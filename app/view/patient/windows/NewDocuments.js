@@ -824,7 +824,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		}
 
 		DocumentHandler.createDocument(params,function(provider, response){
-			app.onDocumentView(response.result.doc.url);
+			app.onDocumentView(response.result.doc.id);
 		});
 	},
 

@@ -723,10 +723,11 @@ body#login {
 }
 
 #msg-div {
-	position: absolute;
+	/*position: absolute;*/
 	left: 35%;
 	top: 10px;
-	width: 300px;
+	min-width: 300px;
+	max-width: 400px;
 	z-index: 20000;
 }
 

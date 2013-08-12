@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.Summary', {
@@ -477,6 +477,12 @@ Ext.define('App.view.patient.Summary', {
                         header: i18n('sha1_hash'),
                         dataIndex: 'hash',
                         width: 300
+                    },
+                    {
+                        header: i18n('encrypted'),
+                        dataIndex: 'encrypted',
+                        width: 70,
+	                    renderer:me.boolRenderer
                     }
                 ],
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
@@ -527,6 +533,11 @@ Ext.define('App.view.patient.Summary', {
                                                 name: 'filePath',
                                                 buttonText: i18n('select_a_file') + '...',
                                                 anchor: '100%'
+                                            },
+                                            {
+                                                xtype: 'checkbox',
+                                                name: 'encrypted',
+                                                boxLabel: i18n('encrypted')
                                             }
                                         ],
                                         api: {
@@ -808,13 +819,18 @@ Ext.define('App.view.patient.Summary', {
 	        success;
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
-			app.msg(i18n(success ? 'sweet':'oops'), i18n(success ? 'hash_validation_passed':'hash_validation_failed'), !success);
+			app.msg(
+				i18n(success ? 'sweet':'oops'),
+				i18n(success ? 'hash_validation_passed':'hash_validation_failed') + '<br>'+ response.result.msg,
+				!success
+			);
 
         });
     },
+
     onDocumentView: function(grid, rowIndex){
-        var rec = grid.getStore().getAt(rowIndex), src = rec.data.url;
-        app.onDocumentView(src);
+        var rec = grid.getStore().getAt(rowIndex);
+        app.onDocumentView(rec.data.id);
     },
 
     uploadADocument: function(){
@@ -826,15 +842,17 @@ Ext.define('App.view.patient.Summary', {
     onDocUpload: function(btn){
         var me = this,
 	        form = me.uploadWin.down('form').getForm(),
-	        win = btn.up('window');
+	        win = btn.up('window'),
+	        params = {
+			    pid: me.pid,
+		        encrypted: form.findField('encrypted').getValue()? 1 : 0,
+			    docType: 'UploadDoc'
+		    };
 
         if(form.isValid()){
             form.submit({
                 waitMsg: i18n('uploading_document') + '...',
-                params: {
-	                pid: me.pid,
-	                docType: 'UploadDoc'
-                },
+                params: params,
                 success: function(fp, o){
                     win.close();
                     me.patientDocumentsStore.load({params:{pid: me.pid}});

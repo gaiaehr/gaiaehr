@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+include_once ($_SESSION['root'] . '/classes/Crypt.php');
 include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
 include_once ($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
 
@@ -48,20 +49,20 @@ class DocumentHandler
 
 	public function createDocument($params)
 	{
+		$params = (object) $params;
 		$path = $this->getPatientDir($params) . $this->nameFile();
 		$this->documents->PDFDocumentBuilder($params, $path);
 		if(file_exists($path)){
 
 			$data = new stdClass();
 			$data->pid = $this->pid;
-			$data->eid = $params->eid;
+			$data->eid = (isset($params->eid) ? $params->eid : '0');
 			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
 			$data->docType = $this->docType;
 			$data->name = $this->fileName;
 			$data->url = $this->getDocumentUrl();
 			$data->date = date('Y-m-d H:i:s');
-			$data->hash = md5_file($path);
-
+			$data->hash = sha1_file($path);
 			$data = $this->d->save($data);
 
 			if(isset($params->DoctorsNote)) {
@@ -70,7 +71,7 @@ class DocumentHandler
 
 			return array(
 				'success' => true, 'doc' => array(
-					'id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
+					'id' => $data['data']['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
 				)
 			);
 		} else {
@@ -83,21 +84,29 @@ class DocumentHandler
 	// TODO: rename this function to uploadPatientDocument()
 	public function uploadDocument($params, $file)
 	{
+		$params = (object) $params;
 		$src = $this->getPatientDir($params) . $this->reNameFile($file);
 		if(move_uploaded_file($file['filePath']['tmp_name'], $src)){
-			$doc            = array();
-			$doc['pid']     = $this->pid;
-			$doc['uid']     = $_SESSION['user']['id'];
-			$doc['docType'] = $this->docType;
-			$doc['name']    = $this->fileName;
-			$doc['url']     = $this->getDocumentUrl();
-			$doc['date']    = date('Y-m-d H:i:s');
-			$this->db->setSQL($this->db->sqlBind($doc, 'patient_documents', 'I'));
-			$this->db->execLog();
-			$doc_id = $this->db->lastInsertId;
+
+			if(isset($params->encrypted) && $params->encrypted){
+				file_put_contents($src, Crypt::encrypt(file_get_contents($src)), LOCK_EX);
+			}
+
+			$data = new stdClass();
+			$data->pid = $this->pid;
+			$data->eid = (isset($params->eid) ? $params->eid : 0);
+			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
+			$data->docType = $this->docType;
+			$data->name = $this->fileName;
+			$data->url = $this->getDocumentUrl();
+			$data->date = date('Y-m-d H:i:s');
+			$data->hash = sha1_file($src);
+			$data->encrypted = $params->encrypted;
+			$data = $this->d->save($data);
+
 			return array(
 				'success' => true, 'doc' => array(
-					'id' => $doc_id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl()
+					'id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()
 				)
 			);
 		} else {
@@ -135,7 +144,8 @@ class DocumentHandler
 
 	protected function reNameFile($file)
 	{
-		$ext = end(explode('.', $file['filePath']['name']));
+		$foo = explode('.', $file['filePath']['name']);
+		$ext = end($foo);
 		return $this->fileName = $this->setName() . '.' . $ext;
 	}
 
@@ -220,7 +230,7 @@ class DocumentHandler
 
 	public function checkDocHash($doc){
 		$path = $_SESSION['site']['path'] . '/patients/' . $doc->pid . '/' . strtolower(str_replace(' ', '_', $doc->docType)) . '/' . $doc->name;
-		return array('success' => $doc->hash == sha1_file($path));
+		return array('success' => $doc->hash == sha1_file($path), 'msg' => 'Stored Hash:'.$doc->hash. '<br>File hash:'.sha1_file($path));
 	}
 
 }

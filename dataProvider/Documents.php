@@ -240,41 +240,55 @@ class Documents
     public function get_EncounterTokensData($eid, $allNeededInfo, $tokens)
     {
 
-        $encounterid = new stdClass();
-        $encounterid->eid = $eid;
-        $encounterdata = $this->encounter->getEncounter($encounterid);
-        $encountercodes = $this->encounter->getEncounterCodes($encounterid);
+        $params = new stdClass();
+	    $params->eid = $eid;
+        $encounter = $this->encounter->getEncounter($params);
+        $encounterCodes = $this->encounter->getEncounterCodes($params);
 
-        $vitals = end($encounterdata['encounter']['vitals']);
-        $soap = $encounterdata['encounter']['soap'];
-        $reviewofsystemschecks = $encounterdata['encounter']['reviewofsystemschecks'][0];
-        unset($reviewofsystemschecks['pid'], $reviewofsystemschecks['eid'], $reviewofsystemschecks['uid'], $reviewofsystemschecks['id'], $reviewofsystemschecks['date']);
-        foreach ($reviewofsystemschecks as $rosc => $num) {
+        $vitals = end($encounter['encounter']['vitals']);
+        $soap = $encounter['encounter']['soap'];
+
+        $rosCks = $encounter['encounter']['reviewofsystemschecks'];
+
+        unset(
+	        $rosCks['id'],
+	        $rosCks['pid'],
+	        $rosCks['eid'],
+	        $rosCks['uid'],
+	        $rosCks['date']
+        );
+
+        foreach ($rosCks as $rosc => $num) {
             if ($num == '' || $num == null || $num == 0) {
 
-                unset($reviewofsystemschecks[$rosc]);
+                unset($rosCks[$rosc]);
             }
 
         }
-        $reviewofsystems = $encounterdata['encounter']['reviewofsystems'];
+
+        $reviewofsystems = $encounter['encounter']['reviewofsystems'];
         unset($reviewofsystems['pid'], $reviewofsystems['eid'], $reviewofsystems['uid'], $reviewofsystems['id'], $reviewofsystems['date']);
         foreach ($reviewofsystems as $ros => $num) {
             if ($num == '' || $num == null || $num == 'null') {
 
                 unset($reviewofsystems[$ros]);
             }
-
         }
+
         $cpt = array();
         $icd = array();
         $hcpc = array();
-        foreach ($encountercodes as $code) {
-            if ($code['type'] == 'CPT') {
+        $cvx = array();
+
+        foreach ($encounterCodes['rows'] as $code) {
+            if ($code['code_type'] == 'CPT') {
                 $cpt[] = $code;
-            } elseif ($code['type'] == "ICD") {
+            } elseif ($code['code_type'] == "ICD") {
                 $icd[] = $code;
-            } elseif ($code['type'] == "HCPC") {
+            } elseif ($code['code_type'] == "HCPC") {
                 $hcpc[] = $code;
+            } elseif ($code['code_type'] == "CVX") {
+	            $cvx[] = $code;
             }
         }
 
@@ -285,13 +299,13 @@ class Documents
 //        $dental = $this->medical->getPatientDentalByEncounterID($eid);
         $activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
         $preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
-        $encounterdata = $encounterdata['encounter'];
+	    $encounter = $encounter['encounter'];
 
         $encounterInformation = array(
-            '[ENCOUNTER_START_DATE]' => $encounterdata['start_date'],
-            '[ENCOUNTER_END_DATE]' => $encounterdata['end_date'],
-            '[ENCOUNTER_BRIEF_DESCRIPTION]' => $encounterdata['brief_description'],
-            '[ENCOUNTER_SENSITIVITY]' => $encounterdata['sensitivity'],
+            '[ENCOUNTER_START_DATE]' => $encounter['service_date'],
+            '[ENCOUNTER_END_DATE]' => $encounter['close_date'],
+            '[ENCOUNTER_BRIEF_DESCRIPTION]' => $encounter['brief_description'],
+            '[ENCOUNTER_SENSITIVITY]' => $encounter['priority'],
             '[ENCOUNTER_WEIGHT_LBS]' => $vitals['weight_lbs'],
             '[ENCOUNTER_WEIGHT_KG]' => $vitals['weight_kg'],
             '[ENCOUNTER_HEIGHT_IN]' => $vitals['height_in'],
@@ -326,7 +340,7 @@ class Documents
             //            '[ENCOUNTER_SURGERY_LIST]'
             // =>$this->tokensForEncountersList($surgery,9),
             '[ENCOUNTER_PREVENTIVECARE_DISMISS]' => $this->tokensForEncountersList($preventivecaredismiss, 10),
-            '[ENCOUNTER_REVIEWOFSYSTEMSCHECKS]' => $this->tokensForEncountersList($reviewofsystemschecks, 11),
+            '[ENCOUNTER_REVIEWOFSYSTEMSCHECKS]' => $this->tokensForEncountersList($rosCks, 11),
             '[ENCOUNTER_REVIEWOFSYSTEMS]' => $this->tokensForEncountersList($reviewofsystems, 12),
             //            '[]'     =>$this->tokensForEncountersList($hcpc,13),
             //            '[]'     =>$this->tokensForEncountersList($hcpc,14),
@@ -385,7 +399,7 @@ class Documents
             $html .= '<table>';
             $html .= "<tr><th>" . "Medications" . "</th></tr>";
             foreach ($Array as $row) {
-                $html .= "<tr><td>" . $row['medication'] . "</td></tr>";
+                $html .= "<tr><td>" . $row['STR'] .' '. $row['dose'] .' '. $row['route'] .' '. $row['form'] .' '. $row['prescription_when'] . "</td></tr>";
             }
             $html .= '</table>';
         } elseif ($typeoflist == 6) {
@@ -399,7 +413,7 @@ class Documents
             $html .= '<table>';
             $html .= "<tr><th>" . "Immunizations" . "</th></tr>";
             foreach ($Array as $row) {
-                $html .= "<tr><td>" . $row['immunization_name'] . "</td></tr>";
+                $html .= "<tr><td>" . $row['vaccine_name'] . "</td></tr>";
             }
             $html .= '</table>';
         } elseif ($typeoflist == 8) {
@@ -583,7 +597,7 @@ class Documents
         $allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
 //	    print_r($allNeededInfo);
 
-        if(isset($params->eid) && $params->eid != 0 && $params->eid = ''){
+        if(isset($params->eid) && $params->eid != 0 && $params->eid != ''){
 	        $allNeededInfo = $this->get_EncounterTokensData($params->eid, $allNeededInfo, $tokens);
         }
 

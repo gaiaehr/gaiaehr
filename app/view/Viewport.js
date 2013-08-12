@@ -1271,13 +1271,14 @@ Ext.define('App.view.Viewport', {
             }
         });
     },
-    onDocumentView: function(src){
+    onDocumentView: function(docId){
         var me = this;
-        if(me.documentViewWindow)
-            me.DocumentViewerWindow.remove(me.documentViewWindow);
-        me.DocumentViewerWindow.add(me.documentViewWindow = Ext.create('App.ux.ManagedIframe', {
-                src: src
-            }));
+        if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
+        me.DocumentViewerWindow.add(
+	        me.documentViewWindow = Ext.create('App.ux.ManagedIframe', {
+                src: 'dataProvider/DocumentViewer.php?doc='+docId
+            })
+        );
         me.DocumentViewerWindow.show();
     },
     /**

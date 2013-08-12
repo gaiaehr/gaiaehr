@@ -1214,6 +1214,7 @@ $LANG = array(
     'hash_validation_failed'                => 'Hash Validation Failed',
     'validate_file_integrity_hash'          => 'Validate File Integrity (hash)',
     'encryption'                            => 'Encryption',
+    'encrypted'                             => 'Encrypted',
     'encrypt'                               => 'Encrypt',
     'decrypt'                               => 'Decrypt'
 );

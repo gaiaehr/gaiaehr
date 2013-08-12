@@ -68,6 +68,11 @@ Ext.define('App.model.patient.PatientDocuments', {
         {
 	        name: 'hash',
 	        type: 'string'
+        },
+        {
+	        name: 'encrypted',
+	        type: 'bool',
+	        defaultValue:0
         }
 	],
 	proxy : {

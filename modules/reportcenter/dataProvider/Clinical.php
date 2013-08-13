@@ -79,8 +79,6 @@ class Clinical extends Reports
         if(count($whereArray) >= 1) $sql .= substr(" WHERE " . $whereStatement, 0, -5);
         $sql .= " HAVING age BETWEEN " . ($params->age_from=='' ? '0' : $params->age_from) . " AND " . ($params->age_to=='' ? '100' : $params->age_to);
 
-        error_log($sql);
-
 		$this->db->setSQL($sql);
 		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		return $data;

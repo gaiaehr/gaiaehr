@@ -23,7 +23,6 @@ include_once ($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
 
 class DocumentHandler
 {
-
 	private $db;
 	private $documents;
 

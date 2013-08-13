@@ -1216,5 +1216,7 @@ $LANG = array(
     'encryption'                            => 'Encryption',
     'encrypted'                             => 'Encrypted',
     'encrypt'                               => 'Encrypt',
-    'decrypt'                               => 'Decrypt'
+    'decrypt'                               => 'Decrypt',
+    'immunization_list'                     => 'Immunization List',
+    'medication_list'                       => 'Medication List'
 );

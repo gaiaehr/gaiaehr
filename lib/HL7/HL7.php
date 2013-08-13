@@ -54,7 +54,28 @@ class HL7 {
 		foreach($this->segments As $segment){
 			$msg .= $segment->build();
 		}
-		return $msg. "\r";
+		return $msg;
+	}
+
+	/**
+	 * @param $msg
+	 */
+	function readMessage($msg){
+		$segments = explode(PHP_EOL, $msg);
+		foreach($segments AS $segment){
+			$this->segments[] = $this->readSegment($segment);
+		}
+	}
+
+
+	/**
+	 * @param $segment string
+	 */
+	function readSegment($segment){
+		$seg = substr($segment, 0, 3);
+		include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
+		$seg = new $seg();
+		return $seg->parse($segment);
 	}
 
 	/**

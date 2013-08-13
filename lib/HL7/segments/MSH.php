@@ -19,11 +19,11 @@ class MSH extends Segments{
 		/**
 		 * MSH-3 Sending Application (HD)
 		 */
-		$this->rawSeg[3][0] = $this->getType('HD');     // MSH-3 Sending Application (HD): ^
+		$this->rawSeg[3] = $this->getType('HD');     // MSH-3 Sending Application (HD): ^
 		/**
 		 * MSH-4 Sending Facility (HD)
 		 */
-		$this->rawSeg[4][0]= $this->getType('HD');      // MSH-4 Sending Facility (HD): ^
+		$this->rawSeg[4]= $this->getType('HD');      // MSH-4 Sending Facility (HD): ^
 		/**
 		 * MSH-5 Receiving Application
 		 */
@@ -55,7 +55,43 @@ class MSH extends Segments{
 		/**
 		 * MSH-12 Version
 		 */
-		$this->rawSeg[12][0] = $this->getType('VID');
+		$this->rawSeg[12] = $this->getType('VID');
+		/**
+		 * MSH-13
+		 */
+		$this->rawSeg[13] = '';
+		/**
+		 * MSH-14
+		 */
+		$this->rawSeg[14] = '';
+		/**
+		 * MSH-15
+		 */
+		$this->rawSeg[15] = '';
+		/**
+		 * MSH-16
+		 */
+		$this->rawSeg[16] = '';
+		/**
+		 * MSH-17
+		 */
+		$this->rawSeg[17] = '';
+		/**
+		 * MSH-18
+		 */
+		$this->rawSeg[18] = '';
+		/**
+		 * MSH-19
+		 */
+		$this->rawSeg[19] = $this->getType('CE');
+		/**
+		 * MSH-20
+		 */
+		$this->rawSeg[20] = '';
+		/**
+		 * MSH-21
+		 */
+		$this->rawSeg[21] = $this->getType('EI');
 
 
 

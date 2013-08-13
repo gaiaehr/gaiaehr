@@ -286,7 +286,7 @@ Ext.define('App.view.administration.FloorPlans', {
             zone = editor.zone;
         Ext.Msg.show({
             title:'Wait!',
-            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            msg: i18n('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn:function(btn){
@@ -310,7 +310,7 @@ Ext.define('App.view.administration.FloorPlans', {
             record = sm.getLastSelected();
         Ext.Msg.show({
             title:'Wait!',
-            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            msg: i18n('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn:function(btn){

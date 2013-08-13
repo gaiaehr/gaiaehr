@@ -6,7 +6,7 @@
  * Time: 5:00 PM
  * To change this template use File | Settings | File Templates.
  */
-ini_set('memory_limit', '512M');
+
 class Segments {
 
 
@@ -33,6 +33,11 @@ class Segments {
 	function build(){
 		$this->parseArray($this->rawSeg);
 		return $this->seg . "\r";
+	}
+
+	function parse($string){
+		$this->parseStr($string);
+		return $this->rawSeg;
 	}
 
 	/**
@@ -65,6 +70,56 @@ class Segments {
 		return $array;
 	}
 
+
+	private function parseStr($string){
+		// break the string into "fields"
+		$fields = explode('|',$string);
+		// fix the MSH segment
+		if($fields[0] == 'MSH'){
+			array_unshift($fields, 'MSH');
+			$fields[1] = '|';
+		}
+
+		// handle the fields
+		foreach($fields AS $i => $field){
+
+			$subFields = explode('^', $field);
+			// field only has one value
+			if(count($subFields) == 1){
+				if(!is_array($this->rawSeg[$i])){
+					$this->rawSeg[$i] = $subFields[0];
+				}else{
+					$this->rawSeg[$i][0] = $subFields[0];
+					$this->rawSeg[$i][1] = $subFields[0];
+				}
+			// field has multiple values
+			}else{
+				$this->rawSeg[$i][0] = $field;
+				foreach($subFields AS $j => $subField){
+					$subSubFields = explode('^', $subField);
+					// field only has one value
+					if(count($subSubFields) == 1){
+						if(!is_array($this->rawSeg[$i][$j+1])){
+							$this->rawSeg[$i][$j+1] = $subSubFields[0];
+						}else{
+							$this->rawSeg[$i][$j+1][0] = $subSubFields[0];
+							$this->rawSeg[$i][$j+1][1] = $subSubFields[0];
+						}
+
+						$subSubSubFields = explode('&',$subSubFields[0]);
+						if(count($subSubSubFields) > 1 && $subSubFields[0] != '~\&'){
+							foreach($subSubSubFields As $l => $values){
+								$this->rawSeg[$i][$j+1][$l+1] = $values;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $this->rawSeg;
+	}
+
 	/**
 	 * @param $pos
 	 * @param $data
@@ -87,6 +142,12 @@ class Segments {
 	function getType($type){
 
 		$types = array();
+
+		$types['EI'][0] = '';               // (EI)
+		$types['EI'][1] = '';               // Entity Identifier (ST)
+		$types['EI'][2] = '';               // Namespace ID (IS)
+		$types['EI'][3] = '';               // Universal ID (ST)
+		$types['EI'][4] = '';               // Universal ID Type (ID)
 
 		$types['PT'][0] = '';               // (PT)
 		$types['PT'][1] = '';               // Processing Code (ID)

@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.Medications',{
-	model : 'App.model.administration.Medications',
-	extend : 'Ext.data.Store',
-	buffered: true,
-	leadingBufferZone: 100,
-	pageSize: 50,
-	remoteFilter: true
-}); 
+Ext.define('App.store.patient.CVXCodes', {
+	extend: 'Ext.data.Store',
+	model     : 'App.model.patient.CVXCodes',
+	remoteSort: false,
+	autoLoad  : false
+});
+

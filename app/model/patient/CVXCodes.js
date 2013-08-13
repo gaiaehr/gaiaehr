@@ -16,11 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.Medications',{
-	model : 'App.model.administration.Medications',
-	extend : 'Ext.data.Store',
-	buffered: true,
-	leadingBufferZone: 100,
-	pageSize: 50,
-	remoteFilter: true
-}); 
+
+Ext.define('App.model.patient.CVXCodes', {
+	extend: 'Ext.data.Model',
+	table: {
+		name:'cvx_codes',
+		comment:'Immunizations - CVX'
+	},
+	fields: [
+        {
+	        name: 'id',
+	        type: 'int',
+	        comment: 'Immunization ID'
+        },
+        {
+	        name: 'cvx_code',
+	        type: 'int'
+        },
+        {
+	        name: 'name',
+	        type: 'string'
+        },
+        {
+	        name: 'description',
+	        type: 'string'
+        },
+
+		{
+			name: 'note',
+			type: 'string'
+		},
+		{
+			name: 'status',
+			type: 'string'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat:'Y-m-d H:i:s'
+		}
+	],
+	proxy : {
+		type: 'direct',
+		api : {
+			read: Medical.getImmunizationsList
+		}
+	}
+});

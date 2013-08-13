@@ -302,11 +302,15 @@ class HL7Messages {
 			    if ($result === false) {
 				    $error = "socket_connect() failed. Reason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
 			    }
+
+			    $msg = "\v" . $msg . chr(0x1c). chr(0x0d);
 			    socket_write($socket, $msg, strlen($msg));
-			    while ($response = socket_read($socket, 4048)) {
-				    print $response;
-			    }
+
+			    $response = '';
+			    $bytes = socket_recv($socket, $response, 1024*10, MSG_WAITALL);
 			    socket_close($socket);
+
+
 
 			    if($error !== 0){
 				    $this->msg['status'] = 4; // error

@@ -581,6 +581,9 @@ $API = array(
 			'getRXNORMLiveSearch' => array(
 				'len' => 1
 			),
+			'getRXNORMList' => array(
+				'len' => 1
+			),
 			'getRXNORMAllergyLiveSearch' => array(
 				'len' => 1
 			),

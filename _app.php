@@ -104,9 +104,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'Ext.ux.LiveSearchGridPanel',
 				'Ext.ux.SlidingPager',
 				'Ext.ux.PreviewPlugin',
+				'Ext.ux.form.SearchField',
 				'App.ux.RatingField',
 				'App.ux.grid.GridToHtml',
 				'App.ux.grid.Printer',
+
 				/**
 				 * Load the models, the model are the representative of the database
 				 * table structure with modifications behind the PHP counterpart.
@@ -169,7 +171,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.patient.EncounterCPTsICDs',
                 'App.model.patient.Encounters',
                 'App.model.patient.EventHistory',
-                'App.model.patient.Immunization',
+                'App.model.patient.CVXCodes',
                 'App.model.patient.ImmunizationCheck',
                 'App.model.patient.LaboratoryTypes',
                 'App.model.patient.Insurance',
@@ -267,7 +269,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.patient.Encounter',
                 'App.store.patient.EncounterCPTsICDs',
                 'App.store.patient.Encounters',
-                'App.store.patient.Immunization',
+                'App.store.patient.CVXCodes',
                 'App.store.patient.ImmunizationCheck',
                 'App.store.patient.LaboratoryTypes',
                 'App.store.patient.MeaningfulUseAlert',

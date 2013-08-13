@@ -95,6 +95,8 @@ Ext.define('App.view.patient.windows.Medical', {
 			autoSync: true
 		});
 
+		me.MedicationListStore = Ext.create('App.store.administration.Medications');
+
 		//endregion
 
 		me.immuSm = Ext.create('Ext.selection.CheckboxModel',{
@@ -108,206 +110,241 @@ Ext.define('App.view.patient.windows.Medical', {
 
 			//region Immunization Panel
 			{
-				xtype: 'grid',
-				action: 'patientImmuListGrid',
-				selModel: me.immuSm,
-				store: me.patientImmuListStore,
-				features: Ext.create('Ext.grid.feature.Grouping', {
-					groupHeaderTpl: i18n('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
-//					hideGroupedHeader: true
-				}),
-				columns: [
+				xtype:'panel',
+				layout:'border',
+				border:false,
+				items:[
 					{
-						text: i18n('code'),
-						dataIndex: 'code',
-						width: 50
-					},
-					{
-						text: i18n('immunization_name'),
-						dataIndex: 'vaccine_name',
-						flex: 1
-					},
-					{
-						text: i18n('lot_number'),
-						dataIndex: 'lot_number',
-						width: 100
-					},
-					{
-						text: i18n('amount'),
-						dataIndex: 'administer_amount',
-						width: 100
-					},
-					{
-						text: i18n('units'),
-						dataIndex: 'administer_units',
-						width: 100
-					},
-					{
-						text: i18n('notes'),
-						dataIndex: 'note',
-						flex: 1
-					},
-					{
-						text: i18n('administered_by'),
-						dataIndex: 'administered_by',
-						width: 150
-					},
-					{
-						xtype: 'datecolumn',
-						text: i18n('date'),
-						format: 'Y-m-d',
-						width: 100,
-						dataIndex: 'administered_date'
-					}
-				],
-				plugins: Ext.create('App.ux.grid.RowFormEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 2,
-					formItems: [
-						{
-
-							title: 'general',
-							xtype: 'container',
-							layout: 'vbox',
-							items: [
+						xtype: 'grid',
+						region:'center',
+						action: 'patientImmuListGrid',
+						selModel: me.immuSm,
+						store: me.patientImmuListStore,
+						features: Ext.create('Ext.grid.feature.Grouping', {
+							groupHeaderTpl: i18n('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
+//					        hideGroupedHeader: true
+						}),
+						columns: [
+							{
+								text: i18n('code'),
+								dataIndex: 'code',
+								width: 50
+							},
+							{
+								text: i18n('immunization_name'),
+								dataIndex: 'vaccine_name',
+								flex: 1
+							},
+							{
+								text: i18n('lot_number'),
+								dataIndex: 'lot_number',
+								width: 100
+							},
+							{
+								text: i18n('amount'),
+								dataIndex: 'administer_amount',
+								width: 100
+							},
+							{
+								text: i18n('units'),
+								dataIndex: 'administer_units',
+								width: 100
+							},
+							{
+								text: i18n('notes'),
+								dataIndex: 'note',
+								flex: 1
+							},
+							{
+								text: i18n('administered_by'),
+								dataIndex: 'administered_by',
+								width: 150
+							},
+							{
+								xtype: 'datecolumn',
+								text: i18n('date'),
+								format: 'Y-m-d',
+								width: 100,
+								dataIndex: 'administered_date'
+							}
+						],
+						plugins: Ext.create('App.ux.grid.RowFormEditing', {
+							autoCancel: false,
+							errorSummary: false,
+							clicksToEdit: 2,
+							formItems: [
 								{
-									/**
-									 * Line one
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									itemId: 'line1',
-									defaults: {
-										margin: '0 10 0 0',
-										xtype: 'textfield'
-									},
+
+									title: 'general',
+									xtype: 'container',
+									layout: 'vbox',
 									items: [
 										{
-											xtype: 'immunizationlivesearch',
-											fieldLabel: i18n('name'),
-											name: 'vaccine_name',
-											valueField:'name',
-											hideLabel: false,
-											allowBlank: false,
-											enableKeyEvents: true,
-											width: 570,
-											listeners: {
-												scope: me,
-												select: me.onLiveSearchSelect
-											}
-										},
-										{
-											fieldLabel: i18n('administrator'),
-											name: 'administered_by',
-											width: 295,
-											labelWidth: 160
+											/**
+											 * Line one
+											 */
+											xtype: 'fieldcontainer',
+											layout: 'hbox',
+											itemId: 'line1',
+											defaults: {
+												margin: '0 10 0 0',
+												xtype: 'textfield'
+											},
+											items: [
+												{
+													xtype: 'immunizationlivesearch',
+													fieldLabel: i18n('name'),
+													name: 'vaccine_name',
+													valueField:'name',
+													hideLabel: false,
+													allowBlank: false,
+													enableKeyEvents: true,
+													width: 570,
+													listeners: {
+														scope: me,
+														select: me.onLiveSearchSelect
+													}
+												},
+												{
+													fieldLabel: i18n('administrator'),
+													name: 'administered_by',
+													width: 295,
+													labelWidth: 160
 
-										}
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0',
-										xtype: 'textfield'
-									},
-									items: [
-										{
-											fieldLabel: i18n('lot_number'),
-											xtype: 'textfield',
-											width: 200,
-											name: 'lot_number'
+												}
+											]
 
 										},
 										{
+											/**
+											 * Line two
+											 */
+											xtype: 'fieldcontainer',
+											layout: 'hbox',
+											defaults: {
+												margin: '0 10 0 0',
+												xtype: 'textfield'
+											},
+											items: [
+												{
+													fieldLabel: i18n('lot_number'),
+													xtype: 'textfield',
+													width: 200,
+													name: 'lot_number'
 
-											xtype: 'numberfield',
-											fieldLabel: i18n('amount'),
-											name: 'administer_amount',
-											labelWidth: 60,
-											width: 200
+												},
+												{
+
+													xtype: 'numberfield',
+													fieldLabel: i18n('amount'),
+													name: 'administer_amount',
+													labelWidth: 60,
+													width: 200
+												},
+												{
+
+													xtype: 'textfield',
+													fieldLabel: i18n('units'),
+													name: 'administer_units',
+													labelWidth: 50,
+													width: 150
+
+												},
+												{
+													fieldLabel: i18n('info_statement_given'),
+													width: 295,
+													labelWidth: 160,
+													xtype: 'datefield',
+													format: 'Y-m-d',
+													name: 'education_date'
+												}
+											]
+
 										},
 										{
+											/**
+											 * Line three
+											 */
+											xtype: 'fieldcontainer',
+											layout: 'hbox',
+											defaults: {
+												margin: '0 10 0 0',
+												xtype: 'textfield'
+											},
+											items: [
+												{
+													fieldLabel: i18n('notes'),
+													xtype: 'textfield',
+													width: 300,
+													name: 'note'
 
-											xtype: 'textfield',
-											fieldLabel: i18n('units'),
-											name: 'administer_units',
-											labelWidth: 50,
-											width: 150
+												},
+												me.CvxMvxCombo = Ext.create('App.ux.combo.CVXManufacturersForCvx', {
+													fieldLabel: i18n('manufacturer'),
+													width: 260,
+													name: 'manufacturer'
+												}),
+												{
+													fieldLabel: i18n('date_administered'),
+													width: 295,
+													labelWidth: 160,
+													xtype: 'datefield',
+													format: 'Y-m-d',
+													name: 'administered_date'
+												}
+											]
 
-										},
-										{
-											fieldLabel: i18n('info_statement_given'),
-											width: 295,
-											labelWidth: 160,
-											xtype: 'datefield',
-											format: 'Y-m-d',
-											name: 'education_date'
-										}
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0',
-										xtype: 'textfield'
-									},
-									items: [
-										{
-											fieldLabel: i18n('notes'),
-											xtype: 'textfield',
-											width: 300,
-											name: 'note'
-
-										},
-										me.CvxMvxCombo = Ext.create('App.ux.combo.CVXManufacturersForCvx', {
-											fieldLabel: i18n('manufacturer'),
-											width: 260,
-											name: 'manufacturer'
-										}),
-										{
-											fieldLabel: i18n('date_administered'),
-											width: 295,
-											labelWidth: 160,
-											xtype: 'datefield',
-											format: 'Y-m-d',
-											name: 'administered_date'
 										}
 									]
 
 								}
 							]
-
-						}
-					]
-				}),
-				bbar: [
-					'-',
-					me.vxuBtn = Ext.widget('button',{
-						text: i18n('submit_hl7_vxu'),
-						scope: me,
-						disabled: true,
-						handler: me.onVxu
-					}),
-					'-',
-					'->',
+						}),
+						bbar: [
+							'-',
+							me.vxuBtn = Ext.widget('button',{
+								text: i18n('submit_hl7_vxu'),
+								scope: me,
+								disabled: true,
+								handler: me.onVxu
+							}),
+							'-',
+							'->',
+							{
+								text: i18n('reviewed'),
+								action: 'review',
+								itemId: 'review_immunizations',
+								scope: me,
+								handler: me.onReviewed
+							}
+						]
+					},
 					{
-						text: i18n('reviewed'),
-						action: 'review',
-						itemId: 'review_immunizations',
-						scope: me,
-						handler: me.onReviewed
+						xtype:'grid',
+						title:i18n('immunization_list'),
+						collapseMode:'mini',
+						region:'east',
+						collapsible:true,
+						collapsed:true,
+						width:300,
+						split:true,
+						store: Ext.create('App.store.patient.CVXCodes'),
+						columns: [
+							{
+								text: i18n('code'),
+								dataIndex: 'cvx_code',
+								width: 50
+							},
+							{
+								text: i18n('immunization_name'),
+								dataIndex: 'name',
+								flex: 1
+							}
+						],
+						listeners:{
+							scope:me,
+							expand:me.immunizationListExpand
+						}
 					}
 				]
 			},
@@ -948,104 +985,160 @@ Ext.define('App.view.patient.windows.Medical', {
 
 			//region Medications panel
 			{
-
-
-				xtype: 'grid',
-				action: 'patientMedicationsListGrid',
-				store: me.patientMedicationsStore,
-				columns: [
+				xtype:'panel',
+				layout:'border',
+				border:false,
+				items:[
 					{
-						header: i18n('medication'),
-						flex: 1,
-						dataIndex: 'STR',
-						editor: {
-							xtype: 'rxnormlivetsearch',
-							displayField: 'STR',
-							valueField: 'STR',
-							action: 'medication',
-							listeners: {
-								scope: me,
-								select: me.onLiveSearchSelect
+						xtype: 'grid',
+						region:'center',
+						action: 'patientMedicationsListGrid',
+						store: me.patientMedicationsStore,
+						columns: [
+							{
+								header: i18n('medication'),
+								flex: 1,
+								minWidth:200,
+								dataIndex: 'STR',
+								editor: {
+									xtype: 'rxnormlivetsearch',
+									displayField: 'STR',
+									valueField: 'STR',
+									action: 'medication',
+									listeners: {
+										scope: me,
+										select: me.onLiveSearchSelect
+									}
+								}
+							},
+							{
+								header: i18n('dose'),
+								width: 125,
+								dataIndex: 'dose',
+								sortable: false,
+								hideable: false,
+								editor: {
+									xtype: 'textfield'
+								}
+							},
+							{
+								header: i18n('route'),
+								width: 100,
+								dataIndex: 'route',
+								sortable: false,
+								hideable: false,
+								editor: {
+									xtype: 'mitos.prescriptionhowto'
+								}
+							},
+							{
+								header: i18n('form'),
+								width: 125,
+								dataIndex: 'form',
+								sortable: false,
+								hideable: false,
+								editor: {
+									xtype: 'mitos.prescriptiontypes'
+								}
+							},
+							{
+								header: i18n('instructions'),
+								width: 200,
+								dataIndex: 'prescription_when',
+								sortable: false,
+								hideable: false,
+								editor: Ext.widget('livesigssearch')
+							},
+							{
+								xtype: 'datecolumn',
+								format: globals['date_display_format'],
+								header: i18n('begin_date'),
+								width: 100,
+								dataIndex: 'begin_date',
+								sortable: false,
+								hideable: false
+							},
+							{
+								header: i18n('end_date'),
+								width: 100,
+								dataIndex: 'end_date',
+								sortable: false,
+								hideable: false,
+								editor: {
+									xtype: 'datefield',
+									format: globals['date_display_format']
+								}
+							},
+							{
+								header: i18n('active?'),
+								width: 60,
+								dataIndex: 'active',
+								renderer: me.boolRenderer
 							}
+						],
+						plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+							autoCancel: false,
+							errorSummary: false,
+							clicksToEdit: 2
+						}),
+						bbar: [
+							'->',
+							{
+								text: i18n('reviewed'),
+								action: 'review',
+								itemId: 'review_medications',
+								scope: me,
+								handler: me.onReviewed
+							}
+						]
+					},
+					{
+						xtype:'grid',
+						title:i18n('medication_list'),
+						collapseMode:'mini',
+						region:'east',
+						width:400,
+						collapsible:true,
+						collapsed:true,
+						split:true,
+						loadMask: true,
+						selModel: {
+							pruneRemoved: false
+						},
+						viewConfig: {
+							trackOver: false
+						},
+						verticalScroller:{
+							variableRowHeight: true
+						},
+						store: me.MedicationListStore,
+						tbar:[
+							me.MedicationListSearch = Ext.widget('triggerfield',{
+								triggerCls: Ext.baseCSSPrefix+'form-search-trigger',
+								fieldLabel: i18n('search'),
+								flex:1,
+								labelWidth: 43,
+								onTriggerClick: me.onMedicationListSearch
+							})
+						],
+						columns: [
+							{
+								xtype: 'rownumberer',
+								width: 50,
+								sortable: false
+							},
+							{
+								text: i18n('medication'),
+								dataIndex: 'STR',
+								flex: 1
+							}
+						],
+						listeners:{
+							scope:me,
+							expand:me.medicationListExpand
 						}
-					},
-					{
-						header: i18n('dose'),
-						width: 125,
-						dataIndex: 'dose',
-						sortable: false,
-						hideable: false,
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						header: i18n('route'),
-						width: 100,
-						dataIndex: 'route',
-						sortable: false,
-						hideable: false,
-						editor: {
-							xtype: 'mitos.prescriptionhowto'
-						}
-					},
-					{
-						header: i18n('form'),
-						width: 125,
-						dataIndex: 'form',
-						sortable: false,
-						hideable: false,
-						editor: {
-							xtype: 'mitos.prescriptiontypes'
-						}
-					},
-					{
-						header: i18n('instructions'),
-						width: 200,
-						dataIndex: 'prescription_when',
-						sortable: false,
-						hideable: false,
-						editor: Ext.widget('livesigssearch')
-					},
-					{
-						xtype: 'datecolumn',
-						format: globals['date_display_format'],
-						header: i18n('begin_date'),
-						width: 100,
-						dataIndex: 'begin_date',
-						sortable: false,
-						hideable: false
-					},
-					{
-						header: i18n('end_date'),
-						width: 100,
-						dataIndex: 'end_date',
-						sortable: false,
-						hideable: false,
-						editor: {
-							xtype: 'datefield',
-							format: globals['date_display_format']
-						}
-					},
-					{
-						header: i18n('active?'),
-						width: 60,
-						dataIndex: 'active',
-						renderer: me.boolRenderer
 					}
-				],
-				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 2
-				}),
-				bbar: ['->', {
-					text: i18n('reviewed'),
-					action: 'review',
-					itemId: 'review_medications',
-					scope: me,
-					handler: me.onReviewed
-				}]
+				]
 			},
 			//endregion
 
@@ -1275,7 +1368,6 @@ Ext.define('App.view.patient.windows.Medical', {
 				]
 			}
 		];
-
 		me.buttons = [
 			{
 				text: i18n('close'),
@@ -1285,7 +1377,6 @@ Ext.define('App.view.patient.windows.Medical', {
 				}
 			}
 		];
-
 		me.listeners = {
 			scope: me,
 			show: me.onMedicalWinShow,
@@ -1302,6 +1393,17 @@ Ext.define('App.view.patient.windows.Medical', {
 		Medical.reviewMedicalWindowEncounter(params, function(provider, response){
 			me.msg('Sweet!', i18n('succefully_reviewed'));
 		});
+	},
+
+	//region Medication Stuff
+	onMedicationListSearch:function(){
+		this.up('grid').getStore().load({
+			params:{query:this.getValue()}
+		});
+	},
+	medicationListExpand:function(grid){
+		this.MedicationListSearch.reset();
+		grid.getStore().load();
 	},
 
 	//*******************************************************
@@ -1498,6 +1600,10 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	//*******************************************************
 	//region Immunization Stuff
+	immunizationListExpand:function(grid){
+		grid.getStore().load();
+	},
+
 	onVxu: function(){
 		var me = this,
 			foo = me.immuSm.getSelection(),
@@ -1623,8 +1729,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			});
 		}
 	},
-
-
 	//endregion
 
 	//*******************************************************

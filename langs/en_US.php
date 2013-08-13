@@ -1223,5 +1223,6 @@ $LANG = array(
     'patient_demographic'                   => 'Patient Demographic',
     'patient_problems'                      => 'Patient Problems',
     'patient_medication'                    => 'Patient Medication',
-    'patient_laboratory'                    => 'Patient Laboratory'
+    'patient_laboratory'                    => 'Patient Laboratory',
+    'remove_final_notice'                   => 'This action is final. Are you sure you want to remove'
 );

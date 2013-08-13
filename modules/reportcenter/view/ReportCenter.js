@@ -367,7 +367,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         dataIndex:'race'
                     },
                     {
-                        text:i18n('Ethnicity'),
+                        text:i18n('ethnicity'),
                         flex:1,
                         dataIndex:'ethnicity'
                     }

@@ -64,7 +64,7 @@ class Clinical extends Reports
 	{
 		$params->to = ($params->to == '') ? date('Y-m-d') : $params->to;
 
-		$sql = "SELECT *, DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(DOB)), '%Y')+0 AS age FROM patient";
+		$sql = "SELECT *, DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(DOB)), '%Y')+0 AS age, CONCAT(fname, ' ', mname, ' ', lname) as fullname FROM patient";
 
         $whereArray = array();
         $whereStatement = '';
@@ -81,6 +81,7 @@ class Clinical extends Reports
 
 		$this->db->setSQL($sql);
 		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+
 		return $data;
 	}
 

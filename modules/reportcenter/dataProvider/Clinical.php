@@ -60,82 +60,40 @@ class Clinical extends Reports
 		);
 	}
 
-
 	public function getClinicalList(stdClass $params)
 	{
 		$params->to = ($params->to == '') ? date('Y-m-d') : $params->to;
 
-		$sql = " SELECT * FROM patient";
+		$sql = "SELECT *, DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(DOB)), '%Y')+0 AS age FROM patient";
 
-        if (isset($params->from) ||
-            isset($params->to) ||
-            isset($params->sex) ||
-            isset($params->race) ||
-            isset($params->pid) ||
-            isset($params->ethnicity) ||
-            isset($params->age_from) ||
-            isset($params->age_to)) $sql .= " WHERE";
+        $whereArray = array();
+        $whereStatement = '';
 
-        if (isset($params->from) && isset($params->to)) $sql .= " date_created BETWEEN '$params->from 00:00:00' AND '$params->to 23:59:59'";
-		if (isset($params->sex) && ($params->sex != '' && $params->sex != 'Both')) $sql .= " AND sex = '$params->sex'";
-		if (isset($params->race) && $params->race != '') $sql .= " AND race = '$params->race'";
-		if (isset($params->pid) && $params->pid != '') $sql .= " AND pid = '$params->pid'";
-		if (isset($params->ethnicity) && $params->ethnicity != '') $sql .= " AND ethnicity= '$params->ethnicity'";
+        if ($params->from=='' && $params->to=='') $whereArray[] = "date_created BETWEEN '$params->from 00:00:00' AND '$params->to 23:59:59'";
+		if (isset($params->sex) && ($params->sex != '' && $params->sex != 'Both')) $whereArray[] = "sex='$params->sex'";
+		if (isset($params->race) && $params->race != '') $whereArray[] = "race='$params->race'";
+		if (isset($params->pid) && $params->pid != '') $whereArray[] = "pid='$params->pid'";
+		if (isset($params->ethnicity) && $params->ethnicity != '') $whereArray[] = "ethnicity='$this->getEthnicityByKey($params->ethnicity)'";
 
-		$this -> db -> setSQL($sql);
+        foreach($whereArray as $whereSegment) $whereStatement .= $whereSegment . ' AND ';
+        if(count($whereArray) >= 1) $sql .= substr(" WHERE " . $whereStatement, 0, -5);
+        $sql .= " HAVING age BETWEEN " . ($params->age_from=='' ? '0' : $params->age_from) . " AND " . ($params->age_to=='' ? '100' : $params->age_to);
+
+        error_log($sql);
+
+		$this->db->setSQL($sql);
 		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		$newarray = array();
-		if(($params->age_from == null && $params->age_to == null) || ($params->age_from == '' && $params->age_to == ''))
-        {
-            $params->age_from=0;
-            $params->age_to=100;
-		}
-		foreach ($data as  $key =>$data1)
-		{
-			$age = $this->patient->getPatientAgeByDOB($data1['DOB']);
-			$num =$age['DMY']['years'];
-			if($params->age_from == null)
-            {
-				if($params->age_to != null)
-                {
-					if($params->age_to>=$num) array_push($newarray,$data[$key]);
-				}
-			}
-			else if($params->age_to == null)
-            {
-				if($params->age_from != null)
-                {
-					if($params->age_from <= $num)	array_push($newarray,$data[$key]);
-				}
-			}
-			else if($params->age_from <= $num && $params->age_to >= $num ) array_push($newarray,$data[$key]);
-		}
-		foreach ($newarray AS $num=>$rec)
-		{
-			$ethnicity= $this->getEthnicityByKey($rec['ethnicity']);
-			$age = $this->patient->getPatientAgeByDOB($rec['DOB']);
-			$newarray[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
-			$newarray[$num]['age']= ($age['DMY']['years']==0)?'months':$age['DMY']['years'];
-			$newarray[$num]['ethnicity']= $ethnicity['option_name'];
-		}
-		return $newarray;
+		return $data;
 	}
 
 	public function getEthnicityByKey($key)
     {
-		$sql = " SELECT option_name
-	               FROM combo_lists_options
-	              WHERE option_value ='$key'";
+		$sql = "SELECT option_name
+	            FROM combo_lists_options
+	            WHERE option_value ='$key'";
 		$this -> db -> setSQL($sql);
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 
 }
-
-//$e = new Clinical();
-//$params = new stdClass();
-//$params->from ='2010-03-08';
-//$params->to ='2013-03-08';
-//echo '<pre>';
-//print_r($e->getClinical('','','','2010-03-08','2013-03-08',0,10,'',''));

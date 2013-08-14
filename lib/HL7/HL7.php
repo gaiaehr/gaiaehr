@@ -43,7 +43,10 @@ class HL7 {
 	 * @return Segments
 	 */
 	function getSegment($segment){
-		return $this->$segment;
+		foreach($this->segments AS $s){
+			if($s[0] == $segment) return $s;
+		}
+		return null;
 	}
 
 	/**

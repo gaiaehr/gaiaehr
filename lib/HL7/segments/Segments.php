@@ -1,10 +1,20 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: ernesto
- * Date: 8/4/13
- * Time: 5:00 PM
- * To change this template use File | Settings | File Templates.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 class Segments {
@@ -175,7 +185,6 @@ class Segments {
 		$types['CQ'][5] = '';               // Alternate Text (ST)>
 		$types['CQ'][6] = '';               // Name of Alternate Coding System (ID)
 
-
 		$types['EI'][0] = '';               // (EI)
 		$types['EI'][1] = '';               // Entity Identifier (ST)
 		$types['EI'][2] = '';               // Namespace ID (IS)
@@ -214,10 +223,40 @@ class Segments {
 		$types['RI'][1] = $types['IS'];     // Repeat Pattern (IS)
 		$types['RI'][2] = $types['ST'];     // Explicit Time Interval (ST)
 
+		$types['DLD'][0] = '';              // (DLD)
+		$types['DLD'][1] =  $types['IS'];   // Discharge Location (IS)
+		$types['DLD'][2] =  $types['TS'];   // Effective Date (TS)
+
+		$types['ELD'][0] = '';              // (ELD)
+		$types['ELD'][1] = $types['ST'];    // Segment ID (ST)
+		$types['ELD'][2] = $types['NM'];    // Segment Sequence (NM)
+		$types['ELD'][3] = $types['NM'];    // Field Position (NM)
+		$types['ELD'][4] = $types['CE'];    // Code Identifying Error (CE)
+
+		$types['ERL'][0] = '';              // (ERL)
+		$types['ERL'][1] = $types['ST'];    // Segment ID (ST)
+		$types['ERL'][2] = $types['NM'];    // Segment Sequence (NM)
+		$types['ERL'][3] = $types['NM'];    // Field Position (NM)
+		$types['ERL'][4] = $types['NM'];    // Field Repetition (NM)
+		$types['ERL'][5] = $types['NM'];    // Component Number (NM)
+		$types['ERL'][6] = $types['NM'];    // Sub-Component Number (NM)
 
 		$types['MO'][0] = '';               // (MO)
 		$types['MO'][1] = $types['NM'];     // Quantity (NM)
 		$types['MO'][2] = $types['ID'];     // Denomination (ID)
+
+		$types['PL'][0] = '';               // (PL)
+		$types['PL'][1] = $types['IS'];     // Point of Care (IS)
+		$types['PL'][2] = $types['IS'];     // Room (IS)
+		$types['PL'][3] = $types['IS'];     // Bed (IS)
+		$types['PL'][4] = $types['HD'];     // Facility (HD)
+		$types['PL'][5] = $types['IS'];     // Location Status (IS)
+		$types['PL'][6] = $types['IS'];     // Person Location Type (IS)
+		$types['PL'][7] = $types['IS'];     // Building (IS)
+		$types['PL'][8] = $types['IS'];     // Floor (IS)
+		$types['PL'][9] = $types['ST'];     // Location Description (ST)
+		$types['PL'][10] = $types['EI'];    // Comprehensive Location Identifier (EI)
+		$types['PL'][11] = $types['HD'];    // Assigning Authority for Location (HD)
 
 		$types['SAD'][0] = '';              // (SAD)
 		$types['SAD'][1] = $types['ST'];    // Street or Mailing Address (ST)
@@ -316,7 +355,6 @@ class Segments {
 		$types['XCN'][22] = $types['CWE'];  // Assigning Jurisdiction (CWE)
 		$types['XCN'][23] = $types['CWE'];  // Assigning Agency or Department (CWE)
 
-
 		$types['XPN'][0] = '';              // (XPN)
 		$types['XPN'][1] = $types['FN'];    // Family Name (FN)
 		$types['XPN'][2] = '';              // Given Name (ST)
@@ -392,7 +430,6 @@ class Segments {
 		$types['CX'][9] = $types['CWE'];    // Assigning Jurisdiction (CWE)
 		$types['CX'][10] = $types['CWE'];   // Assigning Agency or Department (CWE)
 
-
 		$types['OSD'][0] = '';               // (OSD)
 		$types['OSD'][1] = $types['ID'];     // Sequence/Results Flag (ID)
 		$types['OSD'][2] = $types['ST'];     // Placer Order Number: Entity Identifier (ST)
@@ -405,7 +442,6 @@ class Segments {
 		$types['OSD'][9] = $types['ID'];     // Placer Order Number: Universal ID Type (ID)
 		$types['OSD'][10] = $types['ST'];    // Filler Order Number: Universal ID (ST)
 		$types['OSD'][11] = $types['ID'];    // Filler Order Number: Universal ID Type (ID)
-
 
 		$types['TQ'][0] = '';                // (TQ)
 		$types['TQ'][1] = $types['CQ'];      // Quantity (CQ)
@@ -431,11 +467,9 @@ class Segments {
 		$types['PRL'][2] = $types['ST'];     // Parent Observation Sub-identifier (ST)
 		$types['PRL'][3] = $types['TX'];     // Parent Observation Value Descriptor (TX)
 
-
 		$types['MOC'][0] = '';               // (MOC)
 		$types['MOC'][1] = $types['MO'];     // Monetary Amount (MO)
 		$types['MOC'][2] = $types['CE'];     // Charge Code (CE)
-
 
 		$types['SPS'][0] = '';               // (SPS)
 		$types['SPS'][1] = $types['CWE'];    // Specimen Source Name or Code (CWE)
@@ -446,6 +480,16 @@ class Segments {
 		$types['SPS'][6] = $types['CWE'];    // Collection Method Modifier Code (CWE)
 		$types['SPS'][7] = $types['CWE'];    // Specimen Role (CWE)
 
+		$types['CNE'][0] = '';               // (CNE)
+		$types['CNE'][1] = $types['ST'];     // Identifier (ST)
+		$types['CNE'][2] = $types['ST'];     // Text (ST)
+		$types['CNE'][3] = $types['ID'];     // Name of Coding System (ID)
+		$types['CNE'][4] = $types['ST'];     // Alternate Identifier (ST)
+		$types['CNE'][5] = $types['ST'];     // Alternate Text (ST)
+		$types['CNE'][6] = $types['ID'];     // Name of Alternate Coding System (ID)
+		$types['CNE'][7] = $types['ST'];     // <Coding System Version ID (ST)
+		$types['CNE'][8] = $types['ST'];     // Alternate Coding System Version ID (ST)
+		$types['CNE'][9] = $types['ST'];     // Original Text (ST)
 
 		$types['CNN'][0] = '';               // (CNN)
 		$types['CNN'][1] = $types['ST'];     // ID Number (ST)
@@ -459,7 +503,6 @@ class Segments {
 		$types['CNN'][9] = $types['IS'];     // Assigning Authority - Namespace ID (IS)
 		$types['CNN'][10] = $types['ST'];    // Assigning Authority - Universal ID (ST)
 		$types['CNN'][11] = $types['ID'];    // Assigning Authority - Universal ID Type (ID)
-
 
 		$types['NDL'][0] = '';               // (NDL)
 		$types['NDL'][1] = $types['CNN'];    // Name (CNN)

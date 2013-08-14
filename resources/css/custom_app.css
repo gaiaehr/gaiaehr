@@ -297,7 +297,7 @@
 }
 
 .floorPlan {
-	background: url(../images/floorPlanBg.png) no-repeat white left top;
+	background: url(../images/cuadricula_transp.png) repeat;
 }
 
 .grid-row-form-editor .x-panel-body {

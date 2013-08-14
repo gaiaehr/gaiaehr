@@ -47,7 +47,6 @@ class Clinical extends Reports
 		$this -> user = new User();
 		$this -> patient = new Patient();
 		$this -> encounter = new Encounter();
-
 		return;
 	}
 
@@ -61,89 +60,39 @@ class Clinical extends Reports
 		);
 	}
 
-
 	public function getClinicalList(stdClass $params)
 	{
-		$params -> to = ($params -> to == '') ? date('Y-m-d') : $params -> to;
+		$params->to = ($params->to == '') ? date('Y-m-d') : $params->to;
 
-		$pid = $params->pid;
-		$sex = $params->sex;
-		$race= $params->race;
-		$from=$params->from;
-		$to= $params->to;
-		$age_from= $params->age_from;
-		$age_to = $params->age_to;
-		$ethnicity= $params->ethnicity;
+		$sql = "SELECT *, DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(DOB)), '%Y')+0 AS age, CONCAT(fname, ' ', mname, ' ', lname) as fullname FROM patient";
 
+        $whereArray = array();
+        $whereStatement = '';
 
-		$sql = " SELECT *
-	               FROM patient
-	              WHERE date_created BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
-		if (isset($sex) && ($sex != '' && $sex != 'Both'))
-			$sql .= " AND sex = '$sex'";
-		if (isset($race) && $race != '')
-			$sql .= " AND race = '$race'";
-		if (isset($pid) && $pid != '')
-			$sql .= " AND pid = '$pid'";
-		if (isset($ethnicity) && $ethnicity != '')
-			$sql .= " AND ethnicity= '$ethnicity'";
+        if ($params->from=='' && $params->to=='') $whereArray[] = "date_created BETWEEN '$params->from 00:00:00' AND '$params->to 23:59:59'";
+		if (isset($params->sex) && ($params->sex != '' && $params->sex != 'Both')) $whereArray[] = "sex='$params->sex'";
+		if (isset($params->race) && $params->race != '') $whereArray[] = "race='$params->race'";
+		if (isset($params->pid) && $params->pid != '') $whereArray[] = "pid='$params->pid'";
+		if (isset($params->ethnicity) && $params->ethnicity != '') $whereArray[] = "ethnicity='$this->getEthnicityByKey($params->ethnicity)'";
 
-		$this -> db -> setSQL($sql);
+        foreach($whereArray as $whereSegment) $whereStatement .= $whereSegment . ' AND ';
+        if(count($whereArray) >= 1) $sql .= substr(" WHERE " . $whereStatement, 0, -5);
+        $sql .= " HAVING age BETWEEN " . ($params->age_from=='' ? '0' : $params->age_from) . " AND " . ($params->age_to=='' ? '100' : $params->age_to);
+
+		$this->db->setSQL($sql);
 		$data = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		$newarray = array();
-		if(($age_from == null && $age_to == null) || ($age_from == '' && $age_to == '')){
-			$age_from=0;
-			$age_to=100;
-		}
-		foreach ($data as  $key =>$data1)
-		{
 
-			$age = $this->patient->getPatientAgeByDOB($data1['DOB']);
-			$num =$age['DMY']['years'];
-			if($age_from == null){
-				if($age_to != null){
-					if($age_to>=$num){
-						array_push($newarray,$data[$key]);
-					}
-				}
-			}
-			else if($age_to == null){
-				if($age_from != null){
-					if($age_from<=$num){
-						array_push($newarray,$data[$key]);
-					}
-				}
-			}
-			else if($age_from<=$num && $age_to>=$num ){
-				array_push($newarray,$data[$key]);
-			}
-		}
-		foreach ($newarray AS $num=>$rec)
-		{
-			$ethnicity= $this->getEthnicityByKey($rec['ethnicity']);
-			$age = $this->patient->getPatientAgeByDOB($rec['DOB']);
-			$newarray[$num]['fullname']=$this->patient->getPatientFullNameByPid($rec['pid']);
-			$newarray[$num]['age']= ($age['DMY']['years']==0)?'months':$age['DMY']['years'];
-			$newarray[$num]['ethnicity']= $ethnicity['option_name'];
-		}
-
-
-		return $newarray;
+		return $data;
 	}
-	public function getEthnicityByKey($key){
-		$sql = " SELECT option_name
-	               FROM combo_lists_options
-	              WHERE option_value ='$key'";
+
+	public function getEthnicityByKey($key)
+    {
+		$sql = "SELECT option_name
+	            FROM combo_lists_options
+	            WHERE option_value ='$key'";
 		$this -> db -> setSQL($sql);
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 
 }
-
-//$e = new Clinical();
-//$params = new stdClass();
-//$params->from ='2010-03-08';
-//$params->to ='2013-03-08';
-//echo '<pre>';
-//print_r($e->getClinical('','','','2010-03-08','2013-03-08',0,10,'',''));

@@ -189,7 +189,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 me.goToReportPanelAndSetPanel({
                     title:i18n('clinical'),
                     action: 'clientListReport',
-                    height: 300,
+                    height: 270,
                     bodyStyle: 'padding:0px 0px 0',
                     border: false,
                     items: [
@@ -228,10 +228,27 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             width     : 275
                         },
                         {
-                            xtype     : 'datefield',
-                            fieldLabel: i18n('date_to'),
-                            format    :'Y-m-d',
-                            name      : 'to'
+                            xtype: 'fieldcontainer',
+                            layout: 'hbox',
+                            labelWidth: 90,
+                            items:[
+                                {
+                                    xtype     : 'datefield',
+                                    fieldLabel: i18n('date_from'),
+                                    format    :'Y-m-d',
+                                    width     : 200,
+                                    name      : 'from'
+                                },
+                                {
+                                    xtype     : 'datefield',
+                                    labelWidth: 60,
+                                    margin     : '0 0 0 5',
+                                    fieldLabel: i18n('date_to'),
+                                    format    :'Y-m-d',
+                                    width     : 160,
+                                    name      : 'to'
+                                }
+                            ]
                         },
                         {
                             xtype: 'fieldcontainer',
@@ -350,7 +367,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         dataIndex:'race'
                     },
                     {
-                        text:i18n('Ethnicity'),
+                        text:i18n('ethnicity'),
                         flex:1,
                         dataIndex:'ethnicity'
                     }

@@ -20,8 +20,8 @@
 include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
 class ERR extends Segments{
 
-	function __construct(){
-
+	function __construct($hl7){
+		parent::__construct($hl7);
 		$this->rawSeg = array();
 		$this->rawSeg[0] = 'ERR';                   // ERR Message Header Segment
 		$this->rawSeg[1] = $this->getType('ELD');

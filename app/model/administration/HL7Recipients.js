@@ -48,6 +48,11 @@ Ext.define('App.model.administration.HL7Recipients', {
 			comment: 'url or Directory Path'
 		},
 		{
+			name: 'port',
+			type: 'string',
+			comment: 'url port if any'
+		},
+		{
 			name: 'isSecure',
 			type: 'bool',
 			comment: 'If secure then user secret_key'

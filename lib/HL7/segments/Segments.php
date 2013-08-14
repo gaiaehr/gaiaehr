@@ -19,10 +19,28 @@
 
 class Segments {
 
-
 	public $buffer;
 	public $rawSeg;
 	public $seg;
+	/**
+	 * @var array
+	 */
+	public $data = array();
+	/**
+	 * @var HL7
+	 */
+	protected $hl7;
+	/**
+	 * @var bool|array
+	 */
+	protected $children = false;
+
+	/**
+	 * @param $hl7 HL7 instance
+	 */
+	function __construct($hl7){
+		$this->hl7 = $hl7;
+	}
 
 	/**
 	 * @param int $length
@@ -46,8 +64,8 @@ class Segments {
 	}
 
 	function parse($string){
-		$this->parseStr($string);
-		return $this->rawSeg;
+		$this->data = $this->parseStr($string);
+		return $this->data;
 	}
 
 	/**
@@ -159,6 +177,25 @@ class Segments {
 //			return $this->rawSeg[$foo[0]][$foo[1]][$foo[2]];
 //		}
 		return null;
+	}
+
+	/**
+	 * @param null|string $segment
+	 * @return array|bool
+	 */
+	function getChildren($segment = null){
+
+		$children = array();
+		$start = false;
+		foreach($this->hl7->getSegments() As $child){
+			$cls = get_class($child);
+			if($start == false){
+				$start = $cls == get_class($this);
+				continue;
+			}
+			if(array_search($cls, $this->children) !== false) $children[] =  $child;
+		}
+		return $children;
 	}
 
 	/**

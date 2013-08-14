@@ -10,8 +10,8 @@ include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
 
 class OBX extends Segments{
 
-	function __construct(){
-
+	function __construct($hl7){
+		parent::__construct($hl7);
 		$this->rawSeg = array();
 		$this->rawSeg[0] = 'OBX';
 		$this->rawSeg[1] = $this->getType('SI');

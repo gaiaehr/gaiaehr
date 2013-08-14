@@ -29,7 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
- 
+if (!isset($_SESSION)){
+	session_name('GaiaEHR');
+	session_start();
+	session_cache_limiter('private');
+}
+include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
@@ -345,6 +350,9 @@ class CCR
 		$data = $this->medical->getPatientProblemsByPid($this->pid);
 		$pCount = 0;
 		foreach($data AS $row) {
+
+//			print_r($row);
+
 			$pCount++;
 			$e_Problem = $this->ccr->createElement('Problem');
 			$e_Problems->appendChild($e_Problem);
@@ -352,7 +360,7 @@ class CCR
 			$e_Problem->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Problem->appendChild($e_DateTime);
-			$date            = new DateTime($row['date']);
+			$date            = new DateTime($row['begin_date']);
 			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
 			$e_IDs = $this->ccr->createElement('IDs');
@@ -372,7 +380,7 @@ class CCR
 			$e_Description->appendChild($e_Text);
 			$e_Code = $this->ccr->createElement('Code');
 			$e_Description->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', $row['diagnosis']);
+			$e_Value = $this->ccr->createElement('Value', $row['code']);
 			$e_Code->appendChild($e_Value);
 			$e_Value = $this->ccr->createElement('CodingSystem', 'ICD9-CM');
 			$e_Code->appendChild($e_Value);
@@ -389,7 +397,7 @@ class CCR
 			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
 			$e_Problem->appendChild($e_Source);
-			$e_CommentID = $this->ccr->createElement('CommentID', $row['comments']);
+			$e_CommentID = $this->ccr->createElement('CommentID', $row['outcome']);
 			$e_Problem->appendChild($e_CommentID);
 			$e_Episodes = $this->ccr->createElement('Episodes');
 			$e_Problem->appendChild($e_Episodes);
@@ -409,7 +417,7 @@ class CCR
 			$e_DateTime->appendChild($e_ExactDateTime);
 			$e_Description = $this->ccr->createElement('Description');
 			$e_HealthStatus->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['reason']);
+			$e_Text = $this->ccr->createElement('Text', $row['code_text']);
 			$e_Description->appendChild($e_Text);
 			$e_HealthStatus->appendChild($this->sourceType($this->sourceID));
 		}
@@ -580,7 +588,12 @@ class CCR
 	function createImmunizations($e_Immunizations)
 	{
 		$data = $this->medical->getPatientImmunizationsByPid($this->pid);
+
+//		print_r($data);
+
 		foreach($data AS $row) {
+
+
 			$e_Immunization = $this->ccr->createElement('Immunization');
 			$e_Immunizations->appendChild($e_Immunization);
 
@@ -609,9 +622,9 @@ class CCR
 			$e_Immunization->appendChild($e_Product);
 			$e_ProductName = $this->ccr->createElement('ProductName');
 			$e_Product->appendChild($e_ProductName);
-			$e_Text = $this->ccr->createElement('Text',$row['immunization_name']);
+			$e_Text = $this->ccr->createElement('Text',$row['vaccine_name']);
 			$e_ProductName->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code',$row['immunization_id']);
+			$e_Code = $this->ccr->createElement('Code',$row['code']);
 			$e_ProductName->appendChild($e_Code);
 
 			$e_Directions = $this->ccr->createElement('Directions');

@@ -20,8 +20,8 @@
 include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
 class PV2 extends Segments{
 
-	function __construct(){
-
+	function __construct($hl7){
+		parent::__construct($hl7);
 		$this->rawSeg = array();
 		$this->rawSeg[0] = 'PV2';                   // PV2 Message Header Segment
 		$this->rawSeg[1] = $this->getType('PL');

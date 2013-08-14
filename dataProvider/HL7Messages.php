@@ -216,7 +216,7 @@ class HL7Messages {
 		$foo->date_processed = date('Y-m-d H:i:s');
 		$foo->isOutbound = true;
 		$foo->status = 1; // processing
-		$foo->foreign_address = $this->to['recipient'];
+		$foo->foreign_address = $this->to['recipient'] . (isset($this->to['port']) ? $this->to['port'] : '') ;
 		$foo->foreign_facility = $this->to['recipient_facility'];
 		$foo->foreign_application = $this->to['recipient_application'];
 		$foo = $this->m->save($foo);
@@ -261,7 +261,7 @@ class HL7Messages {
 
 	    if($this->to['recipient_type'] == 'http'){
 
-		    $ch = curl_init($this->to['recipient']);
+		    $ch = curl_init($this->to['recipient'].':'.$this->to['port']);
 		    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 		    curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
 		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -297,8 +297,7 @@ class HL7Messages {
 			    if ($socket === false) {
 				    $error = "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
 			    }
-			    $address = explode(':', $this->to['recipient']);
-			    $result = socket_connect($socket, $address[0], $address[1]);
+			    $result = socket_connect($socket, $this->to['recipient'], $this->to['port']);
 			    if ($result === false) {
 				    $error = "socket_connect() failed. Reason: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
 			    }

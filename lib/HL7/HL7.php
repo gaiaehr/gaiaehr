@@ -19,9 +19,100 @@
 class HL7 {
 
 	/**
+	 * Stores an array of segments
 	 * @var Segments array
 	 */
 	public  $segments = array();
+
+	/**
+	 * @return mixed
+	 */
+	function getSendingApplication(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[3][1];
+	}
+
+	/**
+	 * @return mixed
+	 */
+	function getSendingFacility(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[4][1];
+	}
+
+	/**
+	 * @param string $format
+	 * @return string
+	 */
+	function getMsgTime($format = 'Y-m-d H:i:s'){
+		$seg = $this->getSegment('MSH');
+		$time = $seg->data[7][1];
+		return $this->time($time, $format);
+	}
+
+	/**
+	 * @return string
+	 */
+	function getMsgSecurity(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[8];
+	}
+
+	/**
+	 * @return array
+	 */
+	function getMsgType(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[9][1];
+	}
+
+	/**
+	 * @return array
+	 */
+	function getMsgEventType(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[9][2];
+	}
+
+	/**
+	 * @return array
+	 */
+	function getMsgStructure(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[9][3];
+	}
+
+	/**
+	 * @return array
+	 */
+	function getMsgControlId(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[10];
+	}
+
+	/**
+	 * @return array
+	 */
+	function getMsgProcessingId(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[11][1];
+	}
+
+	/**
+	 * @return array
+	 */
+	function getMsgProcessingMode(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[11][2];
+	}
+
+	/**
+	 * @return string
+	 */
+	function getMsgVersionId(){
+		$seg = $this->getSegment('MSH');
+		return $seg->data[12][1];
+	}
 
 	/**
 	 * @param $segment
@@ -31,7 +122,7 @@ class HL7 {
 	function addSegment($segment){
 		try{
 			include_once (str_replace('\\', '/',__DIR__)."/segments/$segment.php");
-			$this->segments[] = $seg = new $segment();
+			$this->segments[] = $seg = new $segment($this);
 			return $seg;
 		}catch (Exception $e){
 			throw new Exception("$segment Segment Not Fount");
@@ -44,9 +135,22 @@ class HL7 {
 	 */
 	function getSegment($segment){
 		foreach($this->segments AS $s){
-			if($s[0] == $segment) return $s;
+			if(get_class($s) == $segment) return $s;
 		}
 		return null;
+	}
+
+	/**
+	 * @param $segment
+	 * @return array
+	 */
+	function getSegments($segment = null){
+		if($segment == null) return $this->segments;
+		$segments = array();
+		foreach($this->segments AS $s){
+			if(get_class($s) == $segment) $segments[] = $s;
+		}
+		return $segments;
 	}
 
 	/**
@@ -70,15 +174,39 @@ class HL7 {
 		}
 	}
 
-
 	/**
 	 * @param $segment string
 	 */
 	function readSegment($segment){
 		$seg = substr($segment, 0, 3);
 		include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
-		$seg = new $seg();
-		return $seg->parse($segment);
+		$seg = new $seg($this);
+		$seg->parse($segment);
+		return $seg;
+	}
+
+	function time($time, $format = 'Y-m-d H:i:s'){
+		switch(strlen($time)){
+			case 4:
+				$rawFormat = 'Y';
+				break;
+			case 6:
+				$rawFormat = 'Ym';
+				break;
+			case 8:
+				$rawFormat = 'Ymd';
+				break;
+			case 10:
+				$rawFormat = 'YmdH';
+				break;
+			case 12:
+				$rawFormat = 'YmdHi';
+				break;
+			default:
+				$rawFormat = 'YmdHis';
+				break;
+		}
+		return date_format(date_create_from_format($rawFormat, $time), $format);
 	}
 
 	/**

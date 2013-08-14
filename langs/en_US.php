@@ -1218,5 +1218,6 @@ $LANG = array(
     'encrypt'                               => 'Encrypt',
     'decrypt'                               => 'Decrypt',
     'immunization_list'                     => 'Immunization List',
-    'medication_list'                       => 'Medication List'
+    'medication_list'                       => 'Medication List',
+    'ssl_certificate'                       => 'SSL Certificate'
 );

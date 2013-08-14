@@ -121,11 +121,11 @@ class Segments {
 	}
 
 	/**
-	 * @param $pos
+	 * @param $field
 	 * @param $data
 	 */
-	function setValue($pos, $data){
-		$foo = explode('.',$pos);
+	function setValue($field, $data){
+		$foo = explode('.',$field);
 		if(count($foo) == 1){
 			$this->rawSeg[$foo[0]] = $data;
 		}elseif(count($foo) == 2){
@@ -136,12 +136,45 @@ class Segments {
 	}
 
 	/**
+	 * @param $field
+	 * @return mixed
+	 */
+	function getValue($field){
+		$foo = explode('.',$field);
+//		if(count($foo) == 1){
+//			return $this->rawSeg[$foo[0]];
+//		}elseif(count($foo) == 2){
+//			return $this->rawSeg[$foo[0]][$foo[1]];
+//		}elseif(count($foo) == 3){
+//			return $this->rawSeg[$foo[0]][$foo[1]][$foo[2]];
+//		}
+		return null;
+	}
+
+	/**
 	 * @param $type
 	 * @return mixed
 	 */
 	function getType($type){
 
 		$types = array();
+
+		$types['ID'] = '';                  // (ID)
+		$types['ST'] = '';                  // (ST)
+		$types['NM'] = '';                  // (NM)
+		$types['SI'] = '';                  // (SI)
+		$types['TX'] = '';                  // (TX)
+		$types['DT'] = '';                  // (DT)
+		$types['IS'] = '';                  // (IS)
+
+		$types['CQ'][0] = '';               // (CQ)
+		$types['CQ'][1] = '';               // Identifier (ST)
+		$types['CQ'][2] = '';               // Text (ST)
+		$types['CQ'][3] = '';               // Name of Coding System (ID)>
+		$types['CQ'][4] = '';               // Alternate Identifier (ST)>
+		$types['CQ'][5] = '';               // Alternate Text (ST)>
+		$types['CQ'][6] = '';               // Name of Alternate Coding System (ID)
+
 
 		$types['EI'][0] = '';               // (EI)
 		$types['EI'][1] = '';               // Entity Identifier (ST)
@@ -177,10 +210,19 @@ class Segments {
 		$types['HD'][2] = '';               // Universal ID (ST)
 		$types['HD'][3] = '';               // Universal ID Type (ID)
 
+		$types['RI'][0] = '';               // (RI)
+		$types['RI'][1] = $types['IS'];     // Repeat Pattern (IS)
+		$types['RI'][2] = $types['ST'];     // Explicit Time Interval (ST)
+
+
+		$types['MO'][0] = '';               // (MO)
+		$types['MO'][1] = $types['NM'];     // Quantity (NM)
+		$types['MO'][2] = $types['ID'];     // Denomination (ID)
+
 		$types['SAD'][0] = '';              // (SAD)
-		$types['SAD'][1] = '';              // Street or Mailing Address (ST)
-		$types['SAD'][2] = '';              // Street Name (ST)
-		$types['SAD'][3] = '';              // Dwelling Number (ST)
+		$types['SAD'][1] = $types['ST'];    // Street or Mailing Address (ST)
+		$types['SAD'][2] = $types['ST'];    // Street Name (ST)
+		$types['SAD'][3] = $types['ST'];    // Dwelling Number (ST)
 
 		$types['VID'][0] = '';              // (VID)
 		$types['VID'][1] = '2.5.1';         // Version ID (ID)
@@ -213,8 +255,8 @@ class Segments {
 		$types['MSG'][3] = '';              // Message Structure (ID)
 
 		$types['DLN'][0] = '';              // (DLN)
-		$types['DLN'][1] = '';              // License Number (ST)>
-		$types['DLN'][2] = '';              // Issuing State, Province, Country (IS)>
+		$types['DLN'][1] = '';              // License Number (ST)
+		$types['DLN'][2] = '';              // Issuing State, Province, Country (IS)
 		$types['DLN'][3] = '';              // Expiration Date (DT)
 
 		$types['JCC'][0] = '';              // (JCC)
@@ -261,7 +303,7 @@ class Segments {
 		$types['XCN'][9] = $types['TS'];    // Assigning Authority (HD)
 		$types['XCN'][10] = '';             // Name Type Code (ID)
 		$types['XCN'][11] = '';             // Identifier Check Digit (ST)
-		$types['XCN'][12] = '';             // <Check Digit Scheme (ID)
+		$types['XCN'][12] = '';             // Check Digit Scheme (ID)
 		$types['XCN'][13] = '';             // Identifier Type Code (ID)
 		$types['XCN'][14] = '';             // Assigning Facility (HD)
 		$types['XCN'][15] = '';             // Name Representation Code (ID)
@@ -349,6 +391,88 @@ class Segments {
 		$types['CX'][8] = '';               // Expiration Date (DT)
 		$types['CX'][9] = $types['CWE'];    // Assigning Jurisdiction (CWE)
 		$types['CX'][10] = $types['CWE'];   // Assigning Agency or Department (CWE)
+
+
+		$types['OSD'][0] = '';               // (OSD)
+		$types['OSD'][1] = $types['ID'];     // Sequence/Results Flag (ID)
+		$types['OSD'][2] = $types['ST'];     // Placer Order Number: Entity Identifier (ST)
+		$types['OSD'][3] = $types['IS'];     // Placer Order Number: Namespace ID (IS)
+		$types['OSD'][4] = $types['ST'];     // Filler Order Number: Entity Identifier (ST)
+		$types['OSD'][5] = $types['IS'];     // Filler Order Number: Namespace ID (IS)
+		$types['OSD'][6] = $types['ST'];     // Sequence Condition Value (ST)
+		$types['OSD'][7] = $types['NM'];     // Maximum Number of Repeats (NM)
+		$types['OSD'][8] = $types['ST'];     // Placer Order Number: Universal ID (ST)
+		$types['OSD'][9] = $types['ID'];     // Placer Order Number: Universal ID Type (ID)
+		$types['OSD'][10] = $types['ST'];    // Filler Order Number: Universal ID (ST)
+		$types['OSD'][11] = $types['ID'];    // Filler Order Number: Universal ID Type (ID)
+
+
+		$types['TQ'][0] = '';                // (TQ)
+		$types['TQ'][1] = $types['CQ'];      // Quantity (CQ)
+		$types['TQ'][2] = $types['RI'];      // Interval (RI)
+		$types['TQ'][3] = $types['ST'];      // Duration (ST)
+		$types['TQ'][4] = $types['TS'];      // Start Date/Time (TS)
+		$types['TQ'][5] = $types['TS'];      // End Date/Time (TS)
+		$types['TQ'][6] = $types['ST'];      // Priority (ST)
+		$types['TQ'][7] = $types['ST'];      // Condition (ST)
+		$types['TQ'][8] = $types['TX'];      // Text (TX)
+		$types['TQ'][9] = $types['ID'];      // Conjunction (ID)
+		$types['TQ'][10] = $types['OSD'];    // Order Sequencing (OSD)
+		$types['TQ'][11] = $types['CE'];     // Occurrence Duration (CE)
+		$types['TQ'][12] = $types['NM'];     // Total Occurrences (NM)
+
+		$types['EIP'][0] = '';               // (EIP)
+		$types['EIP'][1] = $types['EI'];     // Placer Assigned Identifier (EI)
+		$types['EIP'][2] = $types['EI'];     // Filler Assigned Identifier (EI)
+
+
+		$types['PRL'][0] = '';               // (PRL)
+		$types['PRL'][1] = $types['CE'];     // Parent Observation Identifier (CE)
+		$types['PRL'][2] = $types['ST'];     // Parent Observation Sub-identifier (ST)
+		$types['PRL'][3] = $types['TX'];     // Parent Observation Value Descriptor (TX)
+
+
+		$types['MOC'][0] = '';               // (MOC)
+		$types['MOC'][1] = $types['MO'];     // Monetary Amount (MO)
+		$types['MOC'][2] = $types['CE'];     // Charge Code (CE)
+
+
+		$types['SPS'][0] = '';               // (SPS)
+		$types['SPS'][1] = $types['CWE'];    // Specimen Source Name or Code (CWE)
+		$types['SPS'][2] = $types['CWE'];    // Additives (CWE)
+		$types['SPS'][3] = $types['TX'];     // Specimen Collection Method (TX)
+		$types['SPS'][4] = $types['CWE'];    // Body Site (CWE)
+		$types['SPS'][5] = $types['CWE'];    // Site Modifier (CWE)
+		$types['SPS'][6] = $types['CWE'];    // Collection Method Modifier Code (CWE)
+		$types['SPS'][7] = $types['CWE'];    // Specimen Role (CWE)
+
+
+		$types['CNN'][0] = '';               // (CNN)
+		$types['CNN'][1] = $types['ST'];     // ID Number (ST)
+		$types['CNN'][2] = $types['ST'];     // Family Name (ST)
+		$types['CNN'][3] = $types['ST'];     // Given Name (ST)
+		$types['CNN'][4] = $types['ST'];     // Second and Further Given Names or Initials Thereof (ST)
+		$types['CNN'][5] = $types['ST'];     // Suffix (e.g., JR or III) (ST)
+		$types['CNN'][6] = $types['ST'];     // Prefix (e.g., DR) (ST)
+		$types['CNN'][7] = $types['IS'];     // Degree (e.g., MD (IS)
+		$types['CNN'][8] = $types['IS'];     // Source Table (IS)
+		$types['CNN'][9] = $types['IS'];     // Assigning Authority - Namespace ID (IS)
+		$types['CNN'][10] = $types['ST'];    // Assigning Authority - Universal ID (ST)
+		$types['CNN'][11] = $types['ID'];    // Assigning Authority - Universal ID Type (ID)
+
+
+		$types['NDL'][0] = '';               // (NDL)
+		$types['NDL'][1] = $types['CNN'];    // Name (CNN)
+		$types['NDL'][2] = $types['TS'];     // Start Date/time (TS)
+		$types['NDL'][3] = $types['TS'];     // End Date/time (TS)
+		$types['NDL'][4] = $types['IS'];     // Point of Care (IS)
+		$types['NDL'][5] = $types['IS'];     // Room (IS)
+		$types['NDL'][6] = $types['IS'];     // Bed (IS)
+		$types['NDL'][7] = $types['HD'];     // Facility (HD)
+		$types['NDL'][8] = $types['IS'];     // Location Status (IS)
+		$types['NDL'][9] = $types['IS'];     // Patient Location Type (IS)
+		$types['NDL'][10] = $types['IS'];    // Building (IS)
+		$types['NDL'][11] = $types['IS'];    // Floor (IS)
 
 		return $types[$type];
 

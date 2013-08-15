@@ -1225,5 +1225,6 @@ $LANG = array(
     'patient_medication'                    => 'Patient Medication',
     'patient_laboratory'                    => 'Patient Laboratory',
     'remove_final_notice'                   => 'This action is final. Are you sure you want to remove',
-    'ssl_certificate'                       => 'SSL Certificate'
+    'ssl_certificate'                       => 'SSL Certificate',
+    'clinical_summary'                      => 'Clinical Summary Report'
 );

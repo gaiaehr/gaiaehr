@@ -303,12 +303,6 @@ class Navigation
 			'id' => 'App.view.administration.Encryption'
 		);
 
-		$admin['children'][] = array(
-			'text' => $this->i18n['ssl_certificate'],
-			'leaf' => true,
-			'cls' => 'file',
-			'id' => 'App.view.administration.SSL'
-		);
 		//}
 		if($this->ACL->hasPermission('access_gloabal_settings') ||
 			$this->ACL->hasPermission('access_facilities') ||

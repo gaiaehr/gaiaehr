@@ -177,17 +177,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             });
 
             /**
-             * Clinical Summary Report v0.0.1
-             * This report will generate a clinical summary by patient filtered by patient
-             * TODO: Load the report dynamically by file, also dynamically add the reports found on the list.
-             * this would be done in the future.
-             * @type {*}
-             */
-            me.ClinicalSummaryReport = me.addReportByCategory(me.patientCategory, i18n('clinical_summary'), function(btn) {
-                if(!me.clinicalSummaryStore) me.clinicalSummaryStore = Ext.create('Modules.reportcenter.store.ClinicalSummary');
-            });
-
-            /**
              * Clinical Report v0.0.1
              * This report will generate a list of patient filtered by demographics, laboratories, medical, ect.
              * This to comply with the Certification

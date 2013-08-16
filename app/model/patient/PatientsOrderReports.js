@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.PatientsObservations', {
+Ext.define('App.model.patient.PatientsOrderReports', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_observations',
-		comment:'Patients Observations'
+		name:'patient_order_reports',
+		comment:'Patients Order Reports'
 	},
 	fields: [
         {

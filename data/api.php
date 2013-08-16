@@ -22,6 +22,7 @@ if(!isset($_SESSION)) {
     session_start();
     session_cache_limiter('private');
 }
+
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
     require_once ('../classes/MatchaHelper.php');
     include_once($_SESSION['root'] . '/dataProvider/Modules.php');

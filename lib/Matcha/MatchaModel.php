@@ -40,11 +40,14 @@ class MatchaModel extends Matcha
     static public function __SenchaModel($fileModel)
     {
         // skip this entire routine if freeze option is true
-        //if(self::$__freeze) return true;
         try
         {
-	        self::$__senchaModel = array();
+			if(self::$__freeze){
+				self::$__senchaModel = self::__getSenchaModel($fileModel);
+				return true;
+			}
 
+	        self::$__senchaModel = array();
             // check the difference in dates of the Sencha model file and the stored Sencha model on the server memory,
             // if there are equal go ahead and load the model from memory and quit the procedure
             if(self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel))

@@ -23,6 +23,7 @@ new MatchaHelper();
 $hl7 = new HL7();
 $m = MatchaModel::setSenchaModel('App.model.administration.HL7Messages');
 $r = MatchaModel::setSenchaModel('App.model.administration.HL7Recipients');
+$o = MatchaModel::setSenchaModel('App.model.patient.PatientsObservations');
 $error = false;
 
 print '<pre>';
@@ -67,7 +68,7 @@ if($error === false){
 		case 'ORU':
 
 			$pid = $hl7->getSegment('PID');
-			$sft = $hl7->getSegment('SFT');
+//			$sft = $hl7->getSegment('SFT');
 			$orc = $hl7->getSegment('ORC');
 			$obr = $hl7->getSegment('OBR');
 

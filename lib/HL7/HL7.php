@@ -176,12 +176,15 @@ class HL7 {
 
 	/**
 	 * @param $segment string
+	 * @return string|Segments
 	 */
 	function readSegment($segment){
 		$seg = substr($segment, 0, 3);
-		include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
-		$seg = new $seg($this);
-		$seg->parse($segment);
+		if($seg != ''){
+			include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
+			$seg = new $seg($this);
+			$seg->parse($segment);
+		}
 		return $seg;
 	}
 

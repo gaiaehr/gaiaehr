@@ -23,6 +23,7 @@ new MatchaHelper();
 $hl7 = new HL7();
 $m = MatchaModel::setSenchaModel('App.model.administration.HL7Messages');
 $r = MatchaModel::setSenchaModel('App.model.administration.HL7Recipients');
+$o = MatchaModel::setSenchaModel('App.model.patient.PatientsObservations');
 $error = false;
 
 print '<pre>';
@@ -39,9 +40,9 @@ PID|||9817566735^^^MPI&2.16.840.1.113883.19.3.2.1&ISO^MR||Johnson^Philip||200705
 ORC|RE|||||||||||1234^Admit^Alan^^^^^^ABC Medical Center&2.16.840.1.113883.19.4.6&ISO|||||||||Level Seven Healthcare^L^^^^ABC Medical Center&2.16.840.1.113883.19.4.6&ISO^XX^^^1234|1005 Healthcare Drive^^Ann Arbor^MI^48103^^B|^^^^^734^5553001|4444 Healthcare Drive^^Ann Arbor^MI^48103^^B
 OBR|1||9700123^Lab^2.16.840.1.113883.19.3.1.6^ISO|10368-9^Lead BldC-mCnc^LN^3456543^Blood lead test^99USI|||200808151030-0700||||||Diarrhea|||1234^Admit^Alan^^^^^^ABC Medical Center&2.16.840.1.113883.19.4.6&ISO||||||200808181800-0700|||F||||||787.91^DIARRHEA^I9CDX
 OBX|1|NM|10368-9^Lead BldC-mCnc^LN|1|50|ug/dL^micro-gram per deci-liter^UCUM|<9 mcg/dL:  Acceptable background lead exposure|H|||F|||200808151030-0700|||||200808181800-0700||||Lab^L^^^^CLIA&2.16.840.1.113883.19.4.6&ISO^XX^^^1236|3434 Industrial Lane^^Ann Arbor^MI^48103^^B
+NTE|1|L|MORAXELLA (BRANHAMELLA) CATARRHALIS
+NTE|2|L|HEAVY GROWTH
 OBX|2|NM|10368-9^Lead BldC-mCnc^LN|1|50|ug/dL^micro-gram per deci-liter^UCUM|<9 mcg/dL:  Acceptable background lead exposure|H|||F|||200808151030-0700|||||200808181800-0700||||Lab^L^^^^CLIA&2.16.840.1.113883.19.4.6&ISO^XX^^^1236|3434 Industrial Lane^^Ann Arbor^MI^48103^^B
-OBX|3|NM|10368-9^Lead BldC-mCnc^LN|1|50|ug/dL^micro-gram per deci-liter^UCUM|<9 mcg/dL:  Acceptable background lead exposure|H|||F|||200808151030-0700|||||200808181800-0700||||Lab^L^^^^CLIA&2.16.840.1.113883.19.4.6&ISO^XX^^^1236|3434 Industrial Lane^^Ann Arbor^MI^48103^^B
-SFT|NIST Lab, Inc.|3.6.23|A-1 Lab System|6742873-12||20080303
 EOF;
 $hl7->readMessage($msg);
 
@@ -67,14 +68,25 @@ if($error === false){
 		case 'ORU':
 
 			$pid = $hl7->getSegment('PID');
-			$sft = $hl7->getSegment('SFT');
+//			$sft = $hl7->getSegment('SFT');
 			$orc = $hl7->getSegment('ORC');
-//			print_r($hl7->getSegment('OBR'));
-			print_r($hl7->getSegment('OBR')->getChildren('OBX'));
+			$obr = $hl7->getSegment('OBR');
+
+			$obxs = $obr->getChildren('OBX', true);
+
+			// for each observation
+			foreach($obxs AS $obx){
+
+				// for each notes
+				foreach($obx->getChildren('NTE') AS $nte){
+					print_r($nte->data);
+				}
+
+			}
+
+//			print_r(count($obxs));
 
 //			$obx = $hl7->getSegments(array('ORC'=>'OBX'));
-
-
 //			print_r($orc);
 
 

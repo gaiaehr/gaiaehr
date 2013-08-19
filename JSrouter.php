@@ -21,6 +21,7 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
+ob_start();
 require_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 include_once($_SESSION['root'] . '/dataProvider/Globals.php');

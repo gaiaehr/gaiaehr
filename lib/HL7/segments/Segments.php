@@ -33,7 +33,7 @@ class Segments {
 	/**
 	 * @var bool|array
 	 */
-	protected $children = false;
+	protected $children = array();
 
 	/**
 	 * @param $hl7 HL7 instance
@@ -181,19 +181,31 @@ class Segments {
 
 	/**
 	 * @param null|string $segment
+	 * @param bool $all
 	 * @return array|bool
 	 */
-	function getChildren($segment = null){
+	function getChildren($segment = null, $all = false){
 
 		$children = array();
-		$start = false;
-		foreach($this->hl7->getSegments() As $child){
-			$cls = get_class($child);
+		$start    = false;
+		$stop     = false;
+		$segments = $this->hl7->getSegments();
+
+		for($i = array_search($this, $segments); $i < count($segments); $i++){
+			if($stop) break;
+			$cls = get_class($segments[$i]);
+
 			if($start == false){
-				$start = $cls == get_class($this);
+				$start = $cls == get_class($segments[$i]);
 				continue;
 			}
-			if(array_search($cls, $this->children) !== false) $children[] =  $child;
+
+			if($segment == $cls && array_search($cls, $this->children) !== false){
+				$children[] =  $segments[$i];
+				continue;
+			}
+
+			$stop = !$all;
 		}
 		return $children;
 	}
@@ -213,6 +225,7 @@ class Segments {
 		$types['TX'] = '';                  // (TX)
 		$types['DT'] = '';                  // (DT)
 		$types['IS'] = '';                  // (IS)
+		$types['FT'] = '';                  // (FT)
 
 		$types['CQ'][0] = '';               // (CQ)
 		$types['CQ'][1] = '';               // Identifier (ST)

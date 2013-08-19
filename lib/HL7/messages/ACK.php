@@ -17,21 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
-class MRG extends Segments{
+class ACK {
 
-	function __construct($hl7){
-		parent::__construct($hl7);
-
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'MRG';                   // MRG Message Header Segment
-		$this->rawSeg[1] = $this->getType('CX');
-		$this->rawSeg[2] = $this->getType('CX');
-		$this->rawSeg[3] = $this->getType('CX');
-		$this->rawSeg[4] = $this->getType('CX');
-		$this->rawSeg[5] = $this->getType('CX');
-		$this->rawSeg[6] = $this->getType('CX');
-		$this->rawSeg[7] = $this->getType('XPN');
-
-	}
+	public $R01 = array(
+		'MSH' => '',
+		'SFT' => '',
+		'MSA' => '',
+		'ERR' => ''
+	);
 }

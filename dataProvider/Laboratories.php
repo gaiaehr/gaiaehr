@@ -31,7 +31,7 @@ class Laboratories
     function __construct()
     {
 	    $this->db = new MatchaHelper();
-	    if($this->LP == null) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabPanels');
+//	    if($this->LP == null) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabPanels');
 	    if($this->LO == null) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabObservations');
         return;
     }

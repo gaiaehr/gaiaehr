@@ -1225,5 +1225,12 @@ $LANG = array(
     'patient_medication'                    => 'Patient Medication',
     'patient_laboratory'                    => 'Patient Laboratory',
     'remove_final_notice'                   => 'This action is final. Are you sure you want to remove',
-    'ssl_certificate'                       => 'SSL Certificate'
+    'ssl_certificate'                       => 'SSL Certificate',
+    'export_ccr'                            => 'Export CCR',
+    'export_ccd'                            => 'Export CCD',
+    'raw_ccr'                               => 'Raw CCR',
+    'raw_ccd'                               => 'Raw CCD',
+    'view_ccd'                              => 'View CCD',
+    'view_ccr'                              => 'View CCR',
+    'filter_encounter'                      => 'Filter by encounter'
 );

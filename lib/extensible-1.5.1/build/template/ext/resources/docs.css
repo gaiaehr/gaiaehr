@@ -304,6 +304,13 @@ h3.home-title {
 	padding:0 5px 10px 0;
 }
 
+.search-item-encounter {
+    margin:5px 5px 9px;
+    padding:0 5px 10px 0;
+    background-color: darkgreen;
+    color: white;
+}
+
 .search-item .member {
 	font:bold 12px tahoma,arial,sans-serif;
 	color:#444;

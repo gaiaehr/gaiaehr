@@ -329,6 +329,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.ManagedIframe',
 				'App.ux.NodeDisabled',
 				'App.ux.PhotoIdWindow',
+                'App.ux.PatientEncounterCombo',
 				/*
 				 * Load the RenderPanel
 				 * This is the main panel when all the forms are rendered.

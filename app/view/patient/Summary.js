@@ -702,7 +702,7 @@ Ext.define('App.view.patient.Summary', {
                         defaultType:'button',
                         items:[
                             {
-                                text:'View CCR',
+                                text: i18n('view_ccr'),
                                 margin:'0 0 5 0',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
@@ -714,7 +714,7 @@ Ext.define('App.view.patient.Summary', {
                                 }
                             },
                             {
-                                text:'View CCD',
+                                text: i18n('view_ccd'),
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
@@ -732,7 +732,7 @@ Ext.define('App.view.patient.Summary', {
                         defaultType:'button',
                         items:[
                             {
-                                text:'Raw CCR',
+                                text: i18n('raw_ccr'),
                                 margin:'0 0 5 0',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
@@ -744,7 +744,7 @@ Ext.define('App.view.patient.Summary', {
                                 }
                             },
                             {
-                                text:'Raw CCD',
+                                text: i18n('raw_ccd'),
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
@@ -762,7 +762,7 @@ Ext.define('App.view.patient.Summary', {
                         defaultType:'button',
                         items:[
                             {
-                                text:'Export CCR',
+                                text: i18n('export_ccr'),
                                 margin:'0 0 5 0',
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
@@ -774,7 +774,7 @@ Ext.define('App.view.patient.Summary', {
                                 }
                             },
                             {
-                                text:'Export CCD',
+                                text: i18n('export_ccd'),
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
@@ -793,6 +793,18 @@ Ext.define('App.view.patient.Summary', {
 //                           	trg.focus();
 //                           	trg.print();
                         }
+                    },'-',
+                    {
+                        xtype:'container',
+                        layout:'vbox',
+                        items:[
+                        {
+                            xtype:'patientEncounterCombo',
+                            name: 'filterEncounter',
+                            margin: 5,
+                            fieldLabel: i18n('filter_encounter'),
+                            hideLabel: false
+                        }]
                     }
                 ]
              });

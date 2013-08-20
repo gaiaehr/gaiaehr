@@ -34,17 +34,21 @@ if($recipient === false){
 }
 
 $msg = <<<EOF
-MSH|^~\&|EHR Application^2.16.840.1.113883.3.72.7.1^HL7|EHR Facility^2.16.840.1.113883.3.72.7.2^HL7|PH Application^2.16.840.1.113883.3.72.7.3^HL7|PH Facility^2.16.840.1.113883.3.72.7.4^HL7|20110316102013||ORU^R01^ORU_R01|NIST-110316102013209|P|2.5.1|||||||||PHLabReport-Ack^^2.16.840.1.114222.4.10.3^ISO
-SFT|NIST Lab, Inc.|3.6.23|A-1 Lab System|6742873-12||20080303
-PID|||9817566735^^^MPI&2.16.840.1.113883.19.3.2.1&ISO^MR||Johnson^Philip||20070526|M||2106-3^White^HL70005|3345 Elm Street^^Aurora^Colorado^80011^USA^M||^PRN^^^^303^5548889|||||||||N^Not Hispanic or Latino^HL70189
-ORC|RE|||||||||||1234^Admit^Alan^^^^^^ABC Medical Center&2.16.840.1.113883.19.4.6&ISO|||||||||Level Seven Healthcare^L^^^^ABC Medical Center&2.16.840.1.113883.19.4.6&ISO^XX^^^1234|1005 Healthcare Drive^^Ann Arbor^MI^48103^^B|^^^^^734^5553001|4444 Healthcare Drive^^Ann Arbor^MI^48103^^B
-OBR|1||9700123^Lab^2.16.840.1.113883.19.3.1.6^ISO|10368-9^Lead BldC-mCnc^LN^3456543^Blood lead test^99USI|||200808151030-0700||||||Diarrhea|||1234^Admit^Alan^^^^^^ABC Medical Center&2.16.840.1.113883.19.4.6&ISO||||||200808181800-0700|||F||||||787.91^DIARRHEA^I9CDX
-OBX|1|NM|10368-9^Lead BldC-mCnc^LN|1|50|ug/dL^micro-gram per deci-liter^UCUM|<9 mcg/dL:  Acceptable background lead exposure|H|||F|||200808151030-0700|||||200808181800-0700||||Lab^L^^^^CLIA&2.16.840.1.113883.19.4.6&ISO^XX^^^1236|3434 Industrial Lane^^Ann Arbor^MI^48103^^B
-NTE|1|L|MORAXELLA (BRANHAMELLA) CATARRHALIS
-NTE|2|L|HEAVY GROWTH
-OBX|2|NM|10368-9^Lead BldC-mCnc^LN|1|50|ug/dL^micro-gram per deci-liter^UCUM|<9 mcg/dL:  Acceptable background lead exposure|H|||F|||200808151030-0700|||||200808181800-0700||||Lab^L^^^^CLIA&2.16.840.1.113883.19.4.6&ISO^XX^^^1236|3434 Industrial Lane^^Ann Arbor^MI^48103^^B
+MSH|^~\&|NIST^2.16.840.1.113883.3.72.5.20^ISO|NIST^2.16.840.1.113883.3.72.5.21^ISO|NIST^2.16.840.1.113883.3.72.5.22^ISO|NIST^2.16.840.1.113883.3.72.5.23^ISO|20120821140551-0500||ORU^R01^ORU_R01|NIST-ELR-004.01|T|2.5.1|||NE|NE|||||PHLabReport-NoAck^HL7^2.16.840.1.113883.9.11^ISO
+SFT|NIST Lab, Inc.^L^^^^NIST&2.16.840.1.113883.3.987.1&ISO^XX^^^123544|3.6.23|A-1 Lab System|6742873-12||20100617
+PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.24&ISO^MR^Seminole Cnty Hlth C&2.16.840.1.113883.3.0&ISO||Jones^William^A^^^^L||19610615|M||2106-3^White^CDCREC|1955 Seminole Lane^^Oveido^FL^32765^USA^H^^12059||^PRN^PH^^1^407^2351234|||||||||N^Not Hispanic or Latino^HL70189^NL^not latino^L
+ORC|RE|ORD723222-4^^2.16.840.1.113883.3.72.5.24^ISO|R-783274-4^LIS^2.16.840.1.113883.3.72.5.25^ISO|||||||||57422^RADON^NICHOLAS^^^Dr.^^^NPI&2.16.840.1.113883.4.6&ISO^L^^^NPI||^PRN^PH^^^407^2341212|||||||Seminole County Health Clinic|555 Orange Ave^^Oviedo^FL^32765^^B|^WPN^PH^^^813^8847284|555 Orange Ave^^Oviedo^FL^32765^^B
+OBR|1|ORD723222-4^^2.16.840.1.113883.3.72.5.24^ISO|R-783274-4^LIS^2.16.840.1.113883.3.72.5.25^ISO|625-4^Bacteria identified in Stool by Culture^LN^3456543^CULTURE STOOL^99USI^2.40|||20110528|||||||||57422^RADON^NICHOLAS^^^Dr.^^^NPI&2.16.840.1.113883.4.6&ISO^L^^^NPI|^PRN^PH^^^407^2341212|||||201106010900-0500|||F
+OBX|1|CWE|625-4^Bacteria identified in Stool by Culture^LN^Bacteria identified^Bacteria identified^99USI||85729005^Shigella flexneri^SCT^^^^^^Shigella flexneri||||||F|||20110528|||||20110531130655-0500||||Seminole County Health Department Laboratory^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|6756 Florida Avenue^^Oveido^FL^32765^^B|10092^Pafford^Hamlin^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
+SPM|1|^ORD723222-4&&2.16.840.1.113883.3.72.5.24&ISO||119339001^Stool specimen^SCT^^^^07/31/2012|||||||||||||20110528|20110529
+OBR|2||R-783274-5^LIS^2.16.840.1.113883.3.72.5.25^ISO|50545-3^Bacterial susceptibility panel in Isolate by Minimum inhibitory concentration (MIC)^LN^Bact suscept^Bacteria susceptibility^99USI^2.40|||20110528|||||||||57422^RADON^NICHOLAS^^^Dr.^^^NPI&2.16.840.1.113883.4.6&ISO^L^^^NPI|^PRN^PH^^^407^2341212|||||201106010900-0500|||F|625-4&Bacteria identified in Stool by Culture&LN&Bacteria identified&Bacteria identified&99USI^^Shigella flexneri|||^R-783274-4&LIS&2.16.840.1.113883.3.72.5.25&ISO
+OBX|1|SN|20-8^Amoxicillin+Clavulanate [Susceptibility] by Minimum inhibitory concentration (MIC)^LN^AmoxClav^Amoxicillin-clavulanic acid^99USI^2.40||=^16|ug/mL^microgram per milliliter^UCUM^^^^1.8.2||I^Intermediate^HL70078^^^^2.5.1|||F|||20110528|||||201106010900-0500||||Seminole County Health Department Laboratory^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|6756 Florida Avenue^^Oveido^FL^32765^^B|10092^Pafford^Hamlin^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
+OBX|2|SN|516-5^Trimethoprim+Sulfamethoxazole [Susceptibility] by Minimum inhibitory concentration (MIC)^LN^TMP-SMX^Trimethoprim-sulfamethoxazole^99USI^2.40||=^8^/^152|ug/mL^microgram per milliliter^UCUM^^^^1.8.2||R^Resistant^HL70078^^^^2.5.1|||F|||20110528|||||201106010900-0500||||Seminole County Health Department Laboratory^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|6756 Florida Avenue^^Oveido^FL^32765^^B|10092^Pafford^Hamlin^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
+OBX|3|SN|185-9^Ciprofloxacin [Susceptibility] by Minimum inhibitory concentration (MIC)^LN^CIPROFLOXACIN^CIPROFLOXACIN^99USI^2.40||<=^0.06|ug/mL^microgram per milliliter^UCUM^^^^1.8.2||S^Susceptible^HL70078^^^^2.5.1|||F|||20110528|||||201106010900-0500||||Seminole County Health Department Laboratory^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|6756 Florida Avenue^^Oveido^FL^32765^^B|10092^Pafford^Hamlin^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
+SPM|1|^ORD723222-4.1&&2.16.840.1.113883.3.72.5.24&ISO||119303007^Microbial isolate specimen^SCT^^^^07/31/2012|||||||||||||20110528|20110529
 EOF;
-$hl7->readMessage($msg);
+
+print_r($hl7->readMessage($msg));
 
 $message = new stdClass();
 $message->msg_type = $hl7->getMsgType();
@@ -59,46 +63,45 @@ $message = $m->save($message);
 
 //print '<br>';
 
-//print_r($hl7->segments);
+//print_r($hl7->getSegment('PID')->data);
 // save message to database
 
 if($error === false){
-	switch($hl7->getMsgType()){
-
-		case 'ORU':
-
-			$pid = $hl7->getSegment('PID');
-//			$sft = $hl7->getSegment('SFT');
-			$orc = $hl7->getSegment('ORC');
-			$obr = $hl7->getSegment('OBR');
-
-			$obxs = $obr->getChildren('OBX', true);
-
-			// for each observation
-			foreach($obxs AS $obx){
-
-				// for each notes
-				foreach($obx->getChildren('NTE') AS $nte){
-					print_r($nte->data);
-				}
-
-			}
-
-//			print_r(count($obxs));
-
-//			$obx = $hl7->getSegments(array('ORC'=>'OBX'));
-//			print_r($orc);
-
-
-
-
-
-			break;
-		default:
-
-
-			break;
-	}
+//	switch($hl7->getMsgType()){
+//		case 'ORU':
+//
+//			$pid = $hl7->getSegment('PID');
+//			$orc = $hl7->getSegment('ORC');
+//			$obrs = $orc->getChildren('OBR');
+//			foreach($obrs AS $obr){
+//
+//				$obxs = $obr->getChildren('OBX', true);
+//
+//				// for each observation
+//				foreach($obxs AS $obx){
+//					// for each notes
+//					foreach($obx->getChildren('NTE') AS $nte){
+////						print_r($obx->data);
+////						print_r($nte->data);
+//					}
+//				}
+//
+//				print_r(count($obr->data));
+////				$obx = $hl7->getSegments(array('ORC'=>'OBX'));
+////				print_r($orc);
+//
+//			}
+//
+//
+//
+//
+//
+//			break;
+//		default:
+//
+//
+//			break;
+//	}
 
 }
 

@@ -16,84 +16,127 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+include_once (str_replace('\\', '/',__DIR__).'/Message.php');
 
-class ORU {
+class ORU extends Message {
 
-	public $_01 = array(
-		'MSH' => '',
-		'SFT' => '',
-		'PATIENT_RESULT' => array(
-			'PATIENT' => array(
-				'PID' => '',
-				'PDI' => '',
-				'NTE' => '',
-				'NK1' => '',
-				'VISIT' => array(
-					'PV1' => '',
-					'PV2' => '',
+	protected function Events($event){
+		$events = array(
+			'R01' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'PATIENT_RESULT' => array(
+					'required' => true,
+					'repeatable' => true,
+					'items' => array(
+						'PATIENT' => array(
+							'items' => array(
+								'PID' => array('required' => true),
+								'PDI' => array('repeatable' => true),
+								'NTE' => array('repeatable' => true),
+								'NK1' => array('repeatable' => true),
+								'VISIT' => array(
+									'items'=> array(
+										'PV1' => array('required' => true),
+										'PV2' => array(),
+									)
+								)
+							),
+						),
+						'ORDER_OBSERVATION' => array(
+							'required' => true,
+							'repeatable' => true,
+							'items' => array(
+								'ORC' => array(),
+								'OBR' => array('required' => true),
+								'NTE' => array('repeatable' => true),
+								'TIMING_QTY' => array(
+									'repeatable' => true,
+									'items' => array(
+										'TQ1' => array('required' => true),
+										'TQ2' => array('repeatable' => true)
+									)
+								),
+								'CTD' => array(),
+								'OBSERVATION' => array(
+									'repeatable' => true,
+									'items' => array(
+										'OBX' => array('required' => true),
+										'NTE' => array('repeatable' => true)
+									)
+
+								),
+								'FT1' => array('repeatable' => true),
+								'CTI' => array('repeatable' => true),
+								'SPECIMEN' => array(
+									'required' => true,
+									'items' => array(
+										'SPM' => array('required' => true),
+										'OBX' => array('repeatable' => true)
+									)
+
+								)
+							)
+
+						)
+					)
 				)
 			),
-			'ORDER_OBSERVATION' => array(
-				'ORC' => '',
-				'OBR' => '',
-				'NTE' => '',
-				'TIMING_QTY' => array(
-					'TQ1' => '',
-					'TQ2' => ''
-				),
-				'CTD' => '',
-				'OBSERVATION' => array(
-					'OBX' => '',
-					'NTE' => ''
-				),
-				'FT1' => '',
-				'CTI' => '',
-				'SPECIMEN' => array(
-					'SPM' => '',
-					'OBX' => ''
-				)
-			)
-		)
-	);
+			'R21' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'NTE' => array(),
+				'PATIENT' => array(
+					'items' => array(
+						'PID' => array('required' => true),
+						'PDI' => array(),
+						'NTE' => array('repeatable' => true),
+						'VISIT' => array(
 
-	public $_21 = array(
-		'MSH' => '',
-		'SFT' => '',
-		'NTE' => '',
-		'PATIENT' => array(
-			'PID' => '',
-			'PDI' => '',
-			'NTE' => '',
-			'VISIT' => array(
-				'PV1' => '',
-				'PV2' => '',
+							'PV1' => array('required' => true),
+							'PV2' => array(),
+						)
+					)
+				),
+				'ORDER_OBSERVATION' => array(
+					'required' => true,
+					'repeatable' => true,
+					'items' => array(
+						'CONTAINER' => array(
+							'SAC' => array('required' => true),
+							'SID' => array()
+						),
+						'ORC' => array(),
+						'OBR' => array('required' => true),
+						'NTE' => array('repeatable' => true),
+						'TIMING_QTY' => array(
+							'repeatable' => true,
+							'items' => array(
+								'TQ1' => '',
+								'TQ2' => ''
+							)
+
+						),
+						'CTD' => '',
+						'OBSERVATION' => array(
+							'required' => true,
+							'repeatable' => true,
+							'items' => array(
+								'OBX' => array(),
+								'TCD' => array(),
+								'SID' => array('repeatable' => true),
+								'NTE' => array('repeatable' => true)
+							)
+
+						),
+						'CTI' => array('repeatable' => true),
+					)
+				),
+				'DSC' => array()
 			)
-		),
-		'ORDER_OBSERVATION' => array(
-			'CONTAINER' => array(
-				'SAC' => '',
-				'SID' => ''
-			),
-			'ORC' => '',
-			'OBR' => '',
-			'NTE' => '',
-			'TIMING_QTY' => array(
-				'TQ1' => '',
-				'TQ2' => ''
-			),
-			'CTD' => '',
-			'OBSERVATION' => array(
-				'OBX' => '',
-				'TCD' => '',
-				'SID' => '',
-				'NTE' => ''
-			),
-			'CTI' => '',
-			'SPECIMEN' => array(
-				'SPM' => '',
-				'OBX' => ''
-			)
-		),
-		'DSC' => ''
-	);
+
+		);
+
+		return $events[$event];
+	}
 }

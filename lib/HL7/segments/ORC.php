@@ -10,8 +10,11 @@ include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
 
 class ORC extends Segments{
 
+	protected $children = array('OBR');
+
 	function __construct($hl7){
 		parent::__construct($hl7);
+
 		$this->rawSeg = array();
 		$this->rawSeg[0] = 'ORC';                   // ROC Segment
 		/**

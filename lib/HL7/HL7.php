@@ -24,6 +24,8 @@ class HL7 {
 	 */
 	public  $segments = array();
 
+	public  $message = array();
+
 	/**
 	 * @return mixed
 	 */
@@ -172,6 +174,12 @@ class HL7 {
 		foreach($segments AS $segment){
 			$this->segments[] = $this->readSegment($segment);
 		}
+
+		$type = $this->getMsgType();
+		include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
+		$msg = new $type($this);
+		$msg->readMessage($this->getMsgEventType());
+		return $msg;
 	}
 
 	/**

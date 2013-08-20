@@ -127,17 +127,19 @@ class Segments {
 					$subSubFields = explode('^', $subField);
 					// field only has one value
 					if(count($subSubFields) == 1){
-						if(!is_array($this->rawSeg[$i][$j+1])){
-							$this->rawSeg[$i][$j+1] = $subSubFields[0];
-						}else{
-							$this->rawSeg[$i][$j+1][0] = $subSubFields[0];
-							$this->rawSeg[$i][$j+1][1] = $subSubFields[0];
-						}
+						if(isset($this->rawSeg[$i][$j+1])){
+							if(!is_array($this->rawSeg[$i][$j+1])){
+								$this->rawSeg[$i][$j+1] = $subSubFields[0];
+							}else{
+								$this->rawSeg[$i][$j+1][0] = $subSubFields[0];
+								$this->rawSeg[$i][$j+1][1] = $subSubFields[0];
+							}
 
-						$subSubSubFields = explode('&',$subSubFields[0]);
-						if(count($subSubSubFields) > 1 && $subSubFields[0] != '~\&'){
-							foreach($subSubSubFields As $l => $values){
-								$this->rawSeg[$i][$j+1][$l+1] = $values;
+							$subSubSubFields = explode('&',$subSubFields[0]);
+							if(count($subSubSubFields) > 1 && ($subSubFields[0] != '~\&' && $subSubFields[0] != '~\&#')){
+								foreach($subSubSubFields As $l => $values){
+									$this->rawSeg[$i][$j+1][$l+1] = $values;
+								}
 							}
 						}
 					}
@@ -268,6 +270,10 @@ class Segments {
 		$types['HD'][1] = '';               // Namespace ID (IS)
 		$types['HD'][2] = '';               // Universal ID (ST)
 		$types['HD'][3] = '';               // Universal ID Type (ID)
+
+		$types['DR'] = '';                  // (DR)
+		$types['DR'] = $types['TS'];        // Range Start Date/Time (TS)
+		$types['DR'] = $types['TS'];        // Range End Date/Time (TS)
 
 		$types['RI'][0] = '';               // (RI)
 		$types['RI'][1] = $types['IS'];     // Repeat Pattern (IS)

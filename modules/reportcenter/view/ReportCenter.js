@@ -348,6 +348,12 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 store:me.clinicalStore,
                 columns:[
                     {
+                        xtype:'datecolumn',
+                        text:i18n('created'),
+                        dataIndex:'create_date',
+                        format:'Y-m-d H:i:s'
+                    },
+                    {
                         text:i18n('name'),
                         width:200,
                         dataIndex:'fullname'

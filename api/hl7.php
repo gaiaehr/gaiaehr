@@ -33,7 +33,7 @@ if($recipient === false){
 	$error = 'IP Address Not Authorized';
 }
 
-$msg = <<<EOF
+$rawMsg = <<<EOF
 MSH|^~\&|NIST^2.16.840.1.113883.3.72.0^ISO|NIST^2.16.840.1.113883.3.72.5.21^ISO|NIST^2.16.840.1.113883.3.72.5.22^ISO|NIST^2.16.840.1.113883.3.72.5.23^ISO|20120821140551-0500||ORU^R01^ORU_R01|NIST-ELR-004.01|T|2.5.1|||NE|NE|||||PHLabReport-NoAck^HL7^2.16.840.1.113883.9.11^ISO
 SFT|NIST Lab, Inc.^L^^^^NIST&2.16.840.1.113883.3.987.1&ISO^XX^^^123544|3.6.23|A-1 Lab System|6742873-12||20100617
 PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.24&ISO^MR^Seminole Cnty Hlth C&2.16.840.1.113883.3.0&ISO||Jones^William^A^^^^L||19610615|M||2106-3^White^CDCREC|1955 Seminole Lane^^Oveido^FL^32765^USA^H^^12059||^PRN^PH^^1^407^2351234|||||||||N^Not Hispanic or Latino^HL70189^NL^not latino^L
@@ -49,11 +49,11 @@ OBX|3|111|185-9^Ciprofloxacin [Susceptibility] by Minimum inhibitory concentrati
 SPM|1|111^ORD723222-4.1&&2.16.840.1.113883.3.72.5.24&ISO||119303007^Microbial isolate specimen^SCT^^^^07/31/2012|||||||||||||20110528|20110529
 EOF;
 
-$hl7->readMessage($msg);
+$msg = $hl7->readMessage($rawMsg);
 
 $message = new stdClass();
 $message->msg_type = $hl7->getMsgType();
-$message->message = $msg;
+$message->message = $rawMsg;
 $message->foreign_facility = $hl7->getSendingFacility();
 $message->foreign_application = $hl7->getSendingApplication();
 $message->foreign_address = $_SERVER['REMOTE_ADDR'];
@@ -68,62 +68,17 @@ $message = $m->save($message);
 // save message to database
 
 if($error === false){
-//	switch($hl7->getMsgType()){
-//		case 'ORU':
-//
-//			$pid = $hl7->getSegment('PID');
-//			$orc = $hl7->getSegment('ORC');
-//			$obrs = $orc->getChildren('OBR');
-//			foreach($obrs AS $obr){
-//
-//				$obxs = $obr->getChildren('OBX', true);
-//
-//				// for each observation
-//				foreach($obxs AS $obx){
-//					// for each notes
-//					foreach($obx->getChildren('NTE') AS $nte){
-////						print_r($obx->data);
-////						print_r($nte->data);
-//					}
-//				}
-//
-//				print_r(count($obr->data));
-////				$obx = $hl7->getSegments(array('ORC'=>'OBX'));
-////				print_r($orc);
-//
-//			}
-//
-//
-//
-//
-//
-//			break;
-//		default:
-//
-//
-//			break;
-//	}
+	switch($hl7->getMsgType()){
+		case 'ORU':
+
+			print_r($msg);
+
+
+			break;
+		default:
+
+
+			break;
+	}
 
 }
-
-
-
-//print_r($hl7->getMsgSecurity());
-//print '<br>';
-//print_r($hl7->getMsgControlId());
-//print '<br>';
-//print_r($hl7->getMsgProcessingId());
-//print '<br>';
-//print_r($hl7->getMsgVersionId());
-
-//$pid = $hl7->getSegment('PID');
-//print_r($pid[3][4][1]);
-//print_r($pid);
-
-//print_r($hl7->segments);
-
-
-
-
-
-

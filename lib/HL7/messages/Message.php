@@ -19,31 +19,56 @@
 
 class Message {
 
-
+	/**
+	 * @var HL7
+	 */
 	public $hl7;
 
+	/**
+	 * @var array
+	 */
 	public $evt = array();
 
+	/**
+	 * @var array
+	 */
 	public $data = array();
 
-	public $errors = array();
+	/**
+	 * @var bool|array
+	 */
+	public $errors = false;
 
+	/**
+	 * @var int
+	 */
 	public $segmentIndex = 0;
 
+	/**
+	 * @param $hl7
+	 */
 	function __construct($hl7){
 		$this->hl7 = $hl7;
 	}
 
+	/**
+	 * @param $event
+	 * @return $this
+	 */
 	public function readMessage($event){
 		$this->evt = $this->Events($event);
 		$this->groupWorker($this->evt);
-
-		unset($this->hl7, $this->evt, $this->segmentIndex);
-
-		print_r($this->data);
+		foreach($this->data AS $index => $data){
+			$this->{$index} = $data;
+		}
+		unset($this->hl7, $this->evt, $this->segmentIndex, $this->data);
 		return $this;
 	}
 
+	/**
+	 * @param $array
+	 * @return mixed
+	 */
 	private function groupWorker($array){
 
 		foreach($array AS $key => $val){
@@ -68,7 +93,11 @@ class Message {
 		return $this->data = $array;
 	}
 
-
+	/**
+	 * @param $seg
+	 * @param $onlyOne
+	 * @return array|bool
+	 */
 	private function getNextSegment($seg, $onlyOne){
 		$len = count($this->hl7->segments);
 		$segs = array();
@@ -84,23 +113,43 @@ class Message {
 		return false;
 	}
 
+	/**
+	 * @param $foo
+	 * @return bool
+	 */
 	private function isRequired($foo){
 		return isset($foo['required']) && $foo['required'];
 	}
 
+	/**
+	 * @param $foo
+	 * @return bool
+	 */
 	private function isRepeatable($foo){
 		return isset($foo['repeatable']) && $foo['repeatable'];
 	}
 
+	/**
+	 * @param $foo
+	 * @return bool
+	 */
 	private function getItems($foo){
 		if(!isset($foo['items'])) return false;
 		return $foo['items'];
 	}
 
+	/**
+	 * @param $foo
+	 * @return bool
+	 */
 	private function isSegment($foo){
 		return strlen($foo) == 3;
 	}
 
+	/**
+	 * @param $event
+	 * @return mixed
+	 */
 	protected function Events($event){
 		return $event;
 	}

@@ -20,6 +20,10 @@ include_once (str_replace('\\', '/',__DIR__).'/Message.php');
 
 class ORU extends Message {
 
+	function __construct($hl7){
+		parent::__construct($hl7);
+	}
+
 	protected function Events($event){
 		$events = array(
 			'R01' => array(

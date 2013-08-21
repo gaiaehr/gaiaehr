@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!defined('_GaiaEXEC')) die('No direct access allowed.');
+//if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 $sites    = array();
 $confs    = array();

@@ -351,6 +351,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         xtype:'datecolumn',
                         text:i18n('created'),
                         dataIndex:'create_date',
+                        width:160,
                         format:'Y-m-d H:i:s'
                     },
                     {

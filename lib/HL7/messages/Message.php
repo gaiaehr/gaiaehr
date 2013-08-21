@@ -70,27 +70,43 @@ class Message {
 	 * @return mixed
 	 */
 	private function groupWorker($array){
-
-		foreach($array AS $key => $val){
+		$items = isset($array['items']) ? $array['items'] : $array;
+		foreach($items AS $key => $val){
 			// if is segment
 			if($this->isSegment($key)){
-				$array[$key] = $this->getNextSegment($key, !$this->isRepeatable($val));
+				$items[$key] = $this->getNextSegment($key, !$this->isRepeatable($val));
 				continue;
 			}
 			// is group
 			if($this->isRepeatable($val)){
-				$array[$key] = array();
-				while($a = $this->groupWorker($val['items'])){
+				$items[$key] = array();
+				while($a = $this->groupWorker($val)){
+
+					if($this->isRequired($val)){
+						$items[$key][] = $a;
+						break;
+					};
+
 					if(is_string($a) || !current($a)) break;
 					$curr = current($a);
 					if(is_string($curr) || !current($curr)) break;
-					$array[$key][] = $a;
+					$curr = current($a);
+					if(is_string($curr) || !current($curr)) break;
+					if(empty($a)) break;
+					$items[$key][] = $a;
+
 				}
 			}else{
-				$array[$key] = $this->groupWorker($val['items']);
+				$a = $this->groupWorker($val);
+				if(is_string($a) || !current($a)) {
+					unset($items[$key]);
+					continue;
+				}
+				$items[$key] = $a;
+
 			}
 		};
-		return $this->data = $array;
+		return $this->data = $items;
 	}
 
 	/**
@@ -100,16 +116,27 @@ class Message {
 	 */
 	private function getNextSegment($seg, $onlyOne){
 		$len = count($this->hl7->segments);
-		$segs = array();
-		for($i = $this->segmentIndex; $i < $len; $i++, $this->segmentIndex++){
-			if($onlyOne && isset($segs[0])) return $segs[0];
-			if(get_class($this->hl7->segments[$this->segmentIndex]) == $seg){
-				$segs[] = $this->hl7->segments[$this->segmentIndex]->data;
+		$foo = array();
+
+		if($onlyOne) {
+			$i = $this->segmentIndex;
+			if(isset($this->hl7->segments[$i]) && get_class($this->hl7->segments[$i]) == $seg){
+				$this->segmentIndex++;
+				return $this->hl7->segments[$i]->data;
 			}
-			if(get_class($this->hl7->segments[$this->segmentIndex]) != $seg) break;
+		}else{
+			for($i = $this->segmentIndex; $i < $len; $i++){
+				if(get_class($this->hl7->segments[$i]) == $seg){
+					$foo[] = $this->hl7->segments[$i]->data;
+					$this->segmentIndex++;
+					continue;
+				}
+				break;
+			}
+
+			if(count($foo) >= 1) return $foo;
 		}
 
-		if(count($segs) >= 1) return $segs;
 		return false;
 	}
 

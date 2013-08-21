@@ -36,7 +36,7 @@ class ORU extends Message {
 						'PATIENT' => array(
 							'items' => array(
 								'PID' => array('required' => true),
-								'PDI' => array('repeatable' => true),
+								'PD1' => array('repeatable' => true),
 								'NTE' => array('repeatable' => true),
 								'NK1' => array('repeatable' => true),
 								'VISIT' => array(

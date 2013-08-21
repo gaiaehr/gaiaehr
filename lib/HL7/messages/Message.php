@@ -80,7 +80,7 @@ class Message {
 			if(get_class($this->hl7->segments[$this->segmentIndex]) != $seg) break;
 		}
 
-		if(count($segs) > 1) return $segs;
+		if(count($segs) >= 1) return $segs;
 		return false;
 	}
 

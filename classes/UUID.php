@@ -19,70 +19,30 @@
 
 class UUID
 {
-    /**
-     * Generates version 1: MAC address
-     */
-    public static function v1()
-    {
-        if (!function_exists('uuid_create'))
-            return false;
-
-        uuid_create(&$context);
-        uuid_make($context, UUID_MAKE_V1);
-        uuid_export($context, UUID_FMT_STR, &$uuid);
-        return trim($uuid);
-    }
-
-    /**
-     * Generates version 3 UUID: MD5 hash of URL
-     */
-    public static function v3($i_url)
-    {
-        if (!function_exists('uuid_create'))
-            return false;
-
-        if (!strlen($i_url))
-            $i_url = self::v1();
-
-        uuid_create(&$context);
-        uuid_create(&$namespace);
-
-        uuid_make($context, UUID_MAKE_V3, $namespace, $i_url);
-        uuid_export($context, UUID_FMT_STR, &$uuid);
-        return trim($uuid);
-    }
 
     /**
      * Generates version 4 UUID: random
      */
-    public static function v4()
-    {
-        if (!function_exists('uuid_create'))
-            return false;
+    public static function v4() {
+        return sprintf( '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            // 32 bits for "time_low"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ),
 
-        uuid_create(&$context);
+            // 16 bits for "time_mid"
+            mt_rand( 0, 0xffff ),
 
-        uuid_make($context, UUID_MAKE_V4);
-        uuid_export($context, UUID_FMT_STR, &$uuid);
-        return trim($uuid);
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand( 0, 0x0fff ) | 0x4000,
+
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand( 0, 0x3fff ) | 0x8000,
+
+            // 48 bits for "node"
+            mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff ), mt_rand( 0, 0xffff )
+        );
     }
 
-    /**
-     * Generates version 5 UUID: SHA-1 hash of URL
-     */
-    public static function v5($i_url)
-    {
-        if (!function_exists('uuid_create'))
-            return false;
-
-        if (!strlen($i_url))
-            $i_url = self::v1();
-
-        uuid_create(&$context);
-        uuid_create(&$namespace);
-
-        uuid_make($context, UUID_MAKE_V5, $namespace, $i_url);
-        uuid_export($context, UUID_FMT_STR, &$uuid);
-        return trim($uuid);
-    }
 }

@@ -707,7 +707,7 @@ Ext.define('App.view.patient.Summary', {
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/CCRdocument.php?action=generate&raw=no&pid=' + me.pid
+                                        src: globals.url+'/dataProvider/CCRdocument.php?action=viewccr&raw=no&pid=' + me.pid
                                     }));
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
                                     app.AuditLog('Patient summary CCR viewed');

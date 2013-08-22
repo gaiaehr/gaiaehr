@@ -63,10 +63,10 @@ class CCD
 	{
 		$this->ccr       = new DOMDocument('1.0', 'UTF-8');
 		$this->pid       = $_SESSION['patient']['pid'];
-		$this->authorID  = UUID::v1();
-		$this->patientID = UUID::v1();
-		$this->sourceID  = UUID::v1();
-		$this->gaiaID    = UUID::v1();
+		$this->authorID  = UUID::v4();
+		$this->patientID = UUID::v4();
+		$this->sourceID  = UUID::v4();
+		$this->gaiaID    = UUID::v4();
 		$this->patient   = new Patient();
 		$this->medical   = new Medical();
 	}
@@ -165,12 +165,6 @@ class CCD
             {
 				if($raw == 'pure')
                 {
-					// send a zip file that contains a separate xml data file and xsl stylesheet
-					if(!class_exists('ZipArchive'))
-                    {
-						$this->displayError('ERROR: Missing ZipArchive PHP Module');
-						return;
-					}
 					$tempDir = $_SESSION['site']['temp']['path'];
 					$zipName = $tempDir . '/' . $this->getReportFilename() . '-ccr.zip';
 					if(file_exists($zipName)) unlink($zipName);
@@ -195,7 +189,7 @@ class CCD
 					}
                     else
                     {
-						$this->displayError('ERROR: Unable to Create Zip Archive.');
+						// $this->displayError('ERROR: Unable to Create Zip Archive.');
 						return;
 					}
 				}
@@ -219,32 +213,26 @@ class CCD
 		$ccr_ccd = new DOMDocument();
 		$ccr_ccd->load('../lib/ccr/ccd/ccr_ccd.xsl');
 
-		if(class_exists('XSLTProcessor'))
+        $xslt = new XSLTProcessor();
+        $xslt->importStylesheet($ccr_ccd);
+        $ccd = new DOMDocument();
+        $ccd->preserveWhiteSpace = false;
+        $ccd->formatOutput       = true;
+        $ccd->loadXML($xslt->transformToXML($xmlDom));
+        $ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
+        if($raw == 'yes')
         {
-			$xslt = new XSLTProcessor();
-			$xslt->importStylesheet($ccr_ccd);
-			$ccd = new DOMDocument();
-			$ccd->preserveWhiteSpace = false;
-			$ccd->formatOutput       = true;
-			$ccd->loadXML($xslt->transformToXML($xmlDom));
-			$ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
-			if($raw == 'yes')
-            {
-				// simply send the xml to a textarea (nice debugging tool)
-				echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
-				echo $ccd->saveXml();
-				echo '</textarea>';
-				return;
-			}
-			$ss = new DOMDocument();
-			$ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
-			$xslt->importStyleSheet($ss);
-			print $xslt->transformToXML($ccd);
-		}
-        else
-        {
-			print 'PHP Error Class \'XsltProcessor\' not found. <a href="http://php.net/manual/en/xsl.installation.php" target="_blank">[more info]</a>';
-		}
+            // simply send the xml to a textarea (nice debugging tool)
+            echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
+            echo $ccd->saveXml();
+            echo '</textarea>';
+            return;
+        }
+        $ss = new DOMDocument();
+        $ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
+        $xslt->importStyleSheet($ss);
+        print $xslt->transformToXML($ccd);
+
 	}
 
 	function sourceType($uuid)
@@ -255,11 +243,6 @@ class CCD
 		$e_ActorID = $this->ccr->createElement('ActorID', $uuid);
 		$e_Actor->appendChild($e_ActorID);
 		return $e_Source;
-	}
-
-	function displayError($message)
-	{
-		echo '<script type="text/javascript">alert("' . addslashes($message) . '");</script>';
 	}
 
 	function createHybridXML()
@@ -294,7 +277,7 @@ class CCD
 
 	function createHeader($e_ccr)
 	{
-		$e_ccrDocObjID = $this->ccr->createElement('CCRDocumentObjectID', UUID::v1());
+		$e_ccrDocObjID = $this->ccr->createElement('CCRDocumentObjectID', UUID::v4());
 		$e_ccr->appendChild($e_ccrDocObjID);
 		$e_Language = $this->ccr->createElement('Language');
 		$e_ccr->appendChild($e_Language);
@@ -428,7 +411,7 @@ class CCD
 			//while ($row = sqlFetchArray($result)) {
 			$e_Alert = $this->ccr->createElement('Alert');
 			$e_Alerts->appendChild($e_Alert);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
 			$e_Alert->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Alert->appendChild($e_DateTime);
@@ -459,7 +442,7 @@ class CCD
 			$e_Agent->appendChild($e_EnvironmentalAgents);
 			$e_EnvironmentalAgent = $this->ccr->createElement('EnvironmentalAgent');
 			$e_EnvironmentalAgents->appendChild($e_EnvironmentalAgent);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
 			$e_EnvironmentalAgent->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_EnvironmentalAgent->appendChild($e_DateTime);
@@ -499,7 +482,7 @@ class CCD
         {
 			$e_Medication = $this->ccr->createElement('Medication');
 			$e_Medications->appendChild($e_Medication);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
 			$e_Medication->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Medication->appendChild($e_DateTime);
@@ -587,7 +570,7 @@ class CCD
 			$e_Immunization = $this->ccr->createElement('Immunization');
 			$e_Immunizations->appendChild($e_Immunization);
 
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
 			$e_Immunization->appendChild($e_CCRDataObjectID);
 
 			$e_DateTime = $this->ccr->createElement('DateTime');
@@ -658,7 +641,7 @@ class CCD
         {
 			$e_Result = $this->ccr->createElement('Result');
 			$e_Results->appendChild($e_Result);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
 			$e_Result->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Result->appendChild($e_DateTime);
@@ -678,7 +661,7 @@ class CCD
 			$e_Actor->appendChild($e_ActorID);
 			$e_Test = $this->ccr->createElement('Test');
 			$e_Result->appendChild($e_Test);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
 			$e_Test->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Test->appendChild($e_DateTime);
@@ -783,7 +766,7 @@ class CCD
         $e_IDs->appendChild($e_Source);
         $e_SourceActor = $this->ccr->createElement('Actor');
         $e_Source->appendChild($e_SourceActor);
-        $e_ActorID = $this->ccr->createElement('ActorID', UUID::v1());
+        $e_ActorID = $this->ccr->createElement('ActorID', UUID::v4());
         $e_SourceActor->appendChild($e_ActorID);
         // address
         $e_Address = $this->ccr->createElement('Address');
@@ -980,7 +963,6 @@ class CCD
 			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
 		}
-
 	}
 
 	function getReportFilename()
@@ -993,9 +975,7 @@ class CCD
 
 if(isset($_REQUEST['action']) && isset($_REQUEST['raw']))
 {
-	$c = new CCD();
-	// generate, viewccd
-	// yes, hybrid, pure
-	$c->createCCD($_REQUEST);
+	$document = new CCD();
+    $document->createCCD($_REQUEST);
 }
 

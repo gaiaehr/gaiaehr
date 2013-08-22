@@ -1,23 +1,12 @@
 <?php
 /**
- * This code was originally create by Garden State Health Systems for OpenEMR
- * (see credits bellow) and heavily modified by Ernesto J Rodriguez to make it
- * work with GaiaEHR class system.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
  *
- * ------------------------------------------------------------------------
- *                     Garden State Health Systems
- *                    Copyright (c) 2010 gshsys.com
- *                      <http://www.gshsys.com/>
- * ------------------------------------------------------------------------
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
- * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting
- * source code which is considered copyrighted (c) material of the
- * original comment or credit authors.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,16 +14,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
- *
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 if (!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
+include_once ($_SESSION['root'] . '/classes/UUID.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
 include_once ($_SESSION['root'] . '/dataProvider/User.php');
 include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
@@ -51,8 +40,6 @@ class CCR
 	private $patientID;
 	private $sourceID;
 	private $gaiaID;
-	private $start;
-	private $end;
 
 	private $patient;
 	private $medical;
@@ -61,10 +48,10 @@ class CCR
 	{
 		$this->ccr       = new DOMDocument('1.0', 'UTF-8');
 		$this->pid       = $_SESSION['patient']['pid'];
-		$this->authorID  = $this->getUuid();
-		$this->patientID = $this->getUuid();
-		$this->sourceID  = $this->getUuid();
-		$this->gaiaID    = $this->getUuid();
+		$this->authorID  = cccc
+		$this->patientID = UUID::v1();
+		$this->sourceID  = UUID::v1();
+		$this->gaiaID    = UUID::v1();
 		$this->patient   = new Patient();
 		$this->medical   = new Medical();
 	}
@@ -292,7 +279,7 @@ class CCR
 
 	function createHeader($e_ccr)
 	{
-		$e_ccrDocObjID = $this->ccr->createElement('CCRDocumentObjectID', $this->getUuid());
+		$e_ccrDocObjID = $this->ccr->createElement('CCRDocumentObjectID', UUID::v1());
 		$e_ccr->appendChild($e_ccrDocObjID);
 		$e_Language = $this->ccr->createElement('Language');
 		$e_ccr->appendChild($e_Language);
@@ -426,7 +413,7 @@ class CCR
 			//while ($row = sqlFetchArray($result)) {
 			$e_Alert = $this->ccr->createElement('Alert');
 			$e_Alerts->appendChild($e_Alert);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
 			$e_Alert->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Alert->appendChild($e_DateTime);
@@ -457,7 +444,7 @@ class CCR
 			$e_Agent->appendChild($e_EnvironmentalAgents);
 			$e_EnvironmentalAgent = $this->ccr->createElement('EnvironmentalAgent');
 			$e_EnvironmentalAgents->appendChild($e_EnvironmentalAgent);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
 			$e_EnvironmentalAgent->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_EnvironmentalAgent->appendChild($e_DateTime);
@@ -497,7 +484,7 @@ class CCR
         {
 			$e_Medication = $this->ccr->createElement('Medication');
 			$e_Medications->appendChild($e_Medication);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
 			$e_Medication->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Medication->appendChild($e_DateTime);
@@ -585,7 +572,7 @@ class CCR
 			$e_Immunization = $this->ccr->createElement('Immunization');
 			$e_Immunizations->appendChild($e_Immunization);
 
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
 			$e_Immunization->appendChild($e_CCRDataObjectID);
 
 			$e_DateTime = $this->ccr->createElement('DateTime');
@@ -656,7 +643,7 @@ class CCR
         {
 			$e_Result = $this->ccr->createElement('Result');
 			$e_Results->appendChild($e_Result);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid()); //, $row['immunization_id']);
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
 			$e_Result->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Result->appendChild($e_DateTime);
@@ -676,7 +663,7 @@ class CCR
 			$e_Actor->appendChild($e_ActorID);
 			$e_Test = $this->ccr->createElement('Test');
 			$e_Result->appendChild($e_Test);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
+			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v1());
 			$e_Test->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Test->appendChild($e_DateTime);
@@ -781,7 +768,7 @@ class CCR
         $e_IDs->appendChild($e_Source);
         $e_SourceActor = $this->ccr->createElement('Actor');
         $e_Source->appendChild($e_SourceActor);
-        $e_ActorID = $this->ccr->createElement('ActorID', $this->getUuid());
+        $e_ActorID = $this->ccr->createElement('ActorID', UUID::v1());
         $e_SourceActor->appendChild($e_ActorID);
         // address
         $e_Address = $this->ccr->createElement('Address');
@@ -979,21 +966,6 @@ class CCR
 			$e_Actor->appendChild($e_ActorID);
 		}
 
-	}
-
-	function getUuid()
-	{
-		// The field names refer to RFC 4122 section 4.1.2
-		return sprintf('A%04x%04x-%04x-%03x4-%04x-%04x%04x%04x',
-			mt_rand(0, 65535), mt_rand(0, 65535), // 32 bits for "time_low"
-			mt_rand(0, 65535), // 16 bits for "time_mid"
-			mt_rand(0, 4095), // 12 bits before the 0100 of (version) 4 for "time_hi_and_version"
-			bindec(substr_replace(sprintf('%016b', mt_rand(0, 65535)), '01', 6, 2)),
-			// 8 bits, the last two of which (positions 6 and 7) are 01, for "clk_seq_hi_res"
-			// (hence, the 2nd hex digit after the 3rd hyphen can only be 1, 5, 9 or d)
-			// 8 bits for "clk_seq_low"
-			mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535) // 48 bits for "node"
-		);
 	}
 
 	function getReportFilename()

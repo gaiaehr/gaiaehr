@@ -77,14 +77,7 @@ class CCR
 		$raw    = $request['raw'];
 
 		$this->pid   = $request['pid'];
-//		$this->start = $request['start'];
-//		$this->end   = $request['end'];
 
-
-		//$result = $this->getActorData();
-		//		while($res = sqlFetchArray($result[2])) {
-		//			${"labID{$res['id']}"} = $this->getUuid();
-		//		}
 		$e_styleSheet = $this->ccr->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccr.xsl"');
 		$this->ccr->appendChild($e_styleSheet);
 		$e_ccr = $this->ccr->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
@@ -129,14 +122,11 @@ class CCR
 		/**
 		 * Procedures
 		 */
-		//		$e_Procedures = $this->ccr->createElement('Procedures');
-		//		require_once("createCCRProcedure.php");
-		//		$e_Body->appendChild($e_Procedures);
+
 		/**
 		 * Footer
 		 */
-		//		 $e_VitalSigns = $this->ccr->createElement('VitalSigns');
-		//		 $e_Body->appendChild($e_VitalSigns);
+
 		/**
 		 * Actors
 		 */
@@ -196,16 +186,13 @@ class CCR
 						header('Content-Disposition: attachment; filename=' . basename($zipName) . ';');
 						header('Content-Description: File Transfer');
 						readfile($xmlName);
-//						unlink($zipName);
-//						unlink($xmlName);
 						exit();
 					} else {
 						$this->displayError('ERROR: Unable to Create Zip Archive.');
 						return;
 					}
 				} else {
-//					print '<pre>';
-//					print_r($this->medical->getPatientImmunizationsByPid($this->pid));
+
 					header('Content-type: application/xml');
 					print $this->ccr->saveXml();
 				}
@@ -223,7 +210,6 @@ class CCR
 		$xmlDom->loadXML($this->ccr->saveXML());
 		$ccr_ccd = new DOMDocument();
 		$ccr_ccd->load('../lib/ccr/ccd/ccr_ccd.xsl');
-//
 
 		if(class_exists('XSLTProcessor')){
 			$xslt = new XSLTProcessor();
@@ -310,9 +296,9 @@ class CCR
 		$e_dateTime->appendChild($e_ExactDateTime);
 		$e_patient = $this->ccr->createElement('Patient');
 		$e_ccr->appendChild($e_patient);
-		//$e_ActorID = $this->ccr->createElement('ActorID', $row['patient_id']);
 		$e_ActorID = $this->ccr->createElement('ActorID', 'A1234'); // This value and ActorID in createCCRActor.php should be same.
 		$e_patient->appendChild($e_ActorID);
+
 		//Header From:
 		$e_From = $this->ccr->createElement('From');
 		$e_ccr->appendChild($e_From);
@@ -324,18 +310,19 @@ class CCR
 		$e_ActorLink->appendChild($e_ActorRole);
 		$e_Text = $this->ccr->createElement('Text', 'author');
 		$e_ActorRole->appendChild($e_Text);
+
 		//Header To:
 		$e_To = $this->ccr->createElement('To');
 		$e_ccr->appendChild($e_To);
 		$e_ActorLink = $this->ccr->createElement('ActorLink');
 		$e_To->appendChild($e_ActorLink);
-		//$e_ActorID = $this->ccr->createElement('ActorID', $row['patient_id']);
 		$e_ActorID = $this->ccr->createElement('ActorID', 'A1234');
 		$e_ActorLink->appendChild($e_ActorID);
 		$e_ActorRole = $this->ccr->createElement('ActorRole');
 		$e_ActorLink->appendChild($e_ActorRole);
 		$e_Text = $this->ccr->createElement('Text', 'patient');
 		$e_ActorRole->appendChild($e_Text);
+
 		//Header Purpose:
 		$e_Purpose = $this->ccr->createElement('Purpose');
 		$e_ccr->appendChild($e_Purpose);
@@ -350,9 +337,6 @@ class CCR
 		$data = $this->medical->getPatientProblemsByPid($this->pid);
 		$pCount = 0;
 		foreach($data AS $row) {
-
-//			print_r($row);
-
 			$pCount++;
 			$e_Problem = $this->ccr->createElement('Problem');
 			$e_Problems->appendChild($e_Problem);
@@ -360,7 +344,7 @@ class CCR
 			$e_Problem->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Problem->appendChild($e_DateTime);
-			$date            = new DateTime($row['begin_date']);
+			$date = new DateTime($row['begin_date']);
 			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
 			$e_IDs = $this->ccr->createElement('IDs');
@@ -371,12 +355,10 @@ class CCR
 			$e_Type = $this->ccr->createElement('Type');
 			$e_Problem->appendChild($e_Type);
 			$e_Text = $this->ccr->createElement('Text', 'Problem'); // Changed to pass through validator, Problem type must be one of the required string values: Problem, Condition, Diagnosis, Symptom, Finding, Complaint, Functional Limitation.
-			//$e_Text = $ccr->createElement('Text', $row['prob_title']);
 			$e_Type->appendChild($e_Text);
 			$e_Description = $this->ccr->createElement('Description');
 			$e_Problem->appendChild($e_Description);
 			$e_Text = $this->ccr->createElement('Text', 'lookup_code_descriptions');
-			//			$e_Text = $this->ccr->createElement('Text', lookup_code_descriptions($row['diagnosis']));
 			$e_Description->appendChild($e_Text);
 			$e_Code = $this->ccr->createElement('Code');
 			$e_Description->appendChild($e_Code);
@@ -386,11 +368,8 @@ class CCR
 			$e_Code->appendChild($e_Value);
 			$e_Status = $this->ccr->createElement('Status');
 			$e_Problem->appendChild($e_Status);
-			// $e_Text = $this->ccr->createElement('Text', $row['outcome']);
 			$e_Text = $this->ccr->createElement('Text', 'Active');
 			$e_Status->appendChild($e_Text);
-			//$e_CommentID = $ccr->createElement('CommentID', $row['comments']);
-			//$e_Problem->appendChild($e_CommentID);
 			$e_Source = $this->ccr->createElement('Source');
 			$e_Actor  = $this->ccr->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
@@ -510,7 +489,7 @@ class CCR
 			$e_Medication->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->ccr->createElement('DateTime');
 			$e_Medication->appendChild($e_DateTime);
-			$date            = date_create($row['create_date']);
+			$date = date_create($row['create_date']);
 			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
 			$e_Type = $this->ccr->createElement('Type');
@@ -589,8 +568,6 @@ class CCR
 	{
 		$data = $this->medical->getPatientImmunizationsByPid($this->pid);
 
-//		print_r($data);
-
 		foreach($data AS $row) {
 
 
@@ -632,8 +609,6 @@ class CCR
 			$e_Direction = $this->ccr->createElement('Direction');
 			$e_Directions->appendChild($e_Direction);
 			$e_Description = $this->ccr->createElement('Description');
-
-
 
 			$e_Direction->appendChild($e_Description);
 			$e_Text = $this->ccr->createElement('Text',$row['note']);
@@ -698,8 +673,6 @@ class CCR
 
 	function createResults($e_Results)
 	{
-		//$result = getResultData();
-		//$row = sqlFetchArray($result);
 		$data = array(
 			array(
 				'date'                  => '2004-12-23 00:00:00',
@@ -738,7 +711,6 @@ class CCR
 			$e_Actor = $this->ccr->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
 			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
-			//$e_ActorID = $this->ccr->createElement('ActorID',${"labID{$row['lab']}"});
 			$e_Actor->appendChild($e_ActorID);
 			$e_Test = $this->ccr->createElement('Test');
 			$e_Result->appendChild($e_Test);
@@ -778,7 +750,6 @@ class CCR
 			$e_TestResult->appendChild($e_Description);
 			$e_Text = $this->ccr->createElement('Text', $row['result']);
 			$e_Description->appendChild($e_Text);
-			//if($row['abnormal'] == '' ) {
 			$e_NormalResult = $this->ccr->createElement('NormalResult');
 			$e_Test->appendChild($e_NormalResult);
 			$e_Normal = $this->ccr->createElement('Normal');
@@ -795,75 +766,11 @@ class CCR
 			$e_Source->appendChild($e_Actor);
 			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
-			//} else {
 			$e_Flag = $this->ccr->createElement('Flag');
 			$e_Test->appendChild($e_Flag);
 			$e_Text = $this->ccr->createElement('Text', $row['abnormal']);
 			$e_Flag->appendChild($e_Text);
-			//}
-			//$e_Test = $this->ccr->createElement('Test');
-			//$e_Result->appendChild($e_Test);
-			//
-			//$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
-			//$e_Test->appendChild($e_CCRDataObjectID);
-			//
-			//$e_DateTime = $this->ccr->createElement('DateTime');
-			//$e_Test->appendChild($e_DateTime);
-			//
-			//$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
-			//$e_DateTime->appendChild($e_ExactDateTime);
-			//
-			//$e_Type = $this->ccr->createElement('Type');
-			//$e_Test->appendChild($e_Type);
-			//
-			//$e_Text = $this->ccr->createElement('Text', 'Observation');
-			//$e_Type->appendChild($e_Text);
-			//
-			//
-			//$e_Description = $this->ccr->createElement('Description' );
-			//$e_Test->appendChild($e_Description);
-			//
-			//$e_Text = $this->ccr->createElement('Text', 'Range');
-			//$e_Description->appendChild($e_Text);
-			//
-			//$e_Code = $this->ccr->createElement('Code');
-			//$e_Description->appendChild($e_Code);
-			//
-			//$e_Value = $this->ccr->createElement('Value', 'None');
-			//$e_Code->appendChild($e_Value);
-			//
-			//$e_Test->appendChild($this->sourceType($this->ccr, $this->authorID));
-			//
-			//$e_TestResult = $this->ccr->createElement('TestResult' );
-			//$e_Test->appendChild($e_TestResult);
-			//
-			//$e_Value = $this->ccr->createElement('Value', '1.0');
-			//$e_TestResult->appendChild($e_Value);
-			//
-			//$e_Code = $this->ccr->createElement('Code' );
-			//$e_TestResult->appendChild($e_Code);
-			//
-			//$e_Value = $this->ccr->createElement('Value', 'Test 01 Code');
-			//$e_Code->appendChild($e_Value);
-			//
-			//$e_Description = $this->ccr->createElement('Description' );
-			//$e_TestResult->appendChild($e_Description);
-			//
-			//$e_Text = $this->ccr->createElement('Text', $row['range']);
-			//$e_Description->appendChild($e_Text);
-			//
-			//
-			//if($row['abnormal'] == '' ) {
-			//	$e_NormalResult = $this->ccr->createElement('NormalResult');
-			//	$e_Test->appendChild($e_NormalResult);
-			//} else {
-			//	$e_Flag = $this->ccr->createElement('Flag');
-			//	$e_Test->appendChild($e_Flag);
-			//
-			//	$e_Text = $this->ccr->createElement('Text');
-			//	$e_Flag->appendChild($e_Text);
-			//
-			//}
+
 		}
 	}
 

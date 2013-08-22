@@ -48,7 +48,7 @@ class CCR
 	{
 		$this->ccr       = new DOMDocument('1.0', 'UTF-8');
 		$this->pid       = $_SESSION['patient']['pid'];
-		$this->authorID  = cccc
+		$this->authorID  = UUID::v1();
 		$this->patientID = UUID::v1();
 		$this->sourceID  = UUID::v1();
 		$this->gaiaID    = UUID::v1();

@@ -29,11 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
-if (!isset($_SESSION)){
+
+if (!isset($_SESSION))
+{
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/UUID.php');
 include_once ($_SESSION['root'] . '/dataProvider/Patient.php');

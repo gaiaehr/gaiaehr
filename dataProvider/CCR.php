@@ -67,7 +67,6 @@ class CCR
 		$this->gaiaID    = $this->getUuid();
 		$this->patient   = new Patient();
 		$this->medical   = new Medical();
-
 	}
 
 	function createCCR($request)
@@ -617,56 +616,6 @@ class CCR
 			$e_Description->appendChild($e_Code);
 			$e_Value = $this->ccr->createElement('Value', 'None');
 			$e_Code->appendChild($e_Value);
-
-//			$e_Immunization = $this->ccr->createElement('Immunization');
-//			$e_Immunizations->appendChild($e_Immunization);
-//			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
-//			$e_Immunization->appendChild($e_CCRDataObjectID);
-//
-//			$e_DateTime = $this->ccr->createElement('DateTime');
-//			$e_Immunization->appendChild($e_DateTime);
-//			$date            = date_create($row['administered_date']);
-//			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
-//			$e_DateTime->appendChild($e_ExactDateTime);
-//			$e_Type = $this->ccr->createElement('Type');
-//			$e_Immunization->appendChild($e_Type);
-//			$e_Text = $this->ccr->createElement('Text', 'Immunization');
-//			$e_Type->appendChild($e_Text);
-//			$e_Status = $this->ccr->createElement('Status');
-//			$e_Immunization->appendChild($e_Status);
-//			$e_Text = $this->ccr->createElement('Text', 'ACTIVE');
-//			$e_Status->appendChild($e_Text);
-//			$e_Immunization->appendChild($this->sourceType($this->sourceID));
-//
-//
-//			$e_Product = $this->ccr->createElement('Product');
-//			$e_Immunization->appendChild($e_Product);
-//			$e_ProductName = $this->ccr->createElement('ProductName');
-//			$e_Product->appendChild($e_ProductName);
-//			$e_Text = $this->ccr->createElement('Text', $row['immunization_name']);
-//			$e_ProductName->appendChild($e_Text);
-//
-//
-//			$e_Code = $this->ccr->createElement('ProductCode');
-//			$e_Product->appendChild($e_Code);
-//			$e_Text = $this->ccr->createElement('Text', 'sdsdsd');
-//			$e_Code->appendChild($e_Text);
-//
-//
-//
-//
-//			$e_Directions = $this->ccr->createElement('Directions');
-//			$e_Immunization->appendChild($e_Directions);
-//			$e_Direction = $this->ccr->createElement('Direction');
-//			$e_Directions->appendChild($e_Direction);
-//			$e_Description = $this->ccr->createElement('Description');
-//			$e_Direction->appendChild($e_Description);
-//			$e_Text = $this->ccr->createElement('Text', $row['note']);
-//			$e_Description->appendChild($e_Text);
-//			$e_Code = $this->ccr->createElement('Code');
-//			$e_Description->appendChild($e_Code);
-//			$e_Value = $this->ccr->createElement('Value', 'None');
-//			$e_Code->appendChild($e_Value);
 
 		}
 	}

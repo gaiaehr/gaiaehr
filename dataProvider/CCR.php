@@ -73,14 +73,15 @@ class CCR
 	{
 
 		$action = $request['action'];
-		$raw    = $request['raw'];
+		$raw = $request['raw'];
 
-		$this->pid   = $request['pid'];
+		$this->pid = $request['pid'];
 
 		$e_styleSheet = $this->ccr->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccr.xsl"');
 		$this->ccr->appendChild($e_styleSheet);
 		$e_ccr = $this->ccr->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
 		$this->ccr->appendChild($e_ccr);
+
 		/**
 		 * Header
 		 */
@@ -133,47 +134,50 @@ class CCR
 		$e_Actors = $this->ccr->createElement('Actors');
 		$this->createActors($e_Actors);
 		$e_ccr->appendChild($e_Actors);
-		if($action == 'generate') {
-			$this->gnrtCCR($raw);
-		}
-		if($action == 'viewccd') {
-			$this->viewCCD($raw);
-		}
+
+		if($action == 'generate') $this->generateCCR($raw);
+		if($action == 'viewccd') $this->viewCCD($raw);
 	}
 
-	function gnrtCCR($raw)
+	function generateCCR($raw)
 	{
 		$this->ccr->preserveWhiteSpace = false;
 		$this->ccr->formatOutput       = true;
-		if($raw == 'yes') {
+
+		if($raw == 'yes')
+        {
 			// simply send the xml to a textarea (nice debugging tool)
 			echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
 			echo $this->ccr->saveXml();
 			echo '</textarea>';
 			return;
-		} else {
-			if($raw == 'hybrid') {
+		}
+        else
+        {
+			if($raw == 'hybrid')
+            {
 				// send a file that contains a hybrid file of the raw xml and the xsl stylesheet
 				$this->createHybridXML($this->ccr);
-			} else {
-				if($raw == 'pure') {
+			}
+            else
+            {
+				if($raw == 'pure')
+                {
 					// send a zip file that contains a separate xml data file and xsl stylesheet
-					if(!class_exists('ZipArchive')) {
+					if(!class_exists('ZipArchive'))
+                    {
 						$this->displayError('ERROR: Missing ZipArchive PHP Module');
 						return;
 					}
 					$tempDir = $_SESSION['site']['temp']['path'];
 					$zipName = $tempDir . '/' . $this->getReportFilename() . '-ccr.zip';
-					if(file_exists($zipName)) {
-						unlink($zipName);
-					}
+					if(file_exists($zipName)) unlink($zipName);
 					$zip = new ZipArchive();
-					if($zip->open($zipName, ZipArchive::CREATE)) {
+					if($zip->open($zipName, ZipArchive::CREATE))
+                    {
 						$zip->addFile($_SESSION['root'] . '/lib/ccr/stylesheet/ccr.xsl', 'stylesheet/ccr.xsl');
 						$xmlName = $tempDir . '/' . $this->getReportFilename() . '-ccr.xml';
-						if(file_exists($xmlName)) {
-							unlink($xmlName);
-						}
+						if(file_exists($xmlName)) unlink($xmlName);
 						$this->ccr->save($xmlName);
 						$zip->addFile($xmlName, basename($xmlName));
 						$zip->close();
@@ -186,12 +190,15 @@ class CCR
 						header('Content-Description: File Transfer');
 						readfile($xmlName);
 						exit();
-					} else {
+					}
+                    else
+                    {
 						$this->displayError('ERROR: Unable to Create Zip Archive.');
 						return;
 					}
-				} else {
-
+				}
+                else
+                {
 					header('Content-type: application/xml');
 					print $this->ccr->saveXml();
 				}
@@ -210,15 +217,17 @@ class CCR
 		$ccr_ccd = new DOMDocument();
 		$ccr_ccd->load('../lib/ccr/ccd/ccr_ccd.xsl');
 
-		if(class_exists('XSLTProcessor')){
+		if(class_exists('XSLTProcessor'))
+        {
 			$xslt = new XSLTProcessor();
 			$xslt->importStylesheet($ccr_ccd);
-			$ccd                     = new DOMDocument();
+			$ccd = new DOMDocument();
 			$ccd->preserveWhiteSpace = false;
 			$ccd->formatOutput       = true;
 			$ccd->loadXML($xslt->transformToXML($xmlDom));
 			$ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
-			if($raw == 'yes') {
+			if($raw == 'yes')
+            {
 				// simply send the xml to a textarea (nice debugging tool)
 				echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
 				echo $ccd->saveXml();
@@ -229,7 +238,9 @@ class CCR
 			$ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
 			$xslt->importStyleSheet($ss);
 			print $xslt->transformToXML($ccd);
-		}else{
+		}
+        else
+        {
 			print 'PHP Error Class \'XsltProcessor\' not found. <a href="http://php.net/manual/en/xsl.installation.php" target="_blank">[more info]</a>';
 		}
 	}
@@ -335,7 +346,8 @@ class CCR
 	{
 		$data = $this->medical->getPatientProblemsByPid($this->pid);
 		$pCount = 0;
-		foreach($data AS $row) {
+		foreach($data AS $row)
+        {
 			$pCount++;
 			$e_Problem = $this->ccr->createElement('Problem');
 			$e_Problems->appendChild($e_Problem);
@@ -409,7 +421,8 @@ class CCR
 			array('date' => '2004-12-23 00:00:00', 'pid' => 1, 'type' => 'alert type', 'alert_title' => 'alert title', 'code_text' => 'code text', 'diagnosis' => 210.17, 'outcome' => 'outcome', 'reaction' => 'reaction'),
 			array('date' => '2004-12-23 00:00:00', 'pid' => 1, 'type' => 'alert type', 'alert_title' => 'alert title', 'code_text' => 'code text', 'diagnosis' => 234.11, 'outcome' => 'outcome', 'reaction' => 'reaction')
 		);
-		foreach($data AS $row) {
+		foreach($data AS $row)
+        {
 			//while ($row = sqlFetchArray($result)) {
 			$e_Alert = $this->ccr->createElement('Alert');
 			$e_Alerts->appendChild($e_Alert);
@@ -473,7 +486,6 @@ class CCR
 			$e_Reaction->appendChild($e_Status);
 			$e_Text = $this->ccr->createElement('Text', 'None');
 			$e_Status->appendChild($e_Text);
-
 		}
 
 	}
@@ -481,7 +493,8 @@ class CCR
 	function createMedications($e_Medications)
 	{
 		$data = $this->medical->getPatientMedicationsByPatientID($this->pid);
-		foreach($data AS $row) {
+		foreach($data AS $row)
+        {
 			$e_Medication = $this->ccr->createElement('Medication');
 			$e_Medications->appendChild($e_Medication);
 			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid());
@@ -567,9 +580,8 @@ class CCR
 	{
 		$data = $this->medical->getPatientImmunizationsByPid($this->pid);
 
-		foreach($data AS $row) {
-
-
+		foreach($data AS $row)
+        {
 			$e_Immunization = $this->ccr->createElement('Immunization');
 			$e_Immunizations->appendChild($e_Immunization);
 
@@ -640,7 +652,8 @@ class CCR
 				'abnormal'              => 'note text'
 			),
 		);
-		foreach($data AS $row) {
+		foreach($data AS $row)
+        {
 			$e_Result = $this->ccr->createElement('Result');
 			$e_Results->appendChild($e_Result);
 			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', $this->getUuid()); //, $row['immunization_id']);
@@ -911,7 +924,9 @@ class CCR
 		$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
 		$e_Actor->appendChild($e_ActorID);
 		$labData = array();
-		foreach($labData AS $row) {
+
+		foreach($labData AS $row)
+        {
 			$e_Actor = $this->ccr->createElement('Actor');
 			$e_Actors->appendChild($e_Actor);
 			$e_ActorObjectID = $this->ccr->createElement('ActorObjectID', ${"labID{$row['id']}"});
@@ -989,7 +1004,8 @@ class CCR
 	}
 }
 
-if(isset($_REQUEST['action']) && isset($_REQUEST['raw'])){
+if(isset($_REQUEST['action']) && isset($_REQUEST['raw']))
+{
 	$c = new CCR();
 	// generate, viewccd
 	// yes, hybrid, pure

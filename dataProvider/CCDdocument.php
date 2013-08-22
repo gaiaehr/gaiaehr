@@ -67,7 +67,7 @@ class CCD
 		$this->medical   = new Medical();
 	}
 
-	function createCCR($request)
+	function createCCD($request)
 	{
 
 		$action = $request['action'];
@@ -1007,6 +1007,6 @@ if(isset($_REQUEST['action']) && isset($_REQUEST['raw']))
 	$c = new CCD();
 	// generate, viewccd
 	// yes, hybrid, pure
-	$c->createCCR($_REQUEST);
+	$c->createCCD($_REQUEST);
 }
 

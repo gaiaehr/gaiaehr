@@ -1151,23 +1151,24 @@ Ext.define('App.view.patient.windows.Medical', {
 				items: [
 					{
 						xtype: 'panel',
-						region: 'north',
+						region: 'west',
 						layout: 'border',
 						bodyBorder: false,
 						border: false,
-						height: 350,
+						width: 290,
 						split: true,
 						items: [
 							{
 								xtype: 'grid',
-								region: 'west',
-								width: 290,
+								region: 'center',
 								split: true,
 								store: me.labPanelsStore,
 								columns: [
 									{
-										header: i18n('laboratories'),
+										header: i18n('orders'),
 										dataIndex: 'label',
+										menuDisabled:true,
+										resizable:false,
 										flex: 1
 									}
 								],
@@ -1178,66 +1179,10 @@ Ext.define('App.view.patient.windows.Medical', {
 								}
 							},
 							{
-								xtype: 'panel',
-								action: 'labPreviewPanel',
-								title: i18n('laboratory_preview'),
-								region: 'center',
-								items: [
-									me.uploadWin = Ext.create('Ext.window.Window', {
-										draggable: false,
-										closable: false,
-										closeAction: 'hide',
-										items: [
-											{
-												xtype: 'form',
-												bodyPadding: 10,
-												width: 400,
-												items: [
-													{
-														xtype: 'filefield',
-														name: 'filePath',
-														buttonText: i18n('select_a_file') + '...',
-														anchor: '100%'
-													}
-												],
-												api: {
-													submit: DocumentHandler.uploadDocument
-												}
-											}
-										],
-										buttons: [
-											{
-												text: i18n('cancel'),
-												handler: function(){
-													me.uploadWin.close();
-												}
-											},
-											{
-												text: i18n('upload'),
-												scope: me,
-												handler: me.onLabUpload
-											}
-										]
-									})
-								],
-								listeners: {
-									scope: me,
-									render: me.onLaboratoryPreviewRender
-								}
-							}
-						]
-					},
-					{
-						xtype: 'container',
-						region: 'center',
-						layout: 'border',
-						split: true,
-						items: [
-							{
 								xtype: 'form',
-								title: i18n('laboratory_entry_form'),
-								region: 'west',
-								width: 290,
+								title: i18n('order_detail'),
+								region: 'south',
+								height: 300,
 								split: true,
 								bodyPadding: 5,
 								autoScroll: true,
@@ -1254,10 +1199,106 @@ Ext.define('App.view.patient.windows.Medical', {
 									scope: me,
 									handler: me.onLabResultsSave
 								}]
+							}
+
+						]
+					},
+					{
+						xtype: 'container',
+						region: 'center',
+						layout: 'border',
+						split: true,
+						items: [
+							{
+								xtype: 'grid',
+								action: 'labPreviewPanel',
+								title: i18n('order_observations'),
+								region: 'center',
+								columns:[
+									{
+										text:i18n('status'),
+										menuDisabled:true,
+										width:60
+									},
+									{
+										text:i18n('name'),
+										menuDisabled:true,
+										flex:1
+									},
+									{
+										text:i18n('value'),
+										menuDisabled:true,
+										width:60
+									},
+									{
+										text:i18n('units'),
+										menuDisabled:true,
+										width:60
+									},
+									{
+										text:i18n('range'),
+										menuDisabled:true,
+										width:60
+									},
+									{
+										text:i18n('abnormal'),
+										menuDisabled:true,
+										width:75
+									},
+									{
+										text:i18n('notes'),
+										menuDisabled:true,
+										flex:1
+									}
+
+								],
+//								items: [
+//									me.uploadWin = Ext.create('Ext.window.Window', {
+//										draggable: false,
+//										closable: false,
+//										closeAction: 'hide',
+//										items: [
+//											{
+//												xtype: 'form',
+//												bodyPadding: 10,
+//												width: 400,
+//												items: [
+//													{
+//														xtype: 'filefield',
+//														name: 'filePath',
+//														buttonText: i18n('select_a_file') + '...',
+//														anchor: '100%'
+//													}
+//												],
+//												api: {
+//													submit: DocumentHandler.uploadDocument
+//												}
+//											}
+//										],
+//										buttons: [
+//											{
+//												text: i18n('cancel'),
+//												handler: function(){
+//													me.uploadWin.close();
+//												}
+//											},
+//											{
+//												text: i18n('upload'),
+//												scope: me,
+//												handler: me.onLabUpload
+//											}
+//										]
+//									})
+//								],
+								listeners: {
+									scope: me,
+									render: me.onLaboratoryPreviewRender
+								}
 							},
 							{
 								xtype: 'panel',
-								region: 'center',
+								title: i18n('observation_history'),
+								region: 'south',
 								height: 300,
 								split: true,
 								items: [
@@ -1276,6 +1317,139 @@ Ext.define('App.view.patient.windows.Medical', {
 					}
 				]
 			}
+//			{
+//
+//				xtype: 'container',
+//				action: 'patientLabs',
+//				layout: 'border',
+//				items: [
+//					{
+//						xtype: 'panel',
+//						region: 'north',
+//						layout: 'border',
+//						bodyBorder: false,
+//						border: false,
+//						height: 350,
+//						split: true,
+//						items: [
+//							{
+//								xtype: 'grid',
+//								region: 'west',
+//								width: 290,
+//								split: true,
+//								store: me.labPanelsStore,
+//								columns: [
+//									{
+//										header: i18n('laboratories'),
+//										dataIndex: 'label',
+//										flex: 1
+//									}
+//								],
+//								listeners: {
+//									scope: me,
+//									itemclick: me.onLabPanelSelected,
+//									selectionchange: me.onLabPanelSelectionChange
+//								}
+//							},
+//							{
+//								xtype: 'panel',
+//								action: 'labPreviewPanel',
+//								title: i18n('laboratory_preview'),
+//								region: 'center',
+//								items: [
+//									me.uploadWin = Ext.create('Ext.window.Window', {
+//										draggable: false,
+//										closable: false,
+//										closeAction: 'hide',
+//										items: [
+//											{
+//												xtype: 'form',
+//												bodyPadding: 10,
+//												width: 400,
+//												items: [
+//													{
+//														xtype: 'filefield',
+//														name: 'filePath',
+//														buttonText: i18n('select_a_file') + '...',
+//														anchor: '100%'
+//													}
+//												],
+//												api: {
+//													submit: DocumentHandler.uploadDocument
+//												}
+//											}
+//										],
+//										buttons: [
+//											{
+//												text: i18n('cancel'),
+//												handler: function(){
+//													me.uploadWin.close();
+//												}
+//											},
+//											{
+//												text: i18n('upload'),
+//												scope: me,
+//												handler: me.onLabUpload
+//											}
+//										]
+//									})
+//								],
+//								listeners: {
+//									scope: me,
+//									render: me.onLaboratoryPreviewRender
+//								}
+//							}
+//						]
+//					},
+//					{
+//						xtype: 'container',
+//						region: 'center',
+//						layout: 'border',
+//						split: true,
+//						items: [
+//							{
+//								xtype: 'form',
+//								title: i18n('laboratory_entry_form'),
+//								region: 'west',
+//								width: 290,
+//								split: true,
+//								bodyPadding: 5,
+//								autoScroll: true,
+//								bbar: ['->', {
+//									text: i18n('reset'),
+//									scope: me,
+//									handler: me.onLabResultsReset
+//								}, '-', {
+//									text: i18n('sign'),
+//									scope: me,
+//									handler: me.onLabResultsSign
+//								}, '-', {
+//									text: i18n('save'),
+//									scope: me,
+//									handler: me.onLabResultsSave
+//								}]
+//							},
+//							{
+//								xtype: 'panel',
+//								region: 'center',
+//								height: 300,
+//								split: true,
+//								items: [
+//									{
+//										xtype: 'lalboratoryresultsdataview',
+//										action: 'lalboratoryresultsdataview',
+//										store: Ext.create('App.store.patient.PatientLabsResults'),
+//										listeners: {
+//											scope: me,
+//											itemclick: me.onLabResultClick
+//										}
+//									}
+//								]
+//							}
+//						]
+//					}
+//				]
+//			}
 			//endregion
 		];
 		/**
@@ -1401,12 +1575,12 @@ Ext.define('App.view.patient.windows.Medical', {
 			params:{query:this.getValue()}
 		});
 	},
+
 	medicationListExpand:function(grid){
 		this.MedicationListSearch.reset();
 		grid.getStore().load();
 	},
 
-	//*******************************************************
 	//region Laboratory Stuff
 	onLabPanelSelected: function(grid, model){
 		var me = this, formPanel = me.query('[action="patientLabs"]')[0].down('form'), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, fields = model.data.fields;
@@ -1954,20 +2128,26 @@ Ext.define('App.view.patient.windows.Medical', {
 	},
 
 	onMedicalWinShow: function(){
-		var me = this, reviewBts = me.query('button[action="review"]'), p = app.patient;
+		var me = this,
+			reviewBts = me.query('button[action="review"]'),
+			p = app.patient;
+
 		me.pid = p.pid;
 		me.eid = p.eid;
+//		me.pid = 1;
+//		me.eid = 1;
+
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n('read_mode') + ']</span>' :''));
-		me.setReadOnly(app.patient.readOnly);
+		me.setReadOnly(p.readOnly);
 		for(var i = 0; i < reviewBts.length; i++){
-			reviewBts[i].setVisible((app.patient.eid != null));
+			reviewBts[i].setVisible((me.eid != null));
 		}
 
 		me.labPanelsStore.load();
 
 		me.patientImmuListStore.load({
 			params: {
-				pid: app.patient.pid
+				pid: me.pid
 			}
 		});
 
@@ -1975,31 +2155,40 @@ Ext.define('App.view.patient.windows.Medical', {
 			filters: [
 				{
 					property: 'pid',
-					value: app.patient.pid
+					value: me.pid
 				}
 			]
 		});
 
 		me.patientMedicalIssuesStore.load({
 			params: {
-				pid: app.patient.pid
+				pid: me.pid
 			}
 		});
 //        me.patientSurgeryStore.load({
 //                params:{
-//                    pid:app.patient.pid
+//                    pid:me.pid
 //                }
 //            });
 //        me.patientDentalStore.load({
 //                params:{
-//                    pid:app.patient.pid
+//                    pid:me.pid
 //                }
 //            });
 		me.patientMedicationsStore.load({
 			params: {
-				pid: app.patient.pid
-			}
+				pid: me.pid
+			},
+			filters: [
+				{
+					property: 'pid',
+					value: me.pid
+				}
+			]
 		});
+
+
+		me.cardSwitch({action:'laboratories'});
 	},
 
 	onMedicalWinClose: function(){

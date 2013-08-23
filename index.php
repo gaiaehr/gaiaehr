@@ -72,7 +72,7 @@ if($mobile->isMobile() || $mDebug){
 		 * If no directory is found inside sites dir run the setup wizard,
 		 * if a directory is found inside sites dir run the logon screen
 		 */
-		if($_SESSION['sites']['count'] < 1){
+		if(count($_SESSION['sites']) < 1){
 			unset($_SESSION['site']);
             $_SESSION['install'] = true;
 			include_once('_install.php');

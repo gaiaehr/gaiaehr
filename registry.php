@@ -16,32 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//if(!defined('_GaiaEXEC')) die('No direct access allowed.');
-
-$sites    = array();
-$confs    = array();
-$dir = (file_exists('sites/') ? 'sites/' : '../sites/');
-if($handle = opendir($dir))
-{
-	while(false !== ($entry = readdir($handle))) 
-	{
-		if($entry != '.' && $entry != '..' && is_dir($dir . $entry) === true)
-		{
-			$confs[] = "$entry/conf.php";
-			$sites[] = $entry;
-		}
-	}
-	closedir($handle);
-}
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 // general
 $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
 $_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'].'/'.basename(dirname(__FILE__));
 
 // sites values
-$_SESSION['sites']['sites'] = $sites;
-$_SESSION['sites']['count'] = count($sites);;
-$_SESSION['sites']['confs'] = $confs;
+$_SESSION['sites']    = array();
+
+$sitedir = $_SESSION['root'].'/sites/';
+if($handle = opendir($sitedir))
+{
+	while(false !== ($entry = readdir($handle)))
+	{
+		if($entry != '.' && $entry != '..' && is_dir($sitedir . $entry) === true) $_SESSION['sites'][] = $entry;
+	}
+	closedir($handle);
+}
+
+
 
 // timeout values
 $_SESSION['inactive']['time']    = 60;

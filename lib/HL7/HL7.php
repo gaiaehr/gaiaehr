@@ -197,6 +197,8 @@ class HL7 {
 	}
 
 	function time($time, $format = 'Y-m-d H:i:s'){
+		$foo = explode('-',$time);
+		$time = $foo[0];
 		switch(strlen($time)){
 			case 4:
 				$rawFormat = 'Y';
@@ -217,7 +219,11 @@ class HL7 {
 				$rawFormat = 'YmdHis';
 				break;
 		}
-		return date_format(date_create_from_format($rawFormat, $time), $format);
+
+		$foo = date_create_from_format($rawFormat, $time);
+		if($foo !== false) return date_format(date_create_from_format($rawFormat, $time), $format);
+		return null;
+
 	}
 
 	/**

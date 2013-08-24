@@ -845,8 +845,8 @@ Ext.define('App.view.Viewport', {
         this.setTask(true);
 
 
-		say('*****');
-		say(Ext.create('App.view.patient.windows.Medical').show());
+//		say('*****');
+//		say(Ext.create('App.view.patient.windows.Medical').show());
     },
 
 	onNavigationNodeSelected: function(model, selected){

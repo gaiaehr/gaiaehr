@@ -2132,10 +2132,10 @@ Ext.define('App.view.patient.windows.Medical', {
 			reviewBts = me.query('button[action="review"]'),
 			p = app.patient;
 
-		me.pid = p.pid;
-		me.eid = p.eid;
-//		me.pid = 1;
-//		me.eid = 1;
+//		me.pid = p.pid;
+//		me.eid = p.eid;
+		me.pid = 1;
+		me.eid = 1;
 
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n('read_mode') + ']</span>' :''));
 		me.setReadOnly(p.readOnly);

@@ -59,12 +59,13 @@ class Segments {
 	 * @return string
 	 */
 	function build(){
-		$this->parseArray($this->rawSeg);
+		$this->toString($this->rawSeg);
 		return $this->seg . "\r";
 	}
 
 	function parse($string){
-		$this->data = $this->parseStr($string);
+		$this->data = $this->toArray($string);
+//		print_r($this->data);
 		return $this->data;
 	}
 
@@ -73,14 +74,14 @@ class Segments {
 	 * @param int $glue
 	 * @return mixed
 	 */
-	private function parseArray($array, $glue = 0){
+	private function toString($array, $glue = 0){
 		$glues = ['|','^','&'];
 		$buffer = [];
 		foreach($array as $index => $value) {
 
 			if($glue == 0 || $index > 0){
 				if(is_array($value)){
-					$array[$index] = $this->parseArray($value, $glue + 1);
+					$array[$index] = $this->toString($value, $glue + 1);
 					$buffer[] = $array[$index][0];
 					continue;
 				}
@@ -98,56 +99,51 @@ class Segments {
 		return $array;
 	}
 
+	function toArray($string, $glue = 0, $array = null){
+		$array = $array != null ? $array : $this->rawSeg;
 
-	private function parseStr($string){
-		// break the string into "fields"
-		$fields = explode('|',$string);
-		// fix the MSH segment
-		if($fields[0] == 'MSH'){
-			array_unshift($fields, 'MSH');
-			$fields[1] = '|';
-		}
+		$glues = ['|','^','&'];
 
-		// handle the fields
-		foreach($fields AS $i => $field){
+		if(isset($glues[$glue])){
+			// explode the string by glue | ^ or &
+			$fields = explode($glues[$glue], $string);
+			// fix the MSH segment
+			if($fields[0] == 'MSH'){
+				array_unshift($fields, 'MSH');
+				$fields[1] = '|';
+			}
 
-			$subFields = explode('^', $field);
-			// field only has one value
-			if(count($subFields) == 1){
-				if(!is_array($this->rawSeg[$i])){
-					$this->rawSeg[$i] = $subFields[0];
-				}else{
-					$this->rawSeg[$i][0] = $subFields[0];
-					$this->rawSeg[$i][1] = $subFields[0];
+			$isSubField = $glue > 0;
+
+			if($isSubField) array_unshift($fields, $string);
+
+			foreach($fields AS $i => $fieldString){
+				$hasSubFields = isset($array[$i]) && is_array($array[$i]);
+				if(!$hasSubFields){
+					$array[$i] = $fieldString;
+					continue;
 				}
-			// field has multiple values
-			}else{
-				$this->rawSeg[$i][0] = $field;
-				foreach($subFields AS $j => $subField){
-					$subSubFields = explode('^', $subField);
-					// field only has one value
-					if(count($subSubFields) == 1){
-						if(isset($this->rawSeg[$i][$j+1])){
-							if(!is_array($this->rawSeg[$i][$j+1])){
-								$this->rawSeg[$i][$j+1] = $subSubFields[0];
-							}else{
-								$this->rawSeg[$i][$j+1][0] = $subSubFields[0];
-								$this->rawSeg[$i][$j+1][1] = $subSubFields[0];
-							}
 
-							$subSubSubFields = explode('&',$subSubFields[0]);
-							if(count($subSubSubFields) > 1 && ($subSubFields[0] != '~\&' && $subSubFields[0] != '~\&#')){
-								foreach($subSubSubFields As $l => $values){
-									$this->rawSeg[$i][$j+1][$l+1] = $values;
-								}
-							}
+				if($hasSubFields){
+					if($this->isRepeatable($fieldString)){
+						$foo = array();
+						foreach(explode('~', $fieldString) AS $rep){
+							$foo[] = $this->toArray($rep, $glue + 1, $array[$i]);
 						}
+						$array[$i] = $foo;
+						continue;
 					}
+
+					$array[$i] = $this->toArray($fieldString, $glue + 1, $array[$i]);
 				}
 			}
 		}
+		return $array;
+	}
 
-		return $this->rawSeg;
+	function isRepeatable($string){
+		$foo = strpos($string, '~');
+		return $foo !== false && $string != '~\&';
 	}
 
 	/**

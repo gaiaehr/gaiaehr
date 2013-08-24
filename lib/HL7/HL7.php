@@ -175,10 +175,10 @@ class HL7 {
 			$this->segments[] = $this->readSegment($segment);
 		}
 
-		$type = $this->getMsgType();
-		include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
-		$msg = new $type($this);
-		$msg->readMessage($this->getMsgEventType());
+//		$type = $this->getMsgType();
+//		include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
+//		$msg = new $type($this);
+//		$msg->readMessage($this->getMsgEventType());
 		return $msg;
 	}
 

@@ -167,13 +167,13 @@ class Segments {
 	 */
 	function getValue($field){
 		$foo = explode('.',$field);
-//		if(count($foo) == 1){
-//			return $this->rawSeg[$foo[0]];
-//		}elseif(count($foo) == 2){
-//			return $this->rawSeg[$foo[0]][$foo[1]];
-//		}elseif(count($foo) == 3){
-//			return $this->rawSeg[$foo[0]][$foo[1]][$foo[2]];
-//		}
+		if(count($foo) == 1){
+			return $this->rawSeg[$foo[0]];
+		}elseif(count($foo) == 2){
+			return $this->rawSeg[$foo[0]][$foo[1]];
+		}elseif(count($foo) == 3){
+			return $this->rawSeg[$foo[0]][$foo[1]][$foo[2]];
+		}
 		return null;
 	}
 

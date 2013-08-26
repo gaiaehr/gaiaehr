@@ -16,8 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+include_once (str_replace('\\', '/',__DIR__).'/Message.php');
 
-class ACK {
+class ACK extends Message {
+
+	function __construct($hl7){
+		parent::__construct($hl7);
+	}
 
 	public $R01 = array(
 		'MSH' => '',

@@ -31,7 +31,8 @@ class HL7 {
 	 */
 	function getSendingApplication(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[3][1];
+		if(isset($seg->data)) return $seg->data[3][1];
+		return null;
 	}
 
 	/**
@@ -39,7 +40,8 @@ class HL7 {
 	 */
 	function getSendingFacility(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[4][1];
+		if(isset($seg->data)) return $seg->data[4][1];
+		return null;
 	}
 
 	/**
@@ -48,6 +50,7 @@ class HL7 {
 	 */
 	function getMsgTime($format = 'Y-m-d H:i:s'){
 		$seg = $this->getSegment('MSH');
+		if(!isset($seg->data)) return null;
 		$time = $seg->data[7][1];
 		return $this->time($time, $format);
 	}
@@ -57,7 +60,8 @@ class HL7 {
 	 */
 	function getMsgSecurity(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[8];
+		if(isset($seg->data)) return $seg->data[8];
+		return null;
 	}
 
 	/**
@@ -65,7 +69,8 @@ class HL7 {
 	 */
 	function getMsgType(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[9][1];
+		if(isset($seg->data)) return $seg->data[9][1];
+		return null;
 	}
 
 	/**
@@ -73,7 +78,8 @@ class HL7 {
 	 */
 	function getMsgEventType(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[9][2];
+		if(isset($seg->data)) return $seg->data[9][2];
+		return null;
 	}
 
 	/**
@@ -81,7 +87,8 @@ class HL7 {
 	 */
 	function getMsgStructure(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[9][3];
+		if(isset($seg->data)) return $seg->data[9][3];
+		return null;
 	}
 
 	/**
@@ -89,7 +96,8 @@ class HL7 {
 	 */
 	function getMsgControlId(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[10];
+		if(isset($seg->data)) return $seg->data[10];
+		return null;
 	}
 
 	/**
@@ -97,7 +105,8 @@ class HL7 {
 	 */
 	function getMsgProcessingId(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[11][1];
+		if(isset($seg->data)) return $seg->data[11][1];
+		return null;
 	}
 
 	/**
@@ -105,7 +114,8 @@ class HL7 {
 	 */
 	function getMsgProcessingMode(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[11][2];
+		if(isset($seg->data)) return $seg->data[11][2];
+		return null;
 	}
 
 	/**
@@ -113,7 +123,8 @@ class HL7 {
 	 */
 	function getMsgVersionId(){
 		$seg = $this->getSegment('MSH');
-		return $seg->data[12][1];
+		if(isset($seg->data)) return $seg->data[12][1];
+		return null;
 	}
 
 	/**
@@ -168,16 +179,22 @@ class HL7 {
 
 	/**
 	 * @param $msg
+	 * @return Message
 	 */
 	function readMessage($msg){
 		$segments = explode(PHP_EOL, $msg);
 		foreach($segments AS $segment){
+			$seg = $this->readSegment($segment);
+			if($seg === false) continue;
 			$this->segments[] = $this->readSegment($segment);
 		}
 
 		$type = $this->getMsgType();
+		if(strlen($type) !== 3) return false;
 		include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
 		$msg = new $type($this);
+		$mType = $this->getMsgEventType();
+		if($mType === null) return false;
 		$msg->readMessage($this->getMsgEventType());
 		return $msg;
 	}
@@ -188,6 +205,7 @@ class HL7 {
 	 */
 	function readSegment($segment){
 		$seg = substr($segment, 0, 3);
+		if(strlen($seg) !== 3) return false;
 		if($seg != ''){
 			include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
 			$seg = new $seg($this);
@@ -197,6 +215,8 @@ class HL7 {
 	}
 
 	function time($time, $format = 'Y-m-d H:i:s'){
+		$foo = explode('-',$time);
+		$time = $foo[0];
 		switch(strlen($time)){
 			case 4:
 				$rawFormat = 'Y';
@@ -217,7 +237,11 @@ class HL7 {
 				$rawFormat = 'YmdHis';
 				break;
 		}
-		return date_format(date_create_from_format($rawFormat, $time), $format);
+
+		$foo = date_create_from_format($rawFormat, $time);
+		if($foo !== false) return date_format(date_create_from_format($rawFormat, $time), $format);
+		return null;
+
 	}
 
 	/**

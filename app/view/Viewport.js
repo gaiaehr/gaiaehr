@@ -843,6 +843,10 @@ Ext.define('App.view.Viewport', {
         this.navigateToDefault();
         this.removeAppMask();
         this.setTask(true);
+
+
+//		say('*****');
+//		say(Ext.create('App.view.patient.windows.Medical').show());
     },
 
 	onNavigationNodeSelected: function(model, selected){

@@ -59,7 +59,12 @@ class CCR
 		$this->medical   = new Medical();
 	}
 
-	function createCCR($request)
+    /**
+     * createCCR
+     * Function that builds the complete CCR document
+     * @param $request
+     */
+    function createCCR($request)
 	{
 
 		$action = $request['action'];
@@ -72,12 +77,21 @@ class CCR
 		$e_ccr = $this->CCRdocument->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
 		$this->CCRdocument->appendChild($e_ccr);
 
-		/**
+        /**
 		 * Header
 		 */
 		$this->createHeader($e_ccr);
 		$e_Body = $this->CCRdocument->createElement('Body');
 		$e_ccr->appendChild($e_Body);
+
+        /**
+         * Modify the CSS style
+         */
+        $css = $this->CCRdocument->createElement( 'link' );
+        $css->setAttribute( 'type', 'text/css' );
+        $css->setAttribute( 'href', $_SESSION['url'].'/lib/ccs/stylesheet/cda_styles.css' );
+        $css->setAttribute( 'media', 'all' );
+        $e_Body->appendChild($css);
 
 		/**
 		 * Problems
@@ -125,6 +139,7 @@ class CCR
 		$e_ccr->appendChild($e_Actors);
 
         if($action == 'viewccr') $this->generateCCR($raw);
+
 	}
 
 	function generateCCR($raw)
@@ -327,7 +342,7 @@ class CCR
 			$e_Alert->appendChild($e_CCRDataObjectID);
 			$e_DateTime = $this->CCRdocument->createElement('DateTime');
 			$e_Alert->appendChild($e_DateTime);
-			$date            = new DateTime($row['date']);
+			$date = new DateTime($row['date']);
 			$e_ExactDateTime = $this->CCRdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
 			$e_IDs = $this->CCRdocument->createElement('IDs');
@@ -473,7 +488,12 @@ class CCR
 		}
 	}
 
-	function createImmunizations($e_Immunizations)
+    /**
+     * createImmunizations
+     * Function to build the immunization information about the patient
+     * @param $e_Immunizations
+     */
+    function createImmunizations($e_Immunizations)
 	{
 		$data = $this->medical->getPatientImmunizationsByPid($this->pid);
 
@@ -529,7 +549,12 @@ class CCR
 		}
 	}
 
-	function createResults($e_Results)
+    /**
+     * createResults
+     * Function that build the patient laboratory results
+     * @param $e_Results
+     */
+    function createResults($e_Results)
 	{
 		$data = array(
 			array(
@@ -633,7 +658,12 @@ class CCR
 		}
 	}
 
-	function createActors($e_Actors)
+    /**
+     * createActors
+     * Function to build the Actor
+     * @param $e_Actors
+     */
+    function createActors($e_Actors)
 	{
         $p = $this->patient->getPatientDemographicDataByPid($this->pid);
 
@@ -655,7 +685,7 @@ class CCR
         $e_CurrentName->appendChild($e_Suffix);
         $e_DateOfBirth = $this->CCRdocument->createElement('DateOfBirth');
         $e_Person->appendChild($e_DateOfBirth);
-        $dob             = date_create($p['DOB']);
+        $dob = date_create($p['DOB']);
         $e_ExactDateTime = $this->CCRdocument->createElement('ExactDateTime', $dob->format('Y-m-d\TH:i:s\Z'));
         $e_DateOfBirth->appendChild($e_ExactDateTime);
         $e_Gender = $this->CCRdocument->createElement('Gender');
@@ -716,6 +746,7 @@ class CCR
 			'postal_code' => 'postal_code',
 			'phone' => 'phone'
 		);
+
 		//////// Actor Information Systems
 		$e_Actor = $this->CCRdocument->createElement('Actor');
 		$e_Actors->appendChild($e_Actor);

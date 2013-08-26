@@ -36,7 +36,7 @@ include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
 
 class CCD
 {
-	private $ccr;
+	private $CCDdocument;
 	private $pid;
 	private $authorID;
 	private $patientID;
@@ -48,7 +48,7 @@ class CCD
 
 	function __construct()
 	{
-		$this->ccr       = new DOMDocument('1.0', 'UTF-8');
+		$this->CCDdocument       = new DOMDocument('1.0', 'UTF-8');
 		$this->pid       = $_SESSION['patient']['pid'];
 		$this->authorID  = UUID::v4();
 		$this->patientID = UUID::v4();
@@ -66,46 +66,55 @@ class CCD
 
 		$this->pid = $request['pid'];
 
-		$e_styleSheet = $this->ccr->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccr.xsl"');
-		$this->ccr->appendChild($e_styleSheet);
-		$e_ccr = $this->ccr->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
-		$this->ccr->appendChild($e_ccr);
+		$e_styleSheet = $this->CCDdocument->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccr.xsl"');
+		$this->CCDdocument->appendChild($e_styleSheet);
+		$e_ccr = $this->CCDdocument->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
+		$this->CCDdocument->appendChild($e_ccr);
 
 		/**
 		 * Header
 		 */
 		$this->createHeader($e_ccr);
-		$e_Body = $this->ccr->createElement('Body');
+		$e_Body = $this->CCDdocument->createElement('Body');
 		$e_ccr->appendChild($e_Body);
+
+        /**
+         * Modify the CSS style
+         */
+        $css = $this->CCDdocument->createElement( 'link' );
+        $css->setAttribute( 'type', 'text/css' );
+        $css->setAttribute( 'href', $_SESSION['url'].'/lib/ccs/stylesheet/cda_styles.css' );
+        $css->setAttribute( 'media', 'all' );
+        $e_Body->appendChild($css);
 
 		/**
 		 * Problems
 		 */
-		$e_Problems = $this->ccr->createElement('Problems');
+		$e_Problems = $this->CCDdocument->createElement('Problems');
 		$this->createProblem($e_Problems);
 		$e_Body->appendChild($e_Problems);
 		/**
 		 * Alerts
 		 */
-		$e_Alerts = $this->ccr->createElement('Alerts');
+		$e_Alerts = $this->CCDdocument->createElement('Alerts');
 		$this->createAlerts($e_Alerts);
 		$e_Body->appendChild($e_Alerts);
 		/**
 		 * Medication
 		 */
-		$e_Medications = $this->ccr->createElement('Medications');
+		$e_Medications = $this->CCDdocument->createElement('Medications');
 		$this->createMedications($e_Medications);
 		$e_Body->appendChild($e_Medications);
 		/**
 		 * Immunization
 		 */
-		$e_Immunizations = $this->ccr->createElement('Immunizations');
+		$e_Immunizations = $this->CCDdocument->createElement('Immunizations');
 		$this->createImmunizations($e_Immunizations);
 		$e_Body->appendChild($e_Immunizations);
 		/**
 		 * Results
 		 */
-		$e_Results = $this->ccr->createElement('Results');
+		$e_Results = $this->CCDdocument->createElement('Results');
 		$this->createResults($e_Results);
 		$e_Body->appendChild($e_Results);
 		/**
@@ -120,7 +129,7 @@ class CCD
 		 * Actors
 		 */
 
-		$e_Actors = $this->ccr->createElement('Actors');
+		$e_Actors = $this->CCDdocument->createElement('Actors');
 		$this->createActors($e_Actors);
 		$e_ccr->appendChild($e_Actors);
 
@@ -130,14 +139,14 @@ class CCD
 
 	function generateCCR($raw)
 	{
-		$this->ccr->preserveWhiteSpace = false;
-		$this->ccr->formatOutput       = true;
+		$this->CCDdocument->preserveWhiteSpace = false;
+		$this->CCDdocument->formatOutput       = true;
 
 		if($raw == 'yes')
         {
 			// simply send the xml to a textarea (nice debugging tool)
 			echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
-			echo $this->ccr->saveXml();
+			echo $this->CCDdocument->saveXml();
 			echo '</textarea>';
 			return;
 		}
@@ -146,7 +155,7 @@ class CCD
 			if($raw == 'hybrid')
             {
 				// send a file that contains a hybrid file of the raw xml and the xsl stylesheet
-				$this->createHybridXML($this->ccr);
+				$this->createHybridXML($this->CCDdocument);
 			}
             else
             {
@@ -161,7 +170,7 @@ class CCD
 						$zip->addFile($_SESSION['root'] . '/lib/ccr/stylesheet/ccr.xsl', 'stylesheet/ccr.xsl');
 						$xmlName = $tempDir . '/' . $this->getReportFilename() . '-ccr.xml';
 						if(file_exists($xmlName)) unlink($xmlName);
-						$this->ccr->save($xmlName);
+						$this->CCDdocument->save($xmlName);
 						$zip->addFile($xmlName, basename($xmlName));
 						$zip->close();
 						header('Pragma: public');
@@ -183,7 +192,7 @@ class CCD
                 else
                 {
 					header('Content-type: application/xml');
-					print $this->ccr->saveXml();
+					print $this->CCDdocument->saveXml();
 				}
 			}
 		}
@@ -192,11 +201,11 @@ class CCD
 
 	function viewCCD($raw)
 	{
-		$this->ccr->preserveWhiteSpace = false;
-		$this->ccr->formatOutput       = true;
-		$this->ccr->save($_SESSION['site']['temp']['path'] . '/ccrForCCD.xml');
+		$this->CCDdocument->preserveWhiteSpace = false;
+		$this->CCDdocument->formatOutput       = true;
+		$this->CCDdocument->save($_SESSION['site']['temp']['path'] . '/ccrForCCD.xml');
 		$xmlDom = new DOMDocument();
-		$xmlDom->loadXML($this->ccr->saveXML());
+		$xmlDom->loadXML($this->CCDdocument->saveXML());
 		$ccr_ccd = new DOMDocument();
 		$ccr_ccd->load('../lib/ccr/ccd/ccr_ccd.xsl');
 
@@ -224,10 +233,10 @@ class CCD
 
 	function sourceType($uuid)
 	{
-		$e_Source = $this->ccr->createElement('Source');
-		$e_Actor  = $this->ccr->createElement('Actor');
+		$e_Source = $this->CCDdocument->createElement('Source');
+		$e_Actor  = $this->CCDdocument->createElement('Actor');
 		$e_Source->appendChild($e_Actor);
-		$e_ActorID = $this->ccr->createElement('ActorID', $uuid);
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', $uuid);
 		$e_Actor->appendChild($e_ActorID);
 		return $e_Source;
 	}
@@ -235,7 +244,7 @@ class CCD
 	function createHybridXML()
 	{
 		// save the raw xml
-		$main_xml = $this->ccr->saveXml();
+		$main_xml = $this->CCDdocument->saveXml();
 		// save the stylesheet
 		$main_stylesheet = file_get_contents('stylesheet/ccr.xsl');
 		// replace stylesheet link in raw xml file
@@ -264,53 +273,53 @@ class CCD
 
 	function createHeader($e_ccr)
 	{
-		$e_ccrDocObjID = $this->ccr->createElement('CCRDocumentObjectID', UUID::v4());
+		$e_ccrDocObjID = $this->CCDdocument->createElement('CCRDocumentObjectID', UUID::v4());
 		$e_ccr->appendChild($e_ccrDocObjID);
-		$e_Language = $this->ccr->createElement('Language');
+		$e_Language = $this->CCDdocument->createElement('Language');
 		$e_ccr->appendChild($e_Language);
-		$e_Text = $this->ccr->createElement('Text', 'English');
+		$e_Text = $this->CCDdocument->createElement('Text', 'English');
 		$e_Language->appendChild($e_Text);
-		$e_Version = $this->ccr->createElement('Version', 'V1.0');
+		$e_Version = $this->CCDdocument->createElement('Version', 'V1.0');
 		$e_ccr->appendChild($e_Version);
-		$e_dateTime = $this->ccr->createElement('DateTime');
+		$e_dateTime = $this->CCDdocument->createElement('DateTime');
 		$e_ccr->appendChild($e_dateTime);
-		$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', date('Y-m-d\TH:i:s\Z'));
+		$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', date('Y-m-d\TH:i:s\Z'));
 		$e_dateTime->appendChild($e_ExactDateTime);
-		$e_patient = $this->ccr->createElement('Patient');
+		$e_patient = $this->CCDdocument->createElement('Patient');
 		$e_ccr->appendChild($e_patient);
-		$e_ActorID = $this->ccr->createElement('ActorID', 'A1234'); // This value and ActorID in createCCRActor.php should be same.
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', 'A1234'); // This value and ActorID in createCCRActor.php should be same.
 		$e_patient->appendChild($e_ActorID);
 
 		//Header From:
-		$e_From = $this->ccr->createElement('From');
+		$e_From = $this->CCDdocument->createElement('From');
 		$e_ccr->appendChild($e_From);
-		$e_ActorLink = $this->ccr->createElement('ActorLink');
+		$e_ActorLink = $this->CCDdocument->createElement('ActorLink');
 		$e_From->appendChild($e_ActorLink);
-		$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 		$e_ActorLink->appendChild($e_ActorID);
-		$e_ActorRole = $this->ccr->createElement('ActorRole');
+		$e_ActorRole = $this->CCDdocument->createElement('ActorRole');
 		$e_ActorLink->appendChild($e_ActorRole);
-		$e_Text = $this->ccr->createElement('Text', 'author');
+		$e_Text = $this->CCDdocument->createElement('Text', 'author');
 		$e_ActorRole->appendChild($e_Text);
 
 		//Header To:
-		$e_To = $this->ccr->createElement('To');
+		$e_To = $this->CCDdocument->createElement('To');
 		$e_ccr->appendChild($e_To);
-		$e_ActorLink = $this->ccr->createElement('ActorLink');
+		$e_ActorLink = $this->CCDdocument->createElement('ActorLink');
 		$e_To->appendChild($e_ActorLink);
-		$e_ActorID = $this->ccr->createElement('ActorID', 'A1234');
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', 'A1234');
 		$e_ActorLink->appendChild($e_ActorID);
-		$e_ActorRole = $this->ccr->createElement('ActorRole');
+		$e_ActorRole = $this->CCDdocument->createElement('ActorRole');
 		$e_ActorLink->appendChild($e_ActorRole);
-		$e_Text = $this->ccr->createElement('Text', 'patient');
+		$e_Text = $this->CCDdocument->createElement('Text', 'patient');
 		$e_ActorRole->appendChild($e_Text);
 
 		//Header Purpose:
-		$e_Purpose = $this->ccr->createElement('Purpose');
+		$e_Purpose = $this->CCDdocument->createElement('Purpose');
 		$e_ccr->appendChild($e_Purpose);
-		$e_Description = $this->ccr->createElement('Description');
+		$e_Description = $this->CCDdocument->createElement('Description');
 		$e_Purpose->appendChild($e_Description);
-		$e_Text = $this->ccr->createElement('Text', 'Summary of patient information');
+		$e_Text = $this->CCDdocument->createElement('Text', 'Summary of patient information');
 		$e_Description->appendChild($e_Text);
 	}
 
@@ -321,65 +330,65 @@ class CCD
 		foreach($data AS $row)
         {
 			$pCount++;
-			$e_Problem = $this->ccr->createElement('Problem');
+			$e_Problem = $this->CCDdocument->createElement('Problem');
 			$e_Problems->appendChild($e_Problem);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', 'PROB' . $pCount);
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', 'PROB' . $pCount);
 			$e_Problem->appendChild($e_CCRDataObjectID);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_Problem->appendChild($e_DateTime);
 			$date = new DateTime($row['begin_date']);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_IDs = $this->ccr->createElement('IDs');
+			$e_IDs = $this->CCDdocument->createElement('IDs');
 			$e_Problem->appendChild($e_IDs);
-			$e_ID = $this->ccr->createElement('ID', $row['pid']);
+			$e_ID = $this->CCDdocument->createElement('ID', $row['pid']);
 			$e_IDs->appendChild($e_ID);
 			$e_IDs->appendChild($this->sourceType($this->sourceID));
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_Problem->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'Problem'); // Changed to pass through validator, Problem type must be one of the required string values: Problem, Condition, Diagnosis, Symptom, Finding, Complaint, Functional Limitation.
+			$e_Text = $this->CCDdocument->createElement('Text', 'Problem'); // Changed to pass through validator, Problem type must be one of the required string values: Problem, Condition, Diagnosis, Symptom, Finding, Complaint, Functional Limitation.
 			$e_Type->appendChild($e_Text);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_Problem->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', 'lookup_code_descriptions');
+			$e_Text = $this->CCDdocument->createElement('Text', 'lookup_code_descriptions');
 			$e_Description->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_Description->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', $row['code']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['code']);
 			$e_Code->appendChild($e_Value);
-			$e_Value = $this->ccr->createElement('CodingSystem', 'ICD9-CM');
+			$e_Value = $this->CCDdocument->createElement('CodingSystem', 'ICD9-CM');
 			$e_Code->appendChild($e_Value);
-			$e_Status = $this->ccr->createElement('Status');
+			$e_Status = $this->CCDdocument->createElement('Status');
 			$e_Problem->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text', 'Active');
+			$e_Text = $this->CCDdocument->createElement('Text', 'Active');
 			$e_Status->appendChild($e_Text);
-			$e_Source = $this->ccr->createElement('Source');
-			$e_Actor  = $this->ccr->createElement('Actor');
+			$e_Source = $this->CCDdocument->createElement('Source');
+			$e_Actor  = $this->CCDdocument->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+			$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
 			$e_Problem->appendChild($e_Source);
-			$e_CommentID = $this->ccr->createElement('CommentID', $row['outcome']);
+			$e_CommentID = $this->CCDdocument->createElement('CommentID', $row['outcome']);
 			$e_Problem->appendChild($e_CommentID);
-			$e_Episodes = $this->ccr->createElement('Episodes');
+			$e_Episodes = $this->CCDdocument->createElement('Episodes');
 			$e_Problem->appendChild($e_Episodes);
-			$e_Number = $this->ccr->createElement('Number');
+			$e_Number = $this->CCDdocument->createElement('Number');
 			$e_Episodes->appendChild($e_Number);
-			$e_Episode = $this->ccr->createElement('Episode');
+			$e_Episode = $this->CCDdocument->createElement('Episode');
 			$e_Episodes->appendChild($e_Episode);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', 'EP' . $pCount);
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', 'EP' . $pCount);
 			$e_Episode->appendChild($e_CCRDataObjectID);
 			$e_Episode->appendChild($this->sourceType($this->sourceID));
 			$e_Episodes->appendChild($this->sourceType($this->sourceID));
-			$e_HealthStatus = $this->ccr->createElement('HealthStatus');
+			$e_HealthStatus = $this->CCDdocument->createElement('HealthStatus');
 			$e_Problem->appendChild($e_HealthStatus);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_HealthStatus->appendChild($e_DateTime);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime');
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime');
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_HealthStatus->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['code_text']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['code_text']);
 			$e_Description->appendChild($e_Text);
 			$e_HealthStatus->appendChild($this->sourceType($this->sourceID));
 		}
@@ -396,67 +405,67 @@ class CCD
 		foreach($data AS $row)
         {
 			//while ($row = sqlFetchArray($result)) {
-			$e_Alert = $this->ccr->createElement('Alert');
+			$e_Alert = $this->CCDdocument->createElement('Alert');
 			$e_Alerts->appendChild($e_Alert);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', UUID::v4());
 			$e_Alert->appendChild($e_CCRDataObjectID);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_Alert->appendChild($e_DateTime);
 			$date            = new DateTime($row['date']);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_IDs = $this->ccr->createElement('IDs');
+			$e_IDs = $this->CCDdocument->createElement('IDs');
 			$e_Alert->appendChild($e_IDs);
-			$e_ID = $this->ccr->createElement('ID', $row['pid']);
+			$e_ID = $this->CCDdocument->createElement('ID', $row['pid']);
 			$e_IDs->appendChild($e_ID);
 			$e_IDs->appendChild($this->sourceType($this->sourceID));
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_Alert->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', $row['type'] . '-' . $row['alert_title']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['type'] . '-' . $row['alert_title']);
 			$e_Type->appendChild($e_Text);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_Alert->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['code_text']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['code_text']);
 			$e_Description->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_Description->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', $row['diagnosis']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['diagnosis']);
 			$e_Code->appendChild($e_Value);
 			$e_Alert->appendChild($this->sourceType($this->sourceID));
-			$e_Agent = $this->ccr->createElement('Agent');
+			$e_Agent = $this->CCDdocument->createElement('Agent');
 			$e_Alert->appendChild($e_Agent);
-			$e_EnvironmentalAgents = $this->ccr->createElement('EnvironmentalAgents');
+			$e_EnvironmentalAgents = $this->CCDdocument->createElement('EnvironmentalAgents');
 			$e_Agent->appendChild($e_EnvironmentalAgents);
-			$e_EnvironmentalAgent = $this->ccr->createElement('EnvironmentalAgent');
+			$e_EnvironmentalAgent = $this->CCDdocument->createElement('EnvironmentalAgent');
 			$e_EnvironmentalAgents->appendChild($e_EnvironmentalAgent);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', UUID::v4());
 			$e_EnvironmentalAgent->appendChild($e_CCRDataObjectID);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_EnvironmentalAgent->appendChild($e_DateTime);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $row['date']);
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $row['date']);
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_EnvironmentalAgent->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['alert_title']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['alert_title']);
 			$e_Description->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_Description->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value'); //,$row['codetext']
+			$e_Value = $this->CCDdocument->createElement('Value'); //,$row['codetext']
 			$e_Code->appendChild($e_Value);
-			$e_Status = $this->ccr->createElement('Status');
+			$e_Status = $this->CCDdocument->createElement('Status');
 			$e_EnvironmentalAgent->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text', $row['outcome']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['outcome']);
 			$e_Status->appendChild($e_Text);
 			$e_EnvironmentalAgent->appendChild($this->sourceType($this->sourceID));
-			$e_Reaction = $this->ccr->createElement('Reaction');
+			$e_Reaction = $this->CCDdocument->createElement('Reaction');
 			$e_Alert->appendChild($e_Reaction);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_Reaction->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['reaction']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['reaction']);
 			$e_Description->appendChild($e_Text);
-			$e_Status = $this->ccr->createElement('Status');
+			$e_Status = $this->CCDdocument->createElement('Status');
 			$e_Reaction->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text', 'None');
+			$e_Text = $this->CCDdocument->createElement('Text', 'None');
 			$e_Status->appendChild($e_Text);
 		}
 
@@ -467,83 +476,83 @@ class CCD
 		$data = $this->medical->getPatientMedicationsByPatientID($this->pid);
 		foreach($data AS $row)
         {
-			$e_Medication = $this->ccr->createElement('Medication');
+			$e_Medication = $this->CCDdocument->createElement('Medication');
 			$e_Medications->appendChild($e_Medication);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', UUID::v4());
 			$e_Medication->appendChild($e_CCRDataObjectID);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_Medication->appendChild($e_DateTime);
 			$date = date_create($row['create_date']);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_Medication->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'Medication');
+			$e_Text = $this->CCDdocument->createElement('Text', 'Medication');
 			$e_Type->appendChild($e_Text);
-			$e_Status = $this->ccr->createElement('Status');
+			$e_Status = $this->CCDdocument->createElement('Status');
 			$e_Medication->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text', ($row['end_date'] == null || $row['end_date'] == '' ? 'Active' : 'Prior History No Longer Active' ));
+			$e_Text = $this->CCDdocument->createElement('Text', ($row['end_date'] == null || $row['end_date'] == '' ? 'Active' : 'Prior History No Longer Active' ));
 			$e_Status->appendChild($e_Text);
 			$e_Medication->appendChild($this->sourceType($this->sourceID));
-			$e_Product = $this->ccr->createElement('Product');
+			$e_Product = $this->CCDdocument->createElement('Product');
 			$e_Medication->appendChild($e_Product);
-			$e_ProductName = $this->ccr->createElement('ProductName');
+			$e_ProductName = $this->CCDdocument->createElement('ProductName');
 			$e_Product->appendChild($e_ProductName);
-			$e_Text = $this->ccr->createElement('Text', $row['STR']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['STR']);
 			$e_ProductName->appendChild(clone $e_Text);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_ProductName->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', $row['CODE']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['CODE']);
 			$e_Code->appendChild($e_Value);
-			$e_Value = $this->ccr->createElement('CodingSystem', 'RxNorm');
+			$e_Value = $this->CCDdocument->createElement('CodingSystem', 'RxNorm');
 			$e_Code->appendChild($e_Value);
-			$e_Strength = $this->ccr->createElement('Strength');
+			$e_Strength = $this->CCDdocument->createElement('Strength');
 			$e_Product->appendChild($e_Strength);
-			$e_Value = $this->ccr->createElement('Value', $row['dose']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['dose']);
 			$e_Strength->appendChild($e_Value);
-			$e_Units = $this->ccr->createElement('Units');
+			$e_Units = $this->CCDdocument->createElement('Units');
 			$e_Strength->appendChild($e_Units);
-			$e_Unit = $this->ccr->createElement('Unit',' - ');
+			$e_Unit = $this->CCDdocument->createElement('Unit',' - ');
 			$e_Units->appendChild($e_Unit);
-			$e_Form = $this->ccr->createElement('Form');
+			$e_Form = $this->CCDdocument->createElement('Form');
 			$e_Product->appendChild($e_Form);
-			$e_Text = $this->ccr->createElement('Text', $row['form']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['form']);
 			$e_Form->appendChild($e_Text);
-			$e_Quantity = $this->ccr->createElement('Quantity');
+			$e_Quantity = $this->CCDdocument->createElement('Quantity');
 			$e_Medication->appendChild($e_Quantity);
-			$e_Value = $this->ccr->createElement('Value', $row['dispense']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['dispense']);
 			$e_Quantity->appendChild($e_Value);
-			$e_Units = $this->ccr->createElement('Units');
+			$e_Units = $this->CCDdocument->createElement('Units');
 			$e_Quantity->appendChild($e_Units);
-			$e_Unit = $this->ccr->createElement('Unit', ' - ');
+			$e_Unit = $this->CCDdocument->createElement('Unit', ' - ');
 			$e_Units->appendChild($e_Unit);
-			$e_Directions = $this->ccr->createElement('Directions');
+			$e_Directions = $this->CCDdocument->createElement('Directions');
 			$e_Medication->appendChild($e_Directions);
-			$e_Direction = $this->ccr->createElement('Direction');
+			$e_Direction = $this->CCDdocument->createElement('Direction');
 			$e_Directions->appendChild($e_Direction);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_Direction->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['prescription_often']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['prescription_often']);
 			$e_Description->appendChild(clone $e_Text);
-			$e_Route = $this->ccr->createElement('Route');
+			$e_Route = $this->CCDdocument->createElement('Route');
 			$e_Direction->appendChild($e_Route);
-			$e_Text = $this->ccr->createElement('Text', $row['route']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['route']);
 			$e_Route->appendChild($e_Text);
-			$e_Site = $this->ccr->createElement('Site');
+			$e_Site = $this->CCDdocument->createElement('Site');
 			$e_Direction->appendChild($e_Site);
-			$e_Text = $this->ccr->createElement('Text', '????');
+			$e_Text = $this->CCDdocument->createElement('Text', '????');
 			$e_Site->appendChild($e_Text);
-			$e_PatientInstructions = $this->ccr->createElement('PatientInstructions');
+			$e_PatientInstructions = $this->CCDdocument->createElement('PatientInstructions');
 			$e_Medication->appendChild($e_PatientInstructions);
-			$e_Instruction = $this->ccr->createElement('Instruction');
+			$e_Instruction = $this->CCDdocument->createElement('Instruction');
 			$e_PatientInstructions->appendChild($e_Instruction);
-			$e_Text = $this->ccr->createElement('Text', $row['prescription_often']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['prescription_often']);
 			$e_Instruction->appendChild($e_Text);
-			$e_Refills = $this->ccr->createElement('Refills');
+			$e_Refills = $this->CCDdocument->createElement('Refills');
 			$e_Medication->appendChild($e_Refills);
-			$e_Refill = $this->ccr->createElement('Refill');
+			$e_Refill = $this->CCDdocument->createElement('Refill');
 			$e_Refills->appendChild($e_Refill);
-			$e_Number = $this->ccr->createElement('Number', $row['refill']);
+			$e_Number = $this->CCDdocument->createElement('Number', $row['refill']);
 			$e_Refill->appendChild($e_Number);
 		}
 	}
@@ -554,51 +563,51 @@ class CCD
 
 		foreach($data AS $row)
         {
-			$e_Immunization = $this->ccr->createElement('Immunization');
+			$e_Immunization = $this->CCDdocument->createElement('Immunization');
 			$e_Immunizations->appendChild($e_Immunization);
 
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', UUID::v4());
 			$e_Immunization->appendChild($e_CCRDataObjectID);
 
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_Immunization->appendChild($e_DateTime);
 			$date = date_create($row['administered_date']);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
 
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_Immunization->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'Immunization');
+			$e_Text = $this->CCDdocument->createElement('Text', 'Immunization');
 			$e_Type->appendChild($e_Text);
 
-			$e_Status = $this->ccr->createElement('Status');
+			$e_Status = $this->CCDdocument->createElement('Status');
 			$e_Immunization->appendChild($e_Status);
-			$e_Text = $this->ccr->createElement('Text','ACTIVE');
+			$e_Text = $this->CCDdocument->createElement('Text','ACTIVE');
 			$e_Status->appendChild($e_Text);
 
 			$e_Immunization->appendChild($this->sourceType($this->sourceID));
 
-			$e_Product = $this->ccr->createElement('Product');
+			$e_Product = $this->CCDdocument->createElement('Product');
 			$e_Immunization->appendChild($e_Product);
-			$e_ProductName = $this->ccr->createElement('ProductName');
+			$e_ProductName = $this->CCDdocument->createElement('ProductName');
 			$e_Product->appendChild($e_ProductName);
-			$e_Text = $this->ccr->createElement('Text',$row['vaccine_name']);
+			$e_Text = $this->CCDdocument->createElement('Text',$row['vaccine_name']);
 			$e_ProductName->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code',$row['code']);
+			$e_Code = $this->CCDdocument->createElement('Code',$row['code']);
 			$e_ProductName->appendChild($e_Code);
 
-			$e_Directions = $this->ccr->createElement('Directions');
+			$e_Directions = $this->CCDdocument->createElement('Directions');
 			$e_Immunization->appendChild($e_Directions);
-			$e_Direction = $this->ccr->createElement('Direction');
+			$e_Direction = $this->CCDdocument->createElement('Direction');
 			$e_Directions->appendChild($e_Direction);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 
 			$e_Direction->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text',$row['note']);
+			$e_Text = $this->CCDdocument->createElement('Text',$row['note']);
 			$e_Description->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_Description->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', 'None');
+			$e_Value = $this->CCDdocument->createElement('Value', 'None');
 			$e_Code->appendChild($e_Value);
 
 		}
@@ -626,83 +635,83 @@ class CCD
 		);
 		foreach($data AS $row)
         {
-			$e_Result = $this->ccr->createElement('Result');
+			$e_Result = $this->CCDdocument->createElement('Result');
 			$e_Results->appendChild($e_Result);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', UUID::v4());
 			$e_Result->appendChild($e_CCRDataObjectID);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_Result->appendChild($e_DateTime);
 			$date            = date_create($row['date']);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_IDs = $this->ccr->createElement('IDs');
+			$e_IDs = $this->CCDdocument->createElement('IDs');
 			$e_Result->appendChild($e_IDs);
-			$e_ID = $this->ccr->createElement('ID');
+			$e_ID = $this->CCDdocument->createElement('ID');
 			$e_IDs->appendChild($e_ID);
 			$e_IDs->appendChild($this->sourceType($this->authorID));
-			$e_Source = $this->ccr->createElement('Source');
+			$e_Source = $this->CCDdocument->createElement('Source');
 			$e_Result->appendChild($e_Source);
-			$e_Actor = $this->ccr->createElement('Actor');
+			$e_Actor = $this->CCDdocument->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+			$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
-			$e_Test = $this->ccr->createElement('Test');
+			$e_Test = $this->CCDdocument->createElement('Test');
 			$e_Result->appendChild($e_Test);
-			$e_CCRDataObjectID = $this->ccr->createElement('CCRDataObjectID', UUID::v4());
+			$e_CCRDataObjectID = $this->CCDdocument->createElement('CCRDataObjectID', UUID::v4());
 			$e_Test->appendChild($e_CCRDataObjectID);
-			$e_DateTime = $this->ccr->createElement('DateTime');
+			$e_DateTime = $this->CCDdocument->createElement('DateTime');
 			$e_Test->appendChild($e_DateTime);
-			$e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
+			$e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $date->format('Y-m-d\TH:i:s\Z'));
 			$e_DateTime->appendChild($e_ExactDateTime);
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_Test->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'Observation');
+			$e_Text = $this->CCDdocument->createElement('Text', 'Observation');
 			$e_Type->appendChild($e_Text);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_Test->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['name']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['name']);
 			$e_Description->appendChild($e_Text);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_Description->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', 'Value');
+			$e_Value = $this->CCDdocument->createElement('Value', 'Value');
 			$e_Code->appendChild($e_Value);
-			$e_Source = $this->ccr->createElement('Source');
+			$e_Source = $this->CCDdocument->createElement('Source');
 			$e_Test->appendChild($e_Source);
-			$e_Actor = $this->ccr->createElement('Actor');
+			$e_Actor = $this->CCDdocument->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+			$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
-			$e_TestResult = $this->ccr->createElement('TestResult');
+			$e_TestResult = $this->CCDdocument->createElement('TestResult');
 			$e_Test->appendChild($e_TestResult);
-			$e_Value = $this->ccr->createElement('Value', $row['result']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['result']);
 			$e_TestResult->appendChild($e_Value);
-			$e_Code = $this->ccr->createElement('Code');
+			$e_Code = $this->CCDdocument->createElement('Code');
 			$e_TestResult->appendChild($e_Code);
-			$e_Value = $this->ccr->createElement('Value', 'Value');
+			$e_Value = $this->CCDdocument->createElement('Value', 'Value');
 			$e_Code->appendChild($e_Value);
-			$e_Description = $this->ccr->createElement('Description');
+			$e_Description = $this->CCDdocument->createElement('Description');
 			$e_TestResult->appendChild($e_Description);
-			$e_Text = $this->ccr->createElement('Text', $row['result']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['result']);
 			$e_Description->appendChild($e_Text);
-			$e_NormalResult = $this->ccr->createElement('NormalResult');
+			$e_NormalResult = $this->CCDdocument->createElement('NormalResult');
 			$e_Test->appendChild($e_NormalResult);
-			$e_Normal = $this->ccr->createElement('Normal');
+			$e_Normal = $this->CCDdocument->createElement('Normal');
 			$e_NormalResult->appendChild($e_Normal);
-			$e_Value = $this->ccr->createElement('Value', $row['range']);
+			$e_Value = $this->CCDdocument->createElement('Value', $row['range']);
 			$e_Normal->appendChild($e_Value);
-			$e_Units = $this->ccr->createElement('Units');
+			$e_Units = $this->CCDdocument->createElement('Units');
 			$e_Normal->appendChild($e_Units);
-			$e_Unit = $this->ccr->createElement('Unit', 'Test Unit');
+			$e_Unit = $this->CCDdocument->createElement('Unit', 'Test Unit');
 			$e_Units->appendChild($e_Unit);
-			$e_Source = $this->ccr->createElement('Source');
+			$e_Source = $this->CCDdocument->createElement('Source');
 			$e_Normal->appendChild($e_Source);
-			$e_Actor = $this->ccr->createElement('Actor');
+			$e_Actor = $this->CCDdocument->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+			$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
-			$e_Flag = $this->ccr->createElement('Flag');
+			$e_Flag = $this->CCDdocument->createElement('Flag');
 			$e_Test->appendChild($e_Flag);
-			$e_Text = $this->ccr->createElement('Text', $row['abnormal']);
+			$e_Text = $this->CCDdocument->createElement('Text', $row['abnormal']);
 			$e_Flag->appendChild($e_Text);
 
 		}
@@ -712,75 +721,75 @@ class CCD
 	{
         $p = $this->patient->getPatientDemographicDataByPid($this->pid);
 
-        $e_Actor = $this->ccr->createElement('Actor');
+        $e_Actor = $this->CCDdocument->createElement('Actor');
         $e_Actors->appendChild($e_Actor);
-        $e_ActorObjectID = $this->ccr->createElement('ActorObjectID', 'A1234'); // Refer createCCRHeader.php
+        $e_ActorObjectID = $this->CCDdocument->createElement('ActorObjectID', 'A1234'); // Refer createCCRHeader.php
         $e_Actor->appendChild($e_ActorObjectID);
-        $e_Person = $this->ccr->createElement('Person');
+        $e_Person = $this->CCDdocument->createElement('Person');
         $e_Actor->appendChild($e_Person);
-        $e_Name = $this->ccr->createElement('Name');
+        $e_Name = $this->CCDdocument->createElement('Name');
         $e_Person->appendChild($e_Name);
-        $e_CurrentName = $this->ccr->createElement('CurrentName');
+        $e_CurrentName = $this->CCDdocument->createElement('CurrentName');
         $e_Name->appendChild($e_CurrentName);
-        $e_Given = $this->ccr->createElement('Given', $p['fname']);
+        $e_Given = $this->CCDdocument->createElement('Given', $p['fname']);
         $e_CurrentName->appendChild($e_Given);
-        $e_Family = $this->ccr->createElement('Family', $p['lname']);
+        $e_Family = $this->CCDdocument->createElement('Family', $p['lname']);
         $e_CurrentName->appendChild($e_Family);
-        $e_Suffix = $this->ccr->createElement('Suffix');
+        $e_Suffix = $this->CCDdocument->createElement('Suffix');
         $e_CurrentName->appendChild($e_Suffix);
-        $e_DateOfBirth = $this->ccr->createElement('DateOfBirth');
+        $e_DateOfBirth = $this->CCDdocument->createElement('DateOfBirth');
         $e_Person->appendChild($e_DateOfBirth);
         $dob             = date_create($p['DOB']);
-        $e_ExactDateTime = $this->ccr->createElement('ExactDateTime', $dob->format('Y-m-d\TH:i:s\Z'));
+        $e_ExactDateTime = $this->CCDdocument->createElement('ExactDateTime', $dob->format('Y-m-d\TH:i:s\Z'));
         $e_DateOfBirth->appendChild($e_ExactDateTime);
-        $e_Gender = $this->ccr->createElement('Gender');
+        $e_Gender = $this->CCDdocument->createElement('Gender');
         $e_Person->appendChild($e_Gender);
-        $e_Text = $this->ccr->createElement('Text', $p['sex']);
+        $e_Text = $this->CCDdocument->createElement('Text', $p['sex']);
         $e_Gender->appendChild($e_Text);
-        $e_Code = $this->ccr->createElement('Code');
+        $e_Code = $this->CCDdocument->createElement('Code');
         $e_Gender->appendChild($e_Code);
-        $e_Value = $this->ccr->createElement('Value');
+        $e_Value = $this->CCDdocument->createElement('Value');
         $e_Code->appendChild($e_Value);
-        $e_IDs = $this->ccr->createElement('IDs');
+        $e_IDs = $this->CCDdocument->createElement('IDs');
         $e_Actor->appendChild($e_IDs);
-        $e_Type = $this->ccr->createElement('Type');
+        $e_Type = $this->CCDdocument->createElement('Type');
         $e_IDs->appendChild($e_Type);
-        $e_Text = $this->ccr->createElement('Text', 'Patient ID');
+        $e_Text = $this->CCDdocument->createElement('Text', 'Patient ID');
         $e_Type->appendChild($e_Text);
-        $e_ID = $this->ccr->createElement('ID', $p['pid']);
+        $e_ID = $this->CCDdocument->createElement('ID', $p['pid']);
         $e_IDs->appendChild($e_ID);
-        $e_Source = $this->ccr->createElement('Source');
+        $e_Source = $this->CCDdocument->createElement('Source');
         $e_IDs->appendChild($e_Source);
-        $e_SourceActor = $this->ccr->createElement('Actor');
+        $e_SourceActor = $this->CCDdocument->createElement('Actor');
         $e_Source->appendChild($e_SourceActor);
-        $e_ActorID = $this->ccr->createElement('ActorID', UUID::v4());
+        $e_ActorID = $this->CCDdocument->createElement('ActorID', UUID::v4());
         $e_SourceActor->appendChild($e_ActorID);
         // address
-        $e_Address = $this->ccr->createElement('Address');
+        $e_Address = $this->CCDdocument->createElement('Address');
         $e_Actor->appendChild($e_Address);
-        $e_Type = $this->ccr->createElement('Type');
+        $e_Type = $this->CCDdocument->createElement('Type');
         $e_Address->appendChild($e_Type);
-        $e_Text = $this->ccr->createElement('Text', 'H');
+        $e_Text = $this->CCDdocument->createElement('Text', 'H');
         $e_Type->appendChild($e_Text);
-        $e_Line1 = $this->ccr->createElement('Line1', $p['address']);
+        $e_Line1 = $this->CCDdocument->createElement('Line1', $p['address']);
         $e_Address->appendChild($e_Line1);
-        $e_Line2 = $this->ccr->createElement('Line2');
+        $e_Line2 = $this->CCDdocument->createElement('Line2');
         $e_Address->appendChild($e_Line1);
-        $e_City = $this->ccr->createElement('City', $p['city']);
+        $e_City = $this->CCDdocument->createElement('City', $p['city']);
         $e_Address->appendChild($e_City);
-        $e_State = $this->ccr->createElement('State', $p['state']);
+        $e_State = $this->CCDdocument->createElement('State', $p['state']);
         $e_Address->appendChild($e_State);
-        $e_PostalCode = $this->ccr->createElement('PostalCode', $p['zipcode']);
+        $e_PostalCode = $this->CCDdocument->createElement('PostalCode', $p['zipcode']);
         $e_Address->appendChild($e_PostalCode);
-        $e_Telephone = $this->ccr->createElement('Telephone');
+        $e_Telephone = $this->CCDdocument->createElement('Telephone');
         $e_Actor->appendChild($e_Telephone);
-        $e_Value = $this->ccr->createElement('Value', $p['home_phone']);
+        $e_Value = $this->CCDdocument->createElement('Value', $p['home_phone']);
         $e_Telephone->appendChild($e_Value);
-        $e_Source = $this->ccr->createElement('Source');
+        $e_Source = $this->CCDdocument->createElement('Source');
         $e_Actor->appendChild($e_Source);
-        $e_Actor = $this->ccr->createElement('Actor');
+        $e_Actor = $this->CCDdocument->createElement('Actor');
         $e_Source->appendChild($e_Actor);
-        $e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+        $e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
         $e_Actor->appendChild($e_ActorID);
 
 		$informationData = array(
@@ -792,162 +801,162 @@ class CCD
 			'phone' => 'phone'
 		);
 		//////// Actor Information Systems
-		$e_Actor = $this->ccr->createElement('Actor');
+		$e_Actor = $this->CCDdocument->createElement('Actor');
 		$e_Actors->appendChild($e_Actor);
-		$e_ActorObjectID = $this->ccr->createElement('ActorObjectID', $this->authorID);
+		$e_ActorObjectID = $this->CCDdocument->createElement('ActorObjectID', $this->authorID);
 		$e_Actor->appendChild($e_ActorObjectID);
-		$e_InformationSystem = $this->ccr->createElement('InformationSystem');
+		$e_InformationSystem = $this->CCDdocument->createElement('InformationSystem');
 		$e_Actor->appendChild($e_InformationSystem);
-		$e_Name = $this->ccr->createElement('Name', $informationData['facility']);
+		$e_Name = $this->CCDdocument->createElement('Name', $informationData['facility']);
 		$e_InformationSystem->appendChild($e_Name);
-		$e_Type = $this->ccr->createElement('Type', 'Facility');
+		$e_Type = $this->CCDdocument->createElement('Type', 'Facility');
 		$e_InformationSystem->appendChild($e_Type);
-		$e_IDs = $this->ccr->createElement('IDs');
+		$e_IDs = $this->CCDdocument->createElement('IDs');
 		$e_Actor->appendChild($e_IDs);
-		$e_Type = $this->ccr->createElement('Type');
+		$e_Type = $this->CCDdocument->createElement('Type');
 		$e_IDs->appendChild($e_Type);
-		$e_Text = $this->ccr->createElement('Text', '');
+		$e_Text = $this->CCDdocument->createElement('Text', '');
 		$e_Type->appendChild($e_Text);
-		$e_ID = $this->ccr->createElement('ID', '');
+		$e_ID = $this->CCDdocument->createElement('ID', '');
 		$e_IDs->appendChild($e_ID);
-		$e_Source = $this->ccr->createElement('Source');
+		$e_Source = $this->CCDdocument->createElement('Source');
 		$e_IDs->appendChild($e_Source);
-		$e_SourceActor = $this->ccr->createElement('Actor');
+		$e_SourceActor = $this->CCDdocument->createElement('Actor');
 		$e_Source->appendChild($e_SourceActor);
-		$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 		$e_SourceActor->appendChild($e_ActorID);
-		$e_Address = $this->ccr->createElement('Address');
+		$e_Address = $this->CCDdocument->createElement('Address');
 		$e_Actor->appendChild($e_Address);
-		$e_Type = $this->ccr->createElement('Type');
+		$e_Type = $this->CCDdocument->createElement('Type');
 		$e_Address->appendChild($e_Type);
-		$e_Text = $this->ccr->createElement('Text', 'WP');
+		$e_Text = $this->CCDdocument->createElement('Text', 'WP');
 		$e_Type->appendChild($e_Text);
-		$e_Line1 = $this->ccr->createElement('Line1', $informationData['street']);
+		$e_Line1 = $this->CCDdocument->createElement('Line1', $informationData['street']);
 		$e_Address->appendChild($e_Line1);
-		$e_Line2 = $this->ccr->createElement('Line2');
+		$e_Line2 = $this->CCDdocument->createElement('Line2');
 		$e_Address->appendChild($e_Line1);
-		$e_City = $this->ccr->createElement('City', $informationData['city']);
+		$e_City = $this->CCDdocument->createElement('City', $informationData['city']);
 		$e_Address->appendChild($e_City);
-		$e_State = $this->ccr->createElement('State', $informationData['state'] . ' ');
+		$e_State = $this->CCDdocument->createElement('State', $informationData['state'] . ' ');
 		$e_Address->appendChild($e_State);
-		$e_PostalCode = $this->ccr->createElement('PostalCode', $informationData['postal_code']);
+		$e_PostalCode = $this->CCDdocument->createElement('PostalCode', $informationData['postal_code']);
 		$e_Address->appendChild($e_PostalCode);
-		$e_Telephone = $this->ccr->createElement('Telephone');
+		$e_Telephone = $this->CCDdocument->createElement('Telephone');
 		$e_Actor->appendChild($e_Telephone);
-		$e_Phone = $this->ccr->createElement('Value', $informationData['phone']);
+		$e_Phone = $this->CCDdocument->createElement('Value', $informationData['phone']);
 		$e_Telephone->appendChild($e_Phone);
-		$e_Source = $this->ccr->createElement('Source');
+		$e_Source = $this->CCDdocument->createElement('Source');
 		$e_Actor->appendChild($e_Source);
-		$e_Actor = $this->ccr->createElement('Actor');
+		$e_Actor = $this->CCDdocument->createElement('Actor');
 		$e_Source->appendChild($e_Actor);
-		$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 		$e_Actor->appendChild($e_ActorID);
 		//////// Actor Information Systems
-		$e_Actor = $this->ccr->createElement('Actor');
+		$e_Actor = $this->CCDdocument->createElement('Actor');
 		$e_Actors->appendChild($e_Actor);
-		$e_ActorObjectID = $this->ccr->createElement('ActorObjectID', $this->gaiaID);
+		$e_ActorObjectID = $this->CCDdocument->createElement('ActorObjectID', $this->gaiaID);
 		$e_Actor->appendChild($e_ActorObjectID);
-		$e_InformationSystem = $this->ccr->createElement('InformationSystem');
+		$e_InformationSystem = $this->CCDdocument->createElement('InformationSystem');
 		$e_Actor->appendChild($e_InformationSystem);
-		$e_Name = $this->ccr->createElement('Name', 'GEHR');
+		$e_Name = $this->CCDdocument->createElement('Name', 'GEHR');
 		$e_InformationSystem->appendChild($e_Name);
-		$e_Type = $this->ccr->createElement('Type', 'GaiaEHR');
+		$e_Type = $this->CCDdocument->createElement('Type', 'GaiaEHR');
 		$e_InformationSystem->appendChild($e_Type);
-		$e_Version = $this->ccr->createElement('Version', '1.x');
+		$e_Version = $this->CCDdocument->createElement('Version', '1.x');
 		$e_InformationSystem->appendChild($e_Version);
-		$e_IDs = $this->ccr->createElement('IDs');
+		$e_IDs = $this->CCDdocument->createElement('IDs');
 		$e_Actor->appendChild($e_IDs);
-		$e_Type = $this->ccr->createElement('Type');
+		$e_Type = $this->CCDdocument->createElement('Type');
 		$e_IDs->appendChild($e_Type);
-		$e_Text = $this->ccr->createElement('Text', 'Certification #');
+		$e_Text = $this->CCDdocument->createElement('Text', 'Certification #');
 		$e_Type->appendChild($e_Text);
-		$e_ID = $this->ccr->createElement('ID', 'NONE');
+		$e_ID = $this->CCDdocument->createElement('ID', 'NONE');
 		$e_IDs->appendChild($e_ID);
-		$e_Source = $this->ccr->createElement('Source');
+		$e_Source = $this->CCDdocument->createElement('Source');
 		$e_IDs->appendChild($e_Source);
-		$e_SourceActor = $this->ccr->createElement('Actor');
+		$e_SourceActor = $this->CCDdocument->createElement('Actor');
 		$e_Source->appendChild($e_SourceActor);
-		$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 		$e_SourceActor->appendChild($e_ActorID);
-		$e_Address = $this->ccr->createElement('Address');
+		$e_Address = $this->CCDdocument->createElement('Address');
 		$e_Actor->appendChild($e_Address);
-		$e_Type = $this->ccr->createElement('Type');
+		$e_Type = $this->CCDdocument->createElement('Type');
 		$e_Address->appendChild($e_Type);
-		$e_Text = $this->ccr->createElement('Text', 'WP');
+		$e_Text = $this->CCDdocument->createElement('Text', 'WP');
 		$e_Type->appendChild($e_Text);
-		$e_Line1 = $this->ccr->createElement('Line1', '90 Blvd. Media Luna');
+		$e_Line1 = $this->CCDdocument->createElement('Line1', '90 Blvd. Media Luna');
 		$e_Address->appendChild($e_Line1);
-		$e_Line2 = $this->ccr->createElement('Line2');
+		$e_Line2 = $this->CCDdocument->createElement('Line2');
 		$e_Address->appendChild($e_Line1);
-		$e_City = $this->ccr->createElement('City', 'San Juan');
+		$e_City = $this->CCDdocument->createElement('City', 'San Juan');
 		$e_Address->appendChild($e_City);
-		$e_State = $this->ccr->createElement('State', 'PR ');
+		$e_State = $this->CCDdocument->createElement('State', 'PR ');
 		$e_Address->appendChild($e_State);
-		$e_PostalCode = $this->ccr->createElement('PostalCode', '00987');
+		$e_PostalCode = $this->CCDdocument->createElement('PostalCode', '00987');
 		$e_Address->appendChild($e_PostalCode);
-		$e_Telephone = $this->ccr->createElement('Telephone');
+		$e_Telephone = $this->CCDdocument->createElement('Telephone');
 		$e_Actor->appendChild($e_Telephone);
-		$e_Phone = $this->ccr->createElement('Value', '000-000-0000');
+		$e_Phone = $this->CCDdocument->createElement('Value', '000-000-0000');
 		$e_Telephone->appendChild($e_Phone);
-		$e_Source = $this->ccr->createElement('Source');
+		$e_Source = $this->CCDdocument->createElement('Source');
 		$e_Actor->appendChild($e_Source);
-		$e_Actor = $this->ccr->createElement('Actor');
+		$e_Actor = $this->CCDdocument->createElement('Actor');
 		$e_Source->appendChild($e_Actor);
-		$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+		$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 		$e_Actor->appendChild($e_ActorID);
 		$labData = array();
 
 		foreach($labData AS $row)
         {
-			$e_Actor = $this->ccr->createElement('Actor');
+			$e_Actor = $this->CCDdocument->createElement('Actor');
 			$e_Actors->appendChild($e_Actor);
-			$e_ActorObjectID = $this->ccr->createElement('ActorObjectID', ${"labID{$row['id']}"});
+			$e_ActorObjectID = $this->CCDdocument->createElement('ActorObjectID', ${"labID{$row['id']}"});
 			$e_Actor->appendChild($e_ActorObjectID);
-			$e_InformationSystem = $this->ccr->createElement('InformationSystem');
+			$e_InformationSystem = $this->CCDdocument->createElement('InformationSystem');
 			$e_Actor->appendChild($e_InformationSystem);
-			$e_Name = $this->ccr->createElement('Name', $row['lname'] . " " . $row['fname']);
+			$e_Name = $this->CCDdocument->createElement('Name', $row['lname'] . " " . $row['fname']);
 			$e_InformationSystem->appendChild($e_Name);
-			$e_Type = $this->ccr->createElement('Type', 'Lab Service');
+			$e_Type = $this->CCDdocument->createElement('Type', 'Lab Service');
 			$e_InformationSystem->appendChild($e_Type);
-			$e_IDs = $this->ccr->createElement('IDs');
+			$e_IDs = $this->CCDdocument->createElement('IDs');
 			$e_Actor->appendChild($e_IDs);
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_IDs->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', '');
+			$e_Text = $this->CCDdocument->createElement('Text', '');
 			$e_Type->appendChild($e_Text);
-			$e_ID = $this->ccr->createElement('ID', '');
+			$e_ID = $this->CCDdocument->createElement('ID', '');
 			$e_IDs->appendChild($e_ID);
-			$e_Source = $this->ccr->createElement('Source');
+			$e_Source = $this->CCDdocument->createElement('Source');
 			$e_IDs->appendChild($e_Source);
-			$e_SourceActor = $this->ccr->createElement('Actor');
+			$e_SourceActor = $this->CCDdocument->createElement('Actor');
 			$e_Source->appendChild($e_SourceActor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+			$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 			$e_SourceActor->appendChild($e_ActorID);
-			$e_Address = $this->ccr->createElement('Address');
+			$e_Address = $this->CCDdocument->createElement('Address');
 			$e_Actor->appendChild($e_Address);
-			$e_Type = $this->ccr->createElement('Type');
+			$e_Type = $this->CCDdocument->createElement('Type');
 			$e_Address->appendChild($e_Type);
-			$e_Text = $this->ccr->createElement('Text', 'WP');
+			$e_Text = $this->CCDdocument->createElement('Text', 'WP');
 			$e_Type->appendChild($e_Text);
-			$e_Line1 = $this->ccr->createElement('Line1', $row['street']);
+			$e_Line1 = $this->CCDdocument->createElement('Line1', $row['street']);
 			$e_Address->appendChild($e_Line1);
-			$e_Line2 = $this->ccr->createElement('Line2');
+			$e_Line2 = $this->CCDdocument->createElement('Line2');
 			$e_Address->appendChild($e_Line1);
-			$e_City = $this->ccr->createElement('City', $row['city']);
+			$e_City = $this->CCDdocument->createElement('City', $row['city']);
 			$e_Address->appendChild($e_City);
-			$e_State = $this->ccr->createElement('State', $row['state'] . ' ');
+			$e_State = $this->CCDdocument->createElement('State', $row['state'] . ' ');
 			$e_Address->appendChild($e_State);
-			$e_PostalCode = $this->ccr->createElement('PostalCode', $row['zip']);
+			$e_PostalCode = $this->CCDdocument->createElement('PostalCode', $row['zip']);
 			$e_Address->appendChild($e_PostalCode);
-			$e_Telephone = $this->ccr->createElement('Telephone');
+			$e_Telephone = $this->CCDdocument->createElement('Telephone');
 			$e_Actor->appendChild($e_Telephone);
-			$e_Phone = $this->ccr->createElement('Value', $row['phone']);
+			$e_Phone = $this->CCDdocument->createElement('Value', $row['phone']);
 			$e_Telephone->appendChild($e_Phone);
-			$e_Source = $this->ccr->createElement('Source');
+			$e_Source = $this->CCDdocument->createElement('Source');
 			$e_Actor->appendChild($e_Source);
-			$e_Actor = $this->ccr->createElement('Actor');
+			$e_Actor = $this->CCDdocument->createElement('Actor');
 			$e_Source->appendChild($e_Actor);
-			$e_ActorID = $this->ccr->createElement('ActorID', $this->authorID);
+			$e_ActorID = $this->CCDdocument->createElement('ActorID', $this->authorID);
 			$e_Actor->appendChild($e_ActorID);
 		}
 	}

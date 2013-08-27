@@ -87,11 +87,11 @@ class CCD
         /**
          * Modify the CSS style
          */
-        //$css = $this->CDAdocument->createElement( 'link' );
-        //$css->setAttribute( 'type', 'text/css' );
-        //$css->setAttribute( 'href', $_SESSION['url'].'/lib/ccs/stylesheet/cda_styles.css' );
-        //$css->setAttribute( 'media', 'all' );
-        //$XMLDataDocument->appendChild($css);
+        $css = $this->CDAdocument->createElement( 'link' );
+        $css->setAttribute( 'type', 'text/css' );
+        $css->setAttribute( 'href', $_SESSION['url'].'/lib/ccs/stylesheet/cda_styles.css' );
+        $css->setAttribute( 'media', 'all' );
+        $XMLDataDocument->appendChild($css);
 
         /**
          * Problems
@@ -141,7 +141,7 @@ class CCD
          */
         $e_Actors = $this->CDAdocument->createElement('Actors');
         $this->createActors($e_Actors);
-        $XMLDataDocument->appendChild($e_Actors);
+        $CDA->appendChild($e_Actors);
 
         $this->CDAdocument->preserveWhiteSpace = false;
         $this->CDAdocument->formatOutput = true;
@@ -149,12 +149,10 @@ class CCD
         //$xslt = new XSLTProcessor();
         //$xslt->importStylesheet($ccr_ccd);
 
-        //header('Content-type: application/xml');
-        //print $xslt->transformToXML($this->CDAdocument->saveXML());
-
-        echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
+        header('Content-type: application/xml');
+        //echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
         echo $this->CDAdocument->saveXML();
-        echo '</textarea>';
+        //echo '</textarea>';
         //return;
 
     }
@@ -384,57 +382,56 @@ class CCD
 		echo $main_xml;
 	}
 
-	function createHeader($e_ccr)
-	{
-		$e_ccrDocObjID = $this->CDAdocument->createElement('CCRDocumentObjectID', UUID::v4());
-		$e_ccr->appendChild($e_ccrDocObjID);
-		$e_Language = $this->CDAdocument->createElement('Language');
-		$e_ccr->appendChild($e_Language);
-		$e_Text = $this->CDAdocument->createElement('Text', 'English');
-		$e_Language->appendChild($e_Text);
-		$e_Version = $this->CDAdocument->createElement('Version', 'V1.0');
-		$e_ccr->appendChild($e_Version);
-		$e_dateTime = $this->CDAdocument->createElement('DateTime');
-		$e_ccr->appendChild($e_dateTime);
-		$e_ExactDateTime = $this->CDAdocument->createElement('ExactDateTime', date('Y-m-d\TH:i:s\Z'));
-		$e_dateTime->appendChild($e_ExactDateTime);
-		$e_patient = $this->CDAdocument->createElement('Patient');
-		$e_ccr->appendChild($e_patient);
-		$e_ActorID = $this->CDAdocument->createElement('ActorID', 'A1234'); // This value and ActorID in createCCRActor.php should be same.
-		$e_patient->appendChild($e_ActorID);
-
-		//Header From:
-		$e_From = $this->CDAdocument->createElement('From');
-		$e_ccr->appendChild($e_From);
-		$e_ActorLink = $this->CDAdocument->createElement('ActorLink');
-		$e_From->appendChild($e_ActorLink);
-		$e_ActorID = $this->CDAdocument->createElement('ActorID', $this->authorID);
-		$e_ActorLink->appendChild($e_ActorID);
-		$e_ActorRole = $this->CDAdocument->createElement('ActorRole');
-		$e_ActorLink->appendChild($e_ActorRole);
-		$e_Text = $this->CDAdocument->createElement('Text', 'author');
-		$e_ActorRole->appendChild($e_Text);
-
-		//Header To:
-		$e_To = $this->CDAdocument->createElement('To');
-		$e_ccr->appendChild($e_To);
-		$e_ActorLink = $this->CDAdocument->createElement('ActorLink');
-		$e_To->appendChild($e_ActorLink);
-		$e_ActorID = $this->CDAdocument->createElement('ActorID', 'A1234');
-		$e_ActorLink->appendChild($e_ActorID);
-		$e_ActorRole = $this->CDAdocument->createElement('ActorRole');
-		$e_ActorLink->appendChild($e_ActorRole);
-		$e_Text = $this->CDAdocument->createElement('Text', 'patient');
-		$e_ActorRole->appendChild($e_Text);
-
-		//Header Purpose:
-		$e_Purpose = $this->CDAdocument->createElement('Purpose');
-		$e_ccr->appendChild($e_Purpose);
-		$e_Description = $this->CDAdocument->createElement('Description');
-		$e_Purpose->appendChild($e_Description);
-		$e_Text = $this->CDAdocument->createElement('Text', 'Summary of patient information');
-		$e_Description->appendChild($e_Text);
-	}
+    function createHeader($e_ccr)
+    {
+        $e_ccrDocObjID = $this->CDAdocument->createElement('CCRDocumentObjectID', UUID::v4());
+        $e_ccr->appendChild($e_ccrDocObjID);
+        $e_Language = $this->CDAdocument->createElement('Language');
+        $e_ccr->appendChild($e_Language);
+        $e_Text = $this->CDAdocument->createElement('Text', 'English');
+        $e_Language->appendChild($e_Text);
+        $e_Version = $this->CDAdocument->createElement('Version', 'V1.0');
+        $e_ccr->appendChild($e_Version);
+        $e_dateTime = $this->CDAdocument->createElement('DateTime');
+        $e_ccr->appendChild($e_dateTime);
+        $e_ExactDateTime = $this->CDAdocument->createElement('ExactDateTime', date('Y-m-d\TH:i:s\Z'));
+        $e_dateTime->appendChild($e_ExactDateTime);
+        $e_patient = $this->CDAdocument->createElement('Patient');
+        $e_ccr->appendChild($e_patient);
+        //$e_ActorID = $this->ccr->createElement('ActorID', $row['patient_id']);
+        $e_ActorID = $this->CDAdocument->createElement('ActorID', 'A1234'); // This value and ActorID in createCCRActor.php should be same.
+        $e_patient->appendChild($e_ActorID);
+        //Header From:
+        $e_From = $this->CDAdocument->createElement('From');
+        $e_ccr->appendChild($e_From);
+        $e_ActorLink = $this->CDAdocument->createElement('ActorLink');
+        $e_From->appendChild($e_ActorLink);
+        $e_ActorID = $this->CDAdocument->createElement('ActorID', $this->authorID);
+        $e_ActorLink->appendChild($e_ActorID);
+        $e_ActorRole = $this->CDAdocument->createElement('ActorRole');
+        $e_ActorLink->appendChild($e_ActorRole);
+        $e_Text = $this->CDAdocument->createElement('Text', 'author');
+        $e_ActorRole->appendChild($e_Text);
+        //Header To:
+        $e_To = $this->CDAdocument->createElement('To');
+        $e_ccr->appendChild($e_To);
+        $e_ActorLink = $this->CDAdocument->createElement('ActorLink');
+        $e_To->appendChild($e_ActorLink);
+        //$e_ActorID = $this->ccr->createElement('ActorID', $row['patient_id']);
+        $e_ActorID = $this->CDAdocument->createElement('ActorID', 'A1234');
+        $e_ActorLink->appendChild($e_ActorID);
+        $e_ActorRole = $this->CDAdocument->createElement('ActorRole');
+        $e_ActorLink->appendChild($e_ActorRole);
+        $e_Text = $this->CDAdocument->createElement('Text', 'patient');
+        $e_ActorRole->appendChild($e_Text);
+        //Header Purpose:
+        $e_Purpose = $this->CDAdocument->createElement('Purpose');
+        $e_ccr->appendChild($e_Purpose);
+        $e_Description = $this->CDAdocument->createElement('Description');
+        $e_Purpose->appendChild($e_Description);
+        $e_Text = $this->CDAdocument->createElement('Text', 'Summary of patient information');
+        $e_Description->appendChild($e_Text);
+    }
 
 	function createProblem($e_Problems)
 	{
@@ -852,7 +849,7 @@ class CCD
         $e_CurrentName->appendChild($e_Suffix);
         $e_DateOfBirth = $this->CDAdocument->createElement('DateOfBirth');
         $e_Person->appendChild($e_DateOfBirth);
-        $dob             = date_create($p['DOB']);
+        $dob = date_create($p['DOB']);
         $e_ExactDateTime = $this->CDAdocument->createElement('ExactDateTime', $dob->format('Y-m-d\TH:i:s\Z'));
         $e_DateOfBirth->appendChild($e_ExactDateTime);
         $e_Gender = $this->CDAdocument->createElement('Gender');
@@ -964,6 +961,7 @@ class CCD
 		$e_Source->appendChild($e_Actor);
 		$e_ActorID = $this->CDAdocument->createElement('ActorID', $this->authorID);
 		$e_Actor->appendChild($e_ActorID);
+
 		//////// Actor Information Systems
 		$e_Actor = $this->CDAdocument->createElement('Actor');
 		$e_Actors->appendChild($e_Actor);

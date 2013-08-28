@@ -17,6 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Class ccrXML
+ * This class should create a valid XML data file for HL7 CCR
+ * stylesheet CCR.XSL
+ */
 class ccrXML {
 
 }

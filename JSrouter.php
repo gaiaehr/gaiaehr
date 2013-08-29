@@ -61,12 +61,12 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	 * This variable will be used in JavaScript code
 	 * look at it as a PHP to JavaScript variable conversion.
 	 */
-	foreach($acl->getAllUserPermsAccess() AS $perm)
-	{
+	foreach($acl->getAllUserPermsAccess() AS $perm){
 		$perms[$perm['perm']] = $perm['value'];
 	}
 	$user = new User();
 	$userData = $user->getCurrentUserBasicData();
+	$userData['token'] = $_SESSION['user']['token'];
 	Globals::setGlobals();
 	/*
 	 * Pass all the PHP to JavaScript

@@ -19,25 +19,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //$_SESSION['site'] = array();
 $_SESSION['site']['db']['type'] = 'mysql';
-$_SESSION['site']['db']['host'] = '%host%';
-$_SESSION['site']['db']['port'] = '%port%';
-$_SESSION['site']['db']['username'] = '%user%';
-$_SESSION['site']['db']['password'] = '%pass%';
-$_SESSION['site']['db']['database'] = '%db%';
+$_SESSION['site']['db']['host'] = '#host#';
+$_SESSION['site']['db']['port'] = '#port#';
+$_SESSION['site']['db']['username'] = '#user#';
+$_SESSION['site']['db']['password'] = '#pass#';
+$_SESSION['site']['db']['database'] = '#db#';
 /**
  * AES Key
  * 256bit - key
  */
-$_SESSION['site']['AESkey'] = "%key%";
+$_SESSION['site']['AESkey'] = "#key#";
+/**
+ * HL7 server values
+ */
+$_SESSION['site']['hl7']['port'] = #hl7Port#;
 /**
  * Default site language and theme
  * Check if the localization variable already has a value, if not pass the 
  * default language.
  */
-$_SESSION['site']['name'] = '%sitename%';
-$_SESSION['site']['default_localization']  = '%lang%';
-$_SESSION['site']['theme'] = '%theme%';
-$_SESSION['site']['timezone'] = '%timezone%';
+$_SESSION['site']['name'] = '#sitename#';
+$_SESSION['site']['default_localization']  = '#lang#';
+$_SESSION['site']['theme'] = '#theme#';
+$_SESSION['site']['timezone'] = '#timezone#';
 
 $_SESSION['site']['id']    = basename(dirname(__FILE__));
 $_SESSION['site']['dir']   = $_SESSION['site']['id'];

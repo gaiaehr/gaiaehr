@@ -36,7 +36,6 @@ include_once ($_SESSION['root'] . '/classes/UUID.php');
 class ccrXML {
 
     public $cdaDocument;
-    private $xmlBody;
 
     private $patientUI;
     private $authorUI;
@@ -500,9 +499,130 @@ class ccrXML {
             // This section lists and describes all relevant clinical problems at the time the summary is generated. At a
             // minimum, all pertinent current and historical problems should be listed. CDA R2 represents problems as
             // Observations.
-            if(isset($dataArray['functionalStatus']))
+            if(isset($dataArray['problems']))
             {
+                $this->cdaDocument->startElement("Problems");
+                foreach($dataArray['problems'] as $problem)
+                {
+                    $this->cdaDocument->startElement("Problem");
+                        // CCRDocumentObjectID
+                        $this->cdaDocument->startElement("CCRDocumentObjectID");
+                        $this->cdaDocument->text(UUID::v4());
+                        $this->cdaDocument->endElement();
+                        // DateTime
+                        $this->cdaDocument->startElement("DateTime");
+                            $this->cdaDocument->startElement("ExactDateTime");
+                            $this->cdaDocument->text($problem['exactDateTime']);
+                            $this->cdaDocument->endElement();
+                        $this->cdaDocument->endElement();
+                        // Description
+                        $this->cdaDocument->startElement("Description");
+                            $this->cdaDocument->startElement("Text");
+                            $this->cdaDocument->text($problem['description']['description']);
+                            $this->cdaDocument->endElement();
+                            $this->cdaDocument->startElement("Code");
+                                $this->cdaDocument->startElement("Value");
+                                $this->cdaDocument->text($problem['description']['code']);
+                                $this->cdaDocument->endElement();
+                                $this->cdaDocument->startElement("CodingSystem");
+                                $this->cdaDocument->text($problem['description']['codingsystem']);
+                                $this->cdaDocument->endElement();
+                            $this->cdaDocument->endElement();
+                        $this->cdaDocument->endElement();
+                        // Episodes - (if has any)
+                        if(isset($dataArray['problems']['episodes']))
+                        {
+                            $this->cdaDocument->startElement("Episodes");
+                            foreach($dataArray['problems']['episodes'] as $episode)
+                            {
+                                $this->cdaDocument->startElement("Episode");
+                                    // CCRDocumentObjectID
+                                    $this->cdaDocument->startElement("CCRDocumentObjectID");
+                                    $this->cdaDocument->text(UUID::v4());
+                                    $this->cdaDocument->endElement();
+                                    // DateTime
+                                    $this->cdaDocument->startElement("DateTime");
+                                        $this->cdaDocument->startElement("ExactDateTime");
+                                        $this->cdaDocument->text($episode['exactDateTime']);
+                                        $this->cdaDocument->endElement();
+                                    $this->cdaDocument->endElement();
+                                    // Status
+                                    $this->cdaDocument->startElement("Status");
+                                        $this->cdaDocument->startElement("Text");
+                                        $this->cdaDocument->text($episode['status']['text']);
+                                        $this->cdaDocument->endElement();
+                                        $this->cdaDocument->startElement("Code");
+                                            $this->cdaDocument->startElement("Value");
+                                            $this->cdaDocument->text($episode['status']['code']);
+                                            $this->cdaDocument->endElement();
+                                            $this->cdaDocument->startElement("CodingSystem");
+                                            $this->cdaDocument->text($episode['status']['codingsystem']);
+                                            $this->cdaDocument->endElement();
+                                        $this->cdaDocument->endElement();
+                                    $this->cdaDocument->endElement();
+                                    // Source
+                                    $this->cdaDocument->startElement("Source");
+                                        $this->cdaDocument->startElement("Actor");
+                                            $this->cdaDocument->startElement("ActorID");
+                                            $this->cdaDocument->text($this->softwareUI);
+                                            $this->cdaDocument->endElement();
+                                        $this->cdaDocument->endElement();
+                                    $this->cdaDocument->endElement();
+                                $this->cdaDocument->endElement();
+                            }
+                            $this->cdaDocument->endElement();
+                        }
+                        // Status
+                        $this->cdaDocument->startElement("Status");
+                            $this->cdaDocument->startElement("Text");
+                            $this->cdaDocument->text($problem['status']['description']);
+                            $this->cdaDocument->endElement();
+                            $this->cdaDocument->startElement("Code");
+                                $this->cdaDocument->startElement("Value");
+                                $this->cdaDocument->text($problem['status']['code']);
+                                $this->cdaDocument->endElement();
+                                $this->cdaDocument->startElement("CodingSystem");
+                                $this->cdaDocument->text($problem['status']['codingsystem']);
+                                $this->cdaDocument->endElement();
+                            $this->cdaDocument->endElement();
+                        $this->cdaDocument->endElement();
+                        // Source
+                        $this->cdaDocument->startElement("Source");
+                            $this->cdaDocument->startElement("Actor");
+                                $this->cdaDocument->startElement("ActorID");
+                                $this->cdaDocument->text($this->softwareUI);
+                                $this->cdaDocument->endElement();
+                            $this->cdaDocument->endElement();
+                        $this->cdaDocument->endElement();
+                    $this->cdaDocument->endElement();
+                }
+                $this->cdaDocument->endElement();
+            }
 
+            // Family History - (OPTIONAL)
+            if(isset($dataArray['familyHistory']))
+            {
+                $this->cdaDocument->startElement("FamilyHistory");
+                foreach($dataArray['familyHistory'] as $familyProblem)
+                {
+                    $this->cdaDocument->startElement("FamilyProblemHistory");
+                        // CCRDocumentObjectID
+                        $this->cdaDocument->startElement("CCRDocumentObjectID");
+                        $this->cdaDocument->text(UUID::v4());
+                        $this->cdaDocument->endElement();
+                        // Source
+                        $this->cdaDocument->startElement("Source");
+                            $this->cdaDocument->startElement("Actor");
+                                $this->cdaDocument->startElement("ActorID");
+                                $this->cdaDocument->text($this->softwareUI);
+                                $this->cdaDocument->endElement();
+                            $this->cdaDocument->endElement();
+                        $this->cdaDocument->endElement();
+                        // FamilyMember
+
+                    $this->cdaDocument->endElement();
+                }
+                $this->cdaDocument->endElement();
             }
 
             // End of Body
@@ -556,6 +676,37 @@ $headerData['functionalStatus']['problem']['description'] = 'Dependence on cane'
 $headerData['functionalStatus']['problem']['code'] = '105504002';
 $headerData['functionalStatus']['problem']['codingsystem'] = 'SNOMED CT';
 $headerData['functionalStatus']['problem']['status'] = 'Active';
+
+$headerData['problems'][0]['description']['description'] = 'Asthma';
+$headerData['problems'][0]['exactDateTime'] = '1950';
+$headerData['problems'][0]['description']['code'] = '195967001';
+$headerData['problems'][0]['description']['codingsystem'] = 'SNOMED CT';
+$headerData['problems'][0]['status']['description'] = 'Active';
+$headerData['problems'][0]['status']['code'] = '55561003';
+$headerData['problems'][0]['status']['codingsystem'] = 'SNOMED CT';
+
+$headerData['problems'][1]['description']['description'] = 'Pneumonia';
+$headerData['problems'][1]['description']['code'] = '233604007';
+$headerData['problems'][1]['description']['codingsystem'] = 'SNOMED CT';
+$headerData['problems'][1]['episodes'][0]['exactDateTime'] = '1997-01';
+$headerData['problems'][1]['episodes'][0]['status']['text'] = 'Resolved';
+$headerData['problems'][1]['episodes'][0]['status']['code'] = '413322009';
+$headerData['problems'][1]['episodes'][0]['status']['codingsystem'] = 'SNOMED CT';
+$headerData['problems'][1]['episodes'][1]['exactDateTime'] = '1999-03';
+$headerData['problems'][1]['episodes'][1]['status']['text'] = 'Resolved';
+$headerData['problems'][1]['episodes'][1]['status']['code'] = '413322009';
+$headerData['problems'][1]['episodes'][1]['status']['codingsystem'] = 'SNOMED CT';
+
+$headerData['problems'][2]['description']['description'] = 'Myocardial infarction';
+$headerData['problems'][2]['exactDateTime'] = '1997-01';
+$headerData['problems'][2]['description']['code'] = '22298006';
+$headerData['problems'][2]['description']['codingsystem'] = 'SNOMED CT';
+$headerData['problems'][2]['status']['description'] = 'Resolved';
+$headerData['problems'][2]['status']['code'] = '413322009';
+$headerData['problems'][2]['status']['codingsystem'] = 'SNOMED CT';
+
+$headerData['familyHistory'][0] = '';
+
 
 
 //echo '<pre>';

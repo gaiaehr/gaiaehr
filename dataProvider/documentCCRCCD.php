@@ -69,12 +69,12 @@ class CCD
 
         if($request['action'] == 'viewccr') $documentStyleSheet = $this->CDAdocument->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccr.xsl"');
         if($request['action'] == 'viewccd') $documentStyleSheet = $this->CDAdocument->createProcessingInstruction('xml-stylesheet', 'type="text/xsl" href="'.$_SESSION['url'].'/lib/ccr/stylesheet/ccd.xsl"');
+        $this->CDAdocument->appendChild($documentStyleSheet);
 
         $this->pid = $request['pid'];
 
-        $this->CDAdocument->appendChild($documentStyleSheet);
         if($request['action'] == 'viewccr') $CDA = $this->CDAdocument->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
-        if($request['action'] == 'viewccd') $CDA = $this->CDAdocument->createElementNS('urn:astm-org:CCR', 'ContinuityOfCareRecord');
+        if($request['action'] == 'viewccd') $CDA = $this->CDAdocument->createElementNS('urn:astm-org:CCD', 'ContinuityOfCareRecord');
         $this->CDAdocument->appendChild($CDA);
 
         /**
@@ -146,15 +146,38 @@ class CCD
         $this->CDAdocument->preserveWhiteSpace = false;
         $this->CDAdocument->formatOutput = true;
 
-        //$xslt = new XSLTProcessor();
-        //$xslt->importStylesheet($ccr_ccd);
+        if($request['action'] == 'viewccr')
+        {
+            header('Content-type: application/xml');
+            print $this->CDAdocument->saveXML();
+            return;
+        }
+        if($request['action'] == 'viewccd')
+        {
+            $this->CDAdocument->preserveWhiteSpace = false;
+            $this->CDAdocument->formatOutput       = true;
+            $this->CDAdocument->save($_SESSION['site']['temp']['path'] . '/ccrForCCD.xml');
 
-        header('Content-type: application/xml');
-        //echo '<textarea rows="35" cols="500" style="width:100%; height:99%" readonly>';
-        echo $this->CDAdocument->saveXML();
-        //echo '</textarea>';
-        //return;
+            $xmlDom = new DOMDocument();
+            $xmlDom->loadXML($this->CDAdocument->saveXML());
 
+            $ccr_ccd = new DOMDocument();
+            $ccr_ccd->load($_SESSION['root'].'/lib/ccr/stylesheet/ccd.xsl');
+
+            $xslt = new XSLTProcessor();
+            $xslt->importStylesheet($ccr_ccd);
+
+            $ccd = new DOMDocument();
+            $ccd->preserveWhiteSpace = false;
+            $ccd->formatOutput       = true;
+            $ccd->loadXML($xslt->transformToXML($xmlDom));
+            $ccd->save($_SESSION['site']['temp']['path'] . '/ccdDebug.xml');
+
+            $ss = new DOMDocument();
+            $ss->load($_SESSION['root'] . '/lib/ccr/stylesheet/cda.xsl');
+            $xslt->importStyleSheet($ss);
+            print $xslt->transformToXML($ccd);
+        }
     }
 
 	function createCCD($request)
@@ -386,21 +409,25 @@ class CCD
     {
         $e_ccrDocObjID = $this->CDAdocument->createElement('CCRDocumentObjectID', UUID::v4());
         $e_ccr->appendChild($e_ccrDocObjID);
+
         $e_Language = $this->CDAdocument->createElement('Language');
         $e_ccr->appendChild($e_Language);
         $e_Text = $this->CDAdocument->createElement('Text', 'English');
         $e_Language->appendChild($e_Text);
+
         $e_Version = $this->CDAdocument->createElement('Version', 'V1.0');
         $e_ccr->appendChild($e_Version);
+
         $e_dateTime = $this->CDAdocument->createElement('DateTime');
         $e_ccr->appendChild($e_dateTime);
         $e_ExactDateTime = $this->CDAdocument->createElement('ExactDateTime', date('Y-m-d\TH:i:s\Z'));
         $e_dateTime->appendChild($e_ExactDateTime);
+
         $e_patient = $this->CDAdocument->createElement('Patient');
         $e_ccr->appendChild($e_patient);
-        //$e_ActorID = $this->ccr->createElement('ActorID', $row['patient_id']);
         $e_ActorID = $this->CDAdocument->createElement('ActorID', 'A1234'); // This value and ActorID in createCCRActor.php should be same.
         $e_patient->appendChild($e_ActorID);
+
         //Header From:
         $e_From = $this->CDAdocument->createElement('From');
         $e_ccr->appendChild($e_From);
@@ -412,6 +439,7 @@ class CCD
         $e_ActorLink->appendChild($e_ActorRole);
         $e_Text = $this->CDAdocument->createElement('Text', 'author');
         $e_ActorRole->appendChild($e_Text);
+
         //Header To:
         $e_To = $this->CDAdocument->createElement('To');
         $e_ccr->appendChild($e_To);

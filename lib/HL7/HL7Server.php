@@ -21,17 +21,17 @@ error_reporting(E_ALL);
 set_time_limit(0);
 ob_implicit_flush();
 
-$address = '127.0.0.1';
-
 // ****************************************************** //
 // * Place here persistent logic ************************ //
 // ****************************************************** //
 
-$path   = $argv[1];
-$site   = $argv[2];
-$class  = $argv[3];
-$method = $argv[4];
-$port   = $argv[5];
+$host   = $argv[1];
+$port   = $argv[2];
+$path   = $argv[3];
+$class  = $argv[4];
+$method = $argv[5];
+$site   = $argv[6];
+
 chdir($path);
 include_once("$class.php");
 $cls = new $class($site);
@@ -45,7 +45,7 @@ if (($sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) === false) {
 	echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
 }
 
-if (socket_bind($sock, $address, $port) === false) {
+if (socket_bind($sock, $host, $port) === false) {
 	echo "socket_bind() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
 }
 

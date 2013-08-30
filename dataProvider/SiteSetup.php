@@ -293,16 +293,17 @@ class SiteSetup
 			if(($params->AESkey = ACL::createRandomKey()) !== false){
 				$buffer    = file_get_contents($conf);
 				$search    = array(
-					'%host%',
-                    '%user%',
-                    '%pass%',
-                    '%db%',
-                    '%port%',
-                    '%key%',
-                    '%lang%',
-                    '%theme%',
-                    '%timezone%',
-                    '%sitename%'
+					'#host#',
+                    '#user#',
+                    '#pass#',
+                    '#db#',
+                    '#port#',
+                    '#key#',
+                    '#lang#',
+                    '#theme#',
+                    '#timezone#',
+                    '#sitename#',
+                    '#hl7Port#'
 				);
 				$replace   = array(
 					$params->dbHost,
@@ -314,7 +315,8 @@ class SiteSetup
                     $params->lang,
                     $params->theme,
                     $params->timezone,
-                    $params->siteId
+                    $params->siteId,
+					9100 // TODO check other sites and +1 to the highest port
 				);
 				$newConf   = str_replace($search, $replace, $buffer);
 				$siteDir   = "sites/$params->siteId";

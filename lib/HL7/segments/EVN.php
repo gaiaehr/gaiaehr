@@ -17,8 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+if(!class_exists('Segments')){
+	include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+}
+
 class EVN extends Segments{
+
+	function __destruct(){
+		parent::__destruct();
+	}
 
 	function __construct($hl7){
 		parent::__construct($hl7);

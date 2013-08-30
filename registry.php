@@ -20,7 +20,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 // general
 $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
-$_SESSION['url']   = 'http://' . $_SERVER['HTTP_HOST'].'/'.basename(dirname(__FILE__));
+$_SESSION['url']   = 'http://' . 'localhost'.'/'.basename(dirname(__FILE__));
 
 // sites values
 $_SESSION['sites']    = array();
@@ -68,5 +68,5 @@ $_SESSION['server']['token']       = null;
 $_SESSION['server']['last_tid']    = null;
 
 // client data
-$_SESSION['client']['browser'] = $_SERVER['HTTP_USER_AGENT'];
-$_SESSION['client']['os']      = (strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') === false ? 'Linux' : 'Windows');
+$_SESSION['client']['browser'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+$_SESSION['client']['os']      = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') === false ? 'Linux' : 'Windows');

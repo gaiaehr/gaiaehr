@@ -37,23 +37,18 @@ if( isset($_SESSION['user']) &&
 
 	switch($_REQUEST['action']){
 		case 'start':
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $_SESSION['url'].'/dataProvider/HL7Server.php');
-			curl_setopt($ch, CURLOPT_TIMEOUT_MS, 250);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, array(
-					'action' => 'start',
-					'site' => $_SESSION['site']['id'],
-					'port' => $port
-				)
-			);
-			curl_exec($ch);
-			curl_close($ch);
-			print json_encode(array('online'=>checkStatus($port)));
+			$cmd = 'php -f "C:\inetpub\wwwroot\gaiaehr\lib\HL7\HL7Server.php" -- "C:/inetpub/wwwroot/gaiaehr/dataProvider" "default" "HL7Server" "Process" "9100"';
+			if (substr(php_uname(), 0, 7) == "Windows"){
+				pclose(popen("start /B ". $cmd, "r"));
+			}
+			else {
+				exec($cmd . " > /dev/null &");
+			}
 			break;
 		case 'stop':
 			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 			@socket_connect($socket, '127.0.0.1', $port);
-			$msg = 'kill:secret';
+			$msg = 'shutdown';
 			@socket_write($socket, $msg, strlen($msg));
 			@socket_recv($socket, $response, 1024*10, MSG_WAITALL);
 			@socket_close($socket);

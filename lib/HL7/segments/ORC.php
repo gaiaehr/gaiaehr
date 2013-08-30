@@ -12,6 +12,10 @@ class ORC extends Segments{
 
 	protected $children = array('OBR');
 
+	function __destruct(){
+		parent::__destruct();
+	}
+
 	function __construct($hl7){
 		parent::__construct($hl7);
 

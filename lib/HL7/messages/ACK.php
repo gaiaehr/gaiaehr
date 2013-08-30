@@ -24,10 +24,18 @@ class ACK extends Message {
 		parent::__construct($hl7);
 	}
 
-	public $R01 = array(
-		'MSH' => '',
-		'SFT' => '',
-		'MSA' => '',
-		'ERR' => ''
-	);
+	function __destruct(){
+		parent::__destruct();
+	}
+	protected function Events($event){
+
+		$events = array(
+			'MSH' => '',
+			'SFT' => '',
+			'MSA' => '',
+			'ERR' => ''
+		);
+		return $events;
+
+	}
 }

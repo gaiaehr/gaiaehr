@@ -51,17 +51,20 @@ class Message {
 		$this->hl7 = $hl7;
 	}
 
+	function __destruct(){
+		$this->segmentIndex = 0;
+		$this->errors = false;
+		$this->data = array();
+//		print 'Destroying class "'. get_class($this). '" (Message)'.PHP_EOL;
+	}
+
 	/**
 	 * @param $event
 	 * @return $this
 	 */
 	public function readMessage($event){
-		$this->evt = $this->Events($event);
-		$this->groupWorker($this->evt);
-		foreach($this->data AS $index => $data){
-			$this->{$index} = $data;
-		}
-		unset($this->hl7, $this->evt, $this->segmentIndex, $this->data);
+		$this->groupWorker($this->Events($event));
+		unset($this->hl7, $this->evt, $this->segmentIndex);
 		return $this;
 	}
 

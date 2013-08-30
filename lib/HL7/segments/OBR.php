@@ -8,9 +8,14 @@
  */
 include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
 
+
 class OBR extends Segments{
 
 	protected $children = array('OBX','SPM');
+
+	function __destruct(){
+		parent::__destruct();
+	}
 
 	function __construct($hl7){
 		parent::__construct($hl7);

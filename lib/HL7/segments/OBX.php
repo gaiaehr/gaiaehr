@@ -12,6 +12,10 @@ class OBX extends Segments{
 
 	protected $children = array('NTE');
 
+	function __destruct(){
+		parent::__destruct();
+	}
+
 	function __construct($hl7){
 		parent::__construct($hl7);
 

@@ -24,6 +24,10 @@ class ORU extends Message {
 		parent::__construct($hl7);
 	}
 
+	function __destruct(){
+		parent::__destruct();
+	}
+
 	protected function Events($event){
 		$events = array(
 			'R01' => array(

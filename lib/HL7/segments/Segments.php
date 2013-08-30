@@ -42,11 +42,15 @@ class Segments {
 		$this->hl7 = $hl7;
 	}
 
+	function __destruct(){
+//		print 'Destroying class "'. get_class($this). '" (Segments)' .PHP_EOL;
+	}
+
 	/**
 	 * @param int $length
 	 * @return string
 	 */
-	function newUID($length = 15){
+	public function newUID($length = 15){
 		$n = '';
 		for($i=0; $i < $length; $i++){
 			$n = $n . rand(0,9);
@@ -58,14 +62,15 @@ class Segments {
 	 * Build the segment message string from the $this->rawSeg array
 	 * @return string
 	 */
-	function build(){
+	public function build(){
 		$this->toString($this->rawSeg);
+		unset($this->hl7);
 		return $this->seg . "\r";
 	}
 
-	function parse($string){
+	public function parse($string){
 		$this->data = $this->toArray($string);
-//		print_r($this->data);
+		unset($this->hl7);
 		return $this->data;
 	}
 
@@ -99,7 +104,7 @@ class Segments {
 		return $array;
 	}
 
-	function toArray($string, $glue = 0, $array = null){
+	private function toArray($string, $glue = 0, $array = null){
 		$array = $array != null ? $array : $this->rawSeg;
 
 		$glues = ['|','^','&'];
@@ -141,7 +146,7 @@ class Segments {
 		return $array;
 	}
 
-	function isRepeatable($string){
+	private function isRepeatable($string){
 		$foo = strpos($string, '~');
 		return $foo !== false && $string != '~\&';
 	}
@@ -150,7 +155,7 @@ class Segments {
 	 * @param $field
 	 * @param $data
 	 */
-	function setValue($field, $data){
+	public function setValue($field, $data){
 		$foo = explode('.',$field);
 		if(count($foo) == 1){
 			$this->rawSeg[$foo[0]] = $data;
@@ -165,7 +170,7 @@ class Segments {
 	 * @param $field
 	 * @return mixed
 	 */
-	function getValue($field){
+	public function getValue($field){
 		$foo = explode('.',$field);
 		if(count($foo) == 1){
 			return $this->rawSeg[$foo[0]];
@@ -182,7 +187,7 @@ class Segments {
 	 * @param bool $all
 	 * @return array|bool
 	 */
-	function getChildren($segment = null, $all = false){
+	protected function getChildren($segment = null, $all = false){
 
 		$children = array();
 		$start    = false;
@@ -212,7 +217,7 @@ class Segments {
 	 * @param $type
 	 * @return mixed
 	 */
-	function getType($type){
+	protected function getType($type){
 
 		$types = array();
 

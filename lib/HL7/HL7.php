@@ -24,7 +24,21 @@ class HL7 {
 	 */
 	public  $segments = array();
 
-	public  $message = array();
+	/**
+	 * @var string
+	 */
+	public  $message;
+
+
+	function __destruct()
+	{
+		unset($this->message);
+
+		foreach($this->segments As $i => $seg){
+			unset($this->segments[$i]);
+		}
+//		print 'Destroying class "'. get_class($this). '" ' .date('Y-m-d H:i:s').PHP_EOL;
+	}
 
 	/**
 	 * @return mixed
@@ -134,9 +148,11 @@ class HL7 {
 	 */
 	function addSegment($segment){
 		try{
-			include_once (str_replace('\\', '/',__DIR__)."/segments/$segment.php");
-			$this->segments[] = $seg = new $segment($this);
-			return $seg;
+			if(!class_exists($segment)){
+				include_once(str_replace('\\', '/',__DIR__)."/segments/$segment.php");
+			}
+			$this->segments[] = new $segment($this);
+			return end($this->segments);
 		}catch (Exception $e){
 			throw new Exception("$segment Segment Not Fount");
 		}
@@ -182,21 +198,27 @@ class HL7 {
 	 * @return Message
 	 */
 	function readMessage($msg){
+
 		$segments = explode(PHP_EOL, $msg);
+
 		foreach($segments AS $segment){
-			$seg = $this->readSegment($segment);
-			if($seg === false) continue;
-			$this->segments[] = $this->readSegment($segment);
+			$this->readSegment($segment);
 		}
 
 		$type = $this->getMsgType();
 		if(strlen($type) !== 3) return false;
-		include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
-		$msg = new $type($this);
+
+		if(!class_exists($type)){
+			include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
+		}
+
+		$this->message = new $type($this);
+
 		$mType = $this->getMsgEventType();
 		if($mType === null) return false;
-		$msg->readMessage($this->getMsgEventType());
-		return $msg;
+
+		$this->message->readMessage($this->getMsgEventType());
+		return $this->message;
 	}
 
 	/**
@@ -205,13 +227,17 @@ class HL7 {
 	 */
 	function readSegment($segment){
 		$seg = substr($segment, 0, 3);
+
 		if(strlen($seg) !== 3) return false;
+
 		if($seg != ''){
-			include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
-			$seg = new $seg($this);
-			$seg->parse($segment);
+			if(!class_exists($seg)){
+				include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
+			}
+			$this->segments[] = new $seg($this);
+			end($this->segments)->parse($segment);
 		}
-		return $seg;
+		return true;
 	}
 
 	function time($time, $format = 'Y-m-d H:i:s'){

@@ -57,7 +57,7 @@ if (socket_listen($sock, 5) === false) {
 $clients = array();
 
 while(true){
-	usleep(1);
+	usleep(50);
 
 	$read = array();
 	$read[] = $sock;

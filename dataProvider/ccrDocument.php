@@ -56,7 +56,6 @@ $healthProviderGUID = UUID::v4();
 
 $patientGUID = UUID::v4();
 
-
 /**
  * References
  * ----------
@@ -65,28 +64,26 @@ $patientGUID = UUID::v4();
  * reference within the section where it occurs.
  */
 $references = array(
-    'References' => array(
-        'Reference' => array(
-            array( // Reference 1
-                'ReferenceObjectID' => UUID::v4(),
-                'Description' => array(
-                    'Text' => 'Advance directive',
-                    'Code' => array(
-                        'Value' => '371538006',
-                        'CodingSystem' => 'SNOMED CT'
-                    )
-                ),
-                'Source' => array(
-                    'Actor' => array(
-                        'ActorID' => $softwareGUID
-                    )
-                ),
-                'Locations' => array(
-                    'Location' => array(
-                        array( // Location 1
-                            'Actor' => array(
-                                'ActorID' => 'b50b7910-7ffb-4f4c-bbe4-177ed68cbbf3'
-                            )
+    'Reference' => array(
+        array( // Reference 1
+            'ReferenceObjectID' => UUID::v4(),
+            'Description' => array(
+                'Text' => 'Advance directive',
+                'Code' => array(
+                    'Value' => '371538006',
+                    'CodingSystem' => 'SNOMED CT'
+                )
+            ),
+            'Source' => array(
+                'Actor' => array(
+                    'ActorID' => $softwareGUID
+                )
+            ),
+            'Locations' => array(
+                'Location' => array(
+                    array( // Location 1
+                        'Actor' => array(
+                            'ActorID' => 'b50b7910-7ffb-4f4c-bbe4-177ed68cbbf3'
                         )
                     )
                 )
@@ -106,63 +103,61 @@ $references = array(
  * <ActorLink> element, CCD defines many participants within the document header and body.
  */
 $actors = array(
-    'Actors' => array(
-        'Actor' => array(
-            array( // Actor 1 ****
-                'ActorObjectID' => $patientGUID,
-                'Person' => array(
-                    'Name' => array(
-                        'CurrentName' => array(
-                            'Given' => 'Gino',
-                            'Family' => 'Rivera',
-                            'Suffix' => 'Mr.'
-                        )
+    'Actor' => array(
+        array( // Actor 1 (This should be a loop with all the persons related to the CCR document
+            'ActorObjectID' => $patientGUID,
+            'Person' => array(
+                'Name' => array(
+                    'CurrentName' => array(
+                        'Given' => 'Gino',
+                        'Family' => 'Rivera',
+                        'Suffix' => 'Mr.'
+                    )
+                ),
+                'DateOfBirth' => array(
+                    'ExactDateTime' => '1977-01-13'
+                ),
+                'Gender' => array(
+                    'Text' => 'Male',
+                    'Code' => array(
+                        'Value' => 'M',
+                        'CodingSystem' => '2.16.840.1.113883.5.1' // TODO: Where this GUID came from
+                    )
+                )
+            ),
+            'IDs' => array(
+                array( // IDs 1
+                    'Type' => array(
+                        'Text' => 'Patient ID'
                     ),
-                    'DateOfBirth' => array(
-                        'ExactDateTime' => '1977-01-13'
+                    'ID' => '2-16-840-1-113883-19-5-996756495', // TODO: Where this come from
+                    'IssuedBy' => array(
+                        'ActorID' => '2.16.840.1.113883.19.5' // TODO: Where this come from
                     ),
-                    'Gender' => array(
-                        'Text' => 'Male',
-                        'Code' => array(
-                            'Value' => 'M',
-                            'CodingSystem' => '2.16.840.1.113883.5.1' // TODO: Where this GUID came from
+                    'Source' => array(
+                        'Actor' => array(
+                            'ActorID' => $softwareGUID
                         )
                     )
                 ),
-                'IDs' => array(
-                    array( // IDs 1
-                        'Type' => array(
-                            'Text' => 'Patient ID'
-                        ),
-                        'ID' => '2-16-840-1-113883-19-5-996756495', // TODO: Where this come from
-                        'IssuedBy' => array(
-                            'ActorID' => '2.16.840.1.113883.19.5' // TODO: Where this come from
-                        ),
-                        'Source' => array(
-                            'Actor' => array(
-                                'ActorID' => $softwareGUID
-                            )
-                        )
+                array( // IDs 2
+                    'Type' => array(
+                        'Text' => 'Covered party ID'
                     ),
-                    array( // IDs 2
-                        'Type' => array(
-                            'Text' => 'Covered party ID'
-                        ),
-                        'ID' => '14d4a520-7aae-11db-9fe1-0800200c9a66', // TODO: Where this come from
-                        'IssuedBy' => array(
-                            'ActorID' => '329fcdf0-7ab3-11db-9fe1-0800200c9a66' // TODO: Where this come from
-                        ),
-                        'Source' => array(
-                            'Actor' => array(
-                                'ActorID' => $softwareGUID
-                            )
+                    'ID' => '14d4a520-7aae-11db-9fe1-0800200c9a66', // TODO: Where this come from
+                    'IssuedBy' => array(
+                        'ActorID' => '329fcdf0-7ab3-11db-9fe1-0800200c9a66' // TODO: Where this come from
+                    ),
+                    'Source' => array(
+                        'Actor' => array(
+                            'ActorID' => $softwareGUID
                         )
                     )
-                ),
-                'Source' => array(
-                    'Actor' => array(
-                        'ActorID' => $softwareGUID
-                    )
+                )
+            ),
+            'Source' => array(
+                'Actor' => array(
+                    'ActorID' => $softwareGUID
                 )
             )
         )
@@ -2128,16 +2123,20 @@ $ccrArray = array(
     'Actors' => array(
         $actors
     ),
-    $references
+    'References' => array(
+        $references
+    )
 );
 
+/**
+ * Build the CCR XML Object
+ */
 Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'/lib/CCRCDA/schema/ccr.xsl"'));
 $xml = Array2XML::createXML('ContinuityOfCareRecord', $ccrArray);
 
-header('Content-type: application/xml');
-echo $xml->saveXML();
 
 if($_REQUEST['action'] == 'viewccr')
 {
-
+    header('Content-type: application/xml');
+    echo $xml->saveXML();
 }

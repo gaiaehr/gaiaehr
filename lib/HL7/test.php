@@ -9,13 +9,11 @@
 
 //$WshShell = new COM("WScript.Shell");
 //$oExec = $WshShell->Run('php -f ".\HL7Server.php" -- "C:/path/" "site" "class" "function"', 0, false);
-set_time_limit(0);
-$cmd = 'php -f "C:\inetpub\wwwroot\gaiaehr\lib\HL7\HL7Server.php" -- "C:/inetpub/wwwroot/gaiaehr/dataProvider" "default" "HL7Server" "Process" "9100"';
+set_time_limit(1);
+$cmd = '.\start.bat "127.0.0.1" 9100 "C:/inetpub/wwwroot/gaiaehr/dataProvider" "HL7Server" "Process" "default"';
 if (substr(php_uname(), 0, 7) == "Windows"){
-//	print_r(exec($cmd));
-	$h = popen("start /B ". $cmd, "r");
-	pclose($h);
-//	unset($h);
+//	system($cmd);
+	pclose(popen($cmd, "r"));
 	exit;
 }
 else {

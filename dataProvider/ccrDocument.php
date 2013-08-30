@@ -52,7 +52,301 @@ $familyMemberLink1 = UUID::v4();
 $familyMemberLink2 = UUID::v4();
 
 $manufacturerGUID = UUID::v4();
+$healthProviderGUID = UUID::v4();
 
+$patientGUID = UUID::v4();
+
+
+/**
+ * References
+ * ----------
+ * Used to list the details concerning references to external data sources. Corresponds to the CDA R2
+ * <reference> element. Whereas ASTM CCR enumerates all references in the CCR Footer, CCD defines the
+ * reference within the section where it occurs.
+ */
+$references = array(
+    'References' => array(
+        'Reference' => array(
+            array( // Reference 1
+                'ReferenceObjectID' => UUID::v4(),
+                'Description' => array(
+                    'Text' => 'Advance directive',
+                    'Code' => array(
+                        'Value' => '371538006',
+                        'CodingSystem' => 'SNOMED CT'
+                    )
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
+                    )
+                ),
+                'Locations' => array(
+                    'Location' => array(
+                        array( // Location 1
+                            'Actor' => array(
+                                'ActorID' => 'b50b7910-7ffb-4f4c-bbe4-177ed68cbbf3'
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+);
+
+/**
+ * Actors
+ * ------
+ * Used as a container to define all of the individuals, organizations, locations, and systems associated with
+ * data in the summary document. Within the CCR data set, an Actor is a <Person>, <Organization> or
+ * <Device>. These correspond to the HL7 RIM Entity classes: LivingSubject, Person, Organization or
+ * Device, and are mapped accordingly to these classes as exposed in a CDA document. Whereas ASTM CCR
+ * enumerates all Actors in the CCR Footer and references those Actors from within the CCR Body with the
+ * <ActorLink> element, CCD defines many participants within the document header and body.
+ */
+$actors = array(
+    'Actors' => array(
+        'Actor' => array(
+            array( // Actor 1 ****
+                'ActorObjectID' => $patientGUID,
+                'Person' => array(
+                    'Name' => array(
+                        'CurrentName' => array(
+                            'Given' => 'Gino',
+                            'Family' => 'Rivera',
+                            'Suffix' => 'Mr.'
+                        )
+                    ),
+                    'DateOfBirth' => array(
+                        'ExactDateTime' => '1977-01-13'
+                    ),
+                    'Gender' => array(
+                        'Text' => 'Male',
+                        'Code' => array(
+                            'Value' => 'M',
+                            'CodingSystem' => '2.16.840.1.113883.5.1' // TODO: Where this GUID came from
+                        )
+                    )
+                ),
+                'IDs' => array(
+                    array( // IDs 1
+                        'Type' => array(
+                            'Text' => 'Patient ID'
+                        ),
+                        'ID' => '2-16-840-1-113883-19-5-996756495', // TODO: Where this come from
+                        'IssuedBy' => array(
+                            'ActorID' => '2.16.840.1.113883.19.5' // TODO: Where this come from
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        )
+                    ),
+                    array( // IDs 2
+                        'Type' => array(
+                            'Text' => 'Covered party ID'
+                        ),
+                        'ID' => '14d4a520-7aae-11db-9fe1-0800200c9a66', // TODO: Where this come from
+                        'IssuedBy' => array(
+                            'ActorID' => '329fcdf0-7ab3-11db-9fe1-0800200c9a66' // TODO: Where this come from
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        )
+                    )
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
+                    )
+                )
+            )
+        )
+    )
+);
+
+/**
+ * Healthcare providers
+ * --------------------
+ * Represents the healthcare providers involved in the current or pertinent historical care of the patient. At a
+ * minimum, the patient’s key healthcare providers should be listed, particularly their primary physician and
+ * any active consulting physicians, therapists, and counselors.
+ */
+$healthProviders = array(
+    'HealthCareProviders' => array(
+        'Provider' => array(
+            array( // Provider 1
+                'ActorID' => $healthProviderGUID,
+                'ActorRole' => array(
+                    'Text' => 'Primary Care Provider',
+                    'Code' => array(
+                        'Value' => 'PCP',
+                        'CodingSystem' => '2.16.840.1.113883.5.88' // TODO: Find out from where this ID came from
+                    )
+                )
+            )
+        )
+    )
+);
+
+/**
+ * Plan of Care section
+ * --------------------
+ * The plan of care section contains data defining pending orders, interventions, encounters, services, and
+ * procedures for the patient. It is limited to prospective, unfulfilled, or incomplete orders and requests only.
+ * All active, incomplete, or pending orders, appointments, referrals, procedures, services, or any other
+ * pending event of clinical significance to the current and ongoing care of the patient should be listed, unless
+ * constrained due to issues of privacy.
+ */
+$planOfCare = array(
+    'PlanOfCare' => array(
+        'Plan' => array(
+            array( // Plan 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
+                    )
+                ),
+                'OrderRequest' => array(
+                    'CCRDocumentObjectID' => UUID::v4(),
+                    'DateTime' => array(
+                        'Type' => array(
+                            'Text' => 'Requested date'
+                        ),
+                        'ExactDateTime' => '2000-04-21'
+                    ),
+                    'Status' => array(
+                        'Text' => 'Ordered'
+                    ),
+                    'Source' => array(
+                        'Actor' => array(
+                            'ActorID' => $softwareGUID
+                        )
+                    ),
+                    'Procedures' => array(
+                        'Procedure' => array(
+                            array( // Procedure 1
+                                'CCRDocumentObjectID' => UUID::v4(),
+                                'Type' => array(
+                                    'Text' => 'Pulmonary function test',
+                                    'Code' => array(
+                                        'Value' => '23426006',
+                                        'CodingSystem' => 'SNOMED CT'
+                                    )
+                                ),
+                                'Source' => array(
+                                    'Actor' => array(
+                                        'ActorID' => $softwareGUID
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+);
+
+/**
+ * Encounters section
+ * ------------------
+ * This section is used to list and describe any healthcare encounters pertinent to the patient’s current health
+ * status or historical health history. An Encounter is an interaction, regardless of the setting, between a
+ * patient and a practitioner who is vested with primary responsibility for diagnosing, evaluating, or treating
+ * the patient’s condition. It may include visits, appointments, as well as non face-to-face interactions. It is
+ * also a contact between a patient and a practitioner who has primary responsibility for assessing and treating
+ * the patient at a given contact, exercising independent judgment. This section may contain all encounters for
+ * the time period being summarized, but should include notable encounters.
+ */
+$encounters = array(
+    'Encounters' => array(
+        'Encounter' => array(
+            array( // Encounter 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'ExactDateTime' => '2000-04-07'
+                ),
+                'Type' => array(
+                    'Text' => 'Checkup Examination',
+                    'Code' => array(
+                        'Value' => 'GENRL',
+                        'CodingSystem' => '2.16.840.1.113883.5.4'
+                    )
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
+                    )
+                ),
+                'Locations' => array(
+                    'Location' => array(
+                        'Actor' => array(
+                            'ActorID' => '2.16.840.1.113883.19.5' // TODO: Find out what this ID came from
+                        )
+                    )
+                )
+            )
+        )
+    )
+);
+
+/**
+ * Procedures section
+ * ------------------
+ * This section defines all interventional, surgical, diagnostic, or therapeutic procedures or treatments
+ * pertinent to the patient historically at the time the document is generated. The section may contain all
+ * procedures for the period of time being summarized, but should include notable procedures.
+ */
+$procedures = array(
+    'Procedures' => array(
+        'Procedure' => array(
+            array( // Procedure 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'Type' => array(
+                        'Text' => 'Procedure Date'
+                    ),
+                    'ExactDateTime' => '1998'
+                ),
+                'Description' => array(
+                    'Text' => 'Total hip replacement, left',
+                    'ObjectAttribute' => array(
+                        'Attribute' => 'Laterality',
+                        'AttributeValue' => array(
+                            'Value' => 'Left',
+                            'Code' => array(
+                                'Value' => '7771000',
+                                'CodingSystem' => 'SNOMED CT'
+                            )
+                        )
+                    ),
+                    'Code' => array(
+                        'Value' => '52734007',
+                        'CodingSystem' => 'SNOMED CT'
+                    )
+                ),
+                'Status' => array(
+                    'Text' => 'Final Results'
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
+                    )
+                ),
+                'InternalCCRLink' => array(
+                    'LinkID' => UUID::v4(), // TODO: Find out for what this GUID came from
+                    'LinkRelationship' => 'Implanted equipment'
+                )
+            )
+        )
+    )
+);
 
 /**
  * Results section
@@ -65,6 +359,78 @@ $manufacturerGUID = UUID::v4();
  */
 $results = array(
     'Results' => array(
+        'Result' => array(
+            array( // Result 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'Type' => array(
+                        'Text' => 'Assessment Time'
+                    ),
+                    'ExactDateTime' => '2000-04-07T14:30Z'
+                ),
+                'Description' => array(
+                    'Text' => 'CBC WO DIFFERENTIAL',
+                    'Code' => array(
+                        'Value' => '43789009',
+                        'CodingSystem' => 'SNOMED CT'
+                    )
+                ),
+                'Status' => array(
+                    'Text' => 'Final Results'
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
+                    )
+                ),
+                'Test' => array(
+                    array( // Test 1
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => '2000-04-07T14:30Z'
+                        ),
+                        'Description' => array(
+                            'Text' => 'HGB',
+                            'Code' => array(
+                                'Value' => '30313-1',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => '13.2',
+                            'Units' => array(
+                                'Unit' => 'g/dl'
+                            )
+                        ),
+                        'NormalResult' => array(
+                            'Normal' => array(
+                                array( // Normal 1
+                                    'Description' => array(
+                                        'Text' => 'M 13-18 g/dl; F 12-16 g/dl',
+                                        'Source' => array(
+                                            'Actor' => array(
+                                                'ActorID' => $softwareGUID
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
     )
 );
 
@@ -1753,8 +2119,16 @@ $ccrArray = array(
         $medicalEquipment,
         $immunizations,
         $vitals,
-        $results
-    )
+        $results,
+        $procedures,
+        $encounters,
+        $planOfCare,
+        $healthProviders
+    ),
+    'Actors' => array(
+        $actors
+    ),
+    $references
 );
 
 Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'/lib/CCRCDA/schema/ccr.xsl"'));

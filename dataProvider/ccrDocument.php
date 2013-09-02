@@ -39,6 +39,11 @@ include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
 
+
+/**
+ * Load all the data for the CCR XML data and loops
+ */
+
 $patientGUID = UUID::v4();
 $softwareGUID = UUID::v4();
 $paymentProviderGUID = UUID::v4();
@@ -2133,7 +2138,6 @@ $ccrArray = array(
  */
 Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'/lib/CCRCDA/schema/ccr.xsl"'));
 $xml = Array2XML::createXML('ContinuityOfCareRecord', $ccrArray);
-
 
 if($_REQUEST['action'] == 'viewccr')
 {

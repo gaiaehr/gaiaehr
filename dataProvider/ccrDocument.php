@@ -1999,7 +1999,7 @@ $payers = array(
         array( // Payer 1
             'CCRDocumentObjectID' => UUID::v4(),
             'Type' => array(
-                'Text' => 'Palic Insurance',
+                'Text' => $insuranceData['provider'],
                 'Code' => array(
                     'Value' => 'EHCPOL',
                     'CodingSystem' => 'ActCode'
@@ -2098,12 +2098,8 @@ $ccrArray = array(
         'PlanOfCare' => $planOfCare,
         'HealthCareProviders' => $healthProviders
     ),
-    'Actors' => array(
-        $actors
-    ),
-    'References' => array(
-        $references
-    )
+    'Actors' => $actors,
+    'References' => $references
 );
 
 /**

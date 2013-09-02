@@ -5,7 +5,7 @@ Ext.define('App.model.patient.Vitals',
 {
     extend: 'Ext.data.Model',
     table: {
-        name: 'vitals',
+        name: 'encounter_vitals',
         comment: 'Vitals'
     },
     fields: [

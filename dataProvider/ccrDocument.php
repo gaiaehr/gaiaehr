@@ -56,6 +56,7 @@ $manufacturerGUID = UUID::v4();
 $healthProviderGUID = UUID::v4();
 
 $Patient = new Patient();
+$Encounter = new Encounter();
 $Medical = new Medical();
 
 /**
@@ -431,302 +432,460 @@ $results = array(
  * minimum should include notable vital signs such as the most recent, maximum and/or minimum, or both,
  * baseline, or relevant trends.
  */
-$vitals = array(
-    'Result' => array(
-        array( // Result 1
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
+$vitalSigns = $Encounter->getVitalsByPid($_REQUEST['pid']);
+foreach($vitalSigns as $item)
+{
+    $vitals[] = array(
+        'Result' => array(
+            array( // Result 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'Type' => array(
+                        'Text' => 'Assessment Time'
+                    ),
+                    'ExactDateTime' => $item['date']
+                ),
                 'Type' => array(
-                    'Text' => 'Assessment Time'
-                ),
-                'ExactDateTime' => '1999-11-14'
-            ),
-            'Type' => array(
-                'Text' => 'Vital Signs',
-                'Code' => array(
-                    'Value' => '46680005',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Status' => array(
-                'Text' => 'Final Results'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Test' => array(
-                array( // Test 1
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
-                        ),
-                        'ExactDateTime' => '1999-11-14'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Body height',
-                        'Code' => array(
-                            'Value' => '50373000',
-                            'CodingSystem' => 'SNOMED CT'
-                        )
-                    ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '177',
-                        'Units' => array(
-                            'Unit' => 'cm'
-                        )
+                    'Text' => 'Vital Signs',
+                    'Code' => array(
+                        'Value' => '8716-3',
+                        'CodingSystem' => 'LOINC'
                     )
                 ),
-                array( // Test 2
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
-                        ),
-                        'ExactDateTime' => '1999-11-14'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Body height',
-                        'Code' => array(
-                            'Value' => '50373000',
-                            'CodingSystem' => 'SNOMED CT'
-                        )
-                    ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '86',
-                        'Units' => array(
-                            'Unit' => 'cm'
-                        )
+                'Status' => array(
+                    'Text' => 'Final Results'
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
                     )
                 ),
-                array( //Test 3
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
+                'Test' => array(
+                    array( // Body height
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
                         ),
-                        'ExactDateTime' => '1999-11-14'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Systolic BP',
-                        'Code' => array(
-                            'Value' => '271649006',
-                            'CodingSystem' => 'SNOMED CT'
-                        )
-                    ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '132',
-                        'Units' => array(
-                            'Unit' => 'mm Hg'
-                        )
-                    )
-                ),
-                array( // Test 4
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
+                        'Description' => array(
+                            'Text' => 'Body height',
+                            'Code' => array(
+                                'Value' => '3138-5',
+                                'CodingSystem' => 'LOINC'
+                            )
                         ),
-                        'ExactDateTime' => '1999-11-14'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Diastolic BP',
-                        'Code' => array(
-                            'Value' => '271650006',
-                            'CodingSystem' => 'SNOMED CT'
-                        )
-                    ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '86',
-                        'Units' => array(
-                            'Unit' => 'mm Hg'
-                        )
-                    )
-                )
-            )
-        ),
-        array( // Result 2
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'Type' => array(
-                    'Text' => 'Assessment Time'
-                ),
-                'ExactDateTime' => '2000-04-07'
-            ),
-            'Type' => array(
-                'Text' => 'Vital Signs',
-                'Code' => array(
-                    'Value' => '46680005',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Status' => array(
-                'Text' => 'Final Results'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Test' => array(
-                array( // Test 1
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
+                        'Status' => array(
+                            'Text' => 'Final Results'
                         ),
-                        'ExactDateTime' => '2000-04-07'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Body height',
-                        'Code' => array(
-                            'Value' => '50373000',
-                            'CodingSystem' => 'SNOMED CT'
-                        )
-                    ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '177',
-                        'Units' => array(
-                            'Unit' => 'cm'
-                        )
-                    )
-                ),
-                array( // Test 2
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
                         ),
-                        'ExactDateTime' => '2000-04-07'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Body height',
-                        'Code' => array(
-                            'Value' => '50373000',
-                            'CodingSystem' => 'SNOMED CT'
+                        'TestResult' => array(
+                            'Value' => $item['height_in'],
+                            'Units' => array(
+                                'Unit' => 'in'
+                            )
                         )
                     ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '88',
-                        'Units' => array(
-                            'Unit' => 'kg'
-                        )
-                    )
-                ),
-                array( //Test 3
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
+                    array( // Body height
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
                         ),
-                        'ExactDateTime' => '2000-04-07'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Systolic BP',
-                        'Code' => array(
-                            'Value' => '271649006',
-                            'CodingSystem' => 'SNOMED CT'
-                        )
-                    ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    ),
-                    'TestResult' => array(
-                        'Value' => '145',
-                        'Units' => array(
-                            'Unit' => 'mm Hg'
-                        )
-                    )
-                ),
-                array( // Test 4
-                    'CCRDocumentObjectID' => UUID::v4(),
-                    'DateTime' => array(
-                        'Type' => array(
-                            'Text' => 'Assessment Time'
+                        'Description' => array(
+                            'Text' => 'Body height',
+                            'Code' => array(
+                                'Value' => '3138-5',
+                                'CodingSystem' => 'LOINC'
+                            )
                         ),
-                        'ExactDateTime' => '1999-11-14'
-                    ),
-                    'Description' => array(
-                        'Text' => 'Diastolic BP',
-                        'Code' => array(
-                            'Value' => '271650006',
-                            'CodingSystem' => 'SNOMED CT'
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['height_cm'],
+                            'Units' => array(
+                                'Unit' => 'cm'
+                            )
                         )
                     ),
-                    'Status' => array(
-                        'Text' => 'Final Results'
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
+                    array( // Systolic BP
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Systolic BP',
+                            'Code' => array(
+                                'Value' => '8480-6',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['bp_systolic'],
+                            'Units' => array(
+                                'Unit' => 'mm Hg'
+                            )
                         )
                     ),
-                    'TestResult' => array(
-                        'Value' => '88',
-                        'Units' => array(
-                            'Unit' => 'mm Hg'
+                    array( // Diastolic BP
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Diastolic BP',
+                            'Code' => array(
+                                'Value' => '20184-8',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['bp_diastolic'],
+                            'Units' => array(
+                                'Unit' => 'mm Hg'
+                            )
+                        )
+                    ),
+                    array( // Body weight
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Body weight',
+                            'Code' => array(
+                                'Value' => '3141-9',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['weight_lbs'],
+                            'Units' => array(
+                                'Unit' => 'Lbs'
+                            )
+                        )
+                    ),
+                    array( // Body weight
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Body weight',
+                            'Code' => array(
+                                'Value' => '3141-9',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['weight_kg'],
+                            'Units' => array(
+                                'Unit' => 'Kg'
+                            )
+                        )
+                    ),
+                    array( // Pulse
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Pulse',
+                            'Code' => array(
+                                'Value' => '44974-4',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['pulse'],
+                            'Units' => array(
+                                'Unit' => 'Kg'
+                            )
+                        )
+                    ),
+                    array( // Respiration
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Respiration',
+                            'Code' => array(
+                                'Value' => '28333-3',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['respiration'],
+                            'Units' => array(
+                                'Unit' => ''
+                            )
+                        )
+                    ),
+                    array( // Temperature (Fahrenheit)
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Temperature',
+                            'Code' => array(
+                                'Value' => '8310-5',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['temp_f'],
+                            'Units' => array(
+                                'Unit' => 'F'
+                            )
+                        )
+                    ),
+                    array( // Temperature (Celcius)
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Temperature',
+                            'Code' => array(
+                                'Value' => '8310-5',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['temp_c'],
+                            'Units' => array(
+                                'Unit' => 'C'
+                            )
+                        )
+                    ),
+                    array( // Oxygen saturation
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Oxygen saturation',
+                            'Code' => array(
+                                'Value' => '20564-1',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['oxygen_saturation'],
+                            'Units' => array(
+                                'Unit' => '%'
+                            )
+                        )
+                    ),
+                    array( // Head circumference
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Head circumference',
+                            'Code' => array(
+                                'Value' => '11986-7',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['head_circumference_cm'],
+                            'Units' => array(
+                                'Unit' => 'cm'
+                            )
+                        )
+                    ),
+                    array( // Waist circumference
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'Waist circumference',
+                            'Code' => array(
+                                'Value' => '8280-0',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['waist_circumference_cm'],
+                            'Units' => array(
+                                'Unit' => 'cm'
+                            )
+                        )
+                    ),
+                    array( // BMI
+                        'CCRDocumentObjectID' => UUID::v4(),
+                        'DateTime' => array(
+                            'Type' => array(
+                                'Text' => 'Assessment Time'
+                            ),
+                            'ExactDateTime' => $item['date']
+                        ),
+                        'Description' => array(
+                            'Text' => 'BMI',
+                            'Code' => array(
+                                'Value' => '59574-4',
+                                'CodingSystem' => 'LOINC'
+                            )
+                        ),
+                        'Status' => array(
+                            'Text' => 'Final Results'
+                        ),
+                        'Source' => array(
+                            'Actor' => array(
+                                'ActorID' => $softwareGUID
+                            )
+                        ),
+                        'TestResult' => array(
+                            'Value' => $item['bmi'],
+                            'Units' => array(
+                                'Unit' => '%'
+                            )
                         )
                     )
                 )
             )
         )
-    )
-);
+    );
+}
 
 /**
  * Immunizations section
@@ -736,102 +895,37 @@ $vitals = array(
  * immunization status. The section should include current immunization status, and may contain the entire
  * immunization history that is relevant to the period of time being summarized.
  */
-$immunizations = array(
-    'Immunization' => array(
-        array( // Immunization 1
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'Type' => array(
-                    'Text' => 'Immunization Date'
+$patientImmunizations = $Medical->getPatientImmunizations($_REQUEST['pid']);
+foreach($patientImmunizations as $item)
+{
+    $immunizations[] = array(
+        'Immunization' => array(
+            array(
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'Type' => array(
+                        'Text' => 'Immunization Date'
+                    ),
+                    'ExactDateTime' => $item['administered_date']
                 ),
-                'ExactDateTime' => '1950'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Influenza virus vaccine',
-                    'Code' => array(
-                        'Value' => '88',
-                        'CodingSystem' => 'CDC Vaccine Code'
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
                     )
-                )
-            )
-        ),
-        array( // Immunization 2
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'Type' => array(
-                    'Text' => 'Immunization Date'
                 ),
-                'ExactDateTime' => '1998-12'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Influenza virus vaccine',
-                    'Code' => array(
-                        'Value' => '88',
-                        'CodingSystem' => 'CDC Vaccine Code'
-                    )
-                )
-            )
-        ),
-        array( // Immunization 3
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'Type' => array(
-                    'Text' => 'Immunization Date'
-                ),
-                'ExactDateTime' => '1998-12'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Pneumococcal polysaccharide vaccine',
-                    'Code' => array(
-                        'Value' => '33',
-                        'CodingSystem' => 'CDC Vaccine Code'
-                    )
-                )
-            )
-        ),
-        array( // Immunization 4
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'Type' => array(
-                    'Text' => 'Immunization Date'
-                ),
-                'ExactDateTime' => '1997'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Tetanus and diphtheria toxoids',
-                    'Code' => array(
-                        'Value' => '09',
-                        'CodingSystem' => 'CDC Vaccine Code'
+                'Product' => array(
+                    'ProductName' => array(
+                        'Text' => $item['vaccine_name'],
+                        'Code' => array(
+                            'Value' => $item['code'],
+                            'CodingSystem' => $item['code_type']
+                        )
                     )
                 )
             )
         )
-    )
-);
+    );
+}
 
 /**
  * Medical Equipment section
@@ -928,281 +1022,65 @@ $medicalEquipment = array(
  * include a patient’s prescription history, and enables the determination of the source of a medication list
  * (e.g. from a pharmacy system vs. from the patient).
  */
-$medications = array(
-    'Medication' => array(
-        array( // Medication 1
-            'CCRDocumentObjectID' => UUID::v4(),
-            'Status' => array(
-                'Text' => 'Active'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Albuterol inhalant',
-                    'Code' => array(
-                        'Value' => '307782',
-                        'CodingSystem' => 'RxNorm'
-                    )
-                )
-            ),
-            'Directions' => array(
-                'Direction' => array(
-                    array( // Direction 1
-                        'Dose' => array(
-                            'Value' => '2'
+$patientMedications = $Medical->getPatientMedications($_REQUEST['pid']);
+foreach($patientMedications as $item)
+{
+    $medications[] = array(
+        'Medication' => array(
+            array( // Medication 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'DateTimeRange' => array(
+                        'BeginRange' => array(
+                            'ExactDateTime' => $item['begin_date']
                         ),
-                        'Route' => array(
-                            'Code' => array(
-                                'Value' => 'IPINHL',
-                                'CodingSystem' => 'RouteOfAdministration'
-                            )
-                        ),
-                        'Frequency' => array(
-                            'Value' => 'QID'
-                        ),
-                        'Indication' => array(
-                            'PRNFlag' => array(
-                                'Text' => 'Wheezing',
-                                'Code' => array(
-                                    'Value' => '56018004',
-                                    'CodingSystem' => 'SNOMED CT'
-                                )
-                            )
+                        'EndRange' => array(
+                            'ExactDateTime' => $item['end_date']
                         )
                     )
-                )
-            )
-        ),
-        array( // Medication 2
-            'CCRDocumentObjectID' => UUID::v4(),
-            'Status' => array(
-                'Text' => 'Active'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Clopidogrel',
-                    'Code' => array(
-                        'Value' => '309362',
-                        'CodingSystem' => 'RxNorm'
+                ),
+                'Status' => array(
+                    'Text' => 'Active'
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
                     )
                 ),
-                'BrandName' => array(
-                    'Text' => 'Plavix'
-                ),
-                'Strength' => array(
-                    'Value' => '75',
-                    'Units' => array(
-                        'Unit' => 'MG'
-                    )
-                ),
-                'Form' => array(
-                    'Text' => 'TABLET'
-                )
-            ),
-            'Directions' => array(
-                'Direction' => array(
-                    array( // Direction 1
-                        'Dose' => array(
-                            'Value' => '2'
-                        ),
-                        'Route' => array(
-                            'Code' => array(
-                                'Value' => 'IPINHL',
-                                'CodingSystem' => 'RouteOfAdministration'
-                            )
-                        ),
-                        'Frequency' => array(
-                            'Value' => 'Daily'
+                'Product' => array(
+                    'ProductName' => array(
+                        'Text' => 'Albuterol inhalant',
+                        'Code' => array(
+                            'Value' => '307782',
+                            'CodingSystem' => 'RxNorm'
                         )
-                    )
-                )
-            )
-        ),
-        array( // Medication 3
-            'CCRDocumentObjectID' => UUID::v4(),
-            'Status' => array(
-                'Text' => 'Active'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Metoprolol',
-                    'Code' => array(
-                        'Value' => '430618',
-                        'CodingSystem' => 'RxNorm'
-                    )
-                ),
-                'Strength' => array(
-                    'Value' => '25',
-                    'Units' => array(
-                        'Unit' => 'MG'
-                    )
-                ),
-                'Form' => array(
-                    'Text' => 'TABLET'
-                )
-            ),
-            'Directions' => array(
-                'Direction' => array(
-                    array( // Direction 1
-                        'Dose' => array(
-                            'Value' => '1'
-                        ),
-                        'Route' => array(
-                            'Code' => array(
-                                'Value' => 'PO',
-                                'CodingSystem' => 'RouteOfAdministration'
-                            )
-                        ),
-                        'Frequency' => array(
-                            'Value' => 'BID'
-                        )
-                    )
-                )
-            )
-        ),
-        array( // Medication 4
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'DateTimeRange' => array(
-                    'BeginRange' => array(
-                        'ExactDateTime' => '2000-03-28'
-                    )
-                )
-            ),
-            'Status' => array(
-                'Text' => 'Active'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Prednisone',
-                    'Code' => array(
-                        'Value' => '312615',
-                        'CodingSystem' => 'RxNorm'
-                    )
-                ),
-                'Strength' => array(
-                    'Value' => '20',
-                    'Units' => array(
-                        'Unit' => 'MG'
-                    )
-                ),
-                'Form' => array(
-                    'Text' => 'TABLET'
-                )
-            ),
-            'Directions' => array(
-                'Direction' => array(
-                    array( // Direction 1
-                        'Dose' => array(
-                            'Value' => '1'
-                        ),
-                        'Route' => array(
-                            'Code' => array(
-                                'Value' => 'PO',
-                                'CodingSystem' => 'RouteOfAdministration'
-                            )
-                        ),
-                        'Frequency' => array(
-                            'Value' => 'Daily'
-                        )
-                    )
-                )
-            )
-        ),
-        array( //Medication 5
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'DateTimeRange' => array(
-                    'BeginRange' => array(
-                        'ExactDateTime' => '2000-03-28'
                     ),
-                    'EndRange' => array(
-                        'ExactDateTime' => '2000-04-04'
-                    )
-                )
-            ),
-            'Status' => array(
-                'Text' => 'No Longer Active'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Cephalexin',
-                    'Code' => array(
-                        'Value' => '197454',
-                        'CodingSystem' => 'RxNorm'
+                    'Form' => array(
+                        'Text' => ($item['take_pills'] ? 'TABLET' : '')
                     )
                 ),
-                'BrandName' => array(
-                    'Text' => 'Keflex'
-                ),
-                'Strength' => array(
-                    'Value' => '500',
-                    'Units' => array(
-                        'Unit' => 'MG'
-                    )
-                ),
-                'Form' => array(
-                    'Text' => 'TABLET'
-                )
-            ),
-            'Directions' => array(
-                'Direction' => array(
-                    array( // Direction 1
-                        'Dose' => array(
-                            'Value' => '1'
-                        ),
-                        'Route' => array(
-                            'Code' => array(
-                                'Value' => 'PO',
-                                'CodingSystem' => 'RouteOfAdministration'
-                            )
-                        ),
-                        'Frequency' => array(
-                            'Value' => 'QID'
-                        ),
-                        'Indication' => array(
-                            'Problem' => array(
-                                'CCRDocumentObjectID' => UUID::v4(),
-                                'Description' => array(
-                                    'Text' => 'Bronchitis',
-                                    'Code' => array(
-                                        'Value' => '32398004',
-                                        'CodingSystem' => 'SNOMED CT'
-                                    )
-                                ),
-                                'Source' => array(
-                                    'Actor' => array(
-                                        'ActorID' => $softwareGUID
-                                    )
+                'Directions' => array(
+                    'Direction' => array(
+                        array( // Direction 1
+                            'Dose' => array(
+                                'Value' => $item['dose']
+                            ),
+                            'Route' => array(
+                                'Code' => array(
+                                    'Value' => $item['route'],
+                                    'CodingSystem' => 'RouteOfAdministration'
                                 )
                             ),
-                            'Source' => array(
-                                'Actor' => array(
-                                    'ActorID' => $softwareGUID
+                            'Frequency' => array(
+                                'Value' => $item['prescription_often']
+                            ),
+                            'Indication' => array(
+                                'PRNFlag' => array(
+                                    'Text' => 'Wheezing',
+                                    'Code' => array(
+                                        'Value' => '56018004',
+                                        'CodingSystem' => 'SNOMED CT'
+                                    )
                                 )
                             )
                         )
@@ -1210,9 +1088,8 @@ $medications = array(
                 )
             )
         )
-    )
-);
-
+    );
+}
 /**
  * Alerts section
  * --------------
@@ -1708,118 +1585,39 @@ $familyHistoryProblems = array(
  * minimum, all pertinent current and historical problems should be listed. CDA R2 represents problems as
  * Observations.
  */
-$problems = array(
-    'Problem' => array(
-        array( // Problem 1
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'ExactDateTime' => '1950'
-            ),
-            'Description' => array(
-                'Text' => 'Asthma',
-                'Code' => array(
-                    'Value' => '195967001',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Status' => array(
-                'Text' => 'Active',
-                'Code' => array(
-                    'Value' => '55561003',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            )
-        ),
-        array( // Problem 2
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'ExactDateTime' => '1950'
-            ),
-            'Description' => array(
-                'Text' => 'Pneumonia',
-                'Code' => array(
-                    'Value' => '233604007',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Episodes' => array(
-                'Episode' => array(
-                    array(
-                        'CCRDocumentObjectID' => UUID::v4(),
-                        'DateTime' => array(
-                            'ExactDateTime' => '1950'
-                        ),
-                        'Status' => array(
-                            'Text' => 'Resolved',
-                            'Code' => array(
-                                'Value' => '413322009',
-                                'CodingSystem' => 'SNOMED CT'
-                            )
-                        ),
-                        'Source' => array(
-                            'Actor' => array(
-                                'ActorID' => $softwareGUID
-                            )
-                        )
-                    ),
-                    array(
-                        'CCRDocumentObjectID' => UUID::v4(),
-                        'DateTime' => array(
-                            'ExactDateTime' => '1950'
-                        ),
-                        'Status' => array(
-                            'Text' => 'Resolved',
-                            'Code' => array(
-                                'Value' => '413322009',
-                                'CodingSystem' => 'SNOMED CT'
-                            )
-                        ),
-                        'Source' => array(
-                            'Actor' => array(
-                                'ActorID' => $softwareGUID
-                            )
-                        )
+$patientProblems = $Medical->getPatientProblemsByPid($_REQUEST['pid']);
+foreach($patientProblems as $item)
+{
+    $problems[] = array(
+        'Problem' => array(
+            array( // Problem 1
+                'CCRDocumentObjectID' => UUID::v4(),
+                'DateTime' => array(
+                    'ExactDateTime' => $item['begin_date']
+                ),
+                'Description' => array(
+                    'Text' => $item['code_text'],
+                    'Code' => array(
+                        'Value' => $item['diagnosis_code'],
+                        'CodingSystem' => $item['code']
+                    )
+                ),
+                'Status' => array(
+                    'Text' => 'Active',
+                    'Code' => array(
+                        'Value' => '55561003',
+                        'CodingSystem' => 'SNOMED CT'
+                    )
+                ),
+                'Source' => array(
+                    'Actor' => array(
+                        'ActorID' => $softwareGUID
                     )
                 )
             )
-        ),
-        array( // Problem 3
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'ExactDateTime' => '1997-01'
-            ),
-            'Description' => array(
-                'Text' => 'Myocardial infarction',
-                'Code' => array(
-                    'Value' => '22298006',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Status' => array(
-                'Text' => 'Resolved',
-                'Code' => array(
-                    'Value' => '413322009',
-                    'CodingSystem' => 'SNOMED CT'
-                )
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            )
         )
-    )
-);
+    );
+}
 
 /**
  * Functional Status section
@@ -2081,17 +1879,17 @@ $ccrArray = array(
     ),
     'Body' => array(
         'Payers' => $payers,
-        'AdvanceDirectives' => $advanceDirectives,
-        'Support' => $supporters,
-        'FunctionalStatus' => $functional,
+        // 'AdvanceDirectives' => $advanceDirectives,
+        // 'Support' => $supporters,
+        // 'FunctionalStatus' => $functional,
         'Problems' => $problems,
-        'FamilyHistory' => $familyHistoryProblems,
-        'SocialHistory' => $socialHistory,
+        // 'FamilyHistory' => $familyHistoryProblems,
+        // 'SocialHistory' => $socialHistory,
         'Alerts' => $alerts,
         'Medications' => $medications,
-        'MedicalEquipment' => $medicalEquipment,
-        'Immunizations' => $immunizations,
-        'VitalSigns' => $vitals,
+        // 'MedicalEquipment' => $medicalEquipment,
+        'Immunizations' => $immunizations, // DONE
+        'VitalSigns' => $vitals, // DONE
         'Results' => $results,
         'Procedures' => $procedures,
         'Encounters' => $encounters,

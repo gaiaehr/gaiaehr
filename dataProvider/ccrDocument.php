@@ -83,7 +83,7 @@ $actors = array(
                     )
                 ),
                 'DateOfBirth' => array(
-                    'ExactDateTime' => $patientData['DOB']
+                    'ExactDateTime' => date("Y-m-d", strtotime($patientData['DOB']))
                 ),
                 'Gender' => array(
                     'Text' => $patientData['sex'],
@@ -443,7 +443,7 @@ foreach($vitalSigns as $item)
                     'Type' => array(
                         'Text' => 'Assessment Time'
                     ),
-                    'ExactDateTime' => $item['date']
+                    'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                 ),
                 'Type' => array(
                     'Text' => 'Vital Signs',
@@ -467,7 +467,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Body height',
@@ -497,7 +497,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Body height',
@@ -527,7 +527,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Systolic BP',
@@ -557,7 +557,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Diastolic BP',
@@ -587,7 +587,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Body weight',
@@ -617,7 +617,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Body weight',
@@ -647,7 +647,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Pulse',
@@ -677,7 +677,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Respiration',
@@ -707,7 +707,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Temperature',
@@ -737,7 +737,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Temperature',
@@ -767,7 +767,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Oxygen saturation',
@@ -797,7 +797,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Head circumference',
@@ -827,7 +827,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'Waist circumference',
@@ -857,7 +857,7 @@ foreach($vitalSigns as $item)
                             'Type' => array(
                                 'Text' => 'Assessment Time'
                             ),
-                            'ExactDateTime' => $item['date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['date']))
                         ),
                         'Description' => array(
                             'Text' => 'BMI',
@@ -906,7 +906,7 @@ foreach($patientImmunizations as $item)
                     'Type' => array(
                         'Text' => 'Immunization Date'
                     ),
-                    'ExactDateTime' => $item['administered_date']
+                    'ExactDateTime' => date("Y-m-d", strtotime($item['administered_date']))
                 ),
                 'Source' => array(
                     'Actor' => array(
@@ -938,26 +938,6 @@ foreach($patientImmunizations as $item)
  */
 $medicalEquipment = array(
     'Equipment' => array(
-        array( // Equipment 1
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'ExactDateTime' => '1950'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Automatic implantable cardioverter/defibrillator',
-                    'Code' => array(
-                        'Value' => '72506001',
-                        'CodingSystem' => 'SNOMED CT'
-                    )
-                )
-            )
-        ),
         array( // Equipment 2
             'CCRDocumentObjectID' => UUID::v4(),
             'DateTime' => array(
@@ -988,26 +968,6 @@ $medicalEquipment = array(
                     )
                 )
             )
-        ),
-        array( // Equipment 3
-            'CCRDocumentObjectID' => UUID::v4(),
-            'DateTime' => array(
-                'ExactDateTime' => '1999'
-            ),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'Product' => array(
-                'ProductName' => array(
-                    'Text' => 'Wheelchair',
-                    'Code' => array(
-                        'Value' => '58938008',
-                        'CodingSystem' => 'SNOMED CT'
-                    )
-                )
-            )
         )
     )
 );
@@ -1032,10 +992,10 @@ foreach($patientMedications as $item)
                 'DateTime' => array(
                     'DateTimeRange' => array(
                         'BeginRange' => array(
-                            'ExactDateTime' => $item['begin_date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['begin_date']))
                         ),
                         'EndRange' => array(
-                            'ExactDateTime' => $item['end_date']
+                            'ExactDateTime' => date("Y-m-d", strtotime($item['end_date']))
                         )
                     )
                 ),
@@ -1362,7 +1322,7 @@ $socialHistory = array(
  */
 $familyHistoryProblems = array(
     'FamilyProblemHistory' => array(
-        array( // Fam. Problem 1
+        array( // Fam. Problem Loop
             'CCRDocumentObjectID' => UUID::v4(),
             'Source' => array(
                 'Actor' => array(
@@ -1432,148 +1392,6 @@ $familyHistoryProblems = array(
                     )
                 )
             )
-        ),
-        array(
-            'CCRDocumentObjectID' => UUID::v4(),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'FamilyMember' => array(
-                'ActorID' =>$familyMemberLink1,
-                'ActorRole' => array(
-                    'Text' => 'Father'
-                ),
-                'HealthStatus' => array(
-                    'Description' => array(
-                        'Text' => 'Deceased'
-                    ),
-                    'CauseOfDeath' => 'No',
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    )
-                ),
-                'Source' => array(
-                    'Actor' => array(
-                        'ActorID' => $softwareGUID
-                    )
-                )
-            ),
-            'Problem' => array(
-                'Description' => array(
-                    'Text' => 'Hypertension',
-                    'Code' => array(
-                        'Value' => '59621000',
-                        'CodingSystem' => 'SNOMED CT'
-                    )
-                ),
-                'Episodes' => array(
-                    'Number' => '1',
-                    'Episode' => array(
-                        'CCRDocumentObjectID' => UUID::v4(),
-                        'DateTime' => array(
-                            'Type' => array(
-                                'Text' => 'Age At Onset'
-                            ),
-                            'Age' => array(
-                                'Value' => '40',
-                                'Units' => array(
-                                    'Unit' => 'Years'
-                                )
-                            )
-                        ),
-                        'Source' => array(
-                            'Actor' => array(
-                                'ActorID' => $softwareGUID
-                            )
-                        )
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    )
-                ),
-                'Source' => array(
-                    'Actor' => array(
-                        'ActorID' => $softwareGUID
-                    )
-                )
-            )
-        ),
-        array(
-            'CCRDocumentObjectID' => UUID::v4(),
-            'Source' => array(
-                'Actor' => array(
-                    'ActorID' => $softwareGUID
-                )
-            ),
-            'FamilyMember' => array(
-                'ActorID' =>$familyMemberLink2,
-                'ActorRole' => array(
-                    'Text' => 'Mother'
-                ),
-                'HealthStatus' => array(
-                    'Description' => array(
-                        'Text' => 'Alive And Well'
-                    ),
-                    'CauseOfDeath' => 'No',
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    )
-                ),
-                'Source' => array(
-                    'Actor' => array(
-                        'ActorID' => $softwareGUID
-                    )
-                )
-            ),
-            'Problem' => array(
-                'Description' => array(
-                    'Text' => 'Asthma',
-                    'Code' => array(
-                        'Value' => '195967001',
-                        'CodingSystem' => 'SNOMED CT'
-                    )
-                ),
-                'Episodes' => array(
-                    'Number' => '1',
-                    'Episode' => array(
-                        'CCRDocumentObjectID' => UUID::v4(),
-                        'DateTime' => array(
-                            'Type' => array(
-                                'Text' => 'Age At Onset'
-                            ),
-                            'Age' => array(
-                                'Value' => '30',
-                                'Units' => array(
-                                    'Unit' => 'Years'
-                                )
-                            )
-                        ),
-                        'Source' => array(
-                            'Actor' => array(
-                                'ActorID' => $softwareGUID
-                            )
-                        )
-                    ),
-                    'Source' => array(
-                        'Actor' => array(
-                            'ActorID' => $softwareGUID
-                        )
-                    )
-                ),
-                'Source' => array(
-                    'Actor' => array(
-                        'ActorID' => $softwareGUID
-                    )
-                )
-            )
         )
     )
 );
@@ -1593,7 +1411,7 @@ foreach($patientProblems as $item)
             array( // Problem 1
                 'CCRDocumentObjectID' => UUID::v4(),
                 'DateTime' => array(
-                    'ExactDateTime' => $item['begin_date']
+                    'ExactDateTime' => date("Y-m-d", strtotime($item['begin_date']))
                 ),
                 'Description' => array(
                     'Text' => $item['code_text'],
@@ -1855,7 +1673,7 @@ $ccrArray = array(
     ),
     'Version' => 'V1.0',
     'DateTime' => array(
-        'ExactDateTime' => date('Y-m-d TH:i:s')
+        'ExactDateTime' => date('Y-m-d')
     ),
     'Patient' => array(
         'ActorID' => $patientGUID
@@ -1882,22 +1700,22 @@ $ccrArray = array(
         // 'AdvanceDirectives' => $advanceDirectives,
         // 'Support' => $supporters,
         // 'FunctionalStatus' => $functional,
-        'Problems' => $problems,
+        //'Problems' => $problems,
         // 'FamilyHistory' => $familyHistoryProblems,
         // 'SocialHistory' => $socialHistory,
-        'Alerts' => $alerts,
-        'Medications' => $medications,
+        //'Alerts' => $alerts,
+        //'Medications' => $medications,
         // 'MedicalEquipment' => $medicalEquipment,
         'Immunizations' => $immunizations, // DONE
         'VitalSigns' => $vitals, // DONE
-        'Results' => $results,
-        'Procedures' => $procedures,
-        'Encounters' => $encounters,
-        'PlanOfCare' => $planOfCare,
-        'HealthCareProviders' => $healthProviders
+        //'Results' => $results,
+        //'Procedures' => $procedures,
+        //'Encounters' => $encounters,
+        //'PlanOfCare' => $planOfCare,
+        //'HealthCareProviders' => $healthProviders
     ),
-    'Actors' => $actors,
-    'References' => $references
+    'Actors' => $actors
+    //'References' => $references
 );
 
 /**

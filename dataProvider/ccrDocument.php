@@ -1426,8 +1426,8 @@ foreach($patientProblems as $item)
                 'Description' => array(
                     'Text' => $item['code_text'],
                     'Code' => array(
-                        'Value' => $item['diagnosis_code'],
-                        'CodingSystem' => $item['code']
+                        'Value' => $item['code'],
+                        'CodingSystem' => $item['code_type']
                     )
                 ),
                 'Status' => array(
@@ -1483,7 +1483,7 @@ $functional = array(
                 array(
                     'CCRDocumentObjectID' => UUID::v4(),
                     'DateTime' => array(
-                        'ExactDateTime' => '1999-11-07'
+                        'ExactDateTime'=> '1999-11-07'
                     ),
                     'Description' => array(
                         'Text' => 'Dependence on cane',
@@ -1710,7 +1710,7 @@ $ccrArray = array(
         // 'AdvanceDirectives' => $advanceDirectives,
         // 'Support' => $supporters,
         // 'FunctionalStatus' => $functional,
-        //'Problems' => $problems,
+        'Problems' => $problems, // DONE
         // 'FamilyHistory' => $familyHistoryProblems,
         // 'SocialHistory' => $socialHistory,
         //'Alerts' => $alerts,

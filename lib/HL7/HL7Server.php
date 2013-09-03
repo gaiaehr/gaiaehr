@@ -20,105 +20,78 @@
 error_reporting(E_ALL);
 set_time_limit(0);
 ob_implicit_flush();
-
 // ****************************************************** //
 // * Place here persistent logic ************************ //
 // ****************************************************** //
-
 $host   = $argv[1];
 $port   = $argv[2];
 $path   = $argv[3];
 $class  = $argv[4];
 $method = $argv[5];
 $site   = $argv[6];
-
 chdir($path);
 include_once("$class.php");
 $cls = new $class($site);
-
 // ****************************************************** //
 // * End persistent logic ******************************* //
 // ****************************************************** //
-
-
 if (($sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) === false) {
 	echo "socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n";
 }
-
 if (socket_bind($sock, $host, $port) === false) {
 	echo "socket_bind() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
 }
-
 if (socket_listen($sock, 5) === false) {
 	echo "socket_listen() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
 }
-
 //clients array
 $clients = array();
-
 while(true){
-	usleep(50);
-
+	usleep(500);
 	$read = array();
 	$read[] = $sock;
-
 	$read = array_merge($read,$clients);
 	$null = null;
 	// Set up a blocking call to socket_select
 	if(@socket_select($read, $null, $null, $tv_sec = 5) < 1){
 		continue;
 	}
-
 	// Handle new Connections
 	if (in_array($sock, $read)) {
-
 		if (($msgsock = @socket_accept($sock)) === false) {
 			echo "socket_accept() failed: reason: " . socket_strerror(socket_last_error($sock)) . "\n";
 			break;
 		}
 		$clients[] = $msgsock;
 		$key = array_keys($clients, $msgsock);
-
 	}
-
 	// Handle Input
 	foreach ($clients as $key => $client) { // for each client
 		if (in_array($client, $read)) {
-
 			$data = @socket_read($client, 1024*10);
 
-
-			if (!$data = trim($data)) {
+			if (!$data) {
 				continue;
 			}
-
 			if ($data == 'quit') {
 				unset($clients[$key]);
 				socket_close($client);
 				break;
 			}
-
 			if ($data == 'shutdown') {
 				socket_close($client);
 				break 2;
 			}
-
 			// ****************************************************** //
 			// ** Place message logic ******************************* //
 			// ****************************************************** //
-
-
 			$ack = call_user_func(array($cls, $method), $data);
-
-
 			// ****************************************************** //
 			// ** End message logic ********************************* //
 			// ****************************************************** //
-
 			set_time_limit(0);
 			@socket_write($client, $ack, strlen($ack));
 		}
 	}
 };
-
 socket_close($sock);

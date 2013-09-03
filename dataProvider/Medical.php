@@ -282,6 +282,7 @@ class Medical
 	{
 		return $this->getPatientLabsResultsByPid($params->parent_id);
 	}
+
 	public function getPatientLabsResultsByPid($pid)
 	{
 		$records = array();
@@ -719,11 +720,6 @@ class Medical
 		foreach($params->immunizations As $i){
 			$data['immunizations'][] = $this->i->load($i)->one();
 		}
-
-//		include_once('');
-
-
-
 
 		return $data;
 

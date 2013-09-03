@@ -319,12 +319,13 @@ Ext.define('App.view.administration.Practice', {
 				{
 					text:i18n('add_new_pharmacy'),
 					iconCls:'save',
-					action:'pharmacyGrid',
+					action:'pharmacy',
 					scope:me,
 					handler:me.onNewRec
 				}
 			]
 		});
+
 		me.laboratoryGrid = Ext.create('Ext.grid.Panel', {
 			title:i18n('laboratories'),
 			store:me.laboratoryStore,
@@ -566,7 +567,7 @@ Ext.define('App.view.administration.Practice', {
 				{
 					text:i18n('add_new_laboratory'),
 					iconCls:'save',
-					action:'pharmacyGrid',
+					action:'laboratory',
 					scope:me,
 					handler:me.onNewRec
 				}
@@ -818,7 +819,7 @@ Ext.define('App.view.administration.Practice', {
 				{
 					text:i18n('add_new_insurance'),
 					iconCls:'save',
-					action:'InsuranceGrid',
+					action:'insurance',
 					scope:me,
 					handler:me.onNewRec
 				}
@@ -839,45 +840,45 @@ Ext.define('App.view.administration.Practice', {
 		//			]
 		//
 		//		});
-		me.x12ParnersGrid = Ext.create('Ext.grid.Panel', {
-			title:i18n('x12_partners_clearing_houses'),
-			//store     : me.x12PartnersStore,
-			border:false,
-			frame:false,
-			viewConfig:{
-				stripeRows:true
-			},
-			columns:[
-				{
-					text:i18n('name'),
-					flex:1,
-					sortable:true,
-					dataIndex:'name'
-				},
-				{
-					text:i18n('sender_id'),
-					flex:1,
-					width:100,
-					sortable:true,
-					dataIndex:'phone'
-				},
-				{
-					text:i18n('receiver_id'),
-					flex:1,
-					width:100,
-					sortable:true,
-					dataIndex:'phone'
-				},
-				{
-					text:i18n('version'),
-					flex:1,
-					width:100,
-					sortable:true,
-					dataIndex:'phone'
-				}
-			]
-
-		});
+//		me.x12ParnersGrid = Ext.create('Ext.grid.Panel', {
+//			title:i18n('x12_partners_clearing_houses'),
+//			//store     : me.x12PartnersStore,
+//			border:false,
+//			frame:false,
+//			viewConfig:{
+//				stripeRows:true
+//			},
+//			columns:[
+//				{
+//					text:i18n('name'),
+//					flex:1,
+//					sortable:true,
+//					dataIndex:'name'
+//				},
+//				{
+//					text:i18n('sender_id'),
+//					flex:1,
+//					width:100,
+//					sortable:true,
+//					dataIndex:'phone'
+//				},
+//				{
+//					text:i18n('receiver_id'),
+//					flex:1,
+//					width:100,
+//					sortable:true,
+//					dataIndex:'phone'
+//				},
+//				{
+//					text:i18n('version'),
+//					flex:1,
+//					width:100,
+//					sortable:true,
+//					dataIndex:'phone'
+//				}
+//			]
+//
+//		});
 		// *************************************************************************************
 		// Tab Panel
 		// *************************************************************************************
@@ -886,52 +887,64 @@ Ext.define('App.view.administration.Practice', {
 			items:[
 				me.pharmacyGrid,
 				me.laboratoryGrid,
-				me.InsuranceGrid,
+				me.InsuranceGrid
 //				me.InsuranceNumbersGrid,
-				me.x12ParnersGrid, {
-					title:i18n('hl7_viewer'),
-					frame:false,
-					border:false,
-					items:[
-						{
-
-						}
-					],
-					tbar:[
-						{
-							xtype:'button',
-							text:i18n('clear_hl7_data'),
-							iconCls:'save',
-							handler:function(){
-								me.onWinOpen();
-							}
-						},
-						'-',
-						{
-							xtype:'button',
-							text:i18n('parse_hl7'),
-							iconCls:'save',
-							handler:function(){
-								me.onWinOpen();
-							}
-						}
-					]
-				}]
+//				me.x12ParnersGrid,
+//				{
+//					title:i18n('hl7_viewer'),
+//					frame:false,
+//					border:false,
+//					items:[
+//						{
+//
+//						}
+//					],
+//					tbar:[
+//						{
+//							xtype:'button',
+//							text:i18n('clear_hl7_data'),
+//							iconCls:'save',
+//							handler:function(){
+//								me.onWinOpen();
+//							}
+//						},
+//						'-',
+//						{
+//							xtype:'button',
+//							text:i18n('parse_hl7'),
+//							iconCls:'save',
+//							handler:function(){
+//								me.onWinOpen();
+//							}
+//						}
+//					]
+//				}
+			]
 		});
 		me.pageBody = [me.praticePanel];
 		me.callParent(arguments);
 	},
 	onNewRec:function(btn){
-		var me = this, grid = btn.up('grid'), store = grid.store, model = btn.action, plugin = grid.editingPlugin, newModel;
+		var me = this,
+			grid = btn.up('grid'),
+			store = grid.store,
+			model = btn.action,
+			plugin = grid.editingPlugin,
+			newModel;
+
 		say(grid);
 		say(plugin);
 		say(model);
 		plugin.cancelEdit();
-		newModel = Ext.ModelManager.create({
-			active:1
-		}, model);
-		say(newModel);
-		store.insert(0, newModel);
+
+//		newModel = Ext.ModelManager.create({
+//			active:1
+//		}, model);
+//		say(newModel);
+
+//		say(store);
+
+		store.insert(0, {active:1});
 		plugin.startEdit(0, 0);
 	},
 	/**

@@ -53,7 +53,7 @@ class Practice extends MatchaHelper
     public function addPharmacy(stdClass $params)
     {
         if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
-        $params->id = $this->getNextPharmacyInsuranceId();
+//        $params->id = $this->getNextPharmacyInsuranceId();
         $data = get_object_vars($params);
         $row['id'] = $data['id'];
         $row['name'] = $data['name'];
@@ -99,7 +99,7 @@ class Practice extends MatchaHelper
     public function addLaboratory(stdClass $params)
     {
         if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
-        $params->id = $this->getNextPharmacyInsuranceId();
+//        $params->id = $this->getNextPharmacyInsuranceId();
         $data = get_object_vars($params);
         $row['id'] = $data['id'];
         $row['name'] = $data['name'];
@@ -116,11 +116,12 @@ class Practice extends MatchaHelper
     {
         if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
         $data = get_object_vars($params);
+        $row['id'] = $data['id'];
         $row['name'] = $data['name'];
         $row['transmit_method'] = $data['transmit_method'];
         $row['email'] = $data['email'];
         $row['active'] = $data['active'];
-        $this->Laboratory->save($row);
+        $this->Laboratory->save((object)$row);
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
         return $params;
@@ -145,18 +146,21 @@ class Practice extends MatchaHelper
     public function addInsurance(stdClass $params)
     {
         if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
-        $params->id = $this->getNextPharmacyInsuranceId();
+//        $params->id = $this->getNextPharmacyInsuranceId();
         $data = get_object_vars($params);
-        $row['id'] = $data['id'];
-        $row['name'] = $data['name'];
-        $row['attn'] = $data['attn'];
-        $row['cms_id'] = $data['cms_id'];
-        $row['freeb_type'] = $data['freeb_type'];
-        $row['x12_receiver_id'] = $data['x12_receiver_id'];
-        $row['x12_default_partner_id'] = $data['x12_default_partner_id'];
-        $row['alt_cms_id'] = $data['alt_cms_id'];
-        $row['active'] = $data['active'];
-        $this->Insurance->save($row);
+
+	    $o = new stdClass();
+	    $o->id = $data['id'];
+	    $o->name = $data['name'];
+	    $o->attn = $data['attn'];
+	    $o->cms_id = $data['cms_id'];
+	    $o->freeb_type = $data['freeb_type'];
+	    $o->x12_receiver_id = $data['x12_receiver_id'];
+	    $o->x12_default_partner_id = $data['x12_default_partner_id'];
+	    $o->alt_cms_id = $data['alt_cms_id'];
+	    $o->active = $data['active'];
+        $this->Insurance->save($o);
+
         $params = $this->addAddress($params);
         $params = $this->addPhones($params);
         return $params;
@@ -174,7 +178,7 @@ class Practice extends MatchaHelper
         $row['x12_default_partner_id'] = $data['x12_default_partner_id'];
         $row['alt_cms_id'] = $data['alt_cms_id'];
         $row['active'] = $data['active'];
-        $this->Insurance->save($row);
+        $this->Insurance->save((object)$row);
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
         return $params;
@@ -193,16 +197,17 @@ class Practice extends MatchaHelper
     private function addAddress($params)
     {
         if($this->Address == NULL) $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
-        $data = get_object_vars($params);
-        $arow['line1'] = $data['line1'];
-        $arow['line2'] = $data['line2'];
-        $arow['city'] = $data['city'];
-        $arow['state'] = $data['state'];
-        $arow['zip'] = $data['zip'];
-        $arow['plus_four'] = $data['plus_four'];
-        $arow['country'] = $data['country'];
-        $arow['foreign_id'] = $data['id'];
-        $this->Address->save($arow);
+//        $data = get_object_vars($params);
+	    $o = new stdClass();
+	    $o->line1 = $params->line1;
+        $o->line2 = $params->line2;
+        $o->city = $params->city;
+        $o->state = $params->state;
+        $o->zip = $params->zip;
+        $o->plus_four = $params->plus_four;
+        $o->country = $params->country;
+        $o->foreign_id = $params->id;
+        $this->Address->save($o);
         $params->address_full = $params->line1 . ' ' . $params->line2 . ' ' . $params->city . ',' . $params->state . ' ' . $params->zip . '-' . $params->plus_four . ' ' . $params->country;
         return $params;
     }
@@ -210,15 +215,16 @@ class Practice extends MatchaHelper
     private function updateAddress($params)
     {
         if($this->Address == NULL) $this->Address = MatchaModel::setSenchaModel('App.model.administration.Address');
-        $data = get_object_vars($params);
-        $arow['line1'] = $data['line1'];
-        $arow['line2'] = $data['line2'];
-        $arow['city'] = $data['city'];
-        $arow['state'] = $data['state'];
-        $arow['zip'] = $data['zip'];
-        $arow['plus_four'] = $data['plus_four'];
-        $arow['country'] = $data['country'];
-        $this->Address->save($arow);
+//        $data = get_object_vars($params);
+	    $o = new stdClass();
+	    $o->line1 = $params->line1;
+	    $o->line2 = $params->line2;
+	    $o->city = $params->city;
+	    $o->state = $params->state;
+	    $o->zip = $params->zip;
+	    $o->plus_four = $params->plus_four;
+        $o->country = $params->country;
+        $this->Address->save($o);
         $params->address_full = $params->line1 . ' ' . $params->line2 . ' ' . $params->city . ',' . $params->state . ' ' . $params->zip . '-' . $params->plus_four . ' ' . $params->country;
         return $params;
     }
@@ -267,8 +273,8 @@ class Practice extends MatchaHelper
         $frow['number'] = $data['fax_number'];
         $frow['type'] = 5;
         $frow['foreign_id'] = $data['id'];
-        $this->Phone->save($prow);
-        $this->Phone->save($frow);
+        $this->Phone->save((object)$prow);
+        $this->Phone->save((object)$frow);
         $params->phone_full = $prow['country_code'] . ' ' . $prow['area_code'] . '-' . $prow['prefix'] . '-' . $prow['number'];
         $params->fax_full = $frow['country_code'] . ' ' . $frow['area_code'] . '-' . $frow['prefix'] . '-' . $frow['number'];
         return $params;
@@ -284,28 +290,29 @@ class Practice extends MatchaHelper
         $prow['prefix'] = $data['phone_prefix'];
         $prow['number'] = $data['phone_number'];
         $prow['type'] = 2;
-        $frow['foreign_id'] =  $data['id'];
+
+	    $frow['foreign_id'] =  $data['id'];
         $frow['country_code'] = $data['fax_country_code'];
         $frow['area_code'] = $data['fax_area_code'];
         $frow['prefix'] = $data['fax_prefix'];
         $frow['number'] = $data['fax_number'];
         $prow['type'] = 5;
-        $this->Phone->save($prow);
-        $this->Phone->save($frow);
+        $this->Phone->save((object)$prow);
+        $this->Phone->save((object)$frow);
         $params->phone_full = $prow['country_code'] . ' ' . $prow['area_code'] . '-' . $prow['prefix'] . '-' . $prow['number'];
         $params->fax_full = $frow['country_code'] . ' ' . $frow['area_code'] . '-' . $frow['prefix'] . '-' . $frow['number'];
         return $params;
     }
 
-    private function getNextPharmacyInsuranceId()
-    {
-        if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
-        if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
-        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
-        $prec = $this->Pharmacy->nextId();
-        $lrec = $this->Laboratory->nextId();
-        $irec = $this->Insurance->nextId();
-        return max($prec['maxid'], $lrec['maxid'], $irec['maxid']) + 1;
-    }
+//    private function getNextPharmacyInsuranceId()
+//    {
+//        if($this->Pharmacy == NULL) $this->Pharmacy = MatchaModel::setSenchaModel('App.model.Pharmacy');
+//        if($this->Laboratory == NULL) $this->Laboratory = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
+//        if($this->Insurance == NULL) $this->Insurance = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
+//        $prec = $this->Pharmacy->nextId();
+//        $lrec = $this->Laboratory->nextId();
+//        $irec = $this->Insurance->nextId();
+//        return max($prec['maxid'], $lrec['maxid'], $irec['maxid']) + 1;
+//    }
 
 }

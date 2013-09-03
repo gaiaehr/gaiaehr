@@ -1009,14 +1009,14 @@ foreach($patientMedications as $item)
                 ),
                 'Product' => array(
                     'ProductName' => array(
-                        'Text' => 'Albuterol inhalant',
+                        'Text' => $item['STR'],
                         'Code' => array(
-                            'Value' => '307782',
+                            'Value' => $item['RXCUI'],
                             'CodingSystem' => 'RxNorm'
                         )
                     ),
                     'Form' => array(
-                        'Text' => ($item['take_pills'] ? 'TABLET' : '')
+                        'Text' => $item['form']
                     )
                 ),
                 'Directions' => array(

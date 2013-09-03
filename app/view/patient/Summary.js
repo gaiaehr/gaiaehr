@@ -712,18 +712,18 @@ Ext.define('App.view.patient.Summary', {
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
                                     app.AuditLog('Patient summary CCR viewed');
                                 }
-                            },
-                            {
-                                text: i18n('view_ccd'),
-                                handler:function(){
-                                    me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/ccdDocument.php?action=viewccd&pid=' + me.pid
-                                    }));
-                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                                    app.AuditLog('Patient summary CCD viewed');
-                                }
-                            }
+                            }//,
+                            //{
+                            //    text: i18n('view_ccd'),
+                            //    handler:function(){
+                            //        me.reportPanel.remove(me.miframe);
+                            //        me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                            //            src: globals.url+'/dataProvider/ccdDocument.php?action=viewccd&pid=' + me.pid
+                            //        }));
+                            //        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                            //        app.AuditLog('Patient summary CCD viewed');
+                            //    }
+                            //}
                         ]
                     },'-',
                     {
@@ -742,18 +742,18 @@ Ext.define('App.view.patient.Summary', {
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
                                     app.AuditLog('Patient summary raw CCR viewed');
                                 }
-                            },
-                            {
-                                text: i18n('raw_ccd'),
-                                handler:function(){
-                                    me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/ccdDocument.php?action=rawccd&pid=' + me.pid
-                                    }));
-                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                                    app.AuditLog('Patient summary raw CCD viewed');
-                                }
-                            }
+                            }//,
+                            //{
+                            //    text: i18n('raw_ccd'),
+                            //    handler:function(){
+                            //        me.reportPanel.remove(me.miframe);
+                            //        me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                            //            src: globals.url+'/dataProvider/ccdDocument.php?action=rawccd&pid=' + me.pid
+                            //        }));
+                            //        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                            //        app.AuditLog('Patient summary raw CCD viewed');
+                            //    }
+                            //}
                         ]
                     },'-',
                     {
@@ -772,18 +772,18 @@ Ext.define('App.view.patient.Summary', {
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
                                     app.AuditLog('Patient summary CCR exported');
                                 }
-                            },
-                            {
-                                text: i18n('export_ccd'),
-                                handler:function(){
-                                    me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/ccdDocument.php?action=ccdexport&pid=' + me.pid
-                                    }));
-                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                                    app.AuditLog('Patient summary CCD exported');
-                                }
-                            }
+                            }//,
+                            //{
+                            //    text: i18n('export_ccd'),
+                            //    handler:function(){
+                            //        me.reportPanel.remove(me.miframe);
+                            //        me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
+                            //            src: globals.url+'/dataProvider/ccdDocument.php?action=ccdexport&pid=' + me.pid
+                            //        }));
+                            //        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+                            //        app.AuditLog('Patient summary CCD exported');
+                            //    }
+                            //}
                         ]
                     },'-',
                     {

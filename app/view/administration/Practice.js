@@ -295,7 +295,7 @@ Ext.define('App.view.administration.Practice', {
 					dataIndex:'phone_full'
 				},
 				{
-					header:i18n('Fax'),
+					header:i18n('fax'),
 					width:120,
 					sortable:true,
 					dataIndex:'fax_full'
@@ -543,7 +543,7 @@ Ext.define('App.view.administration.Practice', {
 					dataIndex:'phone_full'
 				},
 				{
-					header:i18n('Fax'),
+					header:i18n('fax'),
 					width:120,
 					sortable:true,
 					dataIndex:'fax_full'
@@ -790,7 +790,7 @@ Ext.define('App.view.administration.Practice', {
 					dataIndex:'address_full'
 				},
 				{
-					header:i18n('Phone'),
+					header:i18n('phone'),
 					width:120,
 					sortable:true,
 					dataIndex:'phone_full'

@@ -24,9 +24,6 @@ if (!isset($_SESSION))
     session_cache_limiter('private');
 }
 
-$_SESSION['url'] = 'http://localhost/gaiaehr';
-$_SESSION['root'] = '/var/www/gaiaehr';
-
 include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
 include_once ($_SESSION['root'] . '/classes/UUID.php');
 include_once ($_SESSION['root'] . '/classes/Array2XML.php');
@@ -348,7 +345,10 @@ $procedures = array(
  * observations. The section may contain all results for the period of time being summarized, but should
  * include notable results such as abnormal values or relevant trends.
  */
-$patientResult = $Medical->getPatientLabsResults($_REQUEST['pid']);
+$param = new stdClass();
+$param->parent_id = $_REQUEST['pid'];
+$patientResult = $Medical->getPatientLabsResults($param);
+$results[] = array();
 foreach($patientResult as $item)
 {
     $results[] = array(
@@ -437,6 +437,7 @@ foreach($patientResult as $item)
  * baseline, or relevant trends.
  */
 $vitalSigns = $Encounter->getVitalsByPid($_REQUEST['pid']);
+$vitals = array();
 foreach($vitalSigns as $item)
 {
     $vitals[] = array(
@@ -900,6 +901,7 @@ foreach($vitalSigns as $item)
  * immunization history that is relevant to the period of time being summarized.
  */
 $patientImmunizations = $Medical->getPatientImmunizations($_REQUEST['pid']);
+$immunizations = array();
 foreach($patientImmunizations as $item)
 {
     $immunizations[] = array(
@@ -986,7 +988,10 @@ $medicalEquipment = array(
  * include a patient’s prescription history, and enables the determination of the source of a medication list
  * (e.g. from a pharmacy system vs. from the patient).
  */
-$patientMedications = $Medical->getPatientMedications($_REQUEST['pid']);
+$param = new stdClass();
+$param->pid = $_REQUEST['pid'];
+$patientMedications = $Medical->getPatientMedications($param);
+$medications = array();
 foreach($patientMedications as $item)
 {
     $medications[] = array(
@@ -1408,6 +1413,7 @@ $familyHistoryProblems = array(
  * Observations.
  */
 $patientProblems = $Medical->getPatientProblemsByPid($_REQUEST['pid']);
+$problems = array();
 foreach($patientProblems as $item)
 {
     $problems[] = array(
@@ -1712,11 +1718,11 @@ $ccrArray = array(
         // 'MedicalEquipment' => $medicalEquipment,
         'Immunizations' => $immunizations, // DONE
         'VitalSigns' => $vitals, // DONE
-        'Results' => $results,
+        'Results' => $results//,
         //'Procedures' => $procedures,
         //'Encounters' => $encounters,
         //'PlanOfCare' => $planOfCare,
-        'HealthCareProviders' => $healthProviders
+        //'HealthCareProviders' => $healthProviders
     ),
     'Actors' => $actors
     //'References' => $references

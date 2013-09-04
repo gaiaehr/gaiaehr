@@ -732,36 +732,6 @@ Ext.define('App.view.patient.Summary', {
                         defaultType:'button',
                         items:[
                             {
-                                text: i18n('raw_ccr'),
-                                margin:'0 0 5 0',
-                                handler:function(){
-                                    me.reportPanel.remove(me.miframe);
-                                    me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/ccrDocument.php?action=rawccr&pid=' + me.pid
-                                    }));
-                                    // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                                    app.AuditLog('Patient summary raw CCR viewed');
-                                }
-                            }//,
-                            //{
-                            //    text: i18n('raw_ccd'),
-                            //    handler:function(){
-                            //        me.reportPanel.remove(me.miframe);
-                            //        me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                            //            src: globals.url+'/dataProvider/ccdDocument.php?action=rawccd&pid=' + me.pid
-                            //        }));
-                            //        // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                            //        app.AuditLog('Patient summary raw CCD viewed');
-                            //    }
-                            //}
-                        ]
-                    },'-',
-                    {
-                        xtype:'container',
-                        layout:'vbox',
-                        defaultType:'button',
-                        items:[
-                            {
                                 text: i18n('export_ccr'),
                                 margin:'0 0 5 0',
                                 handler:function(){

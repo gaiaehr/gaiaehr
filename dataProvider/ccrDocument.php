@@ -1730,14 +1730,48 @@ $ccrArray = array(
     //'References' => $references
 );
 
-/**
- * Build the CCR XML Object
- */
-Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'/lib/CCRCDA/schema/ccr.xsl"'));
-$xml = Array2XML::createXML('ContinuityOfCareRecord', $ccrArray);
 
 if($_REQUEST['action'] == 'viewccr')
 {
+    /**
+     * Build the CCR XML Object
+     */
+    Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'/lib/CCRCDA/schema/ccr.xsl"'));
+    $xml = Array2XML::createXML('ContinuityOfCareRecord', $ccrArray);
+
+    /**
+     * Show the document inline
+     */
     header('Content-type: application/xml');
     echo $xml->saveXML();
+}
+
+if($_REQUEST['action'] == 'ccrexport')
+{
+    /**
+     * Build the CCR XML Object
+     */
+    Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="ccr.xsl"'));
+    $xml = Array2XML::createXML('ContinuityOfCareRecord', $ccrArray);
+
+    /**
+     * Create a ZIP archive for delivery
+     */
+    $zip = new ZipArchive();
+    $tempDirectory = $_SESSION['root']."/temp/";
+    $filename = $_REQUEST['pid'] . "-".$patientData['fname'].$patientData['lname'];
+    if ($zip->open($tempDirectory.$filename.".zip", ZipArchive::CREATE)!==TRUE)
+    {
+        exit("cannot open <$filename.zip>\n");
+    }
+    $zip->addFromString($filename.".xml",$xml->saveXML());
+    $zip->addFromString("ccr.xsl",  file_get_contents($_SESSION['root'].'/lib/CCRCDA/schema/ccr.xsl'));
+    $zip->close();
+
+    // Stream the file to the client
+    header("Content-Type: application/zip");
+    header("Content-Length: " . filesize($tempDirectory.$filename.".zip"));
+    header("Content-Disposition: attachment; filename=\"$filename.zip\"");
+    readfile($tempDirectory.$filename.".zip");
+    unlink($tempDirectory.$filename.".zip");
 }

@@ -333,6 +333,7 @@ Ext.define('App.view.messages.Messages',
 		this.msgForm.getComponent('bodyMsg').setReadOnly(true);
 		this.onNewMessage();
 	},
+
 	/**
 	 * onNewMessage will reset the form and load a new model
 	 * with message_status value set to New, and
@@ -350,8 +351,8 @@ Ext.define('App.view.messages.Messages',
         );
 		this.action('new');
 	},
+
 	/**
-	 *
 	 * @param btn
 	 */
 	onSend : function(btn)
@@ -380,8 +381,8 @@ Ext.define('App.view.messages.Messages',
 			this.msg('Oops!', i18n('please_complete_all_required_fields') + '.');
 		}
 	},
+
 	/**
-	 *
 	 * onDelete will show an alert msg to confirm,
 	 * delete the message and prepare the form for a new message
 	 */

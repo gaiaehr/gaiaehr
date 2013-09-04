@@ -608,6 +608,10 @@ Ext.define('App.view.Viewport', {
         me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
+        if(acl['access_encounter_checkout']){
+            me.checkoutWindow = Ext.create('App.view.patient.windows.EncounterCheckOut');
+        }
+
         me.layout = {
             type: 'border',
             padding: 3

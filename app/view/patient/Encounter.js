@@ -28,6 +28,7 @@ Ext.define('App.view.patient.Encounter', {
 	convercionMethod: 'english',
     pid:null,
     eid:null,
+
     currEncounterStartDate:null,
     initComponent:function(){
         var me = this;
@@ -51,13 +52,13 @@ Ext.define('App.view.patient.Encounter', {
         });
         me.encounterEventHistoryStore = Ext.create('App.store.administration.AuditLog');
 
-        /**
-         * Encounter Checkout window
-         * @type {*}
-         */
-        if(acl['access_encounter_checkout']){
-	        me.checkoutWindow = Ext.create('App.view.patient.windows.EncounterCheckOut',{enc:me});
-        }
+//        /**
+//         * Encounter Checkout window
+//         * @type {*}
+//         */
+//        if(acl['access_encounter_checkout']){
+//	        app.checkoutWindow = app.checkoutWindow;
+//        }
 
         if(me.renderAdministrative){
             me.centerPanel = Ext.create('Ext.tab.Panel', {
@@ -469,11 +470,12 @@ Ext.define('App.view.patient.Encounter', {
     onCheckout:function(){
         var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')';
 
-	    this.checkoutWindow.pid = app.patient.pid;
-	    this.checkoutWindow.eid = app.patient.eid;
+	    app.checkoutWindow.enc = this;
+//	    app.checkoutWindow.pid = app.patient.pid;
+//	    app.checkoutWindow.eid = app.patient.eid;
 
-	    this.checkoutWindow.setTitle(title);
-	    this.checkoutWindow.show();
+	    app.checkoutWindow.setTitle(title);
+	    app.checkoutWindow.show();
     },
 
 
@@ -721,7 +723,7 @@ Ext.define('App.view.patient.Encounter', {
         var me = this, form, values;
         me.passwordVerificationWin(function(btn, password){
             if(btn == 'ok'){
-                form = me.checkoutWindow.down('form').getForm();
+                form = app.checkoutWindow.down('form').getForm();
                 values = form.getValues();
                 values.eid = me.eid;
                 values.pid = me.pid;
@@ -1156,7 +1158,7 @@ Ext.define('App.view.patient.Encounter', {
             if(me.CurrentProceduralTerminology) buttons.concat(buttons, me.CurrentProceduralTerminology.query('button'));
             if(me.EncounterEventHistory) buttons.concat(buttons, me.EncounterEventHistory.query('button'));
             if(me.newEncounterWindow) buttons.concat(buttons, me.newEncounterWindow.query('button'));
-            if(me.checkoutWindow) buttons.concat(buttons, me.checkoutWindow.query('button'));
+            if(app.checkoutWindow) buttons.concat(buttons, app.checkoutWindow.query('button'));
             me.ButtonsToDisable = buttons;
         }
         return me.ButtonsToDisable;

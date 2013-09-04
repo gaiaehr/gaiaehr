@@ -28,6 +28,9 @@ Ext.define('App.view.administration.Practice', {
 	initComponent:function(){
 		var me = this;
 
+		me.defaultCountryCode = '+1';
+
+
         // *************************************************************************************
 		// Practice Model and Store
         // *************************************************************************************
@@ -64,6 +67,7 @@ Ext.define('App.view.administration.Practice', {
 		// -------------------------------------------------------------------------------------
 		// render function for Default Method column in the Pharmacy grid
 		// -------------------------------------------------------------------------------------
+
 		function transmit_method(val){
 			if(val == '1'){
 				return 'Print';
@@ -95,18 +99,18 @@ Ext.define('App.view.administration.Practice', {
 						{
 							xtype:'container',
 							layout:'hbox',
-							width:900,
+//							width:900,
 							items:[
 								{
 									xtype:'container',
-									width:450,
+									width:400,
 									layout:'anchor',
 									items:[
 										{
 											xtype:'textfield',
 											fieldLabel:i18n('name'),
 											name:'name',
-											allowBlank:false,
+											allowBlank:true,
 											width:385
 										},
 										{
@@ -162,12 +166,7 @@ Ext.define('App.view.administration.Practice', {
 									width:300,
 									layout:'anchor',
 									items:[
-										{
-											xtype:'textfield',
-											fieldLabel:i18n('email'),
-											name:'email',
-											width:275
-										},
+
 										{
 											xtype:'fieldcontainer',
 											layout:'hbox',
@@ -182,7 +181,7 @@ Ext.define('App.view.administration.Practice', {
 												},
 												{
 													xtype:'displayfield',
-													width:5,
+													width:6,
 													value:'('
 												},
 												{
@@ -192,7 +191,7 @@ Ext.define('App.view.administration.Practice', {
 												},
 												{
 													xtype:'displayfield',
-													width:5,
+													width:6,
 													value:')'
 												},
 												{
@@ -202,7 +201,7 @@ Ext.define('App.view.administration.Practice', {
 												},
 												{
 													xtype:'displayfield',
-													width:5,
+													width:7,
 													value:'-'
 												},
 												{
@@ -226,7 +225,7 @@ Ext.define('App.view.administration.Practice', {
 												},
 												{
 													xtype:'displayfield',
-													width:5,
+													width:6,
 													value:'('
 												},
 												{
@@ -236,7 +235,7 @@ Ext.define('App.view.administration.Practice', {
 												},
 												{
 													xtype:'displayfield',
-													width:5,
+													width:6,
 													value:')'
 												},
 												{
@@ -246,7 +245,7 @@ Ext.define('App.view.administration.Practice', {
 												},
 												{
 													xtype:'displayfield',
-													width:5,
+													width:7,
 													value:'-'
 												},
 												{
@@ -257,6 +256,12 @@ Ext.define('App.view.administration.Practice', {
 											]
 										},
 										{
+											xtype:'textfield',
+											fieldLabel:i18n('email'),
+											name:'email',
+											width:385
+										},
+										{
 											xtype:'transmitmethodcombo',
 											fieldLabel:i18n('default_method'),
 											labelWidth:100,
@@ -264,12 +269,74 @@ Ext.define('App.view.administration.Practice', {
 										}
 									]
 								},
+//								{
+//									xtype:'grid',
+//									width:350,
+//									height:120,
+//									hideHeaders: true,
+//									columnLines: true,
+//									tbar:[
+//										'Phones',
+//										'->',
+//										{
+//											iconCls:'icoAdd',
+//											action:'pharmacy',
+//											scope:me,
+//											handler:me.onAddPhone
+//										}
+//									],
+//									plugins:[
+//										{
+//											ptype:'cellediting'
+//										}
+//									],
+//									columns:[
+//										{
+//											text:i18n('type'),
+//											dataIndex:'type',
+//											width:50,
+//											renderer:function(v){
+//												return '(' + v + ')';
+//											},
+//											editor:{
+//												xtype:'textfield'
+//											}
+//										},
+//										{
+//											text:i18n('country_code'),
+//											dataIndex:'country_code',
+//											width:30,
+//											editor:{
+//												xtype:'textfield'
+//											}
+//										},
+//										{
+//											text:i18n('fullnumber'),
+//											dataIndex:'fullnumber',
+//											flex:1,
+//											editor:{
+//												xtype:'textfield'
+//											}
+//										},
+//										{
+//											text:i18n('active?'),
+//											dataIndex:'active',
+//											width:27,
+//											renderer:me.boolRenderer,
+//											editor:{
+//												xtype:'checkbox'
+//											}
+//										}
+//									]
+//								},
 								{
 									xtype:'mitos.checkbox',
 									fieldLabel:i18n('active'),
-									labelWidth:60,
+							        labelWidth:60,
+									margin: '0 0 0 10',
 									name:'active'
 								}
+
 							]
 						}
 					]
@@ -924,29 +991,43 @@ Ext.define('App.view.administration.Practice', {
 		me.pageBody = [me.praticePanel];
 		me.callParent(arguments);
 	},
+
 	onNewRec:function(btn){
-		var me = this,
-			grid = btn.up('grid'),
+		var grid = btn.up('grid'),
 			store = grid.store,
 			model = btn.action,
-			plugin = grid.editingPlugin,
-			newModel;
+			plugin = grid.editingPlugin;
 
-		say(grid);
-		say(plugin);
-		say(model);
 		plugin.cancelEdit();
 
-//		newModel = Ext.ModelManager.create({
-//			active:1
-//		}, model);
-//		say(newModel);
+		store.insert(0,{
+			active:1
+		});
 
-//		say(store);
-
-		store.insert(0, {active:1});
 		plugin.startEdit(0, 0);
 	},
+
+	onAddPhone:function(btn){
+		say(btn.action);
+
+		var me = this,
+			grid = btn.up('grid'),
+			store = grid.getStore(),
+			model = Ext.create('App.model.administration.Phone',{
+				country_code: me.defaultCountryCode,
+				area_code: '000',
+				prefix: '000',
+				number: '0000',
+				type:'H',
+				foreign_type:btn.action,
+				active:true
+			});
+
+		grid.editingPlugin.cancelEdit();
+		store.insert(0, model);
+		grid.editingPlugin.startEdit(0,1);
+	},
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.

@@ -552,8 +552,8 @@ Ext.define('App.view.patient.Patient', {
 		say(store);
 
         // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-        app.AuditLog('Patient new record created');
 
+        app.AuditLog('Patient new record created');
 		this.demoForm.getForm().loadRecord(patient);
 	},
 
@@ -591,7 +591,11 @@ Ext.define('App.view.patient.Patient', {
                         }
                     ],
                     callback:function(records){
+
+
+	                    say('Loading Patient Insurances....');
                         say(records);
+
                     }
                 });
 				Patient.getPatientInsurancesCardsUrlByPid(me.pid, function(insurance){

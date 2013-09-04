@@ -1768,7 +1768,9 @@ if($_REQUEST['action'] == 'ccrexport')
     $zip->addFromString("ccr.xsl",  file_get_contents($_SESSION['root'].'/lib/CCRCDA/schema/ccr.xsl'));
     $zip->close();
 
-    // Stream the file to the client
+    /**
+     * Stream the file to the client
+     */
     header("Content-Type: application/zip");
     header("Content-Length: " . filesize($tempDirectory.$filename.".zip"));
     header("Content-Disposition: attachment; filename=\"$filename.zip\"");

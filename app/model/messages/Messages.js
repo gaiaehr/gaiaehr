@@ -43,11 +43,12 @@ Ext.define('App.model.messages.Messages',
     {
         name : 'body',
         type : 'string',
+        dataType: 'text',
         comment: 'Message'
     },
     {
         name : 'pid',
-        type : 'string',
+        type : 'int',
         comment: 'Patient ID'
     },
     {
@@ -82,12 +83,12 @@ Ext.define('App.model.messages.Messages',
     },
     {
         name : 'to_id',
-        type : 'string',
+        type : 'int',
         comment: 'To'
     },
     {
         name : 'from_id',
-        type : 'string',
+        type : 'int',
         comment: 'From'
     },
     {
@@ -99,5 +100,15 @@ Ext.define('App.model.messages.Messages',
         name : 'note_type',
         type : 'string',
         comment: 'Message Type'
+    },
+    {
+        name: 'to_deleted',
+        type: 'bool',
+        comment: 'Deleted to the user'
+    },
+    {
+        name: 'from_deleted',
+        type: 'bool',
+        comment: 'Deleted from the source'
     }]
 });

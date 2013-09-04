@@ -413,9 +413,8 @@ Ext.define('App.view.messages.Messages',
 	{
 		var me = this, form = combo.up('form').getForm();
 
-		if (form.isValid())
+		if (form.getRecord().data.id)
 		{
-
 			var id = form.getRecord().data.id, col = combo.name, val = record[0].data.option_id, params =
 			{
 				id : id,

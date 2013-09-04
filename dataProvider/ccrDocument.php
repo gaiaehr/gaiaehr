@@ -1758,7 +1758,7 @@ if($_REQUEST['action'] == 'ccrexport')
      * Create a ZIP archive for delivery
      */
     $zip = new ZipArchive();
-    $tempDirectory = $_SESSION['root']."/temp/";
+    $tempDirectory = $_SESSION['site']['temp']['path'] . '/';
     $filename = $_REQUEST['pid'] . "-".$patientData['fname'].$patientData['lname'];
     if ($zip->open($tempDirectory.$filename.".zip", ZipArchive::CREATE)!==TRUE)
     {

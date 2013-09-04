@@ -900,7 +900,9 @@ foreach($vitalSigns as $item)
  * immunization status. The section should include current immunization status, and may contain the entire
  * immunization history that is relevant to the period of time being summarized.
  */
-$patientImmunizations = $Medical->getPatientImmunizations($_REQUEST['pid']);
+$param = new stdClass();
+$param->pid = $_REQUEST['pid'];
+$patientImmunizations = $Medical->getPatientImmunizations($param);
 $immunizations = array();
 foreach($patientImmunizations as $item)
 {

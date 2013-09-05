@@ -23,10 +23,81 @@ Ext.define('App.model.administration.Phone',{
 		comment: 'User/Contacts phones'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'User Contact Phone ID'},
-		{name: 'create_uid',        type: 'int',    comment:'create user ID'},
-		{name: 'write_uid',         type: 'int',    comment:'update user ID'},
-		{name: 'create_date',       type: 'date',   comment:'create date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'update_date',       type: 'date',   comment:'last update date', dateFormat:'Y-m-d H:i:s'}
+        {
+	        name: 'id',
+	        type: 'int',
+	        comment: 'User Contact Phone ID'
+        },
+		{
+			name: 'create_uid',
+			type: 'int',
+			comment:'create user ID'
+		},
+		{
+			name: 'write_uid',
+			type: 'int',
+			comment:'update user ID'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment:'create date',
+			dateFormat:'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment:'last update date',
+			dateFormat:'Y-m-d H:i:s'
+		},
+		{
+			name: 'country_code',
+			type: 'string'
+		},
+		{
+			name: 'area_code',
+			type: 'string',
+			len: 5
+		},
+		{
+			name: 'prefix',
+			type: 'string',
+			len: 5
+		},
+		{
+			name: 'number',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'type',
+			type: 'string'
+		},
+		{
+			name: 'foreign_type',
+			type: 'string'
+		},
+		{
+			name: 'foreign_id',
+			type: 'int'
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		},
+		{
+			name: 'fullnumber',
+			type: 'int',
+			store: false,
+			convert: function(v, record){
+				say(record);
+				return Ext.String.trim(
+//					record.data.country_code + ' ' +
+					record.data.area_code + '-' +
+					record.data.prefix + '-' +
+					record.data.number
+				);
+			}
+		}
 	]
 });

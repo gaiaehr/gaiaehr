@@ -19,7 +19,7 @@
 Ext.define('App.model.administration.Address', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'address',
+		name: 'addresses',
 		comment: 'Users/Contacts addresses'
 	},
 	fields: [
@@ -49,6 +49,54 @@ Ext.define('App.model.administration.Address', {
 			type: 'date',
 			comment: 'last update date',
 			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'line1',
+			type: 'string'
+		},
+		{
+			name: 'line2',
+			type: 'string'
+		},
+		{
+			name: 'city',
+			type: 'string'
+		},
+		{
+			name: 'state',
+			type: 'string'
+		},
+		{
+			name: 'zip',
+			type: 'string'
+		},
+		{
+			name: 'plus_four',
+			type: 'string'
+		},
+		{
+			name: 'country',
+			type: 'string'
+		},
+		{
+			name: 'foreign_id',
+			type: 'int'
+		},
+		{
+			name: 'fulladdress',
+			type: 'int',
+			store: false,
+			convert: function(v, record){
+				return Ext.String.trim(
+					record.data.line1 + ' ' +
+					record.data.line2 + ' ' +
+					record.data.city + ', ' +
+					record.data.state + ' ' +
+					record.data.zip + '-' +
+					record.data.plus_four + ' ' +
+					record.data.country
+				).replace('  ', ' ');
+			}
 		}
 	]
 });

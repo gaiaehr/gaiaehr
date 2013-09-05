@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+include_once ($_SESSION['root'] . '/classes/XML2Array.php');
 
 class MedlinePlus
 {
@@ -30,17 +31,6 @@ class MedlinePlus
          * Pass the URL witch is ColdFusion Server
          */
         $this->medlineUrl = 'http://apps.nlm.nih.gov/medlineplus/services/mpconnect_service.cfm?';
-
-
-    }
-
-    function setCodingSystem($coding = 'ICD9')
-    {
-        if($coding == 'ICD9') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.103';
-        if($coding == 'SNOMED') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.96';
-        if($coding == 'RXCUI') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.88';
-        if($coding == 'NDC') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.69';
-        if($coding == 'LOINC') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.1';
     }
 
     /**
@@ -48,6 +38,7 @@ class MedlinePlus
      * This will get a detailed description from MedlinePlus Connect
      * @param $coding
      * @param $code
+     * @return \Array
      */
     function getResponse($coding, $code)
     {
@@ -57,8 +48,8 @@ class MedlinePlus
         if($coding == 'NDC') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.69';
         if($coding == 'LOINC') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.1';
         $urlBuilder = $this->medlineUrl . $this->codingSystem . '&mainSearchCriteria.v.c=' . $code;
-
-
+        $xmlData = simplexml_load_file($urlBuilder);
+        return XML2Array::createArray($xmlData);
     }
 
 }

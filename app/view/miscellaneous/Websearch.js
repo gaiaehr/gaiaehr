@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.miscellaneous.Websearch',
@@ -45,19 +45,36 @@ Ext.define('App.view.miscellaneous.Websearch',
 				xtype : 'radiogroup',
 				fieldLabel : i18n('search_by'),
 				items : [
-				{
-					boxLabel : i18n('heath_topics'),
-					name : 'type',
-					inputValue : 'health_topics'
-				},
-				{
-					boxLabel : 'ICD-9-CM',
-					name : 'type',
-					inputValue : 'icd9cm'
-				}
-				//{boxLabel: 'N/A', name: 'type', inputValue: 3},
-				//{boxLabel: 'N/A', name: 'type', inputValue: 4},
-				//{boxLabel: 'N/A', name: 'type', inputValue: 5}
+                    {
+                        boxLabel : i18n('heath_topics'),
+                        name : 'type',
+                        inputValue : 'health_topics'
+                    },
+                    {
+                        boxLabel : 'SNOMED CT',
+                        name : 'type',
+                        inputValue : 'snomed'
+                    },
+                    {
+                        boxLabel : 'RxCUI',
+                        name : 'type',
+                        inputValue : 'rxcui'
+                    },
+                    {
+                        boxLabel : 'LOINC',
+                        name : 'type',
+                        inputValue : 'loinc'
+                    },
+                    {
+                        boxLabel : 'NDC',
+                        name : 'type',
+                        inputValue : 'ndc'
+                    },
+                    {
+                        boxLabel : 'ICD-9-CM',
+                        name : 'type',
+                        inputValue : 'icd9cm'
+                    }
 				],
 				listeners :
 				{

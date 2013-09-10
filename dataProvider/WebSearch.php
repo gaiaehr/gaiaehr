@@ -50,9 +50,7 @@ switch ($_SESSION['search_type'])
 			$args .= '&term=' . $_REQUEST['q'];
 			$args .= '&retstart=' . $_REQUEST['retstart'];
 			$args .= '&retmax=' . $_REQUEST['retmax'];
-
 			$_SESSION['web_search_q'] = $_REQUEST['q'];
-
 		}
 		else
 		{

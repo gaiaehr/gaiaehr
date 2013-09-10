@@ -165,9 +165,9 @@ Ext.define('App.view.miscellaneous.Websearch',
 			{
 				itemclick : function(DataView, record, item, rowIndex)
 				{
-					page.viewPanel.expand();
 					rec = page.store.getAt(rowIndex);
 					page.viewPanel.update(rec.data);
+                    page.viewPanel.expand();
 				}
 			}
 		});

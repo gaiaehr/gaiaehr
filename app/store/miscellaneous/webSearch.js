@@ -22,7 +22,7 @@ Ext.define('App.store.miscellaneous.webSearch', {
     proxy :
     {
         type : 'ajax',
-        url : 'app/miscellaneous/websearch/data_read.ejs.php',
+        url : 'dataProvider/WebSearch.php',
         noCache : false,
         startParam : 'retstart',
         limitParam : 'retmax',

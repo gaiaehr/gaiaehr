@@ -113,7 +113,7 @@ $rows = array();
 switch ($_SESSION['search_type'])
 {
 	case 'health_topics' :
-		if (isset($parser -> document -> list[0] -> document))
+		if (isset($parser -> document->list[0]->document))
 		{
 			$totals = $parser -> document -> count[0] -> tagData;
 			//----------------------------------------------------------------------------

@@ -64,10 +64,15 @@ switch ($_SESSION['search_type'])
 			$args .= '&retmax=' . $_REQUEST['retmax'];
 		}
 		break;
-	case 'icd9cm' :
+	default:
 		if (isset($_REQUEST['type']))
 		{
-			$baseUrl = 'http://apps.nlm.nih.gov/medlineplus/services/mpconnect_service.cfm?mainSearchCriteria.v.cs=2.16.840.1.113883.6.103';
+            if($_REQUEST['type'] == 'icd9cm') $codingSystem = '2.16.840.1.113883.6.103';
+            if($_REQUEST['type'] == 'snomed') $codingSystem = '2.16.840.1.113883.6.96';
+            if($_REQUEST['type'] == 'rxcui') $codingSystem = '2.16.840.1.113883.6.88';
+            if($_REQUEST['type'] == 'ndc') $codingSystem = '2.16.840.1.113883.6.69';
+            if($_REQUEST['type'] == 'loinc') $codingSystem = '2.16.840.1.113883.6.1';
+			$baseUrl = 'http://apps.nlm.nih.gov/medlineplus/services/mpconnect_service.cfm?mainSearchCriteria.v.cs=' . $codingSystem;
 
 			if (!is_numeric($_REQUEST['q']))
 			{
@@ -148,21 +153,25 @@ switch ($_SESSION['search_type'])
 			}
 		}
 		break;
-	case 'icd9cm' :
-		$item['source'] = $parser -> document -> author[0] -> name[0] -> tagData;
+    case 'snomed';
+    case 'rxcui';
+    case 'loinc';
+    case 'ndc';
+	case 'icd9cm':
+		$item['source'] = $parser->document->author[0]->name[0]->tagData;
 		//--------------------------------------------------------------------------------
 		// get the total value form the xml
 		//--------------------------------------------------------------------------------
-		if (isset($parser -> document -> entry))
+		if (isset($parser->document->entry))
 		{
 			//****************************************************************************
 			// now lets work the xml file to push stuff into the $rows array()
 			//****************************************************************************
 			foreach ($parser->document->entry as $document)
 			{
-				$item['title'] = $document -> title[0] -> tagData;
-				$item['snippet'] = substr($document -> summary[0] -> tagData, 0, 400) . '...';
-				$item['FullSummary'] = $document -> summary[0] -> tagData;
+				$item['title'] = $document->title[0]->tagData;
+				$item['snippet'] = substr($document->summary[0]->tagData, 0, 400) . '...';
+				$item['FullSummary'] = $document -> summary[0]->tagData;
 				array_push($rows, $item);
 				$count++;
 			}

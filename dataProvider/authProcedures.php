@@ -59,7 +59,7 @@ class authProcedures
 		// If this condition is met, the user did not
 		// use the logon form. Possible hack.
 		//-------------------------------------------
-		if(strlen($params->authPass) >= 11){
+		if(strlen($params->authPass) >= 15){
 			return array(
 				'success' => false, 'type' => 'error', 'message' => 'Possible hack, please use the Logon Screen.'
 			);

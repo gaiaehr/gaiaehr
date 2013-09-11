@@ -1,22 +1,23 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+include_once($_SESSION['root'].'/classes/Address.php');
+include_once($_SESSION['root'].'/classes/Phone.php');
 class Practice
 {
 	/**
@@ -40,71 +41,54 @@ class Practice
 	 */
 	private $phone = null;
 
+    public function __construct(){
+	    if(is_null($this->phone)) $this->phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
+	    if(is_null($this->address)) $this->address = MatchaModel::setSenchaModel('App.model.administration.Address');
+    }
 
-    public function __construct()
-    {
-	    if($this->phone == null) $this->phone = MatchaModel::setSenchaModel('App.model.administration.Phone');
-	    if($this->address == null) $this->address = MatchaModel::setSenchaModel('App.model.administration.Address');
-        return;
+    public function __destruct(){
+	    unset($this->p, $this->l, $this->i, $this->phone, $this->address);
     }
 
 	private function setPharmacyModel(){
-		if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
+		if(is_null($this->p)) $this->p = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
 	}
 
 	private function setLaboratoryModel(){
-		if($this->l == null) $this->l = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
+		if(is_null($this->l)) $this->l = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
 	}
 
 	private function setInsuranceCompanyModel(){
-		if($this->i == null) $this->i = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
+		if(is_null($this->i)) $this->i = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
 	}
 
 	//**********************************************************************************
 	public function getPharmacies(){
 	    $this->setPharmacyModel();
-
-	    $rows = array();
-	    foreach($this->p->load()->all() as $row){
-//            $row['address_full'] = $row['line1'].' '.$row['line2'].' '.$row['city'].','.$row['state'].' '.$row['zip'].'-'.$row['plus_four'].' '.$row['country'];
-//            array_push($rows, $this->phone->load(array('foreign_id'=>$row['id']))->one());
-
-		    $rows[] = $row;
+		$records = array();
+	    foreach($this->p->load()->all() as $record){
+		    $record = $this->getAddress($record);
+		    $record = $this->getPhones($record);
+		    $records[] = $record;
         }
-
-	    return $rows;
+	    return $records;
     }
 
     public function addPharmacy(stdClass $params){
 	    $this->setPharmacyModel();
-	    $row = new stdClass();
-        $row->id = $params->id;
-        $row->name = $params->name;
-        $row->transmit_method = $params->transmit_method;
-        $row->email = $params->email;
-        $row->active = $params->active;
-	    $row = $this->p->save($row);
-	    $params->id = $row['id'];
-
+	    $record = $this->p->save($params);
+	    $params->id = $record['id'];
+	    unset($record);
         $params = $this->addAddress($params);
         $params = $this->addPhones($params);
-
         return $params;
     }
 
     public function updatePharmacy(stdClass $params){
 	    $this->setPharmacyModel();
-
-	    $o = new stdClass();
-	    $o->name = $params->name;
-	    $o->transmit_method = $params->transmit_method;
-	    $o->email = $params->email;
-	    $o->active = $params->active;
-	    $this->p->save($o);
-
+	    $this->p->save($params);
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
-
         return $params;
     }
 
@@ -112,29 +96,20 @@ class Practice
 	//**********************************************************************************
     public function getLaboratories(){
 	    $this->setLaboratoryModel();
-
-        $rows = array();
-        foreach ($this->l->load()->all() as $row)
-        {
-//            $address = $this->address->load(array('foreign_id'=>$row['id']), array('address_id', 'line1', 'line2', 'city', 'state', 'zip', 'plus_four', 'country'));
-//            array_push($rows, $address);
-//            $row = $this->getPhones($row);
-//            $row['address_full'] = $row['line1'] . ' ' . $row['line2'] . ' ' . $row['city'] . ',' . $row['state'] . ' ' . $row['zip'] . '-' . $row['plus_four'] . ' ' . $row['country'];
-            array_push($rows, $row);
+	    $records = array();
+        foreach ($this->l->load()->all() as $record){
+	        $record = $this->getAddress($record);
+	        $record = $this->getPhones($record);
+	        $records[] = $record;
         }
-        return $rows;
+        return $records;
     }
 
     public function addLaboratory(stdClass $params){
 	    $this->setLaboratoryModel();
-	    $o = new stdClass();
-	    $o->name = $params->name;
-	    $o->transmit_method = $params->transmit_method;
-	    $o->email = $params->email;
-	    $o->active = $params->active;
-	    $o = $this->l->save($o);
-	    $params->id = $o['id'];
-
+	    $record = $this->l->save($params);
+	    $params->id = $record['id'];
+	    unset($record);
         $params = $this->addAddress($params);
         $params = $this->addPhones($params);
         return $params;
@@ -142,14 +117,7 @@ class Practice
 
     public function updateLaboratory(stdClass $params){
 	    $this->setLaboratoryModel();
-
-        $data = get_object_vars($params);
-        $row['id'] = $data['id'];
-        $row['name'] = $data['name'];
-        $row['transmit_method'] = $data['transmit_method'];
-        $row['email'] = $data['email'];
-        $row['active'] = $data['active'];
-        $this->l->save((object)$row);
+        $this->l->save($params);
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
         return $params;
@@ -158,35 +126,22 @@ class Practice
 
 	//**********************************************************************************
     public function getInsurances(){
-
 	    $this->setInsuranceCompanyModel();
-        $rows = array();
-        foreach($this->i->load()->all() as $row)
-        {
-//            $address = $this->address->load(array('foreign_id'=>$row['id']), array('address_id', 'line1', 'line2', 'city', 'state', 'zip', 'plus_four', 'country'));
-//            array_push($rows, $address);
-//            $row = $this->getPhones($row);
-//            $row['address_full'] = $row['line1'] . ' ' . $row['line2'] . ' ' . $row['city'] . ',' . $row['state'] . ' ' . $row['zip'] . '-' . $row['plus_four'] . ' ' . $row['country'];
-            array_push($rows, $row);
+	    $records = array();
+        foreach($this->i->load()->all() as $record){
+	        $record = $this->getAddress($record);
+	        $record = $this->getPhones($record);
+	        $records[] = $record;
         }
-        return $rows;
+        return $records;
     }
+
 
     public function addInsurance(stdClass $params){
 	    $this->setInsuranceCompanyModel();
-
-	    $o = new stdClass();
-	    $o->id = $params->id;
-	    $o->name = $params->name;
-	    $o->attn = $params->attn;
-	    $o->cms_id = $params->cms_id;
-	    $o->freeb_type = $params->freeb_type;
-	    $o->x12_receiver_id = $params->x12_receiver_id;
-	    $o->x12_default_partner_id = $params->x12_default_partner_id;
-	    $o->alt_cms_id = $params->alt_cms_id;
-	    $o->active = $params->active;
-        $this->i->save($o);
-
+	    $record = $this->i->save($params);
+	    $params->id = $record['id'];
+	    unset($record);
         $params = $this->addAddress($params);
         $params = $this->addPhones($params);
         return $params;
@@ -194,20 +149,9 @@ class Practice
 
     public function updateInsurance(stdClass $params){
 	    $this->setInsuranceCompanyModel();
-	    $o = new stdClass();
-	    $o->name = $params->name;
-	    $o->attn = $params->attn;
-	    $o->cms_id = $params->cms_id;
-	    $o->freeb_type = $params->freeb_type;
-	    $o->x12_receiver_id = $params->x12_receiver_id;
-	    $o->x12_default_partner_id = $params->x12_default_partner_id;
-	    $o->alt_cms_id = $params->alt_cms_id;
-	    $o->active = $params->active;
-        $this->i->save($o);
-
+        $this->i->save($params);
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
-
         return $params;
     }
 
@@ -221,7 +165,6 @@ class Practice
 //        return $params;
 //    }
 
-
     private function addAddress($params){
 	    $o = new stdClass();
 	    $o->line1 = $params->line1;
@@ -232,13 +175,24 @@ class Practice
         $o->plus_four = $params->plus_four;
         $o->country = $params->country;
         $o->foreign_id = $params->id;
-        $this->address->save($o);
-        return $params;
+	    $record = $this->address->save($o);
+	    $params->address_id = $record['id'];
+	    unset($o, $record);
+	    if(is_object($this->p)){
+		    $this->p->save($params);
+	    }elseif(is_object($this->l)){
+		    $this->l->save($params);
+	    }elseif(is_object($this->i)){
+		    $this->i->save($params);
+	    }
+	    $params->address_full = Address::fullAddress($params->line1, $params->line2, $params->city, $params->state, $params->zip, $params->plus_four, $params->country);
+	    return $params;
     }
 
     private function updateAddress($params)
     {
 	    $o = new stdClass();
+	    $o->id = $params->address_id;
 	    $o->line1 = $params->line1;
 	    $o->line2 = $params->line2;
 	    $o->city = $params->city;
@@ -247,81 +201,102 @@ class Practice
 	    $o->plus_four = $params->plus_four;
         $o->country = $params->country;
         $this->address->save($o);
-        return $params;
+	    unset($o);
+	    $params->address_full = Address::fullAddress($params->line1, $params->line2, $params->city, $params->state, $params->zip, $params->plus_four, $params->country);
+	    return $params;
     }
 
-    private function getPhones($row){
-        foreach ($this->phone->load(array('foreign_id'=>$row['id'])) as $phoneRow){
-            switch ($phoneRow['type']){
-                case "2" :
-                    $row['phone_id'] = $phoneRow['id'];
-                    $row['phone_country_code'] = $phoneRow['country_code'];
-                    $row['phone_area_code'] = $phoneRow['area_code'];
-                    $row['phone_prefix'] = $phoneRow['prefix'];
-                    $row['phone_number'] = $phoneRow['number'];
-                    $row['phone_full'] = $phoneRow['country_code'] . ' ' . $phoneRow['area_code'] . '-' . $phoneRow['prefix'] . '-' . $phoneRow['number'];
-                    break;
-                case "5" :
-                    $row['fax_id'] = $phoneRow['id'];
-                    $row['fax_country_code'] = $phoneRow['country_code'];
-                    $row['fax_area_code'] = $phoneRow['area_code'];
-                    $row['fax_prefix'] = $phoneRow['prefix'];
-                    $row['fax_number'] = $phoneRow['number'];
-                    $row['fax_full'] = $phoneRow['country_code'] . ' ' . $phoneRow['area_code'] . '-' . $phoneRow['prefix'] . '-' . $phoneRow['number'];
-                    break;
-            }
-        }
-        return $row;
+    private function getAddress($record){
+	    $a = $this->address->load($record['address_id'])->one();
+	    $record['line1'] = $a['line1'];
+	    $record['line2'] = $a['line2'];
+	    $record['city'] = $a['city'];
+	    $record['state'] = $a['state'];
+	    $record['zip'] = $a['zip'];
+	    $record['plus_four'] = $a['plus_four'];
+	    $record['country'] = $a['country'];
+	    $record['address_full'] = Address::fullAddress($a['line1'], $a['line2'], $a['city'], $a['state'], $a['zip'], $a['plus_four'], $a['country']);
+        return $record;
+    }
+    private function getPhones($record){
+	    $p = $this->phone->load($record['phone_id'])->one();
+	    $record['phone_country_code'] = $p['country_code'];
+	    $record['phone_area_code'] = $p['area_code'];
+	    $record['phone_prefix'] = $p['prefix'];
+	    $record['phone_number'] = $p['number'];
+	    $record['phone_full'] = Phone::fullPhone($p['country_code'], $p['area_code'], $p['prefix'], $p['number']);
+	    unset($p);
+	    $f = $this->phone->load($record['fax_id'])->one();
+	    $record['fax_country_code'] = $f['country_code'];
+	    $record['fax_area_code'] = $f['area_code'];
+	    $record['fax_prefix'] = $f['prefix'];
+	    $record['fax_number'] = $f['number'];
+	    $record['fax_full'] = Phone::fullPhone($f['country_code'], $f['area_code'], $f['prefix'], $f['number']);
+		unset($f);
+        return $record;
     }
 
     private function addPhones($params, $foreignType = ''){
-        $prow['country_code'] = $params->phone_country_code;
-        $prow['area_code'] = $params->phone_area_code;
-        $prow['prefix'] = $params->phone_prefix;
-        $prow['number'] = $params->phone_number;
-        $prow['type'] = 'phone';
-        $prow['foreign_type'] = $foreignType;
-        $prow['foreign_id'] = $params->id;
 
-        $frow['country_code'] = $params->fax_country_code;
-        $frow['area_code'] = $params->fax_area_code;
-        $frow['prefix'] = $params->fax_prefix;
-        $frow['number'] = $params->fax_number;
-        $frow['type'] = 'fax';
-	    $frow['foreign_type'] = $foreignType;
-        $frow['foreign_id'] = $params->id;
-
-	    $prow = $this->phone->save((object)$prow);
-	    $frow = $this->phone->save((object)$frow);
-
-	    $params->phone_id = $prow['id'];
-	    $params->fax_id = $frow['id'];
-
-//        $params->phone_full = $prow['country_code'] . ' ' . $prow['area_code'] . '-' . $prow['prefix'] . '-' . $prow['number'];
-//        $params->fax_full = $frow['country_code'] . ' ' . $frow['area_code'] . '-' . $frow['prefix'] . '-' . $frow['number'];
-        return $params;
+	    $p = new stdClass();
+	    $p->country_code = $params->phone_country_code;
+	    $p->area_code = $params->phone_area_code;
+	    $p->prefix = $params->phone_prefix;
+	    $p->number = $params->phone_number;
+	    $p->number_type = 'phone';
+	    $p->foreign_type = $foreignType;
+	    $p->foreign_id = $params->id;
+	    $record = $this->phone->save($p);
+	    $params->phone_id = $record['id'];
+	    $params->phone_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+		unset($p, $record);
+	    $f = new stdClass();
+	    $f->country_code = $params->fax_country_code;
+	    $f->area_code = $params->fax_area_code;
+	    $f->prefix = $params->fax_prefix;
+	    $f->number = $params->fax_number;
+	    $f->number_type = 'fax';
+	    $f->foreign_type = $foreignType;
+	    $f->foreign_id = $params->id;
+	    $record = $this->phone->save($f);
+	    $params->fax_id = $record['id'];
+	    $params->fax_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    unset($f, $record);
+	    if(is_object($this->p)){
+		    $this->p->save($params);
+	    }elseif(is_object($this->l)){
+		    $this->l->save($params);
+	    }elseif(is_object($this->i)){
+		    $this->i->save($params);
+	    }
+	    return $params;
     }
 
-    private function updatePhones($params){
-        $data = get_object_vars($params);
-        $prow['foreign_id'] =  $data['id'];
-        $prow['country_code'] = $data['phone_country_code'];
-        $prow['area_code'] = $data['phone_area_code'];
-        $prow['prefix'] = $data['phone_prefix'];
-        $prow['number'] = $data['phone_number'];
-        $prow['type'] = 2;
-
-	    $frow['foreign_id'] =  $data['id'];
-        $frow['country_code'] = $data['fax_country_code'];
-        $frow['area_code'] = $data['fax_area_code'];
-        $frow['prefix'] = $data['fax_prefix'];
-        $frow['number'] = $data['fax_number'];
-        $prow['type'] = 5;
-        $this->phone->save((object)$prow);
-        $this->phone->save((object)$frow);
-        $params->phone_full = $prow['country_code'] . ' ' . $prow['area_code'] . '-' . $prow['prefix'] . '-' . $prow['number'];
-        $params->fax_full = $frow['country_code'] . ' ' . $frow['area_code'] . '-' . $frow['prefix'] . '-' . $frow['number'];
-        return $params;
+    private function updatePhones($params, $foreignType = ''){
+	    $p = new stdClass();
+	    $p->id = $params->phone_id;
+	    $p->country_code = $params->phone_country_code;
+	    $p->area_code = $params->phone_area_code;
+	    $p->prefix = $params->phone_prefix;
+	    $p->number = $params->phone_number;
+	    $p->number_type = 'phone';
+	    $p->foreign_type = $foreignType;
+	    $p->foreign_id = $params->id;
+	    $record = $this->phone->save($p);
+	    $params->phone_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    unset($p, $record);
+	    $f = new stdClass();
+	    $f->id = $params->fax_id;
+	    $f->country_code = $params->fax_country_code;
+	    $f->area_code = $params->fax_area_code;
+	    $f->prefix = $params->fax_prefix;
+	    $f->number = $params->fax_number;
+	    $f->number_type = 'fax';
+	    $f->foreign_type = $foreignType;
+	    $f->foreign_id = $params->id;
+	    $record = $this->phone->save($f);
+	    $params->fax_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    unset($f, $record);
+	    return $params;
     }
-
 }

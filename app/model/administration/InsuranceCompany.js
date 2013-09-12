@@ -121,7 +121,8 @@ Ext.define('App.model.administration.InsuranceCompany', {
 		},
 		{
 			name: 'phone_number',
-			type: 'string'
+			type: 'string',
+			store: false
 		},
 		{
 			name: 'phone_full',

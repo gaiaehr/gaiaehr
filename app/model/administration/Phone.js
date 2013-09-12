@@ -70,7 +70,7 @@ Ext.define('App.model.administration.Phone',{
 			len: 10
 		},
 		{
-			name: 'type',
+			name: 'number_type',
 			type: 'string'
 		},
 		{
@@ -87,7 +87,7 @@ Ext.define('App.model.administration.Phone',{
 		},
 		{
 			name: 'fullnumber',
-			type: 'int',
+			type: 'string',
 			store: false,
 			convert: function(v, record){
 				say(record);

@@ -118,6 +118,11 @@ Ext.define('App.model.administration.Laboratories', {
 			type: 'int'
 		},
 		{
+			name: 'fax_country_code',
+			type: 'string',
+			store: false
+		},
+		{
 			name: 'fax_area_code',
 			type: 'string',
 			store: false

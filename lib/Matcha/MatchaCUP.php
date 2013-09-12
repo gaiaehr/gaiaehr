@@ -733,7 +733,7 @@ class MatchaCUP
 		foreach($values as $index => $foo)
 		{
 			if(!isset($properties[$index]['store']) || (isset($properties[$index]['store']) && $properties[$index]['store'] != false)){
-				$type = $properties[$index]['type'];
+				$type = isset($properties[$index]['type']) ? $properties[$index]['type'] : 'string';
 
 				if(isset($properties[$index]['encrypt']) && $properties[$index]['encrypt']){
 					$values[$index] = $this->dataEncrypt($values[$index]);

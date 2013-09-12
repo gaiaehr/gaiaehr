@@ -79,12 +79,16 @@ Ext.define('App.model.administration.Address', {
 			type: 'string'
 		},
 		{
+			name: 'address_type',
+			type: 'string'
+		},
+		{
 			name: 'foreign_id',
 			type: 'int'
 		},
 		{
 			name: 'fulladdress',
-			type: 'int',
+			type: 'string',
 			store: false,
 			convert: function(v, record){
 				return Ext.String.trim(

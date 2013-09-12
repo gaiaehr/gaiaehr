@@ -1232,5 +1232,6 @@ $LANG = array(
     'raw_ccd'                               => 'Raw CCD',
     'view_ccd'                              => 'View CCD',
     'view_ccr'                              => 'View CCR',
-    'filter_encounter'                      => 'Filter by encounter'
+    'filter_encounter'                      => 'Filter by encounter',
+    'code_term'                             => 'Code or Term'
 );

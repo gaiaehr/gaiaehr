@@ -28,10 +28,20 @@ Ext.define('App.view.miscellaneous.Websearch',
 
 		var page = this;
 		var search_type;
+        var term;
 		var rec;
 		if (!Ext.ModelManager.isRegistered('webSearch'))
 		{
             page.store = Ext.create('App.store.miscellaneous.webSearch');
+            page.codingStore = Ext.create('Ext.data.Store',
+            {
+                fields: ['search', 'name'],
+                data :
+                    [
+                        {"search":"code", "name":"Code"},
+                        {"search":"term", "name":"Term"}
+                    ]
+            });
 		}
 
 		page.searchPanel = Ext.create('Ext.panel.Panel',
@@ -86,7 +96,26 @@ Ext.define('App.view.miscellaneous.Websearch',
 						page.searchField.reset();
 					}
 				}
-			}, page.searchField = Ext.create('Ext.form.field.Text',
+			},
+            page.termField = Ext.create('Ext.form.ComboBox',
+            {
+                name: 'term',
+                fieldLabel: i18n('code_term') + ':',
+                store: page.codingStore,
+                anchor : '100%',
+                queryMode: 'local',
+                displayField: 'name',
+                valueField: 'search',
+                editable: false,
+                listeners:
+                {
+                    change: function()
+                    {
+                        term = this.getValue();
+                    }
+                }
+            }),
+            page.searchField = Ext.create('Ext.form.field.Text',
 			{
 				emptyText : i18n('web_search') + '...',
 				enableKeyEvents : true,
@@ -104,8 +133,9 @@ Ext.define('App.view.miscellaneous.Websearch',
 							{
 								params :
 								{
-									type : search_type,
-									q : query
+									type: search_type,
+									q: query,
+                                    term: term
 								}
 							});
 						}
@@ -116,7 +146,8 @@ Ext.define('App.view.miscellaneous.Websearch',
 						page.viewPanel.collapse();
 					}
 				}
-			})]
+			}
+            )]
 		});
 		page.searchRow = function(value, p, record)
 		{
@@ -186,6 +217,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 
 		page.pageBody = [page.searchPanel, page.onotesGrid, page.viewPanel];
 		page.callParent(arguments);
+        page.termField.select('code');
 	}, // end of initComponent
 	/**
 	 * This function is called from Viewport.js when

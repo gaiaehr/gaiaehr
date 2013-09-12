@@ -74,13 +74,13 @@ switch ($_SESSION['search_type'])
             if($_REQUEST['type'] == 'loinc') $codingSystem = '2.16.840.1.113883.6.1';
 			$baseUrl = 'http://apps.nlm.nih.gov/medlineplus/services/mpconnect_service.cfm?mainSearchCriteria.v.cs=' . $codingSystem;
 
-			if (!is_numeric($_REQUEST['q']))
+			if ($_REQUEST['term'] == 'term')
 			{
-				$args .= '&mainSearchCriteria.v.dn=' . $_REQUEST['q'];
+				$args .= '&mainSearchCriteria.v.dn=' . strtolower($_REQUEST['q']);
 			}
 			else
 			{
-				$args .= '&mainSearchCriteria.v.c=' . $_REQUEST['q'];
+				$args .= '&mainSearchCriteria.v.c=' . strtolower($_REQUEST['q']);
 			}
 			$_SESSION['web_search_q'] = $_REQUEST['q'];
 
@@ -89,11 +89,11 @@ switch ($_SESSION['search_type'])
 		{
 			if (!is_numeric($_SESSION['web_search_q']))
 			{
-				$args .= '&mainSearchCriteria.v.dn=' . $_SESSION['web_search_q'];
+				$args .= '&mainSearchCriteria.v.dn=' . strtolower($_SESSION['web_search_q']);
 			}
 			else
 			{
-				$args .= '&mainSearchCriteria.v.c=' . $_SESSION['web_search_q'];
+				$args .= '&mainSearchCriteria.v.c=' . strtolower($_SESSION['web_search_q']);
 			}
 		}
 		break;
@@ -102,6 +102,7 @@ switch ($_SESSION['search_type'])
 // build the URL using the baseUrl and the appended arguments from the if/else
 //********************************************************************************
 $url = $baseUrl . $args;
+
 //********************************************************************************
 // XML parser... PFM!
 //********************************************************************************

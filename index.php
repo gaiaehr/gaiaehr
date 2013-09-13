@@ -25,14 +25,14 @@ session_start();
 session_cache_limiter('private');
 define('_GaiaEXEC', 1);
 
-include_once('classes/Mobile_Detect.php');
-$mobile = new Mobile_Detect();
+//include_once('classes/Mobile_Detect.php');
+//$mobile = new Mobile_Detect();
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
 $mDebug = false;
-if($mobile->isMobile() || $mDebug){
-	header('Location: _aire/?site='.$site);
-}else{
+//if($mobile->isMobile() || $mDebug){
+//	header('Location: _aire/?site='.$site);
+//}else{
 	/**
 	 * Startup the registry
 	 * This contains SESSION Variables to use in the application
@@ -82,7 +82,7 @@ if($mobile->isMobile() || $mDebug){
 			include_once('_login.php');
 		}
 	}
-}
+//}
 $_SESSION['inactive']['timeout'] = time();
 
 

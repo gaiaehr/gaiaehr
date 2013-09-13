@@ -79,18 +79,14 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
     getFormItems: function(formPanel, formToRender, callback) {
-        if(formPanel){
-            formPanel.removeAll();
-            FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-                var items = eval(response.result), form;
-                form = formPanel.add(items);
-                if(typeof callback == 'function') {
-                    callback(formPanel, items, true);
-                }
-                return form;
-            });
-        }
-   	},
+	    if(formPanel) formPanel.removeAll();
+	    FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+            var items = eval(response.result),
+                form = formPanel ? formPanel.add(items) : false;
+	        if(typeof callback == 'function') callback(formPanel, items, true);
+	        return form;
+        });
+    },
 
 	boolRenderer: function(val) {
 		if(val == '1' || val == true || val == 'true') {

@@ -335,6 +335,7 @@ Ext.override(Ext.container.Container, {
             }
         }
     },
+
     setReadOnly: function(readOnly){
         var forms = this.query('form');
         for(var j = 0; j < forms.length; j++){
@@ -349,6 +350,7 @@ Ext.override(Ext.container.Container, {
         }
         return readOnly;
     },
+
     setButtonsDisabled: function(buttons, disabled){
         var disable = disabled || app.patient.readOnly;
         for(var i = 0; i < buttons.length; i++){
@@ -359,17 +361,21 @@ Ext.override(Ext.container.Container, {
             }
         }
     },
+
     goBack: function(){
         app.goBack();
     },
+
     checkIfCurrPatient: function(){
         return app.getCurrPatient();
     },
-    patientInfoAlert: function(){
+
+	patientInfoAlert: function(){
         var patient = app.getCurrPatient();
         Ext.Msg.alert(i18n('status'), i18n('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
     },
-    currPatientError: function(msg){
+
+	currPatientError: function(msg){
         Ext.Msg.show({
             title: 'Oops! ' + i18n('no_patient_selected'),
             msg: Ext.isString(msg) ? msg : i18n('select_patient_patient_live_search'),
@@ -381,21 +387,17 @@ Ext.override(Ext.container.Container, {
             }
         });
     },
+
     getFormItems: function(formPanel, formToRender, callback){
-        if(formPanel){
-            formPanel.removeAll();
-            FormLayoutEngine.getFields({
-                formToRender: formToRender
-            }, function(provider, response){
-                var items = eval(response.result), form;
-                form = formPanel.add(items);
-                if(typeof callback == 'function'){
-                    callback(formPanel, items, true);
-                }
-                return form;
-            });
-        }
+	    if(formPanel) formPanel.removeAll();
+	    FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+		    var items = eval(response.result),
+			    form = formPanel ? formPanel.add(items) : false;
+		    if(typeof callback == 'function') callback(formPanel, items, true);
+		    return form;
+	    });
     },
+
     boolRenderer: function(val){
         if(val == '1' || val == true || val == 'true'){
             return '<div style="margin-left:auto; margin-right:auto; width:16"><img src="resources/images/icons/yes.gif" /></div>';
@@ -404,7 +406,8 @@ Ext.override(Ext.container.Container, {
         }
         return val;
     },
-    alertRenderer: function(val){
+
+	alertRenderer: function(val){
         if(val == '1' || val == true || val == 'true'){
             return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
         }else if(val == '0' || val == false || val == 'false'){
@@ -412,31 +415,39 @@ Ext.override(Ext.container.Container, {
         }
         return val;
     },
-    warnRenderer: function(val, metaData, record){
+
+	warnRenderer: function(val, metaData, record){
         var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
         if(val == '1' || val == true || val == 'true'){
             return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
         }
         return '';
     },
+
     onExpandRemoveMask: function(cmb){
         cmb.picker.loadMask.destroy()
     },
+
     strToLowerUnderscores: function(str){
         return str.toLowerCase().replace(/ /gi, "_");
     },
+
     getCurrPatient: function(){
         return app.getCurrPatient();
     },
+
     getApp: function(){
         return app.getApp();
     },
+
     msg: function(title, format, warning){
         app.msg(title, format, warning)
     },
+
     alert: function(msg, icon){
         app.alert(msg, icon)
     },
+
     passwordVerificationWin: function(callback){
         var msg = Ext.Msg.prompt(i18n('password_verification'), i18n('please_enter_your_password') + ':', function(btn, password){
             callback(btn, password);

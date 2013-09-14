@@ -67,7 +67,7 @@ Ext.define('App.view.patient.Patient', {
 					],
 					listeners:{
 						scope:me,
-						beforeadd:me.insuranceAdd
+						beforeadd:me.insurancePanelAdd
 					}
 				})
 			],
@@ -206,20 +206,21 @@ Ext.define('App.view.patient.Patient', {
 
     },
 
-	insuranceAdd:function(tapPanel, form){
-		var me = this;
-		form.title = i18n('insurance') + ' (' + i18n('new') + ')';
+	insurancePanelAdd:function(tapPanel, form){
+		var me = this,
+			rec = form.insurance || Ext.create('App.model.patient.Insurance',{pid: me.pid});
+		form.title = i18n('insurance') + ' (' + (form.insurance ? rec.data.type : i18n('new')) + ')';
+
 		form.add(me.insuranceFormItmes);
-		form.getForm().loadRecord(Ext.create('App.model.patient.Insurance',{
-			pid: me.pid
-		}));
+		form.getForm().loadRecord(rec);
 	},
 
 	getValidInsurances:function(){
 		var me = this,
 			forms = me.insPanel.items.items,
 			records = [],
-			form;
+			form,
+			rec;
 
 		for(var i=0; i < forms.length; i++){
 			form = forms[i].getForm();
@@ -227,8 +228,12 @@ Ext.define('App.view.patient.Patient', {
 				me.insPanel.setActiveTab(forms[i]);
 				return false;
 			}
-			records.push(form.getRecord());
+
+			rec = form.getRecord();
+			rec.set(form.getValues());
+			records.push(rec);
 		}
+
 		return records;
 	},
 
@@ -389,45 +394,29 @@ Ext.define('App.view.patient.Patient', {
 			form = me.demoForm.getForm(),
 			record = form.getRecord(),
 			values = form.getValues(),
-			insuranceRecords = me.getValidInsurances();
+			insRecs = me.getValidInsurances();
 
 
-		if(form.isValid() && insuranceRecords !== false){
+		if(form.isValid() && insRecs !== false){
 
 			record.set(values);
 			record.save({
 				scope: me,
 				callback: function(record){
-
 					app.setPatient(record.data.pid, null);
-
 					if(!me.newPatient){
 						me.getPatientImgs();
 						me.verifyPatientRequiredInfo();
 						me.readOnlyFields(form.getFields());
 					}
-
-					var insurranceStore = record.insurance();
-
-					say(me.getValidInsurances());
-
-
-//				for(var i=0; i < insurances.length; i++){
-//                    if(i == 0){
-//                        values = me.ins1.getForm().getValues();
-//                    }else if(i == 1){
-//                        values = me.ins2.getForm().getValues();
-//                    }else if(i == 2){
-//                        values = me.ins3.getForm().getValues();
-//                    }
-//
-//                    values.pid = record.data.pid;
-//					insurances[i].set(values);
-//				}
-
-					record.insuranceStore.sync();
+					var insStore = record.insurance();
+					say(insStore);
+					say(insRecs);
+					for(var i=0; i < insRecs.length; i++){
+						if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
+					}
+					insStore.sync();
 					me.msg('Sweet!', i18n('record_saved'));
-
 					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 					app.AuditLog('Patient new record created');
 				}
@@ -505,10 +494,18 @@ Ext.define('App.view.patient.Patient', {
                         }
                     ],
                     callback:function(records){
+	                    say(records);
+	                    me.insPanel.removeAll(true);
+	                    for(var i=0; i < records.length; i++){
+		                    me.insPanel.add({
+			                    xtype: 'form',
+			                    border:false,
+			                    bodyBorder:false,
+			                    insurance:records[i]
+		                    });
+	                    }
 
-	                    say('Loading Patient Insurances....');
-                        say(records);
-
+	                    if(me.insPanel.items.length != 0) me.insPanel.setActiveTab(0);
                     }
                 });
 

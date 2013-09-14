@@ -778,10 +778,8 @@ Ext.define('App.view.Viewport', {
 		        Ext.Function.defer(function() {
 			        me.getPanelByCls('App.view.patient.Summary').onActive();
 		        }, 100);
-
 	        }
         });
-
     },
 
 	stowPatientRecord: function(){

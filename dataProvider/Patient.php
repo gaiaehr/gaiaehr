@@ -93,7 +93,6 @@ class Patient
         $this->patient = $this->p->save($params);
         $this->patient['fullname'] = $fullName;
         $this->createPatientDir($this->patient['pid']);
-//        $this->createDefaultPhotoId($this->patient['pid']);
         return $this->patient;
     }
     /**
@@ -121,9 +120,8 @@ class Patient
         if($pid != null && ($this->patient == null || $this->patient != $pid)){
             $this->setPatientModel();
             $this->patient = $this->p->load($pid)->one();
-            $this->patient['pic'] = $this->getPatientPhotoSrc($this->patient['pid']);
+            $this->patient['pic'] = $this->patient['image'];
             $this->patient['age'] = $this->getPatientAge();
-
             $_SESSION['patient']['pid']  = $this->patient['pid'];
             $_SESSION['patient']['name'] = $this->getPatientFullName();
         }
@@ -592,16 +590,16 @@ class Patient
         return $docs;
     }
 
-    private function getPatientSurgeryByPatientID($pid)
-    {
-        $this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
-        $records = array();
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
-            $rec['alert'] = ($rec['end_date'] == null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
-            $records[]    = $rec;
-        }
-        return $records;
-    }
+//    private function getPatientSurgeryByPatientID($pid)
+//    {
+//        $this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
+//        $records = array();
+//        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
+//            $rec['alert'] = ($rec['end_date'] == null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
+//            $records[]    = $rec;
+//        }
+//        return $records;
+//    }
 
     public function getPatientInsurancesCardsUrlByPid($pid)
     {

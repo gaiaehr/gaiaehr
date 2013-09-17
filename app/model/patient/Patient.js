@@ -259,18 +259,18 @@ Ext.define('App.model.patient.Patient',
             type: 'int',
             comment: 'patient occupation'
         },
-        {
-            name: 'test',
-            type: 'string'
-        },
-        {
-            name: 'test',
-            type: 'string'
-        },
-        {
-            name: 'test',
-            type: 'string'
-        }
+	    {
+		    name: 'image',
+		    type: 'string',
+		    dataType: 'mediumtext',
+		    comment: 'patient image base64 string'
+	    },
+	    {
+		    name: 'qrcode',
+		    type: 'string',
+		    dataType: 'mediumtext',
+		    comment: 'patient QRCode base64 string'
+	    }
     ],
     idProperty: 'pid',
     proxy: {

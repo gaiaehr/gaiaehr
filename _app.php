@@ -54,6 +54,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		</div>
 		<!-- slide down message div -->
 		<span id="app-msg" style="display:none;"></span>
+		<!-- JQuery library -->
+		<script src="lib/JQuery/jquery.min.js"></script>
+		<!-- ScriptCam library -->
+		<script src="lib/ScriptCam/scriptcam.js"></script>
 		<!-- Ext library -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
 		<!-- JSrouter and Ext.deirect API files -->
@@ -623,6 +627,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
                 ],
                 controllers:[
+	                'ScriptCam',
                     'patient.encounter.SOAP'
                 ],
                 launch: function() {

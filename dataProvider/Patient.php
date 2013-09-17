@@ -88,11 +88,12 @@ class Patient
      */
     public function savePatient($params){
         $this->setPatientModel();
+	    $fullName = Person::fullname($params->fname, $params->mname, $params->lname);
+	    $params->qrcode = $this->createPatientQrCode($this->patient['pid'], $fullName);
         $this->patient = $this->p->save($params);
-        $this->patient['fullname'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+        $this->patient['fullname'] = $fullName;
         $this->createPatientDir($this->patient['pid']);
-        $this->createPatientQrCode($this->patient['pid'], $this->patient['pid']);
-        $this->createDefaultPhotoId($this->patient['pid']);
+//        $this->createDefaultPhotoId($this->patient['pid']);
         return $this->patient;
     }
     /**
@@ -222,7 +223,7 @@ class Patient
             'patient' => array(
                 'pid' => $this->patient['pid'],
                 'name' => $_SESSION['patient']['name'],
-                'pic' => $this->getPatientPhotoSrc(),
+                'pic' => $this->patient['image'],
                 'sex' => $this->getPatientSex(),
                 'dob' => $dob = $this->getPatientDOB(),
                 'age' => $this->getPatientAge(),
@@ -293,13 +294,13 @@ class Patient
 
     public function createPatientQrCode($pid, $fullname)
     {
-        //set it to writable location, a place for temp generated PNG files
-        $path         = $_SESSION['site']['path'] . '/patients/' . $pid;
         $data         = '{"name":"' . $fullname . '","pid":' . $pid . ',"ehr": "GaiaEHR"}';
-        $PNG_TEMP_DIR = $path;
         include ($_SESSION['root'] . '/lib/phpqrcode/qrlib.php');
-        $filename = $PNG_TEMP_DIR . '/patientDataQrCode.png';
-        QRcode::png($data, $filename, 'Q', 2, 2);
+	    ob_start();
+	    QRCode::png($data, false, 'Q', 2, 2);
+	    $imageString = base64_encode( ob_get_contents() );
+	    ob_end_clean();
+	    return $imageString;
     }
 
 
@@ -393,12 +394,12 @@ class Patient
         }
     }
 
-    public function createDefaultPhotoId($pid)
-    {
-        $newImg = $_SESSION['site']['path'] . '/patients/' . $pid . '/patientPhotoId.jpg';
-        copy($_SESSION['root'] . '/resources/images/icons/patientPhotoId.jpg', $newImg);
-        return;
-    }
+//    public function createDefaultPhotoId($pid)
+//    {
+//        $newImg = $_SESSION['site']['path'] . '/patients/' . $pid . '/patientPhotoId.jpg';
+//        copy($_SESSION['root'] . '/resources/images/icons/patientPhotoId.jpg', $newImg);
+//        return;
+//    }
 
     public function getPatientAddressById($pid)
     {
@@ -674,13 +675,15 @@ class Patient
 
     public function getPatientPhotoSrc()
     {
-        return $_SESSION['site']['url'] . '/patients/' . $this->patient['pid'] . '/patientPhotoId.jpg';
+        return $this->patient['image'];
     }
 
     public function getPatientPhotoSrcIdByPid($pid = null)
     {
         $pid = ($pid == null) ? $_SESSION['patient']['pid'] : $pid;
-        return $_SESSION['site']['url'] . '/patients/' . $pid . '/patientPhotoId.jpg';
+	    $this->setPatientModel();
+	    $patient =  $this->p->load($pid)->one();
+        return $patient['image'];
     }
 
     //******************************************************************************************************************

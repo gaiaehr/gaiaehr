@@ -187,6 +187,12 @@ Ext.define('App.model.patient.Insurance', {
 			comment: 'main supplemental'
 		},
 		{
+			name: 'image',
+			type: 'string',
+			dataType: 'mediumtext',
+			comment: 'insurance image base64 string'
+		},
+		{
 			name: 'active',
 			type: 'bool',
 			comment: '0=inactive, 1=active',

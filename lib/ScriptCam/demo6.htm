@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+		<script language="JavaScript" src="http://mrdoob.github.com/three.js/build/three.min.js"></script>
+		<script language="JavaScript" src="http://mrdoob.github.com/three.js/examples/js/Detector.js"></script>
+		<script language="JavaScript" src="scriptcam.js"></script>
+		<script> 
+			var SCREEN_WIDTH = 500;
+			var SCREEN_HEIGHT = 384;
+			var windowHalfX = SCREEN_WIDTH / 2;
+			var windowHalfY = SCREEN_HEIGHT / 2;
+			var FLOOR = -250;
+			var container;
+			var camera, scene;
+			var webglRenderer;
+			var mesh, zmesh, geometry;
+			var mouseX = 0, mouseY = 0;
+			var has_gl = 0;
+			$(document).ready(function() {
+				container = document.getElementById( 'obj' );
+				camera = new THREE.PerspectiveCamera( 75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 100000 );
+				camera.position.z = 500;
+				scene = new THREE.Scene();
+				var x = document.createElement( "canvas" );
+				var xc = x.getContext("2d");
+				x.width = x.height = 10;
+				xc.fillStyle = "#EEEEEE";
+				xc.fillRect(0, 0, 10, 10);
+				var xm = new THREE.MeshBasicMaterial( { map: new THREE.Texture( x, new THREE.UVMapping(), THREE.RepeatWrapping, THREE.RepeatWrapping ) } );
+				xm.map.needsUpdate = true;
+				xm.map.repeat.set( 10, 10 );
+				geometry = new THREE.PlaneGeometry( 100, 100, 15, 10 );
+				mesh = new THREE.Mesh( geometry, xm );
+				mesh.position.set( 0, FLOOR, 0 );
+				mesh.rotation.x = - Math.PI / 2;
+				mesh.scale.set( 10, 10, 10 );
+				scene.add( mesh );
+				var ambient = new THREE.AmbientLight( 0xffffff );
+				scene.add( ambient );
+				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+				directionalLight.position.set( 0, 0, 255 ).normalize();
+				scene.add( directionalLight );
+				var directionalLight2 = new THREE.DirectionalLight( 0xffffff );
+				directionalLight2.position.set( 0, 0, 100 ).normalize();
+				scene.add( directionalLight2 );
+				try {
+					webglRenderer = new THREE.WebGLRenderer();
+					webglRenderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+					webglRenderer.domElement.style.position = "relative";
+					container.appendChild( webglRenderer.domElement );
+					has_gl = 1;
+				}
+				catch (e) {
+				}
+				if (!has_gl) {
+					alert("No openGL");
+				}
+				else {
+					var loader = new THREE.JSONLoader();
+					var callbackFemale = function ( geometry, materials ) {
+						zmesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial( materials ) );
+						zmesh.position.set( 0, FLOOR, 150 );
+						zmesh.scale.set( 3, 3, 3 );
+						scene.add( zmesh );
+					};
+					loader.load( "3D_female.js", callbackFemale );
+					animate();
+				}
+				$("#webcam").scriptcam({
+					onMotion:onMotion,
+					onError:onError,
+					onWebcamReady:onWebcamReady,
+					cornerRadius:0,
+					zoom:0.7,
+					posX:224,
+					posY:0,
+					flip:1
+				});
+			});
+
+			function onError(errorId,errorMsg) {
+				alert(errorMsg);
+			}			
+			function changeCamera() {
+				$.scriptcam.changeCamera($('#cameraNames').val());
+			}
+			function getMotion() {
+				$.scriptcam.getMotionParameters();
+			}
+			function onWebcamReady(cameraNames,camera,microphoneNames,microphone,volume) {
+				$.each(cameraNames, function(index, text) {
+					$('#cameraNames').append( $('<option></option>').val(index).html(text) )
+				}); 
+				$('#cameraNames').val(camera);
+				setInterval(getMotion,500);
+			}
+			function onMotion(motion,brightness,color,motionx,motiony) {
+				console.log(motionx,motiony);
+				mouseX=parseInt(motionx*2);
+				mouseY=parseInt(motiony*2);
+			}
+			function animate() {
+				requestAnimationFrame( animate );
+				camera.position.x += ( mouseX - camera.position.x ) * .05;
+				camera.position.y += ( - mouseY - camera.position.y ) * .05;
+				camera.lookAt( scene.position );
+				webglRenderer.render( scene, camera );
+			}
+		</script> 
+	</head>
+	<body>
+		<div id="obj"></div>
+		<div id="webcam"></div>
+		<div style="margin:5px;">
+			<img src="webcamlogo.png" style="vertical-align:text-top"/>
+			<select id="cameraNames" size="1" onChange="changeCamera()" style="width:245px;font-size:10px;height:25px;">
+			</select>
+		</div>
+	</body>
+</html>

@@ -174,7 +174,7 @@ class Matcha
 	
 	/**
 	 * function __renderTableOptions():
-	 * Render and return a well formed Table Options for the creating table.
+	 * Render and return a well formed Table Options for creating table.
      * some default properties of the table are:
      * engine: InnoDB
      * charset: utf8

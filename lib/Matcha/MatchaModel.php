@@ -42,7 +42,8 @@ class MatchaModel extends Matcha
         // skip this entire routine if freeze option is true
         try
         {
-			if(self::$__freeze){
+			if(self::$__freeze)
+            {
 				self::$__senchaModel = self::__getSenchaModel($fileModel);
 				return true;
 			}
@@ -629,7 +630,8 @@ class MatchaModel extends Matcha
         return $SenchaField;
     }
 
-	static public function __getFields($model){
+	static public function __getFields($model)
+    {
 		$arr = array();
 		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
 		foreach($fields as $field)

@@ -1236,5 +1236,8 @@ $LANG = array(
     'view_ccd'                              => 'View CCD',
     'view_ccr'                              => 'View CCR',
     'filter_encounter'                      => 'Filter by encounter',
-    'code_term'                             => 'Code or Term'
+    'code_term'                             => 'Code or Term',
+    'enable_portal'                         => 'Enable Patient Portal',
+    'portal_url'                            => 'Patient Portal URL',
+    'portal_port'                           => 'Patient Portal Port'
 );

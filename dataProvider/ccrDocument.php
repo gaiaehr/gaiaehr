@@ -86,7 +86,7 @@ $actors = array(
                     'Text' => $patientData['sex'],
                     'Code' => array(
                         'Value' => ($patientData['sex'] == 'Male' ? 'M' : 'F'),
-                        'CodingSystem' => '2.16.840.1.113883.5.1' // TODO: Where this GUID came from
+                        'CodingSystem' => '2.16.840.1.113883.5.1'
                     )
                 )
             ),

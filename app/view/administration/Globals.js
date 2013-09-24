@@ -760,25 +760,42 @@ Ext.define('App.view.administration.Globals',
 				},
 				{
 					title : i18n('connectors'),
-					defaultType : 'textfield',
-					items : [
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('enable_lab_exchange'),
-						name : 'Conn1'
-					},
-					{
-						fieldLabel : i18n('lab_exchange_site_id'),
-						name : 'Conn2'
-					},
-					{
-						fieldLabel : i18n('lab_exchange_token_id'),
-						name : 'Conn3'
-					},
-					{
-						fieldLabel : i18n('lab_exchange_site_address'),
-						name : 'Conn4'
-					}]
+					items : [{
+                        xtype:'fieldset',
+                        defaultType : 'textfield',
+                        title: i18n('enable_lab_exchange'),
+                        collapsible: true,
+                        items:[
+                            {
+                                fieldLabel : i18n('lab_exchange_site_id'),
+                                name : 'Conn2'
+                            },
+                            {
+                                fieldLabel : i18n('lab_exchange_token_id'),
+                                name : 'Conn3'
+                            },
+                            {
+                                fieldLabel : i18n('lab_exchange_site_address'),
+                                name : 'Conn4'
+                            }
+                        ]
+                    },
+                    {
+                        xtype:'fieldset',
+                        defaultType : 'textfield',
+                        title: i18n('enable_portal'),
+                        collapsible: true,
+                        items:[
+                            {
+                                fieldLabel : i18n('portal_url'),
+                                name : 'portal_url'
+                            },
+                            {
+                                fieldLabel : i18n('portal_port'),
+                                name : 'portal_port'
+                            }
+                        ]
+                    }]
 				}],
 				dockedItems : [
 				{

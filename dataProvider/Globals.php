@@ -77,7 +77,8 @@ class Globals extends MatchaHelper
 	public static function setGlobals()
 	{
 		self::setGlobalModel();
-		foreach(self::$g->load()->all() as $setting){
+		foreach(self::$g->load()->all() as $setting)
+        {
 			$_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
 		}
 		$_SESSION['global_settings']['timezone_offset'] = -14400;

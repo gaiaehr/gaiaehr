@@ -82,4 +82,20 @@ class sndCCR
         }
     }
 
+    static public function receiveCCR()
+    {
+        try
+        {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+            return curl_exec($ch);
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
 }

@@ -25,16 +25,26 @@ class sndCCR
     private $hostURL;
     private $xmlData;
 
+    /**
+     * @param $host
+     */
     static public function setHost($host)
     {
         self::$hostURL = $host;
     }
 
+    /**
+     * @param $data
+     */
     static public function setXMLData($data)
     {
         self::$xmlData = $data;
     }
 
+    /**
+     * @param $file
+     * @return bool
+     */
     static public function loadXMLData($file)
     {
         try
@@ -49,6 +59,9 @@ class sndCCR
         }
     }
 
+    /**
+     * @return bool
+     */
     static public function transmitCCR()
     {
         try

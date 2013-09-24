@@ -22,15 +22,42 @@ include_once('../lib/Matcha/Matcha.php');
 class sndCCR
 {
 
-    private function transmitCCR($hostURL, $xmlData)
+    private $hostURL;
+    private $xmlData;
+
+    static public function setHost($host)
+    {
+        self::$hostURL = $host;
+    }
+
+    static public function setXMLData($data)
+    {
+        self::$xmlData = $data;
+    }
+
+    static public function loadXMLData($file)
+    {
+        try
+        {
+            self::$xmlData = file_get_contents($file);
+            return true;
+        }
+        catch(Exception $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
+
+    static public function transmitCCR()
     {
         try
         {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $hostURL);
+            curl_setopt($ch, CURLOPT_URL, self::$hostURL);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlData);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, self::$xmlData);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: close'));
             return true;

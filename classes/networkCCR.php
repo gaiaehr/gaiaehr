@@ -82,6 +82,9 @@ class sndCCR
         }
     }
 
+    /**
+     * @return bool|mixed
+     */
     static public function receiveCCR()
     {
         try

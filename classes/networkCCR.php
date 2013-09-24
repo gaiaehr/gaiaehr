@@ -19,18 +19,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 include_once('../lib/Matcha/Matcha.php');
 
-class sndCCR
+class networkCCR
 {
 
-    private $hostURL;
-    private $xmlData;
+    private static $__hostURL;
+    private static $__xmlData;
 
     /**
      * @param $host
      */
     static public function setHost($host)
     {
-        self::$hostURL = $host;
+        self::$__hostURL = $host;
     }
 
     /**
@@ -38,7 +38,7 @@ class sndCCR
      */
     static public function setXMLData($data)
     {
-        self::$xmlData = $data;
+        self::$__xmlData = $data;
     }
 
     /**
@@ -49,7 +49,7 @@ class sndCCR
     {
         try
         {
-            self::$xmlData = file_get_contents($file);
+            self::setXMLData(file_get_contents($file));
             return true;
         }
         catch(Exception $e)
@@ -67,12 +67,13 @@ class sndCCR
         try
         {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, self::$hostURL);
+            curl_setopt($ch, CURLOPT_URL, self::$__hostURL);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, self::$xmlData);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, self::$__xmlData);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: close'));
+            curl_exec($ch);
             return true;
         }
         catch(Exception $e)
@@ -89,10 +90,7 @@ class sndCCR
     {
         try
         {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            return curl_exec($ch);
+            return file_get_contents('php://input');
         }
         catch(Exception $e)
         {

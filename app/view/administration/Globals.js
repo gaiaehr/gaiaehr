@@ -733,23 +733,6 @@ Ext.define('App.view.administration.Globals',
 					},
 					{
 						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('enable_hylafax_support'),
-						name : 'enable_hylafax'
-					},
-					{
-						fieldLabel : i18n('hylafax_server'),
-						name : 'hylafax_server'
-					},
-					{
-						fieldLabel : i18n('hylafax_directory'),
-						name : 'hylafax_basedir'
-					},
-					{
-						fieldLabel : i18n('hylafax_enscript_command'),
-						name : 'hylafax_enscript'
-					},
-					{
-						xtype : 'mitos.checkbox',
 						fieldLabel : i18n('enable_scanner_support'),
 						name : 'enable_scanner'
 					},

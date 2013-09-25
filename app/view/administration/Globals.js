@@ -787,6 +787,11 @@ Ext.define('App.view.administration.Globals',
                         collapsible: true,
                         items:[
                             {
+                                xtype: 'checkbox',
+                                fieldLabel : i18n('enable_portal'),
+                                name : 'portal_enable'
+                            },
+                            {
                                 fieldLabel : i18n('portal_url'),
                                 name : 'portal_url'
                             },

@@ -25,17 +25,13 @@ class Globals extends MatchaHelper
 	 */
 	private static $g = null;
 
-	private static function setGlobalModel()
-	{
-		if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
-	}
-
 	/**
 	 * @return array
 	 */
 	public static function getGlobals()
 	{
 		$conn = new MatchaHelper();
+        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		$conn->setSQL("SELECT gl_name, gl_index, gl_value FROM globals");
 		$rows = array();
 		foreach($conn->fetchRecords() as $row){
@@ -50,9 +46,8 @@ class Globals extends MatchaHelper
 	 */
 	public function updateGlobals(stdClass $params)
 	{
-
+        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		$data = get_object_vars($params);
-
 		foreach($data as $key => $value){
 			if(is_int($value)){
 				$rec = trim($value);
@@ -76,7 +71,7 @@ class Globals extends MatchaHelper
 	 */
 	public static function setGlobals()
 	{
-		self::setGlobalModel();
+        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		foreach(self::$g->load()->all() as $setting)
         {
 			$_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];

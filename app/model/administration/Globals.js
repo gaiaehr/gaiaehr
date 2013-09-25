@@ -21,7 +21,8 @@ Ext.define('App.model.administration.Globals',
         extend: 'Ext.data.Model',
         table: {
             name:'globals',
-            comment:'Global Settings'
+            comment:'Global Settings',
+            data: 'App.data.administration.Globals'
         },
         fields: [
             {

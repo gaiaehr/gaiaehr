@@ -342,24 +342,6 @@
         "gl_value": 0
     },
     {
-        "id": 58,
-        "gl_name": "hylafax_basedir",
-        "gl_index": 0,
-        "gl_value": "/var/spool/fax"
-    },
-    {
-        "id": 59,
-        "gl_name": "hylafax_enscript",
-        "gl_index": 0,
-        "gl_value": "enscript -M Letter -B -e^ --margins=36:36:36:36"
-    },
-    {
-        "id": 60,
-        "gl_name": "hylafax_server",
-        "gl_index": 0,
-        "gl_value": "localhost"
-    },
-    {
         "id": 61,
         "gl_name": "ignore_pnotes_authorization",
         "gl_index": 0,
@@ -694,5 +676,17 @@
         "gl_name": "use_charges_panel",
         "gl_index": 0,
         "gl_value": 0
+    },
+    {
+        "id": 117,
+        "gl_name": "portal_port",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 118,
+        "gl_name": "portal_url",
+        "gl_index": 0,
+        "gl_value": ""
     }
 ]

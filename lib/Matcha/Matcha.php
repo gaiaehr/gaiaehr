@@ -158,7 +158,7 @@ class Matcha
 			{
 			    $rec = self::$__conn->prepare('SELECT * FROM '.$table);
 				$rec->execute();
-			    if($rec->rowCount() == 0 && isset(MatchaModel::$__senchaModel['table']['data']))
+			    if($rec->rowCount() == 0)
 			    {
 				    MatchaModel::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
 				}

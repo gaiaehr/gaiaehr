@@ -37,7 +37,7 @@ include_once ($_SESSION['root'] . '/dataProvider/Medical.php');
 include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
 include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
-
+include_once ($_SESSION['root'] . '/dataProvider/Facilities.php');
 
 /**
  * Load all the data for the CCR XML data and loops
@@ -55,6 +55,7 @@ $healthProviderGUID = UUID::v4();
 $Patient = new Patient();
 $Encounter = new Encounter();
 $Medical = new Medical();
+$Facilities = new Facilities();
 
 /**
  * Actors - (SHALL)
@@ -172,6 +173,7 @@ $references = array(
  * minimum, the patient’s key healthcare providers should be listed, particularly their primary physician and
  * any active consulting physicians, therapists, and counselors.
  */
+//$facilitiesData = $Facilities->getPatientDemographicDataByPid($_REQUEST['pid']);
 $healthProviders = array(
     'Provider' => array(
         array( // Provider 1
@@ -180,7 +182,7 @@ $healthProviders = array(
                 'Text' => 'Gino Clinic',
                 'Code' => array(
                     'Value' => 'PCP',
-                    'CodingSystem' => '2.16.840.1.113883.5.88' // TODO: Find out from where this ID came from
+                    'CodingSystem' => '2.16.840.1.113883.5.88'
                 )
             )
         )
@@ -1068,160 +1070,67 @@ foreach($patientMedications as $item)
  * patient’s current or past medical history. At a minimum, currently active and any relevant historical
  * allergies and adverse reactions should be listed.
  */
-$alerts = array(
-  'Alert' => array(
-      array( // Alert 1
-          'CCRDocumentObjectID' => UUID::v4(),
-          'Description' => array(
-              'Text' => 'Adverse reaction to substance',
-              'Code' => array(
-                  'Value' => '282100009',
-                  'CodingSystem' => 'SNOMED CT'
-              )
-          ),
-          'Status' => array(
-              'Text' => 'Active'
-          ),
-          'Source' => array(
-              'Actor' => array(
-                  'ActorID' => $softwareGUID
-              )
-          ),
-          'Agent' => array(
-              'Products' => array(
-                  'Product' => array(
-                      array( // Product 1
-                          'CCRDocumentObjectID' => UUID::v4(),
-                          'Source' => array(
-                              'Actor' => array(
-                                  'ActorID' => $softwareGUID
-                              )
-                          ),
-                          'Product' => array(
-                              'ProductName' => array(
-                                  'Text' => 'Penicillin',
-                                  'Code' => array(
-                                      'Value' => '70618',
-                                      'CodingSystem' => 'RxNorm'
+$param = new stdClass();
+$param->pid = $_REQUEST['pid'];
+$patientAllergies = $Medical->getPatientAllergies($param);
+$alerts = array();
+foreach($patientAllergies as $item)
+{
+    $alerts[] = array(
+      'Alert' => array(
+          array( // Alert 1
+              'CCRDocumentObjectID' => UUID::v4(),
+              'Description' => array(
+                  'Text' => $item['allergy'],
+                  'Code' => array(
+                      'Value' => $item['allergy_code'],
+                      'CodingSystem' => 'RXNORM'
+                  )
+              ),
+              'Status' => array(
+                  'Text' => ($item['end_date'] == '' ? 'Active' : 'Not active')
+              ),
+              'Source' => array(
+                  'Actor' => array(
+                      'ActorID' => $softwareGUID
+                  )
+              ),
+              'Agent' => array(
+                  'Products' => array(
+                      'Product' => array(
+                          array( // Product 1
+                              'CCRDocumentObjectID' => UUID::v4(),
+                              'Source' => array(
+                                  'Actor' => array(
+                                      'ActorID' => $softwareGUID
+                                  )
+                              ),
+                              'Product' => array(
+                                  'ProductName' => array(
+                                      'Text' => 'Penicillin',
+                                      'Code' => array(
+                                          'Value' => '70618',
+                                          'CodingSystem' => 'RxNorm'
+                                      )
                                   )
                               )
                           )
                       )
                   )
-              )
-          ),
-          'Reaction' => array(
-              'Description' => array(
-                  'Text' => 'Hives',
-                  'Code' => array(
-                      'Value' => '247472004',
-                      'CodingSystem' => 'SNOMED CT'
-                  )
-              )
-          )
-      ),
-      array( // Alert 2
-          'CCRDocumentObjectID' => UUID::v4(),
-          'Description' => array(
-              'Text' => 'Adverse reaction to substance',
-              'Code' => array(
-                  'Value' => '282100009',
-                  'CodingSystem' => 'SNOMED CT'
-              )
-          ),
-          'Status' => array(
-              'Text' => 'Active'
-          ),
-          'Source' => array(
-              'Actor' => array(
-                  'ActorID' => $softwareGUID
-              )
-          ),
-          'Agent' => array(
-              'Products' => array(
-                  'Product' => array(
-                      array( // Product 1
-                          'CCRDocumentObjectID' => UUID::v4(),
-                          'Source' => array(
-                              'Actor' => array(
-                                  'ActorID' => $softwareGUID
-                              )
-                          ),
-                          'Product' => array(
-                              'ProductName' => array(
-                                  'Text' => 'Aspirin',
-                                  'Code' => array(
-                                      'Value' => '1191',
-                                      'CodingSystem' => 'RxNorm'
-                                  )
-                              )
-                          )
+              ),
+              'Reaction' => array(
+                  'Description' => array(
+                      'Text' => 'Hives',
+                      'Code' => array(
+                          'Value' => '247472004',
+                          'CodingSystem' => 'SNOMED CT'
                       )
-                  )
-              )
-          ),
-          'Reaction' => array(
-              'Description' => array(
-                  'Text' => 'Wheezing',
-                  'Code' => array(
-                      'Value' => '56018004',
-                      'CodingSystem' => 'SNOMED CT'
-                  )
-              )
-          )
-      ),
-      array( // Alert 3
-          'CCRDocumentObjectID' => UUID::v4(),
-          'Description' => array(
-              'Text' => 'Adverse reaction to substance',
-              'Code' => array(
-                  'Value' => '282100009',
-                  'CodingSystem' => 'SNOMED CT'
-              )
-          ),
-          'Status' => array(
-              'Text' => 'Active'
-          ),
-          'Source' => array(
-              'Actor' => array(
-                  'ActorID' => $softwareGUID
-              )
-          ),
-          'Agent' => array(
-              'Products' => array(
-                  'Product' => array(
-                      array( // Product 1
-                          'CCRDocumentObjectID' => UUID::v4(),
-                          'Source' => array(
-                              'Actor' => array(
-                                  'ActorID' => $softwareGUID
-                              )
-                          ),
-                          'Product' => array(
-                              'ProductName' => array(
-                                  'Text' => 'Codeine',
-                                  'Code' => array(
-                                      'Value' => '2670',
-                                      'CodingSystem' => 'RxNorm'
-                                  )
-                              )
-                          )
-                      )
-                  )
-              )
-          ),
-          'Reaction' => array(
-              'Description' => array(
-                  'Text' => 'Nausea',
-                  'Code' => array(
-                      'Value' => '73879007',
-                      'CodingSystem' => 'SNOMED CT'
                   )
               )
           )
       )
-  )
-);
+    );
+}
 
 /**
  * Social History section - (OPTIONAL)
@@ -1715,7 +1624,7 @@ $ccrArray = array(
         'Problems' => $problems, // DONE
         // 'FamilyHistory' => $familyHistoryProblems,
         // 'SocialHistory' => $socialHistory,
-        //'Alerts' => $alerts,
+        'Alerts' => $alerts,
         'Medications' => $medications,
         // 'MedicalEquipment' => $medicalEquipment,
         'Immunizations' => $immunizations, // DONE

@@ -105,8 +105,20 @@ class MatchaModel extends Matcha
             if( count($tableColumns) <= 1 )
             {
                 self::__createAllColumns($workingModelFields);
+
+                // add data - if the model has data defined.
+                if(isset(self::$__senchaModel['table']['data']))
+                {
+                    $rec = self::$__conn->prepare('SELECT * FROM '.$table);
+                    $rec->execute();
+                    if($rec->rowCount() <= 0)
+                    {
+                        MatchaModel::__setSenchaModelData(MatchaModel::$__senchaModel['table']['data']);
+                    }
+                }
                 return true;
             }
+
             // Verify that all the columns does not have difference
             // between field names
             elseif( count($differentCreateColumns) || count($differentDropColumns) )

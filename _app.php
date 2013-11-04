@@ -631,6 +631,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                     'patient.encounter.SOAP'
                 ],
                 launch: function() {
+
+                    App.Current = this;
+
                     CronJob.run(function(){
                         say('Loading GaiaEHR');
                         app = Ext.create('App.view.Viewport');

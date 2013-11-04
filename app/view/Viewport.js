@@ -111,13 +111,13 @@ Ext.define('App.view.Viewport', {
                 xtype: 'toolbar',
                 dock: 'top',
                 items: ['-', {
-                    text: "List issues",
+                    text: 'List issues',
                     iconCls: 'list',
                     action: 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
                     scope: me,
                     handler: me.showMiframe
                 }, '-', {
-                    text: "Create an issue",
+                    text: 'Create an issue',
                     iconCls: 'icoAddRecord',
                     action: 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
                     scope: me,
@@ -1356,12 +1356,13 @@ Ext.define('App.view.Viewport', {
      * This folder will hold modules created by third-party.
      */
     loadModules: function(){
-        say('Loading Modules');
+        say('*** Loading Modules ***');
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
-                say('Module ' + modules[i].dir + ' loaded!');
-                Ext.create('Modules.' + modules[i].dir + '.Main');
+                var m = App.Current.getController('Modules.' + modules[i].dir + '.Main');
+                m.init();
+                say('Module ' + modules[i].dir + ' loaded...');
             }
         });
     },

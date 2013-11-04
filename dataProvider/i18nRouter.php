@@ -26,6 +26,8 @@ class i18nRouter
 	// -----------------------------------------------------------------------
 	public static function getTranslation()
 	{
+        $hasModuleLocales =  false;
+
 		if (isset($_SESSION['site']['localization']))
 		{
 			$loc = $_SESSION['site']['localization'];
@@ -40,7 +42,22 @@ class i18nRouter
 		}
 		// This language file is need by default.
 		include ($_SESSION['root'] . '/langs/en_US.php');
-		$en_US = $LANG;
+        $en_US = $LANG;
+
+        if(isset($_SESSION['site']['modules'])){
+            foreach($_SESSION['site']['modules'] AS $module){
+                if(isset($module['locales'])){
+                    $hasModuleLocales =  true;
+                    $key = array_search('en_US', $module['locales']);
+                    if($key !== false){
+                        include ($_SESSION['root'] . '/modules/'.$module['name'].'/locales/en_US.php');
+                        $en_US = array_merge($en_US, $LANG);
+                    }
+                }
+            }
+        }
+
+
 		// This file will be called when the user or the administrator select
 		// a different language. But the primary language will be called first.
 		// So if some words are not translated by the selected language it can be
@@ -48,7 +65,21 @@ class i18nRouter
 		if ($loc !== false)
 		{
 			include ($_SESSION['root'] . '/langs/' . $loc . '.php');
-			return array_merge($en_US, $LANG);
+            $locale = array_merge($en_US, $LANG);
+
+            if($hasModuleLocales){
+                foreach($_SESSION['site']['modules'] AS $module){
+                    if(isset($module['locales'])){
+                        $key = array_search($loc, $module['locales']);
+                        if($key !== false){
+                            include ($_SESSION['root'] . '/modules/'.$module['name'].'/locales/'.$loc.'.php');
+                            $locale = array_merge($locale, $LANG);
+                        }
+                    }
+                }
+            }
+
+            return $locale;
 		}
 		else
 		{

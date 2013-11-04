@@ -77,7 +77,13 @@ class Modules
         foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
 	        if(isset($m['name'])){
 		        $foo = $this->getModuleConfig($m['name']);
-		        if ($foo['active']) $modules[] = $foo;
+		        if ($foo['active']){
+                    $modules[] = $foo;
+                    if(isset($foo['actionsAPI'])) unset($foo['actionsAPI']);
+                    if(isset($foo['extjs'])) unset($foo['extjs']);
+                    if(isset($foo['install'])) unset($foo['install']);
+                    $_SESSION['site']['modules'][$foo['name']] = $foo;
+                }
 	        }
         }
         return $modules;
@@ -152,12 +158,12 @@ class Modules
             $ModuleConfig = $this->getModuleConfig($module);
             if ($ModuleConfig['active'])
             {
-                $this->db->setSQL("SELECT * FROM modules WHERE `name` = '".$ModuleConfig['name']."'");
+                $this->db->setSQL("SELECT * FROM modules WHERE `name` = '{$ModuleConfig['name']}'");
                 $moduleRecord = $this->db->fetchRecord(PDO::FETCH_ASSOC);
                 if(empty($moduleRecord))
                 {
                     $data['name'] = $ModuleConfig['name'];
-                    $data['enable'] = 0;
+                    $data['enable'] = '0';
                     $data['installed_version'] = $ModuleConfig['version'];
                     $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
                     $this->db->execOnly();

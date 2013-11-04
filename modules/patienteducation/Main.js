@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.patienteducation.Main',
-{
+Ext.define('Modules.patienteducation.Main', {
 	extend : 'Modules.Module',
-	constructor : function()
-	{
+	init : function()	{
 		var me = this;
 
         app.checkoutWindow.on('render', function(win){

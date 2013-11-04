@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.view.patient.Encounter', {
     extend:'App.ux.RenderPanel',
     id:'panelEncounter',
@@ -22,7 +23,14 @@ Ext.define('App.view.patient.Encounter', {
     pageLayout:'border',
     requires:[
         'App.store.patient.Encounter',
-        'App.store.patient.Vitals'
+        'App.store.patient.Vitals',
+        'App.store.administration.AuditLog',
+        'App.view.patient.encounter.SOAP',
+        'App.view.patient.encounter.SOAP',
+        'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
+        'App.view.patient.encounter.CurrentProceduralTerminology',
+        'App.view.patient.ProgressNote',
+        'App.ux.combo.EncounterPriority'
     ],
     showRating:true,
 	convercionMethod: 'english',

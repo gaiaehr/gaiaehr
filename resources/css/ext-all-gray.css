@@ -11419,6 +11419,7 @@ svg, vml {
 .x-window-default,
 .x-window-header-default-top,
 .x-panel-default-framed,
-.x-panel-header-default-framed-top {
-	border-radius: 0;
+.x-panel-header-default-framed-top,
+.x-menu-item-active .x-menu-item-link {
+    border-radius: 0 !important;
 }

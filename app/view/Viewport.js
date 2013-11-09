@@ -1071,21 +1071,35 @@ Ext.define('App.view.Viewport', {
             }));
         me.winSupport.show();
     },
-    msg: function(title, format, error){
+
+    msg: function(title, format, error, persistent) {
         var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
-        if(!this.msgCt){
-            this.msgCt = Ext.core.DomHelper.insertFirst(document.body, {
-                    id: 'msg-div'
-                }, true);
-        }
+        this.msgCt = Ext.get('msg-div');
         this.msgCt.alignTo(document, 't-t');
-        var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)), m = Ext.core.DomHelper.append(this.msgCt, {
-                html: '<div class="msg ' + msgBgCls + '"><h3>' + title + '</h3><p>' + s + '</p></div>'
+        var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
+            m = Ext.core.DomHelper.append(this.msgCt, {
+                html: '<div class="flyMsg ' + msgBgCls + '"><h3>' + (title || '') + '</h3><p>' + s + '</p></div>'
             }, true);
-        m.slideIn('t').pause(3000).ghost('t', {
-                remove: true
-            });
+        if (persistent === true) return m; // if persitent return the message element without the fade animation
+        m.addCls('fadeded');
+        Ext.create('Ext.fx.Animator', {
+            target: m,
+            duration: error ? 7000 : 2000,
+            keyframes: {
+                0: { opacity: 0 },
+                20: { opacity: 1 },
+                80: { opacity: 1 },
+                100: { opacity: 0, height: 0 }
+            },
+            listeners: {
+                afteranimate: function() {
+                    m.destroy();
+                }
+            }
+        });
+        return true;
     },
+
     checkSession: function(){
         authProcedures.ckAuth(function(provider, response){
             if(!response.result.authorized){

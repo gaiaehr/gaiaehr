@@ -7,6 +7,10 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+
+.tooth path, .tooth circle {
+    cursor: pointer;
+}
 .emergency .x-menu-item-text {
     color: red !important;
 }
@@ -710,43 +714,38 @@ body#login {
 /*width: 100%;*/
 /*}*/
 /*Top Alert Message Styles*/
-.msg .x-box-mc {
-	font-size: 14px;
-}
-
-.msg-green {
-	background: #d6f6dd;
-}
-
-.msg-red {
-	background: #ffcccc;
-}
-
 #msg-div {
-	/*position: absolute;*/
-	left: 35%;
-	top: 10px;
-	min-width: 300px;
-	max-width: 400px;
-	z-index: 20000;
+    position: absolute;
+    top: 10px;
+    min-width: 300px;
+    max-width: 600px;
+    z-index: 20000;
+}
+#msg-div .flyMsg {
+    border: 1px solid #CCCCCC;
+    color: #555555;
+    margin-top: 3px;
+    padding: 10px 15px;
+}
+#msg-div .fadeded {
+    opacity:0;
+}
+.msg-green {
+    background: none repeat scroll 0 0 #D6F6DD;
+}
+.msg-red {
+    background: none repeat scroll 0 0 #FFCCCC;
+}
+#msg-div .flyMsg h3 {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 0 0 8px;
+}
+#msg-div .flyMsg p {
+    margin: 0;
 }
 
-#msg-div .msg {
-	border: 1px solid #ccc;
-	margin-top: 3px;
-	padding: 10px 15px;
-	color: #555;
-}
 
-#msg-div .msg h3 {
-	margin: 0 0 8px;
-	font-weight: bold;
-	font-size: 15px;
-}
-
-#msg-div .msg p {
-	margin: 0;
-}
 
 .toolDelete {
 	background-color: #ff0033 ! important;

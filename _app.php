@@ -53,7 +53,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			</div>
 		</div>
 		<!-- slide down message div -->
-		<span id="app-msg" style="display:none;"></span>
+        <div id="msg-div"></div>
 		<!-- JQuery library -->
 		<script src="lib/JQuery/jquery.min.js"></script>
 		<!-- ScriptCam library -->

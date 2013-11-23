@@ -25,3 +25,7 @@ Mobile Application:
 Setup documentation can be found in the INSTALL file,
 and extensive documentation can be found at the GaiaEHR web site at:
 [Read more](http://www.GaiaEHR.org/).
+
+License
+-------
+This project is open sourced under [GNU GPL Version 3](http://www.gnu.org/licenses/gpl-3.0.html).

@@ -31,7 +31,8 @@ Ext.define('App.view.patient.windows.Medical', {
 	},
 	requires: [
 		'App.view.patient.LaboratoryResults',
-		'App.store.administration.HL7Recipients'
+		'App.store.administration.HL7Recipients',
+        'App.ux.grid.RowFormEditing'
 	],
 	pid: null,
 	initComponent: function(){
@@ -2026,11 +2027,12 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	onAddItem: function(){
 		var me = this,
-			grid = this.getLayout().getActiveItem(),
+			activeItem = me.getLayout().getActiveItem(),
+            grid = activeItem.xtype == 'grid' ? activeItem : activeItem.down('grid'),
 			store = grid.store,
 			params;
 
-		grid.editingPlugin.cancelEdit();
+        grid.editingPlugin.cancelEdit();
 
 		store.insert(0, {
 			created_uid: app.user.id,

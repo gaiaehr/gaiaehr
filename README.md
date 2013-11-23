@@ -28,4 +28,4 @@ and extensive documentation can be found at the GaiaEHR web site at:
 
 License
 -------
-This project is open sourced under [GNU GPL Version 3](http://www.gnu.org/licenses/gpl-3.0.html).
+This project is open sourced under [GNU GPL Version 3](https://github.com/gaiaehr/gaiaehr/blob/master/LICENSE).

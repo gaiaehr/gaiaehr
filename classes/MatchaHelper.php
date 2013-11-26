@@ -16,13 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 if (!isset($_SESSION)){
-    session_name('GaiaEHR');
-    session_start();
-    session_cache_limiter('private');
+    @session_name('GaiaEHR');
+    @session_start();
+    @session_cache_limiter('private');
 }
-
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');

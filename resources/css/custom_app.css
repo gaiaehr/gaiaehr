@@ -8,9 +8,25 @@
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
-.tooth path, .tooth circle {
+.tooth path, .tooth circle, .tooth text, .tooth tspan {
     cursor: pointer;
 }
+.lightRegBgBtn.x-btn-pressed {
+    background-color: #ffbcc4;
+}
+.centerInputText input {
+    text-align: center;
+}
+.CheckNoPadding .x-form-checkboxgroup-body,
+.CheckNoPadding .x-form-cb-wrap,
+.CheckNoPadding label {
+    padding: 0;
+}
+.ProbingWarningValue input{
+    color: red;
+}
+
+
 .emergency .x-menu-item-text {
     color: red !important;
 }

@@ -173,34 +173,34 @@ class MatchaCUP
 				// columns
 				if ($columns == null)
 				{
-					$columnsx = '*';
+					$_columns = '*';
 				}
 				elseif (is_array($columns))
 				{
-					$columnsx = '`' . implode('`,`', $columns) . '`';
+					$_columns = '`' . implode('`,`', $columns) . '`';
 				}
 				else
 				{
-					$columnsx = $columns;
+					$_columns = $columns;
 				}
 				// where
 				if (is_numeric($where))
 				{
 					$where = $this->ifDataEncrypt($this->primaryKey,$where);
-					$wherex = "`$this->primaryKey`='$where'";
+					$_where = "`$this->primaryKey`='$where'";
 				}
 				elseif (is_array($where))
 				{
-					$wherex = self::parseWhereArray($where);
+					$_where = self::parseWhereArray($where);
 				}
 				else
 				{
-					$wherex = $where;
+					$_where = $where;
 				}
 				if ($where != null)
-					$wherex = ' WHERE ' . $wherex;
+					$_where = ' WHERE ' . $_where;
 				// sql build
-				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
+				$this->sql = "SELECT $_columns FROM `" . $this->table . "` $_where";
 			}
 			else
 			{
@@ -216,35 +216,42 @@ class MatchaCUP
 				}
 
 				// sort
-				$sortx = '';
+				$_sort = '';
 				if (isset($where->sort))
 				{
 					$sortArray = array();
 					foreach ($where->sort as $sort)
 						{
-						if(isset($sort->property) && (!is_array($this->phantomFields) || (is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)))){
+						if(
+                            isset($sort->property) &&
+                            (!is_array($this->phantomFields) ||
+                                (
+                                    is_array($this->phantomFields) && !in_array($sort->property, $this->phantomFields)
+                                )
+                            )
+                        ){
 							$sortDirection = (isset($sort->direction) ? $sort->direction : '');
 							$sortArray[] = $sort->property.' '.$sortDirection;
 						}
 					}
 					if(!empty($sortArray)){
-						$sortx = ' ORDER BY ' . implode(', ', $sortArray);
+						$_sort = ' ORDER BY ' . implode(', ', $sortArray);
 					}
 				}
 				// group
-				$groupx = '';
+				$_group = '';
 				if (isset($where->group))
 				{
 					$property = $where->group[0]->property;
 					$direction = isset($where->group[0]->direction) ? $where->group[0]->direction : '';
-					$groupx = " GROUP BY `$property` $direction";
+					$_group = " GROUP BY `$property` $direction";
 				}
 				// filter/where
-				$wherex = '';
+				$_where = '';
 
                 if(isset($where->{$this->primaryKey}))
                 {
-                    $wherex = ' WHERE '.$this->primaryKey.' = \''.$where->{$this->primaryKey}.'\'';
+                    $_where = ' WHERE '.$this->primaryKey.' = \''.$where->{$this->primaryKey}.'\'';
                 }
                 elseif(isset($where->filter) && isset($where->filter[0]->property))
 				{
@@ -265,11 +272,13 @@ class MatchaCUP
 							}
 						}
 					}
-					if(count($whereArray) > 0) $wherex = 'WHERE ' . implode(' AND ', $whereArray);
+					if(count($whereArray) > 0) $_where = 'WHERE ' . implode(' AND ', $whereArray);
 				}
-				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx";
-				$this->sql          = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx $limits";
+				$this->nolimitsql   = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort";
+				$this->sql          = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort $limits";
 			}
+
+//            print  $this->sql;
 
 			return $this;
 
@@ -290,7 +299,7 @@ class MatchaCUP
     {
         try
         {
-            $r = Matcha::$__conn->query("SELECT MAX($this->primaryKey) AS lastID FROM $this->table")->fetch();
+            $r = Matcha::$__conn->query("SELECT MAX({$this->primaryKey}) AS lastID FROM {$this->table}")->fetch();
             return $r['lastID']+1;
         }
         catch(PDOException $e)
@@ -568,7 +577,7 @@ class MatchaCUP
 	 */
 	public function search($params){
 
-		$sql = "SELECT * FROM `$this->table` ";
+		$sql = "SELECT * FROM `{$this->table}` ";
 
 		$filter = '';
 
@@ -724,49 +733,41 @@ class MatchaCUP
 	 */
 	private function parseValues($data)
 	{
-		$columns = array_keys($data);
-		$values = array_values($data);
+        $encrypted = false;
+        $columns = array_keys($data);
+        $values = array_values($data);
 
-		foreach($columns as $index=>$column) if(!in_array($column,$this->fields)) unset($columns[$index],$values[$index]);
+        foreach ($columns as $index => $column) if (!in_array($column, $this->fields)) unset($columns[$index], $values[$index]);
 
-		$properties = (array) MatchaModel::__getFieldsProperties($columns, $this->model);
-		foreach($values as $index => $foo)
-		{
-			if(!isset($properties[$index]['store']) || (isset($properties[$index]['store']) && $properties[$index]['store'] != false)){
-				$type = isset($properties[$index]['type']) ? $properties[$index]['type'] : 'string';
+        $properties = (array)MatchaModel::__getFieldsProperties($columns, $this->model);
+        foreach ($values as $index => $foo) {
+            if (!isset($properties[$index]['store']) || (isset($properties[$index]['store']) && $properties[$index]['store'] != false)) {
+                $type = $properties[$index]['type'];
 
-				if(isset($properties[$index]['encrypt']) && $properties[$index]['encrypt']){
-					$values[$index] = $this->dataEncrypt($values[$index]);
-				}else{
-					if($type == 'bool')
-					{
-						if($foo === true)
-						{
-							$values[$index] = 1;
-						}
-						elseif($foo === false)
-						{
-							$values[$index] = 0;
-						}
-//					}
-//					elseif($type == 'int')
-//					{
-//						$values[$index] = ($foo == '' || $foo == false ? 'NULL' : $values[$index]);
-					}elseif($type == 'date')
-					{
-						$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
-					}
-					elseif($type == 'array')
-					{
-						$values[$index] = ($foo == '' ? 'NULL' : serialize($values[$index]));
-					}else{
-						addslashes($values[$index]);
-					}
-				}
-			}else{
-				unset($columns[$index], $values[$index]);
-			}
-		}
+                if (isset($properties[$index]['encrypt']) && $properties[$index]['encrypt']) {
+                    $values[$index] = $this->dataEncrypt($values[$index]);
+                    $encrypted = true;
+                } else {
+                    if ($type == 'bool') {
+                        if ($foo === true) {
+                            $values[$index] = 1;
+                        } elseif ($foo === false) {
+                            $values[$index] = 0;
+                        }
+                    } elseif ($type == 'date') {
+                        $values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
+                    } elseif ($type == 'array') {
+                        $values[$index] = ($foo == '' ? 'NULL' : serialize($values[$index]));
+                    }
+                }
+
+                // escape single quotes in value
+                if ($type != 'array' && !$encrypted) $values[$index] = str_replace('\'', '\\\'', $foo);
+
+            } else {
+                unset($columns[$index], $values[$index]);
+            }
+   		}
 		return array_combine($columns,$values);
 	}
 

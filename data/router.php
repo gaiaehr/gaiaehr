@@ -38,11 +38,12 @@ class BogusAction
 
 $isForm = false;
 $isUpload = false;
+$module = null;
 if (isset($HTTP_RAW_POST_DATA))
 {
 	header('Content-Type: text/javascript');
 	$data = json_decode($HTTP_RAW_POST_DATA);
-	if (isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
+	if (isset($_REQUEST['module'])) $module = $_REQUEST['module'];
 }
 else
 {
@@ -61,7 +62,7 @@ else
 			$_FILES
 		);
 		if (isset($_REQUEST['module']))
-			$data->module = $_REQUEST['module'];
+            $module = $_REQUEST['module'];
 
 	}
 	else
@@ -72,7 +73,7 @@ else
 
 function doRpc($cdata)
 {
-	global $API;
+	global $API, $module;
 	try
 	{
 		/**
@@ -115,9 +116,9 @@ function doRpc($cdata)
 			'action' => $action,
 			'method' => $method
 		);
-		if (isset($cdata->module))
+		if (isset($module))
 		{
-			require_once ("../modules/$cdata->module/dataProvider/$action.php");
+			require_once ("../modules/$module/dataProvider/$action.php");
 		}
 		else
 		{

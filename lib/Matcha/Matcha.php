@@ -219,12 +219,13 @@ class Matcha
 	 * function __createColumn($column = array()):
 	 * Method that will create a single column into the table
 	 */
-	static protected function __createColumn($column = array(), $table = NULL)
+	static protected function __createColumn($column = array(), $table = NULL, $index = false)
 	{
 		try
 		{
             if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
 			if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' ADD '.$column['name'].' '.self::__rendercolumnsyntax($column).';');
+            if($index) self::__createIndex($table, $column['name']);
             return true;
 		}
 		catch(PDOException $e)
@@ -238,12 +239,13 @@ class Matcha
 	 * function __modifyColumn($column = array(), $table = NULL):
 	 * Method to modify a single column properties
 	 */
-	static protected function __modifyColumn($column = array(), $table = NULL)
+	static protected function __modifyColumn($column = array(), $table = NULL, $index = false)
 	{
 		try
 		{
-            if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel ['table']['name'] : MatchaModel::$__senchaModel['table']);
+            if($table == null) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel ['table']['name'] : MatchaModel::$__senchaModel['table']);
             if(self::__rendercolumnsyntax($column) == true) self::$__conn->query('ALTER TABLE '.$table.' MODIFY '.$column['name'].' '.self::__renderColumnSyntax($column).';');
+            if($index) self::__createIndex($table, $column['name']);
             return true;
 		}
 		catch(PDOException $e)
@@ -281,7 +283,7 @@ class Matcha
 		try
 		{
 			if(!$table) $table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
-			self::$__conn->query("ALTER TABLE ".$table." DROP COLUMN `".$column."`;");
+			self::$__conn->query('ALTER TABLE '.$table.' DROP COLUMN `'.$column.'`;');
             return true;
 		}
 		catch(PDOException $e)
@@ -290,6 +292,26 @@ class Matcha
             return false;
 		}
 	}
+
+    /**
+     * function __createIndex($table, $column):
+     * Method to create an new index to table if index does not exist
+     * @param $table
+     * @param $column
+     * @return bool
+     */
+    static public function __createIndex($table, $column){
+        try
+        {
+            self::$__conn->query('ALTER TABLE '.$table.' ADD INDEX '.$column.'('.$column.');');
+            return true;
+        }
+        catch(PDOException $e)
+        {
+            MatchaErrorHandler::__errorProcess($e);
+            return false;
+        }
+    }
 
     /**
      * function __renameColumn($oldColumn, $newColumn, $table = NULL):
@@ -390,7 +412,7 @@ class Matcha
             }
             elseif($column['type'] == 'array')
             {
-                $columnType = (string)'TEXT';
+                $columnType = (string)'MEDIUMTEXT';
             }
             else
             {

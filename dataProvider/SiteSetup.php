@@ -241,6 +241,7 @@ class SiteSetup
 
 	public function loadDatabaseStructure()
 	{
+        ini_set('memory_limit', '-1');
 		if(file_exists($sqlFile = 'sql/gaiadb_install_structure.sql')){
 			$query = file_get_contents($sqlFile);
 			if($this->conn->query($query) !== false){
@@ -255,19 +256,19 @@ class SiteSetup
 
 	public function loadDatabaseData(stdClass $params)
 	{
+        ini_set('memory_limit', '-1');
 		if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
-			if(file_exists($sqlFile = 'sql/gaiadb_install_data.sql')){
-				$query = file_get_contents($sqlFile);
+            if(file_exists($sqlFile = 'sql/gaiadb_install_data.sql')){
+                $query = file_get_contents($sqlFile);
 				if($this->conn->query($query) !== false){
 					return array('success' => true);
 				} else {
-					FileManager::rmdir_recursive("sites/$params->siteId");
-					if(isset($params->rootUser)) $this->dropDatabase($params->dbName);
-					return array(
-						'success' => false, 'error' => $this->conn->errorInfo()
-					);
-				}
-			} else {
+                    FileManager::rmdir_recursive("sites/$params->siteId");
+                    if(isset($params->rootUser)) $this->dropDatabase($params->dbName);
+                    return array('success' => false, 'error' => $this->conn->errorInfo());
+                }
+
+            } else {
 				FileManager::rmdir_recursive("sites/$params->siteId");
 				if(isset($params->rootUser)) $this->dropDatabase($params->dbName);
 				return array(

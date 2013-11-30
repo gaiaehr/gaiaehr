@@ -28,7 +28,7 @@ $_SESSION['site']['db']['database'] = '#db#';
  * AES Key
  * 256bit - key
  */
-$_SESSION['site']['AESkey'] = "#key#";
+$_SESSION['site']['AESkey'] = '#key#';
 /**
  * HL7 server values
  */

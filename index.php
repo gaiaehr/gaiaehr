@@ -1,10 +1,7 @@
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="Last-Modified" content="0">
-<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
-<meta http-equiv="Pragma" content="no-cache">
 <?php
 /**
- * GaiaEHR
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 session_name('GaiaEHR');
 session_start();
 session_cache_limiter('private');

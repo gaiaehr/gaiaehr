@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,20 +52,33 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				</div>
 			</div>
 		</div>
-		<!-- slide down message div -->
+
+        <!-- slide down message div -->
         <div id="msg-div"></div>
-		<!-- JQuery library -->
+
+        <!-- JQuery library -->
 		<script src="lib/JQuery/jquery.min.js"></script>
-		<!-- ScriptCam library -->
+
+        <!-- ScriptCam library -->
 		<script src="lib/ScriptCam/scriptcam.js"></script>
-		<!-- Ext library -->
+
+        <!-- Ext library -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
-		<script type="text/javascript">
-			function i18n(key){	return lang[key] || '*'+key+'*'; }
-			function say(a){ console.log(a); }
+
+        <script type="text/javascript">
+
+            window.i18n = function(key){
+                return window.lang[key] || '*'+key+'*';
+            };
+
+            window.say = function(a){
+                console.log(a);
+            };
+
 			/**
 			 * Ext Localization file
 			 * Using a anonymous function, in javascript.

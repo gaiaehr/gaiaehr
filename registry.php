@@ -18,9 +18,15 @@
 
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
+$http = 'http';
+if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+	|| $_SERVER['SERVER_PORT'] == 443) {
+	$http = 'https';
+}
+
 // general
 $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
-$_SESSION['url']   = 'http://' . 'localhost'.'/'.basename(dirname(__FILE__));
+$_SESSION['url']  ="$http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
 // sites values
 $_SESSION['sites']    = array();

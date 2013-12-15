@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/classes/FileManager.php');
+include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once (dirname(__FILE__) . '/../classes/FileManager.php');
 
 class ExternalDataUpdate
 {
@@ -796,6 +796,13 @@ class ExternalDataUpdate
                 }
             }
         }
+
+	    $stmt = $this->db->conn()->prepare("
+	    CREATE INDEX X_RXNSAT_CODE ON RXNSAT(CODE);
+		CREATE INDEX X_RXNSAT_SAB ON RXNSAT(SAB);
+		CREATE INDEX X_RXNCONSO_SAB ON RXNCONSO(SAB);");
+	    $stmt->execute();
+
         return true;
     }
 

@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
-include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
-include_once ($_SESSION['root'] . '/dataProvider/Medical.php');
-include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
+include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once (dirname(__FILE__) . '/Patient.php');
+include_once (dirname(__FILE__) . '/User.php');
+include_once (dirname(__FILE__) . '/PoolArea.php');
+include_once (dirname(__FILE__) . '/Medical.php');
+include_once (dirname(__FILE__) . '/PreventiveCare.php');
+include_once (dirname(__FILE__) . '/Services.php');
+include_once (dirname(__FILE__) . '/DiagnosisCodes.php');
 
 class Encounter
 {

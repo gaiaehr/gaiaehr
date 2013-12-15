@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
-include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
+include_once (dirname(__FILE__) . '/Laboratories.php');
+include_once (dirname(__FILE__) . '/Immunizations.php');
+include_once (dirname(__FILE__) . '/Services.php');
 
 class DataManager
 {

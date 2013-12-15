@@ -24,7 +24,7 @@
 //	session_cache_limiter('private');
 //}
 //include_once ('../classes/MatchaHelper.php');
-include_once($_SESSION['root'] . '/dataProvider/CombosData.php');
+include_once(dirname(__FILE__) . '/CombosData.php');
 
 class FormLayoutEngine
 {

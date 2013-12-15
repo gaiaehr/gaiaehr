@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/i18nRouter.php');
+include_once (dirname(__FILE__) . '/i18nRouter.php');
 
 class CombosData
 {
@@ -27,27 +27,54 @@ class CombosData
 	 */
 	private $db;
 
-    /**
-     * Data Object
-     */
-    private $CLO = NULL;
-    private $CC = NULL;
-    private $P = NULL;
-    private $F = NULL;
-    private $FP = NULL;
-    private $I = NULL;
-    private $U = NULL;
-    private $CL = NULL;
-    private $A = NULL;
-    private $DT = NULL;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $CLO = null;
+	/**
+	 * @var MatchaCUP
+	 */
+    private $CC = null;
+	/**
+	 * @var MatchaCUP
+	 */
+    private $P = null;
+	/**
+	 * @var MatchaCUP
+	 */
+    private $F = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $FP = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $I = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $U = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $CL = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $A = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $DT = null;
 
     //------------------------------------------------------------------------------------------------------------------
     // Main Sencha Model Getter and Setters
     //------------------------------------------------------------------------------------------------------------------
 	public function getOptionsByListId(stdClass $params)
 	{
-		if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
-        if($this->CLO == NULL) $this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		if($this->CL == null) $this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
+        if($this->CLO == null) $this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 		if(isset($params->list_id))
         {
 			if(is_numeric($params->list_id))
@@ -95,7 +122,7 @@ class CombosData
 
 	public function getActivePharmacies()
 	{
-        if($this->P == NULL) $this->P = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
+        if($this->P == null) $this->P = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
 		$options = array();
 		foreach($this->P->load(array('active'=>'1'))->all() as $option){
 			$options[] = array(
@@ -108,7 +135,7 @@ class CombosData
 
 	public function getActiveInsurances()
 	{
-        if($this->I == NULL) $this->I = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
+        if($this->I == null) $this->I = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
 		$options = array();
 		foreach($this->I->load(array('active'=>'1'))->all() as $option){
 			$options[] = array(
@@ -121,16 +148,16 @@ class CombosData
 
 	public function getActiveProviders()
 	{
-        if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
+        if($this->U == null) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
         $argumentSQL['SELECT'] = "users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name";
-        $argumentSQL['WHERE'] = "active = '1' AND authorized = '1' AND (npi IS NOT NULL AND npi != '')";
+        $argumentSQL['WHERE'] = "active = '1' AND authorized = '1' AND (npi IS NOT null AND npi != '')";
         $argumentSQL['ORDER'] = "option_name ASC";
 		return $this->U->buildSQL($argumentSQL)->all();
 	}
 
 	public function getActiveFacilities()
 	{
-        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if($this->F == null) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
         $argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
         $argumentSQL['WHERE'] = "active = '1'";
 		return $this->F->buildSQL($argumentSQL)->all();
@@ -138,7 +165,7 @@ class CombosData
 
 	public function getBillingFacilities()
 	{
-        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if($this->F == null) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
         $argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
         $argumentSQL['WHERE'] = "active = '1' AND billing_location = '1'";
         return $this->F->buildSQL($argumentSQL)->all();
@@ -147,7 +174,7 @@ class CombosData
 	public function getUsers()
 	{
 		include_once ('Person.php');
-        if($this->U == NULL) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
+        if($this->U == null) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
 		$rows = array();
 		foreach($this->U->load(array('active'=>1), array('id', 'title', 'fname', 'mname', 'lname'))->all() as $row)
         {
@@ -160,7 +187,7 @@ class CombosData
 
 	public function getLists()
 	{
-        if($this->CL == NULL) $this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
+        if($this->CL == null) $this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
         $records = $this->CL->load()->all();
 	    // manually add all system combos that are not stored combo_lists table
 		$records[] = array( 'id' => 'activePharmacies', 'title' => 'Active Pharmacies' );
@@ -173,7 +200,7 @@ class CombosData
 
 	public function getFacilities()
 	{
-        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if($this->F == null) $this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
         $argumentSQL['SELECT'] = "id, name";
         $argumentSQL['WHERE'] = "service_location != 0";
         $argumentSQL['ORDER'] = "name";
@@ -182,19 +209,19 @@ class CombosData
 
 	public function getRoles()
 	{
-        if($this->F == NULL) $this->F = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
+        if($this->F == null) $this->F = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
         return $this->F->load()->all();
 	}
 
 	public function getCalendarCategories()
 	{
-        if($this->CC == NULL) $this->CC = MatchaModel::setSenchaModel('App.model.administration.CalendarCategory');
+        if($this->CC == null) $this->CC = MatchaModel::setSenchaModel('App.model.administration.CalendarCategory');
         return $this->CC->load()->all();
 	}
 
 	public function getFloorPlanAreas()
 	{
-        if($this->FP == NULL) $this->FP = MatchaModel::setSenchaModel('App.model.administration.FloorPlans');
+        if($this->FP == null) $this->FP = MatchaModel::setSenchaModel('App.model.administration.FloorPlans');
         return $this->FP->load(array("active"=>"1"), array('id', 'title'))->all();
 	}
 
@@ -571,16 +598,13 @@ class CombosData
 
 	public function getAllergiesByType(stdClass $params)
 	{
-        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
-
-
-
+        if($this->A == null) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
         return  $this->A->load(array('allergy_type'=>$params->allergy_type))->all();
 	}
 
 	public function getAllergyTypes()
 	{
-        if($this->A == NULL) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
+        if($this->A == null) $this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
 		$params = new stdClass();
 		$params->group = array();
 		$params->group[0] = new stdClass();
@@ -592,7 +616,7 @@ class CombosData
 
 	public function getTemplatesTypes()
 	{
-        if($this->DT == NULL) $this->DT = MatchaModel::setSenchaModel('App.model.administration.DocumentsTemplates');
+        if($this->DT == null) $this->DT = MatchaModel::setSenchaModel('App.model.administration.DocumentsTemplates');
 		$records = $this->DT->load(array('template_type'=>'documenttemplate'))->all();
 		$records[] = array('title' => 'Empty');
 		return $records;

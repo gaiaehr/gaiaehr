@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once (dirname(__FILE__) . '/Services.php');
+include_once (dirname(__FILE__)  . '/Patient.php');
 
 class AccAccount
 {
@@ -34,14 +34,19 @@ class AccAccount
      * @var Patient
      */
 	protected $patient;
-
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $account = NULL;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $accountType = NULL;
 
     function __construct()
     {
-        if($this->acount == NULL) $this->account = Matcha::setSenchaModel('App.model.account.Account');
-	    if($this->acountType == NULL) $this->accountType = Matcha::setSenchaModel('App.model.account.AccountType');
+        if($this->account == NULL) $this->account = Matcha::setSenchaModel('App.model.account.Account');
+	    if($this->accountType == NULL) $this->accountType = Matcha::setSenchaModel('App.model.account.AccountType');
         $this->services = new Services();
         $this->patient  = new Patient();
         return;

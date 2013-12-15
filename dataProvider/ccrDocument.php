@@ -39,6 +39,8 @@ include_once ($_SESSION['root'] . '/dataProvider/Services.php');
 include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
 include_once ($_SESSION['root'] . '/dataProvider/Facilities.php');
 
+
+$pid = '0';
 /**
  * Load all the data for the CCR XML data and loops
  */
@@ -67,7 +69,7 @@ $Facilities = new Facilities();
  * enumerates all Actors in the CCR Footer and references those Actors from within the CCR Body with the
  * <ActorLink> element, CCD defines many participants within the document header and body.
  */
-$patientData = $Patient->getPatientDemographicDataByPid($_REQUEST['pid']);
+$patientData = $Patient->getPatientDemographicDataByPid($pid);
 $actors = array(
     'Actor' => array(
         array( // Actor 1 (This should be a loop with all the persons related to the CCR document
@@ -173,7 +175,7 @@ $references = array(
  * minimum, the patient’s key healthcare providers should be listed, particularly their primary physician and
  * any active consulting physicians, therapists, and counselors.
  */
-//$facilitiesData = $Facilities->getPatientDemographicDataByPid($_REQUEST['pid']);
+//$facilitiesData = $Facilities->getPatientDemographicDataByPid($pid);
 $healthProviders = array(
     'Provider' => array(
         array( // Provider 1
@@ -348,7 +350,7 @@ $procedures = array(
  * include notable results such as abnormal values or relevant trends.
  */
 $param = new stdClass();
-$param->parent_id = $_REQUEST['pid'];
+$param->parent_id = $pid;
 $patientResult = $Medical->getPatientLabsResults($param);
 $results[] = array();
 foreach($patientResult as $item)
@@ -438,7 +440,7 @@ foreach($patientResult as $item)
  * minimum should include notable vital signs such as the most recent, maximum and/or minimum, or both,
  * baseline, or relevant trends.
  */
-$vitalSigns = $Encounter->getVitalsByPid($_REQUEST['pid']);
+$vitalSigns = $Encounter->getVitalsByPid($pid);
 $vitals = array();
 foreach($vitalSigns as $item)
 {
@@ -903,7 +905,7 @@ foreach($vitalSigns as $item)
  * immunization history that is relevant to the period of time being summarized.
  */
 $param = new stdClass();
-$param->pid = $_REQUEST['pid'];
+$param->pid = $pid;
 $patientImmunizations = $Medical->getPatientImmunizations($param);
 $immunizations = array();
 foreach($patientImmunizations as $item)
@@ -993,7 +995,7 @@ $medicalEquipment = array(
  * (e.g. from a pharmacy system vs. from the patient).
  */
 $param = new stdClass();
-$param->pid = $_REQUEST['pid'];
+$param->pid = $pid;
 $patientMedications = $Medical->getPatientMedications($param);
 $medications = array();
 foreach($patientMedications as $item)
@@ -1071,7 +1073,7 @@ foreach($patientMedications as $item)
  * allergies and adverse reactions should be listed.
  */
 $param = new stdClass();
-$param->pid = $_REQUEST['pid'];
+$param->pid = $pid;
 $patientAllergies = $Medical->getPatientAllergies($param);
 $alerts = array();
 foreach($patientAllergies as $item)
@@ -1323,7 +1325,7 @@ $familyHistoryProblems = array(
  * minimum, all pertinent current and historical problems should be listed. CDA R2 represents problems as
  * Observations.
  */
-$patientProblems = $Medical->getPatientProblemsByPid($_REQUEST['pid']);
+$patientProblems = $Medical->getPatientProblemsByPid($pid);
 $problems = array();
 foreach($patientProblems as $item)
 {
@@ -1530,7 +1532,7 @@ $advanceDirectives = array(
  */
 $payerProviderGUID = UUID::v4();
 $subscriberGUID = UUID::v4();
-$insuranceData = $Patient->getPatientPrimaryInsuranceByPid($_REQUEST['pid']);
+$insuranceData = $Patient->getPatientPrimaryInsuranceByPid($pid);
 $payers = array(
     'Payer' => array(
         array( // Payer 1
@@ -1645,7 +1647,7 @@ if($_REQUEST['action'] == 'viewccr')
     /**
      * Build the CCR XML Object
      */
-    Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'/lib/CCRCDA/schema/ccr.xsl"'));
+    Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="'.$_SESSION['url'].'lib/CCRCDA/schema/ccr.xsl"'));
     $xml = Array2XML::createXML('ContinuityOfCareRecord', $ccrArray);
 
     /**
@@ -1668,7 +1670,7 @@ if($_REQUEST['action'] == 'ccrexport')
      */
     $zip = new ZipArchive();
     $tempDirectory = $_SESSION['site']['temp']['path'] . '/';
-    $filename = $_REQUEST['pid'] . "-".$patientData['fname'].$patientData['lname'];
+    $filename = $pid . "-".$patientData['fname'].$patientData['lname'];
     if ($zip->open($tempDirectory.$filename.".zip", ZipArchive::CREATE)!==TRUE)
     {
         exit("cannot open <$filename.zip>\n");

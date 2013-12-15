@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once('../classes/MatchaHelper.php');
-include_once('../lib/HL7/HL7.php');
+include_once(dirname(__FILE__). '/../classes/MatchaHelper.php');
+include_once(dirname(__FILE__). '/../lib/HL7/HL7.php');
 
 class HL7Messages {
 

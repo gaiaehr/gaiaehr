@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/classes/FileManager.php');
+include_once (dirname(__FILE__) . '/../classes/FileManager.php');
 
 class Modules
 {

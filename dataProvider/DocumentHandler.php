@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/classes/Crypt.php');
-include_once ($_SESSION['root'] . '/dataProvider/Documents.php');
-include_once ($_SESSION['root'] . '/dataProvider/DoctorsNotes.php');
+include_once (dirname(__FILE__) . '/../classes/Crypt.php');
+include_once (dirname(__FILE__) . '/Documents.php');
+include_once (dirname(__FILE__) . '/DoctorsNotes.php');
 
 class DocumentHandler
 {

@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Person.php');
-include_once ($_SESSION['root'] . '/classes/AES.php');
+include_once (dirname(__FILE__) . '/Person.php');
+include_once (dirname(__FILE__) . '/../classes/AES.php');
 
 class User
 {

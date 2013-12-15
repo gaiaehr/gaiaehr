@@ -22,7 +22,7 @@ if (!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 define('_GaiaEXEC', 1);
-include_once('../registry.php');
+include_once(dirname(__FILE__) . '/../registry.php');
 
 class HL7Server {
 

@@ -19,8 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 $_SESSION['site']['flops'] = 0;
 
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/classes/FileManager.php');
+include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once (dirname(__FILE__) . '/../classes/FileManager.php');
 
 class Codes
 {

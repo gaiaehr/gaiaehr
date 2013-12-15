@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/lib/tcpdf/tcpdf.php');
-include_once ($_SESSION['root'] . '/dataProvider/i18nRouter.php');
+include_once (dirname(__FILE__) . '/../lib/tcpdf/tcpdf.php');
+include_once (dirname(__FILE__) . '/i18nRouter.php');
 
 class DocumentPDF extends TCPDF
 {

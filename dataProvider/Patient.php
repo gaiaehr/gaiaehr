@@ -17,10 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Person.php');
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
-include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
+include_once (dirname(__FILE__). '/Person.php');
+include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once (dirname(__FILE__) . '/User.php');
+include_once (dirname(__FILE__) . '/ACL.php');
 
 class Patient
 {
@@ -203,7 +203,7 @@ class Patient
         if(isset($_SESSION['patient']) && $_SESSION['patient']['pid'] != null){
             $this->patientChartInByPid($_SESSION['patient']['pid']);
         }
-        include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
+        include_once (dirname(__FILE__) . '/PoolArea.php');
         $this->setPatient($pid);
         $poolArea   = new PoolArea();
 

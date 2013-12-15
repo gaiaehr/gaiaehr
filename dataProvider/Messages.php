@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/dataProvider/Person.php');
+include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once (dirname(__FILE__) . '/Person.php');
 
 class Messages extends MatchaHelper
 {

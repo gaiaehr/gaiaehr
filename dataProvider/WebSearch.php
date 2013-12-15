@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+if(!isset($_SESSION)){
+	session_name('GaiaEHR');
+	session_start();
+	session_cache_limiter('private');
+}
 
-session_name("GaiaEHR");
-session_start();
-session_cache_limiter('private');
-require_once ($_SESSION['root'] . "/classes/XMLParser.class.php");
+require_once (dirname(__FILE__) . "/../classes/XMLParser.class.php");
 //--------------------------------------------------------------------------------
 // lets declare few vars for later use.
 //--------------------------------------------------------------------------------
@@ -188,4 +190,3 @@ print_r(json_encode(array(
 	'totals' => $totals,
 	'row' => $rows
 )));
-?>

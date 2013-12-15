@@ -65,7 +65,8 @@ class ACL
 	 */
 	public function __construct($uid = '')
 	{
-		$this->user_id = (!is_numeric($uid)) ? $_SESSION['user']['id'] : $uid;
+		$sid = (isset($_SESSION) && isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : '0';
+		$this->user_id = (!is_numeric($uid)) ? $sid : $uid;
 		$this->setModels();
 		$this->user_roles = $this->getUserRoles();
 		$this->emerAccess = $this->isEmergencyAccess();

@@ -17,11 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Laboratories.php');
-include_once ($_SESSION['root'] . '/dataProvider/Rxnorm.php');
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
-include_once ($_SESSION['root'] . '/dataProvider/Immunizations.php');
+include_once (dirname(__FILE__) . '/Laboratories.php');
+include_once (dirname(__FILE__) . '/Rxnorm.php');
+include_once (dirname(__FILE__) . '/Services.php');
+include_once (dirname(__FILE__) . '/DiagnosisCodes.php');
+include_once (dirname(__FILE__) . '/Immunizations.php');
 
 class Medical
 {
@@ -57,6 +57,10 @@ class Medical
 	/**
 	 * @var bool|MatchaCUP
 	 */
+	private $ap;
+	/**
+	 * @var bool|MatchaCUP
+	 */
 	private $m;
 
 
@@ -67,7 +71,7 @@ class Medical
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
-
+		$this->ap = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
 		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
 
 		$this->laboratories = new Laboratories();
@@ -160,34 +164,18 @@ class Medical
 	/*************************************************************************************************************/
 	public function getMedicalIssues(stdClass $params)
 	{
-		return $this->getMedicalIssuesByPatientID($params->pid);
+//		return $this->getMedicalIssuesByPatientID($params->pid);
+		return $this->ap->load($params)->all();
 	}
 
-	public function addMedicalIssues(stdClass $params)
+	public function addMedicalIssues($params)
 	{
-		$data = get_object_vars($params);
-		unset($data['id'], $data['active']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_active_problems', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-		return $params;
+		return $this->ap->save($params);
 	}
 
-	public function updateMedicalIssues(stdClass $params)
+	public function updateMedicalIssues($params)
 	{
-		$data = get_object_vars($params);
-		$id   = $data['id'];
-		unset($data['id'], $data['active']);
-		$data['begin_date']  = $this->parseDate($data['begin_date']);
-		$data['end_date']    = $this->parseDate($data['end_date']);
-		$data['create_date'] = $this->parseDate($data['create_date']);
-		$this->db->setSQL($this->db->sqlBind($data, "patient_active_problems", "U", "id='$id'"));
-		$this->db->execLog();
-		return $params;
-
+		return $this->ap->save($params);
 	}
 
 	/*************************************************************************************************************/

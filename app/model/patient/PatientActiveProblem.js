@@ -16,7 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.MedicalIssues', {
+Ext.define('App.model.patient.PatientActiveProblem', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'patient_active_problems',

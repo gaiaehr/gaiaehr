@@ -31,7 +31,7 @@ Ext.define('App.view.patient.ItemsToReview', {
         var me = this;
         me.patientImmuListStore = Ext.create('App.store.patient.PatientImmunization');
         me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies');
-        me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues');
+        me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems');
 //        me.patientSurgeryStore = Ext.create('App.store.patient.Surgery');
 //        me.patientDentalStore = Ext.create('App.store.patient.Dental');
         me.patientMedicationsStore = Ext.create('App.store.patient.Medications');
@@ -103,7 +103,7 @@ Ext.define('App.view.patient.ItemsToReview', {
                     title: i18n('active_problems'),
                     frame: true,
                     height: 180,
-                    store: me.patientMedicalIssuesStore,
+                    store: me.patientActiveProblemsStore,
                     columns: [
                         {
                             header: i18n('problem'),
@@ -294,7 +294,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 	        form = me.column4.getForm();
         me.patientImmuListStore.load({params: {pid: app.patient.pid}});
         me.patientAllergiesListStore.load({params: {pid: app.patient.pid}});
-        me.patientMedicalIssuesStore.load({params: {pid: app.patient.pid}});
+        me.patientActiveProblemsStore.load({params: {pid: app.patient.pid}});
 //        me.patientSurgeryStore.load({params: {pid: app.patient.pid}});
 //        me.patientDentalStore.load({params: {pid: app.patient.pid}});
         me.patientMedicationsStore.load({params: {pid: app.patient.pid}});

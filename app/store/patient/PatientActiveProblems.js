@@ -16,9 +16,9 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.MedicalIssues', {
+Ext.define('App.store.patient.PatientActiveProblems', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.MedicalIssues',
+	model     : 'App.model.patient.PatientActiveProblem',
     remoteSort: false,
 	autoLoad  : false
 });

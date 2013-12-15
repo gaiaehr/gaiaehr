@@ -60,7 +60,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			autoSync: false
 		});
 
-		me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues', {
+		me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems', {
 			listeners: {
 				scope: me,
 				beforesync: me.setDefaults
@@ -529,8 +529,16 @@ Ext.define('App.view.patient.windows.Medical', {
 			{
 				xtype: 'grid',
 				action: 'patientMedicalListGrid',
-				store: me.patientMedicalIssuesStore,
+				store: me.patientActiveProblemsStore,
 				columns: [
+					{
+						header: i18n('code'),
+						width: 110,
+						dataIndex: 'code',
+						renderer:function(value, metaDate, record){
+							return value + ' (' + record.data.code_type + ')'
+						}
+					},
 					{
 						header: i18n('problem'),
 						flex: 1,
@@ -2162,10 +2170,13 @@ Ext.define('App.view.patient.windows.Medical', {
 			]
 		});
 
-		me.patientMedicalIssuesStore.load({
-			params: {
-				pid: me.pid
-			}
+		me.patientActiveProblemsStore.load({
+			filters: [
+				{
+					property: 'pid',
+					value: me.pid
+				}
+			]
 		});
 //        me.patientSurgeryStore.load({
 //                params:{

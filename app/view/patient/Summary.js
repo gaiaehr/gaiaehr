@@ -37,7 +37,7 @@ Ext.define('App.view.patient.Summary', {
         me.stores = [];
         me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck'));
         me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies'));
-        me.stores.push(me.patientMedicalIssuesStore = Ext.create('App.store.patient.MedicalIssues'));
+        me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems'));
 //        me.stores.push(me.patientSurgeryStore = Ext.create('App.store.patient.Surgery'));
 //        me.stores.push(me.patientDentalStore = Ext.create('App.store.patient.Dental'));
         me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications'));
@@ -138,7 +138,7 @@ Ext.define('App.view.patient.Summary', {
 	                    title: i18n('active_problems'),
 	                    itemId: 'IssuesPanel',
 	                    hideHeaders: true,
-	                    store: me.patientMedicalIssuesStore,
+	                    store: me.patientActiveProblemsStore,
 	                    columns: [
 	                        {
 

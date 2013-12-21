@@ -559,7 +559,7 @@ Ext.define('App.view.Viewport', {
                     dock: 'bottom',
                     items: [
 	                    {
-		                    xtype:'combobox',
+		                    xtype:'mitos.activefacilitiescombo',
 		                    emptyText:'Facilities',
 		                    width: parseFloat(globals['gbl_nav_area_width']) - 4
 	                    },

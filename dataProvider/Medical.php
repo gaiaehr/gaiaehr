@@ -164,7 +164,6 @@ class Medical
 	/*************************************************************************************************************/
 	public function getMedicalIssues(stdClass $params)
 	{
-//		return $this->getMedicalIssuesByPatientID($params->pid);
 		return $this->ap->load($params)->all();
 	}
 

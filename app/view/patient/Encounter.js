@@ -398,7 +398,7 @@ Ext.define('App.view.patient.Encounter', {
                 text:i18n('medications') + ' ',
                 action:'medications'
             }, '-', {
-                text:i18n('laboratories') + ' ',
+                text:i18n('results') + ' ',
                 action:'laboratories'
             }, '-', {
                 text:i18n('lab_orders'),

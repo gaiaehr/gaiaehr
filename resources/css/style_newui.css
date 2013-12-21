@@ -96,7 +96,7 @@
 	background-image: url(../images/icons/facilities.png) !important;
 }
 
-.delete, .close {
+.delete, .close, .icoCancel {
 	background-image: url(../images/icons/delete.png) !important;
 }
 

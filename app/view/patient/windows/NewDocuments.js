@@ -477,16 +477,6 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 
 						],
 						tbar:[
-							me.eRxBtn = Ext.widget('button',{
-								text:i18n('eRx'),
-								iconCls:'icoSend',
-								scope:me,
-								handler:function(){
-									alert('TODO...');
-								}
-
-							}),
-							'-',
 							'->',
 							'-',
 							Ext.widget('button',{
@@ -838,7 +828,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 		this[grid.action+'PrintBtn'].setDisabled(selected.length == 0);
 		if(grid.action == 'rx'){
 			this.cloneRxBtn.setDisabled(selected.length == 0);
-			this.eRxBtn.setDisabled(selected.length == 0);
+			//this.eRxBtn.setDisabled(selected.length == 0);
 		}
 	},
 

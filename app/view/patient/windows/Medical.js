@@ -1151,7 +1151,7 @@ Ext.define('App.view.patient.windows.Medical', {
 			},
 			//endregion
 
-			//region Lab panel
+			//region Lab Results panel
 			{
 
 				xtype: 'container',
@@ -1179,6 +1179,13 @@ Ext.define('App.view.patient.windows.Medical', {
 										menuDisabled:true,
 										resizable:false,
 										flex: 1
+									},
+									{
+										header: i18n('status'),
+										dataIndex: 'status',
+										menuDisabled:true,
+										resizable:false,
+										width: 60
 									}
 								],
 								listeners: {
@@ -1326,139 +1333,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					}
 				]
 			}
-//			{
-//
-//				xtype: 'container',
-//				action: 'patientLabs',
-//				layout: 'border',
-//				items: [
-//					{
-//						xtype: 'panel',
-//						region: 'north',
-//						layout: 'border',
-//						bodyBorder: false,
-//						border: false,
-//						height: 350,
-//						split: true,
-//						items: [
-//							{
-//								xtype: 'grid',
-//								region: 'west',
-//								width: 290,
-//								split: true,
-//								store: me.labPanelsStore,
-//								columns: [
-//									{
-//										header: i18n('laboratories'),
-//										dataIndex: 'label',
-//										flex: 1
-//									}
-//								],
-//								listeners: {
-//									scope: me,
-//									itemclick: me.onLabPanelSelected,
-//									selectionchange: me.onLabPanelSelectionChange
-//								}
-//							},
-//							{
-//								xtype: 'panel',
-//								action: 'labPreviewPanel',
-//								title: i18n('laboratory_preview'),
-//								region: 'center',
-//								items: [
-//									me.uploadWin = Ext.create('Ext.window.Window', {
-//										draggable: false,
-//										closable: false,
-//										closeAction: 'hide',
-//										items: [
-//											{
-//												xtype: 'form',
-//												bodyPadding: 10,
-//												width: 400,
-//												items: [
-//													{
-//														xtype: 'filefield',
-//														name: 'filePath',
-//														buttonText: i18n('select_a_file') + '...',
-//														anchor: '100%'
-//													}
-//												],
-//												api: {
-//													submit: DocumentHandler.uploadDocument
-//												}
-//											}
-//										],
-//										buttons: [
-//											{
-//												text: i18n('cancel'),
-//												handler: function(){
-//													me.uploadWin.close();
-//												}
-//											},
-//											{
-//												text: i18n('upload'),
-//												scope: me,
-//												handler: me.onLabUpload
-//											}
-//										]
-//									})
-//								],
-//								listeners: {
-//									scope: me,
-//									render: me.onLaboratoryPreviewRender
-//								}
-//							}
-//						]
-//					},
-//					{
-//						xtype: 'container',
-//						region: 'center',
-//						layout: 'border',
-//						split: true,
-//						items: [
-//							{
-//								xtype: 'form',
-//								title: i18n('laboratory_entry_form'),
-//								region: 'west',
-//								width: 290,
-//								split: true,
-//								bodyPadding: 5,
-//								autoScroll: true,
-//								bbar: ['->', {
-//									text: i18n('reset'),
-//									scope: me,
-//									handler: me.onLabResultsReset
-//								}, '-', {
-//									text: i18n('sign'),
-//									scope: me,
-//									handler: me.onLabResultsSign
-//								}, '-', {
-//									text: i18n('save'),
-//									scope: me,
-//									handler: me.onLabResultsSave
-//								}]
-//							},
-//							{
-//								xtype: 'panel',
-//								region: 'center',
-//								height: 300,
-//								split: true,
-//								items: [
-//									{
-//										xtype: 'lalboratoryresultsdataview',
-//										action: 'lalboratoryresultsdataview',
-//										store: Ext.create('App.store.patient.PatientLabsResults'),
-//										listeners: {
-//											scope: me,
-//											itemclick: me.onLabResultClick
-//										}
-//									}
-//								]
-//							}
-//						]
-//					}
-//				]
-//			}
+
 			//endregion
 		];
 		/**
@@ -1532,7 +1407,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'-',
 					{
-						text: i18n('laboratories'),
+						text: i18n('results'),
 						enableToggle: true,
 						toggleGroup: 'medicalWin',
 						itemId: 'laboratories',

@@ -43,6 +43,9 @@ class FloorPlans
 	 */
 	private $services;
 
+	/**
+	 * @var PoolArea
+	 */
 	private $pool;
 
 	function __construct()

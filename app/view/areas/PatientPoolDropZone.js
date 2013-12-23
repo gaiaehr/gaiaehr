@@ -19,6 +19,7 @@
 Ext.define('App.view.areas.PatientPoolDropZone', {
 	id: 'panelPoolArea',
 	extend: 'App.ux.RenderPanel',
+
 	pageTitle: i18n('patient_pool_areas'),
 
 	initComponent: function(){
@@ -155,7 +156,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	},
 
 	onActive: function(callback){
-		this.reloadStores();
+//		this.reloadStores();
 		if(typeof callback == 'function') callback(true);
 	}
 });

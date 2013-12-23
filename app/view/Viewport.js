@@ -35,7 +35,7 @@ Ext.define('App.view.Viewport', {
         Ext.tip.QuickTipManager.init();
         var me = this;
         me.lastCardNode = null;
-        me.currCardCmp = null;
+        me.prevNode = null;
         me.fullMode = window.innerWidth >= me.minWidthToFullMode;
         me.patient = {
             name: null,
@@ -377,13 +377,9 @@ Ext.define('App.view.Viewport', {
                     border: false,
                     store: me.storeTree,
                     width: parseFloat(globals['gbl_nav_area_width']),
-                    plugins: [
-                        {
-                            ptype: 'nodedisabled'
-                        }
-                    ],
                     listeners: {
                         scope: me,
+	                    deselect: me.onNavigationNodeDeselect,
                         selectionchange: me.onNavigationNodeSelected
                     }
                 },
@@ -900,6 +896,10 @@ Ext.define('App.view.Viewport', {
 //		say(Ext.create('App.view.patient.windows.Medical').show());
     },
 
+	onNavigationNodeDeselect:function(model, deselected){
+		this.prevNode = deselected;
+	},
+
 	onNavigationNodeSelected: function(model, selected){
         var me = this;
         if(0 < selected.length){
@@ -909,7 +909,6 @@ Ext.define('App.view.Viewport', {
 	                layout = me.MainPanel.getLayout();
 
 //	            cardCmp = Ext.getCmp(card);
-//	            me.currCardCmp = layout.getActiveItem();
 //	            say(ref);
 //	            say(me[ref]);
 
@@ -961,8 +960,11 @@ Ext.define('App.view.Viewport', {
 	},
 
     goBack: function(){
-        var tree = this.navColumn.down('treepanel'), sm = tree.getSelectionModel();
-        sm.select(this.lastCardNode);
+	    if(this.prevNode){
+		    var tree = this.navColumn.down('treepanel'),
+			    sm = tree.getSelectionModel();
+		    sm.select(this.prevNode);
+	    }
     },
 
     navCollapsed: function(){
@@ -1252,18 +1254,15 @@ Ext.define('App.view.Viewport', {
             });
         }
     },
+
     initializePatientPoolDragZone: function(panel){
         panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
             ddGroup: 'patientPoolAreas',
             getDragData: function(){
-                if(app.patient.pid){
-                    var sourceEl = app.patientBtn.el.dom, d;
-//                    if(app.currCardCmp != app.ppdz){
-                        app.MainPanel.getLayout().setActiveItem(
-	                        app.getPanelByCls('App.view.areas.PatientPoolDropZone')
-                        ).onActive();
-//                    }
-                    app.navColumn.down('treepanel').getSelectionModel().deselectAll();
+	            if(app.patient.pid){
+                    var sourceEl = app.patientBtn.el.dom,
+	                    d;
+
                     if(sourceEl){
                         d = sourceEl.cloneNode(true);
                         d.id = Ext.id();
@@ -1276,20 +1275,20 @@ Ext.define('App.view.Viewport', {
                             patient: true
                         };
                     }
+
                     return false;
                 }
+
                 return false;
             },
+
             getRepairXY: function(){
                 app.goBack();
                 return this.dragData.repairXY;
             },
-            onStartDrag:function(){
-//                if(app.currCardCmp != app.ppdz){
-	                app.MainPanel.getLayout().setActiveItem(
-		                app.getPanelByCls('App.view.areas.PatientPoolDropZone')
-	                ).onActive();
-//                }
+
+	        onBeforeDrag:function(){
+		        app.goToPoolAreas();
             }
         });
     },
@@ -1343,6 +1342,7 @@ Ext.define('App.view.Viewport', {
             }
         });
     },
+
     onDocumentView: function(docId){
         var me = this;
         if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
@@ -1353,6 +1353,7 @@ Ext.define('App.view.Viewport', {
         );
         me.DocumentViewerWindow.show();
     },
+
     /**
      *
      * @param panel

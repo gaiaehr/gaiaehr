@@ -22,7 +22,12 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
+
+error_reporting(0);
+@ini_set('display_errors', 0);
+
 define('_GaiaEXEC', 1);
+
 class BogusAction
 {
 	public $action;
@@ -68,6 +73,7 @@ include_once('../dataProvider/Modules.php');
 include_once('../dataProvider/Applications.php');
 include_once('../classes/Sessions.php');
 include_once('config.php');
+
 $modules = new Modules();
 $app = new Applications();
 $appAccess = $app->hasAccess($pvtKey);

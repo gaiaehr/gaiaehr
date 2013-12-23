@@ -27,8 +27,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				user = {},
 				settings = {},
 				globals = {},
-				ext = 'extjs-4.1.1a',
-				version = '0.0.6.176',
+				ext = '<?php print $_SESSION['extjs'] ?>',
+				version = '<?php print $_SESSION['version'] ?>',
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">

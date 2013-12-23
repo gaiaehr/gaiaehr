@@ -33,7 +33,8 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
     <script src="JSrouter.php"></script>
     <script src="data/api.php"></script>
     <script type="text/javascript">
-        var app, site = '<?php print $site ?>', localization = '<?php print $lang ?>';
+        var app, site = '<?php print $site ?>',
+	        localization = '<?php print $lang ?>';
         function i18n(key){ return lang[key] || key; }
         function say(a){ console.log(a); }
         Ext.Loader.setConfig({
@@ -53,7 +54,7 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
 </head>
 <body id="login">
 <div id="msg-div"></div>
-<div id="copyright">GaiaEHR | <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">Copyright
-    Notice</a></div>
+<div id="copyright">
+	<div>Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">GPLv3</a> |:| v<?php print $_SESSION['version'] ?></div>
 </body>
 </html>

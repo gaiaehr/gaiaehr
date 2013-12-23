@@ -717,7 +717,7 @@ body#login {
 	color: #333;
 	position: absolute;
 	bottom: 5px;
-	right: 10px;
+	left: 10px;
 }
 
 #copyright a {

@@ -17,18 +17,18 @@
  */
 
 Ext.define('App.view.calendar.Calendar', {
-	extend     : 'App.ux.RenderPanel',
-	id         : 'panelCalendar',
-	pageTitle  : i18n('calendar_events'),
-	constructor: function() {
+	extend: 'App.ux.RenderPanel',
+	id: 'panelCalendar',
+	pageTitle: i18n('calendar_events'),
+	constructor: function(){
 
 		this.callParent(arguments);
 
 		this.calendarStore = Ext.create('Extensible.calendar.data.MemoryCalendarStore', {
 			autoLoad: true,
-			proxy   : {
-				type   : 'direct',
-				api    : {
+			proxy: {
+				type: 'direct',
+				api: {
 					read: Calendar.getCalendars
 				},
 				noCache: false,
@@ -41,13 +41,13 @@ Ext.define('App.view.calendar.Calendar', {
 		});
 
 		this.eventStore = Ext.create('Extensible.calendar.data.EventStore', {
-			autoLoad : true,
-			proxy    : {
-				type   : 'direct',
-				api    : {
-					read   : Calendar.getEvents,
-					create : Calendar.addEvent,
-					update : Calendar.updateEvent,
+			autoLoad: true,
+			proxy: {
+				type: 'direct',
+				api: {
+					read: Calendar.getEvents,
+					create: Calendar.addEvent,
+					update: Calendar.updateEvent,
 					destroy: Calendar.deleteEvent
 				},
 				noCache: false,
@@ -58,12 +58,12 @@ Ext.define('App.view.calendar.Calendar', {
 				},
 
 				writer: {
-					type        : 'json',
+					type: 'json',
 					nameProperty: 'mapping'
 				},
 
 				listeners: {
-					exception: function(proxy, response) {
+					exception: function(proxy, response){
 						var msg = response.message ? response.message : Ext.decode(response.responseText).message;
 						// ideally an app would provide a less intrusive message display
 						Ext.Msg.alert('Server Error', msg);
@@ -77,17 +77,17 @@ Ext.define('App.view.calendar.Calendar', {
 			// NOT that your changes were actually persisted correctly in the back end. The 'write' event is the best
 			// option for generically messaging after CRUD persistence has succeeded.
 			listeners: {
-				scope  : this,
-				'write': function(store, operation) {
+				scope: this,
+				'write': function(store, operation){
 					say(store);
 					say(operation);
 
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
-					if(operation.action == 'create') {
+					if(operation.action == 'create'){
 						this.msg(i18n('add'), 'Added "' + title + '"');
-					} else if(operation.action == 'update') {
+					}else if(operation.action == 'update'){
 						this.msg(i18n('update'), 'Updated "' + title + '"');
-					} else if(operation.action == 'destroy') {
+					}else if(operation.action == 'destroy'){
 						this.msg(i18n('delete'), 'Deleted "' + title + '"');
 					}
 				}
@@ -96,24 +96,24 @@ Ext.define('App.view.calendar.Calendar', {
 
 		this.pageBody = [
 			{
-				xtype : 'panel',
+				xtype: 'panel',
 				layout: 'border',
 				border: true,
-				items : [
+				items: [
 					{
-						id    : 'app-west',
+						id: 'app-west',
 						region: 'west',
-						width : 179,
+						width: 179,
 						border: false,
-						items : [
+						items: [
 							{
-								xtype    : 'datepicker',
-								id       : 'app-nav-picker',
-								cls      : 'ext-cal-nav-picker',
+								xtype: 'datepicker',
+								id: 'app-nav-picker',
+								cls: 'ext-cal-nav-picker',
 								listeners: {
 									'select': {
-										fn   : function(dp, dt) {
-                                            say(dt);
+										fn: function(dp, dt){
+											say(dt);
 											Ext.getCmp('app-calendar').setStartDate(dt);
 										},
 										scope: this
@@ -121,43 +121,43 @@ Ext.define('App.view.calendar.Calendar', {
 								}
 							},
 							{
-								xtype      : 'extensible.calendarlist',
-								id         : 'app-calendarlist',
-								store      : this.calendarStore,
+								xtype: 'extensible.calendarlist',
+								id: 'app-calendarlist',
+								store: this.calendarStore,
 								collapsible: true,
-								border     : false,
-								width      : 178
+								border: false,
+								width: 178
 							}
 						]
 					},
 					{
-						xtype        : 'extensible.calendarpanel',
-						eventStore   : this.eventStore,
+						xtype: 'extensible.calendarpanel',
+						eventStore: this.eventStore,
 						calendarStore: this.calendarStore,
-						border       : false,
-						id           : 'app-calendar',
-						region       : 'center',
-						activeItem   : 3, // month view
+						border: false,
+						id: 'app-calendar',
+						region: 'center',
+						activeItem: 3, // month view
 
 						// Any generic view options that should be applied to all sub views:
-						viewConfig   : {
+						viewConfig: {
 							enableFx: false,
 							//ddIncrement           : 10, //only applies to DayView and subclasses, but convenient to put it here
-							viewStartHour         : 8,
-							viewEndHour           : 21,
+							viewStartHour: 8,
+							viewEndHour: 21,
 							minEventDisplayMinutes: 15,
 							showTime: false
 						},
 
 						// View options specific to a certain view (if the same options exist in viewConfig
 						// they will be overridden by the view-specific config):
-						monthViewCfg : {
-							showHeader     : true,
-							showWeekLinks  : true,
+						monthViewCfg: {
+							showHeader: true,
+							showWeekLinks: true,
 							showWeekNumbers: true
 						},
 
-						multiWeekViewCfg : {
+						multiWeekViewCfg: {
 							//weekCount: 3
 						},
 
@@ -176,84 +176,84 @@ Ext.define('App.view.calendar.Calendar', {
 						//title             : 'My Calendar',
 
 						listeners: {
-							'eventclick' : {
-								fn   : function() {
-									this.clearMsg();
+							'eventclick': {
+								fn: function(){
+									//this.clearMsg();
 								},
 								scope: this
 							},
-							'eventover'  : function() {
+							'eventover': function(){
 								//console.log('Entered evt rec='+rec.data[Extensible.calendar.data.EventMappings.Title.name]', view='+ vw.id +', el='+el.id);
 							},
-							'eventout'   : function() {
+							'eventout': function(){
 								//console.log('Leaving evt rec='+rec.data[Extensible.calendar.data.EventMappings.Title.name]+', view='+ vw.id +', el='+el.id);
 							},
-							'eventadd'   : {
-								fn   : function(cp, rec) {
-									this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+							'eventadd': {
+								fn: function(cp, rec){
+									//app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
 								},
 								scope: this
 							},
 							'eventupdate': {
-								fn   : function(cp, rec) {
-									this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+								fn: function(cp, rec){
+									//app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
 								},
 								scope: this
 							},
 							'eventcancel': {
-								fn   : function() {
+								fn: function(){
 									// edit canceled
 								},
 								scope: this
 							},
-							'viewchange' : {
-								fn   : function(p, vw, dateInfo) {
-									if(dateInfo) {
+							'viewchange': {
+								fn: function(p, vw, dateInfo){
+									if(dateInfo){
 										//this.updateTitle(dateInfo.viewStart, dateInfo.viewEnd);
 									}
 								},
 								scope: this
 							},
-							'dayclick'   : {
-								fn   : function() {
-									this.clearMsg();
+							'dayclick': {
+								fn: function(){
+									//this.clearMsg();
 								},
 								scope: this
 							},
 							'rangeselect': {
-								fn   : function() {
-									this.clearMsg();
+								fn: function(){
+									//this.clearMsg();
 								},
 								scope: this
 							},
-							'eventmove'  : {
-								fn   : function(vw, rec) {
+							'eventmove': {
+								fn: function(vw, rec){
 									var mappings = Extensible.calendar.data.EventMappings,
 										time = rec.data[mappings.IsAllDay.name] ? '' : ' \\a\\t g:i a';
 
 									rec.commit();
 
-									this.showMsg(i18n('event') + ' ' + rec.data[mappings.Title.name] + ' ' + i18n('was_moved_to') + ' ' +
-										Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
+									//this.showMsg(i18n('event') + ' ' + rec.data[mappings.Title.name] + ' ' + i18n('was_moved_to') + ' ' +
+									//	Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
 								},
 								scope: this
 							},
 							'eventresize': {
-								fn   : function(vw, rec) {
+								fn: function(vw, rec){
 									rec.commit();
-									this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
 								},
 								scope: this
 							},
 							'eventdelete': {
-								fn   : function(win, rec) {
+								fn: function(win, rec){
 									this.eventStore.remove(rec);
-									this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_deleted'));
+									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_deleted'));
 								},
 								scope: this
 							},
-							'initdrag'   : {
-								fn   : function() {
+							'initdrag': {
+								fn: function(){
 									// do something when drag starts
 								},
 								scope: this
@@ -274,25 +274,25 @@ Ext.define('App.view.calendar.Calendar', {
 	 * to call every this panel becomes active
 	 */
 
-	onActive   : function(callback) {
+	onActive: function(callback){
 		var me = this,
 			calPanel = Ext.getCmp('app-calendar'),
 			calListPanel = Ext.getCmp('app-calendarlist');
 
 		calPanel.getActiveView().refresh(true);
 		me.calendarStore.load({
-			callback:function(){
+			callback: function(){
 				calListPanel.doLayout();
 			}
 		});
 		callback(true);
-	},
-
-	showMsg: function(msg) {
-		Ext.fly('app-msg').update(msg).removeCls('x-hidden');
-	},
-
-	clearMsg: function() {
-		Ext.fly('app-msg').update('').addCls('x-hidden');
 	}
+
+//	setFloorPlan: function(msg){
+//		Ext.fly('app-msg').update(msg).removeCls('x-hidden');
+//	},
+//
+//	clearMsg: function(){
+//		Ext.fly('app-msg').update('').addCls('x-hidden');
+//	}
 });

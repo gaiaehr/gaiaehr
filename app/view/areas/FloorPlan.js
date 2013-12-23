@@ -255,8 +255,8 @@ Ext.define('App.view.areas.FloorPlan', {
 		zone.pid = data.pid;
 		zone.priority = data.priority;
 		zone.patientZoneId = data.patientZoneId;
-		zone.dropZone.lock();
-		zone.dragZone.unlock();
+		if(zone.dropZone) zone.dropZone.lock();
+		if(zone.dragZone) zone.dragZone.unlock();
 		zone.setTooltip(i18n('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
 		zone.data = data;
@@ -265,8 +265,8 @@ Ext.define('App.view.areas.FloorPlan', {
 	unSetZone: function(zone){
 		zone.pid = null;
 		zone.data = null;
-		zone.dropZone.unlock();
-		zone.dragZone.lock();
+		if(zone.dropZone) zone.dropZone.unlock();
+		if(zone.dragZone) zone.dragZone.lock();
 		zone.setTooltip(i18n('patient_name') + ': [empty]');
 		zone.removeCls(zone.priority);
 		zone.data = null;

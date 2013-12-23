@@ -413,6 +413,12 @@ $API = array(
 			),
 			'deleteFacility' => array(
 				'len' => 1
+			),
+			'getFacility' => array(
+				'len' => 1
+			),
+			'setFacility' => array(
+				'len' => 1
 			)
 		)
 	),

@@ -22,9 +22,9 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 ob_start();
-require_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
-include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
-include_once($_SESSION['root'] . '/dataProvider/Globals.php');
+require_once (dirname(__FILE__) . '/classes/MatchaHelper.php');
+include_once(dirname(__FILE__) . '/dataProvider/i18nRouter.php');
+include_once(dirname(__FILE__) . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');
 
 
@@ -43,7 +43,7 @@ print 'lang = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
 $global = Globals::getGlobals();
-$global['root'] = $_SESSION['root'];
+$global['root'] = dirname(__FILE__);
 $global['url']  = $_SESSION['url'];
 $global['site']  = $_SESSION['site']['dir'];
 
@@ -51,8 +51,8 @@ print 'globals = '. json_encode( $global ).';';
 
 if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))
 {
-	include_once($_SESSION['root'] . '/dataProvider/ACL.php');
-	include_once($_SESSION['root'] . '/dataProvider/User.php');
+	include_once(dirname(__FILE__) . '/dataProvider/ACL.php');
+	include_once(dirname(__FILE__) . '/dataProvider/User.php');
 
 	$acl = new ACL();
 	$perms = array();
@@ -67,6 +67,7 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	$user = new User();
 	$userData = $user->getCurrentUserBasicData();
 	$userData['token'] = $_SESSION['user']['token'];
+	$userData['facility'] = $_SESSION['user']['facility'];
 	Globals::setGlobals();
 	/*
 	 * Pass all the PHP to JavaScript

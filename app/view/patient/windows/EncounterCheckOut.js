@@ -234,7 +234,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 										},
 										{
 											fieldLabel:i18n('facility'),
-											xtype:'mitos.activefacilitiescombo',
+											xtype:'activefacilitiescombo',
 											name:'followup_facility'
 										}
 									]

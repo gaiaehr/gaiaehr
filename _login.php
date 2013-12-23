@@ -52,6 +52,7 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
     </script>
 </head>
 <body id="login">
+<div id="msg-div"></div>
 <div id="copyright">GaiaEHR | <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">Copyright
     Notice</a></div>
 </body>

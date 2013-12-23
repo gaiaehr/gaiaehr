@@ -32,7 +32,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				requires;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>GaiaEHR :: (Electronic Health Records)</title>
+		<title>GaiaEHR :: Loading...</title>
 		<link rel="stylesheet" type="text/css" href="resources/css/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar.css"/>

@@ -7,3 +7,5 @@ registry.php
 /.settings
 /*.iml
 /*.stackdump
+
+modules/*

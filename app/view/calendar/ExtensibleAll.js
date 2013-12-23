@@ -6594,7 +6594,7 @@ Ext.define('Extensible.calendar.form.EventWindow', {
 			fieldLabel: this.categoryLabelTex,
 			anchor    : '100%'
 		},{
-			xtype     : 'mitos.activefacilitiescombo',                                  // GaiaEHR
+			xtype     : 'activefacilitiescombo',                                  // GaiaEHR
 			itemId    : this.id + '-facility',
 			name      : Extensible.calendar.data.EventMappings.BillingFacility.name,
 			fieldLabel: this.facilityLabelTex,

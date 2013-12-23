@@ -844,7 +844,7 @@ CREATE TABLE IF NOT EXISTS `facility` (
   `facility_npi` varchar(15) DEFAULT NULL,
   `tax_id_type` varchar(31) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

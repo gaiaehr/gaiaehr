@@ -310,7 +310,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 								},
 								{
 									fieldLabel:i18n('facility'),
-									xtype:'mitos.activefacilitiescombo',
+									xtype:'activefacilitiescombo',
 									name:'followup_facility'
 								}
 							],

@@ -18,8 +18,8 @@
  */
 
 error_reporting(E_ALL);
-include_once ($_SESSION['root'] . '/classes/FileManager.php');
-include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/FileManager.php');
+include_once (dirname(dirname(__FILE__)) . '/dataProvider/ACL.php');
 
 class SiteSetup
 {
@@ -350,26 +350,27 @@ class SiteSetup
 
 	public function createSiteAdmin($params)
 	{
-		include_once('sites/' . $params->siteId . '/conf.php');
-		include_once('dataProvider/User.php');
-		$u                 = new User();
-		$admin             = new stdClass();
-		$admin->title      = 'Mr.';
-		$admin->fname      = 'Administrator';
-		$admin->mname      = '';
-		$admin->lname      = 'Administrator';
-		$admin->username   = $params->adminUsername;
-		$admin->password   = $params->adminPassword;
-		$admin->authorized = 1;
-		$admin->active     = 1;
-		$admin->role_id    = 1;
+		include_once(dirname(dirname(__FILE__)). '/sites/' . $params->siteId . '/conf.php');
+		include_once(dirname(dirname(__FILE__)) . '/dataProvider/User.php');
+		$u                  = new User();
+		$admin              = new stdClass();
+		$admin->title       = 'Mr.';
+		$admin->fname       = 'Administrator';
+		$admin->mname       = '';
+		$admin->lname       = 'Administrator';
+		$admin->username    = $params->adminUsername;
+		$admin->password    = $params->adminPassword;
+		$admin->authorized  = 1;
+		$admin->active      = 1;
+		$admin->role_id     = 1;
+		$admin->facility_id = 1;
         $u->addUser($admin);
 		return array('success' => true);
 	}
 
 	public function loadCode($code)
 	{
-		include_once ('dataProvider/ExternalDataUpdate.php');
+		include_once (dirname(dirname(__FILE__)). '/dataProvider/ExternalDataUpdate.php');
 		$codes            = new ExternalDataUpdate();
 		$params           = new stdClass();
 		$params->codeType = $code;

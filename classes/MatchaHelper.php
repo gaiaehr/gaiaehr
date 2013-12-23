@@ -26,8 +26,8 @@ ini_set('max_execution_time', '1500');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
 date_default_timezone_set($timezone);
 
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/lib/Matcha/Matcha.php');
+include_once (dirname(__FILE__) . '/Time.php');
+include_once (dirname(dirname(__FILE__)) . '/lib/Matcha/Matcha.php');
 
 class MatchaHelper extends Matcha
 {

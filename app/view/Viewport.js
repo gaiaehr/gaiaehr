@@ -559,9 +559,13 @@ Ext.define('App.view.Viewport', {
                     dock: 'bottom',
                     items: [
 	                    {
-		                    xtype:'mitos.activefacilitiescombo',
+		                    xtype:'activefacilitiescombo',
 		                    emptyText:'Facilities',
-		                    width: parseFloat(globals['gbl_nav_area_width']) - 4
+		                    width: parseFloat(globals['gbl_nav_area_width']) - 4,
+		                    listeners:{
+			                    scope: me,
+			                    select: me.onFacilitySelect
+		                    }
 	                    },
 	                    '-',
                         {
@@ -610,6 +614,11 @@ Ext.define('App.view.Viewport', {
                 }
             ]
         });
+
+	    me.FacilityCmb = me.Footer.query('activefacilitiescombo')[0];
+		me.FacilityCmb.getStore().on('load', me.onFacilityComboLoad, me);
+
+
         me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
         me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
         me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
@@ -637,6 +646,28 @@ Ext.define('App.view.Viewport', {
         me.callParent(arguments);
         me.signature = Ext.create('App.view.signature.SignatureWindow');
     },
+
+	onFacilitySelect:function(cmb, records){
+		var me = this;
+
+		Facilities.setFacility(records[0].data.option_value, function(provider, response){
+			if(records[0].data.option_value == response.result){
+				me.msg(i18n('sweet'), i18n('facility') + ' ' + records[0].data.option_name);
+				me.setWindowTitle(records[0].data.option_name);
+			}
+		});
+		me.getPatientsInPoolArea();
+	},
+
+	onFacilityComboLoad:function(store, records){
+		var rec = store.findRecord('option_value', this.user.facility);
+		this.FacilityCmb.setValue(rec);
+		this.setWindowTitle(rec.data.option_name)
+	},
+
+	setWindowTitle:function(facility){
+		window.document.title = 'GaiaEHR :: ' + facility;
+	},
 
     /**
      * AuditLog('Data created');
@@ -1462,7 +1493,6 @@ Ext.define('App.view.Viewport', {
 				}
 		    }
 	    });
-
     }
 
 });

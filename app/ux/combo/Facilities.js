@@ -30,7 +30,8 @@ Ext.define('App.ux.combo.Facilities', {
 			displayField: 'name',
 			emptyText   : i18n('select'),
 			store       : me.store
-		}, null);
+		});
+
 		me.callParent(arguments);
 	}
 });

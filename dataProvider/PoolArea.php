@@ -21,7 +21,7 @@ include_once (dirname(__FILE__) . '/Patient.php');
 include_once (dirname(__FILE__) . '/User.php');
 include_once (dirname(__FILE__) . '/ACL.php');
 include_once (dirname(__FILE__) . '/Services.php');
-include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/Time.php');
 
 class PoolArea
 {
@@ -73,7 +73,7 @@ class PoolArea
 			$visit['area_id']    = $foo['id'];
 			$visit['name']       = ($foo['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($visit['pid']);
 			$visit['warning']    = $this->patient->getPatientArrivalLogWarningByPid($visit['pid']);
-			$visit['warningMsg'] = ($visit['warning'] ? 'Patient \'Sex\' or \'Date Of Birth\' not set' : '');
+			$visit['warningMsg'] = ($visit['warning'] ? 'Patient "Sex" or "Date Of Birth" not set' : '');
 			if($foo['time_out'] == null){
 				$visits[] = $visit;
 			}
@@ -83,11 +83,13 @@ class PoolArea
 
 	private function getPatientParentPools()
 	{
-		$this->db->setSQL("SELECT id, time_in AS time, pid
-							 FROM patient_pools
-						    WHERE id = parent_id
-						 ORDER BY time_in ASC, priority DESC
-						 LIMIT 500");
+		$this->db->setSQL("SELECT pp.id, pp.time_in AS time, pp.pid
+							 FROM patient_pools AS pp
+                        LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
+						    WHERE pp.id = pp.parent_id
+						      AND pa.facility_id = {$_SESSION['user']['facility']}
+						 ORDER BY pp.time_in ASC, pp.priority DESC
+						    LIMIT 500");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
@@ -165,6 +167,12 @@ class PoolArea
 		return $this->getPatientsByPoolAreaId($params->area_id, 1);
 	}
 
+	public function getFacilityActivePoolAreas()
+	{
+		$this->db->setSQL("SELECT * FROM pool_areas	WHERE facility_id = {$_SESSION['user']['facility']} AND active = '1'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
 	public function getActivePoolAreas()
 	{
 		$this->db->setSQL("SELECT * FROM pool_areas	WHERE active = '1'");
@@ -240,52 +248,33 @@ class PoolArea
         }else{
             $uid = $_SESSION['user']['id'];
         }
-        $this->acl = new ACL($uid);
+
+		$this->acl = new ACL($uid);
         $patients = array();
+
         if($this->acl->hasPermission('use_pool_areas')){
-            if($this->acl->hasPermission('access_poolcheckin')){
-                foreach($this->getPatientsByPoolAreaId(1, 1) as $p){
-                    $p['shortName']   = Person::ellipsis($p['name'], 20);
-                    $p['poolArea']    = 'Check In';
-                    $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-                    $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(1);
-                    $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-                    $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-                }
-            }
-            if($this->acl->hasPermission('access_pooltriage')){
-                foreach($this->getPatientsByPoolAreaId(2, 1) as $p){
-                    $p['shortName']   = Person::ellipsis($p['name'], 20);
-                    $p['poolArea']    = 'Triage';
-                    $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-                    $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(2);
-                    $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-                    $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-                }
-            }
-            if($this->acl->hasPermission('access_poolphysician')){
-                foreach($this->getPatientsByPoolAreaId(3, 1) as $p){
-                    $p['shortName']   = Person::ellipsis($p['name'], 20);
-                    $p['poolArea']    = 'Physician';
-                    $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-                    $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(3);
-                    $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-                    $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-                }
-            }
-            if($this->acl->hasPermission('access_poolcheckout')){
-                foreach($this->getPatientsByPoolAreaId(4, 1) as $p){
-                    $p['shortName']   = Person::ellipsis($p['name'], 20);
-                    $p['poolArea']    = 'Check Out';
-                    $p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
-                    $p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId(4);
-                    $z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-                    $patients[]       = (empty($z)) ? $p : array_merge($p, $z);
-                }
-            }
+
+			foreach($this->getFacilityActivePoolAreas() AS $area){
+				if(
+					($this->acl->hasPermission('access_poolcheckin') && $area['id'] == 1) ||
+					($this->acl->hasPermission('access_pooltriage') && $area['id'] == 2) ||
+					($this->acl->hasPermission('access_poolphysician') && $area['id'] == 3) ||
+					($this->acl->hasPermission('access_poolcheckout') && $area['id'] == 4)
+				){
+					foreach($this->getPatientsByPoolAreaId($area['id'], 1) as $p){
+						$p['shortName']   = Person::ellipsis($p['name'], 20);
+						$p['poolArea']    = $area['title'];
+						$p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+						$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($area['id']);
+						$z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
+						$patients[]       = (empty($z)) ? $p : array_merge($p, $z);
+					}
+				}
+			}
             $patients = array_slice($patients, 0, 6);
-            return $patients;
         }
+
+		return $patients;
 	}
 
 	public function getAreaTitleById($id)

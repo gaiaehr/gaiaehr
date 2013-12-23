@@ -35,6 +35,11 @@ Ext.define('App.model.administration.FloorPlans', {
 			comment: 'Floor Title'
 		},
 		{
+			name: 'facility_id',
+			type: 'int',
+			comment: 'facility ID'
+		},
+		{
 			name: 'active',
 			type: 'bool',
 			comment: 'Active Floor Plan?'

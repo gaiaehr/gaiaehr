@@ -855,10 +855,11 @@ CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 CREATE TABLE IF NOT EXISTS `floor_plans` (
-`id` bigint(20) NOT NULL AUTO_INCREMENT,
-`title` varchar(255) DEFAULT NULL,
-`active` tinyint(1) NOT NULL DEFAULT '1',
-PRIMARY KEY (`id`)
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL COMMENT 'Floor Title',
+  `facility_id` int(11) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL COMMENT 'Active Floor Plan?',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
@@ -1925,10 +1926,11 @@ CREATE TABLE IF NOT EXISTS `pool_areas` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `floor_plan_id` bigint(20) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
   `sequence` int(11) DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `prescriptions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

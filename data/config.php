@@ -1097,6 +1097,9 @@ $API = array(
 			'getActivePoolAreas' => array(
 				'len' => 0
 			),
+			'getFacilityActivePoolAreas' => array(
+				'len' => 0
+			),
 			'getPatientsByPoolAreaAccess' => array(
 				'len' => 1
 			)

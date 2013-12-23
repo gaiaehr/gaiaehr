@@ -651,12 +651,20 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 
 		Facilities.setFacility(records[0].data.option_value, function(provider, response){
+
 			if(records[0].data.option_value == response.result){
+
 				me.msg(i18n('sweet'), i18n('facility') + ' ' + records[0].data.option_name);
 				me.setWindowTitle(records[0].data.option_name);
+				me['Nav_App_view_areas_PatientPoolDropZone'].reRenderPoolAreas();
+				me['Nav_App_view_areas_FloorPlan'].renderZones();
+				me.getPatientsInPoolArea();
+
 			}
 		});
-		me.getPatientsInPoolArea();
+
+
+
 	},
 
 	onFacilityComboLoad:function(store, records){

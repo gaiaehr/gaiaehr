@@ -222,7 +222,7 @@ class CombosData
 	public function getFloorPlanAreas()
 	{
         if($this->FP == null) $this->FP = MatchaModel::setSenchaModel('App.model.administration.FloorPlans');
-        return $this->FP->load(array("active"=>"1"), array('id', 'title'))->all();
+        return $this->FP->load(array('active'=>'1','facility_id' => $_SESSION['user']['facility']), array('id', 'title'))->all();
 	}
 
 	public function getAuthorizations()

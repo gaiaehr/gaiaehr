@@ -336,7 +336,7 @@ Ext.define('App.view.Viewport', {
          */
         me.navColumn = Ext.create('Ext.panel.Panel', {
             title: i18n('navigation'),
-            stateId: 'navColumn',
+            action: 'mainNavPanel',
             layout: 'border',
             region: globals['main_navigation_menu_left'],
             width: parseFloat(globals['gbl_nav_area_width']),
@@ -361,6 +361,7 @@ Ext.define('App.view.Viewport', {
                     title: i18n('patient_pool_areas'),
                     layout: 'fit',
                     region: 'south',
+	                action:'patientPoolArea',
                     bodyPadding: 5,
                     height: 25,
                     cls: 'patient-pool',
@@ -423,13 +424,7 @@ Ext.define('App.view.Viewport', {
                         handler: me.showMiframe
                     }, '-']
                 }
-            ],
-            listeners: {
-                scope: me,
-                beforecollapse: me.navCollapsed,
-                beforeexpand: me.navExpanded
-
-            }
+            ]
         });
         /**
          * MainPanel is where all the pages are displayed
@@ -452,52 +447,9 @@ Ext.define('App.view.Viewport', {
          * General Area
          */
         me.nav['App_view_dashboard_Dashboard'] = me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
-//        me.Calendar      = me.MainPanel.add(Ext.create('App.view.calendar.Calendar'));
-//        me.Messages      = me.MainPanel.add(Ext.create('App.view.messages.Messages'));
-//        me.PatientSearch = me.MainPanel.add(Ext.create('App.view.search.PatientSearch'));
         me.nav['App_view_areas_FloorPlan'] = me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
-        /**
-         * Patient Area
-         */
-//        me.NewPatient    = me.MainPanel.add(Ext.create('App.view.patient.NewPatient'));
-//	    me.Summary       = me.MainPanel.add(Ext.create('App.view.patient.Summary'));
-//        me.Visits        = me.MainPanel.add(Ext.create('App.view.patient.Visits'));
-//	    me['Nav_App_view_patient_Encounter'] = me.MainPanel.add(Ext.create('App.view.patient.Encounter'));
-//        me.VisitCheckout = me.MainPanel.add(Ext.create('App.view.patient.VisitCheckout'));
-//        /**
-//         * Fees Area
-//         */
-//        me.MainPanel.add(Ext.create('App.view.fees.Billing'));
-//        me.MainPanel.add(Ext.create('App.view.fees.Payments'));
-//        /**
-//         * Miscellaneous
-//         */
-//        me.MainPanel.add(Ext.create('App.view.miscellaneous.Addressbook'));
-//        me.MainPanel.add(Ext.create('App.view.miscellaneous.MyAccount'));
-//        me.MainPanel.add(Ext.create('App.view.miscellaneous.MySettings'));
-//        me.MainPanel.add(Ext.create('App.view.miscellaneous.OfficeNotes'));
-//        me.MainPanel.add(Ext.create('App.view.miscellaneous.Websearch'));
-//
         me.nav['App_view_areas_PatientPoolDropZone'] = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
-//
-//
-//        if(acl['access_gloabal_settings'])  me.MainPanel.add(Ext.create('App.view.administration.Globals'));
-//        if(acl['access_facilities'])        me.MainPanel.add(Ext.create('App.view.administration.Facilities'));
-//        if(acl['access_users'])             me.MainPanel.add(Ext.create('App.view.administration.Users'));
-//        if(acl['access_practice'])          me.MainPanel.add(Ext.create('App.view.administration.Practice'));
-//        if(acl['access_data_manager'])      me.MainPanel.add(Ext.create('App.view.administration.DataManager'));
-//        if(acl['access_preventive_care'])   me.MainPanel.add(Ext.create('App.view.administration.PreventiveCare'));
-////        if(acl['access_medications'])       me.MainPanel.add(Ext.create('App.view.administration.Medications'));
-//        if(acl['access_floor_plans'])       me.MainPanel.add(Ext.create('App.view.administration.FloorPlans'));
-//        if(acl['access_roles'])             me.MainPanel.add(Ext.create('App.view.administration.Roles'));
-//        if(acl['access_layouts'])           me.MainPanel.add(Ext.create('App.view.administration.Layout'));
-//        if(acl['access_lists'])             me.MainPanel.add(Ext.create('App.view.administration.Lists'));
-//        if(acl['access_event_log'])         me.MainPanel.add(Ext.create('App.view.administration.Log'));
-//        if(acl['access_documents'])         me.MainPanel.add(Ext.create('App.view.administration.Documents'));
-//
-//        me.MainPanel.add(Ext.create('App.view.administration.ExternalDataLoads'));
-//        me.MainPanel.add(Ext.create('App.view.administration.Applications'));
-//        me.MainPanel.add(Ext.create('App.view.administration.Modules'));
+
         /**
          * Footer Panel
          */
@@ -506,6 +458,7 @@ Ext.define('App.view.Viewport', {
             split: false,
             padding: '3 0',
             region: 'south',
+	        action:'appFooter',
             items: [
                 {
                     xtype: 'dataview',
@@ -624,7 +577,6 @@ Ext.define('App.view.Viewport', {
 
 	onFacilitySelect:function(cmb, records){
 		var me = this;
-
 		Facilities.setFacility(records[0].data.option_value, function(provider, response){
 
 			if(records[0].data.option_value == response.result){
@@ -637,8 +589,6 @@ Ext.define('App.view.Viewport', {
 
 			}
 		});
-
-
 
 	},
 
@@ -846,29 +796,6 @@ Ext.define('App.view.Viewport', {
         this.nav.navigateTo('App.view.areas.FloorPlan');
     },
 
-
-    navCollapsed: function(){
-        var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
-        if(foot){
-            footView = foot.down('dataview');
-            foot.setHeight(60);
-            footView.show();
-        }
-        me.navColumn.isCollapsed = true;
-        navView.hide();
-    },
-
-	navExpanded: function(){
-        var me = this, navView = me.patientPoolArea, foot = me.Footer, footView;
-        if(foot){
-            footView = foot.down('dataview');
-            foot.setHeight(30);
-            footView.hide();
-        }
-        me.navColumn.isCollapsed = false;
-        navView.show();
-    },
-
     /**
      * Function to get the current active panel.
      * NOTE: This may be used on all the application.
@@ -878,7 +805,9 @@ Ext.define('App.view.Viewport', {
     },
 
     liveSearchSelect: function(combo, selection){
-        var me = this, post = selection[0];
+        var me = this,
+	        post = selection[0];
+
         if(post){
             me.setPatient(post.get('pid'), null, function(){
 	            combo.reset();

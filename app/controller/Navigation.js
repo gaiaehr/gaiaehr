@@ -9,8 +9,24 @@ Ext.define('App.controller.Navigation', {
             selector:'viewport'
         },
         {
+            ref:'mainNavPanel',
+            selector:'panel[action=mainNavPanel]'
+        },
+        {
             ref:'mainNav',
             selector:'treepanel[action=mainNav]'
+        },
+        {
+            ref:'patientPoolArea',
+            selector:'panel[action=patientPoolArea]'
+        },
+        {
+            ref:'appFooter',
+            selector:'container[action=appFooter]'
+        },
+        {
+            ref:'appFooterDataView',
+            selector:'container[action=appFooter] > dataview'
         }
 	],
 
@@ -24,6 +40,10 @@ Ext.define('App.controller.Navigation', {
 			'treepanel[action=mainNav]':{
 				selectionchange: me.onNavigationNodeSelected,
 				beforerender: me.onNavigationBeforeRender
+			},
+			'panel[action=mainNavPanel]':{
+				beforecollapse: me.navCollapsed,
+				beforeexpand: me.navExpanded
 			}
 		});
 
@@ -132,6 +152,36 @@ Ext.define('App.controller.Navigation', {
 	 */
 	getClassByNavRef: function(ref) {
 		return ref.replace(/_/g, '.');
+	},
+
+	navCollapsed: function(){
+		var me = this,
+			navView = me.getPatientPoolArea(),
+			foot = me.getAppFooter(),
+			footView = me.getAppFooterDataView();
+
+		if(footView){
+			foot.setHeight(60);
+			footView.show();
+		}
+
+		me.getMainNavPanel().isCollapsed = true;
+		navView.hide();
+	},
+
+	navExpanded: function(){
+		var me = this,
+			navView = me.getPatientPoolArea(),
+			foot = me.getAppFooter(),
+			footView = me.getAppFooterDataView();
+
+		if(footView){
+			foot.setHeight(30);
+			footView.hide();
+		}
+
+		me.getMainNavPanel().isCollapsed = false;
+		navView.show();
 	}
 
 });

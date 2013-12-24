@@ -22,6 +22,9 @@ Ext.define('App.controller.LogOut', {
 		me.control({
 			'treepanel[action=mainNav]':{
 				beforerender: me.onNavigationBeforeRender
+			},
+			'menuitem[action=logout]':{
+				click: me.appLogout
 			}
 		});
 

@@ -123,8 +123,6 @@ Ext.define('App.view.Viewport', {
             scale: 'large',
             style: 'float:left',
             margin: 0,
-            scope: me,
-            handler: me.openPatientSummary,
             tooltip: i18n('patient_btn_drag'),
             listeners: {
                 scope: me,
@@ -279,8 +277,7 @@ Ext.define('App.view.Viewport', {
                 {
                     text: i18n('logout'),
                     iconCls: 'icoLogout',
-                    scope: me,
-                    handler: me.appLogout
+	                action:'logout',
                 }
             ]
         });
@@ -1082,6 +1079,7 @@ Ext.define('App.view.Viewport', {
         panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
             ddGroup: 'patientPoolAreas',
             getDragData: function(){
+
 	            if(app.patient.pid){
                     var sourceEl = app.patientBtn.el.dom,
 	                    d;
@@ -1106,12 +1104,13 @@ Ext.define('App.view.Viewport', {
             },
 
             getRepairXY: function(){
-                app.nav.goBack();
+//                app.nav.goBack();
                 return this.dragData.repairXY;
             },
 
 	        onBeforeDrag:function(){
-		        app.goToPoolAreas();
+		        app.nav.navigateTo('App.view.areas.PatientPoolDropZone');
+		        return true;
             }
         });
     },

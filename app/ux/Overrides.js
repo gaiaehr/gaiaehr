@@ -363,7 +363,7 @@ Ext.override(Ext.container.Container, {
     },
 
     goBack: function(){
-        app.goBack();
+        app.nav.goBack();
     },
 
     checkIfCurrPatient: function(){

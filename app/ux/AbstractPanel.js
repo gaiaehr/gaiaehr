@@ -52,7 +52,7 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
 	goBack: function() {
-		app.goBack();
+		app.nav.goBack();
 	},
 
 	checkIfCurrPatient: function() {

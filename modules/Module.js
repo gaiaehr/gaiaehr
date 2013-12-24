@@ -18,19 +18,28 @@
 
 Ext.define('Modules.Module',{
     extend: 'Ext.app.Controller',
-
+	refs: [
+		{
+			ref:'viewport',
+			selector:'viewport'
+		},
+		{
+			ref:'mainNav',
+			selector:'treepanel[action=mainNav]'
+		}
+	],
     /**
      * @param panel
      */
     addAppPanel: function (panel) {
-        app.MainPanel.add(panel);
+        this.getViewport().MainPanel.add(panel);
     },
 
     /**
      * @param item
      */
     addHeaderItem: function (item) {
-        app.Header.add(item);
+	    this.getViewport().Header.add(item);
     },
 
     /**
@@ -43,10 +52,10 @@ Ext.define('Modules.Module',{
     addNavigationNodes: function (parentId, node) {
         var parent;
         if (parentId == 'root' || parentId == null) {
-            parent = app.storeTree.tree.getRootNode();
+            parent = this.getMainNav().getStore().getRootNode();
         }
         else {
-            parent = app.storeTree.tree.getNodeById(parentId);
+            parent = this.getMainNav().getStore().getNodeById(parentId);
         }
 
         var firstChildNode = parent.findChildBy(function (node) {

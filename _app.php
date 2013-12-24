@@ -640,6 +640,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
                 ],
                 controllers:[
+	                'Cron',
+	                'LogOut',
+	                'Navigation',
 	                'ScriptCam',
                     'patient.encounter.SOAP'
                 ],

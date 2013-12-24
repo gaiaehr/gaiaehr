@@ -73,37 +73,7 @@ Ext.define('App.view.Viewport', {
         }else if(me.currency == '¥'){
             me.icoMoney = 'icoYen';
         }
-        /**
-         * GaiaEHR Support Page
-         */
-        me.winSupport = Ext.create('Ext.window.Window', {
-            title: i18n('support'),
-            closeAction: 'hide',
-            bodyStyle: 'background-color: #ffffff; padding: 5px;',
-            animateTarget: me.Footer,
-            resizable: false,
-            draggable: false,
-            maximizable: false,
-            autoScroll: true,
-            maximized: true,
-            dockedItems: {
-                xtype: 'toolbar',
-                dock: 'top',
-                items: ['-', {
-                    text: 'List issues',
-                    iconCls: 'list',
-                    action: 'http://GaiaEHR.org/projects/GaiaEHR001/issues',
-                    scope: me,
-                    handler: me.showMiframe
-                }, '-', {
-                    text: 'Create an issue',
-                    iconCls: 'icoAddRecord',
-                    action: 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new',
-                    scope: me,
-                    handler: me.showMiframe
-                }]
-            }
-        });
+
         /**
          * header Panel
          */
@@ -419,9 +389,8 @@ Ext.define('App.view.Viewport', {
                         frame: true,
                         text: 'GaiaEHR Support',
                         iconCls: 'icoHelp',
-                        action: 'http://gaiaehr.org/',
-                        scope: me,
-                        handler: me.showMiframe
+	                    action: 'supportBtn',
+	                    src: 'http://gaiaehr.org/forums/'
                     }, '-']
                 }
             ]
@@ -494,38 +463,31 @@ Ext.define('App.view.Viewport', {
                         {
                             text: 'Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under GPLv3 |:| v' + me.version,
                             iconCls: 'icoGreen',
-                            disabled: true,
-                            action: 'http://GaiaEHR.org/projects/GaiaEHR001',
-                            scope: me,
-                            handler: me.showMiframe
+                            disabled: true
                         },
                         '->',
                         {
                             text: i18n('news'),
-                            action: 'http://GaiaEHR.org/projects/GaiaEHR001/news',
-                            scope: me,
-                            handler: me.showMiframe
+	                        action: 'supportBtn',
+	                        src: 'http://GaiaEHR.org/projects/GaiaEHR001/news'
                         },
                         '-',
                         {
                             text: i18n('wiki'),
-                            action: 'http://gaiaehr.org/',
-                            scope: me,
-                            handler: me.showMiframe
+	                        action: 'supportBtn',
+	                        src: 'http://gaiaehr.org/'
                         },
                         '-',
                         {
                             text: i18n('issues'),
-                            action: 'http://gaiaehr.org/',
-                            scope: me,
-                            handler: me.showMiframe
+	                        action: 'supportBtn',
+                            src: 'http://gaiaehr.org:8181/issues/?jql='
                         },
                         '-',
                         {
                             text: i18n('forums'),
-                            action: 'http://gaiaehr.org/',
-                            scope: me,
-                            handler: me.showMiframe
+	                        action: 'supportBtn',
+	                        src: 'http://gaiaehr.org/forums/'
                         },
                         '-',
                         {
@@ -682,7 +644,9 @@ Ext.define('App.view.Viewport', {
 	//*****************************************************************
 
 	createEmergency: function(){
-        var me = this, emergency;
+        var me = this,
+	        emergency;
+
         Ext.Msg.show({
             title: i18n('wait') + '!!!',
             msg: i18n('are_you_sure_you_want_to_create_a_new') + ' <span style="color: red">"' + i18n('emergency') + '"</span>?',
@@ -707,6 +671,7 @@ Ext.define('App.view.Viewport', {
 
 	onEmergencyAccessClick:function(){
 		var me = this;
+
 		Ext.Msg.show({
 			title:i18n('wait'),
 			msg: i18n('emergency_access_question') + '<br>' + i18n('emergency_access_disclaimer'),
@@ -736,6 +701,7 @@ Ext.define('App.view.Viewport', {
 	 */
     createNewEncounter: function(){
         var me = this;
+
         if(acl['access_encounters'] && acl['add_encounters']){
             me.newEncounterWindow.show();
         }else{
@@ -920,14 +886,6 @@ Ext.define('App.view.Viewport', {
         me.patientBtn.removeCls('Deceased');
     },
 
-    showMiframe: function(btn){
-        var me = this, src = btn.action;
-        me.winSupport.remove(me.miframe);
-        me.winSupport.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-                src: src
-            }));
-        me.winSupport.show();
-    },
 
     msg: function(title, format, error, persistent) {
         var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';

@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, LLC.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.NewPatient', {
@@ -31,7 +31,7 @@ Ext.define('App.view.patient.NewPatient', {
 	},
 	/**
 	 *
-	 * @param callback
+	 * @param {function} callback
 	 */
 	confirmationWin: function(callback) {
 		Ext.Msg.show({
@@ -51,6 +51,7 @@ Ext.define('App.view.patient.NewPatient', {
 	 * this panel is selected in the navigation panel.
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
+	 * @param {function} [callback] - callback
 	 */
 	onActive: function(callback) {
         var me = this;
@@ -60,6 +61,7 @@ Ext.define('App.view.patient.NewPatient', {
 				app.unsetPatient(null, true);
 				callback(true);
 			} else {
+				app.nav.goBack();
 				callback(false);
 			}
 		});

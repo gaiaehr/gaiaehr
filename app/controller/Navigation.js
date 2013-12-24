@@ -42,13 +42,17 @@ Ext.define('App.controller.Navigation', {
 				beforerender: me.onNavigationBeforeRender
 			},
 			'panel[action=mainNavPanel]':{
-				beforecollapse: me.navCollapsed,
-				beforeexpand: me.navExpanded
+				beforecollapse: me.onNavCollapsed,
+				beforeexpand: me.onNavExpanded
 			}
 		});
 
 	},
 
+	/**
+	 *
+	 * @param {object} treepanel
+	 */
 	onNavigationBeforeRender:function(treepanel){
 		treepanel.getStore().on('load', this.afterNavigationLoad, this);
 	},
@@ -57,16 +61,21 @@ Ext.define('App.controller.Navigation', {
 		this.navigateTo('App.view.dashboard.Dashboard');
 	},
 
+	/**
+	 *
+	 * @param {string} cls  - example: 'App.view.ExamplePanel'
+	 * @param {function} [callback] - callback function
+	 */
 	navigateTo: function(cls, callback){
-		var tree = this.getMainNav(),
-			treeStore = tree.getStore(),
-			sm = tree.getSelectionModel(),
-			node = treeStore.getNodeById(cls);
-
-		sm.select(node);
+		window.location = './#!/' + cls;
 		if(typeof callback == 'function') callback(true);
 	},
 
+	/**
+	 *
+	 * @param {object} model
+	 * @param {array} selected
+	 */
 	onNavigationNodeSelected: function(model, selected){
 		if(0 < selected.length){
 			if(selected[0].data.leaf){
@@ -81,22 +90,27 @@ Ext.define('App.controller.Navigation', {
 	afterNavigationLoad: function(){
 		app.fullMode ? app.navColumn.expand() : app.navColumn.collapse();
 		app.removeAppMask();
-
 		this.navigateToDefault();
 	},
 
 	/**
 	 * this method handle the card layout when the URL changes
-	 * @param url
+	 * @param {string} url
 	 */
 	urlChange:function(url){
 		var me = this,
+			tree = me.getMainNav(),
+			treeStore = tree.getStore(),
 			cls = url.replace(/!\//, ''),
 			ref = me.getNavRefByClass(cls),
-			layout = me.getViewport().MainPanel.getLayout();
+			layout = me.getViewport().MainPanel.getLayout(),
+			sm = tree.getSelectionModel(),
+			node = treeStore.getNodeById(cls);
+
+		sm.select(node);
 
 		if (typeof me[ref] == 'undefined') {
-			app.MainPanel.el.mask('Loading...');
+			app.MainPanel.el.mask();
 			Ext.Function.defer(function() {
 				me[ref] = me.getViewport().MainPanel.add(Ext.create(cls));
 				me[ref].onActive(function(success){
@@ -123,7 +137,7 @@ Ext.define('App.controller.Navigation', {
 
 	/**
 	 * this method gets the instance reference of a main panel class
-	 * @param cls
+	 * @param {string} cls
 	 * @returns {*}
 	 */
 	getPanelByCls:function(cls){
@@ -138,7 +152,7 @@ Ext.define('App.controller.Navigation', {
 
 	/**
 	 * this method gets the reference string of the class string App.view.Panel => App_view_Panel
-	 * @param cls
+	 * @param {string} cls
 	 * @returns {XML|Ext.dom.AbstractElement|Object|Ext.dom.Element|string|*}
 	 */
 	getNavRefByClass: function(cls) {
@@ -154,7 +168,10 @@ Ext.define('App.controller.Navigation', {
 		return ref.replace(/_/g, '.');
 	},
 
-	navCollapsed: function(){
+	/**
+	 * this method shows the footer poolarea
+	 */
+	onNavCollapsed: function(){
 		var me = this,
 			navView = me.getPatientPoolArea(),
 			foot = me.getAppFooter(),
@@ -169,7 +186,10 @@ Ext.define('App.controller.Navigation', {
 		navView.hide();
 	},
 
-	navExpanded: function(){
+	/**
+	 * this method hides the footer poolarea
+	 */
+	onNavExpanded: function(){
 		var me = this,
 			navView = me.getPatientPoolArea(),
 			foot = me.getAppFooter(),

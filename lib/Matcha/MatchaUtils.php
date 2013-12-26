@@ -65,8 +65,8 @@ class MatchaUtils extends Matcha
      */
     static public function ChromePHP()
     {
-//        require_once('plugins/ChromePHP/ChromePhp.php');
-//        return ChromePhp()->getInstance();
+        require_once('plugins/ChromePHP/ChromePhp.php');
+        return ChromePhp()->getInstance();
     }
 
     /**
@@ -129,13 +129,13 @@ class MatchaUtils extends Matcha
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 		$cryptText = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, $text, MCRYPT_MODE_ECB, $iv);
-		return $cryptText;
+		return base64_encode($cryptText);
 	}
 
 	static public function __decrypt($text){
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$deCryptText = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, $text, MCRYPT_MODE_ECB, $iv);
+		$deCryptText = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, base64_decode($text), MCRYPT_MODE_ECB, $iv);
 		return trim($deCryptText);
 	}
 }

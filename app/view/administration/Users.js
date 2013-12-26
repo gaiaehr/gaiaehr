@@ -53,7 +53,7 @@ Ext.define('App.view.administration.Users', {
                     flex: 1,
                     text: i18n('aditional_info'),
                     sortable: true,
-                    dataIndex: 'info'
+                    dataIndex: 'notes'
                 },
                 {
                     text: i18n('active'),
@@ -297,7 +297,7 @@ Ext.define('App.view.administration.Users', {
 						        {
 							        width: 180,
 							        xtype: 'textfield',
-							        name: 'federaltaxid'
+							        name: 'fedtaxid'
 						        },
 						        {
 							        width: 100,
@@ -307,7 +307,7 @@ Ext.define('App.view.administration.Users', {
 						        {
 							        width: 175,
 							        xtype: 'textfield',
-							        name: 'federaldrugid'
+							        name: 'feddrugid'
 						        }
 					        ]
 				        },
@@ -334,7 +334,7 @@ Ext.define('App.view.administration.Users', {
 						        {
 							        width: 180,
 							        xtype: 'textfield',
-							        name: 'upin'
+							        name: 'pin'
 						        },
 						        {
 							        width: 100,
@@ -379,7 +379,7 @@ Ext.define('App.view.administration.Users', {
 					        width: 570,
 					        height: 50,
 					        xtype: 'textfield',
-					        name: 'info',
+					        name: 'notes',
 					        emptyText: i18n('additional_info')
 				        }
 			        ]

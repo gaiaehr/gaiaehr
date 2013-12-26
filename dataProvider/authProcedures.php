@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (dirname(__FILE__) . '/../classes/Sessions.php');
-include_once (dirname(__FILE__) . '/../classes/Crypt.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/Sessions.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/Crypt.php');
 include_once (dirname(__FILE__) . '/Patient.php');
 
 class authProcedures
@@ -86,11 +86,10 @@ class authProcedures
 		// variables to connect to the database.
 		//-------------------------------------------
 		define('_GaiaEXEC', 1);
-		chdir($_SESSION['root']);
-		include_once ('registry.php');
-		include_once ('classes/AES.php');
-		include_once ('classes/MatchaHelper.php');
-		$fileConf = 'sites/' . $params->site . '/conf.php';
+		$root = dirname(dirname(__FILE__));
+		include_once ($root .'/registry.php');
+		include_once ($root .'/classes/MatchaHelper.php');
+		$fileConf = $root . '/sites/' . $params->site . '/conf.php';
 		if(file_exists($fileConf)){
 			/** @noinspection PhpIncludeInspection */
 			include_once ($fileConf);
@@ -108,25 +107,21 @@ class authProcedures
 			);
 		}
 		//-------------------------------------------
-		// remove empty space from username and password
+		// remove empty spaces single and double quotes from username and password
 		//-------------------------------------------
-		$params->authUser = str_replace(' ', '', $params->authUser);
-		$params->authPass = str_replace(' ', '', $params->authPass);
-		//-------------------------------------------
-		// Convert the password to AES and validate
-		//-------------------------------------------
-		$aes = new AES($_SESSION['site']['AESkey']);
+		$params->authUser = trim(str_replace(array('\'','"'), '', $params->authUser));
+		$params->authPass = trim(str_replace(array('\'','"'), '', $params->authPass));
+
 		//-------------------------------------------
 		// Username & password match
 		//-------------------------------------------
-		$db->setSQL("SELECT id, username, title, fname, mname, lname, email, facility_id, password
-                         FROM users
-        		        WHERE username   = '$params->authUser'
-        		          AND authorized = '1'
-        		        LIMIT 1");
-		$user = $db->fetchRecord();
+		$u = MatchaModel::setSenchaModel('App.model.administration.User');
+		$user = $u->load(
+			array('username' => $params->authUser, 'authorized' => 1),
+			array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'password')
+		)->one();
 
-		if(empty($user) || $params->authPass != $aes->decrypt($user['password'])){
+		if($user === false || $params->authPass != $user['password']){
 			return array(
 				'success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.'
 			);
@@ -156,8 +151,11 @@ class authProcedures
 			$_SESSION['site']['checkInMode']  = $params->checkInMode;
 			$_SESSION['timeout']              = time();
 			$session                          = new Sessions();
-			$_SESSION['user']['token'] = Crypt::encrypt('{"uid":'.$user['id'].',"sid":'.$session->loginSession().',"site":"'.$params->site.'"}');
+			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":'.$user['id'].',"sid":'.$session->loginSession().',"site":"'.$params->site.'"}');
 			$_SESSION['inactive']['timeout'] = time();
+
+			unset($db);
+
 			return array(
 				'success' => true,
 				'token' => $_SESSION['user']['token'],

@@ -73,6 +73,8 @@ class MatchaHelper extends Matcha
             ));
         }
 
+		self::$__secretKey = $_SESSION['site']['AESkey'];
+
         // Enable the audit feature in Matcha::connect
         // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
         if($this->AuditLog == NULL) $this->AuditLog = MatchaModel::setSenchaModel('App.model.administration.AuditLog');

@@ -23,8 +23,8 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 
-error_reporting(0);
-@ini_set('display_errors', 0);
+//error_reporting(0);
+//@ini_set('display_errors', 0);
 
 define('_GaiaEXEC', 1);
 

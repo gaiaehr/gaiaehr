@@ -1233,8 +1233,8 @@ $API = array(
 			'getUsers' => array(
 				'len' => 1
 			),
-			'getCurrentUserData' => array(
-				'len' => 0
+			'getUser' => array(
+				'len' => 1
 			),
 			'addUser' => array(
 				'len' => 1
@@ -1242,11 +1242,17 @@ $API = array(
 			'updateUser' => array(
 				'len' => 1
 			),
-			'checkPasswordHistory' => array(
+			'updatePassword' => array(
 				'len' => 1
 			),
-			'changeMyPassword' => array(
+			'usernameExist' => array(
 				'len' => 1
+			),
+			'getCurrentUserData' => array(
+				'len' => 0
+			),
+			'getCurrentUserBasicData' => array(
+				'len' => 0
 			),
 			'updateMyAccount' => array(
 				'len' => 1
@@ -1255,12 +1261,6 @@ $API = array(
 				'len' => 1
 			),
 			'getProviders' => array(
-				'len' => 1
-			),
-			'getCurrentUserBasicData' => array(
-				'len' => 0
-			),
-			'usernameExist' => array(
 				'len' => 1
 			),
 			'getUserFullNameById' => array(

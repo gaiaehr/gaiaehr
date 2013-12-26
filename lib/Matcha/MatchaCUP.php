@@ -361,9 +361,9 @@ class MatchaCUP
 			if(!empty($where)){
 				$this->isSenchaRequest = false;
 				$data = get_object_vars($record);
-				$sql = $this->buildUpdateSqlStatement($data, $where);
-				$this->rowsAffected = Matcha::$__conn->exec($sql);
-				self::callBackMethod(array(array('crc32' => crc32($sql), 'event' => 'UPDATE', 'sql' => addslashes($sql))));
+				$this->sql = $this->buildUpdateSqlStatement($data, $where);
+				$this->rowsAffected = Matcha::$__conn->exec($this->sql);
+				self::callBackMethod(array(array('crc32' => crc32($this->sql), 'event' => 'UPDATE', 'sql' => addslashes($this->sql))));
 				$this->record = $data;
 
 				// single object handler
@@ -382,7 +382,7 @@ class MatchaCUP
 			}
 
 			$this->builtRoot();
-			return $this->record;
+			return (array) $this->record;
 
 		} catch(PDOException $e){
 			return MatchaErrorHandler::__errorProcess($e);
@@ -395,14 +395,14 @@ class MatchaCUP
 
 		if($isInsert){
 			unset($data[$this->primaryKey]);
-			$sql = $this->sql = $this->buildInsetSqlStatement($data);
+			$this->sql = $this->buildInsetSqlStatement($data);
 		} else{
-			$sql = $this->sql = $this->buildUpdateSqlStatement($data);
+			$this->sql = $this->buildUpdateSqlStatement($data);
 		}
 
 		$this->bindedValues = array();
 
-		$insert = Matcha::$__conn->prepare($sql);
+		$insert = Matcha::$__conn->prepare($this->sql);
 		foreach($data as $key => $value){
 
 			$this->bindedValues[] = array(":$key" => $value);
@@ -430,9 +430,9 @@ class MatchaCUP
 			} else{
 				$record->{$this->primaryKey} = $this->lastInsertId = Matcha::$__conn->lastInsertId();
 			}
-			self::callBackMethod(array(array('insertId' => $this->lastInsertId, 'crc32' => crc32($sql), 'event' => 'INSERT', 'sql' => addslashes($sql))));
+			self::callBackMethod(array(array('insertId' => $this->lastInsertId, 'crc32' => crc32($this->sql), 'event' => 'INSERT', 'sql' => addslashes($this->sql))));
 		} else{
-			self::callBackMethod(array(array('crc32' => crc32($sql), 'event' => 'UPDATE', 'sql' => addslashes($sql))));
+			self::callBackMethod(array(array('crc32' => crc32($this->sql), 'event' => 'UPDATE', 'sql' => addslashes($this->sql))));
 		}
 
 		return $record;

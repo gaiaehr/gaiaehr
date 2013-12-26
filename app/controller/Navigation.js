@@ -111,15 +111,16 @@ Ext.define('App.controller.Navigation', {
 
 		if (typeof me[ref] == 'undefined') {
 			app.MainPanel.el.mask();
-			Ext.Function.defer(function() {
+//			Ext.Function.defer(function() {
 				me[ref] = me.getViewport().MainPanel.add(Ext.create(cls));
 				me[ref].onActive(function(success){
 					me.getViewport().MainPanel.el.unmask();
 					if(success)	layout.setActiveItem(me[ref]);
 				});
-			}, 100);
+//			}, 100);
 
 		} else {
+//			say('activating panel');
 			if (me[ref].isDestroyed) me[ref].render();
 			me[ref].onActive(function(success){
 				me.getViewport().MainPanel.el.unmask();

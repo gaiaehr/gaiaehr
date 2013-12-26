@@ -103,6 +103,7 @@ Ext.define('App.view.patient.Encounter', {
                 plain:true,
                 activeItem:0,
                 border:false,
+	            action:'encounterTabPanel',
                 defaults:{
                     bodyStyle:'padding:15px',
                     bodyBorder:true,

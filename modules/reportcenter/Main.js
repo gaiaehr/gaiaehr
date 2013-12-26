@@ -27,7 +27,7 @@ Ext.define('Modules.reportcenter.Main', {
 		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportCenter'));
 		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportPanel'));
 		/**
-		 * funtion to add navigation links
+		 * function to add navigation links
 		 * @param parentId  (string)            navigation node parent ID,
 		 * @param node      (object || array)   navigation node configuration properties
 		 */

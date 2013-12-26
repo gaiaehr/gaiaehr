@@ -52,7 +52,7 @@ class MatchaAudit extends Matcha
 	}
 
     /**
-     * function audit($onoff = true):
+     * function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL)
      * Method to enable the audit log process.
      * This will write a log every time it INSERT, UPDATE, DELETE a record.
      */

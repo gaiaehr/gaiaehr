@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-class MatchaCUP {
+
+class MatchaCUP
+{
 	/**
 	 * @var array|object
 	 */
@@ -713,7 +715,11 @@ class MatchaCUP {
 	 *
 	 */
 	private function builtRoot(){
-		if($this->isSenchaRequest && isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)
+		if(
+			$this->isSenchaRequest &&
+			isset($this->model->proxy) &&
+			isset($this->model->proxy->reader) &&
+			isset($this->model->proxy->reader->root)
 		){
 			$record = array();
 			$total = ($this->nolimitsql != '' ? Matcha::$__conn->query($this->nolimitsql)->rowCount() : false);

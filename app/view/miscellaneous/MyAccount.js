@@ -373,7 +373,37 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		me.callParent(arguments);
 	},
 
-	onPasswordSave: function(){
+	onPasswordSave: function(btn){
+		var me = this,
+			form = me.win.down('form').getForm(),
+			values = form.getValues(),
+			id = me.myAccountForm.getForm().getRecord().data.id,
+			params;
+
+		if(values.nPassword != values.vPassword){
+			app.msg(i18n('oops'), i18n('password_does_not_match'), true);
+			return;
+		}
+
+		if(form.isValid()){
+			params = {
+				id:id,
+				old_password:values.oPassword,
+				new_password:values.nPassword
+			};
+
+			User.updatePassword(params, function(provider, response){
+
+				if(response.result.success){
+					app.msg(i18n('sweet'), i18n('record_updated'));
+					me.win.close();
+				}else{
+					app.msg(i18n('oops'), i18n(response.result.message), true);
+				}
+			});
+
+		}
+
 
 	},
 

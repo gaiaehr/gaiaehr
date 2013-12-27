@@ -1,23 +1,26 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, LLC.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend:'Ext.panel.Panel',
+	requires:[
+		'App.ux.grid.RowFormEditing'
+	],
 	action:['patient.encounter.soap'],
 	title:i18n('soap'),
 	layout:'border',
@@ -34,16 +37,23 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title:i18n('snippets'),
-//			collapsible:true,
-//			collapsed:true,
-			split:true,
-			width:300,
 			region:'west',
+			width:300,
+			split:true,
 			hideHeaders:true,
 			useArrows: true,
 			rootVisible: false,
-			store: me.snippetStore,
 			singleExpand: true,
+			store: me.snippetStore,
+			tools:[
+				{
+					xtype:'button',
+					text:i18n('category'),
+					scope:me,
+					iconCls:'icoAdd',
+					handler:me.onAddSnippetCategory
+				}
+			],
 			columns: [
 				{
 					xtype: 'treecolumn', //this is so we know which column will show the tree
@@ -93,7 +103,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				}
 			},
 			plugins:[
-				Ext.create('App.ux.grid.RowFormEditing',{
+				{
+					ptype:'rowformediting',
 					clicksToMoveEditor:1,
 					enabled:false,
 					enableRemove:true,
@@ -105,16 +116,16 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							name:'text'
 						}
 					]
-				})
-			],
-			buttons:[
-				{
-					text:i18n('add_category'),
-					flex:1,
-					scope:me,
-					handler:me.onAddSnippetCategory
 				}
 			],
+//			buttons:[
+//				{
+//					text:i18n('add_category'),
+//					flex:1,
+//					scope:me,
+//					handler:me.onAddSnippetCategory
+//				}
+//			],
 			listeners:{
 				scope:me,
 				itemclick:me.onSnippetClick,
@@ -131,7 +142,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			autoScroll:true,
 			action:'encounter',
 			bodyStyle:'background-color:white',
-			//bodyPadding:5,
 			region:'center',
 			fieldDefaults:{
 				msgTarget:'side'
@@ -366,6 +376,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.callParent();
 	},
 
+	/**
+	 *
+	 * @param cmb
+	 * @param values
+	 */
 	onProcedureSelect:function(cmb, values){
 		var me = this,
 			form = me.pForm.getForm();
@@ -373,6 +388,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		form.findField('code_text').setValue(values[0].data.code_text)
 	},
 
+	/**
+	 *
+	 */
 	onProcedureAdd:function(){
 		var me = this,
 			rec;
@@ -389,6 +407,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.procedureEdit(null, rec);
 	},
 
+	/**
+	 *
+	 */
 	onProcedureCancel:function(){
 		this.procedureStore.rejectChanges();
 		this.pWin.hide(this.pGrid.el);
@@ -396,6 +417,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.pWin.setTitle(i18n('procedure'));
 	},
 
+	/**
+	 *
+	 */
 	onProcedureSave:function(){
 		var me = this,
 			form = me.pForm.getForm(),
@@ -410,6 +434,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.pWin.setTitle(i18n('procedure'));
 	},
 
+	/**
+	 *
+	 */
 	onShow:function(){
 		var me = this;
 		me.callParent();
@@ -428,6 +455,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		}
 	},
 
+	/**
+	 *
+	 * @param view
+	 * @param record
+	 */
 	procedureEdit:function(view, record){
 		if(record.data.code_text != '' || record.data.code != ''){
 			this.pWin.setTitle('[' + record.data.code + '] ' + record.data.code_text);
@@ -440,15 +472,28 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.query('button[action=soapSave]')[0].disable();
 	},
 
+	/**
+	 *
+	 * @param btn
+	 */
 	onSoapSave:function(btn){
 //		this.snippets.collapse(false);
 		this.enc.onEncounterUpdate(btn)
 	},
 
+	/**
+	 *
+	 * @param form
+	 * @param record
+	 */
 	formRecordLoaded:function(form, record){
 		this.dxField.loadIcds(record.data.icdxCodes);
 	},
 
+	/**
+	 *
+	 * @param field
+	 */
 	onFieldFocus:function(field){
 		if(typeof field.name == 'undefined') field.name = 'procedure';
 		this.snippets.setTitle(i18n(field.name) +' '+ i18n('templates'));
@@ -457,15 +502,32 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.snippets.action = field.name;
 	},
 
+	/**
+	 *
+	 * @param v
+	 * @param meta
+	 * @param record
+	 * @returns {string}
+	 */
 	snippetTextRenderer:function(v, meta, record){
 		var toolTip = record.data.text ? ' data-qtip="'+record.data.text+'" ' : '';
 		return '<span '+toolTip+'>'+v+'</span>'
 	},
 
+	/**
+	 *
+	 * @param view
+	 * @param record
+	 */
 	onSnippetClick:function(view, record){
 		if(!record.data.leaf) record.expand();
 	},
 
+	/**
+	 *
+	 * @param view
+	 * @param record
+	 */
 	onSnippetDblClick:function(view, record){
 		if(record.data.leaf){
 			var me = this,
@@ -478,7 +540,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				textArea = me.phWindow.down('textarea');
 
 			if(PhIndex == -1){
-				field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
+				field.setValue(value + me.closeSentence(text));
 			}else{
 				me.phWindow.show();
 				textArea.setValue(text);
@@ -491,6 +553,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		}
 	},
 
+	/**
+	 *
+	 */
 	onPhWindowSubmit:function(){
 		var me = this,
 			textArea = me.phWindow.down('textarea'),
@@ -505,10 +570,19 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		textArea.reset();
 	},
 
+	/**
+	 *
+	 * @param btn
+	 */
 	onPhWindowCancel:function(btn){
 		btn.up('window').close();
 	},
 
+	/**
+	 *
+	 * @param field
+	 * @param e
+	 */
 	onPhTextAreaKey:function(field, e){
 		if (e.getKey() == e.ENTER) this.onPhWindowSubmit();
 	},
@@ -521,14 +595,26 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	closeSentence:function(sentence){
 		var v = Ext.String.trim(sentence),
 			c = v.charAt(v.length - 1);
-		return ((c == '.' || c == '!' || c == '?') ? v : v + '.');
+		if(v == '') return v;
+		return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
 	},
 
+	/**
+	 *
+	 * @param grid
+	 * @param rowIndex
+	 */
 	onSnippetBtnEdit: function(grid, rowIndex) {
 		grid.editingPlugin.enabled = true;
 		grid.editingPlugin.startEdit(rowIndex,0);
 	},
 
+	/**
+	 *
+	 * @param editor
+	 * @param store
+	 * @param record
+	 */
 	onSnippetRemove:function(editor, store, record){
 		var me = this;
 		store.sync({
@@ -540,6 +626,13 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 	},
 
+	/**
+	 *
+	 * @param editor
+	 * @param store
+	 * @param record
+	 * @returns {boolean}
+	 */
 	onSnippetBeforeRemove:function(editor, store, record){
 		var me = this;
 		if(record.childNodes[0]){
@@ -550,19 +643,38 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		}
 	},
 
+	/**
+	 *
+	 * @param plugin
+	 */
 	onSnippetEdit:function(plugin){
 		this.snippetStore.sync();
 		plugin.enabled = false;
 	},
 
+	/**
+	 *
+	 * @param plugin
+	 * @returns {boolean|enabled|Ext.Logger.enabled|Ext.draw.modifier.Highlight.enabled|Ext.chart.interactions.Abstract.enabled|Ext.resizer.SplitterTracker.enabled|*}
+	 */
 	onSnippetBeforeEdit:function(plugin){
 		return plugin.enabled;
 	},
 
+	/**
+	 *
+	 * @param plugin
+	 */
 	onSnippetCancelEdit:function(plugin){
 		plugin.enabled = false;
 	},
 
+	/**
+	 *
+	 * @param node
+	 * @param data
+	 * @param overModel
+	 */
 	onSnippetDrop:function(node, data, overModel){
 		var me = this, pos = 10;
 		for(var i = 0; i < overModel.parentNode.childNodes.length; i++){
@@ -572,8 +684,19 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.snippetStore.sync();
 	},
 
+	/**
+	 *
+	 * @param grid
+	 * @param rowIndex
+	 * @param colIndex
+	 * @param actionItem
+	 * @param event
+	 * @param record
+	 */
 	onSnippetBtnAdd:function(grid, rowIndex, colIndex, actionItem, event, record){
-		var me = this, rec;
+		var me = this,
+			rec;
+
 		me.origScope.snippets.editingPlugin.cancelEdit();
 		rec = me.origScope.snippetStore.getNodeById(record.data.id).appendChild({
 			text:'New Snippet',
@@ -591,24 +714,39 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 	},
 
+	/**
+	 *
+	 */
 	onAddSnippetCategory:function(){
-		var me = this, rec;
+		var me = this,
+			selection = me.snippets.getSelectionModel().getSelection(),
+			baseNode,
+			record;
+
+		if(selection.length == 0){
+			baseNode = me.snippetStore.getRootNode();
+		}else if(selection[0].data.leaf){
+			baseNode = selection[0].parentNode;
+		}else{
+			baseNode = selection[0];
+		}
+
 		me.snippets.editingPlugin.cancelEdit();
-		rec = me.snippetStore.getRootNode().appendChild({
+		record = baseNode.appendChild({
 			text:'New Category',
-			parentId:'root',
+			parentId:baseNode.data.id,
+			category:me.snippets.action,
 			leaf:false,
-			category:me.snippets.action
 		});
 		me.snippetStore.sync({
 			callback:function(batch){
-				rec.set({id:batch.proxy.reader.rawData.id});
-				rec.commit();
+				record.set({id:batch.proxy.reader.rawData.id});
+				record.commit();
 				me.msg('Sweet!', 'Record Added');
 				me.snippets.editingPlugin.enabled = true;
-				me.snippets.editingPlugin.startEdit(rec,0);
+				me.snippets.editingPlugin.startEdit(record, 0);
                 // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                app.AuditLog('SOAP added');
+                // app.AuditLog('SOAP added');
 			}
 		});
 	}

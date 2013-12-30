@@ -645,6 +645,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'Navigation',
 	                'Support',
 	                'ScriptCam',
+	                'patient.Results',
                     'patient.encounter.SOAP'
                 ],
                 launch: function() {

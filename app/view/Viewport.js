@@ -1058,6 +1058,7 @@ Ext.define('App.view.Viewport', {
         if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
         me.DocumentViewerWindow.add(
 	        me.documentViewWindow = Ext.create('App.ux.ManagedIframe', {
+		        autoMask:false,
                 src: 'dataProvider/DocumentViewer.php?doc='+docId
             })
         );

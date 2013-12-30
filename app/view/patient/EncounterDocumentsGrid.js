@@ -51,9 +51,8 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
 	},
 
 	onDocumentView:function(grid, rowIndex){
-		var rec = grid.getStore().getAt(rowIndex),
-			src = rec.data.url;
-		app.onDocumentView(src);
+		var rec = grid.getStore().getAt(rowIndex);
+		app.onDocumentView(rec.data.id);
 	},
 
 	loadDocs:function(eid){

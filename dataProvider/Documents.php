@@ -26,8 +26,8 @@ include_once (dirname(__FILE__) . '/Medical.php');
 include_once (dirname(__FILE__) . '/Services.php');
 include_once (dirname(__FILE__) . '/Facilities.php');
 include_once (dirname(__FILE__) . '/DocumentPDF.php');
-include_once (dirname(__FILE__) . '/../lib/tcpdf/config/lang/eng.php');
 include_once (dirname(__FILE__) . '/i18nRouter.php');
+include_once (dirname(dirname(__FILE__)) . '/lib/tcpdf/config/lang/eng.php');
 
 class Documents
 {
@@ -275,18 +275,21 @@ class Documents
         }
 
         $cpt = array();
-        $icd = array();
+        $dx = array();
         $hcpc = array();
         $cvx = array();
+
+	    //print_r($encounterCodes);
+
 
         foreach ($encounterCodes['rows'] as $code) {
             if ($code['code_type'] == 'CPT') {
                 $cpt[] = $code;
-            } elseif ($code['code_type'] == "ICD") {
-                $icd[] = $code;
-            } elseif ($code['code_type'] == "HCPC") {
+            } elseif ($code['code_type'] == 'ICD' || $code['code_type'] == 'ICD9' || $code['code_type'] == 'ICD10') {
+	            $dx[] = $code;
+            } elseif ($code['code_type'] == 'HCPC') {
                 $hcpc[] = $code;
-            } elseif ($code['code_type'] == "CVX") {
+            } elseif ($code['code_type'] == 'CVX') {
 	            $cvx[] = $code;
             }
         }
@@ -328,7 +331,7 @@ class Documents
             '[ENCOUNTER_ASSESSMENT]' => $soap['assessment'],
             '[ENCOUNTER_PLAN]' => $soap['plan'],
             '[ENCOUNTER_CPT_CODES]' => $this->tokensForEncountersList($cpt, 1),
-            '[ENCOUNTER_ICD_CODES]' => $this->tokensForEncountersList($icd, 2),
+            '[ENCOUNTER_ICD_CODES]' => $this->tokensForEncountersList($dx, 2),
             '[ENCOUNTER_HCPC_CODES]' => $this->tokensForEncountersList($hcpc, 3),
             '[ENCOUNTER_ALLERGIES_LIST]' => $this->tokensForEncountersList($allergies, 4),
             '[ENCOUNTER_MEDICATIONS_LIST]' => $this->tokensForEncountersList($medications, 5),
@@ -637,14 +640,20 @@ class Documents
     }
 
     public function arrayToTable($rows){
+	    // open table tag
         $table = '<table width="100%" border="0" cellspacing="0" cellpadding="2">';
-        $th = array_shift($rows);
-        $table .= '<tr>';
-            foreach($th AS $cell){
-                $table .= '<th style="background-color:#5CB8E6;border-bottom:1px solid #000000;">'.$cell.'</th>';
-            }
+
+	    // get header row
+	    $th = array_shift($rows);
+
+	    // table header
+	    $table .= '<tr>';
+        foreach($th AS $cell){
+            $table .= '<th style="background-color:#5CB8E6;border-bottom:1px solid #000000;">'.$cell.'</th>';
+        }
         $table .= '</tr>';
 
+	    // table rows
         foreach($rows AS $index => $row){
             $table .= '<tr>';
                 foreach($row AS $cell){
@@ -653,6 +662,8 @@ class Documents
                 }
             $table .= '</tr>';
         }
+
+	    // close table tag
         $table .= '</table>';
         return $table;
     }

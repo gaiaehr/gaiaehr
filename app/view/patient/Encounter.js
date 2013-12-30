@@ -355,7 +355,7 @@ Ext.define('App.view.patient.Encounter', {
         });
         me.rightPanel = Ext.create('Ext.tab.Panel', {
             title:i18n('encounter_progress_note'),
-            width:400,
+            width:450,
 	        region:'east',
 	        split:true,
             collapsible:true,

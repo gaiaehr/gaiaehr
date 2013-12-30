@@ -30,11 +30,14 @@ Ext.define('App.view.patient.windows.Medical', {
 		margin: 5
 	},
 	requires: [
-		'App.view.patient.LaboratoryResults',
+		'App.view.patient.Results',
 		'App.store.administration.HL7Recipients',
-        'App.ux.grid.RowFormEditing'
+        'App.ux.grid.RowFormEditing',
 	],
+
 	pid: null,
+	eid: null,
+
 	initComponent: function(){
 		var me = this;
 
@@ -92,12 +95,9 @@ Ext.define('App.view.patient.windows.Medical', {
 			autoSync: false
 		});
 
-		me.labPanelsStore = Ext.create('App.store.patient.LaboratoryTypes', {
-			autoSync: true
-		});
+
 
 		me.MedicationListStore = Ext.create('App.store.administration.Medications');
-
 		//endregion
 
 		me.immuSm = Ext.create('Ext.selection.CheckboxModel',{
@@ -1154,186 +1154,9 @@ Ext.define('App.view.patient.windows.Medical', {
 			//region Lab Results panel
 			{
 
-				xtype: 'container',
-				action: 'patientLabs',
-				layout: 'border',
-				items: [
-					{
-						xtype: 'panel',
-						region: 'west',
-						layout: 'border',
-						bodyBorder: false,
-						border: false,
-						width: 290,
-						split: true,
-						items: [
-							{
-								xtype: 'grid',
-								region: 'center',
-								split: true,
-								store: me.labPanelsStore,
-								columns: [
-									{
-										header: i18n('orders'),
-										dataIndex: 'label',
-										menuDisabled:true,
-										resizable:false,
-										flex: 1
-									},
-									{
-										header: i18n('status'),
-										dataIndex: 'status',
-										menuDisabled:true,
-										resizable:false,
-										width: 60
-									}
-								],
-								listeners: {
-									scope: me,
-									itemclick: me.onLabPanelSelected,
-									selectionchange: me.onLabPanelSelectionChange
-								}
-							},
-							{
-								xtype: 'form',
-								title: i18n('order_detail'),
-								region: 'south',
-								height: 300,
-								split: true,
-								bodyPadding: 5,
-								autoScroll: true,
-								bbar: ['->', {
-									text: i18n('reset'),
-									scope: me,
-									handler: me.onLabResultsReset
-								}, '-', {
-									text: i18n('sign'),
-									scope: me,
-									handler: me.onLabResultsSign
-								}, '-', {
-									text: i18n('save'),
-									scope: me,
-									handler: me.onLabResultsSave
-								}]
-							}
-
-						]
-					},
-					{
-						xtype: 'container',
-						region: 'center',
-						layout: 'border',
-						split: true,
-						items: [
-							{
-								xtype: 'grid',
-								action: 'labPreviewPanel',
-								title: i18n('order_observations'),
-								region: 'center',
-								columns:[
-									{
-										text:i18n('status'),
-										menuDisabled:true,
-										width:60
-									},
-									{
-										text:i18n('name'),
-										menuDisabled:true,
-										flex:1
-									},
-									{
-										text:i18n('value'),
-										menuDisabled:true,
-										width:60
-									},
-									{
-										text:i18n('units'),
-										menuDisabled:true,
-										width:60
-									},
-									{
-										text:i18n('range'),
-										menuDisabled:true,
-										width:60
-									},
-									{
-										text:i18n('abnormal'),
-										menuDisabled:true,
-										width:75
-									},
-									{
-										text:i18n('notes'),
-										menuDisabled:true,
-										flex:1
-									}
-
-								],
-//								items: [
-//									me.uploadWin = Ext.create('Ext.window.Window', {
-//										draggable: false,
-//										closable: false,
-//										closeAction: 'hide',
-//										items: [
-//											{
-//												xtype: 'form',
-//												bodyPadding: 10,
-//												width: 400,
-//												items: [
-//													{
-//														xtype: 'filefield',
-//														name: 'filePath',
-//														buttonText: i18n('select_a_file') + '...',
-//														anchor: '100%'
-//													}
-//												],
-//												api: {
-//													submit: DocumentHandler.uploadDocument
-//												}
-//											}
-//										],
-//										buttons: [
-//											{
-//												text: i18n('cancel'),
-//												handler: function(){
-//													me.uploadWin.close();
-//												}
-//											},
-//											{
-//												text: i18n('upload'),
-//												scope: me,
-//												handler: me.onLabUpload
-//											}
-//										]
-//									})
-//								],
-								listeners: {
-									scope: me,
-									render: me.onLaboratoryPreviewRender
-								}
-							},
-							{
-								xtype: 'panel',
-								title: i18n('observation_history'),
-								region: 'south',
-								height: 300,
-								split: true,
-								items: [
-									{
-										xtype: 'lalboratoryresultsdataview',
-										action: 'lalboratoryresultsdataview',
-										store: Ext.create('App.store.patient.PatientLabsResults'),
-										listeners: {
-											scope: me,
-											itemclick: me.onLabResultClick
-										}
-									}
-								]
-							}
-						]
-					}
-				]
+				xtype:'patientresultspanel',
+				action: 'patientLabs'
 			}
-
 			//endregion
 		];
 		/**
@@ -1465,195 +1288,8 @@ Ext.define('App.view.patient.windows.Medical', {
 		grid.getStore().load();
 	},
 
-	//region Laboratory Stuff
-	onLabPanelSelected: function(grid, model){
-		var me = this, formPanel = me.query('[action="patientLabs"]')[0].down('form'), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, fields = model.data.fields;
-		me.currLabPanelId = model.data.id;
-		me.removeLabDocument();
-		formPanel.removeAll();
-		formPanel.add({
-			xtype: 'textfield',
-			name: 'id',
-			hidden: true
-		});
-		for(var i = 0; i < fields.length; i++){
-			formPanel.add({
-				xtype: 'fieldcontainer',
-				layout: 'hbox',
-				margin: 0,
-				anchor: '100%',
-				fieldLabel: fields[i].code_text_short || fields[i].loinc_name,
-				labelWidth: 130,
-				items: [
-					{
-						xtype: 'textfield',
-						name: fields[i].loinc_number,
-						flex: 1,
-						allowBlank: fields[i].required_in_panel != 'R'
-					},
-					{
-						xtype: 'mitos.unitscombo',
-						value: fields[i].default_unit,
-						name: fields[i].loinc_number + '_unit',
-						width: 90
-					}
-				]
-			});
-		}
-		store.load({params: {parent_id: model.data.id}});
-	},
 
-	onLaboratoryPreviewRender: function(panel){
-		var me = this;
-		panel.dockedItems.items[0].add({
-			xtype: 'button',
-			text: i18n('upload'),
-			disabled: true,
-			action: 'uploadBtn',
-			scope: me,
-			handler: me.onLabUploadWind
-		});
-	},
 
-	onLabPanelSelectionChange: function(model, record){
-		this.query('[action="uploadBtn"]')[0].setDisabled(record.length == 0);
-	},
-
-	onLabUploadWind: function(){
-		var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
-		me.uploadWin.show();
-		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
-	},
-
-	onLabUpload: function(btn){
-		var me = this, formPanel = me.uploadWin.down('form'), form = formPanel.getForm(), win = btn.up('window');
-		if(form.isValid()){
-			formPanel.el.mask(i18n('uploading_laboratory') + '...');
-			form.submit({
-				//waitMsg: i18n('uploading_laboratory') + '...',
-				params: {
-					pid: app.patient.pid,
-					docType: 'laboratory',
-					eid: app.patient.eid
-				},
-				success: function(fp, o){
-					formPanel.el.unmask();
-					say(o.result);
-					win.close();
-					me.getLabDocument(o.result.doc.url);
-					me.addNewLabResults(o.result.doc.id);
-				},
-				failure: function(fp, o){
-					formPanel.el.unmask();
-					say(o.result);
-					win.close();
-				}
-			});
-		}
-	},
-
-	onLabResultClick: function(view, model){
-		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
-		if(me.currDocUrl != model.data.document_url){
-			form.reset();
-			model.data.data.id = model.data.id;
-			form.setValues(model.data.data);
-			me.getLabDocument(model.data.document_url);
-			me.currDocUrl = model.data.document_url;
-		}
-	},
-
-	onLabResultsSign: function(){
-		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
-		if(form.isValid()){
-			if(values.id){
-				me.passwordVerificationWin(function(btn, password){
-					if(btn == 'ok'){
-						User.verifyUserPass(password, function(provider, response){
-							if(response.result){
-								say(record);
-								Medical.signPatientLabsResultById(record.data.id, function(provider, response){
-									store.load({
-										params: {
-											parent_id: me.currLabPanelId
-										}
-									});
-								});
-							} else{
-								Ext.Msg.show({
-									title: 'Oops!',
-									msg: i18n('incorrect_password'),
-									//buttons:Ext.Msg.OKCANCEL,
-									buttons: Ext.Msg.OK,
-									icon: Ext.Msg.ERROR,
-									fn: function(btn){
-										if(btn == 'ok'){
-											//me.onLabResultsSign();
-										}
-									}
-								});
-							}
-						});
-					}
-				});
-			} else{
-				Ext.Msg.show({
-					title: 'Oops!',
-					msg: i18n('nothing_to_sign'),
-					//buttons:Ext.Msg.OKCANCEL,
-					buttons: Ext.Msg.OK,
-					icon: Ext.Msg.ERROR,
-					fn: function(btn){
-						if(btn == 'ok'){
-							//me.onLabResultsSign();
-						}
-					}
-				});
-			}
-		}
-	},
-
-	onLabResultsSave: function(btn){
-		var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
-		if(form.isValid()){
-			Medical.updatePatientLabsResult(values, function(){
-				store.load({params: {parent_id: record.data.parent_id}});
-				form.reset();
-			});
-		}
-	},
-
-	addNewLabResults: function(docId){
-		var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params = {
-			parent_id: me.currLabPanelId,
-			document_id: docId
-		};
-		Medical.addPatientLabsResult(params, function(provider, response){
-			store.load({
-				params: {
-					parent_id: me.currLabPanelId
-				}
-			});
-		});
-	},
-
-	onLabResultsReset: function(btn){
-		var form = btn.up('form').getForm();
-		form.reset();
-	},
-
-	getLabDocument: function(src){
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
-			src: src
-		}));
-	},
-
-	removeLabDocument: function(src){
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
-	},
 	//endregion
 
 	//*******************************************************
@@ -2023,12 +1659,14 @@ Ext.define('App.view.patient.windows.Medical', {
 //		me.eid = 1;
 
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n('read_mode') + ']</span>' :''));
-		me.setReadOnly(p.readOnly);
+
+		me.setReadOnly();
+
 		for(var i = 0; i < reviewBts.length; i++){
 			reviewBts[i].setVisible((me.eid != null));
 		}
 
-		me.labPanelsStore.load();
+		app.getController('patient.Results').setResultPanel();
 
 		me.patientImmuListStore.load({
 			params: {

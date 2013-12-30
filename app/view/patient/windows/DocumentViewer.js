@@ -29,6 +29,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 	defaults   : {
 		margin: 5
 	},
+
 	initComponent: function() {
 		var me = this;
 
@@ -39,10 +40,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 		me.callParent(arguments);
 	},
 
-
 	onViewerDocumentsWinShow  : function() {
-
-
 
 	}
 });

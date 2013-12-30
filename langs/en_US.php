@@ -1241,5 +1241,8 @@ $LANG = array(
     'code_term'                             => 'Code or Term',
     'enable_portal'                         => 'Enable Patient Portal',
     'portal_url'                            => 'Patient Portal URL',
-    'portal_port'                           => 'Patient Portal Port'
+    'portal_port'                           => 'Patient Portal Port',
+    'observations_results'                  => 'Observations Results',
+    'range'                                 => 'Range',
+	'abnormal'                              => 'Abnormal',
 );

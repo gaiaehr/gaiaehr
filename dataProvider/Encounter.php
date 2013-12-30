@@ -423,9 +423,15 @@ class Encounter
 		return $record;
 	}
 
+	/**
+	 * TODO: get all codes CPT/CVX/HCPCS/ICD9/ICD10 encounter
+	 * @param $params
+	 * @return array
+	 */
 	public function getEncounterCodes($params)
 	{
-		return $this->getEncounterServiceCodesByEid($params->eid);
+		if(isset($params->eid)) return $this->getEncounterServiceCodesByEid($params->eid);
+		return array();
 	}
 
 	public function getEncounterServiceCodesByEid($eid)

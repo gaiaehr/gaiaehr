@@ -51,6 +51,7 @@ class DocumentHandler
 		$params = (object) $params;
 		$path = $this->getPatientDir($params) . $this->nameFile();
 		$this->documents->PDFDocumentBuilder($params, $path);
+
 		if(file_exists($path)){
 
 			$data = new stdClass();
@@ -68,9 +69,14 @@ class DocumentHandler
 				$this->doctorsnotes->addDoctorsNotes($params);
 			}
 
+			//print_r($data);
+
 			return array(
 				'success' => true, 'doc' => array(
-					'id' => $data['data']['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path
+					'id' => $data['data']->id,
+					'name' => $this->fileName,
+					'url' => $this->getDocumentUrl(),
+					'path' => $path
 				)
 			);
 		} else {

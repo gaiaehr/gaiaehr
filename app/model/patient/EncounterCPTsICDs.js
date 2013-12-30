@@ -27,6 +27,7 @@ Ext.define('App.model.patient.EncounterCPTsICDs', {
 		{ name: 'pid', type:'int' },
 		{ name: 'eid', type:'int' },
 		{ name: 'code', type:'string' },
+		{ name: 'code_type', type:'string' },
 		{ name: 'code_text_medium', type:'string' },
 		{ name: 'dx_pointers', type:'string' },
 		{ name: 'dx_children'}

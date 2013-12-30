@@ -64,7 +64,11 @@ $mDebug = false;
 		if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode']){
 			include_once('checkin/checkin.php');
 		} else {
-			include_once('_app.php');
+			if(isset($_REQUEST['dual']) && $_REQUEST['dual']){
+				include_once('_dual.php');
+			}else{
+				include_once('_app.php');
+			}
 		}
 	} else { // Make the logon process or Setup process
 		/**

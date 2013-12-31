@@ -324,6 +324,10 @@ class MatchaCUP {
 		}
 	}
 
+	/**
+	 * @param $params
+	 * @return $this
+	 */
 	public function sort($params){
 		if(isset($params->sort)){
 			$sortArray = array();
@@ -340,6 +344,10 @@ class MatchaCUP {
 		return $this;
 	}
 
+	/**
+	 * @param $params
+	 * @return $this
+	 */
 	public function group($params){
 		if(isset($params->group)){
 			$property = $params->group[0]->property;

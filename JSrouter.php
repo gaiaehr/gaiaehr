@@ -1,6 +1,7 @@
 <?php
 /**
- * GaiaEHR
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +45,7 @@ $i18n = i18nRouter::getTranslation();
 print 'lang = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
-$global = Globals::getGlobals();
+$global = Globals::setGlobals();
 $global['root'] = dirname(__FILE__);
 $global['url']  = $_SESSION['url'];
 $global['site']  = $_SESSION['site']['dir'];
@@ -70,7 +71,7 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	$userData = $user->getCurrentUserBasicData();
 	$userData['token'] = $_SESSION['user']['token'];
 	$userData['facility'] = $_SESSION['user']['facility'];
-	Globals::setGlobals();
+//	Globals::setGlobals();
 	/*
 	 * Pass all the PHP to JavaScript
 	 */

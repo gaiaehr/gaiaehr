@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-class MatchaCUP
-{
+class MatchaCUP {
 	/**
 	 * @var array|object
 	 */
@@ -326,6 +324,31 @@ class MatchaCUP
 		}
 	}
 
+	public function sort($params){
+		if(isset($params->sort)){
+			$sortArray = array();
+			foreach($params->sort as $sort){
+				if(isset($sort->property) && (!is_array($this->phantomFields) || (is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)))){
+					$sortDirection = (isset($sort->direction) ? $sort->direction : '');
+					$sortArray[] = $sort->property . ' ' . $sortDirection;
+				}
+			}
+			if(!empty($sortArray)){
+				$this->sql = $this->sql . ' ORDER BY ' . implode(', ', $sortArray);
+			}
+		}
+		return $this;
+	}
+
+	public function group($params){
+		if(isset($params->group)){
+			$property = $params->group[0]->property;
+			$direction = isset($params->group[0]->direction) ? $params->group[0]->direction : '';
+			$this->sql = $this->sql . " GROUP BY `$property` $direction";
+		}
+		return $this;
+	}
+
 	/**
 	 * LIMIT method
 	 * @param null $start
@@ -382,7 +405,7 @@ class MatchaCUP
 			}
 
 			$this->builtRoot();
-			return (array) $this->record;
+			return (array)$this->record;
 
 		} catch(PDOException $e){
 			return MatchaErrorHandler::__errorProcess($e);
@@ -715,11 +738,7 @@ class MatchaCUP
 	 *
 	 */
 	private function builtRoot(){
-		if(
-			$this->isSenchaRequest &&
-			isset($this->model->proxy) &&
-			isset($this->model->proxy->reader) &&
-			isset($this->model->proxy->reader->root)
+		if($this->isSenchaRequest && isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)
 		){
 			$record = array();
 			$total = ($this->nolimitsql != '' ? Matcha::$__conn->query($this->nolimitsql)->rowCount() : false);
@@ -727,7 +746,7 @@ class MatchaCUP
 			if($total !== false){
 				if(isset($this->model->proxy->reader->totalProperty)){
 					$record[$this->model->proxy->reader->totalProperty] = $total;
-				}else{
+				} else{
 					$record['total'] = $total;
 				}
 			}

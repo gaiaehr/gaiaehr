@@ -34,7 +34,9 @@ Ext.define('App.view.administration.Lists', {
          * Store
          */
         me.listsStore = Ext.create('App.store.administration.Lists');
-        me.optionsStore = Ext.create('App.store.administration.ListOptions');
+        me.optionsStore = Ext.create('App.store.administration.ListOptions',{
+	        remoteFilter:true
+        });
 
         /**
          * RowEditor Classes
@@ -201,29 +203,39 @@ Ext.define('App.view.administration.Lists', {
         me.pageBody = [me.listsGrid, me.optionsGrid];
         me.callParent(arguments);
     },
+
     /**
      * This wll load a new record to the grid
      * and start the rowEditor
      */
     onNewList: function(){
         var me = this;
-
         me.listsRowEditing.cancelEdit();
         me.listsStore.insert(0, Ext.create('App.model.administration.Lists'));
         me.listsRowEditing.startEdit(0, 0);
-
     },
+
     /**
      *
      * @param grid
      * @param selected
      */
     onListsGridClick: function(grid, selected){
-        var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected.data.in_use == '1';
-        me.currList = selected.data.id;
-        me.optionsStore.load({params:{list_id: me.currList}});
+        var me = this,
+	        deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'),
+	        inUse = !!selected.data.in_use == '1';
+
+	    me.currList = selected.data.id;
+	    me.optionsStore.clearFilter(true);
+	    me.optionsStore.filter([
+		    {
+			    property:'list_id',
+			    value: me.currList
+		    }
+	    ]);
         inUse ? deleteBtn.disable() : deleteBtn.enable();
     },
+
     /**
      * This wll load a new record to the grid
      * and start the rowEditor
@@ -237,6 +249,7 @@ Ext.define('App.view.administration.Lists', {
         me.optionsStore.insert(0, m);
         me.optionsRowEditing.startEdit(0, 0);
     },
+
     /**
      * Set the Option Value same as Option Title
      * @param a
@@ -245,6 +258,7 @@ Ext.define('App.view.administration.Lists', {
         var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
         field.setValue(value);
     },
+
     /**
      * Logic to sort the options
      * @param node
@@ -261,11 +275,14 @@ Ext.define('App.view.administration.Lists', {
             fields: gridItmes
         };
         Lists.sortOptions(params, function(){
-            me.optionsStore.load({
-                    params: {
-                        list_id: me.currList
-                    }
-                });
+
+	        me.optionsStore.clearFilter(true);
+	        me.optionsStore.filter([
+		        {
+			        property:'list_id',
+			        value: me.currList
+		        }
+	        ]);
         });
     },
     /**
@@ -292,7 +309,7 @@ Ext.define('App.view.administration.Lists', {
                         store.sync({
                             success:function(){
                                 me.msg('Sweet!', i18n('record_deleted'));
-                                me.optionsStore.load();
+                                me.optionsStore.removeAll();
                             },
                             failure:function(){
                                 me.msg('Oops!', i18n('unable_to_delete') + ' "' + record.data.title, true);
@@ -315,7 +332,6 @@ Ext.define('App.view.administration.Lists', {
     onActive: function(callback){
         var me = this;
         me.listsStore.load();
-        me.optionsStore.load();
         callback(true);
     }
 });

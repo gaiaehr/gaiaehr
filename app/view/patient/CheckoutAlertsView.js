@@ -30,7 +30,16 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 	{
 		var me = this;
 
-		me.tpl = '  <table>' + '           <tpl for=".">' + '               <tr class="alert-div>' + '               <div class="alert-div">' + '                   <img class="alert-img" src="{icon}" />' + '                   <div class="alert-msg">{alert}</div>' + '               </div>' + '               </tr>' + '           </tpl>' + '       </table>';
+		me.tpl = '<table>' +
+			'<tpl for=".">' +
+			'<tr class="alert-div>' +
+			'<div class="alert-div">' +
+			'<img class="alert-img" src="{icon}" />' +
+			'<div class="alert-msg">{alert}</div>' +
+			'</div>' +
+			'</tr>' +
+			'</tpl>' +
+			'</table>';
 
 		me.callParent(arguments);
 	}

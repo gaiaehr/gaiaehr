@@ -33,7 +33,7 @@ class Lists extends MatchaHelper
 	public function getOptions(stdClass $params)
 	{
         if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-        return isset($params->list_id) ? $this->ComboListOptions->load(array('list_id'=>$params->list_id))->sort($params)->all() : array();
+        return $this->ComboListOptions->load($params)->all();
 	}
 
 	public function addOption(stdClass $params)

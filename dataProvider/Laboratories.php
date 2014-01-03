@@ -56,8 +56,38 @@ class Laboratories
                                OR l.loinc_num LIKE '$params->query%')
                               AND l.status = 'ACTIVE'
                          ORDER BY l.common_order_rank");
+
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
+
+
+
+	public function getAllLoincPanels(stdClass $params)	{
+		$sql = "SELECT DISTINCT lp.ID as id,
+	                            lp.loinc_name as code_text,
+	                            l.loinc_num as code,
+	                            l.class,
+	                            'LOINC' as code_type,
+	                            e.ALIAS as code_text_short,
+	                            e.HAS_CHILDREN as has_children,
+	                            e.ACTIVE as active
+	                       FROM loinc_panels AS lp
+	                  LEFT JOIN loinc AS l ON l.loinc_num = lp.loinc_num
+	                  LEFT JOIN loinc_extra AS e ON l.loinc_num = e.loinc_num
+	                      WHERE lp.PARENT_ID = lp.ID ";
+
+		if($params->query != ''){
+			$sql .= "AND (l.shortname LIKE '%$params->query%'
+                      OR e.ALIAS LIKE '$params->query%'
+                      OR l.loinc_num LIKE '$params->query%') ";
+		}
+
+		$sql .= "ORDER BY l.common_order_rank";
+		$this->db->setSQL($sql);
+
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+
+	}
 
 	public function indexLoincPanels(){
 		$this->db->setSQL("SELECT loinc_num FROM loinc");
@@ -77,8 +107,7 @@ class Laboratories
      * @param stdClass $params
      * @return array
      */
-    public function getLabObservations(stdClass $params)
-    {
+    public function getLabObservations(stdClass $params) {
         return $this->getLabObservationFieldsByParentId($params->selectedId);
     }
 
@@ -124,8 +153,7 @@ class Laboratories
         return $records;
     }
 
-    public function getLabObservationFieldsByParentId($loinc)
-    {
+    public function getLabObservationFieldsByParentId($panelId) {
 
 	    $this->db->setSQL("SELECT DISTINCT p.LOINC_NUM AS id,
                                   p.PARENT_LOINC AS parent_id,
@@ -144,8 +172,7 @@ class Laboratories
                         LEFT JOIN loinc AS l ON p.LOINC_NUM = l.LOINC_NUM
                         LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.LOINC_NUM
                             WHERE p.PARENT_LOINC != p.LOINC_NUM
-                              AND p.PARENT_LOINC = '$loinc'
-                              AND l.STATUS = 'ACTIVE'
+                              AND p.PARENT_ID = '$panelId'
                          ORDER BY SEQUENCE");
 
 	    $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
@@ -177,23 +204,23 @@ class Laboratories
 	        }
         }
 
-	    if(empty($records)){
-		    $this->db->setSQL("SELECT DISTINCT l.loinc_num AS id,
-	                                  l.long_common_name AS loinc_name,
-	                                  l.loinc_num AS loinc_number,
-	                                  'LOINC' AS code_type,
-	                                  l.unitsrequired AS units_required,
-                                      IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_units) AS default_unit,
-	                                  e.RANGE_START AS range_start,
-	                                  e.RANGE_END AS range_end,
-	                                  e.DESCRIPTION AS description,
-	                                  e.ACTIVE AS active
-	                             FROM loinc AS l
-	                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.loinc_num
-	                            WHERE l.loinc_num = '{$loinc}'
-	                              AND l.STATUS = 'ACTIVE'");
-		    $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-	    }
+//	    if(empty($records)){
+//		    $this->db->setSQL("SELECT DISTINCT l.loinc_num AS id,
+//	                                  l.long_common_name AS loinc_name,
+//	                                  l.loinc_num AS loinc_number,
+//	                                  'LOINC' AS code_type,
+//	                                  l.unitsrequired AS units_required,
+//                                      IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_units) AS default_unit,
+//	                                  e.RANGE_START AS range_start,
+//	                                  e.RANGE_END AS range_end,
+//	                                  e.DESCRIPTION AS description,
+//	                                  e.ACTIVE AS active
+//	                             FROM loinc AS l
+//	                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.loinc_num
+//	                            WHERE l.loinc_num = '{$loinc}'
+//	                              AND l.STATUS = 'ACTIVE'");
+//		    $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+//	    }
         return $records;
     }
 

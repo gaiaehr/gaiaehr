@@ -93,7 +93,7 @@ class DataManager
             );
         }
 
-        $records = $this->labs->getLoincPanels($params);
+        $records = $this->labs->getAllLoincPanels($params);
         $total = count($records);
         $records = array_slice($records, $params->start, $params->limit);
         return array(

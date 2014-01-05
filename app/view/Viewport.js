@@ -821,7 +821,7 @@ Ext.define('App.view.Viewport', {
                     };
 
 	                // fire global event
-	                me.fireEvent('patientset', me, me.patient);
+	                me.fireEvent('patientset', me.patient);
 
 	                var panels = me.MainPanel.items.items;
 	                for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(me.patient.rating);
@@ -860,7 +860,7 @@ Ext.define('App.view.Viewport', {
 		    callback(true);
 	    }else{
 			// fire global event
-		    me.fireEvent('patientunset', me);
+		    me.fireEvent('patientunset');
 
 		    var panels = me.MainPanel.items.items;
 		    for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(0);

@@ -43,6 +43,14 @@ Ext.define('App.view.patient.Summary', {
         me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications'));
         me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents'));
 
+
+	    app.on('patientset', function(patient){
+		    if(!me.hidden){
+			    me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + i18n('patient_summary') + ')', app.patient.readOnly, null);
+		    }
+
+	    }, me);
+
         me.pageBody = [
 	        me.tabPanel = Ext.widget('tabpanel',{
                 flex: 1,
@@ -203,6 +211,7 @@ Ext.define('App.view.patient.Summary', {
 	            ]
             }
         ];
+
         if(acl['access_demographics']){
             me.tabPanel.add(
 	            me.demographics = Ext.create('App.view.patient.Patient',{
@@ -211,7 +220,8 @@ Ext.define('App.view.patient.Summary', {
 	            })
             );
         }
-        if(acl['access_patient_disclosures']){
+
+	    if(acl['access_patient_disclosures']){
             me.stores.push(
 	            me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
                     autoSync: false
@@ -278,6 +288,7 @@ Ext.define('App.view.patient.Summary', {
                 ]
             });
         }
+
         if(acl['access_patient_notes']){
             me.stores.push(
 	            me.patientNotesStore = Ext.create('App.store.patient.Notes', {
@@ -334,6 +345,7 @@ Ext.define('App.view.patient.Summary', {
                 ]
             });
         }
+
         if(acl['access_patient_reminders']){
             me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders', {
                 autoSync: false
@@ -388,6 +400,7 @@ Ext.define('App.view.patient.Summary', {
                 ]
             })
         }
+
         if(acl['access_patient_vitals']){
             me.stores.push(me.vitalsStore = Ext.create('App.store.patient.Vitals'));
             me.tabPanel.add({
@@ -400,6 +413,7 @@ Ext.define('App.view.patient.Summary', {
                 }
             })
         }
+
         if(acl['access_patient_history']){
             me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
             me.tabPanel.add({
@@ -423,6 +437,7 @@ Ext.define('App.view.patient.Summary', {
                 ]
             })
         }
+
         if(acl['access_patient_documents']){
             me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
             me.tabPanel.add({
@@ -564,6 +579,7 @@ Ext.define('App.view.patient.Summary', {
                 ]
             })
         }
+
         if(acl['access_patient_preventive_care_alerts']){
             me.stores.push(
 	            me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts', {
@@ -680,6 +696,7 @@ Ext.define('App.view.patient.Summary', {
                 })
             })
         }
+
         if(acl['access_patient_billing']){
             me.tabPanel.add({
                 xtype: 'panel',
@@ -953,6 +970,7 @@ Ext.define('App.view.patient.Summary', {
     loadStores: function(){
         var me = this;
         for(var i = 0; i < me.stores.length; i++){
+	        me.stores[i].clearFilter(true);
 	        me.stores[i].load({
                 params: {
                     pid: me.pid

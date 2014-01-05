@@ -329,25 +329,35 @@ Ext.define('App.view.patient.Patient', {
 
 		if(form.isValid() && insRecs !== false){
 			record.set(values);
+
+			// fire global event
+			app.fireEvent('beforedemographicssave', record);
+
 			record.save({
 				scope: me,
 				callback: function(record){
+
 					app.setPatient(record.data.pid, null);
+
 					if(!me.newPatient){
 						me.getPatientImages(record);
 						me.verifyPatientRequiredInfo();
 						me.readOnlyFields(form.getFields());
 					}
+
 					var insStore = record.insurance();
 
 					for(var i=0; i < insRecs.length; i++){
 						if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
 					}
 
+					// fire global event
+					app.fireEvent('afterdemographicssave', record);
+
 					insStore.sync();
 					me.msg('Sweet!', i18n('record_saved'));
 					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-					app.AuditLog('Patient new record created');
+					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});
 		}

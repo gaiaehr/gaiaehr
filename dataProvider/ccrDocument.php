@@ -17,30 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($_SESSION))
-{
+if (!isset($_SESSION)){
     session_name('GaiaEHR');
     session_start();
     session_cache_limiter('private');
 }
 
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
-include_once ($_SESSION['root'] . '/classes/UUID.php');
-include_once ($_SESSION['root'] . '/classes/Array2XML.php');
+if(!isset($_REQUEST['token']) || $_REQUEST['token'] == $_SESSION['user']['token']) die('Not Authorized!');
+if(!isset($_REQUEST['pid'])) die('PID not send');
+if(!isset($_REQUEST['action'])) die('Action not send');
 
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
-include_once ($_SESSION['root'] . '/dataProvider/Rxnorm.php');
-include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
-include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
-include_once ($_SESSION['root'] . '/dataProvider/Medical.php');
-include_once ($_SESSION['root'] . '/dataProvider/PreventiveCare.php');
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/DiagnosisCodes.php');
-include_once ($_SESSION['root'] . '/dataProvider/Facilities.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/UUID.php');
+include_once (dirname(dirname(__FILE__)) . '/classes/Array2XML.php');
 
+include_once (dirname(__FILE__) . '/Patient.php');
+include_once (dirname(__FILE__) . '/User.php');
+include_once (dirname(__FILE__) . '/Rxnorm.php');
+include_once (dirname(__FILE__) . '/Encounter.php');
+include_once (dirname(__FILE__) . '/PoolArea.php');
+include_once (dirname(__FILE__) . '/Medical.php');
+include_once (dirname(__FILE__) . '/PreventiveCare.php');
+include_once (dirname(__FILE__) . '/Services.php');
+include_once (dirname(__FILE__) . '/DiagnosisCodes.php');
+include_once (dirname(__FILE__) . '/Facilities.php');
 
-$pid = '0';
+$pid = $_REQUEST['pid'];
 /**
  * Load all the data for the CCR XML data and loops
  */

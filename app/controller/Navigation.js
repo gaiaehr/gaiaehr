@@ -37,6 +37,10 @@ Ext.define('App.controller.Navigation', {
 		Ext.util.History.on('change', me.urlChange, me);
 
 		me.control({
+			'viewport':{
+				patientset: me.onPatientSet,
+				patientunset: me.onPatientUnset
+			},
 			'treepanel[action=mainNav]':{
 				selectionchange: me.onNavigationNodeSelected,
 				beforerender: me.onNavigationBeforeRender
@@ -203,6 +207,26 @@ Ext.define('App.controller.Navigation', {
 
 		me.getMainNavPanel().isCollapsed = false;
 		navView.show();
+	},
+
+	/**
+	 *
+	 * @param viewport
+	 * @param patient
+	 */
+	onPatientSet:function(viewport, patient){
+		say('onPatientSet');
+		say(patient);
+
+	},
+
+	/**
+	 *
+	 * @param viewport
+	 */
+	onPatientUnset:function(viewport){
+		say('onPatientUnset');
+
 	}
 
 });

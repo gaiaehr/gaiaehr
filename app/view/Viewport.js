@@ -786,7 +786,10 @@ Ext.define('App.view.Viewport', {
         var me = this;
         me.unsetPatient(function(){
             Patient.getPatientSetDataByPid(pid, function(provider, response){
-                var data = response.result, msg1, msg2;
+                var data = response.result,
+	                msg1,
+	                msg2;
+
                 if(data.readOnly){
                     msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
                     msg2 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>';
@@ -802,6 +805,7 @@ Ext.define('App.view.Viewport', {
                 }else{
                     continueSettingPatient(false);
                 }
+
                 function continueSettingPatient(readOnly){
                     me.patient = {
                         pid: data.patient.pid,
@@ -815,6 +819,10 @@ Ext.define('App.view.Viewport', {
                         readOnly: readOnly,
 	                    rating: data.patient.rating
                     };
+
+	                // fire global event
+	                me.fireEvent('patientset', me, me.patient);
+
 	                var panels = me.MainPanel.items.items;
 	                for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(me.patient.rating);
                     me.patientButtonSet(me.patient);
@@ -826,6 +834,7 @@ Ext.define('App.view.Viewport', {
                     if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
                     if(typeof callback == 'function') callback(me.patient);
                 }
+
             },true);
         });
     },
@@ -850,6 +859,9 @@ Ext.define('App.view.Viewport', {
 	    if(typeof callback == 'function'){
 		    callback(true);
 	    }else{
+			// fire global event
+		    me.fireEvent('patientunset', me);
+
 		    var panels = me.MainPanel.items.items;
 		    for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(0);
 		    if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.disable();

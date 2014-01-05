@@ -59,6 +59,7 @@ class Patient
         $this->db   = new MatchaHelper();
         $this->user = new User();
         $this->acl  = new ACL();
+
         $this->setPatient($pid);
         return;
     }

@@ -83,7 +83,7 @@ Ext.define('App.controller.Navigation', {
 	onNavigationNodeSelected: function(model, selected){
 		if(0 < selected.length){
 			if(selected[0].data.leaf){
-				window.location = './#!/' + selected[0].data.id;
+				this.navigateTo(selected[0].data.id);
 			}
 		}
 	},
@@ -113,24 +113,28 @@ Ext.define('App.controller.Navigation', {
 
 		sm.select(node);
 
+		// if the panel is 'undefined' added to MainPanel
 		if (typeof me[ref] == 'undefined') {
-			app.MainPanel.el.mask();
-//			Ext.Function.defer(function() {
-				me[ref] = me.getViewport().MainPanel.add(Ext.create(cls));
-				me[ref].onActive(function(success){
-					me.getViewport().MainPanel.el.unmask();
-					if(success)	layout.setActiveItem(me[ref]);
-				});
-//			}, 100);
+			me.getViewport().MainPanel.el.mask();
+			me[ref] = me.getViewport().MainPanel.add(Ext.create(cls));
 
+		// if the class is destroyed then render it
 		} else {
-//			say('activating panel');
 			if (me[ref].isDestroyed) me[ref].render();
-			me[ref].onActive(function(success){
-				me.getViewport().MainPanel.el.unmask();
-				if(success) layout.setActiveItem(me[ref]);
-			});
 		}
+
+		// fire global event
+		me.getViewport().fireEvent('beforenavigation', me[ref]);
+
+		// call panel onActive method
+		me[ref].onActive(function(success){
+			me.getViewport().MainPanel.el.unmask();
+			if(success)	layout.setActiveItem(me[ref]);
+		});
+
+		// fire global event
+		me.getViewport().fireEvent('afternavigation', me[ref]);
+
 	},
 
 	/**

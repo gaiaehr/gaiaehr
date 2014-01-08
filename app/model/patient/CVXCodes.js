@@ -21,7 +21,7 @@ Ext.define('App.model.patient.CVXCodes', {
 	extend: 'Ext.data.Model',
 	table: {
 		name:'cvx_codes',
-		comment:'Immunizations - CVX'
+		comment:'Immunizations  CVX'
 	},
 	fields: [
         {
@@ -31,7 +31,8 @@ Ext.define('App.model.patient.CVXCodes', {
         },
         {
 	        name: 'cvx_code',
-	        type: 'int'
+	        type: 'int',
+	        len: 10
         },
         {
 	        name: 'name',
@@ -39,16 +40,19 @@ Ext.define('App.model.patient.CVXCodes', {
         },
         {
 	        name: 'description',
-	        type: 'string'
+	        type: 'string',
+	        dataType: 'text'
         },
 
 		{
 			name: 'note',
-			type: 'string'
+			type: 'string',
+			dataType: 'text'
 		},
 		{
 			name: 'status',
-			type: 'string'
+			type: 'string',
+			len: 25
 		},
 		{
 			name: 'update_date',

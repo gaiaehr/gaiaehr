@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.QRCptCodes', {
     extend: 'Ext.data.Model',
-	table: {
-		name:'qrcptcodes',
-		comment:'QR CPT Codes'
-	},
     fields: [
         {name: 'id', type: 'int', comment: 'QR CPT Code ID'},
         {name: 'eid', type:'int'},

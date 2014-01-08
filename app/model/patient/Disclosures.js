@@ -19,26 +19,59 @@
 Ext.define('App.model.patient.Disclosures', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'disclosures',
-		comment:'Disclosures'
+		name: 'patient_disclosures',
+		comment: 'Disclosures'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Disclosures ID'},
-        {name: 'eid', type: 'int'},
-        {name: 'pid', type: 'int'},
-        {name: 'uid', type: 'int'},
-        {name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-        {name: 'type', type: 'string'},
-        {name: 'recipient', type: 'string'},
-        {name: 'description', type: 'string'},
-        {name: 'active', type: 'bool'}
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'type',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'recipient',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'description',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Patient.getPatientDisclosures,
-			create  : Patient.createPatientDisclosure,
-			update  : Patient.updatePatientDisclosure
+		api: {
+			read: Patient.getPatientDisclosures,
+			create: Patient.createPatientDisclosure,
+			update: Patient.updatePatientDisclosure
 		}
 	}
 });

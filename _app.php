@@ -56,14 +56,17 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <!-- slide down message div -->
         <div id="msg-div"></div>
 
-        <!-- JQuery library -->
-		<script src="lib/JQuery/jquery.min.js"></script>
 
-        <!-- ScriptCam library -->
-		<script src="lib/ScriptCam/scriptcam.js"></script>
 
         <!-- Ext library -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+
+
+		<!-- JQuery library -->
+		<script src="lib/JQuery/jquery.min.js"></script>
+
+		<!-- ScriptCam library -->
+		<script src="lib/ScriptCam/scriptcam.js"></script>
 
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php"></script>
@@ -188,6 +191,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.patient.EncounterCPTsICDs',
                 'App.model.patient.Encounters',
                 'App.model.patient.EventHistory',
+                'App.model.patient.HCFAOptions',
                 'App.model.patient.CVXCodes',
                 'App.model.patient.ImmunizationCheck',
                 'App.model.patient.LaboratoryTypes',
@@ -211,6 +215,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.patient.QRCptCodes',
                 'App.model.patient.DismissedAlerts',
                 'App.model.patient.Reminders',
+                'App.model.patient.ReviewOfSystems',
                 'App.model.patient.SOAP',
                 'App.model.patient.Surgery',
                 'App.model.patient.VectorGraph',

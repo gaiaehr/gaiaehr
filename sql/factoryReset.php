@@ -86,6 +86,7 @@ $tables = array(
 	'sct_descriptions',
 	'sct_relationships',
 	'standardized_tables_track',
+	'audit_log',
 	'log'
 );
 

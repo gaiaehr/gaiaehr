@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.EventHistory', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'eventhistory',
-		comment:'Event History'
-	},
 	fields: [
         {name: 'id', type: 'int', comment: 'Event History ID'},
 		{name: 'eid', type: 'int'},

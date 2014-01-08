@@ -221,7 +221,6 @@ Ext.define('App.controller.Navigation', {
 	onPatientSet:function(viewport, patient){
 		say('onPatientSet');
 		say(patient);
-
 	},
 
 	/**

@@ -98,6 +98,7 @@ class Navigation
 			'text' => $this->i18n['patient'],
 			'cls' => 'folder',
 			'expanded' => true,
+			'iconCls' => 'icoLogo',
 			'id' => 'patient'
 		);
 		if($this->ACL->hasPermission('add_patient')){
@@ -149,6 +150,7 @@ class Navigation
 			'cls' => 'folder',
 			'expanded' => true,
 			'id' => 'billing',
+			'iconCls' => 'icoLogo',
 			'children' => array(
 				array(
 					'text' => $this->i18n['payment'],
@@ -170,6 +172,7 @@ class Navigation
 			'text' => $this->i18n['administration'],
 			'cls' => 'folder',
 			'expanded' => true,
+			'iconCls' => 'icoLogo',
 			'id' => 'administration'
 		);
 		if($this->ACL->hasPermission('access_gloabal_settings')){
@@ -323,6 +326,7 @@ class Navigation
 			'cls' => 'folder',
 			'expanded' => false,
 			'id' => 'miscellaneous',
+			'iconCls' => 'icoLogo',
 			'children' => array(
 				array(
 					'text' => $this->i18n['web_search'],

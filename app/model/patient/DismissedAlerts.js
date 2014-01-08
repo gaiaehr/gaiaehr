@@ -18,10 +18,7 @@
 
 Ext.define('App.model.patient.DismissedAlerts', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'dismissedalerts',
-		comment:'Dismissed Alerts'
-	},
+
 	fields: [
         {name: 'id', type: 'int', comment: 'Dismissed Alerts ID'},
 		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},

@@ -30,11 +30,13 @@ Ext.define('App.model.patient.Allergies', {
 		},
 		{
 			name: 'eid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'pid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'allergy_type',

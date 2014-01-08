@@ -330,7 +330,7 @@ Ext.define('App.view.administration.Practice', {
 //									]
 //								},
 								{
-									xtype:'mitos.checkbox',
+									xtype:'checkbox',
 									fieldLabel:i18n('active'),
 							        labelWidth:60,
 									margin: '0 0 0 10',
@@ -580,7 +580,7 @@ Ext.define('App.view.administration.Practice', {
 									]
 								},
 								{
-									xtype:'mitos.checkbox',
+									xtype:'checkbox',
 									fieldLabel:i18n('active'),
 									labelWidth:60,
 									name:'active'

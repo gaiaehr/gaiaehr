@@ -276,7 +276,7 @@ class CombosData
 			), 4  => array(
 				'id' => 5, 'name' => 'TextArea Field', 'value' => 'textareafield'
 			), 5  => array(
-				'id' => 6, 'name' => 'CheckBox Field', 'value' => 'mitos.checkbox'
+				'id' => 6, 'name' => 'CheckBox Field', 'value' => 'checkbox'
 			), 6  => array(
 				'id' => 7, 'name' => 'Slelect List / Combo Box', 'value' => 'combobox'
 			), 7  => array(

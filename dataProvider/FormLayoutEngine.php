@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//
 //if(!isset($_SESSION)){
 //	session_name('GaiaEHR');
 //	session_start();
@@ -26,8 +25,7 @@
 //include_once ('../classes/MatchaHelper.php');
 include_once(dirname(__FILE__) . '/CombosData.php');
 
-class FormLayoutEngine
-{
+class FormLayoutEngine {
 	/**
 	 * @var MatchaHelper
 	 */
@@ -52,13 +50,13 @@ class FormLayoutEngine
 	/**
 	 * Creates the MatchaHelper instance
 	 */
-	function __construct()
-	{
+	function __construct(){
 		$this->setModels();
 		$this->db = new MatchaHelper();
 		$this->cb = new CombosData();
 		return;
 	}
+
 	private function setModels(){
 		$this->setComboListModel();
 		$this->setComboListOptionsModel();
@@ -66,13 +64,18 @@ class FormLayoutEngine
 	}
 
 	private function setFieldOptionModel(){
-		if($this->o == null) $this->o = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
+		if($this->o == null)
+			$this->o = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
 	}
+
 	private function setComboListModel(){
-		if($this->cl == null) $this->cl = MatchaModel::setSenchaModel('App.model.administration.Lists');
+		if($this->cl == null)
+			$this->cl = MatchaModel::setSenchaModel('App.model.administration.Lists');
 	}
+
 	private function setComboListOptionsModel(){
-		if($this->clo == null) $this->clo = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		if($this->clo == null)
+			$this->clo = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 	}
 
 	/**
@@ -92,8 +95,7 @@ class FormLayoutEngine
 	 * @internal    $params->formToRender Holds the Title or ID of the form to render
 	 * @return      string String of javascript array
 	 */
-	function getFields(stdClass $params)
-	{
+	function getFields(stdClass $params){
 		$this->setModels();
 		/**
 		 * define $items as an array to push all the $item into.
@@ -112,7 +114,7 @@ class FormLayoutEngine
 		/**
 		 * for each parent item lets get all the options and children items
 		 */
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item) {
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
 			/**
 			 * get parent field options using the parent item "id" as parameter and
 			 * store the return array in $opts.
@@ -121,58 +123,53 @@ class FormLayoutEngine
 			/**
 			 * now take each option and add it to this $item array
 			 */
-			foreach($opts as $opt => $val) {
-				if($opt != 'pos') {
+			foreach($opts as $opt => $val){
+				if($opt != 'pos'){
 					$item[$opt] = $val;
 				};
 			}
-			if($item['xtype'] == 'combobox') {
+			if($item['xtype'] == 'combobox'){
 				$item = $this->getComboDefaults($item);
 				$item['store'] = $this->getStore($item['list_id']);
 			}
 
-			if($item['xtype'] == 'datefield') {
+			if($item['xtype'] == 'datefield'){
 				$item['format'] = 'Y-m-d';
 			}
-
 
 			/**
 			 * now lets get the the child items using the parent item ID parameter
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
-			if($item['xtype'] == 'fieldset' && $item['title'] == 'Assessment') {
-				$item['items'][] = array(
-					'xtype'    => 'icdsfieldset',
-					'emptyText'=> 'Search For Diagnosis Codes',
-					'name'     => 'icdxCodes'
-				);
+			if($item['xtype'] == 'fieldset' && $item['title'] == 'Assessment'){
+				$item['items'][] = array('xtype' => 'icdsfieldset', 'emptyText' => 'Search For Diagnosis Codes', 'name' => 'icdxCodes');
 			}
 			/**
 			 * lets check if this item has a child items. If not, the unset the $item['Items']
 			 * this way we make sure the we done return a items property
 			 */
-			if($item['items'] == null) unset($item['items']);
-
+			if($item['items'] == null)
+				unset($item['items']);
 
 			/**
 			 * unset the stuff that are not properties
 			 */
-			unset($item['id'], $item['form_id'], $item['parentId'], $item['pos']);
+			unset($item['id'], $item['form_id'], $item['parentId'], $item['index']);
 
 			/**
 			 * push this item into the $items Array
 			 */
-			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1)) {
+			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1)){
 				$item['xtype'] = 'panel';
 				$item['border'] = false;
 				$item['bodyBorder'] = false;
 				$item['bodyPadding'] = 10;
-//				if($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' || $item['title'] == 'Tertiary Insurance' ){
-//					array_push($items2, $item);
-//				}else{
-					array_push($items, $item);
-//				}
-			}else{
+				//				if($item['title'] == 'Primary Insurance' || $item['title'] == 'Secondary Insurance' || $item['title'] == 'Tertiary Insurance' ){
+				//					array_push($items2, $item);
+				//				}else{
+				array_push($items, $item);
+				//				}
+			} else{
 				array_push($items, $item);
 			}
 
@@ -224,16 +221,13 @@ class FormLayoutEngine
 		$rawStr = json_encode($items);
 
 		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
-//			$rawStr2 = json_encode($items2);
-			$rawStr  = "Ext.widget('tabpanel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr})";
-//            $rawStr .= "Ext.widget('tabpanel',{border:false,flex:1,defaults:{autoScroll:true},action:'insurances',items:$rawStr2})]";
-        }
+			$rawStr = "Ext.widget('tabpanel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr})";
+		}
 
-
-		$regex      = '("\w*?":|"Ext\.create|\)"\})';
+		$regex = '("\w*?":|"Ext\.create|\)"\})';
 		$cleanItems = array();
 		preg_match_all($regex, $rawStr, $rawItems);
-		foreach($rawItems[0] as $item) {
+		foreach($rawItems[0] as $item){
 			array_push($cleanItems, str_replace('"', '', $item));
 		}
 		$itemsJsArray = str_replace('"', '\'', str_replace($rawItems[0], $cleanItems, $rawStr));
@@ -249,27 +243,26 @@ class FormLayoutEngine
 	 * using basically the same logic of getFields() function and returning
 	 * an array of child items
 	 */
-	function getChildItems($parentId)
-	{
+	function getChildItems($parentId){
 		$this->setModels();
 		$items = array();
 		$this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `index` ASC, `id` ASC");
 
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item) {
+		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
 			$opts = $this->getItemsOptions($item['id']);
 
-			foreach($opts as $opt => $val) {
+			foreach($opts as $opt => $val){
 				$item[$opt] = $val;
 			}
 
 			/**
 			 * If the item is a combo box lets create a store...
 			 */
-			if($item['xtype'] == 'combobox') {
+			if($item['xtype'] == 'combobox'){
 				$item = $this->getComboDefaults($item);
 				$item['store'] = $this->getStore($item['list_id']);
 			}
-			if($item['xtype'] == 'datefield') {
+			if($item['xtype'] == 'datefield'){
 				$item['format'] = 'Y-m-d';
 			}
 			/**
@@ -277,11 +270,11 @@ class FormLayoutEngine
 			 * calling it self
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
-			if($item['items'] == null) unset($item['items']);
-			unset($item['id'], $item['form_id'], $item['parentId']);
+			if($item['items'] == null)
+				unset($item['items']);
+			unset($item['id'], $item['form_id'], $item['parentId'], $item['index']);
 			array_push($items, $item);
 		}
-
 
 		return $items;
 	}
@@ -290,25 +283,15 @@ class FormLayoutEngine
 		 * @param $item_id
 		 * @return array
 		 */
-	function getItemsOptions($item_id)
-	{
+	function getItemsOptions($item_id){
 		$this->setModels();
 		$foo = array();
-		$options = $this->o->load(array('field_id'=>$item_id))->one();
+		$options = $this->o->load(array('field_id' => $item_id))->one();
 		$options = json_decode($options['options'], true);
-		foreach($options as $option => $value) {
+		foreach($options as $option => $value){
 			$foo[$option] = $value;
 
-			if($value == 'temp_f' ||
-				$value == 'temp_c' ||
-				$value == 'weight_lbs' ||
-				$value == 'weight_kg' ||
-				$value == 'height_cm' ||
-				$value == 'height_in' ||
-				$value == 'head_circumference_cm' ||
-				$value == 'head_circumference_in' ||
-				$value == 'waist_circumference_cm' ||
-				$value == 'waist_circumference_in'
+			if($value == 'temp_f' || $value == 'temp_c' || $value == 'weight_lbs' || $value == 'weight_kg' || $value == 'height_cm' || $value == 'height_in' || $value == 'head_circumference_cm' || $value == 'head_circumference_in' || $value == 'waist_circumference_cm' || $value == 'waist_circumference_in'
 			){
 				$foo['enableKeyEvents'] = true;
 			}
@@ -322,14 +305,13 @@ class FormLayoutEngine
 	 * @param $list_id
 	 * @return string
 	 */
-	function getStore($list_id)
-	{
+	function getStore($list_id){
 		$params = new stdClass();
 		$params->list_id = $list_id;
 		$options = $this->cb->getOptionsByListId($params);
 		$buff = "Ext.create('Ext.data.Store',{fields:['option_name','option_value'],data:[";
-		foreach($options as $option) {
-			$option_name  = $option['option_name'];
+		foreach($options as $option){
+			$option_name = $option['option_name'];
 			$option_value = $option['option_value'];
 			$buff .= "{option_name:'$option_name',option_value:'$option_value'},";
 		}
@@ -342,18 +324,18 @@ class FormLayoutEngine
 	 * @param $item
 	 * @return array
 	 */
-	function getComboDefaults($item)
-	{
+	function getComboDefaults($item){
 		$item['displayField'] = 'option_name';
-		$item['valueField']   = 'option_value';
-		$item['queryMode']    = 'local';
-		$item['editable']     = false;
-		if(!isset($item['emptyText'])) {
+		$item['valueField'] = 'option_value';
+		$item['queryMode'] = 'local';
+		$item['editable'] = false;
+		if(!isset($item['emptyText'])){
 			$item['emptyText'] = 'Select';
 		}
 		return $item;
 	}
 }
+
 //echo '<pre>';
 //$params = new stdClass;
 //$params->formToRender = '8';

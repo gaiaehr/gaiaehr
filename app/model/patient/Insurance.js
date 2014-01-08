@@ -58,113 +58,135 @@ Ext.define('App.model.patient.Insurance', {
 		{
 			name: 'provider',
 			type: 'string',
-			comment: 'provider'
+			comment: 'provider',
+			len: 80
 		},
 		{
 			name: 'planName',
 			type: 'string',
-			comment: 'plan name'
+			comment: 'plan name',
+			len: 40
 		},
 		{
 			name: 'effectiveDate',
-			type: 'string',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
 			comment: 'affective date'
 		},
 		{
 			name: 'policyNumber',
 			type: 'string',
-			comment: 'policy number'
+			comment: 'policy number',
+			len: 40
 		},
 		{
 			name: 'groupNumber',
 			type: 'string',
-			comment: 'group number'
+			comment: 'group number',
+			len: 40
 		},
 		{
 			name: 'subscriberTitle',
 			type: 'string',
-			comment: 'subscriber title'
+			comment: 'subscriber title',
+			len: 10
 		},
 		{
 			name: 'subscriberGivenName',
 			type: 'string',
-			comment: 'subscriber first name'
+			comment: 'subscriber first name',
+			len: 80
 		},
 		{
 			name: 'subscriberMiddleName',
 			type: 'string',
-			comment: 'subscriber middle name'
+			comment: 'subscriber middle name',
+			len: 80
 		},
 		{
 			name: 'subscriberSurname',
 			type: 'string',
-			comment: 'subscriber last name'
+			comment: 'subscriber last name',
+			len: 80
 		},
 		{
 			name: 'subscriberRelationship',
 			type: 'string',
-			comment: 'subscriber relationship'
+			comment: 'subscriber relationship',
+			len: 40
 		},
 		{
 			name: 'subscriberStreet',
 			type: 'string',
-			comment: 'subscriber address'
+			comment: 'subscriber address',
+			len: 80
 		},
 		{
 			name: 'subscriberCity',
 			type: 'string',
-			comment: 'subscriber city'
+			comment: 'subscriber city',
+			len: 80
 
 		},
 		{
 			name: 'subscriberState',
 			type: 'string',
-			comment: 'subscriber state'
+			comment: 'subscriber state',
+			len: 80
 		},
 		{
 			name: 'subscriberCountry',
 			type: 'string',
-			comment: 'subscriber country'
+			comment: 'subscriber country',
+			len: 80
 		},
 		{
 			name: 'subscriberPostalCode',
 			type: 'string',
-			comment: 'subscriber postal code'
+			comment: 'subscriber postal code',
+			len: 20
 		},
 		{
 			name: 'subscriberPhone',
 			type: 'string',
-			comment: 'subscriber phone'
+			comment: 'subscriber phone',
+			len: 20
 		},
 		{
 			name: 'subscriberEmployer',
 			type: 'string',
-			comment: 'subscriber employer'
+			comment: 'subscriber employer',
+			len: 80
 		},
 		{
 			name: 'subscriberEmployerStreet',
 			type: 'string',
-			comment: 'subscriber employer address'
+			comment: 'subscriber employer address',
+			len: 80
 		},
 		{
 			name: 'subscriberEmployerCity',
 			type: 'string',
-			comment: 'subscriber employer city'
+			comment: 'subscriber employer city',
+			len: 80
 		},
 		{
 			name: 'subscriberEmployerState',
 			type: 'string',
-			comment: 'subscriber employer state'
+			comment: 'subscriber employer state',
+			len: 80
 		},
 		{
 			name: 'subscriberEmployerCountry',
 			type: 'string',
-			comment: 'subscriber employer country'
+			comment: 'subscriber employer country',
+			len: 80
 		},
 		{
 			name: 'subscriberEmployerPostalCode',
 			type: 'string',
-			comment: 'subscriber employer postal code'
+			comment: 'subscriber employer postal code',
+			len: 20
 		},
 		{
 			name: 'subscriberDob',
@@ -174,17 +196,20 @@ Ext.define('App.model.patient.Insurance', {
 		{
 			name: 'subscriberSS',
 			type: 'string',
-			comment: 'subscriber social security'
+			comment: 'subscriber social security',
+			len: 80
 		},
 		{
 			name: 'copay',
 			type: 'string',
-			comment: 'default copay'
+			comment: 'default copay',
+			len: 10
 		},
 		{
 			name: 'type',
 			type: 'string',
-			comment: 'main supplemental'
+			comment: 'main or supplemental',
+			len: 40
 		},
 		{
 			name: 'image',

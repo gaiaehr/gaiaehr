@@ -36,12 +36,17 @@ class MatchaModel extends Matcha
      *
      * This method needs rework, this method has to be the brain!
      *
+     * @param string $fileModel 'App.model.Example'
+     * @param bool $force for to read the sencha model file (skip the MatchaMemory)
+     * @return bool success
+     *
      */
-    static public function __SenchaModel($fileModel)
+
+	static public function __SenchaModel($fileModel, $force = false)
     {
-        // skip this entire routine if freeze option is true
         try
         {
+	        // skip this entire routine if freeze option is true
 			if(self::$__freeze)
             {
 				self::$__senchaModel = self::__getSenchaModel($fileModel);
@@ -51,7 +56,7 @@ class MatchaModel extends Matcha
 	        self::$__senchaModel = array();
             // check the difference in dates of the Sencha model file and the stored Sencha model on the server memory,
             // if there are equal go ahead and load the model from memory and quit the procedure
-            if(self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel))
+            if(!$force && self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel))
             {
                 self::$__senchaModel = MatchaMemory::__getModelFromMemory($fileModel);
                 return true;
@@ -199,7 +204,6 @@ class MatchaModel extends Matcha
 //                            error_log(var_dump($toIndex));
 //                            error_log(var_dump($indexChange));
 
-
                             // Modify the column on the database
                             if($change == 'true') self::__modifyColumn($field, $table, $toIndex);
                         }
@@ -216,14 +220,19 @@ class MatchaModel extends Matcha
         }
     }
 
-    /**
-     * __getSenchaModel($fileModel):
-     * This method is used by SechaModel method to get all the table and column
-     * information inside the Sencha Model .js file
-     * It also tries to load the model from memory if does not exist parse the
-     * model file and store it.
-     */
-    static public function __getSenchaModel($fileModel)
+	/**
+	 * __getSenchaModel($fileModel):
+	 *
+	 * This method is used by SenchaModel method to get all the table and column
+	 * information inside the Sencha Model .js file
+	 * It also tries to load the model from memory if does not exist parse the
+	 * model file and store it.
+	 *
+	 * @param string $fileModel 'App.model.Example'
+	 * @return array|bool model array or failure
+	 *
+	 */
+	static public function __getSenchaModel($fileModel)
     {
         try
         {
@@ -301,7 +310,7 @@ class MatchaModel extends Matcha
     }
 
     /**
-     * function __getFileContent($file, $type = 'js'):
+     * function __getFileContent($file, $ext = 'js'):
      * Load a Sencha Model from .js file
      */
     static protected function __getFileContent($file, $ext = 'js')
@@ -310,7 +319,7 @@ class MatchaModel extends Matcha
         {
             $file = (string)preg_replace('/^(\w*)./', '', $file);
             $file = str_replace('.', '/', $file);
-            if(!@file_exists(self::$__app.'/'.$file.'.'.$ext)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
+            if(!@file_exists(self::$__app.'/'.$file.'.'.$ext)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$ext.'" not found.');
             return (string)@file_get_contents(self::$__app.'/'.$file.'.'.$ext);
         }
         catch(Exception $e)
@@ -320,22 +329,21 @@ class MatchaModel extends Matcha
         }
     }
 
-    /**
-     * function __getFileModifyDate($file, $type = 'js'):
-     * Method to get the last modified from a Sencha Model file.
-     * @param $file
-     * @param string $type
-     * @return bool|int
-     * @throws Exception
-     */
-    static function __getFileModifyDate($file, $type = 'js')
+	/**
+	 * function __getFileModifyDate($file, $ext = 'js'):
+	 * Method to get the last modified from a Sencha Model file.
+	 * @param $file
+	 * @param string $ext
+	 * @return bool|int
+	 */
+    static function __getFileModifyDate($file, $ext = 'js')
     {
         try
         {
             $file = (string)preg_replace('/^\w*\./', '', $file);
             $file = str_replace('.', '/', $file);
-            if(!@file_exists(self::$__app.'/'.$file.'.'.$type)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$type.'" not found.');
-            return filemtime(self::$__app.'/'.$file.'.'.$type);
+            if(!@file_exists(self::$__app.'/'.$file.'.'.$ext)) throw new Exception('Sencha file "'.self::$__app.'/'.$file.'.'.$ext.'" not found.');
+            return filemtime(self::$__app.'/'.$file.'.'.$ext);
         }
         catch(Exception $e)
         {
@@ -449,8 +457,10 @@ class MatchaModel extends Matcha
             }
 
             // compose the Sencha Model .js for the first time
-            $jsSenchaModel = (string)'// Created dynamically by Matcha::connect';
-            $jsSenchaModel .= '// Create date: '.date('Y-m-d H:i:s');
+	        $jsSenchaModel =  '/**'.chr(13);
+	        $jsSenchaModel .= ' * Generated dynamically by Matcha::Connect'.chr(13);
+	        $jsSenchaModel .= ' * Create date: '.date('Y-m-d H:i:s').chr(13);
+	        $jsSenchaModel .= ' */'.chr(13);
             $jsSenchaModel .= chr(13);
             $jsSenchaModel .= "Ext.define('".$fileSenchaModel."', {" . chr(13);
             $jsSenchaModel .= MatchaUtils::t(1)."extend: 'Ext.data.Model'," . chr(13);
@@ -507,15 +517,18 @@ class MatchaModel extends Matcha
      */
     public static function addFieldsToModel($senchaProperties = array())
     {
-        if(empty($senchaProperties)) return false;
+	    if(empty($senchaProperties) || !isset($senchaProperties['field']) || !isset($senchaProperties['model'])) return false;
+	    if(!isset($senchaProperties['field']['name']) || $senchaProperties['field']['name'] == '') return false;
         $tmpModel = self::__getSenchaModel($senchaProperties['model']);
         if(!$tmpModel) return false;
         // add the new fields to the Sencha Model
+	    $foundKey = MatchaUtils::__recursiveArraySearch($senchaProperties['field']['name'], $tmpModel['fields']);
+	    if($foundKey !== false) return false;
         array_push($tmpModel['fields'], $senchaProperties['field']);
         // re-create the Sencha Model file.
         if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
-        if(!self::__SenchaModel($senchaProperties['model'])) return false;
+        if(!self::__SenchaModel($senchaProperties['model'], true)) return false;
         return true;
     }
 
@@ -527,17 +540,19 @@ class MatchaModel extends Matcha
      */
     public static function removeFieldsFromModel($senchaProperties = array())
     {
-        if(empty($senchaProperties)) return false;
-        $tmpModel = self::__getSenchaModel($senchaProperties['model']);
+        if(empty($senchaProperties) || !isset($senchaProperties['field']) || !isset($senchaProperties['model'])) return false;
+        if(!isset($senchaProperties['field']['name']) || $senchaProperties['field']['name'] == '') return false;
+	    $tmpModel = self::__getSenchaModel($senchaProperties['model']);
         if(!$tmpModel) return false;
         // navigate through the fields of the $removeColumns
         // and remove the field.
-        $foundKey = MatchaUtils::__recursiveArraySearch($senchaProperties['field'], $tmpModel['fields']);
+        $foundKey = MatchaUtils::__recursiveArraySearch($senchaProperties['field']['name'], $tmpModel['fields']);
         if($foundKey !== false) unset($tmpModel['fields'][$foundKey]);
+	    $tmpModel['fields'] = array_values($tmpModel['fields']);
         // re-create the Sencha Model file.
         if(!self::__arrayToSenchaModel($senchaProperties['model'], $tmpModel)) return false;
         // check the database table
-        if(!self::__SenchaModel($senchaProperties['model'])) return false;
+        if(!self::__SenchaModel($senchaProperties['model'], true)) return false;
         return true;
     }
 
@@ -586,10 +601,12 @@ class MatchaModel extends Matcha
             $modelDir = preg_replace('/^\w*\./', '', $modelDir);
 
             // compose the Sencha Model .js
-            $jsSenchaModel = (string)'// Created dynamically by Matcha::connect'.chr(13);
-            $jsSenchaModel .= '// Create date: '.date('Y-m-d H:i:s').chr(13);
+            $jsSenchaModel =  '/**'.chr(13);
+	        $jsSenchaModel .= ' * Generated dynamically by Matcha::Connect'.chr(13);
+            $jsSenchaModel .= ' * Create date: '.date('Y-m-d H:i:s').chr(13);
+            $jsSenchaModel .= ' */'.chr(13);
             $jsSenchaModel .= chr(13);
-            $jsSenchaModel .= "Ext.define('".$fileSenchaModel."',".chr(13);
+            $jsSenchaModel .= "Ext.define('".$fileSenchaModel."',";
             $jsSenchaModel .= preg_replace('/"(?P<key>.+?)":/', '$1:', json_encode($senchaModelArray, JSON_PRETTY_PRINT));
             $jsSenchaModel .= ');'.chr(13);
             $jsSenchaModel = str_replace('"', "'", $jsSenchaModel);
@@ -604,7 +621,7 @@ class MatchaModel extends Matcha
             if(!$fileObject) throw new Exception('Could not create or open the Sencha Model file.');
             if(!@fwrite($fileObject,$jsSenchaModel,strlen($jsSenchaModel))) throw new Exception('Could not write the Sencha Model file.');
             @fclose($fileObject);
-            if(!@chmod($file,0775)) throw new Exception('Could not chmod the Sencha Model file.');
+            if(!@chmod($file, 0755)) throw new Exception('Could not chmod the Sencha Model file.');
             return true;
         }
         catch(Exception $e)

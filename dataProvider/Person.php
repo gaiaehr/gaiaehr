@@ -22,9 +22,9 @@ class Person
 
 	public static function fullname($fname, $mname, $lname)
 	{
-		if (isset($_SESSION['global_settings']) && isset($_SESSION['global_settings']['fullname']))
+		if (isset($_SESSION['globals']) && isset($_SESSION['globals']['fullname']))
 		{
-			switch($_SESSION['global_settings']['fullname'])
+			switch($_SESSION['globals']['fullname'])
 			{
 				case '0' :
 					$fullname = $lname . ', ' . $fname . ' ' . $mname;

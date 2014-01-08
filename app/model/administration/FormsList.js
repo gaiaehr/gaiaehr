@@ -19,12 +19,33 @@
 Ext.define('App.model.administration.FormsList', {
     extend: 'Ext.data.Model',
     table: {
-        name:'formslist',
+        name:'forms_layout',
         comment:'Form List'
     },
     fields: [
-        { name: 'id', type: 'string' },
-        { name: 'name', type: 'string' }
+        {
+	        name: 'id',
+	        type: 'int'
+        },
+        {
+	        name: 'name',
+	        type: 'string',
+	        len: 80
+        },
+        {
+	        name: 'form_data',
+	        type: 'string',
+	        len: 80
+        },
+        {
+	        name: 'model',
+	        type: 'string',
+	        len: 80
+        },
+        {
+	        name: 'active',
+	        type: 'bool'
+        }
     ],
     proxy: {
         type: 'direct',

@@ -17,53 +17,187 @@
  */
 
 Ext.define('App.model.patient.Encounter', {
-	extend : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'encounters',
-		comment:'Encounter Data'
+		name: 'encounters',
+		comment: 'Encounter Data'
 	},
-	fields : [
-		{name: 'eid', type: 'int', comment: 'Encounter ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'open_uid', type: 'int'},
-		{name: 'provider_uid', type: 'int'},
-		{name: 'supervisor_uid', type: 'int'},
-		{name: 'brief_description', type: 'string'},
-		{name: 'visit_category', type: 'string'},
-		{name: 'facility', type: 'string'},
-		{name: 'billing_facility', type: 'string'},
-		{name: 'priority', type: 'string'},
-		{name: 'service_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'close_date', type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'onset_date', type: 'date', dateFormat:'Y-m-d H:i:s'}
+	fields: [
+		{
+			name: 'eid',
+			type: 'int',
+			comment: 'Encounter ID'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'open_uid',
+			type: 'int'
+		},
+		{
+			name: 'provider_uid',
+			type: 'int'
+		},
+		{
+			name: 'supervisor_uid',
+			type: 'int'
+		},
+		{
+			name: 'service_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'close_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'onset_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'priority',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'brief_description',
+			type: 'string'
+		},
+		{
+			name: 'visit_category',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'facility',
+			type: 'string',
+			dataType: 'tinyint'
+		},
+		{
+			name: 'billing_facility',
+			type: 'string',
+			dataType: 'tinyint'
+		},
+		{
+			name: 'billing_stage',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'followup_time',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'followup_facility',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'review_immunizations',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'review_allergies',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'review_active_problems',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'review_alcohol',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'review_smoke',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'review_pregnant',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'review_surgery',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'review_dental',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'review_medications',
+			type: 'int',
+			len: 1
+		},
+		{
+			name: 'message',
+			type: 'string',
+			dataType: 'text'
+		}
 	],
-    idProperty: 'eid',
-	proxy  : {
-		type       : 'direct',
-		api        : {
+	idProperty: 'eid',
+	proxy: {
+		type: 'direct',
+		api: {
 			read: Encounter.getEncounter,
 			create: Encounter.createEncounter,
 			update: Encounter.updateEncounter
 		},
-		reader     : {
-			type: 'json',
+		reader: {
 			root: 'encounter'
 		}
 	},
-    hasMany: [
-	    // model,                                           name of association,            ID of owner model, foreignKey of association
-        {model: 'App.model.patient.Vitals',                 name: 'vitals',                 primaryKey: 'eid', foreignKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystems',        name: 'reviewofsystems',        primaryKey: 'eid', foreignKey: 'eid'},
-        {model: 'App.model.patient.ReviewOfSystemsCheck',   name: 'reviewofsystemschecks',  primaryKey: 'eid', foreignKey: 'eid'},
-        {model: 'App.model.patient.SOAP',                   name: 'soap',                   primaryKey: 'eid', foreignKey: 'eid'},
-        {model: 'App.model.patient.SpeechDictation',        name: 'speechdictation',        primaryKey: 'eid', foreignKey: 'eid'},
-        {model: 'App.model.patient.HCFAOptions',            name: 'hcfaoptions',            primaryKey: 'eid', foreignKey: 'eid'}
-    ]
-//    associations: [
-//        {type: 'hasOne',  model: 'App.model.patient.ReviewOfSystems', foreignKey: 'eid', getterName:'getReviewofsystems'},
-//        {type: 'hasOne',  model: 'App.model.patient.ReviewOfSystemsCheck', getterName:'getReviewofsystemschecks'},
-//        {type: 'hasOne',  model: 'App.model.patient.SOAP', foreignKey: 'eid', getterName:'getSoap'},
-//        {type: 'hasOne',  model: 'App.model.patient.SpeechDictation', foreignKey: 'eid', getterName:'getSpeechdictation'},
-//        {type: 'hasOne',  model: 'App.model.patient.HCFAOptions', foreignKey: 'eid', getterName:'getHcfaoptions'}
-//    ]
+	hasMany: [
+		{
+			model: 'App.model.patient.Vitals',
+			name: 'vitals',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.ReviewOfSystems',
+			name: 'reviewofsystems',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.ReviewOfSystemsCheck',
+			name: 'reviewofsystemschecks',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.SOAP',
+			name: 'soap',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.SpeechDictation',
+			name: 'speechdictation',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.HCFAOptions',
+			name: 'hcfaoptions',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		}
+	]
+
 });

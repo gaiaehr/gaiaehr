@@ -179,19 +179,19 @@ Ext.define('App.view.administration.Users', {
 					        items: [
 						        {
 							        width: 150,
-							        xtype: 'mitos.checkbox',
+							        xtype: 'checkbox',
 							        fieldLabel: i18n('active'),
 							        name: 'active'
 						        },
 						        {
 							        width: 150,
-							        xtype: 'mitos.checkbox',
+							        xtype: 'checkbox',
 							        fieldLabel: i18n('authorized'),
 							        name: 'authorized'
 						        },
 						        {
 							        width: 150,
-							        xtype: 'mitos.checkbox',
+							        xtype: 'checkbox',
 							        fieldLabel: i18n('calendar_q'),
 							        name: 'calendar'
 						        }

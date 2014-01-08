@@ -81,7 +81,7 @@ Ext.define('App.view.administration.Lists', {
                     dataIndex: 'active',
                     renderer: me.boolRenderer,
                     editor: {
-                        xtype: 'mitos.checkbox',
+                        xtype: 'checkbox',
                         padding: '0 0 0 18'
                     }
                 },
@@ -182,7 +182,7 @@ Ext.define('App.view.administration.Lists', {
                     dataIndex: 'active',
                     renderer: me.boolRenderer,
                     editor: {
-                        xtype: 'mitos.checkbox',
+                        xtype: 'checkbox',
                         padding: '0 0 0 18'
                     }
                 }

@@ -210,16 +210,18 @@ Ext.override(Ext.grid.RowEditor, {
     }
 });
 Ext.override(Ext.container.Container, {
+
     setAutoSyncFormEvent: function(field){
         if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
             field.on('keyup', this.autoSyncForm, this);
-        }else if(field.xtype == 'radiofield' || field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+        }else if(field.xtype == 'radiofield' || field.xtype == 'checkbox'){
             field.scope = this;
             field.handler = this.autoSyncForm;
         }else{
             //field.on('select', this.autoSyncForm, this);
         }
     },
+
     autoSyncForm: function(field){
         var me = this, panel = field.up('form'), form = panel.getForm(), record = form.getRecord(), store = record.store, hasChanged;
         if(typeof me.isLoading == 'undefined' || !me.isLoading){
@@ -251,13 +253,14 @@ Ext.override(Ext.container.Container, {
             }
         }
     },
+
     setFieldDirty: function(field){
         var duration = 2000, el;
         if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
             el = field.inputEl;
         }else if(field.xtype == 'radiofield'){
             el = field.ownerCt.el;
-        }else if(field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+        }else if(field.xtype == 'checkbox'){
             el = field.el;
         }else{
             el = field.el;
@@ -293,7 +296,7 @@ Ext.override(Ext.container.Container, {
             el = field.inputEl;
         }else if(field.xtype == 'radiofield'){
             el = field.ownerCt.el;
-        }else if(field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+        }else if(field.xtype == 'checkbox'){
             el = field.el;
         }else{
             el = field.el;
@@ -323,6 +326,7 @@ Ext.override(Ext.container.Container, {
             }
         });
     },
+
     /**
      * this will set all the fields that has change
      * @param form
@@ -391,8 +395,10 @@ Ext.override(Ext.container.Container, {
     getFormItems: function(formPanel, formToRender, callback){
 	    if(formPanel) formPanel.removeAll();
 	    FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+
 		    var items = eval(response.result),
-			    form = formPanel ? formPanel.add(items) : false;
+				form = formPanel ? formPanel.add(items) : false;
+
 		    if(typeof callback == 'function') callback(formPanel, items, true);
 		    return form;
 	    });

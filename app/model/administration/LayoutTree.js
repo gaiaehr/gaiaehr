@@ -17,53 +17,167 @@
  */
 
 Ext.define('App.model.administration.LayoutTree', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'layouttree',
-        comment:'Layout Tree'
-    },
-    fields: [
-        {name: 'id',               type: 'string'},
-        {name: 'parentId',         type: 'string'},
-        {name: 'text',             type: 'string'},
-        {name: 'index',            type: 'int'},
+	extend: 'Ext.data.Model',
+	fields: [
+		{
+			name: 'id',
+			type: 'string'
+		},
+		{
+			name: 'parentId',
+			type: 'string'
+		},
+		{
+			name: 'text',
+			type: 'string'
+		},
+		{
+			name: 'index',
+			type: 'int'
+		},
+		{
+			name: 'parentId',
+			type: 'string'
+		},
+		{
+			name: 'text',
+			type: 'string'
+		},
+		{
+			name: 'index',
+			type: 'int'
+		},
+		{
+			name: 'xtype',
+			type: 'string'
+		},
+		{
+			name: 'form_id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string'
+		},
+		{
+			name: 'fieldLabel',
+			type: 'string'
+		},
+		{
+			name: 'emptyText',
+			type: 'string'
+		},
+		{
+			name: 'labelWidth',
+			type: 'string'
+		},
+		{
+			name: 'hideLabel',
+			type: 'bool',
+			useNull: true,
+			defaultValue: null
+		},
+		{
+			name: 'layout',
+			type: 'string'
+		},
+		{
+			name: 'width',
+			type: 'string'
+		},
+		{
+			name: 'height',
+			type: 'string'
+		},
+		{
+			name: 'anchor',
+			type: 'string'
+		},
+		{
+			name: 'margin',
+			type: 'string'
+		},
+		{
+			name: 'flex',
+			type: 'string'
+		},
+		{
+			name: 'collapsible',
+			type: 'bool',
+			useNull: true,
+			defaultValue: null
+		},
+		{
+			name: 'checkboxToggle',
+			type: 'bool',
+			useNull: true,
+			defaultValue: null
+		},
+		{
+			name: 'collapsed',
+			type: 'bool',
+			useNull: true,
+			defaultValue: null
+		},
+		{
+			name: 'inputValue',
+			type: 'string'
+		},
+		{
+			name: 'allowBlank',
+			type: 'string'
+		},
+		{
+			name: 'value',
+			type: 'string'
+		},
+		{
+			name: 'maxValue',
+			type: 'string'
+		},
+		{
+			name: 'minValue',
+			type: 'string'
+		},
+		{
+			name: 'boxLabel',
+			type: 'string'
+		},
+		{
+			name: 'grow',
+			type: 'bool',
+			useNull: true,
+			defaultValue: null
+		},
+		{
+			name: 'growMin',
+			type: 'string'
+		},
 
-        {name: 'xtype',            type: 'string'},
-        {name: 'form_id',          type: 'int'},
-        {name: 'title',            type: 'string'},
-        {name: 'fieldLabel',       type: 'string'},
-        {name: 'emptyText',        type: 'string'},
-        {name: 'labelWidth',       type: 'string'},
-        {name: 'hideLabel',        type: 'bool', useNull:true, defaultValue:null},
-        {name: 'layout',           type: 'string'},
-        {name: 'width',            type: 'string'},
-        {name: 'height',           type: 'string'},
-        {name: 'anchor',           type: 'string'},
-        {name: 'margin',           type: 'string'},
-        {name: 'flex',             type: 'string'},
-        {name: 'collapsible',      type: 'bool', useNull:true, defaultValue:null},
-        {name: 'checkboxToggle',   type: 'bool', useNull:true, defaultValue:null},
-        {name: 'collapsed',        type: 'bool', useNull:true, defaultValue:null},
-        {name: 'inputValue',       type: 'string'},
-        {name: 'allowBlank',       type: 'string'},
-        {name: 'value',            type: 'string'},
-        {name: 'maxValue',         type: 'string'},
-        {name: 'minValue',         type: 'string'},
-        {name: 'boxLabel',         type: 'string'},
-        {name: 'grow',             type: 'bool', useNull:true, defaultValue:null},
-        {name: 'growMin',          type: 'string'},
-        {name: 'growMax',          type: 'string'},
-        {name: 'increment',        type: 'string'},
-        {name: 'name',             type: 'string'},
-        {name: 'list_id',          type: 'string'}
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: FormLayoutBuilder.getFormFieldsTree,
-            create: FormLayoutBuilder.createFormField,
-            update: FormLayoutBuilder.updateFormField,
-            destroy: FormLayoutBuilder.removeFormField
-        }
-    }
+		{
+			name: 'growMax',
+			type: 'string'
+		},
+		{
+			name: 'increment',
+			type: 'string'
+		},
+		{
+			name: 'name',
+			type: 'string'
+		},
+		{
+			name: 'list_id',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: FormLayoutBuilder.getFormFieldsTree,
+			create: FormLayoutBuilder.createFormField,
+			update: FormLayoutBuilder.updateFormField,
+			destroy: FormLayoutBuilder.removeFormField
+		}
+	}
 });

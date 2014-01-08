@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.LaboratoryTypes', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'laboratorytypes',
-		comment:'Laboratory Types'
-	},
 	fields: [
         {name: 'id', type: 'int', comment: 'Laboratory Types ID'},
 		{name: 'label', type: 'string'},

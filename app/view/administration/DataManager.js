@@ -485,7 +485,7 @@ Ext.define('App.view.administration.DataManager', {
 							width: 500
 						},
 						{
-							xtype: 'mitos.checkbox',
+							xtype: 'checkbox',
 							fieldLabel: i18n('active'),
 							name: 'active',
 							anchor: '100%',

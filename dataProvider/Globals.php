@@ -51,11 +51,11 @@ class Globals extends MatchaHelper {
 		new MatchaHelper();
         if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		foreach(self::$g->load()->all() as $setting){
-			$_SESSION['global_settings'][$setting['gl_name']] = $setting['gl_value'];
+			$_SESSION['globals'][$setting['gl_name']] = $setting['gl_value'];
 		}
-		$_SESSION['global_settings']['timezone_offset'] = -14400;
-		$_SESSION['global_settings']['date_time_display_format'] = $_SESSION['global_settings']['date_display_format'] . ' ' . $_SESSION['global_settings']['time_display_format'];
-		return $_SESSION['global_settings'];
+		$_SESSION['globals']['timezone_offset'] = -14400;
+		$_SESSION['globals']['date_time_display_format'] = $_SESSION['globals']['date_display_format'] . ' ' . $_SESSION['globals']['time_display_format'];
+		return $_SESSION['globals'];
 	}
 
 	/**

@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.ImmunizationCheck', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'immunizationcheck',
-		comment:'Immunization Check'
-	},
 	fields: [
         {name: 'id', type: 'int', comment: 'Immunization Check ID'},
         {name: 'pid', type: 'int'},

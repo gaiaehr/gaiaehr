@@ -104,7 +104,7 @@ Ext.define('App.ux.form.AdvanceForm', {
                 fields[i].enableKeyEvents = true;
                 fields[i].on('keyup', this.setFieldCondition, this);
 	            fields[i].on('change', this.setFieldCondition, this);
-            }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'mitos.checkbox' || fields[i].xtype == 'checkbox'){
+            }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'checkbox'){
                 fields[i].scope = this;
                 fields[i].handler = this.setFieldCondition;
 	            fields[i].on('change', this.setFieldCondition, this);
@@ -198,7 +198,7 @@ Ext.define('App.ux.form.AdvanceForm', {
             return field.inputEl;
         }else if(field.xtype == 'radiofield'){
             return field.ownerCt.el;
-        }else if(field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+        }else if(field.xtype == 'checkbox'){
             return field.el;
         }else{
             return field.el; // leave this for now

@@ -41,7 +41,7 @@ Ext.define('App.view.administration.Roles', {
             items: [
                 {
                     xtype: 'fieldcontainer',
-                    defaultType: 'mitos.checkbox',
+                    defaultType: 'checkbox',
                     layout: 'hbox'
                 }
             ],

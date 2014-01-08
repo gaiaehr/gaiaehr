@@ -613,7 +613,9 @@ $LANG = array(
 	'encounter_cpt_codes_list'				=> 'Encounter CPT Codes List',
 	'encounter_signature'					=> 'Encounter Signature',
 	'procedure'					            => 'Procedure',
+	'new_procedure'					        => 'New Procedure',
 	'procedures'					        => 'Procedures',
+	'no_procedures'					        => 'No Procedures',
 	'orders_laboratories'					=> 'Orders Laboratories',
 	'orders_x_rays'							=> 'Orders X-Rays',
 	'orders_referral'						=> 'Orders Referral',
@@ -1245,4 +1247,5 @@ $LANG = array(
     'observations_results'                  => 'Observations Results',
     'range'                                 => 'Range',
 	'abnormal'                              => 'Abnormal',
+	'children_fields_must_be_remove_first'  => 'Children fields must be remove first',
 );

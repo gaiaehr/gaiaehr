@@ -21,7 +21,17 @@ Ext.define('Modules.imageforms.Main',{
     init: function(){
         var me = this;
         me.encPanel = Ext.getCmp('panelEncounter');
-        me.imgFormPanel = me.encPanel.encounterTabPanel.add(Ext.create('Modules.imageforms.view.EncounterImageFormsPanel'));
+
+	    me.control({
+		    'tabpanel[action=encounterTabPanel]':{
+			    beforerender:function(panel){
+				    me.imgFormPanel = panel.add(
+					    Ext.create('Modules.imageforms.view.EncounterImageFormsPanel')
+				    );
+			    }
+		    }
+	    });
+
     }
 
 });

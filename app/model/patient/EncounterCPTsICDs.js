@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.EncounterCPTsICDs', {
 	extend : 'Ext.data.Model',
-	table: {
-		name:'encountercptsicds',
-		comment:'Encounter CPTs and ICDs Data'
-	},
 	fields : [
 		{ name: 'id', type:'string' },
 		{ name: 'pid', type:'int' },

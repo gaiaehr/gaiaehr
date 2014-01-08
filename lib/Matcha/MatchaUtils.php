@@ -86,12 +86,12 @@ class MatchaUtils extends Matcha
      * function __recursiveArraySearch($needle,$haystack):
      * An recursive array search method
      */
-    static public function __recursiveArraySearch($needle,$haystack)
+    static public function __recursiveArraySearch($needle, $haystack)
     {
-        foreach($haystack as $key=>$value)
+        foreach($haystack as $key => $value)
         {
-            $current_key=$key;
-            if($needle===$value OR (is_array($value) && MatchaUtils::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
+            $current_key = $key;
+            if($needle === $value || (is_array($value) && MatchaUtils::__recursiveArraySearch($needle, $value) !== false)) return $current_key;
         }
         return false;
     }

@@ -30,10 +30,14 @@ Ext.define('App.model.patient.PatientImmunization', {
         },
 		{
 			name: 'pid',
-			type: 'int'},
+			type: 'int',
+			index: true
+		},
 		{
 			name: 'eid',
-			type: 'int'},
+			type: 'int',
+			index: true
+		},
 		{
 			name: 'uid',
 			type: 'int'

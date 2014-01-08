@@ -5,6 +5,9 @@
  * New Styles
  * by GI Technologies, 2011
  *============================================================*/
+.icoLogo {
+	background-image: url(../images/icons/icoLogo.png) !important;
+}
 .icoUnlocked {
 	background-image: url(../images/icons/unlocked.png) !important;
 }

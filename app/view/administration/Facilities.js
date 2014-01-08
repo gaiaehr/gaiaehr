@@ -135,22 +135,22 @@ Ext.define('App.view.administration.Facilities', {
                             {
                                 items: [
                                     {
-                                        xtype: 'mitos.checkbox',
+                                        xtype: 'checkbox',
                                         fieldLabel: i18n('active'),
                                         name: 'active'
                                     },
                                     {
-                                        xtype: 'mitos.checkbox',
+                                        xtype: 'checkbox',
                                         fieldLabel: i18n('service_location'),
                                         name: 'service_location'
                                     },
                                     {
-                                        xtype: 'mitos.checkbox',
+                                        xtype: 'checkbox',
                                         fieldLabel: i18n('billing_location'),
                                         name: 'billing_location'
                                     },
                                     {
-                                        xtype: 'mitos.checkbox',
+                                        xtype: 'checkbox',
                                         fieldLabel: i18n('accepts_assignment'),
                                         name: 'accepts_assignment'
                                     },

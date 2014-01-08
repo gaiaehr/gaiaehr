@@ -498,7 +498,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		if(typeof field.name == 'undefined') field.name = 'procedure';
 		this.snippets.setTitle(i18n(field.name) +' '+ i18n('templates'));
 //		this.snippets.expand(false);
-		if(this.snippets.action != field.name) this.snippetStore.load({params:{category:field.name}});
+		if(this.snippets.action != field.name){
+			this.snippets.getSelectionModel().deselectAll(),
+			this.snippetStore.load({params:{category:field.name}});
+		}
 		this.snippets.action = field.name;
 	},
 
@@ -703,6 +706,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			parentId:record.data.id,
 			leaf:true
 		});
+
 		me.origScope.snippetStore.sync({
 			callback:function(batch){
 				rec.set({id:batch.proxy.reader.rawData.id});
@@ -736,8 +740,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			text:'New Category',
 			parentId:baseNode.data.id,
 			category:me.snippets.action,
-			leaf:false,
+			leaf:false
 		});
+
 		me.snippetStore.sync({
 			callback:function(batch){
 				record.set({id:batch.proxy.reader.rawData.id});

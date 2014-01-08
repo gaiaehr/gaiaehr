@@ -31,11 +31,13 @@ Ext.define('App.model.patient.PatientsOrders', {
         {
 	        name: 'eid',
 	        type: 'int',
+	        index: true,
 	        comment: 'encounter id'
         },
         {
 	        name: 'pid',
 	        type: 'int',
+	        index: true,
 	        comment: 'patient ID'
         },
         {

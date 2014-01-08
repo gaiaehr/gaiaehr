@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.PatientsXrayCtOrders', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'patientsxrayctorders',
-		comment:'Patients XrayCt Orders'
-	},
 	fields: [
         {name: 'id', type: 'int', comment: 'Patients XrayCt Orders ID'},
         { name: 'eid', type: 'int' },

@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.Reminders', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'reminders',
-		comment:'Reminders Data'
-	},
 	fields: [
         {name: 'id', type: 'int', comment: 'Reminder ID'},
 		{name: 'eid', type: 'int'},

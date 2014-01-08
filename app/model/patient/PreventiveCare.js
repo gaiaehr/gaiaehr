@@ -18,10 +18,6 @@
 
 Ext.define('App.model.patient.PreventiveCare', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'preventivecare',
-		comment:'Preventive Care'
-	},
 	fields: [
         {name: 'id', type: 'int', comment: 'Preventive Care ID'},
 		{name: 'pid', type: 'int'},

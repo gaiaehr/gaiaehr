@@ -1114,7 +1114,7 @@ $API = array(
 				'len' => 1
 			),
 			'getForms' => array(
-				'len' => 0
+				'len' => 1
 			),
 			'getParentFields' => array(
 				'len' => 1

@@ -255,8 +255,10 @@ Ext.define('App.view.areas.FloorPlan', {
 		zone.pid = data.pid;
 		zone.priority = data.priority;
 		zone.patientZoneId = data.patientZoneId;
+
 		if(zone.dropZone) zone.dropZone.lock();
 		if(zone.dragZone) zone.dragZone.unlock();
+
 		zone.setTooltip(i18n('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
 		zone.data = data;
@@ -275,11 +277,14 @@ Ext.define('App.view.areas.FloorPlan', {
 	setZones: function(){
 		var me = this, zone, zones, data;
 		FloorPlans.getPatientsZonesByFloorPlanId(me.floorPlanId, function(provider, response){
+
 			zones = me.floorPlan.items.items;
 			data = response.result;
+
 			for(var j = 0; j < zones.length; j++){
 				me.unSetZone(zones[j]);
 			}
+
 			for(var i = 0; i < data.length; i++){
 				zone = me.floorPlan.getComponent(data[i].zoneId);
 				zone.data = data[i];
@@ -294,6 +299,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 	onActive: function(callback){
 		var me = this;
+
 		if(me.floorPlanId == null){
 			me.renderZones();
 		}else{

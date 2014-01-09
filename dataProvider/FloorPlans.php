@@ -163,7 +163,6 @@ class FloorPlans
 	public function unSetPatientFromZoneByPid($pid)
 	{
 		return;
-
 	}
 
 	public function getPatientsZonesByFloorPlanId($FloorPlanId)
@@ -180,6 +179,7 @@ class FloorPlans
 							WHERE fpz.floor_plan_id = $FloorPlanId AND pz.time_out IS NULL");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $zone){
 			$zone['patient']  = $this->patient->getPatientDemographicDataByPid($zone['pid']);
+			$zone['name']     = $this->patient->getPatientFullName();
 			$zone['warning']  = $this->patient->getPatientArrivalLogWarningByPid($zone['pid']);
 			$pool             = $this->pool->getCurrentPatientPoolAreaByPid($zone['pid']);
 			$zone['poolArea'] = $pool['poolArea'];

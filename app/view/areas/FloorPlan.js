@@ -50,37 +50,6 @@ Ext.define('App.view.areas.FloorPlan', {
 			]
 		});
 
-		me.patientInfo = Ext.create('Ext.Window', {
-			title: '',
-			width: 300,
-			closeAction: 'hide',
-			tpl: new Ext.XTemplate(
-				'<div class="zoneSummaryContainer">' +
-					'   <div class="zoneSummaryArea">' +
-					'       <img src="{pic}" height="96" width="96">' +
-					'       <p>Name: {name}</p>' +
-					'       <p>DOB: {DOB}</p>' +
-					'       <p>Age: {age.str}</p>' +
-					'       <p>Sex: {sex}</p>' +
-					'   </div>' +
-					//                '   <div class="zoneSummaryArea">' +
-					//                '       <p>Service Date: {service_date}</p>' +
-					//                '       <p>Provider: {provider} ({phone})</p>' +
-					//                '       <p>Diagnosis: {diagnosis}</p>' +
-					//                '       <p>Plan: {plan}</p>' +
-					//                '       <p>Status: {status}</p>' +
-					//                '   </div>' +
-					'</div>'
-			),
-			listeners: {
-				scope: me,
-				blur: {
-					element: 'el',
-					fn: me.onPatientInfoBlur
-				}
-			}
-		});
-
 		me.pageBody = [ me.floorPlan ];
 		me.callParent(arguments);
 
@@ -140,10 +109,45 @@ Ext.define('App.view.areas.FloorPlan', {
 
 	onZoneArrowClicked: function(zone){
 		var me = this;
+
+		if(!me.patientInfo){
+			me.patientInfo = Ext.create('Ext.Window', {
+				title: '',
+				width: 300,
+				closeAction: 'hide',
+				tpl: new Ext.XTemplate(
+						'<div class="zoneSummaryContainer">' +
+						'   <div class="zoneSummaryArea">' +
+						'       <tpl if="this.patientImg(image)">',
+						'           <img src="data:image/png;base64,{image}" height="96" width="96">' +
+						'       <tpl else>',
+						'           <img src="data:image/png;base64,'+ app.patientImage +'" height="96" width="96">',
+						'       </tpl>',
+						'       <p>Name: {name}</p>' +
+						'       <p>DOB: {DOB}</p>' +
+						'       <p>Age: {age.str}</p>' +
+						'       <p>Sex: {sex}</p>' +
+						'   </div>' +
+						'</div>',
+					{
+						patientImg:function(image){
+							return image != null;
+						}
+					}
+				),
+				listeners: {
+					scope: me,
+					blur: {
+						element: 'el',
+						fn: me.onPatientInfoBlur
+					}
+				}
+			});
+		}
 		if(zone.data){
 			me.patientInfo.update(zone.data.patient);
 			me.patientInfo.show();
-			me.patientInfo.alignTo(zone.getEl(), 'tl-tr?').show();
+			me.patientInfo.alignTo(zone.getEl(), 'tl-tr?');
 			me.patientInfo.focus();
 		}
 	},
@@ -237,6 +241,7 @@ Ext.define('App.view.areas.FloorPlan', {
 			zone_id: zone.zoneId,
 			pid: data.pid
 		};
+
 		FloorPlans.setPatientToZone(params, function(provider, response){
 			data.patientZoneId = response.result.data.patientZoneId;
 			me.msg('Sweet!', data.name + i18n('successfully_moved') + '.');

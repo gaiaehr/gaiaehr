@@ -250,7 +250,7 @@ class PoolArea
         }
 
 		$this->acl = new ACL($uid);
-        $patients = array();
+        $pools = array();
 
         if($this->acl->hasPermission('use_pool_areas')){
 
@@ -264,17 +264,17 @@ class PoolArea
 					foreach($this->getPatientsByPoolAreaId($area['id'], 1) as $p){
 						$p['shortName']   = Person::ellipsis($p['name'], 20);
 						$p['poolArea']    = $area['title'];
-						$p['photoSrc']    = $this->patient->getPatientPhotoSrcIdByPid($p['pid']);
+						$p['patient']     = $this->patient->getPatientDemographicDataByPid($p['pid']);
 						$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($area['id']);
 						$z                = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-						$patients[]       = (empty($z)) ? $p : array_merge($p, $z);
+						$pools[]       = (empty($z)) ? $p : array_merge($p, $z);
 					}
 				}
 			}
-            $patients = array_slice($patients, 0, 6);
+	        $pools = array_slice($pools, 0, 6);
         }
 
-		return $patients;
+		return $pools;
 	}
 
 	public function getAreaTitleById($id)

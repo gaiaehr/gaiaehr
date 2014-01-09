@@ -363,7 +363,9 @@ Ext.define('App.view.Viewport', {
                             tpl: new Ext.XTemplate(
 	                            '<tpl for=".">' +
                                 '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
-                                '<div class="patient_btn_img"><img src="data:image/jpg;base64,{[this.getPatientImage(values.photoSrc)]}" width="32" height="32"></div>' +
+                                '<div class="patient_btn_img">' +
+	                            '<img src="data:image/jpg;base64,{[this.getPatientImage(values.patient)]}" width="32" height="32">' +
+	                            '</div>' +
                                 '<div class="patient_btn_info">' +
                                 '<div class="patient-name">{shortName}</div>' +
                                 '<div class="patient-name">#{pid} ({poolArea})</div>' +
@@ -371,8 +373,8 @@ Ext.define('App.view.Viewport', {
                                 '</div>' +
                                 '</tpl>',
 	                            {
-		                            getPatientImage:function(image){
-										return image != '' ? image : me.patientImage;
+		                            getPatientImage:function(patient){
+										return patient.image ? patient.image : me.patientImage;
 		                            }
 	                            }
                             ),

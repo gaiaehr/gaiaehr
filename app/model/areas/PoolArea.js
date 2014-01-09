@@ -17,27 +17,56 @@
  */
 
 Ext.define('App.model.areas.PoolArea', {
-	extend   : 'Ext.data.Model',
-	table: {
-		name:'poolarea',
-		comment:'Pool Area'
-	},
-	fields   : [
-		{name: 'pid', type: 'int', comment: 'Pool Areas ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'name', type: 'string'},
-		{name: 'shortName', type: 'string'},
-		{name: 'photoSrc', type: 'string'},
-		{name: 'poolArea', type: 'string'},
-		{name: 'floorPlanId', type: 'int'},
-		{name: 'zoneId', type: 'int'},
-		{name: 'patientZoneId', type: 'int'},
-		{name: 'priority', type: 'string'},
-		{name: 'rank',  type:'int'}
+	extend: 'Ext.data.Model',
+	fields: [
+		{
+			name: 'pid',
+			type: 'int',
+			comment: 'Pool Areas ID'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'name',
+			type: 'string'
+		},
+		{
+			name: 'patient'
+		},
+		{
+			name: 'shortName',
+			type: 'string'
+		},
+		{
+			name: 'poolArea',
+			type: 'string'
+		},
+		{
+			name: 'floorPlanId',
+			type: 'int'
+		},
+		{
+			name: 'zoneId',
+			type: 'int'
+		},
+		{
+			name: 'patientZoneId',
+			type: 'int'
+		},
+		{
+			name: 'priority',
+			type: 'string'
+		},
+		{
+			name: 'rank',
+			type: 'int'
+		}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
+	proxy: {
+		type: 'direct',
+		api: {
 			read: PoolArea.getPatientsByPoolAreaAccess
 		}
 	}

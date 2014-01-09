@@ -31,7 +31,6 @@ Ext.define('App.model.administration.AclRolePermissions', {
 		{
 			name: 'user_id',
 			type: 'int',
-			dataType: 'bigint',
 			comment: 'User ID'
 		},
 		{

@@ -275,6 +275,12 @@ $API = array(
 			),
 			'onReviewAllItemsToReview' => array(
 				'len' => 1
+			),
+			'getEncountersByDate' => array(
+				'len' => 1
+			),
+			'getTodayEncounters' => array(
+				'len' => 0
 			)
 		)
 	),

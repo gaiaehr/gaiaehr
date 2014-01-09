@@ -958,6 +958,15 @@ class Encounter {
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
+	public function getEncountersByDate($date){
+		$this->db->setSQL("SELECT * FROM encounters WHERE service_date >= '$date 00:00:00' AND service_date <= '$date 23:59:59'");
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+	public function getTodayEncounters(){
+		return $this->getEncountersByDate(Time::getLocalTime('Y-m-d'));
+	}
+
 }
 
 

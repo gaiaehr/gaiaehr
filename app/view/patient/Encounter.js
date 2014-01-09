@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelEncounter',
+	id: 'panelEncounter', // TODO: remove this ID
 	pageTitle: i18n('encounter'),
 	pageLayout: 'border',
 	requires: [

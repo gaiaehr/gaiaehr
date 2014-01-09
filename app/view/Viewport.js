@@ -167,7 +167,7 @@ Ext.define('App.view.Viewport', {
             padding: 0,
             iconCls: 'icoCheckOut',
             scope: me,
-            handler: me.chargePatient,
+            handler: me.checkOutPatient,
             tooltip: i18n('visit_check_out')
         });
 
@@ -763,10 +763,6 @@ Ext.define('App.view.Viewport', {
 
 	checkOutPatient: function(eid){
         this.nav.navigateTo('App.view.patient.VisitCheckout');
-    },
-
-	chargePatient: function(){
-        this.nav.navigateTo('panelVisitPayment');
     },
 
 	openPatientVisits: function(){

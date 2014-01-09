@@ -30,8 +30,8 @@ class AccVoucher extends AccAccount {
     function __construct()
     {
 	    parent::__construct();
-	    if($this->voucher == NULL) $this->voucher = Matcha::setSenchaModel('App.model.account.Voucher');
-	    if($this->voucherLine == NULL) $this->voucherLine = Matcha::setSenchaModel('App.model.account.VoucherLine');
+	    if($this->voucher == NULL) $this->voucher = MatchaModel::setSenchaModel('App.model.account.Voucher');
+//	    if($this->voucherLine == NULL) $this->voucherLine = MatchaModel::setSenchaModel('App.model.account.VoucherLine');
         return;
     }
 

@@ -45,8 +45,8 @@ class AccAccount
 
     function __construct()
     {
-        if($this->account == NULL) $this->account = Matcha::setSenchaModel('App.model.account.Account');
-	    if($this->accountType == NULL) $this->accountType = Matcha::setSenchaModel('App.model.account.AccountType');
+//      if($this->account == NULL) $this->account = MatchaModel::setSenchaModel('App.model.account.Account');
+//	    if($this->accountType == NULL) $this->accountType = MatchaModel::setSenchaModel('App.model.account.AccountType');
         $this->services = new Services();
         $this->patient  = new Patient();
         return;

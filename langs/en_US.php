@@ -370,6 +370,7 @@ $LANG = array(
 	'closed_encounter'						=> 'Closed Encounter',
 	'encounter_closed'						=> 'Encounter Closed',
 	'this_column_can_not_be_modified_because_it_has_been_signed_by' => 'This column can not be modified because it has been signed by',
+	'open_encounter'						=> 'Open Encounter',
 	'opened_encounter'						=> 'Opened Encounter',
 	'very_severely_underweight'				=> 'Very severely underweight',
 	'severely_underweight'					=> 'Severely underweight',

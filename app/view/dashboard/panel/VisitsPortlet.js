@@ -90,7 +90,6 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 	},
 
 	load: function(){
-
 		var me = this,
 			store = me.store,
 			data = [],
@@ -101,13 +100,8 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 		Encounter.getTodayEncounters(function(provider, response){
 
 			var encounters = response.result;
-
 			for(i=0; i < encounters.length; i++){
-
 				time = Ext.Date.parse(encounters[i].service_date, 'Y-m-d H:i:s').setMinutes(0,0,0);
-
-				say('encounter #' + (i+1));
-
 				var found = false;
 
 				for(j=0; j < data.length; j++){
@@ -123,13 +117,9 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 						time: time
 					});
 				}
-
-				say(data);
 			}
 
-
 			store.loadData(data);
-
 		});
 	}
 });

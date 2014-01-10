@@ -26,7 +26,6 @@ Ext.define('App.model.patient.SOAP', {
 		{
 			name: 'id',
 			type: 'int',
-			comment: 'SOAP ID'
 		},
 		{
 			name: 'pid',

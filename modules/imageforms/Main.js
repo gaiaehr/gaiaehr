@@ -20,7 +20,6 @@ Ext.define('Modules.imageforms.Main',{
     extend: 'Modules.Module',
     init: function(){
         var me = this;
-        me.encPanel = Ext.getCmp('panelEncounter');
 
 	    me.control({
 		    'tabpanel[action=encounterTabPanel]':{

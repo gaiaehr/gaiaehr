@@ -18,7 +18,6 @@
 
 Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelEncounter', // TODO: remove this ID
 	pageTitle: i18n('encounter'),
 	pageLayout: 'border',
 	requires: [
@@ -283,8 +282,8 @@ Ext.define('App.view.patient.Encounter', {
 		 * Administravive Tab Panel and its Panels
 		 * @type {*}
 		 */
-		if( (me.enableHCFA && acl['access_enc_hcfa']) ||
-		    (me.enableCPT && acl['access_enc_cpt']) ||
+		if((me.enableHCFA && acl['access_enc_hcfa']) ||
+			(me.enableCPT && acl['access_enc_cpt']) ||
 			(me.enableEncHistory && acl['access_enc_history'])){
 			me.administrativeTabPanel = me.centerPanel.add(
 				Ext.create('Ext.tab.Panel', {
@@ -1138,28 +1137,28 @@ Ext.define('App.view.patient.Encounter', {
 		 */
 		if(me.reviewSysPanel){
 			me.getFormItems(me.reviewSysPanel, 8, function(){
-//				var formFields = me.reviewSysPanel.getForm().getFields(),
-//					modelFields = new defaultFields;
-//				for(var i = 0; i < formFields.items.length; i++){
-//					modelFields.push({
-//						name: formFields.items[i].name,
-//						type: 'auto'
-//					});
-//				}
-//				Ext.define('App.model.patient.ReviewOfSystems', {
-//					extend: 'Ext.data.Model',
-//					fields: modelFields,
-//					proxy: {
-//						type: 'direct',
-//						api: {
-//							update: Encounter.updateReviewOfSystemsById
-//						}
-//					},
-//					belongsTo: {
-//						model: 'App.model.patient.Encounter',
-//						foreignKey: 'eid'
-//					}
-//				});
+				//				var formFields = me.reviewSysPanel.getForm().getFields(),
+				//					modelFields = new defaultFields;
+				//				for(var i = 0; i < formFields.items.length; i++){
+				//					modelFields.push({
+				//						name: formFields.items[i].name,
+				//						type: 'auto'
+				//					});
+				//				}
+				//				Ext.define('App.model.patient.ReviewOfSystems', {
+				//					extend: 'Ext.data.Model',
+				//					fields: modelFields,
+				//					proxy: {
+				//						type: 'direct',
+				//						api: {
+				//							update: Encounter.updateReviewOfSystemsById
+				//						}
+				//					},
+				//					belongsTo: {
+				//						model: 'App.model.patient.Encounter',
+				//						foreignKey: 'eid'
+				//					}
+				//				});
 			});
 		}
 

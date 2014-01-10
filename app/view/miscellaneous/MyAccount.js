@@ -23,7 +23,8 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 	requires: [
 		'App.ux.combo.Titles',
 		'App.ux.window.Window',
-		'App.ux.combo.Facilities'
+		'App.ux.combo.Facilities',
+		'App.ux.form.fields.plugin.PasswordStrength'
 	],
 
 	initComponent: function(){
@@ -337,7 +338,12 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							fieldLabel: i18n('new_password'),
 							name: 'nPassword',
 							allowBlank: false,
-							id: 'myAccountPage_nPassword'
+							id: 'myAccountPage_nPassword',
+							vtype      : 'strength',
+							strength   : 24,
+							plugins    : {
+								ptype : 'passwordstrength'
+							}
 						},
 						{
 							fieldLabel: i18n('re_type_password'),

@@ -246,14 +246,6 @@ Ext.define('App.view.patient.Summary', {
                         dataIndex: 'date'
                     },
                     {
-                        text: i18n('recipient_name'),
-                        dataIndex: 'recipient',
-                        width: 150,
-                        editor: {
-                            xtype: 'textfield'
-                        }
-                    },
-                    {
                         header: i18n('type'),
                         dataIndex: 'type',
                         editor: {

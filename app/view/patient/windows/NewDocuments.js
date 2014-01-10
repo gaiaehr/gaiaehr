@@ -328,7 +328,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								text: i18n('new_order'),
 								iconCls: 'icoAdd',
 								scope: me,
-								action: 'lab',
+								action: 'rad',
 								handler: me.onAddOrder
 							},
 							'-',

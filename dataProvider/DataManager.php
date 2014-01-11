@@ -53,7 +53,14 @@ class DataManager
                 $foo['code_text'] = $row['name'];
                 $foo['code_text_short'] = $row['description'];
                 $foo['active'] = ($row['status'] == 'Active' ? true : false);
-                $records[] = $foo;
+
+
+	            if(($params->active) && $params->active){
+		            if($foo['active']) $records[] = $foo;
+	            }else{
+		            $records[] = $foo;
+	            }
+
             }
             $total = count($records);
             $records = array_slice($records, $params->start, $params->limit);
@@ -139,30 +146,36 @@ class DataManager
      * @return stdClass
      */
     public function updateService(stdClass $params){
-        $data = get_object_vars($params);
-        foreach ($data as $key => $val) {
-            if ($val == null || $val == '') {
-                unset($data[$key]);
-            }
-        }
-	    unset($data['id']);
-        if ($params->code_type == 'CPT4') {
-            unset($data['code_type']);
-	        $sql = $this->db->sqlBind($data, 'cpt_codes', 'U', array('id' => $params->id));
-        } elseif ($params->code_type == 'HCPCS') {
-	        $sql = $this->db->sqlBind($data, 'hcpcs_codes', 'U', array('id' => $params->id));
-        } elseif ($params->code_type == 'Immunizations') {
-	        $sql = $this->db->sqlBind($data, 'immunizations', 'U', array('id' => $params->id));
-        } else {
-	        $this->labs->updateLabPanel($params);
-        }
+	    try{
+		    $data = get_object_vars($params);
+		    foreach ($data as $key => $val) {
+			    if ($val == null || $val == '') {
+				    unset($data[$key]);
+			    }
+		    }
+		    unset($data['id']);
+		    if ($params->code_type == 'CPT4') {
+			    unset($data['code_type']);
+			    $data['active'] = $params->active ? '1' : '0';
+			    $sql = $this->db->sqlBind($data, 'cpt_codes', 'U', array('id' => $params->id));
+		    } elseif ($params->code_type == 'HCPCS') {
+			    $sql = $this->db->sqlBind($data, 'hcpcs_codes', 'U', array('id' => $params->id));
+		    } elseif ($params->code_type == 'Immunizations') {
+			    $sql = $this->db->sqlBind($data, 'immunizations', 'U', array('id' => $params->id));
+		    } else {
+			    $this->labs->updateLabPanel($params);
+		    }
 
-		if(isset($sql)){
-			$this->db->setSQL($sql);
-			$this->db->execLog();
-		}
+		    if(isset($sql)){
+			    $this->db->setSQL($sql);
+			    $this->db->execLog();
+		    }
 
-        return $params;
+		    return $params;
+	    }catch (Exception $e){
+		    return array('success' => false, 'message' => $e->getMessage());
+	    }
+
     }
 
     /**

@@ -323,7 +323,8 @@ CREATE TABLE `documents_templates` (
   `updated_date` datetime DEFAULT NULL,
   `created_by_uid` int(11) DEFAULT NULL,
   `updated_by_uid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `template_type` (`template_type`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 CREATE TABLE `drugs` (

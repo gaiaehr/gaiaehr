@@ -38,6 +38,7 @@ Ext.define('App.model.administration.Services', {
 		{name: 'taxrates', type: 'string'},
 		{name: 'active', type: 'bool'},
 		{name: 'reportable', type: 'string'},
+		{name: 'has_children', type: 'bool'},
         ////////////////////////////////////
 		{name: 'sex', type: 'string'},
 		{name: 'age_start', type: 'int'},

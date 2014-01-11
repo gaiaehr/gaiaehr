@@ -36,8 +36,11 @@ class Services
     public function getCptCodesList(stdClass $params)
     {
         $sort = (isset($params->sort[0]) ? 'ORDER BY ' . $params->sort[0]->property . ' ' . $params->sort[0]->direction : '');
-        $params->active = (isset($params->active) ? $params->active : 1);
-        $this->db->setSQL("SELECT * FROM cpt_codes WHERE active = '{$params->active}' $sort");
+        $params->active = (isset($params->active) && $params->active ? 1 : 0);
+
+	    $where = $params->active ? 'WHERE active = \'1\'' : '';
+
+        $this->db->setSQL("SELECT * FROM cpt_codes {$where} $sort");
         return $this->db->fetchRecords(PDO::FETCH_ASSOC);
     }
 

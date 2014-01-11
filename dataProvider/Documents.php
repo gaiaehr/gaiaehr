@@ -242,57 +242,74 @@ class Documents
         $params = new stdClass();
 	    $params->eid = $eid;
         $encounter = $this->encounter->getEncounter($params);
+
+	    if(!isset($encounter['encounter'])){
+		    return $allNeededInfo;
+	    }
+
         $encounterCodes = $this->encounter->getEncounterCodes($params);
 
         $vitals = end($encounter['encounter']['vitals']);
-        $soap = $encounter['encounter']['soap'];
 
-        $rosCks = $encounter['encounter']['reviewofsystemschecks'];
+	    $soap = $encounter['encounter']['soap'];
 
-        unset(
-	        $rosCks['id'],
-	        $rosCks['pid'],
-	        $rosCks['eid'],
-	        $rosCks['uid'],
-	        $rosCks['date']
-        );
 
-        foreach ($rosCks as $rosc => $num) {
-            if ($num == '' || $num == null || $num == 0) {
+	    if(isset($encounter['encounter']['reviewofsystemschecks'])){
+		    $rosCks = $encounter['encounter']['reviewofsystemschecks'];
 
-                unset($rosCks[$rosc]);
-            }
+		    unset(
+		    $rosCks['id'],
+		    $rosCks['pid'],
+		    $rosCks['eid'],
+		    $rosCks['uid'],
+		    $rosCks['date']
+		    );
 
-        }
+		    foreach ($rosCks as $rosc => $num) {
+			    if ($num == '' || $num == null || $num == 0) {
+				    unset($rosCks[$rosc]);
+			    }
+		    }
+	    }
 
-        $reviewofsystems = $encounter['encounter']['reviewofsystems'];
-        unset($reviewofsystems['pid'], $reviewofsystems['eid'], $reviewofsystems['uid'], $reviewofsystems['id'], $reviewofsystems['date']);
-        foreach ($reviewofsystems as $ros => $num) {
-            if ($num == '' || $num == null || $num == 'null') {
+	    if(isset($encounter['encounter']['reviewofsystems'])){
+	        $reviewofsystems = $encounter['encounter']['reviewofsystems'];
 
-                unset($reviewofsystems[$ros]);
-            }
-        }
+		    unset(
+	        $reviewofsystems['pid'],
+	        $reviewofsystems['eid'],
+	        $reviewofsystems['uid'],
+	        $reviewofsystems['id'],
+	        $reviewofsystems['date']
+	        );
+
+	        foreach ($reviewofsystems as $ros => $num) {
+	            if ($num == '' || $num == null || $num == 'null') {
+	                unset($reviewofsystems[$ros]);
+	            }
+	        }
+	    }
 
         $cpt = array();
         $dx = array();
         $hcpc = array();
         $cvx = array();
 
-	    //print_r($encounterCodes);
+		if(isset($encounterCodes['rows'])){
+			foreach ($encounterCodes['rows'] as $code) {
+				if ($code['code_type'] == 'CPT') {
+					$cpt[] = $code;
+				} elseif ($code['code_type'] == 'ICD' || $code['code_type'] == 'ICD9' || $code['code_type'] == 'ICD10') {
+					$dx[] = $code;
+				} elseif ($code['code_type'] == 'HCPC') {
+					$hcpc[] = $code;
+				} elseif ($code['code_type'] == 'CVX') {
+					$cvx[] = $code;
+				}
+			}
+		}
 
 
-        foreach ($encounterCodes['rows'] as $code) {
-            if ($code['code_type'] == 'CPT') {
-                $cpt[] = $code;
-            } elseif ($code['code_type'] == 'ICD' || $code['code_type'] == 'ICD9' || $code['code_type'] == 'ICD10') {
-	            $dx[] = $code;
-            } elseif ($code['code_type'] == 'HCPC') {
-                $hcpc[] = $code;
-            } elseif ($code['code_type'] == 'CVX') {
-	            $cvx[] = $code;
-            }
-        }
 
         $medications = $this->medical->getPatientMedicationsByEncounterID($eid);
         $immunizations = $this->medical->getImmunizationsByEncounterID($eid);
@@ -326,10 +343,10 @@ class Documents
             '[ENCOUNTER_WAIST_CIRCUMFERENCE_CM]' => $vitals['waist_circumference_cm'],
             '[ENCOUNTER_BMI]' => $vitals['bmi'],
             '[ENCOUNTER_BMI_STATUS]' => $vitals['bmi_status'],
-            '[ENCOUNTER_SUBJECTIVE]' => $soap['subjective'],
-            '[ENCOUNTER_OBJECTIVE]' => $soap['objective'],
-            '[ENCOUNTER_ASSESSMENT]' => $soap['assessment'],
-            '[ENCOUNTER_PLAN]' => $soap['plan'],
+            '[ENCOUNTER_SUBJECTIVE]' => (isset($soap['subjective']) ? $soap['subjective'] : ''),
+            '[ENCOUNTER_OBJECTIVE]' => (isset($soap['objective']) ? $soap['objective'] : ''),
+            '[ENCOUNTER_ASSESSMENT]' => (isset($soap['assessment']) ? $soap['assessment'] : ''),
+            '[ENCOUNTER_PLAN]' => (isset($soap['plan']) ? $soap['plan'] : ''),
             '[ENCOUNTER_CPT_CODES]' => $this->tokensForEncountersList($cpt, 1),
             '[ENCOUNTER_ICD_CODES]' => $this->tokensForEncountersList($dx, 2),
             '[ENCOUNTER_HCPC_CODES]' => $this->tokensForEncountersList($hcpc, 3),
@@ -342,8 +359,8 @@ class Documents
             //            '[ENCOUNTER_SURGERY_LIST]'
             // =>$this->tokensForEncountersList($surgery,9),
             '[ENCOUNTER_PREVENTIVECARE_DISMISS]' => $this->tokensForEncountersList($preventivecaredismiss, 10),
-            '[ENCOUNTER_REVIEWOFSYSTEMSCHECKS]' => $this->tokensForEncountersList($rosCks, 11),
-            '[ENCOUNTER_REVIEWOFSYSTEMS]' => $this->tokensForEncountersList($reviewofsystems, 12),
+            '[ENCOUNTER_REVIEWOFSYSTEMSCHECKS]' => isset($rosCks) ? $this->tokensForEncountersList($rosCks, 11) : '',
+            '[ENCOUNTER_REVIEWOFSYSTEMS]' => isset($reviewofsystems) ? $this->tokensForEncountersList($reviewofsystems, 12) : '',
             //            '[]'     =>$this->tokensForEncountersList($hcpc,13),
             //            '[]'     =>$this->tokensForEncountersList($hcpc,14),
             //            '[]'     =>$this->tokensForEncountersList($hcpc,15),

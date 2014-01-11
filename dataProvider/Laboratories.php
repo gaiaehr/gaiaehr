@@ -61,30 +61,36 @@ class Laboratories
     }
 
 
-
 	public function getAllLoincPanels(stdClass $params)	{
-		$sql = "SELECT DISTINCT lp.ID as id,
-	                            lp.loinc_name as code_text,
+
+		$sql = "SELECT DISTINCT l.loinc_num as id,
+	                            l.shortname as code_text,
 	                            l.loinc_num as code,
 	                            l.class,
+	                            l.status,
 	                            'LOINC' as code_type,
 	                            e.ALIAS as code_text_short,
 	                            e.HAS_CHILDREN as has_children,
 	                            e.ACTIVE as active
-	                       FROM loinc_panels AS lp
-	                  LEFT JOIN loinc AS l ON l.loinc_num = lp.loinc_num
-	                  LEFT JOIN loinc_extra AS e ON l.loinc_num = e.loinc_num
-	                      WHERE lp.PARENT_ID = lp.ID ";
+	                       FROM loinc AS l
+	                   	   JOIN loinc_extra AS e ON l.loinc_num = e.loinc_num
+	                   	  WHERE l.status = 'ACTIVE'";
 
-		if($params->query != ''){
-			$sql .= "AND (l.shortname LIKE '%$params->query%'
-                      OR e.ALIAS LIKE '$params->query%'
-                      OR l.loinc_num LIKE '$params->query%') ";
+		$where = '';
+
+		if(isset($params->query) && $params->query != ''){
+			$params->query = trim($params->query);
+			$where = " AND (l.shortname LIKE '%{$params->query}%' OR e.ALIAS LIKE '{$params->query}%' OR l.loinc_num LIKE '{$params->query}%') ";
 		}
 
-		$sql .= "ORDER BY l.common_order_rank";
-		$this->db->setSQL($sql);
+		if(isset($params->active) && $params->active){
+			$where .= ' AND e.ACTIVE = \'1\' ';
+		}
 
+		$sql .= "$where ORDER BY l.common_order_rank";
+
+//		print $sql;
+		$this->db->setSQL($sql);
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 
 	}
@@ -113,8 +119,9 @@ class Laboratories
 
 	public function updateLabPanel(stdClass $params){
 		$this->db->setSQL("UPDATE loinc_extra
-		                      SET ALIAS = '$params->code_text_short', ACTIVE = '$params->active'
-		                    WHERE LOINC_NUM = '$params->id'");
+		                      SET ALIAS = '$params->code_text_short',
+		                          ACTIVE = '$params->active'
+		                    WHERE LOINC_NUM = '$params->code'");
 		$this->db->execOnly();
 		return $params;
 
@@ -156,71 +163,42 @@ class Laboratories
     public function getLabObservationFieldsByParentId($panelId) {
 
 	    $this->db->setSQL("SELECT DISTINCT p.LOINC_NUM AS id,
-                                  p.PARENT_LOINC AS parent_id,
-                                  e.ALIAS AS code_text_short,
-                                  p.LOINC_NAME AS loinc_name,
-                                  p.LOINC_NUM AS loinc_number,
-                                  p.OBSERVATION_REQUIRED_IN_PANEL AS required_in_panel,
-                                  'LOINC' AS code_type,
-                                  l.unitsrequired AS units_required,
-                                  IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_units) AS default_unit,
-                                  e.RANGE_START AS range_start,
-                                  e.RANGE_END AS range_end,
-                                  e.DESCRIPTION AS description,
-                                  e.ACTIVE AS active
-                             FROM loinc_panels AS p
-                        LEFT JOIN loinc AS l ON p.LOINC_NUM = l.LOINC_NUM
-                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.LOINC_NUM
-                            WHERE p.PARENT_LOINC != p.LOINC_NUM
-                              AND p.PARENT_ID = '$panelId'
-                         ORDER BY SEQUENCE");
+		                                  p.PARENT_LOINC AS parent_id,
+		                                  p.ID AS panel_id,
+		                                  e.ALIAS AS code_text_short,
+		                                  p.LOINC_NAME AS loinc_name,
+		                                  p.LOINC_NUM AS loinc_number,
+		                                  p.OBSERVATION_REQUIRED_IN_PANEL AS required_in_panel,
+		                                  'LOINC' AS code_type,
+		                                  l.unitsrequired AS units_required,
+		                                  IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_ucum_units) AS default_unit,
+		                                  e.RANGE_START AS range_start,
+		                                  e.RANGE_END AS range_end,
+		                                  e.DESCRIPTION AS description,
+		                                  e.HAS_CHILDREN AS has_children,
+		                                  e.ACTIVE AS active
+		                             FROM loinc_panels AS p
+		                        LEFT JOIN loinc AS l ON p.LOINC_NUM = l.LOINC_NUM
+		                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.LOINC_NUM
+		                            WHERE p.PARENT_LOINC != p.LOINC_NUM
+		                              AND p.PARENT_LOINC = '$panelId'
+		                         ORDER BY SEQUENCE");
 
 	    $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 
         foreach($records AS $index => $row){
-	        $this->db->setSQL("SELECT DISTINCT p.LOINC_NUM AS id,
-	                                  p.PARENT_LOINC AS parent_id,
-	                                  p.LOINC_NAME AS loinc_name,
-	                                  p.LOINC_NUM AS loinc_number,
-	                                  p.OBSERVATION_REQUIRED_IN_PANEL AS required_in_panel,
-	                                  'LOINC' AS code_type,
-	                                  l.unitsrequired AS units_required,
-                                      IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_units) AS default_unit,
-	                                  e.RANGE_START AS range_start,
-	                                  e.RANGE_END AS range_end,
-	                                  e.DESCRIPTION AS description,
-	                                  e.ACTIVE AS active
-	                             FROM loinc_panels AS p
-	                        LEFT JOIN loinc AS l ON p.LOINC_NUM = l.LOINC_NUM
-	                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.LOINC_NUM
-	                            WHERE p.PARENT_LOINC != p.LOINC_NUM
-	                              AND p.PARENT_LOINC = '{$row['id']}'
-	                              AND l.STATUS = 'ACTIVE'
-	                         ORDER BY SEQUENCE");
-	        $children = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+			$children = array();
+	        if($row['has_children']){
+		        $children = $this->getLabObservationFieldsByParentId($row['id']);
+	        }
+
 	        if(!empty($children)){
 		        unset($records[$index]);
 		        $records = array_merge($records, $children);
 	        }
         }
 
-//	    if(empty($records)){
-//		    $this->db->setSQL("SELECT DISTINCT l.loinc_num AS id,
-//	                                  l.long_common_name AS loinc_name,
-//	                                  l.loinc_num AS loinc_number,
-//	                                  'LOINC' AS code_type,
-//	                                  l.unitsrequired AS units_required,
-//                                      IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_units) AS default_unit,
-//	                                  e.RANGE_START AS range_start,
-//	                                  e.RANGE_END AS range_end,
-//	                                  e.DESCRIPTION AS description,
-//	                                  e.ACTIVE AS active
-//	                             FROM loinc AS l
-//	                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.loinc_num
-//	                            WHERE l.loinc_num = '{$loinc}'
-//	                              AND l.STATUS = 'ACTIVE'");
-//		    $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-//	    }
+
         return $records;
     }
 
@@ -246,7 +224,7 @@ class Laboratories
 	public function getRadLoincLiveSearch(stdClass $params)
 	{
 		$this->db->setSQL("SELECT l.loinc_num AS id,
-								  IF(e.ALIAS IS NOT NULL && e.ALIAS != '', e.ALIAS, l.component) AS loinc_name,
+								  IF(e.ALIAS IS NOT NULL && e.ALIAS != '', e.ALIAS, l.long_common_name) AS loinc_name,
 								  l.loinc_num AS loinc_number
 							 FROM loinc_extra AS e
 						LEFT JOIN loinc AS l ON e.LOINC_NUM = l.loinc_num

@@ -100,7 +100,7 @@ Ext.define('App.model.patient.Medications', {
 			dateFormat:'Y-m-d H:i:s'
 		},
 		{
-			name: 'create_date',
+			name: 'created_date',
 			type:'date',
 			dateFormat:'Y-m-d H:i:s'
 		},

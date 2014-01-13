@@ -36,6 +36,7 @@ Ext.define('App.view.Viewport', {
 
 	    me.nav = me.getController('Navigation');
 	    me.cron = me.getController('Cron');
+	    me.log = me.getController('LogOut');
 
 	    me.lastCardNode = null;
         me.prevNode = null;

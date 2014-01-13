@@ -44,7 +44,7 @@ Ext.define('App.controller.patient.Results', {
 
 	onOrderSelectionChange: function(model, records){
 		if(records.length > 0){
-			this.getOrderResult(record[0]);
+			this.getOrderResult(records[0]);
 		}else{
 			this.resetOrderResult();
 		}
@@ -62,9 +62,12 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 
-
-
-
+	/**
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	 */
 
 
 	onLaboratoryPreviewRender: function(panel){

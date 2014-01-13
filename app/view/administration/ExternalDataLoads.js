@@ -303,8 +303,10 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 	},
 
 	onCodeDblClick:function(grid, record){
-		var me = this;
-		app.setTask(false);
+		var me = this,
+			log = app.log;
+
+		log.ActivityMonitor(false);
 		grid.el.mask(i18n('installing_database_please_wait') + '...');
 		ExternalDataUpdate.updateCodes(record.data, function(provider, response){
 			grid.el.unmask();
@@ -315,7 +317,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 			else{
 				me.alert(response.result.error, 'error');
 			}
-			app.setTask(true);
+			log.ActivityMonitor(true);
 		});
 	},
 

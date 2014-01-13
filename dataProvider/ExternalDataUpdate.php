@@ -775,13 +775,13 @@ class ExternalDataUpdate
             }
         }
 
-        $indexes_array = explode(';', $indexes_load);
-        foreach ($indexes_array as $val1) {
-            if (trim($val1) != '') {
-                $stmt = $this->db->conn()->prepare($val1);
-                $stmt->execute();
-            }
-        }
+//        $indexes_array = explode(';', $indexes_load);
+//        foreach ($indexes_array as $val1) {
+//            if (trim($val1) != '') {
+//                $stmt = $this->db->conn()->prepare($val1);
+//                $stmt->execute();
+//            }
+//        }
         $data = explode(';', $data_load);
         foreach ($data as $val) {
             foreach ($rx_info as $key => $value) {

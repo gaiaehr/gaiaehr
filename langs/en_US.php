@@ -1249,4 +1249,6 @@ $LANG = array(
     'range'                                 => 'Range',
 	'abnormal'                              => 'Abnormal',
 	'children_fields_must_be_remove_first'  => 'Children fields must be remove first',
+	'order'                                 => 'Order',
+	'order_result'                          => 'Order Result',
 );

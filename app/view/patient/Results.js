@@ -17,92 +17,135 @@
  */
 
 Ext.define('App.view.patient.Results', {
-    extend: 'Ext.panel.Panel',
-	xtype:'patientresultspanel',
-	layout:'border',
-	border:false,
-	items:[
+	extend: 'Ext.panel.Panel',
+	xtype: 'patientresultspanel',
+	layout: {
+		type: 'vbox',
+		align: 'stretch'
+	},
+	border: false,
+	items: [
 		{
 			xtype: 'grid',
-			region: 'center',
-			action:'orders',
+			action: 'orders',
+			flex: 1,
 			store: Ext.create('App.store.patient.PatientsOrders', {
-				remoteFilter:true
+				remoteFilter: true
 			}),
-			tbar:[
-				'->',
-				{
-					xtype:'combobox'
-				}
-			],
+//			tbar: [
+//				'->',
+//				{
+//					xtype: 'combobox'
+//				}
+//			],
 			split: true,
 			columns: [
 				{
 					header: i18n('orders'),
-					dataIndex: 'label',
-					menuDisabled:true,
-					resizable:false,
+					dataIndex: 'description',
+					menuDisabled: true,
+					resizable: false,
 					flex: 1
 				},
 				{
 					header: i18n('status'),
 					dataIndex: 'status',
-					menuDisabled:true,
-					resizable:false,
+					menuDisabled: true,
+					resizable: false,
 					width: 60
 				}
 			]
 		},
 		{
-			xtype: 'grid',
-			action: 'results',
-//			title: i18n('order_observations_results'),
-			region: 'south',
-			split: true,
-//			height:350,
-			tbar:[
-				i18n('observations_results'),
-				'->',
+			xtype: 'form',
+			title: i18n('order_result'),
+			layout: {
+				type: 'hbox',
+				align: 'stretch'
+			},
+			margin: '5 0 0 0',
+			frame:true,
+			height: 350,
+			tools:[
 				{
-					xtype:'button',
-					text:i18n('view_document')
+					xtype: 'button',
+					text: i18n('view_document')
 				}
 			],
-			columns:[
+			items: [
 				{
-					text:i18n('status'),
-					menuDisabled:true,
-					width:60
+					xtype:'container',
+					layout:'anchor',
+					defaults:{
+						xtype:'textfield'
+					},
+					margin: '5 15 5 5',
+					items:[
+						{
+							fieldLabel:'Test'
+						},
+						{
+							fieldLabel:'Test'
+						},
+						{
+							fieldLabel:'Test'
+						},
+						{
+							fieldLabel:'Test'
+						}
+					]
 				},
 				{
-					text:i18n('name'),
-					menuDisabled:true,
-					flex:1
+					xtype: 'grid',
+					action: 'results',
+					flex: 1,
+					region: 'south',
+					split: true,
+					columns: [
+						{
+							text: i18n('status'),
+							menuDisabled: true,
+							width: 60
+						},
+						{
+							text: i18n('name'),
+							menuDisabled: true,
+							flex: 1
+						},
+						{
+							text: i18n('value'),
+							menuDisabled: true,
+							width: 60
+						},
+						{
+							text: i18n('units'),
+							menuDisabled: true,
+							width: 60
+						},
+						{
+							text: i18n('range'),
+							menuDisabled: true,
+							width: 60
+						},
+						{
+							text: i18n('abnormal'),
+							menuDisabled: true,
+							width: 75
+						},
+						{
+							text: i18n('notes'),
+							menuDisabled: true,
+							flex: 1
+						}
+					]
+				}
+			],
+			buttons:[
+				{
+					text:i18n('reset')
 				},
 				{
-					text:i18n('value'),
-					menuDisabled:true,
-					width:60
-				},
-				{
-					text:i18n('units'),
-					menuDisabled:true,
-					width:60
-				},
-				{
-					text:i18n('range'),
-					menuDisabled:true,
-					width:60
-				},
-				{
-					text:i18n('abnormal'),
-					menuDisabled:true,
-					width:75
-				},
-				{
-					text:i18n('notes'),
-					menuDisabled:true,
-					flex:1
+					text:i18n('save')
 				}
 			]
 		}

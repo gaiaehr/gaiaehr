@@ -20,9 +20,6 @@ Ext.define('App.controller.patient.Results', {
 		me.control({
 			'patientresultspanel > grid[action=orders]': {
 				selectionchange: me.onOrderSelectionChange
-			},
-			'patientresultspanel > grid[action=results]': {
-				render: me.onResultGridRender
 			}
 		});
 	},
@@ -45,26 +42,23 @@ Ext.define('App.controller.patient.Results', {
 		}
 	},
 
-	onOrderSelectionChange: function(model, record){
-		var me = this,
-			store = me.getResultsGrid().getStore();
-
-		store.clearFilter(true);
-		store.load({
-			filters:[
-				{
-					property: 'order_id',
-					value: record.data.id
-				}
-			]
-		});
+	onOrderSelectionChange: function(model, records){
+		if(records.length > 0){
+			this.getOrderResult(record[0]);
+		}else{
+			this.resetOrderResult();
+		}
 	},
 
-	onResultGridRender:function(grid){
-//		grid.getHeader().insert(1,{
-//			xtype:'button',
-//			text:i18n('view_document')
-//		});
+	getOrderResult:function(orderRecord){
+
+		say(orderRecord);
+
+
+	},
+
+	resetOrderResult:function(){
+
 	},
 
 
@@ -204,22 +198,12 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onLabResultsReset: function(btn){
-		var form = btn.up('form').getForm();
-		form.reset();
-	},
-
 	getLabDocument: function(src){
 		var panel = this.query('[action="labPreviewPanel"]')[0];
 		panel.remove(this.doc);
 		panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
 			src: src
 		}));
-	},
-
-	removeLabDocument: function(src){
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
 	}
 
 });

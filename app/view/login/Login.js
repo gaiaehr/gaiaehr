@@ -329,10 +329,13 @@ Ext.define('App.view.login.Login', {
 	 * form rest function
 	 */
 	onFormReset: function(){
-		var me = this, form = me.formLogin.getForm();
-		form.reset();
+		var me = this,
+			form = me.formLogin.getForm();
+
 		form.setValues({
 			site: window.site,
+			authUser:'',
+			authPass:'',
 			lang: me.currLang
 		});
 		me.formLogin.getComponent('authUser').focus();

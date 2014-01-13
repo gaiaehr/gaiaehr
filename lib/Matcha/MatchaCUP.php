@@ -677,7 +677,7 @@ class MatchaCUP {
 							$values[$index] = 0;
 						}
 					} elseif($type == 'date'){
-						$values[$index] = ($foo == '' ? 'NULL' : $values[$index]);
+						$values[$index] = ($foo == '' ? null : $values[$index]);
 					} elseif($type == 'array'){
 						$values[$index] = ($foo == '' ? 'NULL' : serialize($values[$index]));
 					}

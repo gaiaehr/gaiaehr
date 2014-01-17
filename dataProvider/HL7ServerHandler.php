@@ -16,17 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 if (!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
 
-if( isset($_SESSION['user']) &&
-	isset($_SESSION['user']['auth']) &&
-	$_SESSION['user']['auth'] &&
-	isset($_SESSION['user']['token']) &&
-	$_SESSION['user']['token'] != $_REQUEST['token']){
+//if( isset($_SESSION['user']) &&
+//	isset($_SESSION['user']['auth']) &&
+//	$_SESSION['user']['auth']
+//	isset($_SESSION['user']['token']) &&
+//	$_SESSION['user']['token'] != $_REQUEST['token']
+//	)
+//	{
+
+		if(!isset($_REQUEST['action'])) die('Action Error!');
 
 	function checkStatus($port){
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -37,11 +42,13 @@ if( isset($_SESSION['user']) &&
 
 	switch($_REQUEST['action']){
 		case 'start':
-			$cmd = 'php -f "C:\inetpub\wwwroot\gaiaehr\lib\HL7\HL7Server.php" -- "C:/inetpub/wwwroot/gaiaehr/dataProvider" "default" "HL7Server" "Process" "9100"';
+			$cmd = 'php -f "'.dirname(dirname(__FILE__)).'/lib/HL7/HL7Server.php" -- "127.0.0.1" 9100 "'.dirname(dirname(__FILE__)).'/dataProvider" "HL7Server" "Process" "default"';
 			if (substr(php_uname(), 0, 7) == "Windows"){
 				pclose(popen("start /B ". $cmd, "r"));
 			}
 			else {
+
+				print $cmd;
 				exec($cmd . " > /dev/null &");
 			}
 			break;
@@ -62,9 +69,9 @@ if( isset($_SESSION['user']) &&
 			break;
 	}
 
-}else{
-	die('Not Authorized!');
-}
+//}else{
+//	die('Not Authorized!');
+//}
 
 
 //print '<pre>';

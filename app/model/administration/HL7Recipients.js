@@ -35,11 +35,19 @@ Ext.define('App.model.administration.HL7Recipients', {
 		{
 			name: 'recipient_facility',
 			type: 'string',
+			len: 80,
+			comment: 'Facility Name'
+		},
+		{
+			name: 'recipient_address',
+			type: 'string',
+			len: 1000,
 			comment: 'Facility Name'
 		},
 		{
 			name: 'recipient_application',
 			type: 'string',
+			len: 80,
 			comment: 'Application Name'
 		},
 		{
@@ -50,6 +58,7 @@ Ext.define('App.model.administration.HL7Recipients', {
 		{
 			name: 'port',
 			type: 'string',
+			len: 10,
 			comment: 'url port if any'
 		},
 		{
@@ -59,10 +68,7 @@ Ext.define('App.model.administration.HL7Recipients', {
 		},
 		{
 			name: 'secret_key',
-			type: 'string',
-			dataType: 'blob',
-			encrypt: true,
-			comment: 'This field is encrypted automatically by Matcha'
+			type: 'string'
 		},
 		{
 			name: 'active',

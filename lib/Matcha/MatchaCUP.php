@@ -75,6 +75,13 @@ class MatchaCUP {
 	private $bindedValues = array();
 
 	/**
+	 * set to true if want to trim values
+	 * during parseValues function
+	 * @var bool
+	 */
+	public $autoTrim = true;
+
+	/**
 	 * function sql($sql = NULL):
 	 * Method to pass SQL statement without sqlBuilding process
 	 * this is not the preferred way, but sometimes you need to do it.
@@ -655,39 +662,50 @@ class MatchaCUP {
 	 * @return array
 	 */
 	private function parseValues($data){
+		$record = array();
 		$columns = array_keys($data);
 		$values = array_values($data);
 
-		foreach($columns as $index => $column)
-			if(!in_array($column, $this->fields))
-				unset($columns[$index], $values[$index]);
 
-		$properties = (array)MatchaModel::__getFieldsProperties($columns, $this->model);
-		foreach($values as $index => $foo){
-			if(!isset($properties[$index]['store']) || (isset($properties[$index]['store']) && $properties[$index]['store'] != false)){
-				$type = $properties[$index]['type'];
-
-				if(isset($properties[$index]['encrypt']) && $properties[$index]['encrypt']){
-					$values[$index] = $this->dataEncrypt($values[$index]);
-				} else{
-					if($type == 'bool'){
-						if($foo === true){
-							$values[$index] = 1;
-						} elseif($foo === false){
-							$values[$index] = 0;
-						}
-					} elseif($type == 'date'){
-						$values[$index] = ($foo == '' ? null : $values[$index]);
-					} elseif($type == 'array'){
-						$values[$index] = ($foo == '' ? 'NULL' : serialize($values[$index]));
-					}
-				}
-			} else{
+		foreach($columns as $index => $column){
+			if(!in_array($column, $this->fields)){
 				unset($columns[$index], $values[$index]);
 			}
 		}
 
-		return array_combine($columns, $values);
+		foreach($columns as $col){
+
+			$properties = (array)MatchaModel::__getFieldProperties($col, $this->model);
+
+			if(!isset($properties['store']) || $properties['store']){
+
+				$type = MatchaModel::__getFieldType($col, $this->model);
+
+				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
+					$data[$col] = $this->dataEncrypt($data[$col]);
+				} else{
+					if($type == 'bool'){
+						if($data[$col] === true){
+							$data[$col] = 1;
+						} elseif($col === false){
+							$data[$col] = 0;
+						}
+					} elseif($type == 'date'){
+						$data[$col] = ($data[$col] == '' ? null : $data[$col]);
+					} elseif($type == 'array'){
+						$data[$col] = ($data[$col] == '' ? null : serialize($data[$col]));
+					}
+				}
+
+				if($this->autoTrim){
+					$record[$col] = trim($data[$col]);
+				}else{
+					$record[$col] = $data[$col];
+				}
+			}
+		}
+
+		return $record;
 	}
 
 	/**

@@ -20,13 +20,16 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 $http = 'http';
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
-	|| $_SERVER['SERVER_PORT'] == 443) {
+	|| (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) {
 	$http = 'https';
 }
 
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/';
+
 // general
 $_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
-$_SESSION['url']  ="$http://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+$_SESSION['url']  ="$http://{$host}{$uri}";
 
 // sites values
 $_SESSION['sites']    = array();

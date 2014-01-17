@@ -12,12 +12,16 @@ class OBX extends Segments{
 
 	protected $children = array('NTE');
 
+	protected $dynamicFields = array(
+		// field OBX-2 defines OBX-5
+		'2' => '5'
+	);
+
 	function __destruct(){
 		parent::__destruct();
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
 
 		$this->rawSeg = array();
 		$this->rawSeg[0] = 'OBX';
@@ -40,12 +44,20 @@ class OBX extends Segments{
 		 * RP   Reference Pointer
 		 * SN   Structured Numeric
 		 * ST   String Data.
-		 * TM   Time
+		 * TM
+		 * TN
+		 * TS
+		 * TX
+		 * XAD
+		 * XCN
+		 * XON
+		 * XPN
+		 * XTN
 		 */
 		$this->rawSeg[2] = $this->getType('ID');
 		$this->rawSeg[3] = $this->getType('CE');
 		$this->rawSeg[4] = $this->getType('ST');
-		$this->rawSeg[5] = 'VAR:2'; // OBX-2-value type contains the data type for this field
+		$this->rawSeg[5] = 2; // OBX-2-value type contains the data type for this field
 		$this->rawSeg[6] = $this->getType('CE');
 		$this->rawSeg[7] = $this->getType('ST');
 		/**
@@ -109,5 +121,6 @@ class OBX extends Segments{
 		$this->rawSeg[24] = $this->getType('XAD');
 		$this->rawSeg[25] = $this->getType('XCN');
 
+		parent::__construct($hl7);
 	}
 }

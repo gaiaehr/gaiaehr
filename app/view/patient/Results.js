@@ -20,25 +20,17 @@ Ext.define('App.view.patient.Results', {
 	extend: 'Ext.panel.Panel',
 	xtype: 'patientresultspanel',
 	layout: {
-		type: 'vbox',
-		align: 'stretch'
+		type: 'border'
 	},
 	border: false,
 	items: [
 		{
 			xtype: 'grid',
 			action: 'orders',
-			flex: 1,
-			store: Ext.create('App.store.patient.PatientsOrders', {
+			region: 'center',
+			split: true,			store: Ext.create('App.store.patient.PatientsOrders', {
 				remoteFilter: true
 			}),
-//			tbar: [
-//				'->',
-//				{
-//					xtype: 'combobox'
-//				}
-//			],
-			split: true,
 			columns: [
 				{
 					header: i18n('orders'),
@@ -59,93 +51,227 @@ Ext.define('App.view.patient.Results', {
 		{
 			xtype: 'form',
 			title: i18n('order_result'),
+			region: 'south',
+			height: 420,
+			frame: true,
+			split: true,
 			layout: {
-				type: 'hbox',
-				align: 'stretch'
+				type: 'border'
 			},
-			margin: '5 0 0 0',
-			frame:true,
-			height: 350,
-			tools:[
+			tools: [
 				{
 					xtype: 'button',
-					text: i18n('view_document')
+					text: i18n('view_document'),
+					action:'orderDocumentViewBtn'
 				}
 			],
 			items: [
 				{
-					xtype:'container',
-					layout:'anchor',
-					defaults:{
-						xtype:'textfield'
+					xtype: 'panel',
+					title: i18n('report_info'),
+					region: 'west',
+					collapsible: true,
+					autoScroll: true,
+					width:260,
+					bodyPadding: 5,
+					split: true,
+					layout:{
+						type:'vbox',
+						align:'stretch'
 					},
-					margin: '5 15 5 5',
-					items:[
+					items: [
 						{
-							fieldLabel:'Test'
+							xtype: 'fieldset',
+							title: i18n('report_info'),
+							defaults: {
+								xtype: 'textfield',
+								anchor:'100%'
+							},
+							layout: 'anchor',
+							items: [
+								{
+									xtype: 'datefield',
+									fieldLabel: i18n('report_date'),
+									name: 'result_date',
+									format: 'Y-m-d'
+								},
+								{
+									fieldLabel: i18n('report_number'),
+									name: 'lab_order_id'
+								},
+								{
+									fieldLabel: i18n('status'),
+									name: 'result_status'
+								},
+								{
+									fieldLabel: i18n('observation_date'),
+									name: 'observation_date'
+								},
+								{
+									fieldLabel: i18n('specimen'),
+									name: 'specimen_text'
+								},
+								{
+									xtype: 'textareafield',
+									fieldLabel: i18n('specimen_notes'),
+									name: 'specimen_notes',
+									height: 50
+								},
+								{
+									xtype: 'filefield',
+									labelAlign: 'top',
+									fieldLabel: i18n('upload_document'),
+									action: 'orderresultuploadfield',
+									submitValue: false
+								}
+							]
 						},
 						{
-							fieldLabel:'Test'
-						},
-						{
-							fieldLabel:'Test'
-						},
-						{
-							fieldLabel:'Test'
+							xtype: 'fieldset',
+							title: i18n('laboratory_info'),
+							defaults: {
+								xtype: 'textfield',
+								anchor:'100%'
+							},
+							layout: 'anchor',
+							margin: 0,
+							collapsible: true,
+							collapsed: true,
+							items: [
+								{
+									fieldLabel: i18n('name'),
+									name: 'lab_name'
+								},
+								{
+									xtype: 'textareafield',
+									fieldLabel: i18n('address'),
+									name: 'lab_address',
+									height: 50
+								}
+							]
 						}
 					]
 				},
 				{
 					xtype: 'grid',
-					action: 'results',
+					action: 'observations',
 					flex: 1,
-					region: 'south',
+					region: 'center',
 					split: true,
-					columns: [
+					plugins: [
 						{
-							text: i18n('status'),
-							menuDisabled: true,
-							width: 60
-						},
+							ptype:'cellediting',
+							clicksToEdit: 1
+						}
+					],
+					columns: [
 						{
 							text: i18n('name'),
 							menuDisabled: true,
-							flex: 1
+							dataIndex: 'code_text',
+							width: 350
 						},
 						{
 							text: i18n('value'),
 							menuDisabled: true,
-							width: 60
+							dataIndex: 'value',
+							width: 180,
+							editor:{
+								xtype:'textfield'
+							},
+							renderer:function(v, meta, record){
+								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
+									orange = ['L', 'H', 'A', 'W', 'MS'],
+									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
+									green = ['N'];
+
+								if(Ext.Array.contains(green, record.data.abnormal_flag)){
+									return '<span style="color:green;">' + v + '</span>';
+								}else if(Ext.Array.contains(blue, record.data.abnormal_flag)){
+									return '<span style="color:blue;">' + v + '</span>';
+								}else if(Ext.Array.contains(orange, record.data.abnormal_flag)){
+									return '<span style="color:orange;">' + v + '</span>';
+								}else if(Ext.Array.contains(red, record.data.abnormal_flag)){
+									return '<span style="color:red;">' + v + '</span>';
+								}else{
+									return v;
+								}
+							}
 						},
 						{
 							text: i18n('units'),
 							menuDisabled: true,
-							width: 60
-						},
-						{
-							text: i18n('range'),
-							menuDisabled: true,
-							width: 60
+							dataIndex: 'units',
+							width: 75,
+							editor:{
+								xtype:'textfield'
+							}
 						},
 						{
 							text: i18n('abnormal'),
 							menuDisabled: true,
-							width: 75
+							dataIndex: 'abnormal_flag',
+							width: 75,
+							editor:{
+								xtype:'textfield'
+							},
+							renderer:function(v, attr){
+								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
+									orange = ['L', 'H', 'A', 'W', 'MS'],
+									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
+									green = ['N'];
+
+								if(Ext.Array.contains(green, v)){
+									return '<span style="color:green;">' + v + '</span>';
+								}else if(Ext.Array.contains(blue, v)){
+									return '<span style="color:blue;">' + v + '</span>';
+								}else if(Ext.Array.contains(orange, v)){
+									return '<span style="color:orange;">' + v + '</span>';
+								}else if(Ext.Array.contains(red, v)){
+									return '<span style="color:red;">' + v + '</span>';
+								}else{
+									return v;
+								}
+							}
+						},
+						{
+							text: i18n('range'),
+							menuDisabled: true,
+							dataIndex: 'reference_rage',
+							width: 150,
+							editor:{
+								xtype:'textfield'
+							}
 						},
 						{
 							text: i18n('notes'),
 							menuDisabled: true,
-							flex: 1
+							dataIndex: 'notes',
+							width: 300,
+							editor:{
+								xtype:'textfield'
+							}
+						},
+						{
+							text: i18n('status'),
+							menuDisabled: true,
+							dataIndex: 'observation_result_status',
+							width: 60,
+							editor:{
+								xtype:'textfield'
+							}
 						}
 					]
 				}
 			],
-			buttons:[
+			buttons: [
 				{
-					text:i18n('reset')
+					text: i18n('reset'),
+					action:'orderResultResetBtn'
 				},
 				{
-					text:i18n('save')
+					text: i18n('save'),
+					action: 'orderResultSaveBtn'
 				}
 			]
 		}

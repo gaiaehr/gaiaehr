@@ -166,7 +166,7 @@ class Laboratories
 		                                  p.PARENT_LOINC AS parent_id,
 		                                  p.ID AS panel_id,
 		                                  e.ALIAS AS code_text_short,
-		                                  p.LOINC_NAME AS loinc_name,
+		                                  l.long_common_name AS loinc_name,
 		                                  p.LOINC_NUM AS loinc_number,
 		                                  p.OBSERVATION_REQUIRED_IN_PANEL AS required_in_panel,
 		                                  'LOINC' AS code_type,

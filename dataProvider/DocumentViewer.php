@@ -26,7 +26,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	/**
 	 * init Matcha
 	 */
-	require_once(dirname(__FILE__).'/../classes/MatchaHelper.php');
+	require_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
 	new MatchaHelper();
 	$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 
@@ -81,12 +81,11 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	}
 
 	if($doc['encrypted'] == true){
-		include_once(dirname(__FILE__) . '/../classes/Crypt.php');
-		$content = Crypt::decrypt(file_get_contents($path));
+		$content = MatchaUtils::__decrypt(file_get_contents($path));
 	}else{
 		$content =  file_get_contents($path);
 	}
-	header('Content-type: '. get_mime_type($doc['name']));
+	header('Content-Type: '. get_mime_type($doc['name']));
 	header('Content-Disposition: inline; filename="' . $doc['name'] . '"');
 	header('Content-Transfer-Encoding: binary');
 	header('Content-Length: ' . strlen($content));

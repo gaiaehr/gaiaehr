@@ -68,7 +68,7 @@ while(true){
 	// Handle Input
 	foreach ($clients as $key => $client) { // for each client
 		if (in_array($client, $read)) {
-			$data = @socket_read($client, 1024*10);
+			$data = @socket_read($client, 1024 * 1000);
 
 			if (!$data) {
 				continue;
@@ -80,7 +80,8 @@ while(true){
 			}
 			if ($data == 'shutdown') {
 				socket_close($client);
-				break 2;
+				socket_close($sock);
+				exit;
 			}
 			// ****************************************************** //
 			// ** Place message logic ******************************* //

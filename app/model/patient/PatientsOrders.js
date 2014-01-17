@@ -19,93 +19,104 @@
 Ext.define('App.model.patient.PatientsOrders', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_orders',
-		comment:'Patients Orders'
+		name: 'patient_orders',
+		comment: 'Patients Orders'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Patient Lab Order ID'
-        },
-        {
-	        name: 'eid',
-	        type: 'int',
-	        index: true,
-	        comment: 'encounter id'
-        },
-        {
-	        name: 'pid',
-	        type: 'int',
-	        index: true,
-	        comment: 'patient ID'
-        },
-        {
-	        name: 'uid',
-	        type: 'int',
-	        comment: 'user ID who created the order'
-        },
-        {
-	        name: 'code',
-	        type: 'string',
-	        comment: 'Order code'
-        },
-        {
-	        name: 'code_type',
-	        type: 'string',
-	        defaultValue: 'loinc',
-	        comment: 'Order code type loinc'
-        },
-        {
-	        name: 'description',
-	        type: 'string',
-	        comment: 'Order Text Description'
-        },
-        {
-	        name: 'date_ordered',
-	        type: 'date',
-	        dateFormat:'Y-m-d H:i:s',
-	        comment: 'when the order was generated'
-        },
-        {
-	        name: 'date_collected',
-	        type: 'date',
-	        dateFormat:'Y-m-d H:i:s',
-	        comment: 'when the results were collected'
-        },
-        {
-	        name: 'priority',
-	        type: 'string',
-	        comment: 'order priority'
-        },
-        {
-	        name: 'status',
-	        type: 'string',
-	        comment: 'order status'
-        },
-        {
-	        name: 'order_type',
-	        type: 'string',
-	        comment: 'rad || lab || cvx || rx'
-        },
-        {
-	        name: 'note',
-	        type: 'string'
-        },
-        {
-	        name: 'resultsDoc',
-	        type: 'string',
-	        comment: 'collected results document if any'
-        }
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read:Orders.getPatientOrders,
-			create:Orders.addPatientOrder,
-			update:Orders.updatePatientOrder,
-			destroy:Orders.deletePatientOrder
+		{
+			name: 'id',
+			type: 'int'
 		},
-		remoteGroup:false
-	}
+		{
+			name: 'eid',
+			type: 'int',
+			index: true,
+			comment: 'encounter id'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true,
+			comment: 'patient ID'
+		},
+		{
+			name: 'uid',
+			type: 'int',
+			comment: 'user ID who created the order'
+		},
+		{
+			name: 'hl7_recipient_id',
+			type: 'int',
+			comment: 'laboratory id if electronic request'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 25,
+			comment: 'Order code'
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			defaultValue: 'LOINC',
+			len: 15,
+			comment: 'Order code type LOINC'
+		},
+		{
+			name: 'description',
+			type: 'string',
+			comment: 'Order Text Description'
+		},
+		{
+			name: 'date_ordered',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			comment: 'when the order was generated'
+		},
+		{
+			name: 'date_collected',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			comment: 'when the results were collected'
+		},
+		{
+			name: 'priority',
+			type: 'string',
+			len: 25,
+			comment: 'order priority'
+		},
+		{
+			name: 'status',
+			type: 'string',
+			len: 25,
+			comment: 'order status'
+		},
+		{
+			name: 'order_type',
+			type: 'string',
+			comment: 'rad || lab || cvx || rx'
+		},
+		{
+			name: 'note',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: Orders.getPatientOrders,
+			create: Orders.addPatientOrder,
+			update: Orders.updatePatientOrder,
+			destroy: Orders.deletePatientOrder
+		},
+		remoteGroup: false
+	},
+	associations: [
+		{
+			type: 'hasMany',
+			model: 'App.model.patient.PatientsOrderResult',
+			name: 'results',
+			foreignKey: 'order_id'
+		}
+	]
 });

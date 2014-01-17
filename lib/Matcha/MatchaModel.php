@@ -709,6 +709,12 @@ class MatchaModel extends Matcha
 		return $fields[$index]['type'];
 	}
 
+	static public function __getFieldProperties($fieldName, $model){
+		$fields = (is_object($model) ? MatchaUtils::__objectToArray($model->fields) : $model['fields']);
+		$index = MatchaUtils::__recursiveArraySearch($fieldName, $fields);
+		return $fields[$index];
+	}
+
 	/**
 	 *
 	 * @param $fields array || object of fields names example array('id','username','passwors')

@@ -45,7 +45,7 @@ class HL7 {
 	 */
 	function getSendingApplication(){
 		$seg = $this->getSegment('MSH');
-		if(isset($seg->data)) return $seg->data[3][1];
+		if(isset($seg->data)) return $seg->data[3][1] != '' ? $seg->data[3][1] : $seg->data[3][2];
 		return null;
 	}
 
@@ -54,7 +54,7 @@ class HL7 {
 	 */
 	function getSendingFacility(){
 		$seg = $this->getSegment('MSH');
-		if(isset($seg->data)) return $seg->data[4][1];
+		if(isset($seg->data)) return $seg->data[4][1] != '' ? $seg->data[4][1] : $seg->data[4][2];
 		return null;
 	}
 
@@ -199,7 +199,7 @@ class HL7 {
 	 */
 	function readMessage($msg){
 
-		$segments = explode(PHP_EOL, $msg);
+		$segments = preg_split ("/\r\n|\n|\r/", trim($msg));
 
 		foreach($segments AS $segment){
 			$this->readSegment($segment);
@@ -226,7 +226,7 @@ class HL7 {
 	 * @return string|Segments
 	 */
 	function readSegment($segment){
-		$seg = substr($segment, 0, 3);
+		$seg = substr(trim($segment), 0, 3);
 
 		if(strlen($seg) !== 3) return false;
 

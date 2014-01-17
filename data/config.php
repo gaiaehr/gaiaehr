@@ -140,6 +140,30 @@ $API = array(
             ),
 			'deletePatientOrder' => array(
 				'len' => 1
+            ),
+			'getOrderResults' => array(
+				'len' => 1
+            ),
+			'addOrderResults' => array(
+				'len' => 1
+            ),
+			'updateOrderResults' => array(
+				'len' => 1
+            ),
+			'deleteOrderResults' => array(
+				'len' => 1
+			),
+			'getOrderResultObservations' => array(
+				'len' => 1
+            ),
+			'addOrderResultObservations' => array(
+				'len' => 1
+            ),
+			'updateOrderResultObservations' => array(
+				'len' => 1
+            ),
+			'deleteOrderResultObservations' => array(
+				'len' => 1
             )
 		)
 	),
@@ -424,41 +448,6 @@ $API = array(
 				'len' => 1
 			),
 			'setFacility' => array(
-				'len' => 1
-			)
-		)
-	),
-	/*
-	 * Document Handler functions
-	 */
-	'DocumentHandler' => array(
-		'methods' => array(
-			'uploadDocument' => array(
-				'formHandler' => true,
-				'len' => 1
-			),
-			'getDocumentsTemplates' => array(
-				'len' => 1
-			),
-			'addDocumentsTemplates' => array(
-				'len' => 1
-			),
-			'updateDocumentsTemplates' => array(
-				'len' => 1
-			),
-			'getHeadersAndFootersTemplates' => array(
-				'len' => 1
-			),
-			'getDefaultDocumentsTemplates' => array(
-				'len' => 1
-			),
-			'createDocument' => array(
-				'len' => 1
-			),
-			'createDocumentDoctorsNote' => array(
-				'len' => 1
-			),
-			'checkDocHash' => array(
 				'len' => 1
 			)
 		)
@@ -1430,6 +1419,48 @@ $API = array(
 			)
 		)
 	),
+	/**
+	 * Document Handler functions
+	 */
+	'DocumentHandler' => array(
+		'methods' => array(
+			'uploadDocument' => array(
+				'formHandler' => true,
+				'len' => 1
+			),
+			'getDocumentsTemplates' => array(
+				'len' => 1
+			),
+			'addDocumentsTemplates' => array(
+				'len' => 1
+			),
+			'updateDocumentsTemplates' => array(
+				'len' => 1
+			),
+			'getHeadersAndFootersTemplates' => array(
+				'len' => 1
+			),
+			'getDefaultDocumentsTemplates' => array(
+				'len' => 1
+			),
+			'createDocument' => array(
+				'len' => 1
+			),
+			'createDocumentDoctorsNote' => array(
+				'len' => 1
+			),
+			'checkDocHash' => array(
+				'len' => 1
+			)
+		)
+	),
+	'File' => array(
+		'methods' => array(
+			'savePatientBase64Document' => array(
+				'len' => 1
+			)
+		)
+	),
 	'Test' => array(
 		'methods' => array(
 			'getRec' => array(
@@ -1510,6 +1541,12 @@ $API = array(
 	'HL7Messages' => array(
 		'methods' => array(
 			'getMessages' => array(
+				'len' => 1
+			),
+			'getMessage' => array(
+				'len' => 1
+			),
+			'getMessageById' => array(
 				'len' => 1
 			),
 			'getRecipients' => array(

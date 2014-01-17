@@ -340,6 +340,14 @@ class HL7Messages {
 		return $this->m->load($params)->all();
 	}
 
+	public function getMessage($params){
+		return $this->m->load($params)->one();
+	}
+
+	public function getMessageById($id){
+		return $this->m->load($id)->one();
+	}
+
 	public function getRecipients($params){
 		return $this->r->load($params)->all();
 	}

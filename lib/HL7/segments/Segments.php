@@ -36,6 +36,19 @@ class Segments {
 	protected $children = array();
 
 	/**
+	 * array of fields defining other fields
+	 * example:
+	 * $dynamicFields = array(
+	 *      2 => 5,
+	 *      3 => 7
+	 * )
+	 * here field 2 defines field 5
+	 * and field 3 defines field 7
+	 * @var array
+	 */
+	protected $dynamicFields = array();
+
+	/**
 	 * @param $hl7 HL7 instance
 	 */
 	function __construct($hl7){
@@ -123,7 +136,14 @@ class Segments {
 			if($isSubField) array_unshift($fields, $string);
 
 			foreach($fields AS $i => $fieldString){
+
+				if(isset($array[$i]) && is_int($array[$i])){
+					$array[$i] = $this->getType($array[$array[$i]]);
+				}
+
+
 				$hasSubFields = isset($array[$i]) && is_array($array[$i]);
+
 				if(!$hasSubFields){
 					$array[$i] = $fieldString;
 					continue;
@@ -578,4 +598,14 @@ class Segments {
 
 	}
 
+	protected function setDynamicFields(){
+		if(!empty($this->dynamicFields)){
+			foreach($this->dynamicFields as $xField => $yField){
+
+				print $this->rawSeg[$xField];
+
+				$this->rawSeg[$yField] = $this->getType($this->rawSeg[$xField]);
+			}
+		}
+	}
 }

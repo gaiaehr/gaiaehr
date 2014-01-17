@@ -100,7 +100,7 @@ class Matcha
 		}
 		catch(Exception $e)
 		{
-            MatchaErrorHandler::__errorProcess($e);
+//            MatchaErrorHandler::__errorProcess($e);
             return false;
 		}
 	}

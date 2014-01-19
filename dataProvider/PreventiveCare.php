@@ -554,7 +554,7 @@ class PreventiveCare
 
 		$data = get_object_vars($params);
 		$preventivecareid = $data['id'];
-		$pid = $_SESSION['patient']['pid'];
+		$pid = $params->pid;
 		$this->db->setSQL("SELECT *
                            FROM preventive_care_inactive_patient
                            WHERE pid='$pid'
@@ -564,7 +564,7 @@ class PreventiveCare
 
 			unset($data['description'], $data['type'], $data['alert']);
 			$data['preventive_care_id'] = $data['id'];
-			$data['pid'] = $_SESSION['patient']['pid'];
+			$data['pid'] = $params->pid;
 			$data['uid'] = $_SESSION['user']['id'];
 			unset($data['id']);
 			$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'I'));
@@ -579,7 +579,7 @@ class PreventiveCare
 			$id = $u['id'];
 			unset($data['description'], $data['type'], $data['alert']);
 			$data['preventive_care_id'] = $data['id'];
-			$data['pid'] = $_SESSION['patient']['pid'];
+			$data['pid'] = $params->pid;
 			$data['uid'] = $_SESSION['user']['id'];
 			unset($data['id']);
 			$this->db->setSQL($this->db->sqlBind($data, 'preventive_care_inactive_patient', 'U', "id='$id'"));

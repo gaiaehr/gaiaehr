@@ -125,6 +125,7 @@ Ext.define('App.controller.LogOut', {
 
 		if(auto === true){
 			me.ActivityMonitor(false);
+			if(app.patient.pid) Patient.unsetPatient(app.patient.pid);
 			authProcedures.unAuth(function(){
 				window.location = './'
 			});
@@ -136,6 +137,7 @@ Ext.define('App.controller.LogOut', {
 				buttons: Ext.Msg.YESNO,
 				fn: function(btn){
 					if(btn == 'yes'){
+						if(app.patient.pid) Patient.unsetPatient(app.patient.pid);
 						authProcedures.unAuth(function(){
 							me.ActivityMonitor(false);
 							window.location = './'

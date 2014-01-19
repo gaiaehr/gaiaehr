@@ -155,10 +155,10 @@ class DocumentHandler {
 
 	protected function getPatientDir($params){
 		if(is_array($params)){
-			$this->pid = (isset($params['pid'])) ? $params['pid'] : $_SESSION['patient']['pid'];
+			$this->pid = $params['pid'];
 			$this->docType = (isset($params['docType'])) ? $params['docType'] : 'orphanDocuments';
 		} else{
-			$this->pid = (isset($params->pid)) ? $params->pid : $_SESSION['patient']['pid'];
+			$this->pid = $params->pid;
 			$this->docType = (isset($params->docType)) ? $params->docType : 'orphanDocuments';
 		}
 		$path = $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/';

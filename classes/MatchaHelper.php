@@ -96,7 +96,16 @@ class MatchaHelper extends Matcha {
 	 */
 	public static function storeAudit($saveParams = array()){
 		// Prepare the data for MatchaAudit
-		MatchaAudit::$eventLogData = array('date' => Time::getLocalTime('Y-m-d H:i:s'), 'user' => ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System'), 'facility' => $_SESSION['site']['dir'], 'patient_id' => (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0'), 'ip' => $_SESSION['server']['REMOTE_ADDR'], 'event' => $saveParams['event'], 'comments' => $saveParams['sql'], 'checksum' => $saveParams['crc32'],);
+		MatchaAudit::$eventLogData = array(
+			'date' => Time::getLocalTime('Y-m-d H:i:s'),
+			'user' => ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System'),
+			'facility' => $_SESSION['site']['dir'],
+			'patient_id' => (isset($saveParams['pid']) ? $saveParams['pid'] : '0'),
+			'ip' => $_SESSION['server']['REMOTE_ADDR'],
+			'event' => $saveParams['event'],
+			'comments' => $saveParams['sql'],
+			'checksum' => $saveParams['crc32']
+		);
 		MatchaAudit::auditSaveLog();
 	}
 
@@ -342,7 +351,7 @@ class MatchaHelper extends Matcha {
 			$data['user'] = ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System');
 			$data['checksum'] = crc32($this->sql_statement);
 			$data['facility'] = $_SESSION['site']['dir'];
-			$data['patient_id'] = (isset($_SESSION['patient']) ? $_SESSION['patient']['pid'] : '0');
+			$data['patient_id'] = '0';
 			$data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
 			$sqlStatement = $this->sqlBind($data, 'log', 'I');
 			$this->setSQL($sqlStatement);

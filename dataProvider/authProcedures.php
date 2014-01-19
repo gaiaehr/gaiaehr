@@ -148,7 +148,6 @@ class authProcedures {
 		$s = new Sessions();
 		$p = new Patient();
 		$s->logoutSession();
-		$p->patientChartInByPid($_SESSION['patient']['pid']);
 		session_unset();
 		session_destroy();
 		return;

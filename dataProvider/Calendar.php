@@ -1,27 +1,26 @@
 <?php
 /**
  *GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, LLC.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (dirname(__FILE__) . '/Person.php');
-include_once (dirname(__FILE__) . '/../classes/Time.php');
+include_once(dirname(__FILE__) . '/Person.php');
+include_once(dirname(__FILE__) . '/../classes/Time.php');
 
-class Calendar
-{
+class Calendar {
 	/**
 	 * @var MatchaHelper
 	 */
@@ -34,8 +33,7 @@ class Calendar
 	/**
 	 * Creates the MatchaHelper instance
 	 */
-	function __construct()
-	{
+	function __construct(){
 		$this->db = new MatchaHelper();
 		return;
 	}
@@ -43,9 +41,9 @@ class Calendar
 	/**
 	 * MATCHA CUPs (Sencha Models)
 	 */
-	private function setPatientModel()
-	{
-		if($this->u == null) $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+	private function setPatientModel(){
+		if($this->u == null)
+			$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 	}
 
 	/**
@@ -55,13 +53,13 @@ class Calendar
 	 *
 	 * @return array
 	 */
-	public function getCalendars()
-	{
+	public function getCalendars(){
 		$this->setPatientModel();
 		$color = -4;
 		$rows = array();
 		foreach($this->u->load(array('calendar' => 1, 'active' => 1))->all() as $row){
-			if($color > 32) $color = $color - 30;
+			if($color > 32)
+				$color = $color - 30;
 			$color = $color + 5;
 			$cla_user = array();
 			$cla_user['id'] = $row['id'];
@@ -79,8 +77,7 @@ class Calendar
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function getEvents(stdClass $params)
-	{
+	public function getEvents(stdClass $params){
 
 		$sql = ("SELECT * FROM calendar_events WHERE start BETWEEN '" . $params->startDate . " 00:00:00' AND '" . $params->endDate . " 23:59:59' ");
 		$this->db->setSQL($sql);
@@ -102,19 +99,14 @@ class Calendar
 		}
 		//print_r(json_encode(array('success'=>true, 'message'=>'Loaded data',
 		// 'data'=>$rows)));    }
-		return array(
-			'success' => true,
-			'message' => 'Loaded data',
-			'data' => $rows
-		);
+		return array('success' => true, 'message' => 'Loaded data', 'data' => $rows);
 	}
 
 	/**
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function addEvent(stdClass $params)
-	{
+	public function addEvent(stdClass $params){
 		$row = array();
 		$row['user_id'] = $params->calendarId;
 		$row['category'] = $params->category;
@@ -134,19 +126,14 @@ class Calendar
 		$this->db->setSQL($this->db->sqlBind($row, 'calendar_events', 'I'));
 		$this->db->execLog();
 
-		return array(
-			'success' => true,
-			'message' => 'Loaded data',
-			'data' => $params
-		);
+		return array('success' => true, 'message' => 'Loaded data', 'data' => $params);
 	}
 
 	/**
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function updateEvent(stdClass $params)
-	{
+	public function updateEvent(stdClass $params){
 
 		$row['user_id'] = $params->calendarId;
 		$row['category'] = $params->category;
@@ -172,21 +159,17 @@ class Calendar
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function deleteEvent(stdClass $params)
-	{
+	public function deleteEvent(stdClass $params){
 		$this->db->setSQL("DELETE FROM calendar_events WHERE id='$params->id'");
 		$this->db->execLog();
 		return array('success' => true);
 	}
 
-	public function getPatientFutureEvents(stdClass $params)
-	{
-		$pid = isset($params->pid) ? $params->pid : $_SESSION['patient']['pid'];
-		return $this->getPatientFutureEventsByPid($pid);
+	public function getPatientFutureEvents(stdClass $params){
+		return $this->getPatientFutureEventsByPid($params->pid);
 	}
 
-	public function getPatientFutureEventsByPid($pid)
-	{
+	public function getPatientFutureEventsByPid($pid){
 		$date = Time::getLocalTime();
 		$tomorrow = date('Y-m-d 0000:00:00', strtotime($date . ' + 1 days'));
 		$this->db->setSQL("SELECT * FROM calendar_events WHERE patient_id = '$pid' AND start >= '$tomorrow'");

@@ -297,7 +297,7 @@ class Medical
 
 	public function addPatientLabsResult(stdClass $params)
 	{
-		$lab['pid']         = (isset($params->pid)) ? $params->pid : $_SESSION['patient']['pid'];
+		$lab['pid']         = $params->pid;
 		$lab['uid']         = $_SESSION['user']['id'];
 		$lab['document_id'] = $params->document_id;
 		$lab['date']        = date('Y-m-d H:i:s');

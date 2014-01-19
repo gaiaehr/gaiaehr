@@ -802,58 +802,58 @@ Ext.define('App.view.Viewport', {
 
     setPatient: function(pid, eid, callback){
         var me = this;
-        me.unsetPatient(function(){
-            Patient.getPatientSetDataByPid(pid, function(provider, response){
-                var data = response.result,
-	                msg1,
-	                msg2;
+	    me.unsetPatient(null, true);
 
-                if(data.readOnly){
-                    msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
-                    msg2 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>';
-                    Ext.Msg.show({
-                            title: i18n('wait') + '!!!',
-                            msg: data.overrideReadOnly ? msg1 : msg2,
-                            buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
-                            icon: Ext.MessageBox.WARNING,
-                            fn: function(btn){
-                                continueSettingPatient(btn != 'yes');
-                            }
-                        });
-                }else{
-                    continueSettingPatient(false);
-                }
+        Patient.getPatientSetDataByPid({pid:pid, prevPid:me.patient.pid}, function(provider, response){
+            var data = response.result,
+                msg1,
+                msg2;
 
-                function continueSettingPatient(readOnly){
-                    me.patient = {
-                        pid: data.patient.pid,
-                        name: data.patient.name,
-                        pic: data.patient.pic,
-                        sex: data.patient.sex,
-                        dob: data.patient.dob,
-                        age: data.patient.age,
-                        eid: eid,
-                        priority: data.patient.priority,
-                        readOnly: readOnly,
-	                    rating: data.patient.rating
-                    };
+            if(data.readOnly){
+                msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
+                msg2 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>';
+                Ext.Msg.show({
+                        title: i18n('wait') + '!!!',
+                        msg: data.overrideReadOnly ? msg1 : msg2,
+                        buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
+                        icon: Ext.MessageBox.WARNING,
+                        fn: function(btn){
+                            continueSettingPatient(btn != 'yes');
+                        }
+                    });
+            }else{
+                continueSettingPatient(false);
+            }
 
-	                // fire global event
-	                me.fireEvent('patientset', me.patient);
+            function continueSettingPatient(readOnly){
+                me.patient = {
+                    pid: data.patient.pid,
+                    name: data.patient.name,
+                    pic: data.patient.pic,
+                    sex: data.patient.sex,
+                    dob: data.patient.dob,
+                    age: data.patient.age,
+                    eid: eid,
+                    priority: data.patient.priority,
+                    readOnly: readOnly,
+                    rating: data.patient.rating
+                };
 
-	                var panels = me.MainPanel.items.items;
-	                for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(me.patient.rating);
-                    me.patientButtonSet(me.patient);
-                    if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
-                    if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
-                    if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
-                    if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
-                    if(me.patientChargeBtn) me.patientChargeBtn.enable();
-                    if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
-                    if(typeof callback == 'function') callback(me.patient);
-                }
+                // fire global event
+                me.fireEvent('patientset', me.patient);
 
-            },true);
+                var panels = me.MainPanel.items.items;
+                for(var i=0; i<panels.length; i++) if(panels[i].pageRankingDiv) panels[i].pageRankingDiv.setValue(me.patient.rating);
+                me.patientButtonSet(me.patient);
+                if(me.patientSummaryBtn) me.patientSummaryBtn.enable();
+                if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
+                if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
+                if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
+                if(me.patientChargeBtn) me.patientChargeBtn.enable();
+                if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
+                if(typeof callback == 'function') callback(me.patient);
+            }
+
         });
     },
 

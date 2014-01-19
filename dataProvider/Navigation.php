@@ -346,12 +346,12 @@ class Navigation
 					'cls' => 'file',
 					'id' => 'App.view.miscellaneous.OfficeNotes'
 				),
-				array(
-					'text' => $this->i18n['my_settings'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.miscellaneous.MySettings'
-				),
+//				array(
+//					'text' => $this->i18n['my_settings'],
+//					'leaf' => true,
+//					'cls' => 'file',
+//					'id' => 'App.view.miscellaneous.MySettings'
+//				),
 				array(
 					'text' => $this->i18n['my_account'],
 					'leaf' => true,

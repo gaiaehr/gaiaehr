@@ -9467,6 +9467,7 @@ Ext.define('Extensible.calendar.view.Month', {
             recurring = evt[M.RRule.name] != '',
             colorCls = 'x-cal-default',
 		    title = evt[M.Title.name],
+			status = evt[M.Status.name], // GaiaEHR
             fmt = Extensible.Date.use24HourTime ? 'G:i ' : 'g:ia ';
         
         if(this.calendarStore && evt[M.CalendarId.name]){
@@ -9491,9 +9492,10 @@ Ext.define('Extensible.calendar.view.Month', {
 		data._extraCls = extraClasses.join(' ');
         data._isRecurring = evt[M.RRule.name] && evt[M.RRule.name] != '';
         data._isReminder = evt[M.Reminder.name] && evt[M.Reminder.name] != '';
-        data.Title = (evt[M.IsAllDay.name] ? '' : Ext.Date.format(evt[M.StartDate.name], fmt)) + 
-                (!title || title.length == 0 ? this.defaultEventTitleText : title);
-        
+        data.Title = (!status || status.length == 0 ? '' : status) + // GaiaEHR
+	        (evt[M.IsAllDay.name] ? '' : Ext.Date.format(evt[M.StartDate.name], fmt)) +
+            (!title || title.length == 0 ? this.defaultEventTitleText : title);
+
         return Ext.applyIf(data, evt);
     },
     
@@ -10219,45 +10221,47 @@ Ext.define('Extensible.calendar.view.DayBody', {
     },
 
     // private
-    getTemplateEventData : function(evt){
-        var M = Extensible.calendar.data.EventMappings,
-            extraClasses = [this.getEventSelectorCls(evt[M.EventId.name])],
-            data = {},
-            colorCls = 'x-cal-default',
-            title = evt[M.Title.name],
-            fmt = Extensible.Date.use24HourTime ? 'G:i ' : 'g:ia ',
-            recurring = evt[M.RRule.name] !== '',
-            rec;
+	getTemplateEventData : function(evt){
+		var M = Extensible.calendar.data.EventMappings,
+			extraClasses = [this.getEventSelectorCls(evt[M.EventId.name])],
+			data = {},
+			colorCls = 'x-cal-default',
+			title = evt[M.Title.name],
+			status = evt[M.Status.name], // GaiaEHR
+			fmt = Extensible.Date.use24HourTime ? 'G:i ' : 'g:ia ',
+			recurring = evt[M.RRule.name] !== '',
+			rec;
 
-        this.getTemplateEventBox(evt);
+		this.getTemplateEventBox(evt);
 
-        if(this.calendarStore && evt[M.CalendarId.name]){
-            rec = this.calendarStore.findRecord(Extensible.calendar.data.CalendarMappings.CalendarId.name,
-                evt[M.CalendarId.name]);
+		if(this.calendarStore && evt[M.CalendarId.name]){
+			rec = this.calendarStore.findRecord(Extensible.calendar.data.CalendarMappings.CalendarId.name,
+				evt[M.CalendarId.name]);
 
-            if (rec) {
-                colorCls = 'x-cal-' + rec.data[Extensible.calendar.data.CalendarMappings.ColorId.name];
-            }
-        }
-        colorCls += (evt._renderAsAllDay ? '-ad' : '') + (Ext.isIE || Ext.isOpera ? '-x' : '');
-        extraClasses.push(colorCls);
+			if (rec) {
+				colorCls = 'x-cal-' + rec.data[Extensible.calendar.data.CalendarMappings.ColorId.name];
+			}
+		}
+		colorCls += (evt._renderAsAllDay ? '-ad' : '') + (Ext.isIE || Ext.isOpera ? '-x' : '');
+		extraClasses.push(colorCls);
 
-        extraClasses.push('ext-evt-block');
+		extraClasses.push('ext-evt-block');
 
-        if(this.getEventClass){
-            rec = this.getEventRecord(evt[M.EventId.name]);
-            var cls = this.getEventClass(rec, !!evt._renderAsAllDay, data, this.store);
-            extraClasses.push(cls);
-        }
+		if(this.getEventClass){
+			rec = this.getEventRecord(evt[M.EventId.name]);
+			var cls = this.getEventClass(rec, !!evt._renderAsAllDay, data, this.store);
+			extraClasses.push(cls);
+		}
 
-        data._extraCls = extraClasses.join(' ');
-        data._isRecurring = evt[M.RRule.name] && evt[M.RRule.name] !== '';
-        data._isReminder = evt[M.Reminder.name] && evt[M.Reminder.name] !== '';
-        data.Title = (evt[M.IsAllDay.name] ? '' : Ext.Date.format(evt[M.StartDate.name], fmt)) +
-                (!title || title.length === 0 ? this.defaultEventTitleText : title);
+		data._extraCls = extraClasses.join(' ');
+		data._isRecurring = evt[M.RRule.name] && evt[M.RRule.name] !== '';
+		data._isReminder = evt[M.Reminder.name] && evt[M.Reminder.name] !== '';
+		data.Title = (!status || status.length == 0 ? '' : status) + // GaiaEHR
+			(evt[M.IsAllDay.name] ? '' : Ext.Date.format(evt[M.StartDate.name], fmt)) +
+			(!title || title.length == 0 ? this.defaultEventTitleText : title);
 
-        return Ext.applyIf(data, evt);
-    },
+		return Ext.applyIf(data, evt);
+	},
 
     // private
     getEventPositionOffsets: function(){

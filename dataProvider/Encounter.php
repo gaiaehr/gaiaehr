@@ -154,7 +154,7 @@ class Encounter {
 			$this->db->execOnly();
 		}
 
-		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
+		if($_SESSION['globals']['enable_encounter_soap']){
 			$this->db->setSQL($this->db->sqlBind($default, 'encounter_soap', 'I'));
 			$this->db->execOnly();
 		}

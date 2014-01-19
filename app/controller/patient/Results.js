@@ -184,21 +184,43 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	saveOrderResult: function(form, values){
-		var record = form.getRecord(),
-			sm = this.getOrdersGrid().getSelectionModel(),
-			order = sm.getSelection();
+		var me = this,
+			record = form.getRecord(),
+			sm = me.getOrdersGrid().getSelectionModel(),
+			order = sm.getSelection(),
+			observationData = [];
 
-		this.getObservationsGrid().editingPlugin.cancelEdit();
+//		me.getObservationsGrid().editingPlugin.cancelEdit();
+
+		var store = record.observations(),
+			observations = store.data.items;
+
+//		for(var i = 0; i < observations.length; i++){
+//			observationData.push(observations[i].data);
+//		}
+//
+//		say(observationData);
+
 
 		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
 		record.set(values);
+
+
+
 		record.save({
 			success: function(rec){
-				var store = rec.observations(),
-					observations = store.data.items;
+
+//				say(observationData);
+//				say(observationData.length);
+//				say(observations.length);
+
 				for(var i = 0; i < observations.length; i++){
-					observations[i].set({result_id: rec.data.id});
+					observations[i].set({result_id:rec.data.id});
 				}
+
+//				say(observations);
+//				return;
+
 				store.sync();
 
 				order[0].set({status: 'Received'});

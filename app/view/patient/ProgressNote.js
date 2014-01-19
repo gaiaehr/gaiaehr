@@ -48,7 +48,7 @@ Ext.define('App.view.patient.ProgressNote', {
             '           </tr>' +
             '           <tr>' +
             '               <td colspan="2">' +
-            '                   <div class="header row" style="white-space: normal;">' + i18n('brief_description') + ': {brief_description} </div>' +
+            '                   <div class="header row" style="white-space: normal;">' + i18n('chief_complaint') + ': {brief_description} </div>' +
             '               </td>' +
             '           </tr>' +
             '       </table>' +

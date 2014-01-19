@@ -251,13 +251,13 @@ Ext.define('App.view.Viewport', {
                         me.nav.navigateTo('App.view.miscellaneous.MyAccount');
                     }
                 },
-                {
-                    text: i18n('my_settings'),
-                    iconCls: 'icoSettings',
-                    handler: function(){
-                        me.nav.navigateTo('App.view.miscellaneous.MySettings');
-                    }
-                },
+//                {
+//                    text: i18n('my_settings'),
+//                    iconCls: 'icoSettings',
+//                    handler: function(){
+//                        me.nav.navigateTo('App.view.miscellaneous.MySettings');
+//                    }
+//                },
                 {
                     text: i18n('logout'),
                     iconCls: 'icoLogout',

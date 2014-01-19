@@ -401,6 +401,7 @@ $LANG = array(
 	'priority'								=> 'Priority',
 	'close_on'								=> 'Close On',
 	'brief_description'						=> 'Brief Description',
+	'chief_complaint'						=> 'Chief Complaint',
 	'review_of_system_checks'				=> 'Review of System Checks',
 	'subjective'							=> 'Subjective',
 	'objective'								=> 'Objective',

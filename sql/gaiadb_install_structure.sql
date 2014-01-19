@@ -2022,8 +2022,9 @@ CREATE TABLE `patient_out_chart` (
   `chart_out_time` datetime DEFAULT NULL,
   `chart_in_time` datetime DEFAULT NULL,
   `pool_area_id` bigint(20) DEFAULT NULL,
+  `read_only` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=60 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=33 ;
 
 CREATE TABLE `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

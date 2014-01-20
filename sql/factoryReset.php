@@ -52,7 +52,7 @@ $tables = array(
 	'patient_reminders',
 	'patient_disclosures',
 	'patient_surgery',
-	'patient_out_chart',
+	'patient_chart_checkout',
 	'patient_zone',
 	'preventive_care_inactive_patient',
     'patient_insurances',

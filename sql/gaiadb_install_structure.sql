@@ -2015,7 +2015,7 @@ CREATE TABLE `patient_orders` (
   KEY `eid` (`eid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-CREATE TABLE `patient_out_chart` (
+CREATE TABLE `patient_chart_checkout` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL,
   `uid` bigint(20) NOT NULL,

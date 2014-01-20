@@ -48,6 +48,10 @@ class Patient {
 	 * @var MatchaCUP
 	 */
 	private $d = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $c = null;
 
 	/**
 	 * @var PoolArea
@@ -78,6 +82,11 @@ class Patient {
 	private function setDocumentModel(){
 		if($this->d == null)
 			$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+	}
+
+	private function setChartCheckoutModel(){
+		if($this->c == null)
+			$this->c = MatchaModel::setSenchaModel('App.model.patient.PatientChartCheckOut');
 	}
 
 	/**
@@ -216,25 +225,7 @@ class Patient {
 		$area = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
 		$chart = $this->patientChartOutByPid($this->patient['pid'], $area['area_id']);
 
-		return array(
-			'patient' => array(
-				'pid' => $this->patient['pid'],
-				'name' => $this->getPatientFullName(),
-				'pic' => $this->patient['image'],
-				'sex' => $this->getPatientSex(),
-				'dob' => $this->getPatientDOB(),
-				'age' => $this->getPatientAge(),
-				'area' => $area['poolArea'],
-				'priority' => (empty($area) ? null : $area['priority']),
-				'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0)
-			),
-			'chart' => array(
-				'readOnly' => $chart['read_only'] == '1',
-				'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
-				'outUser' => isset($chart['outChart']['uid']) ? $this->user->getUserFullNameById($chart['outChart']['uid']) : 0,
-				'outArea' => isset($chart['outChart']['pool_area_id']) ? $poolArea->getAreaTitleById($chart['outChart']['pool_area_id']) : 0,
-			)
-		);
+		return array('patient' => array('pid' => $this->patient['pid'], 'name' => $this->getPatientFullName(), 'pic' => $this->patient['image'], 'sex' => $this->getPatientSex(), 'dob' => $this->getPatientDOB(), 'age' => $this->getPatientAge(), 'area' => $area['poolArea'], 'priority' => (empty($area) ? null : $area['priority']), 'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0)), 'chart' => array('readOnly' => $chart['read_only'] == '1', 'overrideReadOnly' => $this->acl->hasPermission('override_readonly'), 'outUser' => isset($chart['outChart']['uid']) ? $this->user->getUserFullNameById($chart['outChart']['uid']) : 0, 'outArea' => isset($chart['outChart']['pool_area_id']) ? $poolArea->getAreaTitleById($chart['outChart']['pool_area_id']) : 0,));
 	}
 
 	/**
@@ -293,7 +284,6 @@ class Patient {
 		ob_end_clean();
 		return $imageString;
 	}
-
 
 	/**
 	 * @return string
@@ -629,47 +619,47 @@ class Patient {
 	// patient charts
 	//******************************************************************************************************************
 	public function patientChartOutByPid($pid, $pool_area_id){
-
+		$this->setChartCheckoutModel();
 		$outChart = $this->isPatientChartOutByPid($pid);
 		$data['pid'] = $pid;
 		$data['uid'] = $_SESSION['user']['id'];
 		$data['chart_out_time'] = Time::getLocalTime();
 		$data['pool_area_id'] = $pool_area_id;
 		$data['read_only'] = $outChart === false ? '0' : '1';
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_out_chart', 'I'));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_chart_checkout', 'I'));
 		$this->db->execLog();
 		$data['outChart'] = $outChart;
 		return $data;
 	}
 
 	public function patientChartInByPid($pid){
-//		if(!$_SESSION['patient']['readOnly']){
-			$chart_in_time = Time::getLocalTime();
-			$this->db->setSQL("UPDATE patient_out_chart
+		$this->setChartCheckoutModel();
+		$chart_in_time = Time::getLocalTime();
+		$this->db->setSQL("UPDATE patient_chart_checkout
 								  SET chart_in_time = '$chart_in_time'
 								WHERE pid = '$pid'
 								  AND uid =  {$_SESSION['user']['id']}
 								  AND chart_in_time IS NULL");
-			$this->db->execLog();
-//		}
-	}
-
-	public function patientChartInByUserId($uid){
-		$chart_in_time = Time::getLocalTime();
-		$this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE uid = '$uid' AND chart_in_time IS NULL");
 		$this->db->execLog();
 	}
 
-    public function isPatientChartOutByPid($pid)
-    {
-        $this->db->setSQL("SELECT id, uid, pool_area_id FROM patient_out_chart WHERE pid = '$pid' AND chart_in_time IS NULL");
-        $chart = $this->db->fetchRecord();
-        if(empty($chart)){
-            return false;
-        } else {
-            return $chart;
-        }
-    }
+	public function patientChartInByUserId($uid){
+		$this->setChartCheckoutModel();
+		$chart_in_time = Time::getLocalTime();
+		$this->db->setSQL("UPDATE patient_chart_checkout SET chart_in_time = '$chart_in_time' WHERE uid = '$uid' AND chart_in_time IS NULL");
+		$this->db->execLog();
+	}
+
+	public function isPatientChartOutByPid($pid){
+		$this->setChartCheckoutModel();
+		$this->db->setSQL("SELECT id, uid, pool_area_id FROM patient_chart_checkout WHERE pid = '$pid' AND chart_in_time IS NULL");
+		$chart = $this->db->fetchRecord();
+		if(empty($chart)){
+			return false;
+		} else{
+			return $chart;
+		}
+	}
 
 	//**************************************************************************************************
 	// Disclosures

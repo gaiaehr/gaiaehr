@@ -1,7 +1,7 @@
 Ext.define('App.controller.Cron', {
     extend: 'Ext.app.Controller',
 
-	cronTaskInterval: 15, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+	cronTaskInterval: 10, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
 
 	init: function() {
 		var me = this;

@@ -90,10 +90,10 @@ class Encounter {
 	}
 
 	/**
+	 * @param $pid
 	 * @return array
 	 */
-	public function checkOpenEncounters(){
-		$pid = $_SESSION['patient']['pid'];
+	public function checkOpenEncountersByPid($pid){
 		$this->db->setSQL("SELECT pid FROM encounters WHERE pid = '$pid' AND close_date IS NULL");
 		$total = $this->db->rowCount();
 		if($total >= 1){
@@ -109,7 +109,7 @@ class Encounter {
 	 *  Naming: "getPatientEncounters"
 	 */
 	public function getEncounters(stdClass $params){
-		$pid = $_SESSION['patient']['pid'];
+		$pid = $params->pid;
 		$ORDERX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'service_date DESC';
 		$this->db->setSQL("SELECT * FROM encounters WHERE pid = '$pid' ORDER BY $ORDERX");
 		$rows = array();
@@ -126,7 +126,6 @@ class Encounter {
 	 *  Naming: "createPatientEncounters"
 	 */
 	public function createEncounter(stdClass $params){
-		$params->pid = (isset($params->pid) && is_numeric($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
 		$params->open_uid = $_SESSION['user']['id'];
 		$data = get_object_vars($params);
 
@@ -324,7 +323,7 @@ class Encounter {
 	 * @return array
 	 */
 	public function getVitals(stdClass $params){
-		$pid = (isset($params->pid)) ? $params->pid : $_SESSION['patient']['pid'];
+		$pid = $params->pid;
 		$vitals = $this->getVitalsByPid($pid);
 		if(count($vitals) >= 1){
 			return $vitals;

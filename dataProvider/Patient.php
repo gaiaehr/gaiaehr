@@ -643,11 +643,15 @@ class Patient {
 	}
 
 	public function patientChartInByPid($pid){
-		if(!$_SESSION['patient']['readOnly']){
+//		if(!$_SESSION['patient']['readOnly']){
 			$chart_in_time = Time::getLocalTime();
-			$this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE pid = '$pid' AND chart_in_time IS NULL");
+			$this->db->setSQL("UPDATE patient_out_chart
+								  SET chart_in_time = '$chart_in_time'
+								WHERE pid = '$pid'
+								  AND uid =  {$_SESSION['user']['id']}
+								  AND chart_in_time IS NULL");
 			$this->db->execLog();
-		}
+//		}
 	}
 
 	public function patientChartInByUserId($uid){

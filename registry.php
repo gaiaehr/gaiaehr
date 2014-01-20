@@ -64,9 +64,9 @@ $_SESSION['dir']['AES']         = 'phpAES';
 $_SESSION['dir']['ext_classes'] = 'classes/ext';
 
 // patient
-$_SESSION['patient']['pid']      = null;
-$_SESSION['patient']['name']     = null;
-$_SESSION['patient']['readOnly'] = null;
+//$_SESSION['patient']['pid']      = null;
+//$_SESSION['patient']['name']     = null;
+//$_SESSION['patient']['readOnly'] = null;
 
 // server data
 $_SESSION['server']                = $_SERVER;

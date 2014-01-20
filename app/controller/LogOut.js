@@ -28,12 +28,12 @@ Ext.define('App.controller.LogOut', {
 		 * in seconds - interval to check for
 		 * mouse and keyboard activity
 		 */
-		me.activityMonitorInterval = 60;
+		me.activityMonitorInterval = 10;
 		/**
 		 * in minutes - Maximum time application can
 		 * be inactive (no mouse or keyboard input)
 		 */
-		me.activityMonitorMaxInactive = 20;
+		me.activityMonitorMaxInactive = 1;
 
 		me.cron = me.getController('Cron');
 
@@ -61,7 +61,7 @@ Ext.define('App.controller.LogOut', {
 			App.ux.ActivityMonitor.init({
 				interval: me.activityMonitorInterval * 1000,
 				maxInactive: (1000 * 60 * me.activityMonitorMaxInactive),
-				verbose: true,
+				verbose: false,
 				isInactive: function(){
 					me.startAutoLogout();
 				}

@@ -204,8 +204,8 @@ $API = array(
 	 */
 	'Encounter' => array(
 		'methods' => array(
-			'checkOpenEncounters' => array(
-				'len' => 0
+			'checkOpenEncountersByPid' => array(
+				'len' => 1
 			),
 			'getEncounters' => array(
 				'len' => 1

@@ -65,7 +65,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				var me = this,
 					form = me.down('form').getForm();
 				me.setEncounterForm(form);
-				Encounter.checkOpenEncounters(function(provider, response){
+				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
 					if(response.result.encounter){
 						Ext.Msg.show({
 							title: 'Oops! ' + i18n('open_encounters_found') + '...',

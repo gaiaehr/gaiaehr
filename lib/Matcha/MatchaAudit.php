@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matcha::connect
  *
@@ -15,102 +16,101 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
-class MatchaAudit extends Matcha
-{
-    /**
-     * MatchaAudit public and private variables
-     */
-    public static $__audit = false;
-    public static $eventLogData = array();
-    public static $hookClass = NULL;
-    public static $hookMethod = NULL;
-    public static $hookTable = NULL;
+class MatchaAudit extends Matcha {
+	/**
+	 * MatchaAudit public and private variables
+	 */
+	public static $__audit = false;
+	public static $eventLogData = array();
+	public static $hookClass = NULL;
+	public static $hookMethod = NULL;
+	public static $hookTable = NULL;
 
 	/**
 	 * function auditSaveLog($arrayToInsert = array()):
 	 * Every store has to be logged into the database.
 	 * Also generate the table if does not exist.
 	 */
-	static public function auditSaveLog()
-	{
+	static public function auditSaveLog(){
 		// if the $__audit is true run the procedure if not skip it
-		if(!self::$__audit) return false;
-		try
-		{
+		if(!self::$__audit)
+			return false;
+		try{
 			// insert the event log
-			$fields = "`".(string)implode("`, `", array_keys(self::$eventLogData))."`";
-			$values = "'".(string)implode("', '", array_values(self::$eventLogData))."'";
-			self::$__conn->query('INSERT INTO '.self::$hookTable.' ('.$fields.') VALUES ('.$values.');');
+			$fields = "`" . (string)implode("`, `", array_keys(self::$eventLogData)) . "`";
+			$values = "'" . (string)implode("', '", array_values(self::$eventLogData)) . "'";
+
+			error_log('INSERT INTO ' . self::$hookTable . ' (' . $fields . ') VALUES (' . $values . ');');
+
+			self::$__conn->query('INSERT INTO ' . self::$hookTable . ' (' . $fields . ') VALUES (' . $values . ');');
 			return self::$__conn->lastInsertId();
-		}
-		catch(PDOException $e)
-		{
-            MatchaErrorHandler::__errorProcess($e);
+		} catch(PDOException $e){
+			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
 	}
 
-    /**
-     * function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL)
-     * Method to enable the audit log process.
-     * This will write a log every time it INSERT, UPDATE, DELETE a record.
-     */
-    static public function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL)
-    {
-        self::$__audit = true;
-        self::$hookTable = $logTable;
-        MatchaModel::$tableId = $idColumn;
-        if($classCall == NULL) self::$hookClass = get_called_class(); else self::$hookClass = $classCall;
-        self::$hookMethod = $methodCall;
-        self::defineLogModel($logModelArray);
-    }
+	/**
+	 * function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL)
+	 * Method to enable the audit log process.
+	 * This will write a log every time it INSERT, UPDATE, DELETE a record.
+	 */
+	static public function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL){
+		self::$__audit = true;
+		self::$hookTable = $logTable;
+		MatchaModel::$tableId = $idColumn;
+		if($classCall == NULL)
+			self::$hookClass = get_called_class(); else self::$hookClass = $classCall;
+		self::$hookMethod = $methodCall;
+		self::defineLogModel($logModelArray);
+	}
 
-    /**
-     * function defineLogModel($logModelArray):
-     * Method to define the audit log structure all data and definition will be saved in LOG table.
-     * @param $logModelArray
-     * @return bool or exception
-     */
-    static public function defineLogModel($logModelArray)
-    {
-        try
-        {
-            if(!is_object(self::$__conn)) return false;
+	/**
+	 * function defineLogModel($logModelArray):
+	 * Method to define the audit log structure all data and definition will be saved in LOG table.
+	 * @param $logModelArray
+	 * @return bool or exception
+	 */
+	static public function defineLogModel($logModelArray){
+		try{
+			if(!is_object(self::$__conn))
+				return false;
 
-            //check if the table exist
-            $recordSet = self::$__conn->query("SHOW TABLES LIKE '".self::$hookTable."';");
-            if( isset($recordSet) ) self::__createTable(self::$hookTable);
-            unset($recordSet);
+			//check if the table exist
+			$recordSet = self::$__conn->query("SHOW TABLES LIKE '" . self::$hookTable . "';");
+			if(isset($recordSet))
+				self::__createTable(self::$hookTable);
+			unset($recordSet);
 
-            // get the table column information and remove the id column
-            // from the log table
-            $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN ".self::$hookTable.";")->fetchAll();
-            unset($tableColumns[MatchaUtils::__recursiveArraySearch('id', $tableColumns)]);
+			// get the table column information and remove the id column
+			// from the log table
+			$tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN " . self::$hookTable . ";")->fetchAll();
+			unset($tableColumns[MatchaUtils::__recursiveArraySearch('id', $tableColumns)]);
 
-            // prepare the columns from the table and passed array for comparison
-            $columnsTableNames = array();
-            $columnsLogModelNames = array();
-            foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
-            foreach($logModelArray as $column) $columnsLogModelNames[] = $column['name'];
+			// prepare the columns from the table and passed array for comparison
+			$columnsTableNames = array();
+			$columnsLogModelNames = array();
+			foreach($tableColumns as $column)
+				$columnsTableNames[] = $column['Field'];
+			foreach($logModelArray as $column)
+				$columnsLogModelNames[] = $column['name'];
 
-            // get all the column that are not present in the database-table
-            $differentCreateColumns = array_diff($columnsLogModelNames, $columnsTableNames);
-            $differentDropColumns = array_diff($columnsTableNames, $columnsLogModelNames);
+			// get all the column that are not present in the database-table
+			$differentCreateColumns = array_diff($columnsLogModelNames, $columnsTableNames);
+			$differentDropColumns = array_diff($columnsTableNames, $columnsLogModelNames);
 
-            if( count($differentCreateColumns) || count($differentDropColumns) )
-            {
-                // create columns on the database
-                foreach($differentCreateColumns as $key => $column) self::__createColumn($logModelArray[$key], self::$hookTable);
-                // remove columns from the table
-                foreach($differentDropColumns as $column) self::__dropColumn( $column, self::$hookTable );
-            }
-            return true;
-        }
-        catch(PDOException $e)
-        {
-            MatchaErrorHandler::__errorProcess($e);
-            return false;
-        }
-    }
+			if(count($differentCreateColumns) || count($differentDropColumns)){
+				// create columns on the database
+				foreach($differentCreateColumns as $key => $column)
+					self::__createColumn($logModelArray[$key], self::$hookTable);
+				// remove columns from the table
+				foreach($differentDropColumns as $column)
+					self::__dropColumn($column, self::$hookTable);
+			}
+			return true;
+		} catch(PDOException $e){
+			MatchaErrorHandler::__errorProcess($e);
+			return false;
+		}
+	}
 }

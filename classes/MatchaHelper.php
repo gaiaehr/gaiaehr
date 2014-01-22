@@ -74,10 +74,13 @@ class MatchaHelper extends Matcha {
 
 		self::$__secretKey = $_SESSION['site']['AESkey'];
 
-		// Enable the audit feature in Matcha::connect
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		if($this->AuditLog == NULL)
-			$this->AuditLog = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+		MatchaAudit::$__audit = true;
+		MatchaAudit::$hookTable = 'audit_transaction_log';
+		MatchaAudit::$hookClass = 'MatchaHelper';
+		MatchaAudit::$hookMethod = 'storeAudit';
+		MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
+
+		$this->AuditLog = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 	}
 
 	/**
@@ -92,18 +95,20 @@ class MatchaHelper extends Matcha {
 	 *
 	 * The method should be established PUBLIC STATIC, this way it will not take more
 	 * memory.
-	 *
 	 */
 	public static function storeAudit($saveParams = array()){
 		// Prepare the data for MatchaAudit
 		MatchaAudit::$eventLogData = array(
 			'date' => Time::getLocalTime('Y-m-d H:i:s'),
-			'user' => ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System'),
-			'facility' => $_SESSION['site']['dir'],
-			'patient_id' => (isset($saveParams['pid']) ? $saveParams['pid'] : '0'),
-			'ip' => $_SESSION['server']['REMOTE_ADDR'],
+			'pid' => (isset($saveParams['data']['pid']) ? $saveParams['data']['pid'] : '0'),
+			'eid' => (isset($saveParams['data']['eid']) ? $saveParams['data']['eid'] : '0'),
+			'uid' => (isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0'),
+			'fid' => (isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '0'),
 			'event' => $saveParams['event'],
-			'comments' => $saveParams['sql'],
+			'table_name' => (isset($saveParams['table']) ? $saveParams['table'] : ''),
+			'sql_string' => (isset($saveParams['sql']) ? $saveParams['sql'] : ''),
+			'data' => (isset($saveParams['data']) ? serialize($saveParams['data']) : ''),
+			'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
 			'checksum' => $saveParams['crc32']
 		);
 		MatchaAudit::auditSaveLog();
@@ -331,29 +336,28 @@ class MatchaHelper extends Matcha {
 		self::$__conn->query($this->sql_statement);
 		if(stristr($this->sql_statement, 'INSERT') || stristr($this->sql_statement, 'DELETE') || stristr($this->sql_statement, 'UPDATE') || stristr($this->sql_statement, 'LOAD') || stristr($this->sql_statement, 'ALTER')){
 			$this->lastInsertId = self::$__conn->lastInsertId();
-			$eventLog = "Event triggered but never defined.";
+			$eventLog = "UNDEFINED";
 			if(stristr($this->sql_statement, 'INSERT'))
-				$eventLog = 'Record insertion';
+				$eventLog = 'INSERT';
 			if(stristr($this->sql_statement, 'DELETE'))
-				$eventLog = 'Record deletion';
+				$eventLog = 'DELETE';
 			if(stristr($this->sql_statement, 'UPDATE'))
-				$eventLog = 'Record update';
+				$eventLog = 'UPDATE';
 			if(stristr($this->sql_statement, 'ALTER'))
-				$eventLog = 'Table alteration';
+				$eventLog = 'ALTER';
 			if(stristr($this->sql_statement, 'LOAD'))
-				$eventLog = 'Record load';
+				$eventLog = 'LOAD';
 			/**
 			 * Using the same, internal functions.
 			 */
 			$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
+			$data['uid'] = ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : '0');
+			$data['fid'] = $_SESSION['user']['facility'];
 			$data['event'] = $eventLog;
-			$data['comments'] = $this->sql_statement;
-			$data['user'] = ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 'System');
+			$data['sql_string'] = $this->sql_statement;
 			$data['checksum'] = crc32($this->sql_statement);
-			$data['facility'] = $_SESSION['site']['dir'];
-			$data['patient_id'] = '0';
-			$data['ip'] = $_SESSION['server']['REMOTE_ADDR'];
-			$sqlStatement = $this->sqlBind($data, 'log', 'I');
+			$data['ip'] = $_SERVER['REMOTE_ADDR'];
+			$sqlStatement = $this->sqlBind($data, 'audit_transaction_log', 'I');
 			$this->setSQL($sqlStatement);
 			$this->execOnly(false);
 

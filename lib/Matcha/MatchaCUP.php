@@ -401,7 +401,7 @@ class MatchaCUP {
 				$data = get_object_vars($record);
 				$this->sql = $this->buildUpdateSqlStatement($data, $where);
 				$this->rowsAffected = Matcha::$__conn->exec($this->sql);
-				self::callBackMethod(array(array('crc32' => crc32($this->sql), 'event' => 'UPDATE', 'sql' => addslashes($this->sql))));
+				self::callBackMethod(array('crc32' => crc32($this->sql), 'event' => 'UPDATE', 'sql' => $this->sql));
 				$this->record = $data;
 
 				// single object handler
@@ -468,9 +468,25 @@ class MatchaCUP {
 			} else{
 				$record->{$this->primaryKey} = $this->lastInsertId = Matcha::$__conn->lastInsertId();
 			}
-			self::callBackMethod(array(array('insertId' => $this->lastInsertId, 'crc32' => crc32($this->sql), 'event' => 'INSERT', 'sql' => addslashes($this->sql))));
+			self::callBackMethod(
+					array(
+						'crc32' => crc32($this->sql),
+						'event' => 'INSERT',
+						'sql' => $this->sql,
+						'data' => $this->bindedValues,
+						'table' => $this->table
+					)
+			);
 		} else{
-			self::callBackMethod(array(array('crc32' => crc32($this->sql), 'event' => 'UPDATE', 'sql' => addslashes($this->sql))));
+			self::callBackMethod(
+					array(
+						'crc32' => crc32($this->sql),
+						'event' => 'UPDATE',
+						'sql' => $this->sql,
+						'data' => $this->bindedValues,
+						'table' => $this->table
+					)
+			);
 		}
 
 		return $record;
@@ -488,13 +504,27 @@ class MatchaCUP {
 				$record = get_object_vars($record);
 				$sql = "DELETE FROM " . $this->table . " WHERE $this->primaryKey = '" . $record[$this->primaryKey] . "'";
 				$this->rowsAffected = Matcha::$__conn->exec($sql);
-				self::callBackMethod(array(array('crc32' => crc32($sql), 'event' => 'DELETE', 'sql' => addslashes($sql))));
+				self::callBackMethod(
+					array(
+						'crc32' => crc32($sql),
+						'event' => 'DELETE',
+						'sql' => $sql,
+						'table' => $this->table
+					)
+				);
 			} else{
 				foreach($record as $rec){
 					$rec = get_object_vars($rec);
 					$sql = "DELETE FROM " . $this->table . " WHERE $this->primaryKey ='" . $rec[$this->primaryKey] . "'";
 					$this->rowsAffected = Matcha::$__conn->exec($sql);
-					self::callBackMethod(array(array('crc32' => crc32($sql), 'event' => 'DELETE', 'sql' => addslashes($sql))));
+					self::callBackMethod(
+						array(
+							'crc32' => crc32($sql),
+							'event' => 'DELETE',
+							'sql' => $sql,
+							'table' => $this->table
+						)
+					);
 				}
 			}
 			return $this->rowsAffected;
@@ -548,7 +578,7 @@ class MatchaCUP {
 	 */
 	public function callBackMethod($dataInjectArray = array()){
 		if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
-			call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), $dataInjectArray);
+			call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array($dataInjectArray));
 	}
 
 	/**

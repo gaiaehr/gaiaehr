@@ -33,7 +33,7 @@ Ext.define('App.controller.LogOut', {
 		 * in minutes - Maximum time application can
 		 * be inactive (no mouse or keyboard input)
 		 */
-		me.activityMonitorMaxInactive = 1;
+		me.activityMonitorMaxInactive = 10;
 
 		me.cron = me.getController('Cron');
 

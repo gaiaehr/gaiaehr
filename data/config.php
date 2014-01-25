@@ -168,6 +168,26 @@ $API = array(
 		)
 	),
 
+	'Referrals' => array(
+		'methods' => array(
+			'getPatientReferrals' => array(
+				'len' => 1
+            ),
+			'getPatientReferral' => array(
+				'len' => 1
+            ),
+			'addPatientReferral' => array(
+				'len' => 1
+            ),
+			'updatePatientReferral' => array(
+				'len' => 1
+            ),
+			'deletePatientReferral' => array(
+				'len' => 1
+            ),
+		)
+	),
+
 	'DiagnosisCodes' => array(
 		'methods' => array(
 			'ICDCodeSearch' => array(

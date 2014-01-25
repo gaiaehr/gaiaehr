@@ -716,7 +716,7 @@ Ext.define('App.view.patient.Summary', {
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/ccrDocument.php?action=viewccr&pid=' + me.pid  + '&token=' + app.user.token
+                                        src: globals.url+'/dataProvider/CCDDocument.php?action=view&pid=' + me.pid  + '&token=' + app.user.token
                                     }));
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
                                     app.AuditLog('Patient summary CCR viewed');
@@ -746,7 +746,7 @@ Ext.define('App.view.patient.Summary', {
                                 handler:function(){
                                     me.reportPanel.remove(me.miframe);
                                     me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe',{
-                                        src: globals.url+'/dataProvider/ccrDocument.php?action=ccrexport&pid=' + me.pid + '&token=' + app.user.token
+                                        src: globals.url+'/dataProvider/CCDDocument.php?action=export&pid=' + me.pid + '&token=' + app.user.token
                                     }));
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
                                     app.AuditLog('Patient summary CCR exported');

@@ -255,8 +255,8 @@ Ext.define('App.view.administration.Lists', {
      * @param a
      */
     onOptionTitleChange: function(a){
-        var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
-        field.setValue(value);
+//        var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
+//        field.setValue(value);
     },
 
     /**

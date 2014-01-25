@@ -50,7 +50,7 @@ Ext.define('App.controller.LogOut', {
 
 	onNavigationBeforeRender:function(treepanel){
 		treepanel.getStore().on('load', function(){
-			this.ActivityMonitor(true);
+			//this.ActivityMonitor(true);
 		}, this);
 	},
 

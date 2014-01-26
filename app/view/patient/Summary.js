@@ -703,7 +703,7 @@ Ext.define('App.view.patient.Summary', {
         //if(acl['access_patient_reports']){
             me.reportPanel = me.tabPanel.add({
                 xtype: 'panel',
-                title: i18n('reports'),
+                title: i18n('ccd_reports'),
                 tbar:[
                     {
                         xtype:'container',

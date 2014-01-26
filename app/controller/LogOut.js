@@ -33,7 +33,7 @@ Ext.define('App.controller.LogOut', {
 		 * in minutes - Maximum time application can
 		 * be inactive (no mouse or keyboard input)
 		 */
-		me.activityMonitorMaxInactive = 10;
+		me.activityMonitorMaxInactive = 15;
 
 		me.cron = me.getController('Cron');
 
@@ -50,7 +50,7 @@ Ext.define('App.controller.LogOut', {
 
 	onNavigationBeforeRender:function(treepanel){
 		treepanel.getStore().on('load', function(){
-			//this.ActivityMonitor(true);
+			this.ActivityMonitor(true);
 		}, this);
 	},
 

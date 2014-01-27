@@ -2854,7 +2854,7 @@ class CCDDocument {
 			'section' => array(
 				'templateId' => array(
 					'@attributes' => array(
-						'root' => '2.16.840.1.113883.10.20.1.3'
+						'root' => $this->requiredEncounters ? '2.16.840.1.113883.10.20.22.2.22.1' : '2.16.840.1.113883.10.20.22.2.22'
 					)
 				),
 				'code' => array(
@@ -2924,7 +2924,7 @@ class CCDDocument {
 						),
 						'templateId' => array(
 							'@attributes' => array(
-								'root' => '2.16.840.1.113883.10.20.22.4.1'
+								'root' => '2.16.840.1.113883.10.20.22.4.49'
 							)
 						),
 						'id' => array(
@@ -2934,9 +2934,11 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '99200', // CPT4
-								'CodeSystem' => $this->codes['CPT4']
-							)
+								'code' => '99200', // CPT4 99200 <-> 99299
+								'CodeSystem' => $this->codes['CPT4'],
+
+							),
+							'originalText' => 'Original text'
 						),
 						/**
 						 * Code            System        Print Name
@@ -2967,7 +2969,83 @@ class CCDDocument {
 								)
 							)
 						),
-						'component' => array()
+						'entryRelationship' => array(
+							'@attributes' => array(
+								'typeCode' => 'SUBJ',
+							),
+						    'observation' => array(
+							    '@attributes' => array(
+								    'classCode' => 'ACT',
+								    'moodCode' => 'EVN'
+							    ),
+							    'templateId' => array(
+								    '@attributes' => array(
+									    'root' => '2.16.840.1.113883.10.20.22.4.80'
+								    )
+							    ),
+							    'code' => array(
+								    '@attributes' => array(
+									    'code' => '29308-4', //Diagnosis
+									    'CodeSystem' => '2.16.840.1.113883.6.1',
+
+								    ),
+								    'originalText' => 'Original text'
+							    ),
+							    'entryRelationship' => array(
+								    '@attributes' => array(
+									    'typeCode' => 'SUBJ',
+								    ),
+								    'observation' => array(
+									    '@attributes' => array(
+										    'classCode' => 'OBS',
+										    'moodCode' => 'EVN'
+									    ),
+									    'templateId' => array(
+										    '@attributes' => array(
+											    'root' => '2.16.840.1.113883.10.20.22.4.4'
+										    )
+									    ),
+									    'id' => array(
+										    '@attributes' => array(
+											    'root' => UUID::v4()
+										    )
+									    ),
+									    /**
+									     * Code	        System	    Print Name
+									     * 404684003	SNOMEDCT	Finding
+									     * 409586006	SNOMEDCT	Complaint
+									     * 282291009	SNOMEDCT	Diagnosis
+									     * 64572001	    SNOMEDCT	Condition
+									     * 248536006	SNOMEDCT	Functional limitation
+									     * 418799008	SNOMEDCT	Symptom
+									     * 55607006	    SNOMEDCT	Problem
+									     * 373930000	SNOMEDCT	Cognitive function finding
+									     */
+									    'code' => array(
+										    '@attributes' => array(
+											    'code' => '282291009', //Diagnosis
+											    'CodeSystem' => '2.16.840.1.113883.6.96',
+
+										    ),
+										    'originalText' => 'Original text'
+									    ),
+									    'statusCode' => array(
+										    '@attributes' => array(
+											    'code' => 'completed'
+										    )
+									    ),
+									    'value' => array(
+										    '@attributes' => array(
+											    'xsi:type' => 'TS', // SNOMEDCT problem list
+											    'value' => '20150123'
+											    // Estimated Date Of Delivery
+										    )
+									    )
+								    )
+
+							    )
+						    )
+						)
 					)
 				);
 			}
@@ -2988,7 +3066,7 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 	/**
 	 * Check token for security
 	 */
-	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
+	//if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
 
 	$ccd = new CCDDocument();
 	$ccd->setPid($_REQUEST['pid']);

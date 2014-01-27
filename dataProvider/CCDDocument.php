@@ -44,7 +44,11 @@ class CCDDocument {
 	/**
 	 * @var int
 	 */
-	private $pid;
+	private $pid = null;
+	/**
+	 * @var int
+	 */
+	private $eid = null;
 	/**
 	 * @var string
 	 */
@@ -53,7 +57,6 @@ class CCDDocument {
 	 * @var string
 	 */
 	private $timeNow;
-
 	/**
 	 * @var Encounter
 	 */
@@ -83,15 +86,17 @@ class CCDDocument {
 	 */
 	private $xmlData;
 	/**
-	 * @var string
+	 * @var string toc | ocv | soc
 	 */
-	private $template;
+	private $template = 'toc'; // transition of care
 	/**
 	 * @var array
 	 */
 	private $templateIds = array(
-		'toc' => '2.16.840.1.113883.10.20.22.1.1'
-		// transition of care template
+		'toc' => '2.16.840.1.113883.10.20.22.1.1',  // transition of Care
+		'cov' => '2.16.840.1.113883.10.20.22.1.1',  // Clinical Office Visit
+		'soc' => '2.16.840.1.113883.10.20.22.1.1',  // Summary of Care
+		'ps' => '2.16.840.1.113883.3.88.11.32.1'    // Patient Summary
 	);
 	/**
 	 * @var array
@@ -105,41 +110,88 @@ class CCDDocument {
 		'RXNORM' => '2.16.840.1.113883.6.88',
 		'SNOMEDCT' => '2.16.840.1.113883.6.96'
 	);
-
+	/**
+	 * @var array
+	 */
 	private $patientData;
-
+	/**
+	 * @var bool
+	 */
 	private $requiredAllergies;
+	/**
+	 * @var bool
+	 */
 	private $requiredVitals;
+	/**
+	 * @var bool
+	 */
 	private $requiredImmunization;
+	/**
+	 * @var bool
+	 */
 	private $requiredMedications;
+	/**
+	 * @var bool
+	 */
 	private $requiredProblems;
+	/**
+	 * @var bool
+	 */
 	private $requiredProcedures;
+	/**
+	 * @var bool
+	 */
 	private $requiredPlanOfCare;
+	/**
+	 * @var bool
+	 */
 	private $requiredResults;
+	/**
+	 * @var bool
+	 */
 	private $requiredEncounters;
 
-	function __construct($pid, $template = 'toc'){
-
-		$this->pid = $pid;
+	function __construct(){
 		$this->dateNow = date('Ymd');
 		$this->timeNow = date('YmdHisO');
-		$this->template = $template;
-
 		$this->Encounter = new Encounter();
 		$this->Medical = new Medical();
 		$this->Facilities = new Facilities();
 		$this->CombosData = new CombosData();
-
 		$this->facility = $this->Facilities->getFacility(true);
-
-		$this->buildCCD();
-
 	}
 
+	/**
+	 * @param $pid
+	 */
+	public function setPid($pid){
+		$this->pid = $pid;
+	}
+
+	/**
+	 * @param $eid
+	 */
+	public function setEid($eid){
+		$this->eid = $eid;
+	}
+
+	/**
+	 * @param $template
+	 */
+	public function setTemplate($template){
+		$this->template = $template;
+	}
+
+	/**
+	 * @return mixed
+	 */
 	private function getTemplateId(){
 		return $this->templateIds[$this->template];
 	}
 
+	/**
+	 *
+	 */
 	private function setRequirements(){
 		if($this->template == 'toc'){
 			$this->requiredAllergies = true;
@@ -157,66 +209,91 @@ class CCDDocument {
 	/**
 	 * Method buildCCD()
 	 */
-	public function buildCCD(){
-		$this->xmlData = array(
-			'@attributes' => array(
-				'xmlns' => 'urn:hl7-org:v3',
-				'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-				'xsi:schemaLocation' => 'urn:hl7-org:v3 CDA.xsd'
-			)
-		);
-		$this->setRequirements();
-		$this->startCCD();
+	public function createCCD(){
+		try{
+			if(!isset($this->pid)) throw new Exception('PID variable not set');
 
-		$sections = array(
-			'Procedures',
-			'Vitals',
-			'Immunizations',
-			'Medications',
-			'PlanOfCare',
-			'Problems',
-			'Allergies',
-			'SocialHistory',
-			'Results',
-			'FunctionalStatus'
-		);
+			$this->xmlData = array(
+				'@attributes' => array(
+					'xmlns' => 'urn:hl7-org:v3',
+					'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+					'xsi:schemaLocation' => 'urn:hl7-org:v3 CDA.xsd'
+				)
+			);
+			$this->setRequirements();
+			$this->setHeader();
 
-		foreach($sections AS $Section){
-			call_user_func(array($this, "set{$Section}Section"));
+			/**
+			 * Array of sections to include in CCD
+			 */
+			$sections = array(
+				'Procedures',
+				'Vitals',
+				'Immunizations',
+				'Medications',
+				'PlanOfCare',
+				'Problems',
+				'Allergies',
+				'SocialHistory',
+				'Results',
+				'FunctionalStatus'
+			);
+
+			/**
+			 * Run Section method for each section
+			 */
+			foreach($sections AS $Section){
+				call_user_func(array($this, "set{$Section}Section"));
+			}
+
+			/**
+			 * Build the CCR XML Object
+			 */
+			Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . $_SESSION['url'] . 'lib/CCRCDA/schema/cda2.xsl"'));
+			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
+		}catch (Exception $e){
+			print $e->getMessage();
 		}
-
-		/**
-		 * Build the CCR XML Object
-		 */
-		Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . $_SESSION['url'] . 'lib/CCRCDA/schema/cda2.xsl"'));
-		$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
 	}
 
 	public function view(){
-		header('Content-type: application/xml');
-		print $this->xml->saveXML();
+		try{
+			header('Content-type: application/xml');
+			print $this->xml->saveXML();
+		}catch (Exception $e){
+			print $e->getMessage();
+		}
 	}
 
 	public function export(){
-		/**
-		 * Create a ZIP archive for delivery
-		 */
-		$dir = $_SESSION['site']['temp']['path'] . '/';
-		$filename = $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
-		$file = $this->zipit($dir, $filename);
-		/**
-		 * Stream the file to the client
-		 */
-		header('Content-Type: application/zip');
-		header('Content-Length: ' . filesize($file));
-		header('Content-Disposition: attachment; filename="'.$filename.'.zip'.'"');
-		readfile($file);
-		unlink($file);
+		try{
+			/**
+			 * Create a ZIP archive for delivery
+			 */
+			$dir = $_SESSION['site']['temp']['path'] . '/';
+			$filename = $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
+			$file = $this->zipit($dir, $filename);
+			/**
+			 * Stream the file to the client
+			 */
+			header('Content-Type: application/zip');
+			header('Content-Length: ' . filesize($file));
+			header('Content-Disposition: attachment; filename="'.$filename.'.zip'.'"');
+			readfile($file);
+			unlink($file);
+		}catch (Exception $e){
+			print $e->getMessage();
+		}
+
 	}
 
 	public function save($toDir, $fileName){
-		$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
-		$this->zipit($toDir, $filename);
+		try{
+			$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
+			$this->zipit($toDir, $filename);
+		}catch (Exception $e){
+			print $e->getMessage();
+		}
 	}
 
 	private function zipit($dir, $filename){
@@ -231,9 +308,9 @@ class CCDDocument {
 	}
 
 	/**
-	 * Method startCCD()
+	 * Method setHeader()
 	 */
-	private function startCCD(){
+	private function setHeader(){
 		$this->xmlData['realmCode'] = array(
 			'@attributes' => array(
 				'code' => 'US'
@@ -2898,14 +2975,12 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 	/**
 	 * Check token for security
 	 */
-	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token']){
-//		print str_replace(' ', '+', $_REQUEST['token']);
-//		print '<br>';
-//		print $_SESSION['user']['token'];
-		die('Not Authorized!');
-	}
+	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
 
-	$ccd = new CCDDocument($_REQUEST['pid']);
+	$ccd = new CCDDocument();
+	$ccd->setPid($_REQUEST['pid']);
+	$ccd->setTemplate('toc');
+	$ccd->createCCD();
 
 	if($_REQUEST['action'] == 'view'){
 		$ccd->view();

@@ -719,7 +719,7 @@ Ext.define('App.view.patient.Summary', {
                                         src: globals.url+'/dataProvider/CCDDocument.php?action=view&pid=' + me.pid  + '&token=' + app.user.token
                                     }));
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                                    app.AuditLog('Patient summary CCR viewed');
+                                    app.AuditLog('Patient summary CCD viewed');
                                 }
                             }//,
                             //{
@@ -749,7 +749,7 @@ Ext.define('App.view.patient.Summary', {
                                         src: globals.url+'/dataProvider/CCDDocument.php?action=export&pid=' + me.pid + '&token=' + app.user.token
                                     }));
                                     // GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-                                    app.AuditLog('Patient summary CCR exported');
+                                    app.AuditLog('Patient summary CCD exported');
                                 }
                             }//,
                             //{

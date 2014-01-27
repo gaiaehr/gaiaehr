@@ -264,6 +264,18 @@ class MatchaCUP {
 	}
 
 	/**
+	 * This is create a sequenced unique ID {string} of 38 characters
+	 * @return mixed
+	 */
+	public function newId(){
+		try{
+			return str_replace('.', '', uniqid(date('Uu'), true));
+		} catch(PDOException $e){
+			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	/**
 	 * returns multiple rows of records
 	 * @return mixed
 	 */
@@ -401,7 +413,11 @@ class MatchaCUP {
 				$data = get_object_vars($record);
 				$this->sql = $this->buildUpdateSqlStatement($data, $where);
 				$this->rowsAffected = Matcha::$__conn->exec($this->sql);
-				self::callBackMethod(array('crc32' => crc32($this->sql), 'event' => 'UPDATE', 'sql' => $this->sql));
+				self::callBackMethod(array(
+					'crc32' => crc32($this->sql),
+					'event' => 'UPDATE',
+					'sql' => $this->sql
+				));
 				$this->record = $data;
 
 				// single object handler
@@ -432,7 +448,11 @@ class MatchaCUP {
 		$isInsert = (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == '')));
 
 		if($isInsert){
-			unset($data[$this->primaryKey]);
+			if(isset($this->model->table->uuid) && $this->model->table->uuid){
+				$data[$this->primaryKey] = $this->newId();
+			} else{
+				unset($data[$this->primaryKey]);
+			}
 			$this->sql = $this->buildInsetSqlStatement($data);
 		} else{
 			$this->sql = $this->buildUpdateSqlStatement($data);
@@ -463,30 +483,35 @@ class MatchaCUP {
 		$insert->execute();
 
 		if($isInsert){
-			if(is_array($record)){
-				$record[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+			if($this->isUUID()){
+				if(is_array($record)){
+					$record[$this->primaryKey] = $data[$this->primaryKey];
+				} else{
+					$record->{$this->primaryKey} = $data[$this->primaryKey];
+				}
 			} else{
-				$record->{$this->primaryKey} = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				if(is_array($record)){
+					$record[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				} else{
+					$record->{$this->primaryKey} = $this->lastInsertId = Matcha::$__conn->lastInsertId();
+				}
 			}
-			self::callBackMethod(
-					array(
-						'crc32' => crc32($this->sql),
-						'event' => 'INSERT',
-						'sql' => $this->sql,
-						'data' => $this->bindedValues,
-						'table' => $this->table
-					)
-			);
+
+			self::callBackMethod(array(
+					'crc32' => crc32($this->sql),
+					'event' => 'INSERT',
+					'sql' => $this->sql,
+					'data' => $this->bindedValues,
+					'table' => $this->table
+				));
 		} else{
-			self::callBackMethod(
-					array(
-						'crc32' => crc32($this->sql),
-						'event' => 'UPDATE',
-						'sql' => $this->sql,
-						'data' => $this->bindedValues,
-						'table' => $this->table
-					)
-			);
+			self::callBackMethod(array(
+					'crc32' => crc32($this->sql),
+					'event' => 'UPDATE',
+					'sql' => $this->sql,
+					'data' => $this->bindedValues,
+					'table' => $this->table
+				));
 		}
 
 		return $record;
@@ -501,35 +526,32 @@ class MatchaCUP {
 	public function destroy($record){
 		try{
 			if(is_object($record)){
-				$record = get_object_vars($record);
-				$sql = "DELETE FROM " . $this->table . " WHERE $this->primaryKey = '" . $record[$this->primaryKey] . "'";
-				$this->rowsAffected = Matcha::$__conn->exec($sql);
-				self::callBackMethod(
-					array(
-						'crc32' => crc32($sql),
-						'event' => 'DELETE',
-						'sql' => $sql,
-						'table' => $this->table
-					)
-				);
+				$this->destroyRecord($record);
 			} else{
 				foreach($record as $rec){
-					$rec = get_object_vars($rec);
-					$sql = "DELETE FROM " . $this->table . " WHERE $this->primaryKey ='" . $rec[$this->primaryKey] . "'";
-					$this->rowsAffected = Matcha::$__conn->exec($sql);
-					self::callBackMethod(
-						array(
-							'crc32' => crc32($sql),
-							'event' => 'DELETE',
-							'sql' => $sql,
-							'table' => $this->table
-						)
-					);
+					$this->destroyRecord($rec);
 				}
 			}
-			return $this->rowsAffected;
+			return array('success' => $this->rowsAffected > 0);
 		} catch(PDOException $e){
 			return MatchaErrorHandler::__errorProcess($e);
+		}
+	}
+
+	/**
+	 * @param $record
+	 */
+	private function destroyRecord($record){
+		$record = get_object_vars($record);
+		$sql = "DELETE FROM `{$this->table}` WHERE `{$this->primaryKey}` = '{$record[$this->primaryKey]}'";
+		$this->rowsAffected = Matcha::$__conn->exec($sql);
+		if($this->rowsAffected > 0){
+			self::callBackMethod(array(
+				'crc32' => crc32($sql),
+				'event' => 'DELETE',
+				'sql' => $sql,
+				'table' => $this->table
+			));
 		}
 	}
 
@@ -578,7 +600,10 @@ class MatchaCUP {
 	 */
 	public function callBackMethod($dataInjectArray = array()){
 		if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
-			call_user_func_array(array(MatchaAudit::$hookClass, MatchaAudit::$hookMethod), array($dataInjectArray));
+			call_user_func_array(array(
+				MatchaAudit::$hookClass,
+				MatchaAudit::$hookMethod
+			), array($dataInjectArray));
 	}
 
 	/**
@@ -599,7 +624,7 @@ class MatchaCUP {
 		} else{
 			$this->table = false;
 		}
-
+		$this->date = new DateTime();
 		$this->primaryKey = MatchaModel::__getTablePrimaryKeyColumnName($this->table);
 		$this->fields = MatchaModel::__getFields($this->model);
 		$this->encryptedFields = MatchaModel::__getEncryptedFields($this->model);
@@ -696,7 +721,6 @@ class MatchaCUP {
 		$columns = array_keys($data);
 		$values = array_values($data);
 
-
 		foreach($columns as $index => $column){
 			if(!in_array($column, $this->fields)){
 				unset($columns[$index], $values[$index]);
@@ -704,13 +728,14 @@ class MatchaCUP {
 		}
 
 		foreach($columns as $col){
-
 			$properties = (array)MatchaModel::__getFieldProperties($col, $this->model);
-
-			if(!isset($properties['store']) || $properties['store']){
-
+			/**
+			 * Don't parse the value (skip it) if...
+			 * $properties['store'] is set and is not true OR
+			 * $properties['persist'] is set and is not true OR
+			 */
+			if((!isset($properties['store']) || $properties['store']) || (!isset($properties['persist']) || $properties['persist'])){
 				$type = MatchaModel::__getFieldType($col, $this->model);
-
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else{
@@ -729,7 +754,7 @@ class MatchaCUP {
 
 				if($this->autoTrim){
 					$record[$col] = trim($data[$col]);
-				}else{
+				} else{
 					$record[$col] = $data[$col];
 				}
 			}
@@ -811,5 +836,9 @@ class MatchaCUP {
 			$this->record = $record;
 		}
 
+	}
+
+	private function isUUID(){
+		return (isset($this->model->table->uuid) && $this->model->table->uuid);
 	}
 }

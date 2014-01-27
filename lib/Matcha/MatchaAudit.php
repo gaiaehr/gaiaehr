@@ -37,12 +37,31 @@ class MatchaAudit extends Matcha {
 			return false;
 		try{
 			// insert the event log
-			$fields = "`" . (string)implode("`, `", array_keys(self::$eventLogData)) . "`";
-			$values = "'" . (string)implode("', '", array_values(self::$eventLogData)) . "'";
+			$fields = array_keys(self::$eventLogData);
+			$placeholders = array();
+			foreach($fields as $field){
+				$placeholders[] = ':' . $field;
+			}
+			$query = 'INSERT INTO `' . self::$hookTable . '` ';
+			$query .= '(`' . implode('`, `', $fields) . '`)';
+			$query .= ' VALUES (' . implode(', ', $placeholders) . ')';
 
-			error_log('INSERT INTO ' . self::$hookTable . ' (' . $fields . ') VALUES (' . $values . ');');
-
-			self::$__conn->query('INSERT INTO ' . self::$hookTable . ' (' . $fields . ') VALUES (' . $values . ');');
+			$insert = Matcha::$__conn->prepare($query);
+			foreach(self::$eventLogData as $key => $value){
+				if(is_int($value)){
+					$param = PDO::PARAM_INT;
+				} elseif(is_bool($value)){
+					$param = PDO::PARAM_BOOL;
+				} elseif(is_null($value)){
+					$param = PDO::PARAM_NULL;
+				} elseif(is_string($value)){
+					$param = PDO::PARAM_STR;
+				} else{
+					$param = FALSE;
+				}
+				$insert->bindValue(":$key", $value, $param);
+			}
+			$insert->execute();
 			return self::$__conn->lastInsertId();
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);

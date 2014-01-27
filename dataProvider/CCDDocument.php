@@ -183,30 +183,6 @@ class CCDDocument {
 	}
 
 	/**
-	 * @return mixed
-	 */
-	private function getTemplateId(){
-		return $this->templateIds[$this->template];
-	}
-
-	/**
-	 *
-	 */
-	private function setRequirements(){
-		if($this->template == 'toc'){
-			$this->requiredAllergies = true;
-			$this->requiredVitals = true;
-			$this->requiredImmunization = true;
-			$this->requiredMedications = true;
-			$this->requiredProblems = true;
-			$this->requiredProcedures = true;
-			$this->requiredPlanOfCare = true;
-			$this->requiredResults = true;
-			$this->requiredEncounters = false;
-		}
-	}
-
-	/**
 	 * Method buildCCD()
 	 */
 	public function createCCD(){
@@ -256,6 +232,9 @@ class CCDDocument {
 		}
 	}
 
+	/**
+	 * Method view()
+	 */
 	public function view(){
 		try{
 			header('Content-type: application/xml');
@@ -265,6 +244,9 @@ class CCDDocument {
 		}
 	}
 
+	/**
+	 * Method export()
+	 */
 	public function export(){
 		try{
 			/**
@@ -272,7 +254,7 @@ class CCDDocument {
 			 */
 			$dir = $_SESSION['site']['temp']['path'] . '/';
 			$filename = $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
-			$file = $this->zipit($dir, $filename);
+			$file = $this->zipIt($dir, $filename);
 			/**
 			 * Stream the file to the client
 			 */
@@ -287,16 +269,45 @@ class CCDDocument {
 
 	}
 
+	/**
+	 * Method save()
+	 * @param $toDir
+	 * @param $fileName
+	 */
 	public function save($toDir, $fileName){
 		try{
 			$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
-			$this->zipit($toDir, $filename);
+			$this->zipIt($toDir, $filename);
 		}catch (Exception $e){
 			print $e->getMessage();
 		}
 	}
 
-	private function zipit($dir, $filename){
+	/**
+	 * @return mixed
+	 */
+	private function getTemplateId(){
+		return $this->templateIds[$this->template];
+	}
+
+	/**
+	 * Method setRequirements()
+	 */
+	private function setRequirements(){
+		if($this->template == 'toc'){
+			$this->requiredAllergies = true;
+			$this->requiredVitals = true;
+			$this->requiredImmunization = true;
+			$this->requiredMedications = true;
+			$this->requiredProblems = true;
+			$this->requiredProcedures = true;
+			$this->requiredPlanOfCare = true;
+			$this->requiredResults = true;
+			$this->requiredEncounters = false;
+		}
+	}
+
+	private function zipIt($dir, $filename){
 		$zip = new ZipArchive();
 		$file = $dir . $filename . '.zip';
 		if($zip->open($file, ZipArchive::CREATE) !== true)
@@ -869,7 +880,7 @@ class CCDDocument {
 	}
 
 	/**
-	 *
+	 * Method setVitalsSection()
 	 */
 	private function setVitalsSection(){
 
@@ -2970,7 +2981,9 @@ class CCDDocument {
 
 }
 
-
+/**
+ * Handle the request only if pid and action is available
+ */
 if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 	/**
 	 * Check token for security

@@ -120,6 +120,18 @@ class ExternalDataUpdate {
 								'codeType' => $this->codeType
 							);
 							array_push($revisions, $temp_date);
+						} elseif(preg_match("/SNOMEDCT_CORE_SUBSET_([0-9]{6}).zip/", $file, $matches)){
+
+							$version = 'CoreProblemList:English';
+							$date_release = substr($matches[0], 0, 4) . '-' . substr($matches[1], 4, -0) . '-01';
+							$temp_date = array(
+								'date' => $date_release,
+								'version' => $version,
+								'path' => $file,
+								'basename' => basename($file),
+								'codeType' => $this->codeType.'CoreProblem'
+							);
+							array_push($revisions, $temp_date);
 						}
 					} elseif($this->codeType == 'ICD9'){
 						if(preg_match("/cmsv([0-9]+)_master_descriptions.zip/", $file, $matches)){
@@ -222,6 +234,8 @@ class ExternalDataUpdate {
 						$success = $this->rxnorm_import($dir);
 					} elseif($params->codeType == 'SNOMED'){
 						$success = $this->snomed_import($dir);
+					} elseif($params->codeType == 'SNOMEDCoreProblem'){
+						$success = $this->snomed_problems($dir);
 					} elseif($params->codeType == 'HCPCS'){
 						$success = $this->hcpcs_import($dir);
 					}
@@ -839,6 +853,7 @@ class ExternalDataUpdate {
 	            DescriptionType INT(11) NOT NULL,
 	            LanguageCode VARCHAR(8) NOT NULL,
 	            PRIMARY KEY (DescriptionId),
+	            INDEX X_ConceptId (ConceptId),
 	            INDEX X_Term (Term)
 	            )',
 			'sct_relationships_drop' => 'DROP TABLE IF EXISTS sct_relationships',
@@ -850,7 +865,10 @@ class ExternalDataUpdate {
 	            CharacteristicType INT(11) NOT NULL,
 	            Refinability INT(11) NOT NULL,
 	            RelationshipGroup INT(11) NOT NULL,
-	            PRIMARY KEY (RelationshipId)
+	            PRIMARY KEY (RelationshipId),
+	            INDEX X_ConceptId1(ConceptId1),
+	            INDEX X_ConceptId2(ConceptId2),
+	            INDEX X_RelationshipType(RelationshipType)
 	            )',
 			'sct_relationships_loinc_drop' => 'DROP TABLE IF EXISTS sct_relationships_loinc',
 			'sct_relationships_loinc_structure' => 'CREATE TABLE IF NOT EXISTS sct_relationships_loinc (
@@ -917,6 +935,51 @@ class ExternalDataUpdate {
 
 		$sub_path = 'CrossMaps/ICDO/';
 		$this->loadSnomedData($dir, $sub_path);
+		return true;
+	}
+
+	private function snomed_problems($dir){
+		// set up array
+		$this->db->conn()->exec('
+			DROP TABLE IF EXISTS sct_problem_list;
+			CREATE TABLE sct_problem_list (
+	            SNOMED_CID VARCHAR(15) NOT NULL,
+	            SNOMED_FSN VARCHAR(255) NOT NULL,
+	            SNOMED_CONCEPT_STATUS VARCHAR(20) NOT NULL,
+	            UMLS_CUI VARCHAR(20) NOT NULL,
+	            OCCURRENCE VARCHAR(20) NOT NULL,
+	            CONCEPT_USAGE VARCHAR(20) NOT NULL,
+	            FIRST_IN_SUBSET VARCHAR(20) NOT NULL,
+	            IS_RETIRED_FROM_SUBSET VARCHAR(20) NOT NULL,
+	            LAST_IN_SUBSET VARCHAR(20) NOT NULL,
+	            REPLACED_BY_SNOMED_CID VARCHAR(20) NOT NULL,
+	            PRIMARY KEY (SNOMED_CID),
+	            INDEX X_SNOMED_FSN (SNOMED_FSN)
+            );
+		');
+
+		$dir = str_replace('\\', '/', $dir . '/');
+
+		if(is_dir($dir) && $handle = opendir($dir)){
+			while(false !== ($filename = readdir($handle))){
+				if(($filename != '.' || $filename != '..') && strstr($filename, 'SNOMEDCT_CORE_SUBSET') !== false){
+					$path = $dir . $filename;
+					$load_script = "LOAD DATA LOCAL INFILE '#FILENAME#' into table #TABLE# fields terminated by '|' ESCAPED BY '' lines terminated by '\\n' ignore 1 lines ";
+					$array_replace = array(
+						'#FILENAME#',
+						'#TABLE#'
+					);
+					$new_str = str_replace($array_replace, array(
+						$path,
+						'sct_problem_list'
+					), $load_script);
+					if(isset($new_str)){
+						$this->db->conn()->exec($new_str);
+					}
+				}
+			}
+			closedir($handle);
+		}
 		return true;
 	}
 

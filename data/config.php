@@ -1573,5 +1573,15 @@ $API = array(
 				'len' => 1
 			)
 		)
+	),
+	'Test' => array(
+		'methods' => array(
+			't1' => array(
+				'len' => 0
+			),
+			't2' => array(
+				'len' => 1
+			)
+		)
 	)
 );

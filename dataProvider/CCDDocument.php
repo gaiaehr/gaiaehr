@@ -93,10 +93,14 @@ class CCDDocument {
 	 * @var array
 	 */
 	private $templateIds = array(
-		'toc' => '2.16.840.1.113883.10.20.22.1.1',  // transition of Care
-		'cov' => '2.16.840.1.113883.10.20.22.1.1',  // Clinical Office Visit
-		'soc' => '2.16.840.1.113883.10.20.22.1.1',  // Summary of Care
-		'ps' => '2.16.840.1.113883.3.88.11.32.1'    // Patient Summary
+		'toc' => '2.16.840.1.113883.10.20.22.1.1',
+		// transition of Care
+		'cov' => '2.16.840.1.113883.10.20.22.1.1',
+		// Clinical Office Visit
+		'soc' => '2.16.840.1.113883.10.20.22.1.1',
+		// Summary of Care
+		'ps' => '2.16.840.1.113883.3.88.11.32.1'
+		// Patient Summary
 	);
 	/**
 	 * @var array
@@ -187,7 +191,8 @@ class CCDDocument {
 	 */
 	public function createCCD(){
 		try{
-			if(!isset($this->pid)) throw new Exception('PID variable not set');
+			if(!isset($this->pid))
+				throw new Exception('PID variable not set');
 
 			$this->xmlData = array(
 				'@attributes' => array(
@@ -219,7 +224,10 @@ class CCDDocument {
 			 * Run Section method for each section
 			 */
 			foreach($sections AS $Section){
-				call_user_func(array($this, "set{$Section}Section"));
+				call_user_func(array(
+					$this,
+					"set{$Section}Section"
+				));
 			}
 
 			/**
@@ -227,7 +235,7 @@ class CCDDocument {
 			 */
 			Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . $_SESSION['url'] . 'lib/CCRCDA/schema/cda2.xsl"'));
 			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
-		}catch (Exception $e){
+		} catch(Exception $e){
 			print $e->getMessage();
 		}
 	}
@@ -239,7 +247,7 @@ class CCDDocument {
 		try{
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
-		}catch (Exception $e){
+		} catch(Exception $e){
 			print $e->getMessage();
 		}
 	}
@@ -260,10 +268,10 @@ class CCDDocument {
 			 */
 			header('Content-Type: application/zip');
 			header('Content-Length: ' . filesize($file));
-			header('Content-Disposition: attachment; filename="'.$filename.'.zip'.'"');
+			header('Content-Disposition: attachment; filename="' . $filename . '.zip' . '"');
 			readfile($file);
 			unlink($file);
-		}catch (Exception $e){
+		} catch(Exception $e){
 			print $e->getMessage();
 		}
 
@@ -278,7 +286,7 @@ class CCDDocument {
 		try{
 			$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
 			$this->zipIt($toDir, $filename);
-		}catch (Exception $e){
+		} catch(Exception $e){
 			print $e->getMessage();
 		}
 	}
@@ -410,7 +418,7 @@ class CCDDocument {
 							'@attributes' => array(
 								'qualifier' => 'TITLE'
 							),
-							'@value' => $patientData['title']
+							'@value' => isset($patientData['title']) ? $patientData['title'] : ''
 
 						),
 					),
@@ -2619,13 +2627,13 @@ class CCDDocument {
 							)
 						),
 						/**
-						 * Code            System        Print Name
-						 * aborted        ActStatus    aborted
-						 * active        ActStatus    active
-						 * cancelled    ActStatus    cancelled
-						 * completed    ActStatus    completed
-						 * held            ActStatus    held
-						 * suspended    ActStatus    suspended
+						 * Code         System      Print Name
+						 * aborted      ActStatus   aborted
+						 * active       ActStatus   active
+						 * cancelled    ActStatus   cancelled
+						 * completed    ActStatus   completed
+						 * held         ActStatus   held
+						 * suspended    ActStatus   suspended
 						 */
 						'statusCode' => array(
 							'@attributes' => array(
@@ -2681,13 +2689,13 @@ class CCDDocument {
 								)
 							),
 							/**
-							 * Code            System        Print Name
-							 * aborted        ActStatus    aborted
-							 * active        ActStatus    active
-							 * cancelled    ActStatus    cancelled
-							 * completed    ActStatus    completed
-							 * held            ActStatus    held
-							 * suspended    ActStatus    suspended
+							 * Code         System      Print Name
+							 * aborted      ActStatus   aborted
+							 * active       ActStatus   active
+							 * cancelled    ActStatus   cancelled
+							 * completed    ActStatus   completed
+							 * held         ActStatus   held
+							 * suspended    ActStatus   suspended
 							 */
 							'statusCode' => array(
 								'@attributes' => array(
@@ -2809,13 +2817,13 @@ class CCDDocument {
 							)
 						),
 						/**
-						 * Code            System        Print Name
-						 * aborted        ActStatus    aborted
-						 * active        ActStatus    active
-						 * cancelled    ActStatus    cancelled
-						 * completed    ActStatus    completed
-						 * held            ActStatus    held
-						 * suspended    ActStatus    suspended
+						 * Code         System      Print Name
+						 * aborted      ActStatus   aborted
+						 * active       ActStatus   active
+						 * cancelled    ActStatus   cancelled
+						 * completed    ActStatus   completed
+						 * held         ActStatus   held
+						 * suspended    ActStatus   suspended
 						 */
 						'statusCode' => array(
 							'@attributes' => array(
@@ -2870,7 +2878,11 @@ class CCDDocument {
 				'text' => ''
 			)
 		);
+
+
 		$encountersData = array();
+
+
 		if(!empty($encountersData)){
 			$encounters['section']['text'] = array(
 				'table' => array(
@@ -2937,20 +2949,19 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '99200', // CPT4 99200 <-> 99299
+								// CPT4 Visit code 99200 <-> 99299
+								'code' => '99200',
 								'CodeSystem' => $this->codes['CPT4'],
-
-							),
-							'originalText' => 'Original text'
+							)
 						),
 						/**
-						 * Code            System        Print Name
-						 * aborted        ActStatus    aborted
-						 * active        ActStatus    active
-						 * cancelled    ActStatus    cancelled
-						 * completed    ActStatus    completed
-						 * held            ActStatus    held
-						 * suspended    ActStatus    suspended
+						 * Code         System      Print Name
+						 * aborted      ActStatus   aborted
+						 * active       ActStatus   active
+						 * cancelled    ActStatus   cancelled
+						 * completed    ActStatus   completed
+						 * held         ActStatus   held
+						 * suspended    ActStatus   suspended
 						 */
 						'statusCode' => array(
 							'@attributes' => array(
@@ -2961,6 +2972,7 @@ class CCDDocument {
 							'@attributes' => array(
 								'xsi:type' => 'IVL_TS',
 							),
+							// low date is required
 							'low' => array(
 								'@attributes' => array(
 									'value' => '19320924'
@@ -2973,81 +2985,223 @@ class CCDDocument {
 							)
 						),
 						'entryRelationship' => array(
-							'@attributes' => array(
-								'typeCode' => 'SUBJ',
-							),
-						    'observation' => array(
-							    '@attributes' => array(
-								    'classCode' => 'ACT',
-								    'moodCode' => 'EVN'
-							    ),
-							    'templateId' => array(
-								    '@attributes' => array(
-									    'root' => '2.16.840.1.113883.10.20.22.4.80'
-								    )
-							    ),
-							    'code' => array(
-								    '@attributes' => array(
-									    'code' => '29308-4', //Diagnosis
-									    'CodeSystem' => '2.16.840.1.113883.6.1',
+							/*************************************
+							 * Encounter Diagnosis
+							 */
+							array(
+								'@attributes' => array(
+									'typeCode' => 'SUBJ',
+								),
+								'observation' => array(
+									'@attributes' => array(
+										'classCode' => 'ACT',
+										'moodCode' => 'EVN'
+									),
+									'templateId' => array(
+										'@attributes' => array(
+											'root' => '2.16.840.1.113883.10.20.22.4.80'
+										)
+									),
+									'code' => array(
+										'@attributes' => array(
+											'code' => '29308-4',
+											'CodeSystem' => '2.16.840.1.113883.6.1',
 
-								    ),
-								    'originalText' => 'Original text'
-							    ),
-							    'entryRelationship' => array(
-								    '@attributes' => array(
-									    'typeCode' => 'SUBJ',
-								    ),
-								    'observation' => array(
-									    '@attributes' => array(
-										    'classCode' => 'OBS',
-										    'moodCode' => 'EVN'
-									    ),
-									    'templateId' => array(
-										    '@attributes' => array(
-											    'root' => '2.16.840.1.113883.10.20.22.4.4'
-										    )
-									    ),
-									    'id' => array(
-										    '@attributes' => array(
-											    'root' => UUID::v4()
-										    )
-									    ),
-									    /**
-									     * Code	        System	    Print Name
-									     * 404684003	SNOMEDCT	Finding
-									     * 409586006	SNOMEDCT	Complaint
-									     * 282291009	SNOMEDCT	Diagnosis
-									     * 64572001	    SNOMEDCT	Condition
-									     * 248536006	SNOMEDCT	Functional limitation
-									     * 418799008	SNOMEDCT	Symptom
-									     * 55607006	    SNOMEDCT	Problem
-									     * 373930000	SNOMEDCT	Cognitive function finding
-									     */
-									    'code' => array(
-										    '@attributes' => array(
-											    'code' => '282291009', //Diagnosis
-											    'CodeSystem' => '2.16.840.1.113883.6.96',
+										)
+									),
+									'entryRelationship' => array(
+										/*************************************
+										 * Problem Observation
+										 */
+										array(
+											'@attributes' => array(
+												'typeCode' => 'SUBJ',
+											),
+											'observation' => array(
+												'@attributes' => array(
+													'classCode' => 'OBS',
+													'moodCode' => 'EVN'
+												),
+												'templateId' => array(
+													'@attributes' => array(
+														'root' => '2.16.840.1.113883.10.20.22.4.4'
+													)
+												),
+												'id' => array(
+													'@attributes' => array(
+														'root' => UUID::v4()
+													)
+												),
+												/**
+												 * Code             System      Print Name
+												 * 404684003        SNOMEDCT    Finding
+												 * 409586006        SNOMEDCT    Complaint
+												 * 282291009        SNOMEDCT    Diagnosis
+												 * 64572001         SNOMEDCT    Condition
+												 * 248536006        SNOMEDCT    Functional limitation
+												 * 418799008        SNOMEDCT    Symptom
+												 * 55607006         SNOMEDCT    Problem
+												 * 373930000        SNOMEDCT    Cognitive function finding
+												 */
+												'code' => array(
+													'@attributes' => array(
+														'code' => '282291009',
+														'CodeSystem' => '2.16.840.1.113883.6.96',
 
-										    ),
-										    'originalText' => 'Original text'
-									    ),
-									    'statusCode' => array(
-										    '@attributes' => array(
-											    'code' => 'completed'
-										    )
-									    ),
-									    'value' => array(
-										    '@attributes' => array(
-											    'xsi:type' => 'TS', // SNOMEDCT problem list
-											    'value' => '20150123'
-											    // Estimated Date Of Delivery
-										    )
-									    )
-								    )
+													),
+													'originalText' => 'Original text'
+												),
+												'statusCode' => array(
+													'@attributes' => array(
+														'code' => 'completed'
+													)
+												),
+												'value' => array(
+													'@attributes' => array(
+														'xsi:type' => 'CD',
+														// SNOMEDCT problem list
+														'value' => '20150123'
+													)
+												),
+												'entryRelationship' => array(
+//													/*************************************
+//													 *  Age Observation
+//													 */
+//													array(
+//														'@attributes' => array(
+//															'typeCode' => 'SUBJ',
+//														),
+//														'observation' => array(
+//															'@attributes' => array(
+//																'classCode' => 'OBS',
+//																'moodCode' => 'EVN'
+//															),
+//															'templateId' => array(
+//																'@attributes' => array(
+//																	'root' => '2.16.840.1.113883.10.20.22.4.31'
+//																)
+//															),
+//															'statusCode' => array(
+//																'@attributes' => array(
+//																	'code' => 'completed'
+//																)
+//															),
+//															'code' => array(
+//																'@attributes' => array(
+//																	'code' => '445518008',
+//																	'CodeSystem' => '2.16.840.1.113883.6.96',
+//
+//																),
+//																'originalText' => 'Original text'
+//															),
+//															/**
+//															 * Level    Code    Display Name    Code System
+//															 * 0-L      d       Day             2.16.840.1.113883.6.8
+//															 * 0-L      h       Hour            2.16.840.1.113883.6.8
+//															 * 0-L      min     Minute          2.16.840.1.113883.6.8
+//															 * 0-L      mo      Month           2.16.840.1.113883.6.8
+//															 * 0-L      wk      Week            2.16.840.1.113883.6.8
+//															 * 0-L      a       Year            2.16.840.1.113883.6.8
+//															 */
+//															'value' => array(
+//																'@attributes' => array(
+//																	'xsi:type' => 'PQ',
+//																	'value' => '32',
+//																	'unit' => '1'
+//																)
+//															)
+//														)
+//													),
+													/*************************************
+													 *  Problem Status
+													 */
+													array(
+														'@attributes' => array(
+															'typeCode' => 'REFR',
+														),
+														'observation' => array(
+															'@attributes' => array(
+																'classCode' => 'OBS',
+																'moodCode' => 'EVN'
+															),
+															'templateId' => array(
+																'@attributes' => array(
+																	'root' => '2.16.840.1.113883.10.20.22.4.6'
+																)
+															),
+															'code' => array(
+																'@attributes' => array(
+																	'code' => '33999-4',
+																	'CodeSystem' => '2.16.840.1.113883.6.1',
+																)
+															),
+															'statusCode' => array(
+																'@attributes' => array(
+																	'code' => 'completed'
+																)
+															),
+															/**
+															 * Code         System      Print Name
+															 * 55561003     SNOMEDCT    Active
+															 * 73425007     SNOMEDCT    Inactive
+															 * 413322009    SNOMEDCT    Resolved
+															 */
+															'value' => array(
+																'@attributes' => array(
+																	'xsi:type' => 'CD',
+																	'code' => '413322009'
+																)
+															)
+														)
+													),
+													/*************************************
+													 *  Health Status Observation
+													 */
+													array(
+														'@attributes' => array(
+															'typeCode' => 'REFR',
+														),
+														'observation' => array(
+															'@attributes' => array(
+																'classCode' => 'OBS',
+																'moodCode' => 'EVN'
+															),
+															'templateId' => array(
+																'@attributes' => array(
+																	'root' => '2.16.840.1.113883.10.20.22.4.5'
+																)
+															),
+															'code' => array(
+																'@attributes' => array(
+																	'code' => '11323-3',
+																	'CodeSystem' => '2.16.840.1.113883.6.1',
 
-							    )
-						    )
+																)
+															),
+															/**
+															 * Code         System      Print Name
+															 * 81323004     SNOMEDCT    Alive and well
+															 * 313386006    SNOMEDCT    In remission
+															 * 162467007    SNOMEDCT    Symptom free
+															 * 161901003    SNOMEDCT    Chronically ill
+															 * 271593001    SNOMEDCT    Severely ill
+															 * 21134002     SNOMEDCT    Disabled
+															 * 161045001    SNOMEDCT    Severely disabled
+															 */
+															'value' => array(
+																'@attributes' => array(
+																	'xsi:type' => 'CD',
+																	'code' => '81323004'
+																)
+															)
+														)
+													)
+												)
+											)
+										)
+									)
+								)
+							)
 						)
 					)
 				);

@@ -1481,19 +1481,6 @@ $API = array(
 			)
 		)
 	),
-	'Test' => array(
-		'methods' => array(
-			'getRec' => array(
-				'len' => 0
-			),
-			'getRec2' => array(
-				'len' => 0
-			),
-			'addRec' => array(
-				'len' => 1
-			),
-		)
-	),
 	'CronJob' => array(
 		'methods' => array(
 			'run' => array(

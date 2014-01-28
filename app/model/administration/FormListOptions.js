@@ -18,10 +18,6 @@
 
 Ext.define('App.model.administration.FormListOptions', {
 	extend: 'Ext.data.Model',
-	table: {
-		name: 'formlistoptions',
-		comment: 'Form List Options'
-	},
 	fields: [
 		{
 			name: 'id',

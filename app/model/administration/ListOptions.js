@@ -30,7 +30,7 @@ Ext.define('App.model.administration.ListOptions', {
 		},
 		{
 			name: 'list_id',
-			type: 'string',
+			type: 'int',
 			comment: 'List ID'
 		},
 		{
@@ -44,9 +44,23 @@ Ext.define('App.model.administration.ListOptions', {
 			comment: 'Name'
 		},
 		{
+			name: 'code',
+			type: 'string',
+			len: 15,
+			index: true,
+			comment: 'value code'
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			len: 10,
+			comment: 'CPT4 LOINC SNOMEDCT ICD9 ICD10 RXNORM'
+		},
+		{
 			name: 'seq',
 			type: 'int',
-			comment: 'SEQ'},
+			comment: 'Sequence'
+		},
 		{
 			name: 'notes',
 			type: 'string',

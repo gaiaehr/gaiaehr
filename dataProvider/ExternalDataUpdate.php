@@ -825,7 +825,9 @@ class ExternalDataUpdate {
 	            CTV3ID VARCHAR(5) NOT NULL,
 	            SNOMEDID VARCHAR(8) NOT NULL,
 	            IsPrimitive TINYINT(1) NOT NULL,
-	            PRIMARY KEY (ConceptId)
+	            PRIMARY KEY (ConceptId),
+	            INDEX X_SNOMEDID (SNOMEDID),
+	            INDEX X_FullySpecifiedName (FullySpecifiedName)
 	            )',
 			'sct_descriptions_drop' => 'DROP TABLE IF EXISTS sct_descriptions',
 			'sct_descriptions_structure' => 'CREATE TABLE IF NOT EXISTS sct_descriptions (
@@ -836,7 +838,8 @@ class ExternalDataUpdate {
 	            InitialCapitalStatus TINYINT(1) NOT NULL,
 	            DescriptionType INT(11) NOT NULL,
 	            LanguageCode VARCHAR(8) NOT NULL,
-	            PRIMARY KEY (DescriptionId)
+	            PRIMARY KEY (DescriptionId),
+	            INDEX X_Term (Term)
 	            )',
 			'sct_relationships_drop' => 'DROP TABLE IF EXISTS sct_relationships',
 			'sct_relationships_structure' => 'CREATE TABLE IF NOT EXISTS sct_relationships (
@@ -861,7 +864,9 @@ class ExternalDataUpdate {
 	            RelationNms varchar(256) NOT NULL,
 	            AnswerList varchar(256) NOT NULL,
 	            RelationshipType varchar(25) NOT NULL,
-	            ConceptId varchar(25) NOT NULL
+	            ConceptId varchar(25) NOT NULL,
+	            INDEX X_LoincNum(LoincNum),
+	            INDEX X_ConceptId(ConceptId)
             	)',
 			'sct_relationships_icd9_drop' => 'DROP TABLE IF EXISTS sct_relationships_icd9',
 			'sct_relationships_icd9_structure' => 'CREATE TABLE IF NOT EXISTS sct_relationships_icd9 (
@@ -869,7 +874,9 @@ class ExternalDataUpdate {
 	            TARGETSCHEMEID varchar(50) NOT NULL,
 	            TARGETCODES varchar(50) NOT NULL,
 	            TARGETRULE varchar(50) NOT NULL,
-	            TARGETADVICE varchar(50) NOT NULL
+	            TARGETADVICE varchar(50) NOT NULL,
+	            INDEX X_TARGETID(TARGETID),
+	            INDEX X_TARGETCODES(TARGETCODES)
             	)',
 			'sct_relationships_icd10_drop' => 'DROP TABLE IF EXISTS sct_relationships_icd10',
 			'sct_relationships_icd10_structure' => 'CREATE TABLE IF NOT EXISTS sct_relationships_icd10 (
@@ -877,7 +884,9 @@ class ExternalDataUpdate {
 	            TARGETSCHEMEID varchar(50) NOT NULL,
 	            TARGETCODES varchar(50) NOT NULL,
 	            TARGETRULE varchar(50) NOT NULL,
-	            TARGETADVICE varchar(50) NOT NULL
+	            TARGETADVICE varchar(50) NOT NULL,
+	            INDEX X_TARGETID(TARGETID),
+	            INDEX X_TARGETCODES(TARGETCODES)
             	)'
 		);
 
@@ -894,6 +903,8 @@ class ExternalDataUpdate {
 				$stmt->execute();
 			}
 		}
+
+
 		// reading the SNOMED directory and identifying the files to import and replacing
 		// the variables by originals values.
 		$this->loadSnomedData($dir, $sub_path);

@@ -307,6 +307,9 @@ class CCDDocument {
 		}
 	}
 
+	/**
+	 * Method zipIt()
+	 */
 	private function zipIt($dir, $filename){
 		$zip = new ZipArchive();
 		$file = $dir . $filename . '.zip';

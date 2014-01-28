@@ -252,14 +252,17 @@ CREATE TABLE `combo_lists` (
 
 CREATE TABLE `combo_lists_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `list_id` varchar(255) NOT NULL DEFAULT '' COMMENT 'List ID',
+  `list_id` int(11) NOT NULL DEFAULT '0' COMMENT 'List ID',
   `option_value` varchar(255) NOT NULL DEFAULT '' COMMENT 'Value',
   `option_name` varchar(255) DEFAULT NULL COMMENT 'Name',
-  `seq` int(11) DEFAULT NULL COMMENT 'SEQ',
+  `code` varchar(15) DEFAULT NULL COMMENT 'value code',
+  `code_type` varchar(10) DEFAULT NULL COMMENT 'CPT4 LOINC SNOMEDCT ICD9 ICD10 RXNORM',
+  `seq` int(11) DEFAULT NULL COMMENT 'Sequence',
   `notes` varchar(255) DEFAULT NULL COMMENT 'Notes',
   `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
-  PRIMARY KEY (`id`,`list_id`,`option_value`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=732 ;
+  PRIMARY KEY (`id`,`list_id`,`option_value`),
+  KEY `code` (`code`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=773 ;
 
 CREATE TABLE `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

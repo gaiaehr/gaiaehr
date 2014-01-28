@@ -166,11 +166,29 @@ Ext.define('App.view.administration.Lists', {
                         itemId: 'optionValueTextField'
                     }
                 },
+	            {
+		            text: i18n('code'),
+		            sortable: true,
+		            dataIndex: 'code',
+		            width: 120,
+		            editor: {
+			            allowBlank: true
+		            }
+	            },
+	            {
+		            text: i18n('code_type'),
+		            sortable: true,
+		            dataIndex: 'code_type',
+		            width: 100,
+		            editor: {
+			            allowBlank: true
+		            }
+	            },
                 {
                     text: i18n('notes'),
                     sortable: true,
                     dataIndex: 'notes',
-                    flex: 1,
+                    flex: 1,width: 100,
                     editor: {
                         allowBlank: true
                     }

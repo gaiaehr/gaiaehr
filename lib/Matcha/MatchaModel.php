@@ -82,7 +82,9 @@ class MatchaModel extends Matcha
 
             // if id property is not set in sencha model look for propertyId.
             if($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)] === false) unset($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)]);
-            foreach($modelFields as $key => $SenchaModel) if(isset($SenchaModel['store']) && $SenchaModel['store'] === false) unset($modelFields[$key]);
+
+	        // unset the fields that will noe be store int hte database
+            foreach($modelFields as $key => $field) if((isset($field['store']) && $field['store'] === false) || isset($field['persist']) && $field['persist'] === false) unset($modelFields[$key]);
 
             // get the table column information and remove the id column
             $tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN ".$table.";")->fetchAll(PDO::FETCH_ASSOC);
@@ -736,9 +738,8 @@ class MatchaModel extends Matcha
 	static public function __getPhantomFields($model){
 		$arr = array();
 		$fields = (is_object($model)? MatchaUtils::__objectToArray($model->fields): $model['fields']);
-		foreach($fields as $field)
-		{
-			if(isset($field['store']) && !$field['store']) $arr[] = $field['name'];
+		foreach($fields as $field){
+			if((isset($field['store']) && !$field['store']) || (isset($properties['persist']) && !$properties['persist'])) $arr[] = $field['name'];
 		}
 		$arr = (empty($arr) ? false : $arr);
 		return $arr;

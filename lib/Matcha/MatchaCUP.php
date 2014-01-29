@@ -734,7 +734,7 @@ class MatchaCUP {
 			 * $properties['store'] is set and is not true OR
 			 * $properties['persist'] is set and is not true OR
 			 */
-			if((!isset($properties['store']) || $properties['store']) || (!isset($properties['persist']) || $properties['persist'])){
+			if((!isset($properties['store']) || $properties['store']) && (!isset($properties['persist']) || $properties['persist'])){
 				$type = MatchaModel::__getFieldType($col, $this->model);
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);

@@ -1704,8 +1704,9 @@ CREATE TABLE `patient` (
   KEY `home_phone` (`home_phone`),
   KEY `mobile_phone` (`mobile_phone`),
   KEY `work_phone` (`work_phone`),
-  KEY `email` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patients/Demographics' AUTO_INCREMENT=3 ;
+  KEY `email` (`email`),
+  KEY `LiveSearchIndex` (`pid`,`pubpid`,`fname`,`mname`,`lname`,`SS`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patients/Demographics' ;
 
 CREATE TABLE `patient_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

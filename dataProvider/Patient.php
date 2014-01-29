@@ -323,11 +323,12 @@ class Patient {
 	public function patientLiveSearch(stdClass $params){
 		$this->db->setSQL("SELECT pid,pubpid,fname,lname,mname,DOB,SS
                              FROM patient
-                            WHERE fname LIKE '$params->query%'
-                               OR lname LIKE '$params->query%'
-                               OR mname LIKE '$params->query%'
-                               OR pid 	LIKE '$params->query%'
-                               OR SS 	LIKE '%$params->query'");
+                            WHERE fname  LIKE '$params->query%'
+                               OR lname  LIKE '$params->query%'
+                               OR mname  LIKE '$params->query%'
+                               OR pubpid LIKE '$params->query%'
+                               OR pid 	 LIKE '$params->query%'
+                               OR SS 	 LIKE '%$params->query'");
 		$rows = array();
 		foreach($this->db->fetchRecords(PDO::FETCH_CLASS) as $row){
 			$row->fullname = Person::fullname($row->fname, $row->mname, $row->lname);

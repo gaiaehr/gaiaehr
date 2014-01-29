@@ -57,7 +57,6 @@ Ext.define('App.controller.patient.SocialHistory', {
 			addedRecs;
 
 		plugin.cancelEdit();
-
 		addedRecs = this.getSocialHistoryGrid().getStore().add({
 			pid: app.patient.pid,
 			eid: app.patient.eid,
@@ -73,12 +72,8 @@ Ext.define('App.controller.patient.SocialHistory', {
 		plugin.startEdit(addedRecs[0], 0);
 	},
 
-	onHistoryTypeComboSelectionChanged: function(cmb, records){
-
-		say('onHistoryTypeComboSelectionChanged');
-
+	onHistoryTypeComboSelectionChanged: function(){
 		this.getSocialHistoryAddBtn().enable();
-
 	},
 
 	onSocialHistoryShow: function(grid){

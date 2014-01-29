@@ -32,7 +32,7 @@ Ext.define('App.view.patient.windows.Medical', {
 	requires: [
 		'App.view.patient.Results',
 		'App.store.administration.HL7Recipients',
-        'App.ux.grid.RowFormEditing',
+        'App.ux.grid.RowFormEditing'
 	],
 
 	pid: null,
@@ -703,294 +703,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			},
 			//endregion
 
-			//region Surgery And Dental
-
-			/**
-			 * Surgery Card panel
-			 */
-//            {
-//
-//
-//                xtype:'grid',
-//                action:'patientSurgeryListGrid',
-//                store:me.patientSurgeryStore,
-//                columns:[
-//                    {
-//                        header:i18n('surgery'),
-//                        width:100,
-//                        flex:1,
-//                        dataIndex:'surgery'
-//                    },
-//                    {
-//                        xtype:'datecolumn',
-//                        header:i18n('date'),
-//                        width:100,
-//                        format:'Y-m-d',
-//                        dataIndex:'date'
-//                    }
-//                ],
-//                plugins: Ext.create('App.ux.grid.RowFormEditing', {
-//                    autoCancel:false,
-//                    errorSummary:false,
-//                    clicksToEdit:1,
-//                    formItems:[
-//                        {
-//                            title:i18n('general'),
-//                            xtype:'container',
-//                            padding:10,
-//                            layout:'vbox',
-//                            items:[
-//                                {
-//                                    /**
-//                                     * Line one
-//                                     */
-//                                    xtype:'fieldcontainer',
-//                                    layout:'hbox',
-//                                    defaults:{
-//                                        margin:'0 10 0 0'
-//                                    },
-//                                    items:[
-//                                        {
-//                                            fieldLabel:i18n('surgery'),
-//                                            name:'surgery_id',
-//                                            hideLabel:false,
-//                                            allowBlank:false,
-//                                            width:510,
-//                                            labelWidth:70,
-//                                            xtype:'surgerieslivetsearch',
-//                                            itemId:'surgery',
-//                                            action:'surgery',
-//                                            enableKeyEvents:true,
-//                                            listeners:{
-//                                                scope:me,
-//                                                'select':me.onLiveSearchSelect
-//                                            }
-//                                        },
-//                                        {
-//                                            xtype:'textfield',
-//                                            hidden:true,
-//                                            name:'surgery',
-//                                            action:'idField'
-//                                        },
-//                                        {
-//                                            fieldLabel:i18n('date'),
-//                                            xtype:'datefield',
-//                                            width:200,
-//                                            labelWidth:80,
-//                                            format:'Y-m-d',
-//                                            name:'date'
-//
-//                                        }
-//                                    ]
-//
-//                                },
-//                                {
-//                                    /**
-//                                     * Line two
-//                                     */
-//                                    xtype:'fieldcontainer',
-//                                    layout:'hbox',
-//                                    defaults:{
-//                                        margin:'0 10 0 0'
-//                                    },
-//                                    items:[
-//                                        {
-//                                            fieldLabel:i18n('notes'),
-//                                            xtype:'textfield',
-//                                            width:510,
-//                                            labelWidth:70,
-//                                            name:'notes'
-//
-//                                        },
-//                                        {
-//                                            fieldLabel:i18n('outcome'),
-//                                            xtype:'mitos.outcome2combo',
-//                                            width:200,
-//                                            labelWidth:80,
-//                                            name:'outcome'
-//
-//                                        }
-//                                    ]
-//
-//                                },
-//                                {
-//                                    /**
-//                                     * Line three
-//                                     */
-//                                    xtype:'fieldcontainer',
-//                                    layout:'hbox',
-//                                    defaults:{
-//                                        margin:'0 10 0 0'
-//                                    },
-//                                    items:[
-//                                        {
-//                                            xtype:'textfield',
-//                                            width:510,
-//                                            labelWidth:70,
-//                                            fieldLabel:i18n('referred_by'),
-//                                            name:'referred_by'
-//                                        }
-//                                    ]
-//                                }
-//                            ]
-//                        }
-//                    ]
-//                }),
-//                bbar:['->', {
-//                    text:i18n('reviewed'),
-//                    action:'review',
-//                    itemId:'review_surgery',
-//                    scope:me,
-//                    handler:me.onReviewed
-//                }]
-//            },
-			/**
-			 * Dental Card panel
-			 */
-//            {
-//
-//
-//                xtype:'grid',
-//                action:'patientDentalListGrid',
-//                store:me.patientDentalStore,
-//                columns:[
-//                    {
-//                        header:i18n('dental'),
-//                        width:990,
-//                        dataIndex:'description'
-//                    },
-//                    {
-//                        xtype:'datecolumn',
-//                        header:i18n('begin_date'),
-//                        width:100,
-//                        format:'Y-m-d',
-//                        dataIndex:'begin_date'
-//                    },
-//                    {
-//                        xtype:'datecolumn',
-//                        header:i18n('end_date'),
-//                        flex:1,
-//                        format:'Y-m-d',
-//                        dataIndex:'end_date'
-//                    }
-//                ],
-//                plugins:Ext.create('App.ux.grid.RowFormEditing', {
-//                    autoCancel:false,
-//                    errorSummary:false,
-//                    clicksToEdit:1,
-//                    formItems:[
-//	                    {
-//		                    title:i18n('general'),
-//		                    xtype:'container',
-//		                    padding:10,
-//		                    layout:'vbox',
-//		                    items:[
-//			                    {
-//				                    /**
-//				                     * Line one
-//				                     */
-//				                    xtype:'fieldcontainer',
-//				                    layout:'hbox',
-//				                    defaults:{
-//					                    margin:'0 10 0 0'
-//				                    },
-//				                    items:[
-//					                    {
-//						                    fieldLabel:i18n('dental'),
-//						                    name:'surgery_id',
-//						                    hideLabel:false,
-//						                    allowBlank:false,
-//						                    width:510,
-//						                    labelWidth:70,
-//						                    xtype:'cdtlivetsearch',
-//						                    itemId:'cdt',
-//						                    action:'cdt',
-//						                    enableKeyEvents:true,
-//						                    listeners:{
-//							                    scope:me,
-//							                    'select':me.onLiveSearchSelect
-//						                    }
-//					                    },
-//					                    {
-//						                    xtype:'textfield',
-//						                    hidden:true,
-//						                    name:'surgery',
-//						                    action:'idField'
-//					                    },
-//					                    {
-//						                    fieldLabel:i18n('date'),
-//						                    xtype:'datefield',
-//						                    width:200,
-//						                    labelWidth:80,
-//						                    format:'Y-m-d',
-//						                    name:'date'
-//
-//					                    }
-//				                    ]
-//
-//			                    },
-//			                    {
-//				                    /**
-//				                     * Line two
-//				                     */
-//				                    xtype:'fieldcontainer',
-//				                    layout:'hbox',
-//				                    defaults:{
-//					                    margin:'0 10 0 0'
-//				                    },
-//				                    items:[
-//					                    {
-//						                    fieldLabel:i18n('notes'),
-//						                    xtype:'textfield',
-//						                    width:510,
-//						                    labelWidth:70,
-//						                    name:'notes'
-//
-//					                    },
-//					                    {
-//						                    fieldLabel:i18n('outcome'),
-//						                    xtype:'mitos.outcome2combo',
-//						                    width:200,
-//						                    labelWidth:80,
-//						                    name:'outcome'
-//
-//					                    }
-//				                    ]
-//
-//			                    },
-//			                    {
-//				                    /**
-//				                     * Line three
-//				                     */
-//				                    xtype:'fieldcontainer',
-//				                    layout:'hbox',
-//				                    defaults:{
-//					                    margin:'0 10 0 0'
-//				                    },
-//				                    items:[
-//					                    {
-//						                    xtype:'textfield',
-//						                    width:510,
-//						                    labelWidth:70,
-//						                    fieldLabel:i18n('referred_by'),
-//						                    name:'referred_by'
-//					                    }
-//				                    ]
-//			                    }
-//		                    ]
-//	                    }
-//                    ]
-//                }),
-//                bbar:['->', {
-//                    text:i18n('reviewed'),
-//                    action:'review',
-//                    itemId:'review_dental',
-//                    scope:me,
-//                    handler:me.onReviewed
-//                }]
-//            },
-
-			//endregion
 
 			//region Medications panel
 			{
@@ -1156,6 +868,13 @@ Ext.define('App.view.patient.windows.Medical', {
 
 				xtype:'patientresultspanel',
 				action: 'patientLabs'
+			},
+			//endregion
+
+			//region Social History panel
+			{
+				xtype: 'patientsocialhistorypanel',
+				action: 'patientSocialHistory'
 			}
 			//endregion
 		];
@@ -1199,26 +918,6 @@ Ext.define('App.view.patient.windows.Medical', {
 						handler: me.cardSwitch
 					},
 					'-',
-//                    {
-//                        text:i18n('surgeries'),
-//                        enableToggle:true,
-//                        toggleGroup:'medicalWin',
-//                        itemId:'surgery',
-//                        action:'surgery',
-//                        scope:me,
-//                        handler:me.cardSwitch
-//                    },
-//                    '-',
-//                    {
-//                        text:i18n('dental'),
-//                        enableToggle:true,
-//                        toggleGroup:'medicalWin',
-//                        itemId:'dental',
-//                        action:'dental',
-//                        scope:me,
-//                        handler:me.cardSwitch
-//                    },
-//                    '-',
 					{
 						text: i18n('medications'),
 						enableToggle: true,
@@ -1235,6 +934,16 @@ Ext.define('App.view.patient.windows.Medical', {
 						toggleGroup: 'medicalWin',
 						itemId: 'laboratories',
 						action: 'laboratories',
+						scope: me,
+						handler: me.cardSwitch
+					},
+					'-',
+					{
+						text: i18n('social_history'),
+						enableToggle: true,
+						toggleGroup: 'medicalWin',
+						itemId: 'socialhistory',
+						action: 'socialhistory',
 						scope: me,
 						handler: me.cardSwitch
 					},
@@ -1631,18 +1340,16 @@ Ext.define('App.view.patient.windows.Medical', {
 		} else if(btn.action == 'issues'){
 			layout.setActiveItem(2);
 			title = 'Active Problems';
-//        }else if(btn.action == 'surgery'){
-//            layout.setActiveItem(3);
-//            title = 'Surgeries';
-//        }else if(btn.action == 'dental'){
-//            layout.setActiveItem(4);
-//            title = 'Dentals';
 		} else if(btn.action == 'medications'){
 			layout.setActiveItem(3);
 			title = 'Medications';
 		} else if(btn.action == 'laboratories'){
 			layout.setActiveItem(4);
 			title = 'Laboratories';
+			addBtn.hide();
+		} else if(btn.action == 'socialhistory'){
+			layout.setActiveItem(5);
+			title = 'Social History';
 			addBtn.hide();
 		}
 		me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));

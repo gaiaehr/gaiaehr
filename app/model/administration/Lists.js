@@ -41,7 +41,7 @@ Ext.define('App.model.administration.Lists', {
 		{
 			name: 'in_use',
 			type: 'bool',
-			store: false
+			persist: false
 		}
 	],
 	proxy: {

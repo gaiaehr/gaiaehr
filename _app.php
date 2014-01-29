@@ -508,12 +508,14 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.view.patient.EncounterDocumentsGrid',
 				'App.view.patient.encounter.ICDs',
 				'App.view.patient.CheckoutAlertsView',
+				'App.view.patient.Encounter',
 				'App.view.patient.Vitals',
 				'App.view.patient.NewPatient',
 				'App.view.patient.Summary',
 				'App.view.patient.ProgressNote',
+				'App.view.patient.Results',
+				'App.view.patient.SocialHistory',
 				'App.view.patient.Visits',
-				'App.view.patient.Encounter',
 				'App.view.patient.windows.Medical',
 				'App.view.patient.VisitCheckout',
 				/*
@@ -655,6 +657,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'Support',
 	                'ScriptCam',
 	                'patient.Results',
+	                'patient.SocialHistory',
                     'patient.encounter.SOAP'
                 ],
                 launch: function() {

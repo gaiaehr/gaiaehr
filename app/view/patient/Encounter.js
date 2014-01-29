@@ -431,6 +431,9 @@ Ext.define('App.view.patient.Encounter', {
 				text: i18n('results') + ' ',
 				action: 'laboratories'
 			}, '-', {
+				text: i18n('social_history') + ' ',
+				action: 'socialhistory'
+			}, '-', {
 				text: i18n('lab_orders'),
 				action: 'lab',
 				scope: me,

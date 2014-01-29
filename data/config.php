@@ -789,6 +789,28 @@ $API = array(
 		)
 	),
 	/**
+	 * Social History Functions
+	 */
+	'SocialHistory' => array(
+		'methods' => array(
+			'getSocialHistories' => array(
+				'len' => 1
+			),
+			'getSocialHistory' => array(
+				'len' => 1
+			),
+			'addSocialHistory' => array(
+				'len' => 1
+			),
+			'updateSocialHistory' => array(
+				'len' => 1
+			),
+			'destroySocialHistory' => array(
+				'len' => 1
+			)
+		)
+	),
+	/**
 	 * Prescriptions Functions
 	 */
 	'Prescriptions' => array(

@@ -10,8 +10,22 @@ Ext.define('App.ux.combo.Combo', {
 		Ext.define(model, {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
+				{
+					name: 'option_name',
+					type: 'string'
+				},
+				{
+					name: 'option_value',
+					type: 'string'
+				},
+				{
+					name: 'code',
+					type: 'string'
+				},
+				{
+					name: 'code_type',
+					type: 'string'
+				}
 			],
 			proxy: {
 				type: 'direct',

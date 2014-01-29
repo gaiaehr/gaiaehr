@@ -1131,6 +1131,7 @@ $LANG = array(
 	'units'               			    	=> 'Units',
 	'drugs'               			    	=> 'Drugs',
 	'end'               			        => 'End',
+	'start'               			        => 'Start',
 	'age_from'               			    => 'Age From',
 	'date_from'               			    => 'Date From',
 	'age_to'               			        => 'Age To',
@@ -1265,4 +1266,6 @@ $LANG = array(
 	'laboratory_info'                       => 'Laboratory Info',
 	'acknowledge'                           => 'Acknowledge',
 	'no_document_found'                     => 'No Document Found',
+	'social_history'                        => 'Social History',
+	'add_social_history'                    => 'Add Social History',
 );

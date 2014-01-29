@@ -2261,71 +2261,73 @@ class CCDDocument {
 		 * social, and environmental history and health risk factors, as well as administrative data such
 		 * as marital status, race, ethnicity, and religious affiliation.
 		 */
-		//		$socialHistory['section']['entry'][] = array(
-		//		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
-		//			'td' => array(
-		//				array(
-		//					'@value' => 'Social History Element Data'
-		//				),
-		//				array(
-		//					'@value' => 'ReactiDescriptionon Data'
-		//				),
-		//				array(
-		//					'@value' => 'Effective Data'
-		//				)
-		//			)
-		//		);
-		//			'observation' => array(
-		//				'@attributes' => array(
-		//					'classCode' => 'OBS',
-		//					'moodCode' => 'EVN'
-		//				),
-		//				'templateId' => array(
-		//					'@attributes' => array(
-		//						'root' => '2.16.840.1.113883.10.20.22.4.38'
-		//					)
-		//				),
-		//				'id' => array(
-		//					'@attributes' => array(
-		//						'root' => UUID::v4()
-		//					)
-		//				),
-		//				/**
-		//		         * Code	        System  	Print Name
-		//				 * 229819007	SNOMEDCT	Tobacco use and exposure
-		//				 * 256235009	SNOMEDCT	Exercise
-		//				 * 160573003	SNOMEDCT	Alcohol intake
-		//				 * 364393001	SNOMEDCT	Nutritional observable
-		//				 * 364703007	SNOMEDCT	Employment detail
-		//				 * 425400000	SNOMEDCT	Toxic exposure status
-		//				 * 363908000	SNOMEDCT	Details of drug misuse behavior
-		//				 * 228272008	SNOMEDCT	Health-related behavior
-		//				 * 105421008	SNOMEDCT	Educational Achievement
-		//		         */
-		//				'code' => array(
-		//					'@attributes' => array(
-		//						'code' => '229819007',
-		//						'codeSystem' => $codes['SNOMEDCT'],
-		//						'displayName' => 'Tobacco use and exposure'
-		//					)
-		//				),
-		//				'statusCode' => array(
-		//					'@attributes' => array(
-		//						'code' => 'completed', // active ||  suspended ||  aborted ||  completed
-		//					)
-		//				),
-		//				'value' => array(
-		//					'@attributes' => array(
-		//						'xsi:type' => 'ST'
-		//					),
-		//					'@value' => 'Smoking Data'
-		//				)
-		//			)
-		//		);
+		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
+			'td' => array(
+				array(
+					'@value' => 'Social History Element Data'
+				),
+				array(
+					'@value' => 'ReactiDescriptionon Data'
+				),
+				array(
+					'@value' => 'Effective Data'
+				)
+			)
+		);
 
-		/**
-		 * This clinical statement represents a patient's current smoking status. The vocabulary selected for this
-		 * clinical statement is the best approximation of the statuses in Meaningful Use (MU) Stage 1.
+		$socialHistory['section']['entry'][] = array(
+			'observation' => array(
+				'@attributes' => array(
+					'classCode' => 'OBS',
+					'moodCode' => 'EVN'
+				),
+				'templateId' => array(
+					'@attributes' => array(
+						'root' => '2.16.840.1.113883.10.20.22.4.38'
+					)
+				),
+				'id' => array(
+					'@attributes' => array(
+						'root' => UUID::v4()
+					)
+				),
+				/**
+		         * Code	        System  	Print Name
+				 * 229819007	SNOMEDCT	Tobacco use and exposure
+				 * 256235009	SNOMEDCT	Exercise
+				 * 160573003	SNOMEDCT	Alcohol intake
+				 * 364393001	SNOMEDCT	Nutritional observable
+				 * 364703007	SNOMEDCT	Employment detail
+				 * 425400000	SNOMEDCT	Toxic exposure status
+				 * 363908000	SNOMEDCT	Details of drug misuse behavior
+				 * 228272008	SNOMEDCT	Health-related behavior
+				 * 105421008	SNOMEDCT	Educational Achievement
+		         */
+				'code' => array(
+					'@attributes' => array(
+						'code' => '229819007', // TODO
+						'codeSystem' => $this->codes['SNOMEDCT']
+					),
+				    'originalText' => 'Tobacco use and exposure' // TODO
+				),
+				'statusCode' => array(
+					'@attributes' => array(
+						'code' => 'completed',
+					)
+				),
+				'value' => array(
+					'@attributes' => array(
+						'xsi:type' => 'ST'
+					),
+					'@value' => 'Smoking Data'
+				)
+			)
+		);
+
+		/***************************************************************************************************************
+		 * Smoking Status Observation - This clinical statement represents a patient's current smoking
+		 * status. The vocabulary selected for this clinical statement is the best approximation of the
+		 * statuses in Meaningful Use (MU) Stage 1.
 		 *
 		 * If the patient is a smoker (77176002), the effectiveTime/low element must be present. If the patient
 		 * is an ex-smoker (8517006), both the effectiveTime/low and effectiveTime/high element must be present.
@@ -2357,11 +2359,6 @@ class CCDDocument {
 						'root' => '2.16.840.1.113883.10.20.22.4.78'
 					)
 				),
-				'id' => array(
-					'@attributes' => array(
-						'root' => UUID::v4()
-					)
-				),
 				'code' => array(
 					'@attributes' => array(
 						'code' => 'ASSERTION',
@@ -2371,23 +2368,6 @@ class CCDDocument {
 				'statusCode' => array(
 					'@attributes' => array(
 						'code' => 'completed',
-						// active ||  suspended ||  aborted ||  completed
-					)
-				),
-				/**
-				 * Code                System        Print Name
-				 * 449868002        SNOMEDCT    Current every day smoker
-				 * 428041000124106    SNOMEDCT    Current some day smoker
-				 * 8517006            SNOMEDCT    Former smoker
-				 * 266919005        SNOMEDCT    Never smoker (Never Smoked)
-				 * 77176002            SNOMEDCT    Smoker, current status unknown
-				 * 266927001        SNOMEDCT    Unknown if ever smoked
-				 */
-				'value' => array(
-					'@attributes' => array(
-						'xsi:type' => 'CD',
-						'code' => '449868002',
-						'codeSystem' => $this->codes['SNOMEDCT']
 					)
 				),
 				'effectiveTime' => array(
@@ -2396,22 +2376,38 @@ class CCDDocument {
 					),
 					'low' => array(
 						'@attributes' => array(
-							'value' => '19320924'
+							'value' => '19320924' // TODO
 						)
 					),
 					'high' => array(
 						'@attributes' => array(
-							'value' => '19320924'
+							'value' => '19320924' // TODO
 						)
+					)
+				),
+				/**
+				 * Code             System      Print Name
+				 * 449868002        SNOMEDCT    Current every day smoker
+				 * 428041000124106  SNOMEDCT    Current some day smoker
+				 * 8517006          SNOMEDCT    Former smoker
+				 * 266919005        SNOMEDCT    Never smoker (Never Smoked)
+				 * 77176002         SNOMEDCT    Smoker, current status unknown
+				 * 266927001        SNOMEDCT    Unknown if ever smoked
+				 */
+				'value' => array(
+					'@attributes' => array(
+						'xsi:type' => 'CD',
+						'code' => '449868002', // TODO
+						'codeSystem' => $this->codes['SNOMEDCT']
 					)
 				),
 			)
 		);
 
-		/**
-		 * This clinical statement represents current and/or prior pregnancy dates
-		 * enabling investigators to determine if the subject of the case report
-		 * was pregnant during the course of a condition.
+		/***************************************************************************************************************
+		 * Pregnancy Observation - This clinical statement represents current and/or
+		 * prior pregnancy dates enabling investigators to determine if the subject
+		 * of the case report* was pregnant during the course of a condition.
 		 */
 		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
 			'td' => array(
@@ -2437,23 +2433,6 @@ class CCDDocument {
 						'root' => '2.16.840.1.113883.10.20.15.3.8'
 					)
 				),
-				'id' => array(
-					'@attributes' => array(
-						'root' => UUID::v4()
-					)
-				),
-				/**
-				 * Code            System    Print Name
-				 * 229819007    SNOMEDCT    Tobacco use and exposure
-				 * 256235009    SNOMEDCT    Exercise
-				 * 160573003    SNOMEDCT    Alcohol intake
-				 * 364393001    SNOMEDCT    Nutritional observable
-				 * 364703007    SNOMEDCT    Employment detail
-				 * 425400000    SNOMEDCT    Toxic exposure status
-				 * 363908000    SNOMEDCT    Details of drug misuse behavior
-				 * 228272008    SNOMEDCT    Health-related behavior
-				 * 105421008    SNOMEDCT    Educational Achievement
-				 */
 				'code' => array(
 					'@attributes' => array(
 						'code' => 'ASSERTION',
@@ -2463,32 +2442,13 @@ class CCDDocument {
 				'statusCode' => array(
 					'@attributes' => array(
 						'code' => 'completed',
-						// active ||  suspended ||  aborted ||  completed
 					)
 				),
 				'value' => array(
 					'@attributes' => array(
 						'xsi:type' => 'CD',
 						'code' => '77386006',
-						// Pregnant
 						'codeSystem' => '2.16.840.1.113883.6.96'
-					)
-				),
-				'effectiveTime' => array(
-					'@attributes' => array(
-						'xsi:type' => 'IVL_TS',
-					),
-					'low' => array(
-						'@attributes' => array(
-							'value' => '19320924'
-							// TODO
-						)
-					),
-					'high' => array(
-						'@attributes' => array(
-							'value' => '19320924'
-							// TODO
-						)
 					)
 				),
 				'entryRelationship' => array(
@@ -2516,11 +2476,13 @@ class CCDDocument {
 								'code' => 'completed'
 							)
 						),
+						/**
+						 * Estimated Date Of Delivery
+						 */
 						'value' => array(
 							'@attributes' => array(
 								'xsi:type' => 'TS',
-								'value' => '20150123'
-								// Estimated Date Of Delivery
+								'value' => '20150123' // TODO
 							)
 						)
 					)
@@ -3064,54 +3026,6 @@ class CCDDocument {
 													)
 												),
 												'entryRelationship' => array(
-//													/*************************************
-//													 *  Age Observation
-//													 */
-//													array(
-//														'@attributes' => array(
-//															'typeCode' => 'SUBJ',
-//														),
-//														'observation' => array(
-//															'@attributes' => array(
-//																'classCode' => 'OBS',
-//																'moodCode' => 'EVN'
-//															),
-//															'templateId' => array(
-//																'@attributes' => array(
-//																	'root' => '2.16.840.1.113883.10.20.22.4.31'
-//																)
-//															),
-//															'statusCode' => array(
-//																'@attributes' => array(
-//																	'code' => 'completed'
-//																)
-//															),
-//															'code' => array(
-//																'@attributes' => array(
-//																	'code' => '445518008',
-//																	'CodeSystem' => '2.16.840.1.113883.6.96',
-//
-//																),
-//																'originalText' => 'Original text'
-//															),
-//															/**
-//															 * Level    Code    Display Name    Code System
-//															 * 0-L      d       Day             2.16.840.1.113883.6.8
-//															 * 0-L      h       Hour            2.16.840.1.113883.6.8
-//															 * 0-L      min     Minute          2.16.840.1.113883.6.8
-//															 * 0-L      mo      Month           2.16.840.1.113883.6.8
-//															 * 0-L      wk      Week            2.16.840.1.113883.6.8
-//															 * 0-L      a       Year            2.16.840.1.113883.6.8
-//															 */
-//															'value' => array(
-//																'@attributes' => array(
-//																	'xsi:type' => 'PQ',
-//																	'value' => '32',
-//																	'unit' => '1'
-//																)
-//															)
-//														)
-//													),
 													/*************************************
 													 *  Problem Status
 													 */

@@ -253,6 +253,17 @@ class CCDDocument {
 	}
 
 	/**
+	 * Method get()
+	 */
+	public function get(){
+		try{
+			return $this->xml->saveXML();
+		} catch(Exception $e){
+			return $e->getMessage();
+		}
+	}
+
+	/**
 	 * Method export()
 	 */
 	public function export(){

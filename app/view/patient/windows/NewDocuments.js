@@ -18,6 +18,9 @@
 
 Ext.define('App.view.patient.windows.NewDocuments', {
 	extend: 'App.ux.window.Window',
+	requires:[
+
+	],
 	title: i18n('order_window'),
 	closeAction: 'hide',
 	height: 700,

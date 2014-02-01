@@ -419,12 +419,6 @@ Ext.define('App.view.patient.Encounter', {
 				text: i18n('active_problems') + ' ',
 				action: 'issues'
 			}, '-', {
-				//                text:i18n('surgeries') + ' ',
-				//                action:'surgery'
-				//            }, '-', {
-				//                text:i18n('dental') + ' ',
-				//                action:'dental'
-				//            }, '-', {
 				text: i18n('medications') + ' ',
 				action: 'medications'
 			}, '-', {
@@ -433,6 +427,9 @@ Ext.define('App.view.patient.Encounter', {
 			}, '-', {
 				text: i18n('social_history') + ' ',
 				action: 'socialhistory'
+			}, '-', {
+				text: i18n('referrals') + ' ',
+				action: 'referrals'
 			}, '-', {
 				text: i18n('lab_orders'),
 				action: 'lab',

@@ -40,25 +40,14 @@ Ext.define('App.model.patient.PatientsReferral', {
 			comment: 'patient ID'
 		},
 		{
-			name: 'uid',
-			type: 'int',
-			comment: 'user ID who created the referral'
-		},
-		{
-			name: 'referral_date',
-			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
-		},
-		{
-			name: 'referral_from',
+			name: 'from_uid',
 			type: 'int',
 			comment: 'referral from doctors id'
 		},
 		{
-			name: 'referral_to',
-			type: 'string',
-			len: 200,
-			comment: 'referral to doctors name'
+			name: 'to_id',
+			type: 'int',
+			comment: 'ID from the referral list'
 		},
 		{
 			name: 'reason',
@@ -66,16 +55,32 @@ Ext.define('App.model.patient.PatientsReferral', {
 			dataType:'text'
 		},
 		{
-			name: 'diagnosis_codes',
-			type: 'string'
-		},
-		{
 			name: 'requested_services',
 			type: 'string'
 		},
 		{
-			name: 'include_vitals',
+			name: 'include_ccd',
 			type: 'bool'
+		},
+		{
+			name: 'create_uid',
+			type: 'int',
+			comment: 'user ID who created the referral'
+		},
+		{
+			name: 'update_uid',
+			type: 'int',
+			comment: 'user ID who updated the referral'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat:'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat:'Y-m-d H:i:s'
 		}
 	],
 	proxy: {

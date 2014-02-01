@@ -31,6 +31,7 @@ Ext.define('App.view.patient.windows.Medical', {
 	},
 	requires: [
 		'App.view.patient.Results',
+		'App.view.patient.Referrals',
 		'App.store.administration.HL7Recipients',
         'App.ux.grid.RowFormEditing'
 	],
@@ -875,6 +876,12 @@ Ext.define('App.view.patient.windows.Medical', {
 			{
 				xtype: 'patientsocialhistorypanel',
 				action: 'patientSocialHistory'
+			},
+
+			//region Referrals
+			{
+				xtype: 'patientreferralspanel',
+				action: 'patientReferrals'
 			}
 			//endregion
 		];
@@ -944,6 +951,16 @@ Ext.define('App.view.patient.windows.Medical', {
 						toggleGroup: 'medicalWin',
 						itemId: 'socialhistory',
 						action: 'socialhistory',
+						scope: me,
+						handler: me.cardSwitch
+					},
+					'-',
+					{
+						text: i18n('referrals'),
+						enableToggle: true,
+						toggleGroup: 'medicalWin',
+						itemId: 'referrals',
+						action: 'referrals',
 						scope: me,
 						handler: me.cardSwitch
 					},
@@ -1350,6 +1367,10 @@ Ext.define('App.view.patient.windows.Medical', {
 		} else if(btn.action == 'socialhistory'){
 			layout.setActiveItem(5);
 			title = 'Social History';
+			addBtn.hide();
+		} else if(btn.action == 'referrals'){
+			layout.setActiveItem(6);
+			title = 'Referrals';
 			addBtn.hide();
 		}
 		me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));

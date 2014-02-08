@@ -1080,6 +1080,7 @@ $LANG = array(
     'prescriptions_and_dispensations'		=> 'Prescriptions and Dispensations',
     'clinical'								=> 'Clinical',
     'referrals'								=> 'Referrals',
+    'referral'								=> 'Referral',
     'immunization_registry'					=> 'Immunization Registry',
     'clinic_reports'						=> 'Clinic Reports',
     'standard_measures'						=> 'Standard Measures',

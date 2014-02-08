@@ -42,13 +42,13 @@ Ext.define('App.view.patient.Referrals', {
 			dataIndex: 'notes',
 			menuDisabled: true,
 			resizable: false,
-			width: 200
+			flex: 1
 		}
 	],
 	tbar: [
 		'->',
 		{
-			text: i18n('add_referral'),
+			text: i18n('referral'),
 			iconCls: 'icoAdd',
 			action:'addReferralBtn'
 		}

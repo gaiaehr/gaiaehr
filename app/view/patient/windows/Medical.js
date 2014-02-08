@@ -72,22 +72,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			autoSync: false
 		});
 
-//        me.patientSurgeryStore = Ext.create('App.store.patient.Surgery', {
-//            listeners:{
-//                scope:me,
-//                beforesync:me.setDefaults
-//            },
-//            autoSync:false
-//        });
-
-//        me.patientDentalStore = Ext.create('App.store.patient.Dental', {
-//            listeners:{
-//                scope:me,
-//                beforesync:me.setDefaults
-//            },
-//            autoSync:false
-//        });
-
 		me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
 			listeners: {
 				scope: me,
@@ -1419,16 +1403,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				}
 			]
 		});
-//        me.patientSurgeryStore.load({
-//                params:{
-//                    pid:me.pid
-//                }
-//            });
-//        me.patientDentalStore.load({
-//                params:{
-//                    pid:me.pid
-//                }
-//            });
+
 		me.patientMedicationsStore.load({
 			params: {
 				pid: me.pid

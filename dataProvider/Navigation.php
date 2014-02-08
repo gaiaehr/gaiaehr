@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 include_once(dirname(__FILE__) . '/ACL.php');
+include_once(dirname(__FILE__) . '/i18nRouter.php');
 
 class Navigation
 {
@@ -30,9 +31,8 @@ class Navigation
 
 	function __construct()
 	{
-		include_once($_SESSION['root'] . '/langs/' . $_SESSION['site']['localization'] . '.php');
 		$this->ACL = new ACL();
-		$this->i18n = $LANG;
+		$this->i18n = i18nRouter::getTranslation();
 	}
 
 	public function getNavigation()

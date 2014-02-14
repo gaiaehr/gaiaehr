@@ -75,9 +75,9 @@ Ext.define('App.model.administration.ListOptions', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Lists.getOptions,
-			create: Lists.addOption,
-			update: Lists.updateOption
+			read: 'Lists.getOptions',
+			create: 'Lists.addOption',
+			update: 'Lists.updateOption'
 		}
 	}
 });

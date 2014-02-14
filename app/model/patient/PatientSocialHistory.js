@@ -57,7 +57,7 @@ Ext.define('App.model.patient.PatientSocialHistory', {
 		{
 			name: 'notes',
 			type: 'string',
-			comment:'clinical notes for this history'
+			comment: 'clinical notes for this history'
 		},
 		{
 			name: 'start_date',
@@ -95,10 +95,10 @@ Ext.define('App.model.patient.PatientSocialHistory', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: SocialHistory.getSocialHistories,
-			create: SocialHistory.addSocialHistory,
-			update: SocialHistory.updateSocialHistory,
-			destroy: SocialHistory.destroySocialHistory
+			read: 'SocialHistory.getSocialHistories',
+			create: 'SocialHistory.addSocialHistory',
+			update: 'SocialHistory.updateSocialHistory',
+			destroy: 'SocialHistory.destroySocialHistory'
 		},
 		remoteGroup: false
 	}

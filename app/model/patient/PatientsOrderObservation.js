@@ -131,10 +131,10 @@ Ext.define('App.model.patient.PatientsOrderObservation', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Orders.getOrderResultObservations,
-			create: Orders.addOrderResultObservations,
-			update: Orders.updateOrderResultObservations,
-			destroy: Orders.deleteOrderResultObservations
+			read: 'Orders.getOrderResultObservations',
+			create: 'Orders.addOrderResultObservations',
+			update: 'Orders.updateOrderResultObservations',
+			destroy: 'Orders.deleteOrderResultObservations'
 		},
 		remoteGroup: false
 	},

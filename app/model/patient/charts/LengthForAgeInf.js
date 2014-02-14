@@ -17,13 +17,13 @@
  */
 
 Ext.define('App.model.patient.charts.LengthForAgeInf', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'lengthforageinf',
-		comment:'Length For Age Information'
+		name: 'lengthforageinf',
+		comment: 'Length For Age Information'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Length For Age Information ID'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Length For Age Information ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},
@@ -36,17 +36,17 @@ Ext.define('App.model.patient.charts.LengthForAgeInf', {
 		{name: 'P95', type: 'float'},
 		{name: 'P97', type: 'float'}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'VectorGraph.getGraphData'
 		},
-		reader     : {
+		reader: {
 			type: 'json'
 		},
-        extraParams:{
-            type:2
-        }
+		extraParams: {
+			type: 2
+		}
 	}
 
 });

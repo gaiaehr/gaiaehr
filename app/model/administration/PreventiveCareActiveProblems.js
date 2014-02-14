@@ -19,9 +19,9 @@
 Ext.define('App.model.administration.PreventiveCareActiveProblems', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'preventivecareactiveproblems',
-		comment:'Preventive Care Active Problems'
-	},	
+		name: 'preventivecareactiveproblems',
+		comment: 'Preventive Care Active Problems'
+	},
 	fields: [
 		{name: 'guideline_id', type: 'int'},
 		{name: 'code', type: 'string'},

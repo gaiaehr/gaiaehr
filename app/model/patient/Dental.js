@@ -19,7 +19,7 @@
 Ext.define('App.model.patient.Dental', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'id', type: 'int', comment: 'Dental Data ID'},
+		{name: 'id', type: 'int', comment: 'Dental Data ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'created_uid', type: 'int'},
@@ -33,14 +33,14 @@ Ext.define('App.model.patient.Dental', {
 		{name: 'referred_by', type: 'string'},
 		{name: 'outcome', type: 'string'},
 		{name: 'destination', type: 'string'},
-        {name: 'alert', type: 'bool'}
+		{name: 'alert', type: 'bool'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Medical.getPatientDental,
-			create: Medical.addPatientDental,
-			update: Medical.updatePatientDental
+		api: {
+			read: 'Medical.getPatientDental',
+			create: 'Medical.addPatientDental',
+			update: 'Medical.updatePatientDental'
 		}
 	}
 });

@@ -48,10 +48,10 @@ Ext.define('App.model.administration.FloorPlans', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: FloorPlans.getFloorPlans,
-			create: FloorPlans.createFloorPlan,
-			update: FloorPlans.updateFloorPlan,
-			destroy: FloorPlans.removeFloorPlan
+			read: 'FloorPlans.getFloorPlans',
+			create: 'FloorPlans.createFloorPlan',
+			update: 'FloorPlans.updateFloorPlan',
+			destroy: 'FloorPlans.removeFloorPlan'
 		}
 	}
 });

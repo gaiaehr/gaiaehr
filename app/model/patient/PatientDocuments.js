@@ -19,69 +19,69 @@
 Ext.define('App.model.patient.PatientDocuments', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_documents',
-		comment:'Patient Documents Storage'
+		name: 'patient_documents',
+		comment: 'Patient Documents Storage'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Patient Documents Storage ID'
-        },
-        {
-	        name: 'pid',
-	        type: 'int',
-	        index: true
-        },
-        {
-	        name: 'eid',
-	        type: 'int',
-	        index: true
-        },
-        {
-	        name: 'uid',
-	        type: 'int'
-        },
-        {
-	        name: 'docType',
-	        type: 'string'
-        },
-        {
-	        name: 'name',
-	        type: 'string'
-        },
-        {
-	        name: 'date',
-	        type: 'date',
-	        dateFormat: 'Y-m-d H:i:s'
-        },
-        {
-	        name: 'url',
-	        type: 'string'
-        },
-        {
-	        name: 'note',
-	        type: 'string'
-        },
-        {
-	        name: 'title',
-	        type: 'string'
-        },
-        {
-	        name: 'hash',
-	        type: 'string'
-        },
-        {
-	        name: 'encrypted',
-	        type: 'bool',
-	        defaultValue:0
-        }
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Patient Documents Storage ID'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'docType',
+			type: 'string'
+		},
+		{
+			name: 'name',
+			type: 'string'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'url',
+			type: 'string'
+		},
+		{
+			name: 'note',
+			type: 'string'
+		},
+		{
+			name: 'title',
+			type: 'string'
+		},
+		{
+			name: 'hash',
+			type: 'string'
+		},
+		{
+			name: 'encrypted',
+			type: 'bool',
+			defaultValue: 0
+		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Patient.getPatientDocuments,
-            update: Documents.updateDocumentsTitle
+		api: {
+			read: 'Patient.getPatientDocuments',
+			update: 'Documents.updateDocumentsTitle'
 		},
 		reader: {
 			root: 'data'

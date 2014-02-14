@@ -60,9 +60,9 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Prescriptions.getPrescriptions,
-			create: Prescriptions.addPrescription,
-			update: Prescriptions.updatePrescription
+			read: 'Prescriptions.getPrescriptions',
+			create: 'Prescriptions.addPrescription',
+			update: 'Prescriptions.updatePrescription'
 		}
 	}
 });

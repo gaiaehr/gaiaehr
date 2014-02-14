@@ -56,10 +56,10 @@ Ext.define('App.model.patient.encounter.snippetTree', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Snippets.getSoapSnippetsByCategory,
-			create: Snippets.addSoapSnippets,
-			update: Snippets.updateSoapSnippets,
-			destroy: Snippets.deleteSoapSnippets
+			read: 'Snippets.getSoapSnippetsByCategory',
+			create: 'Snippets.addSoapSnippets',
+			update: 'Snippets.updateSoapSnippets',
+			destroy: 'Snippets.deleteSoapSnippets'
 		}
 	}
 });

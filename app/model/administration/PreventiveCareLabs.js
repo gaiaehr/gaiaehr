@@ -19,9 +19,9 @@
 Ext.define('App.model.administration.PreventiveCareLabs', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'preventivecarelabs',
-		comment:'Preventive Care Labs'
-	},	
+		name: 'preventivecarelabs',
+		comment: 'Preventive Care Labs'
+	},
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'value_name', type: 'string'},

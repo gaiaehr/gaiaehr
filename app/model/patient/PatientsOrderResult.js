@@ -96,10 +96,10 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Orders.getOrderResults,
-			create: Orders.addOrderResults,
-			update: Orders.updateOrderResults,
-			destroy: Orders.deleteOrderResults
+			read: 'Orders.getOrderResults',
+			create: 'Orders.addOrderResults',
+			update: 'Orders.updateOrderResults',
+			destroy: 'Orders.deleteOrderResults'
 		},
 		remoteGroup: false
 	},
@@ -113,8 +113,8 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 		{
 			type: 'belongsTo',
 			model: 'App.model.patient.PatientsOrders',
-			getterName:'getOrder',
-			setterName:'setOrder',
+			getterName: 'getOrder',
+			setterName: 'setOrder',
 			primaryKey: 'id',
 			foreignKey: 'order_id'
 		}

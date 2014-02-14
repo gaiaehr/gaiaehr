@@ -17,73 +17,71 @@
  */
 
 Ext.define('App.model.fees.EncountersPayments',
-{
-	extend : 'Ext.data.Model',
-	table: {
-		name:'encounterspayments',
-		comment:'Encounters Payments'
-	},
-	fields : [
 	{
-		name : 'id',
-		type : 'int',
-        dataType: 'bigint',
-        len: 20,
-        primaryKey : true,
-        autoIncrement : true,
-        allowNull : false,
-        store: true,
-        comment: 'Encounter Payments ID'
-	},
-	{
-		name : 'paying_entity',
-		type : 'string'
-	},
-	{
-		name : 'payment_from',
-		type : 'string'
-	},
-	{
-		name : 'no',
-		type : 'int'
-	},
-	{
-		name : 'payment_method',
-		type : 'string'
-	},
-	{
-		name : 'pay_to',
-		type : 'string'
-	},
-	{
-		name : 'amount',
-		type : 'string'
-	},
-	{
-		name : 'date_from',
-		type : 'date',
-		dateFormat : 'Y-m-d H:i:s'
-	},
-	{
-		name : 'date_to',
-		type : 'date',
-		dateFormat : 'Y-m-d H:i:s'
-	},
-	{
-		name : 'note',
-		type : 'string'
-	}],
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : Fees.getPaymentsBySearch
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'encounterspayments',
+			comment: 'Encounters Payments'
 		},
-		reader :
-		{
-			root : 'rows',
-			totalProperty : 'totals'
+		fields: [
+			{
+				name: 'id',
+				type: 'int',
+				dataType: 'bigint',
+				len: 20,
+				primaryKey: true,
+				autoIncrement: true,
+				allowNull: false,
+				store: true,
+				comment: 'Encounter Payments ID'
+			},
+			{
+				name: 'paying_entity',
+				type: 'string'
+			},
+			{
+				name: 'payment_from',
+				type: 'string'
+			},
+			{
+				name: 'no',
+				type: 'int'
+			},
+			{
+				name: 'payment_method',
+				type: 'string'
+			},
+			{
+				name: 'pay_to',
+				type: 'string'
+			},
+			{
+				name: 'amount',
+				type: 'string'
+			},
+			{
+				name: 'date_from',
+				type: 'date',
+				dateFormat: 'Y-m-d H:i:s'
+			},
+			{
+				name: 'date_to',
+				type: 'date',
+				dateFormat: 'Y-m-d H:i:s'
+			},
+			{
+				name: 'note',
+				type: 'string'
+			}
+		],
+		proxy: {
+			type: 'direct',
+			api: {
+				read: 'Fees.getPaymentsBySearch'
+			},
+			reader: {
+				root: 'rows',
+				totalProperty: 'totals'
+			}
 		}
-	}
-}); 
+	});

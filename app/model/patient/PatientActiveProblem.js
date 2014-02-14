@@ -19,15 +19,15 @@
 Ext.define('App.model.patient.PatientActiveProblem', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_active_problems',
-		comment:'Active Problems'
+		name: 'patient_active_problems',
+		comment: 'Active Problems'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Medical Issues ID'
-        },
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Medical Issues ID'
+		},
 		{
 			name: 'pid',
 			type: 'int',
@@ -99,12 +99,12 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Medical.getMedicalIssues,
-			create: Medical.addMedicalIssues,
-			update: Medical.updateMedicalIssues
+		api: {
+			read: 'Medical.getMedicalIssues',
+			create: 'Medical.addMedicalIssues',
+			update: 'Medical.updateMedicalIssues'
 		}
 	}
 });

@@ -1,11 +1,11 @@
 // Created dynamically by Matcha::connect
 // Create date: 2013-03-12 17:53:28
 
-Ext.define('App.model.patient.Patient',	{
+Ext.define('App.model.patient.Patient', {
 	extend: 'Ext.data.Model',
 	table: {
 		name: 'patient',
-		comment: 'Patients\/Demographics'
+		comment: 'Patients Demographics'
 	},
 	fields: [
 		{
@@ -322,9 +322,9 @@ Ext.define('App.model.patient.Patient',	{
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Patient.getPatients,
-			create: Patient.savePatient,
-			update: Patient.savePatient
+			read: 'Patient.getPatients',
+			create: 'Patient.savePatient',
+			update: 'Patient.savePatient'
 		}
 	},
 	hasMany: [

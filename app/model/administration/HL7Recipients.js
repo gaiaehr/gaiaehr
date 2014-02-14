@@ -78,7 +78,7 @@ Ext.define('App.model.administration.HL7Recipients', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: HL7Messages.getRecipients
+			read: 'HL7Messages.getRecipients'
 		},
 		reader: {
 			totalProperty: 'total',

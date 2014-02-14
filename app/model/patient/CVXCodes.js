@@ -20,29 +20,29 @@
 Ext.define('App.model.patient.CVXCodes', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'cvx_codes',
-		comment:'Immunizations  CVX'
+		name: 'cvx_codes',
+		comment: 'Immunizations  CVX'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Immunization ID'
-        },
-        {
-	        name: 'cvx_code',
-	        type: 'int',
-	        len: 10
-        },
-        {
-	        name: 'name',
-	        type: 'string'
-        },
-        {
-	        name: 'description',
-	        type: 'string',
-	        dataType: 'text'
-        },
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Immunization ID'
+		},
+		{
+			name: 'cvx_code',
+			type: 'int',
+			len: 10
+		},
+		{
+			name: 'name',
+			type: 'string'
+		},
+		{
+			name: 'description',
+			type: 'string',
+			dataType: 'text'
+		},
 
 		{
 			name: 'note',
@@ -57,13 +57,13 @@ Ext.define('App.model.patient.CVXCodes', {
 		{
 			name: 'update_date',
 			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read: Medical.getImmunizationsList
+		api: {
+			read: 'Medical.getImmunizationsList'
 		}
 	}
 });

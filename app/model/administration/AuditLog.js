@@ -68,9 +68,9 @@ Ext.define('App.model.administration.AuditLog', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: AuditLog.getLogs,
-			create: AuditLog.setLog,
-			update: AuditLog.setLog
+			read: 'AuditLog.getLogs',
+			create: 'AuditLog.setLog',
+			update: 'AuditLog.setLog'
 		},
 		reader: {
 			totalProperty: 'totals',

@@ -17,26 +17,26 @@
  */
 
 Ext.define('App.model.administration.Modules', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'modules',
-        comment:'Modules'
-    },
-    fields: [
-        { name: 'id', type: 'int', comment: 'Modules ID'},
-        { name: 'title', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'description', type: 'string' },
-        { name: 'enable', type: 'bool' },
-        { name: 'installed_version', type: 'string' },
-        { name: 'licensekey', type: 'string' },
-        { name: 'localkey', type: 'string' }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: Modules.getActiveModules,
-            update: Modules.updateModule
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'modules',
+		comment: 'Modules'
+	},
+	fields: [
+		{ name: 'id', type: 'int', comment: 'Modules ID'},
+		{ name: 'title', type: 'string' },
+		{ name: 'name', type: 'string' },
+		{ name: 'description', type: 'string' },
+		{ name: 'enable', type: 'bool' },
+		{ name: 'installed_version', type: 'string' },
+		{ name: 'licensekey', type: 'string' },
+		{ name: 'localkey', type: 'string' }
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Modules.getActiveModules',
+			update: 'Modules.updateModule'
+		}
+	}
 });

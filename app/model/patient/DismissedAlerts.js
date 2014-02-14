@@ -20,7 +20,7 @@ Ext.define('App.model.patient.DismissedAlerts', {
 	extend: 'Ext.data.Model',
 
 	fields: [
-        {name: 'id', type: 'int', comment: 'Dismissed Alerts ID'},
+		{name: 'id', type: 'int', comment: 'Dismissed Alerts ID'},
 		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'preventive_care_id', type: 'int'},
 		{name: 'reason', type: 'string'},
@@ -28,11 +28,11 @@ Ext.define('App.model.patient.DismissedAlerts', {
 		{name: 'dismiss', type: 'bool'},
 		{name: 'description', type: 'string'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : PreventiveCare.getPreventiveCareDismissedAlertsByPid,
-			update: PreventiveCare.updatePreventiveCareDismissedAlertsByPid
+		api: {
+			read: 'PreventiveCare.getPreventiveCareDismissedAlertsByPid',
+			update: 'PreventiveCare.updatePreventiveCareDismissedAlertsByPid'
 		}
 	}
 });

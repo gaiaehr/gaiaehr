@@ -53,9 +53,9 @@ Ext.define('App.model.miscellaneous.OfficeNotes', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: OfficeNotes.getOfficeNotes,
-			create: OfficeNotes.addOfficeNotes,
-			update: OfficeNotes.updateOfficeNotes
+			read: 'OfficeNotes.getOfficeNotes',
+			create: 'OfficeNotes.addOfficeNotes',
+			update: 'OfficeNotes.updateOfficeNotes'
 		}
 	}
 });

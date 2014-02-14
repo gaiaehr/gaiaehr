@@ -49,22 +49,22 @@ Ext.define('App.model.patient.SOAP', {
 		{
 			name: 'subjective',
 			type: 'string',
-			dataType:'longtext'
+			dataType: 'longtext'
 		},
 		{
 			name: 'objective',
 			type: 'string',
-			dataType:'longtext'
+			dataType: 'longtext'
 		},
 		{
 			name: 'assessment',
 			type: 'string',
-			dataType:'longtext'
+			dataType: 'longtext'
 		},
 		{
 			name: 'plan',
 			type: 'string',
-			dataType:'longtext'
+			dataType: 'longtext'
 		},
 		{
 			name: 'icdxCodes',
@@ -74,7 +74,7 @@ Ext.define('App.model.patient.SOAP', {
 	proxy: {
 		type: 'direct',
 		api: {
-			update: Encounter.updateSoapById
+			update: 'Encounter.updateSoapById'
 		}
 	},
 	belongsTo: {

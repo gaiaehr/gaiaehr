@@ -63,14 +63,14 @@ Ext.define('App.model.administration.Medications', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Rxnorm.getRXNORMList
+			read: 'Rxnorm.getRXNORMList'
 		},
 		reader: {
 			totalProperty: 'totals',
 			root: 'data'
 		},
 		filterParam: 'query',
-		encodeFilters: function(filters) {
+		encodeFilters: function(filters){
 			return filters[0].value;
 		}
 	}

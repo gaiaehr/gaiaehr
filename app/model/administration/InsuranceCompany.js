@@ -166,9 +166,9 @@ Ext.define('App.model.administration.InsuranceCompany', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Practice.getInsurances,
-			create: Practice.addInsurance,
-			update: Practice.updateInsurance
+			read: 'Practice.getInsurances',
+			create: 'Practice.addInsurance',
+			update: 'Practice.updateInsurance'
 		}
 	}
 });

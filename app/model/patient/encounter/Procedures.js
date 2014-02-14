@@ -17,77 +17,77 @@
  */
 
 Ext.define('App.model.patient.encounter.Procedures', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'encounter_procedures',
-        comment:'Patient Encounter Procedures'
-    },
-    fields:[
-	    {
-		    name: 'id',
-		    type: 'int',
-		    comment: 'Procedure ID'
-	    },
-	    {
-		    name: 'pid',
-		    type: 'int',
-		    comment: 'patient ID'
-	    },
-	    {
-		    name: 'eid',
-		    type: 'int',
-		    comment: 'Encounter ID'
-	    },
-	    {
-		    name: 'create_uid',
-		    type: 'int',
-		    comment: 'create user ID'
-	    },
-	    {
-		    name: 'update_uid',
-		    type: 'int',
-		    comment: 'update user ID'
-	    },
-	    {
-		    name: 'create_date',
-		    type: 'date',
-		    comment: 'create date',
-		    dateFormat: 'Y-m-d H:i:s'
-	    },
-	    {
-		    name: 'update_date',
-		    type: 'date',
-		    comment: 'last update date',
-		    dateFormat: 'Y-m-d H:i:s'
-	    },
-	    {
-		    name: 'code',
-		    type: 'string',
-		    comment: 'procedure code'
-	    },
-	    {
-		    name: 'code_text',
-		    type: 'string',
-		    comment: 'procedure description'
-	    },
-	    {
-		    name: 'code_type',
-		    type: 'string',
-		    comment: 'CPT/ICD-10-PCS/ICD-9-CM/SNOMED/CDT'
-	    },
-	    {
-		    name: 'observation',
-		    type: 'string',
-		    comment: 'observation found'
-	    }
-    ],
-    proxy : {
-        type: 'direct',
-        api : {
-            read: Procedures.loadProcedures,
-            create: Procedures.saveProcedure,
-            update: Procedures.saveProcedure,
-            destroy: Procedures.destroyProcedure
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_procedures',
+		comment: 'Patient Encounter Procedures'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Procedure ID'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			comment: 'patient ID'
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			comment: 'Encounter ID'
+		},
+		{
+			name: 'create_uid',
+			type: 'int',
+			comment: 'create user ID'
+		},
+		{
+			name: 'update_uid',
+			type: 'int',
+			comment: 'update user ID'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			comment: 'procedure code'
+		},
+		{
+			name: 'code_text',
+			type: 'string',
+			comment: 'procedure description'
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			comment: 'CPT/ICD-10-PCS/ICD-9-CM/SNOMED/CDT'
+		},
+		{
+			name: 'observation',
+			type: 'string',
+			comment: 'observation found'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Procedures.loadProcedures',
+			create: 'Procedures.saveProcedure',
+			update: 'Procedures.saveProcedure',
+			destroy: 'Procedures.destroyProcedure'
+		}
+	}
 });

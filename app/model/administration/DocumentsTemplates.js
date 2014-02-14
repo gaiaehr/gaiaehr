@@ -48,7 +48,7 @@ Ext.define('App.model.administration.DocumentsTemplates', {
 			name: 'date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',
-			comment:'to be replace by created_date'
+			comment: 'to be replace by created_date'
 		},
 		{
 			name: 'created_date',

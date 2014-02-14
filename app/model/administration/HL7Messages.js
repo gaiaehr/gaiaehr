@@ -16,43 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.HL7Messages',{
-	extend : 'Ext.data.Model',
+Ext.define('App.model.administration.HL7Messages', {
+	extend: 'Ext.data.Model',
 	table: {
 		name: 'hl7_messages',
 		comment: 'hl7 messages data'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int'
-	    },
+		{
+			name: 'id',
+			type: 'int'
+		},
 		{
 			name: 'msg_type',
 			type: 'string',
-			comment:'example VXU ADT OBX'
+			comment: 'example VXU ADT OBX'
 		},
 		{
 			name: 'message',
 			type: 'string',
 			dataType: 'mediumtext',
-			comment:'Original HL7 message'
+			comment: 'Original HL7 message'
 		},
 		{
 			name: 'response',
 			type: 'string',
 			dataType: 'mediumtext',
-			comment:'HL7 acknowledgment message'
+			comment: 'HL7 acknowledgment message'
 		},
 		{
 			name: 'foreign_facility',
 			type: 'string',
-			comment:'From or To external facility'
+			comment: 'From or To external facility'
 		},
 		{
 			name: 'foreign_application',
 			type: 'string',
-			comment:'From or To external Application'
+			comment: 'From or To external Application'
 		},
 		{
 			name: 'foreign_address',
@@ -62,19 +62,19 @@ Ext.define('App.model.administration.HL7Messages',{
 		{
 			name: 'isOutbound',
 			type: 'bool',
-			comment:'outbound 1, inbound 0'
+			comment: 'outbound 1, inbound 0'
 		},
 		{
 			name: 'date_processed',
 			type: 'date',
-			comment:'When Message was Received or Send',
-			dateFormat:'Y-m-d H:i:s'
+			comment: 'When Message was Received or Send',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'status',
 			type: 'int',
 			len: 1,
-			comment:'0 = hold, 1 = processing, 2 = queue, 3 = processed, 4 = error'
+			comment: '0 = hold, 1 = processing, 2 = queue, 3 = processed, 4 = error'
 		},
 		{
 			name: 'error',
@@ -87,12 +87,12 @@ Ext.define('App.model.administration.HL7Messages',{
 			comment: 'Reference number or file name'
 		}
 	],
-	proxy:{
+	proxy: {
 		type: 'direct',
-		api:{
-			read: HL7Messages.getMessages
+		api: {
+			read: 'HL7Messages.getMessages'
 		},
-		reader:{
+		reader: {
 			totalProperty: 'total',
 			root: 'data'
 		}

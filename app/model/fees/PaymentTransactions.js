@@ -17,24 +17,21 @@
  */
 
 Ext.define('App.model.fees.PaymentTransactions',
-{
-	extend : 'Ext.data.Model',
-	table: {
-		name:'paymenttransactions',
-		comment:'Payment Transactions'
-	},
-	fields : [],
-	proxy :
 	{
-		type : 'direct',
-		api :
-		{
-			read : Fees.getPaymentsBySearch
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'paymenttransactions',
+			comment: 'Payment Transactions'
 		},
-		reader :
-		{
-			root : 'rows',
-			totalProperty : 'totals'
+		fields: [],
+		proxy: {
+			type: 'direct',
+			api: {
+				read: 'Fees.getPaymentsBySearch'
+			},
+			reader: {
+				root: 'rows',
+				totalProperty: 'totals'
+			}
 		}
-	}
-}); 
+	});

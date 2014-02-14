@@ -19,18 +19,18 @@
 Ext.define('App.model.patient.MeaningfulUseAlert', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'meaningfulusealert',
-		comment:'Meaningful Use Alert'
+		name: 'meaningfulusealert',
+		comment: 'Meaningful Use Alert'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Meaningful Use Alert ID'},
+		{name: 'id', type: 'int', comment: 'Meaningful Use Alert ID'},
 		{name: 'name', type: 'string'},
 		{name: 'val', type: 'bool'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Patient.getMeaningfulUserAlertByPid
+		api: {
+			read: 'Patient.getMeaningfulUserAlertByPid'
 		}
 	}
 });

@@ -16,39 +16,39 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Phone',{
-	extend : 'Ext.data.Model',
+Ext.define('App.model.administration.Phone', {
+	extend: 'Ext.data.Model',
 	table: {
 		name: 'phones',
 		comment: 'User/Contacts phones'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'User Contact Phone ID'
-        },
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'User Contact Phone ID'
+		},
 		{
 			name: 'create_uid',
 			type: 'int',
-			comment:'create user ID'
+			comment: 'create user ID'
 		},
 		{
 			name: 'write_uid',
 			type: 'int',
-			comment:'update user ID'
+			comment: 'update user ID'
 		},
 		{
 			name: 'create_date',
 			type: 'date',
-			comment:'create date',
-			dateFormat:'Y-m-d H:i:s'
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'update_date',
 			type: 'date',
-			comment:'last update date',
-			dateFormat:'Y-m-d H:i:s'
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'country_code',
@@ -92,10 +92,10 @@ Ext.define('App.model.administration.Phone',{
 			convert: function(v, record){
 				say(record);
 				return Ext.String.trim(
-//					record.data.country_code + ' ' +
+					//					record.data.country_code + ' ' +
 					record.data.area_code + '-' +
-					record.data.prefix + '-' +
-					record.data.number
+						record.data.prefix + '-' +
+						record.data.number
 				);
 			}
 		}

@@ -16,74 +16,74 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.TransactionLog',{
-    extend: 'Ext.data.Model',
-    table: {
-        name:'audit_transaction_log',
-        comment:'Data INSERT UPDATE DELETE Logs'
-    },
-    fields: [
-        {
-            name: 'id',
-            type: 'int'
-        },
-	    {
-		    name: 'date',
-		    type: 'date',
-		    dateFormat:'Y-m-d H:i:s',
-		    comment: 'Date of the event'
-	    },
-	    {
-		    name: 'pid',
-		    type: 'int',
-		    comment: 'Patient ID'
-	    },
-	    {
-		    name: 'eid',
-		    type: 'int',
-		    comment: 'Encounter ID'
-	    },
-	    {
-		    name: 'uid',
-		    type: 'int',
-		    comment: 'User ID'
-	    },
-	    {
-		    name: 'fid',
-		    type: 'int',
-		    comment: 'Facility ID'
-	    },
-        {
-            name: 'event',
-            type: 'string',
-	        len: 10,
-            comment: 'Event UPDATE INSERT DELETE'
-        },
-        {
-            name: 'table_name',
-            type: 'string',
-            len: 60
-        },
-        {
-            name: 'sql_string',
-            type: 'string',
-	        dataType:'mediumtext'
-        },
-        {
-	        name: 'data',
-	        type: 'string',
-	        dataType:'mediumtext',
-	        comment:'serialized data'
-        },
-        {
-	        name: 'ip',
-	        type: 'string',
-	        len: 40
-        },
-        {
-	        name: 'checksum',
-	        type: 'string',
-	        len: 80
-        }
-    ]
+Ext.define('App.model.administration.TransactionLog', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'audit_transaction_log',
+		comment: 'Data INSERT UPDATE DELETE Logs'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			comment: 'Date of the event'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			comment: 'Patient ID'
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			comment: 'Encounter ID'
+		},
+		{
+			name: 'uid',
+			type: 'int',
+			comment: 'User ID'
+		},
+		{
+			name: 'fid',
+			type: 'int',
+			comment: 'Facility ID'
+		},
+		{
+			name: 'event',
+			type: 'string',
+			len: 10,
+			comment: 'Event UPDATE INSERT DELETE'
+		},
+		{
+			name: 'table_name',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'sql_string',
+			type: 'string',
+			dataType: 'mediumtext'
+		},
+		{
+			name: 'data',
+			type: 'string',
+			dataType: 'mediumtext',
+			comment: 'serialized data'
+		},
+		{
+			name: 'ip',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'checksum',
+			type: 'string',
+			len: 80
+		}
+	]
 });

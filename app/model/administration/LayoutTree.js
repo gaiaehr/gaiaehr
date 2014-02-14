@@ -174,10 +174,10 @@ Ext.define('App.model.administration.LayoutTree', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: FormLayoutBuilder.getFormFieldsTree,
-			create: FormLayoutBuilder.createFormField,
-			update: FormLayoutBuilder.updateFormField,
-			destroy: FormLayoutBuilder.removeFormField
+			read: 'FormLayoutBuilder.getFormFieldsTree',
+			create: 'FormLayoutBuilder.createFormField',
+			update: 'FormLayoutBuilder.updateFormField',
+			destroy: 'FormLayoutBuilder.removeFormField'
 		}
 	}
 });

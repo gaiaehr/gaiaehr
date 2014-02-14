@@ -19,8 +19,8 @@
 Ext.define('App.model.administration.ImmunizationRelations', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'immunizationrelations',
-		comment:'Immunization Relations'
+		name: 'immunizationrelations',
+		comment: 'Immunization Relations'
 	},
 	fields: [
 		{name: 'id', type: 'int', comment: 'Immunization Relations ID'},
@@ -31,16 +31,16 @@ Ext.define('App.model.administration.ImmunizationRelations', {
 		{name: 'code_type' }
 
 	],
-    proxy: {
-    		type       : 'direct',
-    		api        : {
-    			read  : PreventiveCare.getRelations,
-    			create: PreventiveCare.addRelations,
-    			destroy: PreventiveCare.removeRelations
-    		}
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'PreventiveCare.getRelations',
+			create: 'PreventiveCare.addRelations',
+			destroy: 'PreventiveCare.removeRelations'
+		}
 
 
-    	}
+	}
 
 
 });

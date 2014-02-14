@@ -19,19 +19,19 @@
 Ext.define('App.model.patient.CheckoutAlertArea', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'checkoutalertarea',
-		comment:'Checkout Alert Area'
+		name: 'checkoutalertarea',
+		comment: 'Checkout Alert Area'
 	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Checkout Alert ID'},
-        {name: 'alert', type: 'string'},
-        {name: 'alertType', type: 'int'}
+		{name: 'id', type: 'int', comment: 'Checkout Alert ID'},
+		{name: 'alert', type: 'string'},
+		{name: 'alertType', type: 'int'}
 
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read: Encounter.checkoutAlerts
+		api: {
+			read: 'Encounter.checkoutAlerts'
 		}
 	}
 });

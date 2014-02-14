@@ -17,13 +17,13 @@
  */
 
 Ext.define('App.model.areas.PoolDropAreas', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'pooldropareas',
-		comment:'Pool Drop Areas'
+		name: 'pooldropareas',
+		comment: 'Pool Drop Areas'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Pool Drop Areas ID'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Pool Drop Areas ID'},
 		{name: 'name', type: 'string'},
 		{name: 'pid', type: 'int'},
 		{name: 'pic', type: 'string'}

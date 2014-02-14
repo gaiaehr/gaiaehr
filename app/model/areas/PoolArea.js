@@ -67,7 +67,7 @@ Ext.define('App.model.areas.PoolArea', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: PoolArea.getPatientsByPoolAreaAccess
+			read: 'PoolArea.getPatientsByPoolAreaAccess'
 		}
 	}
 });

@@ -93,12 +93,12 @@ Ext.define('App.model.administration.Address', {
 			convert: function(v, record){
 				return Ext.String.trim(
 					record.data.line1 + ' ' +
-					record.data.line2 + ' ' +
-					record.data.city + ', ' +
-					record.data.state + ' ' +
-					record.data.zip + '-' +
-					record.data.plus_four + ' ' +
-					record.data.country
+						record.data.line2 + ' ' +
+						record.data.city + ', ' +
+						record.data.state + ' ' +
+						record.data.zip + '-' +
+						record.data.plus_four + ' ' +
+						record.data.country
 				).replace('  ', ' ');
 			}
 		}

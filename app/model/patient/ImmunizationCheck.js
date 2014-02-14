@@ -19,17 +19,17 @@
 Ext.define('App.model.patient.ImmunizationCheck', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'id', type: 'int', comment: 'Immunization Check ID'},
-        {name: 'pid', type: 'int'},
-        {name: 'code', type: 'int'},
+		{name: 'id', type: 'int', comment: 'Immunization Check ID'},
+		{name: 'pid', type: 'int'},
+		{name: 'code', type: 'int'},
 		{name: 'vaccine_name', type: 'string'},
 		{name: 'alert', type: 'bool'}
 
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read: Medical.getPatientImmunizations
+		api: {
+			read: 'Medical.getPatientImmunizations'
 		}
 	}
 });

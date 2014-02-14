@@ -19,15 +19,15 @@
 Ext.define('App.model.patient.PatientImmunization', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_immunizations',
-		comment:'Patient Immunization'
+		name: 'patient_immunizations',
+		comment: 'Patient Immunization'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Patient Immunization ID'
-        },
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Patient Immunization ID'
+		},
 		{
 			name: 'pid',
 			type: 'int',
@@ -104,12 +104,12 @@ Ext.define('App.model.patient.PatientImmunization', {
 			type: 'int'
 		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Medical.getPatientImmunizations,
-			create: Medical.addPatientImmunization,
-			update: Medical.updatePatientImmunization
+		api: {
+			read: 'Medical.getPatientImmunizations',
+			create: 'Medical.addPatientImmunization',
+			update: 'Medical.updatePatientImmunization'
 		}
 	}
 });

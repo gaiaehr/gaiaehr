@@ -118,14 +118,14 @@ Ext.define('App.model.patient.HCFAOptions', {
 			dataType: 'text'
 		}
 	],
-	proxy:{
-		type:'direct',
-		api:{
-			update:Encounter.updateEncounterHCFAOptions
+	proxy: {
+		type: 'direct',
+		api: {
+			update: 'Encounter.updateEncounterHCFAOptions'
 		}
 	},
-	belongsTo:{
-		model:'App.model.patient.Encounter',
-		foreignKey:'eid'
+	belongsTo: {
+		model: 'App.model.patient.Encounter',
+		foreignKey: 'eid'
 	}
 });

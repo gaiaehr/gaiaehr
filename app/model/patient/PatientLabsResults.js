@@ -17,31 +17,31 @@
  */
 
 Ext.define('App.model.patient.PatientLabsResults', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'patientlabsresults',
-		comment:'Patient Labs Results'
+		name: 'patientlabsresults',
+		comment: 'Patient Labs Results'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Patient Labs Results ID'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Patient Labs Results ID'},
 		{name: 'pid', type: 'int'},
 		{name: 'uid', type: 'int'},
 		{name: 'auth_uid', type: 'int'},
 		{name: 'eid', type: 'int'},
 		{name: 'document_id', type: 'int'},
 		{name: 'document_url'},
-		{name: 'date', type: 'date', dateFormat:'Y-m-d H:s:i'},
+		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:s:i'},
 		{name: 'data'},
 		{name: 'columns'},
 		{name: 'parent_id'}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: Medical.getPatientLabsResults,
-			create: Medical.addPatientLabsResult,
-			update: Medical.updatePatientLabsResult,
-			destroy: Medical.deletePatientLabsResult
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Medical.getPatientLabsResults',
+			create: 'Medical.addPatientLabsResult',
+			update: 'Medical.updatePatientLabsResult',
+			destroy: 'Medical.deletePatientLabsResult'
 		}
 	}
 });

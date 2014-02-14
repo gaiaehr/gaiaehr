@@ -17,19 +17,19 @@
  */
 
 Ext.define('App.model.administration.ParentFields', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'parentfields',
-        comment:'Parent Fields'
-    },
-    fields: [
-        { name: 'name', type: 'string' },
-        { name: 'value', type: 'string' }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: FormLayoutBuilder.getParentFields
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'parentfields',
+		comment: 'Parent Fields'
+	},
+	fields: [
+		{ name: 'name', type: 'string' },
+		{ name: 'value', type: 'string' }
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'FormLayoutBuilder.getParentFields'
+		}
+	}
 });

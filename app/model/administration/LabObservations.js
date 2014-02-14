@@ -19,12 +19,12 @@
 Ext.define('App.model.administration.LabObservations', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'labs_panels',
-		comment:'Laboratory Observations'
+		name: 'labs_panels',
+		comment: 'Laboratory Observations'
 	},
 	fields: [
 		{name: 'id', type: 'string', comment: 'LOINC'},
-        {name: 'code_text_short', type: 'string' },
+		{name: 'code_text_short', type: 'string' },
 		{name: 'parent_id', type: 'int', dataType: 'bigint' },
 		{name: 'parent_loinc', type: 'string', dataType: 'text' },
 		{name: 'parent_name', type: 'string', dataType: 'text'  },
@@ -36,6 +36,6 @@ Ext.define('App.model.administration.LabObservations', {
 		{name: 'range_end', type: 'string' },
 		{name: 'required_in_panel', type: 'string', dataType: 'text' },
 		{name: 'description', type: 'string', dataType: 'text' },
-		{name: 'active', type:'bool' }
+		{name: 'active', type: 'bool' }
 	]
 });

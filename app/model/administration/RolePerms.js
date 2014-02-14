@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.RolePerms',{
-	extend : 'Ext.data.Model',
+Ext.define('App.model.administration.RolePerms', {
+	extend: 'Ext.data.Model',
 	fields: [
 		{
 			name: 'id',
@@ -63,8 +63,8 @@ Ext.define('App.model.administration.RolePerms',{
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Roles.getRolePerms,
-			update: Roles.updateRolePerm
+			read: 'Roles.getRolePerms',
+			update: 'Roles.updateRolePerm'
 		},
 		reader: {
 			type: 'json',

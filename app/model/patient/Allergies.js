@@ -19,8 +19,8 @@
 Ext.define('App.model.patient.Allergies', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_allergies',
-		comment:'Patient Allergies'
+		name: 'patient_allergies',
+		comment: 'Patient Allergies'
 	},
 	fields: [
 		{
@@ -77,14 +77,14 @@ Ext.define('App.model.patient.Allergies', {
 			name: 'severity',
 			type: 'string'
 		},
-        {
-	        name: 'active',
-	        type: 'bool',
-	        store: false,
-	        convert: function(v, record){
+		{
+			name: 'active',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
 				return record.data.end_date == '' || record.data.end_date == null;
-	        }
-        },
+			}
+		},
 		{
 			name: 'created_uid',
 			type: 'int'
@@ -104,12 +104,12 @@ Ext.define('App.model.patient.Allergies', {
 			defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
 		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Medical.getPatientAllergies,
-			create: Medical.addPatientAllergies,
-			update: Medical.updatePatientAllergies
+		api: {
+			read: 'Medical.getPatientAllergies',
+			create: 'Medical.addPatientAllergies',
+			update: 'Medical.updatePatientAllergies'
 		}
 	}
 });

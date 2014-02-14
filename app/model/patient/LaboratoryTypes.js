@@ -19,15 +19,15 @@
 Ext.define('App.model.patient.LaboratoryTypes', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'id', type: 'int', comment: 'Laboratory Types ID'},
+		{name: 'id', type: 'int', comment: 'Laboratory Types ID'},
 		{name: 'label', type: 'string'},
 		{name: 'fields' }
 
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Laboratories.getActiveLaboratoryTypes
+		api: {
+			read: 'Laboratories.getActiveLaboratoryTypes'
 		}
 	}
 });

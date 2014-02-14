@@ -115,8 +115,8 @@ Ext.define('App.model.miscellaneous.Users', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: User.getCurrentUserData,
-			update: User.updateUser
+			read: 'User.getCurrentUserData',
+			update: 'User.updateUser'
 		}
 	}
 });

@@ -36,7 +36,7 @@ Ext.define('App.model.administration.FormListOptions', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: CombosData.getOptionsByListId
+			read: 'CombosData.getOptionsByListId'
 		}
 	}
 });

@@ -47,10 +47,10 @@ Ext.define('App.model.administration.Lists', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Lists.getLists,
-			create: Lists.addList,
-			update: Lists.updateList,
-			destroy: Lists.deleteList
+			read: 'Lists.getLists',
+			create: 'Lists.addList',
+			update: 'Lists.updateList',
+			destroy: 'Lists.deleteList'
 		}
 	}
 });

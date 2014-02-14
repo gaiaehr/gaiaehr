@@ -17,14 +17,14 @@
  */
 
 Ext.define('App.model.patient.charts.WeightForStature', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'weightforstature',
-		comment:'Weight For Stature'
+		name: 'weightforstature',
+		comment: 'Weight For Stature'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Weight For Stature ID'},
-        {name: 'height', type: 'float'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Weight For Stature ID'},
+		{name: 'height', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},
 		{name: 'P5', type: 'float'},
@@ -37,17 +37,17 @@ Ext.define('App.model.patient.charts.WeightForStature', {
 		{name: 'P95', type: 'float'},
 		{name: 'P97', type: 'float'}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'VectorGraph.getGraphData'
 		},
-		reader     : {
+		reader: {
 			type: 'json'
 		},
-        extraParams:{
-            type:5
-        }
+		extraParams: {
+			type: 5
+		}
 	}
 
 });

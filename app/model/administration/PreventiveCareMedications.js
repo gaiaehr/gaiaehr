@@ -19,9 +19,9 @@
 Ext.define('App.model.administration.PreventiveCareMedications', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'preventivecaremedications',
-		comment:'Preventive Care Medications'
-	},	
+		name: 'preventivecaremedications',
+		comment: 'Preventive Care Medications'
+	},
 	fields: [
 		{name: 'guideline_id', type: 'int'},
 		{name: 'code', type: 'string'},

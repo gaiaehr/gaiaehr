@@ -149,9 +149,9 @@ Ext.define('App.model.administration.Pharmacies', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Practice.getPharmacies,
-			create: Practice.addPharmacy,
-			update: Practice.updatePharmacy
+			read: 'Practice.getPharmacies',
+			create: 'Practice.addPharmacy',
+			update: 'Practice.updatePharmacy'
 		}
 	}
 });

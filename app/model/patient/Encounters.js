@@ -77,7 +77,7 @@ Ext.define('App.model.patient.Encounters', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Encounter.getEncounters
+			read: 'Encounter.getEncounters'
 		},
 		reader: {
 			root: 'encounter'

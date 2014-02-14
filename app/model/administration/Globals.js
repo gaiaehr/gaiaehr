@@ -51,9 +51,9 @@ Ext.define('App.model.administration.Globals', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Globals.getGlobals,
-			update: Globals.updateGlobals
+			read: 'Globals.getGlobals',
+			update: 'Globals.updateGlobals'
 		},
-		remoteGroup:false
+		remoteGroup: false
 	}
 });

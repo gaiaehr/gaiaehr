@@ -74,10 +74,10 @@ Ext.define('App.model.patient.CptCodes', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Services.getCptCodes,
-			create: Services.addCptCode,
-			update: Services.updateCptCode,
-			destroy: Services.deleteCptCode
+			read: 'Services.getCptCodes',
+			create: 'Services.addCptCode',
+			update: 'Services.updateCptCode',
+			destroy: 'Services.deleteCptCode'
 		},
 		reader: {
 			root: 'rows',

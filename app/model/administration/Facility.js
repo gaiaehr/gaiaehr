@@ -109,13 +109,13 @@ Ext.define('App.model.administration.Facility', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Facilities.getFacilities,
-			create: Facilities.addFacility,
-			update: Facilities.updateFacility,
-			destroy: Facilities.deleteFacility
+			read: 'Facilities.getFacilities',
+			create: 'Facilities.addFacility',
+			update: 'Facilities.updateFacility',
+			destroy: 'Facilities.deleteFacility'
 		}
 	},
-	reader:{
+	reader: {
 		totalProperty: 'total',
 		root: 'data'
 	}

@@ -19,9 +19,9 @@
 Ext.define('App.model.patient.PatientArrivalLog', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'id', type: 'int', comment: 'Patient Arrival Log ID'},
-        {name: 'area_id', type: 'int'},
-        {name: 'pid', type: 'int'},
+		{name: 'id', type: 'int', comment: 'Patient Arrival Log ID'},
+		{name: 'area_id', type: 'int'},
+		{name: 'pid', type: 'int'},
 		{name: 'time', type: 'string'},
 		{name: 'name', type: 'string'},
 		{name: 'status', type: 'string'},
@@ -30,13 +30,13 @@ Ext.define('App.model.patient.PatientArrivalLog', {
 		{name: 'warningMsg', type: 'string'},
 		{name: 'isNew', type: 'bool'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read: PoolArea.getPatientsArrivalLog,
-			create: PoolArea.addPatientArrivalLog,
-			update: PoolArea.updatePatientArrivalLog,
-			destroy: PoolArea.removePatientArrivalLog
+		api: {
+			read: 'PoolArea.getPatientsArrivalLog',
+			create: 'PoolArea.addPatientArrivalLog',
+			update: 'PoolArea.updatePatientArrivalLog',
+			destroy: 'PoolArea.removePatientArrivalLog'
 		}
 	}
 });

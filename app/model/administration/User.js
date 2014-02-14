@@ -181,9 +181,9 @@ Ext.define('App.model.administration.User', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: User.getUsers,
-			create: User.addUser,
-			update: User.updateUser
+			read: 'User.getUsers',
+			create: 'User.addUser',
+			update: 'User.updateUser'
 		}
 	},
 	hasMany: [

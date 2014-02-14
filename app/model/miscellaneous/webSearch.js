@@ -17,38 +17,33 @@
  */
 
 Ext.define("App.model.miscellaneous.webSearch",
-{
-    extend : 'Ext.data.Model',
-    table: {
-        name:'websearch',
-        comment:'Web Search'
-    },
-    fields : [
-    {
-        name: 'id',
-        type: 'int',
-        dataType: 'bigint',
-        len: 20,
-        primaryKey : true,
-        autoIncrement : true,
-        allowNull : false,
-        store: true,
-        comment: 'Web Search ID'
-    },
-    {
-        name : 'title',
-        type : 'string'
-    },
-    {
-        name : 'source',
-        type : 'string'
-    },
-    {
-        name : 'FullSummary',
-        type : 'string'
-    },
-    {
-        name : 'snippet',
-        type : 'string'
-    }]
-});
+	{
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'websearch',
+			comment: 'Web Search'
+		},
+		fields: [
+			{
+				name: 'id',
+				type: 'int',
+				comment: 'Web Search ID'
+			},
+			{
+				name: 'title',
+				type: 'string'
+			},
+			{
+				name: 'source',
+				type: 'string'
+			},
+			{
+				name: 'FullSummary',
+				type: 'string'
+			},
+			{
+				name: 'snippet',
+				type: 'string'
+			}
+		]
+	});

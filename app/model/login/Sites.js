@@ -17,26 +17,26 @@
  */
 
 Ext.define('App.model.login.Sites',
-{
-    extend: 'Ext.data.Model',
-    table: {
-        name:'sites',
-        comment:'Sites'
-    },
-    fields: [
-    {
-        name: 'site_id',
-        type: 'int'
-    },
-    {
-        name: 'site',
-        type: 'string'
-    }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: authProcedures.getSites
-        }
-    }
-});
+	{
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'sites',
+			comment: 'Sites'
+		},
+		fields: [
+			{
+				name: 'site_id',
+				type: 'int'
+			},
+			{
+				name: 'site',
+				type: 'string'
+			}
+		],
+		proxy: {
+			type: 'direct',
+			api: {
+				read: 'authProcedures.getSites'
+			}
+		}
+	});

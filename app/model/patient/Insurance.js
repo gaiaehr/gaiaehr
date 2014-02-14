@@ -227,9 +227,9 @@ Ext.define('App.model.patient.Insurance', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Patient.getInsurances,
-			create: Patient.saveInsurance,
-			update: Patient.saveInsurance
+			read: 'Patient.getInsurances',
+			create: 'Patient.saveInsurance',
+			update: 'Patient.saveInsurance'
 		}
 	},
 	associations: [

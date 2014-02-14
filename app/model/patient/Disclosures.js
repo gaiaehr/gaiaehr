@@ -69,9 +69,9 @@ Ext.define('App.model.patient.Disclosures', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Patient.getPatientDisclosures,
-			create: Patient.createPatientDisclosure,
-			update: Patient.updatePatientDisclosure
+			read: 'Patient.getPatientDisclosures',
+			create: 'Patient.createPatientDisclosure',
+			update: 'Patient.updatePatientDisclosure'
 		}
 	}
 });

@@ -18,18 +18,18 @@
 
 Ext.define('App.model.patient.PatientChartCheckOut', {
 	extend: 'Ext.data.Model',
-	table:{
-		name:'patient_chart_checkout'
+	table: {
+		name: 'patient_chart_checkout'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int'
-        },
-        {
-	        name: 'pid',
-	        type: 'int'
-        },
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
 		{
 			name: 'uid',
 			type: 'int'
@@ -37,12 +37,12 @@ Ext.define('App.model.patient.PatientChartCheckOut', {
 		{
 			name: 'chart_out_time',
 			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'chart_in_time',
 			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'pool_area_id',

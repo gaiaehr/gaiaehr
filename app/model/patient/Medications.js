@@ -19,15 +19,15 @@
 Ext.define('App.model.patient.Medications', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_medications',
-		comment:'Patient Medications'
+		name: 'patient_medications',
+		comment: 'Patient Medications'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Medications ID'
-        },
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Medications ID'
+		},
 		{
 			name: 'pid',
 			type: 'int',
@@ -96,23 +96,23 @@ Ext.define('App.model.patient.Medications', {
 		},
 		{
 			name: 'date_ordered',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'created_date',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'begin_date',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'end_date',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 
 		{
@@ -136,17 +136,16 @@ Ext.define('App.model.patient.Medications', {
 			}
 		}
 
-
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Medical.getPatientMedications,
-			create: Medical.addPatientMedications,
-			update: Medical.updatePatientMedications,
-			destroy: Medical.deletePatientMedications
+		api: {
+			read: 'Medical.getPatientMedications',
+			create: 'Medical.addPatientMedications',
+			update: 'Medical.updatePatientMedications',
+			destroy: 'Medical.deletePatientMedications'
 		},
-		remoteGroup:false
+		remoteGroup: false
 	}
 });
 

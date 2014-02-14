@@ -52,7 +52,7 @@ Ext.define('App.model.patient.PatientsReferral', {
 		{
 			name: 'reason',
 			type: 'string',
-			dataType:'text'
+			dataType: 'text'
 		},
 		{
 			name: 'requested_services',
@@ -75,21 +75,21 @@ Ext.define('App.model.patient.PatientsReferral', {
 		{
 			name: 'create_date',
 			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'update_date',
 			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Referrals.getPatientReferrals,
-			create: Referrals.addPatientReferral,
-			update: Referrals.updatePatientReferral,
-			destroy: Referrals.deletePatientReferral
+			read: 'Referrals.getPatientReferrals',
+			create: 'Referrals.addPatientReferral',
+			update: 'Referrals.updatePatientReferral',
+			destroy: 'Referrals.deletePatientReferral'
 		},
 		remoteGroup: false
 	}

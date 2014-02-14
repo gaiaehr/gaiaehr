@@ -150,9 +150,9 @@ Ext.define('App.model.administration.Laboratories', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Practice.getLaboratories,
-			create: Practice.addLaboratory,
-			update: Practice.updateLaboratory
+			read: 'Practice.getLaboratories',
+			create: 'Practice.addLaboratory',
+			update: 'Practice.updateLaboratory'
 		}
 	}
 });

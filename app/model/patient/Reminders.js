@@ -19,21 +19,21 @@
 Ext.define('App.model.patient.Reminders', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'id', type: 'int', comment: 'Reminder ID'},
+		{name: 'id', type: 'int', comment: 'Reminder ID'},
 		{name: 'eid', type: 'int'},
 		{name: 'pid', type: 'int'},
 		{name: 'uid', type: 'int'},
-		{name: 'date', type: 'date', dateFormat:'Y-m-d H:i:s'},
+		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'body', type: 'string'},
 		{name: 'type', type: 'string'},
-        {name: 'user_name', type: 'string'}
+		{name: 'user_name', type: 'string'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Patient.getPatientReminders,
-            create: Patient.addPatientReminders,
-            update: Patient.updatePatientReminders
+		api: {
+			read: 'Patient.getPatientReminders',
+			create: 'Patient.addPatientReminders',
+			update: 'Patient.updatePatientReminders'
 		}
 	}
 });

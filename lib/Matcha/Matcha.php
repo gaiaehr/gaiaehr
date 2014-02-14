@@ -59,6 +59,10 @@ class Matcha {
 	 * @var string
 	 */
 	public static $__secretKey = 'CryptSecretKey';
+	/**
+	 * @var int
+	 */
+	public static $__installationNumber = 1;
 
 	/**
 	 * function connect($databaseParameters = array()):
@@ -141,7 +145,7 @@ class Matcha {
 			}
 
 			if(isset(MatchaModel::$__senchaModel['table']['uuid']) && MatchaModel::$__senchaModel['table']['uuid']){
-				$tableIdProperties = 'CHAR(38) NOT NULL PRIMARY KEY';
+				$tableIdProperties = 'CHAR(40) NOT NULL PRIMARY KEY';
 			}else{
 				$tableIdProperties = 'BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
 			}
@@ -429,5 +433,49 @@ class Matcha {
 			return false;
 		}
 	}
+
+	/**
+	 * @param int $number
+	 */
+	public static function setInstallationNumber($number){
+		self::$__installationNumber = $number;
+	}
+
+	/**
+	 * @return int
+	 */
+	public static function getInstallationNumber(){
+		return self::$__installationNumber;
+	}
+
+	/**
+	 * @param string $key
+	 */
+	public static function setSecretKey($key){
+		self::$__secretKey = $key;
+	}
+
+	/**
+	 * @param string $dir
+	 */
+	public static function setAppDir($dir){
+		self::$__app = $dir;
+	}
+
+	/**
+	 * @param string $freeze
+	 */
+	public static function setFreeze($freeze){
+		self::$__freeze = $freeze;
+	}
+
+	/**
+	 * @return PDO
+	 */
+	public static function getConn(){
+		return self::$__conn;
+	}
+
+
 
 }

@@ -73,6 +73,10 @@ class MatchaCUP {
 	 * @var array
 	 */
 	private $bindedValues = array();
+	/**
+	 * @var
+	 */
+	private $date;
 
 	/**
 	 * set to true if want to trim values
@@ -269,7 +273,7 @@ class MatchaCUP {
 	 */
 	public function newId(){
 		try{
-			return str_replace('.', '', uniqid(date('Uu'), true));
+			return strtoupper(str_replace('.', '', (uniqid(date('Uu'), true)))) . Matcha::getInstallationNumber();
 		} catch(PDOException $e){
 			return MatchaErrorHandler::__errorProcess($e);
 		}
@@ -739,20 +743,16 @@ class MatchaCUP {
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else{
-					if($type == 'bool'){
-						if($data[$col] === true){
-							$data[$col] = 1;
-						} elseif($col === false){
-							$data[$col] = 0;
-						}
-					} elseif($type == 'date'){
+					if($type == 'date'){
 						$data[$col] = ($data[$col] == '' ? null : $data[$col]);
 					} elseif($type == 'array'){
 						$data[$col] = ($data[$col] == '' ? null : serialize($data[$col]));
 					}
 				}
-
-				if($this->autoTrim){
+				/**
+				 * do not trim bool values
+				 */
+				if($this->autoTrim && $type != 'bool'){
 					$record[$col] = trim($data[$col]);
 				} else{
 					$record[$col] = $data[$col];

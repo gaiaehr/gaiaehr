@@ -249,7 +249,7 @@ class MatchaModel extends Matcha
             // unnecessary Ext.define functions
             $jsSenchaModel = preg_replace('/(?P<spaces>[\t\n\r ])|(?P<sencha>[\d(),.:;A-Za-z{}]+?)|(?P<properties>\'[^\n\r\']+\')/', '$2$3', $jsSenchaModel);
             // add quotes to proxy Ext.Direct functions
-            $jsSenchaModel = preg_replace("/(read|create|update|destroy)([:])((\w|\.)*)/", "$1$2'$3'", $jsSenchaModel);
+            //$jsSenchaModel = preg_replace("/(read|create|update|destroy)([:])((\w|\.)*)/", "$1$2'$3'", $jsSenchaModel);
 
             // wrap with double quotes to all the properties
             $jsSenchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $jsSenchaModel);
@@ -258,6 +258,8 @@ class MatchaModel extends Matcha
             // replace single quotes for double quotes
             // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
             $jsSenchaModel = preg_replace("(')", '"', $jsSenchaModel);
+
+	        error_log($jsSenchaModel);
 
             $model = (array)json_decode($jsSenchaModel, true);
             if(!count($model)) throw new Exception("Something went wrong converting it to an array. Model('$fileModel'). JSON Error: " . self::__JSONErrorTranslate(json_last_error()));
@@ -612,10 +614,10 @@ class MatchaModel extends Matcha
             $jsSenchaModel .= preg_replace('/"(?P<key>.+?)":/', '$1:', json_encode($senchaModelArray, JSON_PRETTY_PRINT));
             $jsSenchaModel .= ');'.chr(13);
             $jsSenchaModel = str_replace('"', "'", $jsSenchaModel);
-            $jsSenchaModel = preg_replace('/(?P<f>read)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
-            $jsSenchaModel = preg_replace('/(?P<f>create)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
-            $jsSenchaModel = preg_replace('/(?P<f>update)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
-            $jsSenchaModel = preg_replace('/(?P<f>destroy)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+//            $jsSenchaModel = preg_replace('/(?P<f>read)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+//            $jsSenchaModel = preg_replace('/(?P<f>create)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+//            $jsSenchaModel = preg_replace('/(?P<f>update)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
+//            $jsSenchaModel = preg_replace('/(?P<f>destroy)[\t :]+\'(?P<m>.+?)\'/i', "$1: $2", $jsSenchaModel);
 
             // ro-do the Sencha Model .js file
             $file = self::$__app.'/'.strtolower(str_replace('.', '/', $modelDir) ).'/'.$dirLastKey.'.js';

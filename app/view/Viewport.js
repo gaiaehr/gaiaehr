@@ -922,6 +922,7 @@ Ext.define('App.view.Viewport', {
     msg: function(title, format, error, persistent) {
         var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
         this.msgCt = Ext.get('msg-div');
+	    if(!this.msgCt) this.msgCt = Ext.fly('msg-div');
         this.msgCt.alignTo(document, 't-t');
         var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
             m = Ext.core.DomHelper.append(this.msgCt, {

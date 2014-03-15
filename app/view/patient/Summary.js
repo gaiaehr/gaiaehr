@@ -35,13 +35,21 @@ Ext.define('App.view.patient.Summary', {
         var me = this;
 
         me.stores = [];
-        me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck'));
-        me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies'));
-        me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems'));
-//        me.stores.push(me.patientSurgeryStore = Ext.create('App.store.patient.Surgery'));
-//        me.stores.push(me.patientDentalStore = Ext.create('App.store.patient.Dental'));
-        me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications'));
-        me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents'));
+        me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck',{
+	        autoLoad:false
+        }));
+        me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies',{
+	        autoLoad:false
+        }));
+        me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems',{
+	        autoLoad:false
+        }));
+        me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications',{
+	        autoLoad:false
+        }));
+        me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents',{
+	        autoLoad:false
+        }));
 
 
 	    app.on('patientset', function(patient){
@@ -81,7 +89,7 @@ Ext.define('App.view.patient.Summary', {
 	                {
 	                    xtype: 'grid',
 	                    title: i18n('active_medications'),
-	                    itemId: 'MedicationsPanel',
+	                    itemId: 'PatientSummaryMedicationsPanel',
 	                    hideHeaders: true,
 	                    store: me.patientMedicationsStore,
 	                    columns: [
@@ -101,7 +109,7 @@ Ext.define('App.view.patient.Summary', {
 	                {
 	                    xtype: 'grid',
 	                    title: i18n('immunizations'),
-	                    itemId: 'ImmuPanel',
+	                    itemId: 'PatientSummaryImmunizationPanel',
 	                    hideHeaders: true,
 	                    store: me.immuCheckListStore,
 	                    region: 'center',
@@ -123,7 +131,7 @@ Ext.define('App.view.patient.Summary', {
 	                {
 	                    xtype: 'grid',
 	                    title: i18n('allergies'),
-	                    itemId: 'AllergiesPanel',
+	                    itemId: 'PatientSummaryAllergiesPanel',
 	                    hideHeaders: true,
 	                    store: me.patientAllergiesListStore,
 	                    region: 'center',
@@ -144,7 +152,7 @@ Ext.define('App.view.patient.Summary', {
 	                {
 	                    xtype: 'grid',
 	                    title: i18n('active_problems'),
-	                    itemId: 'IssuesPanel',
+	                    itemId: 'PatientSummaryActiveProblemsPanel',
 	                    hideHeaders: true,
 	                    store: me.patientActiveProblemsStore,
 	                    columns: [
@@ -163,35 +171,6 @@ Ext.define('App.view.patient.Summary', {
 	                    ]
 
 	                },
-//	                {
-//	                    xtype: 'grid',
-//	                    title: i18n('dental'),
-//	                    itemId: 'DentalPanel',
-//	                    hideHeaders: true,
-//	                    store: me.patientDentalStore,
-//	                    columns: [
-//	                        {
-//
-//	                            header: i18n('name'),
-//	                            dataIndex: 'description',
-//	                            flex: 1
-//
-//	                        }
-//	                    ]
-//	                },
-//	                {
-//	                    xtype: 'grid',
-//	                    title: i18n('surgeries'),
-//	                    itemId: 'SurgeryPanel',
-//	                    hideHeaders: true,
-//	                    store: me.patientSurgeryStore,
-//	                    columns: [
-//	                        {
-//	                            dataIndex: 'surgery',
-//	                            flex: 1
-//	                        }
-//	                    ]
-//	                },
 	                {
 	                    xtype: 'grid',
 	                    title: i18n('appointments'),
@@ -222,17 +201,20 @@ Ext.define('App.view.patient.Summary', {
         }
 
 	    if(acl['access_patient_disclosures']){
-            me.stores.push(
-	            me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
-                    autoSync: false
-                })
-            );
+//            me.stores.push(
+//	            me.patientDisclosuresStore = Ext.create('App.store.patient.Disclosures', {
+//                    autoSync: false
+//                })
+//            );
             me.tabPanel.add({
                 xtype: 'grid',
                 title: i18n('disclosures'),
-                itemId: 'disclosuresPanel',
+                itemId: 'PatientSummaryDisclosuresPanel',
                 bodyPadding: 0,
-                store: me.patientDisclosuresStore,
+                store: Ext.create('App.store.patient.Disclosures', {
+	                autoSync: false,
+	                autoLoad:false
+                }),
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
                     autoCancel: false,
                     errorSummary: false,
@@ -260,15 +242,6 @@ Ext.define('App.view.patient.Summary', {
                             xtype: 'textfield'
                         }
                     }
-//                    {
-//                        text: i18n('active'),
-//                        dataIndex: 'active',
-//                        width: 50,
-//                        renderer: me.boolRenderer,
-//                        editor: {
-//                            xtype: 'checkbox'
-//                        }
-//                    }
                 ],
                 tbar: [
                     {
@@ -282,17 +255,20 @@ Ext.define('App.view.patient.Summary', {
         }
 
         if(acl['access_patient_notes']){
-            me.stores.push(
-	            me.patientNotesStore = Ext.create('App.store.patient.Notes', {
-                    autoSync: false
-                })
-            );
+//            me.stores.push(
+//	            me.patientNotesStore = Ext.create('App.store.patient.Notes', {
+//                    autoSync: false
+//                })
+//            );
             me.tabPanel.add({
                 title: i18n('notes'),
-                itemId: 'notesPanel',
+                itemId: 'PatientSummeryNotesPanel',
                 xtype: 'grid',
                 bodyPadding: 0,
-                store: me.patientNotesStore,
+                store: Ext.create('App.store.patient.Notes', {
+	                autoSync: false,
+	                autoLoad:false
+                }),
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
                     autoCancel: false,
                     errorSummary: false,
@@ -339,15 +315,18 @@ Ext.define('App.view.patient.Summary', {
         }
 
         if(acl['access_patient_reminders']){
-            me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders', {
-                autoSync: false
-            }));
+//            me.stores.push(me.patientRemindersStore = Ext.create('App.store.patient.Reminders', {
+//                autoSync: false
+//            }));
             me.tabPanel.add({
                 title: i18n('reminders'),
-                itemId: 'remindersPanel',
+                itemId: 'PatientSummaryRemindersPanel',
                 xtype: 'grid',
                 bodyPadding: 0,
-                store: me.patientRemindersStore,
+                store: Ext.create('App.store.patient.Reminders', {
+	                autoLoad: false,
+	                autoSync: false
+                }),
                 plugins: Ext.create('Ext.grid.plugin.RowEditing', {
                         autoCancel: false,
                         errorSummary: false,
@@ -394,24 +373,33 @@ Ext.define('App.view.patient.Summary', {
         }
 
         if(acl['access_patient_vitals']){
-            me.stores.push(me.vitalsStore = Ext.create('App.store.patient.Vitals'));
+//            me.stores.push(me.vitalsStore = Ext.create('App.store.patient.Vitals', {
+//	            autoLoad:false
+//            }));
             me.tabPanel.add({
+	            xtype:'panel',
                 title: i18n('vitals'),
                 autoScroll: true,
                 bodyPadding: 0,
+	            itemId: 'PatientSummaryVitalsPanel',
                 items: {
                     xtype: 'vitalsdataview',
-                    store: me.vitalsStore
+                    store: Ext.create('App.store.patient.Vitals', {
+	                    autoLoad:false
+                    })
                 }
             })
         }
 
         if(acl['access_patient_history']){
-            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
+//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
             me.tabPanel.add({
                 title: i18n('history'),
                 xtype: 'grid',
-                store: me.encounterEventHistoryStore,
+	            itemId: 'PatientEncounterHistoryPanel',
+                store: Ext.create('App.store.patient.Encounters', {
+	                autoLoad:false
+                }),
                 columns: [
                     {
                         header: i18n('date'),
@@ -431,11 +419,14 @@ Ext.define('App.view.patient.Summary', {
         }
 
         if(acl['access_patient_documents']){
-            me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
+//            me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
             me.tabPanel.add({
                 title: i18n('documents'),
                 xtype: 'grid',
-                store: me.patientDocumentsStore,
+	            itemId: 'PatientSummaryDocumentsPanel',
+                store: me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments', {
+	                autoLoad:false
+                }),
                 columns: [
                     {
                         xtype: 'actioncolumn',
@@ -548,7 +539,7 @@ Ext.define('App.view.patient.Summary', {
                                             }
                                         ],
                                         api: {
-                                            submit: DocumentHandler.uploadDocument
+                                            submit: 'DocumentHandler.uploadDocument'
                                         }
                                     }
                                 ],
@@ -573,15 +564,18 @@ Ext.define('App.view.patient.Summary', {
         }
 
         if(acl['access_patient_preventive_care_alerts']){
-            me.stores.push(
-	            me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts', {
-                    //listeners
-                })
-            );
+//            me.stores.push(
+//	            me.patientsDismissedAlerts = Ext.create('App.store.patient.DismissedAlerts', {
+//                    //listeners
+//                })
+//            );
             me.tabPanel.add({
                 title: i18n('dismissed_preventive_care_alerts'),
                 xtype: 'grid',
-                store: me.patientsDismissedAlerts,
+	            itemId:'PatientSummaryPreventiveCareAlertsPanel',
+                store: Ext.create('App.store.patient.DismissedAlerts', {
+	                //listeners
+                }),
                 columns: [
                     {
                         header: i18n('description'),
@@ -871,7 +865,7 @@ Ext.define('App.view.patient.Summary', {
 
     rightColRender: function(panel){
         var me = this;
-        panel.getComponent('ImmuPanel').header.add(
+        panel.getComponent('PatientSummaryImmunizationPanel').header.add(
 	        {
                 xtype: 'button',
                 text: i18n('details'),
@@ -881,7 +875,7 @@ Ext.define('App.view.patient.Summary', {
 
             }
         );
-        panel.getComponent('MedicationsPanel').header.add(
+        panel.getComponent('PatientSummaryMedicationsPanel').header.add(
 	        {
                 xtype: 'button',
                 text: i18n('details'),
@@ -891,7 +885,7 @@ Ext.define('App.view.patient.Summary', {
 
             }
         );
-        panel.getComponent('AllergiesPanel').header.add(
+        panel.getComponent('PatientSummaryAllergiesPanel').header.add(
 	        {
                 xtype: 'button',
                 text: i18n('details'),
@@ -900,7 +894,7 @@ Ext.define('App.view.patient.Summary', {
                 handler: me.medicalWin
             }
         );
-        panel.getComponent('IssuesPanel').header.add(
+        panel.getComponent('PatientSummaryActiveProblemsPanel').header.add(
 	        {
                 xtype: 'button',
                 text: i18n('details'),
@@ -909,24 +903,6 @@ Ext.define('App.view.patient.Summary', {
                 handler: me.medicalWin
             }
         );
-//        panel.getComponent('DentalPanel').header.add(
-//	        {
-//                xtype: 'button',
-//                text: i18n('details'),
-//                action: 'dental',
-//                scope: me,
-//                handler: me.medicalWin
-//            }
-//        );
-//        panel.getComponent('SurgeryPanel').header.add(
-//	        {
-//                xtype: 'button',
-//                text: i18n('details'),
-//                action: 'surgery',
-//                scope: me,
-//                handler: me.medicalWin
-//            }
-//        );
     },
     medicalWin: function(btn){
         app.onMedicalWin(btn);
@@ -961,6 +937,7 @@ Ext.define('App.view.patient.Summary', {
      */
     loadStores: function(){
         var me = this;
+
         for(var i = 0; i < me.stores.length; i++){
 	        me.stores[i].clearFilter(true);
 	        me.stores[i].load({

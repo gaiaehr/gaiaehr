@@ -63,13 +63,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
 
 
-		<!-- JQuery library &  swfobject -->
-		<script src="lib/ScriptCam/jquery.min.js"></script>
-		<script src="lib/ScriptCam/swfobject.js"></script>
-		<!-- ScriptCam library -->
-		<script src="lib/ScriptCam/scriptcam.js"></script>
-
-
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
@@ -670,6 +663,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Referrals',
 	                'patient.Results',
 	                'patient.SocialHistory',
+	                'patient.Summary',
                     'patient.encounter.SOAP'
                 ],
                 launch: function() {

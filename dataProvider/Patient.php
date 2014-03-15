@@ -282,7 +282,7 @@ class Patient {
 		QRCode::png($data, false, 'Q', 2, 2);
 		$imageString = base64_encode(ob_get_contents());
 		ob_end_clean();
-		return $imageString;
+		return 'data:image/jpeg;base64,'.$imageString;
 	}
 
 	/**

@@ -1280,4 +1280,5 @@ $LANG = array(
 	'generating_documents'                  => 'Generating Documents',
 	'copied_to_clipboard'                   => 'Copied To Clipboard',
 	'copy'                                  => 'Copy',
+	'capture_img'                           => 'Capture Img',
 );

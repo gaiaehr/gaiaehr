@@ -77,7 +77,7 @@ Ext.define('App.controller.patient.Referrals', {
 		for(var i=0; i < selection.length; i++){
 			params.pid = me.pid;
 			params.eid = me.eid;
-			params.referralId = selection.data.id,
+			params.referralId = selection[i].data.id,
 			params.templateId = 10;
 			params.docType = 'referrals';
 

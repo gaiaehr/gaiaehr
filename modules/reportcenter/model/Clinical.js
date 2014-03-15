@@ -31,7 +31,7 @@ Ext.define('Modules.reportcenter.model.Clinical', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Clinical.getClinicalList
+			read  : 'Clinical.getClinicalList'
 		}
 	}
 });

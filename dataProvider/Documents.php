@@ -27,7 +27,6 @@ include_once (dirname(__FILE__) . '/Services.php');
 include_once (dirname(__FILE__) . '/Facilities.php');
 include_once (dirname(__FILE__) . '/DocumentPDF.php');
 include_once (dirname(__FILE__) . '/i18nRouter.php');
-include_once (dirname(dirname(__FILE__)) . '/lib/tcpdf/config/lang/eng.php');
 
 class Documents
 {
@@ -581,12 +580,8 @@ class Documents
         $regex = '(\[\w*?\])';
         $this->pdf->SetCreator('TCPDF');
         $this->pdf->SetAuthor($_SESSION['user']['name']);
-        $siteLogo = $_SESSION['site']['path'] . '/logo.jpg';
-        $logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['root'] . '/resources/images/logo.jpg');
 
-        $this->pdf->SetHeaderData($logo, '20', 'Ernesto\'s Clinic', "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");
-        //need to be change
-        $this->pdf->setHeaderFont(Array('helvetica', '', 14));
+	    $this->pdf->setHeaderFont(Array('helvetica', '', 14));
         $this->pdf->setFooterFont(Array('helvetica', '', 8));
         $this->pdf->SetDefaultMonospacedFont('courier');
         $this->pdf->SetMargins(15, 27, 15);
@@ -597,7 +592,7 @@ class Documents
         $this->pdf->setFontSubsetting(true);
         $this->pdf->AddPage();
 
-        $this->pdf->SetY(30); // margin after header line
+        $this->pdf->SetY(35); // margin after header line
 
         if (isset($params->DoctorsNote)) {
             $body = $params->DoctorsNote;
@@ -635,10 +630,14 @@ class Documents
 
         $html = str_replace($tokens, $allNeededInfo, $body);
         $this->pdf->writeHTML((isset($params->DoctorsNote)) ? $html : $html['body']);
-        $this->pdf->Output($path, 'F');
-        $this->pdf->Close();
-//        print_r($html);
-        return true;
+	    if($path == ''){
+		    return $this->pdf->Output('temp.pdf', 'S');
+	    }else{
+		    $this->pdf->Output($path, 'F');
+		    $this->pdf->Close();
+		    return true;
+	    }
+
     }
 
 

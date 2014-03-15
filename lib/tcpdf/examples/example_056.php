@@ -2,7 +2,7 @@
 //============================================================+
 // File name   : example_056.php
 // Begin       : 2010-03-26
-// Last Update : 2011-12-10
+// Last Update : 2013-09-30
 //
 // Description : Example 056 for TCPDF class
 //               Crop marks and color registration bars
@@ -12,9 +12,6 @@
 // (c) Copyright:
 //               Nicola Asuni
 //               Tecnick.com LTD
-//               Manor Coach House, Church Hill
-//               Aldershot, Hants, GU12 4RQ
-//               UK
 //               www.tecnick.com
 //               info@tecnick.com
 //============================================================+
@@ -27,8 +24,8 @@
  * @since 2010-03-26
  */
 
-require_once('../config/lang/eng.php');
-require_once('../tcpdf.php');
+// Include the main TCPDF library (search for installation path).
+require_once('tcpdf_include.php');
 
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -50,45 +47,49 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-//set margins
+// set margins
 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-//set auto page breaks
+// set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-//set image scale factor
+// set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-//set some language-dependent strings
-$pdf->setLanguageArray($l);
+// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+	require_once(dirname(__FILE__).'/lang/eng.php');
+	$pdf->setLanguageArray($l);
+}
 
 // ---------------------------------------------------------
 
 // set font
-$pdf->SetFont('helvetica', '', 20);
+$pdf->SetFont('helvetica', '', 18);
 
 // add a page
 $pdf->AddPage();
 
-$pdf->Write(0, 'Example of Crop Marks and Color Registration Bars', '', 0, 'L', true, 0, false, false, 0);
+$pdf->Write(0, 'Example of Registration Marks, Crop Marks and Color Bars', '', 0, 'L', true, 0, false, false, 0);
 
 $pdf->Ln(5);
 
 // color registration bars
 
+// A,W,R,G,B,C,M,Y,K,RGB,CMYK,ALL,ALLSPOT,<SPOT_COLOR_NAME>
 $pdf->colorRegistrationBar(50, 70, 40, 40, true, false, 'A,R,G,B,C,M,Y,K');
 $pdf->colorRegistrationBar(90, 70, 40, 40, true, true, 'A,R,G,B,C,M,Y,K');
-$pdf->colorRegistrationBar(50, 115, 80, 5, false, true, 'A,W,R,G,B,C,M,Y,K');
-$pdf->colorRegistrationBar(135, 70, 5, 50, false, false, 'A,W,R,G,B,C,M,Y,K');
+$pdf->colorRegistrationBar(50, 115, 80, 5, false, true, 'A,W,R,G,B,C,M,Y,K,ALL');
+$pdf->colorRegistrationBar(135, 70, 5, 50, false, false, 'A,W,R,G,B,C,M,Y,K,ALL');
 
 // corner crop marks
 
-$pdf->cropMark(50, 70, 10, 10, 'TL', array(0,0,0));
-$pdf->cropMark(140, 70, 10, 10, 'TR', array(0,0,0));
-$pdf->cropMark(50, 120, 10, 10, 'BL', array(0,0,0));
-$pdf->cropMark(140, 120, 10, 10, 'BR', array(0,0,0));
+$pdf->cropMark(50, 70, 10, 10, 'TL');
+$pdf->cropMark(140, 70, 10, 10, 'TR');
+$pdf->cropMark(50, 120, 10, 10, 'BL');
+$pdf->cropMark(140, 120, 10, 10, 'BR');
 
 // various crop marks
 
@@ -102,10 +103,25 @@ $pdf->cropMark(95, 140, 5, 5, 'A,D', array(0,0,255));
 
 // registration marks
 
-$pdf->registrationMark(40, 60, 5, false, array(0,0,0), array(255,255,255));
+$pdf->registrationMark(40, 60, 5, false);
 $pdf->registrationMark(150, 60, 5, true, array(0,0,0), array(255,255,0));
 $pdf->registrationMark(40, 130, 5, true, array(0,0,0), array(255,255,0));
-$pdf->registrationMark(150, 130, 5, false, array(0,0,0), array(255,255,255));
+$pdf->registrationMark(150, 130, 5, false, array(100,100,100,100,'All'), array(0,0,0,0,'None'));
+
+// test registration bar with spot colors
+
+$pdf->AddSpotColor('My TCPDF Dark Green', 100, 50, 80, 45);
+$pdf->AddSpotColor('My TCPDF Light Yellow', 0, 0, 55, 0);
+$pdf->AddSpotColor('My TCPDF Black', 0, 0, 0, 100);
+$pdf->AddSpotColor('My TCPDF Red', 30, 100, 90, 10);
+$pdf->AddSpotColor('My TCPDF Green', 100, 30, 100, 0);
+$pdf->AddSpotColor('My TCPDF Blue', 100, 60, 10, 5);
+$pdf->AddSpotColor('My TCPDF Yellow', 0, 20, 100, 0);
+
+$pdf->colorRegistrationBar(50, 150, 80, 10, false, true, 'ALLSPOT');
+
+// CMYK registration mark
+$pdf->registrationMarkCMYK(150, 155, 8);
 
 // ---------------------------------------------------------
 

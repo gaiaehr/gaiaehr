@@ -46,6 +46,11 @@ class DocumentHandler {
 			$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 	}
 
+	/**
+	 * this will return the document info
+	 * @param $params
+	 * @return array
+	 */
 	public function createDocument($params){
 		$this->setPatientDocumentModel();
 
@@ -80,6 +85,17 @@ class DocumentHandler {
 		} else{
 			return array('success' => false, 'error' => 'Document could not be created');
 		}
+	}
+
+	/**
+	 * this will return the PDF base64 string
+	 * @param $params
+	 * @return bool|string
+	 */
+	public function createPDF($params){
+		$this->setPatientDocumentModel();
+		$this->documents = new Documents();
+		return $this->documents->PDFDocumentBuilder((object)$params);
 	}
 
 	// TODO: rename this function to uploadPatientDocument()
@@ -194,7 +210,7 @@ class DocumentHandler {
 
 	public function updateDocumentsTemplates(stdClass $params){
 		$data = get_object_vars($params);
-		$data['update_by_uid'] = $_SESSION['user']['id'];
+		$data['updated_by_uid'] = $_SESSION['user']['id'];
 		unset($data['id']);
 		$this->db->setSQL($this->db->sqlBind($data, 'documents_templates', 'U', array('id' => $params->id)));
 		$this->db->execLog();

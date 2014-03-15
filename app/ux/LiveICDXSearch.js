@@ -48,7 +48,7 @@ Ext.define('App.ux.LiveICDXSearch',
 				proxy:{
 					type:'direct',
 					api:{
-						read:DiagnosisCodes.ICDCodeSearch
+						read:'DiagnosisCodes.ICDCodeSearch'
 					},
 					reader:{
 						totalProperty:'totals',

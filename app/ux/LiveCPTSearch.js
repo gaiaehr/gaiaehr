@@ -43,6 +43,7 @@ Ext.define('App.ux.LiveCPTSearch',
 						{ name:'code', type:'strig' },
 						{ name:'code_text', type:'string' },
 						{ name:'code_text_medium', type:'string' },
+						{ name:'code_type', type:'string', defaultValue:'CPT' },
 						{ name:'place_of_service', type:'string' },
 						{ name:'emergency', type:'string' },
 						{ name:'charge', type:'string' },
@@ -53,7 +54,7 @@ Ext.define('App.ux.LiveCPTSearch',
 					proxy:{
 						type:'direct',
 						api:{
-							read:Services.liveCodeSearch
+							read:'Services.liveCodeSearch'
 						},
 						reader:{
 							totalProperty:'totals',

@@ -171,6 +171,18 @@ class User {
 		return $records;
 	}
 
+	public function getActiveProviders(){
+		$records = array();
+		$records[] = array('option_name' => 'Select', 'option_value' => '');
+		foreach($this->u->load(array('role_id' => 2, 'active' => 1))->all() As $row){
+			$foo = array();
+			$foo['option_name'] = $row['title'] . Person::fullname($row['fname'],$row['mname'],$row['lname']);
+			$foo['option_value'] = $row['id'];
+			$records[] = $foo;
+		}
+		return $records;
+	}
+
 	public function getUserRolesByCurrentUserOrUserId($uid = null){
 		return $this->u->load($uid == null ? $_SESSION['user']['id'] : $uid)->one();
 	}

@@ -1298,7 +1298,10 @@ $API = array(
 				'len' => 1
 			),
 			'getProviders' => array(
-				'len' => 1
+				'len' => 0
+			),
+			'getActiveProviders' => array(
+				'len' => 0
 			),
 			'getUserFullNameById' => array(
 				'len' => 1

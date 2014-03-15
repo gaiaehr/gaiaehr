@@ -990,7 +990,8 @@ Ext.define('App.view.Viewport', {
                 }
             }
         });
-	    me.nav['App_view_areas_PatientPoolDropZone'].reloadStores();
+
+	    if(me.nav['App_view_areas_PatientPoolDropZone'].isVisible()) me.nav['App_view_areas_PatientPoolDropZone'].reloadStores();
     },
 
     initializePatientPoolDragZone: function(panel){
@@ -1244,13 +1245,20 @@ Ext.define('App.view.Viewport', {
         }else{
             icon = Ext.Msg.INFO
         }
+
+	    Ext.Msg.width = null;
+	    Ext.Msg.height = null;
+	    Ext.Msg.maxHeight = 600;
+	    Ext.Msg.maxWidth = 1000;
         Ext.Msg.show({
             msg: msg,
             buttons: Ext.Msg.OK,
-            icon: icon,
-	        minWidth :700,
-            maxWidth:1000
+            icon: icon
         });
+	    Ext.Msg.width = 600;
+	    Ext.Msg.height = 500;
+	    Ext.Msg.maxWidth = 600;
+	    Ext.Msg.maxHeight = 500;
     },
 
     resetApp:function(){

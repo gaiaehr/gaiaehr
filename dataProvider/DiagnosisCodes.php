@@ -302,6 +302,16 @@ class DiagnosisCodes
         );
     }
 
+	public function getServiceCodeByCodeAndCodeType($code, $codeType){
+		if($code == '' || $codeType == '') return '';
+		$codeTable = $codeType == 'ICD9' ? 'icd9_dx_code' : 'icd10_dx_order_code';
+		$codeColumn = $codeType == 'ICD9' ? 'formatted_dx_code' : 'icd10_dx_order_code';
+		$textColumn = $codeType == 'ICD9' ? 'short_desc' : 'short_desc';
+		$this->db->setSQL("SELECT $textColumn AS code_text FROM $codeTable WHERE `$codeColumn` = '$code' LIMIT 1");
+		$record = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return isset($record['code_text']) ? $record['code_text'] : '';
+	}
+
 }
 
 //$f = new DiagnosisCodes();

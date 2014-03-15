@@ -343,6 +343,13 @@ class Services
         );
     }
 
+	public function getServiceCodeByCodeAndCodeType($code, $codeType){
+		$codeTable = $codeType == 'HCPCS' ? 'hcpcs_codes' : 'cpt_codes';
+		$this->db->setSQL("SELECT * FROM $codeTable WHERE `code` = '$code' LIMIT 1");
+		$record = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		return isset($record['code_text']) ? $record['code_text'] : '';
+	}
+
 }
 
 //

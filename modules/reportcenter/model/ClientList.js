@@ -28,7 +28,7 @@ Ext.define('Modules.reportcenter.model.ClientList', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : ClientList.getClientList
+			read  : 'ClientList.getClientList'
 		}
 	}
 });

@@ -33,6 +33,8 @@ Ext.define('App.controller.Navigation', {
 	init: function() {
 		var me = this;
 
+		me.activePanel = null;
+
 		Ext.util.History.init();
 		Ext.util.History.on('change', me.urlChange, me);
 
@@ -129,7 +131,9 @@ Ext.define('App.controller.Navigation', {
 		// call panel onActive method
 		me[ref].onActive(function(success){
 			me.getViewport().MainPanel.el.unmask();
-			if(success)	layout.setActiveItem(me[ref]);
+			if(success){
+				me.activePanel = layout.setActiveItem(me[ref]);
+			}
 		});
 
 		// fire global event

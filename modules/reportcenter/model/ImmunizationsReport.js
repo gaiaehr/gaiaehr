@@ -28,7 +28,7 @@ Ext.define('Modules.reportcenter.model.ImmunizationsReport', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : ImmunizationsReport.getImmunizationsReport
+			read  : 'ImmunizationsReport.getImmunizationsReport'
 		}
 	}
 });

@@ -1269,4 +1269,12 @@ $LANG = array(
 	'no_document_found'                     => 'No Document Found',
 	'social_history'                        => 'Social History',
 	'add_social_history'                    => 'Add Social History',
+	'referral_date'                         => 'Referral Date',
+	'requested_service'                     => 'Service Request',
+	'refer_by'                              => 'Refer By',
+	'refer_to'                              => 'Refer To',
+	'risk_level'                            => 'Risk Level',
+	'send_vitals'                           => 'Send Vitals',
+	'send_record'                           => 'Send Record',
+	'external_referral'                     => 'External Referral',
 );

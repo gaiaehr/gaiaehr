@@ -31,7 +31,7 @@ Ext.define('Modules.reportcenter.model.Appointment', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Appointments.getAppointmentsList
+			read  : 'Appointments.getAppointmentsList'
 		}
 	}
 });

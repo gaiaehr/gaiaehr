@@ -966,6 +966,19 @@ class Encounter {
 		return $this->getEncountersByDate(Time::getLocalTime('Y-m-d'));
 	}
 
+	/**
+	 * - Rx Orders
+	 * - Laboratory Orders
+	 * - Radiology Orders
+	 * - Referrals
+	 * - Doctors Notes
+	 *
+	 * @param $params
+	 */
+	public function getEncounterPrintableStuff($params){
+
+	}
+
 }
 
 

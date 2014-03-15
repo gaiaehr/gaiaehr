@@ -29,7 +29,7 @@ Ext.define('Modules.reportcenter.model.MedicationReport', {
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Rx.getPrescriptionsFromAndToAndPid
+			read  : 'Rx.getPrescriptionsFromAndToAndPid'
 		}
 	}
 });

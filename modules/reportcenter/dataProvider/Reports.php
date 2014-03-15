@@ -45,8 +45,8 @@ class Reports
 		$fileName = $this->fileManager->getTempDirAvailableName() . '.pdf';
 		$this->pdf->SetCreator('TCPDF');
 		$this->pdf->SetAuthor($_SESSION['user']['name']);
-		$siteLogo = $_SESSION['site']['path'] . '/logo.jpg';
-		$logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['root'] . '/resources/images/logo.jpg');
+		$siteLogo = $_SESSION['root'].'/sites/'. $_SESSION['site']['dir'] . '/logo.jpg';
+		$logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['root'].'/resources/images/logo.jpg');
 
 		// TODO: set from admin area
 		$this->pdf->SetHeaderData($logo, '20', 'Ernesto\'s Clinic', "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");

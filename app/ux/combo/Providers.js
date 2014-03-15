@@ -23,7 +23,7 @@ Ext.define('App.ux.combo.Providers',
 				type : 'direct',
 				api :
 				{
-					read : User.getProviders
+					read : 'User.getProviders'
 				}
 			}
 		});
@@ -42,7 +42,7 @@ Ext.define('App.ux.combo.Providers',
 			valueField : 'id',
 			emptyText : i18n('select'),
 			store : me.store
-		}, null);
+		});
 		me.callParent(arguments);
 	}
 }); 

@@ -531,17 +531,6 @@ class Patient {
 		return $docs;
 	}
 
-	//    private function getPatientSurgeryByPatientID($pid)
-	//    {
-	//        $this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
-	//        $records = array();
-	//        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
-	//            $rec['alert'] = ($rec['end_date'] == null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
-	//            $records[]    = $rec;
-	//        }
-	//        return $records;
-	//    }
-
 	public function getPatientInsurancesCardsUrlByPid($pid){
 		$records = array();
 		$this->db->setSQL("SELECT url

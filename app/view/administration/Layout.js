@@ -718,7 +718,7 @@ Ext.define('App.view.administration.Layout', {
     },
 
 	onNameValueChange:function(field, value){
-		field.setDisabled(value != '');
+		field.setDisabled(field.up('form').getForm().getRecord().data.id != 0);
 	},
 
     /**

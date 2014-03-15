@@ -23,26 +23,123 @@ Ext.define('App.controller.patient.Referrals', {
 	],
 	refs: [
 		{
-			ref: 'referralPanel',
+			ref: 'ReferralPanelGrid',
 			selector: 'patientreferralspanel'
+		},
+		{
+			ref: 'AddReferralBtn',
+			selector: 'button[action=addReferralBtn]'
+		},
+		{
+			ref: 'PrintReferralBtn',
+			selector: '#printReferralBtn'
 		}
 	],
 
 	init: function(){
 		var me = this;
 		me.control({
-			'patientreferralspanel': {
-				show: me.onReferralShow
+			'#patientReferralsGrid': {
+				show: me.onReferralShow,
+				selectionchange: me.onGridSelectionChange
+
+			},
+			'button[action=addReferralBtn]': {
+				click: me.onAddReferralBtnClicked
+			},
+			'#referralServiceSearch': {
+				select: me.onReferralServiceSearchSelect
+			},
+			'#referralDiagnosisSearch': {
+				select: me.onReferralDiagnosisSearchSelect
+			},
+			'#referralExternalReferralCheckbox': {
+				select: me.onReferralExternalReferralCheckbox
+			},
+			'#printReferralBtn': {
+				click: me.onPrintReferralBtnClick
 			}
 		});
 	},
 
-	onReferralShow: function(grid){
 
-		say(grid.getStore());
+	onPrintReferralBtnClick:function(){
+		say('onPrintReferralBtnClick');
+
+		var me = this,
+			params = {
+				pid: me.pid,
+				eid: me.eid,
+				templateId: 10,
+				docType: 'referrals'
+			};
+
+		DocumentHandler.createDocument(params, function(provider, response){
+			app.msg('Sweet!', 'Document Created');
+			app.onDocumentView(response.result.doc.id);
+			this.close();
+		});
+
+
+
+	},
+
+	onGridSelectionChange:function(grid, models){
+		this.getPrintReferralBtn().setDisabled(models.length == 0);
+	},
+
+	onReferralServiceSearchSelect: function(cmb, records){
+		var referral = cmb.up('form').getForm().getRecord();
+		referral.set({
+			service_code: records[0].data.code,
+			service_code_type: records[0].data.code_type
+		})
+
+	},
+
+	onReferralDiagnosisSearchSelect: function(cmb, records){
+		var referral = cmb.up('form').getForm().getRecord();
+		referral.set({
+			diagnosis_code: records[0].data.code,
+			diagnosis_code_type: records[0].data.code_type
+		})
+	},
+
+	onReferralExternalReferralCheckbox: function(checkbox){
+		say(checkbox);
+	},
+
+	onReferralShow: function(grid){
+		var store = grid.getStore();
+
+		this.pid = app.patient.pid;
+		this.eid = app.patient.eid;
+
+		store.clearFilter(true);
+		store.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
+			}
+		]);
+	},
+
+	onAddReferralBtnClicked: function(){
+		var me = this,
+			store = me.getReferralPanelGrid().getStore(),
+			plugin = me.getReferralPanelGrid().editingPlugin,
+			records;
+
+		plugin.cancelEdit();
+		records = store.add({
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			create_date: new Date(),
+			create_uid: app.user.id,
+			referral_date: new Date()
+		});
+		plugin.startEdit(records[0], 0);
 
 	}
-
-
 
 });

@@ -328,7 +328,7 @@ class FormLayoutEngine {
 		$item['displayField'] = 'option_name';
 		$item['valueField'] = 'option_value';
 		$item['queryMode'] = 'local';
-		$item['editable'] = false;
+		$item['forceSelection'] = true;
 		if(!isset($item['emptyText'])){
 			$item['emptyText'] = 'Select';
 		}

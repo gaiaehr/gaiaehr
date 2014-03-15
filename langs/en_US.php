@@ -1277,4 +1277,7 @@ $LANG = array(
 	'send_vitals'                           => 'Send Vitals',
 	'send_record'                           => 'Send Record',
 	'external_referral'                     => 'External Referral',
+	'generating_documents'                  => 'Generating Documents',
+	'copied_to_clipboard'                   => 'Copied To Clipboard',
+	'copy'                                  => 'Copy',
 );

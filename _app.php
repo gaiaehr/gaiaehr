@@ -29,7 +29,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				globals = {},
 				ext = '<?php print $_SESSION['extjs'] ?>',
 				version = '<?php print $_SESSION['version'] ?>',
-				requires;
+				requires,
+				AppClipboard;
 		</script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>GaiaEHR :: Loading...</title>
@@ -62,15 +63,17 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
 
 
-		<!-- JQuery library -->
-		<script src="lib/JQuery/jquery.min.js"></script>
-
+		<!-- JQuery library &  swfobject -->
+		<script src="lib/ScriptCam/jquery.min.js"></script>
+		<script src="lib/ScriptCam/swfobject.js"></script>
 		<!-- ScriptCam library -->
 		<script src="lib/ScriptCam/scriptcam.js"></script>
+
 
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php"></script>
 		<script src="data/api.php"></script>
+		<script type="text/javascript" src="lib/ZeroClipboard/ZeroClipboard.js"></script>
 
         <script type="text/javascript">
 
@@ -81,6 +84,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             window.say = function(a){
                 console.log(a);
             };
+            ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );
+            AppClipboard = new ZeroClipboard();
+            AppClipboard.on("complete", function (client, args) {
+	            app.msg(i18n('sweet'), args.text + ' - ' + i18n('copied_to_clipboard'));
+            });
 
 			/**
 			 * Ext Localization file
@@ -114,8 +122,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				);
 			});
 		</script>
-		<script type="text/javascript" src="lib/webcam_control/swfobject.js"></script>
-		<script type="text/javascript" src="lib/jpegcam/htdocs/webcam.js"></script>
 		<script type="text/javascript" src="app/ux/Overrides.js"></script>
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 

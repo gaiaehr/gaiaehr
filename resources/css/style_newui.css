@@ -17,6 +17,9 @@
 .icoLogout {
 	background-image: url(../images/icons/logout.png) !important;
 }
+.icoCopy {
+	background-image: url(../images/icons/copy.png) !important;
+}
 .icoUser {
 	background-image: url(../images/icons/user.png) !important;
 }

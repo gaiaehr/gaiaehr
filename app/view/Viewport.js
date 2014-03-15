@@ -530,7 +530,7 @@ Ext.define('App.view.Viewport', {
         me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
         me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
         me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
-        me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
+//        me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
         if(acl['access_encounter_checkout']){
@@ -1119,15 +1119,29 @@ Ext.define('App.view.Viewport', {
     },
 
     onDocumentView: function(docId){
-        var me = this;
-        if(me.documentViewWindow) me.DocumentViewerWindow.remove(me.documentViewWindow);
-        me.DocumentViewerWindow.add(
-	        me.documentViewWindow = Ext.create('App.ux.ManagedIframe', {
-		        autoMask:false,
-                src: 'dataProvider/DocumentViewer.php?doc='+docId
-            })
-        );
-        me.DocumentViewerWindow.show();
+        var windows = Ext.ComponentQuery.query('#documentviewerwindow'),
+	        window;
+
+	    window = Ext.create('App.view.patient.windows.DocumentViewer',{
+		    items:[
+			    {
+				    xtype:'miframe',
+				    autoMask:false,
+				    src: 'dataProvider/DocumentViewer.php?doc='+docId
+			    }
+		    ]
+	    });
+
+	    if(windows.length > 0){
+		    var last = windows[(windows.length - 1)];
+		    for(var i=0; i < windows.length; i++){
+			    windows[i].toFront();
+		    }
+		    window.showAt((last.x + 25), (last.y + 5));
+
+	    }else{
+		    window.show();
+	    }
     },
 
     /**

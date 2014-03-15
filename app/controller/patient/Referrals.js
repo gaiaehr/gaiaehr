@@ -67,18 +67,28 @@ Ext.define('App.controller.patient.Referrals', {
 		say('onPrintReferralBtnClick');
 
 		var me = this,
-			params = {
-				pid: me.pid,
-				eid: me.eid,
-				templateId: 10,
-				docType: 'referrals'
-			};
+			grid = me.getReferralPanelGrid(),
+			sm = grid.getSelectionModel(),
+			selection = sm.getSelection(),
+			params = {};
 
-		DocumentHandler.createDocument(params, function(provider, response){
-			app.msg('Sweet!', 'Document Created');
-			app.onDocumentView(response.result.doc.id);
-			this.close();
-		});
+		grid.view.el.mask(i18n('generating_documents'));
+
+		for(var i=0; i < selection.length; i++){
+			params.pid = me.pid;
+			params.eid = me.eid;
+			params.referralId = selection.data.id,
+			params.templateId = 10;
+			params.docType = 'referrals';
+
+			DocumentHandler.createDocument(params, function(provider, response){
+				app.msg('Sweet!', 'Document Created');
+				app.onDocumentView(response.result.doc.id);
+				grid.view.el.unmask();
+			});
+		}
+
+
 
 
 

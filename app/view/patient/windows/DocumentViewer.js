@@ -17,30 +17,29 @@
  */
 
 Ext.define('App.view.patient.windows.DocumentViewer', {
-	extend     : 'App.ux.window.Window',
-	title      : i18n('documents_viewer_window'),
-	layout     : 'fit',
-	height     : 650,
-	width      : 700,
-	closeAction: 'hide',
-	bodyStyle  : 'background-color:#fff',
-	maximizable:true,
-	modal      : true,
-	defaults   : {
+	extend: 'Ext.window.Window',
+	title: i18n('documents_viewer_window'),
+	layout: 'fit',
+	height: 650,
+	width: 700,
+	bodyStyle: 'background-color:#fff',
+	maximizable: true,
+	itemId: 'documentviewerwindow',
+	defaults: {
 		margin: 5
 	},
 
-	initComponent: function() {
+	initComponent: function(){
 		var me = this;
 
 		me.listeners = {
 			scope: me,
-			show : me.onViewerDocumentsWinShow
+			show: me.onViewerDocumentsWinShow
 		};
 		me.callParent(arguments);
 	},
 
-	onViewerDocumentsWinShow  : function() {
+	onViewerDocumentsWinShow: function(){
 
 	}
 });

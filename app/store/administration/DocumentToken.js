@@ -21,6 +21,10 @@ Ext.define('App.store.administration.DocumentToken', {
     extend: 'Ext.data.Store',
     data: [
         {
+            title: i18n('patient_id'),
+            token: '[PATIENT_ID]'
+        },
+        {
             title: i18n('patient_name'),
             token: '[PATIENT_NAME]'
         },
@@ -399,6 +403,38 @@ Ext.define('App.store.administration.DocumentToken', {
         {
             title: i18n('current_user_npi_license_number'),
             token: '[CURRENT_USER_NPI_LICENSE_NUMBER]'
+        },
+        {
+            title: i18n('referral_id'),
+            token: '[REFERRAL_ID]'
+        },
+	    {
+            title: i18n('referral_date'),
+            token: '[REFERRAL_DATE]'
+        },
+	    {
+            title: i18n('referral_reason'),
+            token: '[REFERRAL_REASON]'
+        },
+	    {
+            title: i18n('referral_diagnosis'),
+            token: '[REFERRAL_DIAGNOSIS]'
+        },
+	    {
+            title: i18n('referral_service_request'),
+            token: '[REFERRAL_SERVICE]'
+        },
+	    {
+            title: i18n('referral_risk_level'),
+            token: '[REFERRAL_RISK_LEVEL]'
+        },
+	    {
+            title: i18n('referral_by'),
+            token: '[REFERRAL_BY_TEXT]'
+        },
+	    {
+            title: i18n('referral_to'),
+            token: '[REFERRAL_TO_TEXT]'
         }
     ]
 });

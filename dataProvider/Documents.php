@@ -23,6 +23,7 @@ include_once (dirname(__FILE__) . '/Encounter.php');
 include_once (dirname(__FILE__) . '/Fees.php');
 include_once (dirname(__FILE__) . '/PreventiveCare.php');
 include_once (dirname(__FILE__) . '/Medical.php');
+include_once (dirname(__FILE__) . '/Referrals.php');
 include_once (dirname(__FILE__) . '/Services.php');
 include_once (dirname(__FILE__) . '/Facilities.php');
 include_once (dirname(__FILE__) . '/DocumentPDF.php');
@@ -72,6 +73,7 @@ class Documents
         $this->services = new Services();
         $this->facility = new Facilities();
         $this->encounter = new Encounter();
+        $this->referral = new Referrals();
         $this->medical = new Medical();
         $this->preventiveCare = new PreventiveCare();
         $this->fees = new Fees();
@@ -590,9 +592,6 @@ class Documents
         $this->pdf->SetFontSize(8);
         $this->pdf->SetAutoPageBreak(true, 25);
         $this->pdf->setFontSubsetting(true);
-        $this->pdf->AddPage();
-
-        $this->pdf->SetY(35); // margin after header line
 
         if (isset($params->DoctorsNote)) {
             $body = $params->DoctorsNote;
@@ -604,18 +603,16 @@ class Documents
             $body = $this->getTemplateBodyById($templateId);
         }
 
-//	    print_r($tokens);
         $allNeededInfo = $this->setArraySizeOfTokenArray($tokens);
-//	    print_r($allNeededInfo);
 
         $allNeededInfo = $this->get_PatientTokensData($pid, $allNeededInfo, $tokens);
-//	    print_r($allNeededInfo);
 
         if(isset($params->eid) && $params->eid != 0 && $params->eid != ''){
 	        $allNeededInfo = $this->get_EncounterTokensData($params->eid, $allNeededInfo, $tokens);
         }
 
         $allNeededInfo = $this->get_currentTokensData($allNeededInfo, $tokens);
+
         $allNeededInfo = $this->get_ClinicTokensData($allNeededInfo, $tokens);
 
         foreach ($tokens as $index => $tok) {
@@ -628,8 +625,24 @@ class Documents
             $allNeededInfo = $this->parseTokensForOrders($params, $tokens, $allNeededInfo);
         }
 
-        $html = str_replace($tokens, $allNeededInfo, $body);
-        $this->pdf->writeHTML((isset($params->DoctorsNote)) ? $html : $html['body']);
+	    if(isset($params->referralId)){
+		    $allNeededInfo = $this->addReferralData($params, $tokens, $allNeededInfo);
+	    }
+
+	    // add line token
+	    $tokens[] = '{line}';
+	    $allNeededInfo[] = '<hr>';
+
+        $html = str_replace($tokens, $allNeededInfo, (isset($params->DoctorsNote)) ? $body : $body['body']);
+
+	    $pages = explode('{newpage}', $html);
+
+	    foreach($pages AS $page){
+		    $this->pdf->AddPage();
+		    $this->pdf->SetY(35); // margin after header line
+		    $this->pdf->writeHTML($page);
+	    }
+
 	    if($path == ''){
 		    return $this->pdf->Output('temp.pdf', 'S');
 	    }else{
@@ -639,6 +652,29 @@ class Documents
 	    }
 
     }
+
+	private function addReferralData($params, $tokens, $allNeededInfo){
+
+		$data = $this->referral->getPatientReferral($params->templateId);
+		if($data === false) return $allNeededInfo;
+
+		$info = array(
+			'[REFERRAL_ID]' => $data['id'],
+			'[REFERRAL_DATE]' => $data['referral_date'],
+			'[REFERRAL_REASON]' => $data['referal_reason'],
+			'[REFERRAL_DIAGNOSIS]' => $data['diagnosis_code'] .' (' . $data['diagnosis_code_type'] .')',
+			'[REFERRAL_SERVICE]' => $data['service_code'] .' (' . $data['service_code_type'] .')',
+			'[REFERRAL_RISK_LEVEL]' => $data['risk_level'],
+			'[REFERRAL_BY_TEXT]' => $data['refer_by_text'],
+			'[REFERRAL_TO_TEXT]' => $data['refer_to_text']
+		);
+		foreach ($tokens as $i => $tok) {
+			if (isset($info[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)) {
+				$allNeededInfo[$i] = $info[$tok];
+			}
+		}
+		return $allNeededInfo;
+	}
 
 
 

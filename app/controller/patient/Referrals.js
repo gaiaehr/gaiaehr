@@ -69,17 +69,18 @@ Ext.define('App.controller.patient.Referrals', {
 		var me = this,
 			grid = me.getReferralPanelGrid(),
 			sm = grid.getSelectionModel(),
-			selection = sm.getSelection(),
-			params = {};
+			selection = sm.getSelection();
 
 		grid.view.el.mask(i18n('generating_documents'));
 
 		for(var i=0; i < selection.length; i++){
-			params.pid = me.pid;
-			params.eid = me.eid;
-			params.referralId = selection[i].data.id,
-			params.templateId = 10;
-			params.docType = 'referrals';
+			var params = {
+					pid: me.pid,
+					eid: me.eid,
+					referralId: selection[i].data.id,
+					templateId: 10,
+					docType: 'referrals'
+				};
 
 			DocumentHandler.createDocument(params, function(provider, response){
 				app.msg('Sweet!', 'Document Created');

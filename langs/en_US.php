@@ -1281,4 +1281,11 @@ $LANG = array(
 	'copied_to_clipboard'                   => 'Copied To Clipboard',
 	'copy'                                  => 'Copy',
 	'capture_img'                           => 'Capture Img',
+	'referral_id'                           => 'Referral ID',
+	'referral_reason'                       => 'Referral Reason',
+	'referral_service_request'              => 'Referral Service Request',
+	'referral_diagnosis'                    => 'Referral Diagnosis',
+	'referral_risk_level'                   => 'Referral Risk Level',
+	'referral_by'                           => 'Referral By',
+	'referral_to'                           => 'Referral To',
 );

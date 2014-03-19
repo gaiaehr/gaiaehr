@@ -101,7 +101,7 @@ class authProcedures {
 		// Username & password match
 		//-------------------------------------------
 		$u = MatchaModel::setSenchaModel('App.model.administration.User');
-		$user = $u->load(array('username' => $params->authUser, 'authorized' => 1), array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'password'))->one();
+		$user = $u->load(array('username' => $params->authUser, 'authorized' => 1), array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'npi', 'password'))->one();
 
 		if($user === false || $params->authPass != $user['password']){
 			return array('success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.');
@@ -113,6 +113,7 @@ class authProcedures {
 			$_SESSION['user']['id'] = $user['id'];
 			$_SESSION['user']['email'] = $user['email'];
 			$_SESSION['user']['facility'] = ($params->facility == 0 ? $user['facility_id'] : $params->facility);
+			$_SESSION['user']['npi'] = $user['npi'] ;
 			$_SESSION['user']['site'] = $params->site;
 			$_SESSION['user']['auth'] = true;
 			//-------------------------------------------
@@ -136,7 +137,16 @@ class authProcedures {
 
 			unset($db);
 
-			return array('success' => true, 'token' => $_SESSION['user']['token'], 'user' => array('id' => $_SESSION['user']['id'], 'name' => $_SESSION['user']['name'], 'email' => $_SESSION['user']['email'], 'facility' => $_SESSION['user']['facility']));
+			return array(
+				'success' => true,
+				'token' => $_SESSION['user']['token'],
+				'user' => array(
+					'id' => $_SESSION['user']['id'],
+					'name' => $_SESSION['user']['name'],
+					'email' => $_SESSION['user']['email'],
+					'facility' => $_SESSION['user']['facility']
+				)
+			);
 		}
 	}
 

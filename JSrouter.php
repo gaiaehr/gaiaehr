@@ -67,10 +67,12 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	foreach($acl->getAllUserPermsAccess() AS $perm){
 		$perms[$perm['perm']] = $perm['value'];
 	}
+	unset($acl);
 	$user = new User();
 	$userData = $user->getCurrentUserBasicData();
 	$userData['token'] = $_SESSION['user']['token'];
 	$userData['facility'] = $_SESSION['user']['facility'];
+	unset($user);
 //	Globals::setGlobals();
 	/*
 	 * Pass all the PHP to JavaScript

@@ -143,7 +143,7 @@ class User {
 	}
 
 	public function getCurrentUserBasicData(){
-		return $this->u->load($this->getCurrentUserId(), array('id', 'title', 'fname', 'mname', 'lname'))->one();
+		return $this->u->load($this->getCurrentUserId(), array('id', 'npi', 'title', 'fname', 'mname', 'lname'))->one();
 	}
 
 	public function updateMyAccount(stdClass $params){

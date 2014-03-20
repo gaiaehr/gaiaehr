@@ -240,6 +240,13 @@ Ext.define('App.view.Viewport', {
             scale: 'large',
             iconCls: isEmerAccess ? 'icoUnlocked32' : 'icoDoctor',
             iconAlign: 'left',
+		    plugins:[
+			    {
+				    ptype:'badgetext',
+				    defaultText: 0
+			    }
+		    ],
+		    itemId:'userSplitButton',
             cls: 'drButton',
             style: 'float:right',
             margin: '0 0 0 3',
@@ -251,13 +258,6 @@ Ext.define('App.view.Viewport', {
                         me.nav.navigateTo('App.view.miscellaneous.MyAccount');
                     }
                 },
-//                {
-//                    text: i18n('my_settings'),
-//                    iconCls: 'icoSettings',
-//                    handler: function(){
-//                        me.nav.navigateTo('App.view.miscellaneous.MySettings');
-//                    }
-//                },
                 {
                     text: i18n('logout'),
                     iconCls: 'icoLogout',

@@ -196,19 +196,24 @@ class MatchaCUP {
 				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
 			} else{
 				$this->isSenchaRequest = true;
+				// if App.model.Example.load(4)
+				$isModelLoadRequest = isset($where->{$this->primaryKey});
+
 				// limits
-				$limits = '';
-				if(isset($where->limit) || isset($where->start)){
-					$limits = array();
+				if($isModelLoadRequest){
+					$_limits = ' LIMIT 1';
+				}elseif(isset($where->limit) || isset($where->start)){
+					$_limits = array();
 					if(isset($where->start))
-						$limits[] = $where->start;
+						$_limits[] = $where->start;
 					if(isset($where->limit))
-						$limits[] = $where->limit;
-					$limits = ' LIMIT ' . implode(',', $limits);
+						$_limits[] = $where->limit;
+					$_limits = ' LIMIT ' . implode(',', $_limits);
+				}else{
+					$_limits = '';
 				}
 
 				// sort
-				$sortx = '';
 				if(isset($where->sort)){
 					$sortArray = array();
 					foreach($where->sort as $sort){
@@ -218,34 +223,50 @@ class MatchaCUP {
 						}
 					}
 					if(!empty($sortArray)){
-						$sortx = ' ORDER BY ' . implode(', ', $sortArray);
+						$_sort = ' ORDER BY ' . implode(', ', $sortArray);
+					}else{
+						$_sort = '';
 					}
+				}else{
+					$_sort = '';
 				}
+
 				// group
-				$groupx = '';
 				if(isset($where->group)){
 					$property = $where->group[0]->property;
 					$direction = isset($where->group[0]->direction) ? $where->group[0]->direction : '';
-					$groupx = " GROUP BY `$property` $direction";
+					$_group = " GROUP BY `$property` $direction";
+				}else{
+					$_group = '';
 				}
-				// filter/where
-				$wherex = '';
 
-				if(isset($where->{$this->primaryKey})){
-					$wherex = ' WHERE ' . $this->primaryKey . ' = \'' . $where->{$this->primaryKey} . '\'';
+				// filter/where
+				if($isModelLoadRequest){
+					$_where = ' WHERE ' . $this->primaryKey . ' = \'' . $where->{$this->primaryKey} . '\'';
 				} elseif(isset($where->filter) && isset($where->filter[0]->property)){
 					$whereArray = array();
 					foreach($where->filter as $foo){
-						if(isset($foo->value) && isset($foo->property)){
-							$operator = isset($foo->operator) ? $foo->operator : '=';
-							$whereArray[] = "`$foo->property` $operator '$foo->value'";
+						if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
+							if(is_null($foo->value)){
+								$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
+								$whereArray[] = "`$foo->property` $operator NULL";
+							}else{
+								$operator = isset($foo->operator) ? $foo->operator : '=';
+								$whereArray[] = "`$foo->property` $operator '$foo->value'";
+							}
 						}
 					}
-					if(count($whereArray) > 0)
-						$wherex = 'WHERE ' . implode(' AND ', $whereArray);
+					if(count($whereArray) > 0){
+						$_where = 'WHERE ' . implode(' AND ', $whereArray);
+					}else{
+						$_where = '';
+					}
+				}else{
+					$_where = '';
 				}
-				$this->nolimitsql = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx";
-				$this->sql = "SELECT * FROM `" . $this->table . "` $wherex $groupx $sortx $limits";
+
+				$this->nolimitsql = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort";
+				$this->sql = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort $_limits";
 			}
 			return $this;
 		} catch(PDOException $e){
@@ -525,15 +546,16 @@ class MatchaCUP {
 	 * function destroy($record): (part of CRUD) delete
 	 * will delete the record indicated by an id
 	 * @param $record
+	 * @param null $filter
 	 * @return mixed
 	 */
-	public function destroy($record){
+	public function destroy($record, $filter = null){
 		try{
 			if(is_object($record)){
-				$this->destroyRecord($record);
+				$this->destroyRecord($record, $filter);
 			} else{
 				foreach($record as $rec){
-					$this->destroyRecord($rec);
+					$this->destroyRecord($rec, $filter);
 				}
 			}
 			return array('success' => $this->rowsAffected > 0);
@@ -544,10 +566,36 @@ class MatchaCUP {
 
 	/**
 	 * @param $record
+	 * @param $filter
 	 */
-	private function destroyRecord($record){
-		$record = get_object_vars($record);
-		$sql = "DELETE FROM `{$this->table}` WHERE `{$this->primaryKey}` = '{$record[$this->primaryKey]}'";
+	private function destroyRecord($record, $filter){
+		$record = (array) $record;
+		$sql = "DELETE FROM `{$this->table}` ";
+		$where = '';
+
+		if(!isset($filter)){
+			$where = "WHERE `{$this->primaryKey}` = '{$record[$this->primaryKey]}'";
+		} elseif(isset($filter->filter) && isset($filter->filter[0]->property)){
+
+			$whereArray = array();
+			foreach($filter->filter as $foo){
+				if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
+					if(is_null($foo->value)){
+						$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
+						$whereArray[] = "`$foo->property` $operator NULL";
+					}else{
+						$operator = isset($foo->operator) ? $foo->operator : '=';
+						$whereArray[] = "`$foo->property` $operator '$foo->value'";
+					}
+				}
+			}
+
+			if(count($whereArray) > 0) $where = 'WHERE ' . implode(' AND ', $whereArray);
+		}
+
+		$sql .= $where;
+		if(strpos($sql, 'WHERE') === false) return;
+
 		$this->rowsAffected = Matcha::$__conn->exec($sql);
 		if($this->rowsAffected > 0){
 			self::callBackMethod(array(

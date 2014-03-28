@@ -1,0 +1,55 @@
+{
+    "name": "TestApp",
+    "settings": {
+        "cmd": {
+            "license": "gpl",
+            "cmdVersion": "4.0.3.74",
+            "frameworkVersion": "4.2.1.883"
+        },
+        "canvasControls": {
+            "viewportSize": {
+                "name": "Auto Expand",
+                "builtIn": true,
+                "height": null,
+                "width": null
+            }
+        },
+        "urlPrefix": "",
+        "exportPath": "",
+        "spacesToIndent": 4,
+        "sdkPath": "",
+        "lineEnding": "LF",
+        "genTimestamps": false,
+        "cacheBust": false,
+        "buildShouldOverwriteIndex": true,
+        "generateArchitectVersion": true,
+        "displayfield-ExtBox1-1416-inputEl": "Not Installed"
+    },
+    "xdsVersion": "3.0.3",
+    "xdsBuild": 1382,
+    "schemaVersion": 1,
+    "upgradeVersion": 300000000004,
+    "framework": "ext42",
+    "viewOrderMap": {
+        "view": [
+            "8dd5bbfe-7422-4c89-9f37-bf641afbeb8e"
+        ],
+        "store": [
+            "5ac63ac2-a559-474c-859f-2b29b446e86d"
+        ],
+        "controller": [
+            "26e7ce5b-388f-4f62-a6f3-855e31258b0e"
+        ],
+        "model": [
+            "0e1eb172-c809-4c0c-b7c1-4df671f228ba"
+        ],
+        "resource": [
+            "e100fe51-9f9d-4611-8ee6-e68e6853e15a",
+            "d4f28cc7-8081-4032-9145-58726ff57251",
+            "7d85c666-b6a9-47b5-8344-8bbd85b6dc68"
+        ],
+        "app": [
+            "application"
+        ]
+    }
+}

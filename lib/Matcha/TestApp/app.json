@@ -1,0 +1,8 @@
+{
+   "name": "App",
+   "requires": [
+      "MatchaConnect"
+   ],
+   "id": "469518e6-e508-4f79-b279-dc2a91ee72fb",
+   "resources": []
+}

@@ -476,6 +476,13 @@ class Matcha {
 		return self::$__conn;
 	}
 
+	/**
+	 * @param bool $pause True to pause the audit log
+	 * @return bool
+	 */
+	public static function pauseLog($pause){
+		return MatchaAudit::$__audit = !$pause;
+	}
 
 
 }

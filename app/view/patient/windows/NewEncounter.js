@@ -27,7 +27,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 	initComponent: function(){
 		var me = this;
 
-		me.store = Ext.create('App.store.patient.Encounter');
+		me.store = Ext.create('App.store.patient.Encounters');
 
 		Ext.apply(me, {
 			items: [
@@ -96,6 +96,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				pid: app.patient.pid,
 				service_date: new Date(),
 				priority: 'Minimal',
+				open_uid: app.user.id,
 				facility: app.user.facility,
 				billing_facility: app.user.facility,
 				brief_description: globals['default_chief_complaint']
@@ -106,21 +107,20 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 	createNewEncounter: function(btn){
 		var me = this,
 			form = me.encForm.getForm(),
-			values = form.getValues();
+			values = form.getValues(),
+			record = form.getRecord();
 
 		if(form.isValid()){
 			if(acl['add_encounters']){
-				values.pid = app.patient.pid;
-				me.store.add(values);
-				me.store.sync({
-					callback: function(batch, options){
-						if(options.operations.create){
-							var data = options.operations.create[0].data;
-							app.patientButtonRemoveCls();
-							app.patientBtn.addCls(data.priority);
-							app.openEncounter(data.eid);
-							me.close();
-						}
+				record.set(values);
+
+				record.save({
+					callback: function(record){
+						var data = record.data;
+						app.patientButtonRemoveCls();
+						app.patientBtn.addCls(data.priority);
+						app.openEncounter(data.eid);
+						me.close();
 					}
 				});
 			}else{

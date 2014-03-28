@@ -297,7 +297,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							}
 						}),
 						me.dxField = Ext.widget('icdsfieldset', {
-							name: 'icdxCodes'
+							name: 'dxCodes'
 						})
 					]
 				},
@@ -381,13 +381,20 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	/**
 	 *
 	 * @param cmb
-	 * @param values
+	 * @param record
 	 */
-	onProcedureSelect: function(cmb, values){
+	onProcedureSelect: function(cmb, record){
 		var me = this,
-			form = me.pForm.getForm();
+			form = me.pForm.getForm(),
+			procedure = form.getRecord();
 
-		form.findField('code_text').setValue(values[0].data.code_text)
+		procedure.set({
+			code:record[0].data.code,
+			code_type:record[0].data.code_type,
+			code_text:record[0].data.code_text
+		});
+
+		form.findField('code_text').setValue(record[0].data.code_text);
 	},
 
 	/**
@@ -481,7 +488,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param btn
 	 */
 	onSoapSave: function(btn){
-		//		this.snippets.collapse(false);
 		this.enc.onEncounterUpdate(btn)
 	},
 
@@ -491,7 +497,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param record
 	 */
 	formRecordLoaded: function(form, record){
-		this.dxField.loadIcds(record.data.icdxCodes);
+		var store = record.dxCodes();
+		store.on('write', function(){
+			record.store.fireEvent('write');
+		});
+		this.dxField.loadIcds(record.dxCodes());
 	},
 
 	/**
@@ -499,14 +509,12 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param field
 	 */
 	onFieldFocus: function(field){
-		say('onFieldFocus');
-
 		if(typeof field.name == 'undefined') field.name = 'procedure';
 		this.snippets.setTitle(i18n(field.name) + ' ' + i18n('templates'));
 		//		this.snippets.expand(false);
 		if(this.snippets.action != field.name){
-			this.snippets.getSelectionModel().deselectAll(),
-				this.snippetStore.load({params: {category: field.name}});
+			this.snippets.getSelectionModel().deselectAll();
+			this.snippetStore.load({params: {category: field.name}});
 		}
 		this.snippets.action = field.name;
 	},

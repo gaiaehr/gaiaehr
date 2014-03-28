@@ -13,7 +13,7 @@ Ext.define('App.ux.combo.EncounterICDS', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: Encounter.getEncounterIcdxCodes
+					read: 'Encounter.getEncounterDxs'
 				}
 			}
 		});
@@ -27,7 +27,7 @@ Ext.define('App.ux.combo.EncounterICDS', {
 			emptyText   : i18n('select'),
 			store       : Ext.create('Ext.data.Store', {
 				model   : 'EncounterICDXComboModel',
-				autoLoad: true
+				autoLoad: false
 			}),
 			listConfig  : {
 				getInnerTpl: function() {

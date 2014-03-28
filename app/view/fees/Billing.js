@@ -597,14 +597,16 @@ Ext.define('App.view.fees.Billing',
 	getEncounterIcds : function()
 	{
 		var me = this;
-
-		Encounter.getEncounterIcdxCodes(
-		{
-			eid : me.eid
-		}, function(provider, response)
-		{
-			me.icdForm.down( 'icdsfieldset' ).loadIcds( response.result );
-		} );
+		/**
+		 * TODO !!
+		 */
+//		Encounter.getEncounterIcdxCodes(
+//		{
+//			eid : me.eid
+//		}, function(provider, response)
+//		{
+//			me.icdForm.down( 'icdsfieldset' ).loadIcds( response.result );
+//		} );
 	},
 
 	/**
@@ -615,12 +617,14 @@ Ext.define('App.view.fees.Billing',
 		var me = this;
 
 		data.eid = me.eid;
-
-		Encounter.updateEncounterIcdxCodes( data, function(provider, response)
-		{
-			say( response.result );
-			return true;
-		} );
+		/**
+		 * TODO !!
+		 */
+//		Encounter.updateEncounterIcdxCodes( data, function(provider, response)
+//		{
+//			say( response.result );
+//			return true;
+//		} );
 	},
 
 	/**

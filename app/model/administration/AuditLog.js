@@ -34,29 +34,25 @@ Ext.define('App.model.administration.AuditLog', {
 			comment: 'Encounter ID'
 		},
 		{
-			name: 'event',
-			type: 'string',
-			comment: 'Event description'
-		},
-		{
-			name: 'facility',
-			type: 'string',
-			comment: 'Witch facility'
-		},
-		{
-			name: 'patient_id',
+			name: 'pid',
 			type: 'int',
 			comment: 'Patient ID'
 		},
 		{
-			name: 'user_id',
+			name: 'uid',
 			type: 'int',
 			comment: 'User ID'
 		},
 		{
-			name: 'user',
+			name: 'fid',
+			type: 'int',
+			comment: 'Facility ID'
+		},
+		{
+			name: 'event',
 			type: 'string',
-			comment: 'Username'
+			len: 200,
+			comment: 'Event description'
 		},
 		{
 			name: 'date',
@@ -76,13 +72,5 @@ Ext.define('App.model.administration.AuditLog', {
 			totalProperty: 'totals',
 			root: 'rows'
 		}
-	},
-	hasMany: [
-		{
-			model: 'App.model.patient.Patient',
-			name: 'patient',
-			primaryKey: 'patient_id',
-			foreignKey: 'pid'
-		}
-	]
+	}
 });

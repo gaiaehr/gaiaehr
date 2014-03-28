@@ -16,90 +16,67 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.FloorPlanZones', {
+Ext.define('App.model.patient.EncounterDx', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'floor_plans_zones',
-		comment: 'Floor Plan Zones'
+		name: 'encounter_dx',
+		comment: 'Encounter Diagnosis'
 	},
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Floor Plan Zones ID'
+			type: 'int'
 		},
 		{
-			name: 'floor_plan_id',
+			name: 'pid',
 			type: 'int',
 			index: true
 		},
 		{
-			name: 'title',
-			type: 'string',
-			len: 180
-		},
-		{
-			name: 'type',
-			type: 'string',
-			len: 100
-		},
-		{
-			name: 'bg_color',
-			type: 'string',
-			lem: 10,
-			useNull: true
-		},
-		{
-			name: 'border_color',
-			type: 'string',
-			lem: 10,
-			useNull: true
-		},
-		{
-			name: 'scale',
-			type: 'string',
-			lem: 30,
-			defaultValue: 'medium'
-		},
-		{
-			name: 'width',
+			name: 'eid',
 			type: 'int',
-			useNull: true
-		},
-		{
-			name: 'height',
-			type: 'int',
-			useNull: true
-		},
-		{
-			name: 'x',
-			type: 'int'
-		},
-		{
-			name: 'y',
-			type: 'int'
-		},
-		{
-			name: 'show_priority_color',
-			type: 'bool'
-		},
-		{
-			name: 'show_patient_preview',
-			type: 'bool'
-		},
-		{
-			name: 'active',
-			type: 'bool',
 			index: true
+		},
+		{
+			name: 'uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'code_text',
+			type: 'string',
+			store: false,
+			convert:function(v, record){
+				return v == '' ? record.data.long_desc : v;
+			}
+		},
+		{
+			name: 'long_desc',
+			type: 'string',
+			store: false
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'FloorPlans.getFloorPlanZones',
-			create: 'FloorPlans.createFloorPlanZone',
-			update: 'FloorPlans.updateFloorPlanZone',
-			destroy: 'FloorPlans.removeFloorPlanZone'
+			read: 'Encounter.getEncounterDxs',
+			create: 'Encounter.createEncounterDx',
+			update: 'Encounter.updateEncounterDx',
+			destroy: 'Encounter.destroyEncounterDx'
 		}
+	},
+	belongsTo: {
+		model: 'App.model.patient.SOAP',
+		foreignKey: 'eid'
 	}
 });

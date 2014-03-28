@@ -254,22 +254,28 @@ $API = array(
 			'createEncounter' => array(
 				'len' => 1
 			),
-			'updateSoapById' => array(
+			'updateSoap' => array(
 				'len' => 1
 			),
-			'getEncounterIcdxCodes' => array(
+			'getEncounterDxs' => array(
 				'len' => 1
 			),
-			'updateEncounterIcdxCodes' => array(
+			'createEncounterDx' => array(
 				'len' => 1
 			),
-			'updateReviewOfSystemsChecksById' => array(
+			'updateEncounterDx' => array(
 				'len' => 1
 			),
-			'updateReviewOfSystemsById' => array(
+			'destroyEncounterDx' => array(
 				'len' => 1
 			),
-			'updateDictationById' => array(
+			'updateReviewOfSystems' => array(
+				'len' => 1
+			),
+			'updateDictation' => array(
+				'len' => 1
+			),
+			'updateHCFA' => array(
 				'len' => 1
 			),
 			'getProgressNoteByEid' => array(
@@ -328,7 +334,7 @@ $API = array(
 			)
 		)
 	),
-	/*
+	/**
 	 * Floor Plans function
 	 */
 	'FloorPlans' => array(
@@ -356,17 +362,24 @@ $API = array(
 			),
 			'removeFloorPlanZone' => array(
 				'len' => 1
-			),
-			'setPatientToZone' => array(
+			)
+		)
+	),
+	/**
+	 * Patient Zones
+	 */
+	'PatientZone' => array(
+		'methods' => array(
+			'addPatientToZone' => array(
 				'len' => 1
 			),
-			'unSetPatientZoneByPatientZoneId' => array(
+			'removePatientFromZone' => array(
 				'len' => 1
 			),
 			'getPatientsZonesByFloorPlanId' => array(
 				'len' => 1
 			),
-			'unSetPatientFromZoneByPid' => array(
+			'removePatientFromZoneByPid' => array(
 				'len' => 1
 			)
 		)

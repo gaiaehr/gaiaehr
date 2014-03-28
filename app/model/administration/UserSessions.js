@@ -16,36 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.EventHistory', {
+Ext.define('App.model.administration.UserSessions', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'encounter_history'
+		name: 'users_sessions',
+		comment: 'User Session'
 	},
 	fields: [
 		{
 			name: 'id',
 			type: 'int',
-			comment: 'Event History ID'
+			comment: 'User Account ID'
 		},
 		{
-			name: 'eid',
+			name: 'sid',
+			type: 'string',
+			comment: 'Session ID'
+		},
+		{
+			name: 'uid',
+			type: 'int',
+			comment: 'User ID'
+		},
+		{
+			name: 'login',
 			type: 'int'
 		},
 		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			name: 'logout',
+			type: 'int'
 		},
 		{
-			name: 'user',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'event',
-			type: 'string',
-			len: 600
+			name: 'last_request',
+			type: 'int'
 		}
 	]
 });
-

@@ -28,7 +28,7 @@ Ext.override(Ext.data.proxy.Server, {
         for (; i < length; i++) {
             min[i] = {
                 property: filters[i].property,
-                operator: filters[i].operator,
+                operator: filters[i].operator || '=',
                 value   : filters[i].value
             };
         }
@@ -100,7 +100,30 @@ Ext.override(Ext.data.proxy.Server, {
         }
 
         return params;
-    }
+    },
+
+	buildRequest: function(operation) {
+		var me = this,
+			params = Ext.applyIf(operation.params || {}, me.extraParams || {}),
+			pk = me.getModel().prototype.idProperty || 'id',
+			request;
+
+		params = Ext.applyIf(params, me.getParams(operation));
+		if (operation.id !== undefined && params.id === undefined) {
+			params[pk] = operation.id;
+		}
+		request = new Ext.data.Request({
+			params : params,
+			action : operation.action,
+			records : operation.records,
+			operation: operation,
+			url : operation.url,
+			proxy: me
+		});
+		request.url = me.buildUrl(request);
+		operation.request = request;
+		return request;
+	}
 });
 
 

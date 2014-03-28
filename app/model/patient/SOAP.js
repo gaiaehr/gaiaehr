@@ -18,6 +18,11 @@
 
 Ext.define('App.model.patient.SOAP', {
 	extend: 'Ext.data.Model',
+	requires: [
+		'App.model.patient.Encounter',
+		'App.model.patient.EncounterDx',
+		'App.model.patient.encounter.Procedures'
+	],
 	table: {
 		name: 'encounter_soap',
 		comment: 'SOAP Data'
@@ -65,20 +70,31 @@ Ext.define('App.model.patient.SOAP', {
 			name: 'plan',
 			type: 'string',
 			dataType: 'longtext'
-		},
-		{
-			name: 'icdxCodes',
-			store: false
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			update: 'Encounter.updateSoapById'
+			update: 'Encounter.updateSoap'
 		}
 	},
+	hasMany: [
+		{
+			model: 'App.model.patient.EncounterDx',
+			name: 'dxCodes',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.encounter.Procedures',
+			name: 'procedures',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		}
+	],
 	belongsTo: {
 		model: 'App.model.patient.Encounter',
 		foreignKey: 'eid'
 	}
+
 });

@@ -54,7 +54,8 @@ Ext.define('App.model.patient.HCFAOptions', {
 		},
 		{
 			name: 'state',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'other_accident',
@@ -121,7 +122,7 @@ Ext.define('App.model.patient.HCFAOptions', {
 	proxy: {
 		type: 'direct',
 		api: {
-			update: 'Encounter.updateEncounterHCFAOptions'
+			update: 'Encounter.updateHCFA'
 		}
 	},
 	belongsTo: {

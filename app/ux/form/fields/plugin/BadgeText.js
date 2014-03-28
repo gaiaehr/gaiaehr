@@ -5,39 +5,40 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 	disableBg: 'gray',
 	enableBg: 'red',
 	textSize: 10,
-	textColor: 'black',
-	defaultText: '&#160;',
+	textColor: 'white',
+	defaultText: ' ',
 	disableOpacity: 0,
-	text: '&#160;',
+	align: 'left',
+	text: ' ',
 	disable: true,
-
+	button: null,
 	/**
 	 *
-	 * @param field
+	 * @param button
 	 */
-	init: function(field){
+	init: function(button){
 
 		var me = this;
 
-		me.field = field;
+		me.button = button;
 		me.text = me.defaultText;
 
-		field.on('render', me.addBadgeEl, me);
+		button.on('render', me.addBadgeEl, me);
 
-		Ext.apply(field,{
+		Ext.apply(button,{
 
 			setBadgeText:function(text){
 
 				me.disable = typeof text == 'undefined' || text === me.defaultText;
 				me.text = !me.disable ? text : me.defaultText;
-				if (field.rendered) {
-					field.badgeEl.update(text.toString ? text.toString() : text);
+				if (button.rendered) {
+					button.badgeEl.update(text.toString ? text.toString() : text);
 					if (Ext.isStrict && Ext.isIE8) {
-						field.el.repaint();
+						button.el.repaint();
 					}
 					me.setDisabled(me.disable);
 				}
-				return field;
+				return button;
 			},
 
 			getBadgeText:function(){
@@ -51,26 +52,35 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 
 	/**
 	 *
-	 * @param field
+	 * @param button
 	 */
-	addBadgeEl: function(field){
-		var me = this;
+	addBadgeEl: function(button){
+		var me = this,
+			styles = {
+				'position': 'absolute',
+				'background-color': me.disableBg,
+				'font-size': me.textSize + 'px',
+				'color': me.textColor,
+				'padding': '1px 2px',
+				'index': 50,
+				'top': '-5px',
+				'border-radius': '3px',
+				'font-weight': 'bold',
+				'text-shadow': 'rgba(0, 0, 0, 0.5) 0 -0.08em 0',
+				'box-shadow': 'rgba(0, 0, 0, 0.3) 0 0.1em 0.1em',
+				'cursor':'pointer'
+			};
 
-		field.badgeEl = Ext.DomHelper.append(field.el, { tag:'div', cls:'badgeText x-unselectable'}, true);
-		field.badgeEl.setOpacity(me.disableOpacity);
-		field.badgeEl.setStyle({
-			'position': 'absolute',
-			'background-color': me.disableBg,
-			'font-size': me.textSize,
-			'color': me.textColor,
-			'padding': '2 4',
-			'border': 'solid 1px gray',
-			'index': 50,
-			'left': 0,
-			'top': 0,
-			'cursor':'pointer'
-		});
-		field.badgeEl.update(me.text.toString ? me.text.toString() : me.text);
+		if(me.align == 'left'){
+			styles.left = '2px';
+		}else{
+			styles.right = '2px';
+		}
+
+		button.badgeEl = Ext.DomHelper.append(button.el, { tag:'div', cls:'badgeText x-unselectable'}, true);
+		button.badgeEl.setOpacity(me.disableOpacity);
+		button.badgeEl.setStyle(styles);
+		button.badgeEl.update(me.text.toString ? me.text.toString() : me.text);
 
 	},
 
@@ -79,7 +89,7 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 	 */
 	onBadgeClick:function(){
 		var me = this;
-		me.field.fireEvent('badgeclick', me.field, me.text)
+		me.button.fireEvent('badgeclick', me.button, me.text)
 	},
 
 	/**
@@ -89,16 +99,14 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 	setDisabled:function(disable){
 		var me = this;
 
-		me.field.badgeEl.setStyle({
+		me.button.badgeEl.setStyle({
 			'background-color': (disable ? me.disableBg : me.enableBg),
-			'color': (disable ? 'black' : 'white'),
+			//'color': (disable ? 'black' : 'white'),
 			'opacity': (disable ? me.disableOpacity : 1)
 		});
 
-		if(!disable){
-			me.field.badgeEl.on('click', me.onBadgeClick, me, { preventDefault: true, stopEvent:true });
-		}else{
-			me.field.badgeEl.un('click', me.onBadgeClick, me);
-		}
+		me.button.badgeEl.clearListeners();
+		if(!disable) me.button.badgeEl.on('click', me.onBadgeClick, me, { preventDefault: true, stopEvent:true });
+
 	}
 });

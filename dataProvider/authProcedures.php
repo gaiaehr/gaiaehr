@@ -120,19 +120,18 @@ class authProcedures {
 			// Also fetch the current version of the
 			// Application & Database
 			//-------------------------------------------
-			$sql = "SELECT * FROM version LIMIT 1";
-			$db->setSQL($sql);
-			$version = $db->fetchRecord();
-			$_SESSION['ver']['codeName'] = $version['v_tag'];
-			$_SESSION['ver']['major'] = $version['v_major'];
-			$_SESSION['ver']['rev'] = $version['v_patch'];
-			$_SESSION['ver']['minor'] = $version['v_minor'];
-			$_SESSION['ver']['database'] = $version['v_database'];
+//			$sql = "SELECT * FROM version LIMIT 1";
+//			$db->setSQL($sql);
+//			$version = $db->fetchRecord();
+//			$_SESSION['ver']['codeName'] = $version['v_tag'];
+//			$_SESSION['ver']['major'] = $version['v_major'];
+//			$_SESSION['ver']['rev'] = $version['v_patch'];
+//			$_SESSION['ver']['minor'] = $version['v_minor'];
+//			$_SESSION['ver']['database'] = $version['v_database'];
 			$_SESSION['site']['localization'] = $params->lang;
 			$_SESSION['site']['checkInMode'] = $params->checkInMode;
 			$_SESSION['timeout'] = time();
-			$session = new Sessions();
-			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":' . $user['id'] . ',"sid":' . $session->loginSession() . ',"site":"' . $params->site . '"}');
+			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":' . $user['id'] . ',"sid":' . $this->session->loginSession() . ',"site":"' . $params->site . '"}');
 			$_SESSION['inactive']['timeout'] = time();
 
 			unset($db);
@@ -155,9 +154,7 @@ class authProcedures {
 	 * @return mixed
 	 */
 	public function unAuth(){
-		$s = new Sessions();
-		$p = new Patient();
-		$s->logoutSession();
+		$this->session->logoutSession();
 		session_unset();
 		session_destroy();
 		return;
@@ -178,8 +175,7 @@ class authProcedures {
 		// return an exit code
 		//****************************************************************
 		if($_SESSION['site']['flops'] < 300){
-			$session = new Sessions();
-			$session->updateSession();
+			$this->session->updateSession();
 			return array('authorized' => true);
 		} else{
 			$this->unAuth();

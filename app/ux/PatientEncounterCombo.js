@@ -35,7 +35,7 @@ Ext.define('App.ux.PatientEncounterCombo', {
             proxy: {
                 type: 'direct',
                 api: {
-                    read: Encounter.getEncounters
+                    read: 'Encounter.getEncounters'
                 },
                 reader: {
                     totalProperty: 'totals',

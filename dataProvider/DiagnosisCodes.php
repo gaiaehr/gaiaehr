@@ -52,7 +52,7 @@ class DiagnosisCodes
 								  long_desc,
 								  long_desc 		AS code_text,
 								  short_desc,
-								  'ICD9'			AS code_type
+								  'ICD9-DX'			AS code_type
 						     FROM icd9_dx_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
@@ -62,27 +62,7 @@ class DiagnosisCodes
                         	   OR formatted_dx_code	LIKE '$query%')
                          ORDER BY formatted_dx_code ASC");
         $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
-        /**
-         * ICD9 Surgery
-         */
-        $this->db->setSQL("SELECT sg_id 			AS id,
-								  formatted_sg_code,
-								  formatted_sg_code	AS code,
-								  sg_code,
-								  sg_code			AS xcode,
-								  long_desc,
-								  long_desc 		AS code_text,
-								  short_desc,
-                                  'ICD9'			AS code_type
-							 FROM icd9_sg_code
-                        	WHERE active = '1'
-                        	  AND revision = '$revision'
-                        	  AND (short_desc 		LIKE '%$query%'
-                        	   OR long_desc 		LIKE '$query%'
-                        	   OR sg_code			LIKE '$query%'
-                        	   OR formatted_sg_code	LIKE '$query%')
-                         ORDER BY formatted_sg_code ASC");
-        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
+
         /**
          *  get last icd10 code revision
          */
@@ -98,7 +78,7 @@ class DiagnosisCodes
 								  long_desc,
 								  long_desc 		AS code_text,
 								  short_desc,
-								  'ICD10'		AS code_type
+								  'ICD10-DX'		AS code_type
 							 FROM icd10_dx_order_code
                         	WHERE active = '1'
                         	  AND revision = '$revision'
@@ -108,25 +88,6 @@ class DiagnosisCodes
                         	   OR formatted_dx_code	LIKE '$query%')
                          ORDER BY formatted_dx_code ASC");
         $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
-        /**
-         * ICD10 PCS Procedures
-         */
-//        $this->db->setSQL("SELECT pcs_id 			AS id,
-//								  pcs_code,
-//								  pcs_code			AS code,
-//								  pcs_code			AS xcode,
-//								  long_desc,
-//								  long_desc 		AS code_text,
-//								  short_desc,
-//								  'ICD10-PCS'		AS code_type
-//							 FROM icd10_pcs_order_code
-//                        	WHERE active = '1'
-//                        	  AND revision = '$revision'
-//                        	  AND (short_desc 		LIKE '%$query%'
-//                        	   OR long_desc 		LIKE '$query%'
-//                        	   OR pcs_code 			LIKE '$query%')
-//                         ORDER BY pcs_code ASC");
-//        $records = array_merge($records, $this->db->fetchRecords(PDO::FETCH_ASSOC));
 
         if (is_object($query)) {
             $total = count($records);
@@ -138,31 +99,28 @@ class DiagnosisCodes
 
     }
 
-    public function getICDDataByCode($code)
+    public function getICDDataByCode($code, $code_type = null)
     {
         $data = array();
-        $revision = $this->getLastRevisionByCodeType('ICD9');
-        $this->db->setSQL("SELECT *, formatted_dx_code AS code, 'ICD9-DX' AS code_type
+
+	    if($code_type == null || ($code_type == 'ICD9' || $code_type == 'ICD9-DX')){
+		    $revision = $this->getLastRevisionByCodeType('ICD9');
+		    $this->db->setSQL("SELECT *, formatted_dx_code AS code, 'ICD9-DX' AS code_type
 						  	 FROM icd9_dx_code
 						 	WHERE (dx_code  = '$code' OR formatted_dx_code  = '$code')
 						      AND revision = '$revision'");
-        $data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        $this->db->setSQL("SELECT *, formatted_sg_code AS code, 'ICD9-SG' AS code_type
-						  	 FROM icd9_sg_code
-						 	WHERE (sg_code  = '$code' OR formatted_sg_code  = '$code')
-						      AND revision = '$revision'");
-        $data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        $revision = $this->getLastRevisionByCodeType('ICD10');
-        $this->db->setSQL("SELECT *, formatted_dx_code AS code, 'ICD10-DX' AS code_type
+		    $data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+	    }
+
+	    if($code_type == null || ($code_type == 'ICD10' || $code_type == 'ICD10-DX')){
+		    $revision = $this->getLastRevisionByCodeType('ICD10');
+		    $this->db->setSQL("SELECT *, formatted_dx_code AS code, 'ICD10-DX' AS code_type
 						  	 FROM icd10_dx_order_code
 						 	WHERE (dx_code  = '$code' OR formatted_dx_code  = '$code')
 						      AND revision = '$revision'");
-        $data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        $this->db->setSQL("SELECT *, pcs_code AS code, 'ICD10-PCS' AS code_type
-						  	 FROM icd10_pcs_order_code
-						 	WHERE pcs_code = '$code'
-						      AND revision = '$revision'");
-        $data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		    $data[] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+	    }
+
         foreach ($data as $foo) {
             if (is_array($foo)) {
                 return $foo;
@@ -173,7 +131,6 @@ class DiagnosisCodes
 
     public function getICD9CodesByICD10Code($ICD10)
     {
-        $ICD9s = array();
         $revision = $this->getLastRevisionByCodeType('ICD10');
         $this->db->setSQL("SELECT b.formatted_dx_code AS code,
 								  'ICD9-DX' AS code_type, b.*
@@ -182,23 +139,12 @@ class DiagnosisCodes
 						 	WHERE a.dx_icd10_source = '$ICD10'
 						 	  AND a.revision = '$revision'");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        if (!empty($records))
-            $ICD9s = array_merge($ICD9s, $records);
-        $this->db->setSQL("SELECT b.formatted_sg_code AS code,
-								  'ICD9-SG' AS code_type, b.*
-						  	 FROM icd10_gem_pcs_10_9 AS a
-						LEFT JOIN icd9_sg_code AS b ON b.sg_code = a.pcs_icd9_target
-						 	WHERE a.pcs_icd10_source = '$ICD10'
-						 	  AND a.revision = '$revision'");
-        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        if (!empty($records))
-            $ICD9s = array_merge($ICD9s, $records);
-        return $ICD9s;
+
+        return $records;
     }
 
     public function getICD10CodesByICD9Code($ICD9)
     {
-        $ICD10s = array();
         $revision = $this->getLastRevisionByCodeType('ICD9');
         $this->db->setSQL("SELECT b.formatted_dx_code AS code,
 								  'ICD10-DX' AS code_type, b.*
@@ -207,18 +153,7 @@ class DiagnosisCodes
 						 	WHERE a.dx_icd9_source = '$ICD9'
 						 	  AND a.revision = '$revision'");
         $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        if (!empty($records))
-            $ICD10s = array_merge($ICD10s, $records);
-        $this->db->setSQL("SELECT b.pcs_code AS code,
-								  'ICD10-PCS' AS code_type, b.*
-						  	 FROM icd10_gem_pcs_9_10 AS a
-					    LEFT JOIN icd10_pcs_order_code AS b ON b.pcs_code = a.pcs_icd10_target
-						 	WHERE a.pcs_icd9_source = '$ICD9'
-						 	  AND a.revision = '$revision'");
-        $records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-        if (!empty($records))
-            $ICD10s = array_merge($ICD10s, $records);
-        return $ICD10s;
+        return $records;
     }
 
     public function getLastRevisionByCodeType($codeType)
@@ -232,17 +167,10 @@ class DiagnosisCodes
 
     public function getICDByEid($eid, $active = null)
     {
-        if($active == null){
-            $activex = '';
-        }elseif($active){
-            $activex = 'AND active = \'1\'';
-        }else{
-            $activex = 'AND active = \'0\'';
-        }
         $records = array();
         $this->db->setSQL("SELECT *
 							 FROM encounter_dx
-							WHERE eid = '$eid' $activex
+							WHERE eid = '$eid'
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
             $dx = $this->getICDDataByCode($foo['code']);
@@ -253,17 +181,10 @@ class DiagnosisCodes
 
     public function getICDByPid($pid, $active = false)
     {
-        if($active == null){
-            $activex = '';
-        }elseif($active){
-            $activex = 'AND active = \'1\'';
-        }else{
-            $activex = 'AND active = \'0\'';
-        }
         $records = array();
         $this->db->setSQL("SELECT *
 							 FROM encounter_dx
-							WHERE pid = '$pid' $activex
+							WHERE pid = '$pid'
                             ORDER BY id ASC");
         foreach ($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $foo) {
             $dx = $this->getICDDataByCode($foo['code']);

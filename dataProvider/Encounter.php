@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(dirname(__FILE__)) . '/classes/Time.php');
 include_once(dirname(__FILE__) . '/Patient.php');
 include_once(dirname(__FILE__) . '/User.php');
 include_once(dirname(__FILE__) . '/PoolArea.php');
@@ -66,6 +65,37 @@ class Encounter {
 
 	private $EncounterHistory;
 
+
+
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $e;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $ros;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $soap;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $d;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $hcfa;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $v;
+	/**
+	 * @var bool|MatchaCUP
+	 */
+	private $edx;
+
 	function __construct(){
 		$this->db = new MatchaHelper();
 		$this->user = new User();
@@ -75,7 +105,14 @@ class Encounter {
 		$this->medical = new Medical();
 		$this->preventiveCare = new PreventiveCare();
 		$this->diagnosis = new DiagnosisCodes();
-		return;
+
+		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
+		$this->ros = MatchaModel::setSenchaModel('App.model.patient.ReviewOfSystems');
+		$this->soap = MatchaModel::setSenchaModel('App.model.patient.SOAP');
+		$this->d = MatchaModel::setSenchaModel('App.model.patient.Dictation');
+		$this->hcfa = MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
+		$this->v = MatchaModel::setSenchaModel('App.model.patient.Vitals');
+		$this->edx = MatchaModel::setSenchaModel('App.model.patient.EncounterDx');
 	}
 
 	private function setEid($eid){
@@ -94,9 +131,16 @@ class Encounter {
 	 * @return array
 	 */
 	public function checkOpenEncountersByPid($pid){
-		$this->db->setSQL("SELECT pid FROM encounters WHERE pid = '$pid' AND close_date IS NULL");
-		$total = $this->db->rowCount();
-		if($total >= 1){
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+		$params->filter[1] = new stdClass();
+		$params->filter[1]->property = 'close_date';
+		$params->filter[1]->value = null;
+		$records = $this->e->load($params)->all();
+		unset($params);
+		if(count($records['encounter']) > 0){
 			return array('encounter' => true);
 		} else{
 			return array('encounter' => false);
@@ -108,16 +152,13 @@ class Encounter {
 	 * @return array
 	 *  Naming: "getPatientEncounters"
 	 */
-	public function getEncounters(stdClass $params){
-		$pid = $params->pid;
-		$ORDERX = isset($params->sort) ? $params->sort[0]->property . ' ' . $params->sort[0]->direction : 'service_date DESC';
-		$this->db->setSQL("SELECT * FROM encounters WHERE pid = '$pid' ORDER BY $ORDERX");
-		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$row['status'] = ($row['close_date'] == null) ? 'open' : 'close';
-			array_push($rows, $row);
+	public function getEncounters($params){
+		$records = $this->e->load($params)->all();
+		$encounters = (array) $records['encounter'];
+		foreach($encounters as $i => $encounter){
+			$encounters[$i]['status'] = ($encounter['close_date'] == null) ? 'open' : 'close';
 		}
-		return $rows;
+		return $encounters;
 	}
 
 	/**
@@ -126,115 +167,104 @@ class Encounter {
 	 *  Naming: "createPatientEncounters"
 	 */
 	public function createEncounter(stdClass $params){
-		$params->open_uid = $_SESSION['user']['id'];
-		$data = get_object_vars($params);
-
-		foreach($data as $key => $val){
-			if($val == ''){
-				unset($data[$key]);
-			}
-		}
-
-		$data['service_date'] = $this->parseDate($data['service_date']);
-		$sql = $this->db->sqlBind($data, 'encounters', 'I');
-		$this->db->setSQL($sql);
-		$this->db->execLog();
-
-		$eid = $this->db->lastInsertId;
-		$default = array('pid' => $params->pid, 'eid' => $eid, 'uid' => $params->open_uid, 'date' => Time::getLocalTime());
+		$record = $this->e->save($params);
+		$encounter = (array) $record['encounter'];
+		unset($record);
+		$default = array(
+			'pid' => $encounter['pid'],
+			'eid' => $encounter['eid'],
+			'uid' => $encounter['open_uid'],
+			'date' => date('Y-m-d H:i:s')
+		);
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
-			$this->db->setSQL($this->db->sqlBind($default, 'encounter_review_of_systems', 'I'));
-			$this->db->execOnly();
+			$this->addReviewOfSystems((object)$default);
 		}
 
+		// TODO: Matcha Model
 		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
-			$this->db->setSQL($this->db->sqlBind($default, 'encounter_review_of_systems_check', 'I'));
-			$this->db->execOnly();
+
 		}
 
 		if($_SESSION['globals']['enable_encounter_soap']){
-			$this->db->setSQL($this->db->sqlBind($default, 'encounter_soap', 'I'));
-			$this->db->execOnly();
+			$this->addSoap((object)$default);
 		}
 
 		if($_SESSION['globals']['enable_encounter_dictation']){
-			$this->db->setSQL($this->db->sqlBind($default, 'encounter_dictation', 'I'));
-			$this->db->execOnly();
+			$this->addDictation((object)$default);
 		}
 
 		if($_SESSION['globals']['enable_encounter_hcfa']){
-			$this->db->setSQL($this->db->sqlBind($default, 'encounter_1500_options', 'I'));
-			$this->db->execOnly();
+			$this->addHCFA((object)$default);
 		}
 
-		$params->eid = intval($eid);
-		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
-		$this->setEid($params->eid);
+		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $encounter['eid'], 'priority' => $encounter['priority']), $encounter['pid']);
+		$this->setEid($encounter['eid']);
 
-		return array('success' => true, 'encounter' => $params);
+		return array('success' => true, 'encounter' => $encounter);
 	}
 
 	/**
 	 * @param stdClass $params
+	 * @param bool $relations
 	 * @return array|mixed
-	 *  Naming: "getPatientEncounters"
 	 */
-	public function getEncounter(stdClass $params){
-		$this->setEid($params->eid);
-		$this->db->setSQL("SELECT * FROM encounters WHERE eid = '$params->eid'");
-		$encounter = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+	public function getEncounter($params, $relations = true){
+
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'eid';
+		if(is_string($params) || is_int($params)){
+			$filters->filter[0]->value = $params;
+			$record = $this->e->load($filters)->one();
+		}else{
+			$record = $this->e->load($params)->one();
+		}
+
+		if($record === false) return array();
+		$encounter = (array) $record['encounter'];
+		$this->setEid($encounter['eid']);
+		unset($record);
+
+		if($relations == false) return array('encounter' => $encounter);
+
+		$filters->filter[0]->value = $encounter['eid'];
 
 		if($_SESSION['globals']['enable_encounter_vitals']){
 			$encounter['vitals'] = $this->getVitalsByPid($encounter['pid']);
 		}
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
-			$encounter['reviewofsystems'] = $this->getReviewOfSystemsByEid($params->eid);
+			$encounter['reviewofsystems'][] = $this->getReviewOfSystems($filters);
 		}
 
+		// TODO: Matcha Model
 		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
-			$encounter['reviewofsystemschecks'] = $this->getReviewOfSystemsChecksByEid($params->eid);
+
 		}
 
 		if($_SESSION['globals']['enable_encounter_soap']){
-			$encounter['soap'] = $this->getSoapByEid($params->eid);
+			$encounter['soap'][] = $this->getSoapByEid($encounter['eid']);
 		}
 
 		if($_SESSION['globals']['enable_encounter_dictation']){
-			$encounter['speechdictation'] = $this->getDictationByEid($params->eid);
+			$encounter['speechdictation'][] = $this->getDictation($filters);
 		}
 
 		if($_SESSION['globals']['enable_encounter_hcfa']){
-			$encounter['hcfaoptions'] = $this->getEncounterHCFAOptionsByEid($params->eid);
+			$encounter['hcfaoptions'][] = $this->getHCFA($filters);
 		}
 
-
-		if(!empty($encounter)){
-			return array('success' => true, 'encounter' => $encounter);
-		} else{
-			return array('success' => false, 'error' => "Encounter ID $params->eid not found");
-		}
+		unset($filters);
+		return array('encounter' => $encounter);
 	}
+
 
 	public function getEncounterSummary(stdClass $params){
 		$this->setEid($params->eid);
-		$this->db->setSQL("SELECT e.*,
-								  p.fname,
-								  p.mname,
-								  p.lname,
-								  p.DOB,
-								  p.sex
-							 FROM encounters AS e
-					    LEFT JOIN patient AS p ON e.pid = p.pid
-							WHERE e.eid = '$params->eid'");
-		$e = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$e['name'] = Person::fullname($e['fname'], $e['mname'], $e['lname']);
-		$e['pic'] = $this->patient->getPatientPhotoSrcIdByPid($e['pid']);
-		$e['age'] = $this->patient->getPatientAgeByDOB($e['DOB']);
-
-		//$this->addEncounterHistoryEvent('Encounter viewed');
-
+		$record = $this->getEncounter($params);
+		$encounter = (array) $record['encounter'];
+		$encounter['patient'] = $this->patient->getPatientDemographicDataByPid($encounter['pid']);
 		if(!empty($e)){
 			return array('success' => true, 'encounter' => $e);
 		} else{
@@ -243,9 +273,7 @@ class Encounter {
 	}
 
 	public function updateEncounterPriority($params){
-		$data['priority'] = $params->priority;
-		$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
-		$this->db->execLog();
+		$this->updateEncounter($params);
 		$this->poolArea->updateCurrentPatientPoolAreaByPid(array('eid' => $params->eid, 'priority' => $params->priority), $params->pid);
 	}
 
@@ -253,8 +281,8 @@ class Encounter {
 	 * @param stdClass $params
 	 * @return array|mixed
 	 */
-	public function updateEncounter(stdClass $params){
-		return array("success" => true, 'encounter' => $params);
+	public function updateEncounter($params){
+		return $this->e->save($params);
 	}
 
 	/**
@@ -263,19 +291,10 @@ class Encounter {
 	 */
 	public function closeEncounter(stdClass $params){
 		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['eid'], $data['pid'], $data['signature'], $data['note'], $data['reminder']);
-		$data['provider_uid'] = $_SESSION['user']['id'];
-		$data['supervisor_uid'] = $_SESSION['user']['id'];
 		if($this->user->verifyUserPass($params->signature)){
-			if($params->note != ''){
-				$this->patient->addPatientNoteByPid($params->pid, $params->note, $params->eid);
-			}
-			if($params->reminder != ''){
-				$this->patient->addPatientReminderByPid($params->pid, $params->reminder, $params->eid);
-			}
-			$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
-			$this->db->execLog();
+			if($params->note != '') $this->patient->addPatientNoteByPid($params->pid, $params->note, $params->eid);
+			if($params->reminder != '') $this->patient->addPatientReminderByPid($params->pid, $params->reminder, $params->eid);
+			$data = $this->updateEncounter($params);
 			return array('success' => true, 'data' => $data);
 		} else{
 			return array('success' => false);
@@ -283,95 +302,17 @@ class Encounter {
 
 	}
 
-	/******************************************************************************************************************/
-	/**
-	 * @param $pid
-	 * @return array
-	 */
-	public function getVitalsByPid($pid){
-		$this->db->setSQL("SELECT * FROM encounter_vitals WHERE pid = '$pid' ORDER BY date DESC");
-		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$row['height_in'] = intval($row['height_in']);
-			$row['height_cm'] = intval($row['height_cm']);
-			$row['administer_by'] = $row['uid'] != null ? $this->user->getUserNameById($row['uid']) : '';
-			$row['authorized_by'] = $row['auth_uid'] != null ? $this->user->getUserNameById($row['auth_uid']) : '';
-			array_push($rows, $row);
-		}
-		return $rows;
-	}
-
-	/**
-	 * @param $eid
-	 * @return array
-	 */
-	public function getVitalsByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounter_vitals WHERE eid = '$eid' ORDER BY date DESC");
-		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$row['height_in'] = intval($row['height_in']);
-			$row['height_cm'] = intval($row['height_cm']);
-			$row['administer_by'] = $row['uid'] != null ? $this->user->getUserNameById($row['uid']) : '';
-			$row['authorized_by'] = $row['auth_uid'] != null ? $this->user->getUserNameById($row['auth_uid']) : '';
-			array_push($rows, $row);
-		}
-		return $rows;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function getVitals(stdClass $params){
-		$pid = $params->pid;
-		$vitals = $this->getVitalsByPid($pid);
-		if(count($vitals) >= 1){
-			return $vitals;
-		} else{
-			return array();
-		}
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function addVitals(stdClass $params){
-		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_vitals', 'I'));
-		$this->db->execLog();
-		$params->id = $this->db->lastInsertId;
-		$params->administer_by = $this->user->getUserNameById($params->uid);
-		return $params;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateVitals(stdClass $params){
-		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['date'], $data['administer_by'], $data['authorized_by'], $data['id'], $data['bp_diastolic_normal'], $data['bp_systolic_normal']);
-		$sql = $this->db->sqlBind($data, 'encounter_vitals', 'U', array('id' => $params->id));
-		$this->db->setSQL($sql);
-		$this->db->execLog();
-		$params->administer_by = $params->uid != 0 ? $this->user->getUserNameById($params->uid) : '';
-		$params->authorized_by = $params->auth_uid != 0 ? $this->user->getUserNameById($params->auth_uid) : '';
-		return $params;
-	}
-
-	/******************************************************************************************************************/
 	/**
 	 * @param $eid
 	 * @return array
 	 */
 	public function getSoapByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounter_soap WHERE eid = '$eid' ORDER BY date DESC");
-		$soap = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$soap['icdxCodes'] = $this->diagnosis->getICDByEid($eid, true);
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'eid';
+		$filters->filter[0]->value = $eid;
+		$soap = $this->getSoap($filters);
+		$soap['dxCodes'] = $this->getEncounterDxs($filters);
 		return $soap;
 	}
 
@@ -380,61 +321,41 @@ class Encounter {
 	 * @return array
 	 */
 	public function getSoapHistory(stdClass $params){
-		$soap = array();
-		$this->db->setSQL("SELECT s.subjective, s.objective, s.assessment, s.plan, e.service_date
-							 FROM encounter_soap AS s
-					    LEFT JOIN encounters AS e ON s.eid = e.eid
-							WHERE s.pid = '$params->pid'
-							  AND e.eid != '$params->eid'
-				 		 ORDER BY e.service_date DESC");
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $row){
-			$row['service_date'] = date($_SESSION['globals']['date_time_display_format'], strtotime($row['service_date']));
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'eid';
+		$filters->filter[0]->operator = '!=';
+		$filters->filter[0]->value = $params->eid;
+		$filters->filter[1] = new stdClass();
+		$filters->filter[1]->property = 'pid';
+		$filters->filter[1]->operator = '=';
+		$filters->filter[1]->value = $params->pid;
+		$encounters = $this->getEncounters($filters);
+
+		// switch the operator to =
+		$filters->filter[0]->operator = '=';
+		// remove the pid filter we don't need it
+		unset($filters->filter[1]);
+
+		foreach($encounters AS $i => $encounter){
+			$filters->filter[0]->value = $encounter['eid'];
+			$soap = $this->getSoap($filters);
+			$encounter['service_date'] = date($_SESSION['globals']['date_time_display_format'], strtotime($encounter['service_date']));
 			$icds = '';
-			foreach($this->diagnosis->getICDByEid($params->eid, true) as $code){
+			foreach($this->diagnosis->getICDByEid($encounter['eid'], true) as $code){
 				$icds .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 			}
-			$row['assessment'] .= '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
-			$row['objective'] .= $this->getObjectiveExtraDataByEid($params->eid);
-			$soap[] = $row;
+			$encounter['subjective'] = $soap['subjective'];
+			$encounter['objective'] = $soap['objective'] . $this->getObjectiveExtraDataByEid($params->eid);
+			$encounter['assessment'] = $soap['assessment'] . '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
+			$encounter['plan'] = $soap['plan'];
+			$encounters[$i] = $encounter;
+			unset($soap);
 		}
-		return $soap;
+		unset($filters);
+		return $encounters;
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateSoapById(stdClass $params){
-		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['id'], $data['icdxCodes']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_soap', 'U', "id='" . $params->id . "'"));
-		$this->db->execLog();
-		$this->updateEncounterIcdxCodes($params);
-		return $params;
-	}
-
-	/**
-	 * @param $eid
-	 * @return array
-	 */
-	public function getReviewOfSystemsChecksByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounter_review_of_systems_check WHERE eid = '$eid' ORDER BY date DESC");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
-	}
-
-	/**
-	 * @param $eid
-	 * @return array
-	 */
-	public function getReviewOfSystemsByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounter_review_of_systems WHERE eid = '$eid' ORDER BY date DESC");
-		$record = $this->db->fetchRecord();
-		foreach($record as $key => $val){
-			$record[$key] = ($val == null) ? 'null' : $val;
-		}
-		return $record;
-	}
 
 	/**
 	 * TODO: get all codes CPT/CVX/HCPCS/ICD9/ICD10 encounter
@@ -451,9 +372,7 @@ class Encounter {
 		return $this->services->getCptByEid($eid);
 	}
 
-	//***********************************************************************************************
-	//***********************************************************************************************
-	//***********************************************************************************************
+
 	//***********************************************************************************************
 	//***********************************************************************************************
 	public function getEncounterCptDxTree($params){
@@ -511,9 +430,7 @@ class Encounter {
 		$this->services->deleteCptCode($params);
 		return $params;
 	}
-	//***********************************************************************************************
-	//***********************************************************************************************
-	//***********************************************************************************************
+
 	//***********************************************************************************************
 	//***********************************************************************************************
 
@@ -526,128 +443,16 @@ class Encounter {
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
-	public function getEncounterIcdxCodes(stdClass $params){
-		if(isset($params->eid)){
-			$this->setEid($params->eid);
-			return $this->diagnosis->getICDByEid($params->eid, true);
-		} else{
-			return array();
-		}
-	}
-
-	public function updateEncounterIcdxCodes(stdClass $params){
-		$this->setEid($params->eid);
-
-		// if $params->icdxCodes is a string explode it by (,)
-		$newEncDxCodes = is_string($params->icdxCodes) ? explode(',', $params->icdxCodes) : $params->icdxCodes;
-		// get encounter Dx
-		$encDxCodes = $this->diagnosis->getICDByEid($params->eid);
-
-		// loop for each encounter Dx
-		foreach($encDxCodes AS $encCode){
-
-			// search for encounter Dx code inside icdxCodes array
-			$key = array_search($encCode['code'], $newEncDxCodes);
-
-			// if Dx found in icdxCodes array
-			if($key !== false){
-
-				// if encounter Dx is inactive set back to active
-				if($encCode['active'] == false){
-					$dx = array();
-					$dx['uid'] = $params->uid;
-					$dx['code'] = trim($encCode['code']);
-					$dx['active'] = '1';
-					$this->db->setSQL($this->db->sqlBind($dx, 'encounter_dx', 'U', array('id' => $encCode['id'])));
-				}
-
-				// remove updated Dx code from $newEncDxCodes
-				unset($newEncDxCodes[$key]);
-
-				// if not found the set Dx active to 0
-			} else{
-				$dx = array();
-				$dx['active'] = '0';
-				$this->db->setSQL($this->db->sqlBind($dx, 'encounter_dx', 'U', array('id' => $encCode['id'])));
-			}
-
-			// exe the sql
-			$this->db->execOnly();
-		}
-
-		// insert the new encounter codes remaining
-		foreach($newEncDxCodes AS $newEncDxCode){
-			$dx = array();
-			$dx['pid'] = $params->pid;
-			$dx['eid'] = $params->eid;
-			$dx['uid'] = $params->uid;
-			$dx['code'] = trim($newEncDxCode);
-			$this->db->setSQL($this->db->sqlBind($dx, 'encounter_dx', 'I'));
-			$this->db->execOnly();
-		}
-
-		$params->icdxCodes = $this->diagnosis->getICDByEid($params->eid, true);
-
-		return $params;
-	}
-
-	public function isEncounterDxCodeDByEid($code, $eid){
-		$this->db->setSQL("SELECT * FROM encounter_dx WHERE code = '$code' AND eid = '$eid'");
-		$dx = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		if(!empty($dx)){
-			return $dx;
-		} else{
-			return false;
-		}
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateReviewOfSystemsChecksById(stdClass $params){
-		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_review_of_systems_check', 'U', "id='" . $params->id . "'"));
-		$this->db->execLog();
-		return $params;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateReviewOfSystemsById(stdClass $params){
-		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_review_of_systems', 'U', "id='" . $params->id . "'"));
-		$this->db->execLog();
-		return $params;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateDictationById(stdClass $params){
-		$this->setEid($params->eid);
-		$data = get_object_vars($params);
-		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_dictation', 'U', "id='" . $params->id . "'"));
-		$this->db->execLog();
-		return $params;
-	}
-
 	/**
 	 * @param $eid
 	 * @return array
 	 *  Naming: "closePatientEncounter"
 	 */
 	public function getProgressNoteByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounters WHERE eid = '$eid'");
-		$encounter = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+
+		$record = $this->getEncounter($eid);
+		unset($filters);
+		$encounter = (array) $record['encounter'];
 
 		$encounter['service_date'] = date('F j, Y, g:i a', strtotime($encounter['service_date']));
 		$encounter['patient_name'] = $this->patient->getPatientFullNameByPid($encounter['pid']);
@@ -658,50 +463,27 @@ class Encounter {
 		 * Add vitals to progress note
 		 */
 		if($_SESSION['globals']['enable_encounter_vitals']){
-			$vitals = $this->getVitalsByEid($eid);
-			if(count($vitals)){
-				$encounter['vitals'] = $vitals;
-			}
+			if(count($encounter['vitals']) == 0) unset($encounter['vitals']);
 		}
 
 		/**
 		 * Add Review of Systems to progress note
 		 */
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
-			$ros = $this->getReviewOfSystemsByEid($eid);
 			$foo = array();
-			foreach($ros as $key => $value){
+			foreach($encounter['reviewofsystems'] as $key => $value){
 				if($key != 'id' && $key != 'pid' && $key != 'eid' && $key != 'uid' && $key != 'date'){
 					if($value != null && $value != 'null'){
 						$value = ($value == 1 || $value == '1') ? 'Yes' : 'No';
 						$foo[] = array('name' => $key, 'value' => $value);
 					}
 				}
-
 			}
 			if(!empty($foo)){
 				$encounter['reviewofsystems'] = $foo;
 			}
 		}
 
-		/**
-		 * Add Review of Systems Checks to progress note
-		 */
-		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
-			$rosck = $this->getReviewOfSystemsChecksByEid($eid);
-			$foo = array();
-			foreach($rosck as $key => $value){
-				if($key != 'id' && $key != 'pid' && $key != 'eid' && $key != 'uid' && $key != 'date'){
-					if($value != null && $value != 'null' && $value != '0' || $value != 0){
-						$value = ($value == 1 || $value == '1') ? 'Yes' : 'No';
-						$foo[] = array('name' => $key, 'value' => $value);
-					}
-				}
-			}
-			if(!empty($foo)){
-				$encounter['reviewofsystemschecks'] = $foo;
-			}
-		}
 
 		/**
 		 * Add SOAP to progress note
@@ -712,7 +494,6 @@ class Encounter {
 			foreach($this->diagnosis->getICDByEid($eid, true) as $code){
 				$icdxs .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 			}
-
 			$soap = $this->getSoapByEid($eid);
 			$soap['assessment'] = isset($soap['assessment']) ? $soap['assessment'] : '';
 			$soap['objective'] = $this->getObjectiveExtraDataByEid($eid);
@@ -730,9 +511,6 @@ class Encounter {
 			}
 		}
 
-		/**
-		 * return the encounter array of data
-		 */
 		return $encounter;
 	}
 
@@ -742,11 +520,7 @@ class Encounter {
 		if(!empty($medications)){
 			$lis = '';
 			foreach($medications as $foo){
-				//				print_r($foo);
-
 				$lis .= '<li>' . $foo['STR'] . '</li>';
-				//				$lis .= 'Instruction: ' . $foo['take_pills'] . ' ' . $foo['type'] . ' ' . $foo['by'] . ' ' . $foo['prescription_often'] . ' ' . $foo['prescription_when'] . '<br>';
-				//				$lis .= 'Dispense: ' . $foo['dispense'] . '  Refill: ' . $foo['refill'] . ' </li>';
 			}
 			$ExtraData .= '<p>Medications:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
@@ -779,30 +553,6 @@ class Encounter {
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
 
-		//		$surgeries = $this->medical->getPatientSurgeryByEncounterID($eid);
-		//		if(!empty($surgeries)){
-		//			$lis = '';
-		//			foreach($surgeries as $foo){
-		//				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-		//				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-		//				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-		//			}
-		//			$ExtraData .= '<p>Surgeries:</p>';
-		//			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		//		}
-
-		//		$dental = $this->medical->getPatientDentalByEncounterID($eid);
-		//		if(!empty($dental)){
-		//			$lis = '';
-		//			foreach($dental as $foo){
-		//				//			    $lis .= '<li>Immunization name: '.$foo['immunization_name'].'<br>';
-		//				//			    $lis .= 'Immunization ID: ' .$foo['immunization_id'].'<br>';
-		//				//			    $lis .= 'Administered By: '.$foo['administered_by'].' </li>';
-		//			}
-		//			$ExtraData .= '<p>Dental:</p>';
-		//			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		//		}
-
 		/**
 		 * Active Problems found in this Encounter
 		 */
@@ -830,37 +580,17 @@ class Encounter {
 		return $ExtraData;
 	}
 
-	protected function addEncounterHistoryEvent($msg){
-		$data['eid'] = $this->eid;
-		//$data['pid']    = $_SESSION['patient']['pid'];
-		$data['date'] = date('Y-m-d H:i:s');
-		$data['user'] = $this->user->getCurrentUserTitleLastName();
-		$data['event'] = $msg;
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_history', 'I'));
-		$this->db->execOnly();
-	}
-
 	public function getEncounterEventHistory($params){
 		$this->EncounterHistory = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 		return $this->EncounterHistory->load($params)->all();
-		//$this->db->setSQL("SELECT * FROM encounter_history WHERE eid = '$params->eid' ORDER BY `date` DESC");
-		//return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
 	public function checkoutAlerts(stdClass $params){
 		$alerts = array();
-		$this->db->setSQL("SELECT review_immunizations,
-                                  review_allergies,
-                                  review_active_problems,
-                                  review_surgery,
-                                  review_dental,
-                                  review_medications,
-                                  review_alcohol,
-                                  review_smoke,
-                                  review_pregnant
-                             FROM encounters
-                            WHERE eid = '$params->eid'");
-		$records = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$records = $this->e->load(
+			array('eid' => $params->eid),
+			array('review_immunizations', 'review_allergies', 'review_active_problems', 'review_medications', 'review_alcohol', 'review_smoke', 'review_pregnant')
+		)->one();
 		foreach($records as $key => $rec){
 			if($rec != 0 && $rec != null){
 				unset($records[$key]);
@@ -963,32 +693,148 @@ class Encounter {
 	}
 
 	public function getTodayEncounters(){
-		return $this->getEncountersByDate(Time::getLocalTime('Y-m-d'));
+		return $this->getEncountersByDate(date('Y-m-d'));
+	}
+
+	public function getReviewOfSystems($params){
+		return $this->ros->load($params)->one();
+	}
+
+	public function addReviewOfSystems($params){
+		return $this->ros->save($params);
+	}
+
+	public function updateReviewOfSystems($params){
+		return $this->ros->save($params);
+	}
+
+	public function getSoap($params){
+		return $this->soap->load($params)->one();
+	}
+
+	public function addSoap($params){
+		return $this->soap->save($params);
+	}
+
+	public function updateSoap($params){
+		return $this->soap->save($params);
+	}
+
+	public function getDictation($params){
+		return $this->d->load($params)->one();
+	}
+
+	public function addDictation($params){
+		return $this->d->save($params);
+	}
+
+	public function updateDictation($params){
+		return $this->d->save($params);
+	}
+
+	public function getHCFA($params){
+		return $this->hcfa->load($params)->one();
+	}
+
+	public function addHCFA($params){
+		return $this->hcfa->save($params);
+	}
+
+	public function updateHCFA($params){
+		return $this->hcfa->save($params);
+	}
+
+	public function getEncounterDxs($params){
+		$records = $this->edx->load($params)->all();
+		foreach($records as $i => $record){
+			if($record !== false){
+				$code = $this->diagnosis->getICDDataByCode($record['code'], $record['code_type']);
+				if(is_array($code)) $records[$i] = array_merge($records[$i], $code);
+			}
+		}
+		return $records;
+	}
+
+	public function getEncounterDx($params){
+		$record = $this->edx->load($params)->one();
+		if($record !== false){
+			$code = $this->diagnosis->getICDDataByCode($record['code'], $record['code_type']);
+			if(is_array($code)) $record = array_merge($record, $code);
+		}
+		return $record;
+	}
+
+	public function createEncounterDx($params){
+		return $this->edx->save($params);
+	}
+
+	public function updateEncounterDx($params){
+		return $this->edx->save($params);
+	}
+
+	public function destroyEncounterDx($params){
+		return $this->edx->destroy($params);
 	}
 
 	/**
-	 * - Rx Orders
-	 * - Laboratory Orders
-	 * - Radiology Orders
-	 * - Referrals
-	 * - Doctors Notes
-	 *
-	 * @param $params
+	 * @param stdClass $params
+	 * @return array
 	 */
-	public function getEncounterPrintableStuff($params){
-
+	public function getVitals(stdClass $params){
+		$records =  $this->v->load($params)->all();
+		foreach($records as $i => $record){
+			$records[$i]['height_in'] = intval($record['height_in']);
+			$records[$i]['height_cm'] = intval($record['height_cm']);
+			$records[$i]['administer_by'] = $record['uid'] != null ? $this->user->getUserNameById($record['uid']) : '';
+			$records[$i]['authorized_by'] = $record['auth_uid'] != null ? $this->user->getUserNameById($record['auth_uid']) : '';
+		}
+		return $records;
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return stdClass
+	 */
+	public function addVitals($params){
+		$this->setEid($params->eid);
+		$record = (array) $this->v->save($params);
+		$record['administer_by'] = $this->user->getUserNameById($record['uid']);
+		return $record;
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return stdClass
+	 */
+	public function updateVitals(stdClass $params){
+		$this->setEid($params->eid);
+		$record = (array) $this->v->save($params);
+		$record['administer_by'] = $record['uid'] != 0 ? $this->user->getUserNameById($record['uid']) : '';
+		$params['authorized_by'] = $record['auth_uid'] != 0 ? $this->user->getUserNameById($record['auth_uid']) : '';
+		return $params;
+	}
+
+	/**
+	 * @param $pid
+	 * @return array
+	 */
+	public function getVitalsByPid($pid){
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'pid';
+		$filters->filter[0]->value = $pid;
+		return $this->getVitals($filters);
+	}
+
+	/**
+	 * @param $eid
+	 * @return array
+	 */
+	public function getVitalsByEid($eid){
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'eid';
+		$filters->filter[0]->value = $eid;
+		return $this->getVitals($filters);
+	}
 }
-
-
-//$params = new stdClass();
-//$params->pid = 3;
-//$params->eid = 3;
-//$params->uid = 85;
-//$params->icdxCodes = array('401.9','V22.0','250.90');
-//
-//$e = new Encounter();
-//echo '<pre>';
-//$e->updateEncounterIcdxCodes($params);
-//print_r($e->getSoapHistoryByPid(1));

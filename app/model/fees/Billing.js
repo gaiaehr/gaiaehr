@@ -69,7 +69,7 @@ Ext.define('App.model.fees.Billing',
 				type: 'int'
 			},
 			{
-				name: 'icdxCodes',
+				name: 'dxCodes',
 				type: 'auto'
 			}
 		],

@@ -16,19 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.EventHistory', {
+Ext.define('App.model.patient.Dictation', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'encounter_history'
+		name: 'encounter_dictation',
+		comment: 'Dictation Panel Data'
 	},
 	fields: [
 		{
 			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
 			type: 'int',
-			comment: 'Event History ID'
+			index: true
 		},
 		{
 			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'uid',
 			type: 'int'
 		},
 		{
@@ -37,15 +47,24 @@ Ext.define('App.model.patient.EventHistory', {
 			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
-			name: 'user',
+			name: 'dictation',
 			type: 'string',
-			len: 80
+			dataType: 'longtext'
 		},
 		{
-			name: 'event',
+			name: 'additional_notes',
 			type: 'string',
-			len: 600
+			dataType: 'longtext'
 		}
-	]
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			update: 'Encounter.updateDictation'
+		}
+	},
+	belongsTo: {
+		model: 'App.model.patient.Encounter',
+		foreignKey: 'eid'
+	}
 });
-

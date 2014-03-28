@@ -140,8 +140,7 @@ class Patient {
 			$this->patient = $this->p->load($pid)->one();
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			//            $_SESSION['patient']['pid']  = $this->patient['pid'];
-			//            $_SESSION['patient']['name'] = $this->getPatientFullName();
+			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
 		}
 	}
 
@@ -152,8 +151,6 @@ class Patient {
 	public function unsetPatient($pid){
 		if($pid != null)
 			$this->patientChartInByPid($pid);
-		//        $_SESSION['patient']['pid']  = null;
-		//        $_SESSION['patient']['name'] = null;
 		return;
 	}
 
@@ -353,13 +350,6 @@ class Patient {
 			return true;
 		}
 	}
-
-	//    public function createDefaultPhotoId($pid)
-	//    {
-	//        $newImg = $_SESSION['site']['path'] . '/patients/' . $pid . '/patientPhotoId.jpg';
-	//        copy($_SESSION['root'] . '/resources/images/icons/patientPhotoId.jpg', $newImg);
-	//        return;
-	//    }
 
 	public function getPatientAddressById($pid){
 		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");

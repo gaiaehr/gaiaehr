@@ -17,12 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//if(!isset($_SESSION)){
-//	session_name('GaiaEHR');
-//	session_start();
-//	session_cache_limiter('private');
-//}
-//include_once ('../classes/MatchaHelper.php');
 include_once(dirname(__FILE__) . '/CombosData.php');
 
 class FormLayoutEngine {
@@ -142,7 +136,7 @@ class FormLayoutEngine {
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
 			if($item['xtype'] == 'fieldset' && $item['title'] == 'Assessment'){
-				$item['items'][] = array('xtype' => 'icdsfieldset', 'emptyText' => 'Search For Diagnosis Codes', 'name' => 'icdxCodes');
+				$item['items'][] = array('xtype' => 'icdsfieldset', 'emptyText' => 'Search For Diagnosis Codes', 'name' => 'dxCodes');
 			}
 			/**
 			 * lets check if this item has a child items. If not, the unset the $item['Items']

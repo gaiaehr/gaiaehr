@@ -1244,13 +1244,13 @@ Ext.define('App.view.Viewport', {
 
     alert: function(msg, icon){
         if(icon == 'error'){
-            icon = Ext.Msg.ERROR
+            icon = Ext.Msg.ERROR;
         }else if(icon == 'warning'){
-            icon = Ext.Msg.WARNING
+            icon = Ext.Msg.WARNING;
         }else if(icon == 'question'){
-            icon = Ext.Msg.QUESTION
+            icon = Ext.Msg.QUESTION;
         }else{
-            icon = Ext.Msg.INFO
+            icon = Ext.Msg.INFO;
         }
 
 	    Ext.Msg.width = null;

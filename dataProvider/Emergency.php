@@ -99,9 +99,10 @@ class Emergency
 			$params->brief_description = '***EMERGENCY***';
 			$params->visit_category    = 'Emergency';
 			$params->priority          = $this->priority;
-			$params->service_date        = Time::getLocalTime();
+			$params->service_date      = Time::getLocalTime();
+			$params->open_uid          = $_SESSION['user']['id'];
 			$encounter                 = $this->encounter->createEncounter($params);
-			$this->eid                 = $encounter['encounter']->eid;
+			$this->eid                 = $encounter['encounter']['eid'];
 			/**
 			 * log the emergency
 			 */

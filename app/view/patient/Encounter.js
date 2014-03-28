@@ -21,7 +21,7 @@ Ext.define('App.view.patient.Encounter', {
 	pageTitle: i18n('encounter'),
 	pageLayout: 'border',
 	requires: [
-		'App.store.patient.Encounter',
+		'App.store.patient.Encounters',
 		'App.store.patient.Vitals',
 		'App.store.administration.AuditLog',
 		'App.view.patient.encounter.SOAP',
@@ -46,6 +46,7 @@ Ext.define('App.view.patient.Encounter', {
 
 	pid: null,
 	eid: null,
+	encounter: null,
 
 	currEncounterStartDate: null,
 	initComponent: function(){
@@ -65,7 +66,7 @@ Ext.define('App.view.patient.Encounter', {
 		 * stores
 		 * @type {*}
 		 */
-		me.encounterStore = Ext.create('App.store.patient.Encounter', {
+		me.encounterStore = Ext.create('App.store.patient.Encounters', {
 			listeners: {
 				scope: me,
 				datachanged: me.updateProgressNote
@@ -533,37 +534,32 @@ Ext.define('App.view.patient.Encounter', {
 	 * @param SaveBtn
 	 */
 	onEncounterUpdate: function(SaveBtn){
-		var me = this, form;
+		var me = this,
+			form;
 		if(SaveBtn.action == "encounter"){
 			form = me.newEncounterWindow.down('form').getForm();
 		}else{
 			form = SaveBtn.up('form').getForm();
 		}
 		if(form.isValid()){
-			var values = form.getValues(), store, record, storeIndex;
+			var values = form.getValues(),
+				store,
+				record,
+				storeIndex;
+
 			if(SaveBtn.action == 'encounter'){
 				if(acl['add_encounters']){
-					store = me.encounterStore;
 					record = form.getRecord();
-					storeIndex = store.indexOf(record);
-					values.pid = app.patient.pid;
-					if(storeIndex == -1){
-						store.add(values);
-						record = store.last();
-					}else{
-						record.set(values);
-					}
-					store.sync({
-						callback: function(batch, options){
-							if(options.operations.create){
-								var data = options.operations.create[0].data;
-								app.patientButtonRemoveCls();
-								app.patientBtn.addCls(data.priority);
-								me.openEncounter(data.eid);
-								SaveBtn.up('window').hide();
-								// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-								app.AuditLog('Patient encounter created');
-							}
+					record.set(values);
+					record.save({
+						callback: function(record){
+							var data = record.data;
+							app.patientButtonRemoveCls();
+							app.patientBtn.addCls(data.priority);
+							me.openEncounter(data.eid);
+							SaveBtn.up('window').hide();
+							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+							app.AuditLog('Patient encounter created');
 						}
 					});
 				}else{
@@ -585,7 +581,10 @@ Ext.define('App.view.patient.Encounter', {
 
 				if((VFieldsCount - 3) > emptyCount){
 					if(acl['add_vitals']){
-						store = me.encounterStore.getAt(0).vitals();
+
+						say(me);
+
+						store = me.encounter.vitals();
 						record = form.getRecord();
 						values = me.addDefaultData(values);
 						storeIndex = store.indexOf(record);
@@ -613,7 +612,6 @@ Ext.define('App.view.patient.Encounter', {
 				if(acl['edit_encounters']){
 					record = form.getRecord();
 					store = record.store;
-
 					values = me.addDefaultData(values);
 					record.set(values);
 					store.sync({
@@ -623,9 +621,12 @@ Ext.define('App.view.patient.Encounter', {
 							app.AuditLog('Patient encounter updated');
 						}
 					});
-					me.encounterEventHistoryStore.load({filters: [
-						{property: 'eid', value: me.eid}
-					]});
+					me.encounterEventHistoryStore.load({
+						filters:[{
+							property: 'eid',
+							value: me.eid
+						}]
+					});
 				}else{
 					app.accessDenied();
 				}
@@ -634,7 +635,7 @@ Ext.define('App.view.patient.Encounter', {
 	},
 
 	onVitalsSign: function(){
-		var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounterStore.getAt(0).vitals(), record = form.getRecord();
+		var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounter.vitals(), record = form.getRecord();
 		if(form.isValid()){
 			me.passwordVerificationWin(function(btn, password){
 				if(btn == 'ok'){
@@ -693,24 +694,27 @@ Ext.define('App.view.patient.Encounter', {
 	 * @param eid
 	 */
 	openEncounter: function(eid){
-		var me = this, vitals, store;
+		var me = this,
+			vitals,
+			store;
+
 		me.el.mask(i18n('loading...') + ' ' + i18n('encounter') + ' - ' + eid);
 		me.resetTabs();
 
 		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 		app.AuditLog('Patient encounter viewed');
 
-		// add eid as extra params to encounter store
-		// and set 'eid' globally for convenient use
-		me.encounterStore.getProxy().extraParams.eid = me.eid = eid;
+		if(me.encounter) delete me.encounter;
 
-		me.encounterStore.load({
+		App.model.patient.Encounter.load(eid, {
 			scope: me,
 			callback: function(record){
-				var data = record[0].data;
+				me.encounter = record;
+				var data = me.encounter.data;
 
 				// set pid globally for convenient use
 				me.pid = data.pid;
+				me.eid = data.eid;
 
 				me.currEncounterStartDate = data.service_date;
 
@@ -728,45 +732,51 @@ Ext.define('App.view.patient.Encounter', {
 				if(me.vitalsPanel){
 					vitals = me.vitalsPanel.down('vitalsdataview');
 					me.resetVitalsForm();
-					vitals.store = record[0].vitalsStore;
+					vitals.store = me.encounter.vitalsStore;
 					vitals.refresh();
 				}
 				if(me.reviewSysPanel){
-					store = record[0].reviewofsystems();
+					store = me.encounter.reviewofsystems();
 					store.on('write', me.updateProgressNote, me);
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
 				if(me.reviewSysCkPanel){
-					store = record[0].reviewofsystemschecks();
+					store = me.encounter.reviewofsystemschecks();
 					store.on('write', me.updateProgressNote, me);
 					me.reviewSysCkPanel.getForm().loadRecord(store.getAt(0));
 				}
 				if(me.soapPanel){
-					store = record[0].soap();
+					store = me.encounter.soap();
 					store.on('write', me.updateProgressNote, me);
 					me.soapPanel.down('form').getForm().loadRecord(store.getAt(0));
-					//me.soapPanel.query('icdsfieldset')[0].loadIcds(store.getAt(0).data.icdxCodes);
 				}
 				if(me.MiscBillingOptionsPanel){
-					store = record[0].hcfaoptions();
+					store = me.encounter.hcfaoptions();
 					me.MiscBillingOptionsPanel.getForm().loadRecord(store.getAt(0));
 				}
 				//me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
 
 				me.priorityCombo.setValue(data.priority);
+
+				me.encounterEventHistoryStore.load({
+					filters: [
+						{
+							property: 'eid', value: me.eid
+						}
+					]
+				});
+				if(me.CurrentProceduralTerminology){
+					me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){
+						me.CurrentProceduralTerminology.setDefaultQRCptCodes();
+					});
+				}
+				if(me.progressHistory) me.getProgressNotesHistory();
+				if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
+
 				me.el.unmask();
 			}
 		});
-		me.encounterEventHistoryStore.load({filters: [
-			{property: 'eid', value: me.eid}
-		]});
-		if(me.CurrentProceduralTerminology){
-			me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){
-				me.CurrentProceduralTerminology.setDefaultQRCptCodes();
-			});
-		}
-		if(me.progressHistory) me.getProgressNotesHistory();
-		if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
+
 	},
 
 	/**
@@ -819,6 +829,8 @@ Ext.define('App.view.patient.Encounter', {
 
 	updateProgressNote: function(){
 		var me = this;
+		say('updateProgressNote');
+
 		Encounter.getProgressNoteByEid(me.eid, function(provider, response){
 			var data = response.result;
 			me.progressNote.tpl.overwrite(me.progressNote.body, data);
@@ -826,9 +838,13 @@ Ext.define('App.view.patient.Encounter', {
 	},
 
 	getProgressNotesHistory: function(){
-		var me = this, soaps;
+		var me = this,
+			soaps;
+
+		say(me);
+
 		me.progressHistory.removeAll();
-		Encounter.getSoapHistory({pid: me.pid, eid: me.eid}, function(provider, response){
+		Encounter.getSoapHistory({pid: me.encounter.data.pid, eid: me.encounter.data.eid}, function(provider, response){
 			soaps = response.result;
 			for(var i = 0; i < soaps.length; i++){
 				me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
@@ -1137,60 +1153,10 @@ Ext.define('App.view.patient.Encounter', {
 		 */
 		if(me.reviewSysPanel){
 			me.getFormItems(me.reviewSysPanel, 8, function(){
-				//				var formFields = me.reviewSysPanel.getForm().getFields(),
-				//					modelFields = new defaultFields;
-				//				for(var i = 0; i < formFields.items.length; i++){
-				//					modelFields.push({
-				//						name: formFields.items[i].name,
-				//						type: 'auto'
-				//					});
-				//				}
-				//				Ext.define('App.model.patient.ReviewOfSystems', {
-				//					extend: 'Ext.data.Model',
-				//					fields: modelFields,
-				//					proxy: {
-				//						type: 'direct',
-				//						api: {
-				//							update: Encounter.updateReviewOfSystemsById
-				//						}
-				//					},
-				//					belongsTo: {
-				//						model: 'App.model.patient.Encounter',
-				//						foreignKey: 'eid'
-				//					}
-				//				});
+
 			});
 		}
 
-		/**
-		 * Get 'SOAP' Form and define the Model using the form fields
-		 */
-		//        if(me.soapPanel){
-		//            me.getFormItems(me.soapPanel.down('form'), 6, function(){
-		//                var formFields = me.soapPanel.down('form').getForm().getFields(),
-		//	                modelFields = [];
-		//                for(var i = 0; i < formFields.items.length; i++){
-		//                    modelFields.push({
-		//                        name:formFields.items[i].name,
-		//                        type:'auto'
-		//                    });
-		//                }
-		//                Ext.define('App.model.patient.SOAP', {
-		//                    extend:'Ext.data.Model',
-		//                    fields:modelFields,
-		//                    proxy:{
-		//                        type:'direct',
-		//                        api:{
-		//                            update:Encounter.updateSoapById
-		//                        }
-		//                    },
-		//                    belongsTo:{
-		//                        model:'App.model.patient.Encounter',
-		//                        foreignKey:'eid'
-		//                    }
-		//                });
-		//            });
-		//        }
 
 		/**
 		 * Get 'Review of Systems Check' Form and define the Model using the form fields
@@ -1210,7 +1176,7 @@ Ext.define('App.view.patient.Encounter', {
 					proxy: {
 						type: 'direct',
 						api: {
-							update: Encounter.updateReviewOfSystemsChecksById
+							update: 'Encounter.updateReviewOfSystemsChecks'
 						}
 					},
 					belongsTo: {

@@ -586,7 +586,7 @@ Ext.define('App.model.patient.ReviewOfSystems', {
 	proxy: {
 		type: 'direct',
 		api: {
-			update: 'Encounter.updateReviewOfSystemsById'
+			update: 'Encounter.updateReviewOfSystems'
 		}
 	},
 	belongsTo: {

@@ -16,71 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.Encounters', {
+Ext.define('App.model.patient.PatientZone', {
 	extend: 'Ext.data.Model',
+	table: {
+		name: 'patient_zone',
+		comment: 'Patients Zones'
+	},
 	fields: [
 		{
-			name: 'eid',
-			type: 'int',
-			comment: 'Encounter ID'
+			name: 'id',
+			type: 'int'
 		},
 		{
 			name: 'pid',
 			type: 'int',
-			comment: 'Patient ID'
+			index: true,
+			comment: 'patient ID'
 		},
 		{
-			name: 'open_uid',
-			type: 'string'
+			name: 'uid',
+			type: 'int',
+			comment: 'user ID who created the order'
 		},
 		{
-			name: 'close_uid',
-			type: 'string'
+			name: 'zone_id',
+			type: 'int',
+			comment: 'Zone ID'
 		},
 		{
-			name: 'brief_description',
-			type: 'string'
-		},
-		{
-			name: 'visit_category',
-			type: 'string'
-		},
-		{
-			name: 'facility',
-			type: 'string'
-		},
-		{
-			name: 'billing_facility',
-			type: 'string'
-		},
-		{
-			name: 'sensitivity',
-			type: 'string'
-		},
-		{
-			name: 'service_date',
+			name: 'time_in',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s',
+			comment: 'patient in time'
 		},
 		{
-			name: 'close_date',
+			name: 'time_out',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'onset_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s',
+			comment: 'patient out time'
 		}
-	],
-	idProperty: 'eid',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Encounter.getEncounters'
-		},
-		reader: {
-			root: 'encounter'
-		}
-	}
+	]
 });

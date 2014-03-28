@@ -43,7 +43,7 @@ class User {
 		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 	}
 
-	public function getUsers(stdClass $params){
+	public function getUsers($params){
 		$users = $this->u->load($params)->all();
 		foreach($users as $index => $user){
 			$users[$index]['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
@@ -52,7 +52,7 @@ class User {
 		return $users;
 	}
 
-	public function getUser(stdClass $params){
+	public function getUser($params){
 		$user = $this->u->load($params)->all();
 		$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
 		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);

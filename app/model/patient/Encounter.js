@@ -30,24 +30,29 @@ Ext.define('App.model.patient.Encounter', {
 		},
 		{
 			name: 'pid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'open_uid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'provider_uid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'supervisor_uid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'service_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
 		},
 		{
 			name: 'close_date',
@@ -62,31 +67,35 @@ Ext.define('App.model.patient.Encounter', {
 		{
 			name: 'priority',
 			type: 'string',
-			len: 25
+			len: 60
 		},
 		{
 			name: 'brief_description',
-			type: 'string'
+			type: 'string',
+			len: 600
 		},
 		{
 			name: 'visit_category',
 			type: 'string',
-			len: 25
+			len: 80
 		},
 		{
 			name: 'facility',
-			type: 'string',
-			dataType: 'tinyint'
+			type: 'int',
+			len: 1,
+			index: true
 		},
 		{
 			name: 'billing_facility',
-			type: 'string',
-			dataType: 'tinyint'
+			type: 'int',
+			len: 1,
+			index: true
 		},
 		{
 			name: 'billing_stage',
 			type: 'int',
-			len: 1
+			len: 1,
+			index: true
 		},
 		{
 			name: 'followup_time',
@@ -95,53 +104,47 @@ Ext.define('App.model.patient.Encounter', {
 		},
 		{
 			name: 'followup_facility',
-			type: 'int',
-			len: 1
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'review_immunizations',
-			type: 'int',
-			len: 1
+			type: 'bool'
 		},
 		{
 			name: 'review_allergies',
-			type: 'int',
-			len: 1
+			type: 'bool'
 		},
 		{
 			name: 'review_active_problems',
-			type: 'int',
-			len: 1
+			type: 'bool'
 		},
 		{
 			name: 'review_alcohol',
 			type: 'string',
-			len: 25
+			len: 40
 		},
 		{
 			name: 'review_smoke',
 			type: 'string',
-			len: 25
+			len: 40
 		},
 		{
 			name: 'review_pregnant',
 			type: 'string',
-			len: 25
+			len: 40
 		},
 		{
 			name: 'review_surgery',
-			type: 'int',
-			len: 1
+			type: 'bool'
 		},
 		{
 			name: 'review_dental',
-			type: 'int',
-			len: 1
+			type: 'bool'
 		},
 		{
 			name: 'review_medications',
-			type: 'int',
-			len: 1
+			type: 'bool'
 		},
 		{
 			name: 'message',

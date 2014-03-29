@@ -109,7 +109,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
 
 				},
 				destroy: function(){
-					this.toolTip.destroy();
+					if(typeof this.toolTip != 'undefined') this.toolTip.destroy();
 					me.store.remove(this.dxRecord);
 					if(me.autoFormSync) me.store.sync();
 				}

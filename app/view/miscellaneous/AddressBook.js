@@ -221,13 +221,12 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 			tbar: [
 				{
 					text: i18n('add_contact'),
-					iconCls: 'icoAddressBook',
+					iconCls: 'icoAdd',
 					scope: me,
 					handler: me.onAddContact
 				}
 			],
 			bbar: Ext.create('Ext.PagingToolbar', {
-				pageSize: 10,
 				store: me.store,
 				displayInfo: true,
 				plugins: Ext.create('Ext.ux.SlidingPager', {})
@@ -238,6 +237,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 
 		me.callParent(arguments);
 	},
+
 	onAddContact: function(){
 		var me = this,
 			grid = me.grid,

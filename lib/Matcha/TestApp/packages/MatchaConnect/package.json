@@ -1,0 +1,35 @@
+{
+    "name": "MatchaConnect",
+    "type": "code",
+    "creator": "Ernesto J. Rodriguez (Certun, LLC)",
+    "summary": "MatchaConnect For Sencha",
+    "detailedDescription": "Long description of package",
+    "version": "1.0.0",
+    "compatVersion": "1.0.0",
+    "format": "1",
+    "local": true,
+	"architect": {
+		"compatFrameworks": [
+			"ext41",
+			"ext42"
+		],
+		"classes": [{
+			"definition": "MatchaField.Definitions.js",
+			"className": "Ext.ux.MatchaField",
+			"js": [
+				"MatchaField.js"
+			],
+			"css": [
+			]
+		},{
+			"definition": "MatchaModel.Definitions.js",
+			"className": "Ext.ux.MatchaModel",
+			"js": [
+				"MatchaModel.js"
+			],
+			"css": [
+			]
+		}]
+	},
+	"requires": []
+}

@@ -1,0 +1,85 @@
+{
+    "type": "Ext.ux.MatchaModel",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "UserModel",
+        "table": [
+            "{\"name\":\"users\",\"comment\":\"This is a table comment\"}"
+        ]
+    },
+    "designerId": "0e1eb172-c809-4c0c-b7c1-4df671f228ba",
+    "cn": [
+        {
+            "type": "Ext.ux.MatchaField",
+            "reference": {
+                "name": "fields",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "name": "id",
+                "type": "int"
+            },
+            "designerId": "eeca9510-3d8d-4044-b3b0-9be41309debe"
+        },
+        {
+            "type": "Ext.ux.MatchaField",
+            "reference": {
+                "name": "fields",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "len": 80,
+                "name": "fullname",
+                "type": "string"
+            },
+            "designerId": "0c278772-8412-4df5-a04f-67b985cb04cc"
+        },
+        {
+            "type": "Ext.ux.MatchaField",
+            "reference": {
+                "name": "fields",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "dateFormat": "Y-m-d H:i:s",
+                "name": "dob",
+                "type": "date"
+            },
+            "designerId": "2cf9c7c5-bf7b-4146-8558-9639c6413f85"
+        },
+        {
+            "type": "Ext.ux.MatchaField",
+            "reference": {
+                "name": "fields",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "len": 40,
+                "name": "email",
+                "type": "string"
+            },
+            "designerId": "b2717d07-96ee-4051-b7c7-be958d686631"
+        },
+        {
+            "type": "Ext.ux.MatchaField",
+            "reference": {
+                "name": "fields",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "name": "active",
+                "type": "bool"
+            },
+            "designerId": "c0364e33-44bc-49b0-9eae-2511e717218b"
+        }
+    ]
+}

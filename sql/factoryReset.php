@@ -18,6 +18,8 @@ $db = new MatchaHelper();
 $tables = array(
 	'calendar_events',
 
+	'emergencies',
+
 	'encounters',
 	'encounter_services',
     'encounter_1500_options',
@@ -59,6 +61,7 @@ $tables = array(
 
 
 	// logs
+    'audit_transaction_log',
     'payment_transactions',
 	'audit_log',
 	'log',

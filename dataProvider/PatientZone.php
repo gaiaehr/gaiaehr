@@ -37,7 +37,7 @@ class PatientZone {
 	}
 
 	public function removePatientFromZone($params){
-		$data['time_out'] = date('Y-m-d H:i:s');
+		$params->time_out = date('Y-m-d H:i:s');
 		return array(
 			'success' => true,
 			'data' => $this->pz->save($params)

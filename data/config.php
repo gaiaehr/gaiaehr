@@ -599,13 +599,19 @@ $API = array(
 	 */
 	'AddressBook' => array(
 		'methods' => array(
-			'getAddresses' => array(
+			'getContacts' => array(
+				'len' => 1
+			),
+			'getContact' => array(
 				'len' => 1
 			),
 			'addContact' => array(
 				'len' => 1
 			),
-			'updateAddress' => array(
+			'updateContact' => array(
+				'len' => 1
+			),
+			'destroyContact' => array(
 				'len' => 1
 			)
 		)

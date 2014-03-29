@@ -1288,4 +1288,7 @@ $LANG = array(
 	'referral_risk_level'                   => 'Referral Risk Level',
 	'referral_by'                           => 'Referral By',
 	'referral_to'                           => 'Referral To',
+	'url'                                   => 'Url',
+	'cell_phone'                            => 'Cell Phone',
+	'primary_phone'                         => 'Primary Phone',
 );

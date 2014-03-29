@@ -549,7 +549,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				/*
 				 * Load the miscellaneous related panels
 				 */
-				'App.view.miscellaneous.Addressbook',
+				'App.view.miscellaneous.AddressBook',
 				'App.view.miscellaneous.MyAccount',
 				'App.view.miscellaneous.MySettings',
 				'App.view.miscellaneous.OfficeNotes',

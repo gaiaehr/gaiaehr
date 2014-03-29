@@ -338,7 +338,7 @@ class Navigation
 					'text' => $this->i18n['address_book'],
 					'leaf' => true,
 					'cls' => 'file',
-					'id' => 'App.view.miscellaneous.Addressbook'
+					'id' => 'App.view.miscellaneous.AddressBook'
 				),
 				array(
 					'text' => $this->i18n['office_notes'],

@@ -139,6 +139,9 @@ Ext.define('App.controller.Navigation', {
 		// fire global event
 		me.getViewport().fireEvent('afternavigation', me[ref]);
 
+
+		say(me);
+
 	},
 
 	/**

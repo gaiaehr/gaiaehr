@@ -732,8 +732,15 @@ Ext.define('App.view.Viewport', {
     },
 
 	openPatientSummary: function(){
-        var me = this;
+        var me = this,
+	        cls = me.nav.getNavRefByClass('App.view.patient.Summary'),
+	        panel =  me.nav[cls];
+
+		if(panel && panel == me.nav.activePanel) panel.loadPatient();
+
         me.nav.navigateTo('App.view.patient.Summary');
+
+
     },
 
 	stowPatientRecord: function(){

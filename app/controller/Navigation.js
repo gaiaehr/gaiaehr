@@ -55,6 +55,10 @@ Ext.define('App.controller.Navigation', {
 
 	},
 
+	getTopNavigation:function(){
+		return app
+	},
+
 	/**
 	 *
 	 * @param {object} treepanel

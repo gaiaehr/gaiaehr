@@ -8,6 +8,12 @@
 .icoLogo {
 	background-image: url(../images/icons/icoLogo.png) !important;
 }
+.speech-icon-active {
+	background-image: url(../images/icons/record-active.png) !important;
+}
+.speech-icon-inactive {
+	background-image: url(../images/icons/record-inactive.png) !important;
+}
 .icoUnlocked {
 	background-image: url(../images/icons/unlocked.png) !important;
 }

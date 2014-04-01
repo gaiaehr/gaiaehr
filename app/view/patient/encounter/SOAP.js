@@ -21,7 +21,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	requires: [
 		'App.ux.grid.RowFormEditing'
 	],
-	action: ['patient.encounter.soap'],
+	action: 'patient.encounter.soap',
 	title: i18n('soap'),
 	layout: 'border',
 	frame: true,

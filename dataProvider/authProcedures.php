@@ -113,6 +113,7 @@ class authProcedures {
 			$_SESSION['user']['id'] = $user['id'];
 			$_SESSION['user']['email'] = $user['email'];
 			$_SESSION['user']['facility'] = ($params->facility == 0 ? $user['facility_id'] : $params->facility);
+			$_SESSION['user']['localization'] = $params->lang;
 			$_SESSION['user']['npi'] = $user['npi'] ;
 			$_SESSION['user']['site'] = $params->site;
 			$_SESSION['user']['auth'] = true;
@@ -143,7 +144,8 @@ class authProcedures {
 					'id' => $_SESSION['user']['id'],
 					'name' => $_SESSION['user']['name'],
 					'email' => $_SESSION['user']['email'],
-					'facility' => $_SESSION['user']['facility']
+					'facility' => $_SESSION['user']['facility'],
+				    'localization' => $params->lang
 				)
 			);
 		}

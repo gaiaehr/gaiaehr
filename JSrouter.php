@@ -72,6 +72,7 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	$userData = $user->getCurrentUserBasicData();
 	$userData['token'] = $_SESSION['user']['token'];
 	$userData['facility'] = $_SESSION['user']['facility'];
+	$userData['localization'] = $_SESSION['user']['localization'];
 	unset($user);
 //	Globals::setGlobals();
 	/*

@@ -824,44 +824,34 @@ Ext.define('App.view.patient.Summary', {
 
 	rightColRender: function(panel){
 		var me = this;
-		panel.getComponent('PatientSummaryImmunizationPanel').header.add(
-			{
-				xtype: 'button',
-				text: i18n('details'),
-				action: 'immunization',
-				scope: me,
-				handler: me.medicalWin
-
-			}
-		);
-		panel.getComponent('PatientSummaryMedicationsPanel').header.add(
-			{
-				xtype: 'button',
-				text: i18n('details'),
-				action: 'medications',
-				scope: me,
-				handler: me.medicalWin
-
-			}
-		);
-		panel.getComponent('PatientSummaryAllergiesPanel').header.add(
-			{
-				xtype: 'button',
-				text: i18n('details'),
-				action: 'allergies',
-				scope: me,
-				handler: me.medicalWin
-			}
-		);
-		panel.getComponent('PatientSummaryActiveProblemsPanel').header.add(
-			{
-				xtype: 'button',
-				text: i18n('details'),
-				action: 'issues',
-				scope: me,
-				handler: me.medicalWin
-			}
-		);
+		panel.getComponent('PatientSummaryImmunizationPanel').header.add({
+			xtype: 'button',
+			text: i18n('details'),
+			action: 'immunization',
+			scope: me,
+			handler: me.medicalWin
+		});
+		panel.getComponent('PatientSummaryMedicationsPanel').header.add({
+			xtype: 'button',
+			text: i18n('details'),
+			action: 'medications',
+			scope: me,
+			handler: me.medicalWin
+		});
+		panel.getComponent('PatientSummaryAllergiesPanel').header.add({
+			xtype: 'button',
+			text: i18n('details'),
+			action: 'allergies',
+			scope: me,
+			handler: me.medicalWin
+		});
+		panel.getComponent('PatientSummaryActiveProblemsPanel').header.add({
+			xtype: 'button',
+			text: i18n('details'),
+			action: 'issues',
+			scope: me,
+			handler: me.medicalWin
+		});
 	},
 	medicalWin: function(btn){
 		app.onMedicalWin(btn);

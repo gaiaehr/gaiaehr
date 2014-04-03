@@ -8,6 +8,10 @@
 	"dir": "imageforms",
 	"active": true,
 	"debug": false,
+	"locales": [
+		"en_US",
+		"es_PR"
+	],
 	"actionsAPI": {
 		"ImageForm": {
 			"methods": {

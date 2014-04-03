@@ -17,33 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/../classes/MatchaHelper.php');
-
-class AuditLog extends MatchaHelper {
+class AuditLog {
 
 	/**
-	 * Data Object
+	 * @var MatchaCUP
 	 */
-	private $Log = NULL;
+	private $l;
 
 	function __construct(){
-		if($this->Log == NULL)
-			$this->Log = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
-		return;
+		$this->$l = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 	}
 
-	//------------------------------------------------------------------------------------------------------------------
-	// Main Sencha Model Getter and Setters
-	//------------------------------------------------------------------------------------------------------------------
 	public function getLogs(stdClass $params){
-		return $this->Log->load($params)->all();
+		return $this->l->load($params)->all();
 	}
 
 	public function setLog(stdClass $params){
 		$params->date = date('Y-m-d H:i:s');
-		$params->facility = $_SESSION['user']['facility'];
-		$params->user_id = $_SESSION['user']['id'];
-		return $this->Log->save($params);
+		$params->fid = $_SESSION['user']['facility'];
+		$params->uid = $_SESSION['user']['id'];
+		Matcha::pauseLog(true);
+		$record = $this->l->save($params);
+		Matcha::pauseLog(false);
+		return $record;
 	}
 
 }

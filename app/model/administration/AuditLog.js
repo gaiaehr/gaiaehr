@@ -31,22 +31,26 @@ Ext.define('App.model.administration.AuditLog', {
 		{
 			name: 'eid',
 			type: 'int',
-			comment: 'Encounter ID'
+			comment: 'Encounter ID',
+			index: true
 		},
 		{
 			name: 'pid',
 			type: 'int',
-			comment: 'Patient ID'
+			comment: 'Patient ID',
+			index: true
 		},
 		{
 			name: 'uid',
 			type: 'int',
-			comment: 'User ID'
+			comment: 'User ID',
+			index: true
 		},
 		{
 			name: 'fid',
 			type: 'int',
-			comment: 'Facility ID'
+			comment: 'Facility ID',
+			index: true
 		},
 		{
 			name: 'event',

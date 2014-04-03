@@ -22,7 +22,7 @@ Ext.define('App.view.patient.windows.Medical', {
 	id: 'MedicalWindow',
 	layout: 'card',
 	closeAction: 'hide',
-	height: 750,
+	height: 700,
 	width: 1200,
 	bodyStyle: 'background-color:#fff',
 	modal: true,

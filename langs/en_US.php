@@ -1291,4 +1291,5 @@ $LANG = array(
 	'url'                                   => 'Url',
 	'cell_phone'                            => 'Cell Phone',
 	'primary_phone'                         => 'Primary Phone',
+	'color'                                 => 'Color',
 );

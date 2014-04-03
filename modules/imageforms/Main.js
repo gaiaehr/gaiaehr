@@ -21,6 +21,8 @@ Ext.define('Modules.imageforms.Main',{
     init: function(){
         var me = this;
 
+	    this.getController('Modules.imageforms.controller.ImageForm').init();
+
 	    me.control({
 		    'tabpanel[action=encounterTabPanel]':{
 			    beforerender:function(panel){

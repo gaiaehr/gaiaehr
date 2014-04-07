@@ -31,6 +31,7 @@ Ext.define('Modules.imageforms.view.EncounterImageFormsPanel', {
 		{
 			text: 'New Form',
 			iconCls: 'icoAdd',
+			action: 'encounterRecordAdd',
 			itemId:'imageFormAddImageBtn'
 		}
 	]

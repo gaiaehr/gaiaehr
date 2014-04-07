@@ -200,6 +200,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						{
 							text: i18n('save'),
 							scope: me,
+							itemId: 'encounterRecordAdd',
 							handler: me.onProcedureSave
 						}
 					]
@@ -323,6 +324,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					iconCls: 'save',
 					action: 'soapSave',
 					scope: me,
+					itemId: 'encounterRecordAdd',
 					handler: me.onSoapSave
 				}
 			],

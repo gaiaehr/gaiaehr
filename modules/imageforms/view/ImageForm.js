@@ -102,6 +102,7 @@ Ext.define('Modules.imageforms.view.ImageForm', {
 				{
 					xtype: 'button',
 					itemId: 'imageFormSaveBtn',
+					action: 'encounterRecordAdd',
 					text: i18n('save'),
 					minWidth: 70
 				}

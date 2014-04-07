@@ -297,9 +297,9 @@ Ext.define('App.view.patient.windows.Medical', {
 							'-',
 							'->',
 							{
-								text: i18n('reviewed'),
-								action: 'review',
+								text: i18n('review'),
 								itemId: 'review_immunizations',
+								action: 'encounterRecordAdd',
 								scope: me,
 								handler: me.onReviewed
 							}
@@ -500,8 +500,8 @@ Ext.define('App.view.patient.windows.Medical', {
 					},
 					'->',
 					{
-						text: i18n('reviewed'),
-						action: 'review',
+						text: i18n('review'),
+						action: 'encounterRecordAdd',
 						itemId: 'review_allergies',
 						scope: me,
 						handler: me.onReviewed
@@ -679,10 +679,10 @@ Ext.define('App.view.patient.windows.Medical', {
 					]
 				}),
 				bbar: ['->', {
-					text: i18n('reviewed'),
-					action: 'review',
+					text: i18n('review'),
 					itemId: 'review_active_problems',
 					scope: me,
+					action: 'encounterRecordAdd',
 					handler: me.onReviewed
 				}]
 			},
@@ -790,10 +790,10 @@ Ext.define('App.view.patient.windows.Medical', {
 						bbar: [
 							'->',
 							{
-								text: i18n('reviewed'),
-								action: 'review',
+								text: i18n('review'),
 								itemId: 'review_medications',
 								scope: me,
+								action: 'encounterRecordAdd',
 								handler: me.onReviewed
 							}
 						]
@@ -952,6 +952,7 @@ Ext.define('App.view.patient.windows.Medical', {
 					{
 						text: i18n('add_new'),
 						action: 'AddRecord',
+						itemId: 'encounterRecordAdd',
 						iconCls: 'icoAdd',
 						scope: me,
 						handler: me.onAddItem
@@ -1374,9 +1375,9 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		me.setReadOnly();
 
-		for(var i = 0; i < reviewBts.length; i++){
-			reviewBts[i].setVisible((me.eid != null));
-		}
+//		for(var i = 0; i < reviewBts.length; i++){
+//			reviewBts[i].setVisible((me.eid != null));
+//		}
 
 		app.getController('patient.Results').setResultPanel();
 

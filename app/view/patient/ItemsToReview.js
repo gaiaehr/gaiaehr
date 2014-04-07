@@ -280,6 +280,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 			{
 				text: i18n('review_all'),
 				name: 'review',
+				itemId: 'encounterRecordAdd',
 				scope: me,
 				handler: me.onReviewAll
 			}

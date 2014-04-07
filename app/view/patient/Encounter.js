@@ -20,6 +20,7 @@ Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: i18n('encounter'),
 	pageLayout: 'border',
+	itemId: 'encounterPanel',
 	requires: [
 		'App.store.patient.Encounters',
 		'App.store.patient.Vitals',
@@ -165,6 +166,7 @@ Ext.define('App.view.patient.Encounter', {
 									action: 'vitals',
 									width: 40,
 									scope: me,
+									itemId: 'encounterRecordAdd',
 									handler: me.onEncounterUpdate
 								},
 								{
@@ -173,6 +175,7 @@ Ext.define('App.view.patient.Encounter', {
 									disabled: true,
 									action: 'signBtn',
 									scope: me,
+									itemId: 'encounterRecordAdd',
 									handler: me.onVitalsSign
 								}
 							]
@@ -224,6 +227,7 @@ Ext.define('App.view.patient.Encounter', {
 							iconCls: 'save',
 							action: 'reviewOfSystems',
 							scope: me,
+							itemId: 'encounterRecordAdd',
 							handler: me.onEncounterUpdate
 						}
 					]
@@ -254,6 +258,7 @@ Ext.define('App.view.patient.Encounter', {
 							iconCls: 'save',
 							action: 'reviewOfSystemsChecks',
 							scope: me,
+							itemId: 'encounterRecordAdd',
 							handler: me.onEncounterUpdate
 						}
 					]
@@ -767,6 +772,9 @@ Ext.define('App.view.patient.Encounter', {
 				if(me.progressHistory) me.getProgressNotesHistory();
 				if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
 
+
+				app.setEncounterClose(me.isClose());
+
 				me.el.unmask();
 			}
 		});
@@ -856,14 +864,6 @@ Ext.define('App.view.patient.Encounter', {
 		return typeof this.encounter.data.provider_uid != 'undefined' && this.encounter.data.provider_uid != null && this.encounter.data.provider_uid != 0;
 	},
 
-	disableEdit:function(){
-
-		// TODO......
-
-
-
-
-	},
 
 	/**
 	 * listen for the progress note panel and runs the

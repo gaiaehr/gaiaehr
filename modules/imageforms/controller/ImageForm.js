@@ -347,6 +347,8 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 			width: 450,
 			height: 380
 		});
+
+		form.query('button[action=encounterRecordAdd]')[0].setDisabled(app.patient.encounterIsClose);
 		form.loadRecord(record);
 		this.getImageFormPanel().add(form);
 		this.initFormCanvas(form);

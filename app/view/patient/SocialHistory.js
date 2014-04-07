@@ -77,6 +77,7 @@ Ext.define('App.view.patient.SocialHistory', {
 			text: i18n('add'),
 			iconCls: 'icoAdd',
 			disabled: true,
+			itemId: 'encounterRecordAdd',
 			action: 'socialHistoryAddBtn'
 		}
 	]

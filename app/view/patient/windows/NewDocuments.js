@@ -198,6 +198,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								iconCls: 'icoAdd',
 								scope: me,
 								action: 'lab',
+								itemId: 'encounterRecordAdd',
 								handler: me.onAddOrder
 							},
 							'-',
@@ -332,6 +333,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								iconCls: 'icoAdd',
 								scope: me,
 								action: 'rad',
+								itemId: 'encounterRecordAdd',
 								handler: me.onAddOrder
 							},
 							'-',
@@ -486,6 +488,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								text: i18n('new_order'),
 								iconCls: 'icoAdd',
 								scope: me,
+								itemId: 'encounterRecordAdd',
 								handler: me.onNewPrescription
 
 							}),
@@ -496,6 +499,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 								disabled: true,
 								scope: me,
 								margin: '0 5 0 0',
+								itemId: 'encounterRecordAdd',
 								handler: me.onClonePrescriptions
 							}),
 							'-',
@@ -547,6 +551,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 							'->', {
 								text: i18n('create_doctors_notes'),
 								scope: me,
+								itemId: 'encounterRecordAdd',
 								handler: me.onCreateDoctorsNote
 							}
 						]

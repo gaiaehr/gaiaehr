@@ -172,6 +172,7 @@ Ext.define('App.view.patient.Referrals', {
 		{
 			text: i18n('referral'),
 			iconCls: 'icoAdd',
+			itemId: 'encounterRecordAdd',
 			action: 'addReferralBtn'
 		},
 		'-',

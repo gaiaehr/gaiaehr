@@ -273,6 +273,7 @@ $LANG = array(
     'Manufacturer'							=> 'Manufacturer',
     'date_administered'						=> 'Date Administered',
     'reviewed'								=> 'Reviewed',
+    'review'								=> 'Review',
     'location'								=> 'Location',
     'severity'								=> 'Severity',
     'active?'								=> 'Active?',

@@ -1292,4 +1292,6 @@ $LANG = array(
 	'cell_phone'                            => 'Cell Phone',
 	'primary_phone'                         => 'Primary Phone',
 	'color'                                 => 'Color',
+	'supervisor'                            => 'Supervisor',
+	'supervisor_does_not_match_user'        => 'Encounter supervisor does not match current user',
 );

@@ -35,8 +35,23 @@ Ext.define('App.ux.LivePatientSearch', {
 					type: 'int'
 				},
 				{
-					name: 'fullname',
+					name: 'fname',
 					type: 'string'
+				},
+				{
+					name: 'mname',
+					type: 'string'
+				},
+				{
+					name: 'lname',
+					type: 'string'
+				},
+				{
+					name: 'fullname',
+					type: 'string',
+					convert: function(v, record){
+						return record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname
+					}
 				},
 				{
 					name: 'DOB',
@@ -50,7 +65,7 @@ Ext.define('App.ux.LivePatientSearch', {
 			proxy: {
 				type: 'direct',
 				api: {
-					read: Patient.patientLiveSearch
+					read: 'Patient.patientLiveSearch'
 				},
 				reader: {
 					totalProperty: 'totals',
@@ -65,7 +80,7 @@ Ext.define('App.ux.LivePatientSearch', {
 			autoLoad: false
 		});
 
-		Ext.apply(this, {
+		Ext.apply(me, {
 			store: me.store,
 			displayField: 'fullname',
 			valueField: 'pid',
@@ -73,6 +88,7 @@ Ext.define('App.ux.LivePatientSearch', {
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
+			queryDelay: 200,
 			listConfig: {
 				loadingText: i18n('searching') + '...',
 				//emptyText	: 'No matching posts found.',

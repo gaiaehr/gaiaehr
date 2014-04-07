@@ -49,6 +49,12 @@ Ext.define('App.model.patient.Encounter', {
 			index: true
 		},
 		{
+			name: 'requires_supervisor',
+			type: 'bool',
+			index: true,
+			defaultValue: false
+		},
+		{
 			name: 'service_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',

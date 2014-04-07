@@ -18,6 +18,9 @@
 
 Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	extend:'App.ux.window.Window',
+	requires:[
+		'App.ux.combo.EncounterSupervisors'
+	],
 	title:i18n('checkout_and_signing'),
 	closeAction:'hide',
 	modal:true,
@@ -280,14 +283,19 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			],
 			buttons:[
 				{
-					text:i18n('co_sign'),
-					action:'encounter',
+					xtype: 'encountersupervisorscombo'	,
+					itemId:'encounterCoSignSupervisorCombo',
+					allowBlank: false
+				},
+				{
+					text:i18n('co_sign') + ' (' + i18n('supervisor') + ')',
+					itemId:'encounterCoSignSupervisorBtn',
 					scope:me,
 					handler:me.coSignEncounter
 				},
 				{
 					text:i18n('sign'),
-					action:'encounter',
+					itemId:'encounterSignBtn',
 					scope:me,
 					handler:me.signEncounter
 				},
@@ -295,18 +303,24 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					text:i18n('cancel'),
 					scope:me,
 					handler:me.cancelCheckout
-
 				}
 			],
 			listeners:{
 				scope:me,
-				show:me.onWindowShow
+				show:me.onWindowShow,
+				beforerender: me.onBeforeRender
 			}
 		});
 
 		me.callParent();
 
+		me.coSignCombo = me.query('#encounterCoSignSupervisorCombo')[0];
+		me.coSignBtn = me.query('#encounterCoSignSupervisorBtn')[0];
+		me.signBtn = me.query('#encounterSignBtn')[0];
+	},
 
+	onBeforeRender:function(){
+		this.coSignCombo.getStore().load();
 	},
 
 	onQuickService:function(btn){
@@ -335,7 +349,6 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 				}
 				rec.expand();
 				me.msg('Sweet!', '"' + batch.proxy.reader.rawData.code_text_medium + '" ' + i18n('added'));
-
 			}
 		});
 
@@ -362,12 +375,18 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	},
 
 	coSignEncounter:function(){
-
+		this.enc.doSignEncounter(true);
 	},
 
 	signEncounter:function(){
-		this.enc.closeEncounter();
-		this.close();
+
+		if(acl['require_enc_supervisor']){
+			if(this.coSignCombo.isValid()){
+				this.enc.doSignEncounter(false);
+			}
+		}else{
+			this.enc.doSignEncounter(false);
+		}
 	},
 
 	cancelCheckout:function(){
@@ -380,10 +399,48 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 
 		me.pid = me.enc.pid;
 		me.eid = me.enc.eid;
-
 		me.encounterCPTsICDsStore.load({params:{eid:me.eid}});
-		if(acl['access_encounter_checkout']) me.checkoutAlertArea.load({params:{eid:app.patient.eid}});
+		if(acl['access_encounter_checkout']) me.checkoutAlertArea.load({params:{eid:me.eid}});
 		me.documentsimplegrid.loadDocs(app.patient.eid);
+
+		console.clear();
+
+		say(me.enc.encounter.data.supervisor_uid);
+
+		if(me.enc.encounter.data.supervisor_uid > 0){
+			me.coSignCombo.setValue(me.enc.encounter.data.supervisor_uid);
+		}else{
+			me.coSignCombo.reset();
+		}
+
+
+		if(me.enc.isClose() || !acl['sign_enc']){
+			me.signBtn.disable();
+			me.coSignBtn.disable();
+			me.coSignCombo.setVisible(me.enc.encounter.data.supervisor_uid > 0);
+			me.coSignCombo.disable();
+		}else{
+			// not previously signed and required supervisor
+			if(!me.enc.encounter.data.provider_uid > 0 && acl['require_enc_supervisor']){
+				me.signBtn.enable();
+				me.coSignBtn.disable();
+				me.coSignCombo.show();
+				me.coSignCombo.enable();
+
+			// previously signed and supervisor
+			}else if(me.enc.encounter.data.provider_uid > 0 && acl['sign_enc_supervisor']){
+				me.signBtn.disable();
+				me.coSignBtn.enable();
+				me.coSignCombo.show();
+				me.coSignCombo.enable();
+			// not previously and
+			}else{
+				me.signBtn.enable();
+				me.coSignBtn.disable();
+				me.coSignCombo.hide();
+				me.coSignCombo.disable();
+			}
+		}
 	},
 
 	alertIconRenderer:function(v){

@@ -63,9 +63,10 @@ class Encounter {
 	 */
 	private $diagnosis;
 
+	/**
+	 * @var
+	 */
 	private $EncounterHistory;
-
-
 
 	/**
 	 * @var bool|MatchaCUP
@@ -289,16 +290,38 @@ class Encounter {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function closeEncounter(stdClass $params){
+	public function signEncounter(stdClass $params){
 		$this->setEid($params->eid);
-		if($this->user->verifyUserPass($params->signature)){
-			if($params->note != '') $this->patient->addPatientNoteByPid($params->pid, $params->note, $params->eid);
-			if($params->reminder != '') $this->patient->addPatientReminderByPid($params->pid, $params->reminder, $params->eid);
-			$data = $this->updateEncounter($params);
-			return array('success' => true, 'data' => $data);
-		} else{
-			return array('success' => false);
+
+		/** verify permissions (sign encounter and supervisor) */
+		if(!ACL::hasPermission('sign_enc') || ($params->isSupervisor && !ACL::hasPermission('sign_enc_supervisor'))){
+			return array('success' => false, 'error' => 'access_denied');
 		}
+
+		if($params->isSupervisor){
+			if($params->supervisor_uid != $_SESSION['user']['id']){
+				return array('success' => false, 'error' => 'supervisor_does_not_match_user');
+			}
+			if(!$this->user->verifyUserPass($params->signature, $params->supervisor_uid)){
+				return array('success' => false, 'error' => 'incorrect_password');
+			}
+		}else{
+			if(!$this->user->verifyUserPass($params->signature)){
+				return array('success' => false, 'error' => 'incorrect_password');
+			}
+		}
+
+
+		if($params->isSupervisor){
+			$params->close_date = date('Y-m-d H:i:s');
+		}else{
+			$params->provider_uid = $_SESSION['user']['id'];
+			if(!ACL::hasPermission('require_enc_supervisor')) $params->close_date = date('Y-m-d H:i:s');
+		}
+
+		$data = $this->updateEncounter($params);
+		return array('success' => true, 'data' => $data);
+
 
 	}
 

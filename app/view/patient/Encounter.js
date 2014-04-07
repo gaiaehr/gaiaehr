@@ -462,8 +462,9 @@ Ext.define('App.view.patient.Encounter', {
 
 		if(acl['access_encounter_checkout']){
 			me.panelToolBar.add({
-				text: i18n('checkout'),
-				handler: me.onCheckout
+				text: i18n('sign'),
+				icon: 'resources/images/icons/edit.png',
+				handler: me.onSignEncounter
 			}, '-');
 		}
 
@@ -475,6 +476,7 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.callParent();
 		me.down('panel').addDocked(me.panelToolBar);
+
 	},
 
 	newDoc: function(btn){
@@ -514,20 +516,6 @@ Ext.define('App.view.patient.Encounter', {
 	},
 
 	/**
-	 * CheckOut Functions
-	 */
-	onCheckout: function(){
-		var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')';
-
-		app.checkoutWindow.enc = this;
-		//	    app.checkoutWindow.pid = app.patient.pid;
-		//	    app.checkoutWindow.eid = app.patient.eid;
-
-		app.checkoutWindow.setTitle(title);
-		app.checkoutWindow.show();
-	},
-
-	/**
 	 * Sends the data to the server to be saved.
 	 * This function needs the button action to determine
 	 * which form  to save.
@@ -558,7 +546,7 @@ Ext.define('App.view.patient.Encounter', {
 							app.patientBtn.addCls(data.priority);
 							me.openEncounter(data.eid);
 							SaveBtn.up('window').hide();
-							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 							app.AuditLog('Patient encounter created');
 						}
 					});
@@ -617,15 +605,17 @@ Ext.define('App.view.patient.Encounter', {
 					store.sync({
 						callback: function(){
 							me.msg('Sweet!', i18n('encounter_updated'));
-							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 							app.AuditLog('Patient encounter updated');
 						}
 					});
 					me.encounterEventHistoryStore.load({
-						filters:[{
-							property: 'eid',
-							value: me.eid
-						}]
+						filters: [
+							{
+								property: 'eid',
+								value: me.eid
+							}
+						]
 					});
 				}else{
 					app.accessDenied();
@@ -635,7 +625,11 @@ Ext.define('App.view.patient.Encounter', {
 	},
 
 	onVitalsSign: function(){
-		var me = this, form = me.vitalsPanel.down('form').getForm(), store = me.encounter.vitals(), record = form.getRecord();
+		var me = this,
+			form = me.vitalsPanel.down('form').getForm(),
+			store = me.encounter.vitals(),
+			record = form.getRecord();
+
 		if(form.isValid()){
 			me.passwordVerificationWin(function(btn, password){
 				if(btn == 'ok'){
@@ -651,7 +645,7 @@ Ext.define('App.view.patient.Encounter', {
 									me.updateProgressNote();
 									me.resetVitalsForm();
 									me.vitalsPanel.down('vitalsdataview').refresh();
-									// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+									/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 									app.AuditLog('Patient vitals signed');
 								}
 							});
@@ -701,7 +695,7 @@ Ext.define('App.view.patient.Encounter', {
 		me.el.mask(i18n('loading...') + ' ' + i18n('encounter') + ' - ' + eid);
 		me.resetTabs();
 
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+		/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 		app.AuditLog('Patient encounter viewed');
 
 		if(me.encounter) delete me.encounter;
@@ -782,41 +776,93 @@ Ext.define('App.view.patient.Encounter', {
 	/**
 	 * Function to close the encounter..
 	 */
-	closeEncounter: function(){
-		var me = this, form, values;
+	doSignEncounter: function(isSupervisor, callback){
+		var me = this,
+			form,
+			values;
+
 		me.passwordVerificationWin(function(btn, password){
 			if(btn == 'ok'){
+
 				form = app.checkoutWindow.down('form').getForm();
 				values = form.getValues();
 				values.eid = me.eid;
-				values.pid = me.pid;
-				values.close_date = Ext.Date.format(new Date(), 'Y-m-d H:i:s');
 				values.signature = password;
-				Encounter.closeEncounter(values, function(provider, response){
+				values.isSupervisor = isSupervisor;
+
+				if(acl['require_enc_supervisor'] || isSupervisor){
+					values.requires_supervisor = true;
+					values.supervisor_uid = app.checkoutWindow.coSignCombo.getValue();
+				}else if(!isSupervisor && !acl['require_enc_supervisor']){
+					values.requires_supervisor = false;
+				}
+
+				Encounter.signEncounter(values, function(provider, response){
 					if(response.result.success){
 						if(me.stopTimer()){
+
+							/** default data for notes and reminder **/
+							var params = {
+								pid: me.pid,
+								eid: me.eid,
+								uid: app.user.id,
+								type: 'checkout',
+								date: new Date()
+							};
+
+							/** create a new note if not blank **/
+							params.body = values.note;
+							if(params.body !== '') Ext.create('App.model.patient.Notes', params).save();
+							/** create a new reminder if not blank **/
+							params.body = values.reminder;
+							if(params.body !== '') Ext.create('App.model.patient.Reminders', params).save();
+
+							/** unset the patient eid **/
 							app.patient.eid = null;
 							app.openPatientVisits();
+
+							app.AuditLog('Patient encounter ' + (isSupervisor ? 'co-signed' : 'signed'));
 							me.msg('Sweet!', i18n('encounter_closed'));
+							app.checkoutWindow.close();
 						}
 					}else{
 						Ext.Msg.show({
 							title: 'Oops!',
-							msg: i18n('incorrect_password'),
-							buttons: Ext.Msg.OKCANCEL,
-							icon: Ext.Msg.ERROR,
-							fn: function(btn){
-								if(btn == 'ok'){
-									me.closeEncounter();
-									// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-									app.AuditLog('Patient encounter closed');
-								}
-							}
+							msg: i18n(response.result.error),
+							buttons: Ext.Msg.OK,
+							icon: Ext.Msg.ERROR
 						});
 					}
 				});
 			}
 		});
+	},
+
+	/**
+	 * CheckOut Functions
+	 */
+	onSignEncounter: function(){
+		var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')';
+		app.checkoutWindow.enc = this;
+		app.checkoutWindow.setTitle(title);
+		app.checkoutWindow.show();
+	},
+
+	isClose:function(){
+		return typeof this.encounter.data.close_date != 'undefined' && this.encounter.data.close_date != null;
+	},
+
+	isSigned:function(){
+		return typeof this.encounter.data.provider_uid != 'undefined' && this.encounter.data.provider_uid != null && this.encounter.data.provider_uid != 0;
+	},
+
+	disableEdit:function(){
+
+		// TODO......
+
+
+
+
 	},
 
 	/**
@@ -1156,7 +1202,6 @@ Ext.define('App.view.patient.Encounter', {
 
 			});
 		}
-
 
 		/**
 		 * Get 'Review of Systems Check' Form and define the Model using the form fields

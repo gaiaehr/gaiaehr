@@ -74,7 +74,7 @@ CREATE TABLE `acl_permissions` (
   `seq` int(11) DEFAULT NULL COMMENT 'Sequence Order',
   PRIMARY KEY (`id`),
   UNIQUE KEY `permKey` (`perm_key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=93 ;
 
 CREATE TABLE `acl_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -91,7 +91,7 @@ CREATE TABLE `acl_role_perms` (
   `value` tinyint(1) DEFAULT NULL COMMENT 'Value',
   `add_date` datetime DEFAULT NULL COMMENT 'Date Added',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=316 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=334 ;
 
 CREATE TABLE `acl_user_perms` (
   `id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,

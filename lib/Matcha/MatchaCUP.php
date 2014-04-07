@@ -91,25 +91,26 @@ class MatchaCUP {
 	 * this is not the preferred way, but sometimes you need to do it.
 	 *
 	 * @param null $sql
+	 *
 	 * @return MatchaCUP
 	 */
-	public function sql($sql = NULL){
-		try{
+	public function sql($sql = null) {
+		try {
 			$this->isSenchaRequest = false;
 
-			if($sql == NULL){
+			if($sql == null){
 				throw new Exception("Error the SQL statement is not set.");
-			} else{
+			} else {
 				$this->sql = $sql;
 			}
 			return $this;
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
 	}
 
-	public function exec(){
+	public function exec() {
 		$statement = Matcha::$__conn->prepare($this->sql);
 		$result = $statement->execute();
 		$statement->closeCursor();
@@ -121,9 +122,9 @@ class MatchaCUP {
 	 * this is the preferred way to build complex SQL statements that will
 	 * use MatchaCUP objects
 	 */
-	public function buildSQL($sqlArray = NULL){
-		try{
-			if($sqlArray == NULL || !is_array($sqlArray))
+	public function buildSQL($sqlArray = null) {
+		try {
+			if($sqlArray == null || !is_array($sqlArray))
 				throw new Exception("Error the argument passed are empty, null or is not an array.");
 			if(empty($sqlArray['SELECT']))
 				throw new Exception("Error the select statement is mandatory.");
@@ -133,7 +134,7 @@ class MatchaCUP {
 				if(count($sqlArray['LEFTJOIN']) > 1){
 					foreach($sqlArray['LEFTJOIN'] as $LJoin)
 						$SQLStatement .= 'LEFT JOIN ' . $LJoin . chr(13);
-				} else{
+				} else {
 					$SQLStatement .= 'LEFT JOIN ' . $sqlArray['LEFTJOIN'] . chr(13);
 				}
 			}
@@ -142,7 +143,7 @@ class MatchaCUP {
 			$SQLStatement .= (!empty($sqlArray['ORDER']) ? 'ORDER BY ' . $sqlArray['ORDER'] . chr(13) : '');
 			$this->sql = $SQLStatement;
 			return $this;
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
@@ -164,29 +165,30 @@ class MatchaCUP {
 	 *
 	 * @param null $where
 	 * @param null $columns
+	 *
 	 * @return MatchaCUP
 	 */
-	public function load($where = NULL, $columns = NULL){
+	public function load($where = null, $columns = null) {
 
-		try{
+		try {
 			$this->sql = '';
 			if(!is_object($where)){
 				$this->isSenchaRequest = false;
 				// columns
 				if($columns == null){
 					$columnsx = '*';
-				} elseif(is_array($columns)){
+				} elseif(is_array($columns)) {
 					$columnsx = '`' . implode('`,`', $columns) . '`';
-				} else{
+				} else {
 					$columnsx = $columns;
 				}
 				// where
 				if(is_numeric($where)){
 					$where = $this->ifDataEncrypt($this->primaryKey, $where);
 					$wherex = "`$this->primaryKey`='$where'";
-				} elseif(is_array($where)){
+				} elseif(is_array($where)) {
 					$wherex = self::parseWhereArray($where);
-				} else{
+				} else {
 					$wherex = $where;
 				}
 				if($where != null){
@@ -194,7 +196,7 @@ class MatchaCUP {
 				}
 				// sql build
 				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
-			} else{
+			} else {
 				$this->isSenchaRequest = true;
 				// if App.model.Example.load(4)
 				$isModelLoadRequest = isset($where->{$this->primaryKey});
@@ -202,14 +204,14 @@ class MatchaCUP {
 				// limits
 				if($isModelLoadRequest){
 					$_limits = ' LIMIT 1';
-				}elseif(isset($where->limit) || isset($where->start)){
+				} elseif(isset($where->limit) || isset($where->start)) {
 					$_limits = array();
 					if(isset($where->start))
 						$_limits[] = $where->start;
 					if(isset($where->limit))
 						$_limits[] = $where->limit;
 					$_limits = ' LIMIT ' . implode(',', $_limits);
-				}else{
+				} else {
 					$_limits = '';
 				}
 
@@ -224,10 +226,10 @@ class MatchaCUP {
 					}
 					if(!empty($sortArray)){
 						$_sort = ' ORDER BY ' . implode(', ', $sortArray);
-					}else{
+					} else {
 						$_sort = '';
 					}
-				}else{
+				} else {
 					$_sort = '';
 				}
 
@@ -236,21 +238,21 @@ class MatchaCUP {
 					$property = $where->group[0]->property;
 					$direction = isset($where->group[0]->direction) ? $where->group[0]->direction : '';
 					$_group = " GROUP BY `$property` $direction";
-				}else{
+				} else {
 					$_group = '';
 				}
 
 				// filter/where
 				if($isModelLoadRequest){
 					$_where = ' WHERE ' . $this->primaryKey . ' = \'' . $where->{$this->primaryKey} . '\'';
-				} elseif(isset($where->filter) && isset($where->filter[0]->property)){
+				} elseif(isset($where->filter) && isset($where->filter[0]->property)) {
 					$whereArray = array();
 					foreach($where->filter as $foo){
 						if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
 							if(is_null($foo->value)){
 								$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
 								$whereArray[] = "`$foo->property` $operator NULL";
-							}else{
+							} else {
 								$operator = isset($foo->operator) ? $foo->operator : '=';
 								$whereArray[] = "`$foo->property` $operator '$foo->value'";
 							}
@@ -258,10 +260,10 @@ class MatchaCUP {
 					}
 					if(count($whereArray) > 0){
 						$_where = 'WHERE ' . implode(' AND ', $whereArray);
-					}else{
+					} else {
 						$_where = '';
 					}
-				}else{
+				} else {
 					$_where = '';
 				}
 
@@ -269,7 +271,7 @@ class MatchaCUP {
 				$this->sql = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort $_limits";
 			}
 			return $this;
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -279,11 +281,11 @@ class MatchaCUP {
 	 * Method to get the next ID from a table
 	 * @return mixed
 	 */
-	public function nextId(){
-		try{
+	public function nextId() {
+		try {
 			$r = Matcha::$__conn->query("SELECT MAX($this->primaryKey) AS lastID FROM $this->table")->fetch();
 			return $r['lastID'] + 1;
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -292,10 +294,10 @@ class MatchaCUP {
 	 * This is create a sequenced unique ID {string} of 38 characters
 	 * @return mixed
 	 */
-	public function newId(){
-		try{
+	public function newId() {
+		try {
 			return strtoupper(str_replace('.', '', (uniqid(date('Uu'), true)))) . Matcha::getInstallationNumber();
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -304,15 +306,22 @@ class MatchaCUP {
 	 * returns multiple rows of records
 	 * @return mixed
 	 */
-	public function all(){
+	public function all() {
 		//		return $this->sql;
-		try{
+		try {
 			$this->record = Matcha::$__conn->query($this->sql)->fetchAll();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
 			$this->builtRoot();
+			self::callBackMethod(array(
+				'crc32' => crc32($this->sql),
+				'event' => 'SELECT',
+				'sql' => $this->sql,
+				'data' => '',
+				'table' => $this->table
+			));
 			return $this->record;
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -321,15 +330,22 @@ class MatchaCUP {
 	 * returns one record
 	 * @return mixed
 	 */
-	public function one(){
+	public function one() {
 		//		return $this->sql;
-		try{
+		try {
 			$this->record = Matcha::$__conn->query($this->sql)->fetch();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
 			$this->builtRoot();
+			self::callBackMethod(array(
+				'crc32' => crc32($this->sql),
+				'event' => 'SELECT',
+				'sql' => $this->sql,
+				'data' => '',
+				'table' => $this->table
+			));
 			return $this->record;
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -338,10 +354,10 @@ class MatchaCUP {
 	 * return an specific column
 	 * @return mixed
 	 */
-	public function column(){
-		try{
+	public function column() {
+		try {
 			return Matcha::$__conn->query($this->sql)->fetchColumn();
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -349,10 +365,10 @@ class MatchaCUP {
 	/**
 	 * @return mixed
 	 */
-	public function rowCount(){
-		try{
+	public function rowCount() {
+		try {
 			return Matcha::$__conn->query($this->sql)->rowCount();
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -360,19 +376,20 @@ class MatchaCUP {
 	/**
 	 * @return mixed
 	 */
-	public function columnCount(){
-		try{
+	public function columnCount() {
+		try {
 			return Matcha::$__conn->query($this->sql)->columnCount();
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
 	/**
 	 * @param $params
+	 *
 	 * @return $this
 	 */
-	public function sort($params){
+	public function sort($params) {
 		if(isset($params->sort)){
 			$sortArray = array();
 			foreach($params->sort as $sort){
@@ -390,9 +407,10 @@ class MatchaCUP {
 
 	/**
 	 * @param $params
+	 *
 	 * @return $this
 	 */
-	public function group($params){
+	public function group($params) {
 		if(isset($params->group)){
 			$property = $params->group[0]->property;
 			$direction = isset($params->group[0]->direction) ? $params->group[0]->direction : '';
@@ -403,23 +421,25 @@ class MatchaCUP {
 
 	/**
 	 * LIMIT method
+	 *
 	 * @param null $start
-	 * @param int $limit
+	 * @param int  $limit
+	 *
 	 * @return mixed
 	 */
-	public function limit($start = NULL, $limit = 25){
-		try{
+	public function limit($start = null, $limit = 25) {
+		try {
 			$this->sql = preg_replace("(LIMIT[ 0-9,]*)", '', $this->sql);
 			if($start == null){
 				$this->sql = $this->sql . " LIMIT $limit";
-			} else{
+			} else {
 				$this->sql = $this->sql . " LIMIT $start, $limit";
 			}
 			$this->record = Matcha::$__conn->query($this->sql)->fetchAll();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
 			return $this->record;
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -427,12 +447,14 @@ class MatchaCUP {
 	/**
 	 * function save($record): (part of CRUD) Create & Update
 	 * store the record as array into the working table
+	 *
 	 * @param array|object $record
-	 * @param array $where
+	 * @param array        $where
+	 *
 	 * @return array
 	 */
-	public function save($record, $where = array()){
-		try{
+	public function save($record, $where = array()) {
+		try {
 			if(!empty($where)){
 				$this->isSenchaRequest = false;
 				$data = get_object_vars($record);
@@ -446,12 +468,12 @@ class MatchaCUP {
 				$this->record = $data;
 
 				// single object handler
-			} elseif(is_object($record)){
+			} elseif(is_object($record)) {
 				$this->isSenchaRequest = true;
 				$this->record = $this->saveRecord($record);
 
 				// multiple objects handler
-			} else{
+			} else {
 				$this->isSenchaRequest = true;
 				// record
 				$this->record = array();
@@ -463,23 +485,23 @@ class MatchaCUP {
 			$this->builtRoot();
 			return (array)$this->record;
 
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
 
-	private function saveRecord($record){
+	private function saveRecord($record) {
 		$data = $this->parseValues(get_object_vars($record));
 		$isInsert = (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == '')));
 
 		if($isInsert){
 			if(isset($this->model->table->uuid) && $this->model->table->uuid){
 				$data[$this->primaryKey] = $this->newId();
-			} else{
+			} else {
 				unset($data[$this->primaryKey]);
 			}
 			$this->sql = $this->buildInsetSqlStatement($data);
-		} else{
+		} else {
 			$this->sql = $this->buildUpdateSqlStatement($data);
 		}
 
@@ -492,14 +514,14 @@ class MatchaCUP {
 
 			if(is_int($value)){
 				$param = PDO::PARAM_INT;
-			} elseif(is_bool($value)){
+			} elseif(is_bool($value)) {
 				$param = PDO::PARAM_BOOL;
-			} elseif(is_null($value)){
+			} elseif(is_null($value)) {
 				$param = PDO::PARAM_NULL;
-			} elseif(is_string($value)){
+			} elseif(is_string($value)) {
 				$param = PDO::PARAM_STR;
-			} else{
-				$param = FALSE;
+			} else {
+				$param = false;
 			}
 
 			$insert->bindValue(":$key", $value, $param);
@@ -511,32 +533,32 @@ class MatchaCUP {
 			if($this->isUUID()){
 				if(is_array($record)){
 					$record[$this->primaryKey] = $data[$this->primaryKey];
-				} else{
+				} else {
 					$record->{$this->primaryKey} = $data[$this->primaryKey];
 				}
-			} else{
+			} else {
 				if(is_array($record)){
 					$record[$this->primaryKey] = $this->lastInsertId = Matcha::$__conn->lastInsertId();
-				} else{
+				} else {
 					$record->{$this->primaryKey} = $this->lastInsertId = Matcha::$__conn->lastInsertId();
 				}
 			}
 
 			self::callBackMethod(array(
-					'crc32' => crc32($this->sql),
-					'event' => 'INSERT',
-					'sql' => $this->sql,
-					'data' => $this->bindedValues,
-					'table' => $this->table
-				));
-		} else{
+				'crc32' => crc32($this->sql),
+				'event' => 'INSERT',
+				'sql' => $this->sql,
+				'data' => $data,
+				'table' => $this->table
+			));
+		} else {
 			self::callBackMethod(array(
-					'crc32' => crc32($this->sql),
-					'event' => 'UPDATE',
-					'sql' => $this->sql,
-					'data' => $this->bindedValues,
-					'table' => $this->table
-				));
+				'crc32' => crc32($this->sql),
+				'event' => 'UPDATE',
+				'sql' => $this->sql,
+				'data' => $data,
+				'table' => $this->table
+			));
 		}
 
 		return $record;
@@ -545,21 +567,23 @@ class MatchaCUP {
 	/**
 	 * function destroy($record): (part of CRUD) delete
 	 * will delete the record indicated by an id
-	 * @param $record
+	 *
+	 * @param      $record
 	 * @param null $filter
+	 *
 	 * @return mixed
 	 */
-	public function destroy($record, $filter = null){
-		try{
+	public function destroy($record, $filter = null) {
+		try {
 			if(is_object($record)){
 				$this->destroyRecord($record, $filter);
-			} else{
+			} else {
 				foreach($record as $rec){
 					$this->destroyRecord($rec, $filter);
 				}
 			}
 			return array('success' => $this->rowsAffected > 0);
-		} catch(PDOException $e){
+		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
 	}
@@ -568,14 +592,14 @@ class MatchaCUP {
 	 * @param $record
 	 * @param $filter
 	 */
-	private function destroyRecord($record, $filter){
-		$record = (array) $record;
+	private function destroyRecord($record, $filter) {
+		$record = (array)$record;
 		$sql = "DELETE FROM `{$this->table}` ";
 		$where = '';
 
 		if(!isset($filter)){
 			$where = "WHERE `{$this->primaryKey}` = '{$record[$this->primaryKey]}'";
-		} elseif(isset($filter->filter) && isset($filter->filter[0]->property)){
+		} elseif(isset($filter->filter) && isset($filter->filter[0]->property)) {
 
 			$whereArray = array();
 			foreach($filter->filter as $foo){
@@ -583,18 +607,20 @@ class MatchaCUP {
 					if(is_null($foo->value)){
 						$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
 						$whereArray[] = "`$foo->property` $operator NULL";
-					}else{
+					} else {
 						$operator = isset($foo->operator) ? $foo->operator : '=';
 						$whereArray[] = "`$foo->property` $operator '$foo->value'";
 					}
 				}
 			}
 
-			if(count($whereArray) > 0) $where = 'WHERE ' . implode(' AND ', $whereArray);
+			if(count($whereArray) > 0)
+				$where = 'WHERE ' . implode(' AND ', $whereArray);
 		}
 
 		$sql .= $where;
-		if(strpos($sql, 'WHERE') === false) return;
+		if(strpos($sql, 'WHERE') === false)
+			return;
 
 		$this->rowsAffected = Matcha::$__conn->exec($sql);
 		if($this->rowsAffected > 0){
@@ -609,9 +635,10 @@ class MatchaCUP {
 
 	/**
 	 * @param $params
+	 *
 	 * @return MatchaCUP
 	 */
-	public function search($params){
+	public function search($params) {
 
 		$sql = "SELECT * FROM `$this->table` ";
 
@@ -648,9 +675,10 @@ class MatchaCUP {
 	 * Method to do the callback function, and also inject the event data
 	 * it depends on MatchaAudit, if MatchaAudit is not configured this will not
 	 * execute.
+	 *
 	 * @param array $dataInjectArray
 	 */
-	public function callBackMethod($dataInjectArray = array()){
+	public function callBackMethod($dataInjectArray = array()) {
 		if(method_exists(MatchaAudit::$hookClass, MatchaAudit::$hookMethod) && MatchaAudit::$__audit)
 			call_user_func_array(array(
 				MatchaAudit::$hookClass,
@@ -661,19 +689,21 @@ class MatchaCUP {
 	/**
 	 * function setModel($model):
 	 * This method will set the model array as an object within MatchaCUP scope
+	 *
 	 * @param $model
+	 *
 	 * @return bool|\MatchaCUP
 	 */
-	public function setModel($model){
+	public function setModel($model) {
 		$this->model = (is_array($model) ? MatchaUtils::__arrayToObject($model) : $model);
 
 		if(isset($this->model->table)){
 			if(is_string($this->model->table)){
 				$this->table = $this->model->table;
-			} else{
+			} else {
 				$this->table = $this->model->table->name;
 			}
-		} else{
+		} else {
 			$this->table = false;
 		}
 		$this->date = new DateTime();
@@ -687,10 +717,12 @@ class MatchaCUP {
 	/**
 	 * function parseWhereArray($array):
 	 * This method will parse the where array and return the SQL string
+	 *
 	 * @param $array
+	 *
 	 * @return string
 	 */
-	private function parseWhereArray($array){
+	private function parseWhereArray($array) {
 		$whereStr = '';
 		$prevArray = false;
 		foreach($array as $key => $val){
@@ -700,12 +732,12 @@ class MatchaCUP {
 				$val = $this->ifDataEncrypt($key, $val);
 				$whereStr .= "`$key`='$val' ";
 				$prevArray = true;
-			} elseif(is_array($val)){
+			} elseif(is_array($val)) {
 				if($prevArray)
 					$whereStr .= 'AND ';
 				$whereStr .= '(' . self::parseWhereArray($val) . ')';
 				$prevArray = true;
-			} else{
+			} else {
 				$whereStr .= $val . ' ';
 				$prevArray = false;
 			}
@@ -716,10 +748,12 @@ class MatchaCUP {
 	/**
 	 * function buildInsetSqlStatement($data):
 	 * Method to build the insert sql statement
+	 *
 	 * @param $data
+	 *
 	 * @return mixed
 	 */
-	private function buildInsetSqlStatement($data){
+	private function buildInsetSqlStatement($data) {
 		$fields = array_keys($data);
 		$placeholders = array();
 		// array(':field1', ':field2', ':field3')
@@ -735,15 +769,17 @@ class MatchaCUP {
 	/**
 	 * function buildUpdateSqlStatement($data):
 	 * Method to build the update sql statement
-	 * @param $data
+	 *
+	 * @param       $data
 	 * @param array $where
+	 *
 	 * @return mixed
 	 */
-	private function buildUpdateSqlStatement($data, $where = array()){
+	private function buildUpdateSqlStatement($data, $where = array()) {
 
 		if(!empty($where)){
 			$primaryKey = current(array_keys($where));
-		} else{
+		} else {
 			$primaryKey = $this->primaryKey;
 		}
 
@@ -765,10 +801,12 @@ class MatchaCUP {
 	/**
 	 * function parseValues($data):
 	 * Parse the data and if some values met the type correct them.
+	 *
 	 * @param $data
+	 *
 	 * @return array
 	 */
-	private function parseValues($data){
+	private function parseValues($data) {
 		$record = array();
 		$columns = array_keys($data);
 		$values = array_values($data);
@@ -790,10 +828,10 @@ class MatchaCUP {
 				$type = MatchaModel::__getFieldType($col, $this->model);
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
-				} else{
+				} else {
 					if($type == 'date'){
 						$data[$col] = ($data[$col] == '' ? null : $data[$col]);
-					} elseif($type == 'array'){
+					} elseif($type == 'array') {
 						$data[$col] = ($data[$col] == '' ? null : serialize($data[$col]));
 					}
 				}
@@ -802,7 +840,7 @@ class MatchaCUP {
 				 */
 				if($this->autoTrim && $type != 'bool'){
 					$record[$col] = trim($data[$col]);
-				} else{
+				} else {
 					$record[$col] = $data[$col];
 				}
 			}
@@ -813,18 +851,20 @@ class MatchaCUP {
 
 	/**
 	 * @param $value
+	 *
 	 * @return string
 	 */
-	private function dataEncrypt($value){
+	private function dataEncrypt($value) {
 		return MatchaUtils::__encrypt($value);
 	}
 
 	/**
 	 * @param $key
 	 * @param $value
+	 *
 	 * @return string
 	 */
-	private function ifDataEncrypt($key, $value){
+	private function ifDataEncrypt($key, $value) {
 		if(is_array($this->encryptedFields) && in_array($key, $this->encryptedFields)){
 			$value = MatchaUtils::__encrypt($value);
 		}
@@ -836,7 +876,7 @@ class MatchaCUP {
 	 * @param $key
 	 * @param $encryptedFields
 	 */
-	private function dataDecrypt(&$item, $key, $encryptedFields){
+	private function dataDecrypt(&$item, $key, $encryptedFields) {
 		if(in_array($key, $encryptedFields)){
 			$item = MatchaUtils::__decrypt($item);
 		}
@@ -845,19 +885,19 @@ class MatchaCUP {
 	/**
 	 *
 	 */
-	private function dataDecryptWalk(){
+	private function dataDecryptWalk() {
 		if(is_array($this->record) && is_array($this->encryptedFields)){
 			array_walk_recursive($this->record, 'self::dataDecrypt', $this->encryptedFields);
 		}
 	}
 
-	private function dataUnSerialize(&$item, $key, $arrayFields){
+	private function dataUnSerialize(&$item, $key, $arrayFields) {
 		if(in_array($key, $arrayFields)){
 			$item = unserialize($item);
 		}
 	}
 
-	private function dataUnSerializeWalk(){
+	private function dataUnSerializeWalk() {
 		if(is_array($this->record) && is_array($this->arrayFields)){
 			array_walk_recursive($this->record, 'self::dataUnSerialize', $this->arrayFields);
 		}
@@ -866,7 +906,7 @@ class MatchaCUP {
 	/**
 	 *
 	 */
-	private function builtRoot(){
+	private function builtRoot() {
 		if($this->isSenchaRequest && isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)
 		){
 			$record = array();
@@ -875,7 +915,7 @@ class MatchaCUP {
 			if($total !== false){
 				if(isset($this->model->proxy->reader->totalProperty)){
 					$record[$this->model->proxy->reader->totalProperty] = $total;
-				} else{
+				} else {
 					$record['total'] = $total;
 				}
 			}
@@ -886,7 +926,7 @@ class MatchaCUP {
 
 	}
 
-	private function isUUID(){
+	private function isUUID() {
 		return (isset($this->model->table->uuid) && $this->model->table->uuid);
 	}
 }

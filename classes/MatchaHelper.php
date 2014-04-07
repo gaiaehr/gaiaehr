@@ -45,7 +45,6 @@ class MatchaHelper extends Matcha {
 	 */
 	private $err;
 
-	private $AuditLog;
 
 	/**
 	 * @brief       MatchaHelper constructor.
@@ -79,8 +78,7 @@ class MatchaHelper extends Matcha {
 		MatchaAudit::$hookClass = 'MatchaHelper';
 		MatchaAudit::$hookMethod = 'storeAudit';
 		MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
-
-		$this->AuditLog = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+		MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 	}
 
 	/**
@@ -97,21 +95,24 @@ class MatchaHelper extends Matcha {
 	 * memory.
 	 */
 	public static function storeAudit($saveParams = array()){
-		// Prepare the data for MatchaAudit
-		MatchaAudit::$eventLogData = array(
-			'date' => Time::getLocalTime('Y-m-d H:i:s'),
-			'pid' => (isset($saveParams['data']['pid']) ? $saveParams['data']['pid'] : '0'),
-			'eid' => (isset($saveParams['data']['eid']) ? $saveParams['data']['eid'] : '0'),
-			'uid' => (isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0'),
-			'fid' => (isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '0'),
-			'event' => $saveParams['event'],
-			'table_name' => (isset($saveParams['table']) ? $saveParams['table'] : ''),
-			'sql_string' => (isset($saveParams['sql']) ? $saveParams['sql'] : ''),
-			'data' => (isset($saveParams['data']) ? serialize($saveParams['data']) : ''),
-			'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
-			'checksum' => $saveParams['crc32']
-		);
-		MatchaAudit::auditSaveLog();
+
+		if($saveParams['event'] != 'SELECT'){
+			MatchaAudit::$eventLogData = array(
+				'date' => Time::getLocalTime('Y-m-d H:i:s'),
+				'pid' => (isset($saveParams['data']['pid']) ? $saveParams['data']['pid'] : '0'),
+				'eid' => (isset($saveParams['data']['eid']) ? $saveParams['data']['eid'] : '0'),
+				'uid' => (isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0'),
+				'fid' => (isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '0'),
+				'event' => $saveParams['event'],
+				'table_name' => (isset($saveParams['table']) ? $saveParams['table'] : ''),
+				'sql_string' => (isset($saveParams['sql']) ? $saveParams['sql'] : ''),
+				'data' => (isset($saveParams['data']) ? serialize($saveParams['data']) : ''),
+				'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
+				'checksum' => $saveParams['crc32']
+			);
+			MatchaAudit::auditSaveLog();
+		}
+
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 /**
- *GaiaEHR (Electronic Health Records)
+ * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,8 +18,6 @@
  */
 
 include_once(dirname(__FILE__) . '/Person.php');
-include_once(dirname(__FILE__) . '/../classes/Time.php');
-
 class Calendar {
 	/**
 	 * @var MatchaHelper
@@ -28,22 +26,20 @@ class Calendar {
 	/**
 	 * @var MatchaCUP
 	 */
-	private $u = null;
+	private $u;
+	private $c;
+	private $e;
 
 	/**
 	 * Creates the MatchaHelper instance
 	 */
 	function __construct(){
 		$this->db = new MatchaHelper();
-		return;
-	}
+		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+		$this->c = MatchaModel::setSenchaModel('App.model.calendar.Category');
+		$this->e = MatchaModel::setSenchaModel('App.model.calendar.Events');
 
-	/**
-	 * MATCHA CUPs (Sencha Models)
-	 */
-	private function setPatientModel(){
-		if($this->u == null)
-			$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+		return;
 	}
 
 	/**
@@ -54,21 +50,21 @@ class Calendar {
 	 * @return array
 	 */
 	public function getCalendars(){
-		$this->setPatientModel();
+		$calendars = array();
 		$color = -4;
-		$rows = array();
-		foreach($this->u->load(array('calendar' => 1, 'active' => 1))->all() as $row){
-			if($color > 32)
+		$users = $this->u->load(array('calendar' => 1, 'active' => 1))->all();
+		foreach($users as $user){
+			if($color > 32){
 				$color = $color - 30;
+			}
 			$color = $color + 5;
-			$cla_user = array();
-			$cla_user['id'] = $row['id'];
-			$cla_user['title'] = $row['title'] . ' ' . $row['lname'];
-			$cla_user['color'] = strval($color);
-			array_push($rows, $cla_user);
+			$calendar = array();
+			$calendar['id'] = $user['id'];
+			$calendar['title'] = $user['title'] . ' ' . $user['lname'];
+			$calendar['color'] = strval($color);
+			$calendars[] = $calendar;
 		}
-		return $rows;
-
+		return $calendars;
 	}
 
 	/**
@@ -78,27 +74,27 @@ class Calendar {
 	 * @return array
 	 */
 	public function getEvents(stdClass $params){
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'start';
+		$filters->filter[0]->operator = '>=';
+		$filters->filter[0]->value = $params->startDate . ' 00:00:00';
+		$filters->filter[1] = new stdClass();
+		$filters->filter[1]->property = 'end';
+		$filters->filter[1]->operator = '<=';
+		$filters->filter[1]->value = $params->endDate . ' 23:59:59';
+		$events = $this->e->load($params)->all();
+		unset($filters);
 
-		$sql = ("SELECT * FROM calendar_events WHERE start BETWEEN '" . $params->startDate . " 00:00:00' AND '" . $params->endDate . " 23:59:59' ");
-		$this->db->setSQL($sql);
 		$rows = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-			$row['id'] = intval($row['id']);
-			$row['calendarId'] = intval($row['user_id']);
-			$row['category'] = intval($row['category']);
-			$row['facility'] = intval($row['facility']);
-			$row['billing_facility'] = intval($row['billing_facillity']);
-			$row['patient_id'] = intval($row['patient_id']);
+		foreach($events as $event){
+			$user = $this->u->load($event['uid'])->one();
+			if($user !== false)	$row['title'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user);
 
-			$sql = ("SELECT * FROM patient WHERE pid= '" . $row['patient_id'] . "'");
-			$this->db->setSQL($sql);
-			foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $urow){
-				$row['title'] = Person::fullname($urow['fname'], $urow['mname'], $urow['lname']);
-			}
-			array_push($rows, $row);
+			$rows[] = $event;
 		}
-		//print_r(json_encode(array('success'=>true, 'message'=>'Loaded data',
-		// 'data'=>$rows)));    }
+
 		return array('success' => true, 'message' => 'Loaded data', 'data' => $rows);
 	}
 
@@ -106,27 +102,8 @@ class Calendar {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function addEvent(stdClass $params){
-		$row = array();
-		$row['user_id'] = $params->calendarId;
-		$row['category'] = $params->category;
-		$row['facility'] = $params->facility;
-		$row['billing_facillity'] = $params->billing_facility;
-		$row['patient_id'] = $params->patient_id;
-		$row['title'] = $params->title;
-		$row['status'] = $params->status;
-		$row['start'] = $params->start;
-		$row['end'] = $params->end;
-		$row['rrule'] = $params->rrule;
-		$row['loc'] = $params->loc;
-		$row['notes'] = $params->notes;
-		$row['url'] = $params->url;
-		$row['ad'] = $params->ad;
-
-		$this->db->setSQL($this->db->sqlBind($row, 'calendar_events', 'I'));
-		$this->db->execLog();
-
-		return array('success' => true, 'message' => 'Loaded data', 'data' => $params);
+	public function addEvent($params){
+		return array('success' => true, 'message' => 'Loaded data', 'data' => $this->e->save($params));
 	}
 
 	/**
@@ -134,25 +111,7 @@ class Calendar {
 	 * @return array
 	 */
 	public function updateEvent(stdClass $params){
-
-		$row['user_id'] = $params->calendarId;
-		$row['category'] = $params->category;
-		$row['facility'] = $params->facility;
-		$row['billing_facillity'] = $params->billing_facility;
-		$row['patient_id'] = $params->patient_id;
-		$row['title'] = $params->title;
-		$row['status'] = $params->status;
-		$row['start'] = $params->start;
-		$row['end'] = $params->end;
-		$row['rrule'] = $params->rrule;
-		$row['loc'] = $params->loc;
-		$row['notes'] = $params->notes;
-		$row['url'] = $params->url;
-		$row['ad'] = $params->ad;
-
-		$this->db->setSQL($this->db->sqlBind($row, 'calendar_events', 'U', array('id' => $params->id)));
-		$this->db->execLog();
-		return array('success' => true);
+		return array('success' => true, 'message' => 'Updated data', 'data' => $this->e->save($params));
 	}
 
 	/**
@@ -160,9 +119,7 @@ class Calendar {
 	 * @return array
 	 */
 	public function deleteEvent(stdClass $params){
-		$this->db->setSQL("DELETE FROM calendar_events WHERE id='$params->id'");
-		$this->db->execLog();
-		return array('success' => true);
+		return $this->e->destroy($params);
 	}
 
 	public function getPatientFutureEvents(stdClass $params){
@@ -172,8 +129,17 @@ class Calendar {
 	public function getPatientFutureEventsByPid($pid){
 		$date = Time::getLocalTime();
 		$tomorrow = date('Y-m-d 0000:00:00', strtotime($date . ' + 1 days'));
-		$this->db->setSQL("SELECT * FROM calendar_events WHERE patient_id = '$pid' AND start >= '$tomorrow'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'pid';
+		$filters->filter[0]->operator = '=';
+		$filters->filter[0]->value = $pid;
+		$filters->filter[1] = new stdClass();
+		$filters->filter[1]->property = 'start';
+		$filters->filter[1]->operator = '>=';
+		$filters->filter[1]->value = $tomorrow;
+		return $this->e->load($filters)->all();
+
 	}
 
 }

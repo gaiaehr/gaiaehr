@@ -1,84 +1,86 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, LLC.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 class ACL
 {
 
 	/**
 	 * @var array
 	 */
-	private $perms = array();
+	private static $perms = array();
 	/**
 	 * @var int
 	 */
-	private $user_id;
+	private static $user_id;
 	/**
 	 * @var array
 	 */
-	private $user_roles = array();
+	private static $user_roles = array();
 	/**
 	 * @var MatchaCup
 	 */
-	private $U = null;
+	private static $U = null;
 	/**
 	 * @var MatchaCup
 	 */
-	private $AR = null;
+	private static $AR = null;
 	/**
 	 * @var MatchaCup
 	 */
-    private $AP = null;
+    private static $AP = null;
 	/**
 	 * @var MatchaCup
 	 */
-    public  $ARP = null;
+    public  static $ARP = null;
 	/**
 	 * @var MatchaCup
 	 */
-    private $AUP = null;
+    private static $AUP = null;
 
 	/**
 	 * true if emergency access is enable
 	 * @var bool
 	 */
-	private $emerAccess = false;
+	private static $emerAccess = false;
 
-    /**
-	 * @internal param string $user_id
-	 * @param null|string $uid
-	 * @internal param null $user_id
-	 */
-	public function __construct($uid = '')
+	private static $isConstructed =  false;
+
+
+	public static function construct($uid = null)
 	{
-		$sid = (isset($_SESSION) && isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : '0';
-		$this->user_id = (!is_numeric($uid)) ? $sid : $uid;
-		$this->setModels();
-		$this->user_roles = $this->getUserRoles();
-		$this->emerAccess = $this->isEmergencyAccess();
-		$this->buildACL();
+		if(!self::$isConstructed){
+			self::$isConstructed = true;
+			self::$user_id = isset($uid) ? $uid : ((isset($_SESSION) && isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : '0');
+			self::setModels();
+			self::$user_roles = self::getUserRoles();
+			self::$emerAccess = self::isEmergencyAccess();
+			self::buildACL();
+		}
+
 	}
 
-	public function setModels(){
-		if($this->U == null) $this->U = MatchaModel::setSenchaModel('App.model.administration.User');
-		if($this->AR == null) $this->AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
-		if($this->AP == null) $this->AP = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
-		if($this->ARP == null) $this->ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
-		if($this->AUP == null) $this->AUP = MatchaModel::setSenchaModel('App.model.administration.AclUserPermissions');
+	public static function setModels(){
+		if(self::$U == null) self::$U = MatchaModel::setSenchaModel('App.model.administration.User');
+		if(self::$AR == null) self::$AR = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
+		if(self::$AP == null) self::$AP = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
+		if(self::$ARP == null) self::$ARP = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
+		if(self::$AUP == null) self::$AUP = MatchaModel::setSenchaModel('App.model.administration.AclUserPermissions');
 	}
 
     //------------------------------------------------------------------------------------------------------------------
@@ -89,20 +91,22 @@ class ACL
 	 * @internal param string $format
 	 * @return array
 	 */
-	public function getAllRoles()
+	public static function getAllRoles()
 	{
-		return array( 'totals' => $this->AR->load()->rowCount(), 'row' => $this->AR->load()->all() );
+		self::construct();
+		return array( 'totals' => self::$AR->load()->rowCount(), 'row' => self::$AR->load()->all() );
 	}
 
 	/**
 	 * @param string $format
 	 * @return array
 	 */
-	public function getAllPermissions($format = 'ids')
+	public static function getAllPermissions($format = 'ids')
 	{
+		self::construct();
 		$format = strtolower($format);
 		$resp = array();
-		foreach($this->AP->load()->all() as $row)
+		foreach(self::$AP->load()->all() as $row)
         {
 			if($format == 'full')
             {
@@ -124,13 +128,13 @@ class ACL
 	/**
 	 * @return array
 	 */
-	private function getUserRoles()
+	private static function getUserRoles()
 	{
 		$roles = array();
-        $sqlStatement['SELECT'] = "acl_roles.role_key";
-        $sqlStatement['LEFTJOIN'] = "acl_roles ON users.role_id = acl_roles.id";
-        $sqlStatement['WHERE'] = "users.id ='$this->user_id'";
-        $rolesRec = $this->U->buildSQL($sqlStatement)->all();
+        $sqlStatement['SELECT'] = 'acl_roles.role_key';
+        $sqlStatement['LEFTJOIN'] = 'acl_roles ON users.role_id = acl_roles.id';
+        $sqlStatement['WHERE'] = 'users.id =\'' . self::$user_id . '\'';
+        $rolesRec = self::$U->buildSQL($sqlStatement)->all();
         if($rolesRec !== false){
             foreach($rolesRec AS $role) {
                 $roles[] = (string) $role['role_key'];
@@ -144,23 +148,23 @@ class ACL
     // This methods are used by the view to gather extra data from the store or the model
     //------------------------------------------------------------------------------------------------------------------
 
-	private function buildACL()
+	private static function buildACL()
 	{
 		//first, get the rules for the user's role
-		if(count($this->user_roles) > 0){
-			$this->perms = array_merge($this->perms, $this->getRolePerms($this->user_roles));
+		if(count(self::$user_roles) > 0){
+			self::$perms = array_merge(self::$perms, self::getRolePerms(self::$user_roles));
 		}
 		//then, get the individual user permissions
-		$this->perms = array_merge($this->perms, $this->getUserPerms());
+		self::$perms = array_merge(self::$perms, self::getUserPerms());
 	}
 
 	/**
 	 * @param $perm_Key
 	 * @return mixed
 	 */
-	private function getPermNameByPermKey($perm_Key)
+	private static function getPermNameByPermKey($perm_Key)
 	{
-        $row = $this->AP->load(array('perm_key'=>$perm_Key))->one();
+        $row = self::$AP->load(array('perm_key'=>$perm_Key))->one();
 		return $row['perm_name'];
 	}
 
@@ -168,9 +172,9 @@ class ACL
 	 * @param $role_key
 	 * @return mixed
 	 */
-	private function getRoleNameByRoleKey($role_key)
+	private static function getRoleNameByRoleKey($role_key)
 	{
-        $row = $this->AR->load(array('role_key'=>$role_key))->one();
+        $row = self::$AR->load(array('role_key'=>$role_key))->one();
 		return $row['role_name'];
 	}
 
@@ -178,32 +182,32 @@ class ACL
 	 * @internal param $role
 	 * @return array
 	 */
-	private function getRolePerms()
+	private static function getRolePerms()
 	{
 		$perms = array();
-        if(is_array($this->user_roles))
+        if(is_array(self::$user_roles))
         {
-            $fo = implode("','", $this->user_roles);
+            $fo = implode("','", self::$user_roles);
             $sqlStatement['SELECT'] = "*";
             $sqlStatement['WHERE'] = "role_key IN ('$fo')";
             $sqlStatement['ORDER'] = "id ASC";
         }
         else
         {
-            $fo = $this->user_roles;
+            $fo = self::$user_roles;
             $sqlStatement['SELECT'] = "*";
             $sqlStatement['WHERE'] = "role_key = '$fo'";
             $sqlStatement['ORDER'] = "id ASC";
         }
-		if($this->emerAccess) $emerPerms = $this->getEmergencyAccessPerms();
-		foreach($this->ARP->buildSQL($sqlStatement)->all() as $row)
+		if(self::$emerAccess) $emerPerms = self::getEmergencyAccessPerms();
+		foreach(self::$ARP->buildSQL($sqlStatement)->all() as $row)
         {
 			$pK = $pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
 			if($row['value'] == '1'){
 				$hP = true;
 			}else{
-				if($this->emerAccess && isset($emerPerms[$row['perm_key']]) && $emerPerms[$row['perm_key']]){
+				if(self::$emerAccess && isset($emerPerms[$row['perm_key']]) && $emerPerms[$row['perm_key']]){
 					$hP = true;
 				} else {
 					$hP = false;
@@ -213,7 +217,7 @@ class ACL
 				'perm' => $pK,
 				'inheritted' => true,
 				'value' => $hP,
-				'Name' => $this->getPermNameByPermKey($row['perm_key']),
+				'Name' => self::getPermNameByPermKey($row['perm_key']),
 				'id' => $row['id']
 			);
 		}
@@ -224,18 +228,19 @@ class ACL
 	 * @internal param $user_id
 	 * @return array
 	 */
-	public function getUserPerms()
+	public static function getUserPerms()
 	{
+		self::construct();
 		$perms = array();
-		if($this->emerAccess) $emerPerms = $this->getEmergencyAccessPerms();
-		foreach($this->AUP->load(array('user_id'=>$this->user_id))->all() as $row)
+		if(self::$emerAccess) $emerPerms = self::getEmergencyAccessPerms();
+		foreach(self::$AUP->load(array('user_id'=>self::$user_id))->all() as $row)
         {
 			$pK = strtolower($row['perm_key']);
 			if($pK == '') continue;
 	        if($row['value'] == '1'){
 		        $hP = true;
 	        }else{
-		        if($this->emerAccess && isset($emerPerms[$row['perm_key']]) && $emerPerms[$row['perm_key']]){
+		        if(self::$emerAccess && isset($emerPerms[$row['perm_key']]) && $emerPerms[$row['perm_key']]){
 			        $hP = true;
 		        } else {
 			        $hP = false;
@@ -245,7 +250,7 @@ class ACL
 				'perm' => $pK,
 				'inheritted' => false,
 				'value' => $hP,
-				'Name' => $this->getPermNameByPermKey($row['perm_key']),
+				'Name' => self::getPermNameByPermKey($row['perm_key']),
 				'id' => $row['id']
 			);
 		}
@@ -256,15 +261,16 @@ class ACL
 	 * @param $role_id
 	 * @return bool
 	 */
-	private function userHasRole($role_id)
+	private static function userHasRole($role_id)
 	{
-		foreach($this->user_roles as $k => $v) if(floatval($v) === floatval($role_id)) return true;
+		foreach(self::$user_roles as $k => $v) if(floatval($v) === floatval($role_id)) return true;
 		return false;
 	}
 
-	public function getAllUserPermsAccess()
+	public static function getAllUserPermsAccess()
 	{
-		return array_values($this->perms);
+		self::construct();
+		return array_values(self::$perms);
 	}
 
 	/**
@@ -280,12 +286,13 @@ class ACL
 	 *
 	 * {@source }
 	 */
-	public function hasPermission($perm_key)
+	public static function hasPermission($perm_key)
 	{
+		self::construct();
 		$perm_key = strtolower($perm_key);
-		if(array_key_exists($perm_key, $this->perms))
+		if(array_key_exists($perm_key, self::$perms))
         {
-			if($this->perms[$perm_key]['value'] === '1' || $this->perms[$perm_key]['value'] === true)
+			if(self::$perms[$perm_key]['value'] === '1' || self::$perms[$perm_key]['value'] === true)
             {
 				return true;
 			}
@@ -296,6 +303,30 @@ class ACL
 		}
         else
         {
+			return false;
+		}
+	}
+	public static function hasPermissionByUid($perm_key, $uid)
+	{
+		self::$isConstructed = false;
+		self::construct($uid);
+		$perm_key = strtolower($perm_key);
+		if(array_key_exists($perm_key, self::$perms))
+        {
+			if(self::$perms[$perm_key]['value'] === '1' || self::$perms[$perm_key]['value'] === true)
+            {
+	            self::$isConstructed = false;
+				return true;
+			}
+            else
+            {
+	            self::$isConstructed = false;
+				return false;
+			}
+		}
+        else
+        {
+	        self::$isConstructed = false;
 			return false;
 		}
 	}
@@ -318,12 +349,13 @@ class ACL
         endif;
 	}
 
-	public function getEmergencyAccessPerms(){
+	public static function getEmergencyAccessPerms(){
+		self::construct();
 		$perms = array();
 		$sqlStatement['SELECT'] = "*";
 		$sqlStatement['WHERE'] = "role_key = 'emergencyaccess'";
 		$sqlStatement['ORDER'] = "id ASC";
-		foreach($this->ARP->buildSQL($sqlStatement)->all() as $row)
+		foreach(self::$ARP->buildSQL($sqlStatement)->all() as $row)
 		{
 			$pK = strtolower($row['perm_key']);
 			if($pK == '' || !$row['value']) continue;
@@ -333,19 +365,20 @@ class ACL
 		return $perms;
 	}
 
-	public function emergencyAccess($uid){
+	public static function emergencyAccess($uid){
+		self::construct();
 		if(!isset($_SESSION['user']) && !isset($_SESSION['user']['token'])) return false;
-		include_once ($_SESSION['root'] . '/classes/Crypt.php');
+		include_once (dirname(dirname(__FILE__)) . '/classes/Crypt.php');
 		$foo = json_decode(Crypt::decrypt($_SESSION['user']['token']), true);
 		if($foo['uid'] != $uid) return false;
-		if(!$this->hasPermission('emergency_access')) return false;
+		if(!self::hasPermission('emergency_access')) return false;
 		$_SESSION['user']['emergencyAccess'] = true;
 		return $_SESSION['user']['emergencyAccess'];
 	}
 
-
-	public function isEmergencyAccess(){
-		if(	is_numeric($this->user_id) &&
+	public static function isEmergencyAccess(){
+		self::construct();
+		if(	is_numeric(self::$user_id) &&
 			isset($_SESSION['user']) &&
 			isset($_SESSION['user']['auth']) &&
 			isset($_SESSION['user']['emergencyAccess']) &&

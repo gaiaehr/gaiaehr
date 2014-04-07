@@ -18,22 +18,58 @@
 
 Ext.define('App.model.patient.Notes', {
 	extend: 'Ext.data.Model',
+	table:{
+		name:'patient_notes'
+	},
 	fields: [
-		{name: 'id', type: 'int', comment: 'Notes ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'body', type: 'string'},
-		{name: 'type', type: 'string'},
-		{name: 'user_name', type: 'string'}
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
+		},
+		{
+			name: 'body',
+			type: 'string',
+			len: 600
+		},
+		{
+			name: 'type',
+			type: 'string',
+			len: 80,
+			index: true
+		},
+		{
+			name: 'user_name',
+			type: 'string',
+			store: false
+		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Patient.getPatientNotes',
-			create: 'Patient.addPatientNotes',
-			update: 'Patient.updatePatientNotes'
+			read: 'Notes.getNotes',
+			create: 'Notes.addNote',
+			update: 'Notes.updateNote'
 		}
 	}
 });

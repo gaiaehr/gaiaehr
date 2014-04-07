@@ -450,6 +450,9 @@ Ext.define('App.view.patient.VisitCheckout', {
 		values.eid = me.eid;
 		values.uid = app.user.id;
 		values.type = 'administrative';
+
+		// TODO: fix this method...
+
 		if(form.isValid()){
 			Patient.addPatientNoteAndReminder(values, function(provider, response){
 				if(response.result.success){

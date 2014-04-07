@@ -892,11 +892,23 @@ class CombosData {
 		);
 	}
 
-	public function getDisplayValueByListIdAndOptionValue($listId, $optionValue){
+	public function getDisplayValueByListIdAndOptionValue($listId, $optionValue) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		$foo = $this->CLO->load(array('list_id' => $listId, 'option_value' => $optionValue))->one();
-		return isset($foo['option_name']) ? $foo['option_name'] : '';
+		$foo = $this->CLO->load(array(
+			'list_id' => $listId,
+			'option_value' => $optionValue
+		))->one();
+	}
+
+	public function getEncounterSupervisors(){
+		$providers = $this->getActiveProviders();
+		$supervisors = array();
+		foreach($providers as $provider){
+			if(ACL::hasPermissionByUid('sign_enc_supervisor', $provider['option_value'])) $supervisors[] = $provider;
+		}
+
+		return $supervisors;
 	}
 
 }

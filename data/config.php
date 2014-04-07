@@ -66,6 +66,91 @@ $API = array(
             )
         )
     ),
+    'Insurance' => array(
+        'methods' => array(
+            'getInsurances' => array(
+                'len' => 1
+            ),
+            'getInsurance' => array(
+                'len' => 1
+            ),
+            'addInsurance' => array(
+                'len' => 1
+            ),
+            'updateInsurance' => array(
+                'len' => 1
+            ),
+            'destroyInsurance' => array(
+                'len' => 1
+            ),
+            'getPatientPrimaryInsuranceByPid' => array(
+                'len' => 1
+            ),
+            'getPatientSecondaryInsuranceByPid' => array(
+                'len' => 1
+            ),
+            'getPatientTertiaryInsuranceByPid' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Disclosure' => array(
+        'methods' => array(
+            'getDisclosures' => array(
+                'len' => 1
+            ),
+            'getDisclosure' => array(
+                'len' => 1
+            ),
+            'addDisclosure' => array(
+                'len' => 1
+            ),
+            'updateDisclosure' => array(
+                'len' => 1
+            ),
+            'destroyDisclosure' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Reminders' => array(
+        'methods' => array(
+            'getReminders' => array(
+                'len' => 1
+            ),
+            'getReminder' => array(
+                'len' => 1
+            ),
+            'addReminder' => array(
+                'len' => 1
+            ),
+            'updateReminder' => array(
+                'len' => 1
+            ),
+            'destroyReminder' => array(
+                'len' => 1
+            )
+        )
+    ),
+    'Notes' => array(
+        'methods' => array(
+            'getNotes' => array(
+                'len' => 1
+            ),
+            'getNote' => array(
+                'len' => 1
+            ),
+            'addNote' => array(
+                'len' => 1
+            ),
+            'updateNote' => array(
+                'len' => 1
+            ),
+            'destroyNote' => array(
+                'len' => 1
+            )
+        )
+    ),
     'CupTest' => array(
         'methods' => array(
             'cuptest' => array(
@@ -281,7 +366,7 @@ $API = array(
 			'getProgressNoteByEid' => array(
 				'len' => 1
 			),
-			'closeEncounter' => array(
+			'signEncounter' => array(
 				'len' => 1
 			),
 			'getEncounterEventHistory' => array(
@@ -1415,6 +1500,9 @@ $API = array(
 				'len' => 0
 			),
 			'getThemes' => array(
+				'len' => 0
+			),
+			'getEncounterSupervisors' => array(
 				'len' => 0
 			)
 		)),

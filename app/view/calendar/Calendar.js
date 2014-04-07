@@ -1,54 +1,58 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, LLC.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.calendar.Calendar', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelCalendar',
 	pageTitle: i18n('calendar_events'),
+
+	ckInStatus: ['@','~'],
+	ckOutStatus: ['!','x','?','%'],
+
 	constructor: function(){
+		var me = this;
 
 		this.callParent(arguments);
 
-		this.calendarStore = Ext.create('Extensible.calendar.data.MemoryCalendarStore', {
+		me.calendarStore = Ext.create('Extensible.calendar.data.MemoryCalendarStore', {
 			autoLoad: true,
 			proxy: {
 				type: 'direct',
 				api: {
-					read: Calendar.getCalendars
+					read: 'Calendar.getCalendars'
 				},
 				noCache: false,
 
 				reader: {
 					type: 'json',
-					root: 'calendars'
+					root: 'data'
 				}
 			}
 		});
 
-		this.eventStore = Ext.create('Extensible.calendar.data.EventStore', {
+		me.eventStore = Ext.create('Extensible.calendar.data.EventStore', {
 			autoLoad: true,
 			proxy: {
 				type: 'direct',
 				api: {
-					read: Calendar.getEvents,
-					create: Calendar.addEvent,
-					update: Calendar.updateEvent,
-					destroy: Calendar.deleteEvent
+					read: 'Calendar.getEvents',
+					create: 'Calendar.addEvent',
+					update: 'Calendar.updateEvent',
+					destroy: 'Calendar.deleteEvent'
 				},
 				noCache: false,
 
@@ -79,9 +83,6 @@ Ext.define('App.view.calendar.Calendar', {
 			listeners: {
 				scope: this,
 				'write': function(store, operation){
-					say(store);
-					say(operation);
-
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
 					if(operation.action == 'create'){
 						this.msg(i18n('add'), 'Added "' + title + '"');
@@ -94,7 +95,7 @@ Ext.define('App.view.calendar.Calendar', {
 			}
 		});
 
-		this.pageBody = [
+		me.pageBody = [
 			{
 				xtype: 'panel',
 				layout: 'border',
@@ -113,7 +114,6 @@ Ext.define('App.view.calendar.Calendar', {
 								listeners: {
 									'select': {
 										fn: function(dp, dt){
-											say(dt);
 											Ext.getCmp('app-calendar').setStartDate(dt);
 										},
 										scope: this
@@ -123,7 +123,7 @@ Ext.define('App.view.calendar.Calendar', {
 							{
 								xtype: 'extensible.calendarlist',
 								id: 'app-calendarlist',
-								store: this.calendarStore,
+								store: me.calendarStore,
 								collapsible: true,
 								border: false,
 								width: 178
@@ -133,7 +133,7 @@ Ext.define('App.view.calendar.Calendar', {
 					{
 						xtype: 'extensible.calendarpanel',
 						eventStore: this.eventStore,
-						calendarStore: this.calendarStore,
+						calendarStore: me.calendarStore,
 						border: false,
 						id: 'app-calendar',
 						region: 'center',
@@ -190,13 +190,16 @@ Ext.define('App.view.calendar.Calendar', {
 							},
 							'eventadd': {
 								fn: function(cp, rec){
-									//app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+//									app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
 								},
 								scope: this
 							},
 							'eventupdate': {
 								fn: function(cp, rec){
-									//app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+
+									me.getPoolAreaAction(rec);
+
+//									app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
 								},
 								scope: this
 							},
@@ -247,7 +250,7 @@ Ext.define('App.view.calendar.Calendar', {
 							},
 							'eventdelete': {
 								fn: function(win, rec){
-									this.eventStore.remove(rec);
+									me.eventStore.remove(rec);
 									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_deleted'));
 								},
 								scope: this
@@ -264,16 +267,27 @@ Ext.define('App.view.calendar.Calendar', {
 			}
 		];
 
-		this.callParent();
+		me.callParent();
 
 	},
+
+	getPoolAreaAction:function(record){
+		var status = record.data[Extensible.calendar.data.EventMappings.Status.name];
+		if(Ext.Array.indexOf(this.ckInStatus, status) != -1){
+			return 'in'
+		}else if(Ext.Array.indexOf(this.ckOutStatus, status) != -1){
+			return 'out'
+		}else{
+			return 'none'
+		}
+	},
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-
 	onActive: function(callback){
 		var me = this,
 			calPanel = Ext.getCmp('app-calendar'),
@@ -288,11 +302,4 @@ Ext.define('App.view.calendar.Calendar', {
 		callback(true);
 	}
 
-//	setFloorPlan: function(msg){
-//		Ext.fly('app-msg').update(msg).removeCls('x-hidden');
-//	},
-//
-//	clearMsg: function(){
-//		Ext.fly('app-msg').update('').addCls('x-hidden');
-//	}
 });

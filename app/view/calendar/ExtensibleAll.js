@@ -2224,7 +2224,7 @@ Extensible.calendar.data.EventMappings = {
 	},
 	CalendarId     : {
 		name   : 'CalendarId',
-		mapping: 'calendarId',
+		mapping: 'uid',
 		type   : 'string'
 	},
 	Category       : {
@@ -2244,7 +2244,7 @@ Extensible.calendar.data.EventMappings = {
 	},
 	Patient        : {
 		name   : 'Patient',
-		mapping: 'patient_id',
+		mapping: 'pid',
 		type   : 'int'
 	},
 	Title          : {

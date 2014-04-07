@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require_once ('../classes/MatchaHelper.php');
 include_once ('../dataProvider/Modules.php');
+include_once ('../dataProvider/ACL.php');
 require ('config.php');
 
 if (isset($_SESSION['install']) && $_SESSION['install'] != true)

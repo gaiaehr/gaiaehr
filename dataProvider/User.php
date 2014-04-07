@@ -152,13 +152,17 @@ class User {
 		return $this->u->save($data);
 	}
 
-	public function verifyUserPass($pass){
-		$userResult = $this->u->load(
-			array('id' => $_SESSION['user']['id'], 'password' => $pass, 'authorized' => '1'),
-			array('username')
+	public function verifyUserPass($pass, $uid = null){
+		$user = $this->u->load(
+			array(
+				'id' => isset($uid) ? $uid : $_SESSION['user']['id'],
+				'authorized' => '1'
+			),
+			array(
+				'password'
+			)
 		)->one();
-		$count = count($userResult);
-		return ($count != 0) ? 1 : 2;
+		return $user['password'] == $pass;
 	}
 
 	public function getProviders(){

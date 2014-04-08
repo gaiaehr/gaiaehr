@@ -241,6 +241,8 @@ class MatchaModel extends Matcha
             // Getting Sencha model as a namespace
             $jsSenchaModel = self::__getFileContent($fileModel);
             if(!$jsSenchaModel) throw new Exception("Error opening the Sencha model file.");
+	        // remove functions at the end
+	        $jsSenchaModel = preg_replace("/function\(\){(.|\n)*( *)\}(,|\n)/", '" "', $jsSenchaModel);
             // get the actual Sencha Model.
             preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
             $jsSenchaModel = $match['extmodel'];
@@ -255,8 +257,9 @@ class MatchaModel extends Matcha
             $jsSenchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $jsSenchaModel);
             // wrap with double quotes float numbers
             $jsSenchaModel = preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $jsSenchaModel);
+
             // replace single quotes for double quotes
-            // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
+	        // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
             $jsSenchaModel = preg_replace("(')", '"', $jsSenchaModel);
 
 	        error_log($jsSenchaModel);

@@ -207,6 +207,18 @@ Ext.define('App.model.patient.Encounter', {
 			primaryKey: 'eid',
 			foreignKey: 'eid'
 		}
-	]
+	],
+
+	isClose:function(){
+		return typeof this.data.close_date != 'undefined' && this.data.close_date != null;
+	},
+
+	isSigned:function(){
+		return typeof this.data.provider_uid != 'undefined' && this.data.provider_uid != null && this.data.provider_uid != 0;
+	},
+
+	isCoSigned:function(){
+		return typeof this.data.supervisor_uid != 'undefined' && this.data.supervisor_uid != null && this.data.supervisor_uid != 0;
+	}
 
 });

@@ -773,10 +773,7 @@ Ext.define('App.view.patient.Encounter', {
 				if(me.progressHistory) me.getProgressNotesHistory();
 				if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
 
-
-
-
-				app.setEncounterClose(me.isClose());
+				app.setEncounterClose(record.isClose());
 
 				me.el.unmask();
 			}

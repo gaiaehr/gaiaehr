@@ -70,7 +70,7 @@ Ext.define('App.view.patient.Encounter', {
 		me.encounterStore = Ext.create('App.store.patient.Encounters', {
 			listeners: {
 				scope: me,
-				datachanged: me.updateProgressNote
+				datachanged: me.getProgressNote
 			}
 		});
 
@@ -353,44 +353,13 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
+
 		/**
 		 * Progress Note
 		 */
-		me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-			title: i18n('progress_note'),
-			autoScroll: true,
-			tbar: [
-				'->', {
-					xtype: 'tool',
-					type: 'print',
-					tooltip: i18n('print_progress_note'),
-					scope: me,
-					handler: function(){
-						var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
-						var dom = me.progressNote.body.dom;
-						var wrap = document.createElement('div');
-						var html = wrap.appendChild(dom.cloneNode(true));
-						win.document.write(html.innerHTML);
-						Ext.defer(function(){
-							win.print();
-						}, 1000);
-					}
-				}
-			]
-		});
-
-		me.progressHistory = Ext.create('Ext.panel.Panel', {
-			title: i18n('progress_history'),
-			bodyPadding: 5,
-			autoScroll: true,
-			items: [
-				{}
-			]
-		});
-
 		me.rightPanel = Ext.create('Ext.tab.Panel', {
 			title: i18n('encounter_progress_note'),
-			width: 450,
+			width: 500,
 			region: 'east',
 			split: true,
 			collapsible: true,
@@ -403,8 +372,37 @@ Ext.define('App.view.patient.Encounter', {
 			},
 
 			items: [
-				me.progressNote,
-				me.progressHistory
+				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
+					title: i18n('progress_note'),
+					autoScroll: true,
+					tbar: [
+						'->', {
+							xtype: 'tool',
+							type: 'print',
+							tooltip: i18n('print_progress_note'),
+							scope: me,
+							handler: function(){
+								var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+								var dom = me.progressNote.body.dom;
+								var wrap = document.createElement('div');
+								var html = wrap.appendChild(dom.cloneNode(true));
+								win.document.write(html.innerHTML);
+								Ext.defer(function(){
+									win.print();
+								}, 1000);
+							}
+						}
+					]
+				}),
+
+				me.progressHistory = Ext.create('Ext.panel.Panel', {
+					title: i18n('progress_history'),
+					bodyPadding: 5,
+					autoScroll: true,
+					items: [
+						{}
+					]
+				})
 			]
 
 		});
@@ -517,7 +515,7 @@ Ext.define('App.view.patient.Encounter', {
 			app.patientButtonRemoveCls();
 			app.patientBtn.addCls(priority);
 		});
-		me.updateProgressNote();
+		me.getProgressNote();
 	},
 
 	/**
@@ -590,7 +588,7 @@ Ext.define('App.view.patient.Encounter', {
 							scope: me,
 							success: function(){
 								me.msg('Sweet!', i18n('vitals_saved'));
-								me.updateProgressNote();
+								me.getProgressNote();
 								me.vitalsPanel.down('vitalsdataview').refresh();
 								me.resetVitalsForm();
 							}
@@ -647,7 +645,7 @@ Ext.define('App.view.patient.Encounter', {
 								callback: function(){
 									form.reset();
 									me.msg('Sweet!', i18n('vitals_signed'));
-									me.updateProgressNote();
+									me.getProgressNote();
 									me.resetVitalsForm();
 									me.vitalsPanel.down('vitalsdataview').refresh();
 									/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
@@ -717,6 +715,9 @@ Ext.define('App.view.patient.Encounter', {
 
 				me.currEncounterStartDate = data.service_date;
 
+				/** get progress note **/
+				me.getProgressNote();
+
 				if(!data.close_date){
 					me.startTimer();
 					me.setButtonsDisabled(me.getButtonsToDisable());
@@ -736,17 +737,17 @@ Ext.define('App.view.patient.Encounter', {
 				}
 				if(me.reviewSysPanel){
 					store = me.encounter.reviewofsystems();
-					store.on('write', me.updateProgressNote, me);
+					store.on('write', me.getProgressNote, me);
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
 				if(me.reviewSysCkPanel){
 					store = me.encounter.reviewofsystemschecks();
-					store.on('write', me.updateProgressNote, me);
+					store.on('write', me.getProgressNote, me);
 					me.reviewSysCkPanel.getForm().loadRecord(store.getAt(0));
 				}
 				if(me.soapPanel){
 					store = me.encounter.soap();
-					store.on('write', me.updateProgressNote, me);
+					store.on('write', me.getProgressNote, me);
 					me.soapPanel.down('form').getForm().loadRecord(store.getAt(0));
 				}
 				if(me.MiscBillingOptionsPanel){
@@ -771,6 +772,8 @@ Ext.define('App.view.patient.Encounter', {
 				}
 				if(me.progressHistory) me.getProgressNotesHistory();
 				if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
+
+
 
 
 				app.setEncounterClose(me.isClose());
@@ -873,13 +876,10 @@ Ext.define('App.view.patient.Encounter', {
 		this.centerPanel.doLayout();
 	},
 
-	updateProgressNote: function(){
+	getProgressNote: function(){
 		var me = this;
-		say('updateProgressNote');
-
 		Encounter.getProgressNoteByEid(me.eid, function(provider, response){
-			var data = response.result;
-			me.progressNote.tpl.overwrite(me.progressNote.body, data);
+			me.progressNote.tpl.overwrite(me.progressNote.body, response.result);
 		});
 	},
 

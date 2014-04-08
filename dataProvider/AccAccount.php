@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 include_once (dirname(__FILE__) . '/Services.php');
-include_once (dirname(__FILE__)  . '/Patient.php');
+include_once (dirname(__FILE__)  . '/Insurance.php');
 
 class AccAccount
 {
@@ -31,9 +31,9 @@ class AccAccount
      */
 	protected $services;
     /**
-     * @var Patient
+     * @var Insurance
      */
-	protected $patient;
+	protected $insurance;
 	/**
 	 * @var MatchaCUP
 	 */
@@ -48,14 +48,14 @@ class AccAccount
 //      if($this->account == NULL) $this->account = MatchaModel::setSenchaModel('App.model.account.Account');
 //	    if($this->accountType == NULL) $this->accountType = MatchaModel::setSenchaModel('App.model.account.AccountType');
         $this->services = new Services();
-        $this->patient  = new Patient();
+        $this->insurance  = new Insurance();
         return;
     }
 
 	public function getVisitCheckOutCharges(stdClass $params)
     {
         $invoice = array();
-        $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);
+        $insurance = $this->insurance->getPatientPrimaryInsuranceByPid($params->pid);
         if($insurance !== false){
             $invoice[] = array(
                 'code' => 'COPAY',

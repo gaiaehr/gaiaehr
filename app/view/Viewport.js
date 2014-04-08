@@ -765,7 +765,14 @@ Ext.define('App.view.Viewport', {
     },
 
 	checkOutPatient: function(eid){
-        this.nav.navigateTo('App.view.patient.VisitCheckout');
+		var me = this;
+        this.nav.navigateTo('App.view.patient.VisitCheckout', function(success){
+	        if(success){
+		        Ext.Function.defer(function() {
+			        me.nav.getPanelByCls('App.view.patient.VisitCheckout').setVisitPanel();
+		        }, 100);
+	        }
+        });
     },
 
 	openPatientVisits: function(){
@@ -1182,8 +1189,9 @@ Ext.define('App.view.Viewport', {
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
+
                     // if encounter id is set and pool area is check out....  go to Patient Checkout panel
-                    if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
+                    if(data.patientData.eid && data.patientData.poolArea == 'Checkout'){
 
 	                    say('checkOutPatient');
                         me.checkOutPatient(data.patientData.eid);

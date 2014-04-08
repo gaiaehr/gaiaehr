@@ -619,6 +619,14 @@ Ext.define('App.view.patient.VisitCheckout', {
 		}
 	},
 
+	setVisitPanel:function(){
+		this.pid = app.patient.pid;
+		this.eid = app.patient.eid;
+		this.uid = app.user.id;
+		this.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + i18n('visit_checkout') + ')');
+		this.setPanel();
+	},
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
@@ -628,11 +636,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	onActive:function(callback){
 		var me = this;
 		if(app.patient.pid && app.patient.eid){
-			me.pid = app.patient.pid;
-			me.eid = app.patient.eid;
-			me.uid = app.user.id;
-			me.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + i18n('visit_checkout') + ')');
-			me.setPanel();
+			me.setVisitPanel();
 			callback(true);
 		}else{
 			callback(false);

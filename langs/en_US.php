@@ -455,6 +455,7 @@ $LANG = array(
 	'copay_payment'							=> 'Co-Pay / Payment',
 	'paid'									=> 'Paid',
 	'charge'								=> 'Charge',
+	'price'								    => 'Price',
 	'total'									=> 'Total',
 	'subtotal'							    => 'Subtotal',
 	'tax'							        => 'Tax',

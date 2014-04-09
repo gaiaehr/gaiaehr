@@ -30,7 +30,8 @@ Ext.define('App.view.patient.Vitals', {
 	initComponent: function() {
 		var me = this;
 
-        me.tpl = '<table>' +
+        me.tpl = new  Ext.XTemplate(
+	        '<table>' +
 	        '   <tbody>' +
             '       <tr>' +
             '       <tpl for=".">' +
@@ -44,97 +45,97 @@ Ext.define('App.view.patient.Vitals', {
 	        '                       </tr>' +
             '                       <tr class="x-grid-row first">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.weight_lbs || "-"]}</div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.weight_lbs)]}</div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.weight_kg || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.weight_kg)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.height_in || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.height_in)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.height_cm || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.height_cm)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.bp_systolic || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.bp_systolic)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.bp_diastolic || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.height_in)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.pulse || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.pulse)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.respiration || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.respiration)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.temp_f || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.temp_f)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.temp_c || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.temp_c)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.temp_location ? values.temp_location.toUpperCase() : "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.temp_location.toUpperCase())]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.oxygen_saturation || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.oxygen_saturation)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.head_circumference_in || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.head_circumference_in)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.head_circumference_cm || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.head_circumference_cm)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.waist_circumference_in || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.waist_circumference_in)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.waist_circumference_cm || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.waist_circumference_cm)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.bmi || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.bmi)]}{[values.bmi || "-"]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.bmi_status || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.bmi_status)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row x-grid-row-alt">' +
 	        '                           <td class="x-grid-cell">' +
-	        '                               <div class="x-grid-cell-inner ">{[values.other_notes || "-"]}<div>' +
+	        '                               <div class="x-grid-cell-inner ">{[this.getValue(values.other_notes)]}<div>' +
 	        '                           </td>' +
 	        '                       </tr>' +
             '                       <tr class="x-grid-row ">' +
@@ -153,7 +154,14 @@ Ext.define('App.view.patient.Vitals', {
             '       </tpl>' +
             '       </tr>' +
 	        '   </tbody>' +
-            '</table>';
+            '</table>',
+	        {
+				getValue:function(value){
+					return value == 0 ? '-' : value;
+				}
+			}
+
+        );
 
 		me.callParent(arguments);
 	}

@@ -901,7 +901,7 @@ Ext.define('App.view.patient.Encounter', {
 
 	onTapPanelChange: function(panel){
 		if(panel.card.itemId == 'encounter'){
-			this.setEncounterProgressCollapsed(true);
+			this.setEncounterProgressCollapsed(false);
 		}else{
 			this.setEncounterProgressCollapsed(true);
 		}

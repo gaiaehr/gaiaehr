@@ -21,15 +21,17 @@ Ext.define('Modules.patienteducation.Main', {
 	init : function()	{
 		var me = this;
 
-        app.checkoutWindow.on('render', function(win){
+		if(app.checkoutWindow){
+			app.checkoutWindow.on('render', function(win){
 
-            win.getDockedItems('toolbar[dock="bottom"]')[0].insert(0,[{
-                xtype:'button',
-                text:i18n('patient_education'),
-                handler:me.onPatientEducation
-            },'->']);
+				win.getDockedItems('toolbar[dock="bottom"]')[0].insert(0,[{
+					xtype:'button',
+					text:i18n('patient_education'),
+					handler:me.onPatientEducation
+				},'->']);
 
-        });
+			});
+		}
 
 		me.callParent();
 	},
@@ -39,7 +41,6 @@ Ext.define('Modules.patienteducation.Main', {
         var win = btn.up('window'),
             pid = win.pid,
             eid = win.eid;
-
         say(pid);
         say(eid);
         say('patient education pressed');

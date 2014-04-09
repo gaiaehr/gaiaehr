@@ -12,7 +12,7 @@ if(!isset($_SESSION)){
     session_cache_limiter('private');
 }
 
-include_once($_SESSION['root'].'/classes/MatchaHelper.php');
+include_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 $tables = array(
@@ -47,12 +47,17 @@ $tables = array(
 	'patient_dental',
 	'patient_doctors_notes',
 	'patient_orders',
+	'patient_order_results',
+	'patient_order_results_observations',
 	'patient_pools',
 	'patient_labs_results',
 	'patient_labs',
 	'patient_documents',
+	'patient_pools',
 	'patient_prescriptions',
+	'patient_referrals',
 	'patient_reminders',
+	'patient_social_history',
 	'patient_disclosures',
 	'patient_surgery',
 	'patient_chart_checkout',
@@ -62,9 +67,9 @@ $tables = array(
 
 
 	// logs
+	'audit_log',
     'audit_transaction_log',
     'payment_transactions',
-	'audit_log',
 	'log',
 
 	// codes table

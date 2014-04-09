@@ -150,7 +150,11 @@ class CombosData {
 			$this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		$argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
 		$argumentSQL['WHERE'] = "active = '1'";
-		return $this->F->buildSQL($argumentSQL)->all();
+		$records = $this->F->buildSQL($argumentSQL)->all();
+		foreach($records as $i => $record){
+			$records[$i]['option_value'] = intval($record['option_value']);
+		}
+		return $records;
 	}
 
 	public function getBillingFacilities(){
@@ -158,7 +162,11 @@ class CombosData {
 			$this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
 		$argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
 		$argumentSQL['WHERE'] = "active = '1' AND billing_location = '1'";
-		return $this->F->buildSQL($argumentSQL)->all();
+		$records = $this->F->buildSQL($argumentSQL)->all();
+		foreach($records as $i => $record){
+			$records[$i]['option_value'] = intval($record['option_value']);
+		}
+		return $records;
 	}
 
 	public function getUsers(){

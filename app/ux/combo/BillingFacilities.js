@@ -13,7 +13,7 @@ Ext.define('App.ux.combo.BillingFacilities', {
 			proxy : {
 				type: 'direct',
 				api : {
-					read: CombosData.getBillingFacilities
+					read: 'CombosData.getBillingFacilities'
 				}
 			}
 		});

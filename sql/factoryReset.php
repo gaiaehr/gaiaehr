@@ -23,17 +23,18 @@ $tables = array(
 	'encounters',
 	'encounter_services',
     'encounter_1500_options',
+    'encounter_dictation',
     'encounter_dx',
 	'encounter_history',
-	'encounter_dictation',
+	'encounter_procedures',
 	'encounter_review_of_systems',
 	'encounter_review_of_systems_check',
+	'encounter_services',
 	'encounter_soap',
 	'encounter_vitals',
 
 	'messages',
 	'users_sessions',
-	'emergencies',
 
 	// patient tables
 	'patient',

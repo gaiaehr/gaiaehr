@@ -303,15 +303,24 @@ class FormLayoutEngine {
 		$params = new stdClass();
 		$params->list_id = $list_id;
 		$options = $this->cb->getOptionsByListId($params);
-		$buff = "Ext.create('Ext.data.Store',{fields:['option_name','option_value'],data:[";
-		foreach($options as $option){
-			$option_name = $option['option_name'];
-			$option_value = $option['option_value'];
-			$buff .= "{option_name:'$option_name',option_value:'$option_value'},";
+		$fields = array(
+			array(
+				'name' => 'option_name'
+			),
+			array(
+				'name' =>'option_value'
+			)
+		);
+		$data = array();
+		foreach($options as $i => $option){
+			if($i == 0 && is_int($option['option_value'])) $fields[1]['type'] = 'int';
+			$data[] = array(
+				'option_name' => $option['option_name'],
+				'option_value' => $option['option_value']
+			);
 		}
-		$buff = rtrim($buff, ',');
-		$buff .= "]})";
-		return $buff;
+		$store = 'Ext.create(\'Ext.data.Store\',{fields:' . json_encode($fields). ',data:' . json_encode($data) . '})';
+		return str_replace('"', '\'', $store);
 	}
 
 	/**

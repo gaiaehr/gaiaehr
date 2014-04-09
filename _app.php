@@ -466,7 +466,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.view.patient.windows.Medical',
 				'App.view.patient.windows.Charts',
 				'App.view.patient.windows.PreventiveCare',
-				'App.view.patient.windows.NewDocuments',
+				'App.view.patient.windows.Orders',
 				'App.view.patient.windows.DocumentViewer',
 				'App.view.patient.windows.NewEncounter',
 				'App.view.patient.windows.ArrivalLog',

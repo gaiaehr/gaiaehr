@@ -39,6 +39,7 @@ $tables = array(
 	'patient',
 	'patient_allergies',
 	'patient_disclosures',
+	'patient_images',
 	'patient_immunizations',
 	'patient_medications',
 	'patient_notes',

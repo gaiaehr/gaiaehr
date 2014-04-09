@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.patient.windows.NewDocuments', {
+Ext.define('App.view.patient.windows.Orders', {
 	extend: 'App.ux.window.Window',
 	requires:[
 

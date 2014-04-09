@@ -529,7 +529,7 @@ Ext.define('App.view.Viewport', {
         me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
         me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
         me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
-        me.NewDocumentsWindow = Ext.create('App.view.patient.windows.NewDocuments');
+        me.PatientOrdersWindow = Ext.create('App.view.patient.windows.Orders');
 //        me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
@@ -625,10 +625,10 @@ Ext.define('App.view.Viewport', {
      * Show the Document window dialog.
      */
     onNewDocumentsWin: function(action){
-        this.NewDocumentsWindow.eid = this.patient.eid;
-        this.NewDocumentsWindow.pid = this.patient.pid;
-        this.NewDocumentsWindow.show();
-        this.NewDocumentsWindow.cardSwitch(action);
+        this.PatientOrdersWindow.eid = this.patient.eid;
+        this.PatientOrdersWindow.pid = this.patient.pid;
+        this.PatientOrdersWindow.show();
+        this.PatientOrdersWindow.cardSwitch(action);
     },
 
     onWebCamComplete: function(msg){

@@ -162,7 +162,7 @@ Ext.define('App.model.patient.Encounter', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Encounter.getEncounter',
+			read: 'Encounter.getEncounters',
 			create: 'Encounter.createEncounter',
 			update: 'Encounter.updateEncounter'
 		},

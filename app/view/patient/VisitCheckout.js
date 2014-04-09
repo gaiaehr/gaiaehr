@@ -541,10 +541,12 @@ Ext.define('App.view.patient.VisitCheckout', {
         return 100 * ( percent / value );
     },
 
-	setPanel:function(){
+	setVoucher:function(){
 		var me = this;
 		me.docsGrid.loadDocs(me.eid);
+
 		me.getVisitOtherInfo();
+
 		me.VisitVoucherStore.load({
 			filters:[
 				{
@@ -557,14 +559,19 @@ Ext.define('App.view.patient.VisitCheckout', {
 				}
 			],
             callback:function(records, operation, success){
+
 	            var voucher = records[0];
+
 				if(voucher){
+
 					voucher.voucherlines().load({
 						callback:function(){
 							say('hello');
 						}
 					});
+
 				}else{
+
 					AccVoucher.getVisitCheckOutCharges({pid:me.pid,eid:me.eid},function(provicer,response){
 						var charges = response.result;
 						if(charges.length > 0){
@@ -624,7 +631,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 		this.eid = app.patient.eid;
 		this.uid = app.user.id;
 		this.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + i18n('visit_checkout') + ')');
-		this.setPanel();
+		this.setVoucher();
 	},
 
 	/**

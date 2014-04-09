@@ -484,14 +484,15 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 						tbar: [
 							'->',
 							'-',
-							Ext.widget('button', {
+							{
+								xtype:'button',
 								text: i18n('new_order'),
 								iconCls: 'icoAdd',
 								scope: me,
-								itemId: 'encounterRecordAdd',
+								action: 'encounterRecordAdd',
 								handler: me.onNewPrescription
 
-							}),
+							},
 							'-',
 							me.cloneRxBtn = Ext.widget('button', {
 								text: i18n('clone_order'),
@@ -835,6 +836,7 @@ Ext.define('App.view.patient.windows.NewDocuments', {
 	onSelectionChange: function(sm, selected){
 		var grid = sm.views[0].panel;
 		this[grid.action + 'PrintBtn'].setDisabled(selected.length == 0);
+
 		if(grid.action == 'rx'){
 			this.cloneRxBtn.setDisabled(selected.length == 0);
 			//this.eRxBtn.setDisabled(selected.length == 0);

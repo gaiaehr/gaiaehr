@@ -351,7 +351,6 @@ class Medical {
 	 */
 	public function getPatientImmunizationsByPid($pid){
 		$params = new stdClass();
-		$params->filter = array();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'pid';
 		$params->filter[0]->value = $pid;
@@ -364,7 +363,6 @@ class Medical {
 	 */
 	public function getImmunizationsByEncounterID($eid){
 		$params = new stdClass();
-		$params->filter = array();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'eid';
 		$params->filter[0]->value = $eid;

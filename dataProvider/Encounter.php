@@ -151,20 +151,6 @@ class Encounter {
 	/**
 	 * @param stdClass $params
 	 * @return array
-	 *  Naming: "getPatientEncounters"
-	 */
-	public function getEncounters($params){
-		$records = $this->e->load($params)->all();
-		$encounters = (array) $records['encounter'];
-		foreach($encounters as $i => $encounter){
-			$encounters[$i]['status'] = ($encounter['close_date'] == null) ? 'open' : 'close';
-		}
-		return $encounters;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return array
 	 *  Naming: "createPatientEncounters"
 	 */
 	public function createEncounter(stdClass $params){
@@ -206,16 +192,36 @@ class Encounter {
 	}
 
 	/**
+	 * @param $params
+	 * @param bool     $relations
+	 *
+	 * @return array
+	 */
+	public function getEncounters($params, $relations = true){
+		$records = $this->e->load($params)->all();
+		$encounters = (array) $records['encounter'];
+		$relations = isset($params->relations) ? $params->relations : $relations;
+
+		foreach($encounters as $i => $encounter){
+			$encounters[$i]['status'] = ($encounter['close_date'] == null) ? 'open' : 'close';
+			if($relations){
+				$encounters[$i] = $this->getEncounterRelations($encounters[$i]);
+			}
+		}
+		return $encounters;
+	}
+
+	/**
 	 * @param stdClass $params
 	 * @param bool $relations
 	 * @return array|mixed
 	 */
 	public function getEncounter($params, $relations = true){
 
-		$filters = new stdClass();
-		$filters->filter[0] = new stdClass();
-		$filters->filter[0]->property = 'eid';
 		if(is_string($params) || is_int($params)){
+			$filters = new stdClass();
+			$filters->filter[0] = new stdClass();
+			$filters->filter[0]->property = 'eid';
 			$filters->filter[0]->value = $params;
 			$record = $this->e->load($filters)->one();
 		}else{
@@ -227,8 +233,18 @@ class Encounter {
 		$this->setEid($encounter['eid']);
 		unset($record);
 
+		$relations = isset($params->relations) ? $params->relations : $relations;
 		if($relations == false) return array('encounter' => $encounter);
+		$encounter = $this->getEncounterRelations($encounter);
 
+		unset($filters);
+		return array('encounter' => $encounter);
+	}
+
+	private function getEncounterRelations($encounter){
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'eid';
 		$filters->filter[0]->value = $encounter['eid'];
 
 		if($_SESSION['globals']['enable_encounter_vitals']){
@@ -255,9 +271,8 @@ class Encounter {
 		if($_SESSION['globals']['enable_encounter_hcfa']){
 			$encounter['hcfaoptions'][] = $this->getHCFA($filters);
 		}
-
 		unset($filters);
-		return array('encounter' => $encounter);
+		return $encounter;
 	}
 
 
@@ -369,7 +384,7 @@ class Encounter {
 				$icds .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
 			}
 			$encounter['subjective'] = $soap['subjective'];
-			$encounter['objective'] = $soap['objective'] . $this->getObjectiveExtraDataByEid($params->eid);
+			$encounter['objective'] = $soap['objective'] . $this->getObjectiveExtraDataByEid($encounter['eid']);
 			$encounter['assessment'] = $soap['assessment'] . '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
 			$encounter['plan'] = $soap['plan'];
 			$encounters[$i] = $encounter;
@@ -833,7 +848,7 @@ class Encounter {
 		$this->setEid($params->eid);
 		$record = (array) $this->v->save($params);
 		$record['administer_by'] = $record['uid'] != 0 ? $this->user->getUserNameById($record['uid']) : '';
-		$params['authorized_by'] = $record['auth_uid'] != 0 ? $this->user->getUserNameById($record['auth_uid']) : '';
+		$record['authorized_by'] = $record['auth_uid'] != 0 ? $this->user->getUserNameById($record['auth_uid']) : '';
 		return $params;
 	}
 

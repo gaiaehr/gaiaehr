@@ -292,9 +292,9 @@ class Segments {
 		$types['HD'][2] = '';               // Universal ID (ST)
 		$types['HD'][3] = '';               // Universal ID Type (ID)
 
-		$types['DR'] = '';                  // (DR)
-		$types['DR'] = $types['TS'];        // Range Start Date/Time (TS)
-		$types['DR'] = $types['TS'];        // Range End Date/Time (TS)
+		$types['DR'][0] = '';                  // (DR)
+		$types['DR'][1] = $types['TS'];        // Range Start Date/Time (TS)
+		$types['DR'][2] = $types['TS'];        // Range End Date/Time (TS)
 
 		$types['RI'][0] = '';               // (RI)
 		$types['RI'][1] = $types['IS'];     // Repeat Pattern (IS)

@@ -421,7 +421,7 @@ Ext.define('App.view.patient.Encounter', {
 				action: 'allergies'
 			}, '-', {
 				text: i18n('active_problems') + ' ',
-				action: 'issues'
+				action: 'activeproblems'
 			}, '-', {
 				text: i18n('medications') + ' ',
 				action: 'medications'
@@ -491,7 +491,7 @@ Ext.define('App.view.patient.Encounter', {
 	 * @param btn
 	 */
 	onMedicalWin: function(btn){
-		app.onMedicalWin(btn);
+		app.onMedicalWin(btn.action);
 	},
 
 	/**

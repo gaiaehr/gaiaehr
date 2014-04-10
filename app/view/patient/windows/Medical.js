@@ -19,16 +19,13 @@
 Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
 	title: i18n('medical_window'),
-	id: 'MedicalWindow',
+	itemId: 'MedicalWindow',
 	layout: 'card',
 	closeAction: 'hide',
 	height: 700,
 	width: 1200,
 	bodyStyle: 'background-color:#fff',
 	modal: true,
-	defaults: {
-		margin: 5
-	},
 	requires: [
 		'App.view.patient.Results',
 		'App.view.patient.Referrals',
@@ -93,76 +90,315 @@ Ext.define('App.view.patient.windows.Medical', {
 		});
 
 		me.items = [
-
-			//region Immunization Panel
 			{
-				xtype:'panel',
-				layout:'border',
+				xtype:'tabpanel',
 				border:false,
+				bodyBorder:false,
+				plain: true,
+				margin: 5,
 				items:[
+					//region Immunization Panel
+					{
+						xtype:'panel',
+						layout:'border',
+						title: i18n('immunization'),
+						itemId: 'immunization',
+						border:false,
+						items:[
+							{
+								xtype: 'grid',
+								region:'center',
+								action: 'patientImmuListGrid',
+								selModel: me.immuSm,
+								store: me.patientImmuListStore,
+								features: Ext.create('Ext.grid.feature.Grouping', {
+									groupHeaderTpl: i18n('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
+								}),
+								columns: [
+									{
+										text: i18n('code'),
+										dataIndex: 'code',
+										width: 50
+									},
+									{
+										text: i18n('immunization_name'),
+										dataIndex: 'vaccine_name',
+										flex: 1
+									},
+									{
+										text: i18n('lot_number'),
+										dataIndex: 'lot_number',
+										width: 100
+									},
+									{
+										text: i18n('amount'),
+										dataIndex: 'administer_amount',
+										width: 100
+									},
+									{
+										text: i18n('units'),
+										dataIndex: 'administer_units',
+										width: 100
+									},
+									{
+										text: i18n('notes'),
+										dataIndex: 'note',
+										flex: 1
+									},
+									{
+										text: i18n('administered_by'),
+										dataIndex: 'administered_by',
+										width: 150
+									},
+									{
+										xtype: 'datecolumn',
+										text: i18n('date'),
+										format: 'Y-m-d',
+										width: 100,
+										dataIndex: 'administered_date'
+									}
+								],
+								plugins: Ext.create('App.ux.grid.RowFormEditing', {
+									autoCancel: false,
+									errorSummary: false,
+									clicksToEdit: 2,
+									formItems: [
+										{
+
+											title: 'general',
+											xtype: 'container',
+											layout: 'vbox',
+											items: [
+												{
+													/**
+													 * Line one
+													 */
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													itemId: 'line1',
+													defaults: {
+														margin: '0 10 0 0',
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															xtype: 'immunizationlivesearch',
+															fieldLabel: i18n('name'),
+															name: 'vaccine_name',
+															valueField:'name',
+															hideLabel: false,
+															allowBlank: false,
+															enableKeyEvents: true,
+															width: 570,
+															listeners: {
+																scope: me,
+																select: me.onLiveSearchSelect
+															}
+														},
+														{
+															fieldLabel: i18n('administrator'),
+															name: 'administered_by',
+															width: 295,
+															labelWidth: 160
+
+														}
+													]
+
+												},
+												{
+													/**
+													 * Line two
+													 */
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													defaults: {
+														margin: '0 10 0 0',
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															fieldLabel: i18n('lot_number'),
+															xtype: 'textfield',
+															width: 200,
+															name: 'lot_number'
+
+														},
+														{
+
+															xtype: 'numberfield',
+															fieldLabel: i18n('amount'),
+															name: 'administer_amount',
+															labelWidth: 60,
+															width: 200
+														},
+														{
+
+															xtype: 'textfield',
+															fieldLabel: i18n('units'),
+															name: 'administer_units',
+															labelWidth: 50,
+															width: 150
+
+														},
+														{
+															fieldLabel: i18n('info_statement_given'),
+															width: 295,
+															labelWidth: 160,
+															xtype: 'datefield',
+															format: 'Y-m-d',
+															name: 'education_date'
+														}
+													]
+
+												},
+												{
+													/**
+													 * Line three
+													 */
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													defaults: {
+														margin: '0 10 0 0',
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															fieldLabel: i18n('notes'),
+															xtype: 'textfield',
+															width: 300,
+															name: 'note'
+
+														},
+														me.CvxMvxCombo = Ext.create('App.ux.combo.CVXManufacturersForCvx', {
+															fieldLabel: i18n('manufacturer'),
+															width: 260,
+															name: 'manufacturer'
+														}),
+														{
+															fieldLabel: i18n('date_administered'),
+															width: 295,
+															labelWidth: 160,
+															xtype: 'datefield',
+															format: 'Y-m-d',
+															name: 'administered_date'
+														}
+													]
+
+												}
+											]
+
+										}
+									]
+								}),
+								tbar:[
+									'->',
+									{
+										text: i18n('add_new'),
+										action: 'AddRecord',
+										itemId: 'encounterRecordAdd',
+										iconCls: 'icoAdd',
+										scope: me,
+										handler: me.onAddItem
+									}
+								],
+								bbar: [
+									'-',
+									me.vxuBtn = Ext.widget('button',{
+										text: i18n('submit_hl7_vxu'),
+										scope: me,
+										disabled: true,
+										handler: me.onVxu
+									}),
+									'-',
+									'->',
+									{
+										text: i18n('review'),
+										itemId: 'review_immunizations',
+										action: 'encounterRecordAdd',
+										scope: me,
+										handler: me.onReviewed
+									}
+								]
+							},
+							{
+								xtype:'grid',
+								title:i18n('immunization_list'),
+								collapseMode:'mini',
+								region:'east',
+								collapsible:true,
+								collapsed:true,
+								width:300,
+								split:true,
+								store: Ext.create('App.store.patient.CVXCodes'),
+								columns: [
+									{
+										text: i18n('code'),
+										dataIndex: 'cvx_code',
+										width: 50
+									},
+									{
+										text: i18n('immunization_name'),
+										dataIndex: 'name',
+										flex: 1
+									}
+								],
+								listeners:{
+									scope:me,
+									expand:me.immunizationListExpand
+								}
+							}
+						]
+					},
+					//endregion
+
+					//region Allergies Card panel
 					{
 						xtype: 'grid',
-						region:'center',
-						action: 'patientImmuListGrid',
-						selModel: me.immuSm,
-						store: me.patientImmuListStore,
-						features: Ext.create('Ext.grid.feature.Grouping', {
-							groupHeaderTpl: i18n('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
-//					        hideGroupedHeader: true
-						}),
+						title: i18n('allergies'),
+						itemId: 'allergies',
+						action: 'patientAllergiesListGrid',
+						store: me.patientAllergiesListStore,
 						columns: [
 							{
-								text: i18n('code'),
-								dataIndex: 'code',
-								width: 50
-							},
-							{
-								text: i18n('immunization_name'),
-								dataIndex: 'vaccine_name',
-								flex: 1
-							},
-							{
-								text: i18n('lot_number'),
-								dataIndex: 'lot_number',
-								width: 100
-							},
-							{
-								text: i18n('amount'),
-								dataIndex: 'administer_amount',
-								width: 100
-							},
-							{
-								text: i18n('units'),
-								dataIndex: 'administer_units',
-								width: 100
-							},
-							{
-								text: i18n('notes'),
-								dataIndex: 'note',
-								flex: 1
-							},
-							{
-								text: i18n('administered_by'),
-								dataIndex: 'administered_by',
-								width: 150
-							},
-							{
-								xtype: 'datecolumn',
-								text: i18n('date'),
-								format: 'Y-m-d',
+								header: i18n('type'),
 								width: 100,
-								dataIndex: 'administered_date'
+								dataIndex: 'allergy_type'
+							},
+							{
+								header: i18n('name'),
+								width: 375,
+								dataIndex: 'allergy'
+							},
+							{
+								header: i18n('location'),
+								width: 100,
+								dataIndex: 'location'
+							},
+							{
+								header: i18n('severity'),
+								flex: 1,
+								dataIndex: 'severity'
+							},
+							{
+								text: i18n('active'),
+								width: 55,
+								dataIndex: 'active',
+								renderer: me.boolRenderer
 							}
 						],
-						plugins: Ext.create('App.ux.grid.RowFormEditing', {
+						plugins: me.rowEditingAllergies = Ext.create('App.ux.grid.RowFormEditing', {
 							autoCancel: false,
 							errorSummary: false,
-							clicksToEdit: 2,
+							clicksToEdit: 1,
+							listeners: {
+								scope: me,
+								beforeedit: me.beforeAllergyEdit
+							},
 							formItems: [
 								{
-
-									title: 'general',
+									title: i18n('general'),
 									xtype: 'container',
+									padding: '0 10',
 									layout: 'vbox',
 									items: [
 										{
@@ -171,31 +407,53 @@ Ext.define('App.view.patient.windows.Medical', {
 											 */
 											xtype: 'fieldcontainer',
 											layout: 'hbox',
-											itemId: 'line1',
 											defaults: {
-												margin: '0 10 0 0',
-												xtype: 'textfield'
+												margin: '0 10 0 0'
 											},
 											items: [
 												{
-													xtype: 'immunizationlivesearch',
-													fieldLabel: i18n('name'),
-													name: 'vaccine_name',
-													valueField:'name',
-													hideLabel: false,
+													xtype: 'mitos.allergiestypescombo',
+													fieldLabel: i18n('type'),
+													name: 'allergy_type',
+													action: 'allergy_type',
 													allowBlank: false,
+													width: 225,
+													labelWidth: 70,
 													enableKeyEvents: true,
-													width: 570,
+													listeners: {
+														scope: me,
+														change: me.onAllergyTypeCahnge
+													}
+												},
+												me.allergieType = Ext.create('App.ux.combo.Allergies', {
+													fieldLabel: i18n('allergy'),
+													action: 'allergie_name',
+													name: 'allergy',
+													enableKeyEvents: true,
+													disabled: true,
+													width: 550,
+													labelWidth: 70
+												}),
+												me.allergieMedication = Ext.widget('rxnormallergylivetsearch', {
+													fieldLabel: i18n('allergy'),
+													hideLabel: false,
+													action: 'allergy',
+													name: 'allergy',
+													hidden: true,
+													disabled: true,
+													enableKeyEvents: true,
+													width: 550,
+													labelWidth: 70,
 													listeners: {
 														scope: me,
 														select: me.onLiveSearchSelect
 													}
-												},
+												}),
 												{
-													fieldLabel: i18n('administrator'),
-													name: 'administered_by',
-													width: 295,
-													labelWidth: 160
+													fieldLabel: i18n('begin_date'),
+													xtype: 'datefield',
+													format: 'Y-m-d',
+													name: 'begin_date'
 
 												}
 											]
@@ -208,41 +466,212 @@ Ext.define('App.view.patient.windows.Medical', {
 											xtype: 'fieldcontainer',
 											layout: 'hbox',
 											defaults: {
-												margin: '0 10 0 0',
-												xtype: 'textfield'
+												margin: '0 10 0 0'
 											},
 											items: [
 												{
-													fieldLabel: i18n('lot_number'),
-													xtype: 'textfield',
-													width: 200,
-													name: 'lot_number'
+													xtype: 'mitos.allergieslocationcombo',
+													fieldLabel: i18n('location'),
+													name: 'location',
+													action: 'location',
+													width: 225,
+													labelWidth: 70,
+													listeners: {
+														scope: me,
+														select: me.onLocationSelect
+													}
 
 												},
+												me.allergiesReaction = Ext.create('App.ux.combo.AllergiesAbdominal', {
+													xtype: 'mitos.allergiesabdominalcombo',
+													fieldLabel: i18n('reaction'),
+													name: 'reaction',
+													width: 315,
+													labelWidth: 70
+												}),
 												{
-
-													xtype: 'numberfield',
-													fieldLabel: i18n('amount'),
-													name: 'administer_amount',
-													labelWidth: 60,
-													width: 200
+													xtype: 'mitos.allergiesseveritycombo',
+													fieldLabel: i18n('severity'),
+													name: 'severity',
+													width: 225,
+													labelWidth: 70
 												},
 												{
-
-													xtype: 'textfield',
-													fieldLabel: i18n('units'),
-													name: 'administer_units',
-													labelWidth: 50,
-													width: 150
-
-												},
-												{
-													fieldLabel: i18n('info_statement_given'),
-													width: 295,
-													labelWidth: 160,
+													fieldLabel: i18n('end_date'),
 													xtype: 'datefield',
 													format: 'Y-m-d',
-													name: 'education_date'
+													name: 'end_date'
+												}
+											]
+										}
+									]
+								}
+							]
+						}),
+						tbar:[
+							'->',
+							{
+								text: i18n('add_new'),
+								action: 'AddRecord',
+								itemId: 'encounterRecordAdd',
+								iconCls: 'icoAdd',
+								scope: me,
+								handler: me.onAddItem
+							}
+						],
+						bbar: [
+							{
+								text: i18n('only_active'),
+								enableToggle: true,
+								scope: me,
+								toggleHandler: me.onOnlyActiveToggle
+							},
+							'->',
+							{
+								text: i18n('review'),
+								action: 'encounterRecordAdd',
+								itemId: 'review_allergies',
+								scope: me,
+								handler: me.onReviewed
+							}
+						]
+					},
+					//endregion
+
+					//region Active Problem Card panel
+					{
+						xtype: 'grid',
+						title: i18n('active_problems'),
+						itemId: 'activeproblems',
+						action: 'patientMedicalListGrid',
+						store: me.patientActiveProblemsStore,
+						columns: [
+							{
+								header: i18n('code'),
+								width: 110,
+								dataIndex: 'code',
+								renderer:function(value, metaDate, record){
+									return value + ' (' + record.data.code_type + ')'
+								}
+							},
+							{
+								header: i18n('problem'),
+								flex: 1,
+								dataIndex: 'code_text'
+							},
+							{
+								xtype: 'datecolumn',
+								header: i18n('date_diagnosed'),
+								width: 100,
+								format: 'Y-m-d',
+								dataIndex: 'begin_date'
+							},
+							{
+								xtype: 'datecolumn',
+								header: i18n('end_date'),
+								width: 100,
+								format: 'Y-m-d',
+								dataIndex: 'end_date'
+							},
+							{
+								header: i18n('active?'),
+								width: 60,
+								dataIndex: 'active',
+								renderer: me.boolRenderer
+							}
+						],
+						plugins: Ext.create('App.ux.grid.RowFormEditing', {
+							autoCancel: false,
+							errorSummary: false,
+							clicksToEdit: 1,
+							formItems: [
+								{
+									xtype: 'container',
+									padding: 10,
+									layout: 'vbox',
+									items: [
+										{
+											xtype: 'liveicdxsearch',
+											fieldLabel: i18n('search'),
+											name: 'code',
+											hideLabel: false,
+											itemId: 'actiiveproblems',
+											action: 'actiiveproblems',
+											enableKeyEvents: true,
+											displayField: 'code',
+											valueField: 'code',
+											width: 720,
+											labelWidth: 70,
+											listeners: {
+												scope: me,
+												select: me.onLiveSearchSelect
+											}
+										},
+										{
+											/**
+											 * Line one
+											 */
+											xtype: 'fieldcontainer',
+											layout: 'hbox',
+											defaults: {
+												margin: '0 10 0 0'
+											},
+											items: [
+												{
+													xtype: 'textfield',
+													fieldLabel: i18n('problem'),
+													width: 510,
+													labelWidth: 70,
+													allowBlank: false,
+													name: 'code_text',
+													action: 'code_text'
+												},
+												{
+													fieldLabel: i18n('code_type'),
+													xtype: 'textfield',
+													width: 200,
+													labelWidth: 100,
+													name: 'code_type'
+
+												}
+											]
+
+										},
+										{
+											/**
+											 * Line two
+											 */
+											xtype: 'fieldcontainer',
+											layout: 'hbox',
+											defaults: {
+												margin: '0 10 0 0'
+											},
+											items: [
+												{
+													fieldLabel: i18n('occurrence'),
+													width: 250,
+													labelWidth: 70,
+													xtype: 'mitos.occurrencecombo',
+													name: 'occurrence'
+
+												},
+												{
+													fieldLabel: i18n('outcome'),
+													xtype: 'mitos.outcome2combo',
+													width: 250,
+													labelWidth: 70,
+													name: 'outcome'
+
+												},
+
+												{
+													fieldLabel: i18n('date_diagnosed'),
+													xtype: 'datefield',
+													width: 200,
+													labelWidth: 100,
+													format: 'Y-m-d',
+													name: 'begin_date'
+
 												}
 											]
 
@@ -254,712 +683,272 @@ Ext.define('App.view.patient.windows.Medical', {
 											xtype: 'fieldcontainer',
 											layout: 'hbox',
 											defaults: {
-												margin: '0 10 0 0',
-												xtype: 'textfield'
+												margin: '0 10 0 0'
 											},
 											items: [
 												{
-													fieldLabel: i18n('notes'),
 													xtype: 'textfield',
-													width: 300,
-													name: 'note'
-
+													width: 510,
+													labelWidth: 70,
+													fieldLabel: i18n('referred_by'),
+													name: 'referred_by'
 												},
-												me.CvxMvxCombo = Ext.create('App.ux.combo.CVXManufacturersForCvx', {
-													fieldLabel: i18n('manufacturer'),
-													width: 260,
-													name: 'manufacturer'
-												}),
 												{
-													fieldLabel: i18n('date_administered'),
-													width: 295,
-													labelWidth: 160,
+													fieldLabel: i18n('end_date'),
 													xtype: 'datefield',
+													width: 200,
+													labelWidth: 100,
 													format: 'Y-m-d',
-													name: 'administered_date'
+													name: 'end_date'
+
 												}
 											]
-
 										}
 									]
-
 								}
 							]
 						}),
-						bbar: [
-							'-',
-							me.vxuBtn = Ext.widget('button',{
-								text: i18n('submit_hl7_vxu'),
-								scope: me,
-								disabled: true,
-								handler: me.onVxu
-							}),
-							'-',
+						tbar:[
 							'->',
 							{
-								text: i18n('review'),
-								itemId: 'review_immunizations',
-								action: 'encounterRecordAdd',
+								text: i18n('add_new'),
+								action: 'AddRecord',
+								itemId: 'encounterRecordAdd',
+								iconCls: 'icoAdd',
 								scope: me,
-								handler: me.onReviewed
-							}
-						]
-					},
-					{
-						xtype:'grid',
-						title:i18n('immunization_list'),
-						collapseMode:'mini',
-						region:'east',
-						collapsible:true,
-						collapsed:true,
-						width:300,
-						split:true,
-						store: Ext.create('App.store.patient.CVXCodes'),
-						columns: [
-							{
-								text: i18n('code'),
-								dataIndex: 'cvx_code',
-								width: 50
-							},
-							{
-								text: i18n('immunization_name'),
-								dataIndex: 'name',
-								flex: 1
+								handler: me.onAddItem
 							}
 						],
-						listeners:{
-							scope:me,
-							expand:me.immunizationListExpand
-						}
-					}
-				]
-			},
-			//endregion
+						bbar: ['->', {
+							text: i18n('review'),
+							itemId: 'review_active_problems',
+							scope: me,
+							action: 'encounterRecordAdd',
+							handler: me.onReviewed
+						}]
+					},
+					//endregion
 
-			//region Allergies Card panel
-			{
-				xtype: 'grid',
-				action: 'patientAllergiesListGrid',
-				store: me.patientAllergiesListStore,
-				columns: [
+					//region Medications panel
 					{
-						header: i18n('type'),
-						width: 100,
-						dataIndex: 'allergy_type'
-					},
-					{
-						header: i18n('name'),
-						width: 375,
-						dataIndex: 'allergy'
-					},
-					{
-						header: i18n('location'),
-						width: 100,
-						dataIndex: 'location'
-					},
-					{
-						header: i18n('severity'),
-						flex: 1,
-						dataIndex: 'severity'
-					},
-					{
-						text: i18n('active'),
-						width: 55,
-						dataIndex: 'active',
-						renderer: me.boolRenderer
-					}
-				],
-				plugins: me.rowEditingAllergies = Ext.create('App.ux.grid.RowFormEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					listeners: {
-						scope: me,
-						beforeedit: me.beforeAllergyEdit
-					},
-					formItems: [
-						{
-							title: i18n('general'),
-							xtype: 'container',
-							padding: '0 10',
-							layout: 'vbox',
-							items: [
-								{
-									/**
-									 * Line one
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0'
-									},
-									items: [
-										{
-											xtype: 'mitos.allergiestypescombo',
-											fieldLabel: i18n('type'),
-											name: 'allergy_type',
-											action: 'allergy_type',
-											allowBlank: false,
-											width: 225,
-											labelWidth: 70,
-											enableKeyEvents: true,
-											listeners: {
-												scope: me,
-												change: me.onAllergyTypeCahnge
-											}
-										},
-										me.allergieType = Ext.create('App.ux.combo.Allergies', {
-											fieldLabel: i18n('allergy'),
-											action: 'allergie_name',
-											name: 'allergy',
-											enableKeyEvents: true,
-											disabled: true,
-											width: 550,
-											labelWidth: 70
-										}),
-										me.allergieMedication = Ext.widget('rxnormallergylivetsearch', {
-											fieldLabel: i18n('allergy'),
-											hideLabel: false,
-											action: 'allergy',
-											name: 'allergy',
-											hidden: true,
-											disabled: true,
-											enableKeyEvents: true,
-											width: 550,
-											labelWidth: 70,
+						xtype:'panel',
+						title: i18n('medications'),
+						itemId: 'medications',
+						layout:'border',
+						border:false,
+						items:[
+							{
+								xtype: 'grid',
+								region:'center',
+								action: 'patientMedicationsListGrid',
+								store: me.patientMedicationsStore,
+								columns: [
+									{
+										header: i18n('medication'),
+										flex: 1,
+										minWidth:200,
+										dataIndex: 'STR',
+										editor: {
+											xtype: 'rxnormlivetsearch',
+											displayField: 'STR',
+											valueField: 'STR',
+											action: 'medication',
 											listeners: {
 												scope: me,
 												select: me.onLiveSearchSelect
 											}
-										}),
-										{
-											fieldLabel: i18n('begin_date'),
-											xtype: 'datefield',
-											format: 'Y-m-d',
-											name: 'begin_date'
-
 										}
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0'
 									},
-									items: [
-										{
-											xtype: 'mitos.allergieslocationcombo',
-											fieldLabel: i18n('location'),
-											name: 'location',
-											action: 'location',
-											width: 225,
-											labelWidth: 70,
-											listeners: {
-												scope: me,
-												select: me.onLocationSelect
-											}
-
-										},
-										me.allergiesReaction = Ext.create('App.ux.combo.AllergiesAbdominal', {
-											xtype: 'mitos.allergiesabdominalcombo',
-											fieldLabel: i18n('reaction'),
-											name: 'reaction',
-											width: 315,
-											labelWidth: 70
-										}),
-										{
-											xtype: 'mitos.allergiesseveritycombo',
-											fieldLabel: i18n('severity'),
-											name: 'severity',
-											width: 225,
-											labelWidth: 70
-										},
-										{
-											fieldLabel: i18n('end_date'),
-											xtype: 'datefield',
-											format: 'Y-m-d',
-											name: 'end_date'
+									{
+										header: i18n('dose'),
+										width: 125,
+										dataIndex: 'dose',
+										sortable: false,
+										hideable: false,
+										editor: {
+											xtype: 'textfield'
 										}
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar: [
-					{
-						text: i18n('only_active'),
-						enableToggle: true,
-						scope: me,
-						toggleHandler: me.onOnlyActiveToggle
-					},
-					'->',
-					{
-						text: i18n('review'),
-						action: 'encounterRecordAdd',
-						itemId: 'review_allergies',
-						scope: me,
-						handler: me.onReviewed
-					}
-				]
-			},
-			//endregion
-
-			//region Active Problem Card panel
-			{
-				xtype: 'grid',
-				action: 'patientMedicalListGrid',
-				store: me.patientActiveProblemsStore,
-				columns: [
-					{
-						header: i18n('code'),
-						width: 110,
-						dataIndex: 'code',
-						renderer:function(value, metaDate, record){
-							return value + ' (' + record.data.code_type + ')'
-						}
-					},
-					{
-						header: i18n('problem'),
-						flex: 1,
-						dataIndex: 'code_text'
-					},
-					{
-						xtype: 'datecolumn',
-						header: i18n('date_diagnosed'),
-						width: 100,
-						format: 'Y-m-d',
-						dataIndex: 'begin_date'
-					},
-					{
-						xtype: 'datecolumn',
-						header: i18n('end_date'),
-						width: 100,
-						format: 'Y-m-d',
-						dataIndex: 'end_date'
-					},
-					{
-						header: i18n('active?'),
-						width: 60,
-						dataIndex: 'active',
-						renderer: me.boolRenderer
-					}
-				],
-				plugins: Ext.create('App.ux.grid.RowFormEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					formItems: [
-						{
-							xtype: 'container',
-							padding: 10,
-							layout: 'vbox',
-							items: [
-								{
-									xtype: 'liveicdxsearch',
-									fieldLabel: i18n('search'),
-									name: 'code',
-									hideLabel: false,
-									itemId: 'actiiveproblems',
-									action: 'actiiveproblems',
-									enableKeyEvents: true,
-									displayField: 'code',
-									valueField: 'code',
-									width: 720,
-									labelWidth: 70,
-									listeners: {
-										scope: me,
-										select: me.onLiveSearchSelect
+									},
+									{
+										header: i18n('route'),
+										width: 100,
+										dataIndex: 'route',
+										sortable: false,
+										hideable: false,
+										editor: {
+											xtype: 'mitos.prescriptionhowto'
+										}
+									},
+									{
+										header: i18n('form'),
+										width: 125,
+										dataIndex: 'form',
+										sortable: false,
+										hideable: false,
+										editor: {
+											xtype: 'mitos.prescriptiontypes'
+										}
+									},
+									{
+										header: i18n('instructions'),
+										width: 200,
+										dataIndex: 'prescription_when',
+										sortable: false,
+										hideable: false,
+										editor: Ext.widget('livesigssearch')
+									},
+									{
+										xtype: 'datecolumn',
+										format: globals['date_display_format'],
+										header: i18n('begin_date'),
+										width: 100,
+										dataIndex: 'begin_date',
+										sortable: false,
+										hideable: false
+									},
+									{
+										header: i18n('end_date'),
+										width: 100,
+										dataIndex: 'end_date',
+										sortable: false,
+										hideable: false,
+										editor: {
+											xtype: 'datefield',
+											format: globals['date_display_format']
+										}
+									},
+									{
+										header: i18n('active?'),
+										width: 60,
+										dataIndex: 'active',
+										renderer: me.boolRenderer
 									}
-								},
-								{
-									/**
-									 * Line one
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0'
-									},
-									items: [
-										{
-											xtype: 'textfield',
-											fieldLabel: i18n('problem'),
-											width: 510,
-											labelWidth: 70,
-											allowBlank: false,
-											name: 'code_text',
-											action: 'code_text'
-										},
-										{
-											fieldLabel: i18n('code_type'),
-											xtype: 'textfield',
-											width: 200,
-											labelWidth: 100,
-											name: 'code_type'
-
-										}
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0'
-									},
-									items: [
-										{
-											fieldLabel: i18n('occurrence'),
-											width: 250,
-											labelWidth: 70,
-											xtype: 'mitos.occurrencecombo',
-											name: 'occurrence'
-
-										},
-										{
-											fieldLabel: i18n('outcome'),
-											xtype: 'mitos.outcome2combo',
-											width: 250,
-											labelWidth: 70,
-											name: 'outcome'
-
-										},
-
-										{
-											fieldLabel: i18n('date_diagnosed'),
-											xtype: 'datefield',
-											width: 200,
-											labelWidth: 100,
-											format: 'Y-m-d',
-											name: 'begin_date'
-
-										}
-									]
-
-								},
-								{
-									/**
-									 * Line three
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 0 0'
-									},
-									items: [
-										{
-											xtype: 'textfield',
-											width: 510,
-											labelWidth: 70,
-											fieldLabel: i18n('referred_by'),
-											name: 'referred_by'
-										},
-										{
-											fieldLabel: i18n('end_date'),
-											xtype: 'datefield',
-											width: 200,
-											labelWidth: 100,
-											format: 'Y-m-d',
-											name: 'end_date'
-
-										}
-									]
-								}
-							]
-						}
-					]
-				}),
-				bbar: ['->', {
-					text: i18n('review'),
-					itemId: 'review_active_problems',
-					scope: me,
-					action: 'encounterRecordAdd',
-					handler: me.onReviewed
-				}]
-			},
-			//endregion
-
-
-			//region Medications panel
-			{
-				xtype:'panel',
-				layout:'border',
-				border:false,
-				items:[
-					{
-						xtype: 'grid',
-						region:'center',
-						action: 'patientMedicationsListGrid',
-						store: me.patientMedicationsStore,
-						columns: [
-							{
-								header: i18n('medication'),
-								flex: 1,
-								minWidth:200,
-								dataIndex: 'STR',
-								editor: {
-									xtype: 'rxnormlivetsearch',
-									displayField: 'STR',
-									valueField: 'STR',
-									action: 'medication',
-									listeners: {
+								],
+								plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+									autoCancel: false,
+									errorSummary: false,
+									clicksToEdit: 2
+								}),
+								bbar: [
+									'->',
+									{
+										text: i18n('review'),
+										itemId: 'review_medications',
 										scope: me,
-										select: me.onLiveSearchSelect
+										action: 'encounterRecordAdd',
+										handler: me.onReviewed
 									}
+								]
+							},
+							{
+								xtype:'grid',
+								title:i18n('medication_list'),
+								collapseMode:'mini',
+								region:'east',
+								width:400,
+								collapsible:true,
+								collapsed:true,
+								split:true,
+								loadMask: true,
+								selModel: {
+									pruneRemoved: false
+								},
+								viewConfig: {
+									trackOver: false
+								},
+								verticalScroller:{
+									variableRowHeight: true
+								},
+								store: me.MedicationListStore,
+								tbar:[
+									me.MedicationListSearch = Ext.widget('triggerfield',{
+										triggerCls: Ext.baseCSSPrefix+'form-search-trigger',
+										fieldLabel: i18n('search'),
+										flex:1,
+										labelWidth: 43,
+										onTriggerClick: me.onMedicationListSearch
+									})
+								],
+								columns: [
+									{
+										xtype: 'rownumberer',
+										width: 50,
+										sortable: false
+									},
+									{
+										text: i18n('medication'),
+										dataIndex: 'STR',
+										flex: 1
+									}
+								],
+								listeners:{
+									scope:me,
+									expand:me.medicationListExpand
 								}
-							},
-							{
-								header: i18n('dose'),
-								width: 125,
-								dataIndex: 'dose',
-								sortable: false,
-								hideable: false,
-								editor: {
-									xtype: 'textfield'
-								}
-							},
-							{
-								header: i18n('route'),
-								width: 100,
-								dataIndex: 'route',
-								sortable: false,
-								hideable: false,
-								editor: {
-									xtype: 'mitos.prescriptionhowto'
-								}
-							},
-							{
-								header: i18n('form'),
-								width: 125,
-								dataIndex: 'form',
-								sortable: false,
-								hideable: false,
-								editor: {
-									xtype: 'mitos.prescriptiontypes'
-								}
-							},
-							{
-								header: i18n('instructions'),
-								width: 200,
-								dataIndex: 'prescription_when',
-								sortable: false,
-								hideable: false,
-								editor: Ext.widget('livesigssearch')
-							},
-							{
-								xtype: 'datecolumn',
-								format: globals['date_display_format'],
-								header: i18n('begin_date'),
-								width: 100,
-								dataIndex: 'begin_date',
-								sortable: false,
-								hideable: false
-							},
-							{
-								header: i18n('end_date'),
-								width: 100,
-								dataIndex: 'end_date',
-								sortable: false,
-								hideable: false,
-								editor: {
-									xtype: 'datefield',
-									format: globals['date_display_format']
-								}
-							},
-							{
-								header: i18n('active?'),
-								width: 60,
-								dataIndex: 'active',
-								renderer: me.boolRenderer
 							}
 						],
-						plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-							autoCancel: false,
-							errorSummary: false,
-							clicksToEdit: 2
-						}),
-						bbar: [
+						tbar:[
 							'->',
 							{
-								text: i18n('review'),
-								itemId: 'review_medications',
+								text: i18n('add_new'),
+								action: 'AddRecord',
+								itemId: 'encounterRecordAdd',
+								iconCls: 'icoAdd',
 								scope: me,
-								action: 'encounterRecordAdd',
-								handler: me.onReviewed
+								handler: me.onAddItem
 							}
 						]
 					},
+					//endregion
+
+					//region Lab Results panel
 					{
-						xtype:'grid',
-						title:i18n('medication_list'),
-						collapseMode:'mini',
-						region:'east',
-						width:400,
-						collapsible:true,
-						collapsed:true,
-						split:true,
-						loadMask: true,
-						selModel: {
-							pruneRemoved: false
-						},
-						viewConfig: {
-							trackOver: false
-						},
-						verticalScroller:{
-							variableRowHeight: true
-						},
-						store: me.MedicationListStore,
-						tbar:[
-							me.MedicationListSearch = Ext.widget('triggerfield',{
-								triggerCls: Ext.baseCSSPrefix+'form-search-trigger',
-								fieldLabel: i18n('search'),
-								flex:1,
-								labelWidth: 43,
-								onTriggerClick: me.onMedicationListSearch
-							})
-						],
-						columns: [
-							{
-								xtype: 'rownumberer',
-								width: 50,
-								sortable: false
-							},
-							{
-								text: i18n('medication'),
-								dataIndex: 'STR',
-								flex: 1
-							}
-						],
-						listeners:{
-							scope:me,
-							expand:me.medicationListExpand
-						}
+
+						xtype:'patientresultspanel',
+						title: i18n('results'),
+						itemId: 'laboratories',
+						action: 'patientLabs'
+					},
+					//endregion
+
+					//region Social History panel
+					{
+						xtype: 'patientsocialhistorypanel',
+						title: i18n('social_history'),
+						itemId: 'socialhistory',
+						action: 'patientSocialHistory'
+					},
+
+					//region Referrals
+					{
+						xtype: 'patientreferralspanel',
+						title: i18n('referrals'),
+						itemId: 'referrals',
+						action: 'patientReferrals'
 					}
+					//endregion
 				]
-			},
-			//endregion
-
-			//region Lab Results panel
-			{
-
-				xtype:'patientresultspanel',
-				action: 'patientLabs'
-			},
-			//endregion
-
-			//region Social History panel
-			{
-				xtype: 'patientsocialhistorypanel',
-				action: 'patientSocialHistory'
-			},
-
-			//region Referrals
-			{
-				xtype: 'patientreferralspanel',
-				action: 'patientReferrals'
 			}
-			//endregion
 		];
 		/**
 		 * Docked Items
 		 * @type {Array}
 		 */
-		me.dockedItems = [
-			{
-				xtype: 'toolbar',
-				items: [
-					{
-
-						text: i18n('immunization'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						pressed: true,
-						itemId: 'immunization',
-						action: 'immunization',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'-',
-					{
-						text: i18n('allergies'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						itemId: 'allergies',
-						action: 'allergies',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'-',
-					{
-						text: i18n('active_problems'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						itemId: 'issues',
-						action: 'issues',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'-',
-					{
-						text: i18n('medications'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						itemId: 'medications',
-						action: 'medications',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'-',
-					{
-						text: i18n('results'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						itemId: 'laboratories',
-						action: 'laboratories',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'-',
-					{
-						text: i18n('social_history'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						itemId: 'socialhistory',
-						action: 'socialhistory',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'-',
-					{
-						text: i18n('referrals'),
-						enableToggle: true,
-						toggleGroup: 'medicalWin',
-						itemId: 'referrals',
-						action: 'referrals',
-						scope: me,
-						handler: me.cardSwitch
-					},
-					'->',
-					{
-						text: i18n('add_new'),
-						action: 'AddRecord',
-						itemId: 'encounterRecordAdd',
-						iconCls: 'icoAdd',
-						scope: me,
-						handler: me.onAddItem
-					}
-				]
-			}
-		];
+//		me.dockedItems = [
+//			{
+//				xtype: 'toolbar',
+//				items: [
+//					{
+//						text: i18n('add_new'),
+//						action: 'AddRecord',
+//						itemId: 'encounterRecordAdd',
+//						iconCls: 'icoAdd',
+//						scope: me,
+//						handler: me.toolbarBtnClick
+//					}
+//				]
+//			}
+//		];
 		me.buttons = [
 			{
 				text: i18n('close'),
@@ -974,7 +963,11 @@ Ext.define('App.view.patient.windows.Medical', {
 			show: me.onMedicalWinShow,
 			close: me.onMedicalWinClose
 		};
+
 		me.callParent(arguments);
+
+
+
 	},
 
 	onReviewed: function(btn){
@@ -1231,11 +1224,6 @@ Ext.define('App.view.patient.windows.Medical', {
 		} else if(combo.action == 'actiiveproblems'){
 			xform.findField('code_text').setValue(record[0].data.code_text);
 			xform.findField('code_type').setValue(record[0].data.code_type);
-//        }else if(combo.action == 'surgery'){
-//            name = record[0].data.surgery;
-//            field = combo.up('fieldcontainer').query('[action="idField"]')[0];
-//            field.setValue(name);
-
 		} else if(combo.action == 'medication'){
 			Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
 				xform.setValues({
@@ -1257,7 +1245,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	onAddItem: function(){
 		var me = this,
-			activeItem = me.getLayout().getActiveItem(),
+			activeItem = me.down('tabpanel').getActiveTab(),
             grid = activeItem.xtype == 'grid' ? activeItem : activeItem.down('grid'),
 			store = grid.store,
 			params;
@@ -1323,42 +1311,17 @@ Ext.define('App.view.patient.windows.Medical', {
 		}
 	},
 
-	cardSwitch: function(btn){
+	cardSwitch:function(action){
 		var me = this,
-			layout = me.getLayout(),
-			addBtn = me.down('toolbar').query('[action="AddRecord"]')[0],
-			p = app.patient,
-			title;
+			tabPanel = me.down('tabpanel'),
+			panel = tabPanel.query('#' + action)[0];
+		me.pid = app.patient.pid;
+		tabPanel.setActiveTab(panel);
+		me.setWindowTitle(panel.title);
+	},
 
-		me.pid = p.pid;
-		addBtn.show();
-
-		if(btn.action == 'immunization'){
-			layout.setActiveItem(0);
-			title = 'Immunizations';
-		} else if(btn.action == 'allergies'){
-			layout.setActiveItem(1);
-			title = 'Allergies';
-		} else if(btn.action == 'issues'){
-			layout.setActiveItem(2);
-			title = 'Active Problems';
-		} else if(btn.action == 'medications'){
-			layout.setActiveItem(3);
-			title = 'Medications';
-		} else if(btn.action == 'laboratories'){
-			layout.setActiveItem(4);
-			title = 'Laboratories';
-			addBtn.hide();
-		} else if(btn.action == 'socialhistory'){
-			layout.setActiveItem(5);
-			title = 'Social History';
-			addBtn.hide();
-		} else if(btn.action == 'referrals'){
-			layout.setActiveItem(6);
-			title = 'Referrals';
-			addBtn.hide();
-		}
-		me.setTitle(p.name + ' (' + title + ') ' + (p.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
+	setWindowTitle:function(title){
+		this.setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
 	},
 
 	onMedicalWinShow: function(){
@@ -1368,16 +1331,10 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		me.pid = p.pid;
 		me.eid = p.eid;
-//		me.pid = 1;
-//		me.eid = 1;
 
 		me.setTitle(p.name + (p.readOnly ? ' <span style="color:red">[' + i18n('read_mode') + ']</span>' :''));
 
 		me.setReadOnly();
-
-//		for(var i = 0; i < reviewBts.length; i++){
-//			reviewBts[i].setVisible((me.eid != null));
-//		}
 
 		app.getController('patient.Results').setResultPanel();
 
@@ -1417,8 +1374,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			]
 		});
 
-
-		me.cardSwitch({action:'laboratories'});
 	},
 
 	onMedicalWinClose: function(){

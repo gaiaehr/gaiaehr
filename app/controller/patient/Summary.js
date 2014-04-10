@@ -63,7 +63,6 @@ Ext.define('App.controller.patient.Summary', {
 		});
 	},
 
-
 	reloadGrid:function(grid){
 		var store;
 		if(grid.itemId == 'PatientSummaryVitalsPanel'){

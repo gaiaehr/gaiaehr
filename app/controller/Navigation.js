@@ -30,13 +30,20 @@ Ext.define('App.controller.Navigation', {
         }
 	],
 
+	navKey: 'ALT',
+
 	init: function() {
 		var me = this;
 
+		me.navKey = this.setNavKey(this.navKey);
+
 		me.activePanel = null;
+		me.altIsDown = false;
 
 		Ext.util.History.init();
 		Ext.util.History.on('change', me.urlChange, me);
+
+		me.initFunctionKeyNav();
 
 		me.control({
 			'viewport':{
@@ -241,6 +248,33 @@ Ext.define('App.controller.Navigation', {
 	onPatientUnset:function(viewport){
 		say('onPatientUnset');
 
+	},
+
+	initFunctionKeyNav:function(){
+		Ext.getBody().on('keydown', this.captureDownKey, this);
+		Ext.getBody().on('keyup', this.captureUpKey, this);
+	},
+
+	captureDownKey:function(e){
+		if(e.getKey() == e.ALT){
+			this.altIsDown = true;
+			return;
+		}
+		if(!this.altIsDown) return;
+		this.getViewport().fireEvent('navkey', e, e.getKey());
+		say('navkey');
+	},
+
+	captureUpKey:function(e){
+		if(e.getKey() == e.ALT) this.altIsDown = false;
+	},
+
+	setNavKey:function(key){
+		return this.navKey = Ext.EventObjectImpl[key];
+	},
+
+	getNavKey:function(){
+		return this.navKey;
 	}
 
 });

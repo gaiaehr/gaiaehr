@@ -663,6 +663,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Referrals',
 	                'patient.Results',
 	                'patient.SocialHistory',
+	                'patient.Medical',
 	                'patient.Summary',
                     'patient.encounter.SOAP'
                 ],

@@ -854,7 +854,7 @@ Ext.define('App.view.patient.Summary', {
 		});
 	},
 	medicalWin: function(btn){
-		app.onMedicalWin(btn);
+		app.onMedicalWin(btn.action);
 	},
 
 	/**

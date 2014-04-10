@@ -608,10 +608,9 @@ Ext.define('App.view.Viewport', {
     /**
      * Show the medical window dialog.
      */
-    onMedicalWin: function(btn){
+    onMedicalWin: function(action){
         this.MedicalWindow.show();
-        this.MedicalWindow.down('toolbar').getComponent(btn.action).toggle(true);
-        this.MedicalWindow.cardSwitch(btn);
+        this.MedicalWindow.cardSwitch(action);
     },
 
     /**

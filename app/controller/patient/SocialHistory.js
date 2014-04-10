@@ -56,6 +56,8 @@ Ext.define('App.controller.patient.SocialHistory', {
 			plugin = this.getSocialHistoryGrid().editingPlugin,
 			addedRecs;
 
+		if(!this.getSocialHistoryTypeCombo().isValid()) return;
+
 		plugin.cancelEdit();
 		addedRecs = this.getSocialHistoryGrid().getStore().add({
 			pid: app.patient.pid,

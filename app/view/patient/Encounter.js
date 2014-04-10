@@ -364,7 +364,7 @@ Ext.define('App.view.patient.Encounter', {
 			split: true,
 			collapsible: true,
 			animCollapse: true,
-			collapsed: true,
+			collapsed: false,
 			listeners: {
 				scope: this,
 				collapse: me.progressNoteCollapseExpand,
@@ -409,6 +409,7 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.panelToolBar = Ext.create('Ext.toolbar.Toolbar', {
 			dock: 'top',
+//			ui:'footer',
 			defaults: {
 				scope: me,
 				handler: me.onMedicalWin

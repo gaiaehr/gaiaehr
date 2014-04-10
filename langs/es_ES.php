@@ -405,7 +405,6 @@ $LANG = array(
     'head_circumference_cm'					=> 'Circunferencia de la cabeza en cm',
     'waist_circumference_in'				=> 'Circunferencia de la cintura en pulgadas',
     'waist_circumference_cm'				=> 'Circunferencia de la  cintura en cm',
-    'bmi'									=> 'IMC',
     'bmi_status'							=> 'Estado IMC',
     'other_notes'							=> 'Otras notas',
     'administer'							=> 'Administrar',

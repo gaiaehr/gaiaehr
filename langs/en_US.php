@@ -1296,4 +1296,5 @@ $LANG = array(
 	'color'                                 => 'Color',
 	'supervisor'                            => 'Supervisor',
 	'supervisor_does_not_match_user'        => 'Encounter supervisor does not match current user',
+	'request'                               => 'Request',
 );

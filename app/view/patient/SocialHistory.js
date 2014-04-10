@@ -71,6 +71,7 @@ Ext.define('App.view.patient.SocialHistory', {
 			xtype: 'gaiaehr.combo',
 			width: 200,
 			list: 101,
+			allowBlank: false,
 			action: 'socialHistoryTypeCombo'
 		},
 		{

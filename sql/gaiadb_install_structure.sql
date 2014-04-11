@@ -1003,7 +1003,7 @@ CREATE TABLE `globals` (
   `gl_category` varchar(255) DEFAULT NULL COMMENT 'Category',
   PRIMARY KEY (`id`),
   KEY `gl_name` (`gl_name`,`gl_index`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=119 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=120 ;
 
 CREATE TABLE `groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

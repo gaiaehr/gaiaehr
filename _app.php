@@ -77,6 +77,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             window.say = function(a){
                 console.log(a);
             };
+
+            window.g = function(global){
+	            return globals[global] || false;
+            };
+
             ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );
             AppClipboard = new ZeroClipboard();
             AppClipboard.on("complete", function (client, args) {
@@ -655,15 +660,22 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 ],
                 controllers:[
 	                'Cron',
+	                'DualScreen',
 	                'LogOut',
 	                'Navigation',
 	                'Support',
 	                'Notification',
 	                'ScriptCam',
+
+	                'patient.ActiveProblems',
+	                'patient.Allergies',
+	                'patient.Immunizations',
+	                'patient.Medical',
+	                'patient.Medications',
 	                'patient.Referrals',
 	                'patient.Results',
 	                'patient.SocialHistory',
-	                'patient.Medical',
+
 	                'patient.Summary',
                     'patient.encounter.SOAP'
                 ],
@@ -673,7 +685,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
                     CronJob.run(function(){
                         say('Loading GaiaEHR');
-                        app = Ext.create('App.view.Viewport');
+                        window.app = Ext.create('App.view.Viewport');
                     });
                 }
             });

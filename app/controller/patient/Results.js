@@ -55,6 +55,9 @@ Ext.define('App.controller.patient.Results', {
 	init: function(){
 		var me = this;
 		me.control({
+			'patientresultspanel': {
+				activate: me.onResultPanelActive
+			},
 			'patientresultspanel > grid[action=orders]': {
 				selectionchange: me.onOrderSelectionChange
 			},
@@ -71,6 +74,10 @@ Ext.define('App.controller.patient.Results', {
 				click: me.onOrderDocumentViewBtnClicked
 			}
 		});
+	},
+
+	onResultPanelActive:function(){
+		this.setResultPanel();
 	},
 
 	setResultPanel: function(){

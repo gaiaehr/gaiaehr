@@ -18,19 +18,26 @@
 
 Ext.define('App.view.patient.Results', {
 	extend: 'Ext.panel.Panel',
+	requires:[
+		'Ext.grid.plugin.CellEditing',
+		'App.store.patient.PatientsOrders'
+	],
+	title: i18n('results'),
 	xtype: 'patientresultspanel',
 	layout: {
-		type: 'border'
+		type:'vbox',
+		align:'stretch'
 	},
-	border: false,
+//	border: false,
 	items: [
 		{
 			xtype: 'grid',
 			action: 'orders',
-			region: 'center',
-			split: true,			store: Ext.create('App.store.patient.PatientsOrders', {
-				remoteFilter: true
-			}),
+			flex: 1,
+			split: true,
+			store: Ext.create('App.store.patient.PatientsOrders', {
+			    remoteFilter: true
+		    }),
 			columns: [
 				{
 					header: i18n('orders'),
@@ -62,7 +69,7 @@ Ext.define('App.view.patient.Results', {
 				{
 					xtype: 'button',
 					text: i18n('view_document'),
-					action:'orderDocumentViewBtn'
+					action: 'orderDocumentViewBtn'
 				}
 			],
 			items: [
@@ -72,12 +79,12 @@ Ext.define('App.view.patient.Results', {
 					region: 'west',
 					collapsible: true,
 					autoScroll: true,
-					width:260,
+					width: 260,
 					bodyPadding: 5,
 					split: true,
-					layout:{
-						type:'vbox',
-						align:'stretch'
+					layout: {
+						type: 'vbox',
+						align: 'stretch'
 					},
 					items: [
 						{
@@ -85,7 +92,7 @@ Ext.define('App.view.patient.Results', {
 							title: i18n('report_info'),
 							defaults: {
 								xtype: 'textfield',
-								anchor:'100%'
+								anchor: '100%'
 							},
 							layout: 'anchor',
 							items: [
@@ -131,7 +138,7 @@ Ext.define('App.view.patient.Results', {
 							title: i18n('laboratory_info'),
 							defaults: {
 								xtype: 'textfield',
-								anchor:'100%'
+								anchor: '100%'
 							},
 							layout: 'anchor',
 							margin: 0,
@@ -160,7 +167,7 @@ Ext.define('App.view.patient.Results', {
 					split: true,
 					plugins: [
 						{
-							ptype:'cellediting',
+							ptype: 'cellediting',
 							clicksToEdit: 1
 						}
 					],
@@ -176,10 +183,10 @@ Ext.define('App.view.patient.Results', {
 							menuDisabled: true,
 							dataIndex: 'value',
 							width: 180,
-							editor:{
-								xtype:'textfield'
+							editor: {
+								xtype: 'textfield'
 							},
-							renderer:function(v, meta, record){
+							renderer: function(v, meta, record){
 								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
 									orange = ['L', 'H', 'A', 'W', 'MS'],
 									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
@@ -203,8 +210,8 @@ Ext.define('App.view.patient.Results', {
 							menuDisabled: true,
 							dataIndex: 'units',
 							width: 75,
-							editor:{
-								xtype:'textfield'
+							editor: {
+								xtype: 'textfield'
 							}
 						},
 						{
@@ -212,10 +219,10 @@ Ext.define('App.view.patient.Results', {
 							menuDisabled: true,
 							dataIndex: 'abnormal_flag',
 							width: 75,
-							editor:{
-								xtype:'textfield'
+							editor: {
+								xtype: 'textfield'
 							},
-							renderer:function(v, attr){
+							renderer: function(v, attr){
 								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
 									orange = ['L', 'H', 'A', 'W', 'MS'],
 									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
@@ -239,8 +246,8 @@ Ext.define('App.view.patient.Results', {
 							menuDisabled: true,
 							dataIndex: 'reference_rage',
 							width: 150,
-							editor:{
-								xtype:'textfield'
+							editor: {
+								xtype: 'textfield'
 							}
 						},
 						{
@@ -248,8 +255,8 @@ Ext.define('App.view.patient.Results', {
 							menuDisabled: true,
 							dataIndex: 'notes',
 							width: 300,
-							editor:{
-								xtype:'textfield'
+							editor: {
+								xtype: 'textfield'
 							}
 						},
 						{
@@ -257,8 +264,8 @@ Ext.define('App.view.patient.Results', {
 							menuDisabled: true,
 							dataIndex: 'observation_result_status',
 							width: 60,
-							editor:{
-								xtype:'textfield'
+							editor: {
+								xtype: 'textfield'
 							}
 						}
 					]
@@ -267,7 +274,7 @@ Ext.define('App.view.patient.Results', {
 			buttons: [
 				{
 					text: i18n('reset'),
-					action:'orderResultResetBtn'
+					action: 'orderResultResetBtn'
 				},
 				{
 					text: i18n('save'),

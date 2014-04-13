@@ -19,38 +19,82 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		},
 		{
 			ref: 'SoapPanel',
-			selector: 'panel[action="patient.encounter.soap"]'
+			selector: '#soapPanel'
+		},
+		{
+			ref: 'SoapForm',
+			selector: '#soapPanel #soapForm'
+		},
+		{
+			ref: 'SoapProcedureWindow',
+			selector: '#soapProcedureWindow'
+		},
+		{
+			ref: 'SoapProcedureForm',
+			selector: '#soapProcedureWindow > form'
+		},
+		{
+			ref: 'TemplatesTreePanel',
+			selector: '#soapPanel #templatesTreePanel'
 		},
 		{
 			ref: 'SpeechBtn',
-			selector: 'panel[action="patient.encounter.soap"] button[action=speechBtn]'
+			selector: '#soapPanel button[action=speechBtn]'
 		}
 	],
 
 	init: function() {
 
 		this.control({
-			'panel[action="patient.encounter.soap"]': {
+			'#soapPanel': {
 				beforerender: this.onPanelBeforeRender
 			},
-			'panel[action="patient.encounter.soap"] button[action=speechBtn]': {
+			'#soapPanel button[action=speechBtn]': {
 				toggle: this.onSpeechBtnToggle
 			},
-			'panel[action="patient.encounter.soap"] textfield': {
-				focus: this.onTextFieldFocus
+			'#soapForm > fieldset > textarea': {
+				focus: this.onSoapTextFieldFocus
+			},
+			'#soapProcedureWindow > form > textarea': {
+				focus: this.onProcedureTextFieldFocus
 			}
 		});
 	},
 
+	onSoapTextFieldFocus: function(field) {
+		this.loadTemplatesByCategory(field.name);
 
-
-
-	onTextFieldFocus: function(field) {
 		if(!Ext.isWebKit) return;
-
 		this.field = field;
 		this.final_transcript = field.getValue();
 		this.interim_transcript = '';
+	},
+
+	onProcedureTextFieldFocus: function(field) {
+		this.loadTemplatesByCategory(field.name);
+
+		if(!Ext.isWebKit) return;
+		this.field = field;
+		this.final_transcript = field.getValue();
+		this.interim_transcript = '';
+	},
+
+	loadTemplatesByCategory:function(category){
+
+		if(this.getTemplatesTreePanel().collapsed === false){
+			var templates = this.getTemplatesTreePanel();
+
+			templates.setTitle(i18n(category) + ' ' + i18n('templates'));
+			if(templates.action != category){
+				templates.getSelectionModel().deselectAll();
+				templates.getStore().load({
+					params: {
+						category: category
+					}
+				});
+			}
+			templates.action = category;
+		}
 	},
 
 	onPanelBeforeRender: function(panel) {

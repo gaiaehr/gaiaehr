@@ -18,9 +18,9 @@
 
 Ext.define('App.store.patient.PatientsOrders', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientsOrders',
+	model: 'App.model.patient.PatientsOrders',
 	remoteSort: false,
-	autoLoad  : false
+	autoLoad: false
 });
 
 

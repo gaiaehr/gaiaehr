@@ -7,6 +7,24 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.dualAppMask {
+    background: none repeat scroll 0 0 #CCCCCC;
+    position: absolute;
+    opacity: 1;
+}
+.dualAppMaskMsg {
+    background-color: #ffffff;
+}
+.dualAppMaskMsg div {
+    background-color: #ffffff;
+    background-image: none;
+    padding: 10px 20px 10px 25px;
+}
+.dualAppMaskMsg p {
+    color: #999999;
+    font-size: 14px;
+    text-align: center;
+}
 
 .tooth path, .tooth circle, .tooth text, .tooth tspan {
     cursor: pointer;

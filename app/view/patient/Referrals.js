@@ -22,9 +22,11 @@ Ext.define('App.view.patient.Referrals', {
 		'App.ux.LiveCPTSearch',
 		'App.ux.LiveICDXSearch',
 		'App.ux.combo.ActiveProviders',
-		'Ext.selection.CheckboxModel'
+		'Ext.selection.CheckboxModel',
+		'App.ux.grid.RowFormEditing'
 	],
 	xtype: 'patientreferralspanel',
+	title: i18n('referrals'),
 	action: 'referralsGrid',
 	itemId: 'patientReferralsGrid',
 	store: Ext.create('App.store.patient.Referrals', {

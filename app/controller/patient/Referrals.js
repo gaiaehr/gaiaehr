@@ -39,8 +39,8 @@ Ext.define('App.controller.patient.Referrals', {
 	init: function(){
 		var me = this;
 		me.control({
-			'#patientReferralsGrid': {
-				show: me.onReferralShow,
+			'patientreferralspanel': {
+				activate: me.onReferralActive,
 				selectionchange: me.onGridSelectionChange
 
 			},
@@ -120,7 +120,7 @@ Ext.define('App.controller.patient.Referrals', {
 		say(checkbox);
 	},
 
-	onReferralShow: function(grid){
+	onReferralActive: function(grid){
 		var store = grid.getStore();
 
 		this.pid = app.patient.pid;

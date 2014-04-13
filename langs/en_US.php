@@ -488,6 +488,7 @@ $LANG = array(
 	'create_a_new_patient'					=> 'Create a new patient',
 	'create_new_emergency'					=> 'Create New Emergency',
 	'logout'								=> 'Logout',
+	'logged_out'							=> 'Logged Out',
 	'arrival_log'							=> 'Arrival Log',
 	'pool_areas'							=> 'Pool Areas',
 	'floor_plans'							=> 'Floor Plans',

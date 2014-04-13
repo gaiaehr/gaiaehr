@@ -18,8 +18,17 @@
 
 Ext.define('App.view.patient.SocialHistory', {
 	extend: 'Ext.grid.Panel',
+	requires:[
+		'Ext.grid.plugin.RowEditing',
+		'Ext.grid.feature.Grouping',
+		'App.store.patient.PatientSocialHistory',
+		'App.ux.combo.Combo'
+	],
 	xtype: 'patientsocialhistorypanel',
-	store: Ext.create('App.store.patient.PatientSocialHistory'),
+	title: i18n('social_history'),
+	store: Ext.create('App.store.patient.PatientSocialHistory',{
+		remoteFilter: true
+	}),
 	plugins: [
 		{
 			ptype: 'rowediting'

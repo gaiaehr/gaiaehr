@@ -101,7 +101,7 @@ class Medical {
 	 * @return array
 	 */
 	public function getPatientImmunizations($params){
-		return $this->getPatientImmunizationsByPid($params->pid);
+		return $this->i->load($params)->all();
 	}
 
 	/**

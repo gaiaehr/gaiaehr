@@ -13,7 +13,7 @@ Ext.define('App.ux.combo.PrescriptionTypes', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: CombosData.getOptionsByListId
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 89

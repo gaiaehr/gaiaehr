@@ -43,6 +43,16 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <!-- slide down message div -->
         <div id="msg-div"></div>
 
+        <!-- Loading Mask -->
+        <div id="mainapp-loading-mask" class="x-mask mitos-mask"></div>
+        <div id="mainapp-x-mask-msg">
+	        <div id="mainapp-loading" class="x-mask-msg mitos-mask-msg">
+		        <div>
+			        Loading GaiaEHR...
+		        </div>
+	        </div>
+        </div>
+
         <!-- Ext library -->
 		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
 
@@ -58,6 +68,14 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
             window.say = function(a){
                 console.log(a);
+            };
+
+            window.g = function(global){
+	            return globals[global] || false;
+            };
+
+            window.set = function(key, val){
+	            window[key] = val;
             };
 
 			/**
@@ -83,6 +101,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			for(var x = 0; x < App.data.length; x++){
 				Ext.direct.Manager.addProvider(App.data[x]);
 			}
+
 			Ext.direct.Manager.on('exception', function(e, o){
 				say(e);
 				app.alert(
@@ -104,16 +123,29 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             Ext.application({
                 name: 'App',
                 models:[
-
+	                'patient.PatientsOrders',
+	                'patient.Referral',
+	                'patient.PatientSocialHistory'
                 ],
                 stores:[
-
+	                'patient.Medications',
+	                'patient.PatientsOrders',
+	                'patient.Referrals',
+	                'patient.PatientSocialHistory',
+	                'administration.Medications'
                 ],
                 views:[
-
+					'patient.Medications'
                 ],
                 controllers:[
-
+	                'DualScreen',
+	                'patient.ActiveProblems',
+	                'patient.Allergies',
+	                'patient.Immunizations',
+	                'patient.Medications',
+	                'patient.Referrals',
+	                'patient.Results',
+	                'patient.SocialHistory'
                 ],
                 launch: function() {
                     say('Loading GaiaEHR');

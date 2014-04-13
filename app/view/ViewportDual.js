@@ -20,9 +20,60 @@ Ext.define('App.view.ViewportDual', {
     extend: 'Ext.Viewport',
     requires: [
 
+
+	    'App.view.patient.Immunizations',
+	    'App.view.patient.Allergies',
+	    'App.view.patient.ActiveProblems',
+	    'App.view.patient.Medications',
+	    'App.view.patient.SocialHistory',
+	    'App.view.patient.Results',
+	    'App.view.patient.Referrals'
     ],
-
-
-	html:'Hello World!'
-
+	layout: {
+		type: 'vbox',
+		align: 'stretch'
+	},
+	itemId:'dualViewport',
+	style: {
+		'background-color': '#DFE8F6'
+	},
+	items:[
+		{
+			xtype: 'container',
+			cls: 'RenderPanel-header',
+			itemId: 'RenderPanel-header',
+			region: 'north',
+			height: 33
+		},
+		{
+			xtype:'tabpanel',
+			activeTab: 0,
+			frame: true,
+			margin: '0 5 5 5',
+			flex: 1,
+			items:[
+				{
+					xtype:'patientimmunizationspanel'
+				},
+				{
+					xtype:'patientallergiespanel'
+				},
+				{
+					xtype:'patientactiveproblemspanel'
+				},
+				{
+					xtype:'patientmedicationspanel'
+				},
+				{
+					xtype:'patientsocialhistorypanel'
+				},
+				{
+					xtype:'patientresultspanel'
+				},
+				{
+					xtype:'patientreferralspanel'
+				}
+			]
+		}
+	]
 });

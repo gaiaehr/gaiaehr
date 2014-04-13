@@ -247,7 +247,6 @@ Ext.define('App.controller.Navigation', {
 	 */
 	onPatientUnset:function(viewport){
 		say('onPatientUnset');
-
 	},
 
 	initFunctionKeyNav:function(){

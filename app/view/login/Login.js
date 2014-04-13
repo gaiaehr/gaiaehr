@@ -33,6 +33,8 @@ Ext.define('App.view.login.Login', {
 
 		me.siteError = window.site === false || window.site === '';
 
+		me.logged = false;
+
 		/**
 		 * The Copyright Notice Window
 		 */

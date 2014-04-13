@@ -22,6 +22,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		'App.ux.grid.RowFormEditing'
 	],
 	action: 'patient.encounter.soap',
+	itemId: 'soapPanel',
 	title: i18n('soap'),
 	layout: 'border',
 	frame: true,
@@ -39,6 +40,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title: i18n('snippets'),
+			itemId: 'templatesTreePanel',
 			region: 'west',
 			width: 300,
 			split: true,
@@ -46,6 +48,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			useArrows: true,
 			rootVisible: false,
 			singleExpand: true,
+			collapsed: !eval(g('enable_encounter_soap_templates')),
+			collapsible: true,
+			collapseMode: 'mini',
+			hideCollapseTool: true,
 			store: me.snippetStore,
 			tools: [
 				{
@@ -120,14 +126,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					]
 				}
 			],
-			//			buttons:[
-			//				{
-			//					text:i18n('add_category'),
-			//					flex:1,
-			//					scope:me,
-			//					handler:me.onAddSnippetCategory
-			//				}
-			//			],
 			listeners: {
 				scope: me,
 				itemclick: me.onSnippetClick,
@@ -145,6 +143,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			action: 'encounter',
 			bodyStyle: 'background-color:white',
 			region: 'center',
+			itemId: 'soapForm',
 			fieldDefaults: {
 				msgTarget: 'side'
 			},
@@ -160,6 +159,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					closable: false,
 					constrain: true,
 					closeAction: 'hide',
+					itemId: 'soapProcedureWindow',
 					layout: 'fit',
 					items: [
 						me.pForm = Ext.widget('form', {
@@ -214,11 +214,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						me.sField = Ext.widget('textarea', {
 							name: 'subjective',
 							anchor: '100%',
-							enableKeyEvents: true,
-							listeners: {
-								scope: me,
-								focus: me.onFieldFocus
-							}
+							enableKeyEvents: true
 						})
 					]
 				},
@@ -229,11 +225,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					items: [
 						me.oField = Ext.widget('textarea', {
 							name: 'objective',
-							anchor: '100%',
-							listeners: {
-								scope: me,
-								focus: me.onFieldFocus
-							}
+							anchor: '100%'
 						})
 					]
 				},
@@ -273,13 +265,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 									handler: me.onProcedureAdd,
 									iconCls: 'icoAdd'
 								}
-							],
-							listeners: {
-								scope: me,
-								render: function(toolbar){
-									toolbar.container.on('click', me.onFieldFocus, me);
-								}
-							}
+							]
 						}
 
 					]
@@ -291,11 +277,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					items: [
 						me.aField = Ext.widget('textarea', {
 							name: 'assessment',
-							anchor: '100%',
-							listeners: {
-								scope: me,
-								focus: me.onFieldFocus
-							}
+							anchor: '100%'
 						}),
 						me.dxField = Ext.widget('icdsfieldset', {
 							name: 'dxCodes'
@@ -309,11 +291,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					items: [
 						me.pField = Ext.widget('textarea', {
 							name: 'plan',
-							anchor: '100%',
-							listeners: {
-								scope: me,
-								focus: me.onFieldFocus
-							}
+							anchor: '100%'
 						})
 					]
 				}
@@ -506,20 +484,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.dxField.loadIcds(record.dxCodes());
 	},
 
-	/**
-	 *
-	 * @param field
-	 */
-	onFieldFocus: function(field){
-		if(typeof field.name == 'undefined') field.name = 'procedure';
-		this.snippets.setTitle(i18n(field.name) + ' ' + i18n('templates'));
-		//		this.snippets.expand(false);
-		if(this.snippets.action != field.name){
-			this.snippets.getSelectionModel().deselectAll();
-			this.snippetStore.load({params: {category: field.name}});
-		}
-		this.snippets.action = field.name;
-	},
 
 	/**
 	 *

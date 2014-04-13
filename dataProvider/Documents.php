@@ -549,7 +549,7 @@ class Documents {
 	private function addReferralData($params, $tokens, $allNeededInfo){
 
 		$referral = new Referrals();
-		$data = $referral->getPatientReferral($params->templateId);
+		$data = $referral->getPatientReferral($params->referralId);
 		if($data === false)
 			return $allNeededInfo;
 		$info = array(

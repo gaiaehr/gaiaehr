@@ -40,7 +40,7 @@ Ext.define('App.controller.patient.SocialHistory', {
 		var me = this;
 		me.control({
 			'patientsocialhistorypanel': {
-				show: me.onSocialHistoryShow
+				activate: me.onSocialHistoryActive
 			},
 			'button[action=socialHistoryAddBtn]': {
 				click: me.onAddBtnClicked
@@ -78,15 +78,15 @@ Ext.define('App.controller.patient.SocialHistory', {
 		this.getSocialHistoryAddBtn().enable();
 	},
 
-	onSocialHistoryShow: function(grid){
-		grid.getStore().load({
-			filters: [
-				{
-					property: 'pid',
-					value: app.patient.pid
-				}
-			]
-		});
+	onSocialHistoryActive: function(grid){
+		var store = grid.getStore();
+		store.clearFilter(true);
+		store.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
+			}
+		]);
 	}
 
 });

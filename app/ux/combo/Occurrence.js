@@ -1,7 +1,7 @@
 Ext.define('App.ux.combo.Occurrence', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.occurrencecombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.mitos.occurrencecombo',
+	initComponent: function(){
 		var me = this;
 
 		Ext.define('OccurrenceModel', {
@@ -10,10 +10,10 @@ Ext.define('App.ux.combo.Occurrence', {
 				{name: 'option_name', type: 'string' },
 				{name: 'option_value', type: 'string' }
 			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 26
@@ -22,18 +22,18 @@ Ext.define('App.ux.combo.Occurrence', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'OccurrenceModel',
+			model: 'OccurrenceModel',
 			autoLoad: true
 		});
 
 		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
+			editable: false,
+			queryMode: 'local',
 			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n('select'),
-			store       : me.store
-		}, null);
+			valueField: 'option_value',
+			emptyText: i18n('select'),
+			store: me.store
+		});
 		me.callParent(arguments);
 	}
 });

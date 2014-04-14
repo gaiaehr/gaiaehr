@@ -1576,6 +1576,22 @@ $API = array(
 	 */
 	'DocumentHandler' => array(
 		'methods' => array(
+			'getPatientDocuments' => array(
+				'len' => 1
+			),
+			'getPatientDocument' => array(
+				'len' => 1
+			),
+			'addPatientDocument' => array(
+				'len' => 1
+			),
+			'updatePatientDocument' => array(
+				'len' => 1
+			),
+			'destroyPatientDocument' => array(
+				'len' => 1
+			),
+
 			'uploadDocument' => array(
 				'formHandler' => true,
 				'len' => 1

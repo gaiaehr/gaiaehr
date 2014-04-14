@@ -19,15 +19,17 @@
 Ext.define('App.view.ViewportDual', {
     extend: 'Ext.Viewport',
     requires: [
-
-
-	    'App.view.patient.Immunizations',
 	    'App.view.patient.Allergies',
+	    'App.view.patient.Documents',
+	    'App.view.patient.Immunizations',
+	    'App.view.patient.LabOrders',
 	    'App.view.patient.ActiveProblems',
 	    'App.view.patient.Medications',
-	    'App.view.patient.SocialHistory',
+	    'App.view.patient.RadOrders',
+	    'App.view.patient.Referrals',
 	    'App.view.patient.Results',
-	    'App.view.patient.Referrals'
+	    'App.view.patient.RxOrders',
+	    'App.view.patient.SocialHistory'
     ],
 	layout: {
 		type: 'vbox',
@@ -43,6 +45,7 @@ Ext.define('App.view.ViewportDual', {
 			cls: 'RenderPanel-header',
 			itemId: 'RenderPanel-header',
 			region: 'north',
+			margin: '5 0 0 0',
 			height: 33
 		},
 		{
@@ -52,6 +55,9 @@ Ext.define('App.view.ViewportDual', {
 			margin: '0 5 5 5',
 			flex: 1,
 			items:[
+				{
+					xtype:'patientdocumentspanel'
+				},
 				{
 					xtype:'patientimmunizationspanel'
 				},
@@ -72,6 +78,15 @@ Ext.define('App.view.ViewportDual', {
 				},
 				{
 					xtype:'patientreferralspanel'
+				},
+				{
+					xtype:'patientlaborderspanel'
+				},
+				{
+					xtype:'patientradorderspanel'
+				},
+				{
+					xtype:'patientrxorderspanel'
 				}
 			]
 		}

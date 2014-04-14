@@ -213,10 +213,12 @@ class Encounter {
 
 	/**
 	 * @param stdClass $params
-	 * @param bool $relations
+	 * @param bool     $relations
+	 * @param bool     $allVitals include all patient vitals
+	 *
 	 * @return array|mixed
 	 */
-	public function getEncounter($params, $relations = true){
+	public function getEncounter($params, $relations = true, $allVitals = true){
 
 		if(is_string($params) || is_int($params)){
 			$filters = new stdClass();
@@ -235,20 +237,20 @@ class Encounter {
 
 		$relations = isset($params->relations) ? $params->relations : $relations;
 		if($relations == false) return array('encounter' => $encounter);
-		$encounter = $this->getEncounterRelations($encounter);
+		$encounter = $this->getEncounterRelations($encounter, $allVitals);
 
 		unset($filters);
 		return array('encounter' => $encounter);
 	}
 
-	private function getEncounterRelations($encounter){
+	private function getEncounterRelations($encounter, $allVitals = true){
 		$filters = new stdClass();
 		$filters->filter[0] = new stdClass();
 		$filters->filter[0]->property = 'eid';
 		$filters->filter[0]->value = $encounter['eid'];
 
 		if($_SESSION['globals']['enable_encounter_vitals']){
-			$encounter['vitals'] = $this->getVitalsByPid($encounter['pid']);
+			$encounter['vitals'] = $allVitals ? $this->getVitalsByPid($encounter['pid']) : $this->getVitalsByEid($encounter['eid']);
 		}
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
@@ -488,7 +490,7 @@ class Encounter {
 	 */
 	public function getProgressNoteByEid($eid){
 
-		$record = $this->getEncounter($eid);
+		$record = $this->getEncounter($eid, true, false);
 		unset($filters);
 		$encounter = (array) $record['encounter'];
 

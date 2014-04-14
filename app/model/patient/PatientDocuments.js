@@ -40,11 +40,13 @@ Ext.define('App.model.patient.PatientDocuments', {
 		},
 		{
 			name: 'uid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'docType',
-			type: 'string'
+			type: 'string',
+			index: true
 		},
 		{
 			name: 'name',
@@ -53,7 +55,8 @@ Ext.define('App.model.patient.PatientDocuments', {
 		{
 			name: 'date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
 		},
 		{
 			name: 'url',
@@ -75,17 +78,33 @@ Ext.define('App.model.patient.PatientDocuments', {
 			name: 'encrypted',
 			type: 'bool',
 			defaultValue: 0
+		},
+		{
+			name: 'document',
+			type: 'string',
+			dataType: 'longblob'
+		},
+		{
+			name: 'groupDate',
+			type: 'date',
+			dateFormat: 'Y-m-d',
+			store: false,
+			convert: function(v, record){
+				return Ext.Date.format(record.data.date, 'Y-m-d');
+			}
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Patient.getPatientDocuments',
-			update: 'Documents.updateDocumentsTitle'
+			read: 'DocumentHandler.getPatientDocuments',
+			create: 'DocumentHandler.addPatientDocument',
+			update: 'DocumentHandler.updatePatientDocument'
 		},
 		reader: {
 			root: 'data'
-		}
+		},
+		remoteGroup: false
 	}
 });
 

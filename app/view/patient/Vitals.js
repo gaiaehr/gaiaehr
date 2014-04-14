@@ -157,7 +157,7 @@ Ext.define('App.view.patient.Vitals', {
             '</table>',
 	        {
 				getValue:function(value){
-					return value == 0 ? '-' : value;
+					return value == 0 || value == null ? '-' : value;
 				}
 			}
 

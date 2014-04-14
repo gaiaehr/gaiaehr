@@ -6,9 +6,9 @@
  * Time: 4:45 PM
  */
 Ext.define('App.ux.combo.Themes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.themescombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.themescombo',
+	initComponent: function(){
 		var me = this;
 
 		Ext.define('ThemesComboModel', {
@@ -17,25 +17,25 @@ Ext.define('App.ux.combo.Themes', {
 				{ name: 'name', type: 'string' },
 				{ name: 'value', type: 'string' }
 			],
-			proxy : {
+			proxy: {
 				type: 'direct',
-				api : {
-					read: CombosData.getThemes
+				api: {
+					read: 'CombosData.getThemes'
 				}
 			}
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'ThemesComboModel',
+			model: 'ThemesComboModel',
 			autoLoad: false
 		});
 
 		Ext.apply(this, {
-			editable    : false,
-			valueField  : 'value',
+			editable: false,
+			valueField: 'value',
 			displayField: 'name',
-			emptyText   : i18n('select'),
-			store       : me.store
+			emptyText: i18n('select'),
+			store: me.store
 		}, null);
 		me.callParent();
 	}

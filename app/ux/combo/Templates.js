@@ -1,10 +1,10 @@
 Ext.define('App.ux.combo.Templates', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.mitos.templatescombo',
+	alias: 'widget.documentstemplatescombo',
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('TemplatesComboModel', {
+		Ext.define('DocumentsTemplatesComboModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{
@@ -23,14 +23,9 @@ Ext.define('App.ux.combo.Templates', {
 			proxy: {
 				type: 'direct',
 				api: {
-					read: CombosData.getTemplatesTypes
+					read: 'CombosData.getTemplatesTypes'
 				}
 			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model: 'TemplatesComboModel',
-			autoLoad: false
 		});
 
 		Ext.apply(this, {
@@ -38,7 +33,10 @@ Ext.define('App.ux.combo.Templates', {
 			displayField: 'title',
 			valueField: 'id',
 			emptyText: i18n('select'),
-			store: me.store
+			store: Ext.create('Ext.data.Store', {
+				model: 'DocumentsTemplatesComboModel',
+				autoLoad: false
+			})
 		});
 
 		me.callParent(arguments);

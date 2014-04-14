@@ -116,7 +116,8 @@ Ext.define('App.controller.DualScreen', {
 
 		if(panel.getStore){
 			return panel.getStore();
-		}if(panel.xtype == 'patientimmunizationspanel' ||
+		}if(panel.xtype == 'patientdocumentspanel' ||
+			panel.xtype == 'patientimmunizationspanel' ||
 			panel.xtype == 'patientmedicationspanel' ||
 			panel.xtype == 'patientimmunizationspanel'){
 			return panel.down('grid').getStore();

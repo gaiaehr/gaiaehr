@@ -528,7 +528,7 @@ Ext.define('App.view.patient.windows.Orders', {
 							align: 'stretch'
 						},
 						items: [
-							me.doctorsNoteTplCombo = Ext.widget('mitos.templatescombo', {
+							me.doctorsNoteTplCombo = Ext.widget('documentstemplatescombo', {
 								fieldLabel: i18n('template'),
 								action: 'template',
 								labelWidth: 75,

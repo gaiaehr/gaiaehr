@@ -138,6 +138,14 @@ class MatchaUtils extends Matcha
 		$deCryptText = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, base64_decode($text), MCRYPT_MODE_ECB, $iv);
 		return trim($deCryptText);
 	}
+
+	static public function encrypt($text){
+		return self::__encrypt($text);
+	}
+
+	static public function decrypt($text){
+		return self::__decrypt($text);
+	}
 }
 //print $pass = MatchaUtils::__encrypt("pass");
 //print '<br>';

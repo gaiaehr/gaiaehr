@@ -311,7 +311,11 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onLabUpload: function(btn){
-		var me = this, formPanel = me.uploadWin.down('form'), form = formPanel.getForm(), win = btn.up('window');
+		var me = this,
+			formPanel = me.uploadWin.down('form'),
+			form = formPanel.getForm(),
+			win = btn.up('window');
+
 		if(form.isValid()){
 			formPanel.el.mask(i18n('uploading_laboratory') + '...');
 			form.submit({

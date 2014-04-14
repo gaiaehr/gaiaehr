@@ -18,7 +18,6 @@
 
 Ext.define('App.view.patient.Summary', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelSummary',
 	pageTitle: i18n('patient_summary'),
 	pageLayout: {
 		type: 'hbox',
@@ -26,7 +25,8 @@ Ext.define('App.view.patient.Summary', {
 	},
 	requires: [
 		'Ext.XTemplate',
-		'Ext.ux.IFrame'
+		'Ext.ux.IFrame',
+		'App.view.patient.Documents'
 	],
 	showRating: true,
 	pid: null,
@@ -404,145 +404,8 @@ Ext.define('App.view.patient.Summary', {
 		if(acl['access_patient_documents']){
 			//            me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
 			me.tabPanel.add({
-				title: i18n('documents'),
-				xtype: 'grid',
-				itemId: 'PatientSummaryDocumentsPanel',
-				store: me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments', {
-					autoLoad: false
-				}),
-				columns: [
-					{
-						xtype: 'actioncolumn',
-						width: 60,
-						items: [
-
-							{
-								icon: 'resources/images/icons/icoLessImportant.png',
-								tooltip: i18n('validate_file_integrity_hash'),
-								handler: me.onDocumentHashCheck,
-								getClass: function(){
-									return 'x-grid-icon-padding';
-								}
-							},
-							{
-								icon: 'resources/images/icons/preview.png',
-								tooltip: i18n('view_document'),
-								handler: me.onDocumentView,
-								getClass: function(){
-									return 'x-grid-icon-padding';
-								}
-							}
-						]
-					},
-					{
-						header: i18n('type'),
-						dataIndex: 'docType'
-					},
-					{
-						xtype: 'datecolumn',
-						header: i18n('date'),
-						dataIndex: 'date',
-						format: 'Y-m-d'
-
-					},
-					{
-						header: i18n('title'),
-						dataIndex: 'title',
-						flex: 1,
-						editor: {
-							xtype: 'textfield',
-							action: 'title'
-						}
-					},
-					{
-						header: i18n('sha1_hash'),
-						dataIndex: 'hash',
-						width: 300
-					},
-					{
-						header: i18n('encrypted'),
-						dataIndex: 'encrypted',
-						width: 70,
-						renderer: me.boolRenderer
-					}
-				],
-				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-					autoCancel: true,
-					errorSummary: false,
-					clicksToEdit: 2
-
-				}),
-				tbar: [
-					{
-						xtype: 'mitos.templatescombo',
-						fieldLabel: i18n('available_documents'),
-						width: 320,
-						labelWidth: 145,
-						margin: '10 0 0 10'
-
-					},
-					'-',
-					{
-						text: i18n('add_document'),
-						iconCls: 'icoAdd',
-						scope: me,
-						handler: me.newDoc
-					},
-					'->',
-					{
-						text: i18n('upload_document'),
-						scope: me,
-						handler: me.uploadADocument
-					},
-					{
-						xtype: 'panel',
-						action: 'upload',
-						region: 'center',
-						items: [
-							me.uploadWin = Ext.create('Ext.window.Window', {
-								draggable: false,
-								closable: false,
-								closeAction: 'hide',
-								items: [
-									{
-										xtype: 'form',
-										bodyPadding: 10,
-										width: 400,
-										items: [
-											{
-												xtype: 'filefield',
-												name: 'filePath',
-												buttonText: i18n('select_a_file') + '...',
-												anchor: '100%'
-											},
-											{
-												xtype: 'checkbox',
-												name: 'encrypted',
-												boxLabel: i18n('encrypted')
-											}
-										],
-										api: {
-											submit: 'DocumentHandler.uploadDocument'
-										}
-									}
-								],
-								buttons: [
-									{
-										text: i18n('cancel'),
-										handler: function(){
-											me.uploadWin.close();
-										}
-									},
-									{
-										text: i18n('upload'),
-										scope: me,
-										handler: me.onDocUpload
-									}
-								]
-							})
-						]
-					}
-				]
+				xtype: 'patientdocumentspanel',
+				border: false
 			})
 		}
 
@@ -771,56 +634,55 @@ Ext.define('App.view.patient.Summary', {
 		grid.plugins[0].startEdit(0, 0);
 	},
 
-	onDocumentHashCheck: function(grid, rowIndex){
-		var rec = grid.getStore().getAt(rowIndex),
-			success;
-		DocumentHandler.checkDocHash(rec.data, function(provider, response){
-			success = response.result.success;
-			app.msg(
-				i18n(success ? 'sweet' : 'oops'),
-					i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg,
-				!success
-			);
+//	onDocumentHashCheck: function(grid, rowIndex){
+//		var rec = grid.getStore().getAt(rowIndex),
+//			success;
+//		DocumentHandler.checkDocHash(rec.data, function(provider, response){
+//			success = response.result.success;
+//			app.msg(
+//				i18n(success ? 'sweet' : 'oops'),
+//					i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg,
+//				!success
+//			);
+//
+//		});
+//	},
 
-		});
-	},
-
-	onDocumentView: function(grid, rowIndex){
-		var rec = grid.getStore().getAt(rowIndex);
-		app.onDocumentView(rec.data.id);
-	},
-
-	uploadADocument: function(){
-		var me = this, previewPanel = me.query('[action="upload"]')[0];
-		me.uploadWin.show();
-		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
-	},
-
-	onDocUpload: function(btn){
-		var me = this,
-			form = me.uploadWin.down('form').getForm(),
-			win = btn.up('window'),
-			params = {
-				pid: me.pid,
-				encrypted: form.findField('encrypted').getValue() ? 1 : 0,
-				docType: 'UploadDoc'
-			};
-
-		if(form.isValid()){
-			form.submit({
-				waitMsg: i18n('uploading_document') + '...',
-				params: params,
-				success: function(fp, o){
-					win.close();
-					me.patientDocumentsStore.load({params: {pid: me.pid}});
-				}
-			});
-		}
-	},
-
-	newDoc: function(btn){
-		app.onNewDocumentsWin(btn.action)
-	},
+//	onDocumentView: function(grid, rowIndex){
+//		var rec = grid.getStore().getAt(rowIndex);
+//		app.onDocumentView(rec.data.id);
+//	},
+//
+//	uploadADocument: function(){
+//		var me = this, previewPanel = me.query('[action="upload"]')[0];
+//		me.uploadWin.show();
+//		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
+//	},
+//
+//	onDocUpload: function(btn){
+//		var me = this,
+//			form = me.uploadWin.down('form').getForm(),
+//			win = btn.up('window'),
+//			params = {
+//				pid: me.pid,
+//				encrypted: form.findField('encrypted').getValue() ? 1 : 0,
+//				docType: 'UploadDoc'
+//			};
+//
+//		if(form.isValid()){
+//			form.submit({
+//				waitMsg: i18n('uploading_document') + '...',
+//				params: params,
+//				success: function(fp, o){
+//					win.close();
+//					me.patientDocumentsStore.load({params: {pid: me.pid}});
+//				}
+//			});
+//		}
+//	},
+//	newDoc: function(btn){
+//		app.onNewDocumentsWin(btn.action)
+//	},
 
 	rightColRender: function(panel){
 		var me = this;

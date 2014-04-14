@@ -128,23 +128,26 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.PatientSocialHistory'
                 ],
                 stores:[
-	                'patient.Medications',
 	                'patient.PatientsOrders',
 	                'patient.Referrals',
 	                'patient.PatientSocialHistory',
 	                'administration.Medications'
                 ],
                 views:[
-					'patient.Medications'
+
                 ],
                 controllers:[
 	                'DualScreen',
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.Documents',
 	                'patient.Immunizations',
+	                'patient.LabOrders',
 	                'patient.Medications',
+	                'patient.RadOrders',
 	                'patient.Referrals',
 	                'patient.Results',
+	                'patient.RxOrders',
 	                'patient.SocialHistory'
                 ],
                 launch: function() {

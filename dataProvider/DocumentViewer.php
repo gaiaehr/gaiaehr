@@ -31,7 +31,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 
 	if(!isset($_REQUEST['doc'])){
-		print 'No Document Found, Please contact Support Desk. Thank You!';
+		print '';
 		exit;
 	}
 
@@ -41,8 +41,6 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		print 'No Document Found, Please contact Support Desk. Thank You!';
 		exit;
 	}
-
-	$path = $_SESSION['site']['path'] . '/patients/' . $doc['pid'] . '/' . strtolower(str_replace(' ', '_', $doc['docType'])) . '/' . $doc['name'];
 
 	function get_mime_type($file)
 	{
@@ -81,9 +79,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	}
 
 	if($doc['encrypted'] == true){
-		$content = MatchaUtils::__decrypt(file_get_contents($path));
+		$content = base64_decode(MatchaUtils::decrypt($doc['document']));
 	}else{
-		$content =  file_get_contents($path);
+		$content =  base64_decode($doc['document']);
 	}
 	header('Content-Type: '. get_mime_type($doc['name']));
 	header('Content-Disposition: inline; filename="' . $doc['name'] . '"');

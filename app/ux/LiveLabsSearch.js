@@ -33,7 +33,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 			proxy: {
 				type: 'direct',
 				api: {
-					read: Laboratories.getLabLoincLiveSearch
+					read: 'Laboratories.getLabLoincLiveSearch'
 				},
 				reader: {
 					totalProperty: 'totals',

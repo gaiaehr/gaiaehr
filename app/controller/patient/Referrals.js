@@ -123,9 +123,6 @@ Ext.define('App.controller.patient.Referrals', {
 	onReferralActive: function(grid){
 		var store = grid.getStore();
 
-		this.pid = app.patient.pid;
-		this.eid = app.patient.eid;
-
 		store.clearFilter(true);
 		store.filter([
 			{

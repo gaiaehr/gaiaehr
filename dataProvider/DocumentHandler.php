@@ -47,6 +47,107 @@ class DocumentHandler {
 	}
 
 	/**
+	 * @param      $params
+	 * @param bool $document
+	 *
+	 * @return mixed
+	 */
+	public function getPatientDocuments($params, $document = false){
+		$this->setPatientDocumentModel();
+		$records = $this->d->load($params)->all();
+		/** lets unset the actual document data */
+		if(!$document){
+			foreach($records as $i => $record){
+				unset($records[$i]['document']);
+			}
+		}
+		return $records;
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return mixed
+	 */
+	public function getPatientDocument($params){
+		$this->setPatientDocumentModel();
+		return $this->d->load($params)->one();
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	public function addPatientDocument($params){
+		$this->setPatientDocumentModel();
+		if(is_array($params)){
+			foreach($params as $i => $param){
+				/** remove the mime type */
+				$doc = explode(',', $params[$i]->document, 2);
+				$params[$i]->document = $doc[1];
+				/** encrypted if necessary */
+				if($params[$i]->encrypted){
+					$params[$i]->document = MatchaUtils::encrypt($params[$i]->document);
+				};
+				$params[$i]->hash = sha1($params[$i]->document);
+			}
+		}else{
+			/** remove the mime type */
+			$doc = explode(',', $params->document, 2);
+			$params->document = $doc[1];
+			/** encrypted if necessary */
+			if($params->encrypted){
+				$params->document = MatchaUtils::encrypt($params->document);
+			};
+			$params->hash = sha1($params->document);
+		}
+
+		$results = $this->d->save($params);
+		if(is_array($results)){
+			foreach($results as $i => $result){
+				unset($results[$i]->document);
+			}
+		}else{
+			unset($results->document);
+		}
+		return $results;
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	public function updatePatientDocument($params){
+		$this->setPatientDocumentModel();
+		/** lets unset the actual document data (can not be updated) */
+		if(is_array($params)){
+			foreach($params as $i => $param){
+				unset($params[$i]->document);
+			}
+		}else{
+			unset($params->document);
+		}
+		return $this->d->save($params);
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return mixed
+	 */
+	public function destroyPatientDocument($params){
+		$this->setPatientDocumentModel();
+		return $this->d->destroy($params);
+	}
+
+
+
+
+
+
+	/**
 	 * this will return the document info
 	 * @param $params
 	 * @return array
@@ -98,7 +199,6 @@ class DocumentHandler {
 		return $this->documents->PDFDocumentBuilder((object)$params);
 	}
 
-	// TODO: rename this function to uploadPatientDocument()
 	public function uploadDocument($params, $file){
 		$this->setPatientDocumentModel();
 

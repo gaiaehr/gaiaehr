@@ -219,10 +219,13 @@ class MatchaCUP {
 				if(isset($where->sort)){
 					$sortArray = array();
 					foreach($where->sort as $sort){
-						if(isset($sort->property) && (!is_array($this->phantomFields) || (is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)))){
-							$sortDirection = (isset($sort->direction) ? $sort->direction : '');
-							$sortArray[] = $sort->property . ' ' . $sortDirection;
-						}
+
+						if(!isset($sort->property)) continue;
+						if(is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)) continue;
+
+						$sortDirection = (isset($sort->direction) ? $sort->direction : '');
+						$sortArray[] = $sort->property . ' ' . $sortDirection;
+
 					}
 					if(!empty($sortArray)){
 						$_sort = ' ORDER BY ' . implode(', ', $sortArray);
@@ -234,7 +237,11 @@ class MatchaCUP {
 				}
 
 				// group
-				if(isset($where->group)){
+				if( isset($where->group) &&
+					isset($where->group[0]) &&
+					isset($where->group[0]->property) &&
+					in_array($where->group[0]->property, $this->fields)){
+
 					$property = $where->group[0]->property;
 					$direction = isset($where->group[0]->direction) ? $where->group[0]->direction : '';
 					$_group = " GROUP BY `$property` $direction";

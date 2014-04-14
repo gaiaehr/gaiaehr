@@ -669,6 +669,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.Documents',
 	                'patient.Immunizations',
 	                'patient.Medical',
 	                'patient.Medications',

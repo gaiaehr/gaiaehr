@@ -33,14 +33,14 @@ Ext.define('App.view.patient.Encounter', {
 		'App.ux.combo.EncounterPriority'
 	],
 
-	enableCPT: eval(globals['enable_encounter_cpt']),
-	enableHCFA: eval(globals['enable_encounter_hcfa']),
-	enableSOAP: eval(globals['enable_encounter_soap']),
-	enableVitals: eval(globals['enable_encounter_vitals']),
-	enableEncHistory: eval(globals['enable_encounter_history']),
-	enableItemsToReview: eval(globals['enable_encounter_items_to_review']),
-	enableReviewOfSystem: eval(globals['enable_encounter_review_of_systems']),
-	enableReviewOfSystemChecks: eval(globals['enable_encounter_review_of_systems_cks']),
+	enableCPT: eval(g('enable_encounter_cpt')),
+	enableHCFA: eval(g('enable_encounter_hcfa')),
+	enableSOAP: eval(g('enable_encounter_soap')),
+	enableVitals: eval(g('enable_encounter_vitals')),
+	enableEncHistory: eval(g('enable_encounter_history')),
+	enableItemsToReview: eval(g('enable_encounter_items_to_review')),
+	enableReviewOfSystem: eval(g('enable_encounter_review_of_systems')),
+	enableReviewOfSystemChecks: eval(g('enable_encounter_review_of_systems_cks')),
 
 	showRating: true,
 	conversionMethod: 'english',
@@ -166,7 +166,7 @@ Ext.define('App.view.patient.Encounter', {
 									action: 'vitals',
 									width: 40,
 									scope: me,
-									itemId: 'encounterRecordAdd',
+									//itemId: 'encounterRecordAdd',
 									handler: me.onEncounterUpdate
 								},
 								{
@@ -218,7 +218,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					plugins: {
 						ptype: 'advanceform',
-						autoSync: globals['autosave'],
+						autoSync: g('autosave'),
 						syncAcl: acl['edit_encounters']
 					},
 					buttons: [
@@ -249,7 +249,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					plugins: {
 						ptype: 'advanceform',
-						autoSync: globals['autosave'],
+						autoSync: g('autosave'),
 						syncAcl: acl['edit_encounters']
 					},
 					buttons: [
@@ -319,7 +319,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					plugins: {
 						ptype: 'advanceform',
-						autoSync: globals['autosave'],
+						autoSync: g('autosave'),
 						syncAcl: acl['edit_enc_hcfa']
 					},
 					buttons: [

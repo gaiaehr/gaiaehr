@@ -81,7 +81,7 @@ Ext.define('App.model.patient.DoctorsNote', {
 			type: 'string',
 			store: false,
 			convert:function(v, record){
-				return record.data.restrictions.join(', ');
+				return (record.data.restrictions.join) ? record.data.restrictions.join(', ') : record.data.restrictions;
 			}
 		},
 		{

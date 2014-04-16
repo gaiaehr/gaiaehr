@@ -192,6 +192,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.patient.Dental',
                 'App.model.patient.Disclosures',
 				'App.model.patient.DismissedAlerts',
+				'App.model.patient.DoctorsNote',
 				'App.model.patient.Encounter',
                 'App.model.patient.EncounterCPTsICDs',
                 'App.model.patient.EventHistory',
@@ -295,6 +296,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.patient.CptCodes',
                 'App.store.patient.Dental',
                 'App.store.patient.Disclosures',
+                'App.store.patient.DoctorsNotes',
                 'App.store.patient.EncounterCPTsICDs',
                 'App.store.patient.Encounters',
                 'App.store.patient.CVXCodes',
@@ -512,6 +514,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.view.patient.encounter.ICDs',
                 'App.view.patient.encounter.SOAP',
 
+				'App.view.patient.DoctorsNotes',
 				'App.view.patient.ItemsToReview',
 				'App.view.patient.EncounterDocumentsGrid',
 				'App.view.patient.encounter.ICDs',
@@ -669,6 +672,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.DoctorsNotes',
 	                'patient.Documents',
 	                'patient.Immunizations',
 	                'patient.Medical',

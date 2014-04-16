@@ -17,7 +17,6 @@
  */
 
 Ext.define('App.store.patient.DoctorsNotes', {
-	requires: ['App.model.patient.DoctorsNote'],
 	extend: 'Ext.data.Store',
 	model: 'App.model.patient.DoctorsNote',
 	autoLoad: false

@@ -57,18 +57,18 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 
 		/** get the document templates data of grid renderer **/
 		CombosData.getTemplatesTypes(function(provider, response){
-			for(var i=0; i < response.result.length; i++){
+			for(var i = 0; i < response.result.length; i++){
 				if(response.result[i].id) me.docTemplates[response.result[i].id] = response.result[i].title;
 			}
 		});
 
 	},
 
-	onDoctorsNotesGridSelectionChange:function(sm, selected){
+	onDoctorsNotesGridSelectionChange: function(sm, selected){
 		this.getPrintDoctorsNoteBtn().setDisabled(selected.length == 0);
 	},
 
-	onNewDoctorsNoteBtn:function(btn){
+	onNewDoctorsNoteBtn: function(btn){
 		var grid = btn.up('grid');
 
 		grid.editingPlugin.cancelEdit();
@@ -83,26 +83,23 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-
-	onDoctorsNotesGridValidateEdit:function(plugin, e){
+	onDoctorsNotesGridValidateEdit: function(plugin, e){
 		var multiField = plugin.editor.query('multitextfield')[0],
 			values = multiField.getValue();
 
 		e.record.set({restrictions: values});
 
-//		e.record.store.sync();
+		//		e.record.store.sync();
 	},
 
-
-	onDoctorsNotesGridBeforeEdit:function(plugin, e){
+	onDoctorsNotesGridBeforeEdit: function(plugin, e){
 		var multiField = plugin.editor.query('multitextfield')[0],
 			data = e.record.data.restrictions;
 		multiField.setValue(data);
 
 	},
 
-
-	onPrintDoctorsNoteBtn:function(){
+	onPrintDoctorsNoteBtn: function(){
 		var me = this,
 			grid = me.getDoctorsNotesGrid(),
 			record = grid.getSelectionModel().getSelection()[0],
@@ -123,7 +120,7 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 		});
 	},
 
-	onDoctorsNotesGridActive:function(grid){
+	onDoctorsNotesGridActive: function(grid){
 		var store = grid.getStore();
 
 		store.clearFilter(true);
@@ -135,7 +132,7 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 		]);
 	},
 
-	templatesRenderer:function(v){
+	templatesRenderer: function(v){
 		return this.docTemplates[v];
 	}
 

@@ -19,6 +19,7 @@
 Ext.define('App.view.patient.DoctorsNotes', {
 	extend: 'Ext.grid.Panel',
 	requires: [
+		'App.store.patient.DoctorsNotes',
 		'App.ux.grid.RowFormEditing',
 		'App.ux.form.fields.MultiText',
 		'App.ux.combo.Templates'
@@ -52,8 +53,8 @@ Ext.define('App.view.patient.DoctorsNotes', {
 				{
 					icon: 'resources/images/icons/cross.png',
 					tooltip: i18n('remove')
-//					scope: me,
-//					handler: me.onRemoveClick
+					//					scope: me,
+					//					handler: me.onRemoveClick
 				}
 			]
 		},
@@ -66,8 +67,9 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		{
 			text: i18n('type'),
 			dataIndex: 'template_id',
-			scope: App.Current.getController('patient.DoctorsNotes'),
-			renderer: App.Current.getController('patient.DoctorsNotes').templatesRenderer,
+			renderer: function(v){
+				return App.Current.getController('patient.DoctorsNotes').templatesRenderer(v);
+			},
 			allowBlank: false
 		},
 		{
@@ -98,19 +100,19 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		{
 			ptype: 'rowformediting',
 			clicksToEdit: 2,
-			formItems:[
+			formItems: [
 				{
-					xtype:'container',
-					layout:{
-						type:'hbox'
+					xtype: 'container',
+					layout: {
+						type: 'hbox'
 					},
-					items:[
+					items: [
 						{
-							xtype:'fieldset',
-							layout:'anchor',
+							xtype: 'fieldset',
+							layout: 'anchor',
 							title: i18n('general'),
 							width: 300,
-							items:[
+							items: [
 								{
 									xtype: 'datefield',
 									fieldLabel: i18n('order_date'),
@@ -137,13 +139,13 @@ Ext.define('App.view.patient.DoctorsNotes', {
 							]
 						},
 						{
-							xtype:'fieldset',
-							layout:'fit',
+							xtype: 'fieldset',
+							layout: 'fit',
 							title: i18n('comments'),
 							flex: 1,
 							height: 138,
 							margin: '0 5 0 5',
-							items:[
+							items: [
 								{
 									xtype: 'textareafield',
 									anchor: '100%',
@@ -152,12 +154,12 @@ Ext.define('App.view.patient.DoctorsNotes', {
 							]
 						},
 						{
-							xtype:'fieldset',
+							xtype: 'fieldset',
 							title: i18n('restrictions'),
 							height: 138,
 							width: 400,
 							autoScroll: true,
-							items:[
+							items: [
 								{
 									xtype: 'multitextfield',
 									name: 'restrictions'
@@ -176,7 +178,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 			text: i18n('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
-			itemId :'newDoctorsNoteBtn'
+			itemId: 'newDoctorsNoteBtn'
 
 		},
 		'-',
@@ -185,7 +187,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
-			itemId :'printDoctorsNoteBtn'
+			itemId: 'printDoctorsNoteBtn'
 		}
 	]
 });

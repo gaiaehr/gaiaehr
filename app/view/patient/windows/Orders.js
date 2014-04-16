@@ -21,7 +21,8 @@ Ext.define('App.view.patient.windows.Orders', {
 	requires:[
 		'App.view.patient.LabOrders',
 		'App.view.patient.RadOrders',
-		'App.view.patient.RxOrders'
+		'App.view.patient.RxOrders',
+		'App.view.patient.DoctorsNotes'
 	],
 	title: i18n('order_window'),
 	closeAction: 'hide',
@@ -31,8 +32,6 @@ Ext.define('App.view.patient.windows.Orders', {
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 
-	pid: null,
-	eid: null,
 	buttons: [
 		{
 			text: i18n('close'),
@@ -53,13 +52,13 @@ Ext.define('App.view.patient.windows.Orders', {
 					 * LAB ORDERS PANEL
 					 */
 					{
-						xtype: 'patientlaborderspanel',
+						xtype: 'patientlaborderspanel'
 					},
 					/**
 					 * X-RAY PANEL
 					 */
 					{
-						xtype: 'patientradorderspanel',
+						xtype: 'patientradorderspanel'
 					},
 					/**
 					 * PRESCRIPTION PANEL
@@ -71,40 +70,7 @@ Ext.define('App.view.patient.windows.Orders', {
 					 * DOCTORS NOTE
 					 */
 					{
-						title: i18n('new_doctors_note'),
-						layout: {
-							type: 'vbox',
-							align: 'stretch'
-						},
-						items: [
-							me.doctorsNoteTplCombo = Ext.widget('documentstemplatescombo', {
-								fieldLabel: i18n('template'),
-								action: 'template',
-								labelWidth: 75,
-								margin: '5 5 0 5',
-								enableKeyEvents: true,
-								listeners: {
-									scope: me,
-									select: me.onTemplateTypeSelect
-								}
-							}),
-							me.doctorsNoteBody = Ext.widget('htmleditor', {
-								name: 'body',
-								action: 'body',
-								itemId: 'body',
-								enableFontSize: false,
-								flex: 1,
-								margin: '5 5 8 5'
-							})
-						],
-						bbar: [
-							'->', {
-								text: i18n('create_doctors_notes'),
-								scope: me,
-								itemId: 'encounterRecordAdd',
-								handler: me.onCreateDoctorsNote
-							}
-						]
+						xtype: 'patientdoctorsnotepanel'
 					}
 				]
 
@@ -150,95 +116,21 @@ Ext.define('App.view.patient.windows.Orders', {
 	},
 
 
-
-	/**
-	 * OK!
-	 * This will set the htmleditor value
-	 * @param combo
-	 * @param record
-	 */
-	onTemplateTypeSelect: function(combo, record){
-		combo.up('panel').getComponent('body').setValue(record[0].data.body);
-	},
-
-	/**
-	 * OK!
-	 * On doctors note create
-	 */
-	onCreateDoctorsNote: function(){
-		var me = this,
-			params = {
-				pid: eval(me.pid),
-				eid: eval(me.eid),
-				templateId: eval(me.doctorsNoteTplCombo.getValue()),
-				docType: 'DoctorsNotes',
-				body: me.doctorsNoteBody.getValue()
-			};
-
-		DocumentHandler.createDocument(params, function(provider, response){
-			app.msg('Sweet!', 'Document Created');
-			say(response.result);
-			this.close();
-		});
-	},
-
-
-	/**
-	 *
-	 * @param sm
-	 * @param selected
-	 */
-	onSelectionChange: function(sm, selected){
-		var grid = sm.views[0].panel;
-		this[grid.action + 'PrintBtn'].setDisabled(selected.length == 0);
-
-		if(grid.action == 'rx'){
-			this.cloneRxBtn.setDisabled(selected.length == 0);
-			//this.eRxBtn.setDisabled(selected.length == 0);
-		}
-	},
-
-
 	/**
 	 * OK!
 	 * On window shows
 	 */
 	onWinShow: function(){
-		var me = this,
-			dock,
-			visible;
+		var me = this;
 		/**
 		 * Fire Event
 		 */
-		me.fireEvent('orderswindowhide', me);
-		/**
-		 * set current patient data to panel
-		 */
-		me.pid = app.patient.pid;
-		me.eid = app.patient.eid;
+		me.fireEvent('orderswindowshow', me);
 		/**
 		 * read only stuff
 		 */
 		me.setTitle(app.patient.name + ' - ' + i18n('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
-
-
-		/**
-		 * Doctors Notes stuff
-		 */
-		me.doctorsNoteBody.reset();
-		me.doctorsNoteTplCombo.reset();
-		/**
-		 * This will hide encounter panels and
-		 * switch to notes panel if eid is null
-		 */
-		dock = this.tabPanel.getDockedItems()[0];
-		visible = this.eid != null;
-		dock.items.items[0].setVisible(visible);
-		dock.items.items[1].setVisible(visible);
-		dock.items.items[2].setVisible(visible);
-		if(visible) me.encounderIcdsCodes.getStore().load({params: {eid: me.eid}});
-		if(!visible) me.cardSwitch('notes');
 	},
 
 	/**
@@ -247,10 +139,6 @@ Ext.define('App.view.patient.windows.Orders', {
 	 */
 	onWinHide: function(){
 		var me = this;
-
-		me.pid = null;
-		me.eid = null;
-
 		/**
 		 * Fire Event
 		 */

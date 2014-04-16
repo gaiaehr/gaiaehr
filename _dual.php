@@ -134,12 +134,14 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.Medications'
                 ],
                 views:[
-
+					'patient.windows.DocumentViewer'
                 ],
                 controllers:[
+	                'DocumentViewer',
 	                'DualScreen',
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.DoctorsNotes',
 	                'patient.Documents',
 	                'patient.Immunizations',
 	                'patient.LabOrders',
@@ -151,7 +153,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.SocialHistory'
                 ],
                 launch: function() {
-                    say('Loading GaiaEHR');
+	                App.Current = this;
+
                     dual = Ext.create('App.view.ViewportDual');
                 }
             });

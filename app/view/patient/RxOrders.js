@@ -33,6 +33,7 @@ Ext.define('App.view.patient.RxOrders', {
 	store: Ext.create('App.store.patient.Medications', {
 		groupField: 'date_ordered',
 		remoteFilter: true,
+		pageSize: 200,
 		sorters: [
 			{
 				property: 'date_ordered',
@@ -83,7 +84,7 @@ Ext.define('App.view.patient.RxOrders', {
 			dataIndex: 'STR',
 			editor: {
 				xtype: 'rxnormlivetsearch',
-				itemId: 'RxNormLiveSearch'
+				itemId: 'RxNormOrderLiveSearch'
 //				listeners: {
 //					scope: me,
 //					select: me.onRxnormLiveSearchSelect
@@ -143,7 +144,8 @@ Ext.define('App.view.patient.RxOrders', {
 			width: 150,
 			dataIndex: 'ICDS',
 			editor: {
-				xtype:'encountericdscombo'
+				xtype:'encountericdscombo',
+				itemId: 'rxEncounterDxLiveSearch'
 			} //me.encounderIcdsCodes
 		},
 		{
@@ -172,31 +174,30 @@ Ext.define('App.view.patient.RxOrders', {
 		{
 			text: i18n('new_order'),
 			iconCls: 'icoAdd',
-			action: 'encounterRecordAdd'
+			action: 'encounterRecordAdd',
+			itemId :'newRxOrderBtn'
 //			scope: me,
 //			handler: me.onNewPrescription
 
 		},
 		'-',
-//		me.cloneRxBtn =
-			{
+		{
 			text: i18n('clone_order'),
 			iconCls: 'icoAdd',
 			disabled: true,
 			margin: '0 5 0 0',
-			action: 'encounterRecordAdd'
+			action: 'encounterRecordAdd',
+			itemId :'cloneRxOrderBtn'
 //			scope: me,
 //			handler: me.onClonePrescriptions
 		},
 		'-',
-//		me.rxPrintBtn =
 		{
 			text: i18n('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
-			margin: '0 5 0 0'
-//			scope: me,
-//			handler: me.onPrintOrder
+			margin: '0 5 0 0',
+			itemId :'printRxOrderBtn'
 		}
 	]
 //	listeners: {

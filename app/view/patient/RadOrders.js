@@ -30,12 +30,7 @@ Ext.define('App.view.patient.RadOrders', {
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		groupField: 'date_ordered',
 		remoteFilter: true,
-		filters: [
-			{
-				property: 'order_type',
-				value: 'rad'
-			}
-		],
+		pageSize: 200,
 		sorters: [
 			{
 				property: 'date_ordered',
@@ -77,8 +72,10 @@ Ext.define('App.view.patient.RadOrders', {
 			editor: {
 				xtype: 'gaiaehr.combo',
 				list: 40
+			},
+			renderer: function(v){
+				return app.getController('patient.RadOrders').radOrdersGridStatusColumnRenderer(v)
 			}
-//			renderer: me.statusRenderer
 		},
 		{
 			xtype: 'datecolumn',
@@ -100,11 +97,8 @@ Ext.define('App.view.patient.RadOrders', {
 			flex: 1,
 			dataIndex: 'description',
 			editor: {
-				xtype: 'radiologylivetsearch'
-//				listeners: {
-//					scope: me,
-//					select: me.onLoincSearchSelect
-//				}
+				xtype: 'radiologylivetsearch',
+				itemId: 'radOrderliveSearch'
 			}
 		},
 		{
@@ -136,14 +130,10 @@ Ext.define('App.view.patient.RadOrders', {
 		}
 	],
 	tbar: [
-//		me.eRadBtn =
 		{
 			text: i18n('eRad'),
-			iconCls: 'icoSend'
-//			scope: me,
-//			handler: function(){
-//				alert('TODO...');
-//			}
+			iconCls: 'icoSend',
+			itemId: 'electronicRadOrderBtn'
 		},
 		'-',
 		'->',
@@ -152,23 +142,16 @@ Ext.define('App.view.patient.RadOrders', {
 			xtype: 'button',
 			text: i18n('new_order'),
 			iconCls: 'icoAdd',
-			action: 'encounterRecordAdd'
-//			scope: me,
-//			handler: me.onAddOrder
+			action: 'encounterRecordAdd',
+			itemId: 'newRadOrderBtn'
 		},
 		'-',
-//		me.radPrintBtn =
 		{
 			text: i18n('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
-			margin: '0 5 0 0'
-//			scope: this,
-//			handler: me.onPrintOrder
+			margin: '0 5 0 0',
+			itemId: 'printRadOrderBtn'
 		}
 	]
-//	listeners: {
-//		scope: me,
-//		selectionchange: me.onSelectionChange
-//	}
 });

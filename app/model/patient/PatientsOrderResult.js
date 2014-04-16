@@ -18,6 +18,9 @@
 
 Ext.define('App.model.patient.PatientsOrderResult', {
 	extend: 'Ext.data.Model',
+	requires:[
+		'App.model.patient.PatientsOrderObservation'
+	],
 	table: {
 		name: 'patient_order_results',
 		comment: 'Patients Results OBR'

@@ -20,6 +20,7 @@ Ext.define('App.view.ViewportDual', {
     extend: 'Ext.Viewport',
     requires: [
 	    'App.view.patient.Allergies',
+	    'App.view.patient.DoctorsNotes',
 	    'App.view.patient.Documents',
 	    'App.view.patient.Immunizations',
 	    'App.view.patient.LabOrders',
@@ -87,8 +88,72 @@ Ext.define('App.view.ViewportDual', {
 				},
 				{
 					xtype:'patientrxorderspanel'
+				},
+				{
+					xtype:'patientdoctorsnotepanel'
 				}
 			]
 		}
-	]
+	],
+
+	onDocumentView: function(id, type){
+		var windows = Ext.ComponentQuery.query('documentviewerwindow'),
+			src = 'dataProvider/DocumentViewer.php?id='+id,
+			win;
+
+		if(typeof type != 'undefined') src += '&temp=' + type;
+
+		win = Ext.create('App.view.patient.windows.DocumentViewer',{
+			documentType: type,
+			documentId: id,
+			items:[
+				{
+					xtype:'miframe',
+					autoMask:false,
+					src: src
+				}
+			]
+		});
+
+		if(windows.length > 0){
+			var last = windows[(windows.length - 1)];
+			for(var i=0; i < windows.length; i++){
+				windows[i].toFront();
+			}
+			win.showAt((last.x + 25), (last.y + 5));
+
+		}else{
+			win.show();
+		}
+	},
+
+	msg: function(title, format, error, persistent) {
+		var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
+		this.msgCt = Ext.get('msg-div');
+		if(!this.msgCt) this.msgCt = Ext.fly('msg-div');
+		this.msgCt.alignTo(document, 't-t');
+		var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
+			m = Ext.core.DomHelper.append(this.msgCt, {
+				html: '<div class="flyMsg ' + msgBgCls + '"><h3>' + (title || '') + '</h3><p>' + s + '</p></div>'
+			}, true);
+		if (persistent === true) return m; // if persitent return the message element without the fade animation
+		m.addCls('fadeded');
+		Ext.create('Ext.fx.Animator', {
+			target: m,
+			duration: error ? 7000 : 2000,
+			keyframes: {
+				0: { opacity: 0 },
+				20: { opacity: 1 },
+				80: { opacity: 1 },
+				100: { opacity: 0, height: 0 }
+			},
+			listeners: {
+				afteranimate: function() {
+					m.destroy();
+				}
+			}
+		});
+		return true;
+	}
+
 });

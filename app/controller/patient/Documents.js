@@ -80,7 +80,7 @@ Ext.define('App.controller.patient.Documents', {
 		var frame = this.getPatientDocumentViewerFrame();
 
 		if(records.length > 0){
-			frame.setSrc('dataProvider/DocumentViewer.php?doc=' + records[0].data.id);
+			frame.setSrc('dataProvider/DocumentViewer.php?id=' + records[0].data.id);
 		}else{
 			frame.setSrc('dataProvider/DocumentViewer.php');
 		}
@@ -131,7 +131,12 @@ Ext.define('App.controller.patient.Documents', {
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
 			message = i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
-			app.msg(i18n(success ? 'sweet' : 'oops'), message, !success);
+
+			if(dual){
+				dual.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+			}else{
+				app.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+			};
 		});
 	},
 
@@ -180,7 +185,12 @@ Ext.define('App.controller.patient.Documents', {
 			},
 			failure:function(){
 				store.rejectChanges();
-				app.msg(i18n('oops'), i18n('document_error'), true);
+				if(dual){
+					dual.msg(i18n('oops'), i18n('document_error'), true);
+				}else{
+					app.msg(i18n('oops'), i18n('document_error'), true);
+				}
+
 			}
 		})
 

@@ -26,25 +26,15 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	/**
 	 * init Matcha
 	 */
-	require_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
+	require_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
 	new MatchaHelper();
-	$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 
-	if(!isset($_REQUEST['doc'])){
-		print '';
-		exit;
+
+	if(!isset($_REQUEST['id'])){
+		die('');
 	}
 
-	$doc = $d->load($_REQUEST['doc'])->one();
-
-	if($doc === false){
-		print 'No Document Found, Please contact Support Desk. Thank You!';
-		exit;
-	}
-
-	function get_mime_type($file)
-	{
-
+	function get_mime_type($file) {
 		$mime_types = array(
 			"pdf" => "application/pdf",
 			"exe" => "application/octet-stream",
@@ -78,19 +68,42 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return $mime_types[$extension];
 	}
 
-	if($doc['encrypted'] == true){
-		$content = base64_decode(MatchaUtils::decrypt($doc['document']));
-	}else{
-		$content =  base64_decode($doc['document']);
+	function base64ToBinary($doc){
+		$doc = (object) $doc;
+		if(isset($doc->encrypted) && $doc->encrypted == true){
+			$doc->document = base64_decode(MatchaUtils::decrypt($doc->document));
+		} else {
+			$doc->document = base64_decode($doc->document);
+		}
+		return $doc;
 	}
-	header('Content-Type: '. get_mime_type($doc['name']));
-	header('Content-Disposition: inline; filename="' . $doc['name'] . '"');
-	header('Content-Transfer-Encoding: binary');
-	header('Content-Length: ' . strlen($content));
-	header('Accept-Ranges: bytes');
-	print $content;
 
-} else{
+	if(isset($_REQUEST['temp'])){
+		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocumentsTemp');
+		$doc = $d->load($_REQUEST['id'])->one();
+		if($doc === false){
+			die('No Document Found, Please contact Support Desk. Thank You!');
+		}
+		$doc = (object) $doc;
+		$doc->name = 'temp.pdf';
+		$doc = base64ToBinary($doc);
+	}else{
+		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+		$doc = $d->load($_REQUEST['id'])->one();
+		if($doc === false){
+			die('No Document Found, Please contact Support Desk. Thank You!');
+		}
+		$doc = base64ToBinary($doc);
+	}
+
+	header('Content-Type: ' . get_mime_type($doc->name));
+	header('Content-Disposition: inline; filename="' . $doc->name . '"');
+	header('Content-Transfer-Encoding: binary');
+	header('Content-Length: ' . strlen($doc->document));
+	header('Accept-Ranges: bytes');
+	print $doc->document;
+
+} else {
 	print 'Not Authorized to be here, Please contact Support Desk. Thank You!';
 }
 

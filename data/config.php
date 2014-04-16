@@ -1494,7 +1494,7 @@ $API = array(
 				'len' => 1
 			),
 			'getTemplatesTypes' => array(
-				'len' => 1
+				'len' => 0
 			),
 			'getActiveInsurances' => array(
 				'len' => 0
@@ -1592,6 +1592,17 @@ $API = array(
 				'len' => 1
 			),
 
+			'createTempDocument' => array(
+				'len' => 1
+			),
+			'destroyTempDocument' => array(
+				'len' => 1
+			),
+			'transferTempDocument' => array(
+				'len' => 1
+			),
+
+
 			'uploadDocument' => array(
 				'formHandler' => true,
 				'len' => 1
@@ -1618,6 +1629,25 @@ $API = array(
 				'len' => 1
 			),
 			'checkDocHash' => array(
+				'len' => 1
+			)
+		)
+	),
+	'DoctorsNotes' => array(
+		'methods' => array(
+			'getDoctorsNotes' => array(
+				'len' => 1
+			),
+			'getDoctorsNote' => array(
+				'len' => 1
+			),
+			'addDoctorsNote' => array(
+				'len' => 1
+			),
+			'updateDoctorsNote' => array(
+				'len' => 1
+			),
+			'destroyDoctorsNote' => array(
 				'len' => 1
 			)
 		)

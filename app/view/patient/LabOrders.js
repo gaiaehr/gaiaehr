@@ -30,12 +30,7 @@ Ext.define('App.view.patient.LabOrders', {
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		groupField: 'date_ordered',
 		remoteFilter: true,
-		filters: [
-			{
-				property: 'order_type',
-				value: 'lab'
-			}
-		],
+		pageSize: 200,
 		sorters: [
 			{
 				property: 'date_ordered',
@@ -77,8 +72,10 @@ Ext.define('App.view.patient.LabOrders', {
 			editor: {
 				xtype: 'gaiaehr.combo',
 				list: 40
+			},
+			renderer: function(v){
+				return app.getController('patient.LabOrders').labOrdersGridStatusColumnRenderer(v)
 			}
-//			renderer: me.statusRenderer
 		},
 		{
 			xtype: 'datecolumn',
@@ -101,10 +98,6 @@ Ext.define('App.view.patient.LabOrders', {
 			dataIndex: 'description',
 			editor: {
 				xtype: 'labslivetsearch'
-//				listeners: {
-//					scope: me,
-//					select: me.onLoincSearchSelect
-//				}
 			}
 		},
 		{
@@ -139,7 +132,8 @@ Ext.define('App.view.patient.LabOrders', {
 //		me.eLabBtn =
 		{
 			text: i18n('eLab'),
-			iconCls: 'icoSend'
+			iconCls: 'icoSend',
+			itemId:'electronicLabOrderBtn'
 //			scope: me,
 //			handler: function(){
 //				alert('TODO...');
@@ -151,8 +145,8 @@ Ext.define('App.view.patient.LabOrders', {
 		{
 			text: i18n('new_order'),
 			iconCls: 'icoAdd',
-			action: 'lab',
-			itemId: 'encounterRecordAdd'
+			action: 'encounterRecordAdd',
+			itemId:'newLabOrderBtn'
 //			scope: me,
 //			handler: me.onAddOrder
 		},
@@ -162,7 +156,8 @@ Ext.define('App.view.patient.LabOrders', {
 			text: i18n('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
-			margin: '0 5 0 0'
+			margin: '0 5 0 0',
+			itemId:'printLabOrderBtn'
 //			scope: me,
 //			handler: me.onPrintOrder
 		}

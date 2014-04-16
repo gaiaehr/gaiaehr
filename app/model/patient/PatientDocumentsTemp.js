@@ -1,4 +1,3 @@
-<?php
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
@@ -17,35 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class DoctorsNotes {
+Ext.define('App.model.patient.PatientDocumentsTemp', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'patient_documents_temp',
+		comment: 'Patient Documents Temporary Storage'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date'
+		},
+		{
+			name: 'document',
+			type: 'string',
+			dataType: 'longtext'
+		}
+	]
+});
 
-	/**
-	 * @var bool|MatchaCUP
-	 */
-	private $n;
-
-	function __construct(){
-		$this->n = MatchaModel::setSenchaModel('App.model.patient.DoctorsNote');
-	}
-
-	public function getDoctorsNotes($params){
-		return $this->n->load($params)->all();
-	}
-
-	public function getDoctorsNote($params){
-		return $this->n->load($params)->one();
-	}
-
-	public function addDoctorsNote($params){
-		return $this->n->save($params);
-	}
-
-	public function updateDoctorsNote($params){
-		return $this->n->save($params);
-	}
-
-	public function destroyDoctorsNote($params){
-		return $this->n->destroy($params);
-	}
-
-}

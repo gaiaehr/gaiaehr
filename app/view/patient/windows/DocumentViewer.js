@@ -18,28 +18,23 @@
 
 Ext.define('App.view.patient.windows.DocumentViewer', {
 	extend: 'Ext.window.Window',
+	xtype: 'documentviewerwindow',
 	title: i18n('documents_viewer_window'),
 	layout: 'fit',
 	height: 650,
 	width: 700,
 	bodyStyle: 'background-color:#fff',
 	maximizable: true,
-	itemId: 'documentviewerwindow',
+
 	defaults: {
 		margin: 5
 	},
-
-	initComponent: function(){
-		var me = this;
-
-		me.listeners = {
-			scope: me,
-			show: me.onViewerDocumentsWinShow
-		};
-		me.callParent(arguments);
-	},
-
-	onViewerDocumentsWinShow: function(){
-
-	}
+	tbar: [
+		'->',
+		{
+			text: i18n('archive_document'),
+			itemId: 'archiveDocumentBtn',
+			icon: 'resources/images/icons/save.png'
+		}
+	]
 });

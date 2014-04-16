@@ -34,6 +34,11 @@ class DocumentHandler {
 	 * @var MatchaCUP
 	 */
 	private $d = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $t = null;
+
 	private $doctorsnotes;
 
 	function __construct(){
@@ -44,6 +49,11 @@ class DocumentHandler {
 	private function setPatientDocumentModel(){
 		if(!isset($this->d))
 			$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+	}
+
+	private function setPatientDocumentTempModel(){
+		if(!isset($this->t))
+			$this->t = MatchaModel::setSenchaModel('App.model.patient.PatientDocumentsTemp');
 	}
 
 	/**
@@ -84,8 +94,8 @@ class DocumentHandler {
 		if(is_array($params)){
 			foreach($params as $i => $param){
 				/** remove the mime type */
-				$doc = explode(',', $params[$i]->document, 2);
-				$params[$i]->document = $doc[1];
+				$params[$i]->document = $this->trimBase64($params[$i]->document);
+
 				/** encrypted if necessary */
 				if($params[$i]->encrypted){
 					$params[$i]->document = MatchaUtils::encrypt($params[$i]->document);
@@ -94,8 +104,7 @@ class DocumentHandler {
 			}
 		}else{
 			/** remove the mime type */
-			$doc = explode(',', $params->document, 2);
-			$params->document = $doc[1];
+			$params->document = $this->trimBase64($params->document);
 			/** encrypted if necessary */
 			if($params->encrypted){
 				$params->document = MatchaUtils::encrypt($params->document);
@@ -143,7 +152,50 @@ class DocumentHandler {
 	}
 
 
+	public function createTempDocument($params){
+		$this->setPatientDocumentTempModel();
+		$params = (object) $params;
+		$this->documents = new Documents();
+		$pdf = base64_encode($this->documents->PDFDocumentBuilder((object) $params));
+		$record = new stdClass();
+		$record->create_date = date('Y-m-d H:i:s');
+		$record->document = $pdf;
+		$record = (object) $this->t->save($record);
+		unset($record->document);
+		return $record;
+	}
 
+	public function destroyTempDocument($params){
+		$this->setPatientDocumentTempModel();
+		return $this->t->destroy($params);
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array|mixed
+	 */
+	public function transferTempDocument($params){
+		$this->setPatientDocumentModel();
+		$this->setPatientDocumentTempModel();
+		$record = $this->t->load($params)->one();
+		if($record == false) return array('success' => false);
+
+		$params->document = $record['document'];
+		$params->date = date('Y-m-d H:i:s');
+		$params->name = 'transferred.pdf';
+		unset($params->id);
+
+		$params = $this->addPatientDocument($params);
+		unset($params['data']->document);
+		return array('success' => true, 'record' => $params['data']);
+	}
+
+	private function trimBase64($base64){
+		$pos = strpos($base64, ',');
+		if($pos === false) return $base64;
+		return substr($base64, $pos + 1);
+	}
 
 
 

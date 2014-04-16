@@ -32,6 +32,7 @@ Ext.define('App.ux.combo.Templates', {
 			editable: false,
 			displayField: 'title',
 			valueField: 'id',
+			queryMode: 'local',
 			emptyText: i18n('select'),
 			store: Ext.create('Ext.data.Store', {
 				model: 'DocumentsTemplatesComboModel',
@@ -40,5 +41,12 @@ Ext.define('App.ux.combo.Templates', {
 		});
 
 		me.callParent(arguments);
+
+		me.listeners = {
+			scope: me,
+			beforerender:function(){
+				me.getStore().load();
+			}
+		}
 	}
 });

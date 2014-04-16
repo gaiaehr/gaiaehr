@@ -1140,16 +1140,21 @@ Ext.define('App.view.Viewport', {
         });
     },
 
-    onDocumentView: function(docId){
-        var windows = Ext.ComponentQuery.query('#documentviewerwindow'),
-	        window;
+    onDocumentView: function(id, type){
+	    var windows = Ext.ComponentQuery.query('documentviewerwindow'),
+		    src = 'dataProvider/DocumentViewer.php?id='+id,
+		    win;
 
-	    window = Ext.create('App.view.patient.windows.DocumentViewer',{
+	    if(typeof type != 'undefined') src += '&temp=' + type;
+
+	    win = Ext.create('App.view.patient.windows.DocumentViewer',{
+		    documentType: type,
+		    documentId: id,
 		    items:[
 			    {
 				    xtype:'miframe',
 				    autoMask:false,
-				    src: 'dataProvider/DocumentViewer.php?doc='+docId
+				    src: src
 			    }
 		    ]
 	    });
@@ -1159,10 +1164,10 @@ Ext.define('App.view.Viewport', {
 		    for(var i=0; i < windows.length; i++){
 			    windows[i].toFront();
 		    }
-		    window.showAt((last.x + 25), (last.y + 5));
+		    win.showAt((last.x + 25), (last.y + 5));
 
 	    }else{
-		    window.show();
+		    win.show();
 	    }
     },
 

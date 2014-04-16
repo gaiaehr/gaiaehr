@@ -54,7 +54,8 @@ Ext.define('App.view.patient.Documents', {
 				autoLoad: false,
 				remoteFilter: true,
 				remoteSort: false,
-				autoSync: false
+				autoSync: false,
+				pageSize: 200
 			}),
 			columns: [
 				{

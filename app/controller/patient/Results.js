@@ -117,6 +117,9 @@ Ext.define('App.controller.patient.Results', {
 		observationGrid.editingPlugin.cancelEdit();
 		resultsStore.load({
 			callback: function(records){
+
+				say(records);
+
 				if(records.length > 0){
 					form.loadRecord(records[0]);
 					observationStore = records[0].observations();

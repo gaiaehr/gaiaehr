@@ -105,11 +105,14 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 			record = grid.getSelectionModel().getSelection()[0],
 			params = {};
 
-		params.pid = record.pid;
-		params.eid = record.eid;
+		say(grid);
+		say(record);
+
+		params.pid = record.data.pid;
+		params.eid = record.data.eid;
 		params.docType = 'Doctors Note';
-		params.templateId = record.template_id;
-		params.docNoteid = record.id;
+		params.templateId = record.data.template_id;
+		params.docNoteid = record.data.id;
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
 			if(dual){

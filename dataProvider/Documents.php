@@ -43,7 +43,7 @@ class Documents {
 
 	public $pdf;
 
-	function __construct(){
+	function __construct() {
 		$this->db = new MatchaHelper();
 		$this->patient = new Patient();
 		$this->encounter = new Encounter();
@@ -53,7 +53,7 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function getArrayWithTokensNeededByDocumentID($id){
+	public function getArrayWithTokensNeededByDocumentID($id) {
 		$this->db->setSQL("SELECT title, body FROM documents_templates WHERE id = '$id' ");
 		$record = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		$regex = '(\[\w*?\])';
@@ -63,19 +63,19 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function getTemplateBodyById($id){
+	public function getTemplateBodyById($id) {
 		$this->db->setSQL("SELECT title, body FROM documents_templates WHERE id = '$id' ");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function getAllPatientData($pid){
+	public function getAllPatientData($pid) {
 		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function updateDocumentsTitle(stdClass $params){
+	public function updateDocumentsTitle(stdClass $params) {
 		$data = get_object_vars($params);
 		$id = $data['id'];
 		unset($data['id'], $data['date']);
@@ -85,7 +85,7 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function setArraySizeOfTokenArray($tokens){
+	public function setArraySizeOfTokenArray($tokens) {
 		$givingValuesToTokens = array();
 		foreach($tokens as $tok){
 			array_push($givingValuesToTokens, '');
@@ -94,7 +94,7 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function get_PatientTokensData($pid, $allNeededInfo, $tokens){
+	public function get_PatientTokensData($pid, $allNeededInfo, $tokens) {
 		$patientData = $this->getAllPatientData($pid);
 		$age = $this->patient->getPatientAgeByDOB($patientData['DOB']);
 		$user = new User();
@@ -202,7 +202,7 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public function get_EncounterTokensData($eid, $allNeededInfo, $tokens){
+	public function get_EncounterTokensData($eid, $allNeededInfo, $tokens) {
 
 		$params = new stdClass();
 		$params->eid = $eid;
@@ -251,11 +251,11 @@ class Documents {
 			foreach($encounterCodes['rows'] as $code){
 				if($code['code_type'] == 'CPT'){
 					$cpt[] = $code;
-				} elseif($code['code_type'] == 'ICD' || $code['code_type'] == 'ICD9' || $code['code_type'] == 'ICD10'){
+				} elseif($code['code_type'] == 'ICD' || $code['code_type'] == 'ICD9' || $code['code_type'] == 'ICD10') {
 					$dx[] = $code;
-				} elseif($code['code_type'] == 'HCPC'){
+				} elseif($code['code_type'] == 'HCPC') {
 					$hcpc[] = $code;
-				} elseif($code['code_type'] == 'CVX'){
+				} elseif($code['code_type'] == 'CVX') {
 					$cvx[] = $code;
 				}
 			}
@@ -330,7 +330,7 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function tokensForEncountersList($Array, $typeoflist){
+	private function tokensForEncountersList($Array, $typeoflist) {
 		$html = '';
 		if($typeoflist == 1){
 			$html .= '<table>';
@@ -339,60 +339,60 @@ class Documents {
 				$html .= "<tr><td>" . $row['code'] . "</td><td>" . $row['code_text_short'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 2){
+		} elseif($typeoflist == 2) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "ICD" . "</th><th>" . "Code text" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['code'] . "</td><td>" . $row['code_text'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 3){
+		} elseif($typeoflist == 3) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "HCPC" . "</th><th>" . "Code text" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['code'] . "</td><td>" . $row['code_text'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 4){
+		} elseif($typeoflist == 4) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Allergies" . "</th><th>" . "Type" . "</th><th>" . "Severity" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['allergy'] . "</td><td>" . $row['allergy_type'] . "</td><td>" . $row['severity'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 5){
+		} elseif($typeoflist == 5) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Medications" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['STR'] . ' ' . $row['dose'] . ' ' . $row['route'] . ' ' . $row['form'] . ' ' . $row['prescription_when'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 6){
+		} elseif($typeoflist == 6) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Active Problems" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['code_text'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 7){
+		} elseif($typeoflist == 7) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Immunizations" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['vaccine_name'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 8){
+		} elseif($typeoflist == 8) {
 			// Dental
-		} elseif($typeoflist == 9){
+		} elseif($typeoflist == 9) {
 			// Surgeries
-		} elseif($typeoflist == 10){
+		} elseif($typeoflist == 10) {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Preventive Care" . "</th><th>" . "Reason" . "</th></tr>";
 			foreach($Array as $row){
 				$html .= "<tr><td>" . $row['description'] . "</td><td>" . $row['reason'] . "</td></tr>";
 			}
 			$html .= '</table>';
-		} elseif($typeoflist == 11){
+		} elseif($typeoflist == 11) {
 			$html .= '<table width="300">';
 			$html .= "<tr><th>" . "Review of systems checks" . "</th><th>" . "Active?" . "</th></tr>";
 			foreach($Array as $key => $val){
@@ -400,7 +400,7 @@ class Documents {
 			}
 			$html .= '</table>';
 
-		} elseif($typeoflist == 12){
+		} elseif($typeoflist == 12) {
 			$html .= '<table width="300">';
 			$html .= "<tr><th>" . "Review of systems" . "</th><th>" . "Active?" . "</th></tr>";
 			foreach($Array as $key => $val){
@@ -410,13 +410,12 @@ class Documents {
 
 		}
 
-
 		return ($Array == null || $Array == '') ? '' : $html;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private function getCurrentTokensData($allNeededInfo, $tokens){
+	private function getCurrentTokensData($allNeededInfo, $tokens) {
 
 		$currentInformation = array(
 			'[CURRENT_DATE]' => date('d-m-Y'),
@@ -437,7 +436,7 @@ class Documents {
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private function getClinicTokensData($allNeededInfo, $tokens){
+	private function getClinicTokensData($allNeededInfo, $tokens) {
 		$facility = new Facilities();
 		$facilityInfo = $facility->getActiveFacilitiesById($_SESSION['user']['facility']);
 		$clinicInformation = array(
@@ -467,7 +466,7 @@ class Documents {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public function PDFDocumentBuilder($params, $path = ''){
+	public function PDFDocumentBuilder($params, $path = '') {
 		$pid = $params->pid;
 		$templateId = $params->templateId;
 		$regex = '(\[\w*?\])';
@@ -488,7 +487,6 @@ class Documents {
 		$this->pdf->SetMargins(15, 27, 15);
 		$this->pdf->SetHeaderMargin(5);
 		$this->pdf->SetFooterMargin(10);
-		$this->pdf->SetFontSize(8);
 		$this->pdf->SetAutoPageBreak(true, 25);
 		$this->pdf->setFontSubsetting(true);
 
@@ -496,7 +494,7 @@ class Documents {
 			$body = $params->DoctorsNote;
 			preg_match_all($regex, $body, $tokensfound);
 			$tokens = $tokensfound;
-		} else{
+		} else {
 			$tokens = $this->getArrayWithTokensNeededByDocumentID($templateId);
 			//getting the template
 			$body = $this->getTemplateBodyById($templateId);
@@ -522,6 +520,10 @@ class Documents {
 			$allNeededInfo = $this->addReferralData($params, $tokens, $allNeededInfo);
 		}
 
+		if(isset($params->docNoteid)){
+			$allNeededInfo = $this->addDoctorsNoteData($params, $tokens, $allNeededInfo);
+		}
+
 		// add line token
 		$tokens[] = '{line}';
 		$allNeededInfo[] = '<hr>';
@@ -533,12 +535,13 @@ class Documents {
 		foreach($pages AS $page){
 			$this->pdf->AddPage();
 			$this->pdf->SetY(35); // margin after header line
+			//			$this->pdf->SetFontSize(12);
 			$this->pdf->writeHTML($page);
 		}
 
 		if($path == ''){
 			return $this->pdf->Output('temp.pdf', 'S');
-		} else{
+		} else {
 			$this->pdf->Output($path, 'F');
 			$this->pdf->Close();
 			return true;
@@ -546,7 +549,7 @@ class Documents {
 
 	}
 
-	private function addReferralData($params, $tokens, $allNeededInfo){
+	private function addReferralData($params, $tokens, $allNeededInfo) {
 
 		$referral = new Referrals();
 		$data = $referral->getPatientReferral($params->referralId);
@@ -571,7 +574,32 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	private function parseTokensForOrders($params, $tokens, $allNeededInfo){
+	private function addDoctorsNoteData($params, $tokens, $allNeededInfo) {
+
+		$DoctorsNotes = new DoctorsNotes();
+		$data = $DoctorsNotes->getDoctorsNote($params->docNoteid);
+		if($data === false)
+			return $allNeededInfo;
+		$info = array(
+			'[DOC_NOTE_ID]' => $data['id'],
+			'[DOC_NOTE_CREATE_DATE]' => $data['create_date'],
+			'[DOC_NOTE_ORDER_DATE]' => $data['order_date'],
+			'[DOC_NOTE_FROM_DATE]' => $data['from_date'],
+			'[DOC_NOTE_TO_DATE]' => $data['to_date'],
+//			'[DOC_NOTE_RETURN_DATE]' => $data['return_date'],
+			'[DOC_NOTE_RESTRICTIONS]' => $this->arrayToOrderedList($data['restrictions']),
+			'[DOC_NOTE_COMMENTS]' => $data['comments']
+		);
+		unset($referral);
+		foreach($tokens as $i => $tok){
+			if(isset($info[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)){
+				$allNeededInfo[$i] = $info[$tok];
+			}
+		}
+		return $allNeededInfo;
+	}
+
+	private function parseTokensForOrders($params, $tokens, $allNeededInfo) {
 		$html = $this->arrayToTable($params->orderItems);
 		foreach($tokens as $index => $tok){
 			if($allNeededInfo[$index] == '' || $allNeededInfo[$index] == null){
@@ -583,12 +611,36 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	public function arrayToTable($rows){
+	public function arrayToOrderedList($array) {
+		if(!is_array($array) || count($array) == 0)
+			return 'N/A';
+		$ol = '<ol style="margin: 0">';
+		foreach($array as $list){
+			$ol .= '<li>' . $list . '</li>';
+		}
+		$ol .= '</ol>';
+		return $ol;
+	}
+
+	public function arrayToUnorderedList($array) {
+		if(!is_array($array) || count($array) == 0)
+			return 'N/A';
+		$ol = '<ul>';
+		foreach($array as $list){
+			$ol .= '<li>' . $list . '</li>';
+		}
+		$ol .= '</ul>';
+		return $ol;
+	}
+
+	public function arrayToTable($array) {
+		if(!is_array($array) || count($array) == 0)
+			return 'N/A';
 		// open table tag
 		$table = '<table width="100%" border="0" cellspacing="0" cellpadding="2">';
 
 		// get header row
-		$th = array_shift($rows);
+		$th = array_shift($array);
 
 		// table header
 		$table .= '<tr>';
@@ -598,7 +650,7 @@ class Documents {
 		$table .= '</tr>';
 
 		// table rows
-		foreach($rows AS $index => $row){
+		foreach($array AS $index => $row){
 			$table .= '<tr>';
 			foreach($row AS $cell){
 				$color = ($index % 2 == 0 ? '#ffffff' : '#f6f6f6');

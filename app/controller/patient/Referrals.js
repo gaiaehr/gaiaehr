@@ -79,12 +79,15 @@ Ext.define('App.controller.patient.Referrals', {
 					eid: me.eid,
 					referralId: selection[i].data.id,
 					templateId: 10,
-					docType: 'referrals'
+					docType: 'Referral'
 				};
 
-			DocumentHandler.createDocument(params, function(provider, response){
-				app.msg('Sweet!', 'Document Created');
-				app.onDocumentView(response.result.doc.id);
+			DocumentHandler.createTempDocument(params, function(provider, response){
+				if(dual){
+					dual.onDocumentView(response.result.id, 'Referral');
+				}else{
+					app.onDocumentView(response.result.id, 'Referral');
+				}
 				grid.view.el.unmask();
 			});
 		}

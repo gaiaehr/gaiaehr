@@ -105,9 +105,6 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 			record = grid.getSelectionModel().getSelection()[0],
 			params = {};
 
-		say(grid);
-		say(record);
-
 		params.pid = record.data.pid;
 		params.eid = record.data.eid;
 		params.docType = 'Doctors Note';

@@ -93,9 +93,6 @@ Ext.define('App.controller.patient.Referrals', {
 		}
 
 
-
-
-
 	},
 
 	onGridSelectionChange:function(grid, models){

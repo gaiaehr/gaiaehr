@@ -322,9 +322,21 @@ class Segments {
 		$types['MO'][1] = $types['NM'];     // Quantity (NM)
 		$types['MO'][2] = $types['ID'];     // Denomination (ID)
 
-		$types['DR'][0] = '';               // (MO)
+		$types['DR'][0] = '';               // (DR)
 		$types['DR'][1] = $types['TS'];     // Range Start Date/Time (TS)
 		$types['DR'][2] = $types['TS'];     // Range End Date/Time (TS)
+
+		$types['FC'][0] = '';               // (FC)
+		$types['FC'][1] = $types['IS'];     // Financial Class Code (IS)
+		$types['FC'][2] = $types['TS'];     // Effective Date (TS)
+
+		$types['CP'][0] = '';               // (CP)
+		$types['CP'][1] = $types['MO'];     // Price (MO)
+		$types['CP'][2] = $types['ID'];     // Price Type (ID)
+		$types['CP'][3] = $types['NM'];     // From Value (NM)
+		$types['CP'][4] = $types['NM'];     // To Value (NM)
+		$types['CP'][5] = $types['CE'];     // Range Units (CE)
+		$types['CP'][6] = $types['ID'];     // Range Type (ID)
 
 		$types['PL'][0] = '';               // (PL)
 		$types['PL'][1] = $types['IS'];     // Point of Care (IS)
@@ -343,6 +355,11 @@ class Segments {
 		$types['SAD'][1] = $types['ST'];    // Street or Mailing Address (ST)
 		$types['SAD'][2] = $types['ST'];    // Street Name (ST)
 		$types['SAD'][3] = $types['ST'];    // Dwelling Number (ST)
+
+		$types['AUI'][0] = '';              // (AUI)
+		$types['AUI'][1] = $types['ST'];    // Authorization Number (ST)
+		$types['AUI'][2] = $types['DT'];    // Date (ST)
+		$types['AUI'][3] = $types['ST'];    // Source (ST)
 
 		$types['VID'][0] = '';              // (VID)
 		$types['VID'][1] = '2.5.1';         // Version ID (ID)

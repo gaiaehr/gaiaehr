@@ -31,7 +31,7 @@ class ADT extends Message {
 	protected function Events($event) {
 		$events = array(
 			/** ADT/ACK - Admit/Visit Notification (Event A01) */
-			'R01' => array(
+			'A01' => array(
 				'MSH' => array('required' => true),
 				'SFT' => array('repeatable' => true),
 				'EVN' => array('required' => true),
@@ -69,216 +69,264 @@ class ADT extends Message {
 					'UB2' => array(),
 					'PDA' => array()
 				),
-				/** ADT/ACK - Register a Patient (Event A04) */
-				'R04' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
+			),
+			/** ADT/ACK - Register a Patient (Event A04) */
+			'A04' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'ROL' => array('repeatable' => true),
+				'NK1' => array('repeatable' => true),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true),
+				'AL1' => array('repeatable' => true),
+				'DG1' => array('repeatable' => true),
+				'DRG' => array(),
+				'PROCEDURE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'PR1' => array('required' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'GT1' => array('repeatable' => true),
+				'INSURANCE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'IN1' => array('required' => true),
+						'IN2' => array(),
+						'IN3' => array('repeatable' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'ACC' => array(),
+				'UB1' => array(),
+				'UB2' => array(),
+				'PDA' => array()
+			),
+			/** ADT/ACK - Update Patient Information (Event A08) */
+			'A08' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'ROL' => array('repeatable' => true),
+				'NK1' => array('repeatable' => true),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true),
+				'AL1' => array('repeatable' => true),
+				'DG1' => array('repeatable' => true),
+				'DRG' => array(),
+				'PROCEDURE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'PR1' => array('required' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'GT1' => array('repeatable' => true),
+				'INSURANCE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'IN1' => array('required' => true),
+						'IN2' => array(),
+						'IN3' => array('repeatable' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'ACC' => array(),
+				'UB1' => array(),
+				'UB2' => array(),
+				'PDA' => array()
+			),
+			/** ADT/ACK - Patient Departing - Tracking (Event A09) */
+			'A09' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true),
+				'DG1' => array('repeatable' => true)
+			),
+			/** ADT/ACK - Patient Arriving - Tracking (Event A10) */
+			'A10' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true),
+				'DG1' => array('repeatable' => true)
+			),
+			/** ADT/ACK - Merge Patient Information (Event A18) */
+			'A18' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PDI' => array(),
+				'MRG' => array('required' => true),
+				'PV1' => array('required' => true),
+			),
+			/** ADT/ACK - Add Person or Patient Information (Event A28) */
+			'A28' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'ROL' => array('repeatable' => true),
+				'NK1' => array('repeatable' => true),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true),
+				'AL1' => array('repeatable' => true),
+				'DG1' => array('repeatable' => true),
+				'DRG' => array(),
+				'PROCEDURE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'PR1' => array('required' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'GT1' => array('repeatable' => true),
+				'INSURANCE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'IN1' => array('required' => true),
+						'IN2' => array(),
+						'IN3' => array('repeatable' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'ACC' => array(),
+				'UB1' => array(),
+				'UB2' => array()
+			),
+			/** ADT/ACK - Delete Person Information (Event A29) */
+			'A29' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true)
+			),
+			/** ADT/ACK - Update Person Information (Event A31) */
+			'A31' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'ROL' => array('repeatable' => true),
+				'NK1' => array('repeatable' => true),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true),
+				'AL1' => array('repeatable' => true),
+				'DG1' => array('repeatable' => true),
+				'DRG' => array(),
+				'PROCEDURE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'PR1' => array('required' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'GT1' => array('repeatable' => true),
+				'INSURANCE' => array(
+					'repeatable' => true,
+					'items' => array(
+						'IN1' => array('required' => true),
+						'IN2' => array(),
+						'IN3' => array('repeatable' => true),
+						'ROL' => array('repeatable' => true),
+					)
+				),
+				'ACC' => array(),
+				'UB1' => array(),
+				'UB2' => array()
+			),
+			/** ADT/ACK - Cancel Patient Arriving - Tracking (Event A32) */
+			'A32' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true)
+			),
+			/** ADT/ACK - Cancel Patient Departing - Tracking (Event A33) */
+			'A33' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PID' => array('required' => true),
+				'PD1' => array(),
+				'PV1' => array('required' => true),
+				'PV2' => array(),
+				'DB1' => array('repeatable' => true),
+				'OBX' => array('repeatable' => true)
+			),
+			/** ADT/ACK - Merge Person - Patient ID (Event A39) */
+			'A39' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PATIENT' => array(
 					'PID' => array('required' => true),
 					'PD1' => array(),
-					'ROL' => array('repeatable' => true),
-					'NK1' => array('repeatable' => true),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true),
-					'AL1' => array('repeatable' => true),
-					'DG1' => array('repeatable' => true),
-					'DRG' => array(),
-					'PROCEDURE' => array(
-						'repeatable' => true,
-						'items' => array(
-							'PR1' => array('required' => true),
-							'ROL' => array('repeatable' => true),
-						)
-					),
-					'GT1' => array('repeatable' => true),
-					'INSURANCE' => array(
-						'repeatable' => true,
-						'items' => array(
-							'IN1' => array('required' => true),
-							'IN2' => array(),
-							'IN3' => array('repeatable' => true),
-							'ROL' => array('repeatable' => true),
-						)
-					),
-					'ACC' => array(),
-					'UB1' => array(),
-					'UB2' => array(),
-					'PDA' => array()
-				),
-				/** ADT/ACK - Update Patient Information (Event A08) */
-				'R08' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PD1' => array(),
-					'ROL' => array('repeatable' => true),
-					'NK1' => array('repeatable' => true),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true),
-					'AL1' => array('repeatable' => true),
-					'DG1' => array('repeatable' => true),
-					'DRG' => array(),
-					'PROCEDURE' => array(
-						'repeatable' => true,
-						'items' => array(
-							'PR1' => array('required' => true),
-							'ROL' => array('repeatable' => true),
-						)
-					),
-					'GT1' => array('repeatable' => true),
-					'INSURANCE' => array(
-						'repeatable' => true,
-						'items' => array(
-							'IN1' => array('required' => true),
-							'IN2' => array(),
-							'IN3' => array('repeatable' => true),
-							'ROL' => array('repeatable' => true),
-						)
-					),
-					'ACC' => array(),
-					'UB1' => array(),
-					'UB2' => array(),
-					'PDA' => array()
-				),
-				/** ADT/ACK - Patient Departing - Tracking (Event A09) */
-				'A09' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PD1' => array(),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true),
-					'DG1' => array('repeatable' => true)
-				),
-				/** ADT/ACK - Patient Arriving - Tracking (Event A10) */
-				'A10' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PD1' => array(),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true),
-					'DG1' => array('repeatable' => true)
-				),
-				/** ADT/ACK - Merge Patient Information (Event A18) */
-				'A18' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PDI' => array(),
 					'MRG' => array('required' => true),
-					'PV1' => array('required' => true),
-				),
-				/** ADT/ACK - Update Person Information (Event A31) */
-				'A31' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PD1' => array(),
-					'ROL' => array('repeatable' => true),
-					'NK1' => array('repeatable' => true),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true),
-					'AL1' => array('repeatable' => true),
-					'DG1' => array('repeatable' => true),
-					'DRG' => array(),
-					'PROCEDURE' => array(
-						'repeatable' => true,
-						'items' => array(
-							'PR1' => array('required' => true),
-							'ROL' => array('repeatable' => true),
-						)
-					),
-					'GT1' => array('repeatable' => true),
-					'INSURANCE' => array(
-						'repeatable' => true,
-						'items' => array(
-							'IN1' => array('required' => true),
-							'IN2' => array(),
-							'IN3' => array('repeatable' => true),
-							'ROL' => array('repeatable' => true),
-						)
-					),
-					'ACC' => array(),
-					'UB1' => array(),
-					'UB2' => array()
-				),
-				/** ADT/ACK - Cancel Patient Arriving - Tracking (Event A32) */
-				'A32' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PD1' => array(),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true)
-				),
-				/** ADT/ACK - Cancel Patient Departing - Tracking (Event A33) */
-				'A33' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PID' => array('required' => true),
-					'PD1' => array(),
-					'PV1' => array('required' => true),
-					'PV2' => array(),
-					'DB1' => array('repeatable' => true),
-					'OBX' => array('repeatable' => true)
-				),
-				/** ADT/ACK - Merge Person - Patient ID (Event A39) */
-				'A39' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PATIENT' => array(
-						'PID' => array('required' => true),
-						'PD1' => array(),
-						'MRG' => array('required' => true),
-						'PV1' => array()
-					)
-				),
-				/** ADT/ACK - Merge Patient - Patient Identifier List (Event A40) */
-				'A40' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PATIENT' => array(
-						'PID' => array('required' => true),
-						'PD1' => array(),
-						'MRG' => array('required' => true),
-						'PV1' => array()
-					)
-				),
-				/** ADT/ACK - Merge Account - Patient Account Number (Event A41) */
-				'A41' => array(
-					'MSH' => array('required' => true),
-					'SFT' => array('repeatable' => true),
-					'EVN' => array('required' => true),
-					'PATIENT' => array(
-						'PID' => array('required' => true),
-						'PD1' => array(),
-						'MRG' => array('required' => true),
-						'PV1' => array()
-					)
+					'PV1' => array()
 				)
-
+			),
+			/** ADT/ACK - Merge Patient - Patient Identifier List (Event A40) */
+			'A40' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PATIENT' => array(
+					'PID' => array('required' => true),
+					'PD1' => array(),
+					'MRG' => array('required' => true),
+					'PV1' => array()
+				)
+			),
+			/** ADT/ACK - Merge Account - Patient Account Number (Event A41) */
+			'A41' => array(
+				'MSH' => array('required' => true),
+				'SFT' => array('repeatable' => true),
+				'EVN' => array('required' => true),
+				'PATIENT' => array(
+					'PID' => array('required' => true),
+					'PD1' => array(),
+					'MRG' => array('required' => true),
+					'PV1' => array()
+				)
 			)
 		);
 

@@ -6,7 +6,7 @@
  * Time: 4:06 PM
  * To change this template use File | Settings | File Templates.
  */
-include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+include_once (dirname(__FILE__).'/Segments.php');
 
 class ORC extends Segments{
 

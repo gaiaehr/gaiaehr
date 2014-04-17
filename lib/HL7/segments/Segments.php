@@ -322,6 +322,10 @@ class Segments {
 		$types['MO'][1] = $types['NM'];     // Quantity (NM)
 		$types['MO'][2] = $types['ID'];     // Denomination (ID)
 
+		$types['DR'][0] = '';               // (MO)
+		$types['DR'][1] = $types['TS'];     // Range Start Date/Time (TS)
+		$types['DR'][2] = $types['TS'];     // Range End Date/Time (TS)
+
 		$types['PL'][0] = '';               // (PL)
 		$types['PL'][1] = $types['IS'];     // Point of Care (IS)
 		$types['PL'][2] = $types['IS'];     // Room (IS)
@@ -593,6 +597,55 @@ class Segments {
 		$types['NDL'][9] = $types['IS'];     // Patient Location Type (IS)
 		$types['NDL'][10] = $types['IS'];    // Building (IS)
 		$types['NDL'][11] = $types['IS'];    // Floor (IS)
+
+		$types['OSP'][0] = '';               // (OSP)
+		$types['OSP'][1] = $types['CNE'];    // Occurrence Span Code (CNE)
+		$types['OSP'][2] = $types['DT'];     // Occurrence Span Start Date (DT)
+		$types['OSP'][3] = $types['DT'];     // Occurrence Span Stop Date (DT)
+
+		$types['OCD'][0] = '';               // (OCD)
+		$types['OCD'][1] = $types['CNE'];    // Occurrence Code (CNE)
+		$types['OCD'][2] = $types['DT'];     // Occurrence Date (DT)
+
+		$types['UVC'][0] = '';               // (UVC)
+		$types['UVC'][1] = $types['CNE'];    // Value Code (CNE)
+		$types['UVC'][2] = $types['MO'];     // Value Amount (MO)
+
+		$types['ICD'][0] = '';               // (ICD)
+		$types['ICD'][1] = $types['IS'];     // Certification Patient Type (IS)
+		$types['ICD'][2] = $types['ID'];     // Certification Required (ID)
+		$types['ICD'][3] = $types['TS'];     // Date/Time Certification Required (TS)
+
+		$types['MOP'][0] = '';               // (MOP)
+		$types['MOP'][1] = $types['ID'];     // Money or Percentage Indicator (ID)
+		$types['MOP'][2] = $types['NM'];     // Money or Percentage Quantity (NM)
+		$types['MOP'][3] = $types['ID'];     // Currency Denomination (ID)
+
+		$types['RMC'][0] = '';               // (RMC)
+		$types['RMC'][1] = $types['IS'];     // Room Type (IS)
+		$types['RMC'][2] = $types['IS'];     // Amount Type (IS)
+		$types['RMC'][3] = $types['NM'];     // Coverage Amount (NM)
+		$types['RMC'][4] = $types['MOP'];    // Money or Percentage (MOP)
+
+		$types['DTN'][0] = '';               // (DTN)
+		$types['DTN'][1] = $types['IS'];     // Day Type (IS)
+		$types['DTN'][2] = $types['NM'];     // Number of Days (NM)
+
+		$types['PTA'][0] = '';               // (PTA)
+		$types['PTA'][1] = $types['IS'];     // Policy Type (IS)
+		$types['PTA'][2] = $types['IS'];     // Amount Class (IS)
+		$types['PTA'][3] = $types['NM'];     // Money or Percentage Quantity (NM)
+		$types['PTA'][4] = $types['MOP'];    // Money or Percentage (MOP)
+
+		$types['DDI'][0] = '';               // (DDI)
+		$types['DDI'][1] = $types['NM'];     // Delay Days (NM)
+		$types['DDI'][2] = $types['MO'];     // Monetary Amount (MO)
+		$types['DDI'][3] = $types['NM'];     // Number of Days (NM)
+
+		$types['JCC'][0] = '';               // (JCC)
+		$types['JCC'][1] = $types['IS'];     // Job Code (NM)
+		$types['JCC'][2] = $types['IS'];     // Job Class (MO)
+		$types['JCC'][3] = $types['TX'];     // Job Description Text (NM)
 
 		return $types[$type];
 

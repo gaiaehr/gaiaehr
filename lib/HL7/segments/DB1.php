@@ -18,7 +18,7 @@
  */
 include_once (dirname(__FILE__).'/Segments.php');
 
-class SFT extends Segments{
+class DB1 extends Segments{
 
 	function __destruct(){
 		parent::__destruct();
@@ -27,13 +27,14 @@ class SFT extends Segments{
 	function __construct($hl7){
 		parent::__construct($hl7);
 		$this->rawSeg = array();
-		$this->rawSeg[0] = 'SFT';                   // SFT Message Header Segment
-		$this->rawSeg[1] = $this->getType('XON');
-		$this->rawSeg[2] = $this->getType('ST');
-		$this->rawSeg[3] = $this->getType('ST');
-		$this->rawSeg[4] = $this->getType('ST');
-		$this->rawSeg[5] = $this->getType('TX');
-		$this->rawSeg[6] = $this->getType('TS');
-
+		$this->rawSeg[0] = 'DB1';                   // DB1 Message Header Segment
+		$this->rawSeg[1] = $this->getType('SI');
+		$this->rawSeg[2] = $this->getType('IS');    // TABLE 0334
+		$this->rawSeg[3] = $this->getType('CX');
+		$this->rawSeg[4] = $this->getType('ID');    // TABLE 0136
+		$this->rawSeg[5] = $this->getType('DT');
+		$this->rawSeg[6] = $this->getType('DT');
+		$this->rawSeg[7] = $this->getType('DT');
+		$this->rawSeg[8] = $this->getType('DT');
 	}
 }

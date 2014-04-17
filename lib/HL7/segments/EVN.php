@@ -18,7 +18,7 @@
  */
 
 if(!class_exists('Segments')){
-	include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+	include_once (dirname(__FILE__).'/Segments.php');
 }
 
 class EVN extends Segments{

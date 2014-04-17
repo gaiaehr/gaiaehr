@@ -18,7 +18,7 @@
  */
 include_once (dirname(__FILE__).'/Segments.php');
 
-class SFT extends Segments{
+class UB2 extends Segments{
 
 	function __destruct(){
 		parent::__destruct();
@@ -27,13 +27,23 @@ class SFT extends Segments{
 	function __construct($hl7){
 		parent::__construct($hl7);
 		$this->rawSeg = array();
-		$this->rawSeg[0] = 'SFT';                   // SFT Message Header Segment
-		$this->rawSeg[1] = $this->getType('XON');
+		$this->rawSeg[0] = 'UB2';                   // UB2 Message Header Segment
+		$this->rawSeg[1] = $this->getType('SI');
 		$this->rawSeg[2] = $this->getType('ST');
-		$this->rawSeg[3] = $this->getType('ST');
+		$this->rawSeg[3] = $this->getType('IS');
 		$this->rawSeg[4] = $this->getType('ST');
-		$this->rawSeg[5] = $this->getType('TX');
-		$this->rawSeg[6] = $this->getType('TS');
-
+		$this->rawSeg[5] = $this->getType('ST');
+		$this->rawSeg[6] = $this->getType('UVC');
+		$this->rawSeg[7] = $this->getType('OCD');
+		$this->rawSeg[8] = $this->getType('OSP');
+		$this->rawSeg[9] = $this->getType('ST');
+		$this->rawSeg[10] = $this->getType('ST');
+		$this->rawSeg[11] = $this->getType('ST');
+		$this->rawSeg[12] = $this->getType('ST');
+		$this->rawSeg[13] = $this->getType('ST');
+		$this->rawSeg[14] = $this->getType('ST');
+		$this->rawSeg[15] = $this->getType('ST');
+		$this->rawSeg[16] = $this->getType('ST');
+		$this->rawSeg[17] = $this->getType('NM');
 	}
 }

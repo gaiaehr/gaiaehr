@@ -149,7 +149,7 @@ class HL7 {
 	function addSegment($segment){
 		try{
 			if(!class_exists($segment)){
-				include_once(str_replace('\\', '/',__DIR__)."/segments/$segment.php");
+				include_once(dirname(__FILE__)."/segments/$segment.php");
 			}
 			$this->segments[] = new $segment($this);
 			return end($this->segments);
@@ -209,7 +209,7 @@ class HL7 {
 		if(strlen($type) !== 3) return false;
 
 		if(!class_exists($type)){
-			include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
+			include_once (dirname(__FILE__)."/messages/$type.php");
 		}
 
 		$this->message = new $type($this);
@@ -232,7 +232,7 @@ class HL7 {
 
 		if($seg != ''){
 			if(!class_exists($seg)){
-				include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
+				include_once (dirname(__FILE__)."/segments/$seg.php");
 			}
 			$this->segments[] = new $seg($this);
 			end($this->segments)->parse($segment);

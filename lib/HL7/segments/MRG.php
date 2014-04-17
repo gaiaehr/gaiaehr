@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+include_once (dirname(__FILE__).'/Segments.php');
 
 class MRG extends Segments{
 

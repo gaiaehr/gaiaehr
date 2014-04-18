@@ -30,11 +30,13 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 
     <link rel="shortcut icon" href="favicon.ico">
-    <script src="JSrouter.php"></script>
-    <script src="data/api.php"></script>
+    <script src="JSrouter.php?site=<?php print $site ?>"></script>
+    <script src="data/api.php?site=<?php print $site ?>"></script>
     <script type="text/javascript">
-        var app, site = '<?php print $site ?>',
+        var app,
+	        site = '<?php print $site ?>',
 	        localization = '<?php print $lang ?>';
+
         function i18n(key){ return lang[key] || key; }
         function say(a){ console.log(a); }
         Ext.Loader.setConfig({

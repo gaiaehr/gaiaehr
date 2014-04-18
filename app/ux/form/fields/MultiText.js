@@ -13,6 +13,7 @@ Ext.define('App.ux.form.fields.MultiText', {
 		align: 'stretch'
 	},
 	name: null,
+	numbers: true,
 	initComponent: function(){
 		var me = this;
 
@@ -33,7 +34,7 @@ Ext.define('App.ux.form.fields.MultiText', {
 			labelWidth: 20,
 			enableKeyEvents: true
 		});
-		me.lastField.setFieldLabel((me.items.items.indexOf(me.lastField) + 1).toString());
+		if(me.numbers) me.lastField.setFieldLabel((me.items.items.indexOf(me.lastField) + 1).toString());
 		me.lastField.on('keyup', this.onFieldKeyUp, this);
 
 	},

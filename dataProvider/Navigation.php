@@ -1,21 +1,22 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, LLC.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 
 include_once(dirname(__FILE__) . '/ACL.php');
 include_once(dirname(__FILE__) . '/i18nRouter.php');
@@ -276,6 +277,13 @@ class Navigation
 				'id' => 'App.view.administration.Documents'
 			);
 		}
+		//if($this->ACL->hasPermission('access_documents')){
+		$admin['children'][] = array(
+			'text' => $this->i18n['hl7_servers'],
+			'leaf' => true,
+			'cls' => 'file',
+			'id' => 'App.view.administration.HL7Servers'
+		);
 		//if($this->ACL->hasPermission('access_documents')){
 		$admin['children'][] = array(
 			'text' => $this->i18n['external_data_loads'],

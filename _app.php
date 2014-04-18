@@ -64,8 +64,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 
 		<!-- JSrouter and Ext.deirect API files -->
-		<script src="JSrouter.php"></script>
-		<script src="data/api.php"></script>
+		<script src="JSrouter.php?site=<?php print $site ?>"></script>
+		<script src="data/api.php?site=<?php print $site ?>"></script>
 		<script type="text/javascript" src="lib/ZeroClipboard/ZeroClipboard.js"></script>
 
         <script type="text/javascript">
@@ -662,6 +662,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
                 ],
                 controllers:[
+	                'administration.HL7Servers',
+
 	                'Cron',
 	                'DualScreen',
 	                'LogOut',

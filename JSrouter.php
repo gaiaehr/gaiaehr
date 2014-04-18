@@ -23,7 +23,8 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 ob_start();
-require_once (dirname(__FILE__) . '/classes/MatchaHelper.php');
+require_once(dirname(__FILE__) . '/sites/'.$_REQUEST['site'].'/conf.php');
+require_once(dirname(__FILE__) . '/classes/MatchaHelper.php');
 include_once(dirname(__FILE__) . '/dataProvider/i18nRouter.php');
 include_once(dirname(__FILE__) . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');

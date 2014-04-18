@@ -88,15 +88,12 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 			values = multiField.getValue();
 
 		e.record.set({restrictions: values});
-
-		//		e.record.store.sync();
 	},
 
 	onDoctorsNotesGridBeforeEdit: function(plugin, e){
 		var multiField = plugin.editor.query('multitextfield')[0],
 			data = e.record.data.restrictions;
 		multiField.setValue(data);
-
 	},
 
 	onPrintDoctorsNoteBtn: function(){

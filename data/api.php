@@ -70,8 +70,9 @@ if(!isset($_SESSION)) {
 }
 
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
-    require_once ('../classes/MatchaHelper.php');
-    include_once($_SESSION['root'] . '/dataProvider/Modules.php');
+	require_once(dirname(dirname(__FILE__)) . '/sites/' . $_REQUEST['site'] . '/conf.php');
+    require_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
+    include_once(dirname(dirname(__FILE__)) . '/dataProvider/Modules.php');
     $m = new Modules();
 }
 /*

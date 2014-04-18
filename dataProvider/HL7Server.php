@@ -43,6 +43,10 @@ class HL7Server {
 	 */
 	private $r;
 	/**
+	 * @var MatchaCUP
+	 */
+	private $s;
+	/**
 	 * @var bool
 	 */
 	private $ackStatus;
@@ -75,12 +79,42 @@ class HL7Server {
 		include_once(dirname(dirname(__FILE__))."/sites/{$this->site}/conf.php");
 		include_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
 		include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
+		include_once(dirname(__FILE__).'/HL7ServerHandler.php');
 		new MatchaHelper();
-		
+
+
+		$this->s = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
 		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Messages');
 		$this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Recipients');
-
 	}
+
+	public function getServers($params){
+		$servers = $this->s->load($params)->all();
+		foreach($servers['data'] as $i => $server){
+			$handler = new HL7ServerHandler();
+			$status = $handler->status($server['port']);
+			$servers['data'][$i]['online'] = $status['online'];
+		}
+
+		return $servers;
+	}
+
+	public function getServer($params){
+		return $this->s->load($params)->one();
+	}
+
+	public function addServer($params){
+		return $this->s->save($params);
+	}
+
+	public function updateServer($params){
+		return $this->s->save($params);
+	}
+
+	public function deleteServer($params){
+		return $this->s->destroy($params);
+	}
+
 
 	public function Process($msg = ''){
 		$this->msg = $msg;
@@ -311,7 +345,6 @@ class HL7Server {
 		}
 	}
 }
-
 //$msg = <<<EOF
 //MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
 //PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
@@ -359,9 +392,49 @@ class HL7Server {
 //OBX|4|NM|2089-1^Cholesterol in LDL [Mass/volume] in Serum or Plasma^LN^^^^^^Cholesterol in LDL [Mass/volume] in Serum or Plasma||116|mg/dL^milligrams per deciliter^UCUM|Recommended: <130; Moderate Risk: 130-159; High Risk: >160|N|||F|||20110531123551-0800|||||20110601130551-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //SPM|1|||119297000^BLD^SCT^^^^^^Blood|||||||||||||20110531123551-0800
 //EOF;
+
+//$msg = <<<EOF
+//MSH|^~\&|EPIC|EPICADT|SMS|SMSADT|199912271408|CHARRIS|ADT^A04|1817457|D|2.5|
+//PID||0493575^^^2^ID 1|454721||DOE^JOHN^^^^|DOE^JOHN^^^^|19480203|M||B|254 MYSTREET AVE^^MYTOWN^OH^44123^USA||(216)123-4567|||M|NON|400003403~1129086|
+//NK1||ROE^MARIE^^^^|SPO||(216)123-4567||EC|||||||||||||||||||||||||||
+//PV1||O|168 ~219~C~PMA^^^^^^^^^||||277^ALLEN MYLASTNAME^BONNIE^^^^|||||||||| ||2688684|||||||||||||||||||||||||199912271408||||||002376853
+//EOF;
+
+//$msg = <<<EOF
+//MSH|^~\&||LAB1||SITE1|20090601103638||ADT^A08|JPANUCCI-0091|T|2.2|5109
+//EVN|A08|20090601103638||||
+//PID|1|SH0091|SH0091||Panucci^John^||19490314|M||G|33 10th Ave.^^Costa Mesa^CA^92330||(714) 555-0091^^||ENG|M|CATH|SHACT0091|123-45-6789||
+//NK1|1|Panucci^Joan|HU|7056 Culver^^IRVINE^CA^92612|(949)211-4615|
+//NK1|2|^||^^^^||
+//PV1||O|Z27|2|||16^VAN HOUTEN^KIRK^|11^FLANDERS^MAUDE^|14^VAN HOUTEN^MILLHOUSE^|O/P||||1|||005213^KURZWEIL^PETER^R|O|1|MA|||||||||||||||||||SIMPSON CLINIC|||||200906011027
+//PV2|||^MENISCUS TEAR RIGHT KNEE|||||||||EKG/LAB||VET
+//GT1|||Washington^GEORGE^M||7056 Main St^^SEATTLE^WA^98101|(234)211-4615|||M||01^PATIENT IS INSURED|677-47-2055||||DISABLED
+//IN1|1|MB|0011|MEDICARE OP ONLY MCR M|||||
+//IN1|2|MSCP|0I38|MEM SENIOR COMPPLN IND I|||||
+//EOF;
+
+//$msg = <<<EOF
+//MSH|^~\&||OTHER REG MED CTR^1234567890^NPI|||201102171531||ADT^A04^ADT_A01|201102171531956|P|2.3.1
+//EVN||201102171531
+//PID|1||FL01059711^^^^PI||~^^^^^^U|||F||2106-3^White^CDCREC|^^^12^33821|||||||||||2186-5^Not Hispanic^CDCREC
+//PV1||E||E||||||||||7|||||V20220217-00274^^^^VN|||||||||||||||||||||||||201102171522
+//PV2|||78907^ABDOMINAL PAIN, GENERALIZED^I9CDX
+//OBX|1|HD|SS001^TREATING FACILITY IDENTIFIER^PHINQUESTION||OTHER REG MED CTR^1234567890^NPI||||||F|||201102171531
+//OBX|2|CWE|8661-1^CHIEF COMPLAINT:FIND:PT:PATIENT:NOM:REPORTED^LN||^^^^^^^^STOMACH ACHE||||||F|||201102171531
+//OBX|3|NM|21612-7^AGE TIME PATIENT REPORTED^LN||43|a^YEAR^UCUM|||||F|||201102171531
+//DG1|1||78900^ABDMNAL PAIN UNSPCF SITE^I9CDX|||A
+//EOF;
 //
-//
+
+
+//include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
+
 //print '<pre>';
+//
+//$hl7 = new HL7();
+//$msg = $hl7->readMessage($msg);
+//print_r($msg);
+
 //$hl7 = new HL7Server();
-////$hl7->Process($msg);
+//$hl7->Process($msg);
 //print $hl7->Process($msg);

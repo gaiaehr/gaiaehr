@@ -1723,6 +1723,35 @@ $API = array(
 			)
 		)
 	),
+	'HL7Server' => array(
+		'methods' => array(
+			'getServers' => array(
+				'len' => 1
+			),
+			'addServer' => array(
+				'len' => 1
+			),
+			'updateServer' => array(
+				'len' => 1
+			),
+			'deleteServer' => array(
+				'len' => 1
+			)
+		)
+	),
+	'HL7ServerHandler' => array(
+		'methods' => array(
+			'start' => array(
+				'len' => 1
+			),
+			'stop' => array(
+				'len' => 1
+			),
+			'status' => array(
+				'len' => 1
+			)
+		)
+	),
 	'HL7Messages' => array(
 		'methods' => array(
 			'getMessages' => array(

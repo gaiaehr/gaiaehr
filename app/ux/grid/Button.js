@@ -78,6 +78,8 @@ Ext.define('App.ux.grid.Button', {
 					cls: theItem.cls || null,
 					listeners: theItem.listeners || null,
 					record: record,
+					width: theItem.width || 50,
+					margin: theItem.margin || 0,
 					renderTo: target.parent()
 				};
 			}

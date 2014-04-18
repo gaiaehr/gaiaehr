@@ -50,7 +50,7 @@ while(true){
 	usleep(500);
 	$read = array();
 	$read[] = $sock;
-	$read = array_merge($read,$clients);
+	$read = array_merge($read, $clients);
 	$null = null;
 	// Set up a blocking call to socket_select
 	if(@socket_select($read, $null, $null, $tv_sec = 5) < 1){
@@ -73,15 +73,12 @@ while(true){
 			if (!$data) {
 				continue;
 			}
-			if ($data == 'quit') {
-				unset($clients[$key]);
-				socket_close($client);
-				break;
-			}
+
 			if ($data == 'shutdown') {
 				socket_close($client);
 				socket_close($sock);
-				exit;
+				unset($client, $sock, $cls, $data);
+				die;
 			}
 			// ****************************************************** //
 			// ** Place message logic ******************************* //
@@ -92,6 +89,7 @@ while(true){
 			// ****************************************************** //
 			set_time_limit(0);
 			@socket_write($client, $ack, strlen($ack));
+			unset($ack);
 		}
 	}
 };

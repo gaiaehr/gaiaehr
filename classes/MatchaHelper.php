@@ -24,7 +24,7 @@ if(!isset($_SESSION)){
 }
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
-$timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : 'UTC');
+$timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : site_timezone);
 date_default_timezone_set($timezone);
 
 include_once(dirname(__FILE__) . '/Time.php');
@@ -60,18 +60,18 @@ class MatchaHelper extends Matcha {
 		self::$__freeze = false;
 		// Connect to the database
 		// This is compatible with the old methods
-		if(isset($_SESSION['site']) && isset($_SESSION['site']['db'])){
+		if(defined('site_db_type')){
 			self::connect(array(
-				'host' => (string)$_SESSION['site']['db']['host'],
-				'port' => (int)$_SESSION['site']['db']['port'],
-				'name' => (string)$_SESSION['site']['db']['database'],
-				'user' => (string)$_SESSION['site']['db']['username'],
-				'pass' => (string)$_SESSION['site']['db']['password'],
-				'app' => (string)dirname(dirname(__FILE__)) . '/app')
+				'host' => site_db_host,
+				'port' => site_db_port,
+				'name' => site_db_database,
+				'user' => site_db_username,
+				'pass' => site_db_password,
+				'app' => dirname(dirname(__FILE__)) . '/app')
 			);
 		}
 
-		self::$__secretKey = $_SESSION['site']['AESkey'];
+		self::$__secretKey = site_aes_key;
 
 		MatchaAudit::$__audit = true;
 		MatchaAudit::$hookTable = 'audit_transaction_log';

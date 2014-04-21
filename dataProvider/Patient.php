@@ -106,6 +106,8 @@ class Patient {
 		$this->setPatientModel();
 		$fullName = Person::fullname($params->fname, $params->mname, $params->lname);
 		$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $fullName);
+		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
+		$params->update_date = date('Y-m-d H:i:s');
 		$this->patient = $this->p->save($params);
 		$this->patient['fullname'] = $fullName;
 		$this->createPatientDir($this->patient['pid']);

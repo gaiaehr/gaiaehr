@@ -244,28 +244,28 @@ class HL7 {
 
 		switch(strlen($time)){
 			case 4:
-				$date = preg_replace('/^([0-9]{4})$/', '$1-01-01 00:00:00', $time);
+				$time = preg_replace('/^([0-9]{4})$/', '$1-01-01 00:00:00', $time);
 				break;
 			case 6:
-				$date = preg_replace('/^([0-9]{4})([0-9]{2})$/', '$1-$2-01 00:00:00', $time);
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})$/', '$1-$2-01 00:00:00', $time);
 				break;
 			case 8:
-				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 00:00:00', $time);
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 00:00:00', $time);
 				break;
 			case 10:
-				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:00:00', $time);
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:00:00', $time);
 				break;
 			case 12:
-				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:00', $time);
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:00', $time);
 				break;
-			default:
-				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:$6', $time);
+			case 14:
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:$6', $time);
 				break;
 		}
-		if($format == 'Y-m-d H:i:s'){
-			return $date;
+		if($time == '' || $format == 'Y-m-d H:i:s'){
+			return $time;
 		}else{
-			return date($format, strtotime($date));
+			return date($format, strtotime($time));
 		}
 	}
 

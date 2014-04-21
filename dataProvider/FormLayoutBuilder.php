@@ -504,7 +504,13 @@ class FormLayoutBuilder {
 			$fo = $this->db->fetchRecord();
 			$foo = json_decode($fo['options'], true);
 
-			$row['name'] = (isset($foo['title']) ? $foo['title'] : $foo['fieldLabel']) . ' (' . $parentField['xtype'] . ')';
+			if(isset($foo['title'])){
+				$row['name'] = $foo['title'] . ' (' . $parentField['xtype'] . ')';
+			}elseif(isset($foo['fieldLabel'])){
+				$row['name'] = $foo['fieldLabel'] . ' (' . $parentField['xtype'] . ')';
+			}else{
+				$row['name'] = '(' . $parentField['xtype'] . ')';
+			}
 			$row['value'] = $parentField['id'];
 			array_push($parentFields, $row);
 		}

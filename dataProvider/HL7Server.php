@@ -45,6 +45,10 @@ class HL7Server {
 	/**
 	 * @var MatchaCUP
 	 */
+	private $p;
+	/**
+	 * @var MatchaCUP
+	 */
 	private $s;
 	/**
 	 * @var bool
@@ -76,6 +80,8 @@ class HL7Server {
 	private $pResult;
 	private $pObservation;
 
+	protected $updateKey = 'pid';
+
 
 	function __construct($site = 'default'){
 		$this->site = $site;
@@ -89,6 +95,9 @@ class HL7Server {
 		$this->s = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
 		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Messages');
 		$this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Recipients');
+
+		/** Patient Model */
+		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 
 		/** Order Models */
 		$this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
@@ -150,11 +159,11 @@ class HL7Server {
 			/**
 			 * Check for IP address access
 			 */
-			$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
-			if($this->recipient === false){
-				$this->ackStatus = 'AR';
-				$this->ackMessage = "This application '$application' Not Authorized";
-			}
+//			$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
+//			if($this->recipient === false){
+//				$this->ackStatus = 'AR';
+//				$this->ackMessage = "This application '$application' Not Authorized";
+//			}
 			/**
 			 *
 			 */
@@ -165,17 +174,17 @@ class HL7Server {
 			/**
 			 *
 			 */
-			$record = new stdClass();
-			$record->msg_type = $hl7->getMsgType();
-			$record->message = $this->msg;
-			$record->foreign_facility = $hl7->getSendingFacility();
-			$record->foreign_application = $hl7->getSendingApplication();
-			$record->foreign_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-			$record->isOutbound = '0';
-			$record->status = '2';
-			$record->date_processed = date('Y-m-d H:i:s');
-			$record = $this->m->save($record);
-			$record = (array) $record['data'];
+			$msgRecord = new stdClass();
+			$msgRecord->msg_type = $hl7->getMsgType();
+			$msgRecord->message = $this->msg;
+			$msgRecord->foreign_facility = $hl7->getSendingFacility();
+			$msgRecord->foreign_application = $hl7->getSendingApplication();
+			$msgRecord->foreign_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+			$msgRecord->isOutbound = '0';
+			$msgRecord->status = '2';
+			$msgRecord->date_processed = date('Y-m-d H:i:s');
+			$msgRecord = $this->m->save($msgRecord);
+			$msgRecord = (array) $msgRecord['data'];
 
 			if($this->ackStatus == 'AA'){
 				/**
@@ -183,10 +192,10 @@ class HL7Server {
 				 */
 				switch($hl7->getMsgType()){
 					case 'ORU':
-						$this->ProcessORU($hl7, $msg, $record);
+						$this->ProcessORU($hl7, $msg, $msgRecord);
 						break;
 					case 'ADT':
-						$this->ProcesADT($hl7, $msg, $record);
+						$this->ProcessADT($hl7, $msg, $msgRecord);
 						break;
 					default:
 
@@ -210,11 +219,11 @@ class HL7Server {
 			$msa->setValue('3', $this->ackMessage);         // Error Message
 			$ackMsg = $ack->getMessage();
 
-			$record['response'] = $ackMsg;
-			$this->m->save((object)$record);
+			$msgRecord['response'] = $ackMsg;
+			$this->m->save((object)$msgRecord);
 
 			// unset all the variables to release memory
-			unset($ack, $hl7, $msg, $record, $oData, $result);
+			unset($ack, $hl7, $msg, $msgRecord, $oData, $result);
 
 
 			return $addSocketCharacters ? "\v".$ackMsg.chr(0x1c).chr(0x0d) : $ackMsg;
@@ -227,9 +236,9 @@ class HL7Server {
 	/**
 	 * @param $hl7 HL7
 	 * @param $msg
-	 * @param $record
+	 * @param $msgRecord
 	 */
-	private function ProcessORU($hl7, $msg, $record){
+	private function ProcessORU($hl7, $msg, $msgRecord){
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
@@ -279,7 +288,7 @@ class HL7Server {
 //					}
 				}
 
-				$foo->documentId = 'hl7|' . $record['id'];
+				$foo->documentId = 'hl7|' . $msgRecord['id'];
 				$rResult = (array) $this->pResult->save($foo);
 				unset($foo);
 				/**
@@ -335,12 +344,76 @@ class HL7Server {
 		unset($patient, $rResult);
 	}
 
-	private function ProcessADT($hl7, $msg, $record){
-		$patient = new stdClass();
+	/**
+	 * @param HL7       $hl7
+	 * @param ADT       $msg
+	 * @param stdClass  $msgRecord
+	 */
+	private function ProcessADT($hl7, $msg, $msgRecord){
+
+		$evt = $hl7->getMsgEventType();
+
+		if($evt == 'A01'){ /** Admit Visit **/
+			$patient = $this->PidToPatient($msg->data['PID'], $hl7);
+
+
+		} elseif($evt == 'A04'){ /** Register a Patient **/
+			$patientObj = $this->PidToPatient($msg->data['PID'], $hl7);
+			$patient = $this->p->load($patientObj->{$this->updateKey})->one();
+			$patient = array_merge($patient, $patientObj);
+			$this->p->save((object) $patient);
+
+		} elseif($evt == 'A08'){ /** Update Patient Information **/
+			$patientData = $this->PidToPatient($msg->data['PID'], $hl7);
+			$patient = $this->p->load($patientData[$this->updateKey])->one();
+			$patient = array_merge($patient, $patientData);
+
+			foreach($msg->data['INSURANCE'] as $insuranceGroup){
+				foreach($insuranceGroup as $key => $insurance){
+					if($insurance == false) continue;
+					if($key == 'IN1'){
+						$in1 = $this->IN1ToInsuranceObj($insurance, $hl7);
+
+
+					}elseif($key == 'IN2'){
+						$in2 = $this->IN2ToInsuranceObj($insurance, $hl7);
+
+
+					}elseif($key == 'IN3'){
+						foreach($insurance as $IN3){
+							$in3 = $this->IN3ToInsuranceObj($IN3, $hl7);
 
 
 
+						}
+					}
+				}
+			}
 
+
+		} elseif($evt == 'A09'){ /** Patient Departing - Tracking **/
+
+		} elseif($evt == 'A10'){ /** Patient Arriving - Tracking **/
+
+		} elseif($evt == 'A18'){ /** Merge Patient Information **/
+
+		} elseif($evt == 'A28'){ /** Add Person or Patient Information **/
+
+		} elseif($evt == 'A29'){ /** Delete Person Information **/
+
+		} elseif($evt == 'A31'){ /** Update Person Information **/
+
+		} elseif($evt == 'A32'){ /** Cancel Patient Arriving - Tracking **/
+
+		} elseif($evt == 'A33'){ /** Cancel Patient Departing - Tracking **/
+
+		} elseif($evt == 'A39'){ /** Merge Person - Patient ID **/
+
+		} elseif($evt == 'A40'){ /** Merge Patient - Patient Identifier List **/
+
+		} elseif($evt == 'A41'){ /** Merge Account - Patient Account Number **/
+
+		}
 
 
 
@@ -349,48 +422,142 @@ class HL7Server {
 		unset($patient);
 	}
 
-	private function PIDtoPatientObj($PID){
-		$patient = new stdClass();
-		$patient->id = $PID[1];                 // Set ID – Patient ID
-		$patient->pubpid = $PID[2][1];          // Patient ID (External ID)
-		$patient->id = $PID[3][1];              // Patient ID (Internal ID)
-		$patient->pubid = $PID[4][1];           // Alternate Patient ID – PID
-		$patient->fname = $PID[5][1];           // Patient Name...
-		$patient->mname = $PID[5][3];           //
-		$patient->lname = $PID[5][2];           //
-		$patient->mothers_name = "{$PID[6][1]} {$PID[6][3]} {$PID[6][2]}";  // Mother’s Maiden Name
-		$patient->DOB = $PID[7][1];                 // Date/Time of Birth
-		$patient->sex = $PID[8];                    // Sex
-//		$patient->00 = $PID[9];                     // Patient Alias
-		$patient->race = $PID[10][1];               // Race
-		$patient->address = $PID[11][1][1];         // Patient Address
-		$patient->city = $PID[11][3];               //
-		$patient->state = $PID[11][4];              //
-		$patient->zipcode = $PID[11][5];            //
-		$patient->country = $PID[11][6];            // Country Code
-		$patient->home_phone = "{$PID[13][7]} . '-' . {$PID[13][1]}";        // Phone Number – Home
-		$patient->work_phone = "{$PID[14][7]} . '-' . {$PID[14][1]}";        // Phone Number – Business
-		$patient->language = $PID[15][1];               // Primary Language
-		$patient->marital_status = $PID[16][1];         // Marital Status
-//		$patient->00 = $PID[17];                        // Religion
-//		$patient->00 = $PID[18];                        // Patient Account Number
-		$patient->SS = $PID[19];                        // SSN Number – Patient
-		$patient->drivers_license = $PID[20][1];        // Driver’s License Number - Patient
-		$patient->drivers_license_state = $PID[20][2];  // Driver’s License State - Patient
-		$patient->drivers_license_exp = $PID[20][3];    // Driver’s License Exp Date - Patient
-//		$patient->00 = $PID[21];                        // Mother’s Identifier
-		$patient->ethnicity = $PID[22][1];              // Ethnic Group
-//		$patient->00 = $PID[23];                // Birth Place
-//		$patient->00 = $PID[24];                // Multiple Birth Indicator
-//		$patient->00 = $PID[25];                // Birth Order
-//		$patient->00 = $PID[26];                // Citizenship
-//		$patient->00 = $PID[27];                // Veterans Military Status
-//		$patient->00 = $PID[29];                // Patient Death Date and Time
-//		$patient->00 = $PID[30];                // Patient Death Indicator
-		return $patient;
+	/**
+	 * @param array $PID
+	 * @param HL7   $hl7
+	 *
+	 * @return array
+	 */
+	private function PidToPatient($PID, $hl7){
+		$p = array();
+		if($this->notEmpty($PID[2][1]))     $p['pubpid'] = $PID[2][1];          // Patient ID (External ID)
+		if($this->notEmpty($PID[3][1]))     $p['pid'] = $PID[3][1];              // Patient ID (Internal ID)
+		if($this->notEmpty($PID[5][2]))     $p['fname'] = $PID[5][2];           // Patient Name...
+		if($this->notEmpty($PID[5][3]))     $p['mname'] = $PID[5][3];           //
+		if($this->notEmpty($PID[5][1][1]))  $p['lname'] = $PID[5][1][1];        //
+		if($this->notEmpty($PID[6][3]))     $p['mothers_name'] = "{$PID[6][2]} {$PID[6][3]} {$PID[6][1][1]}";   // Mother’s Maiden Name
+		if($this->notEmpty($PID[7][1]))     $p['DOB'] = $hl7->time($PID[7][1]);                                             // Date/Time of Birth
+		if($this->notEmpty($PID[8]))        $p['sex'] = $PID[8];                                                // Sex
+		if($this->notEmpty($PID[9][3]))     $p['alias'] = "{$PID[9][2]} {$PID[9][3]} {$PID[9][1][1]}";          // Patient Alias
+		if($this->notEmpty($PID[10][1]))    $p['race'] = $PID[10][1];                   // Race
+		if($this->notEmpty($PID[11][1][1])) $p['address'] = $PID[11][1][1];             // Patient Address
+		if($this->notEmpty($PID[11][3]))    $p['city'] = $PID[11][3];                   //
+		if($this->notEmpty($PID[11][4]))    $p['state'] = $PID[11][4];                  //
+		if($this->notEmpty($PID[11][5]))    $p['zipcode'] = $PID[11][5];                //
+		if($this->notEmpty($PID[11][6]))    $p['country'] = $PID[11][6];                // Country Code
+		if($this->notEmpty($PID[13][7]))    $p['home_phone'] = "{$PID[13][7]} . '-' . {$PID[13][1]}";   // Phone Number – Home
+		if($this->notEmpty($PID[14][7]))    $p['work_phone'] = "{$PID[14][7]} . '-' . {$PID[14][1]}";   // Phone Number – Business
+		if($this->notEmpty($PID[15][1]))    $p['language'] = $PID[15][1];                               // Primary Language
+		if($this->notEmpty($PID[16][1]))    $p['marital_status'] = $PID[16][1];                         // Marital Status
+//		if($this->notEmpty($PID[17]))       $p['00'] = $PID[17];                                        // Religion
+		if($this->notEmpty($PID[18][1]))    $p['pubaccount'] = $PID[18][1];                             // Patient Account Number
+		if($this->notEmpty($PID[19]))       $p['SS'] = $PID[19];                                        // SSN Number – Patient
+		if($this->notEmpty($PID[20][1]))    $p['drivers_license'] = $PID[20][1];                        // Driver’s License Number - Patient
+		if($this->notEmpty($PID[20][2]))    $p['drivers_license_state'] = $PID[20][2];                  // Driver’s License State - Patient
+		if($this->notEmpty($PID[20][3]))    $p['drivers_license_exp'] = $PID[20][3];                    // Driver’s License Exp Date - Patient
+//		if($this->notEmpty($PID[21]))       $p['00'] = $PID[21];                            // Mother’s Identifier
+		if($this->notEmpty($PID[22][1]))    $p['ethnicity'] = $PID[22][1];                  // Ethnic Group
+		if($this->notEmpty($PID[23]))       $p['birth_place'] = $PID[23];                   // Birth Place
+		if($this->notEmpty($PID[24]))       $p['birth_multiple'] = $PID[24];                // Multiple Birth Indicator
+		if($this->notEmpty($PID[25]))       $p['birth_order'] = $PID[25];                   // Birth Order
+		if($this->notEmpty($PID[26][1]))    $p['citizenship'] = $PID[26][1];                // Citizenship
+		if($this->notEmpty($PID[27][1]))    $p['is_veteran'] = $PID[27][1];                 // Veterans Military Status
+		if($this->notEmpty($PID[27][1]))    $p['death_date'] = $PID[29][1];                 // Patient Death Date and Time
+		if($this->notEmpty($PID[30]))       $p['deceased'] = $PID[30];                      // Patient Death Indicator
+		if($this->notEmpty($PID[33][1]))    $p['update_date'] = $hl7->time($PID[33][1]);    // Last update time stamp
+		return $p;
 	}
 
+	/**
+	 * @param array $IN1
+	 * @param HL7   $hl7
+	 *
+	 * @return stdClass
+	 */
+	private function IN1ToInsuranceObj($IN1, $hl7) {
+		$obj = new stdClass();
+		if($this->notEmpty($IN1[0]))     $p['pid'] = $IN1[0];
 
+		return $obj;
+	}
+
+	/**
+	 * @param array $IN1
+	 * @param HL7   $hl7
+	 *
+	 * @return stdClass
+	 */
+	private function IN2ToInsuranceObj($IN1, $hl7) {
+		$obj = new stdClass();
+		if($this->notEmpty($IN1[0]))     $p['pid'] = $IN1[0];
+
+		return $obj;
+	}
+
+	/**
+	 * @param array $IN1
+	 * @param HL7   $hl7
+	 *
+	 * @return stdClass
+	 */
+	private function IN3ToInsuranceObj($IN1, $hl7) {
+		$obj = new stdClass();
+		if($this->notEmpty($IN1[0]))     $p['id'] = $IN1[0];
+
+		return $obj;
+	}
+	/**
+	 * @param array $p
+	 * @param HL7   $hl7
+	 *
+	 * @return \HL7
+	 */
+	private function PatientObjToPID($p, $hl7){
+		$PID = $hl7->addSegment('PID');
+		if($this->notEmpty($p['pubpid'])) $PID->setValue('2.3',$p['pubpid']);
+		if($this->notEmpty($p['pid'])) $PID->setValue('3.1',$p['pid']);
+		if($this->notEmpty($p['fname'])) $PID->setValue('5.2',$p['fname']);
+		if($this->notEmpty($p['mname'])) $PID->setValue('5.3',$p['mname']);
+		if($this->notEmpty($p['lname'])) $PID->setValue('5.1.1',$p['lname']);
+		if($this->notEmpty($p['mothers_name'])) $PID->setValue('6.2',$p['mothers_name']);
+		if($this->notEmpty($p['DOB'])) $PID->setValue('7.1',$p['DOB']);
+		if($this->notEmpty($p['sex'])) $PID->setValue('8',$p['sex']);
+		if($this->notEmpty($p['alias'])) $PID->setValue('9.2',$p['alias']);
+		if($this->notEmpty($p['race'])) $PID->setValue('10.1',$p['race']);
+		if($this->notEmpty($p['address'])) $PID->setValue('11.1.1',$p['address']);
+		if($this->notEmpty($p['city'])) $PID->setValue('11.3',$p['city']);
+		if($this->notEmpty($p['state'])) $PID->setValue('11.4',$p['state']);
+		if($this->notEmpty($p['zipcode'])) $PID->setValue('11.5',$p['zipcode']);
+		if($this->notEmpty($p['country'])) $PID->setValue('11.6',$p['country']);
+		if($this->notEmpty($p['home_phone'])) $PID->setValue('',$p['home_phone']);
+		if($this->notEmpty($p['work_phone'])) $PID->setValue('',$p['work_phone']);
+		if($this->notEmpty($p['language'])) $PID->setValue('15.1',$p['language']);
+		if($this->notEmpty($p['marital_status'])) $PID->setValue('16.1',$p['marital_status']);
+		if($this->notEmpty($p['pubaccount'])) $PID->setValue('18.1',$p['pubaccount']);
+		if($this->notEmpty($p['SS'])) $PID->setValue('19',$p['SS']);
+		if($this->notEmpty($p['drivers_license'])) $PID->setValue('20.1',$p['drivers_license']);
+		if($this->notEmpty($p['drivers_license_state'])) $PID->setValue('20.2',$p['drivers_license_state']);
+		if($this->notEmpty($p['drivers_license_exp'])) $PID->setValue('20.3',$p['drivers_license_exp']);
+		if($this->notEmpty($p['ethnicity'])) $PID->setValue('22.1',$p['ethnicity']);
+		if($this->notEmpty($p['birth_place'])) $PID->setValue('23',$p['birth_place']);
+		if($this->notEmpty($p['birth_multiple'])) $PID->setValue('24',$p['birth_multiple']);
+		if($this->notEmpty($p['birth_order'])) $PID->setValue('25',$p['birth_order']);
+		if($this->notEmpty($p['citizenship'])) $PID->setValue('26.1',$p['citizenship']);
+		if($this->notEmpty($p['is_veteran'])) $PID->setValue('27.1',$p['is_veteran']);
+		if($this->notEmpty($p['death_date'])) $PID->setValue('29.1',$p['death_date']);
+		if($this->notEmpty($p['deceased'])) $PID->setValue('30',$p['deceased']);
+		if($this->notEmpty($p['update_date'])) $PID->setValue('33.1',$p['update_date']);
+		return $hl7;
+	}
+
+	/**
+	 * @param $data
+	 *
+	 * @return bool
+	 */
+	private function notEmpty($data){
+		return isset($data) && ($data != '' && $data != '""' && $data != '\'\'');
+	}
 }
 //$msg = <<<EOF
 //MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
@@ -447,21 +614,26 @@ class HL7Server {
 //PV1||O|168 ~219~C~PMA^^^^^^^^^||||277^ALLEN MYLASTNAME^BONNIE^^^^|||||||||| ||2688684|||||||||||||||||||||||||199912271408||||||002376853
 //EOF;
 
-//$msg = <<<EOF
-//MSH|^~\&||LAB1||SITE1|20090601103638||ADT^A08|JPANUCCI-0091|T|2.2|5109
-//EVN|A08|20090601103638||||
-//PID|1|SH0091|SH0091||Panucci^John^||19490314|M||G|33 10th Ave.^^Costa Mesa^CA^92330||(714) 555-0091^^||ENG|M|CATH|SHACT0091|123-45-6789||
-//NK1|1|Panucci^Joan|HU|7056 Culver^^IRVINE^CA^92612|(949)211-4615|
-//NK1|2|^||^^^^||
-//PV1||O|Z27|2|||16^VAN HOUTEN^KIRK^|11^FLANDERS^MAUDE^|14^VAN HOUTEN^MILLHOUSE^|O/P||||1|||005213^KURZWEIL^PETER^R|O|1|MA|||||||||||||||||||SIMPSON CLINIC|||||200906011027
-//PV2|||^MENISCUS TEAR RIGHT KNEE|||||||||EKG/LAB||VET
-//GT1|||Washington^GEORGE^M||7056 Main St^^SEATTLE^WA^98101|(234)211-4615|||M||01^PATIENT IS INSURED|677-47-2055||||DISABLED
-//IN1|1|MB|0011|MEDICARE OP ONLY MCR M|||||
-//IN1|2|MSCP|0I38|MEM SENIOR COMPPLN IND I|||||
-//EOF;
+$msg = <<<EOF
+MSH|^~\&|REGADT|GOOD HEALTH HOSPITAL|GHH LAB||200712311501||ADT^A08^ADT_A01|000001|P|2.5.1|||
+EVN|A04|200701101500|200701101400|01||200701101410
+PID|||2^^^GOOD HEALTH HOSPITAL^MR^GOOD HEALTH HOSPI- TAL^^^USSSA^SS|253763|EVERYMAN^ADAM^A||19560129|M|||2222 HOME STREET^^ISHPEMING^MI^49849^""^||555-555-2004|555-555- 2004||S|C|10199925^^^GOOD HEALTH HOSPITAL^AN|371-66-9256||
+NK1|1|NUCLEAR^NELDA|SPOUSE|6666 HOME STREET^^ISHPEMING^MI^49849^""^|555-555- 5001|555-555-5001~555-555-5001|EC1^FIRST EMERGENCY CONTACT
+NK1|2|MUM^MARTHA|MOTHER|4444 HOME STREET^^ISHPEMING^MI^49849^""^|555-555 2006|555-555-2006~555-555-2006|EC2^SECOND EMERGENCY CONTACT
+NK1|3
+NK1|4|||6666 WORKER LOOP^^ISHPEMING^MI^49849^""^||(900)545- 1200|EM^EMPLOYER|19940605||PROGRAMMER|||WORK IS FUN, INC.
+PV1||O|O/R||||0148^ATTEND^AARON^A|0148^ATTEND^AARON^A|0148^ATTEND^AARON^A|AMB|||| |||0148^ATTEND^AARON^A|S|1400|A|||||||||||||||||||GOOD HEALTH HOSPI- TAL|||||199501101410|
+PV2||||||||200701101400||||||||||||||||||||||||||200301101400
+OBX||ST|1010.1^BODY WEIGHT||62|kg|||||F
+OBX||ST|1010.1^HEIGHT||190|cm|||||F
+DG1|1|19||BIOPSY||00|
+GT1|1||EVERYMAN^ADAM^A||2222 HOME STREET^^ISHPEMING^MI^49849^""^|444-33 3333|555- 555-2004||||SE^SELF|444-33 3333||||AUTO CLINIC|2222 HOME STREET^^ISHPEMING^MI^49849^""|555-555-2004|
+IN1|0|0|UA1|UARE INSURED, INC.|8888 INSURERS CIRCLE^^ISHPEMING^M149849^""^||555- 555-3015|90||||||50 OK|
+IN1|2|""|""
+EOF;
 
 //$msg = <<<EOF
-//MSH|^~\&||OTHER REG MED CTR^1234567890^NPI|||201102171531||ADT^A04^ADT_A01|201102171531956|P|2.3.1
+//MSH|^~\&||OTHER REG MED CTR^1234567890^NPI|||201102171531||ADT^A04^ADT_A01|201102171531956|P|2.5.1
 //EVN||201102171531
 //PID|1||FL01059711^^^^PI||~^^^^^^U|||F||2106-3^White^CDCREC|^^^12^33821|||||||||||2186-5^Not Hispanic^CDCREC
 //PV1||E||E||||||||||7|||||V20220217-00274^^^^VN|||||||||||||||||||||||||201102171522
@@ -471,7 +643,7 @@ class HL7Server {
 //OBX|3|NM|21612-7^AGE TIME PATIENT REPORTED^LN||43|a^YEAR^UCUM|||||F|||201102171531
 //DG1|1||78900^ABDMNAL PAIN UNSPCF SITE^I9CDX|||A
 //EOF;
-//
+
 
 
 //include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
@@ -482,6 +654,5 @@ class HL7Server {
 //$msg = $hl7->readMessage($msg);
 //print_r($msg);
 
-//$hl7 = new HL7Server();
-//$hl7->Process($msg);
-//print $hl7->Process($msg);
+$hl7 = new HL7Server();
+print $hl7->Process($msg);

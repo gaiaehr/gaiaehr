@@ -82,7 +82,7 @@ Ext.define('App.controller.patient.Documents', {
 		if(records.length > 0){
 			frame.setSrc('dataProvider/DocumentViewer.php?site='+ site +'&id=' + records[0].data.id);
 		}else{
-			frame.setSrc('dataProvider/DocumentViewer.php');
+			frame.setSrc('dataProvider/DocumentViewer.php?site='+ site);
 		}
 	},
 

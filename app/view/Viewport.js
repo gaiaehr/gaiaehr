@@ -1142,7 +1142,7 @@ Ext.define('App.view.Viewport', {
 
     onDocumentView: function(id, type){
 	    var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-		    src = 'dataProvider/DocumentViewer.php?id='+id,
+		    src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id,
 		    win;
 
 	    if(typeof type != 'undefined') src += '&temp=' + type;

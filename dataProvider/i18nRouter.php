@@ -43,7 +43,7 @@ class i18nRouter {
 					$hasModuleLocales = true;
 					$key = array_search('en_US', $module['locales']);
 					if($key !== false){
-						include($_SESSION['root'] . '/modules/' . $module['name'] . '/locales/en_US.php');
+						include(ROOT . '/modules/' . $module['name'] . '/locales/en_US.php');
 						$en_US = array_merge($en_US, $LANG);
 					}
 				}

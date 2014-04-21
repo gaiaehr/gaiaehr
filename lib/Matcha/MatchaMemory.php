@@ -59,7 +59,7 @@ class MatchaMemory extends Matcha
     {
         try
         {
-            $recordSet = self::$__conn->query("SHOW TABLES LIKE '_sencha_model';")->fetch();
+            $recordSet = self::$__conn->query("SHOW TABLES LIKE '_sencha_model'")->fetch();
             if(!is_array($recordSet)) self::__createMemoryModel();
         }
         catch(PDOException $e)

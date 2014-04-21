@@ -335,7 +335,7 @@ class CCDDocument {
 		if($zip->open($file, ZipArchive::CREATE) !== true)
 			exit("cannot open <$filename.zip>\n");
 		$zip->addFromString($filename . '.xml', $this->xml->saveXML());
-		$zip->addFromString('cda2.xsl', file_get_contents($_SESSION['root'] . '/lib/CCRCDA/schema/cda2.xsl'));
+		$zip->addFromString('cda2.xsl', file_get_contents(ROOT . '/lib/CCRCDA/schema/cda2.xsl'));
 		$zip->close();
 		return $file;
 	}

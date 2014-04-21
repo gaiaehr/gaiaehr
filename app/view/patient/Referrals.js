@@ -29,6 +29,7 @@ Ext.define('App.view.patient.Referrals', {
 	title: i18n('referrals'),
 	action: 'referralsGrid',
 	itemId: 'patientReferralsGrid',
+	columnLines: true,
 	store: Ext.create('App.store.patient.Referrals', {
 		remoteFilter: true
 	}),

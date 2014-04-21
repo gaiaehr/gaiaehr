@@ -26,6 +26,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 	],
 	xtype: 'patientdoctorsnotepanel',
 	title: i18n('doctors_notes'),
+	columnLines: true,
 	store: Ext.create('App.store.patient.DoctorsNotes', {
 		groupField: 'order_date',
 		remoteFilter: true,

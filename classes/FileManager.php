@@ -112,7 +112,7 @@ class FileManager
 
     public function setWorkingDir()
     {
-        $workingDir = $_SESSION['root'] . '/temp/' . $this->getTempDirAvailableName();
+        $workingDir = ROOT . '/temp/' . $this->getTempDirAvailableName();
         if (!is_dir($workingDir)) {
             if (mkdir($workingDir, 0777, true)) {
                 chmod($workingDir, 0777);

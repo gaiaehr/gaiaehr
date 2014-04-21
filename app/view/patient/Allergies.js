@@ -33,6 +33,7 @@ Ext.define('App.view.patient.Allergies', {
 	title: i18n('allergies'),
 	layout:'border',
 	border:false,
+	columnLines: true,
 	store: Ext.create('App.store.patient.Allergies', {
 		remoteFilter: true,
 		autoSync: false

@@ -74,23 +74,20 @@ class authProcedures {
 		// And include the rest of the remaining
 		// variables to connect to the database.
 		//-------------------------------------------
-		define('_GaiaEXEC', 1);
-		$root = dirname(dirname(__FILE__));
-		include_once($root . '/registry.php');
-		include_once($root . '/classes/MatchaHelper.php');
-		$fileConf = $root . '/sites/' . $params->site . '/conf.php';
-		if(file_exists($fileConf)){
-			/** @noinspection PhpIncludeInspection */
-			include_once($fileConf);
-			$db = new MatchaHelper();
-			$err = $db->getError();
-			if(!is_array($err)){
-				return array('success' => false, 'type' => 'error', 'message' => 'For some reason, I can\'t connect to the database.');
-			}
-			// Do not stop here!, continue with the rest of the code.
-		} else{
-			return array('success' => false, 'type' => 'error', 'message' => 'No configuration file found for site <span style="font-weight:bold">' . $params->site . '</span>.<br>Please double check URL or contact support desk.');
-		}
+//		$root = dirname(dirname(__FILE__));
+//		$fileConf = $root . '/sites/' . $params->site . '/conf.php';
+//		if(file_exists($fileConf)){
+//			/** @noinspection PhpIncludeInspection */
+//			include_once($fileConf);
+//			$db = new MatchaHelper();
+//			$err = $db->getError();
+//			if(!is_array($err)){
+//				return array('success' => false, 'type' => 'error', 'message' => 'For some reason, I can\'t connect to the database.');
+//			}
+//			// Do not stop here!, continue with the rest of the code.
+//		} else{
+//			return array('success' => false, 'type' => 'error', 'message' => 'No configuration file found for site <span style="font-weight:bold">' . $params->site . '</span>.<br>Please double check URL or contact support desk.');
+//		}
 		//-------------------------------------------
 		// remove empty spaces single and double quotes from username and password
 		//-------------------------------------------

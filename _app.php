@@ -29,6 +29,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				globals = {},
 				ext = '<?php print $_SESSION['extjs'] ?>',
 				version = '<?php print $_SESSION['version'] ?>',
+				site = '<?php print $site ?>',
 				requires,
 				AppClipboard;
 		</script>

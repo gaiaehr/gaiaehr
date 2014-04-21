@@ -26,7 +26,7 @@ Ext.define('App.view.administration.HL7Servers', {
 	pageBody: [
 		{
 			xtype:'grid',
-			store: Ext.create('App.store.administration.HL7Servers'),
+			store: this.sStore = Ext.create('App.store.administration.HL7Servers'),
 			itemId: 'hl7serversgrid',
 			columns:[
 				{
@@ -56,7 +56,7 @@ Ext.define('App.view.administration.HL7Servers', {
 				},
 				{
 					xtype:'gridbutton',
-					width: 150,
+					width: 120,
 					items:[
 						{
 							xtype:'button',
@@ -237,7 +237,13 @@ Ext.define('App.view.administration.HL7Servers', {
 					iconCls:'icoDelete',
 					itemId: 'removeHL7ServerBtn'
 				}
-			]
+			],
+			bbar: Ext.create('Ext.PagingToolbar', {
+				store: this.sStore,
+				displayInfo: true,
+				displayMsg: 'Displaying {0} - {1} of {2}',
+				emptyMsg: "No Servers to display"
+			})
 		}
 	]
 }); 

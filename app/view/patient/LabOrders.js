@@ -27,6 +27,7 @@ Ext.define('App.view.patient.LabOrders', {
 	],
 	xtype: 'patientlaborderspanel',
 	title: i18n('lab_orders'),
+	columnLines: true,
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		groupField: 'date_ordered',
 		remoteFilter: true,
@@ -64,6 +65,11 @@ Ext.define('App.view.patient.LabOrders', {
 //					handler: me.onRemoveClick
 				}
 			]
+		},
+		{
+			header: i18n('order#'),
+			width: 60,
+			dataIndex: 'id'
 		},
 		{
 			header: i18n('status'),

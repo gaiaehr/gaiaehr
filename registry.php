@@ -26,7 +26,6 @@ if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['
 
 $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
 $uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/';
-$_SESSION['root'] = str_replace('\\', '/', dirname(__FILE__));
 $_SESSION['url'] = "$http://{$host}{$uri}";
 
 if(!defined('HTTP')){

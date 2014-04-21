@@ -80,7 +80,7 @@ Ext.define('App.controller.patient.Documents', {
 		var frame = this.getPatientDocumentViewerFrame();
 
 		if(records.length > 0){
-			frame.setSrc('dataProvider/DocumentViewer.php?id=' + records[0].data.id);
+			frame.setSrc('dataProvider/DocumentViewer.php?site='+ site +'&id=' + records[0].data.id);
 		}else{
 			frame.setSrc('dataProvider/DocumentViewer.php');
 		}
@@ -136,7 +136,7 @@ Ext.define('App.controller.patient.Documents', {
 				dual.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
 			}else{
 				app.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
-			};
+			}
 		});
 	},
 

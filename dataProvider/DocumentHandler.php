@@ -371,8 +371,9 @@ class DocumentHandler {
 	}
 
 	public function checkDocHash($doc){
-		$path = $_SESSION['site']['path'] . '/patients/' . $doc->pid . '/' . strtolower(str_replace(' ', '_', $doc->docType)) . '/' . $doc->name;
-		return array('success' => $doc->hash == sha1_file($path), 'msg' => 'Stored Hash:' . $doc->hash . '<br>File hash:' . sha1_file($path));
+		$doc = $this->getPatientDocument($doc->id);
+		$hash = sha1($doc['document']);
+		return array('success' => $doc['hash'] == $hash, 'msg' => 'Stored Hash:' . $doc['hash'] . '<br>File hash:' . $hash);
 	}
 
 }

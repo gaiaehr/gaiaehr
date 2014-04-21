@@ -31,7 +31,7 @@ class SiteSetup
 
 	function __construct()
 	{
-		chdir($_SESSION['root']);
+		chdir(ROOT);
 	}
 
 	/*

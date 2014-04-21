@@ -30,6 +30,7 @@ Ext.define('App.view.patient.RxOrders', {
 	],
 	xtype: 'patientrxorderspanel',
 	title: i18n('rx_orders'),
+	columnLines: true,
 	store: Ext.create('App.store.patient.Medications', {
 		groupField: 'date_ordered',
 		remoteFilter: true,

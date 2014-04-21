@@ -21,8 +21,8 @@ if (!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-define('_GaiaEXEC', 1);
-include_once(dirname(dirname(__FILE__)) . '/registry.php');
+//define('_GaiaEXEC', 1);
+//include_once(dirname(dirname(__FILE__)) . '/registry.php');
 
 class HL7Server {
 
@@ -72,20 +72,28 @@ class HL7Server {
 	 */
 	private $msg;
 
+	private $pOrder;
+	private $pResult;
+	private $pObservation;
+
 
 	function __construct($site = 'default'){
 		$this->site = $site;
-
 		include_once(dirname(dirname(__FILE__))."/sites/{$this->site}/conf.php");
 		include_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
 		include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
 		include_once(dirname(__FILE__).'/HL7ServerHandler.php');
 		new MatchaHelper();
 
-
+		/** HL7 Models */
 		$this->s = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
 		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Messages');
 		$this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Recipients');
+
+		/** Order Models */
+		$this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
+		$this->pResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
+		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 	}
 
 	public function getServers($params){
@@ -94,6 +102,7 @@ class HL7Server {
 			$handler = new HL7ServerHandler();
 			$status = $handler->status($server['port']);
 			$servers['data'][$i]['online'] = $status['online'];
+			unset($handler);
 		}
 
 		return $servers;
@@ -116,110 +125,111 @@ class HL7Server {
 	}
 
 
-	public function Process($msg = ''){
-		$this->msg = $msg;
+	public function Process($msg = '', $addSocketCharacters = true){
+//		try{
+			$this->msg = $msg;
 
-		$this->ackStatus = 'AA';
-		$this->ackMessage = '';
+			$this->ackStatus = 'AA';
+			$this->ackMessage = '';
 
-		/**
-		 * Parse the HL7 Message
-		 */
-		$hl7 = new HL7();
-		$msg = $hl7->readMessage($this->msg);
+			/**
+			 * Parse the HL7 Message
+			 */
+			$hl7 = new HL7();
+			$msg = $hl7->readMessage($this->msg);
 
 
-		$application = $hl7->getSendingApplication();
-		$facility = $hl7->getSendingFacility();
-		$version =  $hl7->getMsgVersionId();
+			$application = $hl7->getSendingApplication();
+			$facility = $hl7->getSendingFacility();
+			$version =  $hl7->getMsgVersionId();
 
-		/**
-		 * check HL7 version
-		 */
-		if($version != '2.5.1'){
-			$this->ackStatus = 'AR';
-			$this->ackMessage = 'HL7 version unsupported';
-		}
+			/**
+			 * check HL7 version
+			 */
+			if($version != '2.5.1'){
+				$this->ackStatus = 'AR';
+				$this->ackMessage = 'HL7 version unsupported';
+			}
 
-		/**
-		 * Check for IP address access
-		 */
-		$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
-		if($this->recipient === false){
-			$this->ackStatus = 'AR';
-			$this->ackMessage = "This application '$application' Not Authorized";
-		}
+			/**
+			 * Check for IP address access
+			 */
+			$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
+			if($this->recipient === false){
+				$this->ackStatus = 'AR';
+				$this->ackMessage = "This application '$application' Not Authorized";
+			}
 
-		/**
-		 *
-		 */
-		if($msg === false){
-			$this->ackStatus = 'AE';
-			$this->ackMessage = 'Unable to parse HL7 message, please contact Support Desk';
-		}
-
-		/**
-		 *
-		 */
-		$record = new stdClass();
-		$record->msg_type = $hl7->getMsgType();
-		$record->message = $this->msg;
-		$record->foreign_facility = $hl7->getSendingFacility();
-		$record->foreign_application = $hl7->getSendingApplication();
-		$record->foreign_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-		$record->isOutbound = '0';
-		$record->status = '2';
-		$record->date_processed = date('Y-m-d H:i:s');
-		$record = $this->m->save($record);
-		$record = (array) $record['data'];
-
-		if($this->ackStatus == 'AA'){
 			/**
 			 *
 			 */
-			switch($hl7->getMsgType()){
-				case 'ORU':
-
-					$this->ProcessORU($hl7, $msg, $record);
-					break;
-				default:
-
-					break;
+			if($msg === false){
+				$this->ackStatus = 'AE';
+				$this->ackMessage = 'Unable to parse HL7 message, please contact Support Desk';
 			}
-		}
 
-		/**
-		 *
-		 */
-		$ack = new HL7();
-		$msh = $ack->addSegment('MSH');
-		$msh->setValue('3.1','GaiaEHR');                // Sending Application
-		$msh->setValue('4.1', 'Gaia');                  // Sending Facility
-		$msh->setValue('9.1','ACK');
-		$msh->setValue('11.1','P');                     // P = Production
-		$msh->setValue('12.1','2.5.1');                 // HL7 version
-		$msa =  $ack->addSegment('MSA');
-		$msa->setValue('1',$this->ackStatus);           // AA = Positive acknowledgment, AE = Application error, AR = Application reject
-		$msa->setValue('2', $hl7->getMsgControlId());   // Message Control ID from MSH
-		$msa->setValue('3', $this->ackMessage);         // Error Message
-		$foo = $ack->getMessage();
+			/**
+			 *
+			 */
+			$record = new stdClass();
+			$record->msg_type = $hl7->getMsgType();
+			$record->message = $this->msg;
+			$record->foreign_facility = $hl7->getSendingFacility();
+			$record->foreign_application = $hl7->getSendingApplication();
+			$record->foreign_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+			$record->isOutbound = '0';
+			$record->status = '2';
+			$record->date_processed = date('Y-m-d H:i:s');
+			$record = $this->m->save($record);
+			$record = (array) $record['data'];
 
-		$record['response'] = $foo;
-		$this->m->save((object)$record);
+			if($this->ackStatus == 'AA'){
+				/**
+				 *
+				 */
+				switch($hl7->getMsgType()){
+					case 'ORU':
 
-		// unset all the variables to release memory
-		unset($ack, $hl7, $msg, $record, $oData, $result);
+						$this->ProcessORU($hl7, $msg, $record);
+						break;
+					default:
+
+						break;
+				}
+			}
+
+			/**
+			 *
+			 */
+			$ack = new HL7();
+			$msh = $ack->addSegment('MSH');
+			$msh->setValue('3.1','GaiaEHR');                // Sending Application
+			$msh->setValue('4.1', 'Gaia');                  // Sending Facility
+			$msh->setValue('9.1','ACK');
+			$msh->setValue('11.1','P');                     // P = Production
+			$msh->setValue('12.1','2.5.1');                 // HL7 version
+			$msa =  $ack->addSegment('MSA');
+			$msa->setValue('1',$this->ackStatus);           // AA = Positive acknowledgment, AE = Application error, AR = Application reject
+			$msa->setValue('2', $hl7->getMsgControlId());   // Message Control ID from MSH
+			$msa->setValue('3', $this->ackMessage);         // Error Message
+			$ackMsg = $ack->getMessage();
+
+			$record['response'] = $ackMsg;
+			$this->m->save((object)$record);
+
+			// unset all the variables to release memory
+			unset($ack, $hl7, $msg, $record, $oData, $result);
 
 
-		return "\v".$foo.chr(0x1c).chr(0x0d);
+			return $addSocketCharacters ? "\v".$ackMsg.chr(0x1c).chr(0x0d) : $ackMsg;
+//		}catch (Exception $e){
+//			error_log($e->getMessage(), 1, "vela1606@gmail.com");
+//			return '';
+//		}
 	}
 
 
 	private function ProcessORU($hl7, $msg, $record){
-		
-		$mOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
-		$mResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
-		$mObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 
 
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
@@ -237,7 +247,7 @@ class HL7Server {
 				 * Check for order number in GaiaEHR
 				 */
 				$orderId = $orc[2][1];
-				$orderRecord = $mOrder->load(array('id' => $orderId))->one();
+				$orderRecord = $this->pOrder->load(array('id' => $orderId))->one();
 				/**
 				 * id not found set the error and break twice to get out of all the loops
 				 */
@@ -266,7 +276,7 @@ class HL7Server {
 				}else{
 					$foo->reason_code = $obr[31][3].':'.$obr[31][1];
 				}
-
+//
 				// specimen segment
 				if(isset($order['SPECIMEN']) && $order['SPECIMEN'] !== false){
 					$spm = $order['SPECIMEN']['SPM'];
@@ -286,7 +296,7 @@ class HL7Server {
 
 				$foo->documentId = 'hl7|' . $record['id'];
 
-				$rResult = (array) $mResult->save($foo);
+				$rResult = (array) $this->pResult->save($foo);
 				unset($foo);
 
 				/**
@@ -328,7 +338,7 @@ class HL7Server {
 					$foo->performing_org_address = $obx[24][1][1] . ' ' . $obx[24][3] . ', ' . $obx[24][4] . ' ' . $obx[24][5];
 					$foo->date_analysis = $hl7->time($obx[19][1]);
 					$foo->notes = $note['3'];
-					$mObservation->save($foo);
+					$this->pObservation->save($foo);
 					unset($foo);
 
 				}
@@ -339,10 +349,12 @@ class HL7Server {
 				$foo = new stdClass();
 				$foo->id = $orderId;
 				$foo->status = 'Received';
-				$mOrder->save($foo);
+				$this->pOrder->save($foo);
 				unset($foo);
 			}
 		}
+
+		unset($patient, $rResult);
 	}
 }
 //$msg = <<<EOF

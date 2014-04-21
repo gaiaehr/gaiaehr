@@ -35,6 +35,7 @@ Ext.define('App.view.patient.Documents', {
 			region: 'west',
 			split: true,
 			flex: 1,
+			columnLines: true,
 			features: [
 				{
 					ftype: 'grouping',
@@ -66,7 +67,7 @@ Ext.define('App.view.patient.Documents', {
 							icon: 'resources/images/icons/icoLessImportant.png',
 							tooltip: i18n('validate_file_integrity_hash'),
 							handler: function(grid, rowIndex){
-								app.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex)
+								App.Current.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex)
 							},
 							getClass: function(){
 								return 'x-grid-icon-padding';

@@ -26,18 +26,20 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
-		'App.ux.LiveSigsSearch',
+		'App.ux.LiveSigsSearch'
 	],
 	xtype: 'patientmedicationspanel',
 	title: i18n('medications'),
 	layout: 'border',
 	border: false,
+	columnLines: true,
 	items: [
 		{
 			xtype: 'grid',
 			region: 'center',
 			action: 'patientMedicationsListGrid',
 			itemId: 'patientMedicationsGrid',
+			columnLines: true,
 			store: Ext.create('App.store.patient.Medications', {
 				remoteFilter: true,
 				autoSync: false

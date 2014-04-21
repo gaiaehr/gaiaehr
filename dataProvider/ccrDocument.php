@@ -1678,7 +1678,7 @@ if($_REQUEST['action'] == 'ccrexport')
         exit("cannot open <$filename.zip>\n");
     }
     $zip->addFromString($filename.".xml",$xml->saveXML());
-    $zip->addFromString("ccr.xsl",  file_get_contents($_SESSION['root'].'/lib/CCRCDA/schema/ccr.xsl'));
+    $zip->addFromString("ccr.xsl",  file_get_contents(ROOT.'/lib/CCRCDA/schema/ccr.xsl'));
     $zip->close();
 
     /**

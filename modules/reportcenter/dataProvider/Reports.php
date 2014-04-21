@@ -22,8 +22,8 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once($_SESSION['root'] . '/classes/FileManager.php');
-include_once($_SESSION['root'] . '/dataProvider/DocumentPDF.php');
+include_once(ROOT . '/classes/FileManager.php');
+include_once($_SESSION['roROOTider/DocumentPDF.php');
 
 class Reports
 {
@@ -45,7 +45,7 @@ class Reports
 		$fileName = $this->fileManager->getTempDirAvailableName() . '.pdf';
 		$this->pdf->SetCreator('TCPDF');
 		$this->pdf->SetAuthor($_SESSION['user']['name']);
-		$siteLogo = $_SESSION['root'].'/sites/'. $_SESSION['site']['dir'] . '/logo.jpg';
+		$siteLogo = $_SESSION['root'].'/sites/ROOTe']['dir'] . '/logo.jpg';
 		$logo = (file_exists($siteLogo) ? $siteLogo : $_SESSION['root'].'/resources/images/logo.jpg');
 
 		// TODO: set from admin area

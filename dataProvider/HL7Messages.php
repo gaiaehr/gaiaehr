@@ -158,7 +158,7 @@ class HL7Messages {
 		$this->setPID();
 
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
-		include_once($_SESSION['root'] . '/dataProvider/Immunizations.php');
+		include_once(ROOT . '/dataProvider/Immunizations.php');
 		$immunization = new Immunizations();
 
 		// immunizations loop

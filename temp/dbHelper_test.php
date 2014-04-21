@@ -10,7 +10,7 @@ if (!isset($_SESSION))
 
 include_once('../registry.php');
 include_once('../sites/default/conf.php');
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
+include_once (ROOT . '/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
 

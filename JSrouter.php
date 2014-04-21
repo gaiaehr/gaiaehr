@@ -23,6 +23,8 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 ob_start();
+if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+require_once(dirname(__FILE__) . '/registry.php');
 require_once(dirname(__FILE__) . '/sites/'.$_REQUEST['site'].'/conf.php');
 require_once(dirname(__FILE__) . '/classes/MatchaHelper.php');
 include_once(dirname(__FILE__) . '/dataProvider/i18nRouter.php');

@@ -27,6 +27,7 @@ Ext.define('App.view.patient.RadOrders', {
 	],
 	xtype: 'patientradorderspanel',
 	title: i18n('xray_ct_orders'),
+	columnLines: true,
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		groupField: 'date_ordered',
 		remoteFilter: true,

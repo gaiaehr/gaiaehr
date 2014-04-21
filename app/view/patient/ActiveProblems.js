@@ -27,6 +27,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 	xtype: 'patientactiveproblemspanel',
 	title: i18n('active_problems'),
 	border:false,
+	columnLines: true,
 	store: Ext.create('App.store.patient.PatientActiveProblems', {
 		remoteFilter: true,
 		autoSync: false

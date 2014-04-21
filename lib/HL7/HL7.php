@@ -241,33 +241,32 @@ class HL7 {
 	}
 
 	function time($time, $format = 'Y-m-d H:i:s'){
-		$foo = explode('-',$time);
-		$time = $foo[0];
+
 		switch(strlen($time)){
 			case 4:
-				$rawFormat = 'Y';
+				$date = preg_replace('/^([0-9]{4})$/', '$1-01-01 00:00:00', $time);
 				break;
 			case 6:
-				$rawFormat = 'Ym';
+				$date = preg_replace('/^([0-9]{4})([0-9]{2})$/', '$1-$2-01 00:00:00', $time);
 				break;
 			case 8:
-				$rawFormat = 'Ymd';
+				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 00:00:00', $time);
 				break;
 			case 10:
-				$rawFormat = 'YmdH';
+				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:00:00', $time);
 				break;
 			case 12:
-				$rawFormat = 'YmdHi';
+				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:00', $time);
 				break;
 			default:
-				$rawFormat = 'YmdHis';
+				$date = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:$6', $time);
 				break;
 		}
-
-		$foo = date_create_from_format($rawFormat, $time);
-		if($foo !== false) return date_format(date_create_from_format($rawFormat, $time), $format);
-		return null;
-
+		if($format == 'Y-m-d H:i:s'){
+			return $date;
+		}else{
+			return date($format, strtotime($date));
+		}
 	}
 
 	/**

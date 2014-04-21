@@ -29,7 +29,7 @@ class Modules
 
     function __construct()
     {
-        $this->modulesDir = $_SESSION['root'] . '/modules/';
+        $this->modulesDir = ROOT . '/modules/';
         $this->db = new MatchaHelper();
         $this->setNewModules();
     }

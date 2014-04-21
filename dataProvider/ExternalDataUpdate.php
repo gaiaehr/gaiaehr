@@ -1062,7 +1062,7 @@ class ExternalDataUpdate {
 	}
 
 	private function getCodeDir(){
-		return $_SESSION['root'] . '/contrib/' . strtolower($this->codeType);
+		return ROOT . '/contrib/' . strtolower($this->codeType);
 	}
 
 	public function getCurrentCodesInfo(){

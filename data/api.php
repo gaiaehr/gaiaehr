@@ -70,6 +70,8 @@ if(!isset($_SESSION)) {
 }
 
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
+	if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+	require_once(dirname(dirname(__FILE__)) . '/registry.php');
 	require_once(dirname(dirname(__FILE__)) . '/sites/' . $_REQUEST['site'] . '/conf.php');
     require_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
     include_once(dirname(dirname(__FILE__)) . '/dataProvider/Modules.php');

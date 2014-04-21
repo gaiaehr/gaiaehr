@@ -24,17 +24,14 @@ Ext.define('App.view.patient.Results', {
 	],
 	title: i18n('results'),
 	xtype: 'patientresultspanel',
-	layout: {
-		type:'vbox',
-		align:'stretch'
-	},
-//	border: false,
+	layout: 'border',
 	items: [
 		{
 			xtype: 'grid',
 			action: 'orders',
-			flex: 1,
+			region: 'center',
 			split: true,
+			columnLines: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
 			    remoteFilter: true
 		    }),
@@ -59,7 +56,7 @@ Ext.define('App.view.patient.Results', {
 			xtype: 'form',
 			title: i18n('order_result'),
 			region: 'south',
-			height: 420,
+			height: 450,
 			frame: true,
 			split: true,
 			layout: {
@@ -165,6 +162,7 @@ Ext.define('App.view.patient.Results', {
 					flex: 1,
 					region: 'center',
 					split: true,
+					columnLines: true,
 					plugins: [
 						{
 							ptype: 'cellediting',

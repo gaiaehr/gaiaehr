@@ -99,7 +99,7 @@ class Matcha {
 
 			return self::$__conn;
 		} catch(Exception $e){
-			//            MatchaErrorHandler::__errorProcess($e);
+			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
 	}

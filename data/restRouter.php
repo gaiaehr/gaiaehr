@@ -23,8 +23,8 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 define('_GaiaEXEC', 1);
-$_SESSION['root'] = 'C:/inetpub/wwwroot/gaiaehr';
-include_once($_SESSION['root'] . '/classes/Arrays.php');
+ROOT = 'C:/inetpub/wwwroot/gaiaehr';
+include_once(ROOT . '/classes/Arrays.php');
 /**
  * verify private key
  */

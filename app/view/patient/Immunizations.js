@@ -34,6 +34,7 @@ Ext.define('App.view.patient.Immunizations', {
 			region:'center',
 			itemId: 'patientImmunizationsGrid',
 			selModel: Ext.create('Ext.selection.CheckboxModel'),
+			columnLines: true,
 			store: this.store = Ext.create('App.store.patient.PatientImmunization', {
 				groupField: 'vaccine_name',
 				sorters: [

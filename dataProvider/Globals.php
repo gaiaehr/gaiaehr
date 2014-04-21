@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Globals extends MatchaHelper {
+class Globals {
 
 	/**
 	 * @var bool|MatchaCUP

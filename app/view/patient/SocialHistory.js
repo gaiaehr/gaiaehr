@@ -26,6 +26,7 @@ Ext.define('App.view.patient.SocialHistory', {
 	],
 	xtype: 'patientsocialhistorypanel',
 	title: i18n('social_history'),
+	columnLines: true,
 	store: Ext.create('App.store.patient.PatientSocialHistory',{
 		remoteFilter: true
 	}),

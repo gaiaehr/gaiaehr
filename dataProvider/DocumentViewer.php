@@ -22,6 +22,10 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 
+if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+require_once(dirname(dirname(__FILE__)).'/registry.php');
+require_once(dirname(dirname(__FILE__)).'/sites/'. $_REQUEST['site'] .'/conf.php');
+
 if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	/**
 	 * init Matcha

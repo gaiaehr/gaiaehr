@@ -23,9 +23,9 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 include_once('Reports.php');
-include_once($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['root'] . '/dataProvider/User.php');
-include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once($_SESSION['roROOTider/User.php');
+include_once($_SESSION['root'] . '/dataROOTr.php');
 include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
 class ClientList extends Reports

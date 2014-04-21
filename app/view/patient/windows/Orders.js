@@ -26,12 +26,9 @@ Ext.define('App.view.patient.windows.Orders', {
 	],
 	title: i18n('order_window'),
 	closeAction: 'hide',
-	height: 700,
-	width: 1300,
 	layout: 'fit',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
-
 	buttons: [
 		{
 			text: i18n('close'),
@@ -46,6 +43,8 @@ Ext.define('App.view.patient.windows.Orders', {
 		me.items = [
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
 				margin: 5,
+				height: 600,
+				width: 1100,
 				plain: true,
 				items: [
 					/**

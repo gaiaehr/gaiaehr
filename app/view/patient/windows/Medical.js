@@ -22,8 +22,6 @@ Ext.define('App.view.patient.windows.Medical', {
 	itemId: 'MedicalWindow',
 	layout: 'fit',
 	closeAction: 'hide',
-	height: 700,
-	width: 1200,
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 	requires: [
@@ -46,6 +44,8 @@ Ext.define('App.view.patient.windows.Medical', {
 				bodyBorder:false,
 				plain: true,
 				margin: 5,
+				height: 600,
+				width: 1100,
 				items:[
 					{
 						xtype:'patientimmunizationspanel',

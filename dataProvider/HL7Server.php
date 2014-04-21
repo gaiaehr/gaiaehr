@@ -137,12 +137,9 @@ class HL7Server {
 			 */
 			$hl7 = new HL7();
 			$msg = $hl7->readMessage($this->msg);
-
-
 			$application = $hl7->getSendingApplication();
 			$facility = $hl7->getSendingFacility();
 			$version =  $hl7->getMsgVersionId();
-
 			/**
 			 * check HL7 version
 			 */
@@ -150,7 +147,6 @@ class HL7Server {
 				$this->ackStatus = 'AR';
 				$this->ackMessage = 'HL7 version unsupported';
 			}
-
 			/**
 			 * Check for IP address access
 			 */
@@ -159,7 +155,6 @@ class HL7Server {
 				$this->ackStatus = 'AR';
 				$this->ackMessage = "This application '$application' Not Authorized";
 			}
-
 			/**
 			 *
 			 */
@@ -167,7 +162,6 @@ class HL7Server {
 				$this->ackStatus = 'AE';
 				$this->ackMessage = 'Unable to parse HL7 message, please contact Support Desk';
 			}
-
 			/**
 			 *
 			 */
@@ -189,8 +183,10 @@ class HL7Server {
 				 */
 				switch($hl7->getMsgType()){
 					case 'ORU':
-
 						$this->ProcessORU($hl7, $msg, $record);
+						break;
+					case 'ADT':
+						$this->ProcesADT($hl7, $msg, $record);
 						break;
 					default:
 
@@ -228,21 +224,17 @@ class HL7Server {
 //		}
 	}
 
-
+	/**
+	 * @param $hl7 HL7
+	 * @param $msg
+	 * @param $record
+	 */
 	private function ProcessORU($hl7, $msg, $record){
-
-
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
-
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
-
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
-
-//				print_r($order);
-
 				$orc = $order['ORC'];
 				$obr = $order['OBR'];
-
 				/**
 				 * Check for order number in GaiaEHR
 				 */
@@ -256,9 +248,6 @@ class HL7Server {
 					$this->ackMessage = "Unable to find order number '$orderId' within the system";
 					break 2;
 				}
-
-//				print_r($obr);
-
 				$foo = new stdClass();
 				$foo->order_id = $obr[2][1];
 				$foo->lab_order_id = $obr[3][1];
@@ -266,7 +255,6 @@ class HL7Server {
 				$foo->lab_address = $this->recipient['recipient_address'];
 				$foo->observation_time = $hl7->time($obr[7][1]);
 				$foo->result_status = $obr[25];
-
 				if(is_array($obr[31][1])){
 					$foo = array();
 					foreach($obr[31] AS $dx){
@@ -276,16 +264,13 @@ class HL7Server {
 				}else{
 					$foo->reason_code = $obr[31][3].':'.$obr[31][1];
 				}
-//
 				// specimen segment
 				if(isset($order['SPECIMEN']) && $order['SPECIMEN'] !== false){
 					$spm = $order['SPECIMEN']['SPM'];
-//			        print_r($spm);
 					$foo->specimen_code = $spm[4][6] == 'HL70487' ? $spm[4][4] : $spm[4][1];
 					$foo->specimen_text = $spm[4][6] == 'HL70487' ? $spm[4][5] : $spm[4][2];
 					$foo->specimen_code_type = $spm[4][6] == 'HL70487' ? $spm[4][6] : $spm[4][3];
 					$foo->specimen_notes = $spm[4][6] == 'HL70487' ? $spm[4][6] : $spm[4][3];
-
 					// handle multiple SPECIMEN OBX's
 //					if(isset($order['SPECIMEN']['OBX']) && $order['SPECIMEN']['OBX'] !== false){
 //						foreach($order['SPECIMEN']['OBX'] AS $obx){
@@ -295,27 +280,22 @@ class HL7Server {
 				}
 
 				$foo->documentId = 'hl7|' . $record['id'];
-
 				$rResult = (array) $this->pResult->save($foo);
 				unset($foo);
-
 				/**
 				 * Handle all the observations
 				 */
 				foreach($order['OBSERVATION'] AS $observation){
-
 					/**
 					 * observations and notes
 					 */
 					$obx = $observation['OBX'];
 					$note = $observation['NTE'];
-
 					$foo = new stdClass();
 					$foo->result_id = $rResult['id'];
 					$foo->code = $obx[3][1];
 					$foo->code_text = $obx[3][2];
 					$foo->code_type = $obx[3][3];
-
 					/**
 					 * handle the dynamics of the value field
 					 * based on the OBX-2 value
@@ -340,9 +320,7 @@ class HL7Server {
 					$foo->notes = $note['3'];
 					$this->pObservation->save($foo);
 					unset($foo);
-
 				}
-
 				/**
 				 * Change the order status to received
 				 */
@@ -356,6 +334,63 @@ class HL7Server {
 
 		unset($patient, $rResult);
 	}
+
+	private function ProcessADT($hl7, $msg, $record){
+		$patient = new stdClass();
+
+
+
+
+
+
+
+
+
+		unset($patient);
+	}
+
+	private function PIDtoPatientObj($PID){
+		$patient = new stdClass();
+		$patient->id = $PID[1];                 // Set ID – Patient ID
+		$patient->pubpid = $PID[2][1];          // Patient ID (External ID)
+		$patient->id = $PID[3][1];              // Patient ID (Internal ID)
+		$patient->pubid = $PID[4][1];           // Alternate Patient ID – PID
+		$patient->fname = $PID[5][1];           // Patient Name...
+		$patient->mname = $PID[5][3];           //
+		$patient->lname = $PID[5][2];           //
+		$patient->mothers_name = "{$PID[6][1]} {$PID[6][3]} {$PID[6][2]}";  // Mother’s Maiden Name
+		$patient->DOB = $PID[7][1];                 // Date/Time of Birth
+		$patient->sex = $PID[8];                    // Sex
+//		$patient->00 = $PID[9];                     // Patient Alias
+		$patient->race = $PID[10][1];               // Race
+		$patient->address = $PID[11][1][1];         // Patient Address
+		$patient->city = $PID[11][3];               //
+		$patient->state = $PID[11][4];              //
+		$patient->zipcode = $PID[11][5];            //
+		$patient->country = $PID[11][6];            // Country Code
+		$patient->home_phone = "{$PID[13][7]} . '-' . {$PID[13][1]}";        // Phone Number – Home
+		$patient->work_phone = "{$PID[14][7]} . '-' . {$PID[14][1]}";        // Phone Number – Business
+		$patient->language = $PID[15][1];               // Primary Language
+		$patient->marital_status = $PID[16][1];         // Marital Status
+//		$patient->00 = $PID[17];                        // Religion
+//		$patient->00 = $PID[18];                        // Patient Account Number
+		$patient->SS = $PID[19];                        // SSN Number – Patient
+		$patient->drivers_license = $PID[20][1];        // Driver’s License Number - Patient
+		$patient->drivers_license_state = $PID[20][2];  // Driver’s License State - Patient
+		$patient->drivers_license_exp = $PID[20][3];    // Driver’s License Exp Date - Patient
+//		$patient->00 = $PID[21];                        // Mother’s Identifier
+		$patient->ethnicity = $PID[22][1];              // Ethnic Group
+//		$patient->00 = $PID[23];                // Birth Place
+//		$patient->00 = $PID[24];                // Multiple Birth Indicator
+//		$patient->00 = $PID[25];                // Birth Order
+//		$patient->00 = $PID[26];                // Citizenship
+//		$patient->00 = $PID[27];                // Veterans Military Status
+//		$patient->00 = $PID[29];                // Patient Death Date and Time
+//		$patient->00 = $PID[30];                // Patient Death Indicator
+		return $patient;
+	}
+
+
 }
 //$msg = <<<EOF
 //MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO

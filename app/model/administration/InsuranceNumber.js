@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.areas.PoolArea', {
+Ext.define('App.model.administration.InsuranceNumber', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'pool_areas'
+		name: 'insurance_numbers',
+		comment: 'Insurance Numbers'
 	},
 	fields: [
 		{
@@ -27,25 +28,55 @@ Ext.define('App.model.areas.PoolArea', {
 			type: 'int'
 		},
 		{
-			name: 'title',
+			name: 'provider_id',
+			type: 'int'
+		},
+		{
+			name: 'insurance_company_id',
+			type: 'int'
+		},
+		{
+			name: 'provider_id_text',
 			type: 'string',
-			len: 80
+			store: false
 		},
 		{
-			name: 'floor_plan_id',
-			type: 'int'
+			name: 'insurance_company_id_text',
+			type: 'string',
+			store: false
 		},
 		{
-			name: 'facility_id',
-			type: 'int'
+			name: 'provider_number',
+			type: 'string',
+			len: 20
 		},
 		{
-			name: 'sequence',
-			type: 'int'
+			name: 'rendering_provider_number',
+			type: 'string',
+			len: 20
 		},
 		{
-			name: 'active',
-			type: 'bool'
+			name: 'group_number',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'provider_number_type',
+			type: 'string',
+			len: 4
+		},
+		{
+			name: 'rendering_provider_number_type',
+			type: 'string',
+			len: 4
 		}
-	]
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Insurance.getInsuranceNumbers',
+			create: 'Insurance.addInsuranceNumber',
+			update: 'Insurance.updateInsuranceNumber'
+		}
+	}
 });

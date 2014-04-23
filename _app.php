@@ -238,6 +238,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.model.patient.charts.WeightForAgeInf',
                 'App.model.patient.charts.WeightForRecumbentInf',
                 'App.model.patient.charts.WeightForStature',
+                'App.model.areas.PatientArea',
                 'App.model.areas.PoolArea',
                 'App.model.areas.PoolDropAreas',
 				/**
@@ -259,7 +260,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.administration.Globals',
                 'App.store.administration.HeadersAndFooters',
                 'App.store.administration.ImmunizationRelations',
-                'App.store.administration.Insurance',
+                'App.store.administration.InsuranceCompanies',
                 'App.store.administration.LabObservations',
                 'App.store.administration.Laboratories',
                 'App.store.administration.LayoutTree',
@@ -338,7 +339,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 'App.store.patient.charts.WeightForAgeInf',
                 'App.store.patient.charts.WeightForRecumbentInf',
                 'App.store.patient.charts.WeightForStature',
-                'App.store.areas.PoolArea',
+                'App.store.areas.PatientAreas',
+                'App.store.areas.PoolAreas',
                 'App.store.areas.PoolDropAreas',
 				/*
 				 * Load the activity by the user
@@ -664,6 +666,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 ],
                 controllers:[
 	                'administration.HL7Servers',
+	                'administration.Practice',
 
 	                'Cron',
 	                'DualScreen',

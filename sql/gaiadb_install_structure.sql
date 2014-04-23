@@ -248,7 +248,7 @@ CREATE TABLE `combo_lists` (
   `title` varchar(255) DEFAULT NULL COMMENT 'Title of the combo',
   `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=97 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=105 ;
 
 CREATE TABLE `combo_lists_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -262,7 +262,7 @@ CREATE TABLE `combo_lists_options` (
   `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
   PRIMARY KEY (`id`,`list_id`,`option_value`),
   KEY `code` (`code`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=773 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=793 ;
 
 CREATE TABLE `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -922,6 +922,7 @@ CREATE TABLE `floor_plans_zones` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=43 ;
 
+
 CREATE TABLE `forms_fields` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `form_id` bigint(11) DEFAULT NULL,
@@ -931,7 +932,7 @@ CREATE TABLE `forms_fields` (
   PRIMARY KEY (`id`),
   KEY `form_id` (`form_id`),
   KEY `parentId` (`parentId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1184 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1208 ;
 
 CREATE TABLE `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -939,7 +940,7 @@ CREATE TABLE `forms_field_options` (
   `options` text COMMENT 'Field Options JSON Format',
   PRIMARY KEY (`id`),
   KEY `field_id` (`field_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1559 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1583 ;
 
 CREATE TABLE `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1253,57 +1254,35 @@ CREATE TABLE `immunizations_relations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `insurance_companies` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) DEFAULT NULL,
-  `attn` varchar(255) DEFAULT NULL,
-  `cms_id` varchar(15) DEFAULT NULL,
-  `freeb_type` varchar(255) DEFAULT NULL,
-  `x12_receiver_id` varchar(25) DEFAULT NULL,
-  `x12_default_partner_id` varchar(255) DEFAULT NULL,
-  `alt_cms_id` varchar(15) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(120) DEFAULT NULL,
+  `attn` varchar(120) DEFAULT NULL,
+  `cms_id` varchar(80) DEFAULT NULL,
+  `freeb_type` varchar(80) DEFAULT NULL,
+  `x12_receiver_id` varchar(80) DEFAULT NULL,
+  `x12_default_partner_id` varchar(80) DEFAULT NULL,
+  `alt_cms_id` varchar(80) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
-  `address_id` int(11) DEFAULT NULL,
-  `phone_id` int(11) DEFAULT NULL,
-  `fax_id` int(11) DEFAULT NULL,
+  `address` varchar(100) DEFAULT NULL,
+  `address_cont` varchar(80) DEFAULT NULL,
+  `city` varchar(80) DEFAULT NULL,
+  `state` varchar(80) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
+  `plus_four` varchar(10) DEFAULT NULL,
+  `country` varchar(80) DEFAULT NULL,
+  `phone_country_code` varchar(10) DEFAULT NULL,
+  `phone_area_code` varchar(10) DEFAULT NULL,
+  `phone_prefix` varchar(10) DEFAULT NULL,
+  `phone_number` varchar(10) DEFAULT NULL,
+  `fax_country_code` varchar(10) DEFAULT NULL,
+  `fax_area_code` varchar(10) DEFAULT NULL,
+  `fax_prefix` varchar(10) DEFAULT NULL,
+  `fax_number` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `insurance_data` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` enum('primary','secondary','tertiary') DEFAULT NULL,
-  `provider` varchar(255) DEFAULT NULL,
-  `plan_name` varchar(255) DEFAULT NULL,
-  `policy_number` varchar(255) DEFAULT NULL,
-  `group_number` varchar(255) DEFAULT NULL,
-  `subscriber_lname` varchar(255) DEFAULT NULL,
-  `subscriber_mname` varchar(255) DEFAULT NULL,
-  `subscriber_fname` varchar(255) DEFAULT NULL,
-  `subscriber_relationship` varchar(255) DEFAULT NULL,
-  `subscriber_ss` varchar(255) DEFAULT NULL,
-  `subscriber_DOB` date DEFAULT NULL,
-  `subscriber_street` varchar(255) DEFAULT NULL,
-  `subscriber_postal_code` varchar(255) DEFAULT NULL,
-  `subscriber_city` varchar(255) DEFAULT NULL,
-  `subscriber_state` varchar(255) DEFAULT NULL,
-  `subscriber_country` varchar(255) DEFAULT NULL,
-  `subscriber_phone` varchar(255) DEFAULT NULL,
-  `subscriber_employer` varchar(255) DEFAULT NULL,
-  `subscriber_employer_street` varchar(255) DEFAULT NULL,
-  `subscriber_employer_postal_code` varchar(255) DEFAULT NULL,
-  `subscriber_employer_state` varchar(255) DEFAULT NULL,
-  `subscriber_employer_country` varchar(255) DEFAULT NULL,
-  `subscriber_employer_city` varchar(255) DEFAULT NULL,
-  `copay` varchar(255) DEFAULT NULL,
-  `date` date NOT NULL DEFAULT '0000-00-00',
-  `pid` bigint(20) NOT NULL DEFAULT '0',
-  `subscriber_sex` varchar(25) DEFAULT NULL,
-  `accept_assignment` varchar(5) NOT NULL DEFAULT 'TRUE',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pid_type_date` (`pid`,`type`,`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE `insurance_numbers` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `provider_id` int(11) NOT NULL DEFAULT '0',
   `insurance_company_id` int(11) DEFAULT NULL,
   `provider_number` varchar(20) DEFAULT NULL,
@@ -1312,7 +1291,7 @@ CREATE TABLE `insurance_numbers` (
   `provider_number_type` varchar(4) DEFAULT NULL,
   `rendering_provider_number_type` varchar(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE `issue_encounter` (
   `pid` int(11) NOT NULL,

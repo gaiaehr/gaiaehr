@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.areas.PoolArea', {
+Ext.define('App.model.areas.PatientPool', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'pool_areas'
+	table:{
+		name:'patient_pools'
 	},
 	fields: [
 		{
@@ -27,25 +27,53 @@ Ext.define('App.model.areas.PoolArea', {
 			type: 'int'
 		},
 		{
-			name: 'title',
+			name: 'parent_id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'time_in',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'time_out',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'area_id',
+			type: 'int'
+		},
+		{
+			name: 'priority',
 			type: 'string',
-			len: 80
+			len: 15
 		},
 		{
-			name: 'floor_plan_id',
-			type: 'int'
-		},
-		{
-			name: 'facility_id',
-			type: 'int'
-		},
-		{
-			name: 'sequence',
-			type: 'int'
-		},
-		{
-			name: 'active',
+			name: 'in_queue',
 			type: 'bool'
+		},
+		{
+			name: 'checkout_timer',
+			type: 'string',
+			dataType: 'time'
 		}
 	]
 });

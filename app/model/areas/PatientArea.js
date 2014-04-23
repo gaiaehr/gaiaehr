@@ -16,36 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.areas.PoolArea', {
+Ext.define('App.model.areas.PatientArea', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'pool_areas'
-	},
 	fields: [
 		{
-			name: 'id',
+			name: 'pid',
+			type: 'int',
+			comment: 'Pool Areas ID'
+		},
+		{
+			name: 'eid',
 			type: 'int'
 		},
 		{
-			name: 'title',
-			type: 'string',
-			len: 80
+			name: 'name',
+			type: 'string'
 		},
 		{
-			name: 'floor_plan_id',
+			name: 'patient'
+		},
+		{
+			name: 'shortName',
+			type: 'string'
+		},
+		{
+			name: 'poolArea',
+			type: 'string'
+		},
+		{
+			name: 'floorPlanId',
 			type: 'int'
 		},
 		{
-			name: 'facility_id',
+			name: 'zoneId',
 			type: 'int'
 		},
 		{
-			name: 'sequence',
+			name: 'patientZoneId',
 			type: 'int'
 		},
 		{
-			name: 'active',
-			type: 'bool'
+			name: 'priority',
+			type: 'string'
+		},
+		{
+			name: 'rank',
+			type: 'int'
 		}
-	]
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'PoolArea.getPatientsByPoolAreaAccess'
+		}
+	}
 });

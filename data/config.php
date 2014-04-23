@@ -68,6 +68,36 @@ $API = array(
     ),
     'Insurance' => array(
         'methods' => array(
+            'getInsuranceCompanies' => array(
+                'len' => 1
+            ),
+            'getInsuranceCompany' => array(
+                'len' => 1
+            ),
+            'addInsuranceCompany' => array(
+                'len' => 1
+            ),
+            'updateInsuranceCompany' => array(
+                'len' => 1
+            ),
+            'destroyInsuranceCompany' => array(
+                'len' => 1
+            ),
+            'getInsuranceNumbers' => array(
+                'len' => 1
+            ),
+            'getInsuranceNumber' => array(
+                'len' => 1
+            ),
+            'addInsuranceNumber' => array(
+                'len' => 1
+            ),
+            'updateInsuranceNumber' => array(
+                'len' => 1
+            ),
+            'destroyInsuranceNumber' => array(
+                'len' => 1
+            ),
             'getInsurances' => array(
                 'len' => 1
             ),

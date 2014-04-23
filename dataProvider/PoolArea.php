@@ -18,41 +18,34 @@
  */
 
 include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/User.php');
 include_once(dirname(__FILE__) . '/ACL.php');
-include_once(dirname(__FILE__) . '/Services.php');
-include_once(dirname(dirname(__FILE__)) . '/classes/Time.php');
 
 class PoolArea {
-	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
-	/**
-	 * @var User
-	 */
-	private $user;
+
 	/**
 	 * @var Patient
 	 */
 	private $patient;
-	/**
-	 * @var Services
-	 */
-	private $services;
+
 	/**
 	 * @var
 	 */
 	private $acl;
 
-	private $PoolArea;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $pa;
+
+	/**
+	 * @var MatchaCUP
+	 */
+	private $pp;
 
 	function __construct() {
-		$this->db = new MatchaHelper();
-		$this->user = new User();
 		$this->patient = new Patient();
-		$this->services = new Services();
-		//$this->PoolArea = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
+		$this->pa = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
+		$this->pp = MatchaModel::setSenchaModel('App.model.areas.PatientPool');
 		return;
 	}
 
@@ -60,12 +53,11 @@ class PoolArea {
 		$visits = array();
 		foreach($this->getPatientParentPools() AS $visit){
 			$id = $visit['id'];
-			$this->db->setSQL("SELECT pp.id, pa.title AS area, pp.time_out, pp.eid
+			$foo = $this->pa->sql("SELECT pp.id, pa.title AS area, pp.time_out, pp.eid
 								 FROM patient_pools AS pp
 						    LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
 							    WHERE pp.parent_id = $id
-							 ORDER BY pp.id DESC");
-			$foo = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+							 ORDER BY pp.id DESC")->one();
 			$visit['area'] = $foo['area'];
 			$visit['area_id'] = $foo['id'];
 			$visit['name'] = ($foo['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($visit['pid']);
@@ -79,22 +71,19 @@ class PoolArea {
 	}
 
 	private function getPatientParentPools() {
-		$this->db->setSQL("SELECT pp.id, pp.time_in AS time, pp.pid
-							 FROM patient_pools AS pp
-                        LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
-						    WHERE pp.id = pp.parent_id
-						      AND pa.facility_id = {$_SESSION['user']['facility']}
-						 ORDER BY pp.time_in ASC, pp.priority DESC
-						    LIMIT 500");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$parentPools = $this->pa->sql("SELECT pp.id, pp.time_in AS time, pp.pid
+										 FROM patient_pools AS pp
+			                        LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
+									    WHERE pp.id = pp.parent_id
+									      AND pa.facility_id = {$_SESSION['user']['facility']}
+									 ORDER BY pp.time_in ASC, pp.priority DESC
+									    LIMIT 500")->all();
+		return $parentPools;
 	}
 
 	private function getParentPoolId($id) {
-		$this->db->setSQL("SELECT parent_id
-							 FROM patient_pools
-						    WHERE id = $id");
-		$foo = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		return $foo['parent_id'];
+		$foo = $this->pa->sql("SELECT parent_id FROM patient_pools WHERE id = $id")->one();
+		return $foo !== false ? $foo['parent_id'] : 0;
 	}
 
 	public function addPatientArrivalLog(stdClass $params) {
@@ -117,38 +106,47 @@ class PoolArea {
 	}
 
 	public function removePatientArrivalLog(stdClass $params) {
-		$this->db->setSQL($this->db->sqlBind(array('time_out' => Time::getLocalTime()), 'patient_pools', 'U', array('id' => $params->area_id)));
-		$this->db->execLog();
+		$record = new stdClass();
+		$record->id = $params->area_id;
+		$record->time_out = date('Y-m-d H:i:s');
+		$this->pp->save($record);
+		unset($record);
 		return array('success' => true);
 	}
 
 	public function sendPatientToPoolArea(stdClass $params) {
+
 		$fo = $this->getCurrentPatientPoolAreaByPid($params->pid);
+
 		/**
 		 * If patient comes from another area check him/her out
 		 */
 		if(!empty($fo)){
-			$data['time_out'] = Time::getLocalTime();
-			$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id' => $fo['id'])));
-			$this->db->execLog();
+			$record = new stdClass();
+			$record->id = $fo['id'];
+			$record->time_out = date('Y-m-d H:i:s');
+			$this->pp->save($record);
+			unset($record);
 		}
-		$data = array();
-		$data['pid'] = $params->pid;
-		$data['uid'] = $_SESSION['user']['id'];
-		$data['time_in'] = Time::getLocalTime();
-		$data['area_id'] = $params->sendTo;
-		$data['priority'] = (isset($params->priority) ? $params->priority : '');
+		$record = new stdClass();
+		$record->pid  = $params->pid;
+		$record->uid  = $_SESSION['user']['id'];
+		$record->time_in  = date('Y-m-d H:i:s');
+		$record->area_id  = $params->sendTo;
+		$record->in_queue  = 1;
+		$record->priority  = (isset($params->priority) ? $params->priority : '');
 		if(!empty($fo)){
-			$data['parent_id'] = $this->getParentPoolId($fo['id']);
-			$data['eid'] = $fo['eid'];
-			$data['priority'] = $fo['priority'];
+			$record->parent_id  = $this->getParentPoolId($fo['id']);
+			$record->eid  = $fo['eid'];
+			$record->priority  = $fo['priority'];
 		}
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'I'));
-		$this->db->execLog();
+		$record = (object) $this->pp->save($record);
+
 		if(empty($fo)){
-			$data['parent_id'] = $this->db->lastInsertId;
-			$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id' => $this->db->lastInsertId)));
-			$this->db->execLog();
+			$record->parent_id  = $record->id;
+			Matcha::pauseLog(true); // no need to log this
+			$this->pp->save($record);
+			Matcha::pauseLog(false);
 		}
 
 	}
@@ -158,57 +156,68 @@ class PoolArea {
 	}
 
 	public function getFacilityActivePoolAreas() {
-		$this->db->setSQL("SELECT * FROM pool_areas	WHERE facility_id = {$_SESSION['user']['facility']} AND active = '1'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->pa->sql("SELECT * FROM pool_areas	WHERE facility_id = {$_SESSION['user']['facility']} AND active = '1'")->all();
 	}
 
 	public function getActivePoolAreas() {
-		$this->db->setSQL("SELECT * FROM pool_areas	WHERE active = '1'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		return $this->pa->sql("SELECT * FROM pool_areas	WHERE active = '1'")->all();
+	}
+
+	/**
+	 * This this return an arrays of Areas
+	 * where array index equal the area ID
+	 */
+	public function getAreasArray(){
+		$areas = array();
+		foreach($this->getActivePoolAreas() as $area){
+			$areas[$area['id']] = $area;
+		}
+		return $areas;
 	}
 
 	/******************************************************************************************************************/
 	/******************************************************************************************************************/
 	/******************************************************************************************************************/
 	private function checkInPatient($params) {
-		$data['pid'] = $params->pid;
-		$data['uid'] = $_SESSION['user']['id'];
-		$data['time_in'] = Time::getLocalTime();
-		$data['area_id'] = 1;
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'I'));
-		$this->db->execLog();
-		$data = array();
-		$data['parent_id'] = $this->db->lastInsertId;
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id' => $this->db->lastInsertId)));
-		$this->db->execLog();
+		$record = new stdClass();
+		$record->pid= $params->pid;
+		$record->uid= $_SESSION['user']['id'];
+		$record->time_in = date('Y-m-d H:i:s');
+		$record->area_id = 1;
+		$record->in_queue = 1;
+		$this->pp->save($record);
+
+		$record->parent_id = $record->id;
+		Matcha::pauseLog(true);
+		$this->pp->save($record);
+		Matcha::pauseLog(false);
 	}
 
 	public function getCurrentPatientPoolAreaByPid($pid) {
-		$this->db->setSQL("SELECT pp.*,
-								  pa.title AS poolArea
-							 FROM patient_pools AS pp
-							 LEFT JOIN pool_areas AS pa ON pa.id = pp.area_id
-							WHERE pp.pid = $pid
-							  AND pp.time_out IS NULL
-						 ORDER BY pp.id DESC");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$record = $this->pp->sql("SELECT pp.*, pa.title AS poolArea
+								 	FROM patient_pools AS pp
+							   LEFT JOIN pool_areas AS pa ON pa.id = pp.area_id
+								   WHERE pp.pid = $pid
+								  	 AND pp.time_out IS NULL
+							 	ORDER BY pp.id DESC")->one();
+		return $record;
 	}
 
-	public function updateCurrentPatientPoolAreaByPid(array $data, $pid) {
+	public function updateCurrentPatientPoolAreaByPid($data, $pid) {
 		$area = $this->getCurrentPatientPoolAreaByPid($pid);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_pools', 'U', array('id' => $area['id'])));
-		$this->db->execLog();
+		$data['id'] = $area['id'];
+		$this->pp->save((object) $data);
 		return;
 	}
 
 	private function getPatientsByPoolAreaId($area_id, $in_queue) {
-		$this->db->setSQL("SELECT pp.*
+		$patients = $this->pp->sql("SELECT pp.*
 							 FROM patient_pools AS pp
 							WHERE pp.area_id = '$area_id'
 							  AND pp.time_out IS NULL
-							  AND pp.in_queue = '$in_queue'");
+							  AND pp.in_queue = '$in_queue'")->all();
 		$records = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $patient){
+		foreach($patients as $patient){
 			if(isset($patient['pid'])){
 				$patient['name'] = ($patient['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($patient['pid']);
 				$records[] = $patient;
@@ -258,25 +267,23 @@ class PoolArea {
 	}
 
 	public function getAreaTitleById($id) {
-		$this->db->setSQL("SELECT title FROM pool_areas WHERE id = $id");
-		$area = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$area = $this->pa->sql("SELECT title FROM pool_areas WHERE id = $id")->one();
 		return $area['title'];
 	}
 
 	public function getFloorPlanIdByPoolAreaId($poolAreaId) {
-		$this->db->setSQL("SELECT floor_plan_id FROM pool_areas WHERE id = $poolAreaId");
-		$area = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$area = $this->pa->sql("SELECT floor_plan_id FROM pool_areas WHERE id = $poolAreaId")->one();
 		return $area['floor_plan_id'];
 	}
 
 	public function getPatientCurrentZoneInfoByPid($pid) {
-		$this->db->setSQL("SELECT id AS patientZoneId,
+		$zone = $this->pp->sql("SELECT id AS patientZoneId,
 								  zone_id AS zoneId,
 								  time_in AS zoneTimeIn
 		                     FROM patient_zone
 		                    WHERE pid = '$pid' AND time_out IS NULL
-		                    ORDER BY id DESC");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		                    ORDER BY id DESC")->one();
+		return $zone;
 	}
 
 }

@@ -184,8 +184,8 @@ class Patient {
 		}
 		$params->create_uid = $_SESSION['user']['id'];
 		$params->create_uid = $_SESSION['user']['id'];
-		$params->create_date = Time::getLocalTime();
-		$params->update_date = Time::getLocalTime();
+		$params->create_date = date('Y-m-d H:i:s');
+		$params->update_date = date('Y-m-d H:i:s');
 		$patient = $this->savePatient($params);
 		return array(
 			'success' => true,
@@ -239,6 +239,7 @@ class Patient {
 				'outArea' => isset($chart->outChart->pool_area_id) ? $poolArea->getAreaTitleById($chart->outChart->pool_area_id) : 0,
 			)
 		);
+		unset($poolArea);
 	}
 
 	/**
@@ -391,7 +392,7 @@ class Patient {
 		$params = new stdClass();
 		$params->pid = $pid;
 		$params->uid = $_SESSION['user']['id'];
-		$params->chart_out_time = Time::getLocalTime();
+		$params->chart_out_time = date('Y-m-d H:i:s');
 		$params->pool_area_id = $pool_area_id;
 		$params->read_only = $outChart === false ? '0' : '1';
 		$params = (object) $this->c->save($params);

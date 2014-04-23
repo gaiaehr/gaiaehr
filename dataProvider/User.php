@@ -53,7 +53,7 @@ class User {
 	}
 
 	public function getUser($params){
-		$user = $this->u->load($params)->all();
+		$user = $this->u->load($params)->one();
 		$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
 		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
 		return $user;

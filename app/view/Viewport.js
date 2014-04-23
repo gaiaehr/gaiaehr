@@ -67,7 +67,7 @@ Ext.define('App.view.Viewport', {
         /**
          * This store will handle the patient pool area
          */
-        me.patientPoolStore = Ext.create('App.store.areas.PoolArea');
+        me.patientPoolStore = Ext.create('App.store.areas.PatientAreas');
         /*
          * TODO: this should be managed by the language files
          * The language file has a definition for this.

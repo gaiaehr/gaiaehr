@@ -1,7 +1,7 @@
 Ext.define('App.ux.combo.EncounterPriority', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.encounterprioritycombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.encounterprioritycombo',
+	initComponent: function(){
 		var me = this;
 
 		Ext.define('EncounterPriorityModel', {
@@ -10,10 +10,10 @@ Ext.define('App.ux.combo.EncounterPriority', {
 				{name: 'option_name', type: 'string' },
 				{name: 'option_value', type: 'string' }
 			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 94
@@ -22,25 +22,25 @@ Ext.define('App.ux.combo.EncounterPriority', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'EncounterPriorityModel',
+			model: 'EncounterPriorityModel',
 			autoLoad: true
 		});
 
 		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
+			editable: false,
+			queryMode: 'local',
 			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : i18n('priority'),
-			store       : me.store,
-			listConfig  : {
-				getInnerTpl: function() {
+			valueField: 'option_value',
+			emptyText: i18n('priority'),
+			store: me.store,
+			listConfig: {
+				getInnerTpl: function(){
 					return '<span class="{option_name}">{option_name}</span></div>';
 				}
 			}
 		}, null);
 
-		me.on('change', function(cmb ,newValue){
+		me.on('change', function(cmb, newValue){
 			var bgColor, color;
 			if(newValue == 'Minimal'){
 				bgColor = '#008000';
@@ -60,11 +60,12 @@ Ext.define('App.ux.combo.EncounterPriority', {
 			}
 
 			this.inputEl.setStyle({
-				'background-color':bgColor,
-				'background-image':'none',
-				'color':color
+				'background-color': bgColor,
+				'background-image': 'none',
+				'color': color
 			})
 		}, me);
+
 		me.callParent(arguments);
 	}
 });

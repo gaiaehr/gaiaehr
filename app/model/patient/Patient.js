@@ -38,6 +38,12 @@ Ext.define('App.model.patient.Patient',{
             dateFormat: 'Y-m-d H:i:s'
         },
         {
+            name: 'administrative_status',
+            type: 'string',
+	        comment: 'active | inactive | merged',
+            len: 15
+        },
+        {
             name: 'title',
             type: 'string',
             comment: 'Title Mr. Sr.',

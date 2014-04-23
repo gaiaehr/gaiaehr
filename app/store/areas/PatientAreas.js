@@ -15,37 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-Ext.define('App.model.areas.PoolArea', {
-	extend: 'Ext.data.Model',
-	table: {
-		name:'pool_areas'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'title',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'floor_plan_id',
-			type: 'int'
-		},
-		{
-			name: 'facility_id',
-			type: 'int'
-		},
-		{
-			name: 'sequence',
-			type: 'int'
-		},
-		{
-			name: 'active',
-			type: 'bool'
-		}
-	]
+Ext.define('App.store.areas.PatientAreas', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.areas.PatientArea'],
+	model: 'App.model.areas.PatientArea',
+	pageSize: 10
 });

@@ -24,7 +24,11 @@ if(!isset($_SESSION)){
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
 if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 require_once(dirname(dirname(__FILE__)).'/registry.php');
-require_once(dirname(dirname(__FILE__)).'/sites/'. $site .'/conf.php');
+$conf = dirname(dirname(__FILE__)).'/sites/'. $site .'/conf.php';
+if(file_exists($conf)){
+	require_once(dirname(dirname(__FILE__)).'/sites/'. $site .'/conf.php');
+	require_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
+}
 require_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
 include_once(dirname(dirname(__FILE__)).'/dataProvider/Modules.php');
 include_once(dirname(dirname(__FILE__)).'/dataProvider/ACL.php');

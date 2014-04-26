@@ -32,7 +32,7 @@ class SiteSetup
 
 	function __construct()
 	{
-		chdir(ROOT);
+		chdir(dirname(dirname(__FILE__)));
 	}
 
 	/*

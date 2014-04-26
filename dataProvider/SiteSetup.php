@@ -118,58 +118,63 @@ class SiteSetup
 	 */
 	public function checkRequirements()
 	{
-		$row = array();
-		// check if ...
-//		$status = (empty($_SESSION['sites']['sites']) ? 'Ok' : 'Fail');
-//		$row[]  = array(
-//			'msg' => 'GaiaEHR is not installed', 'status' => $status
-//		);
-		// verified that php 5.2.0 or later is installed
-		$status = (version_compare(phpversion(), '5.3.2', '>=') ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'PHP 5.3.2 + installed', 'status' => $status
-		);
-		// Check if get_magic_quotes_gpc is off
-		$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'get_magic_quotes_gpc off/disabled', 'status' => $status
-		);
-		// try chmod sites folder and check chmod after that
-		$status = (chmod('sites', 0755) ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'Sites dir writable by Web Server', 'status' => $status
-		);
-		// check if safe_mode is off
-		$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'PHP safe mode off', 'status' => $status
-		);
-		// check if PDO
-		$status = (class_exists('PDO') ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'PHP class PDO', 'status' => $status
-		);
-		// check if ZipArchive is enable
-		$status = (function_exists("gzcompress") ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'PHP class zlib', 'status' => $status
-		);
-		// check if ZipArchive is enable
-		$status = (function_exists('curl_version') ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'PHP Curl installed', 'status' => $status
-		);
-		// check for mcrypt is installed in PHP
-		$status = (function_exists('mcrypt_encrypt') ? 'Ok' : 'Fail');
-		$row[]  = array(
-			'msg' => 'PHP MCrypt installed', 'status' => $status
-		);
-        // check if PDO object exists
-        $status = (defined('PDO::ATTR_DRIVER_NAME') ? 'Ok' : 'Fail');
-        $row[]  = array(
-            'msg' => 'PDO installed', 'status' => $status
-        );
-		return $row;
+		try{
+			$row = array();
+			// check if ...
+			//		$status = (empty($_SESSION['sites']['sites']) ? 'Ok' : 'Fail');
+			//		$row[]  = array(
+			//			'msg' => 'GaiaEHR is not installed', 'status' => $status
+			//		);
+			// verified that php 5.2.0 or later is installed
+			$status = (version_compare(phpversion(), '5.3.2', '>=') ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PHP 5.3.2 + installed', 'status' => $status
+			);
+			// Check if get_magic_quotes_gpc is off
+			$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'get_magic_quotes_gpc off/disabled', 'status' => $status
+			);
+			// try chmod sites folder and check chmod after that
+			$status = (chmod('sites', 0755) ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'Sites dir writable by Web Server', 'status' => $status
+			);
+			// check if safe_mode is off
+			$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PHP safe mode off', 'status' => $status
+			);
+			// check if PDO
+			$status = (class_exists('PDO') ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PHP class PDO', 'status' => $status
+			);
+			// check if ZipArchive is enable
+			$status = (function_exists("gzcompress") ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PHP class zlib', 'status' => $status
+			);
+			// check if ZipArchive is enable
+			$status = (function_exists('curl_version') ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PHP Curl installed', 'status' => $status
+			);
+			// check for mcrypt is installed in PHP
+			$status = (function_exists('mcrypt_encrypt') ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PHP MCrypt installed', 'status' => $status
+			);
+			// check if PDO object exists
+			$status = (defined('PDO::ATTR_DRIVER_NAME') ? 'Ok' : 'Fail');
+			$row[]  = array(
+				'msg' => 'PDO installed', 'status' => $status
+			);
+			return $row;
+		}catch (Exception $e){
+			return $e->getMessage();
+		}
+
 	}
 
 	public function setSiteDirBySiteId($siteId)

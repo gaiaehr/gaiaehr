@@ -28,6 +28,7 @@
 if(!defined('site_db_type')) define('site_db_type', 'mysql');
 if(!defined('site_db_host')) define('site_db_host', '#host#');
 if(!defined('site_db_port')) define('site_db_port', '#port#');
+if(!defined('site_db_username')) define('site_db_username', '#user#');
 if(!defined('site_db_password')) define('site_db_password', '#pass#');
 if(!defined('site_db_database')) define('site_db_database', '#db#');
 /**

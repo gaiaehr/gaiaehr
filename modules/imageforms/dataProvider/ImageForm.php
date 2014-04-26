@@ -27,7 +27,7 @@ class ImageForm {
 	function __construct(){
 		Matcha::$__app = ROOT.'/modules';
 		$this->i = MatchaModel::setSenchaModel('Modules.imageforms.model.PatientImage');
-		Matcha::$__app = $_SESSION['root'].'/app';
+		Matcha::$__app = ROOT.'/app';
 	}
 
 	public function getImages($params){

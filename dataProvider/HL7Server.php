@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
@@ -16,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class HL7Server {
 
 	/**
@@ -75,15 +75,14 @@ class HL7Server {
 
 	protected $updateKey = 'pid';
 
-
-	function __construct($site = 'default'){
+	function __construct($site = 'default') {
 		$this->site = $site;
-		include_once(dirname(dirname(__FILE__))."/sites/{$this->site}/conf.php");
-		include_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
-		include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
-		include_once(dirname(__FILE__).'/HL7ServerHandler.php');
-		include_once(dirname(__FILE__).'/PoolArea.php');
-		include_once(dirname(__FILE__).'/Merge.php');
+		include_once(dirname(dirname(__FILE__)) . "/sites/{$this->site}/conf.php");
+		include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
+		include_once(dirname(dirname(__FILE__)) . '/lib/HL7/HL7.php');
+		include_once(dirname(__FILE__) . '/HL7ServerHandler.php');
+		include_once(dirname(__FILE__) . '/PoolArea.php');
+		include_once(dirname(__FILE__) . '/Merge.php');
 		new MatchaHelper();
 
 		/** HL7 Models */
@@ -100,7 +99,7 @@ class HL7Server {
 		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 	}
 
-	protected function getServers($params){
+	protected function getServers($params) {
 		$servers = $this->s->load($params)->all();
 		foreach($servers['data'] as $i => $server){
 			$handler = new HL7ServerHandler();
@@ -112,120 +111,115 @@ class HL7Server {
 		return $servers;
 	}
 
-	protected function getServer($params){
+	protected function getServer($params) {
 		return $this->s->load($params)->one();
 	}
 
-	protected function addServer($params){
+	protected function addServer($params) {
 		return $this->s->save($params);
 	}
 
-	protected function updateServer($params){
+	protected function updateServer($params) {
 		return $this->s->save($params);
 	}
 
-	protected function deleteServer($params){
+	protected function deleteServer($params) {
 		return $this->s->destroy($params);
 	}
 
+	public function Process($msg = '', $addSocketCharacters = true) {
+		//		try{
+		$this->msg = $msg;
 
-	public function Process($msg = '', $addSocketCharacters = true){
-//		try{
-			$this->msg = $msg;
+		$this->ackStatus = 'AA';
+		$this->ackMessage = '';
 
-			$this->ackStatus = 'AA';
-			$this->ackMessage = '';
+		/**
+		 * Parse the HL7 Message
+		 */
+		$hl7 = new HL7();
+		$msg = $hl7->readMessage($this->msg);
+		$application = $hl7->getSendingApplication();
+		$facility = $hl7->getSendingFacility();
+		$version = $hl7->getMsgVersionId();
+		/**
+		 * check HL7 version
+		 */
+		if($version != '2.5.1'){
+			$this->ackStatus = 'AR';
+			$this->ackMessage = 'HL7 version unsupported';
+		}
+		/**
+		 * Check for IP address access
+		 */
+		//			$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
+		//			if($this->recipient === false){
+		//				$this->ackStatus = 'AR';
+		//				$this->ackMessage = "This application '$application' Not Authorized";
+		//			}
+		/**
+		 *
+		 */
+		if($msg === false){
+			$this->ackStatus = 'AE';
+			$this->ackMessage = 'Unable to parse HL7 message, please contact Support Desk';
+		}
+		/**
+		 *
+		 */
+		$msgRecord = new stdClass();
+		$msgRecord->msg_type = $hl7->getMsgType();
+		$msgRecord->message = $this->msg;
+		$msgRecord->foreign_facility = $hl7->getSendingFacility();
+		$msgRecord->foreign_application = $hl7->getSendingApplication();
+		$msgRecord->foreign_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+		$msgRecord->isOutbound = '0';
+		$msgRecord->status = '2';
+		$msgRecord->date_processed = date('Y-m-d H:i:s');
+		$msgRecord = $this->m->save($msgRecord);
+		$msgRecord = (array)$msgRecord['data'];
 
-			/**
-			 * Parse the HL7 Message
-			 */
-			$hl7 = new HL7();
-			$msg = $hl7->readMessage($this->msg);
-			$application = $hl7->getSendingApplication();
-			$facility = $hl7->getSendingFacility();
-			$version =  $hl7->getMsgVersionId();
-			/**
-			 * check HL7 version
-			 */
-			if($version != '2.5.1'){
-				$this->ackStatus = 'AR';
-				$this->ackMessage = 'HL7 version unsupported';
-			}
-			/**
-			 * Check for IP address access
-			 */
-//			$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
-//			if($this->recipient === false){
-//				$this->ackStatus = 'AR';
-//				$this->ackMessage = "This application '$application' Not Authorized";
-//			}
-			/**
-			 *
-			 */
-			if($msg === false){
-				$this->ackStatus = 'AE';
-				$this->ackMessage = 'Unable to parse HL7 message, please contact Support Desk';
-			}
-			/**
-			 *
-			 */
-			$msgRecord = new stdClass();
-			$msgRecord->msg_type = $hl7->getMsgType();
-			$msgRecord->message = $this->msg;
-			$msgRecord->foreign_facility = $hl7->getSendingFacility();
-			$msgRecord->foreign_application = $hl7->getSendingApplication();
-			$msgRecord->foreign_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-			$msgRecord->isOutbound = '0';
-			$msgRecord->status = '2';
-			$msgRecord->date_processed = date('Y-m-d H:i:s');
-			$msgRecord = $this->m->save($msgRecord);
-			$msgRecord = (array) $msgRecord['data'];
-
-			if($this->ackStatus == 'AA'){
-				/**
-				 *
-				 */
-				switch($hl7->getMsgType()){
-					case 'ORU':
-						$this->ProcessORU($hl7, $msg, $msgRecord);
-						break;
-					case 'ADT':
-						$this->ProcessADT($hl7, $msg, $msgRecord);
-						break;
-					default:
-
-						break;
-				}
-			}
-
+		if($this->ackStatus == 'AA'){
 			/**
 			 *
 			 */
-			$ack = new HL7();
-			$msh = $ack->addSegment('MSH');
-			$msh->setValue('3.1','GaiaEHR');                // Sending Application
-			$msh->setValue('4.1', 'Gaia');                  // Sending Facility
-			$msh->setValue('9.1','ACK');
-			$msh->setValue('11.1','P');                     // P = Production
-			$msh->setValue('12.1','2.5.1');                 // HL7 version
-			$msa =  $ack->addSegment('MSA');
-			$msa->setValue('1',$this->ackStatus);           // AA = Positive acknowledgment, AE = Application error, AR = Application reject
-			$msa->setValue('2', $hl7->getMsgControlId());   // Message Control ID from MSH
-			$msa->setValue('3', $this->ackMessage);         // Error Message
-			$ackMsg = $ack->getMessage();
+			switch($hl7->getMsgType()) {
+				case 'ORU':
+					$this->ProcessORU($hl7, $msg, $msgRecord);
+					break;
+				case 'ADT':
+					$this->ProcessADT($hl7, $msg, $msgRecord);
+					break;
+				default:
 
-			$msgRecord['response'] = $ackMsg;
-			$this->m->save((object)$msgRecord);
+					break;
+			}
+		}
 
-			// unset all the variables to release memory
-			unset($ack, $hl7, $msg, $msgRecord, $oData, $result);
+		/**
+		 *
+		 */
+		$ack = new HL7();
+		$msh = $ack->addSegment('MSH');
+		$msh->setValue('3.1', 'GaiaEHR'); // Sending Application
+		$msh->setValue('4.1', 'Gaia'); // Sending Facility
+		$msh->setValue('9.1', 'ACK');
+		$msh->setValue('11.1', 'P'); // P = Production
+		$msh->setValue('12.1', '2.5.1'); // HL7 version
+		$msa = $ack->addSegment('MSA');
+		$msa->setValue('1', $this->ackStatus); // AA = Positive acknowledgment, AE = Application error, AR = Application reject
+		$msa->setValue('2', $hl7->getMsgControlId()); // Message Control ID from MSH
+		$msa->setValue('3', $this->ackMessage); // Error Message
+		$ackMsg = $ack->getMessage();
 
+		$msgRecord['response'] = $ackMsg;
+		$this->m->save((object)$msgRecord);
 
-			return $addSocketCharacters ? "\v".$ackMsg.chr(0x1c).chr(0x0d) : $ackMsg;
-//		}catch (Exception $e){
-//			error_log($e->getMessage(), 1, "vela1606@gmail.com");
-//			return '';
-//		}
+		// unset all the variables to release memory
+		unset($ack, $hl7, $msg, $msgRecord, $oData, $result);
+
+		return $addSocketCharacters ? "\v" . $ackMsg . chr(0x1c) . chr(0x0d) : $ackMsg;
+
 	}
 
 	/**
@@ -233,7 +227,7 @@ class HL7Server {
 	 * @param $msg
 	 * @param $msgRecord
 	 */
-	protected function ProcessORU($hl7, $msg, $msgRecord){
+	protected function ProcessORU($hl7, $msg, $msgRecord) {
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
@@ -262,11 +256,11 @@ class HL7Server {
 				if(is_array($obr[31][1])){
 					$foo = array();
 					foreach($obr[31] AS $dx){
-						$foo[] = $dx[3].':'.$dx[1];
+						$foo[] = $dx[3] . ':' . $dx[1];
 					}
-					$foo->reason_code = implode(',',$foo);
-				}else{
-					$foo->reason_code = $obr[31][3].':'.$obr[31][1];
+					$foo->reason_code = implode(',', $foo);
+				} else {
+					$foo->reason_code = $obr[31][3] . ':' . $obr[31][1];
 				}
 				// specimen segment
 				if(isset($order['SPECIMEN']) && $order['SPECIMEN'] !== false){
@@ -276,15 +270,15 @@ class HL7Server {
 					$foo->specimen_code_type = $spm[4][6] == 'HL70487' ? $spm[4][6] : $spm[4][3];
 					$foo->specimen_notes = $spm[4][6] == 'HL70487' ? $spm[4][6] : $spm[4][3];
 					// handle multiple SPECIMEN OBX's
-//					if(isset($order['SPECIMEN']['OBX']) && $order['SPECIMEN']['OBX'] !== false){
-//						foreach($order['SPECIMEN']['OBX'] AS $obx){
-//					    	print_r($obx);
-//						}
-//					}
+					//					if(isset($order['SPECIMEN']['OBX']) && $order['SPECIMEN']['OBX'] !== false){
+					//						foreach($order['SPECIMEN']['OBX'] AS $obx){
+					//					    	print_r($obx);
+					//						}
+					//					}
 				}
 
 				$foo->documentId = 'hl7|' . $msgRecord['id'];
-				$rResult = (array) $this->pResult->save($foo);
+				$rResult = (array)$this->pResult->save($foo);
 				unset($foo);
 				/**
 				 * Handle all the observations
@@ -306,7 +300,7 @@ class HL7Server {
 					 */
 					if($obx[2] == 'CWE'){
 						$foo->value = $obx[5][2];
-					}else{
+					} else {
 						$foo->value = $obx[5];
 					}
 					$foo->units = $obx[6][1];
@@ -318,7 +312,7 @@ class HL7Server {
 					$foo->date_rage_values = $hl7->time($obx[12][1]);
 					$foo->date_observation = $hl7->time($obx[14][1]);
 					$foo->observer = trim($obx[16][2][1] . ' ' . $obx[16][3]);
-					$foo->performing_org_name = $obx[23][1] ;
+					$foo->performing_org_name = $obx[23][1];
 					$foo->performing_org_address = $obx[24][1][1] . ' ' . $obx[24][3] . ', ' . $obx[24][4] . ' ' . $obx[24][5];
 					$foo->date_analysis = $hl7->time($obx[19][1]);
 					$foo->notes = $note['3'];
@@ -340,20 +334,19 @@ class HL7Server {
 	}
 
 	/**
-	 * @param HL7       $hl7
-	 * @param ADT       $msg
-	 * @param stdClass  $msgRecord
+	 * @param HL7      $hl7
+	 * @param ADT      $msg
+	 * @param stdClass $msgRecord
 	 */
-	protected function ProcessADT($hl7, $msg, $msgRecord){
+	protected function ProcessADT($hl7, $msg, $msgRecord) {
 
 		$evt = $hl7->getMsgEventType();
-
 
 		if($evt == 'A01'){
 			/**
 			 * Admit Visit
 			 */
-		} elseif($evt == 'A04'){
+		} elseif($evt == 'A04') {
 			/**
 			 * Register a Patient
 			 */
@@ -362,14 +355,15 @@ class HL7Server {
 
 			if($patient === false){
 				$this->ackStatus = 'AR';
-				$this->ackMessage = 'Unable to find patient '.$patientData[$this->updateKey];
-			}			$patient = array_merge($patient, $patientData);
+				$this->ackMessage = 'Unable to find patient ' . $patientData[$this->updateKey];
+			}
+			$patient = array_merge($patient, $patientData);
 
-			$patient = $this->p->save((object) $patient);
+			$patient = $this->p->save((object)$patient);
 			$this->InsuranceGroupHandler($msg->data['INSURANCE'], $hl7, $patient);
 
 			return;
-		} elseif($evt == 'A08'){
+		} elseif($evt == 'A08') {
 			/**
 			 * Update Patient Information
 			 */
@@ -378,14 +372,15 @@ class HL7Server {
 
 			if($patient === false){
 				$this->ackStatus = 'AR';
-				$this->ackMessage = 'Unable to find patient '.$patientData[$this->updateKey];
-			}			$patient = array_merge($patient, $patientData);
+				$this->ackMessage = 'Unable to find patient ' . $patientData[$this->updateKey];
+			}
+			$patient = array_merge($patient, $patientData);
 
-			$patient = $this->p->save((object) $patient);
+			$patient = $this->p->save((object)$patient);
 			$this->InsuranceGroupHandler($msg->data['INSURANCE'], $hl7, $patient);
 
 			return;
-		} elseif($evt == 'A09'){
+		} elseif($evt == 'A09') {
 			/**
 			 * Patient Departing - Tracking
 			 * PV1-3 - Assigned Patient Location
@@ -400,7 +395,7 @@ class HL7Server {
 			$filter = array();
 			if($PID[3][4][1] == $this->getAssigningAuthority()){
 				$filter['pid'] = $PID[3][1];
-			}else{
+			} else {
 				$filter['pubpid'] = $PID[3][1];
 			}
 
@@ -428,7 +423,7 @@ class HL7Server {
 			unset($params);
 
 			return;
-		} elseif($evt == 'A10'){
+		} elseif($evt == 'A10') {
 			/**
 			 * Patient Arriving - Tracking
 			 * PV1-3  - As signed Patient Location
@@ -442,7 +437,7 @@ class HL7Server {
 			$filter = array();
 			if($PID[3][4][1] == $this->getAssigningAuthority()){
 				$filter['pid'] = $PID[3][1];
-			}else{
+			} else {
 				$filter['pubpid'] = $PID[3][1];
 			}
 
@@ -470,7 +465,7 @@ class HL7Server {
 			unset($params);
 
 			return;
-		} elseif($evt == 'A18'){
+		} elseif($evt == 'A18') {
 			/**
 			 * Merge Patient Information
 			 * PID-2.1 <= MRG-4.1
@@ -482,22 +477,22 @@ class HL7Server {
 			$this->MergeHandler($aPatient, $bPatient, $pid, $mrg);
 
 			return;
-		} elseif($evt == 'A28'){
+		} elseif($evt == 'A28') {
 			/**
 			 * Add Person or Patient Information
 			 * PID-2.1 <= MRG-4.1
 			 */
 			$patientData = $this->PidToPatient($msg->data['PID'], $hl7);
 			$patientData['pid'] = 0;
-			$patient = $this->p->save((object) $patientData);
+			$patient = $this->p->save((object)$patientData);
 			$this->InsuranceGroupHandler($msg->data['INSURANCE'], $hl7, $patient);
 
 			return;
-		} elseif($evt == 'A29'){
+		} elseif($evt == 'A29') {
 			/**
 			 * Delete Person Information
 			 */
-		} elseif($evt == 'A31'){
+		} elseif($evt == 'A31') {
 			/**
 			 * Update Person Information
 			 */
@@ -506,25 +501,23 @@ class HL7Server {
 
 			if($patient === false){
 				$this->ackStatus = 'AR';
-				$this->ackMessage = 'Unable to find patient '.$patientData[$this->updateKey];
+				$this->ackMessage = 'Unable to find patient ' . $patientData[$this->updateKey];
 			}
 			$patient = array_merge($patient, $patientData);
 
-			$patient = $this->p->save((object) $patient);
+			$patient = $this->p->save((object)$patient);
 			$this->InsuranceGroupHandler($msg->data['INSURANCE'], $hl7, $patient);
 
 			return;
-		} elseif($evt == 'A32'){ /** Cancel Patient Arriving - Tracking **/
-
-
-
-			return;
-		} elseif($evt == 'A33'){ /** Cancel Patient Departing - Tracking **/
-
-
+		} elseif($evt == 'A32') {
+			/** Cancel Patient Arriving - Tracking **/
 
 			return;
-		} elseif($evt == 'A39'){
+		} elseif($evt == 'A33') {
+			/** Cancel Patient Departing - Tracking **/
+
+			return;
+		} elseif($evt == 'A39') {
 			/**
 			 * Merge Person - Patient ID (Using External ID)
 			 * PID-2.1 <= MRG-4.1
@@ -536,7 +529,7 @@ class HL7Server {
 			$this->MergeHandler($aPatient, $bPatient, $pid, $mrg);
 
 			return;
-		} elseif($evt == 'A40'){
+		} elseif($evt == 'A40') {
 			/**
 			 * Merge Patient - Patient Identifier List
 			 * PID-3.1 <= MRG-1.1
@@ -548,7 +541,7 @@ class HL7Server {
 			$this->MergeHandler($aPatient, $bPatient, $pid, $mrg);
 
 			return;
-		} elseif($evt == 'A41'){
+		} elseif($evt == 'A41') {
 			/**
 			 * Merge Account - Patient Account Number
 			 * PID-18.1 <= MRG-3.1
@@ -574,28 +567,24 @@ class HL7Server {
 	 * @param HL7   $hl7
 	 * @param null  $patient
 	 */
-	protected function InsuranceGroupHandler($insGroups, $hl7, $patient = null){
+	protected function InsuranceGroupHandler($insGroups, $hl7, $patient = null) {
 		/** if patient is not set don't do anything */
-		if(!isset($patient)) return;
-
-
+		if(!isset($patient))
+			return;
 
 		foreach($insGroups as $insuranceGroup){
 			foreach($insuranceGroup as $key => $insurance){
-				if($insurance == false) continue;
+				if($insurance == false)
+					continue;
 				if($key == 'IN1'){
 					$in1 = $this->IN1ToInsuranceObj($insurance, $hl7);
 
-
-				}elseif($key == 'IN2'){
+				} elseif($key == 'IN2') {
 					$in2 = $this->IN2ToInsuranceObj($insurance, $hl7);
 
-
-				}elseif($key == 'IN3'){
+				} elseif($key == 'IN3') {
 					foreach($insurance as $IN3){
 						$in3 = $this->IN3ToInsuranceObj($IN3, $hl7);
-
-
 
 					}
 				}
@@ -603,19 +592,19 @@ class HL7Server {
 		}
 	}
 
-	protected function MergeHandler($aPatient, $bPatient, $pid, $mrg){
+	protected function MergeHandler($aPatient, $bPatient, $pid, $mrg) {
 		if($aPatient === false){
 			$this->ackStatus = 'AR';
-			$this->ackMessage = 'Unable to find primary patient - '. $pid;
+			$this->ackMessage = 'Unable to find primary patient - ' . $pid;
 			return;
-		}elseif($bPatient === false){
+		} elseif($bPatient === false) {
 			$this->ackStatus = 'AR';
-			$this->ackMessage = 'Unable to find merge patient - '. $mrg;
+			$this->ackMessage = 'Unable to find merge patient - ' . $mrg;
 			return;
 		}
 
 		$merge = new Merge();
-		$success = $merge->merge($aPatient['pid'],$bPatient['pid']);
+		$success = $merge->merge($aPatient['pid'], $bPatient['pid']);
 		unset($merge);
 
 		if($success === false){
@@ -633,43 +622,114 @@ class HL7Server {
 	 *
 	 * @return array
 	 */
-	protected function PidToPatient($PID, $hl7){
+	protected function PidToPatient($PID, $hl7) {
 		$p = array();
-		if($this->notEmpty($PID[2][1]))     $p['pubpid'] = $PID[2][1];                                          // Patient ID (External ID)
-		if($this->notEmpty($PID[3][1]))     $p['pid'] = $PID[3][1];                                             // Patient ID (Internal ID)
-		if($this->notEmpty($PID[5][2]))     $p['fname'] = $PID[5][2];                                           // Patient Name...
-		if($this->notEmpty($PID[5][3]))     $p['mname'] = $PID[5][3];                                           //
-		if($this->notEmpty($PID[5][1][1]))  $p['lname'] = $PID[5][1][1];                                        //
-		if($this->notEmpty($PID[6][3]))     $p['mothers_name'] = "{$PID[6][2]} {$PID[6][3]} {$PID[6][1][1]}";   // Mother’s Maiden Name
-		if($this->notEmpty($PID[7][1]))     $p['DOB'] = $hl7->time($PID[7][1]);                                 // Date/Time of Birth
-		if($this->notEmpty($PID[8]))        $p['sex'] = $PID[8];                                                // Sex
-		if($this->notEmpty($PID[9][3]))     $p['alias'] = "{$PID[9][2]} {$PID[9][3]} {$PID[9][1][1]}";          // Patient Alias
-		if($this->notEmpty($PID[10][1]))    $p['race'] = $PID[10][1];                                   // Race
-		if($this->notEmpty($PID[11][1][1])) $p['address'] = $PID[11][1][1];                             // Patient Address
-		if($this->notEmpty($PID[11][3]))    $p['city'] = $PID[11][3];                                   //
-		if($this->notEmpty($PID[11][4]))    $p['state'] = $PID[11][4];                                  //
-		if($this->notEmpty($PID[11][5]))    $p['zipcode'] = $PID[11][5];                                //
-		if($this->notEmpty($PID[11][6]))    $p['country'] = $PID[11][6];                                // Country Code
-		if($this->notEmpty($PID[13][7]))    $p['home_phone'] = "{$PID[13][7]} . '-' . {$PID[13][1]}";   // Phone Number – Home
-		if($this->notEmpty($PID[14][7]))    $p['work_phone'] = "{$PID[14][7]} . '-' . {$PID[14][1]}";   // Phone Number – Business
-		if($this->notEmpty($PID[15][1]))    $p['language'] = $PID[15][1];                               // Primary Language
-		if($this->notEmpty($PID[16][1]))    $p['marital_status'] = $PID[16][1];                         // Marital Status
-//		if($this->notEmpty($PID[17]))       $p['00'] = $PID[17];                                        // Religion
-		if($this->notEmpty($PID[18][1]))    $p['pubaccount'] = $PID[18][1];                             // Patient Account Number
-		if($this->notEmpty($PID[19]))       $p['SS'] = $PID[19];                                        // SSN Number – Patient
-		if($this->notEmpty($PID[20][1]))    $p['drivers_license'] = $PID[20][1];                        // Driver’s License Number - Patient
-		if($this->notEmpty($PID[20][2]))    $p['drivers_license_state'] = $PID[20][2];                  // Driver’s License State - Patient
-		if($this->notEmpty($PID[20][3]))    $p['drivers_license_exp'] = $PID[20][3];                    // Driver’s License Exp Date - Patient
-//		if($this->notEmpty($PID[21]))       $p['00'] = $PID[21];                            // Mother’s Identifier
-		if($this->notEmpty($PID[22][1]))    $p['ethnicity'] = $PID[22][1];                  // Ethnic Group
-		if($this->notEmpty($PID[23]))       $p['birth_place'] = $PID[23];                   // Birth Place
-		if($this->notEmpty($PID[24]))       $p['birth_multiple'] = $PID[24];                // Multiple Birth Indicator
-		if($this->notEmpty($PID[25]))       $p['birth_order'] = $PID[25];                   // Birth Order
-		if($this->notEmpty($PID[26][1]))    $p['citizenship'] = $PID[26][1];                // Citizenship
-		if($this->notEmpty($PID[27][1]))    $p['is_veteran'] = $PID[27][1];                 // Veterans Military Status
-		if($this->notEmpty($PID[27][1]))    $p['death_date'] = $PID[29][1];                 // Patient Death Date and Time
-		if($this->notEmpty($PID[30]))       $p['deceased'] = $PID[30];                      // Patient Death Indicator
-		if($this->notEmpty($PID[33][1]))    $p['update_date'] = $hl7->time($PID[33][1]);    // Last update time stamp
+
+		if($this->notEmpty($PID[2][1]))
+			$p['pubpid'] = $PID[2][1]; // Patient ID (External ID)
+
+		if($this->notEmpty($PID[3][1]))
+			$p['pid'] = $PID[3][1]; // Patient ID (Internal ID)
+
+		if($this->notEmpty($PID[5][2]))
+			$p['fname'] = $PID[5][2]; // Patient Name...
+
+		if($this->notEmpty($PID[5][3]))
+			$p['mname'] = $PID[5][3]; //
+
+		if($this->notEmpty($PID[5][1][1]))
+			$p['lname'] = $PID[5][1][1]; //
+
+		if($this->notEmpty($PID[6][3]))
+			$p['mothers_name'] = "{$PID[6][2]} {$PID[6][3]} {$PID[6][1][1]}"; // Mother’s Maiden Name
+
+		if($this->notEmpty($PID[7][1]))
+			$p['DOB'] = $hl7->time($PID[7][1]); // Date/Time of Birth
+
+		if($this->notEmpty($PID[8]))
+			$p['sex'] = $PID[8]; // Sex
+
+		if($this->notEmpty($PID[9][3]))
+			$p['alias'] = "{$PID[9][2]} {$PID[9][3]} {$PID[9][1][1]}"; // Patient Alias
+
+		if($this->notEmpty($PID[10][1]))
+			$p['race'] = $PID[10][1]; // Race
+
+		if($this->notEmpty($PID[11][1][1]))
+			$p['address'] = $PID[11][1][1]; // Patient Address
+
+		if($this->notEmpty($PID[11][3]))
+			$p['city'] = $PID[11][3]; //
+
+		if($this->notEmpty($PID[11][4]))
+			$p['state'] = $PID[11][4]; //
+
+		if($this->notEmpty($PID[11][5]))
+			$p['zipcode'] = $PID[11][5]; //
+
+		if($this->notEmpty($PID[11][6]))
+			$p['country'] = $PID[11][6]; // Country Code
+
+		if($this->notEmpty($PID[13][7]))
+			$p['home_phone'] = "{$PID[13][7]} . '-' . {$PID[13][1]}"; // Phone Number – Home
+
+		if($this->notEmpty($PID[14][7]))
+			$p['work_phone'] = "{$PID[14][7]} . '-' . {$PID[14][1]}"; // Phone Number – Business
+
+		if($this->notEmpty($PID[15][1]))
+			$p['language'] = $PID[15][1]; // Primary Language
+
+		if($this->notEmpty($PID[16][1]))
+			$p['marital_status'] = $PID[16][1]; // Marital Status
+
+		//if($this->notEmpty($PID[17]))
+		//  $p['00'] = $PID[17]; // Religion
+
+		if($this->notEmpty($PID[18][1]))
+			$p['pubaccount'] = $PID[18][1]; // Patient Account Number
+
+		if($this->notEmpty($PID[19]))
+			$p['SS'] = $PID[19]; // SSN Number – Patient
+
+		if($this->notEmpty($PID[20][1]))
+			$p['drivers_license'] = $PID[20][1]; // Driver’s License Number - Patient
+
+		if($this->notEmpty($PID[20][2]))
+			$p['drivers_license_state'] = $PID[20][2]; // Driver’s License State - Patient
+
+		if($this->notEmpty($PID[20][3]))
+			$p['drivers_license_exp'] = $PID[20][3]; // Driver’s License Exp Date - Patient
+
+		//if($this->notEmpty($PID[21]))
+		//  $p['00'] = $PID[21]; // Mother’s Identifier
+
+		if($this->notEmpty($PID[22][1]))
+			$p['ethnicity'] = $PID[22][1]; // Ethnic Group
+
+		if($this->notEmpty($PID[23]))
+			$p['birth_place'] = $PID[23]; // Birth Place
+
+		if($this->notEmpty($PID[24]))
+			$p['birth_multiple'] = $PID[24]; // Multiple Birth Indicator
+
+		if($this->notEmpty($PID[25]))
+			$p['birth_order'] = $PID[25]; // Birth Order
+
+		if($this->notEmpty($PID[26][1]))
+			$p['citizenship'] = $PID[26][1]; // Citizenship
+
+		if($this->notEmpty($PID[27][1]))
+			$p['is_veteran'] = $PID[27][1]; // Veterans Military Status
+
+		if($this->notEmpty($PID[27][1]))
+			$p['death_date'] = $PID[29][1]; // Patient Death Date and Time
+
+		if($this->notEmpty($PID[30]))
+			$p['deceased'] = $PID[30]; // Patient Death Indicator
+
+		if($this->notEmpty($PID[33][1]))
+			$p['update_date'] = $hl7->time($PID[33][1]); // Last update time stamp
+
 		return $p;
 	}
 
@@ -681,11 +741,16 @@ class HL7Server {
 	 */
 	protected function IN1ToInsuranceObj($IN1, $hl7) {
 		$i = array();
-		if($this->notEmpty($IN1[0]))     $i['pid'] = $IN1[0];
-		if($this->notEmpty($IN1[0]))     $i['pid'] = $IN1[0];
-		if($this->notEmpty($IN1[0]))     $i['pid'] = $IN1[0];
-		if($this->notEmpty($IN1[0]))     $i['pid'] = $IN1[0];
-		if($this->notEmpty($IN1[0]))     $i['pid'] = $IN1[0];
+		if($this->notEmpty($IN1[0]))
+			$i['pid'] = $IN1[0];
+		if($this->notEmpty($IN1[0]))
+			$i['pid'] = $IN1[0];
+		if($this->notEmpty($IN1[0]))
+			$i['pid'] = $IN1[0];
+		if($this->notEmpty($IN1[0]))
+			$i['pid'] = $IN1[0];
+		if($this->notEmpty($IN1[0]))
+			$i['pid'] = $IN1[0];
 
 		return $i;
 	}
@@ -698,8 +763,9 @@ class HL7Server {
 	 */
 	protected function IN2ToInsuranceObj($IN1, $hl7) {
 		$obj = new stdClass();
-		if($this->notEmpty($IN1[0]))     $p['pid'] = $IN1[0];
-
+		if($this->notEmpty($IN1[0])){
+			$p['pid'] = $IN1[0];
+		}
 		return $obj;
 	}
 
@@ -711,51 +777,119 @@ class HL7Server {
 	 */
 	protected function IN3ToInsuranceObj($IN1, $hl7) {
 		$obj = new stdClass();
-		if($this->notEmpty($IN1[0]))     $p['id'] = $IN1[0];
+		if($this->notEmpty($IN1[0]))
+			$p['id'] = $IN1[0];
 
 		return $obj;
 	}
+
 	/**
 	 * @param array $p
 	 * @param HL7   $hl7
 	 *
 	 * @return \HL7
 	 */
-	protected function PatientObjToPID($p, $hl7){
+	protected function PatientObjToPID($p, $hl7) {
 		$PID = $hl7->addSegment('PID');
-		if($this->notEmpty($p['pubpid'])) $PID->setValue('2.3',$p['pubpid']);
-		if($this->notEmpty($p['pid'])) $PID->setValue('3.1',$p['pid']);
-		if($this->notEmpty($p['fname'])) $PID->setValue('5.2',$p['fname']);
-		if($this->notEmpty($p['mname'])) $PID->setValue('5.3',$p['mname']);
-		if($this->notEmpty($p['lname'])) $PID->setValue('5.1.1',$p['lname']);
-		if($this->notEmpty($p['mothers_name'])) $PID->setValue('6.2',$p['mothers_name']);
-		if($this->notEmpty($p['DOB'])) $PID->setValue('7.1',$p['DOB']);
-		if($this->notEmpty($p['sex'])) $PID->setValue('8',$p['sex']);
-		if($this->notEmpty($p['alias'])) $PID->setValue('9.2',$p['alias']);
-		if($this->notEmpty($p['race'])) $PID->setValue('10.1',$p['race']);
-		if($this->notEmpty($p['address'])) $PID->setValue('11.1.1',$p['address']);
-		if($this->notEmpty($p['city'])) $PID->setValue('11.3',$p['city']);
-		if($this->notEmpty($p['state'])) $PID->setValue('11.4',$p['state']);
-		if($this->notEmpty($p['zipcode'])) $PID->setValue('11.5',$p['zipcode']);
-		if($this->notEmpty($p['country'])) $PID->setValue('11.6',$p['country']);
-		if($this->notEmpty($p['home_phone'])) $PID->setValue('',$p['home_phone']);
-		if($this->notEmpty($p['work_phone'])) $PID->setValue('',$p['work_phone']);
-		if($this->notEmpty($p['language'])) $PID->setValue('15.1',$p['language']);
-		if($this->notEmpty($p['marital_status'])) $PID->setValue('16.1',$p['marital_status']);
-		if($this->notEmpty($p['pubaccount'])) $PID->setValue('18.1',$p['pubaccount']);
-		if($this->notEmpty($p['SS'])) $PID->setValue('19',$p['SS']);
-		if($this->notEmpty($p['drivers_license'])) $PID->setValue('20.1',$p['drivers_license']);
-		if($this->notEmpty($p['drivers_license_state'])) $PID->setValue('20.2',$p['drivers_license_state']);
-		if($this->notEmpty($p['drivers_license_exp'])) $PID->setValue('20.3',$p['drivers_license_exp']);
-		if($this->notEmpty($p['ethnicity'])) $PID->setValue('22.1',$p['ethnicity']);
-		if($this->notEmpty($p['birth_place'])) $PID->setValue('23',$p['birth_place']);
-		if($this->notEmpty($p['birth_multiple'])) $PID->setValue('24',$p['birth_multiple']);
-		if($this->notEmpty($p['birth_order'])) $PID->setValue('25',$p['birth_order']);
-		if($this->notEmpty($p['citizenship'])) $PID->setValue('26.1',$p['citizenship']);
-		if($this->notEmpty($p['is_veteran'])) $PID->setValue('27.1',$p['is_veteran']);
-		if($this->notEmpty($p['death_date'])) $PID->setValue('29.1',$p['death_date']);
-		if($this->notEmpty($p['deceased'])) $PID->setValue('30',$p['deceased']);
-		if($this->notEmpty($p['update_date'])) $PID->setValue('33.1',$p['update_date']);
+
+		if($this->notEmpty($p['pubpid']))
+			$PID->setValue('2.3', $p['pubpid']);
+
+		if($this->notEmpty($p['pid']))
+			$PID->setValue('3.1', $p['pid']);
+
+		if($this->notEmpty($p['fname']))
+			$PID->setValue('5.2', $p['fname']);
+
+		if($this->notEmpty($p['mname']))
+			$PID->setValue('5.3', $p['mname']);
+
+		if($this->notEmpty($p['lname']))
+			$PID->setValue('5.1.1', $p['lname']);
+
+		if($this->notEmpty($p['mothers_name']))
+			$PID->setValue('6.2', $p['mothers_name']);
+
+		if($this->notEmpty($p['DOB']))
+			$PID->setValue('7.1', $p['DOB']);
+
+		if($this->notEmpty($p['sex']))
+			$PID->setValue('8', $p['sex']);
+
+		if($this->notEmpty($p['alias']))
+			$PID->setValue('9.2', $p['alias']);
+
+		if($this->notEmpty($p['race']))
+			$PID->setValue('10.1', $p['race']);
+
+		if($this->notEmpty($p['address']))
+			$PID->setValue('11.1.1', $p['address']);
+
+		if($this->notEmpty($p['city']))
+			$PID->setValue('11.3', $p['city']);
+
+		if($this->notEmpty($p['state']))
+			$PID->setValue('11.4', $p['state']);
+
+		if($this->notEmpty($p['zipcode']))
+			$PID->setValue('11.5', $p['zipcode']);
+
+		if($this->notEmpty($p['country']))
+			$PID->setValue('11.6', $p['country']);
+
+		if($this->notEmpty($p['home_phone']))
+			$PID->setValue('', $p['home_phone']);
+
+		if($this->notEmpty($p['work_phone']))
+			$PID->setValue('', $p['work_phone']);
+
+		if($this->notEmpty($p['language']))
+			$PID->setValue('15.1', $p['language']);
+
+		if($this->notEmpty($p['marital_status']))
+			$PID->setValue('16.1', $p['marital_status']);
+
+		if($this->notEmpty($p['pubaccount']))
+			$PID->setValue('18.1', $p['pubaccount']);
+
+		if($this->notEmpty($p['SS']))
+			$PID->setValue('19', $p['SS']);
+
+		if($this->notEmpty($p['drivers_license']))
+			$PID->setValue('20.1', $p['drivers_license']);
+
+		if($this->notEmpty($p['drivers_license_state']))
+			$PID->setValue('20.2', $p['drivers_license_state']);
+
+		if($this->notEmpty($p['drivers_license_exp']))
+			$PID->setValue('20.3', $p['drivers_license_exp']);
+
+		if($this->notEmpty($p['ethnicity']))
+			$PID->setValue('22.1', $p['ethnicity']);
+
+		if($this->notEmpty($p['birth_place']))
+			$PID->setValue('23', $p['birth_place']);
+
+		if($this->notEmpty($p['birth_multiple']))
+			$PID->setValue('24', $p['birth_multiple']);
+
+		if($this->notEmpty($p['birth_order']))
+			$PID->setValue('25', $p['birth_order']);
+
+		if($this->notEmpty($p['citizenship']))
+			$PID->setValue('26.1', $p['citizenship']);
+
+		if($this->notEmpty($p['is_veteran']))
+			$PID->setValue('27.1', $p['is_veteran']);
+
+		if($this->notEmpty($p['death_date']))
+			$PID->setValue('29.1', $p['death_date']);
+
+		if($this->notEmpty($p['deceased']))
+			$PID->setValue('30', $p['deceased']);
+
+		if($this->notEmpty($p['update_date']))
+			$PID->setValue('33.1', $p['update_date']);
 		return $hl7;
 	}
 
@@ -764,11 +898,11 @@ class HL7Server {
 	 *
 	 * @return bool
 	 */
-	private function notEmpty($data){
+	private function notEmpty($data) {
 		return isset($data) && ($data != '' && $data != '""' && $data != '\'\'');
 	}
 
-	private function getAssigningAuthority(){
+	private function getAssigningAuthority() {
 		return 'GAIA-' . Matcha::getInstallationNumber();
 	}
 }
@@ -845,7 +979,6 @@ class HL7Server {
 //PID|||6^^^GAIA-1||EVERYWOMAN^EVE|
 //PV1|1||2|||1|1|||||||||Y
 //EOF;
-
 
 
 //include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');

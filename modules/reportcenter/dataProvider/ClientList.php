@@ -23,10 +23,11 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 include_once('Reports.php');
+include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Patient.php');
-include_once($_SESSION['roROOTider/User.php');
-include_once($_SESSION['root'] . '/dataROOTr.php');
-include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
 
 class ClientList extends Reports
 {

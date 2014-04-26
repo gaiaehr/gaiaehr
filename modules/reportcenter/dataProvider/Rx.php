@@ -24,9 +24,10 @@ if(!isset($_SESSION)){
 }
 include_once('Reports.php');
 include_once(ROOT . '/classes/MatchaHelper.php');
-include_once($_SESSION['roROOTider/Patient.php');
-include_once($_SESSION['root'] . '/dataROOT');
-include_once($_SESSION['root'] . '/dataProvider/EncoROOTude_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
 
 class Rx extends Reports
 {

@@ -164,8 +164,8 @@ class authProcedures {
 	 * @return int
 	 */
 	public function ckAuth(){
-		MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
-
+		//MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
+		if(!isset($_SESSION['site']['flops'])) $_SESSION['site']['flops'] = 0;
 		$_SESSION['site']['flops']++;
 		//****************************************************************
 		// If the session has passed 60 flops, with out any activity exit

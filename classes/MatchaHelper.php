@@ -24,6 +24,7 @@ if(!isset($_SESSION)){
 }
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
+if(!defined('site_timezone')) define('site_timezone', 'UTC');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : site_timezone);
 date_default_timezone_set($timezone);
 

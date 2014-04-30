@@ -20,12 +20,14 @@ class HL7ServerHandler {
 
 	public function start($port){
 		$cmd = 'php -f "'.dirname(dirname(__FILE__)).'/lib/HL7/HL7Server.php" -- "127.0.0.1" '.$port.' "'.dirname(dirname(__FILE__)).'/dataProvider" "HL7Server" "Process" "default"';
+
 		if (substr(php_uname(), 0, 7) == "Windows"){
 			pclose(popen("start /B ". $cmd, "r"));
 		}
 		else {
 			exec($cmd . " > /dev/null &");
 		}
+
 		sleep(3);
 		return $this->status($port);
 	}

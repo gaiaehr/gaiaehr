@@ -33,7 +33,7 @@ $method = $argv[5];
 $site = $argv[6];
 chdir($path);
 include_once("$class.php");
-$cls = new $class($site);
+$cls = new $class($port, $site);
 
 function rLog($msg) {
 	$msg = "[" . date('Y-m-d H:i:s') . "] " . $msg . PHP_EOL;

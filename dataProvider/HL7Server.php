@@ -65,6 +65,11 @@ class HL7Server {
 	protected $recipient;
 
 	/**
+	 * @var array
+	 */
+	protected $server;
+
+	/**
 	 * @var string
 	 */
 	protected $msg;
@@ -75,7 +80,7 @@ class HL7Server {
 
 	protected $updateKey = 'pid';
 
-	function __construct($site = 'default') {
+	function __construct($port = '9000', $site = 'default') {
 		$this->site = $site;
 		include_once(dirname(dirname(__FILE__)) . "/sites/{$this->site}/conf.php");
 		include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
@@ -97,9 +102,11 @@ class HL7Server {
 		$this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
 		$this->pResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
 		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
+
+		$this->server = $this->getServerByPort($port);
 	}
 
-	protected function getServers($params) {
+	public function getServers($params) {
 		$servers = $this->s->load($params)->all();
 		foreach($servers['data'] as $i => $server){
 			$handler = new HL7ServerHandler();
@@ -109,22 +116,6 @@ class HL7Server {
 		}
 
 		return $servers;
-	}
-
-	protected function getServer($params) {
-		return $this->s->load($params)->one();
-	}
-
-	protected function addServer($params) {
-		return $this->s->save($params);
-	}
-
-	protected function updateServer($params) {
-		return $this->s->save($params);
-	}
-
-	protected function deleteServer($params) {
-		return $this->s->destroy($params);
 	}
 
 	public function Process($msg = '', $addSocketCharacters = true) {
@@ -139,9 +130,11 @@ class HL7Server {
 		 */
 		$hl7 = new HL7();
 		$msg = $hl7->readMessage($this->msg);
+
 		$application = $hl7->getSendingApplication();
 		$facility = $hl7->getSendingFacility();
 		$version = $hl7->getMsgVersionId();
+
 		/**
 		 * check HL7 version
 		 */
@@ -152,11 +145,11 @@ class HL7Server {
 		/**
 		 * Check for IP address access
 		 */
-		//			$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
-		//			if($this->recipient === false){
-		//				$this->ackStatus = 'AR';
-		//				$this->ackMessage = "This application '$application' Not Authorized";
-		//			}
+		$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
+		if($this->recipient === false){
+			$this->ackStatus = 'AR';
+			$this->ackMessage = "This application '$application' Not Authorized";
+		}
 		/**
 		 *
 		 */
@@ -221,6 +214,58 @@ class HL7Server {
 		return $addSocketCharacters ? "\v" . $ackMsg . chr(0x1c) . chr(0x0d) : $ackMsg;
 
 	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return mixed
+	 */
+	protected function getServer($params) {
+		return $this->s->load($params)->one();
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	protected function addServer($params) {
+		return $this->s->save($params);
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	protected function updateServer($params) {
+		return $this->s->save($params);
+	}
+
+	/**
+	 * @param $params
+	 *
+	 * @return mixed
+	 */
+	protected function deleteServer($params) {
+		return $this->s->destroy($params);
+	}
+
+	/**
+	 * @param $port
+	 *
+	 * @return mixed
+	 */
+	protected function getServerByPort($port){
+		$filters = new stdClass();
+		$filters[0] = new stdClass();
+		$filters[0]->property = 'port';
+		$filters[0]->value = $port;
+		$server = $this->getServer($filters);
+		unset($filters);
+		return $server;
+	}
+
 
 	/**
 	 * @param $hl7 HL7
@@ -592,6 +637,12 @@ class HL7Server {
 		}
 	}
 
+	/**
+	 * @param $aPatient
+	 * @param $bPatient
+	 * @param $pid
+	 * @param $mrg
+	 */
 	protected function MergeHandler($aPatient, $bPatient, $pid, $mrg) {
 		if($aPatient === false){
 			$this->ackStatus = 'AR';

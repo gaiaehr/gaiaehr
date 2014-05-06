@@ -125,7 +125,7 @@ class SiteSetup
 			//		$row[]  = array(
 			//			'msg' => 'GaiaEHR is not installed', 'status' => $status
 			//		);
-			// verified that php 5.2.0 or later is installed
+			// verified that php 5.4.0 or later is installed
 			$status = (version_compare(phpversion(), '5.4.0', '>=') ? 'Ok' : 'Fail');
 			$row[]  = array(
 				'msg' => 'PHP 5.4 + installed', 'status' => $status

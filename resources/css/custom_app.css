@@ -7,6 +7,22 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+
+.x-mask.uploadmask {
+    border: 5px dashed #333333;
+}
+.x-mask.uploadmask.validdrop {
+    border-color: #02781e;
+}
+
+.x-mask-msg.uploadmask div {
+    background-image: none;
+    font-size: 20px;
+    padding: 5px 10px;
+    color: #666666;
+
+}
+
 .dualAppMask {
     background: none repeat scroll 0 0 #CCCCCC;
     position: absolute;

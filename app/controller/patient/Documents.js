@@ -74,15 +74,17 @@ Ext.define('App.controller.patient.Documents', {
 				click: me.onDocumentUploadSaveBtnClick
 			}
 		});
+
+		this.initDocumentDnD();
 	},
 
 	onPatientDocumentGridSelectionChange: function(grid, records){
 		var frame = this.getPatientDocumentViewerFrame();
 
 		if(records.length > 0){
-			frame.setSrc('dataProvider/DocumentViewer.php?site='+ site +'&id=' + records[0].data.id);
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&id=' + records[0].data.id);
 		}else{
-			frame.setSrc('dataProvider/DocumentViewer.php?site='+ site);
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site);
 		}
 	},
 
@@ -98,7 +100,7 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	onDocumentGroupBtnToggle: function(btn, pressed){
-		if(pressed) {
+		if(pressed){
 			this.getPatientDocumentGrid().view.features[0].enable();
 			this.getPatientDocumentGrid().getStore().group(btn.action);
 		}else{
@@ -106,18 +108,24 @@ Ext.define('App.controller.patient.Documents', {
 		}
 	},
 
-	onDocumentUploadBtnClick: function(btn){
-		var record = Ext.create('App.model.patient.PatientDocuments',{
-				pid: app.patient.pid,
-				eid: app.patient.eid,
-				uid: app.user.id,
-				date: new Date()
-			}),
-			win = this.getUploadWindow();
+	onDocumentUploadBtnClick: function(){
+		this.setDocumentUploadWindow('click');
+	},
 
+	setDocumentUploadWindow:function(action){
+		var record = this.getNewPatientDocumentRecord(),
+			win = this.getUploadWindow(action);
 		win.down('form').getForm().loadRecord(record);
+		return win;
+	},
 
-
+	getNewPatientDocumentRecord:function(){
+		return Ext.create('App.model.patient.PatientDocuments', {
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			uid: app.user.id,
+			date: new Date()
+		})
 	},
 
 	getGroupName: function(name){
@@ -140,15 +148,17 @@ Ext.define('App.controller.patient.Documents', {
 		});
 	},
 
-	getUploadWindow:function(){
+	getUploadWindow: function(action){
 		return Ext.widget('patientuploaddocumentwindow', {
+			action: action,
 			itemId: 'patientDocumentUploadWindow'
 		})
 	},
 
 	onDocumentUploadSaveBtnClick: function(){
 		var me = this,
-			form = me.getPatientDocumentUploadWindow().down('form').getForm(),
+			formPanel = me.getPatientDocumentUploadWindow().down('form'),
+			form = formPanel.getForm(),
 			record = form.getRecord(),
 			values = form.getValues(),
 			reader = new FileReader(),
@@ -157,17 +167,21 @@ Ext.define('App.controller.patient.Documents', {
 		if(!form.isValid()) return;
 
 		record.set(values);
-		record.set({name: uploadField.getValue()});
 
-		reader.onload = function(e){
-			record.set({document: e.target.result});
+		if(formPanel.action == 'click'){
+			record.set({name: uploadField.getValue()});
+			reader.onload = function(e){
+				record.set({document: e.target.result});
+				me.doNewDocumentRecordSave(record);
+			};
+			reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+		}else{
 			me.doNewDocumentRecordSave(record);
-		};
+		}
 
-		reader.readAsDataURL(uploadField.extractFileInput().files[0]);
 	},
 
-	doNewDocumentRecordSave:function(record){
+	doNewDocumentRecordSave: function(record){
 		var me = this,
 			store = me.getPatientDocumentGrid().getStore(),
 			index = store.indexOf(record);
@@ -177,13 +191,13 @@ Ext.define('App.controller.patient.Documents', {
 		}
 
 		store.sync({
-			success:function(){
+			success: function(){
 				app.msg(i18n('sweet'), i18n('document_added'));
 				me.getPatientDocumentUploadWindow().close();
 				me.getPatientDocumentGrid().getSelectionModel().select(record);
 
 			},
-			failure:function(){
+			failure: function(){
 				store.rejectChanges();
 				if(dual){
 					dual.msg(i18n('oops'), i18n('document_error'), true);
@@ -193,6 +207,101 @@ Ext.define('App.controller.patient.Documents', {
 
 			}
 		})
+	},
 
+	initDocumentDnD: function(){
+		var me = this;
+
+		me.dnding = false;
+
+		document.ondragenter = function(e){
+			e.preventDefault();
+			if(!me.dnding) me.setDropMask();
+			return false;
+		};
+
+		document.ondragover = function(e){
+			e.preventDefault();
+			return false;
+		};
+
+		document.ondrop = function(e){
+			e.preventDefault();
+			me.unSetDropMask();
+			if(me.dropMask && (e.target == me.dropMask.maskEl.dom  || e.target == me.dropMask.msgEl.dom)){
+				me.dropHandler(e.dataTransfer.files);
+			}
+			return false;
+		};
+
+		document.ondragleave = function(e){
+			if(e.target.localName == 'body') me.unSetDropMask();
+			e.preventDefault();
+			return false;
+		};
+	},
+
+
+	setDropMask:function(){
+		var me = this,
+			dropPanel = me.getPatientDocumentViewerFrame();
+
+		me.dnding = true;
+
+		if(dropPanel && dropPanel.rendered){
+			if(!me.dropMask){
+				me.dropMask = new Ext.LoadMask(me.getPatientDocumentViewerFrame(), {
+					msg: i18n('drop_here'),
+					cls: 'uploadmask',
+					maskCls: 'x-mask uploadmask',
+					shadow: false
+				});
+				me.dropMask.show();
+
+				me.dropMask.maskEl.dom.addEventListener('dragenter', function(e) {
+					e.preventDefault();
+					e.target.classList.add('validdrop');
+					return false;
+				});
+
+				me.dropMask.maskEl.dom.addEventListener('dragleave', function(e) {
+					e.preventDefault();
+					e.target.classList.remove('validdrop');
+					return false;
+				});
+  			}else{
+				me.dropMask.show();
+			}
+
+		}
+	},
+
+	unSetDropMask:function(){
+		this.dnding = false;
+		if(this.dropMask){
+			this.dropMask.hide();
+		}
+	},
+
+	dropHandler:function(files){
+		say(files);
+		var me = this,
+			win = me.setDocumentUploadWindow('drop'),
+			form = win.down('form').getForm(),
+			record = form.getRecord(),
+			reader = new FileReader(),
+			uploadField = form.findField('document');
+
+		uploadField.hide();
+		uploadField.disable();
+
+		reader.onload = function(e){
+			record.set({
+				document: e.target.result,
+				name: files[0].name
+			});
+		};
+
+		reader.readAsDataURL(files[0]);
 	}
 });

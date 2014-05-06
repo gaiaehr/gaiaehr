@@ -258,9 +258,9 @@ class HL7Server {
 	 */
 	protected function getServerByPort($port){
 		$filters = new stdClass();
-		$filters[0] = new stdClass();
-		$filters[0]->property = 'port';
-		$filters[0]->value = $port;
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'port';
+		$filters->filter[0]->value = $port;
 		$server = $this->getServer($filters);
 		unset($filters);
 		return $server;

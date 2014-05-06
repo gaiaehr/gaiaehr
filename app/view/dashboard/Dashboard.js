@@ -50,7 +50,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 					region: 'center',
 					items: [
 						{
-							id: 'dashboard-col-1',
+							itemId: 'dashboard-col-1',
 							items: [
 								{
 									title: i18n('office_notes'),
@@ -63,7 +63,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 							]
 						},
 						{
-							id   : 'dashboard-col-2',
+							itemId: 'dashboard-col-2',
 							items: [
 								{
 									title: 'Office Visits',
@@ -80,8 +80,6 @@ Ext.define('App.view.dashboard.Dashboard', {
 			]
 		});
 
-
-
 		me.callParent();
 
 		me.listeners = {
@@ -94,7 +92,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 		this.msg(i18n('message') + '!', portlet.title + ' ' + i18n('was_removed'));
 	},
 
-	doReloadStores:function(){
+	doReloadStores: function(){
 		Ext.ComponentQuery.query('visitsportlet')[0].load();
 	},
 

@@ -1329,4 +1329,5 @@ $LANG = array(
 	'allow_messages'                        => 'Allow Messages',
 	'allowed_ips'                           => 'Allowed IPs',
 	'allow_ips'                             => 'Allow IPs',
+	'drop_here'                             => 'Drop Here',
 );

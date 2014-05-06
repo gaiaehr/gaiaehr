@@ -65,11 +65,14 @@ Ext.define('Modules.Module',{
 		    });
 
 		    if (Ext.isArray(node)) {
-			    for (var i = 0; i < node.length; i++)
-				    parent.insertBefore(node[i], firstChildNode);
+			    var nodes = [];
+			    for (var i = 0; i < node.length; i++){
+				    Ext.Array.push(nodes, parent.insertBefore(node[i], firstChildNode));
+			    }
+			    return nodes;
 		    }
 		    else {
-			    parent.insertBefore(node, firstChildNode);
+			    return parent.insertBefore(node, firstChildNode);
 		    }
 	    }
 

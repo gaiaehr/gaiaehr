@@ -54,10 +54,10 @@ Ext.define('App.ux.RenderPanel', {
 						me.mainBoddy = Ext.widget('panel', {
 							cls: 'RenderPanel-body',
 							frame: true,
-							layout: this.pageLayout,
 							border: false,
 							itemId: 'pageLayout',
 							defaults: {frame: false, border: false, autoScroll: true},
+							layout: me.pageLayout,
 							items: me.pageBody,
 							tbar: me.pageTBar,
 							bbar: me.pageBBar,

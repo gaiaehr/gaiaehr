@@ -84,40 +84,43 @@ while(true) {
 	}
 	// Handle Input
 	foreach($clients as $key => $client){ // for each client
-		if(in_array($client, $read)){
-			$data = @socket_read($client, 1024 * 1000);
-//			if(!$data) continue;
-			if(!$data){
-				socket_close($client[$key]);
-				rLog('socket_close() Client #' . $key . ' Total Clients: ' . count($clients));
-				unset($clients[$key]);
-				continue;
-			}
-			if($data == 'shutdown'){
-				socket_close($client[$key]);
-				socket_close($sock);
-				unset($client, $sock, $cls, $data);
-				rLog('shutdown()');
-				die;
-			}
-			// ****************************************************** //
-			// ** Place message logic ******************************* //
-			// ****************************************************** //
-			try{
+		try{
+			if(in_array($client, $read)){
+				$data = @socket_read($client, 1024 * 1000);
+//				rLog($data);
+	//			if(!$data) continue;
+				if(!$data){
+					socket_close($client[$key]);
+					rLog('socket_close() Client #' . $key . ' Total Clients: ' . count($clients));
+					unset($clients[$key]);
+					continue;
+				}
+				if($data == 'shutdown'){
+					socket_close($client[$key]);
+					socket_close($sock);
+					unset($client, $sock, $cls, $data);
+					rLog('shutdown()');
+					die;
+				}
+				// ****************************************************** //
+				// ** Place message logic ******************************* //
+				// ****************************************************** //
+
 				$ack = call_user_func(array($cls,$method), $data);
-			}catch (Exception $e){
-				rLog($e->getMessage());
+
+				// ****************************************************** //
+				// ** End message logic ********************************* //
+				// ****************************************************** //
+				@socket_write($client, $ack, strlen($ack));
+	//			@socket_close($clients[$key]);
+	//			unset($clients[$key]);
+				$request++;
+				rLog('socket_write() client #' . $key . ' Request:' . $request . ' Error:' . socket_strerror(socket_last_error($sock)));
+				unset($ack);
+				gc_collect_cycles();
 			}
-			// ****************************************************** //
-			// ** End message logic ********************************* //
-			// ****************************************************** //
-			@socket_write($client, $ack, strlen($ack));
-//			@socket_close($clients[$key]);
-//			unset($clients[$key]);
-			$request++;
-			rLog('socket_write() client #' . $key . ' Request:' . $request . ' Error:' . socket_strerror(socket_last_error($sock)));
-			unset($ack);
-			gc_collect_cycles();
+		}catch (Exception $e){
+			rLog($e->getMessage());
 		}
 	}
 	//	unset($clients);

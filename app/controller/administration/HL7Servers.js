@@ -70,7 +70,7 @@ Ext.define('App.controller.administration.HL7Servers', {
 	},
 
 	serverStartHandler: function(record){
-		HL7ServerHandler.start(record.data.port, function(provider, response){
+		HL7ServerHandler.start({ ip: record.data.ip, port: record.data.port }, function(provider, response){
 			say(response.result);
 			record.set({'online':response.result.online});
 			record.commit();
@@ -78,7 +78,7 @@ Ext.define('App.controller.administration.HL7Servers', {
 	},
 
 	serverStopHandler: function(record){
-		HL7ServerHandler.stop(record.data.port, function(provider, response){
+		HL7ServerHandler.stop({ ip: record.data.ip, port: record.data.port }, function(provider, response){
 			say(response.result);
 			record.set({'online':response.result.online});
 			record.commit();

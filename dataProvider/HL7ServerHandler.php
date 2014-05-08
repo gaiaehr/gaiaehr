@@ -18,8 +18,8 @@
  */
 class HL7ServerHandler {
 
-	public function start($port){
-		$cmd = 'php -f "'.dirname(dirname(__FILE__)).'/lib/HL7/HL7Server.php" -- "127.0.0.1" '.$port.' "'.dirname(dirname(__FILE__)).'/dataProvider" "HL7Server" "Process" "default"';
+	public function start(stdClass $params){
+		$cmd = 'php -f "'.dirname(dirname(__FILE__)).'/lib/HL7/HL7Server.php" -- "'.$params->ip.'" '.$params->port.' "'.dirname(dirname(__FILE__)).'/dataProvider" "HL7Server" "Process" "default"';
 
 		if (substr(php_uname(), 0, 7) == "Windows"){
 			pclose(popen("start /B ". $cmd, "r"));
@@ -29,23 +29,23 @@ class HL7ServerHandler {
 		}
 
 		sleep(3);
-		return $this->status($port);
+		return $this->status($params);
 	}
 
-	public function stop($port){
+	public function stop($params){
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		@socket_connect($socket, '127.0.0.1', $port);
+		@socket_connect($socket, $params->ip, $params->port);
 		$msg = 'shutdown';
 		@socket_write($socket, $msg, strlen($msg));
 		@socket_recv($socket, $response, 1024*10, MSG_WAITALL);
 		@socket_close($socket);
 		sleep(3);
-		return $this->status($port);
+		return $this->status($params);
 	}
 
-	public function status($port){
+	public function status($params){
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		return array('online'=> @socket_connect($socket, '127.0.0.1', $port));
+		return array('online' => @socket_connect($socket, $params->ip, $params->port));
 	}
 
 }

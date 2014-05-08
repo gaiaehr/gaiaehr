@@ -41,6 +41,11 @@ Ext.define('App.model.administration.HL7Server', {
 			dataType: 'longtext'
 		},
 		{
+			name: 'ip',
+			type: 'string',
+			len: 40
+		},
+		{
 			name: 'port',
 			type: 'string',
 			len: 10

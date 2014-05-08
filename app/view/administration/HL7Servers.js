@@ -28,11 +28,28 @@ Ext.define('App.view.administration.HL7Servers', {
 			xtype:'grid',
 			store: this.sStore = Ext.create('App.store.administration.HL7Servers'),
 			itemId: 'hl7serversgrid',
+			columnLines: true,
 			columns:[
+				{
+					text: i18n('online'),
+					dataIndex: 'online',
+					width: 50,
+					renderer: app.boolRenderer
+				},
 				{
 					text: i18n('server_name'),
 					dataIndex: 'server_name',
-					flex: 1
+					width: 150
+				},
+				{
+					text: i18n('server_ip'),
+					dataIndex: 'ip',
+					width: 110
+				},
+				{
+					text: i18n('port'),
+					dataIndex: 'port',
+					width: 70
 				},
 				{
 					text: i18n('allowed_messages'),
@@ -43,16 +60,6 @@ Ext.define('App.view.administration.HL7Servers', {
 					text: i18n('allowed_ips'),
 					dataIndex: 'allow_ips_string',
 					flex: 1
-				},
-				{
-					text: i18n('port'),
-					dataIndex: 'port'
-				},
-				{
-					text: i18n('online'),
-					dataIndex: 'online',
-					width: 50,
-					renderer: app.boolRenderer
 				},
 				{
 					xtype:'gridbutton',
@@ -99,12 +106,20 @@ Ext.define('App.view.administration.HL7Servers', {
 										{
 											xtype: 'textfield',
 											fieldLabel: i18n('server_name'),
-											name: 'server_name'
+											name: 'server_name',
+											anchor: '100%'
+										},
+										{
+											xtype: 'textfield',
+											fieldLabel: i18n('ip'),
+											name: 'ip',
+											anchor: '100%'
 										},
 										{
 											xtype: 'textfield',
 											fieldLabel: i18n('port'),
-											name: 'port'
+											name: 'port',
+											anchor: '100%'
 										},
 										{
 											xtype: 'multitextfield',

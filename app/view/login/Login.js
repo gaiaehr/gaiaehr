@@ -26,7 +26,7 @@ Ext.define('App.view.login.Login', {
 	initComponent: function(){
 		var me = this;
 		me.currSite = null;
-		me.currLang = null;
+		me.siteLang = window.lang.lang_code;
 
 		// setting to show site field
 		me.showSite = false;
@@ -77,7 +77,7 @@ Ext.define('App.view.login.Login', {
 			items: [
 				{
 					xtype: 'textfield',
-					fieldLabel: 'Username',
+					fieldLabel: i18n('username'),
 					blankText: 'Enter your username',
 					name: 'authUser',
 					itemId: 'authUser',
@@ -96,7 +96,7 @@ Ext.define('App.view.login.Login', {
 					blankText: 'Enter your password',
 					inputType: 'password',
 					name: 'authPass',
-					fieldLabel: 'Password',
+					fieldLabel: i18n('password'),
 					minLengthText: 'Password must be at least 4 characters long.',
 					validationEvent: false,
 					allowBlank: false,
@@ -111,7 +111,7 @@ Ext.define('App.view.login.Login', {
 					xtype: 'activefacilitiescombo',
 					name: 'facility',
 					itemId: 'facility',
-					fieldLabel: 'Facility',
+					fieldLabel: i18n('facility'),
 					allowBlank: false,
 					editable: false,
 					hidden: true,
@@ -124,7 +124,7 @@ Ext.define('App.view.login.Login', {
 					xtype: 'languagescombo',
 					name: 'lang',
 					itemId: 'lang',
-					fieldLabel: 'Language',
+					fieldLabel: i18n('language'),
 					allowBlank: false,
 					editable: false,
 					listeners: {
@@ -142,14 +142,14 @@ Ext.define('App.view.login.Login', {
 				'Check-In Mode',
 				'->',
 				{
-					text: 'Login',
+					text: i18n('login'),
 					name: 'btn_login',
 					scope: me,
 					handler: me.loginSubmit
 				},
 				'-',
 				{
-					text: 'Reset',
+					text: i18n('reset'),
 					name: 'btn_reset',
 					scope: me,
 					handler: me.onFormReset
@@ -312,7 +312,7 @@ Ext.define('App.view.login.Login', {
 	},
 
 	onLangSelect: function(combo, value){
-		this.currLang = value[0].data.value;
+		this.siteLang = value[0].data.value;
 	},
 
 	onFacilityLoad: function(store, records){
@@ -338,7 +338,7 @@ Ext.define('App.view.login.Login', {
 			site: window.site,
 			authUser:'',
 			authPass:'',
-			lang: me.currLang
+			lang: me.siteLang
 		});
 		me.formLogin.getComponent('authUser').focus();
 	},
@@ -346,7 +346,8 @@ Ext.define('App.view.login.Login', {
 	 * After form is render load store
 	 */
 	afterAppRender: function(){
-		var me = this, langCmb = me.formLogin.getComponent('lang');
+		var me = this,
+			langCmb = me.formLogin.getComponent('lang');
 
 		if(!me.siteError){
 			if(me.showSite){
@@ -374,8 +375,8 @@ Ext.define('App.view.login.Login', {
 
 			langCmb.store.load({
 				callback: function(){
-					me.currLang = 'en_US';
-					me.formLogin.getComponent('lang').setValue(me.currLang);
+//					me.siteLang = 'en_US';
+					me.formLogin.getComponent('lang').setValue(me.siteLang);
 				}
 			});
 

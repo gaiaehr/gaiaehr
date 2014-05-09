@@ -88,8 +88,8 @@ class i18nRouter {
 			while(false !== ($entry = readdir($handle))){
 				if($entry != '.' && $entry != '..'){
 					include_once(dirname(dirname(__FILE__)) . '/langs/' . $entry);
-					$languageContent['code'] = @key($LANG);
-					$languageContent['description'] = @current($LANG);
+					$languageContent['code'] = $LANG['lang_code'];
+					$languageContent['description'] = $LANG['lang_text'];
 					$availableLanguages[] = $languageContent;
 					$LANG = NULL;
 				}

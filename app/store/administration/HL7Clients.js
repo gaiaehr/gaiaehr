@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.administration.HL7Recipients', {
-    model: 'App.model.administration.HL7Recipients',
+Ext.define('App.store.administration.HL7Clients', {
+    model: 'App.model.administration.HL7Client',
     extend: 'Ext.data.Store'
 });

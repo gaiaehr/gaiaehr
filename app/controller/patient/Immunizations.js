@@ -189,7 +189,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					fieldLabel: i18n('send_from'),
 					emptyText: i18n('select'),
 					labelWidth: 60,
-					store: Ext.create('App.store.administration.HL7Recipients',{
+					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
 							{
 								property:'active',
@@ -207,7 +207,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					labelWidth: 60,
 					displayField: 'recipient_application',
 					valueField: 'id',
-					store: Ext.create('App.store.administration.HL7Recipients',{
+					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
 							{
 								property:'active',

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.HL7Messages', {
+Ext.define('App.model.administration.HL7Message', {
 	extend: 'Ext.data.Model',
 	table: {
 		name: 'hl7_messages',

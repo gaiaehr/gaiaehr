@@ -1766,6 +1766,22 @@ $API = array(
 			),
 			'deleteServer' => array(
 				'len' => 1
+			),
+		)
+	),
+	'HL7Clients' => array(
+		'methods' => array(
+			'getClients' => array(
+				'len' => 1
+			),
+			'addClient' => array(
+				'len' => 1
+			),
+			'updateClient' => array(
+				'len' => 1
+			),
+			'deleteClient' => array(
+				'len' => 1
 			)
 		)
 	),
@@ -1791,9 +1807,6 @@ $API = array(
 				'len' => 1
 			),
 			'getMessageById' => array(
-				'len' => 1
-			),
-			'getRecipients' => array(
 				'len' => 1
 			),
 			'sendVXU' => array(

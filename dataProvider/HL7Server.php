@@ -92,8 +92,8 @@ class HL7Server {
 
 		/** HL7 Models */
 		$this->s = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
-		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Messages');
-		$this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Recipients');
+		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
+		$this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
 
 		/** Patient Model */
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
@@ -104,18 +104,6 @@ class HL7Server {
 		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 
 		$this->server = $this->getServerByPort($port);
-	}
-
-	public function getServers($params) {
-		$servers = $this->s->load($params)->all();
-		foreach($servers['data'] as $i => $server){
-			$handler = new HL7ServerHandler();
-			$status = $handler->status($server['port']);
-			$servers['data'][$i]['online'] = $status['online'];
-			unset($handler);
-		}
-
-		return $servers;
 	}
 
 	public function Process($msg = '', $addSocketCharacters = true) {
@@ -215,13 +203,35 @@ class HL7Server {
 
 	}
 
+	public function getServers($params) {
+		$servers = $this->s->load($params)->all();
+		foreach($servers['data'] as $i => $server){
+			$handler = new HL7ServerHandler();
+			$status = $handler->status($server['port']);
+			$servers['data'][$i]['online'] = $status['online'];
+			unset($handler);
+		}
+
+		return $servers;
+	}
+
 	/**
 	 * @param $params
 	 *
 	 * @return mixed
 	 */
-	protected function getServer($params) {
-		return $this->s->load($params)->one();
+	public function getServer($params) {
+		$server = $this->s->load($params)->one();
+		if($server === false || (isset($server['data']) && $server['data'] === false)) return $server;
+
+		$handler = new HL7ServerHandler();
+		$status = $handler->status($server['port']);
+		if(isset($server['data'])){
+			$server['data']['online'] = $status['online'];
+		}else{
+			$server['online'] = $status['online'];
+		}
+		return $server;
 	}
 
 	/**
@@ -229,7 +239,7 @@ class HL7Server {
 	 *
 	 * @return array
 	 */
-	protected function addServer($params) {
+	public function addServer($params) {
 		return $this->s->save($params);
 	}
 
@@ -238,7 +248,7 @@ class HL7Server {
 	 *
 	 * @return array
 	 */
-	protected function updateServer($params) {
+	public function updateServer($params) {
 		return $this->s->save($params);
 	}
 
@@ -247,7 +257,7 @@ class HL7Server {
 	 *
 	 * @return mixed
 	 */
-	protected function deleteServer($params) {
+	public function deleteServer($params) {
 		return $this->s->destroy($params);
 	}
 

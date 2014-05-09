@@ -279,10 +279,10 @@ class Navigation
 		}
 		//if($this->ACL->hasPermission('access_documents')){
 		$admin['children'][] = array(
-			'text' => $this->i18n['hl7_servers'],
+			'text' => $this->i18n['hl7'],
 			'leaf' => true,
 			'cls' => 'file',
-			'id' => 'App.view.administration.HL7Servers'
+			'id' => 'App.view.administration.HL7'
 		);
 		//if($this->ACL->hasPermission('access_documents')){
 		$admin['children'][] = array(

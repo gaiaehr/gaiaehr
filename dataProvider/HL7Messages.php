@@ -34,7 +34,7 @@ class HL7Messages {
 	 */
 	private $f;
 	/**
-	 * @var MatchaCUP HL7Recipients
+	 * @var MatchaCUP HL7Client
 	 */
 	private $r;
 	/**

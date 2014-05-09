@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.HL7Recipients', {
+Ext.define('App.model.administration.HL7Client', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'hl7_recipients',
-		comment: 'hl7 Recipients Data'
+		name: 'hl7_clients',
+		comment: 'hl7 Clients'
 	},
 	fields: [
 		{
@@ -28,32 +28,32 @@ Ext.define('App.model.administration.HL7Recipients', {
 			type: 'int'
 		},
 		{
-			name: 'recipient_type',
-			type: 'string',
-			comment: 'http or file'
-		},
-		{
-			name: 'recipient_facility',
+			name: 'facility',
 			type: 'string',
 			len: 80,
 			comment: 'Facility Name'
 		},
 		{
-			name: 'recipient_address',
+			name: 'physical_address',
 			type: 'string',
 			len: 1000,
 			comment: 'Facility Name'
 		},
 		{
-			name: 'recipient_application',
+			name: 'application_name',
 			type: 'string',
 			len: 80,
 			comment: 'Application Name'
 		},
 		{
-			name: 'recipient',
+			name: 'route',
 			type: 'string',
-			comment: 'url or Directory Path'
+			comment: 'socket or http'
+		},
+		{
+			name: 'address',
+			type: 'string',
+			comment: 'URL IP'
 		},
 		{
 			name: 'port',
@@ -78,7 +78,10 @@ Ext.define('App.model.administration.HL7Recipients', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'HL7Messages.getRecipients'
+			read: 'HL7Clients.getClients',
+			create: 'HL7Clients.addClient',
+			update: 'HL7Clients.updateClient',
+			destroy: 'HL7Clients.deleteClient'
 		},
 		reader: {
 			totalProperty: 'total',

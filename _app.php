@@ -665,7 +665,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
                 ],
                 controllers:[
-	                'administration.HL7Servers',
+	                'administration.HL7',
 	                'administration.Practice',
 
 	                'Cron',

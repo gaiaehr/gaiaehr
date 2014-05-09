@@ -7,7 +7,8 @@
 $LANG = array(
 
 	// This items are used internally by the GaiaEHR Application.
-    'fr_All'								=> 'Français',
+	'lang_code'								=> 'fr_All',
+    'lang_text'								=> 'Français',
     'i18nExtFile'							=> 'ext-lang-fr.js',
 	// End of the items
     'dashboard'         					=> 'Tableau de bord',

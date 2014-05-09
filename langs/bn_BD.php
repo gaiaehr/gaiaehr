@@ -7,7 +7,8 @@
 $LANG = array(
 
 	// This items are used internally by the GaiaEHR Application.
-	'bn_BD'									=> 'ইংরেজী (Bangladesh)',
+	'lang_code'								=> 'bn_BD',
+	'lang_text'								=> 'ইংরেজী (Bangladesh)',
 	'i18nExtFile'							=> 'ext-lang-bn_BD.js',
 	// End of the items
     'dashboard'         					=> 'খেরোখাতা',

@@ -7,7 +7,8 @@
 $LANG = array(
 
 	// This items are used internally by the GaiaEHR Application.
-    'nl_All'								=> 'Hollandsk',
+	'lang_code'								=> 'nl_All',
+    'lang_text'								=> 'Hollandsk',
     'i18nExtFile'							=> 'ext-lang-nl.js',
 	// End of the items
     'dashboard'         					=> 'Dashboard',

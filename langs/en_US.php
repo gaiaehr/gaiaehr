@@ -7,7 +7,8 @@
 $LANG = array(
 
 	// This items are used internally by the GaiaEHR Application.
-	'en_US'									=> 'English (USA)',
+	'lang_code'								=> 'en_US',
+	'lang_text'								=> 'English (USA)',
 	'i18nExtFile'							=> 'ext-lang-en.js',
 	// End of the items
     'sweet'         					    => 'Sweet!',
@@ -169,6 +170,7 @@ $LANG = array(
     'add_contact'							=> 'Add Contact',
     'following_data_copied_to_clipboard'	=> 'Following data copied to clipboard',
     'personal_info'							=> 'Personal Info',
+    'login'							        => 'Login',
     'login_info'							=> 'Login Info',
     'change_password'						=> 'Change Password',
     'change_you_password'					=> 'Change you password',
@@ -755,6 +757,7 @@ $LANG = array(
 	'user_charges_panel'					=> 'User Charges Panel',
 	'online_support_link'					=> 'Online Support Link',
 	'fullname_format'						=> 'Full Name Format',
+	'language'						        => 'Language',
 	'default_language'						=> 'Default Language',
 	'all_language_allowed'					=> 'All Language Allowed',
 	'allowed_languages'						=> 'Allowed Languages',

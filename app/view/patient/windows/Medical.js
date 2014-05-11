@@ -44,8 +44,8 @@ Ext.define('App.view.patient.windows.Medical', {
 				bodyBorder:false,
 				plain: true,
 				margin: 5,
-				height: 600,
-				width: 1100,
+				height: Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600,
+				width: Ext.getBody().getWidth() < 1050 ? (Ext.getBody().getWidth() - 50) : 1100,
 				items:[
 					{
 						xtype:'patientimmunizationspanel',
@@ -92,7 +92,8 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		me.listeners = {
 			scope: me,
-			close: me.onMedicalWinClose
+			close: me.onMedicalWinClose,
+			show: me.onMedicalWinShow
 		};
 
 		me.callParent(arguments);
@@ -109,6 +110,20 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	setWindowTitle:function(title){
 		this.setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
+	},
+
+	onMedicalWinShow: function(){
+		var p = this.down('tabpanel'),
+			w = Ext.getBody().getWidth() < 1150 ? (Ext.getBody().getWidth() - 50) : 1100,
+			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
+		p.setSize(w, h);
+		this.alignTo(Ext.getBody(), 'c-c');
+
+//		say(p);
+//		say(Ext.getBody().getWidth());
+//		say(w);
+//		say(Ext.getBody().getHeight());
+//		say(h);
 	},
 
 	onMedicalWinClose: function(){

@@ -43,8 +43,8 @@ Ext.define('App.view.patient.windows.Orders', {
 		me.items = [
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
 				margin: 5,
-				height: 600,
-				width: 1100,
+				height: Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600,
+				width: Ext.getBody().getWidth() < 1050 ? (Ext.getBody().getWidth() - 50) : 1100,
 				plain: true,
 				items: [
 					/**
@@ -120,7 +120,14 @@ Ext.define('App.view.patient.windows.Orders', {
 	 * On window shows
 	 */
 	onWinShow: function(){
-		var me = this;
+		var me = this,
+			p = me.down('tabpanel'),
+			w = Ext.getBody().getWidth() < 1150 ? (Ext.getBody().getWidth() - 50) : 1100,
+			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
+
+		p.setSize(w, h);
+
+		me.alignTo(Ext.getBody(), 'c-c');
 		/**
 		 * Fire Event
 		 */

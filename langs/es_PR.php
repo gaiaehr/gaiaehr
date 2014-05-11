@@ -8,12 +8,12 @@ $LANG = array(
 
 	// This items are used internally by the GaiaEHR Application.
 	'lang_code'								=> 'es_PR',
-	'lang_text'								=> 'Español (Puerto Rico)',
+	'lang_text'								=> 'Español (PR)',
 	'i18nExtFile'							=> 'ext-lang-es.js',
 	// End of the items
 	'sweet'         					    => 'Excelente!',
 	'oops'         					        => 'Oops!',
-	'wait'									=> '¡Espera!',
+	'wait'									=> '¡ Espera!',
 	'dashboard'         					=> 'Tablero',
 	'calendar'          					=> 'Calendario',
 	'messages'          					=> 'Mensajes',
@@ -550,7 +550,7 @@ $LANG = array(
 	'short_name'							=> 'Nombre corto',
 	'long_name'								=> 'Nombre largo',
 	'show_inactive_codes_only'				=> 'Mostrar sólo los códigos inactivos',
-	'ops_laboratories'						=> 'Lo sentimos, No se puede agregar laboratorios. Los datos de laboratorio son pre-cargado con <br> identificadores lógicos de observación Nombres y Códigos (LOINC) visita MedlinePlus <a href="http://loinc.org/" loinc.org target="_blank"> </ a> para obtener más información.',
+	'ops_laboratories'						=> 'Lo sentimos, No se puede agregar laboratorios. Los datos de laboratorio son pre-cargado con <br> identificadores lógicos de observación Nombres y Códigos (LOINC) visita MedlinePlus <a href="http://loinc.org/" loinc.org target="_blank"> </a> para obtener más información.',
 	'patient_full_name'						=> 'Nombre completo del paciente',
 	'patient_mothers_maiden_name'			=> 'Paciente apellido de soltera de la madre',
 	'patient_last_name'						=> 'Nombre del último paciente',
@@ -1064,7 +1064,7 @@ $LANG = array(
 	'click_again_hide_the_error_list'		=> 'Haga clic de nuevo para ocultar la lista de errores',
 	'saving'								=> 'Ahorro',
 	'copyright_notice'						=> 'Aviso de copyright',
-	'select_patient_patient_live_search'	=> 'Por favor, seleccione un paciente utilizando la <strong> "Buscar paciente activo" </ strong> o <strong> "En Area de paciente" </ strong>',
+	'select_patient_patient_live_search'	=> 'Por favor, seleccione un paciente utilizando la <strong> "Buscar paciente activo" </strong> o <strong> "En Area de paciente" </strong>',
 	'password_verification'					=> 'Verificación de contraseña',
 	'please_enter_your_password'			=> 'Por favor ingrese su contraseña',
 	'search_for_a_immunizations'			=> 'Búsqueda de una vacuna',

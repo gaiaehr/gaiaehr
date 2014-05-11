@@ -31,9 +31,6 @@ include_once(dirname(__FILE__) . '/dataProvider/i18nRouter.php');
 include_once(dirname(__FILE__) . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');
 
-$_SESSION['version'] = '0.6.185';
-$_SESSION['extjs'] = 'extjs-4.1.1a';
-
 // check if is emergency access....
 if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess']){
 	$isEmerAccess = 1;

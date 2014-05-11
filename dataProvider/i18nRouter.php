@@ -26,10 +26,10 @@ class i18nRouter {
 	public static function getTranslation(){
 		$hasModuleLocales = false;
 
-		if(isset($_SESSION['site']['localization'])){
-			$loc = $_SESSION['site']['localization'];
-		} elseif(isset($_SESSION['site']['default_localization'])){
-			$loc = $_SESSION['site']['default_localization'];
+		if(isset($_SESSION['user']['localization'])){
+			$loc = $_SESSION['user']['localization'];
+		} elseif(defined('site_default_localization')){
+			$loc = site_default_localization;
 		} else{
 			$loc = false;
 		}
@@ -103,8 +103,8 @@ class i18nRouter {
 	// Get the default language
 	// -----------------------------------------------------------------------
 	public static function getDefaultLanguage(){
-		if(isset($_SESSION['site']['default_localization'])){
-			return $_SESSION['site']['default_localization'];
+		if(defined('site_default_localization')){
+			return site_default_localization;
 		} else{
 			return 'en_US';
 		}

@@ -31,6 +31,7 @@ Ext.define('App.controller.Navigation', {
 	],
 
 	navKey: 'ALT',
+	enableNavKeys: false,
 
 	init: function() {
 		var me = this;
@@ -43,7 +44,7 @@ Ext.define('App.controller.Navigation', {
 		Ext.util.History.init();
 		Ext.util.History.on('change', me.urlChange, me);
 
-		me.initFunctionKeyNav();
+		if(me.enableNavKeys) me.initFunctionKeyNav();
 
 		me.control({
 			'viewport':{

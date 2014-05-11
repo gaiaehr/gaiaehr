@@ -49,9 +49,9 @@ print 'lang = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
 $global = Globals::setGlobals();
-$global['root'] = dirname(__FILE__);
-$global['url']  = $_SESSION['url'];
-$global['site']  = $_SESSION['site']['dir'];
+$global['root'] = ROOT;
+$global['url']  = URL;
+$global['site']  = site_dir;
 
 print 'globals = '. json_encode( $global ).';';
 
@@ -83,6 +83,6 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	 */
 	print 'acl = '. json_encode($perms).';';
 	print 'user = '. json_encode($userData).';';
-	print 'settings.site_url = "'. $_SESSION['site']['url'] .'";';
+	print 'settings.site_url = "'. $global['url'] .'";';
 }
 

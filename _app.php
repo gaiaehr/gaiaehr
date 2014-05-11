@@ -27,8 +27,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				user = {},
 				settings = {},
 				globals = {},
-				ext = '<?php print $_SESSION['extjs'] ?>',
-				version = '<?php print $_SESSION['version'] ?>',
+				ext = '<?php print EXTJS ?>',
+				version = '<?php print VERSION ?>',
 				site = '<?php print $site ?>',
 				requires,
 				AppClipboard;
@@ -61,7 +61,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 
         <!-- Ext library -->
-		<script type="text/javascript" src="lib/extjs-4.1.1a/ext-all-debug.js"></script>
+		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js"></script>
 
 
 		<!-- JSrouter and Ext.deirect API files -->
@@ -95,13 +95,13 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			 * Is not intended to be used globally just this once.
 			 */
             (function(){
-                document.write('<script type="text/javascript" src="lib/extjs-4.1.1a/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>')
+                document.write('<script type="text/javascript" src="lib/<?php print EXTJS ?>/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>')
             })();            // Set and enable Ext.loader for dynamic class loading
             Ext.Loader.setConfig({
                 enabled: true,
                 disableCaching: false,
                 paths: {
-                    'Ext': 'lib/extjs-4.1.1a/src',
+                    'Ext': 'lib/<?php print EXTJS ?>/src',
                     'Ext.ux': 'app/ux/ux',
                     'App': 'app',
                     'Modules': 'modules',

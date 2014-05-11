@@ -22,8 +22,6 @@ session_start();
 session_cache_limiter('private');
 define('_GaiaEXEC', 1);
 
-$_SESSION['version'] = '0.6.185';
-$_SESSION['extjs'] = 'extjs-4.1.1a';
 
 //include_once('classes/Mobile_Detect.php');
 //$mobile = new Mobile_Detect();

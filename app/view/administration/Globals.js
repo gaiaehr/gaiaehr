@@ -29,6 +29,7 @@ Ext.define('App.view.administration.Globals', {
 		me.store = Ext.create('App.store.administration.Globals',{
 			groupField: 'gl_category',
 			remoteSort: false,
+			autoSync: true,
 			sorters: [
 				{
 					sorterFn: function(o1, o2){
@@ -321,6 +322,11 @@ Ext.define('App.view.administration.Globals', {
 					groupHeaderTpl: i18n('category') + ': {name}'
 				}
 			],
+			plugins:[
+				{
+					ptype:'cellediting'
+				}
+			],
 			columns:[
 				{
 					text:i18n('title'),
@@ -330,7 +336,10 @@ Ext.define('App.view.administration.Globals', {
 				{
 					text:i18n('value'),
 					dataIndex:'gl_value',
-					flex:1
+					flex:1,
+					editor:{
+						xtype:'textfield'
+					}
 				},
 				{
 					text:i18n('category'),

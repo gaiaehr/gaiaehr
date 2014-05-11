@@ -17,14 +17,12 @@
  */
 
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
-$lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
-$site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>GaiaEHR Logon Screen</title>
-    <script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
+    <script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js"></script>
     <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
     <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
@@ -35,7 +33,7 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
     <script type="text/javascript">
         var app,
 	        site = '<?php print $site ?>',
-	        localization = '<?php print $lang ?>';
+	        localization = '<?php print site_default_localization ?>';
 
         function i18n(key){ return lang[key] || key; }
         function say(a){ console.log(a); }
@@ -57,6 +55,6 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
 <body id="login">
 <div id="msg-div"></div>
 <div id="copyright">
-	<div>Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">GPLv3</a> |:| v<?php print $_SESSION['version'] ?></div>
+	<div>Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">GPLv3</a> |:| v<?php print VERSION ?></div>
 </body>
 </html>

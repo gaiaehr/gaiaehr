@@ -16,18 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!defined('_GaiaEXEC'))
-	die('No direct access allowed.');
-
-$http = 'http';
-if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)){
-	$http = 'https';
-}
-
-$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
-$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/';
-$_SESSION['url'] = "$http://{$host}{$uri}";
-
+if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 if(!defined('HTTP')){
 	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)){
 		define('HTTP', 'https');
@@ -35,14 +24,14 @@ if(!defined('HTTP')){
 		define('HTTP', 'http');
 	}
 }
-if(!defined('HOST'))
-	define('HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
-if(!defined('URI'))
-	define('URI', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/');
-if(!defined('ROOT'))
-	define('ROOT', str_replace('\\', '/', dirname(__FILE__)));
-if(!defined('URL'))
-	define('URL', HTTP . '://' . HOST . URI);
+if(!defined('HOST')) define('HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
+if(!defined('URI'))	define('URI', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/');
+if(!defined('ROOT')) define('ROOT', str_replace('\\', '/', dirname(__FILE__)));
+if(!defined('URL'))	define('URL', HTTP . '://' . HOST . URI);
+// application version
+if(!defined('VERSION'))	define('VERSION', '0.7.200');
+// extjs sdk directory
+if(!defined('EXTJS')) define('EXTJS', 'extjs-4.1.1a');
 
 // sites values
 $_SESSION['sites'] = array();
@@ -69,18 +58,6 @@ $_SESSION['inactive']['timeout'] = time();
 // cron job
 $_SESSION['cron']['delay'] = 60; // in seconds
 $_SESSION['cron']['time'] = time(); // store the last cron time stamp
-
-// directories
-//$_SESSION['dir']['ext']         = 'extjs-4.1.1';
-//$_SESSION['dir']['touch']       = 'sencha-touch-2.0.1';
-//$_SESSION['dir']['ext_cal']     = 'extensible-1.5.1';
-//$_SESSION['dir']['AES']         = 'phpAES';
-//$_SESSION['dir']['ext_classes'] = 'classes/ext';
-
-// patient
-//$_SESSION['patient']['pid']      = null;
-//$_SESSION['patient']['name']     = null;
-//$_SESSION['patient']['readOnly'] = null;
 
 // server data
 $_SESSION['server'] = $_SERVER;

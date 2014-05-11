@@ -30,6 +30,8 @@ Ext.define('App.model.administration.HL7Message', {
 		{
 			name: 'msg_type',
 			type: 'string',
+			len: 15,
+			index: true,
 			comment: 'example VXU ADT OBX'
 		},
 		{
@@ -47,16 +49,19 @@ Ext.define('App.model.administration.HL7Message', {
 		{
 			name: 'foreign_facility',
 			type: 'string',
+			len: 60,
 			comment: 'From or To external facility'
 		},
 		{
 			name: 'foreign_application',
 			type: 'string',
+			len: 60,
 			comment: 'From or To external Application'
 		},
 		{
 			name: 'foreign_address',
 			type: 'string',
+			len: 180,
 			comment: 'incoming or outgoing address'
 		},
 		{
@@ -74,16 +79,19 @@ Ext.define('App.model.administration.HL7Message', {
 			name: 'status',
 			type: 'int',
 			len: 1,
+			index: true,
 			comment: '0 = hold, 1 = processing, 2 = queue, 3 = processed, 4 = error'
 		},
 		{
 			name: 'error',
 			type: 'string',
+			index: true,
 			comment: 'connection error message'
 		},
 		{
 			name: 'reference',
 			type: 'string',
+			len: 60,
 			comment: 'Reference number or file name'
 		}
 	],

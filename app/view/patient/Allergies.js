@@ -45,24 +45,34 @@ Ext.define('App.view.patient.Allergies', {
 		},
 		{
 			header: i18n('name'),
-			width: 375,
-			dataIndex: 'allergy'
+			flex: 1,
+			dataIndex: 'allergy',
+			renderer:function(v, meta, record){
+				return v + (record.data.allergy_code == '' ? '' : ' ('+ record.data.allergy_code +')');
+			}
 		},
 		{
 			header: i18n('location'),
-			width: 100,
+			width: 220,
 			dataIndex: 'location'
 		},
 		{
+			header: i18n('reaction'),
+			width: 220,
+			dataIndex: 'reaction'
+		},
+		{
 			header: i18n('severity'),
-			flex: 1,
+			width: 220,
 			dataIndex: 'severity'
 		},
 		{
 			text: i18n('active'),
 			width: 55,
 			dataIndex: 'active',
-			renderer: this.boolRenderer
+			renderer: function(v){
+				return app.boolRenderer(v);
+			}
 		}
 	],
 	plugins: Ext.create('App.ux.grid.RowFormEditing', {

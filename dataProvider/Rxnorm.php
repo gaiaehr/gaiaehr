@@ -95,7 +95,7 @@ class Rxnorm {
 	public function getRXNORMLiveSearch(stdClass $params){
 		$this->db->setSQL("SELECT *
                              FROM rxnconso
-                            WHERE (SAB = 'MMSL' AND TTY = 'BD')
+                            WHERE (SAB = 'MMSL' AND (TTY = 'BD' OR TTY = 'SBD'))
                               AND STR LIKE '%$params->query%'
                          GROUP BY RXCUI
                          LIMIT 100");
@@ -118,13 +118,12 @@ class Rxnorm {
 	}
 
 	public function getRXNORMAllergyLiveSearch(stdClass $params){
-		$this->db->setSQL("SELECT * FROM rxnconso WHERE (TTY = 'IN' OR TTY = 'PIN') AND STR LIKE '$params->query%' GROUP BY RXCUI LIMIT 100");
+		$this->db->setSQL("SELECT *
+							 FROM rxnconso
+							WHERE (TTY = 'IN' OR TTY = 'PIN') AND STR LIKE '$params->query%'
+						 GROUP BY RXCUI LIMIT 100");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		$total = count($records);
-		//		if($total == 0){
-		//			$this->db->setSQL("SELECT * FROM rxnconso WHERE TTY = 'PT' AND STR LIKE '$params->query%' GROUP BY RXCUI LIMIT 100");
-		//			$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
-		//		}
 		$records = array_slice($records, $params->start, $params->limit);
 		return array('totals' => $total, 'rows' => $records);
 	}

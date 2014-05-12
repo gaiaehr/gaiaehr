@@ -124,7 +124,9 @@ Ext.define('App.view.patient.Medications', {
 					header: i18n('active?'),
 					width: 60,
 					dataIndex: 'active',
-					renderer: this.boolRenderer
+					renderer: function(v){
+						return app.boolRenderer(v);
+					}
 				}
 			],
 			plugins: Ext.create('Ext.grid.plugin.RowEditing', {

@@ -44,7 +44,9 @@ Ext.define('App.view.administration.HL7', {
 					text: i18n('online'),
 					dataIndex: 'online',
 					width: 50,
-					renderer: app.boolRenderer
+					renderer: function(v){
+						return app.boolRenderer(v);
+					}
 				},
 				{
 					text: i18n('server_name'),
@@ -294,7 +296,9 @@ Ext.define('App.view.administration.HL7', {
 					text: i18n('active'),
 					dataIndex: 'active',
 					width: 50,
-					renderer: app.boolRenderer,
+					renderer: function(v){
+						return app.boolRenderer(v);
+					},
 					editor: {
 						xtype:'checkbox'
 					}

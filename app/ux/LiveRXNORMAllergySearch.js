@@ -25,59 +25,57 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('liveRXNORMAllergySearchModel',
-			{
-				extend: 'Ext.data.Model',
-				fields: [
-					{name: 'RXCUI', type: 'auto'},
-					{name: 'CODE', type: 'auto'},
-					{name: 'STR', type: 'auto'},
-					{name: 'DST', type: 'auto'},
-					{name: 'DRT', type: 'auto'},
-					{name: 'DDF', type: 'auto'},
-					{name: 'DDFA', type: 'auto'},
-					{name: 'RXN_QUANTITY', type: 'auto'},
-					{name: 'SAB', type: 'auto'},
-					{name: 'RXAUI', type: 'auto'}
-				],
-				proxy: {
-					type: 'direct',
-					api: {
-						read: 'Rxnorm.getRXNORMAllergyLiveSearch'
-					},
-					reader: {
-						totalProperty: 'totals',
-						root: 'rows'
-					}
-				}
-			});
-
-		me.store = Ext.create('Ext.data.Store',
-			{
-				model: 'liveRXNORMAllergySearchModel',
-				pageSize: 10,
-				autoLoad: false
-			});
-
-		Ext.apply(this,
-			{
-				store: me.store,
-				emptyText: i18n('search') + '...',
-				typeAhead: false,
-				hideTrigger: true,
-				minChars: 3,
-				listConfig: {
-					loadingText: i18n('searching') + '...',
-					//emptyText	: 'No matching posts found.',
-					//---------------------------------------------------------------------
-					// Custom rendering template for each item
-					//---------------------------------------------------------------------
-					getInnerTpl: function(){
-						return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
-					}
+		Ext.define('liveRXNORMAllergySearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'RXCUI', type: 'auto'},
+				{name: 'CODE', type: 'auto'},
+				{name: 'STR', type: 'auto'},
+				{name: 'DST', type: 'auto'},
+				{name: 'DRT', type: 'auto'},
+				{name: 'DDF', type: 'auto'},
+				{name: 'DDFA', type: 'auto'},
+				{name: 'RXN_QUANTITY', type: 'auto'},
+				{name: 'SAB', type: 'auto'},
+				{name: 'RXAUI', type: 'auto'},
+				{name: 'CodeType', defaultValue: 'RXNORM'}
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'Rxnorm.getRXNORMAllergyLiveSearch'
 				},
-				pageSize: 10
-			});
+				reader: {
+					totalProperty: 'totals',
+					root: 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'liveRXNORMAllergySearchModel',
+			pageSize: 25,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store: me.store,
+			emptyText: i18n('search') + '...',
+			typeAhead: false,
+			hideTrigger: true,
+			minChars: 3,
+			listConfig: {
+				loadingText: i18n('searching') + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function(){
+					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
+				}
+			},
+			pageSize: 25
+		});
 
 		me.callParent();
 	}

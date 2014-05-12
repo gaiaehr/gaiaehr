@@ -37,7 +37,8 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 				{name: 'DDFA', type: 'auto'},
 				{name: 'RXN_QUANTITY', type: 'auto'},
 				{name: 'SAB', type: 'auto'},
-				{name: 'RXAUI', type: 'auto'}
+				{name: 'RXAUI', type: 'auto'},
+				{name: 'CodeType', defaultValue: 'RXNORM'}
 			],
 			proxy: {
 				type: 'direct',
@@ -53,7 +54,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model: 'liveRXNORMSearchModel',
-			pageSize: 10,
+			pageSize: 25,
 			autoLoad: false
 		});
 
@@ -73,7 +74,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
 				}
 			},
-			pageSize: 10
+			pageSize: 25
 		});
 
 		me.callParent();

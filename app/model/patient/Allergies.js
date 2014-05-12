@@ -39,20 +39,39 @@ Ext.define('App.model.patient.Allergies', {
 			index: true
 		},
 		{
-			name: 'allergy_type',
+			name: 'allergy',
+			len: 80,
 			type: 'string'
+		},
+		{
+			name: 'allergy_type',
+			type: 'string',
+			len: 20
 		},
 		{
 			name: 'allergy_code',
 			type: 'string',
+			len: 20,
 			comment: 'RxNORM RXCUI code if food allergy'
 		},
 		{
-			name: 'location',
+			name: 'allergy_code_type',
+			len: 20,
 			type: 'string'
 		},
 		{
-			name: 'allergy',
+			name: 'location',
+			len: 80,
+			type: 'string'
+		},
+		{
+			name: 'reaction',
+			len: 80,
+			type: 'string'
+		},
+		{
+			name: 'severity',
+			len: 80,
 			type: 'string'
 		},
 		{
@@ -66,18 +85,6 @@ Ext.define('App.model.patient.Allergies', {
 			type: 'date',
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'reaction',
-			type: 'string'
-		},
-		{
-			name: 'location',
-			type: 'string'
-		},
-		{
-			name: 'severity',
-			type: 'string'
 		},
 		{
 			name: 'active',
@@ -98,7 +105,8 @@ Ext.define('App.model.patient.Allergies', {
 		{
 			name: 'create_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'},
+			dateFormat: 'Y-m-d H:i:s'
+		},
 		{
 			name: 'update_date',
 			type: 'date',

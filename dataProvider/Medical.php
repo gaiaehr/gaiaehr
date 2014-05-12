@@ -143,9 +143,9 @@ class Medical {
 		return $this->a->load($params)->all();
 	}
 	public function getPatientAllergiesByPid($pid){
-		$params =  new stdClass();
+		$params = new stdClass();
 		$params->filters[0] = new stdClass();
-		$params->filters[0]->property =  'pid';
+		$params->filters[0]->property = 'pid';
 		$params->filters[0]->value =  $pid;
 		return $this->a->load($params)->all();
 	}

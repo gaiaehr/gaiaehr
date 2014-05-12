@@ -96,7 +96,8 @@ Ext.define('App.controller.patient.Allergies', {
 		var form = cmb.up('form').getForm();
 
 		form.getRecord().set({
-			allergy_code: records[0].data.RXCUI
+			allergy_code: records[0].data.RXCUI,
+			allergy_code_type: records[0].data.CodeType
 		});
 	},
 
@@ -110,11 +111,11 @@ Ext.define('App.controller.patient.Allergies', {
 		me.getAllergyTypesCombo().setVisible(!isDrug);
 		me.getAllergyTypesCombo().setDisabled(isDrug);
 
-		if(!isDrug) me.getAllergyTypesCombo().store.load({
-			params: {
-				allergy_type: type
-			}
-		});
+		if(isDrug){
+			me.getAllergyMedicationCombo().reset();
+		}else{
+			me.getAllergyTypesCombo().store.load({params: {allergy_type: type}});
+		}
 	},
 
 	onAllergyLocationComboSelect: function(combo, record){
@@ -180,7 +181,7 @@ Ext.define('App.controller.patient.Allergies', {
 					},
 					{
 						property: 'end_date',
-						value: null
+						value: '0000-00-00'
 					}
 				]
 			})

@@ -40,7 +40,9 @@ Ext.define('App.view.administration.Roles', {
 		            text:i18n('front_office'),
 		            dataIndex: 'role-front_office',
 		            editor: { xtype:'checkbox' },
-		            renderer: this.boolRenderer,
+		            renderer: function(v){
+			            return app.boolRenderer(v);
+		            },
 		            cls: 'headerAlignCenter',
 		            width:120
 	            },
@@ -48,7 +50,9 @@ Ext.define('App.view.administration.Roles', {
 		            text:i18n('auditor'),
 		            dataIndex: 'role-auditor',
 		            editor: { xtype:'checkbox' },
-		            renderer: this.boolRenderer,
+		            renderer: function(v){
+			            return app.boolRenderer(v);
+		            },
 		            cls: 'headerAlignCenter',
 		            width:120
 	            },
@@ -56,7 +60,9 @@ Ext.define('App.view.administration.Roles', {
 		            text:i18n('clinician'),
 		            dataIndex: 'role-clinician',
 		            editor: { xtype:'checkbox' },
-		            renderer: this.boolRenderer,
+		            renderer: function(v){
+			            return app.boolRenderer(v);
+		            },
 		            cls: 'headerAlignCenter',
 		            width:120
 	            },
@@ -64,7 +70,9 @@ Ext.define('App.view.administration.Roles', {
 		            text:i18n('physician'),
 		            dataIndex: 'role-physician',
 		            editor: { xtype:'checkbox' },
-		            renderer: this.boolRenderer,
+		            renderer: function(v){
+			            return app.boolRenderer(v);
+		            },
 		            cls: 'headerAlignCenter',
 		            width:120
 	            },
@@ -72,7 +80,9 @@ Ext.define('App.view.administration.Roles', {
 		            text:i18n('emergency_access'),
 		            dataIndex: 'role-emergencyaccess',
 		            editor: { xtype:'checkbox' },
-		            renderer: this.boolRenderer,
+		            renderer: function(v){
+			            return app.boolRenderer(v);
+		            },
 		            cls: 'headerAlignCenter',
 		            width:120
 	            },
@@ -80,7 +90,9 @@ Ext.define('App.view.administration.Roles', {
 		            text:i18n('administrator'),
 		            dataIndex: 'role-administrator',
 		            editor: { xtype:'checkbox' },
-		            renderer: this.boolRenderer,
+		            renderer: function(v){
+			            return app.boolRenderer(v);
+		            },
 		            cls: 'headerAlignCenter',
 		            width:120
 	            },

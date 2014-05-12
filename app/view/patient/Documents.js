@@ -99,7 +99,9 @@ Ext.define('App.view.patient.Documents', {
 					header: i18n('encrypted'),
 					dataIndex: 'encrypted',
 					width: 70,
-					renderer: this.boolRenderer
+					renderer: function(v){
+						return app.boolRenderer(v);
+					}
 				}
 			],
 			plugins: Ext.create('Ext.grid.plugin.RowEditing', {

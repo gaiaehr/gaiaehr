@@ -43,7 +43,7 @@ Ext.define('App.controller.patient.ActiveProblems', {
 				activate: me.onActiveProblemsGridActive
 			},
 			'#activeProblemLiveSearch':{
-				select: me.onActiveProbleLiveSearchSelect
+				select: me.onActiveProblemLiveSearchSelect
 			},
 			'patientactiveproblemspanel #addActiveProblemBtn':{
 				click: me.onAddActiveProblemBtnClick
@@ -81,11 +81,11 @@ Ext.define('App.controller.patient.ActiveProblems', {
 		]);
 	},
 
-	onActiveProbleLiveSearchSelect:function(cmb, records){
+	onActiveProblemLiveSearchSelect:function(cmb, records){
 		var form = cmb.up('form').getForm();
 
-		form.findField('code_text').setValue(records[0].data.code_text);
-		form.findField('code_type').setValue(records[0].data.code_type);
+		form.findField('code_text').setValue(records[0].data.FullySpecifiedName);
+		form.findField('code_type').setValue(records[0].data.CodeType);
 
 	}
 });

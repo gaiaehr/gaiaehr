@@ -64,8 +64,8 @@ Ext.define('App.view.patient.RxOrders', {
 				{
 					icon: 'resources/images/icons/cross.png',
 					tooltip: i18n('remove')
-//					scope: me,
-//					handler: me.onRemoveClick
+					//					scope: me,
+					//					handler: me.onRemoveClick
 				}
 			]
 		},
@@ -73,10 +73,10 @@ Ext.define('App.view.patient.RxOrders', {
 			xtype: 'datecolumn',
 			header: i18n('date_ordered'),
 			dataIndex: 'date_ordered',
-			format: globals['date_display_format'],
+			format: 'Y-m-d',
 			editor: {
 				xtype: 'datefield',
-				format: g('date_display_format')
+				format: 'Y-m-d'
 			}
 		},
 		{
@@ -86,10 +86,10 @@ Ext.define('App.view.patient.RxOrders', {
 			editor: {
 				xtype: 'rxnormlivetsearch',
 				itemId: 'RxNormOrderLiveSearch'
-//				listeners: {
-//					scope: me,
-//					select: me.onRxnormLiveSearchSelect
-//				}
+				//				listeners: {
+				//					scope: me,
+				//					select: me.onRxnormLiveSearchSelect
+				//				}
 			}
 		},
 		{
@@ -145,13 +145,13 @@ Ext.define('App.view.patient.RxOrders', {
 			width: 150,
 			dataIndex: 'ICDS',
 			editor: {
-				xtype:'encountericdscombo',
+				xtype: 'encountericdscombo',
 				itemId: 'rxEncounterDxLiveSearch'
 			} //me.encounderIcdsCodes
 		},
 		{
 			xtype: 'datecolumn',
-			format: globals['date_display_format'],
+			format: 'Y-m-d',
 			header: i18n('begin_date'),
 			width: 75,
 			dataIndex: 'begin_date'
@@ -160,11 +160,11 @@ Ext.define('App.view.patient.RxOrders', {
 			xtype: 'datecolumn',
 			header: i18n('end_date'),
 			width: 75,
-			format: globals['date_display_format'],
+			format: 'Y-m-d',
 			dataIndex: 'end_date',
 			editor: {
 				xtype: 'datefield',
-				format: globals['date_display_format']
+				format: 'Y-m-d'
 			}
 		}
 
@@ -176,9 +176,9 @@ Ext.define('App.view.patient.RxOrders', {
 			text: i18n('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
-			itemId :'newRxOrderBtn'
-//			scope: me,
-//			handler: me.onNewPrescription
+			itemId: 'newRxOrderBtn'
+			//			scope: me,
+			//			handler: me.onNewPrescription
 
 		},
 		'-',
@@ -188,9 +188,9 @@ Ext.define('App.view.patient.RxOrders', {
 			disabled: true,
 			margin: '0 5 0 0',
 			action: 'encounterRecordAdd',
-			itemId :'cloneRxOrderBtn'
-//			scope: me,
-//			handler: me.onClonePrescriptions
+			itemId: 'cloneRxOrderBtn'
+			//			scope: me,
+			//			handler: me.onClonePrescriptions
 		},
 		'-',
 		{
@@ -198,11 +198,11 @@ Ext.define('App.view.patient.RxOrders', {
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
-			itemId :'printRxOrderBtn'
+			itemId: 'printRxOrderBtn'
 		}
 	]
-//	listeners: {
-//		scope: me,
-//		selectionchange: me.onSelectionChange
-//	}
+	//	listeners: {
+	//		scope: me,
+	//		selectionchange: me.onSelectionChange
+	//	}
 });

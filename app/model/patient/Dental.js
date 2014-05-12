@@ -27,8 +27,16 @@ Ext.define('App.model.patient.Dental', {
 		{name: 'create_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'cdt_code', type: 'string'},
 		{name: 'description', type: 'string'},
-		{name: 'begin_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'end_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+		{
+			name: 'begin_date',
+			type: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'end_date',
+			type: 'date',
+			dateFormat: 'Y-m-d'
+		},
 		{name: 'ocurrence', type: 'string'},
 		{name: 'referred_by', type: 'string'},
 		{name: 'outcome', type: 'string'},

@@ -97,7 +97,8 @@ Ext.define('App.model.patient.Medications', {
 		{
 			name: 'date_ordered',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'created_date',
@@ -107,12 +108,14 @@ Ext.define('App.model.patient.Medications', {
 		{
 			name: 'begin_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'end_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 
 		{

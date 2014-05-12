@@ -197,8 +197,6 @@ Ext.define('App.controller.patient.RxOrders', {
 	onRxOrdersGridActive:function(grid){
 		var store = grid.getStore();
 
-		say(store);
-
 		store.clearFilter(true);
 		store.filter([
 			{

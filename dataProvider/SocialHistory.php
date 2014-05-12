@@ -24,7 +24,6 @@ class SocialHistory {
 	 */
 	private $s = null;
 
-
 	/**
 	 * Set Model App.model.patient.PatientsOrders
 	 */
@@ -41,6 +40,7 @@ class SocialHistory {
 		$this->setModel();
 		return $this->s->load($params)->all();
 	}
+
 	/**
 	 * @param $params
 	 * @return array

@@ -20,13 +20,13 @@ Ext.define('App.view.patient.ActiveProblems', {
 	extend: 'Ext.grid.Panel',
 	requires: [
 		'App.ux.grid.RowFormEditing',
-		'App.ux.LiveICDXSearch',
+		'App.ux.LiveSnomedSearch',
+		'App.ux.combo.CodesTypes',
 		'App.ux.combo.Occurrence',
 		'App.ux.combo.Outcome2'
 	],
 	xtype: 'patientactiveproblemspanel',
 	title: i18n('active_problems'),
-	border:false,
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientActiveProblems', {
 		remoteFilter: true,
@@ -35,7 +35,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 	columns: [
 		{
 			header: i18n('code'),
-			width: 110,
+			width: 150,
 			dataIndex: 'code',
 			renderer:function(value, metaDate, record){
 				return value + ' (' + record.data.code_type + ')'
@@ -78,14 +78,14 @@ Ext.define('App.view.patient.ActiveProblems', {
 				layout: 'vbox',
 				items: [
 					{
-						xtype: 'liveicdxsearch',
+						xtype: 'snomedlivetsearch',
 						fieldLabel: i18n('search'),
 						name: 'code',
 						hideLabel: false,
 						itemId: 'activeProblemLiveSearch',
 						enableKeyEvents: true,
-						displayField: 'code',
-						valueField: 'code',
+						displayField: 'ConceptId',
+						valueField: 'ConceptId',
 						width: 720,
 						labelWidth: 70
 					},
@@ -156,7 +156,6 @@ Ext.define('App.view.patient.ActiveProblems', {
 
 							}
 						]
-
 					},
 					{
 						/**

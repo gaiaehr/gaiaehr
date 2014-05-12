@@ -59,18 +59,22 @@ Ext.define('App.view.patient.SocialHistory', {
 			xtype: 'datecolumn',
 			text: i18n('start'),
 			dataIndex: 'start_date',
+			format: 'Y-m-d',
 			width: 120,
 			editor: {
-				xtype: 'datefield'
+				xtype: 'datefield',
+				format: 'Y-m-d',
 			}
 		},
 		{
 			xtype: 'datecolumn',
 			text: i18n('end'),
 			dataIndex: 'end_date',
+			format: 'Y-m-d',
 			width: 120,
 			editor: {
-				xtype: 'datefield'
+				xtype: 'datefield',
+				format: 'Y-m-d'
 			}
 		}
 	],

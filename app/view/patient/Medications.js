@@ -100,7 +100,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					xtype: 'datecolumn',
-					format: globals['date_display_format'],
+					format: 'Y-m-d',
 					header: i18n('begin_date'),
 					width: 100,
 					dataIndex: 'begin_date',
@@ -108,6 +108,8 @@ Ext.define('App.view.patient.Medications', {
 					hideable: false
 				},
 				{
+					xtype: 'datecolumn',
+					format: 'Y-m-d',
 					header: i18n('end_date'),
 					width: 100,
 					dataIndex: 'end_date',
@@ -115,7 +117,7 @@ Ext.define('App.view.patient.Medications', {
 					hideable: false,
 					editor: {
 						xtype: 'datefield',
-						format: g('date_display_format')
+						format: 'Y-m-d'
 					}
 				},
 				{

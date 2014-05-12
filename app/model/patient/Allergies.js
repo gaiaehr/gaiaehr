@@ -58,12 +58,14 @@ Ext.define('App.model.patient.Allergies', {
 		{
 			name: 'begin_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'end_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'reaction',

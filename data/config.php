@@ -731,6 +731,13 @@ $API = array(
 			)
 		)
 	),
+	'SnomedCodes' => array(
+		'methods' => array(
+			'liveCodeSearch' => array(
+				'len' => 1
+			)
+		)
+	),
 	'Rxnorm' => array(
 		'methods' => array(
 			'getRXNORMLiveSearch' => array(

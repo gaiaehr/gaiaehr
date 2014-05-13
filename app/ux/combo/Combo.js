@@ -1,11 +1,16 @@
 Ext.define('App.ux.combo.Combo', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.gaiaehr.combo',
+	displayField: 'option_name',
+	valueField: 'option_value',
+	emptyText: i18n('select'),
+	editable: false,
+
 	list: null,
 
 	initComponent: function(){
-		var me = this;
-		var model = me.id + 'ComboModel';
+		var me = this,
+			model = me.id + 'ComboModel';
 
 		Ext.define(model, {
 			extend: 'Ext.data.Model',
@@ -40,14 +45,6 @@ Ext.define('App.ux.combo.Combo', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model: model
-		});
-
-		Ext.apply(me, {
-			editable: false,
-			displayField: 'option_name',
-			valueField: 'option_value',
-			emptyText: i18n('select'),
-			store: me.store
 		});
 
 		me.callParent(arguments);

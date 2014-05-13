@@ -33,6 +33,10 @@ Ext.define('App.controller.patient.SocialHistory', {
 		{
 			ref: 'SocialHistoryAddBtn',
 			selector: 'button[action=socialHistoryAddBtn]'
+		},
+		{
+			ref: 'ObservationColumn',
+			selector: '#socialhistorypanelobservationcolumn'
 		}
 	],
 
@@ -40,13 +44,17 @@ Ext.define('App.controller.patient.SocialHistory', {
 		var me = this;
 		me.control({
 			'patientsocialhistorypanel': {
-				activate: me.onSocialHistoryActive
+				activate: me.onSocialHistoryActive,
+				beforeedit: me.onSocialHistoryBeforeEdit
 			},
 			'button[action=socialHistoryAddBtn]': {
 				click: me.onAddBtnClicked
 			},
 			'combobox[action=socialHistoryTypeCombo]': {
 				select: me.onHistoryTypeComboSelectionChanged
+			},
+			'#socialsistoryobservationcombo': {
+				select: me.onHistoryObservationComboSelect
 			}
 		});
 	},
@@ -72,6 +80,44 @@ Ext.define('App.controller.patient.SocialHistory', {
 		});
 
 		plugin.startEdit(addedRecs[0], 0);
+	},
+
+	onSocialHistoryBeforeEdit: function(plugin, e){
+		var column = this.getObservationColumn(),
+			editor;
+
+		if(e.record.data.category_code == '229819007'){ // tobacco use
+			editor = {
+				xtype: 'gaiaehr.combo',
+				valueField: 'option_name',
+				itemId: 'socialsistoryobservationcombo',
+				list: 106
+			};
+		}else if(e.record.data.category_code == '160573003'){ // alcohol intake
+			editor = {
+				xtype: 'gaiaehr.combo',
+				valueField: 'option_name',
+				itemId: 'socialsistoryobservationcombo',
+				list: 105
+			};
+		}else{
+			editor = {
+				xtype: 'textfield'
+			};
+		}
+
+		column.setEditor(editor);
+
+	},
+
+	onHistoryObservationComboSelect: function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+
+		record.set({
+			observation_code: records[0].data.code,
+			observation_code_type: records[0].data.code_type
+		});
+
 	},
 
 	onHistoryTypeComboSelectionChanged: function(){

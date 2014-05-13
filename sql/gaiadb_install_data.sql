@@ -2350,7 +2350,9 @@ INSERT INTO `combo_lists` (`id`, `title`, `active`) VALUES
 (101, 'Social Status Types', 1),
 (102, 'Document Types (Categories)', 1),
 (103, 'Yes/No (Y/N)', 1),
-(104, 'Citizenship', 1);
+(104, 'Citizenship', 1),
+(105, 'Alcohol Intake', 1),
+(106, 'Tobacoo Use', 1);
 
 INSERT INTO `combo_lists_options` (`id`, `list_id`, `option_value`, `option_name`, `code`, `code_type`, `seq`, `notes`, `active`) VALUES
 (1, 23, '2', 'No', NULL, NULL, 1, NULL, 1),
@@ -2998,7 +3000,24 @@ INSERT INTO `combo_lists_options` (`id`, `list_id`, `option_value`, `option_name
 (789, 102, 'Doctors Note', 'Doctors Note', '', '', 10, '', 1),
 (790, 103, 'Y', 'Yes', 'Y', 'HL70136', 10, 'HL7 Table 0136', 1),
 (791, 103, 'N', 'No', 'N', 'HL70136', 20, 'HL7 Table 0136', 1),
-(792, 104, 'USA', 'USA', '', '', 0, '', 1);
+(792, 104, 'USA', 'USA', '', '', 0, '', 1),
+(793, 105, '160593006', 'Alcohol intake within recommended sensible limits', '160593006', 'SNOMED', 10, '', 1),
+(795, 105, '428202005', 'Alcohol intake within recommended daily limit', '428202005', 'SNOMED', 30, '', 1),
+(796, 105, '429775004', 'Alcohol intake exceeds recommended daily limit', '429775004', 'SNOMED', 40, '', 1),
+(797, 105, '413968004', 'Denies alcohol abuse', '413968004', 'SNOMED', 50, '', 1),
+(798, 105, '160580001', 'Alcohol consumption unknown', '160580001', 'SNOMED', 60, '', 1),
+(799, 105, '160592001', 'Alcohol intake above recommended sensible limits', '160592001', 'SNOMED', 70, '', 1),
+(801, 106, '228494002', 'Snuff user', '228494002', 'SNOMED', 20, '', 1),
+(802, 106, '59978006', 'Cigar smoker', '59978006', 'SNOMED', 30, '', 1),
+(803, 106, '43381005', 'Passive smoker', '43381005', 'SNOMED', 40, '', 1),
+(804, 106, '228524006', 'Exposed to tobacco smoke at home', '228524006', 'SNOMED', 50, '', 1),
+(805, 106, '427189007', 'Maternal tobacco use', '427189007', 'SNOMED', 60, '', 1),
+(806, 106, '394871007', 'Thinking about stopping smoking', '394871007', 'SNOMED', 70, '', 1),
+(807, 106, '65568007', 'Cigarette smoker', '65568007', 'SNOMED', 80, '', 1),
+(808, 106, '160619003', 'Rolls own cigarettes', '160619003', 'SNOMED', 90, '', 1),
+(809, 106, '266927001', 'Pipe smoker', '266927001', 'SNOMED', 100, '', 1),
+(810, 106, '81703003', 'Chews tobacco', '81703003', 'SNOMED', 110, '', 1),
+(811, 106, '428061000124105', 'Light tobacco smoker', '428061000124105', 'SNOMED', 120, '', 1);
 
 
 INSERT INTO `cpt_codes` (`id`, `ConceptID`, `code`, `code_text`, `code_text_medium`, `code_text_short`, `active`, `reportable`) VALUES

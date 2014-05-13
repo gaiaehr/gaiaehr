@@ -22,7 +22,8 @@ Ext.define('App.view.patient.SocialHistory', {
 		'Ext.grid.plugin.RowEditing',
 		'Ext.grid.feature.Grouping',
 		'App.store.patient.PatientSocialHistory',
-		'App.ux.combo.Combo'
+		'App.ux.combo.Combo',
+		'App.ux.combo.SmokingStatus'
 	],
 	xtype: 'patientsocialhistorypanel',
 	title: i18n('social_history'),
@@ -48,9 +49,10 @@ Ext.define('App.view.patient.SocialHistory', {
 			width: 250
 		},
 		{
-			text: i18n('notes'),
-			dataIndex: 'notes',
+			text: i18n('observation'),
+			dataIndex: 'observation',
 			flex: 1,
+			itemId: 'socialhistorypanelobservationcolumn',
 			editor: {
 				xtype: 'textfield'
 			}
@@ -63,7 +65,7 @@ Ext.define('App.view.patient.SocialHistory', {
 			width: 120,
 			editor: {
 				xtype: 'datefield',
-				format: 'Y-m-d',
+				format: 'Y-m-d'
 			}
 		},
 		{

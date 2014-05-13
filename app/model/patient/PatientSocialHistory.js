@@ -52,12 +52,24 @@ Ext.define('App.model.patient.PatientSocialHistory', {
 		},
 		{
 			name: 'category_code_text',
+			len: 120,
 			type: 'string'
 		},
 		{
-			name: 'notes',
+			name: 'observation',
 			type: 'string',
-			comment: 'clinical notes for this history'
+			len: 400,
+			comment: 'clinical observation for this history'
+		},
+		{
+			name: 'observation_code',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'observation_code_type',
+			type: 'string',
+			len: 20
 		},
 		{
 			name: 'start_date',

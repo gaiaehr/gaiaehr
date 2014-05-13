@@ -100,6 +100,20 @@ Ext.define('App.controller.patient.SocialHistory', {
 				itemId: 'socialsistoryobservationcombo',
 				list: 105
 			};
+		}else if(e.record.data.category_code == '256235009'){ // exercise
+			editor = {
+				xtype: 'gaiaehr.combo',
+				valueField: 'option_name',
+				itemId: 'socialsistoryobservationcombo',
+				list: 107
+			};
+		}else if(e.record.data.category_code == '363908000'){ // drug abuse
+			editor = {
+				xtype: 'gaiaehr.combo',
+				valueField: 'option_name',
+				itemId: 'socialsistoryobservationcombo',
+				list: 108
+			};
 		}else{
 			editor = {
 				xtype: 'textfield'

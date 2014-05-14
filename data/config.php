@@ -948,6 +948,15 @@ $API = array(
 			),
 			'destroySocialHistory' => array(
 				'len' => 1
+			),
+			'getSmokeStatus' => array(
+				'len' => 1
+			),
+			'addSmokeStatus' => array(
+				'len' => 1
+			),
+			'updateSmokeStatus' => array(
+				'len' => 1
 			)
 		)
 	),

@@ -23,6 +23,10 @@ class SocialHistory {
 	 * @var MatchaCUP
 	 */
 	private $s = null;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $ss = null;
 
 	/**
 	 * Set Model App.model.patient.PatientsOrders
@@ -30,6 +34,8 @@ class SocialHistory {
 	private function setModel(){
 		if(!isset($this->s))
 			$this->s = MatchaModel::setSenchaModel('App.model.patient.PatientSocialHistory');
+		if(!isset($this->ss))
+			$this->ss = MatchaModel::setSenchaModel('App.model.patient.SmokeStatus');
 	}
 
 	/**
@@ -75,6 +81,33 @@ class SocialHistory {
 	public function destroySocialHistory($params){
 		$this->setModel();
 		return $this->s->destroy($params);
+	}
+
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function getSmokeStatus($params){
+		$this->setModel();
+		return $this->ss->load($params)->all();
+	}
+
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function addSmokeStatus($params){
+		$this->setModel();
+		return $this->ss->save($params);
+	}
+
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function updateSmokeStatus($params){
+		$this->setModel();
+		return $this->ss->save($params);
 	}
 
 

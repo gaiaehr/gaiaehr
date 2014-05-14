@@ -6,7 +6,15 @@ Ext.define('App.ux.combo.Combo', {
 	emptyText: i18n('select'),
 	editable: false,
 
+	/**
+	 * List ID
+	 */
 	list: null,
+	/**
+	 * Auto Load Store
+	 */
+	loadStore: false,
+
 
 	initComponent: function(){
 		var me = this,
@@ -44,7 +52,8 @@ Ext.define('App.ux.combo.Combo', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: model
+			model: model,
+			autoLoad: me.loadStore
 		});
 
 		me.callParent(arguments);

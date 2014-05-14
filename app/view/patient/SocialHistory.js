@@ -81,6 +81,12 @@ Ext.define('App.view.patient.SocialHistory', {
 		}
 	],
 	tbar: [
+		{
+			xtype: 'mitos.smokingstatuscombo',
+			fieldLabel: i18n('smoking_status'),
+			itemId: 'socialsmokingstatuscombo',
+			width: 350
+		},
 		'->',
 		i18n('social_history'),
 		{
@@ -91,7 +97,6 @@ Ext.define('App.view.patient.SocialHistory', {
 			action: 'socialHistoryTypeCombo'
 		},
 		{
-			text: i18n('add'),
 			iconCls: 'icoAdd',
 			disabled: true,
 			itemId: 'encounterRecordAdd',

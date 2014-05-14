@@ -37,6 +37,10 @@ Ext.define('App.controller.patient.SocialHistory', {
 		{
 			ref: 'ObservationColumn',
 			selector: '#socialhistorypanelobservationcolumn'
+		},
+		{
+			ref: 'SmokingStatusCombo',
+			selector: '#socialsmokingstatuscombo'
 		}
 	],
 
@@ -55,6 +59,55 @@ Ext.define('App.controller.patient.SocialHistory', {
 			},
 			'#socialsistoryobservationcombo': {
 				select: me.onHistoryObservationComboSelect
+			},
+			'#socialsmokingstatuscombo': {
+				select: me.onSmokingStatusComboSelect
+			},
+			'#reviewsmokingstatuscombo': {
+				select: me.onSmokingStatusComboSelect
+			}
+		});
+
+		me.smokeStatusStore = Ext.create('App.store.patient.SmokeStatus',{
+			pageSize: 1000,
+			listeners:{
+				scope: me,
+				load: me.onSmokeStatusStoreLoad
+			}
+		});
+	},
+
+	onSmokeStatusStoreLoad: function(store, records){
+		if(store.last() && this.getSmokingStatusCombo()){
+			this.getSmokingStatusCombo().setValue(store.last().data.status);
+		}
+	},
+
+	onSmokingStatusComboSelect: function(cmb, records){
+		this.smokeStatusStore.add({
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			status: records[0].data.option_name,
+			status_code: records[0].data.code,
+			status_code_type: records[0].data.code_type,
+			create_uid: app.user.id,
+			create_date: new Date()
+		});
+
+		this.smokeStatusStore.sync({
+			success:function(){
+				if(window.dual){
+					dual.msg(i18n('sweet'), i18n('record_updated'));
+				}else{
+					app.msg(i18n('sweet'), i18n('record_updated'));
+				}
+			},
+			failure:function(){
+				if(window.dual){
+					dual.msg(i18n('oops'), i18n('record_error'), true);
+				}else{
+					app.msg(i18n('oops'), i18n('record_error'), true);
+				}
 			}
 		});
 	},
@@ -138,7 +191,17 @@ Ext.define('App.controller.patient.SocialHistory', {
 		this.getSocialHistoryAddBtn().enable();
 	},
 
-	onSocialHistoryActive: function(grid){
+	loadSmokeStore:function(){
+		this.smokeStatusStore.clearFilter(true);
+		this.smokeStatusStore.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
+			}
+		]);
+	},
+
+	loadHistoryStore:function(grid){
 		var store = grid.getStore();
 		store.clearFilter(true);
 		store.filter([
@@ -147,6 +210,13 @@ Ext.define('App.controller.patient.SocialHistory', {
 				value: app.patient.pid
 			}
 		]);
+	},
+
+	onSocialHistoryActive: function(grid){
+		this.loadHistoryStore(grid);
+		this.loadSmokeStore();
+		this.getSmokingStatusCombo().reset();
+
 	}
 
 });

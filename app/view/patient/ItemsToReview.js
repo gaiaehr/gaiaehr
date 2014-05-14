@@ -174,59 +174,17 @@ Ext.define('App.view.patient.ItemsToReview', {
 				]
 			},
 			{
-				xtype: 'form',
-				border: false,
+				xtype: 'fieldset',
+				title: i18n('social_history'),
 				items: [
 					{
-						xtype: 'fieldset',
-						title: i18n('live_styles'),
-						items: [
-							{
-								xtype: 'fieldcontainer',
-								layout: 'hbox',
-								items: [
-									{
-										fieldLabel: i18n('smoking_status'),
-										xtype: 'mitos.smokingstatuscombo',
-										labelWidth: 100,
-										width: 325,
-										name: 'review_smoke'
-									},
-									{
-										xtype: 'mitos.smokingstatuscombo',
-										fieldLabel: i18n('smoke_history'),
-										name: 'last_history_smoke',
-										labelWidth: 85,
-										margin: '0 5',
-										width: 325,
-										submitValue: false
-									},
-									{
-										xtype: 'displayfield',
-										labelWidth: 40,
-										fieldLabel: i18n('date'),
-										name: 'last_history_smoke_date',
-										submitValue: false
-									}
-								]
-							},
-							{
-								fieldLabel: i18n('alcohol'),
-								xtype: 'mitos.yesnocombo',
-								labelWidth: 100,
-								width: 325,
-								name: 'review_alcohol'
-							},
-							{
-								fieldLabel: i18n('pregnant'),
-								xtype: 'mitos.yesnonacombo',
-								labelWidth: 100,
-								width: 325,
-								name: 'review_pregnant'
-							}
-						]
+						fieldLabel: i18n('smoking_status'),
+						xtype: 'mitos.smokingstatuscombo',
+						itemId :'reviewsmokingstatuscombo',
+						allowBlank: false,
+						labelWidth: 100,
+						width: 325
 					}
-
 				]
 			}
 		];
@@ -242,47 +200,56 @@ Ext.define('App.view.patient.ItemsToReview', {
 		];
 
 		me.listeners = {
+			scope: me,
 			show: me.storesLoad
 		};
 
 		me.callParent(arguments);
+
+		me.smokeStatusStore = app.getController('patient.SocialHistory').smokeStatusStore;
+		me.smokeStatusCombo = me.query('#reviewsmokingstatuscombo')[0];
 	},
+
 	storesLoad: function(){
 		var me = this,
-			form = me.down('form').getForm(),
 			params = {
-				// old way
-				params: {
+				params: { // old way
 					pid: app.patient.pid
 				},
-				// new way
-				filters: [
+				filters: [ // new way
 					{
 						property: 'pid',
 						value: app.patient.pid
 					}
 				]
 			};
-
+		me.smokeStatusCombo.reset();
 		me.patientImmuListStore.load(params);
 		me.patientAllergiesListStore.load(params);
 		me.patientActiveProblemsStore.load(params);
 		me.patientMedicationsStore.load(params);
 
-		Medical.getEncounterReviewByEid(app.patient.eid, function(provider, response){
-			if(response.result.last_history_smoke_date == '') response.result.last_history_smoke_date = i18n('n/a');
-			form.setValues(response.result);
-			form.findField('last_history_smoke').setReadOnly(true);
-		});
+		/**
+		 * add the callback function to handle the Smoking Status
+		 */
+		params.callback = function(){
+			if(me.smokeStatusStore.last()){
+				me.smokeStatusCombo.setValue(me.smokeStatusStore.last().data.status);
+			}
+		};
+		me.smokeStatusStore.load(params);
+
 	},
+
+
 	onReviewAll: function(){
 		var me = this,
-			panel = me.down('form'),
-			form = panel.getForm(),
-			values = form.getFieldValues();
+			values = {
+			pid: app.patient.pid,
+			eid: app.patient.eid
+		};
 
-		values.eid = app.patient.eid;
-		if(form.isValid()){
+		if(me.smokeStatusCombo.isValid()){
 			Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
 				if(response.result.success){
 					app.msg('Sweet!', i18n('items_to_review_save_and_review'));

@@ -118,7 +118,7 @@ Ext.define('App.controller.patient.Results', {
 		resultsStore.load({
 			callback: function(records){
 
-				say(records);
+//				say(records);
 
 				if(records.length > 0){
 					form.loadRecord(records[0]);
@@ -330,14 +330,14 @@ Ext.define('App.controller.patient.Results', {
 				},
 				success: function(fp, o){
 					formPanel.el.unmask();
-					say(o.result);
+//					say(o.result);
 					win.close();
 					me.getLabDocument(o.result.doc.url);
 					me.addNewLabResults(o.result.doc.id);
 				},
 				failure: function(fp, o){
 					formPanel.el.unmask();
-					say(o.result);
+//					say(o.result);
 					win.close();
 				}
 			});
@@ -363,7 +363,7 @@ Ext.define('App.controller.patient.Results', {
 					if(btn == 'ok'){
 						User.verifyUserPass(password, function(provider, response){
 							if(response.result){
-								say(record);
+//								say(record);
 								Medical.signPatientLabsResultById(record.data.id, function(provider, response){
 									store.load({
 										params: {

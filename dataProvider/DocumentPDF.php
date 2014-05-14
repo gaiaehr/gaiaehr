@@ -25,7 +25,7 @@ class DocumentPDF extends TCPDF {
 	//Page header
 	public function Header() {
 		// Logo
-		$siteLogo = $_SESSION['site']['path'] . '/logo.png';
+		$siteLogo = site_path . '/logo.png';
 		$image_file = (file_exists($siteLogo) ? $siteLogo : ROOT . '/resources/images/gaiaehr_small_white.png');
 		$y = 16;
 		$x = 70;

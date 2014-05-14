@@ -359,7 +359,7 @@ class Patient {
 	}
 
 	private function createPatientDir($pid) {
-		$path = $_SESSION['site']['path'] . '/patients/' . $pid;
+		$path = site_path . '/patients/' . $pid;
 		if(!file_exists($path)){
 			if(mkdir($path, 0777, true)){
 				chmod($path, 0777);

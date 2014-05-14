@@ -300,7 +300,7 @@ class DocumentHandler {
 	public function getDocumentPathById($id){
 		$this->db->setSQL("SELECT * FROM patient_documents WHERE id = '$id'");
 		$doc = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		return $_SESSION['site']['path'] . '/patients/' . $doc['pid'] . '/' . strtolower(str_replace(' ', '_', $doc['docType'])) . '/' . $doc['name'];
+		return site_path . '/patients/' . $doc['pid'] . '/' . strtolower(str_replace(' ', '_', $doc['docType'])) . '/' . $doc['name'];
 	}
 
 	protected function reNameFile($file){
@@ -329,7 +329,7 @@ class DocumentHandler {
 			$this->pid = $params->pid;
 			$this->docType = (isset($params->docType)) ? $params->docType : 'orphanDocuments';
 		}
-		$path = $_SESSION['site']['path'] . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/';
+		$path = site_path . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/';
 		if(is_dir($path) || mkdir($path, 0777, true)){
 			chmod($path, 0777);
 		}

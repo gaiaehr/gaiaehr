@@ -27,7 +27,7 @@ if(!defined('HTTP')){
 if(!defined('HOST')) define('HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
 if(!defined('URI'))	define('URI', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/');
 if(!defined('ROOT')) define('ROOT', str_replace('\\', '/', dirname(__FILE__)));
-if(!defined('URL'))	define('URL', HTTP . '://' . HOST . URI);
+if(!defined('URL'))	define('URL', isset($_SERVER['HTTP_REFERER']) ? rtrim($_SERVER['HTTP_REFERER'], '/') : HTTP . '://' . HOST . URI);
 // application version
 if(!defined('VERSION'))	define('VERSION', '0.7.200');
 // extjs sdk directory

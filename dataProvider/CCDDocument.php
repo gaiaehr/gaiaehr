@@ -22,12 +22,13 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
+ob_start();
 
-include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
 include_once(dirname(dirname(__FILE__)) . '/classes/UUID.php');
 include_once(dirname(dirname(__FILE__)) . '/classes/Array2XML.php');
 
 include_once(dirname(__FILE__) . '/Patient.php');
+include_once(dirname(__FILE__) . '/Insurance.php');
 include_once(dirname(__FILE__) . '/User.php');
 include_once(dirname(__FILE__) . '/Rxnorm.php');
 include_once(dirname(__FILE__) . '/Encounter.php');
@@ -233,7 +234,7 @@ class CCDDocument {
 			/**
 			 * Build the CCR XML Object
 			 */
-			Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . $_SESSION['url'] . 'lib/CCRCDA/schema/cda2.xsl"'));
+			Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"'));
 			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
 		} catch(Exception $e){
 			print $e->getMessage();
@@ -245,6 +246,7 @@ class CCDDocument {
 	 */
 	public function view(){
 		try{
+			ob_clean();
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
 		} catch(Exception $e){
@@ -402,7 +404,8 @@ class CCDDocument {
 	private function getRecordTarget(){
 		$Patient = new Patient();
 		$patientData = $this->patientData = $Patient->getPatientDemographicDataByPid($this->pid);
-		$insuranceData = $Patient->getPatientPrimaryInsuranceByPid($this->pid);
+		$Insurance = new Insurance();
+		$insuranceData = $Insurance->getPatientPrimaryInsuranceByPid($this->pid);
 
 		$recordTarget = array(
 			'typeId' => array(
@@ -489,7 +492,7 @@ class CCDDocument {
 			)
 		);
 
-		unset($Patient, $patientData, $insuranceData);
+		unset($Patient, $patientData, $Insurance, $insuranceData);
 
 		return $recordTarget;
 	}
@@ -3149,7 +3152,10 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 	 * Check token for security
 	 */
 	//if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
-
+	if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+	include_once(dirname(dirname(__FILE__)) . '/registry.php');
+	include_once(dirname(dirname(__FILE__)) . '/sites/' . $_REQUEST['site'] . '/conf.php');
+	include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
 	$ccd = new CCDDocument();
 	$ccd->setPid($_REQUEST['pid']);
 	$ccd->setTemplate('toc');

@@ -551,7 +551,7 @@ Ext.define('App.view.patient.Summary', {
 							handler: function(){
 								me.reportPanel.remove(me.miframe);
 								me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-									src: globals.url + '/dataProvider/CCDDocument.php?action=view&pid=' + me.pid + '&token=' + app.user.token
+									src: 'dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token
 								}));
 								// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 								app.AuditLog('Patient summary CCD viewed');

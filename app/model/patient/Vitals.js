@@ -133,7 +133,7 @@ Ext.define('App.model.patient.Vitals', {
 		},
 		{
 			name: 'bmi',
-			type: 'int',
+			type: 'float',
 			useNull: true,
 			len: 10
 		},

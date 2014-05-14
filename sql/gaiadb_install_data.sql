@@ -14496,7 +14496,7 @@ INSERT INTO `globals` (`id`, `gl_name`, `gl_index`, `gl_value`, `gl_category`) V
 (47, 'enable_hylafax', 0, '0', 'Fax/Scanner'),
 (48, 'enable_scanner', 0, '0', 'Fax/Scanner'),
 (50, 'fullname', 0, '1', 'Locale'),
-(52, 'gbl_currency_symbol', 0, '$', 'Locale'),
+(52, 'gbl_currency_symbol', 0, 'â‚¬', 'Locale'),
 (53, 'gbl_mask_invoice_number', 0, '', 'General'),
 (54, 'gbl_mask_patient_id', 0, '', 'General'),
 (55, 'gbl_mask_product_id', 0, '', 'General'),
@@ -14535,7 +14535,9 @@ INSERT INTO `globals` (`id`, `gl_name`, `gl_index`, `gl_value`, `gl_category`) V
 (118, 'enable_encounter_dictation', 0, '0', 'Clinical'),
 (119, 'enable_document_encryption', 0, '0', 'Security'),
 (120, 'enable_dual_monitor', 0, '0', 'General'),
-(121, 'enable_encounter_soap_templates', 0, '1', 'Clinical');
+(121, 'enable_encounter_soap_templates', 0, '1', 'Clinical'),
+(122, 'dx_code_type', 0, 'ICD10', 'Clinical'),
+(123, 'units_of_measurement', 0, 'metric', 'General');
 
 INSERT INTO `groups` (`id`, `name`, `user`) VALUES
 (1, 'Default', 'admin'),

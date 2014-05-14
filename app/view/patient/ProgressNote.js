@@ -119,26 +119,32 @@ Ext.define('App.view.patient.ProgressNote', {
             '                                           <div class="x-grid-cell-inner ">' + i18n['date_&_time'] + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('weight_lbs') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('weight_kg') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('height_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('height_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('bp_systolic') + '</div>' +
@@ -159,16 +165,19 @@ Ext.define('App.view.patient.ProgressNote', {
             '                                           <div class="x-grid-cell-inner ">' + i18n('respiration') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('temp_f') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('temp_c') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('temp_location') + '</div>' +
@@ -179,26 +188,32 @@ Ext.define('App.view.patient.ProgressNote', {
             '                                           <div class="x-grid-cell-inner ">' + i18n('oxygen_saturation') + '%</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('head_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('head_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('waist_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('waist_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">' + i18n('bmi') + '</div>' +
@@ -236,92 +251,107 @@ Ext.define('App.view.patient.ProgressNote', {
             '                                           <div class="x-grid-cell-inner ">{date}</div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row first">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.weight_lbs)]}</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+	            '                       <tpl else>',
+            '                                   <tr class="x-grid-row first">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.weight_kg)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+	            '                       </tpl>',
+		        '                       <tpl if="!this.isMetric()">' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.height_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+	            '                       <tpl else>',
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.height_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+	            '                       </tpl>',
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bp_systolic)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bp_diastolic)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.pulse)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.respiration)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+	            '                       <tpl if="!this.isMetric()">' +
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_f)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+	            '                       <tpl else>',
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_c)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_location.toUpperCase())]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.oxygen_saturation)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.head_circumference_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+	            '                       <tpl else>',
+            '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.head_circumference_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row x-grid-row-alt">' +
+	            '                       </tpl>',
+		        '                       <tpl if="!this.isMetric()">' +
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.waist_circumference_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+	            '                       <tpl else>',
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.waist_circumference_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
+	            '                       </tpl>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bmi)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bmi_status)]}<div>' +
             '                                       </td>' +
@@ -331,12 +361,12 @@ Ext.define('App.view.patient.ProgressNote', {
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.other_notes)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+            '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[(values.administer_by == null || values.administer_by == " ") ? "-" : values.administer_by]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row ">' +
+            '                                   <tr class="x-grid-row  x-grid-row-alt">' +
             '                                       <td class="x-grid-cell">' +
             '                                           <div class="x-grid-cell-inner ">{[(values.authorized_by == null || values.authorized_by == " ") ? "-" : values.authorized_by]}<div>' +
             '                                       </td>' +
@@ -363,7 +393,12 @@ Ext.define('App.view.patient.ProgressNote', {
 
 		        getVitalsValue:function(value){
 			        return (value == 0 || value == null) ? '-' : value;
-		        }
+		        },
+
+	            isMetric:function(){
+		            return g('units_of_measurement') == 'metric';
+	            }
+
 
             }
         );

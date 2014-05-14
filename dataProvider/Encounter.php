@@ -823,8 +823,8 @@ class Encounter {
 	public function getVitals(stdClass $params){
 		$records =  $this->v->load($params)->all();
 		foreach($records as $i => $record){
-			$records[$i]['height_in'] = intval($record['height_in']);
-			$records[$i]['height_cm'] = intval($record['height_cm']);
+			$records[$i]['height_in'] = isset($record['height_in']) ? intval($record['height_in']) : '';
+			$records[$i]['height_cm'] = isset($record['height_cm']) ? intval($record['height_cm']) : '';
 			$records[$i]['administer_by'] = $record['uid'] != null ? $this->user->getUserNameById($record['uid']) : '';
 			$records[$i]['authorized_by'] = $record['auth_uid'] != null ? $this->user->getUserNameById($record['auth_uid']) : '';
 		}
@@ -863,6 +863,10 @@ class Encounter {
 		$filters->filter[0] = new stdClass();
 		$filters->filter[0]->property = 'pid';
 		$filters->filter[0]->value = $pid;
+
+		$filters->sort[0] = new stdClass();
+		$filters->sort[0]->property = 'date';
+		$filters->sort[0]->direction = 'DESC';
 		return $this->getVitals($filters);
 	}
 
@@ -875,6 +879,10 @@ class Encounter {
 		$filters->filter[0] = new stdClass();
 		$filters->filter[0]->property = 'eid';
 		$filters->filter[0]->value = $eid;
+
+		$filters->sort[0] = new stdClass();
+		$filters->sort[0]->property = 'date';
+		$filters->sort[0]->direction = 'DESC';
 		return $this->getVitals($filters);
 	}
 }

@@ -140,7 +140,7 @@ Ext.define('App.controller.patient.Documents', {
 			success = response.result.success;
 			message = i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
 
-			if(dual){
+			if(window.dual){
 				dual.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
 			}else{
 				app.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
@@ -199,7 +199,7 @@ Ext.define('App.controller.patient.Documents', {
 			},
 			failure: function(){
 				store.rejectChanges();
-				if(dual){
+				if(window.dual){
 					dual.msg(i18n('oops'), i18n('document_error'), true);
 				}else{
 					app.msg(i18n('oops'), i18n('document_error'), true);

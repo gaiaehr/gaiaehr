@@ -26,7 +26,6 @@ Ext.define('App.view.patient.Encounter', {
 		'App.store.patient.Vitals',
 		'App.store.administration.AuditLog',
 		'App.view.patient.encounter.SOAP',
-		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
 		'App.view.patient.ProgressNote',
@@ -1175,20 +1174,42 @@ Ext.define('App.view.patient.Encounter', {
 		if(me.vitalsPanel){
 			me.getFormItems(me.vitalsPanel.down('form'), 4, function(){
 				form = me.vitalsPanel.down('form').getForm();
-				form.findField('temp_c').addListener('keyup', me.cf, me);
-				form.findField('temp_f').addListener('keyup', me.fc, me);
-				form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
-				form.findField('weight_kg').addListener('keyup', me.kglbs, me);
-				form.findField('height_cm').addListener('keyup', me.cmin, me);
-				form.findField('height_in').addListener('keyup', me.incm, me);
-				form.findField('weight_lbs').addListener('blur', me.bmi, me);
-				form.findField('weight_kg').addListener('blur', me.bmi, me);
-				form.findField('height_cm').addListener('blur', me.bmi, me);
-				form.findField('height_in').addListener('blur', me.bmi, me);
-				form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
-				form.findField('head_circumference_in').addListener('keyup', me.incm, me);
-				form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
-				form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
+
+				if(me.isMetric()){
+					// hide standard fields
+					form.findField('temp_f').hide();
+					form.findField('weight_lbs').hide();
+					form.findField('height_in').hide();
+					form.findField('weight_lbs').hide();
+					form.findField('height_in').hide();
+					form.findField('head_circumference_in').hide();
+					form.findField('waist_circumference_in').hide();
+					// add listeners to metric fields
+					form.findField('temp_c').addListener('keyup', me.cf, me);
+					form.findField('weight_kg').addListener('keyup', me.kglbs, me);
+					form.findField('height_cm').addListener('keyup', me.cmin, me);
+					form.findField('weight_kg').addListener('blur', me.bmi, me);
+					form.findField('height_cm').addListener('blur', me.bmi, me);
+					form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
+					form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
+				}else{
+					// hide metric fields
+					form.findField('temp_c').hide();
+					form.findField('weight_kg').hide();
+					form.findField('height_cm').hide();
+					form.findField('weight_kg').hide();
+					form.findField('height_cm').hide();
+					form.findField('head_circumference_cm').hide();
+					form.findField('waist_circumference_cm').hide();
+					// add listeners to standards fields
+					form.findField('temp_f').addListener('keyup', me.fc, me);
+					form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
+					form.findField('height_in').addListener('keyup', me.incm, me);
+					form.findField('weight_lbs').addListener('blur', me.bmi, me);
+					form.findField('height_in').addListener('blur', me.bmi, me);
+					form.findField('head_circumference_in').addListener('keyup', me.incm, me);
+					form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
+				}
 			});
 		}
 
@@ -1229,6 +1250,13 @@ Ext.define('App.view.patient.Encounter', {
 				});
 			});
 		}
+	},
+
+	/**
+	 * return true if units of measurement is metric
+	 */
+	isMetric:function(){
+		return g('units_of_measurement') == 'metric';
 	},
 
 	getButtonsToDisable: function(){

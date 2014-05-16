@@ -119,9 +119,9 @@ Ext.define('App.view.areas.FloorPlan', {
 						'<div class="zoneSummaryContainer">' +
 						'   <div class="zoneSummaryArea">' +
 						'       <tpl if="this.patientImg(image)">',
-						'           <img src="data:image/png;base64,{image}" height="96" width="96">' +
+						'           <img src="{image}" height="96" width="96">' +
 						'       <tpl else>',
-						'           <img src="data:image/png;base64,'+ app.patientImage +'" height="96" width="96">',
+						'           <img src="'+ app.patientImage +'" height="96" width="96">',
 						'       </tpl>',
 						'       <p>Name: {name}</p>' +
 						'       <p>DOB: {DOB}</p>' +

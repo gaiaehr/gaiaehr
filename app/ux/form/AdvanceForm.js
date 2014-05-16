@@ -66,8 +66,14 @@ Ext.define('App.ux.form.AdvanceForm', {
      * @return {*|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic}
      */
     loadRecord: function(record){
-        var form = this, formPanel = form.owner, plugin = this.owner.pugin, rec;
-        form.isLoading = true;
+        var form = this,
+	        formPanel = form.owner,
+	        plugin = this.owner.pugin,
+	        rec;
+
+	    if(!record) return form;
+
+	    form.isLoading = true;
         form._record = record;
         plugin.setFormFieldsClean(false);
         record.store.on('write', plugin.onStoreWrite, plugin);
@@ -121,7 +127,15 @@ Ext.define('App.ux.form.AdvanceForm', {
      * @param field
      */
     setFieldCondition: function(field){
-        var me = this, record = me.form.getRecord(), store = record.store, obj = {}, valueChanged, el = me.getFieldEl(field);
+        var me = this,
+	        record = me.form.getRecord(),
+	        store = record ? record.store : null,
+	        obj = {},
+	        valueChanged,
+	        el = me.getFieldEl(field);
+
+	    if(store == null) return;
+
         if((!me.form.isLoading && field.xtype != 'radiofield') || (!me.form.isLoading && field.xtype == 'radiofield' && field.checked)){
             obj[field.name] = field.getSubmitValue();
             record.set(obj);

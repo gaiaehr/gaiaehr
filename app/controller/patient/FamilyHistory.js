@@ -16,30 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.Main', {
-	extend: 'Modules.Module',
+Ext.define('App.controller.patient.FamilyHistory', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		{
+			ref: 'FamilyHistoryPanel',
+			selector: 'familyhistorypanel'
+		},
+		{
+			ref: 'FamilyHistorySaveBtn',
+			selector: '#familyHistorySaveBtn'
+		}
+	],
+
 	init: function(){
 		var me = this;
-		/**
-		 * @param panel     (Ext.component)     Component to add to MainPanel
-		 */
-		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportCenter'));
-		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportPanel'));
-
-		me.getController('Modules.reportcenter.controller.Dashboard').init();
-
-		/**
-		 * function to add navigation links
-		 * @param parentId  (string)            navigation node parent ID,
-		 * @param node      (object || array)   navigation node configuration properties
-		 */
-		me.addNavigationNodes('root', {
-			text: i18n('report_center'),
-			leaf: true,
-			cls: 'file',
-			iconCls: 'icoReport',
-			id: 'Modules.reportcenter.view.ReportCenter'
+		me.control({
+			'#familyHistorySaveBtn': {
+				click: me.onFamilyHistoryPanelSaveBtnClick
+			}
 		});
-		me.callParent();
+	},
+
+	onFamilyHistoryPanelSaveBtnClick: function(btn){
+		var form = btn.up('form').getForm(),
+			values = form.getValues(),
+			record = form.getRecord();
+
+		values.update_uid = app.user.id;
+		values.update_date = new Date();
+
+		record.set(values);
+		record.store.sync();
 	}
-}); 
+
+});

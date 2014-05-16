@@ -1840,7 +1840,7 @@ CREATE TABLE `patient_documents` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
-  `uid` bigint(20) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
   `docType` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
@@ -1849,10 +1849,66 @@ CREATE TABLE `patient_documents` (
   `title` varchar(255) DEFAULT 'No title',
   `hash` varchar(255) DEFAULT NULL,
   `encrypted` tinyint(1) DEFAULT '0',
+  `document` longblob,
   PRIMARY KEY (`id`),
   KEY `eid` (`eid`),
-  KEY `pid` (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+  KEY `pid` (`pid`),
+  KEY `uid` (`uid`),
+  KEY `docType` (`docType`),
+  KEY `date` (`date`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+CREATE TABLE `patient_documents_temp` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `create_date` datetime DEFAULT NULL,
+  `document` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patient Documents Temporary Storage' AUTO_INCREMENT=1 ;
+
+CREATE TABLE `patient_family_history` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `auth_uid` int(11) DEFAULT NULL,
+  `create_uid` int(11) DEFAULT NULL,
+  `update_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `emphysema` varchar(60) DEFAULT NULL,
+  `tuberculosis` varchar(60) DEFAULT NULL,
+  `asthma` varchar(60) DEFAULT NULL,
+  `hypertension` varchar(60) DEFAULT NULL,
+  `heart_murmur` varchar(60) DEFAULT NULL,
+  `rheumatic_fever` varchar(60) DEFAULT NULL,
+  `heart_attak` varchar(60) DEFAULT NULL,
+  `angina` varchar(60) DEFAULT NULL,
+  `stroke` varchar(60) DEFAULT NULL,
+  `high_cholesterol` varchar(60) DEFAULT NULL,
+  `vascular_graft` varchar(60) DEFAULT NULL,
+  `mitral_valve_prolapse` varchar(60) DEFAULT NULL,
+  `hepatitis_a` varchar(60) DEFAULT NULL,
+  `hepatitis_b` varchar(60) DEFAULT NULL,
+  `hepatitis_c` varchar(60) DEFAULT NULL,
+  `kidney` varchar(60) DEFAULT NULL,
+  `std` varchar(60) DEFAULT NULL,
+  `ulcers` varchar(60) DEFAULT NULL,
+  `diabetes` varchar(60) DEFAULT NULL,
+  `thyroid` varchar(60) DEFAULT NULL,
+  `hemophilia` varchar(60) DEFAULT NULL,
+  `anemia` varchar(60) DEFAULT NULL,
+  `cancer` varchar(60) DEFAULT NULL,
+  `hiv_aids` varchar(60) DEFAULT NULL,
+  `osteoarthritis` varchar(60) DEFAULT NULL,
+  `rheumatoid_arthritis` varchar(60) DEFAULT NULL,
+  `seizures` varchar(60) DEFAULT NULL,
+  `dementia` varchar(60) DEFAULT NULL,
+  `anxiety` varchar(60) DEFAULT NULL,
+  `depression` varchar(60) DEFAULT NULL,
+  `eating_disorder` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`),
+  KEY `eid` (`eid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;
 
 CREATE TABLE `patient_immunizations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,

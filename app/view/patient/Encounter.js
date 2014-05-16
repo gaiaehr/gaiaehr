@@ -28,6 +28,7 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
+		'App.view.patient.encounter.FamilyHistory',
 		'App.view.patient.ProgressNote',
 		'App.ux.combo.EncounterPriority'
 	],
@@ -37,6 +38,7 @@ Ext.define('App.view.patient.Encounter', {
 	enableSOAP: eval(g('enable_encounter_soap')),
 	enableVitals: eval(g('enable_encounter_vitals')),
 	enableEncHistory: eval(g('enable_encounter_history')),
+	enableFamilyHistory: eval(g('enable_encounter_family_history')),
 	enableItemsToReview: eval(g('enable_encounter_items_to_review')),
 	enableReviewOfSystem: eval(g('enable_encounter_review_of_systems')),
 	enableReviewOfSystemChecks: eval(g('enable_encounter_review_of_systems_cks')),
@@ -262,6 +264,12 @@ Ext.define('App.view.patient.Encounter', {
 						}
 					]
 				})
+			);
+		}
+
+		if(me.enableFamilyHistory && acl['access_family_history']){
+			me.familyHistoryPanel = me.encounterTabPanel.add(
+				Ext.create('App.view.patient.encounter.FamilyHistory')
 			);
 		}
 
@@ -693,6 +701,7 @@ Ext.define('App.view.patient.Encounter', {
 	openEncounter: function(eid){
 		var me = this,
 			vitals,
+			record,
 			store;
 
 		me.el.mask(i18n('loading...') + ' ' + i18n('encounter') + ' - ' + eid);
@@ -740,6 +749,19 @@ Ext.define('App.view.patient.Encounter', {
 					store.on('write', me.getProgressNote, me);
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
+				if(me.familyHistoryPanel){
+					store = me.encounter.familyhistory();
+					store.on('write', me.getProgressNote, me);
+					if(!store.last()){
+						store.add({
+							pid: data.pid,
+							eid: data.eid,
+							create_uid: app.user.id,
+							create_date: new Date()
+						});
+					}
+					me.familyHistoryPanel.getForm().loadRecord(store.last());
+				}
 				if(me.reviewSysCkPanel){
 					store = me.encounter.reviewofsystemschecks();
 					store.on('write', me.getProgressNote, me);
@@ -776,6 +798,7 @@ Ext.define('App.view.patient.Encounter', {
 				app.setEncounterClose(record.isClose());
 
 				me.el.unmask();
+
 			}
 		});
 
@@ -1147,26 +1170,27 @@ Ext.define('App.view.patient.Encounter', {
 	 * After this panel is render add the forms and listeners for conventions
 	 */
 	beforePanelRender: function(){
-		var me = this, form, defaultFields = function(){
-			return [
-				{
-					name: 'id',
-					type: 'int'
-				},
-				{
-					name: 'pid',
-					type: 'int'
-				},
-				{
-					name: 'eid',
-					type: 'int'
-				},
-				{
-					name: 'uid',
-					type: 'int'
-				}
-			]
-		};
+		var me = this, form,
+			defaultFields = function(){
+				return [
+					{
+						name: 'id',
+						type: 'int'
+					},
+					{
+						name: 'pid',
+						type: 'int'
+					},
+					{
+						name: 'eid',
+						type: 'int'
+					},
+					{
+						name: 'uid',
+						type: 'int'
+					}
+				]
+			};
 
 		/**
 		 * Get 'Vitals' Form Fields and add listeners to convert values
@@ -1300,8 +1324,7 @@ Ext.define('App.view.patient.Encounter', {
 			patient = app.patient;
 
 		if(patient.pid && patient.eid){
-			//	        me.pid = patient.pid;
-			//	        me.eid = patient.eid;
+
 			me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
 			me.setReadOnly(patient.readOnly);
 			callback(true);

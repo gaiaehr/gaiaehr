@@ -357,6 +357,11 @@ class CombosData {
 				'id' => 12,
 				'name' => 'Number Field',
 				'value' => 'numberfield'
+			),
+			12 => array(
+				'id' => 13,
+				'name' => 'CheckBox With Family History',
+				'value' => 'checkboxwithfamilyhistory'
 			)
 		);
 	}

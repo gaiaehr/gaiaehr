@@ -16,30 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.Main', {
-	extend: 'Modules.Module',
+Ext.define('Modules.reportcenter.controller.Dashboard', {
+	extend: 'Ext.app.Controller',
+	requires: [
+		'Modules.reportcenter.view.dashboard.WeekVisitsPortlet',
+		'App.view.dashboard.panel.Portlet'
+	],
+	refs: [
+		{
+			ref: 'DashboardColumnOne',
+			selector: '#dashboard-col-1'
+		},
+		{
+			ref: 'DashboardColumnTwo',
+			selector: '#dashboard-col-2'
+		}
+	],
+
 	init: function(){
 		var me = this;
-		/**
-		 * @param panel     (Ext.component)     Component to add to MainPanel
-		 */
-		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportCenter'));
-		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportPanel'));
 
-		me.getController('Modules.reportcenter.controller.Dashboard').init();
+		me.control({
 
-		/**
-		 * function to add navigation links
-		 * @param parentId  (string)            navigation node parent ID,
-		 * @param node      (object || array)   navigation node configuration properties
-		 */
-		me.addNavigationNodes('root', {
-			text: i18n('report_center'),
-			leaf: true,
-			cls: 'file',
-			iconCls: 'icoReport',
-			id: 'Modules.reportcenter.view.ReportCenter'
 		});
-		me.callParent();
-	}
-}); 
+
+		if(me.getDashboardColumnTwo()){
+			me.getDashboardColumnTwo().add({
+				xtype: 'portlet',
+				title: i18n('week_report'),
+				items: [
+					{
+						xtype: 'weekvisitsportlet',
+						height: 400
+					}
+				]
+			});
+		}
+	},
+
+});

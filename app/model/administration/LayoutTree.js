@@ -163,6 +163,10 @@ Ext.define('App.model.administration.LayoutTree', {
 			type: 'string'
 		},
 		{
+			name: 'code',
+			type: 'string'
+		},
+		{
 			name: 'name',
 			type: 'string'
 		},

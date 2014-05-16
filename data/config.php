@@ -575,6 +575,22 @@ $API = array(
 			)
 		)
 	),
+    /**
+	 * FamilyHistory Functions
+	 */
+	'FamilyHistory' => array(
+		'methods' => array(
+			'getFamilyHistory' => array(
+				'len' => 1
+			),
+			'addFamilyHistory' => array(
+				'len' => 1
+			),
+			'updateFamilyHistory' => array(
+				'len' => 1
+			)
+		)
+	),
 	/**
 	 * Facilities Functions
 	 */

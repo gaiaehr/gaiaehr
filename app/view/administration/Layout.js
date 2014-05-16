@@ -363,7 +363,15 @@ Ext.define('App.view.administration.Layout', {
                                 scope: me,
                                 change: me.onSelectListSelect
                             }
-                        }
+                        },
+	                    {
+		                    fieldLabel: i18n('code'),
+		                    xtype: 'textfield',
+		                    name: 'code',
+		                    itemId: 'code',
+		                    emptyText: 'ei. SNOMED:254687942 or ICD10:H25.091',
+		                    hidden: true
+	                    }
                     ]
                 }
             ]
@@ -901,6 +909,8 @@ Ext.define('App.view.administration.Layout', {
             items = ['name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
         }else if(value == 'datefield' || value == 'mitos.datetime'){
             items = ['name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+        }else if(value == 'checkboxwithfamilyhistory'){
+	        items = ['name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
         }else{
             items = ['name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
         }

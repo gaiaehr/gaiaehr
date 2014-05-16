@@ -1346,4 +1346,6 @@ $LANG = array(
 	'physical_address'                      => 'Physical Address',
 	'url_ip_or_domain'                      => 'URL IP/Domain',
 	'secret_key'                            => 'Secret Key',
+	'family_history'                        => 'Family History',
+	'relation'                              => 'Relation',
 );

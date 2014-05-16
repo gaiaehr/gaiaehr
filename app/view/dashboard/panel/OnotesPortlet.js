@@ -17,35 +17,35 @@
  */
 
 Ext.define('App.view.dashboard.panel.OnotesPortlet', {
-	extend       : 'Ext.grid.Panel',
-	xtype        : 'onotesportlet',
-//	height       : 250,
+	extend: 'Ext.grid.Panel',
+	xtype: 'onotesportlet',
+	height: 250,
 
-	initComponent: function() {
+	initComponent: function(){
 		var me = this;
 
-        // *************************************************************************************
-        // Office Notes Portlet Data Store
-        // *************************************************************************************
+		// *************************************************************************************
+		// Office Notes Portlet Data Store
+		// *************************************************************************************
 		me.store = Ext.create('App.store.dashboard.panel.OfficeNotesPortlet');
 
-		Ext.apply(me,{
-			height     : me.height,
-			store      : me.store,
-			stripeRows : true,
+		Ext.apply(me, {
+			height: me.height,
+			store: me.store,
+			stripeRows: true,
 			columnLines: true,
-			columns    : [
+			columns: [
 				{
-					id       : 'user',
-					text     : 'From',
-					sortable : true,
+					id: 'user',
+					text: 'From',
+					sortable: true,
 					dataIndex: 'user'
 				},
 				{
-					text     : 'Note',
-					sortable : true,
+					text: 'Note',
+					sortable: true,
 					dataIndex: 'body',
-					flex     : 1
+					flex: 1
 				}
 			]
 		});

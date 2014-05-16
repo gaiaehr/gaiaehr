@@ -188,7 +188,8 @@ Ext.define('App.view.administration.Lists', {
                     text: i18n('notes'),
                     sortable: true,
                     dataIndex: 'notes',
-                    flex: 1,width: 100,
+                    flex: 1,
+	                width: 100,
                     editor: {
                         allowBlank: true
                     }
@@ -201,7 +202,7 @@ Ext.define('App.view.administration.Lists', {
                     renderer: me.boolRenderer,
                     editor: {
                         xtype: 'checkbox',
-                        padding: '0 0 0 18'
+                        margin: 0
                     }
                 }
             ],

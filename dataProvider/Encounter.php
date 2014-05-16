@@ -24,6 +24,7 @@ include_once(dirname(__FILE__) . '/Medical.php');
 include_once(dirname(__FILE__) . '/PreventiveCare.php');
 include_once(dirname(__FILE__) . '/Services.php');
 include_once(dirname(__FILE__) . '/DiagnosisCodes.php');
+include_once(dirname(__FILE__) . '/FamilyHistory.php');
 
 class Encounter {
 	/**
@@ -107,6 +108,8 @@ class Encounter {
 		$this->preventiveCare = new PreventiveCare();
 		$this->diagnosis = new DiagnosisCodes();
 
+		$this->FamilyHistory = new FamilyHistory();
+
 		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
 		$this->ros = MatchaModel::setSenchaModel('App.model.patient.ReviewOfSystems');
 		$this->soap = MatchaModel::setSenchaModel('App.model.patient.SOAP');
@@ -167,6 +170,11 @@ class Encounter {
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
 			$this->addReviewOfSystems((object)$default);
 		}
+
+		if($_SESSION['globals']['enable_encounter_family_history']){
+			$familyHistory = $this->FamilyHistory->getFamilyHistoryByPid($encounter['pid']);
+		}
+
 
 		// TODO: Matcha Model
 		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
@@ -255,6 +263,10 @@ class Encounter {
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
 			$encounter['reviewofsystems'][] = $this->getReviewOfSystems($filters);
+		}
+
+		if($_SESSION['globals']['enable_encounter_family_history']){
+			$encounter['familyhistory'] = $this->FamilyHistory->getFamilyHistoryByPid($encounter['pid']);
 		}
 
 		// TODO: Matcha Model

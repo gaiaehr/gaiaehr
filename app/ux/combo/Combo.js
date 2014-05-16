@@ -48,7 +48,8 @@ Ext.define('App.ux.combo.Combo', {
 				extraParams: {
 					list_id: me.list
 				}
-			}
+			},
+			idProperty: 'option_value'
 		});
 
 		me.store = Ext.create('Ext.data.Store', {

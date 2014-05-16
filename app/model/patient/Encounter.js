@@ -18,6 +18,9 @@
 
 Ext.define('App.model.patient.Encounter', {
 	extend: 'Ext.data.Model',
+	requires:[
+		'App.model.patient.FamilyHistory'
+	],
 	table: {
 		name: 'encounters',
 		comment: 'Encounter Data'
@@ -180,6 +183,12 @@ Ext.define('App.model.patient.Encounter', {
 		{
 			model: 'App.model.patient.ReviewOfSystems',
 			name: 'reviewofsystems',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.FamilyHistory',
+			name: 'familyhistory',
 			primaryKey: 'eid',
 			foreignKey: 'eid'
 		},

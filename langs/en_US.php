@@ -1348,4 +1348,5 @@ $LANG = array(
 	'secret_key'                            => 'Secret Key',
 	'family_history'                        => 'Family History',
 	'relation'                              => 'Relation',
+	'referrer'                              => 'Referrer',
 );

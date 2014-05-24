@@ -58,17 +58,17 @@ class DocumentHandler {
 
 	/**
 	 * @param      $params
-	 * @param bool $document
+	 * @param bool $includeDocument
 	 *
 	 * @return mixed
 	 */
-	public function getPatientDocuments($params, $document = false){
+	public function getPatientDocuments($params, $includeDocument = false){
 		$this->setPatientDocumentModel();
 		$records = $this->d->load($params)->all();
 		/** lets unset the actual document data */
-		if(!$document){
-			foreach($records as $i => $record){
-				unset($records[$i]['document']);
+		if(!$includeDocument && isset($records['data'])){
+			foreach($records['data'] as $i => $record){
+				unset($records['data'][$i]['document']);
 			}
 		}
 		return $records;

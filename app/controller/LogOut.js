@@ -121,13 +121,16 @@ Ext.define('App.controller.LogOut', {
 	},
 
 	appLogout: function(auto){
-		var me = this;
+		var me = this,
+			nav = me.getController('Navigation');
 
 		if(auto === true){
 			me.ActivityMonitor(false);
 			if(app.patient.pid) Patient.unsetPatient(app.patient.pid);
 			authProcedures.unAuth(function(){
-				window.location = './'
+				nav.navigateTo('App.view.login.Login', null, true);
+				window.location.reload();
+
 			});
 		}else{
 			Ext.Msg.show({
@@ -140,7 +143,8 @@ Ext.define('App.controller.LogOut', {
 						if(app.patient.pid) Patient.unsetPatient(app.patient.pid);
 						authProcedures.unAuth(function(){
 							me.ActivityMonitor(false);
-							window.location = './'
+							nav.navigateTo('App.view.login.Login', null, true);
+							window.location.reload();
 						});
 					}
 				}

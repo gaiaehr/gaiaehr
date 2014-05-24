@@ -19,10 +19,7 @@
 Ext.define('App.view.patient.Summary', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: i18n('patient_summary'),
-	pageLayout: {
-		type: 'hbox',
-		align: 'stretch'
-	},
+	pageLayout: 'border',
 	requires: [
 		'Ext.XTemplate',
 		'Ext.ux.IFrame',
@@ -35,21 +32,6 @@ Ext.define('App.view.patient.Summary', {
 		var me = this;
 
 		me.stores = [];
-		me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck', {
-			autoLoad: false
-		}));
-		me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
-			autoLoad: false
-		}));
-		me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems', {
-			autoLoad: false
-		}));
-		me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
-			autoLoad: false
-		}));
-		me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
-			autoLoad: false
-		}));
 
 		app.on('patientset', function(patient){
 			if(!me.hidden){
@@ -66,131 +48,215 @@ Ext.define('App.view.patient.Summary', {
 				frame: false,
 				border: false,
 				plain: true,
+				region: 'center',
 				itemId: 'centerPanel'
-			}),
-			{
-				xtype: 'panel',
+			})
+		];
+
+		me.sidePanelItems = [];
+
+		if(a('access_patient_medications')){
+
+			me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
+				autoLoad: false
+			}));
+
+
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: i18n('active_medications'),
+				itemId: 'PatientSummaryMedicationsPanel',
+				hideHeaders: true,
+				store: me.patientMedicationsStore,
+				tools:[
+					{
+						xtype: 'button',
+						text: i18n('details'),
+						action: 'medications',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+						header: i18n('name'),
+						dataIndex: 'STR',
+						flex: 1
+					},
+					{
+						text: i18n('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.boolRenderer
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_immunizations')){
+
+			me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: i18n('immunizations'),
+				itemId: 'PatientSummaryImmunizationPanel',
+				hideHeaders: true,
+				store: me.immuCheckListStore,
+				region: 'center',
+				tools:[
+					{
+						xtype: 'button',
+						text: i18n('details'),
+						action: 'immunization',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+
+						header: i18n('name'),
+						dataIndex: 'vaccine_name',
+						flex: 1
+					},
+					{
+						text: i18n('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.alertRenderer
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_allergies')){
+
+			me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: i18n('allergies'),
+				itemId: 'PatientSummaryAllergiesPanel',
+				hideHeaders: true,
+				store: me.patientAllergiesListStore,
+				region: 'center',
+				tools:[
+					{
+						xtype: 'button',
+						text: i18n('details'),
+						action: 'allergies',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+						header: i18n('name'),
+						dataIndex: 'allergy',
+						flex: 1
+					},
+					{
+						text: i18n('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.boolRenderer
+					}
+				]
+			});
+		}
+
+		if(a('access_active_problems')){
+
+			me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: i18n('active_problems'),
+				itemId: 'PatientSummaryActiveProblemsPanel',
+				hideHeaders: true,
+				store: me.patientActiveProblemsStore,
+				tools:[
+					{
+						xtype: 'button',
+						text: i18n('details'),
+						action: 'issues',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+
+						header: i18n('name'),
+						dataIndex: 'code',
+						flex: 1
+					},
+					{
+						text: i18n('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.boolRenderer
+					}
+				]
+
+			});
+		}
+
+		if(a('access_patient_calendar_events')){
+
+			me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: i18n('appointments'),
+				itemId: 'AppointmentsPanel',
+				hideHeaders: true,
+				disableSelection: true,
+				store: me.patientCalendarEventsStore,
+				columns: [
+					{
+						xtype: 'datecolumn',
+						format: 'F j, Y, g:i a',
+						dataIndex: 'start',
+						flex: 1
+					}
+				]
+			});
+		}
+
+
+		if(me.sidePanelItems.length > 0){
+			me.sidePanel = Ext.widget('panel', {
 				width: 250,
 				bodyPadding: 0,
 				frame: false,
 				border: false,
 				bodyBorder: true,
-				margin: '0 0 0 5',
+				region: 'east',
+				split: true,
 				defaults: {
 					layout: 'fit',
 					margin: '5 5 0 5'
 				},
-				listeners: {
-					scope: me,
-					render: me.rightColRender
-				},
-				items: [
-					{
-						xtype: 'grid',
-						title: i18n('active_medications'),
-						itemId: 'PatientSummaryMedicationsPanel',
-						hideHeaders: true,
-						store: me.patientMedicationsStore,
-						columns: [
-							{
-								header: i18n('name'),
-								dataIndex: 'STR',
-								flex: 1
-							},
-							{
-								text: i18n('alert'),
-								width: 55,
-								dataIndex: 'alert',
-								renderer: me.boolRenderer
-							}
-						]
-					},
-					{
-						xtype: 'grid',
-						title: i18n('immunizations'),
-						itemId: 'PatientSummaryImmunizationPanel',
-						hideHeaders: true,
-						store: me.immuCheckListStore,
-						region: 'center',
-						columns: [
-							{
+				items: me.sidePanelItems
+			});
 
-								header: i18n('name'),
-								dataIndex: 'vaccine_name',
-								flex: 1
-							},
-							{
-								text: i18n('alert'),
-								width: 55,
-								dataIndex: 'alert',
-								renderer: me.alertRenderer
-							}
-						]
-					},
-					{
-						xtype: 'grid',
-						title: i18n('allergies'),
-						itemId: 'PatientSummaryAllergiesPanel',
-						hideHeaders: true,
-						store: me.patientAllergiesListStore,
-						region: 'center',
-						columns: [
-							{
-								header: i18n('name'),
-								dataIndex: 'allergy',
-								flex: 1
-							},
-							{
-								text: i18n('alert'),
-								width: 55,
-								dataIndex: 'alert',
-								renderer: me.boolRenderer
-							}
-						]
-					},
-					{
-						xtype: 'grid',
-						title: i18n('active_problems'),
-						itemId: 'PatientSummaryActiveProblemsPanel',
-						hideHeaders: true,
-						store: me.patientActiveProblemsStore,
-						columns: [
-							{
+			Ext.Array.push(me.pageBody, me.sidePanel);
 
-								header: i18n('name'),
-								dataIndex: 'code',
-								flex: 1
-							},
-							{
-								text: i18n('alert'),
-								width: 55,
-								dataIndex: 'alert',
-								renderer: me.boolRenderer
-							}
-						]
+		}
 
-					},
-					{
-						xtype: 'grid',
-						title: i18n('appointments'),
-						itemId: 'AppointmentsPanel',
-						hideHeaders: true,
-						disableSelection: true,
-						store: me.patientCalendarEventsStore,
-						columns: [
-							{
-								xtype: 'datecolumn',
-								format: 'F j, Y, g:i a',
-								dataIndex: 'start',
-								flex: 1
-							}
-						]
-					}
-				]
-			}
-		];
 
-		if(acl['access_demographics']){
+		if(a('access_demographics')){
 			me.tabPanel.add(
 				me.demographics = Ext.create('App.view.patient.Patient', {
 					newPatient: false,
@@ -199,7 +265,7 @@ Ext.define('App.view.patient.Summary', {
 			);
 		}
 
-		if(acl['access_patient_disclosures']){
+		if(a('access_patient_disclosures')){
 			me.tabPanel.add({
 				xtype: 'grid',
 				title: i18n('disclosures'),
@@ -248,7 +314,7 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 
-		if(acl['access_patient_notes']){
+		if(a('access_patient_notes')){
 			me.tabPanel.add({
 				title: i18n('notes'),
 				itemId: 'PatientSummeryNotesPanel',
@@ -303,7 +369,7 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 
-		if(acl['access_patient_reminders']){
+		if(a('access_patient_reminders')){
 			me.tabPanel.add({
 				title: i18n('reminders'),
 				itemId: 'PatientSummaryRemindersPanel',
@@ -358,7 +424,7 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(acl['access_patient_vitals']){
+		if(a('access_patient_vitals')){
 			me.tabPanel.add({
 				xtype: 'panel',
 				title: i18n('vitals'),
@@ -374,7 +440,7 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(acl['access_patient_history']){
+		if(a('access_patient_history')){
 			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
 			me.tabPanel.add({
 				title: i18n('history'),
@@ -401,7 +467,7 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(acl['access_patient_documents']){
+		if(a('access_patient_documents')){
 			//            me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
 			me.tabPanel.add({
 				xtype: 'patientdocumentspanel',
@@ -409,7 +475,7 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(acl['access_patient_preventive_care_alerts']){
+		if(a('access_patient_preventive_care_alerts')){
 			me.tabPanel.add({
 				title: i18n('dismissed_preventive_care_alerts'),
 				xtype: 'grid',
@@ -524,7 +590,7 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(acl['access_patient_billing']){
+		if(a('access_patient_billing')){
 			me.tabPanel.add({
 				xtype: 'panel',
 				action: 'balancePanel',
@@ -535,76 +601,76 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 
-		//if(acl['access_patient_reports']){
-		me.reportPanel = me.tabPanel.add({
-			xtype: 'panel',
-			title: i18n('ccd_reports'),
-			tbar: [
-				{
-					xtype: 'container',
-					layout: 'vbox',
-					defaultType: 'button',
-					items: [
-						{
-							text: i18n('view_ccr'),
-							margin: '0 0 5 0',
-							handler: function(){
-								me.reportPanel.remove(me.miframe);
-								me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-									src: 'dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token
-								}));
-								// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-								app.AuditLog('Patient summary CCD viewed');
+		if(a('access_patient_ccd')){
+			me.reportPanel = me.tabPanel.add({
+				xtype: 'panel',
+				title: i18n('ccd_reports'),
+				tbar: [
+					{
+						xtype: 'container',
+						layout: 'vbox',
+						defaultType: 'button',
+						items: [
+							{
+								text: i18n('view_ccr'),
+								margin: '0 0 5 0',
+								handler: function(){
+									me.reportPanel.remove(me.miframe);
+									me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
+										src: 'dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token
+									}));
+									// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+									app.AuditLog('Patient summary CCD viewed');
+								}
 							}
-						}
-					]
-				},
-				'-',
-				{
-					xtype: 'container',
-					layout: 'vbox',
-					defaultType: 'button',
-					items: [
-						{
-							text: i18n('export_ccr'),
-							margin: '0 0 5 0',
-							handler: function(){
-								me.reportPanel.remove(me.miframe);
-								me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-									src: globals.url + '/dataProvider/CCDDocument.php?action=export&pid=' + me.pid + '&token=' + app.user.token
-								}));
-								// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-								app.AuditLog('Patient summary CCD exported');
+						]
+					},
+					'-',
+					{
+						xtype: 'container',
+						layout: 'vbox',
+						defaultType: 'button',
+						items: [
+							{
+								text: i18n('export_ccr'),
+								margin: '0 0 5 0',
+								handler: function(){
+									me.reportPanel.remove(me.miframe);
+									me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
+										src: globals.url + '/dataProvider/CCDDocument.php?action=export&pid=' + me.pid + '&token=' + app.user.token
+									}));
+									// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+									app.AuditLog('Patient summary CCD exported');
+								}
 							}
+						]
+					},
+					'-',
+					{
+						xtype: 'container',
+						layout: 'vbox',
+						items: [
+							{
+								xtype: 'patientEncounterCombo',
+								name: 'filterEncounter',
+								margin: 5,
+								fieldLabel: i18n('filter_encounter'),
+								hideLabel: false
+							}
+						]
+					},
+					'-',
+					{
+						text: 'Print',
+						iconCls: 'icon-print',
+						handler: function(){
+							//                           	trg.focus();
+							//                           	trg.print();
 						}
-					]
-				},
-				'-',
-				{
-					xtype: 'container',
-					layout: 'vbox',
-					items: [
-						{
-							xtype: 'patientEncounterCombo',
-							name: 'filterEncounter',
-							margin: 5,
-							fieldLabel: i18n('filter_encounter'),
-							hideLabel: false
-						}
-					]
-				},
-				'-',
-				{
-					text: 'Print',
-					iconCls: 'icon-print',
-					handler: function(){
-						//                           	trg.focus();
-						//                           	trg.print();
 					}
-				}
-			]
-		});
-		//}
+				]
+			});
+		}
 
 		me.callParent();
 	},
@@ -634,87 +700,6 @@ Ext.define('App.view.patient.Summary', {
 		grid.plugins[0].startEdit(0, 0);
 	},
 
-//	onDocumentHashCheck: function(grid, rowIndex){
-//		var rec = grid.getStore().getAt(rowIndex),
-//			success;
-//		DocumentHandler.checkDocHash(rec.data, function(provider, response){
-//			success = response.result.success;
-//			app.msg(
-//				i18n(success ? 'sweet' : 'oops'),
-//					i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg,
-//				!success
-//			);
-//
-//		});
-//	},
-
-//	onDocumentView: function(grid, rowIndex){
-//		var rec = grid.getStore().getAt(rowIndex);
-//		app.onDocumentView(rec.data.id);
-//	},
-//
-//	uploadADocument: function(){
-//		var me = this, previewPanel = me.query('[action="upload"]')[0];
-//		me.uploadWin.show();
-//		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 30])
-//	},
-//
-//	onDocUpload: function(btn){
-//		var me = this,
-//			form = me.uploadWin.down('form').getForm(),
-//			win = btn.up('window'),
-//			params = {
-//				pid: me.pid,
-//				encrypted: form.findField('encrypted').getValue() ? 1 : 0,
-//				docType: 'UploadDoc'
-//			};
-//
-//		if(form.isValid()){
-//			form.submit({
-//				waitMsg: i18n('uploading_document') + '...',
-//				params: params,
-//				success: function(fp, o){
-//					win.close();
-//					me.patientDocumentsStore.load({params: {pid: me.pid}});
-//				}
-//			});
-//		}
-//	},
-//	newDoc: function(btn){
-//		app.onNewDocumentsWin(btn.action)
-//	},
-
-	rightColRender: function(panel){
-		var me = this;
-		panel.getComponent('PatientSummaryImmunizationPanel').header.add({
-			xtype: 'button',
-			text: i18n('details'),
-			action: 'immunization',
-			scope: me,
-			handler: me.medicalWin
-		});
-		panel.getComponent('PatientSummaryMedicationsPanel').header.add({
-			xtype: 'button',
-			text: i18n('details'),
-			action: 'medications',
-			scope: me,
-			handler: me.medicalWin
-		});
-		panel.getComponent('PatientSummaryAllergiesPanel').header.add({
-			xtype: 'button',
-			text: i18n('details'),
-			action: 'allergies',
-			scope: me,
-			handler: me.medicalWin
-		});
-		panel.getComponent('PatientSummaryActiveProblemsPanel').header.add({
-			xtype: 'button',
-			text: i18n('details'),
-			action: 'issues',
-			scope: me,
-			handler: me.medicalWin
-		});
-	},
 	medicalWin: function(btn){
 		app.onMedicalWin(btn.action);
 	},
@@ -759,10 +744,7 @@ Ext.define('App.view.patient.Summary', {
 						property: 'pid',
 						value: me.pid
 					}
-				],
-				callback: function(){
-					me.el.unmask();
-				}
+				]
 			});
 		}
 	},
@@ -792,12 +774,12 @@ Ext.define('App.view.patient.Summary', {
 		me.setReadOnly(app.patient.readOnly);
 		me.setButtonsDisabled(me.query('button[action="readOnly"]'));
 
-		if(acl['access_demographics']) me.demographics.loadPatient(me.pid);
+		if(a('access_demographics')) me.demographics.loadPatient(me.pid);
 
 		/**
 		 * get billing info if user has access
 		 */
-		if(acl['access_patient_billing']){
+		if(a('access_patient_billing')){
 			billingPanel = me.tabPanel.getComponent('balancePanel');
 			Fees.getPatientBalance({pid: me.pid},
 				function(balance){
@@ -813,6 +795,7 @@ Ext.define('App.view.patient.Summary', {
 		 * load all the stores
 		 */
 		me.loadStores();
+		me.el.unmask();
 	},
 	/**
 	 * This function is called from Viewport.js when

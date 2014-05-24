@@ -50,17 +50,17 @@ Ext.define('App.view.dashboard.Dashboard', {
 					region: 'center',
 					items: [
 						{
-							itemId: 'dashboard-col-1',
-							items: [
-								{
-									title: i18n('office_notes'),
-									tools: this.getTools(),
-									items: { xtype: 'onotesportlet' },
-									listeners: {
-										close: Ext.bind(this.onPortletClose, this)
-									}
-								}
-							]
+							itemId: 'dashboard-col-1'
+//							items: [
+//								{
+//									title: i18n('office_notes'),
+//									tools: this.getTools(),
+//									items: { xtype: 'onotesportlet' },
+//									listeners: {
+//										close: Ext.bind(this.onPortletClose, this)
+//									}
+//								}
+//							]
 						},
 						{
 							itemId: 'dashboard-col-2',

@@ -41,7 +41,7 @@ Ext.define('App.ux.RenderPanel', {
 					cls: 'RenderPanel-header',
 					itemId: 'RenderPanel-header',
 					region: 'north',
-					height: 33
+					height: 30
 				}),
 				{
 					cls: 'RenderPanel-body-container',

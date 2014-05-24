@@ -54,8 +54,10 @@ class User {
 
 	public function getUser($params){
 		$user = $this->u->load($params)->one();
-		$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
-		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		if($user !== false){
+			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		}
 		return $user;
 	}
 
@@ -83,7 +85,7 @@ class User {
 		}
 		$user = $this->u->save($params);
 //		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
-		return $this->u;
+		return $user;
 	}
 
 	public function updatePassword(stdClass $params){
@@ -189,5 +191,13 @@ class User {
 
 	public function getUserRolesByCurrentUserOrUserId($uid = null){
 		return $this->u->load($uid == null ? $_SESSION['user']['id'] : $uid)->one();
+	}
+
+	public function getUserByNPI($npi){
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'NPI';
+		$params->filter[0]->value = $npi;
+		return $this->getUser($params);
 	}
 }

@@ -51,7 +51,7 @@ Ext.define('App.view.patient.Documents', {
 			],
 			itemId: 'patientDocumentGrid',
 			minWidth: 450,
-			store: Ext.create('App.store.patient.PatientDocuments', {
+			store: this.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments', {
 				autoLoad: false,
 				remoteFilter: true,
 				remoteSort: false,
@@ -132,7 +132,13 @@ Ext.define('App.view.patient.Documents', {
 					text: i18n('upload_document'),
 					itemId: 'documentUploadBtn'
 				}
-			]
+			],
+			bbar: Ext.create('Ext.PagingToolbar', {
+				pageSize: 10,
+				store: this.patientDocumentsStore,
+				displayInfo: true,
+				plugins: Ext.create('Ext.ux.SlidingPager', {})
+			})
 		},
 		{
 			xtype: 'panel',

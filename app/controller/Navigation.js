@@ -83,9 +83,12 @@ Ext.define('App.controller.Navigation', {
 	 *
 	 * @param {string} cls  - example: 'App.view.ExamplePanel'
 	 * @param {function} [callback] - callback function
+	 * @param {bool} resetParams true to reset all params
 	 */
-	navigateTo: function(cls, callback){
-		window.location = './#!/' + cls;
+	navigateTo: function(cls, callback, resetParams){
+		var params = resetParams !== true ? this.getUrlParams() : [];
+		params[0] = cls;
+		this.setUrlParams(params);
 		if(typeof callback == 'function') callback(true);
 	},
 
@@ -111,6 +114,20 @@ Ext.define('App.controller.Navigation', {
 		this.navigateToDefault();
 	},
 
+
+	setUrlParams:function(params){
+		var url = './#!/';
+		if(params.length > 0) url += params.join('/');
+		window.location = url;
+	},
+
+	getUrlParams:function(){
+		if(window.location.hash){
+			return window.location.hash.substring(1).replace(/!\//, '').split('/');
+		}
+		return [];
+	},
+
 	/**
 	 * this method handle the card layout when the URL changes
 	 * @param {string} url
@@ -119,13 +136,17 @@ Ext.define('App.controller.Navigation', {
 		var me = this,
 			tree = me.getMainNav(),
 			treeStore = tree.getStore(),
-			cls = url.replace(/!\//, ''),
+			cls = me.getUrlParams()[0],
 			ref = me.getNavRefByClass(cls),
 			layout = me.getViewport().MainPanel.getLayout(),
 			sm = tree.getSelectionModel(),
 			node = treeStore.getNodeById(cls);
 
+		this.url = url;
 		sm.select(node);
+
+		// ignore the Login
+		if(cls == 'App.view.login.Login') return;
 
 		// if the panel is 'undefined' added to MainPanel
 		if (typeof me[ref] == 'undefined') {
@@ -150,10 +171,6 @@ Ext.define('App.controller.Navigation', {
 
 		// fire global event
 		me.getViewport().fireEvent('afternavigation', me[ref]);
-
-
-		say(me);
-
 	},
 
 	/**

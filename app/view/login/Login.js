@@ -49,8 +49,7 @@ Ext.define('App.view.login.Login', {
 			modal: false,
 			resizable: true,
 			draggable: true,
-			closable: true,
-			autoScroll: true
+			closable: true
 		});
 		/**
 		 * Form Layout [Login]
@@ -272,11 +271,14 @@ Ext.define('App.view.login.Login', {
 	 * Form Submit/Logon function
 	 */
 	loginSubmit: function(){
+
 		var me = this,
 			formPanel = this.formLogin,
 			form = formPanel.getForm(),
 			params = form.getValues(),
 			checkInMode = me.formLogin.query('checkbox')[0].getValue();
+
+
 
 		if(form.isValid()){
 			formPanel.el.mask('Sending credentials...');
@@ -284,9 +286,7 @@ Ext.define('App.view.login.Login', {
 
 			authProcedures.login(params, function(provider, response){
 				if(response.result.success){
-					window.location = './';
-					//window.close();
-					//window.appWindow = window.open('./','app','fullscreen=yes,directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no');
+					window.location.reload();
 				}else{
 					Ext.Msg.show({
 						title: 'Oops!',

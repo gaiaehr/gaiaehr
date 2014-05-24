@@ -35,8 +35,22 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	        site = '<?php print $site ?>',
 	        localization = '<?php print site_default_localization ?>';
 
-        function i18n(key){ return lang[key] || key; }
-        function say(a){ console.log(a); }
+        window.i18n = function(key){
+	        return window.lang[key] || '*'+key+'*';
+        };
+
+        window.say = function(a){
+	        console.log(a);
+        };
+
+        window.g = function(global){
+	        return window.globals[global] || false;
+        };
+
+        window.a = function(acl){
+	        return window.acl[acl] || false;
+        };
+
         Ext.Loader.setConfig({
             enabled: true,
             disableCaching: true,

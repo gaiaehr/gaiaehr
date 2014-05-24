@@ -1,5 +1,6 @@
 <?php
 $functions = array();
+$complexTypes = array();
 /*****************************************************************************
  * To access this WSDL specification run via: /wsdl.php?WSDL
  * Any other access to this WSDL will display as a HTML document
@@ -23,51 +24,254 @@ $functions = array();
  *  soapAddress - The php file to send to to process SOAP requests
  *****************************************************************************/
 
-$serviceName = 'GaiaEHR SAOP Web Service Access Point';
+$serviceName = 'GaiaEHR Access Point';
+
+$complexTypes['Patient'] = array(
+	array(
+		'name' => 'Pid',
+		'type' => 'int',
+		'minOccurs' => '1',
+		'document' => 'GaiaEHR Internal ID'
+	),
+	array(
+		'name' => 'RecordNumber',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'GaiaEHR Public ID or Record Number'
+	),
+	array(
+		'name' => 'FirstName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Patient First Name'
+	),
+	array(
+		'name' => 'MiddleName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Patient Middle Name'
+	),
+	array(
+		'name' => 'LastName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Patient Last Name'
+	),
+	array(
+		'name' => 'DOB',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'On Format YYYY-MM-DD (0000-00-00)'
+	),
+	array(
+		'name' => 'Sex',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'F or M'
+	),
+	array(
+		'name' => 'SSN',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => '** Not Recommended **'
+	)
+
+);
+
+$complexTypes['Provider'] = array(
+	array(
+		'name' => 'NPI',
+		'type' => 'string',
+		'minOccurs' => '1',
+		'document' => 'National Provider Identifier'
+	),
+	array(
+		'name' => 'FirstName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Provider Last Name'
+	),
+	array(
+		'name' => 'MiddleName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Provider Last Name'
+	),
+	array(
+		'name' => 'LastName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Provider Last Name'
+	)
+
+);
+
+$complexTypes['Document'] = array(
+	array(
+		'name' => 'Base64Document',
+		'type' => 'string',
+		'minOccurs' => '1'
+	),
+	array(
+		'name' => 'Date',
+		'type' => 'string',
+		'minOccurs' => '1',
+		'document' => 'On Format YYYY-MM-DD (0000-00-00)'
+	),
+	array(
+		'name' => 'Title',
+		'type' => 'string',
+		'minOccurs' => '1'
+	),
+	array(
+		'name' => 'Category',
+		'type' => 'string',
+		'minOccurs' => '1',
+		'document' => 'General | Rx | CT | Lab | CR...  etc, etc,'
+	),
+	array(
+		'name' => 'Notes',
+		'type' => 'string',
+		'minOccurs' => '0'
+	),
+	array(
+		'name' => 'Encrypted',
+		'type' => 'boolean',
+		'minOccurs' => '0',
+		'document' => 'Set true is you would like Gaia to save it encrypted. ***DO NOT*** send the document already encrypted'
+	)
+);
+
+
+$complexTypes['Order'] = array(
+	array(
+		'name' => 'OrderId',
+		'type' => 'string',
+		'minOccurs' => '1'
+	),
+	array(
+		'name' => 'DateCollected',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'On Format YYYY-MM-DD (0000-00-00)'
+	),
+	array(
+		'name' => 'Notes',
+		'type' => 'string',
+		'minOccurs' => '0'
+	)
+);
 
 $functions[] = array(
-	'funcName' => 'getDocument',
-	'doc' => 'This web service will return the requested patient CCD document',
+	'funcName' => 'GetCCDDocument',
+	'doc' => 'This will return the requested patient CCD document',
 	'inputParams' => array(
 		array(
-			'name' => 'pid',
+			'name' => 'SecureKey',
 			'type' => 'string',
-		    'minOccurs' => '1'
+			'minOccurs' => '1',
+			'document' => 'GUID Secure Key provided'
 		),
 		array(
-			'name' => 'document',
+			'name' => 'Pid',
 			'type' => 'string',
-			'minOccurs' => '1'
+			'minOccurs' => '1',
+			'document' => 'GaiaEHR Internal ID'
 		),
 		array(
-			'name' => 'site',
+			'name' => 'Site',
 			'type' => 'string',
-			'minOccurs' => '0'
+			'minOccurs' => '0',
+			'document' => 'Default Value is "default"'
 		),
 		array(
-			'name' => 'facility',
+			'name' => 'Facility',
 			'type' => 'int',
-			'minOccurs' => '0'
+			'minOccurs' => '0',
+			'document' => 'Default Value is "1"'
 		)
 	),
 	'outputParams' => array(
 		array(
-			'name' => 'success',
+			'name' => 'Success',
 			'type' => 'boolean',
+			'minOccurs' => '1',
+			'document' => 'True if request was successfully processed'
+		),
+		array(
+			'name' => 'Document',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'CCD Document'
+		),
+		array(
+			'name' => 'Error',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'If success == false an error message will be send back'
+		)
+	),
+	'soapAddress' => 'http://24.55.126.192/gaiaehr/dataProvider/SOAP/Server.php'
+);
+
+$functions[] = array(
+	'funcName' => 'UploadPatientDocument',
+	'doc' => 'This will add a document to the patient archive documents',
+	'inputParams' => array(
+		array(
+			'name' => 'SecureKey',
+			'type' => 'string',
+			'minOccurs' => '1',
+			'document' => 'GUID Secure Key provided'
+		),
+		array(
+			'name' => 'Patient',
+			'type' => 'Patient',
 			'minOccurs' => '1'
 		),
 		array(
-			'name' => 'document',
-			'type' => 'string',
+			'name' => 'Provider',
+			'type' => 'Provider',
+			'minOccurs' => '1'
+		),
+		array(
+			'name' => 'Document',
+			'type' => 'Document',
+			'minOccurs' => '1'
+		),
+		array(
+			'name' => 'Order',
+			'type' => 'Order',
 			'minOccurs' => '0'
 		),
 		array(
-			'name' => 'error',
+			'name' => 'Site',
 			'type' => 'string',
-			'minOccurs' => '0'
+			'minOccurs' => '0',
+			'document' => 'Default Value is "default"'
+		),
+		array(
+			'name' => 'Facility',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => 'Default Value is "1"'
 		)
 	),
-	'soapAddress' => 'http://localhost/gaiaehr/dataProvider/SOAP/Server.php'
+	'outputParams' => array(
+		array(
+			'name' => 'Success',
+			'type' => 'boolean',
+			'minOccurs' => '1',
+			'document' => 'True if request was successfully processed'
+		),
+		array(
+			'name' => 'Error',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'If success == false an error message will be send back'
+		)
+	),
+	'soapAddress' => 'http://24.55.126.192/gaiaehr/dataProvider/SOAP/Server.php'
 );
 
 // ----------------------------------------------------------------------------
@@ -82,12 +286,27 @@ if(stristr($_SERVER['QUERY_STRING'], 'wsdl')){
 	// WSDL request - output raw XML
 	header('Content-Type: application/soap+xml; charset=utf-8');
 	print DisplayXML();
-} else{
+} else {
 	// Page accessed normally - output documentation
 	$cp = substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1); // Current page
 	print '<!-- Attention: To access via a SOAP client use ' . $cp . '?WSDL -->';
 	print '<html>';
 	print '<head><title>' . $serviceName . '</title></head>';
+	print <<<STYLES
+<style>
+ul ul {
+	background-color: #f9f9f9;
+	padding: 10px 30px;
+	margin: 5px;
+	border: solid 1px #ccc;
+
+}
+ul ul ul {
+	background-color: #eff8ff;
+}
+</style>
+STYLES;
+
 	print '<body>';
 	print '<h1>' . $serviceName . '</h1>';
 	print '<p style="margin-left:20px;">To access via a SOAP client use <code>' . $cp . '?WSDL</code></p>';
@@ -102,24 +321,14 @@ if(stristr($_SERVER['QUERY_STRING'], 'wsdl')){
 		print $functions[$i]['doc'];
 		print '<ul>';
 		if(array_key_exists("inputParams", $functions[$i])){
-			print '<li>Input Parameters:<ul>';
-			for($j = 0; $j < count($functions[$i]['inputParams']); $j++){
-				print '<li>' . $functions[$i]['inputParams'][$j]['name'];
-				print ' {' . $functions[$i]['inputParams'][$j]['type'] . '} ';
-				$functions[$i]['inputParams'][$j]['minOccurs'] !== '0' ? print '(required)' : print '(optional)';
-				print '</li>';
-			}
-			print '</ul></li>';
+			print '<li>Input Parameters:';
+			DisplayElementHtml($functions[$i]['inputParams']);
+			print '</li>';
 		}
 		if(array_key_exists("outputParams", $functions[$i])){
-			print '<li>Output Parameters:<ul>';
-			for($j = 0; $j < count($functions[$i]['outputParams']); $j++){
-				print '<li>' . $functions[$i]['outputParams'][$j]['name'];
-				print ' {' . $functions[$i]['outputParams'][$j]['type'] . '} ';
-				$functions[$i]['outputParams'][$j]['minOccurs'] !== '0' ? print '(required)' : print '(optional)';
-				print '</li>';
-			}
-			print '</ul></li>';
+			print '<li>Output Parameters:';
+			DisplayElementHtml($functions[$i]['outputParams']);
+			print '</li>';
 		}
 		print '</ul>';
 		print '</p>';
@@ -128,7 +337,7 @@ if(stristr($_SERVER['QUERY_STRING'], 'wsdl')){
 	print '</div>';
 
 	print '<h2>WSDL output:</h2>';
-	print '<pre style="margin-left:20px;width:800px;overflow-x:scroll;border:1px solid black;padding:10px;background-color:#D3D3D3;">';
+	print '<pre style="margin-left:20px;width:90%;overflow-x:scroll;border:1px solid black;padding:10px;background-color:#D3D3D3;">';
 	print DisplayXML(false);
 	print '</pre>';
 	print '</body></html>';
@@ -136,13 +345,34 @@ if(stristr($_SERVER['QUERY_STRING'], 'wsdl')){
 
 exit;
 
+function DisplayElementHtml($elements) {
+	global $complexTypes;
+	print ' :<ul>';
+	foreach($elements as $element){
+		print '<li>' . $element['name'];
+		print ' {' . $element['type'] . '} ';
+		$element['minOccurs'] !== '0' ? print '<b>(required)</b>' : print '(optional)';
+		if(isset($complexTypes[$element['type']])){
+			DisplayElementHtml($complexTypes[$element['type']]);
+		}
+		if(isset($element['document'])){
+			print '<p style="font-size: 14px; border: solid 1px #ccc; margin: 2px; padding: 5px; background-color: #cbe7d0; border-radius: 5px; width: 90%">';
+			print $element['document'];
+			print '</p>';
+		}
+		print '</li>';
+	}
+	print '</ul>';
+}
+
 /*****************************************************************************
  * Create WSDL XML
  * @PARAM xmlformat=true - Display output in HTML friendly format if set false
  *****************************************************************************/
-function DisplayXML($xmlformat = true){
+function DisplayXML($xmlformat = true) {
 	global $functions; // Functions that this web service supports
 	global $serviceName; // Web Service ID
+	global $complexTypes;
 	$i = 0; // For traversing functions array
 	$j = 0; // For traversing parameters arrays
 	$str = ''; // XML String to output
@@ -174,29 +404,51 @@ function DisplayXML($xmlformat = true){
 	// Declare Types / Schema
 	$str .= '<wsdl:types>' . "\n";
 	$str .= $t1 . '<s:schema elementFormDefault="qualified" targetNamespace="http://www.darkerwhite.com/">' . "\n";
+
+	// Define Request Complex Types
+	if(count($complexTypes) > 0){
+		foreach($complexTypes as $index => $complexType){
+			$str .= $t3 . '<s:complexType name="' . $index . '">' . "\n";
+			$str .= $t4 . '<s:sequence>' . "\n";
+			foreach($complexType as $element){
+				$str .= $t5 . '<s:element minOccurs="' . $element['minOccurs'] . '" maxOccurs="1" ';
+				$str .= 'name="' . $element['name'] . '" ';
+				$str .= 'type="s:' . $element['type'] . '" />' . "\n";
+			}
+			$str .= $t4 . '</s:sequence>' . "\n";
+			$str .= $t3 . '</s:complexType>' . "\n";
+		}
+	}
+
 	for($i = 0; $i < count($functions); $i++){
 		// Define Request Types
 		if(array_key_exists("inputParams", $functions[$i])){
 			$str .= $t2 . '<s:element name="' . $functions[$i]['funcName'] . 'Request">' . "\n";
-			$str .= $t3 . '<s:complexType><s:sequence>' . "\n";
+			$str .= $t3 . '<s:complexType>' . "\n";
+			$str .= $t4 . '<s:sequence>' . "\n";
 			for($j = 0; $j < count($functions[$i]['inputParams']); $j++){
-				$str .= $t4 . '<s:element minOccurs="' . $functions[$i]['inputParams'][$j]['minOccurs'] . '" maxOccurs="1" ';
+				$str .= $t5 . '<s:element minOccurs="' . $functions[$i]['inputParams'][$j]['minOccurs'] . '" maxOccurs="1" ';
 				$str .= 'name="' . $functions[$i]['inputParams'][$j]['name'] . '" ';
-				$str .= 'type="s:' . $functions[$i]['inputParams'][$j]['type'] . '" />' . "\n";
+				$str .= 'type="' . ((isset($complexTypes[$functions[$i]['inputParams'][$j]['type']])) ? 'tns' : 's');
+				$str .= ':' . $functions[$i]['inputParams'][$j]['type'] . '" />' . "\n";
 			}
-			$str .= $t3 . '</s:sequence></s:complexType>' . "\n";
+			$str .= $t4 . '</s:sequence>' . "\n";
+			$str .= $t3 . '</s:complexType>' . "\n";
 			$str .= $t2 . '</s:element>' . "\n";
 		}
 		// Define Response Types
 		if(array_key_exists("outputParams", $functions[$i])){
 			$str .= $t2 . '<s:element name="' . $functions[$i]['funcName'] . 'Response">' . "\n";
-			$str .= $t3 . '<s:complexType><s:sequence>' . "\n";
+			$str .= $t3 . '<s:complexType>' . "\n";
+			$str .= $t4 . '<s:sequence>' . "\n";
 			for($j = 0; $j < count($functions[$i]['outputParams']); $j++){
-				$str .= $t4 . '<s:element minOccurs="' . $functions[$i]['outputParams'][$j]['minOccurs'] . '" maxOccurs="1" ';
+				$str .= $t5 . '<s:element minOccurs="' . $functions[$i]['outputParams'][$j]['minOccurs'] . '" maxOccurs="1" ';
 				$str .= 'name="' . $functions[$i]['outputParams'][$j]['name'] . '" ';
-				$str .= 'type="s:' . $functions[$i]['outputParams'][$j]['type'] . '" />' . "\n";
+				$str .= 'type="' . ((isset($complexTypes[$functions[$i]['outputParams'][$j]['type']])) ? 'tns' : 's');
+				$str .= ':' . $functions[$i]['outputParams'][$j]['type'] . '" />' . "\n";
 			}
-			$str .= $t3 . '</s:sequence></s:complexType>' . "\n";
+			$str .= $t4 . '</s:sequence>' . "\n";
+			$str .= $t3 . '</s:complexType>' . "\n";
 			$str .= $t2 . '</s:element>' . "\n";
 		}
 	}

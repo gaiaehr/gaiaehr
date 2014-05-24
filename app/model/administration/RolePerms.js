@@ -56,6 +56,10 @@ Ext.define('App.model.administration.RolePerms', {
 			type: 'bool'
 		},
 		{
+			name: 'role-referrer',
+			type: 'bool'
+		},
+		{
 			name: 'role-administrator',
 			type: 'bool'
 		}

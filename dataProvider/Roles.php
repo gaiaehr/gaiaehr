@@ -97,6 +97,7 @@ class Roles
 				$this->saveRolePerm('physician', $param->perm_key, $param->{'role-physician'});
 				$this->saveRolePerm('administrator', $param->perm_key, $param->{'role-administrator'});
 				$this->saveRolePerm('emergencyaccess', $param->perm_key, $param->{'role-emergencyaccess'});
+				$this->saveRolePerm('referrer', $param->perm_key, $param->{'role-referrer'});
 			}
 			return $params;
 		}
@@ -106,6 +107,7 @@ class Roles
 		$this->saveRolePerm('physician', $params->perm_key, $params->{'role-physician'});
 		$this->saveRolePerm('administrator', $params->perm_key, $params->{'role-administrator'});
 		$this->saveRolePerm('emergencyaccess', $params->perm_key, $params->{'role-emergencyaccess'});
+		$this->saveRolePerm('referrer', $params->perm_key, $params->{'role-referrer'});
 		return $params;
 	}
 

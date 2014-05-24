@@ -123,20 +123,23 @@ Ext.define('App.view.Viewport', {
             tooltip: i18n('patient_summary')
         });
 
-	    me.patientOpenVisitsBtn = me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:left',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn',
-            padding: 0,
-            iconCls: 'icoBackClock',
-            scope: me,
-            handler: me.openPatientVisits,
-            tooltip: i18n('patient_visits_history')
-        });
+	    if(a('access_patient_visits')){
+		    me.patientOpenVisitsBtn = me.Header.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    style: 'float:left',
+			    margin: '0 0 0 3',
+			    cls: 'headerLargeBtn',
+			    padding: 0,
+			    iconCls: 'icoBackClock',
+			    scope: me,
+			    handler: me.openPatientVisits,
+			    tooltip: i18n('patient_visits_history')
+		    });
+	    }
 
-	    if(acl['add_encounters']){
+
+	    if(a('add_encounters')){
             me.patientCreateEncounterBtn = me.Header.add({
                 xtype: 'button',
                 scale: 'large',
@@ -164,80 +167,91 @@ Ext.define('App.view.Viewport', {
             tooltip: i18n('stow_patient_record')
         });
 
-	    me.patientCheckOutBtn = me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:left',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn',
-            padding: 0,
-            iconCls: 'icoCheckOut',
-            scope: me,
-            handler: me.checkOutPatient,
-            tooltip: i18n('visit_check_out')
-        });
+	    if(a('access_patient_visit_checkout')){
+		    me.patientCheckOutBtn = me.Header.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    style: 'float:left',
+			    margin: '0 0 0 3',
+			    cls: 'headerLargeBtn',
+			    padding: 0,
+			    iconCls: 'icoCheckOut',
+			    scope: me,
+			    handler: me.checkOutPatient,
+			    tooltip: i18n('visit_check_out')
+		    });
+	    }
 
-	    me.patientChargeBtn = me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:left',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn',
-            padding: 0,
-            iconCls: me.icoMoney,
-            scope: me,
-            handler: me.onPaymentEntryWindow,
-            tooltip: i18n('payment_entry')
-        });
 
-	    me.Header.add({
-            xtype: 'panel',
-            bodyPadding: '8 11 5 11',
-            margin: '0 0 0 3',
-            style: 'float:left',
-            items: [
-                {
-                    xtype: 'patienlivetsearch',
-                    emptyText: i18n('patient_live_search') + '...',
-                    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
-                    listeners: {
-                        scope: me,
-                        select: me.liveSearchSelect,
-                        blur: function(combo){
-                            combo.reset();
-                        }
-                    }
-                }
-            ]
-        });
+//	    me.patientChargeBtn = me.Header.add({
+//            xtype: 'button',
+//            scale: 'large',
+//            style: 'float:left',
+//            margin: '0 0 0 3',
+//            cls: 'headerLargeBtn',
+//            padding: 0,
+//            iconCls: me.icoMoney,
+//            scope: me,
+//            handler: me.onPaymentEntryWindow,
+//            tooltip: i18n('payment_entry')
+//        });
 
-	    me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:left',
-            margin: '0 0 0 3',
-            padding: 4,
-            itemId: 'patientNewReset',
-            iconCls: 'icoAddPatient',
-            scope: me,
-            handler: me.newPatient,
-            tooltip: i18n('create_a_new_patient')
-        });
+	    if(a('access_patient_search')){
+		    me.Header.add({
+			    xtype: 'panel',
+			    bodyPadding: '8 11 5 11',
+			    margin: '0 0 0 3',
+			    style: 'float:left',
+			    items: [
+				    {
+					    xtype: 'patienlivetsearch',
+					    emptyText: i18n('patient_live_search') + '...',
+					    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
+					    listeners: {
+						    scope: me,
+						    select: me.liveSearchSelect,
+						    blur: function(combo){
+							    combo.reset();
+						    }
+					    }
+				    }
+			    ]
+		    });
+	    }
 
-        me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:left',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn emerBtn',
-            overCls: 'emerBtnOver',
-            padding: 0,
-            itemId: 'createEmergency',
-            iconCls: 'icoEmer',
-            scope: me,
-            handler: me.createEmergency,
-            tooltip: i18n('create_new_emergency')
-        });
+
+
+	    if(a('add_patient')){
+		    me.Header.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    style: 'float:left',
+			    margin: '0 0 0 3',
+			    padding: 4,
+			    itemId: 'patientNewReset',
+			    iconCls: 'icoAddPatient',
+			    scope: me,
+			    handler: me.newPatient,
+			    tooltip: i18n('create_a_new_patient')
+		    });
+	    }
+
+	    if(a('create_emergency_encounter')){
+		    me.Header.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    style: 'float:left',
+			    margin: '0 0 0 3',
+			    cls: 'headerLargeBtn emerBtn',
+			    overCls: 'emerBtnOver',
+			    padding: 0,
+			    itemId: 'createEmergency',
+			    iconCls: 'icoEmer',
+			    scope: me,
+			    handler: me.createEmergency,
+			    tooltip: i18n('create_new_emergency')
+		    });
+	    }
 
 	    me.userSplitBtn = me.Header.add({
             xtype: 'button',
@@ -271,7 +285,7 @@ Ext.define('App.view.Viewport', {
             ]
         });
 
-	    if(acl['emergency_access']){
+	    if(a('emergency_access')){
 		    me.userSplitBtn.menu.insert(0,{
 			    text:i18n('emergency_access'),
 			    cls: 'emergency',
@@ -281,47 +295,53 @@ Ext.define('App.view.Viewport', {
 		    });
 	    }
 
-        me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:right',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn',
-            padding: 0,
-            itemId: 'patientCheckIn',
-            iconCls: 'icoCheckIn',
-            scope: me,
-            handler: me.onPatientLog,
-            tooltip: i18n('arrival_log')
-        });
+	    if(a('access_poolcheckin')){
+		    me.Header.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    style: 'float:right',
+			    margin: '0 0 0 3',
+			    cls: 'headerLargeBtn',
+			    padding: 0,
+			    itemId: 'patientCheckIn',
+			    iconCls: 'icoCheckIn',
+			    scope: me,
+			    handler: me.onPatientLog,
+			    tooltip: i18n('arrival_log')
+		    });
+	    }
 
-        me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:right',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn',
-            padding: 0,
-            itemId: 'patientPoolArea',
-            iconCls: 'icoPoolArea',
-            scope: me,
-            handler: me.goToPoolAreas,
-            tooltip: i18n('pool_areas')
-        });
+	    if(a('access_pool_areas_panel')){
+		    me.Header.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    style: 'float:right',
+			    margin: '0 0 0 3',
+			    cls: 'headerLargeBtn',
+			    padding: 0,
+			    itemId: 'patientPoolArea',
+			    iconCls: 'icoPoolArea',
+			    scope: me,
+			    handler: me.goToPoolAreas,
+			    tooltip: i18n('pool_areas')
+		    });
+	    }
 
-        me.Header.add({
-            xtype: 'button',
-            scale: 'large',
-            style: 'float:right',
-            margin: '0 0 0 3',
-            cls: 'headerLargeBtn',
-            padding: 0,
-            itemId: 'floorPlans',
-            iconCls: 'icoZoneAreasBig',
-            scope: me,
-            handler: me.goToFloorPlans,
-            tooltip: i18n('floor_plans')
-        });
+		if(a('access_floor_plan_panel')){
+			me.Header.add({
+				xtype: 'button',
+				scale: 'large',
+				style: 'float:right',
+				margin: '0 0 0 3',
+				cls: 'headerLargeBtn',
+				padding: 0,
+				itemId: 'floorPlans',
+				iconCls: 'icoZoneAreasBig',
+				scope: me,
+				handler: me.goToFloorPlans,
+				tooltip: i18n('floor_plans')
+			});
+		}
 
         /**
          * The panel definition for the the TreeMenu & the support button
@@ -481,6 +501,7 @@ Ext.define('App.view.Viewport', {
 		                    xtype:'activefacilitiescombo',
 		                    emptyText:'Facilities',
 		                    width: parseFloat(globals['gbl_nav_area_width']) - 4,
+		                    hidden: !eval(a('access_to_other_facilities')),
 		                    listeners:{
 			                    scope: me,
 			                    select: me.onFacilitySelect
@@ -520,6 +541,10 @@ Ext.define('App.view.Viewport', {
                         {
                             text: '<span style="color: red">'+i18n('FACTORY RESET')+'</span>',
                             scope: me,
+	                        //TODO: VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+	                        //TODO: remove this!!! hide if not localhost for now
+	                        //TODO: VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+	                        hidden: window.location.hostname != 'localhost',
                             handler: me.resetApp
                         }
                     ]
@@ -1247,14 +1272,25 @@ Ext.define('App.view.Viewport', {
     },
 
     removeAppMask: function(){
-        Ext.get('mainapp-loading').remove();
-        Ext.get('mainapp-loading-mask').fadeOut({
+        if(Ext.get('mainapp-loading')) Ext.get('mainapp-loading').remove();
+        if(Ext.get('mainapp-loading-mask')) Ext.get('mainapp-loading-mask').fadeOut({
             remove: true
         });
     },
 
     beforeAppRender: function(){
-	    this.unsetPatient(null, false);
+	    var me = this,
+		    params = me.nav.getUrlParams();
+		if(params[1]){
+			me.setPatient(params[1], null, function(){
+				Ext.Function.defer(function(){
+					me.nav.navigateTo('App.view.patient.Summary');
+				}, 500);
+
+			});
+		}else{
+			me.unsetPatient(null, false);
+		}
     },
 
     getCurrPatient: function(){

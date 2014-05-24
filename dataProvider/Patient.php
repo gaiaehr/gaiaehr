@@ -121,13 +121,49 @@ class Patient {
 	 * @return mixed
 	 */
 	protected function setPatient($pid) {
-		if($pid != null && ($this->patient == null || $this->patient != $pid)){
-			$this->setPatientModel();
-			$this->patient = $this->p->load($pid)->one();
+		return $this->getPatientByPid($pid);
+	}
+
+	/**
+	 * @param $pid
+	 *
+	 * @return mixed
+	 */
+	public function getPatientByPid($pid) {
+		$this->setPatientModel();
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+		$this->patient = $this->p->load($params)->one();
+		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
 			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
 		}
+		unset($params);
+		return $this->patient;
+	}
+
+	/**
+	 * @param $pubpid
+	 *
+	 * @return mixed
+	 */
+	public function getPatientByPublicId($pubpid) {
+		$this->setPatientModel();
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pubpid';
+		$params->filter[0]->value = $pubpid;
+		$this->patient = $this->p->load($params)->one();
+		if($this->patient !== false){
+			$this->patient['pic'] = $this->patient['image'];
+			$this->patient['age'] = $this->getPatientAge();
+			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+		}
+		unset($params);
+		return $this->patient;
 	}
 
 	/**
@@ -206,15 +242,14 @@ class Patient {
 	}
 
 	/**
-	 * @param $pid int patient to set
+	 * @param $params
 	 *
-	 * @internal param $pid
-	 * @return mixed
+	 * @return array
 	 */
-	public function getPatientSetDataByPid($pid) {
+	public function getPatientSetDataByPid($params) {
 
 		include_once(dirname(__FILE__) . '/PoolArea.php');
-		$this->setPatient($pid);
+		$this->setPatient($params->pid);
 		$poolArea = new PoolArea();
 
 		$area = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
@@ -239,7 +274,6 @@ class Patient {
 				'outArea' => isset($chart->outChart->pool_area_id) ? $poolArea->getAreaTitleById($chart->outChart->pool_area_id) : 0,
 			)
 		);
-		unset($poolArea);
 	}
 
 	/**

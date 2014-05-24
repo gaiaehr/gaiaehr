@@ -42,56 +42,64 @@ class Navigation
 		// Renders the items of the navigation panel
 		// Default Nav Data
 		// *************************************************************************************
-		$nav = array(
-			array(
-				'text' => $this->i18n['dashboard'],
-				'disabled' => !$this->ACL->hasPermission('access_dashboard'),
-				'leaf' => true,
-				'cls' => 'file',
-				'iconCls' => 'icoDash',
-				'id' => 'App.view.dashboard.Dashboard'
-			),
-			array(
+		$nav = array();
+
+		$nav[] = array(
+			'text' => $this->i18n['dashboard'],
+			'leaf' => true,
+			'cls' => 'file',
+			'iconCls' => 'icoDash',
+			'id' => 'App.view.dashboard.Dashboard'
+		);
+
+		if($this->ACL->hasPermission('access_calendar')){
+			$nav[] = array(
 				'text' => $this->i18n['calendar'],
-				'disabled' => !$this->ACL->hasPermission('access_calendar'),
 				'leaf' => true,
 				'cls' => 'file',
 				'iconCls' => 'icoCalendar',
 				'id' => 'App.view.calendar.Calendar'
-			),
-			array(
+			);
+		}
+
+		if($this->ACL->hasPermission('access_messages')){
+			$nav[] = array(
 				'text' => $this->i18n['messages'],
-				'disabled' => !$this->ACL->hasPermission('access_messages'),
 				'leaf' => true,
 				'cls' => 'file',
 				'iconCls' => 'mail',
 				'id' => 'App.view.messages.Messages'
-			),
-//			array(
-//				'text' => $this->i18n['patient_search'],
-//				'disabled' => !$this->ACL->hasPermission('access_patient_search'),
-//				'leaf' => true,
-//				'cls' => 'file',
-//				'iconCls' => 'searchUsers',
-//				'id' => 'panelPatientSearch'
-//			),
-			array(
+			);
+		}
+
+//		$nav[] = array(
+//			'text' => $this->i18n['patient_search'],
+//			'disabled' => !$this->ACL->hasPermission('access_patient_search'),
+//			'leaf' => true,
+//			'cls' => 'file',
+//			'iconCls' => 'searchUsers',
+//			'id' => 'panelPatientSearch'
+//		);
+
+		if($this->ACL->hasPermission('access_floor_plan_panel')){
+			$nav[] = array(
 				'text' => $this->i18n['area_floor_plan'],
-				'disabled' => false,
 				'leaf' => true,
 				'cls' => 'file',
 				'iconCls' => 'icoZoneAreas',
 				'id' => 'App.view.areas.FloorPlan'
-			),
-			array(
+			);
+		}
+
+		if($this->ACL->hasPermission('access_pool_areas_panel')){
+			$nav[] = array(
 				'text' => $this->i18n['patient_pool_areas'],
-				'disabled' => false,
 				'leaf' => true,
 				'cls' => 'file',
 				'iconCls' => 'icoPoolArea16',
 				'id' => 'App.view.areas.PatientPoolDropZone'
-			)
-		);
+			);
+		}
 		// *************************************************************************************
 		// Patient Folder
 		// *************************************************************************************
@@ -146,26 +154,26 @@ class Navigation
 		// *************************************************************************************
 		// Billing Manager Folder
 		// *************************************************************************************
-		array_push($nav, array(
-			'text' => $this->i18n['billing_manager'],
-			'cls' => 'folder',
-			'expanded' => true,
-			'id' => 'billing',
-			'iconCls' => 'icoLogo',
-			'children' => array(
-				array(
-					'text' => $this->i18n['payment'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.fees.Payments'
-				), array(
-					'text' => $this->i18n['billing'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.fees.Billing'
-				)
-			)
-		));
+//		array_push($nav, array(
+//			'text' => $this->i18n['billing_manager'],
+//			'cls' => 'folder',
+//			'expanded' => true,
+//			'id' => 'billing',
+//			'iconCls' => 'icoLogo',
+//			'children' => array(
+//				array(
+//					'text' => $this->i18n['payment'],
+//					'leaf' => true,
+//					'cls' => 'file',
+//					'id' => 'App.view.fees.Payments'
+//				), array(
+//					'text' => $this->i18n['billing'],
+//					'leaf' => true,
+//					'cls' => 'file',
+//					'id' => 'App.view.fees.Billing'
+//				)
+//			)
+//		));
 		// *************************************************************************************
 		// Administration Folder
 		// *************************************************************************************
@@ -224,11 +232,6 @@ class Navigation
 				'id' => 'App.view.administration.PreventiveCare'
 			);
 		}
-//		if($this->ACL->hasPermission('access_medications')){
-//			$admin['children'][] = array(
-//				'text' => $this->i18n['medications'], 'leaf' => true, 'cls' => 'file', 'id' => 'panelMedications'
-//			);
-//		}
 		if($this->ACL->hasPermission('access_floor_plans')){
 			$admin['children'][] = array(
 				'text' => $this->i18n['floor_areas'],
@@ -277,97 +280,97 @@ class Navigation
 				'id' => 'App.view.administration.Documents'
 			);
 		}
-		//if($this->ACL->hasPermission('access_documents')){
-		$admin['children'][] = array(
-			'text' => $this->i18n['hl7'],
-			'leaf' => true,
-			'cls' => 'file',
-			'id' => 'App.view.administration.HL7'
-		);
-		//if($this->ACL->hasPermission('access_documents')){
-		$admin['children'][] = array(
-			'text' => $this->i18n['external_data_loads'],
-			'leaf' => true,
-			'cls' => 'file',
-			'id' => 'App.view.administration.ExternalDataLoads'
-		);
-		//if($this->ACL->hasPermission('access_documents')){
-		$admin['children'][] = array(
-			'text' => $this->i18n['applications'],
-			'leaf' => true,
-			'cls' => 'file',
-			'id' => 'App.view.administration.Applications'
-		);
-		//}
-		//if($this->ACL->hasPermission('access_documents')){
-		$admin['children'][] = array(
-			'text' => $this->i18n['modules'],
-			'leaf' => true,
-			'cls' => 'file',
-			'id' => 'App.view.administration.Modules'
-		);
+		if($this->ACL->hasPermission('access_admin_hl7')){
+			$admin['children'][] = array(
+				'text' => $this->i18n['hl7'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.administration.HL7'
+			);
+		}
+		if($this->ACL->hasPermission('access_admin_external_data')){
+			$admin['children'][] = array(
+				'text' => $this->i18n['external_data_loads'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.administration.ExternalDataLoads'
+			);
+		}
+		if($this->ACL->hasPermission('access_admin_applications')){
+			$admin['children'][] = array(
+				'text' => $this->i18n['applications'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.administration.Applications'
+			);
+		}
+		if($this->ACL->hasPermission('access_admin_modules')){
+			$admin['children'][] = array(
+				'text' => $this->i18n['modules'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.administration.Modules'
+			);
+		}
+		if($this->ACL->hasPermission('access_admin_encryption')){
+			$admin['children'][] = array(
+				'text' => $this->i18n['encryption'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.administration.Encryption'
+			);
+		}
 
-		$admin['children'][] = array(
-			'text' => $this->i18n['encryption'],
-			'leaf' => true,
-			'cls' => 'file',
-			'id' => 'App.view.administration.Encryption'
-		);
+		if(isset($admin['children']) && count($admin['children']) > 0) array_push($nav, $admin);
 
-		//}
-		if($this->ACL->hasPermission('access_gloabal_settings') ||
-			$this->ACL->hasPermission('access_facilities') ||
-			$this->ACL->hasPermission('access_users') ||
-			$this->ACL->hasPermission('access_practice') ||
-			$this->ACL->hasPermission('access_services') ||
-			$this->ACL->hasPermission('access_medications') ||
-			$this->ACL->hasPermission('access_floor_plans') ||
-			$this->ACL->hasPermission('access_roles') ||
-			$this->ACL->hasPermission('access_layouts') ||
-			$this->ACL->hasPermission('access_lists') ||
-			$this->ACL->hasPermission('access_event_log')) array_push($nav, $admin);
+
 		// *************************************************************************************
 		// Miscellaneous Folder
 		// *************************************************************************************
-		array_push($nav, array(
+		$misc = array(
 			'text' => $this->i18n['miscellaneous'],
 			'cls' => 'folder',
-			'expanded' => false,
-			'id' => 'miscellaneous',
+			'expanded' => true,
 			'iconCls' => 'icoLogo',
-			'children' => array(
-				array(
-					'text' => $this->i18n['web_search'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.miscellaneous.Websearch'
-				),
-				array(
-					'text' => $this->i18n['address_book'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.miscellaneous.AddressBook'
-				),
-				array(
-					'text' => $this->i18n['office_notes'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.miscellaneous.OfficeNotes'
-				),
-//				array(
-//					'text' => $this->i18n['my_settings'],
-//					'leaf' => true,
-//					'cls' => 'file',
-//					'id' => 'App.view.miscellaneous.MySettings'
-//				),
-				array(
-					'text' => $this->i18n['my_account'],
-					'leaf' => true,
-					'cls' => 'file',
-					'id' => 'App.view.miscellaneous.MyAccount'
-				)
-			)
-		));
+			'id' => 'miscellaneous'
+		);
+
+		if($this->ACL->hasPermission('access_web_search')){
+			$misc['children'][] = array(
+				'text' => $this->i18n['web_search'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.miscellaneous.Websearch'
+			);
+		}
+
+		if($this->ACL->hasPermission('access_address_book')){
+			$misc['children'][] = array(
+				'text' => $this->i18n['address_book'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.miscellaneous.AddressBook'
+			);
+		}
+
+		if($this->ACL->hasPermission('access_office_notes')){
+			$misc['children'][] = array(
+				'text' => $this->i18n['office_notes'],
+				'leaf' => true,
+				'cls' => 'file',
+				'id' => 'App.view.miscellaneous.OfficeNotes'
+			);
+		}
+
+		$misc['children'][] = array(
+			'text' => $this->i18n['my_account'],
+			'leaf' => true,
+			'cls' => 'file',
+			'id' => 'App.view.miscellaneous.MyAccount'
+		);
+
+		if(isset($misc['children']) && count($misc['children']) > 0) array_push($nav, $misc);
+
 		return $nav;
 
 	}

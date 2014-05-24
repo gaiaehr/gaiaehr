@@ -34,7 +34,7 @@ class i18nRouter {
 			$loc = false;
 		}
 		// This language file is need by default.
-		include(dirname(dirname(__FILE__)) . '/langs/en_US.php');
+		include(ROOT . '/langs/en_US.php');
 		$en_US = $LANG;
 
 		if(isset($_SESSION['site']['modules'])){
@@ -55,7 +55,7 @@ class i18nRouter {
 		// So if some words are not translated by the selected language it can be
 		// displayed by the original language.
 		if($loc !== false){
-			include(dirname(dirname(__FILE__)) . '/langs/' . $loc . '.php');
+			include(ROOT . '/langs/' . $loc . '.php');
 			$locale = array_merge($en_US, $LANG);
 
 			if($hasModuleLocales){
@@ -63,7 +63,7 @@ class i18nRouter {
 					if(isset($module['locales'])){
 						$key = array_search($loc, $module['locales']);
 						if($key !== false){
-							include(dirname(dirname(__FILE__)) . '/modules/' . $module['name'] . '/locales/' . $loc . '.php');
+							include(ROOT . '/modules/' . $module['name'] . '/locales/' . $loc . '.php');
 							$locale = array_merge($locale, $LANG);
 						}
 					}
@@ -84,10 +84,10 @@ class i18nRouter {
 	// -----------------------------------------------------------------------
 	public static function getAvailableLanguages(){
 		$availableLanguages = array();
-		if($handle = opendir(dirname(dirname(__FILE__)) . '/langs/')){
+		if($handle = opendir(ROOT . '/langs/')){
 			while(false !== ($entry = readdir($handle))){
 				if($entry != '.' && $entry != '..'){
-					include_once(dirname(dirname(__FILE__)) . '/langs/' . $entry);
+					include_once(ROOT . '/langs/' . $entry);
 					$languageContent['code'] = $LANG['lang_code'];
 					$languageContent['description'] = $LANG['lang_text'];
 					$availableLanguages[] = $languageContent;

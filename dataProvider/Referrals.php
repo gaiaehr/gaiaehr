@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once(dirname(__FILE__).'/ServiceCodes.php');
-include_once(dirname(__FILE__).'/DiagnosisCodes.php');
-include_once(dirname(__FILE__).'/User.php');
+include_once(ROOT . '/dataProvider/ServiceCodes.php');
+include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
+include_once(ROOT . '/dataProvider/User.php');
 class Referrals {
 	/**
 	 * @var MatchaCUP

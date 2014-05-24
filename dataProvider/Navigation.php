@@ -18,8 +18,8 @@
  */
 
 
-include_once(dirname(__FILE__) . '/ACL.php');
-include_once(dirname(__FILE__) . '/i18nRouter.php');
+include_once(ROOT . '/dataProvider/ACL.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
 
 class Navigation
 {

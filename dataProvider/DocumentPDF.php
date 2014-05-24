@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define ('K_PATH_IMAGES', '');
-include_once(dirname(dirname(__FILE__)) . '/lib/tcpdf/tcpdf.php');
-include_once(dirname(__FILE__) . '/i18nRouter.php');
-include_once(dirname(__FILE__) . '/Facilities.php');
+include_once(ROOT . '/lib/tcpdf/tcpdf.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
+include_once(ROOT . '/dataProvider/Facilities.php');
 
 class DocumentPDF extends TCPDF {
 	//Page header

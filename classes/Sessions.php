@@ -22,9 +22,9 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
-include_once(dirname(dirname(__FILE__)) . '/classes/Crypt.php');
-include_once(dirname(dirname(__FILE__)) . '/dataProvider/User.php');
+include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/classes/Crypt.php');
+include_once(ROOT . '/dataProvider/User.php');
 
 class Sessions {
 	/**

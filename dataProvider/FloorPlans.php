@@ -17,12 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/User.php');
-include_once(dirname(__FILE__) . '/ACL.php');
-include_once(dirname(__FILE__) . '/PoolArea.php');
-include_once(dirname(__FILE__) . '/Services.php');
-include_once(dirname(__FILE__) . '/../classes/Time.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/ACL.php');
+include_once(ROOT . '/dataProvider/PoolArea.php');
+include_once(ROOT . '/dataProvider/Services.php');
+include_once(ROOT . '/classes/Time.php');
 
 class FloorPlans {
 	/**

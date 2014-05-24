@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (dirname(__FILE__) . '/Services.php');
-include_once (dirname(__FILE__)  . '/Insurance.php');
+include_once (ROOT . '/dataProvider/Services.php');
+include_once (ROOT . '/dataProvider/Insurance.php');
 
 class AccAccount
 {

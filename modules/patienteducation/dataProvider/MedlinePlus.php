@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (dirname(dirname(dirname(dirname(__FILE__)))) . '/classes/XML2Array.php');
+include_once (ROOT . '/classes/XML2Array.php');
 
 class MedlinePlus
 {

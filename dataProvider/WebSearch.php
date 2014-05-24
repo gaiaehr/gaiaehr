@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 
-require_once (dirname(__FILE__) . "/../classes/XMLParser.class.php");
+require_once (ROOT . '/classes/XMLParser.class.php');
 //--------------------------------------------------------------------------------
 // lets declare few vars for later use.
 //--------------------------------------------------------------------------------

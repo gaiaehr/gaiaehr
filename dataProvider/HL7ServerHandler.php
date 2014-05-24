@@ -19,7 +19,7 @@
 class HL7ServerHandler {
 
 	public function start(stdClass $params){
-		$cmd = 'php -f "'.dirname(dirname(__FILE__)).'/lib/HL7/HL7Server.php" -- "'.$params->ip.'" '.$params->port.' "'.dirname(dirname(__FILE__)).'/dataProvider" "HL7Server" "Process" "default"';
+		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "'.$params->ip.'" '.$params->port.' "'.ROOT.'/dataProvider" "HL7Server" "Process" "default"';
 
 		if (substr(php_uname(), 0, 7) == "Windows"){
 			pclose(popen("start /B ". $cmd, "r"));

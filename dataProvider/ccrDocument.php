@@ -27,20 +27,20 @@ if(!isset($_REQUEST['token']) || $_REQUEST['token'] == $_SESSION['user']['token'
 if(!isset($_REQUEST['pid'])) die('PID not send');
 if(!isset($_REQUEST['action'])) die('Action not send');
 
-include_once (dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
-include_once (dirname(dirname(__FILE__)) . '/classes/UUID.php');
-include_once (dirname(dirname(__FILE__)) . '/classes/Array2XML.php');
+include_once (ROOT . '/classes/MatchaHelper.php');
+include_once (ROOT . '/classes/UUID.php');
+include_once (ROOT . '/classes/Array2XML.php');
 
-include_once (dirname(__FILE__) . '/Patient.php');
-include_once (dirname(__FILE__) . '/User.php');
-include_once (dirname(__FILE__) . '/Rxnorm.php');
-include_once (dirname(__FILE__) . '/Encounter.php');
-include_once (dirname(__FILE__) . '/PoolArea.php');
-include_once (dirname(__FILE__) . '/Medical.php');
-include_once (dirname(__FILE__) . '/PreventiveCare.php');
-include_once (dirname(__FILE__) . '/Services.php');
-include_once (dirname(__FILE__) . '/DiagnosisCodes.php');
-include_once (dirname(__FILE__) . '/Facilities.php');
+include_once (ROOT . '/dataProvider/Patient.php');
+include_once (ROOT . '/dataProvider/User.php');
+include_once (ROOT . '/dataProvider/Rxnorm.php');
+include_once (ROOT . '/dataProvider/Encounter.php');
+include_once (ROOT . '/dataProvider/PoolArea.php');
+include_once (ROOT . '/dataProvider/Medical.php');
+include_once (ROOT . '/dataProvider/PreventiveCare.php');
+include_once (ROOT . '/dataProvider/Services.php');
+include_once (ROOT . '/dataProvider/DiagnosisCodes.php');
+include_once (ROOT . '/dataProvider/Facilities.php');
 
 $pid = $_REQUEST['pid'];
 /**

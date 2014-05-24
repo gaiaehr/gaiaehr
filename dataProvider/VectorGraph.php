@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/../classes/Age.php');
-include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/Encounter.php');
+include_once(ROOT . '/classes/Age.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
 
 class VectorGraph
 {

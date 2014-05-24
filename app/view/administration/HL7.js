@@ -83,7 +83,7 @@ Ext.define('App.view.administration.HL7', {
 							width: 50,
 							margin: '0 5 0 0',
 							handler: function(record){
-								App.Current.getController('administration.HL7Servers').serverStartHandler(record);
+								App.Current.getController('administration.HL7').serverStartHandler(record);
 							}
 						},
 						{
@@ -91,7 +91,7 @@ Ext.define('App.view.administration.HL7', {
 							text: i18n('stop'),
 							width: 50,
 							handler: function(record){
-								App.Current.getController('administration.HL7Servers').serverStopHandler(record);
+								App.Current.getController('administration.HL7').serverStopHandler(record);
 							}
 						}
 					]

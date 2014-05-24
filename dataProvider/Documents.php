@@ -17,15 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/User.php');
-include_once(dirname(__FILE__) . '/Encounter.php');
-include_once(dirname(__FILE__) . '/PreventiveCare.php');
-include_once(dirname(__FILE__) . '/Medical.php');
-include_once(dirname(__FILE__) . '/Referrals.php');
-include_once(dirname(__FILE__) . '/Facilities.php');
-include_once(dirname(__FILE__) . '/DocumentPDF.php');
-include_once(dirname(__FILE__) . '/i18nRouter.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
+include_once(ROOT . '/dataProvider/PreventiveCare.php');
+include_once(ROOT . '/dataProvider/Medical.php');
+include_once(ROOT . '/dataProvider/Referrals.php');
+include_once(ROOT . '/dataProvider/Facilities.php');
+include_once(ROOT . '/dataProvider/DocumentPDF.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
 
 class Documents {
 	/**

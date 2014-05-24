@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 $_SESSION['site']['flops'] = 0;
-include_once (dirname(__FILE__) . '/../classes/Arrays.php');
+include_once (ROOT . '/classes/Arrays.php');
 
 class DiagnosisCodes
 {

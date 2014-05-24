@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/Person.php');
-include_once(dirname(__FILE__) . '/ACL.php');
+include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/ACL.php');
 
 class User {
 

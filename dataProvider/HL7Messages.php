@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
-include_once(dirname(dirname(__FILE__)) . '/lib/HL7/HL7.php');
-include_once(dirname(dirname(__FILE__)) . '/lib/HL7/HL7Client.php');
+include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/lib/HL7/HL7.php');
+include_once(ROOT . '/lib/HL7/HL7Client.php');
 
 class HL7Messages {
 
@@ -159,7 +159,7 @@ class HL7Messages {
 		$this->setPID();
 
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
-		include_once(dirname(dirname(__FILE__)) . '/dataProvider/Immunizations.php');
+		include_once(ROOT . '/dataProvider/Immunizations.php');
 		$immunization = new Immunizations();
 
 		// immunizations loop

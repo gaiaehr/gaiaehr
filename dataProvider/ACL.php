@@ -368,7 +368,7 @@ class ACL
 	public static function emergencyAccess($uid){
 		self::construct();
 		if(!isset($_SESSION['user']) && !isset($_SESSION['user']['token'])) return false;
-		include_once (dirname(dirname(__FILE__)) . '/classes/Crypt.php');
+		include_once (ROOT . '/classes/Crypt.php');
 		$foo = json_decode(Crypt::decrypt($_SESSION['user']['token']), true);
 		if($foo['uid'] != $uid) return false;
 		if(!self::hasPermission('emergency_access')) return false;

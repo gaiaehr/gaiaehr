@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/i18nRouter.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
 
 class CombosData {
 

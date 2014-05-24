@@ -23,22 +23,23 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 ob_start();
+if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+include_once(ROOT . '/classes/UUID.php');
+include_once(ROOT . '/classes/Array2XML.php');
 
-include_once(dirname(dirname(__FILE__)) . '/classes/UUID.php');
-include_once(dirname(dirname(__FILE__)) . '/classes/Array2XML.php');
-
-include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/Insurance.php');
-include_once(dirname(__FILE__) . '/User.php');
-include_once(dirname(__FILE__) . '/Rxnorm.php');
-include_once(dirname(__FILE__) . '/Encounter.php');
-include_once(dirname(__FILE__) . '/PoolArea.php');
-include_once(dirname(__FILE__) . '/Medical.php');
-include_once(dirname(__FILE__) . '/PreventiveCare.php');
-include_once(dirname(__FILE__) . '/Services.php');
-include_once(dirname(__FILE__) . '/DiagnosisCodes.php');
-include_once(dirname(__FILE__) . '/Facilities.php');
-include_once(dirname(__FILE__) . '/CombosData.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Insurance.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/Rxnorm.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
+include_once(ROOT . '/dataProvider/PoolArea.php');
+include_once(ROOT . '/dataProvider/Medical.php');
+include_once(ROOT . '/dataProvider/PreventiveCare.php');
+include_once(ROOT . '/dataProvider/Services.php');
+include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
+include_once(ROOT . '/dataProvider/Facilities.php');
+include_once(ROOT . '/dataProvider/CombosData.php');
 
 class CCDDocument {
 
@@ -3153,9 +3154,9 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 	 */
 	//if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
 	if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-	include_once(dirname(dirname(__FILE__)) . '/registry.php');
-	include_once(dirname(dirname(__FILE__)) . '/sites/' . $_REQUEST['site'] . '/conf.php');
-	include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
+	include_once(ROOT . '/registry.php');
+	include_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
+	include_once(ROOT . '/classes/MatchaHelper.php');
 	$ccd = new CCDDocument();
 	$ccd->setPid($_REQUEST['pid']);
 	$ccd->setTemplate('toc');

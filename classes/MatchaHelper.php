@@ -28,8 +28,8 @@ if(!defined('site_timezone')) define('site_timezone', 'UTC');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : site_timezone);
 date_default_timezone_set($timezone);
 
-include_once(dirname(__FILE__) . '/Time.php');
-include_once(dirname(dirname(__FILE__)) . '/lib/Matcha/Matcha.php');
+include_once(ROOT . '/classes/Time.php');
+include_once(ROOT . '/lib/Matcha/Matcha.php');
 
 class MatchaHelper extends Matcha {
 
@@ -68,7 +68,7 @@ class MatchaHelper extends Matcha {
 				'name' => site_db_database,
 				'user' => site_db_username,
 				'pass' => site_db_password,
-				'app' => dirname(dirname(__FILE__)) . '/app')
+				'app' => ROOT . '/app')
 			);
 		}
 

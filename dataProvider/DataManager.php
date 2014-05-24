@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (dirname(__FILE__) . '/Laboratories.php');
-include_once (dirname(__FILE__) . '/Immunizations.php');
-include_once (dirname(__FILE__) . '/Services.php');
+include_once (ROOT . '/dataProvider/Laboratories.php');
+include_once (ROOT . '/dataProvider/Immunizations.php');
+include_once (ROOT . '/dataProvider/Services.php');
 
 class DataManager
 {

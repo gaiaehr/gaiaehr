@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(dirname(__FILE__)) . '/classes/Sessions.php');
-include_once(dirname(dirname(__FILE__)) . '/classes/Crypt.php');
-include_once(dirname(__FILE__) . '/Patient.php');
+include_once(ROOT . '/classes/Sessions.php');
+include_once(ROOT . '/classes/Crypt.php');
+include_once(ROOT . '/dataProvider/Patient.php');
 
 class authProcedures {
 
@@ -74,7 +74,7 @@ class authProcedures {
 		// And include the rest of the remaining
 		// variables to connect to the database.
 		//-------------------------------------------
-//		$root = dirname(dirname(__FILE__));
+//		$root = ROOT;
 //		$fileConf = $root . '/sites/' . $params->site . '/conf.php';
 //		if(file_exists($fileConf)){
 //			/** @noinspection PhpIncludeInspection */

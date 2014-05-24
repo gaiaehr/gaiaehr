@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/Person.php');
-include_once(dirname(__FILE__) . '/User.php');
-include_once(dirname(__FILE__) . '/ACL.php');
+include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/ACL.php');
 
 class Patient {
 
@@ -248,7 +248,7 @@ class Patient {
 	 */
 	public function getPatientSetDataByPid($params) {
 
-		include_once(dirname(__FILE__) . '/PoolArea.php');
+		include_once(ROOT . '/dataProvider/PoolArea.php');
 		$this->setPatient($params->pid);
 		$poolArea = new PoolArea();
 

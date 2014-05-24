@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once(dirname(__FILE__) . '/../classes/Address.php');
-include_once(dirname(__FILE__) . '/../classes/Phone.php');
+include_once(ROOT . '/classes/Address.php');
+include_once(ROOT . '/classes/Phone.php');
 class Practice
 {
 	/**

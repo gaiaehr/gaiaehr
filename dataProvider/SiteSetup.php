@@ -19,8 +19,8 @@
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-include_once (dirname(dirname(__FILE__)) . '/classes/FileManager.php');
-include_once (dirname(dirname(__FILE__)) . '/dataProvider/ACL.php');
+include_once (ROOT . '/classes/FileManager.php');
+include_once (ROOT . '/dataProvider/ACL.php');
 
 class SiteSetup
 {
@@ -32,7 +32,7 @@ class SiteSetup
 
 	function __construct()
 	{
-		chdir(dirname(dirname(__FILE__)));
+		chdir(ROOT);
 	}
 
 	/*
@@ -356,8 +356,8 @@ class SiteSetup
 
 	public function createSiteAdmin($params)
 	{
-		include_once(dirname(dirname(__FILE__)). '/sites/' . $params->siteId . '/conf.php');
-		include_once(dirname(dirname(__FILE__)) . '/dataProvider/User.php');
+		include_once(ROOT. '/sites/' . $params->siteId . '/conf.php');
+		include_once(ROOT . '/dataProvider/User.php');
 		$u                  = new User();
 		$admin              = new stdClass();
 		$admin->title       = 'Mr.';
@@ -376,7 +376,7 @@ class SiteSetup
 
 	public function loadCode($code)
 	{
-		include_once (dirname(dirname(__FILE__)). '/dataProvider/ExternalDataUpdate.php');
+		include_once (ROOT . '/dataProvider/ExternalDataUpdate.php');
 		$codes            = new ExternalDataUpdate();
 		$params           = new stdClass();
 		$params->codeType = $code;

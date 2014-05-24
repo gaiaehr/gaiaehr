@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(dirname(__FILE__)) . '/classes/Arrays.php');
+include_once(ROOT . '/classes/Arrays.php');
 
 class SnomedCodes {
 

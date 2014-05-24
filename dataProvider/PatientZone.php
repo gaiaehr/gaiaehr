@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/PoolArea.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/PoolArea.php');
 class PatientZone {
 
 	private $pz;

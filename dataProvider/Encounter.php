@@ -17,14 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once(dirname(__FILE__) . '/Patient.php');
-include_once(dirname(__FILE__) . '/User.php');
-include_once(dirname(__FILE__) . '/PoolArea.php');
-include_once(dirname(__FILE__) . '/Medical.php');
-include_once(dirname(__FILE__) . '/PreventiveCare.php');
-include_once(dirname(__FILE__) . '/Services.php');
-include_once(dirname(__FILE__) . '/DiagnosisCodes.php');
-include_once(dirname(__FILE__) . '/FamilyHistory.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/PoolArea.php');
+include_once(ROOT . '/dataProvider/Medical.php');
+include_once(ROOT . '/dataProvider/PreventiveCare.php');
+include_once(ROOT . '/dataProvider/Services.php');
+include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
+include_once(ROOT . '/dataProvider/FamilyHistory.php');
 
 class Encounter {
 	/**

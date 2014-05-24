@@ -19,9 +19,9 @@ class SoapHandler {
 		$this->site = isset($params->Site) ? $params->Site : 'default';
 		$this->facility = isset($params->Facility) ? $params->Facility : '1';
 		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-		include_once(dirname(dirname(dirname(__FILE__))) . '/registry.php');
-		include_once(dirname(dirname(dirname(__FILE__))) . "/sites/{$this->site}/conf.php");
-		include_once(dirname(dirname(dirname(__FILE__))) . '/classes/MatchaHelper.php');
+		include_once(str_replace('\\', '/', dirname(dirname(dirname(__FILE__)))) . '/registry.php');
+		include_once(ROOT . "/sites/{$this->site}/conf.php");
+		include_once(ROOT . '/classes/MatchaHelper.php');
 
 		if(isset($params->Provider)){
 			$this->getProvider($params->Provider);
@@ -41,7 +41,7 @@ class SoapHandler {
 	 * @return bool
 	 */
 	protected function isAuth(){
-		require_once(dirname(dirname(__FILE__)) . '/Applications.php');
+		require_once(ROOT . '/dataProvider/Applications.php');
 		$Applications = new Applications();
 		$access = $Applications->hasAccess($this->params->SecureKey);
 		unset($Applications);
@@ -116,7 +116,7 @@ class SoapHandler {
 		$document->note = isset($params->Document->Notes) ? $params->Document->Notes : '';
 		$document->encrypted = isset($params->Document->Encrypted) ? $params->Document->Encrypted : false;;
 
-		require_once(dirname(dirname(__FILE__)). '/DocumentHandler.php');
+		require_once(ROOT . '/dataProvider/DocumentHandler.php');
 		$DocumentHandler =  new DocumentHandler();
 		$result = $DocumentHandler->addPatientDocument($document);
 		unset($DocumentHandler);
@@ -132,7 +132,7 @@ class SoapHandler {
 	 * @return mixed|object
 	 */
 	private function getProvider($provider){
-		require_once(dirname(dirname(__FILE__)). '/User.php');
+		require_once(ROOT . '/dataProvider/User.php');
 		$User = new User();
 		$provider = $User->getUserByNPI($provider->NPI);
 		unset($User);
@@ -145,7 +145,7 @@ class SoapHandler {
 	 * @return mixed|object
 	 */
 	private function getPatient($patient){
-		require_once(dirname(dirname(__FILE__)). '/Patient.php');
+		require_once(ROOT . '/dataProvider/Patient.php');
 		$Patient = new Patient();
 		if(isset($patient->RecordNumber)){
 			$patient = $Patient->getPatientByPublicId($patient->RecordNumber);

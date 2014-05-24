@@ -82,12 +82,14 @@ class HL7Server {
 
 	function __construct($port = '9000', $site = 'default') {
 		$this->site = $site;
-		include_once(dirname(dirname(__FILE__)) . "/sites/{$this->site}/conf.php");
-		include_once(dirname(dirname(__FILE__)) . '/classes/MatchaHelper.php');
-		include_once(dirname(dirname(__FILE__)) . '/lib/HL7/HL7.php');
-		include_once(dirname(__FILE__) . '/HL7ServerHandler.php');
-		include_once(dirname(__FILE__) . '/PoolArea.php');
-		include_once(dirname(__FILE__) . '/Merge.php');
+		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+		include_once(ROOT . "/sites/{$this->site}/conf.php");
+		include_once(ROOT . '/classes/MatchaHelper.php');
+		include_once(ROOT . '/lib/HL7/HL7.php');
+		include_once(ROOT . '/dataProvider/HL7ServerHandler.php');
+		include_once(ROOT . '/dataProvider/PoolArea.php');
+		include_once(ROOT . '/dataProvider/Merge.php');
 		new MatchaHelper();
 
 		/** HL7 Models */

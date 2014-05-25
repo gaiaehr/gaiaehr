@@ -140,14 +140,14 @@ Ext.define('App.controller.patient.RxOrders', {
 					}
 					store.sync({
 						success: function(){
-							if(dual){
+							if(window.dual){
 								dual.msg(i18n('sweet'), i18n('record_added'));
 							}else{
 								app.msg(i18n('sweet'), i18n('record_added'));
 							}
 						},
 						failure: function(){
-							if(dual){
+							if(window.dual){
 								dual.msg(i18n('oops'), i18n('record_error'), true);
 							}else{
 								app.msg(i18n('oops'), i18n('record_error'), true);
@@ -186,7 +186,7 @@ Ext.define('App.controller.patient.RxOrders', {
 		}
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
-			if(dual){
+			if(window.dual){
 				dual.onDocumentView(response.result.id, 'Rx');
 			}else{
 				app.onDocumentView(response.result.id, 'Rx');

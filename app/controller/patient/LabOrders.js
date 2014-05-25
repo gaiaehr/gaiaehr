@@ -47,7 +47,7 @@ Ext.define('App.controller.patient.LabOrders', {
 				activate: me.onLabOrdersGridActive,
 				selectionchange: me.onLabOrdersGridSelectionChange
 			},
-			'patientlaborderspanel labslivetsearch': {
+			'#rxLabOrderLabsLiveSearch': {
 				select: me.onLoincSearchSelect
 			},
 			'patientlaborderspanel #electronicLabOrderBtn': {
@@ -70,6 +70,9 @@ Ext.define('App.controller.patient.LabOrders', {
 		say(records);
 
 		var form = cmb.up('form').getForm();
+
+		say(form.getRecord());
+
 		form.getRecord().set({code: records[0].data.loinc_number});
 		form.findField('code').setValue(records[0].data.loinc_number);
 		form.findField('note').focus(false, 200);
@@ -90,7 +93,7 @@ Ext.define('App.controller.patient.LabOrders', {
 			eid: app.patient.eid,
 			uid: app.user.id,
 			date_ordered: new Date(),
-			order_type: 'Lab',
+			order_type: 'lab',
 			status: 'Pending',
 			priority: 'Normal'
 		});
@@ -122,7 +125,7 @@ Ext.define('App.controller.patient.LabOrders', {
 		}
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
-			if(dual){
+			if(window.dual){
 				dual.onDocumentView(response.result.id, 'Lab');
 			}else{
 				app.onDocumentView(response.result.id, 'Lab');

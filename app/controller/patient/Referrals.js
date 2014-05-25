@@ -83,7 +83,7 @@ Ext.define('App.controller.patient.Referrals', {
 				};
 
 			DocumentHandler.createTempDocument(params, function(provider, response){
-				if(dual){
+				if(window.dual){
 					dual.onDocumentView(response.result.id, 'Referral');
 				}else{
 					app.onDocumentView(response.result.id, 'Referral');

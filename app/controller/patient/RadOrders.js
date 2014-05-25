@@ -104,7 +104,7 @@ Ext.define('App.controller.patient.RadOrders', {
 		}
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
-			if(dual){
+			if(window.dual){
 				dual.onDocumentView(response.result.id, 'Rad');
 			}else{
 				app.onDocumentView(response.result.id, 'Rad');

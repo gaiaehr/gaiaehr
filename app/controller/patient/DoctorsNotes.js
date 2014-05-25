@@ -109,7 +109,7 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 		params.docNoteid = record.data.id;
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
-			if(dual){
+			if(window.dual){
 				dual.onDocumentView(response.result.id, 'Doctors Note');
 			}else{
 				app.onDocumentView(response.result.id, 'Doctors Note');

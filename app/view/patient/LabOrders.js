@@ -103,7 +103,8 @@ Ext.define('App.view.patient.LabOrders', {
 			flex: 1,
 			dataIndex: 'description',
 			editor: {
-				xtype: 'labslivetsearch'
+				xtype: 'labslivetsearch',
+				itemId: 'rxLabOrderLabsLiveSearch'
 			}
 		},
 		{

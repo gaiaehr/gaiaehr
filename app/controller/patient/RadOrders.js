@@ -37,7 +37,8 @@ Ext.define('App.controller.patient.RadOrders', {
 		me.control({
 			'patientradorderspanel': {
 				activate: me.onRadOrdersGridActive,
-				selectionchange: me.onRadOrdersGridSelectionChange
+				selectionchange: me.onRadOrdersGridSelectionChange,
+				beforerender: me.onRadOrdersGridBeforeRender
 			},
 			'#radOrderliveSearch': {
 				select: me.onRadSearchSelect
@@ -48,6 +49,13 @@ Ext.define('App.controller.patient.RadOrders', {
 			'patientradorderspanel #printRadOrderBtn': {
 				click: me.onPrintRadOrderBtnClick
 			}
+		});
+	},
+
+	onRadOrdersGridBeforeRender:function(grid){
+		app.on('patientunset', function(){
+			grid.editingPlugin.cancelEdit();
+			grid.getStore().removeAll();
 		});
 	},
 
@@ -114,18 +122,19 @@ Ext.define('App.controller.patient.RadOrders', {
 
 	onRadOrdersGridActive:function(grid){
 		var store = grid.getStore();
-
-		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
-			},
-			{
-				property: 'order_type',
-				value: 'rad'
-			}
-		]);
+		if(!grid.editingPlugin.editing){
+			store.clearFilter(true);
+			store.filter([
+				{
+					property: 'pid',
+					value: app.patient.pid
+				},
+				{
+					property: 'order_type',
+					value: 'rad'
+				}
+			]);
+		}
 	},
 
 	radOrdersGridStatusColumnRenderer:function(v){

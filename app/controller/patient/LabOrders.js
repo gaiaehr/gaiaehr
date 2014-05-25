@@ -45,7 +45,8 @@ Ext.define('App.controller.patient.LabOrders', {
 		me.control({
 			'patientlaborderspanel': {
 				activate: me.onLabOrdersGridActive,
-				selectionchange: me.onLabOrdersGridSelectionChange
+				selectionchange: me.onLabOrdersGridSelectionChange,
+				beforerender: me.onLabOrdersGridBeforeRender
 			},
 			'#rxLabOrderLabsLiveSearch': {
 				select: me.onLoincSearchSelect
@@ -62,13 +63,18 @@ Ext.define('App.controller.patient.LabOrders', {
 		});
 	},
 
+	onLabOrdersGridBeforeRender: function(grid){
+		app.on('patientunset', function(){
+			grid.editingPlugin.cancelEdit();
+			grid.getStore().removeAll();
+		});
+	},
+
 	onLabOrdersGridSelectionChange: function(sm, selected){
 		this.getPrintLabOrderBtn().setDisabled(selected.length == 0);
 	},
 
 	onLoincSearchSelect: function(cmb, records){
-		say(records);
-
 		var form = cmb.up('form').getForm();
 
 		say(form.getRecord());
@@ -136,17 +142,19 @@ Ext.define('App.controller.patient.LabOrders', {
 	onLabOrdersGridActive:function(grid){
 		var store = grid.getStore();
 
-		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
-			},
-			{
-				property: 'order_type',
-				value: 'lab'
-			}
-		]);
+		if(!grid.editingPlugin.editing){
+			store.clearFilter(true);
+			store.filter([
+				{
+					property: 'pid',
+					value: app.patient.pid
+				},
+				{
+					property: 'order_type',
+					value: 'lab'
+				}
+			]);
+		}
 	},
 
 	labOrdersGridStatusColumnRenderer:function(v){

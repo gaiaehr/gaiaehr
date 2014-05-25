@@ -49,7 +49,8 @@ Ext.define('App.controller.patient.RxOrders', {
 		me.control({
 			'patientrxorderspanel': {
 				activate: me.onRxOrdersGridActive,
-				selectionchange: me.onRxOrdersGridSelectionChange
+				selectionchange: me.onRxOrdersGridSelectionChange,
+				beforerender: me.onRxOrdersGridBeforeRender
 			},
 			'#RxNormOrderLiveSearch': {
 				select: me.onRxNormOrderLiveSearchSelect
@@ -63,6 +64,13 @@ Ext.define('App.controller.patient.RxOrders', {
 			'#printRxOrderBtn': {
 				click: me.onPrintRxOrderBtnClick
 			}
+		});
+	},
+
+	onRxOrdersGridBeforeRender: function(grid){
+		app.on('patientunset', function(){
+			grid.editingPlugin.cancelEdit();
+			grid.getStore().removeAll();
 		});
 	},
 
@@ -196,14 +204,15 @@ Ext.define('App.controller.patient.RxOrders', {
 
 	onRxOrdersGridActive:function(grid){
 		var store = grid.getStore();
-
-		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
-			}
-		]);
+		if(!grid.editingPlugin.editing){
+			store.clearFilter(true);
+			store.filter([
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			]);
+		}
 	}
 
 });

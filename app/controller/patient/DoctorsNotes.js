@@ -42,6 +42,7 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 			'patientdoctorsnotepanel': {
 				activate: me.onDoctorsNotesGridActive,
 				selectionchange: me.onDoctorsNotesGridSelectionChange,
+				beforerender: me.onDoctorsNotesGridBeforeRender,
 				beforeedit: me.onDoctorsNotesGridBeforeEdit,
 				validateedit: me.onDoctorsNotesGridValidateEdit
 			},
@@ -62,6 +63,13 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 			}
 		});
 
+	},
+
+	onDoctorsNotesGridBeforeRender: function(grid){
+		app.on('patientunset', function(){
+			grid.editingPlugin.cancelEdit();
+			grid.getStore().removeAll();
+		});
 	},
 
 	onDoctorsNotesGridSelectionChange: function(sm, selected){
@@ -119,14 +127,15 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 
 	onDoctorsNotesGridActive: function(grid){
 		var store = grid.getStore();
-
-		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
-			}
-		]);
+		if(!grid.editingPlugin.editing){
+			store.clearFilter(true);
+			store.filter([
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			]);
+		}
 	},
 
 	templatesRenderer: function(v){

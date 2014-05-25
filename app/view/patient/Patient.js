@@ -110,6 +110,10 @@ Ext.define('App.view.patient.Patient', {
             whoPanel;
 
         me.getFormItems(me.demoForm, 1, function(formPanel){
+
+	        var dob = me.demoForm.getForm().findField('DOB');
+	        if(dob) dob.setMaxValue(new Date());
+
             if(!me.newPatient){
                 whoPanel = formPanel.query('tabpanel')[0].items.items[0];
                 whoPanel.insert(0,
@@ -204,8 +208,7 @@ Ext.define('App.view.patient.Patient', {
 		        ]
 	        });
 
-	        me.insuranceFormItmes = items
-
+	        me.insuranceFormItmes = items;
         });
 
     },

@@ -198,7 +198,11 @@ Ext.define('App.ux.form.fields.DateTime', {
     setReadOnly:function(value){
         this.dateField.setReadOnly(value);
         this.timeField.setReadOnly(value);
-    }
+    },
+
+	setMaxValue:function(date){
+		this.dateField.setMaxValue(date);
+	}
 });
 
 //eo file

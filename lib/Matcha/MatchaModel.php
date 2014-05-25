@@ -242,7 +242,9 @@ class MatchaModel extends Matcha
             $jsSenchaModel = self::__getFileContent($fileModel);
             if(!$jsSenchaModel) throw new Exception("Error opening the Sencha model file.");
 	        // remove functions at the end
-	        $jsSenchaModel = preg_replace("/function\(\){(.|\n)*( *)\}(,|\n)/", '" "', $jsSenchaModel);
+	        if(preg_match("/(?<!convert\: )function[\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
+		        $jsSenchaModel = preg_replace("/(?<!convert\: )function[\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL. '});';
+	        }
             // get the actual Sencha Model.
             preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
             $jsSenchaModel = $match['extmodel'];
@@ -261,8 +263,6 @@ class MatchaModel extends Matcha
             // replace single quotes for double quotes
 	        // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
             $jsSenchaModel = preg_replace("(')", '"', $jsSenchaModel);
-
-	        error_log($jsSenchaModel);
 
             $model = (array)json_decode($jsSenchaModel, true);
             if(!count($model)) throw new Exception("Something went wrong converting it to an array. Model('$fileModel'). JSON Error: " . self::__JSONErrorTranslate(json_last_error()));

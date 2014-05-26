@@ -56,7 +56,7 @@ Ext.define('App.model.patient.EncounterDx', {
 			name: 'code_text',
 			type: 'string',
 			store: false,
-			convert:function(v, record){
+			convert: function(v, record){
 				return v == '' ? record.data.long_desc : v;
 			}
 		},

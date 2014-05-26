@@ -18,8 +18,8 @@
 
 Ext.define('App.model.patient.Notes', {
 	extend: 'Ext.data.Model',
-	table:{
-		name:'patient_notes'
+	table: {
+		name: 'patient_notes'
 	},
 	fields: [
 		{

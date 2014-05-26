@@ -18,7 +18,7 @@
 
 Ext.define('App.model.patient.PatientsOrderResult', {
 	extend: 'Ext.data.Model',
-	requires:[
+	requires: [
 		'App.model.patient.PatientsOrderObservation'
 	],
 	table: {

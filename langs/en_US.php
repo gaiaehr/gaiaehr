@@ -1349,4 +1349,7 @@ $LANG = array(
 	'family_history'                        => 'Family History',
 	'relation'                              => 'Relation',
 	'referrer'                              => 'Referrer',
+	'ssn'                                   => 'SSN',
+	'ein'                                   => 'EIN',
+	'fda_number'                            => 'FDA Number',
 );

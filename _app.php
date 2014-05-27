@@ -87,11 +87,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	            return window.acl[acl] || false;
             };
 
-//            ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );
-//            AppClipboard = new ZeroClipboard();
-//            AppClipboard.on("complete", function (client, args) {
-//	            app.msg(i18n('sweet'), args.text + ' - ' + i18n('copied_to_clipboard'));
-//            });
+            ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );
+            AppClipboard = new ZeroClipboard();
+            AppClipboard.on("complete", function (client, args) {
+	            app.msg(i18n('sweet'), args.text + ' - ' + i18n('copied_to_clipboard'));
+            });
 
 			/**
 			 * Ext Localization file

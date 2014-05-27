@@ -24,7 +24,9 @@ Ext.define('App.view.administration.Practice', {
 		'App.ux.combo.Titles',
 		'App.ux.combo.TransmitMethod',
 		'App.ux.combo.InsurancePayerType',
-		'App.ux.grid.RowFormEditing'
+		'App.ux.grid.RowFormEditing',
+
+		'App.view.administration.ReferringProviders'
 	],
 	initComponent: function(){
 		var me = this;
@@ -912,6 +914,9 @@ Ext.define('App.view.administration.Practice', {
 							}
 						]
 
+					},
+					{
+						xtype: 'referringproviderspanel'
 					}
 				]
 

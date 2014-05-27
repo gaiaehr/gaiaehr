@@ -124,6 +124,25 @@ $API = array(
             )
         )
     ),
+    'ReferringProviders' => array(
+        'methods' => array(
+            'getReferringProviders' => array(
+                'len' => 1
+            ),
+            'getReferringProvider' => array(
+                'len' => 1
+            ),
+            'addReferringProvider' => array(
+                'len' => 1
+            ),
+            'updateReferringProvider' => array(
+                'len' => 1
+            ),
+            'deleteReferringProvider' => array(
+                'len' => 1
+            )
+        )
+    ),
     'Disclosure' => array(
         'methods' => array(
             'getDisclosures' => array(

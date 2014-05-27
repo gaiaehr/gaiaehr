@@ -34,8 +34,8 @@ Ext.define('App.model.administration.Facility', {
 			comment: 'Facility Name'
 		},
 		{
-			name: 'active',
-			type: 'bool'
+			name: 'attn',
+			type: 'string'
 		},
 		{
 			name: 'phone',
@@ -66,7 +66,11 @@ Ext.define('App.model.administration.Facility', {
 			type: 'string'
 		},
 		{
-			name: 'federal_ein',
+			name: 'ssn',
+			type: 'string'
+		},
+		{
+			name: 'ein',
 			type: 'string'
 		},
 		{
@@ -90,20 +94,20 @@ Ext.define('App.model.administration.Facility', {
 			type: 'string'
 		},
 		{
-			name: 'attn',
+			name: 'clia',
 			type: 'string'
 		},
 		{
-			name: 'domain_identifier',
+			name: 'fda',
 			type: 'string'
 		},
 		{
-			name: 'facility_npi',
+			name: 'npi',
 			type: 'string'
 		},
 		{
-			name: 'tax_id_type',
-			type: 'string'
+			name: 'active',
+			type: 'bool'
 		}
 	],
 	proxy: {

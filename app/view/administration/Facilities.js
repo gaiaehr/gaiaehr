@@ -18,9 +18,8 @@
 
 Ext.define('App.view.administration.Facilities', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelFacilities',
     pageTitle: i18n('facilities_active'),
-    uses: ['App.ux.GridPanel', 'App.ux.window.Window'],
+
     initComponent: function(){
         var me = this;
 
@@ -116,17 +115,19 @@ Ext.define('App.view.administration.Facilities', {
                                     },
                                     {
                                         xtype: 'fieldcontainer',
-                                        fieldLabel: i18n('tax_id'),
                                         layout: 'hbox',
                                         items: [
                                             {
-                                                xtype: 'mitos.taxidcombo',
-                                                name: 'tax_id_type',
-                                                width: 50
+	                                            xtype: 'textfield',
+	                                            fieldLabel: i18n('ssn'),
+                                                name: 'ssn',
+	                                            margin: '0 10 0 0'
                                             },
                                             {
                                                 xtype: 'textfield',
-                                                name: 'federal_ein'
+	                                            fieldLabel: i18n('ein'),
+	                                            labelWidth: 40,
+                                                name: 'ein'
                                             }
                                         ]
                                     }
@@ -134,26 +135,11 @@ Ext.define('App.view.administration.Facilities', {
                             },
                             {
                                 items: [
-                                    {
-                                        xtype: 'checkbox',
-                                        fieldLabel: i18n('active'),
-                                        name: 'active'
-                                    },
-                                    {
-                                        xtype: 'checkbox',
-                                        fieldLabel: i18n('service_location'),
-                                        name: 'service_location'
-                                    },
-                                    {
-                                        xtype: 'checkbox',
-                                        fieldLabel: i18n('billing_location'),
-                                        name: 'billing_location'
-                                    },
-                                    {
-                                        xtype: 'checkbox',
-                                        fieldLabel: i18n('accepts_assignment'),
-                                        name: 'accepts_assignment'
-                                    },
+	                                {
+		                                fieldLabel: i18n('billing_attn'),
+		                                name: 'attn',
+		                                anchor: '100%'
+	                                },
                                     {
                                         xtype: 'mitos.poscodescombo',
                                         fieldLabel: i18n('pos_code'),
@@ -161,20 +147,40 @@ Ext.define('App.view.administration.Facilities', {
                                         anchor: '100%'
                                     },
                                     {
-                                        fieldLabel: i18n('billing_attn'),
-                                        name: 'attn',
-                                        anchor: '100%'
-                                    },
-                                    {
                                         fieldLabel: i18n('clia_number'),
-                                        name: 'domain_identifier',
+                                        name: 'clia',
                                         anchor: '100%'
                                     },
                                     {
-                                        fieldLabel: 'Facility NPI',
-                                        name: 'facility_npi',
+                                        fieldLabel: i18n('npi'),
+                                        name: 'npi',
                                         anchor: '100%'
-                                    }
+                                    },
+                                    {
+                                        fieldLabel: i18n('fda_number'),
+                                        name: 'fda',
+                                        anchor: '100%'
+                                    },
+	                                {
+		                                xtype: 'checkbox',
+		                                fieldLabel: i18n('active'),
+		                                name: 'active'
+	                                },
+	                                {
+		                                xtype: 'checkbox',
+		                                fieldLabel: i18n('service_location'),
+		                                name: 'service_location'
+	                                },
+	                                {
+		                                xtype: 'checkbox',
+		                                fieldLabel: i18n('billing_location'),
+		                                name: 'billing_location'
+	                                },
+	                                {
+		                                xtype: 'checkbox',
+		                                fieldLabel: i18n('accepts_assignment'),
+		                                name: 'accepts_assignment'
+	                                }
                                 ]
                             }
                         ]
@@ -211,7 +217,7 @@ Ext.define('App.view.administration.Facilities', {
     },
 
     filterFacilitiesby: function(btn){
-        this.updateTitle(i18n('Facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
+        this.updateTitle(i18n('facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
 
         this.FacilityStore.load({
             filters:[
@@ -233,8 +239,7 @@ Ext.define('App.view.administration.Facilities', {
             active: 1,
             service_location: 1,
             billing_location: 0,
-            accepts_assignment: 0,
-            tax_id_type: 'EIN'
+            accepts_assignment: 0
         });
         grid.editingPlugin.startEdit(0, 0);
     },

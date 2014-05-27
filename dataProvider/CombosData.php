@@ -370,14 +370,14 @@ class CombosData {
 		$pos = array();
 		$pos[] = array(
 			'code' => '01',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
+			'title' => 'Pharmacy',
+			'description' => 'A facility or location where drugs and other medically related items and services are sold, dispensed, or otherwise provided directly to patients.'
 		);
-		$pos[] = array(
-			'code' => '02',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '02',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '03',
 			'title' => 'School',
@@ -410,14 +410,14 @@ class CombosData {
 		);
 		$pos[] = array(
 			'code' => '09',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
+			'title' => 'Prison/Correctional Facility',
+			'description' => 'A prison, jail, reformatory, work farm, detention center, or any other similar facility maintained by either Federal, State or local authorities for the purpose of confinement or rehabilitation of adult or juvenile criminal offenders.'
 		);
-		$pos[] = array(
-			'code' => '10',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '10',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '11',
 			'title' => 'Office ',
@@ -445,24 +445,24 @@ class CombosData {
 		);
 		$pos[] = array(
 			'code' => '16',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
+			'title' => 'Temporary Lodging',
+			'description' => 'A short term accommodation such as a hotel, camp ground, hostel, cruise ship or resort where the patient receives care, and which is not identified by any other POS code.'
 		);
 		$pos[] = array(
 			'code' => '17',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
+			'title' => 'Walk-in Retail Health Clinic',
+			'description' => 'A walk-in health clinic, other than an office, urgent care facility, pharmacy or independent clinic and not described by any other Place of Service code, that is located within a retail operation and provides, on an ambulatory basis, preventive and primary care services.'
 		);
 		$pos[] = array(
 			'code' => '18',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
+			'title' => 'Place of Employment-Worksite',
+			'description' => 'A location, not described by any other POS code, owned or operated by a public or private entity where the patient is employed, and where a health professional provides on-going or episodic occupational medical, therapeutic or rehabilitative services to the individual.'
 		);
-		$pos[] = array(
-			'code' => '19',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '19',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '20',
 			'title' => 'Urgent Care Facility',
@@ -498,26 +498,26 @@ class CombosData {
 			'title' => 'Military Treatment Facility',
 			'description' => 'A medical facility operated by one or more of the Uniformed Services. Military Treatment Facility (MTF) also refers to certain former U.S. Public Health Service (USPHS) facilities now designated as Uniformed Service Treatment Facilities (USTF).'
 		);
-		$pos[] = array(
-			'code' => '27',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '28',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '29',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '30',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '27',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '28',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '29',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '30',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '31',
 			'title' => 'Skilled Nursing Facility',
@@ -538,36 +538,36 @@ class CombosData {
 			'title' => 'Hospice',
 			'description' => 'A facility, other than a patient\'s home, in which palliative and supportive care for terminally ill patients and their families are provided.'
 		);
-		$pos[] = array(
-			'code' => '35',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '36',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '37',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '38',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '39',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '40',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '35',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '36',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '37',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '38',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '39',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '40',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '41',
 			'title' => 'Ambulance - Land',
@@ -578,36 +578,36 @@ class CombosData {
 			'title' => 'Ambulance - Air or Water',
 			'description' => 'An air or water vehicle specifically designed, equipped and staffed for lifesaving and transporting the sick or injured.'
 		);
-		$pos[] = array(
-			'code' => '43',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '44',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '45',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '46',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '47',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '48',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '43',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '44',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '45',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '46',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '47',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '48',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '49',
 			'title' => 'Independent Clinic',
@@ -653,16 +653,16 @@ class CombosData {
 			'title' => 'Non-residential Substance Abuse Treatment Facility',
 			'description' => 'A location which provides treatment for substance (alcohol and drug) abuse on an ambulatory basis.  Services include individual and group therapy and counseling, family counseling, laboratory tests, drugs and supplies, and psychological testing.  (effective 10/1/03)'
 		);
-		$pos[] = array(
-			'code' => '58',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '59',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '58',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '59',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '60',
 			'title' => 'Mass Immunization Center',
@@ -678,46 +678,46 @@ class CombosData {
 			'title' => 'Comprehensive Outpatient Rehabilitation Facility',
 			'description' => 'A facility that provides comprehensive rehabilitation services under the supervision of a physician to outpatients with physical disabilities. Services include physical therapy, occupational therapy, and speech pathology services.'
 		);
-		$pos[] = array(
-			'code' => '63',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '64',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '63',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '64',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '65',
 			'title' => 'End-Stage Renal Disease Treatment Facility',
 			'description' => 'A facility other than a hospital, which provides dialysis treatment, maintenance, and/or training to patients or caregivers on an ambulatory or home-care basis.'
 		);
-		$pos[] = array(
-			'code' => '66',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '67',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '68',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '69',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '70',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '66',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '67',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '68',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '69',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '70',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '71',
 			'title' => 'Public Health Clinic',
@@ -728,136 +728,136 @@ class CombosData {
 			'title' => 'Rural Health Clinic',
 			'description' => 'A certified facility which is located in a rural medically underserved area that provides ambulatory primary medical care under the general direction of a physician.'
 		);
-		$pos[] = array(
-			'code' => '73',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '74',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '75',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '76',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '77',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '78',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '79',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '80',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '73',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '74',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '75',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '76',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '77',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '78',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '79',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '80',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '81',
 			'title' => 'Independent Laboratory',
 			'description' => 'A laboratory certified to perform diagnostic and/or clinical tests independent of an institution or a physician\'s office.'
 		);
-		$pos[] = array(
-			'code' => '82',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '83',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '84',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '85',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '86',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '87',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '88',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '89',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '90',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '91',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '92',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '93',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '94',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '95',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '96',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '97',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
-		$pos[] = array(
-			'code' => '98',
-			'title' => 'Unassigned',
-			'description' => 'N/A'
-		);
+//		$pos[] = array(
+//			'code' => '82',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '83',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '84',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '85',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '86',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '87',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '88',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '89',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '90',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '91',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '92',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '93',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '94',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '95',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '96',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '97',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
+//		$pos[] = array(
+//			'code' => '98',
+//			'title' => 'Unassigned',
+//			'description' => 'N/A'
+//		);
 		$pos[] = array(
 			'code' => '99',
 			'title' => 'Other Place of Service',

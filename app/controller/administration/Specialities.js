@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.controller.administration.ReferringProviders', {
+Ext.define('App.controller.administration.Specialities', {
 	extend: 'Ext.app.Controller',
 
 	refs: [
 		{
-			ref: 'ReferringProvidersPanel',
-			selector: 'referringproviderspanel'
+			ref: 'SpecialitiesPanel',
+			selector: 'specialitiespanel'
 		},
 		{
-			ref: 'ReferringProviderAddBtn',
-			selector: '#referringProviderAddBtn'
+			ref: 'SpecialitiesAddBtn',
+			selector: '#specialitiesAddBtn'
 		}
 	],
 
@@ -34,14 +34,14 @@ Ext.define('App.controller.administration.ReferringProviders', {
 		var me = this;
 
 		me.control({
-			'#referringProviderAddBtn': {
-				click: me.onReferringProviderAddBtnClick
+			'#specialitiesAddBtn': {
+				click: me.onSpecialitiesAddBtnClick
 			}
 		});
 
 	},
 
-	onReferringProviderAddBtnClick: function(btn){
+	onSpecialitiesAddBtnClick: function(btn){
 		var grid = btn.up('grid');
 
 		grid.editingPlugin.cancelEdit();

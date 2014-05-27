@@ -322,6 +322,26 @@ $API = array(
 		)
 	),
 
+	'Specialties' => array(
+		'methods' => array(
+			'getSpecialties' => array(
+				'len' => 1
+            ),
+			'getSpecialty' => array(
+				'len' => 1
+            ),
+			'addSpecialty' => array(
+				'len' => 1
+            ),
+			'updateSpecialty' => array(
+				'len' => 1
+            ),
+			'deleteSpecialty' => array(
+				'len' => 1
+            ),
+		)
+	),
+
 	'DiagnosisCodes' => array(
 		'methods' => array(
 			'ICDCodeSearch' => array(

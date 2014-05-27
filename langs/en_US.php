@@ -1352,4 +1352,10 @@ $LANG = array(
 	'ssn'                                   => 'SSN',
 	'ein'                                   => 'EIN',
 	'fda_number'                            => 'FDA Number',
+	'referring_provider'                    => 'Referring Provider',
+	'referring_providers'                   => 'Referring Providers',
+	'lic'                                   => 'LIC.',
+	'phone_number'                          => 'Phone Number',
+	'cel_number'                            => 'Cel Number',
+	'fax_number'                            => 'Fax Number',
 );

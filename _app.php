@@ -671,6 +671,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 controllers:[
 	                'administration.HL7',
 	                'administration.Practice',
+	                'administration.ReferringProviders',
+	                'administration.Specialities',
 
 	                'Cron',
 	                'DualScreen',

@@ -138,6 +138,10 @@ Ext.define('App.model.administration.ReferringProvider', {
 			type: 'string',
 			len: 25,
 			comment: 'cell phone number'
+		},
+		{
+			name: 'active',
+			type: 'bool'
 		}
 	],
 	proxy: {

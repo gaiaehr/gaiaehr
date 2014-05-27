@@ -2229,34 +2229,6 @@ CREATE TABLE `pool_areas` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
-CREATE TABLE `prescriptions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `patient_id` int(11) DEFAULT NULL,
-  `filled_by_id` int(11) DEFAULT NULL,
-  `pharmacy_id` int(11) DEFAULT NULL,
-  `date_added` date DEFAULT NULL,
-  `date_modified` date DEFAULT NULL,
-  `provider_id` int(11) DEFAULT NULL,
-  `start_date` date DEFAULT NULL,
-  `drug` varchar(150) DEFAULT NULL,
-  `drug_id` int(11) NOT NULL DEFAULT '0',
-  `form` int(3) DEFAULT NULL,
-  `dosage` varchar(100) DEFAULT NULL,
-  `quantity` varchar(31) DEFAULT NULL,
-  `size` float unsigned DEFAULT NULL,
-  `unit` int(11) DEFAULT NULL,
-  `route` int(11) DEFAULT NULL,
-  `interval` int(11) DEFAULT NULL,
-  `substitute` int(11) DEFAULT NULL,
-  `refills` int(11) DEFAULT NULL,
-  `per_refill` int(11) DEFAULT NULL,
-  `filled_date` date DEFAULT NULL,
-  `medication` int(11) DEFAULT NULL,
-  `note` text,
-  `active` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 CREATE TABLE `preventive_care_guidelines` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `concept_id` bigint(20) DEFAULT NULL,
@@ -2300,74 +2272,6 @@ CREATE TABLE `prices` (
   `insuranceCompanyId` bigint(20) DEFAULT NULL,
   `price` decimal(19,2) NOT NULL DEFAULT '0.00' COMMENT 'price in local currency',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `procedure_order` (
-  `procedure_order_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `procedure_type_id` bigint(20) NOT NULL COMMENT 'references procedure_type.procedure_type_id',
-  `provider_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id',
-  `patient_id` bigint(20) NOT NULL COMMENT 'references patient_data.pid',
-  `encounter_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references form_encounter.encounter',
-  `date_collected` datetime DEFAULT NULL COMMENT 'time specimen collected',
-  `date_ordered` date DEFAULT NULL,
-  `order_priority` varchar(31) NOT NULL DEFAULT '',
-  `order_status` varchar(31) NOT NULL DEFAULT '' COMMENT 'pending,routed,complete,canceled',
-  `patient_instructions` text NOT NULL,
-  `activity` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0 if deleted',
-  `control_id` bigint(20) NOT NULL COMMENT 'This is the CONTROL ID that is sent back from lab',
-  PRIMARY KEY (`procedure_order_id`),
-  KEY `datepid` (`date_ordered`,`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `procedure_report` (
-  `procedure_report_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `procedure_order_id` bigint(20) DEFAULT NULL COMMENT 'references procedure_order.procedure_order_id',
-  `date_collected` datetime DEFAULT NULL,
-  `date_report` date DEFAULT NULL,
-  `source` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id, who entered this data',
-  `specimen_num` varchar(63) NOT NULL DEFAULT '',
-  `report_status` varchar(31) NOT NULL DEFAULT '' COMMENT 'received,complete,error',
-  `review_status` varchar(31) NOT NULL DEFAULT 'received' COMMENT 'panding reivew status: received,reviewed',
-  PRIMARY KEY (`procedure_report_id`),
-  KEY `procedure_order_id` (`procedure_order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `procedure_result` (
-  `procedure_result_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `procedure_report_id` bigint(20) NOT NULL COMMENT 'references procedure_report.procedure_report_id',
-  `procedure_type_id` bigint(20) NOT NULL COMMENT 'references procedure_type.procedure_type_id',
-  `date` datetime DEFAULT NULL COMMENT 'lab-provided date specific to this result',
-  `facility` varchar(255) NOT NULL DEFAULT '' COMMENT 'lab-provided testing facility ID',
-  `units` varchar(31) NOT NULL DEFAULT '',
-  `result` varchar(255) NOT NULL DEFAULT '',
-  `range` varchar(255) NOT NULL DEFAULT '',
-  `abnormal` varchar(31) NOT NULL DEFAULT '' COMMENT 'no,yes,high,low',
-  `comments` text NOT NULL COMMENT 'comments from the lab',
-  `document_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references documents.id if this result is a document',
-  `result_status` varchar(31) NOT NULL DEFAULT '' COMMENT 'preliminary, cannot be done, final, corrected, incompete...etc.',
-  PRIMARY KEY (`procedure_result_id`),
-  KEY `procedure_report_id` (`procedure_report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-CREATE TABLE `procedure_type` (
-  `procedure_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `parent` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references procedure_type.procedure_type_id',
-  `name` varchar(63) NOT NULL DEFAULT '' COMMENT 'name for this category, procedure or result type',
-  `lab_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id, 0 means default to parent',
-  `procedure_code` varchar(31) NOT NULL DEFAULT '' COMMENT 'code identifying this procedure',
-  `procedure_type` varchar(31) NOT NULL DEFAULT '' COMMENT 'see list proc_type',
-  `body_site` varchar(31) NOT NULL DEFAULT '' COMMENT 'where to do injection, e.g. arm, buttok',
-  `specimen` varchar(31) NOT NULL DEFAULT '' COMMENT 'blood, urine, saliva, etc.',
-  `route_admin` varchar(31) NOT NULL DEFAULT '' COMMENT 'oral, injection',
-  `laterality` varchar(31) NOT NULL DEFAULT '' COMMENT 'left, right, ...',
-  `description` varchar(255) NOT NULL DEFAULT '' COMMENT 'descriptive text for procedure_code',
-  `standard_code` varchar(255) NOT NULL DEFAULT '' COMMENT 'industry standard code type and code (e.g. CPT4:12345)',
-  `related_code` varchar(255) NOT NULL DEFAULT '' COMMENT 'suggested code(s) for followup services if result is abnormal',
-  `units` varchar(31) NOT NULL DEFAULT '' COMMENT 'default for procedure_result.units',
-  `range` varchar(255) NOT NULL DEFAULT '' COMMENT 'default for procedure_result.range',
-  `seq` int(11) NOT NULL DEFAULT '0' COMMENT 'sequence number for ordering',
-  PRIMARY KEY (`procedure_type_id`),
-  KEY `parent` (`parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE `rxnatomarchive` (

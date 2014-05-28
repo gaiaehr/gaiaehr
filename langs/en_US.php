@@ -1358,4 +1358,5 @@ $LANG = array(
 	'phone_number'                          => 'Phone Number',
 	'cel_number'                            => 'Cel Number',
 	'fax_number'                            => 'Fax Number',
+	'codes'                                 => 'Codes',
 );

@@ -154,26 +154,26 @@ class Navigation
 		// *************************************************************************************
 		// Billing Manager Folder
 		// *************************************************************************************
-//		array_push($nav, array(
-//			'text' => $this->i18n['billing_manager'],
-//			'cls' => 'folder',
-//			'expanded' => true,
-//			'id' => 'billing',
-//			'iconCls' => 'icoLogo',
-//			'children' => array(
-//				array(
-//					'text' => $this->i18n['payment'],
-//					'leaf' => true,
-//					'cls' => 'file',
-//					'id' => 'App.view.fees.Payments'
-//				), array(
-//					'text' => $this->i18n['billing'],
-//					'leaf' => true,
-//					'cls' => 'file',
-//					'id' => 'App.view.fees.Billing'
-//				)
-//			)
-//		));
+		array_push($nav, array(
+			'text' => $this->i18n['billing_manager'],
+			'cls' => 'folder',
+			'expanded' => true,
+			'id' => 'billing',
+			'iconCls' => 'icoLogo',
+			'children' => array(
+				array(
+					'text' => $this->i18n['payment'],
+					'leaf' => true,
+					'cls' => 'file',
+					'id' => 'App.view.fees.Payments'
+				), array(
+					'text' => $this->i18n['billing'],
+					'leaf' => true,
+					'cls' => 'file',
+					'id' => 'App.view.fees.Billing'
+				)
+			)
+		));
 		// *************************************************************************************
 		// Administration Folder
 		// *************************************************************************************

@@ -38,7 +38,6 @@ class Specialties {
 		return $this->s->save($params);
 	}
 
-
 	public function updateSpecialty($params){
 		return $this->s->save($params);
 	}

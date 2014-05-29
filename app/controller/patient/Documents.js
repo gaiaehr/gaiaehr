@@ -157,8 +157,8 @@ Ext.define('App.controller.patient.Documents', {
 
 	onDocumentUploadSaveBtnClick: function(){
 		var me = this,
-			formPanel = me.getPatientDocumentUploadWindow().down('form'),
-			form = formPanel.getForm(),
+			win = me.getPatientDocumentUploadWindow(),
+			form = win.down('form').getForm(),
 			record = form.getRecord(),
 			values = form.getValues(),
 			reader = new FileReader(),
@@ -168,7 +168,7 @@ Ext.define('App.controller.patient.Documents', {
 
 		record.set(values);
 
-		if(formPanel.action == 'click'){
+		if(win.action == 'click'){
 			record.set({name: uploadField.getValue()});
 			reader.onload = function(e){
 				record.set({document: e.target.result});

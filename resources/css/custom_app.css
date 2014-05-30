@@ -7,7 +7,10 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
-
+.whiteBackgroundFiledSet .x-fieldset-body{
+    background-color: white;
+    border: solid 1px #ccc !important;
+}
 .icon32Round {
     width: 32px;
     height: 32px;

@@ -64,7 +64,7 @@ Ext.define('App.view.administration.Practice', {
 								autoCancel: false,
 								errorSummary: false,
 								clicksToEdit: 1,
-								formItems: [
+								items: [
 									{
 										xtype: 'container',
 										layout: 'hbox',
@@ -303,7 +303,7 @@ Ext.define('App.view.administration.Practice', {
 								autoCancel: false,
 								errorSummary: false,
 								clicksToEdit: 1,
-								formItems: [
+								items: [
 									{
 										xtype: 'container',
 										layout: 'hbox',
@@ -540,7 +540,7 @@ Ext.define('App.view.administration.Practice', {
 								autoCancel: false,
 								errorSummary: false,
 								clicksToEdit: 1,
-								formItems: [
+								items: [
 									{
 										xtype: 'container',
 										layout: 'hbox',
@@ -788,7 +788,7 @@ Ext.define('App.view.administration.Practice', {
 								autoCancel: false,
 								errorSummary: false,
 								clicksToEdit: 1,
-								formItems: [
+								items: [
 									{
 										xtype: 'container',
 										layout: 'column',

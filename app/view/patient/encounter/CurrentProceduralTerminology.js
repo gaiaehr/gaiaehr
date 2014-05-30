@@ -47,7 +47,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
             errorSummary:false,
             clicksToEdit:1,
             enableRemove:true,
-            formItems:[
+            items:[
                 {
                     fieldLabel: i18n('full_description'),
                     xtype:'displayfield',

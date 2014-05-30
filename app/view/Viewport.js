@@ -90,17 +90,27 @@ Ext.define('App.view.Viewport', {
             height: 44,
             split: false,
             collapsible: false,
-            collapsed: true,
+            collapsed: false,
             frame: false,
             border: false,
             bodyStyle: 'background: transparent',
-            margins: '0 0 0 0'
+            margins: '0 0 0 0',
+	        layout: 'hbox'
         });
 
-	    me.patientBtn = me.Header.add({
+		me.HeaderLeft = Ext.widget('container', {
+			margin: 0,
+			flex: 1,
+			layout: 'hbox'
+		});
+		me.HeaderRight = Ext.widget('container',{
+			margin: 0,
+			layout: 'hbox'
+		});
+
+	    me.patientBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
-            style: 'float:left',
             margin: 0,
             tooltip: i18n('patient_btn_drag'),
             listeners: {
@@ -110,10 +120,9 @@ Ext.define('App.view.Viewport', {
             tpl: me.patientBtnTpl()
         });
 
-	    me.patientSummaryBtn = me.Header.add({
+	    me.patientSummaryBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
-            style: 'float:left',
             margin: '0 0 0 3',
             cls: 'headerLargeBtn',
             padding: 0,
@@ -124,10 +133,9 @@ Ext.define('App.view.Viewport', {
         });
 
 	    if(a('access_patient_visits')){
-		    me.patientOpenVisitsBtn = me.Header.add({
+		    me.patientOpenVisitsBtn = me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    style: 'float:left',
 			    margin: '0 0 0 3',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
@@ -140,10 +148,9 @@ Ext.define('App.view.Viewport', {
 
 
 	    if(a('add_encounters')){
-            me.patientCreateEncounterBtn = me.Header.add({
+            me.patientCreateEncounterBtn = me.HeaderLeft.add({
                 xtype: 'button',
                 scale: 'large',
-                style: 'float:left',
                 margin: '0 0 0 3',
                 cls: 'headerLargeBtn',
                 padding: 0,
@@ -154,10 +161,9 @@ Ext.define('App.view.Viewport', {
             });
         }
 
-	    me.patientCloseCurrEncounterBtn = me.Header.add({
+	    me.patientCloseCurrEncounterBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
-            style: 'float:left',
             margin: '0 0 0 3',
             cls: 'headerLargeBtn',
             padding: 0,
@@ -168,10 +174,9 @@ Ext.define('App.view.Viewport', {
         });
 
 	    if(a('access_patient_visit_checkout')){
-		    me.patientCheckOutBtn = me.Header.add({
+		    me.patientCheckOutBtn = me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    style: 'float:left',
 			    margin: '0 0 0 3',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
@@ -197,16 +202,15 @@ Ext.define('App.view.Viewport', {
 //        });
 
 	    if(a('access_patient_search')){
-		    me.Header.add({
+		    me.HeaderLeft.add({
 			    xtype: 'panel',
 			    bodyPadding: '8 11 5 11',
 			    margin: '0 0 0 3',
-			    style: 'float:left',
 			    items: [
 				    {
 					    xtype: 'patienlivetsearch',
 					    emptyText: i18n('patient_live_search') + '...',
-					    fieldStyle: me.fullMode ? 'width:300' : 'width:250',
+					    width: (me.fullMode ? 300 : 200),
 					    listeners: {
 						    scope: me,
 						    select: me.liveSearchSelect,
@@ -222,10 +226,9 @@ Ext.define('App.view.Viewport', {
 
 
 	    if(a('add_patient')){
-		    me.Header.add({
+		    me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    style: 'float:left',
 			    margin: '0 0 0 3',
 			    padding: 4,
 			    itemId: 'patientNewReset',
@@ -237,10 +240,9 @@ Ext.define('App.view.Viewport', {
 	    }
 
 	    if(a('create_emergency_encounter')){
-		    me.Header.add({
+		    me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    style: 'float:left',
 			    margin: '0 0 0 3',
 			    cls: 'headerLargeBtn emerBtn',
 			    overCls: 'emerBtnOver',
@@ -253,69 +255,25 @@ Ext.define('App.view.Viewport', {
 		    });
 	    }
 
-	    me.userSplitBtn = me.Header.add({
-            xtype: 'button',
-            text: me.user.title + ' ' + me.user.lname,
-            scale: 'large',
-            iconCls: isEmerAccess ? 'icoUnlocked32' : 'icoDoctor',
-            iconAlign: 'left',
-		    plugins:[
-			    {
-				    ptype:'badgetext',
-				    defaultText: 0
-			    }
-		    ],
-		    itemId:'userSplitButton',
-            cls: 'drButton',
-            style: 'float:right',
-            margin: '0 0 0 3',
-            menu: [
-                {
-                    text: i18n('my_account'),
-                    iconCls: 'icoUser',
-                    handler: function(){
-                        me.nav.navigateTo('App.view.miscellaneous.MyAccount');
-                    }
-                },
-                {
-                    text: i18n('logout'),
-                    iconCls: 'icoLogout',
-	                action:'logout'
-                }
-            ]
-        });
-
-	    if(a('emergency_access')){
-		    me.userSplitBtn.menu.insert(0,{
-			    text:i18n('emergency_access'),
-			    cls: 'emergency',
-			    iconCls:'icoUnlocked',
-			    scope:me,
-			    handler:me.onEmergencyAccessClick
-		    });
-	    }
-
-	    if(a('access_poolcheckin')){
-		    me.Header.add({
+	    if(a('access_floor_plan_panel')){
+		    me.HeaderRight.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    style: 'float:right',
 			    margin: '0 0 0 3',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
-			    itemId: 'patientCheckIn',
-			    iconCls: 'icoCheckIn',
+			    itemId: 'floorPlans',
+			    iconCls: 'icoZoneAreasBig',
 			    scope: me,
-			    handler: me.onPatientLog,
-			    tooltip: i18n('arrival_log')
+			    handler: me.goToFloorPlans,
+			    tooltip: i18n('floor_plans')
 		    });
 	    }
 
 	    if(a('access_pool_areas_panel')){
-		    me.Header.add({
+		    me.HeaderRight.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    style: 'float:right',
 			    margin: '0 0 0 3',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
@@ -327,21 +285,63 @@ Ext.define('App.view.Viewport', {
 		    });
 	    }
 
-		if(a('access_floor_plan_panel')){
-			me.Header.add({
-				xtype: 'button',
-				scale: 'large',
-				style: 'float:right',
-				margin: '0 0 0 3',
-				cls: 'headerLargeBtn',
-				padding: 0,
-				itemId: 'floorPlans',
-				iconCls: 'icoZoneAreasBig',
-				scope: me,
-				handler: me.goToFloorPlans,
-				tooltip: i18n('floor_plans')
-			});
-		}
+	    if(a('access_poolcheckin')){
+		    me.HeaderRight.add({
+			    xtype: 'button',
+			    scale: 'large',
+			    margin: '0 0 0 3',
+			    cls: 'headerLargeBtn',
+			    padding: 0,
+			    itemId: 'patientCheckIn',
+			    iconCls: 'icoCheckIn',
+			    scope: me,
+			    handler: me.onPatientLog,
+			    tooltip: i18n('arrival_log')
+		    });
+	    }
+
+	    me.userSplitBtn = me.HeaderRight.add({
+		    xtype: 'button',
+		    text: me.user.title + ' ' + me.user.lname,
+		    scale: 'large',
+		    iconCls: isEmerAccess ? 'icoUnlocked32' : 'icoDoctor',
+		    iconAlign: 'left',
+		    plugins:[
+			    {
+				    ptype:'badgetext',
+				    defaultText: 0
+			    }
+		    ],
+		    itemId:'userSplitButton',
+		    cls: 'drButton',
+		    margin: '0 0 0 3',
+		    menu: [
+			    {
+				    text: i18n('my_account'),
+				    iconCls: 'icoUser',
+				    handler: function(){
+					    me.nav.navigateTo('App.view.miscellaneous.MyAccount');
+				    }
+			    },
+			    {
+				    text: i18n('logout'),
+				    iconCls: 'icoLogout',
+				    action:'logout'
+			    }
+		    ]
+	    });
+
+	    if(a('emergency_access')){
+		    me.userSplitBtn.menu.insert(0,{
+			    text:i18n('emergency_access'),
+			    cls: 'emergency',
+			    iconCls:'icoUnlocked',
+			    scope:me,
+			    handler:me.onEmergencyAccessClick
+		    });
+	    }
+
+	    me.Header.add([me.HeaderLeft, me.HeaderRight]);
 
         /**
          * The panel definition for the the TreeMenu & the support button
@@ -1265,7 +1265,7 @@ Ext.define('App.view.Viewport', {
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
                 var m = App.Current.getController('Modules.' + modules[i].dir + '.Main');
-                m.init();
+//                m.init();
                 say('Module ' + modules[i].dir + ' loaded...');
             }
         });

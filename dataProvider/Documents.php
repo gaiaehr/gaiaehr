@@ -448,10 +448,10 @@ class Documents {
 			'[FACILITY_STATE]' => $facilityInfo['state'],
 			'[FACILITY_POSTALCODE]' => $facilityInfo['postal_code'],
 			'[FACILITY_COUNTRYCODE]' => $facilityInfo['country_code'],
-			'[FACILITY_FEDERAL_EIN]' => $facilityInfo['federal_ein'],
+			'[FACILITY_FEDERAL_EIN]' => $facilityInfo['ein'],
 			'[FACILITY_SERVICE_LOCATION]' => $facilityInfo['service_location'],
 			'[FACILITY_BILLING_LOCATION]' => $facilityInfo['billing_location'],
-			'[FACILITY_FACILITY_NPI]' => $facilityInfo['facility_npi']
+			'[FACILITY_FACILITY_NPI]' => $facilityInfo['npi']
 		);
 		unset($facility);
 		foreach($tokens as $i => $tok){

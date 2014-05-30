@@ -121,11 +121,11 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.callParent();
 
 		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
-		this.inputEl = {
-			dom         : {},
-			swallowEvent: function() {
-			}
-		};
+//		this.inputEl = {
+//			dom         : {},
+//			swallowEvent: function() {
+//			}
+//		};
 
 		me.initField();
 	},

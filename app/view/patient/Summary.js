@@ -517,7 +517,7 @@ Ext.define('App.view.patient.Summary', {
 					autoCancel: false,
 					errorSummary: false,
 					clicksToEdit: 1,
-					formItems: [
+					items: [
 						{
 							title: 'general',
 							xtype: 'container',

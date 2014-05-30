@@ -74,7 +74,7 @@ Ext.define('App.view.administration.ReferringProviders', {
 			plugins: [
 				me.formEditing = Ext.create('App.ux.grid.RowFormEditing', {
 					clicksToEdit: 1,
-					formItems: [
+					items: [
 						{
 							xtype: 'fieldcontainer',
 							fieldLabel: i18n('first_middle_last'),

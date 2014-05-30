@@ -76,7 +76,7 @@ Ext.define('App.view.administration.Medications',
 				errorSummary : false,
 				clicksToEdit : 1,
 				enableRemove : true,
-				formItems : [
+				items : [
 				{
 
 					title : 'general',

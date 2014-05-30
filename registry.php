@@ -31,7 +31,8 @@ if(!defined('URL'))	define('URL', isset($_SERVER['HTTP_REFERER']) ? rtrim($_SERV
 // application version
 if(!defined('VERSION'))	define('VERSION', '0.7.200');
 // extjs sdk directory
-if(!defined('EXTJS')) define('EXTJS', 'extjs-4.1.1a');
+if(!defined('EXTJS')) define('EXTJS', 'extjs-4.2.1');
+//if(!defined('EXTJS')) define('EXTJS', 'extjs-4.1.1a');
 
 // sites values
 $_SESSION['sites'] = array();

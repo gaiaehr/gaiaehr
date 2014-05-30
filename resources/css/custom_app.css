@@ -609,17 +609,14 @@ li .Deceased {
 
 }
 
-.headerLargeBtn .x-btn-center {
-	height: 40px !important;
-	width: 50px !important;
-}
-
-.headerLargeBtn .x-btn-icon {
-	width: 50px !important;
-	height: 40px !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	background-position: center center;
+.headerLargeBtn .x-btn-button,
+.headerLargeBtn .x-btn-icon-el {
+    width: 50px !important;
+    height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    /*background-position: center center;*/
+    background-repeat: no-repeat;
 }
 
 .headerLargeBtn .x-btn-inner {

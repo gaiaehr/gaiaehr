@@ -1,20 +1,21 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, LLC.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 
 Ext.define('App.view.login.Login', {
 	extend: 'Ext.Viewport',
@@ -51,10 +52,12 @@ Ext.define('App.view.login.Login', {
 			draggable: true,
 			closable: true
 		});
+
 		/**
 		 * Form Layout [Login]
 		 */
-		me.formLogin = Ext.create('Ext.form.FormPanel', {
+		me.formLogin = {
+			xtype: 'form',
 			bodyStyle: 'background: #ffffff; padding:5px 5px 0',
 			defaultType: 'textfield',
 			waitMsgTarget: true,
@@ -116,7 +119,8 @@ Ext.define('App.view.login.Login', {
 					hidden: true,
 					listeners: {
 						scope: me,
-						specialkey: me.onEnter
+						specialkey: me.onEnter,
+						beforerender: me.onFacilityCmbBeforeRender
 					}
 				},
 				{
@@ -154,13 +158,10 @@ Ext.define('App.view.login.Login', {
 					handler: me.onFormReset
 				}
 			]
-		});
-
-		me.formLogin.getComponent('facility').getStore().on('load', me.onFacilityLoad, me);
+		};
 
 		if(me.showSite){
-			me.storeSites = Ext.create('App.store.login.Sites');
-			me.formLogin.insert(3, {
+			Ext.Array.insert(me.formLogin.items, 3, [{
 				xtype: 'combobox',
 				name: 'site',
 				itemId: 'site',
@@ -168,7 +169,7 @@ Ext.define('App.view.login.Login', {
 				valueField: 'site',
 				queryMode: 'local',
 				fieldLabel: 'Site',
-				store: me.storeSites,
+				store: me.storeSites = Ext.create('App.store.login.Sites'),
 				allowBlank: false,
 				editable: false,
 				msgTarget: 'side',
@@ -179,16 +180,35 @@ Ext.define('App.view.login.Login', {
 					specialkey: me.onEnter,
 					select: me.onSiteSelect
 				}
-			});
+			}]);
+
 		}else{
-			me.formLogin.insert(3, {
+			Ext.Array.insert(me.formLogin.items, 3, [{
 				xtype: 'textfield',
 				name: 'site',
 				itemId: 'site',
 				hidden: true,
 				value: window.site
-			});
+			}]);
 		}
+
+
+		say(me.formLogin.items);
+
+		var windowItems = [
+			{
+				xtype: 'box',
+				width: 483,
+				height: 135,
+				html: '<img src="resources/images/logon_header.png" />'
+			}
+		];
+
+		windowItems.push(me.siteError ? {
+			xtype: 'container',
+			padding: 15,
+			html: 'Sorry no site configuration file found. Please contact Support Desk'
+		} : me.formLogin);
 
 		/**
 		 * The Logon Window
@@ -203,25 +223,17 @@ Ext.define('App.view.login.Login', {
 			closable: false,
 			width: 495,
 			bodyStyle: 'background: #ffffff;',
-			items: [
-				{
-					xtype: 'box',
-					width: 483,
-					height: 135,
-					html: '<img src="resources/images/logon_header.png" />'
-				},
-				(me.siteError) ?
-				{
-					xtype: 'container',
-					padding: 15,
-					html: 'Sorry no site configuration file found. Please contact Support Desk'
-				} : me.formLogin
-			],
+			autoShow: true,
+			layout: {
+				type: 'vbox',
+				align: 'stretch'
+			},
+			items: windowItems,
 			listeners: {
 				scope: me,
 				afterrender: me.afterAppRender
 			}
-		}).show();
+		});
 
 		me.notice1 = Ext.create('Ext.Container', {
 			floating: true,
@@ -267,18 +279,21 @@ Ext.define('App.view.login.Login', {
 			this.loginSubmit();
 		}
 	},
+
+	onFacilityCmbBeforeRender: function(cmb){
+		var me = this;
+		cmb.getStore().on('load', me.onFacilityLoad, me);
+	},
 	/**
 	 * Form Submit/Logon function
 	 */
 	loginSubmit: function(){
 
 		var me = this,
-			formPanel = this.formLogin,
+			formPanel = me.winLogon.down('form'),
 			form = formPanel.getForm(),
 			params = form.getValues(),
-			checkInMode = me.formLogin.query('checkbox')[0].getValue();
-
-
+			checkInMode = formPanel.query('checkbox')[0].getValue();
 
 		if(form.isValid()){
 			formPanel.el.mask('Sending credentials...');
@@ -316,13 +331,11 @@ Ext.define('App.view.login.Login', {
 	},
 
 	onFacilityLoad: function(store, records){
-		var cmb = this.formLogin.getComponent('facility');
-
+		var cmb = this.winLogon.down('form').getComponent('facility');
 		store.insert(0, {
 			option_name: 'Default',
 			option_value: '0'
 		});
-
 		cmb.setVisible(records.length > 1);
 		cmb.select(0);
 	},
@@ -332,22 +345,23 @@ Ext.define('App.view.login.Login', {
 	 */
 	onFormReset: function(){
 		var me = this,
-			form = me.formLogin.getForm();
+			form = me.winLogon.down('form').getForm();
 
 		form.setValues({
 			site: window.site,
-			authUser:'',
-			authPass:'',
+			authUser: '',
+			authPass: '',
 			lang: me.siteLang
 		});
-		me.formLogin.getComponent('authUser').focus();
+		me.winLogon.down('form').getComponent('authUser').focus();
 	},
 	/**
 	 * After form is render load store
 	 */
-	afterAppRender: function(){
+	afterAppRender: function(win){
 		var me = this,
-			langCmb = me.formLogin.getComponent('lang');
+			form = win.down('form'),
+			langCmb = form.getComponent('lang');
 
 		if(!me.siteError){
 			if(me.showSite){
@@ -362,7 +376,7 @@ Ext.define('App.view.login.Login', {
 							Ext.Function.defer(function(){
 								me.currSite = records[0].data.site;
 								if(me.showSite){
-									me.formLogin.getComponent('site').setValue(this.currSite);
+									form.getComponent('site').setValue(me.currSite);
 								}
 							}, 100, this);
 						}
@@ -375,15 +389,18 @@ Ext.define('App.view.login.Login', {
 
 			langCmb.store.load({
 				callback: function(){
-//					me.siteLang = 'en_US';
-					me.formLogin.getComponent('lang').setValue(me.siteLang);
+					langCmb.setValue(me.siteLang);
+
 				}
 			});
 
 			Ext.Function.defer(function(){
-				me.formLogin.getComponent('authUser').inputEl.focus();
+				form.getComponent('authUser').inputEl.focus();
 			}, 200);
+
 		}
+
+		win.doLayout();
 	},
 	/**
 	 *  animated msg alert

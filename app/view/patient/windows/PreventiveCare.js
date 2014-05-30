@@ -64,7 +64,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 				autoCancel: false,
 				errorSummary: false,
 				clicksToEdit: 1,
-				formItems: [
+				items: [
 					{
 						title: i18n('general'),
 						xtype: 'container',

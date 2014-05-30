@@ -341,14 +341,14 @@ Ext.define('App.view.messages.Messages',
 	 */
 	onNewMessage : function()
 	{
-		var form = this.msgForm;
+		var form = this.msgForm,
+			record = Ext.create('App.model.messages.Messages',{
+				message_status : i18n('new'),
+				note_type : i18n('unassigned')
+			});
+		say(record);
 		form.getForm().reset();
-        form.getForm().loadRecord(
-            Ext.create('App.store.messages.Messages',{
-                message_status : i18n('new'),
-                note_type : i18n('unassigned')
-		    })
-        );
+        form.getForm().loadRecord(record);
 		this.action('new');
 	},
 

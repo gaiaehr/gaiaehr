@@ -126,7 +126,7 @@ Ext.define('App.view.administration.PreventiveCare',
 					canceledit : me.onServiceCancelEdit
 
 				},
-				formItems : [
+				items : [
 				{
 					/**
 					 * CVX Container

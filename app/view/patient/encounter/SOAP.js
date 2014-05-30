@@ -116,7 +116,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					clicksToMoveEditor: 1,
 					enabled: false,
 					enableRemove: true,
-					formItems: [
+					items: [
 						{
 							xtype: 'textarea',
 							height: 100,

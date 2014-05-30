@@ -18,19 +18,19 @@
 
 Ext.define('App.view.administration.HL7', {
 	extend: 'App.ux.RenderPanel',
-	requires:[
-		'App.ux.grid.Button',
+	requires: [
+		//		'App.ux.grid.Button',
 		'Ext.grid.plugin.RowEditing'
 	],
 	xtype: 'hl7serverspanel',
 	pageTitle: i18n('hl7'),
 	pageLayout: {
-		type:'vbox',
+		type: 'vbox',
 		align: 'stretch'
 	},
 	pageBody: [
 		{
-			xtype:'grid',
+			xtype: 'grid',
 			title: i18n('hl7_servers'),
 			store: this.sStore = Ext.create('App.store.administration.HL7Servers'),
 			itemId: 'hl7serversgrid',
@@ -39,7 +39,7 @@ Ext.define('App.view.administration.HL7', {
 			columnLines: true,
 			margin: '0 0 5 0',
 			padding: 0,
-			columns:[
+			columns: [
 				{
 					text: i18n('online'),
 					dataIndex: 'online',
@@ -74,34 +74,55 @@ Ext.define('App.view.administration.HL7', {
 					flex: 1
 				},
 				{
-					xtype:'gridbutton',
-					width: 120,
-					items:[
+					xtype: 'actioncolumn',
+					width: 50,
+					items: [
 						{
-							xtype:'button',
-							text: i18n('start'),
-							width: 50,
+							icon: 'resources/images/icons/icoDotGreen.png',
+							tooltip: i18n('start'),
 							margin: '0 5 0 0',
-							handler: function(record){
+							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.Current.getController('administration.HL7').serverStartHandler(record);
 							}
 						},
 						{
-							xtype:'button',
-							text: i18n('stop'),
-							width: 50,
-							handler: function(record){
+							icon: 'resources/images/icons/icoDotRed.png',
+							tooltip: i18n('stop'),
+							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.Current.getController('administration.HL7').serverStopHandler(record);
 							}
 						}
 					]
 				}
+				//				{
+				//					xtype:'gridbutton',
+				//					width: 120,
+				//					items:[
+				//						{
+				//							xtype:'button',
+				//							text: i18n('start'),
+				//							width: 50,
+				//							margin: '0 5 0 0',
+				//							handler: function(record){
+				//								App.Current.getController('administration.HL7').serverStartHandler(record);
+				//							}
+				//						},
+				//						{
+				//							xtype:'button',
+				//							text: i18n('stop'),
+				//							width: 50,
+				//							handler: function(record){
+				//								App.Current.getController('administration.HL7').serverStopHandler(record);
+				//							}
+				//						}
+				//					]
+				//				}
 			],
 			plugins: [
 				{
 					ptype: 'rowformediting',
 					clicksToEdit: 2,
-					formItems: [
+					items: [
 						{
 							xtype: 'container',
 							layout: {
@@ -113,7 +134,7 @@ Ext.define('App.view.administration.HL7', {
 									layout: 'anchor',
 									title: i18n('general'),
 									width: 300,
-									margin : '0 5 0 0',
+									margin: '0 5 0 0',
 									items: [
 										{
 											xtype: 'textfield',
@@ -140,7 +161,7 @@ Ext.define('App.view.administration.HL7', {
 									layout: 'anchor',
 									title: i18n('allow_ips'),
 									width: 200,
-									margin : '0 5 0 0',
+									margin: '0 5 0 0',
 									items: [
 										{
 											xtype: 'multitextfield',
@@ -154,12 +175,12 @@ Ext.define('App.view.administration.HL7', {
 									title: i18n('messages'),
 									layout: 'fit',
 									flex: 1,
-									items:[
+									items: [
 										{
 											xtype: 'checkboxgroup',
 											columns: 5,
 											vertical: true,
-											defaults:{
+											defaults: {
 												name: 'allow_messages',
 												uncheckedValue: null
 											},
@@ -264,17 +285,17 @@ Ext.define('App.view.administration.HL7', {
 				displayInfo: true,
 				displayMsg: 'Displaying {0} - {1} of {2}',
 				emptyMsg: 'No Servers to display',
-				items:[
+				items: [
 					'-',
 					{
 						text: i18n('add_server'),
-						iconCls:'icoAdd',
+						iconCls: 'icoAdd',
 						itemId: 'addHL7ServerBtn'
 					},
 					'-',
 					{
 						text: i18n('remove_server'),
-						iconCls:'icoDelete',
+						iconCls: 'icoDelete',
 						itemId: 'removeHL7ServerBtn',
 						disabled: true
 					},
@@ -283,7 +304,7 @@ Ext.define('App.view.administration.HL7', {
 			})
 		},
 		{
-			xtype:'grid',
+			xtype: 'grid',
 			title: i18n('hl7_clients'),
 			store: this.cStore = Ext.create('App.store.administration.HL7Clients'),
 			itemId: 'hl7clientsgrid',
@@ -291,7 +312,7 @@ Ext.define('App.view.administration.HL7', {
 			columnLines: true,
 			frame: true,
 			padding: 0,
-			columns:[
+			columns: [
 				{
 					text: i18n('active'),
 					dataIndex: 'active',
@@ -300,7 +321,7 @@ Ext.define('App.view.administration.HL7', {
 						return app.boolRenderer(v);
 					},
 					editor: {
-						xtype:'checkbox'
+						xtype: 'checkbox'
 					}
 				},
 				{
@@ -308,7 +329,7 @@ Ext.define('App.view.administration.HL7', {
 					dataIndex: 'facility',
 					flex: 1,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
@@ -316,7 +337,7 @@ Ext.define('App.view.administration.HL7', {
 					dataIndex: 'application_name',
 					flex: 1,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
@@ -324,7 +345,7 @@ Ext.define('App.view.administration.HL7', {
 					dataIndex: 'physical_address',
 					flex: 1,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
@@ -332,7 +353,7 @@ Ext.define('App.view.administration.HL7', {
 					dataIndex: 'address',
 					flex: 1,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
@@ -340,7 +361,7 @@ Ext.define('App.view.administration.HL7', {
 					dataIndex: 'port',
 					width: 70,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
@@ -348,7 +369,7 @@ Ext.define('App.view.administration.HL7', {
 					dataIndex: 'secret_key',
 					width: 200,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				}
 			],
@@ -363,17 +384,17 @@ Ext.define('App.view.administration.HL7', {
 				displayInfo: true,
 				displayMsg: 'Displaying {0} - {1} of {2}',
 				emptyMsg: 'No Clients to display',
-				items:[
+				items: [
 					'-',
 					{
 						text: i18n('add_client'),
-						iconCls:'icoAdd',
+						iconCls: 'icoAdd',
 						itemId: 'addHL7ClientBtn'
 					},
 					'-',
 					{
 						text: i18n('remove_client'),
-						iconCls:'icoDelete',
+						iconCls: 'icoDelete',
 						itemId: 'removeHL7ClientBtn',
 						disabled: true
 					},

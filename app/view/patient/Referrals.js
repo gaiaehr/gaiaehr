@@ -37,7 +37,7 @@ Ext.define('App.view.patient.Referrals', {
 		{
 			ptype: 'rowformediting',
 			clicksToEdit: 2,
-			formItems: [
+			items: [
 				{
 					xtype: 'container',
 					defaults: {

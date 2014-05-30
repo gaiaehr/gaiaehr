@@ -95,7 +95,7 @@ Ext.define('App.view.patient.Immunizations', {
 				autoCancel: false,
 				errorSummary: false,
 				clicksToEdit: 2,
-				formItems: [
+				items: [
 					{
 
 						title: 'general',

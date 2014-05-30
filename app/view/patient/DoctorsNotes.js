@@ -101,7 +101,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		{
 			ptype: 'rowformediting',
 			clicksToEdit: 2,
-			formItems: [
+			items: [
 				{
 					xtype: 'container',
 					layout: {

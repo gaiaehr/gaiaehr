@@ -106,7 +106,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 disableCaching: false,
                 paths: {
                     'Ext': 'lib/<?php print EXTJS ?>/src',
-                    'Ext.ux': 'app/ux/ux',
+                    'Ext.ux': 'lib/extjs-4.2.1/examples/ux',
                     'App': 'app',
                     'Modules': 'modules',
                     'Extensible': 'lib/extensible-1.5.1/src'

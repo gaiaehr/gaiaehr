@@ -64,7 +64,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 			plugins: [
 				{
 					ptype: 'rowformediting',
-					formItems: [
+					items: [
 						{
 							xtype: 'container',
 							layout: 'column',

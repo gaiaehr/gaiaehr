@@ -63,7 +63,7 @@ Ext.define('App.view.administration.Facilities', {
                 autoCancel: false,
                 errorSummary: false,
                 clicksToEdit: 1,
-                formItems: [
+                items: [
                     {
                         xtype: 'container',
                         layout: 'column',

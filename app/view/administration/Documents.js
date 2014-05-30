@@ -218,24 +218,43 @@ Ext.define('App.view.administration.Documents', {
 					dataIndex: 'token'
 				},
 				{
-					xtype:'gridbutton',
-					width: 35,
-					items:[
+					xtype: 'actioncolumn',
+					width: 50,
+					items: [
 						{
-							xtype:'button',
-							icon:'resources/images/icons/copy.png',
-							listeners:{
-								render:function(btn){
-									btn.btnEl.set({
-										'data-clipboard-text': btn.record.data.token
-									});
-									AppClipboard.clip(btn.btnEl.dom);
-								}
+							icon: 'resources/images/icons/copy.png',
+							tooltip: i18n('copy'),
+							margin: '0 5 0 0',
+							handler: function(grid, rowIndex, colIndex, item, e, record){
+
+
+//								btn.btnEl.set({
+//									'data-clipboard-text': btn.record.data.token
+//								});
+//								AppClipboard.clip(btn.btnEl.dom);
 							}
 						}
 					]
-
 				}
+//				{
+//					xtype:'gridbutton',
+//					width: 35,
+//					items:[
+//						{
+//							xtype:'button',
+//							icon:'resources/images/icons/copy.png',
+//							listeners:{
+//								render:function(btn){
+//									btn.btnEl.set({
+//										'data-clipboard-text': btn.record.data.token
+//									});
+//									AppClipboard.clip(btn.btnEl.dom);
+//								}
+//							}
+//						}
+//					]
+//
+//				}
 //				{
 //					dataIndex: 'token',
 //					width: 30,

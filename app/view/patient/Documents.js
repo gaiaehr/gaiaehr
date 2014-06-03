@@ -50,7 +50,6 @@ Ext.define('App.view.patient.Documents', {
 				}
 			],
 			itemId: 'patientDocumentGrid',
-			minWidth: 450,
 			store: this.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments', {
 				autoLoad: false,
 				remoteFilter: true,
@@ -143,7 +142,7 @@ Ext.define('App.view.patient.Documents', {
 		{
 			xtype: 'panel',
 			region: 'center',
-			flex: 2,
+			flex: 1,
 			layout: 'fit',
 			frame: true,
 			itemId: 'patientDocumentViewerPanel',

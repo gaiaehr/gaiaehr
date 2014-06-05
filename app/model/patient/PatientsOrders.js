@@ -74,30 +74,35 @@ Ext.define('App.model.patient.PatientsOrders', {
 			name: 'date_ordered',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',
-			comment: 'when the order was generated'
+			comment: 'when the order was generated',
+			index: true
 		},
 		{
 			name: 'date_collected',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',
-			comment: 'when the results were collected'
+			comment: 'when the results were collected',
+			index: true
 		},
 		{
 			name: 'priority',
 			type: 'string',
 			len: 25,
-			comment: 'order priority'
+			comment: 'order priority',
+			index: true
 		},
 		{
 			name: 'status',
 			type: 'string',
 			len: 25,
-			comment: 'order status'
+			comment: 'order status',
+			index: true
 		},
 		{
 			name: 'order_type',
 			type: 'string',
-			comment: 'rad || lab || cvx || rx'
+			comment: 'rad || lab',
+			index: true
 		},
 		{
 			name: 'note',

@@ -92,6 +92,11 @@ Ext.define('App.controller.Navigation', {
 		if(typeof callback == 'function') callback(true);
 	},
 
+
+	goTo: function(cls, callback, resetParams){
+		this.navigateTo(cls, callback, resetParams);
+	},
+
 	/**
 	 *
 	 * @param {object} model

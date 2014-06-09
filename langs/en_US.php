@@ -1359,4 +1359,6 @@ $LANG = array(
 	'cel_number'                            => 'Cel Number',
 	'fax_number'                            => 'Fax Number',
 	'codes'                                 => 'Codes',
+	'pending'                               => 'Pending',
+	'completed'                             => 'Completed',
 );

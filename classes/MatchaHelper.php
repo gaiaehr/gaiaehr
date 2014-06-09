@@ -81,6 +81,9 @@ class MatchaHelper extends Matcha {
 		MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
 		MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 	}
+	function __destruct(){
+//		self::$__conn = null;
+	}
 
 	/**
 	 * function storeAudit($saveParams = array()):

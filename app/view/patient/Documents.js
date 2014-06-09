@@ -55,7 +55,8 @@ Ext.define('App.view.patient.Documents', {
 				remoteFilter: true,
 				remoteSort: false,
 				autoSync: false,
-				pageSize: 200
+				pageSize: 200,
+				groupField: 'groupDate'
 			}),
 			columns: [
 				{
@@ -116,6 +117,7 @@ Ext.define('App.view.patient.Documents', {
 					text: i18n('date'),
 					enableToggle: true,
 					action: 'groupDate',
+					pressed: true,
 					toggleGroup: 'documentgridgroup'
 				},
 				{

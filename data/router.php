@@ -32,6 +32,7 @@ if(file_exists($conf)){
 require_once(ROOT . '/classes/MatchaHelper.php');
 include_once(ROOT . '/dataProvider/Modules.php');
 include_once(ROOT . '/dataProvider/ACL.php');
+include_once(ROOT . '/dataProvider/Globals.php');
 require ('config.php');
 
 if (isset($_SESSION['install']) && $_SESSION['install'] != true)

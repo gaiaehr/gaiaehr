@@ -34,6 +34,7 @@ class Matcha {
 	 * This would be a Sencha Model parsed by getSenchaModel method
 	 */
 	public static $Relation;
+
 	public static $currentRecord;
 	/**
 	 * @var int
@@ -70,32 +71,38 @@ class Matcha {
 	 */
 	static public function connect($databaseParameters = array()){
 		try{
-			// check for properties first.
-			if(!isset($databaseParameters['host']) && !isset($databaseParameters['name']) && !isset($databaseParameters['user']) && !isset($databaseParameters['pass']) && !isset($databaseParameters['app']))
-				throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
 
-			// Connect using regular PDO Matcha::connect Abstraction layer.
-			// but make only a connection, not to the database.
-			// and then the database
-			self::$__app = $databaseParameters['app'];
-			$host = (string)(isset($databaseParameters['host']) ? $databaseParameters['host'] : 'localhost');
-			$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
-			$dbName = (string)$databaseParameters['name'];
-			$dbUser = (string)$databaseParameters['user'];
-			$dbPass = (string)$databaseParameters['pass'];
-			self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
-				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-				PDO::ATTR_PERSISTENT => true
-			));
-			self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-			// check if the database exist.
-			self::__createDatabase($dbName);
-			self::$__conn->query('USE ' . $dbName . ';');
+			if(self::$__conn === null){
 
-			// set the encryption secret key if provided
-			if(isset($databaseParameters['key']))
-				self::$__secretKey = $databaseParameters['key'];
+				// check for properties first.
+				if(!isset($databaseParameters['host']) && !isset($databaseParameters['name']) && !isset($databaseParameters['user']) && !isset($databaseParameters['pass']) && !isset($databaseParameters['app']))
+					throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
+
+				// Connect using regular PDO Matcha::connect Abstraction layer.
+				// but make only a connection, not to the database.
+				// and then the database
+				self::$__app = $databaseParameters['app'];
+				$host = (string)(isset($databaseParameters['host']) ? $databaseParameters['host'] : 'localhost');
+				$port = (int)(isset($databaseParameters['port']) ? $databaseParameters['port'] : '3306');
+				$dbName = (string)$databaseParameters['name'];
+				$dbUser = (string)$databaseParameters['user'];
+				$dbPass = (string)$databaseParameters['pass'];
+
+				self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
+					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+					PDO::ATTR_PERSISTENT => true
+				));
+
+				self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+				// check if the database exist.
+				self::__createDatabase($dbName);
+				self::$__conn->query('USE ' . $dbName . ';');
+
+				// set the encryption secret key if provided
+				if(isset($databaseParameters['key']))
+					self::$__secretKey = $databaseParameters['key'];
+			}
 
 			return self::$__conn;
 		} catch(Exception $e){

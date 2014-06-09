@@ -192,9 +192,6 @@ Ext.define('App.view.login.Login', {
 			}]);
 		}
 
-
-		say(me.formLogin.items);
-
 		var windowItems = [
 			{
 				xtype: 'box',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
@@ -16,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class Globals {
 
 	/**
@@ -27,8 +27,9 @@ class Globals {
 	/**
 	 * @return array
 	 */
-	public static function getGlobals()	{
-        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
+	public static function getGlobals() {
+		if(self::$g == null)
+			self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		return self::$g->load()->all();
 	}
 
@@ -36,8 +37,9 @@ class Globals {
 	 * @param stdClass $params
 	 * @return stdClass
 	 */
-	public function updateGlobals($params)	{
-        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
+	public function updateGlobals($params) {
+		if(self::$g == null)
+			self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		$params = self::$g->save($params);
 		$this->setGlobals();
 		return $params;
@@ -47,9 +49,10 @@ class Globals {
 	 * @static
 	 * @return mixed
 	 */
-	public static function setGlobals()	{
+	public static function setGlobals() {
 		new MatchaHelper();
-        if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
+		if(self::$g == null)
+			self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		foreach(self::$g->load()->all() as $setting){
 			$_SESSION['globals'][$setting['gl_name']] = $setting['gl_value'];
 		}
@@ -61,13 +64,27 @@ class Globals {
 	/**
 	 * @return array
 	 */
-	public static function getGlobalsArray(){
-		if(self::$g == null) self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
+	public static function getGlobalsArray() {
+		if(self::$g == null)
+			self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		$gs = array();
 		foreach(self::$g->load()->all() AS $g){
 			$gs[$g['gl_name']] = $g['gl_value'];
 		}
 		return $gs;
+	}
+
+	/**
+	 * @param string $global
+	 * @return mix
+	 */
+	public static function getGlobal($global) {
+		if(!isset($_SESSION['globals'])){
+			self::setGlobals();
+			return self::getGlobal($global);
+		} else {
+			return isset($_SESSION['globals'][$global]) ? $_SESSION['globals'][$global] : false;
+		}
 	}
 
 }

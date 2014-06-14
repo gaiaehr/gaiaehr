@@ -45,6 +45,14 @@ class Facilities {
 	}
 
 	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function getFacility($params){
+		return $this->f->load($params)->one();
+	}
+
+	/**
 	 * @param stdClass $params
 	 * @return array
 	 */
@@ -80,7 +88,7 @@ class Facilities {
 	 * @param bool $getData
 	 * @return mixed
 	 */
-	public function getFacility($getData = false){
+	public function getCurrentFacility($getData = false){
 		if($getData) return $this->f->load($_SESSION['user']['facility'])->one();
 		return $_SESSION['user']['facility'];
 	}

@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.define('App.ux.RenderPanel', {
 	extend: 'Ext.container.Container',
 	alias: 'widget.renderpanel',
@@ -41,6 +42,7 @@ Ext.define('App.ux.RenderPanel', {
 					cls: 'RenderPanel-header',
 					itemId: 'RenderPanel-header',
 					region: 'north',
+					layout: 'hbox',
 					height: 30
 				}),
 				{
@@ -56,7 +58,7 @@ Ext.define('App.ux.RenderPanel', {
 							frame: true,
 							border: false,
 							itemId: 'pageLayout',
-							defaults: {frame: false, border: false, autoScroll: true},
+							defaults: { frame: false, border: false, autoScroll: true },
 							layout: me.pageLayout,
 							items: me.pageBody,
 							tbar: me.pageTBar,
@@ -66,26 +68,23 @@ Ext.define('App.ux.RenderPanel', {
 					]
 				}
 			]
-		}, this);
+		});
 
 		me.pageTitleDiv = me.mainHeader.add(
 			Ext.widget('container', {
 				cls: 'panel_title',
-				style: 'float:left',
 				html: me.pageTitle
 			})
 		);
 
 		me.pageReadOnlyDiv = me.mainHeader.add(
-			Ext.widget('container', {
-				style: 'float:left'
-			})
+			Ext.widget('container') // placeholder
 		);
 
 		if(me.showRating){
 			me.pageRankingDiv = me.mainHeader.add(
 				Ext.widget('ratingField', {
-					style: 'float:left',
+					flex: 1,
 					listeners: {
 						scope: me,
 						click: function(field, val){
@@ -100,7 +99,8 @@ Ext.define('App.ux.RenderPanel', {
 
 		me.pageTimerDiv = me.mainHeader.add(
 			Ext.widget('container', {
-				style: 'float:right'
+				style: 'float:right',
+				width: 185
 			})
 		);
 

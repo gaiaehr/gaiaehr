@@ -696,6 +696,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Results',
 	                'patient.RxOrders',
 	                'patient.SocialHistory',
+	                'patient.Vitals',
 
 	                'patient.Summary',
                     'patient.encounter.SOAP'

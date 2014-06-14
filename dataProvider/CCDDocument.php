@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//print 'hello';
+//exit;
+
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
@@ -164,7 +167,7 @@ class CCDDocument {
 		$this->Medical = new Medical();
 		$this->Facilities = new Facilities();
 		$this->CombosData = new CombosData();
-		$this->facility = $this->Facilities->getFacility(true);
+		$this->facility = $this->Facilities->getCurrentFacility(true);
 	}
 
 	/**

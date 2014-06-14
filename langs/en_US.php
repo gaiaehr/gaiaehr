@@ -1361,4 +1361,5 @@ $LANG = array(
 	'codes'                                 => 'Codes',
 	'pending'                               => 'Pending',
 	'completed'                             => 'Completed',
+	'globals'                               => 'Globals',
 );

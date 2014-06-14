@@ -131,77 +131,8 @@ Ext.define('App.view.patient.Encounter', {
 		);
 
 		if(me.enableVitals && acl['access_patient_vitals']){
-			me.vitalsPanel = me.encounterTabPanel.add(
-				Ext.create('Ext.panel.Panel', {
-					title: i18n('vitals'),
-					action: 'encounter',
-					cls: 'vitals-panel',
-					bodyPadding: '5 10',
-					overflowY: 'auto',
-					frame: true,
-					bodyStyle: 'background-color:white',
-					layout: {
-						type: 'hbox',
-						stretch: true
-					},
-					items: [
-						{
-							xtype: 'form',
-							width: 313,
-							margin: 0,
-							border: false,
-							layout: 'anchor',
-							fieldDefaults: {
-								msgTarget: 'side',
-								labelAlign: 'right'
-							},
-							buttons: [
-								{
-									text: i18n('reset'),
-									width: 40,
-									scope: me,
-									handler: me.resetVitalsForm
-								},
-								{
-									text: i18n('save'),
-									action: 'vitals',
-									width: 40,
-									scope: me,
-									//itemId: 'encounterRecordAdd',
-									handler: me.onEncounterUpdate
-								},
-								{
-									text: i18n('sign'),
-									width: 40,
-									disabled: true,
-									action: 'signBtn',
-									scope: me,
-									itemId: 'encounterRecordAdd',
-									handler: me.onVitalsSign
-								}
-							]
-						},
-						{
-							xtype: 'vitalsdataview',
-							flex: 1,
-							autoScroll: true,
-							listeners: {
-								scope: me,
-								itemdblclick: me.onVitalsClick
-							}
-						}
-					],
-					dockedItems: {
-						xtype: 'toolbar',
-						dock: 'top',
-						items: ['->', {
-							text: i18n('vector_charts'),
-							iconCls: 'icoChart',
-							scope: me,
-							handler: me.onChartWindowShow
-						}]
-					}
-				})
+			me.encounterTabPanel.add(
+				Ext.create('App.view.patient.Vitals')
 			);
 		}
 
@@ -738,12 +669,23 @@ Ext.define('App.view.patient.Encounter', {
 					}
 				}
 
-				if(me.vitalsPanel){
-					vitals = me.vitalsPanel.down('vitalsdataview');
-					me.resetVitalsForm();
-					vitals.store = me.encounter.vitalsStore;
-					vitals.refresh();
-				}
+//				if(me.vitalsPanel){
+//					vitals = me.vitalsPanel.down('vitalsdataview');
+//					me.resetVitalsForm();
+//					vitals.store = vitals.dataSource = me.encounter.vitalsStore;
+//
+//					// Bind to the data  source. Cache it by the property name "dataSource".
+//					// The store property is public and must reference the provided store.
+//					vitals.bindStore(vitals.dataSource, true, 'dataSource');
+//					if (!vitals.all) {
+//						vitals.all = new Ext.CompositeElementLite();
+//					}
+//
+//					vitals.refresh();
+//
+//					say(vitals);
+//
+//				}
 				if(me.reviewSysPanel){
 					store = me.encounter.reviewofsystems();
 					store.on('write', me.getProgressNote, me);

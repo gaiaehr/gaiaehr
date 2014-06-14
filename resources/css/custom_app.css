@@ -7,16 +7,44 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+
+.latest-vitals-items {
+    background-color: #66ccff;
+    border-radius: 2px 50px;
+    width: 120px;
+}
+
+.latest-vitals-items .title, .latest-vitals-items .extra {
+    font-size: 10px;
+    color: #ffffff;
+    margin: 5px 10px;
+    padding: 0;
+}
+.latest-vitals-items .extra {
+    text-align: right;
+}
+.latest-vitals-items .value {
+    font-size: 25px;
+    color: #ffffff;
+    margin: 11px 0;
+    padding: 0 5px;
+    text-align: center;
+}
+.latest-vitals-items .trend {
+    margin: 0 0 5px 5px
+}
+
+
 .whiteBackgroundFiledSet .x-fieldset-body{
     background-color: white;
     border: solid 1px #ccc !important;
 }
 .icon32Round {
-    width: 32px;
-    height: 32px;
-    border-radius: 16px;
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
     box-shadow: 0 0 2px rgba(0, 0, 0, .8);
     -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .8);
     -moz-box-shadow: 0 0 2px rgba(0, 0, 0, .8);

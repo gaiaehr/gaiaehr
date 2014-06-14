@@ -62,7 +62,7 @@
 }
 
 .x-tree-icon-leaf {
-	background-image: url(../images/icons/list.png) !important;
+	background-image: url(../images/icons/list.png);
 }
 
 .topheader .x-panel-body {

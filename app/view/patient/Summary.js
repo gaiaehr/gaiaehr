@@ -23,7 +23,8 @@ Ext.define('App.view.patient.Summary', {
 	requires: [
 		'Ext.XTemplate',
 		'Ext.ux.IFrame',
-		'App.view.patient.Documents'
+		'App.view.patient.Documents',
+		'App.ux.ManagedIframe'
 	],
 	showRating: true,
 	pid: null,
@@ -426,17 +427,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_vitals')){
 			me.tabPanel.add({
-				xtype: 'panel',
-				title: i18n('vitals'),
-				autoScroll: true,
-				bodyPadding: 0,
-				itemId: 'PatientSummaryVitalsPanel',
-				items: {
-					xtype: 'vitalsdataview',
-					store: Ext.create('App.store.patient.Vitals', {
-						autoLoad: false
-					})
-				}
+				xtype: 'vitalspanel'
 			})
 		}
 
@@ -605,45 +596,36 @@ Ext.define('App.view.patient.Summary', {
 			me.reportPanel = me.tabPanel.add({
 				xtype: 'panel',
 				title: i18n('ccd_reports'),
+				layout: 'fit',
+				items:[
+					{
+						xtype: 'miframe',
+						style: 'background-color:white',
+						autoMask: false,
+						itemId: 'patientDocumentViewerFrame'
+					}
+				],
 				tbar: [
 					{
-						xtype: 'container',
-						layout: 'vbox',
-						defaultType: 'button',
-						items: [
-							{
-								text: i18n('view_ccr'),
-								margin: '0 0 5 0',
-								handler: function(){
-									me.reportPanel.remove(me.miframe);
-									me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-										src: 'dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token
-									}));
-									// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-									app.AuditLog('Patient summary CCD viewed');
-								}
-							}
-						]
+						xtype: 'button',
+						text: i18n('view_ccr'),
+						margin: '0 0 5 0',
+						handler: function(){
+							me.reportPanel.down('miframe').setSrc('dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token);
+							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+							app.AuditLog('Patient summary CCD viewed');
+						}
+
 					},
 					'-',
 					{
-						xtype: 'container',
-						layout: 'vbox',
-						defaultType: 'button',
-						items: [
-							{
-								text: i18n('export_ccr'),
-								margin: '0 0 5 0',
-								handler: function(){
-									me.reportPanel.remove(me.miframe);
-									me.reportPanel.add(me.miframe = Ext.create('App.ux.ManagedIframe', {
-										src: globals.url + '/dataProvider/CCDDocument.php?action=export&pid=' + me.pid + '&token=' + app.user.token
-									}));
-									// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-									app.AuditLog('Patient summary CCD exported');
-								}
-							}
-						]
+						text: i18n('export_ccr'),
+						margin: '0 0 5 0',
+						handler: function(){
+							me.reportPanel.down('miframe').setSrc('dataProvider/CCDDocument.php?action=export&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token);
+							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+							app.AuditLog('Patient summary CCD exported');
+						}
 					},
 					'-',
 					{

@@ -476,7 +476,7 @@
 			} catch (gdEx) {
 				doc = false; // signifies probable access restriction
 			}
-			return Ext.isDocument(doc, assertAccess !== false) ? doc : false;
+			return  doc || false;
 		},
 
 		/**
@@ -785,7 +785,7 @@
 						al(Ext.isIE ?   doc.body || doc.documentElement  : w, 'blur', p);
 						al(w, 'resize', p);
 						al(w, 'beforeunload', p);
-						al(Ext.supports.Event('scroll', doc) ? doc : w, 'scroll', p);
+						//al(Ext.supports.Event('scroll', doc) ? doc : w, 'scroll', p);
 					}
 
 					// doc && (this.CSS = new Ext.ux.ManagedIFrame.CSS(doc));
@@ -801,7 +801,7 @@
 		 * Event Listeners set.
 		 */
 		domWritable : function() {
-			return !!this._windowContext && !!Ext.isDocument(this.getFrameDocument(),true); //test access
+			return !!this._windowContext && !!this.getFrameDocument(); //test access
 		},
 
 
@@ -825,12 +825,12 @@
 					rl(Ext.isIE ?   doc.body || doc.documentElement  : w, 'blur',  p);
 					rl(w, 'resize', p);
 					rl(w, 'beforeunload', p);
-					rl(Ext.supports.Event('scroll', doc) ? doc : w, 'scroll', p);
+					//rl(Ext.supports.Event('scroll', doc) ? doc : w, 'scroll', p);
 				}
 
 			}
 			me._flyweights = {};
-			doc && Element.clearDocumentCache(doc.id);
+			//doc && Element.clearDocumentCache(doc.id);
 
 			Ext.destroy(me.CSS);
 			delete me.CSS;

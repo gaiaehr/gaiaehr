@@ -31,7 +31,7 @@ class DocumentPDF extends TCPDF {
 		$x = 70;
 
 		$f = new Facilities();
-		$facility = $f->getFacility(true);
+		$facility = $f->getCurrentFacility(true);
 		$address1 = $facility['name'];
 		$address2 = $facility['street'];
 		$address3 = $facility['city'] . ', ' . $facility['state'] . ' ' . $facility['postal_code'];

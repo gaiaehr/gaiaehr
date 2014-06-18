@@ -67,6 +67,11 @@ Ext.define('App.view.patient.RadOrders', {
 			]
 		},
 		{
+			header: i18n('order#'),
+			width: 60,
+			dataIndex: 'id'
+		},
+		{
 			header: i18n('status'),
 			width: 75,
 			dataIndex: 'status',

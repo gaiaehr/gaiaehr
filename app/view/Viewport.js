@@ -1324,8 +1324,8 @@ Ext.define('App.view.Viewport', {
             icon = Ext.Msg.INFO;
         }
 
-	    Ext.Msg.width = null;
-	    Ext.Msg.height = null;
+	    Ext.Msg.width = 1000;
+	    Ext.Msg.height = 600;
 	    Ext.Msg.maxHeight = 600;
 	    Ext.Msg.maxWidth = 1000;
         Ext.Msg.show({

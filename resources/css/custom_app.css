@@ -8,10 +8,17 @@
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+.unsignedVital .x-grid-cell {
+    background-color: #fbffdb;
+}
+.unsignedVital.x-grid-row-selected .x-grid-cell {
+    background-color: #f8ffb3;
+}
+
 .latest-vitals-items {
     background-color: #66ccff;
-    border-radius: 2px 50px;
-    width: 120px;
+    border-radius: 2px 55px;
+    border: solid 1px #999;
 }
 
 .latest-vitals-items .title, .latest-vitals-items .extra {
@@ -27,7 +34,7 @@
     font-size: 25px;
     color: #ffffff;
     margin: 11px 0;
-    padding: 0 5px;
+    padding: 0 10px;
     text-align: center;
 }
 .latest-vitals-items .trend {
@@ -354,12 +361,22 @@
 	background-color: yellow;
 }
 
+.search-item {
+	font-size: 12px;
+    border-bottom: solid 1px #eeeeee;
+}
+.search-item h3 {
+	font-size: 12px;
+    font-weight: bold;
+    margin: 0;
+}
+
 .x-livesearch-match {
 	background-color: yellow;
 }
 
 .x-grid-icon-padding {
-	padding: 0 5px;
+	/*padding: 0 5px;*/
 }
 
 .view_empty_text {
@@ -409,19 +426,22 @@
 	white-space: nowrap;
 }
 
-/* Mitos Loading Mask */
+ /*Mitos Loading Mask*/
 .mitos-mask {
 	z-index: 300000;
 }
 
 .mitos-mask-msg {
 	z-index: 300001;
-	background: url(../images/loading.gif) no-repeat white center top;
 	left: 45%;
 	top: 40%;
 }
 
-.mitos-mask-msg div {
+.mitos-mask-msg .x-mask-msg-inner {
+	background: url(../images/loading.gif) no-repeat white center top !important;
+}
+
+.mitos-mask-msg .x-mask-msg-text {
 	background-color: transparent;
 	background-position: 5px 120px;
 	padding: 120px 10px 10px 26px;

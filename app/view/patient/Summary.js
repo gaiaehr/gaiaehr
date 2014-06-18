@@ -425,11 +425,11 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(a('access_patient_vitals')){
-			me.tabPanel.add({
-				xtype: 'vitalspanel'
-			})
-		}
+//		if(a('access_patient_vitals')){
+//			me.tabPanel.add({
+//				xtype: 'vitalspanel'
+//			})
+//		}
 
 		if(a('access_patient_history')){
 			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));

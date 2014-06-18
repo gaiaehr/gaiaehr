@@ -76,25 +76,37 @@ Ext.define('App.model.patient.Vitals', {
 			name: 'pulse',
 			type: 'int',
 			useNull: true,
-			len: 10
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
 		},
 		{
 			name: 'respiration',
 			type: 'int',
 			useNull: true,
-			len: 10
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
 		},
 		{
 			name: 'temp_f',
 			type: 'float',
 			useNull: true,
-			len: 10
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
 		},
 		{
 			name: 'temp_c',
 			type: 'float',
 			useNull: true,
-			len: 10
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
 		},
 		{
 			name: 'temp_location',
@@ -135,7 +147,10 @@ Ext.define('App.model.patient.Vitals', {
 			name: 'bmi',
 			type: 'float',
 			useNull: true,
-			len: 10
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
 		},
 		{
 			name: 'bmi_status',
@@ -169,6 +184,14 @@ Ext.define('App.model.patient.Vitals', {
 			name: 'authorized_by',
 			type: 'string',
 			store: false
+		},
+		{
+			name: 'group_date',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return Ext.Date.format(record.data.date, 'Y-m-d');
+			}
 		}
 	],
 	proxy: {

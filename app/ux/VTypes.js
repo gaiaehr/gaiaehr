@@ -186,7 +186,34 @@ Ext.apply(Ext.form.VTypes,{
 	strength: function(val, field) {
 		return field.score > field.strength;
 	},
-	strengthText: "Password is not strong enough"
+	strengthText: "Password is not strong enough",
+
+
+	// ---------------------------------------
+	// Validate for an valid Phone Number
+	// ---------------------------------------
+	numeric : function(val, field)
+	{
+		var rgx = /^[\d]*$/;
+		return val.match(rgx);
+	},
+	numericText : i18n('please_enter_a_valid_number'),
+
+
+	numericWithSlash : function(val, field)
+	{
+		var rgx = /^[\d\/.]*$/;
+		return val.match(rgx);
+	},
+	numericWithSlashText : i18n('please_enter_a_valid_number'),
+
+
+	numericWithDecimal : function(val, field)
+	{
+		var rgx = /^[\d.]*$/;
+		return val.match(rgx);
+	},
+	numericWithDecimalText : i18n('please_enter_a_valid_number')
 
 });
 

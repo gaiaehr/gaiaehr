@@ -18,20 +18,477 @@
 
 Ext.define('App.controller.patient.Vitals', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
 	refs: [
+		{
+			ref: 'VitalsPanel',
+			selector: 'vitalspanel'
+		},
+		{
+			ref: 'VitalsBlocksPanel',
+			selector: 'vitalspanel #vitalsBlocks'
+		},
+		{
+			ref: 'VitalsBlocksPanel',
+			selector: 'vitalspanel #vitalsBlocks'
+		},
+		{
+			ref: 'VitalsHistoryGrid',
+			selector: 'vitalspanel #historyGrid'
+		},
+		{
+			ref: 'VitalsAddBtn',
+			selector: 'vitalspanel #vitalAddBtn'
+		},
+		{
+			ref: 'VitalSignBtn',
+			selector: 'vitalspanel #vitalSignBtn'
+		},
+		//
+		{
+			ref: 'VitalTempFField',
+			selector: '#vitalTempFField'
+		},
+		{
+			ref: 'VitalTempCField',
+			selector: '#vitalTempCField'
+		},
+		{
+			ref: 'VitalHeightInField',
+			selector: '#vitalHeightInField'
+		},
+		{
+			ref: 'VitalHeightCmField',
+			selector: '#vitalHeightCmField'
+		},
+		{
+			ref: 'VitalWeightKgField',
+			selector: '#vitalWeightKgField'
+		},
+		{
+			ref: 'VitalWeightLbsField',
+			selector: '#vitalWeightLbsField'
+		},
 
+		// blocks
+		{
+			ref: 'BpBlock',
+			selector: 'vitalspanel #bpBlock'
+		},
+		{
+			ref: 'TempBlock',
+			selector: 'vitalspanel #tempBlock'
+		},
+		{
+			ref: 'WeighBlock',
+			selector: 'vitalspanel #weighBlock'
+		},
+		{
+			ref: 'HeightBlock',
+			selector: 'vitalspanel #heightBlock'
+		},
+		{
+			ref: 'BmiBlock',
+			selector: 'vitalspanel #bmiBlock'
+		},
+		{
+			ref: 'NotesBlock',
+			selector: 'vitalspanel #notesBlock'
+		}
 	],
 
 	init: function(){
 		var me = this;
 
-
 		me.control({
+			'viewport': {
+				beforeencounterload: me.onAppBeforeEncounterLoad
+			},
+			'vitalspanel #historyGrid': {
+				selectionchange: me.onHistoryGridSelectionChange,
+				beforeselect: me.onHistoryGridBeforeSelect,
+				beforeedit: me.onHistoryGridBeforeEdit,
+				validateedit: me.onHistoryGridValidEdit,
+				edit: me.onHistoryGridEdit
+			},
+			'vitalspanel #vitalAddBtn': {
+				click: me.onVitalAddBtnClick
+			},
+			'vitalspanel #vitalSignBtn': {
+				click: me.onVitalSignBtnClick
+			},
 
+
+			/** conversions **/
+			'#vitalTempFField':{
+				keyup:me.onVitalTempFFieldKeyUp
+			},
+			'#vitalTempCField':{
+				keyup:me.onVitalTempCFieldKeyUp
+			},
+			'#vitalHeightInField':{
+				keyup:me.onVitalHeightInFieldKeyUp
+			},
+			'#vitalHeightCmField':{
+				keyup:me.onVitalHeightCmFieldKeyUp
+			},
+			'#vitalWeightLbsField':{
+				keyup:me.onVitalWeightLbsFieldKeyUp
+			},
+			'#vitalWeightKgField':{
+				keyup:me.onVitalWeightKgFieldKeyUp
+			}
 		});
+	},
+
+	onAppBeforeEncounterLoad: function(record){
+		if(this.getVitalsHistoryGrid()){
+			if(record.vitalsStore){
+				this.doReconfigureGrid(record.vitalsStore);
+			}else{
+				this.doReconfigureGrid(Ext.getStore('ext-empty-store'));
+			}
+
+		}
+	},
+
+	onHistoryGridSelectionChange: function(grid, records){
+		var me = this,
+			btn = me.getVitalSignBtn();
+
+		this.doUpdateBlocks(records);
+		if(records.length == 0 || records[0].data.auth_uid > 0){
+			btn.disable();
+		}else{
+			btn.enable();
+		}
+	},
+
+	onHistoryGridBeforeSelect: function(sm, record){
+		var selected = sm.getSelection().length;
+
+		if(selected > 0 && record.data.auth_uid > 0){
+			say('entre false');
+			app.msg(i18n('oops'),i18n('multi_select_signed_records_not_authorized'), true);
+			return false;
+		}
+
+	},
+
+	onHistoryGridValidEdit: function(plugin, context){
+		var me = this,
+			form = plugin.editor.getForm(),
+			w = me.isMetric() ? form.findField('weight_kg').getValue() : form.findField('weight_lbs').getValue(),
+			h = me.isMetric() ? form.findField('height_cm').getValue() : form.findField('height_in').getValue(),
+			bmi = me.bmi(w, h),
+			bmiStatus = me.bmiStatus(bmi);
+
+		context.record.set({
+			bmi: bmi,
+			bmi_status: bmiStatus
+		});
+	},
+
+	onHistoryGridEdit: function(plugin, context){
+		this.doUpdateBlocks([context.record])
+	},
+
+	onHistoryGridBeforeEdit: function(plugin, context){
+		if(context.record.data.auth_uid != 0){
+			app.msg(i18n('oops'), i18n('this_record_can_not_be_modified_because_it_has_been_signed_by') + ' ' + context.record.data.authorized_by, true);
+			return false;
+		}
+		return true;
+	},
+
+	onVitalAddBtnClick: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.getStore(),
+			records;
+
+		grid.editingPlugin.cancelEdit();
+		records = store.add({
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			uid: app.user.id,
+			date: new Date()
+		});
+		grid.editingPlugin.startEdit(records[0], 1);
+	},
+
+	onVitalSignBtnClick: function(){
+		var me = this,
+			grid = me.getVitalsHistoryGrid(),
+			sm = grid.getSelectionModel(),
+			records = sm.getSelection();
+
+		app.fireEvent('beforevitalssigned', records);
+
+		app.passwordVerificationWin(function(btn, password){
+			if(btn == 'ok'){
+				User.verifyUserPass(password, function(provider, response){
+					if(response.result){
+						for(var i = 0; i < records.length; i++){
+							records[i].set({
+								auth_uid: app.user.id
+							});
+						}
+						records[0].store.sync({
+							callback: function(){
+								app.msg('Sweet!', i18n('vitals_signed'));
+//								me.getProgressNote();
+								app.AuditLog('Patient vitals authorized');
+
+								app.fireEvent('vitalssigned', records);
+							}
+						});
+					}else{
+						Ext.Msg.show({
+							title: 'Oops!',
+							msg: i18n('incorrect_password'),
+							buttons: Ext.Msg.OKCANCEL,
+							icon: Ext.Msg.ERROR,
+							fn: function(btn){
+								if(btn == 'ok'){
+									me.onVitalSignBtnClick();
+								}
+							}
+						});
+					}
+				});
+			}
+		});
+
+	},
+
+	doUpdateBlocks: function(records){
+		if(records.length > 0){
+			this.getBpBlock().update(this.getBlockTemplate('bp', records[0]));
+			this.getTempBlock().update(this.getBlockTemplate('temp_f', records[0]));
+			this.getWeighBlock().update(this.getBlockTemplate('weight_lbs', records[0]));
+			this.getHeightBlock().update(this.getBlockTemplate('height_in', records[0]));
+			this.getBmiBlock().update(this.getBlockTemplate('bmi', records[0]));
+			this.getNotesBlock().update(this.getBlockTemplate('other_notes', records[0]));
+		}else{
+			this.getBpBlock().update(this.getBlockTemplate('bp', false));
+			this.getTempBlock().update(this.getBlockTemplate('temp_f', false));
+			this.getWeighBlock().update(this.getBlockTemplate('weight_lbs', false));
+			this.getHeightBlock().update(this.getBlockTemplate('height_in', false));
+			this.getBmiBlock().update(this.getBlockTemplate('bmi', false));
+			this.getNotesBlock().update(this.getBlockTemplate('other_notes', false));
+		}
+	},
+
+	getBlockTemplate: function(property, record){
+		var title = '',
+			value = '',
+			extra = '',
+			symbol = '',
+			align = 'center';
+
+		if(record !== false){
+			if(property == 'bp'){
+				title = i18n(property);
+				value = (record.data.bp_systolic + '/' + record.data.bp_diastolic);
+				value = value == 'null/null' || value == '/' ? '--/--' : value;
+				extra = i18n('systolic') + '/' + i18n('diastolic');
+
+			}else if(property == 'temp_c' || property == 'temp_f'){
+				title = i18n('temp');
+				symbol = property == 'temp_c' ? '&deg;C' : '&deg;F';
+				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
+				extra = record.data.temp_location == '' ? '--' : record.data.temp_location;
+
+			}else if(property == 'weight_lbs' || property == 'weight_kg'){
+				title = i18n('weight');
+				//				symbol = property == 'weight_lbs' ? ' lbs' : ' kg';
+				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
+				extra = property == 'weight_lbs' ? 'lbs/oz' : 'Kg';
+
+			}else if(property == 'height_in' || property == 'height_cm'){
+				title = i18n('height');
+				symbol = property == 'height_in' ? ' in' : ' cm';
+				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
+
+			}else if(property == 'bmi'){
+				title = i18n(property);
+				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
+				extra = record.data.bmi_status == '' ? '--' : record.data.bmi_status;
+
+			}else if(property == 'other_notes'){
+				title = i18n('notes');
+				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
+				align = 'left'
+			}
+		}else{
+			if(property == 'temp_c' || property == 'temp_f'){
+				title = i18n('temp');
+			}else if(property == 'weight_lbs' || property == 'weight_kg'){
+				title = i18n('weight');
+			}else if(property == 'height_in' || property == 'height_cm'){
+				title = i18n('height');
+			}else if(property == 'other_notes'){
+				title = i18n('notes');
+				align = 'left'
+			}else{
+				title = i18n(property);
+			}
+			value = property == 'bp' ? '--/--' : '--';
+			extra = '--';
+		}
+
+		return '<p class="title">' + title + '</p><p class="value" style="text-align: ' + align + '">' + value + '</p><p class="extra">' + extra + '</p>';
+	},
+
+	doReconfigureGrid: function(store){
+		var me = this;
+		store.sort([
+			{
+				property: 'date',
+				direction: 'DESC'
+			}
+		]);
+		store.on('write', me.onVitalStoreWrite, me);
+		me.getVitalsHistoryGrid().reconfigure(store);
+		me.getVitalsHistoryGrid().getSelectionModel().select(0);
+	},
+
+	onVitalStoreWrite:function(store, operation, e){
+		app.fireEvent('vitalwrite', store, operation, e);
+	},
+
+	onVitalTempFFieldKeyUp:function(field){
+		field.up('form').getForm().getRecord().set({temp_c: this.fc(field.getValue())});
+	},
+
+	onVitalTempCFieldKeyUp:function(field){
+		field.up('form').getForm().getRecord().set({temp_f: this.cf(field.getValue())});
+	},
+
+	onVitalHeightInFieldKeyUp:function(field){
+		field.up('form').getForm().getRecord().set({height_cm: this.incm(field.getValue())});
+	},
+
+	onVitalHeightCmFieldKeyUp:function(field){
+		field.up('form').getForm().getRecord().set({height_in: this.cmin(field.getValue())});
+	},
+
+	onVitalWeightLbsFieldKeyUp:function(field){
+		field.up('form').getForm().getRecord().set({weight_kg: this.lbskg(field.getValue())});
+	},
+
+	onVitalWeightKgFieldKeyUp:function(field){
+		field.up('form').getForm().getRecord().set({weight_lbs: this.kglbs(field.getValue())});
+	},
+
+
+	/** Conversions **/
+
+	/**
+	 * Convert Celsius to Fahrenheit
+	 * @param v
+	 */
+	cf: function(v){
+		return Ext.util.Format.round((9 * v / 5 + 32), 1);
+	},
+
+	/**
+	 * Convert Fahrenheit to Celsius
+	 * @param v
+	 */
+	fc: function(v){
+		return Ext.util.Format.round(((v - 32) * 5 / 9), 1);
+	},
+
+	/**
+	 * Convert Lbs to Kg
+	 * @param v
+	 */
+	lbskg: function(v){
+		var lbs = v[0] || 0,
+			oz = v[1] || 0,
+			kg = 0,
+			res;
+		if(lbs > 0) kg = kg + (lbs / 2.2046);
+		if(oz > 0) kg = kg + (oz / 35.274);
+		return Ext.util.Format.round(kg, 1);
+	},
+
+	/**
+	 * Convert Kg to Lbs
+	 * @param v
+	 */
+	kglbs: function(v){
+		return Ext.util.Format.round((v * 2.2046), 1);
+	},
+
+	/**
+	 * Convert Inches to Centimeter
+	 * @param v
+	 */
+	incm: function(v){
+		return Math.floor(v * 2.54);
+	},
+
+	/**
+	 * Convert Centimeter to Inches
+	 * @param v
+	 */
+	cmin: function(v){
+		return  Ext.util.Format.round((v / 2.54), 0);
+	},
+
+	/**
+	 * Get BMI from weight and height
+	 * @param weight
+	 * @param height
+	 * @returns {*}
+	 */
+	bmi: function(weight, height){
+		var bmi = '',
+			foo = weight.split('/');
+
+		if(foo.length > 1){
+			weight = eval(foo[0]) + (foo[1] / 16);
+		}
+
+		if(weight > 0 && height > 0){
+			if(!this.isMetric()){
+				bmi = weight / (height * height) * 703;
+			}else{
+				bmi = weight / ((height / 100) * (height / 100));
+			}
+		}
+
+		return bmi.toFixed(1);
+	},
+
+	bmiStatus:function(bmi){
+		var status = '';
+		if(bmi < 15){
+			status = i18n('very_severely_underweight')
+		}else if(bmi >= 15 && bmi < 16){
+			status = i18n('severely_underweight')
+		}else if(bmi >= 16 && bmi < 18.5){
+			status = i18n('underweight')
+		}else if(bmi >= 18.5 && bmi < 25){
+			status = i18n('normal')
+		}else if(bmi >= 25 && bmi < 30){
+			status = i18n('overweight')
+		}else if(bmi >= 30 && bmi < 35){
+			status = i18n('obese_class_1')
+		}else if(bmi >= 35 && bmi < 40){
+			status = i18n('obese_class_2')
+		}else if(bmi >= 40){
+			status = i18n('obese_class_3')
+		}
+		return status;
+	},
+
+	/**
+	 * return true if units of measurement is metric
+	 */
+	isMetric:function(){
+		return g('units_of_measurement') == 'metric';
 	}
 
 });

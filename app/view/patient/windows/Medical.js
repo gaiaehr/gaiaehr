@@ -20,7 +20,6 @@ Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
 	title: i18n('medical_window'),
 	itemId: 'MedicalWindow',
-	layout: 'fit',
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
@@ -45,7 +44,7 @@ Ext.define('App.view.patient.windows.Medical', {
 				plain: true,
 				margin: 5,
 				height: Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600,
-				width: Ext.getBody().getWidth() < 1050 ? (Ext.getBody().getWidth() - 50) : 1100,
+				width: Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
 				items:[
 					{
 						xtype:'patientimmunizationspanel',
@@ -114,7 +113,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 	onMedicalWinShow: function(){
 		var p = this.down('tabpanel'),
-			w = Ext.getBody().getWidth() < 1150 ? (Ext.getBody().getWidth() - 50) : 1100,
+			w = Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
 			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
 		p.setSize(w, h);
 		this.alignTo(Ext.getBody(), 'c-c');

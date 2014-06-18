@@ -131,7 +131,7 @@ Ext.define('App.view.patient.Encounter', {
 		);
 
 		if(me.enableVitals && acl['access_patient_vitals']){
-			me.encounterTabPanel.add(
+			me.vitalsPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.Vitals')
 			);
 		}
@@ -655,6 +655,8 @@ Ext.define('App.view.patient.Encounter', {
 
 				me.currEncounterStartDate = data.service_date;
 
+				app.fireEvent('beforeencounterload', me.encounter);
+
 				/** get progress note **/
 				me.getProgressNote();
 
@@ -669,23 +671,7 @@ Ext.define('App.view.patient.Encounter', {
 					}
 				}
 
-//				if(me.vitalsPanel){
-//					vitals = me.vitalsPanel.down('vitalsdataview');
-//					me.resetVitalsForm();
-//					vitals.store = vitals.dataSource = me.encounter.vitalsStore;
-//
-//					// Bind to the data  source. Cache it by the property name "dataSource".
-//					// The store property is public and must reference the provided store.
-//					vitals.bindStore(vitals.dataSource, true, 'dataSource');
-//					if (!vitals.all) {
-//						vitals.all = new Ext.CompositeElementLite();
-//					}
-//
-//					vitals.refresh();
-//
-//					say(vitals);
-//
-//				}
+
 				if(me.reviewSysPanel){
 					store = me.encounter.reviewofsystems();
 					store.on('write', me.getProgressNote, me);
@@ -739,6 +725,7 @@ Ext.define('App.view.patient.Encounter', {
 
 				app.setEncounterClose(record.isClose());
 
+				app.fireEvent('encounterload', me.encounter);
 				me.el.unmask();
 
 			}
@@ -876,31 +863,6 @@ Ext.define('App.view.patient.Encounter', {
 		ans ? this.rightPanel.collapse() : this.rightPanel.expand();
 	},
 
-	onVitalsClick: function(view, record, e){
-		var me = this, form = me.vitalsPanel.down('form').getForm();
-		form.reset();
-		if(!record.data.auth_uid){
-			me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(false);
-			form.loadRecord(record);
-		}else{
-			Ext.Msg.show({
-				title: 'Oops!',
-				msg: i18n('this_column_can_not_be_modified_because_it_has_been_signed_by') + ' ' + record.data.authorized_by,
-				buttons: Ext.Msg.OK,
-				icon: Ext.Msg.WARNING,
-				animateTarget: e
-			});
-		}
-	},
-
-	resetVitalsForm: function(){
-		var me = this,
-			form = me.vitalsPanel.down('form').getForm(),
-			newModel = Ext.create('App.model.patient.Vitals');
-
-		me.vitalsPanel.query('button[action="signBtn"]')[0].setDisabled(true);
-		form.loadRecord(newModel);
-	},
 	//***************************************************************************************************//
 	//***************************************************************************************************//
 	//*********    *****  ******    ****** **************************************************************//
@@ -969,144 +931,6 @@ Ext.define('App.view.patient.Encounter', {
 		return t;
 	},
 
-	/**
-	 * Convert Celsius to Fahrenheit
-	 * @param field
-	 * @param e
-	 */
-	cf: function(field, e){
-		var v = field.getValue(), temp = 9 * v / 5 + 32, res = Ext.util.Format.round(temp, 1);
-		if(e.getKey() != e.TAB){
-			field.up('form').getForm().findField('temp_f').setValue(res);
-		}
-	},
-
-	/**
-	 * Convert Fahrenheit to Celsius
-	 * @param field
-	 * @param e
-	 */
-	fc: function(field, e){
-		var v = field.getValue(), temp = (v - 32) * 5 / 9, res = Ext.util.Format.round(temp, 1);
-		if(e.getKey() != e.TAB){
-			field.up('form').getForm().findField('temp_c').setValue(res);
-		}
-	},
-
-	/**
-	 * Convert Lbs to Kg
-	 * @param field
-	 * @param e
-	 */
-	lbskg: function(field, e){
-		var v = field.getValue().split('/'),
-			lbs = v[0] || 0,
-			oz = v[1] || 0,
-			kg = 0,
-			res;
-		if(lbs > 0) kg = kg + (lbs / 2.2046);
-		if(oz > 0) kg = kg + (oz / 35.274);
-		res = Ext.util.Format.round(kg, 1);
-		if(e.getKey() != e.TAB){
-			field.up('form').getForm().findField('weight_kg').setValue(res);
-		}
-	},
-
-	/**
-	 * Convert Kg to Lbs
-	 * @param field
-	 * @param e
-	 */
-	kglbs: function(field, e){
-		var v = field.getValue(),
-			weight = v * 2.2046,
-			res = Ext.util.Format.round(weight, 1);
-		if(e.getKey() != e.TAB){
-			field.up('form').getForm().findField('weight_lbs').setValue(res);
-		}
-	},
-
-	/**
-	 * Convert Inches to Centimeter
-	 * @param field
-	 * @param e
-	 */
-	incm: function(field, e){
-		var v = field.getValue(),
-			weight = v * 2.54,
-			res = Math.floor(weight);
-		if(e.getKey() != e.TAB){
-			if(field.name == 'head_circumference_in'){
-				field.up('form').getForm().findField('head_circumference_cm').setValue(res);
-			}else if(field.name == 'waist_circumference_in'){
-				field.up('form').getForm().findField('waist_circumference_cm').setValue(res);
-			}else if(field.name == 'height_in'){
-				field.up('form').getForm().findField('height_cm').setValue(res);
-			}
-		}
-	},
-
-	/**
-	 * Convert Centimeter to Inches
-	 * @param field
-	 * @param e
-	 */
-	cmin: function(field, e){
-		var v = field.getValue(),
-			weight = v / 2.54,
-			res = Ext.util.Format.round(weight, 0);
-		if(e.getKey() != e.TAB){
-			if(field.name == 'head_circumference_cm'){
-				field.up('form').getForm().findField('head_circumference_in').setValue(res);
-			}else if(field.name == 'waist_circumference_cm'){
-				field.up('form').getForm().findField('waist_circumference_in').setValue(res);
-			}else if(field.name == 'height_cm'){
-				field.up('form').getForm().findField('height_in').setValue(res);
-			}
-		}
-	},
-
-	bmi: function(field){
-		var form = field.up('form').getForm(),
-			weight,
-			height,
-			bmi,
-			status;
-		if(this.conversionMethod == 'english'){
-			weight = form.findField('weight_lbs').getValue().split('/')[0];
-			height = form.findField('height_in').getValue();
-		}else{
-			weight = form.findField('weight_kg').getValue();
-			height = form.findField('height_cm').getValue();
-		}
-		if(weight > 0 && height > 0){
-			if(this.conversionMethod == 'english'){
-				bmi = weight / (height * height) * 703;
-			}else{
-				bmi = weight / ((height / 100) * (height / 100));
-			}
-			if(bmi < 15){
-				status = i18n('very_severely_underweight')
-			}else if(bmi >= 15 && bmi < 16){
-				status = i18n('severely_underweight')
-			}else if(bmi >= 16 && bmi < 18.5){
-				status = i18n('underweight')
-			}else if(bmi >= 18.5 && bmi < 25){
-				status = i18n('normal')
-			}else if(bmi >= 25 && bmi < 30){
-				status = i18n('overweight')
-			}else if(bmi >= 30 && bmi < 35){
-				status = i18n('obese_class_1')
-			}else if(bmi >= 35 && bmi < 40){
-				status = i18n('obese_class_2')
-			}else if(bmi >= 40){
-				status = i18n('obese_class_3')
-			}
-			field.up('form').getForm().findField('bmi').setValue(Ext.util.Format.round(bmi, 1));
-			//            field.up('form').getForm().findField('bmi').setValue(bmi);
-			field.up('form').getForm().findField('bmi_status').setValue(status);
-		}
-	},
 
 	/**
 	 * After this panel is render add the forms and listeners for conventions
@@ -1133,51 +957,6 @@ Ext.define('App.view.patient.Encounter', {
 					}
 				]
 			};
-
-		/**
-		 * Get 'Vitals' Form Fields and add listeners to convert values
-		 */
-		if(me.vitalsPanel){
-			me.getFormItems(me.vitalsPanel.down('form'), 4, function(){
-				form = me.vitalsPanel.down('form').getForm();
-
-				if(me.isMetric()){
-					// hide standard fields
-					form.findField('temp_f').hide();
-					form.findField('weight_lbs').hide();
-					form.findField('height_in').hide();
-					form.findField('weight_lbs').hide();
-					form.findField('height_in').hide();
-					form.findField('head_circumference_in').hide();
-					form.findField('waist_circumference_in').hide();
-					// add listeners to metric fields
-					form.findField('temp_c').addListener('keyup', me.cf, me);
-					form.findField('weight_kg').addListener('keyup', me.kglbs, me);
-					form.findField('height_cm').addListener('keyup', me.cmin, me);
-					form.findField('weight_kg').addListener('blur', me.bmi, me);
-					form.findField('height_cm').addListener('blur', me.bmi, me);
-					form.findField('head_circumference_cm').addListener('keyup', me.cmin, me);
-					form.findField('waist_circumference_cm').addListener('keyup', me.cmin, me);
-				}else{
-					// hide metric fields
-					form.findField('temp_c').hide();
-					form.findField('weight_kg').hide();
-					form.findField('height_cm').hide();
-					form.findField('weight_kg').hide();
-					form.findField('height_cm').hide();
-					form.findField('head_circumference_cm').hide();
-					form.findField('waist_circumference_cm').hide();
-					// add listeners to standards fields
-					form.findField('temp_f').addListener('keyup', me.fc, me);
-					form.findField('weight_lbs').addListener('keyup', me.lbskg, me);
-					form.findField('height_in').addListener('keyup', me.incm, me);
-					form.findField('weight_lbs').addListener('blur', me.bmi, me);
-					form.findField('height_in').addListener('blur', me.bmi, me);
-					form.findField('head_circumference_in').addListener('keyup', me.incm, me);
-					form.findField('waist_circumference_in').addListener('keyup', me.incm, me);
-				}
-			});
-		}
 
 		/**
 		 * Get 'Review of Systems' Form and define the Model using the form fields
@@ -1216,13 +995,6 @@ Ext.define('App.view.patient.Encounter', {
 				});
 			});
 		}
-	},
-
-	/**
-	 * return true if units of measurement is metric
-	 */
-	isMetric:function(){
-		return g('units_of_measurement') == 'metric';
 	},
 
 	getButtonsToDisable: function(){

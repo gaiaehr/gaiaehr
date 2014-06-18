@@ -848,8 +848,9 @@ class Encounter {
 	 * @return stdClass
 	 */
 	public function addVitals($params){
-		$this->setEid($params->eid);
-		$record = (array) $this->v->save($params);
+		$eid = is_object($params) ? $params->eid : $params[0]->eid;
+		$this->setEid($eid);
+		$record = $this->v->save($params);
 		$record['administer_by'] = $this->user->getUserNameById($record['uid']);
 		return $record;
 	}
@@ -858,12 +859,23 @@ class Encounter {
 	 * @param stdClass $params
 	 * @return stdClass
 	 */
-	public function updateVitals(stdClass $params){
-		$this->setEid($params->eid);
-		$record = (array) $this->v->save($params);
-		$record['administer_by'] = $record['uid'] != 0 ? $this->user->getUserNameById($record['uid']) : '';
-		$record['authorized_by'] = $record['auth_uid'] != 0 ? $this->user->getUserNameById($record['auth_uid']) : '';
-		return $params;
+	public function updateVitals($params){
+		$eid = is_object($params) ? $params->eid : $params[0]->eid;
+		$this->setEid($eid);
+		$record = $this->v->save($params);
+		if(is_array($params)){
+			foreach($record as $i => $rec){
+				$record[$i] = $rec = (object) $rec;
+				$record[$i]->administer_by = $rec->uid != 0 ? $this->user->getUserNameById($rec->uid) : '';
+				$record[$i]->authorized_by = $rec->auth_uid != 0 ? $this->user->getUserNameById($rec->auth_uid) : '';
+			}
+		}else{
+			$record = (object) $record;
+			$record->administer_by = $record->uid != 0 ? $this->user->getUserNameById($record->uid) : '';
+			$record->authorized_by = $record->auth_uid != 0 ? $this->user->getUserNameById($record->auth_uid) : '';
+		}
+
+		return $record;
 	}
 
 	/**

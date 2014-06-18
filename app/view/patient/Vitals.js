@@ -1,160 +1,320 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, LLC.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.Vitals', {
 	extend: 'Ext.panel.Panel',
+	requires: [
+		'Ext.grid.plugin.RowEditing',
+		'App.ux.form.fields.DateTime'
+	],
 	alias: 'widget.vitalspanel',
 	title: i18n('vitals'),
-	layout:'border',
-	bodyPadding:5,
-	items:[
+	layout: 'border',
+	bodyPadding: 5,
+	items: [
 		{
-			xtype:'container',
+			xtype: 'container',
 			height: 100,
 			region: 'north',
-			layout:{
-				type:'hbox',
-				align:'stretch'
+			itemId: 'vitalsBlocks',
+			layout: {
+				type: 'hbox',
+				align: 'stretch'
 			},
-			defaults:{
-				xtype:'container',
+			defaults: {
+				xtype: 'container',
 				cls: 'latest-vitals-items',
-				margin: '5 10',
+				margin: '0 5 5 5',
 				width: 130
 			},
-			items:[
+			items: [
 				{
-					html:'<p class="title">BP</p><p class="value">180/90<img src="resources/images/icons/arrow_down.png" class="trend"></p><p class="extra">systolic/diastolic</p>'
+					itemId: 'bpBlock',
+					margin: '0 5 5 0',
+					html: '<p class="title">' + i18n('bp') + '</p><p class="value">--/--</p><p class="extra">' + i18n('systolic') + '/' + i18n('diastolic') + '</p>'
 				},
 				{
-					html:'<p class="title">Temp.</p><p class="value">78&deg;c<img src="resources/images/icons/arrow_down.png" class="trend"></p><p class="extra">Oral</p>'
+					itemId: 'tempBlock',
+					html: '<p class="title">' + i18n('temp') + '</p><p class="value">--</p><p class="extra">--</p>'
 				},
 				{
-					html:'<p class="title">Weight</p><p class="value">180 lbs<img src="resources/images/icons/arrow_down.png" class="trend"></p>'
+					itemId: 'weighBlock',
+					html: '<p class="title">' + i18n('weight') + '</p><p class="value">--</p>'
 				},
 				{
-					html:'<p class="title">Height</p><p class="value">66 in<img src="resources/images/icons/arrow_down.png" class="trend"></p>'
+					itemId: 'heightBlock',
+					html: '<p class="title">' + i18n('height') + '</p><p class="value">--</p>'
 				},
 				{
-					html:'<p class="title">BMI</p><p class="value">21.1<img src="resources/images/icons/arrow_down.png" class="trend"></p><p class="extra">overweight</p>'
+					itemId: 'bmiBlock',
+					html: '<p class="title">' + i18n('bmi') + '</p><p class="value">--</p><p class="extra">--</p>'
+				},
+				{
+					itemId: 'notesBlock',
+					margin: '0 5 5 5',
+					html: '<p class="title">' + i18n('notes') + '</p><p class="value" style="text-align: left"> -- </p><p class="extra">--</p>',
+					flex: 1
 				}
 			]
 		},
 		{
-			xtype:'grid',
+			xtype: 'grid',
 			region: 'center',
 			flex: 1,
-			columnsLines: true,
-			columns:[
+			columnLines: true,
+			itemId: 'historyGrid',
+			multiSelect: true,
+			plugins: [
 				{
+					ptype: 'rowediting'
+				}
+			],
+			viewConfig: {
+				getRowClass: function(record, rowIndex, rowParams, store){
+					return record.data.auth_uid == 0 ? 'unsignedVital' : '';
+				}
+			},
+			columns: [
+				{
+					xtype:'datecolumn',
 					text: i18n('date'),
-					dataIndex: 'date'
+					dataIndex: 'date',
+					format: 'Y-m-d g:i a',
+					width: 180,
+					editor:{
+						xtype: 'mitos.datetime',
+						timeFormat: 'g:i a'
+					}
+				},
+				{
+					text: i18n('bp'),
+					columns:[
+						{
+							text: i18n('systolic'),
+							dataIndex: 'bp_systolic',
+							width: 65,
+							editor: {
+								xtype: 'textfield',
+								vtype: 'numeric'
+							}
+						},
+						{
+							text: i18n('diastolic'),
+							dataIndex: 'bp_diastolic',
+							width: 65,
+							editor: {
+								xtype: 'textfield',
+								vtype: 'numeric'
+							}
+						}
+					]
+				},
+				{
+					text: i18n('temp'),
+					dataIndex: 'temp_f',
+					width: 70,
+					hidden: g('units_of_measurement') == 'metric',
+					editor: {
+						xtype: 'textfield',
+						itemId: 'vitalTempFField',
+						vtype: 'numericWithDecimal',
+						enableKeyEvents: true
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v + '&deg;F'
+					}
+				},
+				{
+					text: i18n('temp'),
+					dataIndex: 'temp_c',
+					width: 70,
+					hidden: g('units_of_measurement') != 'metric',
+					editor: {
+						xtype: 'textfield',
+						itemId: 'vitalTempCField',
+						vtype: 'numericWithDecimal',
+						enableKeyEvents: true
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v + '&deg;C'
+					}
+				},
+				{
+					text: i18n('temp_location'),
+					dataIndex: 'temp_location',
+					editor: {
+						xtype: 'gaiaehr.combo',
+						list: 62
+					}
 				},
 				{
 					text: i18n('weight_lbs'),
-					dataIndex: 'date'
+					dataIndex: 'weight_lbs',
+					width: 80,
+					hidden: g('units_of_measurement') == 'metric',
+					editor: {
+						xtype: 'textfield',
+						itemId: 'vitalWeightLbsField',
+						vtype: 'numericWithSlash',
+						enableKeyEvents: true
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v + ' lbs/oz'
+					}
 				},
 				{
-					text: i18n('weight_kg'),
+					text: i18n('weight'),
 					dataIndex: 'weight_kg',
-					hidden: true
+					width: 80,
+					hidden: g('units_of_measurement') != 'metric',
+					editor: {
+						xtype: 'textfield',
+						itemId: 'vitalWeightKgField',
+						vtype: 'numericWithDecimal',
+						enableKeyEvents: true
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v + ' kg'
+					}
 				},
 				{
 					text: i18n('height_in'),
-					dataIndex: 'height_in'
+					dataIndex: 'height_in',
+					width: 70,
+					hidden: g('units_of_measurement') == 'metric',
+					editor: {
+						xtype: 'textfield',
+						itemId: 'vitalHeightInField',
+						vtype: 'numericWithDecimal',
+						enableKeyEvents: true
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v + ' in'
+					}
 				},
 				{
 					text: i18n('height_cm'),
 					dataIndex: 'height_cm',
-					hidden: true
-				},
-				{
-					text: i18n('bp_systolic'),
-					dataIndex: 'bp_systolic'
-				},
-				{
-					text: i18n('bp_diastolic'),
-					dataIndex: 'bp_diastolic'
-				},
-				{
-					text: i18n('temp_f'),
-					dataIndex: 'temp_f',
-					width:70
-				},
-				{
-					text: i18n('temp_c'),
-					dataIndex: 'temp_c',
-					width:70,
-					hidden: true
-				},
-				{
-					text: i18n('temp_location'),
-					dataIndex: 'temp_location'
+					width: 70,
+					hidden: g('units_of_measurement') != 'metric',
+					editor: {
+						xtype: 'textfield',
+						itemId: 'vitalHeightCmField',
+						vtype: 'numericWithDecimal',
+						enableKeyEvents: true
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v + ' cm'
+					}
 				},
 				{
 					text: i18n('pulse'),
 					dataIndex: 'pulse',
-					width:60
+					width: 60,
+					editor: {
+						xtype: 'textfield',
+						vtype: 'numeric'
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v;
+					}
 				},
 				{
 					text: i18n('respiration'),
-					dataIndex: 'respiration'
+					dataIndex: 'respiration',
+					editor: {
+						xtype: 'textfield',
+						vtype: 'numeric'
+					},
+					renderer:function(v){
+						return v == 0 || v == null ? '' : v;
+					}
 				},
-//				{
-//					text: i18n('oxygen_saturation'),
-//					dataIndex: 'oxygen_saturation'
-//				},
-//				{
-//					text: i18n('head_circumference_in'),
-//					dataIndex: 'head_circumference_in',
-//					width: 150
-//				},
-//				{
-//					text: i18n('head_circumference_cm'),
-//					dataIndex: 'head_circumference_cm',
-//					width: 150,
-//					hidden: true
-//				},
-//				{
-//					text: i18n('waist_circumference_in'),
-//					dataIndex: 'waist_circumference_in',
-//					width: 150
-//				},
-//				{
-//					text: i18n('waist_circumference_cm'),
-//					dataIndex: 'waist_circumference_cm',
-//					width: 150,
-//					hidden: true
-//				},
+				//				{
+				//					text: i18n('oxygen_saturation'),
+				//					dataIndex: 'oxygen_saturation'
+				//				},
+				//				{
+				//					text: i18n('head_circumference_in'),
+				//					dataIndex: 'head_circumference_in',
+				//					width: 150
+				//				},
+				//				{
+				//					text: i18n('head_circumference_cm'),
+				//					dataIndex: 'head_circumference_cm',
+				//					width: 150,
+				//					hidden: true
+				//				},
+				//				{
+				//					text: i18n('waist_circumference_in'),
+				//					dataIndex: 'waist_circumference_in',
+				//					width: 150
+				//				},
+				//				{
+				//					text: i18n('waist_circumference_cm'),
+				//					dataIndex: 'waist_circumference_cm',
+				//					width: 150,
+				//					hidden: true
+				//				},
 				{
 					text: i18n('bmi'),
-					dataIndex: 'bmi'
+					dataIndex: 'bmi',
+					width: 50
 				},
-//				{
-//					text: i18n('bmi_status'),
-//					dataIndex: 'bmi_status'
-//				}
+				//				{
+				//					text: i18n('bmi_status'),
+				//					dataIndex: 'bmi_status'
+				//				}
 				{
 					text: i18n('other_notes'),
 					dataIndex: 'other_notes',
-					flex: 1
+					flex: 1,
+					editor: {
+						xtype: 'textfield'
+					}
+				},
+				{
+					text: i18n('administer_by'),
+					dataIndex: 'administer_by'
+				},
+				{
+					text: i18n('authorized_by'),
+					dataIndex: 'authorized_by'
+				}
+			],
+			tbar: [
+				'->',
+				{
+					text: i18n('vitals'),
+					iconCls: 'icoAdd',
+					itemId: 'vitalAddBtn',
+					action: 'encounterRecordAdd'
+				},
+				'-',
+				{
+					text: i18n('sign'),
+					icon: 'resources/images/icons/pen.png',
+					//disabled: true,
+					itemId: 'vitalSignBtn',
+					action: 'encounterRecordAdd'
 				}
 			]
+
 		}
 	]
 });

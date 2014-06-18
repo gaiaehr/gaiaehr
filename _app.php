@@ -46,10 +46,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	</head>
 	<body>
 		<!-- Loading Mask -->
-		<div id="mainapp-loading-mask" class="x-mask mitos-mask"></div>
-		<div id="mainapp-x-mask-msg">
-			<div id="mainapp-loading" class="x-mask-msg mitos-mask-msg">
-				<div>
+		<div id="mainapp-loading-mask" class="x-mask mitos-mask" style="width: 100%; height: 100%"></div>
+		<div id="mainapp-loading" class="mitos-mask-msg x-mask-msg x-layer x-mask-msg-default x-border-box">
+			<div id="mainapp-x-mask-msg" class="x-mask-msg-inner">
+				<div class="x-mask-msg-text">
 					Loading GaiaEHR...
 				</div>
 			</div>
@@ -57,8 +57,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         <!-- slide down message div -->
         <div id="msg-div"></div>
-
-
 
         <!-- Ext library -->
 		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js"></script>
@@ -669,6 +667,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
                 ],
                 controllers:[
+	                'administration.CPT',
 	                'administration.HL7',
 	                'administration.Practice',
 	                'administration.ReferringProviders',

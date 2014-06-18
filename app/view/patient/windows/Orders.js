@@ -26,7 +26,6 @@ Ext.define('App.view.patient.windows.Orders', {
 	],
 	title: i18n('order_window'),
 	closeAction: 'hide',
-	layout: 'fit',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 	buttons: [
@@ -44,7 +43,7 @@ Ext.define('App.view.patient.windows.Orders', {
 			me.tabPanel = Ext.create('Ext.tab.Panel', {
 				margin: 5,
 				height: Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600,
-				width: Ext.getBody().getWidth() < 1050 ? (Ext.getBody().getWidth() - 50) : 1100,
+				width: Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
 				plain: true,
 				items: [
 					/**
@@ -122,7 +121,7 @@ Ext.define('App.view.patient.windows.Orders', {
 	onWinShow: function(){
 		var me = this,
 			p = me.down('tabpanel'),
-			w = Ext.getBody().getWidth() < 1150 ? (Ext.getBody().getWidth() - 50) : 1100,
+			w = Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
 			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
 
 		p.setSize(w, h);

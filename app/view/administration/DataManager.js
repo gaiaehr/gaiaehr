@@ -18,19 +18,23 @@
 
 Ext.define('App.view.administration.DataManager', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelDataManager',
 	pageTitle: 'Data Manager',
-	uses: ['App.ux.GridPanel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
+	requires: [
+		'App.view.administration.CPT',
+		'App.ux.combo.CodesTypes',
+		'App.ux.combo.Titles'
+	],
 	initComponent: function(){
 		var me = this;
 		me.active = 1;
 		me.dataQuery = '';
-		me.code_type = 'CPT4';
+		me.code_type = 'LOINC';
 		me.store = Ext.create('App.store.administration.Services');
 		me.activeProblemsStore = Ext.create('App.store.administration.ActiveProblems');
 		me.medicationsStore = Ext.create('App.store.administration.Medications');
 		me.ImmuRelationStore = Ext.create('App.store.administration.ImmunizationRelations');
 		me.labObservationsStore = Ext.create('App.store.administration.LabObservations');
+
 
 		function code_type(val){
 			if(val == '1'){
@@ -95,9 +99,9 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							boxLabel: i18n('reportable'),
+							boxLabel: i18n('radiology'),
 							xtype: 'checkboxfield',
-							name: 'reportable'
+							name: 'isRadiology'
 						},
 						{
 							boxLabel: i18n('active'),
@@ -328,7 +332,8 @@ Ext.define('App.view.administration.DataManager', {
 			]
 		});
 
-		me.dataManagerGrid = Ext.create('App.ux.GridPanel', {
+		me.dataManagerGrid = Ext.create('Ext.grid.Panel', {
+			title: 'Codes',
 			region: 'center',
 			store: me.store,
 			viewConfig: {
@@ -376,55 +381,67 @@ Ext.define('App.view.administration.DataManager', {
 					scope: me,
 					beforeedit: me.beforeServiceEdit
 				}
+			}),
+			tbar: this.bar = Ext.create('Ext.PagingToolbar', {
+				store: me.store,
+				displayInfo: true,
+				emptyMsg: i18n('no_office_notes_to_display'),
+				plugins: Ext.create('Ext.ux.SlidingPager'),
+				items: [
+					'-',
+					{
+						xtype: 'mitos.codestypescombo',
+						width: 150,
+						listeners: {
+							scope: me,
+							select: me.onCodeTypeSelect
+						}
+					}, '-',
+					{
+						text: i18n('add'),
+						iconCls: 'icoAddRecord',
+						scope: me,
+						handler: me.onAddData
+					}, '-',
+					{
+						xtype: 'textfield',
+						emptyText: i18n('search'),
+						width: 200,
+						enableKeyEvents: true,
+						listeners: {
+							scope: me,
+							keyup: me.onSearch,
+							buffer: 500
+						}
+					}, '-',
+					{
+						xtype: 'button',
+						text: i18n('show_inactive_codes_only'),
+						enableToggle: true,
+						listeners: {
+							scope: me,
+							toggle: me.onActivePressed
+						}
+					}
+				]
 			})
 		});
 		// END GRID
 
-		me.pageTBar = Ext.create('Ext.PagingToolbar', {
-			store: me.store,
-			displayInfo: true,
-			emptyMsg: i18n('no_office_notes_to_display'),
-			plugins: Ext.create('Ext.ux.SlidingPager'),
-			items: [
-				'-',
+		me.tabPanel = Ext.widget('tabpanel',{
+			items:[
 				{
-					xtype: 'mitos.codestypescombo',
-					width: 150,
-					listeners: {
-						scope: me,
-						select: me.onCodeTypeSelect
-					}
-				}, '-',
-				{
-					text: i18n('add'),
-					iconCls: 'icoAddRecord',
-					scope: me,
-					handler: me.onAddData
-				}, '-',
-				{
-					xtype: 'textfield',
-					emptyText: i18n('search'),
-					width: 200,
-					enableKeyEvents: true,
-					listeners: {
-						scope: me,
-						keyup: me.onSearch,
-						buffer: 500
-					}
-				}, '-',
-				{
-					xtype: 'button',
-					text: i18n('show_inactive_codes_only'),
-					enableToggle: true,
-					listeners: {
-						scope: me,
-						toggle: me.onActivePressed
-					}
-				}
+					xtype: 'cptadmingrid'
+				},
+				me.dataManagerGrid
 			]
 		});
 
-		me.pageBody = [me.dataManagerGrid];
+		me.pageBody = [ me.tabPanel ];
+
+
+
+
 		me.callParent();
 	},
 	onAddData: function(){
@@ -597,7 +614,7 @@ Ext.define('App.view.administration.DataManager', {
 	 * to call every this panel becomes active
 	 */
 	onActive: function(callback){
-		this.pageTBar.query('combobox')[0].setValue("CPT4");
+		this.bar.query('combobox')[0].setValue("CPT4");
 		this.store.proxy.extraParams = {
 			active: this.active,
 			code_type: this.code_type,

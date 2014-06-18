@@ -17,41 +17,27 @@
  */
 Ext.define('App.ux.LiveRadiologySearch', {
 	extend: 'Ext.form.ComboBox',
+	requires:['App.store.administration.CPT'],
 	alias: 'widget.radiologylivetsearch',
 	hideLabel: true,
 
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('liveRadLoincSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{ name: 'id' },
-				{ name: 'loinc_name' },
-				{ name: 'loinc_number' }
-			],
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'Laboratories.getRadLoincLiveSearch'
-				},
-				reader: {
-					totalProperty: 'totals',
-					root: 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model: 'liveRadLoincSearchModel',
+		me.store = Ext.create('App.store.administration.CPT',{
 			pageSize: 10,
 			autoLoad: false
 		});
 
+		me.store.proxy.extraParams = {
+			onlyActive: true,
+			isRadiology: true
+		};
+
 		Ext.apply(this, {
 			store: me.store,
-			displayField: 'loinc_name',
-			valueField: 'loinc_name',
+			displayField: 'code_text_medium',
+			valueField: 'code_text_medium',
 			emptyText: i18n('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
@@ -63,7 +49,7 @@ Ext.define('App.ux.LiveRadiologySearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{loinc_name} ({loinc_number})</h3></div>';
+					return '<div class="search-item"><h3>{code_text_short} ({code})</h3></div>';
 				}
 			},
 			pageSize: 10

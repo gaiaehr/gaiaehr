@@ -66,6 +66,28 @@ $API = array(
             )
         )
     ),
+    'CPT' => array(
+        'methods' => array(
+            'getCPTs' => array(
+                'len' => 1
+            ),
+            'getCPT' => array(
+                'len' => 1
+            ),
+            'addCPT' => array(
+                'len' => 1
+            ),
+            'updateCPT' => array(
+                'len' => 1
+            ),
+            'deleteCPT' => array(
+                'len' => 1
+            ),
+            'query' => array(
+                'len' => 1
+            )
+        )
+    ),
     'Insurance' => array(
         'methods' => array(
             'getInsuranceCompanies' => array(

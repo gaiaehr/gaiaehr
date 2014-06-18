@@ -210,7 +210,7 @@ class Laboratories
 							 FROM loinc_extra AS e
 						LEFT JOIN loinc AS l ON e.LOINC_NUM = l.loinc_num
 							WHERE (l.class != 'RAD' AND l.class != 'PANEL.CARDIAC')
-							  AND (l.long_common_name LIKE '%$params->query%' OR e.ALIAS LIKE '%$params->query%')
+							  AND (l.long_common_name LIKE '%$params->query%' OR e.ALIAS LIKE '%$params->query%' OR l.loinc_num LIKE '%$params->query%')
                               AND e.active = '1'");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		$total   = count($records);

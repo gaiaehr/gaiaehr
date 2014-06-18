@@ -54,6 +54,7 @@ Ext.define('App.controller.patient.Documents', {
 
 	init: function(){
 		var me = this;
+
 		me.control({
 			'patientdocumentspanel': {
 				activate: me.onPatientDocumentPanelActive
@@ -75,6 +76,7 @@ Ext.define('App.controller.patient.Documents', {
 			}
 		});
 
+		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
 	},
 
@@ -89,14 +91,31 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	onPatientDocumentPanelActive: function(){
-		var store = this.getPatientDocumentGrid().getStore();
-		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
+		var me = this,
+			grid = me.getPatientDocumentGrid(),
+			store = grid.getStore();
+		store.load({
+			filters: [
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			],
+			callback:function(records){
+				var params = me.nav.getExtraParams();
+
+				if(params && params.doc){
+					var doc = store.getById(params.doc);
+					if(doc){
+						grid.getSelectionModel().select(doc);
+					}else{
+						app.msg(i18n('oops'), i18n('unable_to_fild_docuent'), true);
+					}
+
+				}
+
 			}
-		]);
+		});
 	},
 
 	onDocumentGroupBtnToggle: function(btn, pressed){
@@ -178,7 +197,6 @@ Ext.define('App.controller.patient.Documents', {
 		}else{
 			me.doNewDocumentRecordSave(record);
 		}
-
 	},
 
 	doNewDocumentRecordSave: function(record){

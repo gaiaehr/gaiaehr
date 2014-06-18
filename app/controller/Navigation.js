@@ -297,6 +297,14 @@ Ext.define('App.controller.Navigation', {
 
 	getNavKey:function(){
 		return this.navKey;
+	},
+
+	getExtraParams: function(){
+		var params = this.getUrlParams();
+		for(var i=0; i < params.length; i++){
+			if(params[i].match(/^{.*}$/)) return eval('('+params[i]+')');
+		}
+		return false;
 	}
 
 });

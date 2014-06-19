@@ -23,7 +23,7 @@ Ext.define('App.view.administration.Documents', {
 	pageLayout: 'border',
 	requires: [
 		'App.ux.grid.Button',
-		'App.ux.GridPanel'
+		'Ext.grid.Panel'
 	],
 	initComponent: function(){
 
@@ -199,7 +199,7 @@ Ext.define('App.view.administration.Documents', {
 			]
 		});
 
-		me.TokensGrid = Ext.create('App.ux.GridPanel', {
+		me.TokensGrid = Ext.create('Ext.grid.Panel', {
 			title: i18n('available_tokens'),
 			region: 'east',
 			width: 250,

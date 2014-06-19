@@ -22,7 +22,8 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-
+if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+include_once ('../registry.php');
 require_once (ROOT . '/classes/XMLParser.class.php');
 //--------------------------------------------------------------------------------
 // lets declare few vars for later use.

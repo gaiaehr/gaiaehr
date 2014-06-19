@@ -22,7 +22,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 	id : 'panelWebsearch',
 	pageTitle : i18n('national_library'),
 	pageLayout : 'border',
-	uses : ['App.ux.GridPanel'],
+	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
 
@@ -153,7 +153,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 		{
 			return Ext.String.format('<div class="topic"><span class="search_title">{0}</span><br><span class="search_source">{1}</span><br><span class="search_snippet" style="white-space: normal;">{2}</span></div>', value, record.get('source') || "Unknown", record.get('snippet') || "Unknown");
 		};
-		page.onotesGrid = Ext.create('App.ux.GridPanel',
+		page.onotesGrid = Ext.create('Ext.grid.Panel',
 		{
 			margin : '0 0 2 0',
 			region : 'center',

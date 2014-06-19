@@ -34,10 +34,23 @@ Ext.define('App.view.patient.ActiveProblems', {
 	}),
 	columns: [
 		{
+			xtype: 'actioncolumn',
+			width: 25,
+			items: [
+				{
+					icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+					tooltip: 'Get Info',
+					handler: function(grid, rowIndex, colIndex, item, e, record){
+						App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.code_text);
+					}
+				}
+			]
+		},
+		{
 			header: i18n('code'),
 			width: 150,
 			dataIndex: 'code',
-			renderer:function(value, metaDate, record){
+			renderer: function(value, metaDate, record){
 				return value + ' (' + record.data.code_type + ')'
 			}
 		},
@@ -72,7 +85,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 	plugins: Ext.create('App.ux.grid.RowFormEditing', {
 		autoCancel: false,
 		errorSummary: false,
-		clicksToEdit: 1,
+		clicksToEdit: 2,
 		items: [
 			{
 				xtype: 'container',
@@ -191,7 +204,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 			}
 		]
 	}),
-	tbar:[
+	tbar: [
 		'->',
 		{
 			text: i18n('add_new'),

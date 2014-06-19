@@ -508,6 +508,10 @@ class Patient {
 		return $this->getPatientAgeByDOB($this->getDOBByPid($pid));
 	}
 
+	public function getPatientPid() {
+		return $this->patient['pid'];
+	}
+
 	public function getPatientSex() {
 		return $this->patient['sex'];
 	}

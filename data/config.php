@@ -235,6 +235,14 @@ $API = array(
         )
     ),
 
+    'WebSearchCodes' => array(
+        'methods' => array(
+			'Search'=>array(
+				'len'=> 1
+			)
+        )
+    ),
+
 	'Modules' => array(
 		'methods' => array(
 			'getAllModules' => array(
@@ -282,7 +290,6 @@ $API = array(
             )
         )
 	),
-
 	'Orders' => array(
 		'methods' => array(
 			'getPatientOrders' => array(
@@ -323,7 +330,6 @@ $API = array(
             )
 		)
 	),
-
 	'Referrals' => array(
 		'methods' => array(
 			'getPatientReferrals' => array(
@@ -378,6 +384,26 @@ $API = array(
 		)
 	),
 
+	'Vitals' => array(
+		'methods' => array(
+			'getVitals' => array(
+				'len' => 1
+			),
+			'addVitals' => array(
+				'len' => 1
+			),
+			'updateVitals' => array(
+				'len' => 1
+			),
+			'getVitalsByPid' => array(
+				'len' => 1
+			),
+			'getVitalsByEid' => array(
+				'len' => 1
+			)
+		)
+	),
+
 	'ExternalDataUpdate' => array(
 		'methods' => array(
 			'updateCodesWithUploadFile' => array(
@@ -416,15 +442,6 @@ $API = array(
 				'len' => 1
 			),
 			'updateEncounterPriority' => array(
-				'len' => 1
-			),
-			'getVitals' => array(
-				'len' => 1
-			),
-			'addVitals' => array(
-				'len' => 1
-			),
-			'updateVitals' => array(
 				'len' => 1
 			),
 			'createEncounter' => array(
@@ -833,16 +850,19 @@ $API = array(
 	),
 	'Medications' => array(
 		'methods' => array(
-			'getMedications' => array(
+			'getPatientMedications' => array(
 				'len' => 1
 			),
-			'addMedications' => array(
+			'getPatientMedication' => array(
 				'len' => 1
 			),
-			'removeMedications' => array(
+			'addPatientMedication' => array(
 				'len' => 1
 			),
-			'updateMedications' => array(
+			'updatePatientMedication' => array(
+				'len' => 1
+			),
+			'destroyPatientMedication' => array(
 				'len' => 1
 			)
 		)
@@ -1321,6 +1341,65 @@ $API = array(
 				'len' => 1
 			),
 			'updatePreventiveCareDismissedAlertsByPid' => array(
+				'len' => 1
+			)
+		)
+	),
+	/**
+	 * DecisionSupport Functions
+	 */
+	'DecisionSupport' => array(
+		'methods' => array(
+			'getDecisionSupportRules' => array(
+				'len' => 1
+			),
+			'getDecisionSupportRule' => array(
+				'len' => 1
+			),
+			'addDecisionSupportRule' => array(
+				'len' => 1
+			),
+			'updateDecisionSupportRule' => array(
+				'len' => 1
+			),
+			'deleteDecisionSupportRule' => array(
+				'len' => 1
+			),
+			'getDecisionSupportRuleConcepts' => array(
+				'len' => 1
+			),
+			'getDecisionSupportRuleConcept' => array(
+				'len' => 1
+			),
+			'addDecisionSupportRuleConcept' => array(
+				'len' => 1
+			),
+			'updateDecisionSupportRuleConcept' => array(
+				'len' => 1
+			),
+			'deleteDecisionSupportRuleConcept' => array(
+				'len' => 1
+			),
+			'getAlerts' => array(
+				'len' => 1
+			)
+		)
+	),
+	'ActiveProblems' => array(
+		'methods' => array(
+			'getPatientActiveProblems' => array(
+				'len' => 1
+			),
+			'getPatientActiveProblem' => array(
+				'len' => 1
+			),
+			'addPatientActiveProblem' => array(
+				'len' => 1
+			),
+			'updatePatientActiveProblem' => array(
+				'len' => 1
+			),
+			'destroyPatientActiveProblem' => array(
 				'len' => 1
 			)
 		)

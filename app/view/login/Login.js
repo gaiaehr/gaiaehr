@@ -117,6 +117,7 @@ Ext.define('App.view.login.Login', {
 					allowBlank: false,
 					editable: false,
 					hidden: true,
+					storeAutoLoad: false,
 					listeners: {
 						scope: me,
 						specialkey: me.onEnter,
@@ -280,6 +281,7 @@ Ext.define('App.view.login.Login', {
 	onFacilityCmbBeforeRender: function(cmb){
 		var me = this;
 		cmb.getStore().on('load', me.onFacilityLoad, me);
+		cmb.getStore().load();
 	},
 	/**
 	 * Form Submit/Logon function
@@ -333,6 +335,7 @@ Ext.define('App.view.login.Login', {
 			option_name: 'Default',
 			option_value: '0'
 		});
+
 		cmb.setVisible(records.length > 1);
 		cmb.select(0);
 	},
@@ -375,7 +378,7 @@ Ext.define('App.view.login.Login', {
 								if(me.showSite){
 									form.getComponent('site').setValue(me.currSite);
 								}
-							}, 100, this);
+							}, 500, this);
 						}
 						else{
 							this.msg('Opps! Something went wrong...', 'No site found.');

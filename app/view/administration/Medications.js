@@ -29,7 +29,7 @@ Ext.define('App.view.administration.Medications',
 
 		me.storeMedications = Ext.create('App.store.administration.Medications');
 
-		me.medicationsGrid = Ext.create('App.ux.GridPanel',
+		me.medicationsGrid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
 			store : me.storeMedications,

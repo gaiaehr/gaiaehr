@@ -19,7 +19,7 @@
 Ext.define('App.ux.combo.ActiveFacilities', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'activefacilitiescombo',
-
+	storeAutoLoad: true,
 	initComponent: function(){
 		var me = this;
 
@@ -45,7 +45,7 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model: 'ActiveFacilitiesComboModel',
-			autoLoad: true
+			autoLoad: me.storeAutoLoad
 		});
 
 		Ext.apply(this, {

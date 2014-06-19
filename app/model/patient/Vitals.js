@@ -197,9 +197,9 @@ Ext.define('App.model.patient.Vitals', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Encounter.getVitals',
-			create: 'Encounter.addVitals',
-			update: 'Encounter.updateVitals'
+			read: 'Vitals.getVitals',
+			create: 'Vitals.addVitals',
+			update: 'Vitals.updateVitals'
 		}
 	},
 	belongsTo: {

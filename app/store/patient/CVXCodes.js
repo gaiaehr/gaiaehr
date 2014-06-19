@@ -18,8 +18,10 @@
 
 Ext.define('App.store.patient.CVXCodes', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.CVXCodes',
+	requires: ['App.model.patient.CVXCodes'],
+	model: 'App.model.patient.CVXCodes',
 	remoteSort: false,
-	autoLoad  : false
+	autoLoad: false
 });
+
 

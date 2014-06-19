@@ -46,6 +46,19 @@ Ext.define('App.view.patient.Medications', {
 			}),
 			columns: [
 				{
+					xtype: 'actioncolumn',
+					width: 25,
+					items: [
+						{
+							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+							tooltip: 'Get Info',
+							handler: function(grid, rowIndex, colIndex, item, e, record){
+								App.app.getController('InfoButton').doGetInfo(record.data.RXCUI, 'RXCUI', record.data.STR);
+							}
+						}
+					]
+				},
+				{
 					header: i18n('medication'),
 					flex: 1,
 					minWidth: 200,

@@ -38,7 +38,7 @@ class Orders {
 	 * Set Model App.model.patient.PatientsOrders
 	 */
 	private function setOrders(){
-		if(!isset($this->o))
+		if($this->o == null)
 			$this->o = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
 	}
 
@@ -46,7 +46,7 @@ class Orders {
 	 * Set Model App.model.patient.PatientsOrderResults
 	 */
 	private function setResults(){
-		if(!isset($this->r))
+		if($this->r == null)
 			$this->r = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
 	}
 
@@ -54,7 +54,7 @@ class Orders {
 	 * Set Model App.model.patient.PatientsOrderObservation
 	 */
 	private function setObservations(){
-		if(!isset($this->b))
+		if($this->b == null)
 			$this->b = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 	}
 
@@ -136,7 +136,6 @@ class Orders {
 	 */
 	public function getOrderResultObservations($params){
 		$this->setObservations();
-
 		if(isset($params->loinc)){
 			$records = $this->getObservationsByLoinc($params->loinc);
 		}else{
@@ -211,18 +210,34 @@ class Orders {
 		if($primary && empty($records)){
 
 			$records = $this->b->sql("SELECT DISTINCT l.LOINC_NUM AS code,
-					                                  IF(e.ALIAS IS NULL OR e.ALIAS = '', l.long_common_name, e.ALIAS) AS code_text,
-					                                  'LN' AS code_type,
-					                                  IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_ucum_units) AS units,
-					                                  CONCAT(e.RANGE_START, ' - ', e.RANGE_END) AS reference_rage,
-					                                  e.HAS_CHILDREN AS has_children,
-					                                  e.active
-					                             FROM loinc AS l
-					                        LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.LOINC_NUM
-					                            WHERE e.active = '1'
-												  AND l.loinc_num = '$loinc'")->all();
+		                                  	 IF(e.ALIAS IS NULL OR e.ALIAS = '', l.long_common_name, e.ALIAS) AS code_text,
+		                                  	 'LN' AS code_type,
+		                                  	 IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_ucum_units) AS units,
+		                                  	 CONCAT(e.RANGE_START, ' - ', e.RANGE_END) AS reference_rage,
+		                                  	 e.HAS_CHILDREN AS has_children,
+		                                  	 e.active
+			                            FROM loinc AS l
+			                       LEFT JOIN loinc_extra AS e ON e.LOINC_NUM = l.LOINC_NUM
+			                           WHERE e.active = '1'
+								         AND l.loinc_num = '$loinc'")->all();
 		}
 		return $records;
+	}
+
+
+	public function getOrderResultObservationsByPidAndCode($pid, $code){
+		$this->setOrders();
+		$this->setResults();
+		$this->setObservations();
+		$sql = "SELECT obs.*, res.*
+				  FROM patient_order_results_observations AS obs
+			 LEFT JOIN patient_order_results AS res ON obs.result_id = res.id
+			 LEFT JOIN patient_orders AS ord ON ord.id = res.order_id
+				 WHERE obs.code = '$code'
+				   AND ord.pid = '$pid'
+			  ORDER BY res.result_date DESC
+				 LIMIT 10";
+		return $this->o->sql($sql)->all();
 	}
 
 }

@@ -19,6 +19,7 @@
 
 include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/Vitals.php');
 include_once(ROOT . '/dataProvider/PoolArea.php');
 include_once(ROOT . '/dataProvider/Medical.php');
 include_once(ROOT . '/dataProvider/PreventiveCare.php');
@@ -90,9 +91,9 @@ class Encounter {
 	 */
 	private $hcfa;
 	/**
-	 * @var bool|MatchaCUP
+	 * @var Vitals
 	 */
-	private $v;
+	private $Vitals;
 	/**
 	 * @var bool|MatchaCUP
 	 */
@@ -100,7 +101,6 @@ class Encounter {
 
 	function __construct(){
 		$this->db = new MatchaHelper();
-		$this->user = new User();
 		$this->patient = new Patient();
 		$this->services = new Services();
 		$this->poolArea = new PoolArea();
@@ -109,13 +109,13 @@ class Encounter {
 		$this->diagnosis = new DiagnosisCodes();
 
 		$this->FamilyHistory = new FamilyHistory();
+		$this->Vitals = new Vitals();
 
 		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
 		$this->ros = MatchaModel::setSenchaModel('App.model.patient.ReviewOfSystems');
 		$this->soap = MatchaModel::setSenchaModel('App.model.patient.SOAP');
 		$this->d = MatchaModel::setSenchaModel('App.model.patient.Dictation');
 		$this->hcfa = MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
-		$this->v = MatchaModel::setSenchaModel('App.model.patient.Vitals');
 		$this->edx = MatchaModel::setSenchaModel('App.model.patient.EncounterDx');
 	}
 
@@ -258,7 +258,7 @@ class Encounter {
 		$filters->filter[0]->value = $encounter['eid'];
 
 		if($_SESSION['globals']['enable_encounter_vitals']){
-			$encounter['vitals'] = $allVitals ? $this->getVitalsByPid($encounter['pid']) : $this->getVitalsByEid($encounter['eid']);
+			$encounter['vitals'] = $allVitals ? $this->Vitals->getVitalsByPid($encounter['pid']) : $this->Vitals->getVitalsByEid($encounter['eid']);
 		}
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
@@ -327,19 +327,23 @@ class Encounter {
 			return array('success' => false, 'error' => 'access_denied');
 		}
 
+		$user = new User();
 		if($params->isSupervisor){
 			if($params->supervisor_uid != $_SESSION['user']['id']){
+				unset($user);
 				return array('success' => false, 'error' => 'supervisor_does_not_match_user');
 			}
-			if(!$this->user->verifyUserPass($params->signature, $params->supervisor_uid)){
+			if(!$user->verifyUserPass($params->signature, $params->supervisor_uid)){
+				unset($user);
 				return array('success' => false, 'error' => 'incorrect_password');
 			}
 		}else{
-			if(!$this->user->verifyUserPass($params->signature)){
+			if(!$user->verifyUserPass($params->signature)){
+				unset($user);
 				return array('success' => false, 'error' => 'incorrect_password');
 			}
 		}
-
+		unset($user);
 
 		if($params->isSupervisor){
 			$params->close_date = date('Y-m-d H:i:s');
@@ -505,12 +509,12 @@ class Encounter {
 		$record = $this->getEncounter($eid, true, false);
 		unset($filters);
 		$encounter = (array) $record['encounter'];
-
+		$user = new User();
 		$encounter['service_date'] = date('F j, Y, g:i a', strtotime($encounter['service_date']));
 		$encounter['patient_name'] = $this->patient->getPatientFullNameByPid($encounter['pid']);
-		$encounter['open_by'] = $this->user->getUserNameById($encounter['open_uid']);
-		$encounter['signed_by'] = $this->user->getUserNameById($encounter['provider_uid']);
-
+		$encounter['open_by'] = $user->getUserNameById($encounter['open_uid']);
+		$encounter['signed_by'] = $user->getUserNameById($encounter['provider_uid']);
+		unset($user);
 		/**
 		 * Add vitals to progress note
 		 */
@@ -828,85 +832,85 @@ class Encounter {
 		return $this->edx->destroy($params);
 	}
 
-	/**
-	 * @param stdClass $params
-	 * @return array
-	 */
-	public function getVitals(stdClass $params){
-		$records =  $this->v->load($params)->all();
-		foreach($records as $i => $record){
-			$records[$i]['height_in'] = isset($record['height_in']) ? intval($record['height_in']) : '';
-			$records[$i]['height_cm'] = isset($record['height_cm']) ? intval($record['height_cm']) : '';
-			$records[$i]['administer_by'] = $record['uid'] != null ? $this->user->getUserNameById($record['uid']) : '';
-			$records[$i]['authorized_by'] = $record['auth_uid'] != null ? $this->user->getUserNameById($record['auth_uid']) : '';
-		}
-		return $records;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function addVitals($params){
-		$eid = is_object($params) ? $params->eid : $params[0]->eid;
-		$this->setEid($eid);
-		$record = $this->v->save($params);
-		$record['administer_by'] = $this->user->getUserNameById($record['uid']);
-		return $record;
-	}
-
-	/**
-	 * @param stdClass $params
-	 * @return stdClass
-	 */
-	public function updateVitals($params){
-		$eid = is_object($params) ? $params->eid : $params[0]->eid;
-		$this->setEid($eid);
-		$record = $this->v->save($params);
-		if(is_array($params)){
-			foreach($record as $i => $rec){
-				$record[$i] = $rec = (object) $rec;
-				$record[$i]->administer_by = $rec->uid != 0 ? $this->user->getUserNameById($rec->uid) : '';
-				$record[$i]->authorized_by = $rec->auth_uid != 0 ? $this->user->getUserNameById($rec->auth_uid) : '';
-			}
-		}else{
-			$record = (object) $record;
-			$record->administer_by = $record->uid != 0 ? $this->user->getUserNameById($record->uid) : '';
-			$record->authorized_by = $record->auth_uid != 0 ? $this->user->getUserNameById($record->auth_uid) : '';
-		}
-
-		return $record;
-	}
-
-	/**
-	 * @param $pid
-	 * @return array
-	 */
-	public function getVitalsByPid($pid){
-		$filters = new stdClass();
-		$filters->filter[0] = new stdClass();
-		$filters->filter[0]->property = 'pid';
-		$filters->filter[0]->value = $pid;
-
-		$filters->sort[0] = new stdClass();
-		$filters->sort[0]->property = 'date';
-		$filters->sort[0]->direction = 'DESC';
-		return $this->getVitals($filters);
-	}
-
-	/**
-	 * @param $eid
-	 * @return array
-	 */
-	public function getVitalsByEid($eid){
-		$filters = new stdClass();
-		$filters->filter[0] = new stdClass();
-		$filters->filter[0]->property = 'eid';
-		$filters->filter[0]->value = $eid;
-
-		$filters->sort[0] = new stdClass();
-		$filters->sort[0]->property = 'date';
-		$filters->sort[0]->direction = 'DESC';
-		return $this->getVitals($filters);
-	}
+//	/**
+//	 * @param stdClass $params
+//	 * @return array
+//	 */
+//	public function getVitals(stdClass $params){
+//		$records =  $this->v->load($params)->all();
+//		foreach($records as $i => $record){
+//			$records[$i]['height_in'] = isset($record['height_in']) ? intval($record['height_in']) : '';
+//			$records[$i]['height_cm'] = isset($record['height_cm']) ? intval($record['height_cm']) : '';
+//			$records[$i]['administer_by'] = $record['uid'] != null ? $this->user->getUserNameById($record['uid']) : '';
+//			$records[$i]['authorized_by'] = $record['auth_uid'] != null ? $this->user->getUserNameById($record['auth_uid']) : '';
+//		}
+//		return $records;
+//	}
+//
+//	/**
+//	 * @param stdClass $params
+//	 * @return stdClass
+//	 */
+//	public function addVitals($params){
+//		$eid = is_object($params) ? $params->eid : $params[0]->eid;
+//		$this->setEid($eid);
+//		$record = $this->v->save($params);
+//		$record['administer_by'] = $this->user->getUserNameById($record['uid']);
+//		return $record;
+//	}
+//
+//	/**
+//	 * @param stdClass $params
+//	 * @return stdClass
+//	 */
+//	public function updateVitals($params){
+//		$eid = is_object($params) ? $params->eid : $params[0]->eid;
+//		$this->setEid($eid);
+//		$record = $this->v->save($params);
+//		if(is_array($params)){
+//			foreach($record as $i => $rec){
+//				$record[$i] = $rec = (object) $rec;
+//				$record[$i]->administer_by = $rec->uid != 0 ? $this->user->getUserNameById($rec->uid) : '';
+//				$record[$i]->authorized_by = $rec->auth_uid != 0 ? $this->user->getUserNameById($rec->auth_uid) : '';
+//			}
+//		}else{
+//			$record = (object) $record;
+//			$record->administer_by = $record->uid != 0 ? $this->user->getUserNameById($record->uid) : '';
+//			$record->authorized_by = $record->auth_uid != 0 ? $this->user->getUserNameById($record->auth_uid) : '';
+//		}
+//
+//		return $record;
+//	}
+//
+//	/**
+//	 * @param $pid
+//	 * @return array
+//	 */
+//	public function getVitalsByPid($pid){
+//		$filters = new stdClass();
+//		$filters->filter[0] = new stdClass();
+//		$filters->filter[0]->property = 'pid';
+//		$filters->filter[0]->value = $pid;
+//
+//		$filters->sort[0] = new stdClass();
+//		$filters->sort[0]->property = 'date';
+//		$filters->sort[0]->direction = 'DESC';
+//		return $this->getVitals($filters);
+//	}
+//
+//	/**
+//	 * @param $eid
+//	 * @return array
+//	 */
+//	public function getVitalsByEid($eid){
+//		$filters = new stdClass();
+//		$filters->filter[0] = new stdClass();
+//		$filters->filter[0]->property = 'eid';
+//		$filters->filter[0]->value = $eid;
+//
+//		$filters->sort[0] = new stdClass();
+//		$filters->sort[0]->property = 'date';
+//		$filters->sort[0]->direction = 'DESC';
+//		return $this->getVitals($filters);
+//	}
 }

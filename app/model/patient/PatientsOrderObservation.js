@@ -37,7 +37,8 @@ Ext.define('App.model.patient.PatientsOrderObservation', {
 		{
 			name: 'code',
 			type: 'string',
-			comment: 'OBX 3'
+			comment: 'OBX 3',
+			index: true
 		},
 		{
 			name: 'code_text',

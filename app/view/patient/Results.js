@@ -37,6 +37,19 @@ Ext.define('App.view.patient.Results', {
 		    }),
 			columns: [
 				{
+					xtype: 'actioncolumn',
+					width: 25,
+					items: [
+						{
+							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+							tooltip: 'Get Info',
+							handler: function(grid, rowIndex, colIndex, item, e, record){
+								App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.description);
+							}
+						}
+					]
+				},
+				{
 					header: i18n('orders'),
 					dataIndex: 'description',
 					menuDisabled: true,
@@ -170,6 +183,19 @@ Ext.define('App.view.patient.Results', {
 						}
 					],
 					columns: [
+						{
+							xtype: 'actioncolumn',
+							width: 25,
+							items: [
+								{
+									icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+									tooltip: 'Get Info',
+									handler: function(grid, rowIndex, colIndex, item, e, record){
+										App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.code_text);
+									}
+								}
+							]
+						},
 						{
 							text: i18n('name'),
 							menuDisabled: true,

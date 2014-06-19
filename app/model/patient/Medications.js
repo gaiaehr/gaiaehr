@@ -143,10 +143,10 @@ Ext.define('App.model.patient.Medications', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getPatientMedications',
-			create: 'Medical.addPatientMedications',
-			update: 'Medical.updatePatientMedications',
-			destroy: 'Medical.deletePatientMedications'
+			read: 'Medications.getPatientMedications',
+			create: 'Medications.addPatientMedication',
+			update: 'Medications.updatePatientMedication',
+			destroy: 'Medications.destroyPatientMedication'
 		},
 		remoteGroup: false
 	}

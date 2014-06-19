@@ -56,11 +56,11 @@ class Medical {
 	/**
 	 * @var bool|MatchaCUP
 	 */
-	private $ap;
+//	private $ap;
 	/**
 	 * @var bool|MatchaCUP
 	 */
-	private $m;
+//	private $m;
 
 	function __construct(){
 		$this->db = new MatchaHelper();
@@ -68,8 +68,8 @@ class Medical {
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
-		$this->ap = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
-		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
+//		$this->ap = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
+//		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
 
 		$this->laboratories = new Laboratories();
 		$this->rxnorm = new Rxnorm();
@@ -159,17 +159,17 @@ class Medical {
 	}
 
 	/*************************************************************************************************************/
-	public function getMedicalIssues(stdClass $params){
-		return $this->ap->load($params)->all();
-	}
-
-	public function addMedicalIssues($params){
-		return $this->ap->save($params);
-	}
-
-	public function updateMedicalIssues($params){
-		return $this->ap->save($params);
-	}
+//	public function getMedicalIssues(stdClass $params){
+//		return $this->ap->load($params)->all();
+//	}
+//
+//	public function addMedicalIssues($params){
+//		return $this->ap->save($params);
+//	}
+//
+//	public function updateMedicalIssues($params){
+//		return $this->ap->save($params);
+//	}
 
 	/*************************************************************************************************************/
 	//	public function getPatientSurgery(stdClass $params)
@@ -236,29 +236,29 @@ class Medical {
 	//	}
 
 	/*************************************************************************************************************/
-	public function getPatientMedications($params){
-		return $this->m->load($params)->all();
-	}
-
-	public function addPatientMedications($params){
-		return $this->m->save($params);
-	}
-
-	public function updatePatientMedications($params){
-		return $this->m->save($params);
-	}
-
-	public function deletePatientMedications($params){
-		return $this->m->destroy($params);
-	}
-
-	public function getPatientMedicationsByPid($pid){
-		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property =  'pid';
-		$params->filters[0]->value =  $pid;
-		return $this->m->load($params)->all();
-	}
+//	public function getPatientMedications($params){
+//		return $this->m->load($params)->all();
+//	}
+//
+//	public function addPatientMedications($params){
+//		return $this->m->save($params);
+//	}
+//
+//	public function updatePatientMedications($params){
+//		return $this->m->save($params);
+//	}
+//
+//	public function deletePatientMedications($params){
+//		return $this->m->destroy($params);
+//	}
+//
+//	public function getPatientMedicationsByPid($pid){
+//		$params =  new stdClass();
+//		$params->filters[0] = new stdClass();
+//		$params->filters[0]->property =  'pid';
+//		$params->filters[0]->value =  $pid;
+//		return $this->m->load($params)->all();
+//	}
 	/*************************************************************************************************************/
 	/***************************************************************************************************************/
 

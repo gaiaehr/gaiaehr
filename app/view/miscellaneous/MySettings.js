@@ -21,7 +21,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 	extend : 'App.ux.RenderPanel',
 	id : 'panelMySettings',
 	pageTitle : i18n('my_settings'),
-	uses : ['App.ux.GridPanel'],
+	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
 		var panel = this;

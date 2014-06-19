@@ -355,6 +355,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				 */
 				'App.ux.AbstractPanel',
 				'App.ux.LiveCPTSearch',
+				'App.ux.LiveICDXSearch',
 				'App.ux.LiveImmunizationSearch',
 				'App.ux.LiveMedicationSearch',
 				'App.ux.LiveLabsSearch',
@@ -396,6 +397,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				'App.ux.form.fields.Currency',
 				'App.ux.form.fields.CustomTrigger',
 				'App.ux.form.fields.DateTime',
+				'App.ux.form.fields.MultiText',
 				'App.ux.form.fields.Percent',
 				'App.ux.form.fields.plugin.BadgeText',
 				'App.ux.form.AdvanceForm',
@@ -675,6 +677,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 	                'Cron',
 	                'DualScreen',
+	                'InfoButton',
 	                'LogOut',
 	                'Navigation',
 	                'Support',

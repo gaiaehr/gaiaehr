@@ -1324,19 +1324,12 @@ Ext.define('App.view.Viewport', {
             icon = Ext.Msg.INFO;
         }
 
-	    Ext.Msg.width = 1000;
-	    Ext.Msg.height = 600;
-	    Ext.Msg.maxHeight = 600;
-	    Ext.Msg.maxWidth = 1000;
         Ext.Msg.show({
             msg: msg,
             buttons: Ext.Msg.OK,
-            icon: icon
+            icon: icon,
+	        maxWidth: 1000
         });
-	    Ext.Msg.width = 600;
-	    Ext.Msg.height = 500;
-	    Ext.Msg.maxWidth = 600;
-	    Ext.Msg.maxHeight = 500;
     },
 
     resetApp:function(){

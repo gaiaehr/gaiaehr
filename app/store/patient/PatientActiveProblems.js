@@ -18,7 +18,8 @@
 
 Ext.define('App.store.patient.PatientActiveProblems', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.PatientActiveProblem',
-    remoteSort: false,
-	autoLoad  : false
+	requires: ['App.model.patient.PatientActiveProblem'],
+	model: 'App.model.patient.PatientActiveProblem',
+	remoteSort: false,
+	autoLoad: false
 });

@@ -21,7 +21,7 @@ Ext.define('App.view.fees.Billing',
 	extend : 'App.ux.RenderPanel',
 	id : 'panelBilling',
 	pageTitle : i18n( 'billing' ),
-	uses : ['App.ux.GridPanel'],
+	uses : ['Ext.grid.Panel'],
 	pageLayout : 'card',
 
 	initComponent : function()

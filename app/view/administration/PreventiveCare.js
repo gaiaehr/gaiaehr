@@ -21,7 +21,7 @@ Ext.define('App.view.administration.PreventiveCare',
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPreventiveCare',
 	pageTitle : i18n('preventive_care'),
-	uses : ['App.ux.GridPanel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
+	uses : ['Ext.grid.Panel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
 	initComponent : function()
 	{
 		var me = this;
@@ -60,7 +60,7 @@ Ext.define('App.view.administration.PreventiveCare',
 		}
 
 
-		me.guidelineGrid = Ext.create('App.ux.GridPanel',
+		me.guidelineGrid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
 			store : me.store,

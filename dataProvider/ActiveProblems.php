@@ -11,48 +11,60 @@
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Procedures {
+class ActiveProblems {
+
 	/**
-	 * @var bool|MatchaCUP
+	 * @var MatchaCUP
 	 */
-	private $p;
+	private $a;
 
 	function __construct() {
-		$this->p = MatchaModel::setSenchaModel('App.model.patient.encounter.Procedures');
+		$this->a = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
 	}
 
-	public function loadProcedures($params) {
-		return $this->p->load($params)->all();
+	public function getPatientActiveProblems($params) {
+		return $this->a->load($params)->all();
 	}
 
-	public function saveProcedure($params) {
-		return $this->p->save($params);
+	public function getPatientActiveProblem($params) {
+		return $this->a->load($params)->one();
 	}
 
-	public function destroyProcedure($params) {
-		return $this->p->destroy($params);
+	public function addPatientActiveProblem($params) {
+		return $this->a->save($params);
 	}
 
-	public function getPatientProcedureByPidAndCode($pid, $code) {
+	public function updatePatientActiveProblem($params) {
+		return $this->a->save($params);
+	}
+
+	public function destroyPatientActiveProblem($params) {
+		return $this->a->destroy($params);
+	}
+
+	public function getPatientActiveProblemByPidAndCode($pid, $code){
 		$params =  new stdClass();
 		$params->filters[0] = new stdClass();
 		$params->filters[0]->property = 'pid';
 		$params->filters[0]->value =  $pid;
-
 		$params->filters[2] = new stdClass();
 		$params->filters[2]->property = 'code';
 		$params->filters[2]->value =  $code;
-		return $this->p->load($params)->all();
+		$records = $this->a->load($params)->all();
+		unset($params);
+		foreach($records as $i => $record){
+			if(strtotime($record['end_date']) < strtotime(date('Y-m-d')) && $record['end_date'] != '0000-00-00'){
+				unset($records[$i]);
+			}
+		}
+		return $records;
 	}
 
 }
-//print '<pre>';
-//$p = new Prescriptions();
-//$params = new stdClass();
-//$params->query = 't';
-//print_r($p->getSigCodesByQuery($params));
+

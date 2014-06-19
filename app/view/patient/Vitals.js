@@ -111,7 +111,7 @@ Ext.define('App.view.patient.Vitals', {
 							editor: {
 								xtype: 'textfield',
 								vtype: 'numeric'
-							}
+							},
 						},
 						{
 							text: i18n('diastolic'),
@@ -298,6 +298,14 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			],
 			tbar: [
+				{
+					xtype:'button',
+					icon:'resources/images/icons/blueInfo.png',
+					focusCls:'',
+					handler:function(){
+						App.app.getController('InfoButton').doGetInfoByUrl('https://vsearch.nlm.nih.gov/vivisimo/cgi-bin/query-meta?v%3Aproject=medlineplus&query=vitals+signs&x=0&y=0');
+					}
+				},
 				'->',
 				{
 					text: i18n('vitals'),

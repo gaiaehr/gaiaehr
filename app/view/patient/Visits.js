@@ -20,7 +20,7 @@ Ext.define('App.view.patient.Visits', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: i18n('visits_history'),
 	uses: [
-		'App.ux.GridPanel',
+		'Ext.grid.Panel',
 		'Ext.ux.PreviewPlugin'
 	],
 	showRating: true,

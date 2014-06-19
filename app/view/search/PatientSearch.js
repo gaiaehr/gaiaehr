@@ -22,7 +22,7 @@ Ext.define('App.view.search.PatientSearch',
 	id : 'panelPatientSearch',
 	pageTitle : i18n('advance_patient_search'),
 	pageLayout : 'border',
-	uses : ['App.ux.GridPanel'],
+	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
 		var me = this;
@@ -81,7 +81,7 @@ Ext.define('App.view.search.PatientSearch',
 			}]
 		});
 		
-		me.grid = Ext.create('App.ux.GridPanel',
+		me.grid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
 			//store    : me.store,

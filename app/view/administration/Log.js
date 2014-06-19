@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Log', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelLog',
-	uses: ['App.ux.GridPanel'],
+	uses: ['Ext.grid.Panel'],
 	pageTitle: i18n('event_history_log'),
 	initComponent: function(){
 		var me = this;
@@ -35,7 +35,7 @@ Ext.define('App.view.administration.Log', {
 		// *************************************************************************************
 		// Create the GridPanel
 		// *************************************************************************************
-		me.logGrid = Ext.create('App.ux.GridPanel', {
+		me.logGrid = Ext.create('Ext.grid.Panel', {
 			store: me.logStore,
 			columns: [
 				{

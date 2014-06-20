@@ -37,7 +37,9 @@ include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Rxnorm.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/PoolArea.php');
+include_once(ROOT . '/dataProvider/Vitals.php');
 include_once(ROOT . '/dataProvider/Medical.php');
+include_once(ROOT . '/dataProvider/Medications.php');
 include_once(ROOT . '/dataProvider/PreventiveCare.php');
 include_once(ROOT . '/dataProvider/Services.php');
 include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
@@ -912,7 +914,7 @@ class CCDDocument {
 	 * Method setVitalsSection()
 	 */
 	private function setVitalsSection(){
-
+		$Vitals = new Vitals();
 		$vitals = array(
 			'section' => array(
 				'templateId' => array(
@@ -931,7 +933,7 @@ class CCDDocument {
 			)
 		);
 
-		$vitalsData = $this->Encounter->getVitalsByPid($this->pid);
+		$vitalsData = $Vitals->getVitalsByPid($this->pid);
 		if(!empty($vitalsData)){
 
 			$vitals['section']['text'] = array(
@@ -1394,7 +1396,7 @@ class CCDDocument {
 	 * Method setMedicationsSection()
 	 */
 	private function setMedicationsSection(){
-
+		$Medications = new Medications();
 		$medications = array(
 			'section' => array(
 				'templateId' => array(
@@ -1412,7 +1414,7 @@ class CCDDocument {
 				'text' => ''
 			)
 		);
-		$medicationsData = $this->Medical->getPatientMedicationsByPid($this->pid);
+		$medicationsData = $Medications->getPatientActiveMedicationsByPid($this->pid);
 		if(!empty($medicationsData)){
 
 			$medications['section']['text'] = array(

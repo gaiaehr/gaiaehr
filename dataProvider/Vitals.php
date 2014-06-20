@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ include_once(ROOT.'/dataProvider/User.php');
 class Vitals {
 
 
@@ -28,8 +28,6 @@ class Vitals {
 	 * @var User
 	 */
 	private $User;
-
-	private $codes;
 
 	function __construct() {
 		$this->v = MatchaModel::setSenchaModel('App.model.patient.Vitals');

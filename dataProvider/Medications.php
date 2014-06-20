@@ -62,14 +62,10 @@ class Medications {
 		$params->filters[0] = new stdClass();
 		$params->filters[0]->property = 'pid';
 		$params->filters[0]->value =  $pid;
-		$params->filters[1] = new stdClass();
-		$params->filters[1]->property = 'end_date';
-		$params->filters[1]->operator = '!=';
-		$params->filters[1]->value =  '0000-00-00';
 		$records = $this->m->load($params)->all();
 
 		foreach($records as $i => $record){
-			if(strtotime($record['end_date']) < strtotime(date('Y-m-d'))){
+			if($record['end_date'] != '0000-00-00' && strtotime($record['end_date']) < strtotime(date('Y-m-d'))){
 				unset($records[$i]);
 			}
 		}
@@ -84,17 +80,12 @@ class Medications {
 		$params->filters[0]->value =  $pid;
 
 		$params->filters[1] = new stdClass();
-		$params->filters[1]->property = 'end_date';
-		$params->filters[1]->operator = '!=';
-		$params->filters[1]->value =  '0000-00-00';
-
-		$params->filters[2] = new stdClass();
-		$params->filters[2]->property = 'RXCUI';
-		$params->filters[2]->value =  $code;
+		$params->filters[1]->property = 'RXCUI';
+		$params->filters[1]->value =  $code;
 		$records = $this->m->load($params)->all();
 
 		foreach($records as $i => $record){
-			if(strtotime($record['end_date']) < strtotime(date('Y-m-d'))){
+			if($record['end_date'] != '0000-00-00' && strtotime($record['end_date']) < strtotime(date('Y-m-d'))){
 				unset($records[$i]);
 			}
 		}

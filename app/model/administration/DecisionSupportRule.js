@@ -18,6 +18,7 @@
 
 Ext.define('App.model.administration.DecisionSupportRule', {
 	extend: 'Ext.data.Model',
+	requires: 'App.model.administration.DecisionSupportRuleConcept',
 	table: {
 		name: 'support_rules'
 	},
@@ -109,5 +110,12 @@ Ext.define('App.model.administration.DecisionSupportRule', {
 		reader: {
 			root: 'data'
 		}
-	}
+	},
+	hasMany: [
+		{
+			model: 'App.model.administration.DecisionSupportRuleConcept',
+			name: 'concepts',
+			foreignKey: 'rule_id'
+		}
+	]
 });

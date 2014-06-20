@@ -229,7 +229,7 @@ class Navigation
 				'text' => $this->i18n['preventive_care'],
 				'leaf' => true,
 				'cls' => 'file',
-				'id' => 'App.view.administration.PreventiveCare'
+				'id' => 'App.view.administration.DecisionSupport'
 			);
 		}
 		if($this->ACL->hasPermission('access_floor_plans')){

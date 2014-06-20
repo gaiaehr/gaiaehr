@@ -677,6 +677,7 @@ Ext.define('App.view.patient.Encounter', {
 					store.on('write', me.getProgressNote, me);
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
+
 				if(me.familyHistoryPanel){
 					store = me.encounter.familyhistory();
 					store.on('write', me.getProgressNote, me);
@@ -690,21 +691,23 @@ Ext.define('App.view.patient.Encounter', {
 					}
 					me.familyHistoryPanel.getForm().loadRecord(store.last());
 				}
+
 				if(me.reviewSysCkPanel){
 					store = me.encounter.reviewofsystemschecks();
 					store.on('write', me.getProgressNote, me);
 					me.reviewSysCkPanel.getForm().loadRecord(store.getAt(0));
 				}
+
 				if(me.soapPanel){
 					store = me.encounter.soap();
 					store.on('write', me.getProgressNote, me);
 					me.soapPanel.down('form').getForm().loadRecord(store.getAt(0));
 				}
+
 				if(me.MiscBillingOptionsPanel){
 					store = me.encounter.hcfaoptions();
 					me.MiscBillingOptionsPanel.getForm().loadRecord(store.getAt(0));
 				}
-				//me.speechDicPanel.getForm().loadRecord(record[0].speechdictation().getAt(0));
 
 				me.priorityCombo.setValue(data.priority);
 
@@ -715,13 +718,16 @@ Ext.define('App.view.patient.Encounter', {
 						}
 					]
 				});
+
 				if(me.CurrentProceduralTerminology){
 					me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){
 						me.CurrentProceduralTerminology.setDefaultQRCptCodes();
 					});
 				}
+
 				if(me.progressHistory) me.getProgressNotesHistory();
-				if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
+
+				//if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
 
 				app.setEncounterClose(record.isClose());
 

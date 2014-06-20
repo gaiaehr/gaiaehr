@@ -73,7 +73,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 return window.lang[key] || '*'+key+'*';
             };
 
-            window.say = function(a){
+	            window.say = function(a){
                 console.log(a);
             };
 
@@ -670,6 +670,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 ],
                 controllers:[
 	                'administration.CPT',
+	                'administration.DecisionSupport',
 	                'administration.HL7',
 	                'administration.Practice',
 	                'administration.ReferringProviders',

@@ -459,11 +459,12 @@ Ext.define('App.controller.patient.Vitals', {
 			}
 		}
 
-		return bmi.toFixed(1);
+		return bmi.toFixed ? bmi.toFixed(1) : bmi;
 	},
 
 	bmiStatus:function(bmi){
 		var status = '';
+		if(bmi == '') return '';
 		if(bmi < 15){
 			status = i18n('very_severely_underweight')
 		}else if(bmi >= 15 && bmi < 16){

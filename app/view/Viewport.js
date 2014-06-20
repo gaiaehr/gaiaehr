@@ -558,9 +558,7 @@ Ext.define('App.view.Viewport', {
         me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
         me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
         me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
-        me.PreventiveCareWindow = Ext.create('App.view.patient.windows.PreventiveCare');
         me.PatientOrdersWindow = Ext.create('App.view.patient.windows.Orders');
-//        me.DocumentViewerWindow = Ext.create('App.view.patient.windows.DocumentViewer');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
         if(acl['access_encounter_checkout']){

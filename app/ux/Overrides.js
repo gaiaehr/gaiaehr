@@ -197,6 +197,84 @@ Ext.override(Ext.data.reader.Reader, {
 //		}, me);
 //	}
 //});
+
+Ext.override(Ext.grid.RowEditor, {
+
+	setColumnField: function(column, field) {
+		var me = this,
+			editor = me.getEditor();
+
+		editor.removeColumnEditor(column);
+		Ext.grid.plugin.RowEditing.superclass.setColumnField.apply(this, arguments);
+		me.getEditor().addFieldsForColumn(column, true);
+		me.getEditor().insertColumnEditor(column);
+	},
+
+	addFieldsForColumn: function(column, initial) {
+		var me = this,
+			i,
+			length, field;
+
+		if (Ext.isArray(column)) {
+			for (i = 0, length = column.length; i < length; i++) {
+				me.addFieldsForColumn(column[i], initial);
+			}
+			return;
+		}
+
+		if (column.getEditor) {
+
+			// Get a default display field if necessary
+			field = column.getEditor(null, {
+				xtype: 'displayfield',
+				// Override Field's implementation so that the default display fields will not return values. This is done because
+				// the display field will pick up column renderers from the grid.
+				getModelData: function() {
+					return null;
+				}
+			});
+			if (column.align === 'right') {
+				field.fieldStyle = 'text-align:right';
+			}
+
+			if (column.xtype === 'actioncolumn') {
+				field.fieldCls += ' ' + Ext.baseCSSPrefix + 'form-action-col-field'
+			}
+
+			if (me.isVisible() && me.context) {
+				if (field.is('displayfield')) {
+					me.renderColumnData(field, me.context.record, column);
+				} else {
+					field.suspendEvents();
+					field.setValue(me.context.record.get(column.dataIndex));
+					field.resumeEvents();
+				}
+			}
+			if (column.hidden) {
+				me.onColumnHide(column);
+			} else if (column.rendered && !initial) {
+				// Setting after initial render
+				me.onColumnShow(column);
+			}
+		}
+		me.mon(field, 'change', me.onFieldChange, me);
+	}
+
+});
+
+Ext.override(Ext.grid.plugin.RowEditing, {
+
+	setColumnField: function(column, field) {
+		var me = this,
+			editor = me.getEditor();
+
+		editor.removeColumnEditor(column);
+		Ext.grid.plugin.RowEditing.superclass.setColumnField.apply(this, arguments);
+		me.getEditor().addFieldsForColumn(column, true);
+		me.getEditor().insertColumnEditor(column);
+	}
+});
+
 Ext.override(Ext.form.field.Checkbox, {
     inputValue: '1',
     uncheckedValue: '0'

@@ -132,6 +132,14 @@ Ext.define('App.model.administration.LayoutTree', {
 			type: 'string'
 		},
 		{
+			name: 'minLength',
+			type: 'string'
+		},
+		{
+			name: 'maxLength',
+			type: 'string'
+		},
+		{
 			name: 'maxValue',
 			type: 'string'
 		},

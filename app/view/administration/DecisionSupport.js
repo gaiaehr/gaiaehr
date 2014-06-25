@@ -20,8 +20,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 	extend: 'App.ux.RenderPanel',
 	requires: [
 		'App.ux.grid.RowFormEditing',
+		'Ext.grid.plugin.CellEditing',
 		'App.store.administration.DecisionSupportRules',
-		'App.store.administration.DecisionSupportRulesConcepts'
+		'App.store.administration.DecisionSupportRulesConcepts',
+		'App.ux.combo.Combo',
+		'App.ux.LiveCPTSearch',
+		'App.ux.LiveSnomedSearch',
+		'App.ux.LiveRXNORMSearch',
+		'App.ux.LiveRXNORMAllergySearch'
 	],
 	itemId: 'decisionSupportAdminPanel',
 	pageTitle: i18n('decision_support'),
@@ -39,11 +45,8 @@ Ext.define('App.view.administration.DecisionSupport', {
 						{
 							icon: 'resources/images/icons/delete.png', // Use a URL in the icon config
 							tooltip: i18n('remove'),
-							handler: function(grid, rowIndex, colIndex){
-								var rec = grid.getStore().getAt(rowIndex);
-							},
-							getClass: function(){
-								return 'x-grid-icon-padding';
+							handler: function(grid, rowIndex, colIndex, item, e, record){
+								App.app.getController('administration.DecisionSupport').doRemoveRule(record);
 							}
 						}
 					]
@@ -77,6 +80,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 					header: i18n('frequency'),
 					sortable: true,
 					dataIndex: 'frequency'
+				},
+				{
+					width: 50,
+					header: i18n('active'),
+					dataIndex: 'active',
+					renderer: function(v){
+						return app.boolRenderer(v);
+					}
 				}
 			],
 			tbar: Ext.create('Ext.PagingToolbar', {
@@ -91,24 +102,20 @@ Ext.define('App.view.administration.DecisionSupport', {
 						iconCls: 'icoAdd',
 						itemId: 'decisionSupportRuleAddBtn'
 					}
-					//'-',
-					//{
-					//	xtype: 'mitos.preventivecaretypescombo',
-					//	width: 150
-					//}
 				]
 			}),
 			plugins: Ext.create('App.ux.grid.RowFormEditing', {
 				autoCancel: false,
 				errorSummary: false,
-				clicksToEdit: 1,
+				clicksToEdit: 2,
 				items: [
 					{
 						xtype: 'tabpanel',
 						action: i18n('immunizations'),
 						layout: 'fit',
+						itemId: 'decisionSupportEditorTabPanel',
 						items: [
-							// TAB
+							// TAB General
 							{
 								xtype: 'container',
 								title: i18n('general'),
@@ -122,25 +129,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										xtype: 'fieldcontainer',
 										layout: 'hbox',
 										defaults: {
-											margin: '0 10 5 0',
+											margin: '0 10 0 0',
 											action: 'field'
 										},
 										items: [
 											{
-
 												xtype: 'textfield',
 												fieldLabel: i18n('description'),
 												name: 'description',
-												labelWidth: 130,
 												width: 703
-											},
-											{
-												xtype: 'gaiaehr.sexcombo',
-												fieldLabel: i18n('sex'),
-												name: 'sex',
-												width: 100,
-												labelWidth: 30
-
 											},
 											{
 												fieldLabel: i18n('active'),
@@ -157,51 +154,48 @@ Ext.define('App.view.administration.DecisionSupport', {
 										xtype: 'fieldcontainer',
 										layout: 'hbox',
 										defaults: {
-											margin: '0 10 5 0',
+											margin: '0 10 0 0',
 											action: 'field'
 										},
 										items: [
 											{
 												xtype: 'mitos.codestypescombo',
 												fieldLabel: i18n('coding_system'),
-												labelWidth: 130,
-												value: 'CVX',
-												name: 'coding_system',
-												readOnly: true
-
+												name: 'service_code_type'
 											},
 											{
-												xtype: 'numberfield',
-												fieldLabel: i18n('frequency'),
-												margin: '0 0 5 0',
-												value: 0,
-												minValue: 0,
-												width: 150,
-												name: 'frequency'
-
-											},
-											{
-												xtype: 'mitos.timecombo',
-												name: 'frequency_time',
-												width: 100
-
-											},
+												xtype: 'textfield',
+												fieldLabel: i18n('code'),
+												width: 458,
+												name: 'service_code'
+											}
+										]
+									},
+									{
+										/**
+										 * Line three
+										 */
+										xtype: 'fieldcontainer',
+										layout: 'hbox',
+										defaults: {
+											margin: '0 10 0 0',
+											action: 'field'
+										},
+										items: [
 											{
 												xtype: 'numberfield',
 												fieldLabel: i18n('age_start'),
 												name: 'age_start',
-												labelWidth: 75,
-												width: 140,
+
 												value: 0,
 												minValue: 0
 
 											},
 											{
-												fieldLabel: i18n('must_be_pregnant'),
-												xtype: 'checkboxfield',
-												labelWidth: 105,
-												name: 'pregnant'
-
+												xtype: 'textfield',
+												fieldLabel: i18n('reference'),
+												name: 'reference',
+												width: 458
 											}
 										]
 
@@ -213,91 +207,278 @@ Ext.define('App.view.administration.DecisionSupport', {
 										xtype: 'fieldcontainer',
 										layout: 'hbox',
 										defaults: {
-											margin: '0 10 5 0',
+											margin: '0 10 0 0',
 											action: 'field'
 										},
 										items: [
 											{
-												xtype: 'textfield',
-												fieldLabel: i18n('code'),
-												name: 'code',
-												labelWidth: 130
-											},
-											{
-												xtype: 'numberfield',
-												fieldLabel: i18n('times_to_perform'),
-												name: 'times_to_perform',
-												width: 250,
-												value: 0,
-												minValue: 0,
-												tooltip: i18n('greater_than_1_or_just_check_perform_once')
-
-											},
-											{
-
 												xtype: 'numberfield',
 												fieldLabel: i18n('age_end'),
 												name: 'age_end',
-												labelWidth: 75,
-												width: 140,
 												value: 0,
 												minValue: 0
-
 											},
 											{
-												fieldLabel: i18n('perform_only_once'),
-												xtype: 'checkboxfield',
-												labelWidth: 105,
-												name: 'only_once'
+												xtype: 'gaiaehr.sexcombo',
+												fieldLabel: i18n('sex'),
+												name: 'sex',
+												margin: '0 10 5 0'
 											}
 										]
-
 									}
 								]
 							},
-							// TAB
+							// TAB Procedures
+							{
+								xtype: 'grid',
+								title: i18n('procedures'),
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'PROC',
+								columns: [
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon: 'resources/images/icons/delete.png',
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
+											}
+										]
+									},
+									{
+										header: i18n('concept'),
+										flex: 1,
+										dataIndex: 'concept_text'
+									},
+									{
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									}
+								],
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
+									}
+								],
+								tbar: [
+									{
+										xtype: 'livecptsearch',
+										fieldLabel: i18n('add_procedure'),
+										hideLabel: false,
+										margin: '0 0 0 5',
+										flex: 1,
+										itemId: 'DecisionSupportProcedureCombo'
+									}
+								]
+							},
+							// TAB Active Problems
 							{
 								xtype: 'grid',
 								title: i18n('active_problems'),
-								action: 'problems',
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'PROB',
 								columns: [
-
 									{
 										xtype: 'actioncolumn',
 										width: 20,
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove')
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
 											}
 										]
 									},
 									{
-										header: i18n('code'),
-										width: 100,
-										dataIndex: 'code'
+										header: i18n('concept'),
+										flex: 1,
+										dataIndex: 'concept_text'
 									},
 									{
-										header: i18n('description'),
-										flex: 1,
-										dataIndex: 'code_text'
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									}
+								],
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
 									}
 								],
 								tbar: [
-									'->',
 									{
-										xtype: 'liveicdxsearch',
+										xtype: 'snomedlivetsearch',
 										fieldLabel: i18n('add_problem'),
 										hideLabel: false,
-										width:600
+										margin: '0 0 0 5',
+										flex: 1,
+										itemId: 'DecisionSupportProblemCombo'
 									}
 								]
 							},
-							// TAB
+							// TAB Social Lifestyle
+							{
+								xtype: 'grid',
+								title: i18n('social_lifestyle'),
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'SOCI',
+								columns: [
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon: 'resources/images/icons/delete.png',
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
+											}
+										]
+									},
+									{
+										header: i18n('concept'),
+										flex: 1,
+										dataIndex: 'concept_text'
+									},
+									{
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									},
+									{
+										text: i18n('value'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'value_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('value'),
+												dataIndex: 'value',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									}
+								],
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
+									}
+								],
+								tbar: [
+									{
+										xtype: 'gaiaehr.combo',
+										fieldLabel: i18n('add_social_lifestyle'),
+										itemId: 'DecisionSupportSocialHistoryCombo',
+										margin: '0 0 0 5',
+										width: 350,
+										list: 101
+									},
+									{
+										xtype: 'button',
+										iconCls: 'icoAdd',
+										itemId: 'DecisionSupportSocialHistoryAddBtn'
+									}
+								]
+							},
+							// TAB Medications
 							{
 								xtype: 'grid',
 								title: i18n('medications'),
-								action: 'medications',
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'MEDI',
 								columns: [
 									{
 										xtype: 'actioncolumn',
@@ -305,36 +486,93 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove')
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
 											}
 										]
 									},
 									{
-										header: i18n('code'),
-										width: 100,
-										dataIndex: 'code'
+										header: i18n('concept'),
+										flex: 1,
+										dataIndex: 'concept_text'
 									},
 									{
-										header: i18n('description'),
-										flex: 1,
-										dataIndex: 'code_text'
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									},
+									{
+										text: i18n('value'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'value_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('value'),
+												dataIndex: 'value',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									}
+								],
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
 									}
 								],
 								tbar: [
-									'->',
 									{
-										xtype: 'medicationlivetsearch',
-										fieldLabel: i18n('add_problem'),
+										xtype: 'rxnormlivetsearch',
+										fieldLabel: i18n('add_medication'),
 										hideLabel: false,
-										width:600
+										margin: '0 0 0 5',
+										flex: 1,
+										itemId: 'DecisionSupportMedicationCombo'
 									}
 								]
 							},
-							// TAB
+							// TAB Medication Allergies
 							{
 								xtype: 'grid',
-								title: i18n('labs'),
-								action: 'labs',
+								title: i18n('medication_allergies'),
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'ALLE',
 								columns: [
 									{
 										xtype: 'actioncolumn',
@@ -342,53 +580,280 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove')
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
 											}
 										]
 									},
 									{
-										header: i18n('value_name'),
+										header: i18n('concept'),
 										flex: 1,
-										dataIndex: 'value_name'
+										dataIndex: 'concept_text'
 									},
 									{
-										header: i18n('less_than'),
-										flex: 1,
-										dataIndex: 'less_than',
-										editor: {
-											xtype: 'numberfield'
-										}
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
 									},
 									{
-										header: i18n('greater_than'),
-										flex: 1,
-										dataIndex: 'greater_than',
-										editor: {
-											xtype: 'numberfield'
-										}
-									},
-									{
-										header: i18n('equal_to'),
-										flex: 1,
-										dataIndex: 'equal_to',
-										editor: {
-											xtype: 'numberfield'
-										}
+										text: i18n('value'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'value_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('value'),
+												dataIndex: 'value',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
 									}
 								],
-								plugins: Ext.create('Ext.grid.plugin.CellEditing', {
-									autoCancel: true,
-									errorSummary: false,
-									clicksToEdit: 2
-								}),
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
+									}
+								],
 								tbar: [
-									'->',
+									{
+										xtype: 'rxnormallergylivetsearch',
+										fieldLabel: i18n('add_medication'),
+										hideLabel: false,
+										margin: '0 0 0 5',
+										flex: 1,
+										itemId: 'DecisionSupportMedicationAllergyCombo'
+									}
+								]
+							},
+							// TAB LAB
+							{
+								xtype: 'grid',
+								title: i18n('labs'),
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'LAB',
+								columns: [
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon: 'resources/images/icons/delete.png',
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
+											}
+										]
+									},
+									{
+										header: i18n('concept'),
+										flex: 1,
+										dataIndex: 'concept_text'
+									},
+									{
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									},
+									{
+										text: i18n('value'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'value_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('value'),
+												dataIndex: 'value',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									}
+								],
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
+									}
+								],
+								tbar: [
 									{
 										xtype: 'labslivetsearch',
 										fieldLabel: i18n('add_labs'),
 										hideLabel: false,
-										width:600
-								    }
+										margin: '0 0 0 5',
+										flex: 1,
+										itemId: 'DecisionSupportLabCombo'
+									}
+								]
+							},
+							// TAB
+							{
+								xtype: 'grid',
+								title: i18n('vitals'),
+								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
+								action: 'VITA',
+								columns: [
+									{
+										xtype: 'actioncolumn',
+										width: 20,
+										items: [
+											{
+												icon: 'resources/images/icons/delete.png',
+												tooltip: i18n('remove'),
+												handler: function(grid, rowIndex, colIndex, item, e, record){
+													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
+												}
+											}
+										]
+									},
+									{
+										header: i18n('concept'),
+										flex: 1,
+										dataIndex: 'concept_text'
+									},
+									{
+										text: i18n('frequency'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'frequency_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('frequency'),
+												dataIndex: 'frequency',
+												editor: {
+													xtype: 'numberfield'
+												}
+											},
+											{
+												header: i18n('interval'),
+												dataIndex: 'frequency_interval',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									},
+									{
+										text: i18n('value'),
+										columns: [
+											{
+												header: i18n('operator'),
+												dataIndex: 'value_operator',
+												width: 180,
+												editor: {
+													xtype: 'gaiaehr.combo',
+													list: 111
+												}
+											},
+											{
+												header: i18n('value'),
+												dataIndex: 'value',
+												editor: {
+													xtype: 'textfield'
+												}
+											}
+										]
+									}
+								],
+								plugins: [
+									{
+										ptype: 'cellediting',
+										autoCancel: true,
+										errorSummary: false,
+										clicksToEdit: 2
+									}
+								],
+								tbar: [
+									{
+										xtype: 'gaiaehr.combo',
+										fieldLabel: i18n('add_vital'),
+										labelWidth: 60,
+										hideLabel: false,
+										margin: '0 0 0 5',
+										list: 110,
+										width: 350,
+										itemId: 'DecisionSupportVitalCombo'
+									},
+									{
+										xtype: 'button',
+										iconCls: 'icoAdd',
+										itemId: 'DecisionSupportVitalAddBtn'
+									}
 								]
 							}
 						]

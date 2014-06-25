@@ -30,7 +30,8 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.CurrentProceduralTerminology',
 		'App.view.patient.encounter.FamilyHistory',
 		'App.view.patient.ProgressNote',
-		'App.ux.combo.EncounterPriority'
+		'App.ux.combo.EncounterPriority',
+		'App.view.patient.DecisionSupportWarningPanel'
 	],
 
 	enableCPT: eval(g('enable_encounter_cpt')),
@@ -42,6 +43,7 @@ Ext.define('App.view.patient.Encounter', {
 	enableItemsToReview: eval(g('enable_encounter_items_to_review')),
 	enableReviewOfSystem: eval(g('enable_encounter_review_of_systems')),
 	enableReviewOfSystemChecks: eval(g('enable_encounter_review_of_systems_cks')),
+	enableClicnicaDecisionSupport: eval(g('enable_clinical_decision_support')),
 
 	showRating: true,
 	conversionMethod: 'english',
@@ -77,13 +79,6 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.encounterEventHistoryStore = Ext.create('App.store.administration.AuditLog');
 
-		//        /**
-		//         * Encounter Checkout window
-		//         * @type {*}
-		//         */
-		//        if(acl['access_encounter_checkout']){
-		//	        app.checkoutWindow = app.checkoutWindow;
-		//        }
 
 		if(me.renderAdministrative){
 			me.centerPanel = Ext.create('Ext.tab.Panel', {
@@ -129,6 +124,14 @@ Ext.define('App.view.patient.Encounter', {
 				}
 			})
 		);
+
+		if(me.enableClicnicaDecisionSupport && a('access_clinical_decision_support')){
+			me.encounterTabPanel.addDocked({
+				xtype: 'decisionsupportwarningpanel',
+				itemId: 'DecisionSupportWarningPanel',
+				dock: 'top'
+			});
+		}
 
 		if(me.enableVitals && acl['access_patient_vitals']){
 			me.vitalsPanel = me.encounterTabPanel.add(
@@ -204,20 +207,20 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableSOAP && acl['access_soap']){
-			me.soapPanel = me.encounterTabPanel.add(
-				Ext.create('App.view.patient.encounter.SOAP', {
-					bodyStyle: 'padding:0',
-					enc: me
-				})
-			);
-		}
-
 		if(me.enableItemsToReview && acl['access_itmes_to_review']){
 			me.itemsToReview = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.ItemsToReview', {
 					title: i18n('items_to_review'),
 					bodyPadding: '7 5 2 5'
+				})
+			);
+		}
+
+		if(me.enableSOAP && acl['access_soap']){
+			me.soapPanel = me.encounterTabPanel.add(
+				Ext.create('App.view.patient.encounter.SOAP', {
+					bodyStyle: 'padding:0',
+					enc: me
 				})
 			);
 		}
@@ -302,7 +305,8 @@ Ext.define('App.view.patient.Encounter', {
 			split: true,
 			collapsible: true,
 			animCollapse: true,
-			collapsed: false,
+			collapsed: true,
+			itemId: 'EncounterProgressNotesPanel',
 			listeners: {
 				scope: this,
 				collapse: me.progressNoteCollapseExpand,

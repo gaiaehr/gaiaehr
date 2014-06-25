@@ -290,6 +290,22 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
+                            fieldLabel: i18n('min_length'),
+                            xtype: 'numberfield',
+                            name: 'minLength',
+                            itemId: 'minLength',
+	                        minValue: 0,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: i18n('max_length'),
+                            xtype: 'numberfield',
+                            name: 'maxLength',
+                            itemId: 'maxLength',
+	                        minValue: 0,
+                            hidden: true
+                        },
+                        {
                             fieldLabel: i18n('value'),
                             xtype: 'textfield',
                             name: 'value',
@@ -898,9 +914,9 @@ Ext.define('App.view.administration.Layout', {
         }else if(value == 'checkbox'){
             items = ['name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
         }else if(value == 'textfield'){
-            items = ['name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin'];
+            items = ['name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
         }else if(value == 'textareafield'){
-            items = ['name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin'];
+            items = ['name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
         }else if(value == 'numberfield'){
             items = ['name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
         }else if(value == 'timefield'){

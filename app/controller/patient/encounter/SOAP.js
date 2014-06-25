@@ -40,6 +40,10 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		{
 			ref: 'SpeechBtn',
 			selector: '#soapPanel button[action=speechBtn]'
+		},
+		{
+			ref: 'EncounterProgressNotesPanel',
+			selector: '#EncounterProgressNotesPanel'
 		}
 	],
 
@@ -47,7 +51,9 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 
 		this.control({
 			'#soapPanel': {
-				beforerender: this.onPanelBeforeRender
+				beforerender: this.onPanelBeforeRender,
+				activate: this.onPanelActive,
+				deactivate: this.onPanelDeActive
 			},
 			'#soapPanel button[action=speechBtn]': {
 				toggle: this.onSpeechBtnToggle
@@ -59,6 +65,20 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 				focus: this.onProcedureTextFieldFocus
 			}
 		});
+	},
+
+	onPanelActive: function(){
+		var me = this;
+		Ext.Function.defer(function(){
+			me.getEncounterProgressNotesPanel().expand();
+		}, 200);
+	},
+
+	onPanelDeActive: function(){
+		var me = this;
+		Ext.Function.defer(function(){
+			me.getEncounterProgressNotesPanel().collapse();
+		}, 200);
 	},
 
 	onSoapTextFieldFocus: function(field) {

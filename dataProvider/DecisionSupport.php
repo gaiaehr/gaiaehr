@@ -23,6 +23,7 @@ include_once(ROOT . '/dataProvider/Orders.php');
 include_once(ROOT . '/dataProvider/Allergies.php');
 include_once(ROOT . '/dataProvider/Medications.php');
 include_once(ROOT . '/dataProvider/Procedures.php');
+include_once(ROOT . '/dataProvider/SocialHistory.php');
 include_once(ROOT . '/dataProvider/ActiveProblems.php');
 include_once(ROOT . '/lib/Matcha/plugins/Carbon/Carbon.php');
 
@@ -66,6 +67,10 @@ class DecisionSupport {
 	 */
 	private $Vitals;
 	/**
+	 * @var SocialHistory
+	 */
+	private $SocialHistory;
+	/**
 	 * @var null | Array
 	 */
 	private $rules = null;
@@ -78,6 +83,7 @@ class DecisionSupport {
 		$this->Allergies = new Allergies();
 		$this->Medications = new Medications();
 		$this->Procedures = new Procedures();
+		$this->SocialHistory = new SocialHistory();
 		$this->ActiveProblems = new ActiveProblems();
 
 	}
@@ -99,6 +105,19 @@ class DecisionSupport {
 	}
 
 	public function deleteDecisionSupportRule($params){
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'rule_id';
+		// remove all rule concepts
+		if(is_array($params)){
+			foreach($params as $param){
+				$filters->filter[0]->value = $param->id;
+				$this->deleteDecisionSupportRuleConcept($filters);
+			}
+		}else{
+			$filters->filter[0]->value = $params->id;
+			$this->deleteDecisionSupportRuleConcept($filters);
+		}
 		return $this->r->destroy($params);
 	}
 
@@ -174,6 +193,9 @@ class DecisionSupport {
 			$params->filter[1]->value = 'PROB';
 			$this->rules[$i]['concepts']['PROB'] = $this->getDecisionSupportRuleConcepts($params);
 
+			$params->filter[1]->value = 'SOCI';
+			$this->rules[$i]['concepts']['SOCI'] = $this->getDecisionSupportRuleConcepts($params);
+
 			$params->filter[1]->value = 'MEDI';
 			$this->rules[$i]['concepts']['MEDI'] = $this->getDecisionSupportRuleConcepts($params);
 
@@ -190,6 +212,10 @@ class DecisionSupport {
 		unset($params);
 	}
 
+	/**
+	 * @param $rule
+	 * @return bool
+	 */
 	private function ckRule($rule){
 		return (
 			$this->ckDemographics($rule) && (
@@ -221,7 +247,7 @@ class DecisionSupport {
 		if($rule['age_end'] > 0 && $age['DMY']['years'] > $rule['age_end']){
 			return false;
 		}
-		if($rule['sex'] !== 'all' && $this->Patient->getPatientSex() != $rule['sex']){
+		if($rule['sex'] !== '' && $this->Patient->getPatientSex() != $rule['sex']){
 			return false;
 		}
 		return true;
@@ -375,26 +401,30 @@ class DecisionSupport {
 		if(isset($rule['concepts']['SOCI']) && !empty($rule['concepts']['SOCI'])){
 			$count = 0;
 			foreach($rule['concepts']['SOCI'] as $concept){
-				$vitals = $this->Vitals->getVitalsByPid($this->Patient->getPatientPid());
-				$codes = $this->Vitals->getCodes();
-				if(empty($vitals)) continue;
-				$frequency = 0;
-				foreach($vitals as $vital){
-					$mapping = $codes[$concept['concept_code']]['mapping'];
-					if($this->compare($vital[$mapping], $concept['value_operator'], $concept['value'])){
-						if($this->isWithInterval($vital['date'], $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d H:i:s')){
+				$socials = $this->SocialHistory->getSocialHistoryByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
+				//if(empty($socials)) continue;
+
+				if($concept['frequency_interval'] == ''){
+					if($this->compare(count($socials), $concept['frequency_operator'], $concept['frequency'])){
+						return true;
+					}
+				}else{
+					$frequency = 0;
+					foreach($socials as $social){
+						$starDate = isset($social['create_date']) ? $social['create_date'] : $social['start_date'];
+						if($this->isWithInterval($starDate, $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d')){
 							$frequency++;
-							//if($concept['frequency'] == $frequency) break;
+							if($concept['frequency'] == $frequency) break;
 						}
 					}
+					if($frequency >= $concept['frequency']){
+						$count++;
+					}
 				}
-				if($concept['frequency_interval'] == 0 || $frequency >= $concept['frequency']){
-					$count++;
-				}
+
 			}
 			return $count == count($rule['concepts']['SOCI']);
 		}
-
 		return true;
 	}
 
@@ -429,6 +459,13 @@ class DecisionSupport {
 		return true;
 	}
 
+	/**
+	 * @param $date
+	 * @param $interval
+	 * @param string $operator
+	 * @param string $dateFormat
+	 * @return bool
+	 */
 	private function isWithInterval($date, $interval, $operator = '=', $dateFormat = 'Y-m-d'){
 		$now = Carbon::now();
 		$date = Carbon::createFromFormat($dateFormat, $date);
@@ -445,6 +482,12 @@ class DecisionSupport {
 		return $this->compare($now, $operator, $date);
 	}
 
+	/**
+	 * @param $v1
+	 * @param $operator
+	 * @param $v2
+	 * @return bool
+	 */
 	private function compare($v1, $operator, $v2){
 		switch($operator) {
 			case '!=': return $v1 != $v2;
@@ -457,11 +500,3 @@ class DecisionSupport {
 	}
 
 }
-
-//$params = new stdClass();
-//$params->start = 0;
-//$params->limit = 25;
-//$params->pid = 5;
-//$t = new PreventiveCare();
-//print '<pre>';
-//print_r($t->getPreventiveCareCheck($params));

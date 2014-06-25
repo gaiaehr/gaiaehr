@@ -7,6 +7,14 @@
 	font-family: 'OpenSans-CondLight';
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
+
+.decisionSupportWarning .x-panel-body-default {
+    background-color: #FFCCCC;
+    border: none;
+    color: #333333;
+    padding: 5px;
+}
+
 .externalinfo-container {
     padding: 10px;
     background-color: #ffffff;

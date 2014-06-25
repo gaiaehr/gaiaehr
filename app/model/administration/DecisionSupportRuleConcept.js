@@ -35,7 +35,7 @@ Ext.define('App.model.administration.DecisionSupportRuleConcept', {
 			name: 'concept_type',
 			type: 'string',
 			len: 10,
-			comment: 'PROC PROB MEDI ALLE LAB VITA'
+			comment: 'PROC PROB MEDI SOCI ALLE LAB VITA'
 		},
 		{
 			name: 'concept_text',

@@ -19,6 +19,6 @@
 Ext.define('App.store.patient.Medications', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Medications',
-    remoteSort: false,
-	autoLoad  : false
+//    remoteSort: false,
+//	autoLoad  : false
 });

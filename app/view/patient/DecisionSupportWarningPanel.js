@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.PatientImmunization', {
-	extend: 'Ext.data.Store',
-	model: 'App.model.patient.PatientImmunization',
-//	remoteSort: false,
-//	autoLoad: false
+Ext.define('App.view.patient.DecisionSupportWarningPanel', {
+	extend: 'Ext.panel.Panel',
+	xtype: 'decisionsupportwarningpanel',
+	cls: 'decisionSupportWarning',
+	header: false,
+	collapsible: true,
+	collapsed: true,
+	hidden: true,
+	margin: 0
 });
-
-

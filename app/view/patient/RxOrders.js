@@ -31,6 +31,7 @@ Ext.define('App.view.patient.RxOrders', {
 	xtype: 'patientrxorderspanel',
 	title: i18n('rx_orders'),
 	columnLines: true,
+	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
 		groupField: 'date_ordered',
 		remoteFilter: true,
@@ -64,8 +65,6 @@ Ext.define('App.view.patient.RxOrders', {
 				{
 					icon: 'resources/images/icons/cross.png',
 					tooltip: i18n('remove')
-					//					scope: me,
-					//					handler: me.onRemoveClick
 				}
 			]
 		},
@@ -86,10 +85,6 @@ Ext.define('App.view.patient.RxOrders', {
 			editor: {
 				xtype: 'rxnormlivetsearch',
 				itemId: 'RxNormOrderLiveSearch'
-				//				listeners: {
-				//					scope: me,
-				//					select: me.onRxnormLiveSearchSelect
-				//				}
 			}
 		},
 		{
@@ -177,9 +172,6 @@ Ext.define('App.view.patient.RxOrders', {
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newRxOrderBtn'
-			//			scope: me,
-			//			handler: me.onNewPrescription
-
 		},
 		'-',
 		{
@@ -189,8 +181,6 @@ Ext.define('App.view.patient.RxOrders', {
 			margin: '0 5 0 0',
 			action: 'encounterRecordAdd',
 			itemId: 'cloneRxOrderBtn'
-			//			scope: me,
-			//			handler: me.onClonePrescriptions
 		},
 		'-',
 		{
@@ -201,8 +191,4 @@ Ext.define('App.view.patient.RxOrders', {
 			itemId: 'printRxOrderBtn'
 		}
 	]
-	//	listeners: {
-	//		scope: me,
-	//		selectionchange: me.onSelectionChange
-	//	}
 });

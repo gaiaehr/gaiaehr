@@ -1326,7 +1326,7 @@ Ext.define('App.view.Viewport', {
             msg: msg,
             buttons: Ext.Msg.OK,
             icon: icon,
-	        maxWidth: 1000
+	        maxWidth: 1200
         });
     },
 

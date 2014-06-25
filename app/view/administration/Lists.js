@@ -42,20 +42,22 @@ Ext.define('App.view.administration.Lists', {
          * RowEditor Classes
          */
         me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-            autoCancel: false,
-            errorSummary: false
+//            autoCancel: false,
+//            errorSummary: false
         });
-        me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-            autoCancel: false,
-            errorSummary: false
+
+	    me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+//            autoCancel: false,
+//            errorSummary: false
         });
+
         /**
          * Lists Grid
          */
         me.listsGrid = Ext.create('Ext.grid.Panel', {
             store: me.listsStore,
             itemId: 'listsGrid',
-            plugins: [me.listsRowEditing],
+            plugins: [ me.listsRowEditing ],
             width: 320,
             margin: '0 2 0 0',
             region: 'west',
@@ -71,6 +73,7 @@ Ext.define('App.view.administration.Lists', {
                     sortable: false,
                     dataIndex: 'title',
                     editor: {
+	                    xtype:'textfield',
                         allowBlank: false
                     }
                 },
@@ -142,6 +145,9 @@ Ext.define('App.view.administration.Lists', {
                 }
             },
             columns: [
+	            {
+		            xtype: 'rownumberer'
+	            },
                 {
                     text: i18n('option_title'),
                     width: 200,

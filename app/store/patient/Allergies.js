@@ -19,6 +19,6 @@
 Ext.define('App.store.patient.Allergies', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Allergies',
-    remoteSort: false,
-	autoLoad  : false
+//    remoteSort: false,
+	//	autoLoad  : false
 });

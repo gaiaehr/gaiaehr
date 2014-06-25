@@ -173,7 +173,9 @@ Ext.define('App.controller.patient.SocialHistory', {
 			};
 		}
 
+		editor._marginWidth = 2;
 		column.setEditor(editor);
+		plugin.editor.onColumnResize(column);
 
 	},
 

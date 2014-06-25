@@ -113,7 +113,8 @@ INSERT INTO `acl_permissions` (`id`, `perm_key`, `perm_name`, `perm_cat`, `seq`)
 (110, 'access_admin_applications', 'Administer Applications', 'Administrators', 6),
 (111, 'access_admin_modules', 'Administer Modules', 'Administrators', 6),
 (112, 'access_admin_encryption', 'Access Encryption Panel', 'Administrators', 6),
-(113, 'access_to_other_facilities', 'Access To Other Facilities', 'General', 2);
+(113, 'access_to_other_facilities', 'Access To Other Facilities', 'General', 2),
+(114, 'access_clinical_decision_support', 'Access Clinical Decision Support', 'Encounters', 3);
 
 INSERT INTO `acl_roles` (`id`, `role_name`, `role_key`, `seq`) VALUES
 (1, 'Administrator', 'administrator', 7),
@@ -602,7 +603,15 @@ INSERT INTO `acl_role_perms` (`id`, `role_key`, `perm_key`, `value`, `add_date`)
 (475, 'physician', 'access_floor_plan_panel', 0, NULL),
 (476, 'administrator', 'access_floor_plan_panel', 1, NULL),
 (477, 'emergencyaccess', 'access_floor_plan_panel', 0, NULL),
-(478, 'referrer', 'access_floor_plan_panel', 0, NULL);
+(478, 'referrer', 'access_floor_plan_panel', 0, NULL),
+(479, 'referrer', 'sign_enc', 0, '0000-00-00 00:00:00'),
+(480, 'front_office', 'access_clinical_decision_support', 0, NULL),
+(481, 'auditor', 'access_clinical_decision_support', 0, NULL),
+(482, 'clinician', 'access_clinical_decision_support', 0, NULL),
+(483, 'physician', 'access_clinical_decision_support', 0, NULL),
+(484, 'administrator', 'access_clinical_decision_support', 1, NULL),
+(485, 'emergencyaccess', 'access_clinical_decision_support', 0, NULL),
+(486, 'referrer', 'access_clinical_decision_support', 0, NULL);
 
 INSERT INTO `addresses` (`id`, `line1`, `line2`, `city`, `state`, `zip`, `plus_four`, `country`, `foreign_id`, `create_uid`, `write_uid`, `create_date`, `update_date`, `address_type`) VALUES
 (3, 'Calle 2 Metropolis', 'Numero 301', 'Carolina', 'PR', '00987', '', '', 2, NULL, NULL, NULL, NULL, NULL),
@@ -2509,10 +2518,10 @@ INSERT INTO `combo_lists` (`id`, `title`, `active`) VALUES
 (94, 'Encounter Priorities', 1),
 (95, 'Sex', 1),
 (96, 'Insurance Type', 1),
-(97, 'Specimen Action Code', 0),
-(98, 'Result Status', 0),
+(97, 'Specimen Action Code', 1),
+(98, 'Result Status', 1),
 (99, 'Observation Result Handling', 0),
-(100, 'Abnormal Flags', 0),
+(100, 'Abnormal Flags', 1),
 (101, 'Social Status Types', 1),
 (102, 'Document Types (Categories)', 1),
 (103, 'Yes/No (Y/N)', 1),
@@ -2521,7 +2530,9 @@ INSERT INTO `combo_lists` (`id`, `title`, `active`) VALUES
 (106, 'Tobacoo Use', 1),
 (107, 'Physical Activity Behavior', 1),
 (108, 'Drug Abuse', 1),
-(109, 'Family History', 1);
+(109, 'Family History', 1),
+(110, 'Vitals (culumns)', 1),
+(111, 'Operators', 1);
 
 INSERT INTO `combo_lists_options` (`id`, `list_id`, `option_value`, `option_name`, `code`, `code_type`, `seq`, `notes`, `active`) VALUES
 (1, 23, '2', 'No', NULL, NULL, 1, '', 1),
@@ -3057,7 +3068,7 @@ INSERT INTO `combo_lists_options` (`id`, `list_id`, `option_value`, `option_name
 (673, 89, 'teaspoon (5ml)', 'teaspoon (5ml)', NULL, NULL, 0, '', 1),
 (674, 20, 'PR', 'Puerto Rico', NULL, NULL, 0, '', 1),
 (675, 59, 'H', 'Hispanic or Latino', 'H', 'HL70189', 0, 'HL7 Table 0189', 1),
-(676, 19, 'Both', 'Both', NULL, NULL, NULL, '', 1),
+(676, 19, '', 'Both', '', '', 0, '', 1),
 (677, 90, '1 Day', '1 Day', NULL, NULL, 10, '', 1),
 (678, 90, '2 Days', '2 Days', NULL, NULL, 20, '', 1),
 (679, 90, '3 Days', '3 Days', NULL, NULL, 30, '', 1),
@@ -3292,7 +3303,29 @@ INSERT INTO `combo_lists_options` (`id`, `list_id`, `option_value`, `option_name
 (999, 109, '160463003', 'Paternal Grandmother', '160463003', 'SNOMED', 0, '', 1),
 (1000, 109, '160460000', 'Maternal Grandfather', '160460000', 'SNOMED', 0, '', 1),
 (1001, 109, '160462008', 'Maternal Grandmother', '160462008', 'SNOMED', 0, '', 1),
-(1002, 109, '160444004', 'Brother', '160444004', 'SNOMED', 0, '', 1);
+(1002, 109, '160444004', 'Brother', '160444004', 'SNOMED', 0, '', 1),
+(1003, 3, 'ESP', 'EspaÃ±a', '', '', 0, '', 1),
+(1004, 20, 'CAT', 'CataluÃ±a', '', '', 0, '', 1),
+(1005, 110, 'weight_kg', 'Weight (kilograms)', '3141-9', 'LOINC', 20, '', 1),
+(1006, 110, 'height_in', 'Height (inches)', '8302-2', 'LOINC', 30, '', 1),
+(1007, 110, 'bp_systolic', 'BP Systolic', '8480-6', 'LOINC', 50, '', 1),
+(1008, 110, 'bp_diastolic', 'BP Diastolic', '8462-4', 'LOINC', 60, '', 1),
+(1009, 110, 'pulse', 'Pulse (Heart Rate)', '8867-4', 'LOINC', 70, '', 1),
+(1010, 110, 'respiration', 'Respiratory Rate', '9279-1', 'LOINC', 80, '', 1),
+(1011, 110, 'temp_c', 'Temperature (celsius)', '8310-5', 'LOINC', 100, '', 1),
+(1012, 110, 'oxygen_saturation', 'Oxygen Saturation', '2710-2', 'LOINC', 110, '', 1),
+(1013, 110, 'head_circumference_cm', 'Head Circumference (centimeters)', '8287-5', 'LOINC', 130, '', 1),
+(1014, 110, 'bmi', 'BMI', '59575-1', 'LOINC', 140, '', 1),
+(1015, 110, 'weight_lbs', 'Weight (punds)', '3141-9', 'LOINC', 10, '', 1),
+(1016, 110, 'height_cm', 'Height (centimeters)', '8302-2', 'LOINC', 40, '', 1),
+(1017, 110, 'temp_f', 'Temperature (fahrenheit)', '8310-5', 'LOINC', 90, '', 1),
+(1018, 110, 'head_circumference_in', 'Head Circumference (inches)', '8287-5', 'LOINC', 120, '', 1),
+(1019, 111, '==', 'Equal to (=)', '', '', 10, '', 1),
+(1020, 111, '!=', 'Not equal to (!=)', '', '', 20, '', 1),
+(1021, 111, '>', 'Greater than (>)', '', '', 40, '', 1),
+(1022, 111, '<', 'Less than (<)', '', '', 30, '', 1),
+(1023, 111, '>=', 'Greater than or equal to (>=)', '', '', 60, '', 1),
+(1024, 111, '<=', 'Less than or equal to', '', '', 50, '', 1);
 
 
 INSERT INTO `cpt_codes` (`id`, `ConceptID`, `code`, `code_text`, `code_text_medium`, `code_text_short`, `active`, `reportable`) VALUES
@@ -13348,9 +13381,9 @@ INSERT INTO `forms_fields` (`id`, `form_id`, `xtype`, `parentId`, `index`) VALUE
 (95, 1, 'fieldset', 'root', NULL),
 (96, 1, 'fieldcontainer', '95', 1),
 (97, 1, 'combobox', '96', 0),
-(98, 1, 'textfield', '96', 0),
-(99, 1, 'textfield', '96', 0),
-(100, 1, 'textfield', '96', 0),
+(98, 1, 'textfield', '96', 1),
+(99, 1, 'textfield', '96', 2),
+(100, 1, 'textfield', '96', 3),
 (101, 1, 'fieldcontainer', '95', 2),
 (102, 1, 'combobox', '101', 0),
 (103, 1, 'mitos.datetime', '101', 0),
@@ -13360,8 +13393,8 @@ INSERT INTO `forms_fields` (`id`, `form_id`, `xtype`, `parentId`, `index`) VALUE
 (107, 1, 'textfield', '1189', NULL),
 (108, 1, 'fieldset', 'root', 2),
 (109, 1, 'fieldcontainer', '1144', NULL),
-(110, 1, 'textfield', '109', 0),
-(111, 1, 'textfield', '114', 0),
+(110, 1, 'textfield', '109', NULL),
+(111, 1, 'textfield', '114', NULL),
 (112, 1, 'combobox', '114', 0),
 (113, 1, 'combobox', '114', 0),
 (114, 1, 'fieldcontainer', '1144', 1),
@@ -13864,9 +13897,9 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (1, '95', '{"title":"Who","hideLabel":false,"collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (2, '96', '{"fieldLabel":"Full Name","labelWidth":149,"hideLabel":false,"layout":"hbox","width":660,"collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (3, '97', '{"list_id":22,"margin":"0 5 0 0","width":70,"name":"title","emptyText":"Title","hideLabel":true,"fieldLabel":"Title"}'),
-(4, '98', '{"fieldLabel":"First Name","hideLabel":true,"emptyText":"First Name","name":"fname","width":100,"margin":"0 5 0 0","allowBlank":false}'),
-(5, '99', '{"margin":"0 5 0 0","width":100,"name":"mname","emptyText":"Middle Name","hideLabel":true,"fieldLabel":"Middle Name"}'),
-(6, '100', '{"fieldLabel":"Last Name","emptyText":"Last Name","hideLabel":true,"width":215,"margin":"0 5 0 0","allowBlank":false,"name":"lname","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
+(4, '98', '{"fieldLabel":"First Name","emptyText":"First Name","hideLabel":true,"width":100,"margin":"0 5 0 0","allowBlank":false,"maxLength":35,"name":"fname"}'),
+(5, '99', '{"fieldLabel":"Middle Name","emptyText":"Middle Name","hideLabel":true,"width":100,"margin":"0 5 0 0","maxLength":35,"name":"mname"}'),
+(6, '100', '{"fieldLabel":"Last Name","emptyText":"Last Name","hideLabel":true,"width":215,"margin":"0 5 0 0","collapsible":false,"checkboxToggle":false,"collapsed":false,"allowBlank":false,"maxLength":35,"name":"lname"}'),
 (7, '101', '{"fieldLabel":"Sex\\/DOB\\/Status\\/S.S.","labelWidth":149,"hideLabel":false,"layout":"hbox","width":660,"collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (8, '102', '{"fieldLabel":"Sex","hideLabel":true,"emptyText":"Sex","name":"sex","width":70,"margin":"0 5 0 0","allowBlank":false,"list_id":95}'),
 (9, '103', '{"fieldLabel":"DOB","emptyText":"DOB","labelWidth":30,"hideLabel":true,"width":205,"margin":"0 5 0 0","allowBlank":false,"name":"DOB","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
@@ -13876,8 +13909,8 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
 (13, '107', '{"fieldLabel":"Driver Lic.","emptyText":"Driver License","labelWidth":149,"hideLabel":true,"width":175,"margin":"0 5 0 0","name":"drivers_license"}'),
 (14, '108', '{"title":"Contact","hideLabel":false,"layout":"column","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
 (15, '109', '{"fieldLabel":"Address","labelWidth":110,"hideLabel":false,"layout":"hbox","width":509,"collapsible":false,"checkboxToggle":false,"collapsed":false}'),
-(16, '110', '{"fieldLabel":"Street","emptyText":"Street","hideLabel":true,"width":375,"margin":"0 5 0 0","name":"address","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
-(17, '111', '{"margin":"0 5 0 0","width":80,"name":"city","emptyText":"City","hideLabel":true,"fieldLabel":"City"}'),
+(16, '110', '{"fieldLabel":"Street","emptyText":"Street","hideLabel":true,"width":375,"margin":"0 5 0 0","collapsible":false,"checkboxToggle":false,"collapsed":false,"maxLength":35,"name":"address"}'),
+(17, '111', '{"fieldLabel":"City","emptyText":"City","hideLabel":true,"width":80,"margin":"0 5 0 0","maxLength":35,"name":"city"}'),
 (18, '112', '{"margin":"0 5 0 0","width":130,"name":"state","emptyText":"State","hideLabel":true,"fieldLabel":"state","list_id":20}'),
 (19, '113', '{"width":70,"name":"country","emptyText":"Country","hideLabel":true,"fieldLabel":"Country","margin":"0 5 0 0","list_id":3}'),
 (20, '114', '{"fieldLabel":"Address Cont.","labelWidth":110,"hideLabel":false,"layout":"hbox","width":509,"collapsible":false,"checkboxToggle":false,"collapsed":false}'),
@@ -14788,8 +14821,10 @@ INSERT INTO `globals` (`id`, `gl_name`, `gl_index`, `gl_value`, `gl_category`) V
 (120, 'enable_dual_monitor', 0, '0', 'General'),
 (121, 'enable_encounter_soap_templates', 0, '1', 'Clinical'),
 (122, 'dx_code_type', 0, 'ICD10', 'Clinical'),
-(123, 'units_of_measurement', 0, 'metric', 'General'),
-(124, 'enable_encounter_family_history', 0, '1', 'Clinical');
+(123, 'units_of_measurement', 0, 'standard', 'General'),
+(124, 'enable_encounter_family_history', 0, '1', 'Clinical'),
+(125, 'use_pubid_for_external_comm', 0, '1', 'General'),
+(126, 'enable_clinical_decision_support', 0, '1', 'Clinical');
 
 INSERT INTO `groups` (`id`, `name`, `user`) VALUES
 (1, 'Default', 'admin'),

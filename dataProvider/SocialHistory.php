@@ -110,5 +110,23 @@ class SocialHistory {
 		return $this->ss->save($params);
 	}
 
+	/**
+	 * @param $pid
+	 * @param $code
+	 * @return mixed
+	 */
+	public function getSocialHistoryByPidAndCode($pid, $code){
+		$this->setModel();
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'pid';
+		$filters->filter[0]->value = $pid;
+		if($code == 'smoking_status'){
+			return $this->getSmokeStatus($filters);
+		}else{
+			return $this->getSocialHistories($filters);
+		}
+	}
+
 
 }

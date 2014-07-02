@@ -35,7 +35,7 @@ class MatchaMemory extends Matcha
             // create the table in memory
             $sql = 'CREATE TABLE IF NOT EXISTS `_sencha_model` (
                         `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                        `model` VARCHAR(50),
+                        `model` VARCHAR(150),
                         `modelData` VARCHAR(21000),
                         `modelLastChange` TIMESTAMP NULL
                     ) ENGINE = MEMORY;';

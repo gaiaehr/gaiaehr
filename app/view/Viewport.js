@@ -964,35 +964,6 @@ Ext.define('App.view.Viewport', {
         me.patientBtn.removeCls('Deceased');
     },
 
-    msg: function(title, format, error, persistent) {
-        var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
-        this.msgCt = Ext.get('msg-div');
-	    if(!this.msgCt) this.msgCt = Ext.fly('msg-div');
-        this.msgCt.alignTo(document, 't-t');
-        var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
-            m = Ext.core.DomHelper.append(this.msgCt, {
-                html: '<div class="flyMsg ' + msgBgCls + '"><h3>' + (title || '') + '</h3><p>' + s + '</p></div>'
-            }, true);
-        if (persistent === true) return m; // if persitent return the message element without the fade animation
-        m.addCls('fadeded');
-        Ext.create('Ext.fx.Animator', {
-            target: m,
-            duration: error ? 7000 : 2000,
-            keyframes: {
-                0: { opacity: 0 },
-                20: { opacity: 1 },
-                80: { opacity: 1 },
-                100: { opacity: 0, height: 0 }
-            },
-            listeners: {
-                afteranimate: function() {
-                    m.destroy();
-                }
-            }
-        });
-        return true;
-    },
-
     patientBtnTpl: function(){
         return Ext.create('Ext.XTemplate',
             '<div class="patient_btn  {priority}">',
@@ -1310,6 +1281,38 @@ Ext.define('App.view.Viewport', {
             icon: Ext.Msg.ERROR
         });
     },
+
+	msg: function(title, format, error, persistent) {
+		var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
+		this.msgCt = Ext.get('msg-div');
+		if(!this.msgCt) this.msgCt = Ext.fly('msg-div');
+
+		var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1)),
+			m = Ext.core.DomHelper.append(this.msgCt, {
+				html: '<div class="flyMsg ' + msgBgCls + '"><h3>' + (title || '') + '</h3><p>' + s + '</p></div>'
+			}, true);
+
+		this.msgCt.alignTo(document, 't-t');
+
+		if (persistent === true) return m; // if persitent return the message element without the fade animation
+		m.addCls('fadeded');
+		Ext.create('Ext.fx.Animator', {
+			target: m,
+			duration: error ? 7000 : 2000,
+			keyframes: {
+				0: { opacity: 0 },
+				20: { opacity: 1 },
+				80: { opacity: 1 },
+				100: { opacity: 0, height: 0 }
+			},
+			listeners: {
+				afteranimate: function() {
+					m.destroy();
+				}
+			}
+		});
+		return true;
+	},
 
     alert: function(msg, icon){
         if(icon == 'error'){

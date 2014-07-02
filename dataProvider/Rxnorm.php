@@ -93,11 +93,13 @@ class Rxnorm {
 	}
 
 	public function getRXNORMLiveSearch(stdClass $params){
-		$this->db->setSQL("SELECT *
+		$this->db->setSQL("SELECT rxnconso.*, rxnsat.ATV as NDC
                              FROM rxnconso
-                            WHERE (SAB = 'MMSL' AND (TTY = 'BD' OR TTY = 'SBD'))
-                              AND STR LIKE '%$params->query%'
-                         GROUP BY RXCUI
+                       RIGHT JOIN rxnsat ON rxnconso.RXCUI = rxnsat.RXCUI
+                            WHERE (rxnconso.SAB = 'MMSL' AND (rxnconso.TTY = 'BD' OR rxnconso.TTY = 'SBD'))
+                              AND rxnsat.ATN = 'NDC'
+                              AND rxnconso.STR LIKE '%$params->query%'
+                         GROUP BY rxnconso.RXCUI
                          LIMIT 100");
 		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 		$total = count($records);

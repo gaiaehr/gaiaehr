@@ -33,7 +33,7 @@ Ext.define('App.controller.LogOut', {
 		 * in minutes - Maximum time application can
 		 * be inactive (no mouse or keyboard input)
 		 */
-		me.activityMonitorMaxInactive = 15;
+		me.activityMonitorMaxInactive = eval(g('timeout'));
 
 		me.cron = me.getController('Cron');
 
@@ -62,6 +62,7 @@ Ext.define('App.controller.LogOut', {
 				interval: me.activityMonitorInterval * 1000,
 				maxInactive: (1000 * 60 * me.activityMonitorMaxInactive),
 				verbose: false,
+				controller: me,
 				isInactive: function(){
 					me.startAutoLogout();
 				}
@@ -76,7 +77,7 @@ Ext.define('App.controller.LogOut', {
 
 	cancelAutoLogout: function(){
 		var me = this;
-		me.el.unmask();
+		app.el.unmask();
 		me.LogoutTask.stop(me.LogoutTaskTimer);
 		me.logoutWarinigWindow.destroy();
 		delete me.logoutWarinigWindow;
@@ -85,7 +86,6 @@ Ext.define('App.controller.LogOut', {
 
 	startAutoLogout: function(){
 		var me = this;
-
 		me.logoutWarinigWindow = Ext.create('Ext.Container', {
 			floating: true,
 			cls: 'logout-warning-window',

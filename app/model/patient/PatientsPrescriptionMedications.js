@@ -54,6 +54,10 @@ Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 			type: 'string'
 		},
 		{
+			name: 'NDC',
+			type: 'string'
+		},
+		{
 			name: 'ICDS',
 			type: 'string'
 		},

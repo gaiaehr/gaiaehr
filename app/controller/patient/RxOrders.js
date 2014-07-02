@@ -83,10 +83,13 @@ Ext.define('App.controller.patient.RxOrders', {
 		var form = combo.up('form').getForm();
 
 		Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
+
 			form.getRecord().set({
 				RXCUI: record[0].data.RXCUI,
-				CODE: record[0].data.CODE
+				CODE: record[0].data.CODE,
+				NDC: record[0].data.NDC
 			});
+
 			form.setValues({
 				STR: record[0].data.STR.split(',')[0],
 				route: response.result.DRT,

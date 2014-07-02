@@ -48,15 +48,23 @@ Ext.define('App.model.patient.Medications', {
 		},
 		{
 			name: 'STR',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'CODE',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'RXCUI',
-			type: 'string'
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'NDC',
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'ICDS',
@@ -64,7 +72,8 @@ Ext.define('App.model.patient.Medications', {
 		},
 		{
 			name: 'dose',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'take_pills',
@@ -72,15 +81,18 @@ Ext.define('App.model.patient.Medications', {
 		},
 		{
 			name: 'form',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'route',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'prescription_often',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'prescription_when',
@@ -88,11 +100,13 @@ Ext.define('App.model.patient.Medications', {
 		},
 		{
 			name: 'dispense',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'refill',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'date_ordered',
@@ -120,15 +134,18 @@ Ext.define('App.model.patient.Medications', {
 
 		{
 			name: 'outcome',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'ocurrence',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'referred_by',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'active',

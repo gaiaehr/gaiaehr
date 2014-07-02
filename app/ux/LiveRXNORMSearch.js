@@ -30,6 +30,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			fields: [
 				{name: 'RXCUI', type: 'auto'},
 				{name: 'CODE', type: 'auto'},
+				{name: 'NDC', type: 'auto'},
 				{name: 'STR', type: 'auto'},
 				{name: 'DST', type: 'auto'},
 				{name: 'DRT', type: 'auto'},

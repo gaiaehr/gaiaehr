@@ -351,7 +351,9 @@ Ext.define('App.view.administration.Users', {
 						        {
 							        width: 175,
 							        xtype: 'textfield',
-							        name: 'npi'
+							        name: 'npi',
+							        maxLength: 10,
+							        vtype: 'npi'
 						        }
 					        ]
 				        },

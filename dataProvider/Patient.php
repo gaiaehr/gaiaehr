@@ -125,6 +125,13 @@ class Patient {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getPatient() {
+		return $this->patient;
+	}
+
+	/**
 	 * @param $pid
 	 *
 	 * @return mixed

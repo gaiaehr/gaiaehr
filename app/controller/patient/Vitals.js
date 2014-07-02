@@ -263,31 +263,31 @@ Ext.define('App.controller.patient.Vitals', {
 	doUpdateBlocks: function(records){
 		var me = this;
 		if(records.length > 0){
-			this.getBpBlock().update(this.getBlockTemplate('bp', records[0]));
+			me.getBpBlock().update(me.getBlockTemplate('bp', records[0]));
 			if(me.isMetric()){
-				this.getTempBlock().update(this.getBlockTemplate('temp_c', records[0]));
-				this.getWeighBlock().update(this.getBlockTemplate('weight_kg', records[0]));
-				this.getHeightBlock().update(this.getBlockTemplate('height_cm', records[0]));
+				me.getTempBlock().update(me.getBlockTemplate('temp_c', records[0]));
+				me.getWeighBlock().update(me.getBlockTemplate('weight_kg', records[0]));
+				me.getHeightBlock().update(me.getBlockTemplate('height_cm', records[0]));
 			}else{
-				this.getTempBlock().update(this.getBlockTemplate('temp_f', records[0]));
-				this.getWeighBlock().update(this.getBlockTemplate('weight_lbs', records[0]));
-				this.getHeightBlock().update(this.getBlockTemplate('height_in', records[0]));
+				me.getTempBlock().update(me.getBlockTemplate('temp_f', records[0]));
+				me.getWeighBlock().update(me.getBlockTemplate('weight_lbs', records[0]));
+				me.getHeightBlock().update(me.getBlockTemplate('height_in', records[0]));
 			}
-			this.getBmiBlock().update(this.getBlockTemplate('bmi', records[0]));
-			this.getNotesBlock().update(this.getBlockTemplate('other_notes', records[0]));
+			me.getBmiBlock().update(me.getBlockTemplate('bmi', records[0]));
+			me.getNotesBlock().update(me.getBlockTemplate('other_notes', records[0]));
 		}else{
-			this.getBpBlock().update(this.getBlockTemplate('bp', false));
+			me.getBpBlock().update(me.getBlockTemplate('bp', false));
 			if(me.isMetric()){
-				this.getTempBlock().update(this.getBlockTemplate('temp_c', false));
-				this.getWeighBlock().update(this.getBlockTemplate('weight_kg', false));
-				this.getHeightBlock().update(this.getBlockTemplate('height_cm', false));
+				me.getTempBlock().update(me.getBlockTemplate('temp_c', false));
+				me.getWeighBlock().update(me.getBlockTemplate('weight_kg', false));
+				me.getHeightBlock().update(me.getBlockTemplate('height_cm', false));
 			}else{
-				this.getTempBlock().update(this.getBlockTemplate('temp_f', false));
-				this.getWeighBlock().update(this.getBlockTemplate('weight_lbs', false));
-				this.getHeightBlock().update(this.getBlockTemplate('height_in', false));
+				me.getTempBlock().update(me.getBlockTemplate('temp_f', false));
+				me.getWeighBlock().update(me.getBlockTemplate('weight_lbs', false));
+				me.getHeightBlock().update(me.getBlockTemplate('height_in', false));
 			}
-			this.getBmiBlock().update(this.getBlockTemplate('bmi', false));
-			this.getNotesBlock().update(this.getBlockTemplate('other_notes', false));
+			me.getBmiBlock().update(me.getBlockTemplate('bmi', false));
+			me.getNotesBlock().update(me.getBlockTemplate('other_notes', false));
 		}
 	},
 

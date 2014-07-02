@@ -25,7 +25,6 @@ define('_GaiaEXEC', 1);
 
 //include_once('classes/Mobile_Detect.php');
 //$mobile = new Mobile_Detect();
-$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
 $mDebug = false;
 //if($mobile->isMobile() || $mDebug){
@@ -37,14 +36,6 @@ $mDebug = false;
 	 * and mobile_detect class is used to detect mobile browsers.
 	 */
 	include_once('registry.php');
-	/**
-	 * set the site using the url parameter site, or default if not given
-	 */
-	if(file_exists('sites/' . $site . '/conf.php')){
-		include_once('sites/' . $site . '/conf.php');
-	} else {
-		$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
-	};
 	/**
 	 * Make the auth process
 	 * lets check for 4 things to allow the user in

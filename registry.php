@@ -71,3 +71,11 @@ $_SESSION['server']['last_tid'] = null;
 // client data
 $_SESSION['client']['browser'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') === false ? 'Linux' : 'Windows');
+
+// default site
+$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
+	include_once(ROOT. '/sites/' . $site . '/conf.php');
+} else {
+	$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
+};

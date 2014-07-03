@@ -496,7 +496,7 @@ Ext.override(Ext.container.Container, {
     getFormItems: function(formPanel, formToRender, callback){
 	    if(formPanel) formPanel.removeAll();
 	    FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-		    var items = Ext.JSON.decode(response.result.replace(/\\\\u/, '\\u')), // UTF-8 \\u fixed
+		    var items = Ext.JSON.decode(response.result.replace(/\\\\u/g, '\\u')), // UTF-8 \\u fixed
 				form = formPanel ? formPanel.add(items) : false;
 
 		    if(typeof callback == 'function') callback(formPanel, items, true);

@@ -1386,5 +1386,15 @@ $LANG = array(
 	'no_reference_provided'                 => 'No Reference Provided',
 	'min_length'                            => 'Min Length',
 	'max_length'                            => 'Max Length',
+	'daw'         	                        => 'DAW',
+	'quantity'         	                    => 'Quantity',
+	'directions'         	                => 'Directions',
+	'dispensed_as_written'         	        => 'Dispensed As Written',
+	'new_notification'         	            => 'New Notification',
+	'notification_handler_error'         	=> 'Notification Handler Error',
+	'dx'         	                        => 'Dx',
+	'notes_to_Pharmacist'         	        => 'Notes To Pharmacist',
+	'refills'         	                    => 'Refills',
+	'missing_required_info'         	    => 'Missing Required Info',
 
 );

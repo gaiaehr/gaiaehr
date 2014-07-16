@@ -22,7 +22,6 @@ Ext.define('Modules.reportcenter.model.MedicationReport', {
         {name: 'pid', type: 'int'},
         {name: 'fullname', type: 'string'},
         {name: 'medication', type: 'string'},
-        {name: 'take_pills', type: 'string'},
         {name: 'type', type: 'string'},
         {name: 'instructions', type: 'string'}
 	],

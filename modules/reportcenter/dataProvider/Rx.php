@@ -91,7 +91,7 @@ class Rx extends Reports
 		}
 		foreach($records as $num => $rec){
 			$records[$num]['fullname'] = $this->patient->getPatientFullNameByPid($rec['pid']);
-			$records[$num]['instructions'] = ($rec['prescription_often'] . ' ' . $rec['prescription_when']);
+			$records[$num]['instructions'] = $rec['directions'];
 		}
 		return $records;
 	}

@@ -158,11 +158,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                             dataIndex:'medication'
                         },
                         {
-                            text:i18n('take'),
-                            width:75,
-                            dataIndex:'take_pills'
-                        },
-                        {
                             text:i18n('type'),
                             width:150,
                             dataIndex:'type'

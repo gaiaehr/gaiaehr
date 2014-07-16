@@ -8,6 +8,19 @@
 	src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+.x-tip {
+    width: auto !important;
+    /*height: auto !important;*/
+}
+.x-tip-body {
+    width: auto !important;
+    /*height: auto !important;*/
+}
+.x-tip-body span {
+    width: auto !important;
+    /*height: auto !important;*/
+}
+
 .decisionSupportWarning .x-panel-body-default {
     background-color: #FFCCCC;
     border: none;
@@ -899,7 +912,7 @@ body#login {
     top: 10px;
     min-width: 300px;
     max-width: 600px;
-    z-index: 20000;
+    z-index: 500001;
 }
 #msg-div .flyMsg {
     border: 1px solid #CCCCCC;
@@ -915,6 +928,12 @@ body#login {
 }
 .msg-red {
     background: none repeat scroll 0 0 #FFCCCC;
+}
+.msg-blue {
+    background: none repeat scroll 0 0 #d7f1ff;
+}
+.msg-yellow {
+    background: none repeat scroll 0 0 #fdffb1;
 }
 #msg-div .flyMsg h3 {
     font-size: 15px;

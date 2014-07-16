@@ -1458,7 +1458,7 @@ class CCDDocument {
 							'@value' => $item['STR']
 						),
 						array(
-							'@value' => $item['dose'] . ' ' . $item['prescription_when']
+							'@value' => $item['dose'] . ' ' . $item['directions']
 						),
 						array(
 							'@value' => date('F j, Y', strtotime($item['begin_date']))

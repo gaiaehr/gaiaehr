@@ -364,7 +364,7 @@ class Documents {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Medications" . "</th></tr>";
 			foreach($Array as $row){
-				$html .= "<tr><td>" . $row['STR'] . ' ' . $row['dose'] . ' ' . $row['route'] . ' ' . $row['form'] . ' ' . $row['prescription_when'] . "</td></tr>";
+				$html .= "<tr><td>" . $row['STR'] . ' ' . $row['dose'] . ' ' . $row['route'] . ' ' . $row['form'] . ' ' . $row['directions'] . "</td></tr>";
 			}
 			$html .= '</table>';
 		} elseif($typeoflist == 6) {
@@ -535,7 +535,7 @@ class Documents {
 		foreach($pages AS $page){
 			$this->pdf->AddPage();
 			$this->pdf->SetY(35); // margin after header line
-			//			$this->pdf->SetFontSize(12);
+			$this->pdf->SetFontSize(10);
 			$this->pdf->writeHTML($page);
 		}
 

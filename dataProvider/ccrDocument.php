@@ -1049,7 +1049,7 @@ foreach($patientMedications as $item)
                                 )
                             ),
                             'Frequency' => array(
-                                'Value' => $item['prescription_often']
+                                'Value' => $item['directions']
                             )//,
                             //'Indication' => array(
                             //    'PRNFlag' => array(

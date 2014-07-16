@@ -290,7 +290,7 @@ class MatchaCUP {
 	 */
 	public function nextId() {
 		try {
-			$r = Matcha::$__conn->query("SELECT MAX($this->primaryKey) AS lastID FROM $this->table")->fetch();
+			$r = Matcha::$__conn->query("SELECT MAX({$this->primaryKey}) AS lastID FROM {$this->table}")->fetch();
 			return $r['lastID'] + 1;
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
@@ -490,7 +490,7 @@ class MatchaCUP {
 			}
 
 			$this->builtRoot();
-			return (array)$this->record;
+			return (array) $this->record;
 
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
@@ -499,6 +499,10 @@ class MatchaCUP {
 
 	private function saveRecord($record) {
 		$data = $this->parseValues(get_object_vars($record));
+
+
+
+
 		$isInsert = (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == '')));
 
 		if($isInsert){
@@ -516,6 +520,12 @@ class MatchaCUP {
 
 		$insert = Matcha::$__conn->prepare($this->sql);
 		foreach($data as $key => $value){
+
+			if(is_object($record) && isset($record->{$key})){
+				$record->{$key} = $value;
+			}elseif(is_array($record) && isset($record[$key])) {
+				$record[$key] = $value;
+			}
 
 			$this->bindedValues[] = array(":$key" => $value);
 
@@ -647,7 +657,7 @@ class MatchaCUP {
 	 */
 	public function search($params) {
 
-		$sql = "SELECT * FROM `$this->table` ";
+		$sql = "SELECT * FROM `{$this->table}` ";
 
 		$filter = '';
 
@@ -798,7 +808,7 @@ class MatchaCUP {
 		foreach($fields as $field){
 			$placeholders[] = "`$field` = :$field";
 		}
-		$query = "UPDATE `{$this->table}` SET ";
+		$query = "UPDATE `{$this->table}` SET " . '';
 		$query .= implode(', ', $placeholders) . ' ';
 		$query .= "WHERE `$primaryKey` = :$primaryKey";
 

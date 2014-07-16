@@ -104,8 +104,9 @@ Ext.define('App.controller.patient.Documents', {
 			callback:function(records){
 				var params = me.nav.getExtraParams();
 
-				if(params && params.doc){
-					var doc = store.getById(params.doc);
+				if(params && params.document){
+					var doc = store.getById(params.document);
+
 					if(doc){
 						grid.getSelectionModel().select(doc);
 					}else{

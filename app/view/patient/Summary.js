@@ -26,6 +26,7 @@ Ext.define('App.view.patient.Summary', {
 		'App.view.patient.Documents',
 		'App.ux.ManagedIframe'
 	],
+	itemId: 'patientsummarypanel',
 	showRating: true,
 	pid: null,
 	demographicsData: null,

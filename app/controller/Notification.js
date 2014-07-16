@@ -72,23 +72,33 @@ Ext.define('App.controller.Notification', {
 	},
 
 	onNotificationsGridItemClick: function(grid, record){
-
 		var me = this,
-			controller = app.getController(record.data.controller),
+			controller = App.app.getController(record.data.controller),
 			method = record.data.method,
 			data = record.data.data;
 
 		if(typeof controller == 'object' && typeof controller[method] == 'function'){
-			controller[method](data, function(success){
-				if(success){
-					me.store.remove(record);
-				}
-				me.doHideNotifications();
-			});
+
+			if(data){
+				controller[method](data, function(success){
+					if(success){
+						me.store.remove(record);
+					}
+					me.doHideNotifications();
+				});
+			}else{
+				controller[method](function(success){
+					if(success){
+						me.store.remove(record);
+					}
+					me.doHideNotifications();
+				});
+			}
+
 		}else{
 			me.store.remove(record);
 			me.doHideNotifications();
-			app.msg(i18n('oops'), i18n('notification_handeler_error'), true);
+			app.msg(i18n('oops'), i18n('notification_handler_error'), true);
 		}
 
 	},
@@ -124,26 +134,46 @@ Ext.define('App.controller.Notification', {
 	doHideNotifications: function(){
 		this.getNotificationsGrid().collapse(Ext.Component.DIRECTION_TOP, true);
 		this.getNotificationsGrid().hide();
+		Ext.getBody().un('click', this.doHideNotifications, this);
 	},
 
 	doShowNotifications: function(){
-		this.grid.show();
-		this.grid.alignTo(this.getUserSplitButton(), 'tr-br', [-1, 4]);
+		this.grid.showBy(this.getUserSplitButton(), 'tr-br', [-1, 4]);
 		this.grid.expand(true);
 		this.grid.toFront();
+		Ext.getBody().on('click', this.doHideNotifications, this);
 	},
 
-	add: function(description, data, controller, method){
-		return this.store.add({
+	add: function(id, description, data, controller, method){
+		var record;
+		if(this.store.getById(id)){
+			record = this.store.getById(id);
+			record.set({
+				description: description,
+				data: data,
+				controller: controller,
+				method: method
+			});
+			record.commit();
+			return record;
+		}
+
+		record = this.store.add({
+			id: id,
 			description: description,
 			data: data,
 			controller: controller,
 			method: method
 		})[0];
+
+		app.msg(i18n('new_notification'), description, 'yellow');
+
+		return record;
 	},
 
-	remove: function(){
-
+	remove: function(id){
+		if(!this.store.getById(id)) return;
+		this.store.remove(this.store.getById(id));
 	},
 
 	testNotification:function(data, callback){

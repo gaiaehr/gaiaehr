@@ -38,6 +38,7 @@ Ext.define('App.view.Viewport', {
 	    me.cron = me.getController('Cron');
 	    me.log = me.getController('LogOut');
 	    me.dual = me.getController('DualScreen');
+	    me.notification = me.getController('Notification');
 
 	    me.logged = true;
 
@@ -210,7 +211,7 @@ Ext.define('App.view.Viewport', {
 				    {
 					    xtype: 'patienlivetsearch',
 					    emptyText: i18n('patient_live_search') + '...',
-					    width: (me.fullMode ? 300 : 200),
+					    width: (me.fullMode ? 300 : 300),
 					    listeners: {
 						    scope: me,
 						    select: me.liveSearchSelect,
@@ -876,7 +877,7 @@ Ext.define('App.view.Viewport', {
                     name: data.patient.name,
                     pic: data.patient.pic,
                     sex: data.patient.sex,
-                    dob: data.patient.dob,
+                    dob: Ext.Date.parse(data.patient.dob, "Y-m-d H:i:s"),
                     age: data.patient.age,
                     eid: eid,
                     priority: data.patient.priority,
@@ -894,7 +895,7 @@ Ext.define('App.view.Viewport', {
                 if(me.patientOpenVisitsBtn) me.patientOpenVisitsBtn.enable();
                 if(me.patientCreateEncounterBtn) me.patientCreateEncounterBtn.enable();
                 if(me.patientCloseCurrEncounterBtn) me.patientCloseCurrEncounterBtn.enable();
-                if(me.patientChargeBtn) me.patientChargeBtn.enable();
+//                if(me.patientChargeBtn) me.patientChargeBtn.enable();
                 if(me.patientCheckOutBtn) me.patientCheckOutBtn.enable();
                 if(typeof callback == 'function') callback(me.patient);
             }
@@ -1230,13 +1231,16 @@ Ext.define('App.view.Viewport', {
      */
     loadModules: function(){
         say('*** Loading Modules ***');
+
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
-                var m = App.Current.getController('Modules.' + modules[i].dir + '.Main');
-//                m.init();
+                App.app.getController('Modules.' + modules[i].dir + '.Main');
                 say('Module ' + modules[i].dir + ' loaded...');
             }
+
+	        app.doLayout();
+
         });
     },
 
@@ -1284,6 +1288,9 @@ Ext.define('App.view.Viewport', {
 
 	msg: function(title, format, error, persistent) {
 		var msgBgCls = (error === true) ? 'msg-red' : 'msg-green';
+
+		if(typeof error === 'string') msgBgCls = 'msg-' + error;
+
 		this.msgCt = Ext.get('msg-div');
 		if(!this.msgCt) this.msgCt = Ext.fly('msg-div');
 
@@ -1294,23 +1301,31 @@ Ext.define('App.view.Viewport', {
 
 		this.msgCt.alignTo(document, 't-t');
 
-		if (persistent === true) return m; // if persitent return the message element without the fade animation
+		// if persitent return the message element without the fade animation
+		if (persistent === true) return m;
+
 		m.addCls('fadeded');
+
 		Ext.create('Ext.fx.Animator', {
 			target: m,
-			duration: error ? 7000 : 2000,
+			duration: error === true ? 8000 : 3000,
 			keyframes: {
 				0: { opacity: 0 },
-				20: { opacity: 1 },
+				10: { opacity: 1 },
 				80: { opacity: 1 },
 				100: { opacity: 0, height: 0 }
 			},
 			listeners: {
-				afteranimate: function() {
-					m.destroy();
+				afteranimate: function(anim) {
+					anim.target.target.destroy();
 				}
 			}
 		});
+
+		m.on('click', function(){
+			m.applyStyles('visibility:hidden; display:none');
+		});
+
 		return true;
 	},
 
@@ -1329,7 +1344,8 @@ Ext.define('App.view.Viewport', {
             msg: msg,
             buttons: Ext.Msg.OK,
             icon: icon,
-	        maxWidth: 1200
+	        maxWidth: 1200,
+	        modal: false
         });
     },
 

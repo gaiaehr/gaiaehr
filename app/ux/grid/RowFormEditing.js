@@ -105,7 +105,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	 * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
 	 * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
 	 */
-	errorSummary: true,
+	errorSummary: false,
 
 	/**
 	 * @event beforeedit

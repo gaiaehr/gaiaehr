@@ -23,6 +23,14 @@ Ext.define('App.controller.patient.Summary', {
 	],
 	refs: [
 		{
+			ref: 'PatientSummaryPanel',
+			selector: 'patientsummarypanel'
+		},
+		{
+			ref: 'PatientDocumentPanel',
+			selector: 'patientdocumentspanel'
+		},
+		{
 			ref: 'ReferralPanelGrid',
 			selector: 'patientreferralspanel'
 		},
@@ -39,6 +47,9 @@ Ext.define('App.controller.patient.Summary', {
 	init: function(){
 		var me = this;
 		me.control({
+			'#patientsummarypanel': {
+				activate: me.onPatientSummaryPanel
+			},
 			'#PatientSummaryDisclosuresPanel': {
 				show: me.reloadGrid
 			},
@@ -61,6 +72,16 @@ Ext.define('App.controller.patient.Summary', {
 				show: me.reloadGrid
 			}
 		});
+
+		me.nav = me.getController('Navigation');
+	},
+
+	onPatientSummaryPanel: function(panel){
+		var params = this.nav.getExtraParams();
+
+		if(params && params.document){
+			panel.down('tabpanel').setActiveTab(this.getPatientDocumentPanel());
+		}
 	},
 
 	reloadGrid:function(grid){

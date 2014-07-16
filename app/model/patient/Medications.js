@@ -25,8 +25,7 @@ Ext.define('App.model.patient.Medications', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Medications ID'
+			type: 'int'
 		},
 		{
 			name: 'pid',
@@ -40,10 +39,6 @@ Ext.define('App.model.patient.Medications', {
 		},
 		{
 			name: 'uid',
-			type: 'int'
-		},
-		{
-			name: 'prescription_id',
 			type: 'int'
 		},
 		{
@@ -67,17 +62,13 @@ Ext.define('App.model.patient.Medications', {
 			len: 40
 		},
 		{
-			name: 'ICDS',
-			type: 'string'
+			name: 'dxs',
+			type: 'array'
 		},
 		{
 			name: 'dose',
 			type: 'string',
 			len: 180
-		},
-		{
-			name: 'take_pills',
-			type: 'int'
 		},
 		{
 			name: 'form',
@@ -90,12 +81,7 @@ Ext.define('App.model.patient.Medications', {
 			len: 80
 		},
 		{
-			name: 'prescription_often',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'prescription_when',
+			name: 'directions',
 			type: 'string'
 		},
 		{
@@ -109,15 +95,30 @@ Ext.define('App.model.patient.Medications', {
 			len: 80
 		},
 		{
+			name: 'daw',
+			type: 'bool',
+			useNull: true,
+			comment: 'Dispensed As Written'
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 300
+		},
+		{
+			name: 'prescription_id',
+			type: 'int'
+		},
+		{
+			name: 'referred_by',
+			type: 'string',
+			len: 180
+		},
+		{
 			name: 'date_ordered',
 			type: 'date',
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'created_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'begin_date',
@@ -131,21 +132,10 @@ Ext.define('App.model.patient.Medications', {
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
 		},
-
 		{
-			name: 'outcome',
-			type: 'string',
-			len: 180
-		},
-		{
-			name: 'ocurrence',
-			type: 'string',
-			len: 180
-		},
-		{
-			name: 'referred_by',
-			type: 'string',
-			len: 180
+			name: 'created_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'active',
@@ -155,7 +145,6 @@ Ext.define('App.model.patient.Medications', {
 				return record.data.end_date == null;
 			}
 		}
-
 	],
 	proxy: {
 		type: 'direct',

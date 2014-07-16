@@ -14,6 +14,10 @@ Ext.define('App.ux.combo.Combo', {
 	 * Auto Load Store
 	 */
 	loadStore: false,
+	/**
+	 * value data type
+	 */
+	valueDataType: 'string',
 
 
 	initComponent: function(){
@@ -29,7 +33,7 @@ Ext.define('App.ux.combo.Combo', {
 				},
 				{
 					name: 'option_value',
-					type: 'string'
+					type: me.valueDataType
 				},
 				{
 					name: 'code',

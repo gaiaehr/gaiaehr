@@ -41,6 +41,10 @@ Ext.define('App.controller.patient.RxOrders', {
 		{
 			ref: 'RxEncounterDxLiveSearch',
 			selector: '#rxEncounterDxLiveSearch'
+		},
+		{
+			ref: 'RxEncounterDxCombo',
+			selector: '#RxEncounterDxCombo'
 		}
 	],
 
@@ -50,7 +54,8 @@ Ext.define('App.controller.patient.RxOrders', {
 			'patientrxorderspanel': {
 				activate: me.onRxOrdersGridActive,
 				selectionchange: me.onRxOrdersGridSelectionChange,
-				beforerender: me.onRxOrdersGridBeforeRender
+				beforerender: me.onRxOrdersGridBeforeRender,
+				beforeedit: me.onRxOrdersGridBeforeEdit
 			},
 			'#RxNormOrderLiveSearch': {
 				select: me.onRxNormOrderLiveSearchSelect
@@ -92,13 +97,27 @@ Ext.define('App.controller.patient.RxOrders', {
 
 			form.setValues({
 				STR: record[0].data.STR.split(',')[0],
-				route: response.result.DRT,
-				dose: response.result.DST,
-				form: response.result.DDF
+				route: Ext.String.capitalize(response.result.DRT),
+				dose: Ext.String.capitalize(response.result.DST),
+				form: Ext.String.capitalize(response.result.DDF)
 			});
-			form.findField('prescription_when').focus(false, 200);
+			form.findField('directions').focus(false, 200);
 
 		});
+	},
+
+	onRxOrdersGridBeforeEdit: function(plugin, context){
+
+		this.getRxEncounterDxCombo().getStore().load({
+			filters:[
+				{
+					property:'eid',
+					value: context.record.data.eid
+				}
+			]
+		});
+
+
 	},
 
 	onNewRxOrderBtnClick:function(btn){
@@ -112,6 +131,7 @@ Ext.define('App.controller.patient.RxOrders', {
 			eid: app.patient.eid,
 			uid: app.user.id,
 			refill: 0,
+			daw: null,
 			date_ordered: new Date(),
 			begin_date: new Date(),
 			created_date: new Date()
@@ -188,11 +208,11 @@ Ext.define('App.controller.patient.RxOrders', {
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
 			params.orderItems.push([
-					data.STR + ' [' + data.RXCUI + '] ' + data.dose + ' ' + data.route + ' ' + data.form,
-				data.prescription_when,
+				data.STR + ' ' + data.dose + ' ' + data.route + ' ' + data.form,
+				data.directions,
 				data.dispense,
 				data.refill,
-				data.ICDS
+				(data.dxs.join ? data.dxs.join(', ') : data.dxs)
 			]);
 		}
 

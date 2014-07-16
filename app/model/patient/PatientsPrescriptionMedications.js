@@ -20,7 +20,7 @@ Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 	extend: 'Ext.data.Model',
 	table: {
 		name: 'patient_medications',
-		comment: 'Patients Medications'
+		comment: 'Patient Medications'
 	},
 	fields: [
 		{
@@ -38,75 +38,110 @@ Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 			index: true
 		},
 		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
 			name: 'prescription_id',
 			type: 'int'
 		},
 		{
 			name: 'STR',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'CODE',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'RXCUI',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'NDC',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
-			name: 'ICDS',
+			name: 'dxs',
 			type: 'string'
 		},
 		{
 			name: 'dose',
-			type: 'string'
-		},
-		{
-			name: 'take_pills',
-			type: 'int'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'form',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'route',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
-			name: 'prescription_often',
-			type: 'string'
-		},
-		{
-			name: 'prescription_when',
+			name: 'directions',
 			type: 'string'
 		},
 		{
 			name: 'dispense',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'refill',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
-			name: 'create_date',
+			name: 'daw',
+			type: 'bool'
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 300
+		},
+		{
+			name: 'referred_by',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'date_ordered',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'created_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'begin_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'end_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
+				return record.data.end_date == null;
+			}
 		}
 	]
 });

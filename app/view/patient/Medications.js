@@ -104,7 +104,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					header: i18n('instructions'),
 					width: 200,
-					dataIndex: 'prescription_when',
+					dataIndex: 'directions',
 					sortable: false,
 					hideable: false,
 					editor: {

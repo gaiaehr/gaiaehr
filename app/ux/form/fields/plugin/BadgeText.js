@@ -4,7 +4,7 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 
 	disableBg: 'gray',
 	enableBg: 'red',
-	textSize: 10,
+	textSize: 15,
 	textColor: 'white',
 	defaultText: ' ',
 	disableOpacity: 0,
@@ -61,10 +61,10 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 				'background-color': me.disableBg,
 				'font-size': me.textSize + 'px',
 				'color': me.textColor,
-				'padding': '1px 2px',
+				'padding': '1px 5px',
 				'index': 50,
-				'top': '-5px',
-				'border-radius': '3px',
+				'top': '-3px',
+				'border-radius': '15px',
 				'font-weight': 'bold',
 				'text-shadow': 'rgba(0, 0, 0, 0.5) 0 -0.08em 0',
 				'box-shadow': 'rgba(0, 0, 0, 0.3) 0 0.1em 0.1em',
@@ -72,15 +72,19 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 			};
 
 		if(me.align == 'left'){
-			styles.left = '2px';
+			styles.left = '-3px';
 		}else{
-			styles.right = '2px';
+			styles.right = '-3px';
 		}
 
 		button.badgeEl = Ext.DomHelper.append(button.el, { tag:'div', cls:'badgeText x-unselectable'}, true);
 		button.badgeEl.setOpacity(me.disableOpacity);
 		button.badgeEl.setStyle(styles);
 		button.badgeEl.update(me.text.toString ? me.text.toString() : me.text);
+
+		button.el.setStyle({
+			overflow: 'hidden'
+		});
 
 	},
 

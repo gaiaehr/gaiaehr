@@ -119,7 +119,6 @@ Ext.define('App.controller.Navigation', {
 		this.navigateToDefault();
 	},
 
-
 	setUrlParams:function(params){
 		var url = './#!/';
 		if(params.length > 0) url += params.join('/');
@@ -176,6 +175,7 @@ Ext.define('App.controller.Navigation', {
 
 		// fire global event
 		me.getViewport().fireEvent('afternavigation', me[ref]);
+
 	},
 
 	/**

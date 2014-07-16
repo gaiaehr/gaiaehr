@@ -62,7 +62,7 @@ Ext.define('App.controller.Navigation', {
 
     onPatientListInit:function(){
         var store = this.getPatientListNav().getStore();
-        store.getProxy()._extraParams.uid = App.user.id;
+        store.getProxy()._extraParams.uid = 1;
     },
 
     onPatientListShow:function(){
@@ -87,7 +87,6 @@ Ext.define('App.controller.Navigation', {
                 say('No tier property found in panel config');
             }
         }
-
     },
 
     setBackBtn:function(tier){

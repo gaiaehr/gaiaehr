@@ -24,6 +24,7 @@ Ext.define('App.view.patient.Summary', {
 		'Ext.XTemplate',
 		'Ext.ux.IFrame',
 		'App.view.patient.Documents',
+		'App.view.patient.CCD',
 		'App.ux.ManagedIframe'
 	],
 	itemId: 'patientsummarypanel',
@@ -595,63 +596,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_ccd')){
 			me.reportPanel = me.tabPanel.add({
-				xtype: 'panel',
-				title: i18n('ccd_reports'),
-				layout: 'fit',
-				items:[
-					{
-						xtype: 'miframe',
-						style: 'background-color:white',
-						autoMask: false,
-						itemId: 'patientDocumentViewerFrame'
-					}
-				],
-				tbar: [
-					{
-						xtype: 'button',
-						text: i18n('view_ccr'),
-						margin: '0 0 5 0',
-						handler: function(){
-							me.reportPanel.down('miframe').setSrc('dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token);
-							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-							app.AuditLog('Patient summary CCD viewed');
-						}
-
-					},
-					'-',
-					{
-						text: i18n('export_ccr'),
-						margin: '0 0 5 0',
-						handler: function(){
-							me.reportPanel.down('miframe').setSrc('dataProvider/CCDDocument.php?action=export&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token);
-							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-							app.AuditLog('Patient summary CCD exported');
-						}
-					},
-					'-',
-					{
-						xtype: 'container',
-						layout: 'vbox',
-						items: [
-							{
-								xtype: 'patientEncounterCombo',
-								name: 'filterEncounter',
-								margin: 5,
-								fieldLabel: i18n('filter_encounter'),
-								hideLabel: false
-							}
-						]
-					},
-					'-',
-					{
-						text: 'Print',
-						iconCls: 'icon-print',
-						handler: function(){
-							//                           	trg.focus();
-							//                           	trg.print();
-						}
-					}
-				]
+				xtype: 'patientccdpanel'
 			});
 		}
 

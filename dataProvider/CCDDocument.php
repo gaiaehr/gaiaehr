@@ -28,6 +28,7 @@ if(!isset($_SESSION)){
 ob_start();
 if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+
 include_once(ROOT . '/classes/UUID.php');
 include_once(ROOT . '/classes/Array2XML.php');
 
@@ -3157,9 +3158,6 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 	/**
 	 * Check token for security
 	 */
-	//if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
-	if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-	include_once(ROOT . '/registry.php');
 	include_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
 	include_once(ROOT . '/classes/MatchaHelper.php');
 	$ccd = new CCDDocument();

@@ -1396,5 +1396,6 @@ $LANG = array(
 	'notes_to_Pharmacist'         	        => 'Notes To Pharmacist',
 	'refills'         	                    => 'Refills',
 	'missing_required_info'         	    => 'Missing Required Info',
+	'ccd'         	                        => 'CCD',
 
 );

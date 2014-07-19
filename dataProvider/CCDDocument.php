@@ -25,9 +25,10 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-ob_start();
-if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+if(!defined('_GaiaEXEC')){
+	define('_GaiaEXEC', 1);
+	require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+}
 
 include_once(ROOT . '/classes/UUID.php');
 include_once(ROOT . '/classes/Array2XML.php');
@@ -86,6 +87,10 @@ class CCDDocument {
 	 */
 	private $facility;
 	/**
+	 * @var array
+	 */
+	private $user;
+	/**
 	 * @var DomDocument
 	 */
 	private $xml;
@@ -120,7 +125,8 @@ class CCDDocument {
 		'LOINC' => '2.16.840.1.113883.6.1',
 		'NDC' => '2.16.840.1.113883.6.6',
 		'RXNORM' => '2.16.840.1.113883.6.88',
-		'SNOMEDCT' => '2.16.840.1.113883.6.96'
+		'SNOMEDCT' => '2.16.840.1.113883.6.96',
+		'NPI' => '2.16.840.1.113883.4.6'
 	);
 	/**
 	 * @var array
@@ -232,10 +238,7 @@ class CCDDocument {
 			 * Run Section method for each section
 			 */
 			foreach($sections AS $Section){
-				call_user_func(array(
-					$this,
-					"set{$Section}Section"
-				));
+				call_user_func(array($this, "set{$Section}Section"));
 			}
 
 			/**
@@ -253,7 +256,6 @@ class CCDDocument {
 	 */
 	public function view(){
 		try{
-			ob_clean();
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
 		} catch(Exception $e){
@@ -280,7 +282,7 @@ class CCDDocument {
 			/**
 			 * Create a ZIP archive for delivery
 			 */
-			$dir = $_SESSION['site']['temp']['path'] . '/';
+			$dir = site_temp_path . '/';
 			$filename = $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
 			$file = $this->zipIt($dir, $filename);
 			/**
@@ -400,6 +402,7 @@ class CCDDocument {
 		$this->xmlData['recordTarget'] = $this->getRecordTarget();
 		$this->xmlData['author'] = $this->getAuthor();
 		$this->xmlData['custodian'] = $this->getCustodian();
+		$this->xmlData['documentationOf'] = $this->getDocumentationOf();
 		$this->xmlData['component']['structuredBody']['component'] = array();
 
 	}
@@ -428,8 +431,37 @@ class CCDDocument {
 						'root' => '2.16.840.1.113883.19.5'
 					)
 				),
+				'addr' => array(
+
+					'@attributes' => array(
+						'use' => 'HP',
+					),
+					'streetAddressLine' => array(
+						'@value' => 'Strert'
+					),
+					'city' => array(
+						'@value' => 'Carolina'
+					),
+					'state' => array(
+						'@value' => 'PR'
+					),
+					'postalCode' => array(
+						'@value' => '00987'
+					),
+					'country' => array(
+						'@value' => 'USA'
+					)
+				),
+				'telecom' => array(
+					'@attributes' => array(
+						'value' => 'tel:000-000-0000'
+					)
+				),
 				'patient' => array(
 					'name' => array(
+						'@attributes' => array(
+							'use' => 'L'
+						),
 						'given' => array(
 							$patientData['fname'],
 							$patientData['mname']
@@ -455,49 +487,39 @@ class CCDDocument {
 							'value' => preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $patientData['DOB'])
 						)
 					),
-					'ethnicGroupCode' => array(
-						'@attributes' => array(
-							'code' => $patientData['ethnicity'] == 'H' ? '2135-2' : '2186-5',
-							'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(59, $patientData['ethnicity']),
-							'codeSystem' => '2.16.840.1.113883.6.238'
-						)
-					),
-					'raceCode' => array(
-						'@attributes' => array(
-							'code' => $patientData['race'],
-							'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(14, $patientData['race']),
-							'codeSystem' => '2.16.840.1.113883.6.238'
-						)
-					)
-				),
-				'addr' => array(
-
-					'@attributes' => array(
-						'use' => 'HP',
-					),
-					'streetAddressLine' => array(
-						'@value' => 'Strert'
-					),
-					'city' => array(
-						'@value' => 'Carolina'
-					),
-					'state' => array(
-						'@value' => 'PR'
-					),
-					'postalCode' => array(
-						'@value' => '00987'
-					),
-					'country' => array(
-						'@value' => 'USA'
-					)
-				),
-				'telecom' => array(
-					'@attributes' => array(
-						'value' => 'tel:000-000-0000'
-					)
 				)
 			)
 		);
+
+		if(isset($patientData['marital_status']) && $patientData['marital_status'] != ''){
+			$recordTarget['patientRole']['patient']['maritalStatusCode'] = array(
+				'@attributes' => array(
+					'code' => $patientData['marital_status'],
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(12, $patientData['marital_status']),
+					'codeSystem' => '2.16.840.1.113883.5.2'
+				)
+			);
+		}
+
+		if(isset($patientData['race']) && $patientData['race'] != ''){
+			$recordTarget['patientRole']['patient']['raceCode'] = array(
+				'@attributes' => array(
+					'code' => $patientData['race'],
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(14, $patientData['race']),
+					'codeSystem' => '2.16.840.1.113883.6.238'
+				)
+			);
+		}
+
+		if(isset($patientData['ethnicity']) && $patientData['ethnicity'] != ''){
+			$recordTarget['patientRole']['patient']['ethnicGroupCode'] = array(
+				'@attributes' => array(
+					'code' => $patientData['ethnicity'] == 'H' ? '2135-2' : '2186-5',
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(59, $patientData['ethnicity']),
+					'codeSystem' => '2.16.840.1.113883.6.238'
+				)
+			);
+		}
 
 		unset($Patient, $patientData, $Insurance, $insuranceData);
 
@@ -510,7 +532,7 @@ class CCDDocument {
 	 */
 	private function getAuthor(){
 		$User = new User();
-		$userData = $User->getCurrentUserData();
+		$this->user = $User->getCurrentUserData();
 		$author = array(
 			'typeId' => array(
 				'@attributes' => array(
@@ -527,24 +549,8 @@ class CCDDocument {
 				'id' => array(
 					'@attributes' => array(
 						'root' => '2.16.840.1.113883.4.6',
-						'extension' => $userData['npi']
+						'extension' => $this->user['npi']
 					)
-				),
-				'assignedPerson' => array(
-					'name' => array(
-						'prefix' => $userData['title'],
-						'given' => $userData['fname'],
-						'family' => $userData['lname'],
-					)
-				),
-				'representedOrganization' => array(
-					'id' => array(
-						'@attributes' => array(
-							'root' => '2.16.840.1.113883.19.5',
-							'extension' => UUID::v4()
-						),
-					),
-					'name' => $this->facility['name']
 				),
 				'addr' => array(
 					'@attributes' => array(
@@ -570,6 +576,22 @@ class CCDDocument {
 					'@attributes' => array(
 						'value' => 'tel:000-000-0000'
 					)
+				),
+				'assignedPerson' => array(
+					'name' => array(
+						'prefix' => $this->user['title'],
+						'given' => $this->user['fname'],
+						'family' => $this->user['lname'],
+					)
+				),
+				'representedOrganization' => array(
+					'id' => array(
+						'@attributes' => array(
+							'root' => '2.16.840.1.113883.19.5',
+							'extension' => UUID::v4()
+						),
+					),
+					'name' => $this->facility['name']
 				)
 			)
 		);
@@ -585,6 +607,19 @@ class CCDDocument {
 		$custodian = array(
 			'assignedCustodian' => array(
 				'representedCustodianOrganization' => array(
+					'id' => array(
+						'@attributes' => array(
+							'root' => '2.16.840.1.113883.4.6',
+							'extension' => '1234567'
+							// TODO: Organization NPI
+						)
+					),
+					'name' => $this->facility['name'],
+					'telecom' => array(
+						'@attributes' => array(
+							'value' => 'tel:(000)000-0000',
+						)
+					),
 					'addr' => array(
 						'@attributes' => array(
 							'use' => 'HP',
@@ -604,19 +639,6 @@ class CCDDocument {
 						'country' => array(
 							'@value' => $this->facility['country_code']
 						)
-					),
-					'id' => array(
-						'@attributes' => array(
-							'root' => '2.16.840.1.113883.4.6',
-							'extension' => '1234567'
-							// TODO: Organization NPI
-						)
-					),
-					'name' => $this->facility['name'],
-					'telecom' => array(
-						'@attributes' => array(
-							'value' => 'tel:(000)000-0000',
-						)
 					)
 				)
 			)
@@ -629,75 +651,125 @@ class CCDDocument {
 	 * @return array
 	 */
 	private function getDocumentationOf(){
-		//		$documentationOf = array(
-		//			'serviceEvent' => array(
-		//				'@attributes' => array(
-		//					'classCode' => 'PCPR'
-		//				),
-		//				'effectiveTime' => array(
-		//					'@attributes' => array(
-		//						'xsi:type' => 'IVL_TS',
-		//					),
-		//					'low' => array(
-		//						'@attributes' => array(
-		//							'value' => '19320924'
-		//						)
-		//					),
-		//					'high' => array(
-		//						'@attributes' => array(
-		//							'value' => $dateNow
-		//						)
-		//					)
-		//				),
-		//				'performer' => array(
-		//					'@attributes' => array(
-		//						'typeCode' => 'PRF'
-		//					),
-		//					'functionCode' => array(
-		//						'@attributes' => array(
-		//							'code' => 'PCP',
-		//							'codeSystem' => '2.16.840.1.113883.5.88'
-		//						)
-		//					),
-		//					'time' => array(
-		//						'low' => array(
-		//							'@attributes' => array(
-		//								'value' => '1990'
-		//							)
-		//						),
-		//						'high' => array(
-		//							'@attributes' => array(
-		//								'value' => $dateNow
-		//							)
-		//						)
-		//					),
-		//					'assignedEntity' => array(
-		//						'id' => array(
-		//							'@attributes' => array(
-		//								'root' => UUID::v4()
-		//							)
-		//						),
-		//						'assignedPerson' => array(
-		//							'name' => array(
-		//								'prefix' => $userData['title'],
-		//								'given' => $userData['fname'],
-		//								'family' => $userData['lname'],
-		//							)
-		//						),
-		//						'representedOrganization' => array(
-		//							'id' => array(
-		//								'@attributes' => array(
-		//									'root' => '2.16.840.1.113883.19.5',
-		//									'extension' => UUID::v4()
-		//								)
-		//							),
-		//							'name' => $facility['name']
-		//						)
-		//					)
-		//				)
-		//			)
-		//		);
-		return array();
+		$documentationOf = array(
+			'serviceEvent' => array(
+				'@attributes' => array(
+					'classCode' => 'PCPR'
+				),
+				'effectiveTime' => array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					),
+					'low' => array(
+						'@attributes' => array(
+							'value' => '19320924'
+						)
+					),
+					'high' => array(
+						'@attributes' => array(
+							'value' => $this->dateNow
+						)
+					)
+				),
+				'performer' => array(
+					'@attributes' => array(
+						'typeCode' => 'PRF'
+					),
+					'functionCode' => array(
+						'@attributes' => array(
+							'code' => 'PCP',
+							'codeSystem' => '2.16.840.1.113883.5.88'
+						)
+					),
+					'time' => array(
+						'low' => array(
+							'@attributes' => array(
+								'value' => '1990'
+							)
+						),
+						'high' => array(
+							'@attributes' => array(
+								'value' => $this->dateNow
+							)
+						)
+					),
+					'assignedEntity' => array(
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'addr' => array(
+							'@attributes' => array(
+								'use' => 'HP',
+							),
+							'streetAddressLine' => array(
+								'@value' => $this->facility['street'] //TODO provider
+							),
+							'city' => array(
+								'@value' => $this->facility['city']//TODO provider
+							),
+							'state' => array(
+								'@value' => $this->facility['state']//TODO provider
+							),
+							'postalCode' => array(
+								'@value' => $this->facility['postal_code']//TODO provider
+							),
+							'country' => array(
+								'@value' => $this->facility['country_code']//TODO provider
+							)
+						),
+						'telecom' => array(
+							'@attributes' => array(
+								'value' => 'tel:(000)000-0000',//TODO provider
+							)
+						),
+						'assignedPerson' => array(
+							'name' => array(
+								'prefix' => $this->user['title'],
+								'given' => $this->user['fname'],
+								'family' => $this->user['lname'],
+							)
+						),
+						'representedOrganization' => array(
+							'id' => array(
+								'@attributes' => array(
+									'root' => '2.16.840.1.113883.19.5',
+									'extension' => UUID::v4()
+								)
+							),
+							'name' => $this->facility['name'],
+							'telecom' => array(
+								'@attributes' => array(
+									'value' => 'tel:(000)000-0000',//TODO provider
+								)
+							),
+							'addr' => array(
+								'@attributes' => array(
+									'use' => 'HP',
+								),
+								'streetAddressLine' => array(
+									'@value' => $this->facility['street'] //TODO provider
+								),
+								'city' => array(
+									'@value' => $this->facility['city']//TODO provider
+								),
+								'state' => array(
+									'@value' => $this->facility['state']//TODO provider
+								),
+								'postalCode' => array(
+									'@value' => $this->facility['postal_code']//TODO provider
+								),
+								'country' => array(
+									'@value' => $this->facility['country_code']//TODO provider
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+		return $documentationOf;
 	}
 
 	/**
@@ -801,25 +873,29 @@ class CCDDocument {
 	 */
 	private function setProceduresSection(){
 
-		$procedures = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredProcedures ? '2.16.840.1.113883.10.20.22.2.7.1' : '2.16.840.1.113883.10.20.22.2.7'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '47519-4',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Procedures',
-				'text' => ''
-			)
-		);
 
 		$proceduresData = array(); // TODO
+		$procedures = array();
+
+		if(empty($proceduresData)){
+			$procedures['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$procedures['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredProcedures ? '2.16.840.1.113883.10.20.22.2.7.1' : '2.16.840.1.113883.10.20.22.2.7'
+			)
+		);
+		$procedures['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '47519-4',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$procedures['section']['title'] = 'Procedures';
+		$procedures['section']['text'] = '';
+
 
 		if(!empty($proceduresData)){
 
@@ -935,6 +1011,7 @@ class CCDDocument {
 		);
 
 		$vitalsData = $Vitals->getVitalsByPid($this->pid);
+
 		if(!empty($vitalsData)){
 
 			$vitals['section']['text'] = array(
@@ -1246,9 +1323,10 @@ class CCDDocument {
 		}
 
 		if($this->requiredVitals || isset($vitals['section']['entry'])){
-			$body[] = $vitals;
+			$this->addSection($vitals);
 		}
 		unset($vitalsData, $vitals);
+
 	}
 
 	/**
@@ -1439,7 +1517,13 @@ class CCDDocument {
 									),
 									array(
 										'@value' => 'Status'
-									)
+									),
+//									array(
+//										'@value' => 'Indications' // diagnosis
+//									),
+//									array(
+//										'@value' => 'Fill Instructions' //1 refill Generic Substitition Allowed
+//									)
 								)
 							)
 						)
@@ -1487,6 +1571,7 @@ class CCDDocument {
 								'root' => UUID::v4()
 							)
 						),
+						'text' => $item['STR'],
 						'statusCode' => array(
 							'@attributes' => array(
 								'code' => 'completed'
@@ -1529,8 +1614,7 @@ class CCDDocument {
 									)
 								)
 							)
-						),
-						'text' => $item['STR']
+						)
 					)
 				);
 			}
@@ -1887,7 +1971,7 @@ class CCDDocument {
 		}
 
 		if($this->requiredProblems || !empty($problems['section']['entry'])){
-			$body[] = $problems;
+			$this->addSection($problems);
 		}
 		unset($problemsData, $problems);
 	}
@@ -2222,7 +2306,7 @@ class CCDDocument {
 			}
 		}
 		if($this->requiredAllergies || !empty($allergies['section']['entry'])){
-			$body[] = $allergies;
+			$this->addSection($allergies);
 		}
 		unset($allergiesData, $allergies);
 	}
@@ -2271,8 +2355,7 @@ class CCDDocument {
 						'tbody' => array(
 							'tr' => array()
 						)
-					),
-					'entry' => array()
+					)
 				)
 			)
 		);
@@ -2297,6 +2380,9 @@ class CCDDocument {
 		);
 
 		$socialHistory['section']['entry'][] = array(
+			'@attributes' => array(
+				'typeCode' => 'DRIV'
+			),
 			'observation' => array(
 				'@attributes' => array(
 					'classCode' => 'OBS',
@@ -2370,6 +2456,9 @@ class CCDDocument {
 			)
 		);
 		$socialHistory['section']['entry'][] = array(
+			'@attributes' => array(
+				'typeCode' => 'DRIV'
+			),
 			'observation' => array(
 				'@attributes' => array(
 					'classCode' => 'OBS',
@@ -2444,6 +2533,9 @@ class CCDDocument {
 			)
 		);
 		$socialHistory['section']['entry'][] = array(
+			'@attributes' => array(
+				'typeCode' => 'DRIV'
+			),
 			'observation' => array(
 				'@attributes' => array(
 					'classCode' => 'OBS',
@@ -2519,24 +2611,29 @@ class CCDDocument {
 	 * Method setResultsSection()
 	 */
 	private function setResultsSection(){
-		$results = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredResults ? '2.16.840.1.113883.10.20.22.2.3.1' : '2.16.840.1.113883.10.20.22.2.3'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '30954-2',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Results',
-				'text' => ''
+
+		$resultsData = array(); // TODO
+		$results = array();
+
+		if(empty($resultsData)){
+			$results['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$results['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredResults ? '2.16.840.1.113883.10.20.22.2.3.1' : '2.16.840.1.113883.10.20.22.2.3'
 			)
 		);
-		$resultsData = array();
+		$results['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '30954-2',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$results['section']['title'] = 'Results';
+		$results['section']['text'] = '';
+
 		if(!empty($allergiesData)){
 			$results['section']['text'] = array(
 				'table' => array(
@@ -3155,6 +3252,8 @@ class CCDDocument {
  * Handle the request only if pid and action is available
  */
 if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
+
+	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_SESSION['user']['token']) die('Not Authorized!');
 	/**
 	 * Check token for security
 	 */

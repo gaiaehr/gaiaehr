@@ -911,6 +911,7 @@ class CombosData {
 			'list_id' => $listId,
 			'option_value' => $optionValue
 		))->one();
+		return $foo !== false ? $foo['option_name'] : '';
 	}
 
 	public function getEncounterSupervisors(){

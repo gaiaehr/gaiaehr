@@ -66,7 +66,7 @@ class Procedures {
 
 		$params->filters[1] = new stdClass();
 		$params->filters[1]->property = 'code';
-		$params->filters[2]->value =  $code;
+		$params->filters[1]->value =  $code;
 		return $this->p->load($params)->all();
 	}
 

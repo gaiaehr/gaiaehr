@@ -1679,7 +1679,7 @@ class CCDDocument {
 						'codeSystem' => '2.16.840.1.113883.6.1'
 					)
 				),
-				'title' => 'Plan',
+				'title' => 'Plan of Care',
 				'text' => ''
 			)
 		);
@@ -1787,10 +1787,7 @@ class CCDDocument {
 				);
 
 				$planOfCare['section']['entry'][] = array(
-					'@attributes' => array(
-						'typeCode' => 'DRIV'
-					),
-					'observation' => array(
+					'act' => array(
 						'@attributes' => array(
 							'classCode' => 'ACT',
 							'moodCode' => 'RQO'
@@ -1798,6 +1795,110 @@ class CCDDocument {
 						'templateId' => array(
 							'@attributes' => array(
 								'root' => '2.16.840.1.113883.10.20.22.4.39'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => '23426006', //TODO
+								'codeSystem' => '2.16.840.1.113883.6.96', //TODO
+								'displayName' => 'Pulmonary function test', //TODO
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'new'
+							)
+						),
+						'effectiveTime' => array(
+							'@attributes' => array(
+								'center' => '20000421'  //TODO
+							)
+						)
+					)
+				);
+			}
+
+			/**
+			 * Encounters...
+			 */
+			foreach($planOfCareData['ENC'] as $item){
+				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
+					'td' => array(
+						array(
+							'@value' => 'Test' //TODO
+						),
+						array(
+							'@value' => 'Ting' //TODO
+						)
+					)
+				);
+
+				$planOfCare['section']['entry'][] = array(
+					'act' => array(
+						'@attributes' => array(
+							'classCode' => 'INT',
+							'moodCode' => 'INT'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.40'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => '23426006', //TODO
+								'codeSystem' => '2.16.840.1.113883.6.96', //TODO
+								'displayName' => 'Pulmonary function test', //TODO
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'new'
+							)
+						),
+						'effectiveTime' => array(
+							'@attributes' => array(
+								'center' => '20000421'  //TODO
+							)
+						)
+					)
+				);
+			}
+
+			/**
+			 * Procedures...
+			 */
+			foreach($planOfCareData['PROC'] as $item){
+				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
+					'td' => array(
+						array(
+							'@value' => 'Test' //TODO
+						),
+						array(
+							'@value' => 'Ting' //TODO
+						)
+					)
+				);
+
+				$planOfCare['section']['entry'][] = array(
+					'procedure' => array(
+						'@attributes' => array(
+							'classCode' => 'INT',
+							'moodCode' => 'INT'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.41'
 							)
 						),
 						'id' => array(

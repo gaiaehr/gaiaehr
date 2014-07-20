@@ -261,7 +261,7 @@ class DecisionSupport {
 		if(isset($rule['concepts']['PROC']) && !empty($rule['concepts']['PROC'])){
 			$count = 0;
 			foreach($rule['concepts']['PROC'] as $concept){
-				$procedures = $this->Procedures->getPatientProcedureByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
+				$procedures = $this->Procedures->getPatientProceduresByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
 				if(empty($procedures)) continue;
 				if($concept['frequency_interval'] == 0){
 					$count++;

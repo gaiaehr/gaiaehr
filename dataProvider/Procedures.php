@@ -26,8 +26,12 @@ class Procedures {
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.encounter.Procedures');
 	}
 
-	public function loadProcedures($params) {
+	public function getPatientProcedures($params) {
 		return $this->p->load($params)->all();
+	}
+
+	public function getPatientProcedure($params) {
+		return $this->p->load($params)->one();
 	}
 
 	public function saveProcedure($params) {
@@ -38,15 +42,37 @@ class Procedures {
 		return $this->p->destroy($params);
 	}
 
-	public function getPatientProcedureByPidAndCode($pid, $code) {
+	public function getPatientProceduresByPid($pid) {
+		$params =  new stdClass();
+		$params->filters[0] = new stdClass();
+		$params->filters[0]->property = 'pid';
+		$params->filters[0]->value =  $pid;
+		return $this->p->load($params)->all();
+	}
+
+	public function getPatientProceduresByEid($eid) {
+		$params =  new stdClass();
+		$params->filters[0] = new stdClass();
+		$params->filters[0]->property = 'eid';
+		$params->filters[0]->value =  $eid;
+		return $this->p->load($params)->all();
+	}
+
+	public function getPatientProceduresByPidAndCode($pid, $code) {
 		$params =  new stdClass();
 		$params->filters[0] = new stdClass();
 		$params->filters[0]->property = 'pid';
 		$params->filters[0]->value =  $pid;
 
-		$params->filters[2] = new stdClass();
-		$params->filters[2]->property = 'code';
+		$params->filters[1] = new stdClass();
+		$params->filters[1]->property = 'code';
 		$params->filters[2]->value =  $code;
+		return $this->p->load($params)->all();
+	}
+
+
+	// TODO: REMOVE
+	public function loadProcedures($params) {
 		return $this->p->load($params)->all();
 	}
 

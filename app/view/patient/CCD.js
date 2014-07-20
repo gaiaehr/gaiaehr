@@ -31,7 +31,7 @@ Ext.define('App.view.patient.CCD', {
 		{
 			xtype: 'miframe',
 			style: 'background-color:white',
-			autoMask: false,
+			autoMask: true,
 			itemId: 'patientDocumentViewerFrame'
 		}
 	],

@@ -43,6 +43,7 @@ include_once(ROOT . '/dataProvider/Vitals.php');
 include_once(ROOT . '/dataProvider/Medical.php');
 include_once(ROOT . '/dataProvider/Medications.php');
 include_once(ROOT . '/dataProvider/PreventiveCare.php');
+include_once(ROOT . '/dataProvider/Procedures.php');
 include_once(ROOT . '/dataProvider/Services.php');
 include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
 include_once(ROOT . '/dataProvider/Facilities.php');
@@ -119,6 +120,7 @@ class CCDDocument {
 	 * @var array
 	 */
 	private $codes = array(
+		'CPT' => '2.16.840.1.113883.6.12',
 		'CPT4' => '2.16.840.1.113883.6.12',
 		'ICD9' => '2.16.840.1.113883.6.42',
 		'ICD10' => '2.16.840.1.113883.6.3',
@@ -873,8 +875,10 @@ class CCDDocument {
 	 */
 	private function setProceduresSection(){
 
+		$Procedures = new Procedures();
+		$proceduresData = $Procedures->getPatientProceduresByPid($this->pid);
+		unset($Procedures);
 
-		$proceduresData = array(); // TODO
 		$procedures = array();
 
 		if(empty($proceduresData)){
@@ -895,7 +899,6 @@ class CCDDocument {
 		);
 		$procedures['section']['title'] = 'Procedures';
 		$procedures['section']['text'] = '';
-
 
 		if(!empty($proceduresData)){
 
@@ -930,10 +933,10 @@ class CCDDocument {
 				$procedures['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Procedure Title'
+							'@value' => $item['code_text']
 						),
 						array(
-							'@value' => 'Procedure Date'
+							'@value' => $this->parseDateToText($item['create_date'])
 						)
 					)
 
@@ -942,6 +945,9 @@ class CCDDocument {
 				//  Procedure Activity Procedure
 
 				$procedures['section']['entry'][] = array(
+					'@attributes' => array(
+						'typeCode' => 'DRIV'
+					),
 					'procedure' => array(
 						'@attributes' => array(
 							'classCode' => 'PROC',
@@ -959,10 +965,9 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '152734007',
-								// TODO...
-								'codeSystem' => $this->codes['SNOMEDCT'],
-								'displayName' => 'Total hip replacement',
+								'code' => $item['code'],
+								'codeSystem' => $this->codes[$item['code_type']],
+								'displayName' => $item['code_text']
 							)
 						),
 						'statusCode' => array(
@@ -972,8 +977,14 @@ class CCDDocument {
 						),
 						'effectiveTime' => array(
 							'@attributes' => array(
-								'value' => '19980123'
-								// TODO...
+								'value' => $this->parseDate($item['create_date'])
+
+							)
+						),
+						'methodCode' => array(
+							'@attributes' => array(
+								'nullFlavor' => 'UNK'
+
 							)
 						)
 					)
@@ -1079,7 +1090,7 @@ class CCDDocument {
 				/**
 				 * strip date (yyyy-mm-dd hh:mm:ss => yyyymmdd)
 				 */
-				$date = preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $item['date']);
+				$date = $this->parseDate($item['date']);
 
 				/**
 				 * date
@@ -1196,7 +1207,7 @@ class CCDDocument {
 									),
 									'templateId' => array(
 										'@attributes' => array(
-											'root' => '2.16.840.1.113883.10.20.1.31'
+											'root' => '2.16.840.1.113883.10.20.22.4.2'
 										)
 									),
 									'id' => array(
@@ -1238,7 +1249,7 @@ class CCDDocument {
 									),
 									'templateId' => array(
 										'@attributes' => array(
-											'root' => '2.16.840.1.113883.10.20.1.31'
+											'root' => '2.16.840.1.113883.10.20.22.4.2'
 										)
 									),
 									'id' => array(
@@ -1281,7 +1292,7 @@ class CCDDocument {
 									),
 									'templateId' => array(
 										'@attributes' => array(
-											'root' => '2.16.840.1.113883.10.20.1.31'
+											'root' => '2.16.840.1.113883.10.20.22.4.2'
 										)
 									),
 									'id' => array(
@@ -1334,6 +1345,8 @@ class CCDDocument {
 	 */
 	private function setImmunizationsSection(){
 
+		$immunizationsData = $this->Medical->getPatientImmunizationsByPid($this->pid);
+
 		$immunizations = array(
 			'section' => array(
 				'templateId' => array(
@@ -1352,7 +1365,6 @@ class CCDDocument {
 			)
 		);
 
-		$immunizationsData = $this->Medical->getPatientImmunizationsByPid($this->pid);
 		if(!empty($immunizationsData)){
 
 			$immunizations['section']['text'] = array(
@@ -1475,7 +1487,11 @@ class CCDDocument {
 	 * Method setMedicationsSection()
 	 */
 	private function setMedicationsSection(){
+
 		$Medications = new Medications();
+		$medicationsData = $Medications->getPatientActiveMedicationsByPid($this->pid);
+		unset($Medications);
+
 		$medications = array(
 			'section' => array(
 				'templateId' => array(
@@ -1493,7 +1509,7 @@ class CCDDocument {
 				'text' => ''
 			)
 		);
-		$medicationsData = $Medications->getPatientActiveMedicationsByPid($this->pid);
+
 		if(!empty($medicationsData)){
 
 			$medications['section']['text'] = array(
@@ -1631,7 +1647,25 @@ class CCDDocument {
 	 * Method setPlanOfCareSection()
 	 */
 	private function setPlanOfCareSection(){
-		$planOfCareData = array();
+
+		/**
+		 * Table moodCode Values
+		 * -----------------------------------------------------------------------
+		 * Code             | Definition
+		 * -----------------------------------------------------------------------
+		 * EVN (event)      | The entry defines an actual occurrence of an event.
+		 * INT (intent)     | The entry is intended or planned.
+		 * PRMS (promise)   | A commitment to perform the stated entry.
+		 * PRP (proposal)   | A proposal that the stated entry be performed.
+		 * RQO (request)    | A request or order to perform the stated entry.
+		 * -----------------------------------------------------------------------
+		 */
+
+		$planOfCareData['OBS'] = array();
+		$planOfCareData['ACT'] = array();
+		$planOfCareData['ENC'] = array();
+		$planOfCareData['PROC'] = array();
+
 		$planOfCare = array(
 			'section' => array(
 				'templateId' => array(
@@ -1650,8 +1684,12 @@ class CCDDocument {
 			)
 		);
 
-		if(!empty($planOfCareData)){
-
+		// if one of these are not empty
+		if(!empty($planOfCareData['OBS']) ||
+			!empty($planOfCareData['ACT']) ||
+			!empty($planOfCareData['ENC']) ||
+			!empty($planOfCareData['PROC'])
+		){
 			$planOfCare['section']['text'] = array(
 				'table' => array(
 					'@attributes' => array(
@@ -1678,18 +1716,19 @@ class CCDDocument {
 			$planOfCare['section']['text']['table']['tbody']['tr'] = array();
 			$planOfCare['section']['entry'] = array();
 
-			foreach($planOfCareData as $item){
-
+			/**
+			 * Observations...
+			 */
+			foreach($planOfCareData['OBS'] as $item){
 				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Test'
+							'@value' => 'Test' //TODO
 						),
 						array(
-							'@value' => 'Ting'
+							'@value' => 'Ting' //TODO
 						)
 					)
-
 				);
 
 				$planOfCare['section']['entry'][] = array(
@@ -1703,7 +1742,7 @@ class CCDDocument {
 						),
 						'templateId' => array(
 							'@attributes' => array(
-								'root' => '2.16.840.1.113883.10.20.1.25'
+								'root' => '2.16.840.1.113883.10.20.22.4.44'
 							)
 						),
 						'id' => array(
@@ -1713,9 +1752,9 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '23426006',
-								'codeSystem' => '2.16.840.1.113883.6.96',
-								'displayName' => 'Pulmonary function test',
+								'code' => '23426006', //TODO
+								'codeSystem' => '2.16.840.1.113883.6.96', //TODO
+								'displayName' => 'Pulmonary function test', //TODO
 							)
 						),
 						'statusCode' => array(
@@ -1725,7 +1764,62 @@ class CCDDocument {
 						),
 						'effectiveTime' => array(
 							'@attributes' => array(
-								'value' => '20000421'
+								'center' => '20000421'  //TODO
+							)
+						)
+					)
+				);
+			}
+
+			/**
+			 * Activities...
+			 */
+			foreach($planOfCareData['ACT'] as $item){
+				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
+					'td' => array(
+						array(
+							'@value' => 'Test' //TODO
+						),
+						array(
+							'@value' => 'Ting' //TODO
+						)
+					)
+				);
+
+				$planOfCare['section']['entry'][] = array(
+					'@attributes' => array(
+						'typeCode' => 'DRIV'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'ACT',
+							'moodCode' => 'RQO'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.39'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => '23426006', //TODO
+								'codeSystem' => '2.16.840.1.113883.6.96', //TODO
+								'displayName' => 'Pulmonary function test', //TODO
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'new'
+							)
+						),
+						'effectiveTime' => array(
+							'@attributes' => array(
+								'center' => '20000421'  //TODO
 							)
 						)
 					)
@@ -1743,6 +1837,9 @@ class CCDDocument {
 	 * Method setProblemsSection()
 	 */
 	private function setProblemsSection(){
+
+		$problemsData = $this->Medical->getPatientProblemsByPid($this->pid);
+
 		$problems = array(
 			'section' => array(
 				'templateId' => array(
@@ -1760,7 +1857,7 @@ class CCDDocument {
 				'text' => ''
 			)
 		);
-		$problemsData = $this->Medical->getPatientProblemsByPid($this->pid);
+
 		if(!empty($problemsData)){
 
 			$problems['section']['text'] = array(
@@ -1958,13 +2055,10 @@ class CCDDocument {
 											)
 										)
 									)
-
 								)
 							)
-
 						)
 					)
-
 				);
 			}
 
@@ -1980,24 +2074,27 @@ class CCDDocument {
 	 * Method setAllergiesSection()
 	 */
 	private function setAllergiesSection(){
-		$allergiesData = $this->Medical->getPatientAllergiesByPid($this->pid);
-		$allergies = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredAllergies ? '2.16.840.1.113883.10.20.22.2.6.1' : '2.16.840.1.113883.10.20.22.2.6'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '48765-2',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Allergies, adverse reactions, alerts',
-				'text' => ''
+		$allergiesData = $this->Medical->getPatientAllergiesByPid($this->pid); //TODO
+		$allergiesData = array(); //TODO
+
+		if(empty($allergiesData)){
+			$allergies['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$allergies['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredAllergies ? '2.16.840.1.113883.10.20.22.2.6.1' : '2.16.840.1.113883.10.20.22.2.6'
 			)
 		);
+		$allergies['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '48765-2',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$allergies['section']['title'] = 'Allergies, Adverse Reactions, Alerts';
+		$allergies['section']['text'] = '';
 
 		if(!empty($allergiesData)){
 			$allergies['section']['text'] = array(
@@ -3244,6 +3341,14 @@ class CCDDocument {
 			$this->addSection($encounters);
 		}
 		unset($encountersData, $encounters);
+	}
+
+	private function parseDateToText($date){
+		return date('F Y', strtotime($date));
+	}
+
+	private function parseDate($date){
+		return preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $date);
 	}
 
 }

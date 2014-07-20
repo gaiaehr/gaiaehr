@@ -31,6 +31,10 @@ Ext.define('App.controller.patient.Summary', {
 			selector: 'patientdocumentspanel'
 		},
 		{
+			ref: 'PatientCcdPanel',
+			selector: 'patientccdpanel'
+		},
+		{
 			ref: 'ReferralPanelGrid',
 			selector: 'patientreferralspanel'
 		},
@@ -79,8 +83,12 @@ Ext.define('App.controller.patient.Summary', {
 	onPatientSummaryPanel: function(panel){
 		var params = this.nav.getExtraParams();
 
-		if(params && params.document){
-			panel.down('tabpanel').setActiveTab(this.getPatientDocumentPanel());
+		if(params){
+			if(params.document){
+				panel.down('tabpanel').setActiveTab(this.getPatientDocumentPanel());
+			}else if(params.ccd){
+				panel.down('tabpanel').setActiveTab(this.getPatientCcdPanel());
+			}
 		}
 	},
 

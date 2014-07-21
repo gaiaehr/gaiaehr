@@ -153,11 +153,13 @@ Ext.define('App.view.patient.ActiveProblems', {
 
 							},
 							{
-								fieldLabel: i18n('outcome'),
-								xtype: 'mitos.outcome2combo',
+								fieldLabel: i18n('status'),
+								xtype: 'gaiaehr.combo',
+								list: 112,
 								width: 250,
 								labelWidth: 70,
-								name: 'outcome'
+								name: 'status',
+								allowBlank: false
 
 							},
 

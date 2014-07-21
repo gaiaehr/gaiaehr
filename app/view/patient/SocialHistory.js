@@ -54,7 +54,8 @@ Ext.define('App.view.patient.SocialHistory', {
 			flex: 1,
 			itemId: 'socialhistorypanelobservationcolumn',
 			editor: {
-				xtype: 'textfield'
+				xtype: 'textfield',
+				allowBlank: false
 			}
 		},
 		{
@@ -65,7 +66,8 @@ Ext.define('App.view.patient.SocialHistory', {
 			width: 120,
 			editor: {
 				xtype: 'datefield',
-				format: 'Y-m-d'
+				format: 'Y-m-d',
+				allowBlank: false
 			}
 		},
 		{

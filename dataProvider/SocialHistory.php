@@ -115,7 +115,7 @@ class SocialHistory {
 	 * @param $code
 	 * @return mixed
 	 */
-	public function getSocialHistoryByPidAndCode($pid, $code){
+	public function getSocialHistoryByPidAndCode($pid, $code = 'history'){
 		$this->setModel();
 		$filters = new stdClass();
 		$filters->filter[0] = new stdClass();

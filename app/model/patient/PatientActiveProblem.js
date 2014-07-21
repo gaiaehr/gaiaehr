@@ -71,7 +71,7 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 			type: 'string'
 		},
 		{
-			name: 'outcome',
+			name: 'status',
 			type: 'string'
 		},
 		{

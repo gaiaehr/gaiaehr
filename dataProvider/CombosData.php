@@ -904,6 +904,16 @@ class CombosData {
 		);
 	}
 
+	public function getValuesByListIdAndOptionValue($listId, $optionValue) {
+		if($this->CLO == null)
+			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		$foo = $this->CLO->load(array(
+			'list_id' => $listId,
+			'option_value' => $optionValue
+		))->one();
+		return $foo;
+	}
+
 	public function getDisplayValueByListIdAndOptionValue($listId, $optionValue) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
@@ -912,6 +922,16 @@ class CombosData {
 			'option_value' => $optionValue
 		))->one();
 		return $foo !== false ? $foo['option_name'] : '';
+	}
+
+	public function getCodeValueByListIdAndOptionValue($listId, $optionValue) {
+		if($this->CLO == null)
+			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		$foo = $this->CLO->load(array(
+			'list_id' => $listId,
+			'option_value' => $optionValue
+		))->one();
+		return $foo !== false ? $foo['code'] : '';
 	}
 
 	public function getEncounterSupervisors(){

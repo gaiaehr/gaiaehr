@@ -260,8 +260,8 @@ Ext.define('App.controller.Navigation', {
 	 * @param patient
 	 */
 	onPatientSet:function(viewport, patient){
-		say('onPatientSet');
-		say(patient);
+//		say('onPatientSet');
+//		say(patient);
 	},
 
 	/**
@@ -269,7 +269,7 @@ Ext.define('App.controller.Navigation', {
 	 * @param viewport
 	 */
 	onPatientUnset:function(viewport){
-		say('onPatientUnset');
+//		say('onPatientUnset');
 	},
 
 	initFunctionKeyNav:function(){
@@ -284,7 +284,7 @@ Ext.define('App.controller.Navigation', {
 		}
 		if(!this.altIsDown) return;
 		this.getViewport().fireEvent('navkey', e, e.getKey());
-		say('navkey');
+//		say('navkey');
 	},
 
 	captureUpKey:function(e){

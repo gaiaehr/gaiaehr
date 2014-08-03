@@ -17,7 +17,6 @@
  */
 
 Ext.define('App.store.miscellaneous.AddressBook', {
-	requires: ['App.model.miscellaneous.AddressBook'],
 	model: 'App.model.miscellaneous.AddressBook',
 	extend: 'Ext.data.Store'
 });

@@ -346,7 +346,7 @@ Ext.define('App.model.patient.Patient', {
 		{
 			name: 'birth_place',
 			type: 'string',
-			len: 80
+			len: 150
 		},
 		{
 			name: 'birth_multiple',

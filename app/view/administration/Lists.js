@@ -63,8 +63,7 @@ Ext.define('App.view.administration.Lists', {
             region: 'west',
             columns: [
                 {
-	                width: 25,
-                    sortable: false,
+	                width: 30,
                     dataIndex: 'id'
                 },
                 {

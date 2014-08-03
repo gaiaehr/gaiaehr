@@ -79,6 +79,16 @@ class MatchaCUP {
 	private $date;
 
 	/**
+	 * @var array
+	 */
+	private $filters;
+
+	/**
+	 * @var array
+	 */
+	private $sorters;
+
+	/**
 	 * set to true if want to trim values
 	 * during parseValues function
 	 * @var bool
@@ -172,6 +182,9 @@ class MatchaCUP {
 
 		try {
 			$this->sql = '';
+
+			if(is_null($where) && (isset($this->filters) || isset($this->sorters))) $where = new stdClass();
+
 			if(!is_object($where)){
 				$this->isSenchaRequest = false;
 				// columns
@@ -197,7 +210,10 @@ class MatchaCUP {
 				// sql build
 				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
 			} else {
-				$this->isSenchaRequest = true;
+				$tmp = (array) $where;
+				$this->isSenchaRequest = !empty($tmp);
+				unset($tmp);
+
 				// if App.model.Example.load(4)
 				$isModelLoadRequest = isset($where->{$this->primaryKey});
 
@@ -216,17 +232,16 @@ class MatchaCUP {
 				}
 
 				// sort
-				if(isset($where->sort)){
-					$sortArray = array();
-					foreach($where->sort as $sort){
+				if(isset($where->sort) || isset($this->sorters)){
 
-						if(!isset($sort->property)) continue;
-						if(is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)) continue;
-
-						$sortDirection = (isset($sort->direction) ? $sort->direction : '');
-						$sortArray[] = $sort->property . ' ' . $sortDirection;
-
+					if(isset($where->sort)){
+						$sortArray = $this->sortHandler($where->sort);
+					}else{
+						$sortArray = $this->sortHandler($this->sorters);
 					}
+
+					$this->clearSorters();
+
 					if(!empty($sortArray)){
 						$_sort = ' ORDER BY ' . implode(', ', $sortArray);
 					} else {
@@ -251,20 +266,17 @@ class MatchaCUP {
 
 				// filter/where
 				if($isModelLoadRequest){
-					$_where = ' WHERE ' . $this->primaryKey . ' = \'' . $where->{$this->primaryKey} . '\'';
-				} elseif(isset($where->filter) && isset($where->filter[0]->property)) {
-					$whereArray = array();
-					foreach($where->filter as $foo){
-						if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
-							if(is_null($foo->value)){
-								$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
-								$whereArray[] = "`$foo->property` $operator NULL";
-							} else {
-								$operator = isset($foo->operator) ? $foo->operator : '=';
-								$whereArray[] = "`$foo->property` $operator '$foo->value'";
-							}
-						}
+					$_where = ' WHERE `' . $this->primaryKey . '` = \'' . $where->{$this->primaryKey} . '\'';
+				} elseif((isset($where->filter) && isset($where->filter[0]->property)) || isset($this->filters)) {
+
+					if(isset($where->filter)){
+						$whereArray = $this->filterHandler($where->filter);
+					}else{
+						$whereArray = $this->filterHandler($this->filters);
 					}
+
+					$this->clearFilters();
+
 					if(count($whereArray) > 0){
 						$_where = 'WHERE ' . implode(' AND ', $whereArray);
 					} else {
@@ -281,6 +293,36 @@ class MatchaCUP {
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
+	}
+
+	private function filterHandler($filters){
+		$whereArray = array();
+		foreach($filters as $foo){
+			if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
+				if(is_null($foo->value)){
+					$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
+					$whereArray[] = "`$foo->property` $operator NULL";
+				} else {
+					$operator = isset($foo->operator) ? $foo->operator : '=';
+					$whereArray[] = "`$foo->property` $operator '$foo->value'";
+				}
+			}
+		}
+		return $whereArray;
+	}
+
+	private function sortHandler($sorters){
+		$sortArray = array();
+		foreach($sorters as $sort){
+
+			if(!isset($sort->property)) continue;
+			if(is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)) continue;
+
+			$sortDirection = (isset($sort->direction) ? $sort->direction : '');
+			$sortArray[] = $sort->property . ' ' . $sortDirection;
+
+		}
+		return $sortArray;
 	}
 
 	/**
@@ -945,5 +987,30 @@ class MatchaCUP {
 
 	private function isUUID() {
 		return (isset($this->model->table->uuid) && $this->model->table->uuid);
+	}
+
+	public function addFilter($property, $value, $operator = '='){
+		if(!isset($this->filters)) $this->filters = array();
+		$filter = new stdClass();
+		$filter->property = $property;
+		$filter->value = $value;
+		$filter->operator = $operator;
+		$this->filters[] = &$filter;
+	}
+
+	public function clearFilters(){
+		unset($this->filters);
+	}
+
+	public function addSort($property, $direction = 'ASC'){
+		if(!isset($this->sorters)) $this->sorters = array();
+		$sort = new stdClass();
+		$sort->property = $property;
+		$sort->direction = $direction;
+		$this->sorters[] = &$sort;
+	}
+
+	public function clearSorters(){
+		unset($this->sorters);
 	}
 }

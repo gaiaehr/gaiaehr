@@ -19,7 +19,9 @@ Ext.define('App.ux.LivePatientSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patienlivetsearch',
 	hideLabel: true,
-
+	displayField: 'fullname',
+	valueField: 'pid',
+	emptyText: i18n('search_for_a_patient') + '...',
 	initComponent: function(){
 		var me = this;
 
@@ -82,9 +84,6 @@ Ext.define('App.ux.LivePatientSearch', {
 
 		Ext.apply(me, {
 			store: me.store,
-			displayField: 'fullname',
-			valueField: 'pid',
-			emptyText: i18n('search_for_a_patient') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,

@@ -36,6 +36,7 @@ Ext.define('App.view.patient.Documents', {
 			split: true,
 			flex: 1,
 			columnLines: true,
+			selType: 'checkboxmodel',
 			features: [
 				{
 					ftype: 'grouping',

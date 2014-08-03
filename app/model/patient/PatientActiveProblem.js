@@ -40,15 +40,18 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 		},
 		{
 			name: 'code',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'code_text',
-			type: 'string'
+			type: 'string',
+			len: 300
 		},
 		{
 			name: 'code_type',
-			type: 'string'
+			type: 'string',
+			len: 20
 		},
 		{
 			name: 'begin_date',
@@ -72,7 +75,18 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 		},
 		{
 			name: 'status',
-			type: 'string'
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'status_code',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'status_code_type',
+			type: 'string',
+			len: 20
 		},
 		{
 			name: 'active',

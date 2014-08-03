@@ -16,18 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\imageforms\dataProvider;
 
 class ImageForm {
 
 	/**
-	 * @var bool|MatchaCUP
+	 * @var bool|\MatchaCUP
 	 */
 	private $i;
 
 	function __construct(){
-		Matcha::$__app = ROOT.'/modules';
-		$this->i = MatchaModel::setSenchaModel('Modules.imageforms.model.PatientImage');
-		Matcha::$__app = ROOT.'/app';
+		\Matcha::$__app = ROOT.'/modules';
+		$this->i = \MatchaModel::setSenchaModel('Modules.imageforms.model.PatientImage');
+		\Matcha::$__app = ROOT.'/app';
 	}
 
 	public function getImages($params){

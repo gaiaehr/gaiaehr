@@ -19,22 +19,5 @@
 Ext.define('App.store.messages.Messages', {
     model: 'App.model.messages.Messages',
     extend: 'Ext.data.Store',
-    proxy :
-    {
-        type : 'direct',
-        api :
-        {
-            read : Messages.getMessages,
-            create : Messages.sendNewMessage,
-            update : Messages.replyMessage,
-            destroy : Messages.deleteMessage
-        },
-        reader :
-        {
-            type : 'json',
-            root : 'messages',
-            totalProperty : 'totals'
-        }
-    },
     autoLoad : false
 });

@@ -138,6 +138,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'DualScreen',
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.CognitiveAndFunctionalStatus',
 	                'patient.DoctorsNotes',
 	                'patient.Documents',
 	                'patient.Immunizations',

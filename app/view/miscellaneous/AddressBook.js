@@ -18,7 +18,8 @@
 
 Ext.define('App.view.miscellaneous.AddressBook', {
 	extend: 'App.ux.RenderPanel',
-	requires:[
+	requires: [
+		'App.store.miscellaneous.AddressBook',
 		'Ext.toolbar.Paging',
 		'Ext.ux.SlidingPager'
 	],
@@ -56,6 +57,11 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 					width: 120
 				},
 				{
+					header: i18n('direct_address'),
+					dataIndex: 'direct_address',
+					width: 120
+				},
+				{
 					header: i18n('notes'),
 					dataIndex: 'notes',
 					flex: 1
@@ -68,7 +74,6 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 						{
 							xtype: 'container',
 							layout: 'column',
-							//width: 700,
 							defaults: {
 								xtype: 'container',
 								layout: 'anchor',
@@ -116,7 +121,8 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 											fieldLabel: i18n('address'),
 											layout: 'anchor',
 											defaults: {
-												anchor: '100%'
+												anchor: '100%',
+												margin: '0 0 5 0'
 											},
 											items: [
 												{
@@ -177,7 +183,8 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 									layout: 'anchor',
 									defaults: {
 										anchor: '100%',
-										labelWidth: 80
+										labelWidth: 80,
+										margin: '0 0 5 0'
 									},
 									items: [
 										{
@@ -204,12 +211,29 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 											xtype: 'textfield',
 											fieldLabel: i18n('email'),
 											name: 'email',
-											margin: '5 0 5 0'
+											margin: '5 0 5 0',
+											vtype: 'email'
 										},
 										{
 											xtype: 'textfield',
 											fieldLabel: i18n('url'),
 											name: 'url'
+										}
+									]
+								},
+								{
+									width: 300,
+									layout: 'anchor',
+									defaults: {
+										anchor: '100%',
+										labelWidth: 100,
+										margin: '0 0 5 0'
+									},
+									items: [
+										{
+											xtype: 'textfield',
+											fieldLabel: i18n('direct_address'),
+											name: 'direct_address'
 										}
 									]
 								}

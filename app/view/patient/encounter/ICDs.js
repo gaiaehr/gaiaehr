@@ -21,7 +21,6 @@ Ext.define('App.view.patient.encounter.ICDs', {
 	alias: 'widget.icdsfieldset',
 	title: i18n('icds_live_search'),
 	padding: '10 15',
-	margin: '0 0 3 0',
 	layout: 'anchor',
 	requires: [ 'App.ux.LiveICDXSearch' ],
 	autoFormSync: true,

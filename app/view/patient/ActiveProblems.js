@@ -20,7 +20,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 	extend: 'Ext.grid.Panel',
 	requires: [
 		'App.ux.grid.RowFormEditing',
-		'App.ux.LiveSnomedSearch',
+		'App.ux.LiveSnomedProblemSearch',
 		'App.ux.combo.CodesTypes',
 		'App.ux.combo.Occurrence',
 		'App.ux.combo.Outcome2'
@@ -93,7 +93,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 				layout: 'vbox',
 				items: [
 					{
-						xtype: 'snomedlivetsearch',
+						xtype: 'snomedliveproblemsearch',
 						fieldLabel: i18n('search'),
 						name: 'code',
 						hideLabel: false,

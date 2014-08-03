@@ -463,8 +463,13 @@ Ext.define('App.view.fees.Billing',
 	 */
 	stage : function(val)
 	{
+
+		say(val);
 		switch(val)
 		{
+			case 0:
+				return '<img src="resources/images/icons/stage0.png" />';
+				break;
 			case 1:
 				return '<img src="resources/images/icons/stage1.png" />';
 				break;

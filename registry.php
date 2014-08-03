@@ -83,3 +83,36 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 } else {
 	$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
 };
+
+// load modules hooks
+if(!isset($_SESSION['hooks'])){
+	include_once(ROOT. '/dataProvider/Modules.php');
+	$Modules = new Modules();
+	$modules = $Modules->getEnabledModules();
+	unset($Modules);
+	foreach($modules as $module){
+		$HooksFile = ROOT . '/modules/' . $module['name'] . '/dataProvider/Hooks.php';
+		if(!file_exists($HooksFile)) continue;
+
+		include_once($HooksFile);
+		$cls = 'modules\\'. $module['name'] .'\dataProvider\Hooks';
+		$ReflectionClass = new ReflectionClass($cls);
+
+		$methods = $ReflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
+
+		foreach($methods as $method){
+			// if method starts with underscores the skill example "__construct"
+			if(preg_match('/^__/', $method->name)) continue;
+
+			$attributes = explode('_', $method->name);
+			if(count($attributes) != 3){
+				error_log('Hook method "' . $method->name . '" requires 3 attributes example. Time_Class_Method');
+			}
+
+			$_SESSION['hooks'][$attributes[1]][$attributes[2]][$attributes[0]]['hooks'][$method->class]  = array(
+				'method' => $method->name,
+				'file' => $HooksFile
+			);
+		}
+	}
+}

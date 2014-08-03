@@ -20,27 +20,47 @@ Ext.define('App.model.administration.Allergies', {
 	extend: 'Ext.data.Model',
 	table: {
 		name: 'allergies',
-		comment: 'Allergies',
-		data: 'App.data.administration.Allergies'
+		comment: 'Allergies'
 	},
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Allergies ID'
+			type: 'int'
 		},
 		{
-			name: 'summary',
+			name: 'allergy',
 			type: 'string',
-			comment: 'Allergy Summary'
+			len: 500,
+			comment: 'Allergy Name'
 		},
 		{
-			name: 'allergy_name',
+			name: 'allergy_term',
+			type: 'string'
+		},
+		{
+			name: 'allergy_code',
 			type: 'string',
-			comment: 'Allergy Name'},
+			len: 20
+		},
+		{
+			name: 'allergy_code_type',
+			type: 'string',
+			len: 15
+		},
 		{
 			name: 'allergy_type',
-			type: 'Allergy Type'
+			type: 'string',
+			len: 5,
+			comment: 'PT = Preferred Term, SN = Systematic Name, SY = Synonym, CD = Code, TR = Trade'
 		}
-	]
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Allergies.searchAllergiesData'
+		},
+		reader: {
+			root: 'data'
+		}
+	}
 });

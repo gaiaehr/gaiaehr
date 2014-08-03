@@ -30,92 +30,107 @@ Ext.define('App.model.miscellaneous.AddressBook', {
 		{
 			name: 'title',
 			type: 'string',
-			lan: 10
+			len: 10
 		},
 		{
 			name: 'fname',
 			type: 'string',
-			lan: 80
+			len: 80,
+			index: true
 		},
 		{
 			name: 'mname',
 			type: 'string',
-			lan: 80
+			len: 80,
+			index: true
 		},
 		{
 			name: 'lname',
 			type: 'string',
-			lan: 80
+			len: 80,
+			index: true
 		},
 		{
 			name: 'email',
 			type: 'string',
-			lan: 80
+			len: 100,
+			index: true
+		},
+		{
+			name: 'direct_address',
+			type: 'string',
+			len: 150,
+			index: true
 		},
 		{
 			name: 'url',
-			type: 'string'
+			type: 'string',
+			len: 150
 		},
 		{
 			name: 'organization',
 			type: 'string',
-			lan: 160
+			len: 160
 		},
 		{
 			name: 'street',
 			type: 'string',
-			lan: 180
+			len: 180
 		},
 		{
 			name: 'street_cont',
 			type: 'string',
-			lan: 180
+			len: 180
 		},
 		{
 			name: 'city',
 			type: 'string',
-			lan: 80
+			len: 80,
+			index: true
 		},
 		{
 			name: 'state',
 			type: 'string',
-			lan: 100
+			len: 100,
+			index: true
 		},
 		{
 			name: 'zip',
 			type: 'string',
-			lan: 15
+			len: 15,
+			index: true
 		},
 		{
 			name: 'country',
 			type: 'string',
-			lan: 160
+			len: 160
 		},
 		{
 			name: 'phone',
 			type: 'string',
-			lan: 20
+			len: 20,
+			index: true
 		},
 		{
 			name: 'phone2',
 			type: 'string',
-			lan: 20
+			len: 20
 		},
 		{
 			name: 'mobile',
 			type: 'string',
-			lan: 20,
+			len: 20,
 			comment: 'cell phone'
 		},
 		{
 			name: 'fax',
 			type: 'string',
-			lan: 20
+			len: 20
 		},
 		{
 			name: 'notes',
 			type: 'string',
-			lan: 600
+			len: 600
 		},
 		{
 			name: 'fullname',

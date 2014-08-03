@@ -22,27 +22,26 @@ if(!isset($_SESSION)){
 	@session_cache_limiter('private');
 }
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
-if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+if(!defined('_GaiaEXEC'))
+	define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
-$conf = ROOT . '/sites/'. $site .'/conf.php';
+$conf = ROOT . '/sites/' . $site . '/conf.php';
 if(file_exists($conf)){
-	require_once(ROOT . '/sites/'. $site .'/conf.php');
+	require_once(ROOT . '/sites/' . $site . '/conf.php');
 	require_once(ROOT . '/classes/MatchaHelper.php');
 }
 require_once(ROOT . '/classes/MatchaHelper.php');
 include_once(ROOT . '/dataProvider/Modules.php');
 include_once(ROOT . '/dataProvider/ACL.php');
 include_once(ROOT . '/dataProvider/Globals.php');
-require ('config.php');
+require('config.php');
 
-if (isset($_SESSION['install']) && $_SESSION['install'] != true)
-{
+if(isset($_SESSION['install']) && $_SESSION['install'] != true){
 	$modules = new Modules();
 	$API = array_merge($API, $modules->getEnabledModulesAPI());
 }
 
-class BogusAction
-{
+class BogusAction {
 	public $action;
 	public $method;
 	public $data;
@@ -53,16 +52,14 @@ class BogusAction
 $isForm = false;
 $isUpload = false;
 $module = null;
-if (isset($HTTP_RAW_POST_DATA))
-{
+
+if(isset($HTTP_RAW_POST_DATA)){
 	header('Content-Type: text/javascript');
 	$data = json_decode($HTTP_RAW_POST_DATA);
-	if (isset($_REQUEST['module'])) $module = $_REQUEST['module'];
-}
-else
-{
-	if (isset($_POST['extAction']))
-	{
+	if(isset($_REQUEST['module']))
+		$module = $_REQUEST['module'];
+} else {
+	if(isset($_POST['extAction'])){
 		// form post
 		$isForm = true;
 		$isUpload = $_POST['extUpload'] == 'true';
@@ -75,21 +72,17 @@ else
 			$_POST,
 			$_FILES
 		);
-		if (isset($_REQUEST['module']))
-            $module = $_REQUEST['module'];
+		if(isset($_REQUEST['module']))
+			$module = $_REQUEST['module'];
 
-	}
-	else
-	{
+	} else {
 		die('Invalid request.');
 	}
 }
 
-function doRpc($cdata)
-{
+function doRpc($cdata) {
 	global $API, $module;
-	try
-	{
+	try {
 		/**
 		 * Check if user is authorized/Logged in
 		 */
@@ -110,52 +103,61 @@ function doRpc($cdata)
 		// GaiaEHR does not recognized this transaction ID.');
 		//            }
 		//        }
-		if (!isset($API[$cdata->action]))
-		{
+		if(!isset($API[$cdata->action])){
 			throw new Exception('Call to undefined action: ' . $cdata->action);
 		}
 		$action = $cdata->action;
 		$a = $API[$action];
-		doAroundCalls($a['before'], $cdata);
+
 		$method = $cdata->method;
 		$mdef = $a['methods'][$method];
-		if (!$mdef)
-		{
+		if(!$mdef){
 			throw new Exception("Call to undefined method: $method on action $action");
 		}
-		doAroundCalls($mdef['before'], $cdata);
+
 		$r = array(
 			'type' => 'rpc',
 			'tid' => $cdata->tid,
 			'action' => $action,
 			'method' => $method
 		);
-		if (isset($module))
-		{
-			require_once ("../modules/$module/dataProvider/$action.php");
+		if(isset($module)){
+			require_once(ROOT . "/modules/$module/dataProvider/$action.php");
+			$action = "\\modules\\$module\\dataProvider\\$action";
+			$o = new $action();
+		} else {
+			require_once(ROOT . "/dataProvider/$action.php");
+			$o = new $action();
 		}
-		else
-		{
-			require_once ("../dataProvider/$action.php");
-		}
-		$o = new $action();
-		if (isset($mdef['len']))
-		{
+
+		if(isset($mdef['len'])){
 			$params = isset($cdata->data) && is_array($cdata->data) ? $cdata->data : array();
-		}
-		else
-		{
+		} else {
 			$params = array($cdata->data);
 		}
-		$r['result'] = call_user_func_array(array(
-			$o,
-			$method
-		), $params);
-		doAroundCalls($mdef['after'], $cdata, $r);
-		doAroundCalls($a['after'], $cdata, $r);
-	}
-	catch(Exception $e)
-	{
+
+		if(isset($_SESSION['hooks']) && isset($_SESSION['hooks'][$action][$method]['Before'])){
+			foreach($_SESSION['hooks'][$action][$method]['Before']['hooks'] as $i => $hook){
+				include_once($hook['file']);
+				$Hook = new $i();
+				$params = array(call_user_func_array(array($Hook, $hook['method']), $params));
+				unset($Hook);
+			}
+		}
+
+		$r['result'] = call_user_func_array(array($o, $method), $params);
+		unset($o);
+
+		if(isset($_SESSION['hooks']) && isset($_SESSION['hooks'][$action][$method]['After'])){
+			foreach($_SESSION['hooks'][$action][$method]['After']['hooks'] as $i => $hook){
+				include_once($hook['file']);
+				$Hook = new $i();
+				$r['result'] = call_user_func(array($Hook, $hook['method']), $r['result']);
+				unset($Hook);
+			}
+		}
+
+	} catch(Exception $e) {
 		$r['type'] = 'exception';
 		$r['message'] = $e->getMessage();
 		$r['where'] = $e->getTraceAsString();
@@ -164,45 +166,19 @@ function doRpc($cdata)
 	return $r;
 }
 
-function doAroundCalls(&$fns, &$cdata, &$returnData = null)
-{
-	if (!$fns)
-	{
-		return;
-	}
-	if (is_array($fns))
-	{
-		foreach ($fns as $f)
-		{
-			$f($cdata, $returnData);
-		}
-	}
-	else
-	{
-		$fns($cdata, $returnData);
-	}
-}
-
 $response = null;
-if (is_array($data))
-{
+if(is_array($data)){
 	$response = array();
-	foreach ($data as $d)
-	{
+	foreach($data as $d){
 		$response[] = doRpc($d);
 	}
-}
-else
-{
+} else {
 	$response = doRpc($data);
 }
-if ($isForm && $isUpload)
-{
+if($isForm && $isUpload){
 	echo '<html><body><textarea>';
 	echo json_encode($response);
 	echo '</textarea></body></html>';
-}
-else
-{
+} else {
 	echo json_encode($response);
 }

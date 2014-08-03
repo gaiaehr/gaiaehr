@@ -122,6 +122,12 @@ Ext.define('App.model.administration.ReferringProvider', {
 			comment: 'email'
 		},
 		{
+			name: 'direct_address',
+			type: 'string',
+			len: 180,
+			comment: 'direct_address'
+		},
+		{
 			name: 'phone_number',
 			type: 'string',
 			len: 25,

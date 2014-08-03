@@ -660,10 +660,18 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             Ext.application({
                 name: 'App',
                 models:[
+	                'miscellaneous.AddressBook',
 
+					'patient.CarePlanGoal',
+					'patient.CognitiveAndFunctionalStatus',
+	                'patient.SmokeStatus'
                 ],
                 stores:[
+	                'miscellaneous.AddressBook',
 
+					'patient.CarePlanGoals',
+					'patient.CognitiveAndFunctionalStatus',
+	                'patient.SmokeStatus'
                 ],
                 views:[
 
@@ -687,7 +695,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.CarePlanGoals',
 	                'patient.CCD',
+	                'patient.CCDimport',
+	                'patient.CognitiveAndFunctionalStatus',
 	                'patient.DecisionSupport',
 	                'patient.DoctorsNotes',
 	                'patient.Documents',

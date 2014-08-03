@@ -1180,8 +1180,8 @@ Ext.define('App.view.Viewport', {
             },
 
             notifyDrop: function(dd, e, data){
-                say('drop record');
-                say(data.patientData);
+//                say('drop record');
+//                say(data.patientData);
                 app.MainPanel.el.unmask();
 
 	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
@@ -1197,19 +1197,19 @@ Ext.define('App.view.Viewport', {
                     // if encounter id is set and pool area is check out....  go to Patient Checkout panel
                     if(data.patientData.eid && data.patientData.poolArea == 'Checkout'){
 
-	                    say('checkOutPatient');
+//	                    say('checkOutPatient');
                         me.checkOutPatient(data.patientData.eid);
 
                     // if encounter id is set and and user has access to encounter area... go to Encounter panel
                     // and open the encounter
                     }else if(data.patientData.eid && acl['access_encounters']){
 
-	                    say('openEncounter');
+//	                    say('openEncounter');
                         me.openEncounter(data.patientData.eid);
                     // else go to patient summary
                     }else{
 
-	                    say('openEncounter');
+//	                    say('openEncounter');
                         me.openPatientSummary();
                     }
                 });

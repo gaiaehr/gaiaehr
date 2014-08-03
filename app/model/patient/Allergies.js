@@ -39,14 +39,24 @@ Ext.define('App.model.patient.Allergies', {
 			index: true
 		},
 		{
+			name: 'allergy_type',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'allergy_type_code',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'allergy_type_code_type',
+			type: 'string',
+			len: 20
+		},
+		{
 			name: 'allergy',
 			len: 80,
 			type: 'string'
-		},
-		{
-			name: 'allergy_type',
-			type: 'string',
-			len: 20
 		},
 		{
 			name: 'allergy_code',
@@ -70,8 +80,43 @@ Ext.define('App.model.patient.Allergies', {
 			type: 'string'
 		},
 		{
+			name: 'reaction_code',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'reaction_code_type',
+			len: 20,
+			type: 'string'
+		},
+		{
 			name: 'severity',
 			len: 80,
+			type: 'string'
+		},
+		{
+			name: 'severity_code',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'severity_code_type',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'status',
+			len: 15,
+			type: 'string'
+		},
+		{
+			name: 'status_code',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'status_code_type',
+			len: 20,
 			type: 'string'
 		},
 		{
@@ -117,9 +162,9 @@ Ext.define('App.model.patient.Allergies', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getPatientAllergies',
-			create: 'Medical.addPatientAllergies',
-			update: 'Medical.updatePatientAllergies'
+			read: 'Allergies.getPatientAllergies',
+			create: 'Allergies.addPatientAllergy',
+			update: 'Allergies.updatePatientAllergy'
 		}
 	}
 });

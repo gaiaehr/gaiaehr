@@ -39,6 +39,10 @@ Ext.define('App.model.patient.encounter.Procedures', {
 			comment: 'Encounter ID'
 		},
 		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
 			name: 'create_uid',
 			type: 'int',
 			comment: 'create user ID'
@@ -74,6 +78,12 @@ Ext.define('App.model.patient.encounter.Procedures', {
 			name: 'code_type',
 			type: 'string',
 			comment: 'CPT/ICD-10-PCS/ICD-9-CM/SNOMED/CDT'
+		},
+		{
+			name: 'procedure_date',
+			type: 'date',
+			comment: 'when procedure has done',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'observation',

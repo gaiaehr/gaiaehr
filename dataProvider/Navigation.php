@@ -62,15 +62,15 @@ class Navigation
 			);
 		}
 
-		if($this->ACL->hasPermission('access_messages')){
-			$nav[] = array(
-				'text' => $this->i18n['messages'],
-				'leaf' => true,
-				'cls' => 'file',
-				'iconCls' => 'mail',
-				'id' => 'App.view.messages.Messages'
-			);
-		}
+//		if($this->ACL->hasPermission('access_messages')){
+//			$nav[] = array(
+//				'text' => $this->i18n['messages'],
+//				'leaf' => true,
+//				'cls' => 'file',
+//				'iconCls' => 'mail',
+//				'id' => 'App.view.messages.Messages'
+//			);
+//		}
 
 //		$nav[] = array(
 //			'text' => $this->i18n['patient_search'],

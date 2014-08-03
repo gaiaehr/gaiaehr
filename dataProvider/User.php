@@ -48,6 +48,7 @@ class User {
 		foreach($users as $index => $user){
 			$users[$index]['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
 			unset($users[$index]['password'], $users[$index]['pwd_history1'], $users[$index]['pwd_history2']);
+			$users[$index] = (object) $users[$index];
 		}
 		return $users;
 	}
@@ -69,7 +70,7 @@ class User {
 				unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
 				$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
 				$user['password'] = '';
-				return $user;
+				return (object) $user;
 			} else{
 				throw new Exception("Username \"$params->username\" exist, please try a different username");
 			}
@@ -85,7 +86,7 @@ class User {
 		}
 		$user = $this->u->save($params);
 //		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
-		return $user;
+		return (object) $user;
 	}
 
 	public function updatePassword(stdClass $params){

@@ -139,24 +139,24 @@ class Medical {
 	}
 
 	/*************************************************************************************************************/
-	public function getPatientAllergies($params){
-		return $this->a->load($params)->all();
-	}
-	public function getPatientAllergiesByPid($pid){
-		$params = new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
-		return $this->a->load($params)->all();
-	}
-
-	public function addPatientAllergies($params){
-		return $this->a->save($params);
-	}
-
-	public function updatePatientAllergies($params){
-		return $this->a->save($params);
-	}
+//	public function getPatientAllergies($params){
+//		return $this->a->load($params)->all();
+//	}
+//	public function getPatientAllergiesByPid($pid){
+//		$params = new stdClass();
+//		$params->filters[0] = new stdClass();
+//		$params->filters[0]->property = 'pid';
+//		$params->filters[0]->value =  $pid;
+//		return $this->a->load($params)->all();
+//	}
+//
+//	public function addPatientAllergies($params){
+//		return $this->a->save($params);
+//	}
+//
+//	public function updatePatientAllergies($params){
+//		return $this->a->save($params);
+//	}
 
 	/*************************************************************************************************************/
 //	public function getMedicalIssues(stdClass $params){
@@ -687,13 +687,3 @@ class Medical {
 	}
 
 }
-
-//
-//$e = new Medical();
-//$params = new stdClass();
-//$params->pid = 1;
-//$params->immunizations[] = 1;
-//$params->immunizations[] = 2;
-//$params->immunizations[] = 3;
-//echo '<pre>';
-//print_r($e->sendVXU($params));

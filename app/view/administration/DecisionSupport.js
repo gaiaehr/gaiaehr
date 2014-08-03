@@ -25,7 +25,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 		'App.store.administration.DecisionSupportRulesConcepts',
 		'App.ux.combo.Combo',
 		'App.ux.LiveCPTSearch',
-		'App.ux.LiveSnomedSearch',
+		'App.ux.LiveSnomedProblemSearch',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.LiveRXNORMAllergySearch'
 	],
@@ -365,7 +365,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								],
 								tbar: [
 									{
-										xtype: 'snomedlivetsearch',
+										xtype: 'snomedliveproblemsearch',
 										fieldLabel: i18n('add_problem'),
 										hideLabel: false,
 										margin: '0 0 0 5',

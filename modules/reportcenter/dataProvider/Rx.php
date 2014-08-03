@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\reportcenter\dataProvider;
 
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+
 include_once('Reports.php');
 include_once(ROOT . '/classes/MatchaHelper.php');
 include_once(ROOT . '/dataProvider/User.php');
@@ -29,8 +31,7 @@ include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/i18nRouter.php');
 
-class Rx extends Reports
-{
+class Rx extends Reports {
 	private $db;
 	private $user;
 	private $patient;
@@ -39,19 +40,17 @@ class Rx extends Reports
 	/*
 	 * The first thing all classes do, the construct.
 	 */
-	function __construct()
-	{
+	function __construct() {
 		parent::__construct();
-		$this->db = new MatchaHelper();
-		$this->user = new User();
-		$this->patient = new Patient();
-		$this->encounter = new Encounter();
+		$this->db = new \MatchaHelper();
+		$this->user = new \User();
+		$this->patient = new \Patient();
+		$this->encounter = new \Encounter();
 
 		return;
 	}
 
-	public function createPrescriptionsDispensations(stdClass $params)
-	{
+	public function createPrescriptionsDispensations(\stdClass $params) {
 		ob_end_clean();
 		$Url = $this->ReportBuilder($params->html, 10);
 		return array(
@@ -60,8 +59,7 @@ class Rx extends Reports
 		);
 	}
 
-	public function getPrescriptionsFromAndToAndPid(stdClass $params)
-	{
+	public function getPrescriptionsFromAndToAndPid(\stdClass $params) {
 		$from = $params->from;
 		$to = $params->to = ($params->to == '') ? date('Y-m-d') : $params->to;
 		$drug = $params->drug;
@@ -73,7 +71,7 @@ class Rx extends Reports
 		if(isset($pid) && $pid != '')
 			$sql .= " AND pid = '$pid'";
 		$this->db->setSQL($sql);
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $key => $data){
+		foreach($this->db->fetchRecords(\PDO::FETCH_ASSOC) as $key => $data){
 			$id = $data['id'];
 			$sql = " SELECT *
 		   	           FROM patient_medications
@@ -81,7 +79,7 @@ class Rx extends Reports
 			if(isset($drug) && $drug != '')
 				$sql .= " AND medication_id = '$drug'";
 			$this->db->setSQL($sql);
-			$alldata[$key] = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+			$alldata[$key] = $this->db->fetchRecords(\PDO::FETCH_ASSOC);
 		}
 		$records = array();
 		foreach($alldata as $data){

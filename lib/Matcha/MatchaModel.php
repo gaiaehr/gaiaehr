@@ -242,8 +242,8 @@ class MatchaModel extends Matcha
             $jsSenchaModel = self::__getFileContent($fileModel);
             if(!$jsSenchaModel) throw new Exception("Error opening the Sencha model file.");
 	        // remove functions at the end
-	        if(preg_match("/(?<!convert\: )function[\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
-		        $jsSenchaModel = preg_replace("/(?<!convert\: )function[\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL. '});';
+	        if(preg_match("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
+		        $jsSenchaModel = preg_replace("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL. '});';
 	        }
             // get the actual Sencha Model.
             preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);

@@ -19,7 +19,9 @@
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend: 'Ext.panel.Panel',
 	requires: [
-		'App.ux.grid.RowFormEditing'
+		'App.ux.grid.RowFormEditing',
+		'App.view.patient.encounter.CarePlanGoals',
+		'App.view.patient.encounter.CarePlanGoalsNewWindow'
 	],
 	action: 'patient.encounter.soap',
 	itemId: 'soapPanel',
@@ -33,7 +35,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	initComponent: function(){
 		var me = this;
 
-		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree',{
+		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree', {
 			autoLoad: false
 		});
 		me.procedureStore = Ext.create('App.store.patient.encounter.Procedures');
@@ -204,8 +206,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							handler: me.onProcedureSave
 						}
 					]
-
 				}),
+				Ext.widget('careplangoalsnewwindow'),
 				{
 					xtype: 'fieldset',
 					title: i18n('subjective'),
@@ -214,7 +216,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						me.sField = Ext.widget('textarea', {
 							name: 'subjective',
 							anchor: '100%',
-							enableKeyEvents: true
+							enableKeyEvents: true,
+							margin: '5 0 10 0'
 						})
 					]
 				},
@@ -226,50 +229,50 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						me.oField = Ext.widget('textarea', {
 							name: 'objective',
 							anchor: '100%'
+						}),
+						me.pGrid = Ext.widget('grid', {
+							frame: true,
+							name: 'procedures',
+							emptyText: i18n('no_procedures'),
+							margin: '5 0 10 0',
+							store: me.procedureStore,
+							columns: [
+								{
+									text: i18n('code'),
+									dataIndex: 'code'
+								},
+								{
+									text: i18n('description'),
+									dataIndex: 'code_text',
+									flex: 1
+								}
+							],
+							listeners: {
+								scope: me,
+								itemdblclick: me.procedureEdit
+							},
+							dockedItems: [
+								{
+									xtype: 'toolbar',
+									items: [
+										{
+											xtype: 'tbtext',
+											text: i18n('procedures')
+										},
+										'->',
+										{
+											text: i18n('new_procedure'),
+											scope: me,
+											handler: me.onProcedureAdd,
+											iconCls: 'icoAdd'
+										}
+									]
+								}
+
+							]
 						})
 					]
 				},
-				me.pGrid = Ext.widget('grid', {
-					frame: true,
-					name: 'procedures',
-					emptyText: i18n('no_procedures'),
-					margin: 5,
-					store: me.procedureStore,
-					columns: [
-						{
-							text: i18n('code'),
-							dataIndex: 'code'
-						},
-						{
-							text: i18n('description'),
-							dataIndex: 'code_text',
-							flex: 1
-						}
-					],
-					listeners: {
-						scope: me,
-						itemdblclick: me.procedureEdit
-					},
-					dockedItems: [
-						{
-							xtype: 'toolbar',
-							items: [
-								{
-									xtype: 'tbtext',
-									text: i18n('procedures')
-								},
-								'->',
-								{
-									text: i18n('new_procedure'),
-									scope: me,
-									handler: me.onProcedureAdd,
-									iconCls: 'icoAdd'
-								}
-							]
-						}
-
-					]
-				}),
 				{
 					xtype: 'fieldset',
 					title: i18n('assessment'),
@@ -280,7 +283,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							anchor: '100%'
 						}),
 						me.dxField = Ext.widget('icdsfieldset', {
-							name: 'dxCodes'
+							name: 'dxCodes',
+							margin: '5 0 10 0'
 						})
 					]
 				},
@@ -292,7 +296,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						me.pField = Ext.widget('textarea', {
 							name: 'plan',
 							anchor: '100%'
-						})
+						}),
+						{
+							xtype: 'careplangoalsgrid',
+							margin: '0 0 10 0'
+						}
 					]
 				}
 			],
@@ -369,9 +377,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			procedure = form.getRecord();
 
 		procedure.set({
-			code:record[0].data.code,
-			code_type:record[0].data.code_type,
-			code_text:record[0].data.code_text
+			code: record[0].data.code,
+			code_type: record[0].data.code_type,
+			code_text: record[0].data.code_text
 		});
 
 		form.findField('code_text').setValue(record[0].data.code_text);
@@ -401,7 +409,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 */
 	onProcedureCancel: function(){
 		this.procedureStore.rejectChanges();
-		this.pWin.hide(this.pGrid.el);
+		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
 		this.pWin.setTitle(i18n('procedure'));
 	},
@@ -418,7 +426,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		record.set(values);
 
 		this.procedureStore.sync();
-		this.pWin.hide(this.pGrid.el);
+		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
 		this.pWin.setTitle(i18n('procedure'));
 	},
@@ -453,7 +461,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 */
 	procedureEdit: function(view, record){
 		if(record.data.code_text != '' || record.data.code != ''){
-			this.pWin.setTitle('[' + record.data.code + '] ' + record.data.code_text);
+			this.pWin.setTitle(record.data.code_text + ' [' + record.data.code + ']');
 		}else{
 			this.pWin.setTitle(i18n('new_procedure'));
 		}
@@ -483,7 +491,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 		this.dxField.loadIcds(record.dxCodes());
 	},
-
 
 	/**
 	 *

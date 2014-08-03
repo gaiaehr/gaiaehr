@@ -16,100 +16,106 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.messages.Messages',
-	{
-		extend: 'Ext.data.Model',
-		table: {
-			name: 'messages',
-			comment: 'Messages'
+Ext.define('App.model.messages.Messages', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'messages',
+		comment: 'Messages'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
 		},
-		fields: [
-			{
-				name: 'id',
-				type: 'int',
-				dataType: 'bigint',
-				len: 20,
-				primaryKey: true,
-				autoIncrement: true,
-				allowNull: false,
-				store: true,
-				comment: 'Messages ID'
-			},
-			{
-				name: 'date',
-				type: 'string',
-				comment: 'Date of message'
-			},
-			{
-				name: 'body',
-				type: 'string',
-				dataType: 'text',
-				comment: 'Message'
-			},
-			{
-				name: 'pid',
-				type: 'int',
-				comment: 'Patient ID'
-			},
-			{
-				name: 'patient_name',
-				type: 'string',
-				messgae: 'Patient Name'
-			},
-			{
-				name: 'from_user',
-				type: 'string',
-				comment: 'Message is from user'
-			},
-			{
-				name: 'to_user',
-				type: 'string',
-				comment: 'Message to user'
-			},
-			{
-				name: 'subject',
-				type: 'string',
-				comment: 'Subject of the message'
-			},
-			{
-				name: 'facility_id',
-				type: 'string',
-				comment: 'Facility'
-			},
-			{
-				name: 'authorized',
-				type: 'string',
-				comment: 'Authorized?'
-			},
-			{
-				name: 'to_id',
-				type: 'int',
-				comment: 'To'
-			},
-			{
-				name: 'from_id',
-				type: 'int',
-				comment: 'From'
-			},
-			{
-				name: 'message_status',
-				type: 'string',
-				comment: 'Message Status'
-			},
-			{
-				name: 'note_type',
-				type: 'string',
-				comment: 'Message Type'
-			},
-			{
-				name: 'to_deleted',
-				type: 'bool',
-				comment: 'Deleted to the user'
-			},
-			{
-				name: 'from_deleted',
-				type: 'bool',
-				comment: 'Deleted from the source'
-			}
-		]
-	});
+		{
+			name: 'date',
+			type: 'string',
+			comment: 'Date of message'
+		},
+		{
+			name: 'body',
+			type: 'string',
+			dataType: 'text',
+			comment: 'Message'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			comment: 'Patient ID'
+		},
+		{
+			name: 'patient_name',
+			type: 'string',
+			comment: 'Patient Name'
+		},
+		{
+			name: 'from_user',
+			type: 'string',
+			comment: 'Message is from user'
+		},
+		{
+			name: 'to_user',
+			type: 'string',
+			comment: 'Message to user'
+		},
+		{
+			name: 'subject',
+			type: 'string',
+			comment: 'Subject of the message'
+		},
+		{
+			name: 'facility_id',
+			type: 'string',
+			comment: 'Facility'
+		},
+		{
+			name: 'authorized',
+			type: 'string',
+			comment: 'Authorized?'
+		},
+		{
+			name: 'to_id',
+			type: 'int',
+			comment: 'To'
+		},
+		{
+			name: 'from_id',
+			type: 'int',
+			comment: 'From'
+		},
+		{
+			name: 'message_status',
+			type: 'string',
+			comment: 'Message Status'
+		},
+		{
+			name: 'note_type',
+			type: 'string',
+			comment: 'Message Type'
+		},
+		{
+			name: 'to_deleted',
+			type: 'bool',
+			comment: 'Deleted to the user'
+		},
+		{
+			name: 'from_deleted',
+			type: 'bool',
+			comment: 'Deleted from the source'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Messages.getMessages',
+			create: 'Messages.sendNewMessage',
+			update: 'Messages.replyMessage',
+			destroy: 'Messages.deleteMessage'
+		},
+		reader: {
+			type: 'json',
+			root: 'data',
+			totalProperty: 'totals'
+		}
+	}
+});

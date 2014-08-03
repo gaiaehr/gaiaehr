@@ -375,6 +375,9 @@ Ext.define('App.view.patient.Encounter', {
 				text: i18n('social_history') + ' ',
 				action: 'socialhistory'
 			}, '-', {
+				text: i18n('functional_status') + ' ',
+				action: 'functionalstatus'
+			}, '-', {
 				text: i18n('referrals') + ' ',
 				action: 'referrals'
 			}, '-', {

@@ -404,6 +404,26 @@ $API = array(
 		)
 	),
 
+	'CognitiveAndFunctionalStatus' => array(
+		'methods' => array(
+			'getPatientCognitiveAndFunctionalStatuses' => array(
+				'len' => 1
+			),
+			'getPatientCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			),
+			'addPatientCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			),
+			'updateCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			),
+			'destroyCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			)
+		)
+	),
+
 	'ExternalDataUpdate' => array(
 		'methods' => array(
 			'updateCodesWithUploadFile' => array(
@@ -653,6 +673,25 @@ $API = array(
 			)
 		)
 	),
+	'CarePlanGoals' => array(
+		'methods' => array(
+			'getPatientCarePlanGoals' => array(
+				'len' => 1
+			),
+			'getPatientCarePlanGoal' => array(
+				'len' => 1
+			),
+			'addPatientCarePlanGoal' => array(
+				'len' => 1
+			),
+			'updatePatientCarePlanGoal' => array(
+				'len' => 1
+			),
+			'destroyPatientCarePlanGoal' => array(
+				'len' => 1
+			)
+		)
+	),
     /**
 	 * FamilyHistory Functions
 	 */
@@ -690,6 +729,31 @@ $API = array(
 				'len' => 1
 			),
 			'setFacility' => array(
+				'len' => 1
+			)
+		)
+	),
+	/**
+	 * Allergies Functions
+	 */
+	'Allergies' => array(
+		'methods' => array(
+			'getPatientAllergies' => array(
+				'len' => 1
+			),
+			'getPatientAllergy' => array(
+				'len' => 1
+			),
+			'addPatientAllergy' => array(
+				'len' => 1
+			),
+			'updatePatientAllergy' => array(
+				'len' => 1
+			),
+			'destroyPatientAllergy' => array(
+				'len' => 1
+			),
+			'searchAllergiesData' => array(
 				'len' => 1
 			)
 		)
@@ -828,6 +892,18 @@ $API = array(
 	'SnomedCodes' => array(
 		'methods' => array(
 			'liveCodeSearch' => array(
+				'len' => 1
+			),
+			'liveProblemCodeSearch' => array(
+				'len' => 1
+			),
+			'liveProcedureCodeSearch' => array(
+				'len' => 1
+			),
+			'updateLiveProcedureCodeSearch' => array(
+				'len' => 1
+			),
+			'updateLiveProblemCodeSearch' => array(
 				'len' => 1
 			)
 		)

@@ -81,7 +81,8 @@ class DocumentHandler {
 	 */
 	public function getPatientDocument($params){
 		$this->setPatientDocumentModel();
-		return $this->d->load($params)->one();
+		$record = $this->d->load($params)->one();
+		return $record;
 	}
 
 	/**

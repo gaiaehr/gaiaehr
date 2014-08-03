@@ -22,6 +22,7 @@ Ext.define('App.view.patient.Allergies', {
 		'App.store.patient.Allergies',
 		'App.ux.grid.RowFormEditing',
 		'App.ux.LiveRXNORMAllergySearch',
+		'App.ux.LiveAllergiesSearch',
 
 		'App.ux.combo.Allergies',
 		'App.ux.combo.AllergiesAbdominal',
@@ -67,12 +68,9 @@ Ext.define('App.view.patient.Allergies', {
 			dataIndex: 'severity'
 		},
 		{
-			text: i18n('active'),
+			text: i18n('status'),
 			width: 55,
-			dataIndex: 'active',
-			renderer: function(v){
-				return app.boolRenderer(v);
-			}
+			dataIndex: 'status'
 		}
 	],
 	plugins: Ext.create('App.ux.grid.RowFormEditing', {
@@ -95,50 +93,27 @@ Ext.define('App.view.patient.Allergies', {
 						defaults: {
 							margin: '0 10 0 0'
 						},
-						items: [
+						items:[
 							{
-								xtype: 'mitos.allergiestypescombo',
+								xtype: 'gaiaehr.combo',
 								fieldLabel: i18n('type'),
-								name: 'allergy_type',
-								action: 'allergy_type',
-								allowBlank: false,
 								itemId:'allergyTypeCombo',
-								width: 225,
+								name: 'allergy_type',
+								allowBlank: false,
 								labelWidth: 70,
+								width: 700,
+								list: 85,
 								enableKeyEvents: true
 							},
-							Ext.create('App.ux.combo.Allergies', {
-								fieldLabel: i18n('allergy'),
-								action: 'allergie_name',
-								name: 'allergy',
-								itemId:'allergyTypesCombo',
-								enableKeyEvents: true,
-								disabled: true,
-								width: 550,
-								labelWidth: 70
-							}),
 							{
-								xtype:'rxnormallergylivetsearch',
-								fieldLabel: i18n('allergy'),
-								hideLabel: false,
-								action: 'allergy',
-								name: 'allergy',
-								itemId:'allergyMedicationCombo',
-								hidden: true,
-								disabled: true,
-								enableKeyEvents: true,
-								width: 550,
-								labelWidth: 70
-							},
-							{
-								fieldLabel: i18n('begin_date'),
-								xtype: 'datefield',
-								format: 'Y-m-d',
-								name: 'begin_date'
-
+								xtype: 'gaiaehr.combo',
+								fieldLabel: i18n('status'),
+								name: 'status',
+								list: 113,
+								itemId: 'allergyStatusCombo',
+								labelWidth: 80
 							}
 						]
-
 					},
 					{
 						/**
@@ -151,35 +126,84 @@ Ext.define('App.view.patient.Allergies', {
 						},
 						items: [
 							{
-								xtype: 'mitos.allergieslocationcombo',
+								xtype: 'allergieslivesearch',
+								fieldLabel: i18n('allergy'),
+								itemId: 'allergySearchCombo',
+								name: 'allergy',
+								hideLabel: false,
+//								disabled: true,
+								enableKeyEvents: true,
+								width: 700,
+								labelWidth: 70
+							},
+							{
+								xtype:'rxnormallergylivetsearch',
+								fieldLabel: i18n('allergy'),
+								itemId:'allergyMedicationCombo',
+								name: 'allergy',
+								hideLabel: false,
+								hidden: true,
+								disabled: true,
+								enableKeyEvents: true,
+								width: 700,
+								labelWidth: 70
+							},
+							{
+								fieldLabel: i18n('begin_date'),
+								xtype: 'datefield',
+								format: 'Y-m-d',
+								name: 'begin_date',
+								labelWidth: 80
+
+							}
+						]
+
+					},
+					{
+						/**
+						 * Line three
+						 */
+						xtype: 'fieldcontainer',
+						layout: 'hbox',
+						defaults: {
+							margin: '0 10 0 0'
+						},
+						items: [
+							{
+								xtype: 'gaiaehr.combo',
 								fieldLabel: i18n('location'),
 								name: 'location',
 								action: 'location',
 								itemId: 'allergyLocationCombo',
 								width: 225,
+								list: 79,
 								labelWidth: 70
 
 							},
-							Ext.create('App.ux.combo.AllergiesAbdominal', {
-								xtype: 'mitos.allergiesabdominalcombo',
+							{
+								xtype: 'gaiaehr.combo',
 								fieldLabel: i18n('reaction'),
 								itemId: 'allergyReactionCombo',
 								name: 'reaction',
-								width: 315,
+								width: 230,
+								list: 82,
 								labelWidth: 70
-							}),
+							},
 							{
-								xtype: 'mitos.allergiesseveritycombo',
+								xtype: 'gaiaehr.combo',
 								fieldLabel: i18n('severity'),
 								name: 'severity',
+								itemId: 'allergySeverityCombo',
 								width: 225,
+								list: 84,
 								labelWidth: 70
 							},
 							{
 								fieldLabel: i18n('end_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
-								name: 'end_date'
+								name: 'end_date',
+								labelWidth: 80
 							}
 						]
 					}

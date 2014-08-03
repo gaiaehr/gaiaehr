@@ -27,14 +27,14 @@ class SnomedCodes {
 		$this->conn = MatchaHelper::getConn();
 	}
 
-	public function liveCodeSearch($params) {
-		$query = $params->query;
+	public function liveProblemCodeSearch($params) {
 
-		$sql = "SELECT ConceptId, FullySpecifiedName
+		$sql = "SELECT ConceptId, FullySpecifiedName, OCCURRENCE
 			     FROM sct_concepts
 		   RIGHT JOIN sct_problem_list ON sct_concepts.ConceptId = sct_problem_list.SNOMED_CID
 	            WHERE sct_concepts.ConceptStatus = '0'
-	              AND sct_concepts.FullySpecifiedName LIKE '%$query%'
+	              AND (sct_concepts.FullySpecifiedName LIKE '%{$params->query}%'
+	              OR sct_concepts.ConceptId LIKE '{$params->query}%')
 	         ORDER BY sct_problem_list.OCCURRENCE DESC";
 
 		$sth = $this->conn->query($sql);
@@ -45,7 +45,54 @@ class SnomedCodes {
 		);
 	}
 
+	public function liveProcedureCodeSearch($params) {
 
+		$sql = "SELECT ConceptId, FullySpecifiedName, Occurrence
+			     FROM sct_procedure_list
+	            WHERE FullySpecifiedName 	LIKE '%{$params->query}%'
+	               OR ConceptId 			LIKE '{$params->query}%'
+	         ORDER BY Occurrence DESC";
+
+		$sth = $this->conn->query($sql);
+		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
+		return array(
+			'totals' => count($results),
+		    'data' => array_slice($results, $params->start, $params->limit)
+		);
+	}
+
+	public function liveCodeSearch($params) {
+
+		$sql = "SELECT ConceptId, FullySpecifiedName
+			     FROM sct_concepts
+	            WHERE sct_concepts.ConceptStatus = '0'
+	              AND sct_concepts.FullySpecifiedName LIKE '%{$params->query}%'
+	              OR sct_concepts.ConceptId LIKE '{$params->query}%'";
+
+		$sth = $this->conn->query($sql);
+		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
+		return array(
+			'totals' => count($results),
+		    'data' => array_slice($results, $params->start, $params->limit)
+		);
+	}
+
+	public function updateLiveProcedureCodeSearch($params) {
+		$sql = "UPDATE sct_procedure_list
+				   SET Occurrence = '{$params->Occurrence}'
+			     WHERE ConceptId = '{$params->ConceptId}'";
+		$this->conn->exec($sql);
+		return $params;
+	}
+
+	public function updateLiveProblemCodeSearch($params) {
+
+		$sql = "UPDATE sct_problem_list
+				   SET OCCURRENCE = '{$params->Occurrence}'
+			     WHERE SNOMED_CID = '{$params->ConceptId}'";
+		$this->conn->exec($sql);
+		return $params;
+	}
 
 }
 

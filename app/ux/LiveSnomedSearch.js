@@ -18,7 +18,7 @@
 
 Ext.define('App.ux.LiveSnomedSearch', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.snomedlivetsearch',
+	alias: 'widget.snomedlivesearch',
 	hideLabel: true,
 	displayField: 'FullySpecifiedName',
 	valueField: 'ConceptId',

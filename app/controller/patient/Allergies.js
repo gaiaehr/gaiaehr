@@ -39,16 +39,17 @@ Ext.define('App.controller.patient.Allergies', {
 			selector: 'patientallergiespanel #activeAllergyBtn'
 		},
 		{
-			ref: 'AllergyTypeCombo',
-			selector: '#allergyTypeCombo'
+			ref: 'AllergyCombo',
+			selector: '#allergyCombo'
 		},
 		{
 			ref: 'AllergyTypesCombo',
 			selector: '#allergyTypesCombo'
 		},
+
 		{
-			ref: 'AllergyCombo',
-			selector: '#allergyCombo'
+			ref: 'AllergySearchCombo',
+			selector: '#allergySearchCombo'
 		},
 		{
 			ref: 'AllergyMedicationCombo',
@@ -57,6 +58,10 @@ Ext.define('App.controller.patient.Allergies', {
 		{
 			ref: 'AllergyReactionCombo',
 			selector: '#allergyReactionCombo'
+		},
+		{
+			ref: 'AllergySeverityCombo',
+			selector: '#allergySeverityCombo'
 		},
 		{
 			ref: 'AllergyLocationCombo',
@@ -81,15 +86,64 @@ Ext.define('App.controller.patient.Allergies', {
 			},
 
 			'#allergyTypeCombo': {
-				change: me.onAllergyTypeComboChange
+				select: me.onAllergyTypeComboSelect
 			},
 			'#allergyMedicationCombo': {
 				select: me.onAllergyLiveSearchSelect
 			},
 			'#allergyLocationCombo': {
 				select: me.onAllergyLocationComboSelect
+			},
+
+
+			'#allergySearchCombo': {
+				select: me.onAllergySearchComboSelect
+			},
+			'#allergyReactionCombo': {
+				select: me.onAllergyReactionComboSelect
+			},
+			'#allergySeverityCombo': {
+				select: me.onAllergySeverityComboSelect
+			},
+			'#allergyStatusCombo': {
+				select: me.onAllergyStatusComboSelect
 			}
 		});
+	},
+
+	onAllergySearchComboSelect:function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+		record.set({
+			allergy_code: records[0].data.allergy_code,
+			allergy_code_type: records[0].data.allergy_code_type
+		});
+	},
+
+	onAllergyReactionComboSelect:function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+		record.set({
+			reaction_code: records[0].data.code,
+			reaction_code_type: records[0].data.code_type
+		});
+	},
+
+	onAllergySeverityComboSelect:function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+		record.set({
+			severity_code: records[0].data.code,
+			severity_code_type: records[0].data.code_type
+		});
+	},
+
+	onAllergyStatusComboSelect:function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+
+		record.set({
+			status_code: records[0].data.code,
+			status_code_type: records[0].data.code_type
+		});
+
+		say(record);
 	},
 
 	onAllergyLiveSearchSelect: function(cmb, records){
@@ -101,21 +155,30 @@ Ext.define('App.controller.patient.Allergies', {
 		});
 	},
 
-	onAllergyTypeComboChange: function(combo){
+	onAllergyTypeComboSelect: function(combo, records){
+
 		var me = this,
-			type = combo.getValue(),
-			isDrug = type == 'Drug';
+			record = records[0],
+			code = record.data.code,
+			isDrug = code == '419511003' || code == '416098002' || code == '59037007';
 
 		me.getAllergyMedicationCombo().setVisible(isDrug);
 		me.getAllergyMedicationCombo().setDisabled(!isDrug);
-		me.getAllergyTypesCombo().setVisible(!isDrug);
-		me.getAllergyTypesCombo().setDisabled(isDrug);
+
+		me.getAllergySearchCombo().setVisible(!isDrug);
+		me.getAllergySearchCombo().setDisabled(isDrug);
 
 		if(isDrug){
 			me.getAllergyMedicationCombo().reset();
 		}else{
-			me.getAllergyTypesCombo().store.load({params: {allergy_type: type}});
+			me.getAllergySearchCombo().store.load();
 		}
+
+		combo.up('form').getForm().getRecord().set({
+			allergy_type_code: record.data.code,
+			allergy_type_code_type: record.data.code_type
+		});
+
 	},
 
 	onAllergyLocationComboSelect: function(combo, record){

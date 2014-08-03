@@ -80,8 +80,8 @@ Ext.define('App.controller.patient.Documents', {
 		this.initDocumentDnD();
 	},
 
-	onPatientDocumentGridSelectionChange: function(grid, records){
-		var frame = this.getPatientDocumentViewerFrame();
+	onPatientDocumentGridSelectionChange: function(sm, records){
+		var frame = sm.view.panel.up('panel').query('#patientDocumentViewerFrame')[0];
 
 		if(records.length > 0){
 			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&id=' + records[0].data.id);
@@ -90,10 +90,11 @@ Ext.define('App.controller.patient.Documents', {
 		}
 	},
 
-	onPatientDocumentPanelActive: function(){
+	onPatientDocumentPanelActive: function(panel){
 		var me = this,
-			grid = me.getPatientDocumentGrid(),
+			grid = panel.down('grid'),
 			store = grid.getStore();
+
 		store.load({
 			filters: [
 				{
@@ -120,11 +121,13 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	onDocumentGroupBtnToggle: function(btn, pressed){
+		var grid = btn.up('grid');
+
 		if(pressed){
-			this.getPatientDocumentGrid().view.features[0].enable();
-			this.getPatientDocumentGrid().getStore().group(btn.action);
+			grid.view.features[0].enable();
+			grid.getStore().group(btn.action);
 		}else{
-			this.getPatientDocumentGrid().view.features[0].disable();
+			grid.view.features[0].disable();
 		}
 	},
 
@@ -303,7 +306,7 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	dropHandler:function(files){
-		say(files);
+//		say(files);
 		var me = this,
 			win = me.setDocumentUploadWindow('drop'),
 			form = win.down('form').getForm(),

@@ -37,7 +37,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 				proxy: {
 					type: 'direct',
 					api: {
-						read: CombosData.getOptionsByListId
+						read: 'CombosData.getOptionsByListId'
 					}
 				}
 			});

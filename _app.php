@@ -685,6 +685,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.Specialities',
 
 	                'Cron',
+	                'DocumentViewer',
 	                'DualScreen',
 	                'InfoButton',
 	                'LogOut',
@@ -697,7 +698,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Allergies',
 	                'patient.CarePlanGoals',
 	                'patient.CCD',
-	                'patient.CCDimport',
+	                'patient.CCDImport',
 	                'patient.CognitiveAndFunctionalStatus',
 	                'patient.DecisionSupport',
 	                'patient.DoctorsNotes',

@@ -94,6 +94,13 @@ class SnomedCodes {
 		return $params;
 	}
 
+	public function getSnomedTextByConceptId($conceptId) {
+		$sql = "SELECT `FullySpecifiedName` FROM `sct_concepts` WHERE `ConceptId` = '$conceptId'";
+		$sth = $this->conn->query($sql);
+		$result = $sth->fetch(PDO::FETCH_ASSOC);
+		return isset($result) && $result != false ? $result['FullySpecifiedName'] : '';
+	}
+
 }
 
 //$f = new DiagnosisCodes();

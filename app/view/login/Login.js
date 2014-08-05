@@ -439,7 +439,8 @@ Ext.define('App.view.login.Login', {
 
 	onAppResize: function(){
 		this.winLogon.alignTo(this, 'c-c');
-		this.notice1.alignTo(Ext.getBody(), 't-t', [0, 10]);
+		if(this.notice1)
+			this.notice1.alignTo(Ext.getBody(), 't-t', [0, 10]);
 		if(this.notice2)
 			this.notice2.alignTo(Ext.getBody(), 't-t', [0, 85]);
 	}

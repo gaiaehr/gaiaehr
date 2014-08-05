@@ -125,4 +125,3 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 		}
 	}
 });
-

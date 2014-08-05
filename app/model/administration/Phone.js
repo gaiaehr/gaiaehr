@@ -82,10 +82,6 @@ Ext.define('App.model.administration.Phone', {
 			type: 'int'
 		},
 		{
-			name: 'active',
-			type: 'bool'
-		},
-		{
 			name: 'fullnumber',
 			type: 'string',
 			store: false,
@@ -98,6 +94,10 @@ Ext.define('App.model.administration.Phone', {
 						record.data.number
 				);
 			}
+		},
+		{
+			name: 'active',
+			type: 'bool'
 		}
 	]
 });

@@ -86,9 +86,7 @@ Ext.define('App.controller.DocumentViewer', {
 	},
 
 	onViewerDocumentsWinClose: function(win){
-		if(win.documentType == 'temp'){
-			DocumentHandler.destroyTempDocument({id: win.documentId});
-		}
+		DocumentHandler.destroyTempDocument({id: win.documentId});
 	}
 
 

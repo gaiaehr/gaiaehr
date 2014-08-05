@@ -83,10 +83,6 @@ Ext.define('App.model.administration.Address', {
 			type: 'string'
 		},
 		{
-			name: 'foreign_id',
-			type: 'int'
-		},
-		{
 			name: 'fulladdress',
 			type: 'string',
 			store: false,
@@ -101,6 +97,10 @@ Ext.define('App.model.administration.Address', {
 						record.data.country
 				).replace('  ', ' ');
 			}
+		},
+		{
+			name: 'foreign_id',
+			type: 'int'
 		}
 	]
 });

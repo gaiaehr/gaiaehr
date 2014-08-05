@@ -64,12 +64,13 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 			"js" => "application/javascript",
 			"php" => "text/html",
 			"htm" => "text/html",
-			"html" => "text/html"
+			"html" => "text/html",
+			"xml" => "text/xml"
 		);
 
 		$foo = explode('.', $file);
 		$extension = strtolower(end($foo));
-		return $mime_types[$extension];
+		return isset($mime_types[$extension]) ? $mime_types[$extension] : '';
 	}
 
 	function base64ToBinary($doc){
@@ -89,7 +90,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 			die('No Document Found, Please contact Support Desk. Thank You!');
 		}
 		$doc = (object) $doc;
-		$doc->name = 'temp.pdf';
+		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
 		$doc = base64ToBinary($doc);
 	}else{
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');

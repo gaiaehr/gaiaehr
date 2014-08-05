@@ -1411,5 +1411,8 @@ $LANG = array(
 	'import_and_merge_with'                 => 'Import and merge with',
 	'dob'                                   => 'DOB',
 	'phones'                                => 'Phones',
+	'view_raw_ccd'                          => 'View Raw CCD',
+	'select_all'                            => 'Select All',
+	'cc'                                    => 'CC',
 
 );

@@ -27,25 +27,23 @@ Ext.define('App.view.patient.windows.CCDImport', {
 		align: 'stretch'
 	},
 	width: 1200,
+	maxHeight: 700,
 	autoScroll: true,
 	ccdData: null,
 	items: [
 		{
-			xtype: 'form',
+			xtype: 'container',
 			layout: 'hbox',
-			frame: true,
-			margin: '5 5 0 5',
-			itemId: 'CcdImportForm',
 			items: [
 				{
-					xtype: 'fieldset',
+					xtype: 'form',
+					frame: true,
+					margin: '5 5 0 5',
 					title: i18n('patient'),
-					flex: 2,
-					margin: 5,
-					defaults: {
-						margin: '0 5 0 0',
-						height: 120
-					},
+					itemId: 'CcdImportPatientForm',
+					flex: 1,
+					height: 145,
+					autoScroll: true,
 					layout: 'column',
 					items: [
 						{
@@ -53,29 +51,26 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							defaults: {
 								xtype: 'displayfield',
 								labelWidth: 45,
-								labelAlign: 'right'
+								labelAlign: 'right',
+								margin: 0
 							},
 							columnWidth: 0.5,
 							items: [
 								{
 									fieldLabel: i18n('name'),
-									name: 'fullname',
-									value: 'fullname'
+									name: 'fullname'
 								},
 								{
 									fieldLabel: i18n('sex'),
-									name: 'sex',
-									value: 'sex'
+									name: 'sex'
 								},
 								{
 									fieldLabel: i18n('dob'),
-									name: 'DOB',
-									value: 'DOB'
+									name: 'DOB'
 								},
 								{
 									fieldLabel: i18n('race'),
-									name: 'race',
-									value: 'race'
+									name: 'race_text'
 								}
 							]
 						},
@@ -84,19 +79,18 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							defaults: {
 								xtype: 'displayfield',
 								labelWidth: 60,
-								labelAlign: 'right'
+								labelAlign: 'right',
+								margin: 0
 							},
 							columnWidth: 0.5,
 							items: [
 								{
 									fieldLabel: i18n('ethnicity'),
-									name: 'ethnicity',
-									value: 'ethnicity'
+									name: 'ethnicity_text'
 								},
 								{
 									fieldLabel: i18n('language'),
-									name: 'language',
-									value: 'language'
+									name: 'language'
 								},
 								{
 									fieldLabel: i18n('address'),
@@ -110,15 +104,40 @@ Ext.define('App.view.patient.windows.CCDImport', {
 								}
 							]
 						}
-
 					]
 				},
 				{
-					xtype: 'fieldset',
-					title: i18n('author'),
+					xtype: 'form',
+					frame: true,
+					margin: '5 5 0 0',
+					title: i18n('encounter'),
+					itemId: 'CcdImportEncounterForm',
+					height: 145,
+					overflowY: 'auto',
 					flex: 1,
-					margin: '5 5 5 0',
-					height: 120
+					defaults: {
+						xtype: 'displayfield',
+						labelWidth: 75,
+						labelAlign: 'right',
+						margin: 0
+					},
+					items: [
+						{
+							fieldLabel: i18n('date'),
+							name: 'service_date'
+						},
+						{
+							fieldLabel: i18n('cc'),
+							name: 'brief_description'
+						},
+						{
+							xtype: 'checkboxgroup',
+							fieldLabel: i18n('assessment'),
+							columns: 1,
+							layout: 'anchor',
+							itemId: 'CcdImportEncounterAssessmentContainer'
+						}
+					]
 				}
 			]
 		},
@@ -136,7 +155,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					},
 					defaults: {
 						xtype: 'grid',
-						height: 120,
+						height: 123,
 						frame: true,
 						hideHeaders: true,
 						selType: 'checkboxmodel',
@@ -151,8 +170,20 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							itemId: 'CcdImportMedicationsGrid',
 							columns: [
 								{
-									text: i18n('description'),
+									dataIndex: 'STR',
 									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'begin_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'end_date',
+									width: 100,
+									format: g('date_display_format')
 								}
 							]
 						},
@@ -162,8 +193,20 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							itemId: 'CcdImportAllergiesGrid',
 							columns: [
 								{
-									text: i18n('description'),
+									dataIndex: 'allergy',
 									flex: 1
+								},
+								{
+									dataIndex: 'reaction',
+									width: 150
+								},
+								{
+									dataIndex: 'severity',
+									width: 100
+								},
+								{
+									dataIndex: 'status',
+									width: 60
 								}
 							]
 						},
@@ -174,7 +217,14 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							columns: [
 								{
 									text: i18n('description'),
+									dataIndex: 'code_text',
 									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'procedure_date',
+									width: 100,
+									format: g('date_display_format')
 								}
 							]
 						}
@@ -189,7 +239,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					},
 					defaults: {
 						xtype: 'grid',
-						height: 120,
+						height: 123,
 						frame: true,
 						hideHeaders: true,
 						selType: 'checkboxmodel',
@@ -204,8 +254,24 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							itemId: 'CcdImportActiveProblemsGrid',
 							columns: [
 								{
-									text: i18n('active_problems'),
+									dataIndex: 'code_text',
 									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'begin_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'end_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									dataIndex: 'status',
+									width: 60
 								}
 							]
 						},
@@ -216,7 +282,31 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							columns: [
 								{
 									text: i18n('results'),
+									dataIndex: 'code_text',
 									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'result_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'actioncolumn',
+									width: 40,
+									items: [
+										{
+											icon: 'resources/images/icons/icoMore.png',
+											margin: '0 5',
+											altText: 'More',
+											getClass: function(v, metadata){
+												return 'x-grid-center-icon';
+											},
+											handler: function(grid, rowIndex, colIndex, item, event, record){
+												App.app.getController('patient.CCDimport').doResultShowObservations(record.observations());
+											}
+										}
+									]
 								}
 							]
 						},
@@ -235,61 +325,41 @@ Ext.define('App.view.patient.windows.CCDImport', {
 				}
 			]
 		}
-		//		{
-		//			xtype: 'grid',
-		//			height: 100,
-		//			frame: true,
-		//			hideHeaders: true,
-		//			title: i18n('procedures'),
-		//			selType: 'checkboxmodel',
-		//			columnLines: true,
-		//			multiSelect: true,
-		//			margin: '0 5 0 5',
-		//			columns: [
-		//				{
-		//					text: i18n('active_problems'),
-		//					flex: 1
-		//				}
-		//			]
-		//		},
-		//		{
-		//			xtype: 'grid',
-		//			height: 100,
-		//			frame: true,
-		//			hideHeaders: true,
-		//			title: i18n('encounters'),
-		//			selType: 'checkboxmodel',
-		//			columnLines: true,
-		//			multiSelect: true,
-		//			margin: 5,
-		//			columns: [
-		//				{
-		//					text: i18n('active_problems'),
-		//					flex: 1
-		//				}
-		//			]
-		//		}
 	],
 	dockedItems: [
 		{
 			xtype: 'toolbar',
 			dock: 'bottom',
 			ui: 'footer',
-			defaults: { minWidth: 70 },
 			items: [
 				{
-					text: i18n('import'),
-					itemId: 'CcdImportWindowImportBtn'
+					text: i18n('view_raw_ccd'),
+					itemId: 'CcdImportWindowViewRawCcdBtn'
 				},
+				'-',
 				{
 					xtype: 'patienlivetsearch',
 					emptyText: i18n('import_and_merge_with') + '...',
 					itemId: 'CcdImportWindowPatientSearchField',
 					width: 300
 				},
+				{
+					xtype: 'checkboxfield',
+					fieldLabel: i18n('select_all'),
+					labelWidth: 55,
+					labelAlign: 'right',
+					itemId: 'CcdImportWindowSelectAllField'
+				},
+				{
+					text: i18n('import'),
+					minWidth: 70,
+					itemId: 'CcdImportWindowImportBtn'
+				},
+				'-',
 				'->',
 				{
 					text: i18n('close'),
+					minWidth: 70,
 					itemId: 'CcdImportWindowCloseBtn'
 				}
 			]

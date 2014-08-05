@@ -1230,13 +1230,13 @@ Ext.define('App.view.Viewport', {
      * This folder will hold modules created by third-party.
      */
     loadModules: function(){
-        say('*** Loading Modules ***');
+        //say('*** Loading Modules ***');
 
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
                 App.app.getController('Modules.' + modules[i].dir + '.Main');
-                say('Module ' + modules[i].dir + ' loaded...');
+                //say('Module ' + modules[i].dir + ' loaded...');
             }
 
 	        app.doLayout();

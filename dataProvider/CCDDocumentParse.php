@@ -16,13 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-//include_once (ROOT. '/classes/Array2XML.php');
-include_once ('../classes/XML2Array.php');
-
+include_once (ROOT. '/classes/Array2XML.php');
+include_once (ROOT. '/classes/XML2Array.php');
+include_once(ROOT. '/dataProvider/SnomedCodes.php');
 class CCDDocumentParse {
 
 	private $document;
+
 	private $index;
+
+	public $styledXml;
+
+	/**
+	 * @var SnomedCodes
+	 */
+	private $SnomedCodes;
 
 	function __construct($xml = null){
 		if(isset($xml)) $this->setDocument($xml);
@@ -30,8 +38,26 @@ class CCDDocumentParse {
 
 	function setDocument($xml){
 		$this->document = $this->XmlToArray($xml);
-		$this->index = array();
+		unset($this->document['ClinicalDocument']['@attributes']);
 
+		Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"'));
+
+		$data = array(
+			'@attributes' => array(
+				'xmlns' => 'urn:hl7-org:v3',
+				'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+				'xsi:schemaLocation' => 'urn:hl7-org:v3 CDA.xsd'
+			)
+		);
+		foreach( $this->document['ClinicalDocument'] as $i => $com){
+			$data[$i] = $com;
+		}
+
+		$this->styledXml = Array2XML::createXML('ClinicalDocument', $data)->saveXML();
+		unset($data);
+
+
+		$this->index = array();
 		foreach($this->document['ClinicalDocument']['component']['structuredBody']['component'] as $index => $component){
 			$code = isset($component['section']['code']['@attributes']['code']) ?
 				$component['section']['code']['@attributes']['code'] : '';
@@ -49,6 +75,10 @@ class CCDDocumentParse {
 				$this->index['results'] = $index;
 			}elseif($code == '46240-8'){
 				$this->index['encounters'] = $index;
+			}elseif($code == '51847-2'){
+				$this->index['assessments'] = $index;
+			}elseif($code == '46239-0'){
+				$this->index['chiefcomplaint'] = $index;
 			}else{
 
 				$tplId = isset($component['section']['templateId']['@attributes']['root']) ?
@@ -63,16 +93,22 @@ class CCDDocumentParse {
 
 	function getDocument(){
 		$document = new stdClass();
+		$document->title = $this->getTitle();
 		$document->patient = $this->getPatient();
+		$document->encounter = $this->getEncounter();
 		$document->author = $this->getAuthor();
 		$document->allergies = $this->getAllergies();
 		$document->medications = $this->getMedications();
 		$document->problems = $this->getProblems();
 		$document->procedures = $this->getProcedures();
 		$document->results = $this->getResults();
-		$document->encounter = $this->getEncounters();
+		$document->encounters = $this->getEncounters();
 		$document->advancedirectives = $this->getAdvanceDirectives();
 		return $document;
+	}
+
+	function getTitle(){
+		return isset($this->document['ClinicalDocument']['title']) ? $this->document['ClinicalDocument']['title'] : '';
 	}
 
 	/**
@@ -119,7 +155,6 @@ class CCDDocumentParse {
 		if(!isset($dom['patient'])){
 			throw new Exception('Error: ClinicalDocument->recordTarget->patientRole->Patient is required');
 		}
-
 		//names
 		if(!isset($dom['patient']['name']['given'])){
 			throw new Exception('Error: Patient given name is required');
@@ -138,6 +173,9 @@ class CCDDocumentParse {
 		$patient->sex = $dom['patient']['administrativeGenderCode']['@attributes']['code'];
 		//DOB
 		$patient->DOB = $this->dateParser($dom['patient']['birthTime']['@attributes']['value']);
+		// fix for date with only the day...  add the time at the end
+		if(strlen($patient->DOB) <= 10) $patient->DOB .= ' 00:00:00';
+
 		//marital StatusCode
 		$patient->marital_status = isset($dom['patient']['maritalStatusCode']['@attributes']['code']) ? $dom['patient']['maritalStatusCode']['@attributes']['code'] : '';
 		//race
@@ -226,6 +264,48 @@ class CCDDocumentParse {
 		return $author;
 	}
 
+	function getEncounter(){
+		$encounter = new stdClass();
+
+		if(!isset($this->document['ClinicalDocument']['componentOf'])){
+			return $encounter;
+		}
+
+		$dom = $this->document['ClinicalDocument']['componentOf'];
+		if(isset($dom['encompassingEncounter'])){
+			$encounter->rid = $dom['encompassingEncounter']['id']['@attributes']['extension'];
+			$times = $this->datesHandler($dom['encompassingEncounter']['effectiveTime']);
+			$encounter->service_date = $times['low'];
+			unset($times);
+		}
+
+		if(isset($this->index['chiefcomplaint'])){
+			$cc = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['chiefcomplaint']]['section'];
+			$encounter->brief_description = $cc['text']['paragraph']['@value'];
+		}
+
+		if(isset($this->index['assessments'])){
+			$assessments = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['assessments']]['section'];
+			if($this->isAssoc($assessments['entry'])) $section['entry'] = array($assessments['entry']);
+
+			$encounter->assessments = [];
+
+			foreach($assessments['entry'] as $i => $entry){
+				if(isset($entry['act'])){
+					$assessment = new stdClass();
+					$assessment->text = $assessments['text']['paragraph'][$i]['@value'];
+					$code = $this->codeHandler($entry['act']['code']);
+					$assessment->code = $code['code'];
+					$assessment->code_text = $code['code_text'];
+					$assessment->code_type = $code['code_type'];
+					$encounter->assessments[] = $assessment;
+				}
+			}
+		}
+
+		return $encounter;
+	}
+
 	/**
 	 * @return array
 	 */
@@ -257,7 +337,7 @@ class CCDDocumentParse {
 			unset($code);
 
 			//dates
-			$dates = $this->datesHandler($entry['act']['effectiveTime']);
+			$dates = $this->datesHandler($entry['act']['effectiveTime'], true);
 			$allergy->begin_date = $dates['low'];
 			$allergy->end_date = $dates['high'];
 
@@ -284,7 +364,6 @@ class CCDDocumentParse {
 					$allergy->{$key.'_code_type'} = $code['code_type'];
 					unset($code);
 				};
-
 			}
 
 			$allergies[] = $allergy;
@@ -315,10 +394,10 @@ class CCDDocumentParse {
 			if(!$this->isAssoc($entry['substanceAdministration']['effectiveTime'])){
 				foreach($entry['substanceAdministration']['effectiveTime'] as $date){
 					if(!isset($date['low'])) continue;
-					$dates = $this->datesHandler($date);
+					$dates = $this->datesHandler($date, true);
 				}
 			}else{
-				$dates = $this->datesHandler($entry['substanceAdministration']['effectiveTime']);
+				$dates = $this->datesHandler($entry['substanceAdministration']['effectiveTime'], true);
 			}
 
 			if(isset($dates)){
@@ -372,7 +451,7 @@ class CCDDocumentParse {
 			$problem->code_type = $code['code_type'];
 			unset($code);
 
-			$dates = $this->datesHandler($entry['act']['effectiveTime']);
+			$dates = $this->datesHandler($entry['act']['effectiveTime'], true);
 			$problem->begin_date = $dates['low'];
 			$problem->end_date = $dates['high'];
 			unset($dates);
@@ -450,12 +529,13 @@ class CCDDocumentParse {
 
 			$code = $this->codeHandler($entry['organizer']['code']);
 			$result->code = $code['code'];
-			$result->description = $code['code_text'];
+			$result->code_text = $code['code_text'];
 			$result->code_type = $code['code_type'];
-
 			unset($code);
 
-			$result->obesrvations = [];
+			$result_date = '0000-00-00';
+
+			$result->observations = [];
 
 			foreach($entry['organizer']['component'] as $obs){
 				$obs = $obs['observation'];
@@ -489,10 +569,12 @@ class CCDDocumentParse {
 				$observation->abnormal_flag = $obs['interpretationCode']['@attributes']['code'];
 				$observation->observation_result_status = $obs['statusCode']['@attributes']['code'];
 				$dates = $this->datesHandler($obs['effectiveTime']);
-				$observation->date_observation = $dates['low'];
+				$observation->date_observation = $result_date = $dates['low'];
 
-				$result->obesrvations[] = $observation;
+				$result->observations[] = $observation;
 			}
+
+			$result->result_date = $result_date;
 
 			$results[] = $result;
 		}
@@ -596,7 +678,7 @@ class CCDDocumentParse {
 			$directive->value_code_type = $code['code_type'];
 			unset($code);
 
-			$dates = $this->datesHandler($entry['observation']['effectiveTime']);
+			$dates = $this->datesHandler($entry['observation']['effectiveTime'], true);
 			$directive->begin_date = $dates['low'];
 			$directive->end_date = $dates['high'];
 
@@ -704,16 +786,17 @@ class CCDDocumentParse {
 
 	/**
 	 * @param $dates
+	 * @param $justDate
 	 * @return array
 	 */
-	function datesHandler($dates){
+	function datesHandler($dates, $justDate = false){
 		$result = array(
 			'low' => '0000-00-00',
 			'high' => '0000-00-00'
 		);
 
 		if(is_string($dates)){
-			$result['value'] = $this->dateParser($dates);
+			$result['low'] = $this->dateParser($dates);
 		}else{
 			if(isset($dates['@value'])){
 				$result['low'] = $this->dateHandler($dates);
@@ -725,6 +808,11 @@ class CCDDocumentParse {
 					$result['high'] = $this->dateHandler($dates['high']);
 				}
 			}
+		}
+
+		if($justDate){
+			$result['low'] = substr($result['low'], 0, 10);
+			$result['high'] = substr($result['low'], 0, 10);
 		}
 
 		return $result;
@@ -756,6 +844,26 @@ class CCDDocumentParse {
 		$result['code'] = isset($code['code']) ? $code['code'] : '';
 		$result['code_type'] = isset($code['codeSystem']) ? $this->getCodeSystemName($code['codeSystem']) : '';
 		$result['code_text'] = isset($code['displayName']) ? $code['displayName'] :  '';
+
+		if($result['code_text'] == ''){
+
+			if($result['code_type'] == 'SNOMEDCT'){
+
+				if(!isset($this->SnomedCodes)){
+					$this->SnomedCodes = new SnomedCodes();
+				}
+				$text = $this->SnomedCodes->getSnomedTextByConceptId($result['code']);
+				$result['code_text'] = $text;
+
+			}elseif($result['code_type'] == 'LOINC'){
+
+				//TODO
+
+			}
+
+
+		}
+
 		return $result;
 	}
 

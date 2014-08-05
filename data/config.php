@@ -1782,6 +1782,12 @@ $API = array(
 			),
 			'getEncounterSupervisors' => array(
 				'len' => 0
+			),
+			'getDisplayValueByListIdAndOptionValue' => array(
+				'len' => 2
+			),
+			'getDisplayValueByListIdAndOptionCode' => array(
+				'len' => 2
 			)
 		)),
 	/**
@@ -1869,8 +1875,10 @@ $API = array(
 			'destroyPatientDocument' => array(
 				'len' => 1
 			),
-
 			'createTempDocument' => array(
+				'len' => 1
+			),
+			'createRawTempDocument' => array(
 				'len' => 1
 			),
 			'destroyTempDocument' => array(
@@ -1879,8 +1887,6 @@ $API = array(
 			'transferTempDocument' => array(
 				'len' => 1
 			),
-
-
 			'uploadDocument' => array(
 				'formHandler' => true,
 				'len' => 1

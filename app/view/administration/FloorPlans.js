@@ -206,23 +206,32 @@ Ext.define('App.view.administration.FloorPlans', {
         me.callParent(arguments);
     },
     setEditMode:function(show, zone){
-        var me = this, el = me.activeZone ? me.activeZone.getEl() : null;
+        var me = this,
+	        el = me.activeZone ? me.activeZone.getEl() : null;
+
         if(el){
-            me.floorPlanZoneEditor.hide(null, function(){
+//            me.floorPlanZoneEditor.hide(null, function(){
+//	            say('hide');
                 me.setEditor(show, zone);
-            });
+//            });
         }else{
             me.setEditor(show, zone);
         }
     },
     setEditor:function(show, zone){
+
+	    say('setEditor');
+
         var me = this;
         if(show){
             me.activeZone = zone;
             me.getEditor().zone = zone;
             me.floorPlanZones.focus();
             me.getEditor().getForm().loadRecord(zone.record);
-            me.floorPlanZoneEditor.show(zone.getEl());
+	        if(me.floorPlanZoneEditor.hidden){
+		        me.floorPlanZoneEditor.show(zone.getEl());
+	        }
+
         }else{
             me.floorPlanZoneEditor.hide();
             me.getEditor().getForm().reset();

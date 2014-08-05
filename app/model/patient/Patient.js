@@ -71,6 +71,14 @@ Ext.define('App.model.patient.Patient', {
 			len: 60
 		},
 		{
+			name: 'fullname',
+			type: 'string',
+			persist: false,
+			convert: function(v, record){
+				return record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
+			}
+		},
+		{
 			name: 'sex',
 			type: 'string',
 			comment: 'sex',
@@ -161,6 +169,14 @@ Ext.define('App.model.patient.Patient', {
 			len: 10
 		},
 		{
+			name: 'fulladdress',
+			type: 'string',
+			persist: false,
+			convert: function(v, record){
+				return record.data.address + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + ' ' + record.data.country;
+			}
+		},
+		{
 			name: 'home_phone',
 			type: 'string',
 			index: true,
@@ -180,6 +196,25 @@ Ext.define('App.model.patient.Patient', {
 			index: true,
 			comment: 'work phone #',
 			len: 15
+		},
+		{
+			name: 'phones',
+			type: 'string',
+			persist: false,
+			convert: function(v, record){
+				var phones = '';
+
+				if(record.data.home_phone != ''){
+					phones += record.data.home_phone + ' (H) ';
+				}
+				if(record.data.mobile_phone != ''){
+					phones += record.data.mobile_phone + ' (M) ';
+				}
+				if(record.data.work_phone != ''){
+					phones += record.data.work_phone + ' (W) ';
+				}
+				return phones;
+			}
 		},
 		{
 			name: 'email',

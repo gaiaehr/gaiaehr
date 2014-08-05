@@ -21,11 +21,10 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 	xtype: 'documentviewerwindow',
 	title: i18n('documents_viewer_window'),
 	layout: 'fit',
-	height: 650,
-	width: 700,
+	height: 700,
+	width: 1000,
 	bodyStyle: 'background-color:#fff',
 	maximizable: true,
-
 	defaults: {
 		margin: 5
 	},

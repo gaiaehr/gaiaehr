@@ -32,10 +32,21 @@ Ext.define('App.model.patient.PatientDocumentsTemp', {
 			type: 'date'
 		},
 		{
+			name: 'document_name',
+			type: 'string',
+			len: '180'
+		},
+		{
 			name: 'document',
 			type: 'string',
 			dataType: 'longtext'
 		}
-	]
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			create: 'DocumentHandler.createRawTempDocument'
+		}
+	}
 });
 

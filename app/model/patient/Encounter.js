@@ -37,6 +37,12 @@ Ext.define('App.model.patient.Encounter', {
 			index: true
 		},
 		{
+			name: 'rid',
+			type: 'string',
+			len: 80,
+			comment:'reference ID'
+		},
+		{
 			name: 'open_uid',
 			type: 'int',
 			index: true
@@ -81,7 +87,8 @@ Ext.define('App.model.patient.Encounter', {
 		{
 			name: 'brief_description',
 			type: 'string',
-			len: 600
+			len: 600,
+			comment: 'chief complaint'
 		},
 		{
 			name: 'visit_category',

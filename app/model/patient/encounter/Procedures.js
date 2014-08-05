@@ -82,8 +82,9 @@ Ext.define('App.model.patient.encounter.Procedures', {
 		{
 			name: 'procedure_date',
 			type: 'date',
+			dataType: 'date',
 			comment: 'when procedure has done',
-			dateFormat: 'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'observation',

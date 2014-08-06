@@ -588,5 +588,17 @@ class Patient {
 		return $patient['image'];
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return mixed
+	 */
+	public function getPossibleDuplicates(stdClass $params) {
+		$this->setPatientModel();
+
+
+
+		return $patient['image'];
+	}
+
 }
 

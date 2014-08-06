@@ -176,6 +176,14 @@ Ext.define('App.model.patient.Vitals', {
 			store: false
 		},
 		{
+			name: 'group_date',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return Ext.Date.format(record.data.date, 'Y-m-d');
+			}
+		},
+		{
 			name: 'administer_by',
 			type: 'string',
 			store: false
@@ -184,14 +192,6 @@ Ext.define('App.model.patient.Vitals', {
 			name: 'authorized_by',
 			type: 'string',
 			store: false
-		},
-		{
-			name: 'group_date',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				return Ext.Date.format(record.data.date, 'Y-m-d');
-			}
 		}
 	],
 	proxy: {

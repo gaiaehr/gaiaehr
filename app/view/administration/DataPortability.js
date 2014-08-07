@@ -18,118 +18,24 @@
 
 Ext.define('App.view.administration.DataPortability', {
     extend: 'App.ux.RenderPanel',
-    pageTitle: i18n('data_portability'),
+    pageTitle: i18n('patients_export'),
+	pageBody:[
 
-    initComponent: function(){
-        var me = this;
+		{
+			xtype:'panel',
+			itemId: 'DataPortabilityPanel',
+			items:[
 
-        // *************************************************************************************
-        // Application Store
-        // *************************************************************************************
-        me.store = Ext.create('App.store.administration.Applications');
+			],
+			tbar:[
+				{
+					text: i18n('export'),
+					itemId: 'DataPortabilityExportBtn'
+				}
+			]
 
-        // *************************************************************************************
-        // Application Grid Panel
-        // *************************************************************************************
-        me.grid = Ext.create('Ext.grid.Panel', {
-            store: me.store,
-            plugins: [
-                me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2,
-                    errorSummary : false
-                })
-            ],
-            columns: [
-                {
-                    xtype:'actioncolumn',
-                    width:20,
-                    items: [
-                        {
-                            icon: 'resources/images/icons/cross.png',  // Use a URL in the icon config
-                            tooltip: 'Remove',
-                            scope:me,
-                            handler: me.removeApplication
-                        }
-                    ]
+		}
+	]
 
-                },
-                {
-                    text: i18n('name'),
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'app_name',
-                    editor:{
-                        xtype:'textfield',
-                        allowBlank:false
-                    }
-                },
-                {
-                    text: i18n('private_key'),
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'pvt_key'
-                },
-                {
-                    text: i18n('active?'),
-                    width: 50,
-                    sortable: true,
-                    renderer: me.boolRenderer,
-                    dataIndex: 'active',
-                    editor:{
-                        xtype:'checkbox'
-                    }
-                }
-            ],
-            tbar:[
-                {
-                    text:i18n('add'),
-                    iconCls:'icoAdd',
-                    scope:me,
-                    handler:me.addApplication
-                }
-            ]
-        });
-        me.pageBody = [me.grid];
-        me.callParent(arguments);
-    },
 
-    removeApplication:function(grid, rowIndex, colIndex){
-        var me = this,
-            record = me.store.getAt(rowIndex);
-        Ext.Msg.show({
-            title:'Wait!',
-            msg: 'This action is final. Are you sure you want to remove <span style="font-weight: bold">"'+record.data.app_name+'"</span>?',
-            buttons: Ext.Msg.YESNO,
-            icon: Ext.Msg.WARNING,
-            fn:function(btn){
-                if(btn == 'yes'){
-                    me.edditing.cancelEdit();
-                    me.store.remove(record);
-                    me.store.sync({
-                        callback:function(){
-                            me.msg('Sweet!', i18n('record_removed'))
-                        }
-                    });
-                }
-            }
-        });
-    },
-
-    addApplication:function(){
-        var me = this;
-        me.edditing.cancelEdit();
-        me.store.insert(0,{active:1});
-        me.edditing.startEdit(0,0);
-    },
-
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive: function(callback){
-        this.store.load();
-        callback(true);
-    }
 });

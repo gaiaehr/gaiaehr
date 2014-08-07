@@ -678,6 +678,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 ],
                 controllers:[
 	                'administration.CPT',
+	                'administration.DataPortability',
 	                'administration.DecisionSupport',
 	                'administration.HL7',
 	                'administration.Practice',

@@ -92,7 +92,7 @@ class Patient {
 	 *
 	 * @return mixed
 	 */
-	public function getPatients(stdClass $params) {
+	public function getPatients($params) {
 		$this->setPatientModel();
 		return $this->p->load($params)->all();
 	}

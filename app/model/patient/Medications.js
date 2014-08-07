@@ -133,17 +133,17 @@ Ext.define('App.model.patient.Medications', {
 			dateFormat: 'Y-m-d'
 		},
 		{
-			name: 'created_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
 			name: 'active',
 			type: 'bool',
 			store: false,
 			convert: function(v, record){
 				return record.data.end_date == null;
 			}
+		},
+		{
+			name: 'created_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {

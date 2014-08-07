@@ -1414,5 +1414,7 @@ $LANG = array(
 	'view_raw_ccd'                          => 'View Raw CCD',
 	'select_all'                            => 'Select All',
 	'cc'                                    => 'CC',
+	'export'                                => 'Export',
+	'patients_export'                       => 'Patients Export',
 
 );

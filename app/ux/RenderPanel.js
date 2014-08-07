@@ -100,7 +100,7 @@ Ext.define('App.ux.RenderPanel', {
 		me.pageTimerDiv = me.mainHeader.add(
 			Ext.widget('container', {
 				style: 'float:right',
-				width: 185
+				width: 200
 			})
 		);
 

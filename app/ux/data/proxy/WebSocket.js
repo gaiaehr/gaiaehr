@@ -180,11 +180,11 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 	 *
 	 * @return {App.ux.data.WebSocket} An instance of App.ux.data.WebSocket or null if an error occurred.
 	 */
-	constructor: function (cfg) {
+	constructor: function(cfg){
 		var me = this;
 
 		// Requires a configuration
-		if (Ext.isEmpty(cfg)) {
+		if(Ext.isEmpty(cfg)){
 			Ext.Error.raise('A configuration is needed!');
 			return false;
 		}
@@ -193,13 +193,13 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 		me.mixins.observable.constructor.call(me, cfg);
 
 		// Requires a storeId
-		if (Ext.isEmpty(me.getStoreId())) {
+		if(Ext.isEmpty(me.getStoreId())){
 			Ext.Error.raise('The storeId field is needed!');
 			return false;
 		}
 
 		//if (Ext.isEmpty (cfg.websocket)) {
-		if (Ext.isEmpty(me.getWebsocket())) {
+		if(Ext.isEmpty(me.getWebsocket())){
 			me.setWebsocket(Ext.create('App.ux.data.WebSocket', {
 				url: me.getUrl(),
 				protocol: me.getProtocol(),
@@ -213,24 +213,24 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 		var ws = me.getWebsocket();
 
 		// Forces the event communication
-		if (ws.getCommunicationType() !== 'event') {
+		if(ws.getCommunicationType() !== 'event'){
 			Ext.Error.raise('App.ux.data.WebSocket must use event communication type (set communicationType to event)!');
 			return false;
 		}
 
-		ws.on(me.getApi().create, function (ws, data) {
+		ws.on(me.getApi().create, function(ws, data){
 			me.completeTask('create', me.getApi().create, data);
 		});
 
-		ws.on(me.getApi().read, function (ws, data) {
+		ws.on(me.getApi().read, function(ws, data){
 			me.completeTask('read', me.getApi().read, data);
 		});
 
-		ws.on(me.getApi().update, function (ws, data) {
+		ws.on(me.getApi().update, function(ws, data){
 			me.completeTask('update', me.getApi().update, data);
 		});
 
-		ws.on(me.getApi().destroy, function (ws, data) {
+		ws.on(me.getApi().destroy, function(ws, data){
 			me.completeTask('destroy', me.getApi().destroy, data);
 		});
 
@@ -285,7 +285,7 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 	 * Starts a new operation (pull)
 	 * @private
 	 */
-	runTask: function (action, operation, callback, scope) {
+	runTask: function(action, operation, callback, scope){
 		var me = this ,
 			data = {} ,
 			ws = me.getWebsocket() ,
@@ -301,15 +301,15 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 		};
 
 		// Treats 'read' as a string event, with no data inside
-		if (action === me.getApi().read) {
+		if(action === me.getApi().read){
 			var sorters = operation.sorters ,
 				groupers = operation.groupers;
 
 			// Remote sorters
-			if (sorters && sorters.length > 0) {
+			if(sorters && sorters.length > 0){
 				data.sort = [];
 
-				for (i = 0; i < sorters.length; i++) {
+				for(i = 0; i < sorters.length; i++){
 					data.sort.push({
 						property: sorters[i].property,
 						direction: sorters[i].direction
@@ -318,10 +318,10 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 			}
 
 			// Remote groupers
-			if (groupers && groupers.length > 0) {
+			if(groupers && groupers.length > 0){
 				data.group = [];
 
-				for (i = 0; i < groupers.length; i++) {
+				for(i = 0; i < groupers.length; i++){
 					data.group.push({
 						property: groupers[i].property,
 						direction: groupers[i].direction
@@ -335,13 +335,13 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 			data.start = operation.start;
 		}
 		// Create, Update, Destroy
-		else {
+		else{
 			var writer = Ext.StoreManager.lookup(me.getStoreId()).getProxy().getWriter(),
 				records = operation.getRecords();
 
 			data = [];
 
-			for (i = 0; i < records.length; i++) {
+			for(i = 0; i < records.length; i++){
 				data.push(writer.getRecordData(records[i]));
 			}
 		}
@@ -354,54 +354,72 @@ Ext.define('App.ux.data.proxy.WebSocket', {
 	 * Completes a pending operation (push/pull)
 	 * @private
 	 */
-	completeTask: function (action, event, data) {
+	completeTask: function(action, event, data){
 		var me = this ,
 			resultSet = me.getReader().read(data);
 
 		// Server push case: the store is get up-to-date with the incoming data
-		if (Ext.isEmpty(me.callbacks[event])) {
+		if(Ext.isEmpty(me.callbacks[event])){
 			var store = Ext.StoreManager.lookup(me.getStoreId());
 
-			if (typeof store === 'undefined') {
+			if(typeof store === 'undefined'){
 				Ext.Error.raise('Unrecognized store: check if the storeId passed into configuration is right.');
 				return false;
 			}
 
-			if (action === 'update') {
-				for (var i = 0; i < resultSet.records.length; i++) {
+			if(action === 'update'){
+				for(var i = 0; i < resultSet.records.length; i++){
 					var record = store.getById(resultSet.records[i].internalId);
-
-					if (record) {
+					if(record){
 						record.set(resultSet.records[i].data);
 					}
 				}
-
+				store.commitChanges();
+			}else if(action === 'destroy'){
+				store.remove(resultSet.records);
+				store.commitChanges();
+			}else{
+				store.add(resultSet.records, true);
 				store.commitChanges();
 			}
-			else if (action === 'destroy') {
-				store.remove(resultSet.records);
-			}
-			else {
-				store.loadData(resultSet.records, true);
-				store.fireEvent('load', store);
-			}
-		}
-		// Client request case: a callback function (operation) has to be called
-		else {
+		}else{ // Client request case: a callback function (operation) has to be called
+
 			var fun = me.callbacks[event] ,
 				opt = fun.operation ,
 				records = opt.records || data;
 
 			delete me.callbacks[event];
 
-			if (typeof opt.setResultSet === 'function') opt.setResultSet(resultSet);
-			else opt.resultSet = resultSet;
+			Ext.apply(opt, {
+				response: data,
+				resultSet: resultSet
+			});
+
+//			if(typeof opt.setResultSet === 'function'){
+//
+//				say('function');
+//				say(resultSet);
+//
+//				opt.setResultSet(resultSet);
+//			}else{
+//				say('not function');
+//				say(resultSet);
+//
+//				opt.resultSet = resultSet;
+//			}
+
 			opt.scope = fun.scope;
 
+			opt.commitRecords(resultSet.records);
 			opt.setCompleted();
 			opt.setSuccessful();
 
-			fun.callback.apply(fun.scope, [opt]);
+//			fun.callback.apply(fun.scope, [opt]);
+
+			if (typeof fun.callback == 'function') {
+				fun.callback.call(fun.scope, opt);
+			}
+
 		}
 	}
 });

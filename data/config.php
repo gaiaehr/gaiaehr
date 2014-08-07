@@ -66,6 +66,13 @@ $API = array(
             )
         )
     ),
+    'DataPortability' => array(
+        'methods' => array(
+            'export' => array(
+                'len' => 1
+            )
+        )
+    ),
     'CPT' => array(
         'methods' => array(
             'getCPTs' => array(

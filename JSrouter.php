@@ -48,6 +48,7 @@ print 'lang = '. json_encode( $i18n ).';';
 $global = Globals::setGlobals();
 $global['root'] = ROOT;
 $global['url']  = URL;
+$global['host']  = HOST;
 $global['site']  = site_dir;
 
 print 'globals = '. json_encode( $global ).';';

@@ -7,6 +7,9 @@
     font-family: 'OpenSans-CondLight';
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.x-grid-row-alt .x-grid-td{
+    background-color: transparent !important;
+}
 
 .CheckBoxWrapHammerFix {
     display: inline-block;

@@ -589,15 +589,38 @@ class Patient {
 	}
 
 	/**
-	 * @param stdClass $params
+	 * @param $params
 	 * @return mixed
 	 */
-	public function getPossibleDuplicates(stdClass $params) {
+	public function getPossibleDuplicatesByFilters($params) {
 		$this->setPatientModel();
 
+//		$sql = "SELECT *
+//				  FROM `patient`
+// 				 WHERE `fname` SOUNDS LIKE 'sudipto'"
 
+		return array();
+	}
 
-		return $patient['image'];
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function getPossibleDuplicatesByDemographic($params) {
+		$this->setPatientModel();
+		$sql = "SELECT *
+				  FROM `patient`
+ 				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
+ 				   AND `lname` SOUNDS LIKE '{$params->lname}'
+ 				   AND `sex` = '{$params->sex}'
+ 				   AND `DOB` = '{$params->DOB}'";
+
+		if(isset($params->pid) && $params->pid != 0){
+			$sql .= " AND `pid` != '{$params->pid}'";
+		}
+
+		$results = $this->p->sql($sql)->all();
+		return array('total' => count($results), 'data' => $results);
 	}
 
 }

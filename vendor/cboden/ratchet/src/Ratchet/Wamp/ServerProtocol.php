@@ -82,7 +82,7 @@ class ServerProtocol implements MessageComponentInterface, WsServerInterface {
      * @throws \Ratchet\Wamp\Exception
      * @throws \Ratchet\Wamp\JsonException
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, $msg, $server) {
         $from = $this->connections[$from];
 
         if (null === ($json = @json_decode($msg, true))) {

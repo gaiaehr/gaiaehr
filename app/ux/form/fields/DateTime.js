@@ -32,6 +32,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 	msgTarget    : 'under',
 	layout       : 'hbox',
 	readOnly     : false,
+	allowBlank   : true,
 
 	/**
 	 * @cfg {String} dateFormat
@@ -78,6 +79,8 @@ Ext.define('App.ux.form.fields.DateTime', {
 	initComponent: function() {
 		var me = this;
 		me.items = me.items || [];
+
+		me.dateConfig.allowBlank = me.allowBlank;
 
 		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
 			format     : me.dateFormat,

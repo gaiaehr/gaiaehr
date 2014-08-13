@@ -87,13 +87,13 @@ class WsServer implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, $msg, $server) {
         if ($from->WebSocket->closing) {
             return;
         }
 
         if (true === $from->WebSocket->established) {
-            return $from->WebSocket->version->onMessage($this->connections[$from], $msg);
+            return $from->WebSocket->version->onMessage($this->connections[$from], $msg, $server);
         }
 
         $this->attemptUpgrade($from, $msg);

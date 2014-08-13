@@ -1416,5 +1416,8 @@ $LANG = array(
 	'cc'                                    => 'CC',
 	'export'                                => 'Export',
 	'patients_export'                       => 'Patients Export',
+	'possible_duplicates'                   => 'Possible Duplicates',
+	'no_possible_duplicates_found'          => 'No Possible Duplicates Found',
+	'required_fields_missing'               => 'Required Fields Missing',
 
 );

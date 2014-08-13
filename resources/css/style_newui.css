@@ -124,6 +124,14 @@
 	background-image: url(../images/icons/icoPatientInfo.png) !important;
 }
 
+.icoHome {
+	background-image: url(../images/icons/icoHome.png) !important;
+}
+
+.icoCalendar2 {
+	background-image: url(../images/icons/icoCalendar2.png) !important;
+}
+
 .icoZoneAreas {
 	background-image: url(../images/icons/icoZoneAreas.png) !important;
 }

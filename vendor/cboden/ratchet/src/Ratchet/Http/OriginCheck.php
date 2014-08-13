@@ -44,8 +44,8 @@ class OriginCheck implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onMessage(ConnectionInterface $from, $msg) {
-        return $this->_component->onMessage($from, $msg);
+    function onMessage(ConnectionInterface $from, $msg, $server) {
+        return $this->_component->onMessage($from, $msg, $server);
     }
 
     /**

@@ -63,7 +63,7 @@ class Hixie76Test extends \PHPUnit_Framework_TestCase {
         $server = new HttpServer(new WsServer($mockApp));
         $server->onOpen($mockConn);
         $mockApp->expects($this->exactly(0))->method('onOpen');
-        $server->onMessage($mockConn, $headers);
+        $server->onMessage($mockConn, $headers, $server);
     }
 
     public function testTcpFragmentedUpgrade() {

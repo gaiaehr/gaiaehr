@@ -35,10 +35,10 @@ class HttpServer implements MessageComponentInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, $msg, $server) {
         if (true !== $from->httpHeadersReceived) {
             try {
-                if (null === ($request = $this->_reqParser->onMessage($from, $msg))) {
+                if (null === ($request = $this->_reqParser->onMessage($from, $msg, $server))) {
                     return;
                 }
             } catch (\OverflowException $oe) {
@@ -50,7 +50,7 @@ class HttpServer implements MessageComponentInterface {
             return $this->_httpServer->onOpen($from, $request);
         }
 
-        $this->_httpServer->onMessage($from, $msg);
+        $this->_httpServer->onMessage($from, $msg, $server);
     }
 
     /**

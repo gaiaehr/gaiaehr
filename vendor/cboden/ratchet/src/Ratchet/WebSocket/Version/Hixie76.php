@@ -74,7 +74,7 @@ class Hixie76 implements VersionInterface {
         return $upgraded;
     }
 
-    public function onMessage(ConnectionInterface $from, $data) {
+    public function onMessage(ConnectionInterface $from, $data, $server) {
         $overflow = '';
 
         if (!isset($from->WebSocket->frame)) {
@@ -94,7 +94,7 @@ class Hixie76 implements VersionInterface {
         }
 
         if (strlen($overflow) > 0) {
-            $this->onMessage($from, $overflow);
+            $this->onMessage($from, $overflow, $server);
         }
     }
 

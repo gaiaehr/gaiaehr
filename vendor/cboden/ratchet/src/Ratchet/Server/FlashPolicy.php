@@ -113,7 +113,7 @@ class FlashPolicy implements MessageComponentInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, $msg, $server) {
         if (!$this->_cacheValid) {
             $this->_cache      = $this->renderPolicy()->asXML();
             $this->_cacheValid = true;

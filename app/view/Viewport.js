@@ -19,7 +19,7 @@
 Ext.define('App.view.Viewport', {
     extend: 'Ext.Viewport',
     // app settings
-    requires: window.requires, // array is defined on _app.php
+
     user: window.user, // array defined on _app.php
     version: window.version, // string defined on _app.php
     minWidthToFullMode: 1585, // full mode = nav expanded
@@ -109,10 +109,35 @@ Ext.define('App.view.Viewport', {
 			layout: 'hbox'
 		});
 
+	    me.HeaderLeft.add({
+		    xtype: 'button',
+		    scale: 'large',
+		    margin: '0 3 0 0',
+		    cls: 'headerLargeBtn',
+		    padding: 0,
+		    iconCls: 'icoHome',
+		    scope: me,
+		    handler: me.openDashboard,
+		    tooltip: i18n('patient_visits_history')
+        });
+
+	    me.HeaderLeft.add({
+		    xtype: 'button',
+		    scale: 'large',
+		    margin: '0 3 0 0',
+		    cls: 'headerLargeBtn',
+		    padding: 0,
+		    iconCls: 'icoCalendar2',
+		    scope: me,
+		    handler: me.openCalendar,
+		    tooltip: i18n('patient_visits_history')
+        });
+
 	    me.patientBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
             margin: 0,
+		    style: 'height: 42px',
             tooltip: i18n('patient_btn_drag'),
             listeners: {
                 scope: me,
@@ -307,6 +332,7 @@ Ext.define('App.view.Viewport', {
 		    scale: 'large',
 		    iconCls: isEmerAccess ? 'icoUnlocked32' : 'icoDoctor',
 		    iconAlign: 'left',
+		    style: 'height: 42px',
 		    plugins:[
 			    {
 				    ptype:'badgetext',
@@ -767,6 +793,30 @@ Ext.define('App.view.Viewport', {
 		if(panel && panel == me.nav.activePanel) panel.loadPatient();
 
         me.nav.navigateTo('App.view.patient.Summary');
+
+
+    },
+
+	openDashboard: function(){
+        var me = this,
+	        cls = me.nav.getNavRefByClass('App.view.dashboard.Dashboard'),
+	        panel =  me.nav[cls];
+
+		if(panel && panel == me.nav.activePanel) panel.loadPatient();
+
+        me.nav.navigateTo('App.view.dashboard.Dashboard');
+
+
+    },
+
+	openCalendar: function(){
+        var me = this,
+	        cls = me.nav.getNavRefByClass('App.view.calendar.Calendar'),
+	        panel =  me.nav[cls];
+
+		if(panel && panel == me.nav.activePanel) panel.loadPatient();
+
+        me.nav.navigateTo('App.view.calendar.Calendar');
 
 
     },

@@ -8,7 +8,7 @@ use Ratchet\Wamp\WampServerInterface;
 class NullComponent implements MessageComponentInterface, WsServerInterface, WampServerInterface {
     public function onOpen(ConnectionInterface $conn) {}
 
-    public function onMessage(ConnectionInterface $conn, $msg) {}
+    public function onMessage(ConnectionInterface $conn, $msg, $server) {}
 
     public function onClose(ConnectionInterface $conn) {}
 

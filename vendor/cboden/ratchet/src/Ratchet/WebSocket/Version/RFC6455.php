@@ -94,11 +94,12 @@ class RFC6455 implements VersionInterface {
         return $upgraded;
     }
 
-    /**
-     * @param \Ratchet\WebSocket\Version\RFC6455\Connection $from
-     * @param string                                        $data
-     */
-    public function onMessage(ConnectionInterface $from, $data) {
+	/**
+	 * @param \Ratchet\ConnectionInterface|\Ratchet\WebSocket\Version\RFC6455\Connection $from
+	 * @param string $data
+	 * @param \Ratchet\Server\IoServer $server
+	 */
+    public function onMessage(ConnectionInterface $from, $data, $server) {
         $overflow = '';
 
         if (!isset($from->WebSocket->message)) {
@@ -171,7 +172,7 @@ class RFC6455 implements VersionInterface {
                 unset($from->WebSocket->frame, $frame, $opcode);
 
                 if (strlen($overflow) > 0) {
-                    $this->onMessage($from, $overflow);
+                    $this->onMessage($from, $overflow, $server);
                 }
 
                 return;
@@ -199,11 +200,11 @@ class RFC6455 implements VersionInterface {
                 return $from->close(Frame::CLOSE_BAD_PAYLOAD);
             }
 
-            $from->WebSocket->coalescedCallback->onMessage($from, $parsed);
+            $from->WebSocket->coalescedCallback->onMessage($from, $parsed, $server);
         }
 
         if (strlen($overflow) > 0) {
-            $this->onMessage($from, $overflow);
+            $this->onMessage($from, $overflow, $server);
         }
     }
 

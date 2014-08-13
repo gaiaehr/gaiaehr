@@ -1648,6 +1648,9 @@ $API = array(
 			),
 			'setPatientRating' => array(
 				'len' => 1
+			),
+			'getPossibleDuplicatesByDemographic' => array(
+				'len' => 1
 			)
 		)
 	),

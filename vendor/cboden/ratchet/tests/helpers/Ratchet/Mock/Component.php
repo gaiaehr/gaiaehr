@@ -17,7 +17,7 @@ class Component implements MessageComponentInterface, WsServerInterface {
         $this->last[__FUNCTION__] = func_get_args();
     }
 
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, $msg, $server) {
         $this->last[__FUNCTION__] = func_get_args();
     }
 

@@ -383,7 +383,7 @@ class Patient {
 
 	public function patientLiveSearch(stdClass $params) {
 		$this->setPatientModel();
-		$patients = $this->p->sql("SELECT pid,pubpid,fname,lname,mname,DOB,SS
+		$patients = $this->p->sql("SELECT pid,pubpid,fname,lname,mname,DOB,SS,sex
                              FROM patient
                             WHERE fname  LIKE '$params->query%'
                                OR lname  LIKE '$params->query%'

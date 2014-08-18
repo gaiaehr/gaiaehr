@@ -52,7 +52,8 @@ Ext.define('App.view.patient.Referrals', {
 							xtype: 'container',
 							flex: 1,
 							defaults: {
-								labelAlign: 'right'
+								labelAlign: 'right',
+								margin: '0 0 5 0'
 							},
 							items: [
 								{
@@ -96,7 +97,8 @@ Ext.define('App.view.patient.Referrals', {
 							xtype: 'container',
 							flex: 1,
 							defaults: {
-								labelAlign: 'right'
+								labelAlign: 'right',
+								margin: '0 0 5 0'
 							},
 							items: [
 								{

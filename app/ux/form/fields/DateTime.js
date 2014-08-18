@@ -43,7 +43,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 	 * @cfg {String} timeFormat
 	 * The default is 'H:i:s'
 	 */
-	timeFormat    : 'g:i:s a',
+	timeFormat    : 'g:i a',
 	/**
 	 * @cfg {String} dateTimeFormat
 	 * The format used when submitting the combined value.

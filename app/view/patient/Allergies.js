@@ -32,7 +32,6 @@ Ext.define('App.view.patient.Allergies', {
 	],
 	xtype: 'patientallergiespanel',
 	title: i18n('allergies'),
-	layout:'border',
 	columnLines: true,
 	store: Ext.create('App.store.patient.Allergies', {
 		remoteFilter: true,
@@ -111,7 +110,8 @@ Ext.define('App.view.patient.Allergies', {
 								name: 'status',
 								list: 113,
 								itemId: 'allergyStatusCombo',
-								labelWidth: 80
+								labelWidth: 80,
+								allowBlank: false
 							}
 						]
 					},
@@ -134,7 +134,8 @@ Ext.define('App.view.patient.Allergies', {
 //								disabled: true,
 								enableKeyEvents: true,
 								width: 700,
-								labelWidth: 70
+								labelWidth: 70,
+								allowBlank: false
 							},
 							{
 								xtype:'rxnormallergylivetsearch',
@@ -146,7 +147,8 @@ Ext.define('App.view.patient.Allergies', {
 								disabled: true,
 								enableKeyEvents: true,
 								width: 700,
-								labelWidth: 70
+								labelWidth: 70,
+								allowBlank: false
 							},
 							{
 								fieldLabel: i18n('begin_date'),
@@ -187,7 +189,8 @@ Ext.define('App.view.patient.Allergies', {
 								name: 'reaction',
 								width: 230,
 								list: 82,
-								labelWidth: 70
+								labelWidth: 70,
+								allowBlank: false
 							},
 							{
 								xtype: 'gaiaehr.combo',
@@ -196,7 +199,8 @@ Ext.define('App.view.patient.Allergies', {
 								itemId: 'allergySeverityCombo',
 								width: 225,
 								list: 84,
-								labelWidth: 70
+								labelWidth: 70,
+								allowBlank: false
 							},
 							{
 								fieldLabel: i18n('end_date'),

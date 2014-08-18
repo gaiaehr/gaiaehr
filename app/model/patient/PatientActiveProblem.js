@@ -25,8 +25,7 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Medical Issues ID'
+			type: 'int'
 		},
 		{
 			name: 'pid',
@@ -76,7 +75,7 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 		{
 			name: 'status',
 			type: 'string',
-			len: 20
+			len: 40
 		},
 		{
 			name: 'status_code',
@@ -87,6 +86,11 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 			name: 'status_code_type',
 			type: 'string',
 			len: 20
+		},
+		{
+			name: 'note',
+			type: 'string',
+			len: 300
 		},
 		{
 			name: 'active',

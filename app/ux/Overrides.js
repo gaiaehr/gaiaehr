@@ -562,32 +562,49 @@ Ext.override(Ext.container.Container, {
         return msg;
     }
 });
-Ext.override(Ext.grid.ViewDropZone, {
 
-    handleNodeDrop: function(data, record, position){
-        var view = this.view, store = view.getStore(), index, records, i, len;
-        /**
-         * fixed to handle the patient button data
-         */
-        if(!data.patient){
-            if(data.copy){
-                records = data.records;
-                data.records = [];
-                for(i = 0, len = records.length; i < len; i++){
-                    data.records.push(records[i].copy(records[i].getId()));
-                }
-            }else{
-                data.view.store.remove(data.records, data.view === view);
-            }
-        }
-        index = store.indexOf(record);
-        // 'after', or undefined (meaning a drop at index -1 on an empty View)...
-        if(position !== 'before'){
-            index++;
-        }
-        store.insert(index, data.records);
-        view.getSelectionModel().select(data.records);
-    }
+
+//Ext.override(Ext.grid.ViewDropZone, {
+//
+//    handleNodeDrop: function(data, record, position){
+//        var view = this.view,
+//	        store = view.getStore(),
+//	        index, records, i, len;
+//        /**
+//         * fixed to handle the patient button data
+//         */
+//        if(!data.patient){
+//
+//	        if(data.copy){
+//                records = data.records;
+//                data.records = [];
+//                for(i = 0, len = records.length; i < len; i++){
+//	                data.records.push(records[i].copy());
+//                }
+//            }else{
+//		        data.view.store.remove(data.records, data.view === view);
+//            }
+//        }
+//
+//	    if (record && position) {
+//		    index = store.indexOf(record);
+//
+//		    // 'after', or undefined (meaning a drop at index -1 on an empty View)...
+//		    if (position !== 'before') {
+//			    index++;
+//		    }
+//		    store.insert(index, data.records);
+//	    }
+//	    // No position specified - append.
+//	    else {
+//		    store.add(data.records);
+//	    }
+//
+//
+//
+//
+//        view.getSelectionModel().select(data.records);
+//    }
     //	notifyEnter: function(dd, e, data) {
     //		var me = this;
     //		me.goToFloorPlanFn = new Ext.util.DelayedTask(function(){
@@ -626,7 +643,7 @@ Ext.override(Ext.grid.ViewDropZone, {
     //		var n = me.getTargetFromEvent(e);
     //		return n ? me.onNodeDrop(n, dd, e, data) : me.onContainerDrop(dd, e, data);
     //	}
-});
+//});
 Ext.override(Ext.view.AbstractView, {
     onRender: function(){
         var me = this;

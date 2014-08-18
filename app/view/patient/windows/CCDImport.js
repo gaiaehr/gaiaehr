@@ -158,7 +158,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 						height: 123,
 						frame: true,
 						hideHeaders: true,
-						selType: 'checkboxmodel',
+//						selType: 'checkboxmodel',
 						columnLines: true,
 						multiSelect: true,
 						margin: '5 5 0 5'
@@ -168,6 +168,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							title: i18n('medications'),
 							store: Ext.create('App.store.patient.Medications'),
 							itemId: 'CcdImportMedicationsGrid',
+							selType: 'checkboxmodel',
 							columns: [
 								{
 									dataIndex: 'STR',
@@ -191,6 +192,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							title: i18n('allergies'),
 							store: Ext.create('App.store.patient.Allergies'),
 							itemId: 'CcdImportAllergiesGrid',
+							selType: 'checkboxmodel',
 							columns: [
 								{
 									dataIndex: 'allergy',
@@ -214,6 +216,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							title: i18n('procedures'),
 							store: Ext.create('App.store.patient.encounter.Procedures'),
 							itemId: 'CcdImportProceduresGrid',
+							disableSelection: true,
 							columns: [
 								{
 									text: i18n('description'),
@@ -242,7 +245,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 						height: 123,
 						frame: true,
 						hideHeaders: true,
-						selType: 'checkboxmodel',
+//						selType: 'checkboxmodel',
 						columnLines: true,
 						multiSelect: true,
 						margin: '5 5 0 0'
@@ -252,6 +255,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							title: i18n('active_problems'),
 							store: Ext.create('App.store.patient.PatientActiveProblems'),
 							itemId: 'CcdImportActiveProblemsGrid',
+							selType: 'checkboxmodel',
 							columns: [
 								{
 									dataIndex: 'code_text',
@@ -279,6 +283,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							title: i18n('results'),
 							store: Ext.create('App.store.patient.PatientsOrderResults'),
 							itemId: 'CcdImportOrderResultsGrid',
+							disableSelection: true,
 							columns: [
 								{
 									text: i18n('results'),
@@ -302,8 +307,8 @@ Ext.define('App.view.patient.windows.CCDImport', {
 											getClass: function(v, metadata){
 												return 'x-grid-center-icon';
 											},
-											handler: function(grid, rowIndex, colIndex, item, event, record){
-												App.app.getController('patient.CCDimport').doResultShowObservations(record.observations());
+											handler: function(grid, rowIndex, colIndex, item, event, record, row){
+												App.app.getController('patient.CCDImport').doResultShowObservations(Ext.get(row), record.observations());
 											}
 										}
 									]
@@ -314,6 +319,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							title: i18n('encounters'),
 							store: Ext.create('App.store.patient.Encounters'),
 							itemId: 'CcdImportEncountersGrid',
+							disableSelection: true,
 							columns: [
 								{
 									text: i18n('results'),

@@ -54,6 +54,9 @@ Ext.define('App.controller.patient.Summary', {
 			'#patientsummarypanel': {
 				activate: me.onPatientSummaryPanel
 			},
+			'#PatientSummaryEncountersPanel': {
+				itemdblclick: me.onPatientSummaryEncounterDblClick
+			},
 			'#PatientSummaryDisclosuresPanel': {
 				show: me.reloadGrid
 			},
@@ -90,6 +93,10 @@ Ext.define('App.controller.patient.Summary', {
 				panel.down('tabpanel').setActiveTab(this.getPatientCcdPanel());
 			}
 		}
+	},
+
+	onPatientSummaryEncounterDblClick: function(grid, record){
+		app.openEncounter(record.data.eid);
 	},
 
 	reloadGrid:function(grid){

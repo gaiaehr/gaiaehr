@@ -28,7 +28,7 @@ Ext.define('App.ux.combo.LabObservations', {
 			proxy : {
 				type  : 'direct',
 				api   : {
-					read: Services.getAllLabObservations
+					read: 'Services.getAllLabObservations'
 				}
 			}
 		});

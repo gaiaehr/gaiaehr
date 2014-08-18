@@ -67,6 +67,18 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
+	public function getPatientActiveDrugAllergiesByPid($pid){
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+
+		$params->filter[1] = new stdClass();
+		$params->filter[1]->property = 'allergy_code_type';
+		$params->filter[1]->value = 'RXNORM';
+		return $this->getPatientAllergies($params);
+	}
+
 	public function getPatientActiveDrugAllergiesByPidAndCode($pid, $code){
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();

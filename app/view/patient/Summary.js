@@ -58,13 +58,38 @@ Ext.define('App.view.patient.Summary', {
 
 		me.sidePanelItems = [];
 
+		if(a('access_patient_visits')){
+
+			me.stores.push(me.patientEncountersStore = Ext.create('App.store.patient.Encounters', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: i18n('encounters'),
+				itemId: 'PatientSummaryEncountersPanel',
+				hideHeaders: true,
+				store: me.patientEncountersStore,
+				columns: [
+					{
+						xtype: 'datecolumn',
+						width: 80,
+						dataIndex: 'service_date',
+						format: g('date_display_format')
+					},
+					{
+						dataIndex: 'brief_description',
+						flex: 1
+					}
+				]
+			});
+		}
+
 		if(a('access_patient_medications')){
 
 			me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
 				autoLoad: false
 			}));
-
-
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
@@ -72,7 +97,7 @@ Ext.define('App.view.patient.Summary', {
 				itemId: 'PatientSummaryMedicationsPanel',
 				hideHeaders: true,
 				store: me.patientMedicationsStore,
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
 						text: i18n('details'),
@@ -110,7 +135,7 @@ Ext.define('App.view.patient.Summary', {
 				hideHeaders: true,
 				store: me.immuCheckListStore,
 				region: 'center',
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
 						text: i18n('details'),
@@ -149,7 +174,7 @@ Ext.define('App.view.patient.Summary', {
 				hideHeaders: true,
 				store: me.patientAllergiesListStore,
 				region: 'center',
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
 						text: i18n('details'),
@@ -186,7 +211,7 @@ Ext.define('App.view.patient.Summary', {
 				itemId: 'PatientSummaryActiveProblemsPanel',
 				hideHeaders: true,
 				store: me.patientActiveProblemsStore,
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
 						text: i18n('details'),
@@ -237,7 +262,6 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 
-
 		if(me.sidePanelItems.length > 0){
 			me.sidePanel = Ext.widget('panel', {
 				width: 250,
@@ -247,8 +271,11 @@ Ext.define('App.view.patient.Summary', {
 				bodyBorder: true,
 				region: 'east',
 				split: true,
+				layout: {
+					type: 'vbox',
+					align: 'stretch'
+				},
 				defaults: {
-					layout: 'fit',
 					margin: '5 5 0 5'
 				},
 				items: me.sidePanelItems
@@ -257,7 +284,6 @@ Ext.define('App.view.patient.Summary', {
 			Ext.Array.push(me.pageBody, me.sidePanel);
 
 		}
-
 
 		if(a('access_demographics')){
 			me.tabPanel.add(
@@ -427,11 +453,11 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-//		if(a('access_patient_vitals')){
-//			me.tabPanel.add({
-//				xtype: 'vitalspanel'
-//			})
-//		}
+		//		if(a('access_patient_vitals')){
+		//			me.tabPanel.add({
+		//				xtype: 'vitalspanel'
+		//			})
+		//		}
 
 		if(a('access_patient_history')){
 			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));

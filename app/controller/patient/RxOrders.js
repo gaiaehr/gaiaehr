@@ -87,23 +87,31 @@ Ext.define('App.controller.patient.RxOrders', {
 	onRxNormOrderLiveSearchSelect: function(combo, record){
 		var form = combo.up('form').getForm();
 
-		Rxnorm.getMedicationAttributesByCODE(record[0].data.CODE, function(provider, response){
-
-			form.getRecord().set({
-				RXCUI: record[0].data.RXCUI,
-				CODE: record[0].data.CODE,
-				NDC: record[0].data.NDC
-			});
-
-			form.setValues({
-				STR: record[0].data.STR.split(',')[0],
-				route: Ext.String.capitalize(response.result.DRT),
-				dose: Ext.String.capitalize(response.result.DST),
-				form: Ext.String.capitalize(response.result.DDF)
-			});
-			form.findField('directions').focus(false, 200);
-
+		form.getRecord().set({
+			RXCUI: record[0].data.RXCUI,
+			CODE: record[0].data.CODE,
+			NDC: record[0].data.NDC
 		});
+
+		form.findField('dispense').focus(false, 200);
+
+//		Rxnorm.getMedicationAttributesByRxcui(record[0].data.RXCUI, function(provider, response){
+//
+//			form.getRecord().set({
+//				RXCUI: record[0].data.RXCUI,
+//				CODE: record[0].data.CODE,
+//				NDC: record[0].data.NDC
+//			});
+//
+////			form.setValues({
+////				STR: record[0].data.STR.split(',')[0],
+////				route: Ext.String.capitalize(response.result.DRT),
+////				dose: Ext.String.capitalize(response.result.DST),
+////				form: Ext.String.capitalize(response.result.DDF)
+////			});
+//
+//			form.findField('directions').focus(false, 200);
+//		});
 	},
 
 	onRxOrdersGridBeforeEdit: function(plugin, context){

@@ -43,11 +43,17 @@ Ext.define('App.controller.patient.Patient', {
 			},
 			'#PatientPossibleDuplicatesBtn': {
 				click: me.onPatientPossibleDuplicatesBtnClick
+			},
+			'#PossiblePatientDuplicatesContinueBtn': {
+				click: me.onPossiblePatientDuplicatesContinueBtnClick
 			}
 		});
 	},
 
 	onPossiblePatientDuplicatesGridItemDblClick: function(grid, record){
+
+		if(this.getPossiblePatientDuplicatesWindow().action != 'openPatientSummary') return;
+
 		app.setPatient(record.data.pid, null, function(){
 			app.openPatientSummary();
 			grid.up('window').close();
@@ -65,9 +71,6 @@ Ext.define('App.controller.patient.Patient', {
 			form = cmp.isPanel ? cmp.getForm() : cmp.up('form').getForm();
 
 		if(form.isValid()){
-			if(!me.getPossiblePatientDuplicatesWindow()){
-				Ext.create('App.view.patient.windows.PossibleDuplicates');
-			}
 
 			var params = {
 				fname: form.findField('fname').getValue(),
@@ -80,22 +83,26 @@ Ext.define('App.controller.patient.Patient', {
 				params.pid = form.getRecord().data.pid;
 			}
 
-			me.lookForPossibleDuplicates(params);
+			me.lookForPossibleDuplicates(params, 'openPatientSummary');
 		}else{
 
 		}app.msg(i18n('oops'), i18n('required_fields_missing'), true);
 	},
 
-	lookForPossibleDuplicates: function(params){
+	lookForPossibleDuplicates: function(params, action, callback){
 		var me = this,
-			store = me.getPossiblePatientDuplicatesWindow().down('grid').getStore();
+			win = me.getPossiblePatientDuplicatesWindow() || Ext.create('App.view.patient.windows.PossibleDuplicates'),
+			store = win.down('grid').getStore();
 
+		win.action = action;
 		store.getProxy().extraParams = params;
-
 		store.load({
 			callback: function(records){
+
+				if(typeof callback == 'function') callback(records);
+
 				if(records.length > 0){
-					me.getPossiblePatientDuplicatesWindow().show();
+					win.show();
 				}else{
 					app.msg(i18n('sweet'), i18n('no_possible_duplicates_found'));
 				}
@@ -105,6 +112,13 @@ Ext.define('App.controller.patient.Patient', {
 
 	onPatientPossibleDuplicatesBtnClick: function(btn){
 		this.checkForPossibleDuplicates(btn.up('panel').down('form'));
+	},
+
+	onPossiblePatientDuplicatesContinueBtnClick: function(btn){
+		var win = this.getPossiblePatientDuplicatesWindow();
+		win.fireEvent('continue', win);
+		win.close();
+
 	}
 
 });

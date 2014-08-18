@@ -22,7 +22,8 @@ Ext.define('App.view.patient.Immunizations', {
 		'App.ux.combo.CVXManufacturersForCvx',
 		'App.ux.LiveImmunizationSearch',
 		'App.ux.grid.RowFormEditing',
-		'App.store.patient.CVXCodes'
+		'App.store.patient.CVXCodes',
+		'App.ux.form.fields.DateTime'
 	],
 	xtype: 'patientimmunizationspanel',
 	title: i18n('immunizations'),
@@ -51,44 +52,79 @@ Ext.define('App.view.patient.Immunizations', {
 				{
 					text: i18n('code'),
 					dataIndex: 'code',
-					width: 50
+					width: 50,
+					renderer:function(v, meta, record){
+
+						say(record.data);
+
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					text: i18n('immunization_name'),
 					dataIndex: 'vaccine_name',
-					flex: 1
+					flex: 1,
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					text: i18n('lot_number'),
 					dataIndex: 'lot_number',
-					width: 100
+					width: 100,
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					text: i18n('amount'),
 					dataIndex: 'administer_amount',
-					width: 100
+					width: 100,
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					text: i18n('units'),
 					dataIndex: 'administer_units',
-					width: 100
+					width: 100,
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					text: i18n('notes'),
 					dataIndex: 'note',
-					flex: 1
+					flex: 1,
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					text: i18n('administered_by'),
 					dataIndex: 'administered_by',
-					width: 150
+					width: 150,
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				},
 				{
 					xtype: 'datecolumn',
 					text: i18n('date'),
 					format: 'Y-m-d',
 					width: 100,
-					dataIndex: 'administered_date'
+					dataIndex: 'administered_date',
+					renderer:function(v, meta, record){
+						if(!record.data.is_error) return v;
+						return '<span class="is_error_data">' + v + '</span>'
+					}
 				}
 			],
 			plugins: Ext.create('App.ux.grid.RowFormEditing', {
@@ -97,127 +133,165 @@ Ext.define('App.view.patient.Immunizations', {
 				clicksToEdit: 2,
 				items: [
 					{
-
-						title: 'general',
 						xtype: 'container',
-						layout: 'vbox',
-						items: [
+						layout: 'hbox',
+						items:[
 							{
-								/**
-								 * Line one
-								 */
-								xtype: 'fieldcontainer',
-								layout: 'hbox',
-								itemId: 'line1',
-								defaults: {
-									margin: '0 10 0 0',
-									xtype: 'textfield'
-								},
+								xtype: 'container',
+								layout: 'vbox',
 								items: [
 									{
-										xtype: 'immunizationlivesearch',
-										itemId: 'immunizationsearch',
-										fieldLabel: i18n('name'),
-										name: 'vaccine_name',
-										valueField:'name',
-										hideLabel: false,
-										allowBlank: false,
-										enableKeyEvents: true,
-										width: 570
+										/**
+										 * Line one
+										 */
+										xtype: 'fieldcontainer',
+										layout: 'hbox',
+										itemId: 'line1',
+										defaults: {
+											margin: '0 10 0 0',
+											xtype: 'textfield'
+										},
+										items: [
+											{
+												xtype: 'immunizationlivesearch',
+												itemId: 'immunizationsearch',
+												fieldLabel: i18n('name'),
+												name: 'vaccine_name',
+												valueField:'name',
+												hideLabel: false,
+												allowBlank: false,
+												enableKeyEvents: true,
+												width: 625
+											}
+										]
+
 									},
 									{
-										fieldLabel: i18n('administrator'),
+										/**
+										 * Line two
+										 */
+										xtype: 'fieldcontainer',
+										layout: 'hbox',
+										defaults: {
+											margin: '0 10 0 0',
+											xtype: 'textfield'
+										},
+										items: [
+
+											{
+
+												xtype: 'numberfield',
+												fieldLabel: i18n('amount'),
+												name: 'administer_amount',
+												width: 160
+											},
+											{
+
+												xtype: 'textfield',
+												fieldLabel: i18n('units'),
+												name: 'administer_units',
+												labelWidth: 50,
+												width: 125
+
+											},
+											{
+												fieldLabel: i18n('administration_site'),
+												width: 320,
+												labelWidth: 130,
+												xtype: 'gaiaehr.combo',
+												list: 119,
+												queryMode: 'local',
+												loadStore: true,
+												name: 'administration_site'
+											}
+										]
+
+									},
+									{
+										/**
+										 * Line three
+										 */
+										xtype: 'fieldcontainer',
+										layout: 'hbox',
+										defaults: {
+											margin: '0 10 0 0',
+											xtype: 'textfield'
+										},
+										items: [
+											{
+												fieldLabel: i18n('route'),
+												xtype: 'gaiaehr.combo',
+												list: 6,
+												queryMode: 'local',
+												loadStore: true,
+												width: 295,
+												name: 'route'
+											},
+											{
+												fieldLabel: i18n('date_administered'),
+												width: 320,
+												labelWidth: 115,
+												xtype: 'mitos.datetime',
+												dateTimeFormat: 'Y-m-d',
+												name: 'administered_date'
+											}
+										]
+
+									},
+									{
+										fieldLabel: i18n('administered_by'),
+										xtype: 'textfield',
 										name: 'administered_by',
-										width: 295,
-										labelWidth: 160
-
-									}
-								]
-
-							},
-							{
-								/**
-								 * Line two
-								 */
-								xtype: 'fieldcontainer',
-								layout: 'hbox',
-								defaults: {
-									margin: '0 10 0 0',
-									xtype: 'textfield'
-								},
-								items: [
-									{
-										fieldLabel: i18n('lot_number'),
-										xtype: 'textfield',
-										width: 200,
-										name: 'lot_number'
-
+										margin: '0 10 5 0',
+										width: 625
 									},
-									{
-
-										xtype: 'numberfield',
-										fieldLabel: i18n('amount'),
-										name: 'administer_amount',
-										labelWidth: 60,
-										width: 200
-									},
-									{
-
-										xtype: 'textfield',
-										fieldLabel: i18n('units'),
-										name: 'administer_units',
-										labelWidth: 50,
-										width: 150
-
-									},
-									{
-										fieldLabel: i18n('info_statement_given'),
-										width: 295,
-										labelWidth: 160,
-										xtype: 'datefield',
-										format: 'Y-m-d',
-										name: 'education_date'
-									}
-								]
-
-							},
-							{
-								/**
-								 * Line three
-								 */
-								xtype: 'fieldcontainer',
-								layout: 'hbox',
-								defaults: {
-									margin: '0 10 0 0',
-									xtype: 'textfield'
-								},
-								items: [
 									{
 										fieldLabel: i18n('notes'),
 										xtype: 'textfield',
-										width: 300,
-										name: 'note'
-
-									},
-									{
-										xtype: 'cvxmanufacturersforcvxcombo',
-										fieldLabel: i18n('manufacturer'),
-										width: 260,
-										name: 'manufacturer'
-									},
-									{
-										fieldLabel: i18n('date_administered'),
-										width: 295,
-										labelWidth: 160,
-										xtype: 'datefield',
-										format: 'Y-m-d',
-										name: 'administered_date'
+										name: 'note',
+										width: 625
 									}
 								]
-
+							},
+							{
+								xtype: 'container',
+								items:[
+									{
+										xtype:'fieldset',
+										title:i18n('substance_data'),
+										defaults: {
+											margin: '0 0 5 0',
+											width: 250
+										},
+										items:[
+											{
+												fieldLabel: i18n('lot_number'),
+												xtype: 'textfield',
+												name: 'lot_number'
+											},
+											{
+												fieldLabel: i18n('exp_date'),
+												xtype: 'datefield',
+												format: 'Y-m-d',
+												name: 'exp_date'
+											},
+											{
+												xtype: 'cvxmanufacturersforcvxcombo',
+												fieldLabel: i18n('manufacturer'),
+												margin: '0 0 8 0',
+												name: 'manufacturer'
+											}
+										]
+									},
+									{
+										xtype: 'checkboxfield',
+										boxLabel: i18n('entered_in_error'),
+										name: 'is_error'
+									}
+								]
 							}
-						]
 
+						]
 					}
 				]
 			}),

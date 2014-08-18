@@ -23,6 +23,7 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
+	closable: false,
 	requires: [
 		'Ext.toolbar.Paging',
 		'Ext.ux.SlidingPager'
@@ -34,28 +35,24 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 			{
 				xtype: 'grid',
 				store: me.store = Ext.create('App.store.patient.PatientPossibleDuplicates'),
-				width: 850,
+				width: 600,
 				frame: true,
 				margin: 5,
+				hideHeaders: true,
 				columns: [
 					{
 						dataIndex: 'image',
 						width: 65,
-						renderer:function(v){
+						renderer: function(v){
 							return '<img src="' + v + '" class="icon32Round" />';
 						}
 					},
 					{
 						dataIndex: 'fullname',
-						width: 190
-					},
-					{
-						dataIndex: 'fulladdress',
-						flex:1
-					},
-					{
-						dataIndex: 'phones',
-						flex:1
+						flex: 1,
+						renderer: function(v, meta, record){
+							return v + ' ' + record.data.SS  + '<br>' + record.data.fulladdress + '<br>' + record.data.phones;
+						}
 					}
 				],
 				bbar: {
@@ -65,6 +62,13 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 					displayInfo: true,
 					plugins: Ext.create('Ext.ux.SlidingPager')
 				}
+			}
+		];
+
+		me.buttons = [
+			{
+				text: i18n('continue'),
+				itemId: 'PossiblePatientDuplicatesContinueBtn'
 			}
 		];
 

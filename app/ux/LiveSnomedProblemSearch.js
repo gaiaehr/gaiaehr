@@ -39,17 +39,18 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 				{
 					name: 'CodeType',
 					type: 'string',
-					defaultValue: 'SNOMED-CT'
+					defaultValue: 'SNOMEDCT'
 				},
 				{
-					name: 'Occurrence',
+					name: 'OCCURRENCE',
 					type: 'int'
 				}
 			],
 			proxy: {
 				type: 'direct',
 				api: {
-					read: 'SnomedCodes.liveProblemCodeSearch'
+					read: 'SnomedCodes.liveProblemCodeSearch',
+					update: 'SnomedCodes.updateLiveProblemCodeSearch'
 				},
 				reader: {
 					totalProperty: 'totals',
@@ -87,7 +88,7 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 
 		me.on('select', function(cmb, records){
 			records[0].set({
-				Occurrence: records[0].data.Occurrence + 1
+				OCCURRENCE: records[0].data.OCCURRENCE + 1
 			});
 			records[0].save();
 		});

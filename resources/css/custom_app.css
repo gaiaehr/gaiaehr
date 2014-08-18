@@ -7,8 +7,18 @@
     font-family: 'OpenSans-CondLight';
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
-.x-grid-row-alt .x-grid-td{
-    background-color: transparent !important;
+
+.x-mask {
+    opacity: .4;
+}
+
+.x-grid-row-alt .x-grid-td {
+    /*background-color: transparent;*/
+}
+
+.is_error_data {
+    text-decoration: line-through !important;
+    color: #999999 !important;
 }
 
 .CheckBoxWrapHammerFix {
@@ -127,9 +137,9 @@
     border-radius: 30px;
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
-    box-shadow: 0 0 2px rgba(0, 0, 0, .8);
-    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .8);
-    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, .8);
+    /*box-shadow: 0 0 2px rgba(0, 0, 0, .8);*/
+    /*-webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .8);*/
+    /*-moz-box-shadow: 0 0 2px rgba(0, 0, 0, .8);*/
     border: 3px solid #CCC;
 }
 
@@ -152,41 +162,19 @@
     margin-top: 0;
 
 }
+
 .newsfeed-message {
     margin-top: 5px;
 }
+
 .newsfeed-from {
-    padding-bottom: 5px;
+    margin: 0;
+    padding: 0;
 }
 
-.newsFeedRow {
-    padding-top: 3px !important;
-}
-
-.newsFeedRow .x-grid-cell-inner {
-    padding: 10px !important;
-
-}
-
-.newsFeedRow .x-grid-cell-inner .x-tree-icon {
-    margin-right: 10px !important;
-}
-
-.newsFeedRow.parentNews {
-    padding: 5px !important;
-}
-
-.newsFeedRow.parentNews .x-grid-cell-inner {
-    background-color: #f6f9ff !important;
-    /*border-top: solid 1px #ccc;*/
-}
-
-.newsFeedRow.parentNews .x-grid-cell-inner .x-tree-elbow,
-.newsFeedRow.parentNews .x-grid-cell-inner .x-tree-elbow-plus,
-.newsFeedRow.parentNews .x-grid-cell-inner .x-tree-elbow-line,
-.newsFeedRow.parentNews .x-grid-cell-inner .x-tree-elbow-end {
-    visibility: hidden;
-    display: none;
+.newsfeed-message {
+    font-size: 12px;
+    white-space: normal;
 }
 
 .x-mask.uploadmask {
@@ -664,15 +652,16 @@ li .Deceased {
 
 .patient_btn_img {
     float: left;
-    height: 32px;
-    width: 32px;
+    height: 50px;
+    width: 50px;
     /*background-color: #ffffff;*/
 }
 
 .patient_btn_img img {
     background-color: white;
     border: 1px solid #999999;
-    border-radius: 16px;
+    border-radius: 25px;
+    margin-top: -8px;
 }
 
 .patient_btn_info {
@@ -698,7 +687,9 @@ li .Deceased {
     margin-bottom: 3px;
     float: none;
     min-width: 188px;
+    height: 42px;
     border-width: 1px 1px 1px 1px;
+    overflow: hidden;
 }
 
 .patient-pool-btn-small {

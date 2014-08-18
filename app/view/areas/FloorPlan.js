@@ -191,6 +191,7 @@ Ext.define('App.view.areas.FloorPlan', {
 		var me = this;
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup: 'patientPoolAreas',
+
 			getDragData: function(e){
 				var sourceEl = panel.btnEl.dom, d;
 				if(sourceEl){
@@ -207,9 +208,11 @@ Ext.define('App.view.areas.FloorPlan', {
 					return false;
 				}
 			},
+
 			getRepairXY: function(e){
 				return this.dragData.repairXY;
 			},
+
 			b4MouseDown: function(e){
 				this.autoOffset(e.getPageX(), e.getPageY());
 			}
@@ -219,6 +222,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
 			ddGroup: 'patientPoolAreas',
+
 			notifyOver: function(dd, e, data){
 				if(panel.pid == null){
 					return Ext.dd.DropZone.prototype.dropAllowed;
@@ -226,6 +230,7 @@ Ext.define('App.view.areas.FloorPlan', {
 					return Ext.dd.DropZone.prototype.dropNotAllowed;
 				}
 			},
+
 			notifyDrop: function(dd, e, data){
 				panel.data = data.patientData;
 				if(data.zone){

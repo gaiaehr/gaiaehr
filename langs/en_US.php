@@ -1419,5 +1419,20 @@ $LANG = array(
 	'possible_duplicates'                   => 'Possible Duplicates',
 	'no_possible_duplicates_found'          => 'No Possible Duplicates Found',
 	'required_fields_missing'               => 'Required Fields Missing',
+	'continue'                              => 'Continue',
+	'warning'                               => 'Warning',
+	'patient_merge_verification'            => 'Are you sure you want to import and merge CCD with selected record?',
+	'patient_import_verification'           => 'Are you sure you want to import CCD?',
+	'records_sex_are_not_equal'             => 'Records "Sex" are not equal',
+	'records_date_of_birth_are_not_equal'   => 'Records "Date of Birth" are not equal',
+	'patient_data_imported'                 => 'Patient Data Imported',
+	'exp_date'                              => 'Exp. Date',
+	'substance_data'                        => 'Substance Data',
+	'administration_site'                   => 'Administration Site',
+	'entered_in_error'                      => 'Entered in Error',
+	'active_drug_allergies'                 => 'Active Drug Allergies',
+	'drag_patient_to_new_area'              => 'Drag Patient To New Area',
+	'drop_patient_to_new_area'              => 'Drop Patient To New Area',
+
 
 );

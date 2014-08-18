@@ -75,9 +75,6 @@ Ext.define('Modules.Module',{
 			    return parent.insertBefore(node, firstChildNode);
 		    }
 	    }
-
-
-
     },
 
     getModuleData:function(name){

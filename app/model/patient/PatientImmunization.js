@@ -50,23 +50,28 @@ Ext.define('App.model.patient.PatientImmunization', {
 		{
 			name: 'code_type',
 			type: 'string',
-			defaultValue: 'CVX'
+			defaultValue: 'CVX',
+			len: 15
 		},
 		{
 			name: 'vaccine_name',
-			type: 'string'
+			type: 'string',
+			len: 300
 		},
 		{
 			name: 'lot_number',
-			type: 'string'
+			type: 'string',
+			len: 60
 		},
 		{
 			name: 'administer_amount',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'administer_units',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'administered_date',
@@ -74,12 +79,30 @@ Ext.define('App.model.patient.PatientImmunization', {
 			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
+			name: 'exp_date',
+			type: 'date',
+			dataType:'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
 			name: 'administered_by',
-			type: 'string'
+			type: 'string',
+			len: 150
+		},
+		{
+			name: 'route',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'administration_site',
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'manufacturer',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'education_date',
@@ -88,7 +111,8 @@ Ext.define('App.model.patient.PatientImmunization', {
 		},
 		{
 			name: 'note',
-			type: 'string'
+			type: 'string',
+			len: 300
 		},
 		{
 			name: 'create_date',
@@ -102,6 +126,10 @@ Ext.define('App.model.patient.PatientImmunization', {
 		{
 			name: 'updated_uid',
 			type: 'int'
+		},
+		{
+			name: 'is_error',
+			type: 'bool'
 		}
 	],
 	proxy: {

@@ -20,6 +20,10 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	id: 'panelPoolArea',
 	extend: 'App.ux.RenderPanel',
 
+	requires:[
+		'App.ux.grid.AreasDragDrop'
+	],
+
 	pageTitle: i18n('patient_pool_areas'),
 
 	initComponent: function(){
@@ -49,6 +53,11 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
+
+//		say(node);
+//		say(data);
+//		say(name);
+//		say(pid);
 
 		app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
 
@@ -89,7 +98,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					proxy: {
 						type: 'direct',
 						api: {
-							read: PoolArea.getPoolAreaPatients
+							read: 'PoolArea.getPoolAreaPatients'
 						},
 						extraParams: {
 							area_id: areas[i].id
@@ -120,7 +129,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					viewConfig: {
 						loadMask: false,
 						plugins: {
-							ptype: 'gridviewdragdrop',
+							ptype: 'areasgridviewdragdrop',
 							dragGroup: 'patientPoolAreas',
 							dropGroup: 'patientPoolAreas'
 						},

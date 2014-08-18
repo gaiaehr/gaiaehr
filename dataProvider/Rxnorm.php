@@ -19,7 +19,7 @@
 
 class Rxnorm {
 	/**
-	 * @var MatchaHelper
+	 * @var PDO
 	 */
 	private $db;
 
@@ -30,78 +30,79 @@ class Rxnorm {
 	//private $medications;
 
 	function __construct(){
-		$this->db = new MatchaHelper();
+		$this->db = Matcha::getConn();
 		return;
 	}
 
 	public function getStrengthByCODE($CODE){
-		$this->db->setSQL("SELECT ATV
+		$sth = $this->db->query("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DST'
-		                      AND SAB    = 'MMSL'");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		                      AND SAB    = 'RXNORM'");
+		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 
 	public function getDrugRouteByCODE($CODE){
-		$this->db->setSQL("SELECT ATV
+		$sth = $this->db->query("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DRT'
-		                      AND SAB    = 'MMSL'");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		                      AND SAB    = 'RXNORM'");
+		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 
 	public function getDoseformByCODE($CODE){
-		$this->db->setSQL("SELECT ATV
+		$sth = $this->db->query("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DDF'
-		                      AND SAB    = 'MMSL'");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		                      AND SAB    = 'RXNORM'");
+		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 
 	public function getDoseformAbbreviateByCODE($CODE){
-		$this->db->setSQL("SELECT ATV
+		$sth = $this->db->query("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = '$CODE'
 		                      AND ATN    = 'DDFA'
-		                      AND SAB    = 'MMSL'");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		                      AND SAB    = 'RXNORM'");
+		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
 
 	public function getDatabaseShortNameByCODE($CODE){
-		$this->db->setSQL("SELECT SAB
+		$sth = $this->db->query("SELECT SAB
 		                     FROM rxnsat
 		                    WHERE `CODE` = '$CODE'
-                              AND SAB    = 'MMSL'");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+                              AND SAB    = 'RXNORM'");
+		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['SAB'];
 	}
 
 	public function getMedicationNameByRXCUI($RXCUI){
-		$this->db->setSQL("SELECT STR
+		$sth = $this->db->query("SELECT STR
 		                     FROM rxnconso
 		                    WHERE RXCUI = '$RXCUI'
 		                 GROUP BY RXCUI");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['STR'];
 	}
 
 	public function getRXNORMLiveSearch(stdClass $params){
-		$this->db->setSQL("SELECT rxnconso.*, rxnsat.ATV as NDC
+		$sth = $this->db->query("SELECT rxnconso.*, rxnsat.ATV as NDC
                              FROM rxnconso
                        RIGHT JOIN rxnsat ON rxnconso.RXCUI = rxnsat.RXCUI
-                            WHERE (rxnconso.SAB = 'MMSL' AND (rxnconso.TTY = 'BD' OR rxnconso.TTY = 'SBD'))
+                            WHERE (rxnconso.SAB = 'RXNORM' AND (rxnconso.TTY = 'PSN' OR rxnconso.TTY = 'SY'))
                               AND rxnsat.ATN = 'NDC'
                               AND rxnconso.STR LIKE '%$params->query%'
                          GROUP BY rxnconso.RXCUI
                          LIMIT 100");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+
+		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
 		return array('totals' => $total, 'rows' => $records);
@@ -109,54 +110,61 @@ class Rxnorm {
 
 	public function getRXNORMList(stdClass $params){
 		if(isset($params->query)){
-			$this->db->setSQL("SELECT * FROM rxnconso WHERE (SAB = 'MMSL' AND TTY = 'BD') AND STR LIKE '$params->query%' GROUP BY RXCUI LIMIT 500");
+			$sth = $this->db->query("SELECT * FROM rxnconso WHERE (SAB = 'RXNORM' AND TTY = 'BD') AND STR LIKE '$params->query%' GROUP BY RXCUI LIMIT 500");
 		} else{
-			$this->db->setSQL("SELECT * FROM rxnconso WHERE (SAB = 'MMSL' AND TTY = 'BD') GROUP BY RXCUI LIMIT 500");
+			$sth = $this->db->query("SELECT * FROM rxnconso WHERE (SAB = 'RXNORM' AND TTY = 'BD') GROUP BY RXCUI LIMIT 500");
 		}
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
 		return array('totals' => $total, 'data' => $records);
 	}
 
 	public function getRXNORMAllergyLiveSearch(stdClass $params){
-		$this->db->setSQL("SELECT *
+		$sth = $this->db->query("SELECT *
 							 FROM rxnconso
 							WHERE (TTY = 'IN' OR TTY = 'PIN') AND STR LIKE '$params->query%'
 						 GROUP BY RXCUI LIMIT 100");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
 		return array('totals' => $total, 'rows' => $records);
 	}
 
-	public function getMedicationAttributesByCODE($CODE){
-		$this->db->setSQL("
-            SELECT `ATV`, `ATN` FROM rxnsat WHERE `CODE` = '$CODE' AND `ATN` = 'DST' AND `SAB` = 'MMSL'
-            UNION
-            SELECT `ATV`, `ATN` FROM rxnsat WHERE `CODE` = '$CODE' AND `ATN` = 'DRT' AND `SAB` = 'MMSL'
-            UNION
-            SELECT `ATV`, `ATN` FROM rxnsat WHERE `CODE` = '$CODE' AND `ATN` = 'DDF' AND `SAB` = 'MMSL'
-        ");
-		$foo = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $fo){
-			$foo[$fo['ATN']] = $fo['ATV'];
-		};
-		return $foo;
+	public function getMedicationAttributesByRxcui($rxcui){
+		$response = array();
+
+		$sth = $this->db->query("SELECT `ATV`, `ATN`
+ 								   FROM rxnsat
+								  WHERE `RXCUI` = '$rxcui'
+								    AND `ATN` = 'RXN_AVAILABLE_STRENGTH'
+								    AND `SAB` = 'RXNORM'");
+		$result = $sth->fetch(PDO::FETCH_ASSOC);
+
+		if($result !== false){
+			$response[$result['ATN']] = $result['ATV'];
+		}
+
+		$sth = $this->db->query("SELECT `rxnconso`.*
+								   FROM `rxnrel`
+						      LEFT JOIN rxnconso ON `rxnconso`.`RXCUI` = `rxnrel`.`RXCUI2`
+								  WHERE `rxnrel`.`RXCUI1` = '$rxcui'
+								    AND `rxnrel`.`RELA` = 'dose_form_of'");
+		$result = $sth->fetch(PDO::FETCH_ASSOC);
+
+
+		return $result;
 	}
 
 	public function IndexActiveIngredients(){
 
-		$this->db->setSQL('TRUNCATE TABLE rxnconsoindex');
-		$this->db->execOnly();
+		$this->db->exec('TRUNCATE TABLE rxnconsoindex');
 
-		$this->db->setSQL("SELECT id, STR FROM rxnconso WHERE TTY = 'IN' AND SAB = 'RXNORM' GROUP BY RXCUI");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$sth = $this->db->query("SELECT id, STR FROM rxnconso WHERE TTY = 'IN' AND SAB = 'RXNORM' GROUP BY RXCUI");
+		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 		foreach($records As $record){
-			$this->db->setSQL("INSERT INTO rxnconsoindex (`rxnid`, `STR`) VALUES ('{$record['id']}', '{$record['STR']}')");
-			$this->db->execOnly();
-
+			$this->db->exec("INSERT INTO rxnconsoindex (`rxnid`, `STR`) VALUES ('{$record['id']}', '{$record['STR']}')");
 		}
 
 	}

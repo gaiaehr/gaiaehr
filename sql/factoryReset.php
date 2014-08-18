@@ -11,7 +11,8 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-
+define('_GaiaEXEC' , 1);
+include_once(dirname(dirname(__FILE__)).'/registry.php');
 include_once(dirname(dirname(__FILE__)).'/classes/MatchaHelper.php');
 
 $db = new MatchaHelper();
@@ -39,6 +40,8 @@ $tables = array(
 	// patient tables
 	'patient',
 	'patient_allergies',
+	'patient_care_plan_goals',
+	'patient_cognitive_functional_status',
 	'patient_disclosures',
 	'patient_images',
 	'patient_immunizations',
@@ -47,6 +50,7 @@ $tables = array(
 	'patient_active_problems',
 	'patient_dental',
 	'patient_doctors_notes',
+	'patient_family_history',
 	'patient_orders',
 	'patient_order_results',
 	'patient_order_results_observations',
@@ -141,7 +145,7 @@ foreach($tables as $table){
 }
 
 //print '<h1>Patient Directories Clean Up!</h1>';
-$path = '../sites/'.$_SESSION['site']['dir'].'/patients/';
+$path = site_path .'/patients/';
 $patientsDir = getDirectoryList($path);
 
 foreach($patientsDir as $dir){

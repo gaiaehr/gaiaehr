@@ -144,9 +144,9 @@ class Medical {
 //	}
 //	public function getPatientAllergiesByPid($pid){
 //		$params = new stdClass();
-//		$params->filters[0] = new stdClass();
-//		$params->filters[0]->property = 'pid';
-//		$params->filters[0]->value =  $pid;
+//		$params->filter[0] = new stdClass();
+//		$params->filter[0]->property = 'pid';
+//		$params->filter[0]->value =  $pid;
 //		return $this->a->load($params)->all();
 //	}
 //
@@ -254,9 +254,9 @@ class Medical {
 //
 //	public function getPatientMedicationsByPid($pid){
 //		$params =  new stdClass();
-//		$params->filters[0] = new stdClass();
-//		$params->filters[0]->property =  'pid';
-//		$params->filters[0]->value =  $pid;
+//		$params->filter[0] = new stdClass();
+//		$params->filter[0]->property =  'pid';
+//		$params->filter[0]->value =  $pid;
 //		return $this->m->load($params)->all();
 //	}
 	/*************************************************************************************************************/
@@ -660,10 +660,9 @@ class Medical {
 
 	public function sendVXU($params){
 		$p = new stdClass();
-		$p->filters = array();
-		$p->filters[0] = new stdClass();
-		$p->filters[0]->property = 'pid';
-		$p->filters[0]->value = $params->pid;
+		$p->filter[0] = new stdClass();
+		$p->filter[0]->property = 'pid';
+		$p->filter[0]->value = $params->pid;
 
 		$data = array();
 		$data['to'] = $params->to;

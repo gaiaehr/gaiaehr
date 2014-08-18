@@ -58,56 +58,101 @@ Ext.define('App.view.patient.RxOrders', {
 			items: [
 				{
 					xtype: 'container',
-					layout: 'anchor',
+					layout: {
+						type: 'hbox',
+						align: 'stretch'
+					},
 					items: [
 						{
-							xtype: 'datefield',
-							fieldLabel: i18n('order_date'),
-							format: 'Y-m-d',
-							name: 'date_ordered',
-							allowBlank: false
-						},
-						{
 							xtype: 'container',
-							margin: '5 0',
-							layout: {
-								type: 'hbox'
-							},
+							layout: 'anchor',
 							items: [
+								{
+									xtype: 'datefield',
+									fieldLabel: i18n('order_date'),
+									format: 'Y-m-d',
+									name: 'date_ordered',
+									allowBlank: false,
+									margin: '0 0 5 0'
+								},
 								{
 									xtype: 'rxnormlivetsearch',
 									itemId: 'RxNormOrderLiveSearch',
 									hideLabel: false,
 									fieldLabel: i18n('medication'),
-									width: 500,
+									width: 700,
 									name: 'STR',
+//									margin: '5 0',
 									allowBlank: false
 								},
+								{
+									xtype: 'container',
+									margin: '5 0',
+									layout: {
+										type: 'hbox'
+									},
+									items: [
+										{
+											xtype: 'numberfield',
+											width: 160,
+											fieldLabel: i18n('dispense'),
+											minValue: 1,
+											name: 'dispense',
+											allowBlank: false
+										},
+										{
+											xtype: 'numberfield',
+											width: 130,
+											fieldLabel: i18n('refill'),
+											labelAlign: 'right',
+											labelWidth: 70,
+											maxValue: 99,
+											minValue: 0,
+											name: 'refill',
+											vtype: 'numeric',
+											allowBlank: false
+										},
+										{
+											xtype: 'encountericdscombo',
+											itemId: 'RxEncounterDxCombo',
+											fieldLabel: i18n('dx'),
+											labelAlign: 'right',
+											labelWidth: 70,
+											width: 405,
+											name: 'dxs'
+										}
+									]
+								},
+								{
+									xtype: 'livesigssearch',
+									width: 700,
+									fieldLabel: 'Instructions',
+									name: 'directions',
+									maxLength: 300,
+									allowBlank: false
+								},
+								{
+									xtype: 'textfield',
+									width: 700,
+									fieldLabel: i18n('notes_to_Pharmacist'),
+									name: 'notes'
+								}
+							]
+						},
+						{
+							xtype: 'container',
+							layout: 'anchor',
+							items: [
 								{
 									xtype: 'checkboxfield',
 									fieldLabel: i18n('daw'),
 									tooltip: i18n('dispensed_as_written'),
-									margin: '0 0 0 5',
 									width: 95,
 									labelWidth: 70,
 									labelAlign: 'right',
-									name: 'daw'
+									name: 'daw',
+									margin: '25 0 5 0'
 								},
-//								{
-//									xtype: 'gaiaehr.combo',
-//									fieldLabel: i18n('daw'),
-//									tooltip: i18n('dispensed_as_written'),
-//									margin: '0 0 0 5',
-//									width: 95,
-//									labelWidth: 40,
-//									list: 1,
-//									labelAlign: 'right',
-//									queryMode: 'local',
-//									loadStore: true,
-//									valueDataType: 'bool',
-//									allowBlank: false,
-//									name: 'daw'
-//								},
 								{
 									xtype: 'datefield',
 									fieldLabel: i18n('begin_date'),
@@ -116,38 +161,8 @@ Ext.define('App.view.patient.RxOrders', {
 									width: 258,
 									format: 'Y-m-d',
 									name: 'begin_date',
+									margin: '0 0 5 0',
 									allowBlank: false
-								}
-							]
-						},
-						{
-							xtype: 'container',
-							margin: '5 0',
-							layout: {
-								type: 'hbox'
-							},
-							items: [
-								{
-									xtype: 'textfield',
-									width: 200,
-									fieldLabel: i18n('dose'),
-									name: 'dose'
-								},
-								{
-									xtype: 'textfield',
-									width: 200,
-									fieldLabel: i18n('route'),
-									labelAlign: 'right',
-									labelWidth: 50,
-									name: 'route'
-								},
-								{
-									xtype: 'textfield',
-									width: 195,
-									fieldLabel: i18n('form'),
-									labelAlign: 'right',
-									labelWidth: 50,
-									name: 'form'
 								},
 								{
 									xtype: 'datefield',
@@ -161,67 +176,11 @@ Ext.define('App.view.patient.RxOrders', {
 							]
 						},
 						{
-							xtype: 'container',
-							margin: '5 0',
-							layout: {
-								type: 'hbox'
-							},
-							items: [
-								{
-									xtype: 'livesigssearch',
-									width: 600,
-									fieldLabel: 'Instructions',
-									name: 'directions',
-									maxLength: 300,
-									allowBlank: false
-								},
-								{
-									xtype: 'numberfield',
-									width: 125,
-									fieldLabel: i18n('dispense'),
-									labelAlign: 'right',
-									labelWidth: 70,
-									minValue: 1,
-									name: 'dispense',
-									allowBlank: false
-								},
-								{
-									xtype: 'numberfield',
-									width: 130,
-									fieldLabel: i18n('refill'),
-									labelAlign: 'right',
-									labelWidth: 70,
-									maxValue: 99,
-									minValue: 0,
-									name: 'refill',
-									vtype: 'numeric',
-									allowBlank: false
-								}
-							]
-						},
-						{
-							xtype: 'container',
-							margin: '5 0',
-							layout: {
-								type: 'hbox'
-							},
-							items: [
-								{
-									xtype: 'textfield',
-									width: 600,
-									fieldLabel: i18n('notes_to_Pharmacist'),
-									name: 'notes'
-								},
-								{
-									xtype: 'encountericdscombo',
-									itemId: 'RxEncounterDxCombo',
-									fieldLabel: i18n('dx'),
-									labelAlign: 'right',
-									labelWidth: 70,
-									width: 258,
-									name: 'dxs'
-								}
-							]
+							xtype: 'fieldset',
+							title: i18n('active_drug_allergies'),
+							html: i18n('none'),
+							margin: '25 0 5 10',
+							flex: 1
 						}
 					]
 				}
@@ -259,26 +218,21 @@ Ext.define('App.view.patient.RxOrders', {
 				return app.boolRenderer(v);
 			}
 		},
-		{
-			header: i18n('dose'),
-			width: 115,
-			dataIndex: 'dose'
-		},
-		{
-			header: i18n('route'),
-			width: 90,
-			dataIndex: 'route'
-		},
-		{
-			header: i18n('form'),
-			width: 70,
-			dataIndex: 'form'
-		},
-		{
-			header: i18n('instructions') + ' (Sig)',
-			width: 150,
-			dataIndex: 'directions'
-		},
+//		{
+//			header: i18n('dose'),
+//			width: 115,
+//			dataIndex: 'dose'
+//		},
+//		{
+//			header: i18n('route'),
+//			width: 90,
+//			dataIndex: 'route'
+//		},
+//		{
+//			header: i18n('form'),
+//			width: 70,
+//			dataIndex: 'form'
+//		},
 		{
 			header: i18n('dispense'),
 			width: 60,
@@ -290,10 +244,15 @@ Ext.define('App.view.patient.RxOrders', {
 			dataIndex: 'refill'
 		},
 		{
+			header: i18n('instructions'),
+			flex: 1,
+			dataIndex: 'directions'
+		},
+		{
 			header: i18n('related_dx'),
 			width: 200,
 			dataIndex: 'dxs',
-			renderer:function(v){
+			renderer: function(v){
 				return v == false || v == 'false' || v[0] == false ? '' : v;
 			}
 		},

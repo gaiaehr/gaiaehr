@@ -926,7 +926,7 @@ $API = array(
 			'getRXNORMAllergyLiveSearch' => array(
 				'len' => 1
 			),
-			'getMedicationAttributesByCODE' => array(
+			'getMedicationAttributesByRxcui' => array(
 				'len' => 1
 			)
 		)

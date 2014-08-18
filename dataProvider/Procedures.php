@@ -44,29 +44,29 @@ class Procedures {
 
 	public function getPatientProceduresByPid($pid) {
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
 		return $this->p->load($params)->all();
 	}
 
 	public function getPatientProceduresByEid($eid) {
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'eid';
-		$params->filters[0]->value =  $eid;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value =  $eid;
 		return $this->p->load($params)->all();
 	}
 
 	public function getPatientProceduresByPidAndCode($pid, $code) {
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
 
-		$params->filters[1] = new stdClass();
-		$params->filters[1]->property = 'code';
-		$params->filters[1]->value =  $code;
+		$params->filter[1] = new stdClass();
+		$params->filter[1]->property = 'code';
+		$params->filter[1]->value =  $code;
 		return $this->p->load($params)->all();
 	}
 

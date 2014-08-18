@@ -4,7 +4,7 @@ Ext.define('App.ux.combo.Combo', {
 	displayField: 'option_name',
 	valueField: 'option_value',
 	emptyText: i18n('select'),
-	editable: false,
+	forceSelection: false,
 
 	/**
 	 * List ID

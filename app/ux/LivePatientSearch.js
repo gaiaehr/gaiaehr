@@ -57,6 +57,11 @@ Ext.define('App.ux.LivePatientSearch', {
 				},
 				{
 					name: 'DOB',
+					type: 'date',
+					dateFormat: 'Y-m-d H:i:s'
+				},
+				{
+					name: 'sex',
 					type: 'string'
 				},
 				{
@@ -95,7 +100,7 @@ Ext.define('App.ux.LivePatientSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3><span>{fullname}</span>&nbsp;&nbsp;({pid})</h3>DOB:&nbsp;{DOB}&nbsp;SS:&nbsp;{SS}</div>';
+					return '<div class="search-item"><h3><span>{fullname}</span> ({pid})</h3><span style="font-weight: bold">DOB:</span> {[Ext.Date.format(values.DOB, g("date_time_display_format"))]} <span style="font-weight: bold">SS:</span> {SS}</div>';
 				}
 			},
 			pageSize: 10

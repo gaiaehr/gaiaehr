@@ -50,12 +50,12 @@ class ActiveProblems {
 
 	public function getPatientActiveProblemByPidAndCode($pid, $code){
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
-		$params->filters[2] = new stdClass();
-		$params->filters[2]->property = 'code';
-		$params->filters[2]->value =  $code;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
+		$params->filter[2] = new stdClass();
+		$params->filter[2]->property = 'code';
+		$params->filter[2]->value =  $code;
 		$records = $this->a->load($params)->all();
 		unset($params);
 		foreach($records as $i => $record){

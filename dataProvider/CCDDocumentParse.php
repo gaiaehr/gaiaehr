@@ -389,8 +389,6 @@ class CCDDocumentParse {
 
 			$medication = new stdClass();
 
-//			var_dump($entry['effectiveTime']);
-
 			if(!$this->isAssoc($entry['substanceAdministration']['effectiveTime'])){
 				foreach($entry['substanceAdministration']['effectiveTime'] as $date){
 					if(!isset($date['low'])) continue;
@@ -812,7 +810,7 @@ class CCDDocumentParse {
 
 		if($justDate){
 			$result['low'] = substr($result['low'], 0, 10);
-			$result['high'] = substr($result['low'], 0, 10);
+			$result['high'] = substr($result['high'], 0, 10);
 		}
 
 		return $result;

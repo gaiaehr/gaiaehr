@@ -47,21 +47,18 @@ Ext.define('App.view.patient.ActiveProblems', {
 			]
 		},
 		{
-			header: i18n('code'),
-			width: 150,
-			dataIndex: 'code',
-			renderer: function(value, metaDate, record){
-				return value + ' (' + record.data.code_type + ')'
-			}
-		},
-		{
 			header: i18n('problem'),
 			flex: 1,
 			dataIndex: 'code_text'
 		},
 		{
+			header: i18n('occurrence'),
+			width: 200,
+			dataIndex: 'occurrence'
+		},
+		{
 			xtype: 'datecolumn',
-			header: i18n('date_diagnosed'),
+			header: i18n('begin_date'),
 			width: 100,
 			format: 'Y-m-d',
 			dataIndex: 'begin_date'
@@ -74,12 +71,9 @@ Ext.define('App.view.patient.ActiveProblems', {
 			dataIndex: 'end_date'
 		},
 		{
-			header: i18n('active?'),
-			width: 60,
-			dataIndex: 'active',
-			renderer: function(v){
-				return app.boolRenderer(v);
-			}
+			header: i18n('status'),
+			width: 80,
+			dataIndex: 'status'
 		}
 	],
 	plugins: Ext.create('App.ux.grid.RowFormEditing', {
@@ -88,120 +82,95 @@ Ext.define('App.view.patient.ActiveProblems', {
 		clicksToEdit: 2,
 		items: [
 			{
-				xtype: 'container',
-				padding: 10,
-				layout: 'vbox',
-				items: [
+				xtype:'container',
+				layout:{
+					type:'hbox',
+					align:'stretch'
+				},
+				items:[
 					{
-						xtype: 'snomedliveproblemsearch',
-						fieldLabel: i18n('search'),
-						name: 'code',
-						hideLabel: false,
-						itemId: 'activeProblemLiveSearch',
-						enableKeyEvents: true,
-						displayField: 'ConceptId',
-						valueField: 'ConceptId',
-						width: 720,
-						labelWidth: 70
-					},
-					{
-						/**
-						 * Line one
-						 */
-						xtype: 'fieldcontainer',
-						layout: 'hbox',
-						defaults: {
-							margin: '0 10 0 0'
-						},
+						xtype: 'container',
+						padding: 10,
+						layout: 'vbox',
 						items: [
 							{
-								xtype: 'textfield',
+								xtype: 'snomedliveproblemsearch',
 								fieldLabel: i18n('problem'),
-								width: 510,
-								labelWidth: 70,
-								allowBlank: false,
 								name: 'code_text',
-								action: 'code_text'
+								hideLabel: false,
+								itemId: 'activeProblemLiveSearch',
+								enableKeyEvents: true,
+								displayField: 'FullySpecifiedName',
+								valueField: 'FullySpecifiedName',
+								width: 720,
+								labelWidth: 70,
+								margin: '0 10 5 0'
 							},
 							{
-								fieldLabel: i18n('code_type'),
+								xtype: 'fieldcontainer',
+								layout: 'hbox',
+								defaults: {
+									margin: '0 10 0 0'
+								},
+								items: [
+									{
+										fieldLabel: i18n('occurrence'),
+										width: 250,
+										labelWidth: 70,
+										xtype: 'mitos.occurrencecombo',
+										name: 'occurrence'
+									},
+									{
+										xtype: 'textfield',
+										width: 460,
+										labelWidth: 70,
+										fieldLabel: i18n('referred_by'),
+										name: 'referred_by'
+									}
+								]
+							},
+							{
+								fieldLabel: i18n('note'),
 								xtype: 'textfield',
-								width: 200,
-								labelWidth: 100,
-								name: 'code_type'
-
+								width: 720,
+								labelWidth: 70,
+								name: 'note'
 							}
 						]
-
 					},
 					{
-						/**
-						 * Line two
-						 */
-						xtype: 'fieldcontainer',
-						layout: 'hbox',
+						xtype: 'container',
+						padding: 10,
+						layout: 'vbox',
 						defaults: {
-							margin: '0 10 0 0'
+							labelWidth: 70,
+							margin: '0 0 5 0',
+							width: 200
 						},
 						items: [
-							{
-								fieldLabel: i18n('occurrence'),
-								width: 250,
-								labelWidth: 70,
-								xtype: 'mitos.occurrencecombo',
-								name: 'occurrence'
-
-							},
 							{
 								fieldLabel: i18n('status'),
 								xtype: 'gaiaehr.combo',
 								list: 112,
-								width: 250,
-								labelWidth: 70,
+								itemId: 'ActiveProblemStatusCombo',
 								name: 'status',
 								allowBlank: false
-
 							},
-
 							{
-								fieldLabel: i18n('date_diagnosed'),
+								fieldLabel: i18n('begin_date'),
 								xtype: 'datefield',
-								width: 200,
-								labelWidth: 100,
 								format: 'Y-m-d',
 								name: 'begin_date'
-
-							}
-						]
-					},
-					{
-						/**
-						 * Line three
-						 */
-						xtype: 'fieldcontainer',
-						layout: 'hbox',
-						defaults: {
-							margin: '0 10 0 0'
-						},
-						items: [
-							{
-								xtype: 'textfield',
-								width: 510,
-								labelWidth: 70,
-								fieldLabel: i18n('referred_by'),
-								name: 'referred_by'
 							},
 							{
 								fieldLabel: i18n('end_date'),
 								xtype: 'datefield',
-								width: 200,
-								labelWidth: 100,
 								format: 'Y-m-d',
 								name: 'end_date'
-
 							}
 						]
 					}
+
 				]
 			}
 		]

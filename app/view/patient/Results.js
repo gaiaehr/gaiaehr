@@ -20,7 +20,9 @@ Ext.define('App.view.patient.Results', {
 	extend: 'Ext.panel.Panel',
 	requires:[
 		'Ext.grid.plugin.CellEditing',
-		'App.store.patient.PatientsOrders'
+		'Ext.grid.plugin.RowEditing',
+		'App.store.patient.PatientsOrders',
+		'App.ux.LiveLabsSearch'
 	],
 	title: i18n('results'),
 	xtype: 'patientresultspanel',
@@ -35,6 +37,11 @@ Ext.define('App.view.patient.Results', {
 			store: Ext.create('App.store.patient.PatientsOrders', {
 			    remoteFilter: true
 		    }),
+			plugins:[
+				{
+					ptype:'rowediting'
+				}
+			],
 			columns: [
 				{
 					xtype: 'actioncolumn',
@@ -54,7 +61,12 @@ Ext.define('App.view.patient.Results', {
 					dataIndex: 'description',
 					menuDisabled: true,
 					resizable: false,
-					flex: 1
+					flex: 1,
+					editor: {
+						xtype: 'labslivetsearch',
+						itemId: 'rxLabOrderLabsLiveSearch',
+						allowBlank: false
+					}
 				},
 				{
 					header: i18n('status'),
@@ -63,13 +75,21 @@ Ext.define('App.view.patient.Results', {
 					resizable: false,
 					width: 60
 				}
+			],
+			bbar:[
+				'->',
+				{
+					text: i18n('new_order'),
+					itemId: 'OrderResultNewOrderBtn',
+					iconCls: 'icoAdd'
+				}
 			]
 		},
 		{
 			xtype: 'form',
 			title: i18n('order_result'),
 			region: 'south',
-			height: 450,
+			height: 400,
 			frame: true,
 			split: true,
 			layout: {
@@ -79,6 +99,7 @@ Ext.define('App.view.patient.Results', {
 				{
 					xtype: 'button',
 					text: i18n('view_document'),
+					icon: 'resources/images/icons/icoView.png',
 					action: 'orderDocumentViewBtn'
 				}
 			],
@@ -110,11 +131,13 @@ Ext.define('App.view.patient.Results', {
 									xtype: 'datefield',
 									fieldLabel: i18n('report_date'),
 									name: 'result_date',
-									format: 'Y-m-d'
+									format: 'Y-m-d',
+									allowBlank: false
 								},
 								{
 									fieldLabel: i18n('report_number'),
-									name: 'lab_order_id'
+									name: 'lab_order_id',
+									allowBlank: false
 								},
 								{
 									fieldLabel: i18n('status'),

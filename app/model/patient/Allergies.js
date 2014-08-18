@@ -25,8 +25,7 @@ Ext.define('App.model.patient.Allergies', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Patient Allergies ID'
+			type: 'int'
 		},
 		{
 			name: 'eid',

@@ -71,46 +71,46 @@ Ext.define('App.view.patient.Medications', {
 						action: 'medication'
 					}
 				},
-				{
-					header: i18n('dose'),
-					width: 125,
-					dataIndex: 'dose',
-					sortable: false,
-					hideable: false,
-					editor: {
-						xtype: 'textfield'
-					}
-				},
-				{
-					header: i18n('route'),
-					width: 100,
-					dataIndex: 'route',
-					sortable: false,
-					hideable: false,
-					editor: {
-						xtype: 'mitos.prescriptionhowto'
-					}
-				},
-				{
-					header: i18n('form'),
-					width: 125,
-					dataIndex: 'form',
-					sortable: false,
-					hideable: false,
-					editor: {
-						xtype: 'mitos.prescriptiontypes'
-					}
-				},
-				{
-					header: i18n('instructions'),
-					width: 200,
-					dataIndex: 'directions',
-					sortable: false,
-					hideable: false,
-					editor: {
-						xtype: 'livesigssearch'
-					}
-				},
+//				{
+//					header: i18n('dose'),
+//					width: 125,
+//					dataIndex: 'dose',
+//					sortable: false,
+//					hideable: false,
+//					editor: {
+//						xtype: 'textfield'
+//					}
+//				},
+//				{
+//					header: i18n('route'),
+//					width: 100,
+//					dataIndex: 'route',
+//					sortable: false,
+//					hideable: false,
+//					editor: {
+//						xtype: 'mitos.prescriptionhowto'
+//					}
+//				},
+//				{
+//					header: i18n('form'),
+//					width: 125,
+//					dataIndex: 'form',
+//					sortable: false,
+//					hideable: false,
+//					editor: {
+//						xtype: 'mitos.prescriptiontypes'
+//					}
+//				},
+//				{
+//					header: i18n('instructions'),
+//					width: 200,
+//					dataIndex: 'directions',
+//					sortable: false,
+//					hideable: false,
+//					editor: {
+//						xtype: 'livesigssearch'
+//					}
+//				},
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',

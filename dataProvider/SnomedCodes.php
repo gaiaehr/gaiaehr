@@ -88,7 +88,7 @@ class SnomedCodes {
 	public function updateLiveProblemCodeSearch($params) {
 
 		$sql = "UPDATE sct_problem_list
-				   SET OCCURRENCE = '{$params->Occurrence}'
+				   SET OCCURRENCE = '{$params->OCCURRENCE}'
 			     WHERE SNOMED_CID = '{$params->ConceptId}'";
 		$this->conn->exec($sql);
 		return $params;

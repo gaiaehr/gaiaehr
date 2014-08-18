@@ -398,7 +398,7 @@ Ext.define('App.view.Viewport', {
                 },
                 me.patientPoolArea = Ext.create('Ext.Panel', {
                     title: i18n('patient_pool_areas'),
-                    layout: 'fit',
+//                    layout: 'fit',
                     region: 'south',
 	                action:'patientPoolArea',
                     bodyPadding: 5,
@@ -417,7 +417,7 @@ Ext.define('App.view.Viewport', {
 	                            '<tpl for=".">' +
                                 '<div class="patient-pool-btn x-btn x-btn-default-large {priority}">' +
                                 '<div class="patient_btn_img">' +
-	                            '<img src="{[this.getPatientImage(values.patient)]}" width="32" height="32">' +
+	                            '<img src="{[this.getPatientImage(values.patient)]}" width="50" height="50">' +
 	                            '</div>' +
                                 '<div class="patient_btn_info">' +
                                 '<div class="patient-name">{shortName}</div>' +
@@ -1019,7 +1019,7 @@ Ext.define('App.view.Viewport', {
         return Ext.create('Ext.XTemplate',
             '<div class="patient_btn  {priority}">',
             '   <div class="patient_btn_img">' +
-            '       <img src="{pic}" width="32" height="32">' +
+            '       <img src="{pic}" width="50" height="50">' +
             '   </div>',
             '   <div class="patient_btn_info">',
             '       <div class="patient_btn_name">{name}</div>',
@@ -1067,26 +1067,24 @@ Ext.define('App.view.Viewport', {
             getDragData: function(){
 
 	            if(app.patient.pid){
-                    var sourceEl = app.patientBtn.el.dom,
-	                    d;
+                    var sourceEl = panel.getEl().dom,
+	                    msgDiv, msg;
 
                     if(sourceEl){
-                        d = sourceEl.cloneNode(true);
-                        d.id = Ext.id();
-                        return panel.dragData = {
+	                    msgDiv = document.createElement('div');
+	                    msgDiv.id = Ext.id();
+	                    msgDiv.innerHTML = i18n('drag_patient_to_new_area');
+
+	                    return panel.dragData = {
                             copy: true,
                             sourceEl: sourceEl,
                             repairXY: Ext.fly(sourceEl).getXY(),
-                            ddel: d,
-                            records: [panel.data],
+                            ddel: msgDiv,
+                            records: [ panel.data ],
                             patient: true
                         };
                     }
-
-                    return false;
                 }
-
-                return false;
             },
 
             getRepairXY: function(){
@@ -1164,7 +1162,10 @@ Ext.define('App.view.Viewport', {
                 this.newGroupReset = true;
             },
             getDragData: function(e){
-                var sourceEl = e.getTarget(panel.itemSelector, 10), d, patientData = panel.getRecord(sourceEl).data;
+                var sourceEl = e.getTarget(panel.itemSelector, 10),
+	                d,
+	                patientData = panel.getRecord(sourceEl).data;
+
                 if(sourceEl){
                     d = sourceEl.cloneNode(true);
                     d.id = Ext.id();

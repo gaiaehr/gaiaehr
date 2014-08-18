@@ -59,7 +59,8 @@ Ext.define('App.controller.patient.Results', {
 				activate: me.onResultPanelActive
 			},
 			'patientresultspanel > grid[action=orders]': {
-				selectionchange: me.onOrderSelectionChange
+				selectionchange: me.onOrderSelectionChange,
+				edit: me.onOrderSelectionEdit
 			},
 			'filefield[action=orderresultuploadfield]': {
 				change: me.onOrderDocumentChange
@@ -72,11 +73,34 @@ Ext.define('App.controller.patient.Results', {
 			},
 			'button[action=orderDocumentViewBtn]': {
 				click: me.onOrderDocumentViewBtnClicked
+			},
+			'#OrderResultNewOrderBtn': {
+				click: me.onOrderResultNewOrderBtnClick
 			}
 		});
 	},
 
-	onResultPanelActive:function(){
+	onOrderSelectionEdit: function(editor, e){
+		say(e.record);
+		this.getOrderResult(e.record);
+	},
+
+	onOrderResultNewOrderBtnClick: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.getStore(),
+			records;
+
+		grid.editingPlugin.cancelEdit();
+		records = store.add({
+			pid: app.patient.pid,
+			uid: app.user.id,
+			order_type: 'lab',
+			status: 'Pending'
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onResultPanelActive: function(){
 		this.setResultPanel();
 	},
 
@@ -118,7 +142,7 @@ Ext.define('App.controller.patient.Results', {
 		resultsStore.load({
 			callback: function(records){
 
-//				say(records);
+				//				say(records);
 
 				if(records.length > 0){
 					form.loadRecord(records[0]);
@@ -158,9 +182,16 @@ Ext.define('App.controller.patient.Results', {
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
 
+		if(!form.isValid()){
+			app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+			return;
+		}
+
 		if(files.length > 0){
 			reader.onload = (function(){
 				return function(e){
+
+					say(values);
 
 					var sm = me.getOrdersGrid().getSelectionModel(),
 						order = sm.getSelection(),
@@ -169,6 +200,7 @@ Ext.define('App.controller.patient.Results', {
 							eid: order[0].data.eid,
 							uid: app.user.id,
 							docType: 'lab',
+							title: 'Lab #'+ values.lab_order_id +' Result',
 							document: e.target.result
 
 						};
@@ -200,36 +232,32 @@ Ext.define('App.controller.patient.Results', {
 			order = sm.getSelection(),
 			observationData = [];
 
-//		me.getObservationsGrid().editingPlugin.cancelEdit();
+		//		me.getObservationsGrid().editingPlugin.cancelEdit();
 
 		var store = record.observations(),
 			observations = store.data.items;
 
-//		for(var i = 0; i < observations.length; i++){
-//			observationData.push(observations[i].data);
-//		}
-//
-//		say(observationData);
+		//		for(var i = 0; i < observations.length; i++){
+		//			observationData.push(observations[i].data);
+		//		}
+		//		say(observationData);
 
-
-		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
+//		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
 		record.set(values);
-
-
 
 		record.save({
 			success: function(rec){
 
-//				say(observationData);
-//				say(observationData.length);
-//				say(observations.length);
+				//				say(observationData);
+				//				say(observationData.length);
+				//				say(observations.length);
 
 				for(var i = 0; i < observations.length; i++){
-					observations[i].set({result_id:rec.data.id});
+					observations[i].set({result_id: rec.data.id});
 				}
 
-//				say(observations);
-//				return;
+				//				say(observations);
+				//				return;
 
 				store.sync();
 
@@ -270,13 +298,6 @@ Ext.define('App.controller.patient.Results', {
 			app.msg(i18n('oops'), i18n('no_document_found'), true)
 		}
 	},
-
-
-
-
-
-
-
 
 	/**
 	 * OLD ******************* OLD ******************* OLD ******************* OLD
@@ -330,14 +351,14 @@ Ext.define('App.controller.patient.Results', {
 				},
 				success: function(fp, o){
 					formPanel.el.unmask();
-//					say(o.result);
+					//					say(o.result);
 					win.close();
 					me.getLabDocument(o.result.doc.url);
 					me.addNewLabResults(o.result.doc.id);
 				},
 				failure: function(fp, o){
 					formPanel.el.unmask();
-//					say(o.result);
+					//					say(o.result);
 					win.close();
 				}
 			});
@@ -363,7 +384,7 @@ Ext.define('App.controller.patient.Results', {
 					if(btn == 'ok'){
 						User.verifyUserPass(password, function(provider, response){
 							if(response.result){
-//								say(record);
+								//								say(record);
 								Medical.signPatientLabsResultById(record.data.id, function(provider, response){
 									store.load({
 										params: {

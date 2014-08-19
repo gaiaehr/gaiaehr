@@ -1,6 +1,8 @@
 Ext.define('App.ux.combo.ActiveProviders', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.activeproviderscombo',
+	displayField: 'option_name',
+	valueField: 'option_value',
 	initComponent: function(){
 		var me = this;
 
@@ -25,15 +27,12 @@ Ext.define('App.ux.combo.ActiveProviders', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'ActiveProvidersModel',
-			autoLoad: true
+			model: 'ActiveProvidersModel'
 		});
 
 		Ext.apply(this, {
 			editable: false,
 			queryMode: 'local',
-			displayField: 'option_name',
-			valueField: 'option_value',
 			emptyText: i18n('select'),
 			store: me.store
 		});

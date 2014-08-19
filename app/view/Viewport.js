@@ -94,6 +94,7 @@ Ext.define('App.view.Viewport', {
             collapsed: false,
             frame: false,
             border: false,
+	        cls: 'appHeader',
             bodyStyle: 'background: transparent',
             margins: '0 0 0 0',
 	        layout: 'hbox'
@@ -133,10 +134,12 @@ Ext.define('App.view.Viewport', {
 		    tooltip: i18n('patient_visits_history')
         });
 
+	    me.HeaderLeft.add({ xtype: 'tbseparator' });
+
 	    me.patientBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
-            margin: 0,
+		    margin: '0 3 0 0',
 		    style: 'height: 42px',
             tooltip: i18n('patient_btn_drag'),
             listeners: {
@@ -146,10 +149,12 @@ Ext.define('App.view.Viewport', {
             tpl: me.patientBtnTpl()
         });
 
+	    me.HeaderLeft.add({ xtype: 'tbseparator' });
+
 	    me.patientSummaryBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
-            margin: '0 0 0 3',
+            margin: '0 3 0 0',
             cls: 'headerLargeBtn',
             padding: 0,
             iconCls: 'icoPatientInfo',
@@ -162,7 +167,7 @@ Ext.define('App.view.Viewport', {
 		    me.patientOpenVisitsBtn = me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
 			    iconCls: 'icoBackClock',
@@ -177,7 +182,7 @@ Ext.define('App.view.Viewport', {
             me.patientCreateEncounterBtn = me.HeaderLeft.add({
                 xtype: 'button',
                 scale: 'large',
-                margin: '0 0 0 3',
+	            margin: '0 3 0 0',
                 cls: 'headerLargeBtn',
                 padding: 0,
                 iconCls: 'icoClock',
@@ -190,7 +195,7 @@ Ext.define('App.view.Viewport', {
 	    me.patientCloseCurrEncounterBtn = me.HeaderLeft.add({
             xtype: 'button',
             scale: 'large',
-            margin: '0 0 0 3',
+		    margin: '0 3 0 0',
             cls: 'headerLargeBtn',
             padding: 0,
             iconCls: 'icoArrowDown',
@@ -203,7 +208,7 @@ Ext.define('App.view.Viewport', {
 		    me.patientCheckOutBtn = me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
 			    iconCls: 'icoCheckOut',
@@ -231,7 +236,7 @@ Ext.define('App.view.Viewport', {
 		    me.HeaderLeft.add({
 			    xtype: 'panel',
 			    bodyPadding: '8 11 5 11',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    items: [
 				    {
 					    xtype: 'patienlivetsearch',
@@ -255,7 +260,7 @@ Ext.define('App.view.Viewport', {
 		    me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    padding: 4,
 			    itemId: 'patientNewReset',
 			    iconCls: 'icoAddPatient',
@@ -269,7 +274,7 @@ Ext.define('App.view.Viewport', {
 		    me.HeaderLeft.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    cls: 'headerLargeBtn emerBtn',
 			    overCls: 'emerBtnOver',
 			    padding: 0,
@@ -285,7 +290,7 @@ Ext.define('App.view.Viewport', {
 		    me.HeaderRight.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
 			    itemId: 'floorPlans',
@@ -300,7 +305,7 @@ Ext.define('App.view.Viewport', {
 		    me.HeaderRight.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
 			    itemId: 'patientPoolArea',
@@ -315,7 +320,7 @@ Ext.define('App.view.Viewport', {
 		    me.HeaderRight.add({
 			    xtype: 'button',
 			    scale: 'large',
-			    margin: '0 0 0 3',
+			    margin: '0 3 0 0',
 			    cls: 'headerLargeBtn',
 			    padding: 0,
 			    itemId: 'patientCheckIn',
@@ -341,7 +346,7 @@ Ext.define('App.view.Viewport', {
 		    ],
 		    itemId:'userSplitButton',
 		    cls: 'drButton',
-		    margin: '0 0 0 3',
+		    margin: 0,
 		    menu: [
 			    {
 				    text: i18n('my_account'),

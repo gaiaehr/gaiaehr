@@ -76,10 +76,10 @@ class Referrals {
 	}
 
 	private function processRecord($record){
-		$record['service_text'] = $this->service->getServiceCodeByCodeAndCodeType($record['service_code'], $record['service_code_type']);
-		$record['diagnosis_text'] = $this->diagnosis->getServiceCodeByCodeAndCodeType($record['diagnosis_code'], $record['diagnosis_code_type']);
-		$record['refer_by_text'] = $this->user->getUserFullNameById($record['refer_by']);
-		$record['refer_to_text'] = $this->user->getUserFullNameById($record['refer_to']);
+//		$record['service_text'] = $this->service->getServiceCodeByCodeAndCodeType($record['service_code'], $record['service_code_type']);
+//		$record['diagnosis_text'] = $this->diagnosis->getServiceCodeByCodeAndCodeType($record['diagnosis_code'], $record['diagnosis_code_type']);
+//		$record['refer_by_text'] = $this->user->getUserFullNameById($record['refer_by']);
+//		$record['refer_to_text'] = $this->user->getUserFullNameById($record['refer_to']);
 		return $record;
 	}
 

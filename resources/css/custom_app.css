@@ -8,6 +8,16 @@
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+.appHeader .x-toolbar-separator {
+    background-color: #ccc;
+    /*box-shadow: 0 0 1px rgba(0, 0, 0, .5);*/
+    /*-webkit-box-shadow: 0 0 1px rgba(0, 0, 0, .5);*/
+    /*-moz-box-shadow: 0 0 1px rgba(0, 0, 0, .5);*/
+    height: 35px;
+    width: 1px;
+    margin: 3px 3px 3px 0;
+}
+
 .x-mask {
     opacity: .4;
 }

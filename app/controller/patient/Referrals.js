@@ -33,6 +33,23 @@ Ext.define('App.controller.patient.Referrals', {
 		{
 			ref: 'PrintReferralBtn',
 			selector: '#printReferralBtn'
+		},
+
+		{
+			ref: 'ReferralProviderCombo',
+			selector: '#ReferralProviderCombo'
+		},
+		{
+			ref: 'ReferralLocalProviderCombo',
+			selector: '#ReferralLocalProviderCombo'
+		},
+		{
+			ref: 'ReferralExternalProviderCombo',
+			selector: '#ReferralExternalProviderCombo'
+		},
+		{
+			ref: 'ReferralExternalReferralCheckbox',
+			selector: '#ReferralExternalReferralCheckbox'
 		}
 	],
 
@@ -41,7 +58,8 @@ Ext.define('App.controller.patient.Referrals', {
 		me.control({
 			'patientreferralspanel': {
 				activate: me.onReferralActive,
-				selectionchange: me.onGridSelectionChange
+				selectionchange: me.onGridSelectionChange,
+				beforeedit: me.onGridBeforeEdit
 
 			},
 			'button[action=addReferralBtn]': {
@@ -53,19 +71,47 @@ Ext.define('App.controller.patient.Referrals', {
 			'#referralDiagnosisSearch': {
 				select: me.onReferralDiagnosisSearchSelect
 			},
-			'#referralExternalReferralCheckbox': {
-				select: me.onReferralExternalReferralCheckbox
+			'#ReferralExternalReferralCheckbox': {
+				change: me.onReferralExternalReferralCheckboxChange
 			},
 			'#printReferralBtn': {
 				click: me.onPrintReferralBtnClick
+			},
+
+			'#ReferralProviderCombo':{
+				select: me.onReferralProviderComboSelect
+			},
+			'#ReferralLocalProviderCombo':{
+				select: me.onReferralLocalProviderComboSelect
+			},
+			'#ReferralExternalProviderCombo':{
+				select: me.onReferralExternalProviderComboSelect
 			}
 		});
 	},
 
+	onGridBeforeEdit: function(editor, context, eOpts){
+		this.getReferralExternalReferralCheckbox().setValue(context.record.data.is_external_referral);
+		this.getReferralLocalProviderCombo().setValue(context.record.data.refer_to_text);
+		this.getReferralExternalProviderCombo().setValue(context.record.data.refer_to_text);
+	},
+
+	onReferralProviderComboSelect: function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+		record.set({refer_by: records[0].data.option_value});
+	},
+
+	onReferralLocalProviderComboSelect: function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+		record.set({refer_to: records[0].data.id});
+	},
+
+	onReferralExternalProviderComboSelect: function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+		record.set({refer_to: records[0].data.id});
+	},
 
 	onPrintReferralBtnClick:function(){
-		say('onPrintReferralBtnClick');
-
 		var me = this,
 			grid = me.getReferralPanelGrid(),
 			sm = grid.getSelectionModel(),
@@ -105,7 +151,6 @@ Ext.define('App.controller.patient.Referrals', {
 			service_code: records[0].data.code,
 			service_code_type: records[0].data.code_type
 		})
-
 	},
 
 	onReferralDiagnosisSearchSelect: function(cmb, records){
@@ -116,13 +161,15 @@ Ext.define('App.controller.patient.Referrals', {
 		})
 	},
 
-	onReferralExternalReferralCheckbox: function(checkbox){
-		say(checkbox);
+	onReferralExternalReferralCheckboxChange: function(checkbox, isExternal){
+		this.getReferralLocalProviderCombo().setVisible(!isExternal);
+		this.getReferralLocalProviderCombo().setDisabled(isExternal);
+		this.getReferralExternalProviderCombo().setVisible(isExternal);
+		this.getReferralExternalProviderCombo().setDisabled(!isExternal);
 	},
 
 	onReferralActive: function(grid){
 		var store = grid.getStore();
-
 		store.clearFilter(true);
 		store.filter([
 			{
@@ -147,7 +194,6 @@ Ext.define('App.controller.patient.Referrals', {
 			referral_date: new Date()
 		});
 		plugin.startEdit(records[0], 0);
-
 	}
 
 });

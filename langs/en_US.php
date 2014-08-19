@@ -1433,6 +1433,7 @@ $LANG = array(
 	'active_drug_allergies'                 => 'Active Drug Allergies',
 	'drag_patient_to_new_area'              => 'Drag Patient To New Area',
 	'drop_patient_to_new_area'              => 'Drop Patient To New Area',
+	'please_select_only_one_record'         => 'Please Select Only One Record',
 
 
 );

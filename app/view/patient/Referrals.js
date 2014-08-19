@@ -23,13 +23,15 @@ Ext.define('App.view.patient.Referrals', {
 		'App.ux.LiveICDXSearch',
 		'App.ux.combo.ActiveProviders',
 		'Ext.selection.CheckboxModel',
-		'App.ux.grid.RowFormEditing'
+		'App.ux.grid.RowFormEditing',
+		'App.ux.combo.ReferringProviders'
 	],
 	xtype: 'patientreferralspanel',
 	title: i18n('referrals'),
 	action: 'referralsGrid',
 	itemId: 'patientReferralsGrid',
 	columnLines: true,
+	allowDeselect: true,
 	store: Ext.create('App.store.patient.Referrals', {
 		remoteFilter: true
 	}),
@@ -102,36 +104,71 @@ Ext.define('App.view.patient.Referrals', {
 							},
 							items: [
 								{
-									xtype: 'checkboxfield',
-									fieldLabel: i18n('external_referral'),
-									itemId: 'referralExternalReferralCheckbox',
-									name: 'is_external_referral'
-								},
-								{
 									xtype: 'activeproviderscombo',
 									fieldLabel: i18n('refer_by'),
-									name: 'refer_by'
+									name: 'refer_by_text',
+									width: 300,
+									displayField: 'option_name',
+									valueField: 'option_name',
+									itemId: 'ReferralProviderCombo'
 								},
 								{
-									xtype: 'activeproviderscombo',
-									fieldLabel: i18n('refer_to'),
-									name: 'refer_to'
+									xtype: 'container',
+									layout: 'hbox',
+									items: [
+										{
+											xtype: 'activeproviderscombo',
+											fieldLabel: i18n('refer_to'),
+											name: 'refer_to_text',
+											labelAlign: 'right',
+											margin: '0 5 5 0',
+											width: 300,
+//											disabled: true,
+//											hidden: true,
+											displayField: 'fullname',
+											valueField: 'fullname',
+											itemId: 'ReferralLocalProviderCombo'
+										},
+										{
+											xtype: 'referringproviderscombo',
+											fieldLabel: i18n('refer_to'),
+											name: 'refer_to_text',
+											labelAlign: 'right',
+											margin: '0 5 5 0',
+											width: 300,
+											disabled: true,
+											hidden: true,
+											displayField: 'fullname',
+											valueField: 'fullname',
+											itemId: 'ReferralExternalProviderCombo'
+										},
+										{
+											xtype: 'checkboxfield',
+											boxLabel: i18n('external_referral'),
+											itemId: 'ReferralExternalReferralCheckbox',
+											name: 'is_external_referral'
+										}
+									]
 								},
+
 								{
 									xtype: 'gaiaehr.combo',
 									fieldLabel: i18n('risk_level'),
 									name: 'risk_level',
-									list: 17
+									list: 17,
+									width: 300
 								},
-								{
-									xtype: 'checkboxfield',
-									fieldLabel: i18n('send_vitals'),
-									name: 'send_vitals'
-								},
+//								{
+//									xtype: 'checkboxfield',
+//									fieldLabel: i18n('send_vitals'),
+//									name: 'send_vitals',
+//									width: 300
+//								},
 								{
 									xtype: 'checkboxfield',
 									fieldLabel: i18n('send_record'),
-									name: 'send_record'
+									name: 'send_record',
+									width: 300
 								}
 							]
 						}

@@ -55,7 +55,7 @@ Ext.define('App.model.patient.Referral', {
 		{
 			name: 'service_text',
 			type: 'string',
-			store: false
+			len: 300
 		},
 		{
 			name: 'service_code',
@@ -76,7 +76,7 @@ Ext.define('App.model.patient.Referral', {
 		{
 			name: 'diagnosis_text',
 			type: 'string',
-			store: false
+			len: 300
 		},
 		{
 			name: 'diagnosis_code',
@@ -100,7 +100,7 @@ Ext.define('App.model.patient.Referral', {
 		{
 			name: 'refer_by_text',
 			type: 'string',
-			store: false
+			len: 120
 		},
 		{
 			name: 'refer_to',
@@ -110,16 +110,12 @@ Ext.define('App.model.patient.Referral', {
 		{
 			name: 'refer_to_text',
 			type: 'string',
-			store: false
+			len: 120
 		},
 		{
 			name: 'risk_level',
 			type: 'string',
 			len: 20
-		},
-		{
-			name: 'send_vitals',
-			type: 'bool'
 		},
 		{
 			name: 'send_record',

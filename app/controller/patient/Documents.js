@@ -84,9 +84,9 @@ Ext.define('App.controller.patient.Documents', {
 		var frame = sm.view.panel.up('panel').query('#patientDocumentViewerFrame')[0];
 
 		if(records.length > 0){
-			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&id=' + records[0].data.id);
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&token=' + app.user.token + '&id=' + records[0].data.id);
 		}else{
-			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site);
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&token=' + app.user.token);
 		}
 	},
 

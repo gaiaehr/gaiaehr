@@ -105,6 +105,7 @@ Ext.define('App.view.Viewport', {
 			flex: 1,
 			layout: 'hbox'
 		});
+
 		me.HeaderRight = Ext.widget('container',{
 			margin: 0,
 			layout: 'hbox'
@@ -204,19 +205,19 @@ Ext.define('App.view.Viewport', {
             tooltip: i18n('stow_patient_record')
         });
 
-	    if(a('access_patient_visit_checkout')){
-		    me.patientCheckOutBtn = me.HeaderLeft.add({
-			    xtype: 'button',
-			    scale: 'large',
-			    margin: '0 3 0 0',
-			    cls: 'headerLargeBtn',
-			    padding: 0,
-			    iconCls: 'icoCheckOut',
-			    scope: me,
-			    handler: me.checkOutPatient,
-			    tooltip: i18n('visit_check_out')
-		    });
-	    }
+//	    if(a('access_patient_visit_checkout')){
+//		    me.patientCheckOutBtn = me.HeaderLeft.add({
+//			    xtype: 'button',
+//			    scale: 'large',
+//			    margin: '0 3 0 0',
+//			    cls: 'headerLargeBtn',
+//			    padding: 0,
+//			    iconCls: 'icoCheckOut',
+//			    scope: me,
+//			    handler: me.checkOutPatient,
+//			    tooltip: i18n('visit_check_out')
+//		    });
+//	    }
 
 
 //	    me.patientChargeBtn = me.Header.add({
@@ -1193,7 +1194,7 @@ Ext.define('App.view.Viewport', {
 
     onDocumentView: function(id, type){
 	    var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-		    src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id,
+		    src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id + '&token=' + app.user.token,
 		    win;
 
 	    if(typeof type != 'undefined') src += '&temp=' + type;

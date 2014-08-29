@@ -72,14 +72,17 @@ class MatchaHelper extends Matcha {
 			);
 		}
 
-		self::$__secretKey = site_aes_key;
+		self::$__secretKey = defined('site_aes_key') ? site_aes_key : '';
 
-		MatchaAudit::$__audit = true;
-		MatchaAudit::$hookTable = 'audit_transaction_log';
-		MatchaAudit::$hookClass = 'MatchaHelper';
-		MatchaAudit::$hookMethod = 'storeAudit';
-		MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
-		MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+		if(isset(self::$__conn)){
+			MatchaAudit::$__audit = true;
+			MatchaAudit::$hookTable = 'audit_transaction_log';
+			MatchaAudit::$hookClass = 'MatchaHelper';
+			MatchaAudit::$hookMethod = 'storeAudit';
+			MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
+			MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+		}
+
 	}
 	function __destruct(){
 //		self::$__conn = null;
@@ -307,6 +310,7 @@ class MatchaHelper extends Matcha {
 	 * @return      array Connection error info if any
 	 */
 	public function execOnly($setLastInsertId = true){
+		if(!isset(self::$__conn)) return array();
 		self::$__conn->query($this->sql_statement);
 		if($setLastInsertId)
 			$this->lastInsertId = self::$__conn->lastInsertId();
@@ -402,6 +406,7 @@ class MatchaHelper extends Matcha {
 	 * @return      array of record or error if any
 	 */
 	function fetchRecord(){
+		if(!isset(self::$__conn)) return array();
 		// Get all the records
 		$recordSet = self::$__conn->query($this->sql_statement);
 		$record = $recordSet->fetch(PDO::FETCH_ASSOC);
@@ -429,6 +434,7 @@ class MatchaHelper extends Matcha {
 	 * @return      array of records, if error occurred return the error instead
 	 */
 	public function fetchRecords($fetchStyle = PDO::FETCH_BOTH){
+		if(!isset(self::$__conn)) return array();
 		$recordSet = self::$__conn->query($this->sql_statement);
 		if(stristr($this->sql_statement, 'SELECT')){
 			$this->lastInsertId = self::$__conn->lastInsertId();

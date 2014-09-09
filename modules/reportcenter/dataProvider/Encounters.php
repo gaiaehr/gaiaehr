@@ -31,7 +31,7 @@ include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/i18nRouter.php');
 
 class Encounters extends Reports {
-	private $db;
+	private $conn;
 	private $user;
 	private $patient;
 	private $encounter;
@@ -41,7 +41,8 @@ class Encounters extends Reports {
 	 */
 	function __construct() {
 		parent::__construct();
-		$this->db = new \MatchaHelper();
+		$this->conn = \Matcha::getConn();
+
 		$this->user = new \User();
 		$this->patient = new \Patient();
 		$this->encounter = new \Encounter();
@@ -77,20 +78,26 @@ class Encounters extends Reports {
 		$sql = " SELECT *
 	               FROM patient_prescriptions
 	              WHERE created_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
-		if(isset($pid) && $pid != '')
+
+		if(isset($pid) && $pid != ''){
 			$sql .= " AND pid = '$pid'";
-		$this->db->setSQL($sql);
-		foreach($this->db->fetchRecords(\PDO::FETCH_ASSOC) as $key => $data){
-			$id = $data['id'];
-			$sql = " SELECT *
-		   	           FROM patient_medications
-		   	          WHERE prescription_id = '$id'";
-			if(isset($drug) && $drug != '')
-				$sql .= " AND medication_id = '$drug'";
-			$this->db->setSQL($sql);
-			//$alldata[$key] = $this -> db -> fetchRecords(PDO::FETCH_ASSOC);
 		}
-		return $this->db->fetchRecords(\PDO::FETCH_ASSOC);
+		$recordSet = $this->conn->query($sql);
+
+//		foreach($recordSet->fetchAll(\PDO::FETCH_ASSOC) as $key => $data){
+//			$id = $data['id'];
+//			$sql = " SELECT *
+//		   	           FROM patient_medications
+//		   	          WHERE prescription_id = '$id'";
+//
+//			if(isset($drug) && $drug != ''){
+//				$sql .= " AND medication_id = '$drug'";
+//			}
+//			$recordSet2 = $this->conn->query($sql);
+//			$alldata[$key] = recordSets->fetchAll;
+//		}
+
+		return $recordSet->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	public function htmlEncountersList($params, $html) {

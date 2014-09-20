@@ -38,6 +38,11 @@ Ext.define('App.model.patient.encounter.snippetTree', {
 			type: 'int'
 		},
 		{
+			name: 'title',
+			type: 'string',
+			len: 80
+		},
+		{
 			name: 'text',
 			type: 'string',
 			dataType: 'text'

@@ -317,6 +317,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['allergies']]['section'];
+
+		if(!isset($section['entry'])){
+			return $allergies;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 		foreach($section['entry'] as $entry){
 
@@ -384,6 +389,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['medications']]['section'];
+
+		if(!isset($section['entry'])){
+			return $medications;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 		foreach($section['entry'] as $entry){
 
@@ -439,6 +449,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['problems']]['section'];
+
+		if(!isset($section['entry'])){
+			return $problems;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 		foreach($section['entry'] as $entry){
 			$problem = new stdClass();
@@ -485,6 +500,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['procedures']]['section'];
+
+		if(!isset($section['entry'])){
+			return $procedures;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 
 		foreach($section['entry'] as $entry){
@@ -520,6 +540,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['results']]['section'];
+
+		if(!isset($section['entry'])){
+			return $results;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 
 		foreach($section['entry'] as $entry){
@@ -591,6 +616,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['encounters']]['section'];
+
+		if(!isset($section['entry'])){
+			return $encounters;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 
 		foreach($section['entry'] as $entry){
@@ -659,6 +689,11 @@ class CCDDocumentParse {
 		}
 
 		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['advancedirectives']]['section'];
+
+		if(!isset($section['entry'])){
+			return $directives;
+		}
+
 		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
 
 		foreach($section['entry'] as $entry){

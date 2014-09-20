@@ -148,7 +148,7 @@ $API = array(
             'getPatientSecondaryInsuranceByPid' => array(
                 'len' => 1
             ),
-            'getPatientTertiaryInsuranceByPid' => array(
+            'getPatientComplementaryInsuranceByPid' => array(
                 'len' => 1
             )
         )
@@ -736,6 +736,38 @@ $API = array(
 				'len' => 1
 			),
 			'setFacility' => array(
+				'len' => 1
+			),
+
+			'getFacilityConfigs' => array(
+				'len' => 1
+			),
+			'getFacilityConfig' => array(
+				'len' => 1
+			),
+			'addFacilityConfig' => array(
+				'len' => 1
+			),
+			'updateFacilityConfig' => array(
+				'len' => 1
+			),
+			'deleteFacilityConfig' => array(
+				'len' => 1
+			),
+
+			'getDepartments' => array(
+				'len' => 1
+			),
+			'getDepartment' => array(
+				'len' => 1
+			),
+			'addDepartment' => array(
+				'len' => 1
+			),
+			'updateDepartment' => array(
+				'len' => 1
+			),
+			'deleteDepartment' => array(
 				'len' => 1
 			)
 		)

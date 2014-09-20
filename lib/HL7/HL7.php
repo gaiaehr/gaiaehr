@@ -199,7 +199,7 @@ class HL7 {
 	 */
 	function readMessage($msg){
 
-		$segments = preg_split ("/\r/", trim($msg));
+		$segments = preg_split ("/\r|\n/", trim($msg));
 
 		foreach($segments AS $segment){
 			$this->readSegment($segment);

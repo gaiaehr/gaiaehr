@@ -1434,6 +1434,14 @@ $LANG = array(
 	'drag_patient_to_new_area'              => 'Drag Patient To New Area',
 	'drop_patient_to_new_area'              => 'Drop Patient To New Area',
 	'please_select_only_one_record'         => 'Please Select Only One Record',
+	'signed_on'                             => 'Signed On',
+	'encounter_details'                     => 'Encounter Details',
+	'snippet'                               => 'Snippet',
+	'provider_numbers'                      => 'Provider Numbers',
+	'facility_configuration'                => 'Facility Configuration',
+	'facility_structure'                    => 'facility Structure',
+	'departments'                           => 'Departments',
+	'please_remove_child_records_first'     => 'Please Remove Child Records First',
 
 
 );

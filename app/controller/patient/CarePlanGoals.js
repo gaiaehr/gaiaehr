@@ -127,14 +127,17 @@ Ext.define('App.controller.patient.CarePlanGoals', {
 	},
 
 	onBeforeOpenEncounter: function(encounter){
-		this.getCarePlanGoalsGrid().getStore().load({
-			filters:[
-				{
-					property: 'eid',
-					value: encounter.data.eid
-				}
-			]
-		});
+		if(this.getCarePlanGoalsGrid()){
+			this.getCarePlanGoalsGrid().getStore().load({
+				filters:[
+					{
+						property: 'eid',
+						value: encounter.data.eid
+					}
+				]
+			});
+		}
+
 	},
 
 	onNewCarePlanGoalBtnClick: function(btn){
@@ -151,6 +154,7 @@ Ext.define('App.controller.patient.CarePlanGoals', {
 		});
 
 		me.getCarePlanGoalsNewWindow().setTitle(i18n('new_goal'));
+		me.getCarePlanGoalsNewWindow().setSize(me.getSoapPanelForm().getSize());
 		me.getCarePlanGoalsNewWindow().show(me.getCarePlanGoalsGrid().el);
 		me.getCarePlanGoalsNewForm().getForm().loadRecord(records[0]);
 

@@ -8,6 +8,28 @@
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+
+.btnGreenBackground {
+    background-color: #ccffcc;
+}
+.btnGreenBackground.x-pressed {
+    background-color: #66cc66;
+}
+
+.btnRedBackground {
+    background-color: #ffcccc;
+}
+.btnRedBackground.x-pressed {
+    background-color: #ff6666;
+}
+
+.btnBlueBackground {
+    background-color: #99ccff;
+}
+.btnBlueBackground.x-pressed {
+    background-color: #6699cc;
+}
+
 .appHeader .x-toolbar-separator {
     background-color: #ccc;
     /*box-shadow: 0 0 1px rgba(0, 0, 0, .5);*/

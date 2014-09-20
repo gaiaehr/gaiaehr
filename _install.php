@@ -32,7 +32,9 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <script type="text/javascript">
 
         var app, lang = {};
-        function say(a){ console.log(a); }
+        window.say = function(args){
+	        console.log.apply(this, arguments);
+        };
         function i18n(key){ return lang[key] || key; }
         Ext.Loader.setConfig({
             enabled: true,

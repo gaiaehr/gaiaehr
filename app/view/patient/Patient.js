@@ -41,79 +41,131 @@ Ext.define('App.view.patient.Patient', {
 		me.store = Ext.create('App.store.patient.Patient');
 		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
 
-		Ext.apply(me, {
-			items: [
+		me.compactDemographics = eval(g('compact_demographics'));
 
+
+
+		me.insPanel = Ext.widget('tabpanel', {
+			itemId: 'PatientInsurancesPanel',
+			flex: 1,
+			defaults: {
+				autoScroll: true,
+				padding: 10
+			},
+			plugins: [
+				{
+					ptype: 'AddTabButton',
+					iconCls: 'icoAdd',
+					toolTip: i18n('new_insurance'),
+					btnText: i18n('add_insurance'),
+					forceText: true,
+					tabConfig: {
+						xtype: 'form',
+						border: false,
+						bodyBorder: false
+					}
+				}
+			],
+			listeners: {
+				scope: me,
+				beforeadd: me.insurancePanelAdd
+			}
+		});
+
+		var configs = {
+			items: [
 				me.demoForm = Ext.widget('form', {
 					action: 'demoFormPanel',
 					itemId: 'PatientDemographicForm',
 					type: 'anchor',
 					border: false,
-					fieldDefaults: { msgTarget: 'side' }
-				}),
-
-				me.insPanel = Ext.widget('tabpanel', {
-					flex: 1,
-					defaults: {
-						autoScroll: true,
-						padding: 10
-					},
-					plugins: [
-						{
-							ptype: 'AddTabButton',
-							iconCls: 'icoAdd',
-							toolTip: i18n('new_insurance'),
-							btnText: i18n('add_insurance'),
-							forceText: true,
-							tabConfig: {
-								xtype: 'form',
-								border: false,
-								bodyBorder: false
-							}
-						}
-					],
-					listeners: {
-						scope: me,
-						beforeadd: me.insurancePanelAdd
+					autoScroll: true,
+					padding: (me.compactDemographics ? 0 : 10),
+					fieldDefaults: {
+						labelAlign: 'right',
+						msgTarget: 'side'
 					}
 				})
-			],
-			bbar: [
-				{
-					xtype: 'button',
-					action: 'readOnly',
-					text: i18n('possible_duplicates'),
-					minWidth: 75,
-					itemId: 'PatientPossibleDuplicatesBtn'
-				},
-				'-',
-				'->',
-				'-',
-				{
-					xtype: 'button',
-					action: 'readOnly',
-					text: i18n('save'),
-					minWidth: 75,
-					scope: me,
-					handler: me.formSave
-				},
-				'-',
-				{
-					xtype: 'button',
-					text: i18n('cancel'),
-					action: 'readOnly',
-					minWidth: 75,
-					scope: me,
-					handler: me.formCancel
-				}
-			],
-			listeners: {
+			]
+		};
+
+		if(me.compactDemographics){
+			configs.items.push(me.insPanel);
+		}
+
+		configs.bbar = [
+			{
+				xtype: 'button',
+				action: 'readOnly',
+				text: i18n('possible_duplicates'),
+				minWidth: 75,
+				itemId: 'PatientPossibleDuplicatesBtn'
+			},
+			'-',
+			'->',
+			'-',
+			{
+				xtype: 'button',
+				action: 'readOnly',
+				text: i18n('save'),
+				minWidth: 75,
 				scope: me,
-				beforerender: me.beforePanelRender
+				handler: me.formSave
+			},
+			'-',
+			{
+				xtype: 'button',
+				text: i18n('cancel'),
+				action: 'readOnly',
+				minWidth: 75,
+				scope: me,
+				handler: me.formCancel
 			}
-		});
+		];
+
+		configs.listeners = {
+			scope: me,
+				beforerender: me.beforePanelRender
+		};
+
+		Ext.apply(me, configs);
 
 		me.callParent(arguments);
+
+
+		if(!me.compactDemographics){
+
+			Ext.Function.defer(function(){
+				me.insPanel.title = i18n('insurance');
+				me.insPanel.addDocked({
+					xtype:'toolbar',
+					dock: 'bottom',
+					items: [
+						'->',
+						'-',
+						{
+							xtype: 'button',
+							action: 'readOnly',
+							text: i18n('save'),
+							minWidth: 75,
+							scope: me,
+							handler: me.formSave
+						},
+						'-',
+						{
+							xtype: 'button',
+							text: i18n('cancel'),
+							action: 'readOnly',
+							minWidth: 75,
+							scope: me,
+							handler: me.formCancel
+						}
+					]
+				});
+
+					me.up('tabpanel').insert(1, me.insPanel);
+			}, 300);
+		}
 	},
 
 	beforePanelRender: function(){
@@ -136,7 +188,7 @@ Ext.define('App.view.patient.Patient', {
 				sex.on('blur', crtl.checkForPossibleDuplicates, crtl);
 				dob.dateField.on('blur', crtl.checkForPossibleDuplicates, crtl);
 			}else{
-				whoPanel = formPanel.query('tabpanel')[0].items.items[0];
+				whoPanel = formPanel.query('[action=DemographicWhoFieldSet]')[0];
 				whoPanel.insert(0,
 					me.patientImages = Ext.create('Ext.panel.Panel', {
 						action: 'patientImage',
@@ -236,8 +288,10 @@ Ext.define('App.view.patient.Patient', {
 
 	insurancePanelAdd: function(tapPanel, form){
 		var me = this,
-			rec = form.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
-		form.title = i18n('insurance') + ' (' + (form.insurance ? rec.data.type : i18n('new')) + ')';
+			rec = form.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
+
+		form.title = i18n('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : i18n('new')) + ')';
+
 		form.add(me.insuranceFormItmes);
 		form.getForm().loadRecord(rec);
 		if(rec.data.image != '') form.down('image').setSrc(rec.data.image);

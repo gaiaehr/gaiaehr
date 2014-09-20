@@ -27,10 +27,6 @@ class User {
 	 */
 	private $u;
 
-	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
 
 	/**
 	 * @var ACL
@@ -38,7 +34,6 @@ class User {
 	private $acl;
 
 	function __construct(){
-		$this->db = new MatchaHelper();
 		$this->acl = new ACL();
 		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 	}

@@ -38,14 +38,18 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree', {
 			autoLoad: false
 		});
+
 		me.procedureStore = Ext.create('App.store.patient.encounter.Procedures');
+
+		var snippetCtrl = App.app.getController('patient.encounter.Snippets');
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
 			title: i18n('snippets'),
-			itemId: 'templatesTreePanel',
+			itemId: 'SnippetsTreePanel',
 			region: 'west',
 			width: 300,
 			split: true,
+			animate: false,
 			hideHeaders: true,
 			useArrows: true,
 			rootVisible: false,
@@ -59,9 +63,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				{
 					xtype: 'button',
 					text: i18n('category'),
-					scope: me,
 					iconCls: 'icoAdd',
-					handler: me.onAddSnippetCategory
+					itemId: 'SnippetCategoryAddBtn'
 				}
 			],
 			columns: [
@@ -69,8 +72,12 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					xtype: 'treecolumn', //this is so we know which column will show the tree
 					text: 'Template',
 					flex: 1,
-					dataIndex: 'text',
-					renderer: me.snippetTextRenderer
+					dataIndex: 'title',
+					renderer: function(v, meta, record){
+						var toolTip = record.data.text ? ' data-qtip="' + record.data.text + '" ' : '';
+
+						return '<span ' + toolTip + '>' + (v != '' ? v : record.data.text) + '</span>'
+					}
 				},
 				{
 					text: i18n('add'),
@@ -81,7 +88,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					align: 'center',
 					icon: 'resources/images/icons/add.gif',
 					scope: me,
-					handler: me.onSnippetBtnAdd,
+					handler: function(grid, rowIndex, colIndex, actionItem, event, record){
+						snippetCtrl.onSnippetAddBtnClick(grid, rowIndex, colIndex, actionItem, event, record);
+					},
 					getClass: function(value, metadata, record){
 						if(!record.data.leaf){
 							return 'x-grid-center-icon';
@@ -98,7 +107,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					tooltip: 'Edit task',
 					align: 'center',
 					icon: 'resources/images/icons/edit.png',
-					handler: me.onSnippetBtnEdit
+					handler: function(grid, rowIndex, colIndex, actionItem, event, record){
+						snippetCtrl.onSnippetBtnEdit(grid, rowIndex, colIndex, actionItem, event, record);
+					}
 				}
 			],
 			viewConfig: {
@@ -112,31 +123,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					drop: me.onSnippetDrop
 				}
 			},
-			plugins: [
-				{
-					ptype: 'rowformediting',
-					clicksToMoveEditor: 1,
-					enabled: false,
-					enableRemove: true,
-					items: [
-						{
-							xtype: 'textarea',
-							height: 100,
-							anchor: '100%',
-							name: 'text'
-						}
-					]
-				}
-			],
 			listeners: {
 				scope: me,
 				itemclick: me.onSnippetClick,
-				itemdblclick: me.onSnippetDblClick,
-				beforeedit: me.onSnippetBeforeEdit,
-				canceledit: me.onSnippetCancelEdit,
-				beforeremove: me.onSnippetBeforeRemove,
-				remove: me.onSnippetRemove,
-				edit: me.onSnippetEdit
+				itemdblclick: me.onSnippetDblClick
 			}
 		});
 
@@ -207,7 +197,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						}
 					]
 				}),
-				Ext.widget('careplangoalsnewwindow'),
 				{
 					xtype: 'fieldset',
 					title: i18n('subjective'),
@@ -363,7 +352,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			items: [ me.snippets, me.form ]
 		});
 
-		me.callParent();
+		me.callParent(arguments);
+
 	},
 
 	/**
@@ -494,18 +484,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 	/**
 	 *
-	 * @param v
-	 * @param meta
-	 * @param record
-	 * @returns {string}
-	 */
-	snippetTextRenderer: function(v, meta, record){
-		var toolTip = record.data.text ? ' data-qtip="' + record.data.text + '" ' : '';
-		return '<span ' + toolTip + '>' + v + '</span>'
-	},
-
-	/**
-	 *
 	 * @param view
 	 * @param record
 	 */
@@ -591,76 +569,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 	/**
 	 *
-	 * @param grid
-	 * @param rowIndex
-	 */
-	onSnippetBtnEdit: function(grid, rowIndex){
-		grid.editingPlugin.enabled = true;
-		grid.editingPlugin.startEdit(rowIndex, 0);
-	},
-
-	/**
-	 *
-	 * @param editor
-	 * @param store
-	 * @param record
-	 */
-	onSnippetRemove: function(editor, store, record){
-		var me = this;
-		store.sync({
-			callback: function(){
-				me.msg('Sweet!', 'Record removed.');
-				// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-				app.AuditLog('SOAP removed');
-			}
-		});
-	},
-
-	/**
-	 *
-	 * @param editor
-	 * @param store
-	 * @param record
-	 * @returns {boolean}
-	 */
-	onSnippetBeforeRemove: function(editor, store, record){
-		var me = this;
-		if(record.childNodes[0]){
-			me.msg('Oops!', 'Unable to remove category "' + record.data.text + '". Please delete snippets first.', true);
-			return false;
-		}else{
-			return true;
-		}
-	},
-
-	/**
-	 *
-	 * @param plugin
-	 */
-	onSnippetEdit: function(plugin){
-		this.snippetStore.sync();
-		plugin.enabled = false;
-	},
-
-	/**
-	 *
-	 * @param plugin
-	 * @returns {boolean|enabled|Ext.Logger.enabled|Ext.draw.modifier.Highlight.enabled|Ext.chart.interactions.Abstract.enabled|Ext.resizer.SplitterTracker.enabled|*}
-	 */
-	onSnippetBeforeEdit: function(plugin){
-		return plugin.enabled;
-	},
-
-	/**
-	 *
-	 * @param plugin
-	 */
-	onSnippetCancelEdit: function(plugin){
-		plugin.enabled = false;
-	},
-
-	/**
-	 *
 	 * @param node
 	 * @param data
 	 * @param overModel
@@ -672,74 +580,5 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			pos = pos + 10;
 		}
 		me.snippetStore.sync();
-	},
-
-	/**
-	 *
-	 * @param grid
-	 * @param rowIndex
-	 * @param colIndex
-	 * @param actionItem
-	 * @param event
-	 * @param record
-	 */
-	onSnippetBtnAdd: function(grid, rowIndex, colIndex, actionItem, event, record){
-		var me = this,
-			rec;
-
-		me.origScope.snippets.editingPlugin.cancelEdit();
-		rec = me.origScope.snippetStore.getNodeById(record.data.id).appendChild({
-			text: 'New Snippet',
-			parentId: record.data.id,
-			leaf: true
-		});
-
-		me.origScope.snippetStore.sync({
-			callback: function(batch){
-				rec.set({id: batch.proxy.reader.rawData.id});
-				rec.commit();
-				me.origScope.msg('Sweet!', 'Record Added');
-				me.origScope.snippets.editingPlugin.enabled = true;
-				me.origScope.snippets.editingPlugin.startEdit(rec, 0);
-			}
-		});
-	},
-
-	/**
-	 *
-	 */
-	onAddSnippetCategory: function(){
-		var me = this,
-			selection = me.snippets.getSelectionModel().getSelection(),
-			baseNode,
-			record;
-
-		if(selection.length == 0){
-			baseNode = me.snippetStore.getRootNode();
-		}else if(selection[0].data.leaf){
-			baseNode = selection[0].parentNode;
-		}else{
-			baseNode = selection[0];
-		}
-
-		me.snippets.editingPlugin.cancelEdit();
-		record = baseNode.appendChild({
-			text: 'New Category',
-			parentId: baseNode.data.id,
-			category: me.snippets.action,
-			leaf: false
-		});
-
-		me.snippetStore.sync({
-			callback: function(batch){
-				record.set({id: batch.proxy.reader.rawData.id});
-				record.commit();
-				me.msg('Sweet!', 'Record Added');
-				me.snippets.editingPlugin.enabled = true;
-				me.snippets.editingPlugin.startEdit(record, 0);
-				// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-				// app.AuditLog('SOAP added');
-			}
-		});
 	}
 });

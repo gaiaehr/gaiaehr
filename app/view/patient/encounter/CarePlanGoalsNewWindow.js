@@ -23,7 +23,6 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 	],
 	xtype: 'careplangoalsnewwindow',
 	title: i18n('new_goal'),
-	maximized: true,
 	closable: false,
 	constrain: true,
 	closeAction: 'hide',

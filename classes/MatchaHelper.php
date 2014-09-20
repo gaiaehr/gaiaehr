@@ -486,6 +486,11 @@ class MatchaHelper extends Matcha {
 
 }
 
+$conn = Matcha::getConn();
+if(!isset($conn)){
+	new MatchaHelper();
+}
+
 //print'<pre>';
 //$db = new MatchaHelper();
 //print_r(MatchaModel::setSenchaModel('App.model.patient.Insurance'));

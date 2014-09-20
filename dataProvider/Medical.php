@@ -490,9 +490,9 @@ class Medical {
 		$data['review_immunizations'] = 1;
 		$data['review_allergies'] = 1;
 		$data['review_active_problems'] = 1;
-		$data['review_alcohol'] = $params->review_alcohol;
-		$data['review_smoke'] = $params->review_smoke;
-		$data['review_pregnant'] = $params->review_pregnant;
+//		$data['review_alcohol'] = $params->review_alcohol;
+//		$data['review_smoke'] = $params->review_smoke;
+//		$data['review_pregnant'] = $params->review_pregnant;
 		$data['review_surgery'] = 1;
 		$data['review_medications'] = 1;
 		$data['review_dental'] = 1;

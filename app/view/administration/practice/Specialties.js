@@ -16,45 +16,59 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.administration.Specialities', {
+Ext.define('App.view.administration.practice.Specialties', {
 	extend: 'Ext.grid.Panel',
-	xtype: 'specialitiespanel',
+	xtype: 'specialtiespanel',
 	requires: [
 		'Ext.grid.plugin.RowEditing',
 		'Ext.ux.SlidingPager'
 	],
-	title: i18n('specialities'),
+	title: i18n('specialties'),
 
 	initComponent: function(){
 		var me = this;
 
 		Ext.apply(me, {
-			store: me.store = Ext.create('App.store.administration.Specialities', {
+			store: me.store = Ext.create('App.store.administration.Specialties', {
 				autoSync: false
 			}),
 			columns: [
 				{
 					width: 200,
 					text: i18n('title'),
-					sortable: true
+					dataIndex: 'title',
+					sortable: true,
+					flex: 1,
+					editor: {
+						xtype: 'textfield'
+					}
 				},
 				{
-					flex: 1,
 					text: i18n('taxonomy'),
 					sortable: true,
-					dataIndex: 'taxonomy'
+					dataIndex: 'taxonomy',
+					flex: 1,
+					editor: {
+						xtype: 'textfield'
+					}
 				},
 				{
-					flex: 1,
 					text: i18n('modality'),
 					sortable: true,
-					dataIndex: 'modality'
+					dataIndex: 'modality',
+					flex: 1,
+					editor: {
+						xtype: 'textfield'
+					}
 				},
 				{
 					text: i18n('active'),
 					sortable: true,
 					dataIndex: 'active',
-					renderer: me.boolRenderer
+					renderer: me.boolRenderer,
+					editor: {
+						xtype: 'checkboxfield'
+					}
 				}
 			],
 			plugins: [
@@ -67,7 +81,7 @@ Ext.define('App.view.administration.Specialities', {
 				'->',
 				{
 					xtype: 'button',
-					text: i18n('specialitiy'),
+					text: i18n('specialty'),
 					iconCls: 'icoAdd',
 					itemId: 'specialitiesAddBtn'
 				}

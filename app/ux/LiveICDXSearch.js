@@ -17,7 +17,7 @@
  */
 
 Ext.define('App.ux.LiveICDXSearch', {
-	extend: 'Ext.form.field.ComboBox',
+	extend: 'Ext.form.ComboBox',
 	alias: 'widget.liveicdxsearch',
 	hideLabel: true,
 	triggerTip: i18n('click_to_clear_selection'),
@@ -34,7 +34,7 @@ Ext.define('App.ux.LiveICDXSearch', {
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('liveICDXSearchModel', {
+		Ext.define('liveICDXSearchModel' + this.id, {
 			extend: 'Ext.data.Model',
 			fields: [
 				{ name: 'id', type: 'int' },
@@ -56,16 +56,15 @@ Ext.define('App.ux.LiveICDXSearch', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'liveICDXSearchModel',
-			pageSize: 25,
+			model: 'liveICDXSearchModel' + this.id,
+			pageSize: 1000,
 			autoLoad: false
 		});
 
 		Ext.apply(this, {
 			store: me.store,
-
-			emptyText: me.emptyText,
-			typeAhead: true,
+			emptyText: i18n('search') + '...',
+			typeAhead: false,
 			minChars: 1,
 			anchor: '100%',
 			listConfig: {
@@ -77,8 +76,8 @@ Ext.define('App.ux.LiveICDXSearch', {
 				getInnerTpl: function(){
 					return '<div class="search-item">{code_type} <span style="font-weight: bold;">{code}</span>: {code_text}</div>';
 				}
-			},
-			pageSize: 10
+			}
+//			pageSize: 10
 			//            listeners:{
 			//                scope:me,
 			//                select:me.codeSelected

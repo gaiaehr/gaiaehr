@@ -387,6 +387,22 @@ Ext.define('App.view.administration.Layout', {
 		                    itemId: 'code',
 		                    emptyText: 'ei. SNOMED:254687942 or ICD10:H25.091',
 		                    hidden: true
+	                    },
+	                    {
+		                    fieldLabel: i18n('item_id'),
+		                    xtype: 'textfield',
+		                    name: 'itemId',
+		                    itemId: 'itemId',
+		                    emptyText: 'sencha itemId',
+		                    hidden: true
+	                    },
+	                    {
+		                    fieldLabel: i18n('action'),
+		                    xtype: 'textfield',
+		                    name: 'action',
+		                    itemId: 'action',
+		                    emptyText: 'sencha action',
+		                    hidden: true
 	                    }
                     ]
                 }
@@ -906,29 +922,29 @@ Ext.define('App.view.administration.Layout', {
 
         var items;
         if(value == 'fieldset'){
-            items = ['title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
+            items = ['itemId', 'action', 'title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
         }else if(value == 'fieldcontainer'){
-            items = ['fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
+            items = ['itemId', 'action', 'fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
         }else if(value == 'combobox'){
-            items = ['name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
+            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
         }else if(value == 'checkbox'){
-            items = ['name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
+            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
         }else if(value == 'textfield'){
-            items = ['name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
+            items = ['itemId', 'action', 'name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
         }else if(value == 'textareafield'){
-            items = ['name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
+            items = ['itemId', 'action', 'name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
         }else if(value == 'numberfield'){
-            items = ['name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
         }else if(value == 'timefield'){
-            items = ['name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
         }else if(value == 'radiofield'){
-            items = ['name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
+            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
         }else if(value == 'datefield' || value == 'mitos.datetime'){
-            items = ['name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+            items = ['itemId', 'action', 'name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
         }else if(value == 'checkboxwithfamilyhistory'){
-	        items = ['name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
+	        items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
         }else{
-            items = ['name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
         }
         enableItems(items);
     },

@@ -163,7 +163,7 @@ Ext.define('App.model.administration.User', {
 		},
 		{
 			name: 'specialty',
-			type: 'string',
+			type: 'array',
 			comment: 'specialty',
 			len: 80
 		},

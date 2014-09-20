@@ -36,14 +36,14 @@ Ext.define('App.view.patient.ProgressNote', {
             '                   <div class="header row">' + i18n('record') + ': #{pid} </div>' +
             '                   <div class="header row">' + i18n('provider_date') + ': {open_by} </div>' +
             '                   <div class="header row">' + i18n('onset_date') + ': {[values.onset_date || "-"]} </div>' +
-            '                   <div class="header row">' + i18n('signed_by') + ': {[values.signed_by || "-"]} </div>' +
+            '                   <div class="header row">' + i18n('provider') + ': {[values.signed_by || "-"]} </div>' +
             '               </td>' +
             '               <td>' +
             '                   <div class="header row">' + i18n('service_date') + ': {service_date} </div>' +
             '                   <div class="header row">' + i18n('visit_category') + ': {visit_category} </div>' +
             '                   <div class="header row">' + i18n('facility') + ': {facility} </div>' +
             '                   <div class="header row">' + i18n('priority') + ': {priority} </div>' +
-            '                   <div class="header row">' + i18n('close_on') + ': {[values.close_date || "-"]} </div>' +
+            '                   <div class="header row">' + i18n('signed_on') + ': {[values.close_date || "-"]} </div>' +
             '               </td>' +
             '           </tr>' +
             '           <tr>' +

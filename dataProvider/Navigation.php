@@ -196,14 +196,14 @@ class Navigation
 				'id' => 'App.view.administration.Globals'
 			);
 		}
-		if($this->ACL->hasPermission('access_facilities')){
-			$admin['children'][] = array(
-				'text' => $this->i18n('facilities'),
-				'leaf' => true,
-				'cls' => 'file',
-				'id' => 'App.view.administration.Facilities'
-			);
-		}
+//		if($this->ACL->hasPermission('access_facilities')){
+//			$admin['children'][] = array(
+//				'text' => $this->i18n('facilities'),
+//				'leaf' => true,
+//				'cls' => 'file',
+//				'id' => 'App.view.administration.Facilities'
+//			);
+//		}
 		if($this->ACL->hasPermission('access_users')){
 			$admin['children'][] = array(
 				'text' => $this->i18n('users'),
@@ -217,7 +217,7 @@ class Navigation
 				'text' => $this->i18n('practice'),
 				'leaf' => true,
 				'cls' => 'file',
-				'id' => 'App.view.administration.Practice'
+				'id' => 'App.view.administration.practice.Practice'
 			);
 		}
 		if($this->ACL->hasPermission('access_data_manager')){

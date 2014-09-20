@@ -73,8 +73,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 return window.lang[key] || '*'+key+'*';
             };
 
-	            window.say = function(a){
-                console.log(a);
+            window.say = function(args){
+	            console.log(args);
             };
 
             window.g = function(global){
@@ -335,6 +335,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.DocumentToken',
 	                'administration.ExternalDataLoads',
 	                'administration.Facility',
+	                'administration.FacilityStructure',
 	                'administration.FloorPlans',
 	                'administration.FloorPlanZones',
 	                'administration.FormListOptions',
@@ -451,6 +452,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.DocumentToken',
 	                'administration.ExternalDataLoads',
 	                'administration.Facility',
+	                'administration.FacilityStructures',
 	                'administration.FloorPlans',
 	                'administration.FloorPlanZones',
 	                'administration.FormListOptions',
@@ -618,10 +620,20 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                /**
 	                 * Load the administration related panels
 	                 */
+
+	                'administration.practice.Facilities',
+	                'administration.practice.FacilityConfig',
+	                'administration.practice.Insurance',
+	                'administration.practice.Laboratories',
+	                'administration.practice.Pharmacies',
+	                'administration.practice.Practice',
+	                'administration.practice.ProviderNumbers',
+	                'administration.practice.ReferringProviders',
+	                'administration.practice.Specialties',
+
 	                'administration.Applications',
 	                'administration.DataManager',
 	                'administration.Documents',
-	                'administration.Facilities',
 	                'administration.Globals',
 	                'administration.Layout',
 	                'administration.Lists',
@@ -629,7 +641,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.Medications',
 	                'administration.Modules',
 	                'administration.FloorPlans',
-	                'administration.Practice',
 	                'administration.PreventiveCare',
 	                'administration.Roles',
 	                'administration.ExternalDataLoads',
@@ -649,10 +660,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.CPT',
 	                'administration.DataPortability',
 	                'administration.DecisionSupport',
+	                'administration.FacilityStructure',
 	                'administration.HL7',
 	                'administration.Practice',
 	                'administration.ReferringProviders',
-	                'administration.Specialities',
+	                'administration.Specialties',
 
 	                'Cron',
 	                'DocumentViewer',
@@ -688,6 +700,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Vitals',
 
 	                'patient.Summary',
+                    'patient.encounter.Encounter',
+	                'patient.encounter.Snippets',
                     'patient.encounter.SOAP'
                 ],
                 launch: function() {

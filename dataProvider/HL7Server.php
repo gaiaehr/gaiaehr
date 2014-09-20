@@ -540,6 +540,7 @@ class HL7Server {
 			 * PID-2.1 <= MRG-4.1
 			 */
 			$patientData = $this->PidToPatient($msg->data['PID'], $hl7);
+			$patientData['pubpid'] = $patientData['pid'];
 			$patientData['pid'] = 0;
 			$patient = $this->p->save((object)$patientData);
 			$this->InsuranceGroupHandler($msg->data['INSURANCE'], $hl7, $patient);
@@ -969,6 +970,9 @@ class HL7Server {
 		return 'GAIA-' . Matcha::getInstallationNumber();
 	}
 }
+
+
+
 //$msg = <<<EOF
 //MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
 //PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
@@ -1043,14 +1047,21 @@ class HL7Server {
 //PV1|1||2|||1|1|||||||||Y
 //EOF;
 
+$msg = <<<EOF
+MSH|^~\&|TRA|||00|20140918123529||ADT^A28||P|2.5.1
+EVN|A01|20140918123529
+PID|||R28112^^||SUAREZ CASTRO^TERESA||19630306|F||2106-3^White|PO-BOX-362319^^SAN JUAN^PR^00936||7877069054|7872505555|spa^Spanish|S|||000002305|||H^Hispanic
+PV1|OP|I|||||||||||||||000^RADIOLOGIA^ADMIN|00|140900008||P|||||||||||||||||||||||20140918123529|20140918123529
+EOF;
 
-//include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
 
-//print '<pre>';
-//
-//$hl7 = new HL7();
+include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
+
+print '<pre>';
+
+$hl7 = new HL7();
 //$msg = $hl7->readMessage($msg);
 //print_r($msg);
-//
-//$hl7 = new HL7Server();
-//print $hl7->Process($msg);
+
+$hl7 = new HL7Server();
+print $hl7->Process($msg);

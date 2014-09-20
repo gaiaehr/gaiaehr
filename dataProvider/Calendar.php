@@ -19,10 +19,10 @@
 
 include_once(ROOT . '/dataProvider/Person.php');
 class Calendar {
-	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
+//	/**
+//	 * @var MatchaHelper
+//	 */
+//	private $db;
 	/**
 	 * @var MatchaCUP
 	 */
@@ -34,7 +34,7 @@ class Calendar {
 	 * Creates the MatchaHelper instance
 	 */
 	function __construct(){
-		$this->db = new MatchaHelper();
+//		$this->db = new MatchaHelper();
 		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 		$this->c = MatchaModel::setSenchaModel('App.model.calendar.Category');
 		$this->e = MatchaModel::setSenchaModel('App.model.calendar.Events');

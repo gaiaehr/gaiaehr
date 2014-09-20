@@ -337,9 +337,9 @@ Ext.define('App.view.sitesetup.SiteSetup',
 													allowBlank:true
 												},
 												{
-													fieldLabel:'SQL Server Host (or IP address)',
+													fieldLabel:'SQL Server Host or IP address',
 													name:'dbHost',
-													value:'localhost',
+													value:'127.0.0.1',
 													allowBlank:false
 												},
 												{

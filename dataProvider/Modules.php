@@ -1,178 +1,171 @@
 <?php
 /**
-GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, LLC.
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once (ROOT . '/classes/MatchaHelper.php');
-include_once (ROOT . '/classes/FileManager.php');
+include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/classes/FileManager.php');
 
-class Modules
-{
-    /**
-     * @var string
-     */
-    private $modulesDir;
-    private $db;
+class Modules {
+	/**
+	 * @var string
+	 */
+	private $modulesDir;
 
-    function __construct()
-    {
-        $this->modulesDir = ROOT . '/modules/';
-        $this->db = new MatchaHelper();
-        $this->setNewModules();
-    }
+	/**
+	 * @var MatchaCUP
+	 */
+	private $m;
 
-    /**
-     * get all modules inside the modules directory
-     * @return array
-     */
-    public function getAllModules()
-    {
-        $modules = array();
-        foreach (FileManager::scanDir($this->modulesDir) AS $module) {
-            $modules[] = $this->getModuleConfig($module);
-        }
-        return $modules;
-    }
+	function __construct() {
+		$this->modulesDir = ROOT . '/modules/';
+		$this->m = MatchaModel::setSenchaModel('App.model.administration.Modules');
+		$this->setNewModules();
 
-    /**
-     * get only modules that are set "active":true in conf.json
-     * @return array
-     */
-    public function getActiveModules()
-    {
-        $modules = array();
-        foreach (FileManager::scanDir($this->modulesDir) AS $module) {
-            $foo = $this->getModuleConfig($module);
-            if ($foo['active']){
-                $name = $foo['name'];
-                $this->db->setSQL("SELECT * FROM `modules` WHERE name = '$name'");
-                $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-                $modules[] = array_merge($foo, $rec);
-            }
-        }
-        return $modules;
-    }
+	}
 
-    /**
-     * get only site enabled modules
-     * @return array
-     */
-    public function getEnabledModules()
-    {
-        $modules = array();
-        $this->db->setSQL("SELECT * FROM `modules` WHERE enable = 1");
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
-	        if(isset($m['name'])){
-		        $foo = $this->getModuleConfig($m['name']);
-		        if ($foo['active']){
-                    $modules[] = $foo;
-                    if(isset($foo['actionsAPI'])) unset($foo['actionsAPI']);
-                    if(isset($foo['extjs'])) unset($foo['extjs']);
-                    if(isset($foo['install'])) unset($foo['install']);
-                    $_SESSION['site']['modules'][$foo['name']] = $foo;
-                }
-	        }
-        }
-        return $modules;
-    }
+	/**
+	 * get all modules inside the modules directory
+	 * @return array
+	 */
+	public function getAllModules() {
+		$modules = array();
+		foreach(FileManager::scanDir($this->modulesDir) AS $module){
+			$modules[] = $this->getModuleConfig($module);
+		}
+		return $modules;
+	}
 
-    /**
-     * get only site disabled modules
-     * @return array
-     */
-    public function getDisabledModules()
-    {
-        $modules = array();
-        $this->db->setSQL("SELECT * FROM `modules` WHERE enable = 0");
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) AS $m){
-            $foo = $this->getModuleConfig($m['name']);
-            if ($foo['active']) $modules[] = $foo;
-        }
-        return $modules;
-    }
-    public function updateModule(stdClass $params)
-    {
-        $data = array();
-        if(isset($params->enable))      $data['enable']     = $params->enable;
-        if(isset($params->licensekey))  $data['licensekey'] = $params->licensekey;
-        if(isset($params->localkey))    $data['localkey']   = $params->localkey;
-        $this->db->setSQL($this->db->sqlBind($data, 'modules', 'U', array('name' => $params->name)));
-        $this->db->execLog();
-        return $params;
-    }
+	/**
+	 * get only modules that are set "active":true in conf.json
+	 * @return array
+	 */
+	public function getActiveModules() {
+		$modules = array();
+		foreach(FileManager::scanDir($this->modulesDir) AS $module){
+			$foo = $this->getModuleConfig($module);
+			if($foo['active']){
+				$record = $this->m->load(array('name' => $foo['name']))->one();
+				if($record === false)
+					continue;
+				$modules[] = array_merge($foo, $record);
+			}
+		}
+		return $modules;
+	}
 
-    public function getEnabledModulesAPI()
-    {
-        $actions = array();
-        foreach ($this->getEnabledModules() AS $module) {
-            $actions = array_merge($actions, $module['actionsAPI']);
-        }
-        return $actions;
-    }
+	/**
+	 * get only site enabled modules
+	 * @return array
+	 */
+	public function getEnabledModules() {
+		$modules = array();
+		$records = $this->m->load(array('enable' => 1))->all();
+		foreach($records AS $m){
+			if(isset($m['name'])){
+				$foo = $this->getModuleConfig($m['name']);
+				if($foo['active']){
+					$modules[] = $foo;
+					if(isset($foo['actionsAPI']))
+						unset($foo['actionsAPI']);
+					if(isset($foo['extjs']))
+						unset($foo['extjs']);
+					if(isset($foo['install']))
+						unset($foo['install']);
+					$_SESSION['site']['modules'][$foo['name']] = $foo;
+				}
+			}
+		}
+		return $modules;
+	}
 
-    /**
-     * get modules config data by module name
-     * @param $moduleName
-     * @return bool|mixed
-     */
-    private function getModuleConfig($moduleName)
-    {
-        if (is_dir($this->modulesDir . $moduleName)) {
-            $text = file_get_contents($this->modulesDir . $moduleName . '/conf.json');
-            return json_decode($text, true);
-        }
-        return false;
-    }
+	/**
+	 * get only site disabled modules
+	 * @return array
+	 */
+	public function getDisabledModules() {
+		$modules = array();
+		$records = $this->m->load(array('enable' => 0))->all();
+		foreach($records AS $m){
+			$foo = $this->getModuleConfig($m['name']);
+			if($foo['active'])
+				$modules[] = $foo;
+		}
+		return $modules;
+	}
 
-    public function getModuleByName($moduleName){
-        $this->db->setSQL("SELECT * FROM `modules` WHERE `name` = '$moduleName'");
-        $m = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        $foo = $this->getModuleConfig($m['name']);
-        if ($foo['active']) {
-            return array_merge($m,$foo);
-        }else{
-            return array();
-        }
-    }
+	public function updateModule($params) {
+		return $this->m->save($params);
+	}
 
-    /**
-     * this method will insert the new active modules in site database if
-     * does not exist
-     */
-    private function setNewModules(){
-        foreach (FileManager::scanDir($this->modulesDir) AS $module)
-        {
-            $ModuleConfig = $this->getModuleConfig($module);
-            if ($ModuleConfig['active'])
-            {
-                $this->db->setSQL("SELECT * FROM modules WHERE `name` = '{$ModuleConfig['name']}'");
-                $moduleRecord = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-                if(empty($moduleRecord))
-                {
-                    $data['name'] = $ModuleConfig['name'];
-                    $data['enable'] = '0';
-                    $data['installed_version'] = $ModuleConfig['version'];
-                    $this->db->setSQL($this->db->sqlBind($data, 'modules', 'I'));
-                    $this->db->execOnly();
-                }
-            }
-        }
-        return;
-    }
+	public function getEnabledModulesAPI() {
+		$actions = array();
+		foreach($this->getEnabledModules() AS $module){
+			$actions = array_merge($actions, $module['actionsAPI']);
+		}
+		return $actions;
+	}
+
+	/**
+	 * get modules config data by module name
+	 * @param $moduleName
+	 * @return bool|mixed
+	 */
+	private function getModuleConfig($moduleName) {
+		if(is_dir($this->modulesDir . $moduleName)){
+			$text = file_get_contents($this->modulesDir . $moduleName . '/conf.json');
+			return json_decode($text, true);
+		}
+		return false;
+	}
+
+	public function getModuleByName($moduleName) {
+		$records = $this->m->load(array('name' => $moduleName))->one();
+		$foo = $this->getModuleConfig($records['name']);
+		if($foo['active']){
+			return array_merge($records, $foo);
+		} else {
+			return array();
+		}
+	}
+
+	/**
+	 * this method will insert the new active modules in site database if
+	 * does not exist
+	 */
+	private function setNewModules() {
+		foreach(FileManager::scanDir($this->modulesDir) AS $module){
+			$ModuleConfig = $this->getModuleConfig($module);
+			if($ModuleConfig['active']){
+				$moduleRecord = $this->m->load(array('name' => $ModuleConfig['name']))->one();
+
+				if(empty($moduleRecord)){
+					$data = new stdClass();
+					$data->title = $ModuleConfig['title'];
+					$data->name = $ModuleConfig['name'];
+					$data->description = $ModuleConfig['description'];
+					$data->enable = '0';
+					$data->installed_version = $ModuleConfig['version'];
+					$this->m->save($data);
+				}
+			}
+		}
+		return;
+	}
 }
 
 //print '<pre>';

@@ -25,7 +25,9 @@ Ext.define('App.view.patient.Summary', {
 		'Ext.ux.IFrame',
 		'App.view.patient.Documents',
 		'App.view.patient.CCD',
-		'App.ux.ManagedIframe'
+		'App.ux.ManagedIframe',
+
+		'App.view.patient.Patient'
 	],
 	itemId: 'patientsummarypanel',
 	showRating: true,
@@ -52,6 +54,7 @@ Ext.define('App.view.patient.Summary', {
 				border: false,
 				plain: true,
 				region: 'center',
+				layout: 'fit',
 				itemId: 'centerPanel'
 			})
 		];
@@ -286,12 +289,12 @@ Ext.define('App.view.patient.Summary', {
 		}
 
 		if(a('access_demographics')){
-			me.tabPanel.add(
-				me.demographics = Ext.create('App.view.patient.Patient', {
-					newPatient: false,
-					title: i18n('demographics')
-				})
-			);
+			me.demographics = me.tabPanel.add({
+				xtype: 'patientdeomgraphics',
+				newPatient: false,
+				autoScroll: true,
+				title: i18n('demographics')
+			});
 		}
 
 		if(a('access_patient_disclosures')){

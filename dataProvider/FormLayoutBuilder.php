@@ -40,11 +40,17 @@ class FormLayoutBuilder {
 	private $db;
 
 	/**
+	 * @var MatchaCUP
+	 */
+	private $ff;
+
+	/**
 	 * Creates the MatchaHelper instance
 	 */
 	function __construct(){
 		$this->db = new MatchaHelper();
-		return;
+		$this->conn = Matcha::getConn();
+		$this->ff = MatchaModel::setSenchaModel('App.model.administration.FormField');
 	}
 
 	/**
@@ -131,7 +137,7 @@ class FormLayoutBuilder {
 			$field['xtype'] = $data['xtype'];
 			$field['form_id'] = intval($data['form_id']);
 			$field['parentId'] = $data['parentId'];
-			$field['index'] = $data['index'];
+			$field['x_index'] = $data['index'];
 
 			unset($data['id'], $data['xtype'], $data['form_id'], $data['parentId'], $data['index'], $data['leaf']);
 
@@ -287,7 +293,7 @@ class FormLayoutBuilder {
 			$field['xtype'] = $data['xtype'];
 			$field['form_id'] = intval($data['form_id']);
 			$field['parentId'] = $data['parentId'];
-			$field['index'] = $data['index'];
+			$field['x_index'] = $data['index'];
 
 			$this->db->setSQL($this->db->sqlBind($field, 'forms_fields', 'U', array('id' => $params->id)));
 			$this->db->execLog();
@@ -495,7 +501,7 @@ class FormLayoutBuilder {
                            ON fl.id = ff.form_id
                         WHERE (fl.`name`  = '$params->currForm' OR fl.`id`    = '$params->currForm')
                           AND (ff.`xtype` = 'fieldcontainer'    OR ff.`xtype` = 'fieldset')
-                     ORDER BY ff.`index`");
+                     ORDER BY ff.`x_index`");
 		$parentFields = array();
 		array_push($parentFields, array('name' => 'Root', 'value' => 'root'));
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $parentField){
@@ -524,7 +530,7 @@ class FormLayoutBuilder {
 	public function getFormFieldsTree(stdClass $params){
 		$fields = array();
 		if(isset($params->currForm)){
-			$this->db->setSQL("Select * FROM `forms_fields` WHERE `form_id` = '$params->currForm' AND `parentId` = 'root' ORDER BY `index` ASC, `id` ASC");
+			$this->db->setSQL("Select * FROM `forms_fields` WHERE `form_id` = '$params->currForm' AND `parentId` = 'root' ORDER BY `x_index` ASC, `id` ASC");
 			$results = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 			foreach($results as $item){
 				$opts = $this->getItemsOptions($item['id']);
@@ -555,7 +561,7 @@ class FormLayoutBuilder {
 	 */
 	private function getChildItems($parentId){
 		$items = array();
-		$this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `index` ASC, `id` ASC");
+		$this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `x_index` ASC, `id` ASC");
 		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
 			$opts = $this->getItemsOptions($item['id']);
 			foreach($opts as $opt => $val){

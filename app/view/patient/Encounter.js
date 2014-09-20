@@ -31,6 +31,7 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.FamilyHistory',
 		'App.view.patient.ProgressNote',
 		'App.ux.combo.EncounterPriority',
+		'App.ux.combo.ActiveProviders',
 		'App.view.patient.DecisionSupportWarningPanel'
 	],
 
@@ -43,7 +44,7 @@ Ext.define('App.view.patient.Encounter', {
 	enableItemsToReview: eval(g('enable_encounter_items_to_review')),
 	enableReviewOfSystem: eval(g('enable_encounter_review_of_systems')),
 	enableReviewOfSystemChecks: eval(g('enable_encounter_review_of_systems_cks')),
-	enableClicnicaDecisionSupport: eval(g('enable_clinical_decision_support')),
+	enableClinicalDecisionSupport: eval(g('enable_clinical_decision_support')),
 
 	showRating: true,
 	conversionMethod: 'english',
@@ -78,7 +79,6 @@ Ext.define('App.view.patient.Encounter', {
 		});
 
 		me.encounterEventHistoryStore = Ext.create('App.store.administration.AuditLog');
-
 
 		if(me.renderAdministrative){
 			me.centerPanel = Ext.create('Ext.tab.Panel', {
@@ -125,7 +125,7 @@ Ext.define('App.view.patient.Encounter', {
 			})
 		);
 
-		if(me.enableClicnicaDecisionSupport && a('access_clinical_decision_support')){
+		if(me.enableClinicalDecisionSupport && a('access_clinical_decision_support')){
 			me.encounterTabPanel.addDocked({
 				xtype: 'decisionsupportwarningpanel',
 				itemId: 'DecisionSupportWarningPanel',
@@ -294,7 +294,6 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-
 		/**
 		 * Progress Note
 		 */
@@ -312,7 +311,6 @@ Ext.define('App.view.patient.Encounter', {
 				collapse: me.progressNoteCollapseExpand,
 				expand: me.progressNoteCollapseExpand
 			},
-
 			items: [
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
 					title: i18n('progress_note'),
@@ -351,61 +349,96 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.panelToolBar = Ext.create('Ext.toolbar.Toolbar', {
 			dock: 'top',
-//			ui:'footer',
+			//			ui:'footer',
 			defaults: {
 				scope: me,
-				handler: me.onMedicalWin
+				handler: me.onToolbarBtnHandler
 			},
-			items: ['-', {
-				text: i18n('immunizations') + ' ',
-				action: 'immunization'
-			}, '-', {
-				text: i18n('allergies') + ' ',
-				action: 'allergies'
-			}, '-', {
-				text: i18n('active_problems') + ' ',
-				action: 'activeproblems'
-			}, '-', {
-				text: i18n('medications') + ' ',
-				action: 'medications'
-			}, '-', {
-				text: i18n('results') + ' ',
-				action: 'laboratories'
-			}, '-', {
-				text: i18n('social_history') + ' ',
-				action: 'socialhistory'
-			}, '-', {
-				text: i18n('functional_status') + ' ',
-				action: 'functionalstatus'
-			}, '-', {
-				text: i18n('referrals') + ' ',
-				action: 'referrals'
-			}, '-', {
-				text: i18n('lab_orders'),
-				action: 'lab',
-				scope: me,
-				handler: me.newDoc
-			}, '-', {
-				text: i18n('xray_ct_orders'),
-				action: 'xRay',
-				scope: me,
-				handler: me.newDoc
-			}, '-', {
-				text: i18n('rx_orders'),
-				action: 'prescription',
-				scope: me,
-				handler: me.newDoc
-			}, '-', {
-				text: i18n('new_doctors_note'),
-				action: 'notes',
-				scope: me,
-				handler: me.newDoc
-			}, '-', '->', '-', me.priorityCombo = Ext.create('App.ux.combo.EncounterPriority', {
-				listeners: {
+			items: [
+				'-',
+				{
+					text: i18n('immunizations') + ' ',
+					action: 'immunization'
+				},
+				'-',
+				{
+					text: i18n('allergies') + ' ',
+					action: 'allergies'
+				},
+				'-',
+				{
+					text: i18n('active_problems') + ' ',
+					action: 'activeproblems'
+				},
+				'-',
+				{
+					text: i18n('medications') + ' ',
+					action: 'medications'
+				},
+				'-',
+				{
+					text: i18n('results') + ' ',
+					action: 'laboratories'
+				},
+				'-',
+				{
+					text: i18n('social_history') + ' ',
+					action: 'socialhistory'
+				},
+				'-',
+				{
+					text: i18n('functional_status') + ' ',
+					action: 'functionalstatus'
+				},
+				'-',
+				{
+					text: i18n('referrals') + ' ',
+					action: 'referrals'
+				},
+				'-',
+				{
+					text: i18n('lab_orders'),
+					action: 'lab',
 					scope: me,
-					select: me.prioritySelect
-				}
-			}), '-'
+					handler: me.newDoc
+				},
+				'-',
+				{
+					text: i18n('xray_ct_orders'),
+					action: 'xRay',
+					scope: me,
+					handler: me.newDoc
+				},
+				'-',
+				{
+					text: i18n('rx_orders'),
+					action: 'prescription',
+					scope: me,
+					handler: me.newDoc
+				},
+				'-',
+				{
+					text: i18n('new_doctors_note'),
+					action: 'notes',
+					scope: me,
+					handler: me.newDoc
+				},
+				'-',
+				'->',
+				'-',
+				{
+					xtype:'button',
+					action: 'encounter',
+					text: i18n('encounter_details')
+				},
+				'-',
+				me.priorityCombo = Ext.create('App.ux.combo.EncounterPriority', {
+					listeners: {
+						scope: me,
+						select: me.prioritySelect
+					}
+				}),
+				'-'
 			]
 		});
 
@@ -436,8 +469,14 @@ Ext.define('App.view.patient.Encounter', {
 	 * opens the Medical window
 	 * @param btn
 	 */
-	onMedicalWin: function(btn){
-		app.onMedicalWin(btn.action);
+	onToolbarBtnHandler: function(btn){
+		if(btn.action == 'encounter'){
+			app.updateEncounter(this.encounter);
+
+		}else{
+			app.onMedicalWin(btn.action);
+		}
+
 	},
 
 	/**
@@ -478,6 +517,7 @@ Ext.define('App.view.patient.Encounter', {
 		}else{
 			form = SaveBtn.up('form').getForm();
 		}
+
 		if(form.isValid()){
 			var values = form.getValues(),
 				store,
@@ -485,6 +525,7 @@ Ext.define('App.view.patient.Encounter', {
 				storeIndex;
 
 			if(SaveBtn.action == 'encounter'){
+
 				if(acl['add_encounters']){
 					record = form.getRecord();
 					record.set(values);
@@ -503,7 +544,9 @@ Ext.define('App.view.patient.Encounter', {
 					SaveBtn.up('window').close();
 					app.accessDenied();
 				}
+
 			}else if(SaveBtn.action == 'vitals'){
+
 				var VFields = form.getFields().items,
 					VFieldsCount = VFields.length,
 					emptyCount = 0;
@@ -517,6 +560,7 @@ Ext.define('App.view.patient.Encounter', {
 				}
 
 				if((VFieldsCount - 3) > emptyCount){
+
 					if(acl['add_vitals']){
 
 						say(me);
@@ -539,18 +583,24 @@ Ext.define('App.view.patient.Encounter', {
 								me.resetVitalsForm();
 							}
 						});
+
 					}else{
 						app.accessDenied();
 					}
+
 				}else{
 					me.msg('Oops!', i18n('vitals_form_is_epmty'), true)
 				}
 			}else{
+
 				if(acl['edit_encounters']){
+
 					record = form.getRecord();
 					store = record.store;
 					values = me.addDefaultData(values);
+
 					record.set(values);
+
 					store.sync({
 						callback: function(){
 							me.msg('Sweet!', i18n('encounter_updated'));
@@ -558,6 +608,7 @@ Ext.define('App.view.patient.Encounter', {
 							app.AuditLog('Patient encounter updated');
 						}
 					});
+
 					me.encounterEventHistoryStore.load({
 						filters: [
 							{
@@ -566,6 +617,7 @@ Ext.define('App.view.patient.Encounter', {
 							}
 						]
 					});
+
 				}else{
 					app.accessDenied();
 				}
@@ -677,7 +729,6 @@ Ext.define('App.view.patient.Encounter', {
 						me.setButtonsDisabled(me.getButtonsToDisable(), true);
 					}
 				}
-
 
 				if(me.reviewSysPanel){
 					store = me.encounter.reviewofsystems();
@@ -821,14 +872,13 @@ Ext.define('App.view.patient.Encounter', {
 		app.checkoutWindow.show();
 	},
 
-	isClose:function(){
+	isClose: function(){
 		return typeof this.encounter.data.close_date != 'undefined' && this.encounter.data.close_date != null;
 	},
 
-	isSigned:function(){
+	isSigned: function(){
 		return typeof this.encounter.data.provider_uid != 'undefined' && this.encounter.data.provider_uid != null && this.encounter.data.provider_uid != 0;
 	},
-
 
 	/**
 	 * listen for the progress note panel and runs the
@@ -943,7 +993,6 @@ Ext.define('App.view.patient.Encounter', {
 		t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n('day_s') + '</span><span class="time">' + t + '</span>';
 		return t;
 	},
-
 
 	/**
 	 * After this panel is render add the forms and listeners for conventions

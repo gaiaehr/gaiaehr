@@ -42,21 +42,35 @@ class PoolArea {
 	 */
 	private $pp;
 
-	function __construct() {
-		$this->patient = new Patient();
-		$this->pa = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
-		$this->pp = MatchaModel::setSenchaModel('App.model.areas.PatientPool');
-		return;
+	private function setPatient(){
+		if(!isset($this->patient)){
+			$this->patient = new Patient();
+		}
 	}
 
+	private function setPaModel(){
+		if(!isset($this->pa)){
+			$this->pa = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
+		}
+	}
+
+	private function setPpModel(){
+		if(!isset($this->pp)){
+			$this->pp = MatchaModel::setSenchaModel('App.model.areas.PatientPool');
+		}
+	}
+
+
 	public function getPatientsArrivalLog(stdClass $params) {
+		$this->setPatient();
+		$this->setPaModel();
 		$visits = array();
 		foreach($this->getPatientParentPools() AS $visit){
 			$id = $visit['id'];
 			$foo = $this->pa->sql("SELECT pp.id, pa.title AS area, pp.time_out, pp.eid
 								 FROM patient_pools AS pp
 						    LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
-							    WHERE pp.parent_id = $id
+							    WHERE pp.parent_id = '$id'
 							 ORDER BY pp.id DESC")->one();
 			$visit['area'] = $foo['area'];
 			$visit['area_id'] = $foo['id'];
@@ -71,22 +85,25 @@ class PoolArea {
 	}
 
 	private function getPatientParentPools() {
+		$this->setPaModel();
 		$parentPools = $this->pa->sql("SELECT pp.id, pp.time_in AS time, pp.pid
 										 FROM patient_pools AS pp
 			                        LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
 									    WHERE pp.id = pp.parent_id
-									      AND pa.facility_id = {$_SESSION['user']['facility']}
+									      AND pa.facility_id = '{$_SESSION['user']['facility']}'
 									 ORDER BY pp.time_in ASC, pp.priority DESC
 									    LIMIT 500")->all();
 		return $parentPools;
 	}
 
 	private function getParentPoolId($id) {
-		$foo = $this->pa->sql("SELECT parent_id FROM patient_pools WHERE id = $id")->one();
+		$this->setPaModel();
+		$foo = $this->pa->sql("SELECT parent_id FROM patient_pools WHERE id = '$id'")->one();
 		return $foo !== false ? $foo['parent_id'] : 0;
 	}
 
 	public function addPatientArrivalLog(stdClass $params) {
+		$this->setPatient();
 		if($params->isNew){
 			$patient = $this->patient->createNewPatientOnlyName($params->name);
 			$params->pid = $patient['patient']['pid'];
@@ -106,6 +123,7 @@ class PoolArea {
 	}
 
 	public function removePatientArrivalLog(stdClass $params) {
+		$this->setPpModel();
 		$record = new stdClass();
 		$record->id = $params->area_id;
 		$record->time_out = date('Y-m-d H:i:s');
@@ -115,7 +133,7 @@ class PoolArea {
 	}
 
 	public function sendPatientToPoolArea(stdClass $params) {
-
+		$this->setPpModel();
 		$fo = $this->getCurrentPatientPoolAreaByPid($params->pid);
 
 		/**
@@ -156,10 +174,12 @@ class PoolArea {
 	}
 
 	public function getFacilityActivePoolAreas() {
-		return $this->pa->sql("SELECT * FROM pool_areas	WHERE facility_id = {$_SESSION['user']['facility']} AND active = '1'")->all();
+		$this->setPaModel();
+		return $this->pa->sql("SELECT * FROM pool_areas	WHERE facility_id = '{$_SESSION['user']['facility']}' AND active = '1'")->all();
 	}
 
 	public function getActivePoolAreas() {
+		$this->setPaModel();
 		return $this->pa->sql("SELECT * FROM pool_areas	WHERE active = '1'")->all();
 	}
 
@@ -179,6 +199,7 @@ class PoolArea {
 	/******************************************************************************************************************/
 	/******************************************************************************************************************/
 	private function checkInPatient($params) {
+		$this->setPpModel();
 		$record = new stdClass();
 		$record->pid= $params->pid;
 		$record->uid= $_SESSION['user']['id'];
@@ -194,16 +215,18 @@ class PoolArea {
 	}
 
 	public function getCurrentPatientPoolAreaByPid($pid) {
+		$this->setPpModel();
 		$record = $this->pp->sql("SELECT pp.*, pa.title AS poolArea
 								 	FROM patient_pools AS pp
 							   LEFT JOIN pool_areas AS pa ON pa.id = pp.area_id
-								   WHERE pp.pid = $pid
+								   WHERE pp.pid = '$pid'
 								  	 AND pp.time_out IS NULL
 							 	ORDER BY pp.id DESC")->one();
 		return $record;
 	}
 
 	public function updateCurrentPatientPoolAreaByPid($data, $pid) {
+		$this->setPpModel();
 		$area = $this->getCurrentPatientPoolAreaByPid($pid);
 		$data['id'] = $area['id'];
 		$this->pp->save((object) $data);
@@ -211,6 +234,8 @@ class PoolArea {
 	}
 
 	private function getPatientsByPoolAreaId($area_id, $in_queue) {
+		$this->setPatient();
+		$this->setPpModel();
 		$patients = $this->pp->sql("SELECT pp.*
 							 FROM patient_pools AS pp
 							WHERE pp.area_id = '$area_id'
@@ -246,12 +271,13 @@ class PoolArea {
 		$pools = array();
 
 		if($this->acl->hasPermission('use_pool_areas')){
+			$this->setPatient();
 
 			foreach($this->getFacilityActivePoolAreas() AS $area){
 				if(($this->acl->hasPermission('access_poolcheckin') && $area['id'] == 1) || ($this->acl->hasPermission('access_pooltriage') && $area['id'] == 2) || ($this->acl->hasPermission('access_poolphysician') && $area['id'] == 3) || ($this->acl->hasPermission('access_poolcheckout') && $area['id'] == 4)
 				){
 					foreach($this->getPatientsByPoolAreaId($area['id'], 1) as $p){
-						$p['shortName'] = Person::ellipsis($p['name'], 20);
+						$p['shortName'] = Person::ellipsis($p['name'], 16);
 						$p['poolArea'] = $area['title'];
 						$p['patient'] = $this->patient->getPatientDemographicDataByPid($p['pid']);
 						$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($area['id']);
@@ -267,16 +293,19 @@ class PoolArea {
 	}
 
 	public function getAreaTitleById($id) {
-		$area = $this->pa->sql("SELECT title FROM pool_areas WHERE id = $id")->one();
+		$this->setPaModel();
+		$area = $this->pa->sql("SELECT title FROM pool_areas WHERE id = '{$id}'")->one();
 		return $area['title'];
 	}
 
 	public function getFloorPlanIdByPoolAreaId($poolAreaId) {
-		$area = $this->pa->sql("SELECT floor_plan_id FROM pool_areas WHERE id = $poolAreaId")->one();
+		$this->setPaModel();
+		$area = $this->pa->sql("SELECT floor_plan_id FROM pool_areas WHERE id = '{$poolAreaId}'")->one();
 		return $area['floor_plan_id'];
 	}
 
 	public function getPatientCurrentZoneInfoByPid($pid) {
+		$this->setPpModel();
 		$zone = $this->pp->sql("SELECT id AS patientZoneId,
 								  zone_id AS zoneId,
 								  time_in AS zoneTimeIn

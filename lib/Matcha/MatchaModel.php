@@ -83,7 +83,7 @@ class MatchaModel extends Matcha
             // if id property is not set in sencha model look for propertyId.
             if($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)] === false) unset($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)]);
 
-	        // unset the fields that will noe be store int hte database
+	        // unset the fields that will noe be store int the database
             foreach($modelFields as $key => $field) if((isset($field['store']) && $field['store'] === false) || isset($field['persist']) && $field['persist'] === false) unset($modelFields[$key]);
 
             // get the table column information and remove the id column
@@ -95,7 +95,7 @@ class MatchaModel extends Matcha
 
             // get all the column names of each model (Sencha and Database-table)
             foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
-            foreach($modelFields as $column) $columnsSenchaNames[] = $column['name'];
+            foreach($modelFields as $column) $columnsSenchaNames[] = (isset($column['mapping']) ? $column['mapping'] : $column['name']);
 
             // get all the column that are not present in the database-table
             $differentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);

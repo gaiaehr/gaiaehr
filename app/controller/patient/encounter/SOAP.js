@@ -34,8 +34,8 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 			selector: '#soapProcedureWindow > form'
 		},
 		{
-			ref: 'TemplatesTreePanel',
-			selector: '#soapPanel #templatesTreePanel'
+			ref: 'SnippetsTreePanel',
+			selector: '#soapPanel #SnippetsTreePanel'
 		},
 		{
 			ref: 'SpeechBtn',
@@ -55,11 +55,14 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 				activate: this.onPanelActive,
 				deactivate: this.onPanelDeActive
 			},
+			'#soapPanel #soapForm': {
+				render: this.onPanelFormRender
+			},
 			'#soapPanel button[action=speechBtn]': {
 				toggle: this.onSpeechBtnToggle
 			},
 			'#soapForm > fieldset > textarea': {
-				focus: this.onSoapTextFieldFocus
+				focus: this.onSoapTextFieldFocus,
 			},
 			'#soapProcedureWindow > form > textarea': {
 				focus: this.onProcedureTextFieldFocus
@@ -82,7 +85,7 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	},
 
 	onSoapTextFieldFocus: function(field) {
-		this.loadTemplatesByCategory(field.name);
+		this.loadSnippetsByCategory(field.name);
 
 		if(!Ext.isWebKit) return;
 		this.field = field;
@@ -91,7 +94,7 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	},
 
 	onProcedureTextFieldFocus: function(field) {
-		this.loadTemplatesByCategory(field.name);
+		this.loadSnippetsByCategory(field.name);
 
 		if(!Ext.isWebKit) return;
 		this.field = field;
@@ -99,10 +102,10 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		this.interim_transcript = '';
 	},
 
-	loadTemplatesByCategory:function(category){
+	loadSnippetsByCategory:function(category){
 
-		if(this.getTemplatesTreePanel().collapsed === false){
-			var templates = this.getTemplatesTreePanel();
+		if(this.getSnippetsTreePanel().collapsed === false){
+			var templates = this.getSnippetsTreePanel();
 
 			templates.setTitle(i18n(category) + ' ' + i18n('templates'));
 			if(templates.action != category){
@@ -129,6 +132,12 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		}, { xtype: 'tbfill' }];
 
 		panel.down('form').getDockedItems('toolbar[dock="bottom"]')[0].insert(0, btn);
+	},
+
+	onPanelFormRender: function(panel) {
+		Ext.widget('careplangoalsnewwindow',{
+			constrainTo: panel.el.dom
+		});
 	},
 
 	onSpeechBtnToggle: function(btn, pressed) {

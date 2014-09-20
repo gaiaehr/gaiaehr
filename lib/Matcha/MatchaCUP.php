@@ -66,6 +66,10 @@ class MatchaCUP {
 	 */
 	public $arrayFields = false;
 	/**
+	 * @var array
+	 */
+	public $serializedFields = array();
+	/**
 	 * @var bool
 	 */
 	private $isSenchaRequest = true;
@@ -298,8 +302,12 @@ class MatchaCUP {
 	private function filterHandler($filters){
 		$whereArray = array();
 		foreach($filters as $foo){
-			if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
-				if(is_null($foo->value)){
+
+			if(isset($foo->property)){
+
+				if(is_array($this->phantomFields) && in_array($foo->property, $this->phantomFields)) continue;
+
+				if(!isset($foo->value)){
 					$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
 					$whereArray[] = "`$foo->property` $operator NULL";
 				} else {
@@ -620,6 +628,16 @@ class MatchaCUP {
 			));
 		}
 
+		if(!empty($this->serializedFields)){
+			foreach($this->serializedFields as  $field => $data){
+				if(is_array($record)){
+					$record[$field] = $data;
+				}else{
+					$record->{$field} = $data;
+				}
+			}
+		}
+
 		return $record;
 	}
 
@@ -866,6 +884,9 @@ class MatchaCUP {
 	 * @return array
 	 */
 	private function parseValues($data) {
+
+		$this->serializedFields = array();
+
 		$record = array();
 		$columns = array_keys($data);
 		$values = array_values($data);
@@ -891,7 +912,12 @@ class MatchaCUP {
 					if($type == 'date'){
 						$data[$col] = ($data[$col] == '' ? null : $data[$col]);
 					} elseif($type == 'array') {
-						$data[$col] = ($data[$col] == '' ? null : serialize($data[$col]));
+						if($data[$col] == ''){
+							$data[$col] = null;
+						}else{
+							$this->serializedFields[$col] = $data[$col];
+							$data[$col] = serialize($data[$col]);
+						}
 					}
 				}
 				/**

@@ -16,9 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-$_SESSION['site']['flops'] = 0;
-
 include_once (ROOT . '/classes/Time.php');
 include_once (ROOT . '/classes/FileManager.php');
 

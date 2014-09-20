@@ -26,7 +26,8 @@ Ext.define('App.view.patient.RxOrders', {
 		'App.ux.combo.PrescriptionTypes',
 		'App.ux.combo.EncounterICDS',
 		'App.ux.LiveSigsSearch',
-		'App.ux.LiveRXNORMSearch'
+		'App.ux.LiveRXNORMSearch',
+		'Modules.erx.view.fields.PatientPharmacyHistory'
 	],
 	xtype: 'patientrxorderspanel',
 	title: i18n('rx_orders'),
@@ -82,7 +83,8 @@ Ext.define('App.view.patient.RxOrders', {
 									fieldLabel: i18n('medication'),
 									width: 700,
 									name: 'STR',
-//									margin: '5 0',
+									displayField: 'STR',
+									valueField: 'STR',
 									allowBlank: false
 								},
 								{

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.administration.ReferringProviders', {
+Ext.define('App.view.administration.practice.ReferringProviders', {
 	extend: 'Ext.grid.Panel',
 	xtype: 'referringproviderspanel',
 	requires: [

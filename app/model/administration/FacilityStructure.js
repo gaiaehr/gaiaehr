@@ -16,66 +16,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Speciality', {
+Ext.define('App.model.administration.FacilityStructure', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'specialties',
-		comment: 'Providers Specialties'
+		name: 'facility_structures',
+		comment: 'Facilities Dept and Specialties'
 	},
 	fields: [
 		{
 			name: 'id',
+			type: 'string'
+		},
+		{
+			name: 'fid',
 			type: 'int',
-			comment: 'Referring Provider ID'
+			index: true
 		},
 		{
-			name: 'create_uid',
+			name: 'parentId',
+			type: 'string',
+			index: true
+		},
+		{
+			name: 'foreign_id',
 			type: 'int',
-			comment: 'create user ID'
+			index: true
 		},
 		{
-			name: 'update_uid',
-			type: 'int',
-			comment: 'update user ID'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			comment: 'create date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			comment: 'last update date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'title',
+			name: 'foreign_type',
 			type: 'string',
-			len: 100
-		},
-		{
-			name: 'taxonomy',
-			type: 'string',
-			len: 15
-		},
-		{
-			name: 'modality',
-			type: 'string',
-			len: 5
+			len: 1,
+			index: true,
+			comment: 'D = department S = specialty'
 		},
 		{
 			name: 'active',
 			type: 'bool'
+		},
+		{
+			name: 'leaf',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
+				return record.data.foreign_type == 'S';
+			}
+		},
+		{
+			name: 'text',
+			type: 'string',
+			store: false
 		}
 	],
+	idProperty: 'id',
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Specialties.getSpecialties',
-			create: 'Specialties.addSpecialty',
-			update: 'Specialties.updateSpecialty'
+			read: 'Facilities.getFacilityConfigs',
+			create: 'Facilities.addFacilityConfig',
+			update: 'Facilities.updateFacilityConfig',
+			destroy: 'Facilities.deleteFacilityConfig'
 		}
 	}
 });

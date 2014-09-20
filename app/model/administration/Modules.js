@@ -23,14 +23,41 @@ Ext.define('App.model.administration.Modules', {
 		comment: 'Modules'
 	},
 	fields: [
-		{ name: 'id', type: 'int', comment: 'Modules ID'},
-		{ name: 'title', type: 'string' },
-		{ name: 'name', type: 'string' },
-		{ name: 'description', type: 'string' },
-		{ name: 'enable', type: 'bool' },
-		{ name: 'installed_version', type: 'string' },
-		{ name: 'licensekey', type: 'string' },
-		{ name: 'localkey', type: 'string' }
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'name',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'description',
+			type: 'string'
+		},
+		{
+			name: 'enable',
+			type: 'bool'
+		},
+		{
+			name: 'installed_version',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'licensekey',
+			type: 'string'
+		},
+		{
+			name: 'localkey',
+			type: 'string'
+		}
 	],
 	proxy: {
 		type: 'direct',

@@ -778,6 +778,7 @@ Ext.define('App.view.Viewport', {
 	//*****************************************************************
 
 
+
 	/*
 	 * Show the Create New Encounter panel.
 	 */
@@ -787,6 +788,17 @@ Ext.define('App.view.Viewport', {
         if(acl['access_encounters'] && acl['add_encounters']){
             me.newEncounterWindow.show();
         }else{
+            me.accessDenied();
+        }
+    },
+
+    updateEncounter: function(record){
+        var me = this;
+
+        if(acl['access_encounters'] && acl['edit_encounters']){
+	        me.newEncounterWindow.loadRecord(record);
+            me.newEncounterWindow.show();
+        } else{
             me.accessDenied();
         }
     },

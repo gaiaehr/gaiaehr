@@ -21,7 +21,7 @@ if(!isset($_SESSION)) {
 	session_start();
 	session_cache_limiter('private');
 }
-$_SESSION['site']['flops'] = 0;
+//$_SESSION['site']['flops'] = 0;
 class Age
 {
 

@@ -276,14 +276,20 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 
 	loadImage: function(form, src){
 		if(form.image) delete form.image;
+
 		form.image = new Image();
 		form.image.src = src;
+
 		form.image.onload = function(){
+
+			say(form);
+
 			form.setSize(form.image.width + 10, form.image.height + 120);
 			form.controller.setFormCanvasBox(form);
-			form.iContext.clearRect(0, 0, form.iContext.canvas.width, form.iContext.canvas.height);
-			form.iContext.drawImage(form.image, 0, 0, form.iContext.canvas.width, form.iContext.canvas.width);
+			form.iContext.clearRect(0, 0, form.image.width, form.image.height);
+			form.iContext.drawImage(form.image, 0, 0, form.image.width, form.image.height);
 			form.iContext.save();
+
 		};
 	},
 
@@ -335,6 +341,7 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 			record = form.getForm().getRecord();
 
 		record.set({
+			image: form.iCanvas.dom.toDataURL(),
 			drawing: form.dCanvas.dom.toDataURL(),
 			notes: form.getForm().findField('notes').getValue()
 		});

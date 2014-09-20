@@ -39,8 +39,8 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 	        return window.lang[key] || '*'+key+'*';
         };
 
-        window.say = function(a){
-	        console.log(a);
+        window.say = function(args){
+	        console.log.apply(this, arguments);
         };
 
         window.g = function(global){

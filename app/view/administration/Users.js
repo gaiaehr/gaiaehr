@@ -19,7 +19,8 @@
 Ext.define('App.view.administration.Users', {
 	extend: 'App.ux.RenderPanel',
 	requires: [
-		'App.ux.form.fields.plugin.PasswordStrength'
+		'App.ux.form.fields.plugin.PasswordStrength',
+		'App.ux.combo.ActiveSpecialties'
 	],
 	pageTitle: i18n('users'),
 
@@ -165,22 +166,30 @@ Ext.define('App.view.administration.Users', {
 											},
 											items: [
 												{
-													width: 150,
+													width: 100,
 													xtype: 'checkbox',
 													fieldLabel: i18n('active'),
 													name: 'active'
 												},
 												{
-													width: 150,
+													width: 100,
 													xtype: 'checkbox',
 													fieldLabel: i18n('authorized'),
 													name: 'authorized'
 												},
 												{
-													width: 150,
+													width: 75,
 													xtype: 'checkbox',
 													fieldLabel: i18n('calendar_q'),
 													name: 'calendar'
+												},
+												{
+													width: 275,
+													xtype: 'gaiaehr.combo',
+													fieldLabel: i18n('type'),
+													name: 'doctor_type',
+													list: 121,
+													loadStore: true
 												}
 											]
 										},
@@ -217,18 +226,18 @@ Ext.define('App.view.administration.Users', {
 											},
 											items: [
 												{
-													width: 280,
+													width: 555,
 													xtype: 'mitos.rolescombo',
 													fieldLabel: i18n('access_control'),
 													name: 'role_id',
 													allowBlank: false
-												},
-												{
-													width: 275,
-													xtype: 'textfield',
-													fieldLabel: i18n('taxonomy'),
-													name: 'taxonomy'
 												}
+//												{
+//													width: 275,
+//													xtype: 'textfield',
+//													fieldLabel: i18n('taxonomy'),
+//													name: 'taxonomy'
+//												}
 											]
 										}
 									]
@@ -287,11 +296,12 @@ Ext.define('App.view.administration.Users', {
 										},
 										{
 											width: 558,
-											xtype: 'textfield',
-											fieldLabel: i18n('job_description'),
+											xtype: 'activespecialtiescombo',
+											fieldLabel: i18n('specialties'),
 											name: 'specialty',
 											margin: '5 0',
-											labelAlign: 'right'
+											labelAlign: 'right',
+											multiSelect: true
 										},
 										{
 											width: 558,

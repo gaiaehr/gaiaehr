@@ -16,17 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.controller.administration.Specialities', {
+Ext.define('App.controller.administration.FacilityStructure', {
 	extend: 'Ext.app.Controller',
 
 	refs: [
 		{
-			ref: 'SpecialitiesPanel',
-			selector: 'specialitiespanel'
+			ref: 'FacilityStructurePanel',
+			selector: '#FacilityStructurePanel'
 		},
 		{
-			ref: 'SpecialitiesAddBtn',
-			selector: '#specialitiesAddBtn'
+			ref: 'FacilityStructureTreePanel',
+			selector: '#FacilityStructureTreePanel'
 		}
 	],
 
@@ -34,25 +34,15 @@ Ext.define('App.controller.administration.Specialities', {
 		var me = this;
 
 		me.control({
-			'#specialitiesAddBtn': {
-				click: me.onSpecialitiesAddBtnClick
+			'#FacilityStructurePanel': {
+				activate: me.onFacilityStructurePanelActivate
 			}
 		});
 
 	},
 
-	onSpecialitiesAddBtnClick: function(btn){
-		var grid = btn.up('grid');
-
-		grid.editingPlugin.cancelEdit();
-		grid.getStore().insert(0, {
-			create_date: new Date(),
-			update_date: new Date(),
-			create_uid: app.user.id,
-			update_uid: app.user.id,
-			active: 1
-		});
-		grid.editingPlugin.startEdit(0, 0);
+	onFacilityStructurePanelActivate: function(){
+		this.getFacilityStructureTreePanel().getStore().load();
 	}
 
 });

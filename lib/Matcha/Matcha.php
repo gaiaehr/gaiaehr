@@ -90,7 +90,7 @@ class Matcha {
 
 				self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-					PDO::ATTR_PERSISTENT => true
+					PDO::ATTR_PERSISTENT => false
 				));
 
 				self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -228,10 +228,12 @@ class Matcha {
 		try{
 			if(!$table)
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
+
+			$colName = isset($column['mapping']) ? $column['mapping'] : $column['name'];
 			if(self::__rendercolumnsyntax($column) == true)
-				self::$__conn->query('ALTER TABLE ' . $table . ' ADD ' . $column['name'] . ' ' . self::__rendercolumnsyntax($column) . ';');
+				self::$__conn->query('ALTER TABLE ' . $table . ' ADD ' . $colName . ' ' . self::__rendercolumnsyntax($column) . ';');
 			if($index)
-				self::__createIndex($table, $column['name']);
+				self::__createIndex($table, $colName);
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);
@@ -247,10 +249,12 @@ class Matcha {
 		try{
 			if($table == null)
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel ['table']['name'] : MatchaModel::$__senchaModel['table']);
+
+			$colName = isset($column['mapping']) ? $column['mapping'] : $column['name'];
 			if(self::__rendercolumnsyntax($column) == true)
-				self::$__conn->query('ALTER TABLE ' . $table . ' MODIFY ' . $column['name'] . ' ' . self::__renderColumnSyntax($column) . ';');
+				self::$__conn->query('ALTER TABLE ' . $table . ' MODIFY ' . $colName . ' ' . self::__renderColumnSyntax($column) . ';');
 			if($index)
-				self::__createIndex($table, $column['name']);
+				self::__createIndex($table, $colName);
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);

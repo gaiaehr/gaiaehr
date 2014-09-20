@@ -25,22 +25,11 @@ include_once(ROOT . '/dataProvider/Services.php');
 include_once(ROOT . '/classes/Time.php');
 
 class FloorPlans {
-	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
-	/**
-	 * @var User
-	 */
-	private $user;
+
 	/**
 	 * @var Patient
 	 */
 	private $patient;
-	/**
-	 * @var Services
-	 */
-	private $services;
 
 	/**
 	 * @var PoolArea
@@ -48,7 +37,6 @@ class FloorPlans {
 	private $pool;
 
 	function __construct(){
-		$this->db = new MatchaHelper();
 		$this->fp = MatchaModel::setSenchaModel('App.model.administration.FloorPlans');
 		$this->fpz = MatchaModel::setSenchaModel('App.model.administration.FloorPlanZones');
 

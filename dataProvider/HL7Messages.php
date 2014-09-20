@@ -90,6 +90,7 @@ class HL7Messages {
 	}
 
 	private function setPID() {
+
 		// set patient globally
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 		$this->patient = $this->p->load($this->patient)->one();

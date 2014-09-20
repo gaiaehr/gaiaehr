@@ -22,11 +22,6 @@ include_once(ROOT . '/dataProvider/i18nRouter.php');
 class CombosData {
 
 	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
-
-	/**
 	 * @var MatchaCUP
 	 */
 	private $CLO = null;

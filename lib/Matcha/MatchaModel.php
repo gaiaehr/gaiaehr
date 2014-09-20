@@ -27,6 +27,10 @@ class MatchaModel extends Matcha
     /**
      *
      */
+    public static $fileModel = '';
+    /**
+     *
+     */
     public static $tableId;
 
     /**
@@ -46,6 +50,8 @@ class MatchaModel extends Matcha
     {
         try
         {
+	        self::$fileModel = $fileModel;
+
 	        // skip this entire routine if freeze option is true
 			if(self::$__freeze)
             {

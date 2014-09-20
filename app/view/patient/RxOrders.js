@@ -26,8 +26,7 @@ Ext.define('App.view.patient.RxOrders', {
 		'App.ux.combo.PrescriptionTypes',
 		'App.ux.combo.EncounterICDS',
 		'App.ux.LiveSigsSearch',
-		'App.ux.LiveRXNORMSearch',
-		'Modules.erx.view.fields.PatientPharmacyHistory'
+		'App.ux.LiveRXNORMSearch'
 	],
 	xtype: 'patientrxorderspanel',
 	title: i18n('rx_orders'),

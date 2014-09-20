@@ -297,12 +297,21 @@ class Matcha {
 	 * function __createIndex($table, $column):
 	 * Method to create an new index to table if index does not exist
 	 * @param $table
-	 * @param $column
+	 * @param $columns
 	 * @return bool
 	 */
-	static public function __createIndex($table, $column){
+	static public function __createIndex($table, $columns){
 		try{
-			self::$__conn->query('ALTER TABLE ' . $table . ' ADD INDEX ' . 'IK_'. $table. '_' . $column . '(' . $column . ');');
+			if(is_string($columns)) $columns = array($columns);
+
+			$keyName = 'IK_'. implode('_', $columns);
+			$columns = implode(',', $columns);
+
+			$sth = self::$__conn->prepare('SHOW INDEX FROM ' . $table . ' WHERE `Key_name` = \'' . $keyName . '\';');
+			$sth->execute();
+			$result = $sth->fetch(PDO::FETCH_ASSOC);
+
+			if($result === false)	self::$__conn->query('ALTER TABLE ' . $table . ' ADD INDEX ' . $keyName . '(' . $columns . ');');
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);

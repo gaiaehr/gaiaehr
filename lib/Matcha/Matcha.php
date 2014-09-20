@@ -302,7 +302,7 @@ class Matcha {
 	 */
 	static public function __createIndex($table, $column){
 		try{
-			self::$__conn->query('ALTER TABLE ' . $table . ' ADD INDEX ' . 'KINDEX_' . $column . '(' . $column . ');');
+			self::$__conn->query('ALTER TABLE ' . $table . ' ADD INDEX ' . 'IK_'. $table. '_' . $column . '(' . $column . ');');
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);

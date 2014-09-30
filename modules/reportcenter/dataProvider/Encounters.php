@@ -80,9 +80,14 @@ class Encounters extends Reports {
 	              WHERE created_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
 
 		if(isset($pid) && $pid != ''){
-			$sql .= " AND pid = '$pid'";
+			$sql .= " AND pid = :p";
+			$recordSet = $this->conn->prepare($sql);
+			$recordSet->execute(array(':p' => $pid));
+		}else{
+			$recordSet = $this->conn->prepare($sql);
+			$recordSet->execute();
 		}
-		$recordSet = $this->conn->query($sql);
+
 
 //		foreach($recordSet->fetchAll(\PDO::FETCH_ASSOC) as $key => $data){
 //			$id = $data['id'];
@@ -93,7 +98,7 @@ class Encounters extends Reports {
 //			if(isset($drug) && $drug != ''){
 //				$sql .= " AND medication_id = '$drug'";
 //			}
-//			$recordSet2 = $this->conn->query($sql);
+//			$recordSet2 = $this->conn->prepare($sql); ???? execute
 //			$alldata[$key] = recordSets->fetchAll;
 //		}
 

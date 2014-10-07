@@ -93,5 +93,9 @@ Ext.define('Modules.Module',{
 
     addLanguages: function (languages) {
 
-    }
+    },
+
+	insertToHead: function(link){
+		Ext.getHeaad().appendChild(link);
+	}
 });

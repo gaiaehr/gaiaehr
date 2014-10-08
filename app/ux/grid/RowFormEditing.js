@@ -65,7 +65,6 @@
 Ext.define('App.ux.grid.RowFormEditing', {
 	extend: 'Ext.grid.plugin.Editing',
 	alias: 'plugin.rowformediting',
-
 	requires: [
 		'App.ux.grid.RowFormEditor'
 	],
@@ -79,6 +78,8 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	addBtnText: 'Add',
 	addBtnIconCls: null,
 	toolbarDock: 'top',
+
+	fieldDefaults: {},
 
 	saveBtnEnabled: false,
 	/**
@@ -179,22 +180,22 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	 * - cancel - Set this to true to cancel the edit or return false from your handler.
 	 */
 
-	constructor: function() {
+	constructor: function(){
 		var me = this;
 		me.callParent(arguments);
 
-		if (!me.clicksToMoveEditor) {
+		if(!me.clicksToMoveEditor){
 			me.clicksToMoveEditor = me.clicksToEdit;
 		}
 
 		me.autoCancel = !!me.autoCancel;
 	},
 
-	init: function(grid) {
+	init: function(grid){
 		var me = this;
 		me.callParent(arguments);
 
-		if (me.enableAddBtn) {
+		if(me.enableAddBtn){
 			var t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
 				grid.addDocked({ xtype: 'toolbar', dock: me.toolbarDock })[0];
 
@@ -207,9 +208,18 @@ Ext.define('App.ux.grid.RowFormEditing', {
 			});
 
 		}
+
+		me.grid.on('beforeselect', me.editHandler, me);
+		me.grid.on('beforecellclick', me.editHandler, me);
+		me.grid.on('beforecelldblclick', me.editHandler, me);
+		me.grid.on('beforecellmousedown', me.editHandler, me);
 	},
 
-	doAddRecord: function() {
+	editHandler: function(){
+		return !this.editing;
+	},
+
+	doAddRecord: function(){
 		var me = this,
 			grid = me.grid,
 			store = grid.store;
@@ -228,7 +238,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	 * @private
 	 * AbstractComponent calls destroy on all its plugins at destroy time.
 	 */
-	destroy: function() {
+	destroy: function(){
 		var me = this;
 		Ext.destroy(me.editor);
 		me.callParent(arguments);
@@ -240,18 +250,18 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	 * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
 	 * @return {Boolean} `true` if editing was started, `false` otherwise.
 	 */
-	startEdit: function(record, columnHeader) {
+	startEdit: function(record, columnHeader){
 		var me = this,
 			editor = me.getEditor(),
 			context;
 
-		if (editor.beforeEdit() !== false) {
+		if(editor.beforeEdit() !== false){
 			context = me.callParent(arguments);
-			if (context) {
+			if(context){
 				me.context = context;
 
 				// If editing one side of a lockable grid, cancel any edit on the other side.
-				if (me.lockingPartner) {
+				if(me.lockingPartner){
 					me.lockingPartner.cancelEdit();
 				}
 				editor.startEdit(context.record, context.column, context);
@@ -262,14 +272,14 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	// private
-	cancelEdit: function() {
+	cancelEdit: function(){
 		var me = this;
 
-		if (me.editing) {
+		if(me.editing){
 			me.getEditor().cancelEdit();
 			me.callParent(arguments);
 
-			if (me.autoCancel) me.view.store.rejectChanges();
+			if(me.autoCancel) me.view.store.rejectChanges();
 
 			me.fireEvent('canceledit', me.context);
 			return;
@@ -279,19 +289,19 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	// private
-	completeEdit: function() {
+	completeEdit: function(){
 		var me = this;
 
-		if (me.editing && me.validateEdit()) {
+		if(me.editing && me.validateEdit()){
 			me.editing = false;
 			me.fireEvent('edit', me, me.context);
 		}
 	},
 
-	completeRemove: function() {
+	completeRemove: function(){
 		var me = this;
 
-		if (me.editing) {
+		if(me.editing){
 			me.getEditor().completeRemove();
 			me.fireEvent('completeremove', me, me.context);
 		}
@@ -299,7 +309,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	// private
-	validateEdit: function() {
+	validateEdit: function(){
 		var me = this,
 			editor = me.editor,
 			context = me.context,
@@ -311,7 +321,7 @@ Ext.define('App.ux.grid.RowFormEditing', {
 			eLen = editors.length,
 			name, item;
 
-		for (e = 0; e < eLen; e++) {
+		for(e = 0; e < eLen; e++){
 			item = editors[e];
 			name = item.name;
 
@@ -328,21 +338,21 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	// private
-	getEditor: function() {
+	getEditor: function(){
 		var me = this;
 
-		if (!me.editor) {
+		if(!me.editor){
 			me.editor = me.initEditor();
 		}
 		return me.editor;
 	},
 
 	// @private
-	initEditor: function() {
+	initEditor: function(){
 		return new App.ux.grid.RowFormEditor(this.initEditorConfig());
 	},
 
-	initEditorConfig: function() {
+	initEditorConfig: function(){
 		var me = this,
 			grid = me.grid,
 			view = me.view,
@@ -363,10 +373,10 @@ Ext.define('App.ux.grid.RowFormEditing', {
 			},
 			item;
 
-		for (b = 0; b < bLen; b++) {
+		for(b = 0; b < bLen; b++){
 			item = btns[b];
 
-			if (Ext.isDefined(me[item])) {
+			if(Ext.isDefined(me[item])){
 				cfg[item] = me[item];
 			}
 		}
@@ -374,43 +384,47 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	// private
-	initEditTriggers: function() {
+	initEditTriggers: function(){
 		var me = this,
 			view = me.view,
 			moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
 
 		me.callParent(arguments);
 
-		if (me.clicksToMoveEditor !== me.clicksToEdit) {
+		if(me.clicksToMoveEditor !== me.clicksToEdit){
 			me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
 		}
 	},
 
-	startEditByClick: function() {
+	startEditByClick: function(){
 		var me = this;
-		if (!me.editing || me.clicksToMoveEditor === me.clicksToEdit) {
+		if(!me.editing || me.clicksToMoveEditor === me.clicksToEdit){
 			me.callParent(arguments);
 		}
 	},
 
-	moveEditorByClick: function() {
+	moveEditorByClick: function(){
 		var me = this;
-		if (me.editing) {
+		if(me.editing){
+			say(me);
+			say(me.superclass);
+
 			me.superclass.onCellClick.apply(me, arguments);
 		}
 	},
 
-	onCellClick: function (view, cell, colIdx, record, row, rowIdx, e) {
+	onCellClick: function(view, cell, colIdx, record, row, rowIdx, e){
 		var me = this;
-		if (me.autoCancel) {
+
+		if(me.autoCancel){
 			me.view.store.rejectChanges();
-			if (me.editor) me.editor.rejectChildStoresChanges();
+			if(me.editor) me.editor.rejectChildStoresChanges();
 		}
 		me.callParent(arguments);
 	},
 
 	// private
-	setColumnField: function(column, field) {
+	setColumnField: function(column, field){
 		var me = this;
 		editor.removeField(column);
 		me.callParent(arguments);

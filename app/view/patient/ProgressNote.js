@@ -86,10 +86,10 @@ Ext.define('App.view.patient.ProgressNote', {
             '   <tpl for="soap">' +
             '       <div class="secession">' +
             '           <div class="title"> ' + i18n('soap') + ' </div>' +
-            '           <p><span>' + i18n('subjective') + ':</span> {[values.subjective || "-"]} </p>' +
-            '           <p><span>' + i18n('objective') + ':</span> {[values.objective || "-"]}</p>' +
-            '           <p><span>' + i18n('assessment') + ':</span> {[values.assessment || "-"]}</p>' +
-            '           <p><span>' + i18n('plan') + ':</span> {[values.plan || "-"]}</p>' +
+            '           <p><span>' + i18n('subjective') + ':</span> {[this.doHtmlDecode(values.subjective) || "-"]} </p>' +
+            '           <p><span>' + i18n('objective') + ':</span> {[this.doHtmlDecode(values.objective) || "-"]}</p>' +
+            '           <p><span>' + i18n('assessment') + ':</span> {[this.doHtmlDecode(values.assessment) || "-"]}</p>' +
+            '           <p><span>' + i18n('plan') + ':</span> {[this.doHtmlDecode(values.plan) || "-"]}</p>' +
             '       </div>' +
             '   </tpl>' +
             /**
@@ -397,7 +397,12 @@ Ext.define('App.view.patient.ProgressNote', {
 
 	            isMetric:function(){
 		            return g('units_of_measurement') == 'metric';
+	            },
+
+	            doHtmlDecode:function(v){
+		            return Ext.String.htmlDecode(v);
 	            }
+
 
 
             }

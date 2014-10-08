@@ -109,8 +109,8 @@ class Patient {
 		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
 		$params->update_date = date('Y-m-d H:i:s');
 		$this->patient = $this->p->save($params);
-		$this->patient['fullname'] = $fullName;
-		$this->createPatientDir($this->patient['pid']);
+		$this->patient->fullname = $fullName;
+		$this->createPatientDir($this->patient->pid);
 		return $this->patient;
 	}
 
@@ -383,14 +383,25 @@ class Patient {
 
 	public function patientLiveSearch(stdClass $params) {
 		$this->setPatientModel();
-		$patients = $this->p->sql("SELECT pid,pubpid,fname,lname,mname,DOB,SS,sex
+		$conn = Matcha::getConn();
+		$sth = $conn->prepare('SELECT pid,pubpid,fname,lname,mname,DOB,SS,sex
                              FROM patient
-                            WHERE fname  LIKE '$params->query%'
-                               OR lname  LIKE '$params->query%'
-                               OR mname  LIKE '$params->query%'
-                               OR pubpid LIKE '$params->query%'
-                               OR pid 	 LIKE '$params->query%'
-                               OR SS 	 LIKE '%$params->query'")->all();
+                            WHERE fname  LIKE :fname
+                               OR lname  LIKE :lname
+                               OR mname  LIKE :mname
+                               OR pubpid LIKE :pubpid
+                               OR pid 	 LIKE :pid
+                               OR SS 	 LIKE :ss');
+		$sth->execute(array(
+			':fname' => $params->query . '%',
+			':lname' => $params->query . '%',
+			':mname' => $params->query . '%',
+			':pubpid' => $params->query . '%',
+			':pid' => $params->query . '%',
+			':ss' => '%' . $params->query
+		));
+		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
+
 		$total = count($patients);
 		$rows = array_slice($patients, $params->start, $params->limit);
 		return array(

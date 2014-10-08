@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 Ext.define('App.model.patient.Encounter',{
     extend: 'Ext.data.Model',
     requires: [

@@ -40,12 +40,26 @@ class DiagnosisCodes {
 		$whereQuery = '';
 
 		$queries = explode(' ', $query);
+
+
+		$wheres = array();
+		$wheresIndex = 0;
+
 		foreach($queries as $q){
 			$q = trim($q);
-			$whereQuery .= " AND (short_desc 		LIKE '%$q%'
-                         OR long_desc 		    LIKE '$q%'
-                         OR dx_code			    LIKE '$q%'
-                         OR formatted_dx_code	LIKE '$q%') ";
+			$w0 = ':W0'. $wheresIndex;
+			$wheres[$w0] = '%'.$q.'%';
+			$w1 = ':W1'. $wheresIndex;
+			$wheres[$w1] = $q.'%';
+			$w2 = ':W2'. $wheresIndex;
+			$wheres[$w2] = $q.'%';
+			$w3 = ':W3'. $wheresIndex++;
+			$wheres[$w3] = $q.'%';
+
+			$whereQuery .= " AND (short_desc 	LIKE $w0
+                         OR long_desc 		    LIKE $w1
+                         OR dx_code			    LIKE $w2
+                         OR formatted_dx_code	LIKE $w3) ";
 		}
 
 		if($type == 'ICD9' || $type == 'BOTH'){
@@ -67,7 +81,8 @@ class DiagnosisCodes {
 	                  AND revision = '$revision'
 	                  $whereQuery
 	             ORDER BY formatted_dx_code ASC";
-			$recordSet = $this->conn->query($sql);
+			$recordSet = $this->conn->prepare($sql);
+			$recordSet->execute($wheres);
 			$records = array_merge($records, $recordSet->fetchAll(PDO::FETCH_ASSOC));
 		} elseif($type == 'ICD10' || $type == 'BOTH') {
 			/**
@@ -91,7 +106,8 @@ class DiagnosisCodes {
                       AND revision = '$revision'
                      $whereQuery
                  ORDER BY formatted_dx_code ASC";
-			$recordSet = $this->conn->query($sql);
+			$recordSet = $this->conn->prepare($sql);
+			$recordSet->execute($wheres);
 			$records = array_merge($records, $recordSet->fetchAll(PDO::FETCH_ASSOC));
 		}
 
@@ -117,9 +133,10 @@ class DiagnosisCodes {
 			$revision = $this->getLastRevisionByCodeType('ICD9');
 			$sql = "SELECT *, formatted_dx_code AS code, 'ICD9-DX' AS code_type
 						  	 FROM icd9_dx_code
-						 	WHERE (dx_code  = '$code' OR formatted_dx_code  = '$code')
+						 	WHERE (dx_code  = :c1 OR formatted_dx_code  = :c2)
 						      AND revision = '$revision'";
-			$recordSet = $this->conn->query($sql);
+			$recordSet = $this->conn->prepare($sql);
+			$recordSet->execute(array(':c1' => $code, ':c2' => $code));
 			$data[] = $recordSet->fetch(PDO::FETCH_ASSOC);
 		}
 
@@ -127,9 +144,10 @@ class DiagnosisCodes {
 			$revision = $this->getLastRevisionByCodeType('ICD10');
 			$sql = "SELECT *, formatted_dx_code AS code, 'ICD10-DX' AS code_type
 						  	 FROM icd10_dx_order_code
-						 	WHERE (dx_code  = '$code' OR formatted_dx_code  = '$code')
+						 	WHERE (dx_code  = :c1 OR formatted_dx_code  = :c2)
 						      AND revision = '$revision'";
-			$recordSet = $this->conn->query($sql);
+			$recordSet = $this->conn->prepare($sql);
+			$recordSet->execute(array(':c1' => $code, ':c2' => $code));
 			$data[] = $recordSet->fetch(PDO::FETCH_ASSOC);
 
 		}
@@ -148,9 +166,10 @@ class DiagnosisCodes {
 								  'ICD9-DX' AS code_type, b.*
 						  	 FROM icd10_gem_dx_10_9 AS a
 						LEFT JOIN icd9_dx_code AS b ON b.dx_code = a.dx_icd9_target
-						 	WHERE a.dx_icd10_source = '$ICD10'
+						 	WHERE a.dx_icd10_source = :c
 						 	  AND a.revision = '$revision'";
-		$recordSet = $this->conn->query($sql);
+		$recordSet = $this->conn->prepare($sql);
+		$recordSet->execute(array(':c' => $ICD10));
 		$records = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 		return $records;
 	}
@@ -161,9 +180,10 @@ class DiagnosisCodes {
 								  'ICD10-DX' AS code_type, b.*
 						  	 FROM icd10_gem_dx_9_10 AS a
 					    LEFT JOIN icd10_dx_order_code AS b ON b.dx_code = a.dx_icd10_target
-						 	WHERE a.dx_icd9_source = '$ICD9'
+						 	WHERE a.dx_icd9_source = :c
 						 	  AND a.revision = '$revision'";
-		$recordSet = $this->conn->query($sql);
+		$recordSet = $this->conn->prepare($sql);
+		$recordSet->execute(array(':c' => $ICD9));
 		$records = $recordSet->fetchAll(PDO::FETCH_ASSOC);
 		return $records;
 	}
@@ -171,8 +191,9 @@ class DiagnosisCodes {
 	public function getLastRevisionByCodeType($codeType) {
 		$sql = "SELECT MAX(revision_number) AS last_revision
                         	 FROM standardized_tables_track
-                        	WHERE code_type = '$codeType'";
-		$recordSet = $this->conn->query($sql);
+                        	WHERE code_type = :c";
+		$recordSet = $this->conn->prepare($sql);
+		$recordSet->execute(array(':c' => $codeType));
 		$record = $recordSet->fetch(PDO::FETCH_ASSOC);
 		return $record['last_revision'];
 	}
@@ -180,10 +201,11 @@ class DiagnosisCodes {
 	public function getICDByEid($eid, $active = null) {
 		$records = array();
 		$sql = "SELECT *
-							 FROM encounter_dx
-							WHERE eid = '$eid'
-                            ORDER BY id ASC";
-		$recordSet = $this->conn->query($sql);
+ 				  FROM encounter_dx
+				 WHERE eid = :c
+              ORDER BY id ASC";
+		$recordSet = $this->conn->prepare($sql);
+		$recordSet->execute(array(':c' => $eid));
 		foreach($recordSet->fetchAll(PDO::FETCH_ASSOC) AS $foo){
 			$dx = $this->getICDDataByCode($foo['code']);
 			$records[] = array_merge($dx, $foo);
@@ -194,10 +216,11 @@ class DiagnosisCodes {
 	public function getICDByPid($pid, $active = false) {
 		$records = array();
 		$sql = "SELECT *
-							 FROM encounter_dx
-							WHERE pid = '$pid'
-                            ORDER BY id ASC";
-		$recordSet = $this->conn->query($sql);
+			      FROM encounter_dx
+				 WHERE pid = :c
+              ORDER BY id ASC";
+		$recordSet = $this->conn->prepare($sql);
+		$recordSet->execute(array(':c' => $pid));
 		foreach($recordSet->fetchAll(PDO::FETCH_ASSOC) AS $foo){
 			$dx = $this->getICDDataByCode($foo['code']);
 			$records[] = array_merge($dx, $foo);
@@ -243,9 +266,9 @@ class DiagnosisCodes {
 		$codeTable = $codeType == 'ICD9-DX' ? 'icd9_dx_code' : 'icd10_dx_order_code';
 		$codeColumn = $codeType == 'ICD9-DX' ? 'formatted_dx_code' : 'icd10_dx_order_code';
 		$textColumn = $codeType == 'ICD9-DX' ? 'short_desc' : 'short_desc';
-		$sql = "SELECT $textColumn AS code_text FROM $codeTable WHERE `$codeColumn` = '$code' LIMIT 1";
-
-		$recordSet = $this->conn->query($sql);
+		$sql = "SELECT $textColumn AS code_text FROM $codeTable WHERE `$codeColumn` = :c LIMIT 1";
+		$recordSet = $this->conn->prepare($sql);
+		$recordSet->execute(array(':c' => $code));
 		$record = $recordSet->fetch(PDO::FETCH_ASSOC);
 		return isset($record['code_text']) ? $record['code_text'] : '';
 	}

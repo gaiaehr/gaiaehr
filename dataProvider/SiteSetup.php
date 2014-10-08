@@ -42,7 +42,7 @@ class SiteSetup
 	{
 		if(isset($params->rootUser)){
 			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
-			if($success && $this->conn->query("USE $params->dbName") !== false){
+			if($success && $this->conn->exec("USE $params->dbName") !== false){
 				return array(
 					'success' => false, 'error' => 'Database name is used. Please, use a different Database name'
 				);
@@ -69,7 +69,7 @@ class SiteSetup
 
 	function setMaxAllowedPacket()
 	{
-		$stm = $this->conn->query("SELECT @@global.max_allowed_packet AS size");
+		$stm = $this->conn->exec("SELECT @@global.max_allowed_packet AS size");
 		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
 		if($pkg['size'] < 209715200){
 			$this->conn->exec("SET @@global.max_allowed_packet = 52428800000");
@@ -251,7 +251,7 @@ class SiteSetup
         ini_set('memory_limit', '-1');
 		if(file_exists($sqlFile = 'sql/gaiadb_install_structure.sql')){
 			$query = file_get_contents($sqlFile);
-			if($this->conn->query($query) !== false){
+			if($this->conn->exec($query) !== false){
 				return true;
 			} else {
 				return false;
@@ -267,7 +267,7 @@ class SiteSetup
 		if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
             if(file_exists($sqlFile = 'sql/gaiadb_install_data.sql')){
                 $query = file_get_contents($sqlFile);
-				if($this->conn->query($query) !== false){
+				if($this->conn->exec($query) !== false){
 					return array('success' => true);
 				} else {
                     FileManager::rmdir_recursive("sites/$params->siteId");

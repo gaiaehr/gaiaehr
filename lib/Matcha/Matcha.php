@@ -90,14 +90,16 @@ class Matcha {
 
 				self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-					PDO::ATTR_PERSISTENT => false
+					PDO::ATTR_PERSISTENT => false,
 				));
 
 				self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+				self::$__conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
 				// check if the database exist.
 				self::__createDatabase($dbName);
-				self::$__conn->query('USE ' . $dbName . ';');
+				self::$__conn->exec('USE ' . $dbName . ';');
 
 				// set the encryption secret key if provided
 				if(isset($databaseParameters['key']))
@@ -151,8 +153,13 @@ class Matcha {
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
 			}
 
-			if(isset(MatchaModel::$__senchaModel['table']['uuid']) && MatchaModel::$__senchaModel['table']['uuid']){
-				$tableIdProperties = 'CHAR(40) NOT NULL PRIMARY KEY';
+			$idProperties = MatchaModel::$tableIdProperties;
+
+			if(
+				(isset(MatchaModel::$__senchaModel['table']['uuid']) && MatchaModel::$__senchaModel['table']['uuid']) ||
+				(isset($idProperties['type']) && $idProperties['type'] == 'string')
+			){
+				$tableIdProperties = 'VARCHAR(60) NOT NULL PRIMARY KEY';
 			}else{
 				$tableIdProperties = 'BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
 			}

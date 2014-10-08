@@ -1442,6 +1442,18 @@ $LANG = array(
 	'facility_structure'                    => 'facility Structure',
 	'departments'                           => 'Departments',
 	'please_remove_child_records_first'     => 'Please Remove Child Records First',
-
+	'attn'                                  => 'Attn',
+	'contact_info'                          => 'Contact Info.',
+	'delete_record'                         => 'Delete Record',
+	'drag_and_drop_to_reorganize'           => 'Drag and drop to reorganize',
+	'icon_color'                            => 'Icon Color',
+	'black'                                 => 'Black',
+	'fuchsia'                               => 'Fuchsia',
+	'orange'                                => 'Orange',
+	'yellow'                                => 'Yellow',
+	'green'                                 => 'Green',
+	'gold'                                  => 'Gold',
+	'coral'                                 => 'Coral',
+	'unable_to_load_module'                 => 'Unable To Load Module',
 
 );

@@ -25,7 +25,8 @@ Ext.define('App.view.patient.Patient', {
 		type: 'vbox',
 		align: 'stretch'
 	},
-	alias: 'widget.patientdeomgraphics',
+	xtype: 'patientdeomgraphics',
+	itemId: 'PatientDemographicsPanel',
 	newPatient: true,
 	pid: null,
 	// default patient photo ID placeholder
@@ -108,6 +109,7 @@ Ext.define('App.view.patient.Patient', {
 				xtype: 'button',
 				action: 'readOnly',
 				text: i18n('save'),
+				itemId: 'PatientDemographicSaveBtn',
 				minWidth: 75,
 				scope: me,
 				handler: me.formSave
@@ -117,6 +119,7 @@ Ext.define('App.view.patient.Patient', {
 				xtype: 'button',
 				text: i18n('cancel'),
 				action: 'readOnly',
+				itemId: 'PatientDemographicCancelBtn',
 				minWidth: 75,
 				scope: me,
 				handler: me.formCancel
@@ -293,7 +296,7 @@ Ext.define('App.view.patient.Patient', {
 		form.title = i18n('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : i18n('new')) + ')';
 
 		form.add(me.insuranceFormItmes);
-		form.getForm().loadRecord(rec);
+		me.insuranceFormLoadRecord(form, rec);
 		if(rec.data.image != '') form.down('image').setSrc(rec.data.image);
 	},
 
@@ -312,7 +315,13 @@ Ext.define('App.view.patient.Patient', {
 			}
 
 			rec = form.getRecord();
+
+			app.fireEvent('beforepatientinsuranceset', form, rec);
+
 			rec.set(form.getValues());
+
+			app.fireEvent('afterpatientinsuranceset', form, rec);
+
 			records.push(rec);
 		}
 
@@ -396,6 +405,12 @@ Ext.define('App.view.patient.Patient', {
 		}
 	},
 
+
+	insuranceFormLoadRecord: function(form, record){
+		form.getForm().loadRecord(record);
+		app.fireEvent('insurancerecordload', form, record);
+	},
+
 	formSave: function(){
 		var me = this,
 			form = me.demoForm.getForm(),
@@ -407,7 +422,7 @@ Ext.define('App.view.patient.Patient', {
 			record.set(values);
 
 			// fire global event
-			app.fireEvent('beforedemographicssave', record);
+			app.fireEvent('beforedemographicssave', record, me);
 
 			record.save({
 				scope: me,
@@ -428,7 +443,7 @@ Ext.define('App.view.patient.Patient', {
 					}
 
 					// fire global event
-					app.fireEvent('afterdemographicssave', record);
+					app.fireEvent('afterdemographicssave', record, me);
 
 					insStore.sync();
 					me.msg('Sweet!', i18n('record_saved'));
@@ -452,7 +467,7 @@ Ext.define('App.view.patient.Patient', {
 			'update_uid': app.user.id,
 			'create_date': new Date(),
 			'update_date': new Date(),
-			'DOB': '000-00-00 00:00:00'
+			'DOB': '0000-00-00 00:00:00'
 		});
 
 		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)

@@ -211,9 +211,11 @@ class VectorGraph
 
 	private function getGraphCurves($type, $sex)
 	{
-		$this->db->setSQL("SELECT * FROM vector_graphs WHERE type = '$type' AND sex = '$sex'");
+		$conn = Matcha::getConn();
+		$sth = $conn->prepare("SELECT * FROM vector_graphs WHERE type = :type AND sex = :sex");
+		$sth->execute(array(':type' => $type, ':sex' => $sex));
 		$records = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
+		foreach($sth->fetchAll(PDO::FETCH_ASSOC) as $row){
 			unset($row['type'], $row['sex'], $row['L'], $row['M'], $row['S']);
 			foreach($row as $key => $val){
 				if($val == null)

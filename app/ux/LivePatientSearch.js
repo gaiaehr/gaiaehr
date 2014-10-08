@@ -22,6 +22,7 @@ Ext.define('App.ux.LivePatientSearch', {
 	displayField: 'fullname',
 	valueField: 'pid',
 	emptyText: i18n('search_for_a_patient') + '...',
+	maxLength: 40,
 	initComponent: function(){
 		var me = this;
 

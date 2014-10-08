@@ -28,6 +28,13 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			type: 'int'
 		},
 		{
+			name: 'external_ref',
+			type: 'string',
+			len: 80,
+			index: true,
+			comment: 'use to reference the insurance to another software'
+		},
+		{
 			name: 'name',
 			type: 'string',
 			len: 120
@@ -38,39 +45,14 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			len: 120
 		},
 		{
-			name: 'cms_id',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'freeb_type',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'x12_receiver_id',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'x12_default_partner_id',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'alt_cms_id',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'address',
+			name: 'address1',
 			type: 'string',
 			len: 100
 		},
 		{
-			name: 'address_cont',
+			name: 'address2',
 			type: 'string',
-			len: 80
+			len: 100
 		},
 		{
 			name: 'city',
@@ -83,14 +65,9 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			len: 80
 		},
 		{
-			name: 'zip',
+			name: 'zip_code',
 			type: 'string',
-			len: 10
-		},
-		{
-			name: 'plus_four',
-			type: 'string',
-			len: 10
+			len: 15
 		},
 		{
 			name: 'country',
@@ -98,67 +75,39 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			len: 80
 		},
 		{
+			name: 'phone1',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'phone2',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'fax',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'dx_type',
+			type: 'string',
+			len: 5
+		},
+		{
 			name: 'address_full',
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-				return record.data.address + ' ' +  record.data.address_cont + ' ' +  record.data.city + ' ' +  record.data.state + ', ' +  record.data.zip;
+				return record.data.address1 + ' ' +  record.data.address2 + ' ' +  record.data.city + ' ' +  record.data.state + ', ' +  record.data.zip_code;
 			}
 		},
 		{
-			name: 'phone_country_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'phone_area_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'phone_prefix',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'phone_number',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'phone_full',
+			name: 'combo_text',
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-				return record.data.phone_country_code + ' ' + record.data.phone_area_code + '-' + record.data.phone_prefix + '-' + record.data.phone_number;
-			}
-		},
-		{
-			name: 'fax_country_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'fax_area_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'fax_prefix',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'fax_number',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'fax_full',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				return record.data.fax_country_code + ' ' + record.data.fax_area_code + '-' + record.data.fax_prefix + '-' + record.data.fax_number;
+				return record.data.id + ': ' + (record.data.name ? record.data.name : ' * ' ) + ' ' + (!record.data.active ? ('(' +  i18n('inactive') + ')') : '') ;
 			}
 		},
 		{
@@ -172,6 +121,9 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			read: 'Insurance.getInsuranceCompanies',
 			create: 'Insurance.addInsuranceCompany',
 			update: 'Insurance.updateInsuranceCompany'
+		},
+		reader: {
+			root: 'data'
 		}
 	}
 });

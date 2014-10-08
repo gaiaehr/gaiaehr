@@ -55,30 +55,36 @@ Ext.define('App.model.administration.DecisionSupportRuleConcept', {
 		{
 			name: 'frequency',
 			type: 'int',
-			len: 2
+			len: 3
 		},
 		{
 			name: 'frequency_interval',
 			type: 'string',
-			len: 2,
+			len: 3,
 			comment: '1D = one day 2M = two month 1Y = one year'
 		},
 		{
 			name: 'frequency_operator',
 			type: 'string',
 			len: 5,
-			comment: '== != <= >= < >'
-		},
-		{
-			name: 'value',
-			type: 'string',
-			len: 10
+			comment: '== != <= >= < >',
+			convert: function(v){
+				return Ext.util.Format.htmlDecode(v);
+			}
 		},
 		{
 			name: 'value_operator',
 			type: 'string',
 			len: 5,
-			comment: '== != <= >= < >'
+			comment: '== != <= >= < >',
+			convert: function(v){
+				return Ext.util.Format.htmlDecode(v);
+			}
+		},
+		{
+			name: 'value',
+			type: 'string',
+			len: 10
 		}
 	],
 	proxy: {

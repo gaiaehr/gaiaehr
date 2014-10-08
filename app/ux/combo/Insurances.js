@@ -15,10 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+Ext.define('App.ux.combo.Insurances', {
+	extend: 'App.ux.combo.ComboResettable',
+	alias: 'widget.insurancescombo',
+	displayField: 'combo_text',
+	valueField: 'id',
+	emptyText: i18n('select'),
+	editable: false,
 
-Ext.define('App.store.patient.PatientImmunization', {
-	extend: 'Ext.data.Store',
-	model: 'App.model.patient.PatientImmunization'
-});
-
-
+	store: Ext.create('App.store.administration.InsuranceCompanies', {
+		autoLoad: true,
+		pageSize: 500
+	})
+}); 

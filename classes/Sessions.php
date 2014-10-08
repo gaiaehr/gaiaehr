@@ -46,9 +46,9 @@ class Sessions {
 		$data->uid = $_SESSION['user']['id'];
 		$data->login = $date;
 		$data->last_request = $date;
-		$record = $this->s->save($data);
+		$record = (object) $this->s->save($data);
 		unset($data);
-		return $_SESSION['session_id'] =  $record['id'];
+		return $_SESSION['session_id'] =  $record->id;
 	}
 
 	public function setSessionByToken($token){

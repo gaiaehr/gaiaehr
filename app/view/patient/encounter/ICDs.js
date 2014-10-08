@@ -88,8 +88,8 @@ Ext.define('App.view.patient.encounter.ICDs', {
 	},
 
 	addIcd: function(record){
-		var me = this;
-		me.getIcdContainer().add({
+		var me = this,
+			dxField = me.getIcdContainer().add({
 			xtype: 'customtrigger',
 			value: record.data.code,
 			dxRecord: record,
@@ -100,6 +100,10 @@ Ext.define('App.view.patient.encounter.ICDs', {
 			editable: false,
 			listeners: {
 				afterrender: function(btn){
+
+
+					new Ext.dd.DragSource(btn.id);
+
 					this.toolTip = Ext.create('Ext.tip.ToolTip', {
 						target: btn.id,
 						html: record.data.code_text
@@ -114,6 +118,8 @@ Ext.define('App.view.patient.encounter.ICDs', {
 				}
 			}
 		});
+
+
 	},
 
 	getIcdContainer: function(){

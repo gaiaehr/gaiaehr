@@ -176,9 +176,14 @@ if(is_array($data)){
 	$response = doRpc($data);
 }
 if($isForm && $isUpload){
-	echo '<html><body><textarea>';
-	echo json_encode($response);
-	echo '</textarea></body></html>';
+	print '<html><body><textarea>';
+	$json = htmlentities(json_encode($response), ENT_NOQUOTES | ENT_SUBSTITUTE, "UTF-8");
+	$json  = mb_convert_encoding($json, 'UTF-8', 'UTF-8');
+	print $json;
+	print '</textarea></body></html>';
 } else {
-	echo json_encode($response);
+	header('Content-Type: application/json; charset=utf-8');
+	$json = htmlentities(json_encode($response), ENT_NOQUOTES | ENT_SUBSTITUTE, "UTF-8");
+	$json  = mb_convert_encoding($json, 'UTF-8', 'UTF-8');
+	print $json;
 }

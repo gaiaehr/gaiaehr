@@ -29,9 +29,13 @@ class MatchaModel extends Matcha
      */
     public static $fileModel = '';
     /**
-     *
+     *@var
      */
     public static $tableId;
+	/**
+	 * @var
+	 */
+	public static $tableIdProperties;
 
     /**
      * function SenchaModel($fileModel):
@@ -72,8 +76,15 @@ class MatchaModel extends Matcha
             self::$__senchaModel = self::__getSenchaModel($fileModel);
             if(!self::$__senchaModel['fields']) return false;
 
+	        // get model fields
+	        $modelFields = (array)self::$__senchaModel['fields'];
+
             // Copy the table ID from the idProperty if the idProperty is undefined use "id" instead.
             self::$tableId = isset(self::$__senchaModel['idProperty']) ? self::$__senchaModel['idProperty'] : 'id';
+
+	        //id properties
+	        $tableIdIndex = MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields);
+	        self::$tableIdProperties = $modelFields[$tableIdIndex];
 
             // check if the table property is an array, if not return the array is a table string.
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
@@ -82,12 +93,9 @@ class MatchaModel extends Matcha
             $recordSet = self::$__conn->query("SHOW TABLES LIKE '".$table."';");
             if(isset($recordSet)) self::__createTable($table);
 
-            // Remove from the model those fields that are not meant to be stored
-            // on the database-table and remove the id from the workingModel.
-            $modelFields = (array)self::$__senchaModel['fields'];
 
             // if id property is not set in sencha model look for propertyId.
-            if($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)] === false) unset($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)]);
+            if($modelFields[$tableIdIndex] === false) unset($modelFields[$tableIdIndex]);
 
 	        // unset the fields that will noe be store int the database
             foreach($modelFields as $key => $field) if((isset($field['store']) && $field['store'] === false) || isset($field['persist']) && $field['persist'] === false) unset($modelFields[$key]);

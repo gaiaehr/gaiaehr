@@ -36,7 +36,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 			xtype: 'grid',
 			itemId: 'decisionSupportAdminGrid',
 			region: 'center',
-			store: Ext.create('App.store.administration.DecisionSupportRules'),
+			store: this._adminDecisionSupportStore = Ext.create('App.store.administration.DecisionSupportRules'),
 			columns: [
 				{
 					xtype: 'actioncolumn',
@@ -94,6 +94,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 				displayInfo: true,
 				emptyMsg: i18n('no_office_notes_to_display'),
 				plugins: Ext.create('Ext.ux.SlidingPager'),
+				store: this._adminDecisionSupportStore,
 				items: [
 					'-',
 					{

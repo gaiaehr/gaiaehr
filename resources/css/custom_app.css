@@ -8,6 +8,33 @@
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+.blackBg {
+    background-color: black;
+}
+.blueBg {
+    background-color: blue;
+}
+.redBg {
+    background-color: red;
+}
+.fuchsiaBg {
+    background-color: fuchsia;
+}
+.orangeBg {
+    background-color: orange;
+}
+.yellowBg {
+    background-color: yellow;
+}
+.greenBg {
+    background-color: green;
+}
+.goldBg {
+    background-color: gold;
+}
+.coralBg {
+    background-color: coral;
+}
 
 .btnGreenBackground {
     background-color: #ccffcc;

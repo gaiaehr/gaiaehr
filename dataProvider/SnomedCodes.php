@@ -33,11 +33,12 @@ class SnomedCodes {
 			     FROM sct_concepts
 		   RIGHT JOIN sct_problem_list ON sct_concepts.ConceptId = sct_problem_list.SNOMED_CID
 	            WHERE sct_concepts.ConceptStatus = '0'
-	              AND (sct_concepts.FullySpecifiedName LIKE '%{$params->query}%'
-	              OR sct_concepts.ConceptId LIKE '{$params->query}%')
+	              AND (sct_concepts.FullySpecifiedName LIKE :c1
+	              OR sct_concepts.ConceptId LIKE :c2)
 	         ORDER BY sct_problem_list.OCCURRENCE DESC";
 
-		$sth = $this->conn->query($sql);
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($results),
@@ -49,11 +50,12 @@ class SnomedCodes {
 
 		$sql = "SELECT ConceptId, FullySpecifiedName, Occurrence
 			     FROM sct_procedure_list
-	            WHERE FullySpecifiedName 	LIKE '%{$params->query}%'
-	               OR ConceptId 			LIKE '{$params->query}%'
+	            WHERE FullySpecifiedName 	LIKE :c1
+	               OR ConceptId 			LIKE :c2
 	         ORDER BY Occurrence DESC";
 
-		$sth = $this->conn->query($sql);
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($results),
@@ -66,10 +68,11 @@ class SnomedCodes {
 		$sql = "SELECT ConceptId, FullySpecifiedName
 			     FROM sct_concepts
 	            WHERE sct_concepts.ConceptStatus = '0'
-	              AND sct_concepts.FullySpecifiedName LIKE '%{$params->query}%'
-	              OR sct_concepts.ConceptId LIKE '{$params->query}%'";
+	              AND sct_concepts.FullySpecifiedName LIKE :c1
+	              OR sct_concepts.ConceptId LIKE :c2";
 
-		$sth = $this->conn->query($sql);
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($results),
@@ -96,7 +99,8 @@ class SnomedCodes {
 
 	public function getSnomedTextByConceptId($conceptId) {
 		$sql = "SELECT `FullySpecifiedName` FROM `sct_concepts` WHERE `ConceptId` = '$conceptId'";
-		$sth = $this->conn->query($sql);
+		$sth = $this->conn->prepare($sql);
+		$sth->execute();
 		$result = $sth->fetch(PDO::FETCH_ASSOC);
 		return isset($result) && $result != false ? $result['FullySpecifiedName'] : '';
 	}

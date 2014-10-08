@@ -17,12 +17,10 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-Ext.define('App.ux.combo.ActiveInsurances',
-{
-	extend : 'Ext.form.ComboBox',
-	alias : 'widget.activeinsurancescombo',
-	initComponent : function()
-	{
+Ext.define('App.ux.combo.ActiveInsurances', {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.activeinsurancescombo',
+	initComponent: function(){
 		var me = this;
 
 		// *************************************************************************************
@@ -30,41 +28,37 @@ Ext.define('App.ux.combo.ActiveInsurances',
 		// AJAX -> component_data.ejs.php
 		// *************************************************************************************
 
-		Ext.define('ActiveInsurancesComboModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'option_name',
-				type : 'string'
-			},
-			{
-				name : 'option_value',
-				type : 'string'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
+		Ext.define('ActiveInsurancesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
 				{
-					read : CombosData.getActiveInsurances
+					name: 'option_name',
+					type: 'string'
+				},
+				{
+					name: 'option_value',
+					type: 'string'
+				}
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'CombosData.getActiveInsurances'
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store',
-		{
-			model : 'ActiveInsurancesComboModel'
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'ActiveInsurancesComboModel'
 		});
 
-		Ext.apply(this,
-		{
-			editable : false,
-			displayField : 'option_name',
-			valueField : 'option_value',
-			emptyText : i18n('select'),
-			store : me.store
-		}, null);
+		Ext.apply(this, {
+			editable: false,
+			displayField: 'option_name',
+			valueField: 'option_value',
+			emptyText: i18n('select'),
+			store: me.store
+		});
 		me.callParent();
 	}
 }); 

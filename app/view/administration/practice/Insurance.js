@@ -25,186 +25,110 @@ Ext.define('App.view.administration.practice.Insurance', {
 	],
 	xtype: 'insurancecompaniespanel',
 	title: i18n('insurance_companies'),
-	store: Ext.create('App.store.administration.InsuranceCompanies'),
-//	border: false,
-//	frame: false,
+	store: this._adminInsuranceCmonpanySotrie = Ext.create('App.store.administration.InsuranceCompanies'),
+	//	border: false,
+	//	frame: false,
 	columnLines: true,
 	plugins: [
 		{
 			ptype: 'rowformediting',
 			autoCancel: false,
 			errorSummary: false,
-//			clicksToEdit: 1,
 			items: [
 				{
 					xtype: 'container',
 					layout: 'hbox',
 					itemId: 'InsuranceCompanyFormContainer',
-					width: 900,
 					items: [
 						{
-							xtype: 'fieldcontainer',
-//							width: 450,
-							layout: 'anchor',
+							xtype: 'fieldset',
+							title: i18n('contact_info'),
+							layout: 'hbox',
+							margin: '0 10 0 0',
 							items: [
 								{
-									xtype: 'textfield',
-									fieldLabel: i18n('name'),
-									name: 'name',
-									allowBlank: false,
-									width: 385
-								},
-								{
-									xtype: 'textfield',
-									fieldLabel: i18n('attn'),
-									name: 'attn',
-									width: 385
-								},
-								{
-									xtype: 'textfield',
-									fieldLabel: i18n('address'),
-									name: 'ins_address1',
-									width: 385
-								},
-								{
-									xtype: 'textfield',
-									fieldLabel: i18n('address_cont'),
-									name: 'ins_address2',
-									width: 385
-								},
-								{
-									xtype: 'fieldcontainer',
+									xtype: 'container',
+									margin: '0 10 0 0',
+									layout: 'anchor',
 									defaults: {
-										hideLabel: true
+										margin: '0 10 5 0'
 									},
-									layout: 'hbox',
 									items: [
 										{
 											xtype: 'textfield',
-											width: 150,
-											name: 'ins_city'
+											fieldLabel: i18n('name'),
+											name: 'name',
+											allowBlank: false,
+											width: 385
 										},
 										{
 											xtype: 'textfield',
-											width: 50,
-											name: 'ins_state'
+											fieldLabel: i18n('attn'),
+											name: 'attn',
+											width: 385
 										},
 										{
 											xtype: 'textfield',
-											width: 75,
-											name: 'ins_zip_code'
+											fieldLabel: i18n('address'),
+											name: 'address1',
+											width: 385
+										},
+										{
+											xtype: 'textfield',
+											fieldLabel: i18n('address_cont'),
+											name: 'address2',
+											width: 385
+										},
+										{
+											xtype: 'fieldcontainer',
+											margin: '0 0 10 105',
+											layout: 'hbox',
+											items: [
+												{
+													xtype: 'textfield',
+													width: 150,
+													name: 'city'
+												},
+												{
+													xtype: 'textfield',
+													width: 50,
+													name: 'state'
+												},
+												{
+													xtype: 'textfield',
+													width: 75,
+													name: 'zip_code'
+												}
+											]
 										}
 									]
-								}
-							]
-						},
-						{
-							xtype: 'container',
-							width: 300,
-							layout: 'anchor',
-							items: [
+								},
 								{
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
+									xtype: 'container',
+									width: 300,
+									layout: 'anchor',
 									defaults: {
-										hideLabel: true
+										margin: '0 10 5 0'
 									},
 									items: [
 										{
-											xtype: 'displayfield',
-											width: 100,
-											value: i18n('phone')
-										},
-										{
 											xtype: 'textfield',
-											width: 40,
-											name: 'phone_area_code'
-										},
-										{
-											xtype: 'displayfield',
-											width: 10,
-											value: '-'
-										},
-										{
-											xtype: 'textfield',
-											width: 50,
-											name: 'phone_prefix'
-										},
-										{
-											xtype: 'displayfield',
-											width: 10,
-											value: '-'
-										},
-										{
-											xtype: 'textfield',
-											width: 70,
+											fieldLabel: i18n('phone_number'),
 											name: 'phone_number'
-										}
-									]
-								},
-								{
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										hideLabel: true
-									},
-									items: [
-										{
-											xtype: 'displayfield',
-											width: 100,
-											value: i18n('fax')
 										},
 										{
 											xtype: 'textfield',
-											width: 40,
-											name: 'fax_area_code'
-										},
-										{
-											xtype: 'displayfield',
-											width: 10,
-											value: '-'
-										},
-										{
-											xtype: 'textfield',
-											width: 50,
-											name: 'fax_prefix'
-										},
-										{
-											xtype: 'displayfield',
-											width: 10,
-											value: '-'
-										},
-										{
-											xtype: 'textfield',
-											width: 70,
+											fieldLabel: i18n('fax_number'),
 											name: 'fax_number'
+										},
+										{
+											xtype: 'checkbox',
+											fieldLabel: i18n('active'),
+											name: 'active'
 										}
 									]
-								},
-								{
-									xtype: 'textfield',
-									fieldLabel: i18n('cms_id'),
-									name: 'cms_id',
-									width: 275
-								},
-								{
-									xtype: 'mitos.insurancepayertypecombo',
-									fieldLabel: i18n('payer_type'),
-									labelWidth: 100,
-									width: 275
-								},
-								{
-									xtype: 'textfield',
-									fieldLabel: 'X12 Partner',
-									name: 'x12_default_partner_id'
 								}
 							]
-						},
-						{
-							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
-							labelWidth: 60,
-							name: 'active'
 						}
 					]
 				}
@@ -214,10 +138,21 @@ Ext.define('App.view.administration.practice.Insurance', {
 	],
 	columns: [
 		{
+			width: 50,
+			sortable: true,
+			dataIndex: 'id'
+		},
+		{
 			header: i18n('insurance_name'),
-			width: 150,
+			width: 200,
 			sortable: true,
 			dataIndex: 'name'
+		},
+		{
+			header: i18n('attn'),
+			width: 200,
+			sortable: true,
+			dataIndex: 'attn'
 		},
 		{
 			header: i18n('address'),
@@ -229,19 +164,19 @@ Ext.define('App.view.administration.practice.Insurance', {
 			header: i18n('phone'),
 			width: 120,
 			sortable: true,
-			dataIndex: 'phone_full'
+			dataIndex: 'phone1'
+		},
+		{
+			header: i18n('phone'),
+			width: 120,
+			sortable: true,
+			dataIndex: 'phone2'
 		},
 		{
 			header: i18n('fax'),
 			width: 120,
 			sortable: true,
-			dataIndex: 'fax_full'
-		},
-		{
-			header: i18n('default_x12_partner'),
-			flex: 1,
-			sortable: true,
-			dataIndex: 'x12_default_partner_id'
+			dataIndex: 'fax'
 		},
 		{
 			header: i18n('active'),
@@ -253,13 +188,20 @@ Ext.define('App.view.administration.practice.Insurance', {
 			}
 		}
 	],
-	tbar: [
-		'->',
-		{
-			text: i18n('insurance_company'),
-			iconCls: 'icoAdd',
-			action: 'insurance',
-			itemId: 'addBtn'
-		}
-	]
+	tbar: Ext.create('Ext.PagingToolbar', {
+		pageSize: 30,
+		store: this._adminInsuranceCmonpanySotrie,
+		displayInfo: true,
+		plugins: Ext.create('Ext.ux.SlidingPager', {
+		}),
+		items: [
+			'-',
+			{
+				text: i18n('insurance_company'),
+				iconCls: 'icoAdd',
+				action: 'insurance',
+				itemId: 'addBtn'
+			}]
+
+	})
 });

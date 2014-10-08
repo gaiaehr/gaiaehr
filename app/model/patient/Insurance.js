@@ -16,12 +16,12 @@ Ext.define('App.model.patient.Insurance',{
         },
         {
             name: 'pid',
-            type: 'int'
+            type: 'int',
+	        index: true
         },
         {
             name: 'insurance_id',
-            type: 'string',
-	        len: 11
+            type: 'int'
         },
         {
             name: 'insurance_type',
@@ -54,9 +54,10 @@ Ext.define('App.model.patient.Insurance',{
         },
         {
             name: 'covers',
-            type: 'string',
-            comment: 'group number',
-            len: 255
+            type: 'array',
+	        dataType: 'VARCHAR',
+	        index: true,
+	        len: 300
         },
         {
             name: 'subscriber_title',

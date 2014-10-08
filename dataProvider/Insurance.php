@@ -109,9 +109,6 @@ class Insurance {
 		$params->filter[1] = new stdClass();
 		$params->filter[1]->property = 'insurance_type';
 		$params->filter[1]->value = 'P';
-//		$params->sort[0] = new stdClass();
-//		$params->sort[0]->property = 'subscriberDob';
-//		$params->sort[0]->direction = 'ASC';
 		return $this->getInsurance($params);
 	}
 
@@ -123,9 +120,6 @@ class Insurance {
 		$params->filter[1] = new stdClass();
 		$params->filter[1]->property = 'insurance_type';
 		$params->filter[1]->value = 'S';
-//		$params->sort[0] = new stdClass();
-//		$params->sort[0]->property = 'subscriberDob';
-//		$params->sort[0]->direction = 'DESC';
 		return $this->getInsurance($params);
 	}
 
@@ -138,9 +132,6 @@ class Insurance {
 		$params->filter[1] = new stdClass();
 		$params->filter[1]->property = 'insurance_type';
 		$params->filter[1]->value = 2;
-//		$params->sort[0] = new stdClass();
-//		$params->sort[0]->property = 'subscriberDob';
-//		$params->sort[0]->direction = 'ASC';
 		return $this->getInsurance($params);
 	}
 } 

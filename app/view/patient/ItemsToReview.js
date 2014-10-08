@@ -120,7 +120,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 						{
 							header: i18n('problem'),
 							width: 250,
-							dataIndex: 'code'
+							dataIndex: 'code_text'
 						},
 						{
 							xtype: 'datecolumn',

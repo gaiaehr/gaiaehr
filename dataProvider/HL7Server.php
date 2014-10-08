@@ -1047,21 +1047,21 @@ class HL7Server {
 //PV1|1||2|||1|1|||||||||Y
 //EOF;
 
-$msg = <<<EOF
-MSH|^~\&|TRA|||00|20140918123529||ADT^A28||P|2.5.1
-EVN|A01|20140918123529
-PID|||R28112^^||SUAREZ CASTRO^TERESA||19630306|F||2106-3^White|PO-BOX-362319^^SAN JUAN^PR^00936||7877069054|7872505555|spa^Spanish|S|||000002305|||H^Hispanic
-PV1|OP|I|||||||||||||||000^RADIOLOGIA^ADMIN|00|140900008||P|||||||||||||||||||||||20140918123529|20140918123529
-EOF;
-
-
-include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
-
-print '<pre>';
-
-$hl7 = new HL7();
-//$msg = $hl7->readMessage($msg);
-//print_r($msg);
-
-$hl7 = new HL7Server();
-print $hl7->Process($msg);
+//$msg = <<<EOF
+//MSH|^~\&|TRA|||00|20140918123529||ADT^A28||P|2.5.1
+//EVN|A01|20140918123529
+//PID|||R28112^^||SUAREZ CASTRO^TERESA||19630306|F||2106-3^White|PO-BOX-362319^^SAN JUAN^PR^00936||7877069054|7872505555|spa^Spanish|S|||000002305|||H^Hispanic
+//PV1|OP|I|||||||||||||||000^RADIOLOGIA^ADMIN|00|140900008||P|||||||||||||||||||||||20140918123529|20140918123529
+//EOF;
+//
+//
+//include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
+//
+//print '<pre>';
+//
+//$hl7 = new HL7();
+////$msg = $hl7->readMessage($msg);
+////print_r($msg);
+//
+//$hl7 = new HL7Server();
+//print $hl7->Process($msg);

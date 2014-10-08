@@ -29,7 +29,7 @@ Ext.define('App.view.patient.Summary', {
 
 		'App.view.patient.Patient'
 	],
-	itemId: 'patientsummarypanel',
+	itemId: 'PatientSummaryPanel',
 	showRating: true,
 	pid: null,
 	demographicsData: null,
@@ -55,7 +55,7 @@ Ext.define('App.view.patient.Summary', {
 				plain: true,
 				region: 'center',
 				layout: 'fit',
-				itemId: 'centerPanel'
+				itemId: 'PatientSummaryTabPanel'
 			})
 		];
 
@@ -612,16 +612,16 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(a('access_patient_billing')){
-			me.tabPanel.add({
-				xtype: 'panel',
-				action: 'balancePanel',
-				itemId: 'balancePanel',
-				title: i18n('billing'),
-				html: i18n('account_balance') + ': '
-
-			});
-		}
+//		if(a('access_patient_billing')){
+//			me.tabPanel.add({
+//				xtype: 'panel',
+//				action: 'balancePanel',
+//				itemId: 'balancePanel',
+//				title: i18n('billing'),
+//				html: i18n('account_balance') + ': '
+//
+//			});
+//		}
 
 		if(a('access_patient_ccd')){
 			me.reportPanel = me.tabPanel.add({
@@ -733,17 +733,17 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_demographics')) me.demographics.loadPatient(me.pid);
 
-		/**
-		 * get billing info if user has access
-		 */
-		if(a('access_patient_billing')){
-			billingPanel = me.tabPanel.getComponent('balancePanel');
-			Fees.getPatientBalance({pid: me.pid},
-				function(balance){
-					billingPanel.update(i18n('account_balance') + ': $' + balance);
-				}
-			);
-		}
+//		/**
+//		 * get billing info if user has access
+//		 */
+//		if(a('access_patient_billing')){
+//			billingPanel = me.tabPanel.getComponent('balancePanel');
+//			Fees.getPatientBalance({pid: me.pid},
+//				function(balance){
+//					billingPanel.update(i18n('account_balance') + ': $' + balance);
+//				}
+//			);
+//		}
 		/**
 		 * reset tab panel to the first tap
 		 */

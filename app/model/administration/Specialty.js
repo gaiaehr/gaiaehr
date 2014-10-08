@@ -61,7 +61,15 @@ Ext.define('App.model.administration.Specialty', {
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-				return record.data.id + ': '+ record.data.title;
+				return record.data.id + ': ' + record.data.title;
+			}
+		},
+		{
+			name: 'combo_text',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return record.data.id + ': ' + record.data.title + ' ' + (record.data.active ? ('(' + i18n('not_active') + ')') : '');
 			}
 		},
 		{

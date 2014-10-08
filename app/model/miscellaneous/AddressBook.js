@@ -128,17 +128,17 @@ Ext.define('App.model.miscellaneous.AddressBook', {
 			len: 20
 		},
 		{
-			name: 'notes',
-			type: 'string',
-			len: 600
-		},
-		{
 			name: 'fullname',
 			type: 'string',
 			store: false,
 			convert: function(v, record){
 				return record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
 			}
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 600
 		}
 	],
 	proxy: {

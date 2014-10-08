@@ -54,10 +54,16 @@ class Vitals {
 	 * @return stdClass
 	 */
 	public function addVitals($params){
-		$eid = is_object($params) ? $params->eid : $params[0]->eid;
-		$record = $this->v->save($params);
-		$record['administer_by'] = $this->User->getUserNameById($record['uid']);
-		return $record;
+		if(is_array($params)){
+			foreach($params as $i => $param){
+				$params[$i] = (object) $this->v->save($param);
+				$params[$i]->administer_by = $this->User->getUserNameById($param->uid);
+			}
+		}else{
+			$params = (object) $this->v->save($params);
+			$params->administer_by = $this->User->getUserNameById($params->uid);
+		}
+		return $params;
 	}
 
 	/**
@@ -118,7 +124,7 @@ class Vitals {
 				'code' => '8310-5',
 				'code_text' => 'Body Temperature',
 				'code_type' => 'LOINC',
-			    'mapping' => 'temp'
+			    'mapping' => 'temp_c'
 			),
 			'8462-4' => array(
 				'code' => '8462-4',
@@ -136,7 +142,7 @@ class Vitals {
 				'code' => '8287-5',
 				'code_text' => 'Head Circumference',
 				'code_type' => 'LOINC',
-				'mapping' => 'head_circumference'
+				'mapping' => 'head_circumference_cm'
 			),
 			'8867-4' => array(
 				'code' => '8867-4',
@@ -148,13 +154,13 @@ class Vitals {
 				'code' => '8302-2',
 				'code_text' => 'Height',
 				'code_type' => 'LOINC',
-				'mapping' => 'height'
+				'mapping' => 'height_cm'
 			),
 			'8306-3' => array(
 				'code' => '8306-3',
 				'code_text' => 'Height (Lying)',
 				'code_type' => 'LOINC',
-				'mapping' => 'height'
+				'mapping' => 'height_cm'
 			),
 			'2710-2' => array(
 				'code' => '2710-2',
@@ -172,7 +178,7 @@ class Vitals {
 				'code' => '3141-9',
 				'code_text' => 'Weight Measured',
 				'code_type' => 'LOINC',
-				'mapping' => 'weight'
+				'mapping' => 'weight_kg'
 			)
 		);
 	}

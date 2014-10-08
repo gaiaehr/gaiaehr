@@ -625,12 +625,16 @@ Ext.define('App.view.Viewport', {
 		Facilities.setFacility(records[0].data.option_value, function(provider, response){
 
 			if(records[0].data.option_value == response.result){
+				// set user global facility value
+				app.user.facility = records[0].data.option_value;
 
 				me.msg(i18n('sweet'), i18n('facility') + ' ' + records[0].data.option_name);
 				me.setWindowTitle(records[0].data.option_name);
 				me.nav['App_view_areas_PatientPoolDropZone'].reRenderPoolAreas();
 				me.nav['App_view_areas_FloorPlan'].renderZones();
 				me.getPatientsInPoolArea();
+
+
 
 			}
 		});
@@ -1304,8 +1308,12 @@ Ext.define('App.view.Viewport', {
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
-                App.app.getController('Modules.' + modules[i].dir + '.Main');
-                //say('Module ' + modules[i].dir + ' loaded...');
+
+	            try{
+		            App.app.getController('Modules.' + modules[i].dir + '.Main');
+	            }catch(error){
+					app.msg(i18n('oops'), (i18n('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
+	            }
             }
 
 	        app.doLayout();

@@ -24,7 +24,7 @@ Ext.define('App.controller.patient.Summary', {
 	refs: [
 		{
 			ref: 'PatientSummaryPanel',
-			selector: 'patientsummarypanel'
+			selector: 'PatientSummaryPanel'
 		},
 		{
 			ref: 'PatientDocumentPanel',
@@ -51,7 +51,7 @@ Ext.define('App.controller.patient.Summary', {
 	init: function(){
 		var me = this;
 		me.control({
-			'#patientsummarypanel': {
+			'#PatientSummaryPanel': {
 				activate: me.onPatientSummaryPanel
 			},
 			'#PatientSummaryEncountersPanel': {

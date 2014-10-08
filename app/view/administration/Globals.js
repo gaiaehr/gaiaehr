@@ -30,6 +30,7 @@ Ext.define('App.view.administration.Globals', {
 			groupField: 'gl_category',
 			remoteSort: false,
 			autoSync: true,
+			pageSize: 500,
 			sorters: [
 				{
 					sorterFn: function(o1, o2){

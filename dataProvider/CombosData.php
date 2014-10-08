@@ -124,7 +124,7 @@ class CombosData {
 		$options = array();
 		foreach($this->I->load(array('active' => '1'))->all() as $option){
 			$options[] = array(
-				'option_name' => $option['name'],
+				'option_name' => $option['id'] . ': ' .$option['name'],
 				'option_value' => $option['id']
 			);
 		}

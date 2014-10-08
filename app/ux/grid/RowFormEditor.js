@@ -65,6 +65,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		me.currRowH = null;
 		plugin = me.editingPlugin;
 		me.items = plugin.items;
+		me.fieldDefaults = plugin.fieldDefaults;
 
 		var buttons = [{
 			action: 'update',
@@ -506,7 +507,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 				store: store
 			});
 
-		// make sure our row is selected before editing
+//		make sure our row is selected before editing
 		context.grid.getSelectionModel().select(record);
 
 		// Reload the record data

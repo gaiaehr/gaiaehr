@@ -167,9 +167,10 @@ class Facilities {
 
 	/**
 	 * @param $params
+	 * @param $tree
 	 * @return mixed
 	 */
-	public function getFacilityConfigs($params){
+	public function getFacilityConfigs($params, $tree = true){
 		$this->setFacilityConfigModel();
 		$records = array();
 		$facilities = $this->getFacilities(array('active' => 1));
@@ -183,7 +184,7 @@ class Facilities {
 
 			$departments = $this->c->sql($sql)->all();
 
-
+			$departmentsRecords = [];
 			foreach($departments as $i => $department){
 				$department = (object) $department;
 				$sql = "SELECT f.*, s.title as `text`, true AS `leaf`, true AS `expanded`, true AS `loaded`
@@ -192,17 +193,35 @@ class Facilities {
 				    WHERE  f.foreign_type = 'S' AND f.parentId = '{$department->id}'";
 
 				$specialties = $this->c->sql($sql)->all();
-				$departments[$i]['children'] = $specialties;
+
+
+
+
+				if($tree){
+					$department->children = $specialties;
+					$departmentsRecords[] = $department;
+				}else{
+
+					foreach($specialties as $specialty){
+						$department->specialties[$specialty['foreign_id']] = $specialty;
+					}
+					$departmentsRecords[$department->foreign_id] = $department;
+				}
 			}
 
-			$records[] = array(
-				'id' => 'f' . $facility->id,
-				'text' => $facility->name,
-				'leaf' => false,
-				'expanded' => true,
-				'expandable' => false,
-				'children' => $departments
-			);
+			if($tree){
+				$records[] = array(
+					'id' => 'f' . $facility->id,
+					'text' => $facility->name,
+					'leaf' => false,
+					'expanded' => true,
+					'expandable' => false,
+					'children' => $departmentsRecords
+				);
+			}else{
+				$facility->departments = $departmentsRecords;
+				$records[$facility->id] = $facility;
+			}
 		}
 
 		return $records;
@@ -291,4 +310,10 @@ class Facilities {
 		return $this->d->destroy($params);
 	}
 
+
+	//////////////////////////////////////////////////////
+
+	public function geFacilitiesStructure(){
+		return $this->getFacilityConfigs(null, false);
+    }
 }

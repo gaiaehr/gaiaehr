@@ -53,34 +53,40 @@ $global['site']  = site_dir;
 
 print 'globals = '. json_encode( $global ).';';
 
-if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))
-{
+if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)) {
 	include_once(dirname(__FILE__) . '/dataProvider/ACL.php');
+	include_once(dirname(__FILE__) . '/dataProvider/Facilities.php');
 	include_once(dirname(__FILE__) . '/dataProvider/User.php');
 
-	$acl = new ACL();
+	$ACL = new ACL();
 	$perms = array();
 	/*
 	 * Look for user permissions and pass it to a PHP variable.
 	 * This variable will be used in JavaScript code
 	 * look at it as a PHP to JavaScript variable conversion.
 	 */
-	foreach($acl->getAllUserPermsAccess() AS $perm){
+	foreach($ACL->getAllUserPermsAccess() AS $perm){
 		$perms[$perm['perm']] = $perm['value'];
 	}
-	unset($acl);
-	$user = new User();
-	$userData = $user->getCurrentUserBasicData();
+	unset($ACL);
+
+	$User = new User();
+	$userData = $User->getCurrentUserBasicData();
 	$userData['token'] = $_SESSION['user']['token'];
 	$userData['facility'] = $_SESSION['user']['facility'];
 	$userData['localization'] = $_SESSION['user']['localization'];
-	unset($user);
-//	Globals::setGlobals();
+	unset($User);
+
+	$Facilities = new Facilities();
+	$structure = $Facilities->geFacilitiesStructure();
+	unset($Facilities);
+
 	/*
 	 * Pass all the PHP to JavaScript
 	 */
-	print 'acl = '. json_encode($perms).';';
-	print 'user = '. json_encode($userData).';';
-	print 'settings.site_url = "'. $global['url'] .'";';
+	print 'window.acl = '. json_encode($perms).';';
+	print 'window.user = '. json_encode($userData).';';
+	print 'window.structure = '. json_encode($structure).';';
+	print 'window.settings.site_url = "'. $global['url'] .'";';
 }
 

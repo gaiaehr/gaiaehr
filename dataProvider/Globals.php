@@ -51,6 +51,8 @@ class Globals {
 	 */
 	public static function setGlobals() {
 
+        if(!isset($_SESSION['globals'])) $_SESSION['globals'] = array();
+
 		if(self::$g == null)
 			self::$g = MatchaModel::setSenchaModel('App.model.administration.Globals');
 		foreach(self::$g->load()->all() as $setting){

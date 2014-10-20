@@ -61,10 +61,10 @@ class User {
 		try{
 			if(!$this->usernameExist($params->username)){
 				unset($params->fullname, $params->pwd_history1, $params->pwd_history2);
-				$user = $this->u->save($params);
-				unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
-				$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
-				$user['password'] = '';
+				$user = (object) $this->u->save($params);
+				unset($user->password, $user->pwd_history1, $user->pwd_history2);
+				$user->fullname = Person::fullname($user->fname, $user->mname, $user->lname);
+				$user->password = '';
 				return (object) $user;
 			} else{
 				throw new Exception("Username \"$params->username\" exist, please try a different username");

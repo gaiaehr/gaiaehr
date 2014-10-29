@@ -42,7 +42,9 @@ class SiteSetup
 	{
 		if(isset($params->rootUser)){
 			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
-			if($success && $this->conn->exec("USE $params->dbName") !== false){
+            $sth = $this->conn->prepare("USE $params->dbName");
+
+			if($success && $sth->execute() !== false){
 				return array(
 					'success' => false, 'error' => 'Database name is used. Please, use a different Database name'
 				);
@@ -69,10 +71,12 @@ class SiteSetup
 
 	function setMaxAllowedPacket()
 	{
-		$stm = $this->conn->exec("SELECT @@global.max_allowed_packet AS size");
+		$stm = $this->conn->prepare("SELECT @@global.max_allowed_packet AS size");
+        $stm->execute();
 		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
 		if($pkg['size'] < 209715200){
-			$this->conn->exec("SET @@global.max_allowed_packet = 52428800000");
+            $stm = $this->conn->prepare("SET @@global.max_allowed_packet = 52428800000");
+            $stm->execute();
 			$error = $this->conn->errorInfo();
 			if(isset($error[2])){
 				return $pkg['size'];
@@ -183,7 +187,11 @@ class SiteSetup
 		if(!file_exists($siteDir)){
 			if(mkdir($siteDir, 0755, true)){
 				if(chmod($siteDir, 0755)){
-					if((mkdir("$siteDir/patients", 0755, true) && chmod("$siteDir/patients", 0755)) && (mkdir("$siteDir/documents", 0755, true) && chmod("$siteDir/documents", 0755)) && (mkdir("$siteDir/temp", 0755, true) && chmod("$siteDir/temp", 0755)) && (mkdir("$siteDir/trash", 0755, true) && chmod("$siteDir/trash", 0755))){
+					if((mkdir("$siteDir/patients", 0755, true) && chmod("$siteDir/patients", 0755)) &&
+                        (mkdir("$siteDir/documents", 0755, true) && chmod("$siteDir/documents", 0755)) &&
+                        (mkdir("$siteDir/temp", 0755, true) && chmod("$siteDir/temp", 0755)) &&
+                        (mkdir("$siteDir/trash", 0755, true) && chmod("$siteDir/trash", 0755))
+                    ){
 						return array('success' => true);
 					} else {
 						return array(
@@ -210,11 +218,21 @@ class SiteSetup
 	public function createDatabaseStructure(stdClass $params)
 	{
 		if(isset($params->rootUser) && $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass)){
-			$this->conn->exec("CREATE DATABASE $params->dbName;");
-			$this->conn->exec("CREATE USER '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass'");
-			$this->conn->exec("GRANT USAGE ON * . * TO  '$params->dbUser'@'$params->dbHost' IDENTIFIED BY  $params->dbPass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0");
-			$this->conn->exec("GRANT ALL PRIVILEGES ON $params->dbName.* TO '$params->dbUser'@'$params->dbHost' WITH GRANT OPTION");
-			if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
+			$sth = $this->conn->prepare("
+                CREATE DATABASE `$params->dbName`;
+                CREATE USER '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass';
+                GRANT USAGE ON *.* TO  '$params->dbUser'@'$params->dbHost' IDENTIFIED BY  '$params->dbPass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+                GRANT ALL PRIVILEGES ON `$params->dbName`.* TO '$params->dbUser'@'$params->dbHost' WITH GRANT OPTION;
+			    FLUSH PRIVILEGES;
+			");
+            $sth->execute();
+            $error =  $this->conn->errorInfo();
+
+
+
+
+
+            if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
 				if($this->loadDatabaseStructure()){
 					return array('success' => true);
 				} else {
@@ -251,7 +269,8 @@ class SiteSetup
         ini_set('memory_limit', '-1');
 		if(file_exists($sqlFile = 'sql/gaiadb_install_structure.sql')){
 			$query = file_get_contents($sqlFile);
-			if($this->conn->exec($query) !== false){
+            $sth = $this->conn->prepare($query);
+			if($sth->execute() !== false){
 				return true;
 			} else {
 				return false;
@@ -292,7 +311,8 @@ class SiteSetup
 
 	function dropDatabase($dbName)
 	{
-		$this->conn->exec("DROP DATABASE $dbName");
+		$sth = $this->conn->prepare("DROP DATABASE $dbName");
+        $sth->execute();
 	}
 
 	public function createSConfigurationFile($params)

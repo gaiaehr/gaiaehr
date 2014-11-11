@@ -17,30 +17,33 @@
  */
 
 Ext.define('App.controller.administration.Roles', {
-    extend: 'Ext.app.Controller',
+	extend: 'Ext.app.Controller',
 
-	requires:[
+	requires: [
 		'App.model.administration.AclGroupPerm'
 	],
 
 	refs: [
 		{
-			ref: 'adminAclGrooupCombo',
-			selector: 'combobox[action=adminAclGrooupCombo]'
+			ref: 'AdministrationRoleGroupCombo',
+			selector: '#AdministrationRoleGroupCombo'
 		},
 		{
-			ref: 'adminAclGrid',
-			selector: 'grid[action=adminAclGrid]'
+			ref: 'AdministrationRoleGrid',
+			selector: '#AdministrationRoleGrid'
 		}
 	],
 
-	init: function() {
+	init: function(){
 		this.control({
-			'grid[action=adminAclGrid]': {
+			'#AdministrationRolePanel': {
+				render: this.onAdministrationRolePanelRender
+			},
+			'#AdministrationRoleGrid': {
 				beforeedit: this.beforeCellEdit
 			},
-			'combobox[action=adminAclGrooupCombo]': {
-				select: this.adminAclGridReconfigure
+			'#AdministrationRoleGroupCombo': {
+				select: this.doAdministrationRoleGridReconfigure
 			},
 			'button[action=adminAclAddRole]': {
 				click: this.doAddRole
@@ -54,35 +57,49 @@ Ext.define('App.controller.administration.Roles', {
 		});
 	},
 
-	doSaveAcl: function () {
+	onAdministrationRolePanelRender: function(){
 		var me = this,
-			store = this.getAdminAclGrid().getStore();
+			cmb = me.getAdministrationRoleGroupCombo(),
+			store = cmb.getStore();
+
+		store.load({
+			callback: function(records){
+				cmb.select(records[0]);
+				me.doAdministrationRoleGridReconfigure();
+			}
+		});
+
+	},
+
+	doSaveAcl: function(){
+		var me = this,
+			store = this.getAdministrationRoleGrid().getStore();
 
 		if(store.getUpdatedRecords().length > 0){
-			me.getAdminAclGrid().el.mask(i18n('saving'));
+			me.getAdministrationRoleGrid().el.mask(i18n('saving'));
 		}
 
 		store.sync({
-			callback: function(response) {
+			callback: function(response){
 				app.msg(i18n('sweet'), i18n('record_saved'));
-				me.getAdminAclGrid().el.unmask();
+				me.getAdministrationRoleGrid().el.unmask();
 			}
 		});
 	},
 
-	doCancelAcl: function () {
-		this.getAdminAclGrid().getStore().rejectChanges();
+	doCancelAcl: function(){
+		this.getAdministrationRoleGrid().getStore().rejectChanges();
 	},
 
-	beforeCellEdit: function (editor, e) {
+	beforeCellEdit: function(editor, e){
 		return e.field != 'title';
 	},
 
-	adminAclGridReconfigure: function () {
+	doAdministrationRoleGridReconfigure: function(){
 		var me = this,
-			cmb = me.getAdminAclGrooupCombo(),
+			cmb = me.getAdministrationRoleGroupCombo(),
 			group_id = cmb.getValue(),
-			grid = me.getAdminAclGrid(),
+			grid = me.getAdministrationRoleGrid(),
 			fields = [
 				{
 					name: 'id',
@@ -106,8 +123,7 @@ Ext.define('App.controller.administration.Roles', {
 		grid.view.el.mask('Loading');
 		// Ext.direct method to get grid configuration and data
 
-
-		ACL.getGroupPerms({group_id: group_id}, function (response) {
+		ACL.getGroupPerms({group_id: group_id}, function(response){
 			// new columns
 			columns = response.columns;
 
@@ -115,8 +131,7 @@ Ext.define('App.controller.administration.Roles', {
 			fields = fields.concat(response.fields);
 			me.getModel('administration.AclGroupPerm').setFields(fields);
 
-
-			var store = Ext.create('Ext.data.Store',{
+			var store = Ext.create('Ext.data.Store', {
 				model: 'App.model.administration.AclGroupPerm',
 				groupField: 'category'
 			});
@@ -125,8 +140,8 @@ Ext.define('App.controller.administration.Roles', {
 			store.loadRawData(response.data);
 
 			// add the checkbox editor and renderer to role fields
-			for (var i = 0; i < columns.length; i++) {
-				columns[i].editor = { xtype: "checkbox" };
+			for(var i = 0; i < columns.length; i++){
+				columns[i].editor = {xtype: "checkbox"};
 				columns[i].renderer = app.boolRenderer;
 			}
 
@@ -142,18 +157,17 @@ Ext.define('App.controller.administration.Roles', {
 		});
 	},
 
-
-	doAddRole: function () {
+	doAddRole: function(){
 		var me = this,
 			record = Ext.create('App.model.administration.AclRoles', {
-				group_id: me.getAdminAclGrooupCombo().getValue()
+				group_id: me.getAdministrationRoleGroupCombo().getValue()
 			});
 
 		me.getRoleWindow().show();
 		me.roleWindow.down('form').getForm().loadRecord(record);
 	},
 
-	doSaveRole: function() {
+	doSaveRole: function(){
 		var me = this,
 			panel = me.roleWindow.down('form'),
 			form = panel.getForm(),
@@ -164,8 +178,8 @@ Ext.define('App.controller.administration.Roles', {
 			panel.el.mask(i18n('be_right_back'));
 			record.set(values);
 			record.save({
-				callback: function (rec) {
-					me.adminAclGridReconfigure();
+				callback: function(rec){
+					me.doAdministrationRoleGridReconfigure();
 					panel.el.unmask();
 					me.roleWindow.close();
 				}
@@ -173,11 +187,11 @@ Ext.define('App.controller.administration.Roles', {
 		}
 	},
 
-	doCancelRole: function () {
+	doCancelRole: function(){
 		this.roleWindow.close();
 	},
 
-	getRoleWindow: function () {
+	getRoleWindow: function(){
 		var me = this;
 
 		me.roleWindow = Ext.widget('window', {

@@ -18,18 +18,18 @@
 
 Ext.define('App.view.administration.Roles', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('roles_and_permissions'),
-
 	requires: [
 		'App.ux.combo.XCombo',
 		'Ext.grid.plugin.CellEditing',
 		'Ext.ux.DataTip'
 	],
+	itemId: 'AdministrationRolePanel',
+	pageTitle: i18n('roles_and_permissions'),
 	pageBody: [
 		{
 			xtype:'grid',
 			bodyStyle: 'background-color:white',
-			action: 'adminAclGrid',
+			itemId: 'AdministrationRoleGrid',
 			frame: true,
 			columnLines: true,
 			tbar: [
@@ -40,8 +40,9 @@ Ext.define('App.view.administration.Roles', {
 					width: 250,
 					valueField: 'id',
 					displayField: 'title',
+					queryMode: 'local',
 					store: Ext.create('App.store.administration.AclGroups'),
-					action: 'adminAclGrooupCombo',
+					itemId: 'AdministrationRoleGroupCombo',
 					windowConfig: {
 						title: i18n('add_group')
 					},

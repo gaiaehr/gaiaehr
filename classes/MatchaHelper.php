@@ -215,8 +215,9 @@ class MatchaHelper extends Matcha {
 				if($value == null || $value === 'null'){
 					$sql .= '`' . $key . '`' . '=NULL, ';
 				} else {
-					if(!is_int($value))
-						$value = mysql_real_escape_string($value);
+					if(is_string($value)){
+						//$value = htmlspecialchars($value);
+					}
 					$sql .= '`' . $key . '`' . "='$value', ";
 				}
 			}
@@ -231,8 +232,9 @@ class MatchaHelper extends Matcha {
 				$count = 0;
 				foreach($Where as $key => $val){
 					$and = ($count == 0) ? '' : ' AND ';
-					if(!is_int($val))
-						$val = mysql_real_escape_string($val);
+					if(is_string($val)){
+						//$val = htmlspecialchars($val);
+					}
 					$sql .= $and . $key . '=\'' . $val . '\'';
 					$count++;
 				}

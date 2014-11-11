@@ -79,7 +79,7 @@ Ext.define('App.controller.patient.ItemsToReview', {
 		me.getItemsToReviewActiveProblemsGrid().getStore().load(params);
 		me.getItemsToReviewMedicationsGrid().getStore().load(params);
 
-		me.smokeStatusStore = app.getController('patient.SocialHistory').smokeStatusStore;
+		me.smokeStatusStore = app.getController('patient.Social').smokeStatusStore;
 
 		/**
 		 * add the callback function to handle the Smoking Status

@@ -535,7 +535,7 @@ class Documents {
 		foreach($pages AS $page){
 			$this->pdf->AddPage();
 			$this->pdf->SetY(35); // margin after header line
-			$this->pdf->SetFontSize(10);
+			$this->pdf->SetFontSize(8);
 			$this->pdf->writeHTML($page);
 		}
 

@@ -148,7 +148,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Referrals',
 	                'patient.Results',
 	                'patient.RxOrders',
-	                'patient.SocialHistory'
+	                'patient.Social'
                 ],
                 launch: function() {
 	                App.Current = this;

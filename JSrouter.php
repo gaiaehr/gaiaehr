@@ -53,7 +53,7 @@ $global['site']  = site_dir;
 
 print 'globals = '. json_encode( $global ).';';
 
-if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)) {
+if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)){
 	include_once(dirname(__FILE__) . '/dataProvider/ACL.php');
 	include_once(dirname(__FILE__) . '/dataProvider/Facilities.php');
 	include_once(dirname(__FILE__) . '/dataProvider/User.php');
@@ -84,9 +84,14 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 	/*
 	 * Pass all the PHP to JavaScript
 	 */
-	print 'window.acl = '. json_encode($perms).';';
-	print 'window.user = '. json_encode($userData).';';
-	print 'window.structure = '. json_encode($structure).';';
-	print 'window.settings.site_url = "'. $global['url'] .'";';
+	print 'window.acl = ' . json_encode($perms) . ';';
+	print 'window.user = ' . json_encode($userData) . ';';
+	print 'window.structure = ' . json_encode($structure) . ';';
+	print 'window.settings.site_url = "' . $global['url'] . '";';
+
+	if(isset($_SESSION['styles'])){
+		print 'window.styles = ' . json_encode($_SESSION['styles']) . ';';
+	}
+
 }
 

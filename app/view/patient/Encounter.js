@@ -382,8 +382,8 @@ Ext.define('App.view.patient.Encounter', {
 				},
 				'-',
 				{
-					text: i18n('social_history') + ' ',
-					action: 'socialhistory'
+					text: i18n('social') + ' ',
+					action: 'social'
 				},
 				'-',
 				{
@@ -398,28 +398,28 @@ Ext.define('App.view.patient.Encounter', {
 				'-',
 				{
 					text: i18n('lab_orders'),
-					action: 'lab',
+					action: 'LabOrders',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
 					text: i18n('xray_ct_orders'),
-					action: 'xRay',
+					action: 'RadOrders',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
 					text: i18n('rx_orders'),
-					action: 'prescription',
+					action: 'RxOrderGrid',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
 					text: i18n('new_doctors_note'),
-					action: 'notes',
+					action: 'DoctorsNotes',
 					scope: me,
 					handler: me.newDoc
 				},
@@ -526,7 +526,7 @@ Ext.define('App.view.patient.Encounter', {
 
 			if(SaveBtn.action == 'encounter'){
 
-				if(acl['add_encounters']){
+				if(a('add_encounters')){
 					record = form.getRecord();
 					record.set(values);
 					record.save({
@@ -561,9 +561,7 @@ Ext.define('App.view.patient.Encounter', {
 
 				if((VFieldsCount - 3) > emptyCount){
 
-					if(acl['add_vitals']){
-
-						say(me);
+					if(a('add_vitals')){
 
 						store = me.encounter.vitals();
 						record = form.getRecord();
@@ -593,16 +591,20 @@ Ext.define('App.view.patient.Encounter', {
 				}
 			}else{
 
-				if(acl['edit_encounters']){
+				if(a('edit_encounters')){
 
 					record = form.getRecord();
 					store = record.store;
 					values = me.addDefaultData(values);
-
 					record.set(values);
+
+					app.fireEvent('encounterbeforesync', me, store, form);
 
 					store.sync({
 						callback: function(){
+
+							app.fireEvent('encountersync', me, store, form);
+
 							me.msg('Sweet!', i18n('encounter_updated'));
 							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 							app.AuditLog('Patient encounter updated');

@@ -27,6 +27,7 @@ Ext.define('App.view.patient.LabOrders', {
 	],
 	xtype: 'patientlaborderspanel',
 	title: i18n('lab_orders'),
+	itemId: 'LabOrders',
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		groupField: 'date_ordered',

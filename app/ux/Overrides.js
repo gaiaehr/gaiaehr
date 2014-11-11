@@ -309,6 +309,7 @@ Ext.override(Ext.grid.RowEditor, {
         }
     }
 });
+
 Ext.override(Ext.container.Container, {
 
     setAutoSyncFormEvent: function(field){

@@ -72,6 +72,11 @@ Ext.define('App.model.patient.PatientSocialHistory', {
 			len: 20
 		},
 		{
+			name: 'note',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
 			name: 'start_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',

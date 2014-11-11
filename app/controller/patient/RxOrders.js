@@ -45,6 +45,18 @@ Ext.define('App.controller.patient.RxOrders', {
 		{
 			ref: 'RxEncounterDxCombo',
 			selector: '#RxEncounterDxCombo'
+		},
+		{
+			ref: 'RxOrderGridFormNotesField',
+			selector: '#RxOrderGridFormNotesField'
+		},
+		{
+			ref: 'RxOrderCompCheckBox',
+			selector: '#RxOrderCompCheckBox'
+		},
+		{
+			ref: 'RxOrderSplyCheckBox',
+			selector: '#RxOrderSplyCheckBox'
 		}
 	],
 
@@ -68,8 +80,32 @@ Ext.define('App.controller.patient.RxOrders', {
 			},
 			'#printRxOrderBtn': {
 				click: me.onPrintRxOrderBtnClick
+			},
+			'#RxOrderCompCheckBox': {
+				change: me.onRxOrderCompCheckBoxChange
+			},
+			'#RxOrderSplyCheckBox': {
+				change: me.onRxOrderSplyCheckBoxChange
 			}
 		});
+	},
+
+	onRxOrderCompCheckBoxChange: function(field, value){
+		if(value){
+			this.getRxOrderSplyCheckBox().setValue(false);
+		}
+	},
+
+	onRxOrderSplyCheckBoxChange: function(field, value){
+		if(value){
+			this.getRxOrderCompCheckBox().setValue(false);
+		}
+	},
+
+	doSelectOrderByOrderId: function(id){
+		var sm = this.getRxOrdersGrid().getSelectionModel(),
+			record = this.getRxOrdersGrid().getStore().getById(id);
+		sm.select(record);
 	},
 
 	onRxOrdersGridBeforeRender: function(grid){
@@ -149,13 +185,8 @@ Ext.define('App.controller.patient.RxOrders', {
 	},
 
 	onCloneRxOrderBtnClick: function(btn){
-		var me = this,
-			grid = btn.up('grid'),
-			sm = grid.getSelectionModel(),
-			store = grid.getStore(),
-			records = sm.getSelection(),
-			newDate = new Date(),
-			data;
+
+		var me = this;
 
 		Ext.Msg.show({
 			title: 'Wait!',
@@ -164,44 +195,57 @@ Ext.define('App.controller.patient.RxOrders', {
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
 				if(btn == 'yes'){
-					grid.editingPlugin.cancelEdit();
-					sm.deselectAll();
-					for(var i = 0; i < records.length; i++){
-						data = Ext.clone(records[i].data);
-						data.id = null;
-						data.pid = app.patient.pid;
-						data.eid = app.patient.eid;
-						data.uid = app.user.id;
-						data.date_ordered = newDate;
-						data.begin_date = newDate;
-						data.created_date = newDate;
-						store.insert(0, data);
-					}
-					store.sync({
-						success: function(){
-							if(window.dual){
-								dual.msg(i18n('sweet'), i18n('record_added'));
-							}else{
-								app.msg(i18n('sweet'), i18n('record_added'));
-							}
-						},
-						failure: function(){
-							if(window.dual){
-								dual.msg(i18n('oops'), i18n('record_error'), true);
-							}else{
-								app.msg(i18n('oops'), i18n('record_error'), true);
-							}
-						}
-					});
+					me.doCloneOrder();
 				}
 			}
 		});
+	},
+
+	doCloneOrder: function(additionalReference){
+
+		var me = this,
+			grid = me.getRxOrdersGrid(),
+			sm = grid.getSelectionModel(),
+			store = grid.getStore(),
+			selection = sm.getSelection(),
+			newDate = new Date(),
+			records,
+			data;
+
+		grid.editingPlugin.cancelEdit();
+		sm.deselectAll();
+
+		for(var i = 0; i < selection.length; i++){
+			data = Ext.clone(selection[i].data);
+
+			data.pid = app.patient.pid;
+			data.eid = app.patient.eid;
+			data.uid = app.user.id;
+
+			data.ref_order = data.id;
+			if(typeof additionalReference == 'string'){
+				data.ref_order += ('~' + additionalReference);
+			}
+
+			data.date_ordered = newDate;
+			data.begin_date = newDate;
+			data.created_date = newDate;
+
+			// clear the id
+			data.id = null;
+			records = store.insert(0, data);
+		}
+
+		grid.editingPlugin.startEdit(records[0], 0);
+
+		return records;
 	},
 
 	onPrintRxOrderBtnClick:function(){
 		var me = this,
 			grid = me.getRxOrdersGrid(),
 			items = grid.getSelectionModel().getSelection(),
+			notes = '',
 			params = {},
 			data,
 			i;
@@ -212,15 +256,24 @@ Ext.define('App.controller.patient.RxOrders', {
 		params.docType = 'Rx';
 
 		params.templateId = 5;
-		params.orderItems.push(['Description', 'Instructions', 'Dispense', 'Refill', 'Dx']);
+		params.orderItems.push(['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes']);
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
+			notes = data.notes;
+
+			if(data.ref_order != ''){
+				var refs = data.ref_order.split('~');
+				notes = 'Reference #: ' + refs[0] + '<br>' + notes;
+			}
+
 			params.orderItems.push([
 				data.STR + ' ' + data.dose + ' ' + data.route + ' ' + data.form,
 				data.directions,
 				data.dispense,
 				data.refill,
-				(data.dxs.join ? data.dxs.join(', ') : data.dxs)
+				data.days_supply,
+				(data.dxs.join ? data.dxs.join(', ') : data.dxs),
+				notes
 			]);
 		}
 

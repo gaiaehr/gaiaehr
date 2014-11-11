@@ -32,17 +32,15 @@ class Snippets {
 			$this->Snippet = MatchaModel::setSenchaModel('App.model.patient.encounter.snippetTree');
 	}
 
-	public function getSoapSnippetsByCategory($params){
+	public function getSoapSnippets($params){
 		$this->setSnippetModel();
-
-		if(isset($params->category)){
-			$snippets = $this->Snippet->load(array('parentId' => 'root', 'category' => $params->category))->all();
+		if(isset($params->filter)){
+			return $this->Snippet->load($params)->all();
 		} elseif(isset($params->id)){
-			$snippets = $this->Snippet->load(array('parentId' => $params->id))->all();
+			return $this->Snippet->load(array('parentId' => $params->id))->all();
 		} else{
-			$snippets = array();
+			return array();
 		}
-		return $snippets;
 	}
 
 	public function addSoapSnippets($params){

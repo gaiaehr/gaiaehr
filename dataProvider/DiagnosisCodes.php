@@ -203,7 +203,7 @@ class DiagnosisCodes {
 		$sql = "SELECT *
  				  FROM encounter_dx
 				 WHERE eid = :c
-              ORDER BY id ASC";
+              ORDER BY dx_order ASC";
 		$recordSet = $this->conn->prepare($sql);
 		$recordSet->execute(array(':c' => $eid));
 		foreach($recordSet->fetchAll(PDO::FETCH_ASSOC) AS $foo){

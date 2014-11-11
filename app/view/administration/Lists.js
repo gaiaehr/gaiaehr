@@ -28,8 +28,7 @@ Ext.define('App.view.administration.Lists', {
     initComponent: function(){
         var me = this;
 
-        me.currList = null;
-        me.currTask = null;
+
         /**
          * Store
          */
@@ -247,14 +246,14 @@ Ext.define('App.view.administration.Lists', {
     onListsGridClick: function(grid, selected){
         var me = this,
 	        deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'),
-	        inUse = !!selected.data.in_use == '1';
+	        inUse = !!selected.data.in_use == '1',
+	        listId = selected.data.id;
 
-	    me.currList = selected.data.id;
 	    me.optionsStore.clearFilter(true);
 	    me.optionsStore.filter([
 		    {
 			    property:'list_id',
-			    value: me.currList
+			    value: listId
 		    }
 	    ]);
         inUse ? deleteBtn.disable() : deleteBtn.enable();
@@ -265,13 +264,18 @@ Ext.define('App.view.administration.Lists', {
      * and start the rowEditor
      */
     onNewOption: function(){
-        var me = this, m;
-        me.optionsRowEditing.cancelEdit();
-        m = Ext.create('App.model.administration.ListOptions', {
-            list_id: me.currList
-        });
-        me.optionsStore.insert(0, m);
-        me.optionsRowEditing.startEdit(0, 0);
+        var me = this,
+	        listId = me.getCurrList(),
+	        m;
+
+	    if(listId !== false){
+		    me.optionsRowEditing.cancelEdit();
+		    m = Ext.create('App.model.administration.ListOptions', {
+			    list_id: listId
+		    });
+		    me.optionsStore.insert(0, m);
+		    me.optionsRowEditing.startEdit(0, 0);
+	    }
     },
 
     /**
@@ -290,21 +294,26 @@ Ext.define('App.view.administration.Lists', {
      * @param overModel
      */
     onDragDrop: function(node, data, overModel){
-        var me = this, items = overModel.stores[0].data.items, gridItmes = [];
+        var me = this,
+	        items = overModel.stores[0].data.items,
+	        listId = me.getCurrList(),
+	        gridItems = [];
+
         for(var i = 0; i < items.length; i++){
-            gridItmes.push(items[i].data.id);
+	        Ext.Array.push(gridItems, items[i].data.id);
         }
+
         var params = {
             list_id: data.records[0].data.list_id,
-            fields: gridItmes
+            fields: gridItems
         };
-        Lists.sortOptions(params, function(){
 
+        Lists.sortOptions(params, function(){
 	        me.optionsStore.clearFilter(true);
 	        me.optionsStore.filter([
 		        {
 			        property:'list_id',
-			        value: me.currList
+			        value: listId
 		        }
 	        ]);
         });
@@ -346,6 +355,17 @@ Ext.define('App.view.administration.Lists', {
             Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
         }
     },
+
+	getCurrList: function(){
+		var records = this.listsGrid.getSelectionModel().getSelection();
+
+		if(records.length > 0){
+			return records[0].data.id;
+		}
+
+		return false;
+
+	},
 
     /**
      * This function is called from Viewport.js when

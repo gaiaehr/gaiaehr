@@ -1,7 +1,6 @@
 Ext.define('App.controller.patient.encounter.SOAP', {
 	extend: 'Ext.app.Controller',
 
-
 	// defaults
 	recognition: null,
 	speechAction: null,
@@ -11,6 +10,9 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	final_transcript: '',
 	interim_transcript: '',
 
+	field: {
+		name: 'subjective'
+	},
 
 	refs: [
 		{
@@ -44,30 +46,63 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		{
 			ref: 'EncounterProgressNotesPanel',
 			selector: '#EncounterProgressNotesPanel'
+		},
+		{
+			ref: 'SoapDxCodesField',
+			selector: '#SoapDxCodesField'
+		},
+
+		// templates specialties combo
+		{
+			ref: 'SoapTemplateSpecialtiesCombo',
+			selector: '#SoapTemplateSpecialtiesCombo'
 		}
 	],
 
-	init: function() {
+	init: function(){
+		var me = this;
 
-		this.control({
+		me.control({
+			'viewport': {
+				'beforeencounterload': me.onOpenEncounter,
+				'encounterbeforesync': me.onEncounterBeforeSync
+			},
 			'#soapPanel': {
-				beforerender: this.onPanelBeforeRender,
-				activate: this.onPanelActive,
-				deactivate: this.onPanelDeActive
+				beforerender: me.onPanelBeforeRender,
+				activate: me.onPanelActive,
+				deactivate: me.onPanelDeActive
 			},
 			'#soapPanel #soapForm': {
-				render: this.onPanelFormRender
+				render: me.onPanelFormRender
 			},
 			'#soapPanel button[action=speechBtn]': {
-				toggle: this.onSpeechBtnToggle
+				toggle: me.onSpeechBtnToggle
 			},
 			'#soapForm > fieldset > textarea': {
-				focus: this.onSoapTextFieldFocus,
+				focus: me.onSoapTextFieldFocus
 			},
 			'#soapProcedureWindow > form > textarea': {
-				focus: this.onProcedureTextFieldFocus
+				focus: me.onProcedureTextFieldFocus
+			},
+			'#SoapTemplateSpecialtiesCombo': {
+				select: me.onSoapTemplateSpecialtiesComboChange,
+				change: me.onSoapTemplateSpecialtiesComboChange
 			}
 		});
+	},
+
+	onSoapTemplateSpecialtiesComboChange: function(cmb){
+		this.loadSnippets();
+	},
+
+	onOpenEncounter: function(encounter){
+		this.getSoapTemplateSpecialtiesCombo().setValue(encounter.data.specialty_id);
+	},
+
+	onEncounterBeforeSync: function(panel, store, form){
+		if(form.owner.itemId == 'soapForm'){
+			this.getSoapDxCodesField().sync();
+		}
 	},
 
 	onPanelActive: function(){
@@ -84,63 +119,84 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		}, 200);
 	},
 
-	onSoapTextFieldFocus: function(field) {
-		this.loadSnippetsByCategory(field.name);
+	onSoapTextFieldFocus: function(field){
+		this.field = field;
+		this.loadSnippets();
 
 		if(!Ext.isWebKit) return;
-		this.field = field;
 		this.final_transcript = field.getValue();
 		this.interim_transcript = '';
 	},
 
-	onProcedureTextFieldFocus: function(field) {
-		this.loadSnippetsByCategory(field.name);
+	onProcedureTextFieldFocus: function(field){
+		this.field = field;
+		this.loadSnippets();
 
 		if(!Ext.isWebKit) return;
-		this.field = field;
 		this.final_transcript = field.getValue();
 		this.interim_transcript = '';
 	},
 
-	loadSnippetsByCategory:function(category){
+	loadSnippets: function(){
+		var me = this;
 
-		if(this.getSnippetsTreePanel().collapsed === false){
-			var templates = this.getSnippetsTreePanel();
+		if(me.getSnippetsTreePanel().collapsed === false){
+			var templates = me.getSnippetsTreePanel(),
+				specialty_id = me.getSoapTemplateSpecialtiesCombo().getValue(),
+				action = me.field.name + '-' + specialty_id;
 
-			templates.setTitle(i18n(category) + ' ' + i18n('templates'));
-			if(templates.action != category){
+			if(templates.action != action){
+
+				templates.setTitle(i18n(me.field.name) + ' ' + i18n('templates'));
+				templates.action = me.field.name + '-' + specialty_id;
+
 				templates.getSelectionModel().deselectAll();
 				templates.getStore().load({
-					params: {
-						category: category
-					}
+					filters: [
+						{
+							property: 'category',
+							value: me.field.name
+						},
+						{
+							property: 'specialty_id',
+							value: me.getSoapTemplateSpecialtiesCombo().getValue()
+						},
+						{
+							property: 'parentId',
+							value: 'root'
+						}
+					]
 				});
+
 			}
-			templates.action = category;
+
 		}
 	},
 
-	onPanelBeforeRender: function(panel) {
+	onPanelBeforeRender: function(panel){
 		if(!Ext.isWebKit) return;
 
-		var btn = [{
-			xtype:'button',
-			action: 'speechBtn',
-			iconCls: 'speech-icon-inactive',
-			enableToggle: true,
-			minWidth: null
-		}, { xtype: 'tbfill' }];
+		var btn = [
+			{
+				xtype: 'button',
+				action: 'speechBtn',
+				iconCls: 'speech-icon-inactive',
+				enableToggle: true,
+				minWidth: null
+			},
+			{ xtype: 'tbfill' }
+		];
 
 		panel.down('form').getDockedItems('toolbar[dock="bottom"]')[0].insert(0, btn);
 	},
 
-	onPanelFormRender: function(panel) {
-		Ext.widget('careplangoalsnewwindow',{
+	onPanelFormRender: function(panel){
+		Ext.widget('careplangoalsnewwindow', {
 			constrainTo: panel.el.dom
 		});
 	},
 
-	onSpeechBtnToggle: function(btn, pressed) {
+	onSpeechBtnToggle: function(btn, pressed){
 		if(pressed){
 			this.initSpeech();
 		}else{
@@ -148,17 +204,17 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		}
 	},
 
-	stopSpeech:function(){
+	stopSpeech: function(){
 		this.recognition.stop();
 		this.final_transcript = '';
 		this.interim_transcript = '';
 		delete this.recognition;
 	},
 
-	initSpeech:function(){
+	initSpeech: function(){
 		var me = this;
 		if(me.recognition) me.stopSpeech();
-		me.final_transcript  = me.field.getValue();
+		me.final_transcript = me.field.getValue();
 		me.recognition = new webkitSpeechRecognition();
 		me.recognition.continuous = true;
 		me.recognition.interimResults = true;
@@ -195,8 +251,8 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		me.recognition.start();
 	},
 
-	setRecordButton:function(recording){
-		this.getSpeechBtn().setIconCls( recording ? 'speech-icon-active' : 'speech-icon-inactive');
+	setRecordButton: function(recording){
+		this.getSpeechBtn().setIconCls(recording ? 'speech-icon-active' : 'speech-icon-inactive');
 	}
 
 });

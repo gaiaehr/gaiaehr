@@ -27,6 +27,12 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 		{
 			ref: 'SnippetSaveBtn',
 			selector: '#SnippetSaveBtn'
+		},
+
+		// templates specialties combo
+		{
+			ref: 'SoapTemplateSpecialtiesCombo',
+			selector: '#SoapTemplateSpecialtiesCombo'
 		}
 	],
 
@@ -52,6 +58,7 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 			form = me.getSnippetForm(),
 			newRecord = Ext.create('App.model.patient.encounter.snippetTree', {
 				parentId: record.data.id,
+				specialty_id: me.getSoapTemplateSpecialtiesCombo.getValue(),
 				leaf: true
 			});
 
@@ -127,6 +134,7 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 		newRecord = Ext.create('App.model.patient.encounter.snippetTree', {
 			parentId: parentRecord.data.id,
 			category: tree.action,
+			specialty_id: me.getSoapTemplateSpecialtiesCombo.getValue(),
 			leaf: false
 		});
 

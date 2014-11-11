@@ -55,6 +55,16 @@ Ext.define('App.model.patient.SmokeStatus', {
 			len: 20
 		},
 		{
+			name: 'counseling',
+			type: 'bool',
+			comment: '1 if counseling received'
+		},
+		{
+			name: 'note',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
 			name: 'create_uid',
 			type: 'int',
 			comment: 'user ID who created the record'

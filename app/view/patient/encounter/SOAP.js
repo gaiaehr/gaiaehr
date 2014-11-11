@@ -19,7 +19,9 @@
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend: 'Ext.panel.Panel',
 	requires: [
+		'App.ux.combo.Specialties',
 		'App.ux.grid.RowFormEditing',
+
 		'App.view.patient.encounter.CarePlanGoals',
 		'App.view.patient.encounter.CarePlanGoalsNewWindow'
 	],
@@ -110,6 +112,13 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					handler: function(grid, rowIndex, colIndex, actionItem, event, record){
 						snippetCtrl.onSnippetBtnEdit(grid, rowIndex, colIndex, actionItem, event, record);
 					}
+				}
+			],
+			bbar:[
+				{
+					xtype: 'specialtiescombo',
+					itemId: 'SoapTemplateSpecialtiesCombo',
+					flex: 1
 				}
 			],
 			viewConfig: {
@@ -273,7 +282,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						}),
 						me.dxField = Ext.widget('icdsfieldset', {
 							name: 'dxCodes',
-							margin: '5 0 10 0'
+							margin: '5 0 10 0',
+							itemId: 'SoapDxCodesField'
 						})
 					]
 				},
@@ -337,13 +347,13 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				'->',
 				{
+					text: i18n('cancel'),
+					handler: me.onPhWindowCancel
+				},
+				{
 					text: i18n('submit'),
 					scope: me,
 					handler: me.onPhWindowSubmit
-				},
-				{
-					text: i18n('cancel'),
-					handler: me.onPhWindowCancel
 				}
 			]
 		});
@@ -497,11 +507,14 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param record
 	 */
 	onSnippetDblClick: function(view, record){
+
+
+
 		if(record.data.leaf){
 			var me = this,
 				form = me.form.getForm(),
-				action = view.panel.action,
-				field = form.findField(action),
+				action = view.panel.action.split('-'),
+				field = form.findField(action[0]),
 				text = record.data.text,
 				value = field.getValue(),
 				PhIndex = text.indexOf('??'),
@@ -528,8 +541,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var me = this,
 			textArea = me.phWindow.down('textarea'),
 			form = me.form.getForm(),
-			action = me.snippets.action,
-			field = form.findField(action),
+			action = me.snippets.action.split('-'),
+			field = form.findField(action[0]),
 			value = field.getValue(),
 			text = textArea.getValue();
 

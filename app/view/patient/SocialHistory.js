@@ -23,10 +23,9 @@ Ext.define('App.view.patient.SocialHistory', {
 		'Ext.grid.feature.Grouping',
 		'App.store.patient.PatientSocialHistory',
 		'App.ux.combo.Combo',
-		'App.ux.combo.SmokingStatus'
 	],
 	xtype: 'patientsocialhistorypanel',
-	title: i18n('social_history'),
+	itemId: 'PatientSocialHistoryGrid',
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientSocialHistory',{
 		remoteFilter: true
@@ -59,6 +58,14 @@ Ext.define('App.view.patient.SocialHistory', {
 			}
 		},
 		{
+			text: i18n('note'),
+			dataIndex: 'note',
+			flex: 1,
+			editor: {
+				xtype: 'textfield'
+			}
+		},
+		{
 			xtype: 'datecolumn',
 			text: i18n('start'),
 			dataIndex: 'start_date',
@@ -84,16 +91,13 @@ Ext.define('App.view.patient.SocialHistory', {
 	],
 	tbar: [
 		{
-			xtype: 'mitos.smokingstatuscombo',
-			fieldLabel: i18n('smoking_status'),
-			itemId: 'socialsmokingstatuscombo',
-			width: 350
+			xtype: 'tbtext',
+			text: i18n('social_history'),
+			width: 100
 		},
-		'->',
-		i18n('social_history'),
 		{
 			xtype: 'gaiaehr.combo',
-			width: 200,
+			width: 250,
 			list: 101,
 			allowBlank: false,
 			action: 'socialHistoryTypeCombo'

@@ -62,10 +62,12 @@ Ext.define('App.view.patient.RxOrders', {
 						type: 'hbox',
 						align: 'stretch'
 					},
+					itemId: 'RxOrderGridFormContainer',
 					items: [
 						{
 							xtype: 'container',
 							layout: 'anchor',
+							itemId: 'RxOrderGridFormContainerOne',
 							items: [
 								{
 									xtype: 'datefield',
@@ -82,8 +84,10 @@ Ext.define('App.view.patient.RxOrders', {
 									fieldLabel: i18n('medication'),
 									width: 700,
 									name: 'STR',
+									maxLength: 105,
 									displayField: 'STR',
 									valueField: 'STR',
+//									forceSelection: true,
 									allowBlank: false
 								},
 								{
@@ -95,18 +99,55 @@ Ext.define('App.view.patient.RxOrders', {
 									items: [
 										{
 											xtype: 'numberfield',
-											width: 160,
+											width: 170,
 											fieldLabel: i18n('dispense'),
-											minValue: 1,
+											minValue: 0.001,
+											maxValue: 99999,
 											name: 'dispense',
-											allowBlank: false
+											decimalPrecision: 3,
+											maxLength: 10,
+											allowBlank: false,
+											fixPrecision: function(value){
+												var me = this,
+													nan = isNaN(value),
+													precision = me.decimalPrecision;
+
+												if(nan || !value){
+													return nan ? '' : value;
+												}else if(!me.allowDecimals || precision <= 0){
+													precision = 0;
+												}
+												var num = String(value);
+												if(num.indexOf('.') !== -1){
+													var numArr = num.split(".");
+													if(numArr.length == 1){
+														return Number(num);
+													}else{
+														return Number(numArr[0] + "." + numArr[1].charAt(0) + numArr[1].charAt(1) + numArr[1].charAt(2));
+													}
+												}else{
+													return Number(num);
+												}
+												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
+											}
 										},
 										{
 											xtype: 'numberfield',
 											width: 130,
+											fieldLabel: i18n('days_supply'),
+											labelAlign: 'right',
+											labelWidth: 75,
+											minValue: 1,
+											maxValue: 630,
+											allowDecimals: false,
+											name: 'days_supply'
+										},
+										{
+											xtype: 'numberfield',
+											width: 100,
 											fieldLabel: i18n('refill'),
 											labelAlign: 'right',
-											labelWidth: 70,
+											labelWidth: 40,
 											maxValue: 99,
 											minValue: 0,
 											name: 'refill',
@@ -118,8 +159,8 @@ Ext.define('App.view.patient.RxOrders', {
 											itemId: 'RxEncounterDxCombo',
 											fieldLabel: i18n('dx'),
 											labelAlign: 'right',
-											labelWidth: 70,
-											width: 405,
+											labelWidth: 30,
+											width: 295,
 											name: 'dxs'
 										}
 									]
@@ -129,30 +170,64 @@ Ext.define('App.view.patient.RxOrders', {
 									width: 700,
 									fieldLabel: 'Instructions',
 									name: 'directions',
-									maxLength: 300,
+									maxLength: 140,
+									validateOnBlur: true,
+									vtype: 'spaceString',
 									allowBlank: false
 								},
 								{
 									xtype: 'textfield',
 									width: 700,
 									fieldLabel: i18n('notes_to_Pharmacist'),
-									name: 'notes'
+									itemId: 'RxOrderGridFormNotesField',
+									name: 'notes',
+									maxLength: 210
 								}
 							]
 						},
 						{
 							xtype: 'container',
 							layout: 'anchor',
+							itemId: 'RxOrderGridFormContainerTwo',
+							padding: '25 0 0 0',
 							items: [
 								{
-									xtype: 'checkboxfield',
-									fieldLabel: i18n('daw'),
-									tooltip: i18n('dispensed_as_written'),
-									width: 95,
-									labelWidth: 70,
-									labelAlign: 'right',
-									name: 'daw',
-									margin: '25 0 5 0'
+									xtype: 'container',
+									layout: 'hbox',
+									items:[
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: i18n('daw'),
+											tooltip: i18n('dispensed_as_written'),
+											width: 90,
+											labelWidth: 70,
+											labelAlign: 'right',
+											name: 'daw',
+											margin: '0 0 5 0'
+										},
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: i18n('is_comp'),
+											tooltip: i18n('is_compound'),
+											width: 85,
+											labelWidth: 65,
+											labelAlign: 'right',
+											name: 'is_compound',
+											itemId: 'RxOrderCompCheckBox',
+											margin: '0 0 5 0'
+										},
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: i18n('is_sply'),
+											tooltip: i18n('is_supply'),
+											width: 85,
+											labelWidth: 65,
+											labelAlign: 'right',
+											name: 'is_supply',
+											itemId: 'RxOrderSplyCheckBox',
+											margin: '0 0 5 0'
+										}
+									]
 								},
 								{
 									xtype: 'datefield',
@@ -219,21 +294,21 @@ Ext.define('App.view.patient.RxOrders', {
 				return app.boolRenderer(v);
 			}
 		},
-//		{
-//			header: i18n('dose'),
-//			width: 115,
-//			dataIndex: 'dose'
-//		},
-//		{
-//			header: i18n('route'),
-//			width: 90,
-//			dataIndex: 'route'
-//		},
-//		{
-//			header: i18n('form'),
-//			width: 70,
-//			dataIndex: 'form'
-//		},
+		//		{
+		//			header: i18n('dose'),
+		//			width: 115,
+		//			dataIndex: 'dose'
+		//		},
+		//		{
+		//			header: i18n('route'),
+		//			width: 90,
+		//			dataIndex: 'route'
+		//		},
+		//		{
+		//			header: i18n('form'),
+		//			width: 70,
+		//			dataIndex: 'form'
+		//		},
 		{
 			header: i18n('dispense'),
 			width: 60,

@@ -540,20 +540,33 @@ class Encounter {
 			}
 		}
 
-
 		/**
 		 * Add SOAP to progress note
 		 */
 		if($_SESSION['globals']['enable_encounter_soap']){
+			$dxCodes = $this->diagnosis->getICDByEid($eid, true);
 
-			$icdxs = '';
-			foreach($this->diagnosis->getICDByEid($eid, true) as $code){
-				$icdxs .= '<li><span style="font-weight:bold; text-decoration:none">' . $code['code'] . '</span> - ' . $code['long_desc'] . '</li>';
+			if(count($dxCodes) > 0){
+				$dxOl = '';
+				$dxGroups = array();
+				foreach($dxCodes as $dxCode){
+					$dxGroups[$dxCode['dx_group']][] = $dxCode;
+				}
+
+				foreach($dxGroups as $dxGroup){
+					$dxOl .= '<p>Dx Group ' . $dxGroup[0]['dx_group'] . '</p>';
+					$dxOl .= '<ol  class="ProgressNote-ol">';
+					foreach($dxGroup as $dxCode){
+						$dxOl .= '<li><span style="font-weight:bold; text-decoration:none">' . $dxCode['code'] . '</span> - ' . $dxCode['long_desc'] . '</li>';
+					}
+					$dxOl .= '</ol>';
+				}
 			}
+
 			$soap = $this->getSoapByEid($eid);
 			$soap['assessment'] = isset($soap['assessment']) ? $soap['assessment'] : '';
 			$soap['objective'] = $this->getObjectiveExtraDataByEid($eid);
-			$soap['assessment'] = $soap['assessment'] . '<ul  class="ProgressNote-ul">' . $icdxs . '</ul>';
+			$soap['assessment'] = $soap['assessment'] . (isset($dxOl) ? $dxOl : '');
 			$encounter['soap'] = $soap;
 		}
 

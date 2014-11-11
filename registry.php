@@ -32,7 +32,7 @@ if(!defined('URL')){
 	define('URL', $URL);
 }
 // application version
-if(!defined('VERSION'))	define('VERSION', '0.7.200');
+if(!defined('VERSION'))	define('VERSION', '0.8.100');
 // extjs sdk directory
 if(!defined('EXTJS')) define('EXTJS', 'extjs-4.2.1');
 //if(!defined('EXTJS')) define('EXTJS', 'extjs-4.1.1a');
@@ -77,6 +77,8 @@ $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERV
 
 // default site
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+$_SESSION['styles'] = array();
+
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');
 
@@ -87,6 +89,19 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 		$modules = $Modules->getEnabledModules();
 		unset($Modules);
 		foreach($modules as $module){
+
+			/**
+			 * Styles
+			 */
+			if(isset($module['styles'])){
+				foreach($module['styles'] AS $style){
+					$_SESSION['styles'][] = 'modules/' . $module['name'] . '/resources/css/' . $style;
+				}
+			}
+
+			/**
+			 * Hooks
+			 */
 			$HooksFile = ROOT . '/modules/' . $module['name'] . '/dataProvider/Hooks.php';
 			if(!file_exists($HooksFile)) continue;
 

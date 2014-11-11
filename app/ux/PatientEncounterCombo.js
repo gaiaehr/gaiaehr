@@ -17,57 +17,74 @@
  */
 
 Ext.define('App.ux.PatientEncounterCombo', {
-    extend: 'Ext.form.ComboBox',
-    alias: 'widget.patientEncounterCombo',
-    hideLabel: true,
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.patientEncounterCombo',
+	hideLabel: true,
+	displayField: 'brief_description',
+	valueField: 'brief_description',
+	emptyText: i18n('search') + '...',
+	width: 400,
+	editable: false,
+	initComponent: function(){
+		var me = this;
 
-    initComponent: function(){
-        var me = this;
+		Ext.define('patientEncounterComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{
+					name: 'eid'
+				},
+				{
+					name: 'brief_description'
+				},
+				{
+					name: 'service_date',
+					type: 'date',
+					dateFormat: 'Y-m-d H:i:s'
+				},
+				{
+					name: 'close_date',
+					type: 'date',
+					dateFormat: 'Y-m-d H:i:s'
+				}
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'Encounter.getEncounters'
+				},
+				reader: {
+					totalProperty: 'totals',
+					root: 'rows'
+				}
+			}
+		});
 
-        Ext.define('patientEncounterComboModel', {
-            extend: 'Ext.data.Model',
-            fields: [
-                { name: 'eid' },
-                { name: 'brief_description' },
-                { name: 'service_date' },
-                { name: 'close_date' }
-            ],
-            proxy: {
-                type: 'direct',
-                api: {
-                    read: 'Encounter.getEncounters'
-                },
-                reader: {
-                    totalProperty: 'totals',
-                    root: 'rows'
-                }
-            }
-        });
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'patientEncounterComboModel',
+			pageSize: 10,
+			autoLoad: false,
+			sorters: [
+				{
+					property: 'service_date',
+					direction: 'DESC'
+				}
+			]
+		});
 
-        me.store = Ext.create('Ext.data.Store', {
-            model: 'patientEncounterComboModel',
-            pageSize: 10,
-            autoLoad: false
-        });
+		Ext.apply(this, {
+			store: me.store,
+			listConfig: {
+				loadingText: i18n('searching') + '...',
+				getInnerTpl: function(){
+					return '<div class="search-item"><h3>{[Ext.Date.format(values.service_date, g("date_time_display_format"))]} - {[Ext.String.ellipsis(values.brief_description, 25)]} </h3></div>';
+				}
+			},
+			pageSize: 10
+		});
 
-        Ext.apply(this, {
-            store: me.store,
-            displayField: 'brief_description',
-            valueField: 'brief_description',
-            emptyText: i18n('search') + '...',
-            width: 400,
-            editable: false,
-            listConfig: {
-                loadingText: i18n('searching') + '...',
-                getInnerTpl: function(){
-                    return '<div class="search-item-encounter"><h3>{brief_description} ({service_date})</h3></div>';
-                }
-            },
-            pageSize: 10
-        });
+		me.callParent();
 
-        me.callParent();
-
-    }
+	}
 
 });

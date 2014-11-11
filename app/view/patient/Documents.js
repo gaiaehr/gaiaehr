@@ -62,19 +62,31 @@ Ext.define('App.view.patient.Documents', {
 			columns: [
 				{
 					xtype: 'actioncolumn',
-					width: 30,
-					items: [
-						{
-							icon: 'resources/images/icons/icoLessImportant.png',
-							tooltip: i18n('validate_file_integrity_hash'),
-							handler: function(grid, rowIndex){
-								App.Current.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex)
-							},
-							getClass: function(){
-								return 'x-grid-icon-padding';
-							}
-						}
-					]
+					width: 23,
+					icon: 'resources/images/icons/icoLessImportant.png',
+					tooltip: i18n('validate_file_integrity_hash'),
+					handler: function(grid, rowIndex){
+						App.app.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex);
+					},
+					getClass: function(){
+						return 'x-grid-icon-padding';
+					}
+				},
+				{
+					xtype: 'actioncolumn',
+					width: 23,
+					icon: 'resources/images/icons/delete.png',
+					tooltip: i18n('delete'),
+					hidden: !eval(a('delete_patient_documents')),
+					handler: function(grid, rowIndex, colIndex, item, e, recprd){
+
+
+						alert('hello');
+
+					},
+					getClass: function(){
+						return 'x-grid-icon-padding';
+					}
 				},
 				{
 					header: i18n('type'),
@@ -145,7 +157,7 @@ Ext.define('App.view.patient.Documents', {
 		{
 			xtype: 'panel',
 			region: 'center',
-			flex: 1,
+			flex: 2,
 			layout: 'fit',
 			frame: true,
 			itemId: 'patientDocumentViewerPanel',
@@ -162,3 +174,5 @@ Ext.define('App.view.patient.Documents', {
 	]
 
 });
+say('delete_patient_documents');
+say(eval(a('delete_patient_documents')));

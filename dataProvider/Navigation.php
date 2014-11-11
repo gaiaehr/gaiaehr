@@ -230,7 +230,7 @@ class Navigation
 		}
 		if($this->ACL->hasPermission('access_preventive_care')){
 			$admin['children'][] = array(
-				'text' => $this->i18n('preventive_care'),
+				'text' => $this->i18n('decision_support'),
 				'leaf' => true,
 				'cls' => 'file',
 				'id' => 'App.view.administration.DecisionSupport'

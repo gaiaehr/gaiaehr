@@ -381,9 +381,22 @@ class CCDDocument {
 				'extension' => 'POCD_HD000040'
 			)
 		);
-		$this->xmlData['templateId'] = array(
+		// US Realm Header Template Id
+		$this->xmlData['templateId'][] = array(
 			'@attributes' => array(
 				'root' => $this->getTemplateId()
+			)
+		);
+		// QRDA templateId
+		$this->xmlData['templateId'][] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.10.20.24.1.1'
+			)
+		);
+		// QDM-based QRDA templateId
+		$this->xmlData['templateId'][] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.10.20.24.1.2'
 			)
 		);
 		$this->xmlData['id'] = array(
@@ -2049,11 +2062,19 @@ class CCDDocument {
 				'nullFlavor' => 'NI'
 			);
 		}
-		$problems['section']['templateId'] = array(
+
+		$problems['section']['templateId'][] = array(
 			'@attributes' => array(
 				'root' => $this->requiredProblems ? '2.16.840.1.113883.10.20.22.2.5.1' : '2.16.840.1.113883.10.20.22.2.5'
 			)
 		);
+
+		$problems['section']['templateId'][] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.3.88.11.83.103'
+			)
+		);
+
 		$problems['section']['code'] = array(
 			'@attributes' => array(
 				'code' => '11450-4',
@@ -2094,6 +2115,9 @@ class CCDDocument {
 					)
 				)
 			);
+
+
+
 			$problems['section']['entry'] = array();
 
 			foreach($problemsData as $item){
@@ -3647,6 +3671,7 @@ class CCDDocument {
 						),
 						'templateId' => array(
 							'@attributes' => array(
+								//2.16.840.1.113883.3.88.11.83.127
 								'root' => '2.16.840.1.113883.10.20.22.4.49'
 							)
 						),

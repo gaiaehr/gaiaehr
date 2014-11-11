@@ -117,10 +117,10 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 			form = me.encForm.getForm(),
 			values = form.getValues(),
 			record = form.getRecord(),
-			isNew = record.data.id == 0 ;
+			isNew = record.data.eid == 0 ;
 
 		if(form.isValid()){
-			if((isNew && acl['add_encounters']) || acl['edit_encounters']){
+			if((isNew && a('add_encounters') || (!isNew && a('edit_encounters')))){
 				record.set(values);
 
 				record.save({

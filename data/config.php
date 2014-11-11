@@ -283,7 +283,10 @@ $API = array(
 
 	'Snippets' => array(
 		'methods' => array(
-			'getSoapSnippetsByCategory' => array(
+			'getSoapSnippets' => array(
+				'len' => 1
+            ),
+			'getSoapSnippet' => array(
 				'len' => 1
             ),
 			'addSoapSnippets' => array(
@@ -297,6 +300,7 @@ $API = array(
             )
         )
 	),
+
 	'Orders' => array(
 		'methods' => array(
 			'getPatientOrders' => array(
@@ -1866,6 +1870,42 @@ $API = array(
 	 */
 	'ACL' => array(
 		'methods' => array(
+
+			'getAclGroups' => array(
+				'len' => 1
+			),
+			'getAclGroup' => array(
+				'len' => 1
+			),
+			'addAclGroup' => array(
+				'len' => 1
+			),
+			'updateAclGroup' => array(
+				'len' => 1
+			),
+			'deleteAclGroup' => array(
+				'len' => 1
+			),
+			'getGroupPerms' => array(
+				'len' => 1
+			),
+			'updateGroupPerms' => array(
+				'len' => 1
+			),
+			'getAclRoles' => array(
+				'len' => 1
+			),
+			'getAclRole' => array(
+				'len' => 1
+			),
+			'addAclRole' => array(
+				'len' => 1
+			),
+			'updateAclRole' => array(
+				'len' => 1
+			),
+
+
 			'getAllUserPermsAccess' => array(
 				'len' => 0
 			),

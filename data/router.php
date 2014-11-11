@@ -52,12 +52,14 @@ class BogusAction {
 $isForm = false;
 $isUpload = false;
 $module = null;
+$data = file_get_contents('php://input');
 
-if(isset($HTTP_RAW_POST_DATA)){
+if(isset($data)){
 	header('Content-Type: text/javascript');
-	$data = json_decode($HTTP_RAW_POST_DATA);
-	if(isset($_REQUEST['module']))
+	$data = json_decode($data);
+	if(isset($_REQUEST['module'])){
 		$module = $_REQUEST['module'];
+	}
 } else {
 	if(isset($_POST['extAction'])){
 		// form post
@@ -187,3 +189,5 @@ if($isForm && $isUpload){
 	$json  = mb_convert_encoding($json, 'UTF-8', 'UTF-8');
 	print $json;
 }
+
+Matcha::$__conn = null;

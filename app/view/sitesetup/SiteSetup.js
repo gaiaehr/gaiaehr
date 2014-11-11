@@ -587,6 +587,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														name:'ICD9',
 														inputValue:'1',
 														action:'code',
+														disabled: true,
 														plugins:[
 															{
 																ptype:'helpicon',
@@ -600,6 +601,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														name:'ICD10',
 														inputValue:'1',
 														action:'code',
+														disabled: true,
 														plugins:[
 															{
 																ptype:'helpicon',

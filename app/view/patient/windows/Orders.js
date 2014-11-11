@@ -101,16 +101,21 @@ Ext.define('App.view.patient.windows.Orders', {
 	 * @param action
 	 */
 	cardSwitch: function(action){
-		var layout = this.tabPanel.getLayout();
-		if(action == 'lab'){
-			layout.setActiveItem(0);
-		}else if(action == 'xRay'){
-			layout.setActiveItem(1);
-		}else if(action == 'prescription'){
-			layout.setActiveItem(2);
-		}else if(action == 'notes'){
-			layout.setActiveItem(3);
+		var me = this,
+			tabPanel = me.tabPanel,
+			activePanel = tabPanel.getActiveTab(),
+			toPanel =  tabPanel.query('#'+ action)[0];
+
+		if(activePanel == toPanel){
+			activePanel.fireEvent('activate', activePanel);
+		}else{
+			tabPanel.setActiveTab(toPanel);
+			me.setWindowTitle(toPanel.title);
 		}
+	},
+
+	setWindowTitle:function(title){
+		this.setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
 	},
 
 

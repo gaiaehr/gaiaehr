@@ -65,26 +65,43 @@ class Patient {
 	}
 
 	/**
-	 * MATCHA CUPs (Sencha Models)
+	 * @return MatchaCUP
 	 */
-	private function setPatientModel() {
-		if($this->p == null)
-			$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+	public function setPatientModel() {
+		if($this->p == null){
+			return $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+		}
+		return $this->p;
 	}
 
-	private function setDocumentModel() {
-		if($this->d == null)
-			$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setDocumentModel() {
+		if($this->d == null){
+			return $this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+		}
+		return $this->d;
 	}
 
-	private function setChartCheckoutModel() {
-		if($this->c == null)
-			$this->c = MatchaModel::setSenchaModel('App.model.patient.PatientChartCheckOut');
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setChartCheckoutModel() {
+		if($this->c == null){
+			return $this->c = MatchaModel::setSenchaModel('App.model.patient.PatientChartCheckOut');
+		}
+		return $this->c;
 	}
 
-	private function setPatientEncounterModel() {
-		if($this->e == null)
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setPatientEncounterModel() {
+		if($this->e == null){
 			$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
+		}
+		return $this->e;
 	}
 
 	/**
@@ -108,7 +125,7 @@ class Patient {
 		$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $fullName);
 		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
 		$params->update_date = date('Y-m-d H:i:s');
-		$this->patient = $this->p->save($params);
+		$this->patient = (object) $this->p->save($params);
 		$this->patient->fullname = $fullName;
 		$this->createPatientDir($this->patient->pid);
 		return $this->patient;
@@ -233,8 +250,8 @@ class Patient {
 		return array(
 			'success' => true,
 			'patient' => array(
-				'pid' => $patient['pid'],
-				'fullname' => $patient['fullname']
+				'pid' => $patient->pid,
+				'fullname' => $patient->fullname
 			)
 		);
 	}

@@ -47,9 +47,11 @@ class Action {
 
 $isForm = false;
 $isUpload = false;
-if(isset($HTTP_RAW_POST_DATA)) {
+$data = file_get_contents('php://input');
+
+if(isset($data)){
 	header('Content-Type: text/javascript');
-	$data = json_decode($HTTP_RAW_POST_DATA);
+	$data = json_decode($data);
 } else if (isset($_POST['extAction'])) { // form post
 	$isForm = true;
 	$isUpload = $_POST['extUpload'] == 'true';

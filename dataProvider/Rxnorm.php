@@ -104,7 +104,7 @@ class Rxnorm {
                             WHERE (rxnconso.SAB = 'RXNORM' AND (rxnconso.TTY = 'PSN' OR rxnconso.TTY = 'SY'))
                               AND rxnsat.ATN = 'NDC'
                               AND rxnconso.STR LIKE :q
-                         GROUP BY rxnconso.RXCUI
+                         GROUP BY rxnconso.STR
                          LIMIT 100");
 
 		$sth->execute(array(':q' => '%'.$params->query.'%'));

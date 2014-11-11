@@ -61,7 +61,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <!-- Ext library -->
 		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js"></script>
 
-
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php?site=<?php print $site ?>"></script>
 		<script src="data/api.php?site=<?php print $site ?>"></script>
@@ -91,14 +90,25 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	            app.msg(i18n('sweet'), args.text + ' - ' + i18n('copied_to_clipboard'));
             });
 
-			/**
-			 * Ext Localization file
-			 * Using a anonymous function, in javascript.
-			 * Is not intended to be used globally just this once.
-			 */
+
             (function(){
+
+	            /**
+	             * Ext Localization file
+	             * Using a anonymous function, in javascript.
+	             * Is not intended to be used globally just this once.
+	             */
                 document.write('<script type="text/javascript" src="lib/<?php print EXTJS ?>/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>')
-            })();            // Set and enable Ext.loader for dynamic class loading
+
+	            /**
+	             * Modules Styles
+	             */
+	            for(var s = 0; s < window.styles.length; s++){
+		            document.write('<link rel="stylesheet" type="text/style" href="' + window.styles[s] + '?_v' + version + '"><\/link>');
+	            }
+
+            })();
+
             Ext.Loader.setConfig({
                 enabled: true,
                 disableCaching: false,
@@ -114,6 +124,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			for(var x = 0; x < App.data.length; x++){
 				Ext.direct.Manager.addProvider(App.data[x]);
 			}
+
 			Ext.direct.Manager.on('exception', function(e, o){
 				say(e);
 				app.alert(
@@ -123,9 +134,13 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				);
 			});
 		</script>
+
 		<script type="text/javascript" src="app/view/calendar/ExtensibleAll.js"></script>
 		<script type="text/javascript" src="app/ux/Overrides.js"></script>
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
+
+		<!-- this is the compiled/minified version -->
+<!--		<script type="text/javascript" src="app/app.min.js"></script>-->
 
 		<script type="text/javascript">
             /**
@@ -664,12 +679,15 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.HL7',
 	                'administration.Practice',
 	                'administration.ReferringProviders',
+	                'administration.Roles',
 	                'administration.Specialties',
 
 	                'Cron',
 	                'DocumentViewer',
 	                'DualScreen',
+	                'Header',
 	                'InfoButton',
+	                'KeyCommands',
 	                'LogOut',
 	                'Navigation',
 	                'Support',
@@ -696,11 +714,12 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Referrals',
 	                'patient.Results',
 	                'patient.RxOrders',
-	                'patient.SocialHistory',
+	                'patient.Social',
 	                'patient.Vitals',
 
 	                'patient.Summary',
                     'patient.encounter.Encounter',
+	                'patient.encounter.EncounterSign',
 	                'patient.encounter.Snippets',
                     'patient.encounter.SOAP'
                 ],

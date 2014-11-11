@@ -231,10 +231,10 @@ class MatchaCUP {
 				unset($tmp);
 
 				// if App.model.Example.load(4)
-				$isModelLoadRequest = isset($where->{$this->primaryKey});
+				$isSimpleLoadRequest = isset($where->{$this->primaryKey}) && !isset($where->filter);
 
 				// limits
-				if($isModelLoadRequest){
+				if($isSimpleLoadRequest){
 					$_limits = ' LIMIT 1';
 				} elseif(isset($where->limit) || isset($where->start)) {
 					$_limits = array();
@@ -281,7 +281,7 @@ class MatchaCUP {
 				}
 
 				// filter/where
-				if($isModelLoadRequest){
+				if($isSimpleLoadRequest){
 					$_where = ' WHERE `' . $this->primaryKey . '` = \'' . $where->{$this->primaryKey} . '\'';
 				} elseif((isset($where->filter) && isset($where->filter[0]->property)) || isset($this->filters)) {
 
@@ -930,7 +930,7 @@ class MatchaCUP {
 			 * $properties['persist'] is set and is not true OR
 			 */
 			if((!isset($properties['store']) || $properties['store']) && (!isset($properties['persist']) || $properties['persist'])){
-				$type = MatchaModel::__getFieldType($col, $this->model);
+				$type = $properties['type'];
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else {
@@ -948,7 +948,7 @@ class MatchaCUP {
 				/**
 				 * do not trim bool values
 				 */
-				if($this->autoTrim && $type != 'bool'){
+				if($this->autoTrim && ($type != 'bool' && $type != 'int')){
 					$record[$col] = trim($data[$col]);
 				} else {
 					$record[$col] = $data[$col];

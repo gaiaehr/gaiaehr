@@ -177,12 +177,30 @@ Ext.define('App.view.patient.Patient', {
 
 		me.getFormItems(me.demoForm, 1, function(formPanel){
 
-			var fname = me.demoForm.getForm().findField('fname'),
-				lname = me.demoForm.getForm().findField('lname'),
-				sex = me.demoForm.getForm().findField('sex'),
-				dob = me.demoForm.getForm().findField('DOB');
+			var form = me.demoForm.getForm(),
+				fname = form.findField('fname'),
+				lname = form.findField('lname'),
+				sex = form.findField('sex'),
+				dob =form.findField('DOB'),
+				zipcode = form.findField('zipcode'),
+				home_phone = form.findField('home_phone'),
+				mobile_phone = form.findField('mobile_phone'),
+				emer_phone = form.findField('emer_phone'),
+				work_phone = form.findField('work_phone'),
+				work_phone_ext = form.findField('work_phone_ext'),
+				email = form.findField('email'),
+				phone_reg = new RegExp(g('phone_validation_format')),
+				zipcode_reg = new RegExp(g('zipcode_validation_format'));
 
+			if(email) email.vtype = 'email';
+			if(zipcode) zipcode.regex = zipcode_reg;
+			if(home_phone) home_phone.regex = phone_reg;
+			if(mobile_phone) mobile_phone.regex = phone_reg;
+			if(emer_phone) emer_phone.regex = phone_reg;
+			if(work_phone) work_phone.regex = phone_reg;
+			if(work_phone_ext) work_phone_ext.regex = new RegExp('^[0-9]*$');
 			if(dob) dob.setMaxValue(new Date());
+
 			if(me.newPatient){
 				var crtl = App.app.getController('patient.Patient');
 
@@ -285,6 +303,7 @@ Ext.define('App.view.patient.Patient', {
 			});
 
 			me.insuranceFormItmes = items;
+
 		});
 
 	},
@@ -296,6 +315,7 @@ Ext.define('App.view.patient.Patient', {
 		form.title = i18n('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : i18n('new')) + ')';
 
 		form.add(me.insuranceFormItmes);
+
 		me.insuranceFormLoadRecord(form, rec);
 		if(rec.data.image != '') form.down('image').setSrc(rec.data.image);
 	},

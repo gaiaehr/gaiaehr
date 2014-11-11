@@ -85,8 +85,8 @@ Ext.define('App.controller.patient.Patient', {
 
 			me.lookForPossibleDuplicates(params, 'openPatientSummary');
 		}else{
-
-		}app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+			app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+		}
 	},
 
 	lookForPossibleDuplicates: function(params, action, callback){

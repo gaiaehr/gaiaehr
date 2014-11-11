@@ -387,38 +387,42 @@ class MatchaModel extends Matcha
             $dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
             if(!count($dataArray)) throw new Exception("Something went wrong converting it to an array, a bad lolo.");
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
-            $columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
+            $columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES '. PHP_EOL;
 
             $rowCount = 0;
-            $valuesEncapsulation = '';
+            $rowValues = array();
             foreach($dataArray as $key => $data)
             {
                 $values  = array_values($data);
                 foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
-                $valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
-                if( $rowCount == 500 || $key == end(array_keys($dataArray)))
+	            $rowValues[] = '(\''.implode('\',\'',$values).'\')';
+	            $keys = array_keys($dataArray);
+                if( $rowCount == 500 || $key == end($keys))
                 {
                     // check if Threads PHP Class exists if does not exist
                     // run the SQL in normal fashion
-                    if(class_exists('MatchaThreads'))
-                    {
-                        $thread = new MatchaThreads();
-                        $thread->sqlStatement = $columns.$valuesEncapsulation.';';
-                        $thread->start();
-                    }
-                    else
-                    {
-                        Matcha::$__conn->query($columns.$valuesEncapsulation.';');
-                    }
-                    $valuesEncapsulation = '';
+//                    if(class_exists('MatchaThreads'))
+//                    {
+//                        $thread = new MatchaThreads();
+//                        $thread->sqlStatement = $columns.$valuesEncapsulation.';';
+//                        $thread->start();
+//                    }
+//                    else
+//                    {
+	                    $foo = implode(',' . PHP_EOL, $rowValues);
+	                    $sql = $columns . $foo .';';
+                        $sth = Matcha::$__conn->prepare($sql);
+	                    $sth->execute();
+//                    }
+	                $rowValues = array();
                     $rowCount = 0;
+	                continue;
                 }
-                else
-                {
-                    $valuesEncapsulation .= ', ';
-                    $rowCount++;
-                }
+
+                $rowCount++;
+
             }
+
             return true;
         }
         catch(Exception $e)

@@ -27,7 +27,7 @@ if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_
 if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 require_once(ROOT . '/sites/'. $_REQUEST['site'] .'/conf.php');
-
+ini_set('memory_limit', '256M');
 
 if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	/**
@@ -76,14 +76,13 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return isset($mime_types[$extension]) ? $mime_types[$extension] : '';
 	}
 
-	function base64ToBinary($doc){
-		$doc = (object) $doc;
-		if(isset($doc->encrypted) && $doc->encrypted == true){
-			$doc->document = base64_decode(MatchaUtils::decrypt($doc->document));
+	function base64ToBinary($document, $encrypted = false){
+		if(isset($encrypted) && $encrypted == true){
+			$document = base64_decode(MatchaUtils::decrypt($document));
 		} else {
-			$doc->document = base64_decode($doc->document);
+			$document = base64_decode($document);
 		}
-		return $doc;
+		return $document;
 	}
 
 	if(isset($_REQUEST['temp'])){
@@ -94,23 +93,24 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		}
 		$doc = (object) $doc;
 		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
-		$doc = base64ToBinary($doc);
+		$document = base64ToBinary($doc->document);
+
 	}else{
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 		$doc = $d->load($_REQUEST['id'])->one();
 		if($doc === false){
 			die('No Document Found, Please contact Support Desk. Thank You!');
 		}
-		$doc = base64ToBinary($doc);
+		$doc = (object) $doc;
+		$document = base64ToBinary($doc->document, $doc->encrypted);
 	}
 
 	header('Content-Type: ' . get_mime_type($doc->name));
 	header('Content-Disposition: inline; filename="' . $doc->name . '"');
-	header('Content-Transfer-Encoding: binary');
-	header('Content-Length: ' . strlen($doc->document));
+	header('Content-Transfer-Encoding: BINARY');
+	header('Content-Length: ' . strlen($document));
 	header('Accept-Ranges: bytes');
-	print $doc->document;
-
+    print $document;
 } else {
 	print 'Not Authorized to be here, Please contact Support Desk. Thank You!';
 }

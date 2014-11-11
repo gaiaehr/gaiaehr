@@ -60,8 +60,10 @@ class User {
 	public function addUser(stdClass $params){
 		try{
 			if(!$this->usernameExist($params->username)){
+
 				unset($params->fullname, $params->pwd_history1, $params->pwd_history2);
 				$user = (object) $this->u->save($params);
+
 				unset($user->password, $user->pwd_history1, $user->pwd_history2);
 				$user->fullname = Person::fullname($user->fname, $user->mname, $user->lname);
 				$user->password = '';

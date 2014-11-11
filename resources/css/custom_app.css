@@ -8,6 +8,14 @@
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
 
+.x-form-add-trigger {
+    background-image: url("../images/icons/add-trigger.gif") !important;
+}
+
+.x-form-update-trigger {
+    background-image: url("../images/icons/update-trigger.gif") !important;
+}
+
 .blackBg {
     background-color: black;
 }
@@ -488,7 +496,7 @@
     background-color: #ffb0a2;
 }
 
-.ProgressNote-ul {
+.ProgressNote-ul, .ProgressNote-ol {
     margin-left: 3em;
     padding-left: 0;
     margin-bottom: 1em;
@@ -496,6 +504,10 @@
 
 .ProgressNote-ul li {
     list-style-type: circle !important;
+}
+
+.ProgressNote-ol li {
+    list-style-type: decimal !important;
 }
 
 .tree-node-disabled .x-grid-cell {
@@ -745,7 +757,7 @@ li .Deceased {
 .patient-pool-btn {
     margin-bottom: 3px;
     float: none;
-    min-width: 188px;
+    width: 100%;
     height: 42px;
     border-width: 1px 1px 1px 1px;
     overflow: hidden;

@@ -263,6 +263,8 @@ class PoolArea {
 			$uid = $params;
 		} elseif(!is_numeric($params) && isset($params->eid)) {
 			$uid = $params->eid;
+		} elseif(!isset($_SESSION['user']['id'])){
+			return array();
 		} else {
 			$uid = $_SESSION['user']['id'];
 		}
@@ -286,7 +288,7 @@ class PoolArea {
 					}
 				}
 			}
-			$pools = array_slice($pools, 0, 6);
+			$pools = array_slice($pools, 0, 15);
 		}
 
 		return $pools;

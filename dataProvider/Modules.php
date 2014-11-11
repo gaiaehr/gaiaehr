@@ -109,6 +109,21 @@ class Modules {
 	}
 
 	public function updateModule($params) {
+		if(is_array($params)){
+			foreach($params as $param){
+				$conf = (object) self::getModuleConfig($param->name);
+				if(isset($conf->permissions)){
+					ACL::updateModulePermissions($param->title, $conf->permissions, $param->enable);
+				}
+			}
+		}else{
+			$conf = (object) self::getModuleConfig($params->name);
+			if(isset($conf->permissions)){
+				ACL::updateModulePermissions($params->title, $conf->permissions, $params->enable);
+			}
+
+
+		}
 		return $this->m->save($params);
 	}
 

@@ -48,8 +48,8 @@ Ext.define('App.ux.calendar.GaiaEventDetails', {
 		'Extensible.form.field.DateRange',
 		'Extensible.calendar.form.field.ReminderCombo',
 		'Extensible.calendar.data.EventMappings',
-		'Extensible.calendar.form.field.CalendarCombo',
-		'Extensible.form.recurrence.Combo'
+		'Extensible.calendar.form.field.CalendarCombo'
+//		'Extensible.form.recurrence.Combo'
 	],
 
 	labelWidth        : 65,

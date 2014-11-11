@@ -154,13 +154,17 @@ class authProcedures {
 		//
 		// return an exit code
 		//****************************************************************
-//		if($_SESSION['site']['flops'] < 300){
+		if(isset($_SESSION['session_id'])){
 			$this->session->updateSession();
 			return array('authorized' => true);
-//		} else{
-//			$this->unAuth();
-//			return array('authorized' => false);
-//		}
+
+		} elseif(isset($_SESSION['session_id']) && (isset($_SESSION['user']) && !$_SESSION['user']['auth'])){
+			$this->unAuth();
+			return array('authorized' => false);
+
+		}else{
+			return array('authorized' => false);
+		}
 	}
 
 	public function getSites(){

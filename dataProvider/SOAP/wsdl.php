@@ -26,6 +26,8 @@ $complexTypes = array();
 
 $serviceName = 'GaiaEHR Access Point';
 
+$ip = $_SERVER['SERVER_ADDR'];
+
 $complexTypes['Patient'] = array(
 	array(
 		'name' => 'Pid',
@@ -211,7 +213,7 @@ $functions[] = array(
 			'document' => 'If success == false an error message will be send back'
 		)
 	),
-	'soapAddress' => 'http://24.55.126.192/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => 'https://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
 );
 
 $functions[] = array(
@@ -271,7 +273,7 @@ $functions[] = array(
 			'document' => 'If success == false an error message will be send back'
 		)
 	),
-	'soapAddress' => 'http://24.55.126.192/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => 'https://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
 );
 
 // ----------------------------------------------------------------------------

@@ -29,7 +29,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.Immunizations',
 		'App.view.patient.Medications',
 		'App.view.patient.ActiveProblems',
-		'App.view.patient.SocialHistory',
+		'App.view.patient.SocialPanel',
 		'App.view.patient.Allergies',
 		'App.view.patient.CognitiveAndFunctionalStatus'
 	],
@@ -69,8 +69,8 @@ Ext.define('App.view.patient.windows.Medical', {
 						itemId: 'laboratories'
 					},
 					{
-						xtype: 'patientsocialhistorypanel',
-						itemId: 'socialhistory'
+						xtype: 'patientsocialpanel',
+						itemId: 'social'
 					},
 					{
 						xtype: 'patientcognitiveandfunctionalstatuspanel',
@@ -106,10 +106,15 @@ Ext.define('App.view.patient.windows.Medical', {
 	cardSwitch:function(action){
 		var me = this,
 			tabPanel = me.down('tabpanel'),
-			panel = tabPanel.query('#' + action)[0];
+			activePanel = tabPanel.getActiveTab(),
+			toPanel = tabPanel.query('#' + action)[0];
 
-		tabPanel.setActiveTab(panel);
-		me.setWindowTitle(panel.title);
+		if(activePanel == toPanel){
+			activePanel.fireEvent('activate', activePanel);
+		}else{
+			tabPanel.setActiveTab(toPanel);
+			me.setWindowTitle(toPanel.title);
+		}
 	},
 
 	setWindowTitle:function(title){

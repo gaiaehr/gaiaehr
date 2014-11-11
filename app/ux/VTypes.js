@@ -40,9 +40,17 @@ Ext.apply(Ext.form.VTypes, {
 	// Validate Empty fields, empty field not allowed
 	// ---------------------------------------
 	empty: function(val, field){
-		return val.length > 0;
+		return val.length > 0 || !val.match(/^[ ]*$/);
 	},
 	emptyText: 'This field must not be empty.',
+
+	// ---------------------------------------
+	// Validate Empty fields, empty field not allowed
+	// ---------------------------------------
+	spaceString: function(val, field){
+		return !val.match(/^[ ]*$/);
+	},
+	spaceStringText: 'This field must not be empty.',
 
 	// ---------------------------------------
 	// Validate Social Security Numbers fields, empty field not allowed
@@ -114,7 +122,6 @@ Ext.apply(Ext.form.VTypes, {
 		}
 		else{
 			// now check for USA
-			regexp = null;
 			return val.match(regexObj.usa);
 		}
 	},

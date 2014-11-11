@@ -20,31 +20,7 @@ Ext.define('App.controller.ScriptCam', {
 		var me = this;
 
 		me.userMedia = null;
-		//
-		//		Ext.define('App.ux.ScriptCamWindow',{
-		//			extend:'Ext.window.Window',
-		//			alias:'widget.scriptcamwindow',
-		//			title:'...',
-		//			html:'<video id="WebCamVideo"></video>',
-		//			buttons:[
-		////				{
-		////					xtype:'combobox',
-		////					action:'ScriptCamCameras',
-		////					store:Ext.create('Ext.data.Store',{
-		////						fields: [ 'option', 'value' ]
-		////					}),
-		////					queryMode: 'local',
-		////					displayField: 'option',
-		////					valueField: 'value',
-		////					editable:false
-		////				},
-		//				'->',
-		//				{
-		//					text:i18n('capture_img'),
-		//					action:'onCaptureImage'
-		//				}
-		//			]
-		//		});
+
 
 		me.control({
 //			'scriptcamwindow': {

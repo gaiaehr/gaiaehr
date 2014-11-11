@@ -42,6 +42,12 @@ Ext.define('App.model.patient.Medications', {
 			type: 'int'
 		},
 		{
+			name: 'ref_order',
+			type: 'string',
+			len: 100,
+			comment: 'reference order number'
+		},
+		{
 			name: 'STR',
 			type: 'string',
 			len: 180
@@ -95,6 +101,16 @@ Ext.define('App.model.patient.Medications', {
 			len: 80
 		},
 		{
+			name: 'potency_code',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'days_supply',
+			type: 'int',
+			useNull: true
+		},
+		{
 			name: 'daw',
 			type: 'bool',
 			useNull: true,
@@ -104,6 +120,14 @@ Ext.define('App.model.patient.Medications', {
 			name: 'notes',
 			type: 'string',
 			len: 300
+		},
+		{
+			name: 'is_compound',
+			type: 'bool'
+		},
+		{
+			name: 'is_supply',
+			type: 'bool'
 		},
 		{
 			name: 'prescription_id',

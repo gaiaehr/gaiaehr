@@ -18,10 +18,16 @@
 
 Ext.apply(Ext.form.VTypes, {
 
+	nonspecialcharacters: function(val){
+		return  !val.match(/[`<>[\]~+!@#$%^&*():;\\/{}=^|?]/ig);
+	},
+	nonspecialcharactersText: i18n('vtype_empty_3chr'),
+
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
 	// Less than 3 characters will be no good
 	// ---------------------------------------
+
 	empty_3chr: function(val, field){
 		return val.length > 2;
 	},

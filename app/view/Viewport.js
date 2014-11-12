@@ -385,8 +385,8 @@ Ext.define('App.view.Viewport', {
             title: i18n('navigation'),
             action: 'mainNavPanel',
             layout: 'border',
-            region: globals['main_navigation_menu_left'],
-            width: parseFloat(globals['gbl_nav_area_width']),
+            region: g('main_navigation_menu_left'),
+            width: parseFloat(g('gbl_nav_area_width')),
             split: true,
             collapsible: true,
             collapsed: false,
@@ -399,7 +399,7 @@ Ext.define('App.view.Viewport', {
                     hideHeaders: true,
                     rootVisible: false,
                     border: false,
-                    width: parseFloat(globals['gbl_nav_area_width']),
+                    width: parseFloat(g('gbl_nav_area_width')),
 	                store: Ext.create('App.store.navigation.Navigation', {
 		                autoLoad: true
 	                })
@@ -536,7 +536,7 @@ Ext.define('App.view.Viewport', {
 	                    {
 		                    xtype:'activefacilitiescombo',
 		                    emptyText:'Facilities',
-		                    width: parseFloat(globals['gbl_nav_area_width']) - 4,
+		                    width: parseFloat(g('gbl_nav_area_width')) - 4,
 		                    hidden: !eval(a('access_to_other_facilities')),
 		                    listeners:{
 			                    scope: me,

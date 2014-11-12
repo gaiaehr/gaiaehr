@@ -150,8 +150,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			},
 			plugins: {
 				ptype: 'advanceform',
-				autoSync: globals['autosave'],
-				syncAcl: acl['edit_encounters']
+				autoSync: g('autosave'),
+				syncAcl: a('edit_encounters')
 			},
 			items: [
 				me.pWin = Ext.widget('window', {

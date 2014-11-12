@@ -16,37 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.patient.encounter.FamilyHistory', {
-	extend: 'Ext.form.Panel',
-	xtype: 'familyhistorypanel',
-	requires: [
-		'App.ux.form.fields.CheckBoxWithFamilyRelation'
-	],
-	itemId: 'familyHistoryPanel',
-	title: i18n('family_history'),
-	autoScroll: true,
-	frame: true,
-	bodyPadding: 10,
-	bodyStyle: 'background-color:white',
-
-	plugins: {
-		ptype: 'advanceform',
-		autoSync: g('autosave'),
-		syncAcl: a('edit_family_history')
-	},
-
-	buttons: [
-		{
-			text: i18n('save'),
-			iconCls: 'save',
-			action: 'encounterRecordAdd',
-			itemId: 'familyHistorySaveBtn'
-		}
-	],
-
-	initComponent: function(){
-		var me = this;
-		me.callParent();
-		me.getFormItems(me, 12);
-	}
+Ext.define('App.store.patient.EncounterServices', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.patient.EncounterService'
 });

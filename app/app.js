@@ -571,7 +571,7 @@ Ext.define('App.ux.grid.GridToHtml', {
             columns = clearColumns;
             //get Styles file relative location, if not supplied
             if(this.stylesheetPath === null){
-                this.stylesheetPath = globals['url'] + '/resources/css/print.css';
+                this.stylesheetPath = g('date_display_format') + '/resources/css/print.css';
             }
             //use the headerTpl and bodyTpl markups to create the main XTemplate below
             var headings = Ext.create('Ext.XTemplate', this.headerTpl).apply(columns);
@@ -825,7 +825,7 @@ Ext.define('App.ux.grid.Printer', {
             columns = clearColumns;
             //get Styles file relative location, if not supplied
             if(this.stylesheetPath === null){
-                this.stylesheetPath = globals['url'] + '/resources/css/print.css';
+                this.stylesheetPath = g('date_display_format') + '/resources/css/print.css';
             }
             //use the headerTpl and bodyTpl markups to create the main XTemplate below
             var headings = Ext.create('Ext.XTemplate', this.headerTpl).apply(columns);
@@ -3855,7 +3855,7 @@ Ext.define('App.ux.form.fields.ColorPicker', {
 Ext.define('App.ux.form.fields.Currency',{
     extend: 'Ext.form.field.Number', //Extending the NumberField
     alias: 'widget.mitos.currency', //Defining the xtype,
-    currencySymbol: globals['gbl_currency_symbol'],
+    currencySymbol: g('date_display_format'),
     useThousandSeparator: true,
     thousandSeparator: ',',
     alwaysDisplayDecimals: true,
@@ -13175,12 +13175,15 @@ Ext.define('App.model.patient.DoctorsNote', {
 		}
 	}
 });
-Ext.define('App.model.patient.EncounterCPTsICDs', {
+Ext.define('App.model.patient.EncounterService', {
 	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_services'
+	},
 	fields: [
 		{
 			name: 'id',
-			type: 'string'
+			type: 'int'
 		},
 		{
 			name: 'pid',
@@ -13192,30 +13195,67 @@ Ext.define('App.model.patient.EncounterCPTsICDs', {
 		},
 		{
 			name: 'code',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'code_type',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
-			name: 'code_text_medium',
-			type: 'string'
+			name: 'code_text',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
+			name: 'units',
+			type: 'int',
+			len: 5
+		},
+		{
+			name: 'modifiers',
+			type: 'array'
+		},
+		{
+			name: 'dx_group_id',
+			type: 'int'
 		},
 		{
 			name: 'dx_pointers',
-			type: 'string'
+			type: 'array'
 		},
 		{
-			name: 'dx_children'
+			name: 'status',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'date_create',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'date_update',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Encounter.getEncounterCptDxTree',
-			create: 'Encounter.addEncounterCptDxTree',
-			destroy: 'Encounter.removeEncounterCptDxTree'
+			read: 'Services.getEncounterServices',
+			create: 'Services.addEncounterService',
+			update: 'Services.updateEncounterService',
+			destroy: 'Services.removeEncounterService'
 		}
 	}
 });
@@ -17046,7 +17086,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 										action: 'date',
 										width: 200,
 										labelWidth: 40,
-										format: globals['date_display_format'],
+										format: g('date_display_format'),
 										name: 'date'
 
 									},
@@ -17213,7 +17253,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				form = me.down('form').getForm(),
 				record = form.getRecord();
 
-			if(!record && acl['add_encounters']){
+			if(!record && a('access_enc_history')){
 
 				me.loadRecord(
 					Ext.create('App.model.patient.Encounter', {
@@ -17223,7 +17263,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						open_uid: app.user.id,
 						facility: app.user.facility,
 						billing_facility: app.user.facility,
-						brief_description: globals['default_chief_complaint']
+						brief_description: g('date_display_format')
 					})
 				);
 
@@ -17243,7 +17283,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						});
 					}
 				});
-			} else if(record && acl['edit_encounters']){
+			} else if(record && a('access_enc_history')){
 
 				// placeholder
 
@@ -19807,7 +19847,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
         me.referenceCptStore = Ext.create('App.store.patient.QRCptCodes');
 
-        me.encounterCptStore = Ext.create('App.store.patient.CptCodes', {
+        me.encounterCptStore = Ext.create('App.store.patient.EncounterServices', {
             autoSync:true,
             listeners:{
                 scope:me,
@@ -20150,8 +20190,13 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
     encounterCptStoreLoad:function(pid, eid, callback){
         this.pid = pid ? pid : this.pid;
         this.eid = eid ? eid : this.eid;
-        this.encounterCptStore.proxy.extraParams = {eid:this.eid, filter:null};
         this.encounterCptStore.load({
+            filters:[
+                {
+                    property:'eid',
+                    value: this.eid
+                }
+            ],
             callback:function(){
                 callback ? callback() : null;
             }
@@ -23081,7 +23126,7 @@ Ext.define('App.view.fees.Billing',
 					fieldLabel : i18n( 'from' ),
 					labelWidth : 35,
 					width : 150,
-					format : globals['date_display_format']
+					format : g('date_display_format')
 				},
 				{
 					xtype : 'datefield',
@@ -23090,7 +23135,7 @@ Ext.define('App.view.fees.Billing',
 					labelWidth : 35,
 					padding : '0 5 0 0',
 					width : 150,
-					format : globals['date_display_format']
+					format : g('date_display_format')
 				}]
 			},
 			{
@@ -23264,7 +23309,7 @@ Ext.define('App.view.fees.Billing',
 								fieldLabel : i18n( 'service_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
-								format : globals['date_display_format']
+								format : g('date_display_format')
 							},
 							{
 								xtype : 'activeinsurancescombo',
@@ -23299,7 +23344,7 @@ Ext.define('App.view.fees.Billing',
 								fieldLabel : i18n( 'hosp_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
-								format : globals['date_display_format']
+								format : g('date_display_format')
 							},
 							{
 								xtype : 'activeinsurancescombo',
@@ -23744,7 +23789,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         xtype: 'datefield',
                         name: 'post_to_date',
                         action: 'new_payment',
-                        format: globals['date_display_format'],
+                        format: g('date_display_format'),
                         labelWidth: 98,
                         width: 220
                     },
@@ -23886,7 +23931,7 @@ Ext.define('App.view.fees.Payments',
 						fieldLabel : i18n('from'),
 						itemId : 'fieldFromDate',
 						xtype : 'datefield',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						labelWidth : 95,
 						width : 230
 					},
@@ -23894,7 +23939,7 @@ Ext.define('App.view.fees.Payments',
 						fieldLabel : i18n('to'),
 						xtype : 'datefield',
 						itemId : 'fieldToDate',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						margin : '0 0 0 25',
 						labelWidth : 42,
 						width : 230
@@ -24021,14 +24066,14 @@ Ext.define('App.view.fees.Payments',
 					{
 						fieldLabel : i18n('from'),
 						xtype : 'datefield',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						fieldLabel : i18n('to'),
 						xtype : 'datefield',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						margin : '0 0 0 25',
 						labelWidth : 42,
 						width : 230
@@ -29894,18 +29939,18 @@ Ext.define('App.view.administration.PreventiveCare',
 //ens servicesPage class
 Ext.define('App.view.administration.Roles', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('roles_and_permissions'),
-
 	requires: [
 		'App.ux.combo.XCombo',
 		'Ext.grid.plugin.CellEditing',
 		'Ext.ux.DataTip'
 	],
+	itemId: 'AdministrationRolePanel',
+	pageTitle: i18n('roles_and_permissions'),
 	pageBody: [
 		{
 			xtype:'grid',
 			bodyStyle: 'background-color:white',
-			action: 'adminAclGrid',
+			itemId: 'AdministrationRoleGrid',
 			frame: true,
 			columnLines: true,
 			tbar: [
@@ -29916,8 +29961,9 @@ Ext.define('App.view.administration.Roles', {
 					width: 250,
 					valueField: 'id',
 					displayField: 'title',
+					queryMode: 'local',
 					store: Ext.create('App.store.administration.AclGroups'),
-					action: 'adminAclGrooupCombo',
+					itemId: 'AdministrationRoleGroupCombo',
 					windowConfig: {
 						title: i18n('add_group')
 					},
@@ -31848,11 +31894,9 @@ Ext.define('App.store.patient.Disclosures', {
 	remoteSort: false,
 	autoLoad  : false
 });
-Ext.define('App.store.patient.EncounterCPTsICDs', {
-	extend: 'Ext.data.TreeStore',
-	model     : 'App.model.patient.EncounterCPTsICDs',
-	remoteSort: false,
-	autoLoad  : false
+Ext.define('App.store.patient.EncounterServices', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.patient.EncounterService'
 });
 Ext.define('App.store.patient.CVXCodes', {
 	extend: 'Ext.data.Store',
@@ -32692,30 +32736,33 @@ Ext.define('App.controller.administration.ReferringProviders', {
 
 });
 Ext.define('App.controller.administration.Roles', {
-    extend: 'Ext.app.Controller',
+	extend: 'Ext.app.Controller',
 
-	requires:[
+	requires: [
 		'App.model.administration.AclGroupPerm'
 	],
 
 	refs: [
 		{
-			ref: 'adminAclGrooupCombo',
-			selector: 'combobox[action=adminAclGrooupCombo]'
+			ref: 'AdministrationRoleGroupCombo',
+			selector: '#AdministrationRoleGroupCombo'
 		},
 		{
-			ref: 'adminAclGrid',
-			selector: 'grid[action=adminAclGrid]'
+			ref: 'AdministrationRoleGrid',
+			selector: '#AdministrationRoleGrid'
 		}
 	],
 
-	init: function() {
+	init: function(){
 		this.control({
-			'grid[action=adminAclGrid]': {
+			'#AdministrationRolePanel': {
+				render: this.onAdministrationRolePanelRender
+			},
+			'#AdministrationRoleGrid': {
 				beforeedit: this.beforeCellEdit
 			},
-			'combobox[action=adminAclGrooupCombo]': {
-				select: this.adminAclGridReconfigure
+			'#AdministrationRoleGroupCombo': {
+				select: this.doAdministrationRoleGridReconfigure
 			},
 			'button[action=adminAclAddRole]': {
 				click: this.doAddRole
@@ -32729,35 +32776,49 @@ Ext.define('App.controller.administration.Roles', {
 		});
 	},
 
-	doSaveAcl: function () {
+	onAdministrationRolePanelRender: function(){
 		var me = this,
-			store = this.getAdminAclGrid().getStore();
+			cmb = me.getAdministrationRoleGroupCombo(),
+			store = cmb.getStore();
+
+		store.load({
+			callback: function(records){
+				cmb.select(records[0]);
+				me.doAdministrationRoleGridReconfigure();
+			}
+		});
+
+	},
+
+	doSaveAcl: function(){
+		var me = this,
+			store = this.getAdministrationRoleGrid().getStore();
 
 		if(store.getUpdatedRecords().length > 0){
-			me.getAdminAclGrid().el.mask(i18n('saving'));
+			me.getAdministrationRoleGrid().el.mask(i18n('saving'));
 		}
 
 		store.sync({
-			callback: function(response) {
+			callback: function(response){
 				app.msg(i18n('sweet'), i18n('record_saved'));
-				me.getAdminAclGrid().el.unmask();
+				me.getAdministrationRoleGrid().el.unmask();
 			}
 		});
 	},
 
-	doCancelAcl: function () {
-		this.getAdminAclGrid().getStore().rejectChanges();
+	doCancelAcl: function(){
+		this.getAdministrationRoleGrid().getStore().rejectChanges();
 	},
 
-	beforeCellEdit: function (editor, e) {
+	beforeCellEdit: function(editor, e){
 		return e.field != 'title';
 	},
 
-	adminAclGridReconfigure: function () {
+	doAdministrationRoleGridReconfigure: function(){
 		var me = this,
-			cmb = me.getAdminAclGrooupCombo(),
+			cmb = me.getAdministrationRoleGroupCombo(),
 			group_id = cmb.getValue(),
-			grid = me.getAdminAclGrid(),
+			grid = me.getAdministrationRoleGrid(),
 			fields = [
 				{
 					name: 'id',
@@ -32781,8 +32842,7 @@ Ext.define('App.controller.administration.Roles', {
 		grid.view.el.mask('Loading');
 		// Ext.direct method to get grid configuration and data
 
-
-		ACL.getGroupPerms({group_id: group_id}, function (response) {
+		ACL.getGroupPerms({group_id: group_id}, function(response){
 			// new columns
 			columns = response.columns;
 
@@ -32790,8 +32850,7 @@ Ext.define('App.controller.administration.Roles', {
 			fields = fields.concat(response.fields);
 			me.getModel('administration.AclGroupPerm').setFields(fields);
 
-
-			var store = Ext.create('Ext.data.Store',{
+			var store = Ext.create('Ext.data.Store', {
 				model: 'App.model.administration.AclGroupPerm',
 				groupField: 'category'
 			});
@@ -32800,8 +32859,8 @@ Ext.define('App.controller.administration.Roles', {
 			store.loadRawData(response.data);
 
 			// add the checkbox editor and renderer to role fields
-			for (var i = 0; i < columns.length; i++) {
-				columns[i].editor = { xtype: "checkbox" };
+			for(var i = 0; i < columns.length; i++){
+				columns[i].editor = {xtype: "checkbox"};
 				columns[i].renderer = app.boolRenderer;
 			}
 
@@ -32817,18 +32876,17 @@ Ext.define('App.controller.administration.Roles', {
 		});
 	},
 
-
-	doAddRole: function () {
+	doAddRole: function(){
 		var me = this,
 			record = Ext.create('App.model.administration.AclRoles', {
-				group_id: me.getAdminAclGrooupCombo().getValue()
+				group_id: me.getAdministrationRoleGroupCombo().getValue()
 			});
 
 		me.getRoleWindow().show();
 		me.roleWindow.down('form').getForm().loadRecord(record);
 	},
 
-	doSaveRole: function() {
+	doSaveRole: function(){
 		var me = this,
 			panel = me.roleWindow.down('form'),
 			form = panel.getForm(),
@@ -32839,8 +32897,8 @@ Ext.define('App.controller.administration.Roles', {
 			panel.el.mask(i18n('be_right_back'));
 			record.set(values);
 			record.save({
-				callback: function (rec) {
-					me.adminAclGridReconfigure();
+				callback: function(rec){
+					me.doAdministrationRoleGridReconfigure();
 					panel.el.unmask();
 					me.roleWindow.close();
 				}
@@ -32848,11 +32906,11 @@ Ext.define('App.controller.administration.Roles', {
 		}
 	},
 
-	doCancelRole: function () {
+	doCancelRole: function(){
 		this.roleWindow.close();
 	},
 
-	getRoleWindow: function () {
+	getRoleWindow: function(){
 		var me = this;
 
 		me.roleWindow = Ext.widget('window', {
@@ -37452,7 +37510,19 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 		{
 			ref: 'EncounterSignAlertGrid',
 			selector: '#EncounterSignAlertGrid'
+		},
+
+		// super bill stuff
+		{
+			ref: 'EncounterSignSuperBillGrid',
+			selector: '#EncounterSignSuperBillGrid'
+		},
+		{
+			ref: 'EncounterSignSuperBillServiceAddBtn',
+			selector: '#EncounterSignSuperBillServiceAddBtn'
 		}
+
+
 	],
 
 	init: function(){
@@ -37465,7 +37535,6 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			'#EncounterCoSignSupervisorCombo': {
 				beforerender: me.onEncounterCoSignSupervisorComboBeforeRender
 			},
-
 			// Buttons
 			'#EncounterCoSignSupervisorBtn': {
 				click: me.onEncounterCoSignSupervisorBtnClick
@@ -37475,9 +37544,48 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			},
 			'#EncounterCancelSignBtn': {
 				click: me.onEncounterCancelSignBtnClick
+			},
+			// super bill stuff
+			'#EncounterSignSuperBillServiceAddBtn': {
+				click: me.onEncounterSignSuperBillServiceAddBtnClick
+			},
+			'#EncounterSignSuperCptSearchCmb': {
+				select: me.onEncounterSignSuperCptSearchCmbSelect
 			}
 		});
 	},
+
+	// super bill stuff
+	onEncounterSignSuperBillServiceAddBtnClick: function(){
+		var me = this,
+			grid = me.getEncounterSignSuperBillGrid(),
+			store = grid.getStore();
+
+		grid.editingPlugin.cancelEdit();
+		var records = store.add({
+			pid: me.encounter.data.pid,
+			eid: me.encounter.data.eid,
+			units: 1,
+			create_uid: app.user.id,
+			date_create: new Date()
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onEncounterSignSuperCptSearchCmbSelect: function(cmb, records){
+		var me = this,
+			record = cmb.up('form').getForm().getValue().getRecord();
+
+		say(records[0].data);
+
+		record.set({
+			code: '',
+			code_text: '',
+			code_type: ''
+		});
+
+	},
+
 
 	onEncounterCoSignSupervisorBtnClick: function(){
 		this.coSignEncounter();
@@ -37521,17 +37629,22 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			coSignBtn = me.getEncounterCoSignSupervisorBtn(),
 			signBtn = me.getEncounterSignBtn();
 
+		me.encounter = win.enc.encounter;
+
 		me.pid = win.enc.pid;
 		me.eid = win.enc.eid;
 
-		//TODO switch to super bill grid
-		//		me.encounterCPTsICDsStore.load({
-		//			params: {
-		//				eid: me.eid
-		//			}
-		//		});
-
 		if(a('access_encounter_checkout')){
+
+			me.getEncounterSignSuperBillGrid().getStore().load({
+				filters:[
+					{
+						property: 'eid',
+						value: me.eid
+					}
+				]
+			});
+
 			me.getEncounterSignAlertGrid().getStore().load({
 				params: {
 					eid: me.eid
@@ -37541,15 +37654,15 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 
 		me.getEncounterSignDocumentGrid().loadDocs(app.patient.eid);
 
-		var isCoSigned = me.enc.encounter.data.supervisor_uid != null && me.enc.encounter.data.supervisor_uid > 0;
+		var isCoSigned = win.enc.encounter.data.supervisor_uid != null && win.enc.encounter.data.supervisor_uid > 0;
 
 		if(isCoSigned){
-			coSignCombo.setValue(me.enc.encounter.data.supervisor_uid);
+			coSignCombo.setValue(win.enc.encounter.data.supervisor_uid);
 		}else{
 			coSignCombo.reset();
 		}
 
-		if(me.enc.isClose() || !a('sign_enc')){
+		if(win.enc.isClose() || !a('sign_enc')){
 			signBtn.disable();
 			coSignBtn.disable();
 			coSignCombo.setVisible(isCoSigned);
@@ -41931,14 +42044,16 @@ Ext.define('App.view.dashboard.panel.PortalPanel', {
 Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	extend: 'App.ux.window.Window',
 	requires: [
-		'App.ux.combo.EncounterSupervisors'
+		'Ext.grid.plugin.RowEditing',
+		'App.ux.combo.EncounterSupervisors',
+		'App.ux.LiveCPTSearch'
 	],
 	title: i18n('checkout_and_signing'),
 	itemId: 'EncounterSignWindow',
 	closeAction: 'hide',
 	modal: true,
 	layout: 'border',
-	width: 1000,
+	width: 1200,
 	height: 660,
 	bodyPadding: 5,
 
@@ -41951,13 +42066,16 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			title: i18n('super_bill'),
 			rootVisible: false,
 			region: 'center',
+			itemId: 'EncounterSignSuperBillGrid',
+			store: Ext.create('App.store.patient.EncounterServices'),
 			flex: 2,
+			columnLines: true,
 			plugins: [
 				{
-					ptype: 'treeviewdragdrop'
+					ptype: 'rowediting',
+					errorSummary: false
 				}
 			],
-			columnLines: true,
 			columns: [
 				{
 					xtype: 'actioncolumn',
@@ -41968,36 +42086,46 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 							tooltip: i18n('remove'),
 							handler: function(){
 								return App.app.getController('patient.encounter.EncounterSign').onRemoveService(v);
-							},
-							getClass: function(value, metadata, record){
-								if(!record.data.leaf){
-									return 'x-grid-center-icon';
-								}else{
-									return 'x-hide-display';
-								}
 							}
 						}
 					]
 				},
 				{
 					text: i18n('service'),
-					dataIndex: 'service',
-					flex: 1
+					dataIndex: 'code_text',
+					flex: 1,
+					editor: {
+						xtype:'livecptsearch',
+						itemId: 'EncounterSignSuperCptSearchCmb',
+						allowBlank: false
+					}
 				},
 				{
 					header: i18n('units'),
 					dataIndex: 'units',
-					width: 50
+					width: 50,
+					editor:{
+						xtype:'numberfield',
+						minValue: 1,
+						allowBlank: false
+					}
 				},
 				{
 					header: i18n('modifiers'),
 					dataIndex: 'units',
-					width: 100
+					width: 100,
+					editor: {
+						xtype:'textfield'
+					}
 				},
 				{
 					header: i18n('diagnosis'),
 					dataIndex: 'diagnosis',
-					width: 200
+					width: 200,
+					editor: {
+						xtype:'textfield',
+						allowBlank: false
+					}
 				}
 			],
 			dockedItems: [
@@ -42005,9 +42133,11 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					xtype: 'toolbar',
 					dock: 'top',
 					items: [
+						'->',
 						{
 							text: i18n('service'),
-							iconCls: 'icoAdd'
+							iconCls: 'icoAdd',
+							itemId: 'EncounterSignSuperBillServiceAddBtn'
 						}
 					]
 				}
@@ -42101,12 +42231,12 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					layout: 'fit',
 					height: 208,
 					title: i18n('warnings_alerts'),
-					itemId: 'EncounterSignAlertGrid',
 					items: [
 						{
 							xtype: 'grid',
 							hideHeaders: true,
 							store: Ext.create('App.store.patient.CheckoutAlertArea'),
+							itemId: 'EncounterSignAlertGrid',
 							border: false,
 							rowLines: false,
 							header: false,
@@ -42470,7 +42600,12 @@ Ext.define('App.view.patient.Patient', {
 
 			var form = me.demoForm.getForm(),
 				fname = form.findField('fname'),
+				mname = form.findField('mname'),
 				lname = form.findField('lname'),
+				address = form.findField('address'),
+				address_cont = form.findField('address_cont'),
+				city = form.findField('city'),
+
 				sex = form.findField('sex'),
 				dob =form.findField('DOB'),
 				zipcode = form.findField('zipcode'),
@@ -42482,6 +42617,14 @@ Ext.define('App.view.patient.Patient', {
 				email = form.findField('email'),
 				phone_reg = new RegExp(g('phone_validation_format')),
 				zipcode_reg = new RegExp(g('zipcode_validation_format'));
+
+
+			if(fname) fname.vtype = 'nonspecialcharacters';
+			if(mname) mname.vtype = 'nonspecialcharacters';
+			if(lname) lname.vtype = 'nonspecialcharacters';
+			if(address) address.vtype = 'nonspecialcharacters';
+			if(address_cont) address_cont.vtype = 'nonspecialcharacters';
+			if(city) city.vtype = 'nonspecialcharacters';
 
 			if(email) email.vtype = 'email';
 			if(zipcode) zipcode.regex = zipcode_reg;
@@ -43413,7 +43556,7 @@ Ext.define('App.view.patient.Summary', {
 											action: 'date',
 											width: 200,
 											labelWidth: 40,
-											format: globals['date_display_format'],
+											format: g('date_display_format'),
 											name: 'date'
 
 										},
@@ -47920,8 +48063,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			},
 			plugins: {
 				ptype: 'advanceform',
-				autoSync: globals['autosave'],
-				syncAcl: acl['edit_encounters']
+				autoSync: g('autosave'),
+				syncAcl: a('access_enc_history')
 			},
 			items: [
 				me.pWin = Ext.widget('window', {
@@ -48824,7 +48967,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 	plugins: {
 		ptype: 'advanceform',
 		autoSync: g('autosave'),
-		syncAcl: acl['edit_family_history']
+		syncAcl: a('access_enc_history')
 	},
 
 	buttons: [
@@ -48883,7 +49026,7 @@ Ext.define('App.view.patient.Encounter', {
 	initComponent: function(){
 		var me = this;
 
-		me.renderAdministrative = acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'];
+		me.renderAdministrative = a('access_enc_history') || a('access_enc_history') || a('access_enc_history');
 
 		me.timerTask = {
 			scope: me,
@@ -48959,13 +49102,13 @@ Ext.define('App.view.patient.Encounter', {
 			});
 		}
 
-		if(me.enableVitals && acl['access_patient_vitals']){
+		if(me.enableVitals && a('access_patient_vitals')){
 			me.vitalsPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.Vitals')
 			);
 		}
 
-		if(me.enableReviewOfSystem && acl['access_review_of_systems']){
+		if(me.enableReviewOfSystem && a('access_review_of_systems')){
 			me.reviewSysPanel = me.encounterTabPanel.add(
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
@@ -48980,7 +49123,7 @@ Ext.define('App.view.patient.Encounter', {
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
-						syncAcl: acl['edit_encounters']
+						syncAcl: a('edit_encounters')
 					},
 					buttons: [
 						{
@@ -48996,7 +49139,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableReviewOfSystemChecks && acl['access_review_of_systems_checks']){
+		if(me.enableReviewOfSystemChecks && a('access_review_of_systems_checks')){
 			me.reviewSysCkPanel = me.encounterTabPanel.add(
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
@@ -49011,7 +49154,7 @@ Ext.define('App.view.patient.Encounter', {
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
-						syncAcl: acl['edit_encounters']
+						syncAcl: a('edit_encounters')
 					},
 					buttons: [
 						{
@@ -49027,13 +49170,13 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableFamilyHistory && acl['access_family_history']){
+		if(me.enableFamilyHistory && a('access_family_history')){
 			me.familyHistoryPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.encounter.FamilyHistory')
 			);
 		}
 
-		if(me.enableItemsToReview && acl['access_itmes_to_review']){
+		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.ItemsToReview', {
 					title: i18n('items_to_review'),
@@ -49042,7 +49185,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableSOAP && acl['access_soap']){
+		if(me.enableSOAP && a('access_soap')){
 			me.soapPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.encounter.SOAP', {
 					bodyStyle: 'padding:0',
@@ -49055,9 +49198,9 @@ Ext.define('App.view.patient.Encounter', {
 		 * Administravive Tab Panel and its Panels
 		 * @type {*}
 		 */
-		if((me.enableHCFA && acl['access_enc_hcfa']) ||
-			(me.enableCPT && acl['access_enc_cpt']) ||
-			(me.enableEncHistory && acl['access_enc_history'])){
+		if((me.enableHCFA && a('access_enc_hcfa')) ||
+			(me.enableCPT && a('access_enc_cpt')) ||
+			(me.enableEncHistory && a('access_enc_history'))){
 			me.administrativeTabPanel = me.centerPanel.add(
 				Ext.create('Ext.tab.Panel', {
 					title: i18n('administrative'),
@@ -49073,7 +49216,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableHCFA && acl['access_enc_hcfa']){
+		if(me.enableHCFA && a('access_enc_hcfa')){
 			me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
 					autoScroll: true,
@@ -49087,7 +49230,7 @@ Ext.define('App.view.patient.Encounter', {
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
-						syncAcl: acl['edit_enc_hcfa']
+						syncAcl: a('edit_enc_hcfa')
 					},
 					buttons: [
 						{
@@ -49102,7 +49245,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableCPT && acl['access_enc_cpt']){
+		if(me.enableCPT && a('access_enc_cpt')){
 			me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
 					title: i18n('current_procedural_terminology')
@@ -49110,7 +49253,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableEncHistory && acl['access_enc_history']){
+		if(me.enableEncHistory && a('access_enc_history')){
 			me.EncounterEventHistory = me.administrativeTabPanel.add(
 				Ext.create('App.ux.grid.EventHistory', {
 					bodyStyle: 0,
@@ -49268,7 +49411,7 @@ Ext.define('App.view.patient.Encounter', {
 			]
 		});
 
-		if(acl['access_encounter_checkout']){
+		if(a('access_encounter_checkout')){
 			me.panelToolBar.add({
 				text: i18n('sign'),
 				icon: 'resources/images/icons/edit.png',
@@ -49642,10 +49785,10 @@ Ext.define('App.view.patient.Encounter', {
 				values.signature = password;
 				values.isSupervisor = isSupervisor;
 
-				if(acl['require_enc_supervisor'] || isSupervisor){
+				if(a('require_enc_supervisor') || isSupervisor){
 					values.requires_supervisor = true;
 					values.supervisor_uid = app.checkoutWindow.coSignCombo.getValue();
-				}else if(!isSupervisor && !acl['require_enc_supervisor']){
+				}else if(!isSupervisor && !a('require_enc_supervisor')){
 					values.requires_supervisor = false;
 				}
 
@@ -50407,8 +50550,8 @@ Ext.define('App.view.Viewport', {
             title: i18n('navigation'),
             action: 'mainNavPanel',
             layout: 'border',
-            region: globals['main_navigation_menu_left'],
-            width: parseFloat(globals['gbl_nav_area_width']),
+            region: g('main_navigation_menu_left'),
+            width: parseFloat(g('gbl_nav_area_width')),
             split: true,
             collapsible: true,
             collapsed: false,
@@ -50421,7 +50564,7 @@ Ext.define('App.view.Viewport', {
                     hideHeaders: true,
                     rootVisible: false,
                     border: false,
-                    width: parseFloat(globals['gbl_nav_area_width']),
+                    width: parseFloat(g('gbl_nav_area_width')),
 	                store: Ext.create('App.store.navigation.Navigation', {
 		                autoLoad: true
 	                })
@@ -50558,7 +50701,7 @@ Ext.define('App.view.Viewport', {
 	                    {
 		                    xtype:'activefacilitiescombo',
 		                    emptyText:'Facilities',
-		                    width: parseFloat(globals['gbl_nav_area_width']) - 4,
+		                    width: parseFloat(g('gbl_nav_area_width')) - 4,
 		                    hidden: !eval(a('access_to_other_facilities')),
 		                    listeners:{
 			                    scope: me,

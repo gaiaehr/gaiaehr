@@ -117,7 +117,7 @@ Ext.define('App.view.fees.Billing',
 					fieldLabel : i18n( 'from' ),
 					labelWidth : 35,
 					width : 150,
-					format : globals['date_display_format']
+					format : g('date_display_format')
 				},
 				{
 					xtype : 'datefield',
@@ -126,7 +126,7 @@ Ext.define('App.view.fees.Billing',
 					labelWidth : 35,
 					padding : '0 5 0 0',
 					width : 150,
-					format : globals['date_display_format']
+					format : g('date_display_format')
 				}]
 			},
 			{
@@ -300,7 +300,7 @@ Ext.define('App.view.fees.Billing',
 								fieldLabel : i18n( 'service_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
-								format : globals['date_display_format']
+								format : g('date_display_format')
 							},
 							{
 								xtype : 'activeinsurancescombo',
@@ -335,7 +335,7 @@ Ext.define('App.view.fees.Billing',
 								fieldLabel : i18n( 'hosp_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
-								format : globals['date_display_format']
+								format : g('date_display_format')
 							},
 							{
 								xtype : 'activeinsurancescombo',

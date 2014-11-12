@@ -179,7 +179,12 @@ Ext.define('App.view.patient.Patient', {
 
 			var form = me.demoForm.getForm(),
 				fname = form.findField('fname'),
+				mname = form.findField('mname'),
 				lname = form.findField('lname'),
+				address = form.findField('address'),
+				address_cont = form.findField('address_cont'),
+				city = form.findField('city'),
+
 				sex = form.findField('sex'),
 				dob =form.findField('DOB'),
 				zipcode = form.findField('zipcode'),
@@ -191,6 +196,14 @@ Ext.define('App.view.patient.Patient', {
 				email = form.findField('email'),
 				phone_reg = new RegExp(g('phone_validation_format')),
 				zipcode_reg = new RegExp(g('zipcode_validation_format'));
+
+
+			if(fname) fname.vtype = 'nonspecialcharacters';
+			if(mname) mname.vtype = 'nonspecialcharacters';
+			if(lname) lname.vtype = 'nonspecialcharacters';
+			if(address) address.vtype = 'nonspecialcharacters';
+			if(address_cont) address_cont.vtype = 'nonspecialcharacters';
+			if(city) city.vtype = 'nonspecialcharacters';
 
 			if(email) email.vtype = 'email';
 			if(zipcode) zipcode.regex = zipcode_reg;

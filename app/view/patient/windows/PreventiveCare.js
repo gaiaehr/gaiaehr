@@ -118,7 +118,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 										action: 'date',
 										width: 200,
 										labelWidth: 40,
-										format: globals['date_display_format'],
+										format: g('date_display_format'),
 										name: 'date'
 
 									},

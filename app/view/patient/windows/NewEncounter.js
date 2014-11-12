@@ -68,7 +68,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				form = me.down('form').getForm(),
 				record = form.getRecord();
 
-			if(!record && acl['add_encounters']){
+			if(!record && a('add_encounters')){
 
 				me.loadRecord(
 					Ext.create('App.model.patient.Encounter', {
@@ -78,7 +78,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						open_uid: app.user.id,
 						facility: app.user.facility,
 						billing_facility: app.user.facility,
-						brief_description: globals['default_chief_complaint']
+						brief_description: g('default_chief_complaint')
 					})
 				);
 
@@ -98,7 +98,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						});
 					}
 				});
-			} else if(record && acl['edit_encounters']){
+			} else if(record && a('edit_encounters')){
 
 				// placeholder
 

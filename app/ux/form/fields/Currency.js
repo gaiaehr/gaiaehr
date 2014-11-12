@@ -20,7 +20,7 @@
 Ext.define('App.ux.form.fields.Currency',{
     extend: 'Ext.form.field.Number', //Extending the NumberField
     alias: 'widget.mitos.currency', //Defining the xtype,
-    currencySymbol: globals['gbl_currency_symbol'],
+    currencySymbol: g('gbl_currency_symbol'),
     useThousandSeparator: true,
     thousandSeparator: ',',
     alwaysDisplayDecimals: true,

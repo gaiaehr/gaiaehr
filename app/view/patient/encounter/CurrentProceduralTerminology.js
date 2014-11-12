@@ -33,7 +33,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
         me.referenceCptStore = Ext.create('App.store.patient.QRCptCodes');
 
-        me.encounterCptStore = Ext.create('App.store.patient.CptCodes', {
+        me.encounterCptStore = Ext.create('App.store.patient.EncounterServices', {
             autoSync:true,
             listeners:{
                 scope:me,
@@ -376,8 +376,13 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
     encounterCptStoreLoad:function(pid, eid, callback){
         this.pid = pid ? pid : this.pid;
         this.eid = eid ? eid : this.eid;
-        this.encounterCptStore.proxy.extraParams = {eid:this.eid, filter:null};
         this.encounterCptStore.load({
+            filters:[
+                {
+                    property:'eid',
+                    value: this.eid
+                }
+            ],
             callback:function(){
                 callback ? callback() : null;
             }

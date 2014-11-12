@@ -19,14 +19,16 @@
 Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	extend: 'App.ux.window.Window',
 	requires: [
-		'App.ux.combo.EncounterSupervisors'
+		'Ext.grid.plugin.RowEditing',
+		'App.ux.combo.EncounterSupervisors',
+		'App.ux.LiveCPTSearch'
 	],
 	title: i18n('checkout_and_signing'),
 	itemId: 'EncounterSignWindow',
 	closeAction: 'hide',
 	modal: true,
 	layout: 'border',
-	width: 1000,
+	width: 1200,
 	height: 660,
 	bodyPadding: 5,
 
@@ -39,13 +41,16 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			title: i18n('super_bill'),
 			rootVisible: false,
 			region: 'center',
+			itemId: 'EncounterSignSuperBillGrid',
+			store: Ext.create('App.store.patient.EncounterServices'),
 			flex: 2,
+			columnLines: true,
 			plugins: [
 				{
-					ptype: 'treeviewdragdrop'
+					ptype: 'rowediting',
+					errorSummary: false
 				}
 			],
-			columnLines: true,
 			columns: [
 				{
 					xtype: 'actioncolumn',
@@ -56,36 +61,47 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 							tooltip: i18n('remove'),
 							handler: function(){
 								return App.app.getController('patient.encounter.EncounterSign').onRemoveService(v);
-							},
-							getClass: function(value, metadata, record){
-								if(!record.data.leaf){
-									return 'x-grid-center-icon';
-								}else{
-									return 'x-hide-display';
-								}
 							}
 						}
 					]
 				},
 				{
 					text: i18n('service'),
-					dataIndex: 'service',
-					flex: 1
+					dataIndex: 'code_text',
+					flex: 1,
+					editor: {
+						xtype:'livecptsearch',
+						itemId: 'EncounterSignSuperCptSearchCmb',
+						valueField: 'code_text_medium',
+						allowBlank: false
+					}
 				},
 				{
 					header: i18n('units'),
 					dataIndex: 'units',
-					width: 50
+					width: 50,
+					editor:{
+						xtype:'numberfield',
+						minValue: 1,
+						allowBlank: false
+					}
 				},
 				{
 					header: i18n('modifiers'),
-					dataIndex: 'units',
-					width: 100
+					dataIndex: 'modifiers',
+					width: 100,
+					editor: {
+						xtype:'textfield'
+					}
 				},
 				{
 					header: i18n('diagnosis'),
-					dataIndex: 'diagnosis',
-					width: 200
+					dataIndex: 'dx_pointers',
+					width: 250,
+					editor: {
+						xtype:'textfield',
+						allowBlank: false
+					}
 				}
 			],
 			dockedItems: [
@@ -93,9 +109,11 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					xtype: 'toolbar',
 					dock: 'top',
 					items: [
+						'->',
 						{
 							text: i18n('service'),
-							iconCls: 'icoAdd'
+							iconCls: 'icoAdd',
+							itemId: 'EncounterSignSuperBillServiceAddBtn'
 						}
 					]
 				}
@@ -189,12 +207,12 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					layout: 'fit',
 					height: 208,
 					title: i18n('warnings_alerts'),
-					itemId: 'EncounterSignAlertGrid',
 					items: [
 						{
 							xtype: 'grid',
 							hideHeaders: true,
 							store: Ext.create('App.store.patient.CheckoutAlertArea'),
+							itemId: 'EncounterSignAlertGrid',
 							border: false,
 							rowLines: false,
 							header: false,

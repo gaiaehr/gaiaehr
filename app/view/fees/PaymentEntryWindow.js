@@ -105,7 +105,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         xtype: 'datefield',
                         name: 'post_to_date',
                         action: 'new_payment',
-                        format: globals['date_display_format'],
+                        format: g('date_display_format'),
                         labelWidth: 98,
                         width: 220
                     },

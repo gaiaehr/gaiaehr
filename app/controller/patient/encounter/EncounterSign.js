@@ -31,7 +31,19 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 		{
 			ref: 'EncounterSignAlertGrid',
 			selector: '#EncounterSignAlertGrid'
+		},
+
+		// super bill stuff
+		{
+			ref: 'EncounterSignSuperBillGrid',
+			selector: '#EncounterSignSuperBillGrid'
+		},
+		{
+			ref: 'EncounterSignSuperBillServiceAddBtn',
+			selector: '#EncounterSignSuperBillServiceAddBtn'
 		}
+
+
 	],
 
 	init: function(){
@@ -44,7 +56,6 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			'#EncounterCoSignSupervisorCombo': {
 				beforerender: me.onEncounterCoSignSupervisorComboBeforeRender
 			},
-
 			// Buttons
 			'#EncounterCoSignSupervisorBtn': {
 				click: me.onEncounterCoSignSupervisorBtnClick
@@ -54,9 +65,45 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			},
 			'#EncounterCancelSignBtn': {
 				click: me.onEncounterCancelSignBtnClick
+			},
+			// super bill stuff
+			'#EncounterSignSuperBillServiceAddBtn': {
+				click: me.onEncounterSignSuperBillServiceAddBtnClick
+			},
+			'#EncounterSignSuperCptSearchCmb': {
+				select: me.onEncounterSignSuperCptSearchCmbSelect
 			}
 		});
 	},
+
+	// super bill stuff
+	onEncounterSignSuperBillServiceAddBtnClick: function(){
+		var me = this,
+			grid = me.getEncounterSignSuperBillGrid(),
+			store = grid.getStore();
+
+		grid.editingPlugin.cancelEdit();
+		var records = store.add({
+			pid: me.encounter.data.pid,
+			eid: me.encounter.data.eid,
+			units: 1,
+			create_uid: app.user.id,
+			date_create: new Date()
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onEncounterSignSuperCptSearchCmbSelect: function(cmb, records){
+		var me = this,
+			record = cmb.up('form').getForm().getRecord();
+
+		record.set({
+			code: records[0].data.code,
+			code_type: records[0].data.code_type
+		});
+
+	},
+
 
 	onEncounterCoSignSupervisorBtnClick: function(){
 		this.coSignEncounter();
@@ -100,17 +147,22 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			coSignBtn = me.getEncounterCoSignSupervisorBtn(),
 			signBtn = me.getEncounterSignBtn();
 
+		me.encounter = win.enc.encounter;
+
 		me.pid = win.enc.pid;
 		me.eid = win.enc.eid;
 
-		//TODO switch to super bill grid
-		//		me.encounterCPTsICDsStore.load({
-		//			params: {
-		//				eid: me.eid
-		//			}
-		//		});
-
 		if(a('access_encounter_checkout')){
+
+			me.getEncounterSignSuperBillGrid().getStore().load({
+				filters:[
+					{
+						property: 'eid',
+						value: me.eid
+					}
+				]
+			});
+
 			me.getEncounterSignAlertGrid().getStore().load({
 				params: {
 					eid: me.eid
@@ -120,15 +172,15 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 
 		me.getEncounterSignDocumentGrid().loadDocs(app.patient.eid);
 
-		var isCoSigned = me.enc.encounter.data.supervisor_uid != null && me.enc.encounter.data.supervisor_uid > 0;
+		var isCoSigned = win.enc.encounter.data.supervisor_uid != null && win.enc.encounter.data.supervisor_uid > 0;
 
 		if(isCoSigned){
-			coSignCombo.setValue(me.enc.encounter.data.supervisor_uid);
+			coSignCombo.setValue(win.enc.encounter.data.supervisor_uid);
 		}else{
 			coSignCombo.reset();
 		}
 
-		if(me.enc.isClose() || !a('sign_enc')){
+		if(win.enc.isClose() || !a('sign_enc')){
 			signBtn.disable();
 			coSignBtn.disable();
 			coSignCombo.setVisible(isCoSigned);

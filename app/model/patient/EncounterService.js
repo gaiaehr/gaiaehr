@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.EncounterCPTsICDs', {
+Ext.define('App.model.patient.EncounterService', {
 	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_services'
+	},
 	fields: [
 		{
 			name: 'id',
-			type: 'string'
+			type: 'int'
 		},
 		{
 			name: 'pid',
@@ -33,30 +36,67 @@ Ext.define('App.model.patient.EncounterCPTsICDs', {
 		},
 		{
 			name: 'code',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'code_type',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
-			name: 'code_text_medium',
-			type: 'string'
+			name: 'code_text',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
+			name: 'units',
+			type: 'int',
+			len: 5
+		},
+		{
+			name: 'modifiers',
+			type: 'array'
+		},
+		{
+			name: 'dx_group_id',
+			type: 'int'
 		},
 		{
 			name: 'dx_pointers',
-			type: 'string'
+			type: 'array'
 		},
 		{
-			name: 'dx_children'
+			name: 'status',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'date_create',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'date_update',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Encounter.getEncounterCptDxTree',
-			create: 'Encounter.addEncounterCptDxTree',
-			destroy: 'Encounter.removeEncounterCptDxTree'
+			read: 'Services.getEncounterServices',
+			create: 'Services.addEncounterService',
+			update: 'Services.updateEncounterService',
+			destroy: 'Services.removeEncounterService'
 		}
 	}
 });

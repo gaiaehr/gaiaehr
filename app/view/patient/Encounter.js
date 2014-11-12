@@ -57,7 +57,7 @@ Ext.define('App.view.patient.Encounter', {
 	initComponent: function(){
 		var me = this;
 
-		me.renderAdministrative = acl['access_enc_hcfa'] || acl['access_enc_cpt'] || acl['access_enc_history'];
+		me.renderAdministrative = a('access_enc_hcfa') || a('access_enc_cpt') || a('access_enc_history');
 
 		me.timerTask = {
 			scope: me,
@@ -133,13 +133,13 @@ Ext.define('App.view.patient.Encounter', {
 			});
 		}
 
-		if(me.enableVitals && acl['access_patient_vitals']){
+		if(me.enableVitals && a('access_patient_vitals')){
 			me.vitalsPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.Vitals')
 			);
 		}
 
-		if(me.enableReviewOfSystem && acl['access_review_of_systems']){
+		if(me.enableReviewOfSystem && a('access_review_of_systems')){
 			me.reviewSysPanel = me.encounterTabPanel.add(
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
@@ -154,7 +154,7 @@ Ext.define('App.view.patient.Encounter', {
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
-						syncAcl: acl['edit_encounters']
+						syncAcl: a('edit_encounters')
 					},
 					buttons: [
 						{
@@ -170,7 +170,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableReviewOfSystemChecks && acl['access_review_of_systems_checks']){
+		if(me.enableReviewOfSystemChecks && a('access_review_of_systems_checks')){
 			me.reviewSysCkPanel = me.encounterTabPanel.add(
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
@@ -185,7 +185,7 @@ Ext.define('App.view.patient.Encounter', {
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
-						syncAcl: acl['edit_encounters']
+						syncAcl: a('edit_encounters')
 					},
 					buttons: [
 						{
@@ -201,13 +201,13 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableFamilyHistory && acl['access_family_history']){
+		if(me.enableFamilyHistory && a('access_family_history')){
 			me.familyHistoryPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.encounter.FamilyHistory')
 			);
 		}
 
-		if(me.enableItemsToReview && acl['access_itmes_to_review']){
+		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.ItemsToReview', {
 					title: i18n('items_to_review'),
@@ -216,7 +216,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableSOAP && acl['access_soap']){
+		if(me.enableSOAP && a('access_soap')){
 			me.soapPanel = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.encounter.SOAP', {
 					bodyStyle: 'padding:0',
@@ -229,9 +229,9 @@ Ext.define('App.view.patient.Encounter', {
 		 * Administravive Tab Panel and its Panels
 		 * @type {*}
 		 */
-		if((me.enableHCFA && acl['access_enc_hcfa']) ||
-			(me.enableCPT && acl['access_enc_cpt']) ||
-			(me.enableEncHistory && acl['access_enc_history'])){
+		if((me.enableHCFA && a('access_enc_hcfa')) ||
+			(me.enableCPT && a('access_enc_cpt')) ||
+			(me.enableEncHistory && a('access_enc_history'))){
 			me.administrativeTabPanel = me.centerPanel.add(
 				Ext.create('Ext.tab.Panel', {
 					title: i18n('administrative'),
@@ -247,7 +247,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableHCFA && acl['access_enc_hcfa']){
+		if(me.enableHCFA && a('access_enc_hcfa')){
 			me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
 					autoScroll: true,
@@ -261,7 +261,7 @@ Ext.define('App.view.patient.Encounter', {
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
-						syncAcl: acl['edit_enc_hcfa']
+						syncAcl: a('edit_enc_hcfa')
 					},
 					buttons: [
 						{
@@ -276,7 +276,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableCPT && acl['access_enc_cpt']){
+		if(me.enableCPT && a('access_enc_cpt')){
 			me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
 					title: i18n('current_procedural_terminology')
@@ -284,7 +284,7 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableEncHistory && acl['access_enc_history']){
+		if(me.enableEncHistory && a('access_enc_history')){
 			me.EncounterEventHistory = me.administrativeTabPanel.add(
 				Ext.create('App.ux.grid.EventHistory', {
 					bodyStyle: 0,
@@ -442,7 +442,7 @@ Ext.define('App.view.patient.Encounter', {
 			]
 		});
 
-		if(acl['access_encounter_checkout']){
+		if(a('access_encounter_checkout')){
 			me.panelToolBar.add({
 				text: i18n('sign'),
 				icon: 'resources/images/icons/edit.png',
@@ -545,50 +545,6 @@ Ext.define('App.view.patient.Encounter', {
 					app.accessDenied();
 				}
 
-			}else if(SaveBtn.action == 'vitals'){
-
-				var VFields = form.getFields().items,
-					VFieldsCount = VFields.length,
-					emptyCount = 0;
-
-				for(var i = 0; i < VFields.length; i++){
-					if(VFields[i].xtype != 'mitos.datetime'){
-						if(VFields[i].value == ''){
-							emptyCount++;
-						}
-					}
-				}
-
-				if((VFieldsCount - 3) > emptyCount){
-
-					if(a('add_vitals')){
-
-						store = me.encounter.vitals();
-						record = form.getRecord();
-						values = me.addDefaultData(values);
-						storeIndex = store.indexOf(record);
-						if(storeIndex == -1){
-							store.insert(0, values);
-						}else{
-							record.set(values);
-						}
-						store.sync({
-							scope: me,
-							success: function(){
-								me.msg('Sweet!', i18n('vitals_saved'));
-								me.getProgressNote();
-								me.vitalsPanel.down('vitalsdataview').refresh();
-								me.resetVitalsForm();
-							}
-						});
-
-					}else{
-						app.accessDenied();
-					}
-
-				}else{
-					me.msg('Oops!', i18n('vitals_form_is_epmty'), true)
-				}
 			}else{
 
 				if(a('edit_encounters')){
@@ -624,50 +580,6 @@ Ext.define('App.view.patient.Encounter', {
 					app.accessDenied();
 				}
 			}
-		}
-	},
-
-	onVitalsSign: function(){
-		var me = this,
-			form = me.vitalsPanel.down('form').getForm(),
-			store = me.encounter.vitals(),
-			record = form.getRecord();
-
-		if(form.isValid()){
-			me.passwordVerificationWin(function(btn, password){
-				if(btn == 'ok'){
-					User.verifyUserPass(password, function(provider, response){
-						if(response.result){
-							record.set({
-								auth_uid: user.id
-							});
-							store.sync({
-								callback: function(){
-									form.reset();
-									me.msg('Sweet!', i18n('vitals_signed'));
-									me.getProgressNote();
-									me.resetVitalsForm();
-									me.vitalsPanel.down('vitalsdataview').refresh();
-									/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-									app.AuditLog('Patient vitals signed');
-								}
-							});
-						}else{
-							Ext.Msg.show({
-								title: 'Oops!',
-								msg: i18n('incorrect_password'),
-								buttons: Ext.Msg.OKCANCEL,
-								icon: Ext.Msg.ERROR,
-								fn: function(btn){
-									if(btn == 'ok'){
-										me.onVitalsSign();
-									}
-								}
-							});
-						}
-					});
-				}
-			});
 		}
 	},
 
@@ -816,10 +728,10 @@ Ext.define('App.view.patient.Encounter', {
 				values.signature = password;
 				values.isSupervisor = isSupervisor;
 
-				if(acl['require_enc_supervisor'] || isSupervisor){
+				if(a('require_enc_supervisor') || isSupervisor){
 					values.requires_supervisor = true;
 					values.supervisor_uid = app.checkoutWindow.coSignCombo.getValue();
-				}else if(!isSupervisor && !acl['require_enc_supervisor']){
+				}else if(!isSupervisor && !a('require_enc_supervisor')){
 					values.requires_supervisor = false;
 				}
 

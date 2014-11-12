@@ -22,7 +22,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 		'App.view.dashboard.panel.OnotesPortlet',
 		'App.view.dashboard.panel.VisitsPortlet'
 	],
-	pageTitle: i18n('dashboard'),
+	pageTitle: _('dashboard'),
 	getTools: function(){
 		return [
 			{
@@ -30,7 +30,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 				type: 'gear',
 				handler: function(e, target, panelHeader){
 					var portlet = panelHeader.ownerCt;
-					portlet.setLoading(i18n('working') + '...');
+					portlet.setLoading(_('working') + '...');
 					Ext.defer(function(){
 						portlet.setLoading(false);
 					}, 2000);
@@ -53,7 +53,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 							itemId: 'dashboard-col-1'
 //							items: [
 //								{
-//									title: i18n('office_notes'),
+//									title: _('office_notes'),
 //									tools: this.getTools(),
 //									items: { xtype: 'onotesportlet' },
 //									listeners: {
@@ -89,7 +89,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 	},
 
 	onPortletClose: function(portlet){
-		this.msg(i18n('message') + '!', portlet.title + ' ' + i18n('was_removed'));
+		this.msg(_('message') + '!', portlet.title + ' ' + _('was_removed'));
 	},
 
 	doReloadStores: function(){

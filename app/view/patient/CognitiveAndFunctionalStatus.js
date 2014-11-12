@@ -24,7 +24,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		'App.store.patient.CognitiveAndFunctionalStatus'
 	],
 	xtype: 'patientcognitiveandfunctionalstatuspanel',
-	title: i18n('cognitive_and_functional_status'),
+	title: _('cognitive_and_functional_status'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.CognitiveAndFunctionalStatus', {
 		remoteFilter: true
@@ -41,12 +41,12 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 				}
 			]
 		},
 		{
-			header: i18n('category'),
+			header: _('category'),
 			width: 150,
 			dataIndex: 'category',
 			editor: {
@@ -57,7 +57,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			}
 		},
 		{
-			header: i18n('description'),
+			header: _('description'),
 			flex: 1,
 			dataIndex: 'code_text',
 			editor: {
@@ -69,7 +69,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			}
 		},
 		{
-			header: i18n('note'),
+			header: _('note'),
 			flex: 2,
 			dataIndex: 'note',
 			editor: {
@@ -78,7 +78,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			dataIndex: 'begin_date',
 			format: 'Y-m-d',
 			editor: {
@@ -88,7 +88,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			dataIndex: 'end_date',
 			format: 'Y-m-d',
 			editor: {
@@ -97,7 +97,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			}
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			dataIndex: 'status',
 			editor: {
 				xtype: 'gaiaehr.combo',
@@ -111,7 +111,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		'->',
 		'-',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newFunctionalStatusBtn'

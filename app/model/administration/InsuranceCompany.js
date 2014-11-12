@@ -107,7 +107,7 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-				return record.data.id + ': ' + (record.data.name ? record.data.name : ' * ' ) + ' ' + (!record.data.active ? ('(' +  i18n('inactive') + ')') : '') ;
+				return record.data.id + ': ' + (record.data.name ? record.data.name : ' * ' ) + ' ' + (!record.data.active ? ('(' +  _('inactive') + ')') : '') ;
 			}
 		},
 		{

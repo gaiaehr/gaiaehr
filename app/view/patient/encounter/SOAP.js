@@ -27,7 +27,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	],
 	action: 'patient.encounter.soap',
 	itemId: 'soapPanel',
-	title: i18n('soap'),
+	title: _('soap'),
 	layout: 'border',
 	frame: true,
 
@@ -46,7 +46,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var snippetCtrl = App.app.getController('patient.encounter.Snippets');
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
-			title: i18n('snippets'),
+			title: _('snippets'),
 			itemId: 'SnippetsTreePanel',
 			region: 'west',
 			width: 300,
@@ -64,7 +64,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			tools: [
 				{
 					xtype: 'button',
-					text: i18n('category'),
+					text: _('category'),
 					iconCls: 'icoAdd',
 					itemId: 'SnippetCategoryAddBtn'
 				}
@@ -82,11 +82,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					}
 				},
 				{
-					text: i18n('add'),
+					text: _('add'),
 					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
-					tooltip: i18n('add_snippet'),
+					tooltip: _('add_snippet'),
 					align: 'center',
 					icon: 'resources/images/icons/add.gif',
 					scope: me,
@@ -102,7 +102,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					}
 				},
 				{
-					text: i18n('edit'),
+					text: _('edit'),
 					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
@@ -125,7 +125,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				plugins: {
 					ptype: 'treeviewdragdrop',
 					expandDelay: 500,
-					dragText: i18n('drag_and_drop_reorganize')
+					dragText: _('drag_and_drop_reorganize')
 				},
 				listeners: {
 					scope: me,
@@ -155,7 +155,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			},
 			items: [
 				me.pWin = Ext.widget('window', {
-					title: i18n('procedure'),
+					title: _('procedure'),
 					maximized: true,
 					closable: false,
 					constrain: true,
@@ -194,12 +194,12 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					],
 					buttons: [
 						{
-							text: i18n('cancel'),
+							text: _('cancel'),
 							scope: me,
 							handler: me.onProcedureCancel
 						},
 						{
-							text: i18n('save'),
+							text: _('save'),
 							scope: me,
 							itemId: 'encounterRecordAdd',
 							handler: me.onProcedureSave
@@ -208,7 +208,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				}),
 				{
 					xtype: 'fieldset',
-					title: i18n('subjective'),
+					title: _('subjective'),
 					margin: 5,
 					items: [
 						me.sField = Ext.widget('textarea', {
@@ -221,7 +221,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('objective'),
+					title: _('objective'),
 					margin: 5,
 					items: [
 						me.oField = Ext.widget('textarea', {
@@ -231,16 +231,16 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						me.pGrid = Ext.widget('grid', {
 							frame: true,
 							name: 'procedures',
-							emptyText: i18n('no_procedures'),
+							emptyText: _('no_procedures'),
 							margin: '5 0 10 0',
 							store: me.procedureStore,
 							columns: [
 								{
-									text: i18n('code'),
+									text: _('code'),
 									dataIndex: 'code'
 								},
 								{
-									text: i18n('description'),
+									text: _('description'),
 									dataIndex: 'code_text',
 									flex: 1
 								}
@@ -255,11 +255,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 									items: [
 										{
 											xtype: 'tbtext',
-											text: i18n('procedures')
+											text: _('procedures')
 										},
 										'->',
 										{
-											text: i18n('new_procedure'),
+											text: _('new_procedure'),
 											scope: me,
 											handler: me.onProcedureAdd,
 											iconCls: 'icoAdd'
@@ -273,7 +273,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('assessment'),
+					title: _('assessment'),
 					margin: 5,
 					items: [
 						me.aField = Ext.widget('textarea', {
@@ -289,7 +289,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('plan'),
+					title: _('plan'),
 					margin: 5,
 					items: [
 						me.pField = Ext.widget('textarea', {
@@ -305,7 +305,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					iconCls: 'save',
 					action: 'soapSave',
 					scope: me,
@@ -320,7 +320,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 
 		me.phWindow = Ext.widget('window', {
-			title: i18n('complete_snippet'),
+			title: _('complete_snippet'),
 			closeAction: 'hide',
 			bodyPadding: 0,
 			bodyBorder: false,
@@ -343,15 +343,15 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			buttons: [
 				{
 					xtype: 'tbtext',
-					text: i18n('shift_enter_submit')
+					text: _('shift_enter_submit')
 				},
 				'->',
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					handler: me.onPhWindowCancel
 				},
 				{
-					text: i18n('submit'),
+					text: _('submit'),
 					scope: me,
 					handler: me.onPhWindowSubmit
 				}
@@ -411,7 +411,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.procedureStore.rejectChanges();
 		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
-		this.pWin.setTitle(i18n('procedure'));
+		this.pWin.setTitle(_('procedure'));
 	},
 
 	/**
@@ -428,7 +428,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.procedureStore.sync();
 		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
-		this.pWin.setTitle(i18n('procedure'));
+		this.pWin.setTitle(_('procedure'));
 	},
 
 	/**
@@ -463,7 +463,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		if(record.data.code_text != '' || record.data.code != ''){
 			this.pWin.setTitle(record.data.code_text + ' [' + record.data.code + ']');
 		}else{
-			this.pWin.setTitle(i18n('new_procedure'));
+			this.pWin.setTitle(_('new_procedure'));
 		}
 
 		this.pForm.getForm().loadRecord(record);

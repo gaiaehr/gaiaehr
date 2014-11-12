@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('encounter'),
+	pageTitle: _('encounter'),
 	pageLayout: 'border',
 	itemId: 'encounterPanel',
 	requires: [
@@ -111,7 +111,7 @@ Ext.define('App.view.patient.Encounter', {
 		 */
 		me.encounterTabPanel = me.centerPanel.add(
 			Ext.create('Ext.tab.Panel', {
-				title: me.renderAdministrative ? i18n('encounter') : false,
+				title: me.renderAdministrative ? _('encounter') : false,
 				itemId: 'encounter',
 				plain: true,
 				activeItem: 0,
@@ -144,7 +144,7 @@ Ext.define('App.view.patient.Encounter', {
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
 					action: 'encounter',
-					title: i18n('review_of_systems'),
+					title: _('review_of_systems'),
 					frame: true,
 					bodyPadding: 5,
 					bodyStyle: 'background-color:white',
@@ -158,7 +158,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					buttons: [
 						{
-							text: i18n('save'),
+							text: _('save'),
 							iconCls: 'save',
 							action: 'reviewOfSystems',
 							scope: me,
@@ -175,7 +175,7 @@ Ext.define('App.view.patient.Encounter', {
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
 					action: 'encounter',
-					title: i18n('review_of_systems_checks'),
+					title: _('review_of_systems_checks'),
 					frame: true,
 					bodyPadding: 5,
 					bodyStyle: 'background-color:white',
@@ -189,7 +189,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					buttons: [
 						{
-							text: i18n('save'),
+							text: _('save'),
 							iconCls: 'save',
 							action: 'reviewOfSystemsChecks',
 							scope: me,
@@ -210,7 +210,7 @@ Ext.define('App.view.patient.Encounter', {
 		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.ItemsToReview', {
-					title: i18n('items_to_review'),
+					title: _('items_to_review'),
 					bodyPadding: '7 5 2 5'
 				})
 			);
@@ -234,7 +234,7 @@ Ext.define('App.view.patient.Encounter', {
 			(me.enableEncHistory && a('access_enc_history'))){
 			me.administrativeTabPanel = me.centerPanel.add(
 				Ext.create('Ext.tab.Panel', {
-					title: i18n('administrative'),
+					title: _('administrative'),
 					itemId: 'administrative',
 					plain: true,
 					activeItem: 0,
@@ -251,7 +251,7 @@ Ext.define('App.view.patient.Encounter', {
 			me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
 					autoScroll: true,
-					title: i18n('misc_billing_options_HCFA_1500'),
+					title: _('misc_billing_options_HCFA_1500'),
 					frame: true,
 					bodyPadding: 5,
 					bodyStyle: 'background-color:white',
@@ -265,7 +265,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					buttons: [
 						{
-							text: i18n('save'),
+							text: _('save'),
 							iconCls: 'save',
 							action: 'soap',
 							scope: me,
@@ -279,7 +279,7 @@ Ext.define('App.view.patient.Encounter', {
 		if(me.enableCPT && a('access_enc_cpt')){
 			me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-					title: i18n('current_procedural_terminology')
+					title: _('current_procedural_terminology')
 				})
 			);
 		}
@@ -288,7 +288,7 @@ Ext.define('App.view.patient.Encounter', {
 			me.EncounterEventHistory = me.administrativeTabPanel.add(
 				Ext.create('App.ux.grid.EventHistory', {
 					bodyStyle: 0,
-					title: i18n('encounter_history'),
+					title: _('encounter_history'),
 					store: me.encounterEventHistoryStore
 				})
 			);
@@ -298,7 +298,7 @@ Ext.define('App.view.patient.Encounter', {
 		 * Progress Note
 		 */
 		me.rightPanel = Ext.create('Ext.tab.Panel', {
-			title: i18n('encounter_progress_note'),
+			title: _('encounter_progress_note'),
 			width: 500,
 			region: 'east',
 			split: true,
@@ -313,13 +313,13 @@ Ext.define('App.view.patient.Encounter', {
 			},
 			items: [
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-					title: i18n('progress_note'),
+					title: _('progress_note'),
 					autoScroll: true,
 					tbar: [
 						'->', {
 							xtype: 'tool',
 							type: 'print',
-							tooltip: i18n('print_progress_note'),
+							tooltip: _('print_progress_note'),
 							scope: me,
 							handler: function(){
 								var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
@@ -336,7 +336,7 @@ Ext.define('App.view.patient.Encounter', {
 				}),
 
 				me.progressHistory = Ext.create('Ext.panel.Panel', {
-					title: i18n('progress_history'),
+					title: _('progress_history'),
 					bodyPadding: 5,
 					autoScroll: true,
 					items: [
@@ -357,68 +357,68 @@ Ext.define('App.view.patient.Encounter', {
 			items: [
 				'-',
 				{
-					text: i18n('immunizations') + ' ',
+					text: _('immunizations') + ' ',
 					action: 'immunization'
 				},
 				'-',
 				{
-					text: i18n('allergies') + ' ',
+					text: _('allergies') + ' ',
 					action: 'allergies'
 				},
 				'-',
 				{
-					text: i18n('active_problems') + ' ',
+					text: _('active_problems') + ' ',
 					action: 'activeproblems'
 				},
 				'-',
 				{
-					text: i18n('medications') + ' ',
+					text: _('medications') + ' ',
 					action: 'medications'
 				},
 				'-',
 				{
-					text: i18n('results') + ' ',
+					text: _('results') + ' ',
 					action: 'laboratories'
 				},
 				'-',
 				{
-					text: i18n('social') + ' ',
+					text: _('social') + ' ',
 					action: 'social'
 				},
 				'-',
 				{
-					text: i18n('functional_status') + ' ',
+					text: _('functional_status') + ' ',
 					action: 'functionalstatus'
 				},
 				'-',
 				{
-					text: i18n('referrals') + ' ',
+					text: _('referrals') + ' ',
 					action: 'referrals'
 				},
 				'-',
 				{
-					text: i18n('lab_orders'),
+					text: _('lab_orders'),
 					action: 'LabOrders',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
-					text: i18n('xray_ct_orders'),
+					text: _('xray_ct_orders'),
 					action: 'RadOrders',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
-					text: i18n('rx_orders'),
+					text: _('rx_orders'),
 					action: 'RxOrderGrid',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
-					text: i18n('new_doctors_note'),
+					text: _('new_doctors_note'),
 					action: 'DoctorsNotes',
 					scope: me,
 					handler: me.newDoc
@@ -429,7 +429,7 @@ Ext.define('App.view.patient.Encounter', {
 				{
 					xtype:'button',
 					action: 'encounter',
-					text: i18n('encounter_details')
+					text: _('encounter_details')
 				},
 				'-',
 				me.priorityCombo = Ext.create('App.ux.combo.EncounterPriority', {
@@ -444,7 +444,7 @@ Ext.define('App.view.patient.Encounter', {
 
 		if(a('access_encounter_checkout')){
 			me.panelToolBar.add({
-				text: i18n('sign'),
+				text: _('sign'),
 				icon: 'resources/images/icons/edit.png',
 				handler: me.onSignEncounter
 			}, '-');
@@ -561,7 +561,7 @@ Ext.define('App.view.patient.Encounter', {
 
 							app.fireEvent('encountersync', me, store, form);
 
-							me.msg('Sweet!', i18n('encounter_updated'));
+							me.msg('Sweet!', _('encounter_updated'));
 							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 							app.AuditLog('Patient encounter updated');
 						}
@@ -608,7 +608,7 @@ Ext.define('App.view.patient.Encounter', {
 			record,
 			store;
 
-		me.el.mask(i18n('loading...') + ' ' + i18n('encounter') + ' - ' + eid);
+		me.el.mask(_('loading...') + ' ' + _('encounter') + ' - ' + eid);
 		me.resetTabs();
 
 		/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
@@ -639,7 +639,7 @@ Ext.define('App.view.patient.Encounter', {
 				}else{
 					if(me.stopTimer()){
 						var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
-						me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer);
+						me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
 						me.setButtonsDisabled(me.getButtonsToDisable(), true);
 					}
 				}
@@ -760,13 +760,13 @@ Ext.define('App.view.patient.Encounter', {
 							app.openPatientVisits();
 
 							app.AuditLog('Patient encounter ' + (isSupervisor ? 'co-signed' : 'signed'));
-							me.msg('Sweet!', i18n('encounter_closed'));
+							me.msg('Sweet!', _('encounter_closed'));
 							app.checkoutWindow.close();
 						}
 					}else{
 						Ext.Msg.show({
 							title: 'Oops!',
-							msg: i18n(response.result.error),
+							msg: _(response.result.error),
 							buttons: Ext.Msg.OK,
 							icon: Ext.Msg.ERROR
 						});
@@ -780,7 +780,7 @@ Ext.define('App.view.patient.Encounter', {
 	 * CheckOut Functions
 	 */
 	onSignEncounter: function(){
-		var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')';
+		var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('checkout') + ')';
 		app.checkoutWindow.enc = this;
 		app.checkoutWindow.setTitle(title);
 		app.checkoutWindow.show();
@@ -822,7 +822,7 @@ Ext.define('App.view.patient.Encounter', {
 				me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
 					styleHtmlContent: true,
 					title: '<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
-					html: '<strong>' + i18n('subjective') + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + i18n('objective') + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + i18n('assessment') + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + i18n('plan') + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
+					html: '<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
 				}))
 			}
 		})
@@ -873,7 +873,7 @@ Ext.define('App.view.patient.Encounter', {
 	encounterTimer: function(){
 		var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
 		if(app.patient.pid != null){
-			me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('open_encounter') + ')', app.patient.readOnly, timer);
+			me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('open_encounter') + ')', app.patient.readOnly, timer);
 		}else{
 			me.stopTimer();
 		}
@@ -904,7 +904,7 @@ Ext.define('App.view.patient.Encounter', {
 		var day = Math.floor(hr / 24);
 		hr = hr % 24;
 		t = twoDigit(hr) + ":" + t;
-		t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n('day_s') + '</span><span class="time">' + t + '</span>';
+		t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + _('day_s') + '</span><span class="time">' + t + '</span>';
 		return t;
 	},
 
@@ -1015,7 +1015,7 @@ Ext.define('App.view.patient.Encounter', {
 
 		if(patient.pid && patient.eid){
 
-			me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
+			me.updateTitle(patient.name + ' (' + _('visits') + ')', patient.readOnly, null);
 			me.setReadOnly(patient.readOnly);
 			callback(true);
 		}else{

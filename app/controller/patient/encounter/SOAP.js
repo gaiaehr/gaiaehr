@@ -147,7 +147,7 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 
 			if(templates.action != action){
 
-				templates.setTitle(i18n(me.field.name) + ' ' + i18n('templates'));
+				templates.setTitle(_(me.field.name) + ' ' + _('templates'));
 				templates.action = me.field.name + '-' + specialty_id;
 
 				templates.getSelectionModel().deselectAll();

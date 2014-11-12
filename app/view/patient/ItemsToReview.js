@@ -43,7 +43,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 			},
 			items: [
 				{
-					title: i18n('immunizations'),
+					title: _('immunizations'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -52,26 +52,26 @@ Ext.define('App.view.patient.ItemsToReview', {
 					margin: '0 5 5 0',
 					columns: [
 						{
-							header: i18n('immunization'),
+							header: _('immunization'),
 							width: 250,
 							dataIndex: 'vaccine_name'
 						},
 						{
-							header: i18n('date'),
+							header: _('date'),
 							width: 90,
 							xtype: 'datecolumn',
 							format: 'Y-m-d',
 							dataIndex: 'administered_date'
 						},
 						{
-							header: i18n('notes'),
+							header: _('notes'),
 							flex: 1,
 							dataIndex: 'note'
 						}
 					]
 				},
 				{
-					title: i18n('allergies'),
+					title: _('allergies'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -79,17 +79,17 @@ Ext.define('App.view.patient.ItemsToReview', {
 					itemId: 'ItemsToReviewAllergiesGrid',
 					columns: [
 						{
-							header: i18n('type'),
+							header: _('type'),
 							width: 100,
 							dataIndex: 'allergy_type'
 						},
 						{
-							header: i18n('name'),
+							header: _('name'),
 							width: 100,
 							dataIndex: 'allergy'
 						},
 						{
-							header: i18n('severity'),
+							header: _('severity'),
 							flex: 1,
 							dataIndex: 'severity'
 						}
@@ -109,7 +109,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 			},
 			items: [
 				{
-					title: i18n('active_problems'),
+					title: _('active_problems'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -118,20 +118,20 @@ Ext.define('App.view.patient.ItemsToReview', {
 					itemId: 'ItemsToReviewActiveProblemsGrid',
 					columns: [
 						{
-							header: i18n('problem'),
+							header: _('problem'),
 							width: 250,
 							dataIndex: 'code_text'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('begin_date'),
+							header: _('begin_date'),
 							width: 90,
 							format: 'Y-m-d',
 							dataIndex: 'begin_date'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('end_date'),
+							header: _('end_date'),
 							flex: 1,
 							format: 'Y-m-d',
 							dataIndex: 'end_date'
@@ -139,7 +139,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 					]
 				},
 				{
-					title: i18n('medications'),
+					title: _('medications'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -147,20 +147,20 @@ Ext.define('App.view.patient.ItemsToReview', {
 					itemId: 'ItemsToReviewMedicationsGrid',
 					columns: [
 						{
-							header: i18n('medication'),
+							header: _('medication'),
 							width: 250,
 							dataIndex: 'STR'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('begin_date'),
+							header: _('begin_date'),
 							width: 90,
 							format: 'Y-m-d',
 							dataIndex: 'begin_date'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('end_date'),
+							header: _('end_date'),
 							flex: 1,
 							format: 'Y-m-d',
 							dataIndex: 'end_date'
@@ -171,10 +171,10 @@ Ext.define('App.view.patient.ItemsToReview', {
 		},
 		{
 			xtype: 'fieldset',
-			title: i18n('social_history'),
+			title: _('social_history'),
 			items: [
 				{
-					fieldLabel: i18n('smoking_status'),
+					fieldLabel: _('smoking_status'),
 					xtype: 'mitos.smokingstatuscombo',
 					itemId: 'reviewsmokingstatuscombo',
 					allowBlank: false,
@@ -186,7 +186,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 	],
 	buttons: [
 		{
-			text: i18n('review_all'),
+			text: _('review_all'),
 			name: 'review',
 			itemId: 'encounterRecordAdd'
 		}

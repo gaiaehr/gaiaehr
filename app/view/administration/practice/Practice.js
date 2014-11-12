@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.practice.Practice', {
 	extend: 'App.ux.RenderPanel',
 	xtype: 'practicepanel',
-	pageTitle: i18n('practice_settings'),
+	pageTitle: _('practice_settings'),
 	requires: [
 		'App.view.administration.practice.Facilities',
 		'App.view.administration.practice.FacilityConfig',

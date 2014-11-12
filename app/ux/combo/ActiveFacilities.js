@@ -53,7 +53,7 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 			queryMode: 'local',
 			valueField: 'option_value',
 			displayField: 'option_name',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);

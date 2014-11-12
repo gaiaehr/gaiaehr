@@ -26,7 +26,7 @@ Ext.define('App.view.patient.Immunizations', {
 		'App.ux.form.fields.DateTime'
 	],
 	xtype: 'patientimmunizationspanel',
-	title: i18n('immunizations'),
+	title: _('immunizations'),
 	layout:'border',
 	border:false,
 	items:[
@@ -46,11 +46,11 @@ Ext.define('App.view.patient.Immunizations', {
 				autoSync: false
 			}),
 			features: Ext.create('Ext.grid.feature.Grouping', {
-				groupHeaderTpl: i18n('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
+				groupHeaderTpl: _('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
 			}),
 			columns: [
 				{
-					text: i18n('code'),
+					text: _('code'),
 					dataIndex: 'code',
 					width: 50,
 					renderer:function(v, meta, record){
@@ -62,7 +62,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('immunization_name'),
+					text: _('immunization_name'),
 					dataIndex: 'vaccine_name',
 					flex: 1,
 					renderer:function(v, meta, record){
@@ -71,7 +71,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('lot_number'),
+					text: _('lot_number'),
 					dataIndex: 'lot_number',
 					width: 100,
 					renderer:function(v, meta, record){
@@ -80,7 +80,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('amount'),
+					text: _('amount'),
 					dataIndex: 'administer_amount',
 					width: 100,
 					renderer:function(v, meta, record){
@@ -89,7 +89,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('units'),
+					text: _('units'),
 					dataIndex: 'administer_units',
 					width: 100,
 					renderer:function(v, meta, record){
@@ -98,7 +98,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('notes'),
+					text: _('notes'),
 					dataIndex: 'note',
 					flex: 1,
 					renderer:function(v, meta, record){
@@ -107,7 +107,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('administered_by'),
+					text: _('administered_by'),
 					dataIndex: 'administered_by',
 					width: 150,
 					renderer:function(v, meta, record){
@@ -117,7 +117,7 @@ Ext.define('App.view.patient.Immunizations', {
 				},
 				{
 					xtype: 'datecolumn',
-					text: i18n('date'),
+					text: _('date'),
 					format: 'Y-m-d',
 					width: 100,
 					dataIndex: 'administered_date',
@@ -155,7 +155,7 @@ Ext.define('App.view.patient.Immunizations', {
 											{
 												xtype: 'immunizationlivesearch',
 												itemId: 'immunizationsearch',
-												fieldLabel: i18n('name'),
+												fieldLabel: _('name'),
 												name: 'vaccine_name',
 												valueField:'name',
 												hideLabel: false,
@@ -181,21 +181,21 @@ Ext.define('App.view.patient.Immunizations', {
 											{
 
 												xtype: 'numberfield',
-												fieldLabel: i18n('amount'),
+												fieldLabel: _('amount'),
 												name: 'administer_amount',
 												width: 160
 											},
 											{
 
 												xtype: 'textfield',
-												fieldLabel: i18n('units'),
+												fieldLabel: _('units'),
 												name: 'administer_units',
 												labelWidth: 50,
 												width: 125
 
 											},
 											{
-												fieldLabel: i18n('administration_site'),
+												fieldLabel: _('administration_site'),
 												width: 320,
 												labelWidth: 130,
 												xtype: 'gaiaehr.combo',
@@ -219,7 +219,7 @@ Ext.define('App.view.patient.Immunizations', {
 										},
 										items: [
 											{
-												fieldLabel: i18n('route'),
+												fieldLabel: _('route'),
 												xtype: 'gaiaehr.combo',
 												list: 6,
 												queryMode: 'local',
@@ -228,7 +228,7 @@ Ext.define('App.view.patient.Immunizations', {
 												name: 'route'
 											},
 											{
-												fieldLabel: i18n('date_administered'),
+												fieldLabel: _('date_administered'),
 												width: 320,
 												labelWidth: 115,
 												xtype: 'mitos.datetime',
@@ -239,14 +239,14 @@ Ext.define('App.view.patient.Immunizations', {
 
 									},
 									{
-										fieldLabel: i18n('administered_by'),
+										fieldLabel: _('administered_by'),
 										xtype: 'textfield',
 										name: 'administered_by',
 										margin: '0 10 5 0',
 										width: 625
 									},
 									{
-										fieldLabel: i18n('notes'),
+										fieldLabel: _('notes'),
 										xtype: 'textfield',
 										name: 'note',
 										width: 625
@@ -258,26 +258,26 @@ Ext.define('App.view.patient.Immunizations', {
 								items:[
 									{
 										xtype:'fieldset',
-										title:i18n('substance_data'),
+										title:_('substance_data'),
 										defaults: {
 											margin: '0 0 5 0',
 											width: 250
 										},
 										items:[
 											{
-												fieldLabel: i18n('lot_number'),
+												fieldLabel: _('lot_number'),
 												xtype: 'textfield',
 												name: 'lot_number'
 											},
 											{
-												fieldLabel: i18n('exp_date'),
+												fieldLabel: _('exp_date'),
 												xtype: 'datefield',
 												format: 'Y-m-d',
 												name: 'exp_date'
 											},
 											{
 												xtype: 'cvxmanufacturersforcvxcombo',
-												fieldLabel: i18n('manufacturer'),
+												fieldLabel: _('manufacturer'),
 												margin: '0 0 8 0',
 												name: 'manufacturer'
 											}
@@ -285,7 +285,7 @@ Ext.define('App.view.patient.Immunizations', {
 									},
 									{
 										xtype: 'checkboxfield',
-										boxLabel: i18n('entered_in_error'),
+										boxLabel: _('entered_in_error'),
 										name: 'is_error'
 									}
 								]
@@ -298,7 +298,7 @@ Ext.define('App.view.patient.Immunizations', {
 			tbar:[
 				'->',
 				{
-					text: i18n('add_new'),
+					text: _('add_new'),
 					action: 'encounterRecordAdd',
 					itemId: 'addImmunizationBtn',
 					iconCls: 'icoAdd'
@@ -308,14 +308,14 @@ Ext.define('App.view.patient.Immunizations', {
 				'-',
 				{
 					xtype: 'button',
-					text: i18n('submit_hl7_vxu'),
+					text: _('submit_hl7_vxu'),
 					disabled: true,
 					itemId: 'submitVxuBtn'
 				},
 				'-',
 				'->',
 				{
-					text: i18n('review'),
+					text: _('review'),
 					itemId: 'reviewImmunizationsBtn',
 					action: 'encounterRecordAdd'
 				}
@@ -323,7 +323,7 @@ Ext.define('App.view.patient.Immunizations', {
 		},
 		{
 			xtype:'grid',
-			title:i18n('immunization_list'),
+			title:_('immunization_list'),
 			itemId: 'cvxGrid',
 			collapseMode:'mini',
 			region:'east',
@@ -334,12 +334,12 @@ Ext.define('App.view.patient.Immunizations', {
 			store: Ext.create('App.store.patient.CVXCodes'),
 			columns: [
 				{
-					text: i18n('code'),
+					text: _('code'),
 					dataIndex: 'cvx_code',
 					width: 50
 				},
 				{
-					text: i18n('immunization_name'),
+					text: _('immunization_name'),
 					dataIndex: 'name',
 					flex: 1
 				}

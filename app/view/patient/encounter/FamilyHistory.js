@@ -23,7 +23,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 		'App.ux.form.fields.CheckBoxWithFamilyRelation'
 	],
 	itemId: 'familyHistoryPanel',
-	title: i18n('family_history'),
+	title: _('family_history'),
 	autoScroll: true,
 	frame: true,
 	bodyPadding: 10,
@@ -37,7 +37,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 
 	buttons: [
 		{
-			text: i18n('save'),
+			text: _('save'),
 			iconCls: 'save',
 			action: 'encounterRecordAdd',
 			itemId: 'familyHistorySaveBtn'

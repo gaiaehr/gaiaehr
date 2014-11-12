@@ -37,18 +37,18 @@ Ext.define('App.view.patient.SmokingStatus', {
 	columns: [
 		{
 			xtype: 'datecolumn',
-			text: i18n('date'),
+			text: _('date'),
 			dataIndex: 'create_date',
 			format: 'Y-m-d',
 			width: 120
 		},
 		{
-			text: i18n('status'),
+			text: _('status'),
 			dataIndex: 'status',
 			width: 250
 		},
 		{
-			text: i18n('counseling_given'),
+			text: _('counseling_given'),
 			dataIndex: 'counseling',
 			width: 120,
 			editor: {
@@ -59,7 +59,7 @@ Ext.define('App.view.patient.SmokingStatus', {
 			}
 		},
 		{
-			text: i18n('note'),
+			text: _('note'),
 			dataIndex: 'note',
 			width: 120,
 			flex: 1,
@@ -71,7 +71,7 @@ Ext.define('App.view.patient.SmokingStatus', {
 	tbar: [
 		{
 			xtype: 'tbtext',
-			text: i18n('smoking_status'),
+			text: _('smoking_status'),
 			width: 100
 		},
 		{

@@ -17,11 +17,11 @@
  */
 Ext.define('App.ux.combo.ComboResettable', {
 	extend: 'Ext.form.ComboBox',
-	triggerTip: i18n('click_to_clear_selection'),
+	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
 	spExtraParam: '',
-	qtip: i18n('clearable_combo_box'),
+	qtip: _('clearable_combo_box'),
 
 	trigger1Class: 'x-form-select-trigger',
 	trigger2Class: 'x-form-clear-trigger',

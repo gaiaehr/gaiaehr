@@ -26,7 +26,7 @@ Ext.define('App.ux.form.fields.CheckBoxWithFamilyRelation', {
 	alias: 'widget.checkboxwithfamilyhistory',
 	textField: {
 		xtype: 'gaiaehr.combo',
-		fieldLabel: i18n('relation'),
+		fieldLabel: _('relation'),
 		labelAlign: 'right',
 		labelWidth: 80,
 		list: 109,

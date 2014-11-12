@@ -105,18 +105,18 @@ Ext.define('App.controller.patient.Social', {
 		me.smokeStatusStore.sync({
 			success:function(){
 				if(window.dual){
-					dual.msg(i18n('sweet'), i18n('record_updated'));
+					dual.msg(_('sweet'), _('record_updated'));
 				}else{
-					app.msg(i18n('sweet'), i18n('record_updated'));
+					app.msg(_('sweet'), _('record_updated'));
 				}
 
 				me.loadSmokeStatusStore(cmb.up('grid').up('panel'));
 			},
 			failure:function(){
 				if(window.dual){
-					dual.msg(i18n('oops'), i18n('record_error'), true);
+					dual.msg(_('oops'), _('record_error'), true);
 				}else{
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			}
 		});

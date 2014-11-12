@@ -36,12 +36,12 @@ Ext.define('App.ux.LiveAllergiesSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

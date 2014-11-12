@@ -39,14 +39,14 @@ Ext.define('App.ux.grid.AreasViewDropZone', {
 	},
 
 	notifyEnter : function(dd, e, data){
-		Ext.get(data.ddel.id).update(i18n('drop_patient_to_new_area'));
+		Ext.get(data.ddel.id).update(_('drop_patient_to_new_area'));
 		this.callParent(arguments);
 	},
 
 	// While over a target node, return the default drop allowed class which
 	// places a "tick" icon into the drag proxy.
 	notifyOut : function(dd, e, data){
-		Ext.get(data.ddel.id).update(i18n('drag_patient_to_new_area'));
+		Ext.get(data.ddel.id).update(_('drag_patient_to_new_area'));
 		this.callParent(arguments);
 	}
 

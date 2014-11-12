@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Log', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelLog',
 	uses: ['Ext.grid.Panel'],
-	pageTitle: i18n('event_history_log'),
+	pageTitle: _('event_history_log'),
 	initComponent: function(){
 		var me = this;
 
@@ -46,26 +46,26 @@ Ext.define('App.view.administration.Log', {
 				},
 				{
 					width: 120,
-					text: i18n('date_created'),
+					text: _('date_created'),
 					sortable: true,
 					dataIndex: 'date',
 					renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a')
 				},
 				{
 					width: 180,
-					text: i18n('user'),
+					text: _('user'),
 					sortable: true,
 					dataIndex: 'user'
 				},
 				{
 					width: 200,
-					text: i18n('patient_record_id'),
+					text: _('patient_record_id'),
 					sortable: true,
 					dataIndex: 'patient_id'
 				},
 				{
 					flex: 1,
-					text: i18n('event'),
+					text: _('event'),
 					sortable: true,
 					dataIndex: 'event'
 				}
@@ -78,14 +78,14 @@ Ext.define('App.view.administration.Log', {
 			tbar: Ext.create('Ext.PagingToolbar', {
 				store: me.logStore,
 				displayInfo: true,
-				emptyMsg: i18n('no_office_notes_to_display'),
+				emptyMsg: _('no_office_notes_to_display'),
 				plugins: Ext.create('Ext.ux.SlidingPager',
 					{
 					}),
 				items: [
 					{
 						xtype: 'button',
-						text: i18n('view_log_event_details'),
+						text: _('view_log_event_details'),
 						iconCls: 'edit',
 						itemId: 'detail',
 						disabled: true,
@@ -98,7 +98,7 @@ Ext.define('App.view.administration.Log', {
 						name: 'from',
 						labelWidth: 30,
 						width: 150,
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						format: 'Y-m-d'
 					},
 					{
@@ -106,13 +106,13 @@ Ext.define('App.view.administration.Log', {
 						name: 'to',
 						labelWidth: 30,
 						width: 150,
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						format: 'Y-m-d',
 						value: new Date()  // defaults to today
 					},
 					{
 						xtype: 'patienlivetsearch',
-						emptyText: i18n('patient_live_search') + '...',
+						emptyText: _('patient_live_search') + '...',
 						fieldStyle: me.fullMode ? 'width:300' : 'width:250',
 						listeners: {
 							scope: me,
@@ -121,7 +121,7 @@ Ext.define('App.view.administration.Log', {
 					},
 					{
 						xtype: 'button',
-						text: i18n('filter'),
+						text: _('filter'),
 						listeners: {
 							click: function(){
 								me.logStore.load({
@@ -148,7 +148,7 @@ Ext.define('App.view.administration.Log', {
 					},
 					{
 						xtype: 'button',
-						text: i18n('reset'),
+						text: _('reset'),
 						listeners: {
 							click: function(){
 								this.up('toolbar').query('datefield[name=from]')[0].setRawValue('');
@@ -166,7 +166,7 @@ Ext.define('App.view.administration.Log', {
 		// Event Detail Window
 		// *************************************************************************************
 		me.winLog = Ext.create('Ext.window.Window', {
-			title: i18n('log_event_details'),
+			title: _('log_event_details'),
 			width: 500,
 			closeAction: 'hide',
 			items: [
@@ -196,27 +196,27 @@ Ext.define('App.view.administration.Log', {
 							name: 'id'
 						},
 						{
-							fieldLabel: i18n('date'),
+							fieldLabel: _('date'),
 							xtype: 'displayfield',
 							name: 'date'
 						},
 						{
-							fieldLabel: i18n('event'),
+							fieldLabel: _('event'),
 							xtype: 'displayfield',
 							name: 'event'
 						},
 						{
-							fieldLabel: i18n('user'),
+							fieldLabel: _('user'),
 							xtype: 'displayfield',
 							name: 'user'
 						},
 						{
-							fieldLabel: i18n('facility'),
+							fieldLabel: _('facility'),
 							xtype: 'displayfield',
 							name: 'facility'
 						},
 						{
-							fieldLabel: i18n('patient_record_id'),
+							fieldLabel: _('patient_record_id'),
 							xtype: 'displayfield',
 							name: 'patient_id'
 						}
@@ -225,7 +225,7 @@ Ext.define('App.view.administration.Log', {
 			],
 			buttons: [
 				{
-					text: i18n('close'),
+					text: _('close'),
 					handler: function(){
 						this.up('window').hide();
 					}

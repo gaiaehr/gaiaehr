@@ -24,7 +24,7 @@ Ext.define('App.view.administration.practice.Insurance', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'insurancecompaniespanel',
-	title: i18n('insurance_companies'),
+	title: _('insurance_companies'),
 	store: this._adminInsuranceCmonpanySotrie = Ext.create('App.store.administration.InsuranceCompanies'),
 	//	border: false,
 	//	frame: false,
@@ -42,7 +42,7 @@ Ext.define('App.view.administration.practice.Insurance', {
 					items: [
 						{
 							xtype: 'fieldset',
-							title: i18n('contact_info'),
+							title: _('contact_info'),
 							layout: 'hbox',
 							margin: '0 10 0 0',
 							items: [
@@ -56,26 +56,26 @@ Ext.define('App.view.administration.practice.Insurance', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('name'),
+											fieldLabel: _('name'),
 											name: 'name',
 											allowBlank: false,
 											width: 385
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('attn'),
+											fieldLabel: _('attn'),
 											name: 'attn',
 											width: 385
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('address'),
+											fieldLabel: _('address'),
 											name: 'address1',
 											width: 385
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('address_cont'),
+											fieldLabel: _('address_cont'),
 											name: 'address2',
 											width: 385
 										},
@@ -113,17 +113,17 @@ Ext.define('App.view.administration.practice.Insurance', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('phone_number'),
+											fieldLabel: _('phone_number'),
 											name: 'phone_number'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('fax_number'),
+											fieldLabel: _('fax_number'),
 											name: 'fax_number'
 										},
 										{
 											xtype: 'checkbox',
-											fieldLabel: i18n('active'),
+											fieldLabel: _('active'),
 											name: 'active'
 										}
 									]
@@ -143,43 +143,43 @@ Ext.define('App.view.administration.practice.Insurance', {
 			dataIndex: 'id'
 		},
 		{
-			header: i18n('insurance_name'),
+			header: _('insurance_name'),
 			width: 200,
 			sortable: true,
 			dataIndex: 'name'
 		},
 		{
-			header: i18n('attn'),
+			header: _('attn'),
 			width: 200,
 			sortable: true,
 			dataIndex: 'attn'
 		},
 		{
-			header: i18n('address'),
+			header: _('address'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'address_full'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone1'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone2'
 		},
 		{
-			header: i18n('fax'),
+			header: _('fax'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'fax'
 		},
 		{
-			header: i18n('active'),
+			header: _('active'),
 			width: 55,
 			sortable: true,
 			dataIndex: 'active',
@@ -197,7 +197,7 @@ Ext.define('App.view.administration.practice.Insurance', {
 		items: [
 			'-',
 			{
-				text: i18n('insurance_company'),
+				text: _('insurance_company'),
 				iconCls: 'icoAdd',
 				action: 'insurance',
 				itemId: 'addBtn'

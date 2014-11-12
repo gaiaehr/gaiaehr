@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Modules', {
     extend: 'App.ux.RenderPanel',
     id: 'panelModules',
-    pageTitle: i18n('modules'),
+    pageTitle: _('modules'),
     initComponent: function(){
         var me = this;
 
@@ -38,25 +38,25 @@ Ext.define('App.view.administration.Modules', {
             ],
             columns: [
                 {
-                    text: i18n('title'),
+                    text: _('title'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'title'
                 },
                 {
-                    text: i18n('description'),
+                    text: _('description'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'description'
                 },
                 {
-                    text: i18n('version'),
+                    text: _('version'),
                     width: 100,
                     sortable: true,
                     dataIndex: 'installed_version'
                 },
                 {
-                    text: i18n('key_if_required'),
+                    text: _('key_if_required'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'licensekey',
@@ -65,7 +65,7 @@ Ext.define('App.view.administration.Modules', {
                     }
                 },
                 {
-                    text: i18n('enabled?'),
+                    text: _('enabled?'),
                     width: 60,
                     sortable: true,
                     renderer: me.boolRenderer,

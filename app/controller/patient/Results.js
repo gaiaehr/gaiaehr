@@ -183,7 +183,7 @@ Ext.define('App.controller.patient.Results', {
 			reader = new FileReader();
 
 		if(!form.isValid()){
-			app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+			app.msg(_('oops'), _('required_fields_missing'), true);
 			return;
 		}
 
@@ -210,7 +210,7 @@ Ext.define('App.controller.patient.Results', {
 							values.documentId = 'doc|' + response.result.id;
 							me.saveOrderResult(form, values);
 						}else{
-							app.msg(i18n('oops'), response.result.error)
+							app.msg(_('oops'), response.result.error)
 						}
 
 					});
@@ -264,7 +264,7 @@ Ext.define('App.controller.patient.Results', {
 				order[0].set({status: 'Received'});
 				order[0].save();
 
-				app.msg(i18n('sweet'), i18n('record_saved'));
+				app.msg(_('sweet'), _('record_saved'));
 			}
 		});
 	},
@@ -284,7 +284,7 @@ Ext.define('App.controller.patient.Results', {
 		if(type && id){
 			if(type == 'hl7'){
 				win = Ext.widget('hl7messageviewer').show();
-				win.body.mask(i18n('loading...'));
+				win.body.mask(_('loading...'));
 				HL7Messages.getMessageById(id, function(provider, response){
 					me.getMessageField().setValue(response.result.message);
 					me.getAcknowledgeField().setValue(response.result.response);
@@ -295,7 +295,7 @@ Ext.define('App.controller.patient.Results', {
 				app.onDocumentView(id);
 			}
 		}else{
-			app.msg(i18n('oops'), i18n('no_document_found'), true)
+			app.msg(_('oops'), _('no_document_found'), true)
 		}
 	},
 
@@ -320,7 +320,7 @@ Ext.define('App.controller.patient.Results', {
 		var me = this;
 		panel.dockedItems.items[0].add({
 			xtype: 'button',
-			text: i18n('upload'),
+			text: _('upload'),
 			disabled: true,
 			action: 'uploadBtn',
 			scope: me,
@@ -341,9 +341,9 @@ Ext.define('App.controller.patient.Results', {
 			win = btn.up('window');
 
 		if(form.isValid()){
-			formPanel.el.mask(i18n('uploading_laboratory') + '...');
+			formPanel.el.mask(_('uploading_laboratory') + '...');
 			form.submit({
-				//waitMsg: i18n('uploading_laboratory') + '...',
+				//waitMsg: _('uploading_laboratory') + '...',
 				params: {
 					pid: app.patient.pid,
 					docType: 'laboratory',
@@ -395,7 +395,7 @@ Ext.define('App.controller.patient.Results', {
 							}else{
 								Ext.Msg.show({
 									title: 'Oops!',
-									msg: i18n('incorrect_password'),
+									msg: _('incorrect_password'),
 									//buttons:Ext.Msg.OKCANCEL,
 									buttons: Ext.Msg.OK,
 									icon: Ext.Msg.ERROR,
@@ -412,7 +412,7 @@ Ext.define('App.controller.patient.Results', {
 			}else{
 				Ext.Msg.show({
 					title: 'Oops!',
-					msg: i18n('nothing_to_sign'),
+					msg: _('nothing_to_sign'),
 					//buttons:Ext.Msg.OKCANCEL,
 					buttons: Ext.Msg.OK,
 					icon: Ext.Msg.ERROR,

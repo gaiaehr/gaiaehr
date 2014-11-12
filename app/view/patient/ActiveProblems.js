@@ -26,7 +26,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 		'App.ux.combo.Outcome2'
 	],
 	xtype: 'patientactiveproblemspanel',
-	title: i18n('active_problems'),
+	title: _('active_problems'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientActiveProblems', {
 		remoteFilter: true,
@@ -47,31 +47,31 @@ Ext.define('App.view.patient.ActiveProblems', {
 			]
 		},
 		{
-			header: i18n('problem'),
+			header: _('problem'),
 			flex: 1,
 			dataIndex: 'code_text'
 		},
 		{
-			header: i18n('occurrence'),
+			header: _('occurrence'),
 			width: 200,
 			dataIndex: 'occurrence'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			width: 100,
 			format: 'Y-m-d',
 			dataIndex: 'begin_date'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			width: 100,
 			format: 'Y-m-d',
 			dataIndex: 'end_date'
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			width: 80,
 			dataIndex: 'status'
 		}
@@ -95,7 +95,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 						items: [
 							{
 								xtype: 'snomedliveproblemsearch',
-								fieldLabel: i18n('problem'),
+								fieldLabel: _('problem'),
 								name: 'code_text',
 								hideLabel: false,
 								itemId: 'activeProblemLiveSearch',
@@ -114,7 +114,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 								},
 								items: [
 									{
-										fieldLabel: i18n('occurrence'),
+										fieldLabel: _('occurrence'),
 										width: 250,
 										labelWidth: 70,
 										xtype: 'mitos.occurrencecombo',
@@ -124,13 +124,13 @@ Ext.define('App.view.patient.ActiveProblems', {
 										xtype: 'textfield',
 										width: 460,
 										labelWidth: 70,
-										fieldLabel: i18n('referred_by'),
+										fieldLabel: _('referred_by'),
 										name: 'referred_by'
 									}
 								]
 							},
 							{
-								fieldLabel: i18n('note'),
+								fieldLabel: _('note'),
 								xtype: 'textfield',
 								width: 720,
 								labelWidth: 70,
@@ -149,7 +149,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 						},
 						items: [
 							{
-								fieldLabel: i18n('status'),
+								fieldLabel: _('status'),
 								xtype: 'gaiaehr.combo',
 								list: 112,
 								itemId: 'ActiveProblemStatusCombo',
@@ -157,13 +157,13 @@ Ext.define('App.view.patient.ActiveProblems', {
 								allowBlank: false
 							},
 							{
-								fieldLabel: i18n('begin_date'),
+								fieldLabel: _('begin_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'begin_date'
 							},
 							{
-								fieldLabel: i18n('end_date'),
+								fieldLabel: _('end_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'end_date'
@@ -178,14 +178,14 @@ Ext.define('App.view.patient.ActiveProblems', {
 	tbar: [
 		'->',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			action: 'encounterRecordAdd',
 			itemId: 'addActiveProblemBtn',
 			iconCls: 'icoAdd'
 		}
 	],
 	bbar: ['->', {
-		text: i18n('review'),
+		text: _('review'),
 		itemId: 'review_active_problems',
 		action: 'encounterRecordAdd'
 	}]

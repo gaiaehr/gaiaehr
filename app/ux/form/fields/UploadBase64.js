@@ -27,7 +27,7 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 	base64: '',
 	ready: false,
 
-	title: i18n('upload'),
+	title: _('upload'),
 	items: [
 		{
 			xtype: 'fileuploadfield',
@@ -36,10 +36,10 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 	],
 	buttons: [
 		{
-			text: i18n('cancel')
+			text: _('cancel')
 		},
 		{
-			text: i18n('upload')
+			text: _('upload')
 		}
 	],
 
@@ -77,7 +77,7 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 			}
 
 			if(!re.exec(me.uValue)){
-				app.msg(i18n('oops'), Ext.String.format(i18n('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
+				app.msg(_('oops'), Ext.String.format(_('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
 				return;
 			}
 		}

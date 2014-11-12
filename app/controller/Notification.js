@@ -98,7 +98,7 @@ Ext.define('App.controller.Notification', {
 		}else{
 			me.store.remove(record);
 			me.doHideNotifications();
-			app.msg(i18n('oops'), i18n('notification_handler_error'), true);
+			app.msg(_('oops'), _('notification_handler_error'), true);
 		}
 
 	},
@@ -166,7 +166,7 @@ Ext.define('App.controller.Notification', {
 			method: method
 		})[0];
 
-		app.msg(i18n('new_notification'), description, 'yellow');
+		app.msg(_('new_notification'), description, 'yellow');
 
 		return record;
 	},

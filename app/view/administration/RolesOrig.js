@@ -18,7 +18,7 @@
 
 Ext.define('App.view.administration.Roles', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('roles_and_permissions'),
+	pageTitle: _('roles_and_permissions'),
 
 	initComponent: function(){
 		var me = this;
@@ -31,13 +31,13 @@ Ext.define('App.view.administration.Roles', {
 			store: Ext.create('App.store.administration.RolePerms'),
 			columns: [
 				{
-					text: i18n('permission'),
+					text: _('permission'),
 					dataIndex: 'perm_name',
 					locked: true,
 					width: 300
 				},
 				{
-					text: i18n('front_office'),
+					text: _('front_office'),
 					dataIndex: 'role-front_office',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -47,7 +47,7 @@ Ext.define('App.view.administration.Roles', {
 					width: 120
 				},
 				{
-					text: i18n('auditor'),
+					text: _('auditor'),
 					dataIndex: 'role-auditor',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -57,7 +57,7 @@ Ext.define('App.view.administration.Roles', {
 					width: 120
 				},
 				{
-					text: i18n('clinician'),
+					text: _('clinician'),
 					dataIndex: 'role-clinician',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -67,7 +67,7 @@ Ext.define('App.view.administration.Roles', {
 					width: 120
 				},
 				{
-					text: i18n('physician'),
+					text: _('physician'),
 					dataIndex: 'role-physician',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -77,7 +77,7 @@ Ext.define('App.view.administration.Roles', {
 					width: 120
 				},
 				{
-					text: i18n('emergency_access'),
+					text: _('emergency_access'),
 					dataIndex: 'role-emergencyaccess',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -87,7 +87,7 @@ Ext.define('App.view.administration.Roles', {
 					width: 120
 				},
 				{
-					text: i18n('referrer'),
+					text: _('referrer'),
 					dataIndex: 'role-referrer',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -97,7 +97,7 @@ Ext.define('App.view.administration.Roles', {
 					width: 120
 				},
 				{
-					text: i18n('administrator'),
+					text: _('administrator'),
 					dataIndex: 'role-administrator',
 					editor: { xtype: 'checkbox' },
 					renderer: function(v){
@@ -113,7 +113,7 @@ Ext.define('App.view.administration.Roles', {
 			features: [
 				{
 					ftype: 'grouping',
-					groupHeaderTpl: i18n('category') + ': {name}'
+					groupHeaderTpl: _('category') + ': {name}'
 				}
 			],
 			plugins: [
@@ -128,14 +128,14 @@ Ext.define('App.view.administration.Roles', {
 			],
 			buttons: [
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					//                    iconCls: 'cancel',
 					margin: '0 20 0 0',
 					scope: me,
 					handler: me.onRolesCancel
 				},
 				{
-					text: i18n('save'),
+					text: _('save'),
 					iconCls: 'save',
 					margin: '0 20 0 0',
 					scope: me,
@@ -147,14 +147,14 @@ Ext.define('App.view.administration.Roles', {
 		me.pageBody = [me.grid];
 		me.pageBbuttons = [
 			{
-				text: i18n('cancel'),
+				text: _('cancel'),
 				iconCls: 'cancel',
 				margin: '0 20 0 0',
 				scope: me,
 				handler: me.onRolesCancel
 			},
 			{
-				text: i18n('save'),
+				text: _('save'),
 				iconCls: 'save',
 				margin: '0 20 0 0',
 				scope: me,
@@ -168,12 +168,12 @@ Ext.define('App.view.administration.Roles', {
 	onRolesCancel: function(){
 		var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
 		if(record.set(values) !== null){
-			me.form.el.mask(i18n('saving_roles') + '...');
+			me.form.el.mask(_('saving_roles') + '...');
 			changedValues = record.getChanges();
 			Roles.saveRolesData(changedValues, function(provider, response){
 				if(response.result){
 					me.form.el.unmask();
-					me.msg('Sweet!', i18n('roles_updated'));
+					me.msg('Sweet!', _('roles_updated'));
 					record.commit();
 				}
 			});
@@ -183,12 +183,12 @@ Ext.define('App.view.administration.Roles', {
 	onRolesSave: function(){
 		var me = this, form = me.form.getForm(), values = form.getValues(), record = form.getRecord(), changedValues;
 		if(record.set(values) !== null){
-			me.form.el.mask(i18n('saving_roles') + '...');
+			me.form.el.mask(_('saving_roles') + '...');
 			changedValues = record.getChanges();
 			Roles.saveRolesData(changedValues, function(provider, response){
 				if(response.result){
 					me.form.el.unmask();
-					me.msg('Sweet!', i18n('roles_updated'));
+					me.msg('Sweet!', _('roles_updated'));
 					record.commit();
 				}
 			});
@@ -203,7 +203,7 @@ Ext.define('App.view.administration.Roles', {
 	 */
 	onActive: function(callback){
 		var me = this;
-		//        form.el.mask(i18n('loading') + '...');
+		//        form.el.mask(_('loading') + '...');
 
 		me.grid.store.load();
 

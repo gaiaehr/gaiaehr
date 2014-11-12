@@ -26,7 +26,7 @@ Ext.define('App.view.patient.RadOrders', {
 		'App.ux.LiveRadiologySearch'
 	],
 	xtype: 'patientradorderspanel',
-	title: i18n('xray_ct_orders'),
+	title: _('xray_ct_orders'),
 	columnLines: true,
 	itemId: 'RadOrders',
 	store: Ext.create('App.store.patient.PatientsOrders', {
@@ -61,19 +61,19 @@ Ext.define('App.view.patient.RadOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 //					scope: me,
 //					handler: me.onRemoveClick
 				}
 			]
 		},
 		{
-			header: i18n('order#'),
+			header: _('order#'),
 			width: 60,
 			dataIndex: 'id'
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			width: 75,
 			dataIndex: 'status',
 			editor: {
@@ -86,7 +86,7 @@ Ext.define('App.view.patient.RadOrders', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_ordered'),
+			header: _('date_ordered'),
 			width: 100,
 			dataIndex: 'date_ordered',
 			format: 'Y-m-d',
@@ -95,12 +95,12 @@ Ext.define('App.view.patient.RadOrders', {
 			}
 		},
 		{
-			header: i18n('code'),
+			header: _('code'),
 			width: 100,
 			dataIndex: 'code'
 		},
 		{
-			header: i18n('description'),
+			header: _('description'),
 			flex: 1,
 			dataIndex: 'description',
 			editor: {
@@ -109,7 +109,7 @@ Ext.define('App.view.patient.RadOrders', {
 			}
 		},
 		{
-			header: i18n('notes'),
+			header: _('notes'),
 			flex: 1,
 			dataIndex: 'note',
 			editor: {
@@ -117,7 +117,7 @@ Ext.define('App.view.patient.RadOrders', {
 			}
 		},
 		{
-			header: i18n('priority'),
+			header: _('priority'),
 			width: 100,
 			dataIndex: 'priority',
 			editor: {
@@ -127,7 +127,7 @@ Ext.define('App.view.patient.RadOrders', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_collected'),
+			header: _('date_collected'),
 			width: 100,
 			dataIndex: 'date_collected',
 			format: 'Y-m-d',
@@ -138,7 +138,7 @@ Ext.define('App.view.patient.RadOrders', {
 	],
 	tbar: [
 		{
-			text: i18n('eRad'),
+			text: _('eRad'),
 			iconCls: 'icoSend',
 			itemId: 'electronicRadOrderBtn'
 		},
@@ -147,14 +147,14 @@ Ext.define('App.view.patient.RadOrders', {
 		'-',
 		{
 			xtype: 'button',
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newRadOrderBtn'
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',

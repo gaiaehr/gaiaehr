@@ -990,11 +990,11 @@ Ext.define('App.ux.LiveImmunizationSearch',
 
 			Ext.apply(this,{
 				store:me.store,
-				emptyText:i18n('search_for_a_immunizations') + '...',
+				emptyText:_('search_for_a_immunizations') + '...',
 				typeAhead:true,
 				minChars:1,
 				listConfig:{
-					loadingText:i18n('searching') + '...',
+					loadingText:_('searching') + '...',
 					//emptyText	: 'No matching posts found.',
 					//---------------------------------------------------------------------
 					// Custom rendering template for each item
@@ -1053,13 +1053,13 @@ Ext.define('App.ux.AbstractPanel', {
 	patientInfoAlert: function() {
 		var patient = app.getCurrPatient();
 
-		Ext.Msg.alert(i18n('status'), i18n('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
+		Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
 	},
 
 	currPatientError: function() {
 		Ext.Msg.show({
-			title  : 'Oops! ' + i18n('no_patient_selected'),
-			msg    : i18n('select_patient_patient_live_search'),
+			title  : 'Oops! ' + _('no_patient_selected'),
+			msg    : _('select_patient_patient_live_search'),
 			scope  : this,
 			buttons: Ext.Msg.OK,
 			icon   : Ext.Msg.ERROR,
@@ -1133,7 +1133,7 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
     passwordVerificationWin:function(callback){
-        var msg = Ext.Msg.prompt(i18n('password_verification'), i18n('please_enter_your_password') + ':', function(btn, password) {
+        var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
             callback(btn, password);
         });
         var f = msg.textField.getInputId();
@@ -1156,13 +1156,13 @@ Ext.define('App.ux.LiveCPTSearch', {
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.livecptsearch',
 	hideLabel: true,
-	triggerTip: i18n('click_to_clear_selection'),
+	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
 	spExtraParam: '',
 	displayField: 'code_text',
 	valueField: 'code',
-	qtip: i18n('clearable_combo_box'),
+	qtip: _('clearable_combo_box'),
 	trigger1Class: 'x-form-select-trigger',
 	trigger2Class: 'x-form-clear-trigger',
 	initComponent: function(){
@@ -1207,13 +1207,13 @@ Ext.define('App.ux.LiveCPTSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			anchor: '100%',
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1268,11 +1268,11 @@ Ext.define('App.ux.LiveICDXSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.liveicdxsearch',
 	hideLabel: true,
-	triggerTip: i18n('click_to_clear_selection'),
+	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
 	spExtraParam: '',
-	qtip: i18n('clearable_combo_box'),
+	qtip: _('clearable_combo_box'),
 	trigger1Class: 'x-form-select-trigger',
 	trigger2Class: 'x-form-clear-trigger',
 
@@ -1311,12 +1311,12 @@ Ext.define('App.ux.LiveICDXSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			minChars: 1,
 			anchor: '100%',
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1420,12 +1420,12 @@ Ext.define('App.ux.LiveMedicationSearch', {
 			store: me.store,
 			displayField: 'PROPRIETARYNAME',
 			valueField: 'id',
-			emptyText: i18n('search_for_a_medication') + '...',
+			emptyText: _('search_for_a_medication') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1477,12 +1477,12 @@ Ext.define('App.ux.LiveLabsSearch', {
 			store: me.store,
 			displayField: 'loinc_name',
 			valueField: 'loinc_name',
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1534,12 +1534,12 @@ Ext.define('App.ux.LiveCDTSearch', {
 			store: me.store,
 			displayField: 'text',
 			valueField: 'code',
-			emptyText: i18n('search_for_a_CDT') + '...',
+			emptyText: _('search_for_a_CDT') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1598,12 +1598,12 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1663,12 +1663,12 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1689,7 +1689,7 @@ Ext.define('App.ux.LivePatientSearch', {
 	hideLabel: true,
 	displayField: 'fullname',
 	valueField: 'pid',
-	emptyText: i18n('search_for_a_patient') + '...',
+	emptyText: _('search_for_a_patient') + '...',
 	maxLength: 40,
 	typeAhead: false,
 	hideTrigger: true,
@@ -1763,7 +1763,7 @@ Ext.define('App.ux.LivePatientSearch', {
 		Ext.apply(me, {
 			store: me.store,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1809,13 +1809,13 @@ Ext.define('App.ux.LiveSigsSearch', {
 			store: me.store,
 			displayField: 'option_value',
 			valueField: 'option_value',
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			anchor: '100%',
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -1900,13 +1900,13 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 			store : me.store,
 			displayField : 'surgery',
 			valueField : 'id',
-			emptyText : i18n('search_for_a_surgery') + '...',
+			emptyText : _('search_for_a_surgery') + '...',
 			typeAhead : false,
             hideTrigger : true,
 			minChars : 1,
 			listConfig :
 			{
-				loadingText : i18n('searching') + '...',
+				loadingText : _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -2050,12 +2050,12 @@ Ext.define('App.ux.PhotoIdWindow',
 			html : window.webcam.get_html(320, 320),
 			buttons : [
 			{
-				text : i18n('capture'),
+				text : _('capture'),
 				iconCls : 'save',
 				handler : me.captureToCanvas
 			},
 			{
-				text : i18n('cancel'),
+				text : _('cancel'),
 				scope : me,
 				handler : function()
 				{
@@ -3608,7 +3608,7 @@ Ext.define('App.ux.PatientEncounterCombo', {
 	hideLabel: true,
 	displayField: 'brief_description',
 	valueField: 'brief_description',
-	emptyText: i18n('search') + '...',
+	emptyText: _('search') + '...',
 	width: 400,
 	editable: false,
 	initComponent: function(){
@@ -3661,7 +3661,7 @@ Ext.define('App.ux.PatientEncounterCombo', {
 		Ext.apply(this, {
 			store: me.store,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{[Ext.Date.format(values.service_date, g("date_time_display_format"))]} - {[Ext.String.ellipsis(values.brief_description, 25)]} </h3></div>';
 				}
@@ -3745,7 +3745,7 @@ Ext.define('App.ux.RenderPanel', {
 						scope: me,
 						click: function(field, val){
 							Patient.setPatientRating({pid: app.patient.pid, rating: val}, function(){
-								app.msg('Sweet!', i18n('record_saved'))
+								app.msg('Sweet!', _('record_saved'))
 							});
 						}
 					}
@@ -3765,7 +3765,7 @@ Ext.define('App.ux.RenderPanel', {
 
 	updateTitle: function(pageTitle, readOnly, timer){
 		this.pageTitleDiv.update(pageTitle);
-		this.pageReadOnlyDiv.update(readOnly ? i18n('read_only') : '');
+		this.pageReadOnlyDiv.update(readOnly ? _('read_only') : '');
 		this.pageTimerDiv.update(timer);
 	},
 
@@ -3795,7 +3795,7 @@ Ext.define('App.ux.form.fields.Help', {
     height       : 16,
     width        : 16,
     margin       : '3 10',
-    helpMsg      : i18n('help_message'),
+    helpMsg      : _('help_message'),
     initComponent: function() {
         var me = this;
         me.listeners = {
@@ -3962,8 +3962,8 @@ Ext.define('App.ux.form.fields.CustomTrigger', {
 	extend: 'Ext.form.field.Trigger',
 	alias: 'widget.customtrigger',
 	hideLabel    : true,
-	triggerTip: i18n('click_to_clear_selection'),
-	qtip: i18n('clearable_combo_box'),
+	triggerTip: _('click_to_clear_selection'),
+	qtip: _('clearable_combo_box'),
 	trigger1Class:'x-form-select-trigger',
 	trigger2Class:'x-form-clear-trigger',
 
@@ -4237,7 +4237,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
 			format     : me.dateFormat,
 			flex       : 1,
-            emptyText  : i18n('date'),
+            emptyText  : _('date'),
             margin     : 0,
 			submitValue: false
 		}, me.dateConfig));
@@ -4246,7 +4246,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
 			format     : me.timeFormat,
 			flex       : 1,
-            emptyText  : i18n('time'),
+            emptyText  : _('time'),
             margin     : 0,
 			submitValue: false
 		}, me.timeConfig));
@@ -4713,9 +4713,9 @@ Ext.define('App.ux.grid.EventHistory',{
     initComponent:function(){
         Ext.apply(this,{
             columns: [
-                { header: i18n('date'),  dataIndex: 'date', width: 140, renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a') },
-                { header: i18n('user'),  dataIndex: 'user', width: 150 },
-                { header: i18n('event'), dataIndex: 'event', flex: 1 }
+                { header: _('date'),  dataIndex: 'date', width: 140, renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a') },
+                { header: _('user'),  dataIndex: 'user', width: 150 },
+                { header: _('event'), dataIndex: 'event', flex: 1 }
             ]
         },null);
 
@@ -4759,7 +4759,7 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 			queryMode: 'local',
 			valueField: 'option_value',
 			displayField: 'option_name',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);
@@ -5502,7 +5502,7 @@ Ext.define('App.ux.combo.ActiveInsurances', {
 			editable: false,
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent();
@@ -5514,7 +5514,7 @@ Ext.define('App.ux.combo.ActiveProviders', {
 	displayField: 'option_name',
 	valueField: 'option_value',
 	editable: false,
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	initComponent: function(){
 		var me = this;
 
@@ -5546,7 +5546,7 @@ Ext.define('App.ux.combo.ActiveProviders', {
 //		Ext.apply(this, {
 //			editable: false,
 //			queryMode: 'local',
-//			emptyText: i18n('select'),
+//			emptyText: _('select'),
 //			store: me.store
 //		});
 		me.callParent(arguments);
@@ -5597,7 +5597,7 @@ Ext.define('App.ux.combo.Allergies',
 			queryMode : 'local',
 			displayField : 'allergy_name',
 			valueField : 'allergy_name',
-			emptyText : i18n('select'),
+			emptyText : _('select'),
 			store : me.store
 		}, null);
 		me.callParent(arguments);
@@ -5635,7 +5635,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 				queryMode: 'local',
 				displayField: 'option_name',
 				valueField: 'option_value',
-				emptyText: i18n('select'),
+				emptyText: _('select'),
 				store: Ext.create('Ext.data.Store',{
 					model: 'allergiesabdominalModel',
 					autoLoad: false
@@ -5677,7 +5677,7 @@ Ext.define('App.ux.combo.AllergiesLocation', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -5716,7 +5716,7 @@ Ext.define('App.ux.combo.AllergiesSeverity', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -5751,7 +5751,7 @@ Ext.define('App.ux.combo.AllergiesTypes', {
 			//queryMode   : 'local',
 			displayField: 'allergy_type',
 			valueField: 'allergy_type',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		}, null);
 		me.callParent(arguments);
@@ -5799,7 +5799,7 @@ Ext.define('App.ux.combo.Authorizations',
 			queryMode : 'local',
 			valueField : 'id',
 			displayField : 'name',
-			emptyText : i18n('select'),
+			emptyText : _('select'),
 			store : me.store
 		}, null);
 
@@ -5836,7 +5836,7 @@ Ext.define('App.ux.combo.BillingFacilities', {
 			queryMode   : 'local',
 			valueField  : 'option_value',
 			displayField: 'option_name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -5848,7 +5848,7 @@ Ext.define('App.ux.combo.CalendarCategories', {
 	editable    : false,
 	displayField: 'catname',
 	valueField  : 'catid',
-	emptyText   : i18n('select'),
+	emptyText   : _('select'),
 
 	initComponent: function() {
 		var me = this;
@@ -5915,7 +5915,7 @@ Ext.define('App.ux.combo.CalendarStatus', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();
@@ -5954,7 +5954,7 @@ Ext.define('App.ux.combo.CodesTypes', {
 			queryMode: 'local',
 			valueField: 'option_value',
 			displayField: 'option_name',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		}, null);
 		me.callParent(arguments);
@@ -5965,7 +5965,7 @@ Ext.define('App.ux.combo.Combo', {
 	alias: 'widget.gaiaehr.combo',
 	displayField: 'option_name',
 	valueField: 'option_value',
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	forceSelection: false,
 
 	/**
@@ -6055,7 +6055,7 @@ Ext.define('App.ux.combo.CVXManufacturers', {
 			editable    : false,
 			valueField  : 'mvx_code',
 			displayField: 'manufacturer',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6091,7 +6091,7 @@ Ext.define('App.ux.combo.CVXManufacturersForCvx', {
 			queryMode: 'local',
 			valueField: 'mvx_code',
 			displayField: 'manufacturer',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 
@@ -6141,7 +6141,7 @@ Ext.define('App.ux.combo.EncounterICDS', {
 			multiSelect: true,
 			displayField: 'code_and_code_type',
 			valueField: 'code_and_code_type',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: Ext.create('Ext.data.Store', {
 				model: 'EncounterICDXComboModel',
 				autoLoad: false
@@ -6189,7 +6189,7 @@ Ext.define('App.ux.combo.EncounterPriority', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('priority'),
+			emptyText: _('priority'),
 			store: me.store,
 			listConfig: {
 				getInnerTpl: function(){
@@ -6260,7 +6260,7 @@ Ext.define('App.ux.combo.Ethnicity', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6296,7 +6296,7 @@ Ext.define('App.ux.combo.Facilities', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		});
 
@@ -6333,7 +6333,7 @@ Ext.define('App.ux.combo.FloorPlanAreas', {
 			queryMode: 'local',
 			displayField: 'title',
 			valueField: 'id',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		}, null);
 		me.callParent(arguments);
@@ -6372,7 +6372,7 @@ Ext.define('App.ux.combo.FollowUp', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6391,33 +6391,33 @@ Ext.define('App.ux.combo.InsurancePayerType', {
 		me.store = Ext.create('Ext.data.Store', {
 			fields: ['id', 'name'],
 			data  : [
-				{"id": "1", "name": i18n('all')},
-				{"id": "16", "name": i18n('other_hcfa')},
-				{"id": "MB", "name": i18n('medicare_part_b')},
-				{"id": "MC", "name": i18n('medicaid')},
-				{"id": "CH", "name": i18n('champusva')},
-				{"id": "CH", "name": i18n('champus')},
-				{"id": "BL", "name": i18n('blue_cross_blue_shield')},
-				{"id": "16", "name": i18n('feca')},
-				{"id": "09", "name": i18n('self_pay')},
-				{"id": "10", "name": i18n('central_certification')},
-				{"id": "11", "name": i18n('other_nonfederal_programs')},
-				{"id": "12", "name": i18n('ppo')},
-				{"id": "13", "name": i18n('pos')},
-				{"id": "14", "name": i18n('epo')},
-				{"id": "15", "name": i18n('indemnity_insurance')},
-				{"id": "16", "name": i18n('hmo')},
-				{"id": "AM", "name": i18n('automobile_medical')},
-				{"id": "CI", "name": i18n('commercial_insurance')},
-				{"id": "DS", "name": i18n('disability')},
-				{"id": "HM", "name": i18n('health_maintenance_organization')},
-				{"id": "LI", "name": i18n('liability')},
-				{"id": "LM", "name": i18n('liability_medical')},
-				{"id": "OF", "name": i18n('other_federal_program')},
-				{"id": "TV", "name": i18n('title_v')},
-				{"id": "VA", "name": i18n('veterans_administration_plan')},
-				{"id": "WC", "name": i18n('workers_compensation_health_plan')},
-				{"id": "ZZ", "name": i18n('mutually_defined')}
+				{"id": "1", "name": _('all')},
+				{"id": "16", "name": _('other_hcfa')},
+				{"id": "MB", "name": _('medicare_part_b')},
+				{"id": "MC", "name": _('medicaid')},
+				{"id": "CH", "name": _('champusva')},
+				{"id": "CH", "name": _('champus')},
+				{"id": "BL", "name": _('blue_cross_blue_shield')},
+				{"id": "16", "name": _('feca')},
+				{"id": "09", "name": _('self_pay')},
+				{"id": "10", "name": _('central_certification')},
+				{"id": "11", "name": _('other_nonfederal_programs')},
+				{"id": "12", "name": _('ppo')},
+				{"id": "13", "name": _('pos')},
+				{"id": "14", "name": _('epo')},
+				{"id": "15", "name": _('indemnity_insurance')},
+				{"id": "16", "name": _('hmo')},
+				{"id": "AM", "name": _('automobile_medical')},
+				{"id": "CI", "name": _('commercial_insurance')},
+				{"id": "DS", "name": _('disability')},
+				{"id": "HM", "name": _('health_maintenance_organization')},
+				{"id": "LI", "name": _('liability')},
+				{"id": "LM", "name": _('liability_medical')},
+				{"id": "OF", "name": _('other_federal_program')},
+				{"id": "TV", "name": _('title_v')},
+				{"id": "VA", "name": _('veterans_administration_plan')},
+				{"id": "WC", "name": _('workers_compensation_health_plan')},
+				{"id": "ZZ", "name": _('mutually_defined')}
 			]
 		});
 
@@ -6427,7 +6427,7 @@ Ext.define('App.ux.combo.InsurancePayerType', {
 			displayField: 'name',
 			valueField  : 'id',
 			queryMode   : 'local',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();
@@ -6467,17 +6467,17 @@ Ext.define('App.ux.combo.LabObservations', {
 			store       : me.store,
 			displayField: 'label',
 			valueField  : 'id',
-			emptyText   : i18n('select_existing_observation'),
+			emptyText   : _('select_existing_observation'),
             editable    : false,
             width: 810,
 			listConfig  : {
 				getInnerTpl: function() {
 					return '<div>' +
-                        '<span style="width:200px;display:inline-block;"><span style="font-weight:bold;">' + i18n('Label') + ':</span> {label},</span>' +
-                        '<span style="width:90px;display:inline-block;"><span style="font-weight:bold;">' + i18n('unit') + ':</span> {unit},</span>' +
-                        '<span style="width:150px;display:inline-block;"><span style="font-weight:bold;">' + i18n('range_start') + ':</span> {range_start},</span>' +
-                        '<span style="width:130px;display:inline-block;"><span style="font-weight:bold;">' + i18n('range_end') + ':</span> {range_end},</span>' +
-                        '<span style="width:100px;display:inline-block;"><span style="font-weight:bold;">' + i18n('threshold') + ':</span> {threshold}</span>' +
+                        '<span style="width:200px;display:inline-block;"><span style="font-weight:bold;">' + _('Label') + ':</span> {label},</span>' +
+                        '<span style="width:90px;display:inline-block;"><span style="font-weight:bold;">' + _('unit') + ':</span> {unit},</span>' +
+                        '<span style="width:150px;display:inline-block;"><span style="font-weight:bold;">' + _('range_start') + ':</span> {range_start},</span>' +
+                        '<span style="width:130px;display:inline-block;"><span style="font-weight:bold;">' + _('range_end') + ':</span> {range_end},</span>' +
+                        '<span style="width:100px;display:inline-block;"><span style="font-weight:bold;">' + _('threshold') + ':</span> {threshold}</span>' +
                         '</div>';
 				}
 			}
@@ -6519,7 +6519,7 @@ Ext.define('App.ux.combo.LabsTypes', {
 			//queryMode   : 'local',
 			displayField: 'loinc_name',
 			valueField  : 'loinc_name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		});
 		me.callParent(arguments);
@@ -6562,7 +6562,7 @@ Ext.define('App.ux.combo.Languages',
 			editable    : false,
 			valueField  : 'code',
 			displayField: 'description',
-            emptyText   : i18n('select'),
+            emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		
@@ -6602,7 +6602,7 @@ Ext.define('App.ux.combo.Lists', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'title',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6641,7 +6641,7 @@ Ext.define('App.ux.combo.MedicalIssues', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6680,7 +6680,7 @@ Ext.define('App.ux.combo.Medications', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6719,7 +6719,7 @@ Ext.define('App.ux.combo.MsgNoteType', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();
@@ -6758,7 +6758,7 @@ Ext.define('App.ux.combo.MsgStatus', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();
@@ -6797,7 +6797,7 @@ Ext.define('App.ux.combo.Occurrence', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);
@@ -6836,7 +6836,7 @@ Ext.define('App.ux.combo.Outcome', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6875,7 +6875,7 @@ Ext.define('App.ux.combo.Outcome2', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);
@@ -6914,7 +6914,7 @@ Ext.define('App.ux.combo.PayingEntity', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6954,7 +6954,7 @@ Ext.define('App.ux.combo.PaymentCategory', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -6993,7 +6993,7 @@ Ext.define('App.ux.combo.PaymentMethod', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7029,7 +7029,7 @@ Ext.define('App.ux.combo.Pharmacies', {
 			//queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7074,7 +7074,7 @@ Ext.define('App.ux.combo.posCodes', {
 			queryMode: 'local',
 			valueField: 'code',
 			displayField: 'title',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 
@@ -7114,7 +7114,7 @@ Ext.define('App.ux.combo.PrescriptionHowTo', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 
@@ -7154,7 +7154,7 @@ Ext.define('App.ux.combo.PrescriptionOften', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7193,7 +7193,7 @@ Ext.define('App.ux.combo.PrescriptionTypes', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);
@@ -7232,7 +7232,7 @@ Ext.define('App.ux.combo.PrescriptionWhen', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7271,7 +7271,7 @@ Ext.define('App.ux.combo.PreventiveCareTypes', {
 			queryMode   : 'local',
 			valueField  : 'option_value',
 			displayField: 'option_name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7310,7 +7310,7 @@ Ext.define('App.ux.combo.ProceduresBodySites', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7352,7 +7352,7 @@ Ext.define('App.ux.combo.Providers', {
 			queryMode: 'local',
 			displayField: 'name',
 			valueField: 'id',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);
@@ -7391,7 +7391,7 @@ Ext.define('App.ux.combo.Race', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7427,7 +7427,7 @@ Ext.define('App.ux.combo.Roles', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'role_name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7466,7 +7466,7 @@ Ext.define('App.ux.combo.Sex', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7511,7 +7511,7 @@ Ext.define('App.ux.combo.Surgery', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7547,7 +7547,7 @@ Ext.define('App.ux.combo.TaxId', {
 			queryMode   : 'local',
 			displayField: 'title',
 			valueField  : 'option_id',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();
@@ -7588,7 +7588,7 @@ Ext.define('App.ux.combo.Templates', {
 			displayField: 'title',
 			valueField: 'id',
 			queryMode: 'local',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: Ext.create('Ext.data.Store', {
 				model: 'DocumentsTemplatesComboModel',
 				autoLoad: false
@@ -7634,7 +7634,7 @@ Ext.define('App.ux.combo.Themes', {
 			editable: false,
 			valueField: 'value',
 			displayField: 'name',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		}, null);
 		me.callParent();
@@ -7673,7 +7673,7 @@ Ext.define('App.ux.combo.Time', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7712,7 +7712,7 @@ Ext.define('App.ux.combo.Titles', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7740,7 +7740,7 @@ Ext.define('App.ux.combo.TransmitMethod', {
 			displayField: 'name',
 			valueField  : 'id',
 			queryMode   : 'local',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.storeTrsmit
 		}, null);
 		me.callParent();
@@ -7861,7 +7861,7 @@ Ext.define('App.ux.combo.Users', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();
@@ -7900,7 +7900,7 @@ Ext.define('App.ux.combo.YesNoNa', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7939,7 +7939,7 @@ Ext.define('App.ux.combo.YesNo', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);
@@ -7949,7 +7949,7 @@ Ext.define('App.view.search.PatientSearch',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPatientSearch',
-	pageTitle : i18n('advance_patient_search'),
+	pageTitle : _('advance_patient_search'),
 	pageLayout : 'border',
 	uses : ['Ext.grid.Panel'],
 	initComponent : function()
@@ -7966,7 +7966,7 @@ Ext.define('App.view.search.PatientSearch',
 			items : [
 			{
 				xtype : 'fieldcontainer',
-				fieldLabel : i18n('name'),
+				fieldLabel : _('name'),
 				layout : 'hbox',
 				defaults :
 				{
@@ -7975,24 +7975,24 @@ Ext.define('App.view.search.PatientSearch',
 				items : [
 				{
 					xtype : 'textfield',
-					emptyText : i18n('first_name'),
+					emptyText : _('first_name'),
 					name : 'fname'
 				},
 				{
 					xtype : 'textfield',
-					emptyText : i18n('middle_name'),
+					emptyText : _('middle_name'),
 					name : 'mname'
 				},
 				{
 					xtype : 'textfield',
-					emptyText : i18n('last_name'),
+					emptyText : _('last_name'),
 					name : 'lname'
 				}]
 			}],
 
 			buttons : [
 			{
-				text : i18n('search'),
+				text : _('search'),
 				iconCls : 'save',
 				handler : function()
 				{
@@ -8000,9 +8000,9 @@ Ext.define('App.view.search.PatientSearch',
 				}
 			}, '-',
 			{
-				text : i18n('reset'),
+				text : _('reset'),
 				iconCls : 'save',
-				tooltip : i18n('hide_selected_office_note'),
+				tooltip : _('hide_selected_office_note'),
 				handler : function()
 				{
 					//TODO: Finish me.
@@ -8023,20 +8023,20 @@ Ext.define('App.view.search.PatientSearch',
 			},
 			{
 				width : 150,
-				header : i18n('date'),
+				header : _('date'),
 				sortable : true,
 				dataIndex : 'date',
 				renderer : Ext.util.Format.dateRenderer('Y-m-d H:i:s')
 			},
 			{
 				width : 150,
-				header : i18n('user'),
+				header : _('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
 			{
 				flex : 1,
-				header : i18n('note'),
+				header : _('note'),
 				sortable : true,
 				dataIndex : 'body'
 			}],
@@ -8044,7 +8044,7 @@ Ext.define('App.view.search.PatientSearch',
 			{
 				store : me.store,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				})
@@ -8200,13 +8200,13 @@ Ext.define('App.ux.window.Window', {
 	patientInfoAlert: function() {
 		var patient = app.getCurrPatient();
 
-		Ext.Msg.alert(i18n('status'), i18n('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
+		Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
 	},
 
 	currPatientError: function() {
 		Ext.Msg.show({
-			title  : 'Oops! ' + i18n('no_patient_selected'),
-			msg    : i18n('select_patient_patient_live_search'),
+			title  : 'Oops! ' + _('no_patient_selected'),
+			msg    : _('select_patient_patient_live_search'),
 			scope  : this,
 			buttons: Ext.Msg.OK,
 			icon   : Ext.Msg.ERROR,
@@ -8273,7 +8273,7 @@ Ext.define('App.ux.window.Window', {
 	},
 
 	passwordVerificationWin: function(callback) {
-		var msg = Ext.Msg.prompt(i18n('password_verification'), i18n('please_enter_your_password') + ':', function(btn, password) {
+		var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
 			callback(btn, password);
 		});
 		var f = msg.textField.getInputId();
@@ -9424,12 +9424,12 @@ Ext.define('App.ux.LiveRadiologySearch', {
 			store: me.store,
 			displayField: 'code_text_medium',
 			valueField: 'code_text_medium',
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -10781,7 +10781,7 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-				return record.data.id + ': ' + (record.data.name ? record.data.name : ' * ' ) + ' ' + (!record.data.active ? ('(' +  i18n('inactive') + ')') : '') ;
+				return record.data.id + ': ' + (record.data.name ? record.data.name : ' * ' ) + ' ' + (!record.data.active ? ('(' +  _('inactive') + ')') : '') ;
 			}
 		},
 		{
@@ -16986,7 +16986,7 @@ Ext.define('App.model.areas.PoolDropAreas', {
 });
 Ext.define('App.view.patient.windows.PreventiveCare', {
 	extend: 'App.ux.window.Window',
-	title: i18n('preventive_care_window'),
+	title: _('preventive_care_window'),
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
@@ -17005,23 +17005,23 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			height: 400,
 			width: 700,
 			features: Ext.create('Ext.grid.feature.Grouping', {
-				groupHeaderTpl: i18n('type') + ': {name} ({rows.length} ' + i18n('item') + '{[values.rows.length > 1 ? "s" : ""]})',
+				groupHeaderTpl: _('type') + ': {name} ({rows.length} ' + _('item') + '{[values.rows.length > 1 ? "s" : ""]})',
 				hideGroupedHeader: true,
 				startCollapsed: true
 			}),
 			columns: [
 				{
-					header: i18n('type'),
+					header: _('type'),
 					dataIndex: 'type',
 					width: 200
 				},
 				{
-					header: i18n('description'),
+					header: _('description'),
 					dataIndex: 'description',
 					width: 200
 				},
 				{
-					header: i18n('reason'),
+					header: _('reason'),
 					dataIndex: 'reason',
 					flex: 1
 
@@ -17034,7 +17034,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 				clicksToEdit: 1,
 				items: [
 					{
-						title: i18n('general'),
+						title: _('general'),
 						xtype: 'container',
 						padding: 10,
 						layout: 'vbox',
@@ -17050,7 +17050,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 									{
 										xtype: 'textfield',
 										name: 'reason',
-										fieldLabel: i18n('reason'),
+										fieldLabel: _('reason'),
 										width: 585,
 										labelWidth: 70,
 										disabled: true,
@@ -17072,7 +17072,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 
 									{
 										xtype: 'textfield',
-										fieldLabel: i18n('observation'),
+										fieldLabel: _('observation'),
 										name: 'observation',
 										width: 250,
 										labelWidth: 70,
@@ -17080,7 +17080,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 										action: 'observation'
 									},
 									{
-										fieldLabel: i18n('date'),
+										fieldLabel: _('date'),
 										xtype: 'datefield',
 										disabled: true,
 										action: 'date',
@@ -17093,7 +17093,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 									{
 										xtype: 'checkboxfield',
 										name: 'dismiss',
-										fieldLabel: i18n('dismiss_alert'),
+										fieldLabel: _('dismiss_alert'),
 										enableKeyEvents: true,
 										listeners: {
 											scope: me,
@@ -17183,7 +17183,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 Ext.define('App.view.patient.windows.DocumentViewer', {
 	extend: 'Ext.window.Window',
 	xtype: 'documentviewerwindow',
-	title: i18n('documents_viewer_window'),
+	title: _('documents_viewer_window'),
 	layout: 'fit',
 	height: 700,
 	width: 1000,
@@ -17195,7 +17195,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 	tbar: [
 		'->',
 		{
-			text: i18n('archive_document'),
+			text: _('archive_document'),
 			itemId: 'archiveDocumentBtn',
 			icon: 'resources/images/icons/save.png'
 		}
@@ -17204,7 +17204,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 Ext.define('App.view.patient.windows.NewEncounter', {
 	extend: 'Ext.window.Window',
 	itemId: 'EncounterDetailWindow',
-	title: i18n('encounter'),
+	title: _('encounter'),
 	closeAction: 'hide',
 	closable: false,
 	modal: true,
@@ -17225,13 +17225,13 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					action: 'encounter',
 					scope: me,
 					handler: me.onFormSave
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.cancelNewEnc
 				}
@@ -17270,8 +17270,8 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
 					if(response.result.encounter){
 						Ext.Msg.show({
-							title: 'Oops! ' + i18n('open_encounters_found') + '...',
-							msg: i18n('do_you_want_to') + ' <strong>' + i18n('continue_creating_the_new_encounters') + '</strong><br>"' + i18n('click_no_to_review_encounter_history') + '"',
+							title: 'Oops! ' + _('open_encounters_found') + '...',
+							msg: _('do_you_want_to') + ' <strong>' + _('continue_creating_the_new_encounters') + '</strong><br>"' + _('click_no_to_review_encounter_history') + '"',
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,
 							fn: function(btn){
@@ -17345,7 +17345,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 
 Ext.define('App.view.patient.windows.ArrivalLog', {
 	extend: 'App.ux.window.Window',
-	title      : i18n('patient_arrival_log'),
+	title      : _('patient_arrival_log'),
 	closeAction: 'hide',
     layout     : 'fit',
 	modal      : true,
@@ -17363,7 +17363,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 		me.tbar = [
             {
                 xtype       : 'patienlivetsearch',
-                fieldLabel  : i18n('look_for_patient'),
+                fieldLabel  : _('look_for_patient'),
                 width       : 400,
                 hideLabel:false,
                 enableKeyEvents:true,
@@ -17376,7 +17376,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 		    },
             '-',
             {
-                text: i18n('add_new_patient'),
+                text: _('add_new_patient'),
                 iconCls:'icoAddRecord',
                 action:'newPatientBtn',
                 disabled:true,
@@ -17403,32 +17403,32 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
                         items: [
                             {
                                 icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
-                                tooltip: i18n('remove'),
+                                tooltip: _('remove'),
                                 scope:me,
                                 handler: me.onPatientRemove
                             }
                         ]
                     },
                     {
-                        header: i18n('time'),
+                        header: _('time'),
                         dataIndex:'time',
 	                    width:130
                     },
                     {
-                        header: i18n('record') + ' #',
+                        header: _('record') + ' #',
                         dataIndex:'pid'
                     },
                     {
-                        header: i18n('patient_name'),
+                        header: _('patient_name'),
                         dataIndex:'name',
                         flex:1
                     },
                     {
-                        header: i18n('insurance'),
+                        header: _('insurance'),
                         dataIndex:'insurance'
                     },
                     {
-                        header: i18n('area'),
+                        header: _('area'),
                         dataIndex:'area'
                     },
                     {
@@ -17491,9 +17491,9 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
             record = store.getAt(rowIndex);
 	    Encounter.checkForAnOpenedEncounterByPid({pid:record.data.pid,date:Ext.Date.format(new Date(), 'Y-m-d H:i:s')}, function(provider, response){
 		    if(response.result) {
-			    me.msg('Oops!', i18n('patient_have_a_opened_encounter'));
+			    me.msg('Oops!', _('patient_have_a_opened_encounter'));
 		    } else {
-			    me.msg('Sweet!', i18n('patient_have_been_removed'));
+			    me.msg('Sweet!', _('patient_have_been_removed'));
 			    store.remove(record);
 		    }
 	    });
@@ -17894,7 +17894,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 		'App.view.dashboard.panel.OnotesPortlet',
 		'App.view.dashboard.panel.VisitsPortlet'
 	],
-	pageTitle: i18n('dashboard'),
+	pageTitle: _('dashboard'),
 	getTools: function(){
 		return [
 			{
@@ -17902,7 +17902,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 				type: 'gear',
 				handler: function(e, target, panelHeader){
 					var portlet = panelHeader.ownerCt;
-					portlet.setLoading(i18n('working') + '...');
+					portlet.setLoading(_('working') + '...');
 					Ext.defer(function(){
 						portlet.setLoading(false);
 					}, 2000);
@@ -17925,7 +17925,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 							itemId: 'dashboard-col-1'
 //							items: [
 //								{
-//									title: i18n('office_notes'),
+//									title: _('office_notes'),
 //									tools: this.getTools(),
 //									items: { xtype: 'onotesportlet' },
 //									listeners: {
@@ -17961,7 +17961,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 	},
 
 	onPortletClose: function(portlet){
-		this.msg(i18n('message') + '!', portlet.title + ' ' + i18n('was_removed'));
+		this.msg(_('message') + '!', portlet.title + ' ' + _('was_removed'));
 	},
 
 	doReloadStores: function(){
@@ -17981,7 +17981,7 @@ Ext.define('App.view.dashboard.Dashboard', {
 
 Ext.define('App.view.calendar.Calendar', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('calendar_events'),
+	pageTitle: _('calendar_events'),
 
 	ckInStatus: ['@','~'],
 	ckOutStatus: ['!','x','?','%'],
@@ -18048,11 +18048,11 @@ Ext.define('App.view.calendar.Calendar', {
 				'write': function(store, operation){
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
 					if(operation.action == 'create'){
-						this.msg(i18n('add'), 'Added "' + title + '"');
+						this.msg(_('add'), 'Added "' + title + '"');
 					}else if(operation.action == 'update'){
-						this.msg(i18n('update'), 'Updated "' + title + '"');
+						this.msg(_('update'), 'Updated "' + title + '"');
 					}else if(operation.action == 'destroy'){
-						this.msg(i18n('delete'), 'Deleted "' + title + '"');
+						this.msg(_('delete'), 'Deleted "' + title + '"');
 					}
 				}
 			}
@@ -18153,7 +18153,7 @@ Ext.define('App.view.calendar.Calendar', {
 							},
 							'eventadd': {
 								fn: function(cp, rec){
-//									app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+//									app.msg(_('sweet'), _('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
 								},
 								scope: this
 							},
@@ -18162,7 +18162,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 									me.getPoolAreaAction(rec);
 
-//									app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+//									app.msg(_('sweet'), _('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
 								},
 								scope: this
 							},
@@ -18199,7 +18199,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 									rec.commit();
 
-									//this.showMsg(i18n('event') + ' ' + rec.data[mappings.Title.name] + ' ' + i18n('was_moved_to') + ' ' +
+									//this.showMsg(_('event') + ' ' + rec.data[mappings.Title.name] + ' ' + _('was_moved_to') + ' ' +
 									//	Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
 								},
 								scope: this
@@ -18207,14 +18207,14 @@ Ext.define('App.view.calendar.Calendar', {
 							'eventresize': {
 								fn: function(vw, rec){
 									rec.commit();
-									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+									//this.showMsg(_('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
 								},
 								scope: this
 							},
 							'eventdelete': {
 								fn: function(win, rec){
 									me.eventStore.remove(rec);
-									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_deleted'));
+									//this.showMsg(_('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_deleted'));
 								},
 								scope: this
 							},
@@ -18269,7 +18269,7 @@ Ext.define('App.view.calendar.Calendar', {
 Ext.define('App.view.messages.Messages', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelMessages',
-	pageTitle: i18n('messages') + ' (' + i18n('inbox') + ')',
+	pageTitle: _('messages') + ' (' + _('inbox') + ')',
 	pageLayout: 'border',
 	defaults: {
 		split: true
@@ -18305,37 +18305,37 @@ Ext.define('App.view.messages.Messages', {
 			},
 			columns: [
 				{
-					header: i18n('status'),
+					header: _('status'),
 					sortable: true,
 					dataIndex: 'message_status',
 					width: 70
 				},
 				{
-					header: i18n('from'),
+					header: _('from'),
 					sortable: true,
 					dataIndex: 'from_user',
 					width: 200
 				},
 				{
-					header: i18n('to'),
+					header: _('to'),
 					sortable: true,
 					dataIndex: 'to_user',
 					width: 200
 				},
 				{
-					header: i18n('patient'),
+					header: _('patient'),
 					sortable: true,
 					dataIndex: 'patient_name',
 					width: 200
 				},
 				{
-					header: i18n('subject'),
+					header: _('subject'),
 					sortable: true,
 					dataIndex: 'subject',
 					flex: 1
 				},
 				{
-					header: i18n('type'),
+					header: _('type'),
 					sortable: true,
 					dataIndex: 'note_type',
 					width: 100
@@ -18345,13 +18345,13 @@ Ext.define('App.view.messages.Messages', {
 				{
 					store: me.storeMsgs,
 					displayInfo: true,
-					emptyMsg: i18n('no_office_notes_to_display'),
+					emptyMsg: _('no_office_notes_to_display'),
 					plugins: Ext.create('Ext.ux.SlidingPager',
 						{
 						}),
 					items: ['-',
 						{
-							text: i18n('delete'),
+							text: _('delete'),
 							cls: 'winDelete',
 							iconCls: 'delete',
 							itemId: 'deleteMsg',
@@ -18360,7 +18360,7 @@ Ext.define('App.view.messages.Messages', {
 							handler: me.onDelete
 						}, '-',
 						{
-							text: i18n('inbox'),
+							text: _('inbox'),
 							action: 'inbox',
 							enableToggle: true,
 							toggleGroup: 'message',
@@ -18369,7 +18369,7 @@ Ext.define('App.view.messages.Messages', {
 							handler: me.messagesType
 						}, '-',
 						{
-							text: i18n('sent'),
+							text: _('sent'),
 							action: 'sent',
 							enableToggle: true,
 							toggleGroup: 'message',
@@ -18377,7 +18377,7 @@ Ext.define('App.view.messages.Messages', {
 							handler: me.messagesType
 						}, '-',
 						{
-							text: i18n('trash'),
+							text: _('trash'),
 							action: 'trash',
 							enableToggle: true,
 							toggleGroup: 'message',
@@ -18387,7 +18387,7 @@ Ext.define('App.view.messages.Messages', {
 				}),
 			bbar: [
 				{
-					text: i18n('new_message'),
+					text: _('new_message'),
 					iconCls: 'newMessage',
 					itemId: 'newMsg',
 					handler: function(){
@@ -18396,7 +18396,7 @@ Ext.define('App.view.messages.Messages', {
 				},
 				'-',
 				{
-					text: i18n('reply'),
+					text: _('reply'),
 					iconCls: 'edit',
 					itemId: 'replyMsg',
 					disabled: true,
@@ -18442,15 +18442,15 @@ Ext.define('App.view.messages.Messages', {
 									items: [
 										{
 											xtype: 'patienlivetsearch',
-											fieldLabel: i18n('patient'),
-											emptyText: i18n('no_patient_selected'),
+											fieldLabel: _('patient'),
+											emptyText: _('no_patient_selected'),
 											itemId: 'patientCombo',
 											name: 'pid',
 											hideLabel: false
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('patient'),
+											fieldLabel: _('patient'),
 											itemId: 'patientField',
 											name: 'patient_name',
 											readOnly: true,
@@ -18459,7 +18459,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype: 'userscombo',
 											name: 'to_id',
-											fieldLabel: i18n('to'),
+											fieldLabel: _('to'),
 											validateOnChange: false,
 											allowBlank: false
 										}
@@ -18473,7 +18473,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype: 'msgnotetypecombo',
 											name: 'note_type',
-											fieldLabel: i18n('type'),
+											fieldLabel: _('type'),
 											listeners: {
 												scope: me,
 												select: me.onChange
@@ -18482,7 +18482,7 @@ Ext.define('App.view.messages.Messages', {
 										{
 											xtype: 'msgstatuscombo',
 											name: 'message_status',
-											fieldLabel: i18n('status'),
+											fieldLabel: _('status'),
 											listeners: {
 												scope: me,
 												select: me.onChange
@@ -18494,7 +18494,7 @@ Ext.define('App.view.messages.Messages', {
 						},
 						{
 							xtype: 'textfield',
-							fieldLabel: i18n('subject'),
+							fieldLabel: _('subject'),
 							name: 'subject',
 							margin: '0 5 5 5'
 						}
@@ -18535,7 +18535,7 @@ Ext.define('App.view.messages.Messages', {
 			],
 			bbar: [
 				{
-					text: i18n('send'),
+					text: _('send'),
 					iconCls: 'save',
 					itemId: 'sendMsg',
 					scope: me,
@@ -18543,7 +18543,7 @@ Ext.define('App.view.messages.Messages', {
 				},
 				'-',
 				{
-					text: i18n('delete'),
+					text: _('delete'),
 					cls: 'winDelete',
 					iconCls: 'delete',
 					itemId: 'deleteMsg',
@@ -18587,8 +18587,8 @@ Ext.define('App.view.messages.Messages', {
 	onNewMessage: function(){
 		var form = this.msgForm,
 			record = Ext.create('App.model.messages.Messages', {
-				message_status: i18n('new'),
-				note_type: i18n('unassigned')
+				message_status: _('new'),
+				note_type: _('unassigned')
 			});
 		say(record);
 		form.getForm().reset();
@@ -18614,10 +18614,10 @@ Ext.define('App.view.messages.Messages', {
 			store.sync();
 			store.load();
 			this.onNewMessage();
-			this.msg('Sweet!', i18n('message_sent'));
+			this.msg('Sweet!', _('message_sent'));
 		}
 		else{
-			this.msg('Oops!', i18n('please_complete_all_required_fields') + '.');
+			this.msg('Oops!', _('please_complete_all_required_fields') + '.');
 		}
 	},
 
@@ -18629,9 +18629,9 @@ Ext.define('App.view.messages.Messages', {
 		var form = this.msgForm.getForm(), store = this.storeMsgs;
 		Ext.Msg.show(
 			{
-				title: i18n('please_confirm') + '...',
+				title: _('please_confirm') + '...',
 				icon: Ext.MessageBox.QUESTION,
-				msg: i18n('are_you_sure_to_delete_this_message'),
+				msg: _('are_you_sure_to_delete_this_message'),
 				buttons: Ext.Msg.YESNO,
 				scope: this,
 				fn: function(btn){
@@ -18640,7 +18640,7 @@ Ext.define('App.view.messages.Messages', {
 						store.remove(currentRec);
 						store.destroy();
 						this.onNewMessage();
-						this.msg('Sweet!', i18n('sent_to_trash'));
+						this.msg('Sweet!', _('sent_to_trash'));
 					}
 				}
 			});
@@ -18733,7 +18733,7 @@ Ext.define('App.view.messages.Messages', {
 Ext.define('App.view.areas.FloorPlan', {
 	id: 'panelAreaFloorPlan',
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('area_floor_plan'),
+	pageTitle: _('area_floor_plan'),
 	floorPlanId: null,
 	initComponent: function(){
 		var me = this;
@@ -18741,13 +18741,13 @@ Ext.define('App.view.areas.FloorPlan', {
 		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
 
 		me.floorPlan = Ext.create('Ext.panel.Panel', {
-			title: i18n('floor_plans'),
+			title: _('floor_plans'),
 			layout: 'absolute',
 			tbar: [
 				'->',
 				{
 					xtype: 'floorplanareascombo',
-					fieldLabel: i18n('area'),
+					fieldLabel: _('area'),
 					labelWidth: 40,
 					listeners: {
 						scope: me,
@@ -18804,7 +18804,7 @@ Ext.define('App.view.areas.FloorPlan', {
 				height: record.data.height,
 				scope: me,
 				handler: me.onZoneClicked,
-				tooltip: i18n('patient_name') + ': [empty]',
+				tooltip: _('patient_name') + ': [empty]',
 				listeners: {
 					scope: me,
 					render: me.initializeZone,
@@ -18963,7 +18963,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 		PatientZone.addPatientToZone(params, function(provider, response){
 			data.patientZoneId = response.result.data.id;
-			me.msg('Sweet!', data.name + i18n('successfully_moved') + '.');
+			me.msg('Sweet!', data.name + _('successfully_moved') + '.');
 			me.setZone(zone, data);
 		});
 	},
@@ -18983,7 +18983,7 @@ Ext.define('App.view.areas.FloorPlan', {
 		if(zone.dropZone) zone.dropZone.lock();
 		if(zone.dragZone) zone.dragZone.unlock();
 
-		zone.setTooltip(i18n('patient_name') + ':' + data.name);
+		zone.setTooltip(_('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
 		zone.data = data;
 	},
@@ -18993,7 +18993,7 @@ Ext.define('App.view.areas.FloorPlan', {
 		zone.data = null;
 		if(zone.dropZone) zone.dropZone.unlock();
 		if(zone.dragZone) zone.dragZone.lock();
-		zone.setTooltip(i18n('patient_name') + ': [empty]');
+		zone.setTooltip(_('patient_name') + ': [empty]');
 		zone.removeCls(zone.priority);
 		zone.data = null;
 	},
@@ -19053,7 +19053,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 
 		me.items = [
 		{
-			title : i18n('blood_pressure'),
+			title : _('blood_pressure'),
 			margin : 5,
 			items : [
 			{
@@ -19068,7 +19068,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				},
 				axes : [
 				{
-					title : i18n('blood_pressure'),
+					title : _('blood_pressure'),
 					type : 'Numeric',
 					position : 'left',
 					fields : ['bp_systolic', 'bp_diastolic', 'bp_systolic_normal', 'bp_diastolic_normal'],
@@ -19083,7 +19083,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('date'),
+					title : _('date'),
 					type : 'Time',
 					dateFormat : 'Y-m-d h:i:s a',
 					position : 'bottom',
@@ -19091,7 +19091,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				}],
 				series : [
 				{
-					title : i18n('systolic'),
+					title : _('systolic'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -19119,7 +19119,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('diastolic'),
+					title : _('diastolic'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -19142,7 +19142,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 						trackMouse : true,
 						renderer : function(storeItem, item)
 						{
-							this.update(i18n('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n('diastolic') + ': ' + storeItem.get('bp_diastolic'));
+							this.update(_('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + _('diastolic') + ': ' + storeItem.get('bp_diastolic'));
 						}
 					}
 
@@ -19199,7 +19199,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				},
 				axes : [
 				{
-					title : i18n('pulse_per_min'),
+					title : _('pulse_per_min'),
 					type : 'Numeric',
 					position : 'left',
 					fields : ['pulse'],
@@ -19214,7 +19214,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('date'),
+					title : _('date'),
 					type : 'Time',
 					dateFormat : 'Y-m-d h:i:s a',
 					position : 'bottom',
@@ -19223,7 +19223,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				}],
 				series : [
 				{
-					title : i18n('pulse'),
+					title : _('pulse'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -19246,14 +19246,14 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 						trackMouse : true,
 						renderer : function(storeItem, item)
 						{
-							this.update(i18n('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n('pulse_per_min') + ': ' + storeItem.get('pulse'));
+							this.update(_('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + _('pulse_per_min') + ': ' + storeItem.get('pulse'));
 						}
 					}
 				}]
 			}]
 		},
 		{
-			title : i18n('temperature'),
+			title : _('temperature'),
 			margin : '0 5 5 5',
 			items : [
 			{
@@ -19268,7 +19268,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				},
 				axes : [
 				{
-					title : i18n('temp_fahrenheits'),
+					title : _('temp_fahrenheits'),
 					type : 'Numeric',
 					position : 'left',
 					fields : ['temp_f'],
@@ -19283,7 +19283,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('date'),
+					title : _('date'),
 					type : 'Time',
 					dateFormat : 'Y-m-d h:i:s a',
 					position : 'bottom',
@@ -19292,7 +19292,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				}],
 				series : [
 				{
-					title : i18n('temp_fahrenheits'),
+					title : _('temp_fahrenheits'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -19315,7 +19315,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 						trackMouse : true,
 						renderer : function(storeItem, item)
 						{
-							this.update(i18n('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n('temp_fahrenheits') + ': ' + storeItem.get('temp_f'));
+							this.update(_('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + _('temp_fahrenheits') + ': ' + storeItem.get('temp_f'));
 						}
 					}
 				}]
@@ -19374,7 +19374,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',
 			}],
 			series : [
 			{
-				title : i18n('circumference_cm'),
+				title : _('circumference_cm'),
 				type : 'scatter',
 				axis : 'left',
 				xField : 'age',
@@ -19572,7 +19572,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 	extend : 'Ext.panel.Panel',
 	layout : 'fit',
 	margin : 5,
-	title : i18n('weight_for_age'),
+	title : _('weight_for_age'),
 
 	initComponent : function()
 	{
@@ -19591,7 +19591,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 			},
 			axes : [
 			{
-				title : i18n('weight_kg'),
+				title : _('weight_kg'),
 				type : 'Numeric',
 				position : 'left',
 				fields : ['PP', 'P3', 'P5', 'P10', 'P25', 'P50', 'P75', 'P85', 'P90', 'P95', 'P97'],
@@ -19608,7 +19608,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 				maximum : 31
 			},
 			{
-				title : i18n('length_cm'),
+				title : _('length_cm'),
 				type : 'Numeric',
 				position : 'bottom',
 				fields : ['height'],
@@ -19617,7 +19617,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 			}],
 			series : [
 			{
-				title : i18n('weight_kg'),
+				title : _('weight_kg'),
 				type : 'scatter',
 				axis : 'left',
 				xField : 'height',
@@ -19640,7 +19640,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 					trackMouse : true,
 					renderer : function(storeItem, item)
 					{
-						this.update(i18n('length_cm') + ': ' + storeItem.get('height') + '<br>' + i18n('weightArray') + ': ' + storeItem.get('PP'));
+						this.update(_('length_cm') + ': ' + storeItem.get('height') + '<br>' + _('weightArray') + ': ' + storeItem.get('PP'));
 					}
 				}
 			},
@@ -19863,7 +19863,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
             enableRemove:true,
             items:[
                 {
-                    fieldLabel: i18n('full_description'),
+                    fieldLabel: _('full_description'),
                     xtype:'displayfield',
                     name:'code_text',
                     anchor:'100%'
@@ -19880,18 +19880,18 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             defaults:{ xtype:'textfield' },
                             items:[
                                 {
-                                    fieldLabel: i18n('place_of_service'),
+                                    fieldLabel: _('place_of_service'),
                                     name:'place_of_service',
                                     anchor:'100%'
                                 },
                                 {
                                     xtype:'checkbox',
                                     labelWidth:105,
-                                    fieldLabel: i18n('emergency') + '?',
+                                    fieldLabel: _('emergency') + '?',
                                     name:'emergency'
                                 },
                                 {
-                                    fieldLabel: i18n('charges'),
+                                    fieldLabel: _('charges'),
                                     name:'charge',
                                     anchor:'100%'
                                 }
@@ -19905,15 +19905,15 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             defaults:{ xtype:'textfield', anchor:'100%', labelWidth:110 },
                             items:[
                                 {
-                                    fieldLabel: i18n('days_of_units'),
+                                    fieldLabel: _('days_of_units'),
                                     name:'days_of_units'
                                 },
                                 {
-                                    fieldLabel: i18n('essdt_fam_plan'),
+                                    fieldLabel: _('essdt_fam_plan'),
                                     name:'essdt_plan'
                                 },
                                 {
-                                    fieldLabel: i18n('modifiers'),
+                                    fieldLabel: _('modifiers'),
                                     xtype:'livecptsearch',
                                     hideLabel:false,
                                     name:'modifiers'
@@ -19926,7 +19926,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                 },
                 {
                     xtype:'liveicdxsearch',
-                    fieldLabel: i18n('diagnosis'),
+                    fieldLabel: _('diagnosis'),
                     hideLabel:false,
                     name:'diagnosis'
                 }
@@ -19940,7 +19940,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
         me.items = [
             {
                 xtype:'panel',
-                title: i18n('cpt_search'),
+                title: _('cpt_search'),
                 itemId:'leftCol',
                 region:'west',
                 width:450,
@@ -19956,7 +19956,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                 items:[
                     {
                         xtype:'fieldset',
-                        title: i18n('cpt_quick_reference_options'),
+                        title: _('cpt_quick_reference_options'),
                         padding:'10 15',
                         margin:'0 0 3 0',
                         layout:'anchor',
@@ -19970,9 +19970,9 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             store:Ext.create('Ext.data.Store', {
                                 fields:['name', 'value'],
                                 data:[
-                                    { name: i18n('show_related_cpt_for_current_diagnostics'), value:0 },
-                                    { name: i18n('show_cpt_history_for_this_patient'), value:1 },
-                                    { name: i18n('show_cpt_commonly_used_by_clinic'), value:2 }
+                                    { name: _('show_related_cpt_for_current_diagnostics'), value:0 },
+                                    { name: _('show_cpt_history_for_this_patient'), value:1 },
+                                    { name: _('show_cpt_commonly_used_by_clinic'), value:2 }
                                 ]
                             }),
                             listeners:{
@@ -19998,13 +19998,13 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         },
                         columns:[
                             {
-                                text: i18n('code'),
+                                text: _('code'),
                                 width:70,
                                 sortable:true,
                                 dataIndex:'code'
                             },
                             {
-                                text: i18n('description'),
+                                text: _('description'),
                                 flex:1,
                                 sortable:true,
                                 dataIndex:'code_text_medium'
@@ -20019,7 +20019,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
             },
             {
                 xtype:'panel',
-                title: i18n('encounter_cpts'),
+                title: _('encounter_cpts'),
                 region:'center',
                 itemId:'rightCol',
                 bodyStyle:'background-color:#fff',
@@ -20031,7 +20031,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                 items:[
                     {
                         xtype:'fieldset',
-                        title: i18n('cpt_live_sarch'),
+                        title: _('cpt_live_sarch'),
                         padding:'10 15',
                         margin:'0 0 3 0',
                         layout:'anchor',
@@ -20051,19 +20051,19 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         store:me.encounterCptStore,
                         columns:[
                             {
-                                text: i18n('code'),
+                                text: _('code'),
                                 width:70,
                                 sortable:true,
                                 dataIndex:'code'
                             },
                             {
-                                text: i18n('description'),
+                                text: _('description'),
                                 flex:1,
                                 sortable:true,
                                 dataIndex:'code_text'
                             },
                             {
-                                text: i18n('status'),
+                                text: _('status'),
                                 width:50,
                                 sortable:true,
                                 dataIndex:'status',
@@ -20072,7 +20072,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         ],
                         tbar:[
                             {
-                                text: i18n('quick_reference'),
+                                text: _('quick_reference'),
                                 action:'referenceCptBtn',
                                 enableToggle:true,
                                 scope:me,
@@ -20080,7 +20080,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             },
                             '->',
                             {
-                                text: i18n('reload'),
+                                text: _('reload'),
                                 handler: function(){
                                     me.encounterCptStoreLoad(null);
                                 }
@@ -20145,7 +20145,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
 
     onCompleteRemove:function () {
-        app.msg('Sweet!', i18n('cpt_removed_from_this_encounter'));
+        app.msg('Sweet!', _('cpt_removed_from_this_encounter'));
     },
 
     onLiveCptSelect:function (btn, record) {
@@ -20168,7 +20168,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
     },
 
     onCptDropped:function(node, data, dropRecord, dropPosition, dropFunction){
-        app.msg('Sweet!', i18n('cpt_added_to_this_encounter'));
+        app.msg('Sweet!', _('cpt_added_to_this_encounter'));
         this.cptFormEdit.cancelEdit();
         var store = dropRecord.store,
             dropIndex = store.indexOf(dropRecord),
@@ -20230,7 +20230,7 @@ Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions'
 Ext.define('App.view.patient.encounter.ICDs', {
 	extend: 'Ext.form.FieldSet',
 	alias: 'widget.icdsfieldset',
-	title: i18n('dx_codes'),
+	title: _('dx_codes'),
 	padding: '10 15',
 	layout: {
 		type: 'vbox',
@@ -20504,7 +20504,7 @@ Ext.define('App.view.patient.encounter.ICDs', {
 });
 Ext.define('App.view.patient.windows.PossibleDuplicates', {
 	extend: 'App.ux.window.Window',
-	title: i18n('possible_duplicates'),
+	title: _('possible_duplicates'),
 	itemId: 'PossiblePatientDuplicatesWindow',
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
@@ -20553,7 +20553,7 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 
 		me.buttons = [
 			{
-				text: i18n('continue'),
+				text: _('continue'),
 				itemId: 'PossiblePatientDuplicatesContinueBtn'
 			}
 		];
@@ -20578,7 +20578,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		'App.ux.combo.Templates'
 	],
 	xtype: 'patientdoctorsnotepanel',
-	title: i18n('doctors_notes'),
+	title: _('doctors_notes'),
 	itemId: 'DoctorsNotes',
 	columnLines: true,
 	store: Ext.create('App.store.patient.DoctorsNotes', {
@@ -20607,7 +20607,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 					//					scope: me,
 					//					handler: me.onRemoveClick
 				}
@@ -20615,12 +20615,12 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('date'),
+			text: _('date'),
 			dataIndex: 'order_date',
 			format: g('date_display_format')
 		},
 		{
-			text: i18n('type'),
+			text: _('type'),
 			dataIndex: 'template_id',
 			renderer: function(v){
 				return App.Current.getController('patient.DoctorsNotes').templatesRenderer(v);
@@ -20629,23 +20629,23 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('from'),
+			text: _('from'),
 			dataIndex: 'from_date',
 			format: g('date_display_format')
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('to'),
+			text: _('to'),
 			dataIndex: 'to_date',
 			format: g('date_display_format')
 		},
 		{
-			text: i18n('comments'),
+			text: _('comments'),
 			dataIndex: 'comments',
 			flex: 1
 		},
 		{
-			text: i18n('restrictions'),
+			text: _('restrictions'),
 			dataIndex: 'string_restrictions',
 			flex: 1
 		}
@@ -20665,29 +20665,29 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						{
 							xtype: 'fieldset',
 							layout: 'anchor',
-							title: i18n('general'),
+							title: _('general'),
 							width: 300,
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('order_date'),
+									fieldLabel: _('order_date'),
 									format: g('date_display_format'),
 									name: 'order_date'
 								},
 								{
 									xtype: 'documentstemplatescombo',
-									fieldLabel: i18n('document'),
+									fieldLabel: _('document'),
 									name: 'template_id'
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('from'),
+									fieldLabel: _('from'),
 									format: g('date_display_format'),
 									name: 'from_date'
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('to'),
+									fieldLabel: _('to'),
 									format: g('date_display_format'),
 									name: 'to_date'
 								}
@@ -20696,7 +20696,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						{
 							xtype: 'fieldset',
 							layout: 'fit',
-							title: i18n('comments'),
+							title: _('comments'),
 							flex: 1,
 							height: 138,
 							margin: '0 5 0 5',
@@ -20710,7 +20710,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						},
 						{
 							xtype: 'fieldset',
-							title: i18n('restrictions'),
+							title: _('restrictions'),
 							height: 138,
 							width: 400,
 							autoScroll: true,
@@ -20730,7 +20730,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		'->',
 		'-',
 		{
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newDoctorsNoteBtn'
@@ -20738,7 +20738,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -20749,7 +20749,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 Ext.define('App.view.patient.EncounterDocumentsGrid', {
 	extend     : 'Ext.grid.Panel',
 	alias:'widget.documentsimplegrid',
-	title: i18n('documents'),
+	title: _('documents'),
     split:true,
 	initComponent: function() {
 		var me = this;
@@ -20762,7 +20762,7 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
                 items: [
                     {
 	                    icon: 'resources/images/icons/preview.png',
-	                    tooltip: i18n('view_document'),
+	                    tooltip: _('view_document'),
 	                    handler: me.onDocumentView,
 	                    getClass:function(){
 		                    return 'x-grid-icon-padding';
@@ -20771,7 +20771,7 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
                 ]
             },
             {
-                header: i18n('type'),
+                header: _('type'),
                 flex:1,
                 dataIndex:'docType'
             }
@@ -20838,7 +20838,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 			},
 			items: [
 				{
-					title: i18n('immunizations'),
+					title: _('immunizations'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -20847,26 +20847,26 @@ Ext.define('App.view.patient.ItemsToReview', {
 					margin: '0 5 5 0',
 					columns: [
 						{
-							header: i18n('immunization'),
+							header: _('immunization'),
 							width: 250,
 							dataIndex: 'vaccine_name'
 						},
 						{
-							header: i18n('date'),
+							header: _('date'),
 							width: 90,
 							xtype: 'datecolumn',
 							format: 'Y-m-d',
 							dataIndex: 'administered_date'
 						},
 						{
-							header: i18n('notes'),
+							header: _('notes'),
 							flex: 1,
 							dataIndex: 'note'
 						}
 					]
 				},
 				{
-					title: i18n('allergies'),
+					title: _('allergies'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -20874,17 +20874,17 @@ Ext.define('App.view.patient.ItemsToReview', {
 					itemId: 'ItemsToReviewAllergiesGrid',
 					columns: [
 						{
-							header: i18n('type'),
+							header: _('type'),
 							width: 100,
 							dataIndex: 'allergy_type'
 						},
 						{
-							header: i18n('name'),
+							header: _('name'),
 							width: 100,
 							dataIndex: 'allergy'
 						},
 						{
-							header: i18n('severity'),
+							header: _('severity'),
 							flex: 1,
 							dataIndex: 'severity'
 						}
@@ -20904,7 +20904,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 			},
 			items: [
 				{
-					title: i18n('active_problems'),
+					title: _('active_problems'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -20913,20 +20913,20 @@ Ext.define('App.view.patient.ItemsToReview', {
 					itemId: 'ItemsToReviewActiveProblemsGrid',
 					columns: [
 						{
-							header: i18n('problem'),
+							header: _('problem'),
 							width: 250,
 							dataIndex: 'code_text'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('begin_date'),
+							header: _('begin_date'),
 							width: 90,
 							format: 'Y-m-d',
 							dataIndex: 'begin_date'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('end_date'),
+							header: _('end_date'),
 							flex: 1,
 							format: 'Y-m-d',
 							dataIndex: 'end_date'
@@ -20934,7 +20934,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 					]
 				},
 				{
-					title: i18n('medications'),
+					title: _('medications'),
 					frame: true,
 					height: 180,
 					flex: 1,
@@ -20942,20 +20942,20 @@ Ext.define('App.view.patient.ItemsToReview', {
 					itemId: 'ItemsToReviewMedicationsGrid',
 					columns: [
 						{
-							header: i18n('medication'),
+							header: _('medication'),
 							width: 250,
 							dataIndex: 'STR'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('begin_date'),
+							header: _('begin_date'),
 							width: 90,
 							format: 'Y-m-d',
 							dataIndex: 'begin_date'
 						},
 						{
 							xtype: 'datecolumn',
-							header: i18n('end_date'),
+							header: _('end_date'),
 							flex: 1,
 							format: 'Y-m-d',
 							dataIndex: 'end_date'
@@ -20966,10 +20966,10 @@ Ext.define('App.view.patient.ItemsToReview', {
 		},
 		{
 			xtype: 'fieldset',
-			title: i18n('social_history'),
+			title: _('social_history'),
 			items: [
 				{
-					fieldLabel: i18n('smoking_status'),
+					fieldLabel: _('smoking_status'),
 					xtype: 'mitos.smokingstatuscombo',
 					itemId: 'reviewsmokingstatuscombo',
 					allowBlank: false,
@@ -20981,7 +20981,7 @@ Ext.define('App.view.patient.ItemsToReview', {
 	],
 	buttons: [
 		{
-			text: i18n('review_all'),
+			text: _('review_all'),
 			name: 'review',
 			itemId: 'encounterRecordAdd'
 		}
@@ -20996,7 +20996,7 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 	itemSelector : 'div.alert-div',
 	loadMask : true,
 	singleSelect : true,
-	emptyText : '<span style="color: #616161; font-size: 12px;">Sweet! ' + i18n('no_alerts_found') + '.</span>',
+	emptyText : '<span style="color: #616161; font-size: 12px;">Sweet! ' + _('no_alerts_found') + '.</span>',
 	initComponent : function()
 	{
 		var me = this;
@@ -21019,7 +21019,7 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 Ext.define('App.view.patient.NewPatient', {
 	extend       : 'App.ux.RenderPanel',
 	id           : 'panelNewPatient',
-	pageTitle    : i18n('patient_entry_form'),
+	pageTitle    : _('patient_entry_form'),
 	initComponent: function() {
 
 		var me = this;
@@ -21035,8 +21035,8 @@ Ext.define('App.view.patient.NewPatient', {
 	 */
 	confirmationWin: function(callback) {
 		Ext.Msg.show({
-			title  : i18n('please_confirm') + '...',
-			msg    : i18n('do_you_want_to_create_a_new_patient'),
+			title  : _('please_confirm') + '...',
+			msg    : _('do_you_want_to_create_a_new_patient'),
 			icon   : Ext.MessageBox.QUESTION,
 			buttons: Ext.Msg.YESNO,
 			scope  : this,
@@ -21074,7 +21074,7 @@ Ext.define('App.view.patient.Vitals', {
 		'App.ux.form.fields.DateTime'
 	],
 	alias: 'widget.vitalspanel',
-	title: i18n('vitals'),
+	title: _('vitals'),
 	layout: 'border',
 	bodyPadding: 5,
 	items: [
@@ -21097,28 +21097,28 @@ Ext.define('App.view.patient.Vitals', {
 				{
 					itemId: 'bpBlock',
 					margin: '0 5 5 0',
-					html: '<p class="title">' + i18n('bp') + '</p><p class="value">--/--</p><p class="extra">' + i18n('systolic') + '/' + i18n('diastolic') + '</p>'
+					html: '<p class="title">' + _('bp') + '</p><p class="value">--/--</p><p class="extra">' + _('systolic') + '/' + _('diastolic') + '</p>'
 				},
 				{
 					itemId: 'tempBlock',
-					html: '<p class="title">' + i18n('temp') + '</p><p class="value">--</p><p class="extra">--</p>'
+					html: '<p class="title">' + _('temp') + '</p><p class="value">--</p><p class="extra">--</p>'
 				},
 				{
 					itemId: 'weighBlock',
-					html: '<p class="title">' + i18n('weight') + '</p><p class="value">--</p>'
+					html: '<p class="title">' + _('weight') + '</p><p class="value">--</p>'
 				},
 				{
 					itemId: 'heightBlock',
-					html: '<p class="title">' + i18n('height') + '</p><p class="value">--</p>'
+					html: '<p class="title">' + _('height') + '</p><p class="value">--</p>'
 				},
 				{
 					itemId: 'bmiBlock',
-					html: '<p class="title">' + i18n('bmi') + '</p><p class="value">--</p><p class="extra">--</p>'
+					html: '<p class="title">' + _('bmi') + '</p><p class="value">--</p><p class="extra">--</p>'
 				},
 				{
 					itemId: 'notesBlock',
 					margin: '0 5 5 5',
-					html: '<p class="title">' + i18n('notes') + '</p><p class="value" style="text-align: left"> -- </p><p class="extra">--</p>',
+					html: '<p class="title">' + _('notes') + '</p><p class="value" style="text-align: left"> -- </p><p class="extra">--</p>',
 					flex: 1
 				}
 			]
@@ -21151,14 +21151,14 @@ Ext.define('App.view.patient.Vitals', {
 				},
 				'->',
 				{
-					text: i18n('vitals'),
+					text: _('vitals'),
 					iconCls: 'icoAdd',
 					itemId: 'vitalAddBtn',
 					action: 'encounterRecordAdd'
 				},
 				'-',
 				{
-					text: i18n('sign'),
+					text: _('sign'),
 					icon: 'resources/images/icons/pen.png',
 					itemId: 'vitalSignBtn',
 					action: 'encounterRecordAdd'
@@ -21173,7 +21173,7 @@ Ext.define('App.view.patient.Vitals', {
 		var columns = [
 			{
 				xtype:'datecolumn',
-				text: i18n('date'),
+				text: _('date'),
 				dataIndex: 'date',
 				format: 'Y-m-d g:i a',
 				width: 180,
@@ -21183,10 +21183,10 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			},
 			{
-				text: i18n('bp'),
+				text: _('bp'),
 				columns:[
 					{
-						text: i18n('systolic'),
+						text: _('systolic'),
 						dataIndex: 'bp_systolic',
 						width: 65,
 						editor: {
@@ -21195,7 +21195,7 @@ Ext.define('App.view.patient.Vitals', {
 						}
 					},
 					{
-						text: i18n('diastolic'),
+						text: _('diastolic'),
 						dataIndex: 'bp_diastolic',
 						width: 65,
 						editor: {
@@ -21209,7 +21209,7 @@ Ext.define('App.view.patient.Vitals', {
 
 		if(g('units_of_measurement') != 'metric'){
 			columns.push({
-				text: i18n('temp'),
+				text: _('temp'),
 				dataIndex: 'temp_f',
 				width: 70,
 				editor: {
@@ -21224,7 +21224,7 @@ Ext.define('App.view.patient.Vitals', {
 			});
 		}else{
 			columns.push({
-				text: i18n('temp'),
+				text: _('temp'),
 				dataIndex: 'temp_c',
 				width: 70,
 				editor: {
@@ -21240,7 +21240,7 @@ Ext.define('App.view.patient.Vitals', {
 		}
 
 		columns.push({
-			text: i18n('temp_location'),
+			text: _('temp_location'),
 			dataIndex: 'temp_location',
 			editor: {
 				xtype: 'gaiaehr.combo',
@@ -21250,7 +21250,7 @@ Ext.define('App.view.patient.Vitals', {
 
 		if(g('units_of_measurement') != 'metric'){
 			columns.push({
-				text: i18n('weight_lbs'),
+				text: _('weight_lbs'),
 				dataIndex: 'weight_lbs',
 				width: 80,
 				editor: {
@@ -21264,7 +21264,7 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			});
 			columns.push({
-				text: i18n('height_in'),
+				text: _('height_in'),
 				dataIndex: 'height_in',
 				width: 70,
 				editor: {
@@ -21279,7 +21279,7 @@ Ext.define('App.view.patient.Vitals', {
 			});
 		}else{
 			columns.push({
-				text: i18n('weight'),
+				text: _('weight'),
 				dataIndex: 'weight_kg',
 				width: 80,
 				editor: {
@@ -21293,7 +21293,7 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			});
 			columns.push({
-				text: i18n('height_cm'),
+				text: _('height_cm'),
 				dataIndex: 'height_cm',
 				width: 70,
 				editor: {
@@ -21309,7 +21309,7 @@ Ext.define('App.view.patient.Vitals', {
 		}
 
 		columns.push({
-			text: i18n('pulse'),
+			text: _('pulse'),
 			dataIndex: 'pulse',
 			width: 60,
 			editor: {
@@ -21322,7 +21322,7 @@ Ext.define('App.view.patient.Vitals', {
 		});
 
 		columns.push({
-			text: i18n('respiration'),
+			text: _('respiration'),
 			dataIndex: 'respiration',
 			editor: {
 				xtype: 'textfield',
@@ -21335,45 +21335,45 @@ Ext.define('App.view.patient.Vitals', {
 
 
 //		{
-//			text: i18n('oxygen_saturation'),
+//			text: _('oxygen_saturation'),
 //			dataIndex: 'oxygen_saturation'
 //		},
 //		{
-//			text: i18n('head_circumference_in'),
+//			text: _('head_circumference_in'),
 //			dataIndex: 'head_circumference_in',
 //			width: 150
 //		},
 //		{
-//			text: i18n('head_circumference_cm'),
+//			text: _('head_circumference_cm'),
 //			dataIndex: 'head_circumference_cm',
 //			width: 150,
 //			hidden: true
 //		},
 //		{
-//			text: i18n('waist_circumference_in'),
+//			text: _('waist_circumference_in'),
 //			dataIndex: 'waist_circumference_in',
 //			width: 150
 //		},
 //		{
-//			text: i18n('waist_circumference_cm'),
+//			text: _('waist_circumference_cm'),
 //			dataIndex: 'waist_circumference_cm',
 //			width: 150,
 //			hidden: true
 //		},
 
 		columns.push({
-			text: i18n('bmi'),
+			text: _('bmi'),
 			dataIndex: 'bmi',
 			width: 50
 		});
 
 //		{
-//			text: i18n('bmi_status'),
+//			text: _('bmi_status'),
 //			dataIndex: 'bmi_status'
 //		}
 
 		columns.push({
-			text: i18n('other_notes'),
+			text: _('other_notes'),
 			dataIndex: 'other_notes',
 			flex: 1,
 			editor: {
@@ -21382,12 +21382,12 @@ Ext.define('App.view.patient.Vitals', {
 		});
 
 		columns.push({
-			text: i18n('administer_by'),
+			text: _('administer_by'),
 			dataIndex: 'administer_by'
 		});
 
 		columns.push({
-			text: i18n('authorized_by'),
+			text: _('authorized_by'),
 			dataIndex: 'authorized_by'
 		});
 
@@ -21409,27 +21409,27 @@ Ext.define('App.view.patient.ProgressNote', {
         me.tpl = new Ext.XTemplate(
             '<div class="progressNote">' +
             '   <div class="secession general-data">' +
-            '       <div class="title"> ' + i18n('general') + ' </div>' +
+            '       <div class="title"> ' + _('general') + ' </div>' +
             '       <table width="100%">' +
             '           <tr>' +
             '               <td>' +
-            '                   <div class="header row">' + i18n('name') + ': {patient_name} </div>' +
-            '                   <div class="header row">' + i18n('record') + ': #{pid} </div>' +
-            '                   <div class="header row">' + i18n('provider_date') + ': {open_by} </div>' +
-            '                   <div class="header row">' + i18n('onset_date') + ': {[values.onset_date || "-"]} </div>' +
-            '                   <div class="header row">' + i18n('provider') + ': {[values.signed_by || "-"]} </div>' +
+            '                   <div class="header row">' + _('name') + ': {patient_name} </div>' +
+            '                   <div class="header row">' + _('record') + ': #{pid} </div>' +
+            '                   <div class="header row">' + _('provider_date') + ': {open_by} </div>' +
+            '                   <div class="header row">' + _('onset_date') + ': {[values.onset_date || "-"]} </div>' +
+            '                   <div class="header row">' + _('provider') + ': {[values.signed_by || "-"]} </div>' +
             '               </td>' +
             '               <td>' +
-            '                   <div class="header row">' + i18n('service_date') + ': {service_date} </div>' +
-            '                   <div class="header row">' + i18n('visit_category') + ': {visit_category} </div>' +
-            '                   <div class="header row">' + i18n('facility') + ': {facility} </div>' +
-            '                   <div class="header row">' + i18n('priority') + ': {priority} </div>' +
-            '                   <div class="header row">' + i18n('signed_on') + ': {[values.close_date || "-"]} </div>' +
+            '                   <div class="header row">' + _('service_date') + ': {service_date} </div>' +
+            '                   <div class="header row">' + _('visit_category') + ': {visit_category} </div>' +
+            '                   <div class="header row">' + _('facility') + ': {facility} </div>' +
+            '                   <div class="header row">' + _('priority') + ': {priority} </div>' +
+            '                   <div class="header row">' + _('signed_on') + ': {[values.close_date || "-"]} </div>' +
             '               </td>' +
             '           </tr>' +
             '           <tr>' +
             '               <td colspan="2">' +
-            '                   <div class="header row" style="white-space: normal;">' + i18n('chief_complaint') + ': {brief_description} </div>' +
+            '                   <div class="header row" style="white-space: normal;">' + _('chief_complaint') + ': {brief_description} </div>' +
             '               </td>' +
             '           </tr>' +
             '       </table>' +
@@ -21439,7 +21439,7 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl if="reviewofsystems">' +
             '       <div class="secession">' +
-            '           <div class="title"> ' + i18n('review_of_systems') + ' </div>' +
+            '           <div class="title"> ' + _('review_of_systems') + ' </div>' +
             '           <tpl for="reviewofsystems">' +
             '               <tpl if="this.isNotNull(value)">' +
             '                   <div class="pblock"> {name}: {value} </div>' +
@@ -21452,7 +21452,7 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl if="reviewofsystemschecks">' +
             '       <div class="secession">' +
-            '           <div class="title"> ' + i18n('review_of_system_checks') + ' </div>' +
+            '           <div class="title"> ' + _('review_of_system_checks') + ' </div>' +
             '           <tpl for="reviewofsystemschecks">' +
             '               <tpl if="this.isNotNull(value)">' +
             '                   <div class="pblock"> {name}: {value} </div>' +
@@ -21466,11 +21466,11 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl for="soap">' +
             '       <div class="secession">' +
-            '           <div class="title"> ' + i18n('soap') + ' </div>' +
-            '           <p><span>' + i18n('subjective') + ':</span> {[this.doHtmlDecode(values.subjective) || "-"]} </p>' +
-            '           <p><span>' + i18n('objective') + ':</span> {[this.doHtmlDecode(values.objective) || "-"]}</p>' +
-            '           <p><span>' + i18n('assessment') + ':</span> {[this.doHtmlDecode(values.assessment) || "-"]}</p>' +
-            '           <p><span>' + i18n('plan') + ':</span> {[this.doHtmlDecode(values.plan) || "-"]}</p>' +
+            '           <div class="title"> ' + _('soap') + ' </div>' +
+            '           <p><span>' + _('subjective') + ':</span> {[this.doHtmlDecode(values.subjective) || "-"]} </p>' +
+            '           <p><span>' + _('objective') + ':</span> {[this.doHtmlDecode(values.objective) || "-"]}</p>' +
+            '           <p><span>' + _('assessment') + ':</span> {[this.doHtmlDecode(values.assessment) || "-"]}</p>' +
+            '           <p><span>' + _('plan') + ':</span> {[this.doHtmlDecode(values.plan) || "-"]}</p>' +
             '       </div>' +
             '   </tpl>' +
             /**
@@ -21478,9 +21478,9 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl for="speechdictation">' +
             '       <div class="secession">' +
-            '           <div class="title"> ' + i18n('speech_dictation') + ' </div>' +
-            '           <p><span>' + i18n('dictation') + ':</span> {dictation}</p>' +
-            '           <p><span>' + i18n('additional_notes') + ':</span> {additional_notes}</p>' +
+            '           <div class="title"> ' + _('speech_dictation') + ' </div>' +
+            '           <p><span>' + _('dictation') + ':</span> {dictation}</p>' +
+            '           <p><span>' + _('additional_notes') + ':</span> {additional_notes}</p>' +
             '       </div>' +
             '   </tpl>' +
             /**
@@ -21488,7 +21488,7 @@ Ext.define('App.view.patient.ProgressNote', {
              */
             '   <tpl if="vitals">' +
             '       <div class="secession vitals-data">' +
-            '           <div class="title"> ' + i18n('vitals') + ' </div>' +
+            '           <div class="title"> ' + _('vitals') + ' </div>' +
             '           <div style="overflow-x: auto">' +
             '               <table>' +
             '                   <tr>' +
@@ -21503,116 +21503,116 @@ Ext.define('App.view.patient.ProgressNote', {
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('weight_lbs') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('weight_lbs') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('weight_kg') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('weight_kg') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('height_in') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('height_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('height_cm') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('height_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('bp_systolic') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('bp_systolic') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('bp_diastolic') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('bp_diastolic') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('pulse') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('pulse') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('respiration') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('respiration') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('temp_f') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('temp_f') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('temp_c') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('temp_c') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('temp_location') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('temp_location') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('oxygen_saturation') + '%</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('oxygen_saturation') + '%</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('head_circumference_in') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('head_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('head_circumference_cm') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('head_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('waist_circumference_in') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('waist_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('waist_circumference_cm') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('waist_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('bmi') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('bmi') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('bmi_status') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('bmi_status') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('other_notes') + '</div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('other_notes') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
             '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n('administer') + '<div>' +
+            '                                           <div class="x-grid-cell-inner ">' + _('administer') + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row">' +
@@ -21811,7 +21811,7 @@ Ext.define('App.view.patient.Results', {
 		'App.store.patient.PatientsOrders',
 		'App.ux.LiveLabsSearch'
 	],
-	title: i18n('results'),
+	title: _('results'),
 	xtype: 'patientresultspanel',
 	layout: 'border',
 	items: [
@@ -21844,7 +21844,7 @@ Ext.define('App.view.patient.Results', {
 					]
 				},
 				{
-					header: i18n('orders'),
+					header: _('orders'),
 					dataIndex: 'description',
 					menuDisabled: true,
 					resizable: false,
@@ -21856,7 +21856,7 @@ Ext.define('App.view.patient.Results', {
 					}
 				},
 				{
-					header: i18n('status'),
+					header: _('status'),
 					dataIndex: 'status',
 					menuDisabled: true,
 					resizable: false,
@@ -21866,7 +21866,7 @@ Ext.define('App.view.patient.Results', {
 			bbar:[
 				'->',
 				{
-					text: i18n('new_order'),
+					text: _('new_order'),
 					itemId: 'OrderResultNewOrderBtn',
 					iconCls: 'icoAdd'
 				}
@@ -21874,7 +21874,7 @@ Ext.define('App.view.patient.Results', {
 		},
 		{
 			xtype: 'form',
-			title: i18n('order_result'),
+			title: _('order_result'),
 			region: 'south',
 			height: 400,
 			frame: true,
@@ -21885,7 +21885,7 @@ Ext.define('App.view.patient.Results', {
 			tools: [
 				{
 					xtype: 'button',
-					text: i18n('view_document'),
+					text: _('view_document'),
 					icon: 'resources/images/icons/icoView.png',
 					action: 'orderDocumentViewBtn'
 				}
@@ -21893,7 +21893,7 @@ Ext.define('App.view.patient.Results', {
 			items: [
 				{
 					xtype: 'panel',
-					title: i18n('report_info'),
+					title: _('report_info'),
 					region: 'west',
 					collapsible: true,
 					autoScroll: true,
@@ -21907,7 +21907,7 @@ Ext.define('App.view.patient.Results', {
 					items: [
 						{
 							xtype: 'fieldset',
-							title: i18n('report_info'),
+							title: _('report_info'),
 							defaults: {
 								xtype: 'textfield',
 								anchor: '100%'
@@ -21916,38 +21916,38 @@ Ext.define('App.view.patient.Results', {
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('report_date'),
+									fieldLabel: _('report_date'),
 									name: 'result_date',
 									format: 'Y-m-d',
 									allowBlank: false
 								},
 								{
-									fieldLabel: i18n('report_number'),
+									fieldLabel: _('report_number'),
 									name: 'lab_order_id',
 									allowBlank: false
 								},
 								{
-									fieldLabel: i18n('status'),
+									fieldLabel: _('status'),
 									name: 'result_status'
 								},
 								{
-									fieldLabel: i18n('observation_date'),
+									fieldLabel: _('observation_date'),
 									name: 'observation_date'
 								},
 								{
-									fieldLabel: i18n('specimen'),
+									fieldLabel: _('specimen'),
 									name: 'specimen_text'
 								},
 								{
 									xtype: 'textareafield',
-									fieldLabel: i18n('specimen_notes'),
+									fieldLabel: _('specimen_notes'),
 									name: 'specimen_notes',
 									height: 50
 								},
 								{
 									xtype: 'filefield',
 									labelAlign: 'top',
-									fieldLabel: i18n('upload_document'),
+									fieldLabel: _('upload_document'),
 									action: 'orderresultuploadfield',
 									submitValue: false
 								}
@@ -21955,7 +21955,7 @@ Ext.define('App.view.patient.Results', {
 						},
 						{
 							xtype: 'fieldset',
-							title: i18n('laboratory_info'),
+							title: _('laboratory_info'),
 							defaults: {
 								xtype: 'textfield',
 								anchor: '100%'
@@ -21966,12 +21966,12 @@ Ext.define('App.view.patient.Results', {
 							collapsed: true,
 							items: [
 								{
-									fieldLabel: i18n('name'),
+									fieldLabel: _('name'),
 									name: 'lab_name'
 								},
 								{
 									xtype: 'textareafield',
-									fieldLabel: i18n('address'),
+									fieldLabel: _('address'),
 									name: 'lab_address',
 									height: 50
 								}
@@ -22007,13 +22007,13 @@ Ext.define('App.view.patient.Results', {
 							]
 						},
 						{
-							text: i18n('name'),
+							text: _('name'),
 							menuDisabled: true,
 							dataIndex: 'code_text',
 							width: 350
 						},
 						{
-							text: i18n('value'),
+							text: _('value'),
 							menuDisabled: true,
 							dataIndex: 'value',
 							width: 180,
@@ -22040,7 +22040,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('units'),
+							text: _('units'),
 							menuDisabled: true,
 							dataIndex: 'units',
 							width: 75,
@@ -22049,7 +22049,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('abnormal'),
+							text: _('abnormal'),
 							menuDisabled: true,
 							dataIndex: 'abnormal_flag',
 							width: 75,
@@ -22076,7 +22076,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('range'),
+							text: _('range'),
 							menuDisabled: true,
 							dataIndex: 'reference_rage',
 							width: 150,
@@ -22085,7 +22085,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('notes'),
+							text: _('notes'),
 							menuDisabled: true,
 							dataIndex: 'notes',
 							width: 300,
@@ -22094,7 +22094,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('status'),
+							text: _('status'),
 							menuDisabled: true,
 							dataIndex: 'observation_result_status',
 							width: 60,
@@ -22107,11 +22107,11 @@ Ext.define('App.view.patient.Results', {
 			],
 			buttons: [
 				{
-					text: i18n('reset'),
+					text: _('reset'),
 					action: 'orderResultResetBtn'
 				},
 				{
-					text: i18n('save'),
+					text: _('save'),
 					action: 'orderResultSaveBtn'
 				}
 			]
@@ -22149,17 +22149,17 @@ Ext.define('App.view.patient.SocialHistory', {
 	features: [
 		{
 			ftype: 'grouping',
-			groupHeaderTpl: i18n('type') + ': {name}'
+			groupHeaderTpl: _('type') + ': {name}'
 		}
 	],
 	columns: [
 		{
-			text: i18n('type'),
+			text: _('type'),
 			dataIndex: 'category_code_text',
 			width: 250
 		},
 		{
-			text: i18n('observation'),
+			text: _('observation'),
 			dataIndex: 'observation',
 			flex: 1,
 			itemId: 'socialhistorypanelobservationcolumn',
@@ -22169,7 +22169,7 @@ Ext.define('App.view.patient.SocialHistory', {
 			}
 		},
 		{
-			text: i18n('note'),
+			text: _('note'),
 			dataIndex: 'note',
 			flex: 1,
 			editor: {
@@ -22178,7 +22178,7 @@ Ext.define('App.view.patient.SocialHistory', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('start'),
+			text: _('start'),
 			dataIndex: 'start_date',
 			format: 'Y-m-d',
 			width: 120,
@@ -22190,7 +22190,7 @@ Ext.define('App.view.patient.SocialHistory', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('end'),
+			text: _('end'),
 			dataIndex: 'end_date',
 			format: 'Y-m-d',
 			width: 120,
@@ -22203,7 +22203,7 @@ Ext.define('App.view.patient.SocialHistory', {
 	tbar: [
 		{
 			xtype: 'tbtext',
-			text: i18n('social_history'),
+			text: _('social_history'),
 			width: 100
 		},
 		{
@@ -22223,7 +22223,7 @@ Ext.define('App.view.patient.SocialHistory', {
 });
 Ext.define('App.view.patient.Visits', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('visits_history'),
+	pageTitle: _('visits_history'),
 	uses: [
 		'Ext.grid.Panel',
 		'Ext.ux.PreviewPlugin'
@@ -22248,7 +22248,7 @@ Ext.define('App.view.patient.Visits', {
 		// Visit History Grid
 		//******************************************************************
 		me.historyGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('encounter_history'),
+			title: _('encounter_history'),
 			store: me.store,
 			columns: [
 				{
@@ -22259,38 +22259,38 @@ Ext.define('App.view.patient.Visits', {
 				},
 				{
 					width: 150,
-					header: i18n('date'),
+					header: _('date'),
 					sortable: true,
 					dataIndex: 'service_date',
 					renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
 				},
 				{
 					flex: 1,
-					header: i18n('reason'),
+					header: _('reason'),
 					sortable: true,
 					dataIndex: 'brief_description'
 				},
 				{
 					width: 180,
-					header: i18n('provider'),
+					header: _('provider'),
 					sortable: false,
 					dataIndex: 'provider'
 				},
 				{
 					width: 120,
-					header: i18n('facility'),
+					header: _('facility'),
 					sortable: false,
 					dataIndex: 'facility'
 				},
 				{
 					width: 120,
-					header: i18n('billing_facility'),
+					header: _('billing_facility'),
 					sortable: true,
 					dataIndex: 'billing_facility'
 				},
 				{
 					width: 45,
-					header: i18n('close') + '?',
+					header: _('close') + '?',
 					sortable: true,
 					dataIndex: 'close_date',
 					renderer: me.openBool
@@ -22320,14 +22320,14 @@ Ext.define('App.view.patient.Visits', {
 				items: [
 					{
 						iconCls: '',
-						text: i18n('show_details'),
+						text: _('show_details'),
 						enableToggle: true,
 						scope: me,
 						toggleHandler: me.onDetailToggle
 					},
 					'-',
 					{
-						text: i18n('new_encounter'),
+						text: _('new_encounter'),
 						scope: me,
 						handler: me.createNewEncounter
 					}
@@ -22371,7 +22371,7 @@ Ext.define('App.view.patient.Visits', {
 	 */
 	onActive: function(callback){
 		if(this.checkIfCurrPatient()){
-			this.updateTitle(app.patient.name + ' (' + i18n('encounters') + ')');
+			this.updateTitle(app.patient.name + ' (' + _('encounters') + ')');
 			this.store.clearFilter(true);
 			this.store.filter([
 				{
@@ -22420,7 +22420,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 					},
 					items:[
 						me.invoicePanel = Ext.widget('panel',{
-							title:i18n('services_charges'),
+							title:_('services_charges'),
 							border:true,
 							frame:true,
 							bodyBorder:true,
@@ -22450,14 +22450,14 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     items:[
                                                         {
                                                             icon:'resources/images/icons/delete.png',
-                                                            tooltip:i18n('remove'),
+                                                            tooltip:_('remove'),
                                                             scope:me,
                                                             handler:me.onRemoveCharge
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    header:i18n('item'),
+                                                    header:_('item'),
                                                     dataIndex:'name',
                                                     flex:1,
                                                     editor:{
@@ -22466,14 +22466,14 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     }
                                                 },
                                                 {
-                                                    header:i18n('price'),
+                                                    header:_('price'),
                                                     width:80,
                                                     dataIndex:'amountOriginal',
                                                     align:'right',
                                                     renderer:me.currencyRenderer
                                                 },
                                                 {
-                                                    header:i18n('charge'),
+                                                    header:_('charge'),
                                                     width:80,
                                                     dataIndex:'amount',
                                                     align:'right',
@@ -22503,7 +22503,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     width:150,
                                                     items:[
                                                         me.total = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('total'),
+                                                            fieldLabel:_('total'),
                                                             labelWidth:70,
                                                             anchor:'100%',
                                                             labelAlign:'right',
@@ -22511,14 +22511,14 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                             margin:'2 0 1 0'
                                                         }),
                                                         me.paid = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('paid'),
+                                                            fieldLabel:_('paid'),
                                                             labelWidth:70,
                                                             anchor:'100%',
                                                             labelAlign:'right',
                                                             margin:'1 0'
                                                         }),
                                                         me.balance = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('balance'),
+                                                            fieldLabel:_('balance'),
                                                             labelWidth:70,
                                                             anchor:'100%',
                                                             labelAlign:'right',
@@ -22540,7 +22540,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                             xtype:'fieldset',
                                             layout:'column',
                                             margin:'5 10',
-                                            title:i18n('payment'),
+                                            title:_('payment'),
                                             items:[
                                                 me.billingNotes = Ext.widget('textarea',{
                                                     xtype:'textarea',
@@ -22548,7 +22548,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     name:'notes',
                                                     columnWidth:.5,
                                                     height:85,
-                                                    emptyText:i18n('additional_billing_notes')
+                                                    emptyText:_('additional_billing_notes')
 
                                                 }),
                                                 {
@@ -22558,19 +22558,19 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     margin:'0 0 0 15',
                                                     items:[
                                                         me.method = Ext.widget('mitos.paymentmethodcombo',{
-                                                            fieldLabel: i18n('payment_method'),
+                                                            fieldLabel: _('payment_method'),
                                                             labelWidth: 100,
                                                             name: 'method',
                                                             anchor:'100%'
                                                         }),
                                                         me.ref = Ext.widget('textfield',{
-                                                            fieldLabel: i18n('reference_#'),
+                                                            fieldLabel: _('reference_#'),
                                                             labelWidth: 100,
                                                             name: 'reference',
                                                             anchor:'100%'
                                                         }),
                                                         me.amount = Ext.widget('mitos.currency',{
-                                                            fieldLabel: i18n('amount'),
+                                                            fieldLabel: _('amount'),
                                                             xtype: 'mitos.currency',
                                                             labelWidth: 100,
                                                             name: 'amount',
@@ -22587,13 +22587,13 @@ Ext.define('App.view.patient.VisitCheckout', {
 							buttons:[
 								'->',
 								{
-									text:i18n('save_and_print'),
+									text:_('save_and_print'),
 									scope:me,
                                     action:'saveprint',
 									handler:me.onInvoiceSave
 								},
 								{
-									text:i18n('save'),
+									text:_('save'),
 									scope:me,
                                     action:'save',
 									handler:me.onInvoiceSave
@@ -22605,7 +22605,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 							}
 						}),
 						me.docsGrid = Ext.widget('documentsimplegrid', {
-							title:i18n('documents'),
+							title:_('documents'),
 							frame:true,
 							margin:'5 5 0 0',
 							flex:1
@@ -22618,7 +22618,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 					defaults:{ height:170 },
 					items:[
 						me.notesReminders = Ext.widget('form', {
-							title:i18n('notes_and_reminders'),
+							title:_('notes_and_reminders'),
 							frame:true,
 							flex:2,
 							action:'formnotes',
@@ -22630,39 +22630,39 @@ Ext.define('App.view.patient.VisitCheckout', {
 							items:[
 								{
 									xtype:'displayfield',
-									fieldLabel:i18n('message'),
+									fieldLabel:_('message'),
 									name:'message'
 								},
 								{
 									xtype:'textfield',
-									fieldLabel:i18n('note'),
+									fieldLabel:_('note'),
 									name:'new_note',
 									action:'notes'
 								},
 								{
 									xtype:'textfield',
 									grow:true,
-									fieldLabel:i18n('reminders'),
+									fieldLabel:_('reminders'),
 									name:'new_reminder',
 									action:'notes'
 								}
 							],
 							buttons:[
 								{
-									text:i18n('reset'),
+									text:_('reset'),
 									scope:me,
 									handler:me.resetNotes
 								},
 								'-',
 								{
-									text:i18n('save'),
+									text:_('save'),
 									scope:me,
 									handler:me.onCheckoutSaveNotes
 								}
 							]
 						}),
 						me.followUp = Ext.widget('form', {
-							title:i18n('followup_information'),
+							title:_('followup_information'),
 							frame:true,
 							flex:1,
 							margin:'5 5 5 0',
@@ -22675,19 +22675,19 @@ Ext.define('App.view.patient.VisitCheckout', {
 							},
 							items:[
 								{
-									fieldLabel:i18n('time'),
+									fieldLabel:_('time'),
 									xtype:'textfield',
 									name:'followup_time'
 								},
 								{
-									fieldLabel:i18n('facility'),
+									fieldLabel:_('facility'),
 									xtype:'activefacilitiescombo',
 									name:'followup_facility'
 								}
 							],
 							buttons:[
 								{
-									text:i18n('schedule_appointment'),
+									text:_('schedule_appointment'),
 									scope:me,
 									handler:me.scheduleAppointment
 								}
@@ -22707,7 +22707,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 		grid.getHeader().add(
 			{
 				xtype:'button',
-				text:i18n('service'),
+				text:_('service'),
 				iconCls:'icoAdd',
 				margin:'0 5 0 0',
 				scope:me,
@@ -22715,7 +22715,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 			},
 			{
 				xtype:'button',
-				text:i18n('copay'),
+				text:_('copay'),
 				iconCls:'icoAdd',
 				margin:'0 5 0 0',
 				scope:me,
@@ -22723,7 +22723,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 			}
 //			{
 //				xtype:'button',
-//				text:i18n('payment'),
+//				text:_('payment'),
 //				iconCls:'icoAdd',
 //				scope:me,
 //				handler:me.onAddPaymentClick
@@ -22827,9 +22827,9 @@ Ext.define('App.view.patient.VisitCheckout', {
 		if(form.isValid()){
 			Patient.addPatientNoteAndReminder(values, function(provider, response){
 				if(response.result.success){
-					app.msg('Sweet!', i18n('note_and_reminder'));
+					app.msg('Sweet!', _('note_and_reminder'));
 				}else{
-					app.msg('Oops!', i18n('note_entry_error'));
+					app.msg('Oops!', _('note_entry_error'));
 				}
 			});
 		}
@@ -23001,7 +23001,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 		this.pid = app.patient.pid;
 		this.eid = app.patient.eid;
 		this.uid = app.user.id;
-		this.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + i18n('visit_checkout') + ')');
+		this.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + _('visit_checkout') + ')');
 		this.setVoucher();
 	},
 
@@ -23029,7 +23029,7 @@ Ext.define('App.view.fees.Billing',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelBilling',
-	pageTitle : i18n( 'billing' ),
+	pageTitle : _( 'billing' ),
 	uses : ['Ext.grid.Panel'],
 	pageLayout : 'card',
 
@@ -23069,32 +23069,32 @@ Ext.define('App.view.fees.Billing',
 			},
 			columns : [
 			{
-				header : i18n( 'service_date' ),
+				header : _( 'service_date' ),
 				dataIndex : 'service_date',
 				width : 200
 			},
 			{
-				header : i18n( 'patient' ),
+				header : _( 'patient' ),
 				dataIndex : 'patientName',
 				width : 200
 			},
 			{
-				header : i18n( 'primary_provider' ),
+				header : _( 'primary_provider' ),
 				dataIndex : 'primaryProvider',
 				width : 200
 			},
 			{
-				header : i18n( 'encounter_provider' ),
+				header : _( 'encounter_provider' ),
 				dataIndex : 'encounterProvider',
 				flex : 1
 			},
 			{
-				header : i18n( 'insurance' ),
+				header : _( 'insurance' ),
 				dataIndex : 'insurance',
 				width : 200
 			},
 			{
-				header : i18n( 'billing_stage' ),
+				header : _( 'billing_stage' ),
 				dataIndex : 'billing_stage',
 				renderer : me.stage,
 				width : 135
@@ -23107,7 +23107,7 @@ Ext.define('App.view.fees.Billing',
 				items : [
 				{
 					xtype : 'displayfield',
-					fieldLabel : i18n( 'patient_search' )
+					fieldLabel : _( 'patient_search' )
 				},
 				{
 					xtype : 'patienlivetsearch',
@@ -23123,7 +23123,7 @@ Ext.define('App.view.fees.Billing',
 				{
 					xtype : 'datefield',
 					itemId : 'datefrom',
-					fieldLabel : i18n( 'from' ),
+					fieldLabel : _( 'from' ),
 					labelWidth : 35,
 					width : 150,
 					format : g('date_display_format')
@@ -23131,7 +23131,7 @@ Ext.define('App.view.fees.Billing',
 				{
 					xtype : 'datefield',
 					itemId : 'dateto',
-					fieldLabel : i18n( 'to' ),
+					fieldLabel : _( 'to' ),
 					labelWidth : 35,
 					padding : '0 5 0 0',
 					width : 150,
@@ -23148,7 +23148,7 @@ Ext.define('App.view.fees.Billing',
 					labelWidth : 60,
 					typeAhead : true,
 					padding : '0 5 0 5',
-					fieldLabel : i18n( 'provider' ),
+					fieldLabel : _( 'provider' ),
 					defaultValue : 'All'
 
 				},
@@ -23157,7 +23157,7 @@ Ext.define('App.view.fees.Billing',
 					itemId : 'insurance',
 					labelWidth : 60,
 					padding : '0 5 0 5',
-					fieldLabel : i18n( 'insurance' ),
+					fieldLabel : _( 'insurance' ),
 					defaultValue : 'All'
 
 				}]
@@ -23171,7 +23171,7 @@ Ext.define('App.view.fees.Billing',
 					xtype : 'button',
 					width : 80,
 					margin : '0 0 3 0',
-					text : i18n( 'search' ),
+					text : _( 'search' ),
 					listeners :
 					{
 						scope : me,
@@ -23188,13 +23188,13 @@ Ext.define('App.view.fees.Billing',
 					xtype : 'button',
 					width : 170,
 					margin : '0 0 3 0',
-					text : i18n( 'generate_cms1500_pdf' )
+					text : _( 'generate_cms1500_pdf' )
 				},
 				{
 					xtype : 'button',
 					width : 170,
 					margin : '0 0 3 0',
-					text : i18n( 'generate_cms1500_text' )
+					text : _( 'generate_cms1500_text' )
 				}]
 			}, '-',
 			{
@@ -23204,15 +23204,15 @@ Ext.define('App.view.fees.Billing',
 				items : [
 				{
 					xtype : 'button',
-					text : i18n( 'generate_x12' )
+					text : _( 'generate_x12' )
 				}]
 			}, '->',
 			{
 				xtype : 'tbtext',
-				text : i18n( 'past_due' ) + ':'
+				text : _( 'past_due' ) + ':'
 			},
 			{
-				text : i18n( '30+' ),
+				text : _( '30+' ),
 				enableToggle : true,
 				action : 30,
 				toggleGroup : 'pastduedates',
@@ -23225,7 +23225,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18n( '60+' ),
+				text : _( '60+' ),
 				enableToggle : true,
 				action : 60,
 				scale : 'large',
@@ -23237,7 +23237,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18n( '120+' ),
+				text : _( '120+' ),
 				enableToggle : true,
 				action : 120,
 				scale : 'large',
@@ -23249,7 +23249,7 @@ Ext.define('App.view.fees.Billing',
 				}
 			},
 			{
-				text : i18n( '180+' ),
+				text : _( '180+' ),
 				enableToggle : true,
 				action : 180,
 				scale : 'large',
@@ -23272,8 +23272,8 @@ Ext.define('App.view.fees.Billing',
 		 */
 		me.encounterBillingDetails = Ext.create( 'Ext.panel.Panel',
 		{
-			defaultTitle : i18n( 'encounter_billing_details' ),
-			title : i18n( 'encounter_billing_details' ),
+			defaultTitle : _( 'encounter_billing_details' ),
+			title : _( 'encounter_billing_details' ),
 			layout : 'border',
 			bodyStyle : 'background-color:#fff',
 			items : [Ext.create( 'Ext.container.Container',
@@ -23288,7 +23288,7 @@ Ext.define('App.view.fees.Billing',
 					items : [
 					{
 						xtype : 'fieldset',
-						title : i18n( 'encounter_general_info' ),
+						title : _( 'encounter_general_info' ),
 						margin : '5 5 0 5',
 						items : [
 						{
@@ -23306,7 +23306,7 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'datefield',
 								name : 'service_date',
-								fieldLabel : i18n( 'service_date' ),
+								fieldLabel : _( 'service_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
 								format : g('date_display_format')
@@ -23314,13 +23314,13 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'activeinsurancescombo',
 								name : 'insurance',
-								fieldLabel : i18n( 'insurance' ),
+								fieldLabel : _( 'insurance' ),
 								labelAlign : 'right'
 							},
 							{
 								xtype : 'textfield',
 								name : 'facility',
-								fieldLabel : i18n( 'facility' ),
+								fieldLabel : _( 'facility' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1
@@ -23341,7 +23341,7 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'datefield',
 								name : 'hosp_date',
-								fieldLabel : i18n( 'hosp_date' ),
+								fieldLabel : _( 'hosp_date' ),
 								labelAlign : 'right',
 								labelWidth : 80,
 								format : g('date_display_format')
@@ -23349,13 +23349,13 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'activeinsurancescombo',
 								name : 'sec_insurance',
-								fieldLabel : i18n( 'sec_insurance' ),
+								fieldLabel : _( 'sec_insurance' ),
 								labelAlign : 'right'
 							},
 							{
 								xtype : 'mitos.providerscombo',
 								name : 'provider',
-								fieldLabel : i18n( 'provider' ),
+								fieldLabel : _( 'provider' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1
@@ -23376,20 +23376,20 @@ Ext.define('App.view.fees.Billing',
 							{
 								xtype : 'mitos.authorizationscombo',
 								name : 'authorization',
-								fieldLabel : i18n( 'authorization' ),
+								fieldLabel : _( 'authorization' ),
 								labelAlign : 'right',
 								labelWidth : 80
 							},
 							{
 								xtype : 'textfield',
 								name : 'sec_authorization',
-								fieldLabel : i18n( 'sec_authorization' ),
+								fieldLabel : _( 'sec_authorization' ),
 								labelAlign : 'right'
 							},
 							{
 								xtype : 'textfield',
 								name : 'referal_by',
-								fieldLabel : i18n( 'referal_by' ),
+								fieldLabel : _( 'referal_by' ),
 								labelAlign : 'right',
 								labelWidth : 60,
 								flex : 1
@@ -23398,7 +23398,7 @@ Ext.define('App.view.fees.Billing',
 					},
 					{
 						xtype : 'icdsfieldset',
-						title : i18n( 'encounter_icd9' ),
+						title : _( 'encounter_icd9' ),
 						margin : '5 5 0 5'
 					}]
 				} ), me.cptPanel = Ext.create( 'App.view.patient.encounter.CurrentProceduralTerminology',
@@ -23407,7 +23407,7 @@ Ext.define('App.view.fees.Billing',
 				} )]
 			} ), me.progressNote = Ext.create( 'App.view.patient.ProgressNote',
 			{
-				title : i18n( 'encounter_progress_note' ),
+				title : _( 'encounter_progress_note' ),
 				region : 'east',
 				margin : 5,
 				bodyStyle : 'padding:15px',
@@ -23419,10 +23419,10 @@ Ext.define('App.view.fees.Billing',
 			} )],
 			buttons : [
 			{
-				text : i18n( 'encounters' ),
+				text : _( 'encounters' ),
 				scope : me,
 				action : 'encounters',
-				tooltip : i18n( 'back_to_encounter_list' ),
+				tooltip : _( 'back_to_encounter_list' ),
 				handler : me.onBtnCancel
 			}, '->',
 			{
@@ -23431,34 +23431,34 @@ Ext.define('App.view.fees.Billing',
 				text : '( 1 of 1 )'
 			},
 			{
-				text : i18n( 'back' ),
+				text : _( 'back' ),
 				scope : me,
 				action : 'back',
 				iconCls : 'icoArrowLeftSmall',
-				tooltip : i18n( 'previous_encounter_details' ),
+				tooltip : _( 'previous_encounter_details' ),
 				handler : me.onBtnBack
 			},
 			{
-				text : i18n( 'save' ),
+				text : _( 'save' ),
 				scope : me,
 				action : 'save',
-				tooltip : i18n( 'save_billing_details' ),
+				tooltip : _( 'save_billing_details' ),
 				handler : me.onBtnSave
 			},
 			{
-				text : i18n( 'cancel' ),
+				text : _( 'cancel' ),
 				scope : me,
 				action : 'cancel',
-				tooltip : i18n( 'cancel_and_go_back_to_encounter_list' ),
+				tooltip : _( 'cancel_and_go_back_to_encounter_list' ),
 				handler : me.onBtnCancel
 			},
 			{
-				text : i18n( 'next' ),
+				text : _( 'next' ),
 				scope : me,
 				action : 'next',
 				iconCls : 'icoArrowRightSmall',
 				iconAlign : 'right',
-				tooltip : i18n( 'next_encounter_details' ),
+				tooltip : _( 'next_encounter_details' ),
 				handler : me.onBtnNext
 			}]
 		} );
@@ -23562,7 +23562,7 @@ Ext.define('App.view.fees.Billing',
 				me.cptPanel.setDefaultQRCptCodes( );
 			} );
 
-			pageInfo[0].setText( '( ' + i18n( 'page' ) + ' ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' )' );
+			pageInfo[0].setText( '( ' + _( 'page' ) + ' ' + (rowIndex + 1) + ' of ' + sm.store.data.length + ' )' );
 			nextBtn[0].setDisabled( rowIndex == sm.store.data.length - 1 );
 			backbtn[0].setDisabled( rowIndex == 0 );
 		}
@@ -23602,7 +23602,7 @@ Ext.define('App.view.fees.Billing',
 		var me = this, form = me.icdForm.getForm( ), values = form.getValues( );
 
 		me.updateEncounterIcds( values );
-		me.msg( 'Sweet!', i18n( 'encounter_billing_data_updated' ) );
+		me.msg( 'Sweet!', _( 'encounter_billing_data_updated' ) );
 	},
 
 	/**
@@ -23702,7 +23702,7 @@ Ext.define('App.view.fees.Billing',
 
 Ext.define('App.view.fees.PaymentEntryWindow', {
     extend: 'Ext.window.Window',
-    title: i18n('add_new_payment'),
+    title: _('add_new_payment'),
     closeAction: 'hide',
     modal: true,
     initComponent: function(){
@@ -23722,7 +23722,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout: 'hbox',
                         items: [
                             {
-                                fieldLabel: i18n('paying_entity'),
+                                fieldLabel: _('paying_entity'),
                                 xtype: 'mitos.payingentitycombo',
                                 name: 'paying_entity',
                                 action: 'new_payment',
@@ -23731,7 +23731,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'patienlivetsearch',
-                                fieldLabel: i18n('from'),
+                                fieldLabel: _('from'),
                                 hideLabel: false,
                                 name: 'payer_id',
                                 action: 'new_payment',
@@ -23742,7 +23742,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'textfield',
-                                fieldLabel: i18n('no'),
+                                fieldLabel: _('no'),
                                 action: 'new_payment',
                                 name: 'check_number',
                                 labelWidth: 47,
@@ -23756,7 +23756,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout: 'hbox',
                         items: [
                             {
-                                fieldLabel: i18n('payment_method'),
+                                fieldLabel: _('payment_method'),
                                 xtype: 'mitos.paymentmethodcombo',
                                 action: 'new_payment',
                                 labelWidth: 98,
@@ -23765,7 +23765,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'mitos.billingfacilitiescombo',
-                                fieldLabel: i18n('pay_to'),
+                                fieldLabel: _('pay_to'),
                                 action: 'new_payment',
                                 labelWidth: 42,
                                 name: 'pay_to',
@@ -23774,7 +23774,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'mitos.currency',
-                                fieldLabel: i18n('amount'),
+                                fieldLabel: _('amount'),
                                 action: 'new_payment',
                                 name: 'amount',
                                 labelWidth: 47,
@@ -23785,7 +23785,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         ]
                     },
                     {
-                        fieldLabel: i18n('post_to_date'),
+                        fieldLabel: _('post_to_date'),
                         xtype: 'datefield',
                         name: 'post_to_date',
                         action: 'new_payment',
@@ -23794,7 +23794,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         width: 220
                     },
                     {
-                        fieldLabel: i18n('note'),
+                        fieldLabel: _('note'),
                         xtype: 'textareafield',
                         grow: true,
                         action: 'new_payment',
@@ -23807,13 +23807,13 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
         ];
         me.buttons = [
             {
-                text: i18n('save'),
+                text: _('save'),
                 scope: me,
                 handler: me.onPaymentSave
             },
             '-',
             {
-                text: i18n('reset'),
+                text: _('reset'),
                 scope: me,
                 handler: me.resetNewPayment
             }
@@ -23832,7 +23832,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                     form.reset();
                     me.hide();
                 }else{
-                    app.msg('Oops!', i18n('payment_entry_error'))
+                    app.msg('Oops!', _('payment_entry_error'))
                 }
             });
         }
@@ -23849,7 +23849,7 @@ Ext.define('App.view.fees.Payments',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPayments',
-	pageTitle : i18n('payments'),
+	pageTitle : _('payments'),
 	initComponent : function()
 	{
 		var me = this;
@@ -23862,7 +23862,7 @@ Ext.define('App.view.fees.Payments',
 		 */
 		me.searchPanel = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n('search'),
+			title : _('search'),
 			layout : 'border',
 			items : [
 			{
@@ -23880,7 +23880,7 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('paying_entity'),
+						fieldLabel : _('paying_entity'),
 						itemId : 'fieldPayingEntityCombo',
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
@@ -23888,7 +23888,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'patienlivetsearch',
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						hideLabel : false,
 						itemId : 'fieldPatient',
 						name : 'from',
@@ -23899,7 +23899,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n('no'),
+						fieldLabel : _('no'),
 						itemId : 'fieldPatientNo',
 						name : 'transaction_number',
 						labelWidth : 45,
@@ -23917,7 +23917,7 @@ Ext.define('App.view.fees.Payments',
 					{
 						xtype : 'mitos.billingfacilitiescombo',
 						itemId : 'fieldFacility',
-						fieldLabel : i18n('pay_to'),
+						fieldLabel : _('pay_to'),
 						labelWidth : 95,
 						width : 470
 					}]
@@ -23928,7 +23928,7 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						itemId : 'fieldFromDate',
 						xtype : 'datefield',
 						format: g('date_display_format'),
@@ -23936,7 +23936,7 @@ Ext.define('App.view.fees.Payments',
 						width : 230
 					},
 					{
-						fieldLabel : i18n('to'),
+						fieldLabel : _('to'),
 						xtype : 'datefield',
 						itemId : 'fieldToDate',
 						format: g('date_display_format'),
@@ -23947,12 +23947,12 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n('search'),
+					text : _('search'),
 					handler: me.onSearchButton,
 					scope : me
 				}, '-',
 				{
-					text : i18n('reset'),
+					text : _('reset'),
 					scope : me,
 					handler: me.onFormResetButton
 					// TODO: Create the function event to reset the form.
@@ -23964,20 +23964,20 @@ Ext.define('App.view.fees.Payments',
 				store : me.encountersPaymentsStore,
 				columns : [
 				{
-					header : i18n('service_date')
+					header : _('service_date')
 				},
 				{
-					header : i18n('patient_name')
+					header : _('patient_name')
 				},
 				{
-					header : i18n('insurance')
+					header : _('insurance')
 				},
 				{
-					header : i18n('billing_notes'),
+					header : _('billing_notes'),
 					flex : 1
 				},
 				{
-					header : i18n('balance_due')
+					header : _('balance_due')
 				}]
 			}]
 		});
@@ -23988,7 +23988,7 @@ Ext.define('App.view.fees.Payments',
 		 */
 		me.detailPanel = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n('detail'),
+			title : _('detail'),
 			layout : 'border',
 			items : [
 			{
@@ -24004,14 +24004,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('paying_entity'),
+						fieldLabel : _('paying_entity'),
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'patienlivetsearch',
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						hideLabel : false,
 						itemId : 'patientFrom',
 						name : 'from',
@@ -24022,7 +24022,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n('no'),
+						fieldLabel : _('no'),
 						name : 'transaction_number',
 						labelWidth : 45,
 						width : 230,
@@ -24036,21 +24036,21 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('payment_method'),
+						fieldLabel : _('payment_method'),
 						xtype : 'mitos.paymentmethodcombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'mitos.billingfacilitiescombo',
-						fieldLabel : i18n('pay_to'),
+						fieldLabel : _('pay_to'),
 						labelWidth : 42,
 						width : 470,
 						margin : '0 0 0 25'
 					},
 					{
 						xtype : 'mitos.currency',
-						fieldLabel : i18n('amount'),
+						fieldLabel : _('amount'),
 						name : 'amount',
 						labelWidth : 45,
 						width : 230,
@@ -24064,14 +24064,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						xtype : 'datefield',
 						format: g('date_display_format'),
 						labelWidth : 95,
 						width : 230
 					},
 					{
-						fieldLabel : i18n('to'),
+						fieldLabel : _('to'),
 						xtype : 'datefield',
 						format: g('date_display_format'),
 						margin : '0 0 0 25',
@@ -24081,13 +24081,13 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n('save')
+					text : _('save')
 				}, '-',
 				{
-					text : i18n('reset')
+					text : _('reset')
 				}, '->',
 				{
-					text : i18n('add_payment'),
+					text : _('add_payment'),
 					scope : me,
 					handler : me.onAddPaymentClick
 
@@ -24111,20 +24111,20 @@ Ext.define('App.view.fees.Payments',
 				}),
 				columns : [
 				{
-					header : i18n('service_date')
+					header : _('service_date')
 				},
 				{
-					header : i18n('patient_name')
+					header : _('patient_name')
 				},
 				{
-					header : i18n('insurance')
+					header : _('insurance')
 				},
 				{
-					header : i18n('billing_notes'),
+					header : _('billing_notes'),
 					flex : 1
 				},
 				{
-					header : i18n('balance_due')
+					header : _('balance_due')
 				}]
 			}]
 		});
@@ -24344,7 +24344,7 @@ Ext.define('App.view.fees.Payments',
 Ext.define('App.view.administration.practice.Facilities', {
 	extend: 'Ext.grid.Panel',
 	xtype: 'facilitiespanel',
-	title: i18n('facilities'),
+	title: _('facilities'),
 
 	initComponent: function(){
 		var me = this;
@@ -24353,25 +24353,25 @@ Ext.define('App.view.administration.practice.Facilities', {
 			store: me.store = Ext.create('App.store.administration.Facility'),
 			columns: [
 				{
-					text: i18n('name'),
+					text: _('name'),
 					flex: 1,
 					sortable: true,
 					dataIndex: 'name'
 				},
 				{
-					text: i18n('phone'),
+					text: _('phone'),
 					width: 100,
 					sortable: true,
 					dataIndex: 'phone'
 				},
 				{
-					text: i18n('fax'),
+					text: _('fax'),
 					width: 100,
 					sortable: true,
 					dataIndex: 'fax'
 				},
 				{
-					text: i18n('city'),
+					text: _('city'),
 					width: 100,
 					sortable: true,
 					dataIndex: 'city'
@@ -24399,36 +24399,36 @@ Ext.define('App.view.administration.practice.Facilities', {
 								},
 								items: [
 									{
-										fieldLabel: i18n('name'),
+										fieldLabel: _('name'),
 										name: 'name',
 										allowBlank: false
 									},
 									{
-										fieldLabel: i18n('phone'),
+										fieldLabel: _('phone'),
 										name: 'phone'
 									},
 									{
-										fieldLabel: i18n('fax'),
+										fieldLabel: _('fax'),
 										name: 'fax'
 									},
 									{
-										fieldLabel: i18n('street'),
+										fieldLabel: _('street'),
 										name: 'street'
 									},
 									{
-										fieldLabel: i18n('city'),
+										fieldLabel: _('city'),
 										name: 'city'
 									},
 									{
-										fieldLabel: i18n('state'),
+										fieldLabel: _('state'),
 										name: 'state'
 									},
 									{
-										fieldLabel: i18n('postal_code'),
+										fieldLabel: _('postal_code'),
 										name: 'postal_code'
 									},
 									{
-										fieldLabel: i18n('country_code'),
+										fieldLabel: _('country_code'),
 										name: 'country_code'
 									},
 									{
@@ -24437,13 +24437,13 @@ Ext.define('App.view.administration.practice.Facilities', {
 										items: [
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('ssn'),
+												fieldLabel: _('ssn'),
 												name: 'ssn',
 												margin: '0 10 0 0'
 											},
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('ein'),
+												fieldLabel: _('ein'),
 												labelWidth: 40,
 												name: 'ein'
 											}
@@ -24454,49 +24454,49 @@ Ext.define('App.view.administration.practice.Facilities', {
 							{
 								items: [
 									{
-										fieldLabel: i18n('billing_attn'),
+										fieldLabel: _('billing_attn'),
 										name: 'attn',
 										anchor: '100%'
 									},
 									{
 										xtype: 'mitos.poscodescombo',
-										fieldLabel: i18n('pos_code'),
+										fieldLabel: _('pos_code'),
 										name: 'pos_code',
 										anchor: '100%'
 									},
 									{
-										fieldLabel: i18n('clia_number'),
+										fieldLabel: _('clia_number'),
 										name: 'clia',
 										anchor: '100%'
 									},
 									{
-										fieldLabel: i18n('npi'),
+										fieldLabel: _('npi'),
 										name: 'npi',
 										anchor: '100%'
 									},
 									{
-										fieldLabel: i18n('fda_number'),
+										fieldLabel: _('fda_number'),
 										name: 'fda',
 										anchor: '100%'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('active'),
+										fieldLabel: _('active'),
 										name: 'active'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('service_location'),
+										fieldLabel: _('service_location'),
 										name: 'service_location'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('billing_location'),
+										fieldLabel: _('billing_location'),
 										name: 'billing_location'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('accepts_assignment'),
+										fieldLabel: _('accepts_assignment'),
 										name: 'accepts_assignment'
 									}
 								]
@@ -24512,17 +24512,17 @@ Ext.define('App.view.administration.practice.Facilities', {
 				plugins: Ext.create('Ext.ux.SlidingPager', {
 				}),
 				items: ['-', {
-					text: i18n('add_new_facility'),
+					text: _('add_new_facility'),
 					iconCls: 'save',
 					scope: me,
 					handler: me.addFacility
 				}, '-', {
-					text: i18n('show_active_facilities'),
+					text: _('show_active_facilities'),
 					action: 'active',
 					scope: me,
 					handler: me.filterFacilitiesby
 				}, '-', {
-					text: i18n('show_inactive_facilities'),
+					text: _('show_inactive_facilities'),
 					action: 'inactive',
 					scope: me,
 					handler: me.filterFacilitiesby
@@ -24536,7 +24536,7 @@ Ext.define('App.view.administration.practice.Facilities', {
 
 	filterFacilitiesby: function(btn){
 
-//		this.setTitle(i18n('facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
+//		this.setTitle(_('facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
 
 		this.store.load({
 			filters: [
@@ -24651,7 +24651,7 @@ Ext.define('App.model.administration.Specialty', {
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-				return record.data.id + ': ' + record.data.title + ' ' + (record.data.active ? ('(' + i18n('not_active') + ')') : '');
+				return record.data.id + ': ' + record.data.title + ' ' + (record.data.active ? ('(' + _('not_active') + ')') : '');
 			}
 		},
 		{
@@ -24701,7 +24701,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 
 	],
 	xtype: 'facilityconfigpanel',
-	title: i18n('facility_configuration'),
+	title: _('facility_configuration'),
 	itemId: 'FacilityStructurePanel',
 	layout: {
 		type: 'hbox',
@@ -24719,7 +24719,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 			items: [
 				{
 					xtype: 'grid',
-					title: i18n('departments'),
+					title: _('departments'),
 					hideHeaders: true,
 					frame: true,
 					margin: '0 0 5 0',
@@ -24781,7 +24781,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 				},
 				{
 					xtype: 'grid',
-					title: i18n('specialties'),
+					title: _('specialties'),
 					//					hideHeaders: true,
 					frame: true,
 					flex: 1,
@@ -24810,7 +24810,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 					columns: [
 						{
 							width: 200,
-							text: i18n('title'),
+							text: _('title'),
 							dataIndex: 'title',
 							sortable: true,
 							flex: 1,
@@ -24819,7 +24819,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 							}
 						},
 						{
-							text: i18n('taxonomy'),
+							text: _('taxonomy'),
 							sortable: true,
 							dataIndex: 'taxonomy',
 							flex: 1,
@@ -24828,7 +24828,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 							}
 						},
 						{
-							text: i18n('modality'),
+							text: _('modality'),
 							sortable: true,
 							dataIndex: 'modality',
 							flex: 1,
@@ -24837,7 +24837,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 							}
 						},
 						{
-							text: i18n('active'),
+							text: _('active'),
 							sortable: true,
 							dataIndex: 'active',
 							renderer: function(v){
@@ -24857,7 +24857,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 					tools: [
 						{
 							xtype: 'button',
-							text: i18n('specialty'),
+							text: _('specialty'),
 							iconCls: 'icoAdd',
 							itemId: 'specialitiesAddBtn'
 						}
@@ -24873,7 +24873,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 		},
 		{
 			xtype: 'treepanel',
-			title: i18n('facility_structure'),
+			title: _('facility_structure'),
 			itemId: 'FacilityStructureTreePanel',
 			store: Ext.create('App.store.administration.FacilityStructures', {
 				autoLoad: true
@@ -25096,17 +25096,17 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 					xtype: 'actioncolumn',
 					width: 20,
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('delete'),
+					tooltip: _('delete'),
 					handler: function(grid, rowIndex, colIndex, item, e, record){
 
 						if(record.childNodes.length > 0){
-							app.msg(i18n('oops'), i18n('please_remove_child_records_first'), true);
+							app.msg(_('oops'), _('please_remove_child_records_first'), true);
 							return;
 						}
 
 						Ext.Msg.show({
-							title: i18n('wait'),
-							msg: i18n('delete_this_record'),
+							title: _('wait'),
+							msg: _('delete_this_record'),
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,
 							fn: function(btn){
@@ -25142,7 +25142,7 @@ Ext.define('App.view.administration.practice.Insurance', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'insurancecompaniespanel',
-	title: i18n('insurance_companies'),
+	title: _('insurance_companies'),
 	store: this._adminInsuranceCmonpanySotrie = Ext.create('App.store.administration.InsuranceCompanies'),
 	//	border: false,
 	//	frame: false,
@@ -25160,7 +25160,7 @@ Ext.define('App.view.administration.practice.Insurance', {
 					items: [
 						{
 							xtype: 'fieldset',
-							title: i18n('contact_info'),
+							title: _('contact_info'),
 							layout: 'hbox',
 							margin: '0 10 0 0',
 							items: [
@@ -25174,26 +25174,26 @@ Ext.define('App.view.administration.practice.Insurance', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('name'),
+											fieldLabel: _('name'),
 											name: 'name',
 											allowBlank: false,
 											width: 385
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('attn'),
+											fieldLabel: _('attn'),
 											name: 'attn',
 											width: 385
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('address'),
+											fieldLabel: _('address'),
 											name: 'address1',
 											width: 385
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('address_cont'),
+											fieldLabel: _('address_cont'),
 											name: 'address2',
 											width: 385
 										},
@@ -25231,17 +25231,17 @@ Ext.define('App.view.administration.practice.Insurance', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('phone_number'),
+											fieldLabel: _('phone_number'),
 											name: 'phone_number'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('fax_number'),
+											fieldLabel: _('fax_number'),
 											name: 'fax_number'
 										},
 										{
 											xtype: 'checkbox',
-											fieldLabel: i18n('active'),
+											fieldLabel: _('active'),
 											name: 'active'
 										}
 									]
@@ -25261,43 +25261,43 @@ Ext.define('App.view.administration.practice.Insurance', {
 			dataIndex: 'id'
 		},
 		{
-			header: i18n('insurance_name'),
+			header: _('insurance_name'),
 			width: 200,
 			sortable: true,
 			dataIndex: 'name'
 		},
 		{
-			header: i18n('attn'),
+			header: _('attn'),
 			width: 200,
 			sortable: true,
 			dataIndex: 'attn'
 		},
 		{
-			header: i18n('address'),
+			header: _('address'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'address_full'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone1'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone2'
 		},
 		{
-			header: i18n('fax'),
+			header: _('fax'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'fax'
 		},
 		{
-			header: i18n('active'),
+			header: _('active'),
 			width: 55,
 			sortable: true,
 			dataIndex: 'active',
@@ -25315,7 +25315,7 @@ Ext.define('App.view.administration.practice.Insurance', {
 		items: [
 			'-',
 			{
-				text: i18n('insurance_company'),
+				text: _('insurance_company'),
 				iconCls: 'icoAdd',
 				action: 'insurance',
 				itemId: 'addBtn'
@@ -25344,7 +25344,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'laboratoriespanel',
-	title: i18n('laboratories'),
+	title: _('laboratories'),
 	store: Ext.create('App.store.administration.Laboratories'),
 	border: false,
 	frame: false,
@@ -25368,20 +25368,20 @@ Ext.define('App.view.administration.practice.Laboratories', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('name'),
+									fieldLabel: _('name'),
 									name: 'name',
 									allowBlank: false,
 									width: 385
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('address'),
+									fieldLabel: _('address'),
 									name: 'line1',
 									width: 385
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('address_cont'),
+									fieldLabel: _('address_cont'),
 									name: 'line2',
 									width: 385
 								},
@@ -25395,7 +25395,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 										{
 											xtype: 'displayfield',
 											width: 105,
-											value: i18n('city_state_zip')
+											value: _('city_state_zip')
 										},
 										{
 											xtype: 'textfield',
@@ -25428,7 +25428,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('email'),
+									fieldLabel: _('email'),
 									name: 'email',
 									width: 275
 								},
@@ -25442,7 +25442,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 										{
 											xtype: 'displayfield',
 											width: 100,
-											value: i18n('phone')
+											value: _('phone')
 										},
 										{
 											xtype: 'textfield',
@@ -25481,7 +25481,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 										{
 											xtype: 'displayfield',
 											width: 100,
-											value: i18n('fax')
+											value: _('fax')
 										},
 										{
 											xtype: 'textfield',
@@ -25512,7 +25512,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 								},
 								{
 									xtype: 'transmitmethodcombo',
-									fieldLabel: i18n('default_method'),
+									fieldLabel: _('default_method'),
 									labelWidth: 100,
 									width: 275
 								}
@@ -25520,7 +25520,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							labelWidth: 60,
 							name: 'active'
 						}
@@ -25531,31 +25531,31 @@ Ext.define('App.view.administration.practice.Laboratories', {
 	],
 	columns: [
 		{
-			header: i18n('pharmacy_name'),
+			header: _('pharmacy_name'),
 			width: 150,
 			sortable: true,
 			dataIndex: 'name'
 		},
 		{
-			header: i18n('address'),
+			header: _('address'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'address_full'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone_full'
 		},
 		{
-			header: i18n('fax'),
+			header: _('fax'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'fax_full'
 		},
 		{
-			header: i18n('default_method'),
+			header: _('default_method'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'transmit_method',
@@ -25571,7 +25571,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 			}
 		},
 		{
-			header: i18n('active'),
+			header: _('active'),
 			width: 55,
 			sortable: true,
 			dataIndex: 'active',
@@ -25583,7 +25583,7 @@ Ext.define('App.view.administration.practice.Laboratories', {
 	tbar: [
 		'->',
 		{
-			text: i18n('laboratory'),
+			text: _('laboratory'),
 			iconCls: 'icoAdd',
 			action: 'laboratory',
 			itemId: 'addBtn'
@@ -25611,7 +25611,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'pharmaciespanel',
-	title: i18n('pharmacies'),
+	title: _('pharmacies'),
 	store: Ext.create('App.store.administration.Pharmacies'),
 	border: false,
 	frame: false,
@@ -25634,20 +25634,20 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('name'),
+									fieldLabel: _('name'),
 									name: 'name',
 									allowBlank: true,
 									width: 385
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('address'),
+									fieldLabel: _('address'),
 									name: 'address',
 									width: 385
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('address_cont'),
+									fieldLabel: _('address_cont'),
 									name: 'address_cont',
 									width: 385
 								},
@@ -25661,7 +25661,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										{
 											xtype: 'displayfield',
 											width: 105,
-											value: i18n('city_state_zip')
+											value: _('city_state_zip')
 										},
 										{
 											xtype: 'textfield',
@@ -25703,7 +25703,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										{
 											xtype: 'displayfield',
 											width: 100,
-											value: i18n('phone')
+											value: _('phone')
 										},
 										{
 											xtype: 'textfield',
@@ -25742,7 +25742,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										{
 											xtype: 'displayfield',
 											width: 100,
-											value: i18n('fax')
+											value: _('fax')
 										},
 										{
 											xtype: 'textfield',
@@ -25773,13 +25773,13 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('email'),
+									fieldLabel: _('email'),
 									name: 'email',
 									width: 385
 								},
 								{
 									xtype: 'transmitmethodcombo',
-									fieldLabel: i18n('default_method'),
+									fieldLabel: _('default_method'),
 									labelWidth: 100,
 									width: 275
 								}
@@ -25787,7 +25787,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							labelWidth: 60,
 							margin: '0 0 0 10',
 							name: 'active'
@@ -25800,31 +25800,31 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 	],
 	columns: [
 		{
-			header: i18n('pharmacy_name'),
+			header: _('pharmacy_name'),
 			width: 150,
 			sortable: true,
 			dataIndex: 'name'
 		},
 		{
-			header: i18n('address'),
+			header: _('address'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'address_full'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone_full'
 		},
 		{
-			header: i18n('fax'),
+			header: _('fax'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'fax_full'
 		},
 		{
-			header: i18n('default_method'),
+			header: _('default_method'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'transmit_method',
@@ -25840,7 +25840,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 			}
 		},
 		{
-			header: i18n('active'),
+			header: _('active'),
 			width: 55,
 			sortable: true,
 			dataIndex: 'active',
@@ -25852,7 +25852,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 	tbar: [
 		'->',
 		{
-			text: i18n('pharmacy'),
+			text: _('pharmacy'),
 			iconCls: 'icoAdd',
 			action: 'pharmacy',
 			itemId: 'addBtn'
@@ -25936,7 +25936,7 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'providersnumberspanel',
-	title: i18n('provider_numbers'),
+	title: _('provider_numbers'),
 	store: Ext.create('App.store.administration.InsuranceNumbers'),
 	border: false,
 	frame: false,
@@ -25967,17 +25967,17 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('provider'),
+									fieldLabel: _('provider'),
 									name: 'provider_id'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('provider_number'),
+									fieldLabel: _('provider_number'),
 									name: 'provider_number'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('provider_number_type'),
+									fieldLabel: _('provider_number_type'),
 									name: 'provider_number_type'
 								}
 							]
@@ -25991,17 +25991,17 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('insurance_company'),
+									fieldLabel: _('insurance_company'),
 									name: 'insurance_company_id'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('rendering_number'),
+									fieldLabel: _('rendering_number'),
 									name: 'rendering_provider_number'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('rendering_number_type'),
+									fieldLabel: _('rendering_number_type'),
 									name: 'rendering_provider_number_type'
 								}
 							]
@@ -26014,7 +26014,7 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('group_number'),
+									fieldLabel: _('group_number'),
 									name: 'group_number'
 								}
 							]
@@ -26026,46 +26026,46 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 	],
 	columns: [
 		{
-			text: i18n('provider'),
+			text: _('provider'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'provider_id_text'
 		},
 		{
-			text: i18n('insurance'),
+			text: _('insurance'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'insurance_company_id_text'
 		},
 		{
-			text: i18n('provider_number'),
+			text: _('provider_number'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'provider_number'
 		},
 		{
-			text: i18n('rendering_number'),
+			text: _('rendering_number'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'rendering_number'
 		},
 		{
-			text: i18n('group_number'),
+			text: _('group_number'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'phone'
 		}
 	],
 	tbar: [
-		i18n('group_by'),
+		_('group_by'),
 		{
-			text: i18n('provider'),
+			text: _('provider'),
 			enableToggle: true,
 			toggleGroup: 'insurance_number_group',
 			action: 'provider_id_text'
 		},
 		{
-			text: i18n('insurance'),
+			text: _('insurance'),
 			enableToggle: true,
 			toggleGroup: 'insurance_number_group',
 			action: 'insurance_company_id_text'
@@ -26073,7 +26073,7 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 		'-',
 		'->',
 		{
-			text: i18n('insurance_number'),
+			text: _('insurance_number'),
 			iconCls: 'icoAdd',
 			action: 'insurance',
 			itemId: 'addBtn'
@@ -26088,7 +26088,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 		'Ext.grid.plugin.RowEditing',
 		'Ext.ux.SlidingPager'
 	],
-	title: i18n('specialties'),
+	title: _('specialties'),
 
 	initComponent: function(){
 		var me = this;
@@ -26100,7 +26100,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 			columns: [
 				{
 					width: 200,
-					text: i18n('title'),
+					text: _('title'),
 					dataIndex: 'title',
 					sortable: true,
 					flex: 1,
@@ -26109,7 +26109,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 					}
 				},
 				{
-					text: i18n('taxonomy'),
+					text: _('taxonomy'),
 					sortable: true,
 					dataIndex: 'taxonomy',
 					flex: 1,
@@ -26118,7 +26118,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 					}
 				},
 				{
-					text: i18n('modality'),
+					text: _('modality'),
 					sortable: true,
 					dataIndex: 'modality',
 					flex: 1,
@@ -26127,7 +26127,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 					}
 				},
 				{
-					text: i18n('active'),
+					text: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer,
@@ -26146,7 +26146,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 				'->',
 				{
 					xtype: 'button',
-					text: i18n('specialty'),
+					text: _('specialty'),
 					iconCls: 'icoAdd',
 					itemId: 'specialitiesAddBtn'
 				}
@@ -26171,7 +26171,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 	requires: [
 
 	],
-	title: i18n('referring_providers'),
+	title: _('referring_providers'),
 
 	initComponent: function(){
 		var me = this;
@@ -26183,7 +26183,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 			columns: [
 				{
 					width: 200,
-					text: i18n('name'),
+					text: _('name'),
 					sortable: true,
 					renderer:function(v, meta, record){
 						return record.data.title + ' ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
@@ -26191,30 +26191,30 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 				},
 				{
 					flex: 1,
-					text: i18n('email'),
+					text: _('email'),
 					sortable: true,
 					dataIndex: 'email'
 				},
 				{
 					flex: 1,
-					text: i18n('phone_number'),
+					text: _('phone_number'),
 					sortable: true,
 					dataIndex: 'phone_number'
 				},
 				{
 					flex: 1,
-					text: i18n('cel_number'),
+					text: _('cel_number'),
 					sortable: true,
 					dataIndex: 'cel_number'
 				},
 				{
 					flex: 1,
-					text: i18n('aditional_info'),
+					text: _('aditional_info'),
 					sortable: true,
 					dataIndex: 'notes'
 				},
 				{
-					text: i18n('active'),
+					text: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer
@@ -26226,7 +26226,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 					items: [
 						{
 							xtype: 'fieldcontainer',
-							fieldLabel: i18n('first_middle_last'),
+							fieldLabel: _('first_middle_last'),
 							labelWidth: 130,
 							labelAlign: 'right',
 							layout: {
@@ -26279,13 +26279,13 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 								{
 									xtype: 'textfield',
 									name: 'email',
-									fieldLabel: i18n('email'),
+									fieldLabel: _('email'),
 									labelWidth: 130,
 									labelAlign: 'right'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('taxonomy'),
+									fieldLabel: _('taxonomy'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'taxonomy'
@@ -26306,14 +26306,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('upin'),
+									fieldLabel: _('upin'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'upin'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('npi'),
+									fieldLabel: _('npi'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'npi'
@@ -26334,14 +26334,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('lic'),
+									fieldLabel: _('lic'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'lic'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('ssn'),
+									fieldLabel: _('ssn'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'ssn'
@@ -26362,14 +26362,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('phone_number'),
+									fieldLabel: _('phone_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'phone_number'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('fax_number'),
+									fieldLabel: _('fax_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'fax_number'
@@ -26391,14 +26391,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('cel_number'),
+									fieldLabel: _('cel_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'cel_number'
 								},
 								{
 									xtype: 'checkbox',
-									fieldLabel: i18n('active'),
+									fieldLabel: _('active'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'active'
@@ -26411,10 +26411,10 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							xtype: 'textareafield',
 							name: 'notes',
 							width: 600,
-							fieldLabel: i18n('notes'),
+							fieldLabel: _('notes'),
 							labelWidth: 130,
 							labelAlign: 'right',
-							emptyText: i18n('additional_info')
+							emptyText: _('additional_info')
 						}
 					]
 				})
@@ -26427,7 +26427,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 						'->',
 						{
 							xtype: 'button',
-							text: i18n('referring_provider'),
+							text: _('referring_provider'),
 							iconCls: 'icoAdd',
 							itemId: 'referringProviderAddBtn',
 						}
@@ -26444,7 +26444,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 
 Ext.define('App.view.administration.Applications', {
     extend: 'App.ux.RenderPanel',
-    pageTitle: i18n('applications'),
+    pageTitle: _('applications'),
 
     initComponent: function(){
         var me = this;
@@ -26480,7 +26480,7 @@ Ext.define('App.view.administration.Applications', {
 
                 },
                 {
-                    text: i18n('name'),
+                    text: _('name'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'app_name',
@@ -26490,13 +26490,13 @@ Ext.define('App.view.administration.Applications', {
                     }
                 },
                 {
-                    text: i18n('private_key'),
+                    text: _('private_key'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'pvt_key'
                 },
                 {
-                    text: i18n('active?'),
+                    text: _('active?'),
                     width: 50,
                     sortable: true,
                     renderer: me.boolRenderer,
@@ -26508,7 +26508,7 @@ Ext.define('App.view.administration.Applications', {
             ],
             tbar:[
                 {
-                    text:i18n('add'),
+                    text:_('add'),
                     iconCls:'icoAdd',
                     scope:me,
                     handler:me.addApplication
@@ -26533,7 +26533,7 @@ Ext.define('App.view.administration.Applications', {
                     me.store.remove(record);
                     me.store.sync({
                         callback:function(){
-                            me.msg('Sweet!', i18n('record_removed'))
+                            me.msg('Sweet!', _('record_removed'))
                         }
                     });
                 }
@@ -26563,7 +26563,7 @@ Ext.define('App.view.administration.Applications', {
 Ext.define('App.view.administration.Globals', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelGlobals',
-	pageTitle: 'GaiaEHR ' + i18n('global_settings'),
+	pageTitle: 'GaiaEHR ' + _('global_settings'),
 	uses: ['App.ux.form.fields.Checkbox'],
 	initComponent: function(){
 		var me = this;
@@ -26619,15 +26619,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('dashboard'),
+					"title": _('dashboard'),
 					"option_id": "app/dashboard/dashboard.ejs.php"
 				},
 				{
-					"title": i18n('calendar'),
+					"title": _('calendar'),
 					"option_id": "app/calendar/calendar.ejs.php"
 				},
 				{
-					"title": i18n('messages'),
+					"title": _('messages'),
 					"option_id": "app/messages/messages.ejs.php"
 				}
 			]
@@ -26636,11 +26636,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['format', 'option_id'],
 			data: [
 				{
-					"format": i18n('last_first_middle'),
+					"format": _('last_first_middle'),
 					"option_id": "0"
 				},
 				{
-					"format": i18n('first_middle_last'),
+					"format": _('first_middle_last'),
 					"option_id": "1"
 				}
 			]
@@ -26649,11 +26649,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('main_navigation_menu_left'),
+					"title": _('main_navigation_menu_left'),
 					"option_id": "west"
 				},
 				{
-					"title": i18n('main_navigation_menu_right'),
+					"title": _('main_navigation_menu_right'),
 					"option_id": "east"
 				}
 			]
@@ -26662,15 +26662,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('grey_default'),
+					"title": _('grey_default'),
 					"option_id": "ext-all-gray.css"
 				},
 				{
-					"title": i18n('blue'),
+					"title": _('blue'),
 					"option_id": "ext-all.css"
 				},
 				{
-					"title": i18n('access'),
+					"title": _('access'),
 					"option_id": "ext-all-access.css"
 				}
 			]
@@ -26679,19 +26679,19 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('oldstyle_static_form_without_search_or_duplication_check'),
+					"title": _('oldstyle_static_form_without_search_or_duplication_check'),
 					"option_id": "0"
 				},
 				{
-					"title": i18n('all_demographics_fields_with_search_and_duplication_check'),
+					"title": _('all_demographics_fields_with_search_and_duplication_check'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('mandatory_or_specified_fields_only_search_and_dup_check'),
+					"title": _('mandatory_or_specified_fields_only_search_and_dup_check'),
 					"option_id": "2"
 				},
 				{
-					"title": i18n('mandatory_or_specified_fields_only_dup_check_no_search'),
+					"title": _('mandatory_or_specified_fields_only_dup_check_no_search'),
 					"option_id": "3"
 				}
 			]
@@ -26700,11 +26700,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('encounter_statistics'),
+					"title": _('encounter_statistics'),
 					"option_id": "0"
 				},
 				{
-					"title": i18n('mandatory_and_specified_fields'),
+					"title": _('mandatory_and_specified_fields'),
 					"option_id": "1"
 				}
 			]
@@ -26713,19 +26713,19 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('show_both_us_and_metric_main_unit_is_us'),
+					"title": _('show_both_us_and_metric_main_unit_is_us'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('show_both_us_and_metric_main_unit_is_metric'),
+					"title": _('show_both_us_and_metric_main_unit_is_metric'),
 					"option_id": "2"
 				},
 				{
-					"title": i18n('show_us_only'),
+					"title": _('show_us_only'),
 					"option_id": "3"
 				},
 				{
-					"title": i18n('show_metric_only'),
+					"title": _('show_metric_only'),
 					"option_id": "4"
 				}
 			]
@@ -26734,15 +26734,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('yyyy_mm_dd'),
+					"title": _('yyyy_mm_dd'),
 					"option_id": "Y-m-d"
 				},
 				{
-					"title": i18n('mm_dd_yyyy'),
+					"title": _('mm_dd_yyyy'),
 					"option_id": "m/d/Y"
 				},
 				{
-					"title": i18n('dd_mm_yyyy'),
+					"title": _('dd_mm_yyyy'),
 					"option_id": "d/m/Y"
 				}
 			]
@@ -26751,7 +26751,7 @@ Ext.define('App.view.administration.Globals', {
 				fields: ['title', 'option_id'],
 				data: [
 					{
-						"title": i18n('24_hr'),
+						"title": _('24_hr'),
 						"option_id": "H:i"
 					},
 					{
@@ -26764,15 +26764,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('0'),
+					"title": _('0'),
 					"option_id": "0"
 				},
 				{
-					"title": i18n('1'),
+					"title": _('1'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('2'),
+					"title": _('2'),
 					"option_id": "2"
 				}
 			]
@@ -26781,11 +26781,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('comma'),
+					"title": _('comma'),
 					"option_id": ","
 				},
 				{
-					"title": i18n('period'),
+					"title": _('period'),
 					"option_id": "."
 				}
 			]
@@ -26794,19 +26794,19 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('comma'),
+					"title": _('comma'),
 					"option_id": ","
 				},
 				{
-					"title": i18n('period'),
+					"title": _('period'),
 					"option_id": "."
 				},
 				{
-					"title": i18n('space'),
+					"title": _('space'),
 					"option_id": " "
 				},
 				{
-					"title": i18n('none'),
+					"title": _('none'),
 					"option_id": ""
 				}
 			]
@@ -26832,15 +26832,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('text_field'),
+					"title": _('text_field'),
 					"option_id": "2"
 				},
 				{
-					"title": i18n('single_selection_list'),
+					"title": _('single_selection_list'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('single_selection_list_with_ability_to_add_to_the_list'),
+					"title": _('single_selection_list_with_ability_to_add_to_the_list'),
 					"option_id": "26"
 				}
 			]
@@ -26848,12 +26848,12 @@ Ext.define('App.view.administration.Globals', {
 		me.dummyStore = new Ext.data.ArrayStore({
 			fields: ['title', 'option_id'],
 			data: [
-				[i18n('option_1'), 'Option 1'],
-				[i18n('option_2'), 'Option 2'],
-				[i18n('option_3'), 'Option 3'],
-				[i18n('option_5'), 'Option 5'],
-				[i18n('option_6'), 'Option 6'],
-				[i18n('option_7'), 'Option 7']
+				[_('option_1'), 'Option 1'],
+				[_('option_2'), 'Option 2'],
+				[_('option_3'), 'Option 3'],
+				[_('option_5'), 'Option 5'],
+				[_('option_6'), 'Option 6'],
+				[_('option_7'), 'Option 7']
 			]
 		});
 		//region end
@@ -26864,7 +26864,7 @@ Ext.define('App.view.administration.Globals', {
 			features: [
 				{
 					ftype:'grouping',
-					groupHeaderTpl: i18n('category') + ': {name}'
+					groupHeaderTpl: _('category') + ': {name}'
 				}
 			],
 			plugins:[
@@ -26874,12 +26874,12 @@ Ext.define('App.view.administration.Globals', {
 			],
 			columns:[
 				{
-					text:i18n('title'),
+					text:_('title'),
 					dataIndex:'gl_name',
 					flex:1
 				},
 				{
-					text:i18n('value'),
+					text:_('value'),
 					dataIndex:'gl_value',
 					flex:1,
 					editor:{
@@ -26887,7 +26887,7 @@ Ext.define('App.view.administration.Globals', {
 					}
 				},
 				{
-					text:i18n('category'),
+					text:_('category'),
 					dataIndex:'gl_category'
 				}
 			]
@@ -26909,7 +26909,7 @@ Ext.define('App.view.administration.Globals', {
 			store.load();
 		});
 
-		this.msg(i18n('new_global_configuration_saved'), i18n('refresh_the_application'));
+		this.msg(_('new_global_configuration_saved'), _('refresh_the_application'));
 	},
 	/**
 	 * This function is called from Viewport.js when
@@ -26927,7 +26927,7 @@ Ext.define('App.view.administration.Globals', {
 Ext.define('App.view.administration.Layout', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLayout',
-    pageTitle: i18n('layout_form_editor'),
+    pageTitle: _('layout_form_editor'),
     pageLayout: 'border',
     initComponent: function(){
         var me = this;
@@ -26978,13 +26978,13 @@ Ext.define('App.view.administration.Layout', {
             collapsed: true,
             columns: [
                 {
-                    text: i18n('name'),
+                    text: _('name'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'option_name'
                 },
                 {
-                    text: i18n('value'),
+                    text: _('value'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'option_value'
@@ -27008,7 +27008,7 @@ Ext.define('App.view.administration.Layout', {
             },
             items: [
                 {
-                    fieldLabel: i18n('type'),
+                    fieldLabel: _('type'),
                     xtype: 'combo',
                     name: 'xtype',
                     displayField: 'name',
@@ -27025,7 +27025,7 @@ Ext.define('App.view.administration.Layout', {
                     }
                 },
                 {
-                    fieldLabel: i18n('child_of'),
+                    fieldLabel: _('child_of'),
                     xtype: 'combo',
                     name: 'parentId',
                     displayField: 'name',
@@ -27046,14 +27046,14 @@ Ext.define('App.view.administration.Layout', {
                 {
                     xtype: 'fieldset',
                     itemId: 'aditionalProperties',
-                    title: i18n('aditional_properties'),
+                    title: _('aditional_properties'),
                     margin: '0 5 5 5',
                     defaults: {
                         anchor: '100%'
                     },
                     items: [
                         {
-                            fieldLabel: i18n('title'),
+                            fieldLabel: _('title'),
                             xtype: 'textfield',
                             name: 'title',
                             itemId: 'title',
@@ -27061,14 +27061,14 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('field_label'),
+                            fieldLabel: _('field_label'),
                             xtype: 'textfield',
                             name: 'fieldLabel',
                             itemId: 'fieldLabel',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('box_label'),
+                            fieldLabel: _('box_label'),
                             xtype: 'textfield',
                             name: 'boxLabel',
                             itemId: 'boxLabel',
@@ -27076,35 +27076,35 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('label_width'),
+                            fieldLabel: _('label_width'),
                             xtype: 'textfield',
                             name: 'labelWidth',
                             itemId: 'labelWidth',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('hide_label'),
+                            fieldLabel: _('hide_label'),
                             xtype: 'checkbox',
                             name: 'hideLabel',
                             itemId: 'hideLabel',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('empty_text'),
+                            fieldLabel: _('empty_text'),
                             xtype: 'textfield',
                             name: 'emptyText',
                             itemId: 'emptyText',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('layout'),
+                            fieldLabel: _('layout'),
                             xtype: 'textfield',
                             name: 'layout',
                             itemId: 'layout',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('name'),
+                            fieldLabel: _('name'),
                             xtype: 'textfield',
                             name: 'name',
                             itemId: 'name',
@@ -27116,14 +27116,14 @@ Ext.define('App.view.administration.Layout', {
 	                        }
                         },
                         {
-                            fieldLabel: i18n('input_value'),
+                            fieldLabel: _('input_value'),
                             xtype: 'textfield',
                             name: 'inputValue',
                             itemId: 'inputValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('width'),
+                            fieldLabel: _('width'),
                             xtype: 'textfield',
                             name: 'width',
                             itemId: 'width',
@@ -27131,7 +27131,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('height'),
+                            fieldLabel: _('height'),
                             xtype: 'textfield',
                             name: 'height',
                             itemId: 'height',
@@ -27139,7 +27139,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('anchor'),
+                            fieldLabel: _('anchor'),
                             xtype: 'textfield',
                             name: 'anchor',
                             itemId: 'anchor',
@@ -27147,35 +27147,35 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('flex'),
+                            fieldLabel: _('flex'),
                             xtype: 'checkbox',
                             name: 'flex',
                             itemId: 'flex',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('collapsible'),
+                            fieldLabel: _('collapsible'),
                             xtype: 'checkbox',
                             name: 'collapsible',
                             itemId: 'collapsible',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('checkbox_toggle'),
+                            fieldLabel: _('checkbox_toggle'),
                             xtype: 'checkbox',
                             name: 'checkboxToggle',
                             itemId: 'checkboxToggle',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('collapsed'),
+                            fieldLabel: _('collapsed'),
                             xtype: 'checkbox',
                             name: 'collapsed',
                             itemId: 'collapsed',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('margin'),
+                            fieldLabel: _('margin'),
                             xtype: 'textfield',
                             name: 'margin',
                             itemId: 'margin',
@@ -27183,7 +27183,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('column_width'),
+                            fieldLabel: _('column_width'),
                             xtype: 'textfield',
                             name: 'columnWidth',
                             itemId: 'columnWidth',
@@ -27191,14 +27191,14 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('is_required'),
+                            fieldLabel: _('is_required'),
                             xtype: 'checkbox',
                             name: 'allowBlank',
                             itemId: 'allowBlank',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('min_length'),
+                            fieldLabel: _('min_length'),
                             xtype: 'numberfield',
                             name: 'minLength',
                             itemId: 'minLength',
@@ -27206,7 +27206,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('max_length'),
+                            fieldLabel: _('max_length'),
                             xtype: 'numberfield',
                             name: 'maxLength',
                             itemId: 'maxLength',
@@ -27214,70 +27214,70 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('value'),
+                            fieldLabel: _('value'),
                             xtype: 'textfield',
                             name: 'value',
                             itemId: 'value',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('max_value'),
+                            fieldLabel: _('max_value'),
                             xtype: 'textfield',
                             name: 'maxValue',
                             itemId: 'maxValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('min_value'),
+                            fieldLabel: _('min_value'),
                             xtype: 'textfield',
                             name: 'minValue',
                             itemId: 'minValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('max_value'),
+                            fieldLabel: _('max_value'),
                             xtype: 'timefield',
                             name: 'maxValue',
                             itemId: 'timeMaxValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('min_value'),
+                            fieldLabel: _('min_value'),
                             xtype: 'timefield',
                             name: 'minValue',
                             itemId: 'timeMinValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('grow'),
+                            fieldLabel: _('grow'),
                             xtype: 'checkbox',
                             name: 'grow',
                             itemId: 'grow',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('grow_min'),
+                            fieldLabel: _('grow_min'),
                             xtype: 'textfield',
                             name: 'growMin',
                             itemId: 'growMin',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('grow_max'),
+                            fieldLabel: _('grow_max'),
                             xtype: 'textfield',
                             name: 'growMax',
                             itemId: 'growMax',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('increment'),
+                            fieldLabel: _('increment'),
                             xtype: 'textfield',
                             name: 'increment',
                             itemId: 'increment',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('list_options'),
+                            fieldLabel: _('list_options'),
                             xtype: 'mitos.listscombo',
                             name: 'list_id',
                             itemId: 'list_id',
@@ -27289,7 +27289,7 @@ Ext.define('App.view.administration.Layout', {
                             }
                         },
 	                    {
-		                    fieldLabel: i18n('code'),
+		                    fieldLabel: _('code'),
 		                    xtype: 'textfield',
 		                    name: 'code',
 		                    itemId: 'code',
@@ -27297,7 +27297,7 @@ Ext.define('App.view.administration.Layout', {
 		                    hidden: true
 	                    },
 	                    {
-		                    fieldLabel: i18n('item_id'),
+		                    fieldLabel: _('item_id'),
 		                    xtype: 'textfield',
 		                    name: 'itemId',
 		                    itemId: 'itemId',
@@ -27305,7 +27305,7 @@ Ext.define('App.view.administration.Layout', {
 		                    hidden: true
 	                    },
 	                    {
-		                    fieldLabel: i18n('action'),
+		                    fieldLabel: _('action'),
 		                    xtype: 'textfield',
 		                    name: 'action',
 		                    itemId: 'action',
@@ -27323,7 +27323,7 @@ Ext.define('App.view.administration.Layout', {
          * the field xtype is a combobox
          */
         me.formContainer = Ext.create('Ext.panel.Panel', {
-            title: i18n('field_configuration'),
+            title: _('field_configuration'),
             border: true,
             split: true,
             width: 390,
@@ -27339,19 +27339,19 @@ Ext.define('App.view.administration.Layout', {
             ],
             buttons:[
                 {
-                    text: i18n('delete'),
+                    text: _('delete'),
                     iconCls: 'icoDeleteBlack',
                     scope: me,
                     handler: me.onFieldDelete
                 },
                 {
-                    text: i18n('reset'),
+                    text: _('reset'),
                     iconCls: 'icoReload',
                     scope: me,
                     handler: me.onFormReset
                 },
                 {
-                    text: i18n('save'),
+                    text: _('save'),
                     iconCls: 'save',
                     scope: me,
                     handler: me.onFieldSave
@@ -27363,14 +27363,14 @@ Ext.define('App.view.administration.Layout', {
                     items: [
                         '->',
                         {
-                            text: i18n('add_new'),
+                            text: _('add_new'),
                             iconCls: 'icoAddRecord',
                             scope: me,
                             handler: me.onFormReset
                         },
                         '-',
                         {
-                            text: i18n('add_child'),
+                            text: _('add_child'),
                             iconCls: 'icoAddRecord',
                             itemId: 'addChild',
                             disabled: true,
@@ -27379,7 +27379,7 @@ Ext.define('App.view.administration.Layout', {
                         },
                         '-',
                         {
-                            text: i18n('form_preview'),
+                            text: _('form_preview'),
                             iconCls: 'icoPreview',
                             enableToggle: true,
                             listeners: {
@@ -27401,7 +27401,7 @@ Ext.define('App.view.administration.Layout', {
             border: true,
             sortable: false,
             rootVisible: false,
-            title: i18n('field_editor_demographics'),
+            title: _('field_editor_demographics'),
             viewConfig: {
                 plugins: {
                     ptype: 'treeviewdragdrop',
@@ -27417,21 +27417,21 @@ Ext.define('App.view.administration.Layout', {
             columns: [
                 {
                     xtype: 'treecolumn',
-                    text: i18n('field_type'),
+                    text: _('field_type'),
                     sortable: false,
                     dataIndex: 'xtype',
                     width: 200,
                     align: 'left'
                 },
                 {
-                    text: i18n('title'),
+                    text: _('title'),
                     sortable: false,
                     dataIndex: 'title',
                     width: 100,
                     align: 'left'
                 },
                 {
-                    text: i18n('label'),
+                    text: _('label'),
                     sortable: false,
                     dataIndex: 'fieldLabel',
                     flex: 1,
@@ -27450,7 +27450,7 @@ Ext.define('App.view.administration.Layout', {
          * forms, just to modified the fields of existing forms.
          */
         me.formsGrid = Ext.create('Ext.grid.Panel', {
-            title: i18n('form_list'),
+            title: _('form_list'),
             region: 'west',
             store: me.formsGridStore,
             width: 200,
@@ -27548,7 +27548,7 @@ Ext.define('App.view.administration.Layout', {
 	               }
 
 	               me.fieldsGrid.getSelectionModel().select(record);
-                   me.msg('Sweet!', i18n('record_saved'));
+                   me.msg('Sweet!', _('record_saved'));
                },
                failure:function(batch){
 
@@ -27571,14 +27571,14 @@ Ext.define('App.view.administration.Layout', {
 		say(record.childNodes);
 
 		if(record.childNodes.length > 0){
-			me.msg(i18n('oops'), i18n('children_fields_must_be_remove_first'), true);
+			me.msg(_('oops'), _('children_fields_must_be_remove_first'), true);
 			return;
 		}
 
 		Ext.Msg.show({
-			title: i18n('please_confirm') + '...',
+			title: _('please_confirm') + '...',
 			icon: Ext.MessageBox.QUESTION,
-			msg: i18n('delete_this_field'),
+			msg: _('delete_this_field'),
 			buttons: Ext.Msg.YESNO,
 			scope: this,
 			fn: function(btn){
@@ -27587,7 +27587,7 @@ Ext.define('App.view.administration.Layout', {
 					me.fieldsGridStore.sync({
 						success:function(){
 							me.previewFormRender();
-							me.msg('Sweet!', i18n('record_removed'));
+							me.msg('Sweet!', _('record_removed'));
 						},
 						failure:function(batch){
 							me.msg('Oops!', batch.proxy.reader.rawData.message, true);
@@ -27728,7 +27728,7 @@ Ext.define('App.view.administration.Layout', {
         var me = this;
 
         me.currForm = record.get('id');
-        me.fieldsGrid.setTitle(i18n('field_editor') + ' (' + record.get('name') + ')');
+        me.fieldsGrid.setTitle(_('field_editor') + ' (' + record.get('name') + ')');
         me.loadFieldsGrid();
         me.onFormReset();
     },
@@ -27772,7 +27772,7 @@ Ext.define('App.view.administration.Layout', {
         var me = this;
 
         if(value == 'combobox'){
-            me.selectListGrid.setTitle(i18n('select_list_options'));
+            me.selectListGrid.setTitle(_('select_list_options'));
             me.selectListGrid.expand();
             me.selectListGrid.enable();
         }else{
@@ -27953,7 +27953,7 @@ Ext.define('App.view.administration.Layout', {
 Ext.define('App.view.administration.Lists', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLists',
-    pageTitle: i18n('select_list_options'),
+    pageTitle: _('select_list_options'),
     pageLayout: 'border',
     uses: [
         'App.ux.form.Panel',
@@ -28000,7 +28000,7 @@ Ext.define('App.view.administration.Lists', {
                     dataIndex: 'id'
                 },
                 {
-                    text: i18n('select_lists'),
+                    text: _('select_lists'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'title',
@@ -28010,7 +28010,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('active'),
+                    text: _('active'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'active',
@@ -28021,7 +28021,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('in_use'),
+                    text: _('in_use'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'in_use',
@@ -28038,20 +28038,20 @@ Ext.define('App.view.administration.Lists', {
                     dock: 'top',
                     items: [
                         {
-                            text: i18n('new_list'),
+                            text: _('new_list'),
                             iconCls: 'icoAddRecord',
                             scope: me,
                             handler: me.onNewList
                         },
                         '->',
                         {
-                            text: i18n('delete_list'),
+                            text: _('delete_list'),
                             iconCls: 'icoDeleteBlack',
                             itemId: 'listDeleteBtn',
                             disabled: true,
                             scope: me,
                             handler: me.onListDelete,
-                            tooltip: i18n('can_be_disable')
+                            tooltip: _('can_be_disable')
                         }
                     ]
                 }
@@ -28069,7 +28069,7 @@ Ext.define('App.view.administration.Lists', {
             viewConfig: {
                 plugins: {
                     ptype: 'gridviewdragdrop',
-                    dragText: i18n('drag_and_drop_reorganize')
+                    dragText: _('drag_and_drop_reorganize')
                 },
                 listeners: {
                     scope: me,
@@ -28081,7 +28081,7 @@ Ext.define('App.view.administration.Lists', {
 		            xtype: 'rownumberer'
 	            },
                 {
-                    text: i18n('option_title'),
+                    text: _('option_title'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'option_name',
@@ -28095,7 +28095,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('option_value'),
+                    text: _('option_value'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'option_value',
@@ -28105,7 +28105,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
 	            {
-		            text: i18n('code'),
+		            text: _('code'),
 		            sortable: true,
 		            dataIndex: 'code',
 		            width: 120,
@@ -28114,7 +28114,7 @@ Ext.define('App.view.administration.Lists', {
 		            }
 	            },
 	            {
-		            text: i18n('code_type'),
+		            text: _('code_type'),
 		            sortable: true,
 		            dataIndex: 'code_type',
 		            width: 100,
@@ -28123,7 +28123,7 @@ Ext.define('App.view.administration.Lists', {
 		            }
 	            },
                 {
-                    text: i18n('notes'),
+                    text: _('notes'),
                     sortable: true,
                     dataIndex: 'notes',
                     flex: 1,
@@ -28133,7 +28133,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('active'),
+                    text: _('active'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'active',
@@ -28149,7 +28149,7 @@ Ext.define('App.view.administration.Lists', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: ['->', {
-                        text: i18n('add_option'),
+                        text: _('add_option'),
                         iconCls: 'icoAddRecord',
                         scope: me,
                         handler: me.onNewOption
@@ -28265,9 +28265,9 @@ Ext.define('App.view.administration.Lists', {
 
         if(!record.data.in_use){
             Ext.Msg.show({
-                title: i18n('please_confirm') + '...',
+                title: _('please_confirm') + '...',
                 icon: Ext.MessageBox.QUESTION,
-                msg: i18n('delete_this_record'),
+                msg: _('delete_this_record'),
                 buttons: Ext.Msg.YESNO,
                 scope: me,
                 fn: function(btn){
@@ -28275,18 +28275,18 @@ Ext.define('App.view.administration.Lists', {
                         store.remove(record);
                         store.sync({
                             success:function(){
-                                me.msg('Sweet!', i18n('record_deleted'));
+                                me.msg('Sweet!', _('record_deleted'));
                                 me.optionsStore.removeAll();
                             },
                             failure:function(){
-                                me.msg('Oops!', i18n('unable_to_delete') + ' "' + record.data.title, true);
+                                me.msg('Oops!', _('unable_to_delete') + ' "' + record.data.title, true);
                             }
                         });
                     }
                 }
             });
         }else{
-            Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
+            Ext.Msg.alert('Oops!', _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
         }
     },
 
@@ -28317,7 +28317,7 @@ Ext.define('App.view.administration.Lists', {
 Ext.define('App.view.administration.Modules', {
     extend: 'App.ux.RenderPanel',
     id: 'panelModules',
-    pageTitle: i18n('modules'),
+    pageTitle: _('modules'),
     initComponent: function(){
         var me = this;
 
@@ -28336,25 +28336,25 @@ Ext.define('App.view.administration.Modules', {
             ],
             columns: [
                 {
-                    text: i18n('title'),
+                    text: _('title'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'title'
                 },
                 {
-                    text: i18n('description'),
+                    text: _('description'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'description'
                 },
                 {
-                    text: i18n('version'),
+                    text: _('version'),
                     width: 100,
                     sortable: true,
                     dataIndex: 'installed_version'
                 },
                 {
-                    text: i18n('key_if_required'),
+                    text: _('key_if_required'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'licensekey',
@@ -28363,7 +28363,7 @@ Ext.define('App.view.administration.Modules', {
                     }
                 },
                 {
-                    text: i18n('enabled?'),
+                    text: _('enabled?'),
                     width: 60,
                     sortable: true,
                     renderer: me.boolRenderer,
@@ -28395,7 +28395,7 @@ Ext.define('App.view.administration.Log', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelLog',
 	uses: ['Ext.grid.Panel'],
-	pageTitle: i18n('event_history_log'),
+	pageTitle: _('event_history_log'),
 	initComponent: function(){
 		var me = this;
 
@@ -28421,26 +28421,26 @@ Ext.define('App.view.administration.Log', {
 				},
 				{
 					width: 120,
-					text: i18n('date_created'),
+					text: _('date_created'),
 					sortable: true,
 					dataIndex: 'date',
 					renderer: Ext.util.Format.dateRenderer('Y-m-d g:i:s a')
 				},
 				{
 					width: 180,
-					text: i18n('user'),
+					text: _('user'),
 					sortable: true,
 					dataIndex: 'user'
 				},
 				{
 					width: 200,
-					text: i18n('patient_record_id'),
+					text: _('patient_record_id'),
 					sortable: true,
 					dataIndex: 'patient_id'
 				},
 				{
 					flex: 1,
-					text: i18n('event'),
+					text: _('event'),
 					sortable: true,
 					dataIndex: 'event'
 				}
@@ -28453,14 +28453,14 @@ Ext.define('App.view.administration.Log', {
 			tbar: Ext.create('Ext.PagingToolbar', {
 				store: me.logStore,
 				displayInfo: true,
-				emptyMsg: i18n('no_office_notes_to_display'),
+				emptyMsg: _('no_office_notes_to_display'),
 				plugins: Ext.create('Ext.ux.SlidingPager',
 					{
 					}),
 				items: [
 					{
 						xtype: 'button',
-						text: i18n('view_log_event_details'),
+						text: _('view_log_event_details'),
 						iconCls: 'edit',
 						itemId: 'detail',
 						disabled: true,
@@ -28473,7 +28473,7 @@ Ext.define('App.view.administration.Log', {
 						name: 'from',
 						labelWidth: 30,
 						width: 150,
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						format: 'Y-m-d'
 					},
 					{
@@ -28481,13 +28481,13 @@ Ext.define('App.view.administration.Log', {
 						name: 'to',
 						labelWidth: 30,
 						width: 150,
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						format: 'Y-m-d',
 						value: new Date()  // defaults to today
 					},
 					{
 						xtype: 'patienlivetsearch',
-						emptyText: i18n('patient_live_search') + '...',
+						emptyText: _('patient_live_search') + '...',
 						fieldStyle: me.fullMode ? 'width:300' : 'width:250',
 						listeners: {
 							scope: me,
@@ -28496,7 +28496,7 @@ Ext.define('App.view.administration.Log', {
 					},
 					{
 						xtype: 'button',
-						text: i18n('filter'),
+						text: _('filter'),
 						listeners: {
 							click: function(){
 								me.logStore.load({
@@ -28523,7 +28523,7 @@ Ext.define('App.view.administration.Log', {
 					},
 					{
 						xtype: 'button',
-						text: i18n('reset'),
+						text: _('reset'),
 						listeners: {
 							click: function(){
 								this.up('toolbar').query('datefield[name=from]')[0].setRawValue('');
@@ -28541,7 +28541,7 @@ Ext.define('App.view.administration.Log', {
 		// Event Detail Window
 		// *************************************************************************************
 		me.winLog = Ext.create('Ext.window.Window', {
-			title: i18n('log_event_details'),
+			title: _('log_event_details'),
 			width: 500,
 			closeAction: 'hide',
 			items: [
@@ -28571,27 +28571,27 @@ Ext.define('App.view.administration.Log', {
 							name: 'id'
 						},
 						{
-							fieldLabel: i18n('date'),
+							fieldLabel: _('date'),
 							xtype: 'displayfield',
 							name: 'date'
 						},
 						{
-							fieldLabel: i18n('event'),
+							fieldLabel: _('event'),
 							xtype: 'displayfield',
 							name: 'event'
 						},
 						{
-							fieldLabel: i18n('user'),
+							fieldLabel: _('user'),
 							xtype: 'displayfield',
 							name: 'user'
 						},
 						{
-							fieldLabel: i18n('facility'),
+							fieldLabel: _('facility'),
 							xtype: 'displayfield',
 							name: 'facility'
 						},
 						{
-							fieldLabel: i18n('patient_record_id'),
+							fieldLabel: _('patient_record_id'),
 							xtype: 'displayfield',
 							name: 'patient_id'
 						}
@@ -28600,7 +28600,7 @@ Ext.define('App.view.administration.Log', {
 			],
 			buttons: [
 				{
-					text: i18n('close'),
+					text: _('close'),
 					handler: function(){
 						this.up('window').hide();
 					}
@@ -28666,7 +28666,7 @@ Ext.define('App.view.administration.Medications',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelMedications',
-	pageTitle : i18n('medications'),
+	pageTitle : _('medications'),
 
 	initComponent : function()
 	{
@@ -28682,37 +28682,37 @@ Ext.define('App.view.administration.Medications',
 			columns : [
 			{
 				width : 70,
-				header : i18n('number'),
+				header : _('number'),
 				dataIndex : 'PRODUCTNDC',
 				sortable : true
 			},
 			{
 				width : 80,
-				header : i18n('name'),
+				header : _('name'),
 				dataIndex : 'PROPRIETARYNAME',
 				sortable : true
 			},
 			{
 				width : 200,
-				header : i18n('active_component'),
+				header : _('active_component'),
 				dataIndex : 'NONPROPRIETARYNAME',
 				sortable : true
 			},
 			{
 				width : 175,
-				header : i18n('dosage'),
+				header : _('dosage'),
 				dataIndex : 'DOSAGEFORMNAME',
 				sortable : true
 			},
 			{
 				width : 45,
-				header : i18n('number'),
+				header : _('number'),
 				dataIndex : 'ACTIVE_NUMERATOR_STRENGTH',
 				sortable : true
 			},
 			{
 				flex : 1,
-				header : i18n('unit'),
+				header : _('unit'),
 				dataIndex : 'ACTIVE_INGRED_UNIT',
 				sortable : true
 			}],
@@ -28743,7 +28743,7 @@ Ext.define('App.view.administration.Medications',
 						items : [
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('name'),
+							fieldLabel : _('name'),
 							width : 150,
 							labelWidth : 50,
 							name : 'PROPRIETARYNAME'
@@ -28751,7 +28751,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('active_component'),
+							fieldLabel : _('active_component'),
 							width : 350,
 							labelWidth : 125,
 							name : 'NONPROPRIETARYNAME'
@@ -28760,7 +28760,7 @@ Ext.define('App.view.administration.Medications',
 
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('dosage'),
+							fieldLabel : _('dosage'),
 							width : 200,
 							labelWidth : 50,
 							name : 'DOSAGEFORMNAME'
@@ -28781,7 +28781,7 @@ Ext.define('App.view.administration.Medications',
 						items : [
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('code'),
+							fieldLabel : _('code'),
 							labelWidth : 50,
 							width : 150,
 							name : 'PRODUCTNDC'
@@ -28789,7 +28789,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('dosis'),
+							fieldLabel : _('dosis'),
 							margin : '0 0 5 0',
 							value : 0,
 							minValue : 0,
@@ -28814,7 +28814,7 @@ Ext.define('App.view.administration.Medications',
 			{
 				store : me.storeMedications,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager'),
 				items : ['-',
                     {
@@ -28825,7 +28825,7 @@ Ext.define('App.view.administration.Medications',
                     '-',
                     {
                         xtype : 'textfield',
-                        emptyText : i18n('search'),
+                        emptyText : _('search'),
                         enableKeyEvents : true,
                         itemId : 'query',
                         listeners :
@@ -28837,7 +28837,7 @@ Ext.define('App.view.administration.Medications',
                     },
                     '-',
                     {
-                        text : i18n('reset'),
+                        text : _('reset'),
                         scope : me,
                         handler : me.onFieldReset
                     },
@@ -28906,7 +28906,7 @@ Ext.define('App.view.administration.Medications',
 Ext.define('App.view.administration.FloorPlans', {
     extend: 'App.ux.RenderPanel',
     id: 'panelFloorPlans',
-    pageTitle: i18n('floor_plan_editor'),
+    pageTitle: _('floor_plan_editor'),
     pageLayout: 'border',
     floorPlanId: null,
     activeZone: null,
@@ -28915,7 +28915,7 @@ Ext.define('App.view.administration.FloorPlans', {
         me.floorPlansStore = Ext.create('App.store.administration.FloorPlans');
         me.floorZonesStore = Ext.create('App.store.administration.FloorPlanZones');
         me.floorPlans = Ext.create('Ext.grid.Panel', {
-            title: i18n('floor_plans'),
+            title: _('floor_plans'),
             region: 'west',
             width: 200,
             split: true,
@@ -28934,13 +28934,13 @@ Ext.define('App.view.administration.FloorPlans', {
                     flex: 1,
                     editor: {
                         xtype: 'textfield',
-                        emptyText:i18n('new_floor')
+                        emptyText:_('new_floor')
                     }
                 }
             ],
             tbar: [
                 {
-                    text: i18n('add_floor'),
+                    text: _('add_floor'),
                     action: 'newFloorPlan',
                     iconCls:'icoAdd',
                     scope: me,
@@ -28948,7 +28948,7 @@ Ext.define('App.view.administration.FloorPlans', {
                 },
                 '-',
                 {
-                    text: i18n('remove_floor'),
+                    text: _('remove_floor'),
                     action: 'newFloorPlan',
                     iconCls:'icoDelete',
                     scope: me,
@@ -28961,13 +28961,13 @@ Ext.define('App.view.administration.FloorPlans', {
             }
         });
         me.floorPlanZones = Ext.create('Ext.panel.Panel', {
-            title: i18n('floor_plan'),
+            title: _('floor_plan'),
             region: 'center',
             bodyCls: 'floorPlan',
             layout: 'absolute',
             tbar: [
                 {
-                    text: i18n('add_zone'),
+                    text: _('add_zone'),
                     action: 'newZone',
                     iconCls:'icoAdd',
                     scope: me,
@@ -28976,7 +28976,7 @@ Ext.define('App.view.administration.FloorPlans', {
             ]
         });
         me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
-            title:i18n('zone_editor'),
+            title:_('zone_editor'),
             closeAction:'hide',
             closable:false,
             resizable:false,
@@ -28992,46 +28992,46 @@ Ext.define('App.view.administration.FloorPlans', {
                     items:[
                         {
                             xtype: 'textfield',
-                            fieldLabel: i18n('zone_name'),
+                            fieldLabel: _('zone_name'),
                             name: 'title'
                         },
                         {
                             xtype:'colorcombo',
-                            fieldLabel: i18n('bg_color'),
+                            fieldLabel: _('bg_color'),
                             name:'bg_color'
                         },
                         {
                             xtype:'colorcombo',
-                            fieldLabel: i18n('border_color'),
+                            fieldLabel: _('border_color'),
                             name:'border_color'
                         },
                         {
                             xtype: 'numberfield',
-                            fieldLabel: i18n('width'),
+                            fieldLabel: _('width'),
                             minValue: 30,
                             maxValue: 300,
                             name: 'width'
                         },
                         {
                             xtype: 'numberfield',
-                            fieldLabel: i18n('height'),
+                            fieldLabel: _('height'),
                             minValue: 30,
                             maxValue: 300,
                             name: 'height'
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18n('show_priority_color'),
+                            fieldLabel: _('show_priority_color'),
                             name: 'show_priority_color'
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18n('show_patient_preview'),
+                            fieldLabel: _('show_patient_preview'),
                             name: 'show_patient_preview'
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18n('active'),
+                            fieldLabel: _('active'),
                             name: 'active'
                         }
                     ]
@@ -29039,21 +29039,21 @@ Ext.define('App.view.administration.FloorPlans', {
             ],
             buttons:[
                 {
-                    text:i18n('remove'),
+                    text:_('remove'),
                     xtype:'button',
                     scope:me,
                     handler:me.onZoneRemove
                 },
                 '->',
                 {
-                    text:i18n('cancel'),
+                    text:_('cancel'),
                     xtype:'button',
                     scope:me,
                     handler:me.onZoneCancel
                 },
                 '-',
                 {
-                    text:i18n('save'),
+                    text:_('save'),
                     xtype:'button',
                     scope:me,
                     handler:me.onZoneSave
@@ -29182,7 +29182,7 @@ Ext.define('App.view.administration.FloorPlans', {
             zone = editor.zone;
         Ext.Msg.show({
             title:'Wait!',
-            msg: i18n('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            msg: _('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn:function(btn){
@@ -29206,7 +29206,7 @@ Ext.define('App.view.administration.FloorPlans', {
             record = sm.getLastSelected();
         Ext.Msg.show({
             title:'Wait!',
-            msg: i18n('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            msg: _('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn:function(btn){
@@ -29216,7 +29216,7 @@ Ext.define('App.view.administration.FloorPlans', {
                         callback:function(){
                             sm.deselectAll();
                             me.floorPlanZones.removeAll();
-                            me.msg('Sweet!',i18n('record_removed'))
+                            me.msg('Sweet!',_('record_removed'))
                         }
                     });
 
@@ -29229,7 +29229,7 @@ Ext.define('App.view.administration.FloorPlans', {
         var me = this;
         me.floorZonesStore.add({
             floor_plan_id: me.floorPlanId,
-            title: i18n('new_zone'),
+            title: _('new_zone'),
             x: 5,
             y: 5,
             show_priority_color: 1,
@@ -29339,7 +29339,7 @@ Ext.define('App.view.administration.PreventiveCare',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPreventiveCare',
-	pageTitle : i18n('preventive_care'),
+	pageTitle : _('preventive_care'),
 	uses : ['Ext.grid.Panel', 'App.ux.combo.CodesTypes', 'App.ux.combo.Titles'],
 	initComponent : function()
 	{
@@ -29390,7 +29390,7 @@ Ext.define('App.view.administration.PreventiveCare',
 				items : [
 				{
 					icon : 'resources/images/icons/delete.png', // Use a URL in the icon config
-					tooltip : i18n('remove'),
+					tooltip : _('remove'),
 					handler : function(grid, rowIndex, colIndex)
 					{
 						var rec = grid.getStore().getAt(rowIndex);
@@ -29404,31 +29404,31 @@ Ext.define('App.view.administration.PreventiveCare',
 
 			{
 				flex : 1,
-				header : i18n('description'),
+				header : _('description'),
 				sortable : true,
 				dataIndex : 'description'
 			},
 			{
 				width : 100,
-				header : i18n('age_start'),
+				header : _('age_start'),
 				sortable : true,
 				dataIndex : 'age_start'
 			},
 			{
 				width : 100,
-				header : i18n('age_end'),
+				header : _('age_end'),
 				sortable : true,
 				dataIndex : 'age_end'
 			},
 			{
 				width : 100,
-				header : i18n('sex'),
+				header : _('sex'),
 				sortable : true,
 				dataIndex : 'sex'
 			},
 			{
 				width : 100,
-				header : i18n('frequency'),
+				header : _('frequency'),
 				sortable : true,
 				dataIndex : 'frequency'
 			}],
@@ -29451,7 +29451,7 @@ Ext.define('App.view.administration.PreventiveCare',
 					 * CVX Container
 					 */
 					xtype : 'tabpanel',
-					action : i18n('immunizations'),
+					action : _('immunizations'),
 					layout : 'fit',
 					plain : true,
 					listeners :
@@ -29461,7 +29461,7 @@ Ext.define('App.view.administration.PreventiveCare',
 					},
 					items : [
 					{
-						title : i18n('general'),
+						title : _('general'),
 						xtype : 'container',
 						padding : 10,
 						layout : 'vbox',
@@ -29481,21 +29481,21 @@ Ext.define('App.view.administration.PreventiveCare',
 							{
 
 								xtype : 'textfield',
-								fieldLabel : i18n('description'),
+								fieldLabel : _('description'),
 								name : 'description',
 								labelWidth : 130,
 								width : 703
 							},
 							{
 								xtype : 'gaiaehr.sexcombo',
-								fieldLabel : i18n('sex'),
+								fieldLabel : _('sex'),
 								name : 'sex',
 								width : 100,
 								labelWidth : 30
 
 							},
 							{
-								fieldLabel : i18n('active'),
+								fieldLabel : _('active'),
 								xtype : 'checkboxfield',
 								labelWidth : 75,
 								name : 'active'
@@ -29515,7 +29515,7 @@ Ext.define('App.view.administration.PreventiveCare',
 							items : [
 							{
 								xtype : 'mitos.codestypescombo',
-								fieldLabel : i18n('coding_system'),
+								fieldLabel : _('coding_system'),
 								labelWidth : 130,
 								value : 'CVX',
 								name : 'coding_system',
@@ -29524,7 +29524,7 @@ Ext.define('App.view.administration.PreventiveCare',
 							},
 							{
 								xtype : 'numberfield',
-								fieldLabel : i18n('frequency'),
+								fieldLabel : _('frequency'),
 								margin : '0 0 5 0',
 								value : 0,
 								minValue : 0,
@@ -29540,7 +29540,7 @@ Ext.define('App.view.administration.PreventiveCare',
 							},
 							{
 								xtype : 'numberfield',
-								fieldLabel : i18n('age_start'),
+								fieldLabel : _('age_start'),
 								name : 'age_start',
 								labelWidth : 75,
 								width : 140,
@@ -29549,7 +29549,7 @@ Ext.define('App.view.administration.PreventiveCare',
 
 							},
 							{
-								fieldLabel : i18n('must_be_pregnant'),
+								fieldLabel : _('must_be_pregnant'),
 								xtype : 'checkboxfield',
 								labelWidth : 105,
 								name : 'pregnant'
@@ -29571,24 +29571,24 @@ Ext.define('App.view.administration.PreventiveCare',
 							items : [
 							{
 								xtype : 'textfield',
-								fieldLabel : i18n('code'),
+								fieldLabel : _('code'),
 								name : 'code',
 								labelWidth : 130
 							},
 							{
 								xtype : 'numberfield',
-								fieldLabel : i18n('times_to_perform'),
+								fieldLabel : _('times_to_perform'),
 								name : 'times_to_perform',
 								width : 250,
 								value : 0,
 								minValue : 0,
-								tooltip : i18n('greater_than_1_or_just_check_perform_once')
+								tooltip : _('greater_than_1_or_just_check_perform_once')
 
 							},
 							{
 
 								xtype : 'numberfield',
-								fieldLabel : i18n('age_end'),
+								fieldLabel : _('age_end'),
 								name : 'age_end',
 								labelWidth : 75,
 								width : 140,
@@ -29597,7 +29597,7 @@ Ext.define('App.view.administration.PreventiveCare',
 
 							},
 							{
-								fieldLabel : i18n('perform_only_once'),
+								fieldLabel : _('perform_only_once'),
 								xtype : 'checkboxfield',
 								labelWidth : 105,
 								name : 'only_once'
@@ -29606,7 +29606,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						}]
 					},
 					{
-						title : i18n('active_problems'),
+						title : _('active_problems'),
 						action : 'problems',
 						xtype : 'grid',
 						margin : 5,
@@ -29619,18 +29619,18 @@ Ext.define('App.view.administration.PreventiveCare',
 							items : [
 							{
 								icon : 'resources/images/icons/delete.png',
-								tooltip : i18n('remove'),
+								tooltip : _('remove'),
 								scope : me,
 								handler : me.onRemoveRelation
 							}]
 						},
 						{
-							header : i18n('code'),
+							header : _('code'),
 							width : 100,
 							dataIndex : 'code'
 						},
 						{
-							header : i18n('description'),
+							header : _('description'),
 							flex : 1,
 							dataIndex : 'code_text'
 						}],
@@ -29638,7 +29638,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						{
 							xtype : 'liveicdxsearch',
 							margin : 5,
-							fieldLabel : i18n('add_problem'),
+							fieldLabel : _('add_problem'),
 							hideLabel : false,
 							listeners :
 							{
@@ -29648,7 +29648,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						}
 					},
 					{
-						title : i18n('medications'),
+						title : _('medications'),
 						action : 'medications',
 						xtype : 'grid',
 						width : 300,
@@ -29660,18 +29660,18 @@ Ext.define('App.view.administration.PreventiveCare',
 							items : [
 							{
 								icon : 'resources/images/icons/delete.png',
-								tooltip : i18n('remove'),
+								tooltip : _('remove'),
 								scope : me,
 								handler : me.onRemoveRelation
 							}]
 						},
 						{
-							header : i18n('code'),
+							header : _('code'),
 							width : 100,
 							dataIndex : 'code'
 						},
 						{
-							header : i18n('description'),
+							header : _('description'),
 							flex : 1,
 							dataIndex : 'code_text'
 						}],
@@ -29679,7 +29679,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						{
 							xtype : 'medicationlivetsearch',
 							margin : 5,
-							fieldLabel : i18n('add_problem'),
+							fieldLabel : _('add_problem'),
 							hideLabel : false,
 							listeners :
 							{
@@ -29689,7 +29689,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						}
 					},
 					{
-						title : i18n('labs'),
+						title : _('labs'),
 						action : 'labs',
 						xtype : 'grid',
 						store : me.labsStore,
@@ -29701,18 +29701,18 @@ Ext.define('App.view.administration.PreventiveCare',
 							items : [
 							{
 								icon : 'resources/images/icons/delete.png',
-								tooltip : i18n('remove'),
+								tooltip : _('remove'),
 								scope : me,
 								handler : me.onRemoveRelation
 							}]
 						},
 						{
-							header : i18n('value_name'),
+							header : _('value_name'),
 							flex : 1,
 							dataIndex : 'value_name'
 						},
 						{
-							header : i18n('less_than'),
+							header : _('less_than'),
 							flex : 1,
 							dataIndex : 'less_than',
 							editor :
@@ -29721,7 +29721,7 @@ Ext.define('App.view.administration.PreventiveCare',
 							}
 						},
 						{
-							header : i18n('greater_than'),
+							header : _('greater_than'),
 							flex : 1,
 							dataIndex : 'greater_than',
 							editor :
@@ -29730,7 +29730,7 @@ Ext.define('App.view.administration.PreventiveCare',
 							}
 						},
 						{
-							header : i18n('equal_to'),
+							header : _('equal_to'),
 							flex : 1,
 							dataIndex : 'equal_to',
 							editor :
@@ -29756,7 +29756,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						{
 							xtype : 'labslivetsearch',
 							margin : 5,
-							fieldLabel : i18n('add_labs'),
+							fieldLabel : _('add_labs'),
 							hideLabel : false,
 							listeners :
 							{
@@ -29773,7 +29773,7 @@ Ext.define('App.view.administration.PreventiveCare',
 			{
 				store : me.store,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				}),
@@ -29945,7 +29945,7 @@ Ext.define('App.view.administration.Roles', {
 		'Ext.ux.DataTip'
 	],
 	itemId: 'AdministrationRolePanel',
-	pageTitle: i18n('roles_and_permissions'),
+	pageTitle: _('roles_and_permissions'),
 	pageBody: [
 		{
 			xtype:'grid',
@@ -29956,7 +29956,7 @@ Ext.define('App.view.administration.Roles', {
 			tbar: [
 				{
 					xtype: 'xcombo',
-					emptyText: i18n('select'),
+					emptyText: _('select'),
 					labelWidth: 50,
 					width: 250,
 					valueField: 'id',
@@ -29965,7 +29965,7 @@ Ext.define('App.view.administration.Roles', {
 					store: Ext.create('App.store.administration.AclGroups'),
 					itemId: 'AdministrationRoleGroupCombo',
 					windowConfig: {
-						title: i18n('add_group')
+						title: _('add_group')
 					},
 					formConfig: {
 						border: false,
@@ -29973,12 +29973,12 @@ Ext.define('App.view.administration.Roles', {
 						items: [
 							{
 								xtype: 'textfield',
-								fieldLabel: i18n('group_name'),
+								fieldLabel: _('group_name'),
 								name: 'title'
 							},
 							{
 								xtype: 'checkbox',
-								fieldLabel: i18n('active'),
+								fieldLabel: _('active'),
 								name: 'active'
 							}
 						]
@@ -29989,7 +29989,7 @@ Ext.define('App.view.administration.Roles', {
 				'-',
 				{
 					xtype: 'button',
-					text: i18n('add_role'),
+					text: _('add_role'),
 					iconCls: 'icoAdd',
 					action: 'adminAclAddRole'
 				},
@@ -30010,7 +30010,7 @@ Ext.define('App.view.administration.Roles', {
 				},
 				{
 					ptype: 'datatip',
-					tpl: i18n('click_to_edit')
+					tpl: _('click_to_edit')
 				}
 			],
 			columns: [
@@ -30024,13 +30024,13 @@ Ext.define('App.view.administration.Roles', {
 	],
 	pageButtons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			cls: 'cancelBtn',
 			action: 'adminAclCancel'
 		},
 		'-',
 		{
-			text: i18n('save'),
+			text: _('save'),
 			cls: 'saveBtn',
 			action: 'adminAclSave'
 		}
@@ -30040,7 +30040,7 @@ Ext.define('App.view.administration.Roles', {
 Ext.define('App.view.administration.ExternalDataLoads',{
 	extend:'App.ux.RenderPanel',
 	id:'panelExternalDataLoads',
-	pageTitle:i18n('external_data_loads'),
+	pageTitle:_('external_data_loads'),
 	/**
 	 * define the layout 'accordion'
 	 * and few more configs
@@ -30112,30 +30112,30 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 		 * Here are the panels used inside the accordion layout
 		 */
 		me.icd9 = Ext.create('Ext.form.Panel',{
-			title:i18n('update_icd9'),
+			title:_('update_icd9'),
 			layout:'border',
 			items:[me.icd9Grid, me.icd9Form]
 		});
 
 		me.icd10 = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_icd10'),
+			title:_('update_icd10'),
 			layout:'border',
 			items:[me.icd10Grid, me.icd10Form]
 		});
 
 		me.rxnorm = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_rxnorm'),
+			title:_('update_rxnorm'),
 			layout:'border',
 			items:[me.rxnormGrid, me.rxnormForm]
 		});
 
 		me.snomed = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_snomed'),
+			title:_('update_snomed'),
 			layout:'border',
 			items:[me.snomedGrid, me.snomedForm]
 		});
 		me.hcpcs = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_hcpcs'),
+			title:_('update_hcpcs'),
 			layout:'border',
 			items:[me.hcpcsGrid, me.hcpcsForm]
 		});
@@ -30159,20 +30159,20 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 					xtype:'fieldset',
 					styleHtmlContent:true,
 					action:action,
-					title:i18n('current_version_installed'),
-					html:i18n('no_data_installed'),
-					tpl:i18n('revision_name') + ':  {revision_name}<br>' + i18n('revision_number') + ':  {revision_number}<br>' + i18n('revision_version') + ': {revision_version}<br>' + i18n('revision_date') + ':    {revision_date}<br>' + i18n('imported_on') + ':      {imported_date}'
+					title:_('current_version_installed'),
+					html:_('no_data_installed'),
+					tpl:_('revision_name') + ':  {revision_name}<br>' + _('revision_number') + ':  {revision_number}<br>' + _('revision_version') + ': {revision_version}<br>' + _('revision_date') + ':    {revision_date}<br>' + _('imported_on') + ':      {imported_date}'
 				},
 				{
 					xtype:'fieldset',
-					title:i18n('installation'),
+					title:_('installation'),
 					action:'installation',
 					styleHtmlContent:true,
 					html:me.getInstallationDetails(action)
 				},
 				{
 					xtype:'fieldset',
-					title:i18n('upload'),
+					title:_('upload'),
 					action:'upload',
 					items:[
 						{
@@ -30180,7 +30180,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 							xtype:'filefield',
 							name:'filePath',
 							buttonText:i18n['Select file'] + '...',
-							emptyText:i18n('data_file'),
+							emptyText:_('data_file'),
 							width:350,
 							labelWidth:50,
 							allowBlank:false
@@ -30193,7 +30193,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 			},
 			buttons:[
 				{
-					text:i18n('update'),
+					text:_('update'),
 					action:action,
 					scope:me,
 					handler:me.uploadFile
@@ -30228,17 +30228,17 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 	getDefaultColumns:function(){
 		return [
 			{
-				header:i18n('date'),
+				header:_('date'),
 				dataIndex:'date',
 				width:98
 			},
 			{
-				header:i18n('version'),
+				header:_('version'),
 				dataIndex:'version',
 				width:98
 			},
 			{
-				header:i18n('file'),
+				header:_('file'),
 				dataIndex:'basename',
 				width:300
 			}
@@ -30308,7 +30308,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 		var me = this, form = btn.up('form').getForm();
 		if(form.isValid()){
 			form.submit({
-				waitMsg:i18n('uploading_and_updating_code_database') + '...',
+				waitMsg:_('uploading_and_updating_code_database') + '...',
 				scope:me,
 				params:{
 					codeType:btn.action
@@ -30328,12 +30328,12 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 			log = app.log;
 
 		log.ActivityMonitor(false);
-		grid.el.mask(i18n('installing_database_please_wait') + '...');
+		grid.el.mask(_('installing_database_please_wait') + '...');
 		ExternalDataUpdate.updateCodes(record.data, function(provider, response){
 			grid.el.unmask();
 			if(response.result.success){
 				me.setCurrentCodesInfo();
-				me.alert(i18n('new_database_installed'), 'info');
+				me.alert(_('new_database_installed'), 'info');
 			}
 			else{
 				me.alert(response.result.error, 'error');
@@ -30383,7 +30383,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelMySettings',
-	pageTitle : i18n('my_settings'),
+	pageTitle : _('my_settings'),
 	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
@@ -30408,7 +30408,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n('appearance_settings'),
+				title : _('appearance_settings'),
 				collapsible : true,
 				defaultType : 'textfield',
 				layout : 'anchor',
@@ -30441,7 +30441,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n('locale_settings'),
+				title : _('locale_settings'),
 				collapsible : true,
 				defaultType : 'textfield',
 				layout : 'anchor',
@@ -30474,7 +30474,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n('calendar_settings'),
+				title : _('calendar_settings'),
 				collapsible : true,
 				defaultType : 'textfield',
 				layout : 'anchor',
@@ -30511,7 +30511,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 				dock : 'top',
 				items : [
 				{
-					text : i18n('save'),
+					text : _('save'),
 					iconCls : 'save',
 					id : 'cmdSave',
 					disabled : true,
@@ -30542,7 +30542,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelOfficeNotes',
-	pageTitle : i18n('office_notes'),
+	pageTitle : _('office_notes'),
 	pageLayout : 'border',
 	initComponent : function()
 	{
@@ -30565,7 +30565,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 				itemId : 'body',
 				name : 'body',
 				anchor : '100%',
-				emptyText : i18n('type_new_note_here') + '...',
+				emptyText : _('type_new_note_here') + '...',
 				listeners :
 				{
 					scope : me,
@@ -30578,7 +30578,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 				dock : 'top',
 				items : [
 				{
-					text : i18n('save'),
+					text : _('save'),
 					iconCls : 'save',
 					itemId : 'cmdSave',
 					disabled : true,
@@ -30586,17 +30586,17 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 					handler : me.onNoteSave
 				}, '-',
 				{
-					text : i18n('hide_this_note'),
+					text : _('hide_this_note'),
 					iconCls : 'save',
 					itemId : 'cmdHide',
-					tooltip : i18n('hide_selected_office_note'),
+					tooltip : _('hide_selected_office_note'),
 					disabled : true,
 					scope : me,
 					handler : me.onNoteHide
 
 				}, '-',
 				{
-					text : i18n('reset'),
+					text : _('reset'),
 					iconCls : 'save',
 					itemId : 'cmdReset',
 					disabled : true,
@@ -30618,20 +30618,20 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 			columns : [
 			{
 				width : 150,
-				header : i18n('date'),
+				header : _('date'),
 				sortable : true,
 				dataIndex : 'date',
 				renderer : Ext.util.Format.dateRenderer('Y-m-d H:i:s')
 			},
 			{
 				width : 150,
-				header : i18n('user'),
+				header : _('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
 			{
 				flex : 1,
-				header : i18n('note'),
+				header : _('note'),
 				sortable : true,
 				dataIndex : 'body'
 			}],
@@ -30639,13 +30639,13 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 			{
 				store : me.store,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				}),
 				items : [
 				{
-					text : i18n('show_only_active_notes'),
+					text : _('show_only_active_notes'),
 					iconCls : 'save',
 					enableToggle : true,
 					pressed : true,
@@ -30662,7 +30662,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 					}
 				}, '-',
 				{
-					text : i18n('show_all_notes'),
+					text : _('show_all_notes'),
 					iconCls : 'save',
 					enableToggle : true,
 					handler : function()
@@ -30764,7 +30764,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelWebsearch',
-	pageTitle : i18n('national_library'),
+	pageTitle : _('national_library'),
 	pageLayout : 'border',
 	uses : ['Ext.grid.Panel'],
 	initComponent : function()
@@ -30797,10 +30797,10 @@ Ext.define('App.view.miscellaneous.Websearch',
 			items : [
 			{
 				xtype : 'radiogroup',
-				fieldLabel : i18n('search_by'),
+				fieldLabel : _('search_by'),
 				items : [
                     {
-                        boxLabel : i18n('heath_topics'),
+                        boxLabel : _('heath_topics'),
                         name : 'type',
                         inputValue : 'health_topics'
                     },
@@ -30844,7 +30844,7 @@ Ext.define('App.view.miscellaneous.Websearch',
             page.termField = Ext.create('Ext.form.ComboBox',
             {
                 name: 'term',
-                fieldLabel: i18n('code_term') + ':',
+                fieldLabel: _('code_term') + ':',
                 store: page.codingStore,
                 anchor : '100%',
                 queryMode: 'local',
@@ -30861,7 +30861,7 @@ Ext.define('App.view.miscellaneous.Websearch',
             }),
             page.searchField = Ext.create('Ext.form.field.Text',
 			{
-				emptyText : i18n('web_search') + '...',
+				emptyText : _('web_search') + '...',
 				enableKeyEvents : true,
 				hideLabel : true,
 				anchor : '100%',
@@ -30905,14 +30905,14 @@ Ext.define('App.view.miscellaneous.Websearch',
 			viewConfig :
 			{
 				deferEmptyText : false,
-				emptyText : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + i18n('nothing_found') + '!</p>',
+				emptyText : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + _('nothing_found') + '!</p>',
 				stripeRows : true,
-				loadingText : i18n('searching') + '... ' + i18n('please_wait')
+				loadingText : _('searching') + '... ' + _('please_wait')
 			},
 			columns : [
 			{
 				flex : 1,
-				header : i18n('search_results'),
+				header : _('search_results'),
 				sortable : true,
 				dataIndex : 'title',
 				renderer : page.searchRow
@@ -30931,7 +30931,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 			{
 				store : page.store,
 				displayInfo : true,
-				emptyMsg : i18n('nothing_to_display'),
+				emptyMsg : _('nothing_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				})
@@ -30956,7 +30956,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 			layout : 'fit',
 			frame : true,
 			bodyBorder : true,
-			tpl : Ext.create('Ext.XTemplate', '<div class="search_container">', '<div class="search_data">', '<h3 class="search_title">' + i18n('title') + ': {title}</h3>', '<h4 class="search_source">' + i18n('source') + ': {source}</h4>', '</div>', '<div class="search_body">{FullSummary}</div>', '</div>')
+			tpl : Ext.create('Ext.XTemplate', '<div class="search_container">', '<div class="search_data">', '<h3 class="search_title">' + _('title') + ': {title}</h3>', '<h4 class="search_source">' + _('source') + ': {source}</h4>', '</div>', '<div class="search_body">{FullSummary}</div>', '</div>')
 		});
 
 		page.pageBody = [page.searchPanel, page.onotesGrid, page.viewPanel];
@@ -30978,7 +30978,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 
 Ext.define('App.view.signature.SignatureWindow', {
 	extend      : 'Ext.window.Window',
-	title       : i18n('please_sign'),
+	title       : _('please_sign'),
 	closeAction : 'hide',
 	height      : 250,
 	width       : 500,
@@ -30992,12 +30992,12 @@ Ext.define('App.view.signature.SignatureWindow', {
 
         me.buttons = [
             {
-                text: i18n('save'),
+                text: _('save'),
                 scope:me,
                 handler:me.signatureSave
             },
             {
-                text: i18n('reset'),
+                text: _('reset'),
                 scope:me,
                 handler:me.signatureCancel
             }
@@ -31140,419 +31140,419 @@ Ext.define('App.store.administration.DocumentToken', {
     extend: 'Ext.data.Store',
     data: [
         {
-            title: i18n('patient_id'),
+            title: _('patient_id'),
             token: '[PATIENT_ID]'
         },
         {
-            title: i18n('patient_name'),
+            title: _('patient_name'),
             token: '[PATIENT_NAME]'
         },
         {
-            title: i18n('patient_full_name'),
+            title: _('patient_full_name'),
             token: '[PATIENT_FULL_NAME]'
         },
         {
-            title: i18n('patient_mothers_maiden_name'),
+            title: _('patient_mothers_maiden_name'),
             token: '[PATIENT_MAIDEN_NAME]'
         },
         {
-            title: i18n('patient_last_name'),
+            title: _('patient_last_name'),
             token: '[PATIENT_LAST_NAME]'
         },
         {
-            title: i18n('patient_birthdate'),
+            title: _('patient_birthdate'),
             token: '[PATIENT_BIRTHDATE]'
         },
         {
-            title: i18n('patient_marital_status'),
+            title: _('patient_marital_status'),
             token: '[PATIENT_MARITAL_STATUS]'
         },
         {
-            title: i18n('patient_home_phone'),
+            title: _('patient_home_phone'),
             token: '[PATIENT_HOME_PHONE]'
         },
         {
-            title: i18n('patient_mobile_phone'),
+            title: _('patient_mobile_phone'),
             token: '[PATIENT_MOBILE_PHONE]'
         },
         {
-            title: i18n('patient_work_phone'),
+            title: _('patient_work_phone'),
             token: '[PATIENT_WORK_PHONE]'
         },
         {
-            title: i18n('patient_email'),
+            title: _('patient_email'),
             token: '[PATIENT_EMAIL]'
         },
         {
-            title: i18n('patient_social_security'),
+            title: _('patient_social_security'),
             token: '[PATIENT_SOCIAL_SECURITY]'
         },
         {
-            title: i18n('patient_sex'),
+            title: _('patient_sex'),
             token: '[PATIENT_SEX]'
         },
         {
-            title: i18n('patient_age'),
+            title: _('patient_age'),
             token: '[PATIENT_AGE]'
         },
         {
-            title: i18n('patient_city'),
+            title: _('patient_city'),
             token: '[PATIENT_CITY]'
         },
         {
-            title: i18n('patient_state'),
+            title: _('patient_state'),
             token: '[PATIENT_STATE]'
         },
         {
-            title: i18n('patient_home_address_line_1'),
+            title: _('patient_home_address_line_1'),
             token: '[PATIENT_HOME_ADDRESS_LINE_ONE]'
         },
         {
-            title: i18n('patient_home_address_line_1'),
+            title: _('patient_home_address_line_1'),
             token: '[PATIENT_HOME_ADDRESS_LINE_TWO]'
         },
         {
-            title: i18n('patient_home_address_zip_code'),
+            title: _('patient_home_address_zip_code'),
             token: '[PATIENT_HOME_ADDRESS_ZIP_CODE]'
         },
         {
-            title: i18n('patient_home_address_city'),
+            title: _('patient_home_address_city'),
             token: '[PATIENT_HOME_ADDRESS_CITY]'
         },
         {
-            title: i18n('patient_home_address_state'),
+            title: _('patient_home_address_state'),
             token: '[PATIENT_HOME_ADDRESS_STATE]'
         },
         {
-            title: i18n('patient_postal_address_line_1'),
+            title: _('patient_postal_address_line_1'),
             token: '[PATIENT_POSTAL_ADDRESS_LINE_ONE]'
         },
         {
-            title: i18n('patient_postal_address_line_2'),
+            title: _('patient_postal_address_line_2'),
             token: '[PATIENT_POSTAL_ADDRESS_LINE_TWO]'
         },
         {
-            title: i18n('patient_postal_address_zip_code'),
+            title: _('patient_postal_address_zip_code'),
             token: '[PATIENT_POSTAL_ADDRESS_ZIP_CODE]'
         },
         {
-            title: i18n('patient_postal_address_city'),
+            title: _('patient_postal_address_city'),
             token: '[PATIENT_POSTAL_ADDRESS_CITY]'
         },
         {
-            title: i18n('patient_postal_address_state'),
+            title: _('patient_postal_address_state'),
             token: '[PATIENT_POSTAL_ADDRESS_STATE]'
         },
         {
-            title: i18n('patient_tabacco'),
+            title: _('patient_tabacco'),
             token: '[PATIENT_TABACCO]'
         },
         {
-            title: i18n('patient_alcohol'),
+            title: _('patient_alcohol'),
             token: '[PATIENT_ALCOHOL]'
         },
         {
-            title: i18n('patient_drivers_license'),
+            title: _('patient_drivers_license'),
             token: '[PATIENT_DRIVERS_LICENSE]'
         },
         {
-            title: i18n('patient_employeer'),
+            title: _('patient_employeer'),
             token: '[PATIENT_EMPLOYEER]'
         },
         {
-            title: i18n('patient_first_emergency_contact'),
+            title: _('patient_first_emergency_contact'),
             token: '[PATIENT_FIRST_EMERGENCY_CONTACT]'
         },
         {
-            title: i18n('patient_referral'),
+            title: _('patient_referral'),
             token: '[PATIENT_REFERRAL]'
         },
         {
-            title: i18n('patient_date_referred'),
+            title: _('patient_date_referred'),
             token: '[PATIENT_REFERRAL_DATE]'
         },
         {
-            title: i18n('patient_balance'),
+            title: _('patient_balance'),
             token: '[PATIENT_BALANCE]'
         },
         {
-            title: i18n('patient_picture'),
+            title: _('patient_picture'),
             token: '[PATIENT_PICTURE]'
         },
         {
-            title: i18n('patient_primary_plan'),
+            title: _('patient_primary_plan'),
             token: '[PATIENT_PRIMARY_PLAN]'
         },
         {
-            title: i18n('patient_primary_plan_insured_person'),
+            title: _('patient_primary_plan_insured_person'),
             token: '[PATIENT_PRIMARY_INSURED_PERSON]'
         },
         {
-            title: i18n('patient_primary_plan_contract_number'),
+            title: _('patient_primary_plan_contract_number'),
             token: '[PATIENT_PRIMARY_CONTRACT_NUMBER]'
         },
         {
-            title: i18n('patient_primary_plan_expiration_date'),
+            title: _('patient_primary_plan_expiration_date'),
             token: '[PATIENT_PRIMARY_EXPIRATION_DATE]'
         },
         {
-            title: i18n('patient_secondary_plan'),
+            title: _('patient_secondary_plan'),
             token: '[PATIENT_SECONDARY_PLAN]'
         },
         {
-            title: i18n('patient_secondary_insured_person'),
+            title: _('patient_secondary_insured_person'),
             token: '[PATIENT_SECONDARY_INSURED_PERSON]'
         },
         {
-            title: i18n('patient_secondary_plan_contract_number'),
+            title: _('patient_secondary_plan_contract_number'),
             token: '[PATIENT_SECONDARY_CONTRACT_NUMBER]'
         },
         {
-            title: i18n('patient_secondary_plan_expiration_date'),
+            title: _('patient_secondary_plan_expiration_date'),
             token: '[PATIENT_SECONDARY_EXPIRATION_DATE]'
         },
         {
-            title: i18n('patient_referral_details'),
+            title: _('patient_referral_details'),
             token: '[PATIENT_REFERRAL_DETAILS]'
         },
         {
-            title: i18n('patient_referral_reason'),
+            title: _('patient_referral_reason'),
             token: '[PATIENT_REFERRAL_REASON]'
         },
         {
-            title: i18n('patient_head_circumference'),
+            title: _('patient_head_circumference'),
             token: '[PATIENT_HEAD_CIRCUMFERENCE]'
         },
         {
-            title: i18n('patient_height'),
+            title: _('patient_height'),
             token: '[PATIENT_HEIGHT]'
         },
         {
-            title: i18n('patient_pulse'),
+            title: _('patient_pulse'),
             token: '[PATIENT_PULSE]'
         },
         {
-            title: i18n('patient_respiratory_rate'),
+            title: _('patient_respiratory_rate'),
             token: '[PATIENT_RESPIRATORY_RATE]'
         },
         {
-            title: i18n('patient_temperature'),
+            title: _('patient_temperature'),
             token: '[PATIENT_TEMPERATURE]'
         },
         {
-            title: i18n('patient_weight'),
+            title: _('patient_weight'),
             token: '[PATIENT_WEIGHT]'
         },
         {
-            title: i18n('patient_pulse_oximeter'),
+            title: _('patient_pulse_oximeter'),
             token: '[PATIENT_PULSE_OXIMETER]'
         },
         {
-            title: i18n('patient_blood_preasure'),
+            title: _('patient_blood_preasure'),
             token: '[PATIENT_BLOOD_PREASURE]'
         },
         {
-            title: i18n('patient_body_mass_index'),
+            title: _('patient_body_mass_index'),
             token: '[PATIENT_BMI]'
         },
         {
-            title: i18n('patient_active_allergies_list'),
+            title: _('patient_active_allergies_list'),
             token: '[PATIENT_ACTIVE_ALLERGIES_LIST]'
         },
         {
-            title: i18n('patient_inactive_allergies_list'),
+            title: _('patient_inactive_allergies_list'),
             token: '[PATIENT_INACTIVE_ALLERGIES_LIST]'
         },
         {
-            title: i18n('patient_active_medications_list'),
+            title: _('patient_active_medications_list'),
             token: '[PATIENT_ACTIVE_MEDICATIONS_LIST]'
         },
         {
-            title: i18n('patient_inactive_medications_list'),
+            title: _('patient_inactive_medications_list'),
             token: '[PATIENT_INACTIVE_MEDICATIONS_LIST]'
         },
         {
-            title: i18n('patient_active_problems_list'),
+            title: _('patient_active_problems_list'),
             token: '[PATIENT_ACTIVE_PROBLEMS_LIST]'
         },
         {
-            title: i18n('patient_inactive_problems_list'),
+            title: _('patient_inactive_problems_list'),
             token: '[PATIENT_INACTIVE_PROBLEMS_LIST]'
         },
         {
-            title: i18n('patient_active_immunizations_list'),
+            title: _('patient_active_immunizations_list'),
             token: '[PATIENT_ACTIVE_IMMUNIZATIONS_LIST]'
         },
         {
-            title: i18n('patient_inactive_immunizations_list'),
+            title: _('patient_inactive_immunizations_list'),
             token: '[PATIENT_INACTIVE_IMMUNIZATIONS_LIST]'
         },
         {
-            title: i18n('patient_active_dental_list'),
+            title: _('patient_active_dental_list'),
             token: '[PATIENT_ACTIVE_DENTAL_LIST]'
         },
         {
-            title: i18n('patient_inactive_dental_list'),
+            title: _('patient_inactive_dental_list'),
             token: '[PATIENT_INACTIVE_DENTAL_LIST]'
         },
         {
-            title: i18n('patient_active_surgery_list'),
+            title: _('patient_active_surgery_list'),
             token: '[PATIENT_ACTIVE_SURGERY_LIST]'
         },
         {
-            title: i18n('patient_inactive_surgery_list'),
+            title: _('patient_inactive_surgery_list'),
             token: '[PATIENT_INACTIVE_SURGERY_LIST]'
         },
         {
-            title: i18n('encounter_date'),
+            title: _('encounter_date'),
             token: '[ENCOUNTER_DATE]'
         },
         {
-            title: i18n('encounter_subjective_part'),
+            title: _('encounter_subjective_part'),
             token: '[ENCOUNTER_SUBJECTIVE]'
         },
         {
-            title: i18n('encounter_subjective_part'),
+            title: _('encounter_subjective_part'),
             token: '[ENCOUNTER_OBJECTIVE]'
         },
         {
-            title: i18n('encounter_assessment'),
+            title: _('encounter_assessment'),
             token: '[ENCOUNTER_ASSESSMENT]'
         },
         {
-            title: i18n('encounter_assessment_list'),
+            title: _('encounter_assessment_list'),
             token: '[ENCOUNTER_ASSESSMENT_LIST]'
         },
         {
-            title: i18n('encounter_assessment_code_list'),
+            title: _('encounter_assessment_code_list'),
             token: '[ENCOUNTER_ASSESSMENT_CODE_LIST]'
         },
         {
-            title: i18n('encounter_assessment_full_list'),
+            title: _('encounter_assessment_full_list'),
             token: '[ENCOUNTER_ASSESSMENT_FULL_LIST]'
         },
         {
-            title: i18n('encounter_plan'),
+            title: _('encounter_plan'),
             token: '[ENCOUNTER_PLAN]'
         },
         {
-            title: i18n('encounter_medications'),
+            title: _('encounter_medications'),
             token: '[ENCOUNTER_MEDICATIONS]'
         },
         {
-            title: i18n('encounter_immunizations'),
+            title: _('encounter_immunizations'),
             token: '[ENCOUNTER_IMMUNIZATIONS]'
         },
         {
-            title: i18n('encounter_allergies'),
+            title: _('encounter_allergies'),
             token: '[ENCOUNTER_ALLERGIES]'
         },
         {
-            title: i18n('encounter_active_problems'),
+            title: _('encounter_active_problems'),
             token: '[ENCOUNTER_ACTIVE_PROBLEMS]'
         },
         {
-            title: i18n('encounter_surgeries'),
+            title: _('encounter_surgeries'),
             token: '[ENCOUNTER_SURGERIES]'
         },
         {
-            title: i18n('encounter_dental'),
+            title: _('encounter_dental'),
             token: '[ENCOUNTER_DENTAL]'
         },
         {
-            title: i18n('encounter_laboratories'),
+            title: _('encounter_laboratories'),
             token: '[ENCOUNTER_LABORATORIES]'
         },
         {
-            title: i18n('encounter_procedures_terms'),
+            title: _('encounter_procedures_terms'),
             token: '[ENCOUNTER_PROCEDURES_TERMS]'
         },
         {
-            title: i18n('encounter_cpt_codes_list'),
+            title: _('encounter_cpt_codes_list'),
             token: '[ENCOUNTER_CPT_CODES]'
         },
         {
-            title: i18n('encounter_signature'),
+            title: _('encounter_signature'),
             token: '[ENCOUNTER_SIGNATURE]'
         },
         {
-            title: i18n('orders_laboratories'),
+            title: _('orders_laboratories'),
             token: '[ORDERS_LABORATORIES]'
         },
         {
-            title: i18n('orders_x_rays'),
+            title: _('orders_x_rays'),
             token: '[ORDERS_XRAYS]'
         },
         {
-            title: i18n('orders_referral'),
+            title: _('orders_referral'),
             token: '[ORDERS_REFERRAL]'
         },
         {
-            title: i18n('orders_other'),
+            title: _('orders_other'),
             token: '[ORDERS_OTHER]'
         },
         {
-            title: i18n('current_date'),
+            title: _('current_date'),
             token: '[CURRENT_DATE]'
         },
         {
-            title: i18n('current_time'),
+            title: _('current_time'),
             token: '[CURRENT_TIME]'
         },
         {
-            title: i18n('current_user_name'),
+            title: _('current_user_name'),
             token: '[CURRENT_USER_NAME]'
         },
         {
-            title: i18n('current_user_full_name'),
+            title: _('current_user_full_name'),
             token: '[CURRENT_USER_FULL_NAME]'
         },
         {
-            title: i18n('current_user_license_number'),
+            title: _('current_user_license_number'),
             token: '[CURRENT_USER_LICENSE_NUMBER]'
         },
         {
-            title: i18n('current_user_dea_license_number'),
+            title: _('current_user_dea_license_number'),
             token: '[CURRENT_USER_DEA_LICENSE_NUMBER]'
         },
         {
-            title: i18n('current_user_dm_license_number'),
+            title: _('current_user_dm_license_number'),
             token: '[CURRENT_USER_DM_LICENSE_NUMBER]'
         },
         {
-            title: i18n('current_user_npi_license_number'),
+            title: _('current_user_npi_license_number'),
             token: '[CURRENT_USER_NPI_LICENSE_NUMBER]'
         },
         {
-            title: i18n('referral_id'),
+            title: _('referral_id'),
             token: '[REFERRAL_ID]'
         },
 	    {
-            title: i18n('referral_date'),
+            title: _('referral_date'),
             token: '[REFERRAL_DATE]'
         },
 	    {
-            title: i18n('referral_reason'),
+            title: _('referral_reason'),
             token: '[REFERRAL_REASON]'
         },
 	    {
-            title: i18n('referral_diagnosis'),
+            title: _('referral_diagnosis'),
             token: '[REFERRAL_DIAGNOSIS]'
         },
 	    {
-            title: i18n('referral_service_request'),
+            title: _('referral_service_request'),
             token: '[REFERRAL_SERVICE]'
         },
 	    {
-            title: i18n('referral_risk_level'),
+            title: _('referral_risk_level'),
             token: '[REFERRAL_RISK_LEVEL]'
         },
 	    {
-            title: i18n('referral_by'),
+            title: _('referral_by'),
             token: '[REFERRAL_BY_TEXT]'
         },
 	    {
-            title: i18n('referral_to'),
+            title: _('referral_to'),
             token: '[REFERRAL_TO_TEXT]'
         }
     ]
@@ -32503,7 +32503,7 @@ Ext.define('App.controller.administration.DecisionSupport', {
 		cmb.getStore().on('load', function(store){
 			store.insert(0,{
 				code: 'smoking_status',
-				option_name: i18n('smoking_status'),
+				option_name: _('smoking_status'),
 				option_value: 'smoking_status',
 				code_type: ''
 			});
@@ -32795,12 +32795,12 @@ Ext.define('App.controller.administration.Roles', {
 			store = this.getAdministrationRoleGrid().getStore();
 
 		if(store.getUpdatedRecords().length > 0){
-			me.getAdministrationRoleGrid().el.mask(i18n('saving'));
+			me.getAdministrationRoleGrid().el.mask(_('saving'));
 		}
 
 		store.sync({
 			callback: function(response){
-				app.msg(i18n('sweet'), i18n('record_saved'));
+				app.msg(_('sweet'), _('record_saved'));
 				me.getAdministrationRoleGrid().el.unmask();
 			}
 		});
@@ -32894,7 +32894,7 @@ Ext.define('App.controller.administration.Roles', {
 			values = form.getValues();
 
 		if(form.isValid()){
-			panel.el.mask(i18n('be_right_back'));
+			panel.el.mask(_('be_right_back'));
 			record.set(values);
 			record.save({
 				callback: function(rec){
@@ -32914,7 +32914,7 @@ Ext.define('App.controller.administration.Roles', {
 		var me = this;
 
 		me.roleWindow = Ext.widget('window', {
-			title: i18n('new_role'),
+			title: _('new_role'),
 			items: [
 				{
 					xtype: 'form',
@@ -32923,13 +32923,13 @@ Ext.define('App.controller.administration.Roles', {
 					items: [
 						{
 							xtype: 'textfield',
-							fieldLabel: i18n('role_name'),
+							fieldLabel: _('role_name'),
 							name: 'role_name',
 							allowBlank: false
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							name: 'active'
 						}
 					]
@@ -32937,14 +32937,14 @@ Ext.define('App.controller.administration.Roles', {
 			],
 			buttons: [
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					cls: 'cancelBtn',
 					scope: me,
 					handler: me.doCancelRole,
 					action: 'adminAclRoleCancel'
 				},
 				{
-					text: i18n('save'),
+					text: _('save'),
 					cls: 'saveBtn',
 					scope: me,
 					handler: me.doSaveRole,
@@ -33165,7 +33165,7 @@ Ext.define('App.controller.DualScreen', {
 		if(!this.isDual || this._loggedout) return;
 		var store = this.getActiveStore();
 
-		this.mask(i18n('no_patient_selected'));
+		this.mask(_('no_patient_selected'));
 		this.getHeader().update('');
 
 		if(filter === false) return;
@@ -33217,7 +33217,7 @@ Ext.define('App.controller.DualScreen', {
 			run: function(){
 				if(window.opener == null) window.close();
 				if(!window.opener.app.logged && !me._loggedout){
-					me.mask(i18n('logged_out'));
+					me.mask(_('logged_out'));
 					me._loggedout = true;
 				}
 			},
@@ -33287,7 +33287,7 @@ Ext.define('App.controller.InfoButton', {
 		var me = this;
 
 		me.medline  = 'http://apps2.nlm.nih.gov/medlineplus/services/mpconnect.cfm?';
-		me.language = i18n('lang_code').match(/^es/) ? 'es' : 'en';
+		me.language = _('lang_code').match(/^es/) ? 'es' : 'en';
 		me.codeSytem = {
 			'ICD10CM': '2.16.840.1.113883.6.90',
 			'ICD10-CM': '2.16.840.1.113883.6.90',
@@ -33329,7 +33329,7 @@ Ext.define('App.controller.InfoButton', {
 
 	getInformationWindow: function(data){
 		Ext.widget('window', {
-			title: i18n('information'),
+			title: _('information'),
 			autoShow: true,
 			width: 800,
 			height: 600,
@@ -33474,8 +33474,8 @@ Ext.define('App.controller.LogOut', {
 			});
 		}else{
 			Ext.Msg.show({
-				title: i18n('please_confirm') + '...',
-				msg: i18n('are_you_sure_to_quit') + ' GaiaEHR?',
+				title: _('please_confirm') + '...',
+				msg: _('are_you_sure_to_quit') + ' GaiaEHR?',
 				icon: Ext.MessageBox.QUESTION,
 				buttons: Ext.Msg.YESNO,
 				fn: function(btn){
@@ -33843,7 +33843,7 @@ Ext.define('App.controller.Support', {
 			me.winSupport.show();
 		}else{
 			me.winSupport = Ext.create('Ext.window.Window', {
-				title: i18n('support'),
+				title: _('support'),
 				closeAction: 'hide',
 				bodyStyle: 'background-color: #ffffff; padding: 5px;',
 				animateTarget: me.Footer,
@@ -33957,7 +33957,7 @@ Ext.define('App.controller.ScriptCam', {
 			buttons: [
 				'->',
 				{
-					text: i18n('capture_img'),
+					text: _('capture_img'),
 					action: 'onCaptureImage'
 				}
 			],
@@ -34344,7 +34344,7 @@ Ext.define('App.controller.patient.Allergies', {
 			area: 'review_allergies'
 		};
 		Medical.reviewMedicalWindowEncounter(params, function(provider, response){
-			app.msg('Sweet!', i18n('succefully_reviewed'));
+			app.msg('Sweet!', _('succefully_reviewed'));
 		});
 	}
 
@@ -34486,7 +34486,7 @@ Ext.define('App.controller.patient.CarePlanGoals', {
 			created_date: new Date()
 		});
 
-		me.getCarePlanGoalsNewWindow().setTitle(i18n('new_goal'));
+		me.getCarePlanGoalsNewWindow().setTitle(_('new_goal'));
 		me.getCarePlanGoalsNewWindow().setSize(me.getSoapPanelForm().getSize());
 		me.getCarePlanGoalsNewWindow().show(me.getCarePlanGoalsGrid().el);
 		me.getCarePlanGoalsNewForm().getForm().loadRecord(records[0]);
@@ -34504,10 +34504,10 @@ Ext.define('App.controller.patient.CarePlanGoals', {
 			record.set(values);
 			record.store.sync({
 				success:function(){
-					app.msg(i18n('sweet'), i18n('record_saved'));
+					app.msg(_('sweet'), _('record_saved'));
 				},
 				failure:function(){
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			});
 
@@ -34747,13 +34747,13 @@ Ext.define('App.controller.patient.CCDImport', {
 			patient = me.getCcdImportPatientForm().getForm().getRecord();
 
 		if(patient.data.sex != records[0].data.sex){
-			app.msg(i18n('warning'), i18n('records_sex_are_not_equal'), true);
+			app.msg(_('warning'), _('records_sex_are_not_equal'), true);
 		}
 
 		if(patient.data.DOB.getFullYear() != records[0].data.DOB.getFullYear() &&
 			patient.data.DOB.getMonth() != records[0].data.DOB.getMonth() &&
 			patient.data.DOB.getDate() != records[0].data.DOB.getDate()){
-			app.msg(i18n('warning'), i18n('records_date_of_birth_are_not_equal'), true);
+			app.msg(_('warning'), _('records_date_of_birth_are_not_equal'), true);
 		}
 
 	},
@@ -34773,7 +34773,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	getResultObservationGrid: function(){
 		return Ext.widget('window',{
-			title: i18n('observations'),
+			title: _('observations'),
 			modal: true,
 			items:[
 				{
@@ -34783,13 +34783,13 @@ Ext.define('App.controller.patient.CCDImport', {
 					frame: true,
 					columns:[
 						{
-							text: i18n('name'),
+							text: _('name'),
 							menuDisabled: true,
 							dataIndex: 'code_text',
 							width: 200
 						},
 						{
-							text: i18n('value'),
+							text: _('value'),
 							menuDisabled: true,
 							dataIndex: 'value',
 							width: 150,
@@ -34813,13 +34813,13 @@ Ext.define('App.controller.patient.CCDImport', {
 							}
 						},
 						{
-							text: i18n('units'),
+							text: _('units'),
 							menuDisabled: true,
 							dataIndex: 'units',
 							width: 75
 						},
 						{
-							text: i18n('abnormal'),
+							text: _('abnormal'),
 							menuDisabled: true,
 							dataIndex: 'abnormal_flag',
 							width: 75,
@@ -34843,19 +34843,19 @@ Ext.define('App.controller.patient.CCDImport', {
 							}
 						},
 						{
-							text: i18n('range'),
+							text: _('range'),
 							menuDisabled: true,
 							dataIndex: 'reference_rage',
 							width: 150
 						},
 						{
-							text: i18n('notes'),
+							text: _('notes'),
 							menuDisabled: true,
 							dataIndex: 'notes',
 							width: 300
 						},
 						{
-							text: i18n('status'),
+							text: _('status'),
 							menuDisabled: true,
 							dataIndex: 'observation_result_status',
 							width: 60
@@ -34875,8 +34875,8 @@ Ext.define('App.controller.patient.CCDImport', {
 			pid = me.getCcdImportWindowPatientSearchField().getValue();
 
 		Ext.Msg.show({
-			title: i18n('wait'),
-			msg: pid ? i18n('patient_merge_verification') : i18n('patient_import_verification'),
+			title: _('wait'),
+			msg: pid ? _('patient_merge_verification') : _('patient_import_verification'),
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -34905,7 +34905,7 @@ Ext.define('App.controller.patient.CCDImport', {
 				if(success){
 					me.doPatientSectionsImport(record.data.pid);
 				}else{
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			}
 		});
@@ -34965,7 +34965,7 @@ Ext.define('App.controller.patient.CCDImport', {
 					app.setPatient(pid, null, function(){
 						app.openPatientSummary();
 					});
-					app.msg(i18n('sweet'), i18n('patient_data_imported'));
+					app.msg(_('sweet'), _('patient_data_imported'));
 				}
 			});
 		}
@@ -35204,7 +35204,7 @@ Ext.define('App.controller.patient.DecisionSupport', {
 						if(btn.result.reference != ''){
 							window.open(btn.result.reference, "_blank", "toolbar=no, scrollbars=yes, resizable=yes, top=10, left=10, width=1000, height=600");
 						}else{
-							app.msg(i18n('oops'), i18n('no_reference_provided'), true);
+							app.msg(_('oops'), _('no_reference_provided'), true);
 						}
 					}
 				};
@@ -35524,7 +35524,7 @@ Ext.define('App.controller.patient.Immunizations', {
 	getVxuWindow: function(){
 		var me = this;
 		return Ext.widget('window',{
-			title: i18n('submit_hl7_vxu'),
+			title: _('submit_hl7_vxu'),
 			closable: false,
 			modal: true,
 			bodyStyle:'background-color:white',
@@ -35535,7 +35535,7 @@ Ext.define('App.controller.patient.Immunizations', {
 			},
 			items:[
 				{
-					html: i18n('please_verify_the_information')+':',
+					html: _('please_verify_the_information')+':',
 					margin: '10 10 0 10'
 				},
 				{
@@ -35556,8 +35556,8 @@ Ext.define('App.controller.patient.Immunizations', {
 			],
 			buttons:[
 				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
-					fieldLabel: i18n('send_from'),
-					emptyText: i18n('select'),
+					fieldLabel: _('send_from'),
+					emptyText: _('select'),
 					labelWidth: 60,
 					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
@@ -35570,8 +35570,8 @@ Ext.define('App.controller.patient.Immunizations', {
 				}),
 				me.vxuTo = Ext.widget('combobox',{
 					xtype:'combobox',
-					fieldLabel: i18n('send_to'),
-					emptyText: i18n('select'),
+					fieldLabel: _('send_to'),
+					emptyText: _('select'),
 					allowBlank: false,
 					forceSelection: true,
 					labelWidth: 60,
@@ -35587,12 +35587,12 @@ Ext.define('App.controller.patient.Immunizations', {
 					})
 				}),
 				{
-					text: i18n('send'),
+					text: _('send'),
 					scope: me,
 					handler: me.doSendVxu
 				},
 				{
-					text:i18n('cancel'),
+					text:_('cancel'),
 					handler:function(){
 						me.vxuWindow.close();
 					}
@@ -35619,14 +35619,14 @@ Ext.define('App.controller.patient.Immunizations', {
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
 
-			me.vxuWindow.el.mask(i18n('sending'));
+			me.vxuWindow.el.mask(_('sending'));
 
 			HL7Messages.sendVXU(params, function(provider, response){
 				me.vxuWindow.el.unmask();
 				if(response.result.success){
-					app.msg(i18n('sweet!'), i18n('message_sent'));
+					app.msg(_('sweet!'), _('message_sent'));
 				}else{
-					app.msg(i18n('oops!'), i18n('message_error'), true);
+					app.msg(_('oops!'), _('message_error'), true);
 				}
 				me.vxuWindow.close();
 				sm.deselectAll();
@@ -35722,9 +35722,9 @@ Ext.define('App.controller.patient.ItemsToReview', {
 		if(me.getReviewSmokingStatusCombo().isValid()){
 			Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
 				if(response.result.success){
-					app.msg('Sweet!', i18n('items_to_review_save_and_review'));
+					app.msg('Sweet!', _('items_to_review_save_and_review'));
 				}else{
-					app.msg('Oops!', i18n('items_to_review_entry_error'))
+					app.msg('Oops!', _('items_to_review_entry_error'))
 				}
 			});
 		}
@@ -35778,7 +35778,7 @@ Ext.define('App.controller.patient.Medical', {
 
 	onNavKey: function(e, key){
 		if(!app.patient.pid) {
-			app.msg(i18n('oops'), i18n('patient_error'), true);
+			app.msg(_('oops'), _('patient_error'), true);
 			return;
 		}
 		var win = this.getMedicalWindow().show();
@@ -35999,7 +35999,7 @@ Ext.define('App.controller.patient.Patient', {
 
 			me.lookForPossibleDuplicates(params, 'openPatientSummary');
 		}else{
-			app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+			app.msg(_('oops'), _('required_fields_missing'), true);
 		}
 	},
 
@@ -36018,7 +36018,7 @@ Ext.define('App.controller.patient.Patient', {
 				if(records.length > 0){
 					win.show();
 				}else{
-					app.msg(i18n('sweet'), i18n('no_possible_duplicates_found'));
+					app.msg(_('sweet'), _('no_possible_duplicates_found'));
 				}
 			}
 		});
@@ -36279,7 +36279,7 @@ Ext.define('App.controller.patient.Referrals', {
 			sm = grid.getSelectionModel(),
 			selection = sm.getSelection();
 
-		grid.view.el.mask(i18n('generating_documents'));
+		grid.view.el.mask(_('generating_documents'));
 
 		for(var i=0; i < selection.length; i++){
 			var params = {
@@ -36732,18 +36732,18 @@ Ext.define('App.controller.patient.Social', {
 		me.smokeStatusStore.sync({
 			success:function(){
 				if(window.dual){
-					dual.msg(i18n('sweet'), i18n('record_updated'));
+					dual.msg(_('sweet'), _('record_updated'));
 				}else{
-					app.msg(i18n('sweet'), i18n('record_updated'));
+					app.msg(_('sweet'), _('record_updated'));
 				}
 
 				me.loadSmokeStatusStore(cmb.up('grid').up('panel'));
 			},
 			failure:function(){
 				if(window.dual){
-					dual.msg(i18n('oops'), i18n('record_error'), true);
+					dual.msg(_('oops'), _('record_error'), true);
 				}else{
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			}
 		});
@@ -37139,7 +37139,7 @@ Ext.define('App.controller.patient.Vitals', {
 
 		if(selected > 0 && record.data.auth_uid > 0){
 			say('entre false');
-			app.msg(i18n('oops'),i18n('multi_select_signed_records_not_authorized'), true);
+			app.msg(_('oops'),_('multi_select_signed_records_not_authorized'), true);
 			return false;
 		}
 
@@ -37165,7 +37165,7 @@ Ext.define('App.controller.patient.Vitals', {
 
 	onHistoryGridBeforeEdit: function(plugin, context){
 		if(context.record.data.auth_uid != 0){
-			app.msg(i18n('oops'), i18n('this_record_can_not_be_modified_because_it_has_been_signed_by') + ' ' + context.record.data.authorized_by, true);
+			app.msg(_('oops'), _('this_record_can_not_be_modified_because_it_has_been_signed_by') + ' ' + context.record.data.authorized_by, true);
 			return false;
 		}
 		return true;
@@ -37205,7 +37205,7 @@ Ext.define('App.controller.patient.Vitals', {
 						}
 						records[0].store.sync({
 							callback: function(){
-								app.msg('Sweet!', i18n('vitals_signed'));
+								app.msg('Sweet!', _('vitals_signed'));
 //								me.getProgressNote();
 								app.AuditLog('Patient vitals authorized');
 
@@ -37215,7 +37215,7 @@ Ext.define('App.controller.patient.Vitals', {
 					}else{
 						Ext.Msg.show({
 							title: 'Oops!',
-							msg: i18n('incorrect_password'),
+							msg: _('incorrect_password'),
 							buttons: Ext.Msg.OKCANCEL,
 							icon: Ext.Msg.ERROR,
 							fn: function(btn){
@@ -37271,50 +37271,50 @@ Ext.define('App.controller.patient.Vitals', {
 
 		if(record !== false){
 			if(property == 'bp'){
-				title = i18n(property);
+				title = _(property);
 				value = (record.data.bp_systolic + '/' + record.data.bp_diastolic);
 				value = value == 'null/null' || value == '/' ? '--/--' : value;
-				extra = i18n('systolic') + '/' + i18n('diastolic');
+				extra = _('systolic') + '/' + _('diastolic');
 
 			}else if(property == 'temp_c' || property == 'temp_f'){
-				title = i18n('temp');
+				title = _('temp');
 				symbol = property == 'temp_c' ? '&deg;C' : '&deg;F';
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
 				extra = record.data.temp_location == '' ? '--' : record.data.temp_location;
 
 			}else if(property == 'weight_lbs' || property == 'weight_kg'){
-				title = i18n('weight');
+				title = _('weight');
 				//				symbol = property == 'weight_lbs' ? ' lbs' : ' kg';
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
 				extra = property == 'weight_lbs' ? 'lbs/oz' : 'Kg';
 
 			}else if(property == 'height_in' || property == 'height_cm'){
-				title = i18n('height');
+				title = _('height');
 				symbol = property == 'height_in' ? ' in' : ' cm';
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
 
 			}else if(property == 'bmi'){
-				title = i18n(property);
+				title = _(property);
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
 				extra = record.data.bmi_status == '' ? '--' : record.data.bmi_status;
 
 			}else if(property == 'other_notes'){
-				title = i18n('notes');
+				title = _('notes');
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
 				align = 'left'
 			}
 		}else{
 			if(property == 'temp_c' || property == 'temp_f'){
-				title = i18n('temp');
+				title = _('temp');
 			}else if(property == 'weight_lbs' || property == 'weight_kg'){
-				title = i18n('weight');
+				title = _('weight');
 			}else if(property == 'height_in' || property == 'height_cm'){
-				title = i18n('height');
+				title = _('height');
 			}else if(property == 'other_notes'){
-				title = i18n('notes');
+				title = _('notes');
 				align = 'left'
 			}else{
-				title = i18n(property);
+				title = _(property);
 			}
 			value = property == 'bp' ? '--/--' : '--';
 			extra = '--';
@@ -37450,21 +37450,21 @@ Ext.define('App.controller.patient.Vitals', {
 		var status = '';
 		if(bmi == '') return '';
 		if(bmi < 15){
-			status = i18n('very_severely_underweight')
+			status = _('very_severely_underweight')
 		}else if(bmi >= 15 && bmi < 16){
-			status = i18n('severely_underweight')
+			status = _('severely_underweight')
 		}else if(bmi >= 16 && bmi < 18.5){
-			status = i18n('underweight')
+			status = _('underweight')
 		}else if(bmi >= 18.5 && bmi < 25){
-			status = i18n('normal')
+			status = _('normal')
 		}else if(bmi >= 25 && bmi < 30){
-			status = i18n('overweight')
+			status = _('overweight')
 		}else if(bmi >= 30 && bmi < 35){
-			status = i18n('obese_class_1')
+			status = _('obese_class_1')
 		}else if(bmi >= 35 && bmi < 40){
-			status = i18n('obese_class_2')
+			status = _('obese_class_2')
 		}else if(bmi >= 40){
-			status = i18n('obese_class_3')
+			status = _('obese_class_3')
 		}
 		return status;
 	},
@@ -38070,7 +38070,7 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 
 			if(templates.action != action){
 
-				templates.setTitle(i18n(me.field.name) + ' ' + i18n('templates'));
+				templates.setTitle(_(me.field.name) + ' ' + _('templates'));
 				templates.action = me.field.name + '-' + specialty_id;
 
 				templates.getSelectionModel().deselectAll();
@@ -38263,7 +38263,7 @@ Ext.define('App.view.patient.Immunizations', {
 		'App.ux.form.fields.DateTime'
 	],
 	xtype: 'patientimmunizationspanel',
-	title: i18n('immunizations'),
+	title: _('immunizations'),
 	layout:'border',
 	border:false,
 	items:[
@@ -38283,11 +38283,11 @@ Ext.define('App.view.patient.Immunizations', {
 				autoSync: false
 			}),
 			features: Ext.create('Ext.grid.feature.Grouping', {
-				groupHeaderTpl: i18n('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
+				groupHeaderTpl: _('immunization') + ': {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
 			}),
 			columns: [
 				{
-					text: i18n('code'),
+					text: _('code'),
 					dataIndex: 'code',
 					width: 50,
 					renderer:function(v, meta, record){
@@ -38299,7 +38299,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('immunization_name'),
+					text: _('immunization_name'),
 					dataIndex: 'vaccine_name',
 					flex: 1,
 					renderer:function(v, meta, record){
@@ -38308,7 +38308,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('lot_number'),
+					text: _('lot_number'),
 					dataIndex: 'lot_number',
 					width: 100,
 					renderer:function(v, meta, record){
@@ -38317,7 +38317,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('amount'),
+					text: _('amount'),
 					dataIndex: 'administer_amount',
 					width: 100,
 					renderer:function(v, meta, record){
@@ -38326,7 +38326,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('units'),
+					text: _('units'),
 					dataIndex: 'administer_units',
 					width: 100,
 					renderer:function(v, meta, record){
@@ -38335,7 +38335,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('notes'),
+					text: _('notes'),
 					dataIndex: 'note',
 					flex: 1,
 					renderer:function(v, meta, record){
@@ -38344,7 +38344,7 @@ Ext.define('App.view.patient.Immunizations', {
 					}
 				},
 				{
-					text: i18n('administered_by'),
+					text: _('administered_by'),
 					dataIndex: 'administered_by',
 					width: 150,
 					renderer:function(v, meta, record){
@@ -38354,7 +38354,7 @@ Ext.define('App.view.patient.Immunizations', {
 				},
 				{
 					xtype: 'datecolumn',
-					text: i18n('date'),
+					text: _('date'),
 					format: 'Y-m-d',
 					width: 100,
 					dataIndex: 'administered_date',
@@ -38392,7 +38392,7 @@ Ext.define('App.view.patient.Immunizations', {
 											{
 												xtype: 'immunizationlivesearch',
 												itemId: 'immunizationsearch',
-												fieldLabel: i18n('name'),
+												fieldLabel: _('name'),
 												name: 'vaccine_name',
 												valueField:'name',
 												hideLabel: false,
@@ -38418,21 +38418,21 @@ Ext.define('App.view.patient.Immunizations', {
 											{
 
 												xtype: 'numberfield',
-												fieldLabel: i18n('amount'),
+												fieldLabel: _('amount'),
 												name: 'administer_amount',
 												width: 160
 											},
 											{
 
 												xtype: 'textfield',
-												fieldLabel: i18n('units'),
+												fieldLabel: _('units'),
 												name: 'administer_units',
 												labelWidth: 50,
 												width: 125
 
 											},
 											{
-												fieldLabel: i18n('administration_site'),
+												fieldLabel: _('administration_site'),
 												width: 320,
 												labelWidth: 130,
 												xtype: 'gaiaehr.combo',
@@ -38456,7 +38456,7 @@ Ext.define('App.view.patient.Immunizations', {
 										},
 										items: [
 											{
-												fieldLabel: i18n('route'),
+												fieldLabel: _('route'),
 												xtype: 'gaiaehr.combo',
 												list: 6,
 												queryMode: 'local',
@@ -38465,7 +38465,7 @@ Ext.define('App.view.patient.Immunizations', {
 												name: 'route'
 											},
 											{
-												fieldLabel: i18n('date_administered'),
+												fieldLabel: _('date_administered'),
 												width: 320,
 												labelWidth: 115,
 												xtype: 'mitos.datetime',
@@ -38476,14 +38476,14 @@ Ext.define('App.view.patient.Immunizations', {
 
 									},
 									{
-										fieldLabel: i18n('administered_by'),
+										fieldLabel: _('administered_by'),
 										xtype: 'textfield',
 										name: 'administered_by',
 										margin: '0 10 5 0',
 										width: 625
 									},
 									{
-										fieldLabel: i18n('notes'),
+										fieldLabel: _('notes'),
 										xtype: 'textfield',
 										name: 'note',
 										width: 625
@@ -38495,26 +38495,26 @@ Ext.define('App.view.patient.Immunizations', {
 								items:[
 									{
 										xtype:'fieldset',
-										title:i18n('substance_data'),
+										title:_('substance_data'),
 										defaults: {
 											margin: '0 0 5 0',
 											width: 250
 										},
 										items:[
 											{
-												fieldLabel: i18n('lot_number'),
+												fieldLabel: _('lot_number'),
 												xtype: 'textfield',
 												name: 'lot_number'
 											},
 											{
-												fieldLabel: i18n('exp_date'),
+												fieldLabel: _('exp_date'),
 												xtype: 'datefield',
 												format: 'Y-m-d',
 												name: 'exp_date'
 											},
 											{
 												xtype: 'cvxmanufacturersforcvxcombo',
-												fieldLabel: i18n('manufacturer'),
+												fieldLabel: _('manufacturer'),
 												margin: '0 0 8 0',
 												name: 'manufacturer'
 											}
@@ -38522,7 +38522,7 @@ Ext.define('App.view.patient.Immunizations', {
 									},
 									{
 										xtype: 'checkboxfield',
-										boxLabel: i18n('entered_in_error'),
+										boxLabel: _('entered_in_error'),
 										name: 'is_error'
 									}
 								]
@@ -38535,7 +38535,7 @@ Ext.define('App.view.patient.Immunizations', {
 			tbar:[
 				'->',
 				{
-					text: i18n('add_new'),
+					text: _('add_new'),
 					action: 'encounterRecordAdd',
 					itemId: 'addImmunizationBtn',
 					iconCls: 'icoAdd'
@@ -38545,14 +38545,14 @@ Ext.define('App.view.patient.Immunizations', {
 				'-',
 				{
 					xtype: 'button',
-					text: i18n('submit_hl7_vxu'),
+					text: _('submit_hl7_vxu'),
 					disabled: true,
 					itemId: 'submitVxuBtn'
 				},
 				'-',
 				'->',
 				{
-					text: i18n('review'),
+					text: _('review'),
 					itemId: 'reviewImmunizationsBtn',
 					action: 'encounterRecordAdd'
 				}
@@ -38560,7 +38560,7 @@ Ext.define('App.view.patient.Immunizations', {
 		},
 		{
 			xtype:'grid',
-			title:i18n('immunization_list'),
+			title:_('immunization_list'),
 			itemId: 'cvxGrid',
 			collapseMode:'mini',
 			region:'east',
@@ -38571,12 +38571,12 @@ Ext.define('App.view.patient.Immunizations', {
 			store: Ext.create('App.store.patient.CVXCodes'),
 			columns: [
 				{
-					text: i18n('code'),
+					text: _('code'),
 					dataIndex: 'cvx_code',
 					width: 50
 				},
 				{
-					text: i18n('immunization_name'),
+					text: _('immunization_name'),
 					dataIndex: 'name',
 					flex: 1
 				}
@@ -38597,7 +38597,7 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.LiveSigsSearch'
 	],
 	xtype: 'patientmedicationspanel',
-	title: i18n('medications'),
+	title: _('medications'),
 	layout: 'border',
 	border: false,
 	columnLines: true,
@@ -38627,7 +38627,7 @@ Ext.define('App.view.patient.Medications', {
 					]
 				},
 				{
-					header: i18n('medication'),
+					header: _('medication'),
 					flex: 1,
 					minWidth: 200,
 					dataIndex: 'STR',
@@ -38640,7 +38640,7 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 //				{
-//					header: i18n('dose'),
+//					header: _('dose'),
 //					width: 125,
 //					dataIndex: 'dose',
 //					sortable: false,
@@ -38650,7 +38650,7 @@ Ext.define('App.view.patient.Medications', {
 //					}
 //				},
 //				{
-//					header: i18n('route'),
+//					header: _('route'),
 //					width: 100,
 //					dataIndex: 'route',
 //					sortable: false,
@@ -38660,7 +38660,7 @@ Ext.define('App.view.patient.Medications', {
 //					}
 //				},
 //				{
-//					header: i18n('form'),
+//					header: _('form'),
 //					width: 125,
 //					dataIndex: 'form',
 //					sortable: false,
@@ -38670,7 +38670,7 @@ Ext.define('App.view.patient.Medications', {
 //					}
 //				},
 //				{
-//					header: i18n('instructions'),
+//					header: _('instructions'),
 //					width: 200,
 //					dataIndex: 'directions',
 //					sortable: false,
@@ -38682,7 +38682,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
-					header: i18n('begin_date'),
+					header: _('begin_date'),
 					width: 100,
 					dataIndex: 'begin_date',
 					sortable: false,
@@ -38691,7 +38691,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
-					header: i18n('end_date'),
+					header: _('end_date'),
 					width: 100,
 					dataIndex: 'end_date',
 					sortable: false,
@@ -38702,7 +38702,7 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 				{
-					header: i18n('active?'),
+					header: _('active?'),
 					width: 60,
 					dataIndex: 'active',
 					renderer: function(v){
@@ -38718,7 +38718,7 @@ Ext.define('App.view.patient.Medications', {
 			bbar: [
 				'->',
 				{
-					text: i18n('review'),
+					text: _('review'),
 					itemId: 'review_medications',
 					action: 'encounterRecordAdd'
 				}
@@ -38726,7 +38726,7 @@ Ext.define('App.view.patient.Medications', {
 		},
 		{
 			xtype: 'grid',
-			title: i18n('medication_list'),
+			title: _('medication_list'),
 			itemId: 'medicationsListGrid',
 			collapseMode: 'mini',
 			region: 'east',
@@ -38749,7 +38749,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					xtype: 'triggerfield',
 					triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
-					fieldLabel: i18n('search'),
+					fieldLabel: _('search'),
 					flex: 1,
 					labelWidth: 43
 				}
@@ -38761,7 +38761,7 @@ Ext.define('App.view.patient.Medications', {
 					sortable: false
 				},
 				{
-					text: i18n('medication'),
+					text: _('medication'),
 					dataIndex: 'STR',
 					flex: 1
 				}
@@ -38771,7 +38771,7 @@ Ext.define('App.view.patient.Medications', {
 	tbar: [
 		'->',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',
 			action: 'encounterRecordAdd',
 			iconCls: 'icoAdd'
@@ -38790,7 +38790,7 @@ Ext.define('App.view.patient.LabOrders', {
 		'App.ux.combo.Combo'
 	],
 	xtype: 'patientlaborderspanel',
-	title: i18n('lab_orders'),
+	title: _('lab_orders'),
 	itemId: 'LabOrders',
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientsOrders', {
@@ -38825,19 +38825,19 @@ Ext.define('App.view.patient.LabOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 //					scope: me,
 //					handler: me.onRemoveClick
 				}
 			]
 		},
 		{
-			header: i18n('order#'),
+			header: _('order#'),
 			width: 60,
 			dataIndex: 'id'
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			width: 75,
 			dataIndex: 'status',
 			editor: {
@@ -38850,7 +38850,7 @@ Ext.define('App.view.patient.LabOrders', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_ordered'),
+			header: _('date_ordered'),
 			width: 100,
 			dataIndex: 'date_ordered',
 			format: 'Y-m-d',
@@ -38859,12 +38859,12 @@ Ext.define('App.view.patient.LabOrders', {
 			}
 		},
 		{
-			header: i18n('code'),
+			header: _('code'),
 			width: 100,
 			dataIndex: 'code'
 		},
 		{
-			header: i18n('description'),
+			header: _('description'),
 			flex: 1,
 			dataIndex: 'description',
 			editor: {
@@ -38873,7 +38873,7 @@ Ext.define('App.view.patient.LabOrders', {
 			}
 		},
 		{
-			header: i18n('notes'),
+			header: _('notes'),
 			flex: 1,
 			dataIndex: 'note',
 			editor: {
@@ -38881,7 +38881,7 @@ Ext.define('App.view.patient.LabOrders', {
 			}
 		},
 		{
-			header: i18n('priority'),
+			header: _('priority'),
 			width: 100,
 			dataIndex: 'priority',
 			editor: {
@@ -38891,7 +38891,7 @@ Ext.define('App.view.patient.LabOrders', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_collected'),
+			header: _('date_collected'),
 			width: 100,
 			dataIndex: 'date_collected',
 			format: 'Y-m-d',
@@ -38903,7 +38903,7 @@ Ext.define('App.view.patient.LabOrders', {
 	tbar: [
 //		me.eLabBtn =
 		{
-			text: i18n('eLab'),
+			text: _('eLab'),
 			iconCls: 'icoSend',
 			itemId:'electronicLabOrderBtn'
 //			scope: me,
@@ -38915,7 +38915,7 @@ Ext.define('App.view.patient.LabOrders', {
 		'->',
 		'-',
 		{
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId:'newLabOrderBtn'
@@ -38925,7 +38925,7 @@ Ext.define('App.view.patient.LabOrders', {
 		'-',
 //		me.labPrintBtn =
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -38949,7 +38949,7 @@ Ext.define('App.view.patient.RadOrders', {
 		'App.ux.LiveRadiologySearch'
 	],
 	xtype: 'patientradorderspanel',
-	title: i18n('xray_ct_orders'),
+	title: _('xray_ct_orders'),
 	columnLines: true,
 	itemId: 'RadOrders',
 	store: Ext.create('App.store.patient.PatientsOrders', {
@@ -38984,19 +38984,19 @@ Ext.define('App.view.patient.RadOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 //					scope: me,
 //					handler: me.onRemoveClick
 				}
 			]
 		},
 		{
-			header: i18n('order#'),
+			header: _('order#'),
 			width: 60,
 			dataIndex: 'id'
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			width: 75,
 			dataIndex: 'status',
 			editor: {
@@ -39009,7 +39009,7 @@ Ext.define('App.view.patient.RadOrders', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_ordered'),
+			header: _('date_ordered'),
 			width: 100,
 			dataIndex: 'date_ordered',
 			format: 'Y-m-d',
@@ -39018,12 +39018,12 @@ Ext.define('App.view.patient.RadOrders', {
 			}
 		},
 		{
-			header: i18n('code'),
+			header: _('code'),
 			width: 100,
 			dataIndex: 'code'
 		},
 		{
-			header: i18n('description'),
+			header: _('description'),
 			flex: 1,
 			dataIndex: 'description',
 			editor: {
@@ -39032,7 +39032,7 @@ Ext.define('App.view.patient.RadOrders', {
 			}
 		},
 		{
-			header: i18n('notes'),
+			header: _('notes'),
 			flex: 1,
 			dataIndex: 'note',
 			editor: {
@@ -39040,7 +39040,7 @@ Ext.define('App.view.patient.RadOrders', {
 			}
 		},
 		{
-			header: i18n('priority'),
+			header: _('priority'),
 			width: 100,
 			dataIndex: 'priority',
 			editor: {
@@ -39050,7 +39050,7 @@ Ext.define('App.view.patient.RadOrders', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_collected'),
+			header: _('date_collected'),
 			width: 100,
 			dataIndex: 'date_collected',
 			format: 'Y-m-d',
@@ -39061,7 +39061,7 @@ Ext.define('App.view.patient.RadOrders', {
 	],
 	tbar: [
 		{
-			text: i18n('eRad'),
+			text: _('eRad'),
 			iconCls: 'icoSend',
 			itemId: 'electronicRadOrderBtn'
 		},
@@ -39070,14 +39070,14 @@ Ext.define('App.view.patient.RadOrders', {
 		'-',
 		{
 			xtype: 'button',
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newRadOrderBtn'
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -39098,7 +39098,7 @@ Ext.define('App.view.patient.RxOrders', {
 		'App.ux.LiveRXNORMSearch'
 	],
 	xtype: 'patientrxorderspanel',
-	title: i18n('rx_orders'),
+	title: _('rx_orders'),
 	columnLines: true,
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
@@ -39140,7 +39140,7 @@ Ext.define('App.view.patient.RxOrders', {
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('order_date'),
+									fieldLabel: _('order_date'),
 									format: 'Y-m-d',
 									name: 'date_ordered',
 									allowBlank: false,
@@ -39150,7 +39150,7 @@ Ext.define('App.view.patient.RxOrders', {
 									xtype: 'rxnormlivetsearch',
 									itemId: 'RxNormOrderLiveSearch',
 									hideLabel: false,
-									fieldLabel: i18n('medication'),
+									fieldLabel: _('medication'),
 									width: 700,
 									name: 'STR',
 									maxLength: 105,
@@ -39169,7 +39169,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'numberfield',
 											width: 170,
-											fieldLabel: i18n('dispense'),
+											fieldLabel: _('dispense'),
 											minValue: 0.001,
 											maxValue: 99999,
 											name: 'dispense',
@@ -39203,7 +39203,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'numberfield',
 											width: 130,
-											fieldLabel: i18n('days_supply'),
+											fieldLabel: _('days_supply'),
 											labelAlign: 'right',
 											labelWidth: 75,
 											minValue: 1,
@@ -39214,7 +39214,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'numberfield',
 											width: 100,
-											fieldLabel: i18n('refill'),
+											fieldLabel: _('refill'),
 											labelAlign: 'right',
 											labelWidth: 40,
 											maxValue: 99,
@@ -39226,7 +39226,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'encountericdscombo',
 											itemId: 'RxEncounterDxCombo',
-											fieldLabel: i18n('dx'),
+											fieldLabel: _('dx'),
 											labelAlign: 'right',
 											labelWidth: 30,
 											width: 295,
@@ -39247,7 +39247,7 @@ Ext.define('App.view.patient.RxOrders', {
 								{
 									xtype: 'textfield',
 									width: 700,
-									fieldLabel: i18n('notes_to_Pharmacist'),
+									fieldLabel: _('notes_to_Pharmacist'),
 									itemId: 'RxOrderGridFormNotesField',
 									name: 'notes',
 									maxLength: 210
@@ -39266,8 +39266,8 @@ Ext.define('App.view.patient.RxOrders', {
 									items:[
 										{
 											xtype: 'checkboxfield',
-											fieldLabel: i18n('daw'),
-											tooltip: i18n('dispensed_as_written'),
+											fieldLabel: _('daw'),
+											tooltip: _('dispensed_as_written'),
 											width: 90,
 											labelWidth: 70,
 											labelAlign: 'right',
@@ -39276,8 +39276,8 @@ Ext.define('App.view.patient.RxOrders', {
 										},
 										{
 											xtype: 'checkboxfield',
-											fieldLabel: i18n('is_comp'),
-											tooltip: i18n('is_compound'),
+											fieldLabel: _('is_comp'),
+											tooltip: _('is_compound'),
 											width: 85,
 											labelWidth: 65,
 											labelAlign: 'right',
@@ -39287,8 +39287,8 @@ Ext.define('App.view.patient.RxOrders', {
 										},
 										{
 											xtype: 'checkboxfield',
-											fieldLabel: i18n('is_sply'),
-											tooltip: i18n('is_supply'),
+											fieldLabel: _('is_sply'),
+											tooltip: _('is_supply'),
 											width: 85,
 											labelWidth: 65,
 											labelAlign: 'right',
@@ -39300,7 +39300,7 @@ Ext.define('App.view.patient.RxOrders', {
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('begin_date'),
+									fieldLabel: _('begin_date'),
 									labelWidth: 70,
 									labelAlign: 'right',
 									width: 258,
@@ -39311,7 +39311,7 @@ Ext.define('App.view.patient.RxOrders', {
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('end_date'),
+									fieldLabel: _('end_date'),
 									labelWidth: 70,
 									labelAlign: 'right',
 									format: 'Y-m-d',
@@ -39322,8 +39322,8 @@ Ext.define('App.view.patient.RxOrders', {
 						},
 						{
 							xtype: 'fieldset',
-							title: i18n('active_drug_allergies'),
-							html: i18n('none'),
+							title: _('active_drug_allergies'),
+							html: _('none'),
 							margin: '25 0 5 10',
 							flex: 1
 						}
@@ -39339,62 +39339,62 @@ Ext.define('App.view.patient.RxOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 				}
 			]
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_ordered'),
+			header: _('date_ordered'),
 			dataIndex: 'date_ordered',
 			format: 'Y-m-d'
 		},
 		{
-			header: i18n('medication'),
+			header: _('medication'),
 			flex: 1,
 			dataIndex: 'STR'
 		},
 		{
-			header: i18n('daw'),
+			header: _('daw'),
 			width: 40,
 			dataIndex: 'daw',
-			tooltip: i18n('dispensed_as_written'),
+			tooltip: _('dispensed_as_written'),
 			renderer: function(v){
 				return app.boolRenderer(v);
 			}
 		},
 		//		{
-		//			header: i18n('dose'),
+		//			header: _('dose'),
 		//			width: 115,
 		//			dataIndex: 'dose'
 		//		},
 		//		{
-		//			header: i18n('route'),
+		//			header: _('route'),
 		//			width: 90,
 		//			dataIndex: 'route'
 		//		},
 		//		{
-		//			header: i18n('form'),
+		//			header: _('form'),
 		//			width: 70,
 		//			dataIndex: 'form'
 		//		},
 		{
-			header: i18n('dispense'),
+			header: _('dispense'),
 			width: 60,
 			dataIndex: 'dispense'
 		},
 		{
-			header: i18n('refill'),
+			header: _('refill'),
 			width: 50,
 			dataIndex: 'refill'
 		},
 		{
-			header: i18n('instructions'),
+			header: _('instructions'),
 			flex: 1,
 			dataIndex: 'directions'
 		},
 		{
-			header: i18n('related_dx'),
+			header: _('related_dx'),
 			width: 200,
 			dataIndex: 'dxs',
 			renderer: function(v){
@@ -39404,13 +39404,13 @@ Ext.define('App.view.patient.RxOrders', {
 		{
 			xtype: 'datecolumn',
 			format: 'Y-m-d',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			width: 75,
 			dataIndex: 'begin_date'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			width: 75,
 			format: 'Y-m-d',
 			dataIndex: 'end_date'
@@ -39420,14 +39420,14 @@ Ext.define('App.view.patient.RxOrders', {
 		'->',
 		'-',
 		{
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newRxOrderBtn'
 		},
 		'-',
 		{
-			text: i18n('clone_order'),
+			text: _('clone_order'),
 			iconCls: 'icoAdd',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -39436,7 +39436,7 @@ Ext.define('App.view.patient.RxOrders', {
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -39510,7 +39510,7 @@ Ext.define('App.ux.combo.EncounterSupervisors', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 
@@ -39558,14 +39558,14 @@ Ext.define('App.ux.grid.AreasViewDropZone', {
 	},
 
 	notifyEnter : function(dd, e, data){
-		Ext.get(data.ddel.id).update(i18n('drop_patient_to_new_area'));
+		Ext.get(data.ddel.id).update(_('drop_patient_to_new_area'));
 		this.callParent(arguments);
 	},
 
 	// While over a target node, return the default drop allowed class which
 	// places a "tick" icon into the drag proxy.
 	notifyOut : function(dd, e, data){
-		Ext.get(data.ddel.id).update(i18n('drag_patient_to_new_area'));
+		Ext.get(data.ddel.id).update(_('drag_patient_to_new_area'));
 		this.callParent(arguments);
 	}
 
@@ -39697,21 +39697,21 @@ Ext.define('App.view.patient.encounter.CarePlanGoals', {
 	frame: true,
 	columns: [
 		{
-			text: i18n('goal'),
+			text: _('goal'),
 			dataIndex: 'goal',
 			width: 200
 		},
 		{
-			text: i18n('instructions'),
+			text: _('instructions'),
 			dataIndex: 'instructions',
 			flex: 1
 		}
 	],
 	tbar: [
-		i18n('care_plan_goals'),
+		_('care_plan_goals'),
 		'->',
 		{
-			text: i18n('new_goal'),
+			text: _('new_goal'),
 			iconCls: 'icoAdd',
 			itemId: 'NewCarePlanGoalBtn'
 		}
@@ -39922,7 +39922,7 @@ Ext.define('App.view.patient.Documents', {
 		'Ext.form.ComboBox'
 	],
 	xtype: 'patientdocumentspanel',
-	title: i18n('documents'),
+	title: _('documents'),
 	layout: 'border',
 	items: [
 		{
@@ -39959,7 +39959,7 @@ Ext.define('App.view.patient.Documents', {
 					xtype: 'actioncolumn',
 					width: 23,
 					icon: 'resources/images/icons/icoLessImportant.png',
-					tooltip: i18n('validate_file_integrity_hash'),
+					tooltip: _('validate_file_integrity_hash'),
 					handler: function(grid, rowIndex){
 						App.app.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex);
 					},
@@ -39971,7 +39971,7 @@ Ext.define('App.view.patient.Documents', {
 					xtype: 'actioncolumn',
 					width: 23,
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('delete'),
+					tooltip: _('delete'),
 					hidden: !eval(a('delete_patient_documents')),
 					handler: function(grid, rowIndex, colIndex, item, e, recprd){
 
@@ -39984,18 +39984,18 @@ Ext.define('App.view.patient.Documents', {
 					}
 				},
 				{
-					header: i18n('type'),
+					header: _('type'),
 					dataIndex: 'docType'
 				},
 				{
 					xtype: 'datecolumn',
-					header: i18n('date'),
+					header: _('date'),
 					dataIndex: 'date',
 					format: 'Y-m-d'
 
 				},
 				{
-					header: i18n('title'),
+					header: _('title'),
 					dataIndex: 'title',
 					flex: 1,
 					editor: {
@@ -40004,7 +40004,7 @@ Ext.define('App.view.patient.Documents', {
 					}
 				},
 				{
-					header: i18n('encrypted'),
+					header: _('encrypted'),
 					dataIndex: 'encrypted',
 					width: 70,
 					renderer: function(v){
@@ -40019,10 +40019,10 @@ Ext.define('App.view.patient.Documents', {
 
 			}),
 			tbar: [
-					i18n('group_by') + ':',
+					_('group_by') + ':',
 				{
 					xtype: 'button',
-					text: i18n('date'),
+					text: _('date'),
 					enableToggle: true,
 					action: 'groupDate',
 					pressed: true,
@@ -40030,7 +40030,7 @@ Ext.define('App.view.patient.Documents', {
 				},
 				{
 					xtype: 'button',
-					text: i18n('type'),
+					text: _('type'),
 					enableToggle: true,
 					action: 'docType',
 					toggleGroup: 'documentgridgroup'
@@ -40038,7 +40038,7 @@ Ext.define('App.view.patient.Documents', {
 				'->',
 				'-',
 				{
-					text: i18n('upload_document'),
+					text: _('upload_document'),
 					itemId: 'documentUploadBtn'
 				}
 			],
@@ -40078,7 +40078,7 @@ Ext.define('App.view.patient.CCD', {
 		'App.ux.ManagedIframe'
 	],
 	xtype: 'patientccdpanel',
-	title: i18n('ccd'),
+	title: _('ccd'),
 	columnLines: true,
 	itemId: 'CcdPanel',
 	layout: 'fit',
@@ -40093,13 +40093,13 @@ Ext.define('App.view.patient.CCD', {
 	tbar: [
 		{
 			xtype: 'button',
-			text: i18n('view_ccr'),
+			text: _('view_ccr'),
 			margin: '0 0 5 0',
 			itemId: 'viewCcdBtn'
 		},
 		'-',
 		{
-			text: i18n('export_ccr'),
+			text: _('export_ccr'),
 			margin: '0 0 5 0',
 			itemId: 'exportCcdBtn'
 		},
@@ -40112,7 +40112,7 @@ Ext.define('App.view.patient.CCD', {
 					xtype: 'patientEncounterCombo',
 					name: 'filterEncounter',
 					margin: 5,
-					fieldLabel: i18n('filter_encounter'),
+					fieldLabel: _('filter_encounter'),
 					hideLabel: false
 				}
 			]
@@ -40136,15 +40136,15 @@ Ext.define('App.view.administration.CPT', {
 		'App.store.administration.CPT'
 	],
 	xtype: 'cptadmingrid',
-	title: i18n('cpt4'),
+	title: _('cpt4'),
 	columns: [
 		{
 			width: 60,
-			header: i18n('code'),
+			header: _('code'),
 			dataIndex: 'code'
 		},
 		{
-			header: i18n('short_name'),
+			header: _('short_name'),
 			dataIndex: 'code_text_short',
 			width: 100,
 			flex: 1,
@@ -40153,7 +40153,7 @@ Ext.define('App.view.administration.CPT', {
 			}
 		},
 		{
-			header: i18n('long_name'),
+			header: _('long_name'),
 			dataIndex: 'code_text',
 			flex: 2,
 			editor:{
@@ -40161,7 +40161,7 @@ Ext.define('App.view.administration.CPT', {
 			}
 		},
 		{
-			header: i18n('radiology'),
+			header: _('radiology'),
 			dataIndex: 'isRadiology',
 			editor:{
 				xtype:'checkbox'
@@ -40172,7 +40172,7 @@ Ext.define('App.view.administration.CPT', {
 		},
 		{
 			width: 60,
-			header: i18n('active'),
+			header: _('active'),
 			dataIndex: 'active',
 			editor:{
 				xtype:'checkbox'
@@ -40197,13 +40197,13 @@ Ext.define('App.view.administration.CPT', {
 		me.tbar = Ext.create('Ext.PagingToolbar', {
 			store: me.store,
 			displayInfo: true,
-			emptyMsg: i18n('no_office_notes_to_display'),
+			emptyMsg: _('no_office_notes_to_display'),
 			plugins: Ext.create('Ext.ux.SlidingPager'),
 			items: [
 				'-',
 				{
 					xtype: 'textfield',
-					emptyText: i18n('search'),
+					emptyText: _('search'),
 					width: 200,
 					enableKeyEvents: true,
 					itemId: 'adminCpt4CodeSearchField'
@@ -40211,7 +40211,7 @@ Ext.define('App.view.administration.CPT', {
 				'-',
 				{
 					xtype: 'button',
-					text: i18n('only_active'),
+					text: _('only_active'),
 					enableToggle: true,
 					itemId: 'adminCpt4CodeOnlyActiveBtn'
 				},
@@ -40336,7 +40336,7 @@ Ext.define('App.ux.combo.ActiveSpecialties', {
 	displayField: 'text_details',
 	valueField: 'id',
 	editable: false,
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	queryMode: 'local',
 	store: Ext.create('App.store.administration.Specialties',{
 		filters: [
@@ -40464,7 +40464,7 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 	draggable: false,
 	modal: true,
 	autoShow: true,
-	title: i18n('archive_document'),
+	title: _('archive_document'),
 	items: [
 		{
 			xtype: 'form',
@@ -40481,12 +40481,12 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 					hidden: true
 				},
 				{
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'gaiaehr.combo',
-					fieldLabel: i18n('type'),
+					fieldLabel: _('type'),
 					list: 102,
 					name: 'docType',
 					allowBlank: false
@@ -40494,25 +40494,25 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 				{
 					xtype: 'checkbox',
 					name: 'encrypted',
-					fieldLabel: i18n('encrypted')
+					fieldLabel: _('encrypted')
 				},
 				{
 					xtype: 'textareafield',
 					name: 'note',
-					fieldLabel: i18n('notes')
+					fieldLabel: _('notes')
 				}
 			]
 		}
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
 		},
 		{
-			text: i18n('archive'),
+			text: _('archive'),
 			itemId: 'archiveBtn'
 		}
 	]
@@ -40525,7 +40525,7 @@ Ext.define('App.view.notifications.Grid', {
 	hideHeaders: true,
 	columns: [
 		{
-			text: i18n('description'),
+			text: _('description'),
 			dataIndex: 'description',
 			flex: 1
 		}
@@ -40538,7 +40538,7 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 	draggable: false,
 	modal: true,
 	autoShow: true,
-	title: i18n('new_document'),
+	title: _('new_document'),
 	items: [
 		{
 			xtype: 'form',
@@ -40551,12 +40551,12 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 			},
 			items: [
 				{
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'gaiaehr.combo',
-					fieldLabel: i18n('type'),
+					fieldLabel: _('type'),
 					list: 102,
 					name: 'docType',
 					allowBlank: false
@@ -40564,32 +40564,32 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 				{
 					xtype: 'fileuploadfield',
 					name: 'document',
-					buttonText: i18n('select_a_file') + '...',
-					fieldLabel: i18n('file'),
+					buttonText: _('select_a_file') + '...',
+					fieldLabel: _('file'),
 					allowBlank: false
 				},
 				{
 					xtype: 'checkbox',
 					name: 'encrypted',
-					fieldLabel: i18n('encrypted')
+					fieldLabel: _('encrypted')
 				},
 				{
 					xtype: 'textareafield',
 					name: 'note',
-					fieldLabel: i18n('notes')
+					fieldLabel: _('notes')
 				}
 			]
 		}
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
 		},
 		{
-			text: i18n('upload'),
+			text: _('upload'),
 			itemId: 'uploadBtn'
 		}
 	]
@@ -40601,7 +40601,7 @@ Ext.define('App.view.administration.HL7MessageViewer', {
 		type: 'vbox',
 		align: 'stretch'
 	},
-	title: i18n('hl7_viewer'),
+	title: _('hl7_viewer'),
 	width: 800,
 	height: 450,
 	bodyPadding: 10,
@@ -40613,12 +40613,12 @@ Ext.define('App.view.administration.HL7MessageViewer', {
 	},
 	items: [
 		{
-			fieldLabel: i18n('message'),
+			fieldLabel: _('message'),
 			action: 'message',
 			flex: 1
 		},
 		{
-			fieldLabel: i18n('acknowledge'),
+			fieldLabel: _('acknowledge'),
 			action: 'acknowledge',
 			flex: 1
 		}
@@ -40631,7 +40631,7 @@ Ext.define('App.view.patient.encounter.Snippets', {
 
 	],
 	itemId: 'SnippetWindow',
-	title: i18n('snippet'),
+	title: _('snippet'),
 	closable: false,
 	items: [
 		{
@@ -40645,12 +40645,12 @@ Ext.define('App.view.patient.encounter.Snippets', {
 			items: [
 				{
 					xtype: 'textfield',
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'textareafield',
-					fieldLabel: i18n('snippet'),
+					fieldLabel: _('snippet'),
 					allowBlank: false,
 					itemId: 'SnippetFormTextField',
 					name: 'text'
@@ -40660,11 +40660,11 @@ Ext.define('App.view.patient.encounter.Snippets', {
 	],
 	buttons:[
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			itemId: 'SnippetCancelBtn'
 		},
 		{
-			text: i18n('save'),
+			text: _('save'),
 			itemId: 'SnippetSaveBtn'
 		}
 	]
@@ -40722,7 +40722,7 @@ Ext.define('App.ux.combo.ReferringProviders', {
 		});
 
 		Ext.apply(this, {
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 
@@ -40750,18 +40750,18 @@ Ext.define('App.view.patient.SmokingStatus', {
 	columns: [
 		{
 			xtype: 'datecolumn',
-			text: i18n('date'),
+			text: _('date'),
 			dataIndex: 'create_date',
 			format: 'Y-m-d',
 			width: 120
 		},
 		{
-			text: i18n('status'),
+			text: _('status'),
 			dataIndex: 'status',
 			width: 250
 		},
 		{
-			text: i18n('counseling_given'),
+			text: _('counseling_given'),
 			dataIndex: 'counseling',
 			width: 120,
 			editor: {
@@ -40772,7 +40772,7 @@ Ext.define('App.view.patient.SmokingStatus', {
 			}
 		},
 		{
-			text: i18n('note'),
+			text: _('note'),
 			dataIndex: 'note',
 			width: 120,
 			flex: 1,
@@ -40784,7 +40784,7 @@ Ext.define('App.view.patient.SmokingStatus', {
 	tbar: [
 		{
 			xtype: 'tbtext',
-			text: i18n('smoking_status'),
+			text: _('smoking_status'),
 			width: 100
 		},
 		{
@@ -40845,12 +40845,12 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -40918,12 +40918,12 @@ Ext.define('App.ux.LiveSnomedSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -40940,11 +40940,11 @@ Ext.define('App.ux.LiveSnomedSearch', {
 });
 Ext.define('App.ux.combo.ComboResettable', {
 	extend: 'Ext.form.ComboBox',
-	triggerTip: i18n('click_to_clear_selection'),
+	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
 	spExtraParam: '',
-	qtip: i18n('clearable_combo_box'),
+	qtip: _('clearable_combo_box'),
 
 	trigger1Class: 'x-form-select-trigger',
 	trigger2Class: 'x-form-clear-trigger',
@@ -41041,12 +41041,12 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -41544,7 +41544,7 @@ Ext.define('App.view.patient.windows.Charts', {
     requires     : [
         'App.store.patient.Vitals'
     ],
-    title        : i18n('vector_charts'),
+    title        : _('vector_charts'),
     layout       : 'card',
     closeAction  : 'hide',
     modal        : true,
@@ -41568,7 +41568,7 @@ Ext.define('App.view.patient.windows.Charts', {
         me.BMIForAgeStore = Ext.create('App.store.patient.charts.BMIForAge');
 
         me.tbar = ['->', {
-            text        : i18n('bp_pulse_temp'),
+            text        : _('bp_pulse_temp'),
             action      : 'bpPulseTemp',
             pressed     : true,
             enableToggle: true,
@@ -41576,56 +41576,56 @@ Ext.define('App.view.patient.windows.Charts', {
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('weight_for_age'),
+            text        : _('weight_for_age'),
             action      : 'WeightForAgeInf',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('length_for_age'),
+            text        : _('length_for_age'),
             action      : 'LengthForAgeInf',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('weight_for_recumbent'),
+            text        : _('weight_for_recumbent'),
             action      : 'WeightForRecumbentInf',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('head_circumference'),
+            text        : _('head_circumference'),
             action      : 'HeadCircumferenceInf',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('weight_for_stature'),
+            text        : _('weight_for_stature'),
             action      : 'WeightForStature',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('weight_for_age'),
+            text        : _('weight_for_age'),
             action      : 'WeightForAge',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('stature_for_age'),
+            text        : _('stature_for_age'),
             action      : 'StatureForAge',
             enableToggle: true,
             toggleGroup : 'charts',
             scope       : me,
             handler     : me.onChartSwitch
         },'-',{
-            text        : i18n('bmi_for_age'),
+            text        : _('bmi_for_age'),
             action      : 'BMIForAge',
             enableToggle: true,
             toggleGroup : 'charts',
@@ -41636,7 +41636,7 @@ Ext.define('App.view.patient.windows.Charts', {
         me.tools = [
             {
                 type   : 'print',
-                tooltip: i18n('print_chart'),
+                tooltip: _('print_chart'),
                 handler: function() {
                     console.log(this.up('window').down('chart'));
                 }
@@ -41649,9 +41649,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('weight_for_age_0_3_mos'),
-                xTitle  : i18n('weight_kg'),
-                yTitle  : i18n('age_months'),
+                title   : _('weight_for_age_0_3_mos'),
+                xTitle  : _('weight_kg'),
+                yTitle  : _('age_months'),
                 xMinimum: 1,
                 xMaximum: 19,
                 yMinimum: 0,
@@ -41660,9 +41660,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.LengthForAgeInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('length_for_age_0_3_mos'),
-                xTitle  : i18n('length_cm'),
-                yTitle  : i18n('age_months'),
+                title   : _('length_for_age_0_3_mos'),
+                xTitle  : _('length_cm'),
+                yTitle  : _('age_months'),
                 xMinimum: 40,
                 xMaximum: 110,
                 yMinimum: 0,
@@ -41671,9 +41671,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForRecumbentInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('weight_for_recumbent_0_3_mos'),
-                xTitle  : i18n('weight_kg'),
-                yTitle  : i18n('length_cm'),
+                title   : _('weight_for_recumbent_0_3_mos'),
+                xTitle  : _('weight_kg'),
+                yTitle  : _('length_cm'),
                 xMinimum: 1,
                 xMaximum: 20,
                 yMinimum: 45,
@@ -41682,9 +41682,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.HeadCircumferenceInf = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('head_circumference_0_3_mos'),
-                xTitle  : i18n('circumference_cm'),
-                yTitle  : i18n('age_months'),
+                title   : _('head_circumference_0_3_mos'),
+                xTitle  : _('circumference_cm'),
+                yTitle  : _('age_months'),
                 xMinimum: 30,
                 xMaximum: 55,
                 yMinimum: 0,
@@ -41693,9 +41693,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForStature = Ext.create('App.view.patient.charts.HeightForStature', {
-////	            title   : i18n('weight_for_age_2_20_years'),
-////	            xTitle  : i18n('weight_kg'),
-////	            yTitle  : i18n('age_years'),
+////	            title   : _('weight_for_age_2_20_years'),
+////	            xTitle  : _('weight_kg'),
+////	            yTitle  : _('age_years'),
 //	            xMinimum: 7,
 //	            xMaximum: 30,
 //	            yMinimum: 76,
@@ -41704,9 +41704,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.WeightForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('weight_for_age_2_20_years'),
-                xTitle  : i18n('weight_kg'),
-                yTitle  : i18n('age_years'),
+                title   : _('weight_for_age_2_20_years'),
+                xTitle  : _('weight_kg'),
+                yTitle  : _('age_years'),
                 xMinimum: 10,
                 xMaximum: 110,
                 yMinimum: 2,
@@ -41715,9 +41715,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.StatureForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('stature_for_age_2_20_years'),
-                xTitle  : i18n('stature_cm'),
-                yTitle  : i18n('age_years'),
+                title   : _('stature_for_age_2_20_years'),
+                xTitle  : _('stature_cm'),
+                yTitle  : _('age_years'),
                 xMinimum: 60,
                 xMaximum: 200,
                 yMinimum: 2,
@@ -41726,9 +41726,9 @@ Ext.define('App.view.patient.windows.Charts', {
             }),
 
             me.BMIForAge = Ext.create('App.view.patient.charts.HeadCircumference', {
-                title   : i18n('bmi_for_age_2_20_years'),
-                xTitle  : i18n('bmi'),
-                yTitle  : i18n('age_years'),
+                title   : _('bmi_for_age_2_20_years'),
+                xTitle  : _('bmi'),
+                yTitle  : _('age_years'),
                 xMinimum: 10,
                 xMaximum: 35,
                 yMinimum: 2,
@@ -41807,13 +41807,13 @@ Ext.define('App.view.patient.windows.Orders', {
 		'App.view.patient.RxOrders',
 		'App.view.patient.DoctorsNotes'
 	],
-	title: i18n('order_window'),
+	title: _('order_window'),
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 	buttons: [
 		{
-			text: i18n('close'),
+			text: _('close'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
@@ -41860,7 +41860,7 @@ Ext.define('App.view.patient.windows.Orders', {
 
 		me.buttons = [
 			{
-				text: i18n('close'),
+				text: _('close'),
 				scope: me,
 				handler: function(){
 					me.close();
@@ -41922,7 +41922,7 @@ Ext.define('App.view.patient.windows.Orders', {
 		/**
 		 * read only stuff
 		 */
-		me.setTitle(app.patient.name + ' - ' + i18n('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
+		me.setTitle(app.patient.name + ' - ' + _('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + _('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
 	},
 
@@ -42048,7 +42048,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 		'App.ux.combo.EncounterSupervisors',
 		'App.ux.LiveCPTSearch'
 	],
-	title: i18n('checkout_and_signing'),
+	title: _('checkout_and_signing'),
 	itemId: 'EncounterSignWindow',
 	closeAction: 'hide',
 	modal: true,
@@ -42063,7 +42063,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	items: [
 		{
 			xtype: 'grid',
-			title: i18n('super_bill'),
+			title: _('super_bill'),
 			rootVisible: false,
 			region: 'center',
 			itemId: 'EncounterSignSuperBillGrid',
@@ -42083,7 +42083,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					items: [
 						{
 							icon: 'resources/images/icons/delete.png',
-							tooltip: i18n('remove'),
+							tooltip: _('remove'),
 							handler: function(){
 								return App.app.getController('patient.encounter.EncounterSign').onRemoveService(v);
 							}
@@ -42091,7 +42091,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					]
 				},
 				{
-					text: i18n('service'),
+					text: _('service'),
 					dataIndex: 'code_text',
 					flex: 1,
 					editor: {
@@ -42101,7 +42101,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					}
 				},
 				{
-					header: i18n('units'),
+					header: _('units'),
 					dataIndex: 'units',
 					width: 50,
 					editor:{
@@ -42111,7 +42111,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					}
 				},
 				{
-					header: i18n('modifiers'),
+					header: _('modifiers'),
 					dataIndex: 'units',
 					width: 100,
 					editor: {
@@ -42119,7 +42119,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					}
 				},
 				{
-					header: i18n('diagnosis'),
+					header: _('diagnosis'),
 					dataIndex: 'diagnosis',
 					width: 200,
 					editor: {
@@ -42135,7 +42135,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					items: [
 						'->',
 						{
-							text: i18n('service'),
+							text: _('service'),
 							iconCls: 'icoAdd',
 							itemId: 'EncounterSignSuperBillServiceAddBtn'
 						}
@@ -42145,14 +42145,14 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 		},
 		{
 			xtype: 'documentsimplegrid',
-			title: i18n('documents'),
+			title: _('documents'),
 			region: 'east',
 			itemId: 'EncounterSignDocumentGrid',
 			width: 200
 		},
 		{
 			xtype: 'form',
-			title: i18n('additional_info'),
+			title: _('additional_info'),
 			region: 'south',
 			split: true,
 			height: 245,
@@ -42177,7 +42177,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					},
 					items: [
 						{
-							title: i18n('messages_notes_and_reminders'),
+							title: _('messages_notes_and_reminders'),
 							defaults: {
 								anchor: '100%'
 							},
@@ -42185,18 +42185,18 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 								{
 									xtype: 'textfield',
 									name: 'message',
-									fieldLabel: i18n('message')
+									fieldLabel: _('message')
 								},
 								{
 									xtype: 'textfield',
 									name: 'reminder',
-									fieldLabel: i18n('reminder')
+									fieldLabel: _('reminder')
 								},
 								{
 									xtype: 'textfield',
 									grow: true,
 									name: 'note',
-									fieldLabel: i18n('note'),
+									fieldLabel: _('note'),
 									margin: 0
 								}
 							]
@@ -42210,11 +42210,11 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 							items: [
 								{
 									xtype: 'mitos.followupcombo',
-									fieldLabel: i18n('time_interval'),
+									fieldLabel: _('time_interval'),
 									name: 'followup_time'
 								},
 								{
-									fieldLabel: i18n('facility'),
+									fieldLabel: _('facility'),
 									xtype: 'activefacilitiescombo',
 									name: 'followup_facility',
 									margin: 0
@@ -42230,7 +42230,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					columnWidth: .5,
 					layout: 'fit',
 					height: 208,
-					title: i18n('warnings_alerts'),
+					title: _('warnings_alerts'),
 					items: [
 						{
 							xtype: 'grid',
@@ -42270,15 +42270,15 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			allowBlank: false
 		},
 		{
-			text: i18n('co_sign') + ' (' + i18n('supervisor') + ')',
+			text: _('co_sign') + ' (' + _('supervisor') + ')',
 			itemId: 'EncounterCoSignSupervisorBtn'
 		},
 		{
-			text: i18n('sign'),
+			text: _('sign'),
 			itemId: 'EncounterSignBtn'
 		},
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			itemId: 'EncounterCancelSignBtn'
 		}
 	]
@@ -42291,7 +42291,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		'App.ux.grid.AreasDragDrop'
 	],
 
-	pageTitle: i18n('patient_pool_areas'),
+	pageTitle: _('patient_pool_areas'),
 
 	initComponent: function(){
 		var me = this;
@@ -42326,7 +42326,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 //		say(name);
 //		say(pid);
 
-		app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
+		app.msg('Sweet!', name + ' ' + _('sent_to') + ' ' + this.panel.title);
 
 		params = {
 			pid: pid,
@@ -42383,12 +42383,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					floorPlanId: areas[i].floor_plan_id,
 					columns: [
 						{
-							header: i18n('record') + ' #',
+							header: _('record') + ' #',
 							width: 100,
 							dataIndex: 'pid'
 						},
 						{
-							header: i18n('patient_name'),
+							header: _('patient_name'),
 							flex: 1,
 							dataIndex: 'name'
 						}
@@ -42478,8 +42478,8 @@ Ext.define('App.view.patient.Patient', {
 				{
 					ptype: 'AddTabButton',
 					iconCls: 'icoAdd',
-					toolTip: i18n('new_insurance'),
-					btnText: i18n('add_insurance'),
+					toolTip: _('new_insurance'),
+					btnText: _('add_insurance'),
 					forceText: true,
 					tabConfig: {
 						xtype: 'form',
@@ -42519,7 +42519,7 @@ Ext.define('App.view.patient.Patient', {
 			{
 				xtype: 'button',
 				action: 'readOnly',
-				text: i18n('possible_duplicates'),
+				text: _('possible_duplicates'),
 				minWidth: 75,
 				itemId: 'PatientPossibleDuplicatesBtn'
 			},
@@ -42529,7 +42529,7 @@ Ext.define('App.view.patient.Patient', {
 			{
 				xtype: 'button',
 				action: 'readOnly',
-				text: i18n('save'),
+				text: _('save'),
 				itemId: 'PatientDemographicSaveBtn',
 				minWidth: 75,
 				scope: me,
@@ -42538,7 +42538,7 @@ Ext.define('App.view.patient.Patient', {
 			'-',
 			{
 				xtype: 'button',
-				text: i18n('cancel'),
+				text: _('cancel'),
 				action: 'readOnly',
 				itemId: 'PatientDemographicCancelBtn',
 				minWidth: 75,
@@ -42560,7 +42560,7 @@ Ext.define('App.view.patient.Patient', {
 		if(!me.compactDemographics){
 
 			Ext.Function.defer(function(){
-				me.insPanel.title = i18n('insurance');
+				me.insPanel.title = _('insurance');
 				me.insPanel.addDocked({
 					xtype:'toolbar',
 					dock: 'bottom',
@@ -42570,7 +42570,7 @@ Ext.define('App.view.patient.Patient', {
 						{
 							xtype: 'button',
 							action: 'readOnly',
-							text: i18n('save'),
+							text: _('save'),
 							minWidth: 75,
 							scope: me,
 							handler: me.formSave
@@ -42578,7 +42578,7 @@ Ext.define('App.view.patient.Patient', {
 						'-',
 						{
 							xtype: 'button',
-							text: i18n('cancel'),
+							text: _('cancel'),
 							action: 'readOnly',
 							minWidth: 75,
 							scope: me,
@@ -42678,7 +42678,7 @@ Ext.define('App.view.patient.Patient', {
 						bbar: [
 							'-',
 							{
-								text: i18n('take_picture'),
+								text: _('take_picture'),
 								action: 'onWebCam'
 								//				                handler: me.getPhotoIdWindow
 							},
@@ -42686,7 +42686,7 @@ Ext.define('App.view.patient.Patient', {
 							'->',
 							'-',
 							{
-								text: i18n('print_qrcode'),
+								text: _('print_qrcode'),
 								scope: me,
 								handler: function(){
 									window.printQRCode(app.patient.pid);
@@ -42729,7 +42729,7 @@ Ext.define('App.view.patient.Patient', {
 					'->',
 					'-',
 					{
-						text: i18n('upload'),
+						text: _('upload'),
 						action: 'onWebCam'
 					},
 					'-'
@@ -42746,7 +42746,7 @@ Ext.define('App.view.patient.Patient', {
 		var me = this,
 			rec = form.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
 
-		form.title = i18n('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : i18n('new')) + ')';
+		form.title = _('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : _('new')) + ')';
 
 		form.add(me.insuranceFormItmes);
 
@@ -42900,13 +42900,13 @@ Ext.define('App.view.patient.Patient', {
 					app.fireEvent('afterdemographicssave', record, me);
 
 					insStore.sync();
-					me.msg('Sweet!', i18n('record_saved'));
+					me.msg('Sweet!', _('record_saved'));
 					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});
 		}else{
-			me.msg(i18n('oops'), i18n('missing_required_data'), true);
+			me.msg(_('oops'), _('missing_required_data'), true);
 		}
 	},
 
@@ -42983,7 +42983,7 @@ Ext.define('App.view.patient.Patient', {
 });
 Ext.define('App.view.patient.Summary', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('patient_summary'),
+	pageTitle: _('patient_summary'),
 	pageLayout: 'border',
 	requires: [
 		'Ext.XTemplate',
@@ -43005,7 +43005,7 @@ Ext.define('App.view.patient.Summary', {
 
 		app.on('patientset', function(patient){
 			if(!me.hidden){
-				me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + i18n('patient_summary') + ')', app.patient.readOnly, null);
+				me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
 			}
 
 		}, me);
@@ -43034,7 +43034,7 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('encounters'),
+				title: _('encounters'),
 				itemId: 'PatientSummaryEncountersPanel',
 				hideHeaders: true,
 				store: me.patientEncountersStore,
@@ -43061,14 +43061,14 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('active_medications'),
+				title: _('active_medications'),
 				itemId: 'PatientSummaryMedicationsPanel',
 				hideHeaders: true,
 				store: me.patientMedicationsStore,
 				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'medications',
 						scope: me,
 						handler: me.medicalWin
@@ -43076,12 +43076,12 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'STR',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.boolRenderer
@@ -43098,7 +43098,7 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('immunizations'),
+				title: _('immunizations'),
 				itemId: 'PatientSummaryImmunizationPanel',
 				hideHeaders: true,
 				store: me.immuCheckListStore,
@@ -43106,7 +43106,7 @@ Ext.define('App.view.patient.Summary', {
 				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'immunization',
 						scope: me,
 						handler: me.medicalWin
@@ -43115,12 +43115,12 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'vaccine_name',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.alertRenderer
@@ -43137,7 +43137,7 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('allergies'),
+				title: _('allergies'),
 				itemId: 'PatientSummaryAllergiesPanel',
 				hideHeaders: true,
 				store: me.patientAllergiesListStore,
@@ -43145,7 +43145,7 @@ Ext.define('App.view.patient.Summary', {
 				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'allergies',
 						scope: me,
 						handler: me.medicalWin
@@ -43153,12 +43153,12 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'allergy',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.boolRenderer
@@ -43175,14 +43175,14 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('active_problems'),
+				title: _('active_problems'),
 				itemId: 'PatientSummaryActiveProblemsPanel',
 				hideHeaders: true,
 				store: me.patientActiveProblemsStore,
 				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'issues',
 						scope: me,
 						handler: me.medicalWin
@@ -43191,12 +43191,12 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'code',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.boolRenderer
@@ -43214,7 +43214,7 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('appointments'),
+				title: _('appointments'),
 				itemId: 'AppointmentsPanel',
 				hideHeaders: true,
 				disableSelection: true,
@@ -43258,14 +43258,14 @@ Ext.define('App.view.patient.Summary', {
 				xtype: 'patientdeomgraphics',
 				newPatient: false,
 				autoScroll: true,
-				title: i18n('demographics')
+				title: _('demographics')
 			});
 		}
 
 		if(a('access_patient_disclosures')){
 			me.tabPanel.add({
 				xtype: 'grid',
-				title: i18n('disclosures'),
+				title: _('disclosures'),
 				itemId: 'PatientSummaryDisclosuresPanel',
 				bodyPadding: 0,
 				store: Ext.create('App.store.patient.Disclosures', {
@@ -43281,18 +43281,18 @@ Ext.define('App.view.patient.Summary', {
 					{
 						xtype: 'datecolumn',
 						format: 'Y-m-d',
-						text: i18n('date'),
+						text: _('date'),
 						dataIndex: 'date'
 					},
 					{
-						header: i18n('type'),
+						header: _('type'),
 						dataIndex: 'type',
 						editor: {
 							xtype: 'textfield'
 						}
 					},
 					{
-						text: i18n('description'),
+						text: _('description'),
 						dataIndex: 'description',
 						flex: 1,
 						editor: {
@@ -43302,7 +43302,7 @@ Ext.define('App.view.patient.Summary', {
 				],
 				tbar: [
 					{
-						text: i18n('disclosure'),
+						text: _('disclosure'),
 						iconCls: 'icoAdd',
 						action: 'disclosure',
 						handler: me.onAddNew
@@ -43313,7 +43313,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_notes')){
 			me.tabPanel.add({
-				title: i18n('notes'),
+				title: _('notes'),
 				itemId: 'PatientSummeryNotesPanel',
 				xtype: 'grid',
 				bodyPadding: 0,
@@ -43330,19 +43330,19 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 						xtype: 'datecolumn',
-						text: i18n('date'),
+						text: _('date'),
 						format: 'Y-m-d',
 						dataIndex: 'date'
 					},
 					{
-						header: i18n('type'),
+						header: _('type'),
 						dataIndex: 'type',
 						editor: {
 							xtype: 'textfield'
 						}
 					},
 					{
-						text: i18n('note'),
+						text: _('note'),
 						dataIndex: 'body',
 						flex: 1,
 						editor: {
@@ -43350,14 +43350,14 @@ Ext.define('App.view.patient.Summary', {
 						}
 					},
 					{
-						text: i18n('user'),
+						text: _('user'),
 						width: 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar: [
 					{
-						text: i18n('add_note'),
+						text: _('add_note'),
 						iconCls: 'icoAdd',
 						action: 'note',
 						handler: me.onAddNew
@@ -43368,7 +43368,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_reminders')){
 			me.tabPanel.add({
-				title: i18n('reminders'),
+				title: _('reminders'),
 				itemId: 'PatientSummaryRemindersPanel',
 				xtype: 'grid',
 				bodyPadding: 0,
@@ -43385,19 +43385,19 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 						xtype: 'datecolumn',
-						text: i18n('date'),
+						text: _('date'),
 						format: 'Y-m-d',
 						dataIndex: 'date'
 					},
 					{
-						header: i18n('type'),
+						header: _('type'),
 						dataIndex: 'type',
 						editor: {
 							xtype: 'textfield'
 						}
 					},
 					{
-						text: i18n('note'),
+						text: _('note'),
 						dataIndex: 'body',
 						flex: 1,
 						editor: {
@@ -43405,14 +43405,14 @@ Ext.define('App.view.patient.Summary', {
 						}
 					},
 					{
-						text: i18n('user'),
+						text: _('user'),
 						width: 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar: [
 					{
-						text: i18n('add_reminder'),
+						text: _('add_reminder'),
 						iconCls: 'icoAdd',
 						action: 'reminder',
 						handler: me.onAddNew
@@ -43430,7 +43430,7 @@ Ext.define('App.view.patient.Summary', {
 		if(a('access_patient_history')){
 			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
 			me.tabPanel.add({
-				title: i18n('history'),
+				title: _('history'),
 				xtype: 'grid',
 				itemId: 'PatientEncounterHistoryPanel',
 				store: Ext.create('App.store.patient.Encounters', {
@@ -43438,16 +43438,16 @@ Ext.define('App.view.patient.Summary', {
 				}),
 				columns: [
 					{
-						header: i18n('date'),
+						header: _('date'),
 						dataIndex: 'service_date'
 					},
 					{
-						header: i18n('event'),
+						header: _('event'),
 						dataIndex: 'brief_description',
 						flex: true
 					},
 					{
-						header: i18n('visit_category'),
+						header: _('visit_category'),
 						dataIndex: 'visit_category'
 					}
 				]
@@ -43464,7 +43464,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_preventive_care_alerts')){
 			me.tabPanel.add({
-				title: i18n('dismissed_preventive_care_alerts'),
+				title: _('dismissed_preventive_care_alerts'),
 				xtype: 'grid',
 				itemId: 'PatientSummaryPreventiveCareAlertsPanel',
 				store: Ext.create('App.store.patient.DismissedAlerts', {
@@ -43472,29 +43472,29 @@ Ext.define('App.view.patient.Summary', {
 				}),
 				columns: [
 					{
-						header: i18n('description'),
+						header: _('description'),
 						dataIndex: 'description'
 					},
 					{
 						xtype: 'datecolumn',
-						header: i18n('date'),
+						header: _('date'),
 						dataIndex: 'date',
 						format: 'Y-m-d'
 
 					},
 					{
-						header: i18n('reason'),
+						header: _('reason'),
 						dataIndex: 'reason',
 						flex: true
 
 					},
 					{
-						header: i18n('observation'),
+						header: _('observation'),
 						dataIndex: 'observation',
 						flex: true
 					},
 					{
-						header: i18n('dismissed'),
+						header: _('dismissed'),
 						dataIndex: 'dismiss',
 						width: 60,
 						renderer: me.boolRenderer
@@ -43524,7 +43524,7 @@ Ext.define('App.view.patient.Summary', {
 										{
 											xtype: 'textfield',
 											name: 'reason',
-											fieldLabel: i18n('reason'),
+											fieldLabel: _('reason'),
 											width: 585,
 											labelWidth: 70,
 											action: 'reason'
@@ -43544,14 +43544,14 @@ Ext.define('App.view.patient.Summary', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('observation'),
+											fieldLabel: _('observation'),
 											name: 'observation',
 											width: 250,
 											labelWidth: 70,
 											action: 'observation'
 										},
 										{
-											fieldLabel: i18n('date'),
+											fieldLabel: _('date'),
 											xtype: 'datefield',
 											action: 'date',
 											width: 200,
@@ -43563,7 +43563,7 @@ Ext.define('App.view.patient.Summary', {
 										{
 											xtype: 'checkboxfield',
 											name: 'dismiss',
-											fieldLabel: i18n('dismiss_alert')
+											fieldLabel: _('dismiss_alert')
 
 										}
 									]
@@ -43582,8 +43582,8 @@ Ext.define('App.view.patient.Summary', {
 //				xtype: 'panel',
 //				action: 'balancePanel',
 //				itemId: 'balancePanel',
-//				title: i18n('billing'),
-//				html: i18n('account_balance') + ': '
+//				title: _('billing'),
+//				html: _('account_balance') + ': '
 //
 //			});
 //		}
@@ -43675,7 +43675,7 @@ Ext.define('App.view.patient.Summary', {
 		var me = this,
 			billingPanel;
 
-		me.el.mask(i18n('loading...'));
+		me.el.mask(_('loading...'));
 		/**
 		 * convenient way to refer to current pid within this panel
 		 * @type {*}
@@ -43689,7 +43689,7 @@ Ext.define('App.view.patient.Summary', {
 		/**
 		 * update panel main title to reflect the patient name and if the patient is read only
 		 */
-		me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + i18n('patient_summary') + ')', app.patient.readOnly, null);
+		me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
 		/**
 		 * verify if the patient is on read only mode
 		 */
@@ -43705,7 +43705,7 @@ Ext.define('App.view.patient.Summary', {
 //			billingPanel = me.tabPanel.getComponent('balancePanel');
 //			Fees.getPatientBalance({pid: me.pid},
 //				function(balance){
-//					billingPanel.update(i18n('account_balance') + ': $' + balance);
+//					billingPanel.update(_('account_balance') + ': $' + balance);
 //				}
 //			);
 //		}
@@ -43740,7 +43740,7 @@ Ext.define('App.view.patient.Summary', {
 Ext.define('App.view.administration.practice.Practice', {
 	extend: 'App.ux.RenderPanel',
 	xtype: 'practicepanel',
-	pageTitle: i18n('practice_settings'),
+	pageTitle: _('practice_settings'),
 	requires: [
 		'App.view.administration.practice.Facilities',
 		'App.view.administration.practice.FacilityConfig',
@@ -43852,7 +43852,7 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('description'),
+							fieldLabel: _('description'),
 							xtype: 'textfield',
 							name: 'code_text',
 							width: 500
@@ -43867,12 +43867,12 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							boxLabel: i18n('radiology'),
+							boxLabel: _('radiology'),
 							xtype: 'checkboxfield',
 							name: 'isRadiology'
 						},
 						{
-							boxLabel: i18n('active'),
+							boxLabel: _('active'),
 							labelWidth: 75,
 							xtype: 'checkboxfield',
 							name: 'active'
@@ -43897,17 +43897,17 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('type'),
+							fieldLabel: _('type'),
 							xtype: 'mitos.codestypescombo',
 							name: 'code_type'
 						},
 						{
-							fieldLabel: i18n('code'),
+							fieldLabel: _('code'),
 							xtype: 'textfield',
 							name: 'code'
 						},
 						{
-							fieldLabel: i18n('modifier'),
+							fieldLabel: _('modifier'),
 							xtype: 'textfield',
 							name: 'mod'
 						}
@@ -43921,12 +43921,12 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('description'),
+							fieldLabel: _('description'),
 							xtype: 'textfield',
 							name: 'code_text'
 						},
 						{
-							fieldLabel: i18n('category'),
+							fieldLabel: _('category'),
 							xtype: 'mitos.titlescombo',
 							name: 'title'
 						}
@@ -43940,12 +43940,12 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							boxLabel: i18n('reportable'),
+							boxLabel: _('reportable'),
 							xtype: 'checkboxfield',
 							name: 'reportable'
 						},
 						{
-							boxLabel: i18n('active'),
+							boxLabel: _('active'),
 							labelWidth: 75,
 							xtype: 'checkboxfield',
 							name: 'active'
@@ -43958,7 +43958,7 @@ Ext.define('App.view.administration.DataManager', {
 		 * CVX Container
 		 */
 		me.cvxCintainer = Ext.create('Ext.container.Container', {
-			action: i18n('immunizations'),
+			action: _('immunizations'),
 			layout: 'fit',
 			items: [
 				{
@@ -43971,7 +43971,7 @@ Ext.define('App.view.administration.DataManager', {
 		 * Labs Container
 		 */
 		me.labContainer = Ext.create('Ext.container.Container', {
-			action: i18n('laboratories'),
+			action: _('laboratories'),
 			layout: {
 				type: 'vbox',
 				align: 'stretch'
@@ -43990,14 +43990,14 @@ Ext.define('App.view.administration.DataManager', {
 					items: [
 						{
 							xtype: 'textfield',
-							fieldLabel: i18n('short_name_alias'),
+							fieldLabel: _('short_name_alias'),
 							name: 'code_text_short',
 							labelWidth: 130,
 							width: 500
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							name: 'active',
 							anchor: '100%',
 							labelWidth: 50
@@ -44008,14 +44008,14 @@ Ext.define('App.view.administration.DataManager', {
 				{
 					xtype: 'grid',
 					frame: true,
-					title: i18n('children'),
+					title: _('children'),
 					store: me.labObservationsStore,
 					plugins: Ext.create('Ext.grid.plugin.CellEditing', {
 						clicksToEdit: 2
 					}),
 					columns: [
 						{
-							header: i18n('label_alias'),
+							header: _('label_alias'),
 							dataIndex: 'code_text_short',
 							width: 150,
 							editor: {
@@ -44023,17 +44023,17 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('loinc_name'),
+							header: _('loinc_name'),
 							dataIndex: 'loinc_name',
 							flex: 1
 						},
 						{
-							header: i18n('loinc_number'),
+							header: _('loinc_number'),
 							dataIndex: 'loinc_number',
 							width: 100
 						},
 						{
-							header: i18n('default_unit'),
+							header: _('default_unit'),
 							dataIndex: 'default_unit',
 							width: 100,
 							editor: {
@@ -44041,12 +44041,12 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('req_opt'),
+							header: _('req_opt'),
 							dataIndex: 'required_in_panel',
 							width: 75
 						},
 						{
-							header: i18n('range_start'),
+							header: _('range_start'),
 							dataIndex: 'range_start',
 							width: 100,
 							editor: {
@@ -44054,7 +44054,7 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('range_end'),
+							header: _('range_end'),
 							dataIndex: 'range_end',
 							width: 100,
 							editor: {
@@ -44062,7 +44062,7 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('description'),
+							header: _('description'),
 							dataIndex: 'description',
 							flex: 1,
 							editor: {
@@ -44071,7 +44071,7 @@ Ext.define('App.view.administration.DataManager', {
 						},
 						{
 							width: 60,
-							header: i18n('active'),
+							header: _('active'),
 							dataIndex: 'active',
 							renderer: me.boolRenderer,
 							editor: {
@@ -44110,32 +44110,32 @@ Ext.define('App.view.administration.DataManager', {
 			columns: [
 				{
 					width: 50,
-//					header: i18n('code_type'),
+//					header: _('code_type'),
 					sortable: false,
 					dataIndex: 'code_type',
 					renderer: code_type
 				},
 				{
 					width: 60,
-					header: i18n('code'),
+					header: _('code'),
 					sortable: true,
 					dataIndex: 'code'
 				},
 				{
-					header: i18n('short_name'),
+					header: _('short_name'),
 					dataIndex: 'code_text_short',
 					width: 100,
 					flex: 1
 				},
 				{
-					header: i18n('long_name'),
+					header: _('long_name'),
 					sortable: true,
 					dataIndex: 'code_text',
 					flex: 2
 				},
 				{
 					width: 60,
-					header: i18n('active'),
+					header: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer
@@ -44153,7 +44153,7 @@ Ext.define('App.view.administration.DataManager', {
 			tbar: this.bar = Ext.create('Ext.PagingToolbar', {
 				store: me.store,
 				displayInfo: true,
-				emptyMsg: i18n('no_office_notes_to_display'),
+				emptyMsg: _('no_office_notes_to_display'),
 				plugins: Ext.create('Ext.ux.SlidingPager'),
 				items: [
 					'-',
@@ -44166,14 +44166,14 @@ Ext.define('App.view.administration.DataManager', {
 						}
 					}, '-',
 					{
-						text: i18n('add'),
+						text: _('add'),
 						iconCls: 'icoAddRecord',
 						scope: me,
 						handler: me.onAddData
 					}, '-',
 					{
 						xtype: 'textfield',
-						emptyText: i18n('search'),
+						emptyText: _('search'),
 						width: 200,
 						enableKeyEvents: true,
 						listeners: {
@@ -44184,7 +44184,7 @@ Ext.define('App.view.administration.DataManager', {
 					}, '-',
 					{
 						xtype: 'button',
-						text: i18n('show_inactive_codes_only'),
+						text: _('show_inactive_codes_only'),
 						enableToggle: true,
 						listeners: {
 							scope: me,
@@ -44215,7 +44215,7 @@ Ext.define('App.view.administration.DataManager', {
 	onAddData: function(){
 		var me = this;
 		if(me.code_type == 'Laboratories'){
-			Ext.Msg.alert('Opps!', i18n('ops_laboratories'));
+			Ext.Msg.alert('Opps!', _('ops_laboratories'));
 		} else{
 			me.dataManagerGrid.plugins[0].cancelEdit();
 			me.store.add({
@@ -44241,7 +44241,7 @@ Ext.define('App.view.administration.DataManager', {
 		}else if(code_type == 'LOINC'){
 
 			me.labContainer.down('grid').setTitle(
-				e.record.data.has_children ? i18n('observations'):i18n('observation')
+				e.record.data.has_children ? _('observations'):_('observation')
 			);
 
 			me.labContainer.down('grid').setVisible(e.record.data.class != 'RAD');
@@ -44396,7 +44396,7 @@ Ext.define('App.view.administration.DataManager', {
 Ext.define('App.view.administration.Documents', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelDocuments',
-	pageTitle: i18n('document_template_editor'),
+	pageTitle: _('document_template_editor'),
 	pageLayout: 'border',
 	requires: [
 		'App.ux.grid.Button',
@@ -44414,7 +44414,7 @@ Ext.define('App.view.administration.Documents', {
 		me.tokenStore = Ext.create('App.store.administration.DocumentToken');
 
 		//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-		//			title      : i18n('header_footer_templates'),
+		//			title      : _('header_footer_templates'),
 		//			region     : 'south',
 		//			height     : 250,
 		//			split      : true,
@@ -44432,7 +44432,7 @@ Ext.define('App.view.administration.Documents', {
 		//				},
 		//				{
 		//					icon: 'resources/images/icons/delete.png',
-		//					tooltip: i18n('remove'),
+		//					tooltip: _('remove'),
 		//					scope:me,
 		//					handler: me.onRemoveDocument
 		//				}
@@ -44444,7 +44444,7 @@ Ext.define('App.view.administration.Documents', {
 		//			tbar       :[
 		//                '->',
 		//                {
-		//                    text : i18n('new'),
+		//                    text : _('new'),
 		//                    scope: me,
 		//                    handler: me.newHeaderOrFooterTemplate
 		//                }
@@ -44458,7 +44458,7 @@ Ext.define('App.view.administration.Documents', {
 		//		});
 
 		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('documents_defaults'),
+			title: _('documents_defaults'),
 			region: 'north',
 			width: 250,
 			border: true,
@@ -44477,7 +44477,7 @@ Ext.define('App.view.administration.Documents', {
 				},
 				{
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('remove'),
+					tooltip: _('remove'),
 					scope: me,
 					handler: me.onRemoveDocument
 				}
@@ -44488,7 +44488,7 @@ Ext.define('App.view.administration.Documents', {
 			},
 			tbar: ['->',
 				{
-					text: i18n('new'),
+					text: _('new'),
 					scope: me,
 					handler: me.newDefaultTemplates
 				}],
@@ -44499,7 +44499,7 @@ Ext.define('App.view.administration.Documents', {
 		});
 
 		me.DocumentsGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('document_templates'),
+			title: _('document_templates'),
 			region: 'center',
 			width: 250,
 			border: true,
@@ -44518,7 +44518,7 @@ Ext.define('App.view.administration.Documents', {
 				},
 				{
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('remove'),
+					tooltip: _('remove'),
 					scope: me,
 					handler: me.onRemoveDocument
 				}
@@ -44529,7 +44529,7 @@ Ext.define('App.view.administration.Documents', {
 			},
 			tbar: ['->',
 				{
-					text: i18n('new'),
+					text: _('new'),
 					scope: me,
 					handler: me.newDocumentTemplate
 				}],
@@ -44549,7 +44549,7 @@ Ext.define('App.view.administration.Documents', {
 		});
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
-			title: i18n('document_editor'),
+			title: _('document_editor'),
 			region: 'center',
 			layout: 'fit',
 			autoScroll: false,
@@ -44564,12 +44564,12 @@ Ext.define('App.view.administration.Documents', {
 			},
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					scope: me,
 					handler: me.onSaveEditor
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.onCancelEditor
 				}
@@ -44577,7 +44577,7 @@ Ext.define('App.view.administration.Documents', {
 		});
 
 		me.TokensGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('available_tokens'),
+			title: _('available_tokens'),
 			region: 'east',
 			width: 250,
 			border: true,
@@ -44600,7 +44600,7 @@ Ext.define('App.view.administration.Documents', {
 					items: [
 						{
 							icon: 'resources/images/icons/copy.png',
-							tooltip: i18n('copy'),
+							tooltip: _('copy'),
 							margin: '0 5 0 0',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 
@@ -44669,7 +44669,7 @@ Ext.define('App.view.administration.Documents', {
 			record = form.getRecord(),
 			values = form.getValues();
 		record.set(values);
-		app.msg(i18n('sweet'), i18n('record_saved'));
+		app.msg(_('sweet'), _('record_saved'));
 	},
 
 	onCancelEditor: function(){
@@ -44689,7 +44689,7 @@ Ext.define('App.view.administration.Documents', {
 		me.rowEditor.cancelEdit();
 		store.insert(0,
 			{
-				title: i18n('new_document'),
+				title: _('new_document'),
 				template_type: 'documenttemplate',
 				date: new Date(),
 				type: 1
@@ -44703,7 +44703,7 @@ Ext.define('App.view.administration.Documents', {
 		me.rowEditor3.cancelEdit();
 		store.insert(0,
 			{
-				title: i18n('new_defaults'),
+				title: _('new_defaults'),
 				template_type: 'defaulttemplate',
 				date: new Date(),
 				type: 1
@@ -44717,7 +44717,7 @@ Ext.define('App.view.administration.Documents', {
 	//            store = me.headersAndFooterStore;
 	//        me.rowEditor2.cancelEdit();
 	//        store.insert(0,{
-	//            title: i18n('new_header_or_footer'),
+	//            title: _('new_header_or_footer'),
 	//	        template_type:'headerorfootertemplate',
 	//            date: new Date(),
 	//	        type: 2
@@ -44755,7 +44755,7 @@ Ext.define('App.view.administration.Users', {
 		'App.ux.form.fields.plugin.PasswordStrength',
 		'App.ux.combo.ActiveSpecialties'
 	],
-	pageTitle: i18n('users'),
+	pageTitle: _('users'),
 
 	initComponent: function(){
 		var me = this;
@@ -44776,36 +44776,36 @@ Ext.define('App.view.administration.Users', {
 				},
 				{
 					width: 100,
-					text: i18n('username'),
+					text: _('username'),
 					sortable: true,
 					dataIndex: 'username'
 				},
 				{
 					width: 200,
-					text: i18n('name'),
+					text: _('name'),
 					sortable: true,
 					dataIndex: 'fullname'
 				},
 				{
 					flex: 1,
-					text: i18n('aditional_info'),
+					text: _('aditional_info'),
 					sortable: true,
 					dataIndex: 'notes'
 				},
 				{
-					text: i18n('active'),
+					text: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer
 				},
 				{
-					text: i18n('authorized'),
+					text: _('authorized'),
 					sortable: true,
 					dataIndex: 'authorized',
 					renderer: me.boolRenderer
 				},
 				{
-					text: i18n('calendar_q'),
+					text: _('calendar_q'),
 					sortable: true,
 					dataIndex: 'calendar',
 					renderer: me.boolRenderer
@@ -44836,7 +44836,7 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'textfield',
-													fieldLabel: i18n('username'),
+													fieldLabel: _('username'),
 													name: 'username',
 													allowBlank: false,
 													validateOnBlur: true,
@@ -44845,7 +44845,7 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 275,
 													xtype: 'textfield',
-													fieldLabel: i18n('password'),
+													fieldLabel: _('password'),
 													name: 'password',
 													inputType: 'password',
 													vtype: 'strength',
@@ -44864,7 +44864,7 @@ Ext.define('App.view.administration.Users', {
 											fieldDefaults: {
 												labelAlign: 'right'
 											},
-											fieldLabel: i18n('name'),
+											fieldLabel: _('name'),
 											items: [
 												{
 													width: 50,
@@ -44901,25 +44901,25 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 100,
 													xtype: 'checkbox',
-													fieldLabel: i18n('active'),
+													fieldLabel: _('active'),
 													name: 'active'
 												},
 												{
 													width: 100,
 													xtype: 'checkbox',
-													fieldLabel: i18n('authorized'),
+													fieldLabel: _('authorized'),
 													name: 'authorized'
 												},
 												{
 													width: 75,
 													xtype: 'checkbox',
-													fieldLabel: i18n('calendar_q'),
+													fieldLabel: _('calendar_q'),
 													name: 'calendar'
 												},
 												{
 													width: 275,
 													xtype: 'gaiaehr.combo',
-													fieldLabel: i18n('type'),
+													fieldLabel: _('type'),
 													name: 'doctor_type',
 													list: 121,
 													loadStore: true
@@ -44938,13 +44938,13 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'mitos.facilitiescombo',
-													fieldLabel: i18n('default_facility'),
+													fieldLabel: _('default_facility'),
 													name: 'facility_id'
 												},
 												{
 													width: 275,
 													xtype: 'mitos.authorizationscombo',
-													fieldLabel: i18n('authorizations'),
+													fieldLabel: _('authorizations'),
 													name: 'see_auth'
 												}
 											]
@@ -44961,14 +44961,14 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 555,
 													xtype: 'mitos.rolescombo',
-													fieldLabel: i18n('access_control'),
+													fieldLabel: _('access_control'),
 													name: 'role_id',
 													allowBlank: false
 												}
 //												{
 //													width: 275,
 //													xtype: 'textfield',
-//													fieldLabel: i18n('taxonomy'),
+//													fieldLabel: _('taxonomy'),
 //													name: 'taxonomy'
 //												}
 											]
@@ -44991,13 +44991,13 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'textfield',
-													fieldLabel: i18n('federal_tax_id'),
+													fieldLabel: _('federal_tax_id'),
 													name: 'fedtaxid'
 												},
 												{
 													width: 275,
 													xtype: 'textfield',
-													fieldLabel: i18n('fed_drug_id'),
+													fieldLabel: _('fed_drug_id'),
 													name: 'feddrugid'
 												}
 											]
@@ -45014,13 +45014,13 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'textfield',
-													fieldLabel: i18n('upin'),
+													fieldLabel: _('upin'),
 													name: 'pin'
 												},
 												{
 													width: 275,
 													xtype: 'textfield',
-													fieldLabel: i18n('npi'),
+													fieldLabel: _('npi'),
 													name: 'npi',
 													maxLength: 10,
 													vtype: 'npi'
@@ -45030,7 +45030,7 @@ Ext.define('App.view.administration.Users', {
 										{
 											width: 558,
 											xtype: 'activespecialtiescombo',
-											fieldLabel: i18n('specialties'),
+											fieldLabel: _('specialties'),
 											name: 'specialty',
 											margin: '5 0',
 											labelAlign: 'right',
@@ -45039,7 +45039,7 @@ Ext.define('App.view.administration.Users', {
 										{
 											width: 558,
 											xtype: 'textfield',
-											fieldLabel: i18n('additional_info'),
+											fieldLabel: _('additional_info'),
 											name: 'notes',
 											labelAlign: 'right'
 										}
@@ -45057,7 +45057,7 @@ Ext.define('App.view.administration.Users', {
 					items: [
 						{
 							xtype: 'button',
-							text: i18n('add_new_user'),
+							text: _('add_new_user'),
 							iconCls: 'save',
 							scope: me,
 							handler: me.onNewUser
@@ -45107,7 +45107,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 		'Ext.toolbar.Paging',
 		'Ext.ux.SlidingPager'
 	],
-	pageTitle: i18n('address_book'),
+	pageTitle: _('address_book'),
 
 	initComponent: function(){
 		var me = this;
@@ -45116,37 +45116,37 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 			store: me.store = Ext.create('App.store.miscellaneous.AddressBook'),
 			columns: [
 				{
-					header: i18n('name'),
+					header: _('name'),
 					width: 200,
 					dataIndex: 'fullname'
 				},
 				{
-					header: i18n('primary_phone'),
+					header: _('primary_phone'),
 					dataIndex: 'phone',
 					width: 120
 				},
 				{
-					header: i18n('cell_phone'),
+					header: _('cell_phone'),
 					dataIndex: 'mobile',
 					width: 120
 				},
 				{
-					header: i18n('fax'),
+					header: _('fax'),
 					dataIndex: 'fax',
 					width: 120
 				},
 				{
-					header: i18n('email'),
+					header: _('email'),
 					dataIndex: 'email',
 					width: 120
 				},
 				{
-					header: i18n('direct_address'),
+					header: _('direct_address'),
 					dataIndex: 'direct_address',
 					width: 120
 				},
 				{
-					header: i18n('notes'),
+					header: _('notes'),
 					dataIndex: 'notes',
 					flex: 1
 				}
@@ -45173,7 +45173,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 									items: [
 										{
 											xtype: 'fieldcontainer',
-											fieldLabel: i18n('name'),
+											fieldLabel: _('name'),
 											layout: 'hbox',
 											defaults: {
 												margin: '0 5 0 0'
@@ -45181,19 +45181,19 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 											items: [
 												{
 													xtype: 'textfield',
-													emptyText: i18n('first_name'),
+													emptyText: _('first_name'),
 													name: 'fname',
 													width: 130
 												},
 												{
 													xtype: 'textfield',
-													emptyText: i18n('middle_name'),
+													emptyText: _('middle_name'),
 													name: 'mname',
 													width: 50
 												},
 												{
 													xtype: 'textfield',
-													emptyText: i18n('last_name'),
+													emptyText: _('last_name'),
 													name: 'lname',
 													flex: 1,
 													margin: 0
@@ -45202,7 +45202,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 										},
 										{
 											xtype: 'fieldcontainer',
-											fieldLabel: i18n('address'),
+											fieldLabel: _('address'),
 											layout: 'anchor',
 											defaults: {
 												anchor: '100%',
@@ -45211,7 +45211,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 											items: [
 												{
 													xtype: 'textfield',
-													emptyText: i18n('street'),
+													emptyText: _('street'),
 													name: 'street'
 												},
 												{
@@ -45227,19 +45227,19 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 													items: [
 														{
 															xtype: 'textfield',
-															emptyText: i18n('city'),
+															emptyText: _('city'),
 															name: 'city',
 															flex: 1
 														},
 														{
 															xtype: 'textfield',
-															emptyText: i18n('state'),
+															emptyText: _('state'),
 															name: 'state',
 															width: 120
 														},
 														{
 															xtype: 'textfield',
-															emptyText: i18n('zip'),
+															emptyText: _('zip'),
 															name: 'zip',
 															width: 100,
 															margin: 0
@@ -45248,7 +45248,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 												},
 												{
 													xtype: 'textfield',
-													emptyText: i18n('country'),
+													emptyText: _('country'),
 													name: 'country',
 													margin: '5 0 0 0'
 												}
@@ -45256,7 +45256,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('notes'),
+											fieldLabel: _('notes'),
 											name: 'notes',
 											margin: '5 0 5 0'
 										}
@@ -45273,34 +45273,34 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('phone') + ' (1)',
+											fieldLabel: _('phone') + ' (1)',
 											name: 'phone'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('phone') + ' (2)',
+											fieldLabel: _('phone') + ' (2)',
 											name: 'phone2'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('cell_phone'),
+											fieldLabel: _('cell_phone'),
 											name: 'mobile'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('fax'),
+											fieldLabel: _('fax'),
 											name: 'fax'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('email'),
+											fieldLabel: _('email'),
 											name: 'email',
 											margin: '5 0 5 0',
 											vtype: 'email'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('url'),
+											fieldLabel: _('url'),
 											name: 'url'
 										}
 									]
@@ -45316,7 +45316,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('direct_address'),
+											fieldLabel: _('direct_address'),
 											name: 'direct_address'
 										}
 									]
@@ -45328,7 +45328,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 			],
 			tbar: [
 				{
-					text: i18n('add_contact'),
+					text: _('add_contact'),
 					iconCls: 'icoAdd',
 					scope: me,
 					handler: me.onAddContact
@@ -45366,7 +45366,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 
 Ext.define('App.view.miscellaneous.MyAccount', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('my_account'),
+	pageTitle: _('my_account'),
 
 	requires: [
 		'App.ux.combo.Titles',
@@ -45411,7 +45411,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('personal_info'),
+					title: _('personal_info'),
 					defaultType: 'textfield',
 					layout: 'anchor',
 					defaults: {
@@ -45466,7 +45466,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('login_info'),
+					title: _('login_info'),
 					defaultType: 'textfield',
 					layout: 'anchor',
 					defaults: {
@@ -45518,7 +45518,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('other_info'),
+					title: _('other_info'),
 					defaultType: 'textfield',
 					layout: 'anchor',
 					defaults: {
@@ -45643,7 +45643,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			tbar:[
 				{
-					text: i18n('change_password'),
+					text: _('change_password'),
 					iconCls: 'save',
 					scope: me,
 					handler: me.onPasswordChange
@@ -45651,7 +45651,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					iconCls: 'save',
 					scope: me,
 					handler: me.onSaveClick
@@ -45661,7 +45661,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 
 		me.win = Ext.create('App.ux.window.Window', {
 			width: 420,
-			title: i18n('change_you_password'),
+			title: _('change_you_password'),
 			items: [
 				{
 					xtype: 'form',
@@ -45678,12 +45678,12 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							hidden: true
 						},
 						{
-							fieldLabel: i18n('old_password'),
+							fieldLabel: _('old_password'),
 							name: 'oPassword',
 							allowBlank: false
 						},
 						{
-							fieldLabel: i18n('new_password'),
+							fieldLabel: _('new_password'),
 							name: 'nPassword',
 							allowBlank: false,
 							id: 'myAccountPage_nPassword',
@@ -45694,7 +45694,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							}
 						},
 						{
-							fieldLabel: i18n('re_type_password'),
+							fieldLabel: _('re_type_password'),
 							name: 'vPassword',
 							allowBlank: false,
 							vtype: 'password',
@@ -45706,12 +45706,12 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					scope: me,
 					handler: me.onPasswordSave
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.onCancel
 				}
@@ -45735,7 +45735,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			params;
 
 		if(values.nPassword != values.vPassword){
-			app.msg(i18n('oops'), i18n('password_does_not_match'), true);
+			app.msg(_('oops'), _('password_does_not_match'), true);
 			return;
 		}
 
@@ -45749,10 +45749,10 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			User.updatePassword(params, function(provider, response){
 
 				if(response.result.success){
-					app.msg(i18n('sweet'), i18n('record_updated'));
+					app.msg(_('sweet'), _('record_updated'));
 					me.win.close();
 				}else{
-					app.msg(i18n('oops'), i18n(response.result.message), true);
+					app.msg(_('oops'), _(response.result.message), true);
 				}
 			});
 
@@ -45782,7 +45782,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		record.set(values);
 		record.save({
 			callback:function(){
-				app.msg(i18n('sweet'), i18n('record_update'))
+				app.msg(_('sweet'), _('record_update'))
 			}
 		});
 	},
@@ -45871,17 +45871,17 @@ Ext.define('App.controller.DocumentViewer', {
 
 				if(response.result.success){
 					if(dual){
-						dual.msg(i18n('sweet'), 'document_transferred');
+						dual.msg(_('sweet'), 'document_transferred');
 					}else{
-						app.msg(i18n('sweet'), 'document_transferred');
+						app.msg(_('sweet'), 'document_transferred');
 					}
 					win.documentWindow.close();
 					win.close();
 				}else{
 					if(dual){
-						dual.msg(i18n('oops'), 'document_transfer_failed', true);
+						dual.msg(_('oops'), 'document_transfer_failed', true);
 					}else{
-						app.msg(i18n('oops'), 'document_transfer_failed', true);
+						app.msg(_('oops'), 'document_transfer_failed', true);
 					}
 				}
 			});
@@ -45893,7 +45893,7 @@ Ext.define('App.controller.DocumentViewer', {
 			values = {
 				id: win.documentId,
 				docType: win.documentType,
-				title: win.documentType +  ' ' + i18n('order')
+				title: win.documentType +  ' ' + _('order')
 			};
 		var archive = Ext.widget('patientarchivedocumentwindow',{
 			documentWindow: win
@@ -46007,7 +46007,7 @@ Ext.define('App.controller.Notification', {
 		}else{
 			me.store.remove(record);
 			me.doHideNotifications();
-			app.msg(i18n('oops'), i18n('notification_handler_error'), true);
+			app.msg(_('oops'), _('notification_handler_error'), true);
 		}
 
 	},
@@ -46075,7 +46075,7 @@ Ext.define('App.controller.Notification', {
 			method: method
 		})[0];
 
-		app.msg(i18n('new_notification'), description, 'yellow');
+		app.msg(_('new_notification'), description, 'yellow');
 
 		return record;
 	},
@@ -46190,7 +46190,7 @@ Ext.define('App.controller.patient.Documents', {
 					if(doc){
 						grid.getSelectionModel().select(doc);
 					}else{
-						app.msg(i18n('oops'), i18n('unable_to_fild_docuent'), true);
+						app.msg(_('oops'), _('unable_to_fild_docuent'), true);
 					}
 
 				}
@@ -46240,12 +46240,12 @@ Ext.define('App.controller.patient.Documents', {
 			message;
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
-			message = i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
+			message = _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
 
 			if(window.dual){
-				dual.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+				dual.msg(_(success ? 'sweet' : 'oops'), message, !success)
 			}else{
-				app.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+				app.msg(_(success ? 'sweet' : 'oops'), message, !success)
 			}
 		});
 	},
@@ -46293,7 +46293,7 @@ Ext.define('App.controller.patient.Documents', {
 
 		store.sync({
 			success: function(){
-				app.msg(i18n('sweet'), i18n('document_added'));
+				app.msg(_('sweet'), _('document_added'));
 				me.getPatientDocumentUploadWindow().close();
 				me.getPatientDocumentGrid().getSelectionModel().select(record);
 
@@ -46301,9 +46301,9 @@ Ext.define('App.controller.patient.Documents', {
 			failure: function(){
 				store.rejectChanges();
 				if(window.dual){
-					dual.msg(i18n('oops'), i18n('document_error'), true);
+					dual.msg(_('oops'), _('document_error'), true);
 				}else{
-					app.msg(i18n('oops'), i18n('document_error'), true);
+					app.msg(_('oops'), _('document_error'), true);
 				}
 
 			}
@@ -46352,7 +46352,7 @@ Ext.define('App.controller.patient.Documents', {
 		if(dropPanel && dropPanel.rendered){
 			if(!me.dropMask){
 				me.dropMask = new Ext.LoadMask(me.getPatientDocumentViewerFrame(), {
-					msg: i18n('drop_here'),
+					msg: _('drop_here'),
 					cls: 'uploadmask',
 					maskCls: 'x-mask uploadmask',
 					shadow: false
@@ -46730,7 +46730,7 @@ Ext.define('App.controller.patient.Results', {
 			reader = new FileReader();
 
 		if(!form.isValid()){
-			app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+			app.msg(_('oops'), _('required_fields_missing'), true);
 			return;
 		}
 
@@ -46757,7 +46757,7 @@ Ext.define('App.controller.patient.Results', {
 							values.documentId = 'doc|' + response.result.id;
 							me.saveOrderResult(form, values);
 						}else{
-							app.msg(i18n('oops'), response.result.error)
+							app.msg(_('oops'), response.result.error)
 						}
 
 					});
@@ -46811,7 +46811,7 @@ Ext.define('App.controller.patient.Results', {
 				order[0].set({status: 'Received'});
 				order[0].save();
 
-				app.msg(i18n('sweet'), i18n('record_saved'));
+				app.msg(_('sweet'), _('record_saved'));
 			}
 		});
 	},
@@ -46831,7 +46831,7 @@ Ext.define('App.controller.patient.Results', {
 		if(type && id){
 			if(type == 'hl7'){
 				win = Ext.widget('hl7messageviewer').show();
-				win.body.mask(i18n('loading...'));
+				win.body.mask(_('loading...'));
 				HL7Messages.getMessageById(id, function(provider, response){
 					me.getMessageField().setValue(response.result.message);
 					me.getAcknowledgeField().setValue(response.result.response);
@@ -46842,7 +46842,7 @@ Ext.define('App.controller.patient.Results', {
 				app.onDocumentView(id);
 			}
 		}else{
-			app.msg(i18n('oops'), i18n('no_document_found'), true)
+			app.msg(_('oops'), _('no_document_found'), true)
 		}
 	},
 
@@ -46867,7 +46867,7 @@ Ext.define('App.controller.patient.Results', {
 		var me = this;
 		panel.dockedItems.items[0].add({
 			xtype: 'button',
-			text: i18n('upload'),
+			text: _('upload'),
 			disabled: true,
 			action: 'uploadBtn',
 			scope: me,
@@ -46888,9 +46888,9 @@ Ext.define('App.controller.patient.Results', {
 			win = btn.up('window');
 
 		if(form.isValid()){
-			formPanel.el.mask(i18n('uploading_laboratory') + '...');
+			formPanel.el.mask(_('uploading_laboratory') + '...');
 			form.submit({
-				//waitMsg: i18n('uploading_laboratory') + '...',
+				//waitMsg: _('uploading_laboratory') + '...',
 				params: {
 					pid: app.patient.pid,
 					docType: 'laboratory',
@@ -46942,7 +46942,7 @@ Ext.define('App.controller.patient.Results', {
 							}else{
 								Ext.Msg.show({
 									title: 'Oops!',
-									msg: i18n('incorrect_password'),
+									msg: _('incorrect_password'),
 									//buttons:Ext.Msg.OKCANCEL,
 									buttons: Ext.Msg.OK,
 									icon: Ext.Msg.ERROR,
@@ -46959,7 +46959,7 @@ Ext.define('App.controller.patient.Results', {
 			}else{
 				Ext.Msg.show({
 					title: 'Oops!',
-					msg: i18n('nothing_to_sign'),
+					msg: _('nothing_to_sign'),
 					//buttons:Ext.Msg.OKCANCEL,
 					buttons: Ext.Msg.OK,
 					icon: Ext.Msg.ERROR,
@@ -47069,7 +47069,7 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		container.insert((container.items.indexOf(cmb) + 1), {
 			xtype: 'activespecialtiescombo',
 			itemId: 'EncounterSpecialtyCmb',
-			fieldLabel: i18n('specialty'),
+			fieldLabel: _('specialty'),
 			labelWidth: cmb.labelWidth,
 			width: cmb.width,
 			name: 'specialty_id',
@@ -47232,10 +47232,10 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 
 			store.sync({
 				success: function(){
-					app.msg(i18n('sweet'), i18n('record_saved'));
+					app.msg(_('sweet'), _('record_saved'));
 				},
 				failure: function(){
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			});
 
@@ -47308,7 +47308,7 @@ Ext.define('App.view.patient.Referrals', {
 		'App.ux.combo.ReferringProviders'
 	],
 	xtype: 'patientreferralspanel',
-	title: i18n('referrals'),
+	title: _('referrals'),
 	action: 'referralsGrid',
 	itemId: 'patientReferralsGrid',
 	columnLines: true,
@@ -47341,14 +47341,14 @@ Ext.define('App.view.patient.Referrals', {
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('referral_date'),
+									fieldLabel: _('referral_date'),
 									name: 'referral_date',
 									format: 'Y-m-d',
 									validateBlank: true
 								},
 								{
 									xtype: 'livecptsearch',
-									fieldLabel: i18n('requested_service'),
+									fieldLabel: _('requested_service'),
 									name: 'service_text',
 									displayField: 'code_text',
 									valueField: 'code_text',
@@ -47358,7 +47358,7 @@ Ext.define('App.view.patient.Referrals', {
 								},
 								{
 									xtype: 'textareafield',
-									fieldLabel: i18n('reason'),
+									fieldLabel: _('reason'),
 									name: 'referal_reason',
 									anchor: '100%',
 									height: 60
@@ -47366,7 +47366,7 @@ Ext.define('App.view.patient.Referrals', {
 								{
 									xtype: 'liveicdxsearch',
 									margin: '0 0 10',
-									fieldLabel: i18n('diagnosis'),
+									fieldLabel: _('diagnosis'),
 									name: 'diagnosis_text',
 									hideLabel: false,
 									displayField: 'code_text',
@@ -47386,7 +47386,7 @@ Ext.define('App.view.patient.Referrals', {
 							items: [
 								{
 									xtype: 'activeproviderscombo',
-									fieldLabel: i18n('refer_by'),
+									fieldLabel: _('refer_by'),
 									name: 'refer_by_text',
 									width: 300,
 									displayField: 'option_name',
@@ -47399,7 +47399,7 @@ Ext.define('App.view.patient.Referrals', {
 									items: [
 										{
 											xtype: 'activeproviderscombo',
-											fieldLabel: i18n('refer_to'),
+											fieldLabel: _('refer_to'),
 											name: 'refer_to_text',
 											labelAlign: 'right',
 											margin: '0 5 5 0',
@@ -47412,7 +47412,7 @@ Ext.define('App.view.patient.Referrals', {
 										},
 										{
 											xtype: 'referringproviderscombo',
-											fieldLabel: i18n('refer_to'),
+											fieldLabel: _('refer_to'),
 											name: 'refer_to_text',
 											labelAlign: 'right',
 											margin: '0 5 5 0',
@@ -47425,7 +47425,7 @@ Ext.define('App.view.patient.Referrals', {
 										},
 										{
 											xtype: 'checkboxfield',
-											boxLabel: i18n('external_referral'),
+											boxLabel: _('external_referral'),
 											itemId: 'ReferralExternalReferralCheckbox',
 											name: 'is_external_referral'
 										}
@@ -47434,20 +47434,20 @@ Ext.define('App.view.patient.Referrals', {
 
 								{
 									xtype: 'gaiaehr.combo',
-									fieldLabel: i18n('risk_level'),
+									fieldLabel: _('risk_level'),
 									name: 'risk_level',
 									list: 17,
 									width: 300
 								},
 //								{
 //									xtype: 'checkboxfield',
-//									fieldLabel: i18n('send_vitals'),
+//									fieldLabel: _('send_vitals'),
 //									name: 'send_vitals',
 //									width: 300
 //								},
 								{
 									xtype: 'checkboxfield',
-									fieldLabel: i18n('send_record'),
+									fieldLabel: _('send_record'),
 									name: 'send_record',
 									width: 300
 								}
@@ -47462,28 +47462,28 @@ Ext.define('App.view.patient.Referrals', {
 	columns: [
 		{
 			xtype: 'datecolumn',
-			text: i18n('date'),
+			text: _('date'),
 			dataIndex: 'referral_date',
 			format: 'Y-m-d',
 			menuDisabled: true,
 			resizable: false
 		},
 		{
-			text: i18n('refer_by'),
+			text: _('refer_by'),
 			dataIndex: 'refer_by_text',
 			menuDisabled: true,
 			resizable: false,
 			width: 200
 		},
 		{
-			text: i18n('refer_to'),
+			text: _('refer_to'),
 			dataIndex: 'refer_to_text',
 			menuDisabled: true,
 			resizable: false,
 			width: 200
 		},
 		{
-			text: i18n('request'),
+			text: _('request'),
 			dataIndex: 'referal_reason',
 			menuDisabled: true,
 			resizable: false,
@@ -47493,14 +47493,14 @@ Ext.define('App.view.patient.Referrals', {
 	tbar: [
 		'->',
 		{
-			text: i18n('referral'),
+			text: _('referral'),
 			iconCls: 'icoAdd',
 			itemId: 'encounterRecordAdd',
 			action: 'addReferralBtn'
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			itemId: 'printReferralBtn'
@@ -47514,7 +47514,7 @@ Ext.define('App.view.patient.SocialPanel', {
 		'App.view.patient.SocialHistory'
 	],
 	xtype: 'patientsocialpanel',
-	title: i18n('social'),
+	title: _('social'),
 	border: false,
 	bodyBorder: false,
 	layout: {
@@ -47543,7 +47543,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 		'App.ux.combo.Outcome2'
 	],
 	xtype: 'patientactiveproblemspanel',
-	title: i18n('active_problems'),
+	title: _('active_problems'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientActiveProblems', {
 		remoteFilter: true,
@@ -47564,31 +47564,31 @@ Ext.define('App.view.patient.ActiveProblems', {
 			]
 		},
 		{
-			header: i18n('problem'),
+			header: _('problem'),
 			flex: 1,
 			dataIndex: 'code_text'
 		},
 		{
-			header: i18n('occurrence'),
+			header: _('occurrence'),
 			width: 200,
 			dataIndex: 'occurrence'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			width: 100,
 			format: 'Y-m-d',
 			dataIndex: 'begin_date'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			width: 100,
 			format: 'Y-m-d',
 			dataIndex: 'end_date'
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			width: 80,
 			dataIndex: 'status'
 		}
@@ -47612,7 +47612,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 						items: [
 							{
 								xtype: 'snomedliveproblemsearch',
-								fieldLabel: i18n('problem'),
+								fieldLabel: _('problem'),
 								name: 'code_text',
 								hideLabel: false,
 								itemId: 'activeProblemLiveSearch',
@@ -47631,7 +47631,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 								},
 								items: [
 									{
-										fieldLabel: i18n('occurrence'),
+										fieldLabel: _('occurrence'),
 										width: 250,
 										labelWidth: 70,
 										xtype: 'mitos.occurrencecombo',
@@ -47641,13 +47641,13 @@ Ext.define('App.view.patient.ActiveProblems', {
 										xtype: 'textfield',
 										width: 460,
 										labelWidth: 70,
-										fieldLabel: i18n('referred_by'),
+										fieldLabel: _('referred_by'),
 										name: 'referred_by'
 									}
 								]
 							},
 							{
-								fieldLabel: i18n('note'),
+								fieldLabel: _('note'),
 								xtype: 'textfield',
 								width: 720,
 								labelWidth: 70,
@@ -47666,7 +47666,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 						},
 						items: [
 							{
-								fieldLabel: i18n('status'),
+								fieldLabel: _('status'),
 								xtype: 'gaiaehr.combo',
 								list: 112,
 								itemId: 'ActiveProblemStatusCombo',
@@ -47674,13 +47674,13 @@ Ext.define('App.view.patient.ActiveProblems', {
 								allowBlank: false
 							},
 							{
-								fieldLabel: i18n('begin_date'),
+								fieldLabel: _('begin_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'begin_date'
 							},
 							{
-								fieldLabel: i18n('end_date'),
+								fieldLabel: _('end_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'end_date'
@@ -47695,14 +47695,14 @@ Ext.define('App.view.patient.ActiveProblems', {
 	tbar: [
 		'->',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			action: 'encounterRecordAdd',
 			itemId: 'addActiveProblemBtn',
 			iconCls: 'icoAdd'
 		}
 	],
 	bbar: ['->', {
-		text: i18n('review'),
+		text: _('review'),
 		itemId: 'review_active_problems',
 		action: 'encounterRecordAdd'
 	}]
@@ -47715,7 +47715,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		'App.store.patient.CognitiveAndFunctionalStatus'
 	],
 	xtype: 'patientcognitiveandfunctionalstatuspanel',
-	title: i18n('cognitive_and_functional_status'),
+	title: _('cognitive_and_functional_status'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.CognitiveAndFunctionalStatus', {
 		remoteFilter: true
@@ -47732,12 +47732,12 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 				}
 			]
 		},
 		{
-			header: i18n('category'),
+			header: _('category'),
 			width: 150,
 			dataIndex: 'category',
 			editor: {
@@ -47748,7 +47748,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			}
 		},
 		{
-			header: i18n('description'),
+			header: _('description'),
 			flex: 1,
 			dataIndex: 'code_text',
 			editor: {
@@ -47760,7 +47760,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			}
 		},
 		{
-			header: i18n('note'),
+			header: _('note'),
 			flex: 2,
 			dataIndex: 'note',
 			editor: {
@@ -47769,7 +47769,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			dataIndex: 'begin_date',
 			format: 'Y-m-d',
 			editor: {
@@ -47779,7 +47779,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			dataIndex: 'end_date',
 			format: 'Y-m-d',
 			editor: {
@@ -47788,7 +47788,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 			}
 		},
 		{
-			header: i18n('status'),
+			header: _('status'),
 			dataIndex: 'status',
 			editor: {
 				xtype: 'gaiaehr.combo',
@@ -47802,7 +47802,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		'->',
 		'-',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newFunctionalStatusBtn'
@@ -47815,7 +47815,7 @@ Ext.define('App.ux.combo.Specialties', {
 	displayField: 'text_details',
 	valueField: 'id',
 	editable: false,
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	queryMode: 'local',
 	store: Ext.create('App.store.administration.Specialties',{
 		pageSize: 500,
@@ -47828,7 +47828,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 		'App.ux.LiveSnomedProcedureSearch'
 	],
 	xtype: 'careplangoalsnewwindow',
-	title: i18n('new_goal'),
+	title: _('new_goal'),
 	closable: false,
 	constrain: true,
 	closeAction: 'hide',
@@ -47847,7 +47847,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 					xtype: 'fieldcontainer',
 					layout: 'hbox',
 					itemId: 'CarePlanGoalPlanDateContainer',
-					fieldLabel: i18n('plan_date'),
+					fieldLabel: _('plan_date'),
 					labelAlign: 'top',
 					defaults: {
 						margin: '0 5 0 0'
@@ -47900,7 +47900,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 				{
 					xtype: 'snomedliveproceduresearch',
 					itemId: 'CarePlanGoalSearchField',
-					fieldLabel: i18n('goal'),
+					fieldLabel: _('goal'),
 					displayField: 'FullySpecifiedName',
 					valueField: 'FullySpecifiedName',
 					labelAlign: 'top',
@@ -47910,7 +47910,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 				},
 				{
 					xtype: 'textareafield',
-					fieldLabel: i18n('instructions'),
+					fieldLabel: _('instructions'),
 					labelAlign: 'top',
 					name: 'instructions',
 					flex: 1
@@ -47920,11 +47920,11 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			itemId: 'CarePlanGoalsNewFormCancelBtn'
 		},
 		{
-			text: i18n('save'),
+			text: _('save'),
 			itemId: 'CarePlanGoalsNewFormSaveBtn'
 		}
 	]
@@ -47940,7 +47940,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	],
 	action: 'patient.encounter.soap',
 	itemId: 'soapPanel',
-	title: i18n('soap'),
+	title: _('soap'),
 	layout: 'border',
 	frame: true,
 
@@ -47959,7 +47959,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var snippetCtrl = App.app.getController('patient.encounter.Snippets');
 
 		me.snippets = Ext.create('Ext.tree.Panel', {
-			title: i18n('snippets'),
+			title: _('snippets'),
 			itemId: 'SnippetsTreePanel',
 			region: 'west',
 			width: 300,
@@ -47977,7 +47977,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			tools: [
 				{
 					xtype: 'button',
-					text: i18n('category'),
+					text: _('category'),
 					iconCls: 'icoAdd',
 					itemId: 'SnippetCategoryAddBtn'
 				}
@@ -47995,11 +47995,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					}
 				},
 				{
-					text: i18n('add'),
+					text: _('add'),
 					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
-					tooltip: i18n('add_snippet'),
+					tooltip: _('add_snippet'),
 					align: 'center',
 					icon: 'resources/images/icons/add.gif',
 					scope: me,
@@ -48015,7 +48015,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					}
 				},
 				{
-					text: i18n('edit'),
+					text: _('edit'),
 					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
@@ -48038,7 +48038,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				plugins: {
 					ptype: 'treeviewdragdrop',
 					expandDelay: 500,
-					dragText: i18n('drag_and_drop_reorganize')
+					dragText: _('drag_and_drop_reorganize')
 				},
 				listeners: {
 					scope: me,
@@ -48068,7 +48068,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			},
 			items: [
 				me.pWin = Ext.widget('window', {
-					title: i18n('procedure'),
+					title: _('procedure'),
 					maximized: true,
 					closable: false,
 					constrain: true,
@@ -48107,12 +48107,12 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					],
 					buttons: [
 						{
-							text: i18n('cancel'),
+							text: _('cancel'),
 							scope: me,
 							handler: me.onProcedureCancel
 						},
 						{
-							text: i18n('save'),
+							text: _('save'),
 							scope: me,
 							itemId: 'encounterRecordAdd',
 							handler: me.onProcedureSave
@@ -48121,7 +48121,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				}),
 				{
 					xtype: 'fieldset',
-					title: i18n('subjective'),
+					title: _('subjective'),
 					margin: 5,
 					items: [
 						me.sField = Ext.widget('textarea', {
@@ -48134,7 +48134,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('objective'),
+					title: _('objective'),
 					margin: 5,
 					items: [
 						me.oField = Ext.widget('textarea', {
@@ -48144,16 +48144,16 @@ Ext.define('App.view.patient.encounter.SOAP', {
 						me.pGrid = Ext.widget('grid', {
 							frame: true,
 							name: 'procedures',
-							emptyText: i18n('no_procedures'),
+							emptyText: _('no_procedures'),
 							margin: '5 0 10 0',
 							store: me.procedureStore,
 							columns: [
 								{
-									text: i18n('code'),
+									text: _('code'),
 									dataIndex: 'code'
 								},
 								{
-									text: i18n('description'),
+									text: _('description'),
 									dataIndex: 'code_text',
 									flex: 1
 								}
@@ -48168,11 +48168,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 									items: [
 										{
 											xtype: 'tbtext',
-											text: i18n('procedures')
+											text: _('procedures')
 										},
 										'->',
 										{
-											text: i18n('new_procedure'),
+											text: _('new_procedure'),
 											scope: me,
 											handler: me.onProcedureAdd,
 											iconCls: 'icoAdd'
@@ -48186,7 +48186,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('assessment'),
+					title: _('assessment'),
 					margin: 5,
 					items: [
 						me.aField = Ext.widget('textarea', {
@@ -48202,7 +48202,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('plan'),
+					title: _('plan'),
 					margin: 5,
 					items: [
 						me.pField = Ext.widget('textarea', {
@@ -48218,7 +48218,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					iconCls: 'save',
 					action: 'soapSave',
 					scope: me,
@@ -48233,7 +48233,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 
 		me.phWindow = Ext.widget('window', {
-			title: i18n('complete_snippet'),
+			title: _('complete_snippet'),
 			closeAction: 'hide',
 			bodyPadding: 0,
 			bodyBorder: false,
@@ -48256,15 +48256,15 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			buttons: [
 				{
 					xtype: 'tbtext',
-					text: i18n('shift_enter_submit')
+					text: _('shift_enter_submit')
 				},
 				'->',
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					handler: me.onPhWindowCancel
 				},
 				{
-					text: i18n('submit'),
+					text: _('submit'),
 					scope: me,
 					handler: me.onPhWindowSubmit
 				}
@@ -48324,7 +48324,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.procedureStore.rejectChanges();
 		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
-		this.pWin.setTitle(i18n('procedure'));
+		this.pWin.setTitle(_('procedure'));
 	},
 
 	/**
@@ -48341,7 +48341,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.procedureStore.sync();
 		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
-		this.pWin.setTitle(i18n('procedure'));
+		this.pWin.setTitle(_('procedure'));
 	},
 
 	/**
@@ -48376,7 +48376,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		if(record.data.code_text != '' || record.data.code != ''){
 			this.pWin.setTitle(record.data.code_text + ' [' + record.data.code + ']');
 		}else{
-			this.pWin.setTitle(i18n('new_procedure'));
+			this.pWin.setTitle(_('new_procedure'));
 		}
 
 		this.pForm.getForm().loadRecord(record);
@@ -48528,12 +48528,12 @@ Ext.define('App.ux.LiveAllergiesSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
@@ -48563,7 +48563,7 @@ Ext.define('App.view.patient.Allergies', {
 		'App.ux.combo.AllergiesSeverity'
 	],
 	xtype: 'patientallergiespanel',
-	title: i18n('allergies'),
+	title: _('allergies'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.Allergies', {
 		remoteFilter: true,
@@ -48571,12 +48571,12 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	columns: [
 		{
-			header: i18n('type'),
+			header: _('type'),
 			width: 100,
 			dataIndex: 'allergy_type'
 		},
 		{
-			header: i18n('name'),
+			header: _('name'),
 			flex: 1,
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
@@ -48584,22 +48584,22 @@ Ext.define('App.view.patient.Allergies', {
 			}
 		},
 		{
-			header: i18n('location'),
+			header: _('location'),
 			width: 220,
 			dataIndex: 'location'
 		},
 		{
-			header: i18n('reaction'),
+			header: _('reaction'),
 			width: 220,
 			dataIndex: 'reaction'
 		},
 		{
-			header: i18n('severity'),
+			header: _('severity'),
 			width: 220,
 			dataIndex: 'severity'
 		},
 		{
-			text: i18n('status'),
+			text: _('status'),
 			width: 55,
 			dataIndex: 'status'
 		}
@@ -48610,7 +48610,7 @@ Ext.define('App.view.patient.Allergies', {
 		clicksToEdit: 1,
 		items: [
 			{
-				title: i18n('general'),
+				title: _('general'),
 				xtype: 'container',
 				padding: '0 10',
 				layout: 'vbox',
@@ -48627,7 +48627,7 @@ Ext.define('App.view.patient.Allergies', {
 						items:[
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('type'),
+								fieldLabel: _('type'),
 								itemId:'allergyTypeCombo',
 								name: 'allergy_type',
 								allowBlank: false,
@@ -48638,7 +48638,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('status'),
+								fieldLabel: _('status'),
 								name: 'status',
 								list: 113,
 								itemId: 'allergyStatusCombo',
@@ -48659,7 +48659,7 @@ Ext.define('App.view.patient.Allergies', {
 						items: [
 							{
 								xtype: 'allergieslivesearch',
-								fieldLabel: i18n('allergy'),
+								fieldLabel: _('allergy'),
 								itemId: 'allergySearchCombo',
 								name: 'allergy',
 								hideLabel: false,
@@ -48671,7 +48671,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype:'rxnormallergylivetsearch',
-								fieldLabel: i18n('allergy'),
+								fieldLabel: _('allergy'),
 								itemId:'allergyMedicationCombo',
 								name: 'allergy',
 								hideLabel: false,
@@ -48683,7 +48683,7 @@ Ext.define('App.view.patient.Allergies', {
 								allowBlank: false
 							},
 							{
-								fieldLabel: i18n('begin_date'),
+								fieldLabel: _('begin_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'begin_date',
@@ -48705,7 +48705,7 @@ Ext.define('App.view.patient.Allergies', {
 						items: [
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('location'),
+								fieldLabel: _('location'),
 								name: 'location',
 								action: 'location',
 								itemId: 'allergyLocationCombo',
@@ -48716,7 +48716,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('reaction'),
+								fieldLabel: _('reaction'),
 								itemId: 'allergyReactionCombo',
 								name: 'reaction',
 								width: 230,
@@ -48726,7 +48726,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('severity'),
+								fieldLabel: _('severity'),
 								name: 'severity',
 								itemId: 'allergySeverityCombo',
 								width: 225,
@@ -48735,7 +48735,7 @@ Ext.define('App.view.patient.Allergies', {
 								allowBlank: false
 							},
 							{
-								fieldLabel: i18n('end_date'),
+								fieldLabel: _('end_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'end_date',
@@ -48750,7 +48750,7 @@ Ext.define('App.view.patient.Allergies', {
 	tbar:[
 		'->',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			itemId: 'addAllergyBtn',
 			action: 'encounterRecordAdd',
 			iconCls: 'icoAdd'
@@ -48758,13 +48758,13 @@ Ext.define('App.view.patient.Allergies', {
 	],
 	bbar: [
 		{
-			text: i18n('only_active'),
+			text: _('only_active'),
 			enableToggle: true,
 			itemId: 'activeAllergyBtn'
 		},
 		'->',
 		{
-			text: i18n('review'),
+			text: _('review'),
 			action: 'encounterRecordAdd',
 			itemId: 'reviewAllergiesBtn'
 		}
@@ -48774,7 +48774,7 @@ Ext.define('App.view.patient.Allergies', {
 });
 Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
-	title: i18n('medical_window'),
+	title: _('medical_window'),
 	itemId: 'MedicalWindow',
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
@@ -48842,7 +48842,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		me.buttons = [
 			{
-				text: i18n('close'),
+				text: _('close'),
 				scope: me,
 				handler: function(){
 					me.close();
@@ -48902,7 +48902,7 @@ Ext.define('App.ux.form.fields.CheckBoxWithFamilyRelation', {
 	alias: 'widget.checkboxwithfamilyhistory',
 	textField: {
 		xtype: 'gaiaehr.combo',
-		fieldLabel: i18n('relation'),
+		fieldLabel: _('relation'),
 		labelAlign: 'right',
 		labelWidth: 80,
 		list: 109,
@@ -48958,7 +48958,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 		'App.ux.form.fields.CheckBoxWithFamilyRelation'
 	],
 	itemId: 'familyHistoryPanel',
-	title: i18n('family_history'),
+	title: _('family_history'),
 	autoScroll: true,
 	frame: true,
 	bodyPadding: 10,
@@ -48972,7 +48972,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 
 	buttons: [
 		{
-			text: i18n('save'),
+			text: _('save'),
 			iconCls: 'save',
 			action: 'encounterRecordAdd',
 			itemId: 'familyHistorySaveBtn'
@@ -48987,7 +48987,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 });
 Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('encounter'),
+	pageTitle: _('encounter'),
 	pageLayout: 'border',
 	itemId: 'encounterPanel',
 	requires: [
@@ -49080,7 +49080,7 @@ Ext.define('App.view.patient.Encounter', {
 		 */
 		me.encounterTabPanel = me.centerPanel.add(
 			Ext.create('Ext.tab.Panel', {
-				title: me.renderAdministrative ? i18n('encounter') : false,
+				title: me.renderAdministrative ? _('encounter') : false,
 				itemId: 'encounter',
 				plain: true,
 				activeItem: 0,
@@ -49113,7 +49113,7 @@ Ext.define('App.view.patient.Encounter', {
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
 					action: 'encounter',
-					title: i18n('review_of_systems'),
+					title: _('review_of_systems'),
 					frame: true,
 					bodyPadding: 5,
 					bodyStyle: 'background-color:white',
@@ -49127,7 +49127,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					buttons: [
 						{
-							text: i18n('save'),
+							text: _('save'),
 							iconCls: 'save',
 							action: 'reviewOfSystems',
 							scope: me,
@@ -49144,7 +49144,7 @@ Ext.define('App.view.patient.Encounter', {
 				Ext.create('Ext.form.Panel', {
 					autoScroll: true,
 					action: 'encounter',
-					title: i18n('review_of_systems_checks'),
+					title: _('review_of_systems_checks'),
 					frame: true,
 					bodyPadding: 5,
 					bodyStyle: 'background-color:white',
@@ -49158,7 +49158,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					buttons: [
 						{
-							text: i18n('save'),
+							text: _('save'),
 							iconCls: 'save',
 							action: 'reviewOfSystemsChecks',
 							scope: me,
@@ -49179,7 +49179,7 @@ Ext.define('App.view.patient.Encounter', {
 		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.ItemsToReview', {
-					title: i18n('items_to_review'),
+					title: _('items_to_review'),
 					bodyPadding: '7 5 2 5'
 				})
 			);
@@ -49203,7 +49203,7 @@ Ext.define('App.view.patient.Encounter', {
 			(me.enableEncHistory && a('access_enc_history'))){
 			me.administrativeTabPanel = me.centerPanel.add(
 				Ext.create('Ext.tab.Panel', {
-					title: i18n('administrative'),
+					title: _('administrative'),
 					itemId: 'administrative',
 					plain: true,
 					activeItem: 0,
@@ -49220,7 +49220,7 @@ Ext.define('App.view.patient.Encounter', {
 			me.MiscBillingOptionsPanel = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
 					autoScroll: true,
-					title: i18n('misc_billing_options_HCFA_1500'),
+					title: _('misc_billing_options_HCFA_1500'),
 					frame: true,
 					bodyPadding: 5,
 					bodyStyle: 'background-color:white',
@@ -49234,7 +49234,7 @@ Ext.define('App.view.patient.Encounter', {
 					},
 					buttons: [
 						{
-							text: i18n('save'),
+							text: _('save'),
 							iconCls: 'save',
 							action: 'soap',
 							scope: me,
@@ -49248,7 +49248,7 @@ Ext.define('App.view.patient.Encounter', {
 		if(me.enableCPT && a('access_enc_cpt')){
 			me.CurrentProceduralTerminology = me.administrativeTabPanel.add(
 				Ext.create('App.view.patient.encounter.CurrentProceduralTerminology', {
-					title: i18n('current_procedural_terminology')
+					title: _('current_procedural_terminology')
 				})
 			);
 		}
@@ -49257,7 +49257,7 @@ Ext.define('App.view.patient.Encounter', {
 			me.EncounterEventHistory = me.administrativeTabPanel.add(
 				Ext.create('App.ux.grid.EventHistory', {
 					bodyStyle: 0,
-					title: i18n('encounter_history'),
+					title: _('encounter_history'),
 					store: me.encounterEventHistoryStore
 				})
 			);
@@ -49267,7 +49267,7 @@ Ext.define('App.view.patient.Encounter', {
 		 * Progress Note
 		 */
 		me.rightPanel = Ext.create('Ext.tab.Panel', {
-			title: i18n('encounter_progress_note'),
+			title: _('encounter_progress_note'),
 			width: 500,
 			region: 'east',
 			split: true,
@@ -49282,13 +49282,13 @@ Ext.define('App.view.patient.Encounter', {
 			},
 			items: [
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
-					title: i18n('progress_note'),
+					title: _('progress_note'),
 					autoScroll: true,
 					tbar: [
 						'->', {
 							xtype: 'tool',
 							type: 'print',
-							tooltip: i18n('print_progress_note'),
+							tooltip: _('print_progress_note'),
 							scope: me,
 							handler: function(){
 								var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
@@ -49305,7 +49305,7 @@ Ext.define('App.view.patient.Encounter', {
 				}),
 
 				me.progressHistory = Ext.create('Ext.panel.Panel', {
-					title: i18n('progress_history'),
+					title: _('progress_history'),
 					bodyPadding: 5,
 					autoScroll: true,
 					items: [
@@ -49326,68 +49326,68 @@ Ext.define('App.view.patient.Encounter', {
 			items: [
 				'-',
 				{
-					text: i18n('immunizations') + ' ',
+					text: _('immunizations') + ' ',
 					action: 'immunization'
 				},
 				'-',
 				{
-					text: i18n('allergies') + ' ',
+					text: _('allergies') + ' ',
 					action: 'allergies'
 				},
 				'-',
 				{
-					text: i18n('active_problems') + ' ',
+					text: _('active_problems') + ' ',
 					action: 'activeproblems'
 				},
 				'-',
 				{
-					text: i18n('medications') + ' ',
+					text: _('medications') + ' ',
 					action: 'medications'
 				},
 				'-',
 				{
-					text: i18n('results') + ' ',
+					text: _('results') + ' ',
 					action: 'laboratories'
 				},
 				'-',
 				{
-					text: i18n('social') + ' ',
+					text: _('social') + ' ',
 					action: 'social'
 				},
 				'-',
 				{
-					text: i18n('functional_status') + ' ',
+					text: _('functional_status') + ' ',
 					action: 'functionalstatus'
 				},
 				'-',
 				{
-					text: i18n('referrals') + ' ',
+					text: _('referrals') + ' ',
 					action: 'referrals'
 				},
 				'-',
 				{
-					text: i18n('lab_orders'),
+					text: _('lab_orders'),
 					action: 'LabOrders',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
-					text: i18n('xray_ct_orders'),
+					text: _('xray_ct_orders'),
 					action: 'RadOrders',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
-					text: i18n('rx_orders'),
+					text: _('rx_orders'),
 					action: 'RxOrderGrid',
 					scope: me,
 					handler: me.newDoc
 				},
 				'-',
 				{
-					text: i18n('new_doctors_note'),
+					text: _('new_doctors_note'),
 					action: 'DoctorsNotes',
 					scope: me,
 					handler: me.newDoc
@@ -49398,7 +49398,7 @@ Ext.define('App.view.patient.Encounter', {
 				{
 					xtype:'button',
 					action: 'encounter',
-					text: i18n('encounter_details')
+					text: _('encounter_details')
 				},
 				'-',
 				me.priorityCombo = Ext.create('App.ux.combo.EncounterPriority', {
@@ -49413,7 +49413,7 @@ Ext.define('App.view.patient.Encounter', {
 
 		if(a('access_encounter_checkout')){
 			me.panelToolBar.add({
-				text: i18n('sign'),
+				text: _('sign'),
 				icon: 'resources/images/icons/edit.png',
 				handler: me.onSignEncounter
 			}, '-');
@@ -49544,7 +49544,7 @@ Ext.define('App.view.patient.Encounter', {
 						store.sync({
 							scope: me,
 							success: function(){
-								me.msg('Sweet!', i18n('vitals_saved'));
+								me.msg('Sweet!', _('vitals_saved'));
 								me.getProgressNote();
 								me.vitalsPanel.down('vitalsdataview').refresh();
 								me.resetVitalsForm();
@@ -49556,7 +49556,7 @@ Ext.define('App.view.patient.Encounter', {
 					}
 
 				}else{
-					me.msg('Oops!', i18n('vitals_form_is_epmty'), true)
+					me.msg('Oops!', _('vitals_form_is_epmty'), true)
 				}
 			}else{
 
@@ -49574,7 +49574,7 @@ Ext.define('App.view.patient.Encounter', {
 
 							app.fireEvent('encountersync', me, store, form);
 
-							me.msg('Sweet!', i18n('encounter_updated'));
+							me.msg('Sweet!', _('encounter_updated'));
 							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
 							app.AuditLog('Patient encounter updated');
 						}
@@ -49613,7 +49613,7 @@ Ext.define('App.view.patient.Encounter', {
 							store.sync({
 								callback: function(){
 									form.reset();
-									me.msg('Sweet!', i18n('vitals_signed'));
+									me.msg('Sweet!', _('vitals_signed'));
 									me.getProgressNote();
 									me.resetVitalsForm();
 									me.vitalsPanel.down('vitalsdataview').refresh();
@@ -49624,7 +49624,7 @@ Ext.define('App.view.patient.Encounter', {
 						}else{
 							Ext.Msg.show({
 								title: 'Oops!',
-								msg: i18n('incorrect_password'),
+								msg: _('incorrect_password'),
 								buttons: Ext.Msg.OKCANCEL,
 								icon: Ext.Msg.ERROR,
 								fn: function(btn){
@@ -49665,7 +49665,7 @@ Ext.define('App.view.patient.Encounter', {
 			record,
 			store;
 
-		me.el.mask(i18n('loading...') + ' ' + i18n('encounter') + ' - ' + eid);
+		me.el.mask(_('loading...') + ' ' + _('encounter') + ' - ' + eid);
 		me.resetTabs();
 
 		/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
@@ -49696,7 +49696,7 @@ Ext.define('App.view.patient.Encounter', {
 				}else{
 					if(me.stopTimer()){
 						var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
-						me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('closed_encounter') + ')', app.patient.readOnly, timer);
+						me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
 						me.setButtonsDisabled(me.getButtonsToDisable(), true);
 					}
 				}
@@ -49817,13 +49817,13 @@ Ext.define('App.view.patient.Encounter', {
 							app.openPatientVisits();
 
 							app.AuditLog('Patient encounter ' + (isSupervisor ? 'co-signed' : 'signed'));
-							me.msg('Sweet!', i18n('encounter_closed'));
+							me.msg('Sweet!', _('encounter_closed'));
 							app.checkoutWindow.close();
 						}
 					}else{
 						Ext.Msg.show({
 							title: 'Oops!',
-							msg: i18n(response.result.error),
+							msg: _(response.result.error),
 							buttons: Ext.Msg.OK,
 							icon: Ext.Msg.ERROR
 						});
@@ -49837,7 +49837,7 @@ Ext.define('App.view.patient.Encounter', {
 	 * CheckOut Functions
 	 */
 	onSignEncounter: function(){
-		var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('checkout') + ')';
+		var title = app.patient.name + ' #' + app.patient.pid + ' - ' + Ext.Date.format(this.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('checkout') + ')';
 		app.checkoutWindow.enc = this;
 		app.checkoutWindow.setTitle(title);
 		app.checkoutWindow.show();
@@ -49879,7 +49879,7 @@ Ext.define('App.view.patient.Encounter', {
 				me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
 					styleHtmlContent: true,
 					title: '<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
-					html: '<strong>' + i18n('subjective') + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + i18n('objective') + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + i18n('assessment') + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + i18n('plan') + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
+					html: '<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
 				}))
 			}
 		})
@@ -49930,7 +49930,7 @@ Ext.define('App.view.patient.Encounter', {
 	encounterTimer: function(){
 		var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
 		if(app.patient.pid != null){
-			me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + i18n('open_encounter') + ')', app.patient.readOnly, timer);
+			me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('open_encounter') + ')', app.patient.readOnly, timer);
 		}else{
 			me.stopTimer();
 		}
@@ -49961,7 +49961,7 @@ Ext.define('App.view.patient.Encounter', {
 		var day = Math.floor(hr / 24);
 		hr = hr % 24;
 		t = twoDigit(hr) + ":" + t;
-		t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + i18n('day_s') + '</span><span class="time">' + t + '</span>';
+		t = (day == 0 ) ? '<span class="time">' + t + '</span>' : '<span class="day">' + day + ' ' + _('day_s') + '</span><span class="time">' + t + '</span>';
 		return t;
 	},
 
@@ -50072,7 +50072,7 @@ Ext.define('App.view.patient.Encounter', {
 
 		if(patient.pid && patient.eid){
 
-			me.updateTitle(patient.name + ' (' + i18n('visits') + ')', patient.readOnly, null);
+			me.updateTitle(patient.name + ' (' + _('visits') + ')', patient.readOnly, null);
 			me.setReadOnly(patient.readOnly);
 			callback(true);
 		}else{
@@ -50094,7 +50094,7 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 	base64: '',
 	ready: false,
 
-	title: i18n('upload'),
+	title: _('upload'),
 	items: [
 		{
 			xtype: 'fileuploadfield',
@@ -50103,10 +50103,10 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 	],
 	buttons: [
 		{
-			text: i18n('cancel')
+			text: _('cancel')
 		},
 		{
-			text: i18n('upload')
+			text: _('upload')
 		}
 	],
 
@@ -50144,7 +50144,7 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 			}
 
 			if(!re.exec(me.uValue)){
-				app.msg(i18n('oops'), Ext.String.format(i18n('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
+				app.msg(_('oops'), Ext.String.format(_('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
 				return;
 			}
 		}
@@ -50287,7 +50287,7 @@ Ext.define('App.view.Viewport', {
 		    iconCls: 'icoHome',
 		    scope: me,
 		    handler: me.openDashboard,
-		    tooltip: i18n('patient_visits_history')
+		    tooltip: _('patient_visits_history')
         });
 
 	    me.HeaderLeft.add({
@@ -50299,7 +50299,7 @@ Ext.define('App.view.Viewport', {
 		    iconCls: 'icoCalendar2',
 		    scope: me,
 		    handler: me.openCalendar,
-		    tooltip: i18n('patient_visits_history')
+		    tooltip: _('patient_visits_history')
         });
 
 	    me.HeaderLeft.add({ xtype: 'tbseparator' });
@@ -50309,7 +50309,7 @@ Ext.define('App.view.Viewport', {
             scale: 'large',
 		    margin: '0 3 0 0',
 		    style: 'height: 42px',
-            tooltip: i18n('patient_btn_drag'),
+            tooltip: _('patient_btn_drag'),
             listeners: {
                 scope: me,
                 afterrender: me.patientBtnRender
@@ -50328,7 +50328,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoPatientInfo',
             scope: me,
             handler: me.openPatientSummary,
-            tooltip: i18n('patient_summary')
+            tooltip: _('patient_summary')
         });
 
 	    if(a('access_patient_visits')){
@@ -50341,7 +50341,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoBackClock',
 			    scope: me,
 			    handler: me.openPatientVisits,
-			    tooltip: i18n('patient_visits_history')
+			    tooltip: _('patient_visits_history')
 		    });
 	    }
 
@@ -50356,7 +50356,7 @@ Ext.define('App.view.Viewport', {
                 iconCls: 'icoClock',
                 scope: me,
                 handler: me.createNewEncounter,
-                tooltip: i18n('new_encounter')
+                tooltip: _('new_encounter')
             });
         }
 
@@ -50369,7 +50369,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoArrowDown',
             scope: me,
             handler: me.stowPatientRecord,
-            tooltip: i18n('stow_patient_record')
+            tooltip: _('stow_patient_record')
         });
 
 //	    if(a('access_patient_visit_checkout')){
@@ -50382,7 +50382,7 @@ Ext.define('App.view.Viewport', {
 //			    iconCls: 'icoCheckOut',
 //			    scope: me,
 //			    handler: me.checkOutPatient,
-//			    tooltip: i18n('visit_check_out')
+//			    tooltip: _('visit_check_out')
 //		    });
 //	    }
 
@@ -50397,7 +50397,7 @@ Ext.define('App.view.Viewport', {
 //            iconCls: me.icoMoney,
 //            scope: me,
 //            handler: me.onPaymentEntryWindow,
-//            tooltip: i18n('payment_entry')
+//            tooltip: _('payment_entry')
 //        });
 
 	    if(a('access_patient_search')){
@@ -50408,7 +50408,7 @@ Ext.define('App.view.Viewport', {
 			    items: [
 				    {
 					    xtype: 'patienlivetsearch',
-					    emptyText: i18n('patient_live_search') + '...',
+					    emptyText: _('patient_live_search') + '...',
 					    width: (me.fullMode ? 300 : 300),
 					    listeners: {
 						    scope: me,
@@ -50434,7 +50434,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoAddPatient',
 			    scope: me,
 			    handler: me.newPatient,
-			    tooltip: i18n('create_a_new_patient')
+			    tooltip: _('create_a_new_patient')
 		    });
 	    }
 
@@ -50450,7 +50450,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoEmer',
 			    scope: me,
 			    handler: me.createEmergency,
-			    tooltip: i18n('create_new_emergency')
+			    tooltip: _('create_new_emergency')
 		    });
 	    }
 
@@ -50465,7 +50465,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoZoneAreasBig',
 			    scope: me,
 			    handler: me.goToFloorPlans,
-			    tooltip: i18n('floor_plans')
+			    tooltip: _('floor_plans')
 		    });
 	    }
 
@@ -50480,7 +50480,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoPoolArea',
 			    scope: me,
 			    handler: me.goToPoolAreas,
-			    tooltip: i18n('pool_areas')
+			    tooltip: _('pool_areas')
 		    });
 	    }
 
@@ -50495,7 +50495,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoCheckIn',
 			    scope: me,
 			    handler: me.onPatientLog,
-			    tooltip: i18n('arrival_log')
+			    tooltip: _('arrival_log')
 		    });
 	    }
 
@@ -50517,14 +50517,14 @@ Ext.define('App.view.Viewport', {
 		    margin: 0,
 		    menu: [
 			    {
-				    text: i18n('my_account'),
+				    text: _('my_account'),
 				    iconCls: 'icoUser',
 				    handler: function(){
 					    me.nav.navigateTo('App.view.miscellaneous.MyAccount');
 				    }
 			    },
 			    {
-				    text: i18n('logout'),
+				    text: _('logout'),
 				    iconCls: 'icoLogout',
 				    action:'logout'
 			    }
@@ -50533,7 +50533,7 @@ Ext.define('App.view.Viewport', {
 
 	    if(a('emergency_access')){
 		    me.userSplitBtn.menu.insert(0,{
-			    text:i18n('emergency_access'),
+			    text:_('emergency_access'),
 			    cls: 'emergency',
 			    iconCls:'icoUnlocked',
 			    scope:me,
@@ -50547,7 +50547,7 @@ Ext.define('App.view.Viewport', {
          * The panel definition for the the TreeMenu & the support button
          */
         me.navColumn = Ext.create('Ext.panel.Panel', {
-            title: i18n('navigation'),
+            title: _('navigation'),
             action: 'mainNavPanel',
             layout: 'border',
             region: g('main_navigation_menu_left'),
@@ -50570,7 +50570,7 @@ Ext.define('App.view.Viewport', {
 	                })
                 },
                 me.patientPoolArea = Ext.create('Ext.Panel', {
-                    title: i18n('patient_pool_areas'),
+                    title: _('patient_pool_areas'),
 //                    layout: 'fit',
                     region: 'south',
 	                action:'patientPoolArea',
@@ -50716,31 +50716,31 @@ Ext.define('App.view.Viewport', {
                         },
                         '->',
                         {
-                            text: i18n('news'),
+                            text: _('news'),
 	                        action: 'supportBtn',
 	                        src: 'http://GaiaEHR.org/projects/GaiaEHR001/news'
                         },
                         '-',
                         {
-                            text: i18n('wiki'),
+                            text: _('wiki'),
 	                        action: 'supportBtn',
 	                        src: 'http://gaiaehr.org/'
                         },
                         '-',
                         {
-                            text: i18n('issues'),
+                            text: _('issues'),
 	                        action: 'supportBtn',
                             src: 'http://gaiaehr.org:8181/issues/?jql='
                         },
                         '-',
                         {
-                            text: i18n('forums'),
+                            text: _('forums'),
 	                        action: 'supportBtn',
 	                        src: 'http://gaiaehr.org/forums/'
                         },
                         '-',
                         {
-                            text: '<span style="color: red">'+i18n('FACTORY RESET')+'</span>',
+                            text: '<span style="color: red">'+_('FACTORY RESET')+'</span>',
                             scope: me,
 	                        //TODO: VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 	                        //TODO: remove this!!! hide if not localhost for now
@@ -50796,7 +50796,7 @@ Ext.define('App.view.Viewport', {
 				// set user global facility value
 				app.user.facility = records[0].data.option_value;
 
-				me.msg(i18n('sweet'), i18n('facility') + ' ' + records[0].data.option_name);
+				me.msg(_('sweet'), _('facility') + ' ' + records[0].data.option_name);
 				me.setWindowTitle(records[0].data.option_name);
 				me.nav['App_view_areas_PatientPoolDropZone'].reRenderPoolAreas();
 				me.nav['App_view_areas_FloorPlan'].renderZones();
@@ -50868,7 +50868,7 @@ Ext.define('App.view.Viewport', {
         if(panel.id == 'panelSummary'){
             panel.demographics.completePhotoId();
         }
-        this.msg('Sweet!', i18n('patient_image_saved'));
+        this.msg('Sweet!', _('patient_image_saved'));
     },
 
 	onPatientLog: function(){
@@ -50902,8 +50902,8 @@ Ext.define('App.view.Viewport', {
 	        emergency;
 
         Ext.Msg.show({
-            title: i18n('wait') + '!!!',
-            msg: i18n('are_you_sure_you_want_to_create_a_new') + ' <span style="color: red">"' + i18n('emergency') + '"</span>?',
+            title: _('wait') + '!!!',
+            msg: _('are_you_sure_you_want_to_create_a_new') + ' <span style="color: red">"' + _('emergency') + '"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn: function(btn){
@@ -50915,7 +50915,7 @@ Ext.define('App.view.Viewport', {
                             me.setPatient(emergency.pid, emergency.eid, function(){
                                 me.openEncounter(emergency.eid);
                             });
-                            me.msg('Sweet!', emergency.name + ' ' + i18n('created'))
+                            me.msg('Sweet!', emergency.name + ' ' + _('created'))
                         }
                     });
                 }
@@ -50927,8 +50927,8 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 
 		Ext.Msg.show({
-			title:i18n('wait'),
-			msg: i18n('emergency_access_question') + '<br>' + i18n('emergency_access_disclaimer'),
+			title:_('wait'),
+			msg: _('emergency_access_question') + '<br>' + _('emergency_access_disclaimer'),
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -50943,7 +50943,7 @@ Ext.define('App.view.Viewport', {
 				window.location = './';
 				return;
 			}
-			Ext.Msg.alert(i18n('oops'), i18n('emergency_access_error'));
+			Ext.Msg.alert(_('oops'), _('emergency_access_error'));
 		});
 	},
 
@@ -51096,10 +51096,10 @@ Ext.define('App.view.Viewport', {
                 msg2;
 
             if(data.readOnly){
-                msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
-                msg2 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>';
+                msg1 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') + '.<br>' + _('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + _('do_you_would_like_to_override_read_mode');
+                msg2 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') + '.<br>';
                 Ext.Msg.show({
-                        title: i18n('wait') + '!!!',
+                        title: _('wait') + '!!!',
                         msg: data.overrideReadOnly ? msg1 : msg2,
                         buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
                         icon: Ext.MessageBox.WARNING,
@@ -51188,7 +51188,7 @@ Ext.define('App.view.Viewport', {
         me.patientBtn.update({
             pid: patient.pid || 'record number',
 	        pic: patient.pic || me.patientImage,
-            name: patient.name || i18n('no_patient_selected')
+            name: patient.name || _('no_patient_selected')
         });
 
 	    me.patientButtonRemoveCls();
@@ -51263,7 +51263,7 @@ Ext.define('App.view.Viewport', {
                     if(sourceEl){
 	                    msgDiv = document.createElement('div');
 	                    msgDiv.id = Ext.id();
-	                    msgDiv.innerHTML = i18n('drag_patient_to_new_area');
+	                    msgDiv.innerHTML = _('drag_patient_to_new_area');
 
 	                    return panel.dragData = {
                             copy: true,
@@ -51341,7 +51341,7 @@ Ext.define('App.view.Viewport', {
                         this.ddGroup = 'patientPoolAreas';
                     }else{
                         this.ddGroup = 'patient';
-                        app.MainPanel.el.mask(i18n('drop_here_to_open') + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + i18n('current_encounter'));
+                        app.MainPanel.el.mask(_('drop_here_to_open') + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + _('current_encounter'));
                     }
                     this.addToGroup(this.ddGroup);
                     this.newGroupReset = false;
@@ -51426,11 +51426,11 @@ Ext.define('App.view.Viewport', {
                 app.MainPanel.el.unmask();
 
 	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
-//		            me.VisitCheckout.el.mask(i18n('loading...'));
+//		            me.VisitCheckout.el.mask(_('loading...'));
 	            }else if(data.patientData.eid && a('access_encounters')){
-//		            me.Encounter.el.mask(i18n('loading...'));
+//		            me.Encounter.el.mask(_('loading...'));
 	            }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
-//		            me.Summary.el.mask(i18n('loading...'));
+//		            me.Summary.el.mask(_('loading...'));
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
@@ -51480,7 +51480,7 @@ Ext.define('App.view.Viewport', {
 	            try{
 		            App.app.getController('Modules.' + modules[i].dir + '.Main');
 	            }catch(error){
-					app.msg(i18n('oops'), (i18n('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
+					app.msg(_('oops'), (_('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
 	            }
             }
 
@@ -51525,7 +51525,7 @@ Ext.define('App.view.Viewport', {
     accessDenied: function(){
         Ext.Msg.show({
             title: 'Oops!',
-            msg: i18n('access_denied'),
+            msg: _('access_denied'),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR
         });

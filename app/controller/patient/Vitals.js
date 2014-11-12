@@ -168,7 +168,7 @@ Ext.define('App.controller.patient.Vitals', {
 
 		if(selected > 0 && record.data.auth_uid > 0){
 			say('entre false');
-			app.msg(i18n('oops'),i18n('multi_select_signed_records_not_authorized'), true);
+			app.msg(_('oops'),_('multi_select_signed_records_not_authorized'), true);
 			return false;
 		}
 
@@ -194,7 +194,7 @@ Ext.define('App.controller.patient.Vitals', {
 
 	onHistoryGridBeforeEdit: function(plugin, context){
 		if(context.record.data.auth_uid != 0){
-			app.msg(i18n('oops'), i18n('this_record_can_not_be_modified_because_it_has_been_signed_by') + ' ' + context.record.data.authorized_by, true);
+			app.msg(_('oops'), _('this_record_can_not_be_modified_because_it_has_been_signed_by') + ' ' + context.record.data.authorized_by, true);
 			return false;
 		}
 		return true;
@@ -234,7 +234,7 @@ Ext.define('App.controller.patient.Vitals', {
 						}
 						records[0].store.sync({
 							callback: function(){
-								app.msg('Sweet!', i18n('vitals_signed'));
+								app.msg('Sweet!', _('vitals_signed'));
 //								me.getProgressNote();
 								app.AuditLog('Patient vitals authorized');
 
@@ -244,7 +244,7 @@ Ext.define('App.controller.patient.Vitals', {
 					}else{
 						Ext.Msg.show({
 							title: 'Oops!',
-							msg: i18n('incorrect_password'),
+							msg: _('incorrect_password'),
 							buttons: Ext.Msg.OKCANCEL,
 							icon: Ext.Msg.ERROR,
 							fn: function(btn){
@@ -300,50 +300,50 @@ Ext.define('App.controller.patient.Vitals', {
 
 		if(record !== false){
 			if(property == 'bp'){
-				title = i18n(property);
+				title = _(property);
 				value = (record.data.bp_systolic + '/' + record.data.bp_diastolic);
 				value = value == 'null/null' || value == '/' ? '--/--' : value;
-				extra = i18n('systolic') + '/' + i18n('diastolic');
+				extra = _('systolic') + '/' + _('diastolic');
 
 			}else if(property == 'temp_c' || property == 'temp_f'){
-				title = i18n('temp');
+				title = _('temp');
 				symbol = property == 'temp_c' ? '&deg;C' : '&deg;F';
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
 				extra = record.data.temp_location == '' ? '--' : record.data.temp_location;
 
 			}else if(property == 'weight_lbs' || property == 'weight_kg'){
-				title = i18n('weight');
+				title = _('weight');
 				//				symbol = property == 'weight_lbs' ? ' lbs' : ' kg';
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
 				extra = property == 'weight_lbs' ? 'lbs/oz' : 'Kg';
 
 			}else if(property == 'height_in' || property == 'height_cm'){
-				title = i18n('height');
+				title = _('height');
 				symbol = property == 'height_in' ? ' in' : ' cm';
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
 
 			}else if(property == 'bmi'){
-				title = i18n(property);
+				title = _(property);
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
 				extra = record.data.bmi_status == '' ? '--' : record.data.bmi_status;
 
 			}else if(property == 'other_notes'){
-				title = i18n('notes');
+				title = _('notes');
 				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
 				align = 'left'
 			}
 		}else{
 			if(property == 'temp_c' || property == 'temp_f'){
-				title = i18n('temp');
+				title = _('temp');
 			}else if(property == 'weight_lbs' || property == 'weight_kg'){
-				title = i18n('weight');
+				title = _('weight');
 			}else if(property == 'height_in' || property == 'height_cm'){
-				title = i18n('height');
+				title = _('height');
 			}else if(property == 'other_notes'){
-				title = i18n('notes');
+				title = _('notes');
 				align = 'left'
 			}else{
-				title = i18n(property);
+				title = _(property);
 			}
 			value = property == 'bp' ? '--/--' : '--';
 			extra = '--';
@@ -479,21 +479,21 @@ Ext.define('App.controller.patient.Vitals', {
 		var status = '';
 		if(bmi == '') return '';
 		if(bmi < 15){
-			status = i18n('very_severely_underweight')
+			status = _('very_severely_underweight')
 		}else if(bmi >= 15 && bmi < 16){
-			status = i18n('severely_underweight')
+			status = _('severely_underweight')
 		}else if(bmi >= 16 && bmi < 18.5){
-			status = i18n('underweight')
+			status = _('underweight')
 		}else if(bmi >= 18.5 && bmi < 25){
-			status = i18n('normal')
+			status = _('normal')
 		}else if(bmi >= 25 && bmi < 30){
-			status = i18n('overweight')
+			status = _('overweight')
 		}else if(bmi >= 30 && bmi < 35){
-			status = i18n('obese_class_1')
+			status = _('obese_class_1')
 		}else if(bmi >= 35 && bmi < 40){
-			status = i18n('obese_class_2')
+			status = _('obese_class_2')
 		}else if(bmi >= 40){
-			status = i18n('obese_class_3')
+			status = _('obese_class_3')
 		}
 		return status;
 	},

@@ -23,7 +23,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 		'Ext.grid.plugin.RowEditing',
 		'Ext.ux.SlidingPager'
 	],
-	title: i18n('specialties'),
+	title: _('specialties'),
 
 	initComponent: function(){
 		var me = this;
@@ -35,7 +35,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 			columns: [
 				{
 					width: 200,
-					text: i18n('title'),
+					text: _('title'),
 					dataIndex: 'title',
 					sortable: true,
 					flex: 1,
@@ -44,7 +44,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 					}
 				},
 				{
-					text: i18n('taxonomy'),
+					text: _('taxonomy'),
 					sortable: true,
 					dataIndex: 'taxonomy',
 					flex: 1,
@@ -53,7 +53,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 					}
 				},
 				{
-					text: i18n('modality'),
+					text: _('modality'),
 					sortable: true,
 					dataIndex: 'modality',
 					flex: 1,
@@ -62,7 +62,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 					}
 				},
 				{
-					text: i18n('active'),
+					text: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer,
@@ -81,7 +81,7 @@ Ext.define('App.view.administration.practice.Specialties', {
 				'->',
 				{
 					xtype: 'button',
-					text: i18n('specialty'),
+					text: _('specialty'),
 					iconCls: 'icoAdd',
 					itemId: 'specialitiesAddBtn'
 				}

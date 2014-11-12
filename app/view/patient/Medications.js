@@ -29,7 +29,7 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.LiveSigsSearch'
 	],
 	xtype: 'patientmedicationspanel',
-	title: i18n('medications'),
+	title: _('medications'),
 	layout: 'border',
 	border: false,
 	columnLines: true,
@@ -59,7 +59,7 @@ Ext.define('App.view.patient.Medications', {
 					]
 				},
 				{
-					header: i18n('medication'),
+					header: _('medication'),
 					flex: 1,
 					minWidth: 200,
 					dataIndex: 'STR',
@@ -72,7 +72,7 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 //				{
-//					header: i18n('dose'),
+//					header: _('dose'),
 //					width: 125,
 //					dataIndex: 'dose',
 //					sortable: false,
@@ -82,7 +82,7 @@ Ext.define('App.view.patient.Medications', {
 //					}
 //				},
 //				{
-//					header: i18n('route'),
+//					header: _('route'),
 //					width: 100,
 //					dataIndex: 'route',
 //					sortable: false,
@@ -92,7 +92,7 @@ Ext.define('App.view.patient.Medications', {
 //					}
 //				},
 //				{
-//					header: i18n('form'),
+//					header: _('form'),
 //					width: 125,
 //					dataIndex: 'form',
 //					sortable: false,
@@ -102,7 +102,7 @@ Ext.define('App.view.patient.Medications', {
 //					}
 //				},
 //				{
-//					header: i18n('instructions'),
+//					header: _('instructions'),
 //					width: 200,
 //					dataIndex: 'directions',
 //					sortable: false,
@@ -114,7 +114,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
-					header: i18n('begin_date'),
+					header: _('begin_date'),
 					width: 100,
 					dataIndex: 'begin_date',
 					sortable: false,
@@ -123,7 +123,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
-					header: i18n('end_date'),
+					header: _('end_date'),
 					width: 100,
 					dataIndex: 'end_date',
 					sortable: false,
@@ -134,7 +134,7 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 				{
-					header: i18n('active?'),
+					header: _('active?'),
 					width: 60,
 					dataIndex: 'active',
 					renderer: function(v){
@@ -150,7 +150,7 @@ Ext.define('App.view.patient.Medications', {
 			bbar: [
 				'->',
 				{
-					text: i18n('review'),
+					text: _('review'),
 					itemId: 'review_medications',
 					action: 'encounterRecordAdd'
 				}
@@ -158,7 +158,7 @@ Ext.define('App.view.patient.Medications', {
 		},
 		{
 			xtype: 'grid',
-			title: i18n('medication_list'),
+			title: _('medication_list'),
 			itemId: 'medicationsListGrid',
 			collapseMode: 'mini',
 			region: 'east',
@@ -181,7 +181,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					xtype: 'triggerfield',
 					triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
-					fieldLabel: i18n('search'),
+					fieldLabel: _('search'),
 					flex: 1,
 					labelWidth: 43
 				}
@@ -193,7 +193,7 @@ Ext.define('App.view.patient.Medications', {
 					sortable: false
 				},
 				{
-					text: i18n('medication'),
+					text: _('medication'),
 					dataIndex: 'STR',
 					flex: 1
 				}
@@ -203,7 +203,7 @@ Ext.define('App.view.patient.Medications', {
 	tbar: [
 		'->',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',
 			action: 'encounterRecordAdd',
 			iconCls: 'icoAdd'

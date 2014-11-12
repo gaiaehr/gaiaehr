@@ -24,7 +24,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 		'App.ux.grid.AreasDragDrop'
 	],
 
-	pageTitle: i18n('patient_pool_areas'),
+	pageTitle: _('patient_pool_areas'),
 
 	initComponent: function(){
 		var me = this;
@@ -59,7 +59,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 //		say(name);
 //		say(pid);
 
-		app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
+		app.msg('Sweet!', name + ' ' + _('sent_to') + ' ' + this.panel.title);
 
 		params = {
 			pid: pid,
@@ -116,12 +116,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					floorPlanId: areas[i].floor_plan_id,
 					columns: [
 						{
-							header: i18n('record') + ' #',
+							header: _('record') + ' #',
 							width: 100,
 							dataIndex: 'pid'
 						},
 						{
-							header: i18n('patient_name'),
+							header: _('patient_name'),
 							flex: 1,
 							dataIndex: 'name'
 						}

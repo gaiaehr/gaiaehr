@@ -23,7 +23,7 @@ Ext.define('App.view.patient.CCD', {
 		'App.ux.ManagedIframe'
 	],
 	xtype: 'patientccdpanel',
-	title: i18n('ccd'),
+	title: _('ccd'),
 	columnLines: true,
 	itemId: 'CcdPanel',
 	layout: 'fit',
@@ -38,13 +38,13 @@ Ext.define('App.view.patient.CCD', {
 	tbar: [
 		{
 			xtype: 'button',
-			text: i18n('view_ccr'),
+			text: _('view_ccr'),
 			margin: '0 0 5 0',
 			itemId: 'viewCcdBtn'
 		},
 		'-',
 		{
-			text: i18n('export_ccr'),
+			text: _('export_ccr'),
 			margin: '0 0 5 0',
 			itemId: 'exportCcdBtn'
 		},
@@ -57,7 +57,7 @@ Ext.define('App.view.patient.CCD', {
 					xtype: 'patientEncounterCombo',
 					name: 'filterEncounter',
 					margin: 5,
-					fieldLabel: i18n('filter_encounter'),
+					fieldLabel: _('filter_encounter'),
 					hideLabel: false
 				}
 			]

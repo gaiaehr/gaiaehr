@@ -23,7 +23,7 @@ Ext.define('App.view.administration.HL7', {
 		'Ext.grid.plugin.RowEditing'
 	],
 	xtype: 'hl7serverspanel',
-	pageTitle: i18n('hl7'),
+	pageTitle: _('hl7'),
 	pageLayout: {
 		type: 'vbox',
 		align: 'stretch'
@@ -31,7 +31,7 @@ Ext.define('App.view.administration.HL7', {
 	pageBody: [
 		{
 			xtype: 'grid',
-			title: i18n('hl7_servers'),
+			title: _('hl7_servers'),
 			store: this.sStore = Ext.create('App.store.administration.HL7Servers'),
 			itemId: 'hl7serversgrid',
 			flex: 1,
@@ -41,7 +41,7 @@ Ext.define('App.view.administration.HL7', {
 			padding: 0,
 			columns: [
 				{
-					text: i18n('online'),
+					text: _('online'),
 					dataIndex: 'online',
 					width: 50,
 					renderer: function(v){
@@ -49,27 +49,27 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('server_name'),
+					text: _('server_name'),
 					dataIndex: 'server_name',
 					width: 150
 				},
 				{
-					text: i18n('server_ip'),
+					text: _('server_ip'),
 					dataIndex: 'ip',
 					width: 110
 				},
 				{
-					text: i18n('port'),
+					text: _('port'),
 					dataIndex: 'port',
 					width: 70
 				},
 				{
-					text: i18n('allowed_messages'),
+					text: _('allowed_messages'),
 					dataIndex: 'allow_messages_string',
 					flex: 1
 				},
 				{
-					text: i18n('allowed_ips'),
+					text: _('allowed_ips'),
 					dataIndex: 'allow_ips_string',
 					flex: 1
 				},
@@ -79,7 +79,7 @@ Ext.define('App.view.administration.HL7', {
 					items: [
 						{
 							icon: 'resources/images/icons/icoDotGreen.png',
-							tooltip: i18n('start'),
+							tooltip: _('start'),
 							margin: '0 5 0 0',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.Current.getController('administration.HL7').serverStartHandler(record);
@@ -87,7 +87,7 @@ Ext.define('App.view.administration.HL7', {
 						},
 						{
 							icon: 'resources/images/icons/icoDotRed.png',
-							tooltip: i18n('stop'),
+							tooltip: _('stop'),
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.Current.getController('administration.HL7').serverStopHandler(record);
 							}
@@ -100,7 +100,7 @@ Ext.define('App.view.administration.HL7', {
 				//					items:[
 				//						{
 				//							xtype:'button',
-				//							text: i18n('start'),
+				//							text: _('start'),
 				//							width: 50,
 				//							margin: '0 5 0 0',
 				//							handler: function(record){
@@ -109,7 +109,7 @@ Ext.define('App.view.administration.HL7', {
 				//						},
 				//						{
 				//							xtype:'button',
-				//							text: i18n('stop'),
+				//							text: _('stop'),
 				//							width: 50,
 				//							handler: function(record){
 				//								App.Current.getController('administration.HL7').serverStopHandler(record);
@@ -132,25 +132,25 @@ Ext.define('App.view.administration.HL7', {
 								{
 									xtype: 'fieldset',
 									layout: 'anchor',
-									title: i18n('general'),
+									title: _('general'),
 									width: 300,
 									margin: '0 5 0 0',
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('server_name'),
+											fieldLabel: _('server_name'),
 											name: 'server_name',
 											anchor: '100%'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('ip'),
+											fieldLabel: _('ip'),
 											name: 'ip',
 											anchor: '100%'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('port'),
+											fieldLabel: _('port'),
 											name: 'port',
 											anchor: '100%'
 										}
@@ -159,7 +159,7 @@ Ext.define('App.view.administration.HL7', {
 								{
 									xtype: 'fieldset',
 									layout: 'anchor',
-									title: i18n('allow_ips'),
+									title: _('allow_ips'),
 									width: 200,
 									margin: '0 5 0 0',
 									items: [
@@ -172,7 +172,7 @@ Ext.define('App.view.administration.HL7', {
 								},
 								{
 									xtype: 'fieldset',
-									title: i18n('messages'),
+									title: _('messages'),
 									layout: 'fit',
 									flex: 1,
 									items: [
@@ -288,13 +288,13 @@ Ext.define('App.view.administration.HL7', {
 				items: [
 					'-',
 					{
-						text: i18n('add_server'),
+						text: _('add_server'),
 						iconCls: 'icoAdd',
 						itemId: 'addHL7ServerBtn'
 					},
 					'-',
 					{
-						text: i18n('remove_server'),
+						text: _('remove_server'),
 						iconCls: 'icoDelete',
 						itemId: 'removeHL7ServerBtn',
 						disabled: true
@@ -305,7 +305,7 @@ Ext.define('App.view.administration.HL7', {
 		},
 		{
 			xtype: 'grid',
-			title: i18n('hl7_clients'),
+			title: _('hl7_clients'),
 			store: this.cStore = Ext.create('App.store.administration.HL7Clients'),
 			itemId: 'hl7clientsgrid',
 			flex: 1,
@@ -314,7 +314,7 @@ Ext.define('App.view.administration.HL7', {
 			padding: 0,
 			columns: [
 				{
-					text: i18n('active'),
+					text: _('active'),
 					dataIndex: 'active',
 					width: 50,
 					renderer: function(v){
@@ -325,7 +325,7 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('facility'),
+					text: _('facility'),
 					dataIndex: 'facility',
 					flex: 1,
 					editor: {
@@ -333,7 +333,7 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('application_name'),
+					text: _('application_name'),
 					dataIndex: 'application_name',
 					flex: 1,
 					editor: {
@@ -341,7 +341,7 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('physical_address'),
+					text: _('physical_address'),
 					dataIndex: 'physical_address',
 					flex: 1,
 					editor: {
@@ -349,7 +349,7 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('url_ip_or_domain'),
+					text: _('url_ip_or_domain'),
 					dataIndex: 'address',
 					flex: 1,
 					editor: {
@@ -357,7 +357,7 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('port'),
+					text: _('port'),
 					dataIndex: 'port',
 					width: 70,
 					editor: {
@@ -365,7 +365,7 @@ Ext.define('App.view.administration.HL7', {
 					}
 				},
 				{
-					text: i18n('secret_key'),
+					text: _('secret_key'),
 					dataIndex: 'secret_key',
 					width: 200,
 					editor: {
@@ -387,13 +387,13 @@ Ext.define('App.view.administration.HL7', {
 				items: [
 					'-',
 					{
-						text: i18n('add_client'),
+						text: _('add_client'),
 						iconCls: 'icoAdd',
 						itemId: 'addHL7ClientBtn'
 					},
 					'-',
 					{
-						text: i18n('remove_client'),
+						text: _('remove_client'),
 						iconCls: 'icoDelete',
 						itemId: 'removeHL7ClientBtn',
 						disabled: true

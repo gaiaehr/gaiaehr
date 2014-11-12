@@ -38,17 +38,17 @@ Ext.define('App.view.patient.SocialHistory', {
 	features: [
 		{
 			ftype: 'grouping',
-			groupHeaderTpl: i18n('type') + ': {name}'
+			groupHeaderTpl: _('type') + ': {name}'
 		}
 	],
 	columns: [
 		{
-			text: i18n('type'),
+			text: _('type'),
 			dataIndex: 'category_code_text',
 			width: 250
 		},
 		{
-			text: i18n('observation'),
+			text: _('observation'),
 			dataIndex: 'observation',
 			flex: 1,
 			itemId: 'socialhistorypanelobservationcolumn',
@@ -58,7 +58,7 @@ Ext.define('App.view.patient.SocialHistory', {
 			}
 		},
 		{
-			text: i18n('note'),
+			text: _('note'),
 			dataIndex: 'note',
 			flex: 1,
 			editor: {
@@ -67,7 +67,7 @@ Ext.define('App.view.patient.SocialHistory', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('start'),
+			text: _('start'),
 			dataIndex: 'start_date',
 			format: 'Y-m-d',
 			width: 120,
@@ -79,7 +79,7 @@ Ext.define('App.view.patient.SocialHistory', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('end'),
+			text: _('end'),
 			dataIndex: 'end_date',
 			format: 'Y-m-d',
 			width: 120,
@@ -92,7 +92,7 @@ Ext.define('App.view.patient.SocialHistory', {
 	tbar: [
 		{
 			xtype: 'tbtext',
-			text: i18n('social_history'),
+			text: _('social_history'),
 			width: 100
 		},
 		{

@@ -56,7 +56,7 @@ Ext.define('App.ux.combo.ActiveInsurances', {
 			editable: false,
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent();

@@ -80,7 +80,7 @@ Ext.define('App.controller.ScriptCam', {
 			buttons: [
 				'->',
 				{
-					text: i18n('capture_img'),
+					text: _('capture_img'),
 					action: 'onCaptureImage'
 				}
 			],

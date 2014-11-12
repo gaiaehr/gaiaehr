@@ -28,11 +28,13 @@ Ext.define('App.model.patient.EncounterService', {
 		},
 		{
 			name: 'pid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'eid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'code',

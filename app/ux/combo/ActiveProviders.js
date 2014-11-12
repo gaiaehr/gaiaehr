@@ -4,7 +4,7 @@ Ext.define('App.ux.combo.ActiveProviders', {
 	displayField: 'option_name',
 	valueField: 'option_value',
 	editable: false,
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	initComponent: function(){
 		var me = this;
 
@@ -36,7 +36,7 @@ Ext.define('App.ux.combo.ActiveProviders', {
 //		Ext.apply(this, {
 //			editable: false,
 //			queryMode: 'local',
-//			emptyText: i18n('select'),
+//			emptyText: _('select'),
 //			store: me.store
 //		});
 		me.callParent(arguments);

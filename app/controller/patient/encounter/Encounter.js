@@ -44,7 +44,7 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		container.insert((container.items.indexOf(cmb) + 1), {
 			xtype: 'activespecialtiescombo',
 			itemId: 'EncounterSpecialtyCmb',
-			fieldLabel: i18n('specialty'),
+			fieldLabel: _('specialty'),
 			labelWidth: cmb.labelWidth,
 			width: cmb.width,
 			name: 'specialty_id',

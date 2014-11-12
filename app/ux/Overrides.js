@@ -477,13 +477,13 @@ Ext.override(Ext.container.Container, {
 
 	patientInfoAlert: function(){
         var patient = app.getCurrPatient();
-        Ext.Msg.alert(i18n('status'), i18n('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
+        Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
     },
 
 	currPatientError: function(msg){
         Ext.Msg.show({
-            title: 'Oops! ' + i18n('no_patient_selected'),
-            msg: Ext.isString(msg) ? msg : i18n('select_patient_patient_live_search'),
+            title: 'Oops! ' + _('no_patient_selected'),
+            msg: Ext.isString(msg) ? msg : _('select_patient_patient_live_search'),
             scope: this,
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR,
@@ -555,7 +555,7 @@ Ext.override(Ext.container.Container, {
     },
 
     passwordVerificationWin: function(callback){
-        var msg = Ext.Msg.prompt(i18n('password_verification'), i18n('please_enter_your_password') + ':', function(btn, password){
+        var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password){
             callback(btn, password);
         });
         var f = msg.textField.getInputId();

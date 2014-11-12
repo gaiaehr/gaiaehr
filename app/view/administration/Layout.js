@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Layout', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLayout',
-    pageTitle: i18n('layout_form_editor'),
+    pageTitle: _('layout_form_editor'),
     pageLayout: 'border',
     initComponent: function(){
         var me = this;
@@ -70,13 +70,13 @@ Ext.define('App.view.administration.Layout', {
             collapsed: true,
             columns: [
                 {
-                    text: i18n('name'),
+                    text: _('name'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'option_name'
                 },
                 {
-                    text: i18n('value'),
+                    text: _('value'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'option_value'
@@ -100,7 +100,7 @@ Ext.define('App.view.administration.Layout', {
             },
             items: [
                 {
-                    fieldLabel: i18n('type'),
+                    fieldLabel: _('type'),
                     xtype: 'combo',
                     name: 'xtype',
                     displayField: 'name',
@@ -117,7 +117,7 @@ Ext.define('App.view.administration.Layout', {
                     }
                 },
                 {
-                    fieldLabel: i18n('child_of'),
+                    fieldLabel: _('child_of'),
                     xtype: 'combo',
                     name: 'parentId',
                     displayField: 'name',
@@ -138,14 +138,14 @@ Ext.define('App.view.administration.Layout', {
                 {
                     xtype: 'fieldset',
                     itemId: 'aditionalProperties',
-                    title: i18n('aditional_properties'),
+                    title: _('aditional_properties'),
                     margin: '0 5 5 5',
                     defaults: {
                         anchor: '100%'
                     },
                     items: [
                         {
-                            fieldLabel: i18n('title'),
+                            fieldLabel: _('title'),
                             xtype: 'textfield',
                             name: 'title',
                             itemId: 'title',
@@ -153,14 +153,14 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('field_label'),
+                            fieldLabel: _('field_label'),
                             xtype: 'textfield',
                             name: 'fieldLabel',
                             itemId: 'fieldLabel',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('box_label'),
+                            fieldLabel: _('box_label'),
                             xtype: 'textfield',
                             name: 'boxLabel',
                             itemId: 'boxLabel',
@@ -168,35 +168,35 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('label_width'),
+                            fieldLabel: _('label_width'),
                             xtype: 'textfield',
                             name: 'labelWidth',
                             itemId: 'labelWidth',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('hide_label'),
+                            fieldLabel: _('hide_label'),
                             xtype: 'checkbox',
                             name: 'hideLabel',
                             itemId: 'hideLabel',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('empty_text'),
+                            fieldLabel: _('empty_text'),
                             xtype: 'textfield',
                             name: 'emptyText',
                             itemId: 'emptyText',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('layout'),
+                            fieldLabel: _('layout'),
                             xtype: 'textfield',
                             name: 'layout',
                             itemId: 'layout',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('name'),
+                            fieldLabel: _('name'),
                             xtype: 'textfield',
                             name: 'name',
                             itemId: 'name',
@@ -208,14 +208,14 @@ Ext.define('App.view.administration.Layout', {
 	                        }
                         },
                         {
-                            fieldLabel: i18n('input_value'),
+                            fieldLabel: _('input_value'),
                             xtype: 'textfield',
                             name: 'inputValue',
                             itemId: 'inputValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('width'),
+                            fieldLabel: _('width'),
                             xtype: 'textfield',
                             name: 'width',
                             itemId: 'width',
@@ -223,7 +223,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('height'),
+                            fieldLabel: _('height'),
                             xtype: 'textfield',
                             name: 'height',
                             itemId: 'height',
@@ -231,7 +231,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('anchor'),
+                            fieldLabel: _('anchor'),
                             xtype: 'textfield',
                             name: 'anchor',
                             itemId: 'anchor',
@@ -239,35 +239,35 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('flex'),
+                            fieldLabel: _('flex'),
                             xtype: 'checkbox',
                             name: 'flex',
                             itemId: 'flex',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('collapsible'),
+                            fieldLabel: _('collapsible'),
                             xtype: 'checkbox',
                             name: 'collapsible',
                             itemId: 'collapsible',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('checkbox_toggle'),
+                            fieldLabel: _('checkbox_toggle'),
                             xtype: 'checkbox',
                             name: 'checkboxToggle',
                             itemId: 'checkboxToggle',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('collapsed'),
+                            fieldLabel: _('collapsed'),
                             xtype: 'checkbox',
                             name: 'collapsed',
                             itemId: 'collapsed',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('margin'),
+                            fieldLabel: _('margin'),
                             xtype: 'textfield',
                             name: 'margin',
                             itemId: 'margin',
@@ -275,7 +275,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('column_width'),
+                            fieldLabel: _('column_width'),
                             xtype: 'textfield',
                             name: 'columnWidth',
                             itemId: 'columnWidth',
@@ -283,14 +283,14 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('is_required'),
+                            fieldLabel: _('is_required'),
                             xtype: 'checkbox',
                             name: 'allowBlank',
                             itemId: 'allowBlank',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('min_length'),
+                            fieldLabel: _('min_length'),
                             xtype: 'numberfield',
                             name: 'minLength',
                             itemId: 'minLength',
@@ -298,7 +298,7 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('max_length'),
+                            fieldLabel: _('max_length'),
                             xtype: 'numberfield',
                             name: 'maxLength',
                             itemId: 'maxLength',
@@ -306,70 +306,70 @@ Ext.define('App.view.administration.Layout', {
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('value'),
+                            fieldLabel: _('value'),
                             xtype: 'textfield',
                             name: 'value',
                             itemId: 'value',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('max_value'),
+                            fieldLabel: _('max_value'),
                             xtype: 'textfield',
                             name: 'maxValue',
                             itemId: 'maxValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('min_value'),
+                            fieldLabel: _('min_value'),
                             xtype: 'textfield',
                             name: 'minValue',
                             itemId: 'minValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('max_value'),
+                            fieldLabel: _('max_value'),
                             xtype: 'timefield',
                             name: 'maxValue',
                             itemId: 'timeMaxValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('min_value'),
+                            fieldLabel: _('min_value'),
                             xtype: 'timefield',
                             name: 'minValue',
                             itemId: 'timeMinValue',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('grow'),
+                            fieldLabel: _('grow'),
                             xtype: 'checkbox',
                             name: 'grow',
                             itemId: 'grow',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('grow_min'),
+                            fieldLabel: _('grow_min'),
                             xtype: 'textfield',
                             name: 'growMin',
                             itemId: 'growMin',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('grow_max'),
+                            fieldLabel: _('grow_max'),
                             xtype: 'textfield',
                             name: 'growMax',
                             itemId: 'growMax',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('increment'),
+                            fieldLabel: _('increment'),
                             xtype: 'textfield',
                             name: 'increment',
                             itemId: 'increment',
                             hidden: true
                         },
                         {
-                            fieldLabel: i18n('list_options'),
+                            fieldLabel: _('list_options'),
                             xtype: 'mitos.listscombo',
                             name: 'list_id',
                             itemId: 'list_id',
@@ -381,7 +381,7 @@ Ext.define('App.view.administration.Layout', {
                             }
                         },
 	                    {
-		                    fieldLabel: i18n('code'),
+		                    fieldLabel: _('code'),
 		                    xtype: 'textfield',
 		                    name: 'code',
 		                    itemId: 'code',
@@ -389,7 +389,7 @@ Ext.define('App.view.administration.Layout', {
 		                    hidden: true
 	                    },
 	                    {
-		                    fieldLabel: i18n('item_id'),
+		                    fieldLabel: _('item_id'),
 		                    xtype: 'textfield',
 		                    name: 'itemId',
 		                    itemId: 'itemId',
@@ -397,7 +397,7 @@ Ext.define('App.view.administration.Layout', {
 		                    hidden: true
 	                    },
 	                    {
-		                    fieldLabel: i18n('action'),
+		                    fieldLabel: _('action'),
 		                    xtype: 'textfield',
 		                    name: 'action',
 		                    itemId: 'action',
@@ -415,7 +415,7 @@ Ext.define('App.view.administration.Layout', {
          * the field xtype is a combobox
          */
         me.formContainer = Ext.create('Ext.panel.Panel', {
-            title: i18n('field_configuration'),
+            title: _('field_configuration'),
             border: true,
             split: true,
             width: 390,
@@ -431,19 +431,19 @@ Ext.define('App.view.administration.Layout', {
             ],
             buttons:[
                 {
-                    text: i18n('delete'),
+                    text: _('delete'),
                     iconCls: 'icoDeleteBlack',
                     scope: me,
                     handler: me.onFieldDelete
                 },
                 {
-                    text: i18n('reset'),
+                    text: _('reset'),
                     iconCls: 'icoReload',
                     scope: me,
                     handler: me.onFormReset
                 },
                 {
-                    text: i18n('save'),
+                    text: _('save'),
                     iconCls: 'save',
                     scope: me,
                     handler: me.onFieldSave
@@ -455,14 +455,14 @@ Ext.define('App.view.administration.Layout', {
                     items: [
                         '->',
                         {
-                            text: i18n('add_new'),
+                            text: _('add_new'),
                             iconCls: 'icoAddRecord',
                             scope: me,
                             handler: me.onFormReset
                         },
                         '-',
                         {
-                            text: i18n('add_child'),
+                            text: _('add_child'),
                             iconCls: 'icoAddRecord',
                             itemId: 'addChild',
                             disabled: true,
@@ -471,7 +471,7 @@ Ext.define('App.view.administration.Layout', {
                         },
                         '-',
                         {
-                            text: i18n('form_preview'),
+                            text: _('form_preview'),
                             iconCls: 'icoPreview',
                             enableToggle: true,
                             listeners: {
@@ -493,7 +493,7 @@ Ext.define('App.view.administration.Layout', {
             border: true,
             sortable: false,
             rootVisible: false,
-            title: i18n('field_editor_demographics'),
+            title: _('field_editor_demographics'),
             viewConfig: {
                 plugins: {
                     ptype: 'treeviewdragdrop',
@@ -509,21 +509,21 @@ Ext.define('App.view.administration.Layout', {
             columns: [
                 {
                     xtype: 'treecolumn',
-                    text: i18n('field_type'),
+                    text: _('field_type'),
                     sortable: false,
                     dataIndex: 'xtype',
                     width: 200,
                     align: 'left'
                 },
                 {
-                    text: i18n('title'),
+                    text: _('title'),
                     sortable: false,
                     dataIndex: 'title',
                     width: 100,
                     align: 'left'
                 },
                 {
-                    text: i18n('label'),
+                    text: _('label'),
                     sortable: false,
                     dataIndex: 'fieldLabel',
                     flex: 1,
@@ -542,7 +542,7 @@ Ext.define('App.view.administration.Layout', {
          * forms, just to modified the fields of existing forms.
          */
         me.formsGrid = Ext.create('Ext.grid.Panel', {
-            title: i18n('form_list'),
+            title: _('form_list'),
             region: 'west',
             store: me.formsGridStore,
             width: 200,
@@ -640,7 +640,7 @@ Ext.define('App.view.administration.Layout', {
 	               }
 
 	               me.fieldsGrid.getSelectionModel().select(record);
-                   me.msg('Sweet!', i18n('record_saved'));
+                   me.msg('Sweet!', _('record_saved'));
                },
                failure:function(batch){
 
@@ -663,14 +663,14 @@ Ext.define('App.view.administration.Layout', {
 		say(record.childNodes);
 
 		if(record.childNodes.length > 0){
-			me.msg(i18n('oops'), i18n('children_fields_must_be_remove_first'), true);
+			me.msg(_('oops'), _('children_fields_must_be_remove_first'), true);
 			return;
 		}
 
 		Ext.Msg.show({
-			title: i18n('please_confirm') + '...',
+			title: _('please_confirm') + '...',
 			icon: Ext.MessageBox.QUESTION,
-			msg: i18n('delete_this_field'),
+			msg: _('delete_this_field'),
 			buttons: Ext.Msg.YESNO,
 			scope: this,
 			fn: function(btn){
@@ -679,7 +679,7 @@ Ext.define('App.view.administration.Layout', {
 					me.fieldsGridStore.sync({
 						success:function(){
 							me.previewFormRender();
-							me.msg('Sweet!', i18n('record_removed'));
+							me.msg('Sweet!', _('record_removed'));
 						},
 						failure:function(batch){
 							me.msg('Oops!', batch.proxy.reader.rawData.message, true);
@@ -820,7 +820,7 @@ Ext.define('App.view.administration.Layout', {
         var me = this;
 
         me.currForm = record.get('id');
-        me.fieldsGrid.setTitle(i18n('field_editor') + ' (' + record.get('name') + ')');
+        me.fieldsGrid.setTitle(_('field_editor') + ' (' + record.get('name') + ')');
         me.loadFieldsGrid();
         me.onFormReset();
     },
@@ -864,7 +864,7 @@ Ext.define('App.view.administration.Layout', {
         var me = this;
 
         if(value == 'combobox'){
-            me.selectListGrid.setTitle(i18n('select_list_options'));
+            me.selectListGrid.setTitle(_('select_list_options'));
             me.selectListGrid.expand();
             me.selectListGrid.enable();
         }else{

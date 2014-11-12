@@ -3,7 +3,7 @@ Ext.define('App.ux.combo.Combo', {
 	alias: 'widget.gaiaehr.combo',
 	displayField: 'option_name',
 	valueField: 'option_value',
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	forceSelection: false,
 
 	/**

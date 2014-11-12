@@ -55,17 +55,17 @@ Ext.define('App.controller.DocumentViewer', {
 
 				if(response.result.success){
 					if(dual){
-						dual.msg(i18n('sweet'), 'document_transferred');
+						dual.msg(_('sweet'), 'document_transferred');
 					}else{
-						app.msg(i18n('sweet'), 'document_transferred');
+						app.msg(_('sweet'), 'document_transferred');
 					}
 					win.documentWindow.close();
 					win.close();
 				}else{
 					if(dual){
-						dual.msg(i18n('oops'), 'document_transfer_failed', true);
+						dual.msg(_('oops'), 'document_transfer_failed', true);
 					}else{
-						app.msg(i18n('oops'), 'document_transfer_failed', true);
+						app.msg(_('oops'), 'document_transfer_failed', true);
 					}
 				}
 			});
@@ -77,7 +77,7 @@ Ext.define('App.controller.DocumentViewer', {
 			values = {
 				id: win.documentId,
 				docType: win.documentType,
-				title: win.documentType +  ' ' + i18n('order')
+				title: win.documentType +  ' ' + _('order')
 			};
 		var archive = Ext.widget('patientarchivedocumentwindow',{
 			documentWindow: win

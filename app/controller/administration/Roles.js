@@ -76,12 +76,12 @@ Ext.define('App.controller.administration.Roles', {
 			store = this.getAdministrationRoleGrid().getStore();
 
 		if(store.getUpdatedRecords().length > 0){
-			me.getAdministrationRoleGrid().el.mask(i18n('saving'));
+			me.getAdministrationRoleGrid().el.mask(_('saving'));
 		}
 
 		store.sync({
 			callback: function(response){
-				app.msg(i18n('sweet'), i18n('record_saved'));
+				app.msg(_('sweet'), _('record_saved'));
 				me.getAdministrationRoleGrid().el.unmask();
 			}
 		});
@@ -175,7 +175,7 @@ Ext.define('App.controller.administration.Roles', {
 			values = form.getValues();
 
 		if(form.isValid()){
-			panel.el.mask(i18n('be_right_back'));
+			panel.el.mask(_('be_right_back'));
 			record.set(values);
 			record.save({
 				callback: function(rec){
@@ -195,7 +195,7 @@ Ext.define('App.controller.administration.Roles', {
 		var me = this;
 
 		me.roleWindow = Ext.widget('window', {
-			title: i18n('new_role'),
+			title: _('new_role'),
 			items: [
 				{
 					xtype: 'form',
@@ -204,13 +204,13 @@ Ext.define('App.controller.administration.Roles', {
 					items: [
 						{
 							xtype: 'textfield',
-							fieldLabel: i18n('role_name'),
+							fieldLabel: _('role_name'),
 							name: 'role_name',
 							allowBlank: false
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							name: 'active'
 						}
 					]
@@ -218,14 +218,14 @@ Ext.define('App.controller.administration.Roles', {
 			],
 			buttons: [
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					cls: 'cancelBtn',
 					scope: me,
 					handler: me.doCancelRole,
 					action: 'adminAclRoleCancel'
 				},
 				{
-					text: i18n('save'),
+					text: _('save'),
 					cls: 'saveBtn',
 					scope: me,
 					handler: me.doSaveRole,

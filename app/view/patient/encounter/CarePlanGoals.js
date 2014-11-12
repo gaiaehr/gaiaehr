@@ -27,21 +27,21 @@ Ext.define('App.view.patient.encounter.CarePlanGoals', {
 	frame: true,
 	columns: [
 		{
-			text: i18n('goal'),
+			text: _('goal'),
 			dataIndex: 'goal',
 			width: 200
 		},
 		{
-			text: i18n('instructions'),
+			text: _('instructions'),
 			dataIndex: 'instructions',
 			flex: 1
 		}
 	],
 	tbar: [
-		i18n('care_plan_goals'),
+		_('care_plan_goals'),
 		'->',
 		{
-			text: i18n('new_goal'),
+			text: _('new_goal'),
 			iconCls: 'icoAdd',
 			itemId: 'NewCarePlanGoalBtn'
 		}

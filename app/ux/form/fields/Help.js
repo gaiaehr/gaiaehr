@@ -12,7 +12,7 @@ Ext.define('App.ux.form.fields.Help', {
     height       : 16,
     width        : 16,
     margin       : '3 10',
-    helpMsg      : i18n('help_message'),
+    helpMsg      : _('help_message'),
     initComponent: function() {
         var me = this;
         me.listeners = {

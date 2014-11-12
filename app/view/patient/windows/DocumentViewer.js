@@ -19,7 +19,7 @@
 Ext.define('App.view.patient.windows.DocumentViewer', {
 	extend: 'Ext.window.Window',
 	xtype: 'documentviewerwindow',
-	title: i18n('documents_viewer_window'),
+	title: _('documents_viewer_window'),
 	layout: 'fit',
 	height: 700,
 	width: 1000,
@@ -31,7 +31,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 	tbar: [
 		'->',
 		{
-			text: i18n('archive_document'),
+			text: _('archive_document'),
 			itemId: 'archiveDocumentBtn',
 			icon: 'resources/images/icons/save.png'
 		}

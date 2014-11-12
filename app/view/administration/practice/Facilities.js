@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.practice.Facilities', {
 	extend: 'Ext.grid.Panel',
 	xtype: 'facilitiespanel',
-	title: i18n('facilities'),
+	title: _('facilities'),
 
 	initComponent: function(){
 		var me = this;
@@ -28,25 +28,25 @@ Ext.define('App.view.administration.practice.Facilities', {
 			store: me.store = Ext.create('App.store.administration.Facility'),
 			columns: [
 				{
-					text: i18n('name'),
+					text: _('name'),
 					flex: 1,
 					sortable: true,
 					dataIndex: 'name'
 				},
 				{
-					text: i18n('phone'),
+					text: _('phone'),
 					width: 100,
 					sortable: true,
 					dataIndex: 'phone'
 				},
 				{
-					text: i18n('fax'),
+					text: _('fax'),
 					width: 100,
 					sortable: true,
 					dataIndex: 'fax'
 				},
 				{
-					text: i18n('city'),
+					text: _('city'),
 					width: 100,
 					sortable: true,
 					dataIndex: 'city'
@@ -74,36 +74,36 @@ Ext.define('App.view.administration.practice.Facilities', {
 								},
 								items: [
 									{
-										fieldLabel: i18n('name'),
+										fieldLabel: _('name'),
 										name: 'name',
 										allowBlank: false
 									},
 									{
-										fieldLabel: i18n('phone'),
+										fieldLabel: _('phone'),
 										name: 'phone'
 									},
 									{
-										fieldLabel: i18n('fax'),
+										fieldLabel: _('fax'),
 										name: 'fax'
 									},
 									{
-										fieldLabel: i18n('street'),
+										fieldLabel: _('street'),
 										name: 'street'
 									},
 									{
-										fieldLabel: i18n('city'),
+										fieldLabel: _('city'),
 										name: 'city'
 									},
 									{
-										fieldLabel: i18n('state'),
+										fieldLabel: _('state'),
 										name: 'state'
 									},
 									{
-										fieldLabel: i18n('postal_code'),
+										fieldLabel: _('postal_code'),
 										name: 'postal_code'
 									},
 									{
-										fieldLabel: i18n('country_code'),
+										fieldLabel: _('country_code'),
 										name: 'country_code'
 									},
 									{
@@ -112,13 +112,13 @@ Ext.define('App.view.administration.practice.Facilities', {
 										items: [
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('ssn'),
+												fieldLabel: _('ssn'),
 												name: 'ssn',
 												margin: '0 10 0 0'
 											},
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('ein'),
+												fieldLabel: _('ein'),
 												labelWidth: 40,
 												name: 'ein'
 											}
@@ -129,49 +129,49 @@ Ext.define('App.view.administration.practice.Facilities', {
 							{
 								items: [
 									{
-										fieldLabel: i18n('billing_attn'),
+										fieldLabel: _('billing_attn'),
 										name: 'attn',
 										anchor: '100%'
 									},
 									{
 										xtype: 'mitos.poscodescombo',
-										fieldLabel: i18n('pos_code'),
+										fieldLabel: _('pos_code'),
 										name: 'pos_code',
 										anchor: '100%'
 									},
 									{
-										fieldLabel: i18n('clia_number'),
+										fieldLabel: _('clia_number'),
 										name: 'clia',
 										anchor: '100%'
 									},
 									{
-										fieldLabel: i18n('npi'),
+										fieldLabel: _('npi'),
 										name: 'npi',
 										anchor: '100%'
 									},
 									{
-										fieldLabel: i18n('fda_number'),
+										fieldLabel: _('fda_number'),
 										name: 'fda',
 										anchor: '100%'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('active'),
+										fieldLabel: _('active'),
 										name: 'active'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('service_location'),
+										fieldLabel: _('service_location'),
 										name: 'service_location'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('billing_location'),
+										fieldLabel: _('billing_location'),
 										name: 'billing_location'
 									},
 									{
 										xtype: 'checkbox',
-										fieldLabel: i18n('accepts_assignment'),
+										fieldLabel: _('accepts_assignment'),
 										name: 'accepts_assignment'
 									}
 								]
@@ -187,17 +187,17 @@ Ext.define('App.view.administration.practice.Facilities', {
 				plugins: Ext.create('Ext.ux.SlidingPager', {
 				}),
 				items: ['-', {
-					text: i18n('add_new_facility'),
+					text: _('add_new_facility'),
 					iconCls: 'save',
 					scope: me,
 					handler: me.addFacility
 				}, '-', {
-					text: i18n('show_active_facilities'),
+					text: _('show_active_facilities'),
 					action: 'active',
 					scope: me,
 					handler: me.filterFacilitiesby
 				}, '-', {
-					text: i18n('show_inactive_facilities'),
+					text: _('show_inactive_facilities'),
 					action: 'inactive',
 					scope: me,
 					handler: me.filterFacilitiesby
@@ -211,7 +211,7 @@ Ext.define('App.view.administration.practice.Facilities', {
 
 	filterFacilitiesby: function(btn){
 
-//		this.setTitle(i18n('facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
+//		this.setTitle(_('facilities') + ' (' + Ext.String.capitalize(btn.action) + ')');
 
 		this.store.load({
 			filters: [

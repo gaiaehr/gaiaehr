@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Lists', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLists',
-    pageTitle: i18n('select_list_options'),
+    pageTitle: _('select_list_options'),
     pageLayout: 'border',
     uses: [
         'App.ux.form.Panel',
@@ -66,7 +66,7 @@ Ext.define('App.view.administration.Lists', {
                     dataIndex: 'id'
                 },
                 {
-                    text: i18n('select_lists'),
+                    text: _('select_lists'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'title',
@@ -76,7 +76,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('active'),
+                    text: _('active'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'active',
@@ -87,7 +87,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('in_use'),
+                    text: _('in_use'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'in_use',
@@ -104,20 +104,20 @@ Ext.define('App.view.administration.Lists', {
                     dock: 'top',
                     items: [
                         {
-                            text: i18n('new_list'),
+                            text: _('new_list'),
                             iconCls: 'icoAddRecord',
                             scope: me,
                             handler: me.onNewList
                         },
                         '->',
                         {
-                            text: i18n('delete_list'),
+                            text: _('delete_list'),
                             iconCls: 'icoDeleteBlack',
                             itemId: 'listDeleteBtn',
                             disabled: true,
                             scope: me,
                             handler: me.onListDelete,
-                            tooltip: i18n('can_be_disable')
+                            tooltip: _('can_be_disable')
                         }
                     ]
                 }
@@ -135,7 +135,7 @@ Ext.define('App.view.administration.Lists', {
             viewConfig: {
                 plugins: {
                     ptype: 'gridviewdragdrop',
-                    dragText: i18n('drag_and_drop_reorganize')
+                    dragText: _('drag_and_drop_reorganize')
                 },
                 listeners: {
                     scope: me,
@@ -147,7 +147,7 @@ Ext.define('App.view.administration.Lists', {
 		            xtype: 'rownumberer'
 	            },
                 {
-                    text: i18n('option_title'),
+                    text: _('option_title'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'option_name',
@@ -161,7 +161,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('option_value'),
+                    text: _('option_value'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'option_value',
@@ -171,7 +171,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
 	            {
-		            text: i18n('code'),
+		            text: _('code'),
 		            sortable: true,
 		            dataIndex: 'code',
 		            width: 120,
@@ -180,7 +180,7 @@ Ext.define('App.view.administration.Lists', {
 		            }
 	            },
 	            {
-		            text: i18n('code_type'),
+		            text: _('code_type'),
 		            sortable: true,
 		            dataIndex: 'code_type',
 		            width: 100,
@@ -189,7 +189,7 @@ Ext.define('App.view.administration.Lists', {
 		            }
 	            },
                 {
-                    text: i18n('notes'),
+                    text: _('notes'),
                     sortable: true,
                     dataIndex: 'notes',
                     flex: 1,
@@ -199,7 +199,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('active'),
+                    text: _('active'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'active',
@@ -215,7 +215,7 @@ Ext.define('App.view.administration.Lists', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: ['->', {
-                        text: i18n('add_option'),
+                        text: _('add_option'),
                         iconCls: 'icoAddRecord',
                         scope: me,
                         handler: me.onNewOption
@@ -331,9 +331,9 @@ Ext.define('App.view.administration.Lists', {
 
         if(!record.data.in_use){
             Ext.Msg.show({
-                title: i18n('please_confirm') + '...',
+                title: _('please_confirm') + '...',
                 icon: Ext.MessageBox.QUESTION,
-                msg: i18n('delete_this_record'),
+                msg: _('delete_this_record'),
                 buttons: Ext.Msg.YESNO,
                 scope: me,
                 fn: function(btn){
@@ -341,18 +341,18 @@ Ext.define('App.view.administration.Lists', {
                         store.remove(record);
                         store.sync({
                             success:function(){
-                                me.msg('Sweet!', i18n('record_deleted'));
+                                me.msg('Sweet!', _('record_deleted'));
                                 me.optionsStore.removeAll();
                             },
                             failure:function(){
-                                me.msg('Oops!', i18n('unable_to_delete') + ' "' + record.data.title, true);
+                                me.msg('Oops!', _('unable_to_delete') + ' "' + record.data.title, true);
                             }
                         });
                     }
                 }
             });
         }else{
-            Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
+            Ext.Msg.alert('Oops!', _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
         }
     },
 

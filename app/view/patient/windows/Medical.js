@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
-	title: i18n('medical_window'),
+	title: _('medical_window'),
 	itemId: 'MedicalWindow',
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
@@ -86,7 +86,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		me.buttons = [
 			{
-				text: i18n('close'),
+				text: _('close'),
 				scope: me,
 				handler: function(){
 					me.close();

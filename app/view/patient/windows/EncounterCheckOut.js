@@ -23,7 +23,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 		'App.ux.combo.EncounterSupervisors',
 		'App.ux.LiveCPTSearch'
 	],
-	title: i18n('checkout_and_signing'),
+	title: _('checkout_and_signing'),
 	itemId: 'EncounterSignWindow',
 	closeAction: 'hide',
 	modal: true,
@@ -38,7 +38,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	items: [
 		{
 			xtype: 'grid',
-			title: i18n('super_bill'),
+			title: _('super_bill'),
 			rootVisible: false,
 			region: 'center',
 			itemId: 'EncounterSignSuperBillGrid',
@@ -58,7 +58,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					items: [
 						{
 							icon: 'resources/images/icons/delete.png',
-							tooltip: i18n('remove'),
+							tooltip: _('remove'),
 							handler: function(){
 								return App.app.getController('patient.encounter.EncounterSign').onRemoveService(v);
 							}
@@ -66,42 +66,46 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					]
 				},
 				{
-					text: i18n('service'),
+					text: _('service'),
 					dataIndex: 'code_text',
 					flex: 1,
 					editor: {
-						xtype:'livecptsearch',
+						xtype: 'livecptsearch',
 						itemId: 'EncounterSignSuperCptSearchCmb',
 						valueField: 'code_text_medium',
 						allowBlank: false
 					}
 				},
 				{
-					header: i18n('units'),
+					header: _('units'),
 					dataIndex: 'units',
 					width: 50,
-					editor:{
-						xtype:'numberfield',
+					editor: {
+						xtype: 'numberfield',
 						minValue: 1,
 						allowBlank: false
 					}
 				},
 				{
-					header: i18n('modifiers'),
+					header: _('modifiers'),
 					dataIndex: 'modifiers',
 					width: 100,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
-					header: i18n('diagnosis'),
+					header: _('diagnosis'),
 					dataIndex: 'dx_pointers',
 					width: 250,
 					editor: {
-						xtype:'textfield',
+						xtype: 'textfield',
 						allowBlank: false
 					}
+				},
+				{
+					header: _('status'),
+					dataIndex: 'status'
 				}
 			],
 			dockedItems: [
@@ -111,7 +115,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					items: [
 						'->',
 						{
-							text: i18n('service'),
+							text: _('service'),
 							iconCls: 'icoAdd',
 							itemId: 'EncounterSignSuperBillServiceAddBtn'
 						}
@@ -121,14 +125,14 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 		},
 		{
 			xtype: 'documentsimplegrid',
-			title: i18n('documents'),
+			title: _('documents'),
 			region: 'east',
 			itemId: 'EncounterSignDocumentGrid',
 			width: 200
 		},
 		{
 			xtype: 'form',
-			title: i18n('additional_info'),
+			title: _('additional_info'),
 			region: 'south',
 			split: true,
 			height: 245,
@@ -153,7 +157,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					},
 					items: [
 						{
-							title: i18n('messages_notes_and_reminders'),
+							title: _('messages_notes_and_reminders'),
 							defaults: {
 								anchor: '100%'
 							},
@@ -161,18 +165,18 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 								{
 									xtype: 'textfield',
 									name: 'message',
-									fieldLabel: i18n('message')
+									fieldLabel: _('message')
 								},
 								{
 									xtype: 'textfield',
 									name: 'reminder',
-									fieldLabel: i18n('reminder')
+									fieldLabel: _('reminder')
 								},
 								{
 									xtype: 'textfield',
 									grow: true,
 									name: 'note',
-									fieldLabel: i18n('note'),
+									fieldLabel: _('note'),
 									margin: 0
 								}
 							]
@@ -186,11 +190,11 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 							items: [
 								{
 									xtype: 'mitos.followupcombo',
-									fieldLabel: i18n('time_interval'),
+									fieldLabel: _('time_interval'),
 									name: 'followup_time'
 								},
 								{
-									fieldLabel: i18n('facility'),
+									fieldLabel: _('facility'),
 									xtype: 'activefacilitiescombo',
 									name: 'followup_facility',
 									margin: 0
@@ -206,7 +210,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					columnWidth: .5,
 					layout: 'fit',
 					height: 208,
-					title: i18n('warnings_alerts'),
+					title: _('warnings_alerts'),
 					items: [
 						{
 							xtype: 'grid',
@@ -246,15 +250,15 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			allowBlank: false
 		},
 		{
-			text: i18n('co_sign') + ' (' + i18n('supervisor') + ')',
+			text: _('co_sign') + ' (' + _('supervisor') + ')',
 			itemId: 'EncounterCoSignSupervisorBtn'
 		},
 		{
-			text: i18n('sign'),
+			text: _('sign'),
 			itemId: 'EncounterSignBtn'
 		},
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			itemId: 'EncounterCancelSignBtn'
 		}
 	]

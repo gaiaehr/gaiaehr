@@ -191,13 +191,13 @@ Ext.define('App.controller.patient.CCDImport', {
 			patient = me.getCcdImportPatientForm().getForm().getRecord();
 
 		if(patient.data.sex != records[0].data.sex){
-			app.msg(i18n('warning'), i18n('records_sex_are_not_equal'), true);
+			app.msg(_('warning'), _('records_sex_are_not_equal'), true);
 		}
 
 		if(patient.data.DOB.getFullYear() != records[0].data.DOB.getFullYear() &&
 			patient.data.DOB.getMonth() != records[0].data.DOB.getMonth() &&
 			patient.data.DOB.getDate() != records[0].data.DOB.getDate()){
-			app.msg(i18n('warning'), i18n('records_date_of_birth_are_not_equal'), true);
+			app.msg(_('warning'), _('records_date_of_birth_are_not_equal'), true);
 		}
 
 	},
@@ -217,7 +217,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	getResultObservationGrid: function(){
 		return Ext.widget('window',{
-			title: i18n('observations'),
+			title: _('observations'),
 			modal: true,
 			items:[
 				{
@@ -227,13 +227,13 @@ Ext.define('App.controller.patient.CCDImport', {
 					frame: true,
 					columns:[
 						{
-							text: i18n('name'),
+							text: _('name'),
 							menuDisabled: true,
 							dataIndex: 'code_text',
 							width: 200
 						},
 						{
-							text: i18n('value'),
+							text: _('value'),
 							menuDisabled: true,
 							dataIndex: 'value',
 							width: 150,
@@ -257,13 +257,13 @@ Ext.define('App.controller.patient.CCDImport', {
 							}
 						},
 						{
-							text: i18n('units'),
+							text: _('units'),
 							menuDisabled: true,
 							dataIndex: 'units',
 							width: 75
 						},
 						{
-							text: i18n('abnormal'),
+							text: _('abnormal'),
 							menuDisabled: true,
 							dataIndex: 'abnormal_flag',
 							width: 75,
@@ -287,19 +287,19 @@ Ext.define('App.controller.patient.CCDImport', {
 							}
 						},
 						{
-							text: i18n('range'),
+							text: _('range'),
 							menuDisabled: true,
 							dataIndex: 'reference_rage',
 							width: 150
 						},
 						{
-							text: i18n('notes'),
+							text: _('notes'),
 							menuDisabled: true,
 							dataIndex: 'notes',
 							width: 300
 						},
 						{
-							text: i18n('status'),
+							text: _('status'),
 							menuDisabled: true,
 							dataIndex: 'observation_result_status',
 							width: 60
@@ -319,8 +319,8 @@ Ext.define('App.controller.patient.CCDImport', {
 			pid = me.getCcdImportWindowPatientSearchField().getValue();
 
 		Ext.Msg.show({
-			title: i18n('wait'),
-			msg: pid ? i18n('patient_merge_verification') : i18n('patient_import_verification'),
+			title: _('wait'),
+			msg: pid ? _('patient_merge_verification') : _('patient_import_verification'),
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -349,7 +349,7 @@ Ext.define('App.controller.patient.CCDImport', {
 				if(success){
 					me.doPatientSectionsImport(record.data.pid);
 				}else{
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			}
 		});
@@ -409,7 +409,7 @@ Ext.define('App.controller.patient.CCDImport', {
 					app.setPatient(pid, null, function(){
 						app.openPatientSummary();
 					});
-					app.msg(i18n('sweet'), i18n('patient_data_imported'));
+					app.msg(_('sweet'), _('patient_data_imported'));
 				}
 			});
 		}

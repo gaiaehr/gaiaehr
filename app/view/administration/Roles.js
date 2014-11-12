@@ -24,7 +24,7 @@ Ext.define('App.view.administration.Roles', {
 		'Ext.ux.DataTip'
 	],
 	itemId: 'AdministrationRolePanel',
-	pageTitle: i18n('roles_and_permissions'),
+	pageTitle: _('roles_and_permissions'),
 	pageBody: [
 		{
 			xtype:'grid',
@@ -35,7 +35,7 @@ Ext.define('App.view.administration.Roles', {
 			tbar: [
 				{
 					xtype: 'xcombo',
-					emptyText: i18n('select'),
+					emptyText: _('select'),
 					labelWidth: 50,
 					width: 250,
 					valueField: 'id',
@@ -44,7 +44,7 @@ Ext.define('App.view.administration.Roles', {
 					store: Ext.create('App.store.administration.AclGroups'),
 					itemId: 'AdministrationRoleGroupCombo',
 					windowConfig: {
-						title: i18n('add_group')
+						title: _('add_group')
 					},
 					formConfig: {
 						border: false,
@@ -52,12 +52,12 @@ Ext.define('App.view.administration.Roles', {
 						items: [
 							{
 								xtype: 'textfield',
-								fieldLabel: i18n('group_name'),
+								fieldLabel: _('group_name'),
 								name: 'title'
 							},
 							{
 								xtype: 'checkbox',
-								fieldLabel: i18n('active'),
+								fieldLabel: _('active'),
 								name: 'active'
 							}
 						]
@@ -68,7 +68,7 @@ Ext.define('App.view.administration.Roles', {
 				'-',
 				{
 					xtype: 'button',
-					text: i18n('add_role'),
+					text: _('add_role'),
 					iconCls: 'icoAdd',
 					action: 'adminAclAddRole'
 				},
@@ -89,7 +89,7 @@ Ext.define('App.view.administration.Roles', {
 				},
 				{
 					ptype: 'datatip',
-					tpl: i18n('click_to_edit')
+					tpl: _('click_to_edit')
 				}
 			],
 			columns: [
@@ -103,13 +103,13 @@ Ext.define('App.view.administration.Roles', {
 	],
 	pageButtons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			cls: 'cancelBtn',
 			action: 'adminAclCancel'
 		},
 		'-',
 		{
-			text: i18n('save'),
+			text: _('save'),
 			cls: 'saveBtn',
 			action: 'adminAclSave'
 		}

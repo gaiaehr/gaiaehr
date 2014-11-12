@@ -83,10 +83,10 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 
 			store.sync({
 				success: function(){
-					app.msg(i18n('sweet'), i18n('record_saved'));
+					app.msg(_('sweet'), _('record_saved'));
 				},
 				failure: function(){
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			});
 

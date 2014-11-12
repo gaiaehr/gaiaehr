@@ -153,7 +153,7 @@ Ext.define('App.controller.patient.CarePlanGoals', {
 			created_date: new Date()
 		});
 
-		me.getCarePlanGoalsNewWindow().setTitle(i18n('new_goal'));
+		me.getCarePlanGoalsNewWindow().setTitle(_('new_goal'));
 		me.getCarePlanGoalsNewWindow().setSize(me.getSoapPanelForm().getSize());
 		me.getCarePlanGoalsNewWindow().show(me.getCarePlanGoalsGrid().el);
 		me.getCarePlanGoalsNewForm().getForm().loadRecord(records[0]);
@@ -171,10 +171,10 @@ Ext.define('App.controller.patient.CarePlanGoals', {
 			record.set(values);
 			record.store.sync({
 				success:function(){
-					app.msg(i18n('sweet'), i18n('record_saved'));
+					app.msg(_('sweet'), _('record_saved'));
 				},
 				failure:function(){
-					app.msg(i18n('oops'), i18n('record_error'), true);
+					app.msg(_('oops'), _('record_error'), true);
 				}
 			});
 

@@ -270,7 +270,7 @@ Ext.define('App.controller.patient.Allergies', {
 			area: 'review_allergies'
 		};
 		Medical.reviewMedicalWindowEncounter(params, function(provider, response){
-			app.msg('Sweet!', i18n('succefully_reviewed'));
+			app.msg('Sweet!', _('succefully_reviewed'));
 		});
 	}
 

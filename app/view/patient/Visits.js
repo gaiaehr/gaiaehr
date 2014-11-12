@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.Visits', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('visits_history'),
+	pageTitle: _('visits_history'),
 	uses: [
 		'Ext.grid.Panel',
 		'Ext.ux.PreviewPlugin'
@@ -43,7 +43,7 @@ Ext.define('App.view.patient.Visits', {
 		// Visit History Grid
 		//******************************************************************
 		me.historyGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('encounter_history'),
+			title: _('encounter_history'),
 			store: me.store,
 			columns: [
 				{
@@ -54,38 +54,38 @@ Ext.define('App.view.patient.Visits', {
 				},
 				{
 					width: 150,
-					header: i18n('date'),
+					header: _('date'),
 					sortable: true,
 					dataIndex: 'service_date',
 					renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
 				},
 				{
 					flex: 1,
-					header: i18n('reason'),
+					header: _('reason'),
 					sortable: true,
 					dataIndex: 'brief_description'
 				},
 				{
 					width: 180,
-					header: i18n('provider'),
+					header: _('provider'),
 					sortable: false,
 					dataIndex: 'provider'
 				},
 				{
 					width: 120,
-					header: i18n('facility'),
+					header: _('facility'),
 					sortable: false,
 					dataIndex: 'facility'
 				},
 				{
 					width: 120,
-					header: i18n('billing_facility'),
+					header: _('billing_facility'),
 					sortable: true,
 					dataIndex: 'billing_facility'
 				},
 				{
 					width: 45,
-					header: i18n('close') + '?',
+					header: _('close') + '?',
 					sortable: true,
 					dataIndex: 'close_date',
 					renderer: me.openBool
@@ -115,14 +115,14 @@ Ext.define('App.view.patient.Visits', {
 				items: [
 					{
 						iconCls: '',
-						text: i18n('show_details'),
+						text: _('show_details'),
 						enableToggle: true,
 						scope: me,
 						toggleHandler: me.onDetailToggle
 					},
 					'-',
 					{
-						text: i18n('new_encounter'),
+						text: _('new_encounter'),
 						scope: me,
 						handler: me.createNewEncounter
 					}
@@ -166,7 +166,7 @@ Ext.define('App.view.patient.Visits', {
 	 */
 	onActive: function(callback){
 		if(this.checkIfCurrPatient()){
-			this.updateTitle(app.patient.name + ' (' + i18n('encounters') + ')');
+			this.updateTitle(app.patient.name + ' (' + _('encounters') + ')');
 			this.store.clearFilter(true);
 			this.store.filter([
 				{

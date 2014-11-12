@@ -18,7 +18,7 @@
 
 Ext.define('App.view.administration.DataPortability', {
     extend: 'App.ux.RenderPanel',
-    pageTitle: i18n('patients_export'),
+    pageTitle: _('patients_export'),
 	pageBody:[
 
 		{
@@ -29,7 +29,7 @@ Ext.define('App.view.administration.DataPortability', {
 			],
 			tbar:[
 				{
-					text: i18n('export'),
+					text: _('export'),
 					itemId: 'DataPortabilityExportBtn'
 				}
 			]

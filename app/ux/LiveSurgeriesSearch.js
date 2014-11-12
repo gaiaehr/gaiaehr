@@ -70,13 +70,13 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 			store : me.store,
 			displayField : 'surgery',
 			valueField : 'id',
-			emptyText : i18n('search_for_a_surgery') + '...',
+			emptyText : _('search_for_a_surgery') + '...',
 			typeAhead : false,
             hideTrigger : true,
 			minChars : 1,
 			listConfig :
 			{
-				loadingText : i18n('searching') + '...',
+				loadingText : _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

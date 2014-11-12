@@ -26,7 +26,7 @@ Ext.define('App.view.patient.LaboratoryResults', {
     selectedItemCls  : 'vitals-column-selected',
     loadMask         : true,
     singleSelect     : true,
-	emptyText        : '<div style="color: #cbcbcb; font-size: 40px; text-align:center">' + i18n('no_laboratory_results_to_display') + '</div>',
+	emptyText        : '<div style="color: #cbcbcb; font-size: 40px; text-align:center">' + _('no_laboratory_results_to_display') + '</div>',
 	initComponent: function() {
 		var me = this;
         me.tpl = '<table>' +

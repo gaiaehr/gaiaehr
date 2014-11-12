@@ -57,8 +57,8 @@ Ext.define('App.view.patient.Patient', {
 				{
 					ptype: 'AddTabButton',
 					iconCls: 'icoAdd',
-					toolTip: i18n('new_insurance'),
-					btnText: i18n('add_insurance'),
+					toolTip: _('new_insurance'),
+					btnText: _('add_insurance'),
 					forceText: true,
 					tabConfig: {
 						xtype: 'form',
@@ -98,7 +98,7 @@ Ext.define('App.view.patient.Patient', {
 			{
 				xtype: 'button',
 				action: 'readOnly',
-				text: i18n('possible_duplicates'),
+				text: _('possible_duplicates'),
 				minWidth: 75,
 				itemId: 'PatientPossibleDuplicatesBtn'
 			},
@@ -108,7 +108,7 @@ Ext.define('App.view.patient.Patient', {
 			{
 				xtype: 'button',
 				action: 'readOnly',
-				text: i18n('save'),
+				text: _('save'),
 				itemId: 'PatientDemographicSaveBtn',
 				minWidth: 75,
 				scope: me,
@@ -117,7 +117,7 @@ Ext.define('App.view.patient.Patient', {
 			'-',
 			{
 				xtype: 'button',
-				text: i18n('cancel'),
+				text: _('cancel'),
 				action: 'readOnly',
 				itemId: 'PatientDemographicCancelBtn',
 				minWidth: 75,
@@ -139,7 +139,7 @@ Ext.define('App.view.patient.Patient', {
 		if(!me.compactDemographics){
 
 			Ext.Function.defer(function(){
-				me.insPanel.title = i18n('insurance');
+				me.insPanel.title = _('insurance');
 				me.insPanel.addDocked({
 					xtype:'toolbar',
 					dock: 'bottom',
@@ -149,7 +149,7 @@ Ext.define('App.view.patient.Patient', {
 						{
 							xtype: 'button',
 							action: 'readOnly',
-							text: i18n('save'),
+							text: _('save'),
 							minWidth: 75,
 							scope: me,
 							handler: me.formSave
@@ -157,7 +157,7 @@ Ext.define('App.view.patient.Patient', {
 						'-',
 						{
 							xtype: 'button',
-							text: i18n('cancel'),
+							text: _('cancel'),
 							action: 'readOnly',
 							minWidth: 75,
 							scope: me,
@@ -257,7 +257,7 @@ Ext.define('App.view.patient.Patient', {
 						bbar: [
 							'-',
 							{
-								text: i18n('take_picture'),
+								text: _('take_picture'),
 								action: 'onWebCam'
 								//				                handler: me.getPhotoIdWindow
 							},
@@ -265,7 +265,7 @@ Ext.define('App.view.patient.Patient', {
 							'->',
 							'-',
 							{
-								text: i18n('print_qrcode'),
+								text: _('print_qrcode'),
 								scope: me,
 								handler: function(){
 									window.printQRCode(app.patient.pid);
@@ -308,7 +308,7 @@ Ext.define('App.view.patient.Patient', {
 					'->',
 					'-',
 					{
-						text: i18n('upload'),
+						text: _('upload'),
 						action: 'onWebCam'
 					},
 					'-'
@@ -325,7 +325,7 @@ Ext.define('App.view.patient.Patient', {
 		var me = this,
 			rec = form.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
 
-		form.title = i18n('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : i18n('new')) + ')';
+		form.title = _('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : _('new')) + ')';
 
 		form.add(me.insuranceFormItmes);
 
@@ -479,13 +479,13 @@ Ext.define('App.view.patient.Patient', {
 					app.fireEvent('afterdemographicssave', record, me);
 
 					insStore.sync();
-					me.msg('Sweet!', i18n('record_saved'));
+					me.msg('Sweet!', _('record_saved'));
 					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});
 		}else{
-			me.msg(i18n('oops'), i18n('missing_required_data'), true);
+			me.msg(_('oops'), _('missing_required_data'), true);
 		}
 	},
 

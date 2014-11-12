@@ -85,7 +85,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
 			format     : me.dateFormat,
 			flex       : 1,
-            emptyText  : i18n('date'),
+            emptyText  : _('date'),
             margin     : 0,
 			submitValue: false
 		}, me.dateConfig));
@@ -94,7 +94,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
 			format     : me.timeFormat,
 			flex       : 1,
-            emptyText  : i18n('time'),
+            emptyText  : _('time'),
             margin     : 0,
 			submitValue: false
 		}, me.timeConfig));

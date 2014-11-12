@@ -21,7 +21,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 	extend : 'Ext.panel.Panel',
 	layout : 'fit',
 	margin : 5,
-	title : i18n('weight_for_age'),
+	title : _('weight_for_age'),
 
 	initComponent : function()
 	{
@@ -40,7 +40,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 			},
 			axes : [
 			{
-				title : i18n('weight_kg'),
+				title : _('weight_kg'),
 				type : 'Numeric',
 				position : 'left',
 				fields : ['PP', 'P3', 'P5', 'P10', 'P25', 'P50', 'P75', 'P85', 'P90', 'P95', 'P97'],
@@ -57,7 +57,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 				maximum : 31
 			},
 			{
-				title : i18n('length_cm'),
+				title : _('length_cm'),
 				type : 'Numeric',
 				position : 'bottom',
 				fields : ['height'],
@@ -66,7 +66,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 			}],
 			series : [
 			{
-				title : i18n('weight_kg'),
+				title : _('weight_kg'),
 				type : 'scatter',
 				axis : 'left',
 				xField : 'height',
@@ -89,7 +89,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 					trackMouse : true,
 					renderer : function(storeItem, item)
 					{
-						this.update(i18n('length_cm') + ': ' + storeItem.get('height') + '<br>' + i18n('weightArray') + ': ' + storeItem.get('PP'));
+						this.update(_('length_cm') + ': ' + storeItem.get('height') + '<br>' + _('weightArray') + ': ' + storeItem.get('PP'));
 					}
 				}
 			},

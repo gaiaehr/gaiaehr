@@ -19,7 +19,7 @@
 Ext.define('App.view.patient.windows.CCDImport', {
 	extend: 'Ext.window.Window',
 	xtype: 'ccdimportwindow',
-	title: i18n('ccd_viewer_and_import'),
+	title: _('ccd_viewer_and_import'),
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 	layout: {
@@ -39,7 +39,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					xtype: 'form',
 					frame: true,
 					margin: '5 5 0 5',
-					title: i18n('patient'),
+					title: _('patient'),
 					itemId: 'CcdImportPatientForm',
 					flex: 1,
 					height: 145,
@@ -57,19 +57,19 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							columnWidth: 0.5,
 							items: [
 								{
-									fieldLabel: i18n('name'),
+									fieldLabel: _('name'),
 									name: 'fullname'
 								},
 								{
-									fieldLabel: i18n('sex'),
+									fieldLabel: _('sex'),
 									name: 'sex'
 								},
 								{
-									fieldLabel: i18n('dob'),
+									fieldLabel: _('dob'),
 									name: 'DOB'
 								},
 								{
-									fieldLabel: i18n('race'),
+									fieldLabel: _('race'),
 									name: 'race_text'
 								}
 							]
@@ -85,20 +85,20 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							columnWidth: 0.5,
 							items: [
 								{
-									fieldLabel: i18n('ethnicity'),
+									fieldLabel: _('ethnicity'),
 									name: 'ethnicity_text'
 								},
 								{
-									fieldLabel: i18n('language'),
+									fieldLabel: _('language'),
 									name: 'language'
 								},
 								{
-									fieldLabel: i18n('address'),
+									fieldLabel: _('address'),
 									name: 'fulladdress',
 									value: 'fulladdress'
 								},
 								{
-									fieldLabel: i18n('phones'),
+									fieldLabel: _('phones'),
 									name: 'phones',
 									value: '000-000-000 (H)'
 								}
@@ -110,7 +110,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					xtype: 'form',
 					frame: true,
 					margin: '5 5 0 0',
-					title: i18n('encounter'),
+					title: _('encounter'),
 					itemId: 'CcdImportEncounterForm',
 					height: 145,
 					overflowY: 'auto',
@@ -123,16 +123,16 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('date'),
+							fieldLabel: _('date'),
 							name: 'service_date'
 						},
 						{
-							fieldLabel: i18n('cc'),
+							fieldLabel: _('cc'),
 							name: 'brief_description'
 						},
 						{
 							xtype: 'checkboxgroup',
-							fieldLabel: i18n('assessment'),
+							fieldLabel: _('assessment'),
 							columns: 1,
 							layout: 'anchor',
 							itemId: 'CcdImportEncounterAssessmentContainer'
@@ -165,7 +165,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					},
 					items: [
 						{
-							title: i18n('medications'),
+							title: _('medications'),
 							store: Ext.create('App.store.patient.Medications'),
 							itemId: 'CcdImportMedicationsGrid',
 							selType: 'checkboxmodel',
@@ -189,7 +189,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							]
 						},
 						{
-							title: i18n('allergies'),
+							title: _('allergies'),
 							store: Ext.create('App.store.patient.Allergies'),
 							itemId: 'CcdImportAllergiesGrid',
 							selType: 'checkboxmodel',
@@ -213,13 +213,13 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							]
 						},
 						{
-							title: i18n('procedures'),
+							title: _('procedures'),
 							store: Ext.create('App.store.patient.encounter.Procedures'),
 							itemId: 'CcdImportProceduresGrid',
 							disableSelection: true,
 							columns: [
 								{
-									text: i18n('description'),
+									text: _('description'),
 									dataIndex: 'code_text',
 									flex: 1
 								},
@@ -252,7 +252,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 					},
 					items: [
 						{
-							title: i18n('active_problems'),
+							title: _('active_problems'),
 							store: Ext.create('App.store.patient.PatientActiveProblems'),
 							itemId: 'CcdImportActiveProblemsGrid',
 							selType: 'checkboxmodel',
@@ -280,13 +280,13 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							]
 						},
 						{
-							title: i18n('results'),
+							title: _('results'),
 							store: Ext.create('App.store.patient.PatientsOrderResults'),
 							itemId: 'CcdImportOrderResultsGrid',
 							disableSelection: true,
 							columns: [
 								{
-									text: i18n('results'),
+									text: _('results'),
 									dataIndex: 'code_text',
 									flex: 1
 								},
@@ -316,13 +316,13 @@ Ext.define('App.view.patient.windows.CCDImport', {
 							]
 						},
 						{
-							title: i18n('encounters'),
+							title: _('encounters'),
 							store: Ext.create('App.store.patient.Encounters'),
 							itemId: 'CcdImportEncountersGrid',
 							disableSelection: true,
 							columns: [
 								{
-									text: i18n('results'),
+									text: _('results'),
 									flex: 1
 								}
 							]
@@ -339,32 +339,32 @@ Ext.define('App.view.patient.windows.CCDImport', {
 			ui: 'footer',
 			items: [
 				{
-					text: i18n('view_raw_ccd'),
+					text: _('view_raw_ccd'),
 					itemId: 'CcdImportWindowViewRawCcdBtn'
 				},
 				'-',
 				{
 					xtype: 'patienlivetsearch',
-					emptyText: i18n('import_and_merge_with') + '...',
+					emptyText: _('import_and_merge_with') + '...',
 					itemId: 'CcdImportWindowPatientSearchField',
 					width: 300
 				},
 				{
 					xtype: 'checkboxfield',
-					fieldLabel: i18n('select_all'),
+					fieldLabel: _('select_all'),
 					labelWidth: 55,
 					labelAlign: 'right',
 					itemId: 'CcdImportWindowSelectAllField'
 				},
 				{
-					text: i18n('import'),
+					text: _('import'),
 					minWidth: 70,
 					itemId: 'CcdImportWindowImportBtn'
 				},
 				'-',
 				'->',
 				{
-					text: i18n('close'),
+					text: _('close'),
 					minWidth: 70,
 					itemId: 'CcdImportWindowCloseBtn'
 				}

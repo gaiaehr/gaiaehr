@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.windows.PreventiveCare', {
 	extend: 'App.ux.window.Window',
-	title: i18n('preventive_care_window'),
+	title: _('preventive_care_window'),
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
@@ -37,23 +37,23 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			height: 400,
 			width: 700,
 			features: Ext.create('Ext.grid.feature.Grouping', {
-				groupHeaderTpl: i18n('type') + ': {name} ({rows.length} ' + i18n('item') + '{[values.rows.length > 1 ? "s" : ""]})',
+				groupHeaderTpl: _('type') + ': {name} ({rows.length} ' + _('item') + '{[values.rows.length > 1 ? "s" : ""]})',
 				hideGroupedHeader: true,
 				startCollapsed: true
 			}),
 			columns: [
 				{
-					header: i18n('type'),
+					header: _('type'),
 					dataIndex: 'type',
 					width: 200
 				},
 				{
-					header: i18n('description'),
+					header: _('description'),
 					dataIndex: 'description',
 					width: 200
 				},
 				{
-					header: i18n('reason'),
+					header: _('reason'),
 					dataIndex: 'reason',
 					flex: 1
 
@@ -66,7 +66,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 				clicksToEdit: 1,
 				items: [
 					{
-						title: i18n('general'),
+						title: _('general'),
 						xtype: 'container',
 						padding: 10,
 						layout: 'vbox',
@@ -82,7 +82,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 									{
 										xtype: 'textfield',
 										name: 'reason',
-										fieldLabel: i18n('reason'),
+										fieldLabel: _('reason'),
 										width: 585,
 										labelWidth: 70,
 										disabled: true,
@@ -104,7 +104,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 
 									{
 										xtype: 'textfield',
-										fieldLabel: i18n('observation'),
+										fieldLabel: _('observation'),
 										name: 'observation',
 										width: 250,
 										labelWidth: 70,
@@ -112,7 +112,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 										action: 'observation'
 									},
 									{
-										fieldLabel: i18n('date'),
+										fieldLabel: _('date'),
 										xtype: 'datefield',
 										disabled: true,
 										action: 'date',
@@ -125,7 +125,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 									{
 										xtype: 'checkboxfield',
 										name: 'dismiss',
-										fieldLabel: i18n('dismiss_alert'),
+										fieldLabel: _('dismiss_alert'),
 										enableKeyEvents: true,
 										listeners: {
 											scope: me,

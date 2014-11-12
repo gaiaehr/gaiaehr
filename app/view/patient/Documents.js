@@ -27,7 +27,7 @@ Ext.define('App.view.patient.Documents', {
 		'Ext.form.ComboBox'
 	],
 	xtype: 'patientdocumentspanel',
-	title: i18n('documents'),
+	title: _('documents'),
 	layout: 'border',
 	items: [
 		{
@@ -64,7 +64,7 @@ Ext.define('App.view.patient.Documents', {
 					xtype: 'actioncolumn',
 					width: 23,
 					icon: 'resources/images/icons/icoLessImportant.png',
-					tooltip: i18n('validate_file_integrity_hash'),
+					tooltip: _('validate_file_integrity_hash'),
 					handler: function(grid, rowIndex){
 						App.app.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex);
 					},
@@ -76,7 +76,7 @@ Ext.define('App.view.patient.Documents', {
 					xtype: 'actioncolumn',
 					width: 23,
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('delete'),
+					tooltip: _('delete'),
 					hidden: !eval(a('delete_patient_documents')),
 					handler: function(grid, rowIndex, colIndex, item, e, recprd){
 
@@ -89,18 +89,18 @@ Ext.define('App.view.patient.Documents', {
 					}
 				},
 				{
-					header: i18n('type'),
+					header: _('type'),
 					dataIndex: 'docType'
 				},
 				{
 					xtype: 'datecolumn',
-					header: i18n('date'),
+					header: _('date'),
 					dataIndex: 'date',
 					format: 'Y-m-d'
 
 				},
 				{
-					header: i18n('title'),
+					header: _('title'),
 					dataIndex: 'title',
 					flex: 1,
 					editor: {
@@ -109,7 +109,7 @@ Ext.define('App.view.patient.Documents', {
 					}
 				},
 				{
-					header: i18n('encrypted'),
+					header: _('encrypted'),
 					dataIndex: 'encrypted',
 					width: 70,
 					renderer: function(v){
@@ -124,10 +124,10 @@ Ext.define('App.view.patient.Documents', {
 
 			}),
 			tbar: [
-					i18n('group_by') + ':',
+					_('group_by') + ':',
 				{
 					xtype: 'button',
-					text: i18n('date'),
+					text: _('date'),
 					enableToggle: true,
 					action: 'groupDate',
 					pressed: true,
@@ -135,7 +135,7 @@ Ext.define('App.view.patient.Documents', {
 				},
 				{
 					xtype: 'button',
-					text: i18n('type'),
+					text: _('type'),
 					enableToggle: true,
 					action: 'docType',
 					toggleGroup: 'documentgridgroup'
@@ -143,7 +143,7 @@ Ext.define('App.view.patient.Documents', {
 				'->',
 				'-',
 				{
-					text: i18n('upload_document'),
+					text: _('upload_document'),
 					itemId: 'documentUploadBtn'
 				}
 			],

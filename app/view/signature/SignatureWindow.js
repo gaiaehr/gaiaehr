@@ -18,7 +18,7 @@
 
 Ext.define('App.view.signature.SignatureWindow', {
 	extend      : 'Ext.window.Window',
-	title       : i18n('please_sign'),
+	title       : _('please_sign'),
 	closeAction : 'hide',
 	height      : 250,
 	width       : 500,
@@ -32,12 +32,12 @@ Ext.define('App.view.signature.SignatureWindow', {
 
         me.buttons = [
             {
-                text: i18n('save'),
+                text: _('save'),
                 scope:me,
                 handler:me.signatureSave
             },
             {
-                text: i18n('reset'),
+                text: _('reset'),
                 scope:me,
                 handler:me.signatureCancel
             }

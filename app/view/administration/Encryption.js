@@ -18,7 +18,7 @@
 
 Ext.define('App.view.administration.Encryption', {
 	extend:'App.ux.RenderPanel',
-	pageTitle:i18n('encryption'),
+	pageTitle:_('encryption'),
 	initComponent:function(){
 		var me = this;
 
@@ -33,7 +33,7 @@ Ext.define('App.view.administration.Encryption', {
 
 		me.pageTBar = [
 			{
-				text:i18n('encrypt'),
+				text:_('encrypt'),
 				enableToggle:true,
 				toggleGroup:'encryption',
 				scope:me,
@@ -41,7 +41,7 @@ Ext.define('App.view.administration.Encryption', {
 			},
 			'-',
 			{
-				text:i18n('decrypt'),
+				text:_('decrypt'),
 				enableToggle:true,
 				toggleGroup:'encryption',
 				scope:me,

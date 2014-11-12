@@ -22,7 +22,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 
 	],
 	xtype: 'facilityconfigpanel',
-	title: i18n('facility_configuration'),
+	title: _('facility_configuration'),
 	itemId: 'FacilityStructurePanel',
 	layout: {
 		type: 'hbox',
@@ -40,7 +40,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 			items: [
 				{
 					xtype: 'grid',
-					title: i18n('departments'),
+					title: _('departments'),
 					hideHeaders: true,
 					frame: true,
 					margin: '0 0 5 0',
@@ -102,7 +102,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 				},
 				{
 					xtype: 'grid',
-					title: i18n('specialties'),
+					title: _('specialties'),
 					//					hideHeaders: true,
 					frame: true,
 					flex: 1,
@@ -131,7 +131,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 					columns: [
 						{
 							width: 200,
-							text: i18n('title'),
+							text: _('title'),
 							dataIndex: 'title',
 							sortable: true,
 							flex: 1,
@@ -140,7 +140,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 							}
 						},
 						{
-							text: i18n('taxonomy'),
+							text: _('taxonomy'),
 							sortable: true,
 							dataIndex: 'taxonomy',
 							flex: 1,
@@ -149,7 +149,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 							}
 						},
 						{
-							text: i18n('modality'),
+							text: _('modality'),
 							sortable: true,
 							dataIndex: 'modality',
 							flex: 1,
@@ -158,7 +158,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 							}
 						},
 						{
-							text: i18n('active'),
+							text: _('active'),
 							sortable: true,
 							dataIndex: 'active',
 							renderer: function(v){
@@ -178,7 +178,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 					tools: [
 						{
 							xtype: 'button',
-							text: i18n('specialty'),
+							text: _('specialty'),
 							iconCls: 'icoAdd',
 							itemId: 'specialitiesAddBtn'
 						}
@@ -194,7 +194,7 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 		},
 		{
 			xtype: 'treepanel',
-			title: i18n('facility_structure'),
+			title: _('facility_structure'),
 			itemId: 'FacilityStructureTreePanel',
 			store: Ext.create('App.store.administration.FacilityStructures', {
 				autoLoad: true
@@ -417,17 +417,17 @@ Ext.define('App.view.administration.practice.FacilityConfig', {
 					xtype: 'actioncolumn',
 					width: 20,
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('delete'),
+					tooltip: _('delete'),
 					handler: function(grid, rowIndex, colIndex, item, e, record){
 
 						if(record.childNodes.length > 0){
-							app.msg(i18n('oops'), i18n('please_remove_child_records_first'), true);
+							app.msg(_('oops'), _('please_remove_child_records_first'), true);
 							return;
 						}
 
 						Ext.Msg.show({
-							title: i18n('wait'),
-							msg: i18n('delete_this_record'),
+							title: _('wait'),
+							msg: _('delete_this_record'),
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,
 							fn: function(btn){

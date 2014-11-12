@@ -31,7 +31,7 @@ Ext.define('App.view.patient.Allergies', {
 		'App.ux.combo.AllergiesSeverity'
 	],
 	xtype: 'patientallergiespanel',
-	title: i18n('allergies'),
+	title: _('allergies'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.Allergies', {
 		remoteFilter: true,
@@ -39,12 +39,12 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	columns: [
 		{
-			header: i18n('type'),
+			header: _('type'),
 			width: 100,
 			dataIndex: 'allergy_type'
 		},
 		{
-			header: i18n('name'),
+			header: _('name'),
 			flex: 1,
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
@@ -52,22 +52,22 @@ Ext.define('App.view.patient.Allergies', {
 			}
 		},
 		{
-			header: i18n('location'),
+			header: _('location'),
 			width: 220,
 			dataIndex: 'location'
 		},
 		{
-			header: i18n('reaction'),
+			header: _('reaction'),
 			width: 220,
 			dataIndex: 'reaction'
 		},
 		{
-			header: i18n('severity'),
+			header: _('severity'),
 			width: 220,
 			dataIndex: 'severity'
 		},
 		{
-			text: i18n('status'),
+			text: _('status'),
 			width: 55,
 			dataIndex: 'status'
 		}
@@ -78,7 +78,7 @@ Ext.define('App.view.patient.Allergies', {
 		clicksToEdit: 1,
 		items: [
 			{
-				title: i18n('general'),
+				title: _('general'),
 				xtype: 'container',
 				padding: '0 10',
 				layout: 'vbox',
@@ -95,7 +95,7 @@ Ext.define('App.view.patient.Allergies', {
 						items:[
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('type'),
+								fieldLabel: _('type'),
 								itemId:'allergyTypeCombo',
 								name: 'allergy_type',
 								allowBlank: false,
@@ -106,7 +106,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('status'),
+								fieldLabel: _('status'),
 								name: 'status',
 								list: 113,
 								itemId: 'allergyStatusCombo',
@@ -127,7 +127,7 @@ Ext.define('App.view.patient.Allergies', {
 						items: [
 							{
 								xtype: 'allergieslivesearch',
-								fieldLabel: i18n('allergy'),
+								fieldLabel: _('allergy'),
 								itemId: 'allergySearchCombo',
 								name: 'allergy',
 								hideLabel: false,
@@ -139,7 +139,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype:'rxnormallergylivetsearch',
-								fieldLabel: i18n('allergy'),
+								fieldLabel: _('allergy'),
 								itemId:'allergyMedicationCombo',
 								name: 'allergy',
 								hideLabel: false,
@@ -151,7 +151,7 @@ Ext.define('App.view.patient.Allergies', {
 								allowBlank: false
 							},
 							{
-								fieldLabel: i18n('begin_date'),
+								fieldLabel: _('begin_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'begin_date',
@@ -173,7 +173,7 @@ Ext.define('App.view.patient.Allergies', {
 						items: [
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('location'),
+								fieldLabel: _('location'),
 								name: 'location',
 								action: 'location',
 								itemId: 'allergyLocationCombo',
@@ -184,7 +184,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('reaction'),
+								fieldLabel: _('reaction'),
 								itemId: 'allergyReactionCombo',
 								name: 'reaction',
 								width: 230,
@@ -194,7 +194,7 @@ Ext.define('App.view.patient.Allergies', {
 							},
 							{
 								xtype: 'gaiaehr.combo',
-								fieldLabel: i18n('severity'),
+								fieldLabel: _('severity'),
 								name: 'severity',
 								itemId: 'allergySeverityCombo',
 								width: 225,
@@ -203,7 +203,7 @@ Ext.define('App.view.patient.Allergies', {
 								allowBlank: false
 							},
 							{
-								fieldLabel: i18n('end_date'),
+								fieldLabel: _('end_date'),
 								xtype: 'datefield',
 								format: 'Y-m-d',
 								name: 'end_date',
@@ -218,7 +218,7 @@ Ext.define('App.view.patient.Allergies', {
 	tbar:[
 		'->',
 		{
-			text: i18n('add_new'),
+			text: _('add_new'),
 			itemId: 'addAllergyBtn',
 			action: 'encounterRecordAdd',
 			iconCls: 'icoAdd'
@@ -226,13 +226,13 @@ Ext.define('App.view.patient.Allergies', {
 	],
 	bbar: [
 		{
-			text: i18n('only_active'),
+			text: _('only_active'),
 			enableToggle: true,
 			itemId: 'activeAllergyBtn'
 		},
 		'->',
 		{
-			text: i18n('review'),
+			text: _('review'),
 			action: 'encounterRecordAdd',
 			itemId: 'reviewAllergiesBtn'
 		}

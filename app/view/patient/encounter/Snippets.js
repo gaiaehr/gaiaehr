@@ -23,7 +23,7 @@ Ext.define('App.view.patient.encounter.Snippets', {
 
 	],
 	itemId: 'SnippetWindow',
-	title: i18n('snippet'),
+	title: _('snippet'),
 	closable: false,
 	items: [
 		{
@@ -37,12 +37,12 @@ Ext.define('App.view.patient.encounter.Snippets', {
 			items: [
 				{
 					xtype: 'textfield',
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'textareafield',
-					fieldLabel: i18n('snippet'),
+					fieldLabel: _('snippet'),
 					allowBlank: false,
 					itemId: 'SnippetFormTextField',
 					name: 'text'
@@ -52,11 +52,11 @@ Ext.define('App.view.patient.encounter.Snippets', {
 	],
 	buttons:[
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			itemId: 'SnippetCancelBtn'
 		},
 		{
-			text: i18n('save'),
+			text: _('save'),
 			itemId: 'SnippetSaveBtn'
 		}
 	]

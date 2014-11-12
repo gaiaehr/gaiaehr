@@ -85,7 +85,7 @@ Ext.define('App.controller.patient.Patient', {
 
 			me.lookForPossibleDuplicates(params, 'openPatientSummary');
 		}else{
-			app.msg(i18n('oops'), i18n('required_fields_missing'), true);
+			app.msg(_('oops'), _('required_fields_missing'), true);
 		}
 	},
 
@@ -104,7 +104,7 @@ Ext.define('App.controller.patient.Patient', {
 				if(records.length > 0){
 					win.show();
 				}else{
-					app.msg(i18n('sweet'), i18n('no_possible_duplicates_found'));
+					app.msg(_('sweet'), _('no_possible_duplicates_found'));
 				}
 			}
 		});

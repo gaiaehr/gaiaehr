@@ -23,7 +23,7 @@ Ext.define('App.view.patient.Vitals', {
 		'App.ux.form.fields.DateTime'
 	],
 	alias: 'widget.vitalspanel',
-	title: i18n('vitals'),
+	title: _('vitals'),
 	layout: 'border',
 	bodyPadding: 5,
 	items: [
@@ -46,28 +46,28 @@ Ext.define('App.view.patient.Vitals', {
 				{
 					itemId: 'bpBlock',
 					margin: '0 5 5 0',
-					html: '<p class="title">' + i18n('bp') + '</p><p class="value">--/--</p><p class="extra">' + i18n('systolic') + '/' + i18n('diastolic') + '</p>'
+					html: '<p class="title">' + _('bp') + '</p><p class="value">--/--</p><p class="extra">' + _('systolic') + '/' + _('diastolic') + '</p>'
 				},
 				{
 					itemId: 'tempBlock',
-					html: '<p class="title">' + i18n('temp') + '</p><p class="value">--</p><p class="extra">--</p>'
+					html: '<p class="title">' + _('temp') + '</p><p class="value">--</p><p class="extra">--</p>'
 				},
 				{
 					itemId: 'weighBlock',
-					html: '<p class="title">' + i18n('weight') + '</p><p class="value">--</p>'
+					html: '<p class="title">' + _('weight') + '</p><p class="value">--</p>'
 				},
 				{
 					itemId: 'heightBlock',
-					html: '<p class="title">' + i18n('height') + '</p><p class="value">--</p>'
+					html: '<p class="title">' + _('height') + '</p><p class="value">--</p>'
 				},
 				{
 					itemId: 'bmiBlock',
-					html: '<p class="title">' + i18n('bmi') + '</p><p class="value">--</p><p class="extra">--</p>'
+					html: '<p class="title">' + _('bmi') + '</p><p class="value">--</p><p class="extra">--</p>'
 				},
 				{
 					itemId: 'notesBlock',
 					margin: '0 5 5 5',
-					html: '<p class="title">' + i18n('notes') + '</p><p class="value" style="text-align: left"> -- </p><p class="extra">--</p>',
+					html: '<p class="title">' + _('notes') + '</p><p class="value" style="text-align: left"> -- </p><p class="extra">--</p>',
 					flex: 1
 				}
 			]
@@ -100,14 +100,14 @@ Ext.define('App.view.patient.Vitals', {
 				},
 				'->',
 				{
-					text: i18n('vitals'),
+					text: _('vitals'),
 					iconCls: 'icoAdd',
 					itemId: 'vitalAddBtn',
 					action: 'encounterRecordAdd'
 				},
 				'-',
 				{
-					text: i18n('sign'),
+					text: _('sign'),
 					icon: 'resources/images/icons/pen.png',
 					itemId: 'vitalSignBtn',
 					action: 'encounterRecordAdd'
@@ -122,7 +122,7 @@ Ext.define('App.view.patient.Vitals', {
 		var columns = [
 			{
 				xtype:'datecolumn',
-				text: i18n('date'),
+				text: _('date'),
 				dataIndex: 'date',
 				format: 'Y-m-d g:i a',
 				width: 180,
@@ -132,10 +132,10 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			},
 			{
-				text: i18n('bp'),
+				text: _('bp'),
 				columns:[
 					{
-						text: i18n('systolic'),
+						text: _('systolic'),
 						dataIndex: 'bp_systolic',
 						width: 65,
 						editor: {
@@ -144,7 +144,7 @@ Ext.define('App.view.patient.Vitals', {
 						}
 					},
 					{
-						text: i18n('diastolic'),
+						text: _('diastolic'),
 						dataIndex: 'bp_diastolic',
 						width: 65,
 						editor: {
@@ -158,7 +158,7 @@ Ext.define('App.view.patient.Vitals', {
 
 		if(g('units_of_measurement') != 'metric'){
 			columns.push({
-				text: i18n('temp'),
+				text: _('temp'),
 				dataIndex: 'temp_f',
 				width: 70,
 				editor: {
@@ -173,7 +173,7 @@ Ext.define('App.view.patient.Vitals', {
 			});
 		}else{
 			columns.push({
-				text: i18n('temp'),
+				text: _('temp'),
 				dataIndex: 'temp_c',
 				width: 70,
 				editor: {
@@ -189,7 +189,7 @@ Ext.define('App.view.patient.Vitals', {
 		}
 
 		columns.push({
-			text: i18n('temp_location'),
+			text: _('temp_location'),
 			dataIndex: 'temp_location',
 			editor: {
 				xtype: 'gaiaehr.combo',
@@ -199,7 +199,7 @@ Ext.define('App.view.patient.Vitals', {
 
 		if(g('units_of_measurement') != 'metric'){
 			columns.push({
-				text: i18n('weight_lbs'),
+				text: _('weight_lbs'),
 				dataIndex: 'weight_lbs',
 				width: 80,
 				editor: {
@@ -213,7 +213,7 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			});
 			columns.push({
-				text: i18n('height_in'),
+				text: _('height_in'),
 				dataIndex: 'height_in',
 				width: 70,
 				editor: {
@@ -228,7 +228,7 @@ Ext.define('App.view.patient.Vitals', {
 			});
 		}else{
 			columns.push({
-				text: i18n('weight'),
+				text: _('weight'),
 				dataIndex: 'weight_kg',
 				width: 80,
 				editor: {
@@ -242,7 +242,7 @@ Ext.define('App.view.patient.Vitals', {
 				}
 			});
 			columns.push({
-				text: i18n('height_cm'),
+				text: _('height_cm'),
 				dataIndex: 'height_cm',
 				width: 70,
 				editor: {
@@ -258,7 +258,7 @@ Ext.define('App.view.patient.Vitals', {
 		}
 
 		columns.push({
-			text: i18n('pulse'),
+			text: _('pulse'),
 			dataIndex: 'pulse',
 			width: 60,
 			editor: {
@@ -271,7 +271,7 @@ Ext.define('App.view.patient.Vitals', {
 		});
 
 		columns.push({
-			text: i18n('respiration'),
+			text: _('respiration'),
 			dataIndex: 'respiration',
 			editor: {
 				xtype: 'textfield',
@@ -284,45 +284,45 @@ Ext.define('App.view.patient.Vitals', {
 
 
 //		{
-//			text: i18n('oxygen_saturation'),
+//			text: _('oxygen_saturation'),
 //			dataIndex: 'oxygen_saturation'
 //		},
 //		{
-//			text: i18n('head_circumference_in'),
+//			text: _('head_circumference_in'),
 //			dataIndex: 'head_circumference_in',
 //			width: 150
 //		},
 //		{
-//			text: i18n('head_circumference_cm'),
+//			text: _('head_circumference_cm'),
 //			dataIndex: 'head_circumference_cm',
 //			width: 150,
 //			hidden: true
 //		},
 //		{
-//			text: i18n('waist_circumference_in'),
+//			text: _('waist_circumference_in'),
 //			dataIndex: 'waist_circumference_in',
 //			width: 150
 //		},
 //		{
-//			text: i18n('waist_circumference_cm'),
+//			text: _('waist_circumference_cm'),
 //			dataIndex: 'waist_circumference_cm',
 //			width: 150,
 //			hidden: true
 //		},
 
 		columns.push({
-			text: i18n('bmi'),
+			text: _('bmi'),
 			dataIndex: 'bmi',
 			width: 50
 		});
 
 //		{
-//			text: i18n('bmi_status'),
+//			text: _('bmi_status'),
 //			dataIndex: 'bmi_status'
 //		}
 
 		columns.push({
-			text: i18n('other_notes'),
+			text: _('other_notes'),
 			dataIndex: 'other_notes',
 			flex: 1,
 			editor: {
@@ -331,12 +331,12 @@ Ext.define('App.view.patient.Vitals', {
 		});
 
 		columns.push({
-			text: i18n('administer_by'),
+			text: _('administer_by'),
 			dataIndex: 'administer_by'
 		});
 
 		columns.push({
-			text: i18n('authorized_by'),
+			text: _('authorized_by'),
 			dataIndex: 'authorized_by'
 		});
 

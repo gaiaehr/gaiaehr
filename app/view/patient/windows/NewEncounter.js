@@ -19,7 +19,7 @@
 Ext.define('App.view.patient.windows.NewEncounter', {
 	extend: 'Ext.window.Window',
 	itemId: 'EncounterDetailWindow',
-	title: i18n('encounter'),
+	title: _('encounter'),
 	closeAction: 'hide',
 	closable: false,
 	modal: true,
@@ -40,13 +40,13 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					action: 'encounter',
 					scope: me,
 					handler: me.onFormSave
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.cancelNewEnc
 				}
@@ -85,8 +85,8 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
 					if(response.result.encounter){
 						Ext.Msg.show({
-							title: 'Oops! ' + i18n('open_encounters_found') + '...',
-							msg: i18n('do_you_want_to') + ' <strong>' + i18n('continue_creating_the_new_encounters') + '</strong><br>"' + i18n('click_no_to_review_encounter_history') + '"',
+							title: 'Oops! ' + _('open_encounters_found') + '...',
+							msg: _('do_you_want_to') + ' <strong>' + _('continue_creating_the_new_encounters') + '</strong><br>"' + _('click_no_to_review_encounter_history') + '"',
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,
 							fn: function(btn){

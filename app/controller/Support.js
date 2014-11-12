@@ -39,7 +39,7 @@ Ext.define('App.controller.Support', {
 			me.winSupport.show();
 		}else{
 			me.winSupport = Ext.create('Ext.window.Window', {
-				title: i18n('support'),
+				title: _('support'),
 				closeAction: 'hide',
 				bodyStyle: 'background-color: #ffffff; padding: 5px;',
 				animateTarget: me.Footer,

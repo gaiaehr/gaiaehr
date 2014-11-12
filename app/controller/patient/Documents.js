@@ -111,7 +111,7 @@ Ext.define('App.controller.patient.Documents', {
 					if(doc){
 						grid.getSelectionModel().select(doc);
 					}else{
-						app.msg(i18n('oops'), i18n('unable_to_fild_docuent'), true);
+						app.msg(_('oops'), _('unable_to_fild_docuent'), true);
 					}
 
 				}
@@ -161,12 +161,12 @@ Ext.define('App.controller.patient.Documents', {
 			message;
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
-			message = i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
+			message = _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
 
 			if(window.dual){
-				dual.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+				dual.msg(_(success ? 'sweet' : 'oops'), message, !success)
 			}else{
-				app.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+				app.msg(_(success ? 'sweet' : 'oops'), message, !success)
 			}
 		});
 	},
@@ -214,7 +214,7 @@ Ext.define('App.controller.patient.Documents', {
 
 		store.sync({
 			success: function(){
-				app.msg(i18n('sweet'), i18n('document_added'));
+				app.msg(_('sweet'), _('document_added'));
 				me.getPatientDocumentUploadWindow().close();
 				me.getPatientDocumentGrid().getSelectionModel().select(record);
 
@@ -222,9 +222,9 @@ Ext.define('App.controller.patient.Documents', {
 			failure: function(){
 				store.rejectChanges();
 				if(window.dual){
-					dual.msg(i18n('oops'), i18n('document_error'), true);
+					dual.msg(_('oops'), _('document_error'), true);
 				}else{
-					app.msg(i18n('oops'), i18n('document_error'), true);
+					app.msg(_('oops'), _('document_error'), true);
 				}
 
 			}
@@ -273,7 +273,7 @@ Ext.define('App.controller.patient.Documents', {
 		if(dropPanel && dropPanel.rendered){
 			if(!me.dropMask){
 				me.dropMask = new Ext.LoadMask(me.getPatientDocumentViewerFrame(), {
-					msg: i18n('drop_here'),
+					msg: _('drop_here'),
 					cls: 'uploadmask',
 					maskCls: 'x-mask uploadmask',
 					shadow: false

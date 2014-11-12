@@ -29,7 +29,7 @@ Ext.define('App.view.patient.RxOrders', {
 		'App.ux.LiveRXNORMSearch'
 	],
 	xtype: 'patientrxorderspanel',
-	title: i18n('rx_orders'),
+	title: _('rx_orders'),
 	columnLines: true,
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
@@ -71,7 +71,7 @@ Ext.define('App.view.patient.RxOrders', {
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('order_date'),
+									fieldLabel: _('order_date'),
 									format: 'Y-m-d',
 									name: 'date_ordered',
 									allowBlank: false,
@@ -81,7 +81,7 @@ Ext.define('App.view.patient.RxOrders', {
 									xtype: 'rxnormlivetsearch',
 									itemId: 'RxNormOrderLiveSearch',
 									hideLabel: false,
-									fieldLabel: i18n('medication'),
+									fieldLabel: _('medication'),
 									width: 700,
 									name: 'STR',
 									maxLength: 105,
@@ -100,7 +100,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'numberfield',
 											width: 170,
-											fieldLabel: i18n('dispense'),
+											fieldLabel: _('dispense'),
 											minValue: 0.001,
 											maxValue: 99999,
 											name: 'dispense',
@@ -134,7 +134,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'numberfield',
 											width: 130,
-											fieldLabel: i18n('days_supply'),
+											fieldLabel: _('days_supply'),
 											labelAlign: 'right',
 											labelWidth: 75,
 											minValue: 1,
@@ -145,7 +145,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'numberfield',
 											width: 100,
-											fieldLabel: i18n('refill'),
+											fieldLabel: _('refill'),
 											labelAlign: 'right',
 											labelWidth: 40,
 											maxValue: 99,
@@ -157,7 +157,7 @@ Ext.define('App.view.patient.RxOrders', {
 										{
 											xtype: 'encountericdscombo',
 											itemId: 'RxEncounterDxCombo',
-											fieldLabel: i18n('dx'),
+											fieldLabel: _('dx'),
 											labelAlign: 'right',
 											labelWidth: 30,
 											width: 295,
@@ -178,7 +178,7 @@ Ext.define('App.view.patient.RxOrders', {
 								{
 									xtype: 'textfield',
 									width: 700,
-									fieldLabel: i18n('notes_to_Pharmacist'),
+									fieldLabel: _('notes_to_Pharmacist'),
 									itemId: 'RxOrderGridFormNotesField',
 									name: 'notes',
 									maxLength: 210
@@ -197,8 +197,8 @@ Ext.define('App.view.patient.RxOrders', {
 									items:[
 										{
 											xtype: 'checkboxfield',
-											fieldLabel: i18n('daw'),
-											tooltip: i18n('dispensed_as_written'),
+											fieldLabel: _('daw'),
+											tooltip: _('dispensed_as_written'),
 											width: 90,
 											labelWidth: 70,
 											labelAlign: 'right',
@@ -207,8 +207,8 @@ Ext.define('App.view.patient.RxOrders', {
 										},
 										{
 											xtype: 'checkboxfield',
-											fieldLabel: i18n('is_comp'),
-											tooltip: i18n('is_compound'),
+											fieldLabel: _('is_comp'),
+											tooltip: _('is_compound'),
 											width: 85,
 											labelWidth: 65,
 											labelAlign: 'right',
@@ -218,8 +218,8 @@ Ext.define('App.view.patient.RxOrders', {
 										},
 										{
 											xtype: 'checkboxfield',
-											fieldLabel: i18n('is_sply'),
-											tooltip: i18n('is_supply'),
+											fieldLabel: _('is_sply'),
+											tooltip: _('is_supply'),
 											width: 85,
 											labelWidth: 65,
 											labelAlign: 'right',
@@ -231,7 +231,7 @@ Ext.define('App.view.patient.RxOrders', {
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('begin_date'),
+									fieldLabel: _('begin_date'),
 									labelWidth: 70,
 									labelAlign: 'right',
 									width: 258,
@@ -242,7 +242,7 @@ Ext.define('App.view.patient.RxOrders', {
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('end_date'),
+									fieldLabel: _('end_date'),
 									labelWidth: 70,
 									labelAlign: 'right',
 									format: 'Y-m-d',
@@ -253,8 +253,8 @@ Ext.define('App.view.patient.RxOrders', {
 						},
 						{
 							xtype: 'fieldset',
-							title: i18n('active_drug_allergies'),
-							html: i18n('none'),
+							title: _('active_drug_allergies'),
+							html: _('none'),
 							margin: '25 0 5 10',
 							flex: 1
 						}
@@ -270,62 +270,62 @@ Ext.define('App.view.patient.RxOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 				}
 			]
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_ordered'),
+			header: _('date_ordered'),
 			dataIndex: 'date_ordered',
 			format: 'Y-m-d'
 		},
 		{
-			header: i18n('medication'),
+			header: _('medication'),
 			flex: 1,
 			dataIndex: 'STR'
 		},
 		{
-			header: i18n('daw'),
+			header: _('daw'),
 			width: 40,
 			dataIndex: 'daw',
-			tooltip: i18n('dispensed_as_written'),
+			tooltip: _('dispensed_as_written'),
 			renderer: function(v){
 				return app.boolRenderer(v);
 			}
 		},
 		//		{
-		//			header: i18n('dose'),
+		//			header: _('dose'),
 		//			width: 115,
 		//			dataIndex: 'dose'
 		//		},
 		//		{
-		//			header: i18n('route'),
+		//			header: _('route'),
 		//			width: 90,
 		//			dataIndex: 'route'
 		//		},
 		//		{
-		//			header: i18n('form'),
+		//			header: _('form'),
 		//			width: 70,
 		//			dataIndex: 'form'
 		//		},
 		{
-			header: i18n('dispense'),
+			header: _('dispense'),
 			width: 60,
 			dataIndex: 'dispense'
 		},
 		{
-			header: i18n('refill'),
+			header: _('refill'),
 			width: 50,
 			dataIndex: 'refill'
 		},
 		{
-			header: i18n('instructions'),
+			header: _('instructions'),
 			flex: 1,
 			dataIndex: 'directions'
 		},
 		{
-			header: i18n('related_dx'),
+			header: _('related_dx'),
 			width: 200,
 			dataIndex: 'dxs',
 			renderer: function(v){
@@ -335,13 +335,13 @@ Ext.define('App.view.patient.RxOrders', {
 		{
 			xtype: 'datecolumn',
 			format: 'Y-m-d',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			width: 75,
 			dataIndex: 'begin_date'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			width: 75,
 			format: 'Y-m-d',
 			dataIndex: 'end_date'
@@ -351,14 +351,14 @@ Ext.define('App.view.patient.RxOrders', {
 		'->',
 		'-',
 		{
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newRxOrderBtn'
 		},
 		'-',
 		{
-			text: i18n('clone_order'),
+			text: _('clone_order'),
 			iconCls: 'icoAdd',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -367,7 +367,7 @@ Ext.define('App.view.patient.RxOrders', {
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',

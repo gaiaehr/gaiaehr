@@ -19,7 +19,7 @@
 Ext.define('App.view.patient.encounter.ICDs', {
 	extend: 'Ext.form.FieldSet',
 	alias: 'widget.icdsfieldset',
-	title: i18n('dx_codes'),
+	title: _('dx_codes'),
 	padding: '10 15',
 	layout: {
 		type: 'vbox',

@@ -22,7 +22,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 		'App.ux.LiveSnomedProcedureSearch'
 	],
 	xtype: 'careplangoalsnewwindow',
-	title: i18n('new_goal'),
+	title: _('new_goal'),
 	closable: false,
 	constrain: true,
 	closeAction: 'hide',
@@ -41,7 +41,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 					xtype: 'fieldcontainer',
 					layout: 'hbox',
 					itemId: 'CarePlanGoalPlanDateContainer',
-					fieldLabel: i18n('plan_date'),
+					fieldLabel: _('plan_date'),
 					labelAlign: 'top',
 					defaults: {
 						margin: '0 5 0 0'
@@ -94,7 +94,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 				{
 					xtype: 'snomedliveproceduresearch',
 					itemId: 'CarePlanGoalSearchField',
-					fieldLabel: i18n('goal'),
+					fieldLabel: _('goal'),
 					displayField: 'FullySpecifiedName',
 					valueField: 'FullySpecifiedName',
 					labelAlign: 'top',
@@ -104,7 +104,7 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 				},
 				{
 					xtype: 'textareafield',
-					fieldLabel: i18n('instructions'),
+					fieldLabel: _('instructions'),
 					labelAlign: 'top',
 					name: 'instructions',
 					flex: 1
@@ -114,11 +114,11 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			itemId: 'CarePlanGoalsNewFormCancelBtn'
 		},
 		{
-			text: i18n('save'),
+			text: _('save'),
 			itemId: 'CarePlanGoalsNewFormSaveBtn'
 		}
 	]

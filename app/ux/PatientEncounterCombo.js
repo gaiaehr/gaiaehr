@@ -22,7 +22,7 @@ Ext.define('App.ux.PatientEncounterCombo', {
 	hideLabel: true,
 	displayField: 'brief_description',
 	valueField: 'brief_description',
-	emptyText: i18n('search') + '...',
+	emptyText: _('search') + '...',
 	width: 400,
 	editable: false,
 	initComponent: function(){
@@ -75,7 +75,7 @@ Ext.define('App.ux.PatientEncounterCombo', {
 		Ext.apply(this, {
 			store: me.store,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{[Ext.Date.format(values.service_date, g("date_time_display_format"))]} - {[Ext.String.ellipsis(values.brief_description, 25)]} </h3></div>';
 				}

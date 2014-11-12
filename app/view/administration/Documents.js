@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Documents', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelDocuments',
-	pageTitle: i18n('document_template_editor'),
+	pageTitle: _('document_template_editor'),
 	pageLayout: 'border',
 	requires: [
 		'App.ux.grid.Button',
@@ -37,7 +37,7 @@ Ext.define('App.view.administration.Documents', {
 		me.tokenStore = Ext.create('App.store.administration.DocumentToken');
 
 		//		me.HeaderFootergrid = Ext.create('Ext.grid.Panel', {
-		//			title      : i18n('header_footer_templates'),
+		//			title      : _('header_footer_templates'),
 		//			region     : 'south',
 		//			height     : 250,
 		//			split      : true,
@@ -55,7 +55,7 @@ Ext.define('App.view.administration.Documents', {
 		//				},
 		//				{
 		//					icon: 'resources/images/icons/delete.png',
-		//					tooltip: i18n('remove'),
+		//					tooltip: _('remove'),
 		//					scope:me,
 		//					handler: me.onRemoveDocument
 		//				}
@@ -67,7 +67,7 @@ Ext.define('App.view.administration.Documents', {
 		//			tbar       :[
 		//                '->',
 		//                {
-		//                    text : i18n('new'),
+		//                    text : _('new'),
 		//                    scope: me,
 		//                    handler: me.newHeaderOrFooterTemplate
 		//                }
@@ -81,7 +81,7 @@ Ext.define('App.view.administration.Documents', {
 		//		});
 
 		me.DocumentsDefaultsGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('documents_defaults'),
+			title: _('documents_defaults'),
 			region: 'north',
 			width: 250,
 			border: true,
@@ -100,7 +100,7 @@ Ext.define('App.view.administration.Documents', {
 				},
 				{
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('remove'),
+					tooltip: _('remove'),
 					scope: me,
 					handler: me.onRemoveDocument
 				}
@@ -111,7 +111,7 @@ Ext.define('App.view.administration.Documents', {
 			},
 			tbar: ['->',
 				{
-					text: i18n('new'),
+					text: _('new'),
 					scope: me,
 					handler: me.newDefaultTemplates
 				}],
@@ -122,7 +122,7 @@ Ext.define('App.view.administration.Documents', {
 		});
 
 		me.DocumentsGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('document_templates'),
+			title: _('document_templates'),
 			region: 'center',
 			width: 250,
 			border: true,
@@ -141,7 +141,7 @@ Ext.define('App.view.administration.Documents', {
 				},
 				{
 					icon: 'resources/images/icons/delete.png',
-					tooltip: i18n('remove'),
+					tooltip: _('remove'),
 					scope: me,
 					handler: me.onRemoveDocument
 				}
@@ -152,7 +152,7 @@ Ext.define('App.view.administration.Documents', {
 			},
 			tbar: ['->',
 				{
-					text: i18n('new'),
+					text: _('new'),
 					scope: me,
 					handler: me.newDocumentTemplate
 				}],
@@ -172,7 +172,7 @@ Ext.define('App.view.administration.Documents', {
 		});
 
 		me.TeamplateEditor = Ext.create('Ext.form.Panel', {
-			title: i18n('document_editor'),
+			title: _('document_editor'),
 			region: 'center',
 			layout: 'fit',
 			autoScroll: false,
@@ -187,12 +187,12 @@ Ext.define('App.view.administration.Documents', {
 			},
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					scope: me,
 					handler: me.onSaveEditor
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.onCancelEditor
 				}
@@ -200,7 +200,7 @@ Ext.define('App.view.administration.Documents', {
 		});
 
 		me.TokensGrid = Ext.create('Ext.grid.Panel', {
-			title: i18n('available_tokens'),
+			title: _('available_tokens'),
 			region: 'east',
 			width: 250,
 			border: true,
@@ -223,7 +223,7 @@ Ext.define('App.view.administration.Documents', {
 					items: [
 						{
 							icon: 'resources/images/icons/copy.png',
-							tooltip: i18n('copy'),
+							tooltip: _('copy'),
 							margin: '0 5 0 0',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 
@@ -292,7 +292,7 @@ Ext.define('App.view.administration.Documents', {
 			record = form.getRecord(),
 			values = form.getValues();
 		record.set(values);
-		app.msg(i18n('sweet'), i18n('record_saved'));
+		app.msg(_('sweet'), _('record_saved'));
 	},
 
 	onCancelEditor: function(){
@@ -312,7 +312,7 @@ Ext.define('App.view.administration.Documents', {
 		me.rowEditor.cancelEdit();
 		store.insert(0,
 			{
-				title: i18n('new_document'),
+				title: _('new_document'),
 				template_type: 'documenttemplate',
 				date: new Date(),
 				type: 1
@@ -326,7 +326,7 @@ Ext.define('App.view.administration.Documents', {
 		me.rowEditor3.cancelEdit();
 		store.insert(0,
 			{
-				title: i18n('new_defaults'),
+				title: _('new_defaults'),
 				template_type: 'defaulttemplate',
 				date: new Date(),
 				type: 1
@@ -340,7 +340,7 @@ Ext.define('App.view.administration.Documents', {
 	//            store = me.headersAndFooterStore;
 	//        me.rowEditor2.cancelEdit();
 	//        store.insert(0,{
-	//            title: i18n('new_header_or_footer'),
+	//            title: _('new_header_or_footer'),
 	//	        template_type:'headerorfootertemplate',
 	//            date: new Date(),
 	//	        type: 2

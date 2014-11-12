@@ -122,7 +122,7 @@ Ext.define('App.view.Viewport', {
 		    iconCls: 'icoHome',
 		    scope: me,
 		    handler: me.openDashboard,
-		    tooltip: i18n('patient_visits_history')
+		    tooltip: _('patient_visits_history')
         });
 
 	    me.HeaderLeft.add({
@@ -134,7 +134,7 @@ Ext.define('App.view.Viewport', {
 		    iconCls: 'icoCalendar2',
 		    scope: me,
 		    handler: me.openCalendar,
-		    tooltip: i18n('patient_visits_history')
+		    tooltip: _('patient_visits_history')
         });
 
 	    me.HeaderLeft.add({ xtype: 'tbseparator' });
@@ -144,7 +144,7 @@ Ext.define('App.view.Viewport', {
             scale: 'large',
 		    margin: '0 3 0 0',
 		    style: 'height: 42px',
-            tooltip: i18n('patient_btn_drag'),
+            tooltip: _('patient_btn_drag'),
             listeners: {
                 scope: me,
                 afterrender: me.patientBtnRender
@@ -163,7 +163,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoPatientInfo',
             scope: me,
             handler: me.openPatientSummary,
-            tooltip: i18n('patient_summary')
+            tooltip: _('patient_summary')
         });
 
 	    if(a('access_patient_visits')){
@@ -176,7 +176,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoBackClock',
 			    scope: me,
 			    handler: me.openPatientVisits,
-			    tooltip: i18n('patient_visits_history')
+			    tooltip: _('patient_visits_history')
 		    });
 	    }
 
@@ -191,7 +191,7 @@ Ext.define('App.view.Viewport', {
                 iconCls: 'icoClock',
                 scope: me,
                 handler: me.createNewEncounter,
-                tooltip: i18n('new_encounter')
+                tooltip: _('new_encounter')
             });
         }
 
@@ -204,7 +204,7 @@ Ext.define('App.view.Viewport', {
             iconCls: 'icoArrowDown',
             scope: me,
             handler: me.stowPatientRecord,
-            tooltip: i18n('stow_patient_record')
+            tooltip: _('stow_patient_record')
         });
 
 //	    if(a('access_patient_visit_checkout')){
@@ -217,7 +217,7 @@ Ext.define('App.view.Viewport', {
 //			    iconCls: 'icoCheckOut',
 //			    scope: me,
 //			    handler: me.checkOutPatient,
-//			    tooltip: i18n('visit_check_out')
+//			    tooltip: _('visit_check_out')
 //		    });
 //	    }
 
@@ -232,7 +232,7 @@ Ext.define('App.view.Viewport', {
 //            iconCls: me.icoMoney,
 //            scope: me,
 //            handler: me.onPaymentEntryWindow,
-//            tooltip: i18n('payment_entry')
+//            tooltip: _('payment_entry')
 //        });
 
 	    if(a('access_patient_search')){
@@ -243,7 +243,7 @@ Ext.define('App.view.Viewport', {
 			    items: [
 				    {
 					    xtype: 'patienlivetsearch',
-					    emptyText: i18n('patient_live_search') + '...',
+					    emptyText: _('patient_live_search') + '...',
 					    width: (me.fullMode ? 300 : 300),
 					    listeners: {
 						    scope: me,
@@ -269,7 +269,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoAddPatient',
 			    scope: me,
 			    handler: me.newPatient,
-			    tooltip: i18n('create_a_new_patient')
+			    tooltip: _('create_a_new_patient')
 		    });
 	    }
 
@@ -285,7 +285,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoEmer',
 			    scope: me,
 			    handler: me.createEmergency,
-			    tooltip: i18n('create_new_emergency')
+			    tooltip: _('create_new_emergency')
 		    });
 	    }
 
@@ -300,7 +300,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoZoneAreasBig',
 			    scope: me,
 			    handler: me.goToFloorPlans,
-			    tooltip: i18n('floor_plans')
+			    tooltip: _('floor_plans')
 		    });
 	    }
 
@@ -315,7 +315,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoPoolArea',
 			    scope: me,
 			    handler: me.goToPoolAreas,
-			    tooltip: i18n('pool_areas')
+			    tooltip: _('pool_areas')
 		    });
 	    }
 
@@ -330,7 +330,7 @@ Ext.define('App.view.Viewport', {
 			    iconCls: 'icoCheckIn',
 			    scope: me,
 			    handler: me.onPatientLog,
-			    tooltip: i18n('arrival_log')
+			    tooltip: _('arrival_log')
 		    });
 	    }
 
@@ -352,14 +352,14 @@ Ext.define('App.view.Viewport', {
 		    margin: 0,
 		    menu: [
 			    {
-				    text: i18n('my_account'),
+				    text: _('my_account'),
 				    iconCls: 'icoUser',
 				    handler: function(){
 					    me.nav.navigateTo('App.view.miscellaneous.MyAccount');
 				    }
 			    },
 			    {
-				    text: i18n('logout'),
+				    text: _('logout'),
 				    iconCls: 'icoLogout',
 				    action:'logout'
 			    }
@@ -368,7 +368,7 @@ Ext.define('App.view.Viewport', {
 
 	    if(a('emergency_access')){
 		    me.userSplitBtn.menu.insert(0,{
-			    text:i18n('emergency_access'),
+			    text:_('emergency_access'),
 			    cls: 'emergency',
 			    iconCls:'icoUnlocked',
 			    scope:me,
@@ -382,7 +382,7 @@ Ext.define('App.view.Viewport', {
          * The panel definition for the the TreeMenu & the support button
          */
         me.navColumn = Ext.create('Ext.panel.Panel', {
-            title: i18n('navigation'),
+            title: _('navigation'),
             action: 'mainNavPanel',
             layout: 'border',
             region: g('main_navigation_menu_left'),
@@ -405,7 +405,7 @@ Ext.define('App.view.Viewport', {
 	                })
                 },
                 me.patientPoolArea = Ext.create('Ext.Panel', {
-                    title: i18n('patient_pool_areas'),
+                    title: _('patient_pool_areas'),
 //                    layout: 'fit',
                     region: 'south',
 	                action:'patientPoolArea',
@@ -551,31 +551,31 @@ Ext.define('App.view.Viewport', {
                         },
                         '->',
                         {
-                            text: i18n('news'),
+                            text: _('news'),
 	                        action: 'supportBtn',
 	                        src: 'http://GaiaEHR.org/projects/GaiaEHR001/news'
                         },
                         '-',
                         {
-                            text: i18n('wiki'),
+                            text: _('wiki'),
 	                        action: 'supportBtn',
 	                        src: 'http://gaiaehr.org/'
                         },
                         '-',
                         {
-                            text: i18n('issues'),
+                            text: _('issues'),
 	                        action: 'supportBtn',
                             src: 'http://gaiaehr.org:8181/issues/?jql='
                         },
                         '-',
                         {
-                            text: i18n('forums'),
+                            text: _('forums'),
 	                        action: 'supportBtn',
 	                        src: 'http://gaiaehr.org/forums/'
                         },
                         '-',
                         {
-                            text: '<span style="color: red">'+i18n('FACTORY RESET')+'</span>',
+                            text: '<span style="color: red">'+_('FACTORY RESET')+'</span>',
                             scope: me,
 	                        //TODO: VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 	                        //TODO: remove this!!! hide if not localhost for now
@@ -631,7 +631,7 @@ Ext.define('App.view.Viewport', {
 				// set user global facility value
 				app.user.facility = records[0].data.option_value;
 
-				me.msg(i18n('sweet'), i18n('facility') + ' ' + records[0].data.option_name);
+				me.msg(_('sweet'), _('facility') + ' ' + records[0].data.option_name);
 				me.setWindowTitle(records[0].data.option_name);
 				me.nav['App_view_areas_PatientPoolDropZone'].reRenderPoolAreas();
 				me.nav['App_view_areas_FloorPlan'].renderZones();
@@ -703,7 +703,7 @@ Ext.define('App.view.Viewport', {
         if(panel.id == 'panelSummary'){
             panel.demographics.completePhotoId();
         }
-        this.msg('Sweet!', i18n('patient_image_saved'));
+        this.msg('Sweet!', _('patient_image_saved'));
     },
 
 	onPatientLog: function(){
@@ -737,8 +737,8 @@ Ext.define('App.view.Viewport', {
 	        emergency;
 
         Ext.Msg.show({
-            title: i18n('wait') + '!!!',
-            msg: i18n('are_you_sure_you_want_to_create_a_new') + ' <span style="color: red">"' + i18n('emergency') + '"</span>?',
+            title: _('wait') + '!!!',
+            msg: _('are_you_sure_you_want_to_create_a_new') + ' <span style="color: red">"' + _('emergency') + '"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn: function(btn){
@@ -750,7 +750,7 @@ Ext.define('App.view.Viewport', {
                             me.setPatient(emergency.pid, emergency.eid, function(){
                                 me.openEncounter(emergency.eid);
                             });
-                            me.msg('Sweet!', emergency.name + ' ' + i18n('created'))
+                            me.msg('Sweet!', emergency.name + ' ' + _('created'))
                         }
                     });
                 }
@@ -762,8 +762,8 @@ Ext.define('App.view.Viewport', {
 		var me = this;
 
 		Ext.Msg.show({
-			title:i18n('wait'),
-			msg: i18n('emergency_access_question') + '<br>' + i18n('emergency_access_disclaimer'),
+			title:_('wait'),
+			msg: _('emergency_access_question') + '<br>' + _('emergency_access_disclaimer'),
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -778,7 +778,7 @@ Ext.define('App.view.Viewport', {
 				window.location = './';
 				return;
 			}
-			Ext.Msg.alert(i18n('oops'), i18n('emergency_access_error'));
+			Ext.Msg.alert(_('oops'), _('emergency_access_error'));
 		});
 	},
 
@@ -931,10 +931,10 @@ Ext.define('App.view.Viewport', {
                 msg2;
 
             if(data.readOnly){
-                msg1 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>' + i18n('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + i18n('do_you_would_like_to_override_read_mode');
-                msg2 = data.user + ' ' + i18n('is_currently_working_with') + ' "' + data.patient.name + '" ' + i18n('in') + ' "' + data.area + '" ' + i18n('area') + '.<br>';
+                msg1 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') + '.<br>' + _('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + _('do_you_would_like_to_override_read_mode');
+                msg2 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') + '.<br>';
                 Ext.Msg.show({
-                        title: i18n('wait') + '!!!',
+                        title: _('wait') + '!!!',
                         msg: data.overrideReadOnly ? msg1 : msg2,
                         buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
                         icon: Ext.MessageBox.WARNING,
@@ -1023,7 +1023,7 @@ Ext.define('App.view.Viewport', {
         me.patientBtn.update({
             pid: patient.pid || 'record number',
 	        pic: patient.pic || me.patientImage,
-            name: patient.name || i18n('no_patient_selected')
+            name: patient.name || _('no_patient_selected')
         });
 
 	    me.patientButtonRemoveCls();
@@ -1098,7 +1098,7 @@ Ext.define('App.view.Viewport', {
                     if(sourceEl){
 	                    msgDiv = document.createElement('div');
 	                    msgDiv.id = Ext.id();
-	                    msgDiv.innerHTML = i18n('drag_patient_to_new_area');
+	                    msgDiv.innerHTML = _('drag_patient_to_new_area');
 
 	                    return panel.dragData = {
                             copy: true,
@@ -1176,7 +1176,7 @@ Ext.define('App.view.Viewport', {
                         this.ddGroup = 'patientPoolAreas';
                     }else{
                         this.ddGroup = 'patient';
-                        app.MainPanel.el.mask(i18n('drop_here_to_open') + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + i18n('current_encounter'));
+                        app.MainPanel.el.mask(_('drop_here_to_open') + ' <strong>"' + panel.getRecord(sourceEl).data.name + '"</strong> ' + _('current_encounter'));
                     }
                     this.addToGroup(this.ddGroup);
                     this.newGroupReset = false;
@@ -1261,11 +1261,11 @@ Ext.define('App.view.Viewport', {
                 app.MainPanel.el.unmask();
 
 	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
-//		            me.VisitCheckout.el.mask(i18n('loading...'));
+//		            me.VisitCheckout.el.mask(_('loading...'));
 	            }else if(data.patientData.eid && a('access_encounters')){
-//		            me.Encounter.el.mask(i18n('loading...'));
+//		            me.Encounter.el.mask(_('loading...'));
 	            }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
-//		            me.Summary.el.mask(i18n('loading...'));
+//		            me.Summary.el.mask(_('loading...'));
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
@@ -1315,7 +1315,7 @@ Ext.define('App.view.Viewport', {
 	            try{
 		            App.app.getController('Modules.' + modules[i].dir + '.Main');
 	            }catch(error){
-					app.msg(i18n('oops'), (i18n('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
+					app.msg(_('oops'), (_('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
 	            }
             }
 
@@ -1360,7 +1360,7 @@ Ext.define('App.view.Viewport', {
     accessDenied: function(){
         Ext.Msg.show({
             title: 'Oops!',
-            msg: i18n('access_denied'),
+            msg: _('access_denied'),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR
         });

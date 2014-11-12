@@ -154,7 +154,7 @@ Ext.define('App.controller.patient.Immunizations', {
 	getVxuWindow: function(){
 		var me = this;
 		return Ext.widget('window',{
-			title: i18n('submit_hl7_vxu'),
+			title: _('submit_hl7_vxu'),
 			closable: false,
 			modal: true,
 			bodyStyle:'background-color:white',
@@ -165,7 +165,7 @@ Ext.define('App.controller.patient.Immunizations', {
 			},
 			items:[
 				{
-					html: i18n('please_verify_the_information')+':',
+					html: _('please_verify_the_information')+':',
 					margin: '10 10 0 10'
 				},
 				{
@@ -186,8 +186,8 @@ Ext.define('App.controller.patient.Immunizations', {
 			],
 			buttons:[
 				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
-					fieldLabel: i18n('send_from'),
-					emptyText: i18n('select'),
+					fieldLabel: _('send_from'),
+					emptyText: _('select'),
 					labelWidth: 60,
 					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
@@ -200,8 +200,8 @@ Ext.define('App.controller.patient.Immunizations', {
 				}),
 				me.vxuTo = Ext.widget('combobox',{
 					xtype:'combobox',
-					fieldLabel: i18n('send_to'),
-					emptyText: i18n('select'),
+					fieldLabel: _('send_to'),
+					emptyText: _('select'),
 					allowBlank: false,
 					forceSelection: true,
 					labelWidth: 60,
@@ -217,12 +217,12 @@ Ext.define('App.controller.patient.Immunizations', {
 					})
 				}),
 				{
-					text: i18n('send'),
+					text: _('send'),
 					scope: me,
 					handler: me.doSendVxu
 				},
 				{
-					text:i18n('cancel'),
+					text:_('cancel'),
 					handler:function(){
 						me.vxuWindow.close();
 					}
@@ -249,14 +249,14 @@ Ext.define('App.controller.patient.Immunizations', {
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
 
-			me.vxuWindow.el.mask(i18n('sending'));
+			me.vxuWindow.el.mask(_('sending'));
 
 			HL7Messages.sendVXU(params, function(provider, response){
 				me.vxuWindow.el.unmask();
 				if(response.result.success){
-					app.msg(i18n('sweet!'), i18n('message_sent'));
+					app.msg(_('sweet!'), _('message_sent'));
 				}else{
-					app.msg(i18n('oops!'), i18n('message_error'), true);
+					app.msg(_('oops!'), _('message_error'), true);
 				}
 				me.vxuWindow.close();
 				sm.deselectAll();

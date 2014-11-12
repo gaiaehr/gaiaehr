@@ -9,7 +9,7 @@ Ext.define('App.view.notifications.Grid', {
 	hideHeaders: true,
 	columns: [
 		{
-			text: i18n('description'),
+			text: _('description'),
 			dataIndex: 'description',
 			flex: 1
 		}

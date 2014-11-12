@@ -42,12 +42,12 @@ Ext.define('App.ux.PhotoIdWindow',
 			html : window.webcam.get_html(320, 320),
 			buttons : [
 			{
-				text : i18n('capture'),
+				text : _('capture'),
 				iconCls : 'save',
 				handler : me.captureToCanvas
 			},
 			{
-				text : i18n('cancel'),
+				text : _('cancel'),
 				scope : me,
 				handler : function()
 				{

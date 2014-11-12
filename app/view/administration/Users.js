@@ -22,7 +22,7 @@ Ext.define('App.view.administration.Users', {
 		'App.ux.form.fields.plugin.PasswordStrength',
 		'App.ux.combo.ActiveSpecialties'
 	],
-	pageTitle: i18n('users'),
+	pageTitle: _('users'),
 
 	initComponent: function(){
 		var me = this;
@@ -43,36 +43,36 @@ Ext.define('App.view.administration.Users', {
 				},
 				{
 					width: 100,
-					text: i18n('username'),
+					text: _('username'),
 					sortable: true,
 					dataIndex: 'username'
 				},
 				{
 					width: 200,
-					text: i18n('name'),
+					text: _('name'),
 					sortable: true,
 					dataIndex: 'fullname'
 				},
 				{
 					flex: 1,
-					text: i18n('aditional_info'),
+					text: _('aditional_info'),
 					sortable: true,
 					dataIndex: 'notes'
 				},
 				{
-					text: i18n('active'),
+					text: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer
 				},
 				{
-					text: i18n('authorized'),
+					text: _('authorized'),
 					sortable: true,
 					dataIndex: 'authorized',
 					renderer: me.boolRenderer
 				},
 				{
-					text: i18n('calendar_q'),
+					text: _('calendar_q'),
 					sortable: true,
 					dataIndex: 'calendar',
 					renderer: me.boolRenderer
@@ -103,7 +103,7 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'textfield',
-													fieldLabel: i18n('username'),
+													fieldLabel: _('username'),
 													name: 'username',
 													allowBlank: false,
 													validateOnBlur: true,
@@ -112,7 +112,7 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 275,
 													xtype: 'textfield',
-													fieldLabel: i18n('password'),
+													fieldLabel: _('password'),
 													name: 'password',
 													inputType: 'password',
 													vtype: 'strength',
@@ -131,7 +131,7 @@ Ext.define('App.view.administration.Users', {
 											fieldDefaults: {
 												labelAlign: 'right'
 											},
-											fieldLabel: i18n('name'),
+											fieldLabel: _('name'),
 											items: [
 												{
 													width: 50,
@@ -168,25 +168,25 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 100,
 													xtype: 'checkbox',
-													fieldLabel: i18n('active'),
+													fieldLabel: _('active'),
 													name: 'active'
 												},
 												{
 													width: 100,
 													xtype: 'checkbox',
-													fieldLabel: i18n('authorized'),
+													fieldLabel: _('authorized'),
 													name: 'authorized'
 												},
 												{
 													width: 75,
 													xtype: 'checkbox',
-													fieldLabel: i18n('calendar_q'),
+													fieldLabel: _('calendar_q'),
 													name: 'calendar'
 												},
 												{
 													width: 275,
 													xtype: 'gaiaehr.combo',
-													fieldLabel: i18n('type'),
+													fieldLabel: _('type'),
 													name: 'doctor_type',
 													list: 121,
 													loadStore: true
@@ -205,13 +205,13 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'mitos.facilitiescombo',
-													fieldLabel: i18n('default_facility'),
+													fieldLabel: _('default_facility'),
 													name: 'facility_id'
 												},
 												{
 													width: 275,
 													xtype: 'mitos.authorizationscombo',
-													fieldLabel: i18n('authorizations'),
+													fieldLabel: _('authorizations'),
 													name: 'see_auth'
 												}
 											]
@@ -228,14 +228,14 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 555,
 													xtype: 'mitos.rolescombo',
-													fieldLabel: i18n('access_control'),
+													fieldLabel: _('access_control'),
 													name: 'role_id',
 													allowBlank: false
 												}
 //												{
 //													width: 275,
 //													xtype: 'textfield',
-//													fieldLabel: i18n('taxonomy'),
+//													fieldLabel: _('taxonomy'),
 //													name: 'taxonomy'
 //												}
 											]
@@ -258,13 +258,13 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'textfield',
-													fieldLabel: i18n('federal_tax_id'),
+													fieldLabel: _('federal_tax_id'),
 													name: 'fedtaxid'
 												},
 												{
 													width: 275,
 													xtype: 'textfield',
-													fieldLabel: i18n('fed_drug_id'),
+													fieldLabel: _('fed_drug_id'),
 													name: 'feddrugid'
 												}
 											]
@@ -281,13 +281,13 @@ Ext.define('App.view.administration.Users', {
 												{
 													width: 280,
 													xtype: 'textfield',
-													fieldLabel: i18n('upin'),
+													fieldLabel: _('upin'),
 													name: 'pin'
 												},
 												{
 													width: 275,
 													xtype: 'textfield',
-													fieldLabel: i18n('npi'),
+													fieldLabel: _('npi'),
 													name: 'npi',
 													maxLength: 10,
 													vtype: 'npi'
@@ -297,7 +297,7 @@ Ext.define('App.view.administration.Users', {
 										{
 											width: 558,
 											xtype: 'activespecialtiescombo',
-											fieldLabel: i18n('specialties'),
+											fieldLabel: _('specialties'),
 											name: 'specialty',
 											margin: '5 0',
 											labelAlign: 'right',
@@ -306,7 +306,7 @@ Ext.define('App.view.administration.Users', {
 										{
 											width: 558,
 											xtype: 'textfield',
-											fieldLabel: i18n('additional_info'),
+											fieldLabel: _('additional_info'),
 											name: 'notes',
 											labelAlign: 'right'
 										}
@@ -324,7 +324,7 @@ Ext.define('App.view.administration.Users', {
 					items: [
 						{
 							xtype: 'button',
-							text: i18n('add_new_user'),
+							text: _('add_new_user'),
 							iconCls: 'save',
 							scope: me,
 							handler: me.onNewUser

@@ -117,7 +117,7 @@ Ext.define('App.controller.patient.Referrals', {
 			sm = grid.getSelectionModel(),
 			selection = sm.getSelection();
 
-		grid.view.el.mask(i18n('generating_documents'));
+		grid.view.el.mask(_('generating_documents'));
 
 		for(var i=0; i < selection.length; i++){
 			var params = {

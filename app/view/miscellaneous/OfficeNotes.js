@@ -20,7 +20,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelOfficeNotes',
-	pageTitle : i18n('office_notes'),
+	pageTitle : _('office_notes'),
 	pageLayout : 'border',
 	initComponent : function()
 	{
@@ -43,7 +43,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 				itemId : 'body',
 				name : 'body',
 				anchor : '100%',
-				emptyText : i18n('type_new_note_here') + '...',
+				emptyText : _('type_new_note_here') + '...',
 				listeners :
 				{
 					scope : me,
@@ -56,7 +56,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 				dock : 'top',
 				items : [
 				{
-					text : i18n('save'),
+					text : _('save'),
 					iconCls : 'save',
 					itemId : 'cmdSave',
 					disabled : true,
@@ -64,17 +64,17 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 					handler : me.onNoteSave
 				}, '-',
 				{
-					text : i18n('hide_this_note'),
+					text : _('hide_this_note'),
 					iconCls : 'save',
 					itemId : 'cmdHide',
-					tooltip : i18n('hide_selected_office_note'),
+					tooltip : _('hide_selected_office_note'),
 					disabled : true,
 					scope : me,
 					handler : me.onNoteHide
 
 				}, '-',
 				{
-					text : i18n('reset'),
+					text : _('reset'),
 					iconCls : 'save',
 					itemId : 'cmdReset',
 					disabled : true,
@@ -96,20 +96,20 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 			columns : [
 			{
 				width : 150,
-				header : i18n('date'),
+				header : _('date'),
 				sortable : true,
 				dataIndex : 'date',
 				renderer : Ext.util.Format.dateRenderer('Y-m-d H:i:s')
 			},
 			{
 				width : 150,
-				header : i18n('user'),
+				header : _('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
 			{
 				flex : 1,
-				header : i18n('note'),
+				header : _('note'),
 				sortable : true,
 				dataIndex : 'body'
 			}],
@@ -117,13 +117,13 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 			{
 				store : me.store,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				}),
 				items : [
 				{
-					text : i18n('show_only_active_notes'),
+					text : _('show_only_active_notes'),
 					iconCls : 'save',
 					enableToggle : true,
 					pressed : true,
@@ -140,7 +140,7 @@ Ext.define('App.view.miscellaneous.OfficeNotes',
 					}
 				}, '-',
 				{
-					text : i18n('show_all_notes'),
+					text : _('show_all_notes'),
 					iconCls : 'save',
 					enableToggle : true,
 					handler : function()

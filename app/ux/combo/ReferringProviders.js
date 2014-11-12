@@ -51,7 +51,7 @@ Ext.define('App.ux.combo.ReferringProviders', {
 		});
 
 		Ext.apply(this, {
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 

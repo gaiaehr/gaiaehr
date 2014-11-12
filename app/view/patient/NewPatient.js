@@ -19,7 +19,7 @@
 Ext.define('App.view.patient.NewPatient', {
 	extend       : 'App.ux.RenderPanel',
 	id           : 'panelNewPatient',
-	pageTitle    : i18n('patient_entry_form'),
+	pageTitle    : _('patient_entry_form'),
 	initComponent: function() {
 
 		var me = this;
@@ -35,8 +35,8 @@ Ext.define('App.view.patient.NewPatient', {
 	 */
 	confirmationWin: function(callback) {
 		Ext.Msg.show({
-			title  : i18n('please_confirm') + '...',
-			msg    : i18n('do_you_want_to_create_a_new_patient'),
+			title  : _('please_confirm') + '...',
+			msg    : _('do_you_want_to_create_a_new_patient'),
 			icon   : Ext.MessageBox.QUESTION,
 			buttons: Ext.Msg.YESNO,
 			scope  : this,

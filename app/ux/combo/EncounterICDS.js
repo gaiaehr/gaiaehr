@@ -41,7 +41,7 @@ Ext.define('App.ux.combo.EncounterICDS', {
 			multiSelect: true,
 			displayField: 'code_and_code_type',
 			valueField: 'code_and_code_type',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: Ext.create('Ext.data.Store', {
 				model: 'EncounterICDXComboModel',
 				autoLoad: false

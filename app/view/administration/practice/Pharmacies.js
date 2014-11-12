@@ -24,7 +24,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'pharmaciespanel',
-	title: i18n('pharmacies'),
+	title: _('pharmacies'),
 	store: Ext.create('App.store.administration.Pharmacies'),
 	border: false,
 	frame: false,
@@ -47,20 +47,20 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('name'),
+									fieldLabel: _('name'),
 									name: 'name',
 									allowBlank: true,
 									width: 385
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('address'),
+									fieldLabel: _('address'),
 									name: 'address',
 									width: 385
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('address_cont'),
+									fieldLabel: _('address_cont'),
 									name: 'address_cont',
 									width: 385
 								},
@@ -74,7 +74,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										{
 											xtype: 'displayfield',
 											width: 105,
-											value: i18n('city_state_zip')
+											value: _('city_state_zip')
 										},
 										{
 											xtype: 'textfield',
@@ -116,7 +116,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										{
 											xtype: 'displayfield',
 											width: 100,
-											value: i18n('phone')
+											value: _('phone')
 										},
 										{
 											xtype: 'textfield',
@@ -155,7 +155,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										{
 											xtype: 'displayfield',
 											width: 100,
-											value: i18n('fax')
+											value: _('fax')
 										},
 										{
 											xtype: 'textfield',
@@ -186,13 +186,13 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('email'),
+									fieldLabel: _('email'),
 									name: 'email',
 									width: 385
 								},
 								{
 									xtype: 'transmitmethodcombo',
-									fieldLabel: i18n('default_method'),
+									fieldLabel: _('default_method'),
 									labelWidth: 100,
 									width: 275
 								}
@@ -200,7 +200,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							labelWidth: 60,
 							margin: '0 0 0 10',
 							name: 'active'
@@ -213,31 +213,31 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 	],
 	columns: [
 		{
-			header: i18n('pharmacy_name'),
+			header: _('pharmacy_name'),
 			width: 150,
 			sortable: true,
 			dataIndex: 'name'
 		},
 		{
-			header: i18n('address'),
+			header: _('address'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'address_full'
 		},
 		{
-			header: i18n('phone'),
+			header: _('phone'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'phone_full'
 		},
 		{
-			header: i18n('fax'),
+			header: _('fax'),
 			width: 120,
 			sortable: true,
 			dataIndex: 'fax_full'
 		},
 		{
-			header: i18n('default_method'),
+			header: _('default_method'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'transmit_method',
@@ -253,7 +253,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 			}
 		},
 		{
-			header: i18n('active'),
+			header: _('active'),
 			width: 55,
 			sortable: true,
 			dataIndex: 'active',
@@ -265,7 +265,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 	tbar: [
 		'->',
 		{
-			text: i18n('pharmacy'),
+			text: _('pharmacy'),
 			iconCls: 'icoAdd',
 			action: 'pharmacy',
 			itemId: 'addBtn'

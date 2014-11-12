@@ -5,7 +5,7 @@ Ext.define('App.ux.combo.Departments', {
 	queryMode: 'local',
 	valueField: 'id',
 	displayField: 'title',
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	store: Ext.create('App.store.administration.Departments', {
 		autoLoad: true
 	})

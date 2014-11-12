@@ -42,7 +42,7 @@ Ext.define('App.ux.combo.TimeZone',
 			editable    : false,
 			valueField  : 'value',
 			displayField: 'name',
-            emptyText   : i18n('select'),
+            emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		

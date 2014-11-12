@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.windows.PossibleDuplicates', {
 	extend: 'App.ux.window.Window',
-	title: i18n('possible_duplicates'),
+	title: _('possible_duplicates'),
 	itemId: 'PossiblePatientDuplicatesWindow',
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
@@ -67,7 +67,7 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 
 		me.buttons = [
 			{
-				text: i18n('continue'),
+				text: _('continue'),
 				itemId: 'PossiblePatientDuplicatesContinueBtn'
 			}
 		];

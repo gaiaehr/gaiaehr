@@ -24,7 +24,7 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 		'App.ux.combo.TransmitMethod'
 	],
 	xtype: 'providersnumberspanel',
-	title: i18n('provider_numbers'),
+	title: _('provider_numbers'),
 	store: Ext.create('App.store.administration.InsuranceNumbers'),
 	border: false,
 	frame: false,
@@ -55,17 +55,17 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('provider'),
+									fieldLabel: _('provider'),
 									name: 'provider_id'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('provider_number'),
+									fieldLabel: _('provider_number'),
 									name: 'provider_number'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('provider_number_type'),
+									fieldLabel: _('provider_number_type'),
 									name: 'provider_number_type'
 								}
 							]
@@ -79,17 +79,17 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('insurance_company'),
+									fieldLabel: _('insurance_company'),
 									name: 'insurance_company_id'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('rendering_number'),
+									fieldLabel: _('rendering_number'),
 									name: 'rendering_provider_number'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('rendering_number_type'),
+									fieldLabel: _('rendering_number_type'),
 									name: 'rendering_provider_number_type'
 								}
 							]
@@ -102,7 +102,7 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('group_number'),
+									fieldLabel: _('group_number'),
 									name: 'group_number'
 								}
 							]
@@ -114,46 +114,46 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 	],
 	columns: [
 		{
-			text: i18n('provider'),
+			text: _('provider'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'provider_id_text'
 		},
 		{
-			text: i18n('insurance'),
+			text: _('insurance'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'insurance_company_id_text'
 		},
 		{
-			text: i18n('provider_number'),
+			text: _('provider_number'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'provider_number'
 		},
 		{
-			text: i18n('rendering_number'),
+			text: _('rendering_number'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'rendering_number'
 		},
 		{
-			text: i18n('group_number'),
+			text: _('group_number'),
 			flex: 1,
 			sortable: true,
 			dataIndex: 'phone'
 		}
 	],
 	tbar: [
-		i18n('group_by'),
+		_('group_by'),
 		{
-			text: i18n('provider'),
+			text: _('provider'),
 			enableToggle: true,
 			toggleGroup: 'insurance_number_group',
 			action: 'provider_id_text'
 		},
 		{
-			text: i18n('insurance'),
+			text: _('insurance'),
 			enableToggle: true,
 			toggleGroup: 'insurance_number_group',
 			action: 'insurance_company_id_text'
@@ -161,7 +161,7 @@ Ext.define('App.view.administration.practice.ProviderNumbers', {
 		'-',
 		'->',
 		{
-			text: i18n('insurance_number'),
+			text: _('insurance_number'),
 			iconCls: 'icoAdd',
 			action: 'insurance',
 			itemId: 'addBtn'

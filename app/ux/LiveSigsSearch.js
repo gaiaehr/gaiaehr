@@ -47,13 +47,13 @@ Ext.define('App.ux.LiveSigsSearch', {
 			store: me.store,
 			displayField: 'option_value',
 			valueField: 'option_value',
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			anchor: '100%',
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

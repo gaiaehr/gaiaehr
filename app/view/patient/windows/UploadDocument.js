@@ -22,7 +22,7 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 	draggable: false,
 	modal: true,
 	autoShow: true,
-	title: i18n('new_document'),
+	title: _('new_document'),
 	items: [
 		{
 			xtype: 'form',
@@ -35,12 +35,12 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 			},
 			items: [
 				{
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'gaiaehr.combo',
-					fieldLabel: i18n('type'),
+					fieldLabel: _('type'),
 					list: 102,
 					name: 'docType',
 					allowBlank: false
@@ -48,32 +48,32 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 				{
 					xtype: 'fileuploadfield',
 					name: 'document',
-					buttonText: i18n('select_a_file') + '...',
-					fieldLabel: i18n('file'),
+					buttonText: _('select_a_file') + '...',
+					fieldLabel: _('file'),
 					allowBlank: false
 				},
 				{
 					xtype: 'checkbox',
 					name: 'encrypted',
-					fieldLabel: i18n('encrypted')
+					fieldLabel: _('encrypted')
 				},
 				{
 					xtype: 'textareafield',
 					name: 'note',
-					fieldLabel: i18n('notes')
+					fieldLabel: _('notes')
 				}
 			]
 		}
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
 		},
 		{
-			text: i18n('upload'),
+			text: _('upload'),
 			itemId: 'uploadBtn'
 		}
 	]

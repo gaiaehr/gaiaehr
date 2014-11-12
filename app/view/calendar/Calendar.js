@@ -18,7 +18,7 @@
 
 Ext.define('App.view.calendar.Calendar', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('calendar_events'),
+	pageTitle: _('calendar_events'),
 
 	ckInStatus: ['@','~'],
 	ckOutStatus: ['!','x','?','%'],
@@ -85,11 +85,11 @@ Ext.define('App.view.calendar.Calendar', {
 				'write': function(store, operation){
 					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
 					if(operation.action == 'create'){
-						this.msg(i18n('add'), 'Added "' + title + '"');
+						this.msg(_('add'), 'Added "' + title + '"');
 					}else if(operation.action == 'update'){
-						this.msg(i18n('update'), 'Updated "' + title + '"');
+						this.msg(_('update'), 'Updated "' + title + '"');
 					}else if(operation.action == 'destroy'){
-						this.msg(i18n('delete'), 'Deleted "' + title + '"');
+						this.msg(_('delete'), 'Deleted "' + title + '"');
 					}
 				}
 			}
@@ -190,7 +190,7 @@ Ext.define('App.view.calendar.Calendar', {
 							},
 							'eventadd': {
 								fn: function(cp, rec){
-//									app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+//									app.msg(_('sweet'), _('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
 								},
 								scope: this
 							},
@@ -199,7 +199,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 									me.getPoolAreaAction(rec);
 
-//									app.msg(i18n('sweet'), i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+//									app.msg(_('sweet'), _('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
 								},
 								scope: this
 							},
@@ -236,7 +236,7 @@ Ext.define('App.view.calendar.Calendar', {
 
 									rec.commit();
 
-									//this.showMsg(i18n('event') + ' ' + rec.data[mappings.Title.name] + ' ' + i18n('was_moved_to') + ' ' +
+									//this.showMsg(_('event') + ' ' + rec.data[mappings.Title.name] + ' ' + _('was_moved_to') + ' ' +
 									//	Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
 								},
 								scope: this
@@ -244,14 +244,14 @@ Ext.define('App.view.calendar.Calendar', {
 							'eventresize': {
 								fn: function(vw, rec){
 									rec.commit();
-									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_updated'));
+									//this.showMsg(_('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
 								},
 								scope: this
 							},
 							'eventdelete': {
 								fn: function(win, rec){
 									me.eventStore.remove(rec);
-									//this.showMsg(i18n('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + i18n('was_deleted'));
+									//this.showMsg(_('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_deleted'));
 								},
 								scope: this
 							},

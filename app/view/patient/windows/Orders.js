@@ -24,13 +24,13 @@ Ext.define('App.view.patient.windows.Orders', {
 		'App.view.patient.RxOrders',
 		'App.view.patient.DoctorsNotes'
 	],
-	title: i18n('order_window'),
+	title: _('order_window'),
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 	buttons: [
 		{
-			text: i18n('close'),
+			text: _('close'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
@@ -77,7 +77,7 @@ Ext.define('App.view.patient.windows.Orders', {
 
 		me.buttons = [
 			{
-				text: i18n('close'),
+				text: _('close'),
 				scope: me,
 				handler: function(){
 					me.close();
@@ -139,7 +139,7 @@ Ext.define('App.view.patient.windows.Orders', {
 		/**
 		 * read only stuff
 		 */
-		me.setTitle(app.patient.name + ' - ' + i18n('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
+		me.setTitle(app.patient.name + ' - ' + _('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + _('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
 	},
 

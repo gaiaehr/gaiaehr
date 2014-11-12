@@ -61,7 +61,7 @@ Ext.define('App.controller.patient.Medical', {
 
 	onNavKey: function(e, key){
 		if(!app.patient.pid) {
-			app.msg(i18n('oops'), i18n('patient_error'), true);
+			app.msg(_('oops'), _('patient_error'), true);
 			return;
 		}
 		var win = this.getMedicalWindow().show();

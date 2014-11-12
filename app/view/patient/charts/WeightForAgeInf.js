@@ -21,7 +21,7 @@ Ext.define('App.view.patient.charts.WeightForAgeInf',
 	extend : 'Ext.panel.Panel',
 	layout : 'fit',
 	margin : 5,
-	title : i18n('weight_for_age_0_36_mos'),
+	title : _('weight_for_age_0_36_mos'),
 
 	initComponent : function()
 	{
@@ -36,7 +36,7 @@ Ext.define('App.view.patient.charts.WeightForAgeInf',
 			theme : 'Sky',
 			axes : [
 			{
-				title : i18n('weight_kg'),
+				title : _('weight_kg'),
 				type : 'Numeric',
 				position : 'left',
 				fields : ['PP', 'P3', 'P5', 'P10', 'P25', 'P50', 'P75', 'P90', 'P95', 'P97'],
@@ -53,14 +53,14 @@ Ext.define('App.view.patient.charts.WeightForAgeInf',
 				}
 			},
 			{
-				title : i18n('age'),
+				title : _('age'),
 				type : 'Numeric',
 				position : 'bottom',
 				fields : ['age']
 			}],
 			series : [
 			{
-				title : i18n('weight_kg'),
+				title : _('weight_kg'),
 				type : 'scatter',
 				axis : 'left',
 				xField : 'age',
@@ -83,7 +83,7 @@ Ext.define('App.view.patient.charts.WeightForAgeInf',
 					trackMouse : true,
 					renderer : function(storeItem, item)
 					{
-						this.update(i18n('age') + ': ' + storeItem.get('age') + '<br>' + i18n('weight') + ': ' + storeItem.get('PP'));
+						this.update(_('age') + ': ' + storeItem.get('age') + '<br>' + _('weight') + ': ' + storeItem.get('PP'));
 					}
 				}
 			},

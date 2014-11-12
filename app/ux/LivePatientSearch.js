@@ -21,7 +21,7 @@ Ext.define('App.ux.LivePatientSearch', {
 	hideLabel: true,
 	displayField: 'fullname',
 	valueField: 'pid',
-	emptyText: i18n('search_for_a_patient') + '...',
+	emptyText: _('search_for_a_patient') + '...',
 	maxLength: 40,
 	typeAhead: false,
 	hideTrigger: true,
@@ -95,7 +95,7 @@ Ext.define('App.ux.LivePatientSearch', {
 		Ext.apply(me, {
 			store: me.store,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

@@ -4,7 +4,7 @@ Ext.define('App.ux.combo.Specialties', {
 	displayField: 'text_details',
 	valueField: 'id',
 	editable: false,
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	queryMode: 'local',
 	store: Ext.create('App.store.administration.Specialties',{
 		pageSize: 500,

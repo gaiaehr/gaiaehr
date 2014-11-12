@@ -20,7 +20,7 @@ Ext.define('App.ux.combo.Insurances', {
 	alias: 'widget.insurancescombo',
 	displayField: 'combo_text',
 	valueField: 'id',
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	editable: false,
 
 	store: Ext.create('App.store.administration.InsuranceCompanies', {

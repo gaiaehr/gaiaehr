@@ -123,7 +123,10 @@ class Medical {
 				$dx_pointers[] = $dx['code'];
 			}
 			$service->dx_pointers = implode(',', $dx_pointers);
-			$this->services->addCptCode($service);
+
+
+			// TODO....
+//			$this->services->addCptCode($service);
 		}
 		return $immunization;
 

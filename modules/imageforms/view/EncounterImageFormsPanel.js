@@ -22,7 +22,7 @@ Ext.define('Modules.imageforms.view.EncounterImageFormsPanel', {
 		'Modules.imageforms.store.PatientImages'
 	],
 	itemId:'imageFormPanel',
-	title: i18n('image_forms'),
+	title: _('image_forms'),
 	layout: 'auto',
 	autoScroll: true,
 	bodyPadding: 5,

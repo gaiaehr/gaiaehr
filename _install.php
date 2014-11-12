@@ -31,11 +31,17 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <script src="data/api.php"></script>
     <script type="text/javascript">
 
-        var app, lang = {};
-        window.say = function(args){
-	        console.log.apply(this, arguments);
+        var app,
+            lang = {};
+
+        window.i18n = window._ = function(key){
+            return window.lang[key] || '*'+key+'*';
         };
-        function i18n(key){ return lang[key] || key; }
+
+        window.say = function(args){
+            console.log(args);
+        };
+
         Ext.Loader.setConfig({
             enabled: true,
             disableCaching: false,

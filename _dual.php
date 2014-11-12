@@ -24,6 +24,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript">
 			var dual,
 				acl = {},
+				lang = {},
 				user = {},
 				settings = {},
 				globals = {},
@@ -63,7 +64,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         <script type="text/javascript">
 
-            window.i18n = function(key){
+	        window.i18n = window._ = function(key){
                 return window.lang[key] || '*'+key+'*';
             };
 

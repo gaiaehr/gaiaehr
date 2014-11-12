@@ -514,18 +514,6 @@ $API = array(
 			'getEncounterCodes' => array(
 				'len' => 1
 			),
-			'getEncounterCptDxTree' => array(
-				'len' => 1
-			),
-			'addEncounterCptDxTree' => array(
-				'len' => 1
-			),
-			'updateEncounterCptDxTree' => array(
-				'len' => 1
-			),
-			'removeEncounterCptDxTree' => array(
-				'len' => 1
-			),
 			'checkoutAlerts' => array(
 				'len' => 1
 			),
@@ -1275,9 +1263,29 @@ $API = array(
 	),
 	'Services' => array(
 		'methods' => array(
+
+            'getEncounterServices' => array(
+				'len' => 1
+			),
+            'getEncounterService' => array(
+				'len' => 1
+			),
+            'addEncounterService' => array(
+				'len' => 1
+			),
+            'updateEncounterService' => array(
+				'len' => 1
+			),
+            'removeEncounterService' => array(
+				'len' => 1
+			),
+
+
+
 			'getServices' => array(
 				'len' => 1
 			),
+
 			'addService' => array(
 				'len' => 1
 			),
@@ -1289,57 +1297,6 @@ $API = array(
 			),
 			'getCptCodes' => array(
 				'len' => 1
-			),
-			'addCptCode' => array(
-				'len' => 1
-			),
-			'updateCptCode' => array(
-				'len' => 1
-			),
-			'deleteCptCode' => array(
-				'len' => 1
-			),
-			'getActiveProblems' => array(
-				'len' => 1
-			),
-			'addActiveProblems' => array(
-				'len' => 1
-			),
-			'removeActiveProblems' => array(
-				'len' => 1
-			),
-			'getMedications' => array(
-				'len' => 1
-			),
-			'addMedications' => array(
-				'len' => 1
-			),
-			'removeMedications' => array(
-				'len' => 1
-			),
-			'updateMedications' => array(
-				'len' => 1
-			),
-			'getAllLabObservations' => array(
-				'len' => 1
-			),
-			'getLabObservations' => array(
-				'len' => 1
-			),
-			'addLabObservation' => array(
-				'len' => 1
-			),
-			'updateLabObservation' => array(
-				'len' => 1
-			),
-			'removeLabObservation' => array(
-				'len' => 1
-			),
-			'getActiveLaboratoryTypes' => array(
-				'len' => 0
-			),
-			'getQuickAccessCheckOutServices' => array(
-				'len' => 0
 			)
 		)
 	),

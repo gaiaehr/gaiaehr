@@ -24,6 +24,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript">
 			var app,
 				acl = {},
+				lang = {},
 				user = {},
 				settings = {},
 				globals = {},
@@ -68,7 +69,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         <script type="text/javascript">
 
-            window.i18n = function(key){
+            window.i18n = window._ = function(key){
                 return window.lang[key] || '*'+key+'*';
             };
 
@@ -399,7 +400,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.DismissedAlerts',
 	                'patient.DoctorsNote',
 	                'patient.Encounter',
-	                'patient.EncounterCPTsICDs',
+	                'patient.EncounterService',
 	                'patient.EventHistory',
 	                'patient.HCFAOptions',
 	                'patient.CVXCodes',
@@ -514,7 +515,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Dental',
 	                'patient.Disclosures',
 	                'patient.DoctorsNotes',
-	                'patient.EncounterCPTsICDs',
+	                'patient.EncounterServices',
 	                'patient.Encounters',
 	                'patient.CVXCodes',
 	                'patient.ImmunizationCheck',

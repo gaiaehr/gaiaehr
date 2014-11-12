@@ -27,6 +27,10 @@ class DataManager
      * @var MatchaHelper
      */
     private $db;
+    /**
+     * @var PDO
+     */
+    private $conn;
 
     private $labs;
     private $immu;
@@ -35,6 +39,7 @@ class DataManager
     function __construct()
     {
         $this->db = new MatchaHelper();
+        $this->conn = Matcha::getConn();
         $this->labs = new Laboratories();
         $this->immu = new Immunizations();
         $this->serv = new Services();

@@ -32,11 +32,14 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <script src="data/api.php?site=<?php print $site ?>"></script>
     <script type="text/javascript">
         var app,
+            acl = {},
+            lang = {},
+            globals = {},
 	        site = '<?php print $site ?>',
 	        localization = '<?php print site_default_localization ?>';
 
-        window.i18n = function(key){
-	        return window.lang[key] || '*'+key+'*';
+        window.i18n = window._ = function(key){
+            return window.lang[key] || '*'+key+'*';
         };
 
         window.say = function(args){

@@ -428,65 +428,6 @@ class Encounter {
 		return $this->services->getCptByEid($eid);
 	}
 
-
-	//***********************************************************************************************
-	//***********************************************************************************************
-	public function getEncounterCptDxTree($params){
-		if(isset($params->eid)){
-			$services = $this->services->getCptByEid($params->eid);
-			foreach($services['rows'] AS $index => $row){
-				$dx_children = array();
-				$foo = explode(',', $row['dx_pointers']);
-				foreach($foo AS $fo){
-					$dx = array();
-					$f = $this->diagnosis->getICDDataByCode($fo);
-					if(!empty($f)){
-						$dx['code'] = $f['code'];
-						$dx['code_text_medium'] = $f['short_desc'];
-						$dx['leaf'] = true;
-						$dx['iconCls'] = 'icoDotYellow';
-						$dx_children[] = $dx;
-					}
-
-				}
-				$services['rows'][$index]['iconCls'] = 'icoDotGrey';
-				$services['rows'][$index]['expanded'] = true;
-				$services['rows'][$index]['children'] = $dx_children;
-			}
-			return $services['rows'];
-		} else{
-			return array();
-		}
-
-	}
-
-	public function addEncounterCptDxTree($params){
-		$dx_pointers = array();
-		$dx_children = array();
-		foreach($this->diagnosis->getICDByEid($params->eid, true) AS $dx){
-			$dx_children[] = $dx;
-			$dx_pointers[] = $dx['code'];
-		}
-		$service = new stdClass();
-		$service->pid = $params->pid;
-		$service->eid = $params->eid;
-		$service->code = $params->code;
-		$service->dx_pointers = implode(',', $dx_pointers);
-		$newService = $this->services->addCptCode($service);
-		$params->id = $newService['rows']->id;
-		$params->dx_children = $dx_children;
-		return $params;
-	}
-
-	public function updateEncounterCptDxTree($params){
-		return $params;
-	}
-
-	public function removeEncounterCptDxTree($params){
-		$this->services->deleteCptCode($params);
-		return $params;
-	}
-
 	//***********************************************************************************************
 	//***********************************************************************************************
 

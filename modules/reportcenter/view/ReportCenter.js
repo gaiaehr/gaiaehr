@@ -19,7 +19,7 @@
 Ext.define('Modules.reportcenter.view.ReportCenter', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelReportCenter',
-	pageTitle: i18n('report_center'),
+	pageTitle: _('report_center'),
 
 	initComponent: function(){
 		var me = this;
@@ -34,31 +34,31 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 		 * TODO: Pass the report indicator telling what report should be rendering
 		 * this indicator will also be the logic for field rendering.
 		 */
-		me.patientCategory = me.addCategory(i18n('patient_reports'), 260);
-		me.ClientListReport = me.addReportByCategory(me.patientCategory, i18n('client_list_report'), function(btn){
+		me.patientCategory = me.addCategory(_('patient_reports'), 260);
+		me.ClientListReport = me.addReportByCategory(me.patientCategory, _('client_list_report'), function(btn){
 
 			if(!me.clientListStore) me.clientListStore = Ext.create('Modules.reportcenter.store.ClientList');
 
 			me.goToReportPanelAndSetPanel({
-				title: i18n('client_list_report'),
+				title: _('client_list_report'),
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						name: 'from',
 						format: 'Y-m-d'
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to',
 						format: 'Y-m-d'
 					},
 					{
 						xtype: 'patienlivetsearch',
-						fieldLabel: i18n('name'),
+						fieldLabel: _('name'),
 						hideLabel: false,
 						name: 'pid',
 						width: 350
@@ -68,34 +68,34 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 				store: me.clientListStore,
 				columns: [
 					{
-						text: i18n('service_date'),
+						text: _('service_date'),
 						xtype: 'datecolumn',
 						format: 'Y-m-d',
 						dataIndex: 'start_date'
 					},
 					{
-						text: i18n('name'),
+						text: _('name'),
 						width: 200,
 						dataIndex: 'fullname'
 					},
 					{
-						text: i18n('address'),
+						text: _('address'),
 						flex: 1,
 						dataIndex: 'fulladdress'
 					},
 					{
-						text: i18n('home_phone'),
+						text: _('home_phone'),
 						dataIndex: 'home_phone'
 					}
 				]
 			});
 		});
 
-		me.Rx = me.addReportByCategory(me.patientCategory, i18n('rx'), function(btn){
+		me.Rx = me.addReportByCategory(me.patientCategory, _('rx'), function(btn){
 			if(!me.medicationStore) me.medicationStore = Ext.create('Modules.reportcenter.store.MedicationReport');
 
 			me.goToReportPanelAndSetPanel({
-				title: i18n('rx'),
+				title: _('rx'),
 				layout: 'anchor',
 				height: 100,
 				items: [
@@ -107,14 +107,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
 							{
 								xtype: 'datefield',
-								fieldLabel: i18n('from'),
+								fieldLabel: _('from'),
 								name: 'from',
 								format: 'Y-m-d',
 								width: 275
 							},
 							{
 								xtype: 'patienlivetsearch',
-								fieldLabel: i18n('name'),
+								fieldLabel: _('name'),
 								hideLabel: false,
 								name: 'pid',
 								width: 350
@@ -129,14 +129,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						items: [
 							{
 								xtype: 'datefield',
-								fieldLabel: i18n('to'),
+								fieldLabel: _('to'),
 								name: 'to',
 								format: 'Y-m-d',
 								width: 275
 							},
 							{
 								xtype: 'medicationlivetsearch',
-								fieldLabel: i18n('drug'),
+								fieldLabel: _('drug'),
 								hideLabel: false,
 								name: 'drug',
 								width: 350
@@ -150,22 +150,22 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 				store: me.medicationStore,
 				columns: [
 					{
-						text: i18n('name'),
+						text: _('name'),
 						width: 250,
 						dataIndex: 'fullname'
 					},
 					{
-						text: i18n('medication'),
+						text: _('medication'),
 						width: 250,
 						dataIndex: 'medication'
 					},
 					{
-						text: i18n('type'),
+						text: _('type'),
 						width: 150,
 						dataIndex: 'type'
 					},
 					{
-						text: i18n('instructions'),
+						text: _('instructions'),
 						flex: 1,
 						dataIndex: 'instructions'
 					}
@@ -181,10 +181,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 		 * this would be done in the future.
 		 * @type {*}
 		 */
-		me.ClinicalReport = me.addReportByCategory(me.patientCategory, i18n('clinical'), function(btn){
+		me.ClinicalReport = me.addReportByCategory(me.patientCategory, _('clinical'), function(btn){
 			if(!me.clinicalStore) me.clinicalStore = Ext.create('Modules.reportcenter.store.Clinical');
 			me.goToReportPanelAndSetPanel({
-				title: i18n('clinical'),
+				title: _('clinical'),
 				action: 'clientListReport',
 				height: 270,
 				bodyStyle: 'padding:0px 0px 0',
@@ -193,7 +193,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 					{
 						xtype: 'fieldset',
 						layout: 'vbox',
-						title: i18n('patient_demographic'),
+						title: _('patient_demographic'),
 						collapsed: false,
 						columnWidth: 0.25,
 						checkboxToggle: true,
@@ -203,14 +203,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						items: [
 							{
 								xtype: 'patienlivetsearch',
-								fieldLabel: i18n('patient'),
+								fieldLabel: _('patient'),
 								hideLabel: false,
 								name: 'pid',
 								width: 280
 							},
 							{
 								xtype: 'gaiaehr.sexcombo',
-								fieldLabel: i18n('sex'),
+								fieldLabel: _('sex'),
 								name: 'sex',
 								width: 275,
 								minValue: 0
@@ -218,7 +218,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 							},
 							{
 								xtype: 'gaiaehr.racecombo',
-								fieldLabel: i18n('race'),
+								fieldLabel: _('race'),
 								name: 'race',
 								action: 'race',
 								hideLabel: false,
@@ -231,7 +231,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 								items: [
 									{
 										xtype: 'datefield',
-										fieldLabel: i18n('date_from'),
+										fieldLabel: _('date_from'),
 										format: 'Y-m-d',
 										width: 200,
 										name: 'from'
@@ -240,7 +240,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 										xtype: 'datefield',
 										labelWidth: 60,
 										margin: '0 0 0 5',
-										fieldLabel: i18n('date_to'),
+										fieldLabel: _('date_to'),
 										format: 'Y-m-d',
 										width: 160,
 										name: 'to'
@@ -254,7 +254,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 								items: [
 									{
 										xtype: 'numberfield',
-										fieldLabel: i18n('age_from'),
+										fieldLabel: _('age_from'),
 										name: 'age_from',
 										width: 160,
 										minValue: 1
@@ -262,7 +262,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 									{
 										xtype: 'numberfield',
 										margin: '0 0 0 5',
-										fieldLabel: i18n('age_to'),
+										fieldLabel: _('age_to'),
 										name: 'age_to',
 										width: 160,
 										minValue: 1
@@ -271,7 +271,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 							},
 							{
 								xtype: 'gaiaehr.ethnicitycombo',
-								fieldLabel: i18n('ethnicity'),
+								fieldLabel: _('ethnicity'),
 								name: 'ethnicity',
 								action: 'ethnicity',
 								hideLabel: false,
@@ -283,7 +283,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 					{
 						xtype: 'fieldset',
 						layout: 'vbox',
-						title: i18n('patient_problems'),
+						title: _('patient_problems'),
 						collapsed: true,
 						columnWidth: 0.25,
 						checkboxToggle: true,
@@ -293,7 +293,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						items: [
 							{
 								xtype: 'liveicdxsearch',
-								fieldLabel: i18n('problem_dx'),
+								fieldLabel: _('problem_dx'),
 								hideLabel: false,
 								name: 'problem',
 								width: 350
@@ -303,7 +303,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 					{
 						xtype: 'fieldset',
 						layout: 'vbox',
-						title: i18n('patient_medication'),
+						title: _('patient_medication'),
 						collapsed: true,
 						columnWidth: 0.25,
 						checkboxToggle: true,
@@ -313,7 +313,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						items: [
 							{
 								xtype: 'medicationlivetsearch',
-								fieldLabel: i18n('drug'),
+								fieldLabel: _('drug'),
 								hideLabel: false,
 								name: 'medication',
 								width: 350
@@ -323,7 +323,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 					{
 						xtype: 'fieldset',
 						layout: 'vbox',
-						title: i18n('patient_laboratory'),
+						title: _('patient_laboratory'),
 						collapsed: true,
 						columnWidth: 0.25,
 						checkboxToggle: true,
@@ -334,7 +334,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 							{
 								xtype: 'labslivetsearch',
 								margin: 5,
-								fieldLabel: i18n('laboratory_result'),
+								fieldLabel: _('laboratory_result'),
 								hideLabel: false,
 								width: 350
 							}
@@ -346,32 +346,32 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 				columns: [
 					{
 						xtype: 'datecolumn',
-						text: i18n('created'),
+						text: _('created'),
 						dataIndex: 'create_date',
 						width: 160,
 						format: 'Y-m-d H:i:s'
 					},
 					{
-						text: i18n('name'),
+						text: _('name'),
 						width: 200,
 						dataIndex: 'fullname'
 					},
 					{
-						text: i18n('age'),
+						text: _('age'),
 						width: 75,
 						dataIndex: 'age'
 					},
 					{
-						text: i18n('sex'),
+						text: _('sex'),
 						dataIndex: 'sex'
 					},
 					{
-						text: i18n('race'),
+						text: _('race'),
 						width: 250,
 						dataIndex: 'race'
 					},
 					{
-						text: i18n('ethnicity'),
+						text: _('ethnicity'),
 						flex: 1,
 						dataIndex: 'ethnicity'
 					}
@@ -379,31 +379,31 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 			});
 		});
 
-		me.ImmunizationReport = me.addReportByCategory(me.patientCategory, i18n('immunization_registry'), function(btn){
+		me.ImmunizationReport = me.addReportByCategory(me.patientCategory, _('immunization_registry'), function(btn){
 			if(!me.immunizationReportStore) me.immunizationReportStore = Ext.create('Modules.reportcenter.store.ImmunizationsReport');
 			me.goToReportPanelAndSetPanel({
-				title: i18n('immunization_registry'),
+				title: _('immunization_registry'),
 				action: 'clientListReport',
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						name: 'from',
 						format: 'Y-m-d',
 						width: 350
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to',
 						format: 'Y-m-d',
 						width: 350
 					},
 					{
 						xtype: 'immunizationlivesearch',
-						fieldLabel: i18n('immunization'),
+						fieldLabel: _('immunization'),
 						hideLabel: false,
 						name: 'immu',
 						width: 350
@@ -413,21 +413,21 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 				store: me.immunizationReportStore,
 				columns: [
 					{
-						text: i18n('name'),
+						text: _('name'),
 						width: 200,
 						dataIndex: 'fullname'
 					},
 					{
-						text: i18n('immunization_id'),
+						text: _('immunization_id'),
 						dataIndex: 'immunization_id'
 					},
 					{
-						text: i18n('immunization_name'),
+						text: _('immunization_name'),
 						dataIndex: 'immunization_name',
 						flex: 1
 					},
 					{
-						text: i18n('administered_date'),
+						text: _('administered_date'),
 						dataIndex: 'administered_date',
 						xtype: 'datecolumn',
 						format: 'Y-m-d'
@@ -441,82 +441,82 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 		 * TODO: Pass the report indicator telling what report should be rendering
 		 * this indicator will also be the logic for field rendering.
 		 */
-		me.clinicCategory = me.addCategory(i18n('clinic_reports'), 270);
-		me.link5 = me.addReportByCategory(me.clinicCategory, i18n('standard_measures'), function(btn){
+		me.clinicCategory = me.addCategory(_('clinic_reports'), 270);
+		me.link5 = me.addReportByCategory(me.clinicCategory, _('standard_measures'), function(btn){
 			me.goToReportPanelAndSetPanel({
-				title: i18n('standard_measures'),
+				title: _('standard_measures'),
 				action: 'clientListReport',
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						name: 'from'
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to'
 					}
 				]
 			});
 		});
-		me.link6 = me.addReportByCategory(me.clinicCategory, i18n('clinical_quality_measures_cqm'), function(btn){
+		me.link6 = me.addReportByCategory(me.clinicCategory, _('clinical_quality_measures_cqm'), function(btn){
 			me.goToReportPanelAndSetPanel({
-				title: i18n('clinical_quality_measures_cqm'),
+				title: _('clinical_quality_measures_cqm'),
 				action: 'clientListReport',
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						name: 'from'
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to'
 					}
 				]
 			});
 		});
-		me.link7 = me.addReportByCategory(me.clinicCategory, i18n('automated_measure_calculations_amc'), function(btn){
+		me.link7 = me.addReportByCategory(me.clinicCategory, _('automated_measure_calculations_amc'), function(btn){
 			me.goToReportPanelAndSetPanel({
-				title: i18n('automated_measure_calculations_amc'),
+				title: _('automated_measure_calculations_amc'),
 				action: 'clientListReport',
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						name: 'from'
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to'
 					}
 				]
 			});
 		});
-		me.link8 = me.addReportByCategory(me.clinicCategory, i18n('automated_measure_calculations_tracking'), function(btn){
+		me.link8 = me.addReportByCategory(me.clinicCategory, _('automated_measure_calculations_tracking'), function(btn){
 			me.goToReportPanelAndSetPanel({
-				title: i18n('automated_measure_calculations_tracking'),
+				title: _('automated_measure_calculations_tracking'),
 				action: 'clientListReport',
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						name: 'from'
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to'
 					}
 				],
@@ -531,30 +531,30 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 		 * TODO: Pass the report indicator telling what report should be rendering
 		 * this indicator will also be the logic for field rendering.
 		 */
-		me.visitCategory = me.addCategory(i18n('visit_reports'), 260);
-		me.link9 = me.addReportByCategory(me.visitCategory, i18n('super_bill'), function(btn){
+		me.visitCategory = me.addCategory(_('visit_reports'), 260);
+		me.link9 = me.addReportByCategory(me.visitCategory, _('super_bill'), function(btn){
 			me.goToReportPanelAndSetPanel({
-				title: i18n('super_bill'),
+				title: _('super_bill'),
 				layout: 'anchor',
 				height: 100,
 				items: [
 					{
 						xtype: 'patienlivetsearch',
-						fieldLabel: i18n('name'),
+						fieldLabel: _('name'),
 						hideLabel: false,
 						name: 'pid',
 						width: 570
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('from'),
+						fieldLabel: _('from'),
 						allowBlank: false,
 						name: 'from',
 						format: 'Y-m-d'
 					},
 					{
 						xtype: 'datefield',
-						fieldLabel: i18n('to'),
+						fieldLabel: _('to'),
 						name: 'to',
 						format: 'Y-m-d'
 					}
@@ -563,10 +563,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 			});
 		});
 
-		me.link10 = me.addReportByCategory(me.visitCategory, i18n('appointments'), function(btn){
+		me.link10 = me.addReportByCategory(me.visitCategory, _('appointments'), function(btn){
 			if(!me.appointmentsReportStore) me.appointmentsReportStore = Ext.create('Modules.reportcenter.store.Appointment');
 			me.goToReportPanelAndSetPanel({
-				title: i18n('appointments'),
+				title: _('appointments'),
 				layout: 'anchor',
 				height: 100,
 				items: [
@@ -577,14 +577,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						items: [
 							{
 								xtype: 'datefield',
-								fieldLabel: i18n('from'),
+								fieldLabel: _('from'),
 								name: 'from',
 								format: 'Y-m-d',
 								width: 275
 							},
 							{
 								xtype: 'mitos.facilitiescombo',
-								fieldLabel: i18n('facility'),
+								fieldLabel: _('facility'),
 								name: 'facility',
 								hideLabel: false,
 								width: 300,
@@ -601,14 +601,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						items: [
 							{
 								xtype: 'datefield',
-								fieldLabel: i18n('to'),
+								fieldLabel: _('to'),
 								name: 'to',
 								format: 'Y-m-d',
 								width: 275
 							},
 							{
 								xtype: 'mitos.providerscombo',
-								fieldLabel: i18n('provider'),
+								fieldLabel: _('provider'),
 								name: 'provider',
 								hideLabel: false,
 								width: 300,
@@ -624,39 +624,39 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 				store: me.appointmentsReportStore,
 				columns: [
 					{
-						text: i18n('provider'),
+						text: _('provider'),
 						width: 200,
 						dataIndex: 'provider'
 					},
 					{
-						text: i18n('patient'),
+						text: _('patient'),
 						width: 200,
 						dataIndex: 'fullname'
 					},
 					{
-						text: i18n('date'),
+						text: _('date'),
 						dataIndex: 'start',
 						xtype: 'datecolumn',
 						format: 'Y-m-d'
 					},
 					{
-						text: i18n('time'),
+						text: _('time'),
 						dataIndex: 'start_time',
 						xtype: 'datecolumn',
 						format: 'h:i a'
 					},
 					{
-						text: i18n('category'),
+						text: _('category'),
 						dataIndex: 'catname',
 						width: 200
 					},
 					{
-						text: i18n('facility'),
+						text: _('facility'),
 						dataIndex: 'facility',
 						width: 250
 					},
 					{
-						text: i18n('notes'),
+						text: _('notes'),
 						dataIndex: 'notes',
 						flex: 1
 					}

@@ -307,11 +307,11 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 			record = form.getForm().getRecord();
 
 		if(record.data.id > 0){
-			app.msg(i18n('oops'), i18n('unable_to_delete_image_msg'), true);
+			app.msg(_('oops'), _('unable_to_delete_image_msg'), true);
 		}else{
 			Ext.Msg.show({
-				title: i18n('wait'),
-				msg: i18n('delete_this_image_confirm'),
+				title: _('wait'),
+				msg: _('delete_this_image_confirm'),
 				buttons: Ext.Msg.YESNO,
 				icon: Ext.Msg.QUESTION,
 				scope: me,

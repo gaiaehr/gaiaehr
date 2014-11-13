@@ -94,14 +94,12 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 	},
 
 	onEncounterSignSuperCptSearchCmbSelect: function(cmb, records){
-		var me = this,
-			record = cmb.up('form').getForm().getRecord();
+		var record = cmb.up('form').getForm().getRecord();
 
 		record.set({
 			code: records[0].data.code,
 			code_type: records[0].data.code_type
 		});
-
 	},
 
 

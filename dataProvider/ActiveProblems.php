@@ -48,6 +48,31 @@ class ActiveProblems {
 		return $this->a->destroy($params);
 	}
 
+	public function getPatientActiveProblemByPid($pid){
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
+		$records = $this->a->load($params)->all();
+		unset($params);
+		foreach($records as $i => $record){
+			if(strtotime($record['end_date']) < strtotime(date('Y-m-d')) && $record['end_date'] != '0000-00-00'){
+				unset($records[$i]);
+			}
+		}
+		return $records;
+	}
+
+	public function getPatientActiveProblemByEid($eid){
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value =  $eid;
+		$records = $this->a->load($params)->all();
+		unset($params);
+		return $records;
+	}
+
 	public function getPatientActiveProblemByPidAndCode($pid, $code){
 		$params =  new stdClass();
 		$params->filter[0] = new stdClass();

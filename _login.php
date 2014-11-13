@@ -28,15 +28,17 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 
     <link rel="shortcut icon" href="favicon.ico">
-    <script src="JSrouter.php?site=<?php print $site ?>"></script>
-    <script src="data/api.php?site=<?php print $site ?>"></script>
     <script type="text/javascript">
         var app,
             acl = {},
             lang = {},
             globals = {},
-	        site = '<?php print $site ?>',
-	        localization = '<?php print site_default_localization ?>';
+            site = '<?php print $site ?>',
+            localization = '<?php print site_default_localization ?>';
+    </script>
+    <script src="JSrouter.php?site=<?php print $site ?>"></script>
+    <script src="data/api.php?site=<?php print $site ?>"></script>
+    <script type="text/javascript">
 
         window.i18n = window._ = function(key){
             return window.lang[key] || '*'+key+'*';

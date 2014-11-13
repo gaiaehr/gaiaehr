@@ -21,29 +21,24 @@ include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Vitals.php');
 include_once(ROOT . '/dataProvider/PoolArea.php');
-include_once(ROOT . '/dataProvider/Medical.php');
-include_once(ROOT . '/dataProvider/PreventiveCare.php');
+include_once(ROOT . '/dataProvider/Allergies.php');
+include_once(ROOT . '/dataProvider/Medications.php');
+include_once(ROOT . '/dataProvider/ActiveProblems.php');
+include_once(ROOT . '/dataProvider/Immunizations.php');
 include_once(ROOT . '/dataProvider/Services.php');
 include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
 include_once(ROOT . '/dataProvider/FamilyHistory.php');
 
 class Encounter {
 	/**
-	 * @var MatchaHelper
+	 * @var PDO
 	 */
-	private $db;
-	/**
-	 * @var User
-	 */
-	private $user;
+	private $conn;
+
 	/**
 	 * @var Patient
 	 */
 	private $patient;
-	/**
-	 * @var Services
-	 */
-	private $services;
 	/**
 	 * @var
 	 */
@@ -52,14 +47,7 @@ class Encounter {
 	 * @var PoolArea
 	 */
 	private $poolArea;
-	/**
-	 * @var Medical
-	 */
-	private $medical;
-	/**
-	 * @var PreventiveCare
-	 */
-	private $preventiveCare;
+
 	/**
 	 * @var DiagnosisCodes
 	 */
@@ -90,26 +78,18 @@ class Encounter {
 	 * @var bool|MatchaCUP
 	 */
 	private $hcfa;
-	/**
-	 * @var Vitals
-	 */
-	private $Vitals;
+
 	/**
 	 * @var bool|MatchaCUP
 	 */
 	private $edx;
 
 	function __construct(){
-		$this->db = new MatchaHelper();
+		$this->conn = Matcha::getConn();
 		$this->patient = new Patient();
-		$this->services = new Services();
 		$this->poolArea = new PoolArea();
-		$this->medical = new Medical();
-		$this->preventiveCare = new PreventiveCare();
 		$this->diagnosis = new DiagnosisCodes();
-
 		$this->FamilyHistory = new FamilyHistory();
-		$this->Vitals = new Vitals();
 
 		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
 		$this->ros = MatchaModel::setSenchaModel('App.model.patient.ReviewOfSystems');
@@ -257,9 +237,12 @@ class Encounter {
 		$filters->filter[0]->property = 'eid';
 		$filters->filter[0]->value = $encounter['eid'];
 
+
+		$Vitals = new Vitals();
 		if($_SESSION['globals']['enable_encounter_vitals']){
-			$encounter['vitals'] = $allVitals ? $this->Vitals->getVitalsByPid($encounter['pid']) : $this->Vitals->getVitalsByEid($encounter['eid']);
+			$encounter['vitals'] = $allVitals ?$Vitals->getVitalsByPid($encounter['pid']) :$Vitals->getVitalsByEid($encounter['eid']);
 		}
+		unset($Vitals);
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
 			$encounter['reviewofsystems'][] = $this->getReviewOfSystems($filters);
@@ -425,7 +408,10 @@ class Encounter {
 	}
 
 	public function getEncounterServiceCodesByEid($eid){
-		return $this->services->getCptByEid($eid);
+		$Services = new Services();
+		$records = $Services->getCptByEid($eid);
+		unset($Services);
+		return $records;
 	}
 
 	//***********************************************************************************************
@@ -436,8 +422,9 @@ class Encounter {
 	 * @return array
 	 */
 	public function getDictationByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounter_dictation WHERE eid = '$eid' ORDER BY date DESC");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare("SELECT * FROM `encounter_dictation` WHERE eid = ? ORDER BY `date` DESC");
+		$sth->execute(array($eid));
+		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -525,8 +512,11 @@ class Encounter {
 	}
 
 	private function getObjectiveExtraDataByEid($eid){
+
 		$ExtraData = '';
-		$medications = $this->medical->getPatientMedicationsByEncounterID($eid);
+
+		$Medications = new Medications();
+		$medications = $Medications->getPatientMedicationsByEid($eid);
 		if(!empty($medications)){
 			$lis = '';
 			foreach($medications as $foo){
@@ -535,7 +525,10 @@ class Encounter {
 			$ExtraData .= '<p>Medications:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
-		$immunizations = $this->medical->getImmunizationsByEncounterID($eid);
+		unset($Medications);
+
+		$Immunizations = new Immunizations();
+		$immunizations = $Immunizations->getImmunizationsByEncounterID($eid);
 		if(!empty($immunizations)){
 			$lis = '';
 			foreach($immunizations as $foo){
@@ -549,7 +542,11 @@ class Encounter {
 			$ExtraData .= '<p>Immunizations:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
-		$allergies = $this->medical->getAllergiesByEncounterID($eid);
+		unset($Immunizations);
+
+
+		$Allergies = new Allergies();
+		$allergies = $Allergies->getPatientAllergiesByEid($eid);
 		if(!empty($allergies)){
 			$lis = '';
 			foreach($allergies as $foo){
@@ -562,11 +559,13 @@ class Encounter {
 			$ExtraData .= '<p>Allergies:</p>';
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
+		unset($Allergies);
 
 		/**
 		 * Active Problems found in this Encounter
 		 */
-		$activeProblems = $this->medical->getMedicalIssuesByEncounterID($eid);
+		$ActiveProblems = new ActiveProblems();
+		$activeProblems = $ActiveProblems->getPatientActiveProblemByEid($eid);
 		if(!empty($activeProblems)){
 			$lis = '';
 			foreach($activeProblems as $foo){
@@ -576,17 +575,8 @@ class Encounter {
 			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
 		}
 
-		$preventiveCare = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
-		if(!empty($preventiveCare)){
-			$lis = '';
-			foreach($preventiveCare as $foo){
-				$lis .= '<li>Description: ' . $foo['description'] . '<br>';
-				$lis .= 'Reason: ' . $foo['reason'] . '<br>';
-				$lis .= 'Observation: ' . $foo['observation'] . ' </li>';
-			}
-			$ExtraData .= '<p>Preventive Care:</p>';
-			$ExtraData .= '<ul class="ProgressNote-ul">' . $lis . '</ul>';
-		}
+		unset($ActiveProblems);
+
 		return $ExtraData;
 	}
 
@@ -627,11 +617,10 @@ class Encounter {
 	public function checkForAnOpenedEncounterByPid(stdClass $params){
 		$date = strtotime('-1 day', strtotime($params->date));
 		$date = date('Y-m-d H:i:s', $date);
-		$this->db->setSQL("SELECT * FROM encounters
-                           WHERE (pid='$params->pid'
-                           AND   close_date is NULL)
-                           AND service_date >= '$date'");
-		$data = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$sql = "SELECT * FROM `encounters` WHERE (pid= ? AND close_date is NULL) AND service_date >= ?";
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array($params->pid, $date));
+		$data = $sth->fetch(PDO::FETCH_ASSOC);
 		if(isset($data['eid'])){
 			return true;
 		} else{
@@ -641,15 +630,21 @@ class Encounter {
 	}
 
 	public function getEncounterFollowUpInfoByEid($eid){
-		$this->db->setSQL("SELECT followup_time, followup_facility FROM encounters WHERE eid = '$eid'");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		$rec['followup_facility'] = intval($rec['followup_facility']);
+		$sql = "SELECT followup_time, followup_facility FROM encounters WHERE eid = ?";
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array($eid));
+		$rec = $sth->fetch(PDO::FETCH_ASSOC);
+		if($rec !== false){
+			$rec['followup_facility'] = intval($rec['followup_facility']);
+		}
 		return $rec;
 	}
 
 	public function getEncounterMessageByEid($eid){
-		$this->db->setSQL("SELECT message FROM encounters WHERE eid = '$eid'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$sql = "SELECT message FROM encounters WHERE eid = ?";
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array($eid));
+		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
 	public function getEncounterByDateFromToAndPatient($from, $to, $pid = null){
@@ -663,43 +658,26 @@ class Encounter {
 		if(isset($pid) && $pid != ''){
 			$sql .= " AND encounters.pid = '$pid'";
 		}
-		$this->db->setSQL($sql);
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
-	}
+		$sth = $this->conn->prepare($sql);
+		$sth->execute();
+		return $sth->fetchAll(PDO::FETCH_ASSOC);
 
-	public function onSaveItemsToReview(stdClass $params){
-		$data = get_object_vars($params);
-		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounters', 'U', array('eid' => $params->eid)));
-		$this->db->execLog();
-		return array('success' => true);
-
-	}
-
-	public function addEncounterHCFAOptions(stdClass $params){
-		$data = get_object_vars($params);
-		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_1500_options', 'U', array('eid' => $params->eid)));
-		$this->db->execLog();
-		return array('success' => true);
-	}
-
-	public function updateEncounterHCFAOptions(stdClass $params){
-		$data = get_object_vars($params);
-		unset($data['eid']);
-		$this->db->setSQL($this->db->sqlBind($data, 'encounter_1500_options', 'U', array('eid' => $params->eid)));
-		$this->db->execLog();
-		return array('success' => true);
-	}
-
-	public function getEncounterHCFAOptionsByEid($eid){
-		$this->db->setSQL("SELECT * FROM encounter_1500_options WHERE eid = '$eid'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
 	public function getEncountersByDate($date){
-		$this->db->setSQL("SELECT * FROM encounters WHERE service_date >= '$date 00:00:00' AND service_date <= '$date 23:59:59'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$filters = new stdClass();
+
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'service_date';
+		$filters->filter[0]->operator = '>=';
+		$filters->filter[0]->value = $date . ' 00:00:00';
+
+		$filters->filter[1] = new stdClass();
+		$filters->filter[1]->property = 'service_date';
+		$filters->filter[1]->operator = '<=';
+		$filters->filter[1]->value = $date . ' 00:00:00';
+
+		return $this->getEncounters($filters, false);
 	}
 
 	public function getTodayEncounters(){
@@ -740,6 +718,10 @@ class Encounter {
 
 	public function updateDictation($params){
 		return $this->d->save($params);
+	}
+
+	public function getHCFAs($params){
+		return $this->hcfa->load($params)->all();
 	}
 
 	public function getHCFA($params){
@@ -785,86 +767,4 @@ class Encounter {
 	public function destroyEncounterDx($params){
 		return $this->edx->destroy($params);
 	}
-
-//	/**
-//	 * @param stdClass $params
-//	 * @return array
-//	 */
-//	public function getVitals(stdClass $params){
-//		$records =  $this->v->load($params)->all();
-//		foreach($records as $i => $record){
-//			$records[$i]['height_in'] = isset($record['height_in']) ? intval($record['height_in']) : '';
-//			$records[$i]['height_cm'] = isset($record['height_cm']) ? intval($record['height_cm']) : '';
-//			$records[$i]['administer_by'] = $record['uid'] != null ? $this->user->getUserNameById($record['uid']) : '';
-//			$records[$i]['authorized_by'] = $record['auth_uid'] != null ? $this->user->getUserNameById($record['auth_uid']) : '';
-//		}
-//		return $records;
-//	}
-//
-//	/**
-//	 * @param stdClass $params
-//	 * @return stdClass
-//	 */
-//	public function addVitals($params){
-//		$eid = is_object($params) ? $params->eid : $params[0]->eid;
-//		$this->setEid($eid);
-//		$record = $this->v->save($params);
-//		$record['administer_by'] = $this->user->getUserNameById($record['uid']);
-//		return $record;
-//	}
-//
-//	/**
-//	 * @param stdClass $params
-//	 * @return stdClass
-//	 */
-//	public function updateVitals($params){
-//		$eid = is_object($params) ? $params->eid : $params[0]->eid;
-//		$this->setEid($eid);
-//		$record = $this->v->save($params);
-//		if(is_array($params)){
-//			foreach($record as $i => $rec){
-//				$record[$i] = $rec = (object) $rec;
-//				$record[$i]->administer_by = $rec->uid != 0 ? $this->user->getUserNameById($rec->uid) : '';
-//				$record[$i]->authorized_by = $rec->auth_uid != 0 ? $this->user->getUserNameById($rec->auth_uid) : '';
-//			}
-//		}else{
-//			$record = (object) $record;
-//			$record->administer_by = $record->uid != 0 ? $this->user->getUserNameById($record->uid) : '';
-//			$record->authorized_by = $record->auth_uid != 0 ? $this->user->getUserNameById($record->auth_uid) : '';
-//		}
-//
-//		return $record;
-//	}
-//
-//	/**
-//	 * @param $pid
-//	 * @return array
-//	 */
-//	public function getVitalsByPid($pid){
-//		$filters = new stdClass();
-//		$filters->filter[0] = new stdClass();
-//		$filters->filter[0]->property = 'pid';
-//		$filters->filter[0]->value = $pid;
-//
-//		$filters->sort[0] = new stdClass();
-//		$filters->sort[0]->property = 'date';
-//		$filters->sort[0]->direction = 'DESC';
-//		return $this->getVitals($filters);
-//	}
-//
-//	/**
-//	 * @param $eid
-//	 * @return array
-//	 */
-//	public function getVitalsByEid($eid){
-//		$filters = new stdClass();
-//		$filters->filter[0] = new stdClass();
-//		$filters->filter[0]->property = 'eid';
-//		$filters->filter[0]->value = $eid;
-//
-//		$filters->sort[0] = new stdClass();
-//		$filters->sort[0]->property = 'date';
-//		$filters->sort[0]->direction = 'DESC';
-//		return $this->getVitals($filters);
-//	}
 }

@@ -63,7 +63,7 @@ Ext.define('App.model.patient.CVXCodes', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getImmunizationsList'
+			read: 'Immunizations.getImmunizationsList'
 		}
 	}
 });

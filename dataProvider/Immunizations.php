@@ -18,14 +18,115 @@
  */
 
 include_once(ROOT . '/classes/XMLParser.class.php');
+include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
 
 class Immunizations {
 	private $db;
 
+	/**
+	 * @var MatchaCUP
+	 */
+	private $i;
+
 	function __construct() {
 		$this->db = new MatchaHelper();
+		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
 		return;
 	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getImmunizationsList(){
+		$sql = "SELECT * FROM cvx_codes";
+		$this->db->setSQL($sql);
+		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
+	public function getPatientImmunizations($params){
+		return $this->i->load($params)->all();
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
+	public function addPatientImmunization($params){
+
+		$DiagnosisCodes = new DiagnosisCodes();
+		$immunization = $this->i->save($params);
+		// add service
+		if($immunization !== false && isset($params->eid) && $params->eid > 0){
+			$service = new stdClass();
+			$service->pid = $params->pid;
+			$service->eid = $params->eid;
+			$service->uid = $params->uid;
+			$service->code = $this->getCptByCvx($params->code);
+			$dx_pointers = array();
+			foreach($DiagnosisCodes->getICDByEid($params->eid, true) AS $dx){
+				$dx_children[] = $dx;
+				$dx_pointers[] = $dx['code'];
+			}
+			$service->dx_pointers = implode(',', $dx_pointers);
+
+			// TODO....
+			//			$this->services->addCptCode($service);
+		}
+		return $immunization;
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
+	public function updatePatientImmunization($params){
+		return $this->i->save($params);
+
+	}
+
+	public function getPatientImmunizationsByPid($pid){
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+		return $this->i->load($params)->all();
+	}
+
+	/**
+	 * @param $eid
+	 * @return array
+	 */
+	public function getImmunizationsByEncounterID($eid){
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value = $eid;
+		return $this->i->load($params)->all();
+	}
+
+	public function sendVXU($params){
+		$model = MatchaModel::setSenchaModel('App.model.patient.Patient');
+		$p = new stdClass();
+		$p->filter[0] = new stdClass();
+		$p->filter[0]->property = 'pid';
+		$p->filter[0]->value = $params->pid;
+		$data = array();
+		$data['to'] = $params->to;
+		$data['patient'] = $model->load($p)->one();
+		$data['immunizations'] = array();
+		foreach($params->immunizations As $i){
+			$data['immunizations'][] = $this->i->load($i)->one();
+		}
+		return $data;
+	}
+
+
+
 
 	public function getCVXCodesByStatus($status = 'Active') {
 		$this->db->setSQL("SELECT * FROM cvx_codes WHERE status = '$status'");

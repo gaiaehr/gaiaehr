@@ -57,6 +57,14 @@ class Medications {
 		return $this->m->load($params)->all();
 	}
 
+	public function getPatientMedicationsByEid($eid){
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value =  $eid;
+		return $this->m->load($params)->all();
+	}
+
 	public function getPatientActiveMedicationsByPid($pid){
 		$params =  new stdClass();
 		$params->filter[0] = new stdClass();

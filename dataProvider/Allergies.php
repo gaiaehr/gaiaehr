@@ -67,6 +67,14 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
+	public function getPatientAllergiesByEid($eid) {
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value = $eid;
+		return $this->getPatientAllergies($params);
+	}
+
 	public function getPatientActiveDrugAllergiesByPid($pid){
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();

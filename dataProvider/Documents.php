@@ -37,8 +37,6 @@ class Documents {
 	 */
 	private $patient;
 
-	private $preventiveCare;
-
 	private $encounter;
 
 	public $pdf;
@@ -47,7 +45,6 @@ class Documents {
 		$this->db = new MatchaHelper();
 		$this->patient = new Patient();
 		$this->encounter = new Encounter();
-		$this->preventiveCare = new PreventiveCare();
 		$this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 		return;
 	}
@@ -261,14 +258,22 @@ class Documents {
 			}
 		}
 
-		$medical = new Medical();
-		$medications = $medical->getPatientMedicationsByEncounterID($eid);
-		$immunizations = $medical->getImmunizationsByEncounterID($eid);
-		$allergies = $medical->getAllergiesByEncounterID($eid);
-		$activeProblems = $medical->getMedicalIssuesByEncounterID($eid);
-		unset($medical);
+		$Medications = new Medications();
+		$medications = $Medications->getPatientMedicationsByEid($eid);
+		unset($Medications);
 
-		$preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
+		$Immunizations = new Immunizations();
+		$immunizations = $Immunizations->getImmunizationsByEid($eid);
+		unset($Immunizations);
+
+		$Allergies = new Allergies();
+		$allergies = $Allergies->getPatientAllergiesByEid($eid);
+		unset($Allergies);
+
+		$ActiveProblems = new ActiveProblems();
+		$activeProblems = $ActiveProblems->getPatientActiveProblemByEid($eid);
+		unset($ActiveProblems);
+
 		$encounter = $encounter['encounter'];
 
 		$encounterInformation = array(
@@ -305,7 +310,7 @@ class Documents {
 			'[ENCOUNTER_MEDICATIONS_LIST]' => $this->tokensForEncountersList($medications, 5),
 			'[ENCOUNTER_ACTIVE_PROBLEMS_LIST]' => $this->tokensForEncountersList($activeProblems, 6),
 			'[ENCOUNTER_IMMUNIZATIONS_LIST]' => $this->tokensForEncountersList($immunizations, 7),
-			'[ENCOUNTER_PREVENTIVECARE_DISMISS]' => $this->tokensForEncountersList($preventivecaredismiss, 10),
+			//'[ENCOUNTER_PREVENTIVECARE_DISMISS]' => $this->tokensForEncountersList($preventivecaredismiss, 10),
 			'[ENCOUNTER_REVIEWOFSYSTEMSCHECKS]' => isset($rosCks) ? $this->tokensForEncountersList($rosCks, 11) : '',
 			'[ENCOUNTER_REVIEWOFSYSTEMS]' => isset($reviewofsystems) ? $this->tokensForEncountersList($reviewofsystems, 12) : '',
 			//            '[]'     =>$this->tokensForEncountersList($hcpc,13),

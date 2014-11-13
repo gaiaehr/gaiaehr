@@ -58,7 +58,7 @@ class MatchaHelper extends Matcha {
 	 *
 	 */
 	function __construct() {
-		self::$__freeze = false;
+		self::$__freeze = true;
 		// Connect to the database
 		// This is compatible with the old methods
 		if(defined('site_db_type')){
@@ -402,8 +402,3 @@ $conn = Matcha::getConn();
 if(!isset($conn)){
 	new MatchaHelper();
 }
-
-//print'<pre>';
-//$db = new MatchaHelper();
-//print_r(MatchaModel::setSenchaModel('App.model.patient.Insurance'));
-//print_r(MatchaModel::setSenchaModel('App.model.patient.Patient'));

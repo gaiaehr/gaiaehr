@@ -135,9 +135,9 @@ Ext.define('App.model.patient.PatientImmunization', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getPatientImmunizations',
-			create: 'Medical.addPatientImmunization',
-			update: 'Medical.updatePatientImmunization'
+			read: 'Immunizations.getPatientImmunizations',
+			create: 'Immunizations.addPatientImmunization',
+			update: 'Immunizations.updatePatientImmunization'
 		}
 	}
 });

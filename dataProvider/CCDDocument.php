@@ -40,12 +40,12 @@ include_once(ROOT . '/dataProvider/Rxnorm.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/PoolArea.php');
 include_once(ROOT . '/dataProvider/Vitals.php');
-include_once(ROOT . '/dataProvider/Medical.php');
+include_once(ROOT . '/dataProvider/Immunizations.php');
+include_once(ROOT . '/dataProvider/ActiveProblems.php');
 include_once(ROOT . '/dataProvider/Allergies.php');
 include_once(ROOT . '/dataProvider/Orders.php');
 include_once(ROOT . '/dataProvider/Medications.php');
 include_once(ROOT . '/dataProvider/CarePlanGoals.php');
-include_once(ROOT . '/dataProvider/PreventiveCare.php');
 include_once(ROOT . '/dataProvider/CognitiveAndFunctionalStatus.php');
 include_once(ROOT . '/dataProvider/Procedures.php');
 include_once(ROOT . '/dataProvider/SocialHistory.php');
@@ -76,10 +76,6 @@ class CCDDocument {
 	 * @var Encounter
 	 */
 	private $Encounter;
-	/**
-	 * @var Medical
-	 */
-	private $Medical;
 	/**
 	 * @var Facilities
 	 */
@@ -188,7 +184,6 @@ class CCDDocument {
 		$this->dateNow = date('Ymd');
 		$this->timeNow = date('YmdHisO');
 		$this->Encounter = new Encounter();
-		$this->Medical = new Medical();
 		$this->Facilities = new Facilities();
 		$this->CombosData = new CombosData();
 		$this->facility = $this->Facilities->getCurrentFacility(true);
@@ -1427,7 +1422,9 @@ class CCDDocument {
 	 */
 	private function setImmunizationsSection(){
 
-		$immunizationsData = $this->Medical->getPatientImmunizationsByPid($this->pid);
+		$Immunizations = new Immunizations();
+		$immunizationsData =$Immunizations->getPatientImmunizationsByPid($this->pid);
+		unset($Immunizations);
 
 		if(empty($immunizationsData)){
 			$immunizations['section']['@attributes'] = array(
@@ -2055,7 +2052,9 @@ class CCDDocument {
 	 */
 	private function setProblemsSection(){
 
-		$problemsData = $this->Medical->getPatientProblemsByPid($this->pid);
+		$ActiveProblems = new ActiveProblems();
+		$problemsData = $ActiveProblems->getPatientActiveProblemByPid($this->pid);
+		unset($ActiveProblems);
 
 		if(empty($problemsData)){
 			$problems['section']['@attributes'] = array(

@@ -571,7 +571,7 @@ Ext.define('App.ux.grid.GridToHtml', {
             columns = clearColumns;
             //get Styles file relative location, if not supplied
             if(this.stylesheetPath === null){
-                this.stylesheetPath = g('date_display_format') + '/resources/css/print.css';
+                this.stylesheetPath = g('url') + '/resources/css/print.css';
             }
             //use the headerTpl and bodyTpl markups to create the main XTemplate below
             var headings = Ext.create('Ext.XTemplate', this.headerTpl).apply(columns);
@@ -825,7 +825,7 @@ Ext.define('App.ux.grid.Printer', {
             columns = clearColumns;
             //get Styles file relative location, if not supplied
             if(this.stylesheetPath === null){
-                this.stylesheetPath = g('date_display_format') + '/resources/css/print.css';
+                this.stylesheetPath = g('url') + '/resources/css/print.css';
             }
             //use the headerTpl and bodyTpl markups to create the main XTemplate below
             var headings = Ext.create('Ext.XTemplate', this.headerTpl).apply(columns);
@@ -1154,13 +1154,13 @@ Ext.define('App.ux.AbstractPanel', {
 
 Ext.define('App.ux.LiveCPTSearch', {
 	extend: 'Ext.form.field.ComboBox',
-	alias: 'widget.livecptsearch',
+	xtype: 'livecptsearch',
 	hideLabel: true,
 	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
 	spExtraParam: '',
-	displayField: 'code_text',
+	displayField: 'code_text_medium',
 	valueField: 'code',
 	qtip: _('clearable_combo_box'),
 	trigger1Class: 'x-form-select-trigger',
@@ -1214,12 +1214,8 @@ Ext.define('App.ux.LiveCPTSearch', {
 			anchor: '100%',
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item">{code}: {code_text}</div>';
+					return '<div class="search-item">{code}: {code_text_medium}</div>';
 				}
 			},
 			pageSize: 25
@@ -3855,7 +3851,7 @@ Ext.define('App.ux.form.fields.ColorPicker', {
 Ext.define('App.ux.form.fields.Currency',{
     extend: 'Ext.form.field.Number', //Extending the NumberField
     alias: 'widget.mitos.currency', //Defining the xtype,
-    currencySymbol: g('date_display_format'),
+    currencySymbol: g('gbl_currency_symbol'),
     useThousandSeparator: true,
     thousandSeparator: ',',
     alwaysDisplayDecimals: true,
@@ -13187,11 +13183,13 @@ Ext.define('App.model.patient.EncounterService', {
 		},
 		{
 			name: 'pid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'eid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'code',
@@ -13296,8 +13294,7 @@ Ext.define('App.model.patient.EventHistory', {
 Ext.define('App.model.patient.HCFAOptions', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'encounter_1500_options',
-		comment: 'HCFA options 1500 Data'
+		name: 'encounter_1500_options'
 	},
 	fields: [
 		{
@@ -13453,7 +13450,7 @@ Ext.define('App.model.patient.CVXCodes', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getImmunizationsList'
+			read: 'Immunizations.getImmunizationsList'
 		}
 	}
 });
@@ -13470,7 +13467,7 @@ Ext.define('App.model.patient.ImmunizationCheck', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getPatientImmunizations'
+			read: 'Immunizations.getPatientImmunizations'
 		}
 	}
 });
@@ -14739,9 +14736,9 @@ Ext.define('App.model.patient.PatientImmunization', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Medical.getPatientImmunizations',
-			create: 'Medical.addPatientImmunization',
-			update: 'Medical.updatePatientImmunization'
+			read: 'Immunizations.getPatientImmunizations',
+			create: 'Immunizations.addPatientImmunization',
+			update: 'Immunizations.updatePatientImmunization'
 		}
 	}
 });
@@ -17253,7 +17250,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				form = me.down('form').getForm(),
 				record = form.getRecord();
 
-			if(!record && a('access_enc_history')){
+			if(!record && a('add_encounters')){
 
 				me.loadRecord(
 					Ext.create('App.model.patient.Encounter', {
@@ -17263,7 +17260,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						open_uid: app.user.id,
 						facility: app.user.facility,
 						billing_facility: app.user.facility,
-						brief_description: g('date_display_format')
+						brief_description: g('default_chief_complaint')
 					})
 				);
 
@@ -17283,7 +17280,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						});
 					}
 				});
-			} else if(record && a('access_enc_history')){
+			} else if(record && a('edit_encounters')){
 
 				// placeholder
 
@@ -37573,17 +37570,12 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 	},
 
 	onEncounterSignSuperCptSearchCmbSelect: function(cmb, records){
-		var me = this,
-			record = cmb.up('form').getForm().getValue().getRecord();
-
-		say(records[0].data);
+		var record = cmb.up('form').getForm().getRecord();
 
 		record.set({
-			code: '',
-			code_text: '',
-			code_type: ''
+			code: records[0].data.code,
+			code_type: records[0].data.code_type
 		});
-
 	},
 
 
@@ -42095,8 +42087,9 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					dataIndex: 'code_text',
 					flex: 1,
 					editor: {
-						xtype:'livecptsearch',
+						xtype: 'livecptsearch',
 						itemId: 'EncounterSignSuperCptSearchCmb',
+						valueField: 'code_text_medium',
 						allowBlank: false
 					}
 				},
@@ -42104,28 +42097,32 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 					header: _('units'),
 					dataIndex: 'units',
 					width: 50,
-					editor:{
-						xtype:'numberfield',
+					editor: {
+						xtype: 'numberfield',
 						minValue: 1,
 						allowBlank: false
 					}
 				},
 				{
 					header: _('modifiers'),
-					dataIndex: 'units',
+					dataIndex: 'modifiers',
 					width: 100,
 					editor: {
-						xtype:'textfield'
+						xtype: 'textfield'
 					}
 				},
 				{
 					header: _('diagnosis'),
-					dataIndex: 'diagnosis',
-					width: 200,
+					dataIndex: 'dx_pointers',
+					width: 250,
 					editor: {
-						xtype:'textfield',
+						xtype: 'textfield',
 						allowBlank: false
 					}
+				},
+				{
+					header: _('status'),
+					dataIndex: 'status'
 				}
 			],
 			dockedItems: [
@@ -48064,7 +48061,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			plugins: {
 				ptype: 'advanceform',
 				autoSync: g('autosave'),
-				syncAcl: a('access_enc_history')
+				syncAcl: a('edit_encounters')
 			},
 			items: [
 				me.pWin = Ext.widget('window', {
@@ -48967,7 +48964,7 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 	plugins: {
 		ptype: 'advanceform',
 		autoSync: g('autosave'),
-		syncAcl: a('access_enc_history')
+		syncAcl: a('edit_family_history')
 	},
 
 	buttons: [
@@ -49026,7 +49023,7 @@ Ext.define('App.view.patient.Encounter', {
 	initComponent: function(){
 		var me = this;
 
-		me.renderAdministrative = a('access_enc_history') || a('access_enc_history') || a('access_enc_history');
+		me.renderAdministrative = a('access_enc_hcfa') || a('access_enc_cpt') || a('access_enc_history');
 
 		me.timerTask = {
 			scope: me,
@@ -49514,50 +49511,6 @@ Ext.define('App.view.patient.Encounter', {
 					app.accessDenied();
 				}
 
-			}else if(SaveBtn.action == 'vitals'){
-
-				var VFields = form.getFields().items,
-					VFieldsCount = VFields.length,
-					emptyCount = 0;
-
-				for(var i = 0; i < VFields.length; i++){
-					if(VFields[i].xtype != 'mitos.datetime'){
-						if(VFields[i].value == ''){
-							emptyCount++;
-						}
-					}
-				}
-
-				if((VFieldsCount - 3) > emptyCount){
-
-					if(a('add_vitals')){
-
-						store = me.encounter.vitals();
-						record = form.getRecord();
-						values = me.addDefaultData(values);
-						storeIndex = store.indexOf(record);
-						if(storeIndex == -1){
-							store.insert(0, values);
-						}else{
-							record.set(values);
-						}
-						store.sync({
-							scope: me,
-							success: function(){
-								me.msg('Sweet!', _('vitals_saved'));
-								me.getProgressNote();
-								me.vitalsPanel.down('vitalsdataview').refresh();
-								me.resetVitalsForm();
-							}
-						});
-
-					}else{
-						app.accessDenied();
-					}
-
-				}else{
-					me.msg('Oops!', _('vitals_form_is_epmty'), true)
-				}
 			}else{
 
 				if(a('edit_encounters')){
@@ -49593,50 +49546,6 @@ Ext.define('App.view.patient.Encounter', {
 					app.accessDenied();
 				}
 			}
-		}
-	},
-
-	onVitalsSign: function(){
-		var me = this,
-			form = me.vitalsPanel.down('form').getForm(),
-			store = me.encounter.vitals(),
-			record = form.getRecord();
-
-		if(form.isValid()){
-			me.passwordVerificationWin(function(btn, password){
-				if(btn == 'ok'){
-					User.verifyUserPass(password, function(provider, response){
-						if(response.result){
-							record.set({
-								auth_uid: user.id
-							});
-							store.sync({
-								callback: function(){
-									form.reset();
-									me.msg('Sweet!', _('vitals_signed'));
-									me.getProgressNote();
-									me.resetVitalsForm();
-									me.vitalsPanel.down('vitalsdataview').refresh();
-									/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-									app.AuditLog('Patient vitals signed');
-								}
-							});
-						}else{
-							Ext.Msg.show({
-								title: 'Oops!',
-								msg: _('incorrect_password'),
-								buttons: Ext.Msg.OKCANCEL,
-								icon: Ext.Msg.ERROR,
-								fn: function(btn){
-									if(btn == 'ok'){
-										me.onVitalsSign();
-									}
-								}
-							});
-						}
-					});
-				}
-			});
 		}
 	},
 

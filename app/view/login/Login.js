@@ -27,7 +27,7 @@ Ext.define('App.view.login.Login', {
 	initComponent: function(){
 		var me = this;
 		me.currSite = null;
-		me.siteLang = window.lang.lang_code;
+		me.siteLang = window['lang']['lang_code'];
 
 		// setting to show site field
 		me.showSite = false;

@@ -105,7 +105,13 @@ Ext.define('App.controller.patient.RxOrders', {
 	doSelectOrderByOrderId: function(id){
 		var sm = this.getRxOrdersGrid().getSelectionModel(),
 			record = this.getRxOrdersGrid().getStore().getById(id);
-		sm.select(record);
+
+		if(record){
+			sm.select(record);
+			return record;
+		}
+
+		return false;
 	},
 
 	onRxOrdersGridBeforeRender: function(grid){
@@ -131,23 +137,6 @@ Ext.define('App.controller.patient.RxOrders', {
 
 		form.findField('dispense').focus(false, 200);
 
-//		Rxnorm.getMedicationAttributesByRxcui(record[0].data.RXCUI, function(provider, response){
-//
-//			form.getRecord().set({
-//				RXCUI: record[0].data.RXCUI,
-//				CODE: record[0].data.CODE,
-//				NDC: record[0].data.NDC
-//			});
-//
-////			form.setValues({
-////				STR: record[0].data.STR.split(',')[0],
-////				route: Ext.String.capitalize(response.result.DRT),
-////				dose: Ext.String.capitalize(response.result.DST),
-////				form: Ext.String.capitalize(response.result.DDF)
-////			});
-//
-//			form.findField('directions').focus(false, 200);
-//		});
 	},
 
 	onRxOrdersGridBeforeEdit: function(plugin, context){
@@ -165,8 +154,7 @@ Ext.define('App.controller.patient.RxOrders', {
 	},
 
 	onNewRxOrderBtnClick:function(btn){
-		var me = this,
-			grid = btn.up('grid');
+		var grid = btn.up('grid');
 
 		grid.editingPlugin.cancelEdit();
 
@@ -245,8 +233,9 @@ Ext.define('App.controller.patient.RxOrders', {
 		var me = this,
 			grid = me.getRxOrdersGrid(),
 			items = grid.getSelectionModel().getSelection(),
-			notes = '',
+			references = '',
 			params = {},
+			columns,
 			data,
 			i;
 
@@ -256,14 +245,18 @@ Ext.define('App.controller.patient.RxOrders', {
 		params.docType = 'Rx';
 
 		params.templateId = 5;
-		params.orderItems.push(['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes']);
+
+		columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+
+		params.orderItems.push(columns);
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
-			notes = data.notes;
 
 			if(data.ref_order != ''){
 				var refs = data.ref_order.split('~');
-				notes = 'Reference #: ' + refs[0] + '<br>' + notes;
+				if(refs.length >= 3){
+					references = 'Rx Reference#: ' + refs[2];
+				}
 			}
 
 			params.orderItems.push([
@@ -273,7 +266,8 @@ Ext.define('App.controller.patient.RxOrders', {
 				data.refill,
 				data.days_supply,
 				(data.dxs.join ? data.dxs.join(', ') : data.dxs),
-				notes
+				data.notes,
+				references
 			]);
 		}
 

@@ -87,7 +87,7 @@ Ext.define('App.view.patient.RxOrders', {
 									maxLength: 105,
 									displayField: 'STR',
 									valueField: 'STR',
-//									forceSelection: true,
+									vtype: 'nonspecialcharactersrequired',
 									allowBlank: false
 								},
 								{
@@ -172,7 +172,7 @@ Ext.define('App.view.patient.RxOrders', {
 									name: 'directions',
 									maxLength: 140,
 									validateOnBlur: true,
-									vtype: 'spaceString',
+									vtype: 'nonspecialcharactersrequired',
 									allowBlank: false
 								},
 								{

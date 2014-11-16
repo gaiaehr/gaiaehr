@@ -99,7 +99,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	             * Using a anonymous function, in javascript.
 	             * Is not intended to be used globally just this once.
 	             */
-                document.write('<script type="text/javascript" src="lib/<?php print EXTJS ?>/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>')
+                document.write('<script type="text/javascript" src="lib/<?php print EXTJS ?>/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>');
 
 	            /**
 	             * Modules Styles

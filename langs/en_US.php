@@ -1470,4 +1470,5 @@ $LANG = array(
 	'role_name'                             => 'Role Name',
 	'be_right_back'                         => 'Be Right Back',
 	'click_to_edit'                         => 'Click To Edit',
+	'message_history'                       => 'Message History',
 );

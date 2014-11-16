@@ -20,8 +20,6 @@
 include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
-include_once(ROOT . '/dataProvider/PreventiveCare.php');
-include_once(ROOT . '/dataProvider/Medical.php');
 include_once(ROOT . '/dataProvider/Referrals.php');
 include_once(ROOT . '/dataProvider/Facilities.php');
 include_once(ROOT . '/dataProvider/DocumentPDF.php');

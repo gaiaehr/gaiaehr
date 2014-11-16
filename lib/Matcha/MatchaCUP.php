@@ -107,6 +107,13 @@ class MatchaCUP {
 	private $whereIndex = 0;
 
 	/**
+	 * This fields will use the OR operator is 2 or more filters
+	 * are applied to the same column
+	 * @var array
+	 */
+	private $orFilterProperties = array();
+
+	/**
 	 * function sql($sql = NULL):
 	 * Method to pass SQL statement without sqlBuilding process
 	 * this is not the preferred way, but sometimes you need to do it.
@@ -294,7 +301,28 @@ class MatchaCUP {
 					$this->clearFilters();
 
 					if(count($whereArray) > 0){
-						$_where = 'WHERE ' . implode(' AND ', $whereArray);
+						$ands = array();
+						foreach($whereArray as $key => $whereArrayItems){
+							if(count($whereArrayItems) == 1){
+								$ands[] = $whereArrayItems[0];
+								continue;
+							}
+
+							$isOrHandler = in_array($key, $this->orFilterProperties);
+							$ors = array();
+							foreach($whereArrayItems AS $whereArrayItem){
+								if(!$isOrHandler){
+									$ands[] = $whereArrayItem;
+									continue;
+								}
+								$ors[] = $whereArrayItem;
+							}
+							if(count($ors) == 0) continue;
+							$ands[]  =  '(' . implode(' OR ', $ors) . ')';
+
+						}
+
+						$_where = 'WHERE ' . implode(' AND ', $ands);
 					} else {
 						$_where = '';
 					}
@@ -313,18 +341,16 @@ class MatchaCUP {
 
 	private function filterHandler($filters){
 		$whereArray = array();
+
 		foreach($filters as $foo){
-
 			if(isset($foo->property)){
-
 				if(is_array($this->phantomFields) && in_array($foo->property, $this->phantomFields)) continue;
-
 				if(!isset($foo->value)){
 					$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
-					$whereArray[] = "`$foo->property` $operator NULL";
+					$whereArray[$foo->property][] = "`$foo->property` $operator NULL";
 				} else {
 					$operator = isset($foo->operator) ? $foo->operator : '=';
-					$whereArray[] = "`$foo->property` $operator '$foo->value'";
+					$whereArray[$foo->property][] = "`$foo->property` $operator '$foo->value'";
 				}
 			}
 		}
@@ -1063,5 +1089,12 @@ class MatchaCUP {
 
 	public function clearSorters(){
 		unset($this->sorters);
+	}
+
+	/**
+	 * @param array $properties
+	 */
+	public function setOrFilterProperties(array $properties){
+		$this->orFilterProperties = $properties;
 	}
 }

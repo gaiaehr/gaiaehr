@@ -29,6 +29,7 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.LiveSigsSearch'
 	],
 	xtype: 'patientmedicationspanel',
+	itemId: 'PatientMedicationsPanel',
 	title: _('medications'),
 	layout: 'border',
 	border: false,
@@ -68,49 +69,10 @@ Ext.define('App.view.patient.Medications', {
 						itemId: 'patientMedicationLiveSearch',
 						displayField: 'STR',
 						valueField: 'STR',
-						action: 'medication'
+						action: 'medication',
+						allowBlank: false
 					}
 				},
-//				{
-//					header: _('dose'),
-//					width: 125,
-//					dataIndex: 'dose',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'textfield'
-//					}
-//				},
-//				{
-//					header: _('route'),
-//					width: 100,
-//					dataIndex: 'route',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'mitos.prescriptionhowto'
-//					}
-//				},
-//				{
-//					header: _('form'),
-//					width: 125,
-//					dataIndex: 'form',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'mitos.prescriptiontypes'
-//					}
-//				},
-//				{
-//					header: _('instructions'),
-//					width: 200,
-//					dataIndex: 'directions',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'livesigssearch'
-//					}
-//				},
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',

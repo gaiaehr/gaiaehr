@@ -31,7 +31,8 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 	}),
 	plugins: [
 		{
-			ptype: 'rowediting'
+			ptype: 'rowediting',
+			errorSummary: false
 		}
 	],
 	columns: [

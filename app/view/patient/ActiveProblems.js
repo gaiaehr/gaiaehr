@@ -104,7 +104,8 @@ Ext.define('App.view.patient.ActiveProblems', {
 								valueField: 'FullySpecifiedName',
 								width: 720,
 								labelWidth: 70,
-								margin: '0 10 5 0'
+								margin: '0 10 5 0',
+								allowBlank: false
 							},
 							{
 								xtype: 'fieldcontainer',
@@ -118,7 +119,8 @@ Ext.define('App.view.patient.ActiveProblems', {
 										width: 250,
 										labelWidth: 70,
 										xtype: 'mitos.occurrencecombo',
-										name: 'occurrence'
+										name: 'occurrence',
+										allowBlank: false
 									},
 									{
 										xtype: 'textfield',

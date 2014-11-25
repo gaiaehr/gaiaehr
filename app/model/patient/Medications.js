@@ -119,7 +119,12 @@ Ext.define('App.model.patient.Medications', {
 		{
 			name: 'notes',
 			type: 'string',
-			len: 300
+			len: 210
+		},
+		{
+			name: 'system_notes',
+			type: 'string',
+			len: 210
 		},
 		{
 			name: 'is_compound',

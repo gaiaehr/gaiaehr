@@ -241,6 +241,9 @@ class ExternalDataUpdate {
 					}
 					$this->file->cleanUp();
 					if($success !== false){
+
+						$params->date = isset($params->date) ? $params->date : date('Y-m-d');
+
 						$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
 						return array(
 							'success' => $success,
@@ -813,16 +816,20 @@ class ExternalDataUpdate {
 					$val1 = str_replace($file_name, $replacement, $val);
 					if(trim($val1) != ''){
 						$this->db->conn()->exec($val1);
-
 					}
 				}
 			}
 		}
 
-		$stmt = $this->db->conn()->prepare("
-	    CREATE INDEX X_RXNSAT_CODE ON RXNSAT(CODE);
-		CREATE INDEX X_RXNSAT_SAB ON RXNSAT(SAB);
-		CREATE INDEX X_RXNCONSO_SAB ON RXNCONSO(SAB);");
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNSAT_CODE ON `rxnsat` (`CODE`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNSAT_SAB ON `rxnsat` (`SAB`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNCONSO_SAB ON `rxnconso` (`SAB`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNCONSO_SEARCH ON `rxnconso` (`STR`,`RXCUI`,`SAB`,`TTY`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNSAT_SEARCH ON `rxnsat` (`RXCUI`,`SAB`,`ATN`,`ATV`) USING BTREE');
 		$stmt->execute();
 
 		return true;

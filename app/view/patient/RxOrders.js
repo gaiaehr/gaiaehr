@@ -25,8 +25,9 @@ Ext.define('App.view.patient.RxOrders', {
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
 		'App.ux.combo.EncounterICDS',
-		'App.ux.LiveSigsSearch',
-		'App.ux.LiveRXNORMSearch'
+		'App.ux.combo.MedicationInstructions',
+		'App.ux.LiveRXNORMSearch',
+		'App.ux.form.fields.plugin.HelpIcon'
 	],
 	xtype: 'patientrxorderspanel',
 	title: _('rx_orders'),
@@ -166,9 +167,10 @@ Ext.define('App.view.patient.RxOrders', {
 									]
 								},
 								{
-									xtype: 'livesigssearch',
+									xtype: 'medicationinstructionscombo',
+									itemId: 'RxOrderMedicationInstructionsCombo',
 									width: 700,
-									fieldLabel: 'Instructions',
+									fieldLabel: _('instructions'),
 									name: 'directions',
 									maxLength: 140,
 									validateOnBlur: true,
@@ -177,11 +179,22 @@ Ext.define('App.view.patient.RxOrders', {
 								},
 								{
 									xtype: 'textfield',
-									width: 700,
-									fieldLabel: _('notes_to_Pharmacist'),
+									width: 680,
+									fieldLabel: '*' + _('notes_to_pharmacist'),
 									itemId: 'RxOrderGridFormNotesField',
 									name: 'notes',
+									plugins:[
+										{
+											ptype: 'helpicon',
+											helpMsg: _('rx_notes_to_pharmacist_warning')
+										}
+									],
 									maxLength: 210
+								},
+								{
+									xtype: 'container',
+									html: ' *' + _('rx_notes_to_pharmacist_warning'),
+									margin: '0 0 0 100'
 								}
 							]
 						},
@@ -294,21 +307,6 @@ Ext.define('App.view.patient.RxOrders', {
 				return app.boolRenderer(v);
 			}
 		},
-		//		{
-		//			header: _('dose'),
-		//			width: 115,
-		//			dataIndex: 'dose'
-		//		},
-		//		{
-		//			header: _('route'),
-		//			width: 90,
-		//			dataIndex: 'route'
-		//		},
-		//		{
-		//			header: _('form'),
-		//			width: 70,
-		//			dataIndex: 'form'
-		//		},
 		{
 			header: _('dispense'),
 			width: 60,

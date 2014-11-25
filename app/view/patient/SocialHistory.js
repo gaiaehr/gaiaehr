@@ -32,7 +32,8 @@ Ext.define('App.view.patient.SocialHistory', {
 	}),
 	plugins: [
 		{
-			ptype: 'rowediting'
+			ptype: 'rowediting',
+			errorSummary: false
 		}
 	],
 	features: [

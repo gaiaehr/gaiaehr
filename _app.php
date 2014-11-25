@@ -683,6 +683,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.Roles',
 	                'administration.Specialties',
 
+	                'AlwaysOnTop',
 	                'Cron',
 	                'DocumentViewer',
 	                'DualScreen',

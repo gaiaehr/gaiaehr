@@ -222,28 +222,6 @@
     border: 3px solid #f9ff01;
 }
 
-.newsfeed-item {
-    display: inline-block;
-    vertical-align: top;
-    border-bottom: solid 1px #ccc;
-    margin-top: 0;
-
-}
-
-.newsfeed-message {
-    margin-top: 5px;
-}
-
-.newsfeed-from {
-    margin: 0;
-    padding: 0;
-}
-
-.newsfeed-message {
-    font-size: 12px;
-    white-space: normal;
-}
-
 .x-mask.uploadmask {
     border: 5px dashed #333333;
 }

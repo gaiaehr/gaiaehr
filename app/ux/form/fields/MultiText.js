@@ -32,6 +32,7 @@ Ext.define('App.ux.form.fields.MultiText', {
 			anchor: '100%',
 			value: value || '',
 			labelWidth: 20,
+			margin: '0 0 5 0',
 			enableKeyEvents: true
 		});
 		if(me.numbers) me.lastField.setFieldLabel((me.items.items.indexOf(me.lastField) + 1).toString());
@@ -62,14 +63,15 @@ Ext.define('App.ux.form.fields.MultiText', {
 		var me = this;
 
 		me.removeAll(true);
-		if(Ext.isString(data)){
+
+		if(Ext.isString(data) && data != ''){
 			me.addField(data);
 		}else if(Ext.isArray(data)){
 			for(var i=0; i < data.length; i++){
 				me.addField(data[i]);
 			}
 		}
-		me.addField(data[i]);
+		me.addField('');
 	},
 
 	getValue:function(){

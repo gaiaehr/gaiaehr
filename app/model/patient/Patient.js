@@ -1,4 +1,9 @@
-/** * Generated dynamically by Matcha::Connect * Create date: 2014-10-21 15:31:15 */Ext.define('App.model.patient.Patient',{
+/**
+ * Generated dynamically by Matcha::Connect
+ * Create date: 2014-10-21 15:31:15
+ */
+
+Ext.define('App.model.patient.Patient',{
     extend: 'Ext.data.Model',
     table: {
         name: 'patient',
@@ -199,7 +204,7 @@
             type: 'string',
             index: true,
             comment: 'email',
-            len: 60
+            len: 80
         },
         {
             name: 'mothers_name',
@@ -430,4 +435,4 @@
             foreignKey: 'pid'
         }
     ]
-});
+});

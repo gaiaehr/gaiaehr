@@ -880,6 +880,21 @@ $API = array(
 			),
 			'getMedicationAttributesByRxcui' => array(
 				'len' => 1
+			),
+			'getMedicationInstructions' => array(
+				'len' => 1
+			),
+			'getMedicationInstruction' => array(
+				'len' => 1
+			),
+			'addMedicationInstruction' => array(
+				'len' => 1
+			),
+			'updateMedicationInstructions' => array(
+				'len' => 1
+			),
+			'destroyMedicationInstructions' => array(
+				'len' => 1
 			)
 		)
 	),

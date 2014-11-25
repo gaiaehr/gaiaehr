@@ -18,6 +18,9 @@
 
 Ext.define('App.ux.LiveRXNORMSearch', {
 	extend: 'Ext.form.ComboBox',
+	requires:[
+		'App.model.administration.MedicationInstruction'
+	],
 	alias: 'widget.rxnormlivetsearch',
 	hideLabel: true,
 	displayField: 'STR',
@@ -28,18 +31,58 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 		Ext.define('liveRXNORMSearchModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'RXCUI', type: 'auto'},
-				{name: 'CODE', type: 'auto'},
-				{name: 'NDC', type: 'auto'},
-				{name: 'STR', type: 'auto'},
-				{name: 'DST', type: 'auto'},
-				{name: 'DRT', type: 'auto'},
-				{name: 'DDF', type: 'auto'},
-				{name: 'DDFA', type: 'auto'},
-				{name: 'RXN_QUANTITY', type: 'auto'},
-				{name: 'SAB', type: 'auto'},
-				{name: 'RXAUI', type: 'auto'},
-				{name: 'CodeType', defaultValue: 'RXNORM'}
+				{
+					name: 'RXCUI',
+					type: 'string'
+				},
+				{
+					name: 'CODE',
+					type: 'string'
+				},
+				{
+					name: 'NDC',
+					type: 'string'
+				},
+				{
+					name: 'STR',
+					type: 'string',
+					convert: function(v){
+						var regex = /\(.*\) | \(.*\)|\(.*\)/g;
+						return v.replace(regex, '');
+					}
+				},
+				{
+					name: 'DST',
+					type: 'auto'
+				},
+				{
+					name: 'DRT',
+					type: 'auto'
+				},
+				{
+					name: 'DDF',
+					type: 'auto'
+				},
+				{
+					name: 'DDFA',
+					type: 'auto'
+				},
+				{
+					name: 'RXN_QUANTITY',
+					type: 'auto'
+				},
+				{
+					name: 'SAB',
+					type: 'auto'
+				},
+				{
+					name: 'RXAUI',
+					type: 'auto'
+				},
+				{
+					name: 'CodeType',
+					defaultValue: 'RXNORM'
+				}
 			],
 			proxy: {
 				type: 'direct',
@@ -50,7 +93,15 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 					totalProperty: 'totals',
 					root: 'rows'
 				}
-			}
+			},
+			hasMany: [
+				{
+					model: 'App.model.administration.MedicationInstruction',
+					name: 'instructions',
+					primaryKey: 'RXCUI',
+					foreignKey: 'rxcui'
+				}
+			]
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
@@ -72,7 +123,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
+					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> NDC: {NDC} </span></h3></div>';
 				}
 			},
 			pageSize: 25

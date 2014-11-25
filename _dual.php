@@ -65,16 +65,20 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <script type="text/javascript">
 
 	        window.i18n = window._ = function(key){
-                return window.lang[key] || '*'+key+'*';
-            };
+		        return window.lang[key] || '*'+key+'*';
+	        };
 
-            window.say = function(args){
-	            console.log.apply(this, arguments);
-            };
+	        window.say = function(args){
+		        console.log(args);
+	        };
 
-            window.g = function(global){
-	            return globals[global] || false;
-            };
+	        window.g = function(global){
+		        return window.globals[global] || false;
+	        };
+
+	        window.a = function(acl){
+		        return window.acl[acl] || false;
+	        };
 
 			/**
 			 * Ext Localization file

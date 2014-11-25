@@ -39,7 +39,8 @@ Ext.define('App.view.patient.Results', {
 		    }),
 			plugins:[
 				{
-					ptype:'rowediting'
+					ptype:'rowediting',
+					errorSummary: false
 				}
 			],
 			columns: [

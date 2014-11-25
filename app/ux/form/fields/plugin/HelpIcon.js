@@ -4,7 +4,7 @@ Ext.define('App.ux.form.fields.plugin.HelpIcon', {
 	iconSrc: 'resources/images/icons/icohelp.png',
 	iconHeight: 16,
 	iconWidth: 16,
-	iconMargin: '0 10',
+	iconMargin: '0 5',
 	init: function(field){
 		field.on('render', this.addHelpIcon, this);
 	},

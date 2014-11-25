@@ -538,7 +538,7 @@ class Documents {
 		foreach($pages AS $page){
 			$this->pdf->AddPage();
 			$this->pdf->SetY(35); // margin after header line
-			$this->pdf->SetFontSize(8);
+			$this->pdf->SetFontSize(10);
 			$this->pdf->writeHTML($page);
 		}
 
@@ -640,7 +640,7 @@ class Documents {
 		if(!is_array($array) || count($array) == 0)
 			return 'N/A';
 		// open table tag
-		$table = '<table width="100%" border="0" cellspacing="0" cellpadding="2">';
+		$table = '<table width="100%" border="0" cellspacing="0" cellpadding="5">';
 
 		// get header row
 		$th = array_shift($array);
@@ -666,5 +666,4 @@ class Documents {
 		$table .= '</table>';
 		return $table;
 	}
-
 }

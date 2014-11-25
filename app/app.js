@@ -179,6 +179,50 @@ Ext.define('Ext.ux.form.SearchField', {
         }
     }
 });
+Ext.define('App.controller.AlwaysOnTop', {
+	extend: 'Ext.app.Controller',
+
+	alwaysOnTopManager: null,
+
+	init: function() {
+		this.control({
+			'component{isFloating()}': {
+				'render': function (component, options) {
+					this.onComponentRender(component, options);
+				}
+			}
+		});
+		/* Uncommenting the code below makes sure that all Ext.window.MessageBoxes stay on top. */
+		/*
+		 Ext.override(Ext.window.MessageBox, {
+		 alwaysOnTop: true
+		 });
+		 */
+		/* Uncommenting the code below makes sure that all form errormessages stay on top.
+		 Necessary if you have a form inside a alwaysOnTop window. */
+		/*
+		 Ext.override(Ext.tip.ToolTip, {
+		 alwaysOnTop: true
+		 });
+		 */
+	},
+
+	onComponentRender: function (component, options) {
+		if (component.alwaysOnTop) {
+			if (!this.alwaysOnTopManager) {
+				this.alwaysOnTopManager = Ext.create('Ext.ZIndexManager');
+			}
+			this.alwaysOnTopManager.register(component);
+		}
+		if (this.alwaysOnTopManager) {
+			/* Making sure the alwaysOnTopManager always has the highest zseed */
+			if (Ext.ZIndexManager.zBase > this.alwaysOnTopManager.zseed) {
+				this.alwaysOnTopManager.zseed = this.alwaysOnTopManager.getNextZSeed();
+			}
+		}
+	}
+
+});
 /*!
  * Ext.ux.RatingField
  *
@@ -1614,8 +1658,50 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 		me.callParent();
 	}
 }); 
+Ext.define('App.model.administration.MedicationInstruction', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'rxinstructions'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'rxcui',
+			type: 'string',
+			index: true
+		},
+		{
+			name: 'occurrence',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'instruction',
+			type: 'string',
+			len: 140
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Rxnorm.getMedicationInstructions',
+			create: 'Rxnorm.addMedicationInstruction',
+			update: 'Rxnorm.updateMedicationInstructions',
+			destroy: 'Rxnorm.destroyMedicationInstructions'
+		},
+		remoteGroup: false
+	}
+});
+
+
 Ext.define('App.ux.LiveRXNORMSearch', {
 	extend: 'Ext.form.ComboBox',
+	requires:[
+		'App.model.administration.MedicationInstruction'
+	],
 	alias: 'widget.rxnormlivetsearch',
 	hideLabel: true,
 	displayField: 'STR',
@@ -1626,18 +1712,58 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 		Ext.define('liveRXNORMSearchModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'RXCUI', type: 'auto'},
-				{name: 'CODE', type: 'auto'},
-				{name: 'NDC', type: 'auto'},
-				{name: 'STR', type: 'auto'},
-				{name: 'DST', type: 'auto'},
-				{name: 'DRT', type: 'auto'},
-				{name: 'DDF', type: 'auto'},
-				{name: 'DDFA', type: 'auto'},
-				{name: 'RXN_QUANTITY', type: 'auto'},
-				{name: 'SAB', type: 'auto'},
-				{name: 'RXAUI', type: 'auto'},
-				{name: 'CodeType', defaultValue: 'RXNORM'}
+				{
+					name: 'RXCUI',
+					type: 'string'
+				},
+				{
+					name: 'CODE',
+					type: 'string'
+				},
+				{
+					name: 'NDC',
+					type: 'string'
+				},
+				{
+					name: 'STR',
+					type: 'string',
+					convert: function(v){
+						var regex = /\(.*\) | \(.*\)|\(.*\)/g;
+						return v.replace(regex, '');
+					}
+				},
+				{
+					name: 'DST',
+					type: 'auto'
+				},
+				{
+					name: 'DRT',
+					type: 'auto'
+				},
+				{
+					name: 'DDF',
+					type: 'auto'
+				},
+				{
+					name: 'DDFA',
+					type: 'auto'
+				},
+				{
+					name: 'RXN_QUANTITY',
+					type: 'auto'
+				},
+				{
+					name: 'SAB',
+					type: 'auto'
+				},
+				{
+					name: 'RXAUI',
+					type: 'auto'
+				},
+				{
+					name: 'CodeType',
+					defaultValue: 'RXNORM'
+				}
 			],
 			proxy: {
 				type: 'direct',
@@ -1648,7 +1774,15 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 					totalProperty: 'totals',
 					root: 'rows'
 				}
-			}
+			},
+			hasMany: [
+				{
+					model: 'App.model.administration.MedicationInstruction',
+					name: 'instructions',
+					primaryKey: 'RXCUI',
+					foreignKey: 'rxcui'
+				}
+			]
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
@@ -1670,7 +1804,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
+					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> NDC: {NDC} </span></h3></div>';
 				}
 			},
 			pageSize: 25
@@ -4006,6 +4140,7 @@ Ext.define('App.ux.form.fields.MultiText', {
 			anchor: '100%',
 			value: value || '',
 			labelWidth: 20,
+			margin: '0 0 5 0',
 			enableKeyEvents: true
 		});
 		if(me.numbers) me.lastField.setFieldLabel((me.items.items.indexOf(me.lastField) + 1).toString());
@@ -4036,14 +4171,15 @@ Ext.define('App.ux.form.fields.MultiText', {
 		var me = this;
 
 		me.removeAll(true);
-		if(Ext.isString(data)){
+
+		if(Ext.isString(data) && data != ''){
 			me.addField(data);
 		}else if(Ext.isArray(data)){
 			for(var i=0; i < data.length; i++){
 				me.addField(data[i]);
 			}
 		}
-		me.addField(data[i]);
+		me.addField('');
 	},
 
 	getValue:function(){
@@ -6094,6 +6230,14 @@ Ext.define('App.ux.combo.CVXManufacturersForCvx', {
 		me.callParent(arguments);
 	}
 });
+Ext.define('App.ux.combo.MedicationInstructions', {
+	extend: 'Ext.form.ComboBox',
+	xtype: 'medicationinstructionscombo',
+	queryMode: 'local',
+	displayField: 'instruction',
+	valueField: 'instruction',
+	store: Ext.create('App.store.administration.MedicationInstructions')
+});
 Ext.define('App.ux.combo.EncounterICDS', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.encountericdscombo',
@@ -6658,7 +6802,7 @@ Ext.define('App.ux.combo.Medications', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: CombosData.getOptionsByListId
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 74
@@ -13800,7 +13944,12 @@ Ext.define('App.model.patient.Medications', {
 		{
 			name: 'notes',
 			type: 'string',
-			len: 300
+			len: 210
+		},
+		{
+			name: 'system_notes',
+			type: 'string',
+			len: 210
 		},
 		{
 			name: 'is_compound',
@@ -20663,7 +20812,11 @@ Ext.define('App.view.patient.DoctorsNotes', {
 							xtype: 'fieldset',
 							layout: 'anchor',
 							title: _('general'),
+							height: 145,
 							width: 300,
+							defaults: {
+								margin: '0 0 5 0'
+							},
 							items: [
 								{
 									xtype: 'datefield',
@@ -20695,12 +20848,13 @@ Ext.define('App.view.patient.DoctorsNotes', {
 							layout: 'fit',
 							title: _('comments'),
 							flex: 1,
-							height: 138,
-							margin: '0 5 0 5',
+							height: 145,
+							margin: '0 5',
 							items: [
 								{
 									xtype: 'textareafield',
 									anchor: '100%',
+									margin: 5,
 									name: 'comments'
 								}
 							]
@@ -20708,7 +20862,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						{
 							xtype: 'fieldset',
 							title: _('restrictions'),
-							height: 138,
+							height: 145,
 							width: 400,
 							autoScroll: true,
 							items: [
@@ -21823,7 +21977,8 @@ Ext.define('App.view.patient.Results', {
 		    }),
 			plugins:[
 				{
-					ptype:'rowediting'
+					ptype:'rowediting',
+					errorSummary: false
 				}
 			],
 			columns: [
@@ -22140,7 +22295,8 @@ Ext.define('App.view.patient.SocialHistory', {
 	}),
 	plugins: [
 		{
-			ptype: 'rowediting'
+			ptype: 'rowediting',
+			errorSummary: false
 		}
 	],
 	features: [
@@ -36358,9 +36514,7 @@ Ext.define('App.controller.patient.Referrals', {
 });
 Ext.define('App.controller.patient.RxOrders', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
+	requires: [],
 	refs: [
 		{
 			ref: 'RxOrdersGrid',
@@ -36387,6 +36541,10 @@ Ext.define('App.controller.patient.RxOrders', {
 			selector: '#RxEncounterDxCombo'
 		},
 		{
+			ref: 'RxOrderMedicationInstructionsCombo',
+			selector: '#RxOrderMedicationInstructionsCombo'
+		},
+		{
 			ref: 'RxOrderGridFormNotesField',
 			selector: '#RxOrderGridFormNotesField'
 		},
@@ -36407,10 +36565,11 @@ Ext.define('App.controller.patient.RxOrders', {
 				activate: me.onRxOrdersGridActive,
 				selectionchange: me.onRxOrdersGridSelectionChange,
 				beforerender: me.onRxOrdersGridBeforeRender,
-				beforeedit: me.onRxOrdersGridBeforeEdit
+				beforeedit: me.onRxOrdersGridBeforeEdit,
+				edit: me.onRxOrdersGridEdit
 			},
 			'#RxNormOrderLiveSearch': {
-				select: me.onRxNormOrderLiveSearchSelect
+				beforeselect: me.onRxNormOrderLiveSearchBeforeSelect
 			},
 			'#newRxOrderBtn': {
 				click: me.onNewRxOrderBtnClick
@@ -36461,39 +36620,81 @@ Ext.define('App.controller.patient.RxOrders', {
 		});
 	},
 
-	onRxOrdersGridSelectionChange:function(sm, selected){
+	onRxOrdersGridSelectionChange: function(sm, selected){
 		this.getCloneRxOrderBtn().setDisabled(selected.length == 0);
 		this.getPrintRxOrderBtn().setDisabled(selected.length == 0);
 	},
 
-	onRxNormOrderLiveSearchSelect: function(combo, record){
-		var form = combo.up('form').getForm();
+	onRxNormOrderLiveSearchBeforeSelect: function(combo, record){
+		var form = combo.up('form').getForm(),
+			insCmb = this.getRxOrderMedicationInstructionsCombo();
 
 		form.getRecord().set({
-			RXCUI: record[0].data.RXCUI,
-			CODE: record[0].data.CODE,
-			NDC: record[0].data.NDC
+			RXCUI: record.data.RXCUI,
+			CODE: record.data.CODE,
+			NDC: record.data.NDC
 		});
 
+		var store = record.instructions();
+		insCmb.bindStore(store, true);
+		insCmb.store = store;
+		insCmb.store.load();
 		form.findField('dispense').focus(false, 200);
-
 	},
 
 	onRxOrdersGridBeforeEdit: function(plugin, context){
 
 		this.getRxEncounterDxCombo().getStore().load({
-			filters:[
+			filters: [
 				{
-					property:'eid',
+					property: 'eid',
 					value: context.record.data.eid
 				}
 			]
 		});
 
+		this.getRxOrderMedicationInstructionsCombo().getStore().load({
+			filters: [
+				{
+					property: 'rxcui',
+					value: context.record.data.RXCUI
+				}
+			]
+		});
+	},
+
+	onRxOrdersGridEdit: function(plugin, context){
+		var insCmb = this.getRxOrderMedicationInstructionsCombo(),
+			instructions = context.record.data.directions,
+			record = insCmb.findRecordByValue(instructions);
+
+		// record found
+		if(record !== false) return;
+
+		Ext.Msg.show({
+			title: _('new_instruction'),
+			msg: instructions + '<br>' + _('would_you_like_to_save_it'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes'){
+
+					var store = insCmb.getStore();
+
+					store.add({
+						rxcui: context.record.data.RXCUI,
+						occurrence: '1',
+						instruction: instructions
+					});
+
+					store.sync();
+				}
+			}
+		});
 
 	},
 
-	onNewRxOrderBtnClick:function(btn){
+	onNewRxOrderBtnClick: function(btn){
 		var grid = btn.up('grid');
 
 		grid.editingPlugin.cancelEdit();
@@ -36569,10 +36770,11 @@ Ext.define('App.controller.patient.RxOrders', {
 		return records;
 	},
 
-	onPrintRxOrderBtnClick:function(){
+	onPrintRxOrderBtnClick: function(){
 		var me = this,
 			grid = me.getRxOrdersGrid(),
 			items = grid.getSelectionModel().getSelection(),
+			isSingleColumnTable = true,
 			references = '',
 			params = {},
 			columns,
@@ -36581,14 +36783,19 @@ Ext.define('App.controller.patient.RxOrders', {
 
 		params.pid = app.patient.pid;
 		params.eid = app.patient.eid;
-		params.orderItems = [ ];
+		params.orderItems = [];
 		params.docType = 'Rx';
 
 		params.templateId = 5;
 
-		columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+		if(isSingleColumnTable){
+			columns = [''];
+		}else{
+			columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+		}
 
 		params.orderItems.push(columns);
+
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
 
@@ -36599,16 +36806,52 @@ Ext.define('App.controller.patient.RxOrders', {
 				}
 			}
 
-			params.orderItems.push([
-				data.STR + ' ' + data.dose + ' ' + data.route + ' ' + data.form,
-				data.directions,
-				data.dispense,
-				data.refill,
-				data.days_supply,
-				(data.dxs.join ? data.dxs.join(', ') : data.dxs),
-				data.notes,
-				references
-			]);
+			if(isSingleColumnTable){
+
+				var text = '<u>' + _('order_number') + '</u>: ' + g('rx_order_number_prefix') + data.id + '<br>';
+				text += '<u>' + _('description') + '</u>: ' + '<b>' + data.STR.toUpperCase() + '</b><br>';
+				text += '<u>' + _('dispense_as_written') + '</u>: ' + (data.daw ? _('yes') : _('no')) + '<br>';
+				text += '<u>' + _('quantity') + '</u>: ' + data.dispense + '<br>';
+
+				if(data.days_supply){
+					text += '<u>' + _('days_supply') + '</u>: ' + data.days_supply + '<br>';
+				}
+
+				text += '<u>' + _('refill') + '</u>: ' + data.refill + '<br>';
+				text += '<u>' + _('instructions') + '</u>: ' + data.directions + '<br>';
+
+				var dxs = (data.dxs.join ? data.dxs.join(', ') : data.dxs);
+				if(dxs && dxs != ''){
+					text += '<u>' + _('dx') + '</u>: ' + (data.dxs.join ? data.dxs.join(', ') : data.dxs) + '<br>';
+				}
+
+				if(data.notes != ''){
+					text += '<u>' + _('notes_to_pharmacist') + '</u>: ' + data.notes + '<br>';
+				}
+
+				if(references != ''){
+					text += '<u>References</u>: ' + references + '<br>';
+				}
+
+				if(data.system_notes != ''){
+					text += '<b>' + data.system_notes + '</b><br>';
+				}
+
+				params.orderItems.push([text]);
+
+			}else{
+
+				params.orderItems.push([
+					data.STR + ' ' + data.dose + ' ' + data.route + ' ' + data.form,
+					data.directions,
+					data.dispense,
+					data.refill,
+					data.days_supply,
+					(data.dxs.join ? data.dxs.join(', ') : data.dxs),
+					data.notes,
+					references
+				]);
+			}
 		}
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
@@ -36620,7 +36863,7 @@ Ext.define('App.controller.patient.RxOrders', {
 		});
 	},
 
-	onRxOrdersGridActive:function(grid){
+	onRxOrdersGridActive: function(grid){
 		var store = grid.getStore();
 		if(!grid.editingPlugin.editing){
 			store.clearFilter(true);
@@ -38583,6 +38826,7 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.LiveSigsSearch'
 	],
 	xtype: 'patientmedicationspanel',
+	itemId: 'PatientMedicationsPanel',
 	title: _('medications'),
 	layout: 'border',
 	border: false,
@@ -38622,49 +38866,10 @@ Ext.define('App.view.patient.Medications', {
 						itemId: 'patientMedicationLiveSearch',
 						displayField: 'STR',
 						valueField: 'STR',
-						action: 'medication'
+						action: 'medication',
+						allowBlank: false
 					}
 				},
-//				{
-//					header: _('dose'),
-//					width: 125,
-//					dataIndex: 'dose',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'textfield'
-//					}
-//				},
-//				{
-//					header: _('route'),
-//					width: 100,
-//					dataIndex: 'route',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'mitos.prescriptionhowto'
-//					}
-//				},
-//				{
-//					header: _('form'),
-//					width: 125,
-//					dataIndex: 'form',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'mitos.prescriptiontypes'
-//					}
-//				},
-//				{
-//					header: _('instructions'),
-//					width: 200,
-//					dataIndex: 'directions',
-//					sortable: false,
-//					hideable: false,
-//					editor: {
-//						xtype: 'livesigssearch'
-//					}
-//				},
 				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
@@ -39080,8 +39285,9 @@ Ext.define('App.view.patient.RxOrders', {
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
 		'App.ux.combo.EncounterICDS',
-		'App.ux.LiveSigsSearch',
-		'App.ux.LiveRXNORMSearch'
+		'App.ux.combo.MedicationInstructions',
+		'App.ux.LiveRXNORMSearch',
+		'App.ux.form.fields.plugin.HelpIcon'
 	],
 	xtype: 'patientrxorderspanel',
 	title: _('rx_orders'),
@@ -39221,9 +39427,10 @@ Ext.define('App.view.patient.RxOrders', {
 									]
 								},
 								{
-									xtype: 'livesigssearch',
+									xtype: 'medicationinstructionscombo',
+									itemId: 'RxOrderMedicationInstructionsCombo',
 									width: 700,
-									fieldLabel: 'Instructions',
+									fieldLabel: _('instructions'),
 									name: 'directions',
 									maxLength: 140,
 									validateOnBlur: true,
@@ -39232,11 +39439,22 @@ Ext.define('App.view.patient.RxOrders', {
 								},
 								{
 									xtype: 'textfield',
-									width: 700,
-									fieldLabel: _('notes_to_Pharmacist'),
+									width: 680,
+									fieldLabel: '*' + _('notes_to_pharmacist'),
 									itemId: 'RxOrderGridFormNotesField',
 									name: 'notes',
+									plugins:[
+										{
+											ptype: 'helpicon',
+											helpMsg: _('rx_notes_to_pharmacist_warning')
+										}
+									],
 									maxLength: 210
+								},
+								{
+									xtype: 'container',
+									html: ' *' + _('rx_notes_to_pharmacist_warning'),
+									margin: '0 0 0 100'
 								}
 							]
 						},
@@ -39349,21 +39567,6 @@ Ext.define('App.view.patient.RxOrders', {
 				return app.boolRenderer(v);
 			}
 		},
-		//		{
-		//			header: _('dose'),
-		//			width: 115,
-		//			dataIndex: 'dose'
-		//		},
-		//		{
-		//			header: _('route'),
-		//			width: 90,
-		//			dataIndex: 'route'
-		//		},
-		//		{
-		//			header: _('form'),
-		//			width: 70,
-		//			dataIndex: 'form'
-		//		},
 		{
 			header: _('dispense'),
 			width: 60,
@@ -47612,7 +47815,8 @@ Ext.define('App.view.patient.ActiveProblems', {
 								valueField: 'FullySpecifiedName',
 								width: 720,
 								labelWidth: 70,
-								margin: '0 10 5 0'
+								margin: '0 10 5 0',
+								allowBlank: false
 							},
 							{
 								xtype: 'fieldcontainer',
@@ -47626,7 +47830,8 @@ Ext.define('App.view.patient.ActiveProblems', {
 										width: 250,
 										labelWidth: 70,
 										xtype: 'mitos.occurrencecombo',
-										name: 'occurrence'
+										name: 'occurrence',
+										allowBlank: false
 									},
 									{
 										xtype: 'textfield',
@@ -47713,7 +47918,8 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 	}),
 	plugins: [
 		{
-			ptype: 'rowediting'
+			ptype: 'rowediting',
+			errorSummary: false
 		}
 	],
 	columns: [

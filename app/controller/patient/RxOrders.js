@@ -18,9 +18,7 @@
 
 Ext.define('App.controller.patient.RxOrders', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
+	requires: [],
 	refs: [
 		{
 			ref: 'RxOrdersGrid',
@@ -47,6 +45,10 @@ Ext.define('App.controller.patient.RxOrders', {
 			selector: '#RxEncounterDxCombo'
 		},
 		{
+			ref: 'RxOrderMedicationInstructionsCombo',
+			selector: '#RxOrderMedicationInstructionsCombo'
+		},
+		{
 			ref: 'RxOrderGridFormNotesField',
 			selector: '#RxOrderGridFormNotesField'
 		},
@@ -67,10 +69,11 @@ Ext.define('App.controller.patient.RxOrders', {
 				activate: me.onRxOrdersGridActive,
 				selectionchange: me.onRxOrdersGridSelectionChange,
 				beforerender: me.onRxOrdersGridBeforeRender,
-				beforeedit: me.onRxOrdersGridBeforeEdit
+				beforeedit: me.onRxOrdersGridBeforeEdit,
+				edit: me.onRxOrdersGridEdit
 			},
 			'#RxNormOrderLiveSearch': {
-				select: me.onRxNormOrderLiveSearchSelect
+				beforeselect: me.onRxNormOrderLiveSearchBeforeSelect
 			},
 			'#newRxOrderBtn': {
 				click: me.onNewRxOrderBtnClick
@@ -121,39 +124,81 @@ Ext.define('App.controller.patient.RxOrders', {
 		});
 	},
 
-	onRxOrdersGridSelectionChange:function(sm, selected){
+	onRxOrdersGridSelectionChange: function(sm, selected){
 		this.getCloneRxOrderBtn().setDisabled(selected.length == 0);
 		this.getPrintRxOrderBtn().setDisabled(selected.length == 0);
 	},
 
-	onRxNormOrderLiveSearchSelect: function(combo, record){
-		var form = combo.up('form').getForm();
+	onRxNormOrderLiveSearchBeforeSelect: function(combo, record){
+		var form = combo.up('form').getForm(),
+			insCmb = this.getRxOrderMedicationInstructionsCombo();
 
 		form.getRecord().set({
-			RXCUI: record[0].data.RXCUI,
-			CODE: record[0].data.CODE,
-			NDC: record[0].data.NDC
+			RXCUI: record.data.RXCUI,
+			CODE: record.data.CODE,
+			NDC: record.data.NDC
 		});
 
+		var store = record.instructions();
+		insCmb.bindStore(store, true);
+		insCmb.store = store;
+		insCmb.store.load();
 		form.findField('dispense').focus(false, 200);
-
 	},
 
 	onRxOrdersGridBeforeEdit: function(plugin, context){
 
 		this.getRxEncounterDxCombo().getStore().load({
-			filters:[
+			filters: [
 				{
-					property:'eid',
+					property: 'eid',
 					value: context.record.data.eid
 				}
 			]
 		});
 
+		this.getRxOrderMedicationInstructionsCombo().getStore().load({
+			filters: [
+				{
+					property: 'rxcui',
+					value: context.record.data.RXCUI
+				}
+			]
+		});
+	},
+
+	onRxOrdersGridEdit: function(plugin, context){
+		var insCmb = this.getRxOrderMedicationInstructionsCombo(),
+			instructions = context.record.data.directions,
+			record = insCmb.findRecordByValue(instructions);
+
+		// record found
+		if(record !== false) return true;
+
+		Ext.Msg.show({
+			title: _('new_instruction'),
+			msg: '<p>' + instructions + '</p><p>' + _('would_you_like_to_save_it') + '</p>',
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes'){
+
+					var store = insCmb.getStore();
+
+					store.add({
+						rxcui: context.record.data.RXCUI,
+						occurrence: '1',
+						instruction: instructions
+					});
+
+					store.sync();
+				}
+			}
+		});
 
 	},
 
-	onNewRxOrderBtnClick:function(btn){
+	onNewRxOrderBtnClick: function(btn){
 		var grid = btn.up('grid');
 
 		grid.editingPlugin.cancelEdit();
@@ -229,10 +274,11 @@ Ext.define('App.controller.patient.RxOrders', {
 		return records;
 	},
 
-	onPrintRxOrderBtnClick:function(){
+	onPrintRxOrderBtnClick: function(){
 		var me = this,
 			grid = me.getRxOrdersGrid(),
 			items = grid.getSelectionModel().getSelection(),
+			isSingleColumnTable = true,
 			references = '',
 			params = {},
 			columns,
@@ -241,14 +287,19 @@ Ext.define('App.controller.patient.RxOrders', {
 
 		params.pid = app.patient.pid;
 		params.eid = app.patient.eid;
-		params.orderItems = [ ];
+		params.orderItems = [];
 		params.docType = 'Rx';
 
 		params.templateId = 5;
 
-		columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+		if(isSingleColumnTable){
+			columns = [''];
+		}else{
+			columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+		}
 
 		params.orderItems.push(columns);
+
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
 
@@ -259,16 +310,52 @@ Ext.define('App.controller.patient.RxOrders', {
 				}
 			}
 
-			params.orderItems.push([
-				data.STR + ' ' + data.dose + ' ' + data.route + ' ' + data.form,
-				data.directions,
-				data.dispense,
-				data.refill,
-				data.days_supply,
-				(data.dxs.join ? data.dxs.join(', ') : data.dxs),
-				data.notes,
-				references
-			]);
+			if(isSingleColumnTable){
+
+				var text = '<u>' + _('order_number') + '</u>: ' + g('rx_order_number_prefix') + data.id + '<br>';
+				text += '<u>' + _('description') + '</u>: ' + '<b>' + data.STR.toUpperCase() + '</b><br>';
+				text += '<u>' + _('dispense_as_written') + '</u>: ' + (data.daw ? _('yes') : _('no')) + '<br>';
+				text += '<u>' + _('quantity') + '</u>: ' + data.dispense + '<br>';
+
+				if(data.days_supply){
+					text += '<u>' + _('days_supply') + '</u>: ' + data.days_supply + '<br>';
+				}
+
+				text += '<u>' + _('refill') + '</u>: ' + data.refill + '<br>';
+				text += '<u>' + _('instructions') + '</u>: ' + data.directions + '<br>';
+
+				var dxs = (data.dxs.join ? data.dxs.join(', ') : data.dxs);
+				if(dxs && dxs != ''){
+					text += '<u>' + _('dx') + '</u>: ' + (data.dxs.join ? data.dxs.join(', ') : data.dxs) + '<br>';
+				}
+
+				if(data.notes != ''){
+					text += '<u>' + _('notes_to_pharmacist') + '</u>: ' + data.notes + '<br>';
+				}
+
+				if(references != ''){
+					text += '<u>References</u>: ' + references + '<br>';
+				}
+
+				if(data.system_notes != ''){
+					text += '<b>' + data.system_notes + '</b><br>';
+				}
+
+				params.orderItems.push([text]);
+
+			}else{
+
+				params.orderItems.push([
+					data.STR + ' ' + data.dose + ' ' + data.route + ' ' + data.form,
+					data.directions,
+					data.dispense,
+					data.refill,
+					data.days_supply,
+					(data.dxs.join ? data.dxs.join(', ') : data.dxs),
+					data.notes,
+					references
+				]);
+			}
 		}
 
 		DocumentHandler.createTempDocument(params, function(provider, response){
@@ -280,7 +367,7 @@ Ext.define('App.controller.patient.RxOrders', {
 		});
 	},
 
-	onRxOrdersGridActive:function(grid){
+	onRxOrdersGridActive: function(grid){
 		var store = grid.getStore();
 		if(!grid.editingPlugin.editing){
 			store.clearFilter(true);

@@ -113,7 +113,11 @@ Ext.define('App.view.patient.DoctorsNotes', {
 							xtype: 'fieldset',
 							layout: 'anchor',
 							title: _('general'),
+							height: 145,
 							width: 300,
+							defaults: {
+								margin: '0 0 5 0'
+							},
 							items: [
 								{
 									xtype: 'datefield',
@@ -145,12 +149,13 @@ Ext.define('App.view.patient.DoctorsNotes', {
 							layout: 'fit',
 							title: _('comments'),
 							flex: 1,
-							height: 138,
-							margin: '0 5 0 5',
+							height: 145,
+							margin: '0 5',
 							items: [
 								{
 									xtype: 'textareafield',
 									anchor: '100%',
+									margin: 5,
 									name: 'comments'
 								}
 							]
@@ -158,7 +163,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						{
 							xtype: 'fieldset',
 							title: _('restrictions'),
-							height: 138,
+							height: 145,
 							width: 400,
 							autoScroll: true,
 							items: [

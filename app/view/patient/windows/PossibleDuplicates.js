@@ -35,7 +35,8 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 			{
 				xtype: 'grid',
 				store: me.store = Ext.create('App.store.patient.PatientPossibleDuplicates'),
-				width: 600,
+				width: 700,
+				maxHeight: 700,
 				frame: true,
 				margin: 5,
 				hideHeaders: true,
@@ -44,14 +45,22 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 						dataIndex: 'image',
 						width: 65,
 						renderer: function(v){
-							return '<img src="' + v + '" class="icon32Round" />';
+							var src =  v != '' ? v : app.patientImage;
+							return '<img src="' + src + '" class="icon32Round" />';
 						}
 					},
 					{
 						dataIndex: 'fullname',
 						flex: 1,
 						renderer: function(v, meta, record){
-							return v + ' ' + record.data.SS  + '<br>' + record.data.fulladdress + '<br>' + record.data.phones;
+							var phone = record.data.home_phone != '' ? record.data.home_phone : '000-000-0000',
+								driver_liv = record.data.drivers_license != '' ? record.data.drivers_license : '0000000000';
+
+							var str = '<p style="margin: 5px"><b>' + _('name') + ':</b> ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname + '</p>';
+							str += '<p style="margin: 5px"><b>' + _('address') + ':</b> ' + record.data.address + ' ' + record.data.address_cont + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + '</p>';
+							str += '<p style="margin: 5px"><b>' + _('home_phone') + ':</b> ' + phone + ' <b>' + _('driver_lic') + ':</b> ' + driver_liv + ' <b>' + _('employer_name') + ':</b> ' + record.data.employer_name + '</p>';
+							str += '<p style="margin: 5px"><b>' + _('social_security') + ':</b> ' + record.data.SS + '</p>';
+							return '<div style="font-size: 12px;">' + str + '</div>';
 						}
 					}
 				],

@@ -44,8 +44,6 @@ Ext.define('App.view.patient.Patient', {
 
 		me.compactDemographics = eval(g('compact_demographics'));
 
-
-
 		me.insPanel = Ext.widget('tabpanel', {
 			itemId: 'PatientInsurancesPanel',
 			flex: 1,
@@ -128,20 +126,19 @@ Ext.define('App.view.patient.Patient', {
 
 		configs.listeners = {
 			scope: me,
-				beforerender: me.beforePanelRender
+			beforerender: me.beforePanelRender
 		};
 
 		Ext.apply(me, configs);
 
 		me.callParent(arguments);
 
-
 		if(!me.compactDemographics){
 
 			Ext.Function.defer(function(){
 				me.insPanel.title = _('insurance');
 				me.insPanel.addDocked({
-					xtype:'toolbar',
+					xtype: 'toolbar',
 					dock: 'bottom',
 					items: [
 						'->',
@@ -166,7 +163,7 @@ Ext.define('App.view.patient.Patient', {
 					]
 				});
 
-					me.up('tabpanel').insert(1, me.insPanel);
+				me.up('tabpanel').insert(1, me.insPanel);
 			}, 300);
 		}
 	},
@@ -186,7 +183,7 @@ Ext.define('App.view.patient.Patient', {
 				city = form.findField('city'),
 
 				sex = form.findField('sex'),
-				dob =form.findField('DOB'),
+				dob = form.findField('DOB'),
 				zipcode = form.findField('zipcode'),
 				home_phone = form.findField('home_phone'),
 				mobile_phone = form.findField('mobile_phone'),
@@ -196,7 +193,6 @@ Ext.define('App.view.patient.Patient', {
 				email = form.findField('email'),
 				phone_reg = new RegExp(g('phone_validation_format')),
 				zipcode_reg = new RegExp(g('zipcode_validation_format'));
-
 
 			if(fname) fname.vtype = 'nonspecialcharacters';
 			if(mname) mname.vtype = 'nonspecialcharacters';
@@ -323,7 +319,7 @@ Ext.define('App.view.patient.Patient', {
 
 	insurancePanelAdd: function(tapPanel, form){
 		var me = this,
-			rec = form.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
+			rec = form.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
 
 		form.title = _('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : _('new')) + ')';
 
@@ -375,7 +371,7 @@ Ext.define('App.view.patient.Patient', {
 			field;
 		me.patientAlertsStore.load({
 			scope: me,
-			params: { pid: me.pid },
+			params: {pid: me.pid},
 			callback: function(records, operation, success){
 				for(var i = 0; i < records.length; i++){
 					field = me.demoForm.getForm().findField(records[i].data.name);
@@ -438,7 +434,6 @@ Ext.define('App.view.patient.Patient', {
 		}
 	},
 
-
 	insuranceFormLoadRecord: function(form, record){
 		form.getForm().loadRecord(record);
 		app.fireEvent('insurancerecordload', form, record);
@@ -461,24 +456,26 @@ Ext.define('App.view.patient.Patient', {
 				scope: me,
 				callback: function(record){
 
-					app.setPatient(record.data.pid, null);
+					app.setPatient(record.data.pid, null, function(){
 
-					if(!me.newPatient){
-						me.getPatientImages(record);
-						me.verifyPatientRequiredInfo();
-						me.readOnlyFields(form.getFields());
-					}
+						var insStore = record.insurance();
+						for(var i = 0; i < insRecs.length; i++){
+							if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
+						}
+						insStore.sync();
 
-					var insStore = record.insurance();
-
-					for(var i = 0; i < insRecs.length; i++){
-						if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
-					}
+						if(me.newPatient){
+							app.openPatientSummary();
+						}else{
+							me.getPatientImages(record);
+							me.verifyPatientRequiredInfo();
+							me.readOnlyFields(form.getFields());
+						}
+					});
 
 					// fire global event
 					app.fireEvent('afterdemographicssave', record, me);
 
-					insStore.sync();
 					me.msg('Sweet!', _('record_saved'));
 					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));

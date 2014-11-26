@@ -70,23 +70,21 @@ Ext.define('App.controller.patient.Patient', {
 		var me = this,
 			form = cmp.isPanel ? cmp.getForm() : cmp.up('form').getForm();
 
-		if(form.isValid()){
+		if(!form.isValid()) return;
 
-			var params = {
-				fname: form.findField('fname').getValue(),
-				lname: form.findField('lname').getValue(),
-				sex: form.findField('sex').getValue(),
-				DOB: form.findField('DOB').getValue()
-			};
+		var params = {
+			fname: form.findField('fname').getValue(),
+			lname: form.findField('lname').getValue(),
+			sex: form.findField('sex').getValue(),
+			DOB: form.findField('DOB').getValue()
+		};
 
-			if(form.getRecord()){
-				params.pid = form.getRecord().data.pid;
-			}
-
-			me.lookForPossibleDuplicates(params, 'openPatientSummary');
-		}else{
-			app.msg(_('oops'), _('required_fields_missing'), true);
+		if(form.getRecord()){
+			params.pid = form.getRecord().data.pid;
 		}
+
+		me.lookForPossibleDuplicates(params, 'openPatientSummary');
+
 	},
 
 	lookForPossibleDuplicates: function(params, action, callback){

@@ -25,9 +25,8 @@ class MSA extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'MSA';
+		parent::__construct($hl7, 'MSA');
+
 		/**
 		 * MSA-1 Acknowledgment Code
 		 * AA Original mode: Application Accept - Enhanced mode: Application acknowledgment: Accept
@@ -36,12 +35,12 @@ class MSA extends Segments{
 		 * CE Enhanced mode: Accept acknowledgment: Commit Error
 		 * CR Enhanced mode: Accept acknowledgment: Commit Reject
 		 */
-		$this->rawSeg[1] = $this->getType('ID');
-		$this->rawSeg[2] = $this->getType('ST');
-		$this->rawSeg[3] = $this->getType('ST');
-		$this->rawSeg[4] = $this->getType('NM');
-		$this->rawSeg[5] = null; //The MSA-5 was deprecated as of v2.2 standard
-		$this->rawSeg[6] = $this->getType('CE');
+		$this->setField(1, 'ID', 2, true);
+		$this->setField(2, 'ST', 20, true);
+		$this->setField(3, 'ST', 80);
+		$this->setField(4, 'NM', 15);
+		$this->setFieldType(5, null); //The MSA-5 was deprecated as of v2.2 standard
+		$this->setField(6, 'CE', 250);
 
 	}
 }

@@ -25,11 +25,10 @@ class ERR extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'ERR';                   // ERR Message Header Segment
-		$this->rawSeg[1] = $this->getType('ELD');
-		$this->rawSeg[2] = $this->getType('ERL');
+		parent::__construct($hl7, 'ERR');
+
+		$this->setField(1, 'ELD', 493, false, true);
+		$this->setField(2, 'ERL', 18, false, true);
 		/**
 		 * 0   - Message accepted                  - Used for systems that must always return a status code. Success. Optional, as the AA conveys success.
 		 * 100 - Segment sequence error            - Error: The message segments were not in the proper order, or required segments are missing.
@@ -45,21 +44,21 @@ class ERR extends Segments{
 		 * 206 - Application record locked         - Rejection: The transaction could not be performed at the application store level, e.g., database locked.
 		 * 207 - Application Internal Error        - Rejection: A catchall for internal errors not explicitly covered by other codes.
 		 */
-		$this->rawSeg[3] = $this->getType('CWE');
+		$this->setField(3, 'CWE', 705, true);
 		/**
 		 * W - Warning      - Transaction  successful, but there may issues
 		 * I - Information  - Transaction  successful, but includes information e.g., inform patient
 		 * E - Error        - Transaction was unsuccessful
 		 */
-		$this->rawSeg[4] = $this->getType('ID');
-		$this->rawSeg[5] = $this->getType('CWE');
-		$this->rawSeg[6] = $this->getType('ST');
-		$this->rawSeg[7] = $this->getType('TX');
-		$this->rawSeg[8] = $this->getType('TX');
-		$this->rawSeg[9] = $this->getType('IS');
-		$this->rawSeg[10] = $this->getType('CWE');
-		$this->rawSeg[11] = $this->getType('CWE');
-		$this->rawSeg[12] = $this->getType('XTN');
+		$this->setField(4, 'ID', 2, true);
+		$this->setField(5, 'CWE', 705);
+		$this->setField(6, 'ST', 80, false, true);
+		$this->setField(7, 'TX', 2048);
+		$this->setField(8, 'TX', 250);
+		$this->setField(9, 'IS', 20, false, true);
+		$this->setField(10, 'CWE', 705);
+		$this->setField(11, 'CWE', 705, false, true);
+		$this->setField(12, 'XTN', 652, false, true);
 
 	}
 }

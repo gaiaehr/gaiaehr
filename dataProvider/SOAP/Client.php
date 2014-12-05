@@ -7,7 +7,7 @@ try{
 	ini_set('soap.wsdl_cache_enabled',0);
 	ini_set('soap.wsdl_cache_ttl',0);
 
-	$client = new SoapClient("http://24.55.126.192/gaiaehr/dataProvider/SOAP/wsdl.php?wsdl");
+	$client = new SoapClient("http://192.168.1.128/gaiaehr/dataProvider/SOAP/wsdl.php?wsdl");
 
 	$params =  new stdClass();
 

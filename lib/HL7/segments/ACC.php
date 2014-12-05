@@ -25,19 +25,19 @@ class ACC extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'ACC';                   // ACC Message Header Segment
-		$this->rawSeg[1] = $this->getType('TS');
-		$this->rawSeg[2] = $this->getType('CE');
-		$this->rawSeg[3] = $this->getType('ST');
-		$this->rawSeg[4] = $this->getType('CE');
-		$this->rawSeg[5] = $this->getType('ID');
-		$this->rawSeg[6] = $this->getType('ID');
-		$this->rawSeg[7] = $this->getType('XCN');
-		$this->rawSeg[8] = $this->getType('ST');
-		$this->rawSeg[9] = $this->getType('ST');
-		$this->rawSeg[10] = $this->getType('ID');
-		$this->rawSeg[11] = $this->getType('XAD');
+		parent::__construct($hl7, 'ACC');
+
+		$this->setField(1, 'TS', 26);
+		$this->setField(2, 'CE', 250);
+		$this->setField(3, 'ST', 25);
+		$this->setField(4, 'CE', 250);
+		$this->setField(5, 'ID', 1);
+		$this->setField(6, 'ID', 12);
+		$this->setField(7, 'XCN', 250);
+		$this->setField(8, 'ST', 25);
+		$this->setField(9, 'ST', 80);
+		$this->setField(10, 'ID', 1);
+		$this->setField(11, 'XAD', 250);
+
 	}
 }

@@ -104,6 +104,7 @@ class MatchaCUP {
 	 * @var array
 	 */
 	private $where = array();
+
 	private $whereIndex = 0;
 
 	/**
@@ -287,6 +288,7 @@ class MatchaCUP {
 					$_group = '';
 				}
 
+
 				// filter/where
 				if($isSimpleLoadRequest){
 					$_where = ' WHERE `' . $this->primaryKey . '` = \'' . $where->{$this->primaryKey} . '\'';
@@ -350,7 +352,8 @@ class MatchaCUP {
 					$whereArray[$foo->property][] = "`$foo->property` $operator NULL";
 				} else {
 					$operator = isset($foo->operator) ? $foo->operator : '=';
-					$whereArray[$foo->property][] = "`$foo->property` $operator '$foo->value'";
+					$valueKey = $this->where($foo->value);
+					$whereArray[$foo->property][] = "`$foo->property` $operator $valueKey";
 				}
 			}
 		}

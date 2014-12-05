@@ -42,9 +42,15 @@ $complexTypes['Patient'] = array(
 		'document' => 'GaiaEHR Public ID or Record Number'
 	),
 	array(
-		'name' => 'FirstName',
+		'name' => 'Title',
 		'type' => 'string',
 		'minOccurs' => '0',
+		'document' => 'Sr. Mr. Mss. etc. etc'
+	),
+	array(
+		'name' => 'FirstName',
+		'type' => 'string',
+		'minOccurs' => '1',
 		'document' => 'Patient First Name'
 	),
 	array(
@@ -56,19 +62,19 @@ $complexTypes['Patient'] = array(
 	array(
 		'name' => 'LastName',
 		'type' => 'string',
-		'minOccurs' => '0',
+		'minOccurs' => '1',
 		'document' => 'Patient Last Name'
 	),
 	array(
 		'name' => 'DOB',
 		'type' => 'string',
-		'minOccurs' => '0',
+		'minOccurs' => '1',
 		'document' => 'On Format YYYY-MM-DD (0000-00-00)'
 	),
 	array(
 		'name' => 'Sex',
 		'type' => 'string',
-		'minOccurs' => '0',
+		'minOccurs' => '1',
 		'document' => 'F or M'
 	),
 	array(
@@ -76,6 +82,228 @@ $complexTypes['Patient'] = array(
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => '** Not Recommended **'
+	),
+	array(
+		'name' => 'MaritalStatus',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Race',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Ethnicity',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Religion',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Language',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'DriverLicence',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'DriverLicenceState',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'DriverLicenceExpirationDate',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Language',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PhysicalAddressLineOne',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PhysicalAddressLineTwo',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PhysicalCity',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PhysicalState',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PhysicalCountry',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PhysicalZipCode',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PostalAddressLineOne',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PostalAddressLineTwo',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PostalCity',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PostalState',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'PostalZipCode',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'HomePhoneNumber',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'MobilePhoneNumber',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'WorkPhoneNumber',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'WorkPhoneExt',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Email',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Image',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'Base64 String'
+	),
+	array(
+		'name' => 'BirthPlace',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'IsBirthMultiple',
+		'type' => 'bool',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'BirthOrder',
+		'type' => 'int',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'Deceased',
+		'type' => 'int',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'DeceaseDate',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'MothersName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'GuardiansName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'EmergencyContact',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'EmergencyPhone',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'DeathDate',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'On Format YYYY-MM-DD (0000-00-00)'
+	),
+	array(
+		'name' => 'Occupation',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => 'work title'
 	)
 
 );
@@ -143,7 +371,6 @@ $complexTypes['Document'] = array(
 		'document' => 'Set true is you would like Gaia to save it encrypted. ***DO NOT*** send the document already encrypted'
 	)
 );
-
 
 $complexTypes['Order'] = array(
 	array(
@@ -213,12 +440,12 @@ $functions[] = array(
 			'document' => 'If success == false an error message will be send back'
 		)
 	),
-	'soapAddress' => 'https://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
 );
 
 $functions[] = array(
-	'funcName' => 'UploadPatientDocument',
-	'doc' => 'This will add a document to the patient archive documents',
+	'funcName' => 'AddPatient',
+	'doc' => 'This will add a patient to GaiaEHR',
 	'inputParams' => array(
 		array(
 			'name' => 'SecureKey',
@@ -230,10 +457,220 @@ $functions[] = array(
 			'name' => 'Patient',
 			'type' => 'Patient',
 			'minOccurs' => '1'
+		)
+	),
+	'outputParams' => array(
+		array(
+			'name' => 'Success',
+			'type' => 'boolean',
+			'minOccurs' => '1',
+			'document' => 'True if request was successfully processed'
 		),
 		array(
-			'name' => 'Provider',
-			'type' => 'Provider',
+			'name' => 'Pid',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => 'System Internal Patient ID'
+		),
+		array(
+			'name' => 'RecordNumber',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'Created Record Number'
+		),
+		array(
+			'name' => 'Error',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'If success == false an error message will be send back'
+		)
+	),
+	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+);
+
+$functions[] = array(
+	'funcName' => 'UpdatePatient',
+	'doc' => 'This will add a patient to GaiaEHR',
+	'inputParams' => array(
+		array(
+			'name' => 'SecureKey',
+			'type' => 'string',
+			'minOccurs' => '1',
+			'document' => 'GUID Secure Key provided'
+		),
+		array(
+			'name' => 'Patient',
+			'type' => 'Patient',
+			'minOccurs' => '1'
+		)
+	),
+	'outputParams' => array(
+		array(
+			'name' => 'Success',
+			'type' => 'boolean',
+			'minOccurs' => '1',
+			'document' => 'True if request was successfully processed'
+		),
+		array(
+			'name' => 'Pid',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => 'System Internal Patient ID'
+		),
+		array(
+			'name' => 'RecordNumber',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'Created Record Number'
+		),
+		array(
+			'name' => 'Error',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'If success == false an error message will be send back'
+		)
+	),
+	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+);
+
+$functions[] = array(
+	'funcName' => 'MergePatient',
+	'doc' => 'This method will use the record number as the primary ID then the PID if record number is not provided',
+	'inputParams' => array(
+		array(
+			'name' => 'SecureKey',
+			'type' => 'string',
+			'minOccurs' => '1',
+			'document' => 'GUID Secure Key provided'
+		),
+		array(
+			'name' => 'PrimaryPid',
+			'type' => 'int',
+			'minOccurs' => '0'
+		),
+		array(
+			'name' => 'SecondaryPid',
+			'type' => 'int',
+			'minOccurs' => '0'
+		),
+		array(
+			'name' => 'PrimaryRecordNumber',
+			'type' => 'int',
+			'minOccurs' => '0'
+		),
+		array(
+			'name' => 'SecondaryRecordNumber',
+			'type' => 'int',
+			'minOccurs' => '0'
+		)
+	),
+	'outputParams' => array(
+		array(
+			'name' => 'Success',
+			'type' => 'boolean',
+			'minOccurs' => '1',
+			'document' => 'True if request was successfully processed'
+		),
+		array(
+			'name' => 'Pid',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => 'Primary Patient ID'
+		),
+		array(
+			'name' => 'RecordNumber',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'Primary Record Number'
+		),
+		array(
+			'name' => 'Error',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'If success == false an error message will be send back'
+		)
+	),
+	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+);
+
+$functions[] = array(
+	'funcName' => 'TransferPatient',
+	'doc' => 'This method will use the record number as the primary ID then the PID if record number is not provided',
+	'inputParams' => array(
+		array(
+			'name' => 'SecureKey',
+			'type' => 'string',
+			'minOccurs' => '1',
+			'document' => 'GUID Secure Key provided'
+		),
+		array(
+			'name' => 'PrimaryPid',
+			'type' => 'int',
+			'minOccurs' => '0'
+		),
+		array(
+			'name' => 'SecondaryPid',
+			'type' => 'int',
+			'minOccurs' => '0'
+		),
+		array(
+			'name' => 'PrimaryRecordNumber',
+			'type' => 'int',
+			'minOccurs' => '0'
+		),
+		array(
+			'name' => 'SecondaryRecordNumber',
+			'type' => 'int',
+			'minOccurs' => '0'
+		)
+	),
+	'outputParams' => array(
+		array(
+			'name' => 'Success',
+			'type' => 'boolean',
+			'minOccurs' => '1',
+			'document' => 'True if request was successfully processed'
+		),
+		array(
+			'name' => 'Pid',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => 'Primary Patient ID'
+		),
+		array(
+			'name' => 'RecordNumber',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'Primary Record Number'
+		),
+		array(
+			'name' => 'Error',
+			'type' => 'string',
+			'minOccurs' => '0',
+			'document' => 'If success == false an error message will be send back'
+		)
+	),
+	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+);
+
+$functions[] = array(
+	'funcName' => 'AppPatientDocument',
+	'doc' => 'This will add a document to the patient archive documents',
+	'inputParams' => array(
+		array(
+			'name' => 'SecureKey',
+			'type' => 'string',
+			'minOccurs' => '1',
+			'document' => 'GUID Secure Key provided'
+		),
+		array(
+			'name' => 'Pid',
+			'type' => 'string',
+			'minOccurs' => '1'
+		),
+		array(
+			'name' => 'ProviderNPI',
+			'type' => 'int',
 			'minOccurs' => '1'
 		),
 		array(
@@ -242,9 +679,10 @@ $functions[] = array(
 			'minOccurs' => '1'
 		),
 		array(
-			'name' => 'Order',
-			'type' => 'Order',
-			'minOccurs' => '0'
+			'name' => 'OrderId',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => 'GaiaEHR Order ID if document is an result of an order'
 		),
 		array(
 			'name' => 'Site',
@@ -267,15 +705,20 @@ $functions[] = array(
 			'document' => 'True if request was successfully processed'
 		),
 		array(
+			'name' => 'DocumentId',
+			'type' => 'int',
+			'minOccurs' => '0',
+			'document' => ''
+		),
+		array(
 			'name' => 'Error',
 			'type' => 'string',
 			'minOccurs' => '0',
 			'document' => 'If success == false an error message will be send back'
 		)
 	),
-	'soapAddress' => 'https://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
 );
-
 // ----------------------------------------------------------------------------
 // END OF PARAMETERS SET UP
 // ----------------------------------------------------------------------------
@@ -317,7 +760,7 @@ STYLES;
 	print '<h2>Available Functions:</h2>';
 	print '<div style="margin-left:20px;">';
 	for($i = 0; $i < count($functions); $i++){
-		print '<h3>Function: ' . $functions[$i]['funcName'] . '</h3>';
+		print '<h3>Method: ' . $functions[$i]['funcName'] . '</h3>';
 		print '<div style="margin-left:20px;">';
 		print '<p>';
 		print $functions[$i]['doc'];
@@ -357,7 +800,7 @@ function DisplayElementHtml($elements) {
 		if(isset($complexTypes[$element['type']])){
 			DisplayElementHtml($complexTypes[$element['type']]);
 		}
-		if(isset($element['document'])){
+		if(isset($element['document']) && $element['document'] != ''){
 			print '<p style="font-size: 14px; border: solid 1px #ccc; margin: 2px; padding: 5px; background-color: #cbe7d0; border-radius: 5px; width: 90%">';
 			print $element['document'];
 			print '</p>';

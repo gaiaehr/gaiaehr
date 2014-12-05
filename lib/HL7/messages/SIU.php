@@ -29,28 +29,69 @@ class SIU extends Message {
 	}
 
 	protected function Events($event) {
-		$events = array(
+
+		$events['S12'] =
+		$events['S13'] =
+		$events['S14'] =
+		$events['S15'] =
+		$events['S16'] =
+		$events['S17'] =
+		$events['S18'] =
+		$events['S19'] =
+		$events['S20'] =
+		$events['S21'] =
+		$events['S22'] =
+		$events['S23'] =
+		$events['S24'] =
+		$events['S26'] = array(
 			'S12' => array(
 				'MSH' => array('required' => true),
-				'SFT' => array('repeatable' => true),
-			),
-			'S13' => array(
-				'MSH' => array('required' => true),
-				'SFT' => array('repeatable' => true),
-			),
-			'S14' => array(
-				'MSH' => array('required' => true),
-				'SFT' => array('repeatable' => true),
-			),
-			'S15' => array(
-				'MSH' => array('required' => true),
-				'SFT' => array('repeatable' => true),
-			),
-			'S22' => array(
-				'MSH' => array('required' => true),
-				'SFT' => array('repeatable' => true),
+				'SCH' => array('required' => true),
+				'TQ1' => array('repeatable' => true),
+				'NTE' => array('repeatable' => true),
+				'PATIENT' => array(
+					'repeatable' => true,
+					'items' => array(
+						'PID' => array('required' => true),
+						'PD1' => array(),
+						'PV1' => array(),
+						'PV2' => array(),
+						'OBX' => array('repeatable' => true),
+						'DG1' => array('repeatable' => true),
+					)
+				),
+				'RESOURCES' => array(
+					'RGS' => array('required' => true),
+					'SERVICE' => array(
+						'repeatable' => true,
+						'items' => array(
+							'AIS' => array('required' => true),
+							'NTE' => array()
+						)
+					),
+					'GENERAL_RESOURCE' => array(
+						'repeatable' => true,
+						'items' => array(
+							'AIG' => array('required' => true),
+							'NTE' => array()
+						)
+					),
+					'LOCATION_RESOURCE' => array(
+						'repeatable' => true,
+						'items' => array(
+							'AIL' => array('required' => true),
+							'NTE' => array()
+						)
+					),
+					'PERSONNEL_RESOURCE' => array(
+						'repeatable' => true,
+						'items' => array(
+							'AIP' => array('required' => true),
+							'NTE' => array()
+						)
+					)
+				)
 			)
-
 		);
 
 		return $events[$event];

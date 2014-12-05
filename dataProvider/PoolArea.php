@@ -236,19 +236,19 @@ class PoolArea {
 	private function getPatientsByPoolAreaId($area_id, $in_queue) {
 		$this->setPatient();
 		$this->setPpModel();
-		$patients = $this->pp->sql("SELECT pp.*
-							 FROM patient_pools AS pp
-							WHERE pp.area_id = '$area_id'
-							  AND pp.time_out IS NULL
-							  AND pp.in_queue = '$in_queue'")->all();
-		$records = array();
-		foreach($patients as $patient){
+		$patients = $this->pp->sql("SELECT pp.*, p.fname, p.lname, p.mname
+									  FROM `patient_pools` AS pp
+								 LEFT JOIN `patient` AS p ON pp.pid = p.pid
+								 	 WHERE pp.area_id = '$area_id'
+									   AND pp.time_out IS NULL
+									   AND pp.in_queue = '$in_queue'")->all();
+		foreach($patients as &$patient){
 			if(isset($patient['pid'])){
-				$patient['name'] = ($patient['eid'] != null ? '*' : '') . $this->patient->getPatientFullNameByPid($patient['pid']);
-				$records[] = $patient;
+				$patient['name'] = ($patient['eid'] != null ? '*' : '') . Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
 			}
 		}
-		return $records;
+		unset($patient);
+		return $patients;
 	}
 
 	/**
@@ -276,10 +276,13 @@ class PoolArea {
 			$this->setPatient();
 
 			foreach($this->getFacilityActivePoolAreas() AS $area){
-				if(($this->acl->hasPermission('access_poolcheckin') && $area['id'] == 1) || ($this->acl->hasPermission('access_pooltriage') && $area['id'] == 2) || ($this->acl->hasPermission('access_poolphysician') && $area['id'] == 3) || ($this->acl->hasPermission('access_poolcheckout') && $area['id'] == 4)
+				if(($this->acl->hasPermission('access_poolcheckin') && $area['id'] == 1) ||
+					($this->acl->hasPermission('access_pooltriage') && $area['id'] == 2) ||
+					($this->acl->hasPermission('access_poolphysician') && $area['id'] == 3) ||
+					($this->acl->hasPermission('access_poolcheckout') && $area['id'] == 4)
 				){
 					foreach($this->getPatientsByPoolAreaId($area['id'], 1) as $p){
-						$p['shortName'] = Person::ellipsis($p['name'], 16);
+						$p['shortName'] = Person::ellipsis($p['name'], 15);
 						$p['poolArea'] = $area['title'];
 						$p['patient'] = $this->patient->getPatientDemographicDataByPid($p['pid']);
 						$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($area['id']);

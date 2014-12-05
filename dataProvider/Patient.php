@@ -35,7 +35,7 @@ class Patient {
 	/**
 	 * @var MatchaCUP
 	 */
-	private $p = null;
+	public $p = null;
 	/**
 	 * @var MatchaCUP
 	 */

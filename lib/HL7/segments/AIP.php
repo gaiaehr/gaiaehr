@@ -16,21 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once (dirname(__FILE__).'/Segments.php');
+include_once(dirname(__FILE__) . '/Segments.php');
 
-class NTE extends Segments{
+class AIP extends Segments {
 
-	function __destruct(){
+	function __destruct() {
 		parent::__destruct();
 	}
 
-	function __construct($hl7){
-		parent::__construct($hl7, 'NTE');
+	function __construct($hl7) {
+		parent::__construct($hl7, 'AIP');
 
-		$this->setField(1, 'SI', 4);
-		$this->setField(2, 'ID', 8);
-		$this->setField(3, 'FT', 65536, false, true);
-		$this->setField(4, 'CE', 250);
+		$this->setField(1, 'SI', 4, true);
+		$this->setField(2, 'ID', 3); // TABLE 0206
+		$this->setField(3, 'XCN', 250, false, true);
+		$this->setField(4, 'CE', 250); // TABLE 0182
+		$this->setField(5, 'CE', 250);
+		$this->setField(6, 'TS', 26);
+		$this->setField(7, 'NM', 20);
+		$this->setField(8, 'CE', 250);
+		$this->setField(9, 'NM', 20);
+		$this->setField(10, 'CE', 250);
+		$this->setField(11, 'IS', 10); // TABLE 0279
+		$this->setField(12, 'CE', 250); // TABLE 0278
 
 	}
+
 }

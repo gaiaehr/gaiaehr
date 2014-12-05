@@ -18,19 +18,18 @@
  */
 include_once (dirname(__FILE__).'/Segments.php');
 
-class NTE extends Segments{
+class RGS extends Segments{
 
 	function __destruct(){
 		parent::__destruct();
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7, 'NTE');
+		parent::__construct($hl7, 'RGS');
 
-		$this->setField(1, 'SI', 4);
-		$this->setField(2, 'ID', 8);
-		$this->setField(3, 'FT', 65536, false, true);
-		$this->setField(4, 'CE', 250);
+		$this->setField(1,'SI', 4, true);
+		$this->setField(2,'ID', 3); // TABLE 0206
+		$this->setField(3,'CE', 250);
 
 	}
 }

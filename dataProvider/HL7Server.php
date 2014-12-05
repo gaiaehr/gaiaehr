@@ -971,8 +971,6 @@ class HL7Server {
 	}
 }
 
-
-
 //$msg = <<<EOF
 //MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
 //PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
@@ -1053,7 +1051,20 @@ class HL7Server {
 //PID|||R28112^^||SUAREZ CASTRO^TERESA||19630306|F||2106-3^White|PO-BOX-362319^^SAN JUAN^PR^00936||7877069054|7872505555|spa^Spanish|S|||000002305|||H^Hispanic
 //PV1|OP|I|||||||||||||||000^RADIOLOGIA^ADMIN|00|140900008||P|||||||||||||||||||||||20140918123529|20140918123529
 //EOF;
-//
+
+
+// RGS-1 = This field contains a number that uniquely identifies the information represented by this segment in this transaction for the purposes of addition, change or deletion.
+// RGS-2  A = Add/Insert, D = Delete, U = Update
+
+//$msg = <<<EOF
+//MSH|^~\&|GPMS|CTX||MED2000|200803060953||SIU^S14|20080306953450|P|2.5.1||||||||
+//SCH|00331839401|||||58||HLCK^HEALTHCHECK ANY AGE|20|MIN|^^^200803061000 |||||JOHN||||VALERIE|||||ARRIVED|
+//PID|1||489671|0|FULANO^DE TAL^||20080205|F|||CALLE DEL SOL^SAN JUAN^PR^00987||7958259|||S|||999999999||||||||||||
+//RGS|1|A||
+//EOF;
+
+
+
 //
 //include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
 //

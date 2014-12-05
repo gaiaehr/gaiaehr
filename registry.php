@@ -77,17 +77,25 @@ $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERV
 
 // default site
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
-$_SESSION['styles'] = array();
+
+if(!isset($_SESSION['styles'])){
+	$_SESSION['styles'] = array();
+}
+
 
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');
 
 	// load modules hooks
 	if(!isset($_SESSION['hooks'])){
+
 		include_once(ROOT. '/dataProvider/Modules.php');
 		$Modules = new Modules();
 		$modules = $Modules->getEnabledModules();
 		unset($Modules);
+
+		$_SESSION['styles'] = array();
+
 		foreach($modules as $module){
 
 			/**

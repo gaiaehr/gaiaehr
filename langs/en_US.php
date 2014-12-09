@@ -1485,5 +1485,10 @@ $LANG = array(
 	'rx_notes_to_pharmacist_warning'        => 'Do NOT enter standardized data in this field like... SIG, Effective Date, Drug Name, Strength, or Quantity.',
     'driver_lic'                            => 'Driver Lic.',
     'employer_name'                         => 'Employer Name',
+    'accept'                                => 'Accept',
+    'scanning_document'                     => 'Scanning Document',
+    'edit'                                  => 'Edit',
+    'editing'                               => 'Editing',
+    'scanner'                               => 'Scanner',
 
 );

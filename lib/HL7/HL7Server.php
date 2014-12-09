@@ -1,4 +1,3 @@
-#!php -q
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
@@ -17,14 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+use Ratchet\Server\IoServer;
+
+
+require (str_replace('\\', '/', dirname(__FILE__)) . '/../../vendor/autoload.php');
+require (str_replace('\\', '/', dirname(__FILE__)) . '/HL7ServerAbstract.php');
+
 error_reporting(E_ALL);
 set_time_limit(0);
 ob_implicit_flush();
-gc_enable();
 
-// ****************************************************** //
-// * Place here persistent logic ************************ //
-// ****************************************************** //
 $host = $argv[1];
 $port = $argv[2];
 $path = $argv[3];
@@ -33,7 +34,35 @@ $method = $argv[5];
 $site = $argv[6];
 chdir($path);
 include_once("$class.php");
+
+gc_enable();
+
+$server = IoServer::factory(new HL7ServerAbstract, $port);
+$server->run();
+
+exit;
+
+
+// ****************************************************** //
+// * Place here persistent logic ************************ //
+// ****************************************************** //
+
+chdir($path);
+
 $cls = new $class($port, $site);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function rLog($msg) {
 	$msg = "[" . date('Y-m-d H:i:s') . "] " . $msg . PHP_EOL;

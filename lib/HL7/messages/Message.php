@@ -109,6 +109,7 @@ class Message {
 
 			}
 		};
+
 		return $this->data = $items;
 	}
 

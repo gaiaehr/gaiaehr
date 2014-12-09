@@ -39,7 +39,5 @@ class AIL extends Segments {
 		$this->setField(10, 'CE', 250);
 		$this->setField(11, 'IS', 10); // TABLE 0279
 		$this->setField(12, 'CE', 250); // TABLE 0278
-
 	}
-
 }

@@ -39,7 +39,7 @@ class MSA extends Segments{
 		$this->setField(2, 'ST', 20, true);
 		$this->setField(3, 'ST', 80);
 		$this->setField(4, 'NM', 15);
-		$this->setFieldType(5, null); //The MSA-5 was deprecated as of v2.2 standard
+		$this->setFieldValue(5, null); //The MSA-5 was deprecated as of v2.2 standard
 		$this->setField(6, 'CE', 250);
 
 	}

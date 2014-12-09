@@ -19,7 +19,7 @@
 class HL7ServerHandler {
 
 	public function start(stdClass $params){
-		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "'.$params->ip.'" '.$params->port.' "'.ROOT.'/dataProvider" "HL7Server" "Process" "default"';
+		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "' . $params->ip . '" ' . $params->port . ' "' . ROOT . '/dataProvider" "HL7Server" "Process" "default"';
 
 		if (substr(php_uname(), 0, 7) == "Windows"){
 			pclose(popen("start /B ". $cmd, "r"));
@@ -35,7 +35,7 @@ class HL7ServerHandler {
 	public function stop($params){
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		@socket_connect($socket, $params->ip, $params->port);
-		$msg = 'shutdown';
+		$msg = MatchaUtils::encrypt(site_aes_key);
 		@socket_write($socket, $msg, strlen($msg));
 		@socket_recv($socket, $response, 1024*10, MSG_WAITALL);
 		@socket_close($socket);
@@ -44,8 +44,11 @@ class HL7ServerHandler {
 	}
 
 	public function status($params){
+		$params = (object) $params;
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		return array('online' => @socket_connect($socket, $params->ip, $params->port));
+		$status = @socket_connect($socket, $params->ip, $params->port);
+		unset($socket);
+		return array('online' => $status);
 	}
 
 }

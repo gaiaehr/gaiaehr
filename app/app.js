@@ -14386,7 +14386,7 @@ Ext.define('App.model.patient.Patient',{
             type: 'string',
             index: true,
             comment: 'email',
-            len: 60
+            len: 80
         },
         {
             name: 'mothers_name',
@@ -14618,6 +14618,7 @@ Ext.define('App.model.patient.Patient',{
         }
     ]
 });
+
 Ext.define('App.model.patient.PatientArrivalLog', {
 	extend: 'Ext.data.Model',
 	fields: [
@@ -20667,7 +20668,8 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 			{
 				xtype: 'grid',
 				store: me.store = Ext.create('App.store.patient.PatientPossibleDuplicates'),
-				width: 600,
+				width: 700,
+				maxHeight: 700,
 				frame: true,
 				margin: 5,
 				hideHeaders: true,
@@ -20676,14 +20678,22 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 						dataIndex: 'image',
 						width: 65,
 						renderer: function(v){
-							return '<img src="' + v + '" class="icon32Round" />';
+							var src =  v != '' ? v : app.patientImage;
+							return '<img src="' + src + '" class="icon32Round" />';
 						}
 					},
 					{
 						dataIndex: 'fullname',
 						flex: 1,
 						renderer: function(v, meta, record){
-							return v + ' ' + record.data.SS  + '<br>' + record.data.fulladdress + '<br>' + record.data.phones;
+							var phone = record.data.home_phone != '' ? record.data.home_phone : '000-000-0000',
+								driver_liv = record.data.drivers_license != '' ? record.data.drivers_license : '0000000000';
+
+							var str = '<p style="margin: 5px"><b>' + _('name') + ':</b> ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname + '</p>';
+							str += '<p style="margin: 5px"><b>' + _('address') + ':</b> ' + record.data.address + ' ' + record.data.address_cont + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + '</p>';
+							str += '<p style="margin: 5px"><b>' + _('home_phone') + ':</b> ' + phone + ' <b>' + _('driver_lic') + ':</b> ' + driver_liv + ' <b>' + _('employer_name') + ':</b> ' + record.data.employer_name + '</p>';
+							str += '<p style="margin: 5px"><b>' + _('social_security') + ':</b> ' + record.data.SS + '</p>';
+							return '<div style="font-size: 12px;">' + str + '</div>';
 						}
 					}
 				],
@@ -21168,15 +21178,15 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 });
 
 Ext.define('App.view.patient.NewPatient', {
-	extend       : 'App.ux.RenderPanel',
-	id           : 'panelNewPatient',
-	pageTitle    : _('patient_entry_form'),
-	initComponent: function() {
+	extend: 'App.ux.RenderPanel',
+	pageTitle: _('patient_entry_form'),
+	initComponent: function(){
 
 		var me = this;
 
 		me.pageBody = [
-			me.newPatientPanel = Ext.create('App.view.patient.Patient') ];
+			me.newPatientPanel = Ext.create('App.view.patient.Patient')
+		];
 		me.callParent(arguments);
 
 	},
@@ -21184,14 +21194,14 @@ Ext.define('App.view.patient.NewPatient', {
 	 *
 	 * @param {function} callback
 	 */
-	confirmationWin: function(callback) {
+	confirmationWin: function(callback){
 		Ext.Msg.show({
-			title  : _('please_confirm') + '...',
-			msg    : _('do_you_want_to_create_a_new_patient'),
-			icon   : Ext.MessageBox.QUESTION,
+			title: _('please_confirm') + '...',
+			msg: _('do_you_want_to_create_a_new_patient'),
+			icon: Ext.MessageBox.QUESTION,
 			buttons: Ext.Msg.YESNO,
-			scope  : this,
-			fn     : function(btn) {
+			scope: this,
+			fn: function(btn){
 				callback(btn);
 			}
 		});
@@ -21204,14 +21214,14 @@ Ext.define('App.view.patient.NewPatient', {
 	 * to call every this panel becomes active
 	 * @param {function} [callback] - callback
 	 */
-	onActive: function(callback) {
-        var me = this;
-		this.confirmationWin(function(btn) {
-			if(btn == 'yes') {
-                me.newPatientPanel.loadNew();
+	onActive: function(callback){
+		var me = this;
+		this.confirmationWin(function(btn){
+			if(btn == 'yes'){
+				me.newPatientPanel.loadNew();
 				app.unsetPatient(null, true);
 				callback(true);
-			} else {
+			}else{
 				app.nav.goBack();
 				callback(false);
 			}
@@ -33955,78 +33965,184 @@ Ext.define('App.controller.Navigation', {
 	}
 
 });
-Ext.define('App.controller.Support', {
-    extend: 'Ext.app.Controller',
-	requires:[
-		'App.ux.ManagedIframe'
+Ext.define('App.controller.Scanner', {
+	extend: 'Ext.app.Controller',
+	requires: [
+		'App.view.scanner.Window'
 	],
 	refs: [
-        {
-            ref:'viewport',
-            selector:'viewport'
-        }
+		{
+			ref: 'ScannerWindow',
+			selector: '#ScannerWindow'
+		},
+		{
+			ref: 'ScannerImage',
+			selector: '#ScannerImage'
+		},
+		{
+			ref: 'ScannerCombo',
+			selector: '#ScannerCombo'
+		},
+		{
+			ref: 'ScannerScanBtn',
+			selector: '#ScannerScanBtn'
+		},
+		{
+			ref: 'ScannerOkBtn',
+			selector: '#ScannerOkBtn'
+		}
 	],
 
-	init: function() {
-		var me = this;
+	/**
+	 *
+	 */
+	ws: null,
 
+	connected: false,
+
+	init: function(){
+		var me = this;
 
 		me.control({
-			'button[action=supportBtn]':{
-				click: me.supportBtnClick
+			'viewport': {
+				afterrender: me.doWebSocketConnect
+			},
+			'#ScannerWindow': {
+				show: me.onScannerWindowShow,
+				close: me.onScannerWindowClose
+			},
+			'#ScannerScanBtn': {
+				click: me.onScannerScanBtnClick
+			},
+			'#ScannerImageEditBtn': {
+				toggle: me.onScannerImageEditBtnClick
+			},
+			'#ScannerOkBtn': {
+				click: me.onScannerOkBtnClick
 			}
 		});
-
 	},
 
-	supportBtnClick: function(btn){
-		var me = this;
-
-		me.getSupportWindow();
-		me.winSupport.remove(me.miframe);
-		me.winSupport.add(
-			me.miframe = Ext.create('App.ux.ManagedIframe',{src: btn.src})
-		);
+	onScannerScanBtnClick: function(){
+		this.doScan();
 	},
 
-	getSupportWindow:function(){
+	doLoadScannersCombo: function(data){
+		var combo = this.getScannerCombo(),
+			store = combo.getStore();
+
+		store.loadData(data);
+		var checked = store.findRecord('Checked', 'true');
+		if(checked){
+			combo.select(checked);
+		}
+	},
+
+	doLoadScannedDocument: function(data){
+		var me = this,
+			image = me.getScannerImage();
+
+		image.setSrc('data:image/png;base64,' + data);
+		me.getScannerWindow().body.el.unmask();
+		me.getScannerWindow().doComponentLayout();
+		me.getScannerWindow().down('toolbar').enable();
+	},
+
+	getSources: function(){
+		var me = this;
+		me.ws.send('getSources');
+	},
+
+	onScannerWindowShow: function(){
+		//this.doWebSocketConnect();
+	},
+
+	onScannerWindowClose: function(){
+		//this.ws.close();
+	},
+
+	doWebSocketConnect: function(){
 		var me = this;
 
-		if(me.winSupport){
-			me.winSupport.show();
-		}else{
-			me.winSupport = Ext.create('Ext.window.Window', {
-				title: _('support'),
-				closeAction: 'hide',
-				bodyStyle: 'background-color: #ffffff; padding: 5px;',
-				animateTarget: me.Footer,
-				resizable: false,
-				draggable: false,
-				maximizable: false,
-				autoScroll: true,
-				maximized: true,
-				dockedItems: {
-					xtype: 'toolbar',
-					dock: 'top',
-					items: ['-', {
-						text: 'List issues',
-						iconCls: 'list',
-						action: 'supportBtn',
-						url: 'http://GaiaEHR.org/projects/GaiaEHR001/issues'
-					}, '-', {
-						text: 'Create an issue',
-						iconCls: 'icoAddRecord',
-						action: 'supportBtn',
-						url: 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new'
-					}]
-				}
+		if(me.connected) return;
+		me.ws = new WebSocket('wss://localhost:8443/TwainService');
+
+		me.ws.onopen = function(evt){
+			me.conencted = true;
+			me.getScanWindow();
+			me.getSources();
+			app.fireEvent('scanconnected', this);
+		};
+
+		me.ws.onerror = function(evt){
+			app.msg(_('oops'), evt.data, true);
+		};
+
+		me.ws.onmessage = function(evt){
+			var response = eval('(' + evt.data + ')');
+
+			if(response.action == 'getSources'){
+				me.doLoadScannersCombo(response.data);
+			}else if(response.action == 'getDocument'){
+				me.doLoadScannedDocument(response.data);
+			}
+		};
+
+		me.ws.onclose = function(e){
+			me.conencted = false;
+			app.fireEvent('scandisconnected', this);
+		};
+	},
+
+	onScannerImageEditBtnClick: function(btn, pressed){
+		if(pressed){
+			this.dkrm = new Darkroom('#ScannerImage', {
+				save: false,
+				replaceDom: false
 			});
-			me.winSupport.show();
+			btn.setText(_('editing'));
+		}else{
+			this.dkrm.selfDestroy();
+			delete this.dkrm;
+			btn.setText(_('edit'));
 		}
 
+		this.getScannerScanBtn().setDisabled(pressed);
+		this.getScannerOkBtn().setDisabled(pressed);
+	},
 
+	getDocument: function(){
+		return this.getScannerImage().imgEl.dom.src;
+	},
+
+	doScan: function(){
+		var me = this,
+			combo = this.getScannerCombo();
+
+		me.getScannerWindow().down('toolbar').disable();
+		me.getScannerWindow().body.el.mask(_('scanning_document'));
+		me.ws.send('getDocument:' + combo.getValue());
+	},
+
+	onScannerOkBtnClick: function(){
+		app.fireEvent('scancompleted', this, this.getDocument());
+		this.getScannerWindow().close();
+	},
+
+	getScanWindow: function(){
+		if(!this.getScannerWindow()){
+			Ext.create('App.view.scanner.Window');
+		}
+		return this.getScannerWindow();
+	},
+
+	initScan: function(){
+		this.getScanWindow();
+		this.getScannerWindow().show();
+		if(this.getScannerCombo().getValue() != ''){
+			this.doScan();
+		}
 	}
-
 });
 Ext.define('App.controller.ScriptCam', {
 	extend: 'Ext.app.Controller',
@@ -34153,6 +34269,79 @@ Ext.define('App.controller.ScriptCam', {
 		field.setValue(dataURL);
 		me.win.close();
 	}
+});
+Ext.define('App.controller.Support', {
+    extend: 'Ext.app.Controller',
+	requires:[
+		'App.ux.ManagedIframe'
+	],
+	refs: [
+        {
+            ref:'viewport',
+            selector:'viewport'
+        }
+	],
+
+	init: function() {
+		var me = this;
+
+
+		me.control({
+			'button[action=supportBtn]':{
+				click: me.supportBtnClick
+			}
+		});
+
+	},
+
+	supportBtnClick: function(btn){
+		var me = this;
+
+		me.getSupportWindow();
+		me.winSupport.remove(me.miframe);
+		me.winSupport.add(
+			me.miframe = Ext.create('App.ux.ManagedIframe',{src: btn.src})
+		);
+	},
+
+	getSupportWindow:function(){
+		var me = this;
+
+		if(me.winSupport){
+			me.winSupport.show();
+		}else{
+			me.winSupport = Ext.create('Ext.window.Window', {
+				title: _('support'),
+				closeAction: 'hide',
+				bodyStyle: 'background-color: #ffffff; padding: 5px;',
+				animateTarget: me.Footer,
+				resizable: false,
+				draggable: false,
+				maximizable: false,
+				autoScroll: true,
+				maximized: true,
+				dockedItems: {
+					xtype: 'toolbar',
+					dock: 'top',
+					items: ['-', {
+						text: 'List issues',
+						iconCls: 'list',
+						action: 'supportBtn',
+						url: 'http://GaiaEHR.org/projects/GaiaEHR001/issues'
+					}, '-', {
+						text: 'Create an issue',
+						iconCls: 'icoAddRecord',
+						action: 'supportBtn',
+						url: 'http://GaiaEHR.org/projects/GaiaEHR001/issues/new'
+					}]
+				}
+			});
+			me.winSupport.show();
+		}
+
+
+	}
+
 });
 Ext.define('App.controller.patient.ActiveProblems', {
 	extend: 'Ext.app.Controller',
@@ -36137,23 +36326,21 @@ Ext.define('App.controller.patient.Patient', {
 		var me = this,
 			form = cmp.isPanel ? cmp.getForm() : cmp.up('form').getForm();
 
-		if(form.isValid()){
+		if(!form.isValid()) return;
 
-			var params = {
-				fname: form.findField('fname').getValue(),
-				lname: form.findField('lname').getValue(),
-				sex: form.findField('sex').getValue(),
-				DOB: form.findField('DOB').getValue()
-			};
+		var params = {
+			fname: form.findField('fname').getValue(),
+			lname: form.findField('lname').getValue(),
+			sex: form.findField('sex').getValue(),
+			DOB: form.findField('DOB').getValue()
+		};
 
-			if(form.getRecord()){
-				params.pid = form.getRecord().data.pid;
-			}
-
-			me.lookForPossibleDuplicates(params, 'openPatientSummary');
-		}else{
-			app.msg(_('oops'), _('required_fields_missing'), true);
+		if(form.getRecord()){
+			params.pid = form.getRecord().data.pid;
 		}
+
+		me.lookForPossibleDuplicates(params, 'openPatientSummary');
+
 	},
 
 	lookForPossibleDuplicates: function(params, action, callback){
@@ -36669,11 +36856,11 @@ Ext.define('App.controller.patient.RxOrders', {
 			record = insCmb.findRecordByValue(instructions);
 
 		// record found
-		if(record !== false) return;
+		if(record !== false) return true;
 
 		Ext.Msg.show({
 			title: _('new_instruction'),
-			msg: instructions + '<br>' + _('would_you_like_to_save_it'),
+			msg: '<p>' + instructions + '</p><p>' + _('would_you_like_to_save_it') + '</p>',
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -40113,29 +40300,9 @@ Ext.define('App.view.patient.Documents', {
 	xtype: 'patientdocumentspanel',
 	title: _('documents'),
 	layout: 'border',
-	items: [
-		{
-			xtype: 'grid',
-			region: 'west',
-			split: true,
-			flex: 1,
-			columnLines: true,
-			selType: 'checkboxmodel',
-			features: [
-				{
-					ftype: 'grouping',
-					groupHeaderTpl: Ext.create('Ext.XTemplate',
-						'Group: {name:this.getGroupName}',
-						{
-							getGroupName: function(name){
-								return app.getController('patient.Documents').getGroupName(name);
-							}
-						}
-					)
-				}
-			],
-			itemId: 'patientDocumentGrid',
-			store: this.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments', {
+	initComponent: function(){
+		var me = this,
+			store = Ext.create('App.store.patient.PatientDocuments', {
 				autoLoad: false,
 				remoteFilter: true,
 				remoteSort: false,
@@ -40143,123 +40310,148 @@ Ext.define('App.view.patient.Documents', {
 				pageSize: 200,
 				groupField: 'groupDate'
 			}),
-			columns: [
-				{
-					xtype: 'actioncolumn',
-					width: 23,
-					icon: 'resources/images/icons/icoLessImportant.png',
-					tooltip: _('validate_file_integrity_hash'),
-					handler: function(grid, rowIndex){
-						App.app.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex);
+			docCtrl = App.app.getController('patient.Documents');
+
+		me.items = [
+			{
+				xtype: 'grid',
+				region: 'west',
+				split: true,
+				flex: 1,
+				columnLines: true,
+				selType: 'checkboxmodel',
+				features: [
+					{
+						ftype: 'grouping',
+						groupHeaderTpl: Ext.create('Ext.XTemplate',
+							'Group: {name:this.getGroupName}',
+							{
+								getGroupName: function(name){
+									return docCtrl.getGroupName(name);
+								}
+							}
+						)
+					}
+				],
+				itemId: 'patientDocumentGrid',
+				store: store,
+				columns: [
+					{
+						xtype: 'actioncolumn',
+						width: 23,
+						icon: 'resources/images/icons/icoLessImportant.png',
+						tooltip: _('validate_file_integrity_hash'),
+						handler: function(grid, rowIndex){
+							docCtrl.onDocumentHashCheckBtnClick(grid, rowIndex);
+						},
+						getClass: function(){
+							return 'x-grid-icon-padding';
+						}
 					},
-					getClass: function(){
-						return 'x-grid-icon-padding';
-					}
-				},
-				{
-					xtype: 'actioncolumn',
-					width: 23,
-					icon: 'resources/images/icons/delete.png',
-					tooltip: _('delete'),
-					hidden: !eval(a('delete_patient_documents')),
-					handler: function(grid, rowIndex, colIndex, item, e, recprd){
+					{
+						xtype: 'actioncolumn',
+						width: 23,
+						icon: 'resources/images/icons/delete.png',
+						tooltip: _('delete'),
+						hidden: !eval(a('delete_patient_documents')),
+						handler: function(grid, rowIndex, colIndex, item, e, recprd){
 
 
-						alert('hello');
+							alert('hello');
+
+						},
+						getClass: function(){
+							return 'x-grid-icon-padding';
+						}
+					},
+					{
+						header: _('type'),
+						dataIndex: 'docType'
+					},
+					{
+						xtype: 'datecolumn',
+						header: _('date'),
+						dataIndex: 'date',
+						format: 'Y-m-d'
 
 					},
-					getClass: function(){
-						return 'x-grid-icon-padding';
+					{
+						header: _('title'),
+						dataIndex: 'title',
+						flex: 1,
+						editor: {
+							xtype: 'textfield',
+							action: 'title'
+						}
+					},
+					{
+						header: _('encrypted'),
+						dataIndex: 'encrypted',
+						width: 70,
+						renderer: function(v){
+							return app.boolRenderer(v);
+						}
 					}
-				},
-				{
-					header: _('type'),
-					dataIndex: 'docType'
-				},
-				{
-					xtype: 'datecolumn',
-					header: _('date'),
-					dataIndex: 'date',
-					format: 'Y-m-d'
+				],
+				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+					autoCancel: true,
+					errorSummary: false,
+					clicksToEdit: 2
 
-				},
-				{
-					header: _('title'),
-					dataIndex: 'title',
-					flex: 1,
-					editor: {
-						xtype: 'textfield',
-						action: 'title'
-					}
-				},
-				{
-					header: _('encrypted'),
-					dataIndex: 'encrypted',
-					width: 70,
-					renderer: function(v){
-						return app.boolRenderer(v);
-					}
-				}
-			],
-			plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-				autoCancel: true,
-				errorSummary: false,
-				clicksToEdit: 2
-
-			}),
-			tbar: [
+				}),
+				tbar: [
 					_('group_by') + ':',
-				{
-					xtype: 'button',
-					text: _('date'),
-					enableToggle: true,
-					action: 'groupDate',
-					pressed: true,
-					toggleGroup: 'documentgridgroup'
-				},
-				{
-					xtype: 'button',
-					text: _('type'),
-					enableToggle: true,
-					action: 'docType',
-					toggleGroup: 'documentgridgroup'
-				},
-				'->',
-				'-',
-				{
-					text: _('upload_document'),
-					itemId: 'documentUploadBtn'
-				}
-			],
-			bbar: Ext.create('Ext.PagingToolbar', {
-				pageSize: 10,
-				store: this.patientDocumentsStore,
-				displayInfo: true,
-				plugins: Ext.create('Ext.ux.SlidingPager', {})
-			})
-		},
-		{
-			xtype: 'panel',
-			region: 'center',
-			flex: 2,
-			layout: 'fit',
-			frame: true,
-			itemId: 'patientDocumentViewerPanel',
-			style: 'background-color:white',
-			items: [
-				{
-					xtype: 'miframe',
-					style: 'background-color:white',
-					autoMask: false,
-					itemId: 'patientDocumentViewerFrame'
-				}
-			]
-		}
-	]
+					{
+						xtype: 'button',
+						text: _('date'),
+						enableToggle: true,
+						action: 'groupDate',
+						pressed: true,
+						toggleGroup: 'documentgridgroup'
+					},
+					{
+						xtype: 'button',
+						text: _('type'),
+						enableToggle: true,
+						action: 'docType',
+						toggleGroup: 'documentgridgroup'
+					},
+					'->',
+					'-',
+					{
+						text: _('add_document'),
+						itemId: 'documentUploadBtn'
+					}
+				],
+				bbar: Ext.create('Ext.PagingToolbar', {
+					pageSize: 10,
+					store: store,
+					displayInfo: true,
+					plugins: Ext.create('Ext.ux.SlidingPager', {})
+				})
+			},
+			{
+				xtype: 'panel',
+				region: 'center',
+				flex: 2,
+				layout: 'fit',
+				frame: true,
+				itemId: 'patientDocumentViewerPanel',
+				style: 'background-color:white',
+				items: [
+					{
+						xtype: 'miframe',
+						style: 'background-color:white',
+						autoMask: false,
+						itemId: 'patientDocumentViewerFrame'
+					}
+				]
+			}
+		];
 
+		me.callParent(arguments);
+	}
 });
-say('delete_patient_documents');
-say(eval(a('delete_patient_documents')));
 Ext.define('App.view.patient.CCD', {
 	extend: 'Ext.panel.Panel',
 	requires: [
@@ -40733,7 +40925,7 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 			xtype: 'form',
 			bodyPadding: 10,
 			width: 400,
-			defaults:{
+			defaults: {
 				xtype: 'textfield',
 				anchor: '100%',
 				labelWidth: 70
@@ -40751,11 +40943,27 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 					allowBlank: false
 				},
 				{
-					xtype: 'fileuploadfield',
-					name: 'document',
-					buttonText: _('select_a_file') + '...',
-					fieldLabel: _('file'),
-					allowBlank: false
+					xtype: 'container',
+					layout: 'hbox',
+					items: [
+						{
+							xtype: 'fileuploadfield',
+							labelWidth: 70,
+							name: 'document',
+							buttonText: _('select'),
+							fieldLabel: _('file'),
+							allowBlank: false,
+							flex: 1,
+							itemId: 'fileUploadField',
+							margin: '0 5 0 0'
+						},
+						{
+							xtype:'button',
+							text: _('scan'),
+							itemId: 'scanBtn',
+							hidden: true
+						}
+					]
 				},
 				{
 					xtype: 'checkbox',
@@ -42659,8 +42867,6 @@ Ext.define('App.view.patient.Patient', {
 
 		me.compactDemographics = eval(g('compact_demographics'));
 
-
-
 		me.insPanel = Ext.widget('tabpanel', {
 			itemId: 'PatientInsurancesPanel',
 			flex: 1,
@@ -42743,20 +42949,19 @@ Ext.define('App.view.patient.Patient', {
 
 		configs.listeners = {
 			scope: me,
-				beforerender: me.beforePanelRender
+			beforerender: me.beforePanelRender
 		};
 
 		Ext.apply(me, configs);
 
 		me.callParent(arguments);
 
-
 		if(!me.compactDemographics){
 
 			Ext.Function.defer(function(){
 				me.insPanel.title = _('insurance');
 				me.insPanel.addDocked({
-					xtype:'toolbar',
+					xtype: 'toolbar',
 					dock: 'bottom',
 					items: [
 						'->',
@@ -42781,7 +42986,7 @@ Ext.define('App.view.patient.Patient', {
 					]
 				});
 
-					me.up('tabpanel').insert(1, me.insPanel);
+				me.up('tabpanel').insert(1, me.insPanel);
 			}, 300);
 		}
 	},
@@ -42801,7 +43006,7 @@ Ext.define('App.view.patient.Patient', {
 				city = form.findField('city'),
 
 				sex = form.findField('sex'),
-				dob =form.findField('DOB'),
+				dob = form.findField('DOB'),
 				zipcode = form.findField('zipcode'),
 				home_phone = form.findField('home_phone'),
 				mobile_phone = form.findField('mobile_phone'),
@@ -42811,7 +43016,6 @@ Ext.define('App.view.patient.Patient', {
 				email = form.findField('email'),
 				phone_reg = new RegExp(g('phone_validation_format')),
 				zipcode_reg = new RegExp(g('zipcode_validation_format'));
-
 
 			if(fname) fname.vtype = 'nonspecialcharacters';
 			if(mname) mname.vtype = 'nonspecialcharacters';
@@ -42938,7 +43142,7 @@ Ext.define('App.view.patient.Patient', {
 
 	insurancePanelAdd: function(tapPanel, form){
 		var me = this,
-			rec = form.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
+			rec = form.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
 
 		form.title = _('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : _('new')) + ')';
 
@@ -42990,7 +43194,7 @@ Ext.define('App.view.patient.Patient', {
 			field;
 		me.patientAlertsStore.load({
 			scope: me,
-			params: { pid: me.pid },
+			params: {pid: me.pid},
 			callback: function(records, operation, success){
 				for(var i = 0; i < records.length; i++){
 					field = me.demoForm.getForm().findField(records[i].data.name);
@@ -43053,7 +43257,6 @@ Ext.define('App.view.patient.Patient', {
 		}
 	},
 
-
 	insuranceFormLoadRecord: function(form, record){
 		form.getForm().loadRecord(record);
 		app.fireEvent('insurancerecordload', form, record);
@@ -43076,24 +43279,26 @@ Ext.define('App.view.patient.Patient', {
 				scope: me,
 				callback: function(record){
 
-					app.setPatient(record.data.pid, null);
+					app.setPatient(record.data.pid, null, function(){
 
-					if(!me.newPatient){
-						me.getPatientImages(record);
-						me.verifyPatientRequiredInfo();
-						me.readOnlyFields(form.getFields());
-					}
+						var insStore = record.insurance();
+						for(var i = 0; i < insRecs.length; i++){
+							if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
+						}
+						insStore.sync();
 
-					var insStore = record.insurance();
-
-					for(var i = 0; i < insRecs.length; i++){
-						if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
-					}
+						if(me.newPatient){
+							app.openPatientSummary();
+						}else{
+							me.getPatientImages(record);
+							me.verifyPatientRequiredInfo();
+							me.readOnlyFields(form.getFields());
+						}
+					});
 
 					// fire global event
 					app.fireEvent('afterdemographicssave', record, me);
 
-					insStore.sync();
 					me.msg('Sweet!', _('record_saved'));
 					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
@@ -46312,6 +46517,18 @@ Ext.define('App.controller.patient.Documents', {
 			selector: '#patientDocumentUploadWindow'
 		},
 		{
+			ref: 'PatientDocumentUploadScanBtn',
+			selector: '#patientDocumentUploadWindow #scanBtn'
+		},
+		{
+			ref: 'PatientDocumentUploadFileUploadField',
+			selector: '#patientDocumentUploadWindow #fileUploadField'
+		},
+		{
+			ref: 'DocumentHashCheckBtn',
+			selector: '#documentHashCheckBtn'
+		},
+		{
 			ref: 'DocumentHashCheckBtn',
 			selector: '#documentHashCheckBtn'
 		},
@@ -46325,10 +46542,16 @@ Ext.define('App.controller.patient.Documents', {
 		}
 	],
 
+	scannedDocument: null,
+
 	init: function(){
 		var me = this;
 
 		me.control({
+			'viewport': {
+				scanconnected: me.onScanConnected,
+				scandisconnected: me.onScanDisconnected
+			},
 			'patientdocumentspanel': {
 				activate: me.onPatientDocumentPanelActive
 			},
@@ -46344,13 +46567,41 @@ Ext.define('App.controller.patient.Documents', {
 			'patientdocumentspanel #documentUploadBtn': {
 				click: me.onDocumentUploadBtnClick
 			},
+			'#patientDocumentUploadWindow': {
+				show: me.onPatientDocumentUploadWindowShow
+			},
 			'#patientDocumentUploadWindow #uploadBtn': {
 				click: me.onDocumentUploadSaveBtnClick
+			},
+			'#patientDocumentUploadWindow #scanBtn': {
+				click: me.onDocumentUploadScanBtnClick
 			}
 		});
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	onScanConnected: function(){
+		say('onScanConnected');
+
+		if(this.getPatientDocumentUploadScanBtn()){
+			this.getPatientDocumentUploadScanBtn().show();
+		}
+	},
+
+	onScanDisconnected: function(){
+		say('onScanDisconnected');
+
+		if(this.getPatientDocumentUploadScanBtn()){
+			this.getPatientDocumentUploadScanBtn().hide();
+		}
+	},
+
+	onPatientDocumentUploadWindowShow: function(){
+		this.scannedDocument = null;
+		this.getPatientDocumentUploadFileUploadField().enable();
+		this.getPatientDocumentUploadScanBtn().setVisible(this.getController('Scanner').conencted);
 	},
 
 	onPatientDocumentGridSelectionChange: function(sm, records){
@@ -46366,31 +46617,38 @@ Ext.define('App.controller.patient.Documents', {
 	onPatientDocumentPanelActive: function(panel){
 		var me = this,
 			grid = panel.down('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+			params = me.nav.getExtraParams();
 
-		store.load({
-			filters: [
-				{
-					property: 'pid',
-					value: app.patient.pid
-				}
-			],
-			callback:function(records){
-				var params = me.nav.getExtraParams();
+		me.activePAnel = panel;
 
-				if(params && params.document){
-					var doc = store.getById(params.document);
+		if(params && params.document){
+			store.on('load', me.doSelectDocument, me);
+		}
 
-					if(doc){
-						grid.getSelectionModel().select(doc);
-					}else{
-						app.msg(_('oops'), _('unable_to_fild_docuent'), true);
-					}
-
-				}
-
+		store.clearFilter(true);
+		store.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
 			}
-		});
+		]);
+	},
+
+	doSelectDocument:function(store){
+		var me = this,
+			grid = me.activePAnel.down('grid'),
+			params = me.nav.getExtraParams();
+
+		var doc = store.getById(params.document);
+		if(doc){
+			grid.getSelectionModel().select(doc);
+
+		}else{
+			app.msg(_('oops'), _('unable_to_find_document'), true);
+		}
+		store.un('load', me.doSelectDocument, me);
+
 	},
 
 	onDocumentGroupBtnToggle: function(btn, pressed){
@@ -46465,15 +46723,42 @@ Ext.define('App.controller.patient.Documents', {
 		record.set(values);
 
 		if(win.action == 'click'){
-			record.set({name: uploadField.getValue()});
-			reader.onload = function(e){
-				record.set({document: e.target.result});
+			var uploadValue = uploadField.getValue();
+			record.set({name: uploadValue});
+
+			if(me.scannedDocument){
+				record.set({document: me.scannedDocument});
 				me.doNewDocumentRecordSave(record);
-			};
-			reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+			}else{
+				reader.onload = function(e){
+					record.set({document: e.target.result});
+					me.doNewDocumentRecordSave(record);
+				};
+				reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+			}
 		}else{
 			me.doNewDocumentRecordSave(record);
 		}
+	},
+
+	onDocumentUploadScanBtnClick: function(){
+		var me = this,
+			scanCtrl = this.getController('Scanner');
+
+		scanCtrl.initScan();
+		app.on('scancompleted', this.onScanCompleted, me);
+	},
+
+	onScanCompleted: function(controller, document){
+		var me = this,
+			win = me.getPatientDocumentUploadWindow(),
+			form = win.down('form').getForm(),
+			uploadField = form.findField('document');
+
+		uploadField.disable();
+
+		me.scannedDocument = document;
+		app.un('scancompleted', this.onScanCompleted, me);
 	},
 
 	doNewDocumentRecordSave: function(record){
@@ -49988,7 +50273,10 @@ Ext.define('App.view.patient.Encounter', {
 				me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
 					styleHtmlContent: true,
 					title: '<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
-					html: '<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? soaps[i].subjective : 'none') + '<br>' + '<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? soaps[i].objective : 'none') + '<br>' + '<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? soaps[i].assessment : 'none') + '<br>' + '<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? soaps[i].plan : 'none')
+					html: '<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? Ext.String.htmlDecode(soaps[i].subjective) : 'none') + '<br>' +
+					'<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? Ext.String.htmlDecode(soaps[i].objective) : 'none') + '<br>' +
+					'<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? Ext.String.htmlDecode(soaps[i].assessment) : 'none') + '<br>' +
+					'<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? Ext.String.htmlDecode(soaps[i].plan) : 'none')
 				}))
 			}
 		})

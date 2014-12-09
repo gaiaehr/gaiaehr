@@ -135,7 +135,7 @@ class HL7Server {
 		/**
 		 * Check for IP address access
 		 */
-		$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
+		$this->recipient = $this->r->load(array('application_name' => $application))->one();
 		if($this->recipient === false){
 			$this->ackStatus = 'AR';
 			$this->ackMessage = "This application '$application' Not Authorized";
@@ -206,10 +206,11 @@ class HL7Server {
 	}
 
 	public function getServers($params) {
+
 		$servers = $this->s->load($params)->all();
 		foreach($servers['data'] as $i => $server){
 			$handler = new HL7ServerHandler();
-			$status = $handler->status($server['port']);
+			$status = $handler->status($server);
 			$servers['data'][$i]['online'] = $status['online'];
 			unset($handler);
 		}
@@ -269,13 +270,8 @@ class HL7Server {
 	 * @return mixed
 	 */
 	protected function getServerByPort($port){
-		$filters = new stdClass();
-		$filters->filter[0] = new stdClass();
-		$filters->filter[0]->property = 'port';
-		$filters->filter[0]->value = $port;
-		$server = $this->getServer($filters);
-		unset($filters);
-		return $server;
+		$this->s->addFilter('port', $port);
+		return $this->s->load()->one();
 	}
 
 
@@ -285,6 +281,7 @@ class HL7Server {
 	 * @param $msgRecord
 	 */
 	protected function ProcessORU($hl7, $msg, $msgRecord) {
+
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
@@ -306,8 +303,8 @@ class HL7Server {
 				$foo = new stdClass();
 				$foo->order_id = $obr[2][1];
 				$foo->lab_order_id = $obr[3][1];
-				$foo->lab_name = $this->recipient['recipient_facility'];
-				$foo->lab_address = $this->recipient['recipient_address'];
+				$foo->lab_name = $this->recipient['facility'];
+				$foo->lab_address = $this->recipient['physical_address'];
 				$foo->observation_time = $hl7->time($obr[7][1]);
 				$foo->result_status = $obr[25];
 				if(is_array($obr[31][1])){
@@ -341,6 +338,7 @@ class HL7Server {
 				 * Handle all the observations
 				 */
 				foreach($order['OBSERVATION'] AS $observation){
+
 					/**
 					 * observations and notes
 					 */
@@ -360,6 +358,9 @@ class HL7Server {
 					} else {
 						$foo->value = $obx[5];
 					}
+
+
+
 					$foo->units = $obx[6][1];
 					$foo->reference_rage = $obx[7];
 					$foo->probability = $obx[9];
@@ -972,10 +973,10 @@ class HL7Server {
 }
 
 //$msg = <<<EOF
-//MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
+//MSH|^~\&|^Test Application^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
 //PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
-//ORC|RE|6^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|GORD874233^^2.16.840.1.113883.3.72.5.24^ISO||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
-//OBR|1|6^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|57021-8^CBC W Auto Differential panel in Blood^LN^4456544^CBC^99USI^^^CBC W Auto Differential panel in Blood|||20110103143428-0800|||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI||||||20110104170028-0800|||F|||10093^Deluca^Naddy^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI|||||||||||||||||||||CC^Carbon Copy^HL70507
+//ORC|RE|1^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|GORD874233^^2.16.840.1.113883.3.72.5.24^ISO||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
+//OBR|1|1^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|57021-8^CBC W Auto Differential panel in Blood^LN^4456544^CBC^99USI^^^CBC W Auto Differential panel in Blood|||20110103143428-0800|||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI||||||20110104170028-0800|||F|||10093^Deluca^Naddy^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI|||||||||||||||||||||CC^Carbon Copy^HL70507
 //OBX|1|NM|26453-1^Erythrocytes [#/volume] in Blood^LN^^^^^^Erythrocytes [#/volume] in Blood||4.41|10*6/uL^million per microliter^UCUM|4.3 to 6.2|N|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|2|NM|718-7^Hemoglobin [Mass/volume] in Blood^LN^^^^^^Hemoglobin [Mass/volume] in Blood||12.5|g/mL^grams per milliliter^UCUM|13 to 18|L|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|3|NM|20570-8^Hematocrit [Volume Fraction] of Blood^LN^^^^^^Hematocrit [Volume Fraction] of Blood||41|%^percent^UCUM|40 to 52|N|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
@@ -1004,7 +1005,7 @@ class HL7Server {
 //OBX|26|TX|6742-1^Erythrocyte morphology finding [Identifier] in Blood^LN^^^^^^Erythrocyte morphology finding [Identifier] in Blood||Many spherocytes present.|||A|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|27|TX|11156-7^Leukocyte morphology finding [Identifier] in Blood^LN^^^^^^Leukocyte morphology finding [Identifier] in Blood||Reactive morphology in lymphoid cells.|||A|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|28|TX|11125-2^Platelet morphology finding [Identifier] in Blood^LN^^^^^^Platelet morphology finding [Identifier] in Blood||Platelets show defective granulation.|||A|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
-//SPM|1|||119297000^BLD^SCT^^^^^^Blood|||||||||||||20110103143428-0800
+//SPM|1|||119297000^BLD^SCT^^^^^^Blood|||||||||||||20110103calen143428-0800
 //EOF;
 
 //$msg = <<<EOF
@@ -1064,8 +1065,6 @@ class HL7Server {
 //EOF;
 
 
-
-//
 //include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
 //
 //print '<pre>';

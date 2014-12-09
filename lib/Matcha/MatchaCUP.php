@@ -416,7 +416,6 @@ class MatchaCUP {
 	 * @return mixed
 	 */
 	public function all() {
-		//		return $this->sql;
 		try {
 			$sth = Matcha::$__conn->prepare($this->sql);
 			$sth->execute($this->where);

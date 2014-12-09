@@ -28,7 +28,7 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 			xtype: 'form',
 			bodyPadding: 10,
 			width: 400,
-			defaults:{
+			defaults: {
 				xtype: 'textfield',
 				anchor: '100%',
 				labelWidth: 70
@@ -46,11 +46,27 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 					allowBlank: false
 				},
 				{
-					xtype: 'fileuploadfield',
-					name: 'document',
-					buttonText: _('select_a_file') + '...',
-					fieldLabel: _('file'),
-					allowBlank: false
+					xtype: 'container',
+					layout: 'hbox',
+					items: [
+						{
+							xtype: 'fileuploadfield',
+							labelWidth: 70,
+							name: 'document',
+							buttonText: _('select'),
+							fieldLabel: _('file'),
+							allowBlank: false,
+							flex: 1,
+							itemId: 'fileUploadField',
+							margin: '0 5 0 0'
+						},
+						{
+							xtype:'button',
+							text: _('scan'),
+							itemId: 'scanBtn',
+							hidden: true
+						}
+					]
 				},
 				{
 					xtype: 'checkbox',

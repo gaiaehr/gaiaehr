@@ -39,6 +39,18 @@ Ext.define('App.controller.patient.Documents', {
 			selector: '#patientDocumentUploadWindow'
 		},
 		{
+			ref: 'PatientDocumentUploadScanBtn',
+			selector: '#patientDocumentUploadWindow #scanBtn'
+		},
+		{
+			ref: 'PatientDocumentUploadFileUploadField',
+			selector: '#patientDocumentUploadWindow #fileUploadField'
+		},
+		{
+			ref: 'DocumentHashCheckBtn',
+			selector: '#documentHashCheckBtn'
+		},
+		{
 			ref: 'DocumentHashCheckBtn',
 			selector: '#documentHashCheckBtn'
 		},
@@ -52,10 +64,16 @@ Ext.define('App.controller.patient.Documents', {
 		}
 	],
 
+	scannedDocument: null,
+
 	init: function(){
 		var me = this;
 
 		me.control({
+			'viewport': {
+				scanconnected: me.onScanConnected,
+				scandisconnected: me.onScanDisconnected
+			},
 			'patientdocumentspanel': {
 				activate: me.onPatientDocumentPanelActive
 			},
@@ -71,13 +89,41 @@ Ext.define('App.controller.patient.Documents', {
 			'patientdocumentspanel #documentUploadBtn': {
 				click: me.onDocumentUploadBtnClick
 			},
+			'#patientDocumentUploadWindow': {
+				show: me.onPatientDocumentUploadWindowShow
+			},
 			'#patientDocumentUploadWindow #uploadBtn': {
 				click: me.onDocumentUploadSaveBtnClick
+			},
+			'#patientDocumentUploadWindow #scanBtn': {
+				click: me.onDocumentUploadScanBtnClick
 			}
 		});
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	onScanConnected: function(){
+		say('onScanConnected');
+
+		if(this.getPatientDocumentUploadScanBtn()){
+			this.getPatientDocumentUploadScanBtn().show();
+		}
+	},
+
+	onScanDisconnected: function(){
+		say('onScanDisconnected');
+
+		if(this.getPatientDocumentUploadScanBtn()){
+			this.getPatientDocumentUploadScanBtn().hide();
+		}
+	},
+
+	onPatientDocumentUploadWindowShow: function(){
+		this.scannedDocument = null;
+		this.getPatientDocumentUploadFileUploadField().enable();
+		this.getPatientDocumentUploadScanBtn().setVisible(this.getController('Scanner').conencted);
 	},
 
 	onPatientDocumentGridSelectionChange: function(sm, records){
@@ -93,31 +139,38 @@ Ext.define('App.controller.patient.Documents', {
 	onPatientDocumentPanelActive: function(panel){
 		var me = this,
 			grid = panel.down('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+			params = me.nav.getExtraParams();
 
-		store.load({
-			filters: [
-				{
-					property: 'pid',
-					value: app.patient.pid
-				}
-			],
-			callback:function(records){
-				var params = me.nav.getExtraParams();
+		me.activePAnel = panel;
 
-				if(params && params.document){
-					var doc = store.getById(params.document);
+		if(params && params.document){
+			store.on('load', me.doSelectDocument, me);
+		}
 
-					if(doc){
-						grid.getSelectionModel().select(doc);
-					}else{
-						app.msg(_('oops'), _('unable_to_fild_docuent'), true);
-					}
-
-				}
-
+		store.clearFilter(true);
+		store.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
 			}
-		});
+		]);
+	},
+
+	doSelectDocument:function(store){
+		var me = this,
+			grid = me.activePAnel.down('grid'),
+			params = me.nav.getExtraParams();
+
+		var doc = store.getById(params.document);
+		if(doc){
+			grid.getSelectionModel().select(doc);
+
+		}else{
+			app.msg(_('oops'), _('unable_to_find_document'), true);
+		}
+		store.un('load', me.doSelectDocument, me);
+
 	},
 
 	onDocumentGroupBtnToggle: function(btn, pressed){
@@ -192,15 +245,42 @@ Ext.define('App.controller.patient.Documents', {
 		record.set(values);
 
 		if(win.action == 'click'){
-			record.set({name: uploadField.getValue()});
-			reader.onload = function(e){
-				record.set({document: e.target.result});
+			var uploadValue = uploadField.getValue();
+			record.set({name: uploadValue});
+
+			if(me.scannedDocument){
+				record.set({document: me.scannedDocument});
 				me.doNewDocumentRecordSave(record);
-			};
-			reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+			}else{
+				reader.onload = function(e){
+					record.set({document: e.target.result});
+					me.doNewDocumentRecordSave(record);
+				};
+				reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+			}
 		}else{
 			me.doNewDocumentRecordSave(record);
 		}
+	},
+
+	onDocumentUploadScanBtnClick: function(){
+		var me = this,
+			scanCtrl = this.getController('Scanner');
+
+		scanCtrl.initScan();
+		app.on('scancompleted', this.onScanCompleted, me);
+	},
+
+	onScanCompleted: function(controller, document){
+		var me = this,
+			win = me.getPatientDocumentUploadWindow(),
+			form = win.down('form').getForm(),
+			uploadField = form.findField('document');
+
+		uploadField.disable();
+
+		me.scannedDocument = document;
+		app.un('scancompleted', this.onScanCompleted, me);
 	},
 
 	doNewDocumentRecordSave: function(record){

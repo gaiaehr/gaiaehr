@@ -9,5 +9,5 @@ interface MessageInterface {
      * @param  \Ratchet\Server\IoServer     $server  The message received
      * @throws \Exception
      */
-    function onMessage(ConnectionInterface $from, $msg, $server);
+    function onMessage(ConnectionInterface $from, $msg, Server\IoServer $server);
 }

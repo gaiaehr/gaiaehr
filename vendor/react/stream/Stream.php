@@ -7,7 +7,7 @@ use React\EventLoop\LoopInterface;
 
 class Stream extends EventEmitter implements ReadableStreamInterface, WritableStreamInterface
 {
-    public $bufferSize = 4096;
+    public $bufferSize = 102400;
     public $stream;
     protected $readable = true;
     protected $writable = true;

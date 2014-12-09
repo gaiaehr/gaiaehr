@@ -26,48 +26,46 @@ class NK1 extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'NK1';                   // NK1 Message Header Segment
-		$this->rawSeg[1] = $this->getType('SI');
-		$this->rawSeg[2] = $this->getType('XPN');
-		$this->rawSeg[3] = $this->getType('CE');
-		$this->rawSeg[4] = $this->getType('XAD');
-		$this->rawSeg[5] = $this->getType('XTN');
-		$this->rawSeg[6] = $this->getType('XTN');
-		$this->rawSeg[7] = $this->getType('CE');
-		$this->rawSeg[8] = $this->getType('DT');
-		$this->rawSeg[9] = $this->getType('DT');
-		$this->rawSeg[10] = $this->getType('ST');
-		$this->rawSeg[11] = $this->getType('JCC');
-		$this->rawSeg[12] = $this->getType('CX');
-		$this->rawSeg[13] = $this->getType('XON');
-		$this->rawSeg[14] = $this->getType('CE');
-		$this->rawSeg[15] = $this->getType('IS');
-		$this->rawSeg[16] = $this->getType('TS');
-		$this->rawSeg[17] = $this->getType('IS');
-		$this->rawSeg[18] = $this->getType('IS');
-		$this->rawSeg[19] = $this->getType('CE');
-		$this->rawSeg[20] = $this->getType('CE');
-		$this->rawSeg[21] = $this->getType('IS');
-		$this->rawSeg[22] = $this->getType('CE');
-		$this->rawSeg[23] = $this->getType('ID');
-		$this->rawSeg[24] = $this->getType('IS');
-		$this->rawSeg[25] = $this->getType('CE');
-		$this->rawSeg[26] = $this->getType('XPN');
-		$this->rawSeg[27] = $this->getType('CE');
-		$this->rawSeg[28] = $this->getType('CE');
-		$this->rawSeg[29] = $this->getType('CE');
-		$this->rawSeg[30] = $this->getType('XPN');
-		$this->rawSeg[31] = $this->getType('XTN');
-		$this->rawSeg[32] = $this->getType('XAD');
-		$this->rawSeg[33] = $this->getType('CX');
-		$this->rawSeg[34] = $this->getType('IS');
-		$this->rawSeg[35] = $this->getType('CE');
-		$this->rawSeg[36] = $this->getType('IS');
-		$this->rawSeg[37] = $this->getType('ST');
-		$this->rawSeg[38] = $this->getType('ST');
-		$this->rawSeg[39] = $this->getType('IS');
+		parent::__construct($hl7, 'NK1');
+		$this->setField(1, 'SI', 4);
+		$this->setField(2, 'XPN', 4);
+		$this->setField(3, 'CE', 4);
+		$this->setField(4, 'XAD', 4);
+		$this->setField(5, 'XTN', 4);
+		$this->setField(6, 'XTN', 4);
+		$this->setField(7, 'CE', 4);
+		$this->setField(8, 'DT', 4);
+		$this->setField(9, 'DT', 4);
+		$this->setField(10, 'ST', 4);
+		$this->setField(11, 'JCC', 4);
+		$this->setField(12, 'CX', 4);
+		$this->setField(13, 'XON', 4);
+		$this->setField(14, 'CE', 4);
+		$this->setField(15, 'IS', 4);
+		$this->setField(16, 'TS', 4);
+		$this->setField(17, 'IS', 4);
+		$this->setField(18, 'IS', 4);
+		$this->setField(19, 'CE', 4);
+		$this->setField(20, 'CE', 4);
+		$this->setField(21, 'IS', 4);
+		$this->setField(22, 'CE', 4);
+		$this->setField(23, 'ID', 4);
+		$this->setField(24, 'IS', 4);
+		$this->setField(25, 'CE', 4);
+		$this->setField(26, 'XPN', 4);
+		$this->setField(27, 'CE', 4);
+		$this->setField(28, 'CE', 4);
+		$this->setField(29, 'CE', 4);
+		$this->setField(30, 'XPN', 4);
+		$this->setField(31, 'XTN', 4);
+		$this->setField(32, 'XAD', 4);
+		$this->setField(33, 'CX', 4);
+		$this->setField(34, 'IS', 4);
+		$this->setField(35, 'CE', 4);
+		$this->setField(36, 'IS', 4);
+		$this->setField(37, 'ST', 4);
+		$this->setField(38, 'ST', 4);
+		$this->setField(39, 'IS', 4);
 
 
 	}

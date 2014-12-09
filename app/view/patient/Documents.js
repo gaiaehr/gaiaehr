@@ -29,29 +29,9 @@ Ext.define('App.view.patient.Documents', {
 	xtype: 'patientdocumentspanel',
 	title: _('documents'),
 	layout: 'border',
-	items: [
-		{
-			xtype: 'grid',
-			region: 'west',
-			split: true,
-			flex: 1,
-			columnLines: true,
-			selType: 'checkboxmodel',
-			features: [
-				{
-					ftype: 'grouping',
-					groupHeaderTpl: Ext.create('Ext.XTemplate',
-						'Group: {name:this.getGroupName}',
-						{
-							getGroupName: function(name){
-								return app.getController('patient.Documents').getGroupName(name);
-							}
-						}
-					)
-				}
-			],
-			itemId: 'patientDocumentGrid',
-			store: this.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments', {
+	initComponent: function(){
+		var me = this,
+			store = Ext.create('App.store.patient.PatientDocuments', {
 				autoLoad: false,
 				remoteFilter: true,
 				remoteSort: false,
@@ -59,120 +39,145 @@ Ext.define('App.view.patient.Documents', {
 				pageSize: 200,
 				groupField: 'groupDate'
 			}),
-			columns: [
-				{
-					xtype: 'actioncolumn',
-					width: 23,
-					icon: 'resources/images/icons/icoLessImportant.png',
-					tooltip: _('validate_file_integrity_hash'),
-					handler: function(grid, rowIndex){
-						App.app.getController('patient.Documents').onDocumentHashCheckBtnClick(grid, rowIndex);
+			docCtrl = App.app.getController('patient.Documents');
+
+		me.items = [
+			{
+				xtype: 'grid',
+				region: 'west',
+				split: true,
+				flex: 1,
+				columnLines: true,
+				selType: 'checkboxmodel',
+				features: [
+					{
+						ftype: 'grouping',
+						groupHeaderTpl: Ext.create('Ext.XTemplate',
+							'Group: {name:this.getGroupName}',
+							{
+								getGroupName: function(name){
+									return docCtrl.getGroupName(name);
+								}
+							}
+						)
+					}
+				],
+				itemId: 'patientDocumentGrid',
+				store: store,
+				columns: [
+					{
+						xtype: 'actioncolumn',
+						width: 23,
+						icon: 'resources/images/icons/icoLessImportant.png',
+						tooltip: _('validate_file_integrity_hash'),
+						handler: function(grid, rowIndex){
+							docCtrl.onDocumentHashCheckBtnClick(grid, rowIndex);
+						},
+						getClass: function(){
+							return 'x-grid-icon-padding';
+						}
 					},
-					getClass: function(){
-						return 'x-grid-icon-padding';
-					}
-				},
-				{
-					xtype: 'actioncolumn',
-					width: 23,
-					icon: 'resources/images/icons/delete.png',
-					tooltip: _('delete'),
-					hidden: !eval(a('delete_patient_documents')),
-					handler: function(grid, rowIndex, colIndex, item, e, recprd){
+					{
+						xtype: 'actioncolumn',
+						width: 23,
+						icon: 'resources/images/icons/delete.png',
+						tooltip: _('delete'),
+						hidden: !eval(a('delete_patient_documents')),
+						handler: function(grid, rowIndex, colIndex, item, e, recprd){
 
 
-						alert('hello');
+							alert('hello');
+
+						},
+						getClass: function(){
+							return 'x-grid-icon-padding';
+						}
+					},
+					{
+						header: _('type'),
+						dataIndex: 'docType'
+					},
+					{
+						xtype: 'datecolumn',
+						header: _('date'),
+						dataIndex: 'date',
+						format: 'Y-m-d'
 
 					},
-					getClass: function(){
-						return 'x-grid-icon-padding';
+					{
+						header: _('title'),
+						dataIndex: 'title',
+						flex: 1,
+						editor: {
+							xtype: 'textfield',
+							action: 'title'
+						}
+					},
+					{
+						header: _('encrypted'),
+						dataIndex: 'encrypted',
+						width: 70,
+						renderer: function(v){
+							return app.boolRenderer(v);
+						}
 					}
-				},
-				{
-					header: _('type'),
-					dataIndex: 'docType'
-				},
-				{
-					xtype: 'datecolumn',
-					header: _('date'),
-					dataIndex: 'date',
-					format: 'Y-m-d'
+				],
+				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+					autoCancel: true,
+					errorSummary: false,
+					clicksToEdit: 2
 
-				},
-				{
-					header: _('title'),
-					dataIndex: 'title',
-					flex: 1,
-					editor: {
-						xtype: 'textfield',
-						action: 'title'
-					}
-				},
-				{
-					header: _('encrypted'),
-					dataIndex: 'encrypted',
-					width: 70,
-					renderer: function(v){
-						return app.boolRenderer(v);
-					}
-				}
-			],
-			plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-				autoCancel: true,
-				errorSummary: false,
-				clicksToEdit: 2
-
-			}),
-			tbar: [
+				}),
+				tbar: [
 					_('group_by') + ':',
-				{
-					xtype: 'button',
-					text: _('date'),
-					enableToggle: true,
-					action: 'groupDate',
-					pressed: true,
-					toggleGroup: 'documentgridgroup'
-				},
-				{
-					xtype: 'button',
-					text: _('type'),
-					enableToggle: true,
-					action: 'docType',
-					toggleGroup: 'documentgridgroup'
-				},
-				'->',
-				'-',
-				{
-					text: _('upload_document'),
-					itemId: 'documentUploadBtn'
-				}
-			],
-			bbar: Ext.create('Ext.PagingToolbar', {
-				pageSize: 10,
-				store: this.patientDocumentsStore,
-				displayInfo: true,
-				plugins: Ext.create('Ext.ux.SlidingPager', {})
-			})
-		},
-		{
-			xtype: 'panel',
-			region: 'center',
-			flex: 2,
-			layout: 'fit',
-			frame: true,
-			itemId: 'patientDocumentViewerPanel',
-			style: 'background-color:white',
-			items: [
-				{
-					xtype: 'miframe',
-					style: 'background-color:white',
-					autoMask: false,
-					itemId: 'patientDocumentViewerFrame'
-				}
-			]
-		}
-	]
+					{
+						xtype: 'button',
+						text: _('date'),
+						enableToggle: true,
+						action: 'groupDate',
+						pressed: true,
+						toggleGroup: 'documentgridgroup'
+					},
+					{
+						xtype: 'button',
+						text: _('type'),
+						enableToggle: true,
+						action: 'docType',
+						toggleGroup: 'documentgridgroup'
+					},
+					'->',
+					'-',
+					{
+						text: _('add_document'),
+						itemId: 'documentUploadBtn'
+					}
+				],
+				bbar: Ext.create('Ext.PagingToolbar', {
+					pageSize: 10,
+					store: store,
+					displayInfo: true,
+					plugins: Ext.create('Ext.ux.SlidingPager', {})
+				})
+			},
+			{
+				xtype: 'panel',
+				region: 'center',
+				flex: 2,
+				layout: 'fit',
+				frame: true,
+				itemId: 'patientDocumentViewerPanel',
+				style: 'background-color:white',
+				items: [
+					{
+						xtype: 'miframe',
+						style: 'background-color:white',
+						autoMask: false,
+						itemId: 'patientDocumentViewerFrame'
+					}
+				]
+			}
+		];
 
+		me.callParent(arguments);
+	}
 });
-say('delete_patient_documents');
-say(eval(a('delete_patient_documents')));

@@ -43,6 +43,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/recurrence.css"/>
 		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
+		<link rel="stylesheet" type="text/css" href="lib/darkroomjs/build/css/darkroom.min.css">
 		<link rel="shortcut icon" href="favicon.ico">
 	</head>
 	<body>
@@ -66,6 +67,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script src="JSrouter.php?site=<?php print $site ?>"></script>
 		<script src="data/api.php?site=<?php print $site ?>"></script>
 		<script type="text/javascript" src="lib/ZeroClipboard/ZeroClipboard.js"></script>
+		<script type="text/javascript" src="lib/darkroomjs/vendor/fabric.js"></script>
+		<script type="text/javascript" src="lib/darkroomjs/build/js/darkroom.min.js"></script>
 
         <script type="text/javascript">
 
@@ -692,9 +695,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'KeyCommands',
 	                'LogOut',
 	                'Navigation',
-	                'Support',
 	                'Notification',
+	                'Scanner',
 	                'ScriptCam',
+	                'Support',
 
 	                'patient.ActiveProblems',
 	                'patient.Allergies',

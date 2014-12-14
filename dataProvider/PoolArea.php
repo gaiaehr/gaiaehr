@@ -241,7 +241,8 @@ class PoolArea {
 								 LEFT JOIN `patient` AS p ON pp.pid = p.pid
 								 	 WHERE pp.area_id = '$area_id'
 									   AND pp.time_out IS NULL
-									   AND pp.in_queue = '$in_queue'")->all();
+									   AND pp.in_queue = '$in_queue'
+									   ORDER BY pp.time_in")->all();
 		foreach($patients as &$patient){
 			if(isset($patient['pid'])){
 				$patient['name'] = ($patient['eid'] != null ? '*' : '') . Person::fullname($patient['fname'], $patient['mname'], $patient['lname']);
@@ -275,23 +276,45 @@ class PoolArea {
 		if($this->acl->hasPermission('use_pool_areas')){
 			$this->setPatient();
 
-			foreach($this->getFacilityActivePoolAreas() AS $area){
-				if(($this->acl->hasPermission('access_poolcheckin') && $area['id'] == 1) ||
-					($this->acl->hasPermission('access_pooltriage') && $area['id'] == 2) ||
-					($this->acl->hasPermission('access_poolphysician') && $area['id'] == 3) ||
-					($this->acl->hasPermission('access_poolcheckout') && $area['id'] == 4)
+			$activeAreas = $this->getFacilityActivePoolAreas();
+			$areas = array();
+
+			foreach($activeAreas as $activeArea){
+				if(($activeArea['id'] == 1 && $this->acl->hasPermission('access_poolcheckin')) ||
+					($activeArea['id'] == 2 && $this->acl->hasPermission('access_pooltriage')) ||
+					($activeArea['id'] == 3 && $this->acl->hasPermission('access_poolphysician')) ||
+					($activeArea['id'] == 4 && $this->acl->hasPermission('access_poolcheckout'))
 				){
-					foreach($this->getPatientsByPoolAreaId($area['id'], 1) as $p){
-						$p['shortName'] = Person::ellipsis($p['name'], 15);
-						$p['poolArea'] = $area['title'];
-						$p['patient'] = $this->patient->getPatientDemographicDataByPid($p['pid']);
-						$p['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($area['id']);
-						$z = $this->getPatientCurrentZoneInfoByPid($p['pid']);
-						$pools[] = (empty($z)) ? $p : array_merge($p, $z);
-					}
+					$areas[] = 'pp.area_id = \'' . $activeArea['id'] . '\'';
 				}
 			}
-			$pools = array_slice($pools, 0, 15);
+
+			$whereAreas = '(' . implode(' OR ', $areas) . ')';
+
+			$sql = "SELECT pp.*, p.fname, p.lname, p.mname, pa.title
+					  FROM `patient_pools` AS pp
+				 LEFT JOIN `patient` AS p ON pp.pid = p.pid
+				 LEFT JOIN `pool_areas` AS pa ON pp.area_id = pa.id
+				     WHERE $whereAreas
+					   AND pp.time_out IS NULL
+					   AND pp.in_queue = '1'
+			      ORDER BY pp.time_in
+			         LIMIT 25";
+
+			$patientPools = $this->pa->sql($sql)->all();
+
+			$pools = [];
+			foreach($patientPools AS $patientPool){
+				$patientPool['name'] = ($patientPool['eid'] != null ? '*' : '') . Person::fullname($patientPool['fname'], $patientPool['mname'], $patientPool['lname']);
+				$patientPool['shortName'] = Person::ellipsis($patientPool['name'], 15);
+				$patientPool['poolArea'] = $patientPool['title'];
+				$patientPool['patient'] = $this->patient->getPatientDemographicDataByPid($patientPool['pid']);
+				$patientPool['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($patientPool['area_id']);
+				$z = $this->getPatientCurrentZoneInfoByPid($patientPool['pid']);
+				$pools[] = (empty($z)) ? $patientPool : array_merge($patientPool, $z);
+			}
+
+			$pools = array_slice($pools, 0, 25);
 		}
 
 		return $pools;

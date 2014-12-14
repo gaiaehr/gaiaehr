@@ -56,7 +56,7 @@ class HL7Client {
 	 * @param null $port
 	 * @param int $timeout
 	 */
-	function __construct($address = null, $port = null, $timeout = 5) {
+	function __construct($address = null, $port = null, $timeout = 3) {
 		if(isset($address)) $this->address = $address;
 		if(isset($port)) $this->port = $port;
 		$this->timeout = $timeout;
@@ -160,21 +160,19 @@ class HL7Client {
 			throw new Exception("socket_create() failed: reason: " . socket_strerror(socket_last_error()));
 		}
 
-		socket_set_nonblock($this->socket);
-
 		$error = null;
 		$attempts = 0;
-		$this->timeout *= 1000;  // adjust because we sleeping in 1 millisecond increments
 		while (!($this->connected = @socket_connect($this->socket, $this->address, $this->port)) && $attempts++ < $this->timeout) {
 			$error = socket_last_error();
 			if ($error != SOCKET_EINPROGRESS && $error != SOCKET_EALREADY) {
-				throw new Exception("socket_connect() failed. Reason: " . socket_strerror($error));
+				$error = socket_strerror($error);
+				throw new Exception("socket_connect() failed. Reason: " . $error);
 			}
 			usleep(1000);
 		}
 
 		if (!$this->connected) {
-			throw new Exception("Error Connecting Socket: Connect Timed Out After {$this->timeout} seconds. ".socket_strerror(socket_last_error()));
+			throw new Exception("Error Connecting Socket: Connect Timed Out After {$this->timeout} seconds. ". socket_strerror(socket_last_error()));
 		}
 
 		return $this->connected = true;

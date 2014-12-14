@@ -1,4 +1,3 @@
-#!php -q
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
@@ -108,7 +107,6 @@ class HL7Client {
 					curl_close($ch);
 					throw new Exception($errorMsg);
 				}
-
 				curl_close($ch);
 				return array(
 					'success' => true,
@@ -118,7 +116,7 @@ class HL7Client {
 			} else {
 
 				$this->Connect();
-				$response = $this->socketWrite();
+				$response = $this->socketWrite($this->msg);
 				$this->Disconnect();
 				$this->connected = false;
 
@@ -159,7 +157,7 @@ class HL7Client {
 		if(!isset($msg))
 			throw new Exception('Hl7 message can not be null');
 
-		$msg = chr(0x0b) . $msg . chr(0x1c) . chr(0x0d);
+		$msg = chr(0x0b) . trim($msg) . chr(0x1c) . chr(0x0d);
 		socket_write($this->socket, $msg);
 		$this->msg = null;
 		$response = '';
@@ -172,7 +170,6 @@ class HL7Client {
 		}
 		return $response;
 	}
-
 
 	/** Setters */
 
@@ -212,19 +209,19 @@ class HL7Client {
 
 }
 
-$client = new HL7Client();
-$client->Connect();
-$msg = 'MSH|^~\&|REGADT|GOOD HEALTH HOSPITAL|RSP1P8|GOOD HEALTH HOSPI- TAL|200701051530|SEC|ADT^A09^ADT_A09|00000003|P|2.5.1'. chr(0x0d);
-$msg .= 'EVN|A09|200701051530'. chr(0x0d);
-$msg .= 'PID|||6^^^GAIA-1||EVERYWOMAN^EVE|'. chr(0x0d);
-$msg .= 'PV1|1||2|||1|1|||||||||Y'. chr(0x0d);
-$res = $client->Send($msg);
+//$client = new HL7Client();
+//$client->Connect();
+//$msg = 'MSH|^~\&|REGADT|GOOD HEALTH HOSPITAL|RSP1P8|GOOD HEALTH HOSPI- TAL|200701051530|SEC|ADT^A09^ADT_A09|00000003|P|2.5.1'. chr(0x0d);
+//$msg .= 'EVN|A09|200701051530'. chr(0x0d);
+//$msg .= 'PID|||6^^^GAIA-1||EVERYWOMAN^EVE|'. chr(0x0d);
+//$msg .= 'PV1|1||2|||1|1|||||||||Y'. chr(0x0d);
 //$res = $client->Send($msg);
-//$res = $client->Send($msg);
-//$res = $client->Send($msg);
-//$res = $client->Send($msg);
-$client->Disconnect();
-print_r($res);
-print_r('<br>');
+////$res = $client->Send($msg);
+////$res = $client->Send($msg);
+////$res = $client->Send($msg);
+////$res = $client->Send($msg);
+//$client->Disconnect();
+//print_r($res);
+//print_r('<br>');
 
 

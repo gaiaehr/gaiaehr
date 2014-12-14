@@ -90,16 +90,14 @@ Ext.define('App.controller.administration.HL7', {
 	},
 
 	serverStartHandler: function(record){
-		HL7ServerHandler.start({ ip: record.data.ip, port: record.data.port }, function(provider, response){
-			say(response.result);
-			record.set({'online': response.result.online});
+		HL7ServerHandler.start({ id: record.data.id, ip: record.data.ip, port: record.data.port }, function(provider, response){
+			record.set({'online': response.result.online, token: response.result.token});
 			record.commit();
 		});
 	},
 
 	serverStopHandler: function(record){
-		HL7ServerHandler.stop({ ip: record.data.ip, port: record.data.port }, function(provider, response){
-			say(response.result);
+		HL7ServerHandler.stop({ token: record.data.token, ip: record.data.ip, port: record.data.port }, function(provider, response){
 			record.set({'online': response.result.online});
 			record.commit();
 		});
@@ -126,7 +124,7 @@ Ext.define('App.controller.administration.HL7', {
 	onHL7ServersGridValidateEdit: function(plugin, e){
 		var multiField = plugin.editor.query('multitextfield')[0],
 			values = multiField.getValue();
-		e.record.set({allow_ips: values});
+		e.record.set({ allow_ips: values });
 	}
 
 });

@@ -19,23 +19,28 @@
 class HL7ServerHandler {
 
 	public function start(stdClass $params){
-		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "' . $params->ip . '" ' . $params->port . ' "' . ROOT . '/dataProvider" "HL7Server" "Process" "default"';
 
+		$server = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
+		$data = new stdClass();
+		$data->id = $params->id;
+		$data->token = $params->token = md5(time());
+		$server->save($data);
+
+		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "' . $params->ip . '" ' . $params->port . ' "' . ROOT . '/dataProvider" "HL7Server" "Process" "default" "'.$params->token.'"';
 		if (substr(php_uname(), 0, 7) == "Windows"){
 			pclose(popen("start /B ". $cmd, "r"));
 		}
 		else {
 			exec($cmd . " > /dev/null &");
 		}
-
-		sleep(3);
+		sleep(2);
 		return $this->status($params);
 	}
 
 	public function stop($params){
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		@socket_connect($socket, $params->ip, $params->port);
-		$msg = MatchaUtils::encrypt(site_aes_key);
+		$msg = $params->token;
 		@socket_write($socket, $msg, strlen($msg));
 		@socket_recv($socket, $response, 1024*10, MSG_WAITALL);
 		@socket_close($socket);
@@ -48,7 +53,8 @@ class HL7ServerHandler {
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		$status = @socket_connect($socket, $params->ip, $params->port);
 		unset($socket);
-		return array('online' => $status);
+		$token = isset($params->token) ? $params->token : '';
+		return array('online' => $status, 'token' => $token);
 	}
 
 }

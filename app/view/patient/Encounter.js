@@ -151,6 +151,7 @@ Ext.define('App.view.patient.Encounter', {
 					fieldDefaults: {
 						msgTarget: 'side'
 					},
+					
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),

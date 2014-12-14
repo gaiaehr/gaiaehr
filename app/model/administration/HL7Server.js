@@ -67,6 +67,11 @@ Ext.define('App.model.administration.HL7Server', {
 			}
 		},
 		{
+			name: 'token',
+			type: 'string',
+			len: 100
+		},
+		{
 			name: 'online',
 			type: 'bool',
 			store: false

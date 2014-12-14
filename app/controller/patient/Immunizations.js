@@ -59,7 +59,8 @@ Ext.define('App.controller.patient.Immunizations', {
 				activate: me.onPatientImmunizationsPanelActive
 			},
 			'patientimmunizationspanel #patientImmunizationsGrid':{
-				selectionchange: me.onPatientImmunizationsGridSelectionChange
+				selectionchange: me.onPatientImmunizationsGridSelectionChange,
+				edit: me.onPatientImmunizationsGridEdit
 			},
 			'patientimmunizationspanel #cvxGrid':{
 				expand: me.onCvxGridExpand
@@ -99,6 +100,10 @@ Ext.define('App.controller.patient.Immunizations', {
 
 	onPatientImmunizationsGridSelectionChange:function(sm, selected){
 		this.getSubmitVxuBtn().setDisabled(selected.length == 0);
+	},
+
+	onPatientImmunizationsGridEdit:function(plugin, context){
+		app.fireEvent('immunizationedit', this, context.record);
 	},
 
 	onPatientImmunizationsPanelActive:function(){

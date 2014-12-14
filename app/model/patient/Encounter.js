@@ -1,25 +1,10 @@
 /**
- * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, LLC.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Generated dynamically by Matcha::Connect
+ * Create date: 2014-12-11 12:16:19
  */
+
 Ext.define('App.model.patient.Encounter',{
     extend: 'Ext.data.Model',
-    requires: [
-        'App.model.patient.FamilyHistory'
-    ],
     table: {
         name: 'encounters',
         comment: 'Encounter Data'
@@ -62,12 +47,12 @@ Ext.define('App.model.patient.Encounter',{
             index: true,
             defaultValue: false
         },
-	    {
-		    name: 'specialty_id',
-		    type: 'string',
-		    len: 11,
-		    index: true
-	    },
+        {
+            name: 'specialty_id',
+            type: 'string',
+            len: 11,
+            index: true
+        },
         {
             name: 'service_date',
             type: 'date',
@@ -171,6 +156,14 @@ Ext.define('App.model.patient.Encounter',{
             name: 'message',
             type: 'string',
             dataType: 'text'
+        },
+        {
+            name: 'patient_class',
+            type: 'string'
+        },
+        {
+            name: 'referring_physician',
+            type: 'string'
         }
     ],
     idProperty: 'eid',
@@ -205,26 +198,20 @@ Ext.define('App.model.patient.Encounter',{
             foreignKey: 'eid'
         },
         {
-            model: 'App.model.patient.ReviewOfSystemsCheck',
-            name: 'reviewofsystemschecks',
-            primaryKey: 'eid',
-            foreignKey: 'eid'
-        },
-        {
             model: 'App.model.patient.SOAP',
             name: 'soap',
             primaryKey: 'eid',
             foreignKey: 'eid'
         },
         {
-            model: 'App.model.patient.SpeechDictation',
-            name: 'speechdictation',
+            model: 'App.model.patient.HCFAOptions',
+            name: 'hcfaoptions',
             primaryKey: 'eid',
             foreignKey: 'eid'
         },
         {
-            model: 'App.model.patient.HCFAOptions',
-            name: 'hcfaoptions',
+            model: 'App.model.patient.EncounterService',
+            name: 'services',
             primaryKey: 'eid',
             foreignKey: 'eid'
         }

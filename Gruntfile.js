@@ -431,6 +431,7 @@ module.exports = function(grunt){
 					'app/controller/patient/encounter/EncounterSign.js',
 					'app/model/patient/FamilyHistory.js',
 					'app/controller/patient/encounter/SOAP.js',
+					'app/controller/patient/encounter/SuperBill.js',
 					'app/model/patient/EncounterDx.js',
 					'app/view/patient/Immunizations.js',
 					'app/view/patient/Medications.js',

@@ -5,6 +5,7 @@ use Ratchet\ConnectionInterface;
 use Ratchet\Http\HttpServerInterface;
 use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Http\Message\Response;
+use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\Version;
 use Ratchet\WebSocket\Encoding\ToggleableValidator;
 
@@ -87,7 +88,7 @@ class WsServer implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg, $server) {
+    public function onMessage(ConnectionInterface $from, $msg, IoServer $server) {
         if ($from->WebSocket->closing) {
             return;
         }

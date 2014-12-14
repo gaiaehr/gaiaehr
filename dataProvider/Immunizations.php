@@ -21,7 +21,10 @@ include_once(ROOT . '/classes/XMLParser.class.php');
 include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
 
 class Immunizations {
-	private $db;
+	/**
+	 * @var PDO
+	 */
+	private $conn;
 
 	/**
 	 * @var MatchaCUP
@@ -29,19 +32,18 @@ class Immunizations {
 	private $i;
 
 	function __construct() {
-		$this->db = new MatchaHelper();
+		$this->conn = Matcha::getConn();
 		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
 		return;
 	}
-
 
 	/**
 	 * @return array
 	 */
 	public function getImmunizationsList(){
-		$sql = "SELECT * FROM cvx_codes";
-		$this->db->setSQL($sql);
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare('SELECT * FROM cvx_codes');
+		$sth->execute();
+		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	/**
@@ -57,27 +59,7 @@ class Immunizations {
 	 * @return array
 	 */
 	public function addPatientImmunization($params){
-
-		$DiagnosisCodes = new DiagnosisCodes();
-		$immunization = $this->i->save($params);
-		// add service
-		if($immunization !== false && isset($params->eid) && $params->eid > 0){
-			$service = new stdClass();
-			$service->pid = $params->pid;
-			$service->eid = $params->eid;
-			$service->uid = $params->uid;
-			$service->code = $this->getCptByCvx($params->code);
-			$dx_pointers = array();
-			foreach($DiagnosisCodes->getICDByEid($params->eid, true) AS $dx){
-				$dx_children[] = $dx;
-				$dx_pointers[] = $dx['code'];
-			}
-			$service->dx_pointers = implode(',', $dx_pointers);
-
-			// TODO....
-			//			$this->services->addCptCode($service);
-		}
-		return $immunization;
+		return  $this->i->save($params);
 	}
 
 	/**
@@ -125,91 +107,73 @@ class Immunizations {
 		return $data;
 	}
 
-
-
-
 	public function getCVXCodesByStatus($status = 'Active') {
-		$this->db->setSQL("SELECT * FROM cvx_codes WHERE status = '$status'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare("SELECT * FROM cvx_codes WHERE `status` = ?");
+		$sth->execute(array($status));
+		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
+	// TODO check to remove this
 	public function updateCVXCode(stdClass $params) {
-		$data = get_object_vars($params);
-		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'cvx_codes', 'U', array('id' => $params->id)));
-		$this->db->execLog();
+
+
 	}
 
-	public function updateCVXCodes($xmlFile = false) {
-		$newCounter = 0;
-		$xmlFile = ($xmlFile == false ? 'http://www2a.cdc.gov/vaccines/iis/iisstandards/XML.asp?rpt=cvx' : $xmlFile);
-		$xml = simplexml_load_file($xmlFile);
-		foreach($xml AS $vac){
-			$vac = get_object_vars($vac);
-			$data['cvx_code'] = trim($vac['Value'][2]);
-			$data['name'] = $vac['Value'][1];
-			$data['description'] = $vac['Value'][0];
-			$data['note'] = (is_object($vac['Value'][3]) ? '' : $vac['Value'][3]);
-			$data['status'] = $vac['Value'][4];
-			$data['update_date'] = date('Y-m-d H:i:s', strtotime($vac['Value'][5]));
-
-			$code = $data['code'];
-			$this->db->setSQL("SELECT id FROM cvx_codes WHERE code = '$code'");
-			$cvx = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-			if(isset($cvx['id'])){
-				$this->db->setSQL($this->db->sqlBind($data, 'cvx_codes', 'U', array('id' => $cvx['id'])));
-				$this->db->execLog();
-			} else {
-				$this->db->setSQL($this->db->sqlBind($data, 'cvx_codes', 'I'));
-				$this->db->execLog();
-				$newCounter++;
-			}
+	public function updateCVXCodes() {
+		$xml = simplexml_load_file('http://www2a.cdc.gov/vaccines/iis/iisstandards/XML2.asp?rpt=cvx');
+		$sth = $this->conn->prepare('TRUNCATE `cvx_codes`');
+		$sth->execute();
+		unset($sth);
+		$sth = $this->conn->prepare('INSERT INTO `cvx_codes` (`cvx_code`, `name`, `description`, `note`, `status`, `update_date`)
+										  VALUES (?,?,?,?,?,?)');
+		foreach($xml as $cvx){
+			$sth->execute(array(
+				trim($cvx->CVXCode),
+				trim($cvx->ShortDescription),
+				trim($cvx->FullVaccinename),
+				trim($cvx->Notes),
+				trim($cvx->Status),
+				(date('Y-m-d H:i:s', strtotime($cvx->LastUpdated)))
+			));
 		}
-		return array(
-			'success' => true,
-			'newCodes' => $newCounter
-		);
+
+		return array('success' => true);
 	}
 
-	public function updateMVXCodes($xmlFile = false) {
-		$newCounter = 0;
-		$xmlFile = ($xmlFile == false ? 'http://www2a.cdc.gov/vaccines/iis/iisstandards/XML.asp?rpt=tradename' : $xmlFile);
-		$xml = simplexml_load_file($xmlFile);
+	public function updateMVXCodes() {
+
+		$xml = simplexml_load_file('http://www2a.cdc.gov/vaccines/iis/iisstandards/XML.asp?rpt=tradename');
+		$sth = $this->conn->prepare('TRUNCATE `cvx_mvx`');
+		$sth->execute();
+		unset($sth);
+		$sth = $this->conn->prepare('INSERT INTO `cvx_mvx` (`cdc_product_name`,`description`,`cvx_code`,`manufacturer`,`mvx_code`,`mvx_status`,`product_name_status`,`update_date`)
+										  VALUES (?,?,?,?,?,?,?,?)');
 		foreach($xml AS $vac){
 			$vac = get_object_vars($vac);
-			$data['cdc_product_name'] = trim($vac['Value'][0]);
-			$data['description'] = trim($vac['Value'][1]);
-			$data['cvx_code'] = trim($vac['Value'][2]);
-			$data['manufacturer'] = (is_object($vac['Value'][3]) ? '' : $vac['Value'][3]);
-			$data['mvx_code'] = trim($vac['Value'][4]);
-			$data['mvx_status'] = $vac['Value'][5];
-			$data['product_name_status'] = $vac['Value'][6];
-			$data['update_date'] = date('Y-m-d H:i:s', strtotime($vac['Value'][7]));
-			$mvx_code = $data['mvx_code'];
-			$this->db->setSQL("SELECT id FROM cvx_mvx WHERE mvx_code = '$mvx_code'");
-			$cvx = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-			if(isset($cvx['id'])){
-				$this->db->setSQL($this->db->sqlBind($data, 'cvx_mvx', 'U', array('id' => $cvx['id'])));
-				$this->db->execLog();
-			} else {
-				$this->db->setSQL($this->db->sqlBind($data, 'cvx_mvx', 'I'));
-				$this->db->execLog();
-				$newCounter++;
-			}
+			$sth->execute(array(
+				trim($vac['Value'][0]),
+				trim($vac['Value'][1]),
+				trim($vac['Value'][2]),
+				trim($vac['Value'][3]),
+				trim($vac['Value'][4]),
+				trim($vac['Value'][5]),
+				trim($vac['Value'][6]),
+				(date('Y-m-d H:i:s', strtotime($vac['Value'][7])))
+			));
 		}
-		return array(
-			'success' => true,
-			'newCodes' => $newCounter
-		);
+		return array('success' => true);
 	}
 
 	public function getImmunizationLiveSearch(stdClass $params) {
-		$this->db->setSQL("SELECT * FROM cvx_codes
-							WHERE (cvx_code   LIKE '$params->query%'
-							   OR `name` 	  LIKE '$params->query%'
-							   OR description LIKE '%$params->query%')
-							  AND (status = '1' OR status = 'Active')");
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare("SELECT * FROM cvx_codes
+							WHERE (cvx_code   LIKE ?
+							   OR `name` 	  LIKE ?
+							   OR description LIKE ?)
+							  AND (`status` = '1' OR `status` = 'Active')");
+		$q = $params->query.'%';
+		$qq = '%'.$params->query.'%';
+		$sth->execute(array($q , $q, $qq));
+		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
 		return array(
@@ -219,25 +183,52 @@ class Immunizations {
 	}
 
 	public function getMvxByCode($code) {
-		$this->db->setSQL("SELECT * FROM cvx_mvx WHERE mvx_code = '$code'");
-		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare('SELECT * FROM cvx_mvx WHERE mvx_code = ?');
+		$sth->execute(array($code));
+		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
 	public function getMvxForCvx(stdClass $params) {
 		$where = (isset($params->cvx_code) ? " WHERE cvx_code = '$params->cvx_code'" : '');
-		$this->db->setSQL("SELECT * FROM cvx_mvx $where");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare("SELECT * FROM cvx_mvx $where");
+		$sth->execute();
+		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	public function getImmunizationsByEid($eid) {
-		$this->db->setSQL("SELECT * FROM patient_immunizations WHERE eid='$eid'");
-		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$sth = $this->conn->prepare('SELECT * FROM patient_immunizations WHERE eid = ?');
+		$sth->execute(array($eid));
+		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	public function getCptByCvx($cvx) {
-		$this->db->setSQL("SELECT cpt FROM cvx_cpt WHERE cvx = '$cvx' AND (active = '1' OR active = 'Active')");
-		$rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-		return $rec['cpt'];
+		$sth = $this->conn->prepare('SELECT cvx_cpt.cpt AS `code`,
+ 										    cpt_codes.code_text_medium AS code_text,
+ 										    \'CPT4\' AS code_type
+									   FROM cvx_cpt
+									   JOIN cpt_codes ON cvx_cpt.cpt = cpt_codes.code
+									  WHERE cvx_cpt.cvx = ? AND (cvx_cpt.active = \'1\' OR cvx_cpt.active = \'Active\')');
+		$sth->execute(array($cvx));
+		return $sth->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	public function updateCvxCptTable(){
+		$foo = file_get_contents('http://www2a.cdc.gov/vaccines/iis/iisstandards/downloads/cpt.txt');
+		$lines = explode(PHP_EOL, $foo);
+		if(count($lines) == 0){
+			throw new \Exception('Empty mapping data from cdc.gov');
+		}
+		$sth = $this->conn->prepare('TRUNCATE `cvx_cpt`');
+		$sth->execute();
+		unset($sth);
+		$sth = $this->conn->prepare('INSERT INTO `cvx_cpt` (cvx, cpt, active) values (?, ?, ?)');
+		foreach($lines as $line){
+			$data = explode('|', $line);
+			if(count($data) < 4) continue;
+			$sth->execute(array(trim($data[4]), trim($data[0]), '1'));
+		}
+
+		return array('success' => true);
 	}
 
 }

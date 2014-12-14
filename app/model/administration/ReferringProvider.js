@@ -19,8 +19,7 @@
 Ext.define('App.model.administration.ReferringProvider', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'referring_providers',
-		comment: 'Referring Providers'
+		name: 'referring_providers'
 	},
 	fields: [
 		{

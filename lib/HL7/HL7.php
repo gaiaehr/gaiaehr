@@ -209,7 +209,9 @@ class HL7 {
 		if(strlen($type) !== 3) return false;
 
 		if(!class_exists($type)){
-			include_once (dirname(__FILE__)."/messages/$type.php");
+			$file = dirname(__FILE__)."/messages/$type.php";
+			if(!file_exists($file)) return false;
+			include_once ($file);
 		}
 
 		$this->message = new $type($this);
@@ -232,7 +234,9 @@ class HL7 {
 
 		if($seg != ''){
 			if(!class_exists($seg)){
-				include_once (dirname(__FILE__)."/segments/$seg.php");
+				$file = dirname(__FILE__)."/segments/$seg.php";
+				if(!file_exists($file)) return false;
+				include_once ($file);
 			}
 			$this->segments[] = new $seg($this);
 			end($this->segments)->parse($segment);

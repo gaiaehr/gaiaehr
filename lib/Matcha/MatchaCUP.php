@@ -151,6 +151,10 @@ class MatchaCUP {
 	 * this is the preferred way to build complex SQL statements that will
 	 * use MatchaCUP objects
 	 */
+	/**
+	 * @param null $sqlArray
+	 * @return MatchaCUP
+	 */
 	public function buildSQL($sqlArray = null) {
 		try {
 			if($sqlArray == null || !is_array($sqlArray))
@@ -962,7 +966,9 @@ class MatchaCUP {
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else {
-					if($type == 'date'){
+					if($type == 'string' && is_string($data[$col])){
+						$data[$col] = html_entity_decode($data[$col]);
+					}elseif($type == 'date'){
 						$data[$col] = ($data[$col] == '' || is_null($data[$col]) ? '0000-00-00' : $data[$col]);
 					} elseif($type == 'array') {
 						if($data[$col] == ''){

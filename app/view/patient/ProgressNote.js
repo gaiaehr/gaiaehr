@@ -114,129 +114,129 @@ Ext.define('App.view.patient.ProgressNote', {
             '                       <td>' +
             '                          <table class="x-grid-table x-grid-table-vitals vitals-column">' +
             '                              <tbody>' +
-            '                                  <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n['date_&_time'] + '</div>' +
+            '                                  <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td x-grid-table-vitals-date">' +
+            '                                           <div class="x-grid-cell-inner ">' + _('date_&_time') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('weight_lbs') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('weight_kg') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('height_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('height_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bp_systolic') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bp_diastolic') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('pulse') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('respiration') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('temp_f') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('temp_c') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('temp_location') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('oxygen_saturation') + '%</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('head_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('head_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('waist_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('waist_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bmi') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bmi_status') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('other_notes') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('administer') + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n['Sign by'] + '<div>' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
+            '                                           <div class="x-grid-cell-inner ">' + _('signed_by') + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                               </tbody>' +
@@ -246,128 +246,128 @@ Ext.define('App.view.patient.ProgressNote', {
             '                           <td>' +
             '                           <table class="x-grid-table x-grid-table-vitals vitals-column">' +
             '                               <tbody>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td x-grid-table-vitals-date">' +
             '                                           <div class="x-grid-cell-inner ">{date}</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row first">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.weight_lbs)]}</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row first">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.weight_kg)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 		        '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.height_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.height_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bp_systolic)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bp_diastolic)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.pulse)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.respiration)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_f)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_c)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_location.toUpperCase())]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.oxygen_saturation)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.head_circumference_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.head_circumference_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 		        '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.waist_circumference_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.waist_circumference_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bmi)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bmi_status)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.other_notes)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[(values.administer_by == null || values.administer_by == " ") ? "-" : values.administer_by]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row  x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[(values.authorized_by == null || values.authorized_by == " ") ? "-" : values.authorized_by]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +

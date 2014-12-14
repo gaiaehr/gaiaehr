@@ -91,7 +91,7 @@ class Segments {
 	public function build() {
 		$this->toString($this->rawSeg);
 		unset($this->hl7);
-		return $this->seg . "\r";
+		return $this->seg . chr(0x0d);
 	}
 
 	public function parse($string) {
@@ -106,15 +106,30 @@ class Segments {
 	 * @return mixed
 	 */
 	private function toString($array, $glue = 0) {
-		$glues = [
-			'|',
-			'^',
-			'&'
-		];
+		$glues = [ '|', '^', '&'];
 		$buffer = [];
+
 		foreach($array as $index => $value){
 
-			if($glue == 0 || $index > 0){
+			if($glue === 0 || $index > 0){
+
+				if($glue === 0 && $this->isRepeatable($index)){
+					$repBuffer = [];
+
+					foreach($value as $i => $repValue){
+						if(is_array($repValue)){
+							$array[$index][$i] = $this->toString($repValue, $glue + 1);
+							$repBuffer[] = $array[$index][$i][0];
+						}else{
+							$repBuffer[] = $repValue;
+						}
+					}
+
+					$buffer[]  = rtrim(implode('~', $repBuffer), '~');
+					continue;
+				}
+
+
 				if(is_array($value)){
 					$array[$index] = $this->toString($value, $glue + 1);
 					$buffer[] = $array[$index][0];
@@ -138,11 +153,7 @@ class Segments {
 	private function toArray($string, $glue = 0, $array = null) {
 		$array = $array != null ? $array : $this->rawSeg;
 
-		$glues = [
-			'|',
-			'^',
-			'&'
-		];
+		$glues = [ '|', '^', '&' ];
 
 		if(isset($glues[$glue])){
 			// explode the string by glue | ^ or &
@@ -153,6 +164,10 @@ class Segments {
 				$fields[1] = '|';
 			}
 
+			if($fields[0] == 'PV1'){
+				$boo = false;
+			}
+
 			$isSubField = $glue > 0;
 
 			if($isSubField)
@@ -160,23 +175,40 @@ class Segments {
 
 			foreach($fields AS $i => $fieldString){
 
+				$repeatable = $glues[$glue] == '|' && $this->isRepeatable($i);
+
+
 				if(isset($array[$i]) && is_int($array[$i])){
-					$array[$i] = $this->getType($array[$array[$i]]);
+					if($repeatable){
+						$array[$i][] = $this->getType($array[$array[$i]]);
+					}else{
+						$array[$i] = $this->getType($array[$array[$i]]);
+					}
 				}
 
 				$hasSubFields = isset($array[$i]) && is_array($array[$i]);
 
 				if(!$hasSubFields){
-					$array[$i] = $fieldString;
+					if($repeatable){
+						$array[$i][] = $fieldString;
+					}else{
+						$array[$i] = $fieldString;
+					}
 					continue;
 				}
 
 				if($hasSubFields){
-					if($this->isRepeatable($fieldString)){
+					if($repeatable){
 						$foo = array();
+						$j = 0;
 						foreach(explode('~', $fieldString) AS $rep){
-							$foo[] = $this->toArray($rep, $glue + 1, $array[$i]);
+							// copy the empty structure
+							$array[$i][$j + 1] = $array[$i][$j];
+							$foo[] = $this->toArray($rep, $glue + 1, $array[$i][$j]);
+							$j++;
 						}
+						// delete the unused structure
+						unset($array[$i][$j]);
 						$array[$i] = $foo;
 						continue;
 					}
@@ -188,23 +220,35 @@ class Segments {
 		return $array;
 	}
 
-	private function isRepeatable($string) {
+	private function hasRepeatable($string) {
 		$foo = strpos($string, '~');
 		return $foo !== false && $string != '~\&';
 	}
 
 	/**
-	 * @param $field
-	 * @param $data
+	 * @param string $field
+	 * @param string $data
+	 * @param int $index
 	 */
-	public function setValue($field, $data) {
+	public function setValue($field, $data, $index = 0) {
 		$foo = explode('.', $field);
-		if(count($foo) == 1){
-			$this->rawSeg[$foo[0]] = $data;
-		} elseif(count($foo) == 2) {
-			$this->rawSeg[$foo[0]][$foo[1]] = $data;
-		} elseif(count($foo) == 3) {
-			$this->rawSeg[$foo[0]][$foo[1]][$foo[2]] = $data;
+
+		if($this->isRepeatable($foo[0])){
+			if(count($foo) == 1){
+				$this->rawSeg[$foo[0]][$index] = $data;
+			} elseif(count($foo) == 2) {
+				$this->rawSeg[$foo[0]][$index][$foo[1]] = $data;
+			} elseif(count($foo) == 3) {
+				$this->rawSeg[$foo[0]][$index][$foo[1]][$foo[2]] = $data;
+			}
+		}else{
+			if(count($foo) == 1){
+				$this->rawSeg[$foo[0]] = $data;
+			} elseif(count($foo) == 2) {
+				$this->rawSeg[$foo[0]][$foo[1]] = $data;
+			} elseif(count($foo) == 3) {
+				$this->rawSeg[$foo[0]][$foo[1]][$foo[2]] = $data;
+			}
 		}
 	}
 
@@ -693,28 +737,36 @@ class Segments {
 
 	}
 
-	protected function setRepeatableField($fieldKey) {
+	protected function isRepeatable($fieldKey) {
+		return in_array($fieldKey, $this->repeatableFields);
+	}
+
+	private function setRepeatableField($fieldKey) {
 		array_push($this->repeatableFields, $fieldKey);
 	}
 
-	protected function setRequiredField($fieldKey) {
+	private function setRequiredField($fieldKey) {
 		array_push($this->requiredFields, $fieldKey);
 	}
 
-	protected function setFieldLength($fieldKey, $len) {
+	private function setFieldLength($fieldKey, $len) {
 		$this->fieldsLengths[$fieldKey] = $len;
 	}
 
-	protected function setFieldType($fieldKey, $type) {
-		$this->rawSeg[$fieldKey] = $this->getType($type);
+	private function setFieldType($fieldKey, $type, $repeatable) {
+		if($repeatable){
+			$this->rawSeg[$fieldKey][0] = $this->getType($type);
+		}else{
+			$this->rawSeg[$fieldKey] = $this->getType($type);
+		}
 	}
 
 	protected function setFieldValue($fieldKey, $value) {
 		$this->rawSeg[$fieldKey] = $value;
 	}
 
-	protected function setField($fieldKey, $type, $len, $required = false, $repeatable = true) {
-		$this->setFieldType($fieldKey, $type);
+	protected function setField($fieldKey, $type, $len, $required = false, $repeatable = false) {
+		$this->setFieldType($fieldKey, $type, $repeatable);
 		$this->setFieldLength($fieldKey, $len);
 		if($required){
 			$this->setRequiredField($fieldKey);

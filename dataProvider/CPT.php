@@ -70,5 +70,4 @@ class CPT {
 		    'data' => array_slice($records, $params->start, $params->limit)
 		);
 	}
-
 }

@@ -54,9 +54,6 @@ Ext.define('App.view.patient.Immunizations', {
 					dataIndex: 'code',
 					width: 50,
 					renderer:function(v, meta, record){
-
-						say(record.data);
-
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}

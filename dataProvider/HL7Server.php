@@ -74,15 +74,28 @@ class HL7Server {
 	 */
 	protected $msg;
 
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $pOrder;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $pResult;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $pObservation;
 
+	/**
+	 * @var string
+	 */
 	protected $updateKey = 'pid';
 
 	function __construct($port = '9000', $site = 'default') {
 		$this->site = $site;
-		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+		if(!defined('_GaiaEXEC'))
+			define('_GaiaEXEC', 1);
 		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
 		include_once(ROOT . '/classes/MatchaHelper.php');
@@ -104,7 +117,6 @@ class HL7Server {
 		$this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
 		$this->pResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
 		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
-
 		$this->server = $this->getServerByPort($port);
 	}
 
@@ -205,6 +217,10 @@ class HL7Server {
 
 	}
 
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
 	public function getServers($params) {
 
 		$servers = $this->s->load($params)->all();
@@ -225,13 +241,14 @@ class HL7Server {
 	 */
 	public function getServer($params) {
 		$server = $this->s->load($params)->one();
-		if($server === false || (isset($server['data']) && $server['data'] === false)) return $server;
+		if($server === false || (isset($server['data']) && $server['data'] === false))
+			return $server;
 
 		$handler = new HL7ServerHandler();
 		$status = $handler->status($server['port']);
 		if(isset($server['data'])){
 			$server['data']['online'] = $status['online'];
-		}else{
+		} else {
 			$server['online'] = $status['online'];
 		}
 		return $server;
@@ -269,11 +286,10 @@ class HL7Server {
 	 *
 	 * @return mixed
 	 */
-	protected function getServerByPort($port){
+	protected function getServerByPort($port) {
 		$this->s->addFilter('port', $port);
 		return $this->s->load()->one();
 	}
-
 
 	/**
 	 * @param $hl7 HL7
@@ -359,8 +375,6 @@ class HL7Server {
 						$foo->value = $obx[5];
 					}
 
-
-
 					$foo->units = $obx[6][1];
 					$foo->reference_rage = $obx[7];
 					$foo->probability = $obx[9];
@@ -392,8 +406,8 @@ class HL7Server {
 	}
 
 	/**
-	 * @param HL7      $hl7
-	 * @param ADT      $msg
+	 * @param HL7 $hl7
+	 * @param ADT $msg
 	 * @param stdClass $msgRecord
 	 */
 	protected function ProcessADT($hl7, $msg, $msgRecord) {
@@ -623,8 +637,8 @@ class HL7Server {
 
 	/**
 	 * @param array $insGroups
-	 * @param HL7   $hl7
-	 * @param null  $patient
+	 * @param HL7 $hl7
+	 * @param null $patient
 	 */
 	protected function InsuranceGroupHandler($insGroups, $hl7, $patient = null) {
 		/** if patient is not set don't do anything */
@@ -683,7 +697,7 @@ class HL7Server {
 
 	/**
 	 * @param array $PID
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return array
 	 */
@@ -800,7 +814,7 @@ class HL7Server {
 
 	/**
 	 * @param array $IN1
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return stdClass
 	 */
@@ -822,7 +836,7 @@ class HL7Server {
 
 	/**
 	 * @param array $IN1
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return stdClass
 	 */
@@ -836,7 +850,7 @@ class HL7Server {
 
 	/**
 	 * @param array $IN1
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return stdClass
 	 */
@@ -849,116 +863,6 @@ class HL7Server {
 	}
 
 	/**
-	 * @param array $p
-	 * @param HL7   $hl7
-	 *
-	 * @return \HL7
-	 */
-	protected function PatientObjToPID($p, $hl7) {
-		$PID = $hl7->addSegment('PID');
-
-		if($this->notEmpty($p['pubpid']))
-			$PID->setValue('2.3', $p['pubpid']);
-
-		if($this->notEmpty($p['pid']))
-			$PID->setValue('3.1', $p['pid']);
-
-		if($this->notEmpty($p['fname']))
-			$PID->setValue('5.2', $p['fname']);
-
-		if($this->notEmpty($p['mname']))
-			$PID->setValue('5.3', $p['mname']);
-
-		if($this->notEmpty($p['lname']))
-			$PID->setValue('5.1.1', $p['lname']);
-
-		if($this->notEmpty($p['mothers_name']))
-			$PID->setValue('6.2', $p['mothers_name']);
-
-		if($this->notEmpty($p['DOB']))
-			$PID->setValue('7.1', $p['DOB']);
-
-		if($this->notEmpty($p['sex']))
-			$PID->setValue('8', $p['sex']);
-
-		if($this->notEmpty($p['alias']))
-			$PID->setValue('9.2', $p['alias']);
-
-		if($this->notEmpty($p['race']))
-			$PID->setValue('10.1', $p['race']);
-
-		if($this->notEmpty($p['address']))
-			$PID->setValue('11.1.1', $p['address']);
-
-		if($this->notEmpty($p['city']))
-			$PID->setValue('11.3', $p['city']);
-
-		if($this->notEmpty($p['state']))
-			$PID->setValue('11.4', $p['state']);
-
-		if($this->notEmpty($p['zipcode']))
-			$PID->setValue('11.5', $p['zipcode']);
-
-		if($this->notEmpty($p['country']))
-			$PID->setValue('11.6', $p['country']);
-
-		if($this->notEmpty($p['home_phone']))
-			$PID->setValue('', $p['home_phone']);
-
-		if($this->notEmpty($p['work_phone']))
-			$PID->setValue('', $p['work_phone']);
-
-		if($this->notEmpty($p['language']))
-			$PID->setValue('15.1', $p['language']);
-
-		if($this->notEmpty($p['marital_status']))
-			$PID->setValue('16.1', $p['marital_status']);
-
-		if($this->notEmpty($p['pubaccount']))
-			$PID->setValue('18.1', $p['pubaccount']);
-
-		if($this->notEmpty($p['SS']))
-			$PID->setValue('19', $p['SS']);
-
-		if($this->notEmpty($p['drivers_license']))
-			$PID->setValue('20.1', $p['drivers_license']);
-
-		if($this->notEmpty($p['drivers_license_state']))
-			$PID->setValue('20.2', $p['drivers_license_state']);
-
-		if($this->notEmpty($p['drivers_license_exp']))
-			$PID->setValue('20.3', $p['drivers_license_exp']);
-
-		if($this->notEmpty($p['ethnicity']))
-			$PID->setValue('22.1', $p['ethnicity']);
-
-		if($this->notEmpty($p['birth_place']))
-			$PID->setValue('23', $p['birth_place']);
-
-		if($this->notEmpty($p['birth_multiple']))
-			$PID->setValue('24', $p['birth_multiple']);
-
-		if($this->notEmpty($p['birth_order']))
-			$PID->setValue('25', $p['birth_order']);
-
-		if($this->notEmpty($p['citizenship']))
-			$PID->setValue('26.1', $p['citizenship']);
-
-		if($this->notEmpty($p['is_veteran']))
-			$PID->setValue('27.1', $p['is_veteran']);
-
-		if($this->notEmpty($p['death_date']))
-			$PID->setValue('29.1', $p['death_date']);
-
-		if($this->notEmpty($p['deceased']))
-			$PID->setValue('30', $p['deceased']);
-
-		if($this->notEmpty($p['update_date']))
-			$PID->setValue('33.1', $p['update_date']);
-		return $hl7;
-	}
-
-	/**
 	 * @param $data
 	 *
 	 * @return bool
@@ -967,6 +871,9 @@ class HL7Server {
 		return isset($data) && ($data != '' && $data != '""' && $data != '\'\'');
 	}
 
+	/**
+	 * @return string
+	 */
 	private function getAssigningAuthority() {
 		return 'GAIA-' . Matcha::getInstallationNumber();
 	}
@@ -1065,13 +972,16 @@ class HL7Server {
 //EOF;
 
 
+//$msg = <<<EOF
+//MSH|^~\&|Test Application|1|TRARIS||201411040737||ORM^O01|20141104073774636|P|2.5.1
+//PID|||32061||DEL PUEBLO^MANUEL||19010101|M|||BO XXXX^CARR 000 K 5 H 5 INT 9983^LUQUILLO^PR^00773||7878888888|||||74636
+//PV1||E|EGY^0^0||||1992960355^SOLIVAN SOBRINO^ENRIQUE~1992960355^RODRIGUEZ GUZAMN^ERNESTO|||||||||||ER||||||||||||||||||||||||||201411040650
+//ORC|NW|36353|||||||201411040736|||1992960355^SOLIVAN SOBRINO^ENRIQUE
+//OBR|1|36353||74177-57969^COMP TOMOGRAPHY ABDOMEN/PELVIS W CONTRAST|R||201411040736|||||||||1992960355^SOLIVAN SOBRINO^ENRIQUE||||||||CT|||^^^201411040736^^R||||^ABDOMINAL PAIN;ABDOMINAL DISTENTION;R/O INTESTINAL OBSTRUCTION
+//EOF;
+////
+////
 //include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
-//
 //print '<pre>';
-//
-//$hl7 = new HL7();
-////$msg = $hl7->readMessage($msg);
-////print_r($msg);
-//
 //$hl7 = new HL7Server();
 //print $hl7->Process($msg);

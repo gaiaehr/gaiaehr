@@ -20,6 +20,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	extend: 'App.ux.window.Window',
 	requires: [
 		'Ext.grid.plugin.RowEditing',
+		'App.view.patient.SupperBill',
 		'App.ux.combo.EncounterSupervisors',
 		'App.ux.LiveCPTSearch'
 	],
@@ -37,91 +38,10 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 
 	items: [
 		{
-			xtype: 'grid',
+			xtype: 'superbillpanel',
 			title: _('super_bill'),
-			rootVisible: false,
 			region: 'center',
-			itemId: 'EncounterSignSuperBillGrid',
-			store: Ext.create('App.store.patient.EncounterServices'),
-			flex: 2,
-			columnLines: true,
-			plugins: [
-				{
-					ptype: 'rowediting',
-					errorSummary: false
-				}
-			],
-			columns: [
-				{
-					xtype: 'actioncolumn',
-					width: 20,
-					items: [
-						{
-							icon: 'resources/images/icons/delete.png',
-							tooltip: _('remove'),
-							handler: function(){
-								return App.app.getController('patient.encounter.EncounterSign').onRemoveService(v);
-							}
-						}
-					]
-				},
-				{
-					text: _('service'),
-					dataIndex: 'code_text',
-					flex: 1,
-					editor: {
-						xtype: 'livecptsearch',
-						itemId: 'EncounterSignSuperCptSearchCmb',
-						valueField: 'code_text_medium',
-						allowBlank: false
-					}
-				},
-				{
-					header: _('units'),
-					dataIndex: 'units',
-					width: 50,
-					editor: {
-						xtype: 'numberfield',
-						minValue: 1,
-						allowBlank: false
-					}
-				},
-				{
-					header: _('modifiers'),
-					dataIndex: 'modifiers',
-					width: 100,
-					editor: {
-						xtype: 'textfield'
-					}
-				},
-				{
-					header: _('diagnosis'),
-					dataIndex: 'dx_pointers',
-					width: 250,
-					editor: {
-						xtype: 'textfield',
-						allowBlank: false
-					}
-				},
-				{
-					header: _('status'),
-					dataIndex: 'status'
-				}
-			],
-			dockedItems: [
-				{
-					xtype: 'toolbar',
-					dock: 'top',
-					items: [
-						'->',
-						{
-							text: _('service'),
-							iconCls: 'icoAdd',
-							itemId: 'EncounterSignSuperBillServiceAddBtn'
-						}
-					]
-				}
-			]
+			flex: 2
 		},
 		{
 			xtype: 'documentsimplegrid',

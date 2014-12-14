@@ -314,27 +314,20 @@ Ext.define('App.ux.grid.RowFormEditing', {
 			editor = me.editor,
 			context = me.context,
 			record = context.record,
-			newValues = {},
 			originalValues = {},
-			editors = editor.getForm().getFields().items,
-			e,
-			eLen = editors.length,
-			name, item;
+			newValues = editor.getForm().getValues();
 
-		for(e = 0; e < eLen; e++){
-			item = editors[e];
-			name = item.name;
 
-			newValues[name] = item.getValue();
-			originalValues[name] = record.get(name);
-		}
+		Ext.Object.each(newValues, function(key){
+			originalValues[key] = record.get(key);
+		});
 
 		Ext.apply(context, {
 			newValues: newValues,
 			originalValues: originalValues
 		});
 
-		return me.callParent(arguments) && me.getEditor().completeEdit();
+		return me.fireEvent('validateedit', me, context) !== false && !context.cancel && me.getEditor().completeEdit();
 	},
 
 	// private
@@ -406,9 +399,6 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	moveEditorByClick: function(){
 		var me = this;
 		if(me.editing){
-			say(me);
-			say(me.superclass);
-
 			me.superclass.onCellClick.apply(me, arguments);
 		}
 	},

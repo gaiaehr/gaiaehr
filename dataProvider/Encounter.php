@@ -252,10 +252,10 @@ class Encounter {
 			$encounter['familyhistory'] = $this->FamilyHistory->getFamilyHistoryByPid($encounter['pid']);
 		}
 
-		// TODO: Matcha Model
-		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
-
-		}
+//		//TODO: Matcha Model
+//		if($_SESSION['globals']['enable_encounter_review_of_systems_cks']){
+//
+//		}
 
 		if($_SESSION['globals']['enable_encounter_soap']){
 			$encounter['soap'][] = $this->getSoapByEid($encounter['eid']);
@@ -268,10 +268,12 @@ class Encounter {
 		if($_SESSION['globals']['enable_encounter_hcfa']){
 			$encounter['hcfaoptions'][] = $this->getHCFA($filters);
 		}
+
+		$encounter['services'] = $this->getEncounterServiceCodesByEid($encounter['eid']);
+
 		unset($filters);
 		return $encounter;
 	}
-
 
 	public function getEncounterSummary(stdClass $params){
 		$this->setEid($params->eid);
@@ -409,7 +411,7 @@ class Encounter {
 
 	public function getEncounterServiceCodesByEid($eid){
 		$Services = new Services();
-		$records = $Services->getCptByEid($eid);
+		$records = $Services->getEncounterServicesByEid($eid);
 		unset($Services);
 		return $records;
 	}

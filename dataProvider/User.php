@@ -57,6 +57,15 @@ class User {
 		return $user;
 	}
 
+	public function getUserByUid($uid){
+		$user = $this->u->load($uid)->one();
+		if($user !== false){
+			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		}
+		return $user;
+	}
+
 	public function addUser(stdClass $params){
 		try{
 			if(!$this->usernameExist($params->username)){

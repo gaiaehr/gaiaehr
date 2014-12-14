@@ -162,7 +162,6 @@ Ext.override(Ext.data.reader.Reader, {
 		);
 
 		this.on('exception', function(r, e){
-			say(r);
 			app.alert(
 				'<p><span style="font-weight:bold">'+ (e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +'</span></p><hr>' +
 					'<p>'+ (typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +'</p>',
@@ -293,6 +292,7 @@ Ext.override(Ext.grid.plugin.Editing, {
     }
 });
 Ext.override(Ext.grid.RowEditor, {
+
     completeEdit: function(){
         var me = this, form = me.getForm();
         if(!form.isValid()){

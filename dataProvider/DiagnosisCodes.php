@@ -140,16 +140,15 @@ class DiagnosisCodes {
 			$data[] = $recordSet->fetch(PDO::FETCH_ASSOC);
 		}
 
-		if($code_type == null || ($code_type == 'ICD10' || $code_type == 'ICD10-DX')){
+		if($code_type == null || ($code_type == 'ICD10' || $code_type == 'ICD10-DX' || $code_type == 'ICD10-CM')){
 			$revision = $this->getLastRevisionByCodeType('ICD10');
-			$sql = "SELECT *, formatted_dx_code AS code, 'ICD10-DX' AS code_type
+			$sql = "SELECT *, formatted_dx_code AS code, '$code_type' AS code_type
 						  	 FROM icd10_dx_order_code
 						 	WHERE (dx_code  = :c1 OR formatted_dx_code  = :c2)
 						      AND revision = '$revision'";
 			$recordSet = $this->conn->prepare($sql);
 			$recordSet->execute(array(':c1' => $code, ':c2' => $code));
 			$data[] = $recordSet->fetch(PDO::FETCH_ASSOC);
-
 		}
 
 		foreach($data as $foo){

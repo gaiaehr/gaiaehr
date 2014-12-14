@@ -49,6 +49,5 @@ class DG1 extends Segments{
 		$this->setField(20, 'EI', 427);
 		$this->setField(21, 'ID', 1);  // TABLE 0206
 
-
 	}
 }

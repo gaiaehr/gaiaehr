@@ -5,6 +5,10 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 	],
 	refs: [
 		{
+			ref: 'EncounterPanel',
+			selector: '#encounterPanel'
+		},
+		{
 			ref: 'EncounterDetailWindow',
 			selector: '#EncounterDetailWindow'
 		},
@@ -26,6 +30,9 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this;
 
 		this.control({
+			'viewport':{
+				patientunset: me.onPatientUnset
+			},
 			'#EncounterDetailWindow': {
 				show: me.onEncounterDetailWindowShow
 			},
@@ -34,6 +41,21 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 				select: me.onEncounterProviderCmbSelect
 			}
 		});
+	},
+
+	/**
+	 * set the encounter record to null when the patient is closed
+	 */
+	onPatientUnset:function(){
+		if(this.getEncounterPanel()) this.getEncounterPanel().encounter = null;
+	},
+
+	/**
+	 * get the encounter record form the encounter panel or return null
+	 * @returns {*}
+	 */
+	getEncounterRecord: function(){
+		return this.getEncounterPanel() ? this.getEncounterPanel().encounter : null;
 	},
 
 	onEncounterProviderCmbBeforeRender: function(cmb){

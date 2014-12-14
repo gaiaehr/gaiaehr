@@ -547,9 +547,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		if (!form.isValid()) {
 			return;
 		}
-		form.updateRecord(me.context.record);
+
+		me.context.record.set(me.context.newValues);
+
 		if(me.editingPlugin.autoSync){
-			form._record.store.sync({
+			me.context.record.store.sync({
 				callback:function(){
 					me.fireEvent('sync', me, me.context);
 				}

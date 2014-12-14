@@ -66,7 +66,7 @@ $complexTypes['Patient'] = array(
 		'document' => 'Patient Last Name'
 	),
 	array(
-		'name' => 'DOB',
+		'name' => 'DateOfBirth',
 		'type' => 'string',
 		'minOccurs' => '1',
 		'document' => 'On Format YYYY-MM-DD (0000-00-00)'
@@ -78,7 +78,7 @@ $complexTypes['Patient'] = array(
 		'document' => 'F or M'
 	),
 	array(
-		'name' => 'SSN',
+		'name' => 'SocialSecurityNumber',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => '** Not Recommended **'
@@ -127,12 +127,6 @@ $complexTypes['Patient'] = array(
 	),
 	array(
 		'name' => 'DriverLicenceExpirationDate',
-		'type' => 'string',
-		'minOccurs' => '0',
-		'document' => ''
-	),
-	array(
-		'name' => 'Language',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => ''
@@ -234,7 +228,7 @@ $complexTypes['Patient'] = array(
 		'document' => ''
 	),
 	array(
-		'name' => 'Image',
+		'name' => 'ProfileImage',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => 'Base64 String'

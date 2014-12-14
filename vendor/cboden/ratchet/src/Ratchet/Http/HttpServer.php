@@ -3,6 +3,8 @@ namespace Ratchet\Http;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Guzzle\Http\Message\Response;
+use Ratchet\Server\IoServer;
+
 
 class HttpServer implements MessageComponentInterface {
     /**
@@ -35,7 +37,7 @@ class HttpServer implements MessageComponentInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg, $server) {
+    public function onMessage(ConnectionInterface $from, $msg, IoServer $server) {
         if (true !== $from->httpHeadersReceived) {
             try {
                 if (null === ($request = $this->_reqParser->onMessage($from, $msg, $server))) {

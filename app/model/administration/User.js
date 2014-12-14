@@ -144,15 +144,23 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'notes',
 			type: 'string',
-			comment: 'notes',
 			len: 300
 		},
 		{
 			name: 'email',
 			type: 'string',
-			comment: 'email',
 			len: 150,
 			index: true
+		},
+		{
+			name: 'phone',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'mobile',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'direct_address',
@@ -196,6 +204,36 @@ Ext.define('App.model.administration.User', {
 			type: 'bool',
 			comment: 'has calendar? 0=no 1=yes',
 			index: true
+		},
+		{
+			name: 'street',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'street_cont',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'city',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'state',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'postal_code',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'country_code',
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'authorized',

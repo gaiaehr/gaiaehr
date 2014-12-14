@@ -392,6 +392,13 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'fees.PaymentTransactions',
 	                'navigation.Navigation',
 
+	                'patient.Vitals',
+	                'patient.ReviewOfSystems',
+	                'patient.FamilyHistory',
+	                'patient.SOAP',
+	                'patient.HCFAOptions',
+	                'patient.EncounterService',
+
 	                'patient.encounter.snippetTree',
 	                'patient.encounter.Procedures',
 
@@ -403,9 +410,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.DismissedAlerts',
 	                'patient.DoctorsNote',
 	                'patient.Encounter',
-	                'patient.EncounterService',
 	                'patient.EventHistory',
-	                'patient.HCFAOptions',
 	                'patient.CVXCodes',
 	                'patient.ImmunizationCheck',
 	                'patient.LaboratoryTypes',
@@ -432,12 +437,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.QRCptCodes',
 	                'patient.Referral',
 	                'patient.Reminders',
-	                'patient.ReviewOfSystems',
-	                'patient.SOAP',
 	                'patient.Surgery',
 	                'patient.VectorGraph',
 	                'patient.VisitPayment',
-	                'patient.Vitals',
 	                'patient.charts.BMIForAge',
 	                'patient.charts.HeadCircumferenceInf',
 	                'patient.charts.LengthForAgeInf',
@@ -727,7 +729,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                     'patient.encounter.Encounter',
 	                'patient.encounter.EncounterSign',
 	                'patient.encounter.Snippets',
-                    'patient.encounter.SOAP'
+                    'patient.encounter.SOAP',
+                    'patient.encounter.SuperBill'
                 ],
                 launch: function() {
 

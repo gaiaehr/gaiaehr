@@ -181,17 +181,16 @@ Ext.define('App.view.administration.HL7', {
 											columns: 5,
 											vertical: true,
 											defaults: {
+												xtype: 'checkbox',
 												name: 'allow_messages',
 												uncheckedValue: null
 											},
 											items: [
 												{
-													xtype: 'checkbox',
 													boxLabel: 'ADT_A01',
 													inputValue: 'ADT_A01'
 												},
 												{
-													xtype: 'checkbox',
 													boxLabel: 'ADT_A04',
 													inputValue: 'ADT_A04'
 												},

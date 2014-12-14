@@ -17,19 +17,24 @@ class HL7ServerAbstract implements MessageComponentInterface {
 	private $method;
 	private $port;
 	private $site;
+	private $token;
 
 	public function __construct() {
-		global $class, $method, $port, $site;
+		global $class, $method, $port, $site, $token;
 
 		$this->port = $port;
 		$this->site = $site;
 		$this->class = $class;
 		$this->method = $method;
+		$this->token = $token;
 
 		//TODO hard coded for now
 		date_default_timezone_set('America/Puerto_Rico');
 		$this->clients = new \SplObjectStorage;
+
 	}
+
+
 
 	public function onOpen(ConnectionInterface $conn) {
 		// Store the new connection to send messages to later
@@ -38,17 +43,23 @@ class HL7ServerAbstract implements MessageComponentInterface {
 	}
 
 	public function onMessage(ConnectionInterface $conn, $message, IoServer $server) {
+		try{
+			if($message == ''){
+				$conn->send('');
+			}if($message == $this->token){
+				$server->loop->stop();
+				$server->socket->shutdown();
+				die();
+			}
 
-		if($message == ''){
-			$conn->send('');
-		}if($message == MatchaUtils::encrypt(site_aes_key)){
-			$server->loop->stop();
-			$server->socket->shutdown();
-			die();
+			$ack = call_user_func(array($conn->handler, $this->method), $message);
+			$conn->send($ack);
+
+		}catch (\Exception $e){
+			error_log($e->getMessage(), 3, 'server_error.log');
 		}
 
-		$ack = call_user_func(array($conn->handler, $this->method), $message);
-		$conn->send($ack);
+
 	}
 
 	public function onClose(ConnectionInterface $conn) {

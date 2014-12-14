@@ -1490,5 +1490,9 @@ $LANG = array(
     'edit'                                  => 'Edit',
     'editing'                               => 'Editing',
     'scanner'                               => 'Scanner',
+    'service_added'                         => 'Service Added',
+    'super_bill_prompt_add_question'        => 'Would you like this as to the Super Bill?',
+    'no_service_code_found'                 => 'No Service Code Found',
+    'dx_codes'                              => 'Dx Codes',
 
 );

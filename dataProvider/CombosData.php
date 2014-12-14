@@ -24,43 +24,47 @@ class CombosData {
 	/**
 	 * @var MatchaCUP
 	 */
-	private $CLO = null;
+	private $CLO;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $CC = null;
+	private $CC;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $P = null;
+	private $P;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $F = null;
+	private $F;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $FP = null;
+	private $FP;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $I = null;
+	private $I;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $U = null;
+	private $R;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $CL = null;
+	private $U;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $A = null;
+	private $CL;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $DT = null;
+	private $A;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $DT;
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Main Sencha Model Getter and Setters
@@ -87,6 +91,8 @@ class CombosData {
 					return $this->getBillingFacilities();
 				} elseif($params->list_id == 'activeInsurances'){
 					return $this->getActiveInsurances();
+				} elseif($params->list_id == 'referringPhysicians'){
+					return $this->getReferringPhysicians();
 				} else{
 					return false;
 				}
@@ -128,6 +134,17 @@ class CombosData {
 				'option_value' => $option['id']
 			);
 		}
+		return $options;
+	}
+
+	public function getReferringPhysicians($query = ''){
+		if($this->R == null)
+			$this->R = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
+
+		$options = array();
+
+
+
 		return $options;
 	}
 
@@ -207,6 +224,10 @@ class CombosData {
 		$records[] = array(
 			'id' => 'billingFacilities',
 			'title' => 'Billing Facilities'
+		);
+		$records[] = array(
+			'id' => 'referringPhysicians',
+			'title' => 'Referring Physicians'
 		);
 		return $records;
 	}

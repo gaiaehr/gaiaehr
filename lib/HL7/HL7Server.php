@@ -32,6 +32,8 @@ $path = $argv[3];
 $class = $argv[4];
 $method = $argv[5];
 $site = $argv[6];
+$token = $argv[7];
+
 chdir($path);
 include_once("$class.php");
 

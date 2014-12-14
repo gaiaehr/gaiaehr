@@ -44,15 +44,50 @@ class Services {
 	}
 
 	public function addEncounterService($params){
-		return $this->s->save($params);
+
+		include_once(ROOT.'/dataProvider/HL7Messages.php');
+		$HL7Messages = new HL7Messages();
+
+		if(is_array($params)){
+			$service = $this->s->save($params);
+			$service = (object) $service;
+			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+		}else{
+			$service = $this->s->save($params);
+			$service = (object) $service;
+			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+		}
+
+		return $service;
 	}
 
 	public function updateEncounterService($params){
-		return $this->s->save($params);
+
+
+		include_once(ROOT.'/dataProvider/HL7Messages.php');
+		$HL7Messages = new HL7Messages();
+
+		if(is_array($params)){
+			$service = $this->s->save($params);
+			$service = (object) $service;
+			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+		}else{
+			$service = $this->s->save($params);
+			$service = (object) $service;
+			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+
+		}
+
+		return $service;
 	}
 
 	public function removeEncounterService($params){
 		return $this->s->destroy($params);
+	}
+
+	public function getEncounterServicesByEid($eid){
+		$this->s->addFilter('eid', $eid);
+		return $this->s->load()->all();
 	}
 
 	/**

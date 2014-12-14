@@ -70,10 +70,10 @@ class ORC extends Segments{
 		 * XR Changed as requested
 		 * XX Order/service changed, unsol.
 		 */
-		$this->setField(1, 'ID', 1);
-		$this->setField(2, 'EI', 1);
-		$this->setField(3, 'EI', 1);
-		$this->setField(4, 'EI', 1);
+		$this->setField(1, 'ID', 2, true);
+		$this->setField(2, 'EI', 22);
+		$this->setField(3, 'EI', 22);
+		$this->setField(4, 'EI', 22);
 		/**
 		 * ORC-5 Order Status
 		 * A    Some, but not all, results available
@@ -86,7 +86,7 @@ class ORC extends Segments{
 		 * RP   Order has been replaced
 		 * SC   In process, scheduled
 		 */
-		$this->setField(5, 'ID', 1);
+		$this->setField(5, 'ID', 2);
 		/**
 		 * ORC-6 Response Flag
 		 * E    Report exceptions only
@@ -96,19 +96,19 @@ class ORC extends Segments{
 		 * N    Only the MSA segment is returned
 		 */
 		$this->setField(6, 'ID', 1);
-		$this->setField(7, 'TQ', 1);
-		$this->setField(8, 'EIP', 1);
-		$this->setField(9, 'TS', 1);
-		$this->setField(10, 'XCN', 1);
-		$this->setField(11, 'XCN', 1);
-		$this->setField(12, 'XCN', 1);
-		$this->setField(13, 'PL', 1);
-		$this->setField(14, 'XTN', 1);
-		$this->setField(15, 'TS', 1);
-		$this->setField(16, 'CE', 1);
-		$this->setField(17, 'CE', 1);
-		$this->setField(18, 'CE', 1);
-		$this->setField(19, 'XCN', 1);
+		$this->setField(7, 'TQ', 200, false, true);
+		$this->setField(8, 'EIP', 200);
+		$this->setField(9, 'TS', 26);
+		$this->setField(10, 'XCN', 250, false, true);
+		$this->setField(11, 'XCN', 250, false, true);
+		$this->setField(12, 'XCN', 250, false, true);
+		$this->setField(13, 'PL', 80);
+		$this->setField(14, 'XTN', 250, false, true);
+		$this->setField(15, 'TS', 26);
+		$this->setField(16, 'CE', 250);
+		$this->setField(17, 'CE', 250);
+		$this->setField(18, 'CE', 250);
+		$this->setField(19, 'XCN', 250, false, true);
 		/**
 		 * ORC-20 Advanced Beneficiary Notice Code
 		 * 1    Service is subject to medical necessity procedures
@@ -116,21 +116,21 @@ class ORC extends Segments{
 		 * 3    Patient has been informed of responsibility, and asks that the payer be billed
 		 * 4    Advanced Beneficiary Notice has not been signed
 		 */
-		$this->setField(20, 'CE', 1);
-		$this->setField(21, 'XON', 1);
-		$this->setField(22, 'XAD', 1);
-		$this->setField(23, 'XTN', 1);
-		$this->setField(24, 'XAD', 1);
-		$this->setField(25, 'CWE', 1);
-		$this->setField(26, 'CWE', 1);
-		$this->setField(27, 'TS', 1);
+		$this->setField(20, 'CE', 250);
+		$this->setField(21, 'XON', 250, false, true);
+		$this->setField(22, 'XAD', 250, false, true);
+		$this->setField(23, 'XTN', 250, false, true);
+		$this->setField(24, 'XAD', 250, false, true);
+		$this->setField(25, 'CWE', 250);
+		$this->setField(26, 'CWE', 60);
+		$this->setField(27, 'TS', 26);
 		$this->setField(28, 'CWE', 1);
 		/**
 		 * ORC – 29 Order Type
 		 * I    Inpatient Order
 		 * O    Outpatient Order
 		 */
-		$this->setField(29, 'CWE', 1);
+		$this->setField(29, 'CWE', 250);
 		/**
 		 * ORC – 30 Enterer Authorization Mode
 		 * EL   Electronic
@@ -144,7 +144,7 @@ class ORC extends Segments{
 		 * VC   Video-conference
 		 * VO   Voice
 		 */
-		$this->setField(30, 'CNE', 1);
-		$this->setField(31, 'CWE', 1);
+		$this->setField(30, 'CNE', 250);
+		$this->setField(31, 'CWE', 250);
 	}
 }

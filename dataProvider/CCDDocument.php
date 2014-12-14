@@ -136,8 +136,9 @@ class CCDDocument {
 		'SNOMEDCT' => '2.16.840.1.113883.6.96',
 		'SNOMED-CT' => '2.16.840.1.113883.6.96',
 		'NPI' => '2.16.840.1.113883.4.6',
-	    'UNII' => '2.16.840.1.113883.4.9',
-	    'NCI' => '2.16.840.1.113883.3.26.1.1'
+		'UNII' => '2.16.840.1.113883.4.9',
+		'NCI' => '2.16.840.1.113883.3.26.1.1',
+		'ActPriority' => '2.16.840.1.113883.1.11.16866'
 	);
 	/**
 	 * @var array
@@ -180,7 +181,7 @@ class CCDDocument {
 	 */
 	private $requiredEncounters;
 
-	function __construct(){
+	function __construct() {
 		$this->dateNow = date('Ymd');
 		$this->timeNow = date('YmdHisO');
 		$this->Encounter = new Encounter();
@@ -192,29 +193,29 @@ class CCDDocument {
 	/**
 	 * @param $pid
 	 */
-	public function setPid($pid){
+	public function setPid($pid) {
 		$this->pid = $pid;
 	}
 
 	/**
 	 * @param $eid
 	 */
-	public function setEid($eid){
+	public function setEid($eid) {
 		$this->eid = $eid;
 	}
 
 	/**
 	 * @param $template
 	 */
-	public function setTemplate($template){
+	public function setTemplate($template) {
 		$this->template = $template;
 	}
 
 	/**
 	 * Method buildCCD()
 	 */
-	public function createCCD(){
-		try{
+	public function createCCD() {
+		try {
 			if(!isset($this->pid))
 				throw new Exception('PID variable not set');
 
@@ -248,7 +249,10 @@ class CCDDocument {
 			 * Run Section method for each section
 			 */
 			foreach($sections AS $Section){
-				call_user_func(array($this, "set{$Section}Section"));
+				call_user_func(array(
+					$this,
+					"set{$Section}Section"
+				));
 			}
 
 			/**
@@ -256,7 +260,7 @@ class CCDDocument {
 			 */
 			Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"'));
 			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 	}
@@ -264,11 +268,11 @@ class CCDDocument {
 	/**
 	 * Method view()
 	 */
-	public function view(){
-		try{
+	public function view() {
+		try {
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 	}
@@ -276,10 +280,10 @@ class CCDDocument {
 	/**
 	 * Method get()
 	 */
-	public function get(){
-		try{
+	public function get() {
+		try {
 			return $this->xml->saveXML();
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -287,8 +291,8 @@ class CCDDocument {
 	/**
 	 * Method export()
 	 */
-	public function export(){
-		try{
+	public function export() {
+		try {
 			/**
 			 * Create a ZIP archive for delivery
 			 */
@@ -303,7 +307,7 @@ class CCDDocument {
 			header('Content-Disposition: attachment; filename="' . $filename . '.zip' . '"');
 			readfile($file);
 			unlink($file);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 
@@ -314,11 +318,11 @@ class CCDDocument {
 	 * @param $toDir
 	 * @param $fileName
 	 */
-	public function save($toDir, $fileName){
-		try{
+	public function save($toDir, $fileName) {
+		try {
 			$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
 			$this->zipIt($toDir, $filename);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 	}
@@ -326,14 +330,14 @@ class CCDDocument {
 	/**
 	 * @return mixed
 	 */
-	private function getTemplateId(){
+	private function getTemplateId() {
 		return $this->templateIds[$this->template];
 	}
 
 	/**
 	 * Method setRequirements()
 	 */
-	private function setRequirements(){
+	private function setRequirements() {
 		if($this->template == 'toc'){
 			$this->requiredAllergies = true;
 			$this->requiredVitals = true;
@@ -350,7 +354,7 @@ class CCDDocument {
 	/**
 	 * Method zipIt()
 	 */
-	private function zipIt($dir, $filename){
+	private function zipIt($dir, $filename) {
 		$zip = new ZipArchive();
 		$file = $dir . $filename . '.zip';
 		if($zip->open($file, ZipArchive::CREATE) !== true)
@@ -364,7 +368,7 @@ class CCDDocument {
 	/**
 	 * Method setHeader()
 	 */
-	private function setHeader(){
+	private function setHeader() {
 		$this->xmlData['realmCode'] = array(
 			'@attributes' => array(
 				'code' => 'US'
@@ -434,12 +438,11 @@ class CCDDocument {
 	 * Method getRecordTarget()
 	 * @return array
 	 */
-	private function getRecordTarget(){
+	private function getRecordTarget() {
 		$Patient = new Patient();
 		$patientData = $this->patientData = $Patient->getPatientDemographicDataByPid($this->pid);
 		$Insurance = new Insurance();
 		$insuranceData = $Insurance->getPatientPrimaryInsuranceByPid($this->pid);
-
 
 		$recordTarget['typeId'] = array(
 			'@attributes' => array(
@@ -521,7 +524,7 @@ class CCDDocument {
 
 		if($patientData['sex'] == 'F'){
 			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Female';
-		}elseif($patientData['sex'] == 'M'){
+		} elseif($patientData['sex'] == 'M') {
 			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Male';
 		}
 
@@ -573,7 +576,7 @@ class CCDDocument {
 	 * Method getAuthor()
 	 * @return array
 	 */
-	private function getAuthor(){
+	private function getAuthor() {
 		$User = new User();
 		$this->user = $User->getCurrentUserData();
 		$author = array(
@@ -618,7 +621,7 @@ class CCDDocument {
 				'telecom' => array(
 					'@attributes' => array(
 						'value' => 'tel:' . $this->facility['phone'],
-					    'use' => 'HP'
+						'use' => 'HP'
 					)
 				),
 				'assignedPerson' => array(
@@ -673,7 +676,7 @@ class CCDDocument {
 	 * Method getCustodian()
 	 * @return array
 	 */
-	private function getCustodian(){
+	private function getCustodian() {
 		$custodian = array(
 			'assignedCustodian' => array(
 				'representedCustodianOrganization' => array(
@@ -720,7 +723,7 @@ class CCDDocument {
 	 * Method getDocumentationOf()
 	 * @return array
 	 */
-	private function getDocumentationOf(){
+	private function getDocumentationOf() {
 		$documentationOf = array(
 			'serviceEvent' => array(
 				'@attributes' => array(
@@ -774,24 +777,30 @@ class CCDDocument {
 								'use' => 'HP',
 							),
 							'streetAddressLine' => array(
-								'@value' => $this->facility['street'] //TODO provider
+								'@value' => $this->facility['street']
+								//TODO provider
 							),
 							'city' => array(
-								'@value' => $this->facility['city']//TODO provider
+								'@value' => $this->facility['city']
+								//TODO provider
 							),
 							'state' => array(
-								'@value' => $this->facility['state']//TODO provider
+								'@value' => $this->facility['state']
+								//TODO provider
 							),
 							'postalCode' => array(
-								'@value' => $this->facility['postal_code']//TODO provider
+								'@value' => $this->facility['postal_code']
+								//TODO provider
 							),
 							'country' => array(
-								'@value' => $this->facility['country_code']//TODO provider
+								'@value' => $this->facility['country_code']
+								//TODO provider
 							)
 						),
 						'telecom' => array(
 							'@attributes' => array(
-								'value' => 'tel:(000)000-0000',//TODO provider
+								'value' => 'tel:(000)000-0000',
+								//TODO provider
 							)
 						),
 						'assignedPerson' => array(
@@ -811,7 +820,8 @@ class CCDDocument {
 							'name' => $this->facility['name'],
 							'telecom' => array(
 								'@attributes' => array(
-									'value' => 'tel:(000)000-0000',//TODO provider
+									'value' => 'tel:(000)000-0000',
+									//TODO provider
 								)
 							),
 							'addr' => array(
@@ -819,19 +829,24 @@ class CCDDocument {
 									'use' => 'HP',
 								),
 								'streetAddressLine' => array(
-									'@value' => $this->facility['street'] //TODO provider
+									'@value' => $this->facility['street']
+									//TODO provider
 								),
 								'city' => array(
-									'@value' => $this->facility['city']//TODO provider
+									'@value' => $this->facility['city']
+									//TODO provider
 								),
 								'state' => array(
-									'@value' => $this->facility['state']//TODO provider
+									'@value' => $this->facility['state']
+									//TODO provider
 								),
 								'postalCode' => array(
-									'@value' => $this->facility['postal_code']//TODO provider
+									'@value' => $this->facility['postal_code']
+									//TODO provider
 								),
 								'country' => array(
-									'@value' => $this->facility['country_code']//TODO provider
+									'@value' => $this->facility['country_code']
+									//TODO provider
 								)
 							)
 						)
@@ -846,7 +861,7 @@ class CCDDocument {
 	 * Method getInformant()
 	 * @return array
 	 */
-	private function getInformant(){
+	private function getInformant() {
 		//		$informant = array(
 		//			'assignedEntity' => array(
 		//				'id' => array(
@@ -872,7 +887,7 @@ class CCDDocument {
 	 * Method getLegalAuthenticator()
 	 * @return array
 	 */
-	private function getLegalAuthenticator(){
+	private function getLegalAuthenticator() {
 		//$legalAuthenticator = array(
 		//	'time' => array(
 		//		'@attributes' => array(
@@ -930,18 +945,107 @@ class CCDDocument {
 		return array();
 	}
 
+	private function getPerformerByUid($uid){
+
+		$User = new User();
+		$user = $User->getUser($uid);
+		unset($User);
+
+		if($user === false) return false;
+		$user = (object) $user;
+
+
+		if($user->facility_id == 0) return false;
+
+		$Facilities = new Facilities();
+		$facility = $Facilities->getFacility(array('id' => $user->facility_id));
+		if($user === false) return false;
+		$facility = (object) $facility;
+
+		$performer =  array(
+			'assignedEntity' => array(
+				'id' => array(
+					'@attributes' => array(
+						'root' => UUID::v4()
+					)
+				),
+				'addr' => array(
+					'@attributes' => array(
+						'use' => 'HP',
+					),
+					'streetAddressLine' => array(
+						'@value' => (isset($user->street) ? $user->street : '')
+					),
+					'city' => array(
+						'@value' => (isset($user->city) ? $user->city : '')
+					),
+					'state' => array(
+						'@value' => (isset($user->state) ? $user->state : '')
+					),
+					'postalCode' => array(
+						'@value' => (isset($user->postal_code) ? $user->postal_code : '')
+					),
+					'country' => array(
+						'@value' => (isset($user->country_code) ? $user->country_code : '')
+					)
+				),
+				'telecom' => array(
+					'@attributes' => array(
+						'value' => 'tel:' . (isset($user->phone) ? $user->phone : '')
+					)
+				),
+				'representedOrganization' => array(
+					'id' => array(
+						'@attributes' => array(
+							'root' => '2.16.840.1.113883.19.5',
+							'extension' => UUID::v4()
+						)
+					),
+					'name' => $facility->name,
+					'telecom' => array(
+						'@attributes' => array(
+							'value' => 'tel:' . $facility->phone,
+						)
+					),
+					'addr' => array(
+						'@attributes' => array(
+							'use' => 'HP',
+						),
+						'streetAddressLine' => array(
+							'@value' => $facility->street
+						),
+						'city' => array(
+							'@value' => $facility->city
+						),
+						'state' => array(
+							'@value' => $facility->state
+						),
+						'postalCode' => array(
+							'@value' => $facility->postal_code
+						),
+						'country' => array(
+							'@value' => $facility->country_code
+						)
+					)
+				)
+			)
+		);
+
+		return $performer;
+	}
+
 	/**
 	 * Method addSection()
 	 * @param $section
 	 */
-	private function addSection($section){
+	private function addSection($section) {
 		$this->xmlData['component']['structuredBody']['component'][] = $section;
 	}
 
 	/**
 	 * Method setProceduresSection()
 	 */
-	private function setProceduresSection(){
+	private function setProceduresSection() {
 
 		$Procedures = new Procedures();
 		$proceduresData = $Procedures->getPatientProceduresByPid($this->pid);
@@ -1012,8 +1116,7 @@ class CCDDocument {
 				);
 
 				//  Procedure Activity Procedure
-
-				$procedures['section']['entry'][] = array(
+				$entry = array(
 					'@attributes' => array(
 						'typeCode' => 'DRIV'
 					),
@@ -1047,17 +1150,22 @@ class CCDDocument {
 						'effectiveTime' => array(
 							'@attributes' => array(
 								'value' => $this->parseDate($item['create_date'])
-
-							)
-						),
-						'methodCode' => array(
-							'@attributes' => array(
-								'nullFlavor' => 'UNK'
-
 							)
 						)
 					)
 				);
+
+				if($item['uid'] > 0){
+					$entry['procedure']['performer'] = $this->getPerformerByUid($item['uid']);
+				};
+
+				$entry['procedure']['methodCode'] = array(
+					'@attributes' => array(
+						'nullFlavor' => 'UNK'
+					)
+				);
+
+				$procedures['section']['entry'][] = $entry;
 			}
 		}
 
@@ -1070,7 +1178,7 @@ class CCDDocument {
 	/**
 	 * Method setVitalsSection()
 	 */
-	private function setVitalsSection(){
+	private function setVitalsSection() {
 		$Vitals = new Vitals();
 		$vitalsData = $Vitals->getVitalsByPid($this->pid);
 
@@ -1093,7 +1201,6 @@ class CCDDocument {
 		);
 		$vitals['section']['title'] = 'Vital Signs';
 		$vitals['section']['text'] = '';
-
 
 		if(!empty($vitalsData)){
 
@@ -1420,10 +1527,10 @@ class CCDDocument {
 	/**
 	 * Method setImmunizationsSection()
 	 */
-	private function setImmunizationsSection(){
+	private function setImmunizationsSection() {
 
 		$Immunizations = new Immunizations();
-		$immunizationsData =$Immunizations->getPatientImmunizationsByPid($this->pid);
+		$immunizationsData = $Immunizations->getPatientImmunizationsByPid($this->pid);
 		unset($Immunizations);
 
 		if(empty($immunizationsData)){
@@ -1522,14 +1629,14 @@ class CCDDocument {
 								'value' => $date
 							)
 						),
-//						'routeCode' => array(
-//							'@attributes' => array(
-//								'code' => 'C28161',
-//								'codeSystem' => '2.16.840.1.113883.3.26.1.1',
-//								'codeSystemName' => 'NCI Thesaurus',
-//								'displayName' => 'INTRAMUSCULAR',
-//							)
-//						),
+						//						'routeCode' => array(
+						//							'@attributes' => array(
+						//								'code' => 'C28161',
+						//								'codeSystem' => '2.16.840.1.113883.3.26.1.1',
+						//								'codeSystemName' => 'NCI Thesaurus',
+						//								'displayName' => 'INTRAMUSCULAR',
+						//							)
+						//						),
 						'consumable' => array(
 							'manufacturedProduct' => array(
 								'@attributes' => array(
@@ -1567,7 +1674,7 @@ class CCDDocument {
 	/**
 	 * Method setMedicationsSection()
 	 */
-	private function setMedicationsSection(){
+	private function setMedicationsSection() {
 
 		$Medications = new Medications();
 		$medicationsData = $Medications->getPatientActiveMedicationsByPid($this->pid);
@@ -1593,7 +1700,6 @@ class CCDDocument {
 		$medications['section']['title'] = 'Medications';
 		$medications['section']['text'] = '';
 
-
 		if(!empty($medicationsData)){
 
 			$medications['section']['text'] = array(
@@ -1618,12 +1724,12 @@ class CCDDocument {
 									array(
 										'@value' => 'Status'
 									),
-//									array(
-//										'@value' => 'Indications' // diagnosis
-//									),
-//									array(
-//										'@value' => 'Fill Instructions' //1 refill Generic Substitition Allowed
-//									)
+									//									array(
+									//										'@value' => 'Indications' // diagnosis
+									//									),
+									//									array(
+									//										'@value' => 'Fill Instructions' //1 refill Generic Substitition Allowed
+									//									)
 								)
 							)
 						)
@@ -1643,7 +1749,7 @@ class CCDDocument {
 							'@value' => $item['STR'] . ' ' . $item['dose'] . ' ' . $item['form']
 						),
 						array(
-							'@value' =>  $item['directions']
+							'@value' => $item['directions']
 						),
 						array(
 							'@value' => date('F j, Y', strtotime($item['begin_date']))
@@ -1698,7 +1804,7 @@ class CCDDocument {
 							'value' => date('Ymd', strtotime($item['end_date']))
 						)
 					);
-				}else{
+				} else {
 					$entry['substanceAdministration']['effectiveTime']['high'] = array(
 						'@attributes' => array(
 							'nullFlavor' => 'NI'
@@ -1744,7 +1850,7 @@ class CCDDocument {
 	/**
 	 * Method setPlanOfCareSection() TODO
 	 */
-	private function setPlanOfCareSection(){
+	private function setPlanOfCareSection() {
 
 		/**
 		 * Table moodCode Values
@@ -1767,11 +1873,7 @@ class CCDDocument {
 		$CarePlanGoals = new CarePlanGoals();
 		$planOfCareData['PROC'] = $CarePlanGoals->getPatientCarePlanGoalsByPid($this->pid);
 
-
-		$hasData = !empty($planOfCareData['OBS']) ||
-			!empty($planOfCareData['ACT']) ||
-			!empty($planOfCareData['ENC']) ||
-			!empty($planOfCareData['PROC']);
+		$hasData = !empty($planOfCareData['OBS']) || !empty($planOfCareData['ACT']) || !empty($planOfCareData['ENC']) || !empty($planOfCareData['PROC']);
 
 		if(!$hasData){
 			$planOfCare['section']['@attributes'] = array(
@@ -1886,10 +1988,12 @@ class CCDDocument {
 				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Test' //TODO
+							'@value' => 'Test'
+							//TODO
 						),
 						array(
-							'@value' => 'Ting' //TODO
+							'@value' => 'Ting'
+							//TODO
 						)
 					)
 				);
@@ -1912,10 +2016,13 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '23426006', //TODO
+								'code' => '23426006',
+								//TODO
 								'codeSystemName' => 'SNOMEDCT',
-								'codeSystem' => '2.16.840.1.113883.6.96', //TODO
-								'displayName' => 'Pulmonary function test', //TODO
+								'codeSystem' => '2.16.840.1.113883.6.96',
+								//TODO
+								'displayName' => 'Pulmonary function test',
+								//TODO
 							)
 						),
 						'statusCode' => array(
@@ -1925,7 +2032,8 @@ class CCDDocument {
 						),
 						'effectiveTime' => array(
 							'@attributes' => array(
-								'center' => '20000421'  //TODO
+								'center' => '20000421'
+								//TODO
 							)
 						)
 					)
@@ -1939,10 +2047,12 @@ class CCDDocument {
 				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Test' //TODO
+							'@value' => 'Test'
+							//TODO
 						),
 						array(
-							'@value' => 'Ting' //TODO
+							'@value' => 'Ting'
+							//TODO
 						)
 					)
 				);
@@ -1965,10 +2075,13 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '23426006', //TODO
+								'code' => '23426006',
+								//TODO
 								'codeSystemName' => 'SNOMEDCT',
-								'codeSystem' => '2.16.840.1.113883.6.96', //TODO
-								'displayName' => 'Pulmonary function test', //TODO
+								'codeSystem' => '2.16.840.1.113883.6.96',
+								//TODO
+								'displayName' => 'Pulmonary function test',
+								//TODO
 							)
 						),
 						'statusCode' => array(
@@ -1978,7 +2091,8 @@ class CCDDocument {
 						),
 						'effectiveTime' => array(
 							'@attributes' => array(
-								'center' => '20000421'  //TODO
+								'center' => '20000421'
+								//TODO
 							)
 						)
 					)
@@ -2050,7 +2164,7 @@ class CCDDocument {
 	/**
 	 * Method setProblemsSection()
 	 */
-	private function setProblemsSection(){
+	private function setProblemsSection() {
 
 		$ActiveProblems = new ActiveProblems();
 		$problemsData = $ActiveProblems->getPatientActiveProblemByPid($this->pid);
@@ -2115,15 +2229,13 @@ class CCDDocument {
 				)
 			);
 
-
-
 			$problems['section']['entry'] = array();
 
 			foreach($problemsData as $item){
 
 				$dateText = $this->parseDate($item['begin_date']) . ' - ';
-				if($item['end_date'] != '0000-00-00') $dateText .= $this->parseDate($item['end_date']);
-
+				if($item['end_date'] != '0000-00-00')
+					$dateText .= $this->parseDate($item['end_date']);
 
 				$problems['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
@@ -2189,7 +2301,7 @@ class CCDDocument {
 							'value' => $this->parseDate($item['end_date'])
 						)
 					);
-				}else{
+				} else {
 					$entry['act']['effectiveTime']['high'] = array(
 						'@attributes' => array(
 							'nullFlavor' => 'NI'
@@ -2258,14 +2370,13 @@ class CCDDocument {
 							'value' => $this->parseDate($item['end_date'])
 						)
 					);
-				}else{
+				} else {
 					$entry['act']['entryRelationship']['observation']['effectiveTime']['high'] = array(
 						'@attributes' => array(
 							'nullFlavor' => 'NI'
 						)
 					);
 				}
-
 
 				$entry['act']['entryRelationship']['observation']['value'] = array(
 					'@attributes' => array(
@@ -2334,7 +2445,7 @@ class CCDDocument {
 	/**
 	 * Method setAllergiesSection()
 	 */
-	private function setAllergiesSection(){
+	private function setAllergiesSection() {
 		$Allergies = new Allergies();
 
 		$allergiesData = $Allergies->getPatientAllergiesByPid($this->pid);
@@ -2393,7 +2504,6 @@ class CCDDocument {
 				)
 			);
 
-
 			$allergies['section']['entry'] = array();
 
 			foreach($allergiesData as $item){
@@ -2443,7 +2553,7 @@ class CCDDocument {
 
 				$entry['act']['statusCode'] = array(
 					'@attributes' => array( // use snomed code for active
-						'code' => $item['end_date'] == '0000-00-00' ? 'active' : 'completed',
+					                        'code' => $item['end_date'] == '0000-00-00' ? 'active' : 'completed',
 					)
 				);
 
@@ -2511,7 +2621,7 @@ class CCDDocument {
 							'value' => $this->parseDate($item['begin_date'])
 						)
 					);
-				}else{
+				} else {
 					$entry['act']['entryRelationship']['observation']['effectiveTime']['low'] = array(
 						'@attributes' => array(
 							'nullFLavor' => 'UNK'
@@ -2573,7 +2683,6 @@ class CCDDocument {
 					)
 				);
 
-
 				// Allergy Status Observation
 				$entryRelationship = array(
 					'@attributes' => array(
@@ -2617,7 +2726,7 @@ class CCDDocument {
 							'value' => $this->parseDate($item['begin_date'])
 						)
 					);
-				}else{
+				} else {
 					$entryRelationship['observation']['effectiveTime']['low'] = array(
 						'@attributes' => array(
 							'nullFLavor' => 'UNK'
@@ -2642,7 +2751,6 @@ class CCDDocument {
 						'codeSystem' => $this->codes[$item['status_code_type']]
 					)
 				);
-
 
 				$entry['act']['entryRelationship']['observation']['entryRelationship'][] = $entryRelationship;
 				unset($entryRelationship);
@@ -2681,7 +2789,6 @@ class CCDDocument {
 					)
 				);
 
-
 				$entryRelationship['observation']['effectiveTime'] = array(
 					'@attributes' => array(
 						'xsi:type' => 'IVL_TS',
@@ -2694,7 +2801,7 @@ class CCDDocument {
 							'value' => $this->parseDate($item['begin_date'])
 						)
 					);
-				}else{
+				} else {
 					$entryRelationship['observation']['effectiveTime']['low'] = array(
 						'@attributes' => array(
 							'nullFLavor' => 'UNK'
@@ -2720,7 +2827,6 @@ class CCDDocument {
 					)
 				);
 
-
 				$entry['act']['entryRelationship']['observation']['entryRelationship'][] = $entryRelationship;
 				unset($entryRelationship);
 
@@ -2745,7 +2851,7 @@ class CCDDocument {
 								'code' => 'SEV',
 								'codeSystemName' => 'ActCode',
 								'codeSystem' => '2.16.840.1.113883.5.4',
-							    'displayName' => 'Severity Observation'
+								'displayName' => 'Severity Observation'
 							)
 						),
 						'statusCode' => array(
@@ -2768,7 +2874,7 @@ class CCDDocument {
 							'value' => $this->parseDate($item['begin_date'])
 						)
 					);
-				}else{
+				} else {
 					$entryRelationship['observation']['effectiveTime']['low'] = array(
 						'@attributes' => array(
 							'nullFLavor' => 'UNK'
@@ -2810,7 +2916,7 @@ class CCDDocument {
 	/**
 	 * Method setSocialHistorySection()
 	 */
-	private function setSocialHistorySection(){
+	private function setSocialHistorySection() {
 
 		$SocialHistory = new SocialHistory();
 
@@ -2908,14 +3014,12 @@ class CCDDocument {
 		}
 		unset($smokingStatus);
 
-
 		/***************************************************************************************************************
 		 * This Social History Observation defines the patient's occupational, personal (e.g., lifestyle),
 		 * social, and environmental history and health risk factors, as well as administrative data such
 		 * as marital status, race, ethnicity, and religious affiliation.
 		 */
 		$socialHistories = $SocialHistory->getSocialHistoryByPidAndCode($this->pid);
-
 
 		if(count($socialHistories) > 0){
 
@@ -2952,7 +3056,8 @@ class CCDDocument {
 		foreach($socialHistories As $socialHistoryEntry){
 
 			$dateText = $this->parseDate($socialHistoryEntry['start_date']) . ' - ';
-			if($socialHistoryEntry['end_date'] != '0000-00-00 00:00:00') $dateText .= $this->parseDate($socialHistoryEntry['end_date']);
+			if($socialHistoryEntry['end_date'] != '0000-00-00 00:00:00')
+				$dateText .= $this->parseDate($socialHistoryEntry['end_date']);
 
 			$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
 				'td' => array(
@@ -2988,23 +3093,23 @@ class CCDDocument {
 						)
 					),
 					/**
-					 * Code	        System  	Print Name
-					 * 229819007	SNOMEDCT	Tobacco use and exposure
-					 * 256235009	SNOMEDCT	Exercise
-					 * 160573003	SNOMEDCT	Alcohol intake
-					 * 364393001	SNOMEDCT	Nutritional observable
-					 * 364703007	SNOMEDCT	Employment detail
-					 * 425400000	SNOMEDCT	Toxic exposure status
-					 * 363908000	SNOMEDCT	Details of drug misuse behavior
-					 * 228272008	SNOMEDCT	Health-related behavior
-					 * 105421008	SNOMEDCT	Educational Achievement
+					 * Code            System    Print Name
+					 * 229819007    SNOMEDCT    Tobacco use and exposure
+					 * 256235009    SNOMEDCT    Exercise
+					 * 160573003    SNOMEDCT    Alcohol intake
+					 * 364393001    SNOMEDCT    Nutritional observable
+					 * 364703007    SNOMEDCT    Employment detail
+					 * 425400000    SNOMEDCT    Toxic exposure status
+					 * 363908000    SNOMEDCT    Details of drug misuse behavior
+					 * 228272008    SNOMEDCT    Health-related behavior
+					 * 105421008    SNOMEDCT    Educational Achievement
 					 */
 					'code' => array(
 						'@attributes' => array(
 							'code' => $socialHistoryEntry['category_code'],
 							'codeSystem' => $this->codes[$socialHistoryEntry['category_code_type']],
 							'codeSystemName' => $socialHistoryEntry['category_code_text'],
-						    'displayName' => $socialHistoryEntry['category_code_text']
+							'displayName' => $socialHistoryEntry['category_code_text']
 						)
 					),
 					'statusCode' => array(
@@ -3033,7 +3138,7 @@ class CCDDocument {
 						'value' => $this->parseDate($socialHistoryEntry['end_date'])
 					)
 				);
-			}else{
+			} else {
 				$entry['observation']['effectiveTime']['high'] = array(
 					'@attributes' => array(
 						'nullFlavor' => 'NI'
@@ -3055,96 +3160,95 @@ class CCDDocument {
 		}
 		unset($socialHistories);
 
-
-//		/***************************************************************************************************************
-//		 * Pregnancy Observation - This clinical statement represents current and/or
-//		 * prior pregnancy dates enabling investigators to determine if the subject
-//		 * of the case report* was pregnant during the course of a condition.
-//		 */
-//		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
-//			'td' => array(
-//				array(
-//					'@value' => 'Social History Element Data'
-//				),
-//				array(
-//					'@value' => 'ReactiDescriptionon Data'
-//				),
-//				array(
-//					'@value' => 'Effective Data'
-//				)
-//			)
-//		);
-//		$socialHistory['section']['entry'][] = array(
-//			'@attributes' => array(
-//				'typeCode' => 'DRIV'
-//			),
-//			'observation' => array(
-//				'@attributes' => array(
-//					'classCode' => 'OBS',
-//					'moodCode' => 'EVN'
-//				),
-//				'templateId' => array(
-//					'@attributes' => array(
-//						'root' => '2.16.840.1.113883.10.20.15.3.8'
-//					)
-//				),
-//				'code' => array(
-//					'@attributes' => array(
-//						'code' => 'ASSERTION',
-//						'codeSystem' => '2.16.840.1.113883.5.4'
-//					)
-//				),
-//				'statusCode' => array(
-//					'@attributes' => array(
-//						'code' => 'completed',
-//					)
-//				),
-//				'value' => array(
-//					'@attributes' => array(
-//						'xsi:type' => 'CD',
-//						'code' => '77386006',
-//						'codeSystem' => '2.16.840.1.113883.6.96'
-//					)
-//				),
-//				'entryRelationship' => array(
-//					'@attributes' => array(
-//						'typeCode' => 'REFR'
-//					),
-//					'observation' => array(
-//						'@attributes' => array(
-//							'classCode' => 'OBS',
-//							'moodCode' => 'EVN'
-//						),
-//						'templateId' => array(
-//							'@attributes' => array(
-//								'root' => '2.16.840.1.113883.10.20.15.3.1'
-//							)
-//						),
-//						'code' => array(
-//							'@attributes' => array(
-//								'code' => '11778-8',
-//		                        'codeSystemName' => 'LOINC',
-//								'codeSystem' => '2.16.840.1.113883.6.1'
-//							)
-//						),
-//						'statusCode' => array(
-//							'@attributes' => array(
-//								'code' => 'completed'
-//							)
-//						),
-//						/**
-//						 * Estimated Date Of Delivery
-//						 */
-//						'value' => array(
-//							'@attributes' => array(
-//								'xsi:type' => 'TS',
-//								'value' => '20150123' // TODO
-//							)
-//						)
-//					)
-//				)
-//			)
-//		);
+		//		/***************************************************************************************************************
+		//		 * Pregnancy Observation - This clinical statement represents current and/or
+		//		 * prior pregnancy dates enabling investigators to determine if the subject
+		//		 * of the case report* was pregnant during the course of a condition.
+		//		 */
+		//		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
+		//			'td' => array(
+		//				array(
+		//					'@value' => 'Social History Element Data'
+		//				),
+		//				array(
+		//					'@value' => 'ReactiDescriptionon Data'
+		//				),
+		//				array(
+		//					'@value' => 'Effective Data'
+		//				)
+		//			)
+		//		);
+		//		$socialHistory['section']['entry'][] = array(
+		//			'@attributes' => array(
+		//				'typeCode' => 'DRIV'
+		//			),
+		//			'observation' => array(
+		//				'@attributes' => array(
+		//					'classCode' => 'OBS',
+		//					'moodCode' => 'EVN'
+		//				),
+		//				'templateId' => array(
+		//					'@attributes' => array(
+		//						'root' => '2.16.840.1.113883.10.20.15.3.8'
+		//					)
+		//				),
+		//				'code' => array(
+		//					'@attributes' => array(
+		//						'code' => 'ASSERTION',
+		//						'codeSystem' => '2.16.840.1.113883.5.4'
+		//					)
+		//				),
+		//				'statusCode' => array(
+		//					'@attributes' => array(
+		//						'code' => 'completed',
+		//					)
+		//				),
+		//				'value' => array(
+		//					'@attributes' => array(
+		//						'xsi:type' => 'CD',
+		//						'code' => '77386006',
+		//						'codeSystem' => '2.16.840.1.113883.6.96'
+		//					)
+		//				),
+		//				'entryRelationship' => array(
+		//					'@attributes' => array(
+		//						'typeCode' => 'REFR'
+		//					),
+		//					'observation' => array(
+		//						'@attributes' => array(
+		//							'classCode' => 'OBS',
+		//							'moodCode' => 'EVN'
+		//						),
+		//						'templateId' => array(
+		//							'@attributes' => array(
+		//								'root' => '2.16.840.1.113883.10.20.15.3.1'
+		//							)
+		//						),
+		//						'code' => array(
+		//							'@attributes' => array(
+		//								'code' => '11778-8',
+		//		                        'codeSystemName' => 'LOINC',
+		//								'codeSystem' => '2.16.840.1.113883.6.1'
+		//							)
+		//						),
+		//						'statusCode' => array(
+		//							'@attributes' => array(
+		//								'code' => 'completed'
+		//							)
+		//						),
+		//						/**
+		//						 * Estimated Date Of Delivery
+		//						 */
+		//						'value' => array(
+		//							'@attributes' => array(
+		//								'xsi:type' => 'TS',
+		//								'value' => '20150123' // TODO
+		//							)
+		//						)
+		//					)
+		//				)
+		//			)
+		//		);
 
 		$this->addSection($socialHistory);
 		unset($socialHistoryData, $socialHistory);
@@ -3153,7 +3257,7 @@ class CCDDocument {
 	/**
 	 * Method setResultsSection()
 	 */
-	private function setResultsSection(){
+	private function setResultsSection() {
 
 		$Orders = new Orders();
 		$resultsData = $Orders->getOrderWithResultsByPid($this->pid);
@@ -3188,7 +3292,7 @@ class CCDDocument {
 						'border' => '1',
 						'width' => '100%'
 					),
-				    'tbody' => array()
+					'tbody' => array()
 				)
 			);
 			$results['section']['entry'] = array();
@@ -3210,14 +3314,14 @@ class CCDDocument {
 					)
 				);
 
-
 				$entry = array(
 					'@attributes' => array(
 						'typeCode' => 'DRIV'
 					),
 					'organizer' => array(
 						'@attributes' => array(
-							'classCode' => 'CLUSTER', // CLUSTER || BATTERY
+							'classCode' => 'CLUSTER',
+							// CLUSTER || BATTERY
 							'moodCode' => 'EVN'
 						),
 						'templateId' => array(
@@ -3256,7 +3360,6 @@ class CCDDocument {
 					)
 				);
 
-
 				foreach($item['result']['observations'] as $obs){
 					$results['section']['text']['table']['tbody'][] = array(
 						'tr' => array(
@@ -3269,7 +3372,7 @@ class CCDDocument {
 										'@attributes' => array(
 											'align' => 'left'
 										),
-										'@value' => htmlentities($obs['value'] . ' ' . $obs['units'] . ' ['. $obs['reference_rage'] . ']')
+										'@value' => htmlentities($obs['value'] . ' ' . $obs['units'] . ' [' . $obs['reference_rage'] . ']')
 									)
 								)
 							)
@@ -3343,7 +3446,7 @@ class CCDDocument {
 						if($obs['units'] != ''){
 							$component['observation']['value']['@attributes']['unit'] = htmlentities($obs['units']);
 						}
-					}else{
+					} else {
 						$component['observation']['value'] = array(
 							'@attributes' => array(
 								'xsi:type' => 'ST'
@@ -3351,9 +3454,6 @@ class CCDDocument {
 							'@value' => htmlentities($obs['value'])
 						);
 					}
-
-
-
 
 					$component['observation']['interpretationCode'] = array(
 						'@attributes' => array(
@@ -3397,8 +3497,6 @@ class CCDDocument {
 				$results['section']['entry'][] = $entry;
 			}
 
-
-
 		}
 
 		if($this->requiredResults || !empty($results['section']['entry'])){
@@ -3410,11 +3508,10 @@ class CCDDocument {
 	/**
 	 * Method setFunctionalStatusSection() TODO
 	 */
-	private function setFunctionalStatusSection(){
+	private function setFunctionalStatusSection() {
 
 		$CognitiveAndFunctionalStatus = new CognitiveAndFunctionalStatus();
 		$functionalStatusData = $CognitiveAndFunctionalStatus->getPatientCognitiveAndFunctionalStatusesByPid($this->pid);
-
 
 		if(empty($functionalStatusData)){
 			$functionalStatus['section']['@attributes'] = array(
@@ -3470,7 +3567,6 @@ class CCDDocument {
 			);
 			$functionalStatus['section']['entry'] = array();
 
-
 			foreach($functionalStatusData as $item){
 
 				$functionalStatus['section']['text']['table']['tbody']['tr'][] = array(
@@ -3502,8 +3598,8 @@ class CCDDocument {
 
 				$entry['observation']['templateId'] = array(
 					'@attributes' => array(
-						'root' => ($item['category_code'] == '363871006' ? '2.16.840.1.113883.10.20.22.4.74': '2.16.840.1.113883.10.20.22.4.67')
-			)
+						'root' => ($item['category_code'] == '363871006' ? '2.16.840.1.113883.10.20.22.4.74' : '2.16.840.1.113883.10.20.22.4.67')
+					)
 				);
 
 				$entry['observation']['id'] = array(
@@ -3533,7 +3629,7 @@ class CCDDocument {
 							'value' => $this->parseDate($item['created_date']),
 						)
 					);
-				}elseif($item['end_date'] != '0000-00-00'){
+				} elseif($item['end_date'] != '0000-00-00') {
 					$entry['observation']['effectiveTime'] = array(
 						'@attributes' => array(
 							'xsi:type' => 'IVL_TS',
@@ -3549,7 +3645,7 @@ class CCDDocument {
 							)
 						)
 					);
-				}else{
+				} else {
 					$entry['observation']['effectiveTime'] = array(
 						'@attributes' => array(
 							'xsi:type' => 'IVL_TS',
@@ -3590,7 +3686,7 @@ class CCDDocument {
 	/**
 	 * Method setEncountersSection() TODO
 	 */
-	private function setEncountersSection(){
+	private function setEncountersSection() {
 		$encounters = array(
 			'section' => array(
 				'templateId' => array(
@@ -3610,9 +3706,7 @@ class CCDDocument {
 			)
 		);
 
-
 		$encountersData = array();
-
 
 		if(!empty($encountersData)){
 			$encounters['section']['text'] = array(
@@ -3898,11 +3992,11 @@ class CCDDocument {
 		unset($encountersData, $encounters);
 	}
 
-	private function parseDateToText($date){
+	private function parseDateToText($date) {
 		return date('F Y', strtotime($date));
 	}
 
-	private function parseDate($date){
+	private function parseDate($date) {
 		$foo = explode(' ', $date);
 		return str_replace('-', '', $foo[0]);
 	}
@@ -3913,7 +4007,8 @@ class CCDDocument {
  */
 if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 
-	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_SESSION['user']['token']) die('Not Authorized!');
+	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_SESSION['user']['token'])
+		die('Not Authorized!');
 	/**
 	 * Check token for security
 	 */
@@ -3926,7 +4021,7 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 
 	if($_REQUEST['action'] == 'view'){
 		$ccd->view();
-	} elseif($_REQUEST['action'] == 'export'){
+	} elseif($_REQUEST['action'] == 'export') {
 		$ccd->export();
 	}
 }

@@ -53,10 +53,10 @@ class OBX extends Segments{
 		 * XPN
 		 * XTN
 		 */
-		$this->setField(2, 'ID', 1);
+		$this->setField(2, 'ID', 1, true);
 		$this->setField(3, 'CE', 1);
 		$this->setField(4, 'ST', 1);
-		$this->setFieldValue(5, 2);  // OBX-2-value type contains the data type for this field
+		$this->setFieldValue(5, 2, false, true);  // OBX-2-value type contains the data type for this field
 		$this->setField(6, 'CE', 1);
 		$this->setField(7, 'ST', 1);
 
@@ -82,7 +82,7 @@ class OBX extends Segments{
 		 * MS   Moderately susceptible. Indicates for microbiology susceptibilities only.
 		 * VS   Very susceptible. Indicates for microbiology susceptibilities only.
 		 */
-		$this->setField(8, 'IS', 1);
+		$this->setField(8, 'IS', 1, false, true);
 		$this->setField(9, 'NM', 1);
 		/**
 		 * OBX-10 Nature of abnormal test
@@ -94,7 +94,7 @@ class OBX extends Segments{
 		 * B    Breed
 		 * ST   Strain
 		 */
-		$this->setField(10, 'ID', 1);
+		$this->setField(10, 'ID', 1, false, true);
 		/**
 		 * C    Record coming over is a correction and thus replaces a final result
 		 * D    Deletes the OBX record
@@ -105,14 +105,14 @@ class OBX extends Segments{
 		 * P    Preliminary results
 		 * R    Results entered -- not verified
 		 */
-		$this->setField(11, 'ID', 1);
+		$this->setField(11, 'ID', 1, true);
 		$this->setField(12, 'TS', 1);
 		$this->setField(13, 'ST', 1);
 		$this->setField(14, 'TS', 1);
 		$this->setField(15, 'CE', 1);
-		$this->setField(16, 'XCN', 1);
-		$this->setField(17, 'CE', 1);
-		$this->setField(18, 'EI', 1);
+		$this->setField(16, 'XCN', 1, false, true);
+		$this->setField(17, 'CE', 1, false, true);
+		$this->setField(18, 'EI', 1, false, true);
 		$this->setField(19, 'CX', 1);
 		$this->setFieldValue(20, null);
 		$this->setFieldValue(21, null);

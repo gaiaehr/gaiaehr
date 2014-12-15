@@ -44,6 +44,7 @@ class HL7ServerAbstract implements MessageComponentInterface {
 
 	public function onMessage(ConnectionInterface $conn, $message, IoServer $server) {
 		try{
+
 			if($message == ''){
 				$conn->send('');
 			}if($message == $this->token){

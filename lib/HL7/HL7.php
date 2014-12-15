@@ -198,8 +198,12 @@ class HL7 {
 	 * @return Message
 	 */
 	function readMessage($msg){
+		$msg = trim($msg);
+		$segments = explode(chr(0x0d), $msg);
 
-		$segments = preg_split ("/\n/", trim($msg));
+		if(count($segments) < 2){
+			$segments = preg_split("/\n/", $msg);
+		}
 
 		foreach($segments AS $segment){
 			$this->readSegment($segment);

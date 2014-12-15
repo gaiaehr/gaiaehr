@@ -164,9 +164,7 @@ class Segments {
 				$fields[1] = '|';
 			}
 
-			if($fields[0] == 'PV1'){
-				$boo = false;
-			}
+
 
 			$isSubField = $glue > 0;
 
@@ -177,7 +175,6 @@ class Segments {
 
 				$repeatable = $glues[$glue] == '|' && $this->isRepeatable($i);
 
-
 				if(isset($array[$i]) && is_int($array[$i])){
 					if($repeatable){
 						$array[$i][] = $this->getType($array[$array[$i]]);
@@ -186,20 +183,17 @@ class Segments {
 					}
 				}
 
-				$hasSubFields = isset($array[$i]) && is_array($array[$i]);
-
-				if(!$hasSubFields){
-					if($repeatable){
-						$array[$i][] = $fieldString;
-					}else{
-						$array[$i] = $fieldString;
-					}
-					continue;
+				if($repeatable){
+					$hasSubFields = isset($array[$i][0]) && is_array($array[$i][0]);
+				}else{
+					$hasSubFields = isset($array[$i]) && is_array($array[$i]);
 				}
 
 				if($hasSubFields){
+
 					if($repeatable){
-						$foo = array();
+
+							$foo = array();
 						$j = 0;
 						foreach(explode('~', $fieldString) AS $rep){
 							// copy the empty structure
@@ -214,6 +208,17 @@ class Segments {
 					}
 
 					$array[$i] = $this->toArray($fieldString, $glue + 1, $array[$i]);
+
+				}else{
+
+					if($repeatable){
+						$values = explode('~', $fieldString);
+						foreach($values as $j => $value){
+							$array[$i][$j] = $value;
+						}
+					}else{
+						$array[$i] = $fieldString;
+					}
 				}
 			}
 		}

@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.Results', {
 	extend: 'Ext.panel.Panel',
-	requires:[
+	requires: [
 		'Ext.grid.plugin.CellEditing',
 		'Ext.grid.plugin.RowEditing',
 		'App.store.patient.PatientsOrders',
@@ -35,11 +35,11 @@ Ext.define('App.view.patient.Results', {
 			split: true,
 			columnLines: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
-			    remoteFilter: true
-		    }),
-			plugins:[
+				remoteFilter: true
+			}),
+			plugins: [
 				{
-					ptype:'rowediting',
+					ptype: 'rowediting',
 					errorSummary: false
 				}
 			],
@@ -77,7 +77,7 @@ Ext.define('App.view.patient.Results', {
 					width: 60
 				}
 			],
-			bbar:[
+			bbar: [
 				'->',
 				{
 					text: _('new_order'),
@@ -93,6 +93,7 @@ Ext.define('App.view.patient.Results', {
 			height: 400,
 			frame: true,
 			split: true,
+			itemId: 'OrderResultForm',
 			layout: {
 				type: 'border'
 			},
@@ -319,14 +320,32 @@ Ext.define('App.view.patient.Results', {
 					]
 				}
 			],
-			buttons: [
+			dockedItems: [
 				{
-					text: _('reset'),
-					action: 'orderResultResetBtn'
-				},
-				{
-					text: _('save'),
-					action: 'orderResultSaveBtn'
+					xtype: 'toolbar',
+					dock: 'bottom',
+					ui: 'footer',
+					itemId: 'OrderResultBottomToolbar',
+					defaults: {
+						minWidth: 75
+					},
+					items: [
+						{
+							text: _('sign'),
+							iconCls: 'icoSing',
+							disabled: true,
+							itemId: 'OrderResultSignBtn'
+						},
+						'->',
+						{
+							text: _('reset'),
+							action: 'orderResultResetBtn'
+						},
+						{
+							text: _('save'),
+							action: 'orderResultSaveBtn'
+						}
+					]
 				}
 			]
 		}

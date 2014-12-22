@@ -94,18 +94,27 @@ Ext.define('App.controller.patient.ItemsToReview', {
 	},
 
 	onReviewAll: function(){
-		var me = this,
-			values = {
-				pid: app.patient.pid,
-				eid: app.patient.eid
-			};
 
-		if(me.getReviewSmokingStatusCombo().isValid()){
-			Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
-				if(response.result.success){
+		if(this.getReviewSmokingStatusCombo().isValid()){
+
+			var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord();
+
+			encounter.set({
+				review_active_problems: true,
+				review_allergies: true,
+				review_dental: true,
+				review_immunizations: true,
+				review_medications: true,
+				review_smoke: true,
+				review_surgery: true
+			});
+
+			encounter.save({
+				success: function(){
 					app.msg('Sweet!', _('items_to_review_save_and_review'));
-				}else{
-					app.msg('Oops!', _('items_to_review_entry_error'))
+				},
+				failure: function(){
+					app.msg('Oops!', _('items_to_review_entry_error'));
 				}
 			});
 		}

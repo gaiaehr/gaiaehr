@@ -5,6 +5,9 @@
  * New Styles
  * by GI Technologies, 2011
  *============================================================*/
+.icoSing {
+	background-image: url(../images/icons/pen.png) !important;
+}
 .icoLogo {
 	background-image: url(../images/icons/icoLogo.png) !important;
 }

@@ -1977,81 +1977,6 @@ Ext.define('App.ux.LiveSigsSearch', {
 
 
 });
-Ext.define('App.ux.LiveSurgeriesSearch',
-{
-	extend : 'Ext.form.ComboBox',
-	alias : 'widget.surgerieslivetsearch',
-	hideLabel : true,
-
-	initComponent : function()
-	{
-		var me = this;
-
-		Ext.define('liveSurgeriesSearchModel',
-		{
-			extend : 'Ext.data.Model',
-			fields : [
-			{
-				name : 'id'
-			},
-			{
-				name : 'type'
-			},
-			{
-				name : 'type_num'
-			},
-			{
-				name : 'surgery'
-			}],
-			proxy :
-			{
-				type : 'direct',
-				api :
-				{
-					read : Medical.getSurgeriesLiveSearch
-				},
-				reader :
-				{
-					totalProperty : 'totals',
-					root : 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store',
-		{
-			model : 'liveSurgeriesSearchModel',
-			pageSize : 10,
-			autoLoad : false
-		});
-
-		Ext.apply(this,
-		{
-			store : me.store,
-			displayField : 'surgery',
-			valueField : 'id',
-			emptyText : _('search_for_a_surgery') + '...',
-			typeAhead : false,
-            hideTrigger : true,
-			minChars : 1,
-			listConfig :
-			{
-				loadingText : _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl : function()
-				{
-					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
-				}
-			},
-			pageSize : 10
-		});
-
-		me.callParent();
-	}
-}); 
 Ext.define('App.ux.NodeDisabled',
 	{
 		alias:'plugin.nodedisabled',
@@ -5432,9 +5357,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		if (!form.isValid()) {
 			return;
 		}
-		form.updateRecord(me.context.record);
+
+		me.context.record.set(me.context.newValues);
+
 		if(me.editingPlugin.autoSync){
-			form._record.store.sync({
+			me.context.record.store.sync({
 				callback:function(){
 					me.fireEvent('sync', me, me.context);
 				}
@@ -9419,27 +9346,20 @@ Ext.define('App.ux.grid.RowFormEditing', {
 			editor = me.editor,
 			context = me.context,
 			record = context.record,
-			newValues = {},
 			originalValues = {},
-			editors = editor.getForm().getFields().items,
-			e,
-			eLen = editors.length,
-			name, item;
+			newValues = editor.getForm().getValues();
 
-		for(e = 0; e < eLen; e++){
-			item = editors[e];
-			name = item.name;
 
-			newValues[name] = item.getValue();
-			originalValues[name] = record.get(name);
-		}
+		Ext.Object.each(newValues, function(key){
+			originalValues[key] = record.get(key);
+		});
 
 		Ext.apply(context, {
 			newValues: newValues,
 			originalValues: originalValues
 		});
 
-		return me.callParent(arguments) && me.getEditor().completeEdit();
+		return me.fireEvent('validateedit', me, context) !== false && !context.cancel && me.getEditor().completeEdit();
 	},
 
 	// private
@@ -9511,9 +9431,6 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	moveEditorByClick: function(){
 		var me = this;
 		if(me.editing){
-			say(me);
-			say(me.superclass);
-
 			me.superclass.onCellClick.apply(me, arguments);
 		}
 	},
@@ -12274,15 +12191,23 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'notes',
 			type: 'string',
-			comment: 'notes',
 			len: 300
 		},
 		{
 			name: 'email',
 			type: 'string',
-			comment: 'email',
 			len: 150,
 			index: true
+		},
+		{
+			name: 'phone',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'mobile',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'direct_address',
@@ -12326,6 +12251,36 @@ Ext.define('App.model.administration.User', {
 			type: 'bool',
 			comment: 'has calendar? 0=no 1=yes',
 			index: true
+		},
+		{
+			name: 'street',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'street_cont',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'city',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'state',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'postal_code',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'country_code',
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'authorized',
@@ -12794,71 +12749,59 @@ Ext.define('App.model.patient.encounter.Procedures', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Procedure ID'
+			type: 'int'
 		},
 		{
 			name: 'pid',
-			type: 'int',
-			comment: 'patient ID'
+			type: 'int'
 		},
 		{
 			name: 'eid',
-			type: 'int',
-			comment: 'Encounter ID'
+			type: 'int'
 		},
 		{
 			name: 'uid',
 			type: 'int'
 		},
 		{
+			name: 'procedure_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'code',
+			type: 'string'
+		},
+		{
+			name: 'code_text',
+			type: 'string'
+		},
+		{
+			name: 'code_type',
+			type: 'string'
+		},
+		{
+			name: 'observation',
+			type: 'string'
+		},
+		{
 			name: 'create_uid',
-			type: 'int',
-			comment: 'create user ID'
+			type: 'int'
 		},
 		{
 			name: 'update_uid',
-			type: 'int',
-			comment: 'update user ID'
+			type: 'int'
 		},
 		{
 			name: 'create_date',
 			type: 'date',
-			comment: 'create date',
 			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'update_date',
 			type: 'date',
-			comment: 'last update date',
 			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'code',
-			type: 'string',
-			comment: 'procedure code'
-		},
-		{
-			name: 'code_text',
-			type: 'string',
-			comment: 'procedure description'
-		},
-		{
-			name: 'code_type',
-			type: 'string',
-			comment: 'CPT/ICD-10-PCS/ICD-9-CM/SNOMED/CDT'
-		},
-		{
-			name: 'procedure_date',
-			type: 'date',
-			dataType: 'date',
-			comment: 'when procedure has done',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'observation',
-			type: 'string',
-			comment: 'observation found'
 		}
 	],
 	proxy: {
@@ -13336,9 +13279,21 @@ Ext.define('App.model.patient.EncounterService', {
 			index: true
 		},
 		{
+			name: 'reference_type',
+			type: 'string',
+			len: 40,
+			index: true
+		},
+		{
+			name: 'reference_id',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'code',
 			type: 'string',
-			len: 40
+			len: 40,
+			index: true
 		},
 		{
 			name: 'code_type',
@@ -17887,50 +17842,104 @@ Ext.define('App.view.dashboard.panel.PortalDropZone', {
 	}
 });
 
-Ext.define('App.view.dashboard.panel.OnotesPortlet', {
-	extend: 'Ext.grid.Panel',
-	xtype: 'onotesportlet',
-	height: 250,
+Ext.define('App.view.dashboard.Dashboard', {
+	extend: 'App.ux.RenderPanel',
+	requires: [
+
+	],
+	pageTitle: _('dashboard'),
+	itemId: 'DashboardPanel',
 
 	initComponent: function(){
 		var me = this;
 
-		// *************************************************************************************
-		// Office Notes Portlet Data Store
-		// *************************************************************************************
-		me.store = Ext.create('App.store.dashboard.panel.OfficeNotesPortlet');
-
 		Ext.apply(me, {
-			height: me.height,
-			store: me.store,
-			stripeRows: true,
-			columnLines: true,
-			columns: [
+			pageBody: [
 				{
-					id: 'user',
-					text: 'From',
-					sortable: true,
-					dataIndex: 'user'
-				},
-				{
-					text: 'Note',
-					sortable: true,
-					dataIndex: 'body',
-					flex: 1
+					xtype: 'portalpanel',
+					region: 'center',
+					items: [
+						{
+							itemId: 'DashboardColumn1'
+						},
+						{
+							itemId: 'DashboardColumn2'
+						}
+					]
 				}
 			]
 		});
 
-		me.store.load();
-
-		me.callParent(arguments);
+		me.callParent();
 	}
 });
 
-Ext.define('App.view.dashboard.panel.VisitsPortlet', {
+Ext.define('App.view.dashboard.panel.NewResults', {
+	extend: 'Ext.grid.Panel',
+	itemId: 'DashboardNewResultsGrid',
+
+	height: 300,
+	columnLines: true,
+
+	initComponent: function(){
+		var me = this;
+
+		me.store = Ext.create('App.store.patient.PatientsOrderResults');
+
+		me.columns = [
+			{
+				xtype: 'datecolumn',
+				text: _('received_date'),
+				dataIndex: 'result_date'
+			},
+			{
+				text: _('description'),
+				dataIndex: 'code_text',
+				flex: 1
+			},
+			{
+				text:  _('status'),
+				renderer: this.pctChange,
+				dataIndex: 'result_status'
+			}
+		];
+
+		me.callParent(arguments);
+	},
+
+
+
+	/**
+	 * Custom function used for column renderer
+	 * @param {Object} val
+	 */
+	change: function(val){
+		if(val > 0){
+			return '<span style="color:green;">' + val + '</span>';
+		}else if(val < 0){
+			return '<span style="color:red;">' + val + '</span>';
+		}
+		return val;
+	},
+
+	/**
+	 * Custom function used for column renderer
+	 * @param {Object} val
+	 */
+	pctChange: function(val){
+		if(val > 0){
+			return '<span style="color:green;">' + val + '%</span>';
+		}else if(val < 0){
+			return '<span style="color:red;">' + val + '%</span>';
+		}
+		return val;
+	},
+
+});
+
+Ext.define('App.view.dashboard.panel.DailyVisits', {
 	extend: 'Ext.panel.Panel',
-	xtype: 'visitsportlet',
-	action: 'visitsportlet',
+
 	initComponent: function(){
 		var me = this;
 
@@ -17939,6 +17948,7 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 			height: 300,
 			items: {
 				xtype: 'chart',
+				itemId: 'DashboardDailyVisitsChart',
 				animate: false,
 				shadow: false,
 				store: me.store = Ext.create('Ext.data.JsonStore', {
@@ -18034,97 +18044,6 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 		});
 	}
 });
-
-Ext.define('App.view.dashboard.Dashboard', {
-	extend: 'App.ux.RenderPanel',
-	requires: [
-		'App.view.dashboard.panel.OnotesPortlet',
-		'App.view.dashboard.panel.VisitsPortlet'
-	],
-	pageTitle: _('dashboard'),
-	getTools: function(){
-		return [
-			{
-				xtype: 'tool',
-				type: 'gear',
-				handler: function(e, target, panelHeader){
-					var portlet = panelHeader.ownerCt;
-					portlet.setLoading(_('working') + '...');
-					Ext.defer(function(){
-						portlet.setLoading(false);
-					}, 2000);
-				}
-			}
-		];
-	},
-
-	initComponent: function(){
-		var me = this;
-
-		Ext.apply(me, {
-			pageBody: [
-				{
-					xtype: 'portalpanel',
-					layout: 'fit',
-					region: 'center',
-					items: [
-						{
-							itemId: 'dashboard-col-1'
-//							items: [
-//								{
-//									title: _('office_notes'),
-//									tools: this.getTools(),
-//									items: { xtype: 'onotesportlet' },
-//									listeners: {
-//										close: Ext.bind(this.onPortletClose, this)
-//									}
-//								}
-//							]
-						},
-						{
-							itemId: 'dashboard-col-2',
-							items: [
-								{
-									title: 'Office Visits',
-									tools: this.getTools(),
-									items: { xtype: 'visitsportlet' },
-									listeners: {
-										close: Ext.bind(this.onPortletClose, this)
-									}
-								}
-							]
-						}
-					]
-				}
-			]
-		});
-
-		me.callParent();
-
-		me.listeners = {
-			scope: me,
-			show: me.doReloadStores
-		};
-	},
-
-	onPortletClose: function(portlet){
-		this.msg(_('message') + '!', portlet.title + ' ' + _('was_removed'));
-	},
-
-	doReloadStores: function(){
-		Ext.ComponentQuery.query('visitsportlet')[0].load();
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive: function(callback){
-		callback(true);
-	}
-}); //ens UserPage class
 
 Ext.define('App.view.calendar.Calendar', {
 	extend: 'App.ux.RenderPanel',
@@ -21656,129 +21575,129 @@ Ext.define('App.view.patient.ProgressNote', {
             '                       <td>' +
             '                          <table class="x-grid-table x-grid-table-vitals vitals-column">' +
             '                              <tbody>' +
-            '                                  <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n['date_&_time'] + '</div>' +
+            '                                  <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td x-grid-table-vitals-date">' +
+            '                                           <div class="x-grid-cell-inner ">' + _('date_&_time') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('weight_lbs') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('weight_kg') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('height_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('height_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bp_systolic') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bp_diastolic') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('pulse') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('respiration') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('temp_f') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('temp_c') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('temp_location') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('oxygen_saturation') + '%</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('head_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('head_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('waist_circumference_in') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('waist_circumference_cm') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bmi') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('bmi_status') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('other_notes') + '</div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">' + _('administer') + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
-            '                                           <div class="x-grid-cell-inner ">' + i18n['Sign by'] + '<div>' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
+            '                                           <div class="x-grid-cell-inner ">' + _('signed_by') + '<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                               </tbody>' +
@@ -21788,128 +21707,128 @@ Ext.define('App.view.patient.ProgressNote', {
             '                           <td>' +
             '                           <table class="x-grid-table x-grid-table-vitals vitals-column">' +
             '                               <tbody>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell x-grid-table-vitals-date">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td x-grid-table-vitals-date">' +
             '                                           <div class="x-grid-cell-inner ">{date}</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row first">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.weight_lbs)]}</div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row first">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.weight_kg)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 		        '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.height_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.height_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bp_systolic)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bp_diastolic)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.pulse)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.respiration)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_f)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_c)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.temp_location.toUpperCase())]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.oxygen_saturation)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl if="!this.isMetric()">' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.head_circumference_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.head_circumference_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
 		        '                       <tpl if="!this.isMetric()">' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.waist_circumference_in)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       <tpl else>',
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.waist_circumference_cm)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
 	            '                       </tpl>',
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bmi)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.bmi_status)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[this.getVitalsValue(values.other_notes)]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
-            '                                   <tr class="x-grid-row">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                   <tr class="x-grid-row x-grid-data-row">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[(values.administer_by == null || values.administer_by == " ") ? "-" : values.administer_by]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
             '                                   <tr class="x-grid-row  x-grid-row-alt">' +
-            '                                       <td class="x-grid-cell">' +
+            '                                       <td class="x-grid-cell x-grid-td">' +
             '                                           <div class="x-grid-cell-inner ">{[(values.authorized_by == null || values.authorized_by == " ") ? "-" : values.authorized_by]}<div>' +
             '                                       </td>' +
             '                                   </tr>' +
@@ -32760,16 +32679,14 @@ Ext.define('App.controller.administration.HL7', {
 	},
 
 	serverStartHandler: function(record){
-		HL7ServerHandler.start({ ip: record.data.ip, port: record.data.port }, function(provider, response){
-			say(response.result);
-			record.set({'online': response.result.online});
+		HL7ServerHandler.start({ id: record.data.id, ip: record.data.ip, port: record.data.port }, function(provider, response){
+			record.set({'online': response.result.online, token: response.result.token});
 			record.commit();
 		});
 	},
 
 	serverStopHandler: function(record){
-		HL7ServerHandler.stop({ ip: record.data.ip, port: record.data.port }, function(provider, response){
-			say(response.result);
+		HL7ServerHandler.stop({ token: record.data.token, ip: record.data.ip, port: record.data.port }, function(provider, response){
 			record.set({'online': response.result.online});
 			record.commit();
 		});
@@ -32796,7 +32713,7 @@ Ext.define('App.controller.administration.HL7', {
 	onHL7ServersGridValidateEdit: function(plugin, e){
 		var multiField = plugin.editor.query('multitextfield')[0],
 			values = multiField.getValue();
-		e.record.set({allow_ips: values});
+		e.record.set({ allow_ips: values });
 	}
 
 });
@@ -33157,6 +33074,126 @@ Ext.define('App.controller.administration.Specialties', {
 			active: 1
 		});
 		grid.editingPlugin.startEdit(0, 0);
+	}
+
+});
+Ext.define('App.controller.dashboard.Dashboard', {
+	extend: 'Ext.app.Controller',
+	refs:[
+		{
+			ref: 'DashboardRenderPanel',
+			selector:'#DashboardPanel'
+		},
+		{
+			ref: 'DashboardPanel',
+			selector:'portalpanel'
+		},
+		{
+			ref: 'DashboardLeftColumn',
+			selector:'#DashboardColumn1'
+		},
+		{
+			ref: 'DashboardRightColumn',
+			selector:'#DashboardColumn2'
+		}
+	],
+
+	addLeftPanel:function(title, item){
+		this.getDashboardLeftColumn().add({
+			xtype: 'portlet',
+			title : title,
+			items: [ item ]
+		});
+	},
+
+	addRightPanel:function(title, item){
+		this.getDashboardRightColumn().add({
+			xtype: 'portlet',
+			title : title,
+			items: [ item ]
+		});
+	},
+
+	getColumns:function(){
+		return this.getDashboardPanel().items;
+	}
+
+
+
+});
+Ext.define('App.controller.dashboard.panel.NewResults', {
+	extend: 'App.controller.dashboard.Dashboard',
+
+	init: function(){
+		if(!a('view_dashboard_new_results')) return;
+
+		var me = this;
+
+		me.control({
+			'portalpanel':{
+				render: me.onDashboardPanelBeforeRender
+			},
+			'#DashboardPanel':{
+				activate: me.onDashboardPanelActivate
+			}
+		});
+
+		me.addRef([
+			{
+				ref: 'DashboardRenderPanel',
+				selector:'#DashboardPanel'
+			},
+			{
+				ref: 'DashboardNewResultsGrid',
+				selector:'#DashboardNewResultsGrid'
+			}
+		]);
+	},
+
+	onDashboardPanelActivate: function(){
+		this.getDashboardNewResultsGrid().getStore().load();
+	},
+
+	onDashboardPanelBeforeRender: function(){
+		this.addRightPanel(_('new_results'), Ext.create('App.view.dashboard.panel.NewResults'));
+	}
+
+});
+Ext.define('App.controller.dashboard.panel.DailyVisits', {
+	extend: 'App.controller.dashboard.Dashboard',
+
+	init: function(){
+		if(!a('view_dashboard_daily_visits')) return;
+
+		var me = this;
+
+		me.control({
+			'portalpanel': {
+				render: me.onDashboardPanelBeforeRender
+			},
+			'#DashboardPanel': {
+				activate: me.onDashboardPanelActivate
+			}
+		});
+
+		me.addRef([
+			{
+				ref: 'DashboardRenderPanel',
+				selector: '#DashboardPanel'
+			},
+			{
+				ref: 'DashboardDailyVisitsChart',
+				selector: '#DashboardDailyVisitsChart'
+			}
+		]);
+	},
+
+	onDashboardPanelActivate: function(){
+		//this.getDashboardDailyVisitsChart().getStore().load();
+	},
+
+	onDashboardPanelBeforeRender: function(){
+		this.addRightPanel(_('office_visits'), Ext.create('App.view.dashboard.panel.DailyVisits'));
 	}
 
 });
@@ -34681,12 +34718,15 @@ Ext.define('App.controller.patient.Allergies', {
 	},
 
 	onReviewAllergiesBtnClick: function(){
-		var params = {
-			eid: app.patient.eid,
-			area: 'review_allergies'
-		};
-		Medical.reviewMedicalWindowEncounter(params, function(provider, response){
-			app.msg('Sweet!', _('succefully_reviewed'));
+		var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord();
+		encounter.set({review_allergies:true});
+		encounter.save({
+			success: function(){
+				app.msg('Sweet!', _('items_to_review_save_and_review'));
+			},
+			failure: function(){
+				app.msg('Oops!', _('items_to_review_entry_error'));
+			}
 		});
 	}
 
@@ -35771,7 +35811,8 @@ Ext.define('App.controller.patient.Immunizations', {
 				activate: me.onPatientImmunizationsPanelActive
 			},
 			'patientimmunizationspanel #patientImmunizationsGrid':{
-				selectionchange: me.onPatientImmunizationsGridSelectionChange
+				selectionchange: me.onPatientImmunizationsGridSelectionChange,
+				edit: me.onPatientImmunizationsGridEdit
 			},
 			'patientimmunizationspanel #cvxGrid':{
 				expand: me.onCvxGridExpand
@@ -35811,6 +35852,10 @@ Ext.define('App.controller.patient.Immunizations', {
 
 	onPatientImmunizationsGridSelectionChange:function(sm, selected){
 		this.getSubmitVxuBtn().setDisabled(selected.length == 0);
+	},
+
+	onPatientImmunizationsGridEdit:function(plugin, context){
+		app.fireEvent('immunizationedit', this, context.record);
 	},
 
 	onPatientImmunizationsPanelActive:function(){
@@ -36055,18 +36100,27 @@ Ext.define('App.controller.patient.ItemsToReview', {
 	},
 
 	onReviewAll: function(){
-		var me = this,
-			values = {
-				pid: app.patient.pid,
-				eid: app.patient.eid
-			};
 
-		if(me.getReviewSmokingStatusCombo().isValid()){
-			Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
-				if(response.result.success){
+		if(this.getReviewSmokingStatusCombo().isValid()){
+
+			var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord();
+
+			encounter.set({
+				review_active_problems: true,
+				review_allergies: true,
+				review_dental: true,
+				review_immunizations: true,
+				review_medications: true,
+				review_smoke: true,
+				review_surgery: true
+			});
+
+			encounter.save({
+				success: function(){
 					app.msg('Sweet!', _('items_to_review_save_and_review'));
-				}else{
-					app.msg('Oops!', _('items_to_review_entry_error'))
+				},
+				failure: function(){
+					app.msg('Oops!', _('items_to_review_entry_error'));
 				}
 			});
 		}
@@ -37931,19 +37985,7 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 		{
 			ref: 'EncounterSignAlertGrid',
 			selector: '#EncounterSignAlertGrid'
-		},
-
-		// super bill stuff
-		{
-			ref: 'EncounterSignSuperBillGrid',
-			selector: '#EncounterSignSuperBillGrid'
-		},
-		{
-			ref: 'EncounterSignSuperBillServiceAddBtn',
-			selector: '#EncounterSignSuperBillServiceAddBtn'
 		}
-
-
 	],
 
 	init: function(){
@@ -37965,43 +38007,9 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			},
 			'#EncounterCancelSignBtn': {
 				click: me.onEncounterCancelSignBtnClick
-			},
-			// super bill stuff
-			'#EncounterSignSuperBillServiceAddBtn': {
-				click: me.onEncounterSignSuperBillServiceAddBtnClick
-			},
-			'#EncounterSignSuperCptSearchCmb': {
-				select: me.onEncounterSignSuperCptSearchCmbSelect
 			}
 		});
 	},
-
-	// super bill stuff
-	onEncounterSignSuperBillServiceAddBtnClick: function(){
-		var me = this,
-			grid = me.getEncounterSignSuperBillGrid(),
-			store = grid.getStore();
-
-		grid.editingPlugin.cancelEdit();
-		var records = store.add({
-			pid: me.encounter.data.pid,
-			eid: me.encounter.data.eid,
-			units: 1,
-			create_uid: app.user.id,
-			date_create: new Date()
-		});
-		grid.editingPlugin.startEdit(records[0], 0);
-	},
-
-	onEncounterSignSuperCptSearchCmbSelect: function(cmb, records){
-		var record = cmb.up('form').getForm().getRecord();
-
-		record.set({
-			code: records[0].data.code,
-			code_type: records[0].data.code_type
-		});
-	},
-
 
 	onEncounterCoSignSupervisorBtnClick: function(){
 		this.coSignEncounter();
@@ -38052,14 +38060,7 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 
 		if(a('access_encounter_checkout')){
 
-			me.getEncounterSignSuperBillGrid().getStore().load({
-				filters:[
-					{
-						property: 'eid',
-						value: me.eid
-					}
-				]
-			});
+			App.app.getController('patient.encounter.SuperBill').reconfigureSupperBillGrid(me.encounter.services());
 
 			me.getEncounterSignAlertGrid().getStore().load({
 				params: {
@@ -38114,15 +38115,7 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 			return '<img src="resources/images/icons/icoImportant.png" />'
 		}
 		return v;
-	},
-
-	onRemoveService: function(grid, rowIndex, colIndex, item, e, record){
-		var me = this;
-
-		//TODO: handle the remove logic
-
 	}
-
 
 });
 Ext.define('App.model.patient.FamilyHistory', {
@@ -38595,6 +38588,189 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	}
 
 });
+Ext.define('App.controller.patient.encounter.SuperBill', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		// super bill stuff
+		{
+			ref: 'SuperBillGrid',
+			selector: 'superbillpanel'
+		},
+		{
+			ref: 'SuperBillServiceAddBtn',
+			selector: '#SuperBillServiceAddBtn'
+		},
+		{
+			ref: 'SuperBillEncounterDxCombo',
+			selector: '#SuperBillEncounterDxCombo'
+		}
+	],
+
+	init: function(){
+		var me = this;
+
+		this.control({
+			'viewport': {
+				immunizationedit: me.onImmunizationEdit
+			},
+			'superbillpanel': {
+				beforeedit: me.onSuperBillGridBeforeEdit
+			},
+			'#SuperBillServiceAddBtn': {
+				click: me.onSuperBillServiceAddBtnClick
+			},
+			'#SuperCptSearchCmb': {
+				select: me.onSuperCptSearchCmbSelect
+			}
+		});
+	},
+
+	onImmunizationEdit:function(controller, record){
+		var serviceRecords = this.getServiceFormEncounterRecord('cvx', record.data.id);
+
+		if(serviceRecords.length == 0){
+			this.promptAddService(record, 'cvx');
+		}
+
+	},
+
+	promptAddService: function(record, type){
+		var me = this;
+
+		Ext.Msg.show({
+			title: _('wait'),
+			msg: _('super_bill_prompt_add_question'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+
+				if(btn == 'yes'){
+					me.addService(record, type);
+				}
+			}
+		});
+	},
+
+	addService: function(record, type){
+		var me = this;
+
+		if(type == 'cvx'){
+			Immunizations.getCptByCvx(record.data.code, function(services){
+				if(services.length == 0){
+					app.msg(_('oops'), _('no_service_code_found'), true);
+				} else if(services.length == 1){
+					me.doAddService(record, type, services[0]);
+				}else{
+
+				}
+			});
+		}
+
+	},
+
+	doAddService: function(record, type, service){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
+
+		store.add({
+			pid: record.data.pid,
+			eid: record.data.eid,
+			units: 1,
+			reference_type: type,
+			reference_id: record.data.id,
+			code: service.code,
+			code_type: service.code_type,
+			code_text: service.code_text,
+			create_uid: app.user.id,
+			date_create: new Date()
+		});
+
+		store.sync({
+			callback:function(){
+				app.msg(_('sweet'), _('service_added'));
+			}
+		})
+
+	},
+
+
+
+	onSuperBillGridBeforeEdit: function(plugin, context){
+
+		this.getSuperBillEncounterDxCombo().getStore().load({
+			filters: [
+				{
+					property: 'eid',
+					value: context.record.data.eid
+				}
+			]
+		});
+	},
+
+	// super bill stuff
+	onSuperBillServiceAddBtnClick: function(){
+		var me = this,
+			grid = me.getSuperBillGrid(),
+			store = grid.getStore(),
+			encounter = me.getController('patient.encounter.EncounterSign').encounter;
+
+		grid.editingPlugin.cancelEdit();
+		var records = store.add({
+			pid: encounter.data.pid,
+			eid: encounter.data.eid,
+			units: 1,
+			create_uid: app.user.id,
+			date_create: new Date()
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onSuperCptSearchCmbSelect: function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+
+		record.set({
+			code: records[0].data.code,
+			code_type: records[0].data.code_type
+		});
+	},
+
+	onRemoveService: function(grid, rowIndex, colIndex, item, e, record){
+		var me = this;
+
+		//TODO: handle the remove logic
+
+	},
+
+	reconfigureSupperBillGrid: function(store){
+		this.getSuperBillGrid().reconfigure(store);
+	},
+
+	getServiceFormEncounterRecord: function(referenceType, referenceId){
+		var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord(),
+			services = [];
+
+		if(encounter == null) return services;
+
+		var store = encounter.services(),
+			records = store.data.items,
+			len = store.data.items.length;
+
+		for(var i = 0; i < len; i++){
+			var record = records[i];
+
+			if(record.data.reference_type == referenceType && record.data.reference_id == referenceId){
+				Ext.Array.push(services, record);
+			}
+		}
+
+		return services;
+	}
+
+
+
+});
 Ext.define('App.model.patient.EncounterDx', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -38707,9 +38883,6 @@ Ext.define('App.view.patient.Immunizations', {
 					dataIndex: 'code',
 					width: 50,
 					renderer:function(v, meta, record){
-
-						say(record.data);
-
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -41629,9 +41802,6 @@ Ext.define('App.ux.form.fields.CheckBoxWithText', {
 });
 Ext.define('App.model.patient.Encounter',{
     extend: 'Ext.data.Model',
-    requires: [
-        'App.model.patient.FamilyHistory'
-    ],
     table: {
         name: 'encounters',
         comment: 'Encounter Data'
@@ -41674,12 +41844,12 @@ Ext.define('App.model.patient.Encounter',{
             index: true,
             defaultValue: false
         },
-	    {
-		    name: 'specialty_id',
-		    type: 'string',
-		    len: 11,
-		    index: true
-	    },
+        {
+            name: 'specialty_id',
+            type: 'string',
+            len: 11,
+            index: true
+        },
         {
             name: 'service_date',
             type: 'date',
@@ -41759,8 +41929,7 @@ Ext.define('App.model.patient.Encounter',{
         },
         {
             name: 'review_smoke',
-            type: 'string',
-            len: 40
+            type: 'bool'
         },
         {
             name: 'review_pregnant',
@@ -41783,6 +41952,14 @@ Ext.define('App.model.patient.Encounter',{
             name: 'message',
             type: 'string',
             dataType: 'text'
+        },
+        {
+            name: 'patient_class',
+            type: 'string'
+        },
+        {
+            name: 'referring_physician',
+            type: 'string'
         }
     ],
     idProperty: 'eid',
@@ -41817,26 +41994,20 @@ Ext.define('App.model.patient.Encounter',{
             foreignKey: 'eid'
         },
         {
-            model: 'App.model.patient.ReviewOfSystemsCheck',
-            name: 'reviewofsystemschecks',
-            primaryKey: 'eid',
-            foreignKey: 'eid'
-        },
-        {
             model: 'App.model.patient.SOAP',
             name: 'soap',
             primaryKey: 'eid',
             foreignKey: 'eid'
         },
         {
-            model: 'App.model.patient.SpeechDictation',
-            name: 'speechdictation',
+            model: 'App.model.patient.HCFAOptions',
+            name: 'hcfaoptions',
             primaryKey: 'eid',
             foreignKey: 'eid'
         },
         {
-            model: 'App.model.patient.HCFAOptions',
-            name: 'hcfaoptions',
+            model: 'App.model.patient.EncounterService',
+            name: 'services',
             primaryKey: 'eid',
             foreignKey: 'eid'
         }
@@ -42358,24 +42529,24 @@ Ext.define('App.view.dashboard.panel.PortalColumn', {
 	//
 });
 Ext.define('App.view.dashboard.panel.PortalPanel', {
-	extend  : 'Ext.panel.Panel',
-	alias   : 'widget.portalpanel',
+	extend: 'Ext.panel.Panel',
+	alias: 'widget.portalpanel',
 	requires: [
-        'Ext.layout.container.Column',
+		'Ext.layout.container.Column',
 
-        'App.view.dashboard.panel.PortalDropZone',
-        'App.view.dashboard.panel.PortalColumn'
+		'App.view.dashboard.panel.PortalDropZone',
+		'App.view.dashboard.panel.PortalColumn'
 	],
 
-	cls            : 'x-portal',
-	bodyCls        : 'x-portal-body',
-	defaultType    : 'portalcolumn',
-	componentLayout: 'body',
-	autoScroll     : true,
+	cls: 'x-portal',
+	bodyCls: 'x-portal-body',
+	defaultType: 'portalcolumn',
+	//componentLayout: 'body',
+	autoScroll: true,
 
-    manageHeight: false,
+	manageHeight: false,
 
-    initComponent: function() {
+	initComponent: function(){
 		var me = this;
 
 		// Implement a Container beforeLayout call from the layout to this Container
@@ -42385,63 +42556,64 @@ Ext.define('App.view.dashboard.panel.PortalPanel', {
 		this.callParent();
 
 		this.addEvents({
-			validatedrop  : true,
+			validatedrop: true,
 			beforedragover: true,
-			dragover      : true,
-			beforedrop    : true,
-			drop          : true
+			dragover: true,
+			beforedrop: true,
+			drop: true
 		});
 	},
 
 	// Set columnWidth, and set first and last column classes to allow exact CSS targeting.
-    beforeLayout: function() {
-        var items = this.layout.getLayoutItems(),
-            len = items.length,
-            firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
-            i, item, last;
+	beforeLayout: function(){
+		var items = this.layout.getLayoutItems(),
+			len = items.length,
+			firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
+			i, item, last;
 
-        for (i = 0; i < len; i++) {
-            item = items[i];
-            item.columnWidth = 1 / len;
-            last = (i == len-1);
+		for(i = 0; i < len; i++){
+			item = items[i];
+			item.columnWidth = 1 / len;
+			last = (i == len - 1);
 
-            if (!i) { // if (first)
-                if (last) {
-                    item.addCls(firstAndLast);
-                } else {
-                    item.addCls('x-portal-column-first');
-                    item.removeCls('x-portal-column-last');
-                }
-            } else if (last) {
-                item.addCls('x-portal-column-last');
-                item.removeCls('x-portal-column-first');
-            } else {
-                item.removeCls(firstAndLast);
-            }
-        }
+			if(!i){ // if (first)
+				if(last){
+					item.addCls(firstAndLast);
+				}else{
+					item.addCls('x-portal-column-first');
+					item.removeCls('x-portal-column-last');
+				}
+			}else if(last){
+				item.addCls('x-portal-column-last');
+				item.removeCls('x-portal-column-first');
+			}else{
+				item.removeCls(firstAndLast);
+			}
+		}
 
-        return this.callParent(arguments);
-    },
+		return this.callParent(arguments);
+	},
 
 	// private
-	initEvents   : function() {
+	initEvents: function(){
 		this.callParent();
 		this.dd = Ext.create('App.view.dashboard.panel.PortalDropZone', this, this.dropConfig);
 	},
 
 	// private
-    beforeDestroy : function() {
-        if (this.dd) {
-            this.dd.unreg();
-        }
-        this.callParent();
-    }
+	beforeDestroy: function(){
+		if(this.dd){
+			this.dd.unreg();
+		}
+		this.callParent();
+	}
 });
 
 Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	extend: 'App.ux.window.Window',
 	requires: [
 		'Ext.grid.plugin.RowEditing',
+		'App.view.patient.SupperBill',
 		'App.ux.combo.EncounterSupervisors',
 		'App.ux.LiveCPTSearch'
 	],
@@ -42459,91 +42631,10 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 
 	items: [
 		{
-			xtype: 'grid',
+			xtype: 'superbillpanel',
 			title: _('super_bill'),
-			rootVisible: false,
 			region: 'center',
-			itemId: 'EncounterSignSuperBillGrid',
-			store: Ext.create('App.store.patient.EncounterServices'),
-			flex: 2,
-			columnLines: true,
-			plugins: [
-				{
-					ptype: 'rowediting',
-					errorSummary: false
-				}
-			],
-			columns: [
-				{
-					xtype: 'actioncolumn',
-					width: 20,
-					items: [
-						{
-							icon: 'resources/images/icons/delete.png',
-							tooltip: _('remove'),
-							handler: function(){
-								return App.app.getController('patient.encounter.EncounterSign').onRemoveService(v);
-							}
-						}
-					]
-				},
-				{
-					text: _('service'),
-					dataIndex: 'code_text',
-					flex: 1,
-					editor: {
-						xtype: 'livecptsearch',
-						itemId: 'EncounterSignSuperCptSearchCmb',
-						valueField: 'code_text_medium',
-						allowBlank: false
-					}
-				},
-				{
-					header: _('units'),
-					dataIndex: 'units',
-					width: 50,
-					editor: {
-						xtype: 'numberfield',
-						minValue: 1,
-						allowBlank: false
-					}
-				},
-				{
-					header: _('modifiers'),
-					dataIndex: 'modifiers',
-					width: 100,
-					editor: {
-						xtype: 'textfield'
-					}
-				},
-				{
-					header: _('diagnosis'),
-					dataIndex: 'dx_pointers',
-					width: 250,
-					editor: {
-						xtype: 'textfield',
-						allowBlank: false
-					}
-				},
-				{
-					header: _('status'),
-					dataIndex: 'status'
-				}
-			],
-			dockedItems: [
-				{
-					xtype: 'toolbar',
-					dock: 'top',
-					items: [
-						'->',
-						{
-							text: _('service'),
-							iconCls: 'icoAdd',
-							itemId: 'EncounterSignSuperBillServiceAddBtn'
-						}
-					]
-				}
-			]
+			flex: 2
 		},
 		{
 			xtype: 'documentsimplegrid',
@@ -46583,16 +46674,12 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	onScanConnected: function(){
-		say('onScanConnected');
-
 		if(this.getPatientDocumentUploadScanBtn()){
 			this.getPatientDocumentUploadScanBtn().show();
 		}
 	},
 
 	onScanDisconnected: function(){
-		say('onScanDisconnected');
-
 		if(this.getPatientDocumentUploadScanBtn()){
 			this.getPatientDocumentUploadScanBtn().hide();
 		}
@@ -47325,164 +47412,6 @@ Ext.define('App.controller.patient.Results', {
 		}
 	},
 
-	/**
-	 * OLD ******************* OLD ******************* OLD ******************* OLD
-	 * OLD ******************* OLD ******************* OLD ******************* OLD
-	 * OLD ******************* OLD ******************* OLD ******************* OLD
-	 * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-	 */
-
-
-
-
-
-
-
-
-
-
-
-	onLaboratoryPreviewRender: function(panel){
-		var me = this;
-		panel.dockedItems.items[0].add({
-			xtype: 'button',
-			text: _('upload'),
-			disabled: true,
-			action: 'uploadBtn',
-			scope: me,
-			handler: me.onLabUploadWind
-		});
-	},
-
-	onLabUploadWind: function(){
-		var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
-		me.uploadWin.show();
-		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
-	},
-
-	onLabUpload: function(btn){
-		var me = this,
-			formPanel = me.uploadWin.down('form'),
-			form = formPanel.getForm(),
-			win = btn.up('window');
-
-		if(form.isValid()){
-			formPanel.el.mask(_('uploading_laboratory') + '...');
-			form.submit({
-				//waitMsg: _('uploading_laboratory') + '...',
-				params: {
-					pid: app.patient.pid,
-					docType: 'laboratory',
-					eid: app.patient.eid
-				},
-				success: function(fp, o){
-					formPanel.el.unmask();
-					//					say(o.result);
-					win.close();
-					me.getLabDocument(o.result.doc.url);
-					me.addNewLabResults(o.result.doc.id);
-				},
-				failure: function(fp, o){
-					formPanel.el.unmask();
-					//					say(o.result);
-					win.close();
-				}
-			});
-		}
-	},
-
-	onLabResultClick: function(view, model){
-		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
-		if(me.currDocUrl != model.data.document_url){
-			form.reset();
-			model.data.data.id = model.data.id;
-			form.setValues(model.data.data);
-			me.getLabDocument(model.data.document_url);
-			me.currDocUrl = model.data.document_url;
-		}
-	},
-
-	onLabResultsSign: function(){
-		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
-		if(form.isValid()){
-			if(values.id){
-				me.passwordVerificationWin(function(btn, password){
-					if(btn == 'ok'){
-						User.verifyUserPass(password, function(provider, response){
-							if(response.result){
-								//								say(record);
-								Medical.signPatientLabsResultById(record.data.id, function(provider, response){
-									store.load({
-										params: {
-											parent_id: me.currLabPanelId
-										}
-									});
-								});
-							}else{
-								Ext.Msg.show({
-									title: 'Oops!',
-									msg: _('incorrect_password'),
-									//buttons:Ext.Msg.OKCANCEL,
-									buttons: Ext.Msg.OK,
-									icon: Ext.Msg.ERROR,
-									fn: function(btn){
-										if(btn == 'ok'){
-											//me.onLabResultsSign();
-										}
-									}
-								});
-							}
-						});
-					}
-				});
-			}else{
-				Ext.Msg.show({
-					title: 'Oops!',
-					msg: _('nothing_to_sign'),
-					//buttons:Ext.Msg.OKCANCEL,
-					buttons: Ext.Msg.OK,
-					icon: Ext.Msg.ERROR,
-					fn: function(btn){
-						if(btn == 'ok'){
-							//me.onLabResultsSign();
-						}
-					}
-				});
-			}
-		}
-	},
-
-	onLabResultsSave: function(btn){
-		var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
-		if(form.isValid()){
-			Medical.updatePatientLabsResult(values, function(){
-				store.load({params: {parent_id: record.data.parent_id}});
-				form.reset();
-			});
-		}
-	},
-
-	addNewLabResults: function(docId){
-		var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params = {
-			parent_id: me.currLabPanelId,
-			document_id: docId
-		};
-		Medical.addPatientLabsResult(params, function(provider, response){
-			store.load({
-				params: {
-					parent_id: me.currLabPanelId
-				}
-			});
-		});
-	},
-
-	getLabDocument: function(src){
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
-			src: src
-		}));
-	},
 
 	onOrderDocumentChange: function(field){
 
@@ -47501,6 +47430,159 @@ Ext.define('App.controller.patient.Results', {
 
 	}
 
+	/**
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	 */
+
+
+
+	//onLaboratoryPreviewRender: function(panel){
+	//	var me = this;
+	//	panel.dockedItems.items[0].add({
+	//		xtype: 'button',
+	//		text: _('upload'),
+	//		disabled: true,
+	//		action: 'uploadBtn',
+	//		scope: me,
+	//		handler: me.onLabUploadWind
+	//	});
+	//},
+	//
+	//onLabUploadWind: function(){
+	//	var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
+	//	me.uploadWin.show();
+	//	me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
+	//},
+	//
+	//onLabUpload: function(btn){
+	//	var me = this,
+	//		formPanel = me.uploadWin.down('form'),
+	//		form = formPanel.getForm(),
+	//		win = btn.up('window');
+	//
+	//	if(form.isValid()){
+	//		formPanel.el.mask(_('uploading_laboratory') + '...');
+	//		form.submit({
+	//			//waitMsg: _('uploading_laboratory') + '...',
+	//			params: {
+	//				pid: app.patient.pid,
+	//				docType: 'laboratory',
+	//				eid: app.patient.eid
+	//			},
+	//			success: function(fp, o){
+	//				formPanel.el.unmask();
+	//				//					say(o.result);
+	//				win.close();
+	//				me.getLabDocument(o.result.doc.url);
+	//				me.addNewLabResults(o.result.doc.id);
+	//			},
+	//			failure: function(fp, o){
+	//				formPanel.el.unmask();
+	//				//					say(o.result);
+	//				win.close();
+	//			}
+	//		});
+	//	}
+	//},
+	//
+	//onLabResultClick: function(view, model){
+	//	var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
+	//	if(me.currDocUrl != model.data.document_url){
+	//		form.reset();
+	//		model.data.data.id = model.data.id;
+	//		form.setValues(model.data.data);
+	//		me.getLabDocument(model.data.document_url);
+	//		me.currDocUrl = model.data.document_url;
+	//	}
+	//},
+	//
+	//onLabResultsSign: function(){
+	//	var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
+	//	if(form.isValid()){
+	//		if(values.id){
+	//			me.passwordVerificationWin(function(btn, password){
+	//				if(btn == 'ok'){
+	//					User.verifyUserPass(password, function(provider, response){
+	//						if(response.result){
+	//							//								say(record);
+	//							Medical.signPatientLabsResultById(record.data.id, function(provider, response){
+	//								store.load({
+	//									params: {
+	//										parent_id: me.currLabPanelId
+	//									}
+	//								});
+	//							});
+	//						}else{
+	//							Ext.Msg.show({
+	//								title: 'Oops!',
+	//								msg: _('incorrect_password'),
+	//								//buttons:Ext.Msg.OKCANCEL,
+	//								buttons: Ext.Msg.OK,
+	//								icon: Ext.Msg.ERROR,
+	//								fn: function(btn){
+	//									if(btn == 'ok'){
+	//										//me.onLabResultsSign();
+	//									}
+	//								}
+	//							});
+	//						}
+	//					});
+	//				}
+	//			});
+	//		}else{
+	//			Ext.Msg.show({
+	//				title: 'Oops!',
+	//				msg: _('nothing_to_sign'),
+	//				//buttons:Ext.Msg.OKCANCEL,
+	//				buttons: Ext.Msg.OK,
+	//				icon: Ext.Msg.ERROR,
+	//				fn: function(btn){
+	//					if(btn == 'ok'){
+	//						//me.onLabResultsSign();
+	//					}
+	//				}
+	//			});
+	//		}
+	//	}
+	//},
+	//
+	//onLabResultsSave: function(btn){
+	//	var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
+	//	if(form.isValid()){
+	//		Medical.updatePatientLabsResult(values, function(){
+	//			store.load({params: {parent_id: record.data.parent_id}});
+	//			form.reset();
+	//		});
+	//	}
+	//},
+	//
+	//addNewLabResults: function(docId){
+	//	var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params = {
+	//		parent_id: me.currLabPanelId,
+	//		document_id: docId
+	//	};
+	//	Medical.addPatientLabsResult(params, function(provider, response){
+	//		store.load({
+	//			params: {
+	//				parent_id: me.currLabPanelId
+	//			}
+	//		});
+	//	});
+	//},
+	//
+	//getLabDocument: function(src){
+	//	var panel = this.query('[action="labPreviewPanel"]')[0];
+	//	panel.remove(this.doc);
+	//	panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
+	//		src: src
+	//	}));
+	//},
+	//
+
+
 });
 Ext.define('App.controller.patient.encounter.Encounter', {
 	extend: 'Ext.app.Controller',
@@ -47508,6 +47590,10 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		'App.ux.combo.ActiveSpecialties'
 	],
 	refs: [
+		{
+			ref: 'EncounterPanel',
+			selector: '#encounterPanel'
+		},
 		{
 			ref: 'EncounterDetailWindow',
 			selector: '#EncounterDetailWindow'
@@ -47530,6 +47616,9 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this;
 
 		this.control({
+			'viewport':{
+				patientunset: me.onPatientUnset
+			},
 			'#EncounterDetailWindow': {
 				show: me.onEncounterDetailWindowShow
 			},
@@ -47538,6 +47627,21 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 				select: me.onEncounterProviderCmbSelect
 			}
 		});
+	},
+
+	/**
+	 * set the encounter record to null when the patient is closed
+	 */
+	onPatientUnset:function(){
+		if(this.getEncounterPanel()) this.getEncounterPanel().encounter = null;
+	},
+
+	/**
+	 * get the encounter record form the encounter panel or return null
+	 * @returns {*}
+	 */
+	getEncounterRecord: function(){
+		return this.getEncounterPanel() ? this.getEncounterPanel().encounter : null;
 	},
 
 	onEncounterProviderCmbBeforeRender: function(cmb){
@@ -49602,6 +49706,7 @@ Ext.define('App.view.patient.Encounter', {
 					fieldDefaults: {
 						msgTarget: 'side'
 					},
+					
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),

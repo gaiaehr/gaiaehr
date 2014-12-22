@@ -214,7 +214,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.LivePatientSearch',
 		            'App.ux.LiveRadiologySearch',
 		            'App.ux.LiveSigsSearch',
-		            'App.ux.LiveSurgeriesSearch',
 		            'App.ux.ManagedIframe',
 		            'App.ux.NodeDisabled',
 		            'App.ux.PhotoIdWindow',
@@ -585,9 +584,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'dashboard.panel.PortalColumn',
 	                'dashboard.panel.PortalDropZone',
 	                'dashboard.panel.PortalPanel',
-	                'dashboard.panel.OnotesPortlet',
-	                'dashboard.panel.VisitsPortlet',
+
 	                'dashboard.Dashboard',
+	                'dashboard.panel.NewResults',
+	                'dashboard.panel.DailyVisits',
+
 	                /**
 	                 * Load the root related panels
 	                 */
@@ -687,6 +688,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.ReferringProviders',
 	                'administration.Roles',
 	                'administration.Specialties',
+
+	                'dashboard.Dashboard',
+	                'dashboard.panel.NewResults',
+	                'dashboard.panel.DailyVisits',
+
 
 	                'AlwaysOnTop',
 	                'Cron',

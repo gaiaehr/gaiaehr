@@ -300,35 +300,48 @@ class HL7Server {
 
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
+
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
 				$orc = $order['ORC'];
 				$obr = $order['OBR'];
 				/**
 				 * Check for order number in GaiaEHR
 				 */
+
 				$orderId = $orc[2][1];
-				$orderRecord = $this->pOrder->load(array('id' => $orderId))->one();
+				$patientId = $patient['PID'][3][0][1];
+				$orderRecord = $this->pOrder->load(array('id' => $orderId, 'pid' => $patientId))->one();
 				/**
 				 * id not found set the error and break twice to get out of all the loops
 				 */
 				if($orderRecord === false){
 					$this->ackStatus = 'AR';
-					$this->ackMessage = "Unable to find order number '$orderId' within the system";
+					$this->ackMessage = "Unable to find order number '$orderId' for patient ID '$patientId'";
 					break 2;
 				}
 				$foo = new stdClass();
+
+				$foo->pid = $patientId;
+				$foo->ordered_uid = $orderRecord['uid'];
+				$foo->create_date = date('Y-m-d H:i:s');
+
+				$foo->code = $obr[4][1] != '' ? $obr[4][1] : $orderRecord['code'];
+				$foo->code_text = $obr[4][2] != '' ? $obr[4][2] : $orderRecord['code_text'];
+				$foo->code_type = $obr[4][3] != '' ? $obr[4][3] : $orderRecord['code_type'];
+
 				$foo->order_id = $obr[2][1];
 				$foo->lab_order_id = $obr[3][1];
 				$foo->lab_name = $this->recipient['facility'];
 				$foo->lab_address = $this->recipient['physical_address'];
 				$foo->observation_time = $hl7->time($obr[7][1]);
 				$foo->result_status = $obr[25];
-				if(is_array($obr[31][1])){
-					$foo = array();
+
+				if(is_array($obr[31])){
+					$fo = array();
 					foreach($obr[31] AS $dx){
-						$foo[] = $dx[3] . ':' . $dx[1];
+						$fo[] = $dx[3] . ':' . $dx[1];
 					}
-					$foo->reason_code = implode(',', $foo);
+					$foo->reason_code = implode(',', $fo);
 				} else {
 					$foo->reason_code = $obr[31][3] . ':' . $obr[31][1];
 				}
@@ -369,25 +382,28 @@ class HL7Server {
 					 * handle the dynamics of the value field
 					 * based on the OBX-2 value
 					 */
+
 					if($obx[2] == 'CWE'){
 						$foo->value = $obx[5][2];
 					} else {
 						$foo->value = $obx[5];
 					}
 
+
 					$foo->units = $obx[6][1];
 					$foo->reference_rage = $obx[7];
 					$foo->probability = $obx[9];
-					$foo->abnormal_flag = $obx[8];
-					$foo->nature_of_abnormal = $obx[10];
+					$foo->abnormal_flag = $obx[8][0];
+					$foo->nature_of_abnormal = $obx[10][0];
 					$foo->observation_result_status = $obx[11];
 					$foo->date_rage_values = $hl7->time($obx[12][1]);
 					$foo->date_observation = $hl7->time($obx[14][1]);
-					$foo->observer = trim($obx[16][2][1] . ' ' . $obx[16][3]);
+					$foo->observer = trim($obx[16][0][2][1] . ' ' . $obx[16][0][3]);
 					$foo->performing_org_name = $obx[23][1];
 					$foo->performing_org_address = $obx[24][1][1] . ' ' . $obx[24][3] . ', ' . $obx[24][4] . ' ' . $obx[24][5];
 					$foo->date_analysis = $hl7->time($obx[19][1]);
 					$foo->notes = $note['3'];
+
 					$this->pObservation->save($foo);
 					unset($foo);
 				}
@@ -881,7 +897,7 @@ class HL7Server {
 
 //$msg = <<<EOF
 //MSH|^~\&|^Test Application^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
-//PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
+//PID|1||1^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
 //ORC|RE|1^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|GORD874233^^2.16.840.1.113883.3.72.5.24^ISO||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
 //OBR|1|1^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|57021-8^CBC W Auto Differential panel in Blood^LN^4456544^CBC^99USI^^^CBC W Auto Differential panel in Blood|||20110103143428-0800|||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI||||||20110104170028-0800|||F|||10093^Deluca^Naddy^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI|||||||||||||||||||||CC^Carbon Copy^HL70507
 //OBX|1|NM|26453-1^Erythrocytes [#/volume] in Blood^LN^^^^^^Erythrocytes [#/volume] in Blood||4.41|10*6/uL^million per microliter^UCUM|4.3 to 6.2|N|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN

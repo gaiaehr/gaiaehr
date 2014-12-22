@@ -49,36 +49,48 @@ class Services {
 		$HL7Messages = new HL7Messages();
 
 		if(is_array($params)){
-			$service = $this->s->save($params);
-			$service = (object) $service;
-			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+			$services = array();
+			foreach($params as $param){
+				$service = $this->s->save($param);
+				$service = (object) $service;
+				$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+				$services[] = $service;
+			}
+
 		}else{
 			$service = $this->s->save($params);
 			$service = (object) $service;
 			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+			$services = $service;
+
 		}
 
-		return $service;
+		return $services;
 	}
 
 	public function updateEncounterService($params){
-
 
 		include_once(ROOT.'/dataProvider/HL7Messages.php');
 		$HL7Messages = new HL7Messages();
 
 		if(is_array($params)){
-			$service = $this->s->save($params);
-			$service = (object) $service;
-			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+			$services = array();
+			foreach($params as $param){
+				$service = $this->s->save($param);
+				$service = (object) $service;
+				$HL7Messages->sendServiceORM(1,1, $service, 'XX');
+				$services[] = $service;
+			}
+
 		}else{
 			$service = $this->s->save($params);
 			$service = (object) $service;
-			$HL7Messages->sendServiceORM(1,1, $service, 'NW');
+			$HL7Messages->sendServiceORM(1,1, $service, 'XX');
+			$services = $service;
 
 		}
 
-		return $service;
+		return $services;
 	}
 
 	public function removeEncounterService($params){

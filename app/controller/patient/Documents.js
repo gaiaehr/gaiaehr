@@ -105,16 +105,12 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	onScanConnected: function(){
-		say('onScanConnected');
-
 		if(this.getPatientDocumentUploadScanBtn()){
 			this.getPatientDocumentUploadScanBtn().show();
 		}
 	},
 
 	onScanDisconnected: function(){
-		say('onScanDisconnected');
-
 		if(this.getPatientDocumentUploadScanBtn()){
 			this.getPatientDocumentUploadScanBtn().hide();
 		}

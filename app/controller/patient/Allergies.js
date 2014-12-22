@@ -265,12 +265,15 @@ Ext.define('App.controller.patient.Allergies', {
 	},
 
 	onReviewAllergiesBtnClick: function(){
-		var params = {
-			eid: app.patient.eid,
-			area: 'review_allergies'
-		};
-		Medical.reviewMedicalWindowEncounter(params, function(provider, response){
-			app.msg('Sweet!', _('succefully_reviewed'));
+		var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord();
+		encounter.set({review_allergies:true});
+		encounter.save({
+			success: function(){
+				app.msg('Sweet!', _('items_to_review_save_and_review'));
+			},
+			failure: function(){
+				app.msg('Oops!', _('items_to_review_entry_error'));
+			}
 		});
 	}
 

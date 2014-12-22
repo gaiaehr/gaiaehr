@@ -107,8 +107,8 @@ Ext.define('App.controller.Scanner', {
 			app.fireEvent('scanconnected', this);
 		};
 
-		me.ws.onerror = function(evt){
-			app.msg(_('oops'), evt.data, true);
+		me.ws.onerror = function(){
+			app.msg(_('oops'), _('scanner_connection_error'), true);
 		};
 
 		me.ws.onmessage = function(evt){

@@ -241,7 +241,8 @@ Ext.define('App.model.administration.User', {
 		},
 		{
 			name: 'active',
-			type: 'bool'
+			type: 'bool',
+			index: true
 		}
 	],
 	proxy: {

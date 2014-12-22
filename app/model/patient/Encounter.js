@@ -132,8 +132,7 @@ Ext.define('App.model.patient.Encounter',{
         },
         {
             name: 'review_smoke',
-            type: 'string',
-            len: 40
+            type: 'bool'
         },
         {
             name: 'review_pregnant',

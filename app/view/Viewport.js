@@ -619,6 +619,10 @@ Ext.define('App.view.Viewport', {
 
     },
 
+	getUserFullname: function(){
+		return this.user.title + ' ' + this.user.fname + ' ' + this.user.mname + ' ' + this.user.lname
+	},
+
 	getController:function(controller){
 		return App.Current.getController(controller);
 	},

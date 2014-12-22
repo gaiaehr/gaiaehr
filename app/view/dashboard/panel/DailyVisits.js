@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.dashboard.panel.VisitsPortlet', {
+Ext.define('App.view.dashboard.panel.DailyVisits', {
 	extend: 'Ext.panel.Panel',
-	xtype: 'visitsportlet',
-	action: 'visitsportlet',
+
 	initComponent: function(){
 		var me = this;
 
@@ -28,6 +27,7 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 			height: 300,
 			items: {
 				xtype: 'chart',
+				itemId: 'DashboardDailyVisitsChart',
 				animate: false,
 				shadow: false,
 				store: me.store = Ext.create('Ext.data.JsonStore', {
@@ -78,48 +78,9 @@ Ext.define('App.view.dashboard.panel.VisitsPortlet', {
 						}
 					}
 				]
-			},
-			listeners: {
-				scope: me,
-				render: me.load
 			}
-
 		});
 
 		me.callParent();
-	},
-
-	load: function(){
-		var me = this,
-			store = me.store,
-			data = [],
-			time,
-			i,
-			j;
-
-		Encounter.getTodayEncounters(function(provider, response){
-
-			var encounters = response.result;
-			for(i=0; i < encounters.length; i++){
-				time = Ext.Date.parse(encounters[i].service_date, 'Y-m-d H:i:s').setMinutes(0,0,0);
-				var found = false;
-
-				for(j=0; j < data.length; j++){
-					if(data[j].time == time){
-						data[j].total = data[j].total + 1;
-						found = true;
-					}
-				}
-
-				if(!found){
-					data.push({
-						total: 1,
-						time: time
-					});
-				}
-			}
-
-			store.loadData(data);
-		});
 	}
 });

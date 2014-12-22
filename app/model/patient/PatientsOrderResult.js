@@ -31,6 +31,21 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			type: 'int'
 		},
 		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'ordered_uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'signed_uid',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'order_id',
 			type: 'int',
 			index: true,
@@ -67,6 +82,12 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			name: 'lab_address',
 			type: 'string',
 			len: 200
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
 		},
 		{
 			name: 'result_date',

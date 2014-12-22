@@ -37,7 +37,7 @@ Ext.define('App.ux.form.fields.BoxSelect', {
     //
     // Begin configuration options related to the underlying store
     //
-    
+
     /**
      * @cfg {String} valueParam
      * The name of the parameter used to load unknown records into the store. If left unspecified, {@link #valueField}
@@ -71,7 +71,7 @@ Ext.define('App.ux.form.fields.BoxSelect', {
      */
 
     /**
-	 * @cfg
+	 * @cfg {Boolean}
      * @inheritdoc
      *
      * When {@link #forceSelection} is `false`, new records can be created by the user as they
@@ -173,7 +173,7 @@ Ext.define('App.ux.form.fields.BoxSelect', {
     //
 
     /**
-     * @cfg
+     * @cfg {Boolean}
      * @inheritdoc
      */
     selectOnFocus: true,
@@ -1188,9 +1188,11 @@ Ext.define('App.ux.form.fields.BoxSelect', {
         var me = this,
         inputEl = me.inputEl,
         result;
+
         me.inputEl = false;
         result = me.callParent(arguments);
         me.inputEl = inputEl;
+
         return result;
     },
 
@@ -1641,21 +1643,19 @@ Ext.define('Ext.ux.layout.component.field.BoxSelectField', {
 
     /*Calculate and cache value of input container.*/
     publishInnerWidth:function(ownerContext) {
-        var me = this,
-            owner = me.owner,
-            width = owner.itemList.getWidth(true) - 10,
-            lastEntry = owner.inputElCt.prev(null, true);
-
-        if (lastEntry && !owner.stacked) {
-            lastEntry = Ext.fly(lastEntry);
-            width = width - lastEntry.getOffsetsTo(lastEntry.up(''))[0] - lastEntry.getWidth();
-        }
-
-        if (!me.skipInputGrowth && (width < 35)) {
-            width = width - 10;
-        } else if (width < 1) {
-            width = 1;
-        }
-        ownerContext.inputElCtContext.setWidth(width);
+        //var me = this,
+        //    owner = me.owner,
+        //    width = owner.itemList.getWidth(true) - 10,
+        //    lastEntry = owner.inputElCt.prev(null, true);
+        //if (lastEntry && !owner.stacked) {
+        //    lastEntry = Ext.fly(lastEntry);
+        //    width = width - lastEntry.getOffsetsTo(lastEntry.up(''))[0] - lastEntry.getWidth();
+        //}
+        //if (!me.skipInputGrowth && (width < 35)) {
+        //    width = width - 10;
+        //} else if (width < 1) {
+        //    width = 1;
+        //}
+        //ownerContext.inputElCtContext.setWidth(width);
     }
 });

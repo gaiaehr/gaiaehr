@@ -114,6 +114,23 @@ class MatchaCUP {
 	 */
 	private $orFilterProperties = array();
 
+
+
+
+	/**
+	 * @var array
+	 */
+	private $hasMany = array();
+	/**
+	 * @var array
+	 */
+	private $hasOne = array();
+
+	/**
+	 * @var bool
+	 */
+	private $persistAssociations = false;
+
 	/**
 	 * function sql($sql = NULL):
 	 * Method to pass SQL statement without sqlBuilding process
@@ -845,6 +862,10 @@ class MatchaCUP {
 		$this->encryptedFields = MatchaModel::__getEncryptedFields($this->model);
 		$this->phantomFields = MatchaModel::__getPhantomFields($this->model);
 		$this->arrayFields = MatchaModel::__getArrayFields($this->model);
+
+		$this->hasMany = isset($model['hasMany']) ? $model['hasMany'] : array();
+		$this->hasOne = isset($model['hasOne']) ? $model['hasOne'] : array();
+
 	}
 
 	/**
@@ -1053,9 +1074,14 @@ class MatchaCUP {
 	private function builtRoot() {
 		if($this->isSenchaRequest && isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)
 		){
+			if($this->nolimitsql != ''){
+				$sth = Matcha::$__conn->prepare($this->nolimitsql);
+				$sth->execute($this->where);
+				$total = $sth->rowCount();
+			}else{
+				$total = false;
+			}
 			$record = array();
-			$total = ($this->nolimitsql != '' ? Matcha::$__conn->query($this->nolimitsql)->rowCount() : false);
-
 			if($total !== false){
 				if(isset($this->model->proxy->reader->totalProperty)){
 					$record[$this->model->proxy->reader->totalProperty] = $total;
@@ -1104,5 +1130,12 @@ class MatchaCUP {
 	 */
 	public function setOrFilterProperties(array $properties){
 		$this->orFilterProperties = $properties;
+	}
+
+	/**
+	 * @param bool $enable
+	 */
+	public function setPersistAssociations($enable){
+		$this->persistAssociations = $enable;
 	}
 }

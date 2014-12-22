@@ -171,10 +171,14 @@ class HL7Messages {
 		// OBR
 		$this->setOBR($service, 1);
 
-		$dxIndex = 1;
-		foreach($service->dx_pointers as $dx){
-			$this->setDG1($dx, $dxIndex);
-			$dxIndex++;
+
+		if(is_array($service->dx_pointers)){
+			$dxIndex = 1;
+			foreach($service->dx_pointers as $dx){
+				$this->setDG1($dx, $dxIndex);
+				$dxIndex++;
+			}
+
 		}
 
 

@@ -48,6 +48,12 @@ Ext.define('App.model.patient.EncounterService', {
 			index: true
 		},
 		{
+			name: 'billing_reference',
+			type: 'string',
+			len: 20,
+			index: true
+		},
+		{
 			name: 'code',
 			type: 'string',
 			len: 40,
@@ -67,6 +73,14 @@ Ext.define('App.model.patient.EncounterService', {
 			name: 'units',
 			type: 'int',
 			len: 5
+		},
+		{
+			name: 'tooth',
+			type: 'string'
+		},
+		{
+			name: 'surface',
+			type: 'array'
 		},
 		{
 			name: 'modifiers',

@@ -87,7 +87,6 @@ class Services {
 			$service = (object) $service;
 			$HL7Messages->sendServiceORM(1,1, $service, 'XX');
 			$services = $service;
-
 		}
 
 		return $services;

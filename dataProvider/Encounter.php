@@ -200,7 +200,7 @@ class Encounter {
 	}
 
 	/**
-	 * @param stdClass $params
+	 * @param stdClass|int $params
 	 * @param bool     $relations
 	 * @param bool     $allVitals include all patient vitals
 	 *

@@ -3,48 +3,48 @@
 
 // Note: Use proper escaping functions: pdfff_escape($str), pdfff_checkbox($value).
 
-$error_level = error_reporting();
-error_reporting($error_level ^ E_NOTICE);
+//$error_level = error_reporting();
+//error_reporting($error_level ^ E_NOTICE);
 $error = 0;
 
 // Do not pass parameters from $_REQUEST to proc_open() without validation!
-$allowed_files = array('test', 'pdf_file_2');
+//$allowed_files = array('test', 'pdf_file_2');
 
-if (in_array($_REQUEST['file'], $allowed_files))
-    $file = $_REQUEST['file'] . '.pdf';
-else {
-    echo 'Unknown file.';
-    exit;
-}
+//if (in_array($_REQUEST['file'], $allowed_files))
+//    $file = $_REQUEST['file'] . '.pdf';
+//else {
+//    echo 'Unknown file.';
+//    exit;
+//}
 
-// Process parameters.
-if ($_REQUEST['flatten']){
-	$flatten = true;
-}else {
-	$flatten = false;
-}
+//// Process parameters.
+//if ($_REQUEST['flatten']){
+//	$flatten = true;
+//}else {
+//	$flatten = false;
+//}
 
-if ($_REQUEST['pff_op'] == 'list')
-    $operation = "list";
-else if ($_REQUEST['pff_op'] == 'env_vars')
-    $operation = "env_vars";
-else if ($_REQUEST['pff_op'] == 'dump_fields')
-    $operation = "dump_fields";
-else 
-    $operation = null;
+//if ($_REQUEST['pff_op'] == 'list')
+//    $operation = "list";
+//else if ($_REQUEST['pff_op'] == 'env_vars')
+//    $operation = "env_vars";
+//else if ($_REQUEST['pff_op'] == 'dump_fields')
+//    $operation = "dump_fields";
+//else
+//    $operation = null;
 
-switch ($_REQUEST['file']) {
-    case 'pdf_file_1':
-        $fill_func = 'fill_pdf_file_1';
-        break;
-    case 'history_2':
-        $fill_func = 'fill_pdf_file_2';
-        break;
-}
+//switch ($_REQUEST['file']) {
+//    case 'pdf_file_1':
+//        $fill_func = 'fill_pdf_file_1';
+//        break;
+//    case 'history_2':
+//        $fill_func = 'fill_pdf_file_2';
+//        break;
+//}
 
-pdfff_fill_pdffile_and_dump_to_http($file, 'fill_pdf_file_1', $operation, $flatten);
+pdfff_fill_pdffile_and_dump_to_http('test.pdf', 'fill_pdf_file_1', 'fill', true);
 
-error_reporting($error_level);
+//error_reporting($error_level);
 
 /**
  * Fills a pdf file <var>$file</var> with the function provided <var>$fill_func</var> and dumps it to http for the browser to download.
@@ -59,6 +59,9 @@ error_reporting($error_level);
  * @param boolean $flatten - produce "flat" pdf, that is its forms will not be editable any more.
  */
 function pdfff_fill_pdffile_and_dump_to_http($file, $fill_func, $operation = 'fill', $flatten = false) {
+
+    $error = 0;
+
     $DO_DUMP = false;
 
     if ($flatten)
@@ -117,7 +120,7 @@ function pdfff_fill_pdffile_and_dump_to_http($file, $fill_func, $operation = 'fi
     if (!$error && !$DO_DUMP) {
         // Disable cache.
         header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the pasts
         // We'll be outputting a PDF
         header('Content-type: application/pdf');
         header('Content-Transfer-Encoding: application/octet-stream');
@@ -166,23 +169,22 @@ function pdfff_escape($str) {
     $str = str_replace("\n", "\\n", $str);
 //    mb_internal_encoding('UTF-8');
 //    mb_regex_encoding('UTF-8');
-
-//    if (($s = preg_replace("\\", "\\\\", $str)) !== false)
+//    if (($s = preg_replace("/\\/", "\\\\", $str)) !== false)
 //        $str = $s;
-
+//
 //    // U+2028 utf-8 E280A8 : LINE SEPARATOR LS
-//    if (($s = preg_replace("\xE2\x80\xA8", "\\n", $str)) !== false)
+//    if (($s = preg_replace("/\xE2\x80\xA8/", "\\n", $str)) !== false)
 //        $str = $s;
 //
 //    //U+2029 utf-8 E280A9 : PARAGRAPH SEPARATOR PS
-//    if (($s = preg_replace("\xE2\x80\xA8", "\\p", $str)) !== false)
+//    if (($s = preg_replace("/\xE2\x80\xA8/", "\\p", $str)) !== false)
 //        $str = $s;
 //
 //    // DOS newline
-//    if (($s = preg_replace("\r\n", "\\n", $str)) !== false)
+//    if (($s = preg_replace("/\r\n/", "\\n", $str)) !== false)
 //        $str = $s;
 //
-//    if (($s = preg_replace("\n", "\\n", $str)) !== false)
+//    if (($s = preg_replace("/\n/", "\\n", $str)) !== false)
 //        $str = $s;
     return $str;
 }

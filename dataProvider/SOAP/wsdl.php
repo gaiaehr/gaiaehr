@@ -78,12 +78,6 @@ $complexTypes['Patient'] = array(
 		'document' => 'F or M'
 	),
 	array(
-		'name' => 'SocialSecurityNumber',
-		'type' => 'string',
-		'minOccurs' => '0',
-		'document' => '** Not Recommended **'
-	),
-	array(
 		'name' => 'MaritalStatus',
 		'type' => 'string',
 		'minOccurs' => '0',
@@ -264,25 +258,67 @@ $complexTypes['Patient'] = array(
 		'document' => ''
 	),
 	array(
-		'name' => 'MothersName',
+		'name' => 'MothersFirstName',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => ''
 	),
 	array(
-		'name' => 'GuardiansName',
+		'name' => 'MothersMiddleName',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => ''
 	),
 	array(
-		'name' => 'EmergencyContact',
+		'name' => 'MothersLastName',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => ''
 	),
 	array(
-		'name' => 'EmergencyPhone',
+		'name' => 'GuardiansFirstName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'GuardiansMiddleName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'GuardiansLastName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'GuardiansPhone',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'EmergencyContactFirstName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'EmergencyContactMiddleName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'EmergencyContactLastName',
+		'type' => 'string',
+		'minOccurs' => '0',
+		'document' => ''
+	),
+	array(
+		'name' => 'EmergencyContactPhone',
 		'type' => 'string',
 		'minOccurs' => '0',
 		'document' => ''

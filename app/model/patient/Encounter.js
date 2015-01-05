@@ -49,8 +49,8 @@ Ext.define('App.model.patient.Encounter',{
         },
         {
             name: 'specialty_id',
-            type: 'string',
-            len: 11,
+            type: 'int',
+            useNull: true,
             index: true
         },
         {

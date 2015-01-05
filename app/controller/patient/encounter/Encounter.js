@@ -88,35 +88,35 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 
 		if(record.data.provider_uid == 0){
 			if(me.getEncounterSpecialtyCmb()) me.getEncounterSpecialtyCmb().setVisible(false);
+
 		}else{
 			User.getUser(record.data.provider_uid, function(provider){
-				me.setSpecialtyCombo(provider);
+				me.setSpecialtyCombo(provider, record.data.specialty_id);
 			});
 		}
 
 	},
 
-	setSpecialtyCombo: function(provider){
-		var me = this,
-			show = false;
-
-		me.getEncounterSpecialtyCmb().setVisible(me.reloadSpecialityCmbBySpecialty(provider.specialty));
-
+	setSpecialtyCombo: function(provider, specialty){
+		this.getEncounterSpecialtyCmb().setVisible(this.reloadSpecialityCmbBySpecialty(provider.specialty, specialty));
 	},
 
-	reloadSpecialityCmbBySpecialty: function(specialty){
+	reloadSpecialityCmbBySpecialty: function(specialties, specialty){
 		var me = this,
 			show = false;
 
-		if(Ext.isNumeric(specialty)){
+		if(Ext.isNumeric(specialty) && specialty > 0){
+			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
 
-			me.getEncounterSpecialtyCmb().setValue(specialty);
+		}else if(Ext.isArray(specialties) && specialty.length == 1){
+			me.getEncounterSpecialtyCmb().setValue(eval(specialty[0]));
 
-		}else if(Ext.isArray(specialty) && specialty.length == 1){
+		}else{
+			me.getEncounterSpecialtyCmb().setValue(null);
+		}
 
-			me.getEncounterSpecialtyCmb().setValue(specialty[0]);
 
-		}else if(Ext.isArray(specialty)){
+		if(Ext.isArray(specialties)){
 
 			show = true;
 

@@ -81,31 +81,44 @@ Ext.define('App.controller.patient.encounter.SuperBill', {
 
 	},
 
-	doAddService: function(record, type, service){
-		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
+	doAddService: function(record, type, service, callback){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services(),
+			serviceData = {
+				pid: record.data.pid,
+				eid: record.data.eid,
+				units: 1,
+				reference_type: type,
+				reference_id: record.data.id,
+				code: service ? service.data.code : record.data.code,
+				code_type: service ? service.data.code_type : record.data.code_type,
+				code_text: service ? service.data.code_text : record.data.code_text,
+				create_uid: app.user.id,
+				date_create: new Date()
+			};
 
-		store.add({
-			pid: record.data.pid,
-			eid: record.data.eid,
-			units: 1,
-			reference_type: type,
-			reference_id: record.data.id,
-			code: service.code,
-			code_type: service.code_type,
-			code_text: service.code_text,
-			create_uid: app.user.id,
-			date_create: new Date()
-		});
+		if(record.data.tooth){
+			serviceData.tooth = record.data.tooth;
+		}
+
+		if(record.data.surface){
+			serviceData.surface = record.data.surface;
+		}
+
+		var records = store.add(serviceData);
 
 		store.sync({
 			callback:function(){
 				app.msg(_('sweet'), _('service_added'));
+				if(typeof callback == 'function') callback(records[0]);
 			}
-		})
-
+		});
 	},
 
+	getServiceRecord: function(reference_id){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
 
+		return store.getById(reference_id);
+	},
 
 	onSuperBillGridBeforeEdit: function(plugin, context){
 
@@ -146,10 +159,11 @@ Ext.define('App.controller.patient.encounter.SuperBill', {
 		});
 	},
 
-	onRemoveService: function(grid, rowIndex, colIndex, item, e, record){
+	onRemoveService: function(record){
 		var me = this;
 
 		//TODO: handle the remove logic
+		record.destroy();
 
 	},
 

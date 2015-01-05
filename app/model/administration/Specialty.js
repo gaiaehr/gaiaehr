@@ -25,7 +25,7 @@ Ext.define('App.model.administration.Specialty', {
 	fields: [
 		{
 			name: 'id',
-			type: 'string'
+			type: 'int'
 		},
 		{
 			name: 'code',

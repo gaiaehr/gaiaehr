@@ -1515,4 +1515,8 @@ $LANG = array(
     'ago'                                   => 'Ago',
     'open'                                  => 'Open',
     'closed'                                => 'Closed',
+    'recorded'                              => 'Recorded',
+    'show_deleted'                          => 'Show Deleted',
+    'lot'                                   => 'Lot',
+    'exp'                                   => 'Exp.',
 );

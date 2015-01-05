@@ -81,57 +81,62 @@ class Insurance {
 	}
 
 	/** Patient */
+
+	/***
+	 * @param $params
+	 * @return mixed
+	 */
 	public function getInsurances($params) {
 		return $this->pi->load($params)->all();
 	}
 
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
 	public function getInsurance($params) {
 		return $this->pi->load($params)->one();
 	}
 
+	/**
+	 * @param $params
+	 * @return array
+	 */
 	public function addInsurance($params) {
 		return $this->pi->save($params);
 	}
 
+	/**
+	 * @param $params
+	 * @return array
+	 */
 	public function updateInsurance($params) {
 		return $this->pi->save($params);
 	}
 
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
 	public function destroyInsurance($params) {
 		return $this->pi->destroy($params);
 	}
 
 	public function getPatientPrimaryInsuranceByPid($pid) {
-		$params = new stdClass();
-		$params->filter[0] = new stdClass();
-		$params->filter[0]->property = 'pid';
-		$params->filter[0]->value = $pid;
-		$params->filter[1] = new stdClass();
-		$params->filter[1]->property = 'insurance_type';
-		$params->filter[1]->value = 'P';
-		return $this->getInsurance($params);
+		$this->pi->addFilter('pid', $pid);
+		$this->pi->addFilter('insurance_type', 'p');
+		return $this->pi->load()->one();
 	}
 
 	public function getPatientSecondaryInsuranceByPid($pid) {
-		$params = new stdClass();
-		$params->filter[0] = new stdClass();
-		$params->filter[0]->property = 'pid';
-		$params->filter[0]->value = $pid;
-		$params->filter[1] = new stdClass();
-		$params->filter[1]->property = 'insurance_type';
-		$params->filter[1]->value = 'S';
-		return $this->getInsurance($params);
+		$this->pi->addFilter('pid', $pid);
+		$this->pi->addFilter('insurance_type', 'S');
+		return $this->pi->load()->one();
 	}
 
-
 	public function getPatientComplementaryInsuranceByPid($pid) {
-		$params = new stdClass();
-		$params->filter[0] = new stdClass();
-		$params->filter[0]->property = 'pid';
-		$params->filter[0]->value = $pid;
-		$params->filter[1] = new stdClass();
-		$params->filter[1]->property = 'insurance_type';
-		$params->filter[1]->value = 2;
-		return $this->getInsurance($params);
+		$this->pi->addFilter('pid', $pid);
+		$this->pi->addFilter('insurance_type', 'C');
+		return $this->pi->load()->one();
 	}
 } 

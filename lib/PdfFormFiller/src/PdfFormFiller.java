@@ -49,6 +49,7 @@ public class PdfFormFiller {
                 }
             }
 
+
             fillPDFFile(document, output, fields, font, operation, flatten, verbose);
 
         } catch (WrongParamsExeption e){

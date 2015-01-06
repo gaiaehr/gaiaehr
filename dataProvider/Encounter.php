@@ -817,11 +817,11 @@ class Encounter {
 	 * @return array
 	 */
 	public function getEncounterPrintDocumentsByEid($eid) {
-		$sql = 'SELECT `id` AS record_id, \'rx\' AS document_type FROM `patient_medications` WHERE `eid` = ?';
+		$sql = 'SELECT `id` AS record_id, \'rx\' AS document_type, `STR` AS description  FROM `patient_medications` WHERE `eid` = ?';
 		$sql .= ' UNION ';
-		$sql .= 'SELECT `id` AS record_id, `order_type` AS document_type FROM `patient_orders` WHERE `eid` = ?';
+		$sql .= 'SELECT `id` AS record_id, `order_type` AS document_type, `description` FROM `patient_orders` WHERE `eid` = ?';
 		$sql .= ' UNION ';
-		$sql .= 'SELECT `id` AS record_id, \'note\' AS document_type FROM `patient_doctors_notes` WHERE `eid` = ?';
+		$sql .= 'SELECT `id` AS record_id, \'note\' AS document_type, \'Doctors Note\' AS description FROM `patient_doctors_notes` WHERE `eid` = ?';
 		$sth = $this->conn->prepare($sql);
 		$sth->execute(array(
 			$eid,

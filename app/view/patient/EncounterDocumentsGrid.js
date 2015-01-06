@@ -27,12 +27,13 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
 	features: [
 		{
 			ftype: 'grouping',
-			collapsible: false
+			collapsible: false,
+			groupHeaderTpl: '{name}\'s'
 		}
 	],
 	selType: 'checkboxmodel',
 	store: Ext.create('Ext.data.Store', {
-		fields: ['id', 'record_id', 'document_type', 'controller', 'method'],
+		fields: ['id', 'record_id', 'description', 'document_type', 'controller', 'method'],
 		proxy: {
 			type: 'memory'
 		},
@@ -40,9 +41,9 @@ Ext.define('App.view.patient.EncounterDocumentsGrid', {
 	}),
 	columns: [
 		{
-			header: _('type'),
-			flex: 1,
-			dataIndex: 'document_type'
+			header: _('description'),
+			dataIndex: 'description',
+			flex: 1
 		}
 	],
 	tools: [

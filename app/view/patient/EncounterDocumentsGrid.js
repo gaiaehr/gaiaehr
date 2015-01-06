@@ -17,45 +17,41 @@
  */
 
 Ext.define('App.view.patient.EncounterDocumentsGrid', {
-	extend     : 'Ext.grid.Panel',
-	alias:'widget.documentsimplegrid',
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.feature.Grouping'
+	],
+	xtype: 'encounterdocumentsgrid',
 	title: _('documents'),
-    split:true,
-	initComponent: function() {
-		var me = this;
-
-		me.store = Ext.create('App.store.patient.PatientDocuments');
-        me.columns = [
-            {
-                xtype: 'actioncolumn',
-                width:26,
-                items: [
-                    {
-	                    icon: 'resources/images/icons/preview.png',
-	                    tooltip: _('view_document'),
-	                    handler: me.onDocumentView,
-	                    getClass:function(){
-		                    return 'x-grid-icon-padding';
-	                    }
-                    }
-                ]
-            },
-            {
-                header: _('type'),
-                flex:1,
-                dataIndex:'docType'
-            }
-        ];
-
-		me.callParent(arguments);
-	},
-
-	onDocumentView:function(grid, rowIndex){
-		var rec = grid.getStore().getAt(rowIndex);
-		app.onDocumentView(rec.data.id);
-	},
-
-	loadDocs:function(eid){
-		this.store.load({params:{eid:eid}})
+	split: true,
+	features: [
+		{
+			ftype: 'grouping',
+			collapsible: false
+		}
+	],
+	selType: 'checkboxmodel',
+	store: Ext.create('Ext.data.Store', {
+		fields: ['id', 'record_id', 'document_type', 'controller', 'method'],
+		proxy: {
+			type: 'memory'
+		},
+		groupField: 'document_type'
+	}),
+	columns: [
+		{
+			header: _('type'),
+			flex: 1,
+			dataIndex: 'document_type'
+		}
+	],
+	tools: [
+		{
+			type:'print',
+			itemId: 'EncounterDocumentsPrintBtn'
+		}
+	],
+	loadDocs: function(eid){
+		App.app.getController('patient.encounter.EncounterDocuments').loadDocumentsByEid(this, eid);
 	}
 });

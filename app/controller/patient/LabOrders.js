@@ -104,10 +104,10 @@ Ext.define('App.controller.patient.LabOrders', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onPrintLabOrderBtnClick: function(){
+	onPrintLabOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getLabOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			params = {},
 			data,
 			i;

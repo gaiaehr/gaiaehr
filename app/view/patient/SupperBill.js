@@ -101,9 +101,6 @@ Ext.define('App.view.patient.SupperBill', {
 					str = '',
 					isMolar = App.app.getController('Modules.dental.controller.Plan').isMolar(record.data.tooth);
 
-				say(value);
-
-
 				for(var i = 0; i < len; i++){
 					if(value[i] == '0') continue;
 
@@ -115,9 +112,6 @@ Ext.define('App.view.patient.SupperBill', {
 						str += value[i];
 					}
 				}
-
-
-
 				return str;
 			}
 		},

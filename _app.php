@@ -733,6 +733,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 	                'patient.Summary',
                     'patient.encounter.Encounter',
+	                'patient.encounter.EncounterDocuments',
 	                'patient.encounter.EncounterSign',
 	                'patient.encounter.Snippets',
                     'patient.encounter.SOAP',

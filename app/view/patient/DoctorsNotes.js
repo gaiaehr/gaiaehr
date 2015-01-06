@@ -29,6 +29,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 	itemId: 'DoctorsNotes',
 	columnLines: true,
 	store: Ext.create('App.store.patient.DoctorsNotes', {
+		storeId: 'DoctorsNotesStore',
 		groupField: 'order_date',
 		remoteFilter: true,
 		pageSize: 200,

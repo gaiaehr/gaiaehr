@@ -233,7 +233,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 								render:me.onInvoicePanelRender
 							}
 						}),
-						me.docsGrid = Ext.widget('documentsimplegrid', {
+						me.docsGrid = Ext.widget('encounterdocumentsgrid', {
 							title:_('documents'),
 							frame:true,
 							margin:'5 5 0 0',

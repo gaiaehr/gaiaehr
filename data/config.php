@@ -540,6 +540,9 @@ $API = array(
 			),
 			'getTodayEncounters' => array(
 				'len' => 0
+			),
+			'getEncounterPrintDocumentsByEid' => array(
+				'len' => 1
 			)
 		)
 	),

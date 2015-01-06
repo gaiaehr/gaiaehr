@@ -27,6 +27,7 @@ class Medications {
 
 	function __construct() {
 		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
+		$this->m->setOrFilterProperties(array('id'));
 	}
 
 	public function getPatientMedications($params) {

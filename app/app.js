@@ -12288,7 +12288,8 @@ Ext.define('App.model.administration.User', {
 		},
 		{
 			name: 'active',
-			type: 'bool'
+			type: 'bool',
+			index: true
 		}
 	],
 	proxy: {
@@ -13290,6 +13291,12 @@ Ext.define('App.model.patient.EncounterService', {
 			index: true
 		},
 		{
+			name: 'billing_reference',
+			type: 'string',
+			len: 20,
+			index: true
+		},
+		{
 			name: 'code',
 			type: 'string',
 			len: 40,
@@ -13309,6 +13316,14 @@ Ext.define('App.model.patient.EncounterService', {
 			name: 'units',
 			type: 'int',
 			len: 5
+		},
+		{
+			name: 'tooth',
+			type: 'string'
+		},
+		{
+			name: 'surface',
+			type: 'array'
 		},
 		{
 			name: 'modifiers',
@@ -15136,6 +15151,21 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			type: 'int'
 		},
 		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'ordered_uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'signed_uid',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'order_id',
 			type: 'int',
 			index: true,
@@ -15172,6 +15202,12 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			name: 'lab_address',
 			type: 'string',
 			len: 200
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
 		},
 		{
 			name: 'result_date',
@@ -17877,20 +17913,38 @@ Ext.define('App.view.dashboard.Dashboard', {
 Ext.define('App.view.dashboard.panel.NewResults', {
 	extend: 'Ext.grid.Panel',
 	itemId: 'DashboardNewResultsGrid',
-
-	height: 300,
+	requires: [
+		'Ext.ux.SlidingPager'
+	],
+	maxHeight: 200,
 	columnLines: true,
-
+	disableSelection: true,
 	initComponent: function(){
 		var me = this;
 
 		me.store = Ext.create('App.store.patient.PatientsOrderResults');
 
+		me.bbar = {
+			xtype: 'pagingtoolbar',
+				pageSize: 10,
+				store: me.store,
+				displayInfo: true,
+				plugins: Ext.create('Ext.ux.SlidingPager')
+		};
+
 		me.columns = [
 			{
+				text: _('signed'),
+				dataIndex: 'signed_uid',
+				width: 60,
+				renderer: function(v){
+					return app.boolRenderer(v);
+				}
+			},
+			{
 				xtype: 'datecolumn',
-				text: _('received_date'),
-				dataIndex: 'result_date'
+				text: _('received'),
+				dataIndex: 'create_date'
 			},
 			{
 				text: _('description'),
@@ -17999,49 +18053,10 @@ Ext.define('App.view.dashboard.panel.DailyVisits', {
 						}
 					}
 				]
-			},
-			listeners: {
-				scope: me,
-				render: me.load
 			}
-
 		});
 
 		me.callParent();
-	},
-
-	load: function(){
-		var me = this,
-			store = me.store,
-			data = [],
-			time,
-			i,
-			j;
-
-		Encounter.getTodayEncounters(function(provider, response){
-
-			var encounters = response.result;
-			for(i=0; i < encounters.length; i++){
-				time = Ext.Date.parse(encounters[i].service_date, 'Y-m-d H:i:s').setMinutes(0,0,0);
-				var found = false;
-
-				for(j=0; j < data.length; j++){
-					if(data[j].time == time){
-						data[j].total = data[j].total + 1;
-						found = true;
-					}
-				}
-
-				if(!found){
-					data.push({
-						total: 1,
-						time: time
-					});
-				}
-			}
-
-			store.loadData(data);
-		});
 	}
 });
 
@@ -20657,6 +20672,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 	itemId: 'DoctorsNotes',
 	columnLines: true,
 	store: Ext.create('App.store.patient.DoctorsNotes', {
+		storeId: 'DoctorsNotesStore',
 		groupField: 'order_date',
 		remoteFilter: true,
 		pageSize: 200,
@@ -20827,46 +20843,42 @@ Ext.define('App.view.patient.DoctorsNotes', {
 	]
 });
 Ext.define('App.view.patient.EncounterDocumentsGrid', {
-	extend     : 'Ext.grid.Panel',
-	alias:'widget.documentsimplegrid',
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.feature.Grouping'
+	],
+	xtype: 'encounterdocumentsgrid',
 	title: _('documents'),
-    split:true,
-	initComponent: function() {
-		var me = this;
-
-		me.store = Ext.create('App.store.patient.PatientDocuments');
-        me.columns = [
-            {
-                xtype: 'actioncolumn',
-                width:26,
-                items: [
-                    {
-	                    icon: 'resources/images/icons/preview.png',
-	                    tooltip: _('view_document'),
-	                    handler: me.onDocumentView,
-	                    getClass:function(){
-		                    return 'x-grid-icon-padding';
-	                    }
-                    }
-                ]
-            },
-            {
-                header: _('type'),
-                flex:1,
-                dataIndex:'docType'
-            }
-        ];
-
-		me.callParent(arguments);
-	},
-
-	onDocumentView:function(grid, rowIndex){
-		var rec = grid.getStore().getAt(rowIndex);
-		app.onDocumentView(rec.data.id);
-	},
-
-	loadDocs:function(eid){
-		this.store.load({params:{eid:eid}})
+	split: true,
+	features: [
+		{
+			ftype: 'grouping',
+			collapsible: false
+		}
+	],
+	selType: 'checkboxmodel',
+	store: Ext.create('Ext.data.Store', {
+		fields: ['id', 'record_id', 'document_type', 'controller', 'method'],
+		proxy: {
+			type: 'memory'
+		},
+		groupField: 'document_type'
+	}),
+	columns: [
+		{
+			header: _('type'),
+			flex: 1,
+			dataIndex: 'document_type'
+		}
+	],
+	tools: [
+		{
+			type:'print',
+			itemId: 'EncounterDocumentsPrintBtn'
+		}
+	],
+	loadDocs: function(eid){
+		App.app.getController('patient.encounter.EncounterDocuments').loadDocumentsByEid(this, eid);
 	}
 });
 Ext.define('App.store.patient.PatientImmunization', {
@@ -21885,7 +21897,7 @@ Ext.define('App.store.patient.PatientsOrders', {
 
 Ext.define('App.view.patient.Results', {
 	extend: 'Ext.panel.Panel',
-	requires:[
+	requires: [
 		'Ext.grid.plugin.CellEditing',
 		'Ext.grid.plugin.RowEditing',
 		'App.store.patient.PatientsOrders',
@@ -21902,11 +21914,11 @@ Ext.define('App.view.patient.Results', {
 			split: true,
 			columnLines: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
-			    remoteFilter: true
-		    }),
-			plugins:[
+				remoteFilter: true
+			}),
+			plugins: [
 				{
-					ptype:'rowediting',
+					ptype: 'rowediting',
 					errorSummary: false
 				}
 			],
@@ -21944,7 +21956,7 @@ Ext.define('App.view.patient.Results', {
 					width: 60
 				}
 			],
-			bbar:[
+			bbar: [
 				'->',
 				{
 					text: _('new_order'),
@@ -21960,6 +21972,7 @@ Ext.define('App.view.patient.Results', {
 			height: 400,
 			frame: true,
 			split: true,
+			itemId: 'OrderResultForm',
 			layout: {
 				type: 'border'
 			},
@@ -22186,14 +22199,32 @@ Ext.define('App.view.patient.Results', {
 					]
 				}
 			],
-			buttons: [
+			dockedItems: [
 				{
-					text: _('reset'),
-					action: 'orderResultResetBtn'
-				},
-				{
-					text: _('save'),
-					action: 'orderResultSaveBtn'
+					xtype: 'toolbar',
+					dock: 'bottom',
+					ui: 'footer',
+					itemId: 'OrderResultBottomToolbar',
+					defaults: {
+						minWidth: 75
+					},
+					items: [
+						{
+							text: _('sign'),
+							iconCls: 'icoSing',
+							disabled: true,
+							itemId: 'OrderResultSignBtn'
+						},
+						'->',
+						{
+							text: _('reset'),
+							action: 'orderResultResetBtn'
+						},
+						{
+							text: _('save'),
+							action: 'orderResultSaveBtn'
+						}
+					]
 				}
 			]
 		}
@@ -22686,7 +22717,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 								render:me.onInvoicePanelRender
 							}
 						}),
-						me.docsGrid = Ext.widget('documentsimplegrid', {
+						me.docsGrid = Ext.widget('encounterdocumentsgrid', {
 							title:_('documents'),
 							frame:true,
 							margin:'5 5 0 0',
@@ -24689,7 +24720,7 @@ Ext.define('App.model.administration.Specialty', {
 	fields: [
 		{
 			name: 'id',
-			type: 'string'
+			type: 'int'
 		},
 		{
 			name: 'code',
@@ -33079,46 +33110,64 @@ Ext.define('App.controller.administration.Specialties', {
 });
 Ext.define('App.controller.dashboard.Dashboard', {
 	extend: 'Ext.app.Controller',
-	refs:[
+	refs: [
 		{
 			ref: 'DashboardRenderPanel',
-			selector:'#DashboardPanel'
+			selector: '#DashboardPanel'
 		},
 		{
 			ref: 'DashboardPanel',
-			selector:'portalpanel'
+			selector: 'portalpanel'
 		},
 		{
 			ref: 'DashboardLeftColumn',
-			selector:'#DashboardColumn1'
+			selector: '#DashboardColumn1'
 		},
 		{
 			ref: 'DashboardRightColumn',
-			selector:'#DashboardColumn2'
+			selector: '#DashboardColumn2'
 		}
 	],
 
-	addLeftPanel:function(title, item){
-		this.getDashboardLeftColumn().add({
-			xtype: 'portlet',
-			title : title,
-			items: [ item ]
-		});
+	addLeftPanel: function(title, item, index){
+		var panel;
+		if(index){
+			panel = this.getDashboardLeftColumn().insert(index, {
+				xtype: 'portlet',
+				title: title,
+				items: [item]
+			});
+		}else{
+			panel = this.getDashboardLeftColumn().add({
+				xtype: 'portlet',
+				title: title,
+				items: [item]
+			});
+		}
+		return panel;
 	},
 
-	addRightPanel:function(title, item){
-		this.getDashboardRightColumn().add({
-			xtype: 'portlet',
-			title : title,
-			items: [ item ]
-		});
+	addRightPanel: function(title, item, index){
+		var panel;
+		if(index){
+			panel = this.getDashboardRightColumn().insert(index, {
+				xtype: 'portlet',
+				title: title,
+				items: [item]
+			});
+		}else{
+			panel = this.getDashboardRightColumn().add({
+				xtype: 'portlet',
+				title: title,
+				items: [item]
+			});
+		}
+		return panel;
 	},
 
-	getColumns:function(){
+	getColumns: function(){
 		return this.getDashboardPanel().items;
 	}
-
-
 
 });
 Ext.define('App.controller.dashboard.panel.NewResults', {
@@ -33135,6 +33184,9 @@ Ext.define('App.controller.dashboard.panel.NewResults', {
 			},
 			'#DashboardPanel':{
 				activate: me.onDashboardPanelActivate
+			},
+			'#DashboardNewResultsGrid':{
+				itemdblclick: me.onDashboardNewResultsGridItemDoubleClick
 			}
 		});
 
@@ -33149,6 +33201,17 @@ Ext.define('App.controller.dashboard.panel.NewResults', {
 			}
 		]);
 	},
+
+	onDashboardNewResultsGridItemDoubleClick: function(grid, record){
+		grid.el.mask(_('please_wait'));
+
+		app.setPatient(record.data.pid, null, function(){
+			app.openPatientSummary();
+			app.onMedicalWin('laboratories');
+			grid.el.unmask();
+		});
+	},
+
 
 	onDashboardPanelActivate: function(){
 		this.getDashboardNewResultsGrid().getStore().load();
@@ -33189,11 +33252,45 @@ Ext.define('App.controller.dashboard.panel.DailyVisits', {
 	},
 
 	onDashboardPanelActivate: function(){
-		//this.getDashboardDailyVisitsChart().getStore().load();
+		this.loadChart();
 	},
 
 	onDashboardPanelBeforeRender: function(){
-		this.addRightPanel(_('office_visits'), Ext.create('App.view.dashboard.panel.DailyVisits'));
+		this.addRightPanel(_('daily_visits'), Ext.create('App.view.dashboard.panel.DailyVisits'));
+	},
+
+	loadChart: function(){
+		var me = this,
+			store = me.getDashboardDailyVisitsChart().getStore(),
+			data = [],
+			time,
+			i,
+			j;
+
+		Encounter.getTodayEncounters(function(response){
+
+			var encounters = response;
+			for(i=0; i < encounters.length; i++){
+				time = Ext.Date.parse(encounters[i].service_date, 'Y-m-d H:i:s').setMinutes(0,0,0);
+				var found = false;
+
+				for(j=0; j < data.length; j++){
+					if(data[j].time == time){
+						data[j].total = data[j].total + 1;
+						found = true;
+					}
+				}
+
+				if(!found){
+					data.push({
+						total: 1,
+						time: time
+					});
+				}
+			}
+
+			store.loadData(data);
+		});
 	}
 
 });
@@ -34111,8 +34208,8 @@ Ext.define('App.controller.Scanner', {
 			app.fireEvent('scanconnected', this);
 		};
 
-		me.ws.onerror = function(evt){
-			app.msg(_('oops'), evt.data, true);
+		me.ws.onerror = function(){
+			app.msg(_('oops'), _('scanner_connection_error'), true);
 		};
 
 		me.ws.onmessage = function(evt){
@@ -35691,10 +35788,10 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 		multiField.setValue(data);
 	},
 
-	onPrintDoctorsNoteBtn: function(){
+	onPrintDoctorsNoteBtn: function(note){
 		var me = this,
 			grid = me.getDoctorsNotesGrid(),
-			record = grid.getSelectionModel().getSelection()[0],
+			record = note || grid.getSelectionModel().getSelection()[0],
 			params = {};
 
 		params.pid = record.data.pid;
@@ -36479,8 +36576,8 @@ Ext.define('App.controller.patient.RadOrders', {
 			code: records[0].data.code,
 			code_type: records[0].data.code_type
 		});
-		form.findField('code').setValue(records[0].data.code);
-		form.findField('note').focus(false, 200);
+		if(form.findField('code')) form.findField('code').setValue(records[0].data.code);
+		if(form.findField('note')) form.findField('note').focus(false, 200);
 	},
 
 	onRadOrdersGridSelectionChange: function(sm, selected){
@@ -36505,10 +36602,10 @@ Ext.define('App.controller.patient.RadOrders', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onPrintRadOrderBtnClick: function(){
+	onPrintRadOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getRadOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			params = {},
 			data,
 			i;
@@ -37011,10 +37108,10 @@ Ext.define('App.controller.patient.RxOrders', {
 		return records;
 	},
 
-	onPrintRxOrderBtnClick: function(){
+	onPrintRxOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getRxOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			isSingleColumnTable = true,
 			references = '',
 			params = {},
@@ -37026,7 +37123,6 @@ Ext.define('App.controller.patient.RxOrders', {
 		params.eid = app.patient.eid;
 		params.orderItems = [];
 		params.docType = 'Rx';
-
 		params.templateId = 5;
 
 		if(isSingleColumnTable){
@@ -37952,6 +38048,136 @@ Ext.define('App.controller.patient.Vitals', {
 	}
 
 });
+Ext.define('App.controller.patient.encounter.EncounterDocuments', {
+	extend: 'Ext.app.Controller',
+	requires: [],
+	refs: [],
+
+	init: function(){
+		var me = this;
+
+		this.control({
+			'#EncounterDocumentsPrintBtn': {
+				click: me.onEncounterDocumentsPrintBtnClick
+			}
+		});
+	},
+
+	onEncounterDocumentsPrintBtnClick: function(btn){
+		var grid = btn.up('grid'),
+			selections = grid.getSelectionModel().getSelection(),
+			groups = {};
+
+		for(var i = 0; i < selections.length; i++){
+			var data = selections[i].data;
+
+			if(!groups[data.document_type]){
+				groups[data.document_type] = {};
+				groups[data.document_type]['controller'] = data.controller;
+				groups[data.document_type]['method'] = data.method;
+				groups[data.document_type]['items'] = [];
+			}
+
+			Ext.Array.push(groups[data.document_type]['items'], data.record_id);
+		}
+
+		this.doEncounterDocumentsPrint(groups);
+	},
+
+	doEncounterDocumentsPrint: function(groups){
+		var me = this, store, filters, i;
+
+		Ext.Object.each(groups, function(group, data){
+
+			filters = [];
+
+			if(group.toUpperCase() == 'NOTE'){
+				store = Ext.data.StoreManager.lookup('DoctorsNotesStore');
+
+				for(i = 0; i < data.items.length; i++){
+					Ext.Array.push(filters, {
+						property: 'id',
+						value: data.items[i]
+					});
+
+					store.load({
+						filters: filters,
+						callback: function(records){
+							me.getController(data.controller)[data.method](records[0]);
+						}
+					});
+				}
+			}else{
+
+				if(group.toUpperCase() == 'RX'){
+					store = Ext.data.StoreManager.lookup('RxOrderStore');
+				}else if(group.toUpperCase() == 'RAD'){
+					store = Ext.data.StoreManager.lookup('LabOrderStore');
+				}else if(group.toUpperCase() == 'LAB'){
+					store = Ext.data.StoreManager.lookup('RadOrderStore');
+				}
+
+				for(i = 0; i < data.items.length; i++){
+					Ext.Array.push(filters, {
+						property: 'id',
+						value: data.items[i]
+					});
+				}
+
+				store.load({
+					filters: filters,
+					callback: function(records){
+						me.getController(data.controller)[data.method](records);
+					}
+				});
+			}
+		});
+	},
+
+	onDocumentView: function(grid, rowIndex){
+		say('onDocumentView');
+
+	},
+
+	loadDocumentsByEid: function(grid, eid){
+		var me = this,
+			store = grid.getStore();
+
+		store.removeAll();
+
+		Encounter.getEncounterPrintDocumentsByEid(eid, function(results){
+			var data = [];
+
+			for(var i = 0; i < results.length; i++){
+				var document = results[i];
+
+				if(document.document_type == 'rx'){
+					document.controller = 'patient.RxOrders';
+					document.method = 'onPrintRxOrderBtnClick';
+				}else if(document.document_type == 'rad'){
+					document.controller = 'patient.RadOrders';
+					document.method = 'onPrintRadOrderBtnClick';
+				}else if(document.document_type == 'lab'){
+					document.controller = 'patient.LabOrders';
+					document.method = 'onPrintLabOrderBtnClick';
+				}else if(document.document_type == 'note'){
+					document.controller = 'patient.DoctorsNotes';
+					document.method = 'onPrintDoctorsNoteBtn';
+				}
+
+				document.document_type = Ext.String.capitalize(document.document_type);
+
+				Ext.Array.push(data, document);
+			}
+
+			if(data.length > 0){
+				store.loadRawData(data);
+			}
+		});
+
+	}
+
+});
 Ext.define('App.controller.patient.encounter.EncounterSign', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -38671,31 +38897,44 @@ Ext.define('App.controller.patient.encounter.SuperBill', {
 
 	},
 
-	doAddService: function(record, type, service){
-		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
+	doAddService: function(record, type, service, callback){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services(),
+			serviceData = {
+				pid: record.data.pid,
+				eid: record.data.eid,
+				units: 1,
+				reference_type: type,
+				reference_id: record.data.id,
+				code: service ? service.data.code : record.data.code,
+				code_type: service ? service.data.code_type : record.data.code_type,
+				code_text: service ? service.data.code_text : record.data.code_text,
+				create_uid: app.user.id,
+				date_create: new Date()
+			};
 
-		store.add({
-			pid: record.data.pid,
-			eid: record.data.eid,
-			units: 1,
-			reference_type: type,
-			reference_id: record.data.id,
-			code: service.code,
-			code_type: service.code_type,
-			code_text: service.code_text,
-			create_uid: app.user.id,
-			date_create: new Date()
-		});
+		if(record.data.tooth){
+			serviceData.tooth = record.data.tooth;
+		}
+
+		if(record.data.surface){
+			serviceData.surface = record.data.surface;
+		}
+
+		var records = store.add(serviceData);
 
 		store.sync({
 			callback:function(){
 				app.msg(_('sweet'), _('service_added'));
+				if(typeof callback == 'function') callback(records[0]);
 			}
-		})
-
+		});
 	},
 
+	getServiceRecord: function(reference_id){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
 
+		return store.getById(reference_id);
+	},
 
 	onSuperBillGridBeforeEdit: function(plugin, context){
 
@@ -38736,10 +38975,11 @@ Ext.define('App.controller.patient.encounter.SuperBill', {
 		});
 	},
 
-	onRemoveService: function(grid, rowIndex, colIndex, item, e, record){
+	onRemoveService: function(record){
 		var me = this;
 
 		//TODO: handle the remove logic
+		record.destroy();
 
 	},
 
@@ -39345,6 +39585,7 @@ Ext.define('App.view.patient.LabOrders', {
 	itemId: 'LabOrders',
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientsOrders', {
+		storeId: 'LabOrderStore',
 		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
@@ -39504,6 +39745,7 @@ Ext.define('App.view.patient.RadOrders', {
 	columnLines: true,
 	itemId: 'RadOrders',
 	store: Ext.create('App.store.patient.PatientsOrders', {
+		storeId: 'RadOrderStore',
 		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
@@ -39654,6 +39896,7 @@ Ext.define('App.view.patient.RxOrders', {
 	columnLines: true,
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
+		storeId: 'RxOrderStore',
 		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
@@ -41846,8 +42089,8 @@ Ext.define('App.model.patient.Encounter',{
         },
         {
             name: 'specialty_id',
-            type: 'string',
-            len: 11,
+            type: 'int',
+            useNull: true,
             index: true
         },
         {
@@ -42637,7 +42880,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 			flex: 2
 		},
 		{
-			xtype: 'documentsimplegrid',
+			xtype: 'encounterdocumentsgrid',
 			title: _('documents'),
 			region: 'east',
 			itemId: 'EncounterSignDocumentGrid',
@@ -47060,10 +47303,10 @@ Ext.define('App.controller.patient.LabOrders', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onPrintLabOrderBtnClick: function(){
+	onPrintLabOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getLabOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			params = {},
 			data,
 			i;
@@ -47162,6 +47405,10 @@ Ext.define('App.controller.patient.Results', {
 		{
 			ref: 'acknowledgeField',
 			selector: 'hl7messageviewer > textareafield[action=acknowledge]'
+		},
+		{
+			ref: 'OrderResultSignBtn',
+			selector: '#OrderResultSignBtn'
 		}
 	],
 
@@ -47189,8 +47436,45 @@ Ext.define('App.controller.patient.Results', {
 			},
 			'#OrderResultNewOrderBtn': {
 				click: me.onOrderResultNewOrderBtnClick
+			},
+			'#OrderResultSignBtn': {
+				click: me.onOrderResultSignBtnClick
 			}
 		});
+	},
+
+	onOrderResultSignBtnClick: function(){
+		var me = this;
+
+		app.passwordVerificationWin(function(btn, password){
+			if(btn == 'ok'){
+
+				User.verifyUserPass(password, function(success){
+					if(success){
+						var form = me.getResultForm().getForm(),
+							record = form.getRecord();
+
+						say(record);
+
+						record.set({signed_uid: app.user.id});
+						record.save({
+							success: function(){
+								app.msg(_('sweet'), _('result_signed'));
+							},
+							failure: function(){
+								app.msg(_('sweet'), _('record_error'), true);
+							}
+						});
+
+					}else{
+						me.onOrderResultSignBtnClick();
+					}
+
+				});
+
+			}
+		});
+
 	},
 
 	onOrderSelectionEdit: function(editor, e){
@@ -47255,19 +47539,20 @@ Ext.define('App.controller.patient.Results', {
 		resultsStore.load({
 			callback: function(records){
 
-				//				say(records);
-
 				if(records.length > 0){
 					form.loadRecord(records[0]);
+					me.getOrderResultSignBtn().setDisabled(records[0].data.signed_uid > 0);
 					observationStore = records[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load();
+
 				}else{
 					var newResult = resultsStore.add({});
 					form.loadRecord(newResult[0]);
+					me.getOrderResultSignBtn().setDisabled(true);
 					observationStore = newResult[0].observations();
 					observationGrid.reconfigure(observationStore);
-					observationStore.load({ params: { loinc: orderRecord.data.code } });
+					observationStore.load({params: {loinc: orderRecord.data.code}});
 				}
 			}
 		});
@@ -47313,7 +47598,7 @@ Ext.define('App.controller.patient.Results', {
 							eid: order[0].data.eid,
 							uid: app.user.id,
 							docType: 'lab',
-							title: 'Lab #'+ values.lab_order_id +' Result',
+							title: 'Lab #' + values.lab_order_id + ' Result',
 							document: e.target.result
 
 						};
@@ -47355,7 +47640,7 @@ Ext.define('App.controller.patient.Results', {
 		//		}
 		//		say(observationData);
 
-//		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
+		//		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
 		record.set(values);
 
 		record.save({
@@ -47411,7 +47696,6 @@ Ext.define('App.controller.patient.Results', {
 			app.msg(_('oops'), _('no_document_found'), true)
 		}
 	},
-
 
 	onOrderDocumentChange: function(field){
 
@@ -47582,7 +47866,6 @@ Ext.define('App.controller.patient.Results', {
 	//},
 	//
 
-
 });
 Ext.define('App.controller.patient.encounter.Encounter', {
 	extend: 'Ext.app.Controller',
@@ -47674,35 +47957,35 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 
 		if(record.data.provider_uid == 0){
 			if(me.getEncounterSpecialtyCmb()) me.getEncounterSpecialtyCmb().setVisible(false);
+
 		}else{
 			User.getUser(record.data.provider_uid, function(provider){
-				me.setSpecialtyCombo(provider);
+				me.setSpecialtyCombo(provider, record.data.specialty_id);
 			});
 		}
 
 	},
 
-	setSpecialtyCombo: function(provider){
-		var me = this,
-			show = false;
-
-		me.getEncounterSpecialtyCmb().setVisible(me.reloadSpecialityCmbBySpecialty(provider.specialty));
-
+	setSpecialtyCombo: function(provider, specialty){
+		this.getEncounterSpecialtyCmb().setVisible(this.reloadSpecialityCmbBySpecialty(provider.specialty, specialty));
 	},
 
-	reloadSpecialityCmbBySpecialty: function(specialty){
+	reloadSpecialityCmbBySpecialty: function(specialties, specialty){
 		var me = this,
 			show = false;
 
-		if(Ext.isNumeric(specialty)){
+		if(Ext.isNumeric(specialty) && specialty > 0){
+			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
 
-			me.getEncounterSpecialtyCmb().setValue(specialty);
+		}else if(Ext.isArray(specialties) && specialty.length == 1){
+			me.getEncounterSpecialtyCmb().setValue(eval(specialty[0]));
 
-		}else if(Ext.isArray(specialty) && specialty.length == 1){
+		}else{
+			me.getEncounterSpecialtyCmb().setValue(null);
+		}
 
-			me.getEncounterSpecialtyCmb().setValue(specialty[0]);
 
-		}else if(Ext.isArray(specialty)){
+		if(Ext.isArray(specialties)){
 
 			show = true;
 
@@ -51285,6 +51568,10 @@ Ext.define('App.view.Viewport', {
         me.signature = Ext.create('App.view.signature.SignatureWindow');
 
     },
+
+	getUserFullname: function(){
+		return this.user.title + ' ' + this.user.fname + ' ' + this.user.mname + ' ' + this.user.lname
+	},
 
 	getController:function(controller){
 		return App.Current.getController(controller);

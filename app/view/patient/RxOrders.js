@@ -34,6 +34,7 @@ Ext.define('App.view.patient.RxOrders', {
 	columnLines: true,
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
+		storeId: 'RxOrderStore',
 		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,

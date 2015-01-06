@@ -104,10 +104,10 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 		multiField.setValue(data);
 	},
 
-	onPrintDoctorsNoteBtn: function(){
+	onPrintDoctorsNoteBtn: function(note){
 		var me = this,
 			grid = me.getDoctorsNotesGrid(),
-			record = grid.getSelectionModel().getSelection()[0],
+			record = note || grid.getSelectionModel().getSelection()[0],
 			params = {};
 
 		params.pid = record.data.pid;

@@ -65,8 +65,8 @@ Ext.define('App.controller.patient.RadOrders', {
 			code: records[0].data.code,
 			code_type: records[0].data.code_type
 		});
-		form.findField('code').setValue(records[0].data.code);
-		form.findField('note').focus(false, 200);
+		if(form.findField('code')) form.findField('code').setValue(records[0].data.code);
+		if(form.findField('note')) form.findField('note').focus(false, 200);
 	},
 
 	onRadOrdersGridSelectionChange: function(sm, selected){
@@ -91,10 +91,10 @@ Ext.define('App.controller.patient.RadOrders', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onPrintRadOrderBtnClick: function(){
+	onPrintRadOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getRadOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			params = {},
 			data,
 			i;

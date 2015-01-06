@@ -274,10 +274,10 @@ Ext.define('App.controller.patient.RxOrders', {
 		return records;
 	},
 
-	onPrintRxOrderBtnClick: function(){
+	onPrintRxOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getRxOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			isSingleColumnTable = true,
 			references = '',
 			params = {},
@@ -289,7 +289,6 @@ Ext.define('App.controller.patient.RxOrders', {
 		params.eid = app.patient.eid;
 		params.orderItems = [];
 		params.docType = 'Rx';
-
 		params.templateId = 5;
 
 		if(isSingleColumnTable){

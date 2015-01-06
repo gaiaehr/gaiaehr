@@ -1519,4 +1519,5 @@ $LANG = array(
     'show_deleted'                          => 'Show Deleted',
     'lot'                                   => 'Lot',
     'exp'                                   => 'Exp.',
+    'dispense_as_written'                   => 'Dispense As Written.',
 );

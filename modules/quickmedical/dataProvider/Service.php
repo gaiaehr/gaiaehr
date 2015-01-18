@@ -18,20 +18,13 @@
  */
 
 namespace modules\quickmedical\dataProvider;
+include_once (ROOT . '/modules/quickmedical/dataProvider/TraSoapClient.php');
 
-class Service {
-
+class Service extends TraSoapClient {
 
 	function Before_Services_addEncounterService($service) {
 
-		$client = new \SoapClient("http://192.168.1.132/TraNextGenWebService/Charges.asmx?WSDL");
-
-		$auth = array(
-			'UserName'=>'SecretUser',
-			'Password'=>'SecretPassword'
-		);
-		$header = new \SoapHeader('http://tranextgen.com/','AuthHeader', $auth, false);
-		$client->__setSoapHeaders($header);
+		$client = $this->SoapClient('Charges');
 
 		$request = new \stdClass();
 		$request->charge = new \stdClass();
@@ -44,12 +37,12 @@ class Service {
 		$recordNumber = 'A-000000000000021-00';
 
 		// get provider NPI
-		$providerNpi = '1184707960';
+		$providerNpi = '1245332576';
 
 		// get user codes
 		$userCode = 'rcastro';
-		$technicianCode = '012';
-		$referrerCode = '0000011';
+		//		$technicianCode = '012';
+		//		$referrerCode = '0000011';
 
 		// get insurance data
 		$insuranceCode = '056';
@@ -76,10 +69,12 @@ class Service {
 		$request->charge->IsPregnant = false;
 		// actors
 		$request->charge->ProviderNpi = $providerNpi;
-		$request->charge->TechnicianUserCode = $technicianCode;
+		if(isset($technicianCode))
+			$request->charge->TechnicianUserCode = $technicianCode;
 		$request->charge->EnterByUserCode = $userCode;
 		// referral
-		$request->charge->ReferrerCode = $referrerCode;
+		if(isset($referrerCode))
+			$request->charge->ReferrerCode = $referrerCode;
 		$request->charge->ReferralNumber = '';
 		$request->charge->PriorAuthorizationNumber = '';
 		// insurance
@@ -98,7 +93,6 @@ class Service {
 		// radiology
 		$request->charge->AccessionNumber = '';
 
-
 		// diagnoses
 		$dx = new \stdClass();
 		$dx->Code = '12405';
@@ -116,16 +110,12 @@ class Service {
 		$pointer->Active = 1;
 		$pointer->Diagnosis = $dx;
 
-
 		$request->charge->DiagnosesGroup = $group;
 		$request->charge->DiagnosesPionters[] = $pointer;
-
 
 		$response = $client->Add($request);
 
 		return $service;
 	}
-
-
 
 }

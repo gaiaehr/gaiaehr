@@ -16,27 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace modules\quickmedical\dataProvider;
+include_once (ROOT . '/modules/quickmedical/dataProvider/TraSoapClient.php');
 
-class Patient {
-
-	private $map;
+class Patient extends TraSoapClient {
 
 	function Before_Patient_savePatient($patient) {
 
+		$client = $this->SoapClient('Patients');
+
 		$mappedPatient = $this->mapPatient($patient, false);
 
-		$client = new \SoapClient("http://192.168.1.132/TraNextGenWebService/Patients.asmx?WSDL");
-		$auth = array(
-			'UserName'=>'SecretUser',
-			'Password'=>'SecretPassword'
-		);
-		$header = new \SoapHeader('http://tranextgen.com/','AuthHeader', $auth, false);
-		$client->__setSoapHeaders($header);
-
 		$request = new \stdClass();
-
 		$request->patient = $mappedPatient;
 		$response = $client->Update($request);
 

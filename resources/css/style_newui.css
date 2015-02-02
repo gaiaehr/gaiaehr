@@ -1,0 +1,366 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*=============================================================
+ * New Styles
+ * by GI Technologies, 2011
+ *============================================================*/
+.icoLogo {
+	background-image: url(../images/icons/icoLogo.png) !important;
+}
+.speech-icon-active {
+	background-image: url(../images/icons/record-active.png) !important;
+}
+.speech-icon-inactive {
+	background-image: url(../images/icons/record-inactive.png) !important;
+}
+.icoUnlocked {
+	background-image: url(../images/icons/unlocked.png) !important;
+}
+.icoUnlocked32 {
+	background-image: url(../images/icons/unlocked32.png) !important;
+}
+.icoLogout {
+	background-image: url(../images/icons/logout.png) !important;
+}
+.icoCopy {
+	background-image: url(../images/icons/copy.png) !important;
+}
+.icoUser {
+	background-image: url(../images/icons/user.png) !important;
+}
+.icoSettings {
+	background-image: url(../images/icons/settings.png) !important;
+}
+.icoPrint {
+	background-image: url(../images/icons/printer.png) !important;
+}
+.icoSend {
+	background-image: url(../images/icons/send.png) !important;
+}
+.icon-print {
+	background-image: url(../images/icons/printer.png) !important;
+}
+
+.icoReport {
+	background-image: url(../images/icons/ico_report.png) !important;
+}
+
+.icoGrayFace {
+	background-image: url(../images/icons/bg_li_stepList.png) !important;
+	background-position: left top !important;
+}
+
+.icoGreenFace {
+	background-image: url(../images/icons/bg_li_stepList.png) !important;
+	background-position: left -50px !important;
+}
+
+.icoRedFace {
+	background-image: url(../images/icons/bg_li_stepList.png) !important;
+	background-position: left -100px !important;
+}
+
+.x-tree-icon-leaf {
+	background-image: url(../images/icons/list.png);
+}
+
+.topheader .x-panel-body {
+	background-color: transparent !important;
+	border: none !important;
+}
+
+.noHeader .x-grid3-header {
+	visibility: hidden !important; /* class use to hide grid colunm header */
+	height: 0 !important;
+	margin-top: -8px !important;
+}
+
+.x-grid3-cell-inner {
+	white-space: normal !important;
+}
+
+.x-grid-wrap-cells td.x-grid3-cell {
+	overflow: hidden !important;
+}
+
+.x-grid-wrap-cells td.x-grid3-cell div.x-grid3-cell-inner {
+	white-space: normal !important;
+}
+
+.icoDotGreen {
+	background-image: url(../images/icons/icoDotGreen.png) !important;
+}
+.icoDotYellow {
+	background-image: url(../images/icons/icoDotYellow.png) !important;
+}
+.icoDotGrey {
+	background-image: url(../images/icons/icoDotGrey.png) !important;
+}
+.icoDotRed {
+	background-image: url(../images/icons/icoDotRed.png) !important;
+}
+.addService {
+	background-image: url(../images/icons/service_ico.png) !important;
+}
+
+.facilities {
+	background-image: url(../images/icons/facilities.png) !important;
+}
+
+.delete, .close, .icoCancel {
+	background-image: url(../images/icons/delete.png) !important;
+}
+
+.save {
+	background-image: url(../images/icons/save.png) !important;
+}
+
+.edit {
+	background-image: url(../images/icons/edit.png) !important;
+}
+
+.icoPatientInfo {
+	background-image: url(../images/icons/icoPatientInfo.png) !important;
+}
+
+.icoZoneAreas {
+	background-image: url(../images/icons/icoZoneAreas.png) !important;
+}
+
+.icoZoneAreasBig {
+	background-image: url(../images/icons/icoZoneAreasBig.png) !important;
+}
+
+.icoDollar {
+	background-image: url(../images/icons/dollar.png) !important;
+}
+
+.icoDeleteBlack {
+	background-image: url(../images/icons/delete_record.png) !important;
+}
+
+.icoChart {
+	background-image: url(../images/icons/icoChart.png) !important;
+}
+
+.icoPoolArea {
+	background-image: url(../images/icons/icoPoolArea.png) !important;
+}
+
+.icoPoolArea16 {
+	background-image: url(../images/icons/icoPoolArea16.png) !important;
+}
+
+.icoEmer {
+	background-image: url(../images/icons/icoEmer.png) !important;
+}
+
+.icoCheck {
+	background-image: url(../images/icons/icoCheck.png) !important;
+}
+
+.icoCheckIn {
+	background-image: url(../images/icons/icoCheckIn.png) !important;
+}
+
+.icoCheckOut {
+	background-image: url(../images/icons/icoCheckOut.png) !important;
+}
+
+.icoStretcher {
+	background-image: url(../images/icons/icoStretcher.png) !important;
+	background-position: top left;
+}
+
+.icoLog {
+	background-image: url(../images/icons/icoLog.png) !important;
+}
+
+.icoClock {
+	background-image: url(../images/icons/icoClock.png) !important;
+}
+
+.icoBackClock {
+	background-image: url(../images/icons/icoBackClock.png) !important;
+}
+
+.icoArrowUp {
+	background-image: url(../images/icons/icoArrowUp.png) !important;
+}
+
+.icoArrowRight {
+	background-image: url(../images/icons/icoArrowRight.png) !important;
+}
+
+.icoArrowRightSmall {
+	background-image: url(../images/icons/arrow_right.png) !important;
+}
+
+.icoArrowLeftSmall {
+	background-image: url(../images/icons/arrow_left.png) !important;
+}
+
+.icoArrowDown {
+	background-image: url(../images/icons/icoArrowDown.png) !important;
+}
+
+.icoDoctor {
+	background-image: url(../images/icons/icoDoctor.png) !important;
+}
+
+.icoAddPatient {
+	background-image: url(../images/icons/patient_add.png) !important;
+}
+
+.searchUsers {
+	background-image: url(../images/icons/search-user.png) !important;
+}
+
+.searchData {
+	background-image: url(../images/icons/search-data.png) !important;
+}
+
+.icoInjection {
+	background-image: url(../images/icons/injection.png) !important;
+}
+
+.icoCalendar {
+	background-image: url(../images/icons/icoCalendar.png) !important;
+}
+
+.icoClose, .icoDelete {
+	background-image: url(../images/icons/no.gif) !important;
+}
+
+.icoAdd {
+	background-image: url(../images/icons/add.gif) !important;
+}
+
+.icoPreview {
+	background-image: url(../images/icons/preview.png) !important;
+}
+
+.icoGreen {
+	background-image: url(../images/icons/green.png) !important;
+}
+
+.icoFilter {
+	background-image: url(../images/icons/icoFilter.png) !important;
+}
+
+.icoReload {
+	background-image: url(../images/icons/reload.png) !important;
+}
+
+.icoEye {
+	background-image: url(../images/icons/eye.png) !important;
+}
+
+.icoAddressBook {
+	background-image: url(../images/icons/address_book.png) !important;
+}
+
+.icoListOptions {
+	background-image: url(../images/icons/list.png) !important;
+}
+
+.icoAddRecord {
+	background-image: url(../images/icons/add_record.png) !important;
+}
+
+.icoDash {
+	background-image: url(../images/icons/facilities.png) !important;
+}
+
+.newMessage {
+	background-image: url(../images/icons/new_message.png) !important;
+}
+
+.mail {
+	background-image: url(../images/icons/mail.png) !important;
+}
+
+.document {
+	background-image: url(../images/icons/document.png) !important;
+}
+
+.select {
+	background-image: url(../images/icons/select.png) !important;
+}
+
+.list {
+	background-image: url(../images/icons/list_bullets.png) !important;
+}
+
+.icoHelp {
+	background-image: url(../images/icons/icohelp.png) !important;
+}
+
+.app_bg {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	text-shadow: #6374AB 1px 1px 1px;
+	font-size: 18px;
+	color: #FFF;
+}
+
+.searchCriteria {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	border: 1px solid #FFF;
+	background-color: #CCC;
+	margin: 5px;
+	padding: 5px;
+	-moz-border-radius: 6px;
+	-webkit-border: 6px;
+}
+
+.ux-calendar-box-txt {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	background-color: #d0def0;
+	color: #333;
+	font-weight: bold;
+	padding-left: 5px;
+}
+
+.ux-bold_title {
+	font-weight: bold;
+	font-size: 10px;
+	white-space: nowrap;
+}
+
+.ux-value {
+	font-size: 10px;
+}
+
+.ux-enclousure {
+	background-image: url(../images/panel_bg.png) !important;
+	background-repeat: repeat-x;
+	padding: 6px;
+}
+
+.ux-eclosure-photo {
+	background-color: #f4f4f4;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #CCC;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 6px;
+	padding-left: 2px;
+}
+
+.ux-center {
+	text-align: center;
+}
+
+.fieldMark {
+	background-color: #ffed27;
+}

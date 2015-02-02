@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extensible : Remote Calendar</title>
+    <!-- Sets up all Ext and Extensible includes: -->
+    <script type="text/javascript" src="../../../Extensible-config.js"></script>
+    
+    <!-- Page-specific includes -->
+    <script type="text/javascript" src="remote.js"></script>
+    <style>
+        #errChk label {
+            cursor: pointer;
+        }
+        #errTitle {
+            font-weight: bold;
+            color: #AF1515;
+        }
+        #sample-overview {
+            padding: 15px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div style="visibility:hidden;">
+        <div id="sample-overview">
+            <h1>Remote Calendar Demo</h1>
+            <p>This sample uses a simple MVC-style PHP (5.3+) / REST implementation to demonstrate the ease with
+                which you can hook a CalendarPanel up to a back end. In fact, the only differences from the
+                other local examples are in the store &mdash; giving it a remote proxy and defining the
+                REST API). The PHP code uses the session object for storage, allowing you to refresh the
+                page without losing data. You can also use Firebug (or any other tool that allows you to
+                inspect XHR requests) to examine each request and verify that the proper HTTP verbs are
+                being used when calling the RESTful API.</p>
+            <p>The calendar will automatically handle server errors, either via remote validation (returning
+                <code>'success': false</code> in the response) or non-200 HTTP response codes. If an editor
+                is visible it will remain visible, and if an event was changed directly via a context menu
+                or drag-and-drop the change will not be applied.</p>
+    
+            <p id="errChk"><label for="forceError"><input type="checkbox" id="forceError"
+                name="forceError" /> Simulate server errors</label></p>
+            
+            <p class="view-src"><a target="_blank" href="remote.js">View the source</a></p>
+        </div>
+    </div>
+</body>
+</htm

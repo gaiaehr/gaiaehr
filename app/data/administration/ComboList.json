@@ -1,0 +1,417 @@
+[
+    {
+        "id": 1,
+        "title": "Boolean",
+        "active": 1
+    },
+    {
+        "id": 2,
+        "title": "Chart Storage Locations",
+        "active": 1
+    },
+    {
+        "id": 3,
+        "title": "Country",
+        "active": 1
+    },
+    {
+        "id": 4,
+        "title": "Drug Forms",
+        "active": 1
+    },
+    {
+        "id": 5,
+        "title": "Drug Units",
+        "active": 1
+    },
+    {
+        "id": 6,
+        "title": "Drug Routes",
+        "active": 1
+    },
+    {
+        "id": 7,
+        "title": "Drug Intervals",
+        "active": 1
+    },
+    {
+        "id": 8,
+        "title": "Exams/Tests",
+        "active": 1
+    },
+    {
+        "id": 9,
+        "title": "Fee Sheet",
+        "active": 1
+    },
+    {
+        "id": 10,
+        "title": "Language",
+        "active": 1
+    },
+    {
+        "id": 12,
+        "title": "Marital Status",
+        "active": 1
+    },
+    {
+        "id": 13,
+        "title": "Price Level",
+        "active": 1
+    },
+    {
+        "id": 14,
+        "title": "Race/Ethnicity",
+        "active": 1
+    },
+    {
+        "id": 15,
+        "title": "Referral Source",
+        "active": 1
+    },
+    {
+        "id": 16,
+        "title": "Risk Factors",
+        "active": 1
+    },
+    {
+        "id": 17,
+        "title": "Risk Level",
+        "active": 1
+    },
+    {
+        "id": 18,
+        "title": "Service Category",
+        "active": 1
+    },
+    {
+        "id": 19,
+        "title": "Sex w/ Both",
+        "active": 1
+    },
+    {
+        "id": 20,
+        "title": "State",
+        "active": 1
+    },
+    {
+        "id": 21,
+        "title": "Tax Rate",
+        "active": 1
+    },
+    {
+        "id": 22,
+        "title": "Titles",
+        "active": 1
+    },
+    {
+        "id": 23,
+        "title": "Yes/No",
+        "active": 1
+    },
+    {
+        "id": 24,
+        "title": "Adjustment Reasons",
+        "active": 1
+    },
+    {
+        "id": 25,
+        "title": "Subscriber Relationship",
+        "active": 1
+    },
+    {
+        "id": 26,
+        "title": "Occurrence",
+        "active": 1
+    },
+    {
+        "id": 27,
+        "title": "Outcome",
+        "active": 1
+    },
+    {
+        "id": 28,
+        "title": "Patient Note Types",
+        "active": 1
+    },
+    {
+        "id": 29,
+        "title": "Immunizations",
+        "active": 1
+    },
+    {
+        "id": 30,
+        "title": "Appointment Statuses",
+        "active": 1
+    },
+    {
+        "id": 31,
+        "title": "Warehouses",
+        "active": 1
+    },
+    {
+        "id": 32,
+        "title": "Address Book Types",
+        "active": 1
+    },
+    {
+        "id": 33,
+        "title": "Procedure Types",
+        "active": 1
+    },
+    {
+        "id": 34,
+        "title": "Procedure Body Sites",
+        "active": 1
+    },
+    {
+        "id": 35,
+        "title": "Procedure Specimen Types",
+        "active": 1
+    },
+    {
+        "id": 36,
+        "title": "Procedure Routes",
+        "active": 1
+    },
+    {
+        "id": 37,
+        "title": "Procedure Lateralities",
+        "active": 1
+    },
+    {
+        "id": 38,
+        "title": "Procedure Units",
+        "active": 1
+    },
+    {
+        "id": 39,
+        "title": "Order Priorities",
+        "active": 1
+    },
+    {
+        "id": 40,
+        "title": "Order Statuses",
+        "active": 1
+    },
+    {
+        "id": 41,
+        "title": "Procedure Report Statuses",
+        "active": 1
+    },
+    {
+        "id": 42,
+        "title": "Procedure Result Abnormal",
+        "active": 1
+    },
+    {
+        "id": 43,
+        "title": "Procedure Result Statuses",
+        "active": 1
+    },
+    {
+        "id": 44,
+        "title": "Procedure Boolean Results",
+        "active": 1
+    },
+    {
+        "id": 45,
+        "title": "Message Status",
+        "active": 1
+    },
+    {
+        "id": 46,
+        "title": "Invoice Reference Number Pools",
+        "active": 1
+    },
+    {
+        "id": 47,
+        "title": "Eligibility",
+        "active": 1
+    },
+    {
+        "id": 48,
+        "title": "Transactions",
+        "active": 1
+    },
+    {
+        "id": 49,
+        "title": "Payment Adjustment Code",
+        "active": 1
+    },
+    {
+        "id": 50,
+        "title": "Payment Ins",
+        "active": 1
+    },
+    {
+        "id": 51,
+        "title": "Payment Method",
+        "active": 1
+    },
+    {
+        "id": 52,
+        "title": "Payment Sort By",
+        "active": 1
+    },
+    {
+        "id": 53,
+        "title": "Payment Status",
+        "active": 1
+    },
+    {
+        "id": 54,
+        "title": "Payment Type",
+        "active": 1
+    },
+    {
+        "id": 55,
+        "title": "Date Master Criteria",
+        "active": 1
+    },
+    {
+        "id": 56,
+        "title": "Codes Types",
+        "active": 1
+    },
+    {
+        "id": 57,
+        "title": "Disclosure Type",
+        "active": 1
+    },
+    {
+        "id": 58,
+        "title": "Smoking Status",
+        "active": 1
+    },
+    {
+        "id": 59,
+        "title": "Race",
+        "active": 1
+    },
+    {
+        "id": 60,
+        "title": "Ethnicity",
+        "active": 1
+    },
+    {
+        "id": 61,
+        "title": "Payment Date",
+        "active": 1
+    },
+    {
+        "id": 62,
+        "title": "Temp Location",
+        "active": 1
+    },
+    {
+        "id": 74,
+        "title": "Outcome2",
+        "active": 1
+    },
+    {
+        "id": 75,
+        "title": "Medical Issues",
+        "active": 1
+    },
+    {
+        "id": 76,
+        "title": "Surgery",
+        "active": 1
+    },
+    {
+        "id": 77,
+        "title": "Time",
+        "active": 1
+    },
+    {
+        "id": 78,
+        "title": "Preventive Care Types",
+        "active": 1
+    },
+    {
+        "id": 79,
+        "title": "Location Allergies",
+        "active": 1
+    },
+    {
+        "id": 80,
+        "title": "Skin Allergies",
+        "active": 1
+    },
+    {
+        "id": 81,
+        "title": "Local Allergies",
+        "active": 1
+    },
+    {
+        "id": 82,
+        "title": "Abdominal Allergies",
+        "active": 1
+    },
+    {
+        "id": 83,
+        "title": "Systemic / anaphylactic Allergies",
+        "active": 1
+    },
+    {
+        "id": 84,
+        "title": "Severity Allergies",
+        "active": 1
+    },
+    {
+        "id": 85,
+        "title": "Allergies types",
+        "active": 1
+    },
+    {
+        "id": 86,
+        "title": "Medication Directions (SIG)",
+        "active": 1
+    },
+    {
+        "id": 87,
+        "title": "Prescription when to take",
+        "active": 1
+    },
+    {
+        "id": 88,
+        "title": "Prescription How to",
+        "active": 1
+    },
+    {
+        "id": 89,
+        "title": "Prescriptions Types",
+        "active": 1
+    },
+    {
+        "id": 90,
+        "title": "Follow Up",
+        "active": 1
+    },
+    {
+        "id": 91,
+        "title": "Visit Categories",
+        "active": 1
+    },
+    {
+        "id": 93,
+        "title": "Yes/No/Na",
+        "active": 1
+    },
+    {
+        "id": 94,
+        "title": "Encounter Priorities",
+        "active": 1
+    },
+    {
+        "id": 95,
+        "title": "Sex",
+        "active": 1
+    },
+    {
+        "id": 96,
+        "title": "Insurance Type",
+        "active": 1
+    }
+]

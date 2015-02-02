@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "role_name": "Administrator",
+        "role_key": "administrator",
+        "seq": 5
+    },
+    {
+        "id": 2,
+        "role_name": "Physician",
+        "role_key": "physician",
+        "seq": 4
+    },
+    {
+        "id": 3,
+        "role_name": "Clinician",
+        "role_key": "clinician",
+        "seq": 3
+    },
+    {
+        "id": 4,
+        "role_name": "Auditor",
+        "role_key": "auditor",
+        "seq": 2
+    },
+    {
+        "id": 5,
+        "role_name": "Front Office",
+        "role_key": "front_office",
+        "seq": 1
+    }
+]

@@ -1,0 +1,74 @@
+[
+    {
+        "catid": 1,
+        "catname": "No Show",
+        "catcolor": "#DDDDDD",
+        "catdesc": "Reserved to define when an event did not occur as specified.",
+        "duration": 0,
+        "cattype": 0
+    },
+    {
+        "catid": 2,
+        "catname": "In Office",
+        "catcolor": "#99CCFF",
+        "catdesc": "Reserved todefine when a provider may haveavailable appointments after.",
+        "duration": 0,
+        "cattype": 1
+    },
+    {
+        "catid": 3,
+        "catname": "Out Of Office",
+        "catcolor": "#99FFFF",
+        "catdesc": "Reserved to define when a provider may not have available appointments after.",
+        "duration": 0,
+        "cattype": 1
+    },
+    {
+        "catid": 4,
+        "catname": "Vacation",
+        "catcolor": "#EFEFEF",
+        "catdesc": "Reserved for use to define Scheduled Vacation Time",
+        "duration": 0,
+        "cattype": 1
+    },
+    {
+        "catid": 5,
+        "catname": "Office Visit",
+        "catcolor": "#FFFFCC",
+        "catdesc": "Normal Office Visit",
+        "duration": 900,
+        "cattype": 0
+    },
+    {
+        "catid": 8,
+        "catname": "Lunch",
+        "catcolor": "#FFFF33",
+        "catdesc": "Lunch",
+        "duration": 3600,
+        "cattype": 1
+    },
+    {
+        "catid": 9,
+        "catname": "Established Patient",
+        "catcolor": "#CCFF33",
+        "catdesc": "",
+        "duration": 900,
+        "cattype": 0
+    },
+    {
+        "catid": 10,
+        "catname": "New Patient",
+        "catcolor": "#CCFFFF",
+        "catdesc": "",
+        "duration": 1800,
+        "cattype": 0
+    },
+    {
+        "catid": 11,
+        "catname": "Reserved",
+        "catcolor": "#FF7777",
+        "catdesc": "Reserved",
+        "duration": 900,
+        "cattype": 1
+    }
+]

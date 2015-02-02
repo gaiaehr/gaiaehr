@@ -1,0 +1,692 @@
+[
+    {
+        "id": 1,
+        "gl_name": "activate_ccr_ccd_report",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 2,
+        "gl_name": "advance_directives_warning",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 3,
+        "gl_name": "atna_audit_cacert",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 4,
+        "gl_name": "atna_audit_host",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 5,
+        "gl_name": "atna_audit_localcert",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 6,
+        "gl_name": "atna_audit_port",
+        "gl_index": 0,
+        "gl_value": 6514
+    },
+    {
+        "id": 7,
+        "gl_name": "audit_events_backup",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 8,
+        "gl_name": "audit_events_order",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 9,
+        "gl_name": "audit_events_other",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 10,
+        "gl_name": "audit_events_patient-record",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 11,
+        "gl_name": "audit_events_query",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 12,
+        "gl_name": "audit_events_scheduling",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 13,
+        "gl_name": "audit_events_security-administration",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 14,
+        "gl_name": "autosave",
+        "gl_index": 0,
+        "gl_value": 1
+    },
+    {
+        "id": 15,
+        "gl_name": "auto_create_new_encounters",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 16,
+        "gl_name": "backup_log_dir",
+        "gl_index": 0,
+        "gl_value": "C:/windows/temp"
+    },
+    {
+        "id": 17,
+        "gl_name": "calendar_appt_style",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 18,
+        "gl_name": "calendar_interval",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 19,
+        "gl_name": "certificate_authority_crt",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 20,
+        "gl_name": "certificate_authority_key",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 21,
+        "gl_name": "client_certificate_valid_in_days",
+        "gl_index": 0,
+        "gl_value": 365
+    },
+    {
+        "id": 22,
+        "gl_name": "configuration_import_export",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 23,
+        "gl_name": "country_data_type",
+        "gl_index": 0,
+        "gl_value": 26
+    },
+    {
+        "id": 24,
+        "gl_name": "country_list",
+        "gl_index": 0,
+        "gl_value": "country"
+    },
+    {
+        "id": 25,
+        "gl_name": "css_header",
+        "gl_index": 0,
+        "gl_value": "ext-all-gray.css"
+    },
+    {
+        "id": 26,
+        "gl_name": "currency_decimals",
+        "gl_index": 0,
+        "gl_value": 2
+    },
+    {
+        "id": 27,
+        "gl_name": "currency_dec_point",
+        "gl_index": 0,
+        "gl_value": "."
+    },
+    {
+        "id": 28,
+        "gl_name": "currency_thousands_sep",
+        "gl_index": 0,
+        "gl_value": ","
+    },
+    {
+        "id": 29,
+        "gl_name": "date_display_format",
+        "gl_index": 0,
+        "gl_value": "Y-m-d"
+    },
+    {
+        "id": 30,
+        "gl_name": "default_chief_complaint",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 31,
+        "gl_name": "default_new_encounter_form",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 32,
+        "gl_name": "default_top_pane",
+        "gl_index": 0,
+        "gl_value": "app/dashboard/dashboard.ejs.php"
+    },
+    {
+        "id": 33,
+        "gl_name": "disable_calendar",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 34,
+        "gl_name": "disable_chart_tracker",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 35,
+        "gl_name": "disable_deprecated_metrics_form",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 36,
+        "gl_name": "disable_immunizations",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 37,
+        "gl_name": "disable_non_default_groups",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 38,
+        "gl_name": "disable_phpmyadmin_link",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 39,
+        "gl_name": "disable_prescriptions",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 40,
+        "gl_name": "discount_by_money",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 41,
+        "gl_name": "docs_see_entire_calendar",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 42,
+        "gl_name": "EMAIL_METHOD",
+        "gl_index": 0,
+        "gl_value": "SMTP"
+    },
+    {
+        "id": 43,
+        "gl_name": "EMAIL_NOTIFICATION_HOUR",
+        "gl_index": 0,
+        "gl_value": 50
+    },
+    {
+        "id": 44,
+        "gl_name": "Emergency_Login_email_id",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 45,
+        "gl_name": "enable_atna_audit",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 46,
+        "gl_name": "enable_auditlog",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 47,
+        "gl_name": "enable_hylafax",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 48,
+        "gl_name": "enable_scanner",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 49,
+        "gl_name": "force_billing_widget_open",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 50,
+        "gl_name": "fullname",
+        "gl_index": 0,
+        "gl_value": 1
+    },
+    {
+        "id": 51,
+        "gl_name": "full_new_patient_form",
+        "gl_index": 0,
+        "gl_value": 1
+    },
+    {
+        "id": 52,
+        "gl_name": "gbl_currency_symbol",
+        "gl_index": 0,
+        "gl_value": "$"
+    },
+    {
+        "id": 53,
+        "gl_name": "gbl_mask_invoice_number",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 54,
+        "gl_name": "gbl_mask_patient_id",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 55,
+        "gl_name": "gbl_mask_product_id",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 56,
+        "gl_name": "gbl_nav_area_width",
+        "gl_index": 0,
+        "gl_value": 200
+    },
+    {
+        "id": 57,
+        "gl_name": "gbl_visit_referral_source",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 61,
+        "gl_name": "ignore_pnotes_authorization",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 62,
+        "gl_name": "inhouse_pharmacy",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 63,
+        "gl_name": "is_client_ssl_enabled",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 64,
+        "gl_name": "language_default",
+        "gl_index": 0,
+        "gl_value": "en_US"
+    },
+    {
+        "id": 65,
+        "gl_name": "language_menu_showall",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 66,
+        "gl_name": "main_navigation_menu_left",
+        "gl_index": 0,
+        "gl_value": "west"
+    },
+    {
+        "id": 67,
+        "gl_name": "MedicareReferrerIsRenderer",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 68,
+        "gl_name": "mitosehr_name",
+        "gl_index": 0,
+        "gl_value": "MitosEHR :: DEMO"
+    },
+    {
+        "id": 69,
+        "gl_name": "mysql_bin_dir",
+        "gl_index": 0,
+        "gl_value": "C:/xampp/mysql/bin"
+    },
+    {
+        "id": 70,
+        "gl_name": "omit_employers",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 71,
+        "gl_name": "online_support_link",
+        "gl_index": 0,
+        "gl_value": "http://mitosehr.org/projects/mitosehr001"
+    },
+    {
+        "id": 72,
+        "gl_name": "password_expiration_days",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 73,
+        "gl_name": "password_grace_time",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 74,
+        "gl_name": "password_history",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 75,
+        "gl_name": "patient_id_category_name",
+        "gl_index": 0,
+        "gl_value": "Patient ID card"
+    },
+    {
+        "id": 76,
+        "gl_name": "patient_photo_category_name",
+        "gl_index": 0,
+        "gl_value": "Patient Photograph"
+    },
+    {
+        "id": 77,
+        "gl_name": "patient_search_results_style",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 78,
+        "gl_name": "perl_bin_dir",
+        "gl_index": 0,
+        "gl_value": "C:/xampp/perl/bin"
+    },
+    {
+        "id": 79,
+        "gl_name": "phone_country_code",
+        "gl_index": 0,
+        "gl_value": 1
+    },
+    {
+        "id": 80,
+        "gl_name": "post_to_date_benchmark",
+        "gl_index": 0,
+        "gl_value": "2011-01-13"
+    },
+    {
+        "id": 81,
+        "gl_name": "practice_return_email_path",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 82,
+        "gl_name": "print_command",
+        "gl_index": 0,
+        "gl_value": "lpr -P HPLaserjet6P -o cpi=10 -o lpi=6 -o page-left=72 -o page-top=72"
+    },
+    {
+        "id": 83,
+        "gl_name": "restrict_user_facility",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 84,
+        "gl_name": "scanner_output_directory",
+        "gl_index": 0,
+        "gl_value": "/mnt/scan_docs"
+    },
+    {
+        "id": 85,
+        "gl_name": "schedule_end",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 86,
+        "gl_name": "schedule_start",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 87,
+        "gl_name": "secure_password",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 88,
+        "gl_name": "select_multi_providers",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 89,
+        "gl_name": "set_facility_cookie",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 90,
+        "gl_name": "simplified_copay",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 91,
+        "gl_name": "simplified_demographics",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 92,
+        "gl_name": "simplified_prescriptions",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 93,
+        "gl_name": "SMS_GATEWAY_APIKEY",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 94,
+        "gl_name": "SMS_GATEWAY_PASSWORD",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 95,
+        "gl_name": "SMS_GATEWAY_USENAME",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 96,
+        "gl_name": "SMS_NOTIFICATION_HOUR",
+        "gl_index": 0,
+        "gl_value": 50
+    },
+    {
+        "id": 97,
+        "gl_name": "SMTP_HOST",
+        "gl_index": 0,
+        "gl_value": "localhost"
+    },
+    {
+        "id": 98,
+        "gl_name": "SMTP_PASS",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 99,
+        "gl_name": "SMTP_PORT",
+        "gl_index": 0,
+        "gl_value": 25
+    },
+    {
+        "id": 100,
+        "gl_name": "SMTP_USER",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 101,
+        "gl_name": "specific_application",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 102,
+        "gl_name": "state_custom_addlist_widget",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 103,
+        "gl_name": "state_data_type",
+        "gl_index": 0,
+        "gl_value": 26
+    },
+    {
+        "id": 104,
+        "gl_name": "state_list",
+        "gl_index": 0,
+        "gl_value": "state"
+    },
+    {
+        "id": 105,
+        "gl_name": "support_encounter_claims",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 106,
+        "gl_name": "temporary_files_dir",
+        "gl_index": 0,
+        "gl_value": "C:/windows/temp"
+    },
+    {
+        "id": 107,
+        "gl_name": "timeout",
+        "gl_index": 0,
+        "gl_value": 7200
+    },
+    {
+        "id": 108,
+        "gl_name": "time_display_format",
+        "gl_index": 0,
+        "gl_value": "g:i a"
+    },
+    {
+        "id": 109,
+        "gl_name": "translate_appt_categories",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 110,
+        "gl_name": "translate_document_categories",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 111,
+        "gl_name": "translate_form_titles",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 112,
+        "gl_name": "translate_gacl_groups",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 113,
+        "gl_name": "translate_layout",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 114,
+        "gl_name": "translate_lists",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 115,
+        "gl_name": "units_of_measurement",
+        "gl_index": 0,
+        "gl_value": 1
+    },
+    {
+        "id": 116,
+        "gl_name": "use_charges_panel",
+        "gl_index": 0,
+        "gl_value": 0
+    },
+    {
+        "id": 117,
+        "gl_name": "portal_port",
+        "gl_index": 0,
+        "gl_value": ""
+    },
+    {
+        "id": 118,
+        "gl_name": "portal_url",
+        "gl_index": 0,
+        "gl_value": ""
+    }
+]

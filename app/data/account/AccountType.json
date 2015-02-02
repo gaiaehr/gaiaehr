@@ -1,0 +1,130 @@
+[
+	{
+		"id": 1,
+		"closeMethod": "none",
+		"note": null,
+		"code": "view",
+		"name": "Root/View",
+		"reportType": "none"
+	},
+	{
+		"id": 2,
+		"closeMethod": "unreconciled",
+		"note": null,
+		"code": "receivable",
+		"name": "Receivable",
+		"reportType": "asset"
+	},
+	{
+		"id": 3,
+		"closeMethod": "unreconciled",
+		"note": null,
+		"code": "payable",
+		"name": "Payable",
+		"reportType": "liability"
+	},
+	{
+		"id": 4,
+		"closeMethod": "balance",
+		"note": null,
+		"code": "bank",
+		"name": "Bank",
+		"reportType": "asset"
+	},
+	{
+		"id": 5,
+		"closeMethod": "balance",
+		"note": null,
+		"code": "cash",
+		"name": "Cash",
+		"reportType": "asset"
+	},
+	{
+		"id": 6,
+		"closeMethod": "balance",
+		"note": null,
+		"code": "asset",
+		"name": "Asset",
+		"reportType": "asset"
+	},
+	{
+		"id": 7,
+		"closeMethod": "balance",
+		"note": null,
+		"code": "liability",
+		"name": "Liability",
+		"reportType": "liability"
+	},
+	{
+		"id": 8,
+		"closeMethod": "none",
+		"note": null,
+		"code": "income",
+		"name": "Income",
+		"reportType": "income"
+	},
+	{
+		"id": 9,
+		"closeMethod": "none",
+		"note": null,
+		"code": "expense",
+		"name": "Expense",
+		"reportType": "expense"
+	},
+	{
+		"id": 10,
+		"closeMethod": "none",
+		"note": null,
+		"code": "view",
+		"name": "Income View",
+		"reportType": "income"
+	},
+	{
+		"id": 11,
+		"closeMethod": "none",
+		"note": null,
+		"code": "expense",
+		"name": "Expense View",
+		"reportType": "expense"
+	},
+	{
+		"id": 12,
+		"closeMethod": "none",
+		"note": null,
+		"code": "asset",
+		"name": "Asset View",
+		"reportType": "asset"
+	},
+	{
+		"id": 13,
+		"closeMethod": "none",
+		"note": null,
+		"code": "liability",
+		"name": "Liability View",
+		"reportType": "liability"
+	},
+	{
+		"id": 14,
+		"closeMethod": "unreconciled",
+		"note": null,
+		"code": "tax",
+		"name": "Tax",
+		"reportType": "expense"
+	},
+	{
+		"id": 15,
+		"closeMethod": "balance",
+		"note": null,
+		"code": "equity",
+		"name": "Equity",
+		"reportType": "liability"
+	},
+	{
+		"id": 16,
+		"closeMethod": "balance",
+		"note": null,
+		"code": "check",
+		"name": "Check",
+		"reportType": "asset"
+	}
+]

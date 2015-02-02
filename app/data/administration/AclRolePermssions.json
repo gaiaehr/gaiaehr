@@ -1,0 +1,2067 @@
+[
+    {
+        "id": 1,
+        "role_key": "front_office",
+        "perm_key": "access_dashboard",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 2,
+        "role_key": "auditor",
+        "perm_key": "access_dashboard",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 3,
+        "role_key": "clinician",
+        "perm_key": "access_dashboard",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 4,
+        "role_key": "physician",
+        "perm_key": "access_dashboard",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 5,
+        "role_key": "administrator",
+        "perm_key": "access_dashboard",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 6,
+        "role_key": "front_office",
+        "perm_key": "access_messages",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 7,
+        "role_key": "auditor",
+        "perm_key": "access_messages",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 8,
+        "role_key": "clinician",
+        "perm_key": "access_messages",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 9,
+        "role_key": "physician",
+        "perm_key": "access_messages",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 10,
+        "role_key": "administrator",
+        "perm_key": "access_messages",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 11,
+        "role_key": "front_office",
+        "perm_key": "access_calendar",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 12,
+        "role_key": "auditor",
+        "perm_key": "access_calendar",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 13,
+        "role_key": "clinician",
+        "perm_key": "access_calendar",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 14,
+        "role_key": "physician",
+        "perm_key": "access_calendar",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 15,
+        "role_key": "administrator",
+        "perm_key": "access_calendar",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 16,
+        "role_key": "front_office",
+        "perm_key": "add_appointments",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 17,
+        "role_key": "auditor",
+        "perm_key": "add_appointments",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 18,
+        "role_key": "clinician",
+        "perm_key": "add_appointments",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 19,
+        "role_key": "physician",
+        "perm_key": "add_appointments",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 20,
+        "role_key": "administrator",
+        "perm_key": "add_appointments",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 21,
+        "role_key": "front_office",
+        "perm_key": "remove_appointments",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 22,
+        "role_key": "auditor",
+        "perm_key": "remove_appointments",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 23,
+        "role_key": "clinician",
+        "perm_key": "remove_appointments",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 24,
+        "role_key": "physician",
+        "perm_key": "remove_appointments",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 25,
+        "role_key": "administrator",
+        "perm_key": "remove_appointments",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 26,
+        "role_key": "front_office",
+        "perm_key": "emergency_access",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 27,
+        "role_key": "auditor",
+        "perm_key": "emergency_access",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 28,
+        "role_key": "clinician",
+        "perm_key": "emergency_access",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 29,
+        "role_key": "physician",
+        "perm_key": "emergency_access",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 30,
+        "role_key": "administrator",
+        "perm_key": "emergency_access",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 31,
+        "role_key": "front_office",
+        "perm_key": "add_patient",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 32,
+        "role_key": "auditor",
+        "perm_key": "add_patient",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 33,
+        "role_key": "clinician",
+        "perm_key": "add_patient",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 34,
+        "role_key": "physician",
+        "perm_key": "add_patient",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 35,
+        "role_key": "administrator",
+        "perm_key": "add_patient",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 36,
+        "role_key": "front_office",
+        "perm_key": "access_patient_visits",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 37,
+        "role_key": "auditor",
+        "perm_key": "access_patient_visits",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 38,
+        "role_key": "clinician",
+        "perm_key": "access_patient_visits",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 39,
+        "role_key": "physician",
+        "perm_key": "access_patient_visits",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 40,
+        "role_key": "administrator",
+        "perm_key": "access_patient_visits",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 41,
+        "role_key": "front_office",
+        "perm_key": "access_patient_summary",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 42,
+        "role_key": "auditor",
+        "perm_key": "access_patient_summary",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 43,
+        "role_key": "clinician",
+        "perm_key": "access_patient_summary",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 44,
+        "role_key": "physician",
+        "perm_key": "access_patient_summary",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 45,
+        "role_key": "administrator",
+        "perm_key": "access_patient_summary",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 46,
+        "role_key": "front_office",
+        "perm_key": "inactive_patient",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 47,
+        "role_key": "auditor",
+        "perm_key": "inactive_patient",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 48,
+        "role_key": "clinician",
+        "perm_key": "inactive_patient",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 49,
+        "role_key": "physician",
+        "perm_key": "inactive_patient",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 50,
+        "role_key": "administrator",
+        "perm_key": "inactive_patient",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 51,
+        "role_key": "front_office",
+        "perm_key": "access_patient_search",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 52,
+        "role_key": "auditor",
+        "perm_key": "access_patient_search",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 53,
+        "role_key": "clinician",
+        "perm_key": "access_patient_search",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 54,
+        "role_key": "physician",
+        "perm_key": "access_patient_search",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 55,
+        "role_key": "administrator",
+        "perm_key": "access_patient_search",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 56,
+        "role_key": "front_office",
+        "perm_key": "override_readonly",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 57,
+        "role_key": "auditor",
+        "perm_key": "override_readonly",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 58,
+        "role_key": "clinician",
+        "perm_key": "override_readonly",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 59,
+        "role_key": "physician",
+        "perm_key": "override_readonly",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 60,
+        "role_key": "administrator",
+        "perm_key": "override_readonly",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 61,
+        "role_key": "front_office",
+        "perm_key": "access_encounters",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 62,
+        "role_key": "auditor",
+        "perm_key": "access_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 63,
+        "role_key": "clinician",
+        "perm_key": "access_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 64,
+        "role_key": "physician",
+        "perm_key": "access_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 65,
+        "role_key": "administrator",
+        "perm_key": "access_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 66,
+        "role_key": "front_office",
+        "perm_key": "add_encounters",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 67,
+        "role_key": "auditor",
+        "perm_key": "add_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 68,
+        "role_key": "clinician",
+        "perm_key": "add_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 69,
+        "role_key": "physician",
+        "perm_key": "add_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 70,
+        "role_key": "administrator",
+        "perm_key": "add_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 71,
+        "role_key": "front_office",
+        "perm_key": "edit_encounters",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 72,
+        "role_key": "auditor",
+        "perm_key": "edit_encounters",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 73,
+        "role_key": "clinician",
+        "perm_key": "edit_encounters",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 74,
+        "role_key": "physician",
+        "perm_key": "edit_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 75,
+        "role_key": "administrator",
+        "perm_key": "edit_encounters",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 76,
+        "role_key": "front_office",
+        "perm_key": "add_vitals",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 77,
+        "role_key": "auditor",
+        "perm_key": "add_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 78,
+        "role_key": "clinician",
+        "perm_key": "add_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 79,
+        "role_key": "physician",
+        "perm_key": "add_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 80,
+        "role_key": "administrator",
+        "perm_key": "add_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 81,
+        "role_key": "front_office",
+        "perm_key": "access_visit_checkout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 82,
+        "role_key": "auditor",
+        "perm_key": "access_visit_checkout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 83,
+        "role_key": "clinician",
+        "perm_key": "access_visit_checkout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 84,
+        "role_key": "physician",
+        "perm_key": "access_visit_checkout",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 85,
+        "role_key": "administrator",
+        "perm_key": "access_visit_checkout",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 86,
+        "role_key": "front_office",
+        "perm_key": "access_encounter_checkout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 87,
+        "role_key": "auditor",
+        "perm_key": "access_encounter_checkout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 88,
+        "role_key": "clinician",
+        "perm_key": "access_encounter_checkout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 89,
+        "role_key": "physician",
+        "perm_key": "access_encounter_checkout",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 90,
+        "role_key": "administrator",
+        "perm_key": "access_encounter_checkout",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 91,
+        "role_key": "front_office",
+        "perm_key": "access_demographics",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 92,
+        "role_key": "auditor",
+        "perm_key": "access_demographics",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 93,
+        "role_key": "clinician",
+        "perm_key": "access_demographics",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 94,
+        "role_key": "physician",
+        "perm_key": "access_demographics",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 95,
+        "role_key": "administrator",
+        "perm_key": "access_demographics",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 96,
+        "role_key": "front_office",
+        "perm_key": "edit_demographics",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 97,
+        "role_key": "auditor",
+        "perm_key": "edit_demographics",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 98,
+        "role_key": "clinician",
+        "perm_key": "edit_demographics",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 99,
+        "role_key": "physician",
+        "perm_key": "edit_demographics",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 100,
+        "role_key": "administrator",
+        "perm_key": "edit_demographics",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 101,
+        "role_key": "front_office",
+        "perm_key": "access_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 102,
+        "role_key": "auditor",
+        "perm_key": "access_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 103,
+        "role_key": "clinician",
+        "perm_key": "access_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 104,
+        "role_key": "physician",
+        "perm_key": "access_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 105,
+        "role_key": "administrator",
+        "perm_key": "access_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 106,
+        "role_key": "front_office",
+        "perm_key": "add_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 107,
+        "role_key": "auditor",
+        "perm_key": "add_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 108,
+        "role_key": "clinician",
+        "perm_key": "add_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 109,
+        "role_key": "physician",
+        "perm_key": "add_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 110,
+        "role_key": "administrator",
+        "perm_key": "add_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 111,
+        "role_key": "front_office",
+        "perm_key": "delete_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 112,
+        "role_key": "auditor",
+        "perm_key": "delete_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 113,
+        "role_key": "clinician",
+        "perm_key": "delete_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 114,
+        "role_key": "physician",
+        "perm_key": "delete_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 115,
+        "role_key": "administrator",
+        "perm_key": "delete_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 116,
+        "role_key": "front_office",
+        "perm_key": "open_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 117,
+        "role_key": "auditor",
+        "perm_key": "open_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 118,
+        "role_key": "clinician",
+        "perm_key": "open_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 119,
+        "role_key": "physician",
+        "perm_key": "open_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 120,
+        "role_key": "administrator",
+        "perm_key": "open_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 121,
+        "role_key": "front_office",
+        "perm_key": "rename_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 122,
+        "role_key": "auditor",
+        "perm_key": "rename_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 123,
+        "role_key": "clinician",
+        "perm_key": "rename_documents",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 124,
+        "role_key": "physician",
+        "perm_key": "rename_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 125,
+        "role_key": "administrator",
+        "perm_key": "rename_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 126,
+        "role_key": "front_office",
+        "perm_key": "access_eprescription",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 127,
+        "role_key": "auditor",
+        "perm_key": "access_eprescription",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 128,
+        "role_key": "clinician",
+        "perm_key": "access_eprescription",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 129,
+        "role_key": "physician",
+        "perm_key": "access_eprescription",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 130,
+        "role_key": "administrator",
+        "perm_key": "access_eprescription",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 131,
+        "role_key": "front_office",
+        "perm_key": "access_eprescription_transaction",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 132,
+        "role_key": "auditor",
+        "perm_key": "access_eprescription_transaction",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 133,
+        "role_key": "clinician",
+        "perm_key": "access_eprescription_transaction",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 134,
+        "role_key": "physician",
+        "perm_key": "access_eprescription_transaction",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 135,
+        "role_key": "administrator",
+        "perm_key": "access_eprescription_transaction",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 136,
+        "role_key": "front_office",
+        "perm_key": "access_medications",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 137,
+        "role_key": "auditor",
+        "perm_key": "access_medications",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 138,
+        "role_key": "clinician",
+        "perm_key": "access_medications",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 139,
+        "role_key": "physician",
+        "perm_key": "access_medications",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 140,
+        "role_key": "administrator",
+        "perm_key": "access_medications",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 141,
+        "role_key": "front_office",
+        "perm_key": "access_gloabal_settings",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 142,
+        "role_key": "auditor",
+        "perm_key": "access_gloabal_settings",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 143,
+        "role_key": "clinician",
+        "perm_key": "access_gloabal_settings",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 144,
+        "role_key": "physician",
+        "perm_key": "access_gloabal_settings",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 145,
+        "role_key": "administrator",
+        "perm_key": "access_gloabal_settings",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 146,
+        "role_key": "front_office",
+        "perm_key": "access_facilities",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 147,
+        "role_key": "auditor",
+        "perm_key": "access_facilities",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 148,
+        "role_key": "clinician",
+        "perm_key": "access_facilities",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 149,
+        "role_key": "physician",
+        "perm_key": "access_facilities",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 150,
+        "role_key": "administrator",
+        "perm_key": "access_facilities",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 151,
+        "role_key": "front_office",
+        "perm_key": "access_users",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 152,
+        "role_key": "auditor",
+        "perm_key": "access_users",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 153,
+        "role_key": "clinician",
+        "perm_key": "access_users",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 154,
+        "role_key": "physician",
+        "perm_key": "access_users",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 155,
+        "role_key": "administrator",
+        "perm_key": "access_users",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 156,
+        "role_key": "front_office",
+        "perm_key": "access_practice",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 157,
+        "role_key": "auditor",
+        "perm_key": "access_practice",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 158,
+        "role_key": "clinician",
+        "perm_key": "access_practice",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 159,
+        "role_key": "physician",
+        "perm_key": "access_practice",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 160,
+        "role_key": "administrator",
+        "perm_key": "access_practice",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 161,
+        "role_key": "front_office",
+        "perm_key": "access_data_manager",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 162,
+        "role_key": "auditor",
+        "perm_key": "access_data_manager",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 163,
+        "role_key": "clinician",
+        "perm_key": "access_data_manager",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 164,
+        "role_key": "physician",
+        "perm_key": "access_data_manager",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 165,
+        "role_key": "administrator",
+        "perm_key": "access_data_manager",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 166,
+        "role_key": "front_office",
+        "perm_key": "access_preventive_care",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 167,
+        "role_key": "auditor",
+        "perm_key": "access_preventive_care",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 168,
+        "role_key": "clinician",
+        "perm_key": "access_preventive_care",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 169,
+        "role_key": "physician",
+        "perm_key": "access_preventive_care",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 170,
+        "role_key": "administrator",
+        "perm_key": "access_preventive_care",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 171,
+        "role_key": "front_office",
+        "perm_key": "access_floor_plans",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 172,
+        "role_key": "auditor",
+        "perm_key": "access_floor_plans",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 173,
+        "role_key": "clinician",
+        "perm_key": "access_floor_plans",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 174,
+        "role_key": "physician",
+        "perm_key": "access_floor_plans",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 175,
+        "role_key": "administrator",
+        "perm_key": "access_floor_plans",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 176,
+        "role_key": "front_office",
+        "perm_key": "access_roles",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 177,
+        "role_key": "auditor",
+        "perm_key": "access_roles",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 178,
+        "role_key": "clinician",
+        "perm_key": "access_roles",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 179,
+        "role_key": "physician",
+        "perm_key": "access_roles",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 180,
+        "role_key": "administrator",
+        "perm_key": "access_roles",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 181,
+        "role_key": "front_office",
+        "perm_key": "access_layouts",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 182,
+        "role_key": "auditor",
+        "perm_key": "access_layouts",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 183,
+        "role_key": "clinician",
+        "perm_key": "access_layouts",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 184,
+        "role_key": "physician",
+        "perm_key": "access_layouts",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 185,
+        "role_key": "administrator",
+        "perm_key": "access_layouts",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 186,
+        "role_key": "front_office",
+        "perm_key": "access_lists",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 187,
+        "role_key": "auditor",
+        "perm_key": "access_lists",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 188,
+        "role_key": "clinician",
+        "perm_key": "access_lists",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 189,
+        "role_key": "physician",
+        "perm_key": "access_lists",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 190,
+        "role_key": "administrator",
+        "perm_key": "access_lists",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 191,
+        "role_key": "front_office",
+        "perm_key": "access_event_log",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 192,
+        "role_key": "auditor",
+        "perm_key": "access_event_log",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 193,
+        "role_key": "clinician",
+        "perm_key": "access_event_log",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 194,
+        "role_key": "physician",
+        "perm_key": "access_event_log",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 195,
+        "role_key": "administrator",
+        "perm_key": "access_event_log",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 196,
+        "role_key": "front_office",
+        "perm_key": "use_pool_areas",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 197,
+        "role_key": "auditor",
+        "perm_key": "use_pool_areas",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 198,
+        "role_key": "clinician",
+        "perm_key": "use_pool_areas",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 199,
+        "role_key": "physician",
+        "perm_key": "use_pool_areas",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 200,
+        "role_key": "administrator",
+        "perm_key": "use_pool_areas",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 201,
+        "role_key": "front_office",
+        "perm_key": "access_pool_areas_panel",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 202,
+        "role_key": "auditor",
+        "perm_key": "access_pool_areas_panel",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 203,
+        "role_key": "clinician",
+        "perm_key": "access_pool_areas_panel",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 204,
+        "role_key": "physician",
+        "perm_key": "access_pool_areas_panel",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 205,
+        "role_key": "administrator",
+        "perm_key": "access_pool_areas_panel",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 206,
+        "role_key": "front_office",
+        "perm_key": "access_poolcheckin",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 207,
+        "role_key": "auditor",
+        "perm_key": "access_poolcheckin",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 208,
+        "role_key": "clinician",
+        "perm_key": "access_poolcheckin",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 209,
+        "role_key": "physician",
+        "perm_key": "access_poolcheckin",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 210,
+        "role_key": "administrator",
+        "perm_key": "access_poolcheckin",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 211,
+        "role_key": "front_office",
+        "perm_key": "access_pooltriage",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 212,
+        "role_key": "auditor",
+        "perm_key": "access_pooltriage",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 213,
+        "role_key": "clinician",
+        "perm_key": "access_pooltriage",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 214,
+        "role_key": "physician",
+        "perm_key": "access_pooltriage",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 215,
+        "role_key": "administrator",
+        "perm_key": "access_pooltriage",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 216,
+        "role_key": "front_office",
+        "perm_key": "access_poolphysician",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 217,
+        "role_key": "auditor",
+        "perm_key": "access_poolphysician",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 218,
+        "role_key": "clinician",
+        "perm_key": "access_poolphysician",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 219,
+        "role_key": "physician",
+        "perm_key": "access_poolphysician",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 220,
+        "role_key": "administrator",
+        "perm_key": "access_poolphysician",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 221,
+        "role_key": "front_office",
+        "perm_key": "access_poolcheckout",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 222,
+        "role_key": "auditor",
+        "perm_key": "access_poolcheckout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 223,
+        "role_key": "clinician",
+        "perm_key": "access_poolcheckout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 224,
+        "role_key": "physician",
+        "perm_key": "access_poolcheckout",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 225,
+        "role_key": "administrator",
+        "perm_key": "access_poolcheckout",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 226,
+        "role_key": "front_office",
+        "perm_key": "access_enc_cpt",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 227,
+        "role_key": "auditor",
+        "perm_key": "access_enc_cpt",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 228,
+        "role_key": "clinician",
+        "perm_key": "access_enc_cpt",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 229,
+        "role_key": "physician",
+        "perm_key": "access_enc_cpt",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 230,
+        "role_key": "administrator",
+        "perm_key": "access_enc_cpt",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 231,
+        "role_key": "front_office",
+        "perm_key": "access_enc_history",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 232,
+        "role_key": "auditor",
+        "perm_key": "access_enc_history",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 233,
+        "role_key": "clinician",
+        "perm_key": "access_enc_history",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 234,
+        "role_key": "physician",
+        "perm_key": "access_enc_history",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 235,
+        "role_key": "administrator",
+        "perm_key": "access_enc_history",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 236,
+        "role_key": "front_office",
+        "perm_key": "access_review_of_systems",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 237,
+        "role_key": "auditor",
+        "perm_key": "access_review_of_systems",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 238,
+        "role_key": "clinician",
+        "perm_key": "access_review_of_systems",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 239,
+        "role_key": "physician",
+        "perm_key": "access_review_of_systems",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 240,
+        "role_key": "administrator",
+        "perm_key": "access_review_of_systems",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 241,
+        "role_key": "front_office",
+        "perm_key": "access review of systems checks",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 242,
+        "role_key": "auditor",
+        "perm_key": "access review of systems checks",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 243,
+        "role_key": "clinician",
+        "perm_key": "access review of systems checks",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 244,
+        "role_key": "physician",
+        "perm_key": "access review of systems checks",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 245,
+        "role_key": "administrator",
+        "perm_key": "access review of systems checks",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 246,
+        "role_key": "front_office",
+        "perm_key": "access_soap",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 247,
+        "role_key": "auditor",
+        "perm_key": "access_soap",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 248,
+        "role_key": "clinician",
+        "perm_key": "access_soap",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 249,
+        "role_key": "physician",
+        "perm_key": "access_soap",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 250,
+        "role_key": "administrator",
+        "perm_key": "access_soap",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 251,
+        "role_key": "front_office",
+        "perm_key": "access_itmes_to_review",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 252,
+        "role_key": "auditor",
+        "perm_key": "access_itmes_to_review",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 253,
+        "role_key": "clinician",
+        "perm_key": "access_itmes_to_review",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 254,
+        "role_key": "physician",
+        "perm_key": "access_itmes_to_review",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 255,
+        "role_key": "administrator",
+        "perm_key": "access_itmes_to_review",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 256,
+        "role_key": "front_office",
+        "perm_key": "access_enc_hcfa",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 257,
+        "role_key": "auditor",
+        "perm_key": "access_enc_hcfa",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 258,
+        "role_key": "clinician",
+        "perm_key": "access_enc_hcfa",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 259,
+        "role_key": "physician",
+        "perm_key": "access_enc_hcfa",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 260,
+        "role_key": "administrator",
+        "perm_key": "access_enc_hcfa",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 261,
+        "role_key": "physician",
+        "perm_key": "access_review_of_systems_checks",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 262,
+        "role_key": "administrator",
+        "perm_key": "access_review_of_systems_checks",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 263,
+        "role_key": "physician",
+        "perm_key": "access_patient_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 264,
+        "role_key": "administrator",
+        "perm_key": "access_patient_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 265,
+        "role_key": "physician",
+        "perm_key": "access_patient_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 266,
+        "role_key": "administrator",
+        "perm_key": "access_patient_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 267,
+        "role_key": "front_office",
+        "perm_key": "access_patient_notes",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 268,
+        "role_key": "clinician",
+        "perm_key": "access_patient_notes",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 269,
+        "role_key": "physician",
+        "perm_key": "access_patient_notes",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 270,
+        "role_key": "administrator",
+        "perm_key": "access_patient_notes",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 271,
+        "role_key": "front_office",
+        "perm_key": "access_patient_reminders",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 272,
+        "role_key": "clinician",
+        "perm_key": "access_patient_reminders",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 273,
+        "role_key": "physician",
+        "perm_key": "access_patient_reminders",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 274,
+        "role_key": "administrator",
+        "perm_key": "access_patient_reminders",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 275,
+        "role_key": "front_office",
+        "perm_key": "access_patient_history",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 276,
+        "role_key": "clinician",
+        "perm_key": "access_patient_history",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 277,
+        "role_key": "physician",
+        "perm_key": "access_patient_history",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 278,
+        "role_key": "administrator",
+        "perm_key": "access_patient_history",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 279,
+        "role_key": "front_office",
+        "perm_key": "access_patient_billing",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 280,
+        "role_key": "clinician",
+        "perm_key": "access_patient_billing",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 281,
+        "role_key": "physician",
+        "perm_key": "access_patient_billing",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 282,
+        "role_key": "administrator",
+        "perm_key": "access_patient_billing",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 283,
+        "role_key": "clinician",
+        "perm_key": "access_patient_preventive_care_alerts",
+        "value": 0,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 284,
+        "role_key": "physician",
+        "perm_key": "access_patient_preventive_care_alerts",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 285,
+        "role_key": "administrator",
+        "perm_key": "access_patient_preventive_care_alerts",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 286,
+        "role_key": "clinician",
+        "perm_key": "access_patient_vitals",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 287,
+        "role_key": "front_office",
+        "perm_key": "access_patient_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 288,
+        "role_key": "clinician",
+        "perm_key": "access_patient_documents",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 289,
+        "role_key": "front_office",
+        "perm_key": "access_patient_disclosures",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 290,
+        "role_key": "auditor",
+        "perm_key": "access_patient_disclosures",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 291,
+        "role_key": "clinician",
+        "perm_key": "access_patient_disclosures",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 292,
+        "role_key": "physician",
+        "perm_key": "access_patient_disclosures",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 293,
+        "role_key": "administrator",
+        "perm_key": "access_patient_disclosures",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 294,
+        "role_key": "physician",
+        "perm_key": "edit_enc_hcfa",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    },
+    {
+        "id": 295,
+        "role_key": "administrator",
+        "perm_key": "edit_enc_hcfa",
+        "value": 1,
+        "add_date": "0000-00-00 00:00:00"
+    }
+]

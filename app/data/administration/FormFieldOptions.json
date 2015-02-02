@@ -1,0 +1,4577 @@
+[
+    {
+        "id": 1,
+        "field_id": 95,
+        "options": "{\"title\":\"Who\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 2,
+        "field_id": 96,
+        "options": "{\"fieldLabel\":\"Full Name\",\"labelWidth\":149,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":660,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 3,
+        "field_id": 97,
+        "options": "{\"list_id\":22,\"margin\":\"0 5 0 0\",\"width\":70,\"name\":\"title\",\"emptyText\":\"Title\",\"hideLabel\":true,\"fieldLabel\":\"Title\"}"
+    },
+    {
+        "id": 4,
+        "field_id": 98,
+        "options": "{\"fieldLabel\":\"First Name\",\"hideLabel\":true,\"emptyText\":\"First Name\",\"name\":\"fname\",\"width\":100,\"margin\":\"0 5 0 0\",\"allowBlank\":false}"
+    },
+    {
+        "id": 5,
+        "field_id": 99,
+        "options": "{\"margin\":\"0 5 0 0\",\"width\":100,\"name\":\"mname\",\"emptyText\":\"Middle Name\",\"hideLabel\":true,\"fieldLabel\":\"Middle Name\"}"
+    },
+    {
+        "id": 6,
+        "field_id": 100,
+        "options": "{\"fieldLabel\":\"Last Name\",\"emptyText\":\"Last Name\",\"hideLabel\":true,\"width\":215,\"margin\":\"0 5 0 0\",\"allowBlank\":false,\"name\":\"lname\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 7,
+        "field_id": 101,
+        "options": "{\"fieldLabel\":\"Sex\\/DOB\\/S.S.\\/Status\",\"labelWidth\":149,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":660,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 8,
+        "field_id": 102,
+        "options": "{\"fieldLabel\":\"Sex\",\"hideLabel\":true,\"emptyText\":\"Sex\",\"name\":\"sex\",\"width\":70,\"margin\":\"0 5 0 0\",\"allowBlank\":false,\"list_id\":95}"
+    },
+    {
+        "id": 9,
+        "field_id": 103,
+        "options": "{\"fieldLabel\":\"DOB\",\"emptyText\":\"DOB\",\"labelWidth\":30,\"hideLabel\":true,\"width\":205,\"margin\":\"0 5 0 0\",\"allowBlank\":false,\"name\":\"DOB\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 10,
+        "field_id": 104,
+        "options": "{\"fieldLabel\":\"Marital Status\",\"emptyText\":\"Marital Status\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"name\":\"marital_status\",\"list_id\":12,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 11,
+        "field_id": 105,
+        "options": "{\"fieldLabel\":\"Social Security\",\"hideLabel\":true,\"emptyText\":\"Social Security\",\"name\":\"SS\",\"width\":100,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 12,
+        "field_id": 106,
+        "options": "{\"fieldLabel\":\"External ID\",\"emptyText\":\"External ID\",\"labelWidth\":149,\"hideLabel\":false,\"width\":329,\"margin\":\"0 5 5 0\",\"name\":\"pubpid\"}"
+    },
+    {
+        "id": 13,
+        "field_id": 107,
+        "options": "{\"fieldLabel\":\"Driver Lic.\",\"emptyText\":\"Driver License\",\"labelWidth\":149,\"hideLabel\":false,\"width\":400,\"margin\":\"0 5 5 0\",\"name\":\"drivers_license\"}"
+    },
+    {
+        "id": 14,
+        "field_id": 108,
+        "options": "{\"title\":\"Contact\",\"hideLabel\":false,\"layout\":\"column\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 15,
+        "field_id": 109,
+        "options": "{\"fieldLabel\":\"Address\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 16,
+        "field_id": 110,
+        "options": "{\"fieldLabel\":\"Street\",\"emptyText\":\"Street\",\"hideLabel\":true,\"width\":375,\"margin\":\"0 5 0 0\",\"name\":\"address\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 17,
+        "field_id": 111,
+        "options": "{\"margin\":\"0 5 0 0\",\"width\":80,\"name\":\"city\",\"emptyText\":\"City\",\"hideLabel\":true,\"fieldLabel\":\"City\"}"
+    },
+    {
+        "id": 18,
+        "field_id": 112,
+        "options": "{\"margin\":\"0 5 0 0\",\"width\":130,\"name\":\"state\",\"emptyText\":\"State\",\"hideLabel\":true,\"fieldLabel\":\"state\",\"list_id\":20}"
+    },
+    {
+        "id": 19,
+        "field_id": 113,
+        "options": "{\"width\":70,\"name\":\"country\",\"emptyText\":\"Country\",\"hideLabel\":true,\"fieldLabel\":\"Country\",\"margin\":\"0 5 0 0\",\"list_id\":3}"
+    },
+    {
+        "id": 20,
+        "field_id": 114,
+        "options": "{\"fieldLabel\":\"Address Cont.\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":609,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 21,
+        "field_id": 115,
+        "options": "{\"fieldLabel\":\"Home Phone\",\"emptyText\":\"000-000-0000\",\"labelWidth\":110,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"home_phone\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 22,
+        "field_id": 116,
+        "options": "{\"fieldLabel\":\"Mobile Phone\",\"emptyText\":\"000-000-0000\",\"labelWidth\":110,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"mobile_phone\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 23,
+        "field_id": 117,
+        "options": "{\"fieldLabel\":\"Work Phone\",\"emptyText\":\"000-000-0000\",\"labelWidth\":110,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"work_phone\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 24,
+        "field_id": 118,
+        "options": "{\"fieldLabel\":\"Email\",\"labelWidth\":149,\"hideLabel\":false,\"emptyText\":\"example@example.com\",\"name\":\"email\",\"width\":379,\"margin\":\"0 5 5 0\"}"
+    },
+    {
+        "id": 25,
+        "field_id": 119,
+        "options": "{\"fieldLabel\":\"Mother`s Name\",\"emptyText\":\"Mother`s Name\",\"labelWidth\":149,\"hideLabel\":false,\"width\":380,\"margin\":\"0 5 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"mothers_name\"}"
+    },
+    {
+        "id": 26,
+        "field_id": 120,
+        "options": "{\"fieldLabel\":\"Guardian`s Name\",\"emptyText\":\"Guardian`s Name\",\"labelWidth\":149,\"hideLabel\":false,\"width\":380,\"margin\":\"0 5 5 0\",\"name\":\"guardians_name\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 27,
+        "field_id": 121,
+        "options": "{\"fieldLabel\":\"Emergency Contact\",\"emptyText\":\"Emergency Contact Name\",\"labelWidth\":149,\"hideLabel\":false,\"width\":380,\"margin\":\"0 5 5 0\",\"name\":\"emer_contact\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 28,
+        "field_id": 122,
+        "options": "{\"fieldLabel\":\"Emergency Phone\",\"emptyText\":\"000-000-0000\",\"labelWidth\":149,\"hideLabel\":false,\"width\":380,\"margin\":\"0 5 5 0\",\"name\":\"emer_phone\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 29,
+        "field_id": 123,
+        "options": "{\"title\":\"Choices\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 30,
+        "field_id": 124,
+        "options": "{\"fieldLabel\":\"Provider\",\"labelWidth\":100,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"provider\",\"list_id\":\"activeProviders\"}"
+    },
+    {
+        "id": 31,
+        "field_id": 125,
+        "options": "{\"fieldLabel\":\"Pharmacy\",\"labelWidth\":100,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"pharmacy\",\"list_id\":\"activePharmacies\"}"
+    },
+    {
+        "id": 32,
+        "field_id": 126,
+        "options": "{\"fieldLabel\":\"HIPAA Notice\",\"labelWidth\":100,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"hipaa_notice\",\"list_id\":1}"
+    },
+    {
+        "id": 34,
+        "field_id": 128,
+        "options": "{\"fieldLabel\":\"Allow line 1\",\"hideLabel\":true,\"layout\":\"hbox\",\"margin\":\"20 0 0 0\"}"
+    },
+    {
+        "id": 35,
+        "field_id": 129,
+        "options": "{\"fieldLabel\":\"Allow Voice Msg\",\"hideLabel\":false,\"name\":\"allow_voice_msg\",\"width\":150,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 36,
+        "field_id": 130,
+        "options": "{\"fieldLabel\":\"Allow Mail Msg\",\"hideLabel\":false,\"name\":\"allow_mail_msg\",\"width\":150,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 37,
+        "field_id": 131,
+        "options": "{\"fieldLabel\":\"Allow line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 38,
+        "field_id": 132,
+        "options": "{\"fieldLabel\":\"Allow SMS\",\"hideLabel\":false,\"name\":\"allow_sms\",\"width\":150,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 39,
+        "field_id": 133,
+        "options": "{\"fieldLabel\":\"Allow Email\",\"hideLabel\":false,\"name\":\"allow_email\",\"width\":150,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 40,
+        "field_id": 134,
+        "options": "{\"fieldLabel\":\"Allow Immunization Registry Use\",\"labelWidth\":190,\"hideLabel\":false,\"name\":\"allow_immunization_registry\",\"width\":240,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 41,
+        "field_id": 135,
+        "options": "{\"fieldLabel\":\"Allow Immunization Info Sharing\",\"labelWidth\":190,\"hideLabel\":false,\"name\":\"allow_immunization_info_sharing\",\"width\":240,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 42,
+        "field_id": 136,
+        "options": "{\"margin\":\"0 5 0 0\",\"name\":\"allow_health_info_exchange\",\"labelWidth\":200,\"fieldLabel\":\"Allow Health Information Exchange\"}"
+    },
+    {
+        "id": 43,
+        "field_id": 137,
+        "options": "{\"fieldLabel\":\"Allow Patient Web Portal\",\"labelWidth\":200,\"hideLabel\":false,\"name\":\"allow_patient_web_portal\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 44,
+        "field_id": 138,
+        "options": "{\"title\":\"Employer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 45,
+        "field_id": 139,
+        "options": "{\"fieldLabel\":\"Occupation\",\"labelWidth\":149,\"hideLabel\":false,\"emptyText\":\"Occupation\",\"name\":\"occupation\",\"width\":350,\"margin\":\"0 5 5 0\"}"
+    },
+    {
+        "id": 46,
+        "field_id": 140,
+        "options": "{\"fieldLabel\":\"Employer Name\",\"labelWidth\":149,\"hideLabel\":false,\"emptyText\":\"Employer Name\",\"name\":\"employer_name\",\"width\":350,\"margin\":\"0 5 5 0\"}"
+    },
+    {
+        "id": 47,
+        "field_id": 141,
+        "options": "{\"fieldLabel\":\"Employer Address\",\"labelWidth\":149,\"hideLabel\":false,\"emptyText\":\"Street\",\"name\":\"employer_address\",\"width\":609,\"margin\":\"0 5 5 0\"}"
+    },
+    {
+        "id": 48,
+        "field_id": 142,
+        "options": "{\"fieldLabel\":\"Employer Address Cont.\",\"labelWidth\":149,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":609}"
+    },
+    {
+        "id": 49,
+        "field_id": 143,
+        "options": "{\"fieldLabel\":\"City\",\"hideLabel\":true,\"emptyText\":\"City\",\"name\":\"employer_city\",\"width\":130,\"margin\":\"0 5 5 0\"}"
+    },
+    {
+        "id": 50,
+        "field_id": 144,
+        "options": "{\"margin\":\"0 5 5 0\",\"width\":130,\"name\":\"employer_state\",\"emptyText\":\"State\",\"hideLabel\":true,\"fieldLabel\":\"State\",\"list_id\":20}"
+    },
+    {
+        "id": 51,
+        "field_id": 145,
+        "options": "{\"fieldLabel\":\"Country\",\"hideLabel\":true,\"emptyText\":\"Country\",\"name\":\"employer_country\",\"width\":100,\"margin\":\"0 5 5 0\",\"list_id\":3}"
+    },
+    {
+        "id": 52,
+        "field_id": 146,
+        "options": "{\"fieldLabel\":\"Postal Code\",\"hideLabel\":true,\"emptyText\":\"Zip Code\",\"name\":\"employer_postal_code\",\"width\":80,\"margin\":\"0 5 5 0\"}"
+    },
+    {
+        "id": 54,
+        "field_id": 149,
+        "options": "{\"fieldLabel\":\"Weight (lbs)\",\"labelWidth\":150,\"hideLabel\":false,\"margin\":0,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"weight_lbs\"}"
+    },
+    {
+        "id": 56,
+        "field_id": 152,
+        "options": "{\"fieldLabel\":\"Weight (kg)\",\"labelWidth\":150,\"margin\":0,\"name\":\"weight_kg\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 74,
+        "field_id": 170,
+        "options": "{\"fieldLabel\":\"Height (in)\",\"labelWidth\":150,\"margin\":0,\"name\":\"height_in\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 75,
+        "field_id": 171,
+        "options": "{\"fieldLabel\":\"Height (cm)\",\"labelWidth\":150,\"margin\":0,\"name\":\"height_cm\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 76,
+        "field_id": 172,
+        "options": "{\"fieldLabel\":\"BP Systolic (mmHg)\",\"labelWidth\":150,\"margin\":0,\"name\":\"bp_systolic\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 77,
+        "field_id": 173,
+        "options": "{\"fieldLabel\":\"BP Diastolic (mmHg)\",\"labelWidth\":150,\"margin\":0,\"name\":\"bp_diastolic\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 78,
+        "field_id": 174,
+        "options": "{\"fieldLabel\":\"Pulse (per min)\",\"labelWidth\":150,\"margin\":0,\"name\":\"pulse\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 79,
+        "field_id": 175,
+        "options": "{\"fieldLabel\":\"Respiration (per min)\",\"labelWidth\":150,\"margin\":0,\"name\":\"respiration\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 80,
+        "field_id": 176,
+        "options": "{\"fieldLabel\":\"Temperature (F)\",\"labelWidth\":150,\"margin\":0,\"name\":\"temp_f\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 81,
+        "field_id": 177,
+        "options": "{\"fieldLabel\":\"Temperature (C)\",\"labelWidth\":150,\"margin\":0,\"name\":\"temp_c\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 82,
+        "field_id": 178,
+        "options": "{\"fieldLabel\":\"Temp Location\",\"labelWidth\":150,\"margin\":0,\"name\":\"temp_location\",\"list_id\":62,\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 83,
+        "field_id": 179,
+        "options": "{\"fieldLabel\":\"Oxygen Saturation %\",\"labelWidth\":150,\"margin\":0,\"name\":\"oxygen_saturation\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 84,
+        "field_id": 180,
+        "options": "{\"fieldLabel\":\"Head Circumference (in)\",\"labelWidth\":150,\"margin\":0,\"name\":\"head_circumference_in\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 85,
+        "field_id": 181,
+        "options": "{\"fieldLabel\":\"Head Circumference (cm)\",\"labelWidth\":150,\"margin\":0,\"name\":\"head_circumference_cm\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 86,
+        "field_id": 182,
+        "options": "{\"fieldLabel\":\"Waist Circumference (in)\",\"labelWidth\":150,\"margin\":0,\"name\":\"waist_circumference_in\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 87,
+        "field_id": 183,
+        "options": "{\"fieldLabel\":\"Waist Circumference (cm)\",\"labelWidth\":150,\"margin\":0,\"name\":\"waist_circumference_cm\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 88,
+        "field_id": 184,
+        "options": "{\"fieldLabel\":\"BMI (kg\\/m^2)\",\"labelWidth\":150,\"margin\":0,\"name\":\"bmi\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 89,
+        "field_id": 185,
+        "options": "{\"fieldLabel\":\"BMI Status Type\",\"labelWidth\":150,\"margin\":0,\"name\":\"bmi_status\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 90,
+        "field_id": 186,
+        "options": "{\"fieldLabel\":\"Other Notes\",\"labelWidth\":150,\"margin\":0,\"name\":\"other_notes\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 91,
+        "field_id": 187,
+        "options": "{\"fieldLabel\":\"Main Container For Column Layout\",\"hideLabel\":true,\"layout\":\"column\"}"
+    },
+    {
+        "id": 92,
+        "field_id": 188,
+        "options": "{\"fieldLabel\":\"Left Column\",\"hideLabel\":true,\"layout\":\"anchor\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 93,
+        "field_id": 189,
+        "options": "{\"fieldLabel\":\"Right Column\",\"hideLabel\":true,\"layout\":\"anchor\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 94,
+        "field_id": 190,
+        "options": "{\"margin\":\"0 10 0 0\",\"height\":157,\"emptyText\":\"Please Type a Brief Description\",\"name\":\"brief_description\",\"width\":300,\"hideLabel\":true,\"fieldLabel\":\"Brief Description\"}"
+    },
+    {
+        "id": 95,
+        "field_id": 191,
+        "options": "{\"fieldLabel\":\"Visit Category\",\"labelWidth\":120,\"hideLabel\":false,\"width\":310,\"margin\":\"0 5 5 0\",\"name\":\"visit_category\",\"list_id\":91,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 97,
+        "field_id": 193,
+        "options": "{\"fieldLabel\":\"Billing Facility\",\"labelWidth\":120,\"hideLabel\":false,\"width\":310,\"margin\":\"0 5 5 0\",\"name\":\"billing_facility\",\"list_id\":\"billingFacilities\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 98,
+        "field_id": 194,
+        "options": "{\"fieldLabel\":\"Priority\",\"labelWidth\":120,\"hideLabel\":false,\"width\":310,\"margin\":\"0 5 5 0\",\"name\":\"priority\",\"list_id\":94,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 99,
+        "field_id": 195,
+        "options": "{\"fieldLabel\":\"Date of Service\",\"labelWidth\":120,\"width\":310,\"margin\":\"0 5 0 0\",\"name\":\"service_date\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 100,
+        "field_id": 196,
+        "options": "{\"fieldLabel\":\"Onset \\/ Hosp. Date\",\"labelWidth\":120,\"width\":310,\"margin\":\"0 5 5 0\",\"name\":\"onset_date\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 102,
+        "field_id": 198,
+        "options": "{\"title\":\"Subjective\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 103,
+        "field_id": 199,
+        "options": "{\"title\":\"Objective\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 104,
+        "field_id": 200,
+        "options": "{\"title\":\"Assessment\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 105,
+        "field_id": 201,
+        "options": "{\"title\":\"Plan\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 106,
+        "field_id": 202,
+        "options": "{\"growMin\":90,\"grow\":true,\"margin\":\"10 5 15 5\",\"anchor\":\"100%\",\"hideLabel\":true,\"name\":\"subjective\",\"fieldLabel\":\"Subjective\"}"
+    },
+    {
+        "id": 107,
+        "field_id": 203,
+        "options": "{\"grow\":true,\"margin\":\"10 5 15 5\",\"anchor\":\"100%\",\"name\":\"objective\",\"hideLabel\":true,\"fieldLabel\":\"Objective\",\"growMin\":90}"
+    },
+    {
+        "id": 108,
+        "field_id": 204,
+        "options": "{\"grow\":true,\"growMin\":90,\"margin\":\"10 5 15 5\",\"hideLabel\":true,\"name\":\"assessment\",\"anchor\":\"100%\",\"fieldLabel\":\"Assessment\"}"
+    },
+    {
+        "id": 110,
+        "field_id": 206,
+        "options": "{\"title\":\"Dictation\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 111,
+        "field_id": 207,
+        "options": "{\"title\":\"Additional Notes\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 112,
+        "field_id": 208,
+        "options": "{\"growMin\":200,\"grow\":true,\"name\":\"dictation\",\"anchor\":\"100%\",\"margin\":\"10 5 15 5\",\"hideLabel\":true,\"fieldLabel\":\"Dictation\"}"
+    },
+    {
+        "id": 113,
+        "field_id": 209,
+        "options": "{\"name\":\"additional_notes\",\"hideLabel\":true,\"fieldLabel\":\"Additional Notes\",\"anchor\":\"100%\",\"margin\":\"10 5 15 5\",\"grow\":true}"
+    },
+    {
+        "id": 115,
+        "field_id": 213,
+        "options": "{\"layout\":\"hbox\",\"fieldLabel\":\"Line 1\",\"hideLabel\":1}"
+    },
+    {
+        "id": 116,
+        "field_id": 214,
+        "options": "{\"hideLabel\":1,\"fieldLabel\":\"Line 2\",\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 117,
+        "field_id": 215,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 118,
+        "field_id": 216,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 119,
+        "field_id": 217,
+        "options": "{\"fieldLabel\":\"Weight Change\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 120,
+        "field_id": 218,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":\"null\",\"name\":\"weight_change\",\"boxLabel\":\"N\\/A\"}"
+    },
+    {
+        "id": 121,
+        "field_id": 219,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":1,\"name\":\"weight_change\",\"boxLabel\":\"YES\"}"
+    },
+    {
+        "id": 122,
+        "field_id": 220,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":0,\"name\":\"weight_change\",\"boxLabel\":\"NO\"}"
+    },
+    {
+        "id": 123,
+        "field_id": 221,
+        "options": "{\"fieldLabel\":\"Anorexia\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 124,
+        "field_id": 222,
+        "options": "{\"fieldLabel\":\"Weakness\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 125,
+        "field_id": 223,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"cons_weakness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 126,
+        "field_id": 224,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"cons_weakness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 127,
+        "field_id": 225,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"cons_weakness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 128,
+        "field_id": 226,
+        "options": "{\"fieldLabel\":\"Fatigue\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 129,
+        "field_id": 227,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":\"null\",\"name\":\"fatigue\",\"boxLabel\":\"N\\/A\"}"
+    },
+    {
+        "id": 130,
+        "field_id": 228,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":1,\"name\":\"fatigue\",\"boxLabel\":\"YES\"}"
+    },
+    {
+        "id": 131,
+        "field_id": 229,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":0,\"name\":\"fatigue\",\"boxLabel\":\"NO\"}"
+    },
+    {
+        "id": 132,
+        "field_id": 230,
+        "options": "{\"inputValue\":\"null\",\"name\":\"anorexia\",\"boxLabel\":\"N\\/A\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 133,
+        "field_id": 231,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":1,\"name\":\"anorexia\",\"boxLabel\":\"YES\"}"
+    },
+    {
+        "id": 134,
+        "field_id": 232,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":0,\"name\":\"anorexia\",\"boxLabel\":\"NO\"}"
+    },
+    {
+        "id": 135,
+        "field_id": 233,
+        "options": "{\"fieldLabel\":\"Fever\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 136,
+        "field_id": 234,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"fever\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 137,
+        "field_id": 235,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"fever\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 138,
+        "field_id": 236,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"fever\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 139,
+        "field_id": 237,
+        "options": "{\"fieldLabel\":\"Chills\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 140,
+        "field_id": 238,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"chills\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 141,
+        "field_id": 239,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"chills\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 142,
+        "field_id": 240,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"chills\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 143,
+        "field_id": 241,
+        "options": "{\"fieldLabel\":\"Night Sweats\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 144,
+        "field_id": 242,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"night_sweats\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 145,
+        "field_id": 243,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"night_sweats\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 146,
+        "field_id": 244,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"night_sweats\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 147,
+        "field_id": 245,
+        "options": "{\"fieldLabel\":\"Insomnia\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 148,
+        "field_id": 246,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"insomnia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 149,
+        "field_id": 247,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"insomnia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 150,
+        "field_id": 248,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"insomnia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 151,
+        "field_id": 249,
+        "options": "{\"fieldLabel\":\"Irritability\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 152,
+        "field_id": 250,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"irritability\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 153,
+        "field_id": 251,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"irritability\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 154,
+        "field_id": 252,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"irritability\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 155,
+        "field_id": 253,
+        "options": "{\"fieldLabel\":\"Heat or Cold\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 156,
+        "field_id": 254,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"heat_or_cold\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 157,
+        "field_id": 255,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"heat_or_cold\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 158,
+        "field_id": 256,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"heat_or_cold\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 159,
+        "field_id": 257,
+        "options": "{\"fieldLabel\":\"Intolerance\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 160,
+        "field_id": 258,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"intolerance\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 161,
+        "field_id": 259,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"intolerance\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 162,
+        "field_id": 260,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"intolerance\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 164,
+        "field_id": 262,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 165,
+        "field_id": 282,
+        "options": "{\"fieldLabel\":\"Change in Vision\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 166,
+        "field_id": 283,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"change_in_vision\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 167,
+        "field_id": 284,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"change_in_vision\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 168,
+        "field_id": 285,
+        "options": "{\"inputValue\":0,\"name\":\"change_in_vision\",\"boxLabel\":\"NO\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 169,
+        "field_id": 286,
+        "options": "{\"fieldLabel\":\"Eye Pain\",\"labelWidth\":75,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":227}"
+    },
+    {
+        "id": 170,
+        "field_id": 287,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"eye_pain\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 171,
+        "field_id": 288,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"eye_pain\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 172,
+        "field_id": 289,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"eye_pain\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 173,
+        "field_id": 290,
+        "options": "{\"fieldLabel\":\"Family History of Glaucoma\",\"labelWidth\":155,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 174,
+        "field_id": 291,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"family_history_of_glaucoma\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 175,
+        "field_id": 292,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"family_history_of_glaucoma\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 176,
+        "field_id": 293,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"family_history_of_glaucoma\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 177,
+        "field_id": 294,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 178,
+        "field_id": 295,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 179,
+        "field_id": 297,
+        "options": "{\"fieldLabel\":\"Irritation\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 180,
+        "field_id": 298,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"irritation\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 181,
+        "field_id": 299,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"irritation\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 182,
+        "field_id": 300,
+        "options": "{\"inputValue\":0,\"name\":\"irritation\",\"boxLabel\":\"NO\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 183,
+        "field_id": 301,
+        "options": "{\"fieldLabel\":\"Redness\",\"labelWidth\":75,\"layout\":\"hbox\",\"width\":227}"
+    },
+    {
+        "id": 184,
+        "field_id": 302,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"redness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 185,
+        "field_id": 303,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"redness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 186,
+        "field_id": 304,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"redness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 187,
+        "field_id": 305,
+        "options": "{\"layout\":\"hbox\",\"labelWidth\":155,\"fieldLabel\":\"Excessive Tearing\",\"width\":300}"
+    },
+    {
+        "id": 188,
+        "field_id": 306,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"excessive_tearing\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 189,
+        "field_id": 307,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"excessive_tearing\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 190,
+        "field_id": 309,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"excessive_tearing\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 191,
+        "field_id": 310,
+        "options": "{\"fieldLabel\":\"Double Vision\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 192,
+        "field_id": 311,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"double_vision\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 193,
+        "field_id": 312,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"double_vision\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 194,
+        "field_id": 313,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"double_vision\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 195,
+        "field_id": 314,
+        "options": "{\"fieldLabel\":\"Blind Spots\",\"labelWidth\":75,\"layout\":\"hbox\",\"width\":227}"
+    },
+    {
+        "id": 196,
+        "field_id": 315,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"blind_spots\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 197,
+        "field_id": 316,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"blind_spots\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 198,
+        "field_id": 317,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"blind_spots\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 199,
+        "field_id": 318,
+        "options": "{\"fieldLabel\":\"Photophobia\",\"labelWidth\":155,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 200,
+        "field_id": 319,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"photophobia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 201,
+        "field_id": 320,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"photophobia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 202,
+        "field_id": 321,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"photophobia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 206,
+        "field_id": 325,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 207,
+        "field_id": 326,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 208,
+        "field_id": 327,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 209,
+        "field_id": 328,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 210,
+        "field_id": 329,
+        "options": "{\"fieldLabel\":\"Hearing Loss\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 211,
+        "field_id": 330,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"hearing_loss\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 212,
+        "field_id": 331,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"hearing_loss\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 213,
+        "field_id": 332,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"hearing_loss\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 214,
+        "field_id": 333,
+        "options": "{\"fieldLabel\":\"Discharge\",\"labelWidth\":95,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":248}"
+    },
+    {
+        "id": 215,
+        "field_id": 334,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"discharge\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 216,
+        "field_id": 335,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"discharge\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 217,
+        "field_id": 336,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"discharge\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 218,
+        "field_id": 337,
+        "options": "{\"labelWidth\":96,\"fieldLabel\":\"Pain\",\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 219,
+        "field_id": 338,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"pain\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 220,
+        "field_id": 339,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"pain\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 221,
+        "field_id": 340,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"pain\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 222,
+        "field_id": 342,
+        "options": "{\"fieldLabel\":\"Vertigo\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 223,
+        "field_id": 343,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"vertigo\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 224,
+        "field_id": 344,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"vertigo\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 225,
+        "field_id": 345,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"vertigo\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 226,
+        "field_id": 346,
+        "options": "{\"labelWidth\":95,\"fieldLabel\":\"Tinnitus\",\"layout\":\"hbox\",\"width\":248}"
+    },
+    {
+        "id": 227,
+        "field_id": 347,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"tinnitus\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 228,
+        "field_id": 348,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"tinnitus\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 229,
+        "field_id": 349,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"tinnitus\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 230,
+        "field_id": 350,
+        "options": "{\"width\":300,\"layout\":\"hbox\",\"fieldLabel\":\"Frequent Colds\",\"labelWidth\":96}"
+    },
+    {
+        "id": 231,
+        "field_id": 351,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"frequent_colds\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 232,
+        "field_id": 352,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"frequent_colds\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 233,
+        "field_id": 353,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"frequent_colds\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 234,
+        "field_id": 354,
+        "options": "{\"fieldLabel\":\"Sore Throat\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 235,
+        "field_id": 355,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"sore_throat\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 236,
+        "field_id": 356,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"sore_throat\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 237,
+        "field_id": 357,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"sore_throat\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 238,
+        "field_id": 359,
+        "options": "{\"labelWidth\":95,\"layout\":\"hbox\",\"width\":248,\"fieldLabel\":\"Sinus Problems\"}"
+    },
+    {
+        "id": 239,
+        "field_id": 360,
+        "options": "{\"name\":\"sinus_problems\",\"boxLabel\":\"N\\/A\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 240,
+        "field_id": 361,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"sinus_problems\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 241,
+        "field_id": 362,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"sinus_problems\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 242,
+        "field_id": 363,
+        "options": "{\"labelWidth\":96,\"fieldLabel\":\"Post Nasal Drip\",\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 243,
+        "field_id": 364,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"post_nasal_drip\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 244,
+        "field_id": 365,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"post_nasal_drip\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 245,
+        "field_id": 366,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"post_nasal_drip\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 246,
+        "field_id": 367,
+        "options": "{\"fieldLabel\":\"Nosebleed\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 247,
+        "field_id": 368,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"nosebleed\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 248,
+        "field_id": 369,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"nosebleed\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 249,
+        "field_id": 370,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"nosebleed\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 250,
+        "field_id": 371,
+        "options": "{\"fieldLabel\":\"Snoring\",\"labelWidth\":95,\"layout\":\"hbox\",\"width\":248}"
+    },
+    {
+        "id": 251,
+        "field_id": 372,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"snoring\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 252,
+        "field_id": 373,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"snoring\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 253,
+        "field_id": 374,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"snoring\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 254,
+        "field_id": 375,
+        "options": "{\"fieldLabel\":\"Apnea\",\"labelWidth\":96,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 255,
+        "field_id": 376,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"apnea\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 256,
+        "field_id": 377,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"apnea\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 257,
+        "field_id": 378,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"apnea\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 258,
+        "field_id": 379,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 259,
+        "field_id": 380,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 260,
+        "field_id": 381,
+        "options": "{\"fieldLabel\":\"Breast Mass\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 261,
+        "field_id": 382,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"breast_mass\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 262,
+        "field_id": 383,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"breast_mass\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 263,
+        "field_id": 384,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"breast_mass\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 264,
+        "field_id": 385,
+        "options": "{\"width\":225,\"fieldLabel\":\"Discharge\",\"layout\":\"hbox\",\"labelWidth\":70}"
+    },
+    {
+        "id": 265,
+        "field_id": 386,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"brest_discharge\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 266,
+        "field_id": 387,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"brest_discharge\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 267,
+        "field_id": 388,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"brest_discharge\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 268,
+        "field_id": 389,
+        "options": "{\"width\":300,\"layout\":\"hbox\",\"labelWidth\":145,\"fieldLabel\":\"Abnormal Mammogram\"}"
+    },
+    {
+        "id": 269,
+        "field_id": 390,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"abnormal_mammogram\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 270,
+        "field_id": 391,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"abnormal_mammogram\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 271,
+        "field_id": 392,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"abnormal_mammogram\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 272,
+        "field_id": 393,
+        "options": "{\"fieldLabel\":\"Biopsy\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 273,
+        "field_id": 394,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"biopsy\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 274,
+        "field_id": 395,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"biopsy\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 275,
+        "field_id": 396,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"biopsy\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 276,
+        "field_id": 398,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 277,
+        "field_id": 399,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 278,
+        "field_id": 400,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 279,
+        "field_id": 401,
+        "options": "{\"fieldLabel\":\"Cough\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 280,
+        "field_id": 402,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"cough\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 281,
+        "field_id": 403,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"cough\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 282,
+        "field_id": 404,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"cough\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 283,
+        "field_id": 405,
+        "options": "{\"fieldLabel\":\"Sputum\",\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 284,
+        "field_id": 406,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"sputum\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 285,
+        "field_id": 407,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"sputum\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 286,
+        "field_id": 408,
+        "options": "{\"inputValue\":0,\"name\":\"sputum\",\"boxLabel\":\"NO\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 287,
+        "field_id": 409,
+        "options": "{\"width\":300,\"layout\":\"hbox\",\"labelWidth\":130,\"fieldLabel\":\"Shortness of Breath\"}"
+    },
+    {
+        "id": 288,
+        "field_id": 411,
+        "options": "{\"name\":\"shortness_of_breath\",\"boxLabel\":\"N\\/A\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 289,
+        "field_id": 413,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"shortness_of_breath\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 290,
+        "field_id": 414,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"shortness_of_breath\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 291,
+        "field_id": 415,
+        "options": "{\"fieldLabel\":\"Wheezing\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 292,
+        "field_id": 416,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"wheezing\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 293,
+        "field_id": 417,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"wheezing\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 294,
+        "field_id": 418,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"wheezing\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 295,
+        "field_id": 419,
+        "options": "{\"fieldLabel\":\"Hemoptysis\",\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 296,
+        "field_id": 420,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"hemoptysis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 297,
+        "field_id": 421,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"hemoptysis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 298,
+        "field_id": 422,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"hemoptysis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 299,
+        "field_id": 423,
+        "options": "{\"layout\":\"hbox\",\"labelWidth\":130,\"fieldLabel\":\"Asthma\",\"width\":300}"
+    },
+    {
+        "id": 300,
+        "field_id": 424,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"asthma\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 301,
+        "field_id": 425,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"asthma\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 302,
+        "field_id": 426,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"asthma\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 303,
+        "field_id": 427,
+        "options": "{\"fieldLabel\":\"COPD\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 304,
+        "field_id": 428,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"copd\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 305,
+        "field_id": 429,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"copd\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 306,
+        "field_id": 430,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"copd\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 308,
+        "field_id": 432,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 309,
+        "field_id": 433,
+        "options": "{\"fieldLabel\":\"Thyroid Problems\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 310,
+        "field_id": 434,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"thyroid_problems\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 311,
+        "field_id": 435,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"thyroid_problems\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 312,
+        "field_id": 436,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"thyroid_problems\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 313,
+        "field_id": 438,
+        "options": "{\"layout\":\"hbox\",\"width\":212,\"fieldLabel\":\"Diabetes\",\"labelWidth\":61}"
+    },
+    {
+        "id": 314,
+        "field_id": 439,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"diabetes\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 315,
+        "field_id": 440,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"diabetes\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 316,
+        "field_id": 441,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"diabetes\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 317,
+        "field_id": 442,
+        "options": "{\"labelWidth\":128,\"layout\":\"hbox\",\"fieldLabel\":\"Abnormal Blood Test\",\"width\":250}"
+    },
+    {
+        "id": 318,
+        "field_id": 443,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"abnormal_blood_test\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 319,
+        "field_id": 444,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"abnormal_blood_test\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 320,
+        "field_id": 445,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"abnormal_blood_test\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 322,
+        "field_id": 447,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 323,
+        "field_id": 448,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 324,
+        "field_id": 449,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 325,
+        "field_id": 450,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 326,
+        "field_id": 451,
+        "options": "{\"fieldLabel\":\"Chest Pain\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 327,
+        "field_id": 452,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"chest_pain\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 328,
+        "field_id": 453,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"chest_pain\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 329,
+        "field_id": 454,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"chest_pain\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 330,
+        "field_id": 455,
+        "options": "{\"fieldLabel\":\"Palpitation\",\"labelWidth\":92,\"layout\":\"hbox\",\"width\":246}"
+    },
+    {
+        "id": 331,
+        "field_id": 456,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"palpitation\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 332,
+        "field_id": 457,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"palpitation\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 333,
+        "field_id": 458,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"palpitation\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 334,
+        "field_id": 459,
+        "options": "{\"labelWidth\":145,\"fieldLabel\":\"Syncope\",\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 335,
+        "field_id": 460,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"syncope\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 336,
+        "field_id": 461,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"syncope\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 337,
+        "field_id": 462,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"syncope\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 338,
+        "field_id": 463,
+        "options": "{\"fieldLabel\":\"PND\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 339,
+        "field_id": 464,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"pnd\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 340,
+        "field_id": 465,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"pnd\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 341,
+        "field_id": 466,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"pnd\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 342,
+        "field_id": 467,
+        "options": "{\"labelWidth\":92,\"fieldLabel\":\"DOE\",\"layout\":\"hbox\",\"width\":246}"
+    },
+    {
+        "id": 343,
+        "field_id": 468,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"doe\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 344,
+        "field_id": 469,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"doe\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 345,
+        "field_id": 470,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"doe\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 346,
+        "field_id": 471,
+        "options": "{\"fieldLabel\":\"Orthopnea\",\"labelWidth\":145,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 347,
+        "field_id": 472,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"orthopnea\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 348,
+        "field_id": 473,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"orthopnea\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 349,
+        "field_id": 474,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"orthopnea\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 350,
+        "field_id": 475,
+        "options": "{\"fieldLabel\":\"Peripheral\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 351,
+        "field_id": 476,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"peripheral\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 352,
+        "field_id": 477,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"peripheral\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 353,
+        "field_id": 478,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"peripheral\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 354,
+        "field_id": 479,
+        "options": "{\"labelWidth\":92,\"fieldLabel\":\"Edema\",\"layout\":\"hbox\",\"width\":246}"
+    },
+    {
+        "id": 355,
+        "field_id": 480,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"edema\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 356,
+        "field_id": 481,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"edema\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 357,
+        "field_id": 482,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"edema\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 358,
+        "field_id": 483,
+        "options": "{\"layout\":\"hbox\",\"labelWidth\":145,\"fieldLabel\":\"Leg Pain\\/Cramping\",\"width\":300}"
+    },
+    {
+        "id": 359,
+        "field_id": 484,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"leg_pain_cramping\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 360,
+        "field_id": 485,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"leg_pain_cramping\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 361,
+        "field_id": 486,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"leg_pain_cramping\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 362,
+        "field_id": 487,
+        "options": "{\"fieldLabel\":\"Arrythmia\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 363,
+        "field_id": 488,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"arrythmia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 364,
+        "field_id": 489,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"arrythmia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 365,
+        "field_id": 490,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"arrythmia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 366,
+        "field_id": 491,
+        "options": "{\"width\":246,\"layout\":\"hbox\",\"labelWidth\":92,\"fieldLabel\":\"Heart Problem\"}"
+    },
+    {
+        "id": 367,
+        "field_id": 492,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"heart_problem\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 368,
+        "field_id": 493,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"heart_problem\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 369,
+        "field_id": 494,
+        "options": "{\"inputValue\":0,\"name\":\"heart_problem\",\"boxLabel\":\"NO\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 370,
+        "field_id": 495,
+        "options": "{\"width\":300,\"layout\":\"hbox\",\"labelWidth\":145,\"fieldLabel\":\"History of Heart Murmur\"}"
+    },
+    {
+        "id": 371,
+        "field_id": 496,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"history_of_heart_murmur\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 372,
+        "field_id": 497,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"history_of_heart_murmur\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 373,
+        "field_id": 498,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"history_of_heart_murmur\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 375,
+        "field_id": 500,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 376,
+        "field_id": 501,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 377,
+        "field_id": 502,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 378,
+        "field_id": 503,
+        "options": "{\"fieldLabel\":\"Polyuria\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 379,
+        "field_id": 504,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"polyuria\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 380,
+        "field_id": 505,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"polyuria\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 381,
+        "field_id": 506,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"polyuria\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 382,
+        "field_id": 507,
+        "options": "{\"layout\":\"hbox\",\"width\":240,\"labelWidth\":85,\"fieldLabel\":\"Polydypsia\"}"
+    },
+    {
+        "id": 383,
+        "field_id": 508,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"polydypsia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 384,
+        "field_id": 509,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"polydypsia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 385,
+        "field_id": 510,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"polydypsia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 386,
+        "field_id": 511,
+        "options": "{\"fieldLabel\":\"Dysuria\",\"labelWidth\":85,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 387,
+        "field_id": 512,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"dysuria\",\"inputValue\":\"nulll\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 388,
+        "field_id": 513,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"dysuria\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 389,
+        "field_id": 514,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"dysuria\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 390,
+        "field_id": 515,
+        "options": "{\"fieldLabel\":\"Hematuria\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 391,
+        "field_id": 516,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"hematuria\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 392,
+        "field_id": 517,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"hematuria\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 393,
+        "field_id": 518,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"hematuria\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 394,
+        "field_id": 519,
+        "options": "{\"layout\":\"hbox\",\"labelWidth\":85,\"fieldLabel\":\"Frequency\",\"width\":240}"
+    },
+    {
+        "id": 395,
+        "field_id": 520,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"frequency\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 396,
+        "field_id": 521,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"frequency\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 397,
+        "field_id": 522,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"frequency\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 398,
+        "field_id": 523,
+        "options": "{\"fieldLabel\":\"Urgency\",\"labelWidth\":85,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 399,
+        "field_id": 525,
+        "options": "{\"name\":\"urgency\",\"boxLabel\":\"N\\/A\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 400,
+        "field_id": 526,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"urgency\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 401,
+        "field_id": 527,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"urgency\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 402,
+        "field_id": 528,
+        "options": "{\"fieldLabel\":\"UTIs\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 403,
+        "field_id": 529,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"utis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 404,
+        "field_id": 530,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"utis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 405,
+        "field_id": 531,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"utis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 406,
+        "field_id": 532,
+        "options": "{\"layout\":\"hbox\",\"width\":240,\"labelWidth\":85,\"fieldLabel\":\"Incontinence\"}"
+    },
+    {
+        "id": 407,
+        "field_id": 533,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"incontinence\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 408,
+        "field_id": 534,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"incontinence\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 409,
+        "field_id": 535,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"incontinence\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 410,
+        "field_id": 536,
+        "options": "{\"layout\":\"hbox\",\"labelWidth\":85,\"fieldLabel\":\"Renal Stones\",\"width\":250}"
+    },
+    {
+        "id": 411,
+        "field_id": 537,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"renal_stones\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 412,
+        "field_id": 538,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"renal_stones\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 413,
+        "field_id": 539,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"renal_stones\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 415,
+        "field_id": 541,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 416,
+        "field_id": 542,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 417,
+        "field_id": 544,
+        "options": "{\"fieldLabel\":\"Hesitancy\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 418,
+        "field_id": 545,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"hesitancy\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 419,
+        "field_id": 546,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"hesitancy\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 420,
+        "field_id": 547,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"hesitancy\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 421,
+        "field_id": 548,
+        "options": "{\"labelWidth\":62,\"width\":218,\"layout\":\"hbox\",\"fieldLabel\":\"Dribbling\"}"
+    },
+    {
+        "id": 422,
+        "field_id": 549,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"dribbling\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 423,
+        "field_id": 550,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"dribbling\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 424,
+        "field_id": 551,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"dribbling\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 425,
+        "field_id": 552,
+        "options": "{\"fieldLabel\":\"Stream\",\"labelWidth\":79,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 426,
+        "field_id": 553,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"stream\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 427,
+        "field_id": 554,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"stream\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 428,
+        "field_id": 555,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"stream\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 429,
+        "field_id": 557,
+        "options": "{\"fieldLabel\":\"Nocturia\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 430,
+        "field_id": 558,
+        "options": "{\"name\":\"nocturia\",\"boxLabel\":\"N\\/A\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 431,
+        "field_id": 559,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"nocturia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 432,
+        "field_id": 560,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"nocturia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 433,
+        "field_id": 561,
+        "options": "{\"fieldLabel\":\"Erections\",\"labelWidth\":62,\"layout\":\"hbox\",\"width\":218}"
+    },
+    {
+        "id": 434,
+        "field_id": 562,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"erections\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 435,
+        "field_id": 563,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"erections\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 436,
+        "field_id": 564,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"erections\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 437,
+        "field_id": 565,
+        "options": "{\"layout\":\"hbox\",\"width\":250,\"labelWidth\":79,\"fieldLabel\":\"Ejaculations\"}"
+    },
+    {
+        "id": 438,
+        "field_id": 566,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"ejaculations\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 439,
+        "field_id": 567,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"ejaculations\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 440,
+        "field_id": 568,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"ejaculations\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 442,
+        "field_id": 570,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 443,
+        "field_id": 571,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 444,
+        "field_id": 572,
+        "options": "{\"fieldLabel\":\"Cancer\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 445,
+        "field_id": 573,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"cancer\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 446,
+        "field_id": 574,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"cancer\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 447,
+        "field_id": 575,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"cancer\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 448,
+        "field_id": 576,
+        "options": "{\"layout\":\"hbox\",\"width\":215,\"fieldLabel\":\"Psoriasis\",\"labelWidth\":60}"
+    },
+    {
+        "id": 449,
+        "field_id": 577,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"psoriasis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 450,
+        "field_id": 578,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"psoriasis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 451,
+        "field_id": 579,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"psoriasis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 452,
+        "field_id": 580,
+        "options": "{\"layout\":\"hbox\",\"fieldLabel\":\"Acne\",\"labelWidth\":45,\"width\":250}"
+    },
+    {
+        "id": 453,
+        "field_id": 581,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"acne\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 454,
+        "field_id": 582,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"acne\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 455,
+        "field_id": 583,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"acne\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 456,
+        "field_id": 584,
+        "options": "{\"fieldLabel\":\"Disease\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 457,
+        "field_id": 585,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"disease\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 458,
+        "field_id": 586,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"disease\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 459,
+        "field_id": 587,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"disease\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 460,
+        "field_id": 588,
+        "options": "{\"fieldLabel\":\"Other\",\"labelWidth\":60,\"layout\":\"hbox\",\"width\":215}"
+    },
+    {
+        "id": 461,
+        "field_id": 589,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"other\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 462,
+        "field_id": 590,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"other\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 463,
+        "field_id": 591,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"other\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 465,
+        "field_id": 593,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 466,
+        "field_id": 594,
+        "options": "{\"fieldLabel\":\"Line 2\",\"layout\":\"hbox\",\"hideLabel\":1}"
+    },
+    {
+        "id": 467,
+        "field_id": 595,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":1,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 468,
+        "field_id": 596,
+        "options": "{\"fieldLabel\":\"Anemia\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 469,
+        "field_id": 597,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"anemia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 470,
+        "field_id": 598,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"anemia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 471,
+        "field_id": 599,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"anemia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 472,
+        "field_id": 600,
+        "options": "{\"labelWidth\":77,\"fieldLabel\":\"HIV\",\"layout\":\"hbox\",\"width\":234}"
+    },
+    {
+        "id": 473,
+        "field_id": 601,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"hiv\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 474,
+        "field_id": 602,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"hiv\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 475,
+        "field_id": 603,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"hiv\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 476,
+        "field_id": 604,
+        "options": "{\"width\":300,\"fieldLabel\":\"F\\/H Blood Problems\",\"layout\":\"hbox\",\"labelWidth\":121}"
+    },
+    {
+        "id": 477,
+        "field_id": 605,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"f_h_blood_problems\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 478,
+        "field_id": 606,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"f_h_blood_problems\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 479,
+        "field_id": 607,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"f_h_blood_problems\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 480,
+        "field_id": 612,
+        "options": "{\"fieldLabel\":\"HAI Status\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 481,
+        "field_id": 613,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"hai_status\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 482,
+        "field_id": 615,
+        "options": "{\"fieldLabel\":\"Frequent Illness\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 483,
+        "field_id": 617,
+        "options": "{\"fieldLabel\":\"Allergies\",\"labelWidth\":77,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":234}"
+    },
+    {
+        "id": 484,
+        "field_id": 618,
+        "options": "{\"inputValue\":\"null\",\"name\":\"allergies\",\"boxLabel\":\"N\\/A\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 485,
+        "field_id": 619,
+        "options": "{\"inputValue\":1,\"name\":\"allergies\",\"boxLabel\":\"YES\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 486,
+        "field_id": 620,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"allergies\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 487,
+        "field_id": 621,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"hai_status\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 488,
+        "field_id": 622,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"hai_status\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 489,
+        "field_id": 623,
+        "options": "{\"labelWidth\":121,\"layout\":\"hbox\",\"fieldLabel\":\"Bleeding Problems\",\"width\":300}"
+    },
+    {
+        "id": 490,
+        "field_id": 624,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"bleeding_problems\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 491,
+        "field_id": 625,
+        "options": "{\"margin\":\"0 5 0 0\",\"inputValue\":1,\"name\":\"bleeding_problems\",\"boxLabel\":\"YES\"}"
+    },
+    {
+        "id": 492,
+        "field_id": 626,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"bleeding_problems\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 493,
+        "field_id": 627,
+        "options": "{\"boxLabel\":\"N\\/A\",\"name\":\"frequent_illness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 494,
+        "field_id": 628,
+        "options": "{\"boxLabel\":\"YES\",\"name\":\"frequent_illness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 495,
+        "field_id": 629,
+        "options": "{\"boxLabel\":\"NO\",\"name\":\"frequent_illness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 496,
+        "field_id": 592,
+        "options": "{\"title\":\"Hematologic\\/Allergic\\/Immunologic\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 497,
+        "field_id": 431,
+        "options": "{\"title\":\"Endocrine\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 498,
+        "field_id": 569,
+        "options": "{\"title\":\"Skin\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 499,
+        "field_id": 540,
+        "options": "{\"title\":\"Genitourinary Male\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 500,
+        "field_id": 499,
+        "options": "{\"title\":\"Genitourinary General\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 501,
+        "field_id": 446,
+        "options": "{\"title\":\"Cardiovascular\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 502,
+        "field_id": 324,
+        "options": "{\"title\":\"Respiratory\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 509,
+        "field_id": 632,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 510,
+        "field_id": 633,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 511,
+        "field_id": 634,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 512,
+        "field_id": 635,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 513,
+        "field_id": 636,
+        "options": "{\"fieldLabel\":\"Line 5\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 514,
+        "field_id": 637,
+        "options": "{\"fieldLabel\":\"Line 6\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 517,
+        "field_id": 640,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"dysphagia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 518,
+        "field_id": 641,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"dysphagia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 519,
+        "field_id": 642,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"dysphagia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 521,
+        "field_id": 644,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"heartburn\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 522,
+        "field_id": 645,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"heartburn\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 523,
+        "field_id": 646,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"heartburn\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 525,
+        "field_id": 648,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"food_intolerance\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 526,
+        "field_id": 649,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"food_intolerance\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 527,
+        "field_id": 650,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"food_intolerance\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 528,
+        "field_id": 651,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"belching\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 529,
+        "field_id": 652,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"belching\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 530,
+        "field_id": 653,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"belching\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 532,
+        "field_id": 655,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"bloating\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 533,
+        "field_id": 656,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"bloating\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 534,
+        "field_id": 657,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"bloating\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 536,
+        "field_id": 659,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"flatulence\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 537,
+        "field_id": 660,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"flatulence\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 538,
+        "field_id": 661,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"flatulence\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 540,
+        "field_id": 663,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"nausea\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 541,
+        "field_id": 664,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"nausea\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 542,
+        "field_id": 665,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"nausea\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 544,
+        "field_id": 667,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"vomiting\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 545,
+        "field_id": 668,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"vomiting\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 546,
+        "field_id": 669,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"vomiting\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 548,
+        "field_id": 671,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"pain\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 549,
+        "field_id": 672,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"pain\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 550,
+        "field_id": 673,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"pain\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 553,
+        "field_id": 676,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"jaundice\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 554,
+        "field_id": 677,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"jaundice\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 555,
+        "field_id": 678,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"jaundice\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 557,
+        "field_id": 680,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"h_o_hepatitis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 558,
+        "field_id": 681,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"h_o_hepatitis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 559,
+        "field_id": 682,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"h_o_hepatitis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 561,
+        "field_id": 684,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"hematemesis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 562,
+        "field_id": 685,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"hematemesis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 563,
+        "field_id": 686,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"hematemesis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 565,
+        "field_id": 688,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"diarrhea\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 566,
+        "field_id": 689,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"diarrhea\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 567,
+        "field_id": 690,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"diarrhea\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 569,
+        "field_id": 692,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"hematochezia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 570,
+        "field_id": 693,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"hematochezia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 571,
+        "field_id": 694,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"hematochezia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 574,
+        "field_id": 697,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"changed_bowel\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 575,
+        "field_id": 698,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"changed_bowel\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 576,
+        "field_id": 699,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"changed_bowel\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 578,
+        "field_id": 701,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"constipation\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 579,
+        "field_id": 702,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"constipation\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 580,
+        "field_id": 703,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"constipation\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 591,
+        "field_id": 691,
+        "options": "{\"fieldLabel\":\"Hematochezia\",\"labelWidth\":95,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":252}"
+    },
+    {
+        "id": 592,
+        "field_id": 647,
+        "options": "{\"fieldLabel\":\"Food Intolerance\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 593,
+        "field_id": 658,
+        "options": "{\"fieldLabel\":\"Flatulence\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 598,
+        "field_id": 638,
+        "options": "{\"fieldLabel\":\"Dysphagia\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 599,
+        "field_id": 639,
+        "options": "{\"fieldLabel\":\"Belching\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 600,
+        "field_id": 662,
+        "options": "{\"fieldLabel\":\"Nausea\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 601,
+        "field_id": 675,
+        "options": "{\"fieldLabel\":\"Jaundice\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 602,
+        "field_id": 687,
+        "options": "{\"fieldLabel\":\"Diarrhea\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 603,
+        "field_id": 670,
+        "options": "{\"fieldLabel\":\"Pain\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 604,
+        "field_id": 679,
+        "options": "{\"fieldLabel\":\"H\\/O Hepatitis\",\"labelWidth\":95,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":252}"
+    },
+    {
+        "id": 605,
+        "field_id": 666,
+        "options": "{\"fieldLabel\":\"Vomiting\",\"labelWidth\":95,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":252}"
+    },
+    {
+        "id": 606,
+        "field_id": 643,
+        "options": "{\"fieldLabel\":\"Heartburn\",\"labelWidth\":95,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":252}"
+    },
+    {
+        "id": 607,
+        "field_id": 654,
+        "options": "{\"fieldLabel\":\"Bloating\",\"labelWidth\":95,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":252}"
+    },
+    {
+        "id": 608,
+        "field_id": 700,
+        "options": "{\"fieldLabel\":\"Constipation\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 609,
+        "field_id": 683,
+        "options": "{\"fieldLabel\":\"Hematemesis\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 610,
+        "field_id": 695,
+        "options": "{\"fieldLabel\":\"Changed Bowel\",\"labelWidth\":110,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 612,
+        "field_id": 631,
+        "options": "{\"title\":\"Gastrointestinal\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 614,
+        "field_id": 705,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 615,
+        "field_id": 706,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 616,
+        "field_id": 707,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 617,
+        "field_id": 708,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 619,
+        "field_id": 710,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"female_g\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 620,
+        "field_id": 711,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"female_g\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 621,
+        "field_id": 712,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"female_g\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 623,
+        "field_id": 714,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"female_p\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 624,
+        "field_id": 715,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"female_p\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 625,
+        "field_id": 716,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"female_p\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 627,
+        "field_id": 718,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"female_ap\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 628,
+        "field_id": 719,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"female_ap\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 629,
+        "field_id": 720,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"female_ap\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 631,
+        "field_id": 722,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"lmp\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 632,
+        "field_id": 723,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"lmp\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 633,
+        "field_id": 724,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"lmp\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 635,
+        "field_id": 726,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"female_lc\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 636,
+        "field_id": 727,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"female_lc\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 637,
+        "field_id": 728,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"female_lc\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 640,
+        "field_id": 731,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"menopause\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 641,
+        "field_id": 732,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"menopause\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 642,
+        "field_id": 733,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"menopause\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 645,
+        "field_id": 735,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"flow\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 646,
+        "field_id": 736,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"flow\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 647,
+        "field_id": 737,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"flow\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 649,
+        "field_id": 739,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"fem_frequency\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 650,
+        "field_id": 740,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"fem_frequency\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 651,
+        "field_id": 741,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"fem_frequency\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 654,
+        "field_id": 743,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"abnormal_hair_growth\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 656,
+        "field_id": 744,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"abnormal_hair_growth\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 657,
+        "field_id": 729,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"abnormal_hair_growth\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 659,
+        "field_id": 746,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"menarche\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 660,
+        "field_id": 747,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"menarche\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 661,
+        "field_id": 748,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"menarche\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 663,
+        "field_id": 750,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"symptoms\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 664,
+        "field_id": 751,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"symptoms\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 665,
+        "field_id": 752,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"symptoms\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 667,
+        "field_id": 754,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"f_h_female_hirsutism_striae\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 668,
+        "field_id": 755,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"f_h_female_hirsutism_striae\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 669,
+        "field_id": 756,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"f_h_female_hirsutism_striae\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 673,
+        "field_id": 745,
+        "options": "{\"fieldLabel\":\"Menarche\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 674,
+        "field_id": 734,
+        "options": "{\"fieldLabel\":\"Flow\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 678,
+        "field_id": 738,
+        "options": "{\"fieldLabel\":\"Frequency\",\"labelWidth\":75,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":234}"
+    },
+    {
+        "id": 683,
+        "field_id": 753,
+        "options": "{\"fieldLabel\":\"F\\/H Female Hirsutism\\/Striae\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 684,
+        "field_id": 742,
+        "options": "{\"fieldLabel\":\"Abnormal Hair Growth\",\"labelWidth\":166,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 685,
+        "field_id": 749,
+        "options": "{\"fieldLabel\":\"Symptoms\",\"labelWidth\":75,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":234}"
+    },
+    {
+        "id": 686,
+        "field_id": 721,
+        "options": "{\"fieldLabel\":\"LMP\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 687,
+        "field_id": 725,
+        "options": "{\"fieldLabel\":\"Female LC\",\"labelWidth\":75,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":234}"
+    },
+    {
+        "id": 688,
+        "field_id": 713,
+        "options": "{\"fieldLabel\":\"Female P\",\"labelWidth\":75,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":234}"
+    },
+    {
+        "id": 689,
+        "field_id": 709,
+        "options": "{\"fieldLabel\":\"Female G\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 690,
+        "field_id": 717,
+        "options": "{\"fieldLabel\":\"Female AP\",\"labelWidth\":166,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 691,
+        "field_id": 730,
+        "options": "{\"fieldLabel\":\"Menopause\",\"labelWidth\":166,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":300}"
+    },
+    {
+        "id": 692,
+        "field_id": 704,
+        "options": "{\"title\":\"Genitourinary Female\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 694,
+        "field_id": 758,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 695,
+        "field_id": 759,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 697,
+        "field_id": 761,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"anxiety\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 698,
+        "field_id": 762,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"anxiety\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 699,
+        "field_id": 763,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"anxiety\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 701,
+        "field_id": 765,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"depression\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 702,
+        "field_id": 766,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"depression\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 703,
+        "field_id": 767,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"depression\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 705,
+        "field_id": 769,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"psychiatric_medication\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 706,
+        "field_id": 770,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"psychiatric_medication\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 707,
+        "field_id": 771,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"psychiatric_medication\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 709,
+        "field_id": 773,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"social_difficulties\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 710,
+        "field_id": 774,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"social_difficulties\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 711,
+        "field_id": 775,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"social_difficulties\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 713,
+        "field_id": 777,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"psychiatric_diagnosis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 714,
+        "field_id": 778,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"psychiatric_diagnosis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 715,
+        "field_id": 779,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"psychiatric_diagnosis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 725,
+        "field_id": 772,
+        "options": "{\"fieldLabel\":\"Social Difficulties\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 726,
+        "field_id": 760,
+        "options": "{\"fieldLabel\":\"Anxiety\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 731,
+        "field_id": 768,
+        "options": "{\"fieldLabel\":\"Psychiatric Medication\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 732,
+        "field_id": 776,
+        "options": "{\"fieldLabel\":\"Psychiatric Diagnosis\",\"labelWidth\":136,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":295}"
+    },
+    {
+        "id": 734,
+        "field_id": 764,
+        "options": "{\"fieldLabel\":\"Depression\",\"labelWidth\":78,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 735,
+        "field_id": 757,
+        "options": "{\"title\":\"Psychiatric\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 737,
+        "field_id": 781,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 738,
+        "field_id": 782,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 739,
+        "field_id": 783,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 741,
+        "field_id": 785,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"fms\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 742,
+        "field_id": 786,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"fms\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 743,
+        "field_id": 787,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"fms\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 745,
+        "field_id": 789,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"swelling\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 746,
+        "field_id": 790,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"swelling\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 747,
+        "field_id": 791,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"swelling\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 749,
+        "field_id": 793,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"redness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 750,
+        "field_id": 794,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"redness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 751,
+        "field_id": 795,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"redness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 753,
+        "field_id": 797,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"warm\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 754,
+        "field_id": 798,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"warm\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 755,
+        "field_id": 799,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"warm\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 757,
+        "field_id": 801,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"muscle\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 758,
+        "field_id": 802,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"muscle\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 759,
+        "field_id": 803,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"muscle\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 761,
+        "field_id": 805,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"stiffness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 762,
+        "field_id": 806,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"stiffness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 763,
+        "field_id": 807,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"stiffness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 765,
+        "field_id": 809,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"aches\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 766,
+        "field_id": 810,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"aches\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 767,
+        "field_id": 811,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"aches\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 769,
+        "field_id": 813,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"arthritis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 770,
+        "field_id": 814,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"arthritis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 771,
+        "field_id": 815,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"arthritis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 773,
+        "field_id": 817,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"chronic_joint_pain\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 774,
+        "field_id": 818,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"chronic_joint_pain\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 775,
+        "field_id": 819,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"chronic_joint_pain\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 782,
+        "field_id": 808,
+        "options": "{\"fieldLabel\":\"Aches\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 788,
+        "field_id": 812,
+        "options": "{\"fieldLabel\":\"Arthritis\",\"labelWidth\":61,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":221}"
+    },
+    {
+        "id": 789,
+        "field_id": 816,
+        "options": "{\"fieldLabel\":\"Chronic Joint Pain\",\"labelWidth\":114,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 790,
+        "field_id": 796,
+        "options": "{\"fieldLabel\":\"Warm\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 791,
+        "field_id": 800,
+        "options": "{\"fieldLabel\":\"Muscle\",\"labelWidth\":61,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":221}"
+    },
+    {
+        "id": 792,
+        "field_id": 804,
+        "options": "{\"fieldLabel\":\"Stiffness\",\"labelWidth\":114,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 794,
+        "field_id": 792,
+        "options": "{\"fieldLabel\":\"Redness\",\"labelWidth\":114,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":250}"
+    },
+    {
+        "id": 795,
+        "field_id": 788,
+        "options": "{\"fieldLabel\":\"Swelling\",\"labelWidth\":61,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":221}"
+    },
+    {
+        "id": 796,
+        "field_id": 784,
+        "options": "{\"fieldLabel\":\"FMS\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 797,
+        "field_id": 780,
+        "options": "{\"title\":\"Musculoskeletal\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 799,
+        "field_id": 821,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 800,
+        "field_id": 822,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 803,
+        "field_id": 823,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 804,
+        "field_id": 824,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 806,
+        "field_id": 826,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"loc\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 807,
+        "field_id": 827,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"loc\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 808,
+        "field_id": 828,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"loc\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 811,
+        "field_id": 831,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"stroke\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 812,
+        "field_id": 829,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"stroke\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 813,
+        "field_id": 832,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"stroke\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 815,
+        "field_id": 834,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"paralysis\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 816,
+        "field_id": 835,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"paralysis\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 817,
+        "field_id": 836,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"paralysis\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 819,
+        "field_id": 838,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"tia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 820,
+        "field_id": 839,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"tia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 821,
+        "field_id": 840,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"tia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 823,
+        "field_id": 842,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"numbness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 824,
+        "field_id": 843,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"numbness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 825,
+        "field_id": 844,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"numbness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 827,
+        "field_id": 846,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"memory_problems\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 828,
+        "field_id": 847,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"memory_problems\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 829,
+        "field_id": 848,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"memory_problems\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 831,
+        "field_id": 850,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"seizures\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 832,
+        "field_id": 851,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"seizures\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 833,
+        "field_id": 852,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"seizures\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 835,
+        "field_id": 854,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"weakness\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 836,
+        "field_id": 855,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"weakness\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 837,
+        "field_id": 856,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"weakness\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 839,
+        "field_id": 858,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"intellectual_decline\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 840,
+        "field_id": 859,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"intellectual_decline\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 841,
+        "field_id": 860,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"intellectual_decline\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 843,
+        "field_id": 862,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"dementia\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 844,
+        "field_id": 863,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"dementia\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 845,
+        "field_id": 864,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"dementia\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 847,
+        "field_id": 866,
+        "options": "{\"boxLabel\":\"N\\/A\",\"hideLabel\":false,\"name\":\"headache\",\"inputValue\":\"null\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 848,
+        "field_id": 867,
+        "options": "{\"boxLabel\":\"YES\",\"hideLabel\":false,\"name\":\"headache\",\"inputValue\":1,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 849,
+        "field_id": 868,
+        "options": "{\"boxLabel\":\"NO\",\"hideLabel\":false,\"name\":\"headache\",\"inputValue\":0,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 852,
+        "field_id": 861,
+        "options": "{\"fieldLabel\":\"Dementia\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 854,
+        "field_id": 837,
+        "options": "{\"fieldLabel\":\"TIA\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 855,
+        "field_id": 825,
+        "options": "{\"fieldLabel\":\"LOC\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 856,
+        "field_id": 849,
+        "options": "{\"fieldLabel\":\"Seizures\",\"hideLabel\":false,\"layout\":\"hbox\",\"width\":255}"
+    },
+    {
+        "id": 858,
+        "field_id": 853,
+        "options": "{\"fieldLabel\":\"Weakness\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 860,
+        "field_id": 857,
+        "options": "{\"fieldLabel\":\"Intellectual Decline\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 861,
+        "field_id": 865,
+        "options": "{\"fieldLabel\":\"Headache\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 862,
+        "field_id": 830,
+        "options": "{\"fieldLabel\":\"Stroke\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 863,
+        "field_id": 841,
+        "options": "{\"fieldLabel\":\"Numbness\",\"labelWidth\":129,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":284}"
+    },
+    {
+        "id": 864,
+        "field_id": 845,
+        "options": "{\"fieldLabel\":\"Memory Problems\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 865,
+        "field_id": 833,
+        "options": "{\"fieldLabel\":\"Paralysis\",\"labelWidth\":160,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":315}"
+    },
+    {
+        "id": 880,
+        "field_id": 877,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 923,
+        "field_id": 881,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 924,
+        "field_id": 874,
+        "options": "{\"fieldLabel\":\"Additional Notes\",\"hideLabel\":false,\"width\":690,\"height\":150,\"margin\":\"0 5 0 0\",\"grow\":0,\"name\":\"notes\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 942,
+        "field_id": 871,
+        "options": "{\"fieldLabel\":\"Fever\",\"labelWidth\":35,\"hideLabel\":false,\"width\":65,\"margin\":\"0 5 0 0\",\"name\":\"fever\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 943,
+        "field_id": 872,
+        "options": "{\"fieldLabel\":\"Chills\",\"labelWidth\":35,\"hideLabel\":false,\"width\":65,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"chills\"}"
+    },
+    {
+        "id": 951,
+        "field_id": 879,
+        "options": "{\"fieldLabel\":\"Depressed\",\"labelWidth\":62,\"hideLabel\":false,\"width\":90,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"depressed\"}"
+    },
+    {
+        "id": 952,
+        "field_id": 878,
+        "options": "{\"fieldLabel\":\"Fatigued\",\"labelWidth\":62,\"hideLabel\":false,\"width\":90,\"margin\":\"0 5 0 0\",\"name\":\"fatigued\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 956,
+        "field_id": 888,
+        "options": "{\"fieldLabel\":\"Insomnia\",\"labelWidth\":70,\"hideLabel\":false,\"width\":100,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"insomnia\"}"
+    },
+    {
+        "id": 957,
+        "field_id": 885,
+        "options": "{\"fieldLabel\":\"Hyperactive\",\"labelWidth\":70,\"hideLabel\":false,\"width\":100,\"margin\":\"0 5 0 0\",\"name\":\"hyperactive\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 964,
+        "field_id": 889,
+        "options": "{\"fieldLabel\":\"Poor Appetite\",\"labelWidth\":81,\"hideLabel\":false,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"poor_appetite\"}"
+    },
+    {
+        "id": 965,
+        "field_id": 875,
+        "options": "{\"fieldLabel\":\"Night Sweats\",\"labelWidth\":81,\"hideLabel\":false,\"width\":110,\"margin\":\"0 5 0 0\",\"name\":\"night_sweats\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 969,
+        "field_id": 886,
+        "options": "{\"fieldLabel\":\"Exposure to Foreign Countries\",\"labelWidth\":172,\"hideLabel\":false,\"width\":220,\"margin\":\"0 5 0 0\",\"name\":\"exposure_to_foreign_countries\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 970,
+        "field_id": 887,
+        "options": "{\"fieldLabel\":\"Weight Loss\",\"labelWidth\":172,\"hideLabel\":false,\"width\":220,\"margin\":\"0 5 0 0\",\"name\":\"weight_loss\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 972,
+        "field_id": 873,
+        "options": "{\"title\":\"General\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 974,
+        "field_id": 892,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 984,
+        "field_id": 893,
+        "options": "{\"fieldLabel\":\"Ulcerations\",\"labelWidth\":65,\"hideLabel\":false,\"width\":95,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"ulcerations\"}"
+    },
+    {
+        "id": 989,
+        "field_id": 894,
+        "options": "{\"fieldLabel\":\"Pemphigus\",\"labelWidth\":64,\"hideLabel\":false,\"width\":95,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"pemphigus\"}"
+    },
+    {
+        "id": 991,
+        "field_id": 895,
+        "options": "{\"fieldLabel\":\"Herpes\",\"labelWidth\":44,\"hideLabel\":false,\"width\":74,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"herpes\"}"
+    },
+    {
+        "id": 1005,
+        "field_id": 891,
+        "options": "{\"fieldLabel\":\"Infections\",\"labelWidth\":58,\"hideLabel\":false,\"width\":88,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"infections\"}"
+    },
+    {
+        "id": 1007,
+        "field_id": 884,
+        "options": "{\"fieldLabel\":\"Rashes\",\"labelWidth\":45,\"hideLabel\":false,\"width\":75,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"rashes\"}"
+    },
+    {
+        "id": 1008,
+        "field_id": 890,
+        "options": "{\"title\":\"Skin\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1010,
+        "field_id": 897,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1011,
+        "field_id": 898,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1023,
+        "field_id": 899,
+        "options": "{\"fieldLabel\":\"Non-Insulin Dependent Diabetes\",\"labelWidth\":180,\"hideLabel\":false,\"width\":210,\"margin\":\"0 5 0 0\",\"name\":\"non_insulin_dependent_diabetes\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1024,
+        "field_id": 900,
+        "options": "{\"fieldLabel\":\"Insulin Dependent Diabetes\",\"labelWidth\":180,\"hideLabel\":false,\"width\":210,\"margin\":\"0 5 0 0\",\"name\":\"insulin_dependent_diabetes\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1028,
+        "field_id": 901,
+        "options": "{\"fieldLabel\":\"Hypothyroidism\",\"labelWidth\":90,\"hideLabel\":false,\"width\":120,\"margin\":\"0 5 0 0\",\"name\":\"hypothyroidism\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1031,
+        "field_id": 902,
+        "options": "{\"fieldLabel\":\"Hyperthyroidism\",\"labelWidth\":94,\"hideLabel\":false,\"width\":124,\"margin\":\"0 5 0 0\",\"name\":\"hyperthyroidism\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1039,
+        "field_id": 903,
+        "options": "{\"fieldLabel\":\"Cushing Syndrome\",\"labelWidth\":108,\"hideLabel\":false,\"width\":138,\"margin\":\"0 5 0 0\",\"name\":\"cushing_syndrome\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1040,
+        "field_id": 904,
+        "options": "{\"fieldLabel\":\"Addison Syndrome\",\"labelWidth\":108,\"hideLabel\":false,\"width\":138,\"margin\":\"0 5 0 0\",\"name\":\"addison_syndrome\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1041,
+        "field_id": 896,
+        "options": "{\"title\":\"Endocrine\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1043,
+        "field_id": 906,
+        "options": "{\"fieldLabel\":\"Line 1 \",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1047,
+        "field_id": 908,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1065,
+        "field_id": 913,
+        "options": "{\"fieldLabel\":\"Shortness of Breath\",\"labelWidth\":112,\"hideLabel\":false,\"width\":142,\"margin\":\"0 5 0 0\",\"name\":\"shortness_of_breath\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1066,
+        "field_id": 909,
+        "options": "{\"fieldLabel\":\"Pheumothorax\",\"labelWidth\":112,\"hideLabel\":false,\"width\":142,\"margin\":\"0 5 0 0\",\"name\":\"pheumothorax\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1072,
+        "field_id": 912,
+        "options": "{\"fieldLabel\":\"Interstitial Lung Disease\",\"labelWidth\":133,\"hideLabel\":false,\"width\":163,\"margin\":\"0 5 0 0\",\"name\":\"interstitial_lung_disease\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1073,
+        "field_id": 911,
+        "options": "{\"fieldLabel\":\"Lung Cancer Surgery\",\"labelWidth\":133,\"hideLabel\":false,\"width\":163,\"margin\":\"0 5 0 0\",\"name\":\"lung_cancer_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1078,
+        "field_id": 914,
+        "options": "{\"fieldLabel\":\"Lung Cancer\",\"labelWidth\":73,\"hideLabel\":false,\"width\":103,\"margin\":\"0 5 0 0\",\"name\":\"lung_cancer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1091,
+        "field_id": 907,
+        "options": "{\"fieldLabel\":\"Emphysema\",\"labelWidth\":67,\"hideLabel\":false,\"width\":97,\"margin\":\"0 5 0 0\",\"name\":\"emphysema\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1094,
+        "field_id": 910,
+        "options": "{\"fieldLabel\":\"Chronic Bronchitis\",\"labelWidth\":101,\"hideLabel\":false,\"width\":131,\"margin\":\"0 5 0 0\",\"name\":\"chronic_bronchitis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1095,
+        "field_id": 905,
+        "options": "{\"title\":\"Pulmonary\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1098,
+        "field_id": 917,
+        "options": "{\"fieldLabel\":\"Line 2 \",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1099,
+        "field_id": 916,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1100,
+        "field_id": 918,
+        "options": "{\"fieldLabel\":\"Line 3 \",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1101,
+        "field_id": 919,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1117,
+        "field_id": 925,
+        "options": "{\"fieldLabel\":\"Throat Cancer Surgery\",\"labelWidth\":128,\"hideLabel\":false,\"width\":158,\"margin\":\"0 5 0 0\",\"name\":\"throat_cancer_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1131,
+        "field_id": 937,
+        "options": "{\"fieldLabel\":\"Strep Throat\",\"labelWidth\":74,\"hideLabel\":false,\"width\":104,\"margin\":\"0 5 0 0\",\"name\":\"strep_throat\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1132,
+        "field_id": 935,
+        "options": "{\"fieldLabel\":\"Bloody Nose\",\"labelWidth\":74,\"hideLabel\":false,\"width\":104,\"margin\":\"0 5 0 0\",\"name\":\"bloody_nose\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1133,
+        "field_id": 924,
+        "options": "{\"fieldLabel\":\"Glaucoma\",\"labelWidth\":74,\"hideLabel\":false,\"width\":104,\"margin\":\"0 5 0 0\",\"name\":\"glaucoma\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1134,
+        "field_id": 922,
+        "options": "{\"fieldLabel\":\"Cataracts\",\"labelWidth\":74,\"hideLabel\":false,\"width\":104,\"margin\":\"0 5 0 0\",\"name\":\"cataracts\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1135,
+        "field_id": 926,
+        "options": "{\"fieldLabel\":\"Cataract Surgery\",\"labelWidth\":128,\"hideLabel\":false,\"width\":158,\"margin\":\"0 5 0 0\",\"name\":\"cataract_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1136,
+        "field_id": 936,
+        "options": "{\"fieldLabel\":\"Throat Cancer\",\"labelWidth\":128,\"hideLabel\":false,\"width\":158,\"margin\":\"0 5 0 0\",\"name\":\"throat_cancer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1137,
+        "field_id": 938,
+        "options": "{\"fieldLabel\":\"Sinus Surgery\",\"labelWidth\":128,\"hideLabel\":false,\"width\":158,\"margin\":\"0 5 0 0\",\"name\":\"sinus_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1142,
+        "field_id": 927,
+        "options": "{\"fieldLabel\":\"Ringing in Ears\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"ringing_in_ears\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1143,
+        "field_id": 931,
+        "options": "{\"fieldLabel\":\"Dry Mouth\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"dry_mouth\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1144,
+        "field_id": 928,
+        "options": "{\"fieldLabel\":\"Headaches\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"headaches\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1145,
+        "field_id": 923,
+        "options": "{\"fieldLabel\":\"Swollen Lymph Nodes\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"swollen_lymph_nodes\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1146,
+        "field_id": 932,
+        "options": "{\"fieldLabel\":\"Double Vision\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"double_vision\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1147,
+        "field_id": 929,
+        "options": "{\"fieldLabel\":\"Blurred Vision\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"blurred_vision\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1150,
+        "field_id": 934,
+        "options": "{\"fieldLabel\":\"Tonsillectomy\",\"labelWidth\":78,\"hideLabel\":false,\"width\":108,\"margin\":\"0 5 0 0\",\"name\":\"tonsillectomy\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1151,
+        "field_id": 933,
+        "options": "{\"fieldLabel\":\"Poor Hearing\",\"labelWidth\":78,\"hideLabel\":false,\"width\":108,\"margin\":\"0 5 0 0\",\"name\":\"poor_hearing\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1152,
+        "field_id": 930,
+        "options": "{\"fieldLabel\":\"Sinusitis\",\"labelWidth\":78,\"hideLabel\":false,\"width\":108,\"margin\":\"0 5 0 0\",\"name\":\"sinusitis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1153,
+        "field_id": 915,
+        "options": "{\"title\":\"HEENT\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1155,
+        "field_id": 940,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1157,
+        "field_id": 942,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1159,
+        "field_id": 941,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\",\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 1180,
+        "field_id": 943,
+        "options": "{\"fieldLabel\":\"Coronary Artery Bypass\",\"labelWidth\":137,\"hideLabel\":false,\"name\":\"coronary_artery_bypass\",\"width\":167,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 1181,
+        "field_id": 945,
+        "options": "{\"fieldLabel\":\"High Blood Pressure\",\"labelWidth\":137,\"hideLabel\":false,\"width\":167,\"margin\":\"0 5 0 0\",\"name\":\"high_blood_pressure\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1182,
+        "field_id": 944,
+        "options": "{\"fieldLabel\":\"Cardiac Catheterization\",\"labelWidth\":137,\"hideLabel\":false,\"width\":167,\"margin\":\"0 5 0 0\",\"name\":\"cardiac_catheterization\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1184,
+        "field_id": 949,
+        "options": "{\"fieldLabel\":\"Chest Pains\",\"labelWidth\":75,\"hideLabel\":false,\"width\":105,\"margin\":\"0 5 0 0\",\"name\":\"chest_pains\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1185,
+        "field_id": 950,
+        "options": "{\"fieldLabel\":\"Heart Attack\",\"labelWidth\":75,\"hideLabel\":false,\"width\":105,\"margin\":\"0 5 0 0\",\"name\":\"heart_attack\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1187,
+        "field_id": 948,
+        "options": "{\"fieldLabel\":\"Irregular Heart Beat\",\"labelWidth\":115,\"hideLabel\":false,\"width\":145,\"margin\":\"0 5 0 0\",\"name\":\"irregular_heart_beat\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1188,
+        "field_id": 946,
+        "options": "{\"fieldLabel\":\"Heart Transplant\",\"labelWidth\":115,\"hideLabel\":false,\"width\":145,\"margin\":\"0 5 0 0\",\"name\":\"heart_transplant\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1193,
+        "field_id": 952,
+        "options": "{\"fieldLabel\":\"Poor Circulation\",\"labelWidth\":92,\"hideLabel\":false,\"width\":122,\"margin\":\"0 5 0 0\",\"name\":\"poor_circulation\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1194,
+        "field_id": 947,
+        "options": "{\"fieldLabel\":\"Vascular Surger\",\"labelWidth\":92,\"hideLabel\":false,\"width\":122,\"margin\":\"0 5 0 0\",\"name\":\"vascular_surger\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1200,
+        "field_id": 953,
+        "options": "{\"fieldLabel\":\"Heart Failure\",\"labelWidth\":76,\"hideLabel\":false,\"width\":106,\"margin\":\"0 5 0 0\",\"name\":\"heart_failure\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1201,
+        "field_id": 951,
+        "options": "{\"fieldLabel\":\"Stress Test\",\"labelWidth\":76,\"hideLabel\":false,\"width\":106,\"margin\":\"0 5 0 0\",\"name\":\"stress_test\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1202,
+        "field_id": 939,
+        "options": "{\"title\":\"Cardiovascular\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1204,
+        "field_id": 955,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1205,
+        "field_id": 956,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1206,
+        "field_id": 957,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1226,
+        "field_id": 960,
+        "options": "{\"fieldLabel\":\"Sexually Transmitted Disease\",\"labelWidth\":165,\"hideLabel\":false,\"width\":195,\"margin\":\"0 5 0 0\",\"name\":\"sexually_transmitted_disease\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1227,
+        "field_id": 959,
+        "options": "{\"fieldLabel\":\"Discharge From Urethra\",\"labelWidth\":165,\"hideLabel\":false,\"width\":195,\"margin\":\"0 5 0 0\",\"name\":\"discharge_from_urethra\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1228,
+        "field_id": 958,
+        "options": "{\"fieldLabel\":\"Burning with Urination\",\"labelWidth\":165,\"hideLabel\":false,\"width\":195,\"margin\":\"0 5 0 0\",\"name\":\"burning_with_urination\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1232,
+        "field_id": 962,
+        "options": "{\"fieldLabel\":\"Bladder Infections\",\"labelWidth\":105,\"hideLabel\":false,\"width\":135,\"margin\":\"0 5 0 0\",\"name\":\"bladder_infections\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1233,
+        "field_id": 961,
+        "options": "{\"fieldLabel\":\"Prostate Problems\",\"labelWidth\":105,\"hideLabel\":false,\"width\":135,\"margin\":\"0 5 0 0\",\"name\":\"prostate_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1234,
+        "field_id": 964,
+        "options": "{\"fieldLabel\":\"Kidney Transplant\",\"labelWidth\":105,\"hideLabel\":false,\"name\":\"kidney_transplant\",\"width\":135,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 1236,
+        "field_id": 963,
+        "options": "{\"fieldLabel\":\"Kidney Infections\",\"labelWidth\":98,\"hideLabel\":false,\"width\":128,\"margin\":\"0 5 0 0\",\"name\":\"kidney_infections\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1237,
+        "field_id": 966,
+        "options": "{\"fieldLabel\":\"Bladder Cancer\",\"labelWidth\":98,\"hideLabel\":false,\"width\":128,\"margin\":\"0 5 0 0\",\"name\":\"bladder_cancer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1241,
+        "field_id": 965,
+        "options": "{\"fieldLabel\":\"Prostate Cancer\",\"labelWidth\":92,\"hideLabel\":false,\"width\":122,\"margin\":\"0 5 0 0\",\"name\":\"prostate_cancer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1242,
+        "field_id": 968,
+        "options": "{\"fieldLabel\":\"Kidney Failure\",\"labelWidth\":92,\"hideLabel\":false,\"width\":122,\"margin\":\"0 5 0 0\",\"name\":\"kidney_failure\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1247,
+        "field_id": 967,
+        "options": "{\"fieldLabel\":\"Kidney Cancer\",\"labelWidth\":83,\"hideLabel\":false,\"width\":113,\"margin\":\"0 5 0 0\",\"name\":\"kidney_cancer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1248,
+        "field_id": 969,
+        "options": "{\"fieldLabel\":\"Kidney Stones\",\"labelWidth\":83,\"hideLabel\":false,\"width\":113,\"margin\":\"0 5 0 0\",\"name\":\"kidney_stones\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1249,
+        "field_id": 954,
+        "options": "{\"title\":\"Genitourinary\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1251,
+        "field_id": 971,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1252,
+        "field_id": 972,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1253,
+        "field_id": 973,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1254,
+        "field_id": 974,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1277,
+        "field_id": 975,
+        "options": "{\"fieldLabel\":\"Colon Cancer Surgery\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"colon_cancer_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1278,
+        "field_id": 976,
+        "options": "{\"fieldLabel\":\"Peptic Ulcer Disease\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"peptic_ulcer_disease\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1279,
+        "field_id": 977,
+        "options": "{\"fieldLabel\":\"Diverticulitis Surgery\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"diverticulitis_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1280,
+        "field_id": 978,
+        "options": "{\"fieldLabel\":\"Cirrhosis of the Liver\",\"labelWidth\":123,\"hideLabel\":false,\"width\":153,\"margin\":\"0 5 0 0\",\"name\":\"cirrhosis_of_the_liver\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1285,
+        "field_id": 979,
+        "options": "{\"fieldLabel\":\"Cholecystectomy\",\"labelWidth\":98,\"hideLabel\":false,\"width\":128,\"margin\":\"0 5 0 0\",\"name\":\"cholecystectomy\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1286,
+        "field_id": 980,
+        "options": "{\"fieldLabel\":\"Crohn`s Disease\",\"labelWidth\":98,\"hideLabel\":false,\"width\":128,\"margin\":\"0 5 0 0\",\"name\":\"crohns_disease\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1287,
+        "field_id": 981,
+        "options": "{\"fieldLabel\":\"Ulcerative Colitis\",\"labelWidth\":98,\"hideLabel\":false,\"width\":128,\"margin\":\"0 5 0 0\",\"name\":\"ulcerative_colitis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1288,
+        "field_id": 982,
+        "options": "{\"fieldLabel\":\"Stomach Pains\",\"labelWidth\":98,\"hideLabel\":false,\"width\":128,\"margin\":\"0 5 0 0\",\"name\":\"stomach_pains\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1291,
+        "field_id": 983,
+        "options": "{\"fieldLabel\":\"Appendectomy\",\"labelWidth\":86,\"hideLabel\":false,\"width\":116,\"margin\":\"0 5 0 0\",\"name\":\"appendectomy\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1292,
+        "field_id": 984,
+        "options": "{\"fieldLabel\":\"Colon Cancer\",\"labelWidth\":86,\"hideLabel\":false,\"width\":116,\"margin\":\"0 5 0 0\",\"name\":\"colon_cancer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1293,
+        "field_id": 985,
+        "options": "{\"fieldLabel\":\"Colonoscopy\",\"labelWidth\":86,\"hideLabel\":false,\"width\":116,\"margin\":\"0 5 0 0\",\"name\":\"colonoscopy\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1294,
+        "field_id": 986,
+        "options": "{\"fieldLabel\":\"Endoscopy\",\"labelWidth\":86,\"hideLabel\":false,\"width\":116,\"margin\":\"0 5 0 0\",\"name\":\"endoscopy\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1298,
+        "field_id": 987,
+        "options": "{\"fieldLabel\":\"Splenectomy\",\"labelWidth\":75,\"hideLabel\":false,\"width\":105,\"margin\":\"0 5 0 0\",\"name\":\"splenectomy\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1299,
+        "field_id": 988,
+        "options": "{\"fieldLabel\":\"Diverticulitis\",\"labelWidth\":75,\"hideLabel\":false,\"width\":105,\"margin\":\"0 5 0 0\",\"name\":\"diverticulitis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1300,
+        "field_id": 989,
+        "options": "{\"fieldLabel\":\"Gall Stones\",\"labelWidth\":75,\"hideLabel\":false,\"width\":105,\"margin\":\"0 5 0 0\",\"name\":\"gall_stones\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1306,
+        "field_id": 990,
+        "options": "{\"fieldLabel\":\"Hepatitis\",\"labelWidth\":54,\"hideLabel\":false,\"width\":84,\"margin\":\"0 5 0 0\",\"name\":\"hepatitis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1307,
+        "field_id": 992,
+        "options": "{\"fieldLabel\":\"Polyps\",\"labelWidth\":54,\"hideLabel\":false,\"width\":84,\"margin\":\"0 5 0 0\",\"name\":\"polyps\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1308,
+        "field_id": 991,
+        "options": "{\"fieldLabel\":\"Gastritis\",\"labelWidth\":54,\"hideLabel\":false,\"width\":84,\"margin\":\"0 5 0 0\",\"name\":\"gastritis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1309,
+        "field_id": 970,
+        "options": "{\"title\":\"Gastrointestinal\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1311,
+        "field_id": 994,
+        "options": "{\"fieldLabel\":\"Line 1\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1312,
+        "field_id": 995,
+        "options": "{\"fieldLabel\":\"Line 2\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1313,
+        "field_id": 996,
+        "options": "{\"fieldLabel\":\"Line 3\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1314,
+        "field_id": 997,
+        "options": "{\"fieldLabel\":\"Line 4\",\"hideLabel\":true,\"layout\":\"hbox\"}"
+    },
+    {
+        "id": 1341,
+        "field_id": 999,
+        "options": "{\"fieldLabel\":\"Ankylosing Spondlilitis\",\"labelWidth\":120,\"hideLabel\":false,\"width\":150,\"margin\":\"0 5 0 0\",\"name\":\"ankylosing_spondlilitis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1342,
+        "field_id": 1000,
+        "options": "{\"fieldLabel\":\"Rheumotoid Arthritis\",\"labelWidth\":120,\"hideLabel\":false,\"width\":150,\"margin\":\"0 5 0 0\",\"name\":\"rheumotoid_arthritis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1343,
+        "field_id": 1001,
+        "options": "{\"fieldLabel\":\"Shoulder Problems\",\"labelWidth\":120,\"hideLabel\":false,\"width\":150,\"margin\":\"0 5 0 0\",\"name\":\"shoulder_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1344,
+        "field_id": 1003,
+        "options": "{\"fieldLabel\":\"Ankle Problems\",\"labelWidth\":120,\"hideLabel\":false,\"width\":150,\"margin\":\"0 5 0 0\",\"name\":\"ankle_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1352,
+        "field_id": 1002,
+        "options": "{\"fieldLabel\":\"Elbow Problems\",\"labelWidth\":91,\"hideLabel\":false,\"width\":121,\"margin\":\"0 5 0 0\",\"name\":\"elbow_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1353,
+        "field_id": 1012,
+        "options": "{\"fieldLabel\":\"Knee Problems\",\"labelWidth\":91,\"hideLabel\":false,\"width\":121,\"margin\":\"0 5 0 0\",\"name\":\"knee_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1354,
+        "field_id": 1008,
+        "options": "{\"fieldLabel\":\"Neck Problems\",\"labelWidth\":91,\"hideLabel\":false,\"width\":121,\"margin\":\"0 5 0 0\",\"name\":\"neck_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1355,
+        "field_id": 1004,
+        "options": "{\"fieldLabel\":\"Back Problems\",\"labelWidth\":91,\"hideLabel\":false,\"width\":121,\"margin\":\"0 5 0 0\",\"name\":\"back_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1359,
+        "field_id": 1010,
+        "options": "{\"fieldLabel\":\"Wrist Problems\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"wrist_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1360,
+        "field_id": 1014,
+        "options": "{\"fieldLabel\":\"Foot Problems\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"foot_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1361,
+        "field_id": 1011,
+        "options": "{\"fieldLabel\":\"Hand Problems\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"hand_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1362,
+        "field_id": 1005,
+        "options": "{\"fieldLabel\":\"Back Surgery\",\"labelWidth\":85,\"hideLabel\":false,\"width\":115,\"margin\":\"0 5 0 0\",\"name\":\"back_surgery\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1371,
+        "field_id": 1007,
+        "options": "{\"fieldLabel\":\"Swollen Joints\",\"labelWidth\":84,\"hideLabel\":false,\"width\":114,\"margin\":\"0 5 0 0\",\"name\":\"swollen_joints\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1372,
+        "field_id": 1013,
+        "options": "{\"fieldLabel\":\"Herniated Disc\",\"labelWidth\":84,\"hideLabel\":false,\"width\":114,\"margin\":\"0 5 0 0\",\"name\":\"herniated_disc\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1373,
+        "field_id": 1006,
+        "options": "{\"fieldLabel\":\"Broken Bones\",\"labelWidth\":84,\"hideLabel\":false,\"width\":114,\"margin\":\"0 5 0 0\",\"name\":\"broken_bones\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1374,
+        "field_id": 1009,
+        "options": "{\"fieldLabel\":\"Osetoarthritis\",\"labelWidth\":84,\"hideLabel\":false,\"width\":114,\"margin\":\"0 5 0 0\",\"name\":\"osetoarthritis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1378,
+        "field_id": 1015,
+        "options": "{\"fieldLabel\":\"Hip Problems\",\"labelWidth\":76,\"hideLabel\":false,\"width\":106,\"margin\":\"0 5 0 0\",\"name\":\"hip_problems\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1379,
+        "field_id": 1018,
+        "options": "{\"fieldLabel\":\"Lupus\",\"labelWidth\":76,\"hideLabel\":false,\"width\":106,\"margin\":\"0 5 0 0\",\"name\":\"lupus\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1380,
+        "field_id": 1017,
+        "options": "{\"fieldLabel\":\"Scoliosis\",\"labelWidth\":76,\"hideLabel\":false,\"width\":106,\"margin\":\"0 5 0 0\",\"name\":\"scoliosis\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1381,
+        "field_id": 1016,
+        "options": "{\"fieldLabel\":\"Stiff Joints\",\"labelWidth\":76,\"hideLabel\":false,\"width\":106,\"margin\":\"0 5 0 0\",\"name\":\"stiff_joints\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1382,
+        "field_id": 993,
+        "options": "{\"title\":\"Musculoskeletal\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1387,
+        "field_id": 820,
+        "options": "{\"title\":\"Neurologic\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1388,
+        "field_id": 212,
+        "options": "{\"title\":\"Constitutional\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1389,
+        "field_id": 261,
+        "options": "{\"title\":\"Eyes\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1390,
+        "field_id": 322,
+        "options": "{\"title\":\"Ears, Nose, Mouth, Throat\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1391,
+        "field_id": 323,
+        "options": "{\"title\":\"Breast\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"hideLabel\":false}"
+    },
+    {
+        "id": 1393,
+        "field_id": 192,
+        "options": "{\"fieldLabel\":\"Facility\",\"labelWidth\":120,\"hideLabel\":false,\"width\":310,\"margin\":\"0 5 5 0\",\"name\":\"facility\",\"list_id\":\"activeFacilities\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1396,
+        "field_id": 205,
+        "options": "{\"fieldLabel\":\"Plan\",\"hideLabel\":true,\"name\":\"plan\",\"anchor\":\"100%\",\"margin\":\"10 5 15 5\",\"grow\":1,\"growMin\":90}"
+    },
+    {
+        "id": 1398,
+        "field_id": 1020,
+        "options": "{\"fieldLabel\":\"Date\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"anchor\",\"width\":305,\"margin\":\"0 0 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"allowBlank\":false,\"name\":\"date\"}"
+    },
+    {
+        "id": 1399,
+        "field_id": 1022,
+        "options": "{\"fieldLabel\":\"Authorized by\",\"labelWidth\":150,\"margin\":0,\"name\":\"authorized_by\",\"hideLabel\":false,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1494,
+        "field_id": 1119,
+        "options": "{\"fieldLabel\":\"Zipcode\",\"hideLabel\":true,\"emptyText\":\"Zipcode\",\"name\":\"zipcode\",\"width\":80,\"margin\":\"0 5 0 0\"}"
+    },
+    {
+        "id": 1495,
+        "field_id": 1120,
+        "options": "{\"fieldLabel\":\"Race\",\"labelWidth\":149,\"hideLabel\":false,\"width\":400,\"margin\":\"0 5 5 0\",\"name\":\"race\",\"list_id\":59}"
+    },
+    {
+        "id": 1496,
+        "field_id": 1121,
+        "options": "{\"fieldLabel\":\"Ethnicity\",\"labelWidth\":149,\"hideLabel\":false,\"width\":400,\"margin\":\"0 5 5 0\",\"name\":\"ethnicity\",\"list_id\":14}"
+    },
+    {
+        "id": 1497,
+        "field_id": 1122,
+        "options": "{\"fieldLabel\":\"Language\",\"labelWidth\":149,\"hideLabel\":false,\"width\":400,\"margin\":\"0 5 5 0\",\"name\":\"language\",\"list_id\":10}"
+    },
+    {
+        "id": 1498,
+        "field_id": 1123,
+        "options": "{\"fieldLabel\":\"BOX 10 (b)\",\"labelWidth\":75,\"hideLabel\":false,\"layout\":\"hbox\",\"margin\":\"0 0 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1499,
+        "field_id": 1124,
+        "options": "{\"fieldLabel\":\"BOX 10 (a) Employment related\",\"labelWidth\":180,\"hideLabel\":false,\"margin\":\"0 15 10 0\",\"name\":\"employment_related\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1500,
+        "field_id": 1125,
+        "options": "{\"fieldLabel\":\"BOX 10 (b) Auto Accident\",\"labelWidth\":180,\"hideLabel\":true,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"auto_accident\"}"
+    },
+    {
+        "id": 1501,
+        "field_id": 1126,
+        "options": "{\"fieldLabel\":\"State\",\"labelWidth\":35,\"hideLabel\":false,\"width\":75,\"margin\":\"0 15 0 10\",\"name\":\"state\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1502,
+        "field_id": 1127,
+        "options": "{\"fieldLabel\":\"BOX 10 (c) Other Accident \",\"labelWidth\":180,\"hideLabel\":false,\"margin\":\"0 5 10 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"other_accident\"}"
+    },
+    {
+        "id": 1503,
+        "field_id": 1128,
+        "options": "{\"fieldLabel\":\"BOX 15 Similar illness date\",\"emptyText\":\"yyyy-mm-dd\",\"labelWidth\":180,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"similar_illness_date\"}"
+    },
+    {
+        "id": 1504,
+        "field_id": 1129,
+        "options": "{\"fieldLabel\":\"BOX 16\",\"hideLabel\":true,\"layout\":\"hbox\",\"margin\":\"0 0 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1505,
+        "field_id": 1130,
+        "options": "{\"fieldLabel\":\"BOX 16 Ubable to work from\",\"emptyText\":\"yyyy-mm-dd\",\"labelWidth\":180,\"hideLabel\":false,\"width\":335,\"margin\":\"0 5 0 0\",\"name\":\"unable_to_work_from\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1506,
+        "field_id": 1131,
+        "options": "{\"fieldLabel\":\"To\",\"emptyText\":\"yyyy-mm-dd\",\"labelWidth\":20,\"hideLabel\":false,\"margin\":\"0 5 0 0\",\"name\":\"unable_to_work_to\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1507,
+        "field_id": 1132,
+        "options": "{\"fieldLabel\":\"BOX 18\",\"hideLabel\":true,\"layout\":\"hbox\",\"margin\":\"0 0 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1508,
+        "field_id": 1133,
+        "options": "{\"fieldLabel\":\"BOX 18 Hospitalization from\",\"emptyText\":\"yyyy-mm-dd\",\"labelWidth\":180,\"hideLabel\":false,\"width\":335,\"margin\":\"0 5 0 0\",\"name\":\"hosp_date_from\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1509,
+        "field_id": 1134,
+        "options": "{\"fieldLabel\":\"To\",\"emptyText\":\"yyyy-mm-dd\",\"labelWidth\":20,\"hideLabel\":false,\"margin\":\"0 5 0 0\",\"name\":\"hops_date_to\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1510,
+        "field_id": 1135,
+        "options": "{\"fieldLabel\":\"BOX 20\",\"hideLabel\":true,\"layout\":\"hbox\",\"margin\":\"0 0 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1511,
+        "field_id": 1136,
+        "options": "{\"fieldLabel\":\"BOX 20. Outside Lab?\",\"labelWidth\":180,\"hideLabel\":false,\"margin\":\"0 5 0 0\",\"name\":\"out_lab_used\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1512,
+        "field_id": 1137,
+        "options": "{\"fieldLabel\":\"$ Charges\",\"labelWidth\":60,\"hideLabel\":false,\"margin\":\"0 5 0 5\",\"name\":\"amount_charges\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1513,
+        "field_id": 1138,
+        "options": "{\"fieldLabel\":\"BOX 22 Medicaid Resubmission\",\"labelWidth\":180,\"hideLabel\":false,\"layout\":\"hbox\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1514,
+        "field_id": 1139,
+        "options": "{\"fieldLabel\":\"Code (ICD-9)\",\"emptyText\":\"Code (ICD-9)\",\"hideLabel\":true,\"width\":150,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"medicaid_resubmission_code\"}"
+    },
+    {
+        "id": 1515,
+        "field_id": 1140,
+        "options": "{\"fieldLabel\":\"Original Reference No.\",\"emptyText\":\"Original Reference No.\",\"hideLabel\":true,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"medicaid_original_reference_number\"}"
+    },
+    {
+        "id": 1516,
+        "field_id": 1141,
+        "options": "{\"fieldLabel\":\"BOX 23 Prior Authorization No.\",\"labelWidth\":180,\"hideLabel\":false,\"margin\":\"0 5 5 0\",\"name\":\"prior_authorization_number\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1517,
+        "field_id": 1142,
+        "options": "{\"fieldLabel\":\"Replacement Claim (X12 only)\",\"labelWidth\":180,\"hideLabel\":false,\"margin\":\"0 5 10 0\",\"name\":\"replacement_claim\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1518,
+        "field_id": 1143,
+        "options": "{\"fieldLabel\":\"Aditional Notes\",\"labelWidth\":180,\"hideLabel\":false,\"width\":530,\"margin\":\"0 5 0 0\",\"grow\":1,\"name\":\"notes\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1519,
+        "field_id": 1144,
+        "options": "{\"fieldLabel\":\"Left Column\",\"hideLabel\":true,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1520,
+        "field_id": 1145,
+        "options": "{\"fieldLabel\":\"Right Column\",\"hideLabel\":true,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1521,
+        "field_id": 1146,
+        "options": "{\"fieldLabel\":\"Insurance Provider\",\"emptyText\":\"Insurance\",\"labelWidth\":150,\"hideLabel\":false,\"width\":430,\"margin\":\"0 5 5 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"provider\",\"list_id\":\"activeInsurances\"}"
+    },
+    {
+        "id": 1522,
+        "field_id": 1147,
+        "options": "{\"fieldLabel\":\"Plan Name\",\"emptyText\":\"Plan Name\",\"hideLabel\":true,\"margin\":\"0 5 0 0\",\"name\":\"planName\"}"
+    },
+    {
+        "id": 1523,
+        "field_id": 1148,
+        "options": "{\"fieldLabel\":\"Effective Date\",\"emptyText\":\"Effective Date\",\"hideLabel\":true,\"width\":140,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"effectiveDate\"}"
+    },
+    {
+        "id": 1524,
+        "field_id": 1149,
+        "options": "{\"fieldLabel\":\"Policy Number\",\"emptyText\":\"Policy Number\",\"hideLabel\":true,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"policyNumber\"}"
+    },
+    {
+        "id": 1525,
+        "field_id": 1150,
+        "options": "{\"fieldLabel\":\"Group Number\",\"emptyText\":\"Group Number\",\"hideLabel\":true,\"width\":165,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"groupNumber\"}"
+    },
+    {
+        "id": 1526,
+        "field_id": 1151,
+        "options": "{\"fieldLabel\":\"Subscriber\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"20 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1527,
+        "field_id": 1152,
+        "options": "{\"fieldLabel\":\"subscriber Title\",\"emptyText\":\"Title\",\"hideLabel\":true,\"width\":65,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberTitle\",\"list_id\":22}"
+    },
+    {
+        "id": 1528,
+        "field_id": 1153,
+        "options": "{\"fieldLabel\":\"First Name\",\"emptyText\":\"First Name\",\"hideLabel\":true,\"width\":100,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberGivenName\"}"
+    },
+    {
+        "id": 1529,
+        "field_id": 1154,
+        "options": "{\"fieldLabel\":\"Middle Name\",\"emptyText\":\"Middle Name\",\"hideLabel\":true,\"width\":100,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberMiddleName\"}"
+    },
+    {
+        "id": 1530,
+        "field_id": 1155,
+        "options": "{\"fieldLabel\":\"Last Name\",\"emptyText\":\"Last Name\",\"hideLabel\":true,\"width\":150,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberSurname\"}"
+    },
+    {
+        "id": 1531,
+        "field_id": 1156,
+        "options": "{\"fieldLabel\":\"Subscriber Address\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1532,
+        "field_id": 1157,
+        "options": "{\"fieldLabel\":\"Subscriber Address Cont\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1533,
+        "field_id": 1158,
+        "options": "{\"fieldLabel\":\"Subscriber Info\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1534,
+        "field_id": 1159,
+        "options": "{\"fieldLabel\":\"Subscriber Street\",\"emptyText\":\"Street\",\"hideLabel\":true,\"width\":430,\"name\":\"subscriberStreet\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1535,
+        "field_id": 1160,
+        "options": "{\"fieldLabel\":\"Relationship\",\"emptyText\":\"Relationship\",\"hideLabel\":true,\"width\":100,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberRelationship\",\"list_id\":25}"
+    },
+    {
+        "id": 1536,
+        "field_id": 1161,
+        "options": "{\"fieldLabel\":\"City\",\"emptyText\":\"City\",\"hideLabel\":true,\"width\":100,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberCity\"}"
+    },
+    {
+        "id": 1537,
+        "field_id": 1162,
+        "options": "{\"fieldLabel\":\"State\",\"emptyText\":\"State\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberState\",\"list_id\":20}"
+    },
+    {
+        "id": 1538,
+        "field_id": 1163,
+        "options": "{\"fieldLabel\":\"Country\",\"emptyText\":\"Country\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberCountry\",\"list_id\":3}"
+    },
+    {
+        "id": 1539,
+        "field_id": 1164,
+        "options": "{\"fieldLabel\":\"Postal Code\",\"emptyText\":\"Postal Code\",\"hideLabel\":true,\"width\":95,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberPostalCode\"}"
+    },
+    {
+        "id": 1540,
+        "field_id": 1165,
+        "options": "{\"fieldLabel\":\"Phone\",\"emptyText\":\"Phone\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberPhone\"}"
+    },
+    {
+        "id": 1541,
+        "field_id": 1166,
+        "options": "{\"fieldLabel\":\"Subscriber Employer\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"20 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1542,
+        "field_id": 1167,
+        "options": "{\"fieldLabel\":\"Employer Address\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1543,
+        "field_id": 1168,
+        "options": "{\"fieldLabel\":\"Employer Address Cont\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":630,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1544,
+        "field_id": 1169,
+        "options": "{\"fieldLabel\":\"Subscriber Employer\",\"emptyText\":\"Employer\",\"hideLabel\":true,\"width\":215,\"name\":\"subscriberEmployer\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1545,
+        "field_id": 1170,
+        "options": "{\"fieldLabel\":\"Street\",\"emptyText\":\"Street\",\"labelWidth\":\"Street\",\"hideLabel\":true,\"width\":430,\"name\":\"subscriberEmployerStreet\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1546,
+        "field_id": 1171,
+        "options": "{\"fieldLabel\":\"Subscriber Employer City\",\"emptyText\":\"City\",\"hideLabel\":true,\"width\":100,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberEmployerCity\"}"
+    },
+    {
+        "id": 1547,
+        "field_id": 1172,
+        "options": "{\"fieldLabel\":\"Subscriber Employer State\",\"emptyText\":\"State\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberEmployerState\",\"list_id\":20}"
+    },
+    {
+        "id": 1548,
+        "field_id": 1173,
+        "options": "{\"fieldLabel\":\"Subscriber Employer Country\",\"emptyText\":\"Country\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberEmployerCountry\",\"list_id\":3}"
+    },
+    {
+        "id": 1549,
+        "field_id": 1174,
+        "options": "{\"fieldLabel\":\"Subscriber Employer Postal Code\",\"emptyText\":\"Postal Code\",\"hideLabel\":true,\"width\":95,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberEmployerPostalCode\"}"
+    },
+    {
+        "id": 1550,
+        "field_id": 1175,
+        "options": "{\"fieldLabel\":\"Subscriber DOB\",\"emptyText\":\"DOB\",\"hideLabel\":true,\"width\":110,\"margin\":\"0 5 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberDob\"}"
+    },
+    {
+        "id": 1551,
+        "field_id": 1176,
+        "options": "{\"fieldLabel\":\"Subscriber SS\",\"emptyText\":\"S.S.\",\"hideLabel\":true,\"width\":95,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"subscriberSS\"}"
+    },
+    {
+        "id": 1552,
+        "field_id": 1177,
+        "options": "{\"fieldLabel\":\"Insurance Info\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":660,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1553,
+        "field_id": 1178,
+        "options": "{\"fieldLabel\":\"Insurance Cont\",\"labelWidth\":150,\"hideLabel\":false,\"layout\":\"hbox\",\"width\":660,\"margin\":\"5 0 0 0\",\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false}"
+    },
+    {
+        "id": 1554,
+        "field_id": 1179,
+        "options": "{\"fieldLabel\":\"Co-Pay\",\"emptyText\":\"Co-Pay\",\"hideLabel\":true,\"width\":110,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"copay\"}"
+    },
+    {
+        "id": 1555,
+        "field_id": 1180,
+        "options": "{\"fieldLabel\":\"Type\",\"emptyText\":\"Type\",\"hideLabel\":true,\"width\":130,\"collapsible\":false,\"checkboxToggle\":false,\"collapsed\":false,\"name\":\"type\",\"list_id\":96}"
+    }
+]

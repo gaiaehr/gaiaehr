@@ -1,0 +1,231 @@
+body,
+input,
+isindex,
+input[type="password"],
+input[type="search"],
+.x-form-label,
+.x-list .x-list-item,
+.x-spinner .x-input-el, .x-field-select .x-input-el {
+	color: #666666;
+}
+
+.x-toolbar-dark,
+.x-tabbar-dark,
+.x-list .x-list-item.x-item-selected .x-dock-horizontal {
+	background-image: none;
+}
+.x-list-normal.x-list-grouped .x-list-header-wrap .x-dock-horizontal {
+	padding-top: 44px;
+}
+.x-list-normal .x-list-header,
+.x-list-normal .x-list-header-wrap .x-item-header {
+	background: url('../images/leftNavBg.png') repeat-y right top #f0f0f0!important;
+	border-top: none;
+	border-bottom: solid 5px #dddddd;
+	color: #666666;
+	font-size: 20px;
+	padding-right: 0;
+	padding-bottom: 0;
+	white-space: nowrap;
+}
+.x-list-normal .x-list-header .x-innerhtml {
+	background: url('../images/listHeaderBg.png') no-repeat right bottom transparent;
+	padding: 5px 0;
+	white-space: nowrap;
+}
+.x-list-normal .x-list-item .x-dock-horizontal,
+.x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
+	border-bottom: 1px solid #D4D4D4;
+	border-top: none!important;
+	white-space: nowrap;
+}
+
+.leftNav {
+	transition:width .1s;
+	-moz-transition:width .1s;
+	-webkit-transition:width .1s;
+	-o-transition:width .1s;
+}
+.leftNav .x-list,
+.leftNav .x-list-item,
+.leftNav .x-list-normal .x-list-header-wrap .x-item-header,
+.leftNav .x-list-normal .x-list-header,
+.leftNav .x-list-normal .x-list-header .x-innerhtml,
+.leftNav .x-toolbar-dark {
+	color: #dddddd !important;
+	background: url('../images/graphite_black.png') #404040  !important;
+}
+.leftNav .x-list-item.x-item-selected .x-dock-horizontal .x-dock-body {
+	background: url('../images/listSelectBg.png')no-repeat right center transparent;
+	white-space: nowrap;
+}
+.leftNav.collapsed .x-list-item.x-item-selected .x-dock-horizontal .x-dock-body {
+	background-image: none !important;
+}
+.leftNav.collapsed .x-list-normal .x-list-header,
+.leftNav.collapsed.x-list-normal .x-list-header-wrap .x-item-header {
+	margin: 0;
+	padding: .6em 0;
+	text-align: center;
+	font-size: 12px;
+}
+.leftNav .x-list-normal .x-list-header {
+	border-bottom: solid 5px #666666;
+}
+.leftNav .x-toolbar-dark.x-docked-top,
+.leftNav .x-list-item .x-dock-horizontal,
+.leftNav .x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal{
+	border-bottom: solid 1px #444444;
+}
+
+.leftNav .x-list-item-body,
+.leftNav .x-toolbar{
+	padding: 0;
+}
+
+.mainPanel .x-list {
+	background-color: transparent!important;
+}
+
+.mainPanel .x-list-normal .x-list-header-wrap .x-item-header, .mainPanel .x-list-normal .x-list-header {
+	/*background-color: #F7F7F7;*/
+	background: #FFFFFF none !important;
+}
+.mainPanel .x-list-normal .x-list-header-wrap .x-item-header, .mainPanel .x-list-normal .x-list-header .x-innerhtml {
+	background: url('../images/listHeaderBg.png') no-repeat right bottom transparent;
+}
+.mainPanel .x-layout-card-item{
+	background-color: #FFFFFF;
+}
+.features {
+	font-size: 19px;
+}.features .version {
+	font-weight: bold;
+}
+.features h2 {
+	font-size: 32px;
+	text-align: center;
+	margin: 20px 0;
+}
+.feature {
+	background: url("../images/circle-learn.png") 10px 10px no-repeat #ffffff;
+	min-height: 60px;
+	margin: 10px;
+	padding: 10px 10px 10px 70px;
+	border: solid 1px #cccccc;
+	border-radius: 5px;
+}
+.feature h3 {
+	font-weight: bold;
+}
+.features .footer {
+	color: white;
+	padding: 5px 10px;
+	border-radius: 5px;
+	background-color: #1469a4;
+	margin: 5px 10px;
+}
+.features .footer a {
+	color: white;
+}
+.patientList img {
+    float: left;
+}
+.patientList {
+	overflow: auto;
+}
+.patientList .info {
+	margin-left: 80px;
+	padding: 5px 10px;
+}
+.patientHeader {
+	overflow: auto;
+	background-color: #f0f0f0;
+}
+.patientHeader .left,
+.patientHeader .left img {
+	float: left;
+}
+.patientHeader .left img {
+	border: solid 1px #ccc;
+}
+.patientHeader p {
+	padding: 10px;
+}
+.patientHeader .left p {
+	margin-left: 135px;
+}
+.patientHeader .right {
+	text-align: right;
+}
+
+.medicalRecordNavHeader {
+	height: 90px;
+	background: url('../images/graphite_black.png') #404040;
+	border-bottom: solid 5px #666666;
+}
+.MedicalRecordMenuList {
+	width: 80px;
+	height: 80px;
+	padding: 30px 0 0 90px;
+
+}
+.MedicalRecordMenuList.patientdemographicspanel { background: url("../images/iconDemographics.png") no-repeat transparent; }
+.MedicalRecordMenuList.patientprogressnotespanel { background: url("../images/iconProgressNotes.png") no-repeat transparent; }
+.MedicalRecordMenuList.patientchartspanel { background: url("../images/iconCharts.png") no-repeat transparent; }
+.MedicalRecordMenuList.patientimagespanel { background: url("../images/iconImages.png") no-repeat transparent; }
+.MedicalRecordMenuList.patientdocumentspanel { background: url("../images/iconDocuments.png") no-repeat transparent; }
+.MedicalRecordMenuList.patientlabresultspanel { background: url("../images/iconLab.png") no-repeat transparent; }
+.MedicalRecordMenuList.patientclinicalorderspanel { background: url("../images/iconClinicalOrders.png") no-repeat transparent; }
+
+
+.x-toolbar {
+	padding: 0;
+}
+
+.x-button {
+	border-radius: 0;
+}
+.x-toolbar .x-button {
+	margin: -.03em 0 0 0;
+	padding: .69em 1.7em;
+}
+.x-button-back,
+.x-toolbar .x-button-back {
+	margin-left: 0.872em;
+	padding-left: .4em;
+}
+
+.x-button-forward, .x-button-back {
+	height: 2.6em;
+}
+.x-button-forward::before,
+.x-button-forward::after,
+.x-button-back::before,
+.x-button-back::after {
+	top: -0.17em;
+	height: 2.8em;
+	-webkit-mask-size: .607em 2.8em;
+}
+.x-button-back::before, .x-toolbar .x-button-back::before {
+left: -0.6808em;
+}
+.x-button-back::after, .x-toolbar .x-button-back::after {
+	left: -0.66em;
+}
+.x-msgbox-buttons .x-button {
+	min-width: 8em;
+	min-height: 3em;
+}
+
+.collapseMenuBtn {
+	background: url("../images/collapseMenuBtnBg.png") no-repeat center center transparent!important;
+	border: none!important;
+	border-left: solid 1px #444444!important;
+	padding: 0!important;
+	margin: 0!important;
+	border-radius:0!important;
+}
+.x-list-pullrefresh-arrow {
+	background-image: url('../images/pullarrow.png');
+}

@@ -1,0 +1,36 @@
+{
+    "applicationName": "GaiaEHR Aire",
+    "applicationId": "com.gaiaehr.aire",
+    "outputPath": "./build/",
+    "versionString": "1.0.0",
+    "versionCode": "100",
+    "inputPath": "./",
+    "icon": {
+        "57": "resources/icons/Icon.png",
+        "72": "resources/icons/Icon~ipad.png",
+        "114": "resources/icons/Icon@2x.png",
+        "144": "resources/icons/Icon~ipad@2x.png"
+    },
+    "configuration": "debug",
+    "platform": "AndroidEmulator",
+    "certificatePath": "keystore",
+    "certificateAlias": "gaiaehraire",
+    "certificatePassword": "seguridad",
+    "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "CAMERA",
+        "VIBRATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CALL_PHONE"
+    ],
+    "sdkPath": "~/adt-bundle-mac/sdk",
+    "androidAPILevel": "15",
+    "orientations": [
+        "portrait",
+        "landscapeLeft",
+        "landscapeRight",
+        "portraitUpsideDown"
+    ]
+}

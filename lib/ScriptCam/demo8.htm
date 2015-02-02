@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+		.slides_container {
+			width:570px;
+			overflow:hidden;
+			position:relative;
+			display:none;
+		}
+
+		.slides_container div.slide {
+			width:570px;
+			height:270px;
+			display:block;
+		}
+
+		.pagination {
+			padding-left:260px;
+		}
+
+		.pagination li {
+			float:left;
+			margin:0 1px;
+			list-style:none;
+		}
+
+		.pagination li a {
+			display:block;
+			width:12px;
+			height:0;
+			padding-top:12px;
+			background-image:url(pagination.png);
+			background-position:0 0;
+			float:left;
+			overflow:hidden;
+		}
+
+		.pagination li.current a {
+			background-position:0 -12px;
+		}
+		</style>
+		<script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+		<script src="https://raw.github.com/nathansearles/Slides/SlidesJS-1.1.8/source/slides.min.jquery.js"></script>
+		<script language="JavaScript" src="scriptcam.js"></script>
+
+		<script> 
+			$(document).ready(function() {
+				$('#slides').slides({
+					preload: true,
+					preloadImage: 'loading.gif',
+					next: 'nextb',
+					prev: 'prevb'
+				});
+				$("#webcam").scriptcam({
+					onHandLeft:onHandLeftFunction,
+					onHandRight:onHandRightFunction,
+					onError:onError,
+					onWebcamReady:onWebcamReady,
+					cornerRadius:0,
+					zoom:0.7,
+					posX:224,
+					posY:0,
+					flip:1
+				});
+			});
+
+			function onError(errorId,errorMsg) {
+				alert(errorMsg);
+			}			
+			function changeCamera() {
+				$.scriptcam.changeCamera($('#cameraNames').val());
+			}
+			function onWebcamReady(cameraNames,camera,microphoneNames,microphone,volume) {
+				$.each(cameraNames, function(index, text) {
+					$('#cameraNames').append( $('<option></option>').val(index).html(text) )
+				}); 
+				$('#cameraNames').val(camera);
+			}
+			function onHandLeftFunction() {
+				$('.prevb').click();
+			}
+
+			function onHandRightFunction() {
+				$('.nextb').click();
+			}
+		</script> 
+	</head>
+	<body>
+		<div id="slides">
+			<div class="slides_container">
+				<div class="slide">
+					<img src="slide-1.jpg">
+				</div>
+				<div class="slide">
+					<img src="slide-2.jpg">
+				</div>
+				<div class="slide">
+					<img src="slide-3.jpg">
+				</div>
+				<div class="slide">
+					<img src="slide-4.jpg">
+				</div>
+				<div class="slide">
+					<img src="slide-5.jpg">
+				</div>
+				<div class="slide">
+					<img src="slide-6.jpg">
+				</div>
+				<div class="slide">
+					<img src="slide-7.jpg">
+				</div>
+			</div>
+			<button class="prevb">PREV</button>
+			<button class="nextb">NEXT</button>
+		</div>
+		<br/>
+		<div id="webcam"></div>
+		<div style="margin:5px;">
+			<img src="webcamlogo.png" style="vertical-align:text-top"/>
+			<select id="cameraNames" size="1" onChange="changeCamera()" style="width:245px;font-size:10px;height:25px;">
+			</select>
+		</div>
+	</body>
+</html>

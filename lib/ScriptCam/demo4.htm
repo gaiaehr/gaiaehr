@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script language="JavaScript" src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+		<script language="JavaScript" src="scriptcam.js"></script>
+		<script> 
+			$(document).ready(function() {
+				$("#webcam").scriptcam({
+					onMotion:onMotion,
+					cornerRadius:0,
+					onError:onError,
+					onWebcamReady:onWebcamReady
+				});
+			});
+
+			function onError(errorId,errorMsg) {
+				alert(errorMsg);
+			}			
+			function changeCamera() {
+				$.scriptcam.changeCamera($('#cameraNames').val());
+			}
+			function onWebcamReady(cameraNames,camera,microphoneNames,microphone,volume) {
+				$.each(cameraNames, function(index, text) {
+					$('#cameraNames').append( $('<option></option>').val(index).html(text) )
+				}); 
+				$('#cameraNames').val(camera);
+			}
+			function onMotion(motion,brightness,color,motionx,motiony) {
+				$('#motion').html('Motion (0 or 1): '+motion);
+				$('#brightness').html('Brightness level (0-255): '+brightness);
+				$('#color').html('Average color (hex): '+color);
+				$('#colordiv').css('background-color','#'+color);
+				$('#motionx').html('Motion x: '+motionx);
+				$('#motiony').html('Motion y: '+motiony);
+			}
+		</script> 
+	</head>
+	<body>
+		<div style="width:330px;float:left;">
+			<div id="webcam">
+			</div>
+			<div style="margin:5px;">
+				<img src="webcamlogo.png" style="vertical-align:text-top"/>
+				<select id="cameraNames" size="1" onChange="changeCamera()" style="width:245px;font-size:10px;height:25px;">
+				</select>
+			</div>
+		</div>
+		<div style="width:135px;float:left;">
+			<button class="btn btn-small" onclick="$.scriptcam.getMotionParameters();">Get values</button>
+		</div>
+		<div style="width:200px;float:left;">
+			<p id="motion"></p>
+			<p id="brightness"></p>
+			<p id="color"></p>
+			<div id="colordiv" style="width:150px;height:10px;margin-bottom:5px;border:1px solid black;"></div>
+			<p id="motionx"></p>
+			<p id="motiony"></p>
+		</div>
+	</body>
+</html>

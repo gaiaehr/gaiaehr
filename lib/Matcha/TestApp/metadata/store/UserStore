@@ -1,0 +1,49 @@
+{
+    "type": "directstore",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "UserStore",
+        "model": "UserModel",
+        "storeId": "UserSotore"
+    },
+    "designerId": "5ac63ac2-a559-474c-859f-2b29b446e86d",
+    "cn": [
+        {
+            "type": "Ext.data.proxy.Direct",
+            "reference": {
+                "name": "proxy",
+                "type": "object"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "api": [
+                    "{",
+                    "    read:'Remote.User.Read',",
+                    "    create:'Remote.User.Create',",
+                    "    update:'Remote.User.Update',",
+                    "    destroy:'Remote.User.Destroy'",
+                    "}"
+                ]
+            },
+            "designerId": "a28e5a8b-c8a3-4372-9bc4-101257a94de4",
+            "cn": [
+                {
+                    "type": "Ext.data.reader.Json",
+                    "reference": {
+                        "name": "reader",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "root": "data"
+                    },
+                    "designerId": "b9ac0f33-067b-45db-a2ba-98afa7515de1"
+                }
+            ]
+        }
+    ]
+}

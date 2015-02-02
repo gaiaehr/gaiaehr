@@ -1,0 +1,486 @@
+<?php
+/**
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+if(!isset($_SESSION)){
+	@session_name('GaiaEHR');
+	@session_start();
+	@session_cache_limiter('private');
+}
+ini_set('max_input_time', '1500');
+ini_set('max_execution_time', '1500');
+if(!defined('site_timezone')) define('site_timezone', 'UTC');
+$timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : site_timezone);
+date_default_timezone_set($timezone);
+
+include_once(ROOT . '/classes/Time.php');
+include_once(ROOT . '/lib/Matcha/Matcha.php');
+
+class MatchaHelper extends Matcha {
+
+	/**
+	 * @var
+	 */
+	public $sql_statement;
+	/**
+	 * @var
+	 */
+	public $lastInsertId;
+	/**
+	 * @var string
+	 */
+	private $err;
+
+
+	/**
+	 * @brief       MatchaHelper constructor.
+	 * @details     This method starts the connection with mysql server using
+	 * $_SESSION values
+	 *              during the login process.
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 */
+	function __construct(){
+		self::$__freeze = false;
+		// Connect to the database
+		// This is compatible with the old methods
+		if(defined('site_db_type')){
+			self::connect(array(
+				'host' => site_db_host,
+				'port' => site_db_port,
+				'name' => site_db_database,
+				'user' => site_db_username,
+				'pass' => site_db_password,
+				'app' => ROOT . '/app')
+			);
+		}
+
+		self::$__secretKey = site_aes_key;
+
+		MatchaAudit::$__audit = true;
+		MatchaAudit::$hookTable = 'audit_transaction_log';
+		MatchaAudit::$hookClass = 'MatchaHelper';
+		MatchaAudit::$hookMethod = 'storeAudit';
+		MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
+		MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+	}
+	function __destruct(){
+//		self::$__conn = null;
+	}
+
+	/**
+	 * function storeAudit($saveParams = array()):
+	 * This method is (optional) will be called automatically by MatchaCUP
+	 * to store the event log into the database.
+	 *
+	 * Basically when MatchaCUP->save or MatchaCUP->destroy is used it will look
+	 * for this method and execute it and pass all the SQL statement and
+	 * other parameters into a array to this method. Here you can execute the MatchaAudit
+	 * class to save the event log or anything you want.
+	 *
+	 * The method should be established PUBLIC STATIC, this way it will not take more
+	 * memory.
+	 */
+	public static function storeAudit($saveParams = array()){
+
+		if($saveParams['event'] != 'SELECT'){
+			MatchaAudit::$eventLogData = array(
+				'date' => Time::getLocalTime('Y-m-d H:i:s'),
+				'pid' => (isset($saveParams['data']['pid']) ? $saveParams['data']['pid'] : '0'),
+				'eid' => (isset($saveParams['data']['eid']) ? $saveParams['data']['eid'] : '0'),
+				'uid' => (isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0'),
+				'fid' => (isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '0'),
+				'event' => $saveParams['event'],
+				'table_name' => (isset($saveParams['table']) ? $saveParams['table'] : ''),
+				'sql_string' => (isset($saveParams['sql']) ? $saveParams['sql'] : ''),
+				'data' => (isset($saveParams['data']) ? serialize($saveParams['data']) : ''),
+				'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
+				'checksum' => $saveParams['crc32']
+			);
+			MatchaAudit::auditSaveLog();
+		}
+
+	}
+
+	/**
+	 * @brief       Set the SQL Statement.
+	 * @details     This method set the SQL statement in
+	 *              $this->sql_statement for other methods to use it
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @see         Logs::getLogs() for basic example and
+	 * Patient::patientLiveSearch() for advance example.
+	 *
+	 * @param       $sql string statement to set
+	 */
+	public function setSQL($sql){
+		$this->sql_statement = $sql;
+	}
+
+	public function exec($sql){
+		return self::$__conn->exec($sql);
+	}
+
+	public function conn(){
+		return self::$__conn;
+	}
+
+	/**
+	 * @brief       SQL Bind.
+	 * @details     This method is used to INSERT and UPDATE the database.
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @note        To eliminate fields that are not in the database you can use
+	 * unset($b_array['field']);
+	 * @warning     To UPDATE you can NOT pass the ID in the $b_array.
+	 *              Make user to unset the ID before calling this method.
+	 *
+	 * @see         User::addUser() for Add example and  User::updateUser() for
+	 * Update example.
+	 *
+	 * @param       array $BindFieldsArray containing a key that has to be the
+	 * exact field on the data base, and it's value
+	 * @param       string $Table A valid database table to make the SQL
+	 * statement
+	 * @param       string $InsertOrUpdate Insert or Update parameter. This has to
+	 * options I = Insert, U = Update
+	 * @param              $Where
+	 * @return      string constructed SQL string
+	 */
+	public function sqlBind($BindFieldsArray, $Table, $InsertOrUpdate = 'I', $Where = null){
+		//		print '<pre>';
+		if(isset($BindFieldsArray['__utma']))
+			unset($BindFieldsArray['__utma']);
+		if(isset($BindFieldsArray['__utmz']))
+			unset($BindFieldsArray['__utmz']);
+		if(isset($BindFieldsArray['GaiaEHR']))
+			unset($BindFieldsArray['GaiaEHR']);
+		/**
+		 * Step 1 -  Create the INSERT or UPDATE Clause
+		 */
+		$InsertOrUpdate = strtolower($InsertOrUpdate);
+		if($InsertOrUpdate == 'i'){
+			$sql = 'INSERT INTO `' . $Table . '`';
+		} elseif($InsertOrUpdate == 'u'){
+			$sql = 'UPDATE `' . $Table . '`';
+		} else
+			return "No update or insert command.";
+		/**
+		 * Step 2 -  Create the SET clause
+		 */
+		$sql .= ' SET ';
+
+		//		print_r($BindFieldsArray);
+
+		foreach($BindFieldsArray as $key => $value){
+			$value = (is_string($value) ? addslashes($value) : $value);
+			if(is_array($Where)){
+				if(!array_key_exists($key, $Where)){
+					if($value == null || $value === 'null'){
+						$sql .= '`' . $key . '`' . '=NULL, ';
+					} else{
+						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
+						$sql .= '`' . $key . '`' . "='$value', ";
+					}
+				} else{
+					return array('success' => false, 'error' => 'Where value can not be updated. please make sure to unset it from the array');
+				}
+			} else{
+				// TODO: remove this... after new version (above) is implemented throughout the
+				// application
+				//				if ($Where <> ($key . "='$value'") && $Where <> ($key . '=' . $value) && $Where <> ($key . '="' . $value . '"'))
+				//				{
+				if($value == null || $value === 'null'){
+					$sql .= '`' . $key . '`' . '=NULL, ';
+				} else{
+					//						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
+					$sql .= '`' . $key . '`' . "='$value', ";
+				}
+				//				}
+				//				else
+				//				{
+				//					return array(
+				//						'success' => false,
+				//						'error' => 'Where value can not be updated. please make sure to unset it from the array'
+				//					);
+				//				}
+			}
+
+		}
+		$sql = substr($sql, 0, -2);
+		/**
+		 * Step 3 - Create the WHERE clause, if applicable
+		 */
+		if($InsertOrUpdate == 'u' && $Where != null){
+			$sql .= ' WHERE ';
+			if(is_array($Where)){
+				$count = 0;
+				foreach($Where as $key => $val){
+					$and = ($count == 0) ? '' : ' AND ';
+					$sql .= $and . $key . '=\'' . $val . '\'';
+					$count++;
+				}
+			} else{
+				$sql .= $Where;
+			}
+		}
+		/**
+		 * Step 4 - return the sql statement
+		 */
+		return $sql;
+	}
+
+	/**
+	 * @brief    SQL Select Builder.
+	 * @details  This method is used to build Select statements for MySQL.
+	 *
+	 * @author   Gino Rivera (Certun) <grivera@certun.com>
+	 * @version  Vega 1.0
+	 *
+	 * @param       $Table
+	 * @param array $Fields
+	 * @param null $Where
+	 * @param null $Order
+	 * @internal param $ (array)$Fields
+	 * @internal param $ (array)$Order
+	 * @internal param $ (array)$Where
+	 * @return string
+	 */
+	public function sqlSelectBuilder($Table, $Fields = array('*'), $Where = null, $Order = null){
+		// Step 1 - Select clause and wrote down the fields
+		$sqlReturn = 'SELECT ';
+		foreach($Fields as $key => $value)
+			$sqlReturn .= $value . ', ';
+		$sqlReturn = substr($sqlReturn, 0, -2);
+		// Step 2 - From clause, table
+		$sqlReturn .= ' FROM ' . $Table . ' ';
+		// Step 3 - Having clause, filter the records
+		if($Where != null){
+			$sqlReturn .= ' HAVING ';
+			foreach($Where as $key => $value){
+				$sqlReturn .= '(' . $value . ')';
+				$sqlReturn .= (is_int($key)) ? ' AND ' : ' ' . $key . ' ';
+			}
+			$sqlReturn = substr($sqlReturn, 0, -5);
+		}
+		// Step 4 - Order clause, sort the results
+		if($Order != null){
+			$sqlReturn .= ' ORDER BY ';
+			foreach($Order as $key => $value){
+				$sqlReturn .= (!is_int($key)) ? $value . ' ' . $key . ', ' : $value . ', ';
+			}
+			$sqlReturn = substr($sqlReturn, 0, -2);
+		}
+		return $sqlReturn;
+	}
+
+	/**
+	 * @brief       Execute Statement "WITHOUT" returning records
+	 * @details     Simple exec SQL Statement, with no Event LOG injection.
+	 *              For example to execute an ALTER a table.
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @param       bool $setLastInsertId
+	 * @return      array Connection error info if any
+	 */
+	public function execOnly($setLastInsertId = true){
+		self::$__conn->query($this->sql_statement);
+		if($setLastInsertId)
+			$this->lastInsertId = self::$__conn->lastInsertId();
+		$err = self::$__conn->errorInfo();
+		if($err[2]){
+			return self::$__conn->errorInfo();
+		} else{
+			return $this->lastInsertId;
+		}
+	}
+
+	/**
+	 * @brief       Execute Log.
+	 * @details     This method is used to INSERT, UPDATE, DELETE, and ALTER the
+	 * database.
+	 *              with a event log injection.
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @note        The Log Injection is automatic It tries to detect an insert,
+	 * delete, alter and log the event
+	 *
+	 * @see         User::addUser() for Add example.
+	 *
+	 * @return      array Connection error info if any
+	 */
+	function execLog(){
+		/**
+		 * Execute the sql statement
+		 */
+		self::$__conn->query($this->sql_statement);
+		if(stristr($this->sql_statement, 'INSERT') || stristr($this->sql_statement, 'DELETE') || stristr($this->sql_statement, 'UPDATE') || stristr($this->sql_statement, 'LOAD') || stristr($this->sql_statement, 'ALTER')){
+			$this->lastInsertId = self::$__conn->lastInsertId();
+			$eventLog = "UNDEFINED";
+			if(stristr($this->sql_statement, 'INSERT'))
+				$eventLog = 'INSERT';
+			if(stristr($this->sql_statement, 'DELETE'))
+				$eventLog = 'DELETE';
+			if(stristr($this->sql_statement, 'UPDATE'))
+				$eventLog = 'UPDATE';
+			if(stristr($this->sql_statement, 'ALTER'))
+				$eventLog = 'ALTER';
+			if(stristr($this->sql_statement, 'LOAD'))
+				$eventLog = 'LOAD';
+			/**
+			 * Using the same, internal functions.
+			 */
+			$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
+			$data['uid'] = ((isset($_SESSION['user']) && isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : '0');
+			$data['fid'] = $_SESSION['user']['facility'];
+			$data['event'] = $eventLog;
+			$data['sql_string'] = $this->sql_statement;
+			$data['checksum'] = crc32($this->sql_statement);
+			$data['ip'] = $_SERVER['REMOTE_ADDR'];
+			$sqlStatement = $this->sqlBind($data, 'audit_transaction_log', 'I');
+			$this->setSQL($sqlStatement);
+			$this->execOnly(false);
+
+		}
+		return self::$__conn->errorInfo();
+	}
+
+	/**
+	 * @brief       Execute Event
+	 * @details     This method is used to Inject directly to the event log
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @param       string $eventLog event data to log
+	 * @return      array Connection error info if any
+	 */
+	function execEvent($eventLog){
+		$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
+		$data['event'] = $eventLog;
+		$data['comments'] = $this->sql_statement;
+		$data['user'] = $_SESSION['user']['name'];
+		$data['patient_id'] = $_SESSION['patient']['id'];
+		$sqlStatement = $this->sqlBind($data, 'log', 'I');
+		$this->setSQL($sqlStatement);
+		$this->fetchRecords();
+		return self::$__conn->errorInfo();
+	}
+
+	/**
+	 * @brief       Fetch
+	 * @details     This method is used to fetch only one record from the database
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @return      array of record or error if any
+	 */
+	function fetchRecord(){
+		// Get all the records
+		$recordSet = self::$__conn->query($this->sql_statement);
+		$record = $recordSet->fetch(PDO::FETCH_ASSOC);
+		$err = $recordSet->errorInfo();
+		if($err[2])
+			return $err;
+		return $record;
+
+	}
+
+	/**
+	 * @brief       Execute Statement.
+	 * @details     This method is a simple SQL Statement, with no Event LOG
+	 * injection
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @see         Logs::getLogs() for basic example and
+	 * Patient::patientLiveSearch() for advance example.
+	 *
+	 * @param       int default to (PDO::FETCH_BOTH) Please see Fetch
+	 *                  Style docs at <a
+	 * href="http://php.net/manual/en/pdostatement.fetch.php">PDO Statement Fetch</a>
+	 * @return      array of records, if error occurred return the error instead
+	 */
+	public function fetchRecords($fetchStyle = PDO::FETCH_BOTH){
+		$recordSet = self::$__conn->query($this->sql_statement);
+		if(stristr($this->sql_statement, 'SELECT')){
+			$this->lastInsertId = self::$__conn->lastInsertId();
+		}
+		$records = $recordSet->fetchAll($fetchStyle);
+		$err = $recordSet->errorInfo();
+		if($err[2])
+			return $err;
+		return $records;
+	}
+
+	/**
+	 * @brief       Fetch the last error.
+	 * @details     If there was a problem with the connection it will return
+	 *              the error message, if the was not a connection problem, it will
+	 *              return a array with the code and message.
+	 *
+	 * @author      Gino Rivera (Certun) <grivera@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @return      array|string
+	 */
+	function getError(){
+		if(!$this->err){
+			return self::$__conn->errorInfo();
+		} else{
+			return $this->err;
+		}
+	}
+
+	/**
+	 * @brief       Row Count
+	 * @details     This methods is used to query an statement and return the rows
+	 * coount using PDO
+	 *
+	 * @author      Ernesto J. Rodriguez (Certun) <erodriguez@certun.com>
+	 * @version     Vega 1.0
+	 *
+	 * @note        count($sql) should be use instead of this method.
+	 *              please refer to @ref Logs::getLogs() to see an example
+	 *              of how to use count();
+	 *
+	 * @return      int The number of rows in a table
+	 */
+	function rowCount(){
+		$recordSet = self::$__conn->query($this->sql_statement);
+		return $recordSet->rowCount();
+	}
+
+}
+
+//print'<pre>';
+//$db = new MatchaHelper();
+//print_r(MatchaModel::setSenchaModel('App.model.patient.Insurance'));
+//print_r(MatchaModel::setSenchaModel('App.model.patient.Patient'));

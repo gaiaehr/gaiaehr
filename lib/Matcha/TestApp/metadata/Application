@@ -1,0 +1,59 @@
+{
+    "type": "Ext.app.Application",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "controllers": [
+            "Main"
+        ],
+        "models": [
+            "UserModel"
+        ],
+        "name": "App",
+        "stores": [
+            "UserStore"
+        ],
+        "views": [
+            "MyViewport"
+        ]
+    },
+    "designerId": "application",
+    "cn": [
+        {
+            "type": "fixedfunction",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "fn": "launch",
+                "implHandler": [
+                    ""
+                ]
+            },
+            "designerId": "2f54e494-d1c3-4737-a6a3-b1e003d70b8b"
+        },
+        {
+            "type": "basicfunction",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|params": [
+                    "application"
+                ],
+                "fn": "init",
+                "implHandler": [
+                    "Ext.Direct.addProvider(Ext.app.REMOTING_API);"
+                ]
+            },
+            "designerId": "56faf71a-9e1d-4c18-a3c5-248d43e2c05f"
+        }
+    ]
+}

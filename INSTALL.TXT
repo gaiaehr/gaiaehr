@@ -1,0 +1,6 @@
+For installation instruction please visit:
+
+Linux: http://gaiaehr.org/lamp-and-gaiaehr-installation-linux/
+Windows: http://gaiaehr.org/wamp-and-gaiaehr-installation-windows/
+
+for more information regarding how to install this software.

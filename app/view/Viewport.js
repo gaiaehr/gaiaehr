@@ -223,8 +223,6 @@ Ext.define('App.view.Viewport', {
 		    });
 	    }
 
-
-
 	    if(a('add_patient')){
 		    me.HeaderLeft.add({
 			    xtype: 'button',

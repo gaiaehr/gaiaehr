@@ -67,7 +67,7 @@ Ext.define('App.controller.patient.DecisionSupport', {
 						if(btn.result.reference != ''){
 							window.open(btn.result.reference, "_blank", "toolbar=no, scrollbars=yes, resizable=yes, top=10, left=10, width=1000, height=600");
 						}else{
-							app.msg(i18n('oops'), i18n('no_reference_provided'), true);
+							app.msg(_('oops'), _('no_reference_provided'), true);
 						}
 					}
 				};

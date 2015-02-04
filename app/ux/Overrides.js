@@ -1,22 +1,21 @@
-/*
- GaiaEHR (Electronic Health Records)
- Overrides.js
- UX
- Copyright (C) 2012 Ernesto Rodriguez
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 Ext.override(Ext.data.proxy.Server, {
     // remoteGroup default to true
     remoteGroup: true,
@@ -163,7 +162,6 @@ Ext.override(Ext.data.reader.Reader, {
 		);
 
 		this.on('exception', function(r, e){
-			say(r);
 			app.alert(
 				'<p><span style="font-weight:bold">'+ (e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +'</span></p><hr>' +
 					'<p>'+ (typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +'</p>',
@@ -294,6 +292,7 @@ Ext.override(Ext.grid.plugin.Editing, {
     }
 });
 Ext.override(Ext.grid.RowEditor, {
+
     completeEdit: function(){
         var me = this, form = me.getForm();
         if(!form.isValid()){
@@ -310,6 +309,7 @@ Ext.override(Ext.grid.RowEditor, {
         }
     }
 });
+
 Ext.override(Ext.container.Container, {
 
     setAutoSyncFormEvent: function(field){
@@ -477,13 +477,13 @@ Ext.override(Ext.container.Container, {
 
 	patientInfoAlert: function(){
         var patient = app.getCurrPatient();
-        Ext.Msg.alert(i18n('status'), i18n('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
+        Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
     },
 
 	currPatientError: function(msg){
         Ext.Msg.show({
-            title: 'Oops! ' + i18n('no_patient_selected'),
-            msg: Ext.isString(msg) ? msg : i18n('select_patient_patient_live_search'),
+            title: 'Oops! ' + _('no_patient_selected'),
+            msg: Ext.isString(msg) ? msg : _('select_patient_patient_live_search'),
             scope: this,
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR,
@@ -555,7 +555,7 @@ Ext.override(Ext.container.Container, {
     },
 
     passwordVerificationWin: function(callback){
-        var msg = Ext.Msg.prompt(i18n('password_verification'), i18n('please_enter_your_password') + ':', function(btn, password){
+        var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password){
             callback(btn, password);
         });
         var f = msg.textField.getInputId();
@@ -563,32 +563,49 @@ Ext.override(Ext.container.Container, {
         return msg;
     }
 });
-Ext.override(Ext.grid.ViewDropZone, {
 
-    handleNodeDrop: function(data, record, position){
-        var view = this.view, store = view.getStore(), index, records, i, len;
-        /**
-         * fixed to handle the patient button data
-         */
-        if(!data.patient){
-            if(data.copy){
-                records = data.records;
-                data.records = [];
-                for(i = 0, len = records.length; i < len; i++){
-                    data.records.push(records[i].copy(records[i].getId()));
-                }
-            }else{
-                data.view.store.remove(data.records, data.view === view);
-            }
-        }
-        index = store.indexOf(record);
-        // 'after', or undefined (meaning a drop at index -1 on an empty View)...
-        if(position !== 'before'){
-            index++;
-        }
-        store.insert(index, data.records);
-        view.getSelectionModel().select(data.records);
-    }
+
+//Ext.override(Ext.grid.ViewDropZone, {
+//
+//    handleNodeDrop: function(data, record, position){
+//        var view = this.view,
+//	        store = view.getStore(),
+//	        index, records, i, len;
+//        /**
+//         * fixed to handle the patient button data
+//         */
+//        if(!data.patient){
+//
+//	        if(data.copy){
+//                records = data.records;
+//                data.records = [];
+//                for(i = 0, len = records.length; i < len; i++){
+//	                data.records.push(records[i].copy());
+//                }
+//            }else{
+//		        data.view.store.remove(data.records, data.view === view);
+//            }
+//        }
+//
+//	    if (record && position) {
+//		    index = store.indexOf(record);
+//
+//		    // 'after', or undefined (meaning a drop at index -1 on an empty View)...
+//		    if (position !== 'before') {
+//			    index++;
+//		    }
+//		    store.insert(index, data.records);
+//	    }
+//	    // No position specified - append.
+//	    else {
+//		    store.add(data.records);
+//	    }
+//
+//
+//
+//
+//        view.getSelectionModel().select(data.records);
+//    }
     //	notifyEnter: function(dd, e, data) {
     //		var me = this;
     //		me.goToFloorPlanFn = new Ext.util.DelayedTask(function(){
@@ -627,7 +644,7 @@ Ext.override(Ext.grid.ViewDropZone, {
     //		var n = me.getTargetFromEvent(e);
     //		return n ? me.onNodeDrop(n, dd, e, data) : me.onContainerDrop(dd, e, data);
     //	}
-});
+//});
 Ext.override(Ext.view.AbstractView, {
     onRender: function(){
         var me = this;

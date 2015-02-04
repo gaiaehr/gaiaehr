@@ -32,6 +32,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 	msgTarget    : 'under',
 	layout       : 'hbox',
 	readOnly     : false,
+	allowBlank   : true,
 
 	/**
 	 * @cfg {String} dateFormat
@@ -42,7 +43,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 	 * @cfg {String} timeFormat
 	 * The default is 'H:i:s'
 	 */
-	timeFormat    : 'g:i:s a',
+	timeFormat    : 'g:i a',
 	/**
 	 * @cfg {String} dateTimeFormat
 	 * The format used when submitting the combined value.
@@ -79,10 +80,12 @@ Ext.define('App.ux.form.fields.DateTime', {
 		var me = this;
 		me.items = me.items || [];
 
+		me.dateConfig.allowBlank = me.allowBlank;
+
 		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
 			format     : me.dateFormat,
 			flex       : 1,
-            emptyText  : i18n('date'),
+            emptyText  : _('date'),
             margin     : 0,
 			submitValue: false
 		}, me.dateConfig));
@@ -91,7 +94,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
 			format     : me.timeFormat,
 			flex       : 1,
-            emptyText  : i18n('time'),
+            emptyText  : _('time'),
             margin     : 0,
 			submitValue: false
 		}, me.timeConfig));

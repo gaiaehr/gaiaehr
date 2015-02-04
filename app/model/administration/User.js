@@ -25,8 +25,7 @@ Ext.define('App.model.administration.User', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'User Account ID'
+			type: 'int'
 		},
 		{
 			name: 'create_uid',
@@ -53,7 +52,9 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'username',
 			type: 'string',
-			comment: 'username'
+			comment: 'username',
+			len: 20,
+			index: true
 		},
 		{
 			name: 'password',
@@ -79,22 +80,29 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'title',
 			type: 'string',
-			comment: 'title (Mr. Mrs.)'
+			comment: 'title (Mr. Mrs.)',
+			len: 10
 		},
 		{
 			name: 'fname',
 			type: 'string',
-			comment: 'first name'
+			comment: 'first name',
+			len: 80,
+			index: true
 		},
 		{
 			name: 'mname',
 			type: 'string',
-			comment: 'middle name'
+			comment: 'middle name',
+			len: 80,
+			index: true
 		},
 		{
 			name: 'lname',
 			type: 'string',
-			comment: 'last name'
+			comment: 'last name',
+			len: 120,
+			index: true
 		},
 		{
 			name: 'fullname',
@@ -111,43 +119,69 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'pin',
 			type: 'string',
-			comment: 'pin number'
+			comment: 'pin number',
+			len: 10
 		},
 		{
 			name: 'npi',
 			type: 'string',
-			comment: 'National Provider Identifier'
+			comment: 'National Provider Identifier',
+			len: 15,
+			index: true
 		},
 		{
 			name: 'fedtaxid',
 			type: 'string',
-			comment: 'federal tax id'
+			comment: 'federal tax id',
+			len: 80
 		},
 		{
 			name: 'feddrugid',
 			type: 'string',
-			comment: 'federal drug id'
+			comment: 'federal drug id',
+			len: 80
 		},
 		{
 			name: 'notes',
 			type: 'string',
-			comment: 'notes'
+			len: 300
 		},
 		{
 			name: 'email',
 			type: 'string',
-			comment: 'email'
+			len: 150,
+			index: true
+		},
+		{
+			name: 'phone',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'mobile',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'direct_address',
+			type: 'string',
+			comment: 'direct_address',
+			len: 150,
+			index: true
 		},
 		{
 			name: 'specialty',
-			type: 'string',
-			comment: 'specialty'
+			type: 'array',
+			comment: 'specialty',
+			len: 80
 		},
 		{
 			name: 'taxonomy',
 			type: 'string',
 			comment: 'taxonomy',
-			defaultValue: '207Q00000X'
+			defaultValue: '207Q00000X',
+			len: 40,
+			index: true
 		},
 		{
 			name: 'warehouse_id',
@@ -157,7 +191,8 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'facility_id',
 			type: 'int',
-			comment: 'default facility'
+			comment: 'default facility',
+			index: true
 		},
 		{
 			name: 'role_id',
@@ -167,7 +202,38 @@ Ext.define('App.model.administration.User', {
 		{
 			name: 'calendar',
 			type: 'bool',
-			comment: 'has calendar? 0=no 1=yes'
+			comment: 'has calendar? 0=no 1=yes',
+			index: true
+		},
+		{
+			name: 'street',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'street_cont',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'city',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'state',
+			type: 'string',
+			len: 55
+		},
+		{
+			name: 'postal_code',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'country_code',
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'authorized',
@@ -175,7 +241,8 @@ Ext.define('App.model.administration.User', {
 		},
 		{
 			name: 'active',
-			type: 'bool'
+			type: 'bool',
+			index: true
 		}
 	],
 	proxy: {

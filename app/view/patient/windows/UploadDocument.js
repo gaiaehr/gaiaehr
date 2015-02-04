@@ -22,58 +22,74 @@ Ext.define('App.view.patient.windows.UploadDocument', {
 	draggable: false,
 	modal: true,
 	autoShow: true,
-	title: i18n('new_document'),
+	title: _('new_document'),
 	items: [
 		{
 			xtype: 'form',
 			bodyPadding: 10,
 			width: 400,
-			defaults:{
+			defaults: {
 				xtype: 'textfield',
 				anchor: '100%',
 				labelWidth: 70
 			},
 			items: [
 				{
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'gaiaehr.combo',
-					fieldLabel: i18n('type'),
+					fieldLabel: _('type'),
 					list: 102,
 					name: 'docType',
 					allowBlank: false
 				},
 				{
-					xtype: 'fileuploadfield',
-					name: 'document',
-					buttonText: i18n('select_a_file') + '...',
-					fieldLabel: i18n('file'),
-					allowBlank: false
+					xtype: 'container',
+					layout: 'hbox',
+					items: [
+						{
+							xtype: 'fileuploadfield',
+							labelWidth: 70,
+							name: 'document',
+							buttonText: _('select'),
+							fieldLabel: _('file'),
+							allowBlank: false,
+							flex: 1,
+							itemId: 'fileUploadField',
+							margin: '0 5 0 0'
+						},
+						{
+							xtype:'button',
+							text: _('scan'),
+							itemId: 'scanBtn',
+							hidden: true
+						}
+					]
 				},
 				{
 					xtype: 'checkbox',
 					name: 'encrypted',
-					fieldLabel: i18n('encrypted')
+					fieldLabel: _('encrypted')
 				},
 				{
 					xtype: 'textareafield',
 					name: 'note',
-					fieldLabel: i18n('notes')
+					fieldLabel: _('notes')
 				}
 			]
 		}
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
 		},
 		{
-			text: i18n('upload'),
+			text: _('upload'),
 			itemId: 'uploadBtn'
 		}
 	]

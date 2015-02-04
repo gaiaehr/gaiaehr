@@ -23,6 +23,18 @@ Ext.define('App.controller.patient.Summary', {
 	],
 	refs: [
 		{
+			ref: 'PatientSummaryPanel',
+			selector: 'PatientSummaryPanel'
+		},
+		{
+			ref: 'PatientDocumentPanel',
+			selector: 'patientdocumentspanel'
+		},
+		{
+			ref: 'PatientCcdPanel',
+			selector: 'patientccdpanel'
+		},
+		{
 			ref: 'ReferralPanelGrid',
 			selector: 'patientreferralspanel'
 		},
@@ -39,6 +51,12 @@ Ext.define('App.controller.patient.Summary', {
 	init: function(){
 		var me = this;
 		me.control({
+			'#PatientSummaryPanel': {
+				activate: me.onPatientSummaryPanel
+			},
+			'#PatientSummaryEncountersPanel': {
+				itemdblclick: me.onPatientSummaryEncounterDblClick
+			},
 			'#PatientSummaryDisclosuresPanel': {
 				show: me.reloadGrid
 			},
@@ -61,13 +79,29 @@ Ext.define('App.controller.patient.Summary', {
 				show: me.reloadGrid
 			}
 		});
+
+		me.nav = me.getController('Navigation');
+	},
+
+	onPatientSummaryPanel: function(panel){
+		var params = this.nav.getExtraParams();
+
+		if(params){
+			if(params.document){
+				panel.down('tabpanel').setActiveTab(this.getPatientDocumentPanel());
+			}else if(params.ccd){
+				panel.down('tabpanel').setActiveTab(this.getPatientCcdPanel());
+			}
+		}
+	},
+
+	onPatientSummaryEncounterDblClick: function(grid, record){
+		app.openEncounter(record.data.eid);
 	},
 
 	reloadGrid:function(grid){
 		var store;
 		if(grid.itemId == 'PatientSummaryVitalsPanel'){
-			say(grid);
-
 			store = grid.down('vitalsdataview').getStore();
 		}else{
 			store = grid.getStore();

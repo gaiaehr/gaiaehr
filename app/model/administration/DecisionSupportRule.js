@@ -31,12 +31,14 @@ Ext.define('App.model.administration.DecisionSupportRule', {
 			name: 'category',
 			type: 'string',
 			len: 10,
+			defaultValue: 'C',
 			comment: 'C = Clinical A = Administrative'
 		},
 		{
 			name: 'alert_type',
 			type: 'string',
 			len: 2,
+			defaultValue: 'P',
 			comment: 'A = Active P = Passive'
 		},
 		{

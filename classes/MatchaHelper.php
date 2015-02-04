@@ -24,7 +24,8 @@ if(!isset($_SESSION)){
 }
 ini_set('max_input_time', '1500');
 ini_set('max_execution_time', '1500');
-if(!defined('site_timezone')) define('site_timezone', 'UTC');
+if(!defined('site_timezone'))
+	define('site_timezone', 'UTC');
 $timezone = (isset($_SESSION['site']['timezone']) ? $_SESSION['site']['timezone'] : site_timezone);
 date_default_timezone_set($timezone);
 
@@ -46,7 +47,6 @@ class MatchaHelper extends Matcha {
 	 */
 	private $err;
 
-
 	/**
 	 * @brief       MatchaHelper constructor.
 	 * @details     This method starts the connection with mysql server using
@@ -57,32 +57,36 @@ class MatchaHelper extends Matcha {
 	 * @version     Vega 1.0
 	 *
 	 */
-	function __construct(){
+	function __construct() {
 		self::$__freeze = false;
 		// Connect to the database
 		// This is compatible with the old methods
 		if(defined('site_db_type')){
 			self::connect(array(
-				'host' => site_db_host,
-				'port' => site_db_port,
-				'name' => site_db_database,
-				'user' => site_db_username,
-				'pass' => site_db_password,
-				'app' => ROOT . '/app')
-			);
+					'host' => site_db_host,
+					'port' => site_db_port,
+					'name' => site_db_database,
+					'user' => site_db_username,
+					'pass' => site_db_password,
+					'app' => ROOT . '/app'
+				));
 		}
 
-		self::$__secretKey = site_aes_key;
+		self::$__secretKey = defined('site_aes_key') ? site_aes_key : '';
 
-		MatchaAudit::$__audit = true;
-		MatchaAudit::$hookTable = 'audit_transaction_log';
-		MatchaAudit::$hookClass = 'MatchaHelper';
-		MatchaAudit::$hookMethod = 'storeAudit';
-		MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
-		MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+		if(isset(self::$__conn)){
+			MatchaAudit::$__audit = true;
+			MatchaAudit::$hookTable = 'audit_transaction_log';
+			MatchaAudit::$hookClass = 'MatchaHelper';
+			MatchaAudit::$hookMethod = 'storeAudit';
+			MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
+			MatchaModel::setSenchaModel('App.model.administration.AuditLog');
+		}
+
 	}
-	function __destruct(){
-//		self::$__conn = null;
+
+	function __destruct() {
+		//		self::$__conn = null;
 	}
 
 	/**
@@ -98,7 +102,7 @@ class MatchaHelper extends Matcha {
 	 * The method should be established PUBLIC STATIC, this way it will not take more
 	 * memory.
 	 */
-	public static function storeAudit($saveParams = array()){
+	public static function storeAudit($saveParams = array()) {
 
 		if($saveParams['event'] != 'SELECT'){
 			MatchaAudit::$eventLogData = array(
@@ -132,15 +136,15 @@ class MatchaHelper extends Matcha {
 	 *
 	 * @param       $sql string statement to set
 	 */
-	public function setSQL($sql){
+	public function setSQL($sql) {
 		$this->sql_statement = $sql;
 	}
 
-	public function exec($sql){
+	public function exec($sql) {
 		return self::$__conn->exec($sql);
 	}
 
-	public function conn(){
+	public function conn() {
 		return self::$__conn;
 	}
 
@@ -168,7 +172,7 @@ class MatchaHelper extends Matcha {
 	 * @param              $Where
 	 * @return      string constructed SQL string
 	 */
-	public function sqlBind($BindFieldsArray, $Table, $InsertOrUpdate = 'I', $Where = null){
+	public function sqlBind($BindFieldsArray, $Table, $InsertOrUpdate = 'I', $Where = null) {
 		//		print '<pre>';
 		if(isset($BindFieldsArray['__utma']))
 			unset($BindFieldsArray['__utma']);
@@ -182,7 +186,7 @@ class MatchaHelper extends Matcha {
 		$InsertOrUpdate = strtolower($InsertOrUpdate);
 		if($InsertOrUpdate == 'i'){
 			$sql = 'INSERT INTO `' . $Table . '`';
-		} elseif($InsertOrUpdate == 'u'){
+		} elseif($InsertOrUpdate == 'u') {
 			$sql = 'UPDATE `' . $Table . '`';
 		} else
 			return "No update or insert command.";
@@ -191,42 +195,32 @@ class MatchaHelper extends Matcha {
 		 */
 		$sql .= ' SET ';
 
-		//		print_r($BindFieldsArray);
-
 		foreach($BindFieldsArray as $key => $value){
 			$value = (is_string($value) ? addslashes($value) : $value);
 			if(is_array($Where)){
 				if(!array_key_exists($key, $Where)){
 					if($value == null || $value === 'null'){
 						$sql .= '`' . $key . '`' . '=NULL, ';
-					} else{
+					} else {
 						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
 						$sql .= '`' . $key . '`' . "='$value', ";
 					}
-				} else{
-					return array('success' => false, 'error' => 'Where value can not be updated. please make sure to unset it from the array');
+				} else {
+					return array(
+						'success' => false,
+						'error' => 'Where value can not be updated. please make sure to unset it from the array'
+					);
 				}
-			} else{
-				// TODO: remove this... after new version (above) is implemented throughout the
-				// application
-				//				if ($Where <> ($key . "='$value'") && $Where <> ($key . '=' . $value) && $Where <> ($key . '="' . $value . '"'))
-				//				{
+			} else {
 				if($value == null || $value === 'null'){
 					$sql .= '`' . $key . '`' . '=NULL, ';
-				} else{
-					//						$value = preg_replace('/([0-9]{4}-[0-9]{2}-[0-9]{2})T([0-9]{2}:[0-9]{2}:[0-9]{2})/i', '${1} ${2}', trim($value));
+				} else {
+					if(is_string($value)){
+						//$value = htmlspecialchars($value);
+					}
 					$sql .= '`' . $key . '`' . "='$value', ";
 				}
-				//				}
-				//				else
-				//				{
-				//					return array(
-				//						'success' => false,
-				//						'error' => 'Where value can not be updated. please make sure to unset it from the array'
-				//					);
-				//				}
 			}
-
 		}
 		$sql = substr($sql, 0, -2);
 		/**
@@ -238,10 +232,13 @@ class MatchaHelper extends Matcha {
 				$count = 0;
 				foreach($Where as $key => $val){
 					$and = ($count == 0) ? '' : ' AND ';
+					if(is_string($val)){
+						//$val = htmlspecialchars($val);
+					}
 					$sql .= $and . $key . '=\'' . $val . '\'';
 					$count++;
 				}
-			} else{
+			} else {
 				$sql .= $Where;
 			}
 		}
@@ -249,50 +246,6 @@ class MatchaHelper extends Matcha {
 		 * Step 4 - return the sql statement
 		 */
 		return $sql;
-	}
-
-	/**
-	 * @brief    SQL Select Builder.
-	 * @details  This method is used to build Select statements for MySQL.
-	 *
-	 * @author   Gino Rivera (Certun) <grivera@certun.com>
-	 * @version  Vega 1.0
-	 *
-	 * @param       $Table
-	 * @param array $Fields
-	 * @param null $Where
-	 * @param null $Order
-	 * @internal param $ (array)$Fields
-	 * @internal param $ (array)$Order
-	 * @internal param $ (array)$Where
-	 * @return string
-	 */
-	public function sqlSelectBuilder($Table, $Fields = array('*'), $Where = null, $Order = null){
-		// Step 1 - Select clause and wrote down the fields
-		$sqlReturn = 'SELECT ';
-		foreach($Fields as $key => $value)
-			$sqlReturn .= $value . ', ';
-		$sqlReturn = substr($sqlReturn, 0, -2);
-		// Step 2 - From clause, table
-		$sqlReturn .= ' FROM ' . $Table . ' ';
-		// Step 3 - Having clause, filter the records
-		if($Where != null){
-			$sqlReturn .= ' HAVING ';
-			foreach($Where as $key => $value){
-				$sqlReturn .= '(' . $value . ')';
-				$sqlReturn .= (is_int($key)) ? ' AND ' : ' ' . $key . ' ';
-			}
-			$sqlReturn = substr($sqlReturn, 0, -5);
-		}
-		// Step 4 - Order clause, sort the results
-		if($Order != null){
-			$sqlReturn .= ' ORDER BY ';
-			foreach($Order as $key => $value){
-				$sqlReturn .= (!is_int($key)) ? $value . ' ' . $key . ', ' : $value . ', ';
-			}
-			$sqlReturn = substr($sqlReturn, 0, -2);
-		}
-		return $sqlReturn;
 	}
 
 	/**
@@ -306,14 +259,16 @@ class MatchaHelper extends Matcha {
 	 * @param       bool $setLastInsertId
 	 * @return      array Connection error info if any
 	 */
-	public function execOnly($setLastInsertId = true){
+	public function execOnly($setLastInsertId = true) {
+		if(!isset(self::$__conn))
+			return array();
 		self::$__conn->query($this->sql_statement);
 		if($setLastInsertId)
 			$this->lastInsertId = self::$__conn->lastInsertId();
 		$err = self::$__conn->errorInfo();
 		if($err[2]){
 			return self::$__conn->errorInfo();
-		} else{
+		} else {
 			return $this->lastInsertId;
 		}
 	}
@@ -334,7 +289,7 @@ class MatchaHelper extends Matcha {
 	 *
 	 * @return      array Connection error info if any
 	 */
-	function execLog(){
+	function execLog() {
 		/**
 		 * Execute the sql statement
 		 */
@@ -371,28 +326,6 @@ class MatchaHelper extends Matcha {
 	}
 
 	/**
-	 * @brief       Execute Event
-	 * @details     This method is used to Inject directly to the event log
-	 *
-	 * @author      Gino Rivera (Certun) <grivera@certun.com>
-	 * @version     Vega 1.0
-	 *
-	 * @param       string $eventLog event data to log
-	 * @return      array Connection error info if any
-	 */
-	function execEvent($eventLog){
-		$data['date'] = Time::getLocalTime('Y-m-d H:i:s');
-		$data['event'] = $eventLog;
-		$data['comments'] = $this->sql_statement;
-		$data['user'] = $_SESSION['user']['name'];
-		$data['patient_id'] = $_SESSION['patient']['id'];
-		$sqlStatement = $this->sqlBind($data, 'log', 'I');
-		$this->setSQL($sqlStatement);
-		$this->fetchRecords();
-		return self::$__conn->errorInfo();
-	}
-
-	/**
 	 * @brief       Fetch
 	 * @details     This method is used to fetch only one record from the database
 	 *
@@ -401,7 +334,9 @@ class MatchaHelper extends Matcha {
 	 *
 	 * @return      array of record or error if any
 	 */
-	function fetchRecord(){
+	function fetchRecord() {
+		if(!isset(self::$__conn))
+			return array();
 		// Get all the records
 		$recordSet = self::$__conn->query($this->sql_statement);
 		$record = $recordSet->fetch(PDO::FETCH_ASSOC);
@@ -428,7 +363,9 @@ class MatchaHelper extends Matcha {
 	 * href="http://php.net/manual/en/pdostatement.fetch.php">PDO Statement Fetch</a>
 	 * @return      array of records, if error occurred return the error instead
 	 */
-	public function fetchRecords($fetchStyle = PDO::FETCH_BOTH){
+	public function fetchRecords($fetchStyle = PDO::FETCH_BOTH) {
+		if(!isset(self::$__conn))
+			return array();
 		$recordSet = self::$__conn->query($this->sql_statement);
 		if(stristr($this->sql_statement, 'SELECT')){
 			$this->lastInsertId = self::$__conn->lastInsertId();
@@ -438,25 +375,6 @@ class MatchaHelper extends Matcha {
 		if($err[2])
 			return $err;
 		return $records;
-	}
-
-	/**
-	 * @brief       Fetch the last error.
-	 * @details     If there was a problem with the connection it will return
-	 *              the error message, if the was not a connection problem, it will
-	 *              return a array with the code and message.
-	 *
-	 * @author      Gino Rivera (Certun) <grivera@certun.com>
-	 * @version     Vega 1.0
-	 *
-	 * @return      array|string
-	 */
-	function getError(){
-		if(!$this->err){
-			return self::$__conn->errorInfo();
-		} else{
-			return $this->err;
-		}
 	}
 
 	/**
@@ -473,14 +391,14 @@ class MatchaHelper extends Matcha {
 	 *
 	 * @return      int The number of rows in a table
 	 */
-	function rowCount(){
+	function rowCount() {
 		$recordSet = self::$__conn->query($this->sql_statement);
 		return $recordSet->rowCount();
 	}
 
 }
 
-//print'<pre>';
-//$db = new MatchaHelper();
-//print_r(MatchaModel::setSenchaModel('App.model.patient.Insurance'));
-//print_r(MatchaModel::setSenchaModel('App.model.patient.Patient'));
+$conn = Matcha::getConn();
+if(!isset($conn)){
+	new MatchaHelper();
+}

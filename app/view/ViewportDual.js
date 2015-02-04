@@ -30,7 +30,7 @@ Ext.define('App.view.ViewportDual', {
 	    'App.view.patient.Referrals',
 	    'App.view.patient.Results',
 	    'App.view.patient.RxOrders',
-	    'App.view.patient.SocialHistory'
+	    'App.view.patient.SocialPanel'
     ],
 	layout: {
 		type: 'vbox',
@@ -72,7 +72,7 @@ Ext.define('App.view.ViewportDual', {
 					xtype:'patientmedicationspanel'
 				},
 				{
-					xtype:'patientsocialhistorypanel'
+					xtype:'patientsocialpanel'
 				},
 				{
 					xtype:'patientresultspanel'

@@ -1,4 +1,3 @@
-#!php -q
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
@@ -31,20 +30,36 @@ class HL7Client {
 	/**
 	 * @var null|string
 	 */
-	private $msg = null;
+	private $msg;
 	/**
 	 * @var null
 	 */
-	private $socket = null;
+	private $socket;
 
+	/**
+	 * @var
+	 */
+	private $context;
+
+	/**
+	 * @var bool
+	 */
 	private $connected = false;
 
-	private $timeout = 10; // ten seconds
+	/**
+	 * @var
+	 */
+	private $timeout; // ten seconds
 
-
-	function __construct($address = null, $port = null) {
+	/**
+	 * @param null $address
+	 * @param null $port
+	 * @param int $timeout
+	 */
+	function __construct($address = null, $port = null, $timeout = 3) {
 		if(isset($address)) $this->address = $address;
 		if(isset($port)) $this->port = $port;
+		$this->timeout = $timeout;
 	}
 
 	public function Save($msg = null) {
@@ -94,7 +109,7 @@ class HL7Client {
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				curl_setopt($ch, CURLOPT_HEADER, 0);
 				curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 					'Content-Type: application/hl7-v2; charset=ISO-8859-4',
 					'Content-Length: ' . strlen($msg)
@@ -108,7 +123,6 @@ class HL7Client {
 					curl_close($ch);
 					throw new Exception($errorMsg);
 				}
-
 				curl_close($ch);
 				return array(
 					'success' => true,
@@ -118,7 +132,7 @@ class HL7Client {
 			} else {
 
 				$this->Connect();
-				$response = $this->socketWrite();
+				$response = $this->socketWrite($this->msg);
 				$this->Disconnect();
 				$this->connected = false;
 
@@ -136,30 +150,55 @@ class HL7Client {
 		}
 	}
 
+	/**
+	 * @return bool
+	 * @throws Exception
+	 */
 	public function Connect(){
 		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		if($this->socket === false){
 			throw new Exception("socket_create() failed: reason: " . socket_strerror(socket_last_error()));
 		}
-		$result = socket_connect($this->socket, $this->address, $this->port);
-		if($result === false){
-			throw new Exception("socket_connect() failed. Reason: ($result) " . socket_strerror(socket_last_error($this->socket)));
+
+		$error = null;
+		$attempts = 0;
+		while (!($this->connected = @socket_connect($this->socket, $this->address, $this->port)) && $attempts++ < $this->timeout) {
+			$error = socket_last_error();
+			if ($error != SOCKET_EINPROGRESS && $error != SOCKET_EALREADY) {
+				$error = socket_strerror($error);
+				throw new Exception("socket_connect() failed. Reason: " . $error);
+			}
+			usleep(1000);
 		}
+
+		if (!$this->connected) {
+			throw new Exception("Error Connecting Socket: Connect Timed Out After {$this->timeout} seconds. ". socket_strerror(socket_last_error()));
+		}
+
 		return $this->connected = true;
 	}
 
 	public function Disconnect(){
-		if(isset($this->socket)) socket_shutdown($this->socket);
-		if(isset($this->socket)) socket_close($this->socket);
+		if(isset($this->socket)){
+			if($this->connected){
+				socket_shutdown($this->socket);
+			}
+			socket_close($this->socket);
+		}
 		unset($this->socket);
 		$this->connected = false;
 	}
 
+	/**
+	 * @param null $msg
+	 * @return string
+	 * @throws Exception
+	 */
 	private function socketWrite($msg = null) {
 		if(!isset($msg))
 			throw new Exception('Hl7 message can not be null');
 
-		$msg = chr(0x0b) . $msg . chr(0x1c) . chr(0x0d);
+		$msg = chr(0x0b) . trim($msg) . chr(0x1c) . chr(0x0d);
 		socket_write($this->socket, $msg);
 		$this->msg = null;
 		$response = '';
@@ -170,61 +209,89 @@ class HL7Client {
 			$response .= @socket_read($this->socket, 4);
 			if(substr($response, -2) == chr(0x1c) . chr(0x0d)) break;
 		}
+
 		return $response;
 	}
 
+	/***** Setters *****/
 
-	/** Setters */
-
+	/**
+	 * @param $address
+	 * @return mixed
+	 */
 	public function setAddress($address){
 		return $this->address = $address;
 	}
 
+	/**
+	 * @param $port
+	 * @return mixed
+	 */
 	public function setPort($port){
 		return $this->port = $port;
 	}
 
+	/**
+	 * @param $msg
+	 * @return mixed
+	 */
 	public function setMsg($msg){
 		return $this->msg = $msg;
 	}
 
+	/**
+	 * @param $timeout
+	 * @return mixed
+	 */
 	public function setTimeout($timeout){
 		return $this->timeout = $timeout;
 	}
 
-	/** Getters */
+	/***** Getters *****/
 
+	/**
+	 * @return null|string
+	 */
 	public function getAddress(){
 		return $this->address;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public function getPort(){
 		return $this->port;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public function getMsg(){
 		return $this->msg;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getTimeout(){
 		return $this->timeout;
 	}
 
 }
 
-$client = new HL7Client();
-$client->Connect();
-$msg = 'MSH|^~\&|REGADT|GOOD HEALTH HOSPITAL|RSP1P8|GOOD HEALTH HOSPI- TAL|200701051530|SEC|ADT^A09^ADT_A09|00000003|P|2.5.1'. chr(0x0d);
-$msg .= 'EVN|A09|200701051530'. chr(0x0d);
-$msg .= 'PID|||6^^^GAIA-1||EVERYWOMAN^EVE|'. chr(0x0d);
-$msg .= 'PV1|1||2|||1|1|||||||||Y'. chr(0x0d);
-$res = $client->Send($msg);
+//$client = new HL7Client();
+//$client->Connect();
+//$msg = 'MSH|^~\&|REGADT|GOOD HEALTH HOSPITAL|RSP1P8|GOOD HEALTH HOSPI- TAL|200701051530|SEC|ADT^A09^ADT_A09|00000003|P|2.5.1'. chr(0x0d);
+//$msg .= 'EVN|A09|200701051530'. chr(0x0d);
+//$msg .= 'PID|||6^^^GAIA-1||EVERYWOMAN^EVE|'. chr(0x0d);
+//$msg .= 'PV1|1||2|||1|1|||||||||Y'. chr(0x0d);
 //$res = $client->Send($msg);
-//$res = $client->Send($msg);
-//$res = $client->Send($msg);
-//$res = $client->Send($msg);
-$client->Disconnect();
-print_r($res);
-print_r('<br>');
+////$res = $client->Send($msg);
+////$res = $client->Send($msg);
+////$res = $client->Send($msg);
+////$res = $client->Send($msg);
+//$client->Disconnect();
+//print_r($res);
+//print_r('<br>');
 
 

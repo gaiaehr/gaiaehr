@@ -337,9 +337,9 @@ Ext.define('App.view.sitesetup.SiteSetup',
 													allowBlank:true
 												},
 												{
-													fieldLabel:'SQL Server Host (or IP address)',
+													fieldLabel:'SQL Server Host or IP address',
 													name:'dbHost',
-													value:'localhost',
+													value:'127.0.0.1',
 													allowBlank:false
 												},
 												{
@@ -587,6 +587,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														name:'ICD9',
 														inputValue:'1',
 														action:'code',
+														disabled: true,
 														plugins:[
 															{
 																ptype:'helpicon',
@@ -600,6 +601,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														name:'ICD10',
 														inputValue:'1',
 														action:'code',
+														disabled: true,
 														plugins:[
 															{
 																ptype:'helpicon',

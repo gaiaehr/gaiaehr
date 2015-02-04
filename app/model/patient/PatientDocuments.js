@@ -80,11 +80,6 @@ Ext.define('App.model.patient.PatientDocuments', {
 			defaultValue: 0
 		},
 		{
-			name: 'document',
-			type: 'string',
-			dataType: 'longblob'
-		},
-		{
 			name: 'groupDate',
 			type: 'date',
 			dateFormat: 'Y-m-d',
@@ -92,6 +87,11 @@ Ext.define('App.model.patient.PatientDocuments', {
 			convert: function(v, record){
 				return Ext.Date.format(record.data.date, 'Y-m-d');
 			}
+		},
+		{
+			name: 'document',
+			type: 'string',
+			dataType: 'longblob'
 		}
 	],
 	proxy: {

@@ -24,13 +24,13 @@ Ext.define('App.view.patient.windows.Orders', {
 		'App.view.patient.RxOrders',
 		'App.view.patient.DoctorsNotes'
 	],
-	title: i18n('order_window'),
+	title: _('order_window'),
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
 	modal: true,
 	buttons: [
 		{
-			text: i18n('close'),
+			text: _('close'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
@@ -77,7 +77,7 @@ Ext.define('App.view.patient.windows.Orders', {
 
 		me.buttons = [
 			{
-				text: i18n('close'),
+				text: _('close'),
 				scope: me,
 				handler: function(){
 					me.close();
@@ -101,16 +101,21 @@ Ext.define('App.view.patient.windows.Orders', {
 	 * @param action
 	 */
 	cardSwitch: function(action){
-		var layout = this.tabPanel.getLayout();
-		if(action == 'lab'){
-			layout.setActiveItem(0);
-		}else if(action == 'xRay'){
-			layout.setActiveItem(1);
-		}else if(action == 'prescription'){
-			layout.setActiveItem(2);
-		}else if(action == 'notes'){
-			layout.setActiveItem(3);
+		var me = this,
+			tabPanel = me.tabPanel,
+			activePanel = tabPanel.getActiveTab(),
+			toPanel =  tabPanel.query('#'+ action)[0];
+
+		if(activePanel == toPanel){
+			activePanel.fireEvent('activate', activePanel);
+		}else{
+			tabPanel.setActiveTab(toPanel);
+			me.setWindowTitle(toPanel.title);
 		}
+	},
+
+	setWindowTitle:function(title){
+		this.setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
 	},
 
 
@@ -134,7 +139,7 @@ Ext.define('App.view.patient.windows.Orders', {
 		/**
 		 * read only stuff
 		 */
-		me.setTitle(app.patient.name + ' - ' + i18n('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + i18n('read_mode') + ']</span>' : ''));
+		me.setTitle(app.patient.name + ' - ' + _('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + _('read_mode') + ']</span>' : ''));
 		me.setReadOnly(app.patient.readOnly);
 	},
 

@@ -38,12 +38,12 @@ Ext.define('App.ux.LiveRadiologySearch', {
 			store: me.store,
 			displayField: 'code_text_medium',
 			valueField: 'code_text_medium',
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

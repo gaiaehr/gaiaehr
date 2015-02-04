@@ -119,7 +119,6 @@ Ext.define('App.controller.Navigation', {
 		this.navigateToDefault();
 	},
 
-
 	setUrlParams:function(params){
 		var url = './#!/';
 		if(params.length > 0) url += params.join('/');
@@ -176,6 +175,7 @@ Ext.define('App.controller.Navigation', {
 
 		// fire global event
 		me.getViewport().fireEvent('afternavigation', me[ref]);
+
 	},
 
 	/**
@@ -260,8 +260,8 @@ Ext.define('App.controller.Navigation', {
 	 * @param patient
 	 */
 	onPatientSet:function(viewport, patient){
-		say('onPatientSet');
-		say(patient);
+//		say('onPatientSet');
+//		say(patient);
 	},
 
 	/**
@@ -269,7 +269,7 @@ Ext.define('App.controller.Navigation', {
 	 * @param viewport
 	 */
 	onPatientUnset:function(viewport){
-		say('onPatientUnset');
+//		say('onPatientUnset');
 	},
 
 	initFunctionKeyNav:function(){
@@ -284,7 +284,7 @@ Ext.define('App.controller.Navigation', {
 		}
 		if(!this.altIsDown) return;
 		this.getViewport().fireEvent('navkey', e, e.getKey());
-		say('navkey');
+//		say('navkey');
 	},
 
 	captureUpKey:function(e){

@@ -27,17 +27,18 @@ class SnomedCodes {
 		$this->conn = MatchaHelper::getConn();
 	}
 
-	public function liveCodeSearch($params) {
-		$query = $params->query;
+	public function liveProblemCodeSearch($params) {
 
-		$sql = "SELECT ConceptId, FullySpecifiedName
+		$sql = "SELECT ConceptId, FullySpecifiedName, OCCURRENCE
 			     FROM sct_concepts
 		   RIGHT JOIN sct_problem_list ON sct_concepts.ConceptId = sct_problem_list.SNOMED_CID
 	            WHERE sct_concepts.ConceptStatus = '0'
-	              AND sct_concepts.FullySpecifiedName LIKE '%$query%'
+	              AND (sct_concepts.FullySpecifiedName LIKE :c1
+	              OR sct_concepts.ConceptId LIKE :c2)
 	         ORDER BY sct_problem_list.OCCURRENCE DESC";
 
-		$sth = $this->conn->query($sql);
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return array(
 			'totals' => count($results),
@@ -45,7 +46,64 @@ class SnomedCodes {
 		);
 	}
 
+	public function liveProcedureCodeSearch($params) {
 
+		$sql = "SELECT ConceptId, FullySpecifiedName, Occurrence
+			     FROM sct_procedure_list
+	            WHERE FullySpecifiedName 	LIKE :c1
+	               OR ConceptId 			LIKE :c2
+	         ORDER BY Occurrence DESC";
+
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
+		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
+		return array(
+			'totals' => count($results),
+		    'data' => array_slice($results, $params->start, $params->limit)
+		);
+	}
+
+	public function liveCodeSearch($params) {
+
+		$sql = "SELECT ConceptId, FullySpecifiedName
+			     FROM sct_concepts
+	            WHERE sct_concepts.ConceptStatus = '0'
+	              AND sct_concepts.FullySpecifiedName LIKE :c1
+	              OR sct_concepts.ConceptId LIKE :c2";
+
+		$sth = $this->conn->prepare($sql);
+		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
+		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
+		return array(
+			'totals' => count($results),
+		    'data' => array_slice($results, $params->start, $params->limit)
+		);
+	}
+
+	public function updateLiveProcedureCodeSearch($params) {
+		$sql = "UPDATE sct_procedure_list
+				   SET Occurrence = '{$params->Occurrence}'
+			     WHERE ConceptId = '{$params->ConceptId}'";
+		$this->conn->exec($sql);
+		return $params;
+	}
+
+	public function updateLiveProblemCodeSearch($params) {
+
+		$sql = "UPDATE sct_problem_list
+				   SET OCCURRENCE = '{$params->OCCURRENCE}'
+			     WHERE SNOMED_CID = '{$params->ConceptId}'";
+		$this->conn->exec($sql);
+		return $params;
+	}
+
+	public function getSnomedTextByConceptId($conceptId) {
+		$sql = "SELECT `FullySpecifiedName` FROM `sct_concepts` WHERE `ConceptId` = '$conceptId'";
+		$sth = $this->conn->prepare($sql);
+		$sth->execute();
+		$result = $sth->fetch(PDO::FETCH_ASSOC);
+		return isset($result) && $result != false ? $result['FullySpecifiedName'] : '';
+	}
 
 }
 

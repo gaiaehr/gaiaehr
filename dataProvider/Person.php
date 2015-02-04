@@ -75,7 +75,7 @@ class Person
 		return $street . $streetb . $city . ' ' . $state . ' ' . $zip;
 	}
 
-	public static function ellipsis($text, $max = 100, $append = '&hellip;')
+	public static function ellipsis($text, $max = 100, $append = '...')
 	{
 		if (strlen($text) <= $max)
 			return $text;

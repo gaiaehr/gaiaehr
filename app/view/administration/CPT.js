@@ -23,15 +23,15 @@ Ext.define('App.view.administration.CPT', {
 		'App.store.administration.CPT'
 	],
 	xtype: 'cptadmingrid',
-	title: i18n('cpt4'),
+	title: _('cpt4'),
 	columns: [
 		{
 			width: 60,
-			header: i18n('code'),
+			header: _('code'),
 			dataIndex: 'code'
 		},
 		{
-			header: i18n('short_name'),
+			header: _('short_name'),
 			dataIndex: 'code_text_short',
 			width: 100,
 			flex: 1,
@@ -40,7 +40,7 @@ Ext.define('App.view.administration.CPT', {
 			}
 		},
 		{
-			header: i18n('long_name'),
+			header: _('long_name'),
 			dataIndex: 'code_text',
 			flex: 2,
 			editor:{
@@ -48,7 +48,7 @@ Ext.define('App.view.administration.CPT', {
 			}
 		},
 		{
-			header: i18n('radiology'),
+			header: _('radiology'),
 			dataIndex: 'isRadiology',
 			editor:{
 				xtype:'checkbox'
@@ -59,7 +59,7 @@ Ext.define('App.view.administration.CPT', {
 		},
 		{
 			width: 60,
-			header: i18n('active'),
+			header: _('active'),
 			dataIndex: 'active',
 			editor:{
 				xtype:'checkbox'
@@ -84,13 +84,13 @@ Ext.define('App.view.administration.CPT', {
 		me.tbar = Ext.create('Ext.PagingToolbar', {
 			store: me.store,
 			displayInfo: true,
-			emptyMsg: i18n('no_office_notes_to_display'),
+			emptyMsg: _('no_office_notes_to_display'),
 			plugins: Ext.create('Ext.ux.SlidingPager'),
 			items: [
 				'-',
 				{
 					xtype: 'textfield',
-					emptyText: i18n('search'),
+					emptyText: _('search'),
 					width: 200,
 					enableKeyEvents: true,
 					itemId: 'adminCpt4CodeSearchField'
@@ -98,7 +98,7 @@ Ext.define('App.view.administration.CPT', {
 				'-',
 				{
 					xtype: 'button',
-					text: i18n('only_active'),
+					text: _('only_active'),
 					enableToggle: true,
 					itemId: 'adminCpt4CodeOnlyActiveBtn'
 				},

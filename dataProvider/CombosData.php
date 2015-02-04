@@ -22,50 +22,49 @@ include_once(ROOT . '/dataProvider/i18nRouter.php');
 class CombosData {
 
 	/**
-	 * @var MatchaHelper
+	 * @var MatchaCUP
 	 */
-	private $db;
-
+	private $CLO;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $CLO = null;
+	private $CC;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $CC = null;
+	private $P;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $P = null;
+	private $F;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $F = null;
+	private $FP;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $FP = null;
+	private $I;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $I = null;
+	private $R;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $U = null;
+	private $U;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $CL = null;
+	private $CL;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $A = null;
+	private $A;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $DT = null;
+	private $DT;
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Main Sencha Model Getter and Setters
@@ -92,6 +91,8 @@ class CombosData {
 					return $this->getBillingFacilities();
 				} elseif($params->list_id == 'activeInsurances'){
 					return $this->getActiveInsurances();
+				} elseif($params->list_id == 'referringPhysicians'){
+					return $this->getReferringPhysicians();
 				} else{
 					return false;
 				}
@@ -129,10 +130,21 @@ class CombosData {
 		$options = array();
 		foreach($this->I->load(array('active' => '1'))->all() as $option){
 			$options[] = array(
-				'option_name' => $option['name'],
+				'option_name' => $option['id'] . ': ' .$option['name'],
 				'option_value' => $option['id']
 			);
 		}
+		return $options;
+	}
+
+	public function getReferringPhysicians($query = ''){
+		if($this->R == null)
+			$this->R = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
+
+		$options = array();
+
+
+
 		return $options;
 	}
 
@@ -212,6 +224,10 @@ class CombosData {
 		$records[] = array(
 			'id' => 'billingFacilities',
 			'title' => 'Billing Facilities'
+		);
+		$records[] = array(
+			'id' => 'referringPhysicians',
+			'title' => 'Referring Physicians'
 		);
 		return $records;
 	}
@@ -904,6 +920,16 @@ class CombosData {
 		);
 	}
 
+	public function getValuesByListIdAndOptionValue($listId, $optionValue) {
+		if($this->CLO == null)
+			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		$foo = $this->CLO->load(array(
+			'list_id' => $listId,
+			'option_value' => $optionValue
+		))->one();
+		return $foo;
+	}
+
 	public function getDisplayValueByListIdAndOptionValue($listId, $optionValue) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
@@ -911,6 +937,27 @@ class CombosData {
 			'list_id' => $listId,
 			'option_value' => $optionValue
 		))->one();
+		return $foo !== false ? $foo['option_name'] : $optionValue;
+	}
+
+	public function getDisplayValueByListIdAndOptionCode($listId, $optionCode) {
+		if($this->CLO == null)
+			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		$foo = $this->CLO->load(array(
+			'list_id' => $listId,
+			'code' => $optionCode
+		))->one();
+		return $foo !== false ? $foo['option_name'] : $optionCode;
+	}
+
+	public function getCodeValueByListIdAndOptionValue($listId, $optionValue) {
+		if($this->CLO == null)
+			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		$foo = $this->CLO->load(array(
+			'list_id' => $listId,
+			'option_value' => $optionValue
+		))->one();
+		return $foo !== false ? $foo['code'] : $optionValue;
 	}
 
 	public function getEncounterSupervisors(){

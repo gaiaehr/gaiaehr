@@ -66,6 +66,13 @@ $API = array(
             )
         )
     ),
+    'DataPortability' => array(
+        'methods' => array(
+            'export' => array(
+                'len' => 1
+            )
+        )
+    ),
     'CPT' => array(
         'methods' => array(
             'getCPTs' => array(
@@ -141,7 +148,7 @@ $API = array(
             'getPatientSecondaryInsuranceByPid' => array(
                 'len' => 1
             ),
-            'getPatientTertiaryInsuranceByPid' => array(
+            'getPatientComplementaryInsuranceByPid' => array(
                 'len' => 1
             )
         )
@@ -276,7 +283,10 @@ $API = array(
 
 	'Snippets' => array(
 		'methods' => array(
-			'getSoapSnippetsByCategory' => array(
+			'getSoapSnippets' => array(
+				'len' => 1
+            ),
+			'getSoapSnippet' => array(
 				'len' => 1
             ),
 			'addSoapSnippets' => array(
@@ -290,6 +300,7 @@ $API = array(
             )
         )
 	),
+
 	'Orders' => array(
 		'methods' => array(
 			'getPatientOrders' => array(
@@ -404,6 +415,26 @@ $API = array(
 		)
 	),
 
+	'CognitiveAndFunctionalStatus' => array(
+		'methods' => array(
+			'getPatientCognitiveAndFunctionalStatuses' => array(
+				'len' => 1
+			),
+			'getPatientCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			),
+			'addPatientCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			),
+			'updateCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			),
+			'destroyCognitiveAndFunctionalStatus' => array(
+				'len' => 1
+			)
+		)
+	),
+
 	'ExternalDataUpdate' => array(
 		'methods' => array(
 			'updateCodesWithUploadFile' => array(
@@ -483,18 +514,6 @@ $API = array(
 			'getEncounterCodes' => array(
 				'len' => 1
 			),
-			'getEncounterCptDxTree' => array(
-				'len' => 1
-			),
-			'addEncounterCptDxTree' => array(
-				'len' => 1
-			),
-			'updateEncounterCptDxTree' => array(
-				'len' => 1
-			),
-			'removeEncounterCptDxTree' => array(
-				'len' => 1
-			),
 			'checkoutAlerts' => array(
 				'len' => 1
 			),
@@ -505,9 +524,6 @@ $API = array(
 				'len' => 1
 			),
 			'getEncounterMessageByEid' => array(
-				'len' => 1
-			),
-			'onSaveItemsToReview' => array(
 				'len' => 1
 			),
 			'getSoapHistory' => array(
@@ -524,6 +540,9 @@ $API = array(
 			),
 			'getTodayEncounters' => array(
 				'len' => 0
+			),
+			'getEncounterPrintDocumentsByEid' => array(
+				'len' => 1
 			)
 		)
 	),
@@ -653,6 +672,25 @@ $API = array(
 			)
 		)
 	),
+	'CarePlanGoals' => array(
+		'methods' => array(
+			'getPatientCarePlanGoals' => array(
+				'len' => 1
+			),
+			'getPatientCarePlanGoal' => array(
+				'len' => 1
+			),
+			'addPatientCarePlanGoal' => array(
+				'len' => 1
+			),
+			'updatePatientCarePlanGoal' => array(
+				'len' => 1
+			),
+			'destroyPatientCarePlanGoal' => array(
+				'len' => 1
+			)
+		)
+	),
     /**
 	 * FamilyHistory Functions
 	 */
@@ -691,118 +729,106 @@ $API = array(
 			),
 			'setFacility' => array(
 				'len' => 1
+			),
+
+			'getFacilityConfigs' => array(
+				'len' => 1
+			),
+			'getFacilityConfig' => array(
+				'len' => 1
+			),
+			'addFacilityConfig' => array(
+				'len' => 1
+			),
+			'updateFacilityConfig' => array(
+				'len' => 1
+			),
+			'deleteFacilityConfig' => array(
+				'len' => 1
+			),
+
+			'getDepartments' => array(
+				'len' => 1
+			),
+			'getDepartment' => array(
+				'len' => 1
+			),
+			'addDepartment' => array(
+				'len' => 1
+			),
+			'updateDepartment' => array(
+				'len' => 1
+			),
+			'deleteDepartment' => array(
+				'len' => 1
+			)
+		)
+	),
+	/**
+	 * Allergies Functions
+	 */
+	'Allergies' => array(
+		'methods' => array(
+			'getPatientAllergies' => array(
+				'len' => 1
+			),
+			'getPatientAllergy' => array(
+				'len' => 1
+			),
+			'addPatientAllergy' => array(
+				'len' => 1
+			),
+			'updatePatientAllergy' => array(
+				'len' => 1
+			),
+			'destroyPatientAllergy' => array(
+				'len' => 1
+			),
+			'searchAllergiesData' => array(
+				'len' => 1
 			)
 		)
 	),
 	/**
 	 * Medical Functions
 	 */
-	'Medical' => array(
-		'methods' => array(
-			'getImmunizationsList' => array(
-				'len' => 0
-			),
-			'getPatientImmunizations' => array(
-				'len' => 1
-			),
-			'addPatientImmunization' => array(
-				'len' => 1
-			),
-			'updatePatientImmunization' => array(
-				'len' => 1
-			),
-			'getPatientAllergies' => array(
-				'len' => 1
-			),
-			'addPatientAllergies' => array(
-				'len' => 1
-			),
-			'updatePatientAllergies' => array(
-				'len' => 1
-			),
-			'getMedicalIssues' => array(
-				'len' => 1
-			),
-			'addMedicalIssues' => array(
-				'len' => 1
-			),
-			'updateMedicalIssues' => array(
-				'len' => 1
-			),
-			'getPatientSurgery' => array(
-				'len' => 1
-			),
-			'addPatientSurgery' => array(
-				'len' => 1
-			),
-			'updatePatientSurgery' => array(
-				'len' => 1
-			),
-			'getPatientDental' => array(
-				'len' => 1
-			),
-			'addPatientDental' => array(
-				'len' => 1
-			),
-			'updatePatientDental' => array(
-				'len' => 1
-			),
-			'getPatientMedications' => array(
-				'len' => 1
-			),
-			'addPatientMedications' => array(
-				'len' => 1
-			),
-			'updatePatientMedications' => array(
-				'len' => 1
-			),
-			'deletePatientMedications' => array(
-				'len' => 1
-			),
-			'getMedicationLiveSearch' => array(
-				'len' => 1
-			),
-			'getPatientLabsResults' => array(
-				'len' => 1
-			),
-			'addPatientLabsResult' => array(
-				'len' => 1
-			),
-			'updatePatientLabsResult' => array(
-				'len' => 1
-			),
-			'deletePatientLabsResult' => array(
-				'len' => 1
-			),
-			'signPatientLabsResultById' => array(
-				'len' => 1
-			),
-			'reviewMedicalWindowEncounter' => array(
-				'len' => 1
-			),
-			'getLabsLiveSearch' => array(
-				'len' => 1
-			),
-			'reviewAllMedicalWindowEncounter' => array(
-				'len' => 1
-			),
-			'getEncounterReviewByEid' => array(
-				'len' => 1
-			),
-			'getSurgeriesLiveSearch' => array(
-				'len' => 1
-			),
-			'getCDTLiveSearch' => array(
-				'len' => 1
-			),
-			'getPatientsMedicalSummaryGrouped' => array(
-				'len' => 1
-			),
-			'sendVXU' => array(
-				'len' => 1
-			)
-		)
-	),
+//	'Medical' => array(
+//		'methods' => array(
+//			'getPatientLabsResults' => array(
+//				'len' => 1
+//			),
+//			'addPatientLabsResult' => array(
+//				'len' => 1
+//			),
+//			'updatePatientLabsResult' => array(
+//				'len' => 1
+//			),
+//			'deletePatientLabsResult' => array(
+//				'len' => 1
+//			),
+//			'signPatientLabsResultById' => array(
+//				'len' => 1
+//			),
+//			'reviewMedicalWindowEncounter' => array(
+//				'len' => 1
+//			),
+//			'getLabsLiveSearch' => array(
+//				'len' => 1
+//			),
+//			'reviewAllMedicalWindowEncounter' => array(
+//				'len' => 1
+//			),
+//			'getEncounterReviewByEid' => array(
+//				'len' => 1
+//			),
+//			'getSurgeriesLiveSearch' => array(
+//				'len' => 1
+//			),
+//			'getCDTLiveSearch' => array(
+//				'len' => 1
+//			)
+//		)
+//	),
 	 /**
 	 * AddressBook Functions
 	 */
@@ -829,6 +855,18 @@ $API = array(
 		'methods' => array(
 			'liveCodeSearch' => array(
 				'len' => 1
+			),
+			'liveProblemCodeSearch' => array(
+				'len' => 1
+			),
+			'liveProcedureCodeSearch' => array(
+				'len' => 1
+			),
+			'updateLiveProcedureCodeSearch' => array(
+				'len' => 1
+			),
+			'updateLiveProblemCodeSearch' => array(
+				'len' => 1
 			)
 		)
 	),
@@ -843,7 +881,22 @@ $API = array(
 			'getRXNORMAllergyLiveSearch' => array(
 				'len' => 1
 			),
-			'getMedicationAttributesByCODE' => array(
+			'getMedicationAttributesByRxcui' => array(
+				'len' => 1
+			),
+			'getMedicationInstructions' => array(
+				'len' => 1
+			),
+			'getMedicationInstruction' => array(
+				'len' => 1
+			),
+			'addMedicationInstruction' => array(
+				'len' => 1
+			),
+			'updateMedicationInstructions' => array(
+				'len' => 1
+			),
+			'destroyMedicationInstructions' => array(
 				'len' => 1
 			)
 		)
@@ -869,26 +922,45 @@ $API = array(
 	),
 	'Immunizations' => array(
 		'methods' => array(
+            'getImmunizationsList' => array(
+                'len' => 0
+            ),
+            'getPatientImmunizations' => array(
+                'len' => 1
+            ),
+            'addPatientImmunization' => array(
+                'len' => 1
+            ),
+            'updatePatientImmunization' => array(
+                'len' => 1
+            ),
+            'sendVXU' => array(
+                'len' => 1
+            ),
 			'getMvx' => array(
 				'len' => 1
 			),
 			'getMvxForCvx' => array(
 				'len' => 1
 			),
-			'getImmunizationLiveSearch' => array(
-				'len' => 1
-			)
-		)
-	),	'Xrays' => array(
-		'methods' => array(
-			'getXrays' => array(
+			'getCptByCvx' => array(
 				'len' => 1
 			),
-			'getXraysLiveSearch' => array(
+			'getImmunizationLiveSearch' => array(
+				'len' => 1
+			),
+			'updateMVXCodes' => array(
+				'len' => 1
+			),
+			'updateCVXCodes' => array(
+				'len' => 1
+			),
+			'updateCvxCptTable' => array(
 				'len' => 1
 			)
 		)
 	),
+
 	'Laboratories' => array(
 		'methods' => array(
 			'getLabObservations' => array(
@@ -1156,9 +1228,29 @@ $API = array(
 	),
 	'Services' => array(
 		'methods' => array(
+
+            'getEncounterServices' => array(
+				'len' => 1
+			),
+            'getEncounterService' => array(
+				'len' => 1
+			),
+            'addEncounterService' => array(
+				'len' => 1
+			),
+            'updateEncounterService' => array(
+				'len' => 1
+			),
+            'removeEncounterService' => array(
+				'len' => 1
+			),
+
+
+
 			'getServices' => array(
 				'len' => 1
 			),
+
 			'addService' => array(
 				'len' => 1
 			),
@@ -1170,181 +1262,10 @@ $API = array(
 			),
 			'getCptCodes' => array(
 				'len' => 1
-			),
-			'addCptCode' => array(
-				'len' => 1
-			),
-			'updateCptCode' => array(
-				'len' => 1
-			),
-			'deleteCptCode' => array(
-				'len' => 1
-			),
-			'getActiveProblems' => array(
-				'len' => 1
-			),
-			'addActiveProblems' => array(
-				'len' => 1
-			),
-			'removeActiveProblems' => array(
-				'len' => 1
-			),
-			'getMedications' => array(
-				'len' => 1
-			),
-			'addMedications' => array(
-				'len' => 1
-			),
-			'removeMedications' => array(
-				'len' => 1
-			),
-			'updateMedications' => array(
-				'len' => 1
-			),
-			'getAllLabObservations' => array(
-				'len' => 1
-			),
-			'getLabObservations' => array(
-				'len' => 1
-			),
-			'addLabObservation' => array(
-				'len' => 1
-			),
-			'updateLabObservation' => array(
-				'len' => 1
-			),
-			'removeLabObservation' => array(
-				'len' => 1
-			),
-			'getActiveLaboratoryTypes' => array(
-				'len' => 0
-			),
-			'getQuickAccessCheckOutServices' => array(
-				'len' => 0
 			)
 		)
 	),
-	/**
-	 * Preventive Care Functions
-	 */
-	'PreventiveCare' => array(
-		'methods' => array(
-			'getServices' => array(
-				'len' => 1
-			),
-			'addService' => array(
-				'len' => 1
-			),
-			'updateService' => array(
-				'len' => 1
-			),
-			'liveCodeSearch' => array(
-				'len' => 1
-			),
-			'getCptCodes' => array(
-				'len' => 1
-			),
-			'addCptCode' => array(
-				'len' => 1
-			),
-			'updateCptCode' => array(
-				'len' => 1
-			),
-			'deleteCptCode' => array(
-				'len' => 1
-			),
-			'getActiveProblems' => array(
-				'len' => 1
-			),
-			'addActiveProblems' => array(
-				'len' => 1
-			),
-			'removeActiveProblems' => array(
-				'len' => 1
-			),
-			'getMedications' => array(
-				'len' => 1
-			),
-			'addMedications' => array(
-				'len' => 1
-			),
-			'removeMedications' => array(
-				'len' => 1
-			),
-			'updateMedications' => array(
-				'len' => 1
-			),
-			'getRelations' => array(
-				'len' => 1
-			),
-			'addRelations' => array(
-				'len' => 1
-			),
-			'removeRelations' => array(
-				'len' => 1
-			),
-			'getImmunizationsCheck' => array(
-				'len' => 1
-			),
-			'getPreventiveCareCheck' => array(
-				'len' => 1
-			),
-			'activePreventiveCareAlert' => array(
-				'len' => 1
-			),
-			'addPreventivePatientDismiss' => array(
-				'len' => 1
-			),
-			'getGuideLinesByCategory' => array(
-				'len' => 1
-			),
-			'addGuideLine' => array(
-				'len' => 1
-			),
-			'updateGuideLine' => array(
-				'len' => 1
-			),
-			'getGuideLineActiveProblems' => array(
-				'len' => 1
-			),
-			'addGuideLineActiveProblems' => array(
-				'len' => 1
-			),
-			'removeGuideLineActiveProblems' => array(
-				'len' => 1
-			),
-			'getGuideLineMedications' => array(
-				'len' => 1
-			),
-			'addGuideLineMedications' => array(
-				'len' => 1
-			),
-			'removeGuideLineMedications' => array(
-				'len' => 1
-			),
-			'getGuideLineLabs' => array(
-				'len' => 1
-			),
-			'addGuideLineLabs' => array(
-				'len' => 1
-			),
-			'removeGuideLineLabs' => array(
-				'len' => 1
-			),
-			'updateGuideLineLabs' => array(
-				'len' => 1
-			),
-			'getPreventiveCareDismissPatientByEncounterID' => array(
-				'len' => 1
-			),
-			'getPreventiveCareDismissedAlertsByPid' => array(
-				'len' => 1
-			),
-			'updatePreventiveCareDismissedAlertsByPid' => array(
-				'len' => 1
-			)
-		)
-	),
+
 	/**
 	 * DecisionSupport Functions
 	 */
@@ -1565,6 +1486,9 @@ $API = array(
 			),
 			'setPatientRating' => array(
 				'len' => 1
+			),
+			'getPossibleDuplicatesByDemographic' => array(
+				'len' => 1
 			)
 		)
 	),
@@ -1706,6 +1630,12 @@ $API = array(
 			),
 			'getEncounterSupervisors' => array(
 				'len' => 0
+			),
+			'getDisplayValueByListIdAndOptionValue' => array(
+				'len' => 2
+			),
+			'getDisplayValueByListIdAndOptionCode' => array(
+				'len' => 2
 			)
 		)),
 	/**
@@ -1742,6 +1672,42 @@ $API = array(
 	 */
 	'ACL' => array(
 		'methods' => array(
+
+			'getAclGroups' => array(
+				'len' => 1
+			),
+			'getAclGroup' => array(
+				'len' => 1
+			),
+			'addAclGroup' => array(
+				'len' => 1
+			),
+			'updateAclGroup' => array(
+				'len' => 1
+			),
+			'deleteAclGroup' => array(
+				'len' => 1
+			),
+			'getGroupPerms' => array(
+				'len' => 1
+			),
+			'updateGroupPerms' => array(
+				'len' => 1
+			),
+			'getAclRoles' => array(
+				'len' => 1
+			),
+			'getAclRole' => array(
+				'len' => 1
+			),
+			'addAclRole' => array(
+				'len' => 1
+			),
+			'updateAclRole' => array(
+				'len' => 1
+			),
+
+
 			'getAllUserPermsAccess' => array(
 				'len' => 0
 			),
@@ -1793,8 +1759,10 @@ $API = array(
 			'destroyPatientDocument' => array(
 				'len' => 1
 			),
-
 			'createTempDocument' => array(
+				'len' => 1
+			),
+			'createRawTempDocument' => array(
 				'len' => 1
 			),
 			'destroyTempDocument' => array(
@@ -1803,8 +1771,6 @@ $API = array(
 			'transferTempDocument' => array(
 				'len' => 1
 			),
-
-
 			'uploadDocument' => array(
 				'formHandler' => true,
 				'len' => 1

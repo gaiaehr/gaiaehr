@@ -84,7 +84,7 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('description'),
+							fieldLabel: _('description'),
 							xtype: 'textfield',
 							name: 'code_text',
 							width: 500
@@ -99,12 +99,12 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							boxLabel: i18n('radiology'),
+							boxLabel: _('radiology'),
 							xtype: 'checkboxfield',
 							name: 'isRadiology'
 						},
 						{
-							boxLabel: i18n('active'),
+							boxLabel: _('active'),
 							labelWidth: 75,
 							xtype: 'checkboxfield',
 							name: 'active'
@@ -129,17 +129,17 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('type'),
+							fieldLabel: _('type'),
 							xtype: 'mitos.codestypescombo',
 							name: 'code_type'
 						},
 						{
-							fieldLabel: i18n('code'),
+							fieldLabel: _('code'),
 							xtype: 'textfield',
 							name: 'code'
 						},
 						{
-							fieldLabel: i18n('modifier'),
+							fieldLabel: _('modifier'),
 							xtype: 'textfield',
 							name: 'mod'
 						}
@@ -153,12 +153,12 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							fieldLabel: i18n('description'),
+							fieldLabel: _('description'),
 							xtype: 'textfield',
 							name: 'code_text'
 						},
 						{
-							fieldLabel: i18n('category'),
+							fieldLabel: _('category'),
 							xtype: 'mitos.titlescombo',
 							name: 'title'
 						}
@@ -172,12 +172,12 @@ Ext.define('App.view.administration.DataManager', {
 					},
 					items: [
 						{
-							boxLabel: i18n('reportable'),
+							boxLabel: _('reportable'),
 							xtype: 'checkboxfield',
 							name: 'reportable'
 						},
 						{
-							boxLabel: i18n('active'),
+							boxLabel: _('active'),
 							labelWidth: 75,
 							xtype: 'checkboxfield',
 							name: 'active'
@@ -190,7 +190,7 @@ Ext.define('App.view.administration.DataManager', {
 		 * CVX Container
 		 */
 		me.cvxCintainer = Ext.create('Ext.container.Container', {
-			action: i18n('immunizations'),
+			action: _('immunizations'),
 			layout: 'fit',
 			items: [
 				{
@@ -203,7 +203,7 @@ Ext.define('App.view.administration.DataManager', {
 		 * Labs Container
 		 */
 		me.labContainer = Ext.create('Ext.container.Container', {
-			action: i18n('laboratories'),
+			action: _('laboratories'),
 			layout: {
 				type: 'vbox',
 				align: 'stretch'
@@ -222,14 +222,14 @@ Ext.define('App.view.administration.DataManager', {
 					items: [
 						{
 							xtype: 'textfield',
-							fieldLabel: i18n('short_name_alias'),
+							fieldLabel: _('short_name_alias'),
 							name: 'code_text_short',
 							labelWidth: 130,
 							width: 500
 						},
 						{
 							xtype: 'checkbox',
-							fieldLabel: i18n('active'),
+							fieldLabel: _('active'),
 							name: 'active',
 							anchor: '100%',
 							labelWidth: 50
@@ -240,14 +240,14 @@ Ext.define('App.view.administration.DataManager', {
 				{
 					xtype: 'grid',
 					frame: true,
-					title: i18n('children'),
+					title: _('children'),
 					store: me.labObservationsStore,
 					plugins: Ext.create('Ext.grid.plugin.CellEditing', {
 						clicksToEdit: 2
 					}),
 					columns: [
 						{
-							header: i18n('label_alias'),
+							header: _('label_alias'),
 							dataIndex: 'code_text_short',
 							width: 150,
 							editor: {
@@ -255,17 +255,17 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('loinc_name'),
+							header: _('loinc_name'),
 							dataIndex: 'loinc_name',
 							flex: 1
 						},
 						{
-							header: i18n('loinc_number'),
+							header: _('loinc_number'),
 							dataIndex: 'loinc_number',
 							width: 100
 						},
 						{
-							header: i18n('default_unit'),
+							header: _('default_unit'),
 							dataIndex: 'default_unit',
 							width: 100,
 							editor: {
@@ -273,12 +273,12 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('req_opt'),
+							header: _('req_opt'),
 							dataIndex: 'required_in_panel',
 							width: 75
 						},
 						{
-							header: i18n('range_start'),
+							header: _('range_start'),
 							dataIndex: 'range_start',
 							width: 100,
 							editor: {
@@ -286,7 +286,7 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('range_end'),
+							header: _('range_end'),
 							dataIndex: 'range_end',
 							width: 100,
 							editor: {
@@ -294,7 +294,7 @@ Ext.define('App.view.administration.DataManager', {
 							}
 						},
 						{
-							header: i18n('description'),
+							header: _('description'),
 							dataIndex: 'description',
 							flex: 1,
 							editor: {
@@ -303,7 +303,7 @@ Ext.define('App.view.administration.DataManager', {
 						},
 						{
 							width: 60,
-							header: i18n('active'),
+							header: _('active'),
 							dataIndex: 'active',
 							renderer: me.boolRenderer,
 							editor: {
@@ -342,32 +342,32 @@ Ext.define('App.view.administration.DataManager', {
 			columns: [
 				{
 					width: 50,
-//					header: i18n('code_type'),
+//					header: _('code_type'),
 					sortable: false,
 					dataIndex: 'code_type',
 					renderer: code_type
 				},
 				{
 					width: 60,
-					header: i18n('code'),
+					header: _('code'),
 					sortable: true,
 					dataIndex: 'code'
 				},
 				{
-					header: i18n('short_name'),
+					header: _('short_name'),
 					dataIndex: 'code_text_short',
 					width: 100,
 					flex: 1
 				},
 				{
-					header: i18n('long_name'),
+					header: _('long_name'),
 					sortable: true,
 					dataIndex: 'code_text',
 					flex: 2
 				},
 				{
 					width: 60,
-					header: i18n('active'),
+					header: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer
@@ -385,7 +385,7 @@ Ext.define('App.view.administration.DataManager', {
 			tbar: this.bar = Ext.create('Ext.PagingToolbar', {
 				store: me.store,
 				displayInfo: true,
-				emptyMsg: i18n('no_office_notes_to_display'),
+				emptyMsg: _('no_office_notes_to_display'),
 				plugins: Ext.create('Ext.ux.SlidingPager'),
 				items: [
 					'-',
@@ -398,14 +398,14 @@ Ext.define('App.view.administration.DataManager', {
 						}
 					}, '-',
 					{
-						text: i18n('add'),
+						text: _('add'),
 						iconCls: 'icoAddRecord',
 						scope: me,
 						handler: me.onAddData
 					}, '-',
 					{
 						xtype: 'textfield',
-						emptyText: i18n('search'),
+						emptyText: _('search'),
 						width: 200,
 						enableKeyEvents: true,
 						listeners: {
@@ -416,7 +416,7 @@ Ext.define('App.view.administration.DataManager', {
 					}, '-',
 					{
 						xtype: 'button',
-						text: i18n('show_inactive_codes_only'),
+						text: _('show_inactive_codes_only'),
 						enableToggle: true,
 						listeners: {
 							scope: me,
@@ -447,7 +447,7 @@ Ext.define('App.view.administration.DataManager', {
 	onAddData: function(){
 		var me = this;
 		if(me.code_type == 'Laboratories'){
-			Ext.Msg.alert('Opps!', i18n('ops_laboratories'));
+			Ext.Msg.alert('Opps!', _('ops_laboratories'));
 		} else{
 			me.dataManagerGrid.plugins[0].cancelEdit();
 			me.store.add({
@@ -473,7 +473,7 @@ Ext.define('App.view.administration.DataManager', {
 		}else if(code_type == 'LOINC'){
 
 			me.labContainer.down('grid').setTitle(
-				e.record.data.has_children ? i18n('observations'):i18n('observation')
+				e.record.data.has_children ? _('observations'):_('observation')
 			);
 
 			me.labContainer.down('grid').setVisible(e.record.data.class != 'RAD');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
@@ -16,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class Segments {
 
 	public $buffer;
@@ -48,40 +48,53 @@ class Segments {
 	 */
 	protected $dynamicFields = array();
 
+	protected $repeatableFields = array();
+
+	protected $requiredFields = array();
+
+	protected $fieldsLengths = array();
+
 	/**
-	 * @param $hl7 HL7 instance
+	 * @param HL7 $hl7 HL7 instance
+	 * @param null|string $segment
 	 */
-	function __construct($hl7){
+	function __construct($hl7, $segment = null) {
 		$this->hl7 = $hl7;
+		$this->rawSeg = array();
+		$this->rawSeg[0] = $segment;
+		if($segment == 'MSH'){
+			$this->rawSeg[1] = '|';
+			$this->rawSeg[2] = '^~\&';
+		}
 	}
 
-	function __destruct(){
-//		print 'Destroying class "'. get_class($this). '" (Segments)' .PHP_EOL;
+	function __destruct() {
+
 	}
 
 	/**
 	 * @param int $length
 	 * @return string
 	 */
-	public function newUID($length = 15){
+	public function newUID($length = 15) {
 		$n = '';
-		for($i=0; $i < $length; $i++){
-			$n = $n . rand(0,9);
+		for($i = 0; $i < $length; $i++){
+			$n = $n . rand(0, 9);
 		}
-		return 'GAIA-'. $n;
+		return 'GAIA-' . $n;
 	}
 
 	/**
 	 * Build the segment message string from the $this->rawSeg array
 	 * @return string
 	 */
-	public function build(){
+	public function build() {
 		$this->toString($this->rawSeg);
 		unset($this->hl7);
-		return $this->seg . "\r";
+		return $this->seg . chr(0x0d);
 	}
 
-	public function parse($string){
+	public function parse($string) {
 		$this->data = $this->toArray($string);
 		unset($this->hl7);
 		return $this->data;
@@ -92,35 +105,55 @@ class Segments {
 	 * @param int $glue
 	 * @return mixed
 	 */
-	private function toString($array, $glue = 0){
-		$glues = ['|','^','&'];
+	private function toString($array, $glue = 0) {
+		$glues = [ '|', '^', '&'];
 		$buffer = [];
-		foreach($array as $index => $value) {
 
-			if($glue == 0 || $index > 0){
+		foreach($array as $index => $value){
+
+			if($glue === 0 || $index > 0){
+
+				if($glue === 0 && $this->isRepeatable($index)){
+					$repBuffer = [];
+
+					foreach($value as $i => $repValue){
+						if(is_array($repValue)){
+							$array[$index][$i] = $this->toString($repValue, $glue + 1);
+							$repBuffer[] = $array[$index][$i][0];
+						}else{
+							$repBuffer[] = $repValue;
+						}
+					}
+
+					$buffer[]  = rtrim(implode('~', $repBuffer), '~');
+					continue;
+				}
+
+
 				if(is_array($value)){
 					$array[$index] = $this->toString($value, $glue + 1);
 					$buffer[] = $array[$index][0];
 					continue;
 				}
 
-				if($value != '|' ) $buffer[] = $value;
+				if($value != '|')
+					$buffer[] = $value;
 			}
 		}
 
 		if($glue != 0){
-			$array[0] = rtrim(implode($glues[$glue], $buffer),$glues[$glue]);
-		}else{
-			$this->seg = rtrim(implode($glues[$glue], $buffer),$glues[$glue]);
+			$array[0] = rtrim(implode($glues[$glue], $buffer), $glues[$glue]);
+		} else {
+			$this->seg = rtrim(implode($glues[$glue], $buffer), $glues[$glue]);
 		}
 
 		return $array;
 	}
 
-	private function toArray($string, $glue = 0, $array = null){
+	private function toArray($string, $glue = 0, $array = null) {
 		$array = $array != null ? $array : $this->rawSeg;
 
-		$glues = ['|','^','&'];
+		$glues = [ '|', '^', '&' ];
 
 		if(isset($glues[$glue])){
 			// explode the string by glue | ^ or &
@@ -131,58 +164,96 @@ class Segments {
 				$fields[1] = '|';
 			}
 
+
+
 			$isSubField = $glue > 0;
 
-			if($isSubField) array_unshift($fields, $string);
+			if($isSubField)
+				array_unshift($fields, $string);
 
 			foreach($fields AS $i => $fieldString){
 
+				$repeatable = $glues[$glue] == '|' && $this->isRepeatable($i);
+
 				if(isset($array[$i]) && is_int($array[$i])){
-					$array[$i] = $this->getType($array[$array[$i]]);
+					if($repeatable){
+						$array[$i][] = $this->getType($array[$array[$i]]);
+					}else{
+						$array[$i] = $this->getType($array[$array[$i]]);
+					}
 				}
 
-
-				$hasSubFields = isset($array[$i]) && is_array($array[$i]);
-
-				if(!$hasSubFields){
-					$array[$i] = $fieldString;
-					continue;
+				if($repeatable){
+					$hasSubFields = isset($array[$i][0]) && is_array($array[$i][0]);
+				}else{
+					$hasSubFields = isset($array[$i]) && is_array($array[$i]);
 				}
 
 				if($hasSubFields){
-					if($this->isRepeatable($fieldString)){
-						$foo = array();
+
+					if($repeatable){
+
+							$foo = array();
+						$j = 0;
 						foreach(explode('~', $fieldString) AS $rep){
-							$foo[] = $this->toArray($rep, $glue + 1, $array[$i]);
+							// copy the empty structure
+							$array[$i][$j + 1] = $array[$i][$j];
+							$foo[] = $this->toArray($rep, $glue + 1, $array[$i][$j]);
+							$j++;
 						}
+						// delete the unused structure
+						unset($array[$i][$j]);
 						$array[$i] = $foo;
 						continue;
 					}
 
 					$array[$i] = $this->toArray($fieldString, $glue + 1, $array[$i]);
+
+				}else{
+
+					if($repeatable){
+						$values = explode('~', $fieldString);
+						foreach($values as $j => $value){
+							$array[$i][$j] = $value;
+						}
+					}else{
+						$array[$i] = $fieldString;
+					}
 				}
 			}
 		}
 		return $array;
 	}
 
-	private function isRepeatable($string){
+	private function hasRepeatable($string) {
 		$foo = strpos($string, '~');
 		return $foo !== false && $string != '~\&';
 	}
 
 	/**
-	 * @param $field
-	 * @param $data
+	 * @param string $field
+	 * @param string $data
+	 * @param int $index
 	 */
-	public function setValue($field, $data){
-		$foo = explode('.',$field);
-		if(count($foo) == 1){
-			$this->rawSeg[$foo[0]] = $data;
-		}elseif(count($foo) == 2){
-			$this->rawSeg[$foo[0]][$foo[1]] = $data;
-		}elseif(count($foo) == 3){
-			$this->rawSeg[$foo[0]][$foo[1]][$foo[2]] = $data;
+	public function setValue($field, $data, $index = 0) {
+		$foo = explode('.', $field);
+
+		if($this->isRepeatable($foo[0])){
+			if(count($foo) == 1){
+				$this->rawSeg[$foo[0]][$index] = $data;
+			} elseif(count($foo) == 2) {
+				$this->rawSeg[$foo[0]][$index][$foo[1]] = $data;
+			} elseif(count($foo) == 3) {
+				$this->rawSeg[$foo[0]][$index][$foo[1]][$foo[2]] = $data;
+			}
+		}else{
+			if(count($foo) == 1){
+				$this->rawSeg[$foo[0]] = $data;
+			} elseif(count($foo) == 2) {
+				$this->rawSeg[$foo[0]][$foo[1]] = $data;
+			} elseif(count($foo) == 3) {
+				$this->rawSeg[$foo[0]][$foo[1]][$foo[2]] = $data;
+			}
 		}
 	}
 
@@ -190,13 +261,13 @@ class Segments {
 	 * @param $field
 	 * @return mixed
 	 */
-	public function getValue($field){
-		$foo = explode('.',$field);
+	public function getValue($field) {
+		$foo = explode('.', $field);
 		if(count($foo) == 1){
 			return $this->rawSeg[$foo[0]];
-		}elseif(count($foo) == 2){
+		} elseif(count($foo) == 2) {
 			return $this->rawSeg[$foo[0]][$foo[1]];
-		}elseif(count($foo) == 3){
+		} elseif(count($foo) == 3) {
 			return $this->rawSeg[$foo[0]][$foo[1]][$foo[2]];
 		}
 		return null;
@@ -207,15 +278,16 @@ class Segments {
 	 * @param bool $all
 	 * @return array|bool
 	 */
-	protected function getChildren($segment = null, $all = false){
+	protected function getChildren($segment = null, $all = false) {
 
 		$children = array();
-		$start    = false;
-		$stop     = false;
+		$start = false;
+		$stop = false;
 		$segments = $this->hl7->getSegments();
 
 		for($i = array_search($this, $segments); $i < count($segments); $i++){
-			if($stop) break;
+			if($stop)
+				break;
 			$cls = get_class($segments[$i]);
 
 			if($start == false){
@@ -224,7 +296,7 @@ class Segments {
 			}
 
 			if($segment == $cls && array_search($cls, $this->children) !== false){
-				$children[] =  $segments[$i];
+				$children[] = $segments[$i];
 				continue;
 			}
 
@@ -237,7 +309,7 @@ class Segments {
 	 * @param $type
 	 * @return mixed
 	 */
-	protected function getType($type){
+	protected function getType($type) {
 
 		$types = array();
 
@@ -301,8 +373,8 @@ class Segments {
 		$types['RI'][2] = $types['ST'];     // Explicit Time Interval (ST)
 
 		$types['DLD'][0] = '';              // (DLD)
-		$types['DLD'][1] =  $types['IS'];   // Discharge Location (IS)
-		$types['DLD'][2] =  $types['TS'];   // Effective Date (TS)
+		$types['DLD'][1] = $types['IS'];   // Discharge Location (IS)
+		$types['DLD'][2] = $types['TS'];   // Effective Date (TS)
 
 		$types['ELD'][0] = '';              // (ELD)
 		$types['ELD'][1] = $types['ST'];    // Segment ID (ST)
@@ -384,7 +456,6 @@ class Segments {
 		$types['LA2'][15] = '';             // Address Type (ID)
 		$types['LA2'][16] = '';             // Other Geographic Designation
 		$types['LA2'][17] = '';             //
-
 
 		$types['MSG'][0] = '';              // (MSG)
 		$types['MSG'][1] = '';              // Message Code (ID)
@@ -482,9 +553,9 @@ class Segments {
 		$types['XPN'][8] = '';                  // Name	Representation Code (ID)
 		$types['XPN'][9] = $types['CE'];        // Name Context (CE)
 		$types['XPN'][10] = '';                 // Name Validity Range (DR)
-//		$types['XPN'][10][0] = '';              // Sub-components for Name Validity Range (DR):
-//		$types['XPN'][10][1] = $types['TS'];    // Range Start Date/Time (TS)
-//		$types['XPN'][10][2] = $types['TS'];    // Range End Date/Time (TS)
+		//		$types['XPN'][10][0] = '';              // Sub-components for Name Validity Range (DR):
+		//		$types['XPN'][10][1] = $types['TS'];    // Range Start Date/Time (TS)
+		//		$types['XPN'][10][2] = $types['TS'];    // Range End Date/Time (TS)
 		$types['XPN'][11] = '';                 // Name Assembly Order (ID)
 		$types['XPN'][12] = $types['TS'];       // Effective Date (TS)
 		$types['XPN'][13] = $types['TS'];       // Expiration Date (TS)
@@ -558,7 +629,6 @@ class Segments {
 		$types['EIP'][0] = '';               // (EIP)
 		$types['EIP'][1] = $types['EI'];     // Placer Assigned Identifier (EI)
 		$types['EIP'][2] = $types['EI'];     // Filler Assigned Identifier (EI)
-
 
 		$types['PRL'][0] = '';               // (PRL)
 		$types['PRL'][1] = $types['CE'];     // Parent Observation Identifier (CE)
@@ -664,16 +734,57 @@ class Segments {
 		$types['JCC'][2] = $types['IS'];     // Job Class (MO)
 		$types['JCC'][3] = $types['TX'];     // Job Description Text (NM)
 
+		$types['SCV'][0] = '';               // (SCV)
+		$types['SCV'][1] = $types['CWE'];    // (CWE)
+		$types['SCV'][2] = $types['ST'];     // (ST)
+
 		return $types[$type];
 
 	}
 
-	protected function setDynamicFields(){
+	protected function isRepeatable($fieldKey) {
+		return in_array($fieldKey, $this->repeatableFields);
+	}
+
+	private function setRepeatableField($fieldKey) {
+		array_push($this->repeatableFields, $fieldKey);
+	}
+
+	private function setRequiredField($fieldKey) {
+		array_push($this->requiredFields, $fieldKey);
+	}
+
+	private function setFieldLength($fieldKey, $len) {
+		$this->fieldsLengths[$fieldKey] = $len;
+	}
+
+	private function setFieldType($fieldKey, $type, $repeatable) {
+		if($repeatable){
+			$this->rawSeg[$fieldKey][0] = $this->getType($type);
+		}else{
+			$this->rawSeg[$fieldKey] = $this->getType($type);
+		}
+	}
+
+	protected function setFieldValue($fieldKey, $value) {
+		$this->rawSeg[$fieldKey] = $value;
+	}
+
+	protected function setField($fieldKey, $type, $len, $required = false, $repeatable = false) {
+		$this->setFieldType($fieldKey, $type, $repeatable);
+		$this->setFieldLength($fieldKey, $len);
+		if($required){
+			$this->setRequiredField($fieldKey);
+		}
+		if($repeatable){
+			$this->setRepeatableField($fieldKey);
+		}
+	}
+
+	protected function setDynamicFields() {
 		if(!empty($this->dynamicFields)){
 			foreach($this->dynamicFields as $xField => $yField){
-
 				print $this->rawSeg[$xField];
-
 				$this->rawSeg[$yField] = $this->getType($this->rawSeg[$xField]);
 			}
 		}

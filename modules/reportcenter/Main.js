@@ -34,7 +34,7 @@ Ext.define('Modules.reportcenter.Main', {
 		 * @param node      (object || array)   navigation node configuration properties
 		 */
 		me.addNavigationNodes('root', {
-			text: i18n('report_center'),
+			text: _('report_center'),
 			leaf: true,
 			cls: 'file',
 			iconCls: 'icoReport',

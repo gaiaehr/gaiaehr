@@ -70,25 +70,6 @@ class authProcedures {
 			return array('success' => false, 'type' => 'error', 'message' => 'The password field can not be in blank. Try again.');
 		}
 		//-------------------------------------------
-		// Find the AES key in the selected site
-		// And include the rest of the remaining
-		// variables to connect to the database.
-		//-------------------------------------------
-//		$root = ROOT;
-//		$fileConf = $root . '/sites/' . $params->site . '/conf.php';
-//		if(file_exists($fileConf)){
-//			/** @noinspection PhpIncludeInspection */
-//			include_once($fileConf);
-//			$db = new MatchaHelper();
-//			$err = $db->getError();
-//			if(!is_array($err)){
-//				return array('success' => false, 'type' => 'error', 'message' => 'For some reason, I can\'t connect to the database.');
-//			}
-//			// Do not stop here!, continue with the rest of the code.
-//		} else{
-//			return array('success' => false, 'type' => 'error', 'message' => 'No configuration file found for site <span style="font-weight:bold">' . $params->site . '</span>.<br>Please double check URL or contact support desk.');
-//		}
-		//-------------------------------------------
 		// remove empty spaces single and double quotes from username and password
 		//-------------------------------------------
 		$params->authUser = trim(str_replace(array('\'', '"'), '', $params->authUser));
@@ -165,19 +146,23 @@ class authProcedures {
 	 */
 	public function ckAuth(){
 		//MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
-		if(!isset($_SESSION['site']['flops'])) $_SESSION['site']['flops'] = 0;
-		$_SESSION['site']['flops']++;
+//		if(!isset($_SESSION['site']['flops'])) $_SESSION['site']['flops'] = 0;
+//		$_SESSION['site']['flops']++;
 		//****************************************************************
 		// If the session has passed 60 flops, with out any activity exit
 		// the application.
 		//
 		// return an exit code
 		//****************************************************************
-		if($_SESSION['site']['flops'] < 300){
+		if(isset($_SESSION['session_id'])){
 			$this->session->updateSession();
 			return array('authorized' => true);
-		} else{
+
+		} elseif(isset($_SESSION['session_id']) && (isset($_SESSION['user']) && !$_SESSION['user']['auth'])){
 			$this->unAuth();
+			return array('authorized' => false);
+
+		}else{
 			return array('authorized' => false);
 		}
 	}

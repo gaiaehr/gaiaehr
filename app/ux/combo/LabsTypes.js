@@ -30,7 +30,7 @@ Ext.define('App.ux.combo.LabsTypes', {
 			//queryMode   : 'local',
 			displayField: 'loinc_name',
 			valueField  : 'loinc_name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		});
 		me.callParent(arguments);

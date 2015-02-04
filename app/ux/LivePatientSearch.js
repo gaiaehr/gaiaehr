@@ -19,7 +19,14 @@ Ext.define('App.ux.LivePatientSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patienlivetsearch',
 	hideLabel: true,
-
+	displayField: 'fullname',
+	valueField: 'pid',
+	emptyText: _('search_for_a_patient') + '...',
+	maxLength: 40,
+	typeAhead: false,
+	hideTrigger: true,
+	minChars: 1,
+	queryDelay: 200,
 	initComponent: function(){
 		var me = this;
 
@@ -55,6 +62,11 @@ Ext.define('App.ux.LivePatientSearch', {
 				},
 				{
 					name: 'DOB',
+					type: 'date',
+					dateFormat: 'Y-m-d H:i:s'
+				},
+				{
+					name: 'sex',
 					type: 'string'
 				},
 				{
@@ -82,21 +94,14 @@ Ext.define('App.ux.LivePatientSearch', {
 
 		Ext.apply(me, {
 			store: me.store,
-			displayField: 'fullname',
-			valueField: 'pid',
-			emptyText: i18n('search_for_a_patient') + '...',
-			typeAhead: false,
-			hideTrigger: true,
-			minChars: 1,
-			queryDelay: 200,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3><span>{fullname}</span>&nbsp;&nbsp;({pid})</h3>DOB:&nbsp;{DOB}&nbsp;SS:&nbsp;{SS}</div>';
+					return '<div class="search-item"><h3><span>{fullname}</span> ({pid})</h3><span style="font-weight: bold">DOB:</span> {[Ext.Date.format(values.DOB, g("date_time_display_format"))]} <span style="font-weight: bold">SS:</span> {SS}</div>';
 				}
 			},
 			pageSize: 10

@@ -88,14 +88,14 @@ Ext.define('Modules.imageforms.view.ImageForm', {
 				},
 				{
 					xtype: 'button',
-					text: i18n('color'),
+					text: _('color'),
 					itemId: 'imageFormColorBtn'
 				},
 				'->',
 				{
 					xtype: 'button',
 					itemId: 'imageFormResetBtn',
-					text: i18n('reset'),
+					text: _('reset'),
 					minWidth: 70
 				},
 				'-',
@@ -103,7 +103,7 @@ Ext.define('Modules.imageforms.view.ImageForm', {
 					xtype: 'button',
 					itemId: 'imageFormSaveBtn',
 					action: 'encounterRecordAdd',
-					text: i18n('save'),
+					text: _('save'),
 					minWidth: 70
 				}
 			]
@@ -118,7 +118,7 @@ Ext.define('Modules.imageforms.view.ImageForm', {
 					name: 'notes',
 					grow: true,
 					flex: 1,
-					emptyText: i18n('notes')
+					emptyText: _('notes')
 				}
 			]
 		}

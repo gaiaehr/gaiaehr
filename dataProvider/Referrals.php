@@ -15,73 +15,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once(ROOT . '/dataProvider/ServiceCodes.php');
-include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
-include_once(ROOT . '/dataProvider/User.php');
 class Referrals {
 	/**
 	 * @var MatchaCUP
 	 */
 	private $r;
-	private $service;
-	private $diagnosis;
-	private $user;
 
 	function __construct(){
 		$this->r = MatchaModel::setSenchaModel('App.model.patient.Referral');
-		$this->service = new ServiceCodes();
-		$this->diagnosis = new DiagnosisCodes();
-		$this->user = new User();
 	}
 
 	public function getPatientReferrals($params){
-		$records = $this->r->load($params)->all();
-		foreach($records AS $i => $record){
-			$records[$i] = $this->processRecord($record);
-		}
-		return $records;
+		return $this->r->load($params)->all();;
 	}
 
 	public function getPatientReferral($params){
-		$record = $this->r->load($params)->one();
-		return $this->processRecord($record);
+		return $this->r->load($params)->one();
 	}
 
 	public function addPatientReferral($params){
-		$records = $this->r->save($params);
-		if(is_array($params)){
-			foreach($records AS $i => $record){
-				$records[$i] = (object) $this->processRecord((array) $record);
-			}
-		}else{
-			$records = (object) $this->processRecord((array) $records);
-		}
-		return $records;
+		return $this->r->save($params);
 	}
 
 	public function updatePatientReferral($params){
-		$records = $this->r->save($params);
-		if(is_array($records)){
-			foreach($records AS $i => $record){
-				$records[$i] = (object) $this->processRecord((array) $record);
-			}
-		}else{
-			$records = (object) $this->processRecord((array) $records);
-		}
-		return $records;
+		return $this->r->save($params);
 	}
 
 	public function deletePatientReferral($params){
 		return $this->r->destroy($params);
 	}
-
-	private function processRecord($record){
-		$record['service_text'] = $this->service->getServiceCodeByCodeAndCodeType($record['service_code'], $record['service_code_type']);
-		$record['diagnosis_text'] = $this->diagnosis->getServiceCodeByCodeAndCodeType($record['diagnosis_code'], $record['diagnosis_code_type']);
-		$record['refer_by_text'] = $this->user->getUserFullNameById($record['refer_by']);
-		$record['refer_to_text'] = $this->user->getUserFullNameById($record['refer_to']);
-		return $record;
-	}
-
 
 }

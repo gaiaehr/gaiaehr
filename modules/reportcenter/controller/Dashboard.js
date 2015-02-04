@@ -43,7 +43,7 @@ Ext.define('Modules.reportcenter.controller.Dashboard', {
 		if(me.getDashboardColumnTwo()){
 			me.getDashboardColumnTwo().add({
 				xtype: 'portlet',
-				title: i18n('week_report'),
+				title: _('week_report'),
 				items: [
 					{
 						xtype: 'weekvisitsportlet',

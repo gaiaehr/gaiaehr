@@ -25,29 +25,27 @@ class PD1 extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'PD1';                   // PD1 Message Header Segment
-		$this->rawSeg[1] = $this->getType('IS');    // TABLE 0223
-		$this->rawSeg[2] = $this->getType('IS');    // TABLE 0220
-		$this->rawSeg[3] = $this->getType('XON');
-		$this->rawSeg[4] = $this->getType('XCN');
-		$this->rawSeg[5] = $this->getType('IS');    // TABLE 0231
-		$this->rawSeg[6] = $this->getType('IS');    // TABLE 0295
-		$this->rawSeg[7] = $this->getType('IS');    // TABLE 0315
-		$this->rawSeg[8] = $this->getType('IS');    // TABLE 0316
-		$this->rawSeg[9] = $this->getType('ID');    // TABLE 0136
-		$this->rawSeg[10] = $this->getType('CX');
-		$this->rawSeg[11] = $this->getType('CE');   // TABLE 0215
-		$this->rawSeg[12] = $this->getType('ID');   // TABLE 0136
-		$this->rawSeg[13] = $this->getType('DT');
-		$this->rawSeg[14] = $this->getType('XON');
-		$this->rawSeg[15] = $this->getType('CE');   // TABLE 0435
-		$this->rawSeg[16] = $this->getType('IS');   // TABLE 0441
-		$this->rawSeg[17] = $this->getType('DT');
-		$this->rawSeg[18] = $this->getType('DT');
-		$this->rawSeg[19] = $this->getType('IS');   // TABLE 0140
-		$this->rawSeg[20] = $this->getType('IS');   // TABLE 0141
-		$this->rawSeg[21] = $this->getType('IS');   // TABLE 0142
+		parent::__construct($hl7, 'PD1');
+		$this->setField(1, 'IS', 2, false, true);    // TABLE 0223
+		$this->setField(2, 'IS', 2);    // TABLE 0220
+		$this->setField(3, 'XON', 250, false, true);
+		$this->setField(4, 'XCN', 250, false, true);
+		$this->setField(5, 'IS', 2);    // TABLE 0231
+		$this->setField(6, 'IS', 2);    // TABLE 0295
+		$this->setField(7, 'IS', 2);    // TABLE 0315
+		$this->setField(8, 'IS', 2);    // TABLE 0316
+		$this->setField(9, 'ID', 1);    // TABLE 0136
+		$this->setField(10, 'CX', 250, false, true);
+		$this->setField(11, 'CE', 250);   // TABLE 0215
+		$this->setField(12, 'ID', 1);   // TABLE 0136
+		$this->setField(13, 'DT', 8);
+		$this->setField(14, 'XON', 250, false, true);
+		$this->setField(15, 'CE', 250, false, true);   // TABLE 0435
+		$this->setField(16, 'IS', 1);   // TABLE 0441
+		$this->setField(17, 'DT', 8);
+		$this->setField(18, 'DT', 8);
+		$this->setField(19, 'IS', 5);   // TABLE 0140
+		$this->setField(20, 'IS', 2);   // TABLE 0141
+		$this->setField(21, 'IS', 3);   // TABLE 0142
 	}
 }

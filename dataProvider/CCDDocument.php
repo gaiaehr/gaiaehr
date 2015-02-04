@@ -25,9 +25,11 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
-ob_start();
-if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+if(!defined('_GaiaEXEC')){
+	define('_GaiaEXEC', 1);
+	require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+}
+
 include_once(ROOT . '/classes/UUID.php');
 include_once(ROOT . '/classes/Array2XML.php');
 
@@ -38,9 +40,15 @@ include_once(ROOT . '/dataProvider/Rxnorm.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/PoolArea.php');
 include_once(ROOT . '/dataProvider/Vitals.php');
-include_once(ROOT . '/dataProvider/Medical.php');
+include_once(ROOT . '/dataProvider/Immunizations.php');
+include_once(ROOT . '/dataProvider/ActiveProblems.php');
+include_once(ROOT . '/dataProvider/Allergies.php');
+include_once(ROOT . '/dataProvider/Orders.php');
 include_once(ROOT . '/dataProvider/Medications.php');
-include_once(ROOT . '/dataProvider/PreventiveCare.php');
+include_once(ROOT . '/dataProvider/CarePlanGoals.php');
+include_once(ROOT . '/dataProvider/CognitiveAndFunctionalStatus.php');
+include_once(ROOT . '/dataProvider/Procedures.php');
+include_once(ROOT . '/dataProvider/SocialHistory.php');
 include_once(ROOT . '/dataProvider/Services.php');
 include_once(ROOT . '/dataProvider/DiagnosisCodes.php');
 include_once(ROOT . '/dataProvider/Facilities.php');
@@ -69,10 +77,6 @@ class CCDDocument {
 	 */
 	private $Encounter;
 	/**
-	 * @var Medical
-	 */
-	private $Medical;
-	/**
 	 * @var Facilities
 	 */
 	private $Facilities;
@@ -84,6 +88,10 @@ class CCDDocument {
 	 * @var array
 	 */
 	private $facility;
+	/**
+	 * @var array
+	 */
+	private $user;
 	/**
 	 * @var DomDocument
 	 */
@@ -113,13 +121,24 @@ class CCDDocument {
 	 * @var array
 	 */
 	private $codes = array(
+		'CPT' => '2.16.840.1.113883.6.12',
 		'CPT4' => '2.16.840.1.113883.6.12',
+		'CPT-4' => '2.16.840.1.113883.6.12',
 		'ICD9' => '2.16.840.1.113883.6.42',
+		'ICD-9' => '2.16.840.1.113883.6.42',
 		'ICD10' => '2.16.840.1.113883.6.3',
+		'ICD-10' => '2.16.840.1.113883.6.3',
+		'LN' => '2.16.840.1.113883.6.1',
 		'LOINC' => '2.16.840.1.113883.6.1',
 		'NDC' => '2.16.840.1.113883.6.6',
 		'RXNORM' => '2.16.840.1.113883.6.88',
-		'SNOMEDCT' => '2.16.840.1.113883.6.96'
+		'SNOMED' => '2.16.840.1.113883.6.96',
+		'SNOMEDCT' => '2.16.840.1.113883.6.96',
+		'SNOMED-CT' => '2.16.840.1.113883.6.96',
+		'NPI' => '2.16.840.1.113883.4.6',
+		'UNII' => '2.16.840.1.113883.4.9',
+		'NCI' => '2.16.840.1.113883.3.26.1.1',
+		'ActPriority' => '2.16.840.1.113883.1.11.16866'
 	);
 	/**
 	 * @var array
@@ -162,11 +181,10 @@ class CCDDocument {
 	 */
 	private $requiredEncounters;
 
-	function __construct(){
+	function __construct() {
 		$this->dateNow = date('Ymd');
 		$this->timeNow = date('YmdHisO');
 		$this->Encounter = new Encounter();
-		$this->Medical = new Medical();
 		$this->Facilities = new Facilities();
 		$this->CombosData = new CombosData();
 		$this->facility = $this->Facilities->getCurrentFacility(true);
@@ -175,29 +193,29 @@ class CCDDocument {
 	/**
 	 * @param $pid
 	 */
-	public function setPid($pid){
+	public function setPid($pid) {
 		$this->pid = $pid;
 	}
 
 	/**
 	 * @param $eid
 	 */
-	public function setEid($eid){
+	public function setEid($eid) {
 		$this->eid = $eid;
 	}
 
 	/**
 	 * @param $template
 	 */
-	public function setTemplate($template){
+	public function setTemplate($template) {
 		$this->template = $template;
 	}
 
 	/**
 	 * Method buildCCD()
 	 */
-	public function createCCD(){
-		try{
+	public function createCCD() {
+		try {
 			if(!isset($this->pid))
 				throw new Exception('PID variable not set');
 
@@ -242,7 +260,7 @@ class CCDDocument {
 			 */
 			Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"'));
 			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 	}
@@ -250,12 +268,11 @@ class CCDDocument {
 	/**
 	 * Method view()
 	 */
-	public function view(){
-		try{
-			ob_clean();
+	public function view() {
+		try {
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 	}
@@ -263,10 +280,10 @@ class CCDDocument {
 	/**
 	 * Method get()
 	 */
-	public function get(){
-		try{
+	public function get() {
+		try {
 			return $this->xml->saveXML();
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			return $e->getMessage();
 		}
 	}
@@ -274,12 +291,12 @@ class CCDDocument {
 	/**
 	 * Method export()
 	 */
-	public function export(){
-		try{
+	public function export() {
+		try {
 			/**
 			 * Create a ZIP archive for delivery
 			 */
-			$dir = $_SESSION['site']['temp']['path'] . '/';
+			$dir = site_temp_path . '/';
 			$filename = $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
 			$file = $this->zipIt($dir, $filename);
 			/**
@@ -290,7 +307,7 @@ class CCDDocument {
 			header('Content-Disposition: attachment; filename="' . $filename . '.zip' . '"');
 			readfile($file);
 			unlink($file);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 
@@ -301,11 +318,11 @@ class CCDDocument {
 	 * @param $toDir
 	 * @param $fileName
 	 */
-	public function save($toDir, $fileName){
-		try{
+	public function save($toDir, $fileName) {
+		try {
 			$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
 			$this->zipIt($toDir, $filename);
-		} catch(Exception $e){
+		} catch(Exception $e) {
 			print $e->getMessage();
 		}
 	}
@@ -313,14 +330,14 @@ class CCDDocument {
 	/**
 	 * @return mixed
 	 */
-	private function getTemplateId(){
+	private function getTemplateId() {
 		return $this->templateIds[$this->template];
 	}
 
 	/**
 	 * Method setRequirements()
 	 */
-	private function setRequirements(){
+	private function setRequirements() {
 		if($this->template == 'toc'){
 			$this->requiredAllergies = true;
 			$this->requiredVitals = true;
@@ -337,7 +354,7 @@ class CCDDocument {
 	/**
 	 * Method zipIt()
 	 */
-	private function zipIt($dir, $filename){
+	private function zipIt($dir, $filename) {
 		$zip = new ZipArchive();
 		$file = $dir . $filename . '.zip';
 		if($zip->open($file, ZipArchive::CREATE) !== true)
@@ -351,7 +368,7 @@ class CCDDocument {
 	/**
 	 * Method setHeader()
 	 */
-	private function setHeader(){
+	private function setHeader() {
 		$this->xmlData['realmCode'] = array(
 			'@attributes' => array(
 				'code' => 'US'
@@ -363,9 +380,22 @@ class CCDDocument {
 				'extension' => 'POCD_HD000040'
 			)
 		);
-		$this->xmlData['templateId'] = array(
+		// US Realm Header Template Id
+		$this->xmlData['templateId'][] = array(
 			'@attributes' => array(
 				'root' => $this->getTemplateId()
+			)
+		);
+		// QRDA templateId
+		$this->xmlData['templateId'][] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.10.20.24.1.1'
+			)
+		);
+		// QDM-based QRDA templateId
+		$this->xmlData['templateId'][] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.10.20.24.1.2'
 			)
 		);
 		$this->xmlData['id'] = array(
@@ -399,6 +429,7 @@ class CCDDocument {
 		$this->xmlData['recordTarget'] = $this->getRecordTarget();
 		$this->xmlData['author'] = $this->getAuthor();
 		$this->xmlData['custodian'] = $this->getCustodian();
+		$this->xmlData['documentationOf'] = $this->getDocumentationOf();
 		$this->xmlData['component']['structuredBody']['component'] = array();
 
 	}
@@ -407,96 +438,134 @@ class CCDDocument {
 	 * Method getRecordTarget()
 	 * @return array
 	 */
-	private function getRecordTarget(){
+	private function getRecordTarget() {
 		$Patient = new Patient();
 		$patientData = $this->patientData = $Patient->getPatientDemographicDataByPid($this->pid);
 		$Insurance = new Insurance();
 		$insuranceData = $Insurance->getPatientPrimaryInsuranceByPid($this->pid);
 
-		$recordTarget = array(
-			'typeId' => array(
-				'@attributes' => array(
-					'root' => '2.16.840.1.113883.1.3',
-					'extension' => 'POCD_HD000040'
-				)
-			),
-			'patientRole' => array(
-				'id' => array(
-					'@attributes' => array(
-						'extension' => $patientData['pid'],
-						'root' => '2.16.840.1.113883.19.5'
-					)
-				),
-				'patient' => array(
-					'name' => array(
-						'given' => array(
-							$patientData['fname'],
-							$patientData['mname']
-						),
-						'family' => $patientData['lname'],
-						'suffix' => array(
-							'@attributes' => array(
-								'qualifier' => 'TITLE'
-							),
-							'@value' => isset($patientData['title']) ? $patientData['title'] : ''
-
-						),
-					),
-					'administrativeGenderCode' => array(
-						'@attributes' => array(
-							'code' => $patientData['sex'],
-							// values are M, F, or UM more info... http://phinvads.cdc.gov/vads/ViewValueSet.action?id=8DE75E17-176B-DE11-9B52-0015173D1785
-							'codeSystem' => '2.16.840.1.113883.5.1'
-						)
-					),
-					'birthTime' => array(
-						'@attributes' => array(
-							'value' => preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $patientData['DOB'])
-						)
-					),
-					'ethnicGroupCode' => array(
-						'@attributes' => array(
-							'code' => $patientData['ethnicity'] == 'H' ? '2135-2' : '2186-5',
-							'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(59, $patientData['ethnicity']),
-							'codeSystem' => '2.16.840.1.113883.6.238'
-						)
-					),
-					'raceCode' => array(
-						'@attributes' => array(
-							'code' => $patientData['race'],
-							'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(14, $patientData['race']),
-							'codeSystem' => '2.16.840.1.113883.6.238'
-						)
-					)
-				),
-				'addr' => array(
-
-					'@attributes' => array(
-						'use' => 'HP',
-					),
-					'streetAddressLine' => array(
-						'@value' => 'Strert'
-					),
-					'city' => array(
-						'@value' => 'Carolina'
-					),
-					'state' => array(
-						'@value' => 'PR'
-					),
-					'postalCode' => array(
-						'@value' => '00987'
-					),
-					'country' => array(
-						'@value' => 'USA'
-					)
-				),
-				'telecom' => array(
-					'@attributes' => array(
-						'value' => 'tel:000-000-0000'
-					)
-				)
+		$recordTarget['typeId'] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.1.3',
+				'extension' => 'POCD_HD000040'
 			)
 		);
+
+		$recordTarget['patientRole']['id'] = array(
+			'@attributes' => array(
+				'extension' => $patientData['pid'],
+				'root' => '2.16.840.1.113883.19.5'
+			)
+		);
+
+		if($patientData['address'] != ''){
+			$recordTarget['patientRole']['addr'] = array(
+				'@attributes' => array(
+					'use' => 'HP',
+				),
+				'streetAddressLine' => array(
+					'@value' => $patientData['address']
+				),
+				'city' => array(
+					'@value' => $patientData['city']
+				),
+				'state' => array(
+					'@value' => $patientData['state']
+				),
+				'postalCode' => array(
+					'@value' => $patientData['zipcode']
+				),
+				'country' => array(
+					'@value' => $patientData['country']
+				)
+			);
+		}
+
+		if($patientData['home_phone'] != ''){
+			$recordTarget['patientRole']['telecom'] = array(
+				'@attributes' => array(
+					'xsi:type' => 'TEL',
+					'value' => 'tel:' . $patientData['home_phone']
+				)
+			);
+		}
+
+		$recordTarget['patientRole']['patient']['name'] = array(
+			'@attributes' => array(
+				'use' => 'L'
+			),
+		);
+
+		$recordTarget['patientRole']['patient']['name']['given'][] = $patientData['fname'];
+
+		if($patientData['mname'] != ''){
+			$recordTarget['patientRole']['patient']['name']['given'][] = $patientData['mname'];
+		}
+
+		$recordTarget['patientRole']['patient']['name']['family'] = $patientData['lname'];
+
+		if($patientData['title'] != ''){
+			$recordTarget['patientRole']['patient']['name']['suffix'] = array(
+				'@attributes' => array(
+					'qualifier' => 'TITLE'
+				),
+				'@value' => isset($patientData['title']) ? $patientData['title'] : ''
+			);
+		}
+
+		$recordTarget['patientRole']['patient']['administrativeGenderCode'] = array(
+			'@attributes' => array(
+				'code' => $patientData['sex'],
+				// values are M, F, or UM more info... http://phinvads.cdc.gov/vads/ViewValueSet.action?id=8DE75E17-176B-DE11-9B52-0015173D1785
+				'codeSystemName' => 'AdministrativeGender',
+				'codeSystem' => '2.16.840.1.113883.5.1'
+			)
+		);
+
+		if($patientData['sex'] == 'F'){
+			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Female';
+		} elseif($patientData['sex'] == 'M') {
+			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Male';
+		}
+
+		$recordTarget['patientRole']['patient']['birthTime'] = array(
+			'@attributes' => array(
+				'value' => preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $patientData['DOB'])
+			)
+		);
+
+		if(isset($patientData['marital_status']) && $patientData['marital_status'] != ''){
+			$recordTarget['patientRole']['patient']['maritalStatusCode'] = array(
+				'@attributes' => array(
+					'code' => $patientData['marital_status'],
+					'codeSystemName' => 'MaritalStatusCode',
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(12, $patientData['marital_status']),
+					'codeSystem' => '2.16.840.1.113883.5.2'
+				)
+			);
+		}
+
+		if(isset($patientData['race']) && $patientData['race'] != ''){
+			$recordTarget['patientRole']['patient']['raceCode'] = array(
+				'@attributes' => array(
+					'code' => $patientData['race'],
+					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(14, $patientData['race']),
+					'codeSystem' => '2.16.840.1.113883.6.238'
+				)
+			);
+		}
+
+		if(isset($patientData['ethnicity']) && $patientData['ethnicity'] != ''){
+			$recordTarget['patientRole']['patient']['ethnicGroupCode'] = array(
+				'@attributes' => array(
+					'code' => $patientData['ethnicity'] == 'H' ? '2135-2' : '2186-5',
+					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(59, $patientData['ethnicity']),
+					'codeSystem' => '2.16.840.1.113883.6.238'
+				)
+			);
+		}
 
 		unset($Patient, $patientData, $Insurance, $insuranceData);
 
@@ -507,9 +576,9 @@ class CCDDocument {
 	 * Method getAuthor()
 	 * @return array
 	 */
-	private function getAuthor(){
+	private function getAuthor() {
 		$User = new User();
-		$userData = $User->getCurrentUserData();
+		$this->user = $User->getCurrentUserData();
 		$author = array(
 			'typeId' => array(
 				'@attributes' => array(
@@ -526,14 +595,40 @@ class CCDDocument {
 				'id' => array(
 					'@attributes' => array(
 						'root' => '2.16.840.1.113883.4.6',
-						'extension' => $userData['npi']
+						'extension' => $this->user['npi']
+					)
+				),
+				'addr' => array(
+					'@attributes' => array(
+						'use' => 'HP',
+					),
+					'streetAddressLine' => array(
+						'@value' => $this->facility['street']
+					),
+					'city' => array(
+						'@value' => $this->facility['city']
+					),
+					'state' => array(
+						'@value' => $this->facility['state']
+					),
+					'postalCode' => array(
+						'@value' => $this->facility['postal_code']
+					),
+					'country' => array(
+						'@value' => $this->facility['country_code']
+					)
+				),
+				'telecom' => array(
+					'@attributes' => array(
+						'value' => 'tel:' . $this->facility['phone'],
+						'use' => 'HP'
 					)
 				),
 				'assignedPerson' => array(
 					'name' => array(
-						'prefix' => $userData['title'],
-						'given' => $userData['fname'],
-						'family' => $userData['lname'],
+						'prefix' => $this->user['title'],
+						'given' => $this->user['fname'],
+						'family' => $this->user['lname'],
 					)
 				),
 				'representedOrganization' => array(
@@ -543,47 +638,13 @@ class CCDDocument {
 							'extension' => UUID::v4()
 						),
 					),
-					'name' => $this->facility['name']
-				),
-				'addr' => array(
-					'@attributes' => array(
-						'use' => 'HP',
+					'name' => $this->facility['name'],
+					'telecom' => array(
+						'@attributes' => array(
+							'value' => 'tel:' . $this->facility['phone'],
+							'use' => 'HP'
+						)
 					),
-					'streetAddressLine' => array(
-						'@value' => 'Strert'
-					),
-					'city' => array(
-						'@value' => 'Carolina'
-					),
-					'state' => array(
-						'@value' => 'PR'
-					),
-					'postalCode' => array(
-						'@value' => '00987'
-					),
-					'country' => array(
-						'@value' => 'USA'
-					)
-				),
-				'telecom' => array(
-					'@attributes' => array(
-						'value' => 'tel:000-000-0000'
-					)
-				)
-			)
-		);
-
-		return $author;
-	}
-
-	/**
-	 * Method getCustodian()
-	 * @return array
-	 */
-	private function getCustodian(){
-		$custodian = array(
-			'assignedCustodian' => array(
-				'representedCustodianOrganization' => array(
 					'addr' => array(
 						'@attributes' => array(
 							'use' => 'HP',
@@ -604,6 +665,21 @@ class CCDDocument {
 							'@value' => $this->facility['country_code']
 						)
 					),
+				)
+			)
+		);
+
+		return $author;
+	}
+
+	/**
+	 * Method getCustodian()
+	 * @return array
+	 */
+	private function getCustodian() {
+		$custodian = array(
+			'assignedCustodian' => array(
+				'representedCustodianOrganization' => array(
 					'id' => array(
 						'@attributes' => array(
 							'root' => '2.16.840.1.113883.4.6',
@@ -616,6 +692,26 @@ class CCDDocument {
 						'@attributes' => array(
 							'value' => 'tel:(000)000-0000',
 						)
+					),
+					'addr' => array(
+						'@attributes' => array(
+							'use' => 'HP',
+						),
+						'streetAddressLine' => array(
+							'@value' => $this->facility['street']
+						),
+						'city' => array(
+							'@value' => $this->facility['city']
+						),
+						'state' => array(
+							'@value' => $this->facility['state']
+						),
+						'postalCode' => array(
+							'@value' => $this->facility['postal_code']
+						),
+						'country' => array(
+							'@value' => $this->facility['country_code']
+						)
 					)
 				)
 			)
@@ -627,83 +723,145 @@ class CCDDocument {
 	 * Method getDocumentationOf()
 	 * @return array
 	 */
-	private function getDocumentationOf(){
-		//		$documentationOf = array(
-		//			'serviceEvent' => array(
-		//				'@attributes' => array(
-		//					'classCode' => 'PCPR'
-		//				),
-		//				'effectiveTime' => array(
-		//					'@attributes' => array(
-		//						'xsi:type' => 'IVL_TS',
-		//					),
-		//					'low' => array(
-		//						'@attributes' => array(
-		//							'value' => '19320924'
-		//						)
-		//					),
-		//					'high' => array(
-		//						'@attributes' => array(
-		//							'value' => $dateNow
-		//						)
-		//					)
-		//				),
-		//				'performer' => array(
-		//					'@attributes' => array(
-		//						'typeCode' => 'PRF'
-		//					),
-		//					'functionCode' => array(
-		//						'@attributes' => array(
-		//							'code' => 'PCP',
-		//							'codeSystem' => '2.16.840.1.113883.5.88'
-		//						)
-		//					),
-		//					'time' => array(
-		//						'low' => array(
-		//							'@attributes' => array(
-		//								'value' => '1990'
-		//							)
-		//						),
-		//						'high' => array(
-		//							'@attributes' => array(
-		//								'value' => $dateNow
-		//							)
-		//						)
-		//					),
-		//					'assignedEntity' => array(
-		//						'id' => array(
-		//							'@attributes' => array(
-		//								'root' => UUID::v4()
-		//							)
-		//						),
-		//						'assignedPerson' => array(
-		//							'name' => array(
-		//								'prefix' => $userData['title'],
-		//								'given' => $userData['fname'],
-		//								'family' => $userData['lname'],
-		//							)
-		//						),
-		//						'representedOrganization' => array(
-		//							'id' => array(
-		//								'@attributes' => array(
-		//									'root' => '2.16.840.1.113883.19.5',
-		//									'extension' => UUID::v4()
-		//								)
-		//							),
-		//							'name' => $facility['name']
-		//						)
-		//					)
-		//				)
-		//			)
-		//		);
-		return array();
+	private function getDocumentationOf() {
+		$documentationOf = array(
+			'serviceEvent' => array(
+				'@attributes' => array(
+					'classCode' => 'PCPR'
+				),
+				'effectiveTime' => array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					),
+					'low' => array(
+						'@attributes' => array(
+							'value' => '19320924'
+						)
+					),
+					'high' => array(
+						'@attributes' => array(
+							'value' => $this->dateNow
+						)
+					)
+				),
+				'performer' => array(
+					'@attributes' => array(
+						'typeCode' => 'PRF'
+					),
+					'functionCode' => array(
+						'@attributes' => array(
+							'code' => 'PCP',
+							'codeSystem' => '2.16.840.1.113883.5.88'
+						)
+					),
+					'time' => array(
+						'low' => array(
+							'@attributes' => array(
+								'value' => '1990'
+							)
+						),
+						'high' => array(
+							'@attributes' => array(
+								'value' => $this->dateNow
+							)
+						)
+					),
+					'assignedEntity' => array(
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'addr' => array(
+							'@attributes' => array(
+								'use' => 'HP',
+							),
+							'streetAddressLine' => array(
+								'@value' => $this->facility['street']
+								//TODO provider
+							),
+							'city' => array(
+								'@value' => $this->facility['city']
+								//TODO provider
+							),
+							'state' => array(
+								'@value' => $this->facility['state']
+								//TODO provider
+							),
+							'postalCode' => array(
+								'@value' => $this->facility['postal_code']
+								//TODO provider
+							),
+							'country' => array(
+								'@value' => $this->facility['country_code']
+								//TODO provider
+							)
+						),
+						'telecom' => array(
+							'@attributes' => array(
+								'value' => 'tel:(000)000-0000',
+								//TODO provider
+							)
+						),
+						'assignedPerson' => array(
+							'name' => array(
+								'prefix' => $this->user['title'],
+								'given' => $this->user['fname'],
+								'family' => $this->user['lname'],
+							)
+						),
+						'representedOrganization' => array(
+							'id' => array(
+								'@attributes' => array(
+									'root' => '2.16.840.1.113883.19.5',
+									'extension' => UUID::v4()
+								)
+							),
+							'name' => $this->facility['name'],
+							'telecom' => array(
+								'@attributes' => array(
+									'value' => 'tel:(000)000-0000',
+									//TODO provider
+								)
+							),
+							'addr' => array(
+								'@attributes' => array(
+									'use' => 'HP',
+								),
+								'streetAddressLine' => array(
+									'@value' => $this->facility['street']
+									//TODO provider
+								),
+								'city' => array(
+									'@value' => $this->facility['city']
+									//TODO provider
+								),
+								'state' => array(
+									'@value' => $this->facility['state']
+									//TODO provider
+								),
+								'postalCode' => array(
+									'@value' => $this->facility['postal_code']
+									//TODO provider
+								),
+								'country' => array(
+									'@value' => $this->facility['country_code']
+									//TODO provider
+								)
+							)
+						)
+					)
+				)
+			)
+		);
+		return $documentationOf;
 	}
 
 	/**
 	 * Method getInformant()
 	 * @return array
 	 */
-	private function getInformant(){
+	private function getInformant() {
 		//		$informant = array(
 		//			'assignedEntity' => array(
 		//				'id' => array(
@@ -729,7 +887,7 @@ class CCDDocument {
 	 * Method getLegalAuthenticator()
 	 * @return array
 	 */
-	private function getLegalAuthenticator(){
+	private function getLegalAuthenticator() {
 		//$legalAuthenticator = array(
 		//	'time' => array(
 		//		'@attributes' => array(
@@ -787,38 +945,133 @@ class CCDDocument {
 		return array();
 	}
 
+	private function getPerformerByUid($uid){
+
+		$User = new User();
+		$user = $User->getUser($uid);
+		unset($User);
+
+		if($user === false) return false;
+		$user = (object) $user;
+
+
+		if($user->facility_id == 0) return false;
+
+		$Facilities = new Facilities();
+		$facility = $Facilities->getFacility(array('id' => $user->facility_id));
+		if($user === false) return false;
+		$facility = (object) $facility;
+
+		$performer =  array(
+			'assignedEntity' => array(
+				'id' => array(
+					'@attributes' => array(
+						'root' => UUID::v4()
+					)
+				),
+				'addr' => array(
+					'@attributes' => array(
+						'use' => 'HP',
+					),
+					'streetAddressLine' => array(
+						'@value' => (isset($user->street) ? $user->street : '')
+					),
+					'city' => array(
+						'@value' => (isset($user->city) ? $user->city : '')
+					),
+					'state' => array(
+						'@value' => (isset($user->state) ? $user->state : '')
+					),
+					'postalCode' => array(
+						'@value' => (isset($user->postal_code) ? $user->postal_code : '')
+					),
+					'country' => array(
+						'@value' => (isset($user->country_code) ? $user->country_code : '')
+					)
+				),
+				'telecom' => array(
+					'@attributes' => array(
+						'value' => 'tel:' . (isset($user->phone) ? $user->phone : '')
+					)
+				),
+				'representedOrganization' => array(
+					'id' => array(
+						'@attributes' => array(
+							'root' => '2.16.840.1.113883.19.5',
+							'extension' => UUID::v4()
+						)
+					),
+					'name' => $facility->name,
+					'telecom' => array(
+						'@attributes' => array(
+							'value' => 'tel:' . $facility->phone,
+						)
+					),
+					'addr' => array(
+						'@attributes' => array(
+							'use' => 'HP',
+						),
+						'streetAddressLine' => array(
+							'@value' => $facility->street
+						),
+						'city' => array(
+							'@value' => $facility->city
+						),
+						'state' => array(
+							'@value' => $facility->state
+						),
+						'postalCode' => array(
+							'@value' => $facility->postal_code
+						),
+						'country' => array(
+							'@value' => $facility->country_code
+						)
+					)
+				)
+			)
+		);
+
+		return $performer;
+	}
+
 	/**
 	 * Method addSection()
 	 * @param $section
 	 */
-	private function addSection($section){
+	private function addSection($section) {
 		$this->xmlData['component']['structuredBody']['component'][] = $section;
 	}
 
 	/**
 	 * Method setProceduresSection()
 	 */
-	private function setProceduresSection(){
+	private function setProceduresSection() {
 
-		$procedures = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredProcedures ? '2.16.840.1.113883.10.20.22.2.7.1' : '2.16.840.1.113883.10.20.22.2.7'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '47519-4',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Procedures',
-				'text' => ''
+		$Procedures = new Procedures();
+		$proceduresData = $Procedures->getPatientProceduresByPid($this->pid);
+		unset($Procedures);
+
+		$procedures = array();
+
+		if(empty($proceduresData)){
+			$procedures['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$procedures['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredProcedures ? '2.16.840.1.113883.10.20.22.2.7.1' : '2.16.840.1.113883.10.20.22.2.7'
 			)
 		);
-
-		$proceduresData = array(); // TODO
+		$procedures['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '47519-4',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$procedures['section']['title'] = 'Procedures';
+		$procedures['section']['text'] = '';
 
 		if(!empty($proceduresData)){
 
@@ -853,18 +1106,20 @@ class CCDDocument {
 				$procedures['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Procedure Title'
+							'@value' => $item['code_text']
 						),
 						array(
-							'@value' => 'Procedure Date'
+							'@value' => $this->parseDateToText($item['create_date'])
 						)
 					)
 
 				);
 
 				//  Procedure Activity Procedure
-
-				$procedures['section']['entry'][] = array(
+				$entry = array(
+					'@attributes' => array(
+						'typeCode' => 'DRIV'
+					),
 					'procedure' => array(
 						'@attributes' => array(
 							'classCode' => 'PROC',
@@ -882,10 +1137,9 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => '152734007',
-								// TODO...
-								'codeSystem' => $this->codes['SNOMEDCT'],
-								'displayName' => 'Total hip replacement',
+								'code' => $item['code'],
+								'codeSystem' => $this->codes[$item['code_type']],
+								'displayName' => $item['code_text']
 							)
 						),
 						'statusCode' => array(
@@ -895,12 +1149,23 @@ class CCDDocument {
 						),
 						'effectiveTime' => array(
 							'@attributes' => array(
-								'value' => '19980123'
-								// TODO...
+								'value' => $this->parseDate($item['create_date'])
 							)
 						)
 					)
 				);
+
+				if($item['uid'] > 0){
+					$entry['procedure']['performer'] = $this->getPerformerByUid($item['uid']);
+				};
+
+				$entry['procedure']['methodCode'] = array(
+					'@attributes' => array(
+						'nullFlavor' => 'UNK'
+					)
+				);
+
+				$procedures['section']['entry'][] = $entry;
 			}
 		}
 
@@ -913,27 +1178,30 @@ class CCDDocument {
 	/**
 	 * Method setVitalsSection()
 	 */
-	private function setVitalsSection(){
+	private function setVitalsSection() {
 		$Vitals = new Vitals();
-		$vitals = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredVitals ? '2.16.840.1.113883.10.20.22.2.4.1' : '2.16.840.1.113883.10.20.22.2.4'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '8716-3',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Vital Signs',
-				'text' => ''
+		$vitalsData = $Vitals->getVitalsByPid($this->pid);
+
+		if(empty($vitalsData)){
+			$vitals['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$vitals['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredVitals ? '2.16.840.1.113883.10.20.22.2.4.1' : '2.16.840.1.113883.10.20.22.2.4'
 			)
 		);
+		$vitals['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '8716-3',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$vitals['section']['title'] = 'Vital Signs';
+		$vitals['section']['text'] = '';
 
-		$vitalsData = $Vitals->getVitalsByPid($this->pid);
 		if(!empty($vitalsData)){
 
 			$vitals['section']['text'] = array(
@@ -1001,7 +1269,7 @@ class CCDDocument {
 				/**
 				 * strip date (yyyy-mm-dd hh:mm:ss => yyyymmdd)
 				 */
-				$date = preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $item['date']);
+				$date = $this->parseDate($item['date']);
 
 				/**
 				 * date
@@ -1053,6 +1321,7 @@ class CCDDocument {
 						'code' => array(
 							'@attributes' => array(
 								'code' => '46680005',
+								'codeSystemName' => 'SNOMED CT',
 								'codeSystem' => '2.16.840.1.113883.6.96',
 								'displayName' => 'Vital signs'
 							)
@@ -1087,6 +1356,7 @@ class CCDDocument {
 									'code' => array(
 										'@attributes' => array(
 											'code' => '8302-2',
+											'codeSystemName' => 'LOINC',
 											'codeSystem' => '2.16.840.1.113883.6.1',
 											'displayName' => 'Height'
 										)
@@ -1118,7 +1388,7 @@ class CCDDocument {
 									),
 									'templateId' => array(
 										'@attributes' => array(
-											'root' => '2.16.840.1.113883.10.20.1.31'
+											'root' => '2.16.840.1.113883.10.20.22.4.2'
 										)
 									),
 									'id' => array(
@@ -1129,6 +1399,7 @@ class CCDDocument {
 									'code' => array(
 										'@attributes' => array(
 											'code' => '3141-9',
+											'codeSystemName' => 'LOINC',
 											'codeSystem' => '2.16.840.1.113883.6.1',
 											'displayName' => 'Weight Measured'
 										)
@@ -1160,7 +1431,7 @@ class CCDDocument {
 									),
 									'templateId' => array(
 										'@attributes' => array(
-											'root' => '2.16.840.1.113883.10.20.1.31'
+											'root' => '2.16.840.1.113883.10.20.22.4.2'
 										)
 									),
 									'id' => array(
@@ -1171,6 +1442,7 @@ class CCDDocument {
 									'code' => array(
 										'@attributes' => array(
 											'code' => '8480-6',
+											'codeSystemName' => 'LOINC',
 											'codeSystem' => '2.16.840.1.113883.6.1',
 											'displayName' => 'BP Systolic'
 										)
@@ -1203,7 +1475,7 @@ class CCDDocument {
 									),
 									'templateId' => array(
 										'@attributes' => array(
-											'root' => '2.16.840.1.113883.10.20.1.31'
+											'root' => '2.16.840.1.113883.10.20.22.4.2'
 										)
 									),
 									'id' => array(
@@ -1214,6 +1486,7 @@ class CCDDocument {
 									'code' => array(
 										'@attributes' => array(
 											'code' => '8462-4',
+											'codeSystemName' => 'LOINC',
 											'codeSystem' => '2.16.840.1.113883.6.1',
 											'displayName' => 'BP Diastolic'
 										)
@@ -1245,35 +1518,41 @@ class CCDDocument {
 		}
 
 		if($this->requiredVitals || isset($vitals['section']['entry'])){
-			$body[] = $vitals;
+			$this->addSection($vitals);
 		}
 		unset($vitalsData, $vitals);
+
 	}
 
 	/**
 	 * Method setImmunizationsSection()
 	 */
-	private function setImmunizationsSection(){
+	private function setImmunizationsSection() {
 
-		$immunizations = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredImmunization ? '2.16.840.1.113883.10.20.22.2.2.1' : '2.16.840.1.113883.10.20.22.2.2'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '11369-6',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Immunizations',
-				'text' => ''
+		$Immunizations = new Immunizations();
+		$immunizationsData = $Immunizations->getPatientImmunizationsByPid($this->pid);
+		unset($Immunizations);
+
+		if(empty($immunizationsData)){
+			$immunizations['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$immunizations['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredImmunization ? '2.16.840.1.113883.10.20.22.2.2.1' : '2.16.840.1.113883.10.20.22.2.2'
 			)
 		);
+		$immunizations['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '11369-6',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$immunizations['section']['title'] = 'Immunizations';
+		$immunizations['section']['text'] = '';
 
-		$immunizationsData = $this->Medical->getPatientImmunizationsByPid($this->pid);
 		if(!empty($immunizationsData)){
 
 			$immunizations['section']['text'] = array(
@@ -1350,14 +1629,14 @@ class CCDDocument {
 								'value' => $date
 							)
 						),
-						'routeCode' => array(
-							'@attributes' => array(
-								'code' => 'C28161',
-								'codeSystem' => '2.16.840.1.113883.3.26.1.1',
-								'codeSystemName' => 'NCI Thesaurus',
-								'displayName' => 'INTRAMUSCULAR',
-							)
-						),
+						//						'routeCode' => array(
+						//							'@attributes' => array(
+						//								'code' => 'C28161',
+						//								'codeSystem' => '2.16.840.1.113883.3.26.1.1',
+						//								'codeSystemName' => 'NCI Thesaurus',
+						//								'displayName' => 'INTRAMUSCULAR',
+						//							)
+						//						),
 						'consumable' => array(
 							'manufacturedProduct' => array(
 								'@attributes' => array(
@@ -1372,8 +1651,8 @@ class CCDDocument {
 									'code' => array(
 										'@attributes' => array(
 											'code' => $item['code'],
+											'codeSystemName' => 'CVX',
 											'codeSystem' => '2.16.840.1.113883.12.292',
-											// CVX
 											'displayName' => ucwords($item['vaccine_name'])
 										)
 									)
@@ -1395,26 +1674,32 @@ class CCDDocument {
 	/**
 	 * Method setMedicationsSection()
 	 */
-	private function setMedicationsSection(){
+	private function setMedicationsSection() {
+
 		$Medications = new Medications();
-		$medications = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredMedications ? '2.16.840.1.113883.10.20.22.2.1.1' : '2.16.840.1.113883.10.20.22.2.1'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '10160-0',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Medications',
-				'text' => ''
+		$medicationsData = $Medications->getPatientActiveMedicationsByPid($this->pid);
+		unset($Medications);
+
+		if(empty($medicationsData)){
+			$medications['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$medications['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredMedications ? '2.16.840.1.113883.10.20.22.2.1.1' : '2.16.840.1.113883.10.20.22.2.1'
 			)
 		);
-		$medicationsData = $Medications->getPatientActiveMedicationsByPid($this->pid);
+		$medications['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '10160-0',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$medications['section']['title'] = 'Medications';
+		$medications['section']['text'] = '';
+
 		if(!empty($medicationsData)){
 
 			$medications['section']['text'] = array(
@@ -1438,7 +1723,13 @@ class CCDDocument {
 									),
 									array(
 										'@value' => 'Status'
-									)
+									),
+									//									array(
+									//										'@value' => 'Indications' // diagnosis
+									//									),
+									//									array(
+									//										'@value' => 'Fill Instructions' //1 refill Generic Substitition Allowed
+									//									)
 								)
 							)
 						)
@@ -1455,10 +1746,10 @@ class CCDDocument {
 				$medications['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => $item['STR']
+							'@value' => $item['STR'] . ' ' . $item['dose'] . ' ' . $item['form']
 						),
 						array(
-							'@value' => $item['dose'] . ' ' . $item['prescription_when']
+							'@value' => $item['directions']
 						),
 						array(
 							'@value' => date('F j, Y', strtotime($item['begin_date']))
@@ -1470,68 +1761,82 @@ class CCDDocument {
 
 				);
 
-				$medications['section']['entry'][] = array(
-					'substanceAdministration' => array(
+				$entry['substanceAdministration']['@attributes'] = array(
+					'classCode' => 'SBADM',
+					'moodCode' => 'EVN'
+				);
+
+				$entry['substanceAdministration']['templateId'] = array(
+					'@attributes' => array(
+						'root' => '2.16.840.1.113883.10.20.22.4.16'
+					)
+				);
+
+				$entry['substanceAdministration']['id'] = array(
+					'@attributes' => array(
+						'root' => UUID::v4()
+					)
+				);
+
+				$entry['substanceAdministration']['text'] = $item['STR'];
+
+				$entry['substanceAdministration']['statusCode'] = array(
+					'@attributes' => array(
+						'code' => 'completed'
+					)
+				);
+
+				$entry['substanceAdministration']['effectiveTime'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS'
+					)
+				);
+
+				$entry['substanceAdministration']['effectiveTime']['low'] = array(
+					'@attributes' => array(
+						'value' => date('Ymd', strtotime($item['begin_date']))
+					)
+				);
+
+				if($item['end_date'] != '0000-00-00'){
+					$entry['substanceAdministration']['effectiveTime']['high'] = array(
 						'@attributes' => array(
-							'classCode' => 'SBADM',
-							'moodCode' => 'EVN'
+							'value' => date('Ymd', strtotime($item['end_date']))
+						)
+					);
+				} else {
+					$entry['substanceAdministration']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'nullFlavor' => 'NI'
+						)
+					);
+				}
+
+				$entry['substanceAdministration']['consumable'] = array(
+					'manufacturedProduct' => array(
+						'@attributes' => array(
+							'classCode' => 'MANU'
 						),
 						'templateId' => array(
 							'@attributes' => array(
-								'root' => '2.16.840.1.113883.10.20.22.4.16'
+								'root' => '2.16.840.1.113883.10.20.22.4.23'
 							)
 						),
-						'id' => array(
-							'@attributes' => array(
-								'root' => UUID::v4()
-							)
-						),
-						'statusCode' => array(
-							'@attributes' => array(
-								'code' => 'completed'
-							)
-						),
-						'effectiveTime' => array(
-							'@attributes' => array(
-								'xsi:type' => 'IVL_TS'
-							),
-							'low' => array(
+						'manufacturedMaterial' => array(
+							'code' => array(
 								'@attributes' => array(
-									'value' => date('Ymd', strtotime($item['begin_date']))
-								)
-							),
-							'high' => array(
-								'@attributes' => array(
-									'value' => date('Ymd', strtotime($item['begin_date']))
+									'code' => $item['RXCUI'],
+									'codeSystem' => '2.16.840.1.113883.6.88',
+									'displayName' => ucwords($item['STR']),
+									'codeSystemName' => 'RxNorm'
 								)
 							)
-						),
-						'consumable' => array(
-							'manufacturedProduct' => array(
-								'@attributes' => array(
-									'classCode' => 'MANU'
-								),
-								'templateId' => array(
-									'@attributes' => array(
-										'root' => '2.16.840.1.113883.10.20.22.4.23'
-									)
-								),
-								'manufacturedMaterial' => array(
-									'code' => array(
-										'@attributes' => array(
-											'code' => $item['RXCUI'],
-											'codeSystem' => '2.16.840.1.113883.6.88',
-											// CVX
-											'displayName' => ucwords($item['STR']),
-											'codeSystemName' => 'RxNorm'
-										)
-									)
-								)
-							)
-						),
-						'text' => $item['STR']
+						)
 					)
 				);
+
+				$medications['section']['entry'][] = $entry;
+				unset($entry);
 			}
 
 		}
@@ -1543,30 +1848,55 @@ class CCDDocument {
 	}
 
 	/**
-	 * Method setPlanOfCareSection()
+	 * Method setPlanOfCareSection() TODO
 	 */
-	private function setPlanOfCareSection(){
-		$planOfCareData = array();
-		$planOfCare = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => '2.16.840.1.113883.10.20.22.2.10'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '18776-5',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Plan',
-				'text' => ''
+	private function setPlanOfCareSection() {
+
+		/**
+		 * Table moodCode Values
+		 * -----------------------------------------------------------------------
+		 * Code             | Definition
+		 * -----------------------------------------------------------------------
+		 * EVN (event)      | The entry defines an actual occurrence of an event.
+		 * INT (intent)     | The entry is intended or planned.
+		 * PRMS (promise)   | A commitment to perform the stated entry.
+		 * PRP (proposal)   | A proposal that the stated entry be performed.
+		 * RQO (request)    | A request or order to perform the stated entry.
+		 * -----------------------------------------------------------------------
+		 */
+		$Orders = new Orders();
+		$planOfCareData['OBS'] = $Orders->getOrderWithoutResultsByPid($this->pid);
+
+		$planOfCareData['ACT'] = array();
+		$planOfCareData['ENC'] = array();
+
+		$CarePlanGoals = new CarePlanGoals();
+		$planOfCareData['PROC'] = $CarePlanGoals->getPatientCarePlanGoalsByPid($this->pid);
+
+		$hasData = !empty($planOfCareData['OBS']) || !empty($planOfCareData['ACT']) || !empty($planOfCareData['ENC']) || !empty($planOfCareData['PROC']);
+
+		if(!$hasData){
+			$planOfCare['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$planOfCare['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.10.20.22.2.10'
 			)
 		);
+		$planOfCare['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '18776-5',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$planOfCare['section']['title'] = 'Plan of Care';
+		$planOfCare['section']['text'] = '';
 
-		if(!empty($planOfCareData)){
-
+		// if one of these are not empty
+		if($hasData){
 			$planOfCare['section']['text'] = array(
 				'table' => array(
 					'@attributes' => array(
@@ -1593,18 +1923,19 @@ class CCDDocument {
 			$planOfCare['section']['text']['table']['tbody']['tr'] = array();
 			$planOfCare['section']['entry'] = array();
 
-			foreach($planOfCareData as $item){
-
+			/**
+			 * Observations...
+			 */
+			foreach($planOfCareData['OBS'] as $item){
 				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Test'
+							'@value' => $item['description']
 						),
 						array(
-							'@value' => 'Ting'
+							'@value' => $this->parseDate($item['date_ordered'])
 						)
 					)
-
 				);
 
 				$planOfCare['section']['entry'][] = array(
@@ -1618,7 +1949,64 @@ class CCDDocument {
 						),
 						'templateId' => array(
 							'@attributes' => array(
-								'root' => '2.16.840.1.113883.10.20.1.25'
+								'root' => '2.16.840.1.113883.10.20.22.4.44'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => $item['code'],
+								'codeSystemName' => $item['code_type'],
+								'codeSystem' => $this->codes[$item['code_type']],
+								'displayName' => $item['description']
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'new'
+							)
+						),
+						'effectiveTime' => array(
+							'center' => array(
+								'@attributes' => array(
+									'value' => $this->parseDate($item['date_ordered'])
+								)
+							)
+						)
+					)
+				);
+			}
+
+			/**
+			 * Activities...
+			 */
+			foreach($planOfCareData['ACT'] as $item){
+				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
+					'td' => array(
+						array(
+							'@value' => 'Test'
+							//TODO
+						),
+						array(
+							'@value' => 'Ting'
+							//TODO
+						)
+					)
+				);
+
+				$planOfCare['section']['entry'][] = array(
+					'act' => array(
+						'@attributes' => array(
+							'classCode' => 'ACT',
+							'moodCode' => 'RQO'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.39'
 							)
 						),
 						'id' => array(
@@ -1629,8 +2017,12 @@ class CCDDocument {
 						'code' => array(
 							'@attributes' => array(
 								'code' => '23426006',
+								//TODO
+								'codeSystemName' => 'SNOMEDCT',
 								'codeSystem' => '2.16.840.1.113883.6.96',
+								//TODO
 								'displayName' => 'Pulmonary function test',
+								//TODO
 							)
 						),
 						'statusCode' => array(
@@ -1640,7 +2032,122 @@ class CCDDocument {
 						),
 						'effectiveTime' => array(
 							'@attributes' => array(
-								'value' => '20000421'
+								'center' => '20000421'
+								//TODO
+							)
+						)
+					)
+				);
+			}
+
+			/**
+			 * Encounters...
+			 */
+			foreach($planOfCareData['ENC'] as $item){
+				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
+					'td' => array(
+						array(
+							'@value' => 'Test'
+							//TODO
+						),
+						array(
+							'@value' => 'Ting'
+							//TODO
+						)
+					)
+				);
+
+				$planOfCare['section']['entry'][] = array(
+					'act' => array(
+						'@attributes' => array(
+							'classCode' => 'INT',
+							'moodCode' => 'INT'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.40'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => '23426006',
+								//TODO
+								'codeSystemName' => 'SNOMEDCT',
+								'codeSystem' => '2.16.840.1.113883.6.96',
+								//TODO
+								'displayName' => 'Pulmonary function test',
+								//TODO
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'new'
+							)
+						),
+						'effectiveTime' => array(
+							'@attributes' => array(
+								'center' => '20000421'
+								//TODO
+							)
+						)
+					)
+				);
+			}
+
+			/**
+			 * Procedures...
+			 */
+			foreach($planOfCareData['PROC'] as $item){
+				$planOfCare['section']['text']['table']['tbody']['tr'][] = array(
+					'td' => array(
+						array(
+							'@value' => $item['goal']
+						),
+						array(
+							'@value' => $this->parseDate($item['plan_date'])
+						)
+					)
+				);
+
+				$planOfCare['section']['entry'][] = array(
+					'procedure' => array(
+						'@attributes' => array(
+							'moodCode' => 'RQO',
+							'classCode' => 'PROC'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.41'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => $item['goal_code'],
+								'codeSystemName' => $item['goal_code_type'],
+								'codeSystem' => $this->codes[$item['goal_code_type']],
+								'displayName' => htmlentities($item['goal']),
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'new'
+							)
+						),
+						'effectiveTime' => array(
+							'center' => array(
+								'@attributes' => array(
+									'value' => $this->parseDate($item['plan_date'])
+								)
 							)
 						)
 					)
@@ -1657,25 +2164,40 @@ class CCDDocument {
 	/**
 	 * Method setProblemsSection()
 	 */
-	private function setProblemsSection(){
-		$problems = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredProblems ? '2.16.840.1.113883.10.20.22.2.5.1' : '2.16.840.1.113883.10.20.22.2.5'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '11450-4',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Problems',
-				'text' => ''
+	private function setProblemsSection() {
+
+		$ActiveProblems = new ActiveProblems();
+		$problemsData = $ActiveProblems->getPatientActiveProblemByPid($this->pid);
+		unset($ActiveProblems);
+
+		if(empty($problemsData)){
+			$problems['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+
+		$problems['section']['templateId'][] = array(
+			'@attributes' => array(
+				'root' => $this->requiredProblems ? '2.16.840.1.113883.10.20.22.2.5.1' : '2.16.840.1.113883.10.20.22.2.5'
 			)
 		);
-		$problemsData = $this->Medical->getPatientProblemsByPid($this->pid);
+
+		$problems['section']['templateId'][] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.3.88.11.83.103'
+			)
+		);
+
+		$problems['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '11450-4',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$problems['section']['title'] = 'Problems';
+		$problems['section']['text'] = '';
+
 		if(!empty($problemsData)){
 
 			$problems['section']['text'] = array(
@@ -1706,26 +2228,31 @@ class CCDDocument {
 					)
 				)
 			);
+
 			$problems['section']['entry'] = array();
 
 			foreach($problemsData as $item){
 
+				$dateText = $this->parseDate($item['begin_date']) . ' - ';
+				if($item['end_date'] != '0000-00-00')
+					$dateText .= $this->parseDate($item['end_date']);
+
 				$problems['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Condition Data'
+							'@value' => $item['code_text']
 						),
 						array(
-							'@value' => 'Datate Data'
+							'@value' => $dateText
 						),
 						array(
-							'@value' => 'Active'
+							'@value' => $item['status']
 						)
 					)
 
 				);
 
-				$problems['section']['entry'][] = array(
+				$entry = array(
 					'act' => array(
 						'@attributes' => array(
 							'classCode' => 'ACT',
@@ -1744,7 +2271,9 @@ class CCDDocument {
 						'code' => array(
 							'@attributes' => array(
 								'code' => 'CONC',
-								'codeSystem' => '2.16.840.1.113883.5.6'
+								'codeSystemName' => 'ActClass',
+								'codeSystem' => '2.16.840.1.113883.5.6',
+								'displayName' => 'Concern'
 							)
 						),
 						'statusCode' => array(
@@ -1752,141 +2281,163 @@ class CCDDocument {
 								'code' => 'active',
 								// active ||  suspended ||  aborted ||  completed
 							)
-						),
-						'effectiveTime' => array(
-							'@attributes' => array(
-								'xsi:type' => 'IVL_TS',
-							),
-							'low' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							),
-							'high' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							)
-						),
-						'entryRelationship' => array(
-							'@attributes' => array(
-								'typeCode' => 'SUBJ'
-							),
-							'observation' => array(
-								'@attributes' => array(
-									'classCode' => 'OBS',
-									'moodCode' => 'EVN'
-								),
-								'templateId' => array(
-									'@attributes' => array(
-										'root' => '2.16.840.1.113883.10.20.22.4.4'
-									)
-								),
-								'id' => array(
-									'@attributes' => array(
-										'root' => UUID::v4()
-									)
-								),
-								/**
-								 *  404684003    SNOMEDCT    Finding
-								 *    409586006    SNOMEDCT    Complaint
-								 *    282291009    SNOMEDCT    Diagnosis
-								 *    64572001    SNOMEDCT    Condition
-								 *    248536006    SNOMEDCT    Functional limitation
-								 *    418799008    SNOMEDCT    Symptom
-								 *    55607006    SNOMEDCT    Problem
-								 *    373930000    SNOMEDCT    Cognitive function finding
-								 */
-								'code' => array(
-									'@attributes' => array(
-										'code' => '55607006',
-										'codeSystem' => '2.16.840.1.113883.6.96'
-									)
-								),
-								'statusCode' => array(
-									'@attributes' => array(
-										'code' => 'completed',
-										// active ||  suspended ||  aborted ||  completed
-										//'codeSystem' => '2.16.840.1.113883.5.14'
-									)
-								),
-								'effectiveTime' => array(
-									'@attributes' => array(
-										'xsi:type' => 'IVL_TS',
-									),
-									'low' => array(
-										'@attributes' => array(
-											'value' => '19320924'
-										)
-									),
-									'high' => array(
-										'@attributes' => array(
-											'value' => '19320924'
-										)
-									)
-								),
-								'value' => array(
-									'@attributes' => array(
-										'xsi:type' => 'CD',
-										'code' => '195967001',
-										'codeSystem' => '2.16.840.1.113883.6.96'
-										// SNOMED
-									)
-								),
-								'entryRelationship' => array(
-									'@attributes' => array(
-										'typeCode' => 'REFR'
-									),
-									'observation' => array(
-										'@attributes' => array(
-											'classCode' => 'OBS',
-											'moodCode' => 'EVN'
-										),
-										'templateId' => array(
-											'@attributes' => array(
-												'root' => '2.16.840.1.113883.10.20.22.4.6'
-											)
-										),
-										'code' => array(
-											'@attributes' => array(
-												'code' => '33999-4',
-												'codeSystem' => '2.16.840.1.113883.6.1'
-											)
-										),
-										'statusCode' => array(
-											'@attributes' => array(
-												'code' => 'completed',
-												//'codeSystem' => '2.16.840.1.113883.5.14'
-											)
-										),
-										/**
-										 * 55561003        SNOMEDCT    Active
-										 * 73425007        SNOMEDCT    Inactive
-										 * 413322009    SNOMEDCT    Resolved
-										 */
-										'value' => array(
-											'@attributes' => array(
-												'xsi:type' => 'CD',
-												'code' => '413322009',
-												'codeSystem' => '2.16.840.1.113883.6.96'
-												// SNOMED
-											)
-										)
-									)
-
-								)
-							)
-
 						)
 					)
-
 				);
+
+				$entry['act']['effectiveTime'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					)
+				);
+				$entry['act']['effectiveTime']['low'] = array(
+					'@attributes' => array(
+						'value' => $this->parseDate($item['begin_date'])
+					)
+				);
+				if($item['end_date'] != '0000-00-00'){
+					$entry['act']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['end_date'])
+						)
+					);
+				} else {
+					$entry['act']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'nullFlavor' => 'NI'
+						)
+					);
+				}
+
+				$entry['act']['entryRelationship'] = array(
+					'@attributes' => array(
+						'typeCode' => 'SUBJ'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'OBS',
+							'moodCode' => 'EVN'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.4'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						/**
+						 *  404684003    SNOMEDCT    Finding
+						 *    409586006    SNOMEDCT    Complaint
+						 *    282291009    SNOMEDCT    Diagnosis
+						 *    64572001    SNOMEDCT    Condition
+						 *    248536006    SNOMEDCT    Functional limitation
+						 *    418799008    SNOMEDCT    Symptom
+						 *    55607006    SNOMEDCT    Problem
+						 *    373930000    SNOMEDCT    Cognitive function finding
+						 */
+						'code' => array(
+							'@attributes' => array(
+								'code' => '55607006',
+								'displayName' => 'Problem',
+								'codeSystemName' => 'SNOMED CT',
+								'codeSystem' => '2.16.840.1.113883.6.96'
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'completed',
+							)
+						)
+					)
+				);
+
+				$entry['act']['entryRelationship']['observation']['effectiveTime'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					)
+				);
+				$entry['act']['entryRelationship']['observation']['effectiveTime']['low'] = array(
+					'@attributes' => array(
+						'value' => $this->parseDate($item['begin_date'])
+					)
+				);
+				if($item['end_date'] != '0000-00-00'){
+					$entry['act']['entryRelationship']['observation']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['end_date'])
+						)
+					);
+				} else {
+					$entry['act']['entryRelationship']['observation']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'nullFlavor' => 'NI'
+						)
+					);
+				}
+
+				$entry['act']['entryRelationship']['observation']['value'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'CD',
+						'code' => $item['code'],
+						'codeSystemName' => $item['code_type'],
+						'codeSystem' => $this->codes[$item['code_type']]
+					)
+				);
+				$entry['act']['entryRelationship']['observation']['entryRelationship'] = array(
+					'@attributes' => array(
+						'typeCode' => 'REFR'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'OBS',
+							'moodCode' => 'EVN'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.6'
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => '33999-4',
+								'displayName' => 'Status',
+								'codeSystemName' => 'LOINC',
+								'codeSystem' => '2.16.840.1.113883.6.1'
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'completed'
+							)
+						),
+						/**
+						 * 55561003     SNOMEDCT    Active
+						 * 73425007     SNOMEDCT    Inactive
+						 * 413322009    SNOMEDCT    Resolved
+						 */
+						'value' => array(
+							'@attributes' => array(
+								'xsi:type' => 'CD',
+								'code' => $this->CombosData->getCodeValueByListIdAndOptionValue(112, $item['status']),
+								'displayName' => $item['status'],
+								'codeSystemName' => 'SNOMED CT',
+								'codeSystem' => '2.16.840.1.113883.6.96'
+							)
+						)
+					)
+				);
+
+				$problems['section']['entry'][] = $entry;
+				unset($entry);
 			}
 
 		}
 
 		if($this->requiredProblems || !empty($problems['section']['entry'])){
-			$body[] = $problems;
+			$this->addSection($problems);
 		}
 		unset($problemsData, $problems);
 	}
@@ -1894,25 +2445,31 @@ class CCDDocument {
 	/**
 	 * Method setAllergiesSection()
 	 */
-	private function setAllergiesSection(){
-		$allergiesData = $this->Medical->getPatientAllergiesByPid($this->pid);
-		$allergies = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredAllergies ? '2.16.840.1.113883.10.20.22.2.6.1' : '2.16.840.1.113883.10.20.22.2.6'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '48765-2',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Allergies, adverse reactions, alerts',
-				'text' => ''
+	private function setAllergiesSection() {
+		$Allergies = new Allergies();
+
+		$allergiesData = $Allergies->getPatientAllergiesByPid($this->pid);
+		unset($Allergies);
+
+		if(empty($allergiesData)){
+			$allergies['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$allergies['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredAllergies ? '2.16.840.1.113883.10.20.22.2.6.1' : '2.16.840.1.113883.10.20.22.2.6'
 			)
 		);
+		$allergies['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '48765-2',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$allergies['section']['title'] = 'Allergies, Adverse Reactions, Alerts';
+		$allergies['section']['text'] = '';
 
 		if(!empty($allergiesData)){
 			$allergies['section']['text'] = array(
@@ -1932,6 +2489,9 @@ class CCDDocument {
 										'@value' => 'Reaction'
 									),
 									array(
+										'@value' => 'Severity'
+									),
+									array(
 										'@value' => 'Status'
 									)
 								)
@@ -1943,6 +2503,7 @@ class CCDDocument {
 					)
 				)
 			);
+
 			$allergies['section']['entry'] = array();
 
 			foreach($allergiesData as $item){
@@ -1950,19 +2511,21 @@ class CCDDocument {
 				$allergies['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Substance Data'
+							'@value' => $item['allergy']
 						),
 						array(
-							'@value' => 'Reaction Data'
+							'@value' => $item['reaction']
+						),
+						array(
+							'@value' => $item['severity']
 						),
 						array(
 							'@value' => 'Status Data'
 						)
 					)
-
 				);
 
-				$allergies['section']['entry'][] = array(
+				$entry = array(
 					'act' => array(
 						'@attributes' => array(
 							'classCode' => 'ACT',
@@ -1980,248 +2543,372 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'nullFlavor' => 'NA',
-								//						'codeSystem' => '2.16.840.1.113883.5.6'
+								'code' => '48765-2',
+								'codeSystemName' => 'LOINC',
+								'codeSystem' => '2.16.840.1.113883.6.1',
 							)
-						),
-						'statusCode' => array(
-							'@attributes' => array(
-								'code' => 'active',
-								// active ||  suspended ||  aborted ||  completed
-							)
-						),
-						'effectiveTime' => array(
-							'@attributes' => array(
-								'xsi:type' => 'IVL_TS',
-							),
-							'low' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							),
-							'high' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							)
-						),
-						'entryRelationship' => array(
-							'@attributes' => array(
-								'typeCode' => 'SUBJ'
-							),
-							'observation' => array(
-								'@attributes' => array(
-									'classCode' => 'OBS',
-									'moodCode' => 'EVN'
-								),
-								'templateId' => array(
-									'@attributes' => array(
-										'root' => '2.16.840.1.113883.10.20.22.4.7'
-									)
-								),
-								'id' => array(
-									'@attributes' => array(
-										'root' => UUID::v4()
-									)
-								),
-								'code' => array(
-									'@attributes' => array(
-										'code' => 'ASSERTION',
-										'codeSystem' => '2.16.840.1.113883.5.4'
-									)
-								),
-								'statusCode' => array(
-									'@attributes' => array(
-										'code' => 'completed',
-										// active ||  suspended ||  aborted ||  completed
-										//'codeSystem' => '2.16.840.1.113883.5.14'
-									)
-								),
-								'effectiveTime' => array(
-									// If it is unknown when the allergy began, this effectiveTime SHALL contain low/@nullFLavor="UNK" (CONF:9103)
-									'@attributes' => array(
-										'xsi:type' => 'IVL_TS',
-									),
-									'low' => array(
-										'@attributes' => array(
-											'value' => '19320924'
-										)
-									),
-									'high' => array(
-										'@attributes' => array(
-											'value' => '19320924'
-										)
-									)
-								),
-								/**
-								 * 420134006    SNOMEDCT    Propensity to adverse reactions
-								 * 418038007    SNOMEDCT    Propensity to adverse reactions to substance
-								 * 419511003    SNOMEDCT    Propensity to adverse reactions to drug
-								 * 418471000    SNOMEDCT    Propensity to adverse reactions to food
-								 * 419199007    SNOMEDCT    Allergy to substance
-								 * 416098002    SNOMEDCT    Drug allergy
-								 * 414285001    SNOMEDCT    Food allergy
-								 * 59037007        SNOMEDCT    Drug intolerance
-								 * 235719002    SNOMEDCT    Food intolerance
-								 */
-								'value' => array(
-									'@attributes' => array(
-										'xsi:type' => 'CD',
-										'code' => '416098002',
-										// TODO
-										'codeSystem' => '2.16.840.1.113883.6.96'
-										// SNOMED
-									)
-								),
-								'entryRelationship' => array(
-									// Reaction Observation
-									array(
-										'@attributes' => array(
-											'typeCode' => 'MFST',
-											'inversionInd' => 'true'
-										),
-										'observation' => array(
-											'@attributes' => array(
-												'classCode' => 'OBS',
-												'moodCode' => 'EVN'
-											),
-											'templateId' => array(
-												'@attributes' => array(
-													'root' => '2.16.840.1.113883.10.20.22.4.9'
-												)
-											),
-											'id' => array(
-												'@attributes' => array(
-													'root' => UUID::v4()
-												)
-											),
-											'code' => array(
-												'@attributes' => array(
-													'code' => '33999-4',
-													// TODO: allergy SNOMED code
-													'codeSystem' => $this->codes['SNOMEDCT']
-												)
-											),
-											'statusCode' => array(
-												'@attributes' => array(
-													'code' => 'completed'
-												)
-											),
-											/**
-											 * 55561003        SNOMEDCT    Active
-											 * 73425007        SNOMEDCT    Inactive
-											 * 413322009    SNOMEDCT    Resolved
-											 */
-											'value' => array(
-												'@attributes' => array(
-													'xsi:type' => 'CD',
-													'code' => '413322009',
-													'codeSystem' => $this->codes['SNOMEDCT']
-													// SNOMED
-												)
-											)
-										)
-									),
-									//  Severity Observation
-									array(
-										'@attributes' => array(
-											'typeCode' => 'SUBJ',
-											'inversionInd' => 'true'
-										),
-										'observation' => array(
-											'@attributes' => array(
-												'classCode' => 'OBS',
-												'moodCode' => 'EVN'
-											),
-											'templateId' => array(
-												'@attributes' => array(
-													'root' => '2.16.840.1.113883.10.20.22.4.8'
-												)
-											),
-											'code' => array(
-												'@attributes' => array(
-													'code' => 'SEV',
-													'codeSystem' => '2.16.840.1.113883.5.4'
-												)
-											),
-											'statusCode' => array(
-												'@attributes' => array(
-													'code' => 'completed'
-												)
-											),
-											/**
-											 * 255604002    SNOMEDCT    Mild
-											 * 371923003    SNOMEDCT    Mild to moderate
-											 * 6736007        SNOMEDCT    Moderate
-											 * 371924009    SNOMEDCT    Moderate to severe
-											 * 24484000        SNOMEDCT    Severe
-											 * 399166001    SNOMEDCT    Fatal
-											 */
-											'value' => array(
-												'@attributes' => array(
-													'xsi:type' => 'CD',
-													'code' => '255604002',
-													// TODO...
-													'codeSystem' => $this->codes['SNOMEDCT']
-													// SNOMED
-												)
-											)
-										)
-									),
-									// Allergy Status Observation
-									array(
-										'@attributes' => array(
-											'typeCode' => 'SUBJ',
-											'inversionInd' => 'true'
-										),
-										'observation' => array(
-											'@attributes' => array(
-												'classCode' => 'OBS',
-												'moodCode' => 'EVN'
-											),
-											'templateId' => array(
-												'@attributes' => array(
-													'root' => '2.16.840.1.113883.10.20.22.4.28'
-												)
-											),
-											'code' => array(
-												'@attributes' => array(
-													'code' => '33999-4',
-													'codeSystem' => '2.16.840.1.113883.6.1'
-												)
-											),
-											'statusCode' => array(
-												'@attributes' => array(
-													'code' => 'completed'
-												)
-											),
-											/**
-											 * 55561003        SNOMEDCT    Active
-											 * 73425007        SNOMEDCT    Inactive
-											 * 413322009    SNOMEDCT    Resolved
-											 */
-											'value' => array(
-												'@attributes' => array(
-													'xsi:type' => 'CE',
-													'code' => '413322009',
-													// TODO...
-													'codeSystem' => '2.16.840.1.113883.6.96'
-													// SNOMED
-												)
-											)
-										)
-									)
-								)
-							)
-
 						)
 					)
 				);
 
+				$entry['act']['statusCode'] = array(
+					'@attributes' => array( // use snomed code for active
+					                        'code' => $item['end_date'] == '0000-00-00' ? 'active' : 'completed',
+					)
+				);
+
+				$entry['act']['effectiveTime'] = array(
+					'low' => array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['begin_date'])
+						)
+					)
+				);
+
+				if($entry['act']['statusCode']['@attributes']['code'] == 'completed'){
+					$entry['act']['effectiveTime'] = array(
+						'high' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($item['end_date'])
+							)
+						)
+					);
+				}
+
+				$entry['act']['entryRelationship'] = array(
+					'@attributes' => array(
+						'typeCode' => 'SUBJ'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'OBS',
+							'moodCode' => 'EVN'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.7'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => 'ASSERTION',
+								'codeSystem' => '2.16.840.1.113883.5.4'
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'completed'
+							)
+						)
+					)
+				);
+
+				$entry['act']['entryRelationship']['observation']['effectiveTime'] = array(
+					// If it is unknown when the allergy began, this effectiveTime SHALL contain low/@nullFLavor="UNK" (CONF:9103)
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					)
+				);
+
+				if($item['begin_date'] != '0000-00-00'){
+					$entry['act']['entryRelationship']['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['begin_date'])
+						)
+					);
+				} else {
+					$entry['act']['entryRelationship']['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'nullFLavor' => 'UNK'
+						)
+					);
+				}
+
+				if($item['end_date'] != '0000-00-00'){
+					$entry['act']['entryRelationship']['observation']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['end_date'])
+						)
+					);
+				}
+
+				/**
+				 * 420134006    SNOMEDCT    Propensity to adverse reactions
+				 * 418038007    SNOMEDCT    Propensity to adverse reactions to substance
+				 * 419511003    SNOMEDCT    Propensity to adverse reactions to drug
+				 * 418471000    SNOMEDCT    Propensity to adverse reactions to food
+				 * 419199007    SNOMEDCT    Allergy to substance
+				 * 416098002    SNOMEDCT    Drug allergy
+				 * 414285001    SNOMEDCT    Food allergy
+				 * 59037007     SNOMEDCT    Drug intolerance
+				 * 235719002    SNOMEDCT    Food intolerance
+				 */
+
+				$entry['act']['entryRelationship']['observation']['value'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'CD',
+						'code' => $item['allergy_type_code'],
+						'displayName' => $item['allergy_type'],
+						'codeSystemName' => $item['allergy_type_code_type'],
+						'codeSystem' => $this->codes[$item['allergy_type_code_type']]
+					)
+				);
+
+				$entry['act']['entryRelationship']['observation']['participant'] = array(
+					'@attributes' => array(
+						'typeCode' => 'CSM'
+					),
+					'participantRole' => array(
+						'@attributes' => array(
+							'classCode' => 'MANU'
+						),
+						'playingEntity' => array(
+							'@attributes' => array(
+								'classCode' => 'MMAT'
+							),
+							'code' => array(
+								'@attributes' => array(
+									'code' => $item['allergy_code'],
+									'displayName' => $item['allergy'],
+									'codeSystemName' => $item['allergy_code_type'],
+									'codeSystem' => $this->codes[$item['allergy_code_type']]
+								)
+							)
+						)
+					)
+				);
+
+				// Allergy Status Observation
+				$entryRelationship = array(
+					'@attributes' => array(
+						'typeCode' => 'SUBJ',
+						'inversionInd' => 'true'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'OBS',
+							'moodCode' => 'EVN'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.28'
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => '33999-4',
+								'codeSystemName' => 'LOINC',
+								'codeSystem' => '2.16.840.1.113883.6.1'
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'completed'
+							)
+						)
+					)
+				);
+
+				$entryRelationship['observation']['effectiveTime'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					)
+				);
+
+				if($item['begin_date'] != '0000-00-00'){
+					$entryRelationship['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['begin_date'])
+						)
+					);
+				} else {
+					$entryRelationship['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'nullFLavor' => 'UNK'
+						)
+					);
+				}
+
+				if($item['end_date'] != '0000-00-00'){
+					$entryRelationship['observation']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['end_date'])
+						)
+					);
+				}
+
+				$entryRelationship['observation']['value'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'CE',
+						'code' => $item['status_code'],
+						'displayName' => $item['status'],
+						'codeSystemName' => $item['status_code_type'],
+						'codeSystem' => $this->codes[$item['status_code_type']]
+					)
+				);
+
+				$entry['act']['entryRelationship']['observation']['entryRelationship'][] = $entryRelationship;
+				unset($entryRelationship);
+
+				// Reaction Observation
+				$entryRelationship = array(
+					'@attributes' => array(
+						'typeCode' => 'MFST',
+						'inversionInd' => 'true'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'OBS',
+							'moodCode' => 'EVN'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.9'
+							)
+						),
+						'id' => array(
+							'@attributes' => array(
+								'root' => UUID::v4()
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'nullFlavor' => 'NA'
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'completed'
+							)
+						)
+					)
+				);
+
+				$entryRelationship['observation']['effectiveTime'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					)
+				);
+
+				if($item['begin_date'] != '0000-00-00'){
+					$entryRelationship['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['begin_date'])
+						)
+					);
+				} else {
+					$entryRelationship['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'nullFLavor' => 'UNK'
+						)
+					);
+				}
+
+				if($item['end_date'] != '0000-00-00'){
+					$entryRelationship['observation']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['end_date'])
+						)
+					);
+				}
+
+				$entryRelationship['observation']['value'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'CD',
+						'code' => $item['reaction_code'],
+						'displayName' => $item['reaction'],
+						'codeSystemName' => $item['reaction_code_type'],
+						'codeSystem' => $this->codes[$item['reaction_code_type']]
+					)
+				);
+
+				$entry['act']['entryRelationship']['observation']['entryRelationship'][] = $entryRelationship;
+				unset($entryRelationship);
+
+				// Severity Observation
+				$entryRelationship = array(
+					'@attributes' => array(
+						'typeCode' => 'SUBJ',
+						'inversionInd' => 'true'
+					),
+					'observation' => array(
+						'@attributes' => array(
+							'classCode' => 'OBS',
+							'moodCode' => 'EVN'
+						),
+						'templateId' => array(
+							'@attributes' => array(
+								'root' => '2.16.840.1.113883.10.20.22.4.8'
+							)
+						),
+						'code' => array(
+							'@attributes' => array(
+								'code' => 'SEV',
+								'codeSystemName' => 'ActCode',
+								'codeSystem' => '2.16.840.1.113883.5.4',
+								'displayName' => 'Severity Observation'
+							)
+						),
+						'statusCode' => array(
+							'@attributes' => array(
+								'code' => 'completed'
+							)
+						)
+					)
+				);
+
+				$entryRelationship['observation']['effectiveTime'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'IVL_TS',
+					)
+				);
+
+				if($item['begin_date'] != '0000-00-00'){
+					$entryRelationship['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['begin_date'])
+						)
+					);
+				} else {
+					$entryRelationship['observation']['effectiveTime']['low'] = array(
+						'@attributes' => array(
+							'nullFLavor' => 'UNK'
+						)
+					);
+				}
+
+				if($item['end_date'] != '0000-00-00'){
+					$entryRelationship['observation']['effectiveTime']['high'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['end_date'])
+						)
+					);
+				}
+
+				$entryRelationship['observation']['value'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'CD',
+						'code' => $item['severity_code'],
+						'displayName' => $item['severity'],
+						'codeSystemName' => $item['severity_code_type'],
+						'codeSystem' => $this->codes[$item['severity_code_type']]
+					)
+				);
+
+				$entry['act']['entryRelationship']['observation']['entryRelationship'][] = $entryRelationship;
+				unset($entryRelationship);
+
+				$allergies['section']['entry'][] = $entry;
+
 			}
 		}
 		if($this->requiredAllergies || !empty($allergies['section']['entry'])){
-			$body[] = $allergies;
+			$this->addSection($allergies);
 		}
 		unset($allergiesData, $allergies);
 	}
@@ -2229,7 +2916,10 @@ class CCDDocument {
 	/**
 	 * Method setSocialHistorySection()
 	 */
-	private function setSocialHistorySection(){
+	private function setSocialHistorySection() {
+
+		$SocialHistory = new SocialHistory();
+
 		$socialHistory = array(
 			'section' => array(
 				'templateId' => array(
@@ -2240,107 +2930,12 @@ class CCDDocument {
 				'code' => array(
 					'@attributes' => array(
 						'code' => '29762-2',
+						'codeSystemName' => 'LOINC',
 						'codeSystem' => '2.16.840.1.113883.6.1'
 					)
 				),
 				'title' => 'Social History',
-				'text' => array(
-					'table' => array(
-						'@attributes' => array(
-							'border' => '1',
-							'width' => '100%'
-						),
-						'thead' => array(
-							'tr' => array(
-								array(
-									'th' => array(
-										array(
-											'@value' => 'Social History Element'
-										),
-										array(
-											'@value' => 'Description'
-										),
-										array(
-											'@value' => 'Effective Dates'
-										)
-									)
-								)
-							)
-						),
-						'tbody' => array(
-							'tr' => array()
-						)
-					),
-					'entry' => array()
-				)
-			)
-		);
-
-		/**
-		 * This Social History Observation defines the patient's occupational, personal (e.g., lifestyle),
-		 * social, and environmental history and health risk factors, as well as administrative data such
-		 * as marital status, race, ethnicity, and religious affiliation.
-		 */
-		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
-			'td' => array(
-				array(
-					'@value' => 'Social History Element Data'
-				),
-				array(
-					'@value' => 'ReactiDescriptionon Data'
-				),
-				array(
-					'@value' => 'Effective Data'
-				)
-			)
-		);
-
-		$socialHistory['section']['entry'][] = array(
-			'observation' => array(
-				'@attributes' => array(
-					'classCode' => 'OBS',
-					'moodCode' => 'EVN'
-				),
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => '2.16.840.1.113883.10.20.22.4.38'
-					)
-				),
-				'id' => array(
-					'@attributes' => array(
-						'root' => UUID::v4()
-					)
-				),
-				/**
-		         * Code	        System  	Print Name
-				 * 229819007	SNOMEDCT	Tobacco use and exposure
-				 * 256235009	SNOMEDCT	Exercise
-				 * 160573003	SNOMEDCT	Alcohol intake
-				 * 364393001	SNOMEDCT	Nutritional observable
-				 * 364703007	SNOMEDCT	Employment detail
-				 * 425400000	SNOMEDCT	Toxic exposure status
-				 * 363908000	SNOMEDCT	Details of drug misuse behavior
-				 * 228272008	SNOMEDCT	Health-related behavior
-				 * 105421008	SNOMEDCT	Educational Achievement
-		         */
-				'code' => array(
-					'@attributes' => array(
-						'code' => '229819007', // TODO
-						'codeSystem' => $this->codes['SNOMEDCT']
-					),
-				    'originalText' => 'Tobacco use and exposure' // TODO
-				),
-				'statusCode' => array(
-					'@attributes' => array(
-						'code' => 'completed',
-					)
-				),
-				'value' => array(
-					'@attributes' => array(
-						'xsi:type' => 'ST'
-					),
-					'@value' => 'Smoking Data'
-				)
+				'text' => ''
 			)
 		);
 
@@ -2355,189 +2950,80 @@ class CCDDocument {
 		 * The smoking status value set includes a special code to communicate if the smoking status is unknown
 		 * which is different from how Consolidated CDA generally communicates unknown information.
 		 */
-		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
-			'td' => array(
-				array(
-					'@value' => 'Social History Element Data'
-				),
-				array(
-					'@value' => 'ReactiDescriptionon Data'
-				),
-				array(
-					'@value' => 'Effective Data'
-				)
-			)
-		);
-		$socialHistory['section']['entry'][] = array(
-			'observation' => array(
+		$smokingStatus = $SocialHistory->getSocialHistoryByPidAndCode($this->pid, 'smoking_status');
+
+		if(count($smokingStatus) > 0){
+			$smokingStatus = end($smokingStatus);
+
+			$socialHistory['section']['entry'][] = array(
 				'@attributes' => array(
-					'classCode' => 'OBS',
-					'moodCode' => 'EVN'
+					'typeCode' => 'DRIV'
 				),
-				'templateId' => array(
+				'observation' => array(
 					'@attributes' => array(
-						'root' => '2.16.840.1.113883.10.20.22.4.78'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => 'ASSERTION',
-						'codeSystem' => '2.16.840.1.113883.5.4'
-					)
-				),
-				'statusCode' => array(
-					'@attributes' => array(
-						'code' => 'completed',
-					)
-				),
-				'effectiveTime' => array(
-					'@attributes' => array(
-						'xsi:type' => 'IVL_TS',
+						'classCode' => 'OBS',
+						'moodCode' => 'EVN'
 					),
-					'low' => array(
+					'templateId' => array(
 						'@attributes' => array(
-							'value' => '19320924' // TODO
+							'root' => '2.16.840.1.113883.10.20.22.4.78'
 						)
 					),
-					'high' => array(
+					'code' => array(
 						'@attributes' => array(
-							'value' => '19320924' // TODO
+							'code' => 'ASSERTION',
+							'codeSystemName' => 'ActCode',
+							'codeSystem' => '2.16.840.1.113883.5.4'
+						)
+					),
+					'statusCode' => array(
+						'@attributes' => array(
+							'code' => 'completed',
+						)
+					),
+					'effectiveTime' => array(
+						'@attributes' => array(
+							'xsi:type' => 'IVL_TS',
+						),
+						'low' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($smokingStatus['create_date'])
+							)
+						)
+					),
+					/**
+					 * Code             System      Print Name
+					 * 449868002        SNOMEDCT    Current every day smoker
+					 * 428041000124106  SNOMEDCT    Current some day smoker
+					 * 8517006          SNOMEDCT    Former smoker
+					 * 266919005        SNOMEDCT    Never smoker (Never Smoked)
+					 * 77176002         SNOMEDCT    Smoker, current status unknown
+					 * 266927001        SNOMEDCT    Unknown if ever smoked
+					 */
+					'value' => array(
+						'@attributes' => array(
+							'xsi:type' => 'CD',
+							'code' => $smokingStatus['status_code'],
+							'displayName' => $smokingStatus['status'],
+							'codeSystemName' => $smokingStatus['status_code_type'],
+							'codeSystem' => $this->codes[$smokingStatus['status_code_type']]
 						)
 					)
-				),
-				/**
-				 * Code             System      Print Name
-				 * 449868002        SNOMEDCT    Current every day smoker
-				 * 428041000124106  SNOMEDCT    Current some day smoker
-				 * 8517006          SNOMEDCT    Former smoker
-				 * 266919005        SNOMEDCT    Never smoker (Never Smoked)
-				 * 77176002         SNOMEDCT    Smoker, current status unknown
-				 * 266927001        SNOMEDCT    Unknown if ever smoked
-				 */
-				'value' => array(
-					'@attributes' => array(
-						'xsi:type' => 'CD',
-						'code' => '449868002', // TODO
-						'codeSystem' => $this->codes['SNOMEDCT']
-					)
-				),
-			)
-		);
+				)
+			);
+		}
+		unset($smokingStatus);
 
 		/***************************************************************************************************************
-		 * Pregnancy Observation - This clinical statement represents current and/or
-		 * prior pregnancy dates enabling investigators to determine if the subject
-		 * of the case report* was pregnant during the course of a condition.
+		 * This Social History Observation defines the patient's occupational, personal (e.g., lifestyle),
+		 * social, and environmental history and health risk factors, as well as administrative data such
+		 * as marital status, race, ethnicity, and religious affiliation.
 		 */
-		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
-			'td' => array(
-				array(
-					'@value' => 'Social History Element Data'
-				),
-				array(
-					'@value' => 'ReactiDescriptionon Data'
-				),
-				array(
-					'@value' => 'Effective Data'
-				)
-			)
-		);
-		$socialHistory['section']['entry'][] = array(
-			'observation' => array(
-				'@attributes' => array(
-					'classCode' => 'OBS',
-					'moodCode' => 'EVN'
-				),
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => '2.16.840.1.113883.10.20.15.3.8'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => 'ASSERTION',
-						'codeSystem' => '2.16.840.1.113883.5.4'
-					)
-				),
-				'statusCode' => array(
-					'@attributes' => array(
-						'code' => 'completed',
-					)
-				),
-				'value' => array(
-					'@attributes' => array(
-						'xsi:type' => 'CD',
-						'code' => '77386006',
-						'codeSystem' => '2.16.840.1.113883.6.96'
-					)
-				),
-				'entryRelationship' => array(
-					'@attributes' => array(
-						'typeCode' => 'REFR'
-					),
-					'observation' => array(
-						'@attributes' => array(
-							'classCode' => 'OBS',
-							'moodCode' => 'EVN'
-						),
-						'templateId' => array(
-							'@attributes' => array(
-								'root' => '2.16.840.1.113883.10.20.15.3.1'
-							)
-						),
-						'code' => array(
-							'@attributes' => array(
-								'code' => '11778-8',
-								'codeSystem' => '2.16.840.1.113883.6.1'
-							)
-						),
-						'statusCode' => array(
-							'@attributes' => array(
-								'code' => 'completed'
-							)
-						),
-						/**
-						 * Estimated Date Of Delivery
-						 */
-						'value' => array(
-							'@attributes' => array(
-								'xsi:type' => 'TS',
-								'value' => '20150123' // TODO
-							)
-						)
-					)
-				)
-			)
-		);
+		$socialHistories = $SocialHistory->getSocialHistoryByPidAndCode($this->pid);
 
-		$this->addSection($socialHistory);
-		unset($socialHistoryData, $socialHistory);
-	}
+		if(count($socialHistories) > 0){
 
-	/**
-	 * Method setResultsSection()
-	 */
-	private function setResultsSection(){
-		$results = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => $this->requiredResults ? '2.16.840.1.113883.10.20.22.2.3.1' : '2.16.840.1.113883.10.20.22.2.3'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '30954-2',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Results',
-				'text' => ''
-			)
-		);
-		$resultsData = array();
-		if(!empty($allergiesData)){
-			$results['section']['text'] = array(
+			$socialHistory['section']['text'] = array(
 				'table' => array(
 					'@attributes' => array(
 						'border' => '1',
@@ -2548,13 +3034,13 @@ class CCDDocument {
 							array(
 								'th' => array(
 									array(
-										'@value' => 'Substance'
+										'@value' => 'Social History Element'
 									),
 									array(
-										'@value' => 'Reaction'
+										'@value' => 'Description'
 									),
 									array(
-										'@value' => 'Status'
+										'@value' => 'Effective Dates'
 									)
 								)
 							)
@@ -2565,26 +3051,273 @@ class CCDDocument {
 					)
 				)
 			);
-			$results['section']['entry'] = array();
+		}
 
-			foreach($allergiesData as $item){
+		foreach($socialHistories As $socialHistoryEntry){
 
-				$results['section']['text']['table']['tbody']['tr'][] = array(
-					'td' => array(
-						array(
-							'@value' => 'Substance Data'
-						),
-						array(
-							'@value' => 'Reaction Data'
-						),
-						array(
-							'@value' => 'Status Data'
+			$dateText = $this->parseDate($socialHistoryEntry['start_date']) . ' - ';
+			if($socialHistoryEntry['end_date'] != '0000-00-00 00:00:00')
+				$dateText .= $this->parseDate($socialHistoryEntry['end_date']);
+
+			$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
+				'td' => array(
+					array(
+						'@value' => $socialHistoryEntry['category_code_text']
+					),
+					array(
+						'@value' => $socialHistoryEntry['observation']
+					),
+					array(
+						'@value' => $dateText
+					)
+				)
+			);
+
+			$entry = array(
+				'@attributes' => array(
+					'typeCode' => 'DRIV'
+				),
+				'observation' => array(
+					'@attributes' => array(
+						'classCode' => 'OBS',
+						'moodCode' => 'EVN'
+					),
+					'templateId' => array(
+						'@attributes' => array(
+							'root' => '2.16.840.1.113883.10.20.22.4.38'
+						)
+					),
+					'id' => array(
+						'@attributes' => array(
+							'root' => UUID::v4()
+						)
+					),
+					/**
+					 * Code            System    Print Name
+					 * 229819007    SNOMEDCT    Tobacco use and exposure
+					 * 256235009    SNOMEDCT    Exercise
+					 * 160573003    SNOMEDCT    Alcohol intake
+					 * 364393001    SNOMEDCT    Nutritional observable
+					 * 364703007    SNOMEDCT    Employment detail
+					 * 425400000    SNOMEDCT    Toxic exposure status
+					 * 363908000    SNOMEDCT    Details of drug misuse behavior
+					 * 228272008    SNOMEDCT    Health-related behavior
+					 * 105421008    SNOMEDCT    Educational Achievement
+					 */
+					'code' => array(
+						'@attributes' => array(
+							'code' => $socialHistoryEntry['category_code'],
+							'codeSystem' => $this->codes[$socialHistoryEntry['category_code_type']],
+							'codeSystemName' => $socialHistoryEntry['category_code_text'],
+							'displayName' => $socialHistoryEntry['category_code_text']
+						)
+					),
+					'statusCode' => array(
+						'@attributes' => array(
+							'code' => 'completed',
 						)
 					)
+				)
+			);
 
+			$entry['observation']['effectiveTime'] = array(
+				'@attributes' => array(
+					'xsi:type' => 'IVL_TS',
+				)
+			);
+
+			$entry['observation']['effectiveTime']['low'] = array(
+				'@attributes' => array(
+					'value' => $this->parseDate($socialHistoryEntry['start_date'])
+				)
+			);
+
+			if($socialHistoryEntry['end_date'] != '0000-00-00 00:00:00'){
+				$entry['observation']['effectiveTime']['high'] = array(
+					'@attributes' => array(
+						'value' => $this->parseDate($socialHistoryEntry['end_date'])
+					)
+				);
+			} else {
+				$entry['observation']['effectiveTime']['high'] = array(
+					'@attributes' => array(
+						'nullFlavor' => 'NI'
+					)
+				);
+			}
+
+			$entry['observation']['value'] = array(
+				'@attributes' => array(
+					'xsi:type' => 'ST'
+				),
+				'@value' => $socialHistoryEntry['observation']
+			);
+
+			$socialHistory['section']['entry'][] = $entry;
+
+			unset($entry);
+
+		}
+		unset($socialHistories);
+
+		//		/***************************************************************************************************************
+		//		 * Pregnancy Observation - This clinical statement represents current and/or
+		//		 * prior pregnancy dates enabling investigators to determine if the subject
+		//		 * of the case report* was pregnant during the course of a condition.
+		//		 */
+		//		$socialHistory['section']['text']['table']['tbody']['tr'][] = array(
+		//			'td' => array(
+		//				array(
+		//					'@value' => 'Social History Element Data'
+		//				),
+		//				array(
+		//					'@value' => 'ReactiDescriptionon Data'
+		//				),
+		//				array(
+		//					'@value' => 'Effective Data'
+		//				)
+		//			)
+		//		);
+		//		$socialHistory['section']['entry'][] = array(
+		//			'@attributes' => array(
+		//				'typeCode' => 'DRIV'
+		//			),
+		//			'observation' => array(
+		//				'@attributes' => array(
+		//					'classCode' => 'OBS',
+		//					'moodCode' => 'EVN'
+		//				),
+		//				'templateId' => array(
+		//					'@attributes' => array(
+		//						'root' => '2.16.840.1.113883.10.20.15.3.8'
+		//					)
+		//				),
+		//				'code' => array(
+		//					'@attributes' => array(
+		//						'code' => 'ASSERTION',
+		//						'codeSystem' => '2.16.840.1.113883.5.4'
+		//					)
+		//				),
+		//				'statusCode' => array(
+		//					'@attributes' => array(
+		//						'code' => 'completed',
+		//					)
+		//				),
+		//				'value' => array(
+		//					'@attributes' => array(
+		//						'xsi:type' => 'CD',
+		//						'code' => '77386006',
+		//						'codeSystem' => '2.16.840.1.113883.6.96'
+		//					)
+		//				),
+		//				'entryRelationship' => array(
+		//					'@attributes' => array(
+		//						'typeCode' => 'REFR'
+		//					),
+		//					'observation' => array(
+		//						'@attributes' => array(
+		//							'classCode' => 'OBS',
+		//							'moodCode' => 'EVN'
+		//						),
+		//						'templateId' => array(
+		//							'@attributes' => array(
+		//								'root' => '2.16.840.1.113883.10.20.15.3.1'
+		//							)
+		//						),
+		//						'code' => array(
+		//							'@attributes' => array(
+		//								'code' => '11778-8',
+		//		                        'codeSystemName' => 'LOINC',
+		//								'codeSystem' => '2.16.840.1.113883.6.1'
+		//							)
+		//						),
+		//						'statusCode' => array(
+		//							'@attributes' => array(
+		//								'code' => 'completed'
+		//							)
+		//						),
+		//						/**
+		//						 * Estimated Date Of Delivery
+		//						 */
+		//						'value' => array(
+		//							'@attributes' => array(
+		//								'xsi:type' => 'TS',
+		//								'value' => '20150123' // TODO
+		//							)
+		//						)
+		//					)
+		//				)
+		//			)
+		//		);
+
+		$this->addSection($socialHistory);
+		unset($socialHistoryData, $socialHistory);
+	}
+
+	/**
+	 * Method setResultsSection()
+	 */
+	private function setResultsSection() {
+
+		$Orders = new Orders();
+		$resultsData = $Orders->getOrderWithResultsByPid($this->pid);
+
+		$results = array();
+
+		if(empty($resultsData)){
+			$results['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$results['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => $this->requiredResults ? '2.16.840.1.113883.10.20.22.2.3.1' : '2.16.840.1.113883.10.20.22.2.3'
+			)
+		);
+		$results['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '30954-2',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$results['section']['title'] = 'Results';
+		$results['section']['text'] = '';
+
+		if(!empty($resultsData)){
+
+			$results['section']['text'] = array(
+				'table' => array(
+					'@attributes' => array(
+						'border' => '1',
+						'width' => '100%'
+					),
+					'tbody' => array()
+				)
+			);
+			$results['section']['entry'] = array();
+
+			foreach($resultsData as $item){
+
+				$results['section']['text']['table']['tbody'][] = array(
+					'tr' => array(
+						array(
+							'th' => array(
+								array(
+									'@value' => $item['description']
+								),
+								array(
+									'@value' => $this->parseDateToText($item['result']['result_date'])
+								)
+							)
+						)
+					)
 				);
 
-				$results['section']['entry'][] = $order = array(
+				$entry = array(
+					'@attributes' => array(
+						'typeCode' => 'DRIV'
+					),
 					'organizer' => array(
 						'@attributes' => array(
 							'classCode' => 'CLUSTER',
@@ -2603,9 +3336,10 @@ class CCDDocument {
 						),
 						'code' => array(
 							'@attributes' => array(
-								'code' => 'NA',
-								'CodeSystem' => '2.16.840.1.113883.6.1'
-								// LOINC
+								'code' => $item['code'],
+								'displayName' => $item['description'],
+								'codeSystemName' => $item['code_type'],
+								'codeSystem' => $this->codes[$item['code_type']]
 							)
 						),
 						/**
@@ -2622,31 +3356,31 @@ class CCDDocument {
 								'code' => 'completed',
 							)
 						),
-						'effectiveTime' => array(
-							'@attributes' => array(
-								'xsi:type' => 'IVL_TS',
-							),
-							'low' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							),
-							'high' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							)
-						),
 						'component' => array()
 					)
 				);
 
-				$observations = array(); // TODO
+				foreach($item['result']['observations'] as $obs){
+					$results['section']['text']['table']['tbody'][] = array(
+						'tr' => array(
+							array(
+								'td' => array(
+									array(
+										'@value' => $obs['code_text']
+									),
+									array(
+										'@attributes' => array(
+											'align' => 'left'
+										),
+										'@value' => htmlentities($obs['value'] . ' ' . $obs['units'] . ' [' . $obs['reference_rage'] . ']')
+									)
+								)
+							)
+						)
+					);
 
-				foreach($observations As $observation){
-
-					$order['organizer']['component'][] = array(
-						'component' => array(
+					$component = array(
+						'observation' => array(
 							'@attributes' => array(
 								'classCode' => 'OBS',
 								'moodCode' => 'EVN'
@@ -2663,11 +3397,10 @@ class CCDDocument {
 							),
 							'code' => array(
 								'@attributes' => array(
-									'code' => '33765-9',
-									// TODO
-									'CodeSystem' => '2.16.840.1.113883.6.1',
-									// LOINC
-									'displayName' => 'WBC'
+									'code' => $obs['code'],
+									'codeSystemName' => $obs['code_type'],
+									'codeSystem' => $this->codes[$obs['code_type']],
+									'displayName' => $obs['code_text']
 								)
 							),
 							/**
@@ -2683,18 +3416,87 @@ class CCDDocument {
 								'@attributes' => array(
 									'code' => 'completed'
 								)
-							),
-							'value' => array(
-								'@attributes' => array(
-									'xsi:type' => 'PQ',
-									'value' => '6.7',
-									'unit' => '0+3/ul'
-								)
 							)
 						)
 					);
+
+					$component['observation']['effectiveTime'] = array(
+						'@attributes' => array(
+							'xsi:type' => 'IVL_TS',
+						),
+						'low' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($item['result']['result_date'])
+							)
+						),
+						'high' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($item['result']['result_date'])
+							)
+						)
+					);
+
+					if(is_numeric($obs['value'])){
+						$component['observation']['value'] = array(
+							'@attributes' => array(
+								'xsi:type' => 'PQ',
+								'value' => htmlentities($obs['value'])
+							)
+						);
+						if($obs['units'] != ''){
+							$component['observation']['value']['@attributes']['unit'] = htmlentities($obs['units']);
+						}
+					} else {
+						$component['observation']['value'] = array(
+							'@attributes' => array(
+								'xsi:type' => 'ST'
+							),
+							'@value' => htmlentities($obs['value'])
+						);
+					}
+
+					$component['observation']['interpretationCode'] = array(
+						'@attributes' => array(
+							'code' => htmlentities($obs['abnormal_flag']),
+							'codeSystemName' => 'ObservationInterpretation',
+							'codeSystem' => '2.16.840.1.113883.5.83'
+						)
+					);
+
+					$ranges = preg_split("/to|-/", $obs['reference_rage']);
+					if(is_array($ranges) && count($ranges) > 2){
+
+						$component['observation']['referenceRange'] = array(
+							'observationRange' => array(
+								'value' => array(
+									'@attributes' => array(
+										'xsi:type' => 'IVL_PQ'
+									),
+									'low' => array(
+										'@attributes' => array(
+											'value' => htmlentities($ranges[0]),
+											'unit' => htmlentities($obs['units'])
+										)
+									),
+									'high' => array(
+										'@attributes' => array(
+											'value' => htmlentities($ranges[1]),
+											'unit' => htmlentities($obs['units'])
+										)
+									)
+								)
+							)
+						);
+
+					}
+
+					$entry['organizer']['component'][] = $component;
+
 				}
+
+				$results['section']['entry'][] = $entry;
 			}
+
 		}
 
 		if($this->requiredResults || !empty($results['section']['entry'])){
@@ -2704,28 +3506,33 @@ class CCDDocument {
 	}
 
 	/**
-	 * Method setFunctionalStatusSection()
+	 * Method setFunctionalStatusSection() TODO
 	 */
-	private function setFunctionalStatusSection(){
+	private function setFunctionalStatusSection() {
 
-		$functionalStatus = array(
-			'section' => array(
-				'templateId' => array(
-					'@attributes' => array(
-						'root' => '2.16.840.1.113883.10.20.22.2.14'
-					)
-				),
-				'code' => array(
-					'@attributes' => array(
-						'code' => '47420-5',
-						'codeSystem' => '2.16.840.1.113883.6.1'
-					)
-				),
-				'title' => 'Functional status assessment',
-				'text' => ''
+		$CognitiveAndFunctionalStatus = new CognitiveAndFunctionalStatus();
+		$functionalStatusData = $CognitiveAndFunctionalStatus->getPatientCognitiveAndFunctionalStatusesByPid($this->pid);
+
+		if(empty($functionalStatusData)){
+			$functionalStatus['section']['@attributes'] = array(
+				'nullFlavor' => 'NI'
+			);
+		}
+		$functionalStatus['section']['templateId'] = array(
+			'@attributes' => array(
+				'root' => '2.16.840.1.113883.10.20.22.2.14'
 			)
 		);
-		$functionalStatusData = array();
+		$functionalStatus['section']['code'] = array(
+			'@attributes' => array(
+				'code' => '47420-5',
+				'codeSystemName' => 'LOINC',
+				'codeSystem' => '2.16.840.1.113883.6.1'
+			)
+		);
+		$functionalStatus['section']['title'] = 'Functional status assessment';
+		$functionalStatus['section']['text'] = '';
+
 		if(!empty($functionalStatusData)){
 			$functionalStatus['section']['text'] = array(
 				'table' => array(
@@ -2738,10 +3545,13 @@ class CCDDocument {
 							array(
 								'th' => array(
 									array(
-										'@value' => 'Functional Condition'
+										'@value' => 'Functional or Cognitive Finding'
 									),
 									array(
-										'@value' => 'Effective Dates'
+										'@value' => 'Observation'
+									),
+									array(
+										'@value' => 'Observation Date'
 									),
 									array(
 										'@value' => 'Condition Status'
@@ -2762,74 +3572,108 @@ class CCDDocument {
 				$functionalStatus['section']['text']['table']['tbody']['tr'][] = array(
 					'td' => array(
 						array(
-							'@value' => 'Functional Condition Data'
+							'@value' => $item['category']
 						),
 						array(
-							'@value' => 'Effective Dates Data'
+							'@value' => $item['code_text']
 						),
 						array(
-							'@value' => 'Condition Status Data'
+							'@value' => $this->parseDate($item['created_date'])
+						),
+						array(
+							'@value' => $item['status']
 						)
 					)
 
 				);
 
-				$functionalStatus['section']['entry'][] = $order = array(
-					'organizer' => array(
+				$entry = array(
+					'observation' => array(
 						'@attributes' => array(
-							'classCode' => 'CLUSTER',
-							// CLUSTER || BATTERY
+							'classCode' => 'OBS',
 							'moodCode' => 'EVN'
 						),
-						'templateId' => array(
-							'@attributes' => array(
-								'root' => '2.16.840.1.113883.10.20.22.4.1'
-							)
-						),
-						'id' => array(
-							'@attributes' => array(
-								'root' => UUID::v4()
-							)
-						),
-						'code' => array(
-							'@attributes' => array(
-								'code' => 'NA',
-								'CodeSystem' => '2.16.840.1.113883.6.1'
-								// LOINC
-							)
-						),
-						/**
-						 * Code         System      Print Name
-						 * aborted      ActStatus   aborted
-						 * active       ActStatus   active
-						 * cancelled    ActStatus   cancelled
-						 * completed    ActStatus   completed
-						 * held         ActStatus   held
-						 * suspended    ActStatus   suspended
-						 */
-						'statusCode' => array(
-							'@attributes' => array(
-								'code' => 'completed',
-							)
-						),
-						'effectiveTime' => array(
-							'@attributes' => array(
-								'xsi:type' => 'IVL_TS',
-							),
-							'low' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							),
-							'high' => array(
-								'@attributes' => array(
-									'value' => '19320924'
-								)
-							)
-						),
-						'component' => array()
 					)
 				);
+
+				$entry['observation']['templateId'] = array(
+					'@attributes' => array(
+						'root' => ($item['category_code'] == '363871006' ? '2.16.840.1.113883.10.20.22.4.74' : '2.16.840.1.113883.10.20.22.4.67')
+					)
+				);
+
+				$entry['observation']['id'] = array(
+					'@attributes' => array(
+						'root' => UUID::v4()
+					)
+				);
+
+				$entry['observation']['code'] = array(
+					'@attributes' => array(
+						'code' => $item['category_code'],
+						'codeSystemName' => $item['category_code_type'],
+						'codeSystem' => $this->codes[$item['category_code_type']],
+						'displayName' => $item['category']
+					)
+				);
+
+				$entry['observation']['statusCode'] = array(
+					'@attributes' => array(
+						'code' => 'completed',
+					)
+				);
+
+				if($item['begin_date'] != '0000-00-00'){
+					$entry['observation']['effectiveTime'] = array(
+						'@attributes' => array(
+							'value' => $this->parseDate($item['created_date']),
+						)
+					);
+				} elseif($item['end_date'] != '0000-00-00') {
+					$entry['observation']['effectiveTime'] = array(
+						'@attributes' => array(
+							'xsi:type' => 'IVL_TS',
+						),
+						'low' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($item['begin_date']),
+							)
+						),
+						'high' => array(
+							'@attributes' => array(
+								'nullFlavor' => 'NI'
+							)
+						)
+					);
+				} else {
+					$entry['observation']['effectiveTime'] = array(
+						'@attributes' => array(
+							'xsi:type' => 'IVL_TS',
+						),
+						'low' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($item['begin_date']),
+							)
+						),
+						'high' => array(
+							'@attributes' => array(
+								'value' => $this->parseDate($item['end_date']),
+							)
+						)
+					);
+				}
+
+				$entry['observation']['value'] = array(
+					'@attributes' => array(
+						'xsi:type' => 'CD',
+						'code' => $item['code'],
+						'codeSystemName' => $item['code_type'],
+						'codeSystem' => $this->codes[$item['code_type']],
+						'displayName' => $item['code_text']
+					)
+				);
+
+				$functionalStatus['section']['entry'][] = $entry;
 			}
 		}
 
@@ -2840,9 +3684,9 @@ class CCDDocument {
 	}
 
 	/**
-	 * Method setFunctionalStatusSection()
+	 * Method setEncountersSection() TODO
 	 */
-	private function setEncountersSection(){
+	private function setEncountersSection() {
 		$encounters = array(
 			'section' => array(
 				'templateId' => array(
@@ -2853,6 +3697,7 @@ class CCDDocument {
 				'code' => array(
 					'@attributes' => array(
 						'code' => '46240-8',
+						'codeSystemName' => 'LOINC',
 						'codeSystem' => '2.16.840.1.113883.6.1'
 					)
 				),
@@ -2861,9 +3706,7 @@ class CCDDocument {
 			)
 		);
 
-
 		$encountersData = array();
-
 
 		if(!empty($encountersData)){
 			$encounters['section']['text'] = array(
@@ -2921,6 +3764,7 @@ class CCDDocument {
 						),
 						'templateId' => array(
 							'@attributes' => array(
+								//2.16.840.1.113883.3.88.11.83.127
 								'root' => '2.16.840.1.113883.10.20.22.4.49'
 							)
 						),
@@ -2933,7 +3777,7 @@ class CCDDocument {
 							'@attributes' => array(
 								// CPT4 Visit code 99200 <-> 99299
 								'code' => '99200',
-								'CodeSystem' => $this->codes['CPT4'],
+								'codeSystem' => $this->codes['CPT4'],
 							)
 						),
 						/**
@@ -2987,7 +3831,7 @@ class CCDDocument {
 									'code' => array(
 										'@attributes' => array(
 											'code' => '29308-4',
-											'CodeSystem' => '2.16.840.1.113883.6.1',
+											'codeSystem' => '2.16.840.1.113883.6.1',
 
 										)
 									),
@@ -3028,7 +3872,7 @@ class CCDDocument {
 												'code' => array(
 													'@attributes' => array(
 														'code' => '282291009',
-														'CodeSystem' => '2.16.840.1.113883.6.96',
+														'codeSystem' => '2.16.840.1.113883.6.96',
 
 													),
 													'originalText' => 'Original text'
@@ -3066,7 +3910,7 @@ class CCDDocument {
 															'code' => array(
 																'@attributes' => array(
 																	'code' => '33999-4',
-																	'CodeSystem' => '2.16.840.1.113883.6.1',
+																	'codeSystem' => '2.16.840.1.113883.6.1',
 																)
 															),
 															'statusCode' => array(
@@ -3108,7 +3952,7 @@ class CCDDocument {
 															'code' => array(
 																'@attributes' => array(
 																	'code' => '11323-3',
-																	'CodeSystem' => '2.16.840.1.113883.6.1',
+																	'codeSystem' => '2.16.840.1.113883.6.1',
 
 																)
 															),
@@ -3148,18 +3992,26 @@ class CCDDocument {
 		unset($encountersData, $encounters);
 	}
 
+	private function parseDateToText($date) {
+		return date('F Y', strtotime($date));
+	}
+
+	private function parseDate($date) {
+		$foo = explode(' ', $date);
+		return str_replace('-', '', $foo[0]);
+	}
 }
 
 /**
  * Handle the request only if pid and action is available
  */
 if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
+
+	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_SESSION['user']['token'])
+		die('Not Authorized!');
 	/**
 	 * Check token for security
 	 */
-	//if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) !== $_SESSION['user']['token'])die('Not Authorized!');
-	if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-	include_once(ROOT . '/registry.php');
 	include_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
 	include_once(ROOT . '/classes/MatchaHelper.php');
 	$ccd = new CCDDocument();
@@ -3169,7 +4021,7 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 
 	if($_REQUEST['action'] == 'view'){
 		$ccd->view();
-	} elseif($_REQUEST['action'] == 'export'){
+	} elseif($_REQUEST['action'] == 'export') {
 		$ccd->export();
 	}
 }

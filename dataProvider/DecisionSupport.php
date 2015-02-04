@@ -214,22 +214,32 @@ class DecisionSupport {
 
 	/**
 	 * @param $rule
-	 * @return bool
+	 * @return bool Alert
 	 */
 	private function ckRule($rule){
-		return (
-			$this->ckDemographics($rule) && (
-				!isset($rule['concepts']) || (
-					$this->ckProcedures($rule) &&  // done
-					$this->ckActiveProblems($rule) && // done
-					$this->ckActiveMedications($rule) &&// done
-					$this->ckActiveMedicationAllergies($rule) && //done
-					$this->ckLaboratoryResults($rule) && // done
-					$this->ckSocialHistory($rule) && // done
-					$this->ckVitals($rule) // done
-				)
-			)
-		);
+
+		$alert = $this->ckDemographics($rule);
+
+		if($alert && isset($rule['concepts'])){
+			$procedureAlert = $this->ckProcedures($rule);
+			$activeProblemsAlert = $this->ckActiveProblems($rule);
+			$medicationsAlert = $this->ckActiveMedications($rule);
+			$activeMedicationsAllergyAlert = $this->ckActiveMedicationAllergies($rule);
+			$laboratoryAlert = $this->ckLaboratoryResults($rule);
+			$socialHistoryAlert = $this->ckSocialHistory($rule);
+			$vitalsAlert = $this->ckVitals($rule);
+
+			return ($procedureAlert &&
+				$activeProblemsAlert &&
+				$medicationsAlert &&
+				$activeMedicationsAllergyAlert &&
+				$laboratoryAlert &&
+				$socialHistoryAlert &&
+				$vitalsAlert);
+
+		}else{
+			return $alert;
+		}
 	}
 
 	/**
@@ -261,7 +271,7 @@ class DecisionSupport {
 		if(isset($rule['concepts']['PROC']) && !empty($rule['concepts']['PROC'])){
 			$count = 0;
 			foreach($rule['concepts']['PROC'] as $concept){
-				$procedures = $this->Procedures->getPatientProcedureByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
+				$procedures = $this->Procedures->getPatientProceduresByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
 				if(empty($procedures)) continue;
 				if($concept['frequency_interval'] == 0){
 					$count++;
@@ -274,7 +284,8 @@ class DecisionSupport {
 						if($concept['frequency'] == $frequency) break;
 					}
 				}
-				if($frequency >= $concept['frequency']){
+
+				if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 					$count++;
 				}
 			}
@@ -304,7 +315,8 @@ class DecisionSupport {
 						if($concept['frequency'] == $frequency) break;
 					}
 				}
-				if($frequency >= $concept['frequency']){
+
+				if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 					$count++;
 				}
 			}
@@ -344,7 +356,6 @@ class DecisionSupport {
 			foreach($rule['concepts']['ALLE'] as $concept){
 				$allergies = $this->Allergies->getPatientActiveDrugAllergiesByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
 				if(empty($allergies)) continue;
-
 				if($concept['frequency_interval'] == 0){
 					$count++;
 					continue;
@@ -356,7 +367,7 @@ class DecisionSupport {
 						if($concept['frequency'] == $frequency) break;
 					}
 				}
-				if($frequency >= $concept['frequency']){
+				if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 					$count++;
 				}
 			}
@@ -384,7 +395,7 @@ class DecisionSupport {
 						}
 					}
 				}
-				if($concept['frequency_interval'] == 0 || $frequency >= $concept['frequency']){
+				if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 					$count++;
 				}
 			}
@@ -402,8 +413,6 @@ class DecisionSupport {
 			$count = 0;
 			foreach($rule['concepts']['SOCI'] as $concept){
 				$socials = $this->SocialHistory->getSocialHistoryByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
-				//if(empty($socials)) continue;
-
 				if($concept['frequency_interval'] == ''){
 					if($this->compare(count($socials), $concept['frequency_operator'], $concept['frequency'])){
 						return true;
@@ -412,16 +421,15 @@ class DecisionSupport {
 					$frequency = 0;
 					foreach($socials as $social){
 						$starDate = isset($social['create_date']) ? $social['create_date'] : $social['start_date'];
-						if($this->isWithInterval($starDate, $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d')){
+						if($this->isWithInterval($starDate, $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d H:i:s')){
 							$frequency++;
 							if($concept['frequency'] == $frequency) break;
 						}
 					}
-					if($frequency >= $concept['frequency']){
+					if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 						$count++;
 					}
 				}
-
 			}
 			return $count == count($rule['concepts']['SOCI']);
 		}
@@ -433,29 +441,28 @@ class DecisionSupport {
 	 * @return bool
 	 */
 	private function ckVitals($rule){
-		if(isset($rule['concepts']['VITA']) && !empty($rule['concepts']['PROC'])){
+		if(isset($rule['concepts']['VITA']) && !empty($rule['concepts']['VITA'])){
 			$count = 0;
 			foreach($rule['concepts']['VITA'] as $concept){
 				$vitals = $this->Vitals->getVitalsByPid($this->Patient->getPatientPid());
 				$codes = $this->Vitals->getCodes();
-				if(empty($vitals)) continue;
 				$frequency = 0;
 				foreach($vitals as $vital){
 					$mapping = $codes[$concept['concept_code']]['mapping'];
-					if($this->compare($vital[$mapping], $concept['value_operator'], $concept['value'])){
+
+					if($concept['value_operator'] == '' || $this->compare($vital[$mapping], $concept['value_operator'], $concept['value'])){
 						if($this->isWithInterval($vital['date'], $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d H:i:s')){
 							$frequency++;
 							//if($concept['frequency'] == $frequency) break;
 						}
 					}
 				}
-				if($concept['frequency_interval'] == 0 || $frequency >= $concept['frequency']){
+				if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 					$count++;
 				}
 			}
 			return $count == count($rule['concepts']['VITA']);
 		}
-
 		return true;
 	}
 
@@ -498,5 +505,4 @@ class DecisionSupport {
 			default:   return $v1 == $v2;
 		}
 	}
-
 }

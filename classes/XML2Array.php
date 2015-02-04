@@ -42,6 +42,8 @@ class XML2Array {
      * @return DOMDocument
      */
     public static function &createArray($input_xml) {
+	    // clean xml comments
+	    $input_xml = preg_replace('/<!--[\s\S\W\D]*?-->/','', $input_xml);
         $xml = self::getXMLRoot();
         if(is_string($input_xml)) {
             $parsed = $xml->loadXML($input_xml);
@@ -87,9 +89,19 @@ class XML2Array {
 
                         // assume more nodes of same kind are coming
                         if(!isset($output[$t])) {
-                            $output[$t] = array();
+
+	                        if(is_string($output)){
+		                        if($t == 'br'){
+			                        throw new Exception('Error: <br> tag found inside <'.$node->tagName.'>, just after "'.$output.'". Please user xml safe characters on strings');
+		                        } else {
+			                        throw new Exception( 'Error: Unhandled string "'.$output.'" found inside <'.$t.'> tag');
+		                        }
+	                        }
+	                        $output[$t] = array();
                         }
-                        $output[$t][] = $v;
+
+	                    $output[$t][] = $v;
+
                     } else {
                         //check if it is not an empty text node
                         if($v !== '') {
@@ -138,4 +150,3 @@ class XML2Array {
         return self::$xml;
     }
 }
-?>

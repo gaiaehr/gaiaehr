@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Globals', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelGlobals',
-	pageTitle: 'GaiaEHR ' + i18n('global_settings'),
+	pageTitle: 'GaiaEHR ' + _('global_settings'),
 	uses: ['App.ux.form.fields.Checkbox'],
 	initComponent: function(){
 		var me = this;
@@ -30,6 +30,7 @@ Ext.define('App.view.administration.Globals', {
 			groupField: 'gl_category',
 			remoteSort: false,
 			autoSync: true,
+			pageSize: 500,
 			sorters: [
 				{
 					sorterFn: function(o1, o2){
@@ -74,15 +75,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('dashboard'),
+					"title": _('dashboard'),
 					"option_id": "app/dashboard/dashboard.ejs.php"
 				},
 				{
-					"title": i18n('calendar'),
+					"title": _('calendar'),
 					"option_id": "app/calendar/calendar.ejs.php"
 				},
 				{
-					"title": i18n('messages'),
+					"title": _('messages'),
 					"option_id": "app/messages/messages.ejs.php"
 				}
 			]
@@ -91,11 +92,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['format', 'option_id'],
 			data: [
 				{
-					"format": i18n('last_first_middle'),
+					"format": _('last_first_middle'),
 					"option_id": "0"
 				},
 				{
-					"format": i18n('first_middle_last'),
+					"format": _('first_middle_last'),
 					"option_id": "1"
 				}
 			]
@@ -104,11 +105,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('main_navigation_menu_left'),
+					"title": _('main_navigation_menu_left'),
 					"option_id": "west"
 				},
 				{
-					"title": i18n('main_navigation_menu_right'),
+					"title": _('main_navigation_menu_right'),
 					"option_id": "east"
 				}
 			]
@@ -117,15 +118,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('grey_default'),
+					"title": _('grey_default'),
 					"option_id": "ext-all-gray.css"
 				},
 				{
-					"title": i18n('blue'),
+					"title": _('blue'),
 					"option_id": "ext-all.css"
 				},
 				{
-					"title": i18n('access'),
+					"title": _('access'),
 					"option_id": "ext-all-access.css"
 				}
 			]
@@ -134,19 +135,19 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('oldstyle_static_form_without_search_or_duplication_check'),
+					"title": _('oldstyle_static_form_without_search_or_duplication_check'),
 					"option_id": "0"
 				},
 				{
-					"title": i18n('all_demographics_fields_with_search_and_duplication_check'),
+					"title": _('all_demographics_fields_with_search_and_duplication_check'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('mandatory_or_specified_fields_only_search_and_dup_check'),
+					"title": _('mandatory_or_specified_fields_only_search_and_dup_check'),
 					"option_id": "2"
 				},
 				{
-					"title": i18n('mandatory_or_specified_fields_only_dup_check_no_search'),
+					"title": _('mandatory_or_specified_fields_only_dup_check_no_search'),
 					"option_id": "3"
 				}
 			]
@@ -155,11 +156,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('encounter_statistics'),
+					"title": _('encounter_statistics'),
 					"option_id": "0"
 				},
 				{
-					"title": i18n('mandatory_and_specified_fields'),
+					"title": _('mandatory_and_specified_fields'),
 					"option_id": "1"
 				}
 			]
@@ -168,19 +169,19 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('show_both_us_and_metric_main_unit_is_us'),
+					"title": _('show_both_us_and_metric_main_unit_is_us'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('show_both_us_and_metric_main_unit_is_metric'),
+					"title": _('show_both_us_and_metric_main_unit_is_metric'),
 					"option_id": "2"
 				},
 				{
-					"title": i18n('show_us_only'),
+					"title": _('show_us_only'),
 					"option_id": "3"
 				},
 				{
-					"title": i18n('show_metric_only'),
+					"title": _('show_metric_only'),
 					"option_id": "4"
 				}
 			]
@@ -189,15 +190,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('yyyy_mm_dd'),
+					"title": _('yyyy_mm_dd'),
 					"option_id": "Y-m-d"
 				},
 				{
-					"title": i18n('mm_dd_yyyy'),
+					"title": _('mm_dd_yyyy'),
 					"option_id": "m/d/Y"
 				},
 				{
-					"title": i18n('dd_mm_yyyy'),
+					"title": _('dd_mm_yyyy'),
 					"option_id": "d/m/Y"
 				}
 			]
@@ -206,7 +207,7 @@ Ext.define('App.view.administration.Globals', {
 				fields: ['title', 'option_id'],
 				data: [
 					{
-						"title": i18n('24_hr'),
+						"title": _('24_hr'),
 						"option_id": "H:i"
 					},
 					{
@@ -219,15 +220,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('0'),
+					"title": _('0'),
 					"option_id": "0"
 				},
 				{
-					"title": i18n('1'),
+					"title": _('1'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('2'),
+					"title": _('2'),
 					"option_id": "2"
 				}
 			]
@@ -236,11 +237,11 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('comma'),
+					"title": _('comma'),
 					"option_id": ","
 				},
 				{
-					"title": i18n('period'),
+					"title": _('period'),
 					"option_id": "."
 				}
 			]
@@ -249,19 +250,19 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('comma'),
+					"title": _('comma'),
 					"option_id": ","
 				},
 				{
-					"title": i18n('period'),
+					"title": _('period'),
 					"option_id": "."
 				},
 				{
-					"title": i18n('space'),
+					"title": _('space'),
 					"option_id": " "
 				},
 				{
-					"title": i18n('none'),
+					"title": _('none'),
 					"option_id": ""
 				}
 			]
@@ -287,15 +288,15 @@ Ext.define('App.view.administration.Globals', {
 			fields: ['title', 'option_id'],
 			data: [
 				{
-					"title": i18n('text_field'),
+					"title": _('text_field'),
 					"option_id": "2"
 				},
 				{
-					"title": i18n('single_selection_list'),
+					"title": _('single_selection_list'),
 					"option_id": "1"
 				},
 				{
-					"title": i18n('single_selection_list_with_ability_to_add_to_the_list'),
+					"title": _('single_selection_list_with_ability_to_add_to_the_list'),
 					"option_id": "26"
 				}
 			]
@@ -303,12 +304,12 @@ Ext.define('App.view.administration.Globals', {
 		me.dummyStore = new Ext.data.ArrayStore({
 			fields: ['title', 'option_id'],
 			data: [
-				[i18n('option_1'), 'Option 1'],
-				[i18n('option_2'), 'Option 2'],
-				[i18n('option_3'), 'Option 3'],
-				[i18n('option_5'), 'Option 5'],
-				[i18n('option_6'), 'Option 6'],
-				[i18n('option_7'), 'Option 7']
+				[_('option_1'), 'Option 1'],
+				[_('option_2'), 'Option 2'],
+				[_('option_3'), 'Option 3'],
+				[_('option_5'), 'Option 5'],
+				[_('option_6'), 'Option 6'],
+				[_('option_7'), 'Option 7']
 			]
 		});
 		//region end
@@ -319,7 +320,7 @@ Ext.define('App.view.administration.Globals', {
 			features: [
 				{
 					ftype:'grouping',
-					groupHeaderTpl: i18n('category') + ': {name}'
+					groupHeaderTpl: _('category') + ': {name}'
 				}
 			],
 			plugins:[
@@ -329,12 +330,12 @@ Ext.define('App.view.administration.Globals', {
 			],
 			columns:[
 				{
-					text:i18n('title'),
+					text:_('title'),
 					dataIndex:'gl_name',
 					flex:1
 				},
 				{
-					text:i18n('value'),
+					text:_('value'),
 					dataIndex:'gl_value',
 					flex:1,
 					editor:{
@@ -342,7 +343,7 @@ Ext.define('App.view.administration.Globals', {
 					}
 				},
 				{
-					text:i18n('category'),
+					text:_('category'),
 					dataIndex:'gl_category'
 				}
 			]
@@ -364,7 +365,7 @@ Ext.define('App.view.administration.Globals', {
 			store.load();
 		});
 
-		this.msg(i18n('new_global_configuration_saved'), i18n('refresh_the_application'));
+		this.msg(_('new_global_configuration_saved'), _('refresh_the_application'));
 	},
 	/**
 	 * This function is called from Viewport.js when

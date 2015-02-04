@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\patienteducation\dataProvider;
 
 include_once (ROOT . '/classes/XML2Array.php');
 
@@ -49,7 +50,7 @@ class MedlinePlus
         if($coding == 'LOINC') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.1';
         $urlBuilder = $this->medlineUrl . $this->codingSystem . '&mainSearchCriteria.v.c=' . $code;
         $xmlData = simplexml_load_file($urlBuilder);
-        return XML2Array::createArray($xmlData);
+        return \XML2Array::createArray($xmlData);
     }
 
 }

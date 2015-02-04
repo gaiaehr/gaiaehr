@@ -38,10 +38,14 @@ class BogusAction
 }
 $isForm   = false;
 $isUpload = false;
-if(isset($HTTP_RAW_POST_DATA)){
+$data = file_get_contents('php://input');
+
+if(isset($data)){
 	header('Content-Type: text/javascript');
-	$data = json_decode($HTTP_RAW_POST_DATA);
-	if(isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
+	$data = json_decode($data);
+	if(isset($_REQUEST['module'])){
+		$data->module = $_REQUEST['module'];
+	}
 } else {
 	if(isset($_POST['extAction'])){
 		$isForm       = true;

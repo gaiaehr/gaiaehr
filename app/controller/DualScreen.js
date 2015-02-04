@@ -98,7 +98,7 @@ Ext.define('App.controller.DualScreen', {
 		if(!this.isDual || this._loggedout) return;
 		var store = this.getActiveStore();
 
-		this.mask(i18n('no_patient_selected'));
+		this.mask(_('no_patient_selected'));
 		this.getHeader().update('');
 
 		if(filter === false) return;
@@ -150,7 +150,7 @@ Ext.define('App.controller.DualScreen', {
 			run: function(){
 				if(window.opener == null) window.close();
 				if(!window.opener.app.logged && !me._loggedout){
-					me.mask(i18n('logged_out'));
+					me.mask(_('logged_out'));
 					me._loggedout = true;
 				}
 			},

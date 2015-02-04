@@ -32,27 +32,27 @@ class Sessions {
 	 */
 	private $s;
 
-	/**
-	 * Creates the MatchaHelper instance
-	 */
-	function __construct(){
-		$this->s = MatchaModel::setSenchaModel('App.model.administration.UserSessions');
-		return;
+	private function setModel(){
+		if(!isset($this->s)){
+			$this->s = MatchaModel::setSenchaModel('App.model.administration.UserSessions');
+		}
 	}
 
 	public function loginSession(){
+		$this->setModel();
 		$data = new stdClass();
 		$date = time();
 		$data->sid = session_id();
 		$data->uid = $_SESSION['user']['id'];
 		$data->login = $date;
 		$data->last_request = $date;
-		$record = $this->s->save($data);
+		$record = (object) $this->s->save($data);
 		unset($data);
-		return $_SESSION['session_id'] =  $record['id'];
+		return $_SESSION['session_id'] =  $record->id;
 	}
 
 	public function setSessionByToken($token){
+		$this->setModel();
 		$s = json_decode(Crypt::decrypt($token));
 		$session = $this->s->load($s->sid)->one();
 		if($session === false){
@@ -71,26 +71,25 @@ class Sessions {
 	}
 
 	public function updateSession(){
-		$data = new stdClass();
-		$data->id = $_SESSION['session_id'];
-		$data->last_request = $_SESSION['inactive']['timeout'] = time();
-		Matcha::pauseLog(true);
-		$this->s->save($data);
-		Matcha::pauseLog(false);
-		unset($data);
+		$id = $_SESSION['session_id'];
+		$last_request = $_SESSION['inactive']['timeout'] = time();
+		//Matcha::pauseLog(true);
+		$conn = Matcha::getConn();
+		$conn->exec("UPDATE `users_sessions` SET `last_request` = '{$last_request}' WHERE `id` = '{$id}'");
+		//Matcha::pauseLog(false);
 		return true;
 	}
 
 	public function logoutSession(){
-		$data = new stdClass();
-		$data->id = $_SESSION['session_id'];
-		$data->logout = time();
-		$this->s->save($data);
-		unset($data);
+		$id = $_SESSION['session_id'];
+		$logout = time();
+		$conn = Matcha::getConn();
+		$conn->exec("UPDATE `users_sessions` SET `logout` = '{$logout}' WHERE `id` = '{$id}'");
 		return true;
 	}
 
 	public function logoutInactiveUsers(){
+		$this->setModel();
 		$now = time();
 		$users = array();
 		$params = new stdClass();

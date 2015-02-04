@@ -49,6 +49,10 @@ Ext.define('App.controller.patient.Results', {
 		{
 			ref: 'acknowledgeField',
 			selector: 'hl7messageviewer > textareafield[action=acknowledge]'
+		},
+		{
+			ref: 'OrderResultSignBtn',
+			selector: '#OrderResultSignBtn'
 		}
 	],
 
@@ -59,7 +63,8 @@ Ext.define('App.controller.patient.Results', {
 				activate: me.onResultPanelActive
 			},
 			'patientresultspanel > grid[action=orders]': {
-				selectionchange: me.onOrderSelectionChange
+				selectionchange: me.onOrderSelectionChange,
+				edit: me.onOrderSelectionEdit
 			},
 			'filefield[action=orderresultuploadfield]': {
 				change: me.onOrderDocumentChange
@@ -72,11 +77,71 @@ Ext.define('App.controller.patient.Results', {
 			},
 			'button[action=orderDocumentViewBtn]': {
 				click: me.onOrderDocumentViewBtnClicked
+			},
+			'#OrderResultNewOrderBtn': {
+				click: me.onOrderResultNewOrderBtnClick
+			},
+			'#OrderResultSignBtn': {
+				click: me.onOrderResultSignBtnClick
 			}
 		});
 	},
 
-	onResultPanelActive:function(){
+	onOrderResultSignBtnClick: function(){
+		var me = this;
+
+		app.passwordVerificationWin(function(btn, password){
+			if(btn == 'ok'){
+
+				User.verifyUserPass(password, function(success){
+					if(success){
+						var form = me.getResultForm().getForm(),
+							record = form.getRecord();
+
+						say(record);
+
+						record.set({signed_uid: app.user.id});
+						record.save({
+							success: function(){
+								app.msg(_('sweet'), _('result_signed'));
+							},
+							failure: function(){
+								app.msg(_('sweet'), _('record_error'), true);
+							}
+						});
+
+					}else{
+						me.onOrderResultSignBtnClick();
+					}
+
+				});
+
+			}
+		});
+
+	},
+
+	onOrderSelectionEdit: function(editor, e){
+		say(e.record);
+		this.getOrderResult(e.record);
+	},
+
+	onOrderResultNewOrderBtnClick: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.getStore(),
+			records;
+
+		grid.editingPlugin.cancelEdit();
+		records = store.add({
+			pid: app.patient.pid,
+			uid: app.user.id,
+			order_type: 'lab',
+			status: 'Pending'
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onResultPanelActive: function(){
 		this.setResultPanel();
 	},
 
@@ -118,19 +183,20 @@ Ext.define('App.controller.patient.Results', {
 		resultsStore.load({
 			callback: function(records){
 
-//				say(records);
-
 				if(records.length > 0){
 					form.loadRecord(records[0]);
+					me.getOrderResultSignBtn().setDisabled(records[0].data.signed_uid > 0);
 					observationStore = records[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load();
+
 				}else{
 					var newResult = resultsStore.add({});
 					form.loadRecord(newResult[0]);
+					me.getOrderResultSignBtn().setDisabled(true);
 					observationStore = newResult[0].observations();
 					observationGrid.reconfigure(observationStore);
-					observationStore.load({ params: { loinc: orderRecord.data.code } });
+					observationStore.load({params: {loinc: orderRecord.data.code}});
 				}
 			}
 		});
@@ -158,9 +224,16 @@ Ext.define('App.controller.patient.Results', {
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
 
+		if(!form.isValid()){
+			app.msg(_('oops'), _('required_fields_missing'), true);
+			return;
+		}
+
 		if(files.length > 0){
 			reader.onload = (function(){
 				return function(e){
+
+					say(values);
 
 					var sm = me.getOrdersGrid().getSelectionModel(),
 						order = sm.getSelection(),
@@ -169,6 +242,7 @@ Ext.define('App.controller.patient.Results', {
 							eid: order[0].data.eid,
 							uid: app.user.id,
 							docType: 'lab',
+							title: 'Lab #' + values.lab_order_id + ' Result',
 							document: e.target.result
 
 						};
@@ -178,7 +252,7 @@ Ext.define('App.controller.patient.Results', {
 							values.documentId = 'doc|' + response.result.id;
 							me.saveOrderResult(form, values);
 						}else{
-							app.msg(i18n('oops'), response.result.error)
+							app.msg(_('oops'), response.result.error)
 						}
 
 					});
@@ -200,43 +274,39 @@ Ext.define('App.controller.patient.Results', {
 			order = sm.getSelection(),
 			observationData = [];
 
-//		me.getObservationsGrid().editingPlugin.cancelEdit();
+		//		me.getObservationsGrid().editingPlugin.cancelEdit();
 
 		var store = record.observations(),
 			observations = store.data.items;
 
-//		for(var i = 0; i < observations.length; i++){
-//			observationData.push(observations[i].data);
-//		}
-//
-//		say(observationData);
+		//		for(var i = 0; i < observations.length; i++){
+		//			observationData.push(observations[i].data);
+		//		}
+		//		say(observationData);
 
-
-		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
+		//		values.result_date = values.result_date == '' ? values.result_date : (values.result_date + ' 00:00:00');
 		record.set(values);
-
-
 
 		record.save({
 			success: function(rec){
 
-//				say(observationData);
-//				say(observationData.length);
-//				say(observations.length);
+				//				say(observationData);
+				//				say(observationData.length);
+				//				say(observations.length);
 
 				for(var i = 0; i < observations.length; i++){
-					observations[i].set({result_id:rec.data.id});
+					observations[i].set({result_id: rec.data.id});
 				}
 
-//				say(observations);
-//				return;
+				//				say(observations);
+				//				return;
 
 				store.sync();
 
 				order[0].set({status: 'Received'});
 				order[0].save();
 
-				app.msg(i18n('sweet'), i18n('record_saved'));
+				app.msg(_('sweet'), _('record_saved'));
 			}
 		});
 	},
@@ -256,7 +326,7 @@ Ext.define('App.controller.patient.Results', {
 		if(type && id){
 			if(type == 'hl7'){
 				win = Ext.widget('hl7messageviewer').show();
-				win.body.mask(i18n('loading...'));
+				win.body.mask(_('loading...'));
 				HL7Messages.getMessageById(id, function(provider, response){
 					me.getMessageField().setValue(response.result.message);
 					me.getAcknowledgeField().setValue(response.result.response);
@@ -267,174 +337,8 @@ Ext.define('App.controller.patient.Results', {
 				app.onDocumentView(id);
 			}
 		}else{
-			app.msg(i18n('oops'), i18n('no_document_found'), true)
+			app.msg(_('oops'), _('no_document_found'), true)
 		}
-	},
-
-
-
-
-
-
-
-
-	/**
-	 * OLD ******************* OLD ******************* OLD ******************* OLD
-	 * OLD ******************* OLD ******************* OLD ******************* OLD
-	 * OLD ******************* OLD ******************* OLD ******************* OLD
-	 * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-	 */
-
-
-
-
-
-
-
-
-
-
-
-	onLaboratoryPreviewRender: function(panel){
-		var me = this;
-		panel.dockedItems.items[0].add({
-			xtype: 'button',
-			text: i18n('upload'),
-			disabled: true,
-			action: 'uploadBtn',
-			scope: me,
-			handler: me.onLabUploadWind
-		});
-	},
-
-	onLabUploadWind: function(){
-		var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
-		me.uploadWin.show();
-		me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
-	},
-
-	onLabUpload: function(btn){
-		var me = this,
-			formPanel = me.uploadWin.down('form'),
-			form = formPanel.getForm(),
-			win = btn.up('window');
-
-		if(form.isValid()){
-			formPanel.el.mask(i18n('uploading_laboratory') + '...');
-			form.submit({
-				//waitMsg: i18n('uploading_laboratory') + '...',
-				params: {
-					pid: app.patient.pid,
-					docType: 'laboratory',
-					eid: app.patient.eid
-				},
-				success: function(fp, o){
-					formPanel.el.unmask();
-//					say(o.result);
-					win.close();
-					me.getLabDocument(o.result.doc.url);
-					me.addNewLabResults(o.result.doc.id);
-				},
-				failure: function(fp, o){
-					formPanel.el.unmask();
-//					say(o.result);
-					win.close();
-				}
-			});
-		}
-	},
-
-	onLabResultClick: function(view, model){
-		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
-		if(me.currDocUrl != model.data.document_url){
-			form.reset();
-			model.data.data.id = model.data.id;
-			form.setValues(model.data.data);
-			me.getLabDocument(model.data.document_url);
-			me.currDocUrl = model.data.document_url;
-		}
-	},
-
-	onLabResultsSign: function(){
-		var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
-		if(form.isValid()){
-			if(values.id){
-				me.passwordVerificationWin(function(btn, password){
-					if(btn == 'ok'){
-						User.verifyUserPass(password, function(provider, response){
-							if(response.result){
-//								say(record);
-								Medical.signPatientLabsResultById(record.data.id, function(provider, response){
-									store.load({
-										params: {
-											parent_id: me.currLabPanelId
-										}
-									});
-								});
-							}else{
-								Ext.Msg.show({
-									title: 'Oops!',
-									msg: i18n('incorrect_password'),
-									//buttons:Ext.Msg.OKCANCEL,
-									buttons: Ext.Msg.OK,
-									icon: Ext.Msg.ERROR,
-									fn: function(btn){
-										if(btn == 'ok'){
-											//me.onLabResultsSign();
-										}
-									}
-								});
-							}
-						});
-					}
-				});
-			}else{
-				Ext.Msg.show({
-					title: 'Oops!',
-					msg: i18n('nothing_to_sign'),
-					//buttons:Ext.Msg.OKCANCEL,
-					buttons: Ext.Msg.OK,
-					icon: Ext.Msg.ERROR,
-					fn: function(btn){
-						if(btn == 'ok'){
-							//me.onLabResultsSign();
-						}
-					}
-				});
-			}
-		}
-	},
-
-	onLabResultsSave: function(btn){
-		var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
-		if(form.isValid()){
-			Medical.updatePatientLabsResult(values, function(){
-				store.load({params: {parent_id: record.data.parent_id}});
-				form.reset();
-			});
-		}
-	},
-
-	addNewLabResults: function(docId){
-		var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params = {
-			parent_id: me.currLabPanelId,
-			document_id: docId
-		};
-		Medical.addPatientLabsResult(params, function(provider, response){
-			store.load({
-				params: {
-					parent_id: me.currLabPanelId
-				}
-			});
-		});
-	},
-
-	getLabDocument: function(src){
-		var panel = this.query('[action="labPreviewPanel"]')[0];
-		panel.remove(this.doc);
-		panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
-			src: src
-		}));
 	},
 
 	onOrderDocumentChange: function(field){
@@ -453,5 +357,157 @@ Ext.define('App.controller.patient.Results', {
 		//		fr.readAsDataURL( field.value );
 
 	}
+
+	/**
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * OLD ******************* OLD ******************* OLD ******************* OLD
+	 * vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	 */
+
+
+
+	//onLaboratoryPreviewRender: function(panel){
+	//	var me = this;
+	//	panel.dockedItems.items[0].add({
+	//		xtype: 'button',
+	//		text: _('upload'),
+	//		disabled: true,
+	//		action: 'uploadBtn',
+	//		scope: me,
+	//		handler: me.onLabUploadWind
+	//	});
+	//},
+	//
+	//onLabUploadWind: function(){
+	//	var me = this, previewPanel = me.query('[action="labPreviewPanel"]')[0];
+	//	me.uploadWin.show();
+	//	me.uploadWin.alignTo(previewPanel.el.dom, 'tr-tr', [-5, 35])
+	//},
+	//
+	//onLabUpload: function(btn){
+	//	var me = this,
+	//		formPanel = me.uploadWin.down('form'),
+	//		form = formPanel.getForm(),
+	//		win = btn.up('window');
+	//
+	//	if(form.isValid()){
+	//		formPanel.el.mask(_('uploading_laboratory') + '...');
+	//		form.submit({
+	//			//waitMsg: _('uploading_laboratory') + '...',
+	//			params: {
+	//				pid: app.patient.pid,
+	//				docType: 'laboratory',
+	//				eid: app.patient.eid
+	//			},
+	//			success: function(fp, o){
+	//				formPanel.el.unmask();
+	//				//					say(o.result);
+	//				win.close();
+	//				me.getLabDocument(o.result.doc.url);
+	//				me.addNewLabResults(o.result.doc.id);
+	//			},
+	//			failure: function(fp, o){
+	//				formPanel.el.unmask();
+	//				//					say(o.result);
+	//				win.close();
+	//			}
+	//		});
+	//	}
+	//},
+	//
+	//onLabResultClick: function(view, model){
+	//	var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm();
+	//	if(me.currDocUrl != model.data.document_url){
+	//		form.reset();
+	//		model.data.data.id = model.data.id;
+	//		form.setValues(model.data.data);
+	//		me.getLabDocument(model.data.document_url);
+	//		me.currDocUrl = model.data.document_url;
+	//	}
+	//},
+	//
+	//onLabResultsSign: function(){
+	//	var me = this, form = me.query('[action="patientLabs"]')[0].down('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
+	//	if(form.isValid()){
+	//		if(values.id){
+	//			me.passwordVerificationWin(function(btn, password){
+	//				if(btn == 'ok'){
+	//					User.verifyUserPass(password, function(provider, response){
+	//						if(response.result){
+	//							//								say(record);
+	//							Medical.signPatientLabsResultById(record.data.id, function(provider, response){
+	//								store.load({
+	//									params: {
+	//										parent_id: me.currLabPanelId
+	//									}
+	//								});
+	//							});
+	//						}else{
+	//							Ext.Msg.show({
+	//								title: 'Oops!',
+	//								msg: _('incorrect_password'),
+	//								//buttons:Ext.Msg.OKCANCEL,
+	//								buttons: Ext.Msg.OK,
+	//								icon: Ext.Msg.ERROR,
+	//								fn: function(btn){
+	//									if(btn == 'ok'){
+	//										//me.onLabResultsSign();
+	//									}
+	//								}
+	//							});
+	//						}
+	//					});
+	//				}
+	//			});
+	//		}else{
+	//			Ext.Msg.show({
+	//				title: 'Oops!',
+	//				msg: _('nothing_to_sign'),
+	//				//buttons:Ext.Msg.OKCANCEL,
+	//				buttons: Ext.Msg.OK,
+	//				icon: Ext.Msg.ERROR,
+	//				fn: function(btn){
+	//					if(btn == 'ok'){
+	//						//me.onLabResultsSign();
+	//					}
+	//				}
+	//			});
+	//		}
+	//	}
+	//},
+	//
+	//onLabResultsSave: function(btn){
+	//	var me = this, form = btn.up('form').getForm(), dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, values = form.getValues(), record = dataView.getSelectionModel().getLastSelected();
+	//	if(form.isValid()){
+	//		Medical.updatePatientLabsResult(values, function(){
+	//			store.load({params: {parent_id: record.data.parent_id}});
+	//			form.reset();
+	//		});
+	//	}
+	//},
+	//
+	//addNewLabResults: function(docId){
+	//	var me = this, dataView = me.query('[action="lalboratoryresultsdataview"]')[0], store = dataView.store, params = {
+	//		parent_id: me.currLabPanelId,
+	//		document_id: docId
+	//	};
+	//	Medical.addPatientLabsResult(params, function(provider, response){
+	//		store.load({
+	//			params: {
+	//				parent_id: me.currLabPanelId
+	//			}
+	//		});
+	//	});
+	//},
+	//
+	//getLabDocument: function(src){
+	//	var panel = this.query('[action="labPreviewPanel"]')[0];
+	//	panel.remove(this.doc);
+	//	panel.add(this.doc = Ext.create('App.ux.ManagedIframe', {
+	//		src: src
+	//	}));
+	//},
+	//
 
 });

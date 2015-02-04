@@ -75,9 +75,6 @@ Ext.define('Modules.Module',{
 			    return parent.insertBefore(node, firstChildNode);
 		    }
 	    }
-
-
-
     },
 
     getModuleData:function(name){
@@ -96,5 +93,9 @@ Ext.define('Modules.Module',{
 
     addLanguages: function (languages) {
 
-    }
+    },
+
+	insertToHead: function(link){
+		Ext.getHeaad().appendChild(link);
+	}
 });

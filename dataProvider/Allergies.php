@@ -24,9 +24,19 @@ class Allergies {
 	 * @var MatchaCUP
 	 */
 	private $a;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $d;
 
 	function __construct() {
 		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+	}
+
+	private function setAdminAllergyModel(){
+		if(is_null($this->d)){
+			$this->d = MatchaModel::setSenchaModel('App.model.administration.Allergies');
+		}
 	}
 
 	public function getPatientAllergies($params){
@@ -49,6 +59,34 @@ class Allergies {
 		return $this->a->destroy($params);
 	}
 
+	public function getPatientAllergiesByPid($pid) {
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+		return $this->getPatientAllergies($params);
+	}
+
+	public function getPatientAllergiesByEid($eid) {
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value = $eid;
+		return $this->getPatientAllergies($params);
+	}
+
+	public function getPatientActiveDrugAllergiesByPid($pid){
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+
+		$params->filter[1] = new stdClass();
+		$params->filter[1]->property = 'allergy_code_type';
+		$params->filter[1]->value = 'RXNORM';
+		return $this->getPatientAllergies($params);
+	}
+
 	public function getPatientActiveDrugAllergiesByPidAndCode($pid, $code){
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();
@@ -65,6 +103,15 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
-
+	public function searchAllergiesData($params){
+		if(!isset($params->query)) return array();
+		$this->setAdminAllergyModel();
+		$sql = "SELECT * FROM `allergies` WHERE `allergy` LIKE '%{$params->query}%' GROUP BY `allergy_code`	LIMIT 100";
+		$records = $this->d->sql($sql)->all();
+		return array(
+			'total' => count($records),
+		    'data' => array_slice($records, $params->start, $params->limit)
+		);
+	}
 }
 

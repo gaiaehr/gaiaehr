@@ -53,6 +53,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 	// Change the hideMode to offsets so that we get accurate measurements when
 	// the roweditor is hidden for laying out things like a TriggerField.
 	hideMode: 'offsets',
+	errorSummary: false,
 
 	style:'background-color:#E0E0E0',
 
@@ -64,10 +65,12 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		me.currRowH = null;
 		plugin = me.editingPlugin;
 		me.items = plugin.items;
+		me.fieldDefaults = plugin.fieldDefaults;
 
-		buttons = [{
+		var buttons = [{
 			action: 'update',
 			xtype: 'button',
+			itemId: 'update',
 			handler: plugin.completeEdit,
 			scope: plugin,
 			text: me.saveBtnText,
@@ -75,6 +78,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		},
 			{
 				xtype: 'button',
+				itemId: 'cancel',
 				handler: plugin.cancelEdit,
 				scope: plugin,
 				text: me.cancelBtnText
@@ -82,6 +86,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		if (plugin.enableRemove) {
 			buttons.push({
 				xtype: 'button',
+				itemId: 'remove',
 				handler: plugin.completeRemove,
 				scope: plugin,
 				text: me.removeBtnText
@@ -135,15 +140,18 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		form = me.getForm();
 		me.setFields();
 		form.trackResetOnLoad = true;
+		me.floatingButtons = me.getDockedItems('toolbar[dock="bottom"]')[0];
 	},
 
 	onFieldValueChange: function() {
 		var me = this,
 			form = me.getForm(),
 			valid = form.isValid(), btn;
+
 		if (me.errorSummary && me.isVisible()) {
 			me[valid ? 'hideToolTip' : 'showToolTip']();
 		}
+
 		btn = me.query('button[action="update"]')[0];
 		if (btn){
 			btn.setDisabled(!valid);
@@ -153,9 +161,15 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
 	afterRender: function() {
 		var me = this,
-			plugin = me.editingPlugin;
+			plugin = me.editingPlugin,
+			grid = plugin.grid,
+			view = grid.lockable ? grid.normalGrid.view : grid.view;
 
 		me.callParent(arguments);
+
+
+		me.scrollingView = view;
+		me.scrollingViewEl = view.el;
 		me.mon(me.renderTo, 'scroll', me.onCtScroll, me, { buffer: 100 });
 
 		// Prevent from bubbling click events to the grid view
@@ -441,11 +455,14 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
 		if(me.saveBtnEnabled) updateBtn.setDisabled(!me.saveBtnEnabled);
 
-		if (form.isValid()) {
-			me.hideToolTip();
-		} else {
-			me.showToolTip();
+		if(this.errorSummary){
+			if (form.isValid()) {
+				me.hideToolTip();
+			} else {
+				me.showToolTip();
+			}
 		}
+
 
 		// render display fields so they honor the column renderer/template
 		Ext.Array.forEach(me.query('>displayfield'), function(field) {
@@ -490,7 +507,7 @@ Ext.define('App.ux.grid.RowFormEditor', {
 				store: store
 			});
 
-		// make sure our row is selected before editing
+//		make sure our row is selected before editing
 		context.grid.getSelectionModel().select(record);
 
 		// Reload the record data
@@ -530,9 +547,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 		if (!form.isValid()) {
 			return;
 		}
-		form.updateRecord(me.context.record);
+
+		me.context.record.set(me.context.newValues);
+
 		if(me.editingPlugin.autoSync){
-			form._record.store.sync({
+			me.context.record.store.sync({
 				callback:function(){
 					me.fireEvent('sync', me, me.context);
 				}
@@ -606,20 +625,15 @@ Ext.define('App.ux.grid.RowFormEditor', {
 	},
 
 	getToolTip: function() {
-		var me = this,
-			tip;
-
-		if (!me.tooltip) {
-			me.tooltip = Ext.createWidget('tooltip', {
-				cls: Ext.baseCSSPrefix + 'grid-row-editor-errors',
-				title: me.errorsText,
-				autoHide: false,
-				closable: true,
-				closeAction: 'disable',
-				anchor: 'left'
-			});
-		}
-		return me.tooltip;
+		return this.tooltip || (this.tooltip = new Ext.tip.ToolTip({
+			cls: Ext.baseCSSPrefix + 'grid-row-editor-errors',
+			title: this.errorsText,
+			autoHide: false,
+			closable: true,
+			closeAction: 'disable',
+			anchor: 'left',
+			anchorToTarget: false
+		}));
 	},
 
 	hideToolTip: function() {
@@ -633,17 +647,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 
 	showToolTip: function() {
 		var me = this,
-			tip = me.getToolTip(),
-			context = me.context,
-			row = Ext.get(context.row),
-			viewEl = context.grid.view.el;
+			tip = me.getToolTip();
 
-		tip.setTarget(row);
-		tip.showAt([-10000, -10000]);
-		tip.body.update(me.getErrors());
-		tip.mouseOffset = [viewEl.getWidth() - row.getWidth() + me.lastScrollLeft + 15, 0];
+		tip.showAt([0, 0]);
+		tip.update(me.getErrors());
 		me.repositionTip();
-		tip.doLayout();
 		tip.enable();
 	},
 
@@ -652,16 +660,16 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			tip = me.getToolTip(),
 			context = me.context,
 			row = Ext.get(context.row),
-			viewEl = context.grid.view.el,
-			viewHeight = viewEl.getHeight(),
+			viewEl = me.scrollingViewEl,
+			viewHeight = viewEl.dom.clientHeight,
 			viewTop = me.lastScrollTop,
 			viewBottom = viewTop + viewHeight,
 			rowHeight = row.getHeight(),
-			rowTop = row.dom.offsetTop,
+			rowTop = row.getOffsetsTo(me.context.view.body)[1],
 			rowBottom = rowTop + rowHeight;
 
 		if (rowBottom > viewTop && rowTop < viewBottom) {
-			tip.show();
+			tip.showAt(tip.getAlignToXY(viewEl, 'tl-tr', [15, row.getOffsetsTo(viewEl)[1]]));
 			me.hiddenTip = false;
 		} else {
 			tip.hide();
@@ -670,19 +678,28 @@ Ext.define('App.ux.grid.RowFormEditor', {
 	},
 
 	getErrors: function() {
-		var me = this,
-			dirtyText = !me.autoCancel && me.isDirty() ? me.dirtyText + '<br />' : '',
-			errors = [];
+		var me        = this,
+			errors    = [],
+			fields    = me.query('[isFormField]'),
+			length    = fields.length,
+			i;
 
-		Ext.Array.forEach(me.query('>[isFormField]'), function(field) {
+		for (i = 0; i < length; i++) {
 			errors = errors.concat(
-				Ext.Array.map(field.getErrors(), function(e) {
-					return '<li>' + e + '</li>';
-				})
+				Ext.Array.map(fields[i].getErrors(), me.createErrorListItem)
 			);
-		}, me);
+		}
 
-		return dirtyText + '<ul>' + errors.join('') + '</ul>';
+		// Only complain about unsaved changes if all the fields are valid
+		if (!errors.length && !me.autoCancel && me.isDirty()) {
+			errors[0] = me.createErrorListItem(me.dirtyText);
+		}
+
+		return '<ul class="' + Ext.plainListCls + '">' + errors.join('') + '</ul>';
+	},
+
+	createErrorListItem: function(e) {
+		return '<li class="' + Ext.baseCSSPrefix + 'grid-row-editor-errors-item">' + e + '</li>';
 	},
 
 	invalidateScroller: function() {

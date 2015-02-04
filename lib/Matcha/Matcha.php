@@ -90,14 +90,16 @@ class Matcha {
 
 				self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-					PDO::ATTR_PERSISTENT => true
+					PDO::ATTR_PERSISTENT => false,
 				));
 
 				self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+				self::$__conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
 				// check if the database exist.
 				self::__createDatabase($dbName);
-				self::$__conn->query('USE ' . $dbName . ';');
+				self::$__conn->exec('USE ' . $dbName . ';');
 
 				// set the encryption secret key if provided
 				if(isset($databaseParameters['key']))
@@ -151,13 +153,18 @@ class Matcha {
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
 			}
 
-			if(isset(MatchaModel::$__senchaModel['table']['uuid']) && MatchaModel::$__senchaModel['table']['uuid']){
-				$tableIdProperties = 'CHAR(40) NOT NULL PRIMARY KEY';
+			$idProperties = MatchaModel::$tableIdProperties;
+
+			if(
+				(isset(MatchaModel::$__senchaModel['table']['uuid']) && MatchaModel::$__senchaModel['table']['uuid']) ||
+				(isset($idProperties['type']) && $idProperties['type'] == 'string')
+			){
+				$tableIdProperties = 'VARCHAR(60) NOT NULL PRIMARY KEY';
 			}else{
 				$tableIdProperties = 'BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY';
 			}
 			$tableId = MatchaModel::$tableId;
-			self::$__conn->exec("CREATE TABLE IF NOT EXISTS  {$table} ({$tableId} {$tableIdProperties}) " . self::__renderTableOptions() . ';');
+			self::$__conn->exec("CREATE TABLE IF NOT EXISTS  `{$table}` ({$tableId} {$tableIdProperties}) " . self::__renderTableOptions() . ';');
 
 			return true;
 		} catch(PDOException $e){
@@ -209,9 +216,9 @@ class Matcha {
 	}
 
 	/**
-	 * function __createAllColumns($paramaters = array()):
+	 * function __createAllColumns($parameters = array()):
 	 * This method will create all the columns inside the table of the database
-	 * method used by SechaModel method
+	 * method used by SenchaModel method
 	 */
 	static protected function __createAllColumns($parameters = array()){
 		foreach($parameters as $column)
@@ -228,10 +235,12 @@ class Matcha {
 		try{
 			if(!$table)
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
+
+			$colName = isset($column['mapping']) ? $column['mapping'] : $column['name'];
 			if(self::__rendercolumnsyntax($column) == true)
-				self::$__conn->query('ALTER TABLE ' . $table . ' ADD ' . $column['name'] . ' ' . self::__rendercolumnsyntax($column) . ';');
+				self::$__conn->query('ALTER TABLE `' . $table . '` ADD `' . $colName . '` ' . self::__rendercolumnsyntax($column) . ';');
 			if($index)
-				self::__createIndex($table, $column['name']);
+				self::__createIndex($table, $colName);
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);
@@ -247,10 +256,12 @@ class Matcha {
 		try{
 			if($table == null)
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel ['table']['name'] : MatchaModel::$__senchaModel['table']);
+
+			$colName = isset($column['mapping']) ? $column['mapping'] : $column['name'];
 			if(self::__rendercolumnsyntax($column) == true)
-				self::$__conn->query('ALTER TABLE ' . $table . ' MODIFY ' . $column['name'] . ' ' . self::__renderColumnSyntax($column) . ';');
+				self::$__conn->query('ALTER TABLE  `' . $table . '` MODIFY `' . $colName . '` ' . self::__renderColumnSyntax($column) . ';');
 			if($index)
-				self::__createIndex($table, $column['name']);
+				self::__createIndex($table, $colName);
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);
@@ -281,7 +292,7 @@ class Matcha {
 		try{
 			if(!$table)
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
-			self::$__conn->query('ALTER TABLE ' . $table . ' DROP COLUMN `' . $column . '`;');
+			self::$__conn->query('ALTER TABLE `' . $table . '` DROP COLUMN `' . $column . '`;');
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);
@@ -293,12 +304,21 @@ class Matcha {
 	 * function __createIndex($table, $column):
 	 * Method to create an new index to table if index does not exist
 	 * @param $table
-	 * @param $column
+	 * @param $columns
 	 * @return bool
 	 */
-	static public function __createIndex($table, $column){
+	static public function __createIndex($table, $columns){
 		try{
-			self::$__conn->query('ALTER TABLE ' . $table . ' ADD INDEX ' . $column . '(' . $column . ');');
+			if(is_string($columns)) $columns = array($columns);
+
+			$keyName = 'IK_'. implode('_', $columns);
+			$columns = implode(',', $columns);
+
+			$sth = self::$__conn->prepare('SHOW INDEX FROM ' . $table . ' WHERE `Key_name` = \'' . $keyName . '\';');
+			$sth->execute();
+			$result = $sth->fetch(PDO::FETCH_ASSOC);
+
+			if($result === false)	self::$__conn->query('ALTER TABLE `' . $table . '` ADD INDEX ' . $keyName . '(' . $columns . ');');
 			return true;
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);
@@ -351,7 +371,7 @@ class Matcha {
 			}
 			if($databaseName == NULL || $databaseTable == NULL)
 				throw new Exception('No database or table name provided."');
-			$size = self::$__conn->query("SELECT (data_length+index_length)$Calculation tablesize FROM information_schema.tables WHERE table_schema='$databaseName' and table_name='$databaseTable';");
+			$size = self::$__conn->query("SELECT (data_length+index_length) $Calculation tablesize FROM information_schema.tables WHERE table_schema='$databaseName' and table_name='$databaseTable';");
 			return $size['tablesize'];
 		} catch(PDOException $e){
 			MatchaErrorHandler::__errorProcess($e);

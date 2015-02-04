@@ -22,7 +22,7 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 	draggable: false,
 	modal: true,
 	autoShow: true,
-	title: i18n('archive_document'),
+	title: _('archive_document'),
 	items: [
 		{
 			xtype: 'form',
@@ -39,12 +39,12 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 					hidden: true
 				},
 				{
-					fieldLabel: i18n('title'),
+					fieldLabel: _('title'),
 					name: 'title'
 				},
 				{
 					xtype: 'gaiaehr.combo',
-					fieldLabel: i18n('type'),
+					fieldLabel: _('type'),
 					list: 102,
 					name: 'docType',
 					allowBlank: false
@@ -52,25 +52,25 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 				{
 					xtype: 'checkbox',
 					name: 'encrypted',
-					fieldLabel: i18n('encrypted')
+					fieldLabel: _('encrypted')
 				},
 				{
 					xtype: 'textareafield',
 					name: 'note',
-					fieldLabel: i18n('notes')
+					fieldLabel: _('notes')
 				}
 			]
 		}
 	],
 	buttons: [
 		{
-			text: i18n('cancel'),
+			text: _('cancel'),
 			handler: function(btn){
 				btn.up('window').close();
 			}
 		},
 		{
-			text: i18n('archive'),
+			text: _('archive'),
 			itemId: 'archiveBtn'
 		}
 	]

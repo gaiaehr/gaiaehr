@@ -44,7 +44,7 @@ Ext.define('App.ux.combo.posCodes', {
 			queryMode: 'local',
 			valueField: 'code',
 			displayField: 'title',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 

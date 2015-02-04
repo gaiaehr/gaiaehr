@@ -72,11 +72,6 @@ Ext.define('App.model.patient.DoctorsNote', {
 			type: 'array'
 		},
 		{
-			name: 'comments',
-			type: 'string',
-			dataType: 'text'
-		},
-		{
 			name: 'string_restrictions',
 			type: 'string',
 			store: false,
@@ -92,6 +87,11 @@ Ext.define('App.model.patient.DoctorsNote', {
 			convert: function(v, record){
 				return Ext.Date.format(record.data.date, 'Y-m-d');
 			}
+		},
+		{
+			name: 'comments',
+			type: 'string',
+			dataType: 'text'
 		}
 	],
 	proxy: {

@@ -38,7 +38,6 @@ class ReferringProviders {
 		return $this->r->save($params);
 	}
 
-
 	public function updateReferringProvider($params){
 		return $this->r->save($params);
 	}

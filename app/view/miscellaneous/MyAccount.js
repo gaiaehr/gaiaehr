@@ -18,7 +18,7 @@
 
 Ext.define('App.view.miscellaneous.MyAccount', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('my_account'),
+	pageTitle: _('my_account'),
 
 	requires: [
 		'App.ux.combo.Titles',
@@ -63,7 +63,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('personal_info'),
+					title: _('personal_info'),
 					defaultType: 'textfield',
 					layout: 'anchor',
 					defaults: {
@@ -118,7 +118,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('login_info'),
+					title: _('login_info'),
 					defaultType: 'textfield',
 					layout: 'anchor',
 					defaults: {
@@ -170,7 +170,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('other_info'),
+					title: _('other_info'),
 					defaultType: 'textfield',
 					layout: 'anchor',
 					defaults: {
@@ -295,7 +295,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			tbar:[
 				{
-					text: i18n('change_password'),
+					text: _('change_password'),
 					iconCls: 'save',
 					scope: me,
 					handler: me.onPasswordChange
@@ -303,7 +303,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					iconCls: 'save',
 					scope: me,
 					handler: me.onSaveClick
@@ -313,7 +313,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 
 		me.win = Ext.create('App.ux.window.Window', {
 			width: 420,
-			title: i18n('change_you_password'),
+			title: _('change_you_password'),
 			items: [
 				{
 					xtype: 'form',
@@ -330,12 +330,12 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							hidden: true
 						},
 						{
-							fieldLabel: i18n('old_password'),
+							fieldLabel: _('old_password'),
 							name: 'oPassword',
 							allowBlank: false
 						},
 						{
-							fieldLabel: i18n('new_password'),
+							fieldLabel: _('new_password'),
 							name: 'nPassword',
 							allowBlank: false,
 							id: 'myAccountPage_nPassword',
@@ -346,7 +346,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 							}
 						},
 						{
-							fieldLabel: i18n('re_type_password'),
+							fieldLabel: _('re_type_password'),
 							name: 'vPassword',
 							allowBlank: false,
 							vtype: 'password',
@@ -358,12 +358,12 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					scope: me,
 					handler: me.onPasswordSave
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.onCancel
 				}
@@ -387,7 +387,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			params;
 
 		if(values.nPassword != values.vPassword){
-			app.msg(i18n('oops'), i18n('password_does_not_match'), true);
+			app.msg(_('oops'), _('password_does_not_match'), true);
 			return;
 		}
 
@@ -401,10 +401,10 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 			User.updatePassword(params, function(provider, response){
 
 				if(response.result.success){
-					app.msg(i18n('sweet'), i18n('record_updated'));
+					app.msg(_('sweet'), _('record_updated'));
 					me.win.close();
 				}else{
-					app.msg(i18n('oops'), i18n(response.result.message), true);
+					app.msg(_('oops'), _(response.result.message), true);
 				}
 			});
 
@@ -434,7 +434,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		record.set(values);
 		record.save({
 			callback:function(){
-				app.msg(i18n('sweet'), i18n('record_update'))
+				app.msg(_('sweet'), _('record_update'))
 			}
 		});
 	},

@@ -1,0 +1,25 @@
+{
+  "name": "darkroom",
+  "description": "Extensible image editing tool via HTML canvas",
+  "version": "1.0.0",
+  "homepage": "https://mattketmo.github.io/darkroomjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattketmo/darkroomjs.git"
+  },
+  "author": "Matthieu Moquet <matthieu@moquet.net> (http://moquet.net/)",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+//    "grunt-contrib-clean": "~0.5.0",
+//    "grunt-contrib-concat": "~0.3.0",
+//    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-copy": "~0.4.1",
+//    "grunt-contrib-sass": "~0.8.1",
+    "grunt-contrib-uglify": "~0.2.0",
+//    "grunt-contrib-watch": "~0.5.2",
+//    "grunt-docco": "~0.3.0",
+//    "grunt-webfont": "~0.2.1",
+//    "load-grunt-tasks": "~0.1.0"
+  }
+}

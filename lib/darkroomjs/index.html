@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DarkroomJS</title>
+  <link rel="stylesheet" href="./build/css/darkroom.min.css">
+  <link rel="stylesheet" href="./demo/css/page.css">
+</head>
+<body>
+
+
+
+
+
+        <div class="image-container target">
+          <!-- You may add attribute crossOrigin="anonymous" for CORS -->
+          <img src="./demo/images/domokun.jpg" alt="DomoKun" id="target">
+
+          
+        </div>
+
+        
+
+  <script src="./vendor/fabric.js"></script>
+  <script src="./build/js/darkroom.min.js"></script>
+
+  <script>
+    var dkrm = new Darkroom('#target', {
+      // Size options
+      minWidth: 100,
+      minHeight: 100,
+      maxWidth: 650,
+      maxHeight: 500,
+
+      plugins: {
+        //save: false,
+        crop: {
+          quickCropKey: 67, //key "c"
+          //minHeight: 50,
+          //minWidth: 50,
+          //ratio: 1
+        }
+      },
+      init: function() {
+        var cropPlugin = this.getPlugin('crop');
+        cropPlugin.selectZone(170, 25, 300, 300);
+        //cropPlugin.requireFocus();
+      }
+    });
+  </script>
+</body>
+</html>

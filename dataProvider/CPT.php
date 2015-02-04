@@ -19,6 +19,9 @@
  */
 class CPT {
 
+	/**
+	 * @var bool|MatchaCUP
+	 */
 	private $c;
 
 	function __construct() {
@@ -56,15 +59,15 @@ class CPT {
 		if(isset($params->isRadiology) && $params->isRadiology){
 			$sql .= " AND isRadiology = '1' ";
 		}
-        $sql .= " AND (code LIKE '{$params->query}%'
-			       OR code_text LIKE '%{$params->query}%'
-			       OR code_text_short LIKE '%{$params->query}%'
-			       OR code_text_medium LIKE '%{$params->query}%')";
+		$this->c->reset();
+        $sql .= ' AND (code LIKE '. $this->c->where($params->query.'%') .
+			    ' OR code_text LIKE '. $this->c->where('%'.$params->query.'%') .
+			    ' OR code_text_short LIKE '. $this->c->where('%'.$params->query.'%') .
+			    ' OR code_text_medium LIKE '. $this->c->where('%'.$params->query.'%') . ')';
 		$records = $this->c->sql($sql)->all();
 		return array(
 			'total' => count($records),
 		    'data' => array_slice($records, $params->start, $params->limit)
 		);
 	}
-
 }

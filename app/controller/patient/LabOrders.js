@@ -77,11 +77,9 @@ Ext.define('App.controller.patient.LabOrders', {
 	onLoincSearchSelect: function(cmb, records){
 		var form = cmb.up('form').getForm();
 
-		say(form.getRecord());
-
 		form.getRecord().set({code: records[0].data.loinc_number});
-		form.findField('code').setValue(records[0].data.loinc_number);
-		form.findField('note').focus(false, 200);
+		if(form.findField('code')) form.findField('code').setValue(records[0].data.loinc_number);
+		if(form.findField('note')) form.findField('note').focus(false, 200);
 	},
 
 	onElectronicLabOrderBtnClick: function(){
@@ -106,10 +104,10 @@ Ext.define('App.controller.patient.LabOrders', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-	onPrintLabOrderBtnClick: function(){
+	onPrintLabOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getLabOrdersGrid(),
-			items = grid.getSelectionModel().getSelection(),
+			items = orders || grid.getSelectionModel().getSelection(),
 			params = {},
 			data,
 			i;

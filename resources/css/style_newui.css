@@ -5,6 +5,9 @@
  * New Styles
  * by GI Technologies, 2011
  *============================================================*/
+.icoSing {
+	background-image: url(../images/icons/pen.png) !important;
+}
 .icoLogo {
 	background-image: url(../images/icons/icoLogo.png) !important;
 }
@@ -122,6 +125,14 @@
 
 .icoPatientInfo {
 	background-image: url(../images/icons/icoPatientInfo.png) !important;
+}
+
+.icoHome {
+	background-image: url(../images/icons/icoHome.png) !important;
+}
+
+.icoCalendar2 {
+	background-image: url(../images/icons/icoCalendar2.png) !important;
 }
 
 .icoZoneAreas {

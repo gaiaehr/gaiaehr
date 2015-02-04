@@ -18,11 +18,12 @@
 
 Ext.define('App.view.miscellaneous.AddressBook', {
 	extend: 'App.ux.RenderPanel',
-	requires:[
+	requires: [
+		'App.store.miscellaneous.AddressBook',
 		'Ext.toolbar.Paging',
 		'Ext.ux.SlidingPager'
 	],
-	pageTitle: i18n('address_book'),
+	pageTitle: _('address_book'),
 
 	initComponent: function(){
 		var me = this;
@@ -31,32 +32,37 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 			store: me.store = Ext.create('App.store.miscellaneous.AddressBook'),
 			columns: [
 				{
-					header: i18n('name'),
+					header: _('name'),
 					width: 200,
 					dataIndex: 'fullname'
 				},
 				{
-					header: i18n('primary_phone'),
+					header: _('primary_phone'),
 					dataIndex: 'phone',
 					width: 120
 				},
 				{
-					header: i18n('cell_phone'),
+					header: _('cell_phone'),
 					dataIndex: 'mobile',
 					width: 120
 				},
 				{
-					header: i18n('fax'),
+					header: _('fax'),
 					dataIndex: 'fax',
 					width: 120
 				},
 				{
-					header: i18n('email'),
+					header: _('email'),
 					dataIndex: 'email',
 					width: 120
 				},
 				{
-					header: i18n('notes'),
+					header: _('direct_address'),
+					dataIndex: 'direct_address',
+					width: 120
+				},
+				{
+					header: _('notes'),
 					dataIndex: 'notes',
 					flex: 1
 				}
@@ -68,7 +74,6 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 						{
 							xtype: 'container',
 							layout: 'column',
-							//width: 700,
 							defaults: {
 								xtype: 'container',
 								layout: 'anchor',
@@ -84,7 +89,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 									items: [
 										{
 											xtype: 'fieldcontainer',
-											fieldLabel: i18n('name'),
+											fieldLabel: _('name'),
 											layout: 'hbox',
 											defaults: {
 												margin: '0 5 0 0'
@@ -92,19 +97,19 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 											items: [
 												{
 													xtype: 'textfield',
-													emptyText: i18n('first_name'),
+													emptyText: _('first_name'),
 													name: 'fname',
 													width: 130
 												},
 												{
 													xtype: 'textfield',
-													emptyText: i18n('middle_name'),
+													emptyText: _('middle_name'),
 													name: 'mname',
 													width: 50
 												},
 												{
 													xtype: 'textfield',
-													emptyText: i18n('last_name'),
+													emptyText: _('last_name'),
 													name: 'lname',
 													flex: 1,
 													margin: 0
@@ -113,15 +118,16 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 										},
 										{
 											xtype: 'fieldcontainer',
-											fieldLabel: i18n('address'),
+											fieldLabel: _('address'),
 											layout: 'anchor',
 											defaults: {
-												anchor: '100%'
+												anchor: '100%',
+												margin: '0 0 5 0'
 											},
 											items: [
 												{
 													xtype: 'textfield',
-													emptyText: i18n('street'),
+													emptyText: _('street'),
 													name: 'street'
 												},
 												{
@@ -137,19 +143,19 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 													items: [
 														{
 															xtype: 'textfield',
-															emptyText: i18n('city'),
+															emptyText: _('city'),
 															name: 'city',
 															flex: 1
 														},
 														{
 															xtype: 'textfield',
-															emptyText: i18n('state'),
+															emptyText: _('state'),
 															name: 'state',
 															width: 120
 														},
 														{
 															xtype: 'textfield',
-															emptyText: i18n('zip'),
+															emptyText: _('zip'),
 															name: 'zip',
 															width: 100,
 															margin: 0
@@ -158,7 +164,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 												},
 												{
 													xtype: 'textfield',
-													emptyText: i18n('country'),
+													emptyText: _('country'),
 													name: 'country',
 													margin: '5 0 0 0'
 												}
@@ -166,7 +172,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('notes'),
+											fieldLabel: _('notes'),
 											name: 'notes',
 											margin: '5 0 5 0'
 										}
@@ -177,39 +183,57 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 									layout: 'anchor',
 									defaults: {
 										anchor: '100%',
-										labelWidth: 80
+										labelWidth: 80,
+										margin: '0 0 5 0'
 									},
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('phone') + ' (1)',
+											fieldLabel: _('phone') + ' (1)',
 											name: 'phone'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('phone') + ' (2)',
+											fieldLabel: _('phone') + ' (2)',
 											name: 'phone2'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('cell_phone'),
+											fieldLabel: _('cell_phone'),
 											name: 'mobile'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('fax'),
+											fieldLabel: _('fax'),
 											name: 'fax'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('email'),
+											fieldLabel: _('email'),
 											name: 'email',
-											margin: '5 0 5 0'
+											margin: '5 0 5 0',
+											vtype: 'email'
 										},
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('url'),
+											fieldLabel: _('url'),
 											name: 'url'
+										}
+									]
+								},
+								{
+									width: 300,
+									layout: 'anchor',
+									defaults: {
+										anchor: '100%',
+										labelWidth: 100,
+										margin: '0 0 5 0'
+									},
+									items: [
+										{
+											xtype: 'textfield',
+											fieldLabel: _('direct_address'),
+											name: 'direct_address'
 										}
 									]
 								}
@@ -220,7 +244,7 @@ Ext.define('App.view.miscellaneous.AddressBook', {
 			],
 			tbar: [
 				{
-					text: i18n('add_contact'),
+					text: _('add_contact'),
 					iconCls: 'icoAdd',
 					scope: me,
 					handler: me.onAddContact

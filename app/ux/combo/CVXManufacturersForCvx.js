@@ -28,7 +28,7 @@ Ext.define('App.ux.combo.CVXManufacturersForCvx', {
 			queryMode: 'local',
 			valueField: 'mvx_code',
 			displayField: 'manufacturer',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 

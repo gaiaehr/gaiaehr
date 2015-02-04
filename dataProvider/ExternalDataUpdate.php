@@ -241,6 +241,9 @@ class ExternalDataUpdate {
 					}
 					$this->file->cleanUp();
 					if($success !== false){
+
+						$params->date = isset($params->date) ? $params->date : date('Y-m-d');
+
 						$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
 						return array(
 							'success' => $success,
@@ -704,18 +707,18 @@ class ExternalDataUpdate {
 	}
 
 	private function rxnorm_import($dir){
-		$dirScripts = $dir . '/scripts/mysql';
-		$dir = $dir . '/rrf';
+		$dirScripts = $dir . '/prescribe/scripts/mysql';
+		$dir = $dir . '/prescribe/rrf';
 		$dir = str_replace('\\', '/', $dir);
 		$rx_info = array();
-		$rx_info['rxnatomarchive'] = array(
-			'title' => 'Archive Data',
-			'dir' => $dir,
-			'origin' => 'RXNATOMARCHIVE.RRF',
-			'filename' => 'RXNATOMARCHIVE.RRF',
-			'table' => 'rxnatomarchive',
-			'required' => 0
-		);
+//		$rx_info['rxnatomarchive'] = array(
+//			'title' => 'Archive Data',
+//			'dir' => $dir,
+//			'origin' => 'RXNATOMARCHIVE.RRF',
+//			'filename' => 'RXNATOMARCHIVE.RRF',
+//			'table' => 'rxnatomarchive',
+//			'required' => 0
+//		);
 		$rx_info['rxnconso'] = array(
 			'title' => 'Concept Names and Sources',
 			'dir' => $dir,
@@ -724,30 +727,30 @@ class ExternalDataUpdate {
 			'table' => 'rxnconso',
 			'required' => 1
 		);
-		$rx_info['rxncui'] = array(
-			'title' => 'Retired RXCUI Data',
-			'dir' => $dir,
-			'origin' => 'RXNCUI.RRF',
-			'filename' => 'RXNCUI.RRF',
-			'table' => 'rxncui',
-			'required' => 1
-		);
-		$rx_info['rxncuichanges'] = array(
-			'title' => 'Concept Changes',
-			'dir' => $dir,
-			'origin' => 'RXNCUICHANGES.RRF',
-			'filename' => 'RXNCUICHANGES.RRF',
-			'table' => 'rxncuichanges',
-			'required' => 1
-		);
-		$rx_info['rxndoc'] = array(
-			'title' => 'Documentation for Abbreviated Values',
-			'dir' => $dir,
-			'origin' => 'RXNDOC.RRF',
-			'filename' => 'RXNDOC.RRF',
-			'table' => 'rxndoc',
-			'required' => 1
-		);
+//		$rx_info['rxncui'] = array(
+//			'title' => 'Retired RXCUI Data',
+//			'dir' => $dir,
+//			'origin' => 'RXNCUI.RRF',
+//			'filename' => 'RXNCUI.RRF',
+//			'table' => 'rxncui',
+//			'required' => 1
+//		);
+//		$rx_info['rxncuichanges'] = array(
+//			'title' => 'Concept Changes',
+//			'dir' => $dir,
+//			'origin' => 'RXNCUICHANGES.RRF',
+//			'filename' => 'RXNCUICHANGES.RRF',
+//			'table' => 'rxncuichanges',
+//			'required' => 1
+//		);
+//		$rx_info['rxndoc'] = array(
+//			'title' => 'Documentation for Abbreviated Values',
+//			'dir' => $dir,
+//			'origin' => 'RXNDOC.RRF',
+//			'filename' => 'RXNDOC.RRF',
+//			'table' => 'rxndoc',
+//			'required' => 1
+//		);
 		$rx_info['rxnrel'] = array(
 			'title' => 'Relationships',
 			'dir' => $dir,
@@ -756,14 +759,14 @@ class ExternalDataUpdate {
 			'table' => 'rxnrel',
 			'required' => 1
 		);
-		$rx_info['rxnsab'] = array(
-			'title' => 'Source Information',
-			'dir' => $dir,
-			'origin' => 'RXNSAB.RRF',
-			'filename' => 'RXNSAB.RRF',
-			'table' => 'rxnsab',
-			'required' => 0
-		);
+//		$rx_info['rxnsab'] = array(
+//			'title' => 'Source Information',
+//			'dir' => $dir,
+//			'origin' => 'RXNSAB.RRF',
+//			'filename' => 'RXNSAB.RRF',
+//			'table' => 'rxnsab',
+//			'required' => 0
+//		);
 		$rx_info['rxnsat'] = array(
 			'title' => 'Simple Concept and Atom Attributes',
 			'dir' => $dir,
@@ -772,14 +775,14 @@ class ExternalDataUpdate {
 			'table' => 'rxnsat',
 			'required' => 0
 		);
-		$rx_info['rxnsty'] = array(
-			'title' => 'Semantic Types ',
-			'dir' => $dir,
-			'origin' => 'RXNSTY.RRF',
-			'filename' => 'RXNSTY.RRF',
-			'table' => 'rxnsty',
-			'required' => 1
-		);
+//		$rx_info['rxnsty'] = array(
+//			'title' => 'Semantic Types ',
+//			'dir' => $dir,
+//			'origin' => 'RXNSTY.RRF',
+//			'filename' => 'RXNSTY.RRF',
+//			'table' => 'rxnsty',
+//			'required' => 1
+//		);
 		// load scripts
 		$file_load = file_get_contents($dirScripts . '/Table_scripts_mysql_rxn.sql', true);
 		if($_SESSION['server']['IS_WINDOWS']){
@@ -813,16 +816,20 @@ class ExternalDataUpdate {
 					$val1 = str_replace($file_name, $replacement, $val);
 					if(trim($val1) != ''){
 						$this->db->conn()->exec($val1);
-
 					}
 				}
 			}
 		}
 
-		$stmt = $this->db->conn()->prepare("
-	    CREATE INDEX X_RXNSAT_CODE ON RXNSAT(CODE);
-		CREATE INDEX X_RXNSAT_SAB ON RXNSAT(SAB);
-		CREATE INDEX X_RXNCONSO_SAB ON RXNCONSO(SAB);");
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNSAT_CODE ON `rxnsat` (`CODE`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNSAT_SAB ON `rxnsat` (`SAB`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNCONSO_SAB ON `rxnconso` (`SAB`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNCONSO_SEARCH ON `rxnconso` (`STR`,`RXCUI`,`SAB`,`TTY`) USING BTREE');
+		$stmt->execute();
+		$stmt = $this->db->conn()->prepare('CREATE INDEX X_RXNSAT_SEARCH ON `rxnsat` (`RXCUI`,`SAB`,`ATN`,`ATV`) USING BTREE');
 		$stmt->execute();
 
 		return true;

@@ -39,6 +39,18 @@ Ext.define('App.controller.patient.Documents', {
 			selector: '#patientDocumentUploadWindow'
 		},
 		{
+			ref: 'PatientDocumentUploadScanBtn',
+			selector: '#patientDocumentUploadWindow #scanBtn'
+		},
+		{
+			ref: 'PatientDocumentUploadFileUploadField',
+			selector: '#patientDocumentUploadWindow #fileUploadField'
+		},
+		{
+			ref: 'DocumentHashCheckBtn',
+			selector: '#documentHashCheckBtn'
+		},
+		{
 			ref: 'DocumentHashCheckBtn',
 			selector: '#documentHashCheckBtn'
 		},
@@ -52,10 +64,16 @@ Ext.define('App.controller.patient.Documents', {
 		}
 	],
 
+	scannedDocument: null,
+
 	init: function(){
 		var me = this;
 
 		me.control({
+			'viewport': {
+				scanconnected: me.onScanConnected,
+				scandisconnected: me.onScanDisconnected
+			},
 			'patientdocumentspanel': {
 				activate: me.onPatientDocumentPanelActive
 			},
@@ -71,8 +89,14 @@ Ext.define('App.controller.patient.Documents', {
 			'patientdocumentspanel #documentUploadBtn': {
 				click: me.onDocumentUploadBtnClick
 			},
+			'#patientDocumentUploadWindow': {
+				show: me.onPatientDocumentUploadWindowShow
+			},
 			'#patientDocumentUploadWindow #uploadBtn': {
 				click: me.onDocumentUploadSaveBtnClick
+			},
+			'#patientDocumentUploadWindow #scanBtn': {
+				click: me.onDocumentUploadScanBtnClick
 			}
 		});
 
@@ -80,50 +104,79 @@ Ext.define('App.controller.patient.Documents', {
 		this.initDocumentDnD();
 	},
 
-	onPatientDocumentGridSelectionChange: function(grid, records){
-		var frame = this.getPatientDocumentViewerFrame();
-
-		if(records.length > 0){
-			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&id=' + records[0].data.id);
-		}else{
-			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site);
+	onScanConnected: function(){
+		if(this.getPatientDocumentUploadScanBtn()){
+			this.getPatientDocumentUploadScanBtn().show();
 		}
 	},
 
-	onPatientDocumentPanelActive: function(){
+	onScanDisconnected: function(){
+		if(this.getPatientDocumentUploadScanBtn()){
+			this.getPatientDocumentUploadScanBtn().hide();
+		}
+	},
+
+	onPatientDocumentUploadWindowShow: function(){
+		this.scannedDocument = null;
+		this.getPatientDocumentUploadFileUploadField().enable();
+		this.getPatientDocumentUploadScanBtn().setVisible(this.getController('Scanner').conencted);
+	},
+
+	onPatientDocumentGridSelectionChange: function(sm, records){
+		var frame = sm.view.panel.up('panel').query('#patientDocumentViewerFrame')[0];
+
+		if(records.length > 0){
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&token=' + app.user.token + '&id=' + records[0].data.id);
+		}else{
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&token=' + app.user.token);
+		}
+	},
+
+	onPatientDocumentPanelActive: function(panel){
 		var me = this,
-			grid = me.getPatientDocumentGrid(),
-			store = grid.getStore();
-		store.load({
-			filters: [
-				{
-					property: 'pid',
-					value: app.patient.pid
-				}
-			],
-			callback:function(records){
-				var params = me.nav.getExtraParams();
+			grid = panel.down('grid'),
+			store = grid.getStore(),
+			params = me.nav.getExtraParams();
 
-				if(params && params.doc){
-					var doc = store.getById(params.doc);
-					if(doc){
-						grid.getSelectionModel().select(doc);
-					}else{
-						app.msg(i18n('oops'), i18n('unable_to_fild_docuent'), true);
-					}
+		me.activePAnel = panel;
 
-				}
+		if(params && params.document){
+			store.on('load', me.doSelectDocument, me);
+		}
 
+		store.clearFilter(true);
+		store.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
 			}
-		});
+		]);
+	},
+
+	doSelectDocument:function(store){
+		var me = this,
+			grid = me.activePAnel.down('grid'),
+			params = me.nav.getExtraParams();
+
+		var doc = store.getById(params.document);
+		if(doc){
+			grid.getSelectionModel().select(doc);
+
+		}else{
+			app.msg(_('oops'), _('unable_to_find_document'), true);
+		}
+		store.un('load', me.doSelectDocument, me);
+
 	},
 
 	onDocumentGroupBtnToggle: function(btn, pressed){
+		var grid = btn.up('grid');
+
 		if(pressed){
-			this.getPatientDocumentGrid().view.features[0].enable();
-			this.getPatientDocumentGrid().getStore().group(btn.action);
+			grid.view.features[0].enable();
+			grid.getStore().group(btn.action);
 		}else{
-			this.getPatientDocumentGrid().view.features[0].disable();
+			grid.view.features[0].disable();
 		}
 	},
 
@@ -157,12 +210,12 @@ Ext.define('App.controller.patient.Documents', {
 			message;
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
-			message = i18n(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
+			message = _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
 
 			if(window.dual){
-				dual.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+				dual.msg(_(success ? 'sweet' : 'oops'), message, !success)
 			}else{
-				app.msg(i18n(success ? 'sweet' : 'oops'), message, !success)
+				app.msg(_(success ? 'sweet' : 'oops'), message, !success)
 			}
 		});
 	},
@@ -188,15 +241,42 @@ Ext.define('App.controller.patient.Documents', {
 		record.set(values);
 
 		if(win.action == 'click'){
-			record.set({name: uploadField.getValue()});
-			reader.onload = function(e){
-				record.set({document: e.target.result});
+			var uploadValue = uploadField.getValue();
+			record.set({name: uploadValue});
+
+			if(me.scannedDocument){
+				record.set({document: me.scannedDocument});
 				me.doNewDocumentRecordSave(record);
-			};
-			reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+			}else{
+				reader.onload = function(e){
+					record.set({document: e.target.result});
+					me.doNewDocumentRecordSave(record);
+				};
+				reader.readAsDataURL(uploadField.extractFileInput().files[0]);
+			}
 		}else{
 			me.doNewDocumentRecordSave(record);
 		}
+	},
+
+	onDocumentUploadScanBtnClick: function(){
+		var me = this,
+			scanCtrl = this.getController('Scanner');
+
+		scanCtrl.initScan();
+		app.on('scancompleted', this.onScanCompleted, me);
+	},
+
+	onScanCompleted: function(controller, document){
+		var me = this,
+			win = me.getPatientDocumentUploadWindow(),
+			form = win.down('form').getForm(),
+			uploadField = form.findField('document');
+
+		uploadField.disable();
+
+		me.scannedDocument = document;
+		app.un('scancompleted', this.onScanCompleted, me);
 	},
 
 	doNewDocumentRecordSave: function(record){
@@ -210,7 +290,7 @@ Ext.define('App.controller.patient.Documents', {
 
 		store.sync({
 			success: function(){
-				app.msg(i18n('sweet'), i18n('document_added'));
+				app.msg(_('sweet'), _('document_added'));
 				me.getPatientDocumentUploadWindow().close();
 				me.getPatientDocumentGrid().getSelectionModel().select(record);
 
@@ -218,9 +298,9 @@ Ext.define('App.controller.patient.Documents', {
 			failure: function(){
 				store.rejectChanges();
 				if(window.dual){
-					dual.msg(i18n('oops'), i18n('document_error'), true);
+					dual.msg(_('oops'), _('document_error'), true);
 				}else{
-					app.msg(i18n('oops'), i18n('document_error'), true);
+					app.msg(_('oops'), _('document_error'), true);
 				}
 
 			}
@@ -269,7 +349,7 @@ Ext.define('App.controller.patient.Documents', {
 		if(dropPanel && dropPanel.rendered){
 			if(!me.dropMask){
 				me.dropMask = new Ext.LoadMask(me.getPatientDocumentViewerFrame(), {
-					msg: i18n('drop_here'),
+					msg: _('drop_here'),
 					cls: 'uploadmask',
 					maskCls: 'x-mask uploadmask',
 					shadow: false
@@ -302,7 +382,7 @@ Ext.define('App.controller.patient.Documents', {
 	},
 
 	dropHandler:function(files){
-		say(files);
+//		say(files);
 		var me = this,
 			win = me.setDocumentUploadWindow('drop'),
 			form = win.down('form').getForm(),

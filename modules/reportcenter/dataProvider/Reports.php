@@ -16,37 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\reportcenter\dataProvider;
 
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
+
 include_once(ROOT . '/classes/FileManager.php');
 include_once(ROOT . '/dataProvider/DocumentPDF.php');
 
-class Reports
-{
+class Reports {
 	protected $fileManager;
 	protected $pdf;
 
 	/*
 	 * The first thing all classes do, the construct.
 	 */
-	function __construct()
-	{
-		$this->fileManager = new FileManager();
-		$this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+	function __construct() {
+		$this->fileManager = new \FileManager();
+		$this->pdf = new \DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 		return;
 	}
 
-	public function ReportBuilder($html, $fontsize = 12)
-	{
+	public function ReportBuilder($html, $fontsize = 12) {
 		$fileName = $this->fileManager->getTempDirAvailableName() . '.pdf';
 		$this->pdf->SetCreator('TCPDF');
 		$this->pdf->SetAuthor($_SESSION['user']['name']);
 		$siteLogo = site_dir . '/logo.jpg';
-		$logo = (file_exists($siteLogo) ? $siteLogo : ROOT.'/resources/images/logo.jpg');
+		$logo = (file_exists($siteLogo) ? $siteLogo : ROOT . '/resources/images/logo.jpg');
 
 		// TODO: set from admin area
 		$this->pdf->SetHeaderData($logo, '20', 'Ernesto\'s Clinic', "Cond. Capital Center\nPDO Suite 205\nAve. Arterial Hostos 239                                                                                                                                   Tel: 787-787-7878\nCarolina PR. 00987                                                                                                                                         Fax: 787-787-7878");

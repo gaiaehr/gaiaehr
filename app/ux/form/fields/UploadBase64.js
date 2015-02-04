@@ -27,7 +27,7 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 	base64: '',
 	ready: false,
 
-	title: i18n('upload'),
+	title: _('upload'),
 	items: [
 		{
 			xtype: 'fileuploadfield',
@@ -36,18 +36,21 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 	],
 	buttons: [
 		{
-			text: i18n('cancel')
+			text: _('cancel')
 		},
 		{
-			text: i18n('upload')
+			text: _('upload')
 		}
 	],
+
+	allowExtensions: null,
 
 	initComponent: function(){
 		var me = this;
 
 		me.callParent();
 
+		me.uValue = '';
 		me.uField = me.getComponent(0);
 		me.uDock = me.getDockedItems('toolbar[dock="bottom"]')[0];
 		me.uCancel = me.uDock.getComponent(0);
@@ -62,6 +65,23 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 		var me = this,
 			fr = new FileReader();
 
+		me.uValue = me.uField.getValue();
+
+		if(me.allowExtensions){
+			var re;
+
+			if(Ext.isArray(me.allowExtensions)){
+				re = new RegExp(me.allowExtensions.join('|'));
+			}else{
+				re = new RegExp(me.allowExtensions + '$');
+			}
+
+			if(!re.exec(me.uValue)){
+				app.msg(_('oops'), Ext.String.format(_('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
+				return;
+			}
+		}
+
 		me.setReady(false);
 		fr.onload = function(e){
 			me.base64 = e.target.result;
@@ -69,6 +89,7 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 			me.fireEvent('uploadready', me, me.base64);
 			me.close();
 		};
+
 		fr.readAsDataURL(me.uField.extractFileInput().files[0]);
 	},
 
@@ -86,5 +107,10 @@ Ext.define('App.ux.form.fields.UploadBase64', {
 
 	setReady: function(ready){
 		return this.ready = ready;
+	},
+
+	getValue: function(){
+		return this.uValue;
 	}
+
 });

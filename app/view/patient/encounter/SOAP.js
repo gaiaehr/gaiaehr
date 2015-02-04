@@ -19,11 +19,15 @@
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend: 'Ext.panel.Panel',
 	requires: [
-		'App.ux.grid.RowFormEditing'
+		'App.ux.combo.Specialties',
+		'App.ux.grid.RowFormEditing',
+
+		'App.view.patient.encounter.CarePlanGoals',
+		'App.view.patient.encounter.CarePlanGoalsNewWindow'
 	],
 	action: 'patient.encounter.soap',
 	itemId: 'soapPanel',
-	title: i18n('soap'),
+	title: _('soap'),
 	layout: 'border',
 	frame: true,
 
@@ -33,17 +37,21 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	initComponent: function(){
 		var me = this;
 
-		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree',{
+		me.snippetStore = Ext.create('App.store.patient.encounter.snippetTree', {
 			autoLoad: false
 		});
+
 		me.procedureStore = Ext.create('App.store.patient.encounter.Procedures');
 
+		var snippetCtrl = App.app.getController('patient.encounter.Snippets');
+
 		me.snippets = Ext.create('Ext.tree.Panel', {
-			title: i18n('snippets'),
-			itemId: 'templatesTreePanel',
+			title: _('snippets'),
+			itemId: 'SnippetsTreePanel',
 			region: 'west',
 			width: 300,
 			split: true,
+			animate: false,
 			hideHeaders: true,
 			useArrows: true,
 			rootVisible: false,
@@ -56,10 +64,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			tools: [
 				{
 					xtype: 'button',
-					text: i18n('category'),
-					scope: me,
+					text: _('category'),
 					iconCls: 'icoAdd',
-					handler: me.onAddSnippetCategory
+					itemId: 'SnippetCategoryAddBtn'
 				}
 			],
 			columns: [
@@ -67,19 +74,25 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					xtype: 'treecolumn', //this is so we know which column will show the tree
 					text: 'Template',
 					flex: 1,
-					dataIndex: 'text',
-					renderer: me.snippetTextRenderer
+					dataIndex: 'title',
+					renderer: function(v, meta, record){
+						var toolTip = record.data.text ? ' data-qtip="' + record.data.text + '" ' : '';
+
+						return '<span ' + toolTip + '>' + (v != '' ? v : record.data.text) + '</span>'
+					}
 				},
 				{
-					text: i18n('add'),
+					text: _('add'),
 					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
-					tooltip: i18n('add_snippet'),
+					tooltip: _('add_snippet'),
 					align: 'center',
 					icon: 'resources/images/icons/add.gif',
 					scope: me,
-					handler: me.onSnippetBtnAdd,
+					handler: function(grid, rowIndex, colIndex, actionItem, event, record){
+						snippetCtrl.onSnippetAddBtnClick(grid, rowIndex, colIndex, actionItem, event, record);
+					},
 					getClass: function(value, metadata, record){
 						if(!record.data.leaf){
 							return 'x-grid-center-icon';
@@ -89,52 +102,40 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					}
 				},
 				{
-					text: i18n('edit'),
+					text: _('edit'),
 					width: 25,
 					menuDisabled: true,
 					xtype: 'actioncolumn',
 					tooltip: 'Edit task',
 					align: 'center',
 					icon: 'resources/images/icons/edit.png',
-					handler: me.onSnippetBtnEdit
+					handler: function(grid, rowIndex, colIndex, actionItem, event, record){
+						snippetCtrl.onSnippetBtnEdit(grid, rowIndex, colIndex, actionItem, event, record);
+					}
+				}
+			],
+			bbar:[
+				{
+					xtype: 'specialtiescombo',
+					itemId: 'SoapTemplateSpecialtiesCombo',
+					flex: 1
 				}
 			],
 			viewConfig: {
 				plugins: {
 					ptype: 'treeviewdragdrop',
 					expandDelay: 500,
-					dragText: i18n('drag_and_drop_reorganize')
+					dragText: _('drag_and_drop_reorganize')
 				},
 				listeners: {
 					scope: me,
 					drop: me.onSnippetDrop
 				}
 			},
-			plugins: [
-				{
-					ptype: 'rowformediting',
-					clicksToMoveEditor: 1,
-					enabled: false,
-					enableRemove: true,
-					items: [
-						{
-							xtype: 'textarea',
-							height: 100,
-							anchor: '100%',
-							name: 'text'
-						}
-					]
-				}
-			],
 			listeners: {
 				scope: me,
 				itemclick: me.onSnippetClick,
-				itemdblclick: me.onSnippetDblClick,
-				beforeedit: me.onSnippetBeforeEdit,
-				canceledit: me.onSnippetCancelEdit,
-				beforeremove: me.onSnippetBeforeRemove,
-				remove: me.onSnippetRemove,
-				edit: me.onSnippetEdit
+				itemdblclick: me.onSnippetDblClick
 			}
 		});
 
@@ -149,12 +150,12 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			},
 			plugins: {
 				ptype: 'advanceform',
-				autoSync: globals['autosave'],
-				syncAcl: acl['edit_encounters']
+				autoSync: g('autosave'),
+				syncAcl: a('edit_encounters')
 			},
 			items: [
 				me.pWin = Ext.widget('window', {
-					title: i18n('procedure'),
+					title: _('procedure'),
 					maximized: true,
 					closable: false,
 					constrain: true,
@@ -193,86 +194,86 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					],
 					buttons: [
 						{
-							text: i18n('cancel'),
+							text: _('cancel'),
 							scope: me,
 							handler: me.onProcedureCancel
 						},
 						{
-							text: i18n('save'),
+							text: _('save'),
 							scope: me,
 							itemId: 'encounterRecordAdd',
 							handler: me.onProcedureSave
 						}
 					]
-
 				}),
 				{
 					xtype: 'fieldset',
-					title: i18n('subjective'),
+					title: _('subjective'),
 					margin: 5,
 					items: [
 						me.sField = Ext.widget('textarea', {
 							name: 'subjective',
 							anchor: '100%',
-							enableKeyEvents: true
+							enableKeyEvents: true,
+							margin: '5 0 10 0'
 						})
 					]
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('objective'),
+					title: _('objective'),
 					margin: 5,
 					items: [
 						me.oField = Ext.widget('textarea', {
 							name: 'objective',
 							anchor: '100%'
+						}),
+						me.pGrid = Ext.widget('grid', {
+							frame: true,
+							name: 'procedures',
+							emptyText: _('no_procedures'),
+							margin: '5 0 10 0',
+							store: me.procedureStore,
+							columns: [
+								{
+									text: _('code'),
+									dataIndex: 'code'
+								},
+								{
+									text: _('description'),
+									dataIndex: 'code_text',
+									flex: 1
+								}
+							],
+							listeners: {
+								scope: me,
+								itemdblclick: me.procedureEdit
+							},
+							dockedItems: [
+								{
+									xtype: 'toolbar',
+									items: [
+										{
+											xtype: 'tbtext',
+											text: _('procedures')
+										},
+										'->',
+										{
+											text: _('new_procedure'),
+											scope: me,
+											handler: me.onProcedureAdd,
+											iconCls: 'icoAdd'
+										}
+									]
+								}
+
+							]
 						})
 					]
 				},
-				me.pGrid = Ext.widget('grid', {
-					frame: true,
-					name: 'procedures',
-					emptyText: i18n('no_procedures'),
-					margin: 5,
-					store: me.procedureStore,
-					columns: [
-						{
-							text: i18n('code'),
-							dataIndex: 'code'
-						},
-						{
-							text: i18n('description'),
-							dataIndex: 'code_text',
-							flex: 1
-						}
-					],
-					listeners: {
-						scope: me,
-						itemdblclick: me.procedureEdit
-					},
-					dockedItems: [
-						{
-							xtype: 'toolbar',
-							items: [
-								{
-									xtype: 'tbtext',
-									text: i18n('procedures')
-								},
-								'->',
-								{
-									text: i18n('new_procedure'),
-									scope: me,
-									handler: me.onProcedureAdd,
-									iconCls: 'icoAdd'
-								}
-							]
-						}
-
-					]
-				}),
 				{
 					xtype: 'fieldset',
-					title: i18n('assessment'),
+					title: _('assessment'),
 					margin: 5,
 					items: [
 						me.aField = Ext.widget('textarea', {
@@ -280,25 +281,31 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							anchor: '100%'
 						}),
 						me.dxField = Ext.widget('icdsfieldset', {
-							name: 'dxCodes'
+							name: 'dxCodes',
+							margin: '5 0 10 0',
+							itemId: 'SoapDxCodesField'
 						})
 					]
 				},
 				{
 					xtype: 'fieldset',
-					title: i18n('plan'),
+					title: _('plan'),
 					margin: 5,
 					items: [
 						me.pField = Ext.widget('textarea', {
 							name: 'plan',
 							anchor: '100%'
-						})
+						}),
+						{
+							xtype: 'careplangoalsgrid',
+							margin: '0 0 10 0'
+						}
 					]
 				}
 			],
 			buttons: [
 				{
-					text: i18n('save'),
+					text: _('save'),
 					iconCls: 'save',
 					action: 'soapSave',
 					scope: me,
@@ -313,7 +320,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		});
 
 		me.phWindow = Ext.widget('window', {
-			title: i18n('complete_snippet'),
+			title: _('complete_snippet'),
 			closeAction: 'hide',
 			bodyPadding: 0,
 			bodyBorder: false,
@@ -336,17 +343,17 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			buttons: [
 				{
 					xtype: 'tbtext',
-					text: i18n('shift_enter_submit')
+					text: _('shift_enter_submit')
 				},
 				'->',
 				{
-					text: i18n('submit'),
-					scope: me,
-					handler: me.onPhWindowSubmit
+					text: _('cancel'),
+					handler: me.onPhWindowCancel
 				},
 				{
-					text: i18n('cancel'),
-					handler: me.onPhWindowCancel
+					text: _('submit'),
+					scope: me,
+					handler: me.onPhWindowSubmit
 				}
 			]
 		});
@@ -355,7 +362,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			items: [ me.snippets, me.form ]
 		});
 
-		me.callParent();
+		me.callParent(arguments);
+
 	},
 
 	/**
@@ -369,9 +377,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			procedure = form.getRecord();
 
 		procedure.set({
-			code:record[0].data.code,
-			code_type:record[0].data.code_type,
-			code_text:record[0].data.code_text
+			code: record[0].data.code,
+			code_type: record[0].data.code_type,
+			code_text: record[0].data.code_text
 		});
 
 		form.findField('code_text').setValue(record[0].data.code_text);
@@ -401,9 +409,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 */
 	onProcedureCancel: function(){
 		this.procedureStore.rejectChanges();
-		this.pWin.hide(this.pGrid.el);
+		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
-		this.pWin.setTitle(i18n('procedure'));
+		this.pWin.setTitle(_('procedure'));
 	},
 
 	/**
@@ -418,9 +426,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		record.set(values);
 
 		this.procedureStore.sync();
-		this.pWin.hide(this.pGrid.el);
+		this.pWin.close();
 		this.query('button[action=soapSave]')[0].enable();
-		this.pWin.setTitle(i18n('procedure'));
+		this.pWin.setTitle(_('procedure'));
 	},
 
 	/**
@@ -453,9 +461,9 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 */
 	procedureEdit: function(view, record){
 		if(record.data.code_text != '' || record.data.code != ''){
-			this.pWin.setTitle('[' + record.data.code + '] ' + record.data.code_text);
+			this.pWin.setTitle(record.data.code_text + ' [' + record.data.code + ']');
 		}else{
-			this.pWin.setTitle(i18n('new_procedure'));
+			this.pWin.setTitle(_('new_procedure'));
 		}
 
 		this.pForm.getForm().loadRecord(record);
@@ -484,19 +492,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		this.dxField.loadIcds(record.dxCodes());
 	},
 
-
-	/**
-	 *
-	 * @param v
-	 * @param meta
-	 * @param record
-	 * @returns {string}
-	 */
-	snippetTextRenderer: function(v, meta, record){
-		var toolTip = record.data.text ? ' data-qtip="' + record.data.text + '" ' : '';
-		return '<span ' + toolTip + '>' + v + '</span>'
-	},
-
 	/**
 	 *
 	 * @param view
@@ -512,11 +507,14 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param record
 	 */
 	onSnippetDblClick: function(view, record){
+
+
+
 		if(record.data.leaf){
 			var me = this,
 				form = me.form.getForm(),
-				action = view.panel.action,
-				field = form.findField(action),
+				action = view.panel.action.split('-'),
+				field = form.findField(action[0]),
 				text = record.data.text,
 				value = field.getValue(),
 				PhIndex = text.indexOf('??'),
@@ -543,8 +541,8 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var me = this,
 			textArea = me.phWindow.down('textarea'),
 			form = me.form.getForm(),
-			action = me.snippets.action,
-			field = form.findField(action),
+			action = me.snippets.action.split('-'),
+			field = form.findField(action[0]),
 			value = field.getValue(),
 			text = textArea.getValue();
 
@@ -584,76 +582,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 
 	/**
 	 *
-	 * @param grid
-	 * @param rowIndex
-	 */
-	onSnippetBtnEdit: function(grid, rowIndex){
-		grid.editingPlugin.enabled = true;
-		grid.editingPlugin.startEdit(rowIndex, 0);
-	},
-
-	/**
-	 *
-	 * @param editor
-	 * @param store
-	 * @param record
-	 */
-	onSnippetRemove: function(editor, store, record){
-		var me = this;
-		store.sync({
-			callback: function(){
-				me.msg('Sweet!', 'Record removed.');
-				// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-				app.AuditLog('SOAP removed');
-			}
-		});
-	},
-
-	/**
-	 *
-	 * @param editor
-	 * @param store
-	 * @param record
-	 * @returns {boolean}
-	 */
-	onSnippetBeforeRemove: function(editor, store, record){
-		var me = this;
-		if(record.childNodes[0]){
-			me.msg('Oops!', 'Unable to remove category "' + record.data.text + '". Please delete snippets first.', true);
-			return false;
-		}else{
-			return true;
-		}
-	},
-
-	/**
-	 *
-	 * @param plugin
-	 */
-	onSnippetEdit: function(plugin){
-		this.snippetStore.sync();
-		plugin.enabled = false;
-	},
-
-	/**
-	 *
-	 * @param plugin
-	 * @returns {boolean|enabled|Ext.Logger.enabled|Ext.draw.modifier.Highlight.enabled|Ext.chart.interactions.Abstract.enabled|Ext.resizer.SplitterTracker.enabled|*}
-	 */
-	onSnippetBeforeEdit: function(plugin){
-		return plugin.enabled;
-	},
-
-	/**
-	 *
-	 * @param plugin
-	 */
-	onSnippetCancelEdit: function(plugin){
-		plugin.enabled = false;
-	},
-
-	/**
-	 *
 	 * @param node
 	 * @param data
 	 * @param overModel
@@ -665,74 +593,5 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			pos = pos + 10;
 		}
 		me.snippetStore.sync();
-	},
-
-	/**
-	 *
-	 * @param grid
-	 * @param rowIndex
-	 * @param colIndex
-	 * @param actionItem
-	 * @param event
-	 * @param record
-	 */
-	onSnippetBtnAdd: function(grid, rowIndex, colIndex, actionItem, event, record){
-		var me = this,
-			rec;
-
-		me.origScope.snippets.editingPlugin.cancelEdit();
-		rec = me.origScope.snippetStore.getNodeById(record.data.id).appendChild({
-			text: 'New Snippet',
-			parentId: record.data.id,
-			leaf: true
-		});
-
-		me.origScope.snippetStore.sync({
-			callback: function(batch){
-				rec.set({id: batch.proxy.reader.rawData.id});
-				rec.commit();
-				me.origScope.msg('Sweet!', 'Record Added');
-				me.origScope.snippets.editingPlugin.enabled = true;
-				me.origScope.snippets.editingPlugin.startEdit(rec, 0);
-			}
-		});
-	},
-
-	/**
-	 *
-	 */
-	onAddSnippetCategory: function(){
-		var me = this,
-			selection = me.snippets.getSelectionModel().getSelection(),
-			baseNode,
-			record;
-
-		if(selection.length == 0){
-			baseNode = me.snippetStore.getRootNode();
-		}else if(selection[0].data.leaf){
-			baseNode = selection[0].parentNode;
-		}else{
-			baseNode = selection[0];
-		}
-
-		me.snippets.editingPlugin.cancelEdit();
-		record = baseNode.appendChild({
-			text: 'New Category',
-			parentId: baseNode.data.id,
-			category: me.snippets.action,
-			leaf: false
-		});
-
-		me.snippetStore.sync({
-			callback: function(batch){
-				record.set({id: batch.proxy.reader.rawData.id});
-				record.commit();
-				me.msg('Sweet!', 'Record Added');
-				me.snippets.editingPlugin.enabled = true;
-				me.snippets.editingPlugin.startEdit(record, 0);
-				// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-				// app.AuditLog('SOAP added');
-			}
-		});
 	}
 });

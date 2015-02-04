@@ -24,6 +24,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript">
 			var dual,
 				acl = {},
+				lang = {},
 				user = {},
 				settings = {},
 				globals = {},
@@ -63,17 +64,21 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         <script type="text/javascript">
 
-            window.i18n = function(key){
-                return window.lang[key] || '*'+key+'*';
-            };
+	        window.i18n = window._ = function(key){
+		        return window.lang[key] || '*'+key+'*';
+	        };
 
-            window.say = function(a){
-                console.log(a);
-            };
+	        window.say = function(args){
+		        console.log(args);
+	        };
 
-            window.g = function(global){
-	            return globals[global] || false;
-            };
+	        window.g = function(global){
+		        return window.globals[global] || false;
+	        };
+
+	        window.a = function(acl){
+		        return window.acl[acl] || false;
+	        };
 
 			/**
 			 * Ext Localization file
@@ -138,6 +143,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'DualScreen',
 	                'patient.ActiveProblems',
 	                'patient.Allergies',
+	                'patient.CognitiveAndFunctionalStatus',
 	                'patient.DoctorsNotes',
 	                'patient.Documents',
 	                'patient.Immunizations',
@@ -147,7 +153,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.Referrals',
 	                'patient.Results',
 	                'patient.RxOrders',
-	                'patient.SocialHistory'
+	                'patient.Social'
                 ],
                 launch: function() {
 	                App.Current = this;

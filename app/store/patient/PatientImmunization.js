@@ -18,9 +18,7 @@
 
 Ext.define('App.store.patient.PatientImmunization', {
 	extend: 'Ext.data.Store',
-	model: 'App.model.patient.PatientImmunization',
-//	remoteSort: false,
-//	autoLoad: false
+	model: 'App.model.patient.PatientImmunization'
 });
 
 

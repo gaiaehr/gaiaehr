@@ -23,6 +23,6 @@ Ext.define('Modules.imageforms.view.FormBackgroundImagesCombo', {
 	queryMode: 'local',
 	displayField: 'name',
 	valueField: 'value',
-	emptyText: i18n('select'),
+	emptyText: _('select'),
 	store: Ext.create('Modules.imageforms.store.DefaultImages')
 }); 

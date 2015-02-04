@@ -20,7 +20,11 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 	id: 'panelPoolArea',
 	extend: 'App.ux.RenderPanel',
 
-	pageTitle: i18n('patient_pool_areas'),
+	requires:[
+		'App.ux.grid.AreasDragDrop'
+	],
+
+	pageTitle: _('patient_pool_areas'),
 
 	initComponent: function(){
 		var me = this;
@@ -50,7 +54,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
 
-		app.msg('Sweet!', name + ' ' + i18n('sent_to') + ' ' + this.panel.title);
+//		say(node);
+//		say(data);
+//		say(name);
+//		say(pid);
+
+		app.msg('Sweet!', name + ' ' + _('sent_to') + ' ' + this.panel.title);
 
 		params = {
 			pid: pid,
@@ -89,7 +98,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					proxy: {
 						type: 'direct',
 						api: {
-							read: PoolArea.getPoolAreaPatients
+							read: 'PoolArea.getPoolAreaPatients'
 						},
 						extraParams: {
 							area_id: areas[i].id
@@ -107,12 +116,12 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					floorPlanId: areas[i].floor_plan_id,
 					columns: [
 						{
-							header: i18n('record') + ' #',
+							header: _('record') + ' #',
 							width: 100,
 							dataIndex: 'pid'
 						},
 						{
-							header: i18n('patient_name'),
+							header: _('patient_name'),
 							flex: 1,
 							dataIndex: 'name'
 						}
@@ -120,7 +129,7 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 					viewConfig: {
 						loadMask: false,
 						plugins: {
-							ptype: 'gridviewdragdrop',
+							ptype: 'areasgridviewdragdrop',
 							dragGroup: 'patientPoolAreas',
 							dropGroup: 'patientPoolAreas'
 						},

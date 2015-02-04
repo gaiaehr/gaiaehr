@@ -20,8 +20,6 @@
 include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
-include_once(ROOT . '/dataProvider/PreventiveCare.php');
-include_once(ROOT . '/dataProvider/Medical.php');
 include_once(ROOT . '/dataProvider/Referrals.php');
 include_once(ROOT . '/dataProvider/Facilities.php');
 include_once(ROOT . '/dataProvider/DocumentPDF.php');
@@ -37,8 +35,6 @@ class Documents {
 	 */
 	private $patient;
 
-	private $preventiveCare;
-
 	private $encounter;
 
 	public $pdf;
@@ -47,7 +43,6 @@ class Documents {
 		$this->db = new MatchaHelper();
 		$this->patient = new Patient();
 		$this->encounter = new Encounter();
-		$this->preventiveCare = new PreventiveCare();
 		$this->pdf = new DocumentPDF('P', 'mm', 'A4', true, 'UTF-8', false);
 		return;
 	}
@@ -261,14 +256,22 @@ class Documents {
 			}
 		}
 
-		$medical = new Medical();
-		$medications = $medical->getPatientMedicationsByEncounterID($eid);
-		$immunizations = $medical->getImmunizationsByEncounterID($eid);
-		$allergies = $medical->getAllergiesByEncounterID($eid);
-		$activeProblems = $medical->getMedicalIssuesByEncounterID($eid);
-		unset($medical);
+		$Medications = new Medications();
+		$medications = $Medications->getPatientMedicationsByEid($eid);
+		unset($Medications);
 
-		$preventivecaredismiss = $this->preventiveCare->getPreventiveCareDismissPatientByEncounterID($eid);
+		$Immunizations = new Immunizations();
+		$immunizations = $Immunizations->getImmunizationsByEid($eid);
+		unset($Immunizations);
+
+		$Allergies = new Allergies();
+		$allergies = $Allergies->getPatientAllergiesByEid($eid);
+		unset($Allergies);
+
+		$ActiveProblems = new ActiveProblems();
+		$activeProblems = $ActiveProblems->getPatientActiveProblemByEid($eid);
+		unset($ActiveProblems);
+
 		$encounter = $encounter['encounter'];
 
 		$encounterInformation = array(
@@ -305,7 +308,7 @@ class Documents {
 			'[ENCOUNTER_MEDICATIONS_LIST]' => $this->tokensForEncountersList($medications, 5),
 			'[ENCOUNTER_ACTIVE_PROBLEMS_LIST]' => $this->tokensForEncountersList($activeProblems, 6),
 			'[ENCOUNTER_IMMUNIZATIONS_LIST]' => $this->tokensForEncountersList($immunizations, 7),
-			'[ENCOUNTER_PREVENTIVECARE_DISMISS]' => $this->tokensForEncountersList($preventivecaredismiss, 10),
+			//'[ENCOUNTER_PREVENTIVECARE_DISMISS]' => $this->tokensForEncountersList($preventivecaredismiss, 10),
 			'[ENCOUNTER_REVIEWOFSYSTEMSCHECKS]' => isset($rosCks) ? $this->tokensForEncountersList($rosCks, 11) : '',
 			'[ENCOUNTER_REVIEWOFSYSTEMS]' => isset($reviewofsystems) ? $this->tokensForEncountersList($reviewofsystems, 12) : '',
 			//            '[]'     =>$this->tokensForEncountersList($hcpc,13),
@@ -364,7 +367,7 @@ class Documents {
 			$html .= '<table>';
 			$html .= "<tr><th>" . "Medications" . "</th></tr>";
 			foreach($Array as $row){
-				$html .= "<tr><td>" . $row['STR'] . ' ' . $row['dose'] . ' ' . $row['route'] . ' ' . $row['form'] . ' ' . $row['prescription_when'] . "</td></tr>";
+				$html .= "<tr><td>" . $row['STR'] . ' ' . $row['dose'] . ' ' . $row['route'] . ' ' . $row['form'] . ' ' . $row['directions'] . "</td></tr>";
 			}
 			$html .= '</table>';
 		} elseif($typeoflist == 6) {
@@ -535,7 +538,7 @@ class Documents {
 		foreach($pages AS $page){
 			$this->pdf->AddPage();
 			$this->pdf->SetY(35); // margin after header line
-			//			$this->pdf->SetFontSize(12);
+			$this->pdf->SetFontSize(10);
 			$this->pdf->writeHTML($page);
 		}
 
@@ -637,7 +640,7 @@ class Documents {
 		if(!is_array($array) || count($array) == 0)
 			return 'N/A';
 		// open table tag
-		$table = '<table width="100%" border="0" cellspacing="0" cellpadding="2">';
+		$table = '<table width="100%" border="0" cellspacing="0" cellpadding="5">';
 
 		// get header row
 		$th = array_shift($array);
@@ -663,5 +666,4 @@ class Documents {
 		$table .= '</table>';
 		return $table;
 	}
-
 }

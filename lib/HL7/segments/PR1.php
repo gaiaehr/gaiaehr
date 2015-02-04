@@ -27,7 +27,6 @@ class PR1 extends Segments{
 	function __construct($hl7){
 		parent::__construct($hl7);
 		$this->rawSeg = array();
-		$this->rawSeg = array();
 		$this->rawSeg[0] = 'PR1';                   // PR1 Message Header Segment
 		$this->rawSeg[1] = $this->getType('SI');
 		$this->rawSeg[2] = $this->getType('IS');    // TABLE 0089

@@ -18,14 +18,5 @@
 
 Ext.define('App.store.patient.encounter.snippetTree', {
 	model: 'App.model.patient.encounter.snippetTree',
-	extend: 'Ext.data.TreeStore',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: Snippets.getSoapSnippetsByCategory,
-			create: Snippets.addSoapSnippets,
-			update: Snippets.updateSoapSnippets,
-			destroy: Snippets.deleteSoapSnippets
-		}
-	}
+	extend: 'Ext.data.TreeStore'
 });

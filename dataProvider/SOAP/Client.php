@@ -1,33 +1,77 @@
 <?php
 
-print '<pre>';
-
+ini_set('soap.wsdl_cache_enabled',0);
+ini_set('soap.wsdl_cache_ttl',0);
+//print '<pre>';
 try{
 
-	ini_set('soap.wsdl_cache_enabled',0);
-	ini_set('soap.wsdl_cache_ttl',0);
+	//*************************************************//
+	//*************************************************//
+	//*************************************************//
 
-	$client = new SoapClient("http://24.55.126.192/gaiaehr/dataProvider/SOAP/wsdl.php?wsdl");
+	$client = new SoapClient("http://192.168.1.122/TraNextGenWebService/Patients.asmx?WSDL");
 
-	$params =  new stdClass();
+	$auth = array(
+		'UserName'=>'SecretUser',
+		'Password'=>'SecretPassword'
+	);
+	$header = new SoapHeader('http://tranextgen.com/','AuthHeader', $auth, false);
+	$client->__setSoapHeaders($header);
 
-	$params->Patient = new stdClass();
-	$params->Patient->Pid = '2';
-	$params->Patient->RecordNumber = '123456';
+	$request = new stdClass();
 
-	$params->Provider = new stdClass();
-	$params->Provider->NPI = '1234567890';
+//	$request->SecurityInfo = new stdClass();
+//	$request->SecurityInfo->UserName = 'SecretUser';
+//	$request->SecurityInfo->Password = 'SecretPassword';
 
-	$params->Document = new stdClass();
-	$params->Document->Title = 'Hello form SOAP';
-	$params->Document->Base64Document = '123456rtyuio';
-	$params->Document->Date = '2012-05-16';
 
-	$params->SecureKey = '02FT-KNKX-ZV0D-K8ZC-6AKQ';
+	$request->patient = new stdClass();
+	$request->patient->Pid = 3;
+	$request->patient->RecordNumber = 'A-000000000000021-00';
+	$request->patient->FirstName = 'RAMOS';
+	$request->patient->MiddleName = '';
+	$request->patient->LastName = 'JESSICA RAMOS';
+	$request->patient->Sex = 'F';
+	$request->patient->DateOfBirth = '1989-08-01';
+//	$request->charge->Units = 1;
 
-	$response = $client->UploadPatientDocument($params);
 
-	print_r($response);
+	$auth = (object) $auth;
+	$response = $client->Update($request);
+
+	var_dump($response);
+
+
+	//*************************************************//
+	//*************************************************//
+	//*************************************************//
+
+//	$client = new SoapClient("http://192.168.1.106/TraNextGenWebService/Patients.asmx?WSDL");
+//
+//	$auth = array(
+//		'UserName'=>'SecretUser',
+//		'Password'=>'SecretPassword'
+//	);
+//	$header = new SoapHeader('http://tranextgen.com/','AuthHeader', $auth, false);
+//	$client->__setSoapHeaders($header);
+//
+//	$params = new stdClass();
+//	$patient =  new stdClass();
+//
+//	$patient->FirstName = 'Ernesto';
+//	$patient->LastName = 'Rodriguez Guzman';
+//	$patient->DateOfBirth = '1978-01-23';
+//	$patient->Sex = 'M';
+//
+//
+//	$params->patient = $patient;
+//	$response = $client->Add($params);
+//
+//	var_dump($response);
+
+	//*************************************************//
+	//*************************************************//
+	//*************************************************//
 
 } catch(SoapFault $e){
 	var_dump($e);

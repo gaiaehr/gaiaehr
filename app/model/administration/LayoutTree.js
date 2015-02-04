@@ -33,7 +33,8 @@ Ext.define('App.model.administration.LayoutTree', {
 		},
 		{
 			name: 'index',
-			type: 'int'
+			type: 'int',
+			mapping: 'x_index'
 		},
 		{
 			name: 'parentId',
@@ -180,6 +181,14 @@ Ext.define('App.model.administration.LayoutTree', {
 		},
 		{
 			name: 'list_id',
+			type: 'string'
+		},
+		{
+			name: 'itemId',
+			type: 'string'
+		},
+		{
+			name: 'action',
 			type: 'string'
 		}
 	],

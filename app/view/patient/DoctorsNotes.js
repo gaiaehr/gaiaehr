@@ -25,9 +25,11 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		'App.ux.combo.Templates'
 	],
 	xtype: 'patientdoctorsnotepanel',
-	title: i18n('doctors_notes'),
+	title: _('doctors_notes'),
+	itemId: 'DoctorsNotes',
 	columnLines: true,
 	store: Ext.create('App.store.patient.DoctorsNotes', {
+		storeId: 'DoctorsNotesStore',
 		groupField: 'order_date',
 		remoteFilter: true,
 		pageSize: 200,
@@ -53,7 +55,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 					//					scope: me,
 					//					handler: me.onRemoveClick
 				}
@@ -61,12 +63,12 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('date'),
+			text: _('date'),
 			dataIndex: 'order_date',
 			format: g('date_display_format')
 		},
 		{
-			text: i18n('type'),
+			text: _('type'),
 			dataIndex: 'template_id',
 			renderer: function(v){
 				return App.Current.getController('patient.DoctorsNotes').templatesRenderer(v);
@@ -75,23 +77,23 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('from'),
+			text: _('from'),
 			dataIndex: 'from_date',
 			format: g('date_display_format')
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('to'),
+			text: _('to'),
 			dataIndex: 'to_date',
 			format: g('date_display_format')
 		},
 		{
-			text: i18n('comments'),
+			text: _('comments'),
 			dataIndex: 'comments',
 			flex: 1
 		},
 		{
-			text: i18n('restrictions'),
+			text: _('restrictions'),
 			dataIndex: 'string_restrictions',
 			flex: 1
 		}
@@ -111,29 +113,33 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						{
 							xtype: 'fieldset',
 							layout: 'anchor',
-							title: i18n('general'),
+							title: _('general'),
+							height: 145,
 							width: 300,
+							defaults: {
+								margin: '0 0 5 0'
+							},
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('order_date'),
+									fieldLabel: _('order_date'),
 									format: g('date_display_format'),
 									name: 'order_date'
 								},
 								{
 									xtype: 'documentstemplatescombo',
-									fieldLabel: i18n('document'),
+									fieldLabel: _('document'),
 									name: 'template_id'
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('from'),
+									fieldLabel: _('from'),
 									format: g('date_display_format'),
 									name: 'from_date'
 								},
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('to'),
+									fieldLabel: _('to'),
 									format: g('date_display_format'),
 									name: 'to_date'
 								}
@@ -142,22 +148,23 @@ Ext.define('App.view.patient.DoctorsNotes', {
 						{
 							xtype: 'fieldset',
 							layout: 'fit',
-							title: i18n('comments'),
+							title: _('comments'),
 							flex: 1,
-							height: 138,
-							margin: '0 5 0 5',
+							height: 145,
+							margin: '0 5',
 							items: [
 								{
 									xtype: 'textareafield',
 									anchor: '100%',
+									margin: 5,
 									name: 'comments'
 								}
 							]
 						},
 						{
 							xtype: 'fieldset',
-							title: i18n('restrictions'),
-							height: 138,
+							title: _('restrictions'),
+							height: 145,
 							width: 400,
 							autoScroll: true,
 							items: [
@@ -176,7 +183,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		'->',
 		'-',
 		{
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newDoctorsNoteBtn'
@@ -184,7 +191,7 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',

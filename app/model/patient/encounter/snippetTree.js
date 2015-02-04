@@ -34,8 +34,19 @@ Ext.define('App.model.patient.encounter.snippetTree', {
 			index: true
 		},
 		{
+			name: 'specialty_id',
+			type: 'string',
+			len: 11,
+			index: true
+		},
+		{
 			name: 'index',
 			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'text',
@@ -56,7 +67,7 @@ Ext.define('App.model.patient.encounter.snippetTree', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Snippets.getSoapSnippetsByCategory',
+			read: 'Snippets.getSoapSnippets',
 			create: 'Snippets.addSoapSnippets',
 			update: 'Snippets.updateSoapSnippets',
 			destroy: 'Snippets.deleteSoapSnippets'

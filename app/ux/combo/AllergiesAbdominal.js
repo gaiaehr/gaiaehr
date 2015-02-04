@@ -37,7 +37,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 				proxy: {
 					type: 'direct',
 					api: {
-						read: CombosData.getOptionsByListId
+						read: 'CombosData.getOptionsByListId'
 					}
 				}
 			});
@@ -48,7 +48,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 				queryMode: 'local',
 				displayField: 'option_name',
 				valueField: 'option_value',
-				emptyText: i18n('select'),
+				emptyText: _('select'),
 				store: Ext.create('Ext.data.Store',{
 					model: 'allergiesabdominalModel',
 					autoLoad: false

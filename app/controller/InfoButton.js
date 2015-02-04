@@ -9,7 +9,7 @@ Ext.define('App.controller.InfoButton', {
 		var me = this;
 
 		me.medline  = 'http://apps2.nlm.nih.gov/medlineplus/services/mpconnect.cfm?';
-		me.language = i18n('lang_code').match(/^es/) ? 'es' : 'en';
+		me.language = _('lang_code').match(/^es/) ? 'es' : 'en';
 		me.codeSytem = {
 			'ICD10CM': '2.16.840.1.113883.6.90',
 			'ICD10-CM': '2.16.840.1.113883.6.90',
@@ -51,7 +51,7 @@ Ext.define('App.controller.InfoButton', {
 
 	getInformationWindow: function(data){
 		Ext.widget('window', {
-			title: i18n('information'),
+			title: _('information'),
 			autoShow: true,
 			width: 800,
 			height: 600,

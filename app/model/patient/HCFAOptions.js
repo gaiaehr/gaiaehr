@@ -19,8 +19,7 @@
 Ext.define('App.model.patient.HCFAOptions', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'encounter_1500_options',
-		comment: 'HCFA options 1500 Data'
+		name: 'encounter_1500_options'
 	},
 	fields: [
 		{

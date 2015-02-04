@@ -23,54 +23,64 @@ Ext.define('App.view.patient.SocialHistory', {
 		'Ext.grid.feature.Grouping',
 		'App.store.patient.PatientSocialHistory',
 		'App.ux.combo.Combo',
-		'App.ux.combo.SmokingStatus'
 	],
 	xtype: 'patientsocialhistorypanel',
-	title: i18n('social_history'),
+	itemId: 'PatientSocialHistoryGrid',
 	columnLines: true,
 	store: Ext.create('App.store.patient.PatientSocialHistory',{
 		remoteFilter: true
 	}),
 	plugins: [
 		{
-			ptype: 'rowediting'
+			ptype: 'rowediting',
+			errorSummary: false
 		}
 	],
 	features: [
 		{
 			ftype: 'grouping',
-			groupHeaderTpl: i18n('type') + ': {name}'
+			groupHeaderTpl: _('type') + ': {name}'
 		}
 	],
 	columns: [
 		{
-			text: i18n('type'),
+			text: _('type'),
 			dataIndex: 'category_code_text',
 			width: 250
 		},
 		{
-			text: i18n('observation'),
+			text: _('observation'),
 			dataIndex: 'observation',
 			flex: 1,
 			itemId: 'socialhistorypanelobservationcolumn',
+			editor: {
+				xtype: 'textfield',
+				allowBlank: false
+			}
+		},
+		{
+			text: _('note'),
+			dataIndex: 'note',
+			flex: 1,
 			editor: {
 				xtype: 'textfield'
 			}
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('start'),
+			text: _('start'),
 			dataIndex: 'start_date',
 			format: 'Y-m-d',
 			width: 120,
 			editor: {
 				xtype: 'datefield',
-				format: 'Y-m-d'
+				format: 'Y-m-d',
+				allowBlank: false
 			}
 		},
 		{
 			xtype: 'datecolumn',
-			text: i18n('end'),
+			text: _('end'),
 			dataIndex: 'end_date',
 			format: 'Y-m-d',
 			width: 120,
@@ -82,16 +92,13 @@ Ext.define('App.view.patient.SocialHistory', {
 	],
 	tbar: [
 		{
-			xtype: 'mitos.smokingstatuscombo',
-			fieldLabel: i18n('smoking_status'),
-			itemId: 'socialsmokingstatuscombo',
-			width: 350
+			xtype: 'tbtext',
+			text: _('social_history'),
+			width: 100
 		},
-		'->',
-		i18n('social_history'),
 		{
 			xtype: 'gaiaehr.combo',
-			width: 200,
+			width: 250,
 			list: 101,
 			allowBlank: false,
 			action: 'socialHistoryTypeCombo'

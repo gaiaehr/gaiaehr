@@ -134,8 +134,8 @@ Ext.define('App.controller.LogOut', {
 			});
 		}else{
 			Ext.Msg.show({
-				title: i18n('please_confirm') + '...',
-				msg: i18n('are_you_sure_to_quit') + ' GaiaEHR?',
+				title: _('please_confirm') + '...',
+				msg: _('are_you_sure_to_quit') + ' GaiaEHR?',
 				icon: Ext.MessageBox.QUESTION,
 				buttons: Ext.Msg.YESNO,
 				fn: function(btn){

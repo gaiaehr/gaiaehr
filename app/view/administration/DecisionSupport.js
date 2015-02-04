@@ -25,18 +25,18 @@ Ext.define('App.view.administration.DecisionSupport', {
 		'App.store.administration.DecisionSupportRulesConcepts',
 		'App.ux.combo.Combo',
 		'App.ux.LiveCPTSearch',
-		'App.ux.LiveSnomedSearch',
+		'App.ux.LiveSnomedProblemSearch',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.LiveRXNORMAllergySearch'
 	],
 	itemId: 'decisionSupportAdminPanel',
-	pageTitle: i18n('decision_support'),
+	pageTitle: _('decision_support'),
 	pageBody: [
 		{
 			xtype: 'grid',
 			itemId: 'decisionSupportAdminGrid',
 			region: 'center',
-			store: Ext.create('App.store.administration.DecisionSupportRules'),
+			store: this._adminDecisionSupportStore = Ext.create('App.store.administration.DecisionSupportRules'),
 			columns: [
 				{
 					xtype: 'actioncolumn',
@@ -44,7 +44,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 					items: [
 						{
 							icon: 'resources/images/icons/delete.png', // Use a URL in the icon config
-							tooltip: i18n('remove'),
+							tooltip: _('remove'),
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.app.getController('administration.DecisionSupport').doRemoveRule(record);
 							}
@@ -53,37 +53,37 @@ Ext.define('App.view.administration.DecisionSupport', {
 				},
 				{
 					flex: 1,
-					header: i18n('description'),
+					header: _('description'),
 					sortable: true,
 					dataIndex: 'description'
 				},
 				{
 					width: 100,
-					header: i18n('age_start'),
+					header: _('age_start'),
 					sortable: true,
 					dataIndex: 'age_start'
 				},
 				{
 					width: 100,
-					header: i18n('age_end'),
+					header: _('age_end'),
 					sortable: true,
 					dataIndex: 'age_end'
 				},
 				{
 					width: 100,
-					header: i18n('sex'),
+					header: _('sex'),
 					sortable: true,
 					dataIndex: 'sex'
 				},
 				{
 					width: 100,
-					header: i18n('frequency'),
+					header: _('frequency'),
 					sortable: true,
 					dataIndex: 'frequency'
 				},
 				{
 					width: 50,
-					header: i18n('active'),
+					header: _('active'),
 					dataIndex: 'active',
 					renderer: function(v){
 						return app.boolRenderer(v);
@@ -92,13 +92,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 			],
 			tbar: Ext.create('Ext.PagingToolbar', {
 				displayInfo: true,
-				emptyMsg: i18n('no_office_notes_to_display'),
+				emptyMsg: _('no_office_notes_to_display'),
 				plugins: Ext.create('Ext.ux.SlidingPager'),
+				store: this._adminDecisionSupportStore,
 				items: [
 					'-',
 					{
 						xtype: 'button',
-						text: i18n('new_rule'),
+						text: _('new_rule'),
 						iconCls: 'icoAdd',
 						itemId: 'decisionSupportRuleAddBtn'
 					}
@@ -111,14 +112,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 				items: [
 					{
 						xtype: 'tabpanel',
-						action: i18n('immunizations'),
+						action: _('immunizations'),
 						layout: 'fit',
 						itemId: 'decisionSupportEditorTabPanel',
 						items: [
 							// TAB General
 							{
 								xtype: 'container',
-								title: i18n('general'),
+								title: _('general'),
 								padding: 10,
 								layout: 'vbox',
 								items: [
@@ -135,12 +136,12 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('description'),
+												fieldLabel: _('description'),
 												name: 'description',
 												width: 703
 											},
 											{
-												fieldLabel: i18n('active'),
+												fieldLabel: _('active'),
 												xtype: 'checkboxfield',
 												labelWidth: 75,
 												name: 'active'
@@ -160,12 +161,12 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												xtype: 'mitos.codestypescombo',
-												fieldLabel: i18n('coding_system'),
+												fieldLabel: _('coding_system'),
 												name: 'service_code_type'
 											},
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('code'),
+												fieldLabel: _('code'),
 												width: 458,
 												name: 'service_code'
 											}
@@ -184,7 +185,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												xtype: 'numberfield',
-												fieldLabel: i18n('age_start'),
+												fieldLabel: _('age_start'),
 												name: 'age_start',
 
 												value: 0,
@@ -193,7 +194,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 											},
 											{
 												xtype: 'textfield',
-												fieldLabel: i18n('reference'),
+												fieldLabel: _('reference'),
 												name: 'reference',
 												width: 458
 											}
@@ -213,14 +214,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												xtype: 'numberfield',
-												fieldLabel: i18n('age_end'),
+												fieldLabel: _('age_end'),
 												name: 'age_end',
 												value: 0,
 												minValue: 0
 											},
 											{
 												xtype: 'gaiaehr.sexcombo',
-												fieldLabel: i18n('sex'),
+												fieldLabel: _('sex'),
 												name: 'sex',
 												margin: '0 10 5 0'
 											}
@@ -231,7 +232,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB Procedures
 							{
 								xtype: 'grid',
-								title: i18n('procedures'),
+								title: _('procedures'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'PROC',
 								columns: [
@@ -241,7 +242,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -249,15 +250,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -266,14 +267,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -293,7 +294,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								tbar: [
 									{
 										xtype: 'livecptsearch',
-										fieldLabel: i18n('add_procedure'),
+										fieldLabel: _('add_procedure'),
 										hideLabel: false,
 										margin: '0 0 0 5',
 										flex: 1,
@@ -304,7 +305,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB Active Problems
 							{
 								xtype: 'grid',
-								title: i18n('active_problems'),
+								title: _('active_problems'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'PROB',
 								columns: [
@@ -314,7 +315,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -322,15 +323,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -339,14 +340,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -365,8 +366,8 @@ Ext.define('App.view.administration.DecisionSupport', {
 								],
 								tbar: [
 									{
-										xtype: 'snomedlivetsearch',
-										fieldLabel: i18n('add_problem'),
+										xtype: 'snomedliveproblemsearch',
+										fieldLabel: _('add_problem'),
 										hideLabel: false,
 										margin: '0 0 0 5',
 										flex: 1,
@@ -377,7 +378,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB Social Lifestyle
 							{
 								xtype: 'grid',
-								title: i18n('social_lifestyle'),
+								title: _('social_lifestyle'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'SOCI',
 								columns: [
@@ -387,7 +388,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -395,15 +396,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -412,14 +413,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -428,10 +429,10 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										text: i18n('value'),
+										text: _('value'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'value_operator',
 												width: 180,
 												editor: {
@@ -440,7 +441,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('value'),
+												header: _('value'),
 												dataIndex: 'value',
 												editor: {
 													xtype: 'textfield'
@@ -460,7 +461,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								tbar: [
 									{
 										xtype: 'gaiaehr.combo',
-										fieldLabel: i18n('add_social_lifestyle'),
+										fieldLabel: _('add_social_lifestyle'),
 										itemId: 'DecisionSupportSocialHistoryCombo',
 										margin: '0 0 0 5',
 										width: 350,
@@ -476,7 +477,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB Medications
 							{
 								xtype: 'grid',
-								title: i18n('medications'),
+								title: _('medications'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'MEDI',
 								columns: [
@@ -486,7 +487,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -494,15 +495,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -511,14 +512,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -527,10 +528,10 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										text: i18n('value'),
+										text: _('value'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'value_operator',
 												width: 180,
 												editor: {
@@ -539,7 +540,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('value'),
+												header: _('value'),
 												dataIndex: 'value',
 												editor: {
 													xtype: 'textfield'
@@ -559,7 +560,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								tbar: [
 									{
 										xtype: 'rxnormlivetsearch',
-										fieldLabel: i18n('add_medication'),
+										fieldLabel: _('add_medication'),
 										hideLabel: false,
 										margin: '0 0 0 5',
 										flex: 1,
@@ -570,7 +571,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB Medication Allergies
 							{
 								xtype: 'grid',
-								title: i18n('medication_allergies'),
+								title: _('medication_allergies'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'ALLE',
 								columns: [
@@ -580,7 +581,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -588,15 +589,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -605,14 +606,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -621,10 +622,10 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										text: i18n('value'),
+										text: _('value'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'value_operator',
 												width: 180,
 												editor: {
@@ -633,7 +634,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('value'),
+												header: _('value'),
 												dataIndex: 'value',
 												editor: {
 													xtype: 'textfield'
@@ -653,7 +654,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								tbar: [
 									{
 										xtype: 'rxnormallergylivetsearch',
-										fieldLabel: i18n('add_medication'),
+										fieldLabel: _('add_medication'),
 										hideLabel: false,
 										margin: '0 0 0 5',
 										flex: 1,
@@ -664,7 +665,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB LAB
 							{
 								xtype: 'grid',
-								title: i18n('labs'),
+								title: _('labs'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'LAB',
 								columns: [
@@ -674,7 +675,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -682,15 +683,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -699,14 +700,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -715,10 +716,10 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										text: i18n('value'),
+										text: _('value'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'value_operator',
 												width: 180,
 												editor: {
@@ -727,7 +728,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('value'),
+												header: _('value'),
 												dataIndex: 'value',
 												editor: {
 													xtype: 'textfield'
@@ -747,7 +748,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								tbar: [
 									{
 										xtype: 'labslivetsearch',
-										fieldLabel: i18n('add_labs'),
+										fieldLabel: _('add_labs'),
 										hideLabel: false,
 										margin: '0 0 0 5',
 										flex: 1,
@@ -758,7 +759,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 							// TAB
 							{
 								xtype: 'grid',
-								title: i18n('vitals'),
+								title: _('vitals'),
 								store: Ext.create('App.store.administration.DecisionSupportRulesConcepts'),
 								action: 'VITA',
 								columns: [
@@ -768,7 +769,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 										items: [
 											{
 												icon: 'resources/images/icons/delete.png',
-												tooltip: i18n('remove'),
+												tooltip: _('remove'),
 												handler: function(grid, rowIndex, colIndex, item, e, record){
 													App.app.getController('administration.DecisionSupport').doRemoveRuleConcept(record);
 												}
@@ -776,15 +777,15 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										header: i18n('concept'),
+										header: _('concept'),
 										flex: 1,
 										dataIndex: 'concept_text'
 									},
 									{
-										text: i18n('frequency'),
+										text: _('frequency'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'frequency_operator',
 												width: 180,
 												editor: {
@@ -793,14 +794,14 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('frequency'),
+												header: _('frequency'),
 												dataIndex: 'frequency',
 												editor: {
 													xtype: 'numberfield'
 												}
 											},
 											{
-												header: i18n('interval'),
+												header: _('interval'),
 												dataIndex: 'frequency_interval',
 												editor: {
 													xtype: 'textfield'
@@ -809,10 +810,10 @@ Ext.define('App.view.administration.DecisionSupport', {
 										]
 									},
 									{
-										text: i18n('value'),
+										text: _('value'),
 										columns: [
 											{
-												header: i18n('operator'),
+												header: _('operator'),
 												dataIndex: 'value_operator',
 												width: 180,
 												editor: {
@@ -821,7 +822,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 												}
 											},
 											{
-												header: i18n('value'),
+												header: _('value'),
 												dataIndex: 'value',
 												editor: {
 													xtype: 'textfield'
@@ -841,7 +842,7 @@ Ext.define('App.view.administration.DecisionSupport', {
 								tbar: [
 									{
 										xtype: 'gaiaehr.combo',
-										fieldLabel: i18n('add_vital'),
+										fieldLabel: _('add_vital'),
 										labelWidth: 60,
 										hideLabel: false,
 										margin: '0 0 0 5',

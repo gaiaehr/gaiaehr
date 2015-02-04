@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.ExternalDataLoads',{
 	extend:'App.ux.RenderPanel',
 	id:'panelExternalDataLoads',
-	pageTitle:i18n('external_data_loads'),
+	pageTitle:_('external_data_loads'),
 	/**
 	 * define the layout 'accordion'
 	 * and few more configs
@@ -91,30 +91,30 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 		 * Here are the panels used inside the accordion layout
 		 */
 		me.icd9 = Ext.create('Ext.form.Panel',{
-			title:i18n('update_icd9'),
+			title:_('update_icd9'),
 			layout:'border',
 			items:[me.icd9Grid, me.icd9Form]
 		});
 
 		me.icd10 = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_icd10'),
+			title:_('update_icd10'),
 			layout:'border',
 			items:[me.icd10Grid, me.icd10Form]
 		});
 
 		me.rxnorm = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_rxnorm'),
+			title:_('update_rxnorm'),
 			layout:'border',
 			items:[me.rxnormGrid, me.rxnormForm]
 		});
 
 		me.snomed = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_snomed'),
+			title:_('update_snomed'),
 			layout:'border',
 			items:[me.snomedGrid, me.snomedForm]
 		});
 		me.hcpcs = Ext.create('Ext.panel.Panel',{
-			title:i18n('update_hcpcs'),
+			title:_('update_hcpcs'),
 			layout:'border',
 			items:[me.hcpcsGrid, me.hcpcsForm]
 		});
@@ -138,20 +138,20 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 					xtype:'fieldset',
 					styleHtmlContent:true,
 					action:action,
-					title:i18n('current_version_installed'),
-					html:i18n('no_data_installed'),
-					tpl:i18n('revision_name') + ':  {revision_name}<br>' + i18n('revision_number') + ':  {revision_number}<br>' + i18n('revision_version') + ': {revision_version}<br>' + i18n('revision_date') + ':    {revision_date}<br>' + i18n('imported_on') + ':      {imported_date}'
+					title:_('current_version_installed'),
+					html:_('no_data_installed'),
+					tpl:_('revision_name') + ':  {revision_name}<br>' + _('revision_number') + ':  {revision_number}<br>' + _('revision_version') + ': {revision_version}<br>' + _('revision_date') + ':    {revision_date}<br>' + _('imported_on') + ':      {imported_date}'
 				},
 				{
 					xtype:'fieldset',
-					title:i18n('installation'),
+					title:_('installation'),
 					action:'installation',
 					styleHtmlContent:true,
 					html:me.getInstallationDetails(action)
 				},
 				{
 					xtype:'fieldset',
-					title:i18n('upload'),
+					title:_('upload'),
 					action:'upload',
 					items:[
 						{
@@ -159,7 +159,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 							xtype:'filefield',
 							name:'filePath',
 							buttonText:i18n['Select file'] + '...',
-							emptyText:i18n('data_file'),
+							emptyText:_('data_file'),
 							width:350,
 							labelWidth:50,
 							allowBlank:false
@@ -172,7 +172,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 			},
 			buttons:[
 				{
-					text:i18n('update'),
+					text:_('update'),
 					action:action,
 					scope:me,
 					handler:me.uploadFile
@@ -207,17 +207,17 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 	getDefaultColumns:function(){
 		return [
 			{
-				header:i18n('date'),
+				header:_('date'),
 				dataIndex:'date',
 				width:98
 			},
 			{
-				header:i18n('version'),
+				header:_('version'),
 				dataIndex:'version',
 				width:98
 			},
 			{
-				header:i18n('file'),
+				header:_('file'),
 				dataIndex:'basename',
 				width:300
 			}
@@ -287,7 +287,7 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 		var me = this, form = btn.up('form').getForm();
 		if(form.isValid()){
 			form.submit({
-				waitMsg:i18n('uploading_and_updating_code_database') + '...',
+				waitMsg:_('uploading_and_updating_code_database') + '...',
 				scope:me,
 				params:{
 					codeType:btn.action
@@ -307,12 +307,12 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 			log = app.log;
 
 		log.ActivityMonitor(false);
-		grid.el.mask(i18n('installing_database_please_wait') + '...');
+		grid.el.mask(_('installing_database_please_wait') + '...');
 		ExternalDataUpdate.updateCodes(record.data, function(provider, response){
 			grid.el.unmask();
 			if(response.result.success){
 				me.setCurrentCodesInfo();
-				me.alert(i18n('new_database_installed'), 'info');
+				me.alert(_('new_database_installed'), 'info');
 			}
 			else{
 				me.alert(response.result.error, 'error');

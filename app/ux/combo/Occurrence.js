@@ -31,7 +31,7 @@ Ext.define('App.ux.combo.Occurrence', {
 			queryMode: 'local',
 			displayField: 'option_name',
 			valueField: 'option_value',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: me.store
 		});
 		me.callParent(arguments);

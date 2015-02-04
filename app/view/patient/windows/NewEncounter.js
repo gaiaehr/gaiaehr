@@ -18,7 +18,8 @@
 
 Ext.define('App.view.patient.windows.NewEncounter', {
 	extend: 'Ext.window.Window',
-	title: i18n('new_encounter_form'),
+	itemId: 'EncounterDetailWindow',
+	title: _('encounter'),
 	closeAction: 'hide',
 	closable: false,
 	modal: true,
@@ -32,25 +33,27 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 		Ext.apply(me, {
 			items: [
 				me.encForm = Ext.create('Ext.form.Panel', {
+					itemId: 'EncounterDetailForm',
 					border: false,
 					bodyPadding: '10 10 0 10'
 				})
 			],
 			buttons: [
 				{
-					text: i18n('create_encounter'),
+					text: _('save'),
 					action: 'encounter',
 					scope: me,
-					handler: me.createNewEncounter
+					handler: me.onFormSave
 				},
 				{
-					text: i18n('cancel'),
+					text: _('cancel'),
 					scope: me,
 					handler: me.cancelNewEnc
 				}
 			],
 			listeners: {
-				show: me.checkValidation
+				show: me.checkValidation,
+				hide: me.resetRecord
 			}
 		}, me);
 
@@ -61,15 +64,29 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 
 	checkValidation: function(){
 		if(app.patient.pid){
-			if(acl['add_encounters']){
-				var me = this,
-					form = me.down('form').getForm();
-				me.setEncounterForm(form);
+			var me = this,
+				form = me.down('form').getForm(),
+				record = form.getRecord();
+
+			if(!record && a('add_encounters')){
+
+				me.loadRecord(
+					Ext.create('App.model.patient.Encounter', {
+						pid: app.patient.pid,
+						service_date: new Date(),
+						priority: 'Minimal',
+						open_uid: app.user.id,
+						facility: app.user.facility,
+						billing_facility: app.user.facility,
+						brief_description: g('default_chief_complaint')
+					})
+				);
+
 				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
 					if(response.result.encounter){
 						Ext.Msg.show({
-							title: 'Oops! ' + i18n('open_encounters_found') + '...',
-							msg: i18n('do_you_want_to') + ' <strong>' + i18n('continue_creating_the_new_encounters') + '</strong><br>"' + i18n('click_no_to_review_encounter_history') + '"',
+							title: 'Oops! ' + _('open_encounters_found') + '...',
+							msg: _('do_you_want_to') + ' <strong>' + _('continue_creating_the_new_encounters') + '</strong><br>"' + _('click_no_to_review_encounter_history') + '"',
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,
 							fn: function(btn){
@@ -81,7 +98,13 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 						});
 					}
 				});
-			}else{
+			} else if(record && a('edit_encounters')){
+
+				// placeholder
+
+
+
+			} else{
 				app.accessDenied();
 			}
 		}else{
@@ -89,37 +112,25 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 		}
 	},
 
-	setEncounterForm: function(form){
-		form.reset();
-		return form.loadRecord(
-			Ext.create('App.model.patient.Encounter', {
-				pid: app.patient.pid,
-				service_date: new Date(),
-				priority: 'Minimal',
-				open_uid: app.user.id,
-				facility: app.user.facility,
-				billing_facility: app.user.facility,
-				brief_description: globals['default_chief_complaint']
-			})
-		);
-	},
-
-	createNewEncounter: function(btn){
+	onFormSave: function(btn){
 		var me = this,
 			form = me.encForm.getForm(),
 			values = form.getValues(),
-			record = form.getRecord();
+			record = form.getRecord(),
+			isNew = record.data.eid == 0 ;
 
 		if(form.isValid()){
-			if(acl['add_encounters']){
+			if((isNew && a('add_encounters') || (!isNew && a('edit_encounters')))){
 				record.set(values);
 
 				record.save({
 					callback: function(record){
-						var data = record.data;
-						app.patientButtonRemoveCls();
-						app.patientBtn.addCls(data.priority);
-						app.openEncounter(data.eid);
+						if(isNew){
+							var data = record.data;
+							app.patientButtonRemoveCls();
+							app.patientBtn.addCls(data.priority);
+							app.openEncounter(data.eid);
+						}
 						me.close();
 					}
 				});
@@ -128,6 +139,17 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				app.accessDenied();
 			}
 		}
+	},
+
+	loadRecord: function(record){
+		say(record);
+
+		this.encForm.getForm().loadRecord(record);
+	},
+
+	resetRecord: function(){
+		this.down('form').getForm().reset(true);
+		delete this.down('form').getForm()._record;
 	},
 
 	cancelNewEnc: function(){

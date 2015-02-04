@@ -18,7 +18,7 @@
 
 Ext.define('App.view.administration.Applications', {
     extend: 'App.ux.RenderPanel',
-    pageTitle: i18n('applications'),
+    pageTitle: _('applications'),
 
     initComponent: function(){
         var me = this;
@@ -54,7 +54,7 @@ Ext.define('App.view.administration.Applications', {
 
                 },
                 {
-                    text: i18n('name'),
+                    text: _('name'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'app_name',
@@ -64,13 +64,13 @@ Ext.define('App.view.administration.Applications', {
                     }
                 },
                 {
-                    text: i18n('private_key'),
+                    text: _('private_key'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'pvt_key'
                 },
                 {
-                    text: i18n('active?'),
+                    text: _('active?'),
                     width: 50,
                     sortable: true,
                     renderer: me.boolRenderer,
@@ -82,7 +82,7 @@ Ext.define('App.view.administration.Applications', {
             ],
             tbar:[
                 {
-                    text:i18n('add'),
+                    text:_('add'),
                     iconCls:'icoAdd',
                     scope:me,
                     handler:me.addApplication
@@ -107,7 +107,7 @@ Ext.define('App.view.administration.Applications', {
                     me.store.remove(record);
                     me.store.sync({
                         callback:function(){
-                            me.msg('Sweet!', i18n('record_removed'))
+                            me.msg('Sweet!', _('record_removed'))
                         }
                     });
                 }

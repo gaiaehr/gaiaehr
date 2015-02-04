@@ -24,18 +24,57 @@ Ext.define('App.model.account.AccountType', {
 		data: 'App.data.account.AccountType'
 	},
 	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'createUid', type: 'int'},
-		{name: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'writeUid', type: 'int'},
-		{name: 'writeDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-
-		{name: 'closeMethod', type: 'string', comment: 'Name'},
-		{name: 'note', type: 'string', comment: 'Code'},
-		{name: 'code', type: 'string', comment: 'Shortcut'},
-		{name: 'note', type: 'string', comment: 'Internal Notes'},
-		{name: 'name', type: 'string', comment: 'Outgoing Currencies Rate'},
-		{name: 'reportType', type: 'string', comment: 'Internal Type'}
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'createUid',
+			type: 'int'
+		},
+		{
+			name: 'createDate',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'writeUid',
+			type: 'int'
+		},
+		{
+			name: 'writeDate',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'closeMethod',
+			type: 'string',
+			comment: 'Name'
+		},
+		{
+			name: 'note',
+			type: 'string', comment: 'Code'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			comment: 'Shortcut'
+		},
+		{
+			name: 'note',
+			type: 'string',
+			comment: 'Internal Notes'
+		},
+		{
+			name: 'name',
+			type: 'string',
+			comment: 'Outgoing Currencies Rate'
+		},
+		{
+			name: 'reportType',
+			type: 'string',
+			comment: 'Internal Type'
+		}
 	],
 	proxy: {
 		type: 'direct',

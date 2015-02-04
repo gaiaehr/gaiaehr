@@ -19,20 +19,22 @@
 Ext.define('App.view.patient.RxOrders', {
 	extend: 'Ext.grid.Panel',
 	requires: [
-		'Ext.grid.plugin.RowEditing',
+		'App.ux.grid.RowFormEditing',
 		'Ext.grid.feature.Grouping',
 		'Ext.selection.CheckboxModel',
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
 		'App.ux.combo.EncounterICDS',
-		'App.ux.LiveSigsSearch',
-		'App.ux.LiveRXNORMSearch'
+		'App.ux.combo.MedicationInstructions',
+		'App.ux.LiveRXNORMSearch',
+		'App.ux.form.fields.plugin.HelpIcon'
 	],
 	xtype: 'patientrxorderspanel',
-	title: i18n('rx_orders'),
+	title: _('rx_orders'),
 	columnLines: true,
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
+		storeId: 'RxOrderStore',
 		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
@@ -53,8 +55,226 @@ Ext.define('App.view.patient.RxOrders', {
 	],
 	plugins: [
 		{
-			ptype: 'rowediting',
-			clicksToEdit: 2
+			ptype: 'rowformediting',
+			clicksToEdit: 2,
+			items: [
+				{
+					xtype: 'container',
+					layout: {
+						type: 'hbox',
+						align: 'stretch'
+					},
+					itemId: 'RxOrderGridFormContainer',
+					items: [
+						{
+							xtype: 'container',
+							layout: 'anchor',
+							itemId: 'RxOrderGridFormContainerOne',
+							items: [
+								{
+									xtype: 'datefield',
+									fieldLabel: _('order_date'),
+									format: 'Y-m-d',
+									name: 'date_ordered',
+									allowBlank: false,
+									margin: '0 0 5 0'
+								},
+								{
+									xtype: 'rxnormlivetsearch',
+									itemId: 'RxNormOrderLiveSearch',
+									hideLabel: false,
+									fieldLabel: _('medication'),
+									width: 700,
+									name: 'STR',
+									maxLength: 105,
+									displayField: 'STR',
+									valueField: 'STR',
+									vtype: 'nonspecialcharactersrequired',
+									allowBlank: false
+								},
+								{
+									xtype: 'container',
+									margin: '5 0',
+									layout: {
+										type: 'hbox'
+									},
+									items: [
+										{
+											xtype: 'numberfield',
+											width: 170,
+											fieldLabel: _('dispense'),
+											minValue: 0.001,
+											maxValue: 99999,
+											name: 'dispense',
+											decimalPrecision: 3,
+											maxLength: 10,
+											allowBlank: false,
+											fixPrecision: function(value){
+												var me = this,
+													nan = isNaN(value),
+													precision = me.decimalPrecision;
+
+												if(nan || !value){
+													return nan ? '' : value;
+												}else if(!me.allowDecimals || precision <= 0){
+													precision = 0;
+												}
+												var num = String(value);
+												if(num.indexOf('.') !== -1){
+													var numArr = num.split(".");
+													if(numArr.length == 1){
+														return Number(num);
+													}else{
+														return Number(numArr[0] + "." + numArr[1].charAt(0) + numArr[1].charAt(1) + numArr[1].charAt(2));
+													}
+												}else{
+													return Number(num);
+												}
+												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
+											}
+										},
+										{
+											xtype: 'numberfield',
+											width: 130,
+											fieldLabel: _('days_supply'),
+											labelAlign: 'right',
+											labelWidth: 75,
+											minValue: 1,
+											maxValue: 630,
+											allowDecimals: false,
+											name: 'days_supply'
+										},
+										{
+											xtype: 'numberfield',
+											width: 100,
+											fieldLabel: _('refill'),
+											labelAlign: 'right',
+											labelWidth: 40,
+											maxValue: 99,
+											minValue: 0,
+											name: 'refill',
+											vtype: 'numeric',
+											allowBlank: false
+										},
+										{
+											xtype: 'encountericdscombo',
+											itemId: 'RxEncounterDxCombo',
+											fieldLabel: _('dx'),
+											labelAlign: 'right',
+											labelWidth: 30,
+											width: 295,
+											name: 'dxs'
+										}
+									]
+								},
+								{
+									xtype: 'medicationinstructionscombo',
+									itemId: 'RxOrderMedicationInstructionsCombo',
+									width: 700,
+									fieldLabel: _('instructions'),
+									name: 'directions',
+									maxLength: 140,
+									validateOnBlur: true,
+									vtype: 'nonspecialcharactersrequired',
+									allowBlank: false
+								},
+								{
+									xtype: 'textfield',
+									width: 680,
+									fieldLabel: '*' + _('notes_to_pharmacist'),
+									itemId: 'RxOrderGridFormNotesField',
+									name: 'notes',
+									plugins:[
+										{
+											ptype: 'helpicon',
+											helpMsg: _('rx_notes_to_pharmacist_warning')
+										}
+									],
+									maxLength: 210
+								},
+								{
+									xtype: 'container',
+									html: ' *' + _('rx_notes_to_pharmacist_warning'),
+									margin: '0 0 0 100'
+								}
+							]
+						},
+						{
+							xtype: 'container',
+							layout: 'anchor',
+							itemId: 'RxOrderGridFormContainerTwo',
+							padding: '25 0 0 0',
+							items: [
+								{
+									xtype: 'container',
+									layout: 'hbox',
+									items:[
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: _('daw'),
+											tooltip: _('dispensed_as_written'),
+											width: 90,
+											labelWidth: 70,
+											labelAlign: 'right',
+											name: 'daw',
+											margin: '0 0 5 0'
+										},
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: _('is_comp'),
+											tooltip: _('is_compound'),
+											width: 85,
+											labelWidth: 65,
+											labelAlign: 'right',
+											name: 'is_compound',
+											itemId: 'RxOrderCompCheckBox',
+											margin: '0 0 5 0'
+										},
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: _('is_sply'),
+											tooltip: _('is_supply'),
+											width: 85,
+											labelWidth: 65,
+											labelAlign: 'right',
+											name: 'is_supply',
+											itemId: 'RxOrderSplyCheckBox',
+											margin: '0 0 5 0'
+										}
+									]
+								},
+								{
+									xtype: 'datefield',
+									fieldLabel: _('begin_date'),
+									labelWidth: 70,
+									labelAlign: 'right',
+									width: 258,
+									format: 'Y-m-d',
+									name: 'begin_date',
+									margin: '0 0 5 0',
+									allowBlank: false
+								},
+								{
+									xtype: 'datefield',
+									fieldLabel: _('end_date'),
+									labelWidth: 70,
+									labelAlign: 'right',
+									format: 'Y-m-d',
+									width: 258,
+									name: 'end_date'
+								}
+							]
+						},
+						{
+							xtype: 'fieldset',
+							title: _('active_drug_allergies'),
+							html: _('none'),
+							margin: '25 0 5 10',
+							flex: 1
+						}
+					]
+				}
+			]
 		}
 	],
 	columns: [
@@ -64,118 +284,80 @@ Ext.define('App.view.patient.RxOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: i18n('remove')
+					tooltip: _('remove')
 				}
 			]
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('date_ordered'),
+			header: _('date_ordered'),
 			dataIndex: 'date_ordered',
-			format: 'Y-m-d',
-			editor: {
-				xtype: 'datefield',
-				format: 'Y-m-d'
-			}
+			format: 'Y-m-d'
 		},
 		{
-			header: i18n('medication'),
+			header: _('medication'),
 			flex: 1,
-			dataIndex: 'STR',
-			editor: {
-				xtype: 'rxnormlivetsearch',
-				itemId: 'RxNormOrderLiveSearch'
+			dataIndex: 'STR'
+		},
+		{
+			header: _('daw'),
+			width: 40,
+			dataIndex: 'daw',
+			tooltip: _('dispensed_as_written'),
+			renderer: function(v){
+				return app.boolRenderer(v);
 			}
 		},
 		{
-			header: i18n('dose'),
-			width: 125,
-			dataIndex: 'dose',
-			editor: {
-				xtype: 'textfield'
-			}
-		},
-		{
-			header: i18n('route'),
-			width: 100,
-			dataIndex: 'route',
-			editor: {
-				xtype: 'mitos.prescriptionhowto'
-			}
-		},
-		{
-			header: i18n('form'),
-			width: 75,
-			dataIndex: 'form',
-			editor: {
-				xtype: 'mitos.prescriptiontypes'
-			}
-		},
-		{
-			header: i18n('instructions') + ' (Sig)',
-			width: 150,
-			dataIndex: 'prescription_when',
-			editor: {
-				xtype: 'livesigssearch'
-			}
-		},
-		{
-			header: i18n('dispense'),
+			header: _('dispense'),
 			width: 60,
-			dataIndex: 'dispense',
-			editor: {
-				xtype: 'numberfield'
-			}
+			dataIndex: 'dispense'
 		},
 		{
-			header: i18n('refill'),
+			header: _('refill'),
 			width: 50,
-			dataIndex: 'refill',
-			editor: {
-				xtype: 'numberfield'
-			}
+			dataIndex: 'refill'
 		},
 		{
-			header: i18n('related_dx'),
-			width: 150,
-			dataIndex: 'ICDS',
-			editor: {
-				xtype: 'encountericdscombo',
-				itemId: 'rxEncounterDxLiveSearch'
-			} //me.encounderIcdsCodes
+			header: _('instructions'),
+			flex: 1,
+			dataIndex: 'directions'
+		},
+		{
+			header: _('related_dx'),
+			width: 200,
+			dataIndex: 'dxs',
+			renderer: function(v){
+				return v == false || v == 'false' || v[0] == false ? '' : v;
+			}
 		},
 		{
 			xtype: 'datecolumn',
 			format: 'Y-m-d',
-			header: i18n('begin_date'),
+			header: _('begin_date'),
 			width: 75,
 			dataIndex: 'begin_date'
 		},
 		{
 			xtype: 'datecolumn',
-			header: i18n('end_date'),
+			header: _('end_date'),
 			width: 75,
 			format: 'Y-m-d',
-			dataIndex: 'end_date',
-			editor: {
-				xtype: 'datefield',
-				format: 'Y-m-d'
-			}
+			dataIndex: 'end_date'
 		}
-
 	],
 	tbar: [
 		'->',
 		'-',
 		{
-			text: i18n('new_order'),
+			text: _('new_order'),
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId: 'newRxOrderBtn'
 		},
 		'-',
 		{
-			text: i18n('clone_order'),
+			text: _('clone_order'),
 			iconCls: 'icoAdd',
 			disabled: true,
 			margin: '0 5 0 0',
@@ -184,7 +366,7 @@ Ext.define('App.view.patient.RxOrders', {
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',

@@ -13,7 +13,7 @@ Ext.define('App.ux.combo.Facilities', {
 			proxy : {
 				type: 'direct',
 				api : {
-					read: CombosData.getFacilities
+					read: 'CombosData.getFacilities'
 				}
 			}
 		});
@@ -28,7 +28,7 @@ Ext.define('App.ux.combo.Facilities', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		});
 

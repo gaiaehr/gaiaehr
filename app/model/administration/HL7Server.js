@@ -51,11 +51,6 @@ Ext.define('App.model.administration.HL7Server', {
 			len: 10
 		},
 		{
-			name: 'online',
-			type: 'bool',
-			store: false
-		},
-		{
 			name: 'allow_messages_string',
 			type: 'string',
 			store: false,
@@ -70,6 +65,16 @@ Ext.define('App.model.administration.HL7Server', {
 			convert: function(v, record){
 				return Ext.isArray(record.data.allow_ips) ? record.data.allow_ips.join(', ') : record.data.allow_ips;
 			}
+		},
+		{
+			name: 'token',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'online',
+			type: 'bool',
+			store: false
 		}
 	],
 	proxy: {

@@ -19,8 +19,7 @@
 Ext.define('App.model.administration.ReferringProvider', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'referring_providers',
-		comment: 'Referring Providers'
+		name: 'referring_providers'
 	},
 	fields: [
 		{
@@ -120,6 +119,12 @@ Ext.define('App.model.administration.ReferringProvider', {
 			type: 'string',
 			len: 180,
 			comment: 'email'
+		},
+		{
+			name: 'direct_address',
+			type: 'string',
+			len: 180,
+			comment: 'direct_address'
 		},
 		{
 			name: 'phone_number',

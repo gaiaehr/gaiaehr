@@ -89,7 +89,7 @@ Ext.define('App.ux.RenderPanel', {
 						scope: me,
 						click: function(field, val){
 							Patient.setPatientRating({pid: app.patient.pid, rating: val}, function(){
-								app.msg('Sweet!', i18n('record_saved'))
+								app.msg('Sweet!', _('record_saved'))
 							});
 						}
 					}
@@ -100,7 +100,7 @@ Ext.define('App.ux.RenderPanel', {
 		me.pageTimerDiv = me.mainHeader.add(
 			Ext.widget('container', {
 				style: 'float:right',
-				width: 185
+				width: 200
 			})
 		);
 
@@ -109,7 +109,7 @@ Ext.define('App.ux.RenderPanel', {
 
 	updateTitle: function(pageTitle, readOnly, timer){
 		this.pageTitleDiv.update(pageTitle);
-		this.pageReadOnlyDiv.update(readOnly ? i18n('read_only') : '');
+		this.pageReadOnlyDiv.update(readOnly ? _('read_only') : '');
 		this.pageTimerDiv.update(timer);
 	},
 

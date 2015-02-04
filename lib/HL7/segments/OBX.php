@@ -22,10 +22,9 @@ class OBX extends Segments{
 	}
 
 	function __construct($hl7){
+		parent::__construct($hl7, 'OBX');
 
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'OBX';
-		$this->rawSeg[1] = $this->getType('SI');
+		$this->setField(1, 'SI', 1);
 		/**
 		 * OBX-2 Value Type
 		 * AD   Address
@@ -54,12 +53,13 @@ class OBX extends Segments{
 		 * XPN
 		 * XTN
 		 */
-		$this->rawSeg[2] = $this->getType('ID');
-		$this->rawSeg[3] = $this->getType('CE');
-		$this->rawSeg[4] = $this->getType('ST');
-		$this->rawSeg[5] = 2; // OBX-2-value type contains the data type for this field
-		$this->rawSeg[6] = $this->getType('CE');
-		$this->rawSeg[7] = $this->getType('ST');
+		$this->setField(2, 'ID', 1, true);
+		$this->setField(3, 'CE', 1);
+		$this->setField(4, 'ST', 1);
+		$this->setFieldValue(5, 2, false, true);  // OBX-2-value type contains the data type for this field
+		$this->setField(6, 'CE', 1);
+		$this->setField(7, 'ST', 1);
+
 		/**
 		 * OBX-8 Abnormal Flags
 		 * L    Below low normal
@@ -82,8 +82,8 @@ class OBX extends Segments{
 		 * MS   Moderately susceptible. Indicates for microbiology susceptibilities only.
 		 * VS   Very susceptible. Indicates for microbiology susceptibilities only.
 		 */
-		$this->rawSeg[8] = $this->getType('IS');
-		$this->rawSeg[9] = $this->getType('NM');
+		$this->setField(8, 'IS', 1, false, true);
+		$this->setField(9, 'NM', 1);
 		/**
 		 * OBX-10 Nature of abnormal test
 		 * A    An age-based population
@@ -94,7 +94,7 @@ class OBX extends Segments{
 		 * B    Breed
 		 * ST   Strain
 		 */
-		$this->rawSeg[10] = $this->getType('ID');
+		$this->setField(10, 'ID', 1, false, true);
 		/**
 		 * C    Record coming over is a correction and thus replaces a final result
 		 * D    Deletes the OBX record
@@ -105,22 +105,21 @@ class OBX extends Segments{
 		 * P    Preliminary results
 		 * R    Results entered -- not verified
 		 */
-		$this->rawSeg[11] = $this->getType('ID');
-		$this->rawSeg[12] = $this->getType('TS');
-		$this->rawSeg[13] = $this->getType('ST');
-		$this->rawSeg[14] = $this->getType('TS');
-		$this->rawSeg[15] = $this->getType('CE');
-		$this->rawSeg[16] = $this->getType('XCN');
-		$this->rawSeg[17] = $this->getType('CE');
-		$this->rawSeg[18] = $this->getType('EI');
-		$this->rawSeg[19] = $this->getType('CX');
-		$this->rawSeg[20] = null; // Reserved for harmonization with V2.6
-		$this->rawSeg[21] = null; // Reserved for harmonization with V2.6
-		$this->rawSeg[22] = null; // Reserved for harmonization with V2.6
-		$this->rawSeg[23] = $this->getType('XON');
-		$this->rawSeg[24] = $this->getType('XAD');
-		$this->rawSeg[25] = $this->getType('XCN');
+		$this->setField(11, 'ID', 1, true);
+		$this->setField(12, 'TS', 1);
+		$this->setField(13, 'ST', 1);
+		$this->setField(14, 'TS', 1);
+		$this->setField(15, 'CE', 1);
+		$this->setField(16, 'XCN', 1, false, true);
+		$this->setField(17, 'CE', 1, false, true);
+		$this->setField(18, 'EI', 1, false, true);
+		$this->setField(19, 'CX', 1);
+		$this->setFieldValue(20, null);
+		$this->setFieldValue(21, null);
+		$this->setFieldValue(22, null);
+		$this->setField(23, 'XON', 1);
+		$this->setField(24, 'XAD', 1);
+		$this->setField(25, 'XCN', 1);
 
-		parent::__construct($hl7);
 	}
 }

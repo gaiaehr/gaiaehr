@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 if(!defined('HTTP')){
 	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)){
@@ -27,9 +26,13 @@ if(!defined('HTTP')){
 if(!defined('HOST')) define('HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
 if(!defined('URI'))	define('URI', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/');
 if(!defined('ROOT')) define('ROOT', str_replace('\\', '/', dirname(__FILE__)));
-if(!defined('URL'))	define('URL', isset($_SERVER['HTTP_REFERER']) ? rtrim($_SERVER['HTTP_REFERER'], '/') : HTTP . '://' . HOST . URI);
+if(!defined('URL')){
+	$URL = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : HTTP . '://' . HOST . URI;
+	$URL = rtrim(preg_replace('/dataProvider.*/', '', $URL),'/');
+	define('URL', $URL);
+}
 // application version
-if(!defined('VERSION'))	define('VERSION', '0.7.200');
+if(!defined('VERSION'))	define('VERSION', '0.8.100');
 // extjs sdk directory
 if(!defined('EXTJS')) define('EXTJS', 'extjs-4.2.1');
 //if(!defined('EXTJS')) define('EXTJS', 'extjs-4.1.1a');
@@ -74,8 +77,63 @@ $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERV
 
 // default site
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+
+if(!isset($_SESSION['styles'])){
+	$_SESSION['styles'] = array();
+}
+
+
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');
+
+	// load modules hooks
+	if(!isset($_SESSION['hooks'])){
+
+		include_once(ROOT. '/dataProvider/Modules.php');
+		$Modules = new Modules();
+		$modules = $Modules->getEnabledModules();
+		unset($Modules);
+
+		$_SESSION['styles'] = array();
+
+		foreach($modules as $module){
+
+			/**
+			 * Styles
+			 */
+			if(isset($module['styles'])){
+				foreach($module['styles'] AS $style){
+					$_SESSION['styles'][] = 'modules/' . $module['name'] . '/resources/css/' . $style;
+				}
+			}
+
+			/**
+			 * Hooks
+			 */
+			$HooksFile = ROOT . '/modules/' . $module['name'] . '/dataProvider/Hooks.php';
+			if(!file_exists($HooksFile)) continue;
+
+			include_once($HooksFile);
+			$cls = 'modules\\'. $module['name'] .'\dataProvider\Hooks';
+			$ReflectionClass = new ReflectionClass($cls);
+
+			$methods = $ReflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
+
+			foreach($methods as $method){
+				// if method starts with underscores the skill example "__construct"
+				if(preg_match('/^__/', $method->name)) continue;
+
+				$attributes = explode('_', $method->name);
+				if(count($attributes) != 3) continue;
+
+				$_SESSION['hooks'][$attributes[1]][$attributes[2]][$attributes[0]]['hooks'][$method->class]  = array(
+					'method' => $method->name,
+					'file' => $HooksFile
+				);
+			}
+		}
+	}
 } else {
 	$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
 };
+

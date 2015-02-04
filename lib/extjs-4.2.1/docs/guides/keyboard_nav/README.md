@@ -63,7 +63,7 @@ It's also worth keeping in mind users with limited keyboards that might not have
         scope : this
     });
 
-KeyNav's speciality is listening for arrow keys, so we're going to add the ability to navigate around panels with the arrow keys instead of having to use tab, enter and escape.
+KeyNav's specialty is listening for arrow keys, so we're going to add the ability to navigate around panels with the arrow keys instead of having to use tab, enter and escape.
 
     var nav = Ext.create('Ext.util.KeyNav', Ext.getBody(), {
         "left" : function(){

@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.FloorPlans', {
     extend: 'App.ux.RenderPanel',
     id: 'panelFloorPlans',
-    pageTitle: i18n('floor_plan_editor'),
+    pageTitle: _('floor_plan_editor'),
     pageLayout: 'border',
     floorPlanId: null,
     activeZone: null,
@@ -28,7 +28,7 @@ Ext.define('App.view.administration.FloorPlans', {
         me.floorPlansStore = Ext.create('App.store.administration.FloorPlans');
         me.floorZonesStore = Ext.create('App.store.administration.FloorPlanZones');
         me.floorPlans = Ext.create('Ext.grid.Panel', {
-            title: i18n('floor_plans'),
+            title: _('floor_plans'),
             region: 'west',
             width: 200,
             split: true,
@@ -47,13 +47,13 @@ Ext.define('App.view.administration.FloorPlans', {
                     flex: 1,
                     editor: {
                         xtype: 'textfield',
-                        emptyText:i18n('new_floor')
+                        emptyText:_('new_floor')
                     }
                 }
             ],
             tbar: [
                 {
-                    text: i18n('add_floor'),
+                    text: _('add_floor'),
                     action: 'newFloorPlan',
                     iconCls:'icoAdd',
                     scope: me,
@@ -61,7 +61,7 @@ Ext.define('App.view.administration.FloorPlans', {
                 },
                 '-',
                 {
-                    text: i18n('remove_floor'),
+                    text: _('remove_floor'),
                     action: 'newFloorPlan',
                     iconCls:'icoDelete',
                     scope: me,
@@ -74,13 +74,13 @@ Ext.define('App.view.administration.FloorPlans', {
             }
         });
         me.floorPlanZones = Ext.create('Ext.panel.Panel', {
-            title: i18n('floor_plan'),
+            title: _('floor_plan'),
             region: 'center',
             bodyCls: 'floorPlan',
             layout: 'absolute',
             tbar: [
                 {
-                    text: i18n('add_zone'),
+                    text: _('add_zone'),
                     action: 'newZone',
                     iconCls:'icoAdd',
                     scope: me,
@@ -89,7 +89,7 @@ Ext.define('App.view.administration.FloorPlans', {
             ]
         });
         me.floorPlanZoneEditor = Ext.create('Ext.window.Window', {
-            title:i18n('zone_editor'),
+            title:_('zone_editor'),
             closeAction:'hide',
             closable:false,
             resizable:false,
@@ -105,46 +105,46 @@ Ext.define('App.view.administration.FloorPlans', {
                     items:[
                         {
                             xtype: 'textfield',
-                            fieldLabel: i18n('zone_name'),
+                            fieldLabel: _('zone_name'),
                             name: 'title'
                         },
                         {
                             xtype:'colorcombo',
-                            fieldLabel: i18n('bg_color'),
+                            fieldLabel: _('bg_color'),
                             name:'bg_color'
                         },
                         {
                             xtype:'colorcombo',
-                            fieldLabel: i18n('border_color'),
+                            fieldLabel: _('border_color'),
                             name:'border_color'
                         },
                         {
                             xtype: 'numberfield',
-                            fieldLabel: i18n('width'),
+                            fieldLabel: _('width'),
                             minValue: 30,
                             maxValue: 300,
                             name: 'width'
                         },
                         {
                             xtype: 'numberfield',
-                            fieldLabel: i18n('height'),
+                            fieldLabel: _('height'),
                             minValue: 30,
                             maxValue: 300,
                             name: 'height'
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18n('show_priority_color'),
+                            fieldLabel: _('show_priority_color'),
                             name: 'show_priority_color'
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18n('show_patient_preview'),
+                            fieldLabel: _('show_patient_preview'),
                             name: 'show_patient_preview'
                         },
                         {
                             xtype: 'checkbox',
-                            fieldLabel: i18n('active'),
+                            fieldLabel: _('active'),
                             name: 'active'
                         }
                     ]
@@ -152,21 +152,21 @@ Ext.define('App.view.administration.FloorPlans', {
             ],
             buttons:[
                 {
-                    text:i18n('remove'),
+                    text:_('remove'),
                     xtype:'button',
                     scope:me,
                     handler:me.onZoneRemove
                 },
                 '->',
                 {
-                    text:i18n('cancel'),
+                    text:_('cancel'),
                     xtype:'button',
                     scope:me,
                     handler:me.onZoneCancel
                 },
                 '-',
                 {
-                    text:i18n('save'),
+                    text:_('save'),
                     xtype:'button',
                     scope:me,
                     handler:me.onZoneSave
@@ -206,23 +206,32 @@ Ext.define('App.view.administration.FloorPlans', {
         me.callParent(arguments);
     },
     setEditMode:function(show, zone){
-        var me = this, el = me.activeZone ? me.activeZone.getEl() : null;
+        var me = this,
+	        el = me.activeZone ? me.activeZone.getEl() : null;
+
         if(el){
-            me.floorPlanZoneEditor.hide(null, function(){
+//            me.floorPlanZoneEditor.hide(null, function(){
+//	            say('hide');
                 me.setEditor(show, zone);
-            });
+//            });
         }else{
             me.setEditor(show, zone);
         }
     },
     setEditor:function(show, zone){
+
+	    say('setEditor');
+
         var me = this;
         if(show){
             me.activeZone = zone;
             me.getEditor().zone = zone;
             me.floorPlanZones.focus();
             me.getEditor().getForm().loadRecord(zone.record);
-            me.floorPlanZoneEditor.show(zone.getEl());
+	        if(me.floorPlanZoneEditor.hidden){
+		        me.floorPlanZoneEditor.show(zone.getEl());
+	        }
+
         }else{
             me.floorPlanZoneEditor.hide();
             me.getEditor().getForm().reset();
@@ -286,7 +295,7 @@ Ext.define('App.view.administration.FloorPlans', {
             zone = editor.zone;
         Ext.Msg.show({
             title:'Wait!',
-            msg: i18n('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            msg: _('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn:function(btn){
@@ -310,7 +319,7 @@ Ext.define('App.view.administration.FloorPlans', {
             record = sm.getLastSelected();
         Ext.Msg.show({
             title:'Wait!',
-            msg: i18n('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
+            msg: _('remove_final_notice') + ' <span style="font-weight: bold">"'+record.data.title+'"</span>?',
             buttons: Ext.Msg.YESNO,
             icon: Ext.Msg.WARNING,
             fn:function(btn){
@@ -320,7 +329,7 @@ Ext.define('App.view.administration.FloorPlans', {
                         callback:function(){
                             sm.deselectAll();
                             me.floorPlanZones.removeAll();
-                            me.msg('Sweet!',i18n('record_removed'))
+                            me.msg('Sweet!',_('record_removed'))
                         }
                     });
 
@@ -333,7 +342,7 @@ Ext.define('App.view.administration.FloorPlans', {
         var me = this;
         me.floorZonesStore.add({
             floor_plan_id: me.floorPlanId,
-            title: i18n('new_zone'),
+            title: _('new_zone'),
             x: 5,
             y: 5,
             show_priority_color: 1,

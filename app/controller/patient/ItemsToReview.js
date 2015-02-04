@@ -79,7 +79,7 @@ Ext.define('App.controller.patient.ItemsToReview', {
 		me.getItemsToReviewActiveProblemsGrid().getStore().load(params);
 		me.getItemsToReviewMedicationsGrid().getStore().load(params);
 
-		me.smokeStatusStore = app.getController('patient.SocialHistory').smokeStatusStore;
+		me.smokeStatusStore = app.getController('patient.Social').smokeStatusStore;
 
 		/**
 		 * add the callback function to handle the Smoking Status
@@ -94,18 +94,27 @@ Ext.define('App.controller.patient.ItemsToReview', {
 	},
 
 	onReviewAll: function(){
-		var me = this,
-			values = {
-				pid: app.patient.pid,
-				eid: app.patient.eid
-			};
 
-		if(me.getReviewSmokingStatusCombo().isValid()){
-			Medical.reviewAllMedicalWindowEncounter(values, function(provider, response){
-				if(response.result.success){
-					app.msg('Sweet!', i18n('items_to_review_save_and_review'));
-				}else{
-					app.msg('Oops!', i18n('items_to_review_entry_error'))
+		if(this.getReviewSmokingStatusCombo().isValid()){
+
+			var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord();
+
+			encounter.set({
+				review_active_problems: true,
+				review_allergies: true,
+				review_dental: true,
+				review_immunizations: true,
+				review_medications: true,
+				review_smoke: true,
+				review_surgery: true
+			});
+
+			encounter.save({
+				success: function(){
+					app.msg('Sweet!', _('items_to_review_save_and_review'));
+				},
+				failure: function(){
+					app.msg('Oops!', _('items_to_review_entry_error'));
 				}
 			});
 		}

@@ -25,8 +25,7 @@ Ext.define('App.model.patient.Medications', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Medications ID'
+			type: 'int'
 		},
 		{
 			name: 'pid',
@@ -43,8 +42,10 @@ Ext.define('App.model.patient.Medications', {
 			type: 'int'
 		},
 		{
-			name: 'prescription_id',
-			type: 'int'
+			name: 'ref_order',
+			type: 'string',
+			len: 100,
+			comment: 'reference order number'
 		},
 		{
 			name: 'STR',
@@ -67,17 +68,13 @@ Ext.define('App.model.patient.Medications', {
 			len: 40
 		},
 		{
-			name: 'ICDS',
-			type: 'string'
+			name: 'dxs',
+			type: 'array'
 		},
 		{
 			name: 'dose',
 			type: 'string',
 			len: 180
-		},
-		{
-			name: 'take_pills',
-			type: 'int'
 		},
 		{
 			name: 'form',
@@ -90,12 +87,7 @@ Ext.define('App.model.patient.Medications', {
 			len: 80
 		},
 		{
-			name: 'prescription_often',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'prescription_when',
+			name: 'directions',
 			type: 'string'
 		},
 		{
@@ -109,15 +101,53 @@ Ext.define('App.model.patient.Medications', {
 			len: 80
 		},
 		{
+			name: 'potency_code',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'days_supply',
+			type: 'int',
+			useNull: true
+		},
+		{
+			name: 'daw',
+			type: 'bool',
+			useNull: true,
+			comment: 'Dispensed As Written'
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 210
+		},
+		{
+			name: 'system_notes',
+			type: 'string',
+			len: 210
+		},
+		{
+			name: 'is_compound',
+			type: 'bool'
+		},
+		{
+			name: 'is_supply',
+			type: 'bool'
+		},
+		{
+			name: 'prescription_id',
+			type: 'int'
+		},
+		{
+			name: 'referred_by',
+			type: 'string',
+			len: 180
+		},
+		{
 			name: 'date_ordered',
 			type: 'date',
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'created_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'begin_date',
@@ -131,22 +161,6 @@ Ext.define('App.model.patient.Medications', {
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
 		},
-
-		{
-			name: 'outcome',
-			type: 'string',
-			len: 180
-		},
-		{
-			name: 'ocurrence',
-			type: 'string',
-			len: 180
-		},
-		{
-			name: 'referred_by',
-			type: 'string',
-			len: 180
-		},
 		{
 			name: 'active',
 			type: 'bool',
@@ -154,8 +168,12 @@ Ext.define('App.model.patient.Medications', {
 			convert: function(v, record){
 				return record.data.end_date == null;
 			}
+		},
+		{
+			name: 'created_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
-
 	],
 	proxy: {
 		type: 'direct',

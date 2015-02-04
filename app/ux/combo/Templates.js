@@ -33,7 +33,7 @@ Ext.define('App.ux.combo.Templates', {
 			displayField: 'title',
 			valueField: 'id',
 			queryMode: 'local',
-			emptyText: i18n('select'),
+			emptyText: _('select'),
 			store: Ext.create('Ext.data.Store', {
 				model: 'DocumentsTemplatesComboModel',
 				autoLoad: false

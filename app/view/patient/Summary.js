@@ -18,14 +18,18 @@
 
 Ext.define('App.view.patient.Summary', {
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('patient_summary'),
+	pageTitle: _('patient_summary'),
 	pageLayout: 'border',
 	requires: [
 		'Ext.XTemplate',
 		'Ext.ux.IFrame',
 		'App.view.patient.Documents',
-		'App.ux.ManagedIframe'
+		'App.view.patient.CCD',
+		'App.ux.ManagedIframe',
+
+		'App.view.patient.Patient'
 	],
+	itemId: 'PatientSummaryPanel',
 	showRating: true,
 	pid: null,
 	demographicsData: null,
@@ -36,7 +40,7 @@ Ext.define('App.view.patient.Summary', {
 
 		app.on('patientset', function(patient){
 			if(!me.hidden){
-				me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + i18n('patient_summary') + ')', app.patient.readOnly, null);
+				me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
 			}
 
 		}, me);
@@ -50,11 +54,39 @@ Ext.define('App.view.patient.Summary', {
 				border: false,
 				plain: true,
 				region: 'center',
-				itemId: 'centerPanel'
+				layout: 'fit',
+				itemId: 'PatientSummaryTabPanel'
 			})
 		];
 
 		me.sidePanelItems = [];
+
+		if(a('access_patient_visits')){
+
+			me.stores.push(me.patientEncountersStore = Ext.create('App.store.patient.Encounters', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: _('encounters'),
+				itemId: 'PatientSummaryEncountersPanel',
+				hideHeaders: true,
+				store: me.patientEncountersStore,
+				columns: [
+					{
+						xtype: 'datecolumn',
+						width: 80,
+						dataIndex: 'service_date',
+						format: g('date_display_format')
+					},
+					{
+						dataIndex: 'brief_description',
+						flex: 1
+					}
+				]
+			});
+		}
 
 		if(a('access_patient_medications')){
 
@@ -62,18 +94,16 @@ Ext.define('App.view.patient.Summary', {
 				autoLoad: false
 			}));
 
-
-
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('active_medications'),
+				title: _('active_medications'),
 				itemId: 'PatientSummaryMedicationsPanel',
 				hideHeaders: true,
 				store: me.patientMedicationsStore,
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'medications',
 						scope: me,
 						handler: me.medicalWin
@@ -81,12 +111,12 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'STR',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.boolRenderer
@@ -103,15 +133,15 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('immunizations'),
+				title: _('immunizations'),
 				itemId: 'PatientSummaryImmunizationPanel',
 				hideHeaders: true,
 				store: me.immuCheckListStore,
 				region: 'center',
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'immunization',
 						scope: me,
 						handler: me.medicalWin
@@ -120,12 +150,12 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'vaccine_name',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.alertRenderer
@@ -142,15 +172,15 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('allergies'),
+				title: _('allergies'),
 				itemId: 'PatientSummaryAllergiesPanel',
 				hideHeaders: true,
 				store: me.patientAllergiesListStore,
 				region: 'center',
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'allergies',
 						scope: me,
 						handler: me.medicalWin
@@ -158,12 +188,12 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'allergy',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.boolRenderer
@@ -180,14 +210,14 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('active_problems'),
+				title: _('active_problems'),
 				itemId: 'PatientSummaryActiveProblemsPanel',
 				hideHeaders: true,
 				store: me.patientActiveProblemsStore,
-				tools:[
+				tools: [
 					{
 						xtype: 'button',
-						text: i18n('details'),
+						text: _('details'),
 						action: 'issues',
 						scope: me,
 						handler: me.medicalWin
@@ -196,12 +226,12 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 
-						header: i18n('name'),
+						header: _('name'),
 						dataIndex: 'code',
 						flex: 1
 					},
 					{
-						text: i18n('alert'),
+						text: _('alert'),
 						width: 55,
 						dataIndex: 'alert',
 						renderer: me.boolRenderer
@@ -219,7 +249,7 @@ Ext.define('App.view.patient.Summary', {
 
 			Ext.Array.push(me.sidePanelItems, {
 				xtype: 'grid',
-				title: i18n('appointments'),
+				title: _('appointments'),
 				itemId: 'AppointmentsPanel',
 				hideHeaders: true,
 				disableSelection: true,
@@ -235,7 +265,6 @@ Ext.define('App.view.patient.Summary', {
 			});
 		}
 
-
 		if(me.sidePanelItems.length > 0){
 			me.sidePanel = Ext.widget('panel', {
 				width: 250,
@@ -245,8 +274,11 @@ Ext.define('App.view.patient.Summary', {
 				bodyBorder: true,
 				region: 'east',
 				split: true,
+				layout: {
+					type: 'vbox',
+					align: 'stretch'
+				},
 				defaults: {
-					layout: 'fit',
 					margin: '5 5 0 5'
 				},
 				items: me.sidePanelItems
@@ -256,20 +288,19 @@ Ext.define('App.view.patient.Summary', {
 
 		}
 
-
 		if(a('access_demographics')){
-			me.tabPanel.add(
-				me.demographics = Ext.create('App.view.patient.Patient', {
-					newPatient: false,
-					title: i18n('demographics')
-				})
-			);
+			me.demographics = me.tabPanel.add({
+				xtype: 'patientdeomgraphics',
+				newPatient: false,
+				autoScroll: true,
+				title: _('demographics')
+			});
 		}
 
 		if(a('access_patient_disclosures')){
 			me.tabPanel.add({
 				xtype: 'grid',
-				title: i18n('disclosures'),
+				title: _('disclosures'),
 				itemId: 'PatientSummaryDisclosuresPanel',
 				bodyPadding: 0,
 				store: Ext.create('App.store.patient.Disclosures', {
@@ -285,18 +316,18 @@ Ext.define('App.view.patient.Summary', {
 					{
 						xtype: 'datecolumn',
 						format: 'Y-m-d',
-						text: i18n('date'),
+						text: _('date'),
 						dataIndex: 'date'
 					},
 					{
-						header: i18n('type'),
+						header: _('type'),
 						dataIndex: 'type',
 						editor: {
 							xtype: 'textfield'
 						}
 					},
 					{
-						text: i18n('description'),
+						text: _('description'),
 						dataIndex: 'description',
 						flex: 1,
 						editor: {
@@ -306,7 +337,7 @@ Ext.define('App.view.patient.Summary', {
 				],
 				tbar: [
 					{
-						text: i18n('disclosure'),
+						text: _('disclosure'),
 						iconCls: 'icoAdd',
 						action: 'disclosure',
 						handler: me.onAddNew
@@ -317,7 +348,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_notes')){
 			me.tabPanel.add({
-				title: i18n('notes'),
+				title: _('notes'),
 				itemId: 'PatientSummeryNotesPanel',
 				xtype: 'grid',
 				bodyPadding: 0,
@@ -334,19 +365,19 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 						xtype: 'datecolumn',
-						text: i18n('date'),
+						text: _('date'),
 						format: 'Y-m-d',
 						dataIndex: 'date'
 					},
 					{
-						header: i18n('type'),
+						header: _('type'),
 						dataIndex: 'type',
 						editor: {
 							xtype: 'textfield'
 						}
 					},
 					{
-						text: i18n('note'),
+						text: _('note'),
 						dataIndex: 'body',
 						flex: 1,
 						editor: {
@@ -354,14 +385,14 @@ Ext.define('App.view.patient.Summary', {
 						}
 					},
 					{
-						text: i18n('user'),
+						text: _('user'),
 						width: 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar: [
 					{
-						text: i18n('add_note'),
+						text: _('add_note'),
 						iconCls: 'icoAdd',
 						action: 'note',
 						handler: me.onAddNew
@@ -372,7 +403,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_reminders')){
 			me.tabPanel.add({
-				title: i18n('reminders'),
+				title: _('reminders'),
 				itemId: 'PatientSummaryRemindersPanel',
 				xtype: 'grid',
 				bodyPadding: 0,
@@ -389,19 +420,19 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 						xtype: 'datecolumn',
-						text: i18n('date'),
+						text: _('date'),
 						format: 'Y-m-d',
 						dataIndex: 'date'
 					},
 					{
-						header: i18n('type'),
+						header: _('type'),
 						dataIndex: 'type',
 						editor: {
 							xtype: 'textfield'
 						}
 					},
 					{
-						text: i18n('note'),
+						text: _('note'),
 						dataIndex: 'body',
 						flex: 1,
 						editor: {
@@ -409,14 +440,14 @@ Ext.define('App.view.patient.Summary', {
 						}
 					},
 					{
-						text: i18n('user'),
+						text: _('user'),
 						width: 225,
 						dataIndex: 'user_name'
 					}
 				],
 				tbar: [
 					{
-						text: i18n('add_reminder'),
+						text: _('add_reminder'),
 						iconCls: 'icoAdd',
 						action: 'reminder',
 						handler: me.onAddNew
@@ -425,16 +456,16 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-//		if(a('access_patient_vitals')){
-//			me.tabPanel.add({
-//				xtype: 'vitalspanel'
-//			})
-//		}
+		//		if(a('access_patient_vitals')){
+		//			me.tabPanel.add({
+		//				xtype: 'vitalspanel'
+		//			})
+		//		}
 
 		if(a('access_patient_history')){
 			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
 			me.tabPanel.add({
-				title: i18n('history'),
+				title: _('history'),
 				xtype: 'grid',
 				itemId: 'PatientEncounterHistoryPanel',
 				store: Ext.create('App.store.patient.Encounters', {
@@ -442,16 +473,16 @@ Ext.define('App.view.patient.Summary', {
 				}),
 				columns: [
 					{
-						header: i18n('date'),
+						header: _('date'),
 						dataIndex: 'service_date'
 					},
 					{
-						header: i18n('event'),
+						header: _('event'),
 						dataIndex: 'brief_description',
 						flex: true
 					},
 					{
-						header: i18n('visit_category'),
+						header: _('visit_category'),
 						dataIndex: 'visit_category'
 					}
 				]
@@ -468,7 +499,7 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_preventive_care_alerts')){
 			me.tabPanel.add({
-				title: i18n('dismissed_preventive_care_alerts'),
+				title: _('dismissed_preventive_care_alerts'),
 				xtype: 'grid',
 				itemId: 'PatientSummaryPreventiveCareAlertsPanel',
 				store: Ext.create('App.store.patient.DismissedAlerts', {
@@ -476,29 +507,29 @@ Ext.define('App.view.patient.Summary', {
 				}),
 				columns: [
 					{
-						header: i18n('description'),
+						header: _('description'),
 						dataIndex: 'description'
 					},
 					{
 						xtype: 'datecolumn',
-						header: i18n('date'),
+						header: _('date'),
 						dataIndex: 'date',
 						format: 'Y-m-d'
 
 					},
 					{
-						header: i18n('reason'),
+						header: _('reason'),
 						dataIndex: 'reason',
 						flex: true
 
 					},
 					{
-						header: i18n('observation'),
+						header: _('observation'),
 						dataIndex: 'observation',
 						flex: true
 					},
 					{
-						header: i18n('dismissed'),
+						header: _('dismissed'),
 						dataIndex: 'dismiss',
 						width: 60,
 						renderer: me.boolRenderer
@@ -528,7 +559,7 @@ Ext.define('App.view.patient.Summary', {
 										{
 											xtype: 'textfield',
 											name: 'reason',
-											fieldLabel: i18n('reason'),
+											fieldLabel: _('reason'),
 											width: 585,
 											labelWidth: 70,
 											action: 'reason'
@@ -548,26 +579,26 @@ Ext.define('App.view.patient.Summary', {
 									items: [
 										{
 											xtype: 'textfield',
-											fieldLabel: i18n('observation'),
+											fieldLabel: _('observation'),
 											name: 'observation',
 											width: 250,
 											labelWidth: 70,
 											action: 'observation'
 										},
 										{
-											fieldLabel: i18n('date'),
+											fieldLabel: _('date'),
 											xtype: 'datefield',
 											action: 'date',
 											width: 200,
 											labelWidth: 40,
-											format: globals['date_display_format'],
+											format: g('date_display_format'),
 											name: 'date'
 
 										},
 										{
 											xtype: 'checkboxfield',
 											name: 'dismiss',
-											fieldLabel: i18n('dismiss_alert')
+											fieldLabel: _('dismiss_alert')
 
 										}
 									]
@@ -581,76 +612,20 @@ Ext.define('App.view.patient.Summary', {
 			})
 		}
 
-		if(a('access_patient_billing')){
-			me.tabPanel.add({
-				xtype: 'panel',
-				action: 'balancePanel',
-				itemId: 'balancePanel',
-				title: i18n('billing'),
-				html: i18n('account_balance') + ': '
-
-			});
-		}
+//		if(a('access_patient_billing')){
+//			me.tabPanel.add({
+//				xtype: 'panel',
+//				action: 'balancePanel',
+//				itemId: 'balancePanel',
+//				title: _('billing'),
+//				html: _('account_balance') + ': '
+//
+//			});
+//		}
 
 		if(a('access_patient_ccd')){
 			me.reportPanel = me.tabPanel.add({
-				xtype: 'panel',
-				title: i18n('ccd_reports'),
-				layout: 'fit',
-				items:[
-					{
-						xtype: 'miframe',
-						style: 'background-color:white',
-						autoMask: false,
-						itemId: 'patientDocumentViewerFrame'
-					}
-				],
-				tbar: [
-					{
-						xtype: 'button',
-						text: i18n('view_ccr'),
-						margin: '0 0 5 0',
-						handler: function(){
-							me.reportPanel.down('miframe').setSrc('dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token);
-							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-							app.AuditLog('Patient summary CCD viewed');
-						}
-
-					},
-					'-',
-					{
-						text: i18n('export_ccr'),
-						margin: '0 0 5 0',
-						handler: function(){
-							me.reportPanel.down('miframe').setSrc('dataProvider/CCDDocument.php?action=export&site='+ window.site +'&pid=' + me.pid + '&token=' + app.user.token);
-							// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-							app.AuditLog('Patient summary CCD exported');
-						}
-					},
-					'-',
-					{
-						xtype: 'container',
-						layout: 'vbox',
-						items: [
-							{
-								xtype: 'patientEncounterCombo',
-								name: 'filterEncounter',
-								margin: 5,
-								fieldLabel: i18n('filter_encounter'),
-								hideLabel: false
-							}
-						]
-					},
-					'-',
-					{
-						text: 'Print',
-						iconCls: 'icon-print',
-						handler: function(){
-							//                           	trg.focus();
-							//                           	trg.print();
-						}
-					}
-				]
+				xtype: 'patientccdpanel'
 			});
 		}
 
@@ -735,7 +710,7 @@ Ext.define('App.view.patient.Summary', {
 		var me = this,
 			billingPanel;
 
-		me.el.mask(i18n('loading...'));
+		me.el.mask(_('loading...'));
 		/**
 		 * convenient way to refer to current pid within this panel
 		 * @type {*}
@@ -749,7 +724,7 @@ Ext.define('App.view.patient.Summary', {
 		/**
 		 * update panel main title to reflect the patient name and if the patient is read only
 		 */
-		me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + i18n('patient_summary') + ')', app.patient.readOnly, null);
+		me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
 		/**
 		 * verify if the patient is on read only mode
 		 */
@@ -758,17 +733,17 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_demographics')) me.demographics.loadPatient(me.pid);
 
-		/**
-		 * get billing info if user has access
-		 */
-		if(a('access_patient_billing')){
-			billingPanel = me.tabPanel.getComponent('balancePanel');
-			Fees.getPatientBalance({pid: me.pid},
-				function(balance){
-					billingPanel.update(i18n('account_balance') + ': $' + balance);
-				}
-			);
-		}
+//		/**
+//		 * get billing info if user has access
+//		 */
+//		if(a('access_patient_billing')){
+//			billingPanel = me.tabPanel.getComponent('balancePanel');
+//			Fees.getPatientBalance({pid: me.pid},
+//				function(balance){
+//					billingPanel.update(_('account_balance') + ': $' + balance);
+//				}
+//			);
+//		}
 		/**
 		 * reset tab panel to the first tap
 		 */

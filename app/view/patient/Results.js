@@ -18,11 +18,13 @@
 
 Ext.define('App.view.patient.Results', {
 	extend: 'Ext.panel.Panel',
-	requires:[
+	requires: [
 		'Ext.grid.plugin.CellEditing',
-		'App.store.patient.PatientsOrders'
+		'Ext.grid.plugin.RowEditing',
+		'App.store.patient.PatientsOrders',
+		'App.ux.LiveLabsSearch'
 	],
-	title: i18n('results'),
+	title: _('results'),
 	xtype: 'patientresultspanel',
 	layout: 'border',
 	items: [
@@ -33,8 +35,14 @@ Ext.define('App.view.patient.Results', {
 			split: true,
 			columnLines: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
-			    remoteFilter: true
-		    }),
+				remoteFilter: true
+			}),
+			plugins: [
+				{
+					ptype: 'rowediting',
+					errorSummary: false
+				}
+			],
 			columns: [
 				{
 					xtype: 'actioncolumn',
@@ -50,42 +58,57 @@ Ext.define('App.view.patient.Results', {
 					]
 				},
 				{
-					header: i18n('orders'),
+					header: _('orders'),
 					dataIndex: 'description',
 					menuDisabled: true,
 					resizable: false,
-					flex: 1
+					flex: 1,
+					editor: {
+						xtype: 'labslivetsearch',
+						itemId: 'rxLabOrderLabsLiveSearch',
+						allowBlank: false
+					}
 				},
 				{
-					header: i18n('status'),
+					header: _('status'),
 					dataIndex: 'status',
 					menuDisabled: true,
 					resizable: false,
 					width: 60
 				}
+			],
+			bbar: [
+				'->',
+				{
+					text: _('new_order'),
+					itemId: 'OrderResultNewOrderBtn',
+					iconCls: 'icoAdd'
+				}
 			]
 		},
 		{
 			xtype: 'form',
-			title: i18n('order_result'),
+			title: _('order_result'),
 			region: 'south',
-			height: 450,
+			height: 400,
 			frame: true,
 			split: true,
+			itemId: 'OrderResultForm',
 			layout: {
 				type: 'border'
 			},
 			tools: [
 				{
 					xtype: 'button',
-					text: i18n('view_document'),
+					text: _('view_document'),
+					icon: 'resources/images/icons/icoView.png',
 					action: 'orderDocumentViewBtn'
 				}
 			],
 			items: [
 				{
 					xtype: 'panel',
-					title: i18n('report_info'),
+					title: _('report_info'),
 					region: 'west',
 					collapsible: true,
 					autoScroll: true,
@@ -99,7 +122,7 @@ Ext.define('App.view.patient.Results', {
 					items: [
 						{
 							xtype: 'fieldset',
-							title: i18n('report_info'),
+							title: _('report_info'),
 							defaults: {
 								xtype: 'textfield',
 								anchor: '100%'
@@ -108,36 +131,38 @@ Ext.define('App.view.patient.Results', {
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('report_date'),
+									fieldLabel: _('report_date'),
 									name: 'result_date',
-									format: 'Y-m-d'
+									format: 'Y-m-d',
+									allowBlank: false
 								},
 								{
-									fieldLabel: i18n('report_number'),
-									name: 'lab_order_id'
+									fieldLabel: _('report_number'),
+									name: 'lab_order_id',
+									allowBlank: false
 								},
 								{
-									fieldLabel: i18n('status'),
+									fieldLabel: _('status'),
 									name: 'result_status'
 								},
 								{
-									fieldLabel: i18n('observation_date'),
+									fieldLabel: _('observation_date'),
 									name: 'observation_date'
 								},
 								{
-									fieldLabel: i18n('specimen'),
+									fieldLabel: _('specimen'),
 									name: 'specimen_text'
 								},
 								{
 									xtype: 'textareafield',
-									fieldLabel: i18n('specimen_notes'),
+									fieldLabel: _('specimen_notes'),
 									name: 'specimen_notes',
 									height: 50
 								},
 								{
 									xtype: 'filefield',
 									labelAlign: 'top',
-									fieldLabel: i18n('upload_document'),
+									fieldLabel: _('upload_document'),
 									action: 'orderresultuploadfield',
 									submitValue: false
 								}
@@ -145,7 +170,7 @@ Ext.define('App.view.patient.Results', {
 						},
 						{
 							xtype: 'fieldset',
-							title: i18n('laboratory_info'),
+							title: _('laboratory_info'),
 							defaults: {
 								xtype: 'textfield',
 								anchor: '100%'
@@ -156,12 +181,12 @@ Ext.define('App.view.patient.Results', {
 							collapsed: true,
 							items: [
 								{
-									fieldLabel: i18n('name'),
+									fieldLabel: _('name'),
 									name: 'lab_name'
 								},
 								{
 									xtype: 'textareafield',
-									fieldLabel: i18n('address'),
+									fieldLabel: _('address'),
 									name: 'lab_address',
 									height: 50
 								}
@@ -197,13 +222,13 @@ Ext.define('App.view.patient.Results', {
 							]
 						},
 						{
-							text: i18n('name'),
+							text: _('name'),
 							menuDisabled: true,
 							dataIndex: 'code_text',
 							width: 350
 						},
 						{
-							text: i18n('value'),
+							text: _('value'),
 							menuDisabled: true,
 							dataIndex: 'value',
 							width: 180,
@@ -230,7 +255,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('units'),
+							text: _('units'),
 							menuDisabled: true,
 							dataIndex: 'units',
 							width: 75,
@@ -239,7 +264,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('abnormal'),
+							text: _('abnormal'),
 							menuDisabled: true,
 							dataIndex: 'abnormal_flag',
 							width: 75,
@@ -266,7 +291,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('range'),
+							text: _('range'),
 							menuDisabled: true,
 							dataIndex: 'reference_rage',
 							width: 150,
@@ -275,7 +300,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('notes'),
+							text: _('notes'),
 							menuDisabled: true,
 							dataIndex: 'notes',
 							width: 300,
@@ -284,7 +309,7 @@ Ext.define('App.view.patient.Results', {
 							}
 						},
 						{
-							text: i18n('status'),
+							text: _('status'),
 							menuDisabled: true,
 							dataIndex: 'observation_result_status',
 							width: 60,
@@ -295,14 +320,32 @@ Ext.define('App.view.patient.Results', {
 					]
 				}
 			],
-			buttons: [
+			dockedItems: [
 				{
-					text: i18n('reset'),
-					action: 'orderResultResetBtn'
-				},
-				{
-					text: i18n('save'),
-					action: 'orderResultSaveBtn'
+					xtype: 'toolbar',
+					dock: 'bottom',
+					ui: 'footer',
+					itemId: 'OrderResultBottomToolbar',
+					defaults: {
+						minWidth: 75
+					},
+					items: [
+						{
+							text: _('sign'),
+							iconCls: 'icoSing',
+							disabled: true,
+							itemId: 'OrderResultSignBtn'
+						},
+						'->',
+						{
+							text: _('reset'),
+							action: 'orderResultResetBtn'
+						},
+						{
+							text: _('save'),
+							action: 'orderResultSaveBtn'
+						}
+					]
 				}
 			]
 		}

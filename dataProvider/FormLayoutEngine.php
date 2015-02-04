@@ -20,12 +20,9 @@
 include_once(ROOT . '/dataProvider/CombosData.php');
 
 class FormLayoutEngine {
+
 	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
-	/**
-	 * @var MatchaHelper
+	 * @var CombosData
 	 */
 	private $cb;
 	/**
@@ -42,19 +39,23 @@ class FormLayoutEngine {
 	private $clo = null;
 
 	/**
+	 * @var MatchaCUP
+	 */
+	private $ff;
+
+	/**
 	 * Creates the MatchaHelper instance
 	 */
 	function __construct(){
 		$this->setModels();
-		$this->db = new MatchaHelper();
 		$this->cb = new CombosData();
-		return;
 	}
 
 	private function setModels(){
 		$this->setComboListModel();
 		$this->setComboListOptionsModel();
 		$this->setFieldOptionModel();
+		$this->ff = MatchaModel::setSenchaModel('App.model.administration.FormField');
 	}
 
 	private function setFieldOptionModel(){
@@ -98,17 +99,19 @@ class FormLayoutEngine {
 		/**
 		 * get the form parent fields
 		 */
-		$this->db->setSQL("Select ff.*
+
+		$records = $this->ff->sql("Select ff.*
                          FROM `forms_fields` AS ff
                     LEFT JOIN `forms_layout` AS fl
                            ON ff.`form_id` = fl.`id`
                         WHERE (fl.`name` = '$params->formToRender' OR fl.`id` = '$params->formToRender')
                           AND ff.`parentId` = 'root'
-                     ORDER BY ff.`index` ASC, ff.`id` ASC");
+                     ORDER BY ff.`x_index` ASC, ff.`id` ASC")->all();
+
 		/**
 		 * for each parent item lets get all the options and children items
 		 */
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
+		foreach($records as $item){
 			/**
 			 * get parent field options using the parent item "id" as parameter and
 			 * store the return array in $opts.
@@ -148,12 +151,12 @@ class FormLayoutEngine {
 			/**
 			 * unset the stuff that are not properties
 			 */
-			unset($item['id'], $item['form_id'], $item['parentId'], $item['index']);
+			unset($item['id'], $item['form_id'], $item['parentId'], $item['x_index']);
 
 			/**
 			 * push this item into the $items Array
 			 */
-			if($item['xtype'] == 'fieldset' && ($params->formToRender == 'Demographics' || $params->formToRender == 1)){
+			if(Globals::getGlobal('compact_demographics') && $item['xtype'] == 'fieldset' && $params->formToRender == 1){
 				$item['xtype'] = 'panel';
 				$item['border'] = false;
 				$item['bodyBorder'] = false;
@@ -214,7 +217,7 @@ class FormLayoutEngine {
 		 */
 		$rawStr = json_encode($items);
 
-		if($params->formToRender == 'Demographics' || $params->formToRender == 1){
+		if(Globals::getGlobal('compact_demographics') && $params->formToRender == 1){
 			$rawStr = "Ext.widget('tabpanel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr})";
 		}
 
@@ -240,9 +243,11 @@ class FormLayoutEngine {
 	function getChildItems($parentId){
 		$this->setModels();
 		$items = array();
-		$this->db->setSQL("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `index` ASC, `id` ASC");
 
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $item){
+
+		$records = $this->ff->sql("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `x_index` ASC, `id` ASC")->all();
+
+		foreach($records as $item){
 			$opts = $this->getItemsOptions($item['id']);
 
 			foreach($opts as $opt => $val){
@@ -266,7 +271,7 @@ class FormLayoutEngine {
 			$item['items'] = $this->getChildItems($item['id']);
 			if($item['items'] == null)
 				unset($item['items']);
-			unset($item['id'], $item['form_id'], $item['parentId'], $item['index']);
+			unset($item['id'], $item['form_id'], $item['parentId'], $item['x_index']);
 			array_push($items, $item);
 		}
 
@@ -309,11 +314,14 @@ class FormLayoutEngine {
 			),
 			array(
 				'name' =>'option_value'
+			),
+			array(
+				'name' =>'option_data'
 			)
 		);
 		$data = array();
 		foreach($options as $i => $option){
-			if($i == 0 && is_int($option['option_value'])) $fields[1]['type'] = 'int';
+			if($i == 0 && is_numeric($option['option_value'])) $fields[1]['type'] = 'int';
 			$data[] = array(
 				'option_name' => $option['option_name'],
 				'option_value' => $option['option_value']

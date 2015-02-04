@@ -45,6 +45,9 @@ Ext.define('App.controller.patient.ActiveProblems', {
 			'#activeProblemLiveSearch':{
 				select: me.onActiveProblemLiveSearchSelect
 			},
+			'#ActiveProblemStatusCombo':{
+				select: me.onActiveProblemStatusComboSelect
+			},
 			'patientactiveproblemspanel #addActiveProblemBtn':{
 				click: me.onAddActiveProblemBtnClick
 			}
@@ -82,10 +85,23 @@ Ext.define('App.controller.patient.ActiveProblems', {
 	},
 
 	onActiveProblemLiveSearchSelect:function(cmb, records){
-		var form = cmb.up('form').getForm();
+		var form = cmb.up('form').getForm(),
+			record = form.getRecord();
 
-		form.findField('code_text').setValue(records[0].data.FullySpecifiedName);
-		form.findField('code_type').setValue(records[0].data.CodeType);
+		record.set({
+			code: records[0].data.ConceptId,
+			code_type: records[0].data.CodeType
+		});
+	},
+
+	onActiveProblemStatusComboSelect:function(cmb, records){
+		var form = cmb.up('form').getForm(),
+			record = form.getRecord();
+
+		record.set({
+			status_code: records[0].data.code,
+			status_code_type: records[0].data.code_type
+		});
 
 	}
 });

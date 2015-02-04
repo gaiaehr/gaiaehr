@@ -53,12 +53,12 @@ Ext.define('App.ux.LiveCDTSearch', {
 			store: me.store,
 			displayField: 'text',
 			valueField: 'code',
-			emptyText: i18n('search_for_a_CDT') + '...',
+			emptyText: _('search_for_a_CDT') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			listConfig: {
-				loadingText: i18n('searching') + '...',
+				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item

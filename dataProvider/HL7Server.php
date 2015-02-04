@@ -74,15 +74,28 @@ class HL7Server {
 	 */
 	protected $msg;
 
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $pOrder;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $pResult;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $pObservation;
 
+	/**
+	 * @var string
+	 */
 	protected $updateKey = 'pid';
 
 	function __construct($port = '9000', $site = 'default') {
 		$this->site = $site;
-		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+		if(!defined('_GaiaEXEC'))
+			define('_GaiaEXEC', 1);
 		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
 		include_once(ROOT . '/classes/MatchaHelper.php');
@@ -104,7 +117,6 @@ class HL7Server {
 		$this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
 		$this->pResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
 		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
-
 		$this->server = $this->getServerByPort($port);
 	}
 
@@ -135,7 +147,7 @@ class HL7Server {
 		/**
 		 * Check for IP address access
 		 */
-		$this->recipient = $this->r->load(array('recipient_application' => $application))->one();
+		$this->recipient = $this->r->load(array('application_name' => $application))->one();
 		if($this->recipient === false){
 			$this->ackStatus = 'AR';
 			$this->ackMessage = "This application '$application' Not Authorized";
@@ -205,11 +217,16 @@ class HL7Server {
 
 	}
 
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
 	public function getServers($params) {
+
 		$servers = $this->s->load($params)->all();
 		foreach($servers['data'] as $i => $server){
 			$handler = new HL7ServerHandler();
-			$status = $handler->status($server['port']);
+			$status = $handler->status($server);
 			$servers['data'][$i]['online'] = $status['online'];
 			unset($handler);
 		}
@@ -224,13 +241,14 @@ class HL7Server {
 	 */
 	public function getServer($params) {
 		$server = $this->s->load($params)->one();
-		if($server === false || (isset($server['data']) && $server['data'] === false)) return $server;
+		if($server === false || (isset($server['data']) && $server['data'] === false))
+			return $server;
 
 		$handler = new HL7ServerHandler();
 		$status = $handler->status($server['port']);
 		if(isset($server['data'])){
 			$server['data']['online'] = $status['online'];
-		}else{
+		} else {
 			$server['online'] = $status['online'];
 		}
 		return $server;
@@ -268,16 +286,10 @@ class HL7Server {
 	 *
 	 * @return mixed
 	 */
-	protected function getServerByPort($port){
-		$filters = new stdClass();
-		$filters->filter[0] = new stdClass();
-		$filters->filter[0]->property = 'port';
-		$filters->filter[0]->value = $port;
-		$server = $this->getServer($filters);
-		unset($filters);
-		return $server;
+	protected function getServerByPort($port) {
+		$this->s->addFilter('port', $port);
+		return $this->s->load()->one();
 	}
-
 
 	/**
 	 * @param $hl7 HL7
@@ -285,37 +297,51 @@ class HL7Server {
 	 * @param $msgRecord
 	 */
 	protected function ProcessORU($hl7, $msg, $msgRecord) {
+
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
+
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
 				$orc = $order['ORC'];
 				$obr = $order['OBR'];
 				/**
 				 * Check for order number in GaiaEHR
 				 */
+
 				$orderId = $orc[2][1];
-				$orderRecord = $this->pOrder->load(array('id' => $orderId))->one();
+				$patientId = $patient['PID'][3][0][1];
+				$orderRecord = $this->pOrder->load(array('id' => $orderId, 'pid' => $patientId))->one();
 				/**
 				 * id not found set the error and break twice to get out of all the loops
 				 */
 				if($orderRecord === false){
 					$this->ackStatus = 'AR';
-					$this->ackMessage = "Unable to find order number '$orderId' within the system";
+					$this->ackMessage = "Unable to find order number '$orderId' for patient ID '$patientId'";
 					break 2;
 				}
 				$foo = new stdClass();
+
+				$foo->pid = $patientId;
+				$foo->ordered_uid = $orderRecord['uid'];
+				$foo->create_date = date('Y-m-d H:i:s');
+
+				$foo->code = $obr[4][1] != '' ? $obr[4][1] : $orderRecord['code'];
+				$foo->code_text = $obr[4][2] != '' ? $obr[4][2] : $orderRecord['code_text'];
+				$foo->code_type = $obr[4][3] != '' ? $obr[4][3] : $orderRecord['code_type'];
+
 				$foo->order_id = $obr[2][1];
 				$foo->lab_order_id = $obr[3][1];
-				$foo->lab_name = $this->recipient['recipient_facility'];
-				$foo->lab_address = $this->recipient['recipient_address'];
+				$foo->lab_name = $this->recipient['facility'];
+				$foo->lab_address = $this->recipient['physical_address'];
 				$foo->observation_time = $hl7->time($obr[7][1]);
 				$foo->result_status = $obr[25];
-				if(is_array($obr[31][1])){
-					$foo = array();
+
+				if(is_array($obr[31])){
+					$fo = array();
 					foreach($obr[31] AS $dx){
-						$foo[] = $dx[3] . ':' . $dx[1];
+						$fo[] = $dx[3] . ':' . $dx[1];
 					}
-					$foo->reason_code = implode(',', $foo);
+					$foo->reason_code = implode(',', $fo);
 				} else {
 					$foo->reason_code = $obr[31][3] . ':' . $obr[31][1];
 				}
@@ -341,6 +367,7 @@ class HL7Server {
 				 * Handle all the observations
 				 */
 				foreach($order['OBSERVATION'] AS $observation){
+
 					/**
 					 * observations and notes
 					 */
@@ -355,24 +382,28 @@ class HL7Server {
 					 * handle the dynamics of the value field
 					 * based on the OBX-2 value
 					 */
+
 					if($obx[2] == 'CWE'){
 						$foo->value = $obx[5][2];
 					} else {
 						$foo->value = $obx[5];
 					}
+
+
 					$foo->units = $obx[6][1];
 					$foo->reference_rage = $obx[7];
 					$foo->probability = $obx[9];
-					$foo->abnormal_flag = $obx[8];
-					$foo->nature_of_abnormal = $obx[10];
+					$foo->abnormal_flag = $obx[8][0];
+					$foo->nature_of_abnormal = $obx[10][0];
 					$foo->observation_result_status = $obx[11];
 					$foo->date_rage_values = $hl7->time($obx[12][1]);
 					$foo->date_observation = $hl7->time($obx[14][1]);
-					$foo->observer = trim($obx[16][2][1] . ' ' . $obx[16][3]);
+					$foo->observer = trim($obx[16][0][2][1] . ' ' . $obx[16][0][3]);
 					$foo->performing_org_name = $obx[23][1];
 					$foo->performing_org_address = $obx[24][1][1] . ' ' . $obx[24][3] . ', ' . $obx[24][4] . ' ' . $obx[24][5];
 					$foo->date_analysis = $hl7->time($obx[19][1]);
 					$foo->notes = $note['3'];
+
 					$this->pObservation->save($foo);
 					unset($foo);
 				}
@@ -391,8 +422,8 @@ class HL7Server {
 	}
 
 	/**
-	 * @param HL7      $hl7
-	 * @param ADT      $msg
+	 * @param HL7 $hl7
+	 * @param ADT $msg
 	 * @param stdClass $msgRecord
 	 */
 	protected function ProcessADT($hl7, $msg, $msgRecord) {
@@ -540,6 +571,7 @@ class HL7Server {
 			 * PID-2.1 <= MRG-4.1
 			 */
 			$patientData = $this->PidToPatient($msg->data['PID'], $hl7);
+			$patientData['pubpid'] = $patientData['pid'];
 			$patientData['pid'] = 0;
 			$patient = $this->p->save((object)$patientData);
 			$this->InsuranceGroupHandler($msg->data['INSURANCE'], $hl7, $patient);
@@ -621,8 +653,8 @@ class HL7Server {
 
 	/**
 	 * @param array $insGroups
-	 * @param HL7   $hl7
-	 * @param null  $patient
+	 * @param HL7 $hl7
+	 * @param null $patient
 	 */
 	protected function InsuranceGroupHandler($insGroups, $hl7, $patient = null) {
 		/** if patient is not set don't do anything */
@@ -681,7 +713,7 @@ class HL7Server {
 
 	/**
 	 * @param array $PID
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return array
 	 */
@@ -798,7 +830,7 @@ class HL7Server {
 
 	/**
 	 * @param array $IN1
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return stdClass
 	 */
@@ -820,7 +852,7 @@ class HL7Server {
 
 	/**
 	 * @param array $IN1
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return stdClass
 	 */
@@ -834,7 +866,7 @@ class HL7Server {
 
 	/**
 	 * @param array $IN1
-	 * @param HL7   $hl7
+	 * @param HL7 $hl7
 	 *
 	 * @return stdClass
 	 */
@@ -847,116 +879,6 @@ class HL7Server {
 	}
 
 	/**
-	 * @param array $p
-	 * @param HL7   $hl7
-	 *
-	 * @return \HL7
-	 */
-	protected function PatientObjToPID($p, $hl7) {
-		$PID = $hl7->addSegment('PID');
-
-		if($this->notEmpty($p['pubpid']))
-			$PID->setValue('2.3', $p['pubpid']);
-
-		if($this->notEmpty($p['pid']))
-			$PID->setValue('3.1', $p['pid']);
-
-		if($this->notEmpty($p['fname']))
-			$PID->setValue('5.2', $p['fname']);
-
-		if($this->notEmpty($p['mname']))
-			$PID->setValue('5.3', $p['mname']);
-
-		if($this->notEmpty($p['lname']))
-			$PID->setValue('5.1.1', $p['lname']);
-
-		if($this->notEmpty($p['mothers_name']))
-			$PID->setValue('6.2', $p['mothers_name']);
-
-		if($this->notEmpty($p['DOB']))
-			$PID->setValue('7.1', $p['DOB']);
-
-		if($this->notEmpty($p['sex']))
-			$PID->setValue('8', $p['sex']);
-
-		if($this->notEmpty($p['alias']))
-			$PID->setValue('9.2', $p['alias']);
-
-		if($this->notEmpty($p['race']))
-			$PID->setValue('10.1', $p['race']);
-
-		if($this->notEmpty($p['address']))
-			$PID->setValue('11.1.1', $p['address']);
-
-		if($this->notEmpty($p['city']))
-			$PID->setValue('11.3', $p['city']);
-
-		if($this->notEmpty($p['state']))
-			$PID->setValue('11.4', $p['state']);
-
-		if($this->notEmpty($p['zipcode']))
-			$PID->setValue('11.5', $p['zipcode']);
-
-		if($this->notEmpty($p['country']))
-			$PID->setValue('11.6', $p['country']);
-
-		if($this->notEmpty($p['home_phone']))
-			$PID->setValue('', $p['home_phone']);
-
-		if($this->notEmpty($p['work_phone']))
-			$PID->setValue('', $p['work_phone']);
-
-		if($this->notEmpty($p['language']))
-			$PID->setValue('15.1', $p['language']);
-
-		if($this->notEmpty($p['marital_status']))
-			$PID->setValue('16.1', $p['marital_status']);
-
-		if($this->notEmpty($p['pubaccount']))
-			$PID->setValue('18.1', $p['pubaccount']);
-
-		if($this->notEmpty($p['SS']))
-			$PID->setValue('19', $p['SS']);
-
-		if($this->notEmpty($p['drivers_license']))
-			$PID->setValue('20.1', $p['drivers_license']);
-
-		if($this->notEmpty($p['drivers_license_state']))
-			$PID->setValue('20.2', $p['drivers_license_state']);
-
-		if($this->notEmpty($p['drivers_license_exp']))
-			$PID->setValue('20.3', $p['drivers_license_exp']);
-
-		if($this->notEmpty($p['ethnicity']))
-			$PID->setValue('22.1', $p['ethnicity']);
-
-		if($this->notEmpty($p['birth_place']))
-			$PID->setValue('23', $p['birth_place']);
-
-		if($this->notEmpty($p['birth_multiple']))
-			$PID->setValue('24', $p['birth_multiple']);
-
-		if($this->notEmpty($p['birth_order']))
-			$PID->setValue('25', $p['birth_order']);
-
-		if($this->notEmpty($p['citizenship']))
-			$PID->setValue('26.1', $p['citizenship']);
-
-		if($this->notEmpty($p['is_veteran']))
-			$PID->setValue('27.1', $p['is_veteran']);
-
-		if($this->notEmpty($p['death_date']))
-			$PID->setValue('29.1', $p['death_date']);
-
-		if($this->notEmpty($p['deceased']))
-			$PID->setValue('30', $p['deceased']);
-
-		if($this->notEmpty($p['update_date']))
-			$PID->setValue('33.1', $p['update_date']);
-		return $hl7;
-	}
-
-	/**
 	 * @param $data
 	 *
 	 * @return bool
@@ -965,15 +887,19 @@ class HL7Server {
 		return isset($data) && ($data != '' && $data != '""' && $data != '\'\'');
 	}
 
+	/**
+	 * @return string
+	 */
 	private function getAssigningAuthority() {
 		return 'GAIA-' . Matcha::getInstallationNumber();
 	}
 }
+
 //$msg = <<<EOF
-//MSH|^~\&|^2.16.840.1.113883.3.72.5.20^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
-//PID|1||PATID1234^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
-//ORC|RE|6^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|GORD874233^^2.16.840.1.113883.3.72.5.24^ISO||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
-//OBR|1|6^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|57021-8^CBC W Auto Differential panel in Blood^LN^4456544^CBC^99USI^^^CBC W Auto Differential panel in Blood|||20110103143428-0800|||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI||||||20110104170028-0800|||F|||10093^Deluca^Naddy^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI|||||||||||||||||||||CC^Carbon Copy^HL70507
+//MSH|^~\&|^Test Application^ISO|^2.16.840.1.113883.3.72.5.21^ISO||^2.16.840.1.113883.3.72.5.23^ISO|20110531140551-0500||ORU^R01^ORU_R01|NIST-LRI-GU-002.00|T|2.5.1|||AL|NE|||||LRI_Common_Component^^2.16.840.1.113883.9.16^ISO~LRI_GU_Component^^2.16.840.1.113883.9.12^ISO~LRI_RU_Component^^2.16.840.1.113883.9.14^ISO
+//PID|1||1^^^&2.16.840.1.113883.3.72.5.30.2&ISO^MR||Jones^William^A||19610615|M||2106-3^White^HL70005
+//ORC|RE|1^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|GORD874233^^2.16.840.1.113883.3.72.5.24^ISO||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI
+//OBR|1|1^^2.16.840.1.113883.3.72.5.24^ISO|R-991133^^2.16.840.1.113883.3.72.5.25^ISO|57021-8^CBC W Auto Differential panel in Blood^LN^4456544^CBC^99USI^^^CBC W Auto Differential panel in Blood|||20110103143428-0800|||||||||57422^Radon^Nicholas^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI||||||20110104170028-0800|||F|||10093^Deluca^Naddy^^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^NPI|||||||||||||||||||||CC^Carbon Copy^HL70507
 //OBX|1|NM|26453-1^Erythrocytes [#/volume] in Blood^LN^^^^^^Erythrocytes [#/volume] in Blood||4.41|10*6/uL^million per microliter^UCUM|4.3 to 6.2|N|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|2|NM|718-7^Hemoglobin [Mass/volume] in Blood^LN^^^^^^Hemoglobin [Mass/volume] in Blood||12.5|g/mL^grams per milliliter^UCUM|13 to 18|L|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|3|NM|20570-8^Hematocrit [Volume Fraction] of Blood^LN^^^^^^Hematocrit [Volume Fraction] of Blood||41|%^percent^UCUM|40 to 52|N|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
@@ -1002,7 +928,7 @@ class HL7Server {
 //OBX|26|TX|6742-1^Erythrocyte morphology finding [Identifier] in Blood^LN^^^^^^Erythrocyte morphology finding [Identifier] in Blood||Many spherocytes present.|||A|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|27|TX|11156-7^Leukocyte morphology finding [Identifier] in Blood^LN^^^^^^Leukocyte morphology finding [Identifier] in Blood||Reactive morphology in lymphoid cells.|||A|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
 //OBX|28|TX|11125-2^Platelet morphology finding [Identifier] in Blood^LN^^^^^^Platelet morphology finding [Identifier] in Blood||Platelets show defective granulation.|||A|||F|||20110103143428-0800|||||20110103163428-0800||||Century Hospital^^^^^&2.16.840.1.113883.3.72.5.30.1&ISO^XX^^^987|2070 Test Park^^Los Angeles^CA^90067^^B|2343242^Knowsalot^Phil^^^Dr.^^^&2.16.840.1.113883.3.72.5.30.1&ISO^L^^^DN
-//SPM|1|||119297000^BLD^SCT^^^^^^Blood|||||||||||||20110103143428-0800
+//SPM|1|||119297000^BLD^SCT^^^^^^Blood|||||||||||||20110103calen143428-0800
 //EOF;
 
 //$msg = <<<EOF
@@ -1043,14 +969,35 @@ class HL7Server {
 //PV1|1||2|||1|1|||||||||Y
 //EOF;
 
+//$msg = <<<EOF
+//MSH|^~\&|TRA|||00|20140918123529||ADT^A28||P|2.5.1
+//EVN|A01|20140918123529
+//PID|||R28112^^||SUAREZ CASTRO^TERESA||19630306|F||2106-3^White|PO-BOX-362319^^SAN JUAN^PR^00936||7877069054|7872505555|spa^Spanish|S|||000002305|||H^Hispanic
+//PV1|OP|I|||||||||||||||000^RADIOLOGIA^ADMIN|00|140900008||P|||||||||||||||||||||||20140918123529|20140918123529
+//EOF;
 
+
+// RGS-1 = This field contains a number that uniquely identifies the information represented by this segment in this transaction for the purposes of addition, change or deletion.
+// RGS-2  A = Add/Insert, D = Delete, U = Update
+
+//$msg = <<<EOF
+//MSH|^~\&|GPMS|CTX||MED2000|200803060953||SIU^S14|20080306953450|P|2.5.1||||||||
+//SCH|00331839401|||||58||HLCK^HEALTHCHECK ANY AGE|20|MIN|^^^200803061000 |||||JOHN||||VALERIE|||||ARRIVED|
+//PID|1||489671|0|FULANO^DE TAL^||20080205|F|||CALLE DEL SOL^SAN JUAN^PR^00987||7958259|||S|||999999999||||||||||||
+//RGS|1|A||
+//EOF;
+
+
+//$msg = <<<EOF
+//MSH|^~\&|Test Application|1|TRARIS||201411040737||ORM^O01|20141104073774636|P|2.5.1
+//PID|||32061||DEL PUEBLO^MANUEL||19010101|M|||BO XXXX^CARR 000 K 5 H 5 INT 9983^LUQUILLO^PR^00773||7878888888|||||74636
+//PV1||E|EGY^0^0||||1992960355^SOLIVAN SOBRINO^ENRIQUE~1992960355^RODRIGUEZ GUZAMN^ERNESTO|||||||||||ER||||||||||||||||||||||||||201411040650
+//ORC|NW|36353|||||||201411040736|||1992960355^SOLIVAN SOBRINO^ENRIQUE
+//OBR|1|36353||74177-57969^COMP TOMOGRAPHY ABDOMEN/PELVIS W CONTRAST|R||201411040736|||||||||1992960355^SOLIVAN SOBRINO^ENRIQUE||||||||CT|||^^^201411040736^^R||||^ABDOMINAL PAIN;ABDOMINAL DISTENTION;R/O INTESTINAL OBSTRUCTION
+//EOF;
+////
+////
 //include_once(dirname(dirname(__FILE__)).'/lib/HL7/HL7.php');
-
 //print '<pre>';
-//
-//$hl7 = new HL7();
-//$msg = $hl7->readMessage($msg);
-//print_r($msg);
-//
 //$hl7 = new HL7Server();
 //print $hl7->Process($msg);

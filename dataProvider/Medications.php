@@ -27,6 +27,7 @@ class Medications {
 
 	function __construct() {
 		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
+		$this->m->setOrFilterProperties(array('id'));
 	}
 
 	public function getPatientMedications($params) {
@@ -51,21 +52,29 @@ class Medications {
 
 	public function getPatientMedicationsByPid($pid){
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
+		return $this->m->load($params)->all();
+	}
+
+	public function getPatientMedicationsByEid($eid){
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value =  $eid;
 		return $this->m->load($params)->all();
 	}
 
 	public function getPatientActiveMedicationsByPid($pid){
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
 		$records = $this->m->load($params)->all();
 
 		foreach($records as $i => $record){
-			if($record['end_date'] != '0000-00-00' && strtotime($record['end_date']) < strtotime(date('Y-m-d'))){
+			if($record['end_date'] != '0000-00-00' && strtotime($record['end_date']) <= strtotime(date('Y-m-d'))){
 				unset($records[$i]);
 			}
 		}
@@ -75,13 +84,13 @@ class Medications {
 
 	public function getPatientActiveMedicationsByPidAndCode($pid, $code){
 		$params =  new stdClass();
-		$params->filters[0] = new stdClass();
-		$params->filters[0]->property = 'pid';
-		$params->filters[0]->value =  $pid;
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
 
-		$params->filters[1] = new stdClass();
-		$params->filters[1]->property = 'RXCUI';
-		$params->filters[1]->value =  $code;
+		$params->filter[1] = new stdClass();
+		$params->filter[1]->property = 'RXCUI';
+		$params->filter[1]->value =  $code;
 		$records = $this->m->load($params)->all();
 
 		foreach($records as $i => $record){

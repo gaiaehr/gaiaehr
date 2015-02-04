@@ -27,7 +27,15 @@ class MatchaModel extends Matcha
     /**
      *
      */
+    public static $fileModel = '';
+    /**
+     *@var
+     */
     public static $tableId;
+	/**
+	 * @var
+	 */
+	public static $tableIdProperties;
 
     /**
      * function SenchaModel($fileModel):
@@ -46,6 +54,8 @@ class MatchaModel extends Matcha
     {
         try
         {
+	        self::$fileModel = $fileModel;
+
 	        // skip this entire routine if freeze option is true
 			if(self::$__freeze)
             {
@@ -66,8 +76,15 @@ class MatchaModel extends Matcha
             self::$__senchaModel = self::__getSenchaModel($fileModel);
             if(!self::$__senchaModel['fields']) return false;
 
+	        // get model fields
+	        $modelFields = (array)self::$__senchaModel['fields'];
+
             // Copy the table ID from the idProperty if the idProperty is undefined use "id" instead.
             self::$tableId = isset(self::$__senchaModel['idProperty']) ? self::$__senchaModel['idProperty'] : 'id';
+
+	        //id properties
+	        $tableIdIndex = MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields);
+	        self::$tableIdProperties = $modelFields[$tableIdIndex];
 
             // check if the table property is an array, if not return the array is a table string.
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
@@ -76,14 +93,11 @@ class MatchaModel extends Matcha
             $recordSet = self::$__conn->query("SHOW TABLES LIKE '".$table."';");
             if(isset($recordSet)) self::__createTable($table);
 
-            // Remove from the model those fields that are not meant to be stored
-            // on the database-table and remove the id from the workingModel.
-            $modelFields = (array)self::$__senchaModel['fields'];
 
             // if id property is not set in sencha model look for propertyId.
-            if($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)] === false) unset($modelFields[MatchaUtils::__recursiveArraySearch(self::$tableId, $modelFields)]);
+            if($modelFields[$tableIdIndex] === false) unset($modelFields[$tableIdIndex]);
 
-	        // unset the fields that will noe be store int hte database
+	        // unset the fields that will noe be store int the database
             foreach($modelFields as $key => $field) if((isset($field['store']) && $field['store'] === false) || isset($field['persist']) && $field['persist'] === false) unset($modelFields[$key]);
 
             // get the table column information and remove the id column
@@ -95,7 +109,7 @@ class MatchaModel extends Matcha
 
             // get all the column names of each model (Sencha and Database-table)
             foreach($tableColumns as $column) $columnsTableNames[] = $column['Field'];
-            foreach($modelFields as $column) $columnsSenchaNames[] = $column['name'];
+            foreach($modelFields as $column) $columnsSenchaNames[] = (isset($column['mapping']) ? $column['mapping'] : $column['name']);
 
             // get all the column that are not present in the database-table
             $differentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);
@@ -242,14 +256,14 @@ class MatchaModel extends Matcha
             $jsSenchaModel = self::__getFileContent($fileModel);
             if(!$jsSenchaModel) throw new Exception("Error opening the Sencha model file.");
 	        // remove functions at the end
-	        if(preg_match("/(?<!convert\: )function[\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
-		        $jsSenchaModel = preg_replace("/(?<!convert\: )function[\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL. '});';
+	        if(preg_match("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
+		        $jsSenchaModel = preg_replace("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL. '});';
 	        }
             // get the actual Sencha Model.
             preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
             $jsSenchaModel = $match['extmodel'];
-            // clean comments and convert function
-            $jsSenchaModel = preg_replace('%[\t\n\r ,]+(?:convert:)+.+?\}+|//[^\n\r]+%s','',$jsSenchaModel);
+            // clean convert functions with false
+            $jsSenchaModel = preg_replace('/function\(.*\){([\s\S])*?},/',"false },",$jsSenchaModel);
             // unnecessary Ext.define functions
             $jsSenchaModel = preg_replace('/(?P<spaces>[\t\n\r ])|(?P<sencha>[\d(),.:;A-Za-z{}]+?)|(?P<properties>\'[^\n\r\']+\')/', '$2$3', $jsSenchaModel);
             // add quotes to proxy Ext.Direct functions
@@ -373,38 +387,42 @@ class MatchaModel extends Matcha
             $dataArray = json_decode(self::__getFileContent($fileData, 'json'), true);
             if(!count($dataArray)) throw new Exception("Something went wrong converting it to an array, a bad lolo.");
             $table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
-            $columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES ';
+            $columns = 'INSERT INTO `'.$table.'` (`'.implode('`,`', array_keys($dataArray[0]) ).'`) VALUES '. PHP_EOL;
 
             $rowCount = 0;
-            $valuesEncapsulation = '';
+            $rowValues = array();
             foreach($dataArray as $key => $data)
             {
                 $values  = array_values($data);
                 foreach($values as $index => $val) if($val == null) $values[$index] = 'NULL';
-                $valuesEncapsulation  .= '(\''.implode('\',\'',$values).'\')';
-                if( $rowCount == 500 || $key == end(array_keys($dataArray)))
+	            $rowValues[] = '(\''.implode('\',\'',$values).'\')';
+	            $keys = array_keys($dataArray);
+                if( $rowCount == 500 || $key == end($keys))
                 {
                     // check if Threads PHP Class exists if does not exist
                     // run the SQL in normal fashion
-                    if(class_exists('MatchaThreads'))
-                    {
-                        $thread = new MatchaThreads();
-                        $thread->sqlStatement = $columns.$valuesEncapsulation.';';
-                        $thread->start();
-                    }
-                    else
-                    {
-                        Matcha::$__conn->query($columns.$valuesEncapsulation.';');
-                    }
-                    $valuesEncapsulation = '';
+//                    if(class_exists('MatchaThreads'))
+//                    {
+//                        $thread = new MatchaThreads();
+//                        $thread->sqlStatement = $columns.$valuesEncapsulation.';';
+//                        $thread->start();
+//                    }
+//                    else
+//                    {
+	                    $foo = implode(',' . PHP_EOL, $rowValues);
+	                    $sql = $columns . $foo .';';
+                        $sth = Matcha::$__conn->prepare($sql);
+	                    $sth->execute();
+//                    }
+	                $rowValues = array();
                     $rowCount = 0;
+	                continue;
                 }
-                else
-                {
-                    $valuesEncapsulation .= ', ';
-                    $rowCount++;
-                }
+
+                $rowCount++;
+
             }
+
             return true;
         }
         catch(Exception $e)

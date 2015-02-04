@@ -31,10 +31,40 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			type: 'int'
 		},
 		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'ordered_uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'signed_uid',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'order_id',
 			type: 'int',
 			index: true,
 			comment: 'OBR-2'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'code_text',
+			type: 'string',
+			len: 150
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			len: 20
 		},
 		{
 			name: 'lab_order_id',
@@ -45,16 +75,25 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 		},
 		{
 			name: 'lab_name',
-			type: 'string'
+			type: 'string',
+			len: 150
 		},
 		{
 			name: 'lab_address',
-			type: 'string'
+			type: 'string',
+			len: 200
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
 		},
 		{
 			name: 'result_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
+			dataType: 'date',
+			dateFormat: 'Y-m-d',
 			index: true
 		},
 		{
@@ -65,23 +104,28 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 		},
 		{
 			name: 'result_status',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'reason_code',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'specimen_code',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'specimen_text',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'specimen_code_type',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'specimen_notes',
@@ -90,7 +134,8 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 		{
 			name: 'documentId',
 			type: 'string',
-			comment: 'this is the document or hl7 message id - example -> doc|123 or hl7|123'
+			comment: 'this is the document or hl7 message id - example -> doc|123 or hl7|123',
+			len: 40
 		},
 		{
 			name: 'upload',

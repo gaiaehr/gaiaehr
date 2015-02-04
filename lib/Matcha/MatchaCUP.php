@@ -1,6 +1,7 @@
 <?php
 
 /**
+ *
  * Matcha::connect
  *
  * This program is free software: you can redistribute it and/or modify
@@ -66,6 +67,10 @@ class MatchaCUP {
 	 */
 	public $arrayFields = false;
 	/**
+	 * @var array
+	 */
+	public $serializedFields = array();
+	/**
 	 * @var bool
 	 */
 	private $isSenchaRequest = true;
@@ -79,11 +84,52 @@ class MatchaCUP {
 	private $date;
 
 	/**
+	 * @var array
+	 */
+	private $filters;
+
+	/**
+	 * @var array
+	 */
+	private $sorters;
+
+	/**
 	 * set to true if want to trim values
 	 * during parseValues function
 	 * @var bool
 	 */
 	public $autoTrim = true;
+
+	/**
+	 * @var array
+	 */
+	private $where = array();
+
+	private $whereIndex = 0;
+
+	/**
+	 * This fields will use the OR operator is 2 or more filters
+	 * are applied to the same column
+	 * @var array
+	 */
+	private $orFilterProperties = array();
+
+
+
+
+	/**
+	 * @var array
+	 */
+	private $hasMany = array();
+	/**
+	 * @var array
+	 */
+	private $hasOne = array();
+
+	/**
+	 * @var bool
+	 */
+	private $persistAssociations = false;
 
 	/**
 	 * function sql($sql = NULL):
@@ -121,6 +167,10 @@ class MatchaCUP {
 	 * Method to build a a SQL statement using tru MatchaCUP objects.
 	 * this is the preferred way to build complex SQL statements that will
 	 * use MatchaCUP objects
+	 */
+	/**
+	 * @param null $sqlArray
+	 * @return MatchaCUP
 	 */
 	public function buildSQL($sqlArray = null) {
 		try {
@@ -169,9 +219,12 @@ class MatchaCUP {
 	 * @return MatchaCUP
 	 */
 	public function load($where = null, $columns = null) {
-
+		$this->reset();
 		try {
 			$this->sql = '';
+
+			if(is_null($where) && (isset($this->filters) || isset($this->sorters))) $where = new stdClass();
+
 			if(!is_object($where)){
 				$this->isSenchaRequest = false;
 				// columns
@@ -182,27 +235,35 @@ class MatchaCUP {
 				} else {
 					$columnsx = $columns;
 				}
+
 				// where
 				if(is_numeric($where)){
 					$where = $this->ifDataEncrypt($this->primaryKey, $where);
-					$wherex = "`$this->primaryKey`='$where'";
+					$where = $this->where($where);
+					$wherex = "`$this->primaryKey`= $where ";
+
 				} elseif(is_array($where)) {
 					$wherex = self::parseWhereArray($where);
+
 				} else {
 					$wherex = $where;
 				}
+
 				if($where != null){
 					$wherex = ' WHERE ' . $wherex;
 				}
 				// sql build
 				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
 			} else {
-				$this->isSenchaRequest = true;
+				$tmp = (array) $where;
+				$this->isSenchaRequest = !empty($tmp);
+				unset($tmp);
+
 				// if App.model.Example.load(4)
-				$isModelLoadRequest = isset($where->{$this->primaryKey});
+				$isSimpleLoadRequest = isset($where->{$this->primaryKey}) && !isset($where->filter);
 
 				// limits
-				if($isModelLoadRequest){
+				if($isSimpleLoadRequest){
 					$_limits = ' LIMIT 1';
 				} elseif(isset($where->limit) || isset($where->start)) {
 					$_limits = array();
@@ -216,17 +277,16 @@ class MatchaCUP {
 				}
 
 				// sort
-				if(isset($where->sort)){
-					$sortArray = array();
-					foreach($where->sort as $sort){
+				if(isset($where->sort) || isset($this->sorters)){
 
-						if(!isset($sort->property)) continue;
-						if(is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)) continue;
-
-						$sortDirection = (isset($sort->direction) ? $sort->direction : '');
-						$sortArray[] = $sort->property . ' ' . $sortDirection;
-
+					if(isset($where->sort)){
+						$sortArray = $this->sortHandler($where->sort);
+					}else{
+						$sortArray = $this->sortHandler($this->sorters);
 					}
+
+					$this->clearSorters();
+
 					if(!empty($sortArray)){
 						$_sort = ' ORDER BY ' . implode(', ', $sortArray);
 					} else {
@@ -249,24 +309,43 @@ class MatchaCUP {
 					$_group = '';
 				}
 
+
 				// filter/where
-				if($isModelLoadRequest){
-					$_where = ' WHERE ' . $this->primaryKey . ' = \'' . $where->{$this->primaryKey} . '\'';
-				} elseif(isset($where->filter) && isset($where->filter[0]->property)) {
-					$whereArray = array();
-					foreach($where->filter as $foo){
-						if(isset($foo->property) && (isset($foo->value) || is_null($foo->value))){
-							if(is_null($foo->value)){
-								$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
-								$whereArray[] = "`$foo->property` $operator NULL";
-							} else {
-								$operator = isset($foo->operator) ? $foo->operator : '=';
-								$whereArray[] = "`$foo->property` $operator '$foo->value'";
-							}
-						}
+				if($isSimpleLoadRequest){
+					$_where = ' WHERE `' . $this->primaryKey . '` = \'' . $where->{$this->primaryKey} . '\'';
+				} elseif((isset($where->filter) && isset($where->filter[0]->property)) || isset($this->filters)) {
+
+					if(isset($where->filter)){
+						$whereArray = $this->filterHandler($where->filter);
+					}else{
+						$whereArray = $this->filterHandler($this->filters);
 					}
+
+					$this->clearFilters();
+
 					if(count($whereArray) > 0){
-						$_where = 'WHERE ' . implode(' AND ', $whereArray);
+						$ands = array();
+						foreach($whereArray as $key => $whereArrayItems){
+							if(count($whereArrayItems) == 1){
+								$ands[] = $whereArrayItems[0];
+								continue;
+							}
+
+							$isOrHandler = in_array($key, $this->orFilterProperties);
+							$ors = array();
+							foreach($whereArrayItems AS $whereArrayItem){
+								if(!$isOrHandler){
+									$ands[] = $whereArrayItem;
+									continue;
+								}
+								$ors[] = $whereArrayItem;
+							}
+							if(count($ors) == 0) continue;
+							$ands[]  =  '(' . implode(' OR ', $ors) . ')';
+
+						}
+
+						$_where = 'WHERE ' . implode(' AND ', $ands);
 					} else {
 						$_where = '';
 					}
@@ -283,6 +362,50 @@ class MatchaCUP {
 		}
 	}
 
+	private function filterHandler($filters){
+		$whereArray = array();
+
+		foreach($filters as $foo){
+			if(isset($foo->property)){
+				if(is_array($this->phantomFields) && in_array($foo->property, $this->phantomFields)) continue;
+				if(!isset($foo->value)){
+					$operator = (isset($foo->operator) && $foo->operator != '=') ? 'IS NOT' : 'IS';
+					$whereArray[$foo->property][] = "`$foo->property` $operator NULL";
+				} else {
+					$operator = isset($foo->operator) ? $foo->operator : '=';
+					$valueKey = $this->where($foo->value);
+					$whereArray[$foo->property][] = "`$foo->property` $operator $valueKey";
+				}
+			}
+		}
+		return $whereArray;
+	}
+
+	private function sortHandler($sorters){
+		$sortArray = array();
+		foreach($sorters as $sort){
+
+			if(!isset($sort->property)) continue;
+			if(is_array($this->phantomFields) && in_array($sort->property, $this->phantomFields)) continue;
+
+			$sortDirection = (isset($sort->direction) ? $sort->direction : '');
+			$sortArray[] = $sort->property . ' ' . $sortDirection;
+
+		}
+		return $sortArray;
+	}
+
+	public function where($value){
+		$index = ':W'. $this->whereIndex++;
+		$this->where[$index] = $value;
+		return $index;
+	}
+
+	public function reset(){
+		$this->where = array();
+		$this->whereIndex = 0;
+	}
+
 	/**
 	 * function nextId()
 	 * Method to get the next ID from a table
@@ -290,7 +413,7 @@ class MatchaCUP {
 	 */
 	public function nextId() {
 		try {
-			$r = Matcha::$__conn->query("SELECT MAX($this->primaryKey) AS lastID FROM $this->table")->fetch();
+			$r = Matcha::$__conn->query("SELECT MAX({$this->primaryKey}) AS lastID FROM {$this->table}")->fetch();
 			return $r['lastID'] + 1;
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
@@ -314,9 +437,10 @@ class MatchaCUP {
 	 * @return mixed
 	 */
 	public function all() {
-		//		return $this->sql;
 		try {
-			$this->record = Matcha::$__conn->query($this->sql)->fetchAll();
+			$sth = Matcha::$__conn->prepare($this->sql);
+			$sth->execute($this->where);
+			$this->record = $sth->fetchAll();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
 			$this->builtRoot();
@@ -340,7 +464,9 @@ class MatchaCUP {
 	public function one() {
 		//		return $this->sql;
 		try {
-			$this->record = Matcha::$__conn->query($this->sql)->fetch();
+			$sth = Matcha::$__conn->prepare($this->sql);
+			$sth->execute($this->where);
+			$this->record = $sth->fetch();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
 			$this->builtRoot();
@@ -490,7 +616,7 @@ class MatchaCUP {
 			}
 
 			$this->builtRoot();
-			return (array)$this->record;
+			return $this->record;
 
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
@@ -499,6 +625,7 @@ class MatchaCUP {
 
 	private function saveRecord($record) {
 		$data = $this->parseValues(get_object_vars($record));
+
 		$isInsert = (!isset($data[$this->primaryKey]) || (isset($data[$this->primaryKey]) && ($data[$this->primaryKey] == 0 || $data[$this->primaryKey] == '')));
 
 		if($isInsert){
@@ -514,15 +641,21 @@ class MatchaCUP {
 
 		$this->bindedValues = array();
 
-		$insert = Matcha::$__conn->prepare($this->sql);
+		$sth = Matcha::$__conn->prepare($this->sql);
 		foreach($data as $key => $value){
+
+			if(is_object($record) && isset($record->{$key})){
+				$record->{$key} = $value;
+			}elseif(is_array($record) && isset($record[$key])) {
+				$record[$key] = $value;
+			}
 
 			$this->bindedValues[] = array(":$key" => $value);
 
 			if(is_int($value)){
 				$param = PDO::PARAM_INT;
 			} elseif(is_bool($value)) {
-				$param = PDO::PARAM_BOOL;
+				$param = PDO::PARAM_INT;  //PDO::PARAM_BOOL
 			} elseif(is_null($value)) {
 				$param = PDO::PARAM_NULL;
 			} elseif(is_string($value)) {
@@ -531,10 +664,10 @@ class MatchaCUP {
 				$param = false;
 			}
 
-			$insert->bindValue(":$key", $value, $param);
+			$sth->bindValue(":$key", $value, $param);
 		}
 
-		$insert->execute();
+		$sth->execute();
 
 		if($isInsert){
 			if($this->isUUID()){
@@ -568,7 +701,17 @@ class MatchaCUP {
 			));
 		}
 
-		return $record;
+		if(!empty($this->serializedFields)){
+			foreach($this->serializedFields as  $field => $data){
+				if(is_array($record)){
+					$record[$field] = $data;
+				}else{
+					$record->{$field} = $data;
+				}
+			}
+		}
+
+		return (object) $record;
 	}
 
 	/**
@@ -647,7 +790,7 @@ class MatchaCUP {
 	 */
 	public function search($params) {
 
-		$sql = "SELECT * FROM `$this->table` ";
+		$sql = "SELECT * FROM `{$this->table}` ";
 
 		$filter = '';
 
@@ -719,6 +862,10 @@ class MatchaCUP {
 		$this->encryptedFields = MatchaModel::__getEncryptedFields($this->model);
 		$this->phantomFields = MatchaModel::__getPhantomFields($this->model);
 		$this->arrayFields = MatchaModel::__getArrayFields($this->model);
+
+		$this->hasMany = isset($model['hasMany']) ? $model['hasMany'] : array();
+		$this->hasOne = isset($model['hasOne']) ? $model['hasOne'] : array();
+
 	}
 
 	/**
@@ -737,7 +884,8 @@ class MatchaCUP {
 				if($prevArray)
 					$whereStr .= 'AND ';
 				$val = $this->ifDataEncrypt($key, $val);
-				$whereStr .= "`$key`='$val' ";
+				$val = $this->where($val);
+				$whereStr .= "`$key`= $val ";
 				$prevArray = true;
 			} elseif(is_array($val)) {
 				if($prevArray)
@@ -798,7 +946,7 @@ class MatchaCUP {
 		foreach($fields as $field){
 			$placeholders[] = "`$field` = :$field";
 		}
-		$query = "UPDATE `{$this->table}` SET ";
+		$query = "UPDATE `{$this->table}` SET " . '';
 		$query .= implode(', ', $placeholders) . ' ';
 		$query .= "WHERE `$primaryKey` = :$primaryKey";
 
@@ -814,6 +962,9 @@ class MatchaCUP {
 	 * @return array
 	 */
 	private function parseValues($data) {
+
+		$this->serializedFields = array();
+
 		$record = array();
 		$columns = array_keys($data);
 		$values = array_values($data);
@@ -832,20 +983,27 @@ class MatchaCUP {
 			 * $properties['persist'] is set and is not true OR
 			 */
 			if((!isset($properties['store']) || $properties['store']) && (!isset($properties['persist']) || $properties['persist'])){
-				$type = MatchaModel::__getFieldType($col, $this->model);
+				$type = $properties['type'];
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else {
-					if($type == 'date'){
-						$data[$col] = ($data[$col] == '' ? null : $data[$col]);
+					if($type == 'string' && is_string($data[$col])){
+						$data[$col] = html_entity_decode($data[$col]);
+					}elseif($type == 'date'){
+						$data[$col] = ($data[$col] == '' || is_null($data[$col]) ? '0000-00-00' : $data[$col]);
 					} elseif($type == 'array') {
-						$data[$col] = ($data[$col] == '' ? null : serialize($data[$col]));
+						if($data[$col] == ''){
+							$data[$col] = null;
+						}else{
+							$this->serializedFields[$col] = $data[$col];
+							$data[$col] = serialize($data[$col]);
+						}
 					}
 				}
 				/**
 				 * do not trim bool values
 				 */
-				if($this->autoTrim && $type != 'bool'){
+				if($this->autoTrim && ($type != 'bool' && $type != 'int')){
 					$record[$col] = trim($data[$col]);
 				} else {
 					$record[$col] = $data[$col];
@@ -916,9 +1074,14 @@ class MatchaCUP {
 	private function builtRoot() {
 		if($this->isSenchaRequest && isset($this->model->proxy) && isset($this->model->proxy->reader) && isset($this->model->proxy->reader->root)
 		){
+			if($this->nolimitsql != ''){
+				$sth = Matcha::$__conn->prepare($this->nolimitsql);
+				$sth->execute($this->where);
+				$total = $sth->rowCount();
+			}else{
+				$total = false;
+			}
 			$record = array();
-			$total = ($this->nolimitsql != '' ? Matcha::$__conn->query($this->nolimitsql)->rowCount() : false);
-
 			if($total !== false){
 				if(isset($this->model->proxy->reader->totalProperty)){
 					$record[$this->model->proxy->reader->totalProperty] = $total;
@@ -935,5 +1098,44 @@ class MatchaCUP {
 
 	private function isUUID() {
 		return (isset($this->model->table->uuid) && $this->model->table->uuid);
+	}
+
+	public function addFilter($property, $value, $operator = '='){
+		if(!isset($this->filters)) $this->filters = array();
+		$filter = new stdClass();
+		$filter->property = $property;
+		$filter->value = $value;
+		$filter->operator = $operator;
+		$this->filters[] = &$filter;
+	}
+
+	public function clearFilters(){
+		unset($this->filters);
+	}
+
+	public function addSort($property, $direction = 'ASC'){
+		if(!isset($this->sorters)) $this->sorters = array();
+		$sort = new stdClass();
+		$sort->property = $property;
+		$sort->direction = $direction;
+		$this->sorters[] = &$sort;
+	}
+
+	public function clearSorters(){
+		unset($this->sorters);
+	}
+
+	/**
+	 * @param array $properties
+	 */
+	public function setOrFilterProperties(array $properties){
+		$this->orFilterProperties = $properties;
+	}
+
+	/**
+	 * @param bool $enable
+	 */
+	public function setPersistAssociations($enable){
+		$this->persistAssociations = $enable;
 	}
 }

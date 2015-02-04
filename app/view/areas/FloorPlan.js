@@ -19,7 +19,7 @@
 Ext.define('App.view.areas.FloorPlan', {
 	id: 'panelAreaFloorPlan',
 	extend: 'App.ux.RenderPanel',
-	pageTitle: i18n('area_floor_plan'),
+	pageTitle: _('area_floor_plan'),
 	floorPlanId: null,
 	initComponent: function(){
 		var me = this;
@@ -27,13 +27,13 @@ Ext.define('App.view.areas.FloorPlan', {
 		me.floorPlanZonesStore = Ext.create('App.store.administration.FloorPlanZones');
 
 		me.floorPlan = Ext.create('Ext.panel.Panel', {
-			title: i18n('floor_plans'),
+			title: _('floor_plans'),
 			layout: 'absolute',
 			tbar: [
 				'->',
 				{
 					xtype: 'floorplanareascombo',
-					fieldLabel: i18n('area'),
+					fieldLabel: _('area'),
 					labelWidth: 40,
 					listeners: {
 						scope: me,
@@ -90,7 +90,7 @@ Ext.define('App.view.areas.FloorPlan', {
 				height: record.data.height,
 				scope: me,
 				handler: me.onZoneClicked,
-				tooltip: i18n('patient_name') + ': [empty]',
+				tooltip: _('patient_name') + ': [empty]',
 				listeners: {
 					scope: me,
 					render: me.initializeZone,
@@ -191,6 +191,7 @@ Ext.define('App.view.areas.FloorPlan', {
 		var me = this;
 		panel.dragZone = Ext.create('Ext.dd.DragZone', panel.getEl(), {
 			ddGroup: 'patientPoolAreas',
+
 			getDragData: function(e){
 				var sourceEl = panel.btnEl.dom, d;
 				if(sourceEl){
@@ -207,9 +208,11 @@ Ext.define('App.view.areas.FloorPlan', {
 					return false;
 				}
 			},
+
 			getRepairXY: function(e){
 				return this.dragData.repairXY;
 			},
+
 			b4MouseDown: function(e){
 				this.autoOffset(e.getPageX(), e.getPageY());
 			}
@@ -219,6 +222,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 		panel.dropZone = Ext.create('Ext.dd.DropZone', panel.getEl(), {
 			ddGroup: 'patientPoolAreas',
+
 			notifyOver: function(dd, e, data){
 				if(panel.pid == null){
 					return Ext.dd.DropZone.prototype.dropAllowed;
@@ -226,6 +230,7 @@ Ext.define('App.view.areas.FloorPlan', {
 					return Ext.dd.DropZone.prototype.dropNotAllowed;
 				}
 			},
+
 			notifyDrop: function(dd, e, data){
 				panel.data = data.patientData;
 				if(data.zone){
@@ -244,7 +249,7 @@ Ext.define('App.view.areas.FloorPlan', {
 
 		PatientZone.addPatientToZone(params, function(provider, response){
 			data.patientZoneId = response.result.data.id;
-			me.msg('Sweet!', data.name + i18n('successfully_moved') + '.');
+			me.msg('Sweet!', data.name + _('successfully_moved') + '.');
 			me.setZone(zone, data);
 		});
 	},
@@ -264,7 +269,7 @@ Ext.define('App.view.areas.FloorPlan', {
 		if(zone.dropZone) zone.dropZone.lock();
 		if(zone.dragZone) zone.dragZone.unlock();
 
-		zone.setTooltip(i18n('patient_name') + ':' + data.name);
+		zone.setTooltip(_('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
 		zone.data = data;
 	},
@@ -274,7 +279,7 @@ Ext.define('App.view.areas.FloorPlan', {
 		zone.data = null;
 		if(zone.dropZone) zone.dropZone.unlock();
 		if(zone.dragZone) zone.dragZone.lock();
-		zone.setTooltip(i18n('patient_name') + ': [empty]');
+		zone.setTooltip(_('patient_name') + ': [empty]');
 		zone.removeCls(zone.priority);
 		zone.data = null;
 	},

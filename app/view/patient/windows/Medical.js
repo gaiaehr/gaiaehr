@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
-	title: i18n('medical_window'),
+	title: _('medical_window'),
 	itemId: 'MedicalWindow',
 	closeAction: 'hide',
 	bodyStyle: 'background-color:#fff',
@@ -29,8 +29,9 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.Immunizations',
 		'App.view.patient.Medications',
 		'App.view.patient.ActiveProblems',
-		'App.view.patient.SocialHistory',
-		'App.view.patient.Allergies'
+		'App.view.patient.SocialPanel',
+		'App.view.patient.Allergies',
+		'App.view.patient.CognitiveAndFunctionalStatus'
 	],
 
 	initComponent: function(){
@@ -68,8 +69,12 @@ Ext.define('App.view.patient.windows.Medical', {
 						itemId: 'laboratories'
 					},
 					{
-						xtype: 'patientsocialhistorypanel',
-						itemId: 'socialhistory'
+						xtype: 'patientsocialpanel',
+						itemId: 'social'
+					},
+					{
+						xtype: 'patientcognitiveandfunctionalstatuspanel',
+						itemId: 'functionalstatus'
 					},
 					{
 						xtype: 'patientreferralspanel',
@@ -81,7 +86,7 @@ Ext.define('App.view.patient.windows.Medical', {
 
 		me.buttons = [
 			{
-				text: i18n('close'),
+				text: _('close'),
 				scope: me,
 				handler: function(){
 					me.close();
@@ -101,10 +106,15 @@ Ext.define('App.view.patient.windows.Medical', {
 	cardSwitch:function(action){
 		var me = this,
 			tabPanel = me.down('tabpanel'),
-			panel = tabPanel.query('#' + action)[0];
+			activePanel = tabPanel.getActiveTab(),
+			toPanel = tabPanel.query('#' + action)[0];
 
-		tabPanel.setActiveTab(panel);
-		me.setWindowTitle(panel.title);
+		if(activePanel == toPanel){
+			activePanel.fireEvent('activate', activePanel);
+		}else{
+			tabPanel.setActiveTab(toPanel);
+			me.setWindowTitle(toPanel.title);
+		}
 	},
 
 	setWindowTitle:function(title){

@@ -18,14 +18,26 @@
 
 Ext.apply(Ext.form.VTypes, {
 
+	nonspecialcharacters: function(val){
+		return  !val.match(/[`<>[\]~+!@#$%^&*():;\\/{}=^|?]/ig);
+	},
+	nonspecialcharactersText: _('vtype_empty_3chr'),
+
+
+	nonspecialcharactersrequired: function(val){
+		return  !val.match(/^[ ]*$|[`<>[\]~+!@#$^&*:;{}=^|?]/ig);
+	},
+	nonspecialcharactersrequiredText: _('vtype_empty_3chr'),
+
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
 	// Less than 3 characters will be no good
 	// ---------------------------------------
+
 	empty_3chr: function(val, field){
 		return val.length > 2;
 	},
-	empty_3chrText: i18n('vtype_empty_3chr'),
+	empty_3chrText: _('vtype_empty_3chr'),
 
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
@@ -34,15 +46,23 @@ Ext.apply(Ext.form.VTypes, {
 	empty_7chr: function(val, field){
 		return val.length > 6;
 	},
-	empty_7chrText: i18n('vtype_empty_7chr'),
+	empty_7chrText: _('vtype_empty_7chr'),
 
 	// ---------------------------------------
 	// Validate Empty fields, empty field not allowed
 	// ---------------------------------------
 	empty: function(val, field){
-		return val.length > 0;
+		return val.length > 0 || !val.match(/^[ ]*$/);
 	},
 	emptyText: 'This field must not be empty.',
+
+	// ---------------------------------------
+	// Validate Empty fields, empty field not allowed
+	// ---------------------------------------
+	spaceString: function(val, field){
+		return !val.match(/^[ ]*$/);
+	},
+	spaceStringText: 'This field must not be empty.',
 
 	// ---------------------------------------
 	// Validate Social Security Numbers fields, empty field not allowed
@@ -57,7 +77,7 @@ Ext.apply(Ext.form.VTypes, {
 		else
 			return parseInt(matchArr[1], 10) != 0;
 	},
-	SSNText: i18n('vtype_ssn'),
+	SSNText: _('vtype_ssn'),
 
 	// ---------------------------------------
 	// Validate Day of Birth, empty field not allowed
@@ -68,7 +88,7 @@ Ext.apply(Ext.form.VTypes, {
 		var rgx = /^[0-9]{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])/;
 		return val.match(rgx);
 	},
-	dateValText: i18n('vtype_dateVal'),
+	dateValText: _('vtype_dateVal'),
 
 	// ---------------------------------------
 	// Validate email, empty field not allowed
@@ -78,7 +98,7 @@ Ext.apply(Ext.form.VTypes, {
 		var rgx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 		return val.match(rgx);
 	},
-	checkEmailText: i18n('vtype_checkEmail'),
+	checkEmailText: _('vtype_checkEmail'),
 
 	// ---------------------------------------
 	// Validate for an IP Address format
@@ -87,7 +107,7 @@ Ext.apply(Ext.form.VTypes, {
 		var rgx = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/i;
 		return val.match(rgx);
 	},
-	ipaddressText: i18n('vtype_ipaddress'),
+	ipaddressText: _('vtype_ipaddress'),
 
 	// ---------------------------------------
 	// Validate for an valid Phone Number
@@ -96,7 +116,7 @@ Ext.apply(Ext.form.VTypes, {
 		var rgx = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
 		return val.match(rgx);
 	},
-	phoneNumberText: i18n('vtype_phoneNumber'),
+	phoneNumberText: _('vtype_phoneNumber'),
 
 	// ---------------------------------------
 	// Validate for an valid Canadian & US
@@ -114,11 +134,10 @@ Ext.apply(Ext.form.VTypes, {
 		}
 		else{
 			// now check for USA
-			regexp = null;
 			return val.match(regexObj.usa);
 		}
 	},
-	postalCodeText: i18n('vtype_postalCode'),
+	postalCodeText: _('vtype_postalCode'),
 
 	// ---------------------------------------
 	// Validate for a valid new password
@@ -131,7 +150,7 @@ Ext.apply(Ext.form.VTypes, {
 		}
 		return true;
 	},
-	passwordText: i18n('vtype_password'),
+	passwordText: _('vtype_password'),
 
 	// ---------------------------------------
 	// Validate for a correct MySQL field
@@ -142,7 +161,7 @@ Ext.apply(Ext.form.VTypes, {
 		var regexObj = /[A-Za-z][A-Za-z0-9_]*/;
 		return val.match(regexObj);
 	},
-	mysqlFieldText: i18n('vtype_mysqlField'),
+	mysqlFieldText: _('vtype_mysqlField'),
 
 	// ---------------------------------------
 	// Validate for a correct MySQL field
@@ -165,7 +184,7 @@ Ext.apply(Ext.form.VTypes, {
 			return true;
 		}
 	},
-	usernameFieldText: i18n('username_exist'),
+	usernameFieldText: _('username_exist'),
 
 	strength: function(val, field){
 		return field.score > field.strength;
@@ -179,19 +198,19 @@ Ext.apply(Ext.form.VTypes, {
 		var rgx = /^[\d]*$/;
 		return val.match(rgx);
 	},
-	numericText: i18n('please_enter_a_valid_number'),
+	numericText: _('please_enter_a_valid_number'),
 
 	numericWithSlash: function(val, field){
 		var rgx = /^[\d\/.]*$/;
 		return val.match(rgx);
 	},
-	numericWithSlashText: i18n('please_enter_a_valid_number'),
+	numericWithSlashText: _('please_enter_a_valid_number'),
 
 	numericWithDecimal: function(val, field){
 		var rgx = /^[\d.]*$/;
 		return val.match(rgx);
 	},
-	numericWithDecimalText: i18n('please_enter_a_valid_number'),
+	numericWithDecimalText: _('please_enter_a_valid_number'),
 
 	npi: function luhnCheckFast2(npi){
 		var tmp,
@@ -228,7 +247,7 @@ Ext.apply(Ext.form.VTypes, {
 			return 1;
 		}
 	},
-	npiText: i18n('please_enter_a_valid_npi')
+	npiText: _('please_enter_a_valid_npi')
 
 });
 

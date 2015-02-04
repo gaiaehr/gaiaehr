@@ -24,7 +24,7 @@ Ext.define('App.view.administration.HL7MessageViewer', {
 		type: 'vbox',
 		align: 'stretch'
 	},
-	title: i18n('hl7_viewer'),
+	title: _('hl7_viewer'),
 	width: 800,
 	height: 450,
 	bodyPadding: 10,
@@ -36,12 +36,12 @@ Ext.define('App.view.administration.HL7MessageViewer', {
 	},
 	items: [
 		{
-			fieldLabel: i18n('message'),
+			fieldLabel: _('message'),
 			action: 'message',
 			flex: 1
 		},
 		{
-			fieldLabel: i18n('acknowledge'),
+			fieldLabel: _('acknowledge'),
 			action: 'acknowledge',
 			flex: 1
 		}

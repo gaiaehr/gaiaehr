@@ -18,15 +18,15 @@
 
 Ext.define('App.ux.LiveCPTSearch', {
 	extend: 'Ext.form.field.ComboBox',
-	alias: 'widget.livecptsearch',
+	xtype: 'livecptsearch',
 	hideLabel: true,
-	triggerTip: i18n('click_to_clear_selection'),
+	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
 	spExtraParam: '',
-	displayField: 'code_text',
+	displayField: 'code_text_medium',
 	valueField: 'code',
-	qtip: i18n('clearable_combo_box'),
+	qtip: _('clearable_combo_box'),
 	trigger1Class: 'x-form-select-trigger',
 	trigger2Class: 'x-form-clear-trigger',
 	initComponent: function(){
@@ -71,19 +71,15 @@ Ext.define('App.ux.LiveCPTSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: i18n('search') + '...',
+			emptyText: _('search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
 			anchor: '100%',
 			listConfig: {
-				loadingText: i18n('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
+				loadingText: _('searching') + '...',
 				getInnerTpl: function(){
-					return '<div class="search-item">{code}: {code_text}</div>';
+					return '<div class="search-item">{code}: {code_text_medium}</div>';
 				}
 			},
 			pageSize: 25

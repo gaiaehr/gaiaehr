@@ -38,6 +38,8 @@ class File {
 	 */
 	private $encrypt = false;
 
+	private $fileSystemStore = false;
+
 	function __construct(){
 		$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 		$this->encrypt = isset($_SESSION['globals']['enable_document_encryption']) && $_SESSION['globals']['enable_document_encryption'];
@@ -60,27 +62,36 @@ class File {
 		$this->validateParams($params);
 		if($this->error) return array('success' => false, 'error' => $this->errorMsg);
 
-		$dir = $this->getDocumentDirByPidAndDocType($params->pid, $params->docType);
-		if($this->error) return array('success' => false, 'error' => $this->errorMsg);
+		if($this->fileSystemStore){
+			$dir = $this->getDocumentDirByPidAndDocType($params->pid, $params->docType);
+			if($this->error) return array('success' => false, 'error' => $this->errorMsg);
+		}
 
 		$file = explode(',',$params->document);
-
 		$ext = $this->fileExt($file[0]);
 		if($this->error) return array('success' => false, 'error' => $this->errorMsg);
 
-		$params->name = $this->getNewFileName($dir, $ext);
-		if($this->error) return array('success' => false, 'error' => $this->errorMsg);
+		if(isset($dir)){
+			$params->name = $this->getNewFileName($dir, $ext);
+			if($this->error) return array('success' => false, 'error' => $this->errorMsg);
 
-		$src = $this->saveBase64File($dir . $params->name, $file[1]);
-		if($this->error) return array('success' => false, 'error' => $this->errorMsg);
+			$src = $this->saveBase64File($dir . $params->name, $file[1]);
+			if($this->error) return array('success' => false, 'error' => $this->errorMsg);
+		}
 
 		unset($params->file);
 
-		$params->title = 'No title';
+		$params->title = isset($params->title) ? $params->title : '';
 		$params->date = date('Y-m-d H:i:s');
-		$params->hash = sha1_file($src);
-		$params->url = $this->buildDocumentUrl($params->pid, $params->docType, $params->name);
+		$params->hash = isset($src) ? sha1_file($src) : sha1($file[1]);
+		$params->name = isset($params->name) ? $params->name : 'unnamed' . $ext;
 		$params->encrypted = $this->encrypt;
+
+		if($this->fileSystemStore){
+			$params->url = $this->buildDocumentUrl($params->pid, $params->docType, $params->name);
+		}else{
+			$params->document = $this->encrypt ? MatchaUtils::__encrypt($file[1]) : $file[1];
+		}
 
 		$rec = $this->d->save($params);
 		if($rec === false) return array('success' => false, 'error' => 'Unable to save document record');
@@ -167,7 +178,8 @@ class File {
 
 	private function buildDocumentUrl($pid, $docType, $fileName){
 		$docType = strtolower(str_replace(' ', '_', $docType));
-		return "{$_SESSION['site']['url']}/patients/$pid/$docType/$fileName";
+		$url = site_url;
+		return "{$url}/patients/$pid/$docType/$fileName";
 
 	}
 

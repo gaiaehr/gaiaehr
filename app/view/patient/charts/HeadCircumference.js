@@ -64,7 +64,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',
 			}],
 			series : [
 			{
-				title : i18n('circumference_cm'),
+				title : _('circumference_cm'),
 				type : 'scatter',
 				axis : 'left',
 				xField : 'age',

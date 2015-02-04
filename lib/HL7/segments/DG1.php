@@ -25,31 +25,29 @@ class DG1 extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'DG1';                   // DG1 Message Header Segment
-		$this->rawSeg[1] = $this->getType('SI');
-		$this->rawSeg[2] = $this->getType('ID');    // TABLE 0053
-		$this->rawSeg[3] = $this->getType('CE');    // TABLE 0051
-		$this->rawSeg[4] = $this->getType('ST');
-		$this->rawSeg[5] = $this->getType('TS');
-		$this->rawSeg[6] = $this->getType('IS');    // TABLE 0052
-		$this->rawSeg[7] = $this->getType('CE');    // TABLE 0118
-		$this->rawSeg[8] = $this->getType('CE');    // TABLE 0055
-		$this->rawSeg[9] = $this->getType('ID');    // TABLE 0136
-		$this->rawSeg[10] = $this->getType('IS');   // TABLE 0056
-		$this->rawSeg[11] = $this->getType('CE');   // TABLE 0083
-		$this->rawSeg[12] = $this->getType('NM');
-		$this->rawSeg[13] = $this->getType('CP');
-		$this->rawSeg[14] = $this->getType('ST');
-		$this->rawSeg[15] = $this->getType('ID');   // TABLE 0206
-		$this->rawSeg[16] = $this->getType('XCN');
-		$this->rawSeg[17] = $this->getType('IS');   // TABLE 0206
-		$this->rawSeg[18] = $this->getType('ID');   // TABLE 0206
-		$this->rawSeg[19] = $this->getType('TS');
-		$this->rawSeg[20] = $this->getType('EI');
-		$this->rawSeg[21] = $this->getType('ID');   // TABLE 0206
+		parent::__construct($hl7, 'DG1');
+
+		$this->setField(1, 'SI', 4, true);
+		$this->setField(2, 'ID', 2, true); // TABLE 0053
+		$this->setField(3, 'CE', 250); // TABLE 0051
+		$this->setField(4, 'ST', 40);
+		$this->setField(5, 'TS', 26);
+		$this->setField(6, 'IS', 2, true); // TABLE 0052
+		$this->setField(7, 'CE', 250); // TABLE 0118
+		$this->setField(8, 'CE', 250); // TABLE 0055
+		$this->setField(9, 'ID', 1); // TABLE 0136
+		$this->setField(10, 'IS', 2); // TABLE 0056
+		$this->setField(11, 'CE', 250); // TABLE 0083
+		$this->setField(12, 'NM', 3);
+		$this->setField(13, 'CP', 12);
+		$this->setField(14, 'ST', 4);
+		$this->setField(15, 'ID', 2); // TABLE 0206
+		$this->setField(16, 'XCN', 250, false, true);
+		$this->setField(17, 'IS', 3); // TABLE 0206
+		$this->setField(18, 'ID', 1); // TABLE 0206
+		$this->setField(19, 'TS', 26);
+		$this->setField(20, 'EI', 427);
+		$this->setField(21, 'ID', 1);  // TABLE 0206
 
 	}
 }

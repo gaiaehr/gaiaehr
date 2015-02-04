@@ -23,13 +23,15 @@ Ext.define('App.view.patient.Referrals', {
 		'App.ux.LiveICDXSearch',
 		'App.ux.combo.ActiveProviders',
 		'Ext.selection.CheckboxModel',
-		'App.ux.grid.RowFormEditing'
+		'App.ux.grid.RowFormEditing',
+		'App.ux.combo.ReferringProviders'
 	],
 	xtype: 'patientreferralspanel',
-	title: i18n('referrals'),
+	title: _('referrals'),
 	action: 'referralsGrid',
 	itemId: 'patientReferralsGrid',
 	columnLines: true,
+	allowDeselect: true,
 	store: Ext.create('App.store.patient.Referrals', {
 		remoteFilter: true
 	}),
@@ -52,19 +54,20 @@ Ext.define('App.view.patient.Referrals', {
 							xtype: 'container',
 							flex: 1,
 							defaults: {
-								labelAlign: 'right'
+								labelAlign: 'right',
+								margin: '0 0 5 0'
 							},
 							items: [
 								{
 									xtype: 'datefield',
-									fieldLabel: i18n('referral_date'),
+									fieldLabel: _('referral_date'),
 									name: 'referral_date',
 									format: 'Y-m-d',
 									validateBlank: true
 								},
 								{
 									xtype: 'livecptsearch',
-									fieldLabel: i18n('requested_service'),
+									fieldLabel: _('requested_service'),
 									name: 'service_text',
 									displayField: 'code_text',
 									valueField: 'code_text',
@@ -74,7 +77,7 @@ Ext.define('App.view.patient.Referrals', {
 								},
 								{
 									xtype: 'textareafield',
-									fieldLabel: i18n('reason'),
+									fieldLabel: _('reason'),
 									name: 'referal_reason',
 									anchor: '100%',
 									height: 60
@@ -82,7 +85,7 @@ Ext.define('App.view.patient.Referrals', {
 								{
 									xtype: 'liveicdxsearch',
 									margin: '0 0 10',
-									fieldLabel: i18n('diagnosis'),
+									fieldLabel: _('diagnosis'),
 									name: 'diagnosis_text',
 									hideLabel: false,
 									displayField: 'code_text',
@@ -96,40 +99,76 @@ Ext.define('App.view.patient.Referrals', {
 							xtype: 'container',
 							flex: 1,
 							defaults: {
-								labelAlign: 'right'
+								labelAlign: 'right',
+								margin: '0 0 5 0'
 							},
 							items: [
 								{
-									xtype: 'checkboxfield',
-									fieldLabel: i18n('external_referral'),
-									itemId: 'referralExternalReferralCheckbox',
-									name: 'is_external_referral'
+									xtype: 'activeproviderscombo',
+									fieldLabel: _('refer_by'),
+									name: 'refer_by_text',
+									width: 300,
+									displayField: 'option_name',
+									valueField: 'option_name',
+									itemId: 'ReferralProviderCombo'
 								},
 								{
-									xtype: 'activeproviderscombo',
-									fieldLabel: i18n('refer_by'),
-									name: 'refer_by'
+									xtype: 'container',
+									layout: 'hbox',
+									items: [
+										{
+											xtype: 'activeproviderscombo',
+											fieldLabel: _('refer_to'),
+											name: 'refer_to_text',
+											labelAlign: 'right',
+											margin: '0 5 5 0',
+											width: 300,
+//											disabled: true,
+//											hidden: true,
+											displayField: 'fullname',
+											valueField: 'fullname',
+											itemId: 'ReferralLocalProviderCombo'
+										},
+										{
+											xtype: 'referringproviderscombo',
+											fieldLabel: _('refer_to'),
+											name: 'refer_to_text',
+											labelAlign: 'right',
+											margin: '0 5 5 0',
+											width: 300,
+											disabled: true,
+											hidden: true,
+											displayField: 'fullname',
+											valueField: 'fullname',
+											itemId: 'ReferralExternalProviderCombo'
+										},
+										{
+											xtype: 'checkboxfield',
+											boxLabel: _('external_referral'),
+											itemId: 'ReferralExternalReferralCheckbox',
+											name: 'is_external_referral'
+										}
+									]
 								},
-								{
-									xtype: 'activeproviderscombo',
-									fieldLabel: i18n('refer_to'),
-									name: 'refer_to'
-								},
+
 								{
 									xtype: 'gaiaehr.combo',
-									fieldLabel: i18n('risk_level'),
+									fieldLabel: _('risk_level'),
 									name: 'risk_level',
-									list: 17
+									list: 17,
+									width: 300
 								},
+//								{
+//									xtype: 'checkboxfield',
+//									fieldLabel: _('send_vitals'),
+//									name: 'send_vitals',
+//									width: 300
+//								},
 								{
 									xtype: 'checkboxfield',
-									fieldLabel: i18n('send_vitals'),
-									name: 'send_vitals'
-								},
-								{
-									xtype: 'checkboxfield',
-									fieldLabel: i18n('send_record'),
-									name: 'send_record'
+									fieldLabel: _('send_record'),
+									name: 'send_record',
+									width: 300
 								}
 							]
 						}
@@ -142,28 +181,28 @@ Ext.define('App.view.patient.Referrals', {
 	columns: [
 		{
 			xtype: 'datecolumn',
-			text: i18n('date'),
+			text: _('date'),
 			dataIndex: 'referral_date',
 			format: 'Y-m-d',
 			menuDisabled: true,
 			resizable: false
 		},
 		{
-			text: i18n('refer_by'),
+			text: _('refer_by'),
 			dataIndex: 'refer_by_text',
 			menuDisabled: true,
 			resizable: false,
 			width: 200
 		},
 		{
-			text: i18n('refer_to'),
+			text: _('refer_to'),
 			dataIndex: 'refer_to_text',
 			menuDisabled: true,
 			resizable: false,
 			width: 200
 		},
 		{
-			text: i18n('request'),
+			text: _('request'),
 			dataIndex: 'referal_reason',
 			menuDisabled: true,
 			resizable: false,
@@ -173,14 +212,14 @@ Ext.define('App.view.patient.Referrals', {
 	tbar: [
 		'->',
 		{
-			text: i18n('referral'),
+			text: _('referral'),
 			iconCls: 'icoAdd',
 			itemId: 'encounterRecordAdd',
 			action: 'addReferralBtn'
 		},
 		'-',
 		{
-			text: i18n('print'),
+			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			itemId: 'printReferralBtn'

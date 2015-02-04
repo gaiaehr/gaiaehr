@@ -25,14 +25,12 @@ class NTE extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'NTE';                   // ERR Message Header Segment
-		$this->rawSeg[1] = $this->getType('SI');
-		$this->rawSeg[2] = $this->getType('ID');
-		$this->rawSeg[3] = $this->getType('FT');
-		$this->rawSeg[4] = $this->getType('CE');
+		parent::__construct($hl7, 'NTE');
 
+		$this->setField(1, 'SI', 4);
+		$this->setField(2, 'ID', 8);
+		$this->setField(3, 'FT', 65536, false, true);
+		$this->setField(4, 'CE', 250);
 
 	}
 }

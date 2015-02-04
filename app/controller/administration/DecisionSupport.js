@@ -280,7 +280,7 @@ Ext.define('App.controller.administration.DecisionSupport', {
 		cmb.getStore().on('load', function(store){
 			store.insert(0,{
 				code: 'smoking_status',
-				option_name: i18n('smoking_status'),
+				option_name: _('smoking_status'),
 				option_value: 'smoking_status',
 				code_type: ''
 			});

@@ -22,6 +22,9 @@ session_start();
 session_cache_limiter('private');
 define('_GaiaEXEC', 1);
 
+if(isset($_SESSION['hooks'])){
+	unset($_SESSION['hooks']);
+}
 
 //include_once('classes/Mobile_Detect.php');
 //$mobile = new Mobile_Detect();

@@ -17,15 +17,15 @@
  */
 
 Ext.define('App.view.patient.NewPatient', {
-	extend       : 'App.ux.RenderPanel',
-	id           : 'panelNewPatient',
-	pageTitle    : i18n('patient_entry_form'),
-	initComponent: function() {
+	extend: 'App.ux.RenderPanel',
+	pageTitle: _('patient_entry_form'),
+	initComponent: function(){
 
 		var me = this;
 
 		me.pageBody = [
-			me.newPatientPanel = Ext.create('App.view.patient.Patient') ];
+			me.newPatientPanel = Ext.create('App.view.patient.Patient')
+		];
 		me.callParent(arguments);
 
 	},
@@ -33,14 +33,14 @@ Ext.define('App.view.patient.NewPatient', {
 	 *
 	 * @param {function} callback
 	 */
-	confirmationWin: function(callback) {
+	confirmationWin: function(callback){
 		Ext.Msg.show({
-			title  : i18n('please_confirm') + '...',
-			msg    : i18n('do_you_want_to_create_a_new_patient'),
-			icon   : Ext.MessageBox.QUESTION,
+			title: _('please_confirm') + '...',
+			msg: _('do_you_want_to_create_a_new_patient'),
+			icon: Ext.MessageBox.QUESTION,
 			buttons: Ext.Msg.YESNO,
-			scope  : this,
-			fn     : function(btn) {
+			scope: this,
+			fn: function(btn){
 				callback(btn);
 			}
 		});
@@ -53,14 +53,14 @@ Ext.define('App.view.patient.NewPatient', {
 	 * to call every this panel becomes active
 	 * @param {function} [callback] - callback
 	 */
-	onActive: function(callback) {
-        var me = this;
-		this.confirmationWin(function(btn) {
-			if(btn == 'yes') {
-                me.newPatientPanel.loadNew();
+	onActive: function(callback){
+		var me = this;
+		this.confirmationWin(function(btn){
+			if(btn == 'yes'){
+				me.newPatientPanel.loadNew();
 				app.unsetPatient(null, true);
 				callback(true);
-			} else {
+			}else{
 				app.nav.goBack();
 				callback(false);
 			}

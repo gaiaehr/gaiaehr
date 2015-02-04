@@ -29,33 +29,34 @@
 	Ext.define('App.ux.ManagedIframe', {
 
 		/* Begin Definitions */
-		extend      : 'Ext.Component',
-		alias       : 'widget.miframe',
-
+		extend: 'Ext.Component',
+		alias: 'widget.miframe',
 
 		/* End Definitions */
 
-		hideMode    : Ext.isIE ? 'display' : 'nosize',
+		hideMode: Ext.isIE ? 'display' : 'nosize',
 
 		/*
 		 * @cfg {Boolean} autoScroll True to set overflow:auto on the nested iframe.
 		 * If False, overflow is forced to hidden.
 		 * Note: set to undefined to control overflow-x/y via the frameStyle config option
 		 */
-		autoScroll  : true,
+		autoScroll: true,
 
 		/*
 		 * @cfg {String/Object} frameStyle (optional) Style string or object configuration representing
 		 * the desired style attributes to apply to the embedded IFRAME.
 		 * @default 'height:100%; width:100%;'
 		 */
-		frameStyle  : null,
+		frameStyle: null,
 
-		frameCls    : 'ux-miframe',
+		frameConfig: undefined,
 
-		shimCls     : 'ux-miframe-shim',
+		frameCls: 'ux-miframe',
 
-		shimUrl     : Ext.BLANK_IMAGE_URL,
+		shimCls: 'ux-miframe-shim',
+
+		shimUrl: Ext.BLANK_IMAGE_URL,
 
 		/*
 		 * @cfg {Boolean} eventsFollowFrameLinks True to raise the 'dataavailable' event anytime
@@ -63,115 +64,114 @@
 		 * Note: the load event is always fired
 		 * @default true
 		 */
-		eventsFollowFrameLinks : true,
+		eventsFollowFrameLinks: true,
 
 		/*
 		 * @cfg {String} src (optional) Uri to load into the frame
 		 */
-		src         : null,
+		src: null,
 
 		/*
 		 * @cfg {Boolean} autoMask True to display a loadMask during page content changes
 		 */
-		autoMask    : true,
+		autoMask: false,
 
 		/*
 		 * @cfg {String} maskMessage default message text rendered during masking operations
 		 */
-		maskMessage : 'Loading...',
+		maskMessage: 'Loading...',
 
 		/*
 		 * @cfg {String} resetUrl (optional) Uri to load into the frame during initialization only
 		 * @default undefined
 		 */
-		resetUrl    : undefined,
+		resetUrl: undefined,
 
-		ariaRole    : 'presentation',
+		ariaRole: 'presentation',
 
-		unsupportedText : 'Frames are disabled',
+		unsupportedText: 'Frames are disabled',
 
 		/*
 		 * Bubble frame events to upstream containers
 		 */
 		//bubbleEvents: ['dataavailable', 'load', 'unload', 'scroll', 'reset'],
 
-		initComponent : function() {
+		initComponent: function(){
 
-			var me=this;
+			var me = this;
 			me.frameStyle = Ext.isString(me.frameStyle)
 				? Element.parseStyles(me.frameStyle)
 				: me.frameStyle || {};
 
 			me.frameName = me.frameName || me.getId();
 
-			delete me.autoEl;
+			//			delete me.autoEl;
 
-			this.callParent();
-
-			me.autoEl =
-				me.autoEl || {              //generate the necessary markup for shimming and noframes support
+			me.autoEl = me.autoEl || {              //generate the necessary markup for shimming and noframes support
 				cn: [
-					Ext.applyIf(
-							me.frameConfig || {},
+					Ext.applyIf(me.frameConfig || {},
 						{
-							tag : 'iframe',
-							cls : me.frameCls,
-							style : Ext.apply(
+							tag: 'iframe',
+							cls: me.frameCls,
+							style: Ext.apply(
 								{
-									"height" : "100%",
-									"width"  : "100%"
+									"height": "100%",
+									"width": "100%"
 								},
 								me.frameStyle
 							),
-							frameBorder : 'no',
-							role  : me.ariaRole,
-							name  : me.frameName
+							frameBorder: 'no',
+							role: me.ariaRole,
+							name: me.frameName
 						}
 					),
-					{tag : 'noframes', html: me.unsupportedText},
 					{
-						tag  : 'img',
-						cls  : me.shimCls,
-						galleryimg : "no",
+						tag: 'noframes',
+						html: me.unsupportedText
+					},
+					{
+						tag: 'img',
+						cls: me.shimCls,
+						galleryimg: "no",
 						style: "position:absolute;top:0;left:0;display:none;z-index:20;height:100%;width:100%;",
-						src  : me.shimUrl
+						src: me.shimUrl
 					}
 				]
 			};
+
+			this.callParent();
 
 		},
 
 		renderSelectors: {
 			frameElement: 'iframe.ux-miframe',
-			frameShim   : 'img.ux-miframe-shim'
+			frameShim: 'img.ux-miframe-shim'
 		},
 
-		afterRender : function(container) {
+		afterRender: function(container){
 			var me = this, frame;
 			me.callParent();
 
-			if(me.frameShim) {
+			if(me.frameShim){
 				me.frameShim.autoBoxAdjust = false;
 				me.frameShim.setVisibilityMode(Element.DISPLAY);
 			}
 
-			if(frame = me.frameElement) {
+			if(frame = me.frameElement){
 				frame = me.frameElement = new App.ux.ManagedIframe.Element(frame.dom);
 
 				//Suppress dataavailable event chatter during initialization
 				frame.eventsFollowFrameLinks = false;
 
 				frame.on({
-					error   : me.onFrameLoad,
-					load    : me.onFrameLoad,
-					scope   : me
+					dataavailable: me.onFrameDataAvailable,
+					scope: me
 				});
 
-
-				if(this.autoLoad) {
+				if(this.autoLoad){
 					frame.isReset = Ext.isIE;
 					frame.eventsFollowFrameLinks = !!me.eventsFollowFrameLinks;
-				} else {
+				}else{
 
 					Ext.Function.defer(
 						frame.reset,
@@ -182,9 +182,9 @@
 							function(){
 								var me = this;
 								frame.eventsFollowFrameLinks = !!me.eventsFollowFrameLinks;
-								if(me.src || me.defaultSrc) {
+								if(me.src || me.defaultSrc){
 									me.setSrc();
-								} else if(me.data || me.html) {
+								}else if(me.data || me.html){
 									me.update(me.data || me.html);
 								}
 							},
@@ -193,23 +193,22 @@
 					);
 				}
 			}
-
 		},
 
 		// private
-		getContentTarget: function() {
+		getContentTarget: function(){
 			return this.frameElement;
 		},
 
-		getActionEl: function() {
+		getActionEl: function(){
 			return this.frameElement || this.el;
 		},
 
 		/*
 		 * @private
 		 */
-		onFrameLoad : function(e) {
-			if(this.autoMask) {
+		onFrameDataAvailable: function(e){
+			if(this.autoMask){
 				this.setLoading(false);
 			}
 		},
@@ -223,42 +222,52 @@
 		 * @param {Object} scope (Optional) scope by which the callback function is
 		 *            invoked.
 		 */
-		setSrc  : function(uri, callback, scope) {
+		setSrc: function(uri, callback, scope){
 			var me = this;
 			uri = uri || me.src || me.defaultSrc;
-			if(uri && me.rendered && me.frameElement) {
-				me.autoMask &&
-				me.isVisible(true) &&
-				me.setLoading(me.maskMessage || '');
+			if(uri && me.rendered && me.frameElement){
 
-				me.frameElement.setSrc( uri, false, callback, scope);
+				if(me.autoMask && me.isVisible(true)){
+					me.setLoading(me.maskMessage || '', true);
+				}
+
+				me.frameElement.setSrc(uri, false, callback, scope);
 			}
 			me.src = uri;
 			return me;
+		},
+
+		setLoading: function(load){
+			var me = this;
+
+			if(load !== false){
+				me.el.mask(me.maskMessage || '');
+			}else{
+				me.el.unmask();
+			}
 		},
 
 		/**
 		 * contentEl is NOT supported, but tpl/data, and html ARE.
 		 * @private
 		 */
-		initContent: function() {
+		initContent: function(){
 			var me = this,
 				content = me.data || me.html;
 
-			if (me.contentEl && Ext.isDefined(Ext.global.console)) {
+			if(me.contentEl && Ext.isDefined(Ext.global.console)){
 				Ext.global.console.warn('App.ux.ManagedIframe: \'contentEl\' is not supported by this class.');
 			}
 
 			// Make sure this.tpl is an instantiated XTemplate
-			if (me.tpl)
-			{
+			if(me.tpl){
 				me.setTpl(me.tpl);
 			}
 
 			delete me.contentEl;
 		},
 
-		setTpl : function(tpl){
+		setTpl: function(tpl){
 			this.tpl = (tpl && !tpl.isTemplate) ? Ext.create('Ext.XTemplate', tpl) : tpl;
 			return this;
 		},
@@ -274,16 +283,16 @@
 		 * @param {Function} callback (optional) Callback to execute when scripts have finished loading
 		 * @param {Object} scope (optional) execution context of the the callback
 		 */
-		update : function(htmlOrData, loadScripts, callback, scope) {
+		update: function(htmlOrData, loadScripts, callback, scope){
 			var me = this,
 				content = htmlOrData;
 
-			if (me.tpl && Ext.isArray(content) || Ext.isObject(content)) {
+			if(me.tpl && Ext.isArray(content) || Ext.isObject(content)){
 				me.data = content;
 				content = me.tpl.apply(content || {});
 			}
 
-			if (me.rendered) {
+			if(me.rendered){
 				me.autoMask &&
 				me.isVisible(true) &&
 				me.setLoading(me.maskMessage || '');
@@ -292,9 +301,9 @@
 				Ext.defer(
 					function(){
 						frame.update(content, loadScripts, callback, scope);
-						Ext.defer(this.setLoading, 100, this ,[false]);
+						//Ext.defer(this.setLoading, 100, this, [false]);
 					},
-					me.autoMask ? 100 : 10 ,
+					me.autoMask ? 100 : 10,
 					me,
 					[ ]
 				);
@@ -308,12 +317,12 @@
 		 * @param {Boolean} scroll True to allow the IFRAME to auto scroll.
 		 * @return {App.ux.ManagedIframe.Component} this
 		 */
-		setAutoScroll : function(scroll) {
+		setAutoScroll: function(scroll){
 			var me = this,
 				targetEl;
 			if(Ext.isDefined(scroll)){  //permits frameStyle overrides
 				scroll = !!scroll;
-				if (me.rendered && (targetEl = me.getContentTarget())) {
+				if(me.rendered && (targetEl = me.getContentTarget())){
 					targetEl.setStyle('overflow', scroll ? 'auto' : 'hidden');
 				}
 				me.autoScroll = scroll;
@@ -324,15 +333,15 @@
 		/*
 		 *   Toggle the transparent shim on/off
 		 */
-		toggleShim  : function( enabled ) {
+		toggleShim: function(enabled){
 			var me = this;
-			if(me.frameShim) {
-				me.frameShim[enabled? 'show' : 'hide']();
+			if(me.frameShim){
+				me.frameShim[enabled ? 'show' : 'hide']();
 			}
 			return me.frameShim;
 		},
 
-		onDestroy: function() {
+		onDestroy: function(){
 			var me = this, frame;
 			if(frame = me.frameElement){
 				frame.remove();
@@ -348,60 +357,61 @@
 		DOC = window.document,
 
 	// @private add/remove Listeners
-		addListener = function () {
+		addListener = function(){
 			var handler;
-			if (window.addEventListener) {
-				handler = function F(el, eventName, fn, capture) {
+			if(window.addEventListener){
+				handler = function F(el, eventName, fn, capture){
 					el.addEventListener(eventName, fn, !!capture);
 				};
-			} else if (window.attachEvent) {
-				handler = function F(el, eventName, fn, capture) {
+			}else if(window.attachEvent){
+				handler = function F(el, eventName, fn, capture){
 					el.attachEvent("on" + eventName, fn);
 				};
-			} else {
-				handler = function F(){};
+			}else{
+				handler = function F(){
+				};
 			}
 			var F = null; //Gbg collect
 			return handler;
 		}(),
-		removeListener = function() {
+		removeListener = function(){
 			var handler;
-			if (window.removeEventListener) {
-				handler = function F(el, eventName, fn, capture) {
+			if(window.removeEventListener){
+				handler = function F(el, eventName, fn, capture){
 					el.removeEventListener(eventName, fn, (capture));
 				};
-			} else if (window.detachEvent) {
-				handler = function F(el, eventName, fn) {
+			}else if(window.detachEvent){
+				handler = function F(el, eventName, fn){
 					el.detachEvent("on" + eventName, fn);
 				};
-			} else {
-				handler = function F(){};
+			}else{
+				handler = function F(){
+				};
 			}
 			var F = null; //Gbg collect
 			return handler;
 		}();
 
-
 	Ext.define('App.ux.ManagedIframe.Element', {
 
 		/* Begin Definitions */
-		extend      : 'Ext.core.Element',
-		alias       : 'widget.miframeelement',
+		extend: 'Ext.core.Element',
+		alias: 'widget.miframeelement',
 		/* End Definitions */
 
-		visibilityMode : Element.ASCLASS,   //nosize for hiding
+		visibilityMode: Element.ASCLASS,   //nosize for hiding
 
-		eventsFollowFrameLinks : true,
+		eventsFollowFrameLinks: true,
 
-		focusOnLoad : Ext.isIE,
+		focusOnLoad: Ext.isIE,
 
-		constructor : function(element) {
+		constructor: function(element){
 			var id,
 				dom = (typeof element == "string")
 					? DOC.getElementById(element)
 					: (element || {}).dom || element;
 
-			if (!dom) {
+			if(!dom){
 				return null;
 			}
 
@@ -425,12 +435,11 @@
 			this.dom.manager = this;
 			this._flyweights = {};
 
-			if (EC[this.id] && EC[this.id].el) {
+			if(EC[this.id] && EC[this.id].el){
 				EC[this.id].el = this;
-			} else {
+			}else{
 				Element.addToCache(this);
 			}
-
 
 			/*
 			 * Sets up the events required to maintain the state machine
@@ -444,19 +453,19 @@
 				 * Opera still fires LOAD events for images within the FRAME as well,
 				 * so we'll buffer hopefully catching one of the later events
 				 */
-				Ext.isOpera ? {buffer: this.operaLoadBuffer|| 2000} : null
+				Ext.isOpera ? {buffer: this.operaLoadBuffer || 2000} : null
 			);
 
 			this.on({
-				'dataavailable' : function(e, target){
+				'dataavailable': function(e, target){
 					//set current frameAction for downstream listeners
 					e && Ext.apply(e, {
-						frameAction : this._frameAction,
-						frameResetting : this.isReset
+						frameAction: this._frameAction,
+						frameResetting: this.isReset
 					});
 				},
-				load : this.loadHandler,
-				scope : this
+				load: this.loadHandler,
+				scope: this
 
 			});
 
@@ -469,11 +478,11 @@
 		 what domain served the page.
 		 * @return {HTMLElement} The frame document or false if access to document object was denied.
 		 */
-		getFrameDocument : function(assertAccess) {
+		getFrameDocument: function(assertAccess){
 			var win = this.getWindow(), doc = null;
-			try {
-				doc =  win.contentDocument || this.dom.contentDocument || window.frames[this.dom.name].document ||  win.document;
-			} catch (gdEx) {
+			try{
+				doc = win.contentDocument || this.dom.contentDocument || window.frames[this.dom.name].document || win.document;
+			}catch(gdEx){
 				doc = false; // signifies probable access restriction
 			}
 			return  doc || false;
@@ -484,10 +493,9 @@
 		 * {@link Ext.Element}.
 		 * @return {Ext.Element} The document
 		 */
-		getDoc : function() {
+		getDoc: function(){
 			return this.fly(this.getFrameDocument());
 		},
-
 
 		/**
 		 * If sufficient privilege exists, returns the frame's current document
@@ -496,32 +504,30 @@
 		 * @return {Ext.Element} The frame document body or Null if access to
 		 *         document object was denied.
 		 */
-		getBody : function() {
+		getBody: function(){
 			var d;
-			return (d = this.getFrameDocument()) ? this.get( d.body) : null;
+			return (d = this.getFrameDocument()) ? this.get(d.body) : null;
 		},
-
 
 		/*
 		 * Convert an HTMLElement (by id or reference) to a Flyweight Element
 		 */
-		get : function(el){
+		get: function(el){
 			return this.fly(el);
 		},
 
-
-		fly  : function(el, named) {
+		fly: function(el, named){
 			var me = this,
 				ret = null,
 				doc = me.getFrameDocument(),
 				id;
 
-			if(!doc || !el) {
+			if(!doc || !el){
 				return ret;
 			}
 			named = named || '_global';
 			el = Ext.getDom(el, false, doc);
-			if (el) {
+			if(el){
 
 				/* Note: this does two things:
 				 * 1) properly asserts the window/document id's
@@ -545,9 +551,9 @@
 		 * @param {String} selector The CSS selector
 		 * @return {Ext.CompositeElement/Ext.CompositeElementLite} The composite element
 		 */
-		select : function(selector) {
+		select: function(selector){
 			var d;
-			return (d = this.getFrameDocument()) ? Element.select(selector, false, d) : d=null;
+			return (d = this.getFrameDocument()) ? Element.select(selector, false, d) : d = null;
 		},
 
 		/**
@@ -557,21 +563,22 @@
 		 * @param {String} selector The CSS selector
 		 * @return {Array} An array of the matched nodes
 		 */
-		query : function(selector) {
+		query: function(selector){
 			var d;
-			return (d = this.getFrameDocument()) ?  Ext.DomQuery.select(selector, d) : d=null;
+			return (d = this.getFrameDocument()) ? Ext.DomQuery.select(selector, d) : d = null;
 		},
 
 		/**
 		 * Attempt to retrieve the frames current URI via frame's document object
 		 * @return {string} The frame document's current URI or the last know URI if permission was denied.
 		 */
-		getDocumentURI : function() {
+		getDocumentURI: function(){
 
 			var URI, d;
-			try {
-				URI = this.src && (d = this.getFrameDocument()) ? d.location.href: null;
-			} catch (ex) {} // will fail on NON-same-origin domains
+			try{
+				URI = this.src && (d = this.getFrameDocument()) ? d.location.href : null;
+			}catch(ex){
+			} // will fail on NON-same-origin domains
 			return URI || (Ext.isFunction(this.src) ? this.src() : this.src);
 		},
 
@@ -579,26 +586,26 @@
 		 * Attempt to retrieve the frames current URI via frame's Window object
 		 * @return {string} The frame document's current URI or the last know URI if permission was denied.
 		 */
-		getWindowURI : function() {
+		getWindowURI: function(){
 			var URI, w, me = this;
-			try {
+			try{
 				URI = (w = me.getWindow()) ? w.location.href : null;
-			} catch (ex) {
+			}catch(ex){
 			} // will fail on NON-same-origin domains
 			return URI || (Ext.isFunction(me.src) ? me.src() : me.src);
 
 		},
 
-
 		/**
 		 * Returns the frame's current window object.
 		 * @return {Window} The frame Window object.
 		 */
-		getWindow : function() {
+		getWindow: function(){
 			var dom = this.dom, win = null;
-			try {
+			try{
 				win = dom.contentWindow || window.frames[dom.name] || null;
-			} catch (gwEx) {}
+			}catch(gwEx){
+			}
 			return win;
 		},
 
@@ -612,13 +619,13 @@
 		 * @param {Boolean} hscroll (optional) False to disable horizontal scroll (defaults to true)
 		 * @return {App.ux.ManagedIframe.Element} this
 		 */
-		scrollChildIntoView : function(child, container , hscroll) {
+		scrollChildIntoView: function(child, container, hscroll){
 			var me = this,
 				doc = me.getFrameDocument(),
 				f;
 			if(doc){
 				container = (container ? Ext.getDom(container, true, doc) : null) || (!Ext.isWebKit && Ext.isDocumentStrict(doc) ? doc.documentElement : doc.body);
-				if(f = me.fly(child)) {
+				if(f = me.fly(child)){
 					f.scrollIntoView(container, hscroll);
 				}
 			}
@@ -631,21 +638,22 @@
 		 * 'load' state, and raise the 'dataavailable' and other events when
 		 * applicable.
 		 */
-		loadHandler : function(e, target, options) {
+		loadHandler: function(e, target, options){
 			e = e || {};
 			var me = this,
-				rstatus = (e.type == 'readystatechange') ? (me.dom||{}).readyState : e.type ;
+				rstatus = (e.type == 'readystatechange') ? (me.dom || {}).readyState : e.type;
 
 			//console.info('LH ' ,  rstatus , ' follows:',me.eventsFollowFrameLinks, ' isReset:', me.isReset, ' action:',me._frameAction );
-			if (me.eventsFollowFrameLinks || me._frameAction || me.isReset ) {
+			if(me.eventsFollowFrameLinks || me._frameAction || me.isReset){
 
 				me.isReset && e.stopEvent && e.stopEvent();
-				switch (rstatus) {
+				switch(rstatus){
 
 					case 'domready' : // MIF
 					case 'DOMFrameContentLoaded' :
 
-						me._onDocReady (rstatus, e);
+						me._onDocReady(rstatus, e);
+						me.fireDOMEvent('domready', null, {message: e.message});
 						break;
 
 					case 'interactive':   // IE/ Legacy Opera
@@ -654,19 +662,20 @@
 						break;
 					case 'complete' :
 						me.loaded = true;
+						me.fireDOMEvent('complete', null, {message: e.message});
 						break;
 					case 'load' : // Gecko, Opera, IE
 						me.loaded = true;
 						Ext.apply(e, {
-							frameAction     : me._frameAction,
-							frameResetting  : me.isReset
+							frameAction: me._frameAction,
+							frameResetting: me.isReset
 						});
 						me._onDocLoaded(rstatus, e);
 						me.dispatchCallbacks(e, target, options);
 						break;
 
 					case 'error':
-						me.fireDOMEvent('error', null, {message:e.message});
+						me.fireDOMEvent('error', null, {message: e.message});
 						me._frameAction = false;
 						break;
 					default :
@@ -680,31 +689,32 @@
 		/*
 		 *  @private DOM Ready handler
 		 */
-		_onDocReady  : function(status, e) {
-			var me=this;
+		_onDocReady: function(status, e){
+			var me = this;
 
 			me.domReady = true;
 
-			try {
-				if(!me.isReset && me.focusOnLoad) {
+			try{
+				if(!me.isReset && me.focusOnLoad){
 					me.focus();
 				}
-			} catch(ex){ }
+			}catch(ex){
+			}
 
 			//raise internal private event regardless of state.
 			me.fireDOMEvent('datasetchanged');
 
-			if (!me.isReset &&  !me.domReadyFired &&  me._renderHooks()) {
+			if(!me.isReset && !me.domReadyFired && me._renderHooks()){
 
 				// Only raise if sandBox injection succeeded (same origin)
-				if(!me.isReset) {  //but never during a reset
+				if(!me.isReset){  //but never during a reset
 					me.domReadyFired = true;
 					me.fireDOMEvent('dataavailable');
 				}
 			}
 		},
 
-		_onDocLoaded  : function(status, e) {
+		_onDocLoaded: function(status, e){
 			var me = this;
 			/*
 			 * this is necessary to permit other browsers a chance to raise dataavailable during
@@ -718,16 +728,16 @@
 		/*
 		 * @private DOM Event Factory
 		 */
-		createEvent : document.createEvent ?
-			function(eventName, eventClass, fromE, options) {   //DOM2 Event interfaces
-				options = options || { bubbles : true, cancelable : false };
+		createEvent: document.createEvent ?
+			function(eventName, eventClass, fromE, options){   //DOM2 Event interfaces
+				options = options || { bubbles: true, cancelable: false };
 				eventClass = eventClass || 'Event';
 				var evt = document.createEvent(eventClass);
 				evt.initEvent(eventName, !!Ext.value(options.bubbles, true), !!Ext.value(options.cancelable, false));
 				return evt;
 			} :
-			function(eventName, eventClass, fromE, options) {   //IE-style Events
-				options = options || { type : 'on'+ eventName, bubbles : true, cancelable : false };
+			function(eventName, eventClass, fromE, options){   //IE-style Events
+				options = options || { type: 'on' + eventName, bubbles: true, cancelable: false };
 				var evt = document.createEventObject(fromE);
 				return Ext.apply(evt, options);
 			},
@@ -735,18 +745,18 @@
 		/*
 		 * @private DOM Event Dispatch
 		 */
-		dispatchEvent : document.createEvent ?
-			function(e, eventName, options) {
+		dispatchEvent: document.createEvent ?
+			function(e, eventName, options){
 				return this.dom ? !this.dom.dispatchEvent(e) : null;
 			} :
-			function(e, eventName, options) {
-				return this.dom ? this.dom.fireEvent( 'on'+eventName, e) : null;
+			function(e, eventName, options){
+				return this.dom ? this.dom.fireEvent('on' + eventName, e) : null;
 			},
 
 		/*
 		 *  Dispatch a new (or copied) Generic event with the current Element as the event target
 		 */
-		fireDOMEvent : function(eventName,  e,  args) {
+		fireDOMEvent: function(eventName, e, args){
 			return this.dispatchEvent(
 				this.createEvent(eventName, null, e, args),
 				eventName, args
@@ -756,21 +766,21 @@
 		/**
 		 * @private execScript sandbox and messaging interface
 		 */
-		_renderHooks : function() {
+		_renderHooks: function(){
 
 			var me = this;
 			me._windowContext = null;
-			Ext.destroy( me.CSS);
+			Ext.destroy(me.CSS);
 			delete me.CSS;
 			me._hooked = false;
-			try {
-				if (me.writeScript(
-						'(function(){(window.hostMIF = parent.document.getElementById("'+ me.id +
+			try{
+				if(me.writeScript(
+						'(function(){(window.hostMIF = parent.document.getElementById("' + me.id +
 						'").manager)._windowContext='
 						+ (Ext.isIE
 						? 'window'
 						: '{eval:function(s){return new Function("return ("+s+")")();}}')
-						+ ';})()')) {
+						+ ';})()')){
 
 					var w,
 						al = addListener,
@@ -780,9 +790,9 @@
 					/*
 					 * Route all desired events through the proxy for normalization
 					 */
-					if(doc && (w = me.getWindow()) ){
-						al(Ext.isIE ?   doc.body || doc.documentElement  : w, 'focus', p);
-						al(Ext.isIE ?   doc.body || doc.documentElement  : w, 'blur', p);
+					if(doc && (w = me.getWindow())){
+						al(Ext.isIE ? doc.body || doc.documentElement : w, 'focus', p);
+						al(Ext.isIE ? doc.body || doc.documentElement : w, 'blur', p);
 						al(w, 'resize', p);
 						al(w, 'beforeunload', p);
 						//al(Ext.supports.Event('scroll', doc) ? doc : w, 'scroll', p);
@@ -791,7 +801,8 @@
 					// doc && (this.CSS = new Ext.ux.ManagedIFrame.CSS(doc));
 				}
 
-			} catch (ex) {}
+			}catch(ex){
+			}
 			return (me._hooked = me.domWritable());
 		},
 
@@ -800,29 +811,29 @@
 		 * @return {Boolean} accessible If True, the frame's inner DOM can be manipulated, queried, and
 		 * Event Listeners set.
 		 */
-		domWritable : function() {
+		domWritable: function(){
 			return !!this._windowContext && !!this.getFrameDocument(); //test access
 		},
-
 
 		/** @private : clear all event listeners and Sandbox hooks
 		 * This returns the Element to an un-managed state.
 		 */
-		_unHook : function() {
+		_unHook: function(){
 			var me = this;
-			if (me._hooked) {
+			if(me._hooked){
 				try{
 					me._windowContext && (me._windowContext.hostMIF = null);
-				}catch(uhex){}
+				}catch(uhex){
+				}
 				me._windowContext = null;
 				var w,
-					rl  = removeListener,
-					p   = me._frameProxy,
+					rl = removeListener,
+					p = me._frameProxy,
 					doc = me.getFrameDocument();
 
 				if(p && doc && (w = me.getWindow())){
-					rl(Ext.isIE ?   doc.body || doc.documentElement  : w, 'focus', p);
-					rl(Ext.isIE ?   doc.body || doc.documentElement  : w, 'blur',  p);
+					rl(Ext.isIE ? doc.body || doc.documentElement : w, 'focus', p);
+					rl(Ext.isIE ? doc.body || doc.documentElement : w, 'blur', p);
 					rl(w, 'resize', p);
 					rl(w, 'beforeunload', p);
 					//rl(Ext.supports.Event('scroll', doc) ? doc : w, 'scroll', p);
@@ -858,16 +869,16 @@
 		 * @return {Ext.ux.ManagedIFrame.Element} this
 		 *
 		 */
-		submitAsTarget : function(submitCfg){
+		submitAsTarget: function(submitCfg){
 
 			var opt = submitCfg || {},
 				doc = this.getParentDocument(),
 				form = Ext.getDom(
-					opt.form ? opt.form.form || opt.form: null, false, doc) ||
+					opt.form ? opt.form.form || opt.form : null, false, doc) ||
 					Ext.DomHelper.append(doc.body, {
 						tag: 'form',
-						cls : 'x-hide-offsets x-mif-form',
-						encoding : 'multipart/form-data'
+						cls: 'x-hide-offsets x-mif-form',
+						encoding: 'multipart/form-data'
 					}),
 				formFly = Ext.fly(form, '_dynaForm'),
 				formState = {
@@ -881,14 +892,14 @@
 				method = opt.method || form.method || 'POST';
 
 			formFly.set({
-				target  : this.dom.name,
-				method  : method,
+				target: this.dom.name,
+				method: method,
 				encoding: encoding,
-				action  : opt.url || opt.action || form.action
+				action: opt.url || opt.action || form.action
 			});
 
 			if(method == 'POST' || !!opt.enctype){
-				formFly.set({enctype : opt.enctype || form.enctype || encoding});
+				formFly.set({enctype: opt.enctype || form.enctype || encoding});
 			}
 
 			var hiddens, hd, ps;
@@ -896,12 +907,12 @@
 			if(opt.params && (ps = Ext.isFunction(opt.params) ? opt.params() : opt.params)){
 				hiddens = [];
 
-				Ext.iterate(ps = typeof ps == 'string'? Ext.urlDecode(ps, false): ps,
+				Ext.iterate(ps = typeof ps == 'string' ? Ext.urlDecode(ps, false) : ps,
 					function(n, v){
 
 						Ext.fly(hd = D.createElement('input')).set({
-							type : 'hidden',
-							name : n,
+							type: 'hidden',
+							name: n,
 							value: v
 						});
 						form.appendChild(hd);
@@ -910,7 +921,7 @@
 			}
 
 			Ext.isFunction(opt.callback) &&  //use the internal event to dispatch the callback
-			this.on('datasetchanged', opt.callback, opt.scope || this, {single:true, submitOptions : opt});
+			this.on('datasetchanged', opt.callback, opt.scope || this, {single: true, submitOptions: opt});
 
 			this._frameAction = true;
 			this._targetURI = location.href;
@@ -935,10 +946,9 @@
 		 * @cfg {String} resetUrl Frame document reset string for use with the {@link #Ext.ux.ManagedIFrame.Element-reset} method.
 		 * Defaults:<p> For IE on SSL domains - the current value of Ext.SSL_SECURE_URL<p> "about:blank" for all others.
 		 */
-		resetUrl : (function() {
+		resetUrl: (function(){
 			return Ext.isIE && Ext.isSecure ? Ext.SSL_SECURE_URL : 'about:blank';
 		})(),
-
 
 		/**
 		 * Sets the embedded Iframe src property. Note: invoke the function with
@@ -956,17 +966,17 @@
 		 * @param {Object} scope (Optional) scope by which the callback function is
 		 *            invoked.
 		 */
-		setSrc : function(url, discardUrl, callback, scope) {
+		setSrc: function(url, discardUrl, callback, scope){
 
 			var src = url || this.src || this.resetUrl;
 			Ext.isFunction(callback) && this.queueCallback(callback, scope || this);
 			(discardUrl !== true) && (this.src = src);
 			var s = this._targetURI = (Ext.isFunction(src) ? src() || '' : src);
-			try {
+			try{
 				this._frameAction = true; // signal listening now
 				this.dom.src = s;
 				Ext.isIE || this.assertOnReady();
-			} catch (ex) {
+			}catch(ex){
 
 			}
 			return this;
@@ -989,22 +999,22 @@
 		 *            invoked.
 		 *
 		 */
-		setLocation : function(url, discardUrl, callback, scope) {
+		setLocation: function(url, discardUrl, callback, scope){
 
 			var me = this,
 				src = url || me.src || me.resetUrl;
 			me._unHook();
 			Ext.isFunction(callback) && me.queueCallback(callback, scope);
 			var s = me._targetURI = (Ext.isFunction(src) ? src() || '' : src);
-			if (discardUrl !== true) {
+			if(discardUrl !== true){
 				me.src = src;
 			}
 
-			try {
+			try{
 				me._frameAction = true; // signal listening now
 				me.getWindow().location.replace(s);
 				Ext.isIE || me.assertOnReady();
-			} catch (ex) {
+			}catch(ex){
 			}
 			return me;
 		},
@@ -1022,7 +1032,7 @@
 		 *            scope (Optional) scope by which the callback function is
 		 *            invoked.
 		 */
-		reset : function(src, callback, scope) {
+		reset: function(src, callback, scope){
 
 			var me = this,
 				s = src,
@@ -1034,23 +1044,23 @@
 				Ext.isFunction(callback) && me.queueCallback(callback, scope);
 
 				Ext.isFunction(src) && ( s = src());
-				s = me._targetURI = Ext.isEmpty(s, true) ? me.resetUrl: s;
+				s = me._targetURI = Ext.isEmpty(s, true) ? me.resetUrl : s;
 				win.location.href = s;
 			}
 			return me;
 		},
 
-		queueCallback : function( fn, scope){
-			var me=this;
+		queueCallback: function(fn, scope){
+			var me = this;
 			me.callbacks = me.callbacks || [];
 			me.callbacks.push(scope ? Ext.bind(fn, scope || me) : fn);
 			return me;
 		},
 
-		dispatchCallbacks : function(e, target, options){
+		dispatchCallbacks: function(e, target, options){
 			var me = this;
-			if(me.callbacks && me.callbacks.length) {
-				while(me.callbacks.length) {
+			if(me.callbacks && me.callbacks.length){
+				while(me.callbacks.length){
 					me.callbacks.shift()(e, target, options);
 				}
 			}
@@ -1062,7 +1072,7 @@
 		 * @cfg {regexp} scriptRE script removal RegeXp
 		 * Default: "/(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)/gi"
 		 */
-		scriptRE : /(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)/gi,
+		scriptRE: /(?:<script.*?>)((\n|\r|.)*?)(?:<\/script>)/gi,
 
 		/**
 		 * Write(replacing) string content into the IFrames document structure
@@ -1073,14 +1083,14 @@
 		 * frame document has been written and fully loaded. @param {Object}
 		 * scope (Optional) scope by which the callback function is invoked.
 		 */
-		update : function(content, loadScripts, callback, scope) {
+		update: function(content, loadScripts, callback, scope){
 
 			var me = this;
 			content = DomHelper.markup(content || '');
 
 			content = (loadScripts !== false) ? content : content.replace(me.scriptRE, "");
 			var doc;
-			if ((doc = me.getFrameDocument()) && !!content.length) {
+			if((doc = me.getFrameDocument()) && !!content.length){
 				me._unHook();
 				me.src = null;
 				Ext.isFunction(callback) && me.queueCallback(callback, scope || this);
@@ -1092,7 +1102,7 @@
 				me.assertOnReady();
 				doc.close();
 
-			} else {
+			}else{
 				Ext.callback(callback, scope || me);
 			}
 
@@ -1107,10 +1117,10 @@
 		 * @param {Boolean} validate If true, the command is validated to ensure it's invocation is permitted.
 		 * @return {Boolean} indication whether command execution succeeded
 		 */
-		execCommand : function(command, userInterface, value, validate) {
+		execCommand: function(command, userInterface, value, validate){
 
 			var doc, assert;
-			if ((doc = this.getFrameDocument()) && !!command) {
+			if((doc = this.getFrameDocument()) && !!command){
 				try{
 					Ext.isIE && this.focus();
 					assert = validate && Ext.isFunction(doc.queryCommandEnabled)
@@ -1118,44 +1128,44 @@
 						: true;
 
 					return assert && doc.execCommand(command, !!userInterface, value);
-				}catch(eex){return false;}
+				}catch(eex){
+					return false;
+				}
 			}
 			return false;
 		},
-
 
 		/**
 		 * Sets the current DesignMode attribute of the Frame's document
 		 * @param {Boolean/String} active True (or "on"), to enable designMode
 		 *
 		 */
-		setDesignMode : function(active) {
+		setDesignMode: function(active){
 			var doc;
-			if(doc = this.getFrameDocument()) {
-				doc.designMode = (/on|true/i).test(String(active))?'On':'Off';
+			if(doc = this.getFrameDocument()){
+				doc.designMode = (/on|true/i).test(String(active)) ? 'On' : 'Off';
 			}
 			return this;
 		},
-
 
 		/**
 		 * Print the contents of the Iframes (if we own the document)
 		 * @return {Ext.ux.ManagedIFrame.Element} this
 		 */
-		print : function() {
-			try {
+		print: function(){
+			try{
 				var win;
-				if( win = this.getWindow()){
+				if(win = this.getWindow()){
 					Ext.isIE && win.focus();
 					win.print();
 				}
-			} catch (ex) {
+			}catch(ex){
 				//<debug>
 				var Err = this.statics().Error;
 				Err.raise(
-					{ msg     : Err.message.printexception || ex.description || ex.message,
-						error   : ex,
-						win     : win
+					{ msg: Err.message.printexception || ex.description || ex.message,
+						error: ex,
+						win: win
 					}
 				);
 				//</debug>
@@ -1172,25 +1182,25 @@
 		 * update or after same-domain document has been hooked, otherwise an
 		 * exception is raised.
 		 */
-		writeScript : function(block, attributes) {
+		writeScript: function(block, attributes){
 
 			attributes = Ext.apply({}, attributes || {}, {
-				type : "text/javascript",
-				text : block
+				type: "text/javascript",
+				text: block
 			});
 
-			try {
+			try{
 				var head, script, doc = this.getFrameDocument();
-				if (doc && typeof doc.getElementsByTagName != 'undefined') {
-					if (!(head = doc.getElementsByTagName("head")[0])) {
+				if(doc && typeof doc.getElementsByTagName != 'undefined'){
+					if(!(head = doc.getElementsByTagName("head")[0])){
 						// some browsers (Webkit, Safari) do not auto-create
 						// head elements during document.write
 						head = doc.createElement("head");
 						doc.getElementsByTagName("html")[0].appendChild(head);
 					}
-					if (head && (script = doc.createElement("script"))) {
-						for (var attrib in attributes) {
-							if (attributes.hasOwnProperty(attrib) && attrib in script) {
+					if(head && (script = doc.createElement("script"))){
+						for(var attrib in attributes){
+							if(attributes.hasOwnProperty(attrib) && attrib in script){
 								script[attrib] = attributes[attrib];
 							}
 						}
@@ -1198,8 +1208,8 @@
 					}
 				}
 
-			} catch (ex) {
-			} finally {
+			}catch(ex){
+			}finally{
 				script = head = null;
 			}
 			return false;
@@ -1216,29 +1226,28 @@
 		 * been hooked, otherwise an exception is raised.
 		 * @return {Mixed}
 		 */
-		execScript : function(block, useDOM) {
+		execScript: function(block, useDOM){
 			var me = this;
-			try {
-				if (me.domWritable()) {
-					if (useDOM) {
+			try{
+				if(me.domWritable()){
+					if(useDOM){
 						me.writeScript(block);
-					} else {
+					}else{
 						return me._windowContext.eval(block);
 					}
-				} else {
+				}else{
 					var Err = this.statics().Error;
 					throw new Err(
-						{ msg : Err.message['execscript-secure-context'],
-							script : block
+						{ msg: Err.message['execscript-secure-context'],
+							script: block
 						}
 					);
 				}
-			} catch (ex) {
+			}catch(ex){
 				return false;
 			}
 			return true;
 		},
-
 
 		/**
 		 * Eval a function definition into the iframe window context.
@@ -1252,7 +1261,7 @@
 		 * iframe.loadFunction('trim');
 		 * iframe.loadFunction({name:'myTrim',fn:String.prototype.trim || trim});</code></pre>
 		 */
-		loadFunction : function(fn, useDOM, invokeIt) {
+		loadFunction: function(fn, useDOM, invokeIt){
 			var name = fn.name || fn,
 				fnSrc = fn.fn || window[fn];
 
@@ -1265,23 +1274,25 @@
 		 * Poll the Iframes document structure to determine DOM ready
 		 * state, and raise the 'domready' event when applicable.
 		 */
-		assertOnReady : function() {
+		assertOnReady: function(){
 
-			if ( Ext.isGecko || this.isReset) { return; }
+			if(Ext.isGecko || this.isReset){
+				return;
+			}
 			// initialise the counter
 			var n = 0, frame = this, domReady = false,
 				body, l, doc,
 				max = this.domReadyRetries || 5000, //default max 5 seconds
 				atTarget = false,
-				startLocation = (this.getFrameDocument() || {location : {}}).location.href,
+				startLocation = (this.getFrameDocument() || {location: {}}).location.href,
 				fileSize, href,
 				notDefined = /undefined|unknown/i,
 
-				assertion = function(targetURI) { // DOM polling for IE and others
-					if ( this.domReady) {
+				assertion = function(targetURI){ // DOM polling for IE and others
+					if(this.domReady){
 						return;
 					}
-					if(doc = this.getFrameDocument()) {
+					if(doc = this.getFrameDocument()){
 
 						// wait for location.href transition
 						// null href is a 'same-origin' document access violation,
@@ -1294,17 +1305,18 @@
 						 * the DOM is ready
 						 */
 						fileSize = 0;
-						try {  //IE/Webkit/Opera? will report the fileSize of the document when the DOM is ready
+						try{  //IE/Webkit/Opera? will report the fileSize of the document when the DOM is ready
 							fileSize = notDefined.test(typeof doc.fileSize) ? 0 : parseFloat(doc.fileSize);
-						}catch(errFilesize){}
+						}catch(errFilesize){
+						}
 
 						domReady = (!!fileSize) || (atTarget && (body = doc.body) && !!(body.innerHTML || '').length );
 
-						if(domReady) {
-							return frame.loadHandler.call(frame, { type : 'domready'});
+						if(domReady){
+							return frame.loadHandler.call(frame, { type: 'domready'});
 						}
 					}
-					frame.loaded || (++n > max) || Ext.defer(assertion, 2, frame, slice.call(arguments, 0) ); // try again
+					frame.loaded || (++n > max) || Ext.defer(assertion, 2, frame, slice.call(arguments, 0)); // try again
 				};
 			//console.log('seeking ', frame._targetURI, startLocation);
 			assertion.call(frame, frame._targetURI);
@@ -1315,17 +1327,18 @@
 		 * @param {Number} defer (optional) Milliseconds to defer the focus
 		 * @return {App.ux.ManagedIframe.Element} this
 		 */
-		focus: function(defer) {
+		focus: function(defer){
 			var me = this,
 				w = me.getWindow();
-			if(w) {
-				try {
-					if (Number(defer)) {
+			if(w){
+				try{
+					if(Number(defer)){
 						Ext.defer(me.focus, defer, me, [null]);
-					} else {
+					}else{
 						w.focus();
 					}
-				} catch(e) {}
+				}catch(e){
+				}
 			}
 			w = null;
 			return me;
@@ -1335,13 +1348,14 @@
 		 * Tries to blur the element. Any exceptions are caught and ignored.
 		 * @return {App.ux.ManagedIframe.Element} this
 		 */
-		blur: function() {
+		blur: function(){
 			var me = this,
 				w = me.getWindow();
-			if(w) {
-				try {
+			if(w){
+				try{
 					w.blur();
-				} catch(e) {}
+				}catch(e){
+				}
 			}
 			w = null;
 			return me;
@@ -1350,33 +1364,33 @@
 		/**
 		 * <p>Removes this element's dom reference.  Note that event and cache removal is handled at {@link Ext#removeNode Ext.removeNode}</p>
 		 */
-		remove: function() {
+		remove: function(){
 			var me = this,
 				dom = me.dom;
-			if (dom) {
+			if(dom){
 				me.reset();
 				Ext.removeNode(dom);
 				delete me.dom;
 			}
 		},
 
-		statics : {
+		statics: {
 
-			addMethods : function(o) {
-				Ext.apply( MIF.Element.prototype, o);
+			addMethods: function(o){
+				Ext.apply(MIF.Element.prototype, o);
 			},
 
 			/** @private
 			 * @static
 			 * DOMFrameReadyHandler -- Dispatches the captured event to the target MIF.Element
 			 */
-			DOMFrameReadyHandler : function(e ,target) {
+			DOMFrameReadyHandler: function(e, target){
 				var frame;
-				try {
+				try{
 					frame = e.target ? e.target.manager : null;
-				} catch (rhEx) {        //nested (foreign) iframes will throw when accessing target
+				}catch(rhEx){        //nested (foreign) iframes will throw when accessing target
 				}
-				if(frame) {
+				if(frame){
 					frame.loadHandler.call(frame, e);
 				}
 			},
@@ -1385,15 +1399,15 @@
 			 * @static
 			 * Frame document event proxy
 			 */
-			eventProxy : function(e) {
-				if (!e) return;
+			eventProxy: function(e){
+				if(!e) return;
 
 				var evr,
 					eventClass;
 
-				if (!e['eventPhase'] || (e['eventPhase'] == (e['AT_TARGET'] || 2))) {
+				if(!e['eventPhase'] || (e['eventPhase'] == (e['AT_TARGET'] || 2))){
 
-					switch(e.type) {
+					switch(e.type){
 						case 'blur':
 						case 'focus':
 							eventClass = 'UIEvents';
@@ -1403,7 +1417,7 @@
 						case 'scroll':
 
 							//relay subscribed events to the Element instance
-							evr =  this.dispatchEvent(
+							evr = this.dispatchEvent(
 								this.createEvent(e.type, eventClass || 'HTMLEvents'),
 								e.type
 							);
@@ -1419,15 +1433,15 @@
 				return evr;
 			},
 
-			Flyweight  : Element.Flyweight,
+			Flyweight: Element.Flyweight,
 
 			/*
 			 * Returns the document context of the passed HTMLElement, window, or document object
 			 * @return {HTMLDocument}
 			 */
-			getParentDocument : Element.getParentDocument,
+			getParentDocument: Element.getParentDocument,
 
-			isDocumentStrict : function(doc) {
+			isDocumentStrict: function(doc){
 				return (doc && doc.compatMode && doc.compatMode != "BackCompat");
 			},
 
@@ -1436,7 +1450,7 @@
 			 * @static
 			 * @return {Number} documentHeight
 			 */
-			getDocumentHeight: function(win) {
+			getDocumentHeight: function(win){
 				win = win || window;
 				var doc = this.getParentDocument(win);
 				return Math.max(!this.isDocumentStrict(doc) ? doc.body.scrollHeight : doc.documentElement.scrollHeight, this.getViewportHeight(win));
@@ -1447,7 +1461,7 @@
 			 * @static
 			 * @return {Number} documentWidth
 			 */
-			getDocumentWidth: function(win) {
+			getDocumentWidth: function(win){
 				win = win || window;
 				var doc = this.getParentDocument(win);
 				return Math.max(!this.isDocumentStrict(doc) ? doc.body.scrollWidth : doc.documentElement.scrollWidth, this.getViewportWidth(win));
@@ -1458,7 +1472,7 @@
 			 * @static
 			 * @return {Number} viewportHeight
 			 */
-			getViewportHeight: function(win) {
+			getViewportHeight: function(win){
 				return (win || window).innerHeight;
 			},
 
@@ -1467,7 +1481,7 @@
 			 * @static
 			 * @return {Number} viewportWidth
 			 */
-			getViewportWidth : function (win) {
+			getViewportWidth: function(win){
 				return (win || window).innerWidth;
 			},
 
@@ -1476,11 +1490,11 @@
 			 * @static
 			 * @return {Object} object containing width and height properties
 			 */
-			getViewSize : function(win) {
+			getViewSize: function(win){
 				win = win || window;
 				return {
-					width   : this.getViewportWidth(win),
-					height  : this.getViewportHeight(win)
+					width: this.getViewportWidth(win),
+					height: this.getViewportHeight(win)
 				};
 			},
 
@@ -1492,24 +1506,24 @@
 			 * @param {HTMLElement} doc The targeted document context
 			 * @return {FlyWeight} The found Element
 			 */
-			fromPoint: function(x, y, doc) {
+			fromPoint: function(x, y, doc){
 				doc = this.getParentDocument(doc || document);
-				return doc ? Ext.fly(doc.elementFromPoint(x, y), '_fromPoint' ) : null;
+				return doc ? Ext.fly(doc.elementFromPoint(x, y), '_fromPoint') : null;
 			}
 
 		}
 	});
 
-	Ext.define( 'App.ux.ManagedIframe.Error', {
-		extend : 'Ext.Error',
-		name : 'App.ux.ManagedIframe.Error',
-		statics : {
-			raise : Ext.Error.raise,
+	Ext.define('App.ux.ManagedIframe.Error', {
+		extend: 'Ext.Error',
+		name: 'App.ux.ManagedIframe.Error',
+		statics: {
+			raise: Ext.Error.raise,
 			ignore: false,
 			handle: function(){
 				return this.ignore;
 			},
-			message : {
+			message: {
 				'execscript-secure-context': 'An attempt was made at script execution within a document context with restricted access.',
 				'printexception': 'An Error was encountered attempting the print the frame contents (document access is likely restricted).'
 			}
@@ -1518,18 +1532,17 @@
 
 	//Give MIFElement a static reference to the Error class
 	MIF.Element.addStatics(
-		{Error :  App.ux.ManagedIframe.Error}
+		{Error: App.ux.ManagedIframe.Error}
 	);
 
 	// for Gecko and any who might support it later
-	if(window.addEventListener) {
+	if(window.addEventListener){
 
-		window.addEventListener("DOMFrameContentLoaded", MIF.Element.DOMFrameReadyHandler , false);
+		window.addEventListener("DOMFrameContentLoaded", MIF.Element.DOMFrameReadyHandler, false);
 
 		Ext.EventManager.on(window, 'beforeunload', function(){
-			window.removeEventListener("DOMFrameContentLoaded", MIF.Element.DOMFrameReadyHandler , false);
+			window.removeEventListener("DOMFrameContentLoaded", MIF.Element.DOMFrameReadyHandler, false);
 		});
 	}
-
 
 }());

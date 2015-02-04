@@ -240,4 +240,61 @@ class Orders {
 		return $this->o->sql($sql)->all();
 	}
 
+	/**
+	 * @param $pid
+	 * @return mixed
+	 */
+	public function getOrderWithoutResultsByPid($pid){
+		$this->setOrders();
+		$this->setResults();
+		$this->setObservations();
+
+		$this->o->addFilter('pid', $pid);
+		$orders = $this->o->load()->all();
+
+		foreach($orders as $i => &$order){
+			$this->r->addFilter('order_id', $order['id']);
+			$result = $this->r->load()->one();
+
+			if($result !== false){
+				// if result delete order
+				unset($orders[$i]);
+				continue;
+			}
+		}
+		unset($order);
+		return $orders;
+	}
+
+	/**
+	 * @param $pid
+	 * @return mixed
+	 */
+	public function getOrderWithResultsByPid($pid){
+		$this->setOrders();
+		$this->setResults();
+		$this->setObservations();
+
+		$this->o->addFilter('pid', $pid);
+		$orders = $this->o->load()->all();
+
+		foreach($orders as $i => &$order){
+			$this->r->addFilter('order_id', $order['id']);
+			$result = $this->r->load()->one();
+
+			if($result === false){
+				// if no result delete order
+				unset($orders[$i]);
+				continue;
+			}
+
+			$order['result'] = &$result;
+			$this->b->addFilter('result_id', $result['id']);
+			$order['result']['observations'] = $this->b->load()->all();
+			unset($result);
+		}
+		unset($order);
+		return $orders;
+	}
+
 }

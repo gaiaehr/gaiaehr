@@ -43,6 +43,16 @@ Ext.define('App.model.patient.EncounterDx', {
 			index: true
 		},
 		{
+			name: 'dx_group',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'dx_order',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'code',
 			type: 'string',
 			len: 25

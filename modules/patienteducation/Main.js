@@ -26,7 +26,7 @@ Ext.define('Modules.patienteducation.Main', {
 
 				win.getDockedItems('toolbar[dock="bottom"]')[0].insert(0,[{
 					xtype:'button',
-					text:i18n('patient_education'),
+					text:_('patient_education'),
 					handler:me.onPatientEducation
 				},'->']);
 

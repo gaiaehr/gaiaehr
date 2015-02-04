@@ -11,9 +11,10 @@ class BogusAction {
 
 $isForm = false;
 $isUpload = false;
-if(isset($HTTP_RAW_POST_DATA)){
+$data = json_decode(file_get_contents('php://input'));
+
+if(isset($data)){
 	header('Content-Type: text/javascript');
-	$data = json_decode($HTTP_RAW_POST_DATA);
 }else if(isset($_POST['extAction'])){ // form post
 	$isForm = true;
 	$isUpload = $_POST['extUpload'] == 'true';

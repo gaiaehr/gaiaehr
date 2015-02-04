@@ -35,7 +35,7 @@ class Patient {
 	/**
 	 * @var MatchaCUP
 	 */
-	private $p = null;
+	public $p = null;
 	/**
 	 * @var MatchaCUP
 	 */
@@ -65,26 +65,43 @@ class Patient {
 	}
 
 	/**
-	 * MATCHA CUPs (Sencha Models)
+	 * @return MatchaCUP
 	 */
-	private function setPatientModel() {
-		if($this->p == null)
-			$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+	public function setPatientModel() {
+		if($this->p == null){
+			return $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+		}
+		return $this->p;
 	}
 
-	private function setDocumentModel() {
-		if($this->d == null)
-			$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setDocumentModel() {
+		if($this->d == null){
+			return $this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+		}
+		return $this->d;
 	}
 
-	private function setChartCheckoutModel() {
-		if($this->c == null)
-			$this->c = MatchaModel::setSenchaModel('App.model.patient.PatientChartCheckOut');
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setChartCheckoutModel() {
+		if($this->c == null){
+			return $this->c = MatchaModel::setSenchaModel('App.model.patient.PatientChartCheckOut');
+		}
+		return $this->c;
 	}
 
-	private function setPatientEncounterModel() {
-		if($this->e == null)
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setPatientEncounterModel() {
+		if($this->e == null){
 			$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
+		}
+		return $this->e;
 	}
 
 	/**
@@ -92,7 +109,7 @@ class Patient {
 	 *
 	 * @return mixed
 	 */
-	public function getPatients(stdClass $params) {
+	public function getPatients($params) {
 		$this->setPatientModel();
 		return $this->p->load($params)->all();
 	}
@@ -108,9 +125,9 @@ class Patient {
 		$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $fullName);
 		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
 		$params->update_date = date('Y-m-d H:i:s');
-		$this->patient = $this->p->save($params);
-		$this->patient['fullname'] = $fullName;
-		$this->createPatientDir($this->patient['pid']);
+		$this->patient = (object) $this->p->save($params);
+		$this->patient->fullname = $fullName;
+		$this->createPatientDir($this->patient->pid);
 		return $this->patient;
 	}
 
@@ -233,8 +250,8 @@ class Patient {
 		return array(
 			'success' => true,
 			'patient' => array(
-				'pid' => $patient['pid'],
-				'fullname' => $patient['fullname']
+				'pid' => $patient->pid,
+				'fullname' => $patient->fullname
 			)
 		);
 	}
@@ -383,14 +400,25 @@ class Patient {
 
 	public function patientLiveSearch(stdClass $params) {
 		$this->setPatientModel();
-		$patients = $this->p->sql("SELECT pid,pubpid,fname,lname,mname,DOB,SS
+		$conn = Matcha::getConn();
+		$sth = $conn->prepare('SELECT pid,pubpid,fname,lname,mname,DOB,SS,sex
                              FROM patient
-                            WHERE fname  LIKE '$params->query%'
-                               OR lname  LIKE '$params->query%'
-                               OR mname  LIKE '$params->query%'
-                               OR pubpid LIKE '$params->query%'
-                               OR pid 	 LIKE '$params->query%'
-                               OR SS 	 LIKE '%$params->query'")->all();
+                            WHERE fname  LIKE :fname
+                               OR lname  LIKE :lname
+                               OR mname  LIKE :mname
+                               OR pubpid LIKE :pubpid
+                               OR pid 	 LIKE :pid
+                               OR SS 	 LIKE :ss');
+		$sth->execute(array(
+			':fname' => $params->query . '%',
+			':lname' => $params->query . '%',
+			':mname' => $params->query . '%',
+			':pubpid' => $params->query . '%',
+			':pid' => $params->query . '%',
+			':ss' => '%' . $params->query
+		));
+		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
+
 		$total = count($patients);
 		$rows = array_slice($patients, $params->start, $params->limit);
 		return array(
@@ -586,6 +614,41 @@ class Patient {
 		$this->setPatientModel();
 		$patient = $this->p->load($pid)->one();
 		return $patient['image'];
+	}
+
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function getPossibleDuplicatesByFilters($params) {
+		$this->setPatientModel();
+
+//		$sql = "SELECT *
+//				  FROM `patient`
+// 				 WHERE `fname` SOUNDS LIKE 'sudipto'"
+
+		return array();
+	}
+
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function getPossibleDuplicatesByDemographic($params) {
+		$this->setPatientModel();
+		$sql = "SELECT *
+				  FROM `patient`
+ 				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
+ 				   AND `lname` SOUNDS LIKE '{$params->lname}'
+ 				   AND `sex` = '{$params->sex}'
+ 				   AND `DOB` = '{$params->DOB}'";
+
+		if(isset($params->pid) && $params->pid != 0){
+			$sql .= " AND `pid` != '{$params->pid}'";
+		}
+
+		$results = $this->p->sql($sql)->all();
+		return array('total' => count($results), 'data' => $results);
 	}
 
 }

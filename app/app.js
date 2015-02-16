@@ -48279,7 +48279,7 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 			form = me.getSnippetForm(),
 			newRecord = Ext.create('App.model.patient.encounter.snippetTree', {
 				parentId: record.data.id,
-				specialty_id: me.getSoapTemplateSpecialtiesCombo.getValue(),
+				specialty_id: me.getSoapTemplateSpecialtiesCombo().getValue(),
 				leaf: true
 			});
 
@@ -48338,6 +48338,7 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 			tree = me.getSnippetsTreePanel(),
 			store =  tree.getStore(),
 			selection = tree.getSelectionModel().getSelection(),
+			category = tree.action.split('-'),
 			newRecord,
 			parentRecord;
 
@@ -48352,14 +48353,20 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 			parentRecord = selection[0];
 		}
 
+
+		say(tree.action);
+
 		newRecord = Ext.create('App.model.patient.encounter.snippetTree', {
 			parentId: parentRecord.data.id,
-			category: tree.action,
-			specialty_id: me.getSoapTemplateSpecialtiesCombo.getValue(),
+			category: (category.length > 1 ? category[0] : category[1]),
+			specialty_id: me.getSoapTemplateSpecialtiesCombo().getValue(),
 			leaf: false
 		});
 
 		win.parentRecord = parentRecord;
+
+		say(newRecord);
+
 		me.getSnippetForm().getForm().loadRecord(newRecord);
 	},
 

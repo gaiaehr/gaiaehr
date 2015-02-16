@@ -156,12 +156,15 @@ class DocumentHandler {
 	public function createTempDocument($params){
 		$this->setPatientDocumentTempModel();
 		$params = (object) $params;
-		$this->documents = new Documents();
-		$pdf = base64_encode($this->documents->PDFDocumentBuilder((object) $params));
 		$record = new stdClass();
+		if(isset($params->document) && $params->document != ''){
+			$record->document = $params->document;
+		}else{
+			$this->documents = new Documents();
+			$record->document = base64_encode($this->documents->PDFDocumentBuilder((object) $params));;
+		}
 		$record->create_date = date('Y-m-d H:i:s');
 		$record->document_name = isset($params->document_name) ? $params->document_name : '';
-		$record->document = $pdf;
 		$record = (object) $this->t->save($record);
 		unset($record->document);
 		return $record;

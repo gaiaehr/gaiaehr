@@ -32,10 +32,9 @@ if(!defined('URL')){
 	define('URL', $URL);
 }
 // application version
-if(!defined('VERSION'))	define('VERSION', '0.8.100');
+if(!defined('VERSION'))	define('VERSION', '1.0.0');
 // extjs sdk directory
 if(!defined('EXTJS')) define('EXTJS', 'extjs-4.2.1');
-//if(!defined('EXTJS')) define('EXTJS', 'extjs-4.1.1a');
 
 // sites values
 $_SESSION['sites'] = array();
@@ -66,7 +65,7 @@ $_SESSION['cron']['time'] = time(); // store the last cron time stamp
 // server data
 $_SESSION['server'] = $_SERVER;
 $_SESSION['server']['OS'] = (php_uname('s') == 'Linux' ? 'Linux' : 'Windows');
-$_SESSION['server']['IS_WINDOWS'] = (php_uname('s') == 'Linux' ? false : true);
+$_SESSION['server']['IS_WINDOWS'] = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 $_SESSION['server']['PHP_VERSION'] = phpversion();
 $_SESSION['server']['token'] = null;
 $_SESSION['server']['last_tid'] = null;

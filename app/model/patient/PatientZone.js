@@ -41,7 +41,8 @@ Ext.define('App.model.patient.PatientZone', {
 		{
 			name: 'zone_id',
 			type: 'int',
-			comment: 'Zone ID'
+			comment: 'Zone ID',
+			index: true
 		},
 		{
 			name: 'time_in',
@@ -53,7 +54,8 @@ Ext.define('App.model.patient.PatientZone', {
 			name: 'time_out',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',
-			comment: 'patient out time'
+			comment: 'patient out time',
+			index: true
 		}
 	]
 });

@@ -28,7 +28,7 @@ Ext.define('App.model.administration.InsuranceCompany', {
 			type: 'int'
 		},
 		{
-			name: 'external_ref',
+			name: 'code',
 			type: 'string',
 			len: 80,
 			index: true,

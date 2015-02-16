@@ -24,5 +24,19 @@ Ext.define('App.view.patient.DecisionSupportWarningPanel', {
 	collapsible: true,
 	collapsed: true,
 	hidden: true,
-	margin: 0
+	margin: 0,
+	dockedItems:[
+		{
+			xtype: 'toolbar',
+			dock: 'right',
+			ui: 'plain',
+			items: [
+				{
+					xtype: 'button',
+					icon: 'resources/images/icons/close_exit.png',
+					itemId: 'DecisionSupportWarningPanelCloseBtn'
+				}
+			]
+		}
+	]
 });

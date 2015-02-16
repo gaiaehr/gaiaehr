@@ -603,7 +603,7 @@ class CCDDocument {
 						'use' => 'HP',
 					),
 					'streetAddressLine' => array(
-						'@value' => $this->facility['street']
+						'@value' => $this->facility['address'] . ' ' . $this->facility['address_cont']
 					),
 					'city' => array(
 						'@value' => $this->facility['city']
@@ -650,7 +650,7 @@ class CCDDocument {
 							'use' => 'HP',
 						),
 						'streetAddressLine' => array(
-							'@value' => $this->facility['street']
+							'@value' => $this->facility['address'] . ' ' . $this->facility['address_cont']
 						),
 						'city' => array(
 							'@value' => $this->facility['city']
@@ -698,7 +698,7 @@ class CCDDocument {
 							'use' => 'HP',
 						),
 						'streetAddressLine' => array(
-							'@value' => $this->facility['street']
+							'@value' => $this->facility['address'] . ' ' . $this->facility['address_cont']
 						),
 						'city' => array(
 							'@value' => $this->facility['city']
@@ -777,7 +777,7 @@ class CCDDocument {
 								'use' => 'HP',
 							),
 							'streetAddressLine' => array(
-								'@value' => $this->facility['street']
+								'@value' => $this->facility['address'] . ' ' . $this->facility['address_cont']
 								//TODO provider
 							),
 							'city' => array(
@@ -829,7 +829,7 @@ class CCDDocument {
 									'use' => 'HP',
 								),
 								'streetAddressLine' => array(
-									'@value' => $this->facility['street']
+									'@value' => $this->facility['address'] . ' ' . $this->facility['address_cont']
 									//TODO provider
 								),
 								'city' => array(

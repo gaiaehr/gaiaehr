@@ -40,10 +40,10 @@ class User {
 
 	public function getUsers($params){
 		$users = $this->u->load($params)->all();
-		foreach($users as $index => $user){
-			$users[$index]['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
-			unset($users[$index]['password'], $users[$index]['pwd_history1'], $users[$index]['pwd_history2']);
-			$users[$index] = (object) $users[$index];
+		foreach($users['data'] as $index => $user){
+			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+			$users['data'][$index] = (object) $user;
 		}
 		return $users;
 	}
@@ -51,6 +51,7 @@ class User {
 	public function getUser($params){
 		$user = $this->u->load($params)->one();
 		if($user !== false){
+			$user = isset($user['data']) ? $user['data'] : $user;
 			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
 			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
 		}
@@ -60,6 +61,7 @@ class User {
 	public function getUserByUid($uid){
 		$user = $this->u->load($uid)->one();
 		if($user !== false){
+			$user = isset($user['data']) ? $user['data'] : $user;
 			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
 			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
 		}
@@ -101,7 +103,7 @@ class User {
 		if($user === false){
 			return array('success' => false, 'message' => 'user not found');
 		}
-
+		$user = isset($user['data']) ? $user['data'] : $user;
 		if($user['password'] != $params->old_password){
 			return array('success' => false, 'message' => 'wrong_password_error');
 		}
@@ -123,7 +125,7 @@ class User {
 
 	public function usernameExist($username){
 		$user = $this->u->load(array('username' => $username))->one();
-		return !empty($user);
+		return $user !== false;
 	}
 
 	public function getCurrentUserId(){
@@ -131,13 +133,13 @@ class User {
 	}
 
 	public function getCurrentUserTitleLastName(){
-		$userResult = $this->u->load($this->getCurrentUserId(), array('title', 'lname'))->one();
-		return $userResult['title'] . ' ' . $userResult['lname'];
+		$user = $this->u->load($this->getCurrentUserId(), array('title', 'lname'))->one();
+		return $user['title'] . ' ' . $user['lname'];
 	}
 
 	public function getUserNameById($id){
-		$userResult = $this->u->load($id)->one();
-		return $userResult['title'] . ' ' . $userResult['lname'];
+		$user = $this->u->load($id)->one();
+		return $user['title'] . ' ' . $user['lname'];
 	}
 
 	public function getUserFullNameById($id){
@@ -152,7 +154,8 @@ class User {
 	}
 
 	public function getCurrentUserBasicData(){
-		return $this->u->load($this->getCurrentUserId(), array('id', 'npi', 'title', 'fname', 'mname', 'lname'))->one();
+		$user = $this->u->load($this->getCurrentUserId(), array('id', 'npi', 'title', 'fname', 'mname', 'lname'))->one();
+		return $user;
 	}
 
 	public function updateMyAccount(stdClass $params){
@@ -177,7 +180,8 @@ class User {
 	public function getProviders(){
 		$records = array();
 		$records[] = array('name' => 'All', 'id' => 'all');
-		foreach($this->u->load(array('role_id' => 2))->all() As $row){
+		$users = $this->u->load(array('role_id' => 2))->all();
+		foreach($users As $row){
 			$row['name'] = $this->getUserNameById($row['id']);
 			$records[] = $row;
 		}
@@ -185,19 +189,23 @@ class User {
 	}
 
 	public function getActiveProviders(){
-		$records = array();
-		$records[] = array('option_name' => 'Select', 'option_value' => '');
-		foreach($this->u->load(array('role_id' => 2, 'active' => 1))->all() As $row){
-			$foo = array();
-			$foo['option_name'] = $row['title'] . Person::fullname($row['fname'],$row['mname'],$row['lname']);
-			$foo['option_value'] = $row['id'];
-			$records[] = $foo;
-		}
-		return $records;
+//		$records = array();
+//		$records[] = array('option_name' => 'Select', 'option_value' => '');
+		$this->u->addFilter('npi', '', '!=');
+		$this->u->addFilter('active', 1);
+//		$users = $this->u->load()->all();
+//		foreach($users As $row){
+//			$foo = array();
+//			$foo['option_name'] = $row['title'] . Person::fullname($row['fname'],$row['mname'],$row['lname']);
+//			$foo['option_value'] = $row['id'];
+//			$records[] = $foo;
+//		}
+		return $this->u->load()->all();
 	}
 
 	public function getUserRolesByCurrentUserOrUserId($uid = null){
-		return $this->u->load($uid == null ? $_SESSION['user']['id'] : $uid)->one();
+		$user = $this->u->load($uid == null ? $_SESSION['user']['id'] : $uid)->one();
+		return $user;
 	}
 
 	public function getUserByNPI($npi){

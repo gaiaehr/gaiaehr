@@ -41,22 +41,24 @@ DROP TABLE IF EXISTS `patient_insurances`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `patient_insurances` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
+  `code` varchar(40) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
   `insurance_id` int(11) DEFAULT NULL,
-  `insurance_type` varchar(1) DEFAULT NULL COMMENT 'P = primary S = supplemental C =complementary D = Disable',
+  `insurance_type` varchar(1) DEFAULT NULL COMMENT 'P = primary S = supplemental C = complementary D = Disable',
   `effective_date` date NOT NULL,
   `expiration_date` date DEFAULT NULL,
-  `policy_number` varchar(40) NOT NULL,
-  `covers` varchar(300) DEFAULT NULL,
   `group_number` varchar(40) DEFAULT NULL COMMENT 'group number',
+  `policy_number` varchar(40) DEFAULT NULL,
+  `cover_medical` varchar(10) DEFAULT NULL,
+  `cover_dental` varchar(10) DEFAULT NULL,
   `subscriber_title` varchar(10) NOT NULL,
   `subscriber_given_name` varchar(80) DEFAULT NULL,
   `subscriber_middle_name` varchar(80) DEFAULT NULL,
   `subscriber_surname` varchar(80) DEFAULT NULL,
   `subscriber_relationship` varchar(40) DEFAULT NULL,
-  `subscriber_dob` date DEFAULT NULL,
   `subscriber_sex` varchar(1) DEFAULT NULL,
+  `subscriber_dob` date DEFAULT NULL,
   `subscriber_ss` varchar(10) DEFAULT NULL,
   `subscriber_street` varchar(80) DEFAULT NULL,
   `subscriber_city` varchar(80) DEFAULT NULL,
@@ -67,7 +69,6 @@ CREATE TABLE `patient_insurances` (
   `subscriber_employer` varchar(80) DEFAULT NULL,
   `display_order` tinyint(3) unsigned DEFAULT NULL,
   `notes` varchar(320) DEFAULT NULL,
-  `copay` varchar(10) DEFAULT NULL COMMENT 'default copay',
   `image` mediumtext COMMENT 'insurance image base64 string',
   `create_uid` int(11) DEFAULT NULL,
   `update_uid` int(11) DEFAULT NULL,
@@ -75,7 +76,8 @@ CREATE TABLE `patient_insurances` (
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
-  KEY `IK_covers` (`covers`(255))
+  KEY `IK_cover_medical` (`cover_medical`(255)),
+  KEY `IK_cover_dental` (`cover_dental`(255))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1571,7 +1573,7 @@ DROP TABLE IF EXISTS `patient`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `patient` (
-  `pid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL,
   `title` varchar(10) DEFAULT NULL COMMENT 'Title Mr. Sr.',
   `fname` varchar(60) DEFAULT NULL COMMENT 'first name',
   `mname` varchar(40) DEFAULT NULL COMMENT 'middle name',
@@ -1592,7 +1594,7 @@ CREATE TABLE `patient` (
   `home_phone` varchar(15) DEFAULT NULL COMMENT 'home phone #',
   `mobile_phone` varchar(15) DEFAULT NULL COMMENT 'mobile phone #',
   `work_phone` varchar(15) DEFAULT NULL COMMENT 'work phone #',
-  `email` varchar(60) DEFAULT NULL COMMENT 'email',
+  `email` varchar(80) DEFAULT NULL COMMENT 'email',
   `mothers_name` varchar(40) DEFAULT NULL COMMENT 'mother name',
   `guardians_name` varchar(40) DEFAULT NULL COMMENT 'guardians name',
   `emer_contact` varchar(40) DEFAULT NULL COMMENT 'emergency contact',
@@ -1656,8 +1658,7 @@ CREATE TABLE `patient` (
   KEY `LiveSearchIndex` (`pid`,`pubpid`,`fname`,`mname`,`lname`,`SS`),
   KEY `pubaccount` (`pubaccount`),
   KEY `IK_DOB` (`DOB`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COMMENT='Patients/Demographics';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=144962 DEFAULT CHARSET=utf8 COMMENT='Patients/Demographics';
 
 --
 -- Table structure for table `prescriptions`

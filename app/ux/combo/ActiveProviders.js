@@ -12,12 +12,45 @@ Ext.define('App.ux.combo.ActiveProviders', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{
-					name: 'option_name',
+					name: 'id',
+					type: 'int'
+				},
+				{
+					name: 'title',
 					type: 'string'
 				},
 				{
+					name: 'fname',
+					type: 'string'
+				},
+				{
+					name: 'mname',
+					type: 'string'
+				},
+				{
+					name: 'lname',
+					type: 'string'
+				},
+				{
+					name: 'fullname',
+					type: 'string',
+					convert: function(v, record){
+						return record.data.title + ' ' + record.data.lname + ', ' + record.data.fname + ' ' + record.data.mname;
+					}
+				},
+				{
+					name: 'option_name',
+					type: 'string',
+					convert: function(v, record){
+						return record.data.title + ' ' + record.data.lname + ', ' + record.data.fname + ' ' + record.data.mname;
+					}
+				},
+				{
 					name: 'option_value',
-					type: 'int'
+					type: 'int',
+					convert: function(v, record){
+						return record.data.id;
+					}
 				}
 			],
 			proxy: {

@@ -122,6 +122,12 @@ class Insurance {
 		return $this->pi->destroy($params);
 	}
 
+
+	public function getInsuranceCompanyById($id){
+		$this->ic->addFilter('id', $id);
+		return $this->ic->load()->one();
+	}
+
 	public function getPatientPrimaryInsuranceByPid($pid) {
 		$this->pi->addFilter('pid', $pid);
 		$this->pi->addFilter('insurance_type', 'p');

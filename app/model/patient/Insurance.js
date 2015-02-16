@@ -1,6 +1,6 @@
 /**
  * Generated dynamically by Matcha::Connect
- * Create date: 2014-08-31 12:10:50
+ * Create date: 2015-01-28 12:02:41
  */
 
 Ext.define('App.model.patient.Insurance',{
@@ -15,19 +15,27 @@ Ext.define('App.model.patient.Insurance',{
             type: 'int'
         },
         {
+            name: 'code',
+            type: 'string',
+            len: 40,
+            index: true
+        },
+        {
             name: 'pid',
             type: 'int',
-	        index: true
+            index: true
         },
         {
             name: 'insurance_id',
-            type: 'int'
+            type: 'int',
+            index: true
         },
         {
             name: 'insurance_type',
             type: 'string',
             comment: 'P = primary S = supplemental C =complementary D = Disable',
-            len: 1
+            len: 1,
+            index: true
         },
         {
             name: 'effective_date',
@@ -42,22 +50,22 @@ Ext.define('App.model.patient.Insurance',{
             dateFormat: 'Y-m-d'
         },
         {
-            name: 'policy_number',
-            type: 'string',
-            len: 40
-        },
-        {
             name: 'group_number',
             type: 'string',
             comment: 'group number',
             len: 40
         },
         {
-            name: 'covers',
-            type: 'array',
-	        dataType: 'VARCHAR',
-	        index: true,
-	        len: 300
+            name: 'cover_medical',
+            type: 'string',
+            len: 10,
+            index: true
+        },
+        {
+            name: 'cover_dental',
+            type: 'string',
+            len: 10,
+            index: true
         },
         {
             name: 'subscriber_title',
@@ -89,11 +97,6 @@ Ext.define('App.model.patient.Insurance',{
             type: 'date',
             dataType: 'date',
             dateFormat: 'Y-m-d'
-        },
-        {
-            name: 'subscriber_sex',
-            type: 'string',
-            len: 1
         },
         {
             name: 'subscriber_ss',
@@ -140,22 +143,16 @@ Ext.define('App.model.patient.Insurance',{
             type: 'int',
             len: 3
         },
-	    {
-		    name: 'notes',
-		    type: 'string'
-	    },
-	    {
-		    name: 'copay',
-		    type: 'string',
-		    comment: 'default copay',
-		    len: 10
-	    },
-	    {
-		    name: 'image',
-		    type: 'string',
-		    dataType: 'mediumtext',
-		    comment: 'insurance image base64 string'
-	    },
+        {
+            name: 'notes',
+            type: 'string'
+        },
+        {
+            name: 'image',
+            type: 'string',
+            dataType: 'mediumtext',
+            comment: 'insurance image base64 string'
+        },
         {
             name: 'create_uid',
             type: 'int'
@@ -173,6 +170,16 @@ Ext.define('App.model.patient.Insurance',{
             name: 'update_date',
             type: 'date',
             dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'subscriber_sex',
+            type: 'string',
+	        len: 1
+        },
+        {
+            name: 'policy_number',
+            type: 'string',
+	        len: 40
         }
     ],
     proxy: {

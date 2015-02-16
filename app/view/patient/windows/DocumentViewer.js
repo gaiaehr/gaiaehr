@@ -22,7 +22,7 @@ Ext.define('App.view.patient.windows.DocumentViewer', {
 	title: _('documents_viewer_window'),
 	layout: 'fit',
 	height: 700,
-	width: 1000,
+	width: 800,
 	bodyStyle: 'background-color:#fff',
 	maximizable: true,
 	defaults: {

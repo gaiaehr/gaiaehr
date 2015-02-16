@@ -128,10 +128,12 @@ class CombosData {
 		if($this->I == null)
 			$this->I = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
 		$options = array();
-		foreach($this->I->load(array('active' => '1'))->all() as $option){
+		$this->I->addFilter('active', 1);
+		$records = $this->I->load()->all();
+		foreach($records as $record){
 			$options[] = array(
-				'option_name' => $option['id'] . ': ' .$option['name'],
-				'option_value' => $option['id']
+				'option_name' => $record['id'] . ': ' .$record['name'],
+				'option_value' => $record['id']
 			);
 		}
 		return $options;
@@ -143,8 +145,6 @@ class CombosData {
 
 		$options = array();
 
-
-
 		return $options;
 	}
 
@@ -154,7 +154,8 @@ class CombosData {
 		$argumentSQL['SELECT'] = "users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name";
 		$argumentSQL['WHERE'] = "active = '1' AND authorized = '1' AND (npi IS NOT null AND npi != '')";
 		$argumentSQL['ORDER'] = "option_name ASC";
-		return $this->U->buildSQL($argumentSQL)->all();
+		$records = $this->U->buildSQL($argumentSQL)->all();
+		return $records['data'];
 	}
 
 	public function getActiveFacilities(){
@@ -183,16 +184,13 @@ class CombosData {
 
 	public function getUsers(){
 		include_once('Person.php');
-		if($this->U == null)
+		if($this->U == null){
 			$this->U = MatchaModel::setSenchaModel('App.model.administration.User');
+		}
 		$rows = array();
-		foreach($this->U->load(array('active' => 1), array(
-			'id',
-			'title',
-			'fname',
-			'mname',
-			'lname'
-		))->all() as $row){
+		$records = $this->U->load(array('active' => 1), array('id','title','fname','mname','lname'))->all();
+
+		foreach($records['data'] as $row){
 			$row['name'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
 			unset($row['title'], $row['fname'], $row['mname'], $row['lname']);
 			array_push($rows, $row);

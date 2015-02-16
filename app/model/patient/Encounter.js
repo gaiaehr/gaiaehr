@@ -1,6 +1,6 @@
 /**
  * Generated dynamically by Matcha::Connect
- * Create date: 2014-12-11 12:16:19
+ * Create date: 2015-01-20 21:16:17
  */
 
 Ext.define('App.model.patient.Encounter',{
@@ -48,6 +48,12 @@ Ext.define('App.model.patient.Encounter',{
             defaultValue: false
         },
         {
+            name: 'technician_uid',
+            type: 'int',
+            useNull: true,
+            index: true
+        },
+        {
             name: 'specialty_id',
             type: 'int',
             useNull: true,
@@ -87,12 +93,6 @@ Ext.define('App.model.patient.Encounter',{
         },
         {
             name: 'facility',
-            type: 'int',
-            len: 1,
-            index: true
-        },
-        {
-            name: 'billing_facility',
             type: 'int',
             len: 1,
             index: true
@@ -215,15 +215,15 @@ Ext.define('App.model.patient.Encounter',{
             foreignKey: 'eid'
         }
     ],
-	isClose: function(){
-		return typeof this.data.close_date != 'undefined' && this.data.close_date != null;
-	},
+    isClose: function(){
+        return typeof this.data.close_date != 'undefined' && this.data.close_date != null;
+    },
 
-	isSigned: function(){
-		return typeof this.data.provider_uid != 'undefined' && this.data.provider_uid != null && this.data.provider_uid != 0;
-	},
+    isSigned: function(){
+        return typeof this.data.provider_uid != 'undefined' && this.data.provider_uid != null && this.data.provider_uid != 0;
+    },
 
-	isCoSigned: function(){
-		return typeof this.data.supervisor_uid != 'undefined' && this.data.supervisor_uid != null && this.data.supervisor_uid != 0;
-	}
+    isCoSigned: function(){
+        return typeof this.data.supervisor_uid != 'undefined' && this.data.supervisor_uid != null && this.data.supervisor_uid != 0;
+    }
 });

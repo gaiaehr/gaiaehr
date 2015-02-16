@@ -811,6 +811,30 @@ CREATE TABLE `specialties` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `payments`
+--
+
+DROP TABLE IF EXISTS `payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `payments` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL DEFAULT '0',
+  `dtime` datetime NOT NULL,
+  `encounter` bigint(20) NOT NULL DEFAULT '0',
+  `user` varchar(255) DEFAULT NULL,
+  `method` varchar(255) DEFAULT NULL,
+  `source` varchar(255) DEFAULT NULL,
+  `amount1` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `amount2` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `posted1` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `posted2` decimal(12,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `referring_providers`
 --
 
@@ -919,6 +943,36 @@ CREATE TABLE `users_facility` (
   `facility_id` int(11) NOT NULL,
   PRIMARY KEY (`tablename`,`table_id`,`facility_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='joins users or patient_data to facility table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rxnatomarchive`
+--
+
+DROP TABLE IF EXISTS `rxnatomarchive`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rxnatomarchive` (
+  `RXAUI` varchar(8) NOT NULL,
+  `AUI` varchar(10) DEFAULT NULL,
+  `STR` varchar(4000) NOT NULL,
+  `ARCHIVE_TIMESTAMP` varchar(280) NOT NULL,
+  `CREATED_TIMESTAMP` varchar(280) NOT NULL,
+  `UPDATED_TIMESTAMP` varchar(280) NOT NULL,
+  `CODE` varchar(50) DEFAULT NULL,
+  `IS_BRAND` varchar(1) DEFAULT NULL,
+  `LAT` varchar(3) DEFAULT NULL,
+  `LAST_RELEASED` varchar(30) DEFAULT NULL,
+  `SAUI` varchar(50) DEFAULT NULL,
+  `VSAB` varchar(40) DEFAULT NULL,
+  `RXCUI` varchar(8) DEFAULT NULL,
+  `SAB` varchar(20) DEFAULT NULL,
+  `TTY` varchar(20) DEFAULT NULL,
+  `MERGED_TO_RXCUI` varchar(8) DEFAULT NULL,
+  KEY `X_RXNATOMARCHIVE_RXAUI` (`RXAUI`),
+  KEY `X_RXNATOMARCHIVE_RXCUI` (`RXCUI`),
+  KEY `X_RXNATOMARCHIVE_MERGED_TO` (`MERGED_TO_RXCUI`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1632,7 +1686,7 @@ CREATE TABLE `patient` (
   `title` varchar(10) DEFAULT NULL COMMENT 'Title Mr. Sr.',
   `fname` varchar(60) DEFAULT NULL COMMENT 'first name',
   `mname` varchar(40) DEFAULT NULL COMMENT 'middle name',
-  `lname` varchar(60) DEFAULT NULL COMMENT 'last name',
+  `lname` varchar(60) CHARACTER SET latin1 COLLATE latin1_general_ci DEFAULT NULL COMMENT 'last name',
   `sex` varchar(10) DEFAULT NULL COMMENT 'sex',
   `DOB` datetime DEFAULT NULL COMMENT 'day of birth',
   `marital_status` varchar(40) DEFAULT NULL COMMENT 'marital status',
@@ -1868,22 +1922,6 @@ CREATE TABLE `patient_insurance_covers` (
   KEY `IK_cover_emergency` (`cover_emergency`),
   KEY `IK_cover_inpatient` (`cover_inpatient`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `immunizations_relations`
---
-
-DROP TABLE IF EXISTS `immunizations_relations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `immunizations_relations` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `immunization_id` bigint(20) DEFAULT NULL,
-  `foreign_id` bigint(20) DEFAULT NULL,
-  `code_type` varchar(255) DEFAULT NULL COMMENT 'medication,active problem or labs',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2383,6 +2421,22 @@ CREATE TABLE `facility` (
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `_sencha_model`
+--
+
+DROP TABLE IF EXISTS `_sencha_model`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `_sencha_model` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `model` varchar(150) DEFAULT NULL,
+  `modelData` varchar(21000) DEFAULT NULL,
+  `modelLastChange` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4071,4 +4125,4 @@ CREATE TABLE `laboratories` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-02-16 14:25:25
+-- Dump completed on 2015-02-16 15:45:49

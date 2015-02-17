@@ -689,10 +689,11 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.Roles',
 	                'administration.Specialties',
 
+	                'areas.FloorPlan',
+
 	                'dashboard.Dashboard',
 	                'dashboard.panel.NewResults',
 	                'dashboard.panel.DailyVisits',
-
 
 	                'AlwaysOnTop',
 	                'Cron',

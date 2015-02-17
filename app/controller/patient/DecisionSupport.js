@@ -33,9 +33,19 @@ Ext.define('App.controller.patient.DecisionSupport', {
 		me.control({
 			'viewport':{
 				beforeencounterload: me.onBeforeEncounterLoad
+			},
+			'#DecisionSupportWarningPanelCloseBtn':{
+				click: me.DecisionSupportWarningPanelCloseBtnClick
 			}
 		});
 
+	},
+
+	DecisionSupportWarningPanelCloseBtnClick: function(btn){
+		var warning = btn.up('decisionsupportwarningpanel');
+		warning.collapse();
+		warning.hide();
+		warning.removeAll();
 	},
 
 	onBeforeEncounterLoad: function(){

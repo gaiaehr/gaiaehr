@@ -100,8 +100,12 @@ Ext.define('App.controller.patient.encounter.SuperBill', {
 			serviceData.tooth = record.data.tooth;
 		}
 
-		if(record.data.surface){
-			serviceData.surface = record.data.surface;
+		if(record.data.surfaceString){
+			serviceData.surface = record.data.surfaceString;
+		}
+
+		if(record.data.cavity_quadrant){
+			serviceData.cavity_quadrant = record.data.cavity_quadrant;
 		}
 
 		var records = store.add(serviceData);

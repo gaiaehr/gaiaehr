@@ -20,6 +20,8 @@
 namespace modules\quickmedical\dataProvider;
 include_once (ROOT . '/modules/quickmedical/dataProvider/TraSoapClient.php');
 
+gc_enable();
+
 class Sync extends TraSoapClient {
 
 	/**
@@ -54,6 +56,12 @@ class Sync extends TraSoapClient {
 	 * @var array
 	 */
 	private $insuranceMap;
+
+	private $visits = array(
+		'99201', '99202', '99203', '99204', '99205',
+		'99211', '99212', '99213', '99214', '99215',
+		'99241', '99242', '99243', '99244', '99245'
+		);
 
 	function __construct() {
 		$this->patientModel = \MatchaModel::setSenchaModel('App.model.patient.Patient');
@@ -355,6 +363,26 @@ class Sync extends TraSoapClient {
 		return $response;
 	}
 
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	function Patient($params) {
+		$client = $this->SoapClient('Patients');
+		$request = new \stdClass();
+		$request->recordNumber = $params->recordNumber;
+		$response = $client->GetOne($request);
+		$result = $response->GetOneResult;
+		if($result->Success){
+
+			$this->setSpecialtyMap();
+			$this->setInsuranceMap();
+
+			$this->patientHandler($result->Patient);
+		}
+		return $response;
+	}
+
 	private function patientHandler($patient) {
 		$now = date('Y-m-d H:i:s');
 
@@ -378,7 +406,7 @@ class Sync extends TraSoapClient {
 			$insurances = is_array($insurances) ? $insurances : array($insurances);
 
 			foreach($insurances as $insurance){
-				$insuranceRecord = $this->patientInsuranceModel->load(array('code' => $insurance->code))->one();
+				$insuranceRecord = $this->patientInsuranceModel->load(array('code' => $insurance->Code))->one();
 				if($insuranceRecord === false){
 					$insuranceRecord = new \stdClass();
 				} else {
@@ -391,6 +419,7 @@ class Sync extends TraSoapClient {
 				$insuranceRecord->effective_date = '0000-00-00';
 				$insuranceRecord->expiration_date = $insurance->InsuranceExpDate;
 				$insuranceRecord->group_number = $insurance->InsuranceGroup;
+				$insuranceRecord->policy_number = $insurance->InsurancePolicyNumber;
 
 				$covers = explode('~', $insurance->InsuranceCover);
 				$insuranceRecord->cover_radiology = isset($covers[0]) ? $covers[0] : '';
@@ -561,7 +590,7 @@ class Sync extends TraSoapClient {
 			$procedureModel = \MatchaModel::setSenchaModel('Modules.billing.model.BillingProcedure');
 			\Matcha::$__app = ROOT . '/app';
 
-			$now = date('Y-m-d H:is');
+			$now = date('Y-m-d H:i:s');
 
 			$this->setSpecialtyMap();
 
@@ -578,7 +607,7 @@ class Sync extends TraSoapClient {
 				}
 				$record = $this->mapProcedure($procedureRecord, $procedure);
 
-				if(isset($record->id)){
+				if(!isset($record->id)){
 					$record->create_uid = '0';
 					$record->update_uid = '0';
 					$record->create_date = $now;
@@ -589,6 +618,13 @@ class Sync extends TraSoapClient {
 				}
 				$procedureModel->save($record);
 			}
+
+			$conn = \Matcha::getConn();
+			$sth =$conn->prepare("UPDATE `acc_billing_procedures`
+					           SET `description` = TRIM(TRIM(TRAILING '%ï¿½' FROM `description`)),
+								   `abbreviation` = TRIM(TRIM(TRAILING '%ï¿½' FROM `abbreviation`))
+  							 WHERE `description` LIKE '%ï¿½' OR `abbreviation` LIKE '%ï¿½'");
+			$sth->execute();
 		}
 		return $response;
 	}
@@ -602,8 +638,7 @@ class Sync extends TraSoapClient {
 
 		$record->proc_code = $procedure->Code;
 		$record->proc_esp = $procedure->SpecialtyCode;
-		$record->specialty_id = $this->specialtiesMap[$procedure->SpecialtyCode];
-
+		$record->specialty_id = isset($this->specialtiesMap[$procedure->SpecialtyCode]) ? $this->specialtiesMap[$procedure->SpecialtyCode] : '0';
 		$record->modifier = $procedure->Mod;
 		$record->description = $procedure->Description;
 		$record->abbreviation = $procedure->Abreviation;
@@ -638,7 +673,7 @@ class Sync extends TraSoapClient {
 		$record->inv_units = $procedure->UnitValue;
 		$record->wl_esp = $procedure->WlSpe;
 		$record->level = $procedure->Level;
-		//$record->is_visit = $procedure->CC; // ??
+		$record->is_visit = in_array($procedure->Code, $this->visits);
 		$record->is_active = true;
 
 		return $record;
@@ -697,11 +732,109 @@ class Sync extends TraSoapClient {
 		return $response;
 	}
 
+
+	function InsurancesCoversChanges(){
+		$client = $this->SoapClient('Billing');
+		$response = $client->GetInsuranceAndCoversChanges();
+		$result = $response->GetInsuranceAndCoversChangesResult;
+
+		$this->setSpecialtyMap();
+
+		if($result->Success){
+
+			$now = date('Y-m-d H:i:s');
+
+
+			if(isset($result->InsuranceChanges)){
+
+
+				if(isset($result->InsuranceChanges->InsurancesSave)){
+					$insurances = is_array($result->InsuranceChanges->InsurancesSave->Insurance) ?
+						$result->InsuranceChanges->InsurancesSave->Insurance :
+						array($result->InsuranceChanges->InsurancesSave->Insurance);
+
+					foreach($insurances as $insurance){
+						$this->InsuranceHandler($insurance);
+					}
+				}
+
+
+				if(isset($result->InsuranceChanges->InsurancesDeleted)){
+					$insurances = is_array($result->InsuranceChanges->InsurancesDeleted->Insurance) ?
+						$result->InsuranceChanges->InsurancesDeleted->Insurance :
+						array($result->InsuranceChanges->InsurancesDeleted->Insurance);
+
+					foreach($insurances as $insurance){
+
+					}
+				}
+			}
+
+			if(isset($result->CoversChanges)){
+
+
+				if(isset($result->CoversChanges->CoversSave)){
+					$covers = is_array($result->CoversChanges->CoversSave->Cover) ?
+						$result->CoversChanges->CoversSave->Cover :
+						array($result->CoversChanges->CoversSave->Cover);
+
+					foreach($covers as $cover){
+
+						$insurance_id = ''; // get insurance id;
+
+						$this->coverHandler($cover, $insurance_id ,$now);
+					}
+				}
+
+
+				if(isset($result->CoversChanges->CoversDeleted)){
+					$covers = is_array($result->CoversChanges->CoversDeleted->Cover) ?
+						$result->CoversChanges->CoversDeleted->Cover :
+						array($result->CoversChanges->CoversDeleted->Cover);
+
+					foreach($covers as $cover){
+
+						$insurance_id = ''; // get insurance id;
+
+						$coverRecord = $this->coverModel->load(array(
+							'insurance_id' => $insurance_id,
+							'cover' => $cover->Code
+						))->one();
+
+						if($coverRecord !== false){
+							if(isset($this->specialtiesMap[$cover->SpecialtyCode])){
+								$specialty_id = $this->specialtiesMap[$cover->SpecialtyCode];
+							} else {
+								$specialty_id = 0;
+							}
+							$coverLevelRecord = $this->coverLevelModel->load(array(
+								'specialty_id' => $specialty_id,
+								'insurance_id' => $insurance_id,
+								'cover_id' => $coverRecord['id']
+							))->one();
+							$this->coverModel->destroy($coverRecord);
+							$this->coverLevelModel->destroy($coverLevelRecord);
+
+						}
+					}
+				}
+			}
+		}
+
+		return $response;
+
+	}
+
+
 	/**
 	 * @param $insurance
 	 */
 	private function InsuranceHandler($insurance) {
 		$now = date('Y-m-d H:i:s');
+
+
+		// skip SSS
+		//if($insurance->Code == '068') return;
 
 		$record = $this->insuranceModel->load(array('code' => $insurance->Code))->one();
 		if($record === false){
@@ -735,11 +868,10 @@ class Sync extends TraSoapClient {
 			for(; $page <= $pages; $page++){
 
 				if($page !== 1){
-					error_log('Not Handled Second Page Found');
+					error_log('Not Handled Rate Second Page ('. $page .') Found for Insurance Code ('. $insurance->Code .')');
 					$rates = $insurance->Rates->Rate->Rate;
 				} else {
 					$rates = $insurance->Rates->Rate->Rate;
-					continue;
 				}
 
 				$rates = is_array($rates) ? $rates : array($rates);
@@ -781,11 +913,14 @@ class Sync extends TraSoapClient {
 
 					$this->rateModel->save($rateRecord);
 					unset($rateRecord);
+
+					gc_collect_cycles();
 				}
 			}
+
+			unset($insurance->Rates, $rates);
 		}
 
-		unset($insurance->Rates, $rates);
 
 		/**
 		 * Insurance Covers
@@ -798,15 +933,25 @@ class Sync extends TraSoapClient {
 
 				if($page !== 1){
 					// get page....
+					unset($client);
+
 					$client = $this->SoapClient('Billing');
 					$request = new \stdClass();
 					$request->coversRequest = new \stdClass();
 					$request->coversRequest->InsuranceCode = $record->code;
 					$request->coversRequest->Page = $page;
 					$response = $client->GetCovers($request);
+
+					unset($request);
+
 					$result = $response->GetCoversResult;
-					if(!$result->Success)
+
+					unset($response);
+
+					if(!$result->Success) {
 						continue;
+					}
+
 					$covers = $result->Cover->Cover;
 				} else {
 					$covers = $insurance->Covers->Cover->Cover;
@@ -815,92 +960,104 @@ class Sync extends TraSoapClient {
 				$covers = is_array($covers) ? $covers : array($covers);
 
 				foreach($covers as $cover){
-
-					if(isset($this->specialtiesMap[$cover->SpecialtyCode])){
-						$specialty_id = $this->specialtiesMap[$cover->SpecialtyCode];
-					} else {
-						$specialty_id = 0;
-					}
-
-					$coverRecord = $this->coverModel->load(array(
-						'insurance_id' => $insurance_id,
-						'cover' => $cover->Code
-					))->one();
-
-					if($coverRecord === false){
-						$coverRecord = new \stdClass();
-					} else {
-						$coverRecord = (object)$coverRecord;
-					}
-
-					$coverRecord->insurance_id = $insurance_id;
-					$coverRecord = $this->mapCover($coverRecord, $cover);
-
-					if(!isset($coverRecord->id)){
-						$coverRecord->create_uid = '0';
-						$coverRecord->update_uid = '0';
-						$coverRecord->create_date = $now;
-						$coverRecord->update_date = $now;
-					} else {
-						$coverRecord->update_uid = '0';
-						$coverRecord->update_date = $now;
-					}
-
-					$coverRecord = (object)$this->coverModel->save($coverRecord)['data'];
-					$cover_id = $coverRecord->id;
-
-					$percents = explode('~', $cover->Percents);
-					$percents_from = explode('~', $cover->PercentsFrom);
-
-					foreach($percents as $i => $percent){
-						$procedure = $this->procedureModel->load(array('level' => $i))->one();
-						// skip if a procedure using this level is not found
-						if($procedure === false)
-							continue;
-
-						$coverLevelRecord = $this->coverLevelModel->load(array(
-							'specialty_id' => $specialty_id,
-							'insurance_id' => $insurance_id,
-							'cover_id' => $cover_id,
-							'level' => $i,
-						))->one();
-
-						if($coverLevelRecord === false){
-							$coverLevelRecord = new \stdClass();
-						} else {
-							$coverLevelRecord = (object)$coverLevelRecord;
-						}
-
-						$coverLevelRecord->specialty_id = $specialty_id;
-						$coverLevelRecord->insurance_id = $insurance_id;
-						$coverLevelRecord->cover_id = $cover_id;
-						$coverLevelRecord->level = $i;
-
-						$coverLevelRecord->percent = $percents[$i];
-						$coverLevelRecord->pointer = $percents_from[$i];
-						$coverLevelRecord->notes = isset($cover->Notes) ? $cover->Notes : '';
-
-						if(!isset($coverLevelRecord->id)){
-							$coverLevelRecord->create_uid = '0';
-							$coverLevelRecord->update_uid = '0';
-							$coverLevelRecord->create_date = $now;
-							$coverLevelRecord->update_date = $now;
-						} else {
-							$coverLevelRecord->update_uid = '0';
-							$coverLevelRecord->update_date = $now;
-						}
-
-						$this->coverLevelModel->save($coverLevelRecord);
-
-						unset($coverLevelRecord);
-					}
-
-					unset($coverRecord);
+					$this->coverHandler($cover, $insurance_id, $now);
 				}
+
+				unset($covers);
+
+				gc_collect_cycles();
 			}
+
+			unset($insurance->Covers);
 		}
 
-		unset($record);
+		unset($record, $insurance);
+	}
+
+	private function coverHandler($cover, $insurance_id, $now){
+		if(isset($this->specialtiesMap[$cover->SpecialtyCode])){
+			$specialty_id = $this->specialtiesMap[$cover->SpecialtyCode];
+		} else {
+			$specialty_id = 0;
+		}
+
+		$_SESSION['RequestCoverCode'] = $cover->Code;
+
+		$coverRecord = $this->coverModel->load(array(
+			'insurance_id' => $insurance_id,
+			'cover' => $cover->Code
+		))->one();
+
+		if($coverRecord === false){
+			$coverRecord = new \stdClass();
+		} else {
+			$coverRecord = (object)$coverRecord;
+		}
+
+		$coverRecord->insurance_id = $insurance_id;
+		$coverRecord = $this->mapCover($coverRecord, $cover);
+
+		if(!isset($coverRecord->id)){
+			$coverRecord->create_uid = '0';
+			$coverRecord->update_uid = '0';
+			$coverRecord->create_date = $now;
+			$coverRecord->update_date = $now;
+		} else {
+			$coverRecord->update_uid = '0';
+			$coverRecord->update_date = $now;
+		}
+
+		$coverRecord = (object)$this->coverModel->save($coverRecord)['data'];
+		$cover_id = $coverRecord->id;
+
+		$percents = explode('~', $cover->Percents);
+		$percents_from = explode('~', $cover->PercentsFrom);
+
+		foreach($percents as $i => $percent){
+			$procedure = $this->procedureModel->load(array('level' => $i))->one();
+			// skip if a procedure using this level is not found
+			if($procedure === false)
+				continue;
+
+			$coverLevelRecord = $this->coverLevelModel->load(array(
+				'specialty_id' => $specialty_id,
+				'insurance_id' => $insurance_id,
+				'cover_id' => $cover_id,
+				'level' => $i,
+			))->one();
+
+			if($coverLevelRecord === false){
+				$coverLevelRecord = new \stdClass();
+			} else {
+				$coverLevelRecord = (object)$coverLevelRecord;
+			}
+
+			$coverLevelRecord->specialty_id = $specialty_id;
+			$coverLevelRecord->insurance_id = $insurance_id;
+			$coverLevelRecord->cover_id = $cover_id;
+			$coverLevelRecord->level = $i;
+
+			$coverLevelRecord->percent = $percents[$i];
+			$coverLevelRecord->pointer = $percents_from[$i];
+			$coverLevelRecord->notes = isset($cover->Notes) ? $cover->Notes : '';
+
+			if(!isset($coverLevelRecord->id)){
+				$coverLevelRecord->create_uid = '0';
+				$coverLevelRecord->update_uid = '0';
+				$coverLevelRecord->create_date = $now;
+				$coverLevelRecord->update_date = $now;
+			} else {
+				$coverLevelRecord->update_uid = '0';
+				$coverLevelRecord->update_date = $now;
+			}
+
+			$this->coverLevelModel->save($coverLevelRecord);
+
+			unset($coverLevelRecord);
+		}
+
+		unset($coverRecord);
+
 	}
 
 	/**

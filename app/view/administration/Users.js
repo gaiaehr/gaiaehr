@@ -28,18 +28,20 @@ Ext.define('App.view.administration.Users', {
 		var me = this;
 
 		me.userStore = Ext.create('App.store.administration.User', {
+			remoteSort: true,
 			autoSync: false
 		});
 
 		me.userGrid = Ext.create('Ext.grid.Panel', {
 			itemId: 'AdminUserGridPanel',
 			store: me.userStore,
+			columLines: true,
 			columns: [
 				{
 					text: 'id',
 					sortable: false,
 					dataIndex: 'id',
-					width: 25
+					width: 50
 				},
 				{
 					width: 100,
@@ -317,21 +319,23 @@ Ext.define('App.view.administration.Users', {
 					]
 				})
 			],
-			dockedItems: [
+			tbar: [
 				{
-					xtype: 'toolbar',
-					dock: 'top',
-					items: [
-						{
-							xtype: 'button',
-							text: _('add_new_user'),
-							iconCls: 'save',
-							scope: me,
-							handler: me.onNewUser
-						}
-					]
+					xtype: 'button',
+					text: _('user'),
+					iconCls: 'icoAdd',
+					scope: me,
+					handler: me.onNewUser
 				}
-			]
+			],
+			bbar: {
+				xtype: 'pagingtoolbar',
+				pageSize: 10,
+				store: me.userStore,
+				displayInfo: true,
+				plugins: new Ext.ux.SlidingPager()
+			}
+
 		});
 
 		me.pageBody = [ me.userGrid ];

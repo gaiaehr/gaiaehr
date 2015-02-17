@@ -98,18 +98,24 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 	},
 
 	setSpecialtyCombo: function(provider, specialty){
-		this.getEncounterSpecialtyCmb().setVisible(this.reloadSpecialityCmbBySpecialty(provider.specialty, specialty));
+		var show = this.reloadSpecialityCmbBySpecialty(provider.specialty, specialty);
+		this.getEncounterSpecialtyCmb().setVisible(show);
+		this.getEncounterSpecialtyCmb().setDisabled(!show);
 	},
 
 	reloadSpecialityCmbBySpecialty: function(specialties, specialty){
 		var me = this,
 			show = false;
 
+		say('reloadSpecialityCmbBySpecialty');
+		say(specialties);
+		say(specialty);
+
 		if(Ext.isNumeric(specialty) && specialty > 0){
 			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
 
-		}else if(Ext.isArray(specialties) && specialty.length == 1){
-			me.getEncounterSpecialtyCmb().setValue(eval(specialty[0]));
+		}else if(Ext.isArray(specialties) && specialties.length == 1){
+			me.getEncounterSpecialtyCmb().setValue(eval(specialties[0]));
 
 		}else{
 			me.getEncounterSpecialtyCmb().setValue(null);
@@ -123,8 +129,8 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 			var store = this.getEncounterSpecialtyCmb().getStore(),
 				filters = [];
 
-			for(var i = 0; i < specialty.length; i++){
-				Ext.Array.push(filters, specialty[i]);
+			for(var i = 0; i < specialties.length; i++){
+				Ext.Array.push(filters, specialties[i]);
 			}
 
 			store.clearFilter(true);

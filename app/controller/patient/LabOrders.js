@@ -107,7 +107,7 @@ Ext.define('App.controller.patient.LabOrders', {
 	onPrintLabOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getLabOrdersGrid(),
-			items = orders || grid.getSelectionModel().getSelection(),
+			items = (Ext.isArray(orders) ? orders : grid.getSelectionModel().getSelection()),
 			params = {},
 			data,
 			i;

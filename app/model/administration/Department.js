@@ -27,6 +27,11 @@ Ext.define('App.model.administration.Department', {
 			type: 'int'
 		},
 		{
+			name: 'code',
+			type: 'string',
+			len: 5
+		},
+		{
 			name: 'title',
 			type: 'string',
 			len: 100

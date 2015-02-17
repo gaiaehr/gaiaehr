@@ -94,7 +94,7 @@ Ext.define('App.controller.patient.RadOrders', {
 	onPrintRadOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getRadOrdersGrid(),
-			items = orders || grid.getSelectionModel().getSelection(),
+			items = (Ext.isArray(orders) ? orders : grid.getSelectionModel().getSelection()),
 			params = {},
 			data,
 			i;

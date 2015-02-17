@@ -25,53 +25,68 @@ Ext.define('App.model.administration.Facility', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Facility ID'
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'name',
 			type: 'string',
+			len: 120,
 			comment: 'Facility Name'
 		},
 		{
+			name: 'legal_name',
+			type: 'string',
+			len: 180
+		},
+		{
 			name: 'attn',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'phone',
-			type: 'string'
+			type: 'string',
+			len: 25
 		},
 		{
 			name: 'fax',
-			type: 'string'
+			type: 'string',
+			len: 25
 		},
 		{
-			name: 'street',
-			type: 'string'
+			name: 'address',
+			type: 'string',
+			len: 120
+		},
+		{
+			name: 'address_cont',
+			type: 'string',
+			len: 120
 		},
 		{
 			name: 'city',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'state',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'postal_code',
-			type: 'string'
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'country_code',
-			type: 'string'
-		},
-		{
-			name: 'ssn',
-			type: 'string'
-		},
-		{
-			name: 'ein',
-			type: 'string'
+			type: 'string',
+			len: 5
 		},
 		{
 			name: 'service_location',
@@ -82,28 +97,44 @@ Ext.define('App.model.administration.Facility', {
 			type: 'bool'
 		},
 		{
-			name: 'accepts_assignment',
-			type: 'bool'
-		},
-		{
 			name: 'pos_code',
-			type: 'string'
+			type: 'string',
+			len: 3
 		},
 		{
-			name: 'x12_sender_id',
-			type: 'string'
+			name: 'ssn',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'ein',
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'clia',
-			type: 'string'
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'fda',
-			type: 'string'
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'npi',
-			type: 'string'
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'lic',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'ess',
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'active',

@@ -277,7 +277,7 @@ Ext.define('App.controller.patient.RxOrders', {
 	onPrintRxOrderBtnClick: function(orders){
 		var me = this,
 			grid = me.getRxOrdersGrid(),
-			items = orders || grid.getSelectionModel().getSelection(),
+			items = (Ext.isArray(orders) ? orders : grid.getSelectionModel().getSelection()),
 			isSingleColumnTable = true,
 			references = '',
 			params = {},

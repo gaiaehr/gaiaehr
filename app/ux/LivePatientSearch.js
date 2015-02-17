@@ -39,7 +39,7 @@ Ext.define('App.ux.LivePatientSearch', {
 				},
 				{
 					name: 'pubpid',
-					type: 'int'
+					type: 'string'
 				},
 				{
 					name: 'fname',
@@ -100,8 +100,11 @@ Ext.define('App.ux.LivePatientSearch', {
 				//---------------------------------------------------------------------
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
+
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3><span>{fullname}</span> ({pid})</h3><span style="font-weight: bold">DOB:</span> {[Ext.Date.format(values.DOB, g("date_time_display_format"))]} <span style="font-weight: bold">SS:</span> {SS}</div>';
+					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
+					return '<div class="search-item"><h3><span>{fullname}</span> {[Ext.Date.format(values.DOB, g("date_display_format"))]}</h3>' +
+						'Record #{' + pid + '}'
 				}
 			},
 			pageSize: 10

@@ -32,14 +32,13 @@ class DocumentPDF extends TCPDF {
 
 		$f = new Facilities();
 		$facility = $f->getCurrentFacility(true);
-		$address1 = $facility['name'];
-		$address2 = $facility['street'];
+		$address1 = $facility['address'];
+		$address2 = $facility['address_cont'];
 		$address3 = $facility['city'] . ', ' . $facility['state'] . ' ' . $facility['postal_code'];
 
 		$phone1  = '';
 		$phone2  = 'Tel. ' . $facility['phone'];
 		$phone3  = 'Fax ' . $facility['fax'];
-
 
 		// Logo
 		$this->Image($image_file, 10, 13, '', '', 'PNG', '', 'T', false, 1200, '', false, false, 0, false, false, false);

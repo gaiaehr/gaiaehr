@@ -30,28 +30,24 @@ class Patient {
 	/**
 	 * @var
 	 */
-	private $patient = null;
+	private $patient;
 
 	/**
 	 * @var MatchaCUP
 	 */
-	public $p = null;
+	public $p;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $e = null;
+	private $e;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $i = null;
+	private $d;
 	/**
 	 * @var MatchaCUP
 	 */
-	private $d = null;
-	/**
-	 * @var MatchaCUP
-	 */
-	private $c = null;
+	private $c;
 
 	/**
 	 * @var PoolArea
@@ -282,6 +278,7 @@ class Patient {
 		return array(
 			'patient' => array(
 				'pid' => $this->patient['pid'],
+				'pubpid' => $this->patient['pubpid'],
 				'name' => $this->getPatientFullName(),
 				'pic' => $this->patient['image'],
 				'sex' => $this->getPatientSex(),
@@ -401,29 +398,41 @@ class Patient {
 	public function patientLiveSearch(stdClass $params) {
 		$this->setPatientModel();
 		$conn = Matcha::getConn();
-		$sth = $conn->prepare('SELECT pid,pubpid,fname,lname,mname,DOB,SS,sex
-                             FROM patient
-                            WHERE fname  LIKE :fname
-                               OR lname  LIKE :lname
-                               OR mname  LIKE :mname
-                               OR pubpid LIKE :pubpid
-                               OR pid 	 LIKE :pid
-                               OR SS 	 LIKE :ss');
-		$sth->execute(array(
-			':fname' => $params->query . '%',
-			':lname' => $params->query . '%',
-			':mname' => $params->query . '%',
-			':pubpid' => $params->query . '%',
-			':pid' => $params->query . '%',
-			':ss' => '%' . $params->query
-		));
-		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
+		$whereValues = array();
+		$where = array();
+		$queries = explode(' ', $params->query);
+		foreach($queries as $index => $query){
+			$query = trim($query);
+			$where[] = " (pubpid REGEXP :pubpid{$index} OR fname LIKE :fname{$index} OR lname LIKE :lname{$index} OR mname LIKE :mname{$index} OR DOB LIKE :DOB{$index} OR pid LIKE :pid{$index} OR SS LIKE :ss{$index}) ";
 
-		$total = count($patients);
-		$rows = array_slice($patients, $params->start, $params->limit);
+			$whereValues[':fname'.$index] = $query . '%';
+			$whereValues[':lname'.$index] = $query . '%';
+			$whereValues[':mname'.$index] = $query . '%';
+
+			if($index == 0){
+				if(preg_match('/^(.)-(.*)-(.{2})$/', $query, $matches)){
+					$whereValues[':pubpid' . $index] = '^' . $matches[1] . '-' . str_pad($matches[2], 15, '0', STR_PAD_LEFT) . '-' . $matches[3] . '$';
+				}elseif(preg_match('/^(.)-(.*)$/', $query, $matches)){
+					$whereValues[':pubpid' . $index] = '^' . $matches[1] . '-' . str_pad($matches[2], 15, '0', STR_PAD_LEFT);
+				}elseif(preg_match('/(.*)-(.{2})$/', $query, $matches)){
+					$whereValues[':pubpid' . $index] = str_pad($matches[1], 15, '0', STR_PAD_LEFT) . '-' . $matches[2];
+				}else{
+					$whereValues[':pubpid'.$index] = trim($query, '-') . '-.{2}$';
+				}
+			}else{
+				$whereValues[':pubpid'.$index] = trim($query, '-') . '-.{2}$';
+			}
+
+			$whereValues[':DOB'.$index] = $query . '%';
+			$whereValues[':pid'.$index] = $query . '%';
+			$whereValues[':ss'.$index] = '%' . $query;
+		}
+		$sth = $conn->prepare('SELECT pid, pubpid, fname, lname, mname, DOB, SS, sex FROM `patient` WHERE ' . implode(' AND ', $where) . ' LIMIT 300');
+		$sth->execute($whereValues);
+		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return array(
-			'totals' => $total,
-			'rows' => $rows
+			'totals' => count($patients),
+			'rows' => array_slice($patients, $params->start, $params->limit)
 		);
 	}
 
@@ -551,6 +560,10 @@ class Patient {
 		return $this->patient['sex'];
 	}
 
+	public function getPatientSS() {
+		return $this->patient['SS'];
+	}
+
 	public function getPatientSexByPid($pid) {
 		$this->setPatientModel();
 		$p = $this->p->load(array('pid'=>$pid))->one();
@@ -589,7 +602,6 @@ class Patient {
 		}
 		return $docs;
 	}
-
 
 	public function getMeaningfulUserAlertByPid(stdClass $params) {
 		$record = array();
@@ -632,16 +644,21 @@ class Patient {
 
 	/**
 	 * @param $params
+	 * @param $includeDateOfBirth
+	 *
 	 * @return mixed
 	 */
-	public function getPossibleDuplicatesByDemographic($params) {
+	public function getPossibleDuplicatesByDemographic($params, $includeDateOfBirth = false) {
 		$this->setPatientModel();
 		$sql = "SELECT *
 				  FROM `patient`
  				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
  				   AND `lname` SOUNDS LIKE '{$params->lname}'
- 				   AND `sex` = '{$params->sex}'
- 				   AND `DOB` = '{$params->DOB}'";
+ 				   AND `sex` = '{$params->sex}'";
+
+		if($includeDateOfBirth){
+			$sql = " AND `DOB` = '{$params->DOB}'";
+		}
 
 		if(isset($params->pid) && $params->pid != 0){
 			$sql .= " AND `pid` != '{$params->pid}'";
@@ -651,5 +668,40 @@ class Patient {
 		return array('total' => count($results), 'data' => $results);
 	}
 
+
+
+//DROP FUNCTION IF EXISTS UC_FIRST;
+//CREATE FUNCTION UC_FIRST(oldWord VARCHAR(255)) RETURNS VARCHAR(255) RETURN CONCAT(UCASE(SUBSTRING(oldWord, 1, 1)),SUBSTRING(oldWord, 2));
+//
+//
+//
+//
+//DROP FUNCTION IF EXISTS UC_DELIMETER;# MySQL returned an empty result set (i.e. zero rows).
+//
+//DELIMITER //
+//CREATE FUNCTION UC_DELIMETER(oldName VARCHAR(255), delim VARCHAR(1), trimSpaces BOOL) RETURNS VARCHAR(255)
+//BEGIN
+//  SET @oldString := oldName;
+//  SET @newString := "";
+//
+//  tokenLoop: LOOP
+//    IF trimSpaces THEN SET @oldString := TRIM(BOTH " " FROM @oldString); END IF;
+//
+//    SET @splitPoint := LOCATE(delim, @oldString);
+//
+//    IF @splitPoint = 0 THEN
+//      SET @newString := CONCAT(@newString, UC_FIRST(@oldString));
+//      LEAVE tokenLoop;
+//    END IF;
+//
+//    SET @newString := CONCAT(@newString, UC_FIRST(SUBSTRING(@oldString, 1, @splitPoint)));
+//    SET @oldString := SUBSTRING(@oldString, @splitPoint+1);
+//  END LOOP tokenLoop;
+//
+//  RETURN @newString;
+//END//
+//# MySQL returned an empty result set (i.e. zero rows).
+//
+//DELIMITER ;
 }
 

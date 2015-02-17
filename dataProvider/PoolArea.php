@@ -23,6 +23,11 @@ include_once(ROOT . '/dataProvider/ACL.php');
 class PoolArea {
 
 	/**
+	 * @var PDO
+	 */
+	private $conn;
+
+	/**
 	 * @var Patient
 	 */
 	private $patient;
@@ -42,6 +47,11 @@ class PoolArea {
 	 */
 	private $pp;
 
+	function __construct(){
+		$this->conn = \Matcha::getConn();
+	}
+
+
 	private function setPatient(){
 		if(!isset($this->patient)){
 			$this->patient = new Patient();
@@ -59,7 +69,6 @@ class PoolArea {
 			$this->pp = MatchaModel::setSenchaModel('App.model.areas.PatientPool');
 		}
 	}
-
 
 	public function getPatientsArrivalLog(stdClass $params) {
 		$this->setPatient();
@@ -86,13 +95,14 @@ class PoolArea {
 
 	private function getPatientParentPools() {
 		$this->setPaModel();
-		$parentPools = $this->pa->sql("SELECT pp.id, pp.time_in AS time, pp.pid
-										 FROM patient_pools AS pp
-			                        LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
-									    WHERE pp.id = pp.parent_id
-									      AND pa.facility_id = '{$_SESSION['user']['facility']}'
-									 ORDER BY pp.time_in ASC, pp.priority DESC
-									    LIMIT 500")->all();
+		$sql = "SELECT pp.id, pp.time_in AS time, pp.pid
+				 FROM patient_pools AS pp
+            LEFT JOIN pool_areas AS pa ON pp.area_id = pa.id
+			    WHERE pp.id = pp.parent_id
+			      AND pa.facility_id = '{$_SESSION['user']['facility']}'
+			 ORDER BY pp.time_in ASC, pp.priority DESC
+			    LIMIT 500";
+		$parentPools = $this->pa->sql($sql)->all();
 		return $parentPools;
 	}
 
@@ -134,16 +144,21 @@ class PoolArea {
 
 	public function sendPatientToPoolArea(stdClass $params) {
 		$this->setPpModel();
-		$fo = $this->getCurrentPatientPoolAreaByPid($params->pid);
+		$prevArea = $this->getCurrentPatientPoolAreaByPid($params->pid);
 
 		/**
 		 * If patient comes from another area check him/her out
 		 */
-		if(!empty($fo)){
+		if(!empty($prevArea)){
 			$record = new stdClass();
-			$record->id = $fo['id'];
+			$record->id = $prevArea['id'];
 			$record->time_out = date('Y-m-d H:i:s');
 			$this->pp->save($record);
+
+			// check out patient from any patient zone
+			$sql = "UPDATE `patient_zone` SET `time_out` = '{$record->time_out}' WHERE `pid` = {$prevArea['pid']} AND `time_out` IS NULL";
+			$sth = $this->conn->prepare($sql);
+			$sth->execute();
 			unset($record);
 		}
 		$record = new stdClass();
@@ -153,14 +168,14 @@ class PoolArea {
 		$record->area_id  = $params->sendTo;
 		$record->in_queue  = 1;
 		$record->priority  = (isset($params->priority) ? $params->priority : '');
-		if(!empty($fo)){
-			$record->parent_id  = $this->getParentPoolId($fo['id']);
-			$record->eid  = $fo['eid'];
-			$record->priority  = $fo['priority'];
+		if(!empty($prevArea)){
+			$record->parent_id  = $this->getParentPoolId($prevArea['id']);
+			$record->eid  = $prevArea['eid'];
+			$record->priority  = $prevArea['priority'];
 		}
 		$record = (object) $this->pp->save($record);
 
-		if(empty($fo)){
+		if(empty($prevArea)){
 			$record->parent_id  = $record->id;
 			Matcha::pauseLog(true); // no need to log this
 			$this->pp->save($record);

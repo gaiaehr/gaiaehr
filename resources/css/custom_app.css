@@ -119,6 +119,7 @@
     /*height: auto !important;*/
 }
 
+.decisionSupportWarning,
 .decisionSupportWarning .x-panel-body-default {
     background-color: #FFCCCC;
     border: none;
@@ -810,8 +811,8 @@ li .Deceased {
     background-color: #DFE8F6;
     color: #596F8F;
     font-size: 22px;
-    font-weight: 200;
-    padding: 0 15px;
+    font-weight: 500;
+    padding: 2px 0 0 5px;
     text-shadow: 0 1px 0 #fff;
 }
 
@@ -863,7 +864,6 @@ li .Deceased {
 
 .form-white-bg .x-panel-body {
     background-color: #fff !important;
-    background-color: #fff !important;
     border: 1px solid #D4CDCC;
 }
 
@@ -876,7 +876,7 @@ li .Deceased {
 }
 
 .panel_title {
-    font-family: "Cuprum", serif;
+    font-family: Sans-serif, serif;
     font-size: 24px;
     /*width: 100%;*/
     float: left;

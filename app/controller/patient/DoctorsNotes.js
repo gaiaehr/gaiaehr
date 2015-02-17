@@ -107,7 +107,7 @@ Ext.define('App.controller.patient.DoctorsNotes', {
 	onPrintDoctorsNoteBtn: function(note){
 		var me = this,
 			grid = me.getDoctorsNotesGrid(),
-			record = note || grid.getSelectionModel().getSelection()[0],
+			record = (note.isModel ? note : grid.getSelectionModel().getSelection()[0]),
 			params = {};
 
 		params.pid = record.data.pid;

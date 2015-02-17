@@ -197,11 +197,14 @@ class DiagnosisCodes {
 		return $record['last_revision'];
 	}
 
-	public function getICDByEid($eid, $active = null) {
+	public function getICDByEid($eid, $group = null) {
 		$records = array();
+
+		$groupWhere = isset($group) ? " AND `dx_group` = '$group'" : '';
+
 		$sql = "SELECT *
- 				  FROM encounter_dx
-				 WHERE eid = :c
+ 				  FROM `encounter_dx`
+				 WHERE `eid` = :c $groupWhere
               ORDER BY dx_order ASC";
 		$recordSet = $this->conn->prepare($sql);
 		$recordSet->execute(array(':c' => $eid));

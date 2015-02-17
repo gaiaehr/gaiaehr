@@ -438,6 +438,12 @@ class MatchaCUP {
 	 */
 	public function all() {
 		try {
+
+//			error_log($this->nolimitsql);
+//			error_log($this->sql);
+//			error_log(print_r($this->where, true));
+
+
 			$sth = Matcha::$__conn->prepare($this->sql);
 			$sth->execute($this->where);
 			$this->record = $sth->fetchAll();

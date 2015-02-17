@@ -639,8 +639,10 @@ Ext.define('App.view.patient.Encounter', {
 					me.setButtonsDisabled(me.getButtonsToDisable());
 				}else{
 					if(me.stopTimer()){
-						var timer = me.timer(data.service_date, data.close_date), patient = app.patient;
-						me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
+						var timer = me.timer(data.service_date, data.close_date),
+							patient = app.patient;
+
+						me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
 						me.setButtonsDisabled(me.getButtonsToDisable(), true);
 					}
 				}
@@ -877,7 +879,7 @@ Ext.define('App.view.patient.Encounter', {
 	encounterTimer: function(){
 		var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
 		if(app.patient.pid != null){
-			me.updateTitle(app.patient.name + ' #' + app.patient.pid + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('open_encounter') + ')', app.patient.readOnly, timer);
+			me.updateTitle(app.patient.name + ' - ' + app.patient.sexSymbol + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('open_encounter') + ')', app.patient.readOnly, timer);
 		}else{
 			me.stopTimer();
 		}
@@ -916,7 +918,8 @@ Ext.define('App.view.patient.Encounter', {
 	 * After this panel is render add the forms and listeners for conventions
 	 */
 	beforePanelRender: function(){
-		var me = this, form,
+		var me = this,
+			form,
 			defaultFields = function(){
 				return [
 					{

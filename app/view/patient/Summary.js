@@ -40,7 +40,7 @@ Ext.define('App.view.patient.Summary', {
 
 		app.on('patientset', function(patient){
 			if(!me.hidden){
-				me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+				me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
 			}
 
 		}, me);
@@ -498,118 +498,118 @@ Ext.define('App.view.patient.Summary', {
 		}
 
 		if(a('access_patient_preventive_care_alerts')){
-			me.tabPanel.add({
-				title: _('dismissed_preventive_care_alerts'),
-				xtype: 'grid',
-				itemId: 'PatientSummaryPreventiveCareAlertsPanel',
-				store: Ext.create('App.store.patient.DismissedAlerts', {
-					//listeners
-				}),
-				columns: [
-					{
-						header: _('description'),
-						dataIndex: 'description'
-					},
-					{
-						xtype: 'datecolumn',
-						header: _('date'),
-						dataIndex: 'date',
-						format: 'Y-m-d'
-
-					},
-					{
-						header: _('reason'),
-						dataIndex: 'reason',
-						flex: true
-
-					},
-					{
-						header: _('observation'),
-						dataIndex: 'observation',
-						flex: true
-					},
-					{
-						header: _('dismissed'),
-						dataIndex: 'dismiss',
-						width: 60,
-						renderer: me.boolRenderer
-					}
-				],
-				plugins: Ext.create('App.ux.grid.RowFormEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 1,
-					items: [
-						{
-							title: 'general',
-							xtype: 'container',
-							padding: 10,
-							layout: 'vbox',
-							items: [
-								{
-									/**
-									 * Line one
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 5 0'
-									},
-									items: [
-										{
-											xtype: 'textfield',
-											name: 'reason',
-											fieldLabel: _('reason'),
-											width: 585,
-											labelWidth: 70,
-											action: 'reason'
-										}
-									]
-
-								},
-								{
-									/**
-									 * Line two
-									 */
-									xtype: 'fieldcontainer',
-									layout: 'hbox',
-									defaults: {
-										margin: '0 10 5 0'
-									},
-									items: [
-										{
-											xtype: 'textfield',
-											fieldLabel: _('observation'),
-											name: 'observation',
-											width: 250,
-											labelWidth: 70,
-											action: 'observation'
-										},
-										{
-											fieldLabel: _('date'),
-											xtype: 'datefield',
-											action: 'date',
-											width: 200,
-											labelWidth: 40,
-											format: g('date_display_format'),
-											name: 'date'
-
-										},
-										{
-											xtype: 'checkboxfield',
-											name: 'dismiss',
-											fieldLabel: _('dismiss_alert')
-
-										}
-									]
-
-								}
-							]
-						}
-					]
-
-				})
-			})
+			//me.tabPanel.add({
+			//	title: _('dismissed_preventive_care_alerts'),
+			//	xtype: 'grid',
+			//	itemId: 'PatientSummaryPreventiveCareAlertsPanel',
+			//	store: Ext.create('App.store.patient.DismissedAlerts', {
+			//		//listeners
+			//	}),
+			//	columns: [
+			//		{
+			//			header: _('description'),
+			//			dataIndex: 'description'
+			//		},
+			//		{
+			//			xtype: 'datecolumn',
+			//			header: _('date'),
+			//			dataIndex: 'date',
+			//			format: 'Y-m-d'
+			//
+			//		},
+			//		{
+			//			header: _('reason'),
+			//			dataIndex: 'reason',
+			//			flex: true
+			//
+			//		},
+			//		{
+			//			header: _('observation'),
+			//			dataIndex: 'observation',
+			//			flex: true
+			//		},
+			//		{
+			//			header: _('dismissed'),
+			//			dataIndex: 'dismiss',
+			//			width: 60,
+			//			renderer: me.boolRenderer
+			//		}
+			//	],
+			//	plugins: Ext.create('App.ux.grid.RowFormEditing', {
+			//		autoCancel: false,
+			//		errorSummary: false,
+			//		clicksToEdit: 1,
+			//		items: [
+			//			{
+			//				title: 'general',
+			//				xtype: 'container',
+			//				padding: 10,
+			//				layout: 'vbox',
+			//				items: [
+			//					{
+			//						/**
+			//						 * Line one
+			//						 */
+			//						xtype: 'fieldcontainer',
+			//						layout: 'hbox',
+			//						defaults: {
+			//							margin: '0 10 5 0'
+			//						},
+			//						items: [
+			//							{
+			//								xtype: 'textfield',
+			//								name: 'reason',
+			//								fieldLabel: _('reason'),
+			//								width: 585,
+			//								labelWidth: 70,
+			//								action: 'reason'
+			//							}
+			//						]
+			//
+			//					},
+			//					{
+			//						/**
+			//						 * Line two
+			//						 */
+			//						xtype: 'fieldcontainer',
+			//						layout: 'hbox',
+			//						defaults: {
+			//							margin: '0 10 5 0'
+			//						},
+			//						items: [
+			//							{
+			//								xtype: 'textfield',
+			//								fieldLabel: _('observation'),
+			//								name: 'observation',
+			//								width: 250,
+			//								labelWidth: 70,
+			//								action: 'observation'
+			//							},
+			//							{
+			//								fieldLabel: _('date'),
+			//								xtype: 'datefield',
+			//								action: 'date',
+			//								width: 200,
+			//								labelWidth: 40,
+			//								format: g('date_display_format'),
+			//								name: 'date'
+			//
+			//							},
+			//							{
+			//								xtype: 'checkboxfield',
+			//								name: 'dismiss',
+			//								fieldLabel: _('dismiss_alert')
+			//
+			//							}
+			//						]
+			//
+			//					}
+			//				]
+			//			}
+			//		]
+			//
+			//	})
+			//});
 		}
 
 //		if(a('access_patient_billing')){
@@ -721,10 +721,11 @@ Ext.define('App.view.patient.Summary', {
 		 * @type {*}
 		 */
 		var patient = app.patient;
+
 		/**
 		 * update panel main title to reflect the patient name and if the patient is read only
 		 */
-		me.updateTitle(patient.name + ' #' + patient.pid + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+		me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
 		/**
 		 * verify if the patient is on read only mode
 		 */

@@ -47,15 +47,20 @@ Ext.define('App.view.Viewport', {
 	    me.lastCardNode = null;
         me.prevNode = null;
         me.fullMode = window.innerWidth >= me.minWidthToFullMode;
-        me.patient = {
-            name: null,
-            pid: null,
-            pic: null,
-            sex: null,
-            dob: null,
-            age: null,
-            eid: null,
-            readOnly: false
+
+	    me.patient = {
+	        pid: null,
+	        pubpid: null,
+	        name: null,
+	        pic: null,
+	        sex: null,
+	        sexSymbol: null,
+	        dob: null,
+	        age: null,
+	        eid: null,
+	        priority: null,
+	        readOnly: false,
+	        rating: null
         };
 
         /**
@@ -430,7 +435,7 @@ Ext.define('App.view.Viewport', {
 	                            '</div>' +
                                 '<div class="patient_btn_info">' +
                                 '<div class="patient-name">{shortName}</div>' +
-                                '<div class="patient-name">#{pid} ({poolArea})</div>' +
+                                '<div class="patient-name">({poolArea})</div>' +
                                 '</div>' +
                                 '</div>' +
                                 '</tpl>',
@@ -669,10 +674,10 @@ Ext.define('App.view.Viewport', {
         var log = Ext.create('App.model.administration.AuditLog',{
             eid: this.patient.eid,
             patient_id: this.patient.pid,
-            event:message
+            event: message
         }).save({
            callback:function(){
-               delete log;
+               delete this;
            }
         });
     },
@@ -953,9 +958,11 @@ Ext.define('App.view.Viewport', {
             function continueSettingPatient(readOnly){
                 me.patient = {
                     pid: data.patient.pid,
+                    pubpid: data.patient.pubpid,
                     name: data.patient.name,
                     pic: data.patient.pic,
                     sex: data.patient.sex,
+	                sexSymbol: data.patient.sex == 'M' ? '&#9792' : '&#9794',
                     dob: Ext.Date.parse(data.patient.dob, "Y-m-d H:i:s"),
                     age: data.patient.age,
                     eid: eid,
@@ -988,9 +995,11 @@ Ext.define('App.view.Viewport', {
 	    me.currEncounterId = null;
 	    me.patient = {
 		    pid: null,
+		    pubpid: null,
 		    name: null,
 		    pic: null,
 		    sex: null,
+		    sexSymbol: null,
 		    dob: null,
 		    age: null,
 		    eid: null,
@@ -1022,10 +1031,16 @@ Ext.define('App.view.Viewport', {
 
     patientButtonSet: function(data){
         var me = this,
-            patient = data || {};
+            patient = data || {},
+	        displayPid = (eval(g('display_pubpid')) ? patient.pubpid : patient.pid);
+
+	    if(displayPid == null || displayPid == ''){
+		    displayPid = patient.pid;
+	    }
 
         me.patientBtn.update({
-            pid: patient.pid || 'record number',
+            displayPid: displayPid || 'record number',
+            pid: patient.pid,
 	        pic: patient.pic || me.patientImage,
             name: patient.name || _('no_patient_selected')
         });
@@ -1052,7 +1067,7 @@ Ext.define('App.view.Viewport', {
             '   </div>',
             '   <div class="patient_btn_info">',
             '       <div class="patient_btn_name">{name}</div>',
-            '       <div class="patient_btn_record">( {pid} )</div>',
+            '       <div class="patient_btn_record">( {displayPid} )</div>',
             '   </div>',
             '</div>');
     },
@@ -1158,7 +1173,6 @@ Ext.define('App.view.Viewport', {
 				});
 			});
 		}
-
 	},
 
     /**

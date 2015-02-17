@@ -28,6 +28,11 @@ Ext.define('App.model.administration.User', {
 			type: 'int'
 		},
 		{
+			name: 'code',
+			type: 'string',
+			len: 40
+		},
+		{
 			name: 'create_uid',
 			type: 'int',
 			comment: 'create user ID'
@@ -128,6 +133,21 @@ Ext.define('App.model.administration.User', {
 			comment: 'National Provider Identifier',
 			len: 15,
 			index: true
+		},
+		{
+			name: 'lic',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'ess',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'upin',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'fedtaxid',
@@ -251,6 +271,9 @@ Ext.define('App.model.administration.User', {
 			read: 'User.getUsers',
 			create: 'User.addUser',
 			update: 'User.updateUser'
+		},
+		reader: {
+			root: 'data'
 		}
 	},
 	hasMany: [

@@ -84,8 +84,8 @@ Ext.define('App.view.login.Login', {
 					name: 'authUser',
 					itemId: 'authUser',
 					minLengthText: 'Username must be at least 3 characters long.',
-					minLength: 3,
-					maxLength: 25,
+					minLength: 2,
+					maxLength: 12,
 					allowBlank: false,
 					validationEvent: false,
 					listeners: {
@@ -103,7 +103,7 @@ Ext.define('App.view.login.Login', {
 					validationEvent: false,
 					allowBlank: false,
 					minLength: 4,
-					maxLength: 50,
+					maxLength: 12,
 					listeners: {
 						scope: me,
 						specialkey: me.onEnter
@@ -233,14 +233,14 @@ Ext.define('App.view.login.Login', {
 			}
 		});
 
-		me.notice1 = Ext.create('Ext.Container', {
-			floating: true,
-			cls: 'logout-warning-window',
-			style: 'text-align:center; width:800',
-			html: 'This demo version is 300% slower because files are not fully minified (compressed) or compiled.<br>' + 'Please allow about 10sec for the app to download. Compiled version loads between 1 - 2 seconds.',
-			seconds: 10
-		}).show();
-		me.notice1.alignTo(Ext.getBody(), 't-t', [0, 10]);
+		//me.notice1 = Ext.create('Ext.Container', {
+		//	floating: true,
+		//	cls: 'logout-warning-window',
+		//	style: 'text-align:center; width:800',
+		//	html: 'This demo version is 300% slower because files are not fully minified (compressed) or compiled.<br>' + 'Please allow about 10sec for the app to download. Compiled version loads between 1 - 2 seconds.',
+		//	seconds: 10
+		//}).show();
+		//me.notice1.alignTo(Ext.getBody(), 't-t', [0, 10]);
 
 //		if(Ext.isIE){
 //			me.notice2 = Ext.create('Ext.Container', {

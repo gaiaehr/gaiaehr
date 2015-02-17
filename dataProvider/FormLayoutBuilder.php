@@ -438,7 +438,7 @@ class FormLayoutBuilder {
 	 */
 	private function filedInUsed(){
 		try{
-			$this->db->setSQL("SELECT $this->name FROM $this->table");
+			$this->db->setSQL("SELECT {$this->name} FROM {$this->table} WHERE {$this->name} IS NOT NULL");
 			$ret = $this->db->fetchRecords(PDO::FETCH_ASSOC);
 			if(isset($ret[0])){
 				return true;

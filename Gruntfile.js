@@ -398,6 +398,7 @@ module.exports = function(grunt){
 					'app/controller/administration/ReferringProviders.js',
 					'app/controller/administration/Roles.js',
 					'app/controller/administration/Specialties.js',
+					'app/controller/areas/FloorPlan.js',
 					'app/controller/dashboard/Dashboard.js',
 					'app/controller/dashboard/panel/NewResults.js',
 					'app/controller/dashboard/panel/DailyVisits.js',

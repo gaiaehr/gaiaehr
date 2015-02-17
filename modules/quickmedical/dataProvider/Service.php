@@ -18,104 +18,173 @@
  */
 
 namespace modules\quickmedical\dataProvider;
+use modules\billing\dataProvider\BillingProcedures;
+
 include_once (ROOT . '/modules/quickmedical/dataProvider/TraSoapClient.php');
+include_once (ROOT . '/dataProvider/User.php');
+include_once (ROOT . '/dataProvider/Patient.php');
+include_once (ROOT . '/dataProvider/Encounter.php');
+include_once (ROOT . '/dataProvider/Facilities.php');
+include_once (ROOT . '/dataProvider/ReferringProviders.php');
+include_once (ROOT . '/modules/dental/dataProvider/DentalPlans.php');
 
 class Service extends TraSoapClient {
 
-	function Before_Services_addEncounterService($service) {
-
+	function updateQuickMedicalCharge($charge){
 		$client = $this->SoapClient('Charges');
-
 		$request = new \stdClass();
-		$request->charge = new \stdClass();
+		$request->charge = $this->mapChargeQuickMedical($charge);
+		$response = $client->Update($request);
 
-		// dates
-		$dateFrom = date('Y-m-d');
-		$dateTo = date('Y-m-d');
+		return $charge;
+	}
 
-		// get patient record number....
-		$recordNumber = 'A-000000000000021-00';
+	function addQuickMedicalCharge($charge) {
+		$client = $this->SoapClient('Charges');
+		$request = new \stdClass();
+		$request->charge = $this->mapChargeQuickMedical($charge);
+		$response = $client->Add($request);
+		if($response->AddResult->Success){
+			$charge->external_id = $response->AddResult->Charge->EntityId;
+		}
+		return $charge;
+	}
 
-		// get provider NPI
-		$providerNpi = '1245332576';
+	/**
+	 * @param  $charge
+	 * @return \stdClass
+	 */
+	private function mapChargeQuickMedical($charge){
 
-		// get user codes
-		$userCode = 'rcastro';
-		//		$technicianCode = '012';
-		//		$referrerCode = '0000011';
+		$quickMedical = new \stdClass();
 
-		// get insurance data
-		$insuranceCode = '056';
-		$insuranceType = '111';
+		$Patient = new \Patient($charge->pid);
+		$patientData = (object) $Patient->getPatient();
+		unset($Patient);
 
-		// facility and department
-		$facilityCode = '23';
-		$departmentCode = '100';
+		$Provider = new \User();
+		$providerData = (object) $Provider->getUserByUid($charge->provider_id);
+		$userData = (object) $Provider->getUserByUid($charge->create_uid);
+		$technicianData = $Provider->getUserByUid($charge->technician_id);
+		unset($Provider);
 
-		// encounter info
-		$request->charge->EncounterId = $service->eid;
-		$request->charge->DateFrom = $dateFrom;
-		$request->charge->DateTo = $dateTo;
+		$Facilities = new \Facilities();
+		$facilityData = (object) $Facilities->getFacility($charge->facility_id);
+		$departmentData = (object) $Facilities->getDepartment($charge->department_id);
+		unset($Facilities);
 
-		// procedure
-		$request->charge->RecordNumber = $recordNumber;
-		$request->charge->ProcedureCode = $service->code;
-		$request->charge->ProcedureSpecialty = '';
-		$request->charge->Units = $service->units;
-		$request->charge->Minutes = '0';
-		$request->charge->ProcedureType = '4'; //4000?
-		$request->charge->ProcedurePlace = '22'; //4000?
-		$request->charge->Status = 'T';
-		$request->charge->IsPregnant = false;
+		$Insurance = new \Insurance();
+		$InsuranceDataPatient = (object) $Insurance->getInsurance($charge->patient_insurance_id);
+		$InsuranceData = (object) $Insurance->getInsuranceCompany($InsuranceDataPatient->insurance_id);
+		unset($Insurance);
+
+		$Specialties = new \Specialties();
+		$SpecialtyData = (object) $Specialties->getSpecialty($charge->specialty_id);
+		unset($Specialties);
+
+		$ReferringProviders = new \ReferringProviders();
+		$ReferringProviderData = (object) $ReferringProviders->getReferringProvider($charge->referring_id);
+		unset($ReferringProviders);
+
+		$DiagnosisCodes = new \DiagnosisCodes();
+		$DiagnosisCodesData = $DiagnosisCodes->getICDByEid($charge->eid, $charge->dx_group);
+		unset($DiagnosisCodes);
+
+		$BillingProcedure = new BillingProcedures();
+		$BillingProcedureData = (object) $BillingProcedure->getBillingProcedureByCodeAndSpecialty($charge->proc_code, $charge->specialty_id);
+		unset($BillingProcedure);
+
+
+		$quickMedical->EntityId = $charge->external_id;
+
+		$quickMedical->EncounterId = $charge->eid;
+		$quickMedical->RecordNumber = $patientData->pubpid;
+
+		$quickMedical->DateFrom = $this->parseDate($charge->service_date_from, true);
+		$quickMedical->DateTo = $this->parseDate($charge->service_date_to, true);
+
+		$quickMedical->ProcedureCode = $charge->proc_code;
+		$quickMedical->Units = $charge->units;
+		$quickMedical->Minutes = $charge->minutes;
+		$quickMedical->ProcedureType = $BillingProcedureData->type;
+		$quickMedical->ProcedurePlace = $charge->place_of_service;
+
+		if($charge->status == 'HLD'){
+			$quickMedical->Status = 'A';
+		}else{
+			$quickMedical->Status = 'F';
+		}
+
+		$quickMedical->IsPregnant = false;
 		// actors
-		$request->charge->ProviderNpi = $providerNpi;
-		if(isset($technicianCode))
-			$request->charge->TechnicianUserCode = $technicianCode;
-		$request->charge->EnterByUserCode = $userCode;
+		$quickMedical->ProviderNpi = $providerData->npi;
+		$quickMedical->ReferrerCode = isset($ReferringProviderData->code) ? $ReferringProviderData->code : '';
+		$quickMedical->TechnicianUserCode = isset($technicianData->code) ? $technicianData->code : '';
+		$quickMedical->EnterByUserCode = $userData->code;
 		// referral
-		if(isset($referrerCode))
-			$request->charge->ReferrerCode = $referrerCode;
-		$request->charge->ReferralNumber = '';
-		$request->charge->PriorAuthorizationNumber = '';
+		$quickMedical->ReferralNumber = '';
 		// insurance
-		$request->charge->InsuranceCode = $insuranceCode;
-		$request->charge->InsuranceType = $insuranceType;
-		// fees
-		$request->charge->DoctorFee = 0.0;
-		$request->charge->PatientFee = 0.0;
-		$request->charge->InsuranceFee = 0.0;
-		// facility / department
-		$request->charge->FacilityCode = $facilityCode;
-		$request->charge->DepartmentCode = $departmentCode;
+		$quickMedical->InsuranceCode = isset($InsuranceData->code) ? $InsuranceData->code : '';
+		if($departmentData->code == '300'){
+			$quickMedical->InsuranceType = isset($InsuranceDataPatient->cover_dental) ? $InsuranceDataPatient->cover_dental : '';
+		}else{
+			$quickMedical->InsuranceType = isset($InsuranceDataPatient->cover_medical) ? $InsuranceDataPatient->cover_medical : '';
+		}
+
+		$InsuranceDataPatientCode =  explode('~', $InsuranceDataPatient->code);
+		$quickMedical->PatientInsuracneOrder = $InsuranceDataPatientCode[0];
+		$quickMedical->PatientInsuracneType = isset($InsuranceDataPatient->insurance_type) ? $InsuranceDataPatient->insurance_type : '';
+
+		// facility
+		$quickMedical->ProcedurePlace = $charge->place_of_service;
+		$quickMedical->FacilityCode = $facilityData->code;
+		// specialty
+		$quickMedical->ProcedureSpecialtyCode = $SpecialtyData->code;
+		$quickMedical->DepartmentCode = $departmentData->code;
 		// dental
-		$request->charge->Tooth = '';
-		$request->charge->Surface = '';
+		$quickMedical->Tooth = $charge->tooth;
+		$quickMedical->Surface = $charge->surface . '~' . $charge->cavity_quadrant;
+		// fees
+		$quickMedical->DoctorFee = $charge->doctor_fee;
+		$quickMedical->PatientFee = $charge->patient_fee;
+		$quickMedical->InsuranceFee = $charge->insurance_fee;
+		// prior authorization number
+		$quickMedical->PriorAuthorizationNumber = $charge->pro_no;
 		// radiology
-		$request->charge->AccessionNumber = '';
+		$quickMedical->AccessionNumber = '';
 
 		// diagnoses
-		$dx = new \stdClass();
-		$dx->Code = '12405';
-		$dx->CodeType = 'ICD10';
-
 		$group = new \stdClass();
-		$group->Sequence = 1;
-		$group->Diagnoses[] = $dx;
+		foreach($DiagnosisCodesData as $diagnosis){
+			$group->Sequence = $diagnosis['dx_group'];
+			$dx = new \stdClass();
+			$dx->Code = $diagnosis['code'];
+			$dx->CodeType = ['code_type'];
+			$group->Diagnoses[] = $dx;
+		}
 
-		$dx = new \stdClass();
-		$dx->Code = '12405';
-		$dx->CodeType = 'ICD10';
+		//		$pointer = new \stdClass();
+		//		$pointer->Active = 1;
+		//		$pointer->Diagnosis = $dx;
 
-		$pointer = new \stdClass();
-		$pointer->Active = 1;
-		$pointer->Diagnosis = $dx;
+		//		$quickMedical->DiagnosesGroup = $group;
+		//		$quickMedical->DiagnosesPionters[] = array();
 
-		$request->charge->DiagnosesGroup = $group;
-		$request->charge->DiagnosesPionters[] = $pointer;
+		return $quickMedical;
+	}
 
-		$response = $client->Add($request);
+	private function parseDate($date, $cleanHour = false){
+		$dateTimeRegex = '/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2})/';
+		$dateRegex = '/^(\d{4}-\d{2}-\d{2})/';
 
-		return $service;
+		if(!$cleanHour && preg_match($dateTimeRegex, $date)){
+			return preg_replace($dateTimeRegex, '$1T$2',$date);
+		}elseif($cleanHour || preg_match($dateRegex, $date)){
+			return preg_replace($dateTimeRegex, '$1T00:00:00',$date);
+		}else{
+			return $date;
+		}
+
 	}
 
 }

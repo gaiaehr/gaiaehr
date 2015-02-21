@@ -25,8 +25,14 @@ Ext.define('App.model.patient.PatientDocuments', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Patient Documents Storage ID'
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 120,
+			comment: 'external reference id',
+			index: true
 		},
 		{
 			name: 'pid',

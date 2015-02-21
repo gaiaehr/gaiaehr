@@ -32,23 +32,47 @@ class Merge {
 	}
 
 	/**
-	 * @param $aPid
-	 * @param $bPid
+	 * @param $primaryPid
+	 * @param $transferPid
 	 *
 	 * @return bool
 	 */
-	public function merge($aPid, $bPid){
+	public function merge($primaryPid, $transferPid){
 		try{
 			$this->conn->beginTransaction();
 			foreach($this->tables as $t){
-				$this->conn->exec("UPDATE `$t` SET `pid` = '$aPid' WHERE `pid` = '$bPid'");
+				$this->conn->exec("UPDATE `$t` SET `pid` = '$primaryPid' WHERE `pid` = '$transferPid'");
 			}
-			$this->conn->exec("DELETE FROM `$t` WHERE `pid` = '$bPid'");
+			$this->conn->exec("DELETE FROM `patient` WHERE `pid` = '$transferPid'");
 			$this->conn->commit();
 			return true;
 		}catch (Exception $e){
 			error_log($e->getMessage());
 			$this->conn->rollBack();
+			return false;
+		}
+	}
+
+	/**
+	 * @param $primaryPubpid
+	 * @param $transferPubpid
+	 * @param bool $transferRecordIfPrimaryNotFound
+	 * @return bool
+	 */
+	public function mergeByPubpid($primaryPubpid, $transferPubpid, $transferRecordIfPrimaryNotFound = false){
+		$sth = $this->conn->prepare('SELECT pid FROM patient WHERE pubpid = ?');
+		$sth->execute(array($primaryPubpid));
+		$primary = $sth->fetch(PDO::FETCH_ASSOC);
+		$sth->execute(array($transferPubpid));
+		$transfer = $sth->fetch(PDO::FETCH_ASSOC);
+		unset($sth);
+		if($primary !== false && $transfer !== false){
+			return $this->merge($primary['pid'], $transfer['pid']);
+		}elseif($primary === false && $transfer !== false && $transferRecordIfPrimaryNotFound){
+			$sth = $this->conn->prepare('UPDATE `patient` SET `pubpid` = ? WHERE `pid` = ?');
+			$sth->execute(array($primaryPubpid, $transfer['pid']));
+			return true;
+		}else{
 			return false;
 		}
 	}

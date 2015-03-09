@@ -1520,4 +1520,13 @@ $LANG = array(
     'lot'                                   => 'Lot',
     'exp'                                   => 'Exp.',
     'dispense_as_written'                   => 'Dispense As Written.',
+    'record_number'                         => 'Record Number',
+    'zone'                                  => 'Zone',
+    'zones'                                 => 'Zones',
+    'department'                            => 'Department',
+    'patient_zone_assignment'               => 'Patient Zone Assignment',
+    'patient_successfully_assigned_to_zone' => 'Patient Successfully Assigned to Zone',
+    'inuse'                                 => 'In Use',
+    'stop_date'                             => 'Stop Date',
+    'delete_record_confirmation'            => 'You Want To Delete This Record?',
 );

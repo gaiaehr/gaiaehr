@@ -38,9 +38,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<title>GaiaEHR :: Loading...</title>
 		<link rel="stylesheet" type="text/css" href="resources/css/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
-		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar.css"/>
-		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/calendar-colors.css"/>
-		<link rel="stylesheet" type="text/css" href="lib/extensible-1.5.1/resources/css/recurrence.css"/>
 		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 		<link rel="stylesheet" type="text/css" href="lib/darkroomjs/build/css/darkroom.min.css">
@@ -139,7 +136,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			});
 		</script>
 
-		<script type="text/javascript" src="app/view/calendar/ExtensibleAll.js"></script>
 		<script type="text/javascript" src="app/ux/Overrides.js"></script>
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
@@ -232,10 +228,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		             */
 		            'Ext.dd.DropZone', 'Ext.dd.DragZone',
 		            /*
-		             * Load the Extensible related controls and panels
-		             * This is the Calendar Component that GaiaEHR uses.
-		             */
-		            /*
 		             * Load the form specific related fields
 		             * Not all the fields are the same.
 		             */
@@ -250,6 +242,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.form.fields.plugin.BadgeText',
 		            'App.ux.form.AdvanceForm',
 		            'App.ux.form.Panel',
+		            'App.ux.grid.DeleteColumn',
 		            'App.ux.grid.EventHistory',
 		            'App.ux.grid.RowFormEditing',
 		            'App.ux.grid.RowFormEditor',
@@ -278,6 +271,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.combo.Ethnicity',
 		            'App.ux.combo.Facilities',
 		            'App.ux.combo.FloorPlanAreas',
+		            'App.ux.combo.FloorPlanZones',
 		            'App.ux.combo.FollowUp',
 		            'App.ux.combo.InsurancePayerType',
 		            'App.ux.combo.LabObservations',
@@ -592,14 +586,12 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                /**
 	                 * Load the root related panels
 	                 */
-	                //'calendar.ExtensibleAll',
-	                'calendar.Calendar',
 	                'messages.Messages',
 	                /**
 	                 * Load the areas related panels
 	                 */
 	                'areas.FloorPlan',
-	                'areas.PatientPoolDropZone',
+	                'areas.PatientPoolAreas',
 	                /**
 	                 * Load vector charts panel
 	                 */

@@ -198,6 +198,22 @@ Ext.override(Ext.data.reader.Reader, {
 
 Ext.override(Ext.grid.RowEditor, {
 
+	completeEdit: function(){
+		var me = this, form = me.getForm();
+		if(!form.isValid()){
+			return false;
+		}else{
+			form.updateRecord(me.context.record);
+			form._record.store.sync({
+				callback: function(){
+					me.fireEvent('sync', me, me.context);
+				}
+			});
+			me.hide();
+			return true;
+		}
+	},
+
 	setColumnField: function(column, field) {
 		var me = this,
 			editor = me.getEditor();
@@ -261,7 +277,7 @@ Ext.override(Ext.grid.RowEditor, {
 });
 
 Ext.override(Ext.grid.plugin.RowEditing, {
-
+	errorSummary: false,
 	setColumnField: function(column, field) {
 		var me = this,
 			editor = me.getEditor();
@@ -281,7 +297,8 @@ Ext.override(Ext.form.field.Date, {
     format: 'Y-m-d'
 });
 Ext.override(Ext.grid.Panel, {
-    emptyText: 'Nothing to Display'
+    emptyText: 'Nothing to Display',
+	columnLines: true
 });
 Ext.override(Ext.grid.plugin.Editing, {
     cancelEdit: function(){
@@ -291,24 +308,7 @@ Ext.override(Ext.grid.plugin.Editing, {
 	    if(me.grid.store.rejectChanges) me.grid.store.rejectChanges();
     }
 });
-Ext.override(Ext.grid.RowEditor, {
 
-    completeEdit: function(){
-        var me = this, form = me.getForm();
-        if(!form.isValid()){
-            return false;
-        }else{
-            form.updateRecord(me.context.record);
-            form._record.store.sync({
-                callback: function(){
-                    me.fireEvent('sync', me, me.context);
-                }
-            });
-            me.hide();
-            return true;
-        }
-    }
-});
 
 Ext.override(Ext.container.Container, {
 

@@ -448,7 +448,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			updateBtn = me.query('button[action="update"]')[0],
 			saveTxt = record.phantom ? 'Save' : 'Update';
 
+		me.editingPlugin.fireEvent('beforerecordload', me, record);
+
 		form.loadRecord(record);
+
+		me.editingPlugin.fireEvent('recordload', me, record);
 
 		// change the save btn text to update is the record is a phantom (new)
 		updateBtn.setText(saveTxt);

@@ -151,19 +151,26 @@ class CombosData {
 	public function getActiveProviders(){
 		if($this->U == null)
 			$this->U = MatchaModel::setSenchaModel('App.model.administration.User');
-		$argumentSQL['SELECT'] = "users.id AS option_value, CONCAT_WS(' ', users.title, users.lname) as option_name";
-		$argumentSQL['WHERE'] = "active = '1' AND authorized = '1' AND (npi IS NOT null AND npi != '')";
-		$argumentSQL['ORDER'] = "option_name ASC";
-		$records = $this->U->buildSQL($argumentSQL)->all();
-		return $records['data'];
+
+		$sql = 'SELECT users.id AS option_value, CONCAT_WS(\' \', users.title, users.lname) as option_name
+			      FROM `users`
+				 WHERE active = \'1\' AND authorized = \'1\' AND (npi IS NOT null AND npi != \'\')
+				 ORDER BY option_name ASC';
+		return $this->U->sql($sql)->all();
+	}
+
+	public function getFacilities(){
+		if($this->F == null)
+			$this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
+		$sql = 'SELECT * FROM `facility` ORDER BY `name`';
+		return $this->F->sql($sql)->all();
 	}
 
 	public function getActiveFacilities(){
 		if($this->F == null)
 			$this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-		$argumentSQL['SELECT'] = "id AS option_value, `name` AS option_name";
-		$argumentSQL['WHERE'] = "active = '1'";
-		$records = $this->F->buildSQL($argumentSQL)->all();
+		$sql = 'SELECT id AS option_value, `name` AS option_name FROM `facility` WHERE active = \'1\' ORDER BY `name`';
+		$records = $this->F->sql($sql)->all();
 		foreach($records as $i => $record){
 			$records[$i]['option_value'] = intval($record['option_value']);
 		}
@@ -230,14 +237,6 @@ class CombosData {
 		return $records;
 	}
 
-	public function getFacilities(){
-		if($this->F == null)
-			$this->F = MatchaModel::setSenchaModel('App.model.administration.Facility');
-		$argumentSQL['SELECT'] = "id, name";
-		$argumentSQL['WHERE'] = "service_location != 0";
-		$argumentSQL['ORDER'] = "name";
-		return $this->F->buildSQL($argumentSQL)->all();
-	}
 
 	public function getRoles(){
 		if($this->F == null)

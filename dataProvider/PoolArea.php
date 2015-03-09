@@ -178,9 +178,11 @@ class PoolArea {
 		if(empty($prevArea)){
 			$record->parent_id  = $record->id;
 			Matcha::pauseLog(true); // no need to log this
-			$this->pp->save($record);
+			$record = $this->pp->save($record);
 			Matcha::pauseLog(false);
 		}
+
+		return array('record' => $record, 'floor_plan_id' => $this->getFloorPlanIdByPoolAreaId($record->area_id));
 
 	}
 

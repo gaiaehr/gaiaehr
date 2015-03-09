@@ -37,6 +37,11 @@ Ext.define('App.model.areas.PatientPool', {
 			index: true
 		},
 		{
+			name: 'provider_id',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'pid',
 			type: 'int'
 		},

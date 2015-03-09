@@ -574,6 +574,9 @@ $API = array(
 			),
 			'removeFloorPlanZone' => array(
 				'len' => 1
+			),
+			'getFloorPlanZonesByFloorPlanId' => array(
+				'len' => 1
 			)
 		)
 	),

@@ -156,9 +156,10 @@ class MatchaCUP {
 		}
 	}
 
-	public function exec() {
+	public function exec($where = null) {
+		$where = isset($where) ? $where : $this->where;
 		$statement = Matcha::$__conn->prepare($this->sql);
-		$result = $statement->execute();
+		$result = $statement->execute($where);
 		$statement->closeCursor();
 		return $result;
 	}
@@ -229,22 +230,23 @@ class MatchaCUP {
 				$this->isSenchaRequest = false;
 				// columns
 				if($columns == null){
-					$columnsx = '*';
+					$columnsx = '`' . $this->table .'`' . '.*';
 				} elseif(is_array($columns)) {
-					$columnsx = '`' . implode('`,`', $columns) . '`';
+					$columnsx = '`' . implode('`,`'.$this->table.'`.`', $columns) . '`';
 				} else {
-					$columnsx = $columns;
+					$columnsx = '`' . $this->table .'`.`' . $columns . '`';
 				}
 
 				// where
 				if(is_numeric($where)){
 					$where = $this->ifDataEncrypt($this->primaryKey, $where);
 					$where = $this->where($where);
-					$wherex = "`$this->primaryKey`= $where ";
+					$wherex = "`{$this->table}`.`$this->primaryKey`= $where ";
 
 				} elseif(is_array($where)) {
 					$wherex = self::parseWhereArray($where);
-
+				} elseif(is_string($where)) {
+					$wherex = '`' . $this->table .'`.`' .$where . '`';
 				} else {
 					$wherex = $where;
 				}
@@ -353,13 +355,89 @@ class MatchaCUP {
 					$_where = '';
 				}
 
-				$this->nolimitsql = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort";
-				$this->sql = "SELECT * FROM `" . $this->table . "` $_where $_group $_sort $_limits";
+				$this->nolimitsql = "SELECT `$this->table`.* FROM `" . $this->table . "` $_where $_group $_sort";
+				$this->sql = "SELECT `$this->table`.* FROM `" . $this->table . "` $_where $_group $_sort $_limits";
 			}
 			return $this;
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}
+	}
+
+	/**
+	 * @param $columns
+	 * @param $table
+	 * @param $onMainTable
+	 * @param $onMergeTable
+	 * @param string $operator
+	 * @return $this
+	 */
+	public function leftJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
+		$columns = $this->joinColumnHandler($columns, $table);
+		$join = " LEFT JOIN {$table} ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
+
+		$find = array('FROM', 'WHERE');
+		$replace = array(', ' . $columns . ' FROM', $join . ' WHERE');
+		$this->nolimitsql = str_replace($find, $replace, $this->nolimitsql);
+		$this->sql = str_replace($find, $replace, $this->sql);
+		return $this;
+	}
+
+	/**
+	 * @param $columns
+	 * @param $table
+	 * @param $onMainTable
+	 * @param $onMergeTable
+	 * @param string $operator
+	 * @return $this
+	 */
+	public function rightJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
+		$columns = $this->joinColumnHandler($columns, $table);
+		$join = " RIGHT JOIN {$table} ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
+		$this->nolimitsql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->nolimitsql);
+		$this->sql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->sql);
+		return $this;
+	}
+
+	/**
+	 * @param $columns
+	 * @param $table
+	 * @param $onMainTable
+	 * @param $onMergeTable
+	 * @param string $operator
+	 * @return $this
+	 */
+	public function join($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
+		$columns = $this->joinColumnHandler($columns, $table);
+		$join = " JOIN {$table} ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
+		$this->nolimitsql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->nolimitsql);
+		$this->sql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->sql);
+		return $this;
+	}
+
+	private function joinColumnHandler($columns, $table){
+		$_columns = '';
+		if(is_string($columns)){
+			$_columns = "`{$table}`.`{$columns}`";
+		}elseif(is_array($columns)){
+
+			// if associative array
+			if(array_keys($columns) !== range(0, count($columns) - 1)){
+				$buffer = array();
+				foreach($columns as $column => $as){
+					$buffer[] = "`{$table}`.`$column` AS $as";
+				}
+				$columns = $buffer;
+			}else{
+				foreach($columns as &$column){
+					$column = "`{$table}`.`$column``";
+				}
+			}
+
+			unset($column);
+			$_columns = implode(',',$columns);
+		}
+		return $_columns;
 	}
 
 	private function filterHandler($filters){
@@ -434,18 +512,14 @@ class MatchaCUP {
 
 	/**
 	 * returns multiple rows of records
+	 * @param null $where
 	 * @return mixed
 	 */
-	public function all() {
+	public function all($where = null) {
 		try {
-
-//			error_log($this->nolimitsql);
-//			error_log($this->sql);
-//			error_log(print_r($this->where, true));
-
-
+			$where = isset($where) ? $where : $this->where;
 			$sth = Matcha::$__conn->prepare($this->sql);
-			$sth->execute($this->where);
+			$sth->execute($where);
 			$this->record = $sth->fetchAll();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
@@ -465,13 +539,15 @@ class MatchaCUP {
 
 	/**
 	 * returns one record
+	 * @param null $where
 	 * @return mixed
 	 */
-	public function one() {
+	public function one($where = null) {
 		//		return $this->sql;
 		try {
+			$where = isset($where) ? $where : $this->where;
 			$sth = Matcha::$__conn->prepare($this->sql);
-			$sth->execute($this->where);
+			$sth->execute($where);
 			$this->record = $sth->fetch();
 			$this->dataDecryptWalk();
 			$this->dataUnSerializeWalk();
@@ -891,7 +967,7 @@ class MatchaCUP {
 					$whereStr .= 'AND ';
 				$val = $this->ifDataEncrypt($key, $val);
 				$val = $this->where($val);
-				$whereStr .= "`$key`= $val ";
+				$whereStr .= "`{$this->table}`.`$key`= $val ";
 				$prevArray = true;
 			} elseif(is_array($val)) {
 				if($prevArray)
@@ -996,7 +1072,10 @@ class MatchaCUP {
 					if($type == 'string' && is_string($data[$col])){
 						$data[$col] = html_entity_decode($data[$col]);
 					}elseif($type == 'date'){
-						$data[$col] = ($data[$col] == '' || is_null($data[$col]) ? '0000-00-00' : $data[$col]);
+						if($data[$col] === ''){
+							$data[$col] = '0000-00-00';
+						}
+//						$data[$col] = ($data[$col] == '' || is_null($data[$col]) ? '0000-00-00' : $data[$col]);
 					} elseif($type == 'array') {
 						if($data[$col] == ''){
 							$data[$col] = null;
@@ -1009,7 +1088,7 @@ class MatchaCUP {
 				/**
 				 * do not trim bool values
 				 */
-				if($this->autoTrim && ($type != 'bool' && $type != 'int')){
+				if($this->autoTrim && ($type != 'bool' && $type != 'int' && $data[$col] != null)){
 					$record[$col] = trim($data[$col]);
 				} else {
 					$record[$col] = $data[$col];

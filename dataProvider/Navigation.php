@@ -56,15 +56,15 @@ class Navigation
 			'id' => 'App.view.dashboard.Dashboard'
 		);
 
-		if($this->ACL->hasPermission('access_calendar')){
-			$nav[] = array(
-				'text' => $this->i18n('calendar'),
-				'leaf' => true,
-				'cls' => 'file',
-				'iconCls' => 'icoCalendar',
-				'id' => 'App.view.calendar.Calendar'
-			);
-		}
+//		if($this->ACL->hasPermission('access_calendar')){
+//			$nav[] = array(
+//				'text' => $this->i18n('calendar'),
+//				'leaf' => true,
+//				'cls' => 'file',
+//				'iconCls' => 'icoCalendar',
+//				'id' => 'App.view.calendar.Calendar'
+//			);
+//		}
 
 //		if($this->ACL->hasPermission('access_messages')){
 //			$nav[] = array(
@@ -101,7 +101,7 @@ class Navigation
 				'leaf' => true,
 				'cls' => 'file',
 				'iconCls' => 'icoPoolArea16',
-				'id' => 'App.view.areas.PatientPoolDropZone'
+				'id' => 'App.view.areas.PatientPoolAreas'
 			);
 		}
 		// *************************************************************************************

@@ -1,6 +1,6 @@
 Ext.define('App.ux.combo.ActiveProviders', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.activeproviderscombo',
+	xtype: 'activeproviderscombo',
 	displayField: 'option_name',
 	valueField: 'option_value',
 	editable: false,

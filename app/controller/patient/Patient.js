@@ -50,6 +50,10 @@ Ext.define('App.controller.patient.Patient', {
 		});
 	},
 
+	doCapitalizeEachLetterOnKeyUp: function(){
+
+	},
+
 	onPossiblePatientDuplicatesGridItemDblClick: function(grid, record){
 
 		if(this.getPossiblePatientDuplicatesWindow().action != 'openPatientSummary') return;

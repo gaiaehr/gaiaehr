@@ -504,7 +504,7 @@ Ext.define('App.view.Viewport', {
          */
         me.nav['App_view_dashboard_Dashboard'] = me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
         me.nav['App_view_areas_FloorPlan'] = me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
-        me.nav['App_view_areas_PatientPoolDropZone'] = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
+        me.nav['App_view_areas_PatientPoolAreas'] = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolAreas'));
 
         /**
          * Footer Panel
@@ -845,12 +845,12 @@ Ext.define('App.view.Viewport', {
 
 	openCalendar: function(){
         var me = this,
-	        cls = me.nav.getNavRefByClass('App.view.calendar.Calendar'),
+	        cls = me.nav.getNavRefByClass('Modules.appointments.view.Calendar'),
 	        panel =  me.nav[cls];
 
-		if(panel && panel == me.nav.activePanel) panel.loadPatient();
+		//if(panel && panel == me.nav.activePanel) panel.loadPatient();
 
-        me.nav.navigateTo('App.view.calendar.Calendar');
+        me.nav.navigateTo('Modules.appointments.view.Calendar');
 
 
     },
@@ -892,7 +892,7 @@ Ext.define('App.view.Viewport', {
     },
 
 	goToPoolAreas: function(){
-        this.nav.navigateTo('App.view.areas.PatientPoolDropZone');
+        this.nav.navigateTo('App.view.areas.PatientPoolAreas');
     },
 
 	goToFloorPlans: function(){
@@ -1102,7 +1102,7 @@ Ext.define('App.view.Viewport', {
             }
         });
 
-	    if(me.nav['App_view_areas_PatientPoolDropZone'].isVisible()) me.nav['App_view_areas_PatientPoolDropZone'].reloadStores();
+	    if(me.nav['App_view_areas_PatientPoolAreas'].isVisible()) me.nav['App_view_areas_PatientPoolAreas'].reloadStores();
     },
 
     initializePatientPoolDragZone: function(panel){
@@ -1137,7 +1137,7 @@ Ext.define('App.view.Viewport', {
             },
 
 	        onBeforeDrag:function(){
-		        app.nav.navigateTo('App.view.areas.PatientPoolDropZone');
+		        app.nav.navigateTo('App.view.areas.PatientPoolAreas');
 		        return true;
             }
         });

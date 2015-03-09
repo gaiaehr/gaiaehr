@@ -243,26 +243,26 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_calendar_events')){
 
-			me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('appointments'),
-				itemId: 'AppointmentsPanel',
-				hideHeaders: true,
-				disableSelection: true,
-				store: me.patientCalendarEventsStore,
-				columns: [
-					{
-						xtype: 'datecolumn',
-						format: 'F j, Y, g:i a',
-						dataIndex: 'start',
-						flex: 1
-					}
-				]
-			});
+			//me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
+			//	autoLoad: false
+			//}));
+			//
+			//Ext.Array.push(me.sidePanelItems, {
+			//	xtype: 'grid',
+			//	title: _('appointments'),
+			//	itemId: 'AppointmentsPanel',
+			//	hideHeaders: true,
+			//	disableSelection: true,
+			//	store: me.patientCalendarEventsStore,
+			//	columns: [
+			//		{
+			//			xtype: 'datecolumn',
+			//			format: 'F j, Y, g:i a',
+			//			dataIndex: 'start',
+			//			flex: 1
+			//		}
+			//	]
+			//});
 		}
 
 		if(me.sidePanelItems.length > 0){

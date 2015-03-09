@@ -65,7 +65,10 @@ class FloorPlans {
 	// zones -----------
 
 	public function getFloorPlanZones(stdClass $params){
-		return $this->getFloorPlanZonesByFloorPlanId($params->floor_plan_id);
+		if(isset($params->floor_plan_id)){
+			return $this->getFloorPlanZonesByFloorPlanId($params->floor_plan_id);
+		}
+		return  $this->fpz->load($params)->all();
 	}
 
 	public function createFloorPlanZone(stdClass $params){
@@ -90,14 +93,11 @@ class FloorPlans {
 		return $params;
 	}
 
-	private function getFloorPlanZonesByFloorPlanId($floor_plan_id){
-		$filter = new stdClass();
-		$filter->filter[0] = new stdClass();
-		$filter->filter[0]->property = 'floor_plan_id';
-		$filter->filter[0]->value = $floor_plan_id;
-		$record = $this->fpz->load($filter)->all();
-		unset($filter);
-		return $record;
+	public function getFloorPlanZonesByFloorPlanId($floor_plan_id){
+		$sql = 'SELECT DISTINCT fpz.*, (SELECT 1 FROM `patient_zone` as pz WHERE pz.zone_id = fpz.id AND pz.time_out IS NULL LIMIT 1) as in_use
+				  FROM `floor_plans_zones` as fpz
+ 				 WHERE fpz.floor_plan_id = ?';
+		return $this->fpz->sql($sql)->all(array($floor_plan_id));
 	}
 
 }

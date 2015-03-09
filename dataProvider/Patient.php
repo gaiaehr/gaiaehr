@@ -427,7 +427,8 @@ class Patient {
 			$whereValues[':pid'.$index] = $query . '%';
 			$whereValues[':ss'.$index] = '%' . $query;
 		}
-		$sth = $conn->prepare('SELECT pid, pubpid, fname, lname, mname, DOB, SS, sex FROM `patient` WHERE ' . implode(' AND ', $where) . ' LIMIT 300');
+		$sth = $conn->prepare('SELECT pid, pubpid, fname, lname, mname, DOB, SS, sex, email, home_phone, mobile_phone
+ 								 FROM `patient` WHERE ' . implode(' AND ', $where) . ' LIMIT 300');
 		$sth->execute($whereValues);
 		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return array(

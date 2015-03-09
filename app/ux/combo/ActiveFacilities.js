@@ -20,6 +20,11 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'activefacilitiescombo',
 	storeAutoLoad: true,
+	editable: false,
+	queryMode: 'local',
+	valueField: 'option_value',
+	displayField: 'option_name',
+	emptyText: _('select'),
 	initComponent: function(){
 		var me = this;
 
@@ -48,14 +53,6 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 			autoLoad: me.storeAutoLoad
 		});
 
-		Ext.apply(this, {
-			editable: false,
-			queryMode: 'local',
-			valueField: 'option_value',
-			displayField: 'option_name',
-			emptyText: _('select'),
-			store: me.store
-		});
 		me.callParent(arguments);
 	}
 });

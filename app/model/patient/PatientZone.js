@@ -34,27 +34,29 @@ Ext.define('App.model.patient.PatientZone', {
 			comment: 'patient ID'
 		},
 		{
+			name: 'provider_id',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'uid',
 			type: 'int',
-			comment: 'user ID who created the order'
+			comment: 'user ID who assigned the patient to this zone'
 		},
 		{
 			name: 'zone_id',
 			type: 'int',
-			comment: 'Zone ID',
 			index: true
 		},
 		{
 			name: 'time_in',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
-			comment: 'patient in time'
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
 			name: 'time_out',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',
-			comment: 'patient out time',
 			index: true
 		}
 	]

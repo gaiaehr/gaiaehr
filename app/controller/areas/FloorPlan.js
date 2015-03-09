@@ -38,6 +38,18 @@ Ext.define('App.controller.areas.FloorPlan', {
 		{
 			ref: 'FloorPlanPatientZoneDetailRemovePatientBtn',
 			selector: '#FloorPlanPatientZoneDetailRemovePatientBtn'
+		},
+		{
+			ref: 'FloorPlanPatientZoneAssignmentWindow',
+			selector: '#FloorPlanPatientZoneAssignmentWindow'
+		},
+		{
+			ref: 'FloorPlanPatientZoneAssignmentCombo',
+			selector: '#FloorPlanPatientZoneAssignmentCombo'
+		},
+		{
+			ref: 'FloorPlanPatientProviderAssignmentCombo',
+			selector: '#FloorPlanPatientProviderAssignmentCombo'
 		}
 	],
 
@@ -45,15 +57,24 @@ Ext.define('App.controller.areas.FloorPlan', {
 		var me = this;
 
 		me.control({
-			'#FloorPlanPanel':{
+			'#FloorPlanPanel': {
 				activate: me.onFloorPlanPanelActivate,
 				deactivate: me.onFloorPlanPanelDeactivate
 			},
-			'#FloorPlanPatientZoneDetailRemovePatientBtn':{
+			'#FloorPlanPatientZoneDetailRemovePatientBtn': {
 				click: me.onFloorPlanPatientZoneDetailRemovePatientBtnClick
 			},
-			'#FloorPlanAreasCombo':{
+			'#FloorPlanAreasCombo': {
 				select: me.onFloorPlanAreasComboSelect
+			},
+			'#FloorPlanPatientZoneAssignmentCancelBtn': {
+				click: me.onFloorPlanPatientZoneAssignmentCancelBtnClick
+			},
+			'#FloorPlanPatientZoneAssignmentSaveBtn': {
+				click: me.onFloorPlanPatientZoneAssignmentSaveBtnClick
+			},
+			'#FloorPlanPatientZoneAssignmentCombo': {
+				beforeselect: me.onFloorPlanPatientZoneAssignmentComboBeforeSelect
 			}
 		});
 
@@ -89,12 +110,12 @@ Ext.define('App.controller.areas.FloorPlan', {
 		});
 	},
 
-	renderZones:function(){
+	renderZones: function(){
 		var me = this,
 			cmb = me.getFloorPlanAreasCombo();
 
 		cmb.getStore().load({
-			callback:function(records){
+			callback: function(records){
 				if(records.length > 0){
 					cmb.setValue(records[0].data.id);
 					me.onFloorPlanAreasComboSelect(cmb, records);
@@ -232,7 +253,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 					'       <tpl if="this.patientImg(image)">',
 					'           <img src="{image}" height="96" width="96">' +
 					'       <tpl else>',
-					'           <img src="'+ app.patientImage +'" height="96" width="96">',
+					'           <img src="' + app.patientImage + '" height="96" width="96">',
 					'       </tpl>',
 					'       <p>Name: {name}</p>' +
 					'       <p>DOB: {DOB}</p>' +
@@ -241,12 +262,12 @@ Ext.define('App.controller.areas.FloorPlan', {
 					'   </div>' +
 					'</div>',
 					{
-						patientImg:function(image){
+						patientImg: function(image){
 							return image != null && image != '';
 						}
 					}
 				),
-				buttons:[
+				buttons: [
 					{
 						text: _('remove_patient'),
 						itemId: 'FloorPlanPatientZoneDetailRemovePatientBtn'
@@ -275,14 +296,14 @@ Ext.define('App.controller.areas.FloorPlan', {
 
 		PatientZone.addPatientToZone(params, function(response){
 			data.patientZoneId = response.data.id;
-			app.msg('Sweet!', data.name + ' ' +_('successfully_moved') + '.');
+			app.msg('Sweet!', data.name + ' ' + _('successfully_moved') + '.');
 			me.setZone(zone, data);
 		});
 	},
 
 	unAssignPatient: function(zone, data){
 		var me = this;
-		PatientZone.removePatientFromZone({id:data.patientZoneId}, function(){
+		PatientZone.removePatientFromZone({id: data.patientZoneId}, function(){
 			me.unSetZone(zone)
 		});
 	},
@@ -297,6 +318,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 
 		zone.setTooltip(_('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
+		zone.addCls('zone-in-use');
 		zone.data = data;
 	},
 
@@ -307,6 +329,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 		if(zone.dragZone) zone.dragZone.lock();
 		zone.setTooltip(_('patient_name') + ': [empty]');
 		zone.removeCls(zone.priority);
+		zone.removeCls('zone-in-use');
 		zone.data = null;
 	},
 
@@ -337,7 +360,122 @@ Ext.define('App.controller.areas.FloorPlan', {
 
 	setFloorPlan: function(floorPlanId){
 
-	}
+	},
 
+	promptPatientZoneAssignment: function(pid, floorPlanId){
+		var me = this;
+
+		if(!me.getFloorPlanPatientZoneAssignmentWindow()){
+
+			Ext.create('Ext.window.Window', {
+				title: _('patient_zone_assignment'),
+				itemId: 'FloorPlanPatientZoneAssignmentWindow',
+				items: [
+					{
+						xtype: 'combobox',
+						width: 300,
+						margin: 10,
+						itemId: 'FloorPlanPatientZoneAssignmentCombo',
+						queryMode: 'local',
+						valueField: 'id',
+						displayField: 'display',
+						fieldLabel: _('zone'),
+						labelAlign: 'top',
+						editable: false,
+						store: Ext.create('Ext.data.Store', {
+							sorters: [
+								{
+									property: 'title'
+								}
+							],
+							fields: [
+								{
+									name: 'id',
+									type: 'int'
+								},
+								{
+									name: 'title',
+									type: 'string'
+								},
+								{
+									name: 'display',
+									type: 'string',
+									convert: function(v, record){
+										if(record.data.in_use){
+											return '<span style="text-decoration: line-through; color: #c1c1c1">' +
+												record.data.title + '</span> (' + _('inuse') + ')';
+										}
+										return record.data.title;
+									}
+								},
+								{
+									name: 'in_use',
+									type: 'bool'
+								}
+							]
+						})
+					},
+					{
+						xtype: 'activeproviderscombo',
+						margin: '0 10 10 10',
+						width: 300,
+						fieldLabel: _('provider'),
+						labelAlign: 'top',
+						itemId: 'FloorPlanPatientProviderAssignmentCombo'
+					}
+				],
+				buttons: [
+					{
+						text: _('cancel'),
+						itemId: 'FloorPlanPatientZoneAssignmentCancelBtn'
+					},
+					{
+						text: _('save'),
+						itemId: 'FloorPlanPatientZoneAssignmentSaveBtn'
+					}
+				]
+			});
+		}
+
+		FloorPlans.getFloorPlanZonesByFloorPlanId(floorPlanId, function(result){
+			var field = me.getFloorPlanPatientZoneAssignmentCombo();
+			field.reset();
+			field.getStore().loadData(result);
+		});
+		me.getFloorPlanPatientZoneAssignmentWindow().pid = pid;
+		me.getFloorPlanPatientZoneAssignmentWindow().show();
+
+	},
+
+	onFloorPlanPatientZoneAssignmentCancelBtnClick: function(btn){
+		this.getFloorPlanPatientZoneAssignmentWindow().close();
+	},
+
+	onFloorPlanPatientZoneAssignmentSaveBtnClick: function(btn){
+		var zone_id = this.getFloorPlanPatientZoneAssignmentCombo().getValue(),
+			provider_id = this.getFloorPlanPatientProviderAssignmentCombo().getValue(),
+			win = this.getFloorPlanPatientZoneAssignmentWindow();
+
+		if(zone_id && zone_id != null){
+			PatientZone.addPatientToZone({
+				zone_id: zone_id,
+				provider_id: provider_id,
+				pid: win.pid
+			}, function(response){
+				app.msg('Sweet!', _('patient_successfully_assigned_to_zone'));
+
+				// TODO set zone with the data on hand
+				// me.setZone(zone, data);
+			});
+		}
+
+		win.close();
+
+	},
+
+	onFloorPlanPatientZoneAssignmentComboBeforeSelect: function(cmb, record){
+		return !record.data.in_use;
+
+	}
 
 });

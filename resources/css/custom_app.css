@@ -7,7 +7,16 @@
     font-family: 'OpenSans-CondLight';
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
-
+.combo-list-icon {
+    width: 10px;
+    height: 16px;
+    margin-right: 5px;
+    margin-top: 2px;
+    -moz-border-radius:2px;
+    -webkit-border-radius:2px;
+    border-radius:2px;
+    float: left;
+}
 .x-form-add-trigger {
     background-image: url("../images/icons/add-trigger.gif") !important;
 }
@@ -403,7 +412,9 @@
 .charges_balance td {
     line-height: 22px;
 }
-
+.zone-in-use {
+    border-color: #0000ff;
+}
 .zoneSummaryContainer {
     padding: 5px;
     background-color: white;;

@@ -72,6 +72,18 @@ Ext.define('App.ux.LivePatientSearch', {
 				{
 					name: 'SS',
 					type: 'string'
+				},
+				{
+					name: 'email',
+					type: 'string'
+				},
+				{
+					name: 'home_phone',
+					type: 'string'
+				},
+				{
+					name: 'mobile_phone',
+					type: 'string'
 				}
 			],
 			proxy: {

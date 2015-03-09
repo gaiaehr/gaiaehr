@@ -1,10 +1,16 @@
 Ext.define('App.ux.combo.Providers', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.mitos.providerscombo',
+	editable: false,
+	queryMode: 'local',
+	displayField: 'name',
+	valueField: 'id',
+	emptyText: _('select'),
+
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('Providersmodel', {
+		Ext.define('ProvidersComboBoxModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{
@@ -25,18 +31,10 @@ Ext.define('App.ux.combo.Providers', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'Providersmodel',
+			model: 'ProvidersComboBoxModel',
 			autoLoad: true
 		});
 
-		Ext.apply(this, {
-			editable: false,
-			queryMode: 'local',
-			displayField: 'name',
-			valueField: 'id',
-			emptyText: _('select'),
-			store: me.store
-		});
 		me.callParent(arguments);
 	}
 });

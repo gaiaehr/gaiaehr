@@ -1870,6 +1870,18 @@ Ext.define('App.ux.LivePatientSearch', {
 				{
 					name: 'SS',
 					type: 'string'
+				},
+				{
+					name: 'email',
+					type: 'string'
+				},
+				{
+					name: 'home_phone',
+					type: 'string'
+				},
+				{
+					name: 'mobile_phone',
+					type: 'string'
 				}
 			],
 			proxy: {
@@ -4767,6 +4779,33 @@ Ext.define('App.ux.form.AdvanceForm', {
         }
     }
 });
+
+Ext.define('App.ux.grid.DeleteColumn', {
+	extend: 'Ext.grid.column.Action',
+	xtype: 'griddeletecolumn',
+	icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
+	tooltip: _('delete'),
+	acl: '*',
+	width: 30,
+	handler: function(grid, rowIndex, colIndex, item, e, record) {
+		if(this.acl === false || eval(a(this.acl)) === true){
+			Ext.Msg.show({
+				title:_('wait'),
+				msg: _('delete_record_confirmation'),
+				buttons: Ext.Msg.YESNO,
+				icon: Ext.Msg.QUESTION,
+				fn: function(btn){
+					if(btn == 'yes'){
+						record.store.remove(record);
+					}
+				}
+			});
+		}else{
+			app.msg(_('oops'), _('permission_denied'), true);
+		}
+	}
+});
+
 Ext.define('App.ux.grid.EventHistory',{
     extend: 'Ext.grid.Panel',
     alias : 'widget.mitos.eventhistorygrid',
@@ -4786,6 +4825,11 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'activefacilitiescombo',
 	storeAutoLoad: true,
+	editable: false,
+	queryMode: 'local',
+	valueField: 'option_value',
+	displayField: 'option_name',
+	emptyText: _('select'),
 	initComponent: function(){
 		var me = this;
 
@@ -4814,14 +4858,6 @@ Ext.define('App.ux.combo.ActiveFacilities', {
 			autoLoad: me.storeAutoLoad
 		});
 
-		Ext.apply(this, {
-			editable: false,
-			queryMode: 'local',
-			valueField: 'option_value',
-			displayField: 'option_name',
-			emptyText: _('select'),
-			store: me.store
-		});
 		me.callParent(arguments);
 	}
 });
@@ -5261,7 +5297,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			updateBtn = me.query('button[action="update"]')[0],
 			saveTxt = record.phantom ? 'Save' : 'Update';
 
+		me.editingPlugin.fireEvent('beforerecordload', me, record);
+
 		form.loadRecord(record);
+
+		me.editingPlugin.fireEvent('recordload', me, record);
 
 		// change the save btn text to update is the record is a phantom (new)
 		updateBtn.setText(saveTxt);
@@ -5527,7 +5567,11 @@ Ext.define('App.ux.grid.RowFormEditor', {
 });
 Ext.define('App.ux.combo.ActiveInsurances', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.activeinsurancescombo',
+	xtype: 'activeinsurancescombo',
+	editable: false,
+	displayField: 'option_name',
+	valueField: 'option_value',
+	emptyText: _('select'),
 	initComponent: function(){
 		var me = this;
 
@@ -5557,22 +5601,16 @@ Ext.define('App.ux.combo.ActiveInsurances', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'ActiveInsurancesComboModel'
+			model: 'ActiveInsurancesComboModel',
+			autoLoad: true
 		});
 
-		Ext.apply(this, {
-			editable: false,
-			displayField: 'option_name',
-			valueField: 'option_value',
-			emptyText: _('select'),
-			store: me.store
-		});
 		me.callParent();
 	}
 }); 
 Ext.define('App.ux.combo.ActiveProviders', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.activeproviderscombo',
+	xtype: 'activeproviderscombo',
 	displayField: 'option_name',
 	valueField: 'option_value',
 	editable: false,
@@ -6099,6 +6137,26 @@ Ext.define('App.ux.combo.Combo', {
 				{
 					name: 'code_type',
 					type: 'string'
+				},
+				{
+					name: 'color',
+					type: 'string'
+				},
+				{
+					name: 'extraListClass',
+					type: 'string'
+				},
+				{
+					name: 'bg_color',
+					type: 'string',
+					convert: function(v, record){
+						if(record.data.code_type == 'bgcolor'){
+							var bg_color = record ? record.data.code : '#FFFFFF';
+							record.set({color: me.getContrastYIQ(bg_color), extraListClass:'listwith'});
+							return bg_color;
+						}
+					}
+
 				}
 			],
 			proxy: {
@@ -6118,8 +6176,230 @@ Ext.define('App.ux.combo.Combo', {
 			autoLoad: me.loadStore
 		});
 
+		me.listConfig = {
+			itemTpl: new Ext.XTemplate(
+				'<tpl if="this.hasColorBg(code_type)">' +
+				'   <div class="combo-list-icon" style="background-color:{bg_color}">&#160;</div>{option_name}',
+				'<tpl else>' +
+				'   {option_name}',
+				'</tpl>',
+				{
+					hasColorBg: function(code_type){
+						return code_type == 'bgcolor';
+					}
+				}
+			)
+		};
+
 		me.callParent(arguments);
+
+		me.on('change', function(cmb, value){
+			me.setFieldBgColor(cmb, value);
+		});
+	},
+
+	setFieldBgColor: function(cmb, value){
+		var me = this,
+			record = cmb.findRecordByValue(value);
+
+		if(cmb.getStore().isLoading()){
+			cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
+			if(cmb.tries > 2) return;
+
+			Ext.Function.defer(function(){
+				me.setFieldBgColor(cmb, value);
+			}, 1000);
+		}else{
+			if(record !== false && record.data.code_type == 'bgcolor'){
+				cmb.inputEl.setStyle({
+					'background-color': record.data.bg_color,
+					'background-image': 'none',
+					'color': record.data.color
+				});
+			}else{
+				cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
+				if(cmb.tries > 2) return;
+
+				Ext.Function.defer(function(){
+					me.setFieldBgColor(cmb, value);
+				}, 1000);
+			}
+		}
+	},
+
+	getContrastYIQ: function(hexcolor){
+		if(hexcolor[0] != '#'){
+			hexcolor = this.getHexColor(hexcolor);
+		}
+		hexcolor = hexcolor.replace('#', '');
+
+		var r = parseInt(hexcolor.substr(0, 2), 16);
+		var g = parseInt(hexcolor.substr(2, 2), 16);
+		var b = parseInt(hexcolor.substr(4, 2), 16);
+		var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+		return (yiq >= 129) ? 'black' : 'white';
+	},
+
+	getHexColor: function(n){
+		n = n.toLowerCase();
+		var nar = {
+				"aliceblue": "#f0f8ff",
+				"antiquewhite": "#faebd7",
+				"aqua": "#00ffff",
+				"aquamarine": "#7fffd4",
+				"azure": "#f0ffff",
+				"beige": "#f5f5dc",
+				"bisque": "#ffe4c4",
+				"black": "#000000",
+				"blanchedalmond": "#ffebcd",
+				"blue": "#0000ff",
+				"blueviolet": "#8a2be2",
+				"brown": "#a52a2a",
+				"burlywood": "#deb887",
+				"cadetblue": "#5f9ea0",
+				"chartreuse": "#7fff00",
+				"chocolate": "#d2691e",
+				"coral": "#ff7f50",
+				"cornflowerblue": "#6495ed",
+				"cornsilk": "#fff8dc",
+				"crimson": "#dc143c",
+				"cyan": "#00ffff",
+				"darkblue": "#00008b",
+				"darkcyan": "#008b8b",
+				"darkgoldenrod": "#b8860b",
+				"darkgray": "#a9a9a9",
+				"darkgrey": "#a9a9a9",
+				"darkgreen": "#006400",
+				"darkkhaki": "#bdb76b",
+				"darkmagenta": "#8b008b",
+				"darkolivegreen": "#556b2f",
+				"darkorange": "#ff8c00",
+				"darkorchid": "#9932cc",
+				"darkred": "#8b0000",
+				"darksalmon": "#e9967a",
+				"darkseagreen": "#8fbc8f",
+				"darkslateblue": "#483d8b",
+				"darkslategray": "#2f4f4f",
+				"darkslategrey": "#2f4f4f",
+				"darkturquoise": "#00ced1",
+				"darkviolet": "#9400d3",
+				"deeppink": "#ff1493",
+				"deepskyblue": "#00bfff",
+				"dimgray": "#696969",
+				"dimgrey": "#696969",
+				"dodgerblue": "#1e90ff",
+				"firebrick": "#b22222",
+				"floralwhite": "#fffaf0",
+				"forestgreen": "#228b22",
+				"fuchsia": "#ff00ff",
+				"gainsboro": "#dcdcdc",
+				"ghostwhite": "#f8f8ff",
+				"gold": "#ffd700",
+				"goldenrod": "#daa520",
+				"gray": "#808080",
+				"grey": "#808080",
+				"green": "#008000",
+				"greenyellow": "#adff2f",
+				"honeydew": "#f0fff0",
+				"hotpink": "#ff69b4",
+				"indianred": "#cd5c5c",
+				"indigo": "#4b0082",
+				"ivory": "#fffff0",
+				"khaki": "#f0e68c",
+				"lavender": "#e6e6fa",
+				"lavenderblush": "#fff0f5",
+				"lawngreen": "#7cfc00",
+				"lemonchiffon": "#fffacd",
+				"lightblue": "#add8e6",
+				"lightcoral": "#f08080",
+				"lightcyan": "#e0ffff",
+				"lightgoldenrodyellow": "#fafad2",
+				"lightgray": "#d3d3d3",
+				"lightgrey": "#d3d3d3",
+				"lightgreen": "#90ee90",
+				"lightpink": "#ffb6c1",
+				"lightsalmon": "#ffa07a",
+				"lightseagreen": "#20b2aa",
+				"lightskyblue": "#87cefa",
+				"lightslategray": "#778899",
+				"lightslategrey": "#778899",
+				"lightsteelblue": "#b0c4de",
+				"lightyellow": "#ffffe0",
+				"lime": "#00ff00",
+				"limegreen": "#32cd32",
+				"linen": "#faf0e6",
+				"magenta": "#ff00ff",
+				"maroon": "#800000",
+				"mediumaquamarine": "#66cdaa",
+				"mediumblue": "#0000cd",
+				"mediumorchid": "#ba55d3",
+				"mediumpurple": "#9370d8",
+				"mediumseagreen": "#3cb371",
+				"mediumslateblue": "#7b68ee",
+				"mediumspringgreen": "#00fa9a",
+				"mediumturquoise": "#48d1cc",
+				"mediumvioletred": "#c71585",
+				"midnightblue": "#191970",
+				"mintcream": "#f5fffa",
+				"mistyrose": "#ffe4e1",
+				"moccasin": "#ffe4b5",
+				"navajowhite": "#ffdead",
+				"navy": "#000080",
+				"oldlace": "#fdf5e6",
+				"olive": "#808000",
+				"olivedrab": "#6b8e23",
+				"orange": "#ffa500",
+				"orangered": "#ff4500",
+				"orchid": "#da70d6",
+				"palegoldenrod": "#eee8aa",
+				"palegreen": "#98fb98",
+				"paleturquoise": "#afeeee",
+				"palevioletred": "#d87093",
+				"papayawhip": "#ffefd5",
+				"peachpuff": "#ffdab9",
+				"peru": "#cd853f",
+				"pink": "#ffc0cb",
+				"plum": "#dda0dd",
+				"powderblue": "#b0e0e6",
+				"purple": "#800080",
+				"red": "#ff0000",
+				"rosybrown": "#bc8f8f",
+				"royalblue": "#4169e1",
+				"saddlebrown": "#8b4513",
+				"salmon": "#fa8072",
+				"sandybrown": "#f4a460",
+				"seagreen": "#2e8b57",
+				"seashell": "#fff5ee",
+				"sienna": "#a0522d",
+				"silver": "#c0c0c0",
+				"skyblue": "#87ceeb",
+				"slateblue": "#6a5acd",
+				"slategray": "#708090",
+				"slategrey": "#708090",
+				"snow": "#fffafa",
+				"springgreen": "#00ff7f",
+				"steelblue": "#4682b4",
+				"tan": "#d2b48c",
+				"teal": "#008080",
+				"thistle": "#d8bfd8",
+				"tomato": "#ff6347",
+				"turquoise": "#40e0d0",
+				"violet": "#ee82ee",
+				"wheat": "#f5deb3",
+				"white": "#ffffff",
+				"whitesmoke": "#f5f5f5",
+				"yellow": "#ffff00",
+				"yellowgreen": "#9acd32"
+			},
+			r = nar[n];
+		if(r === undefined){
+			return "Invalid Color Name";
+		}
+
+		return r;
 	}
+
+
 });
 Ext.define('App.ux.combo.CVXManufacturers', {
 	extend       : 'Ext.form.ComboBox',
@@ -6260,75 +6540,15 @@ Ext.define('App.ux.combo.EncounterICDS', {
 	}
 });
 Ext.define('App.ux.combo.EncounterPriority', {
-	extend: 'Ext.form.ComboBox',
-	alias: 'widget.encounterprioritycombo',
-	initComponent: function(){
-		var me = this;
-
-		Ext.define('EncounterPriorityModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'CombosData.getOptionsByListId'
-				},
-				extraParams: {
-					list_id: 94
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model: 'EncounterPriorityModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable: false,
-			queryMode: 'local',
-			displayField: 'option_name',
-			valueField: 'option_value',
-			emptyText: _('priority'),
-			store: me.store,
-			listConfig: {
-				getInnerTpl: function(){
-					return '<span class="{option_name}">{option_name}</span></div>';
-				}
-			}
-		}, null);
-
-		me.on('change', function(cmb, newValue){
-			var bgColor, color;
-			if(newValue == 'Minimal'){
-				bgColor = '#008000';
-				color = '#ffffff';
-			}else if(newValue == 'Delayed'){
-				bgColor = '#ffff00';
-				color = '#000000';
-			}else if(newValue == 'Immediate'){
-				bgColor = '#ff0000';
-				color = '#ffffff';
-			}else if(newValue == 'Expectant'){
-				bgColor = '#808080';
-				color = '#ffffff';
-			}else if(newValue == 'Deceased'){
-				bgColor = '#000000';
-				color = '#ffffff';
-			}
-
-			this.inputEl.setStyle({
-				'background-color': bgColor,
-				'background-image': 'none',
-				'color': color
-			})
-		}, me);
-
-		me.callParent(arguments);
-	}
+	extend: 'App.ux.combo.Combo',
+	xtype: 'encounterprioritycombo',
+	editable: false,
+	queryMode: 'local',
+	displayField: 'option_name',
+	valueField: 'option_value',
+	emptyText: _('priority'),
+	list: 94,
+	loadStore: true
 });
 Ext.define('App.ux.combo.Ethnicity', {
 	extend       : 'Ext.form.ComboBox',
@@ -6370,9 +6590,14 @@ Ext.define('App.ux.combo.Ethnicity', {
 	}
 });
 Ext.define('App.ux.combo.Facilities', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.facilitiescombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.mitos.facilitiescombo',
+	editable: false,
+	queryMode: 'local',
+	valueField: 'id',
+	displayField: 'name',
+	emptyText: _('select'),
+	initComponent: function(){
 		var me = this;
 
 		Ext.define('FacilitiesComboModel', {
@@ -6381,26 +6606,17 @@ Ext.define('App.ux.combo.Facilities', {
 				{name: 'id', type: 'int'},
 				{name: 'name', type: 'string'}
 			],
-			proxy : {
+			proxy: {
 				type: 'direct',
-				api : {
+				api: {
 					read: 'CombosData.getFacilities'
 				}
 			}
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'FacilitiesComboModel',
+			model: 'FacilitiesComboModel',
 			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'id',
-			displayField: 'name',
-			emptyText   : _('select'),
-			store       : me.store
 		});
 
 		me.callParent(arguments);
@@ -6441,6 +6657,16 @@ Ext.define('App.ux.combo.FloorPlanAreas', {
 		}, null);
 		me.callParent(arguments);
 	}
+});
+Ext.define('App.ux.combo.FloorPlanZones', {
+	extend: 'Ext.form.ComboBox',
+	xtype: 'floorplanazonescombo',
+	editable: false,
+	//queryMode: 'local',
+	displayField: 'title',
+	valueField: 'id',
+	emptyText: _('select'),
+	store: Ext.create('App.store.administration.FloorPlanZones')
 });
 Ext.define('App.ux.combo.FollowUp', {
 	extend       : 'Ext.form.ComboBox',
@@ -7422,10 +7648,16 @@ Ext.define('App.ux.combo.ProceduresBodySites', {
 Ext.define('App.ux.combo.Providers', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.mitos.providerscombo',
+	editable: false,
+	queryMode: 'local',
+	displayField: 'name',
+	valueField: 'id',
+	emptyText: _('select'),
+
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('Providersmodel', {
+		Ext.define('ProvidersComboBoxModel', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{
@@ -7446,18 +7678,10 @@ Ext.define('App.ux.combo.Providers', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'Providersmodel',
+			model: 'ProvidersComboBoxModel',
 			autoLoad: true
 		});
 
-		Ext.apply(this, {
-			editable: false,
-			queryMode: 'local',
-			displayField: 'name',
-			valueField: 'id',
-			emptyText: _('select'),
-			store: me.store
-		});
 		me.callParent(arguments);
 	}
 });
@@ -8170,84 +8394,87 @@ Ext.define('App.view.search.PatientSearch',
 	}
 });
 //ens oNotesPage class
-Ext.define('Modules.Module',{
-    extend: 'Ext.app.Controller',
+Ext.define('Modules.Module', {
+	extend: 'Ext.app.Controller',
 	refs: [
 		{
-			ref:'viewport',
-			selector:'viewport'
+			ref: 'viewport',
+			selector: 'viewport'
 		},
 		{
-			ref:'mainNav',
-			selector:'treepanel[action=mainNav]'
+			ref: 'mainNav',
+			selector: 'treepanel[action=mainNav]'
 		}
 	],
-    /**
-     * @param panel
-     */
-    addAppPanel: function (panel) {
-        this.getViewport().MainPanel.add(panel);
-    },
+	/**
+	 * @param panel
+	 */
+	addAppPanel: function(panel){
+		this.getViewport().MainPanel.add(panel);
+	},
 
-    /**
-     * @param item
-     */
-    addHeaderItem: function (item) {
-	    this.getViewport().Header.add(item);
-    },
+	/**
+	 * @param item
+	 */
+	addHeaderItem: function(item){
+		this.getViewport().Header.add(item);
+	},
 
-    /**
-     * @param parentId
-     * @param node
-     *
-     * Desc: Method to add items to the navigation tree.
-     *
-     */
-    addNavigationNodes: function (parentId, node) {
-        var parent;
+	/**
+	 * @param parentId
+	 * @param node
+	 * @param index
+	 *
+	 * Desc: Method to add items to the navigation tree.
+	 *
+	 */
+	addNavigationNodes: function(parentId, node, index){
+		var parent;
 
-        if (parentId == 'root' || parentId == null) {
-            parent = this.getMainNav().getStore().getRootNode();
-        }
-        else {
-            parent = this.getMainNav().getStore().getNodeById(parentId);
-        }
+		if(parentId == 'root' || parentId == null){
+			parent = this.getMainNav().getStore().getRootNode();
+		}
+		else{
+			parent = this.getMainNav().getStore().getNodeById(parentId);
+		}
 
-	    if(parent){
-		    var firstChildNode = parent.findChildBy(function (node) {
-			    return node.hasChildNodes();
-		    });
+		if(parent){
+			var firstChildNode = parent.findChildBy(function(node){
+				return node.hasChildNodes();
+			});
 
-		    if (Ext.isArray(node)) {
-			    var nodes = [];
-			    for (var i = 0; i < node.length; i++){
-				    Ext.Array.push(nodes, parent.insertBefore(node[i], firstChildNode));
-			    }
-			    return nodes;
-		    }
-		    else {
-			    return parent.insertBefore(node, firstChildNode);
-		    }
-	    }
-    },
+			if(Ext.isArray(node)){
+				var nodes = [];
+				for(var i = 0; i < node.length; i++){
+					Ext.Array.push(nodes, parent.insertBefore(node[i], firstChildNode));
+				}
+				return nodes;
+			}
+			else if(index){
+				return parent.insertChild(index, node);
+			}else{
+				return parent.insertBefore(node, firstChildNode);
+			}
+		}
+	},
 
-    getModuleData:function(name){
-        var me = this;
-        Modules.getModuleByName(name, function(provider, response){
-            me.fireEvent('moduledata', response.result)
-        });
-    },
+	getModuleData: function(name){
+		var me = this;
+		Modules.getModuleByName(name, function(provider, response){
+			me.fireEvent('moduledata', response.result)
+		});
+	},
 
-    updateModuleData:function(data){
-        var me = this;
-        Modules.updateModule(data, function(provider, response){
-            me.fireEvent('moduledataupdate', response.result)
-        });
-    },
+	updateModuleData: function(data){
+		var me = this;
+		Modules.updateModule(data, function(provider, response){
+			me.fireEvent('moduledataupdate', response.result)
+		});
+	},
 
-    addLanguages: function (languages) {
+	addLanguages: function(languages){
 
-    },
+	},
 
 	insertToHead: function(link){
 		Ext.getHeaad().appendChild(link);
@@ -14758,8 +14985,14 @@ Ext.define('App.model.patient.PatientDocuments', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Patient Documents Storage ID'
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 120,
+			comment: 'external reference id',
+			index: true
 		},
 		{
 			name: 'pid',
@@ -18168,293 +18401,6 @@ Ext.define('App.view.dashboard.panel.DailyVisits', {
 	}
 });
 
-Ext.define('App.view.calendar.Calendar', {
-	extend: 'App.ux.RenderPanel',
-	pageTitle: _('calendar_events'),
-
-	ckInStatus: ['@','~'],
-	ckOutStatus: ['!','x','?','%'],
-
-	constructor: function(){
-		var me = this;
-
-		this.callParent(arguments);
-
-		me.calendarStore = Ext.create('Extensible.calendar.data.MemoryCalendarStore', {
-			autoLoad: true,
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'Calendar.getCalendars'
-				},
-				noCache: false,
-
-				reader: {
-					type: 'json',
-					root: 'data'
-				}
-			}
-		});
-
-		me.eventStore = Ext.create('Extensible.calendar.data.EventStore', {
-			autoLoad: true,
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'Calendar.getEvents',
-					create: 'Calendar.addEvent',
-					update: 'Calendar.updateEvent',
-					destroy: 'Calendar.deleteEvent'
-				},
-				noCache: false,
-
-				reader: {
-					type: 'json',
-					root: 'data'
-				},
-
-				writer: {
-					type: 'json',
-					nameProperty: 'mapping'
-				},
-
-				listeners: {
-					exception: function(proxy, response){
-						var msg = response.message ? response.message : Ext.decode(response.responseText).message;
-						// ideally an app would provide a less intrusive message display
-						Ext.Msg.alert('Server Error', msg);
-					}
-				}
-			},
-
-			// It's easy to provide generic CRUD messaging without having to handle events on every individual view.
-			// Note that while the store provides individual add, update and remove events, those fire BEFORE the
-			// remote transaction returns from the server -- they only signify that records were added to the store,
-			// NOT that your changes were actually persisted correctly in the back end. The 'write' event is the best
-			// option for generically messaging after CRUD persistence has succeeded.
-			listeners: {
-				scope: this,
-				'write': function(store, operation){
-					var title = Ext.value(operation.records[0].data[Extensible.calendar.data.EventMappings.Title.name], '(No title)');
-					if(operation.action == 'create'){
-						this.msg(_('add'), 'Added "' + title + '"');
-					}else if(operation.action == 'update'){
-						this.msg(_('update'), 'Updated "' + title + '"');
-					}else if(operation.action == 'destroy'){
-						this.msg(_('delete'), 'Deleted "' + title + '"');
-					}
-				}
-			}
-		});
-
-		me.pageBody = [
-			{
-				xtype: 'panel',
-				layout: 'border',
-				border: true,
-				items: [
-					{
-						id: 'app-west',
-						region: 'west',
-						width: 179,
-						border: false,
-						items: [
-							{
-								xtype: 'datepicker',
-								id: 'app-nav-picker',
-								cls: 'ext-cal-nav-picker',
-								listeners: {
-									'select': {
-										fn: function(dp, dt){
-											Ext.getCmp('app-calendar').setStartDate(dt);
-										},
-										scope: this
-									}
-								}
-							},
-							{
-								xtype: 'extensible.calendarlist',
-								id: 'app-calendarlist',
-								store: me.calendarStore,
-								collapsible: true,
-								border: false,
-								width: 178
-							}
-						]
-					},
-					{
-						xtype: 'extensible.calendarpanel',
-						eventStore: this.eventStore,
-						calendarStore: me.calendarStore,
-						border: false,
-						id: 'app-calendar',
-						region: 'center',
-						activeItem: 3, // month view
-
-						// Any generic view options that should be applied to all sub views:
-						viewConfig: {
-							enableFx: false,
-							//ddIncrement           : 10, //only applies to DayView and subclasses, but convenient to put it here
-							viewStartHour: 8,
-							viewEndHour: 21,
-							minEventDisplayMinutes: 15,
-							showTime: false
-						},
-
-						// View options specific to a certain view (if the same options exist in viewConfig
-						// they will be overridden by the view-specific config):
-						monthViewCfg: {
-							showHeader: true,
-							showWeekLinks: true,
-							showWeekNumbers: true
-						},
-
-						multiWeekViewCfg: {
-							//weekCount: 3
-						},
-
-						// Some optional CalendarPanel configs to experiment with:
-						//readOnly          : true,
-						//showDayView       : false,
-						//showMultiDayView  : true,
-						//showWeekView      : false,
-						//showMultiWeekView : false,
-						//showMonthView     : false,
-						//showNavBar        : false,
-						//showTodayText     : false,
-						//showTime          : false,
-						//editModal         : true,
-						enableEditDetails: false,
-						//title             : 'My Calendar',
-
-						listeners: {
-							'eventclick': {
-								fn: function(){
-									//this.clearMsg();
-								},
-								scope: this
-							},
-							'eventover': function(){
-								//console.log('Entered evt rec='+rec.data[Extensible.calendar.data.EventMappings.Title.name]', view='+ vw.id +', el='+el.id);
-							},
-							'eventout': function(){
-								//console.log('Leaving evt rec='+rec.data[Extensible.calendar.data.EventMappings.Title.name]+', view='+ vw.id +', el='+el.id);
-							},
-							'eventadd': {
-								fn: function(cp, rec){
-//									app.msg(_('sweet'), _('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
-								},
-								scope: this
-							},
-							'eventupdate': {
-								fn: function(cp, rec){
-
-									me.getPoolAreaAction(rec);
-
-//									app.msg(_('sweet'), _('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
-								},
-								scope: this
-							},
-							'eventcancel': {
-								fn: function(){
-									// edit canceled
-								},
-								scope: this
-							},
-							'viewchange': {
-								fn: function(p, vw, dateInfo){
-									if(dateInfo){
-										//this.updateTitle(dateInfo.viewStart, dateInfo.viewEnd);
-									}
-								},
-								scope: this
-							},
-							'dayclick': {
-								fn: function(){
-									//this.clearMsg();
-								},
-								scope: this
-							},
-							'rangeselect': {
-								fn: function(){
-									//this.clearMsg();
-								},
-								scope: this
-							},
-							'eventmove': {
-								fn: function(vw, rec){
-									var mappings = Extensible.calendar.data.EventMappings,
-										time = rec.data[mappings.IsAllDay.name] ? '' : ' \\a\\t g:i a';
-
-									rec.commit();
-
-									//this.showMsg(_('event') + ' ' + rec.data[mappings.Title.name] + ' ' + _('was_moved_to') + ' ' +
-									//	Ext.Date.format(rec.data[mappings.StartDate.name], ('F jS' + time)));
-								},
-								scope: this
-							},
-							'eventresize': {
-								fn: function(vw, rec){
-									rec.commit();
-									//this.showMsg(_('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_updated'));
-								},
-								scope: this
-							},
-							'eventdelete': {
-								fn: function(win, rec){
-									me.eventStore.remove(rec);
-									//this.showMsg(_('event') + ' ' + rec.data[Extensible.calendar.data.EventMappings.Title.name] + ' ' + _('was_deleted'));
-								},
-								scope: this
-							},
-							'initdrag': {
-								fn: function(){
-									// do something when drag starts
-								},
-								scope: this
-							}
-						}
-					}
-				]
-			}
-		];
-
-		me.callParent();
-
-	},
-
-	getPoolAreaAction:function(record){
-		var status = record.data[Extensible.calendar.data.EventMappings.Status.name];
-		if(Ext.Array.indexOf(this.ckInStatus, status) != -1){
-			return 'in'
-		}else if(Ext.Array.indexOf(this.ckOutStatus, status) != -1){
-			return 'out'
-		}else{
-			return 'none'
-		}
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive: function(callback){
-		var me = this,
-			calPanel = Ext.getCmp('app-calendar'),
-			calListPanel = Ext.getCmp('app-calendarlist');
-
-		calPanel.getActiveView().refresh(true);
-		me.calendarStore.load({
-			callback: function(){
-				calListPanel.doLayout();
-			}
-		});
-		callback(true);
-	}
-
-});
 Ext.define('App.view.messages.Messages', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelMessages',
@@ -32972,6 +32918,18 @@ Ext.define('App.controller.areas.FloorPlan', {
 		{
 			ref: 'FloorPlanPatientZoneDetailRemovePatientBtn',
 			selector: '#FloorPlanPatientZoneDetailRemovePatientBtn'
+		},
+		{
+			ref: 'FloorPlanPatientZoneAssignmentWindow',
+			selector: '#FloorPlanPatientZoneAssignmentWindow'
+		},
+		{
+			ref: 'FloorPlanPatientZoneAssignmentCombo',
+			selector: '#FloorPlanPatientZoneAssignmentCombo'
+		},
+		{
+			ref: 'FloorPlanPatientProviderAssignmentCombo',
+			selector: '#FloorPlanPatientProviderAssignmentCombo'
 		}
 	],
 
@@ -32979,15 +32937,24 @@ Ext.define('App.controller.areas.FloorPlan', {
 		var me = this;
 
 		me.control({
-			'#FloorPlanPanel':{
+			'#FloorPlanPanel': {
 				activate: me.onFloorPlanPanelActivate,
 				deactivate: me.onFloorPlanPanelDeactivate
 			},
-			'#FloorPlanPatientZoneDetailRemovePatientBtn':{
+			'#FloorPlanPatientZoneDetailRemovePatientBtn': {
 				click: me.onFloorPlanPatientZoneDetailRemovePatientBtnClick
 			},
-			'#FloorPlanAreasCombo':{
+			'#FloorPlanAreasCombo': {
 				select: me.onFloorPlanAreasComboSelect
+			},
+			'#FloorPlanPatientZoneAssignmentCancelBtn': {
+				click: me.onFloorPlanPatientZoneAssignmentCancelBtnClick
+			},
+			'#FloorPlanPatientZoneAssignmentSaveBtn': {
+				click: me.onFloorPlanPatientZoneAssignmentSaveBtnClick
+			},
+			'#FloorPlanPatientZoneAssignmentCombo': {
+				beforeselect: me.onFloorPlanPatientZoneAssignmentComboBeforeSelect
 			}
 		});
 
@@ -33023,12 +32990,12 @@ Ext.define('App.controller.areas.FloorPlan', {
 		});
 	},
 
-	renderZones:function(){
+	renderZones: function(){
 		var me = this,
 			cmb = me.getFloorPlanAreasCombo();
 
 		cmb.getStore().load({
-			callback:function(records){
+			callback: function(records){
 				if(records.length > 0){
 					cmb.setValue(records[0].data.id);
 					me.onFloorPlanAreasComboSelect(cmb, records);
@@ -33166,7 +33133,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 					'       <tpl if="this.patientImg(image)">',
 					'           <img src="{image}" height="96" width="96">' +
 					'       <tpl else>',
-					'           <img src="'+ app.patientImage +'" height="96" width="96">',
+					'           <img src="' + app.patientImage + '" height="96" width="96">',
 					'       </tpl>',
 					'       <p>Name: {name}</p>' +
 					'       <p>DOB: {DOB}</p>' +
@@ -33175,12 +33142,12 @@ Ext.define('App.controller.areas.FloorPlan', {
 					'   </div>' +
 					'</div>',
 					{
-						patientImg:function(image){
+						patientImg: function(image){
 							return image != null && image != '';
 						}
 					}
 				),
-				buttons:[
+				buttons: [
 					{
 						text: _('remove_patient'),
 						itemId: 'FloorPlanPatientZoneDetailRemovePatientBtn'
@@ -33209,14 +33176,14 @@ Ext.define('App.controller.areas.FloorPlan', {
 
 		PatientZone.addPatientToZone(params, function(response){
 			data.patientZoneId = response.data.id;
-			app.msg('Sweet!', data.name + ' ' +_('successfully_moved') + '.');
+			app.msg('Sweet!', data.name + ' ' + _('successfully_moved') + '.');
 			me.setZone(zone, data);
 		});
 	},
 
 	unAssignPatient: function(zone, data){
 		var me = this;
-		PatientZone.removePatientFromZone({id:data.patientZoneId}, function(){
+		PatientZone.removePatientFromZone({id: data.patientZoneId}, function(){
 			me.unSetZone(zone)
 		});
 	},
@@ -33231,6 +33198,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 
 		zone.setTooltip(_('patient_name') + ':' + data.name);
 		zone.addCls(data.priority);
+		zone.addCls('zone-in-use');
 		zone.data = data;
 	},
 
@@ -33241,6 +33209,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 		if(zone.dragZone) zone.dragZone.lock();
 		zone.setTooltip(_('patient_name') + ': [empty]');
 		zone.removeCls(zone.priority);
+		zone.removeCls('zone-in-use');
 		zone.data = null;
 	},
 
@@ -33271,8 +33240,123 @@ Ext.define('App.controller.areas.FloorPlan', {
 
 	setFloorPlan: function(floorPlanId){
 
-	}
+	},
 
+	promptPatientZoneAssignment: function(pid, floorPlanId){
+		var me = this;
+
+		if(!me.getFloorPlanPatientZoneAssignmentWindow()){
+
+			Ext.create('Ext.window.Window', {
+				title: _('patient_zone_assignment'),
+				itemId: 'FloorPlanPatientZoneAssignmentWindow',
+				items: [
+					{
+						xtype: 'combobox',
+						width: 300,
+						margin: 10,
+						itemId: 'FloorPlanPatientZoneAssignmentCombo',
+						queryMode: 'local',
+						valueField: 'id',
+						displayField: 'display',
+						fieldLabel: _('zone'),
+						labelAlign: 'top',
+						editable: false,
+						store: Ext.create('Ext.data.Store', {
+							sorters: [
+								{
+									property: 'title'
+								}
+							],
+							fields: [
+								{
+									name: 'id',
+									type: 'int'
+								},
+								{
+									name: 'title',
+									type: 'string'
+								},
+								{
+									name: 'display',
+									type: 'string',
+									convert: function(v, record){
+										if(record.data.in_use){
+											return '<span style="text-decoration: line-through; color: #c1c1c1">' +
+												record.data.title + '</span> (' + _('inuse') + ')';
+										}
+										return record.data.title;
+									}
+								},
+								{
+									name: 'in_use',
+									type: 'bool'
+								}
+							]
+						})
+					},
+					{
+						xtype: 'activeproviderscombo',
+						margin: '0 10 10 10',
+						width: 300,
+						fieldLabel: _('provider'),
+						labelAlign: 'top',
+						itemId: 'FloorPlanPatientProviderAssignmentCombo'
+					}
+				],
+				buttons: [
+					{
+						text: _('cancel'),
+						itemId: 'FloorPlanPatientZoneAssignmentCancelBtn'
+					},
+					{
+						text: _('save'),
+						itemId: 'FloorPlanPatientZoneAssignmentSaveBtn'
+					}
+				]
+			});
+		}
+
+		FloorPlans.getFloorPlanZonesByFloorPlanId(floorPlanId, function(result){
+			var field = me.getFloorPlanPatientZoneAssignmentCombo();
+			field.reset();
+			field.getStore().loadData(result);
+		});
+		me.getFloorPlanPatientZoneAssignmentWindow().pid = pid;
+		me.getFloorPlanPatientZoneAssignmentWindow().show();
+
+	},
+
+	onFloorPlanPatientZoneAssignmentCancelBtnClick: function(btn){
+		this.getFloorPlanPatientZoneAssignmentWindow().close();
+	},
+
+	onFloorPlanPatientZoneAssignmentSaveBtnClick: function(btn){
+		var zone_id = this.getFloorPlanPatientZoneAssignmentCombo().getValue(),
+			provider_id = this.getFloorPlanPatientProviderAssignmentCombo().getValue(),
+			win = this.getFloorPlanPatientZoneAssignmentWindow();
+
+		if(zone_id && zone_id != null){
+			PatientZone.addPatientToZone({
+				zone_id: zone_id,
+				provider_id: provider_id,
+				pid: win.pid
+			}, function(response){
+				app.msg('Sweet!', _('patient_successfully_assigned_to_zone'));
+
+				// TODO set zone with the data on hand
+				// me.setZone(zone, data);
+			});
+		}
+
+		win.close();
+
+	},
+
+	onFloorPlanPatientZoneAssignmentComboBeforeSelect: function(cmb, record){
+		return !record.data.in_use;
+
+	}
 
 });
 Ext.define('App.controller.dashboard.Dashboard', {
@@ -36632,6 +36716,10 @@ Ext.define('App.controller.patient.Patient', {
 				click: me.onPossiblePatientDuplicatesContinueBtnClick
 			}
 		});
+	},
+
+	doCapitalizeEachLetterOnKeyUp: function(){
+
 	},
 
 	onPossiblePatientDuplicatesGridItemDblClick: function(grid, record){
@@ -41324,7 +41412,7 @@ Ext.define('App.ux.grid.Button', {
 });
 Ext.define('App.ux.combo.ActiveSpecialties', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.activespecialtiescombo',
+	xtype: 'activespecialtiescombo',
 	displayField: 'text_details',
 	valueField: 'id',
 	editable: false,
@@ -43214,8 +43302,7 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 		}
 	]
 });
-Ext.define('App.view.areas.PatientPoolDropZone', {
-	id: 'panelPoolArea',
+Ext.define('App.view.areas.PatientPoolAreas', {
 	extend: 'App.ux.RenderPanel',
 
 	requires:[
@@ -43248,14 +43335,10 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 
 	onPatientDrop: function(node, data, overModel, dropPosition, eOpts){
 
-		var name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,
+		var me = this,
+			name = (data.records[0].data) ? data.records[0].data.name : data.records[0].name,
 			pid = (data.records[0].data) ? data.records[0].data.pid : data.records[0].pid,
 			params;
-
-//		say(node);
-//		say(data);
-//		say(name);
-//		say(pid);
 
 		app.msg('Sweet!', name + ' ' + _('sent_to') + ' ' + this.panel.title);
 
@@ -43264,10 +43347,17 @@ Ext.define('App.view.areas.PatientPoolDropZone', {
 			sendTo: this.panel.action
 		};
 
-		PoolArea.sendPatientToPoolArea(params, function(){
-			app.unsetPatient(null, true);
-			Ext.getCmp('panelPoolArea').reloadStores();
-			app.getPatientsInPoolArea();
+		PoolArea.sendPatientToPoolArea(params, function(result){
+
+			if(result.floor_plan_id == null){
+				app.unsetPatient(null, true);
+				app.nav['App_view_areas_PatientPoolAreas'].reloadStores();
+				app.getPatientsInPoolArea();
+				return;
+			}
+
+			app.getController('areas.FloorPlan').promptPatientZoneAssignment(result.record.pid, result.floor_plan_id);
+
 		});
 	},
 
@@ -44136,26 +44226,26 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_calendar_events')){
 
-			me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('appointments'),
-				itemId: 'AppointmentsPanel',
-				hideHeaders: true,
-				disableSelection: true,
-				store: me.patientCalendarEventsStore,
-				columns: [
-					{
-						xtype: 'datecolumn',
-						format: 'F j, Y, g:i a',
-						dataIndex: 'start',
-						flex: 1
-					}
-				]
-			});
+			//me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
+			//	autoLoad: false
+			//}));
+			//
+			//Ext.Array.push(me.sidePanelItems, {
+			//	xtype: 'grid',
+			//	title: _('appointments'),
+			//	itemId: 'AppointmentsPanel',
+			//	hideHeaders: true,
+			//	disableSelection: true,
+			//	store: me.patientCalendarEventsStore,
+			//	columns: [
+			//		{
+			//			xtype: 'datecolumn',
+			//			format: 'F j, Y, g:i a',
+			//			dataIndex: 'start',
+			//			flex: 1
+			//		}
+			//	]
+			//});
 		}
 
 		if(me.sidePanelItems.length > 0){
@@ -48893,7 +48983,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 });
 Ext.define('App.ux.combo.Specialties', {
 	extend: 'App.ux.combo.ComboResettable',
-	alias: 'widget.specialtiescombo',
+	xtype: 'specialtiescombo',
 	displayField: 'text_details',
 	valueField: 'id',
 	editable: false,
@@ -51670,7 +51760,7 @@ Ext.define('App.view.Viewport', {
          */
         me.nav['App_view_dashboard_Dashboard'] = me.MainPanel.add(Ext.create('App.view.dashboard.Dashboard'));
         me.nav['App_view_areas_FloorPlan'] = me.MainPanel.add(Ext.create('App.view.areas.FloorPlan'));
-        me.nav['App_view_areas_PatientPoolDropZone'] = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolDropZone'));
+        me.nav['App_view_areas_PatientPoolAreas'] = me.MainPanel.add(Ext.create('App.view.areas.PatientPoolAreas'));
 
         /**
          * Footer Panel
@@ -52011,12 +52101,12 @@ Ext.define('App.view.Viewport', {
 
 	openCalendar: function(){
         var me = this,
-	        cls = me.nav.getNavRefByClass('App.view.calendar.Calendar'),
+	        cls = me.nav.getNavRefByClass('Modules.appointments.view.Calendar'),
 	        panel =  me.nav[cls];
 
-		if(panel && panel == me.nav.activePanel) panel.loadPatient();
+		//if(panel && panel == me.nav.activePanel) panel.loadPatient();
 
-        me.nav.navigateTo('App.view.calendar.Calendar');
+        me.nav.navigateTo('Modules.appointments.view.Calendar');
 
 
     },
@@ -52058,7 +52148,7 @@ Ext.define('App.view.Viewport', {
     },
 
 	goToPoolAreas: function(){
-        this.nav.navigateTo('App.view.areas.PatientPoolDropZone');
+        this.nav.navigateTo('App.view.areas.PatientPoolAreas');
     },
 
 	goToFloorPlans: function(){
@@ -52268,7 +52358,7 @@ Ext.define('App.view.Viewport', {
             }
         });
 
-	    if(me.nav['App_view_areas_PatientPoolDropZone'].isVisible()) me.nav['App_view_areas_PatientPoolDropZone'].reloadStores();
+	    if(me.nav['App_view_areas_PatientPoolAreas'].isVisible()) me.nav['App_view_areas_PatientPoolAreas'].reloadStores();
     },
 
     initializePatientPoolDragZone: function(panel){
@@ -52303,7 +52393,7 @@ Ext.define('App.view.Viewport', {
             },
 
 	        onBeforeDrag:function(){
-		        app.nav.navigateTo('App.view.areas.PatientPoolDropZone');
+		        app.nav.navigateTo('App.view.areas.PatientPoolAreas');
 		        return true;
             }
         });

@@ -1,6 +1,6 @@
 Ext.define('App.ux.combo.Specialties', {
 	extend: 'App.ux.combo.ComboResettable',
-	alias: 'widget.specialtiescombo',
+	xtype: 'specialtiescombo',
 	displayField: 'text_details',
 	valueField: 'id',
 	editable: false,

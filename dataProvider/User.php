@@ -74,7 +74,7 @@ class User {
 
 				unset($params->fullname, $params->pwd_history1, $params->pwd_history2);
 				$user = (object) $this->u->save($params);
-
+				$user = (object) isset($user->data) ? $user->data : $user;
 				unset($user->password, $user->pwd_history1, $user->pwd_history2);
 				$user->fullname = Person::fullname($user->fname, $user->mname, $user->lname);
 				$user->password = '';

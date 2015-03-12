@@ -23,7 +23,7 @@ Ext.define('App.view.administration.Users', {
 		'App.ux.combo.ActiveSpecialties'
 	],
 	pageTitle: _('users'),
-
+	itemId: 'AdminUsersPanel',
 	initComponent: function(){
 		var me = this;
 
@@ -35,7 +35,6 @@ Ext.define('App.view.administration.Users', {
 		me.userGrid = Ext.create('Ext.grid.Panel', {
 			itemId: 'AdminUserGridPanel',
 			store: me.userStore,
-			columLines: true,
 			columns: [
 				{
 					text: 'id',
@@ -85,237 +84,311 @@ Ext.define('App.view.administration.Users', {
 					clicksToEdit: 1,
 					items: [
 						{
-							xtype: 'container',
-							itemId: 'UserGridEditFormContainer',
-							layout: 'hbox',
+							xtype: 'tabpanel',
 							items: [
 								{
-									xtype: 'container',
-									itemId: 'UserGridEditFormContainerLeft',
+									title: _('general'),
+									itemId: 'UserGridEditFormContainer',
+									layout: 'hbox',
 									items: [
 										{
-											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
-											fieldDefaults: {
-												labelAlign: 'right'
-											},
+											xtype: 'container',
+											itemId: 'UserGridEditFormContainerLeft',
 											items: [
 												{
-													width: 280,
-													xtype: 'textfield',
-													fieldLabel: _('username'),
-													name: 'username',
-													allowBlank: false,
-													validateOnBlur: true,
-													vtype: 'usernameField'
+													xtype: 'fieldcontainer',
+													layout: {
+														type: 'hbox'
+													},
+													fieldDefaults: {
+														labelAlign: 'right'
+													},
+													items: [
+														{
+															width: 280,
+															xtype: 'textfield',
+															fieldLabel: _('username'),
+															name: 'username',
+															allowBlank: false,
+															validateOnBlur: true,
+															vtype: 'usernameField'
+														},
+														{
+															width: 275,
+															xtype: 'textfield',
+															fieldLabel: _('password'),
+															name: 'password',
+															inputType: 'password',
+															vtype: 'strength',
+															strength: 24,
+															plugins: {
+																ptype: 'passwordstrength'
+															}
+														}
+													]
 												},
 												{
-													width: 275,
-													xtype: 'textfield',
-													fieldLabel: _('password'),
-													name: 'password',
-													inputType: 'password',
-													vtype: 'strength',
-													strength: 24,
-													plugins: {
-														ptype: 'passwordstrength'
-													}
+													xtype: 'fieldcontainer',
+													layout: {
+														type: 'hbox'
+													},
+													fieldDefaults: {
+														labelAlign: 'right'
+													},
+													fieldLabel: _('name'),
+													items: [
+														{
+															width: 50,
+															xtype: 'mitos.titlescombo',
+															name: 'title'
+														},
+														{
+															width: 145,
+															xtype: 'textfield',
+															name: 'fname',
+															allowBlank: false
+														},
+														{
+															width: 100,
+															xtype: 'textfield',
+															name: 'mname'
+														},
+														{
+															width: 150,
+															xtype: 'textfield',
+															name: 'lname'
+														}
+													]
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: {
+														type: 'hbox'
+													},
+													fieldDefaults: {
+														labelAlign: 'right'
+													},
+													items: [
+														{
+															width: 125,
+															xtype: 'checkbox',
+															fieldLabel: _('active'),
+															name: 'active'
+														},
+														{
+															width: 100,
+															labelWidth: 85,
+															xtype: 'checkbox',
+															fieldLabel: _('authorized'),
+															name: 'authorized'
+														},
+														{
+															width: 100,
+															labelWidth: 85,
+															xtype: 'checkbox',
+															fieldLabel: _('calendar_q'),
+															name: 'calendar'
+														},
+														{
+															width: 225,
+															labelWidth: 50,
+															xtype: 'gaiaehr.combo',
+															fieldLabel: _('type'),
+															name: 'doctor_type',
+															list: 121,
+															loadStore: true
+														}
+													]
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: {
+														type: 'hbox'
+													},
+													fieldDefaults: {
+														labelAlign: 'right'
+													},
+													items: [
+														{
+															width: 280,
+															xtype: 'mitos.facilitiescombo',
+															fieldLabel: _('default_facility'),
+															name: 'facility_id'
+														},
+														{
+															width: 275,
+															xtype: 'mitos.authorizationscombo',
+															fieldLabel: _('authorizations'),
+															name: 'see_auth'
+														}
+													]
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: {
+														type: 'hbox'
+													},
+													fieldDefaults: {
+														labelAlign: 'right'
+													},
+													items: [
+														{
+															width: 555,
+															xtype: 'mitos.rolescombo',
+															fieldLabel: _('access_control'),
+															name: 'role_id',
+															allowBlank: false
+														}
+														//												{
+														//													width: 275,
+														//													xtype: 'textfield',
+														//													fieldLabel: _('taxonomy'),
+														//													name: 'taxonomy'
+														//												}
+													]
 												}
 											]
 										},
 										{
-											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
-											fieldDefaults: {
-												labelAlign: 'right'
-											},
-											fieldLabel: _('name'),
-											items: [
-												{
-													width: 50,
-													xtype: 'mitos.titlescombo',
-													name: 'title'
-												},
-												{
-													width: 145,
-													xtype: 'textfield',
-													name: 'fname',
-													allowBlank: false
-												},
-												{
-													width: 100,
-													xtype: 'textfield',
-													name: 'mname'
-												},
-												{
-													width: 150,
-													xtype: 'textfield',
-													name: 'lname'
-												}
-											]
-										},
-										{
-											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
-											fieldDefaults: {
-												labelAlign: 'right'
-											},
-											items: [
-												{
-													width: 100,
-													xtype: 'checkbox',
-													fieldLabel: _('active'),
-													name: 'active'
-												},
-												{
-													width: 100,
-													xtype: 'checkbox',
-													fieldLabel: _('authorized'),
-													name: 'authorized'
-												},
-												{
-													width: 75,
-													xtype: 'checkbox',
-													fieldLabel: _('calendar_q'),
-													name: 'calendar'
-												},
-												{
-													width: 275,
-													xtype: 'gaiaehr.combo',
-													fieldLabel: _('type'),
-													name: 'doctor_type',
-													list: 121,
-													loadStore: true
-												}
-											]
-										},
-										{
-											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
-											fieldDefaults: {
-												labelAlign: 'right'
-											},
-											items: [
-												{
-													width: 280,
-													xtype: 'mitos.facilitiescombo',
-													fieldLabel: _('default_facility'),
-													name: 'facility_id'
-												},
-												{
-													width: 275,
-													xtype: 'mitos.authorizationscombo',
-													fieldLabel: _('authorizations'),
-													name: 'see_auth'
-												}
-											]
-										},
-										{
-											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
-											fieldDefaults: {
-												labelAlign: 'right'
-											},
-											items: [
-												{
-													width: 555,
-													xtype: 'mitos.rolescombo',
-													fieldLabel: _('access_control'),
-													name: 'role_id',
-													allowBlank: false
-												}
-//												{
-//													width: 275,
-//													xtype: 'textfield',
-//													fieldLabel: _('taxonomy'),
-//													name: 'taxonomy'
-//												}
-											]
+											xtype: 'container',
+											itemId: 'UserGridEditFormContainerRight',
+											items: []
 										}
 									]
 								},
 								{
-									xtype: 'container',
-									itemId: 'UserGridEditFormContainerRight',
+									xtype: 'panel',
+									title: _('provider'),
+									itemId: 'UserGridEditFormProviderPanel',
+									layout: 'hbox',
 									items: [
 										{
 											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
+											itemId: 'UserGridEditFormProviderPanelLeft',
 											fieldDefaults: {
-												labelAlign: 'right'
+												labelAlign: 'right',
+												width: 500,
+												margin: '0 0 5 0'
 											},
+											margin: '20 10 0 0',
 											items: [
 												{
-													width: 280,
 													xtype: 'textfield',
 													fieldLabel: _('federal_tax_id'),
 													name: 'fedtaxid'
 												},
 												{
-													width: 275,
 													xtype: 'textfield',
 													fieldLabel: _('fed_drug_id'),
 													name: 'feddrugid'
-												}
-											]
-										},
-										{
-											xtype: 'fieldcontainer',
-											layout: {
-												type: 'hbox'
-											},
-											fieldDefaults: {
-												labelAlign: 'right'
-											},
-											items: [
+
+												},
 												{
-													width: 280,
 													xtype: 'textfield',
 													fieldLabel: _('upin'),
 													name: 'pin'
 												},
 												{
-													width: 275,
 													xtype: 'textfield',
 													fieldLabel: _('npi'),
 													name: 'npi',
 													maxLength: 10,
 													vtype: 'npi'
+
+												},
+												{
+													xtype: 'activespecialtiescombo',
+													fieldLabel: _('specialties'),
+													name: 'specialty',
+													margin: '5 0',
+													labelAlign: 'right',
+													multiSelect: true
+												},
+												{
+													xtype: 'textfield',
+													fieldLabel: _('additional_info'),
+													name: 'notes',
+													labelAlign: 'right'
 												}
 											]
 										},
 										{
-											width: 558,
-											xtype: 'activespecialtiescombo',
-											fieldLabel: _('specialties'),
-											name: 'specialty',
-											margin: '5 0',
-											labelAlign: 'right',
-											multiSelect: true
-										},
-										{
-											width: 558,
-											xtype: 'textfield',
-											fieldLabel: _('additional_info'),
-											name: 'notes',
-											labelAlign: 'right'
+											xtype: 'grid',
+											title: _('provider_credentialization'),
+											itemId: 'UserGridEditFormProviderCredentializationGrid',
+											flex: 1,
+											maxHeight: 200,
+											frame: true,
+											store: Ext.create('App.store.administration.ProviderCredentializations', {
+												pageSize: 1000
+											}),
+											plugins:[
+												{
+													ptype:'cellediting'
+												}
+											],
+											tools: [
+												{
+													xtype: 'button',
+													text: _('active_all'),
+													icon: 'resources/images/icons/yes.gif',
+													margin: '0 5 0 0',
+													itemId: 'UserGridEditFormProviderCredentializationActiveBtn'
+												},
+												{
+													xtype:'button',
+													text: _('inactive_all'),
+													icon: 'resources/images/icons/no.gif',
+													itemId: 'UserGridEditFormProviderCredentializationInactiveBtn'
+												}
+											],
+											columns: [
+												{
+													text: _('insurance'),
+													width: 150,
+													dataIndex: 'insurance_company_id',
+													renderer: function(v, meta, record){
+														return record.data.insurance_company_id + ': ' + record.data.insurance_company_name;
+													}
+												},
+												{
+													xtype:'datecolumn',
+													format: g('date_display_format'),
+													text: _('start'),
+													dataIndex: 'start_date',
+													editor: {
+														xtype: 'datefield'
+													}
+												},
+												{
+													xtype:'datecolumn',
+													format: g('date_display_format'),
+													text: _('end'),
+													dataIndex: 'end_date',
+													editor: {
+														xtype: 'datefield'
+													}
+												},
+												{
+													text: _('note'),
+													dataIndex: 'credentialization_notes',
+													flex: 1,
+													editor: {
+														xtype: 'textfield'
+													}
+												},
+												{
+													text: _('active'),
+													dataIndex: 'active',
+													renderer: app.boolRenderer
+												}
+											]
 										}
 									]
 								}
 							]
 						}
+
 					]
 				})
 			],
@@ -338,7 +411,7 @@ Ext.define('App.view.administration.Users', {
 
 		});
 
-		me.pageBody = [ me.userGrid ];
+		me.pageBody = [me.userGrid];
 		me.callParent(arguments);
 
 	},

@@ -66,6 +66,28 @@ $API = array(
             )
         )
     ),
+    'Providers' => array(
+        'methods' => array(
+            'getProviderCredentializations' => array(
+                'len' => 1
+            ),
+            'getProviderCredentialization' => array(
+                'len' => 1
+            ),
+            'addProviderCredentialization' => array(
+                'len' => 1
+            ),
+            'updateProviderCredentialization' => array(
+                'len' => 1
+            ),
+            'deleteProviderCredentialization' => array(
+                'len' => 1
+            ),
+            'getProviderCredentializationForDate' => array(
+                'len' => 3
+            )
+        )
+    ),
     'DataPortability' => array(
         'methods' => array(
             'export' => array(

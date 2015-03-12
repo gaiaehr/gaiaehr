@@ -1529,4 +1529,8 @@ $LANG = array(
     'inuse'                                 => 'In Use',
     'stop_date'                             => 'Stop Date',
     'delete_record_confirmation'            => 'You Want To Delete This Record?',
+    'provider_credentialization'            => 'Provider Credentialization',
+    'active_all'                            => 'Active All',
+    'inactive_all'                          => 'Inactive All',
+    'provider_credentialization_error'      => 'Provider Credentialization Error',
 );

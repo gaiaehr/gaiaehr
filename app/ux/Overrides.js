@@ -179,22 +179,61 @@ Ext.override(Ext.data.reader.Reader, {
 	}
 });
 
-//Ext.override(Ext.grid.RowEditor, {
-//	loadRecord: function(record) {
-//		var me = this,
-//			form = me.getForm(),
-//			valid = form.isValid();
-//
-//		form.loadRecord(record);
-//		if(me.errorSummary) {
-//			me[valid ? 'hideToolTip' : 'showToolTip']();
-//		}
-//
-//		Ext.Array.forEach(me.query('>displayfield'), function(field) {
-//			me.renderColumnData(field, record);
-//		}, me);
-//	}
-//});
+Ext.override(Ext.data.Store, {
+	updateGroupsOnUpdate: function(record, modifiedFieldNames){
+		var me = this,
+			groupField = me.getGroupField(),
+			groupName = me.getGroupString(record),
+			groups = me.groups,
+			len, i, items, group;
+
+		if (modifiedFieldNames && Ext.Array.indexOf(modifiedFieldNames, groupField) !== -1) {
+
+
+			if (me.buffered) {
+				Ext.Error.raise({
+					msg: 'Cannot move records between groups in a buffered store record'
+				});
+			}
+
+
+			items = groups.items;
+			for (i = 0, len = items.length; i < len; ++i) {
+				group = items[i];
+				if (group.contains(record)) {
+					group.remove(record);
+					break;
+				}
+			}
+			group = groups.getByKey(groupName);
+			if (!group) {
+				group = groups.add(new Ext.data.Group({
+					key: groupName,
+					store: me
+				}));
+			}
+			group.add(record);
+
+
+
+			me.data.remove(record);
+			me.data.insert(me.data.findInsertionIndex(record, me.generateComparator()), record);
+
+
+			for (i = 0, len = this.getCount(); i < len; i++) {
+				me.data.items[i].index = i;
+			}
+
+		} else {
+			/**
+			 * group null issue
+			 */
+			if(groupName){
+				groups.getByKey(groupName).setDirty();
+			}
+		}
+	}
+});
 
 Ext.override(Ext.grid.RowEditor, {
 

@@ -374,7 +374,7 @@ class MatchaCUP {
 	 */
 	public function leftJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns, $table);
-		$join = " LEFT JOIN {$table} ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
+		$join = " LEFT JOIN `{$table}` ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
 
 		$find = array('FROM', 'WHERE');
 		$replace = array(', ' . $columns . ' FROM', $join . ' WHERE');
@@ -393,9 +393,12 @@ class MatchaCUP {
 	 */
 	public function rightJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns, $table);
-		$join = " RIGHT JOIN {$table} ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
-		$this->nolimitsql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->nolimitsql);
-		$this->sql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->sql);
+		$join = " RIGHT JOIN `{$table}` ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
+
+		$find = array('FROM', 'WHERE');
+		$replace = array(', ' . $columns . ' FROM', $join . ' WHERE');
+		$this->nolimitsql = str_replace($find, $replace, $this->nolimitsql);
+		$this->sql = str_replace($find, $replace, $this->sql);
 		return $this;
 	}
 
@@ -410,8 +413,11 @@ class MatchaCUP {
 	public function join($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns, $table);
 		$join = " JOIN {$table} ON `{$this->table}`.`$onMainTable` $operator `$table`.`$onMergeTable` ";
-		$this->nolimitsql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->nolimitsql);
-		$this->sql = str_replace('WHERE', $columns . ' ' . $join . ' WHERE', $this->sql);
+
+		$find = array('FROM', 'WHERE');
+		$replace = array(', ' . $columns . ' FROM', $join . ' WHERE');
+		$this->nolimitsql = str_replace($find, $replace, $this->nolimitsql);
+		$this->sql = str_replace($find, $replace, $this->sql);;
 		return $this;
 	}
 

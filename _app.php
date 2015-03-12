@@ -82,7 +82,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             };
 
             window.a = function(acl){
-	            return window.acl[acl] || false;
+	            return eval(window.acl[acl]) || false;
             };
 
             ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );
@@ -140,7 +140,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<!-- this is the compiled/minified version -->
-<!--		<script type="text/javascript" src="app/app.min.js"></script>-->
+<!--		<script type="text/javascript" src="app/app.min.js?_v<?php print VERSION ?>"></script>-->
 
 		<script type="text/javascript">
             /**
@@ -370,6 +370,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.PreventiveCareActiveProblems',
 	                'administration.PreventiveCareLabs',
 	                'administration.PreventiveCareMedications',
+	                'administration.ProviderCredentialization',
 	                'administration.Services',
 	                'administration.User',
 	                'administration.XtypesComboModel',
@@ -489,6 +490,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.PreventiveCareActiveProblems',
 	                'administration.PreventiveCareLabs',
 	                'administration.PreventiveCareMedications',
+	                'administration.ProviderCredentializations',
 	                'administration.Services',
 	                'administration.User',
 	                'administration.XtypesComboModel',
@@ -680,6 +682,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.ReferringProviders',
 	                'administration.Roles',
 	                'administration.Specialties',
+	                'administration.Users',
 
 	                'areas.FloorPlan',
 

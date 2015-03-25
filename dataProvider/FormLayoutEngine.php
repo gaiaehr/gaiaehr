@@ -95,7 +95,7 @@ class FormLayoutEngine {
 		/**
 		 * define $items as an array to push all the $item into.
 		 */
-		$items = array();
+		$items = [];
 		/**
 		 * get the form parent fields
 		 */
@@ -139,7 +139,7 @@ class FormLayoutEngine {
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
 			if($item['xtype'] == 'fieldset' && $item['title'] == 'Assessment'){
-				$item['items'][] = array('xtype' => 'icdsfieldset', 'emptyText' => 'Search For Diagnosis Codes', 'name' => 'dxCodes');
+				$item['items'][] = ['xtype' => 'icdsfieldset', 'emptyText' => 'Search For Diagnosis Codes', 'name' => 'dxCodes'];
 			}
 			/**
 			 * lets check if this item has a child items. If not, the unset the $item['Items']
@@ -222,7 +222,7 @@ class FormLayoutEngine {
 		}
 
 		$regex = '("\w*?":|"Ext\.create|\)"\})';
-		$cleanItems = array();
+		$cleanItems = [];
 		preg_match_all($regex, $rawStr, $rawItems);
 		foreach($rawItems[0] as $item){
 			array_push($cleanItems, str_replace('"', '', $item));
@@ -242,7 +242,7 @@ class FormLayoutEngine {
 	 */
 	function getChildItems($parentId){
 		$this->setModels();
-		$items = array();
+		$items = [];
 
 
 		$records = $this->ff->sql("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `x_index` ASC, `id` ASC")->all();
@@ -284,8 +284,8 @@ class FormLayoutEngine {
 		 */
 	function getItemsOptions($item_id){
 		$this->setModels();
-		$foo = array();
-		$options = $this->o->load(array('field_id' => $item_id))->one();
+		$foo = [];
+		$options = $this->o->load(['field_id' => $item_id])->one();
 		$options = json_decode($options['options'], true);
 		foreach($options as $option => $value){
 			$foo[$option] = $value;
@@ -307,25 +307,35 @@ class FormLayoutEngine {
 	function getStore($list_id){
 		$params = new stdClass();
 		$params->list_id = $list_id;
+
 		$options = $this->cb->getOptionsByListId($params);
-		$fields = array(
-			array(
+
+		$fields = [
+			[
 				'name' => 'option_name'
-			),
-			array(
-				'name' =>'option_value'
-			),
-			array(
+			],
+			[
+				'name' =>'option_value',
+			    'type' => 'auto'
+			],
+			[
 				'name' =>'option_data'
-			)
-		);
-		$data = array();
+			]
+		];
+
+		$data = [];
+
 		foreach($options as $i => $option){
-			if($i == 0 && is_numeric($option['option_value'])) $fields[1]['type'] = 'int';
-			$data[] = array(
+
+//			$isInt = false;
+//			if($i === 0 && is_numeric($option['option_value'])) {
+//				$fields[1]['type'] = 'int';
+//			}
+
+			$data[] = [
 				'option_name' => $option['option_name'],
 				'option_value' => $option['option_value']
-			);
+			];
 		}
 		$store = 'Ext.create(\'Ext.data.Store\',{fields:' . json_encode($fields). ',data:' . json_encode($data) . '})';
 		return str_replace('"', '\'', $store);

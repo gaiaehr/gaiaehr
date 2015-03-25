@@ -117,7 +117,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 			form = me.encForm.getForm(),
 			values = form.getValues(),
 			record = form.getRecord(),
-			isNew = record.data.eid == 0 ;
+			isNew = record.data.eid === 0 ;
 
 		say('isValid');
 		say(form.isValid());

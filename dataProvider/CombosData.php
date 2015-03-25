@@ -76,10 +76,14 @@ class CombosData {
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 		if(isset($params->list_id)){
 			if(is_numeric($params->list_id)){
-				return $this->CLO->load(array(
-					'list_id' => $params->list_id,
-					'active' => 1
-				))->all();
+
+				$sorters = new stdClass();
+				$sorters->sort[0] = new stdClass();
+				$sorters->sort[0]->property = 'seq';
+				$sorters->sort[0]->direction = 'ASC';
+
+				return $this->CLO->load(['list_id' => $params->list_id, 'active' => 1])->sort($sorters)->all();
+
 			} else{
 				if($params->list_id == 'activePharmacies'){
 					return $this->getActivePharmacies();
@@ -101,25 +105,25 @@ class CombosData {
 	}
 
 	public function getTimeZoneList(){
-		$locations = array();
+		$locations = [];
 		$zones = timezone_identifiers_list();
 		foreach($zones as $zone)
-			$locations[] = array(
+			$locations[] = [
 				'value' => $zone,
 				'name' => str_replace('_', ' ', $zone)
-			);
+			];
 		return $locations;
 	}
 
 	public function getActivePharmacies(){
 		if($this->P == null)
 			$this->P = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
-		$options = array();
-		foreach($this->P->load(array('active' => '1'))->all() as $option){
-			$options[] = array(
+		$options = [];
+		foreach($this->P->load(['active' => '1'])->all() as $option){
+			$options[] = [
 				'option_name' => $option['name'],
 				'option_value' => $option['id']
-			);
+			];
 		}
 		return $options;
 	}
@@ -127,14 +131,14 @@ class CombosData {
 	public function getActiveInsurances(){
 		if($this->I == null)
 			$this->I = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
-		$options = array();
+		$options = [];
 		$this->I->addFilter('active', 1);
 		$records = $this->I->load()->all();
 		foreach($records as $record){
-			$options[] = array(
+			$options[] = [
 				'option_name' => $record['id'] . ': ' .$record['name'],
 				'option_value' => $record['id']
-			);
+			];
 		}
 		return $options;
 	}
@@ -143,7 +147,7 @@ class CombosData {
 		if($this->R == null)
 			$this->R = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
 
-		$options = array();
+		$options = [];
 
 		return $options;
 	}
@@ -194,8 +198,8 @@ class CombosData {
 		if($this->U == null){
 			$this->U = MatchaModel::setSenchaModel('App.model.administration.User');
 		}
-		$rows = array();
-		$records = $this->U->load(array('active' => 1), array('id','title','fname','mname','lname'))->all();
+		$rows = [];
+		$records = $this->U->load(['active' => 1], ['id','title','fname','mname','lname'])->all();
 
 		foreach($records['data'] as $row){
 			$row['name'] = $row['title'] . ' ' . Person::fullname($row['fname'], $row['mname'], $row['lname']);
@@ -210,30 +214,30 @@ class CombosData {
 			$this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');
 		$records = $this->CL->load()->all();
 		// manually add all system combos that are not stored combo_lists table
-		$records[] = array(
+		$records[] = [
 			'id' => 'activePharmacies',
 			'title' => 'Active Pharmacies'
-		);
-		$records[] = array(
+		];
+		$records[] = [
 			'id' => 'activeProviders',
 			'title' => 'Active Providers'
-		);
-		$records[] = array(
+		];
+		$records[] = [
 			'id' => 'activeInsurances',
 			'title' => 'Active Insurances'
-		);
-		$records[] = array(
+		];
+		$records[] = [
 			'id' => 'activeFacilities',
 			'title' => 'Active Facilities'
-		);
-		$records[] = array(
+		];
+		$records[] = [
 			'id' => 'billingFacilities',
 			'title' => 'Billing Facilities'
-		);
-		$records[] = array(
+		];
+		$records[] = [
 			'id' => 'referringPhysicians',
 			'title' => 'Referring Physicians'
-		);
+		];
 		return $records;
 	}
 
@@ -253,264 +257,264 @@ class CombosData {
 	public function getFloorPlanAreas(){
 		if($this->FP == null)
 			$this->FP = MatchaModel::setSenchaModel('App.model.administration.FloorPlans');
-		return $this->FP->load(array(
+		return $this->FP->load([
 			'active' => '1',
 			'facility_id' => $_SESSION['user']['facility']
-		), array(
+		], [
 			'id',
 			'title'
-		))->all();
+		])->all();
 	}
 
 	public function getAuthorizations(){
-		return array(
-			array(
+		return [
+			[
 				'id' => 1,
 				'name' => 'Print'
-			),
-			array(
+			],
+			[
 				'id' => 2,
 				'name' => 'Email'
-			),
-			array(
+			],
+			[
 				'id' => 3,
 				'name' => 'Email'
-			),
-		);
+			],
+		];
 	}
 
 	public function getSeeAuthorizations(){
-		return array(
-			array(
+		return [
+			[
 				'id' => 1,
 				'name' => 'none'
-			),
-			array(
+			],
+			[
 				'id' => 2,
 				'name' => 'Only Mine'
-			),
-			array(
+			],
+			[
 				'id' => 3,
 				'name' => 'All'
-			),
-		);
+			],
+		];
 	}
 
 	public function getTaxIds(){
-		return array(
-			array(
+		return [
+			[
 				'option_id' => 'EI',
 				'title' => 'EIN'
-			),
-			array(
+			],
+			[
 				'option_id' => 'SY',
 				'title' => 'SSN'
-			),
-		);
+			],
+		];
 	}
 
 	public function getFiledXtypes(){
-		return array(
-			0 => array(
+		return [
+			0 => [
 				'id' => 1,
 				'name' => 'Fieldset',
 				'value' => 'fieldset'
-			),
-			1 => array(
+			],
+			1 => [
 				'id' => 2,
 				'name' => 'Field Container',
 				'value' => 'fieldcontainer'
-			),
-			2 => array(
+			],
+			2 => [
 				'id' => 3,
 				'name' => 'Display Field',
 				'value' => 'displayfield'
-			),
-			3 => array(
+			],
+			3 => [
 				'id' => 4,
 				'name' => 'Text Field',
 				'value' => 'textfield'
-			),
-			4 => array(
+			],
+			4 => [
 				'id' => 5,
 				'name' => 'TextArea Field',
 				'value' => 'textareafield'
-			),
-			5 => array(
+			],
+			5 => [
 				'id' => 6,
 				'name' => 'CheckBox Field',
 				'value' => 'checkbox'
-			),
-			6 => array(
+			],
+			6 => [
 				'id' => 7,
 				'name' => 'Slelect List / Combo Box',
 				'value' => 'combobox'
-			),
-			7 => array(
+			],
+			7 => [
 				'id' => 8,
 				'name' => 'Radio Field',
 				'value' => 'radiofield'
-			),
-			8 => array(
+			],
+			8 => [
 				'id' => 9,
 				'name' => 'Date/Time Field',
 				'value' => 'mitos.datetime'
-			),
-			9 => array(
+			],
+			9 => [
 				'id' => 10,
 				'name' => 'Date Field',
 				'value' => 'datefield'
-			),
-			10 => array(
+			],
+			10 => [
 				'id' => 11,
 				'name' => 'Time Field',
 				'value' => 'timefield'
-			),
-			11 => array(
+			],
+			11 => [
 				'id' => 12,
 				'name' => 'Number Field',
 				'value' => 'numberfield'
-			),
-			12 => array(
+			],
+			12 => [
 				'id' => 13,
 				'name' => 'CheckBox With Family History',
 				'value' => 'checkboxwithfamilyhistory'
-			)
-		);
+			]
+		];
 	}
 
 	public function getPosCodes(){
-		$pos = array();
-		$pos[] = array(
+		$pos = [];
+		$pos[] = [
 			'code' => '01',
 			'title' => 'Pharmacy',
 			'description' => 'A facility or location where drugs and other medically related items and services are sold, dispensed, or otherwise provided directly to patients.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '02',
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '03',
 			'title' => 'School',
 			'description' => 'A facility whose primary purpose is education.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '04',
 			'title' => 'Homeless Shelter',
 			'description' => 'A facility or location whose primary purpose is to provide temporary housing to homeless individuals (e.g., emergency shelters, individual or family shelters).'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '05',
 			'title' => 'Indian Health Service Free-standing Facility',
 			'description' => 'A facility or location, owned and operated by the Indian Health Service, which provides diagnostic, therapeutic (surgical and non-surgical), and rehabilitation services to American Indians and Alaska Natives who do not require hospitalization.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '06',
 			'title' => 'Indian Health Service Provider-based Facility',
 			'description' => 'A facility or location, owned and operated by the Indian Health Service, which provides diagnostic, therapeutic (surgical and non-surgical), and rehabilitation services rendered by, or under the supervision of, physicians to American Indians and Alaska Natives admitted as inpatients or outpatients.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '07',
 			'title' => 'Tribal 638 Free-standing Facility',
 			'description' => 'A facility or location owned and operated by a federally recognized American Indian or Alaska Native tribe or tribal organization under a 638 agreement, which provides diagnostic, therapeutic (surgical and non-surgical), and rehabilitation services to tribal members who do not require hospitalization.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '08',
 			'title' => 'Tribal 638 Provider-based Facility',
 			'description' => 'A facility or location owned and operated by a federally recognized American Indian or Alaska Native tribe or tribal organization under a 638 agreement, which provides diagnostic, therapeutic (surgical and non-surgical), and rehabilitation services to tribal members admitted as inpatients or outpatients.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '09',
 			'title' => 'Prison/Correctional Facility',
 			'description' => 'A prison, jail, reformatory, work farm, detention center, or any other similar facility maintained by either Federal, State or local authorities for the purpose of confinement or rehabilitation of adult or juvenile criminal offenders.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '10',
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '11',
 			'title' => 'Office ',
 			'description' => 'Location, other than a hospital, skilled nursing facility (SNF), military treatment facility, community health center, State or local public health clinic, or intermediate care facility (ICF), where the health professional routinely provides health examinations, diagnosis, and treatment of illness or injury on an ambulatory basis.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '12',
 			'title' => 'Home',
 			'description' => 'Location, other than a hospital or other facility, where the patient receives care in a private residence.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '13',
 			'title' => 'Assisted Living Facility',
 			'description' => 'Congregate residential facility with self-contained living units providing assessment of each resident’s needs and on-site support 24 hours a day, 7 days a week, with the capacity to deliver or arrange for services including some health care and other services.  (effective 10/1/03)'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '14',
 			'title' => 'Group Home *',
 			'description' => 'A residence, with shared living areas, where clients receive supervision and other services such as social and/or behavioral services, custodial service, and minimal services (e.g., medication administration).'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '15',
 			'title' => 'Mobile Unit',
 			'description' => 'A facility/unit that moves from place-to-place equipped to provide preventive, screening, diagnostic, and/or treatment services.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '16',
 			'title' => 'Temporary Lodging',
 			'description' => 'A short term accommodation such as a hotel, camp ground, hostel, cruise ship or resort where the patient receives care, and which is not identified by any other POS code.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '17',
 			'title' => 'Walk-in Retail Health Clinic',
 			'description' => 'A walk-in health clinic, other than an office, urgent care facility, pharmacy or independent clinic and not described by any other Place of Service code, that is located within a retail operation and provides, on an ambulatory basis, preventive and primary care services.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '18',
 			'title' => 'Place of Employment-Worksite',
 			'description' => 'A location, not described by any other POS code, owned or operated by a public or private entity where the patient is employed, and where a health professional provides on-going or episodic occupational medical, therapeutic or rehabilitative services to the individual.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '19',
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '20',
 			'title' => 'Urgent Care Facility',
 			'description' => 'Location, distinct from a hospital emergency room, an office, or a clinic, whose purpose is to diagnose and treat illness or injury for unscheduled, ambulatory patients seeking immediate medical attention.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '21',
 			'title' => 'Inpatient Hospital',
 			'description' => 'A facility, other than psychiatric, which primarily provides diagnostic, therapeutic (both surgical and nonsurgical), and rehabilitation services by, or under, the supervision of physicians to patients admitted for a variety of medical conditions.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '22',
 			'title' => 'Outpatient Hospital',
 			'description' => 'A portion of a hospital which provides diagnostic, therapeutic (both surgical and nonsurgical), and rehabilitation services to sick or injured persons who do not require hospitalization or institutionalization.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '23',
 			'title' => 'Emergency Room - Hospital',
 			'description' => 'A portion of a hospital where emergency diagnosis and treatment of illness or injury is provided.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '24',
 			'title' => 'Ambulatory Surgical Center',
 			'description' => 'A freestanding facility, other than a physician\'s office, where surgical and diagnostic services are provided on an ambulatory basis.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '25',
 			'title' => 'Birthing Center ',
 			'description' => 'A facility, other than a hospital\'s maternity facilities or a physician\'s office, which provides a setting for labor, delivery, and immediate post-partum care as well as immediate care of new born infants.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '26',
 			'title' => 'Military Treatment Facility',
 			'description' => 'A medical facility operated by one or more of the Uniformed Services. Military Treatment Facility (MTF) also refers to certain former U.S. Public Health Service (USPHS) facilities now designated as Uniformed Service Treatment Facilities (USTF).'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '27',
 //			'title' => 'Unassigned',
@@ -531,26 +535,26 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '31',
 			'title' => 'Skilled Nursing Facility',
 			'description' => 'A facility which primarily provides inpatient skilled nursing care and related services to patients who require medical, nursing, or rehabilitative services but does not provide the level of care or treatment available in a hospital.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '32',
 			'title' => 'Nursing Facility',
 			'description' => 'A facility which primarily provides to residents skilled nursing care and related services for the rehabilitation of injured, disabled, or sick persons, or, on a regular basis, health-related care services above the level of custodial care to other than mentally retarded individuals.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '33',
 			'title' => 'Custodial Care Facility',
 			'description' => 'A facility which provides room, board and other personal assistance services, generally on a long-term basis, and which does not include a medical component.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '34',
 			'title' => 'Hospice',
 			'description' => 'A facility, other than a patient\'s home, in which palliative and supportive care for terminally ill patients and their families are provided.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '35',
 //			'title' => 'Unassigned',
@@ -581,16 +585,16 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '41',
 			'title' => 'Ambulance - Land',
 			'description' => 'A land vehicle specifically designed, equipped and staffed for lifesaving and transporting the sick or injured.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '42',
 			'title' => 'Ambulance - Air or Water',
 			'description' => 'An air or water vehicle specifically designed, equipped and staffed for lifesaving and transporting the sick or injured.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '43',
 //			'title' => 'Unassigned',
@@ -621,51 +625,51 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '49',
 			'title' => 'Independent Clinic',
 			'description' => 'A location, not part of a hospital and not described by any other Place of Service code, that is organized and operated to provide preventive, diagnostic, therapeutic, rehabilitative, or palliative services to outpatients only.  (effective 10/1/03)'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '50',
 			'title' => 'Federally Qualified Health Center',
 			'description' => 'A facility located in a medically underserved area that provides Medicare beneficiaries preventive primary medical care under the general direction of a physician.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '51',
 			'title' => 'Inpatient Psychiatric Facility',
 			'description' => 'A facility that provides inpatient psychiatric services for the diagnosis and treatment of mental illness on a 24-hour basis, by or under the supervision of a physician.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '52',
 			'title' => 'Psychiatric Facility-Partial Hospitalization',
 			'description' => 'A facility for the diagnosis and treatment of mental illness that provides a planned therapeutic program for patients who do not require full time hospitalization, but who need broader programs than are possible from outpatient visits to a hospital-based or hospital-affiliated facility.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '53',
 			'title' => 'Community Mental Health Center',
 			'description' => 'A facility that provides the following services: outpatient services, including specialized outpatient services for children, the elderly, individuals who are chronically ill, and residents of the CMHC\'s mental health services area who have been discharged from inpatient treatment at a mental health facility; 24 hour a day emergency care services; day treatment, other partial hospitalization services, or psychosocial rehabilitation services; screening for patients being considered for admission to State mental health facilities to determine the appropriateness of such admission; and consultation and education services.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '54',
 			'title' => 'Intermediate Care Facility/Mentally Retarded',
 			'description' => 'A facility which primarily provides health-related care and services above the level of custodial care to mentally retarded individuals but does not provide the level of care or treatment available in a hospital or SNF.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '55',
 			'title' => 'Residential Substance Abuse Treatment Facility',
 			'description' => 'A facility which provides treatment for substance (alcohol and drug) abuse to live-in residents who do not require acute medical care. Services include individual and group therapy and counseling, family counseling, laboratory tests, drugs and supplies, psychological testing, and room and board.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '56',
 			'title' => 'Psychiatric Residential Treatment Center',
 			'description' => 'A facility or distinct part of a facility for psychiatric care which provides a total 24-hour therapeutically planned and professionally staffed group living and learning environment.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '57',
 			'title' => 'Non-residential Substance Abuse Treatment Facility',
 			'description' => 'A location which provides treatment for substance (alcohol and drug) abuse on an ambulatory basis.  Services include individual and group therapy and counseling, family counseling, laboratory tests, drugs and supplies, and psychological testing.  (effective 10/1/03)'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '58',
 //			'title' => 'Unassigned',
@@ -676,21 +680,21 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '60',
 			'title' => 'Mass Immunization Center',
 			'description' => 'A location where providers administer pneumococcal pneumonia and influenza virus vaccinations and submit these services as electronic media claims, paper claims, or using the roster billing method. This generally takes place in a mass immunization setting, such as, a public health center, pharmacy, or mall but may include a physician office setting.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '61',
 			'title' => 'Comprehensive Inpatient Rehabilitation Facility',
 			'description' => 'A facility that provides comprehensive rehabilitation services under the supervision of a physician to inpatients with physical disabilities. Services include physical therapy, occupational therapy, speech pathology, social or psychological services, and orthotics and prosthetics services.'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '62',
 			'title' => 'Comprehensive Outpatient Rehabilitation Facility',
 			'description' => 'A facility that provides comprehensive rehabilitation services under the supervision of a physician to outpatients with physical disabilities. Services include physical therapy, occupational therapy, and speech pathology services.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '63',
 //			'title' => 'Unassigned',
@@ -701,11 +705,11 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '65',
 			'title' => 'End-Stage Renal Disease Treatment Facility',
 			'description' => 'A facility other than a hospital, which provides dialysis treatment, maintenance, and/or training to patients or caregivers on an ambulatory or home-care basis.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '66',
 //			'title' => 'Unassigned',
@@ -731,16 +735,16 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '71',
 			'title' => 'Public Health Clinic',
 			'description' => 'A facility maintained by either State or local health departments that provides ambulatory primary medical care under the general direction of a physician.  (effective 10/1/03)'
-		);
-		$pos[] = array(
+		];
+		$pos[] = [
 			'code' => '72',
 			'title' => 'Rural Health Clinic',
 			'description' => 'A certified facility which is located in a rural medically underserved area that provides ambulatory primary medical care under the general direction of a physician.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '73',
 //			'title' => 'Unassigned',
@@ -781,11 +785,11 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '81',
 			'title' => 'Independent Laboratory',
 			'description' => 'A laboratory certified to perform diagnostic and/or clinical tests independent of an institution or a physician\'s office.'
-		);
+		];
 //		$pos[] = array(
 //			'code' => '82',
 //			'title' => 'Unassigned',
@@ -871,95 +875,95 @@ class CombosData {
 //			'title' => 'Unassigned',
 //			'description' => 'N/A'
 //		);
-		$pos[] = array(
+		$pos[] = [
 			'code' => '99',
 			'title' => 'Other Place of Service',
 			'description' => 'Other place of service not identified above.'
-		);
+		];
 		return $pos;
 	}
 
 	public function getAllergiesByType(stdClass $params){
 		if($this->A == null)
 			$this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
-		return $this->A->load(array('allergy_type' => $params->allergy_type))->all();
+		return $this->A->load(['allergy_type' => $params->allergy_type])->all();
 	}
 
 	public function getAllergyTypes(){
 		if($this->A == null)
 			$this->A = MatchaModel::setSenchaModel('App.model.administration.Allergies');
 		$params = new stdClass();
-		$params->group = array();
+		$params->group = [];
 		$params->group[0] = new stdClass();
 		$params->group[0]->property = 'allergy_type';
 		$records = $this->A->load($params)->all();
-		$records[] = array('allergy_type' => 'Drug');
+		$records[] = ['allergy_type' => 'Drug'];
 		return $records;
 	}
 
 	public function getTemplatesTypes(){
 		if($this->DT == null)
 			$this->DT = MatchaModel::setSenchaModel('App.model.administration.DocumentsTemplates');
-		$records = $this->DT->load(array('template_type' => 'documenttemplate'), array('id','title'))->all();
+		$records = $this->DT->load(['template_type' => 'documenttemplate'], ['id','title'])->all();
 		return $records;
 	}
 
 	public function getThemes(){
-		return array(
-			array(
+		return [
+			[
 				'name' => 'Gray',
 				'value' => 'ext-all-gray'
-			),
-			array(
+			],
+			[
 				'name' => 'Blue',
 				'value' => 'ext-all'
-			)
-		);
+			]
+		];
 	}
 
 	public function getValuesByListIdAndOptionValue($listId, $optionValue) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		$foo = $this->CLO->load(array(
+		$foo = $this->CLO->load([
 			'list_id' => $listId,
 			'option_value' => $optionValue
-		))->one();
+		])->one();
 		return $foo;
 	}
 
 	public function getDisplayValueByListIdAndOptionValue($listId, $optionValue) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		$foo = $this->CLO->load(array(
+		$foo = $this->CLO->load([
 			'list_id' => $listId,
 			'option_value' => $optionValue
-		))->one();
+		])->one();
 		return $foo !== false ? $foo['option_name'] : $optionValue;
 	}
 
 	public function getDisplayValueByListIdAndOptionCode($listId, $optionCode) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		$foo = $this->CLO->load(array(
+		$foo = $this->CLO->load([
 			'list_id' => $listId,
 			'code' => $optionCode
-		))->one();
+		])->one();
 		return $foo !== false ? $foo['option_name'] : $optionCode;
 	}
 
 	public function getCodeValueByListIdAndOptionValue($listId, $optionValue) {
 		if($this->CLO == null)
 			$this->CLO = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		$foo = $this->CLO->load(array(
+		$foo = $this->CLO->load([
 			'list_id' => $listId,
 			'option_value' => $optionValue
-		))->one();
+		])->one();
 		return $foo !== false ? $foo['code'] : $optionValue;
 	}
 
 	public function getEncounterSupervisors(){
 		$providers = $this->getActiveProviders();
-		$supervisors = array();
+		$supervisors = [];
 		foreach($providers as $provider){
 			if(ACL::hasPermissionByUid('sign_enc_supervisor', $provider['option_value'])) $supervisors[] = $provider;
 		}

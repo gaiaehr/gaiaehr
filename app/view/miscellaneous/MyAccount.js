@@ -24,6 +24,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		'App.ux.combo.Titles',
 		'App.ux.window.Window',
 		'App.ux.combo.Facilities',
+		'App.ux.combo.ActiveSpecialties',
 		'App.ux.form.fields.plugin.PasswordStrength'
 	],
 
@@ -168,130 +169,130 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 						}
 					]
 				},
-				{
-					xtype: 'fieldset',
-					title: _('other_info'),
-					defaultType: 'textfield',
-					layout: 'anchor',
-					defaults: {
-						labelWidth: 89,
-						anchor: '100%',
-						layout: {
-							type: 'hbox',
-							defaultMargins: {
-								top: 0,
-								right: 5,
-								bottom: 0,
-								left: 0
-							}
-						}
-					},
-					items: [
-						{
-							xtype: 'fieldcontainer',
-							defaults: {
-								hideLabel: true
-							},
-							msgTarget: 'under',
-							items: [
-								{
-									width: 110,
-									xtype: 'displayfield',
-									value: 'Default Facility: '
-								},
-								{
-									xtype:'mitos.facilitiescombo',
-									width: 170,
-									name:'facility_id'
-								},
-								{
-									width: 100,
-									xtype: 'displayfield',
-									value: 'Taxonomy: '
-								},
-								{
-									width: 175,
-									xtype: 'textfield',
-									name: 'taxonomy'
-								}
-							]
-						},
-						{
-							xtype: 'fieldcontainer',
-							defaults: {
-								hideLabel: true
-							},
-							items: [
-								{
-									width: 110,
-									xtype: 'displayfield',
-									value: 'Federal Tax ID: '
-								},
-								{
-									width: 170,
-									xtype: 'textfield',
-									name: 'fedtaxid'
-								},
-								{
-									width: 100,
-									xtype: 'displayfield',
-									value: 'Fed Drug ID: '
-								},
-								{
-									width: 175,
-									xtype: 'textfield',
-									name: 'feddrugid'
-								}
-							]
-						},
-						{
-							xtype: 'fieldcontainer',
-							defaults: {
-								hideLabel: true
-							},
-							items: [
-								{
-									width: 110,
-									xtype: 'displayfield',
-									value: 'User PIN#: '
-								},
-								{
-									width: 170,
-									xtype: 'textfield',
-									name: 'pin'
-								},
-								{
-									width: 100,
-									xtype: 'displayfield',
-									value: 'NPI: '
-								},
-								{
-									width: 175,
-									xtype: 'textfield',
-									name: 'npi'
-								}
-							]
-						},
-						{
-							xtype: 'fieldcontainer',
-							defaults: {
-								hideLabel: true
-							},
-							items: [
-								{
-									width: 110,
-									xtype: 'displayfield',
-									value: 'Job Description: '
-								},
-								{
-									width: 455,
-									xtype: 'textfield',
-									name: 'specialty'
-								}
-							]
-						}
-					]
-				}
+				//{
+				//	xtype: 'fieldset',
+				//	title: _('other_info'),
+				//	defaultType: 'textfield',
+				//	layout: 'anchor',
+				//	defaults: {
+				//		labelWidth: 89,
+				//		anchor: '100%',
+				//		layout: {
+				//			type: 'hbox',
+				//			defaultMargins: {
+				//				top: 0,
+				//				right: 5,
+				//				bottom: 0,
+				//				left: 0
+				//			}
+				//		}
+				//	},
+				//	items: [
+				//		{
+				//			xtype: 'fieldcontainer',
+				//			defaults: {
+				//				hideLabel: true
+				//			},
+				//			msgTarget: 'under',
+				//			items: [
+				//				{
+				//					width: 110,
+				//					xtype: 'displayfield',
+				//					value: 'Default Facility: '
+				//				},
+				//				{
+				//					xtype:'mitos.facilitiescombo',
+				//					width: 170,
+				//					name:'facility_id'
+				//				},
+				//				{
+				//					width: 100,
+				//					xtype: 'displayfield',
+				//					value: 'Taxonomy: '
+				//				},
+				//				{
+				//					width: 175,
+				//					xtype: 'textfield',
+				//					name: 'taxonomy'
+				//				}
+				//			]
+				//		},
+				//		{
+				//			xtype: 'fieldcontainer',
+				//			defaults: {
+				//				hideLabel: true
+				//			},
+				//			items: [
+				//				{
+				//					width: 110,
+				//					xtype: 'displayfield',
+				//					value: 'Federal Tax ID: '
+				//				},
+				//				{
+				//					width: 170,
+				//					xtype: 'textfield',
+				//					name: 'fedtaxid'
+				//				},
+				//				{
+				//					width: 100,
+				//					xtype: 'displayfield',
+				//					value: 'Fed Drug ID: '
+				//				},
+				//				{
+				//					width: 175,
+				//					xtype: 'textfield',
+				//					name: 'feddrugid'
+				//				}
+				//			]
+				//		},
+				//		{
+				//			xtype: 'fieldcontainer',
+				//			defaults: {
+				//				hideLabel: true
+				//			},
+				//			items: [
+				//				{
+				//					width: 110,
+				//					xtype: 'displayfield',
+				//					value: 'User PIN#: '
+				//				},
+				//				{
+				//					width: 170,
+				//					xtype: 'textfield',
+				//					name: 'pin'
+				//				},
+				//				{
+				//					width: 100,
+				//					xtype: 'displayfield',
+				//					value: 'NPI: '
+				//				},
+				//				{
+				//					width: 175,
+				//					xtype: 'textfield',
+				//					name: 'npi'
+				//				}
+				//			]
+				//		},
+				//		{
+				//			xtype: 'fieldcontainer',
+				//			defaults: {
+				//				hideLabel: true
+				//			},
+				//			items: [
+				//				{
+				//					width: 110,
+				//					xtype: 'displayfield',
+				//					value: 'Specialty: '
+				//				},
+				//				{
+				//					width: 455,
+				//					xtype: 'activespecialtiescombo',
+				//					name: 'specialty'
+				//				}
+				//			]
+				//		}
+				//	]
+				//}
 			],
 			tbar:[
 				{

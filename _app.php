@@ -78,7 +78,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             };
 
             window.g = function(global){
-	            return window.globals[global] || false;
+	            return window.globals[global] === undefined ? false : window.globals[global];
             };
 
             window.a = function(acl){

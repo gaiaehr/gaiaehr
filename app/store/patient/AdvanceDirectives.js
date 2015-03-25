@@ -16,26 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.administration.DataPortability', {
-	extend: 'App.ux.RenderPanel',
-	pageTitle: _('patients_export'),
-	pageBody: [
-
-		{
-			xtype: 'panel',
-			itemId: 'DataPortabilityPanel',
-			items: [],
-			tbar: [
-				{
-					text: _('export'),
-					itemId: 'DataPortabilityExportBtn'
-				},
-				'-',
-				{
-					text: _('import'),
-					itemId: 'DataPortabilityImportBtn'
-				}
-			]
-		}
-	]
+Ext.define('App.store.patient.AdvanceDirectives', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.patient.AdvanceDirective'
 });

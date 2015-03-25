@@ -1533,4 +1533,9 @@ $LANG = array(
     'active_all'                            => 'Active All',
     'inactive_all'                          => 'Inactive All',
     'provider_credentialization_error'      => 'Provider Credentialization Error',
+    'advance_directives'                    => 'Advance Directives',
+    'directive'                             => 'Directive',
+    'directives'                            => 'Directives',
+    'verified_date'                         => 'Verified Date',
+    'reconciled'                            => 'Reconciled',
 );

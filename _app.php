@@ -396,6 +396,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.encounter.snippetTree',
 	                'patient.encounter.Procedures',
 
+	                'patient.AdvanceDirective',
 	                'patient.Allergies',
 	                'patient.CheckoutAlertArea',
 	                'patient.CptCodes',
@@ -509,6 +510,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.encounter.snippetTree',
 	                'patient.encounter.Procedures',
 
+	                'patient.AdvanceDirectives',
 	                'patient.Allergies',
 	                'patient.CheckoutAlertArea',
 	                'patient.CptCodes',
@@ -705,6 +707,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'Support',
 
 	                'patient.ActiveProblems',
+	                'patient.AdvanceDirectives',
 	                'patient.Allergies',
 	                'patient.CarePlanGoals',
 	                'patient.CCD',

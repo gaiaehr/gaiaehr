@@ -29,6 +29,12 @@ class ActiveProblems {
 	}
 
 	public function getPatientActiveProblems($params) {
+		if(isset($params->reconciled) && $params->reconciled == true){
+			$groups = new stdClass();
+			$groups->group[0] = new stdClass();
+			$groups->group[0]->property = 'code';
+			return $this->a->load($params)->group($groups)->all();
+		}
 		return $this->a->load($params)->all();
 	}
 

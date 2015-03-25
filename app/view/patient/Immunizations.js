@@ -229,7 +229,7 @@ Ext.define('App.view.patient.Immunizations', {
 												width: 320,
 												labelWidth: 115,
 												xtype: 'mitos.datetime',
-												dateTimeFormat: 'Y-m-d',
+												dateTimeFormat: 'Y-m-d H:i:s',
 												name: 'administered_date'
 											}
 										]

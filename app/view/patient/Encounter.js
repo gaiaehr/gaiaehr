@@ -306,6 +306,9 @@ Ext.define('App.view.patient.Encounter', {
 			collapsible: true,
 			animCollapse: true,
 			collapsed: true,
+			bodyPadding: 0,
+			margin: 0,
+			padding: 0,
 			itemId: 'EncounterProgressNotesPanel',
 			listeners: {
 				scope: this,
@@ -316,6 +319,9 @@ Ext.define('App.view.patient.Encounter', {
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
 					title: _('progress_note'),
 					autoScroll: true,
+					bodyPadding: 0,
+					margin: 0,
+					padding: 0,
 					tbar: [
 						'->', {
 							xtype: 'tool',
@@ -338,10 +344,16 @@ Ext.define('App.view.patient.Encounter', {
 
 				me.progressHistory = Ext.create('Ext.panel.Panel', {
 					title: _('progress_history'),
-					bodyPadding: 5,
+					bodyPadding: 0,
+					margin: 0,
+					padding: 0,
 					autoScroll: true,
-					items: [
-						{}
+					tbar: [
+						{
+							xtype: 'textfield',
+							emptyText: _('search'),
+							flex: 1
+						}
 					]
 				})
 			]
@@ -370,6 +382,11 @@ Ext.define('App.view.patient.Encounter', {
 				{
 					text: _('active_problems') + ' ',
 					action: 'activeproblems'
+				},
+				'-',
+				{
+					text: _('advance_directives') + ' ',
+					action: 'advancedirectives'
 				},
 				'-',
 				{

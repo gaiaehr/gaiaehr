@@ -10826,6 +10826,12 @@ Ext.define('App.model.administration.FloorPlanZones', {
 			index: true
 		},
 		{
+			name: 'code',
+			type: 'string',
+			len: 40,
+			index: true
+		},
+		{
 			name: 'title',
 			type: 'string',
 			len: 180
@@ -12374,6 +12380,11 @@ Ext.define('App.model.administration.User', {
 			len: 40
 		},
 		{
+			name: 'providerCode',
+			type: 'string',
+			len: 40
+		},
+		{
 			name: 'create_uid',
 			type: 'int',
 			comment: 'create user ID'
@@ -13129,6 +13140,109 @@ Ext.define('App.model.patient.encounter.Procedures', {
 			create: 'Procedures.saveProcedure',
 			update: 'Procedures.saveProcedure',
 			destroy: 'Procedures.destroyProcedure'
+		}
+	}
+});
+Ext.define('App.model.patient.AdvanceDirective', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'patient_advance_directives'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'code_text',
+			type: 'string',
+			len: 160
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'status_code',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'status_code_text',
+			type: 'string',
+			len: 160
+		},
+		{
+			name: 'status_code_type',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'notes',
+			len: 300,
+			type: 'string'
+		},
+		{
+			name: 'start_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'end_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'verified_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'verified_uid',
+			type: 'int'
+		},
+		{
+			name: 'created_uid',
+			type: 'int'
+		},
+		{
+			name: 'updated_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'AdvanceDirective.getPatientAdvanceDirectives',
+			create: 'AdvanceDirective.addPatientAdvanceDirective',
+			update: 'AdvanceDirective.updatePatientAdvanceDirective'
 		}
 	}
 });
@@ -33838,7 +33952,7 @@ Ext.define('App.controller.DualScreen', {
 		var me = this;
 		if(me.appMask == null){
 			me.appMask = new Ext.LoadMask(me.getDualViewport(), {
-				msg : '<img src="resources/images/gaiaehr-med-dark.png"><p>' + msg + '</p>',
+				msg : '<img height="86" width="254" src="resources/images/gaiaehr-med-dark.png"><p>' + msg + '</p>',
 				maskCls: 'dualAppMask',
 				cls: 'dualAppMaskMsg',
 				autoShow: true
@@ -33847,6 +33961,8 @@ Ext.define('App.controller.DualScreen', {
 			me.appMask.show();
 			me.appMask.msgEl.query('p')[0].innerHTML = msg;
 		}
+
+		say(me.appMask);
 
 	},
 
@@ -34912,6 +35028,74 @@ Ext.define('App.controller.patient.ActiveProblems', {
 
 	}
 });
+Ext.define('App.controller.patient.AdvanceDirectives', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		{
+			ref: 'AdvanceDirectiveGridPanel',
+			selector: 'patientadvancedirectivepanel'
+		},
+		{
+			ref: 'AdvanceDirectiveAddBtn',
+			selector: '#AdvanceDirectiveAddBtn'
+		},
+		{
+			ref: 'AdvanceDirectiveReviewBtn',
+			selector: '#AdvanceDirectiveReviewBtn'
+		}
+	],
+
+	init: function(){
+		var me = this;
+		me.control({
+			'patientadvancedirectivepanel':{
+				activate: me.onAdvanceDirectiveGridPanelActivate
+			},
+			'#AdvanceDirectiveAddBtn':{
+				click: me.onAdvanceDirectiveAddBtnClick
+			},
+			'#AdvanceDirectiveReviewBtn':{
+				click: me.onAdvanceDirectiveReviewBtnClick
+			}
+		});
+	},
+
+	onAdvanceDirectiveGridPanelActivate: function(grid){
+		var store = grid.getStore();
+		store.clearFilter(true);
+		store.filter([
+			{
+				property: 'pid',
+				value: app.patient.pid
+			}
+		]);
+	},
+
+	onAdvanceDirectiveAddBtnClick: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.getStore();
+
+		grid.editingPlugin.cancelEdit();
+		var records = store.insert(0, {
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			create_date: new Date(),
+			created_uid: app.user.id,
+			start_date: new Date(),
+			verified_date: new Date(),
+			verified_uid: app.user.id
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onAdvanceDirectiveReviewBtnClick: function(btn){
+
+	}
+
+});
 Ext.define('App.controller.patient.Allergies', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -35501,28 +35685,28 @@ Ext.define('App.controller.patient.CCDImport', {
 		var me = this;
 
 		var pForm = me.getCcdImportPatientForm().getForm(),
-			ePanel = me.getCcdImportEncounterForm(),
-			eForm = ePanel.getForm(),
+			//ePanel = me.getCcdImportEncounterForm(),
+			//eForm = ePanel.getForm(),
 			patient = Ext.create('App.model.patient.Patient', data.patient);
 
 
-		if(data.encounter && !Ext.Object.isEmpty(data.encounter)){
-			ePanel.show();
-			var encounter = Ext.create('App.model.patient.Patient', data.encounter),
-				assessmentContainer = me.getCcdImportEncounterAssessmentContainer();
-
-			eForm.loadRecord(encounter);
-			for(var i = 0; i < data.encounter.assessments.length; i++){
-				assessmentContainer.add({
-					anchor: '100%',
-					boxLabel: data.encounter.assessments[i].text,
-					assessmentData: data.encounter.assessments[i],
-					boxLabelCls: 'CheckBoxWrapHammerFix'
-				});
-			}
-		}else{
-			ePanel.hide();
-		}
+		//if(data.encounter && !Ext.Object.isEmpty(data.encounter)){
+		//	ePanel.show();
+		//	var encounter = Ext.create('App.model.patient.Patient', data.encounter),
+		//		assessmentContainer = me.getCcdImportEncounterAssessmentContainer();
+		//
+		//	eForm.loadRecord(encounter);
+		//	for(var i = 0; i < data.encounter.assessments.length; i++){
+		//		assessmentContainer.add({
+		//			anchor: '100%',
+		//			boxLabel: data.encounter.assessments[i].text,
+		//			assessmentData: data.encounter.assessments[i],
+		//			boxLabelCls: 'CheckBoxWrapHammerFix'
+		//		});
+		//	}
+		//}else{
+		//	ePanel.hide();
+		//}
 
 		pForm.loadRecord(patient);
 
@@ -36669,9 +36853,7 @@ Ext.define('App.controller.patient.Medical', {
 });
 Ext.define('App.controller.patient.Medications', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
+	requires: [],
 	refs: [
 		{
 			ref: 'MedicationsPanel',
@@ -36681,18 +36863,22 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationsGrid',
 			selector: 'patientmedicationspanel #patientMedicationsGrid'
 		},
-		{
-			ref: 'MedicationsListGrid',
-			selector: 'patientmedicationspanel #medicationsListGrid'
-		},
+		//{
+		//	ref: 'MedicationsListGrid',
+		//	selector: 'patientmedicationspanel #medicationsListGrid'
+		//},
 		{
 			ref: 'addPatientMedicationBtn',
 			selector: 'patientmedicationspanel #addPatientMedicationBtn'
 		},
 		{
-			ref: 'MedicationsListGridSearchField',
-			selector: 'patientmedicationspanel #medicationsListGrid triggerfield'
+			ref: 'PatientMedicationReconciledBtn',
+			selector: '#PatientMedicationReconciledBtn'
 		}
+		//{
+		//	ref: 'MedicationsListGridSearchField',
+		//	selector: 'patientmedicationspanel #medicationsListGrid triggerfield'
+		//}
 	],
 
 	init: function(){
@@ -36701,35 +36887,38 @@ Ext.define('App.controller.patient.Medications', {
 			'patientmedicationspanel': {
 				activate: me.onMedicationsPanelActive
 			},
-			'patientmedicationspanel #medicationsListGrid': {
-				expand: me.onMedicationsListGridExpand
-			},
-			'patientmedicationspanel #medicationsListGrid triggerfield': {
-				beforerender: me.onMedicationsListGridTriggerFieldBeforeRender
-			},
+			//'patientmedicationspanel #medicationsListGrid': {
+			//	expand: me.onMedicationsListGridExpand
+			//},
+			//'patientmedicationspanel #medicationsListGrid triggerfield': {
+			//	beforerender: me.onMedicationsListGridTriggerFieldBeforeRender
+			//},
 			'patientmedicationspanel #addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
 			'#patientMedicationLiveSearch': {
 				select: me.onMedicationLiveSearchSelect
+			},
+			'#PatientMedicationReconciledBtn': {
+				click: me.onPatientMedicationReconciledBtnClick
 			}
 		});
 	},
 
-	onMedicationsListGridExpand: function(grid){
-		this.getMedicationsListGridSearchField().reset();
-		grid.getStore().load();
-	},
-
-	onMedicationsListGridTriggerFieldBeforeRender: function(field){
-		var me = this;
-
-		field.onTriggerClick = function(){
-			me.getMedicationsListGrid().getStore().load({
-				params: {query: this.getValue()}
-			});
-		}
-	},
+	//onMedicationsListGridExpand: function(grid){
+	//	this.getMedicationsListGridSearchField().reset();
+	//	grid.getStore().load();
+	//},
+	//
+	//onMedicationsListGridTriggerFieldBeforeRender: function(field){
+	//	var me = this;
+	//
+	//	field.onTriggerClick = function(){
+	//		me.getMedicationsListGrid().getStore().load({
+	//			params: {query: this.getValue()}
+	//		});
+	//	}
+	//},
 
 	onAddPatientMedicationBtnClick: function(){
 		var me = this,
@@ -36753,30 +36942,46 @@ Ext.define('App.controller.patient.Medications', {
 
 		form.getRecord().set({
 			RXCUI: records[0].data.RXCUI,
-			CODE: records[0].data.CODE
+			CODE: records[0].data.CODE,
+			NDC: records[0].data.NDC
 		});
 
-//		Rxnorm.getMedicationAttributesByCODE(records[0].data.CODE, function(provider, response){
-//
-//			form.setValues({
-//				STR: records[0].data.STR.split(',')[0],
-//				route: response.result.DRT,
-//				dose: response.result.DST,
-//				form: response.result.DDF
-//			});
-//		});
+		//		Rxnorm.getMedicationAttributesByCODE(records[0].data.CODE, function(provider, response){
+		//
+		//			form.setValues({
+		//				STR: records[0].data.STR.split(',')[0],
+		//				route: response.result.DRT,
+		//				dose: response.result.DST,
+		//				form: response.result.DDF
+		//			});
+		//		});
+	},
+
+	onPatientMedicationReconciledBtnClick: function(){
+		this.onMedicationsPanelActive();
 	},
 
 	onMedicationsPanelActive: function(){
-		var store = this.getPatientMedicationsGrid().getStore();
+		var store = this.getPatientMedicationsGrid().getStore(),
+			reconciled = this.getPatientMedicationReconciledBtn().pressed;
 
 		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
+		store.load({
+			filters: [
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			],
+			params: {
+				reconciled : reconciled
 			}
-		]);
+		});
+
+		//store.clearFilter(true);
+		//store.filter([
+		//
+		//]);
 	}
 });
 Ext.define('App.controller.patient.Patient', {
@@ -39662,7 +39867,7 @@ Ext.define('App.view.patient.Immunizations', {
 												width: 320,
 												labelWidth: 115,
 												xtype: 'mitos.datetime',
-												dateTimeFormat: 'Y-m-d',
+												dateTimeFormat: 'Y-m-d H:i:s',
 												name: 'administered_date'
 											}
 										]
@@ -39803,7 +40008,6 @@ Ext.define('App.view.patient.Medications', {
 			itemId: 'patientMedicationsGrid',
 			columnLines: true,
 			store: Ext.create('App.store.patient.Medications', {
-				remoteFilter: true,
 				autoSync: false
 			}),
 			columns: [
@@ -39832,6 +40036,17 @@ Ext.define('App.view.patient.Medications', {
 						valueField: 'STR',
 						action: 'medication',
 						allowBlank: false
+					},
+					renderer: function(v, mets, record){
+						var codes = '';
+						if(record.data.RXCUI != ''){
+							codes += ' <b>RxNorm:</b> ' + record.data.RXCUI;
+						}
+						if(record.data.NDC != ''){
+							codes += ' <b>NDC:</b> ' + record.data.NDC;
+						}
+						codes = codes != '' ? (' (' + codes + ' )') : '';
+						return v + codes;
 					}
 				},
 				{
@@ -39871,6 +40086,14 @@ Ext.define('App.view.patient.Medications', {
 				clicksToEdit: 2
 			}),
 			bbar: [
+				'-',
+				{
+					text: _('reconciled'),
+					itemId: 'PatientMedicationReconciledBtn',
+					enableToggle: true,
+					pressed: true
+				},
+				'-',
 				'->',
 				{
 					text: _('review'),
@@ -39879,49 +40102,49 @@ Ext.define('App.view.patient.Medications', {
 				}
 			]
 		},
-		{
-			xtype: 'grid',
-			title: _('medication_list'),
-			itemId: 'medicationsListGrid',
-			collapseMode: 'mini',
-			region: 'east',
-			width: 400,
-			collapsible: true,
-			collapsed: true,
-			split: true,
-			loadMask: true,
-			selModel: {
-				pruneRemoved: false
-			},
-			viewConfig: {
-				trackOver: false
-			},
-			verticalScroller: {
-				variableRowHeight: true
-			},
-			store: Ext.create('App.store.administration.Medications'),
-			tbar: [
-				{
-					xtype: 'triggerfield',
-					triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
-					fieldLabel: _('search'),
-					flex: 1,
-					labelWidth: 43
-				}
-			],
-			columns: [
-				{
-					xtype: 'rownumberer',
-					width: 50,
-					sortable: false
-				},
-				{
-					text: _('medication'),
-					dataIndex: 'STR',
-					flex: 1
-				}
-			]
-		}
+		//{
+		//	xtype: 'grid',
+		//	title: _('medication_list'),
+		//	itemId: 'medicationsListGrid',
+		//	collapseMode: 'mini',
+		//	region: 'east',
+		//	width: 400,
+		//	collapsible: true,
+		//	collapsed: true,
+		//	split: true,
+		//	loadMask: true,
+		//	selModel: {
+		//		pruneRemoved: false
+		//	},
+		//	viewConfig: {
+		//		trackOver: false
+		//	},
+		//	verticalScroller: {
+		//		variableRowHeight: true
+		//	},
+		//	store: Ext.create('App.store.administration.Medications'),
+		//	tbar: [
+		//		{
+		//			xtype: 'triggerfield',
+		//			triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
+		//			fieldLabel: _('search'),
+		//			flex: 1,
+		//			labelWidth: 43
+		//		}
+		//	],
+		//	columns: [
+		//		{
+		//			xtype: 'rownumberer',
+		//			width: 50,
+		//			sortable: false
+		//		},
+		//		{
+		//			text: _('medication'),
+		//			dataIndex: 'STR',
+		//			flex: 1
+		//		}
+		//	]
+		//}
 	],
 	tbar: [
 		'->',
@@ -41949,7 +42172,10 @@ Ext.define('App.view.patient.SmokingStatus', {
 		{
 			text: _('status'),
 			dataIndex: 'status',
-			width: 250
+			width: 250,
+			renderer: function(v, meta, record){
+				return v + ' (' + record.data.status_code +')';
+			}
 		},
 		{
 			text: _('counseling_given'),
@@ -48903,7 +49129,10 @@ Ext.define('App.view.patient.ActiveProblems', {
 		{
 			header: _('problem'),
 			flex: 1,
-			dataIndex: 'code_text'
+			dataIndex: 'code_text',
+			renderer: function(v, meta, record){
+				return v + ' (' + record.data.code + ')';
+			}
 		},
 		{
 			header: _('occurrence'),
@@ -49911,30 +50140,35 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	columns: [
 		{
-			header: _('type'),
+			text: _('type'),
 			width: 100,
 			dataIndex: 'allergy_type'
 		},
 		{
-			header: _('name'),
+			text: _('name'),
 			flex: 1,
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
-				return v + (record.data.allergy_code == '' ? '' : ' ('+ record.data.allergy_code +')');
+				var codes = '';
+
+				if(record.data.allergy_code != ''){
+					codes += ' ( <b>'+ record.data.allergy_code_type + ':</b> ' + record.data.allergy_code +' )';
+				}
+				return v + codes;
 			}
 		},
 		{
-			header: _('location'),
+			text: _('location'),
 			width: 220,
 			dataIndex: 'location'
 		},
 		{
-			header: _('reaction'),
+			text: _('reaction'),
 			width: 220,
 			dataIndex: 'reaction'
 		},
 		{
-			header: _('severity'),
+			text: _('severity'),
 			width: 220,
 			dataIndex: 'severity'
 		},
@@ -50003,7 +50237,6 @@ Ext.define('App.view.patient.Allergies', {
 								itemId: 'allergySearchCombo',
 								name: 'allergy',
 								hideLabel: false,
-//								disabled: true,
 								enableKeyEvents: true,
 								width: 700,
 								labelWidth: 70,
@@ -50127,6 +50360,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.ActiveProblems',
 		'App.view.patient.SocialPanel',
 		'App.view.patient.Allergies',
+		'App.view.patient.AdvanceDirectives',
 		'App.view.patient.CognitiveAndFunctionalStatus'
 	],
 
@@ -50156,12 +50390,15 @@ Ext.define('App.view.patient.windows.Medical', {
 						itemId: 'activeproblems'
 					},
 					{
+						xtype: 'patientadvancedirectivepanel',
+						itemId: 'advancedirectives'
+					},
+					{
 						xtype:'patientmedicationspanel',
 						itemId: 'medications'
 					},
 					{
-
-						xtype:'patientresultspanel',
+ 						xtype:'patientresultspanel',
 						itemId: 'laboratories'
 					},
 					{
@@ -50615,6 +50852,9 @@ Ext.define('App.view.patient.Encounter', {
 			collapsible: true,
 			animCollapse: true,
 			collapsed: true,
+			bodyPadding: 0,
+			margin: 0,
+			padding: 0,
 			itemId: 'EncounterProgressNotesPanel',
 			listeners: {
 				scope: this,
@@ -50625,6 +50865,9 @@ Ext.define('App.view.patient.Encounter', {
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
 					title: _('progress_note'),
 					autoScroll: true,
+					bodyPadding: 0,
+					margin: 0,
+					padding: 0,
 					tbar: [
 						'->', {
 							xtype: 'tool',
@@ -50647,10 +50890,16 @@ Ext.define('App.view.patient.Encounter', {
 
 				me.progressHistory = Ext.create('Ext.panel.Panel', {
 					title: _('progress_history'),
-					bodyPadding: 5,
+					bodyPadding: 0,
+					margin: 0,
+					padding: 0,
 					autoScroll: true,
-					items: [
-						{}
+					tbar: [
+						{
+							xtype: 'textfield',
+							emptyText: _('search'),
+							flex: 1
+						}
 					]
 				})
 			]
@@ -50679,6 +50928,11 @@ Ext.define('App.view.patient.Encounter', {
 				{
 					text: _('active_problems') + ' ',
 					action: 'activeproblems'
+				},
+				'-',
+				{
+					text: _('advance_directives') + ' ',
+					action: 'advancedirectives'
 				},
 				'-',
 				{

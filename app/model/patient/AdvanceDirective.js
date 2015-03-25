@@ -16,96 +16,106 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.FloorPlanZones', {
+Ext.define('App.model.patient.AdvanceDirective', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'floor_plans_zones',
-		comment: 'Floor Plan Zones'
+		name: 'patient_advance_directives'
 	},
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Floor Plan Zones ID'
+			type: 'int'
 		},
 		{
-			name: 'floor_plan_id',
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'pid',
 			type: 'int',
 			index: true
 		},
 		{
 			name: 'code',
 			type: 'string',
-			len: 40,
-			index: true
+			len: 80
 		},
 		{
-			name: 'title',
+			name: 'code_text',
 			type: 'string',
-			len: 180
+			len: 160
 		},
 		{
-			name: 'type',
+			name: 'code_type',
 			type: 'string',
-			len: 100
+			len: 20
 		},
 		{
-			name: 'bg_color',
+			name: 'status_code',
 			type: 'string',
-			lem: 10,
-			useNull: true
+			len: 80
 		},
 		{
-			name: 'border_color',
+			name: 'status_code_text',
 			type: 'string',
-			lem: 10,
-			useNull: true
+			len: 160
 		},
 		{
-			name: 'scale',
+			name: 'status_code_type',
 			type: 'string',
-			lem: 30,
-			defaultValue: 'medium'
+			len: 20
 		},
 		{
-			name: 'width',
-			type: 'int',
-			useNull: true
+			name: 'notes',
+			len: 300,
+			type: 'string'
 		},
 		{
-			name: 'height',
-			type: 'int',
-			useNull: true
+			name: 'start_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
-			name: 'x',
+			name: 'end_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'verified_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'verified_uid',
 			type: 'int'
 		},
 		{
-			name: 'y',
+			name: 'created_uid',
 			type: 'int'
 		},
 		{
-			name: 'show_priority_color',
-			type: 'bool'
+			name: 'updated_uid',
+			type: 'int'
 		},
 		{
-			name: 'show_patient_preview',
-			type: 'bool'
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
-			name: 'active',
-			type: 'bool',
-			index: true
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'FloorPlans.getFloorPlanZones',
-			create: 'FloorPlans.createFloorPlanZone',
-			update: 'FloorPlans.updateFloorPlanZone',
-			destroy: 'FloorPlans.removeFloorPlanZone'
+			read: 'AdvanceDirective.getPatientAdvanceDirectives',
+			create: 'AdvanceDirective.addPatientAdvanceDirective',
+			update: 'AdvanceDirective.updatePatientAdvanceDirective'
 		}
 	}
 });

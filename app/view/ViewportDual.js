@@ -19,6 +19,7 @@
 Ext.define('App.view.ViewportDual', {
     extend: 'Ext.Viewport',
     requires: [
+	    'App.view.patient.AdvanceDirectives',
 	    'App.view.patient.Allergies',
 	    'App.view.patient.DoctorsNotes',
 	    'App.view.patient.Documents',
@@ -67,6 +68,9 @@ Ext.define('App.view.ViewportDual', {
 				},
 				{
 					xtype:'patientactiveproblemspanel'
+				},
+				{
+					xtype: 'patientadvancedirectivepanel'
 				},
 				{
 					xtype:'patientmedicationspanel'

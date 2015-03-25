@@ -39,30 +39,35 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	columns: [
 		{
-			header: _('type'),
+			text: _('type'),
 			width: 100,
 			dataIndex: 'allergy_type'
 		},
 		{
-			header: _('name'),
+			text: _('name'),
 			flex: 1,
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
-				return v + (record.data.allergy_code == '' ? '' : ' ('+ record.data.allergy_code +')');
+				var codes = '';
+
+				if(record.data.allergy_code != ''){
+					codes += ' ( <b>'+ record.data.allergy_code_type + ':</b> ' + record.data.allergy_code +' )';
+				}
+				return v + codes;
 			}
 		},
 		{
-			header: _('location'),
+			text: _('location'),
 			width: 220,
 			dataIndex: 'location'
 		},
 		{
-			header: _('reaction'),
+			text: _('reaction'),
 			width: 220,
 			dataIndex: 'reaction'
 		},
 		{
-			header: _('severity'),
+			text: _('severity'),
 			width: 220,
 			dataIndex: 'severity'
 		},
@@ -131,7 +136,6 @@ Ext.define('App.view.patient.Allergies', {
 								itemId: 'allergySearchCombo',
 								name: 'allergy',
 								hideLabel: false,
-//								disabled: true,
 								enableKeyEvents: true,
 								width: 700,
 								labelWidth: 70,

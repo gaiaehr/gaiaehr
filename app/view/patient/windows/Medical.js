@@ -31,6 +31,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.ActiveProblems',
 		'App.view.patient.SocialPanel',
 		'App.view.patient.Allergies',
+		'App.view.patient.AdvanceDirectives',
 		'App.view.patient.CognitiveAndFunctionalStatus'
 	],
 
@@ -60,12 +61,15 @@ Ext.define('App.view.patient.windows.Medical', {
 						itemId: 'activeproblems'
 					},
 					{
+						xtype: 'patientadvancedirectivepanel',
+						itemId: 'advancedirectives'
+					},
+					{
 						xtype:'patientmedicationspanel',
 						itemId: 'medications'
 					},
 					{
-
-						xtype:'patientresultspanel',
+ 						xtype:'patientresultspanel',
 						itemId: 'laboratories'
 					},
 					{

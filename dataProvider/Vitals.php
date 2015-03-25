@@ -182,5 +182,21 @@ class Vitals {
 			)
 		);
 	}
+
+	public function G2($params){
+
+		$pid = $params->pid;
+		$start = $params->start;
+		$end = $params->end;
+		$provider = $params->provider;
+
+		$records = $this->v->load($params)->all();
+
+		return array(
+			'D' => 'asdasdsadasdsadsad',
+			'N' => '',
+			'records' => $records
+		);
+	}
 }
 

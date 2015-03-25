@@ -40,6 +40,12 @@ class Allergies {
 	}
 
 	public function getPatientAllergies($params){
+		if(isset($params->reconciled) && $params->reconciled == true){
+			$groups = new stdClass();
+			$groups->group[0] = new stdClass();
+			$groups->group[0]->property = 'allergy_code';
+			return $this->a->load($params)->group($groups)->all();
+		}
 		return $this->a->load($params)->all();
 	}
 

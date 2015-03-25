@@ -53,6 +53,25 @@ $API = array(
 
         )
     ),
+    'AdvanceDirective' => array(
+        'methods' => array(
+            'getPatientAdvanceDirectives' => array(
+                'len' => 1
+            ),
+            'getPatientAdvanceDirective' => array(
+                'len' => 1
+            ),
+            'addPatientAdvanceDirective' => array(
+                'len' => 1
+            ),
+            'updatePatientAdvanceDirective' => array(
+                'len' => 1
+            ),
+            'destroyPatientAdvanceDirective' => array(
+                'len' => 1
+            )
+        )
+    ),
     'Procedures' => array(
         'methods' => array(
             'loadProcedures' => array(
@@ -432,6 +451,9 @@ $API = array(
 				'len' => 1
 			),
 			'getVitalsByEid' => array(
+				'len' => 1
+			),
+			'G2' => array(
 				'len' => 1
 			)
 		)

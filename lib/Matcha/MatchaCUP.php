@@ -642,8 +642,17 @@ class MatchaCUP {
 		if(isset($params->group)){
 			$property = $params->group[0]->property;
 			$direction = isset($params->group[0]->direction) ? $params->group[0]->direction : '';
-			$this->sql = $this->sql . " GROUP BY `$property` $direction";
+			$group = " GROUP BY `$property` $direction ";
+
+			if(preg_match('/LIMIT/', $this->sql)){
+				$this->sql = str_replace('LIMIT',  $group . 'LIMIT', $this->sql);
+			}else{
+				$this->sql .= $group;
+			}
+			$this->nolimitsql .= $group;
+
 		}
+
 		return $this;
 	}
 

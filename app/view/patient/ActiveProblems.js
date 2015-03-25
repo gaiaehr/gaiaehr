@@ -49,7 +49,10 @@ Ext.define('App.view.patient.ActiveProblems', {
 		{
 			header: _('problem'),
 			flex: 1,
-			dataIndex: 'code_text'
+			dataIndex: 'code_text',
+			renderer: function(v, meta, record){
+				return v + ' (' + record.data.code + ')';
+			}
 		},
 		{
 			header: _('occurrence'),

@@ -46,10 +46,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <div id="msg-div"></div>
 
         <!-- Loading Mask -->
-        <div id="mainapp-loading-mask" class="x-mask mitos-mask"></div>
-        <div id="mainapp-x-mask-msg">
-	        <div id="mainapp-loading" class="x-mask-msg mitos-mask-msg">
-		        <div>
+        <div id="mainapp-loading-mask" class="x-mask mitos-mask" style="width: 100%; height: 100%"></div>
+        <div id="mainapp-loading" class="mitos-mask-msg x-mask-msg x-layer x-mask-msg-default x-border-box">
+	        <div id="mainapp-x-mask-msg" class="x-mask-msg-inner">
+		        <div class="x-mask-msg-text">
 			        Loading GaiaEHR...
 		        </div>
 	        </div>
@@ -142,6 +142,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'DocumentViewer',
 	                'DualScreen',
 	                'patient.ActiveProblems',
+	                'patient.AdvanceDirectives',
 	                'patient.Allergies',
 	                'patient.CognitiveAndFunctionalStatus',
 	                'patient.DoctorsNotes',

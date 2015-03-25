@@ -18,9 +18,7 @@
 
 Ext.define('App.controller.patient.Medications', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
+	requires: [],
 	refs: [
 		{
 			ref: 'MedicationsPanel',
@@ -30,18 +28,22 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationsGrid',
 			selector: 'patientmedicationspanel #patientMedicationsGrid'
 		},
-		{
-			ref: 'MedicationsListGrid',
-			selector: 'patientmedicationspanel #medicationsListGrid'
-		},
+		//{
+		//	ref: 'MedicationsListGrid',
+		//	selector: 'patientmedicationspanel #medicationsListGrid'
+		//},
 		{
 			ref: 'addPatientMedicationBtn',
 			selector: 'patientmedicationspanel #addPatientMedicationBtn'
 		},
 		{
-			ref: 'MedicationsListGridSearchField',
-			selector: 'patientmedicationspanel #medicationsListGrid triggerfield'
+			ref: 'PatientMedicationReconciledBtn',
+			selector: '#PatientMedicationReconciledBtn'
 		}
+		//{
+		//	ref: 'MedicationsListGridSearchField',
+		//	selector: 'patientmedicationspanel #medicationsListGrid triggerfield'
+		//}
 	],
 
 	init: function(){
@@ -50,35 +52,38 @@ Ext.define('App.controller.patient.Medications', {
 			'patientmedicationspanel': {
 				activate: me.onMedicationsPanelActive
 			},
-			'patientmedicationspanel #medicationsListGrid': {
-				expand: me.onMedicationsListGridExpand
-			},
-			'patientmedicationspanel #medicationsListGrid triggerfield': {
-				beforerender: me.onMedicationsListGridTriggerFieldBeforeRender
-			},
+			//'patientmedicationspanel #medicationsListGrid': {
+			//	expand: me.onMedicationsListGridExpand
+			//},
+			//'patientmedicationspanel #medicationsListGrid triggerfield': {
+			//	beforerender: me.onMedicationsListGridTriggerFieldBeforeRender
+			//},
 			'patientmedicationspanel #addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
 			'#patientMedicationLiveSearch': {
 				select: me.onMedicationLiveSearchSelect
+			},
+			'#PatientMedicationReconciledBtn': {
+				click: me.onPatientMedicationReconciledBtnClick
 			}
 		});
 	},
 
-	onMedicationsListGridExpand: function(grid){
-		this.getMedicationsListGridSearchField().reset();
-		grid.getStore().load();
-	},
-
-	onMedicationsListGridTriggerFieldBeforeRender: function(field){
-		var me = this;
-
-		field.onTriggerClick = function(){
-			me.getMedicationsListGrid().getStore().load({
-				params: {query: this.getValue()}
-			});
-		}
-	},
+	//onMedicationsListGridExpand: function(grid){
+	//	this.getMedicationsListGridSearchField().reset();
+	//	grid.getStore().load();
+	//},
+	//
+	//onMedicationsListGridTriggerFieldBeforeRender: function(field){
+	//	var me = this;
+	//
+	//	field.onTriggerClick = function(){
+	//		me.getMedicationsListGrid().getStore().load({
+	//			params: {query: this.getValue()}
+	//		});
+	//	}
+	//},
 
 	onAddPatientMedicationBtnClick: function(){
 		var me = this,
@@ -102,29 +107,45 @@ Ext.define('App.controller.patient.Medications', {
 
 		form.getRecord().set({
 			RXCUI: records[0].data.RXCUI,
-			CODE: records[0].data.CODE
+			CODE: records[0].data.CODE,
+			NDC: records[0].data.NDC
 		});
 
-//		Rxnorm.getMedicationAttributesByCODE(records[0].data.CODE, function(provider, response){
-//
-//			form.setValues({
-//				STR: records[0].data.STR.split(',')[0],
-//				route: response.result.DRT,
-//				dose: response.result.DST,
-//				form: response.result.DDF
-//			});
-//		});
+		//		Rxnorm.getMedicationAttributesByCODE(records[0].data.CODE, function(provider, response){
+		//
+		//			form.setValues({
+		//				STR: records[0].data.STR.split(',')[0],
+		//				route: response.result.DRT,
+		//				dose: response.result.DST,
+		//				form: response.result.DDF
+		//			});
+		//		});
+	},
+
+	onPatientMedicationReconciledBtnClick: function(){
+		this.onMedicationsPanelActive();
 	},
 
 	onMedicationsPanelActive: function(){
-		var store = this.getPatientMedicationsGrid().getStore();
+		var store = this.getPatientMedicationsGrid().getStore(),
+			reconciled = this.getPatientMedicationReconciledBtn().pressed;
 
 		store.clearFilter(true);
-		store.filter([
-			{
-				property: 'pid',
-				value: app.patient.pid
+		store.load({
+			filters: [
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			],
+			params: {
+				reconciled : reconciled
 			}
-		]);
+		});
+
+		//store.clearFilter(true);
+		//store.filter([
+		//
+		//]);
 	}
 });

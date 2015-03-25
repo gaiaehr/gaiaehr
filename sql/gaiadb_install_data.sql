@@ -3044,7 +3044,7 @@ INSERT INTO `forms_field_options` (`id`, `field_id`, `options`) VALUES
   (1494, '1119', '{"fieldLabel":"Zipcode","hideLabel":true,"emptyText":"Zipcode","name":"zipcode","width":80,"margin":"0 5 0 0"}'),
   (1495, '1120', '{"fieldLabel":"Race","labelWidth":149,"hideLabel":false,"width":400,"margin":"0 5 5 0","name":"race","list_id":14}'),
   (1496, '1121', '{"fieldLabel":"Ethnicity","labelWidth":149,"hideLabel":false,"width":400,"margin":"0 5 5 0","name":"ethnicity","list_id":59}'),
-  (1497, '1122', '{"fieldLabel":"Language","labelWidth":149,"hideLabel":false,"width":400,"margin":"0 5 5 0","name":"lenguage","list_id":10}'),
+  (1497, '1122', '{"fieldLabel":"Language","labelWidth":149,"hideLabel":false,"width":400,"margin":"0 5 5 0","name":"language","list_id":10}'),
   (1498, '1123', '{"fieldLabel":"BOX 10 (b)","labelWidth":75,"hideLabel":true,"layout":"hbox","margin":"0 0 5 0","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
   (1499, '1124', '{"fieldLabel":"BOX 10 (a) Employment related","labelWidth":180,"hideLabel":false,"margin":"0 15 10 0","name":"employment_related","collapsible":false,"checkboxToggle":false,"collapsed":false}'),
   (1500, '1125', '{"fieldLabel":"BOX 10 (b) Auto Accident","labelWidth":180,"hideLabel":false,"margin":"0 5 0 0","collapsible":false,"checkboxToggle":false,"collapsed":false,"boxLabel":" ","name":"auto_accident"}'),

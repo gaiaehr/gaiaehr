@@ -33,6 +33,11 @@ Ext.define('App.model.administration.User', {
 			len: 40
 		},
 		{
+			name: 'providerCode',
+			type: 'string',
+			len: 40
+		},
+		{
 			name: 'create_uid',
 			type: 'int',
 			comment: 'create user ID'

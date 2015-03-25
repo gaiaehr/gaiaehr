@@ -42,7 +42,6 @@ Ext.define('App.view.patient.Medications', {
 			itemId: 'patientMedicationsGrid',
 			columnLines: true,
 			store: Ext.create('App.store.patient.Medications', {
-				remoteFilter: true,
 				autoSync: false
 			}),
 			columns: [
@@ -71,6 +70,17 @@ Ext.define('App.view.patient.Medications', {
 						valueField: 'STR',
 						action: 'medication',
 						allowBlank: false
+					},
+					renderer: function(v, mets, record){
+						var codes = '';
+						if(record.data.RXCUI != ''){
+							codes += ' <b>RxNorm:</b> ' + record.data.RXCUI;
+						}
+						if(record.data.NDC != ''){
+							codes += ' <b>NDC:</b> ' + record.data.NDC;
+						}
+						codes = codes != '' ? (' (' + codes + ' )') : '';
+						return v + codes;
 					}
 				},
 				{
@@ -110,6 +120,14 @@ Ext.define('App.view.patient.Medications', {
 				clicksToEdit: 2
 			}),
 			bbar: [
+				'-',
+				{
+					text: _('reconciled'),
+					itemId: 'PatientMedicationReconciledBtn',
+					enableToggle: true,
+					pressed: true
+				},
+				'-',
 				'->',
 				{
 					text: _('review'),
@@ -118,49 +136,49 @@ Ext.define('App.view.patient.Medications', {
 				}
 			]
 		},
-		{
-			xtype: 'grid',
-			title: _('medication_list'),
-			itemId: 'medicationsListGrid',
-			collapseMode: 'mini',
-			region: 'east',
-			width: 400,
-			collapsible: true,
-			collapsed: true,
-			split: true,
-			loadMask: true,
-			selModel: {
-				pruneRemoved: false
-			},
-			viewConfig: {
-				trackOver: false
-			},
-			verticalScroller: {
-				variableRowHeight: true
-			},
-			store: Ext.create('App.store.administration.Medications'),
-			tbar: [
-				{
-					xtype: 'triggerfield',
-					triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
-					fieldLabel: _('search'),
-					flex: 1,
-					labelWidth: 43
-				}
-			],
-			columns: [
-				{
-					xtype: 'rownumberer',
-					width: 50,
-					sortable: false
-				},
-				{
-					text: _('medication'),
-					dataIndex: 'STR',
-					flex: 1
-				}
-			]
-		}
+		//{
+		//	xtype: 'grid',
+		//	title: _('medication_list'),
+		//	itemId: 'medicationsListGrid',
+		//	collapseMode: 'mini',
+		//	region: 'east',
+		//	width: 400,
+		//	collapsible: true,
+		//	collapsed: true,
+		//	split: true,
+		//	loadMask: true,
+		//	selModel: {
+		//		pruneRemoved: false
+		//	},
+		//	viewConfig: {
+		//		trackOver: false
+		//	},
+		//	verticalScroller: {
+		//		variableRowHeight: true
+		//	},
+		//	store: Ext.create('App.store.administration.Medications'),
+		//	tbar: [
+		//		{
+		//			xtype: 'triggerfield',
+		//			triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
+		//			fieldLabel: _('search'),
+		//			flex: 1,
+		//			labelWidth: 43
+		//		}
+		//	],
+		//	columns: [
+		//		{
+		//			xtype: 'rownumberer',
+		//			width: 50,
+		//			sortable: false
+		//		},
+		//		{
+		//			text: _('medication'),
+		//			dataIndex: 'STR',
+		//			flex: 1
+		//		}
+		//	]
+		//}
 	],
 	tbar: [
 		'->',

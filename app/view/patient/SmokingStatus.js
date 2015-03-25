@@ -45,7 +45,10 @@ Ext.define('App.view.patient.SmokingStatus', {
 		{
 			text: _('status'),
 			dataIndex: 'status',
-			width: 250
+			width: 250,
+			renderer: function(v, meta, record){
+				return v + ' (' + record.data.status_code +')';
+			}
 		},
 		{
 			text: _('counseling_given'),

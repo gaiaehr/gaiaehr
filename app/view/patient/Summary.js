@@ -469,7 +469,8 @@ Ext.define('App.view.patient.Summary', {
 				xtype: 'grid',
 				itemId: 'PatientEncounterHistoryPanel',
 				store: Ext.create('App.store.patient.Encounters', {
-					autoLoad: false
+					autoLoad: false,
+					remoteFilter: true
 				}),
 				columns: [
 					{

@@ -62,14 +62,14 @@ class MatchaHelper extends Matcha {
 		// Connect to the database
 		// This is compatible with the old methods
 		if(defined('site_db_type')){
-			self::connect(array(
-					'host' => site_db_host,
-					'port' => site_db_port,
-					'name' => site_db_database,
-					'user' => site_db_username,
-					'pass' => site_db_password,
-					'app' => ROOT . '/app'
-				));
+			self::connect([
+				'host' => site_db_host,
+				'port' => site_db_port,
+				'name' => site_db_database,
+				'user' => site_db_username,
+				'pass' => site_db_password,
+				'app' => ROOT . '/app'
+			]);
 		}
 
 		self::$__secretKey = defined('site_aes_key') ? site_aes_key : '';
@@ -101,25 +101,62 @@ class MatchaHelper extends Matcha {
 	 *
 	 * The method should be established PUBLIC STATIC, this way it will not take more
 	 * memory.
+	 * @param array $saveParams
 	 */
-	public static function storeAudit($saveParams = array()) {
+	public static function storeAudit($saveParams = []) {
 
-		if($saveParams['event'] != 'SELECT'){
-			MatchaAudit::$eventLogData = array(
-				'date' => Time::getLocalTime('Y-m-d H:i:s'),
-				'pid' => (isset($saveParams['data']['pid']) ? $saveParams['data']['pid'] : '0'),
-				'eid' => (isset($saveParams['data']['eid']) ? $saveParams['data']['eid'] : '0'),
-				'uid' => (isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0'),
-				'fid' => (isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '0'),
-				'event' => $saveParams['event'],
-				'table_name' => (isset($saveParams['table']) ? $saveParams['table'] : ''),
-				'sql_string' => (isset($saveParams['sql']) ? $saveParams['sql'] : ''),
-				'data' => (isset($saveParams['data']) ? serialize($saveParams['data']) : ''),
-				'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
-				'checksum' => $saveParams['crc32']
-			);
-			MatchaAudit::auditSaveLog();
+		// get pid...
+		if(isset($saveParams['data']['pid'])){
+			$pid = $saveParams['data']['pid'];
+		} else {
+			$match = [];
+			preg_match('/`pid`.*:W(\d*)/', $saveParams['sql'], $match);
+
+			if(!empty($match)){
+				preg_match('/:W(\d*)/', $match[0], $match);
+				$pid = $saveParams['data'][$match[0]];
+			} else {
+				$pid = '0';
+			}
 		}
+
+		// get eid...
+		if(isset($saveParams['data']['eid'])){
+			$eid = $saveParams['data']['eid'];
+		} else {
+			$match = [];
+			preg_match('/`eid`.*:W(\d*)/', $saveParams['sql'], $match);
+
+			if(!empty($match)){
+				preg_match('/:W(\d*)/', $match[0], $match);
+				$eid = $saveParams['data'][$match[0]];
+			} else {
+				$eid = '0';
+			}
+		}
+
+		$uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
+		$fid = isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '0';
+		$date = Time::getLocalTime('Y-m-d H:i:s');
+		$table = isset($saveParams['table']) ? $saveParams['table'] : '';
+		$sql = isset($saveParams['sql']) ? $saveParams['sql'] : '';
+		$data = isset($saveParams['data']) ? serialize($saveParams['data']) : '';
+
+
+		MatchaAudit::$eventLogData = [
+			'date' => $date,
+			'pid' => $pid,
+			'eid' => $eid,
+			'uid' => $uid,
+			'fid' => $fid,
+			'event' => $saveParams['event'],
+			'table_name' => $table,
+			'sql_string' => $sql,
+			'data' => $data,
+			'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
+			'checksum' => crc32($uid . $fid . $date . $table . $sql . $data)
+		];
+		MatchaAudit::auditSaveLog();
 
 	}
 
@@ -206,10 +243,10 @@ class MatchaHelper extends Matcha {
 						$sql .= '`' . $key . '`' . "='$value', ";
 					}
 				} else {
-					return array(
+					return [
 						'success' => false,
 						'error' => 'Where value can not be updated. please make sure to unset it from the array'
-					);
+					];
 				}
 			} else {
 				if($value == null || $value === 'null'){
@@ -261,7 +298,7 @@ class MatchaHelper extends Matcha {
 	 */
 	public function execOnly($setLastInsertId = true) {
 		if(!isset(self::$__conn))
-			return array();
+			return [];
 		self::$__conn->query($this->sql_statement);
 		if($setLastInsertId)
 			$this->lastInsertId = self::$__conn->lastInsertId();
@@ -336,7 +373,7 @@ class MatchaHelper extends Matcha {
 	 */
 	function fetchRecord() {
 		if(!isset(self::$__conn))
-			return array();
+			return [];
 		// Get all the records
 		$recordSet = self::$__conn->query($this->sql_statement);
 		$record = $recordSet->fetch(PDO::FETCH_ASSOC);
@@ -365,7 +402,7 @@ class MatchaHelper extends Matcha {
 	 */
 	public function fetchRecords($fetchStyle = PDO::FETCH_BOTH) {
 		if(!isset(self::$__conn))
-			return array();
+			return [];
 		$recordSet = self::$__conn->query($this->sql_statement);
 		if(stristr($this->sql_statement, 'SELECT')){
 			$this->lastInsertId = self::$__conn->lastInsertId();

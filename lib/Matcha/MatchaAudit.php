@@ -21,10 +21,10 @@ class MatchaAudit extends Matcha {
 	 * MatchaAudit public and private variables
 	 */
 	public static $__audit = false;
-	public static $eventLogData = array();
-	public static $hookClass = NULL;
-	public static $hookMethod = NULL;
-	public static $hookTable = NULL;
+	public static $eventLogData = [];
+	public static $hookClass = null;
+	public static $hookMethod = null;
+	public static $hookTable = null;
 
 	/**
 	 * function auditSaveLog($arrayToInsert = array()):
@@ -38,7 +38,7 @@ class MatchaAudit extends Matcha {
 		try{
 			// insert the event log
 			$fields = array_keys(self::$eventLogData);
-			$placeholders = array();
+			$placeholders = [];
 			foreach($fields as $field){
 				$placeholders[] = ':' . $field;
 			}
@@ -73,8 +73,13 @@ class MatchaAudit extends Matcha {
 	 * function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL)
 	 * Method to enable the audit log process.
 	 * This will write a log every time it INSERT, UPDATE, DELETE a record.
+	 * @param array $logModelArray
+	 * @param null $methodCall
+	 * @param string $idColumn
+	 * @param string $logTable
+	 * @param null $classCall
 	 */
-	static public function audit($logModelArray = array(), $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL){
+	static public function audit($logModelArray = [], $methodCall = NULL, $idColumn = 'id', $logTable = 'log', $classCall = NULL){
 		self::$__audit = true;
 		self::$hookTable = $logTable;
 		MatchaModel::$tableId = $idColumn;
@@ -107,8 +112,8 @@ class MatchaAudit extends Matcha {
 			unset($tableColumns[MatchaUtils::__recursiveArraySearch('id', $tableColumns)]);
 
 			// prepare the columns from the table and passed array for comparison
-			$columnsTableNames = array();
-			$columnsLogModelNames = array();
+			$columnsTableNames = [];
+			$columnsLogModelNames = [];
 			foreach($tableColumns as $column)
 				$columnsTableNames[] = $column['Field'];
 			foreach($logModelArray as $column)

@@ -68,8 +68,10 @@ class Matcha {
 	/**
 	 * function connect($databaseParameters = array()):
 	 * Method that make the connection to the database
+	 * @param array $databaseParameters
+	 * @return bool|PDO
 	 */
-	static public function connect($databaseParameters = array()){
+	static public function connect($databaseParameters = []){
 		try{
 
 			if(self::$__conn === null){

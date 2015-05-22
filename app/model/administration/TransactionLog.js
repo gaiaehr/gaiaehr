@@ -71,9 +71,12 @@ Ext.define('App.model.administration.TransactionLog', {
 		},
 		{
 			name: 'data',
-			type: 'string',
+			type: 'array',
 			dataType: 'mediumtext',
-			comment: 'serialized data'
+			comment: 'serialized data',
+			convert: function(v, record){
+				return record.serializeEventData(v);
+			}
 		},
 		{
 			name: 'ip',
@@ -81,9 +84,98 @@ Ext.define('App.model.administration.TransactionLog', {
 			len: 40
 		},
 		{
+			name: 'user_title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_lname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_lname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_name',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				var str = '';
+				if(record.data.user_title) str += record.data.user_title + ' ';
+				if(record.data.user_fname) str += record.data.user_fname + ' ';
+				if(record.data.user_mname) str += record.data.user_mname + ' ';
+				if(record.data.user_lname) str += record.data.user_lname;
+				return str;
+			}
+		},
+		{
+			name: 'patient_name',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				var str = '';
+				if(record.data.patient_title) str += record.data.patient_title + ' ';
+				if(record.data.patient_fname) str += record.data.patient_fname + ' ';
+				if(record.data.patient_mname) str += record.data.patient_mname + ' ';
+				if(record.data.patient_lname) str += record.data.patient_lname;
+				return str;
+			}
+		},
+		{
+			name: 'is_valid',
+			type: 'bool',
+			store: false
+		},
+		{
 			name: 'checksum',
 			type: 'string',
 			len: 80
 		}
-	]
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'AuditLog.getLogs'
+		},
+		reader: {
+			root: 'data'
+		}
+	},
+	serializeEventData: function(data){
+		var str = '';
+		Ext.Object.each(data, function(key, value) {
+			str += key+ ' - ' + value + '<br>';
+		});
+		return str;
+
+
+	}
 });

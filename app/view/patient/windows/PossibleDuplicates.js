@@ -53,14 +53,50 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 						dataIndex: 'fullname',
 						flex: 1,
 						renderer: function(v, meta, record){
-							var phone = record.data.home_phone != '' ? record.data.home_phone : '000-000-0000',
-								driver_liv = record.data.drivers_license != '' ? record.data.drivers_license : '0000000000';
+							var phone = record.data.home_phone !== '' ? record.data.home_phone : '000-000-0000',
+								driver_lic = record.data.drivers_license !== '' ? record.data.drivers_license : '0000000000';
 
-							var str = '<p style="margin: 5px"><b>' + _('name') + ':</b> ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname + '</p>';
-							str += '<p style="margin: 5px"><b>' + _('address') + ':</b> ' + record.data.address + ' ' + record.data.address_cont + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + '</p>';
-							str += '<p style="margin: 5px"><b>' + _('home_phone') + ':</b> ' + phone + ' <b>' + _('driver_lic') + ':</b> ' + driver_liv + ' <b>' + _('employer_name') + ':</b> ' + record.data.employer_name + '</p>';
-							str += '<p style="margin: 5px"><b>' + _('social_security') + ':</b> ' + record.data.SS + '</p>';
-							return '<div style="font-size: 12px;">' + str + '</div>';
+							return '<table cellpadding="1" cellspacing="0" border="0" width="100%" style="font-size: 12px;">' +
+								'<tbody>' +
+
+								'<tr>' +
+								'<td width="20%"><b>' + _('record_number') + ':</b></td>' +
+								'<td>' + record.data.record_number +'</td>' +
+								'</tr>' +
+
+								'<tr>' +
+								'<td><b>' + _('patient') + ':</b></td>' +
+								'<td>' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname + ' (' + record.data.sex + ') ' + record.data.DOBFormatted + '</td>' +
+								'</tr>' +
+
+								'</tr>' +
+								'<tr>' +
+								'<td><b>' + _('address') + ':</b></td>' +
+								'<td>' + record.data.address + ' ' + record.data.address_cont + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + '</td>' +
+								'</tr>' +
+
+								'<tr>' +
+								'<td><b>' + _('home_phone') + ':</b></td>' +
+								'<td>' + phone + '</td>' +
+								'</tr>' +
+
+								'<tr>' +
+								'<td><b>' + _('driver_lic') + ':</b></td>' +
+								'<td>' + driver_lic + '</td>' +
+								'</tr>' +
+
+								'<tr>' +
+								'<td><b>' + _('employer_name') + ':</b></td>' +
+								'<td>' + record.data.employer_name + '</td>' +
+								'</tr>' +
+
+								'<tr>' +
+								'<td><b>' + _('social_security') + ':</b></td>' +
+								'<td>' + record.data.SS +'</td>' +
+								'</tr>' +
+								'</tbody>' +
+								'</table>';
+
 						}
 					}
 				],
@@ -75,6 +111,14 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 		];
 
 		me.buttons = [
+			{
+				text: _('cancel'),
+				itemId: 'PossiblePatientDuplicatesCancelBtn',
+				handler: function(btn){
+					btn.up('window').close();
+				}
+			},
+			'-',
 			{
 				text: _('continue'),
 				itemId: 'PossiblePatientDuplicatesContinueBtn'

@@ -65,6 +65,18 @@ Ext.define('App.model.patient.SmokeStatus', {
 			dataType: 'text'
 		},
 		{
+			name: 'start_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'end_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
 			name: 'create_uid',
 			type: 'int',
 			comment: 'user ID who created the record'

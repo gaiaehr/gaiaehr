@@ -23,7 +23,7 @@ Ext.define('App.view.patient.RadOrders', {
 		'Ext.grid.feature.Grouping',
 		'Ext.selection.CheckboxModel',
 		'App.ux.combo.Combo',
-		'App.ux.LiveRadiologySearch'
+		'App.ux.LiveRadsSearch'
 	],
 	xtype: 'patientradorderspanel',
 	title: _('xray_ct_orders'),
@@ -105,7 +105,7 @@ Ext.define('App.view.patient.RadOrders', {
 			flex: 1,
 			dataIndex: 'description',
 			editor: {
-				xtype: 'radiologylivetsearch',
+				xtype: 'radslivetsearch',
 				itemId: 'radOrderliveSearch'
 			}
 		},

@@ -24,11 +24,15 @@ Ext.define('App.view.administration.DataManager', {
 		'App.ux.combo.CodesTypes',
 		'App.ux.combo.Titles'
 	],
+
 	initComponent: function(){
 		var me = this;
+
 		me.active = 1;
 		me.dataQuery = '';
 		me.code_type = 'LOINC';
+
+
 		me.store = Ext.create('App.store.administration.Services');
 		me.activeProblemsStore = Ext.create('App.store.administration.ActiveProblems');
 		me.medicationsStore = Ext.create('App.store.administration.Medications');
@@ -444,6 +448,8 @@ Ext.define('App.view.administration.DataManager', {
 
 		me.callParent();
 	},
+
+
 	onAddData: function(){
 		var me = this;
 		if(me.code_type == 'Laboratories'){
@@ -456,6 +462,8 @@ Ext.define('App.view.administration.DataManager', {
 			me.dataManagerGrid.plugins[0].startEdit(0, 0);
 		}
 	},
+
+
 	beforeServiceEdit: function(context, e){
 
 		var me = this,
@@ -553,59 +561,11 @@ Ext.define('App.view.administration.DataManager', {
 		me.store.load();
 	},
 
-//	onFormTapChange: function(panel, newCard, oldCard){
-//		this.ImmuRelationStore.proxy.extraParams = {
-//			code_type: newCard.action,
-//			selectedId: this.getSelectId()
-//		};
-//		this.ImmuRelationStore.load();
-//	},
-
-//	addActiveProblem: function(field, model){
-//		this.ImmuRelationStore.add({
-//			code: model[0].data.code,
-//			code_text: model[0].data.code_text,
-//			code_type: 'problems',
-//			foreign_id: model[0].data.id,
-//			immunization_id: this.getSelectId()
-//		});
-//		field.reset();
-//	},
-
-//	addMedications: function(field, model){
-//		this.ImmuRelationStore.add({
-//			code: model[0].data.PRODUCTNDC,
-//			code_text: model[0].data.PROPRIETARYNAME,
-//			code_type: 'medications',
-//			foreign_id: model[0].data.id,
-//			immunization_id: this.getSelectId()
-//		});
-//		field.reset();
-//	},
-
-//	addLabObservation: function(){
-//		this.labObservationsStore.add({
-//			lab_id: this.getSelectId(),
-//			label: '',
-//			name: '',
-//			//unit:'M/uL (H)',
-//			range_start: '-99999',
-//			range_end: '99999'
-//
-//		});
-//	},
-
-//	onRemoveRelation: function(grid, rowIndex){
-//		var me = this,
-//			store = grid.getStore(),
-//			record = store.getAt(rowIndex);
-//		store.remove(record);
-//	},
-
 	getSelectId: function(){
 		var row = this.dataManagerGrid.getSelectionModel().getLastSelected();
 		return row.data.id;
 	},
+
 
 	/**
 	 * This function is called from Viewport.js when

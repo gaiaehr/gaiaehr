@@ -23,7 +23,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		'App.ux.grid.RowFormEditing',
 
 		'App.view.patient.encounter.CarePlanGoals',
-		'App.view.patient.encounter.CarePlanGoalsNewWindow'
+		'App.view.patient.encounter.CarePlanGoalsNewWindow',
+		'App.ux.LiveSnomedProcedureSearch',
+		'App.view.patient.encounter.AdministeredMedications',
+		'App.view.patient.encounter.AppointmentRequestGrid'
 	],
 	action: 'patient.encounter.soap',
 	itemId: 'soapPanel',
@@ -171,18 +174,14 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							},
 							items: [
 								{
-									xtype: 'livecptsearch',
-									name: 'code',
-									displayField: 'code',
-									valueField: 'code',
+									xtype: 'snomedliveproceduresearch',
+									name: 'code_text',
+									displayField: 'FullySpecifiedName',
+									valueField: 'FullySpecifiedName',
 									listeners: {
 										scope: me,
 										select: me.onProcedureSelect
 									}
-								},
-								{
-									xtype: 'textfield',
-									name: 'code_text'
 								},
 								{
 									xtype: 'textareafield',
@@ -293,9 +292,29 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					margin: 5,
 					items: [
 						me.pField = Ext.widget('textarea', {
-							name: 'plan',
+							fieldLabel: _('instructions'),
+							labelAlign: 'top',
+							name: 'instructions',
+							margin: '0 0 10 0',
 							anchor: '100%'
 						}),
+						//me.pField = Ext.widget('textarea', {
+						//	name: 'plan',
+						//	anchor: '100%'
+						//}),
+						/**
+						 * this is the grid to administer medication
+						 * during visit...  for now we are going to
+						 * document this via de medication tab
+						 */
+						//{
+						//	xtype: 'administeredmedications',
+						//	margin: '0 0 10 0'
+						//},
+						{
+							xtype: 'appointmentrequestgrid',
+							margin: '0 0 10 0'
+						},
 						{
 							xtype: 'careplangoalsgrid',
 							margin: '0 0 10 0'
@@ -376,13 +395,16 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			form = me.pForm.getForm(),
 			procedure = form.getRecord();
 
+
+		say(record[0].data);
+
 		procedure.set({
-			code: record[0].data.code,
-			code_type: record[0].data.code_type,
-			code_text: record[0].data.code_text
+			code: record[0].data.ConceptId,
+			code_type: record[0].data.CodeType,
+			code_text: record[0].data.FullySpecifiedName
 		});
 
-		form.findField('code_text').setValue(record[0].data.code_text);
+		//form.findField('code_text').setValue(record[0].data.CodeType);
 	},
 
 	/**

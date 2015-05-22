@@ -26,7 +26,9 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
-		'App.ux.LiveSigsSearch'
+		'App.ux.LiveSigsSearch',
+		'App.ux.LiveUserSearch',
+		'App.ux.form.fields.DateTime'
 	],
 	xtype: 'patientmedicationspanel',
 	itemId: 'PatientMedicationsPanel',
@@ -84,10 +86,44 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 				{
+					text: _('directions'),
+					dataIndex: 'directions',
+					flex: 1,
+					editor: {
+						xtype: 'textfield'
+					}
+				},
+				{
+					text: _('administered'),
+					columns:[
+						{
+							text: _('user'),
+							dataIndex: 'administered_by',
+							width: 200,
+							editor: {
+								xtype: 'userlivetsearch',
+								acl: 'administer_medications',
+								valueField: 'fullname',
+								itemId: 'PatientMedicationUserLiveSearch'
+							}
+						},
+						{
+							xtype: 'datecolumn',
+							text: _('date'),
+							dataIndex: 'administered_date',
+							width: 200,
+							format: g('date_time_display_format'),
+							editor: {
+								xtype: 'mitos.datetime'
+							}
+						}
+					]
+				},
+				{
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
 					header: _('begin_date'),
-					width: 100,
+					width: 90,
 					dataIndex: 'begin_date',
 					sortable: false,
 					hideable: false
@@ -96,7 +132,7 @@ Ext.define('App.view.patient.Medications', {
 					xtype: 'datecolumn',
 					format: 'Y-m-d',
 					header: _('end_date'),
-					width: 100,
+					width: 90,
 					dataIndex: 'end_date',
 					sortable: false,
 					hideable: false,

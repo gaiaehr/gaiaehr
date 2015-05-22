@@ -7,6 +7,10 @@
     font-family: 'OpenSans-CondLight';
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
+.list-status-Inactive {
+    color: #ff0000 !important;
+}
+
 .combo-list-icon {
     width: 10px;
     height: 16px;
@@ -35,7 +39,7 @@
     background-color: red;
 }
 .lightRedBg {
-    background-color: #ffe1e3;
+    background-color: #ffe1e3 !important;
 }
 .fuchsiaBg {
     background-color: fuchsia;
@@ -45,6 +49,9 @@
 }
 .yellowBg {
     background-color: yellow;
+}
+.lightGreenBg {
+    background-color: #ccffcc !important;
 }
 .greenBg {
     background-color: green;
@@ -57,24 +64,24 @@
 }
 
 .btnGreenBackground {
-    background-color: #ccffcc;
+    background-color: #ccffcc !important;
 }
 .btnGreenBackground.x-pressed {
-    background-color: #66cc66;
+    background-color: #66cc66 !important;
 }
 
 .btnRedBackground {
-    background-color: #ffcccc;
+    background-color: #ffcccc !important;
 }
 .btnRedBackground.x-pressed {
-    background-color: #ff6666;
+    background-color: #ff6666 !important;
 }
 
 .btnBlueBackground {
-    background-color: #99ccff;
+    background-color: #daedff !important;
 }
 .btnBlueBackground.x-pressed {
-    background-color: #6699cc;
+    background-color: #a9e2ff !important;
 }
 
 .appHeader .x-toolbar-separator {

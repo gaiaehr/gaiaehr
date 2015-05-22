@@ -22,6 +22,10 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 	hideLabel: true,
 	displayField: 'FullySpecifiedName',
 	valueField: 'ConceptId',
+	emptyText: _('search') + '...',
+	typeAhead: false,
+	hideTrigger: true,
+	minChars: 3,
 	initComponent: function(){
 		var me = this;
 
@@ -68,10 +72,6 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: _('search') + '...',
-			typeAhead: false,
-			hideTrigger: true,
-			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',

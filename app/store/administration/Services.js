@@ -30,6 +30,9 @@ Ext.define('App.store.administration.Services', {
 			totalProperty: 'totals',
 			root: 'rows'
 		},
+		writer: {
+			writeAllFields: true
+		},
 		extraParams: {
 			code_type: this.code_type,
 			query: this.query,

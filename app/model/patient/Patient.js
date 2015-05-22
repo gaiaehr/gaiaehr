@@ -1,47 +1,24 @@
 /**
  * Generated dynamically by Matcha::Connect
- * Create date: 2014-10-21 15:31:15
+ * Create date: 2015-04-07 13:57:58
  */
 
 Ext.define('App.model.patient.Patient',{
     extend: 'Ext.data.Model',
+    requires: [
+        'App.model.patient.Insurance',
+        'App.model.patient.Allergies',
+        'App.model.patient.Medications',
+        'App.model.patient.PatientActiveProblem'
+    ],
     table: {
-        name: 'patient',
-        comment: 'Patients Demographics'
+        name: 'patient'
     },
     fields: [
         {
             name: 'pid',
             type: 'int',
             comment: 'patient ID'
-        },
-        {
-            name: 'create_uid',
-            type: 'int',
-            comment: 'create user ID'
-        },
-        {
-            name: 'update_uid',
-            type: 'int',
-            comment: 'update user ID'
-        },
-        {
-            name: 'create_date',
-            type: 'date',
-            comment: 'create date',
-            dateFormat: 'Y-m-d H:i:s'
-        },
-        {
-            name: 'update_date',
-            type: 'date',
-            comment: 'last update date',
-            dateFormat: 'Y-m-d H:i:s'
-        },
-        {
-            name: 'administrative_status',
-            type: 'string',
-            comment: 'active | inactive | merged',
-            len: 15
         },
         {
             name: 'title',
@@ -73,8 +50,23 @@ Ext.define('App.model.patient.Patient',{
         {
             name: 'fullname',
             type: 'string',
-            persist: false,
-            convert: false
+            store: false,
+            convert: function(v, record){
+                var foo = '';
+                if(record.data.title){
+                    foo += record.data.title + ' ';
+                }
+                if(record.data.fname){
+                    foo += record.data.fname + ' ';
+                }
+                if(record.data.mname){
+                    foo += record.data.mname + ' ';
+                }
+                if(record.data.lname){
+                    foo += record.data.lname + ' ';
+                }
+                return foo.trim();
+            }
         },
         {
             name: 'sex',
@@ -90,6 +82,14 @@ Ext.define('App.model.patient.Patient',{
             dateFormat: 'Y-m-d H:i:s',
             index: true,
             defaultValue: '0000-00-00 00:00:00'
+        },
+        {
+            name: 'DOBFormatted',
+            type: 'string',
+            persist: false,
+            convert: function(v, record){
+                return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
+            }
         },
         {
             name: 'marital_status',
@@ -117,6 +117,14 @@ Ext.define('App.model.patient.Patient',{
             index: true,
             comment: 'external reference account',
             len: 40
+        },
+        {
+            name: 'record_number',
+            type: 'string',
+            persist: false,
+            convert: function(v, record){
+                return g('display_pubpid') ? record.data.pubpid : record.data.pid;
+            }
         },
         {
             name: 'drivers_license',
@@ -416,6 +424,44 @@ Ext.define('App.model.patient.Patient',{
         {
             name: 'work_phone_ext',
             type: 'string'
+        },
+        {
+            name: 'administrative_status',
+            type: 'string',
+            comment: 'active | inactive | merged',
+            len: 15
+        },
+        {
+            name: 'create_uid',
+            type: 'int',
+            comment: 'create user ID'
+        },
+        {
+            name: 'update_uid',
+            type: 'int',
+            comment: 'update user ID'
+        },
+        {
+            name: 'create_date',
+            type: 'date',
+            comment: 'create date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'update_date',
+            type: 'date',
+            comment: 'last update date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'portal_password',
+            type: 'string',
+            dataType: 'blob',
+            encrypt: true
+        },
+        {
+            name: 'portal_username',
+            type: 'string'
         }
     ],
     idProperty: 'pid',
@@ -431,6 +477,24 @@ Ext.define('App.model.patient.Patient',{
         {
             model: 'App.model.patient.Insurance',
             name: 'insurance',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.Allergies',
+            name: 'allergies',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.Medications',
+            name: 'medications',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.PatientActiveProblem',
+            name: 'activeproblems',
             primaryKey: 'pid',
             foreignKey: 'pid'
         }

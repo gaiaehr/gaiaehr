@@ -73,7 +73,7 @@ class PoolArea {
 	public function getPatientsArrivalLog(stdClass $params) {
 		$this->setPatient();
 		$this->setPaModel();
-		$visits = array();
+		$visits = [];
 		foreach($this->getPatientParentPools() AS $visit){
 			$id = $visit['id'];
 			$foo = $this->pa->sql("SELECT pp.id, pa.title AS area, pp.time_out, pp.eid
@@ -112,12 +112,11 @@ class PoolArea {
 		return $foo !== false ? $foo['parent_id'] : 0;
 	}
 
-	public function addPatientArrivalLog(stdClass $params) {
+	public function addPatientArrivalLog($params) {
 		$this->setPatient();
 		if($params->isNew){
 			$patient = $this->patient->createNewPatientOnlyName($params->name);
 			$params->pid = $patient['patient']['pid'];
-			$params->name = $patient['patient']['fullname'];
 			$params->area = 'Check In';
 			$params->area_id = 1;
 			$params->new = true;
@@ -139,7 +138,7 @@ class PoolArea {
 		$record->time_out = date('Y-m-d H:i:s');
 		$this->pp->save($record);
 		unset($record);
-		return array('success' => true);
+		return ['success' => true];
 	}
 
 	public function sendPatientToPoolArea(stdClass $params) {
@@ -182,7 +181,7 @@ class PoolArea {
 			Matcha::pauseLog(false);
 		}
 
-		return array('record' => $record, 'floor_plan_id' => $this->getFloorPlanIdByPoolAreaId($record->area_id));
+		return ['record' => $record, 'floor_plan_id' => $this->getFloorPlanIdByPoolAreaId($record->area_id)];
 
 	}
 
@@ -205,7 +204,7 @@ class PoolArea {
 	 * where array index equal the area ID
 	 */
 	public function getAreasArray(){
-		$areas = array();
+		$areas = [];
 		foreach($this->getActivePoolAreas() as $area){
 			$areas[$area['id']] = $area;
 		}
@@ -277,38 +276,42 @@ class PoolArea {
 	 * @return array
 	 */
 	public function getPatientsByPoolAreaAccess($params) {
+		Matcha::pauseLog(true);
 		if(is_numeric($params)){
 			$uid = $params;
 		} elseif(!is_numeric($params) && isset($params->eid)) {
 			$uid = $params->eid;
 		} elseif(!isset($_SESSION['user']['id'])){
-			return array();
+			return [];
 		} else {
 			$uid = $_SESSION['user']['id'];
 		}
 
 		$this->acl = new ACL($uid);
-		$pools = array();
+		$pools = [];
 
 		if($this->acl->hasPermission('use_pool_areas')){
 			$this->setPatient();
 
 			$activeAreas = $this->getFacilityActivePoolAreas();
-			$areas = array();
+			$areas = [];
+			$pools = [];
 
-			foreach($activeAreas as $activeArea){
-				if(($activeArea['id'] == 1 && $this->acl->hasPermission('access_poolcheckin')) ||
-					($activeArea['id'] == 2 && $this->acl->hasPermission('access_pooltriage')) ||
-					($activeArea['id'] == 3 && $this->acl->hasPermission('access_poolphysician')) ||
-					($activeArea['id'] == 4 && $this->acl->hasPermission('access_poolcheckout'))
-				){
-					$areas[] = 'pp.area_id = \'' . $activeArea['id'] . '\'';
+			if(!empty($activeAreas)){
+
+				foreach($activeAreas as $activeArea){
+					if(($activeArea['id'] == 1 && $this->acl->hasPermission('access_poolcheckin')) ||
+						($activeArea['id'] == 2 && $this->acl->hasPermission('access_pooltriage')) ||
+						($activeArea['id'] == 3 && $this->acl->hasPermission('access_poolphysician')) ||
+						($activeArea['id'] == 4 && $this->acl->hasPermission('access_poolcheckout'))
+					){
+						$areas[] = 'pp.area_id = \'' . $activeArea['id'] . '\'';
+					}
 				}
-			}
 
-			$whereAreas = '(' . implode(' OR ', $areas) . ')';
+				$whereAreas = '(' . implode(' OR ', $areas) . ')';
 
-			$sql = "SELECT pp.*, p.fname, p.lname, p.mname, pa.title
+				$sql = "SELECT pp.*, p.fname, p.lname, p.mname, pa.title
 					  FROM `patient_pools` AS pp
 				 LEFT JOIN `patient` AS p ON pp.pid = p.pid
 				 LEFT JOIN `pool_areas` AS pa ON pp.area_id = pa.id
@@ -318,22 +321,24 @@ class PoolArea {
 			      ORDER BY pp.time_in
 			         LIMIT 25";
 
-			$patientPools = $this->pa->sql($sql)->all();
+				$patientPools = $this->pa->sql($sql)->all();
 
-			$pools = [];
-			foreach($patientPools AS $patientPool){
-				$patientPool['name'] = ($patientPool['eid'] != null ? '*' : '') . Person::fullname($patientPool['fname'], $patientPool['mname'], $patientPool['lname']);
-				$patientPool['shortName'] = Person::ellipsis($patientPool['name'], 15);
-				$patientPool['poolArea'] = $patientPool['title'];
-				$patientPool['patient'] = $this->patient->getPatientDemographicDataByPid($patientPool['pid']);
-				$patientPool['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($patientPool['area_id']);
-				$z = $this->getPatientCurrentZoneInfoByPid($patientPool['pid']);
-				$pools[] = (empty($z)) ? $patientPool : array_merge($patientPool, $z);
+				$pools = [];
+				foreach($patientPools AS $patientPool){
+					$patientPool['name'] = ($patientPool['eid'] != null ? '*' : '') . Person::fullname($patientPool['fname'], $patientPool['mname'], $patientPool['lname']);
+					$patientPool['shortName'] = Person::ellipsis($patientPool['name'], 15);
+					$patientPool['poolArea'] = $patientPool['title'];
+					$patientPool['patient'] = $this->patient->getPatientDemographicDataByPid($patientPool['pid']);
+					$patientPool['floorPlanId'] = $this->getFloorPlanIdByPoolAreaId($patientPool['area_id']);
+					$z = $this->getPatientCurrentZoneInfoByPid($patientPool['pid']);
+					$pools[] = (empty($z)) ? $patientPool : array_merge($patientPool, $z);
+				}
+
+				$pools = array_slice($pools, 0, 25);
 			}
-
-			$pools = array_slice($pools, 0, 25);
 		}
 
+		Matcha::pauseLog(false);
 		return $pools;
 	}
 

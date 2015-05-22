@@ -26,7 +26,7 @@ class Referrals {
 	}
 
 	public function getPatientReferrals($params){
-		return $this->r->load($params)->all();;
+		return $this->r->load($params)->all();
 	}
 
 	public function getPatientReferral($params){
@@ -43,6 +43,16 @@ class Referrals {
 
 	public function deletePatientReferral($params){
 		return $this->r->destroy($params);
+	}
+
+	public function getPatientReferralsByEid($eid){
+		$this->r->addFilter('eid', $eid);
+		return $this->r->load()->all();
+	}
+
+	public function getPatientReferralByEid($eid){
+		$this->r->addFilter('eid', $eid);
+		return $this->r->load()->one();
 	}
 
 }

@@ -62,7 +62,7 @@ class Facilities {
 	 */
 	public function getFacilities($params){
 		$this->setFacilityModel();
-		$rows = array();
+		$rows = [];
 		foreach($this->f->load($params)->all() as $row){
 			$row['pos_code'] = str_pad($row['pos_code'], 2, '0', STR_PAD_LEFT);
 			array_push($rows, $row);
@@ -120,7 +120,8 @@ class Facilities {
 	 */
 	public function getCurrentFacility($getData = false){
 		$this->setFacilityModel();
-		if($getData) return $this->f->load($_SESSION['user']['facility'])->one();
+		$foo = isset($_SESSION['user']['facility']) ? $_SESSION['user']['facility'] : '1';
+		if($getData) return $this->f->load($foo)->one();
 		return $_SESSION['user']['facility'];
 	}
 
@@ -134,7 +135,7 @@ class Facilities {
 	 */
 	public function getFacilityInfo($fid){
 		$this->setFacilityModel();
-		$resultRecord = $this->f->load(array('id' => $fid), array('name', 'phone', 'street', 'city', 'state', 'postal_code'))->one();
+		$resultRecord = $this->f->load(['id' => $fid], ['name', 'phone', 'street', 'city', 'state', 'postal_code'])->one();
 		return 'Facility: ' . $resultRecord['name'] . ' ' . $resultRecord['phone'] . ' ' . $resultRecord['street'] . ' ' . $resultRecord['city'] . ' ' . $resultRecord['state'] . ' ' . $resultRecord['postal_code'];
 	}
 
@@ -143,7 +144,7 @@ class Facilities {
 	 */
 	public function getActiveFacilities(){
 		$this->setFacilityModel();
-		return $this->f->load(array('active' => '1'))->one();
+		return $this->f->load(['active' => '1'])->one();
 	}
 
 	/**
@@ -152,7 +153,7 @@ class Facilities {
 	 */
 	public function getActiveFacilitiesById($facilityId){
 		$this->setFacilityModel();
-		return $this->f->load(array('active' => '1', 'id' => $facilityId))->one();
+		return $this->f->load(['active' => '1', 'id' => $facilityId])->one();
 	}
 
 	/**
@@ -160,7 +161,7 @@ class Facilities {
 	 */
 	public function getBillingFacilities(){
 		$this->setFacilityModel();
-		return $this->f->load(array('active' => '1', 'billing_location' => '1'))->one();
+		return $this->f->load(['active' => '1', 'billing_location' => '1'])->one();
 	}
 
 	///////////////////////////////////////////
@@ -172,11 +173,13 @@ class Facilities {
 	 */
 	public function getFacilityConfigs($params, $tree = true){
 		$this->setFacilityConfigModel();
-		$records = array();
-		$facilities = $this->getFacilities(array('active' => 1));
+		$records = [];
+
+		$facilities = $this->getFacilities(['active' => 1]);
 
 		foreach($facilities as $facility){
 			$facility = (object) $facility;
+
 			$sql = "SELECT f.*, d.title as `text`, false AS `leaf`, true AS `expanded`, false AS `expandable`, true AS `loaded`
 					 FROM `facility_structures` AS f
 				LEFT JOIN `departments` AS d ON f.foreign_id = d.id
@@ -210,14 +213,14 @@ class Facilities {
 			}
 
 			if($tree){
-				$records[] = array(
+				$records[] = [
 					'id' => 'f' . $facility->id,
 					'text' => $facility->name,
 					'leaf' => false,
 					'expanded' => true,
 					'expandable' => false,
 					'children' => $departmentsRecords
-				);
+				];
 			}else{
 				$facility->departments = $departmentsRecords;
 				$records[$facility->id] = $facility;

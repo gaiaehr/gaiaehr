@@ -27,7 +27,7 @@ Ext.define('App.view.patient.CCD', {
 	columnLines: true,
 	itemId: 'CcdPanel',
 	layout: 'fit',
-	items:[
+	items: [
 		{
 			xtype: 'miframe',
 			style: 'background-color:white',
@@ -37,39 +37,57 @@ Ext.define('App.view.patient.CCD', {
 	],
 	tbar: [
 		{
-			xtype: 'button',
-			text: _('view_ccr'),
-			margin: '0 0 5 0',
-			itemId: 'viewCcdBtn'
+			xtype: 'patientEncounterCombo',
+			itemId: 'PatientCcdPanelEncounterCmb',
+			margin: '0 5 5 5',
+			width: 300,
+			fieldLabel: _('filter_encounter'),
+			hideLabel: false,
+			labelAlign: 'top'
 		},
 		'-',
 		{
-			text: _('export_ccr'),
-			margin: '0 0 5 0',
-			itemId: 'exportCcdBtn'
-		},
-		'-',
-		{
-			xtype: 'container',
-			layout: 'vbox',
+			xtype: 'checkboxgroup',
+			fieldLabel: _('exclude'),
+			// Arrange checkboxes into two columns, distributed vertically
+			columns: 5,
+			vertical: true,
+			labelWidth: 60,
+			itemId: 'PatientCcdPanelExcludeCheckBoxGroup',
+			flex: 1,
 			items: [
-				{
-					xtype: 'patientEncounterCombo',
-					name: 'filterEncounter',
-					margin: 5,
-					fieldLabel: _('filter_encounter'),
-					hideLabel: false
-				}
+				{boxLabel: _('procedures'), name: 'exclude', inputValue: 'procedures'},
+				{boxLabel: _('vitals'), name: 'exclude', inputValue: 'vitals'},
+				{boxLabel: _('immunizations'), name: 'exclude', inputValue: 'immunizations'},
+				{boxLabel: _('medications'), name: 'exclude', inputValue: 'medications'},
+				{boxLabel: _('meds_administered'), name: 'exclude', inputValue: 'administered'},
+				{boxLabel: _('plan_of_care'), name: 'exclude', inputValue: 'planofcare'},
+				{boxLabel: _('problems'), name: 'exclude', inputValue: 'problems'},
+				{boxLabel: _('allergies'), name: 'exclude', inputValue: 'allergies'},
+				{boxLabel: _('social'), name: 'exclude', inputValue: 'social'},
+				{boxLabel: _('results'), name: 'exclude', inputValue: 'results'}
 			]
+		},
+		'-',
+		{
+			xtype: 'button',
+			text: _('refresh'),
+			margin: '0 0 5 0',
+			itemId: 'viewCcdBtn',
+			icon: 'resources/images/icons/refresh.png'
+		},
+		'-',
+		{
+			text: _('download'),
+			margin: '0 0 5 0',
+			itemId: 'exportCcdBtn',
+			icon: 'resources/images/icons/download.png'
 		},
 		'-',
 		{
 			text: 'Print',
 			iconCls: 'icon-print',
-			handler: function(){
-				//                           	trg.focus();
-				//                           	trg.print();
-			}
+			itemId: 'printCcdBtn'
 		}
 	]
 

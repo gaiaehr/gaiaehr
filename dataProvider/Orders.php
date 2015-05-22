@@ -20,25 +20,25 @@
 class Orders {
 
 	/**
-	 * @var MatchaCUP
+	 * @var MatchaCUP PatientsOrders
 	 */
-	private $o = null;
+	private $o;
 
 	/**
-	 * @var MatchaCUP
+	 * @var MatchaCUP PatientsOrderResults
 	 */
-	private $r = null;
+	private $r;
 
 	/**
-	 * @var MatchaCUP
+	 * @var MatchaCUP PatientsOrderObservation
 	 */
-	private $b = null;
+	private $b;
 
 	/**
 	 * Set Model App.model.patient.PatientsOrders
 	 */
 	private function setOrders(){
-		if($this->o == null)
+		if(!isset($this->o))
 			$this->o = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
 	}
 
@@ -46,7 +46,7 @@ class Orders {
 	 * Set Model App.model.patient.PatientsOrderResults
 	 */
 	private function setResults(){
-		if($this->r == null)
+		if(!isset($this->r))
 			$this->r = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
 	}
 
@@ -54,7 +54,7 @@ class Orders {
 	 * Set Model App.model.patient.PatientsOrderObservation
 	 */
 	private function setObservations(){
-		if($this->b == null)
+		if(!isset($this->b))
 			$this->b = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 	}
 
@@ -176,7 +176,7 @@ class Orders {
 		$this->setObservations();
 
 		$records = $this->b->sql("SELECT DISTINCT p.LOINC_NUM AS code,
-				                                  IF(e.ALIAS IS NULL OR e.ALIAS = '', l.long_common_name, e.ALIAS) AS code_text,
+				                                  IF(e.ALIAS IS NULL OR e.ALIAS = '', l.shortname, e.ALIAS) AS code_text,
 				                                  'LN' AS code_type,
 				                                  IF(e.DEFAULT_UNIT IS NOT NULL, e.DEFAULT_UNIT, l.example_ucum_units) AS units,
 				                                  CONCAT(e.RANGE_START, ' - ', e.RANGE_END) AS reference_rage,
@@ -190,12 +190,13 @@ class Orders {
 											  AND p.PARENT_LOINC = '$loinc'
 				                         ORDER BY p.SEQUENCE")->all();
 
-		foreach($records AS $row){
-			$children = array();
-			if($row['has_children']){
+		foreach($records AS &$record){
+			$record['id'] = null;
+			$children = [];
+			if($record['has_children']){
 				// remove the parent from the record array and get the children
-				unset($records[array_search($row, $records)]);
-				$children = $this->getObservationsByLoinc($row['code'], false);
+				unset($records[array_search($record, $records)]);
+				$children = $this->getObservationsByLoinc($record['code'], false);
 			}
 
 			if(!empty($children)){
@@ -229,7 +230,7 @@ class Orders {
 		$this->setOrders();
 		$this->setResults();
 		$this->setObservations();
-		$sql = "SELECT obs.*, res.*
+		$sql = "SELECT obs.*, res.result_date
 				  FROM patient_order_results_observations AS obs
 			 LEFT JOIN patient_order_results AS res ON obs.result_id = res.id
 			 LEFT JOIN patient_orders AS ord ON ord.id = res.order_id
@@ -237,7 +238,8 @@ class Orders {
 				   AND ord.pid = '$pid'
 			  ORDER BY res.result_date DESC
 				 LIMIT 10";
-		return $this->o->sql($sql)->all();
+		$records = $this->o->sql($sql)->all();
+		return $records;
 	}
 
 	/**

@@ -41,6 +41,9 @@ Ext.define('App.ux.combo.ReferringProviders', {
 				type: 'direct',
 				api: {
 					read: 'ReferringProviders.getReferringProviders'
+				},
+				reader: {
+					root: 'data'
 				}
 			}
 		});

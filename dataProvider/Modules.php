@@ -43,10 +43,12 @@ class Modules {
 	 * @return array
 	 */
 	public function getAllModules() {
-		$modules = array();
+		Matcha::pauseLog(true);
+		$modules = [];
 		foreach(FileManager::scanDir($this->modulesDir) AS $module){
 			$modules[] = $this->getModuleConfig($module);
 		}
+		Matcha::pauseLog(false);
 		return $modules;
 	}
 
@@ -55,16 +57,18 @@ class Modules {
 	 * @return array
 	 */
 	public function getActiveModules() {
-		$modules = array();
+		Matcha::pauseLog(true);
+		$modules = [];
 		foreach(FileManager::scanDir($this->modulesDir) AS $module){
 			$foo = $this->getModuleConfig($module);
 			if($foo['active']){
-				$record = $this->m->load(array('name' => $foo['name']))->one();
+				$record = $this->m->load(['name' => $foo['name']])->one();
 				if($record === false)
 					continue;
 				$modules[] = array_merge($foo, $record);
 			}
 		}
+		Matcha::pauseLog(false);
 		return $modules;
 	}
 
@@ -73,8 +77,9 @@ class Modules {
 	 * @return array
 	 */
 	public function getEnabledModules() {
-		$modules = array();
-		$records = $this->m->load(array('enable' => 1))->all();
+		Matcha::pauseLog(true);
+		$modules = [];
+		$records = $this->m->load(['enable' => 1])->all();
 		foreach($records AS $m){
 			if(isset($m['name'])){
 				$foo = $this->getModuleConfig($m['name']);
@@ -90,6 +95,7 @@ class Modules {
 				}
 			}
 		}
+		Matcha::pauseLog(false);
 		return $modules;
 	}
 
@@ -98,13 +104,15 @@ class Modules {
 	 * @return array
 	 */
 	public function getDisabledModules() {
-		$modules = array();
-		$records = $this->m->load(array('enable' => 0))->all();
+		Matcha::pauseLog(true);
+		$modules = [];
+		$records = $this->m->load(['enable' => 0])->all();
 		foreach($records AS $m){
 			$foo = $this->getModuleConfig($m['name']);
 			if($foo['active'])
 				$modules[] = $foo;
 		}
+		Matcha::pauseLog(false);
 		return $modules;
 	}
 
@@ -128,7 +136,7 @@ class Modules {
 	}
 
 	public function getEnabledModulesAPI() {
-		$actions = array();
+		$actions = [];
 		foreach($this->getEnabledModules() AS $module){
 			$actions = array_merge($actions, $module['actionsAPI']);
 		}
@@ -149,12 +157,12 @@ class Modules {
 	}
 
 	public function getModuleByName($moduleName) {
-		$records = $this->m->load(array('name' => $moduleName))->one();
+		$records = $this->m->load(['name' => $moduleName])->one();
 		$foo = $this->getModuleConfig($records['name']);
 		if($foo['active']){
 			return array_merge($records, $foo);
 		} else {
-			return array();
+			return [];
 		}
 	}
 
@@ -163,10 +171,11 @@ class Modules {
 	 * does not exist
 	 */
 	private function setNewModules() {
+		Matcha::pauseLog(true);
 		foreach(FileManager::scanDir($this->modulesDir) AS $module){
 			$ModuleConfig = $this->getModuleConfig($module);
 			if($ModuleConfig['active']){
-				$moduleRecord = $this->m->load(array('name' => $ModuleConfig['name']))->one();
+				$moduleRecord = $this->m->load(['name' => $ModuleConfig['name']])->one();
 
 				if(empty($moduleRecord)){
 					$data = new stdClass();
@@ -179,6 +188,7 @@ class Modules {
 				}
 			}
 		}
+		Matcha::pauseLog(false);
 		return;
 	}
 }

@@ -56,7 +56,7 @@ class OBX extends Segments{
 		$this->setField(2, 'ID', 1, true);
 		$this->setField(3, 'CE', 1);
 		$this->setField(4, 'ST', 1);
-		$this->setFieldValue(5, 2, false, true);  // OBX-2-value type contains the data type for this field
+		$this->setFieldValue(5, 2);  // OBX-2-value type contains the data type for this field
 		$this->setField(6, 'CE', 1);
 		$this->setField(7, 'ST', 1);
 

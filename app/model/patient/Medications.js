@@ -144,6 +144,43 @@ Ext.define('App.model.patient.Medications', {
 			len: 180
 		},
 		{
+			name: 'administered_uid',
+			type: 'int'
+		},
+		{
+			name: 'administered_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'administered_by',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return record.data.title + ' ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
+			}
+		},
+		{
+			name: 'title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'lname',
+			type: 'string',
+			store: false
+		},
+		{
 			name: 'date_ordered',
 			type: 'date',
 			dataType: 'date',

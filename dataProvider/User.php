@@ -101,17 +101,17 @@ class User {
 		$user = $this->u->load($params->id)->one();
 
 		if($user === false){
-			return array('success' => false, 'message' => 'user not found');
+			return ['success' => false, 'message' => 'user not found'];
 		}
 		$user = isset($user['data']) ? $user['data'] : $user;
 		if($user['password'] != $params->old_password){
-			return array('success' => false, 'message' => 'wrong_password_error');
+			return ['success' => false, 'message' => 'wrong_password_error'];
 		}
 
 		if( $user['password'] == $params->new_password ||
 			$user['pwd_history1'] == $params->new_password ||
 			$user['pwd_history2'] == $params->new_password){
-			return array('success' => false, 'message' => 'password_history_error');
+			return ['success' => false, 'message' => 'password_history_error'];
 		}
 
 		$rec = new stdClass();
@@ -120,20 +120,20 @@ class User {
 		$rec->pwd_history1 = $user['password'];
 		$rec->pwd_history2 = $user['pwd_history1'];
 		$this->u->save($rec);
-		return array('success' => true);
+		return ['success' => true];
 	}
 
 	public function usernameExist($username){
-		$user = $this->u->load(array('username' => $username))->one();
+		$user = $this->u->load(['username' => $username])->one();
 		return $user !== false;
 	}
 
 	public function getCurrentUserId(){
-		return $_SESSION['user']['id'];
+		return isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0;
 	}
 
 	public function getCurrentUserTitleLastName(){
-		$user = $this->u->load($this->getCurrentUserId(), array('title', 'lname'))->one();
+		$user = $this->u->load($this->getCurrentUserId(), ['title', 'lname'])->one();
 		return $user['title'] . ' ' . $user['lname'];
 	}
 
@@ -154,7 +154,7 @@ class User {
 	}
 
 	public function getCurrentUserBasicData(){
-		$user = $this->u->load($this->getCurrentUserId(), array('id', 'npi', 'title', 'fname', 'mname', 'lname'))->one();
+		$user = $this->u->load($this->getCurrentUserId(), ['id', 'npi', 'title', 'fname', 'mname', 'lname'])->one();
 		return $user;
 	}
 
@@ -166,21 +166,21 @@ class User {
 
 	public function verifyUserPass($pass, $uid = null){
 		$user = $this->u->load(
-			array(
+			[
 				'id' => isset($uid) ? $uid : $_SESSION['user']['id'],
 				'authorized' => '1'
-			),
-			array(
+			],
+			[
 				'password'
-			)
+			]
 		)->one();
 		return $user['password'] == $pass;
 	}
 
 	public function getProviders(){
-		$records = array();
-		$records[] = array('name' => 'All', 'id' => 'all');
-		$users = $this->u->load(array('role_id' => 2))->all();
+		$records = [];
+		$records[] = ['name' => 'All', 'id' => 'all'];
+		$users = $this->u->load(['role_id' => 2])->all();
 		foreach($users As $row){
 			$row['name'] = $this->getUserNameById($row['id']);
 			$records[] = $row;
@@ -214,5 +214,47 @@ class User {
 		$params->filter[0]->property = 'NPI';
 		$params->filter[0]->value = $npi;
 		return $this->getUser($params);
+	}
+
+	public function userLiveSearch($params){
+		$acls = isset($params->acl) ? explode('&' , $params->acl) : false;
+
+		if($acls === false){
+			$params->query = $params->query . '%';
+			$this->u->sql('SELECT `u`.*, `ar`.`role_name` AS role FROM users as u
+					    LEFT JOIN `acl_roles` AS ar ON `ar`.`id` = `u`.`role_id`
+						    WHERE `u`.`fname` LIKE ?
+						       OR `u`.`lname` LIKE ?
+						       OR `u`.`username` LIKE ?');
+			$records = $this->u->all([$params->query, $params->query, $params->query ]);
+		}else{
+
+			foreach($acls as &$acl){
+				$acl = '`ap`.`perm_key` = \'' . $acl . '\'';
+			}
+			$count = count($acls);
+			$where = implode(' OR ',  $acls);
+			$sql = "SELECT `u`.*, `ar`.`role_name` AS role FROM users AS u
+                 	LEFT JOIN `acl_roles` AS ar ON `ar`.`id` = `u`.`role_id`
+ 					WHERE `u`.`id` IN (
+					    SELECT  `up`.`id` FROM `users` AS up
+					    LEFT JOIN `acl_role_perms` AS arp ON `arp`.`role_id` = `up`.`role_id`
+					    LEFT JOIN `acl_permissions` AS ap ON `ap`.`id` = `arp`.`perm_id`
+ 						WHERE `arp`.`value` = 1 AND ( {$where} )
+					   	GROUP BY `up`.`id`
+					    HAVING COUNT(`up`.`id`) = {$count}
+					) AND (
+		                fname LIKE ? OR lname LIKE ? OR username LIKE ?
+	                )";
+
+			$this->u->sql($sql);
+			$params->query = $params->query . '%';
+			$records = $this->u->all([ $params->query, $params->query, $params->query ]);
+		}
+
+		return [
+			'total' => count($records),
+		    'data' => array_slice($records, $params->start, $params->limit)
+		];
 	}
 }

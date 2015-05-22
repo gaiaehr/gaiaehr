@@ -34,6 +34,7 @@ Ext.define('App.view.patient.Results', {
 			region: 'center',
 			split: true,
 			columnLines: true,
+			allowDeselect: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
 				remoteFilter: true
 			}),
@@ -146,8 +147,11 @@ Ext.define('App.view.patient.Results', {
 									name: 'result_status'
 								},
 								{
+									xtype: 'datefield',
 									fieldLabel: _('observation_date'),
-									name: 'observation_date'
+									name: 'observation_date',
+									format: 'Y-m-d',
+									allowBlank: false
 								},
 								{
 									fieldLabel: _('specimen'),

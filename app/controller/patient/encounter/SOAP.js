@@ -68,9 +68,9 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 				'encounterbeforesync': me.onEncounterBeforeSync
 			},
 			'#soapPanel': {
-				beforerender: me.onPanelBeforeRender,
-				activate: me.onPanelActive,
-				deactivate: me.onPanelDeActive
+				beforerender: me.onPanelBeforeRender
+				//activate: me.onPanelActive,
+				//deactivate: me.onPanelDeActive
 			},
 			'#soapPanel #soapForm': {
 				render: me.onPanelFormRender
@@ -105,19 +105,19 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		}
 	},
 
-	onPanelActive: function(){
-		var me = this;
-		Ext.Function.defer(function(){
-			me.getEncounterProgressNotesPanel().expand();
-		}, 200);
-	},
-
-	onPanelDeActive: function(){
-		var me = this;
-		Ext.Function.defer(function(){
-			me.getEncounterProgressNotesPanel().collapse();
-		}, 200);
-	},
+	//onPanelActive: function(){
+	//	var me = this;
+	//	Ext.Function.defer(function(){
+	//		me.getEncounterProgressNotesPanel().expand();
+	//	}, 200);
+	//},
+	//
+	//onPanelDeActive: function(){
+	//	var me = this;
+	//	Ext.Function.defer(function(){
+	//		me.getEncounterProgressNotesPanel().collapse();
+	//	}, 200);
+	//},
 
 	onSoapTextFieldFocus: function(field){
 		this.field = field;

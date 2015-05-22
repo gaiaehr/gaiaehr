@@ -381,11 +381,7 @@ class MatchaCUP {
 		$columns = $this->joinColumnHandler($columns);
 		$alias = $this->getJoinTableAlias();
 		$join = " LEFT JOIN `{$table}` AS $alias ON `{$this->table}`.`$onMainTable` $operator `$alias`.`$onMergeTable` ";
-
-		$find = ['FROM', 'WHERE'];
-		$replace = [', ' . $columns . ' FROM', $join . ' WHERE'];
-		$this->nolimitsql = str_replace($find, $replace, $this->nolimitsql);
-		$this->sql = str_replace($find, $replace, $this->sql);
+		$this->joinTableHandler($columns, $join);
 		return $this;
 	}
 
@@ -401,11 +397,7 @@ class MatchaCUP {
 		$columns = $this->joinColumnHandler($columns);
 		$alias = $this->getJoinTableAlias();
 		$join = " RIGHT JOIN `{$table}` AS $alias ON `{$this->table}`.`$onMainTable` $operator `$alias`.`$onMergeTable` ";
-
-		$find = ['FROM', 'WHERE'];
-		$replace = [', ' . $columns . ' FROM', $join . ' WHERE'];
-		$this->nolimitsql = str_replace($find, $replace, $this->nolimitsql);
-		$this->sql = str_replace($find, $replace, $this->sql);
+		$this->joinTableHandler($columns, $join);
 		return $this;
 	}
 
@@ -421,12 +413,27 @@ class MatchaCUP {
 		$columns = $this->joinColumnHandler($columns);
 		$alias = $this->getJoinTableAlias();
 		$join = " JOIN {$table} AS $alias ON `{$this->table}`.`$onMainTable` $operator `$alias`.`$onMergeTable` ";
-
-		$find = ['FROM', 'WHERE'];
-		$replace = [', ' . $columns . ' FROM', $join . ' WHERE'];
-		$this->nolimitsql = str_replace($find, $replace, $this->nolimitsql);
-		$this->sql = str_replace($find, $replace, $this->sql);;
+		$this->joinTableHandler($columns, $join);
 		return $this;
+	}
+
+	private function joinTableHandler($columns, $join){
+		$this->nolimitsql = str_replace('FROM', ', ' . $columns . ' FROM', $this->nolimitsql);
+		$this->sql = str_replace('FROM', ', ' . $columns . ' FROM', $this->sql);
+		if(preg_match('/WHERE/', $this->sql)){
+			$this->sql = str_replace('WHERE', $join . ' WHERE', $this->sql);
+		}elseif(preg_match('/LIMIT/', $this->sql)){
+			$this->sql = str_replace('LIMIT', $join . ' LIMIT', $this->sql);
+		}else{
+			$this->sql = $this->sql . $join;
+		}
+		if(preg_match('/WHERE/', $this->nolimitsql)){
+			$this->nolimitsql = str_replace('WHERE', $join . ' WHERE', $this->nolimitsql);
+		}elseif(preg_match('/LIMIT/', $this->nolimitsql)){
+			$this->nolimitsql = str_replace('LIMIT', $join . ' LIMIT', $this->nolimitsql);
+		}else{
+			$this->nolimitsql = $this->nolimitsql . $join;
+		}
 	}
 
 	private function joinColumnHandler($columns){

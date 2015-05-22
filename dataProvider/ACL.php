@@ -26,7 +26,7 @@ class ACL {
 	/**
 	 * @var array
 	 */
-	private static $perms = array();
+	private static $perms = [];
 	/**
 	 * @var int
 	 */
@@ -34,7 +34,7 @@ class ACL {
 	/**
 	 * @var array
 	 */
-	private static $user_roles = array();
+	private static $user_roles = [];
 	/**
 	 * @var MatchaCup
 	 */
@@ -201,25 +201,25 @@ class ACL {
 	 */
 	public static function getGroupPerms($params) {
 
-		$columns = array();
-		$fields = array();
-		$data = array();
+		$columns = [];
+		$fields = [];
+		$data = [];
 
-		$column = array();
+		$column = [];
 		$column['text'] = 'Permission';
 		$column['locked'] = true;
 		$column['dataIndex'] = 'title';
 		$column['width'] = 300;
 		$columns[] = $column;
 
-		$roles = self::getAclRoles(array('group_id' => $params->group_id));
-		$permissions = self::getAclPermissions(array('active' => 1));
+		$roles = self::getAclRoles(['group_id' => $params->group_id]);
+		$permissions = self::getAclPermissions(['active' => 1]);
 
 		$first = true;
 		foreach($permissions as $permission){
 
 			$permission = (object)$permission;
-			$pData = array();
+			$pData = [];
 			$pData['id'] = $permission->id;
 			$pData['title'] = $permission->perm_name;
 			$pData['group_id'] = $params->group_id;
@@ -228,24 +228,24 @@ class ACL {
 			foreach($roles as $role){
 				$role = (object)$role;
 
-				$rp = self::getAclRolePermission(array(
+				$rp = self::getAclRolePermission([
 					'role_id' => $role->id,
 					'perm_id' => $permission->id
-				));
+				]);
 				$pData['role-' . $role->id] = $rp === false ? $rp : $rp['value'];
 
 				// columns and fields info
 				if(!$first)
 					continue;
 				// get columns info
-				$column = array();
+				$column = [];
 				$column['text'] = $role->role_name;
 				$column['align'] = 'center';
 				$column['width'] = 150;
 				$column['dataIndex'] = 'role-' . $role->id;
 				$columns[] = $column;
 				// model fields
-				$field = array();
+				$field = [];
 				$field['name'] = 'role-' . $role->id;
 				$field['type'] = 'bool';
 				$fields[] = $field;
@@ -254,12 +254,12 @@ class ACL {
 			$data[] = $pData;
 		}
 
-		return array(
+		return [
 			'total' => count($data),
 			'data' => $data,
 			'columns' => $columns,
 			'fields' => $fields
-		);
+		];
 	}
 
 	public static function updateGroupPerms($params) {
@@ -283,10 +283,10 @@ class ACL {
 			$k = explode('-', $key);
 			$role_id = $k[1];
 
-			$rp = self::getAclRolePermission(array(
+			$rp = self::getAclRolePermission([
 				'role_id' => $role_id,
 				'perm_id' => $perm_id
-			));
+			]);
 
 			if($rp === false){
 				$rp = new stdClass();
@@ -312,10 +312,10 @@ class ACL {
 	 */
 	public static function getAllRoles() {
 		self::construct();
-		return array(
+		return [
 			'totals' => self::$AR->load()->rowCount(),
 			'row' => self::$AR->load()->all()
-		);
+		];
 	}
 
 	/**
@@ -323,13 +323,13 @@ class ACL {
 	 */
 	private static function getUserRoles() {
 		$sth = $rolesRec = self::$conn->prepare("SELECT users.role_id FROM `users` WHERE users.id = ?");
-		$sth->execute(array(self::$user_id));
+		$sth->execute([self::$user_id]);
 		$record = $sth->fetch(PDO::FETCH_ASSOC);
 
 		if($record === false){
-			$roles = array();
+			$roles = [];
 		}else{
-			$roles = array($record['role_id']);
+			$roles = [$record['role_id']];
 		}
 
 		return $roles;
@@ -359,7 +359,7 @@ class ACL {
 	 * @return mixed
 	 */
 	private static function getPermNameByPermId($perm_id) {
-		$row = self::$AP->load(array('perm_id' => $perm_id))->one();
+		$row = self::$AP->load(['perm_id' => $perm_id])->one();
 		return $row['perm_name'];
 	}
 
@@ -368,7 +368,7 @@ class ACL {
 	 * @return mixed
 	 */
 	private static function getRoleNameByRoleId($role_id) {
-		$row = self::$AR->load(array('role_id' => $role_id))->one();
+		$row = self::$AR->load(['role_id' => $role_id])->one();
 		return $row['role_name'];
 	}
 
@@ -377,7 +377,7 @@ class ACL {
 	 * @return array
 	 */
 	private static function getRolePerms() {
-		$perms = array();
+		$perms = [];
 
 		if(is_array(self::$user_roles)){
 			$fo = implode("','", self::$user_roles);
@@ -398,7 +398,7 @@ class ACL {
 		}
 
 		$sth = self::$conn->prepare($sql);
-		$sth->execute(array($fo));
+		$sth->execute([$fo]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 		foreach($records as $record){
@@ -408,11 +408,11 @@ class ACL {
 				continue;
 			}
 
-			$perms[$pK] = array(
+			$perms[$pK] = [
 				'perm' => $pK,
 				'value' => true,
 				'name' => $record['perm_name']
-			);
+			];
 		}
 		return $perms;
 	}
@@ -423,7 +423,7 @@ class ACL {
 	 */
 	public static function getUserPerms() {
 		self::construct();
-		$perms = array();
+		$perms = [];
 
 		$sql = "SELECT up.value, p.perm_key, p.perm_name, p.id as perm_id
 				  FROM `acl_user_perms` AS up
@@ -432,7 +432,7 @@ class ACL {
 				   AND p.active = '1'";
 
 		$sth = self::$conn->prepare($sql);
-		$sth->execute(array(self::$user_id));
+		$sth->execute([self::$user_id]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 		foreach($records as $record){
@@ -442,11 +442,11 @@ class ACL {
 				continue;
 			}
 
-			$perms[$pK] = array(
+			$perms[$pK] = [
 				'perm' => $pK,
 				'value' => true,
 				'name' => $record['perm_name']
-			);
+			];
 		}
 
 		return $perms;
@@ -523,25 +523,25 @@ class ACL {
 
 	public static function getEmergencyAccessPerms() {
 		self::construct();
-		$perms = array();
+		$perms = [];
 		$sql = "SELECT DISTINCT rp.value, p.perm_key, p.perm_name, p.id as perm_id
 			      FROM `acl_roles` AS r
 			 LEFT JOIN `acl_role_perms` AS rp ON r.`id` = rp.`role_id`
 			 LEFT JOIN `acl_permissions` AS p ON p.`id` = rp.`perm_id`
 			     WHERE r.`group_id` = ? AND rp.value = '1' AND p.active = '1'";
 		$sth = self::$conn->prepare($sql);
-		$sth->execute(array(4));
+		$sth->execute([4]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 
 		foreach($records as $record){
 			$pK = strtolower($record['perm_key']);
 			if($pK == '' || $record['value'] == '0'){ continue; }
 
-			$perms[$pK] = array(
+			$perms[$pK] = [
 				'perm' => $pK,
 				'value' => true,
 				'name' => $record['perm_name']
-			);
+			];
 		}
 		return $perms;
 	}
@@ -580,33 +580,33 @@ class ACL {
 			$permission = (object) $permission;
 
 			$sth = self::$conn->prepare('SELECT * FROM `acl_permissions` WHERE perm_key = ?');
-			$sth->execute(array($permission->key));
+			$sth->execute([$permission->key]);
 			$record = $sth->fetch(PDO::FETCH_ASSOC);
 
 			if($install && $record === false){
 				$sth = self::$conn->prepare('INSERT INTO `acl_permissions` (`perm_cat`, `perm_name`, `perm_key`, `active`, `seq`) VALUES (?,?,?,?,?)');
-				$sth->execute(array(
+				$sth->execute([
 					$category,
 					$permission->title,
 					$permission->key,
 					'1',
 					isset($permission->seq) ? $permission->seq : '0'
-				));
+				]);
 			}elseif($install){
 				$record = (object) $record;
 				$sth = self::$conn->prepare('UPDATE `acl_permissions` SET `perm_cat` = ?, `perm_name` = ?, `perm_key` = ?, `active` = ?, `seq` = ? WHERE id = ?');
-				$sth->execute(array(
+				$sth->execute([
 					$category,
 					$permission->title,
 					$permission->key,
 					'1',
 					isset($permission->seq) ? $permission->seq : '0',
 					$record->id
-				));
+				]);
 			}elseif($record !== false){
 				$record = (object) $record;
 				$sth = self::$conn->prepare('UPDATE `acl_permissions` SET `active` = ?  WHERE id = ?');
-				$sth->execute(array('0',$record->id));
+				$sth->execute(['0',$record->id]);
 			}
 		}
 	}

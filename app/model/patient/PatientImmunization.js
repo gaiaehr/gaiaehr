@@ -44,7 +44,8 @@ Ext.define('App.model.patient.PatientImmunization', {
 		},
 		{
 			name: 'code',
-			type: 'int',
+			type: 'string',
+			len: 10,
 			comment: 'vaccine code (CVX)'
 		},
 		{
@@ -81,13 +82,46 @@ Ext.define('App.model.patient.PatientImmunization', {
 		{
 			name: 'exp_date',
 			type: 'date',
-			dataType:'date',
+			dataType: 'date',
 			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'administered_uid',
+			type: 'int'
 		},
 		{
 			name: 'administered_by',
 			type: 'string',
-			len: 150
+			store: false,
+			convert: function(v, record){
+
+				say(record.data);
+
+				return record.data.administered_title + ' ' +
+					record.data.administered_fname + ' ' +
+					(record.data.administered_mname || '') + ' ' +
+					record.data.administered_lname;
+			}
+		},
+		{
+			name: 'administered_title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'administered_fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'administered_mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'administered_lname',
+			type: 'string',
+			store: false
 		},
 		{
 			name: 'route',
@@ -107,7 +141,8 @@ Ext.define('App.model.patient.PatientImmunization', {
 		{
 			name: 'education_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'note',

@@ -210,6 +210,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.LivePatientSearch',
 		            'App.ux.LiveRadiologySearch',
 		            'App.ux.LiveSigsSearch',
+		            'App.ux.LiveUserSearch',
 		            'App.ux.ManagedIframe',
 		            'App.ux.NodeDisabled',
 		            'App.ux.PhotoIdWindow',
@@ -331,9 +332,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.SmokeStatus',
 	                'patient.PatientPossibleDuplicate',
 
-
-
-
                 /**
                  * Load the models, the model are the representative of the database
                  * table structure with modifications behind the PHP counterpart.
@@ -371,11 +369,15 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.PreventiveCareLabs',
 	                'administration.PreventiveCareMedications',
 	                'administration.ProviderCredentialization',
+	                'administration.ReferringProviderFacility',
+	                'administration.ReferringProvider',
 	                'administration.Services',
+	                'administration.TransactionLog',
 	                'administration.User',
 	                'administration.XtypesComboModel',
 
 	                'miscellaneous.OfficeNotes',
+	                'miscellaneous.Amendment',
 
 	                'account.VoucherLine',
 	                'account.Voucher',
@@ -396,6 +398,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.encounter.snippetTree',
 	                'patient.encounter.Procedures',
 
+	                'patient.AppointmentRequest',
 	                'patient.AdvanceDirective',
 	                'patient.Allergies',
 	                'patient.CheckoutAlertArea',
@@ -493,10 +496,12 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.PreventiveCareMedications',
 	                'administration.ProviderCredentializations',
 	                'administration.Services',
+	                'administration.TransactionLogs',
 	                'administration.User',
 	                'administration.XtypesComboModel',
 
 	                'miscellaneous.OfficeNotes',
+	                'miscellaneous.Amendments',
 
 	                'account.VoucherLine',
 	                'account.Voucher',
@@ -607,6 +612,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                 */
 	                'patient.Patient',
 
+	                'patient.encounter.AppointmentRequestGrid',
 	                'patient.encounter.CurrentProceduralTerminology',
 	                'patient.encounter.HealthCareFinancingAdministrationOptions',
 	                'patient.encounter.ICDs',
@@ -655,7 +661,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.Globals',
 	                'administration.Layout',
 	                'administration.Lists',
-	                'administration.Log',
+	                'administration.AuditLog',
 	                'administration.Medications',
 	                'administration.Modules',
 	                'administration.FloorPlans',
@@ -667,6 +673,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                 * Load the miscellaneous related panels
 	                 */
 	                'miscellaneous.AddressBook',
+	                'miscellaneous.Amendments',
 	                'miscellaneous.MyAccount',
 	                'miscellaneous.MySettings',
 	                'miscellaneous.OfficeNotes',
@@ -675,6 +682,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                 ],
 
                 controllers:[
+	                'administration.AuditLog',
 	                'administration.CPT',
 	                'administration.DataPortability',
 	                'administration.DecisionSupport',
@@ -691,6 +699,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'dashboard.Dashboard',
 	                'dashboard.panel.NewResults',
 	                'dashboard.panel.DailyVisits',
+
+	                'miscellaneous.Amendments',
 
 	                'AlwaysOnTop',
 	                'Cron',
@@ -709,6 +719,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.ActiveProblems',
 	                'patient.AdvanceDirectives',
 	                'patient.Allergies',
+	                'patient.AppointmentRequests',
 	                'patient.CarePlanGoals',
 	                'patient.CCD',
 	                'patient.CCDImport',
@@ -717,12 +728,14 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.DoctorsNotes',
 	                'patient.Documents',
 	                'patient.FamilyHistory',
+	                'patient.HL7',
 	                'patient.Immunizations',
 	                'patient.ItemsToReview',
 	                'patient.LabOrders',
 	                'patient.Medical',
 	                'patient.Medications',
 	                'patient.Patient',
+	                'patient.ProgressNotesHistory',
 	                'patient.RadOrders',
 	                'patient.Referrals',
 	                'patient.Results',

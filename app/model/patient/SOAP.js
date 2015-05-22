@@ -54,22 +54,27 @@ Ext.define('App.model.patient.SOAP', {
 		{
 			name: 'subjective',
 			type: 'string',
-			dataType: 'longtext'
+			dataType: 'mediumtext'
 		},
 		{
 			name: 'objective',
 			type: 'string',
-			dataType: 'longtext'
+			dataType: 'mediumtext'
 		},
 		{
 			name: 'assessment',
 			type: 'string',
-			dataType: 'longtext'
+			dataType: 'mediumtext'
 		},
 		{
 			name: 'plan',
 			type: 'string',
-			dataType: 'longtext'
+			dataType: 'mediumtext'
+		},
+		{
+			name: 'instructions',
+			type: 'string',
+			dataType: 'mediumtext'
 		}
 	],
 	proxy: {

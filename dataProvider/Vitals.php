@@ -75,13 +75,21 @@ class Vitals {
 		if(is_array($params)){
 			foreach($record as $i => $rec){
 				$record[$i] = $rec = (object) $rec;
-				$record[$i]->administer_by = $rec->uid != 0 ? $this->User->getUserNameById($rec->uid) : '';
-				$record[$i]->authorized_by = $rec->auth_uid != 0 ? $this->User->getUserNameById($rec->auth_uid) : '';
+				if(isset($rec->uid)){
+					$record[$i]->administer_by = $rec->uid != 0 ? $this->User->getUserNameById($rec->uid) : '';
+				}
+				if(isset($rec->auth_uid)){
+					$record[$i]->authorized_by = $rec->auth_uid != 0 ? $this->User->getUserNameById($rec->auth_uid) : '';
+				}
 			}
 		}else{
 			$record = (object) $record;
-			$record->administer_by = $record->uid != 0 ? $this->User->getUserNameById($record->uid) : '';
-			$record->authorized_by = $record->auth_uid != 0 ? $this->User->getUserNameById($record->auth_uid) : '';
+			if(isset($record->uid)){
+				$record->administer_by = $record->uid != 0 ? $this->User->getUserNameById($record->uid) : '';
+			}
+			if(isset($record->auth_uid)){
+				$record->authorized_by = $record->auth_uid != 0 ? $this->User->getUserNameById($record->auth_uid) : '';
+			}
 		}
 		return $record;
 	}

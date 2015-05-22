@@ -20,8 +20,8 @@ Ext.define('App.ux.PatientEncounterCombo', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patientEncounterCombo',
 	hideLabel: true,
-	displayField: 'brief_description',
-	valueField: 'brief_description',
+	displayField: 'display_string',
+	valueField: 'eid',
 	emptyText: _('search') + '...',
 	width: 400,
 	editable: false,
@@ -32,10 +32,12 @@ Ext.define('App.ux.PatientEncounterCombo', {
 			extend: 'Ext.data.Model',
 			fields: [
 				{
-					name: 'eid'
+					name: 'eid',
+					type: 'int'
 				},
 				{
-					name: 'brief_description'
+					name: 'brief_description',
+					type: 'string'
 				},
 				{
 					name: 'service_date',
@@ -46,6 +48,13 @@ Ext.define('App.ux.PatientEncounterCombo', {
 					name: 'close_date',
 					type: 'date',
 					dateFormat: 'Y-m-d H:i:s'
+				},
+				{
+					name: 'display_string',
+					type: 'string',
+					convert: function(v, record){
+						return Ext.Date.format(record.data.service_date, g("date_time_display_format")) + ' - ' + Ext.String.ellipsis(record.data.brief_description, 25);
+					}
 				}
 			],
 			proxy: {
@@ -62,7 +71,7 @@ Ext.define('App.ux.PatientEncounterCombo', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model: 'patientEncounterComboModel',
-			pageSize: 10,
+			pageSize: 500,
 			autoLoad: false,
 			sorters: [
 				{
@@ -70,17 +79,6 @@ Ext.define('App.ux.PatientEncounterCombo', {
 					direction: 'DESC'
 				}
 			]
-		});
-
-		Ext.apply(this, {
-			store: me.store,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{[Ext.Date.format(values.service_date, g("date_time_display_format"))]} - {[Ext.String.ellipsis(values.brief_description, 25)]} </h3></div>';
-				}
-			},
-			pageSize: 10
 		});
 
 		me.callParent();

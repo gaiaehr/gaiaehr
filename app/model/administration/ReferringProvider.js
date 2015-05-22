@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 Ext.define('App.model.administration.ReferringProvider', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -24,54 +23,32 @@ Ext.define('App.model.administration.ReferringProvider', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Referring Provider ID'
+			type: 'int'
 		},
 		{
-			name: 'create_uid',
-			type: 'int',
-			comment: 'create user ID'
-		},
-		{
-			name: 'update_uid',
-			type: 'int',
-			comment: 'update user ID'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			comment: 'create date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			comment: 'last update date',
-			dateFormat: 'Y-m-d H:i:s'
+			name: 'code',
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'title',
 			type: 'string',
-			len: 10,
-			comment: 'title (Mr. Mrs.)'
+			len: 10
 		},
 		{
 			name: 'fname',
 			type: 'string',
-			len: 80,
-			comment: 'first name'
+			len: 80
 		},
 		{
 			name: 'mname',
 			type: 'string',
-			len: 80,
-			comment: 'middle name'
+			len: 80
 		},
 		{
 			name: 'lname',
 			type: 'string',
-			len: 120,
-			comment: 'last name'
+			len: 120
 		},
 		{
 			name: 'upin',
@@ -82,14 +59,22 @@ Ext.define('App.model.administration.ReferringProvider', {
 		{
 			name: 'lic',
 			type: 'string',
-			len: 25,
-			comment: 'Licence Number'
+			len: 25
 		},
 		{
 			name: 'npi',
 			type: 'string',
-			len: 25,
-			comment: 'National Provider Identifier'
+			len: 25
+		},
+		{
+			name: 'fda',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'ess',
+			type: 'string',
+			len: 25
 		},
 		{
 			name: 'ssn',
@@ -112,41 +97,57 @@ Ext.define('App.model.administration.ReferringProvider', {
 		{
 			name: 'notes',
 			type: 'string',
-			comment: 'notes'
+			len: 600
 		},
 		{
 			name: 'email',
 			type: 'string',
-			len: 180,
-			comment: 'email'
+			len: 180
 		},
 		{
 			name: 'direct_address',
 			type: 'string',
-			len: 180,
-			comment: 'direct_address'
+			len: 180
 		},
 		{
 			name: 'phone_number',
 			type: 'string',
-			len: 25,
-			comment: 'phone number'
+			len: 25
 		},
 		{
 			name: 'fax_number',
 			type: 'string',
-			len: 25,
-			comment: 'fax number'
+			len: 25
 		},
 		{
 			name: 'cel_number',
 			type: 'string',
-			len: 25,
-			comment: 'cell phone number'
+			len: 25
 		},
 		{
 			name: 'active',
 			type: 'bool'
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {
@@ -155,6 +156,16 @@ Ext.define('App.model.administration.ReferringProvider', {
 			read: 'ReferringProviders.getReferringProviders',
 			create: 'ReferringProviders.addReferringProvider',
 			update: 'ReferringProviders.updateReferringProvider'
+		},
+		reader: {
+			root: 'data'
 		}
-	}
+	},
+	hasMany: [
+		{
+			model: 'App.model.administration.ReferringProviderFacility',
+			name: 'facilities',
+			foreignKey: 'referring_provider_id'
+		}
+	]
 });

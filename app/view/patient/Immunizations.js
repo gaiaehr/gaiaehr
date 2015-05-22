@@ -23,16 +23,17 @@ Ext.define('App.view.patient.Immunizations', {
 		'App.ux.LiveImmunizationSearch',
 		'App.ux.grid.RowFormEditing',
 		'App.store.patient.CVXCodes',
-		'App.ux.form.fields.DateTime'
+		'App.ux.form.fields.DateTime',
+		'App.ux.LiveUserSearch'
 	],
 	xtype: 'patientimmunizationspanel',
 	title: _('immunizations'),
-	layout:'border',
-	border:false,
-	items:[
+	layout: 'border',
+	border: false,
+	items: [
 		{
 			xtype: 'grid',
-			region:'center',
+			region: 'center',
 			itemId: 'patientImmunizationsGrid',
 			selModel: Ext.create('Ext.selection.CheckboxModel'),
 			columnLines: true,
@@ -53,7 +54,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('code'),
 					dataIndex: 'code',
 					width: 50,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -62,7 +63,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('immunization_name'),
 					dataIndex: 'vaccine_name',
 					flex: 1,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -71,7 +72,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('lot_number'),
 					dataIndex: 'lot_number',
 					width: 100,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -80,7 +81,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('amount'),
 					dataIndex: 'administer_amount',
 					width: 100,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -89,7 +90,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('units'),
 					dataIndex: 'administer_units',
 					width: 100,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -98,7 +99,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('notes'),
 					dataIndex: 'note',
 					flex: 1,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -107,7 +108,7 @@ Ext.define('App.view.patient.Immunizations', {
 					text: _('administered_by'),
 					dataIndex: 'administered_by',
 					width: 150,
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -118,7 +119,7 @@ Ext.define('App.view.patient.Immunizations', {
 					format: 'Y-m-d',
 					width: 100,
 					dataIndex: 'administered_date',
-					renderer:function(v, meta, record){
+					renderer: function(v, meta, record){
 						if(!record.data.is_error) return v;
 						return '<span class="is_error_data">' + v + '</span>'
 					}
@@ -132,7 +133,7 @@ Ext.define('App.view.patient.Immunizations', {
 					{
 						xtype: 'container',
 						layout: 'hbox',
-						items:[
+						items: [
 							{
 								xtype: 'container',
 								layout: 'vbox',
@@ -154,7 +155,7 @@ Ext.define('App.view.patient.Immunizations', {
 												itemId: 'immunizationsearch',
 												fieldLabel: _('name'),
 												name: 'vaccine_name',
-												valueField:'name',
+												valueField: 'name',
 												hideLabel: false,
 												allowBlank: false,
 												enableKeyEvents: true,
@@ -237,10 +238,14 @@ Ext.define('App.view.patient.Immunizations', {
 									},
 									{
 										fieldLabel: _('administered_by'),
-										xtype: 'textfield',
+										xtype: 'userlivetsearch',
+										itemId: 'patientImmunizationsEditFormAdministeredByField',
 										name: 'administered_by',
 										margin: '0 10 5 0',
-										width: 625
+										width: 625,
+										hideLabel: false,
+										forceSelection: false,
+										acl: 'administer_patient_immunizations'
 									},
 									{
 										fieldLabel: _('notes'),
@@ -252,15 +257,16 @@ Ext.define('App.view.patient.Immunizations', {
 							},
 							{
 								xtype: 'container',
-								items:[
+								items: [
 									{
-										xtype:'fieldset',
-										title:_('substance_data'),
+										xtype: 'fieldset',
+										title: _('substance_data'),
 										defaults: {
 											margin: '0 0 5 0',
 											width: 250
 										},
-										items:[
+										margin: '0 15 5 0',
+										items: [
 											{
 												fieldLabel: _('lot_number'),
 												xtype: 'textfield',
@@ -281,18 +287,24 @@ Ext.define('App.view.patient.Immunizations', {
 										]
 									},
 									{
-										xtype: 'checkboxfield',
-										boxLabel: _('entered_in_error'),
-										name: 'is_error'
+										xtype: 'datefield',
+										width: 250,
+										margin: '0 0 0 5',
+										fieldLabel: _('education'),
+										name: 'education_date'
 									}
 								]
+							},
+							{
+								xtype: 'checkboxfield',
+								boxLabel: _('entered_in_error'),
+								name: 'is_error'
 							}
-
 						]
 					}
 				]
 			}),
-			tbar:[
+			tbar: [
 				'->',
 				{
 					text: _('add_new'),
@@ -319,15 +331,15 @@ Ext.define('App.view.patient.Immunizations', {
 			]
 		},
 		{
-			xtype:'grid',
-			title:_('immunization_list'),
+			xtype: 'grid',
+			title: _('immunization_list'),
 			itemId: 'cvxGrid',
-			collapseMode:'mini',
-			region:'east',
-			collapsible:true,
-			collapsed:true,
-			width:300,
-			split:true,
+			collapseMode: 'mini',
+			region: 'east',
+			collapsible: true,
+			collapsed: true,
+			width: 300,
+			split: true,
 			store: Ext.create('App.store.patient.CVXCodes'),
 			columns: [
 				{

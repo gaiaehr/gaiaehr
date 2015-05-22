@@ -28,10 +28,6 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationsGrid',
 			selector: 'patientmedicationspanel #patientMedicationsGrid'
 		},
-		//{
-		//	ref: 'MedicationsListGrid',
-		//	selector: 'patientmedicationspanel #medicationsListGrid'
-		//},
 		{
 			ref: 'addPatientMedicationBtn',
 			selector: 'patientmedicationspanel #addPatientMedicationBtn'
@@ -39,25 +35,44 @@ Ext.define('App.controller.patient.Medications', {
 		{
 			ref: 'PatientMedicationReconciledBtn',
 			selector: '#PatientMedicationReconciledBtn'
+		},
+		{
+			ref: 'PatientMedicationUserLiveSearch',
+			selector: '#PatientMedicationUserLiveSearch'
+		},
+
+		// administer refs
+		{
+			ref: 'AdministeredMedicationsGrid',
+			selector: '#AdministeredMedicationsGrid'
+		},
+		{
+			ref: 'AdministeredMedicationsLiveSearch',
+			selector: '#AdministeredMedicationsLiveSearch'
+		},
+		{
+			ref: 'AdministeredMedicationsUserLiveSearch',
+			selector: '#AdministeredMedicationsUserLiveSearch'
+		},
+		{
+			ref: 'AdministeredMedicationsAddBtn',
+			selector: '#AdministeredMedicationsAddBtn'
 		}
-		//{
-		//	ref: 'MedicationsListGridSearchField',
-		//	selector: 'patientmedicationspanel #medicationsListGrid triggerfield'
-		//}
 	],
 
 	init: function(){
 		var me = this;
 		me.control({
+			'viewport': {
+				encounterload: me.onViewportEncounterLoad
+			},
+
 			'patientmedicationspanel': {
 				activate: me.onMedicationsPanelActive
 			},
-			//'patientmedicationspanel #medicationsListGrid': {
-			//	expand: me.onMedicationsListGridExpand
-			//},
-			//'patientmedicationspanel #medicationsListGrid triggerfield': {
-			//	beforerender: me.onMedicationsListGridTriggerFieldBeforeRender
-			//},
+			'#patientMedicationsGrid': {
+				beforeedit: me.onPatientMedicationsGridBeforeEdit
+			},
 			'patientmedicationspanel #addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
@@ -66,24 +81,103 @@ Ext.define('App.controller.patient.Medications', {
 			},
 			'#PatientMedicationReconciledBtn': {
 				click: me.onPatientMedicationReconciledBtnClick
+			},
+			'#PatientMedicationUserLiveSearch': {
+				select: me.onPatientMedicationUserLiveSearchSelect
+			},
+
+			// administer controls
+			'#AdministeredMedicationsGrid': {
+				beforeedit: me.onAdministeredMedicationsGridBeforeEdit
+			},
+			'#AdministeredMedicationsLiveSearch': {
+				select: me.onAdministeredMedicationsLiveSearchSelect
+			},
+			'#AdministeredMedicationsUserLiveSearch': {
+				select: me.onAdministeredMedicationsUserLiveSearchSelect
+			},
+			'#AdministeredMedicationsAddBtn': {
+				click: me.onAdministeredMedicationsAddBtnClick
 			}
 		});
 	},
 
-	//onMedicationsListGridExpand: function(grid){
-	//	this.getMedicationsListGridSearchField().reset();
-	//	grid.getStore().load();
-	//},
-	//
-	//onMedicationsListGridTriggerFieldBeforeRender: function(field){
-	//	var me = this;
-	//
-	//	field.onTriggerClick = function(){
-	//		me.getMedicationsListGrid().getStore().load({
-	//			params: {query: this.getValue()}
-	//		});
-	//	}
-	//},
+	onViewportEncounterLoad: function(encounter){
+
+	},
+
+	onAdministeredMedicationsGridBeforeEdit: function(plugin, context){
+		var me = this,
+			field = me.getAdministeredMedicationsUserLiveSearch();
+
+		say(plugin.grid.doLayout());
+
+		field.forceSelection = false;
+		field.setValue(context.record.data.administered_by);
+		Ext.Function.defer(function(){
+			field.forceSelection = true;
+		}, 200);
+
+	},
+
+	onAdministeredMedicationsLiveSearchSelect: function(cmb, records){
+		var form = cmb.up('form').getForm();
+
+		form.getRecord().set({
+			RXCUI: records[0].data.RXCUI,
+			CODE: records[0].data.CODE,
+			NDC: records[0].data.NDC
+		});
+	},
+
+	onAdministeredMedicationsUserLiveSearchSelect: function(cmb, records){
+		var administered_by = records[0],
+			record = cmb.up('form').getForm().getRecord();
+
+		record.set({administered_uid: administered_by.data.id});
+	},
+
+	onAdministeredMedicationsAddBtnClick: function(){
+		var me = this,
+			grid = me.getAdministeredMedicationsGrid(),
+			store = grid.getStore();
+
+		grid.editingPlugin.cancelEdit();
+		store.insert(0, {
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			uid: app.user.id,
+			created_uid: app.user.id,
+			created_date: new Date(),
+			begin_date: new Date(),
+			end_date: new Date(),
+			administered_date: new Date(),
+			administered_uid: app.user.id,
+			title: app.user.title,
+			fname: app.user.fname,
+			mname: app.user.mname,
+			lname: app.user.lname,
+		});
+		grid.editingPlugin.startEdit(0, 0);
+	},
+
+	onPatientMedicationsGridBeforeEdit: function(plugin, context){
+		var me = this,
+			field = me.getPatientMedicationUserLiveSearch();
+
+		field.forceSelection = false;
+		field.setValue(context.record.data.administered_by);
+		Ext.Function.defer(function(){
+			field.forceSelection = true;
+		}, 200);
+	},
+
+	onPatientMedicationUserLiveSearchSelect: function(cmb, records){
+		var user = records[0],
+			record = cmb.up('form').getForm().getRecord();
+
+		record.set({administered_uid: user.data.id});
+	},
 
 	onAddPatientMedicationBtnClick: function(){
 		var me = this,
@@ -110,16 +204,6 @@ Ext.define('App.controller.patient.Medications', {
 			CODE: records[0].data.CODE,
 			NDC: records[0].data.NDC
 		});
-
-		//		Rxnorm.getMedicationAttributesByCODE(records[0].data.CODE, function(provider, response){
-		//
-		//			form.setValues({
-		//				STR: records[0].data.STR.split(',')[0],
-		//				route: response.result.DRT,
-		//				dose: response.result.DST,
-		//				form: response.result.DDF
-		//			});
-		//		});
 	},
 
 	onPatientMedicationReconciledBtnClick: function(){
@@ -139,13 +223,8 @@ Ext.define('App.controller.patient.Medications', {
 				}
 			],
 			params: {
-				reconciled : reconciled
+				reconciled: reconciled
 			}
 		});
-
-		//store.clearFilter(true);
-		//store.filter([
-		//
-		//]);
 	}
 });

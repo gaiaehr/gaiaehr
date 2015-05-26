@@ -64,6 +64,9 @@ Ext.define('App.model.administration.Modules', {
 		api: {
 			read: 'Modules.getActiveModules',
 			update: 'Modules.updateModule'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	}
 });

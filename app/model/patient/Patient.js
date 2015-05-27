@@ -52,20 +52,11 @@ Ext.define('App.model.patient.Patient',{
             type: 'string',
             store: false,
             convert: function(v, record){
-                var foo = '';
-                if(record.data.title){
-                    foo += record.data.title + ' ';
-                }
-                if(record.data.fname){
-                    foo += record.data.fname + ' ';
-                }
-                if(record.data.mname){
-                    foo += record.data.mname + ' ';
-                }
-                if(record.data.lname){
-                    foo += record.data.lname + ' ';
-                }
-                return foo.trim();
+                var foo='';if(record.data.title){foo += record.data.title + ' ';
+                }if(record.data.fname){foo += record.data.fname + ' ';
+                }if(record.data.mname){foo += record.data.mname + ' ';
+                }if(record.data.lname){foo += record.data.lname + ' ';
+                } return foo.trim();
             }
         },
         {

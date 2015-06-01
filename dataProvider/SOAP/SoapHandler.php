@@ -21,20 +21,21 @@ class SoapHandler {
 
 	function constructor($params) {
 		$this->params = $params;
-		$this->site = isset($params->Site) ? $params->Site : 'default';
+
+		$this->site = isset($params->ServerSite) ? $params->ServerSite : 'default';
+
 		$this->facility = isset($params->Facility) ? $params->Facility : '1';
-		if(!defined('_GaiaEXEC'))
-			define('_GaiaEXEC', 1);
-		include_once(str_replace('\\', '/', dirname(dirname(dirname(__FILE__)))) . '/registry.php');
+
+		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+
+		include_once(str_replace('\\', '/', dirname(__FILE__)) . '/../../registry.php');
+
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
+
 		include_once(ROOT . '/classes/MatchaHelper.php');
 
 		if(isset($params->Provider)){
 			$this->getProvider($params->Provider);
-		}
-
-		if(isset($params->Patient)){
-			$this->getPatient($params->Patient);
 		}
 
 		if(isset($params->Patient)){
@@ -54,6 +55,192 @@ class SoapHandler {
 		return $access;
 	}
 
+
+	public function PatientPortalAuthorize($params){
+
+//		error_log('PatientPortalAuthorize');
+
+
+		$this->constructor($params);
+
+		if(!$this->isAuth()){
+			return [
+				'Success' => false,
+				'Error' => 'Error: HTTP 403 Access Forbidden'
+			];
+		}
+
+//		$params->RecordNumber = 'C-000000000045478-00';
+//		$params->DOB = '1941-01-09';
+//		$params->Username = 'fulano';
+//		$params->Password = 'qwerty';
+
+		$patient = $this->getPatient($params);
+
+//		error_log(print_r($patient, true));
+//		error_log(substr($patient->DateOfBirth, 0, 10));
+//		error_log(gettype($patient->WebPortalAccess));
+
+		$response = [
+			'Success' => false,
+			'Error' => 'Not Authorized'
+		];
+
+		if($patient === false){
+			return $response;
+		}
+
+		if(
+			$patient->WebPortalAccess == 0 ||
+			$patient->WebPortalPassword !== $params->Password ||
+			substr($patient->DateOfBirth, 0, 10) !== $params->DateOfBirth
+		){
+			return $response;
+		}
+
+		$response = [
+			'Success' => true,
+			'Patient' => $patient,
+			'Error' => ''
+		];
+
+		return $response;
+
+	}
+
+	/**
+	 * @param $params
+	 * @return array
+	 */
+	public function newPatientAmendment($params){
+
+		try{
+			$this->constructor($params);
+
+			if(!$this->isAuth()){
+				return [
+					'Success' => false,
+					'Error' => 'Error: HTTP 403 Access Forbidden'
+				];
+			}
+
+			include_once (ROOT . '/dataProvider/Amendments.php');
+			$Amendments = new Amendments();
+			$data = json_decode($params->Data);
+
+			if(isset($data->demographics) && count($data->demographics) > 0){
+				foreach($data->demographics as &$demographic){
+					if(array_key_exists($demographic->field_name, $this->demographicsMap)){
+						$demographic->field_name = $this->demographicsMap[$demographic->field_name];
+					}
+				}
+			}
+
+			$record = new stdClass();
+
+			$record->portal_id = $params->PortalId;
+			$record->pid = $params->Pid;
+			$record->amendment_type = $params->Type;
+			$record->amendment_data = $data;
+			$record->amendment_message = $params->Message;
+			$record->amendment_status = 'W';
+			$record->is_read = '0';
+			$record->is_viewed = '0';
+			$record->is_synced = '1';
+			$record->assigned_to_uid = '0';
+
+			$record->create_uid = '0';
+			$record->create_date = date('Y-m-d H:i:s');
+
+			$record = $Amendments->addAmendment($record);
+			$record = (object) $record['data'];
+
+			if(isset($record->id) && $record->id > 0){
+				return [
+					'Success' => true,
+					'AmendmentId' => $record->id,
+					'Error' => ''
+				];
+			}else{
+				return [
+					'Success' => false,
+					'Error' => 'Unable to complete request, Please contact provider.'
+				];
+			}
+
+		}catch (Exception $e){
+			return [
+				'Success' => false,
+				'Error' => 'Unable to complete request, Please contact provider.'
+			];
+		}
+	}
+
+
+	public function cancelPatientAmendment($params){
+
+		$this->constructor($params);
+
+		if(!$this->isAuth()){
+			return [
+				'Success' => false,
+				'Error' => 'Error: HTTP 403 Access Forbidden'
+			];
+		}
+
+		include_once (ROOT . '/dataProvider/Amendments.php');
+		$Amendments = new Amendments();
+
+		$record = $Amendments->getAmendment([
+			'id' => $params->AmendmentId,
+			'pid' => $params->Pid
+		]);
+
+
+		if($record === false){
+			return [
+				'Success' => false,
+				'Error' => 'Unable to find Amendment request'
+			];
+
+		}
+
+		$record = (object) $record;
+
+		if($record->amendment_status != 'W'){
+
+			if($record->amendment_status === 'A'){
+				$msg = 'Unable to cancel, Amendment previously approved';
+			}elseif($record->amendment_status === 'D'){
+				$msg = 'Unable to cancel, Amendment previously denied';
+			}elseif($record->amendment_status === 'C'){
+				$msg = 'Unable to cancel, Amendment previously canceled';
+			}else{
+				$msg = 'Unable to cancel, Amendment due to status (' . $record->amendment_status . ')';
+			}
+
+			return [
+				'Success' => false,
+				'Error' => $msg
+			];
+		}
+
+		$record->is_synced = '1';
+		$record->update_uid = 0;
+		$record->amendment_status = 'C';
+		$record->cancel_date = date('Y-m-d H:i:s');
+		$record->cancel_by = 'P'. $record->pid;
+		$record->update_date = date('Y-m-d H:i:s');
+
+		$Amendments->updateAmendment($record);
+
+		return [
+			'Success' => true,
+			'Error' => ''
+		];
+
+	}
+
 	/**
 	 * @param $params
 	 * @return array
@@ -69,15 +256,15 @@ class SoapHandler {
 		$ccd->createCCD();
 
 		if(!$this->isAuth()){
-			return array(
+			return [
 				'Success' => false,
 				'Error' => 'Error: HTTP 403 Access Forbidden'
-			);
+			];
 		}
-		return array(
+		return [
 			'Success' => true,
 			'Document' => $ccd->get()
-		);
+		];
 	}
 
 	public function AddPatient($params) {
@@ -99,7 +286,7 @@ class SoapHandler {
 			/**
 			 * validations
 			 */
-			$validations = array();
+			$validations = [];
 			if(!isset($params->Patient->FirstName)){
 				$validations[] = 'First Name Missing';
 			}
@@ -204,17 +391,17 @@ class SoapHandler {
 
 			$patient = (object)$Patient->createNewPatient($patient);
 
-			return array(
+			return [
 				'Success' => true,
 				'Pid' => $patient->pid,
 				'RecordNumber' => $patient->pubpid
-			);
+			];
 
 		} catch(\Exception $e) {
-			return array(
+			return [
 				'Success' => false,
 				'Error' => $e->getMessage()
-			);
+			];
 		}
 
 	}
@@ -227,24 +414,24 @@ class SoapHandler {
 		$this->constructor($params);
 
 		if(!$this->isAuth()){
-			return array(
+			return [
 				'Success' => false,
 				'Error' => 'Error: HTTP 403 Access Forbidden'
-			);
+			];
 		}
 
 		if(!$this->isPatientValid()){
-			return array(
+			return [
 				'Success' => false,
 				'Error' => 'Error: No Valid Patient Found'
-			);
+			];
 		}
 
 		if(!$this->isProviderValid()){
-			return array(
+			return [
 				'Success' => false,
 				'Error' => 'Error: No Valid Provider Found'
-			);
+			];
 		}
 
 		$document = new stdClass();
@@ -266,9 +453,9 @@ class SoapHandler {
 		$result = $DocumentHandler->addPatientDocument($document);
 		unset($DocumentHandler);
 
-		return array(
+		return [
 			'Success' => isset($result['data']->id)
-		);
+		];
 	}
 
 	/**
@@ -290,15 +477,22 @@ class SoapHandler {
 	 * @return mixed|object
 	 */
 	private function getPatient($patient) {
+
 		require_once(ROOT . '/dataProvider/Patient.php');
 		$Patient = new Patient();
+
+//		if(isset($patient->Username)){
+//			$patient = $Patient->getPatientByUsername($patient->Username);
+//		} else
 		if(isset($patient->RecordNumber)){
 			$patient = $Patient->getPatientByPublicId($patient->RecordNumber);
+
 		} else {
 			$patient = $Patient->getPatientByPid($patient->Pid);
+
 		}
 		unset($Patient);
-		return $this->patient = $patient !== false ? (object)$patient : $patient;
+		return $this->patient = $patient !== false ? $this->convertPatient($patient, false) : $patient;
 	}
 
 	/**
@@ -325,5 +519,101 @@ class SoapHandler {
 		ob_end_clean();
 		error_log($contents);
 	}
+
+	private function convertPatient($data, $inbound) {
+
+		$mapped = new \stdClass();
+
+		if(is_array($data)){
+			$data = (object)$data;
+		}
+
+		if($inbound){
+			foreach($this->demographicsMap as $service => $gaia){
+				if(isset($data->{$service})){
+					$mapped->{$gaia} = $data->{$service};
+					if($gaia == 'DOB' || $gaia == 'drivers_license_exp' || $gaia == 'death_date'){
+						$mapped->{$gaia} = str_replace(' ', 'T', $mapped->{$gaia});
+					}
+				}
+
+			}
+		} else {
+			foreach($this->demographicsMap as $service => $gaia){
+				if(isset($data->{$gaia})){
+					$mapped->{$service} = $data->{$gaia};
+
+					if($service == 'DateOfBirth' || $service == 'DriverLicenceExpirationDate' || $service == 'DeceaseDate'){
+						$mapped->{$service} = str_replace(' ', 'T', $mapped->{$service});
+
+					} elseif($service == 'Language' && $mapped->{$service} == '') {
+						unset($mapped->{$service});
+					}
+				}
+			}
+		}
+
+		return $mapped;
+	}
+
+	/**
+	 * @var array
+	 */
+	private $demographicsMap = [
+		'Pid' => 'pid',
+		'RecordNumber' => 'pubpid',
+		'AccountNumber' => 'pubaccount',
+		'Title' => 'title',
+		'FirstName' => 'fname',
+		'MiddleName' => 'mname',
+		'LastName' => 'lname',
+		'DateOfBirth' => 'DOB',
+		'Sex' => 'sex',
+		'MaritalStatus' => 'marital_status',
+		'Race' => 'race',
+		'Ethnicity' => 'ethnicity',
+		//'Religion' => 'pid',
+		'Language' => 'language',
+		'DriverLicence' => 'drivers_license',
+		'DriverLicenceState' => 'drivers_license_state',
+		'DriverLicenceExpirationDate' => 'drivers_license_exp',
+		'PhysicalAddressLineOne' => 'address',
+		'PhysicalAddressLineTwo' => 'address_cont',
+		'PhysicalCity' => 'city',
+		'PhysicalState' => 'state',
+		'PhysicalCountry' => 'country',
+		'PhysicalZipCode' => 'zipcode',
+		//'PostalAddressLineOne' => 'pid',
+		//'PostalAddressLineTwo' => 'pid',
+		//'PostalCity' => 'pid',
+		//'PostalState' => 'pid',
+		//'PostalZipCode' => 'pid',
+		'HomePhoneNumber' => 'home_phone',
+		'MobilePhoneNumber' => 'mobile_phone',
+		'WorkPhoneNumber' => 'work_phone',
+		'WorkPhoneExt' => 'work_phone_ext',
+		'Email' => 'email',
+		'ProfileImage' => 'image',
+		'IsBirthMultiple' => 'birth_multiple',
+		'BirthOrder' => 'birth_order',
+		'Deceased' => 'deceased',
+		'DeceaseDate' => 'death_date',
+		'MothersFirstName' => 'mothers_name',
+		//'MothersMiddleName' => 'pid',
+		//'MothersLastName' => 'pid',
+		'GuardiansFirstName' => 'guardians_name',
+		//'GuardiansMiddleName' => 'pid',
+		//'GuardiansLastName' => 'pid',
+		//'GuardiansPhone' => 'pid',
+		'EmergencyContactFirstName' => 'emer_contact',
+		//'EmergencyContactMiddleName' => 'pid',
+		//'EmergencyContactLastName' => 'pid',
+		'EmergencyContactPhone' => 'emer_phone',
+		'Occupation' => 'occupation',
+		'Employer' => 'employer_name',
+		'WebPortalUsername' => 'portal_username',
+		'WebPortalPassword' => 'portal_password',
+		'WebPortalAccess' => 'allow_patient_web_portal',
+	];
 
 }

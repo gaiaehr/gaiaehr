@@ -326,7 +326,7 @@ Ext.define('App.view.patient.Patient', {
 		form.add(me.insuranceFormItmes);
 
 		me.insuranceFormLoadRecord(form, rec);
-		if(rec.data.image != '') form.down('image').setSrc(rec.data.image);
+		if(rec.data.image !== '') form.down('image').setSrc(rec.data.image);
 	},
 
 	getValidInsurances: function(){
@@ -359,8 +359,8 @@ Ext.define('App.view.patient.Patient', {
 
 	getPatientImages: function(record){
 		var me = this;
-		if(me.patientImages) me.patientImages.getComponent('image').setSrc((record.data.image != '' ? record.data.image : me.defaultPatientImage));
-		if(me.patientImages) me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode != '' ? record.data.qrcode : me.defaultQRCodeImage));
+		if(me.patientImages) me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
+		if(me.patientImages) me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
 	},
 
 	/**
@@ -460,7 +460,7 @@ Ext.define('App.view.patient.Patient', {
 
 						var insStore = record.insurance();
 						for(var i = 0; i < insRecs.length; i++){
-							if(insRecs[i].data.id == 0) insStore.add(insRecs[i]);
+							if(insRecs[i].data.id === 0) insStore.add(insRecs[i]);
 						}
 						insStore.sync();
 
@@ -511,49 +511,39 @@ Ext.define('App.view.patient.Patient', {
 
 		me.pid = pid;
 
-		me.store.load({
+		form.reset();
+
+		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+		app.AuditLog('Patient record viewed');
+
+		app.patient.record.insurance().load({
 			filters: [
 				{
 					property: 'pid',
-					value: me.pid
+					value: app.patient.record.data.pid
 				}
 			],
-			callback: function(record){
-				form.reset();
-				form.loadRecord(record[0]);
+			callback: function(records){
 
+				form.loadRecord(app.patient.record);
 				me.setReadOnly(app.patient.readOnly);
 				me.setButtonsDisabled(me.query('button[action="readOnly"]'));
-
-				me.getPatientImages(record[0]);
-
+				me.getPatientImages(app.patient.record);
 				me.verifyPatientRequiredInfo();
 
-				// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-				app.AuditLog('Patient record viewed');
+				me.insPanel.removeAll(true);
+				for(var i = 0; i < records.length; i++){
+					me.insPanel.add({
+						xtype: 'form',
+						border: false,
+						bodyBorder: false,
+						insurance: records[i]
+					});
+				}
 
-				record[0].insurance().load({
-					filters: [
-						{
-							property: 'pid',
-							value: me.pid
-						}
-					],
-					callback: function(records){
-						me.insPanel.removeAll(true);
-						for(var i = 0; i < records.length; i++){
-							me.insPanel.add({
-								xtype: 'form',
-								border: false,
-								bodyBorder: false,
-								insurance: records[i]
-							});
-						}
-
-						if(me.insPanel.items.length != 0) me.insPanel.setActiveTab(0);
-					}
-				});
+				if(me.insPanel.items.length !== 0) me.insPanel.setActiveTab(0);
 			}
-		})
+		});
+
 	}
 });

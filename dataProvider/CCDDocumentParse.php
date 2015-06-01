@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once (ROOT. '/classes/Array2XML.php');
-include_once (ROOT. '/classes/XML2Array.php');
-include_once(ROOT. '/dataProvider/SnomedCodes.php');
+include_once(ROOT . '/classes/Array2XML.php');
+include_once(ROOT . '/classes/XML2Array.php');
+include_once(ROOT . '/dataProvider/SnomedCodes.php');
+
 class CCDDocumentParse {
 
 	private $document;
@@ -32,57 +33,55 @@ class CCDDocumentParse {
 	 */
 	private $SnomedCodes;
 
-	function __construct($xml = null){
-		if(isset($xml)) $this->setDocument($xml);
+	function __construct($xml = null) {
+		if(isset($xml))
+			$this->setDocument($xml);
 	}
 
-	function setDocument($xml){
+	function setDocument($xml) {
 		$this->document = $this->XmlToArray($xml);
 		unset($this->document['ClinicalDocument']['@attributes']);
 
-		Array2XML::init('1.0', 'UTF-8', true, array('xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"'));
+		Array2XML::init('1.0', 'UTF-8', true, ['xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"']);
 
-		$data = array(
-			'@attributes' => array(
+		$data = [
+			'@attributes' => [
 				'xmlns' => 'urn:hl7-org:v3',
 				'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
 				'xsi:schemaLocation' => 'urn:hl7-org:v3 CDA.xsd'
-			)
-		);
-		foreach( $this->document['ClinicalDocument'] as $i => $com){
+			]
+		];
+		foreach($this->document['ClinicalDocument'] as $i => $com){
 			$data[$i] = $com;
 		}
 
 		$this->styledXml = Array2XML::createXML('ClinicalDocument', $data)->saveXML();
 		unset($data);
 
-
-		$this->index = array();
+		$this->index = [];
 		foreach($this->document['ClinicalDocument']['component']['structuredBody']['component'] as $index => $component){
-			$code = isset($component['section']['code']['@attributes']['code']) ?
-				$component['section']['code']['@attributes']['code'] : '';
+			$code = isset($component['section']['code']['@attributes']['code']) ? $component['section']['code']['@attributes']['code'] : '';
 
 			//Advance Directives ???
 			if($code == '48765-2'){
 				$this->index['allergies'] = $index;
-			}elseif($code == '10160-0'){
+			} elseif($code == '10160-0') {
 				$this->index['medications'] = $index;
-			}elseif($code == '11450-4'){
+			} elseif($code == '11450-4') {
 				$this->index['problems'] = $index;
-			}elseif($code == '47519-4'){
+			} elseif($code == '47519-4') {
 				$this->index['procedures'] = $index;
-			}elseif($code == '30954-2'){
+			} elseif($code == '30954-2') {
 				$this->index['results'] = $index;
-			}elseif($code == '46240-8'){
+			} elseif($code == '46240-8') {
 				$this->index['encounters'] = $index;
-			}elseif($code == '51847-2'){
+			} elseif($code == '51847-2') {
 				$this->index['assessments'] = $index;
-			}elseif($code == '46239-0'){
+			} elseif($code == '46239-0') {
 				$this->index['chiefcomplaint'] = $index;
-			}else{
+			} else {
 
-				$tplId = isset($component['section']['templateId']['@attributes']['root']) ?
-					$component['section']['templateId']['@attributes']['root'] : '';
+				$tplId = isset($component['section']['templateId']['@attributes']['root']) ? $component['section']['templateId']['@attributes']['root'] : '';
 
 				if($tplId == '2.16.840.1.113883.10.20.22.2.21.1'){
 					$this->index['advancedirectives'] = $index;
@@ -91,7 +90,7 @@ class CCDDocumentParse {
 		}
 	}
 
-	function getDocument(){
+	function getDocument() {
 		$document = new stdClass();
 		$document->title = $this->getTitle();
 		$document->patient = $this->getPatient();
@@ -107,7 +106,7 @@ class CCDDocumentParse {
 		return $document;
 	}
 
-	function getTitle(){
+	function getTitle() {
 		return isset($this->document['ClinicalDocument']['title']) ? $this->document['ClinicalDocument']['title'] : '';
 	}
 
@@ -115,15 +114,15 @@ class CCDDocumentParse {
 	 * @return mixed
 	 * @throws Exception
 	 */
-	function getPatient(){
+	function getPatient() {
 		$dom = $this->document['ClinicalDocument']['recordTarget']['patientRole'];
 		$patient = new stdClass();
 
 		// IDs
 		if($this->isAssoc($dom['id'])){
 			$patient->pubpid = $dom['id']['@attributes']['extension'];
-		}else{
-			$foo = array();
+		} else {
+			$foo = [];
 			foreach($dom['id'] as $id){
 				$foo[] = $id['@attributes']['extension'];
 			}
@@ -132,7 +131,7 @@ class CCDDocumentParse {
 		}
 
 		// address
-		$a = isset($dom['addr']) ? $dom['addr'] : array();
+		$a = isset($dom['addr']) ? $dom['addr'] : [];
 		$patient->address = isset($a['streetAddressLine']) ? $a['streetAddressLine'] : '';
 		$patient->city = isset($a['city']) ? $a['city'] : '';
 		$patient->state = isset($a['state']) ? $a['state'] : '';
@@ -146,7 +145,7 @@ class CCDDocumentParse {
 			foreach($telecoms as $type => $telecom){
 				if($type == 'WP'){
 					$patient->work_phone = $telecom;
-				}else{
+				} else {
 					$patient->home_phone = $telecom;
 				}
 			}
@@ -174,7 +173,8 @@ class CCDDocumentParse {
 		//DOB
 		$patient->DOB = $this->dateParser($dom['patient']['birthTime']['@attributes']['value']);
 		// fix for date with only the day...  add the time at the end
-		if(strlen($patient->DOB) <= 10) $patient->DOB .= ' 00:00:00';
+		if(strlen($patient->DOB) <= 10)
+			$patient->DOB .= ' 00:00:00';
 
 		//marital StatusCode
 		$patient->marital_status = isset($dom['patient']['maritalStatusCode']['@attributes']['code']) ? $dom['patient']['maritalStatusCode']['@attributes']['code'] : '';
@@ -186,23 +186,24 @@ class CCDDocumentParse {
 		if(isset($dom['patient']['birthplace']['place']['addr'])){
 			$addr = $dom['patient']['birthplace']['place']['addr'];
 			$foo = '';
+
 			if(isset($addr['city'])){
-				$foo .= $addr['city'];
+				$foo .= is_string($addr['city']) ? $addr['city'] : '';
 			}
 			if(isset($addr['state'])){
-				$foo .= ' '. $addr['state'];
+				$foo .= is_string($addr['state']) ? ' ' . $addr['state'] : '';
 			}
 			if(isset($addr['country'])){
-				$foo .= ' '. $addr['country'];
+				$foo .= is_string($addr['country']) ? ' ' . $addr['country'] : '';
 			}
+
 			$patient->birth_place = trim($foo);
-		}else{
+		} else {
 			$patient->birth_place = '';
 		}
 
 		//languageCommunication
-		$patient->language = isset($dom['patient']['languageCommunication']['languageCode']['@attributes']['code']) ?
-			$dom['patient']['languageCommunication']['languageCode']['@attributes']['code'] : '';
+		$patient->language = isset($dom['patient']['languageCommunication']['languageCode']['@attributes']['code']) ? $dom['patient']['languageCommunication']['languageCode']['@attributes']['code'] : '';
 
 		//religious  not implemented
 		//$patient->religion = '';
@@ -212,10 +213,8 @@ class CCDDocumentParse {
 			// do a bit more...
 			// lets just save the name for now
 			if($dom['patient']['guardian']['guardianPerson']){
-				$name = isset($dom['patient']['guardian']['guardianPerson']['name']['given']) ?
-					$dom['patient']['guardian']['guardianPerson']['name']['given'] : '';
-				$name .= isset($dom['patient']['guardian']['guardianPerson']['name']['family']) ?
-					' ' . $dom['patient']['guardian']['guardianPerson']['name']['family'] : '';
+				$name = isset($dom['patient']['guardian']['guardianPerson']['name']['given']) ? $dom['patient']['guardian']['guardianPerson']['name']['given'] : '';
+				$name .= isset($dom['patient']['guardian']['guardianPerson']['name']['family']) ? ' ' . $dom['patient']['guardian']['guardianPerson']['name']['family'] : '';
 				$patient->guardians_name = trim($name);
 			}
 		}
@@ -227,34 +226,33 @@ class CCDDocumentParse {
 	/**
 	 * @return stdClass
 	 */
-	function getAuthor(){
+	function getAuthor() {
 		$dom = $this->document['ClinicalDocument']['author'];
 		$author = new stdClass();
 
 		if(isset($dom['assignedAuthor'])){
 			$author->id = $dom['assignedAuthor']['id']['@attributes']['extension'];
-			$names = $this->nameHandler($dom['assignedAuthor']['assignedPerson']['name']);
-			$author->fname = $names['fname'];
-			$author->mname = $names['mname'];
-			$author->lname = $names['lname'];
-			if(isset($dom['assignedAuthor']['addr'])){
-				$author->address = isset($dom['assignedAuthor']['addr']['streetAddressLine']) ?
-					$dom['assignedAuthor']['addr']['streetAddressLine'] : '';
-				$author->city = isset($dom['assignedAuthor']['addr']['city']) ?
-					$dom['assignedAuthor']['addr']['city'] : '';
-				$author->state = isset($dom['assignedAuthor']['addr']['state']) ?
-					$dom['assignedAuthor']['addr']['state'] : '';
-				$author->zipcode = isset($dom['assignedAuthor']['addr']['postalCode']) ?
-					$dom['assignedAuthor']['addr']['postalCode'] : '';
-				$author->country = isset($dom['assignedAuthor']['addr']['country']) ?
-					$dom['assignedAuthor']['addr']['country'] : '';
+
+			if(isset($dom['assignedAuthor']['assignedPerson']['name'])){
+				$names = $this->nameHandler($dom['assignedAuthor']['assignedPerson']['name']);
+				$author->fname = $names['fname'];
+				$author->mname = $names['mname'];
+				$author->lname = $names['lname'];
 			}
-			if(isset($dom['assignedAuthor']['telecom'])){
+
+			if(isset($dom['assignedAuthor']['addr'])){
+				$author->address = isset($dom['assignedAuthor']['addr']['streetAddressLine']) ? $dom['assignedAuthor']['addr']['streetAddressLine'] : '';
+				$author->city = isset($dom['assignedAuthor']['addr']['city']) ? $dom['assignedAuthor']['addr']['city'] : '';
+				$author->state = isset($dom['assignedAuthor']['addr']['state']) ? $dom['assignedAuthor']['addr']['state'] : '';
+				$author->zipcode = isset($dom['assignedAuthor']['addr']['postalCode']) ? $dom['assignedAuthor']['addr']['postalCode'] : '';
+				$author->country = isset($dom['assignedAuthor']['addr']['country']) ? $dom['assignedAuthor']['addr']['country'] : '';
+			}
+			if(isset($dom['assignedAuthor']['telecom']) && $dom['assignedAuthor']['telecom'] !== ''){
 				$telecoms = $this->telecomHandler($dom['assignedAuthor']['telecom']);
 				foreach($telecoms as $type => $telecom){
 					if($type == 'WP'){
 						$author->work_phone = $telecom;
-					}else{
+					} else {
 						$author->home_phone = $telecom;
 					}
 				}
@@ -264,7 +262,7 @@ class CCDDocumentParse {
 		return $author;
 	}
 
-	function getEncounter(){
+	function getEncounter() {
 		$encounter = new stdClass();
 
 		if(!isset($this->document['ClinicalDocument']['componentOf'])){
@@ -286,7 +284,8 @@ class CCDDocumentParse {
 
 		if(isset($this->index['assessments'])){
 			$assessments = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['assessments']]['section'];
-			if($this->isAssoc($assessments['entry'])) $section['entry'] = array($assessments['entry']);
+			if($this->isAssoc($assessments['entry']))
+				$section['entry'] = [$assessments['entry']];
 
 			$encounter->assessments = [];
 
@@ -309,8 +308,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getAllergies(){
-		$allergies = array();
+	function getAllergies() {
+		$allergies = [];
 
 		if(!isset($this->index['allergies'])){
 			return $allergies;
@@ -322,7 +321,8 @@ class CCDDocumentParse {
 			return $allergies;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 		foreach($section['entry'] as $entry){
 
 			$allergy = new stdClass();
@@ -342,15 +342,16 @@ class CCDDocumentParse {
 			unset($code);
 
 			//dates
-			$dates = $this->datesHandler($entry['act']['effectiveTime'], true);
-			$allergy->begin_date = $dates['low'];
-			$allergy->end_date = $dates['high'];
-
+			if(isset($entry['act']['effectiveTime'])){
+				$dates = $this->datesHandler($entry['act']['effectiveTime'], true);
+				$allergy->begin_date = $dates['low'];
+				$allergy->end_date = $dates['high'];
+			}
 
 			// reaction, severity, status
 			foreach($entry['act']['entryRelationship']['observation']['entryRelationship'] as $obs){
 				$key = null;
-				switch($obs['observation']['templateId']['@attributes']['root']){
+				switch($obs['observation']['templateId']['@attributes']['root']) {
 					case '2.16.840.1.113883.10.20.22.4.28':
 						$key = 'status';
 						break;
@@ -365,8 +366,8 @@ class CCDDocumentParse {
 				if(isset($key)){
 					$code = $this->codeHandler($obs['observation']['value']['@attributes']);
 					$allergy->{$key} = $code['code_text'];
-					$allergy->{$key.'_code'} = $code['code'];
-					$allergy->{$key.'_code_type'} = $code['code_type'];
+					$allergy->{$key . '_code'} = $code['code'];
+					$allergy->{$key . '_code_type'} = $code['code_type'];
 					unset($code);
 				};
 			}
@@ -381,8 +382,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getMedications(){
-		$medications = array();
+	function getMedications() {
+		$medications = [];
 
 		if(!isset($this->index['medications'])){
 			return $medications;
@@ -394,23 +395,25 @@ class CCDDocumentParse {
 			return $medications;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 		foreach($section['entry'] as $entry){
 
 			$medication = new stdClass();
 
 			if(!$this->isAssoc($entry['substanceAdministration']['effectiveTime'])){
 				foreach($entry['substanceAdministration']['effectiveTime'] as $date){
-					if(!isset($date['low'])) continue;
+					if(!isset($date['low']))
+						continue;
 					$dates = $this->datesHandler($date, true);
 				}
-			}else{
+			} else {
 				$dates = $this->datesHandler($entry['substanceAdministration']['effectiveTime'], true);
 			}
 
 			if(isset($dates)){
 				$medication->begin_date = $dates['low'];
-				$medication->end_date =  $dates['high'];
+				$medication->end_date = $dates['high'];
 			}
 
 			if($entry['substanceAdministration']['consumable']['manufacturedProduct']['manufacturedMaterial']){
@@ -420,18 +423,18 @@ class CCDDocumentParse {
 				unset($code);
 			}
 
-//			if(isset($entry['substanceAdministration']['doseQuantity']['@attributes']['value'])){
-//				$medication->dose = $entry['substanceAdministration']['doseQuantity']['@attributes']['value'];
-//			}
-//
-//			if(isset($entry['substanceAdministration']['rateQuantity']['@attributes']['value'])){
-//				$medication->dispense = '';
-//			}
-//			$medication->form = '';
-//			$medication->route = '';
-//			$medication->dispense = '';
-//			$medication->refill = '';
-//			$medication->directions = '';
+			//			if(isset($entry['substanceAdministration']['doseQuantity']['@attributes']['value'])){
+			//				$medication->dose = $entry['substanceAdministration']['doseQuantity']['@attributes']['value'];
+			//			}
+			//
+			//			if(isset($entry['substanceAdministration']['rateQuantity']['@attributes']['value'])){
+			//				$medication->dispense = '';
+			//			}
+			//			$medication->form = '';
+			//			$medication->route = '';
+			//			$medication->dispense = '';
+			//			$medication->refill = '';
+			//			$medication->directions = '';
 			$medications[] = $medication;
 		}
 
@@ -441,8 +444,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getProblems(){
-		$problems = array();
+	function getProblems() {
+		$problems = [];
 
 		if(!isset($this->index['problems'])){
 			return $problems;
@@ -454,7 +457,8 @@ class CCDDocumentParse {
 			return $problems;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 		foreach($section['entry'] as $entry){
 			$problem = new stdClass();
 
@@ -469,19 +473,21 @@ class CCDDocumentParse {
 			$problem->end_date = $dates['high'];
 			unset($dates);
 
-
 			foreach($entry['act']['entryRelationship']['observation']['entryRelationship'] as $obs){
 				// status template
 
-				if(!isset($obs['observation'])) continue;
-
+				if(!isset($obs['observation']))
+					continue;
+				if(!isset($obs['observation']['templateId']))
+					continue;
 
 				if($obs['observation']['templateId']['@attributes']['root'] == '2.16.840.1.113883.10.20.22.4.6'){
 					$code = $this->codeHandler($obs['observation']['value']['@attributes']);
 					$problem->status = $code['code_text'];
 					$problem->status_code = $code['code'];
-					$problem->status_code_type =  $code['code_type'];
+					$problem->status_code_type = $code['code_type'];
 				}
+
 			}
 			$problems[] = $problem;
 		}
@@ -492,8 +498,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getProcedures(){
-		$procedures = array();
+	function getProcedures() {
+		$procedures = [];
 
 		if(!isset($this->index['procedures'])){
 			return $procedures;
@@ -505,7 +511,8 @@ class CCDDocumentParse {
 			return $procedures;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 
 		foreach($section['entry'] as $entry){
 			$procedure = new stdClass();
@@ -513,7 +520,8 @@ class CCDDocumentParse {
 			if(isset($entry['procedure']['code'])){
 				// procedure
 				$code = $this->codeHandler($entry['procedure']['code']);
-				if($code['code'] == '') continue;
+				if($code['code'] == '')
+					continue;
 
 				$procedure->code = $code['code'];
 				$procedure->code_text = $code['code_text'];
@@ -532,8 +540,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getResults(){
-		$results = array();
+	function getResults() {
+		$results = [];
 
 		if(!isset($this->index['results'])){
 			return $results;
@@ -545,7 +553,8 @@ class CCDDocumentParse {
 			return $results;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 
 		foreach($section['entry'] as $entry){
 			$result = new stdClass();
@@ -560,41 +569,60 @@ class CCDDocumentParse {
 
 			$result->observations = [];
 
+			if($this->isAssoc($entry['organizer']['component']))
+				$entry['organizer']['component'] = [$entry['organizer']['component']];
+
 			foreach($entry['organizer']['component'] as $obs){
-				$obs = $obs['observation'];
 
-				$observation = new stdClass();
-				$code = $this->codeHandler($obs['code']);
-				$observation->code = $code['code'];
-				$observation->code_text = $code['code_text'];
-				$observation->code_type = $code['code_type'];
-				unset($code);
+				if(isset($obs['observation'])){
+					$obs = $obs['observation'];
 
-				$observation->value = isset($obs['value']['@attributes']['value']) ? $obs['value']['@attributes']['value'] : '';
-				$observation->units = isset($obs['value']['@attributes']['unit']) ? $obs['value']['@attributes']['unit'] : '';
+					$observation = new stdClass();
+					$code = $this->codeHandler($obs['code']);
+					$observation->code = $code['code'];
+					$observation->code_text = $code['code_text'];
+					$observation->code_type = $code['code_type'];
+					unset($code);
 
-				if(isset($obs['referenceRange'])){
-					if(isset($obs['referenceRange']['observationRange']['text'])){
-						$observation->reference_rage = $obs['referenceRange']['observationRange']['text'];
-					}else{
-						if(isset($obs['referenceRange']['observationRange']['value']['low'])){
-							$observation->reference_rage = $obs['referenceRange']['observationRange']['value']['low']['@attributes']['value'];
+					$observation->value = isset($obs['value']['@attributes']['value']) ? $obs['value']['@attributes']['value'] : '';
+					$observation->units = isset($obs['value']['@attributes']['unit']) ? $obs['value']['@attributes']['unit'] : '';
+
+					if(isset($obs['referenceRange'])){
+						if(isset($obs['referenceRange']['observationRange']['text'])){
+							$observation->reference_rage = $obs['referenceRange']['observationRange']['text'];
+						} else {
+							if(isset($obs['referenceRange']['observationRange']['value']['low'])){
+								$observation->reference_rage = $obs['referenceRange']['observationRange']['value']['low']['@attributes']['value'];
+							}
+							if(isset($obs['referenceRange']['observationRange']['value']['high'])){
+								$observation->reference_rage .= ' - ' . $obs['referenceRange']['observationRange']['value']['high']['@attributes']['value'];
+							}
+							$observation->reference_rage .= ' ' . $observation->units;
 						}
-						if(isset($obs['referenceRange']['observationRange']['value']['high'])){
-							$observation->reference_rage .= ' - ' . $obs['referenceRange']['observationRange']['value']['high']['@attributes']['value'];
-						}
-						$observation->reference_rage .= ' ' . $observation->units;
 					}
+
+					$dates = $this->datesHandler($obs['effectiveTime']);
+					$observation->date_analysis = $dates['low'];
+
+					if(isset($obs['interpretationCode'])){
+						$observation->abnormal_flag = $obs['interpretationCode']['@attributes']['code'];
+					}
+
+					$observation->observation_result_status = $obs['statusCode']['@attributes']['code'];
+					$dates = $this->datesHandler($obs['effectiveTime']);
+					$observation->date_observation = $result_date = $dates['low'];
+
+					$result->observations[] = $observation;
+
+
+				}elseif(isset($obs['procedure'])){
+
+					//TODO
+
+
 				}
 
-				$dates = $this->datesHandler($obs['effectiveTime']);
-				$observation->date_analysis = $dates['low'];
-				$observation->abnormal_flag = $obs['interpretationCode']['@attributes']['code'];
-				$observation->observation_result_status = $obs['statusCode']['@attributes']['code'];
-				$dates = $this->datesHandler($obs['effectiveTime']);
-				$observation->date_observation = $result_date = $dates['low'];
 
-				$result->observations[] = $observation;
 			}
 
 			$result->result_date = $result_date;
@@ -608,8 +636,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getEncounters(){
-		$encounters = array();
+	function getEncounters() {
+		$encounters = [];
 
 		if(!isset($this->index['encounters'])){
 			return $encounters;
@@ -621,15 +649,17 @@ class CCDDocumentParse {
 			return $encounters;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 
 		foreach($section['entry'] as $entry){
 
-			if(!isset($entry['encounter']['entryRelationship'])) continue;
+			if(!isset($entry['encounter']['entryRelationship']))
+				continue;
 
 			$encounter = new stdClass();
 
-			$dates =  $this->datesHandler($entry['encounter']['effectiveTime']);
+			$dates = $this->datesHandler($entry['encounter']['effectiveTime']);
 			$encounter->service_date = $dates['low'];
 			unset($dates);
 
@@ -642,14 +672,14 @@ class CCDDocumentParse {
 			$encounter->observations = [];
 
 			if($this->isAssoc($entry['encounter']['entryRelationship'])){
-				$entry['encounter']['entryRelationship'] = array($entry['encounter']['entryRelationship']);
+				$entry['encounter']['entryRelationship'] = [$entry['encounter']['entryRelationship']];
 			};
 			// for each observations
 			foreach($entry['encounter']['entryRelationship'] as $obs){
 
 				if(isset($obs['observation'])){
 					$obs = $obs['observation'];
-				}elseif(isset($obs['act'])){
+				} elseif(isset($obs['act'])) {
 					$obs = $obs['act']['entryRelationship']['observation'];
 				}
 
@@ -657,18 +687,17 @@ class CCDDocumentParse {
 
 				$code = $this->codeHandler($obs['code']);
 				$observation->code = $code['code'];
-				$observation->code_text =  $code['code_text'];
-				$observation->code_type =  $code['code_type'];
+				$observation->code_text = $code['code_text'];
+				$observation->code_type = $code['code_type'];
 				unset($code);
 
 				$code = $this->codeHandler($obs['value']);
 				$observation->value_code = $code['code'];
-				$observation->value_code_text =  $code['code_text'];
-				$observation->value_code_type =  $code['code_type'];
+				$observation->value_code_text = $code['code_text'];
+				$observation->value_code_type = $code['code_type'];
 				unset($code);
 
 				$encounter->observations[] = $observation;
-
 
 			}
 
@@ -681,8 +710,8 @@ class CCDDocumentParse {
 	/**
 	 * @return array
 	 */
-	function getAdvanceDirectives(){
-		$directives = array();
+	function getAdvanceDirectives() {
+		$directives = [];
 
 		if(!isset($this->index['advancedirectives'])){
 			return $directives;
@@ -694,7 +723,8 @@ class CCDDocumentParse {
 			return $directives;
 		}
 
-		if($this->isAssoc($section['entry'])) $section['entry'] = array($section['entry']);
+		if($this->isAssoc($section['entry']))
+			$section['entry'] = [$section['entry']];
 
 		foreach($section['entry'] as $entry){
 			$directive = new stdClass();
@@ -717,7 +747,7 @@ class CCDDocumentParse {
 
 			if(isset($entry['observation']['participant'])){
 				if($this->isAssoc($entry['observation']['participant'])){
-					$entry['observation']['participant'] = array($entry['observation']['participant']);
+					$entry['observation']['participant'] = [$entry['observation']['participant']];
 				}
 
 				$directive->contact = '';
@@ -728,15 +758,14 @@ class CCDDocumentParse {
 					if(isset($participant['playingEntity']) && (isset($participant['addr']) || isset($participant['telecom']))){
 
 						if(isset($participant['addr'])){
-							$address = isset($participant['addr']['streetAddressLine']) ? $participant['addr']['streetAddressLine']: '';
-							$address .= isset($participant['addr']['city']) ? ' '. $participant['addr']['city'] : '';
-							$address .= isset($participant['addr']['state']) ? ', '. $participant['addr']['state'] : '';
-							$address .= isset($participant['addr']['postalCode']) ? ' '. $participant['addr']['postalCode'] : '';
-							$address .= isset($participant['addr']['country']) ? ' '. $participant['addr']['country'] : '';
+							$address = isset($participant['addr']['streetAddressLine']) ? $participant['addr']['streetAddressLine'] : '';
+							$address .= isset($participant['addr']['city']) ? ' ' . $participant['addr']['city'] : '';
+							$address .= isset($participant['addr']['state']) ? ', ' . $participant['addr']['state'] : '';
+							$address .= isset($participant['addr']['postalCode']) ? ' ' . $participant['addr']['postalCode'] : '';
+							$address .= isset($participant['addr']['country']) ? ' ' . $participant['addr']['country'] : '';
 						}
 
-						$tel = isset($participant['telecom']) ?  $participant['telecom']['@attributes']['value'] : '';
-
+						$tel = isset($participant['telecom']) ? $participant['telecom']['@attributes']['value'] : '';
 
 						$name = $this->nameHandler($participant['playingEntity']['name']);
 						$directive->contact = $name['prefix'] . ' ' . $name['lname'] . ' ' . $name['fname'] . $name['mname'] . ' ~ ' . $tel . $address;
@@ -756,7 +785,7 @@ class CCDDocumentParse {
 	 * @param $array
 	 * @return string
 	 */
-	function ArrayToJson($array){
+	function ArrayToJson($array) {
 		return json_encode($array);
 	}
 
@@ -764,7 +793,7 @@ class CCDDocumentParse {
 	 * @param $xml
 	 * @return string
 	 */
-	function XmlToJson($xml){
+	function XmlToJson($xml) {
 		return $this->ArrayToJson($this->XmlToArray($xml));
 	}
 
@@ -772,7 +801,7 @@ class CCDDocumentParse {
 	 * @param $xml
 	 * @return DOMDocument
 	 */
-	function XmlToArray($xml){
+	function XmlToArray($xml) {
 		return XML2Array::createArray($xml);
 	}
 
@@ -780,9 +809,9 @@ class CCDDocumentParse {
 	 * @param $telecoms
 	 * @return array
 	 */
-	function telecomHandler($telecoms){
-		$telecoms = !$this->isAssoc($telecoms) ? $telecoms : array($telecoms);
-		$results = array();
+	function telecomHandler($telecoms) {
+		$telecoms = !$this->isAssoc($telecoms) ? $telecoms : [$telecoms];
+		$results = [];
 		foreach($telecoms as $telecom){
 			$use = isset($telecom['@attributes']['use']) && $telecom['@attributes']['use'] != '' ? $telecom['@attributes']['use'] : 'HP';
 			$results[$use] = isset($telecom['@attributes']['value']) ? $this->parsePhone($telecom['@attributes']['value']) : '';
@@ -794,8 +823,8 @@ class CCDDocumentParse {
 	 * @param $name
 	 * @return array
 	 */
-	function nameHandler($name){
-		$results = array();
+	function nameHandler($name) {
+		$results = [];
 
 		$results['prefix'] = isset($name['prefix']) && is_string($name['prefix']) ? $name['prefix'] : '';
 
@@ -803,12 +832,12 @@ class CCDDocumentParse {
 			$results['fname'] = isset($name['given'][0]) ? $name['given'][0] : '';
 			if(!isset($name['given'][1])){
 				$results['mname'] = '';
-			}elseif(is_string($name['given'][1])){
+			} elseif(is_string($name['given'][1])) {
 				$results['mname'] = isset($name['given'][1]) ? $name['given'][1] : '';
-			}elseif(is_array($name['given'][1])){
+			} elseif(is_array($name['given'][1])) {
 				$results['mname'] = isset($name['given'][1]['@value']) ? $name['given'][1]['@value'] : '';
 			}
-		}else{
+		} else {
 			$results['fname'] = isset($name['given']) ? $name['given'] : '';
 			$results['mname'] = '';
 		}
@@ -822,18 +851,18 @@ class CCDDocumentParse {
 	 * @param $justDate
 	 * @return array
 	 */
-	function datesHandler($dates, $justDate = false){
-		$result = array(
+	function datesHandler($dates, $justDate = false) {
+		$result = [
 			'low' => '0000-00-00',
 			'high' => '0000-00-00'
-		);
+		];
 
 		if(is_string($dates)){
 			$result['low'] = $this->dateParser($dates);
-		}else{
+		} else {
 			if(isset($dates['@value'])){
 				$result['low'] = $this->dateHandler($dates);
-			}else{
+			} else {
 				if(isset($dates['low'])){
 					$result['low'] = $this->dateHandler($dates['low']);
 				}
@@ -855,11 +884,11 @@ class CCDDocumentParse {
 	 * @param $date
 	 * @return mixed|string
 	 */
-	function dateHandler($date){
+	function dateHandler($date) {
 		$result = '0000-00-00';
 		if(is_string($date)){
 			$result = $this->dateParser($date);
-		}elseif(isset($date['@attributes']['value'])){
+		} elseif(isset($date['@attributes']['value'])) {
 			$result = $this->dateParser($date['@attributes']['value']);
 		}
 		return $result;
@@ -869,14 +898,14 @@ class CCDDocumentParse {
 	 * @param $code
 	 * @return array
 	 */
-	function codeHandler($code){
+	function codeHandler($code) {
 		if(isset($code['@attributes'])){
 			return $this->codeHandler($code['@attributes']);
 		}
-		$result = array();
+		$result = [];
 		$result['code'] = isset($code['code']) ? $code['code'] : '';
 		$result['code_type'] = isset($code['codeSystem']) ? $this->getCodeSystemName($code['codeSystem']) : '';
-		$result['code_text'] = isset($code['displayName']) ? $code['displayName'] :  '';
+		$result['code_text'] = isset($code['displayName']) ? $code['displayName'] : '';
 
 		if($result['code_text'] == ''){
 
@@ -888,12 +917,11 @@ class CCDDocumentParse {
 				$text = $this->SnomedCodes->getSnomedTextByConceptId($result['code']);
 				$result['code_text'] = $text;
 
-			}elseif($result['code_type'] == 'LOINC'){
+			} elseif($result['code_type'] == 'LOINC') {
 
 				//TODO
 
 			}
-
 
 		}
 
@@ -904,9 +932,9 @@ class CCDDocumentParse {
 	 * @param $date
 	 * @return mixed|string
 	 */
-	function dateParser($date){
+	function dateParser($date) {
 		$result = '0000-00-00';
-		switch(strlen($date)){
+		switch(strlen($date)) {
 			case 4:
 				$result = $date . '-00-00';
 				break;
@@ -934,15 +962,15 @@ class CCDDocumentParse {
 	 * @param $phone
 	 * @return mixed
 	 */
-	function parsePhone($phone){
-		return preg_replace('/tel:/','',$phone);
+	function parsePhone($phone) {
+		return preg_replace('/tel:/', '', $phone);
 	}
 
 	/**
 	 * @param $arr
 	 * @return bool
 	 */
-	function isAssoc($arr){
+	function isAssoc($arr) {
 		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
 
@@ -950,9 +978,9 @@ class CCDDocumentParse {
 	 * @param $code
 	 * @return string
 	 */
-	function getCodeSystemName($code){
-		$code = str_replace('.','', $code);
-		$codes = array(
+	function getCodeSystemName($code) {
+		$code = str_replace('.', '', $code);
+		$codes = [
 			'2168401113883612' => 'CPT4',
 			'2168401113883642' => 'ICD9',
 			'21684011138836103' => 'ICD9CM',
@@ -964,10 +992,17 @@ class CCDDocumentParse {
 			'216840111388346' => 'NPI',
 			'216840111388349' => 'UNII',
 			'216840111388332611' => 'NCI'
-		);
+		];
 
 		return isset($codes[$code]) ? $codes[$code] : 'UNK';
 
+	}
+
+	function getTestCCD($file) {
+
+		$ccd = file_get_contents(ROOT . '/dataProvider/CCDs/' . $file);
+		$this->setDocument($ccd);
+		return ['ccd' => $this->getDocument()];
 	}
 }
 

@@ -54,7 +54,7 @@ Ext.define('App.controller.DocumentViewer', {
 			DocumentHandler.transferTempDocument(values, function(provider, response){
 
 				if(response.result.success){
-					if(dual){
+					if(window.dual){
 						dual.msg(_('sweet'), 'document_transferred');
 					}else{
 						app.msg(_('sweet'), 'document_transferred');

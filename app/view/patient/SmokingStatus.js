@@ -64,10 +64,21 @@ Ext.define('App.view.patient.SmokingStatus', {
 		{
 			text: _('note'),
 			dataIndex: 'note',
-			width: 120,
 			flex: 1,
 			editor: {
 				xtype: 'textfield'
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			format: 'Y-m-d',
+			text: _('start_date'),
+			dataIndex: 'start_date',
+			width: 120,
+			editor: {
+				xtype: 'datefield',
+				format: g('date_display_format'),
+				submitFormat: 'Y-m-d'
 			}
 		}
 	],

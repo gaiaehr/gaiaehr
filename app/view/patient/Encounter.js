@@ -29,6 +29,7 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
 		'App.view.patient.encounter.FamilyHistory',
+		'App.view.patient.encounter.ProgressNotesHistory',
 		'App.view.patient.ProgressNote',
 		'App.ux.combo.EncounterPriority',
 		'App.ux.combo.ActiveProviders',
@@ -316,6 +317,10 @@ Ext.define('App.view.patient.Encounter', {
 				expand: me.progressNoteCollapseExpand
 			},
 			items: [
+				{
+					xtype:'progressnoteshistory',
+					itemId: 'EncounterProgressNotesHistoryGrid'
+				},
 				me.progressNote = Ext.create('App.view.patient.ProgressNote', {
 					title: _('progress_note'),
 					autoScroll: true,
@@ -341,21 +346,6 @@ Ext.define('App.view.patient.Encounter', {
 						}
 					]
 				}),
-
-				me.progressHistory = Ext.create('Ext.panel.Panel', {
-					title: _('progress_history'),
-					bodyPadding: 0,
-					margin: 0,
-					padding: 0,
-					autoScroll: true,
-					tbar: [
-						{
-							xtype: 'textfield',
-							emptyText: _('search'),
-							flex: 1
-						}
-					]
-				})
 			]
 
 		});
@@ -717,7 +707,8 @@ Ext.define('App.view.patient.Encounter', {
 					});
 				}
 
-				if(me.progressHistory) me.getProgressNotesHistory();
+				App.app.getController('patient.ProgressNotesHistory').loadPatientProgressHistory(data.pid, data.eid);
+
 
 				//if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
 
@@ -824,44 +815,43 @@ Ext.define('App.view.patient.Encounter', {
 
 	getProgressNote: function(){
 		var me = this;
-		Encounter.getProgressNoteByEid(me.eid, function(provider, response){
-			me.progressNote.tpl.overwrite(me.progressNote.body, response.result);
-		});
+		//Encounter.getProgressNoteByEid(me.eid, function(provider, response){
+			//me.progressNote.tpl.overwrite(me.progressNote.body, response.result);
+		//});
 	},
 
-	getProgressNotesHistory: function(){
-		var me = this,
-			soaps;
-
-		say(me);
-
-		me.progressHistory.removeAll();
-		Encounter.getSoapHistory({pid: me.encounter.data.pid, eid: me.encounter.data.eid}, function(provider, response){
-			soaps = response.result;
-			for(var i = 0; i < soaps.length; i++){
-				me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
-					styleHtmlContent: true,
-					title: '<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
-					html: '<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? Ext.String.htmlDecode(soaps[i].subjective) : 'none') + '<br>' +
-					'<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? Ext.String.htmlDecode(soaps[i].objective) : 'none') + '<br>' +
-					'<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? Ext.String.htmlDecode(soaps[i].assessment) : 'none') + '<br>' +
-					'<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? Ext.String.htmlDecode(soaps[i].plan) : 'none')
-				}))
-			}
-		})
-	},
+	//getProgressNotesHistory: function(){
+	//	var me = this,
+	//		soaps;
+	//
+	//	me.progressHistory.removeAll();
+	//	Encounter.getSoapHistory({pid: me.encounter.data.pid, eid: me.encounter.data.eid}, function(provider, response){
+	//		soaps = response.result;
+	//		for(var i = 0; i < soaps.length; i++){
+	//			me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
+	//				styleHtmlContent: true,
+	//				title: '<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
+	//				html: '<strong>' + _('chief_complaint') + ':</strong> ' + (soaps[i].brief_description ? Ext.String.htmlDecode(soaps[i].brief_description) : 'none') + '<br>' +
+	//				'<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? Ext.String.htmlDecode(soaps[i].subjective) : 'none') + '<br>' +
+	//				'<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? Ext.String.htmlDecode(soaps[i].objective) : 'none') + '<br>' +
+	//				'<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? Ext.String.htmlDecode(soaps[i].assessment) : 'none') + '<br>' +
+	//				'<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? Ext.String.htmlDecode(soaps[i].plan) : 'none')
+	//			}))
+	//		}
+	//	})
+	//},
 
 	onTapPanelChange: function(panel){
-		if(panel.card.itemId == 'encounter'){
-			this.setEncounterProgressCollapsed(false);
-		}else{
-			this.setEncounterProgressCollapsed(true);
-		}
+		//if(panel.card.itemId == 'encounter'){
+		//	this.setEncounterProgressCollapsed(false);
+		//}else{
+		//	this.setEncounterProgressCollapsed(true);
+		//}
 	},
 
-	setEncounterProgressCollapsed: function(ans){
-		ans ? this.rightPanel.collapse() : this.rightPanel.expand();
-	},
+	//setEncounterProgressCollapsed: function(ans){
+	//	//ans ? this.rightPanel.collapse() : this.rightPanel.expand();
+	//},
 
 	//***************************************************************************************************//
 	//***************************************************************************************************//

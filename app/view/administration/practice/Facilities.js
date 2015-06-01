@@ -88,7 +88,7 @@ Ext.define('App.view.administration.practice.Facilities', {
 									},
 									{
 										fieldLabel: _('street'),
-										name: 'street'
+										name: 'address'
 									},
 									{
 										fieldLabel: _('city'),

@@ -60,6 +60,7 @@ Ext.define('App.controller.patient.Immunizations', {
 			},
 			'patientimmunizationspanel #patientImmunizationsGrid':{
 				selectionchange: me.onPatientImmunizationsGridSelectionChange,
+				beforeedit: me.onPatientImmunizationsGridBeforeEdit,
 				edit: me.onPatientImmunizationsGridEdit
 			},
 			'patientimmunizationspanel #cvxGrid':{
@@ -76,7 +77,22 @@ Ext.define('App.controller.patient.Immunizations', {
 			},
 			'form #immunizationsearch':{
 				select: me.onImmunizationSearchSelect
+			},
+			'#patientImmunizationsEditFormAdministeredByField':{
+				select: me.onPatientImmunizationsEditFormAdministeredByFieldSelect
 			}
+		});
+	},
+
+	onPatientImmunizationsEditFormAdministeredByFieldSelect:function(comb, records){
+		var record = comb.up('form').getForm().getRecord();
+
+		record.set({
+			administered_uid: records[0].data.id,
+			administered_title: records[0].data.title,
+			administered_fname: records[0].data.fname,
+			administered_mname: records[0].data.mname,
+			administered_lname: records[0].data.lname
 		});
 	},
 
@@ -99,7 +115,17 @@ Ext.define('App.controller.patient.Immunizations', {
 	},
 
 	onPatientImmunizationsGridSelectionChange:function(sm, selected){
-		this.getSubmitVxuBtn().setDisabled(selected.length == 0);
+		this.getSubmitVxuBtn().setDisabled(selected.length === 0);
+	},
+
+	onPatientImmunizationsGridBeforeEdit:function(plugin, context){
+		var field = plugin.editor.getForm().findField('administered_by');
+
+		field.forceSelection = false;
+		Ext.Function.defer(function(){
+			field.setValue(context.record.data.administered_by);
+			field.forceSelection = true;
+		}, 200);
 	},
 
 	onPatientImmunizationsGridEdit:function(plugin, context){

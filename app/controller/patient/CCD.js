@@ -18,9 +18,7 @@
 
 Ext.define('App.controller.patient.CCD', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
+	requires: [],
 	refs: [
 		{
 			ref: 'PatientCcdPanel',
@@ -29,35 +27,101 @@ Ext.define('App.controller.patient.CCD', {
 		{
 			ref: 'PatientCcdPanelMiFrame',
 			selector: 'patientccdpanel > miframe'
+		},
+		{
+			ref: 'PatientCcdPanelEncounterCmb',
+			selector: '#PatientCcdPanelEncounterCmb'
+		},
+		{
+			ref: 'PatientCcdPanelExcludeCheckBoxGroup',
+			selector: '#PatientCcdPanelExcludeCheckBoxGroup'
 		}
 	],
 
 	init: function(){
 		var me = this;
 		me.control({
-			'patientccdpanel':{
-				activate: me.onViewCcdBtnClick
+			'patientccdpanel': {
+				activate: me.onPanelActivate
 			},
-			'#viewCcdBtn':{
+			'#viewCcdBtn': {
 				click: me.onViewCcdBtnClick
 			},
-			'#exportCcdBtn':{
+			'#exportCcdBtn': {
 				click: me.onExportCcdBtnClick
+			},
+			'#printCcdBtn': {
+				click: me.onPrintCcdBtnClick
+			},
+			'#PatientCcdPanelEncounterCmb': {
+				select: me.onPatientCcdPanelEncounterCmbSelect
 			}
 		});
 	},
 
-	onViewCcdBtnClick:function(){
-		this.getPatientCcdPanelMiFrame().setSrc('dataProvider/CCDDocument.php?action=view&site='+ window.site +'&pid=' + app.patient.pid + '&token=' + app.user.token);
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+	eid: null,
+
+	onPanelActivate: function(panel){
+		panel.down('toolbar').down('#PatientCcdPanelEncounterCmb').setVisible(this.eid === null);
+		this.onViewCcdBtnClick(panel.down('toolbar').down('button'));
+	},
+
+	onViewCcdBtnClick: function(btn){
+		btn.up('panel').query('miframe')[0].setSrc(
+			'dataProvider/CCDDocument.php?action=view&site=' + window.site +
+			'&pid=' + app.patient.pid +
+			'&eid=' + this.getEid(btn) +
+			'&exclude=' + this.getExclusions(btn) +
+			'&token=' + app.user.token
+		);
 		app.AuditLog('Patient summary CCD viewed');
 	},
 
-	onExportCcdBtnClick:function(){
-		this.getPatientCcdPanelMiFrame().setSrc('dataProvider/CCDDocument.php?action=export&site='+ window.site +'&pid=' + app.patient.pid + '&token=' + app.user.token);
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+	onExportCcdBtnClick: function(btn){
+		btn.up('panel').query('miframe')[0].setSrc(
+			'dataProvider/CCDDocument.php?action=export&site=' + window.site +
+			'&pid=' + app.patient.pid +
+			'&eid=' + this.getEid(btn) +
+			'&exclude=' + this.getExclusions(btn) +
+			'&token=' + app.user.token
+		);
 		app.AuditLog('Patient summary CCD exported');
-	}
+	},
 
+	onPatientCcdPanelEncounterCmbSelect: function(cmb, records){
+		cmb.selectedRecord = records[0];
+		cmb.up('panel').query('miframe')[0].setSrc(
+			'dataProvider/CCDDocument.php?action=view&site=' + window.site +
+			'&pid=' + app.patient.pid +
+			'&eid=' + this.getEid(cmb) +
+			'&exclude=' + this.getExclusions(cmb) +
+			'&token=' + app.user.token
+		);
+		app.AuditLog('Patient summary CCD exported');
+	},
+
+	onPrintCcdBtnClick: function(btn){
+		say(btn.up('panel').query('miframe')[0]);
+		var cont = btn.up('panel').query('miframe')[0].frameElement.dom.contentWindow;
+		cont.focus();
+		cont.print();
+	},
+
+	getEid: function(cmp){
+		var cmb = cmp.up('toolbar').query('#PatientCcdPanelEncounterCmb')[0];
+		return cmb.selectedRecord ? cmb.selectedRecord.data.eid : this.eid;
+	},
+
+	cmbReset: function(cmp){
+		var cmb = cmp.up('toolbar').query('#PatientCcdPanelEncounterCmb')[0];
+		cmb.reset();
+		delete cmb.selectedRecord;
+	},
+
+	getExclusions: function(cmp){
+		var values = cmp.up('toolbar').query('#PatientCcdPanelExcludeCheckBoxGroup')[0].getValue(),
+			excludes = values.exclude || [];
+		return excludes.join ? excludes.join(',') : excludes;
+	}
 
 });

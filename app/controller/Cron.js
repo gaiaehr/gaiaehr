@@ -6,7 +6,7 @@ Ext.define('App.controller.Cron', {
 	fns:[
 		'app.getPatientsInPoolArea()',
 		'me.checkSession()',
-//		'CronJob.run()'
+		//'CronJob.run()'
 	],
 
 	init: function() {

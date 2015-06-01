@@ -43,7 +43,7 @@ class Rxnorm {
 		                    WHERE `CODE` = :c
 		                      AND ATN    = 'DST'
 		                      AND SAB    = 'RXNORM'");
-		$sth->execute(array(':c' => $CODE));
+		$sth->execute([':c' => $CODE]);
 		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
@@ -54,7 +54,7 @@ class Rxnorm {
 		                    WHERE `CODE` = :c
 		                      AND ATN    = 'DRT'
 		                      AND SAB    = 'RXNORM'");
-		$sth->execute(array(':c' => $CODE));
+		$sth->execute([':c' => $CODE]);
 		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
@@ -65,7 +65,7 @@ class Rxnorm {
 		                    WHERE `CODE` = :c
 		                      AND ATN    = 'DDF'
 		                      AND SAB    = 'RXNORM'");
-		$sth->execute(array(':c' => $CODE));
+		$sth->execute([':c' => $CODE]);
 		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
@@ -76,7 +76,7 @@ class Rxnorm {
 		                    WHERE `CODE` = :c
 		                      AND ATN    = 'DDFA'
 		                      AND SAB    = 'RXNORM'");
-		$sth->execute(array(':c' => $CODE));
+		$sth->execute([':c' => $CODE]);
 		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['ATV'];
 	}
@@ -86,7 +86,7 @@ class Rxnorm {
 		                     FROM rxnsat
 		                    WHERE `CODE` = :c
                               AND SAB    = 'RXNORM'");
-		$sth->execute(array(':c' => $CODE));
+		$sth->execute([':c' => $CODE]);
 		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['SAB'];
 	}
@@ -96,35 +96,37 @@ class Rxnorm {
 		                     FROM rxnconso
 		                    WHERE RXCUI = :c
 		                 GROUP BY RXCUI");
-		$sth->execute(array(':c' => $RXCUI));
+		$sth->execute([':c' => $RXCUI]);
 		$rec = $sth->fetchAll(PDO::FETCH_ASSOC);
 		return $rec['STR'];
 	}
 
 	public function getRXNORMLiveSearch(stdClass $params) {
-		$sth = $this->db->prepare("SELECT rxnconso.*, MAX(rxnsat.ATV) AS NDC
-                             FROM rxnconso
-                       left JOIN rxnsat ON rxnconso.RXCUI = rxnsat.RXCUI
-                            WHERE (rxnconso.SAB = 'RXNORM' AND (rxnconso.TTY = 'PSN' OR rxnconso.TTY = 'SY'))
-                              AND rxnsat.ATN = 'NDC'
-                              AND rxnconso.STR LIKE :q
-                         GROUP BY rxnconso.STR
-                         LIMIT 100");
+		$sth = $this->db->prepare("SELECT `rxnconso`.*, `rxnsat`.`ATV` AS NDC
+									 FROM `rxnconso`
+							   INNER JOIN `rxnsat`
+								       ON `rxnconso`.`RXCUI` = `rxnsat`.`RXCUI`
+								      AND `rxnconso`.`SAB` = 'RXNORM'
+								      AND `rxnsat`.`ATN` = 'NDC'
+								      AND (`rxnconso`.`TTY` = 'SCD' OR `rxnconso`.`TTY` = 'SBD')
+								    WHERE (`rxnconso`.`STR` LIKE :q1 OR `rxnconso`.`RXCUI` = :q2)
+							     GROUP BY `rxnconso`.`STR`
+     							    LIMIT 100");
 
-		$sth->execute(array(':q' => '%'.$params->query.'%'));
+		$sth->execute([ ':q1' => '%'.$params->query.'%', ':q2' => $params->query ]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
-		return array(
+		return [
 			'totals' => $total,
 			'rows' => $records
-		);
+		];
 	}
 
 	public function getRXNORMList(stdClass $params) {
 		if(isset($params->query)){
 			$sth = $this->db->prepare("SELECT * FROM rxnconso WHERE (SAB = 'RXNORM' AND TTY = 'BD') AND STR LIKE :q GROUP BY RXCUI LIMIT 500");
-			$sth->execute(array(':q' => $params->query . '%'));
+			$sth->execute([':q' => $params->query . '%']);
 		} else {
 			$sth = $this->db->prepare("SELECT * FROM rxnconso WHERE (SAB = 'RXNORM' AND TTY = 'BD') GROUP BY RXCUI LIMIT 500");
 			$sth->execute();
@@ -132,36 +134,36 @@ class Rxnorm {
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
-		return array(
+		return [
 			'totals' => $total,
 			'data' => $records
-		);
+		];
 	}
 
 	public function getRXNORMAllergyLiveSearch(stdClass $params) {
 		$sth = $this->db->prepare("SELECT *
 								 	 FROM rxnconso
-									WHERE (TTY = 'IN' OR TTY = 'PIN') AND STR LIKE :q
+									WHERE (TTY = 'IN' OR TTY = 'PIN' OR TTY = 'BN') AND STR LIKE :q
 							 	 GROUP BY RXCUI LIMIT 100");
-		$sth->execute(array(':q' => $params->query . '%'));
+		$sth->execute([':q' => $params->query . '%']);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
-		return array(
+		return [
 			'totals' => $total,
 			'rows' => $records
-		);
+		];
 	}
 
 	public function getMedicationAttributesByRxcui($rxcui) {
-		$response = array();
+		$response = [];
 
 		$sth = $this->db->prepare("SELECT `ATV`, `ATN`
  								   FROM rxnsat
 								  WHERE `RXCUI` = :c
 								    AND `ATN` = 'RXN_AVAILABLE_STRENGTH'
 								    AND `SAB` = 'RXNORM'");
-		$sth->execute(array(':c' => $rxcui));
+		$sth->execute([':c' => $rxcui]);
 		$result = $sth->fetch(PDO::FETCH_ASSOC);
 
 		if($result !== false){
@@ -169,12 +171,12 @@ class Rxnorm {
 		}
 
 		$sth = $this->db->prepare("SELECT `rxnconso`.*
-								   FROM `rxnrel`
-						      LEFT JOIN `rxnconso` ON `rxnconso`.`RXCUI` = `rxnrel`.`RXCUI2`
-								  WHERE `rxnrel`.`RXCUI1` = :c
-								    AND `rxnrel`.`RELA` = 'dose_form_of'");
+								     FROM `rxnrel`
+						        LEFT JOIN `rxnconso` ON `rxnconso`.`RXCUI` = `rxnrel`.`RXCUI2`
+								    WHERE `rxnrel`.`RXCUI1` = :c
+								      AND `rxnrel`.`RELA` = 'dose_form_of'");
 
-		$sth->execute(array(':c' => $rxcui));
+		$sth->execute([':c' => $rxcui]);
 		$result = $sth->fetch(PDO::FETCH_ASSOC);
 		return $result;
 	}

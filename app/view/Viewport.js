@@ -34,6 +34,11 @@ Ext.define('App.view.Viewport', {
         Ext.tip.QuickTipManager.init();
         var me = this;
 
+	    me.user.getFullName = function(){
+		    var fullname = me.user.title + ' ' + me.user.fname + ' ' + me.user.mname + ' ' + me.user.lname;
+			return fullname.replace('  ', ' ').trim();
+	    };
+
 	    me.nav = me.getController('Navigation');
 	    me.cron = me.getController('Cron');
 	    me.log = me.getController('LogOut');
@@ -622,6 +627,13 @@ Ext.define('App.view.Viewport', {
         me.callParent(arguments);
         me.signature = Ext.create('App.view.signature.SignatureWindow');
 
+
+	    //CCDDocumentParse.getTestCCD('CCDA Example_b2 AMB.xml', function(response){
+	    //
+		 //   App.app.getController('patient.CCDImport').CcdImport(response.ccd);
+	    //
+	    //});
+
     },
 
 	getUserFullname: function(){
@@ -645,9 +657,6 @@ Ext.define('App.view.Viewport', {
 				me.nav['App_view_areas_PatientPoolDropZone'].reRenderPoolAreas();
 				me.nav['App_view_areas_FloorPlan'].renderZones();
 				me.getPatientsInPoolArea();
-
-
-
 			}
 		});
 
@@ -671,9 +680,9 @@ Ext.define('App.view.Viewport', {
      * Event: create, read, update, delete
      */
     AuditLog: function(message){
-        var log = Ext.create('App.model.administration.AuditLog',{
+        Ext.create('App.model.administration.AuditLog',{
             eid: this.patient.eid,
-            patient_id: this.patient.pid,
+            pid: this.patient.pid,
             event: message
         }).save({
            callback:function(){
@@ -928,21 +937,26 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-
-
     setPatient: function(pid, eid, callback){
         var me = this;
 	    me.unsetPatient(null, true);
 
-        Patient.getPatientSetDataByPid({pid:pid, prevPid:me.patient.pid}, function(provider, response){
+        Patient.getPatientSetDataByPid({ pid:pid, prevPid:me.patient.pid }, function(provider, response){
             var data = response.result,
                 msg1,
                 msg2;
 
             if(data.readOnly){
-                msg1 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') + '.<br>' + _('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' + _('do_you_would_like_to_override_read_mode');
-                msg2 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') + '.<br>';
-                Ext.Msg.show({
+
+                msg1 = data.user + ' ' + _('is_currently_working_with') + ' "' +
+                data.patient.name + '" ' + _('in') + ' "' + data.area + '" ' + _('area') +
+                '.<br>' + _('override_read_mode_will_remove_the_patient_from_previous_user') + '.<br>' +
+                _('do_you_would_like_to_override_read_mode');
+
+                msg2 = data.user + ' ' + _('is_currently_working_with') + ' "' + data.patient.name + '" ' + _('in') +
+                ' "' + data.area + '" ' + _('area') + '.<br>';
+
+	            Ext.Msg.show({
                         title: _('wait') + '!!!',
                         msg: data.overrideReadOnly ? msg1 : msg2,
                         buttons: data.overrideReadOnly ? Ext.Msg.YESNO : Ext.Msg.OK,
@@ -962,13 +976,14 @@ Ext.define('App.view.Viewport', {
                     name: data.patient.name,
                     pic: data.patient.pic,
                     sex: data.patient.sex,
-	                sexSymbol: data.patient.sex == 'M' ? '&#9792' : '&#9794',
+	                sexSymbol: data.patient.sex == 'F' ? '&#9792' : '&#9794',
                     dob: Ext.Date.parse(data.patient.dob, "Y-m-d H:i:s"),
                     age: data.patient.age,
                     eid: eid,
                     priority: data.patient.priority,
                     readOnly: readOnly,
-                    rating: data.patient.rating
+                    rating: data.patient.rating,
+	                record: Ext.create('App.model.patient.Patient', data.patient.record)
                 };
 
                 // fire global event
@@ -993,6 +1008,9 @@ Ext.define('App.view.Viewport', {
         var me = this;
 	    if(sendRequest) Patient.unsetPatient(me.patient.pid);
 	    me.currEncounterId = null;
+
+	    if(me.patient.record) delete me.patient.record;
+
 	    me.patient = {
 		    pid: null,
 		    pubpid: null,
@@ -1005,8 +1023,10 @@ Ext.define('App.view.Viewport', {
 		    eid: null,
 		    priority: null,
 		    readOnly: false,
-		    rating: null
+		    rating: null,
+		    record: null
 	    };
+
 	    me.patientButtonRemoveCls();
 	    if(typeof callback == 'function'){
 		    callback(true);
@@ -1464,6 +1484,23 @@ Ext.define('App.view.Viewport', {
 				}
 		    }
 	    });
-    }
+    },
+
+	fullname: function(title, fname, name, lname){
+		var foo = '';
+		if(title){
+			foo += title + ' ';
+		}
+		if(fname){
+			foo += fname + ' ';
+		}
+		if(name){
+			foo += name + ' ';
+		}
+		if(lname){
+			foo += lname + ' ';
+		}
+		return foo;
+	}
 
 });

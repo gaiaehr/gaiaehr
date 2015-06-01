@@ -101,7 +101,7 @@ class DocumentHandler {
 				if($params[$i]->encrypted){
 					$params[$i]->document = MatchaUtils::encrypt($params[$i]->document);
 				};
-				$params[$i]->hash = sha1($params[$i]->document);
+				$params[$i]->hash = hash('sha256', $params[$i]->document);
 			}
 		}else{
 			/** remove the mime type */
@@ -110,7 +110,7 @@ class DocumentHandler {
 			if($params->encrypted){
 				$params->document = MatchaUtils::encrypt($params->document);
 			};
-			$params->hash = sha1($params->document);
+			$params->hash = hash('sha256', $params->document);
 		}
 
 		$results = $this->d->save($params);
@@ -241,7 +241,7 @@ class DocumentHandler {
 			$data->name = $this->fileName;
 			$data->url = $this->getDocumentUrl();
 			$data->date = date('Y-m-d H:i:s');
-			$data->hash = sha1_file($path);
+			$data->hash = hash_file('sha256', $path);
 
 			$data = $this->d->save($data);
 
@@ -288,7 +288,7 @@ class DocumentHandler {
 			$data->name = $this->fileName;
 			$data->url = $this->getDocumentUrl();
 			$data->date = date('Y-m-d H:i:s');
-			$data->hash = sha1_file($src);
+			$data->hash = hash_file('sha256', $src);
 			$data->encrypted = $params->encrypted;
 			$data = $this->d->save($data);
 
@@ -390,7 +390,7 @@ class DocumentHandler {
 
 	public function checkDocHash($doc){
 		$doc = $this->getPatientDocument($doc->id);
-		$hash = sha1($doc['document']);
+		$hash = hash('sha256', $doc['document']);
 		return array('success' => $doc['hash'] == $hash, 'msg' => 'Stored Hash:' . $doc['hash'] . '<br>File hash:' . $hash);
 	}
 

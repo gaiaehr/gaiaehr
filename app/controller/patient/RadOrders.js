@@ -18,9 +18,7 @@
 
 Ext.define('App.controller.patient.RadOrders', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
+	requires: [],
 	refs: [
 		{
 			ref: 'RadOrdersGrid',
@@ -52,17 +50,20 @@ Ext.define('App.controller.patient.RadOrders', {
 		});
 	},
 
-	onRadOrdersGridBeforeRender:function(grid){
+	onRadOrdersGridBeforeRender: function(grid){
 		app.on('patientunset', function(){
 			grid.editingPlugin.cancelEdit();
 			grid.getStore().removeAll();
 		});
 	},
 
-	onRadSearchSelect:function(cmb, records){
+	onRadSearchSelect: function(cmb, records){
 		var form = cmb.up('form').getForm();
+
+		say(records);
+
 		form.getRecord().set({
-			code: records[0].data.code,
+			code: records[0].data.loinc_number,
 			code_type: records[0].data.code_type
 		});
 		if(form.findField('code')) form.findField('code').setValue(records[0].data.code);
@@ -70,7 +71,7 @@ Ext.define('App.controller.patient.RadOrders', {
 	},
 
 	onRadOrdersGridSelectionChange: function(sm, selected){
-		this.getPrintRadOrderBtn().setDisabled(selected.length == 0);
+		this.getPrintRadOrderBtn().setDisabled(selected.length === 0);
 	},
 
 	onNewRadOrderBtnClick: function(){
@@ -101,7 +102,7 @@ Ext.define('App.controller.patient.RadOrders', {
 
 		params.pid = app.patient.pid;
 		params.eid = app.patient.eid;
-		params.orderItems = [ ];
+		params.orderItems = [];
 		params.docType = 'Rad';
 
 		params.templateId = 6;
@@ -109,7 +110,7 @@ Ext.define('App.controller.patient.RadOrders', {
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
 			params.orderItems.push([
-					data.description + ' [' + data.code_type + ':' + data.code + ']',
+				data.description + ' [' + data.code_type + ':' + data.code + ']',
 				data.note
 			]);
 		}
@@ -123,7 +124,7 @@ Ext.define('App.controller.patient.RadOrders', {
 		});
 	},
 
-	onRadOrdersGridActive:function(grid){
+	onRadOrdersGridActive: function(grid){
 		var store = grid.getStore();
 		if(!grid.editingPlugin.editing){
 			store.clearFilter(true);
@@ -140,7 +141,7 @@ Ext.define('App.controller.patient.RadOrders', {
 		}
 	},
 
-	radOrdersGridStatusColumnRenderer:function(v){
+	radOrdersGridStatusColumnRenderer: function(v){
 		var color = 'black';
 
 		if(v == 'Canceled'){
@@ -155,6 +156,5 @@ Ext.define('App.controller.patient.RadOrders', {
 
 		return '<div style="color:' + color + '">' + v + '</div>';
 	}
-
 
 });

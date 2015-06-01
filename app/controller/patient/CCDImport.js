@@ -27,19 +27,20 @@ Ext.define('App.controller.patient.CCDImport', {
 			selector: 'ccdimportwindow'
 		},
 		{
+			ref: 'CcdImportPreviewWindow',
+			selector: 'ccdimportpreviewwindow'
+		},
+
+
+		// import patient...
+		{
 			ref: 'CcdImportPatientForm',
 			selector: '#CcdImportPatientForm'
 		},
 		{
-			ref: 'CcdImportEncounterForm',
-			selector: '#CcdImportEncounterForm'
+			ref: 'CcdImportActiveProblemsGrid',
+			selector: '#CcdImportActiveProblemsGrid'
 		},
-		{
-			ref: 'CcdImportEncounterAssessmentContainer',
-			selector: '#CcdImportEncounterAssessmentContainer'
-		},
-
-		// grids...
 		{
 			ref: 'CcdImportMedicationsGrid',
 			selector: '#CcdImportMedicationsGrid'
@@ -48,24 +49,51 @@ Ext.define('App.controller.patient.CCDImport', {
 			ref: 'CcdImportAllergiesGrid',
 			selector: '#CcdImportAllergiesGrid'
 		},
+
+
+		// marge patient...
 		{
-			ref: 'CcdImportProceduresGrid',
-			selector: '#CcdImportProceduresGrid'
+			ref: 'CcdPatientPatientForm',
+			selector: '#CcdPatientPatientForm'
 		},
 		{
-			ref: 'CcdImportActiveProblemsGrid',
-			selector: '#CcdImportActiveProblemsGrid'
+			ref: 'CcdPatientActiveProblemsGrid',
+			selector: '#CcdPatientActiveProblemsGrid'
 		},
 		{
-			ref: 'CcdImportOrderResultsGrid',
-			selector: '#CcdImportOrderResultsGrid'
+			ref: 'CcdPatientMedicationsGrid',
+			selector: '#CcdPatientMedicationsGrid'
 		},
 		{
-			ref: 'CcdImportEncountersGrid',
-			selector: '#CcdImportEncountersGrid'
+			ref: 'CcdPatientAllergiesGrid',
+			selector: '#CcdPatientAllergiesGrid'
 		},
 
+
+		// preview patient...
+		{
+			ref: 'CcdImportPreviewPatientForm',
+			selector: '#CcdImportPreviewPatientForm'
+		},
+		{
+			ref: 'CcdImportPreviewActiveProblemsGrid',
+			selector: '#CcdImportPreviewActiveProblemsGrid'
+		},
+		{
+			ref: 'CcdImportPreviewMedicationsGrid',
+			selector: '#CcdImportPreviewMedicationsGrid'
+		},
+		{
+			ref: 'CcdImportPreviewAllergiesGrid',
+			selector: '#CcdImportPreviewAllergiesGrid'
+		},
+
+
 		// buttons...
+		{
+			ref: 'CcdImportWindowPreviewBtn',
+			selector: '#CcdImportWindowPreviewBtn'
+		},
 		{
 			ref: 'CcdImportWindowImportBtn',
 			selector: '#CcdImportWindowImportBtn'
@@ -87,8 +115,11 @@ Ext.define('App.controller.patient.CCDImport', {
 			'ccdimportwindow': {
 				show: me.onCcdImportWindowShow
 			},
-			'#CcdImportWindowImportBtn': {
-				click: me.onCcdImportWindowImportBtnClick
+			'#CcdImportPreviewWindowImportBtn': {
+				click: me.onCcdImportPreviewWindowImportBtnClick
+			},
+			'#CcdImportWindowPreviewBtn': {
+				click: me.onCcdImportWindowPreviewBtnClick
 			},
 			'#CcdImportWindowCloseBtn': {
 				click: me.onCcdImportWindowCloseBtnClick
@@ -107,9 +138,20 @@ Ext.define('App.controller.patient.CCDImport', {
 			},
 			'#PossiblePatientDuplicatesContinueBtn': {
 				click: me.onPossiblePatientDuplicatesContinueBtnClick
+			},
+			'#CcdImportPreviewWindowCancelBtn': {
+				click: me.onCcdImportPreviewWindowCancelBtnClick
 			}
 		});
 
+	},
+
+	CcdImport: function(ccdData){
+		if(!this.getCcdImportWindow()){
+			Ext.create('App.view.patient.windows.CCDImport');
+		}
+		this.getCcdImportWindow().ccdData = ccdData;
+		this.getCcdImportWindow().show();
 	},
 
 	onCcdImportWindowShow: function(win){
@@ -117,42 +159,23 @@ Ext.define('App.controller.patient.CCDImport', {
 	},
 
 	doLoadCcdData: function(data){
-		var me = this;
-
-		var pForm = me.getCcdImportPatientForm().getForm(),
-			ePanel = me.getCcdImportEncounterForm(),
-			eForm = ePanel.getForm(),
+		var me = this,
+			pForm = me.getCcdImportPatientForm().getForm(),
+			//ePanel = me.getCcdImportEncounterForm(),
+			//eForm = ePanel.getForm(),
 			patient = Ext.create('App.model.patient.Patient', data.patient);
-
-
-		if(data.encounter && !Ext.Object.isEmpty(data.encounter)){
-			ePanel.show();
-			var encounter = Ext.create('App.model.patient.Patient', data.encounter),
-				assessmentContainer = me.getCcdImportEncounterAssessmentContainer();
-
-			eForm.loadRecord(encounter);
-			for(var i = 0; i < data.encounter.assessments.length; i++){
-				assessmentContainer.add({
-					anchor: '100%',
-					boxLabel: data.encounter.assessments[i].text,
-					assessmentData: data.encounter.assessments[i],
-					boxLabelCls: 'CheckBoxWrapHammerFix'
-				});
-			}
-		}else{
-			ePanel.hide();
-		}
 
 		pForm.loadRecord(patient);
 
 		// list 59 ethnicity
 		// list 14 race
-		if(data.patient.race && data.patient.race != ''){
+		if(data.patient.race && data.patient.race !== ''){
 			CombosData.getDisplayValueByListIdAndOptionValue(14, data.patient.race, function(response){
 				pForm.findField('race_text').setValue(response);
 			});
 		}
-		if(data.patient.ethnicity && data.patient.ethnicity != ''){
+
+		if(data.patient.ethnicity && data.patient.ethnicity !== ''){
 			CombosData.getDisplayValueByListIdAndOptionCode(59, data.patient.ethnicity, function(response){
 				pForm.findField('ethnicity_text').setValue(response);
 			});
@@ -168,15 +191,6 @@ Ext.define('App.controller.patient.CCDImport', {
 			if(data.problems && data.problems.length > 0){
 				me.reconfigureGrid('getCcdImportActiveProblemsGrid', data.problems);
 			}
-			if(data.procedures && data.procedures.length > 0){
-				me.reconfigureGrid('getCcdImportProceduresGrid', data.procedures);
-			}
-			if(data.results && data.results.length > 0){
-				me.reconfigureGrid('getCcdImportOrderResultsGrid', data.results);
-			}
-			if(data.encounters && data.encounters.length > 0){
-				me.reconfigureGrid('getCcdImportEncountersGrid', data.encounters);
-			}
 		}
 	},
 
@@ -188,241 +202,70 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	onCcdImportWindowPatientSearchFieldSelect: function(cmb, records){
 		var me = this,
-			patient = me.getCcdImportPatientForm().getForm().getRecord();
+			importPatient = me.getCcdImportPatientForm().getForm().getRecord();
 
-		if(patient.data.sex != records[0].data.sex){
+		if(importPatient.data.sex != records[0].data.sex){
 			app.msg(_('warning'), _('records_sex_are_not_equal'), true);
 		}
 
-		if(patient.data.DOB.getFullYear() != records[0].data.DOB.getFullYear() &&
-			patient.data.DOB.getMonth() != records[0].data.DOB.getMonth() &&
-			patient.data.DOB.getDate() != records[0].data.DOB.getDate()){
+		if(importPatient.data.DOB.getFullYear() != records[0].data.DOB.getFullYear() &&
+			importPatient.data.DOB.getMonth() != records[0].data.DOB.getMonth() &&
+			importPatient.data.DOB.getDate() != records[0].data.DOB.getDate()){
 			app.msg(_('warning'), _('records_date_of_birth_are_not_equal'), true);
 		}
 
+		me.doLoadMergePatientData(records[0].data.pid);
+
 	},
 
-	// TODO
-	doResultShowObservations: function(row, store){
+	doLoadMergePatientData: function(pid){
+		var me = this,
+			pForm = me.getCcdPatientPatientForm().getForm();
 
-		say('doResultShowObservations');
-		say(row);
-		say(store);
-		say(row.getXY());
+		App.model.patient.Patient.load(pid, {
+			success: function(patient) {
 
-		var win = this.getResultObservationGrid();
-		win.down('grid').reconfigure(store);
-		win.show(row);
-	},
+				pForm.loadRecord(patient);
 
-	getResultObservationGrid: function(){
-		return Ext.widget('window',{
-			title: _('observations'),
-			modal: true,
-			items:[
-				{
-					xtype: 'grid',
-					width: 900,
-					margin: 5,
-					frame: true,
-					columns:[
-						{
-							text: _('name'),
-							menuDisabled: true,
-							dataIndex: 'code_text',
-							width: 200
-						},
-						{
-							text: _('value'),
-							menuDisabled: true,
-							dataIndex: 'value',
-							width: 150,
-							renderer: function(v, meta, record){
-								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
-									orange = ['L', 'H', 'A', 'W', 'MS'],
-									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
-									green = ['N'];
-
-								if(Ext.Array.contains(green, record.data.abnormal_flag)){
-									return '<span style="color:green;">' + v + '</span>';
-								}else if(Ext.Array.contains(blue, record.data.abnormal_flag)){
-									return '<span style="color:blue;">' + v + '</span>';
-								}else if(Ext.Array.contains(orange, record.data.abnormal_flag)){
-									return '<span style="color:orange;">' + v + '</span>';
-								}else if(Ext.Array.contains(red, record.data.abnormal_flag)){
-									return '<span style="color:red;">' + v + '</span>';
-								}else{
-									return v;
-								}
-							}
-						},
-						{
-							text: _('units'),
-							menuDisabled: true,
-							dataIndex: 'units',
-							width: 75
-						},
-						{
-							text: _('abnormal'),
-							menuDisabled: true,
-							dataIndex: 'abnormal_flag',
-							width: 75,
-							renderer: function(v, attr){
-								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
-									orange = ['L', 'H', 'A', 'W', 'MS'],
-									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
-									green = ['N'];
-
-								if(Ext.Array.contains(green, v)){
-									return '<span style="color:green;">' + v + '</span>';
-								}else if(Ext.Array.contains(blue, v)){
-									return '<span style="color:blue;">' + v + '</span>';
-								}else if(Ext.Array.contains(orange, v)){
-									return '<span style="color:orange;">' + v + '</span>';
-								}else if(Ext.Array.contains(red, v)){
-									return '<span style="color:red;">' + v + '</span>';
-								}else{
-									return v;
-								}
-							}
-						},
-						{
-							text: _('range'),
-							menuDisabled: true,
-							dataIndex: 'reference_rage',
-							width: 150
-						},
-						{
-							text: _('notes'),
-							menuDisabled: true,
-							dataIndex: 'notes',
-							width: 300
-						},
-						{
-							text: _('status'),
-							menuDisabled: true,
-							dataIndex: 'observation_result_status',
-							width: 60
-						}
-					]
+				if(patient.data.race && patient.data.race !== ''){
+					CombosData.getDisplayValueByListIdAndOptionValue(14, patient.data.race, function(response){
+						pForm.findField('race_text').setValue(response);
+					});
 				}
-			]
-		})
+
+				if(patient.data.ethnicity && patient.data.ethnicity !== ''){
+					CombosData.getDisplayValueByListIdAndOptionValue(59, patient.data.ethnicity, function(response){
+						pForm.findField('ethnicity_text').setValue(response);
+					});
+				}
+
+				me.getCcdPatientMedicationsGrid().reconfigure(patient.medications());
+				patient.medications().load({
+					params: { reconciled: true }
+				});
+
+				me.getCcdPatientAllergiesGrid().reconfigure(patient.allergies());
+				patient.allergies().load();
+
+				me.getCcdPatientActiveProblemsGrid().reconfigure(patient.activeproblems());
+				patient.activeproblems().load();
+			}
+		});
+
 	},
 
 	onCcdImportWindowCloseBtnClick: function(){
 		this.getCcdImportWindow().close();
 	},
 
-	verifyPatientImport:function(){
-		var me = this,
-			pid = me.getCcdImportWindowPatientSearchField().getValue();
-
-		Ext.Msg.show({
-			title: _('wait'),
-			msg: pid ? _('patient_merge_verification') : _('patient_import_verification'),
-			buttons: Ext.Msg.YESNO,
-			icon: Ext.Msg.QUESTION,
-			fn: function(btn){
-				if(btn == 'yes'){
-					if(pid){
-						me.doPatientSectionsImport(pid);
-					}else{
-						me.doPatientImport();
-					}
-				}
-			}
-		});
-	},
-
-	doPatientImport: function(){
-		var me = this,
-			patient = me.getCcdImportPatientForm().getForm().getRecord();
-
-		patient.set({
-			create_uid: app.user.id,
-			create_date: new Date()
-		});
-
-		patient.save({
-			callback:function(record, operation, success){
-				if(success){
-					me.doPatientSectionsImport(record.data.pid);
-				}else{
-					app.msg(_('oops'), _('record_error'), true);
-				}
-			}
-		});
-	},
-
-	doPatientSectionsImport: function(pid){
-		var me = this,
-			date = new Date(),
-			encounter = me.getCcdImportEncounterForm().getForm().getRecord(),
-
-			// mandatory...
-			allergies = me.getCcdImportAllergiesGrid().getSelectionModel().getSelection(),
-			medications = me.getCcdImportMedicationsGrid().getSelectionModel().getSelection(),
-			problems = me.getCcdImportActiveProblemsGrid().getSelectionModel().getSelection(),
-
-			//optional...
-			procedures = me.getCcdImportProceduresGrid().getSelectionModel().getSelection(),
-			results = me.getCcdImportOrderResultsGrid().getSelectionModel().getSelection(),
-			encounters = me.getCcdImportEncountersGrid().getSelectionModel().getSelection(),
-			i,
-			len;
-
-		// allergies
-		len = allergies.length;
-		for(i = 0; i < len; i++){
-			allergies[i].set({
-				pid: pid,
-				created_uid: app.patient.id,
-				create_date: date
-			});
-			allergies[i].save();
-		}
-
-		// medications
-		len = medications.length;
-		for(i = 0; i < len; i++){
-			medications[i].set({
-				pid: pid,
-				created_uid: app.patient.id,
-				create_date: date
-			});
-			medications[i].save();
-		}
-
-		// problems
-		len = problems.length;
-		for(i = 0; i < len; i++){
-			problems[i].set({
-				pid: pid,
-				created_uid: app.patient.id,
-				create_date: date
-			});
-
-			problems[i].save({
-				callback: function(){
-					me.getCcdImportWindow().close();
-					app.setPatient(pid, null, function(){
-						app.openPatientSummary();
-					});
-					app.msg(_('sweet'), _('patient_data_imported'));
-				}
-			});
-		}
-	},
-
 	onPossiblePatientDuplicatesGridItemDblClick:function(grid, record){
-		var win = grid.up('window');
-		if(win.action != 'ccdImportDuplicateAction') return;
-
 		var me = this,
 			cmb = me.getCcdImportWindowPatientSearchField(),
 			store = cmb.getStore(),
-			records;
+			records,
+			win = grid.up('window');
+
+		if(win.action != 'ccdImportDuplicateAction') return;
 
 		store.removeAll();
 		records = store.add({
@@ -434,27 +277,249 @@ Ext.define('App.controller.patient.CCDImport', {
 
 		cmb.select(records[0]);
 		win.close();
-		me.verifyPatientImport();
+		me.promptVerifyPatientImport();
 	},
 
-	onCcdImportWindowImportBtnClick: function(){
+	onCcdImportWindowPreviewBtnClick: function(){
 		var me = this,
-			patientCtrl = App.app.getController('patient.Patient'),
-			data = me.getCcdImportPatientForm().getRecord().data,
-			pid = me.getCcdImportWindowPatientSearchField().getValue(),
-			params = {
-				fname: data.fname,
-				lname: data.lname,
-				sex: data.sex,
-				DOB: data.DOB
-			};
 
-		if(pid){
-			me.verifyPatientImport();
+			reconcile = true,
+
+			pForm,
+			importPatient = me.getCcdImportPatientForm().getForm().getRecord(),
+			importActiveProblems = me.getCcdImportActiveProblemsGrid().getSelectionModel().getSelection(),
+			importMedications = me.getCcdImportMedicationsGrid().getSelectionModel().getSelection(),
+			importAllergies = me.getCcdImportAllergiesGrid().getSelectionModel().getSelection(),
+
+			mergePatient = me.getCcdPatientPatientForm().getForm().getRecord(),
+			mergeActiveProblems = me.getCcdPatientActiveProblemsGrid().getStore().data.items,
+			mergeMedications = me.getCcdPatientMedicationsGrid().getStore().data.items,
+			mergeAllergies = me.getCcdPatientAllergiesGrid().getStore().data.items,
+
+			isMerge = mergePatient !== undefined,
+
+			i, store, records;
+
+		// check is merge and nothing is selected
+		if(
+			isMerge &&
+			importActiveProblems.length === 0 &&
+			importMedications.length === 0 &&
+			importAllergies.length === 0
+		){
+			app.msg(_('oops'), _('nothing_to_merge'), true);
+			return;
+		}
+
+		if(!me.getCcdImportPreviewWindow()){
+			Ext.create('App.view.patient.windows.CCDImportPreview');
+		}
+		me.getCcdImportPreviewWindow().show();
+
+		pForm = me.getCcdImportPreviewPatientForm().getForm();
+
+		if(isMerge){
+			me.getCcdImportPreviewPatientForm().getForm().loadRecord(mergePatient);
+
+			if(mergePatient.data.race && mergePatient.data.race !== ''){
+				CombosData.getDisplayValueByListIdAndOptionValue(14, mergePatient.data.race, function(response){
+					pForm.findField('race_text').setValue(response);
+				});
+			}
+
+			if(mergePatient.data.ethnicity && mergePatient.data.ethnicity !== ''){
+				CombosData.getDisplayValueByListIdAndOptionValue(59, mergePatient.data.ethnicity, function(response){
+					pForm.findField('ethnicity_text').setValue(response);
+				});
+			}
 		}else{
-			patientCtrl.lookForPossibleDuplicates(params, 'ccdImportDuplicateAction', function(records){
-				if(records == 0){
-					me.verifyPatientImport();
+			me.getCcdImportPreviewPatientForm().getForm().loadRecord(importPatient);
+
+			if(importPatient.data.race && importPatient.data.race !== ''){
+				CombosData.getDisplayValueByListIdAndOptionValue(14, importPatient.data.race, function(response){
+					pForm.findField('race_text').setValue(response);
+				});
+			}
+
+			if(importPatient.data.ethnicity && importPatient.data.ethnicity !== ''){
+				CombosData.getDisplayValueByListIdAndOptionCode(59, importPatient.data.ethnicity, function(response){
+					pForm.findField('ethnicity_text').setValue(response);
+				});
+			}
+		}
+
+		if(reconcile){
+			// reconcile active problems
+			records = Ext.clone(mergeActiveProblems);
+			store = me.getCcdPatientActiveProblemsGrid().getStore();
+			for(i=0; i < importActiveProblems.length; i++){
+				if(store.find('code' , importActiveProblems[i].data.code) !== -1) continue;
+				Ext.Array.insert(records, 0, [importActiveProblems[i]]);
+			}
+			me.getCcdImportPreviewActiveProblemsGrid().getStore().loadRecords(records);
+
+			// reconcile medications
+			records = Ext.clone(mergeMedications);
+			store = me.getCcdPatientMedicationsGrid().getStore();
+			for(i=0; i < importMedications.length; i++){
+				if(store.find('RXCUI' , importMedications[i].data.RXCUI) !== -1) continue;
+				Ext.Array.insert(records, 0, [importMedications[i]]);
+			}
+			me.getCcdImportPreviewMedicationsGrid().getStore().loadRecords(records);
+
+			// reconcile allergies
+			records = Ext.clone(mergeAllergies);
+			store = me.getCcdPatientAllergiesGrid().getStore();
+			for(i=0; i < importAllergies.length; i++){
+				if(store.find('allergy_code' , importAllergies[i].data.allergy_code) !== -1) continue;
+				Ext.Array.insert(records, 0, [importAllergies[i]]);
+			}
+			me.getCcdImportPreviewAllergiesGrid().getStore().loadRecords(records);
+
+		}else{
+			me.getCcdImportPreviewActiveProblemsGrid().getStore().loadRecords(
+				Ext.Array.merge(importActiveProblems, mergeActiveProblems)
+			);
+			me.getCcdImportPreviewMedicationsGrid().getStore().loadRecords(
+				Ext.Array.merge(importMedications, mergeMedications)
+			);
+			me.getCcdImportPreviewAllergiesGrid().getStore().loadRecords(
+				Ext.Array.merge(importAllergies, mergeAllergies)
+			);
+		}
+	},
+
+	onCcdImportPreviewWindowImportBtnClick: function(){
+		var me = this,
+			patient = me.getCcdImportPreviewPatientForm().getRecord();
+
+		if(patient.data.pid){
+			me.promptVerifyPatientImport(patient);
+		}else{
+			App.app.getController('patient.Patient').lookForPossibleDuplicates(
+				{
+					fname: patient.data.fname,
+					lname: patient.data.lname,
+					sex: patient.data.sex,
+					DOB: patient.data.DOB
+				},
+				'ccdImportDuplicateAction',
+				function(records){
+					if(records.length === 0){
+						me.promptVerifyPatientImport(patient);
+					}
+				}
+			);
+		}
+	},
+
+	promptVerifyPatientImport:function(patient){
+		var me = this;
+
+		Ext.Msg.show({
+			title: _('wait'),
+			msg: patient.data.pid ? _('patient_merge_verification') : _('patient_import_verification'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes'){
+					if(patient.data.pid){
+						me.doPatientSectionsImport(patient);
+					}else{
+						me.doPatientImport(patient);
+					}
+				}
+			}
+		});
+	},
+
+	doPatientImport: function(patient){
+		var me = this;
+
+		patient.set({
+			create_uid: app.user.id,
+			create_date: new Date()
+		});
+
+		patient.save({
+			callback:function(record, operation, success){
+				if(success){
+					me.doPatientSectionsImport(record);
+				}else{
+					app.msg(_('oops'), _('record_error'), true);
+				}
+			}
+		});
+	},
+
+	onCcdImportPreviewWindowCancelBtnClick: function(btn){
+		btn.up('window').close();
+	},
+
+	doPatientSectionsImport: function(patient){
+		var me = this,
+			now = new Date(),
+			pid = patient.data.pid,
+
+		// mandatory...
+			problems = me.getCcdImportPreviewActiveProblemsGrid().getStore().data.items,
+			medications = me.getCcdImportPreviewMedicationsGrid().getStore().data.items,
+			allergies = me.getCcdImportPreviewAllergiesGrid().getStore().data.items,
+			i, len;
+
+		// allergies
+		len = allergies.length;
+		for(i = 0; i < len; i++){
+
+			if(allergies[i].data.id && allergies[i].data.id > 0)  continue;
+
+			allergies[i].set({
+				pid: pid,
+				created_uid: app.patient.id,
+				create_date: now
+			});
+
+			allergies[i].save();
+		}
+
+		// medications
+		len = medications.length;
+		for(i = 0; i < len; i++){
+
+			if(medications[i].data.id && medications[i].data.id > 0)  continue;
+
+			medications[i].set({
+				pid: pid,
+				created_uid: app.patient.id,
+				create_date: now
+			});
+
+			medications[i].save();
+		}
+
+		// problems
+		len = problems.length;
+		for(i = 0; i < len; i++){
+
+			if(problems[i].data.id && problems[i].data.id > 0)  continue;
+
+			problems[i].set({
+				pid: pid,
+				created_uid: app.patient.id,
+				create_date: now
+			});
+
+			problems[i].save({
+				callback: function(){
+
+					me.getCcdImportWindow().close();
+					me.getCcdImportPreviewWindow().close();
+
+					app.setPatient(pid, null, function(){
+						app.openPatientSummary();
+					});
+
+					app.msg(_('sweet'), _('patient_data_imported'));
 				}
 			});
 		}
@@ -462,7 +527,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	onPossiblePatientDuplicatesContinueBtnClick:function(btn){
 		if(btn.up('window').action != 'ccdImportDuplicateAction') return;
-		this.verifyPatientImport();
+		this.promptVerifyPatientImport(this.getCcdImportPreviewPatientForm().getRecord());
 	},
 
 	onCcdImportWindowSelectAllFieldChange: function(field, selected){
@@ -475,14 +540,6 @@ Ext.define('App.controller.patient.CCDImport', {
 				sm.selectAll();
 			}else{
 				sm.deselectAll();
-			}
-		}
-
-		if(me.getCcdImportEncounterAssessmentContainer()){
-			var checkboxes = me.getCcdImportEncounterAssessmentContainer().query('checkbox');
-
-			for(var j = 0; j < checkboxes.length; j++){
-				checkboxes[j].setValue(selected);
 			}
 		}
 	},

@@ -117,12 +117,16 @@ class Patient {
 	 */
 	public function savePatient($params) {
 		$this->setPatientModel();
-		$fullName = Person::fullname($params->fname, $params->mname, $params->lname);
-		$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $fullName);
+
+		if(isset($params->fullname)){
+			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $params->fullname);
+		}else if(isset($params->fname) && isset($params->mname) && isset($params->lname)){
+			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], Person::fullname($params->fname, $params->mname, $params->lname));
+		}
+
 		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
 		$params->update_date = date('Y-m-d H:i:s');
 		$this->patient = (object) $this->p->save($params);
-		$this->patient->fullname = $fullName;
 		$this->createPatientDir($this->patient->pid);
 		return $this->patient;
 	}
@@ -187,6 +191,31 @@ class Patient {
 	}
 
 	/**
+	 * @param $username
+	 *
+	 * @return mixed
+	 */
+	public function getPatientByUsername($username) {
+
+		$this->setPatientModel();
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'portal_username';
+		$params->filter[0]->value = $username;
+		$this->patient = $this->p->load($params)->one();
+
+		if($this->patient !== false){
+			$this->patient['pic'] = $this->patient['image'];
+			$this->patient['age'] = $this->getPatientAge();
+			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+		}
+
+		unset($params);
+
+		return $this->patient;
+	}
+
+	/**
 	 * @param $pid
 	 *
 	 * @return mixed
@@ -243,13 +272,12 @@ class Patient {
 		$params->create_date = date('Y-m-d H:i:s');
 		$params->update_date = date('Y-m-d H:i:s');
 		$patient = $this->savePatient($params);
-		return array(
+		return [
 			'success' => true,
-			'patient' => array(
-				'pid' => $patient->pid,
-				'fullname' => $patient->fullname
-			)
-		);
+			'patient' => [
+				'pid' => $patient->pid
+			]
+		];
 	}
 
 	/**
@@ -275,8 +303,8 @@ class Patient {
 		$area = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
 		$chart = $this->patientChartOutByPid($this->patient['pid'], $area['area_id']);
 
-		return array(
-			'patient' => array(
+		return [
+			'patient' => [
 				'pid' => $this->patient['pid'],
 				'pubpid' => $this->patient['pubpid'],
 				'name' => $this->getPatientFullName(),
@@ -286,15 +314,16 @@ class Patient {
 				'age' => $this->getPatientAge(),
 				'area' => $area['poolArea'],
 				'priority' => (empty($area) ? null : $area['priority']),
-				'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0)
-			),
-			'chart' => array(
+				'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0),
+			    'record' => $this->patient
+			],
+			'chart' => [
 				'readOnly' => $chart->read_only == '1',
 				'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
 				'outUser' => isset($chart->outChart->uid) ? $this->user->getUserFullNameById($chart->outChart->uid) : 0,
 				'outArea' => isset($chart->outChart->pool_area_id) ? $poolArea->getAreaTitleById($chart->outChart->pool_area_id) : 0,
-			)
-		);
+			]
+		];
 	}
 
 	/**
@@ -306,17 +335,18 @@ class Patient {
 
 	/**
 	 * @param $dob
+	 * @param string $from
 	 *
-	 * @internal param $birthday
 	 * @return array
+	 * @internal param $birthday
 	 */
-	public function getPatientAgeByDOB($dob) {
-		if($this->patient['DOB'] != '0000-00-00 00:00:00'){
-			$today = new DateTime(date('Y-m-d'));
+	public static function getPatientAgeByDOB($dob, $from = 'now') {
+		if($dob != '0000-00-00 00:00:00'){
+			$from = $from == 'now' ? new DateTime(date('Y-m-d')) : $from;
 			$t = new DateTime(date($dob));
-			$age['days'] = $t->diff($today)->d;
-			$age['months'] = $t->diff($today)->m;
-			$age['years'] = $t->diff($today)->y;
+			$age['days'] = $t->diff($from)->d;
+			$age['months'] = $t->diff($from)->m;
+			$age['years'] = $t->diff($from)->y;
 			if($age['years'] >= 2){
 				$ageStr = $age['years'] . ' yr(s)';
 			} else {
@@ -330,19 +360,19 @@ class Patient {
 					}
 				}
 			}
-			return array(
+			return [
 				'DMY' => $age,
 				'str' => $ageStr
-			);
+			];
 		} else {
-			return array(
-				'DMY' => array(
+			return [
+				'DMY' => [
 					'years' => 0,
 					'months' => 0,
 					'days' => 0
-				),
+				],
 				'str' => '<span style="color:red">Age</span>'
-			);
+			];
 		}
 	}
 
@@ -398,8 +428,8 @@ class Patient {
 	public function patientLiveSearch(stdClass $params) {
 		$this->setPatientModel();
 		$conn = Matcha::getConn();
-		$whereValues = array();
-		$where = array();
+		$whereValues = [];
+		$where = [];
 		$queries = explode(' ', $params->query);
 		foreach($queries as $index => $query){
 			$query = trim($query);
@@ -431,10 +461,10 @@ class Patient {
  								 FROM `patient` WHERE ' . implode(' AND ', $where) . ' LIMIT 300');
 		$sth->execute($whereValues);
 		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return array(
+		return [
 			'totals' => count($patients),
 			'rows' => array_slice($patients, $params->start, $params->limit)
-		);
+		];
 	}
 
 	private function createPatientDir($pid) {
@@ -453,7 +483,7 @@ class Patient {
 
 	public function getPatientAddressById($pid) {
 		$this->setPatientModel();
-		$p = $this->p->load(array('pid' => $pid))->one();
+		$p = $this->p->load(['pid' => $pid])->one();
 		$address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
 		return $address;
 	}
@@ -537,7 +567,7 @@ class Patient {
 	///////////////////////////////////////////////////////
 	public function getDOBByPid($pid) {
 		$this->setPatientModel();
-		$p = $this->p->load(array('pid'=>$pid))->one();
+		$p = $this->p->load(['pid'=>$pid])->one();
 		return $p['DOB'];
 	}
 
@@ -567,7 +597,7 @@ class Patient {
 
 	public function getPatientSexByPid($pid) {
 		$this->setPatientModel();
-		$p = $this->p->load(array('pid'=>$pid))->one();
+		$p = $this->p->load(['pid'=>$pid])->one();
 		return $p['sex'];
 	}
 
@@ -584,7 +614,7 @@ class Patient {
 
 	public function getPatientActiveProblemsById($pid, $tablexx, $columnName) {
 		$records = $this->p->sql("SELECT $columnName FROM $tablexx WHERE pid ='$pid'")->all();
-		$rows = array();
+		$rows = [];
 		foreach($records as $record){
 			if(!isset($record['end_date']) || $record['end_date'] != null || $record['end_date'] != '0000-00-00 00:00:00'){
 				$rows[] = $record;
@@ -605,16 +635,16 @@ class Patient {
 	}
 
 	public function getMeaningfulUserAlertByPid(stdClass $params) {
-		$record = array();
+		$record = [];
 
 		$this->setPatientModel();
-		$patient = $this->p->load($params->pid, array('language', 'race', 'ethnicity', 'fname', 'lname', 'sex', 'DOB',))->one();
+		$patient = $this->p->load($params->pid, ['language', 'race', 'ethnicity', 'fname', 'lname', 'sex', 'DOB',])->one();
 		foreach($patient as $key => $val){
 			$val = ($val == null || $val == '') ? false : true;
-			$record[] = array(
+			$record[] = [
 				'name' => $key,
 				'val' => $val
-			);
+			];
 		}
 		return $record;
 	}
@@ -640,7 +670,7 @@ class Patient {
 //				  FROM `patient`
 // 				 WHERE `fname` SOUNDS LIKE 'sudipto'"
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -666,10 +696,10 @@ class Patient {
 		}
 
 		$results = $this->p->sql($sql)->all();
-		return array('total' => count($results), 'data' => $results);
+		return ['total' => count($results), 'data' => $results];
 	}
 
-
+}
 
 //DROP FUNCTION IF EXISTS UC_FIRST;
 //CREATE FUNCTION UC_FIRST(oldWord VARCHAR(255)) RETURNS VARCHAR(255) RETURN CONCAT(UCASE(SUBSTRING(oldWord, 1, 1)),SUBSTRING(oldWord, 2));
@@ -704,5 +734,4 @@ class Patient {
 //# MySQL returned an empty result set (i.e. zero rows).
 //
 //DELIMITER ;
-}
 

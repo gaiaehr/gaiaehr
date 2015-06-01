@@ -22,6 +22,10 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 	hideLabel: true,
 	displayField: 'FullySpecifiedName',
 	valueField: 'ConceptId',
+	emptyText: _('search') + '...',
+	typeAhead: false,
+	hideTrigger: true,
+	minChars: 3,
 	initComponent: function(){
 		var me = this;
 
@@ -46,6 +50,7 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 					type: 'int'
 				}
 			],
+			idProperty: 'ConceptId',
 			proxy: {
 				type: 'direct',
 				api: {
@@ -67,10 +72,6 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: _('search') + '...',
-			typeAhead: false,
-			hideTrigger: true,
-			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',

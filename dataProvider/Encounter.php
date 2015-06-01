@@ -125,9 +125,9 @@ class Encounter {
 		$records = $this->e->load($params)->all();
 		unset($params);
 		if(count($records['encounter']) > 0){
-			return array('encounter' => true);
+			return ['encounter' => true];
 		} else {
-			return array('encounter' => false);
+			return ['encounter' => false];
 		}
 	}
 
@@ -140,12 +140,12 @@ class Encounter {
 		$record = $this->e->save($params);
 		$encounter = (array)$record['encounter'];
 		unset($record);
-		$default = array(
+		$default = [
 			'pid' => $encounter['pid'],
 			'eid' => $encounter['eid'],
 			'uid' => $encounter['open_uid'],
 			'date' => date('Y-m-d H:i:s')
-		);
+		];
 
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
 			$this->addReviewOfSystems((object)$default);
@@ -172,16 +172,16 @@ class Encounter {
 			$this->addHCFA((object)$default);
 		}
 
-		$this->poolArea->updateCurrentPatientPoolAreaByPid(array(
+		$this->poolArea->updateCurrentPatientPoolAreaByPid([
 			'eid' => $encounter['eid'],
 			'priority' => $encounter['priority']
-		), $encounter['pid']);
+		], $encounter['pid']);
 		$this->setEid($encounter['eid']);
 
-		return array(
+		return [
 			'success' => true,
 			'encounter' => $encounter
-		);
+		];
 	}
 
 	/**
@@ -224,18 +224,18 @@ class Encounter {
 		}
 
 		if($record === false)
-			return array();
+			return [];
 		$encounter = (array)$record['encounter'];
 		$this->setEid($encounter['eid']);
 		unset($record);
 
 		$relations = isset($params->relations) ? $params->relations : $relations;
 		if($relations == false)
-			return array('encounter' => $encounter);
+			return ['encounter' => $encounter];
 		$encounter = $this->getEncounterRelations($encounter, $allVitals);
 
 		unset($filters);
-		return array('encounter' => $encounter);
+		return ['encounter' => $encounter];
 	}
 
 	private function getEncounterRelations($encounter, $allVitals = true) {
@@ -287,24 +287,24 @@ class Encounter {
 		$encounter = (array)$record['encounter'];
 		$encounter['patient'] = $this->patient->getPatientDemographicDataByPid($encounter['pid']);
 		if(!empty($e)){
-			return array(
+			return [
 				'success' => true,
 				'encounter' => $e
-			);
+			];
 		} else {
-			return array(
+			return [
 				'success' => false,
 				'error' => "Encounter ID $params->eid not found"
-			);
+			];
 		}
 	}
 
 	public function updateEncounterPriority($params) {
 		$this->updateEncounter($params);
-		$this->poolArea->updateCurrentPatientPoolAreaByPid(array(
+		$this->poolArea->updateCurrentPatientPoolAreaByPid([
 			'eid' => $params->eid,
 			'priority' => $params->priority
-		), $params->pid);
+		], $params->pid);
 	}
 
 	/**
@@ -324,35 +324,35 @@ class Encounter {
 
 		/** verify permissions (sign encounter and supervisor) */
 		if(!ACL::hasPermission('sign_enc') || ($params->isSupervisor && !ACL::hasPermission('sign_enc_supervisor'))){
-			return array(
+			return [
 				'success' => false,
 				'error' => 'access_denied'
-			);
+			];
 		}
 
 		$user = new User();
 		if($params->isSupervisor){
 			if($params->supervisor_uid != $_SESSION['user']['id']){
 				unset($user);
-				return array(
+				return [
 					'success' => false,
 					'error' => 'supervisor_does_not_match_user'
-				);
+				];
 			}
 			if(!$user->verifyUserPass($params->signature, $params->supervisor_uid)){
 				unset($user);
-				return array(
+				return [
 					'success' => false,
 					'error' => 'incorrect_password'
-				);
+				];
 			}
 		} else {
 			if(!$user->verifyUserPass($params->signature)){
 				unset($user);
-				return array(
+				return [
 					'success' => false,
 					'error' => 'incorrect_password'
-				);
+				];
 			}
 		}
 		unset($user);
@@ -366,10 +366,10 @@ class Encounter {
 		}
 
 		$data = $this->updateEncounter($params);
-		return array(
+		return [
 			'success' => true,
 			'data' => $data
-		);
+		];
 
 	}
 
@@ -391,7 +391,7 @@ class Encounter {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function getSoapHistory(stdClass $params) {
+	public function getSoapHistory($params) {
 		$filters = new stdClass();
 		$filters->filter[0] = new stdClass();
 		$filters->filter[0]->property = 'eid';
@@ -401,14 +401,21 @@ class Encounter {
 		$filters->filter[1]->property = 'pid';
 		$filters->filter[1]->operator = '=';
 		$filters->filter[1]->value = $params->pid;
+
+		$filters->sort[0] = new stdClass();
+		$filters->sort[0]->property = 'service_date';
+		$filters->sort[0]->direction = 'DESC';
+
 		$encounters = $this->getEncounters($filters);
+
+		unset($filters->sort[0], $filters->sort);
 
 		// switch the operator to =
 		$filters->filter[0]->operator = '=';
 		// remove the pid filter we don't need it
 		unset($filters->filter[1]);
 
-		foreach($encounters AS $i => $encounter){
+		foreach($encounters AS $i => &$encounter){
 			$filters->filter[0]->value = $encounter['eid'];
 			$soap = $this->getSoap($filters);
 			$encounter['service_date'] = date($_SESSION['globals']['date_time_display_format'], strtotime($encounter['service_date']));
@@ -420,7 +427,6 @@ class Encounter {
 			$encounter['objective'] = $soap['objective'] . $this->getObjectiveExtraDataByEid($encounter['eid']);
 			$encounter['assessment'] = $soap['assessment'] . '<ul  class="ProgressNote-ul">' . $icds . '</ul>';
 			$encounter['plan'] = $soap['plan'];
-			$encounters[$i] = $encounter;
 			unset($soap);
 		}
 		unset($filters);
@@ -435,7 +441,7 @@ class Encounter {
 	public function getEncounterCodes($params) {
 		if(isset($params->eid))
 			return $this->getEncounterServiceCodesByEid($params->eid);
-		return array();
+		return [];
 	}
 
 	public function getEncounterServiceCodesByEid($eid) {
@@ -454,7 +460,7 @@ class Encounter {
 	 */
 	public function getDictationByEid($eid) {
 		$sth = $this->conn->prepare("SELECT * FROM `encounter_dictation` WHERE eid = ? ORDER BY `date` DESC");
-		$sth->execute(array($eid));
+		$sth->execute([$eid]);
 		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -486,15 +492,15 @@ class Encounter {
 		 * Add Review of Systems to progress note
 		 */
 		if($_SESSION['globals']['enable_encounter_review_of_systems']){
-			$foo = array();
+			$foo = [];
 			foreach($encounter['reviewofsystems'] as $key => $value){
 				if($key != 'id' && $key != 'pid' && $key != 'eid' && $key != 'uid' && $key != 'date'){
 					if($value != null && $value != 'null'){
 						$value = ($value == 1 || $value == '1') ? 'Yes' : 'No';
-						$foo[] = array(
+						$foo[] = [
 							'name' => $key,
 							'value' => $value
-						);
+						];
 					}
 				}
 			}
@@ -511,7 +517,7 @@ class Encounter {
 
 			if(count($dxCodes) > 0){
 				$dxOl = '';
-				$dxGroups = array();
+				$dxGroups = [];
 				foreach($dxCodes as $dxCode){
 					$dxGroups[$dxCode['dx_group']][] = $dxCode;
 				}
@@ -528,7 +534,7 @@ class Encounter {
 
 			$soap = $this->getSoapByEid($eid);
 			$soap['assessment'] = isset($soap['assessment']) ? $soap['assessment'] : '';
-			$soap['objective'] = $this->getObjectiveExtraDataByEid($eid);
+			$soap['objective'] = (isset($soap['objective']) ? $soap['objective'] : '') . $this->getObjectiveExtraDataByEid($eid);
 			$soap['assessment'] = $soap['assessment'] . (isset($dxOl) ? $dxOl : '');
 			$encounter['soap'] = $soap;
 		}
@@ -620,8 +626,8 @@ class Encounter {
 	}
 
 	public function checkoutAlerts(stdClass $params) {
-		$alerts = array();
-		$records = $this->e->load(array('eid' => $params->eid), array(
+		$alerts = [];
+		$records = $this->e->load(['eid' => $params->eid], [
 				'review_immunizations',
 				'review_allergies',
 				'review_active_problems',
@@ -629,14 +635,14 @@ class Encounter {
 				'review_alcohol',
 				'review_smoke',
 				'review_pregnant'
-			))->one();
+		])->one();
 		foreach($records as $key => $rec){
 			if($rec != 0 && $rec != null){
 				unset($records[$key]);
 			}
 		}
 		foreach($records as $key => $rec){
-			$foo = array();
+			$foo = [];
 			$foo['alert'] = 'Need to ' . str_replace('_', ' ', $key) . ' area';
 			$foo['alertType'] = 1;
 			$alerts[] = $foo;
@@ -658,10 +664,10 @@ class Encounter {
 		$date = date('Y-m-d H:i:s', $date);
 		$sql = "SELECT * FROM `encounters` WHERE (pid= ? AND close_date IS NULL) AND service_date >= ?";
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array(
+		$sth->execute([
 			$params->pid,
 			$date
-		));
+		]);
 		$data = $sth->fetch(PDO::FETCH_ASSOC);
 		if(isset($data['eid'])){
 			return true;
@@ -674,7 +680,7 @@ class Encounter {
 	public function getEncounterFollowUpInfoByEid($eid) {
 		$sql = "SELECT followup_time, followup_facility FROM encounters WHERE eid = ?";
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array($eid));
+		$sth->execute([$eid]);
 		$rec = $sth->fetch(PDO::FETCH_ASSOC);
 		if($rec !== false){
 			$rec['followup_facility'] = intval($rec['followup_facility']);
@@ -685,7 +691,7 @@ class Encounter {
 	public function getEncounterMessageByEid($eid) {
 		$sql = "SELECT message FROM encounters WHERE eid = ?";
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array($eid));
+		$sth->execute([$eid]);
 		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -823,11 +829,11 @@ class Encounter {
 		$sql .= ' UNION ';
 		$sql .= 'SELECT `id` AS record_id, \'note\' AS document_type, \'Doctors Note\' AS description FROM `patient_doctors_notes` WHERE `eid` = ?';
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array(
+		$sth->execute([
 			$eid,
 			$eid,
 			$eid
-		));
+		]);
 		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 }

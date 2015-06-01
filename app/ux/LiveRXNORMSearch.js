@@ -123,7 +123,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> NDC: {NDC} </span></h3></div>';
+					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
 				}
 			},
 			pageSize: 25

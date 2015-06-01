@@ -79,7 +79,10 @@ class authProcedures {
 		// Username & password match
 		//-------------------------------------------
 		$u = MatchaModel::setSenchaModel('App.model.administration.User');
-		$user = $u->load(array('username' => $params->authUser, 'authorized' => 1), array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'npi', 'password'))->one();
+		$user = $u->load(
+			array('username' => $params->authUser, 'authorized' => 1),
+			array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'npi', 'password')
+		)->one();
 
 		if($user === false || $params->authPass != $user['password']){
 			return array('success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.');

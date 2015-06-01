@@ -16,6 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+Ext.override(Ext.data.writer.Writer, {
+	writeAllFields: false
+});
+
 Ext.override(Ext.data.proxy.Server, {
     // remoteGroup default to true
     remoteGroup: true,
@@ -332,9 +337,12 @@ Ext.override(Ext.form.field.Checkbox, {
     inputValue: '1',
     uncheckedValue: '0'
 });
+
 Ext.override(Ext.form.field.Date, {
-    format: 'Y-m-d'
+	format: g('date_display_format'),
+	submitFormat: 'Y-m-d'
 });
+
 Ext.override(Ext.grid.Panel, {
     emptyText: 'Nothing to Display',
 	columnLines: true

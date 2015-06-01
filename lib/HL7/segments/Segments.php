@@ -25,7 +25,7 @@ class Segments {
 	/**
 	 * @var array
 	 */
-	public $data = array();
+	public $data = [];
 	/**
 	 * @var HL7
 	 */
@@ -33,7 +33,7 @@ class Segments {
 	/**
 	 * @var bool|array
 	 */
-	protected $children = array();
+	protected $children = [];
 
 	/**
 	 * array of fields defining other fields
@@ -46,13 +46,15 @@ class Segments {
 	 * and field 3 defines field 7
 	 * @var array
 	 */
-	protected $dynamicFields = array();
+	protected $dynamicFields = [];
 
-	protected $repeatableFields = array();
+	protected $repeatableFields = [];
 
-	protected $requiredFields = array();
+	protected $requiredFields = [];
 
-	protected $fieldsLengths = array();
+	protected $fieldsLengths = [];
+
+	protected $fieldsStructure = [];
 
 	/**
 	 * @param HL7 $hl7 HL7 instance
@@ -60,7 +62,7 @@ class Segments {
 	 */
 	function __construct($hl7, $segment = null) {
 		$this->hl7 = $hl7;
-		$this->rawSeg = array();
+		$this->rawSeg = [];
 		$this->rawSeg[0] = $segment;
 		if($segment == 'MSH'){
 			$this->rawSeg[1] = '|';
@@ -193,7 +195,7 @@ class Segments {
 
 					if($repeatable){
 
-							$foo = array();
+							$foo = [];
 						$j = 0;
 						foreach(explode('~', $fieldString) AS $rep){
 							// copy the empty structure
@@ -239,6 +241,7 @@ class Segments {
 		$foo = explode('.', $field);
 
 		if($this->isRepeatable($foo[0])){
+			if(!isset($this->rawSeg[$foo[0]][$index])) $this->rawSeg[$foo[0]][$index] = $this->fieldsStructure[$foo[0]];
 			if(count($foo) == 1){
 				$this->rawSeg[$foo[0]][$index] = $data;
 			} elseif(count($foo) == 2) {
@@ -254,6 +257,10 @@ class Segments {
 			} elseif(count($foo) == 3) {
 				$this->rawSeg[$foo[0]][$foo[1]][$foo[2]] = $data;
 			}
+		}
+
+		if(array_key_exists($field, $this->dynamicFields)){
+			$this->setFieldType($this->dynamicFields[$field], $data, false);
 		}
 	}
 
@@ -280,7 +287,7 @@ class Segments {
 	 */
 	protected function getChildren($segment = null, $all = false) {
 
-		$children = array();
+		$children = [];
 		$start = false;
 		$stop = false;
 		$segments = $this->hl7->getSegments();
@@ -311,7 +318,7 @@ class Segments {
 	 */
 	protected function getType($type) {
 
-		$types = array();
+		$types = [];
 
 		$types['ID'] = '';                  // (ID)
 		$types['ST'] = '';                  // (ST)
@@ -760,9 +767,9 @@ class Segments {
 
 	private function setFieldType($fieldKey, $type, $repeatable) {
 		if($repeatable){
-			$this->rawSeg[$fieldKey][0] = $this->getType($type);
+			$this->rawSeg[$fieldKey][0] = $this->fieldsStructure[$fieldKey] = $this->getType($type);
 		}else{
-			$this->rawSeg[$fieldKey] = $this->getType($type);
+			$this->rawSeg[$fieldKey] = $this->fieldsStructure[$fieldKey] = $this->getType($type);
 		}
 	}
 
@@ -779,6 +786,8 @@ class Segments {
 		if($repeatable){
 			$this->setRepeatableField($fieldKey);
 		}
+
+
 	}
 
 	protected function setDynamicFields() {

@@ -13,6 +13,6 @@ include_once('SoapHandler.php');
 ini_set('soap.wsdl_cache_enabled', 0);
 ini_set('soap.wsdl_cache_ttl', 0);
 
-$server = new SoapServer('http://192.168.1.128/gaiaehr/dataProvider/SOAP/wsdl.php?wsdl');
+$server = new SoapServer('http://localhost/gaiaehr/dataProvider/SOAP/wsdl.php?wsdl');
 $server->setClass('SoapHandler');
 $server->handle();

@@ -17,11 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/lib/HL7/HL7.php');
 include_once(ROOT . '/lib/HL7/HL7Client.php');
 
 class HL7Messages {
 
+	/**
+	 * @var PDO
+	 */
+	public $conn;
 	/**
 	 * @var HL7
 	 */
@@ -85,6 +90,7 @@ class HL7Messages {
 
 	function __construct() {
 		$this->hl7 = new HL7();
+		$this->conn = Matcha::getConn();
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
 		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
@@ -92,6 +98,23 @@ class HL7Messages {
 		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
 		$this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
 		$this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
+	}
+
+	function broadcastADT($params){
+		$this->c->addFilter('active', 1);
+		$clients = $this->c->load()->all();
+
+		foreach($clients as $client){
+			$foo = new stdClass();
+			$foo->to = $client['id'];
+			$foo->from = $params->fid;
+			$foo->pid = $params->pid;
+			$foo->eid = isset($params->eid) ? $params->eid : 0;
+			$this->sendADT($foo, $params->event);
+			unset($foo);
+		}
+
+		return [ 'success' => true ];
 	}
 
 	/**
@@ -111,15 +134,67 @@ class HL7Messages {
 		$msh = $this->setMSH();
 		$msh->setValue('9.1', 'ADT');
 		$msh->setValue('9.2', $event);
-		$msh->setValue('9.3', 'ADT_'.$event);
+		$msh->setValue('9.3', 'ADT_A01');
+
+		$msh->setValue('21.1', 'PH_SS-NoAck');
+		$msh->setValue('21.2', 'SS Sender');
+		$msh->setValue('21.3', '2.16.840.1.114222.4.10.3');
+		$msh->setValue('21.4', 'ISO');
+
+		$this->setEVN();
+
 		// PID
 		$this->setPID();
 		$this->setPV1();
 
 		// continue with message
-		if($event == '001'){
+		if($event == 'A04'){
 
+			// specialty
+			$obx = $this->hl7->addSegment('OBX');
+			$obx->setValue('1', 1);
+			$obx->setValue('2', 'CWE');
+			$obx->setValue('3.1', 'SS003');
+			$obx->setValue('3.3', 'PHINQUESTION');
 
+			$sth = $this->conn->prepare('SELECT * FROM `specialties` WHERE id = ?');
+			$sth->execute([$this->encounter->specialty_id]);
+			$specialty = $sth->fetch(PDO::FETCH_ASSOC);
+			if($specialty !== false){
+				$obx->setValue('5.1', $specialty['taxonomy']);
+				$obx->setValue('5.2', $specialty['title']);
+				$obx->setValue('5.3', 'NUCC');
+				$obx->setValue('11', 'F');
+			}
+			unset($obx);
+
+			// Age - Reportedx
+
+			$obx = $this->hl7->addSegment('OBX');
+			$obx->setValue('1', 2);
+			$obx->setValue('2', 'NM');
+			$obx->setValue('3.1', '21612-7');
+			$obx->setValue('3.3', 'LN');
+			$obx->setValue('5', (string) $this->patient->age['DMY']['years']);
+			$obx->setValue('6.1', 'a');
+			$obx->setValue('6.3', 'UCUM');
+			$obx->setValue('11', 'F');
+			unset($obx);
+
+			$obx = $this->hl7->addSegment('OBX');
+			$obx->setValue('1', 3);
+			$obx->setValue('2', 'CWE');
+			$obx->setValue('3.1', '8661-1');
+			$obx->setValue('3.3', 'LN');
+			$obx->setValue('5.9', $this->encounter->brief_description);
+			$obx->setValue('11', 'F');
+
+			$dg1 = $this->hl7->addSegment('DG1');
+			$dg1->setValue('1', 1);
+			$dg1->setValue('3.1', '4871');
+			$dg1->setValue('3.2', 'Influenza with other respiratory manifestations');
+			$dg1->setValue('3.3', 'I9CDX');
+			$dg1->setValue('6', 'W');
 		}
 
 		$msgRecord = $this->saveMsg();
@@ -295,14 +370,29 @@ class HL7Messages {
 		//
 		$msh = $this->hl7->addSegment('MSH');
 		$msh->setValue('3.1', 'GaiaEHR'); // Sending Application
-		$msh->setValue('4.1', addslashes($this->from['name'])); // Sending Facility
+		$msh->setValue('4.1', addslashes(substr($this->from['name'], 0, 20))); // Sending Facility
+		$msh->setValue('4.2', $this->from['npi']);
+		$msh->setValue('4.3', 'NPI');
 		$msh->setValue('5.1', $this->to['application_name']); // Receiving Application
 		$msh->setValue('6.1', $this->to['facility']); // Receiving Facility
+		$msh->setValue('7.1', date('YmdHis')); // Message Date Time
 		$msh->setValue('11.1', 'P'); // D = Debugging P = Production T = Training
 		$msh->setValue('12.1', '2.5.1'); // HL7 version
 		return $msh;
 	}
 
+	private function setEVN(){
+		$evn = $this->hl7->addSegment('EVN');
+		$evn->setValue('2.1', date('YmdHis'));
+		$evn->setValue('7.1', str_replace(' ', '', substr($this->from['name'], 0, 20)));
+		$evn->setValue('7.2', $this->from['npi']);
+		$evn->setValue('7.3', 'NPI');
+	}
+
+	/**
+	 * @return Segments
+	 * @throws Exception
+	 */
 	private function setPID() {
 
 		$this->patient = $this->p->load($this->patient)->one();
@@ -313,7 +403,11 @@ class HL7Messages {
 
 		$this->patient = (object) $this->patient;
 
+		$this->patient->age = Patient::getPatientAgeByDOB($this->patient->DOB);
+
 		$pid = $this->hl7->addSegment('PID');
+
+		$pid->setValue('1', 1);
 
 		if($this->notEmpty($this->patient->pubpid)){
 			$pid->setValue('2.3', $this->patient->pubpid);
@@ -322,15 +416,23 @@ class HL7Messages {
 			$pid->setValue('3.1', $this->patient->pid);
 		}
 		$pid->setValue('3.5', 'MR'); // IDNumber Type (HL70203) MR = Medical Record
-		if($this->notEmpty($this->patient->lname)){
-			$pid->setValue('5.1.1', $this->patient->lname);
+
+		if($this->patient->age['DMY']['years'] == 0){
+//			$pid->setValue('5.1.1', '', 0);
+			$pid->setValue('5.7', 'S', 1);
+		}else{
+			if($this->notEmpty($this->patient->lname)){
+				$pid->setValue('5.1.1', $this->patient->lname);
+			}
+			if($this->notEmpty($this->patient->fname)){
+				$pid->setValue('5.2', $this->patient->fname);
+			}
+			if($this->notEmpty($this->patient->mname)){
+				$pid->setValue('5.3', $this->patient->mname);
+			}
+			$pid->setValue('5.7', 'L');
 		}
-		if($this->notEmpty($this->patient->fname)){
-			$pid->setValue('5.2', $this->patient->fname);
-		}
-		if($this->notEmpty($this->patient->mname)){
-			$pid->setValue('5.3', $this->patient->mname);
-		}
+
 		if($this->notEmpty($this->patient->mothers_name)){
 			$pid->setValue('6.2', $this->patient->mothers_name);
 		}
@@ -346,7 +448,7 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->race)){
 			$pid->setValue('10.1', $this->patient->race);
 			$pid->setValue('10.2', $this->hl7->race($this->patient->race)); //Race Text
-			$pid->setValue('10.3', 'HL70005'); // Race Name of Coding System
+			$pid->setValue('10.3', 'CDCREC'); // Race Name of Coding System
 		}
 		if($this->notEmpty($this->patient->address))
 			$pid->setValue('11.1.1', $this->patient->address);
@@ -366,15 +468,21 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->address)){
 			$pid->setValue('11.7', 'P'); // Address Type P = Permanent
 		}
+
+		$pid->setValue('11.9', '25025');
+
 		if($this->notEmpty($this->patient->home_phone)){
+			$phone = $this->phone($this->patient->home_phone);
+
 			$pid->setValue('13.2', 'PRN'); // PhoneNumber‐Home
-			$pid->setValue('13.6', '000'); // Area/City Code
-			$pid->setValue('13.7', $this->phone($this->patient->home_phone)); // LocalNumber
+			$pid->setValue('13.6', $phone['zip']); // Area/City Code
+			$pid->setValue('13.7',  $phone['number']); // LocalNumber
 		}
 //		if($this->notEmpty($this->patient->work_phone)){
+//		    $phone = $this->phone($this->patient->work_phone);
 //			$PID->setValue('13.2', 'PRN'); // PhoneNumber‐Home
-//			$PID->setValue('13.6', '000'); // Area/City Code
-//			$PID->setValue('13.7', $this->phone($this->patient->work_phone)); // LocalNumber
+//			$PID->setValue('13.6', $phone['zip']); // Area/City Code
+//			$PID->setValue('13.7', $phone['number']); // LocalNumber
 //		}
 		if($this->notEmpty($this->patient->language)){
 			$pid->setValue('15.1', $this->patient->language);
@@ -382,7 +490,7 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->marital_status)){
 			$pid->setValue('16.1', $this->patient->marital_status); // EthnicGroup Identifier
 			$pid->setValue('16.2', $this->hl7->marital($this->patient->marital_status)); // EthnicGroup Text
-			$pid->setValue('16.3', 'HL70002'); // Name of Coding System
+			$pid->setValue('16.3', 'CDCREC'); // Name of Coding System
 		}
 		if($this->notEmpty($this->patient->pubaccount)){
 			$pid->setValue('18.1', $this->patient->pubaccount);
@@ -400,7 +508,15 @@ class HL7Messages {
 			$pid->setValue('20.3', $this->date($this->patient->drivers_license_exp));
 		}
 		if($this->notEmpty($this->patient->ethnicity)){
-			$pid->setValue('22.1', $this->patient->ethnicity);
+			if($this->patient->ethnicity == 'H'){
+				$pid->setValue('22.1', '2135-2');
+				$pid->setValue('22.3', 'CDCREC');
+			}elseif($this->patient->ethnicity == 'N'){
+				$pid->setValue('22.1', '2186-5');
+				$pid->setValue('22.3', 'CDCREC');
+			}else{
+				$pid->setValue('22.1', '$this->patient->ethnicity');
+			}
 		}
 		if($this->notEmpty($this->patient->birth_place)){
 			$pid->setValue('23', $this->patient->birth_place);
@@ -420,12 +536,14 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->death_date)){
 			$pid->setValue('29.1', $this->date($this->patient->death_date));
 		}
-		if($this->notEmpty($this->patient->deceased)){
-			$pid->setValue('30', $this->patient->deceased);
-		}
+//		if($this->notEmpty($this->patient->deceased)){
+//			$pid->setValue('30', $this->patient->deceased);
+//		}
 		if($this->notEmpty($this->patient->update_date)){
 			$pid->setValue('33.1', $this->date($this->patient->update_date));
 		}
+
+		return $pid;
 	}
 
 	private function setPV1(){
@@ -434,10 +552,7 @@ class HL7Messages {
 
 
 		$pv1 = $this->hl7->addSegment('PV1');
-
-		if($this->notEmpty($this->encounter->eid)){
-			$pv1->setValue('1', $this->encounter->eid);
-		}
+		$pv1->setValue('1', 1);
 		/**
 		 * 0004 B Obstetrics
 		 * 0004 C Commercial Account
@@ -506,6 +621,11 @@ class HL7Messages {
 //				$pv1->setValue('8.5', $provider->suffix); // Suffix Sr. Jr
 				$pv1->setValue('8.6', $referring->title); // Prefix Title
 			}
+		}
+
+		if($this->notEmpty($this->encounter->eid)){
+			$pv1->setValue('19.1', $this->encounter->eid);
+			$pv1->setValue('19.5', 'VN');
 		}
 
 		if($this->notEmpty($this->encounter->service_date)){
@@ -737,12 +857,13 @@ class HL7Messages {
 	}
 
 	private function date($date) {
-		$date = str_replace(array(' ',':','-'), '', $date);
+		$date = str_replace([' ',':','-'], '', $date);
 		return $date;
 	}
 
 	private function phone($phone) {
-		return str_replace(array(' ','(',')','-'), '', $phone);
+		$phone = str_replace([' ','(',')','-'], '', $phone);
+		return ['zip' => substr($phone, 0, 3), 'number' => substr($phone, 3, 9)];
 	}
 
 	private function notEmpty($data) {

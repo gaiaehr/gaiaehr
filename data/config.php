@@ -17,825 +17,892 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$API = array(
+$API = [
+
+    'CCDDocumentParse' => [
+        'methods' => [
+            'getTestCCD' => [
+                'len' => 1
+            ]
+        ]
+    ],
     /**
      * Accounting Billing Functions
      */
-    'AccVoucher' => array(
-        'methods' => array(
-            'getVoucher' => array(
+    'AccVoucher' => [
+        'methods' => [
+            'getVoucher' => [
                 'len' => 1
-            ),
-            'addVoucher' => array(
+            ],
+            'addVoucher' => [
                 'len' => 1
-            ),
-            'updateVoucher' => array(
+            ],
+            'updateVoucher' => [
                 'len' => 1
-            ),
-            'destroyVoucher' => array(
+            ],
+            'destroyVoucher' => [
                 'len' => 1
-            ),
-            'getVoucherLines' => array(
+            ],
+            'getVoucherLines' => [
                 'len' => 1
-            ),
-            'addVoucherLine' => array(
+            ],
+            'addVoucherLine' => [
                 'len' => 1
-            ),
-            'updateVoucherLine' => array(
+            ],
+            'updateVoucherLine' => [
                 'len' => 1
-            ),
-            'destroyVoucherLine' => array(
+            ],
+            'destroyVoucherLine' => [
                 'len' => 1
-            ),
-	        'getVisitCheckOutCharges' => array(
+            ],
+	        'getVisitCheckOutCharges' => [
 		        'len' => 1
-	        )
+            ]
 
-        )
-    ),
-    'AdvanceDirective' => array(
-        'methods' => array(
-            'getPatientAdvanceDirectives' => array(
+        ]
+    ],
+    'AdvanceDirective' => [
+        'methods' => [
+            'getPatientAdvanceDirectives' => [
                 'len' => 1
-            ),
-            'getPatientAdvanceDirective' => array(
+            ],
+            'getPatientAdvanceDirective' => [
                 'len' => 1
-            ),
-            'addPatientAdvanceDirective' => array(
+            ],
+            'addPatientAdvanceDirective' => [
                 'len' => 1
-            ),
-            'updatePatientAdvanceDirective' => array(
+            ],
+            'updatePatientAdvanceDirective' => [
                 'len' => 1
-            ),
-            'destroyPatientAdvanceDirective' => array(
+            ],
+            'destroyPatientAdvanceDirective' => [
                 'len' => 1
-            )
-        )
-    ),
-    'Procedures' => array(
-        'methods' => array(
-            'loadProcedures' => array(
+            ]
+        ]
+    ],
+    'AppointmentRequest' => [
+        'methods' => [
+            'getAppointmentRequests' => [
                 'len' => 1
-            ),
-            'saveProcedure' => array(
+            ],
+            'getAppointmentRequest' => [
                 'len' => 1
-            ),
-            'destroyProcedure' => array(
+            ],
+            'addAppointmentRequest' => [
                 'len' => 1
-            )
-        )
-    ),
-    'Providers' => array(
-        'methods' => array(
-            'getProviderCredentializations' => array(
+            ],
+            'updateAppointmentRequest' => [
                 'len' => 1
-            ),
-            'getProviderCredentialization' => array(
+            ],
+            'deleteAppointmentRequest' => [
                 'len' => 1
-            ),
-            'addProviderCredentialization' => array(
+            ]
+        ]
+    ],
+    'Amendments' => [
+        'methods' => [
+            'getAmendment' => [
                 'len' => 1
-            ),
-            'updateProviderCredentialization' => array(
+            ],
+            'getAmendments' => [
                 'len' => 1
-            ),
-            'deleteProviderCredentialization' => array(
+            ],
+            'addAmendment' => [
                 'len' => 1
-            ),
-            'getProviderCredentializationForDate' => array(
+            ],
+            'updateAmendment' => [
+                'len' => 1
+            ],
+            'destroyAmendment' => [
+                'len' => 1
+            ],
+            'getUnreadAmendments' => [
+                'len' => 1
+            ],
+            'getUnViewedAmendments' => [
+                'len' => 1
+            ]
+        ]
+    ],
+    'Procedures' => [
+        'methods' => [
+            'loadProcedures' => [
+                'len' => 1
+            ],
+            'saveProcedure' => [
+                'len' => 1
+            ],
+            'destroyProcedure' => [
+                'len' => 1
+            ]
+        ]
+    ],
+    'Providers' => [
+        'methods' => [
+            'getProviderCredentializations' => [
+                'len' => 1
+            ],
+            'getProviderCredentialization' => [
+                'len' => 1
+            ],
+            'addProviderCredentialization' => [
+                'len' => 1
+            ],
+            'updateProviderCredentialization' => [
+                'len' => 1
+            ],
+            'deleteProviderCredentialization' => [
+                'len' => 1
+            ],
+            'getProviderCredentializationForDate' => [
                 'len' => 3
-            )
-        )
-    ),
-    'DataPortability' => array(
-        'methods' => array(
-            'export' => array(
+            ]
+        ]
+    ],
+    'DataPortability' => [
+        'methods' => [
+            'export' => [
                 'len' => 1
-            )
-        )
-    ),
-    'CPT' => array(
-        'methods' => array(
-            'getCPTs' => array(
+            ]
+        ]
+    ],
+    'CPT' => [
+        'methods' => [
+            'getCPTs' => [
                 'len' => 1
-            ),
-            'getCPT' => array(
+            ],
+            'getCPT' => [
                 'len' => 1
-            ),
-            'addCPT' => array(
+            ],
+            'addCPT' => [
                 'len' => 1
-            ),
-            'updateCPT' => array(
+            ],
+            'updateCPT' => [
                 'len' => 1
-            ),
-            'deleteCPT' => array(
+            ],
+            'deleteCPT' => [
                 'len' => 1
-            ),
-            'query' => array(
+            ],
+            'query' => [
                 'len' => 1
-            )
-        )
-    ),
-    'Insurance' => array(
-        'methods' => array(
-            'getInsuranceCompanies' => array(
+            ]
+        ]
+    ],
+    'Insurance' => [
+        'methods' => [
+            'getInsuranceCompanies' => [
                 'len' => 1
-            ),
-            'getInsuranceCompany' => array(
+            ],
+            'getInsuranceCompany' => [
                 'len' => 1
-            ),
-            'addInsuranceCompany' => array(
+            ],
+            'addInsuranceCompany' => [
                 'len' => 1
-            ),
-            'updateInsuranceCompany' => array(
+            ],
+            'updateInsuranceCompany' => [
                 'len' => 1
-            ),
-            'destroyInsuranceCompany' => array(
+            ],
+            'destroyInsuranceCompany' => [
                 'len' => 1
-            ),
-            'getInsuranceNumbers' => array(
+            ],
+            'getInsuranceNumbers' => [
                 'len' => 1
-            ),
-            'getInsuranceNumber' => array(
+            ],
+            'getInsuranceNumber' => [
                 'len' => 1
-            ),
-            'addInsuranceNumber' => array(
+            ],
+            'addInsuranceNumber' => [
                 'len' => 1
-            ),
-            'updateInsuranceNumber' => array(
+            ],
+            'updateInsuranceNumber' => [
                 'len' => 1
-            ),
-            'destroyInsuranceNumber' => array(
+            ],
+            'destroyInsuranceNumber' => [
                 'len' => 1
-            ),
-            'getInsurances' => array(
+            ],
+            'getInsurances' => [
                 'len' => 1
-            ),
-            'getInsurance' => array(
+            ],
+            'getInsurance' => [
                 'len' => 1
-            ),
-            'addInsurance' => array(
+            ],
+            'addInsurance' => [
                 'len' => 1
-            ),
-            'updateInsurance' => array(
+            ],
+            'updateInsurance' => [
                 'len' => 1
-            ),
-            'destroyInsurance' => array(
+            ],
+            'destroyInsurance' => [
                 'len' => 1
-            ),
-            'getPatientPrimaryInsuranceByPid' => array(
+            ],
+            'getPatientPrimaryInsuranceByPid' => [
                 'len' => 1
-            ),
-            'getPatientSecondaryInsuranceByPid' => array(
+            ],
+            'getPatientSecondaryInsuranceByPid' => [
                 'len' => 1
-            ),
-            'getPatientComplementaryInsuranceByPid' => array(
+            ],
+            'getPatientComplementaryInsuranceByPid' => [
                 'len' => 1
-            )
-        )
-    ),
-    'ReferringProviders' => array(
-        'methods' => array(
-            'getReferringProviders' => array(
+            ]
+        ]
+    ],
+    'ReferringProviders' => [
+        'methods' => [
+            'getReferringProviders' => [
                 'len' => 1
-            ),
-            'getReferringProvider' => array(
+            ],
+            'getReferringProvider' => [
                 'len' => 1
-            ),
-            'addReferringProvider' => array(
+            ],
+            'addReferringProvider' => [
                 'len' => 1
-            ),
-            'updateReferringProvider' => array(
+            ],
+            'updateReferringProvider' => [
                 'len' => 1
-            ),
-            'deleteReferringProvider' => array(
+            ],
+            'deleteReferringProvider' => [
                 'len' => 1
-            )
-        )
-    ),
-    'Disclosure' => array(
-        'methods' => array(
-            'getDisclosures' => array(
+            ],
+            'getReferringProviderFacilities' => [
                 'len' => 1
-            ),
-            'getDisclosure' => array(
+            ],
+            'getReferringProviderFacility' => [
                 'len' => 1
-            ),
-            'addDisclosure' => array(
+            ],
+            'addReferringProviderFacility' => [
                 'len' => 1
-            ),
-            'updateDisclosure' => array(
+            ],
+            'updateReferringProviderFacility' => [
                 'len' => 1
-            ),
-            'destroyDisclosure' => array(
+            ],
+            'deleteReferringProviderFacility' => [
                 'len' => 1
-            )
-        )
-    ),
-    'Reminders' => array(
-        'methods' => array(
-            'getReminders' => array(
+            ]
+        ]
+    ],
+    'Disclosure' => [
+        'methods' => [
+            'getDisclosures' => [
                 'len' => 1
-            ),
-            'getReminder' => array(
+            ],
+            'getDisclosure' => [
                 'len' => 1
-            ),
-            'addReminder' => array(
+            ],
+            'addDisclosure' => [
                 'len' => 1
-            ),
-            'updateReminder' => array(
+            ],
+            'updateDisclosure' => [
                 'len' => 1
-            ),
-            'destroyReminder' => array(
+            ],
+            'destroyDisclosure' => [
                 'len' => 1
-            )
-        )
-    ),
-    'Notes' => array(
-        'methods' => array(
-            'getNotes' => array(
+            ]
+        ]
+    ],
+    'Reminders' => [
+        'methods' => [
+            'getReminders' => [
                 'len' => 1
-            ),
-            'getNote' => array(
+            ],
+            'getReminder' => [
                 'len' => 1
-            ),
-            'addNote' => array(
+            ],
+            'addReminder' => [
                 'len' => 1
-            ),
-            'updateNote' => array(
+            ],
+            'updateReminder' => [
                 'len' => 1
-            ),
-            'destroyNote' => array(
+            ],
+            'destroyReminder' => [
                 'len' => 1
-            )
-        )
-    ),
-    'CupTest' => array(
-        'methods' => array(
-            'cuptest' => array(
+            ]
+        ]
+    ],
+    'Notes' => [
+        'methods' => [
+            'getNotes' => [
                 'len' => 1
-            )
-        )
-    ),
-    'AccAccount' => array(
-        'methods' => array(
+            ],
+            'getNote' => [
+                'len' => 1
+            ],
+            'addNote' => [
+                'len' => 1
+            ],
+            'updateNote' => [
+                'len' => 1
+            ],
+            'destroyNote' => [
+                'len' => 1
+            ]
+        ]
+    ],
+    'CupTest' => [
+        'methods' => [
+            'cuptest' => [
+                'len' => 1
+            ]
+        ]
+    ],
+    'AccAccount' => [
+        'methods' => [
 
-        )
-    ),
+        ]
+    ],
 
-    'WebSearchCodes' => array(
-        'methods' => array(
-			'Search'=>array(
+    'WebSearchCodes' => [
+        'methods' => [
+			'Search'=> [
 				'len'=> 1
-			)
-        )
-    ),
+            ]
+        ]
+    ],
 
-	'Modules' => array(
-		'methods' => array(
-			'getAllModules' => array(
+	'Modules' => [
+		'methods' => [
+			'getAllModules' => [
 				'len' => 0
-			),
-			'getActiveModules' => array(
+            ],
+			'getActiveModules' => [
 				'len' => 0
-			),
-			'getEnabledModules' => array(
+            ],
+			'getEnabledModules' => [
 				'len' => 0
-			),
-			'getDisabledModules' => array(
+            ],
+			'getDisabledModules' => [
 				'len' => 0
-			),
-			'getModuleByName' => array(
+            ],
+			'getModuleByName' => [
 				'len' => 1
-			),
-			'updateModule' => array(
+            ],
+			'updateModule' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 
-	'Emergency' => array(
-		'methods' => array(
-			'createNewEmergency' => array(
+	'Emergency' => [
+		'methods' => [
+			'createNewEmergency' => [
 				'len' => 0
-            )
-        )
-	),
+            ]
+        ]
+    ],
 
-	'Snippets' => array(
-		'methods' => array(
-			'getSoapSnippets' => array(
+	'Snippets' => [
+		'methods' => [
+			'getSoapSnippets' => [
 				'len' => 1
-            ),
-			'getSoapSnippet' => array(
+            ],
+			'getSoapSnippet' => [
 				'len' => 1
-            ),
-			'addSoapSnippets' => array(
+            ],
+			'addSoapSnippets' => [
 				'len' => 1
-            ),
-			'updateSoapSnippets' => array(
+            ],
+			'updateSoapSnippets' => [
 				'len' => 1
-            ),
-			'deleteSoapSnippets' => array(
+            ],
+			'deleteSoapSnippets' => [
 				'len' => 1
-            )
-        )
-	),
+            ]
+        ]
+    ],
 
-	'Orders' => array(
-		'methods' => array(
-			'getPatientOrders' => array(
+	'Orders' => [
+		'methods' => [
+			'getPatientOrders' => [
 				'len' => 1
-            ),
-			'addPatientOrder' => array(
+            ],
+			'addPatientOrder' => [
 				'len' => 1
-            ),
-			'updatePatientOrder' => array(
+            ],
+			'updatePatientOrder' => [
 				'len' => 1
-            ),
-			'deletePatientOrder' => array(
+            ],
+			'deletePatientOrder' => [
 				'len' => 1
-            ),
-			'getOrderResults' => array(
+            ],
+			'getOrderResults' => [
 				'len' => 1
-            ),
-			'addOrderResults' => array(
+            ],
+			'addOrderResults' => [
 				'len' => 1
-            ),
-			'updateOrderResults' => array(
+            ],
+			'updateOrderResults' => [
 				'len' => 1
-            ),
-			'deleteOrderResults' => array(
+            ],
+			'deleteOrderResults' => [
 				'len' => 1
-			),
-			'getOrderResultObservations' => array(
+            ],
+			'getOrderResultObservations' => [
 				'len' => 1
-            ),
-			'addOrderResultObservations' => array(
+            ],
+			'addOrderResultObservations' => [
 				'len' => 1
-            ),
-			'updateOrderResultObservations' => array(
+            ],
+			'updateOrderResultObservations' => [
 				'len' => 1
-            ),
-			'deleteOrderResultObservations' => array(
+            ],
+			'deleteOrderResultObservations' => [
 				'len' => 1
-            )
-		)
-	),
-	'Referrals' => array(
-		'methods' => array(
-			'getPatientReferrals' => array(
+            ]
+        ]
+    ],
+	'Referrals' => [
+		'methods' => [
+			'getPatientReferrals' => [
 				'len' => 1
-            ),
-			'getPatientReferral' => array(
+            ],
+			'getPatientReferral' => [
 				'len' => 1
-            ),
-			'addPatientReferral' => array(
+            ],
+			'addPatientReferral' => [
 				'len' => 1
-            ),
-			'updatePatientReferral' => array(
+            ],
+			'updatePatientReferral' => [
 				'len' => 1
-            ),
-			'deletePatientReferral' => array(
+            ],
+			'deletePatientReferral' => [
 				'len' => 1
-            ),
-		)
-	),
+            ],
+        ]
+    ],
 
-	'Specialties' => array(
-		'methods' => array(
-			'getSpecialties' => array(
+	'Specialties' => [
+		'methods' => [
+			'getSpecialties' => [
 				'len' => 1
-            ),
-			'getSpecialty' => array(
+            ],
+			'getSpecialty' => [
 				'len' => 1
-            ),
-			'addSpecialty' => array(
+            ],
+			'addSpecialty' => [
 				'len' => 1
-            ),
-			'updateSpecialty' => array(
+            ],
+			'updateSpecialty' => [
 				'len' => 1
-            ),
-			'deleteSpecialty' => array(
+            ],
+			'deleteSpecialty' => [
 				'len' => 1
-            ),
-		)
-	),
+            ],
+        ]
+    ],
 
-	'DiagnosisCodes' => array(
-		'methods' => array(
-			'ICDCodeSearch' => array(
+	'DiagnosisCodes' => [
+		'methods' => [
+			'ICDCodeSearch' => [
 				'len' => 1
-			),
-			'liveCodeSearch' => array(
+            ],
+			'liveCodeSearch' => [
 				'len' => 1
-			),
-			'getICDByEid' => array(
+            ],
+			'getICDByEid' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 
-	'Vitals' => array(
-		'methods' => array(
-			'getVitals' => array(
+	'Vitals' => [
+		'methods' => [
+			'getVitals' => [
 				'len' => 1
-			),
-			'addVitals' => array(
+            ],
+			'addVitals' => [
 				'len' => 1
-			),
-			'updateVitals' => array(
+            ],
+			'updateVitals' => [
 				'len' => 1
-			),
-			'getVitalsByPid' => array(
+            ],
+			'getVitalsByPid' => [
 				'len' => 1
-			),
-			'getVitalsByEid' => array(
+            ],
+			'getVitalsByEid' => [
 				'len' => 1
-			),
-			'G2' => array(
+            ],
+			'G2' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 
-	'CognitiveAndFunctionalStatus' => array(
-		'methods' => array(
-			'getPatientCognitiveAndFunctionalStatuses' => array(
+	'CognitiveAndFunctionalStatus' => [
+		'methods' => [
+			'getPatientCognitiveAndFunctionalStatuses' => [
 				'len' => 1
-			),
-			'getPatientCognitiveAndFunctionalStatus' => array(
+            ],
+			'getPatientCognitiveAndFunctionalStatus' => [
 				'len' => 1
-			),
-			'addPatientCognitiveAndFunctionalStatus' => array(
+            ],
+			'addPatientCognitiveAndFunctionalStatus' => [
 				'len' => 1
-			),
-			'updateCognitiveAndFunctionalStatus' => array(
+            ],
+			'updateCognitiveAndFunctionalStatus' => [
 				'len' => 1
-			),
-			'destroyCognitiveAndFunctionalStatus' => array(
+            ],
+			'destroyCognitiveAndFunctionalStatus' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 
-	'ExternalDataUpdate' => array(
-		'methods' => array(
-			'updateCodesWithUploadFile' => array(
+	'ExternalDataUpdate' => [
+		'methods' => [
+			'updateCodesWithUploadFile' => [
 				'formHandler' => true,
 				'len' => 0
-			),
-			'getCodeFiles' => array(
+            ],
+			'getCodeFiles' => [
 				'len' => 1
-			),
-			'updateCodes' => array(
+            ],
+			'updateCodes' => [
 				'len' => 1
-			),
-			'getCurrentCodesInfo' => array(
+            ],
+			'getCurrentCodesInfo' => [
 				'len' => 0
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Encounter Functions
 	 */
-	'Encounter' => array(
-		'methods' => array(
-			'checkOpenEncountersByPid' => array(
+	'Encounter' => [
+		'methods' => [
+			'checkOpenEncountersByPid' => [
 				'len' => 1
-			),
-			'getEncounters' => array(
+            ],
+			'getEncounters' => [
 				'len' => 1
-			),
-			'getEncounter' => array(
+            ],
+			'getEncounter' => [
 				'len' => 1
-			),
-			'getEncounterSummary' => array(
+            ],
+			'getEncounterSummary' => [
 				'len' => 1
-			),
-			'updateEncounter' => array(
+            ],
+			'updateEncounter' => [
 				'len' => 1
-			),
-			'updateEncounterPriority' => array(
+            ],
+			'updateEncounterPriority' => [
 				'len' => 1
-			),
-			'createEncounter' => array(
+            ],
+			'createEncounter' => [
 				'len' => 1
-			),
-			'updateSoap' => array(
+            ],
+			'updateSoap' => [
 				'len' => 1
-			),
-			'getEncounterDxs' => array(
+            ],
+			'getEncounterDxs' => [
 				'len' => 1
-			),
-			'createEncounterDx' => array(
+            ],
+			'createEncounterDx' => [
 				'len' => 1
-			),
-			'updateEncounterDx' => array(
+            ],
+			'updateEncounterDx' => [
 				'len' => 1
-			),
-			'destroyEncounterDx' => array(
+            ],
+			'destroyEncounterDx' => [
 				'len' => 1
-			),
-			'updateReviewOfSystems' => array(
+            ],
+			'updateReviewOfSystems' => [
 				'len' => 1
-			),
-			'updateDictation' => array(
+            ],
+			'updateDictation' => [
 				'len' => 1
-			),
-			'updateHCFA' => array(
+            ],
+			'updateHCFA' => [
 				'len' => 1
-			),
-			'getProgressNoteByEid' => array(
+            ],
+			'getProgressNoteByEid' => [
 				'len' => 1
-			),
-			'signEncounter' => array(
+            ],
+			'signEncounter' => [
 				'len' => 1
-			),
-			'getEncounterEventHistory' => array(
+            ],
+			'getEncounterEventHistory' => [
 				'len' => 1
-			),
-			'getEncounterCodes' => array(
+            ],
+			'getEncounterCodes' => [
 				'len' => 1
-			),
-			'checkoutAlerts' => array(
+            ],
+			'checkoutAlerts' => [
 				'len' => 1
-			),
-			'checkForAnOpenedEncounterByPid' => array(
+            ],
+			'checkForAnOpenedEncounterByPid' => [
 				'len' => 1
-			),
-			'getEncounterFollowUpInfoByEid' => array(
+            ],
+			'getEncounterFollowUpInfoByEid' => [
 				'len' => 1
-			),
-			'getEncounterMessageByEid' => array(
+            ],
+			'getEncounterMessageByEid' => [
 				'len' => 1
-			),
-			'getSoapHistory' => array(
+            ],
+			'getSoapHistory' => [
 				'len' => 1
-			),
-			'updateEncounterHCFAOptions' => array(
+            ],
+			'updateEncounterHCFAOptions' => [
 				'len' => 1
-			),
-			'onReviewAllItemsToReview' => array(
+            ],
+			'onReviewAllItemsToReview' => [
 				'len' => 1
-			),
-			'getEncountersByDate' => array(
+            ],
+			'getEncountersByDate' => [
 				'len' => 1
-			),
-			'getTodayEncounters' => array(
+            ],
+			'getTodayEncounters' => [
 				'len' => 0
-			),
-			'getEncounterPrintDocumentsByEid' => array(
+            ],
+			'getEncounterPrintDocumentsByEid' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Floor Plans function
 	 */
-	'FloorPlans' => array(
-		'methods' => array(
-			'getFloorPlans' => array(
+	'FloorPlans' => [
+		'methods' => [
+			'getFloorPlans' => [
 				'len' => 0
-			),
-			'createFloorPlan' => array(
+            ],
+			'createFloorPlan' => [
 				'len' => 1
-			),
-			'updateFloorPlan' => array(
+            ],
+			'updateFloorPlan' => [
 				'len' => 1
-			),
-			'removeFloorPlan' => array(
+            ],
+			'removeFloorPlan' => [
 				'len' => 1
-			),
-			'getFloorPlanZones' => array(
+            ],
+			'getFloorPlanZones' => [
 				'len' => 1
-			),
-			'createFloorPlanZone' => array(
+            ],
+			'createFloorPlanZone' => [
 				'len' => 1
-			),
-			'updateFloorPlanZone' => array(
+            ],
+			'updateFloorPlanZone' => [
 				'len' => 1
-			),
-			'removeFloorPlanZone' => array(
+            ],
+			'removeFloorPlanZone' => [
 				'len' => 1
-			),
-			'getFloorPlanZonesByFloorPlanId' => array(
+            ],
+			'getFloorPlanZonesByFloorPlanId' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Patient Zones
 	 */
-	'PatientZone' => array(
-		'methods' => array(
-			'addPatientToZone' => array(
+	'PatientZone' => [
+		'methods' => [
+			'addPatientToZone' => [
 				'len' => 1
-			),
-			'removePatientFromZone' => array(
+            ],
+			'removePatientFromZone' => [
 				'len' => 1
-			),
-			'getPatientsZonesByFloorPlanId' => array(
+            ],
+			'getPatientsZonesByFloorPlanId' => [
 				'len' => 1
-			),
-			'removePatientFromZoneByPid' => array(
+            ],
+			'removePatientFromZoneByPid' => [
 				'len' => 1
-			)
-		)
-	),
-	'VectorGraph' => array(
-		'methods' => array(
-			'getGraphData' => array(
+            ]
+        ]
+    ],
+	'VectorGraph' => [
+		'methods' => [
+			'getGraphData' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Calendar Functions
 	 */
-	'Calendar' => array(
-		'methods' => array(
-			'getCalendars' => array(
+	'Calendar' => [
+		'methods' => [
+			'getCalendars' => [
 				'len' => 0
-			),
-			'getEvents' => array(
+            ],
+			'getEvents' => [
 				'len' => 1
-			),
-			'addEvent' => array(
+            ],
+			'addEvent' => [
 				'len' => 1
-			),
-			'updateEvent' => array(
+            ],
+			'updateEvent' => [
 				'len' => 1
-			),
-			'deleteEvent' => array(
+            ],
+			'deleteEvent' => [
 				'len' => 1
-			),
-			'getPatientFutureEvents' => array(
+            ],
+			'getPatientFutureEvents' => [
 				'len' => 1
-			),
-		)
-	),
+            ],
+        ]
+    ],
 	/**
 	 * Messages Functions
 	 */
-	'Messages' => array(
-		'methods' => array(
-			'getMessages' => array(
+	'Messages' => [
+		'methods' => [
+			'getMessages' => [
 				'len' => 1
-			),
-			'deleteMessage' => array(
+            ],
+			'deleteMessage' => [
 				'len' => 1
-			),
-			'sendNewMessage' => array(
+            ],
+			'sendNewMessage' => [
 				'len' => 1
-			),
-			'replyMessage' => array(
+            ],
+			'replyMessage' => [
 				'len' => 1
-			),
-			'updateMessage' => array(
+            ],
+			'updateMessage' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
     /**
 	 * Fees Functions
 	 */
-	'Fees' => array(
-		'methods' => array(
-			'getFilterEncountersBillingData' => array(
+	'Fees' => [
+		'methods' => [
+			'getFilterEncountersBillingData' => [
 				'len' => 1
-			),
-			'getEncountersByPayment' => array(
+            ],
+			'getEncountersByPayment' => [
 				'len' => 1
-			),
-			'addPayment' => array(
+            ],
+			'addPayment' => [
 				'len' => 1
-			),
-			'getPatientBalance' => array(
+            ],
+			'getPatientBalance' => [
 				'len' => 1
-			),
-			'getPaymentsBySearch' => array(
+            ],
+			'getPaymentsBySearch' => [
 				'len' => 1
-			)
-		)
-	),
-	'CarePlanGoals' => array(
-		'methods' => array(
-			'getPatientCarePlanGoals' => array(
+            ]
+        ]
+    ],
+	'CarePlanGoals' => [
+		'methods' => [
+			'getPatientCarePlanGoals' => [
 				'len' => 1
-			),
-			'getPatientCarePlanGoal' => array(
+            ],
+			'getPatientCarePlanGoal' => [
 				'len' => 1
-			),
-			'addPatientCarePlanGoal' => array(
+            ],
+			'addPatientCarePlanGoal' => [
 				'len' => 1
-			),
-			'updatePatientCarePlanGoal' => array(
+            ],
+			'updatePatientCarePlanGoal' => [
 				'len' => 1
-			),
-			'destroyPatientCarePlanGoal' => array(
+            ],
+			'destroyPatientCarePlanGoal' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
     /**
 	 * FamilyHistory Functions
 	 */
-	'FamilyHistory' => array(
-		'methods' => array(
-			'getFamilyHistory' => array(
+	'FamilyHistory' => [
+		'methods' => [
+			'getFamilyHistory' => [
 				'len' => 1
-			),
-			'addFamilyHistory' => array(
+            ],
+			'addFamilyHistory' => [
 				'len' => 1
-			),
-			'updateFamilyHistory' => array(
+            ],
+			'updateFamilyHistory' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Facilities Functions
 	 */
-	'Facilities' => array(
-		'methods' => array(
-			'getFacilities' => array(
+	'Facilities' => [
+		'methods' => [
+			'getFacilities' => [
 				'len' => 1
-			),
-			'addFacility' => array(
+            ],
+			'addFacility' => [
 				'len' => 1
-			),
-			'updateFacility' => array(
+            ],
+			'updateFacility' => [
 				'len' => 1
-			),
-			'deleteFacility' => array(
+            ],
+			'deleteFacility' => [
 				'len' => 1
-			),
-			'getFacility' => array(
+            ],
+			'getFacility' => [
 				'len' => 1
-			),
-			'setFacility' => array(
+            ],
+			'setFacility' => [
 				'len' => 1
-			),
+            ],
 
-			'getFacilityConfigs' => array(
+			'getFacilityConfigs' => [
 				'len' => 1
-			),
-			'getFacilityConfig' => array(
+            ],
+			'getFacilityConfig' => [
 				'len' => 1
-			),
-			'addFacilityConfig' => array(
+            ],
+			'addFacilityConfig' => [
 				'len' => 1
-			),
-			'updateFacilityConfig' => array(
+            ],
+			'updateFacilityConfig' => [
 				'len' => 1
-			),
-			'deleteFacilityConfig' => array(
+            ],
+			'deleteFacilityConfig' => [
 				'len' => 1
-			),
+            ],
 
-			'getDepartments' => array(
+			'getDepartments' => [
 				'len' => 1
-			),
-			'getDepartment' => array(
+            ],
+			'getDepartment' => [
 				'len' => 1
-			),
-			'addDepartment' => array(
+            ],
+			'addDepartment' => [
 				'len' => 1
-			),
-			'updateDepartment' => array(
+            ],
+			'updateDepartment' => [
 				'len' => 1
-			),
-			'deleteDepartment' => array(
+            ],
+			'deleteDepartment' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Allergies Functions
 	 */
-	'Allergies' => array(
-		'methods' => array(
-			'getPatientAllergies' => array(
+	'Allergies' => [
+		'methods' => [
+			'getPatientAllergies' => [
 				'len' => 1
-			),
-			'getPatientAllergy' => array(
+            ],
+			'getPatientAllergy' => [
 				'len' => 1
-			),
-			'addPatientAllergy' => array(
+            ],
+			'addPatientAllergy' => [
 				'len' => 1
-			),
-			'updatePatientAllergy' => array(
+            ],
+			'updatePatientAllergy' => [
 				'len' => 1
-			),
-			'destroyPatientAllergy' => array(
+            ],
+			'destroyPatientAllergy' => [
 				'len' => 1
-			),
-			'searchAllergiesData' => array(
+            ],
+			'searchAllergiesData' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Medical Functions
 	 */
@@ -879,1144 +946,1158 @@ $API = array(
 	 /**
 	 * AddressBook Functions
 	 */
-	'AddressBook' => array(
-		'methods' => array(
-			'getContacts' => array(
+	'AddressBook' => [
+		'methods' => [
+			'getContacts' => [
 				'len' => 1
-			),
-			'getContact' => array(
+            ],
+			'getContact' => [
 				'len' => 1
-			),
-			'addContact' => array(
+            ],
+			'addContact' => [
 				'len' => 1
-			),
-			'updateContact' => array(
+            ],
+			'updateContact' => [
 				'len' => 1
-			),
-			'destroyContact' => array(
+            ],
+			'destroyContact' => [
 				'len' => 1
-			)
-		)
-	),
-	'SnomedCodes' => array(
-		'methods' => array(
-			'liveCodeSearch' => array(
+            ]
+        ]
+    ],
+	'SnomedCodes' => [
+		'methods' => [
+			'liveCodeSearch' => [
 				'len' => 1
-			),
-			'liveProblemCodeSearch' => array(
+            ],
+			'liveProblemCodeSearch' => [
 				'len' => 1
-			),
-			'liveProcedureCodeSearch' => array(
+            ],
+			'liveProcedureCodeSearch' => [
 				'len' => 1
-			),
-			'updateLiveProcedureCodeSearch' => array(
+            ],
+			'updateLiveProcedureCodeSearch' => [
 				'len' => 1
-			),
-			'updateLiveProblemCodeSearch' => array(
+            ],
+			'updateLiveProblemCodeSearch' => [
 				'len' => 1
-			)
-		)
-	),
-	'Rxnorm' => array(
-		'methods' => array(
-			'getRXNORMLiveSearch' => array(
+            ]
+        ]
+    ],
+	'Rxnorm' => [
+		'methods' => [
+			'getRXNORMLiveSearch' => [
 				'len' => 1
-			),
-			'getRXNORMList' => array(
+            ],
+			'getRXNORMList' => [
 				'len' => 1
-			),
-			'getRXNORMAllergyLiveSearch' => array(
+            ],
+			'getRXNORMAllergyLiveSearch' => [
 				'len' => 1
-			),
-			'getMedicationAttributesByRxcui' => array(
+            ],
+			'getMedicationAttributesByRxcui' => [
 				'len' => 1
-			),
-			'getMedicationInstructions' => array(
+            ],
+			'getMedicationInstructions' => [
 				'len' => 1
-			),
-			'getMedicationInstruction' => array(
+            ],
+			'getMedicationInstruction' => [
 				'len' => 1
-			),
-			'addMedicationInstruction' => array(
+            ],
+			'addMedicationInstruction' => [
 				'len' => 1
-			),
-			'updateMedicationInstructions' => array(
+            ],
+			'updateMedicationInstructions' => [
 				'len' => 1
-			),
-			'destroyMedicationInstructions' => array(
+            ],
+			'destroyMedicationInstructions' => [
 				'len' => 1
-			)
-		)
-	),
-	'Medications' => array(
-		'methods' => array(
-			'getPatientMedications' => array(
+            ]
+        ]
+    ],
+	'Medications' => [
+		'methods' => [
+			'getPatientMedications' => [
 				'len' => 1
-			),
-			'getPatientMedication' => array(
+            ],
+			'getPatientMedication' => [
 				'len' => 1
-			),
-			'addPatientMedication' => array(
+            ],
+			'addPatientMedication' => [
 				'len' => 1
-			),
-			'updatePatientMedication' => array(
+            ],
+			'updatePatientMedication' => [
 				'len' => 1
-			),
-			'destroyPatientMedication' => array(
+            ],
+			'destroyPatientMedication' => [
 				'len' => 1
-			)
-		)
-	),
-	'Immunizations' => array(
-		'methods' => array(
-            'getImmunizationsList' => array(
+            ]
+        ]
+    ],
+	'Immunizations' => [
+		'methods' => [
+            'getImmunizationsList' => [
                 'len' => 0
-            ),
-            'getPatientImmunizations' => array(
+            ],
+            'getPatientImmunizations' => [
                 'len' => 1
-            ),
-            'addPatientImmunization' => array(
+            ],
+            'addPatientImmunization' => [
                 'len' => 1
-            ),
-            'updatePatientImmunization' => array(
+            ],
+            'updatePatientImmunization' => [
                 'len' => 1
-            ),
-            'sendVXU' => array(
+            ],
+            'sendVXU' => [
                 'len' => 1
-            ),
-			'getMvx' => array(
+            ],
+			'getMvx' => [
 				'len' => 1
-			),
-			'getMvxForCvx' => array(
+            ],
+			'getMvxForCvx' => [
 				'len' => 1
-			),
-			'getCptByCvx' => array(
+            ],
+			'getCptByCvx' => [
 				'len' => 1
-			),
-			'getImmunizationLiveSearch' => array(
+            ],
+			'getImmunizationLiveSearch' => [
 				'len' => 1
-			),
-			'updateMVXCodes' => array(
+            ],
+			'updateMVXCodes' => [
 				'len' => 1
-			),
-			'updateCVXCodes' => array(
+            ],
+			'updateCVXCodes' => [
 				'len' => 1
-			),
-			'updateCvxCptTable' => array(
+            ],
+			'updateCvxCptTable' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 
-	'Laboratories' => array(
-		'methods' => array(
-			'getLabObservations' => array(
+	'Laboratories' => [
+		'methods' => [
+			'getLabObservations' => [
 				'len' => 1
-			),
-			'addLabObservation' => array(
+            ],
+			'addLabObservation' => [
 				'len' => 1
-			),
-			'updateLabObservation' => array(
+            ],
+			'updateLabObservation' => [
 				'len' => 1
-			),
-			'removeLabObservation' => array(
+            ],
+			'removeLabObservation' => [
 				'len' => 1
-			),
-			'getActiveLaboratoryTypes' => array(
+            ],
+			'getActiveLaboratoryTypes' => [
 				'len' => 1
-			),
-			'indexLoincPanels' => array(
+            ],
+			'indexLoincPanels' => [
 				'len' => 0
-			),
-			'getLabLoincLiveSearch' => array(
+            ],
+			'getLabLoincLiveSearch' => [
 				'len' => 1
-			),
-			'getRadLoincLiveSearch' => array(
+            ],
+			'getRadLoincLiveSearch' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Practice Functions
 	 */
-	'Practice' => array(
-		'methods' => array(
-			'getPharmacies' => array(
+	'Practice' => [
+		'methods' => [
+			'getPharmacies' => [
 				'len' => 0
-			),
-			'addPharmacy' => array(
+            ],
+			'addPharmacy' => [
 				'len' => 1
-			),
-			'updatePharmacy' => array(
+            ],
+			'updatePharmacy' => [
 				'len' => 1
-			),
-			'getLaboratories' => array(
+            ],
+			'getLaboratories' => [
 				'len' => 0
-			),
-			'addLaboratory' => array(
+            ],
+			'addLaboratory' => [
 				'len' => 1
-			),
-			'updateLaboratory' => array(
+            ],
+			'updateLaboratory' => [
 				'len' => 1
-			),
-			'getInsurances' => array(
+            ],
+			'getInsurances' => [
 				'len' => 0
-			),
-			'addInsurance' => array(
+            ],
+			'addInsurance' => [
 				'len' => 1
-			),
-			'updateInsurance' => array(
+            ],
+			'updateInsurance' => [
 				'len' => 1
-			),
-			'getInsuranceNumbers' => array(
+            ],
+			'getInsuranceNumbers' => [
 				'len' => 1
-			),
-			'getX12Partners' => array(
+            ],
+			'getX12Partners' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Globals Functions
 	 */
-	'Globals' => array(
-		'methods' => array(
-			'setGlobals' => array(
+	'Globals' => [
+		'methods' => [
+			'setGlobals' => [
 				'len' => 0
-			),
-			'getGlobals' => array(
+            ],
+			'getGlobals' => [
 				'len' => 0
-			),
-			'getAllGlobals' => array(
+            ],
+			'getAllGlobals' => [
 				'len' => 0
-			),
-			'updateGlobals' => array(
+            ],
+			'updateGlobals' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Lists Functions
 	 */
-	'Lists' => array(
-		'methods' => array(
-			'getOptions' => array(
+	'Lists' => [
+		'methods' => [
+			'getOptions' => [
 				'len' => 1
-			),
-			'addOption' => array(
+            ],
+			'addOption' => [
 				'len' => 1
-			),
-			'updateOption' => array(
+            ],
+			'updateOption' => [
 				'len' => 1
-			),
-			'deleteOption' => array(
+            ],
+			'deleteOption' => [
 				'len' => 1
-			),
-			'sortOptions' => array(
+            ],
+			'sortOptions' => [
 				'len' => 1
-			),
-			'getLists' => array(
+            ],
+			'getLists' => [
 				'len' => 1
-			),
-			'addList' => array(
+            ],
+			'addList' => [
 				'len' => 1
-			),
-			'updateList' => array(
+            ],
+			'updateList' => [
 				'len' => 1
-			),
-			'deleteList' => array(
+            ],
+			'deleteList' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Office Notes Functions
 	 */
-	'OfficeNotes' => array(
-		'methods' => array(
-			'getOfficeNotes' => array(
+	'OfficeNotes' => [
+		'methods' => [
+			'getOfficeNotes' => [
 				'len' => 1
-			),
-			'addOfficeNotes' => array(
+            ],
+			'addOfficeNotes' => [
 				'len' => 1
-			),
-			'updateOfficeNotes' => array(
+            ],
+			'updateOfficeNotes' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Social History Functions
 	 */
-	'SocialHistory' => array(
-		'methods' => array(
-			'getSocialHistories' => array(
+	'SocialHistory' => [
+		'methods' => [
+			'getSocialHistories' => [
 				'len' => 1
-			),
-			'getSocialHistory' => array(
+            ],
+			'getSocialHistory' => [
 				'len' => 1
-			),
-			'addSocialHistory' => array(
+            ],
+			'addSocialHistory' => [
 				'len' => 1
-			),
-			'updateSocialHistory' => array(
+            ],
+			'updateSocialHistory' => [
 				'len' => 1
-			),
-			'destroySocialHistory' => array(
+            ],
+			'destroySocialHistory' => [
 				'len' => 1
-			),
-			'getSmokeStatus' => array(
+            ],
+			'getSmokeStatus' => [
 				'len' => 1
-			),
-			'addSmokeStatus' => array(
+            ],
+			'addSmokeStatus' => [
 				'len' => 1
-			),
-			'updateSmokeStatus' => array(
+            ],
+			'updateSmokeStatus' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Prescriptions Functions
 	 */
-	'Prescriptions' => array(
-		'methods' => array(
-			'getPrescriptions' => array(
+	'Prescriptions' => [
+		'methods' => [
+			'getPrescriptions' => [
 				'len' => 1
-			),
-			'addPrescription' => array(
+            ],
+			'addPrescription' => [
 				'len' => 1
-			),
-			'updatePrescription' => array(
+            ],
+			'updatePrescription' => [
 				'len' => 1
-			),
-			'getPrescriptionMedications' => array(
+            ],
+			'getPrescriptionMedications' => [
 				'len' => 1
-			),
-			'addPrescriptionMedication' => array(
+            ],
+			'addPrescriptionMedication' => [
 				'len' => 1
-			),
-			'updatePrescriptionMedication' => array(
+            ],
+			'updatePrescriptionMedication' => [
 				'len' => 1
-			),
-			'getSigCodesByQuery' => array(
+            ],
+			'getSigCodesByQuery' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Services Functions
 	 */
-	'DataManager' => array(
-		'methods' => array(
-			'getServices' => array(
-				'len' => 1),
-			'addService' => array(
+	'DataManager' => [
+		'methods' => [
+			'getServices' => [
 				'len' => 1
-			),
-			'updateService' => array(
+            ],
+			'addService' => [
 				'len' => 1
-			),
-			'liveCodeSearch' => array(
+            ],
+			'updateService' => [
 				'len' => 1
-			),
-			'getCptCodes' => array(
+            ],
+			'liveCodeSearch' => [
 				'len' => 1
-			),
-			'addCptCode' => array(
+            ],
+			'getCptCodes' => [
 				'len' => 1
-			),
-			'updateCptCode' => array(
+            ],
+			'addCptCode' => [
 				'len' => 1
-			),
-			'deleteCptCode' => array(
+            ],
+			'updateCptCode' => [
 				'len' => 1
-			),
-			'getActiveProblems' => array(
+            ],
+			'deleteCptCode' => [
 				'len' => 1
-			),
-			'addActiveProblems' => array(
+            ],
+			'getActiveProblems' => [
 				'len' => 1
-			),
-			'removeActiveProblems' => array(
+            ],
+			'addActiveProblems' => [
 				'len' => 1
-			),
-			'getMedications' => array(
+            ],
+			'removeActiveProblems' => [
 				'len' => 1
-			),
-			'addMedications' => array(
+            ],
+			'getMedications' => [
 				'len' => 1
-			),
-			'removeMedications' => array(
+            ],
+			'addMedications' => [
 				'len' => 1
-			),
-			'updateMedications' => array(
+            ],
+			'removeMedications' => [
 				'len' => 1
-			),
-			'getAllLabObservations' => array(
+            ],
+			'updateMedications' => [
 				'len' => 1
-			),
-			'getLabObservations' => array(
+            ],
+			'getAllLabObservations' => [
 				'len' => 1
-			),
-			'addLabObservation' => array(
+            ],
+			'getLabObservations' => [
 				'len' => 1
-			),
-			'updateLabObservation' => array(
+            ],
+			'addLabObservation' => [
 				'len' => 1
-			),
-			'removeLabObservation' => array(
+            ],
+			'updateLabObservation' => [
 				'len' => 1
-			),
-			'getActiveLaboratoryTypes' => array(
+            ],
+			'removeLabObservation' => [
+				'len' => 1
+            ],
+			'getActiveLaboratoryTypes' => [
 				'len' => 0
-			)
-		)
-	),
-	'Services' => array(
-		'methods' => array(
+            ]
+        ]
+    ],
+	'Services' => [
+		'methods' => [
 
-            'getEncounterServices' => array(
+            'getEncounterServices' => [
 				'len' => 1
-			),
-            'getEncounterService' => array(
+            ],
+            'getEncounterService' => [
 				'len' => 1
-			),
-            'addEncounterService' => array(
+            ],
+            'addEncounterService' => [
 				'len' => 1
-			),
-            'updateEncounterService' => array(
+            ],
+            'updateEncounterService' => [
 				'len' => 1
-			),
-            'removeEncounterService' => array(
+            ],
+            'removeEncounterService' => [
 				'len' => 1
-			),
+            ],
 
 
 
-			'getServices' => array(
+			'getServices' => [
 				'len' => 1
-			),
+            ],
 
-			'addService' => array(
+			'addService' => [
 				'len' => 1
-			),
-			'updateService' => array(
+            ],
+			'updateService' => [
 				'len' => 1
-			),
-			'liveCodeSearch' => array(
+            ],
+			'liveCodeSearch' => [
 				'len' => 1
-			),
-			'getCptCodes' => array(
+            ],
+			'getCptCodes' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 
 	/**
 	 * DecisionSupport Functions
 	 */
-	'DecisionSupport' => array(
-		'methods' => array(
-			'getDecisionSupportRules' => array(
+	'DecisionSupport' => [
+		'methods' => [
+			'getDecisionSupportRules' => [
 				'len' => 1
-			),
-			'getDecisionSupportRule' => array(
+            ],
+			'getDecisionSupportRule' => [
 				'len' => 1
-			),
-			'addDecisionSupportRule' => array(
+            ],
+			'addDecisionSupportRule' => [
 				'len' => 1
-			),
-			'updateDecisionSupportRule' => array(
+            ],
+			'updateDecisionSupportRule' => [
 				'len' => 1
-			),
-			'deleteDecisionSupportRule' => array(
+            ],
+			'deleteDecisionSupportRule' => [
 				'len' => 1
-			),
-			'getDecisionSupportRuleConcepts' => array(
+            ],
+			'getDecisionSupportRuleConcepts' => [
 				'len' => 1
-			),
-			'getDecisionSupportRuleConcept' => array(
+            ],
+			'getDecisionSupportRuleConcept' => [
 				'len' => 1
-			),
-			'addDecisionSupportRuleConcept' => array(
+            ],
+			'addDecisionSupportRuleConcept' => [
 				'len' => 1
-			),
-			'updateDecisionSupportRuleConcept' => array(
+            ],
+			'updateDecisionSupportRuleConcept' => [
 				'len' => 1
-			),
-			'deleteDecisionSupportRuleConcept' => array(
+            ],
+			'deleteDecisionSupportRuleConcept' => [
 				'len' => 1
-			),
-			'getAlerts' => array(
+            ],
+			'getAlerts' => [
 				'len' => 1
-			)
-		)
-	),
-	'ActiveProblems' => array(
-		'methods' => array(
-			'getPatientActiveProblems' => array(
+            ]
+        ]
+    ],
+	'ActiveProblems' => [
+		'methods' => [
+			'getPatientActiveProblems' => [
 				'len' => 1
-			),
-			'getPatientActiveProblem' => array(
+            ],
+			'getPatientActiveProblem' => [
 				'len' => 1
-			),
-			'addPatientActiveProblem' => array(
+            ],
+			'addPatientActiveProblem' => [
 				'len' => 1
-			),
-			'updatePatientActiveProblem' => array(
+            ],
+			'updatePatientActiveProblem' => [
 				'len' => 1
-			),
-			'destroyPatientActiveProblem' => array(
+            ],
+			'destroyPatientActiveProblem' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Form layout Engine Functions
 	 */
-	'FormLayoutEngine' => array(
-		'methods' => array(
-			'getFields' => array(
+	'FormLayoutEngine' => [
+		'methods' => [
+			'getFields' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Pool Area Functions
 	 */
-	'PoolArea' => array(
-		'methods' => array(
-			'getPatientsArrivalLog' => array(
+	'PoolArea' => [
+		'methods' => [
+			'getPatientsArrivalLog' => [
 				'len' => 1
-			),
-			'addPatientArrivalLog' => array(
+            ],
+			'addPatientArrivalLog' => [
 				'len' => 1
-			),
-			'updatePatientArrivalLog' => array(
+            ],
+			'updatePatientArrivalLog' => [
 				'len' => 1
-			),
-			'removePatientArrivalLog' => array(
+            ],
+			'removePatientArrivalLog' => [
 				'len' => 1
-			),
-			'getPoolAreaPatients' => array(
+            ],
+			'getPoolAreaPatients' => [
 				'len' => 1
-			),
-			'sendPatientToPoolArea' => array(
+            ],
+			'sendPatientToPoolArea' => [
 				'len' => 1
-			),
-			'getActivePoolAreas' => array(
+            ],
+			'getActivePoolAreas' => [
 				'len' => 0
-			),
-			'getFacilityActivePoolAreas' => array(
+            ],
+			'getFacilityActivePoolAreas' => [
 				'len' => 0
-			),
-			'getPatientsByPoolAreaAccess' => array(
+            ],
+			'getPatientsByPoolAreaAccess' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Form layout Builder Functions
 	 */
-	'FormLayoutBuilder' => array(
-		'methods' => array(
-			'getFormDataTable' => array(
+	'FormLayoutBuilder' => [
+		'methods' => [
+			'getFormDataTable' => [
 				'len' => 1
-			),
-			'getForms' => array(
+            ],
+			'getForms' => [
 				'len' => 1
-			),
-			'getParentFields' => array(
+            ],
+			'getParentFields' => [
 				'len' => 1
-			),
-			'getFormFieldsTree' => array(
+            ],
+			'getFormFieldsTree' => [
 				'len' => 1
-			),
-			'createFormField' => array(
+            ],
+			'createFormField' => [
 				'len' => 1
-			),
-			'updateFormField' => array(
+            ],
+			'updateFormField' => [
 				'len' => 1
-			),
-			'removeFormField' => array(
+            ],
+			'removeFormField' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Form layout Builder Functions
 	 */
-	'CCR' => array(
-		'methods' => array(
-			'createCCR' => array(
+	'CCR' => [
+		'methods' => [
+			'createCCR' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Patient Functions
 	 */
-	'Patient' => array(
-		'methods' => array(
-			'getPatients' => array(
+	'Patient' => [
+		'methods' => [
+			'getPatients' => [
 				'len' => 1
-			),
-			'savePatient' => array(
+            ],
+			'savePatient' => [
 				'len' => 1
-			),
-			'getInsurances' => array(
+            ],
+			'getInsurances' => [
 				'len' => 1
-			),
-			'saveInsurance' => array(
+            ],
+			'saveInsurance' => [
 				'len' => 1
-			),
-			'createNewPatient' => array(
+            ],
+			'createNewPatient' => [
 				'len' => 1
-			),
-			'patientLiveSearch' => array(
+            ],
+			'patientLiveSearch' => [
 				'len' => 1
-			),
-			'getPatientSetDataByPid' => array(
+            ],
+			'getPatientSetDataByPid' => [
 				'len' => 1
-			),
-			'unsetPatient' => array(
+            ],
+			'unsetPatient' => [
 				'len' => 1
-			),
-			'getPatientDemographicData' => array(
+            ],
+			'getPatientDemographicData' => [
 				'len' => 1
-			),
-			'updatePatientDemographicData' => array(
+            ],
+			'updatePatientDemographicData' => [
 				'len' => 1
-			),
-			'addPatientNoteAndReminder' => array(
+            ],
+			'addPatientNoteAndReminder' => [
 				'len' => 1
-			),
-			'getPatientReminders' => array(
+            ],
+			'getPatientReminders' => [
 				'len' => 1
-			),
-			'getPatientNotes' => array(
+            ],
+			'getPatientNotes' => [
 				'len' => 1
-			),
-			'getPatientDocuments' => array(
+            ],
+			'getPatientDocuments' => [
 				'len' => 1
-			),
-			'getPatientDocumentsByEid' => array(
+            ],
+			'getPatientDocumentsByEid' => [
 				'len' => 1
-			),
-			'getMeaningfulUserAlertByPid' => array(
+            ],
+			'getMeaningfulUserAlertByPid' => [
 				'len' => 1
-			),
-			'getPatientInsurancesCardsUrlByPid' => array(
+            ],
+			'getPatientInsurancesCardsUrlByPid' => [
 				'len' => 1
-			),
-			'getPatientDisclosures' => array(
+            ],
+			'getPatientDisclosures' => [
 				'len' => 1
-			),
-			'createPatientDisclosure' => array(
+            ],
+			'createPatientDisclosure' => [
 				'len' => 1
-			),
-			'updatePatientDisclosure' => array(
+            ],
+			'updatePatientDisclosure' => [
 				'len' => 1
-			),
-			'addPatientReminders' => array(
+            ],
+			'addPatientReminders' => [
 				'len' => 1
-			),
-			'updatePatientReminders' => array(
+            ],
+			'updatePatientReminders' => [
 				'len' => 1
-			),
-			'addPatientNotes' => array(
+            ],
+			'addPatientNotes' => [
 				'len' => 1
-			),
-			'updatePatientNotes' => array(
+            ],
+			'updatePatientNotes' => [
 				'len' => 1
-			),
-			'setPatientRating' => array(
+            ],
+			'setPatientRating' => [
 				'len' => 1
-			),
-			'getPossibleDuplicatesByDemographic' => array(
+            ],
+			'getPossibleDuplicatesByDemographic' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * User Functions
 	 */
-	'User' => array(
-		'methods' => array(
-			'getUsers' => array(
+	'User' => [
+		'methods' => [
+			'getUsers' => [
 				'len' => 1
-			),
-			'getUser' => array(
+            ],
+			'getUser' => [
 				'len' => 1
-			),
-			'addUser' => array(
+            ],
+			'addUser' => [
 				'len' => 1
-			),
-			'updateUser' => array(
+            ],
+			'updateUser' => [
 				'len' => 1
-			),
-			'updatePassword' => array(
+            ],
+			'updatePassword' => [
 				'len' => 1
-			),
-			'usernameExist' => array(
+            ],
+			'usernameExist' => [
 				'len' => 1
-			),
-			'getCurrentUserData' => array(
+            ],
+			'getCurrentUserData' => [
 				'len' => 0
-			),
-			'getCurrentUserBasicData' => array(
+            ],
+			'getCurrentUserBasicData' => [
 				'len' => 0
-			),
-			'updateMyAccount' => array(
+            ],
+			'updateMyAccount' => [
 				'len' => 1
-			),
-			'verifyUserPass' => array(
+            ],
+			'verifyUserPass' => [
 				'len' => 1
-			),
-			'getProviders' => array(
+            ],
+			'getProviders' => [
 				'len' => 0
-			),
-			'getActiveProviders' => array(
+            ],
+			'getActiveProviders' => [
 				'len' => 0
-			),
-			'getUserFullNameById' => array(
+            ],
+			'getUserFullNameById' => [
 				'len' => 1
-			)
-		)
-	),
+            ],
+			'userLiveSearch' => [
+				'len' => 1
+            ]
+        ]
+    ],
 	/**
 	 * Authorization Procedures Functions
 	 */
-	'authProcedures' => array(
-		'methods' => array(
-			'login' => array(
+	'authProcedures' => [
+		'methods' => [
+			'login' => [
 				'len' => 1
-			),
-			'ckAuth' => array(
+            ],
+			'ckAuth' => [
 				'len' => 0
-			),
-			'unAuth' => array(
+            ],
+			'unAuth' => [
 				'len' => 0
-			),
-			'getSites' => array(
+            ],
+			'getSites' => [
 				'len' => 0
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Comobo Boxes Data Functions
 	 */
-	'CombosData' => array(
-		'methods' => array(
-			'getOptionsByListId' => array(
+	'CombosData' => [
+		'methods' => [
+			'getOptionsByListId' => [
 				'len' => 1
-			),
-			'getTimeZoneList' => array(
+            ],
+			'getTimeZoneList' => [
 				'len' => 1
-			),
-			'getActivePharmacies' => array(
+            ],
+			'getActivePharmacies' => [
 				'len' => 0
-			),
-			'getUsers' => array(
+            ],
+			'getUsers' => [
 				'len' => 0
-			),
-			'getLists' => array(
+            ],
+			'getLists' => [
 				'len' => 0
-			),
-			'getFacilities' => array(
+            ],
+			'getFacilities' => [
 				'len' => 0
-			),
-			'getActiveFacilities' => array(
+            ],
+			'getActiveFacilities' => [
 				'len' => 0
-			),
-			'getBillingFacilities' => array(
+            ],
+			'getBillingFacilities' => [
 				'len' => 0
-			),
-			'getRoles' => array(
+            ],
+			'getRoles' => [
 				'len' => 0
-			),
-			'getCodeTypes' => array(
+            ],
+			'getCodeTypes' => [
 				'len' => 0
-			),
-			'getCalendarCategories' => array(
+            ],
+			'getCalendarCategories' => [
 				'len' => 0
-			),
-			'getFloorPlanAreas' => array(
+            ],
+			'getFloorPlanAreas' => [
 				'len' => 0
-			),
-			'getAuthorizations' => array(
+            ],
+			'getAuthorizations' => [
 				'len' => 0
-			),
-			'getSeeAuthorizations' => array(
+            ],
+			'getSeeAuthorizations' => [
 				'len' => 0
-			),
-			'getTaxIds' => array(
+            ],
+			'getTaxIds' => [
 				'len' => 0
-			),
-			'getFiledXtypes' => array(
+            ],
+			'getFiledXtypes' => [
 				'len' => 0
-			),
-			'getPosCodes' => array(
+            ],
+			'getPosCodes' => [
 				'len' => 0
-			),
-			'getAllergyTypes' => array(
+            ],
+			'getAllergyTypes' => [
 				'len' => 0
-			),
-			'getAllergiesByType' => array(
+            ],
+			'getAllergiesByType' => [
 				'len' => 1
-			),
-			'getTemplatesTypes' => array(
+            ],
+			'getTemplatesTypes' => [
 				'len' => 0
-			),
-			'getActiveInsurances' => array(
+            ],
+			'getActiveInsurances' => [
 				'len' => 0
-			),
-			'getThemes' => array(
+            ],
+			'getThemes' => [
 				'len' => 0
-			),
-			'getEncounterSupervisors' => array(
+            ],
+			'getEncounterSupervisors' => [
 				'len' => 0
-			),
-			'getDisplayValueByListIdAndOptionValue' => array(
+            ],
+			'getDisplayValueByListIdAndOptionValue' => [
 				'len' => 2
-			),
-			'getDisplayValueByListIdAndOptionCode' => array(
+            ],
+			'getDisplayValueByListIdAndOptionCode' => [
 				'len' => 2
-			)
-		)),
+            ]
+        ]
+    ],
 	/**
 	 * Navigation Function
 	 */
-	'Navigation' => array(
-		'methods' => array(
-			'getNavigation' => array(
+	'Navigation' => [
+		'methods' => [
+			'getNavigation' => [
 				'len' => 0
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Navigation Function
 	 */
-	'Roles' => array(
-		'methods' => array(
-			'getRolePerms' => array(
+	'Roles' => [
+		'methods' => [
+			'getRolePerms' => [
 				'len' => 0
-			),
-			'updateRolePerm' => array(
+            ],
+			'updateRolePerm' => [
 				'len' => 1
-			),
-			'getRolesData' => array(
+            ],
+			'getRolesData' => [
 				'len' => 0
-			),
-			'saveRolesData' => array(
+            ],
+			'saveRolesData' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Navigation Function
 	 */
-	'ACL' => array(
-		'methods' => array(
+	'ACL' => [
+		'methods' => [
 
-			'getAclGroups' => array(
+			'getAclGroups' => [
 				'len' => 1
-			),
-			'getAclGroup' => array(
+            ],
+			'getAclGroup' => [
 				'len' => 1
-			),
-			'addAclGroup' => array(
+            ],
+			'addAclGroup' => [
 				'len' => 1
-			),
-			'updateAclGroup' => array(
+            ],
+			'updateAclGroup' => [
 				'len' => 1
-			),
-			'deleteAclGroup' => array(
+            ],
+			'deleteAclGroup' => [
 				'len' => 1
-			),
-			'getGroupPerms' => array(
+            ],
+			'getGroupPerms' => [
 				'len' => 1
-			),
-			'updateGroupPerms' => array(
+            ],
+			'updateGroupPerms' => [
 				'len' => 1
-			),
-			'getAclRoles' => array(
+            ],
+			'getAclRoles' => [
 				'len' => 1
-			),
-			'getAclRole' => array(
+            ],
+			'getAclRole' => [
 				'len' => 1
-			),
-			'addAclRole' => array(
+            ],
+			'addAclRole' => [
 				'len' => 1
-			),
-			'updateAclRole' => array(
+            ],
+			'updateAclRole' => [
 				'len' => 1
-			),
+            ],
 
 
-			'getAllUserPermsAccess' => array(
+			'getAllUserPermsAccess' => [
 				'len' => 0
-			),
-			'hasPermission' => array(
+            ],
+			'hasPermission' => [
 				'len' => 1
-			),
-			'emergencyAccess' => array(
+            ],
+			'emergencyAccess' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Navigation Function
 	 */
-	'AuditLog' => array(
-		'methods' => array(
-			'getLogs' => array(
+	'AuditLog' => [
+		'methods' => [
+			'getLogs' => [
 				'len' => 1
-			),
-            'setLog' => array(
+            ],
+			'getLog' => [
+				'len' => 1
+            ],
+            'setLog' => [
                 'len' => 1
-            )
-		)
-	),
-	'Documents' => array(
-		'methods' => array(
-			'updateDocumentsTitle' => array(
+            ]
+        ]
+    ],
+	'Documents' => [
+		'methods' => [
+			'updateDocumentsTitle' => [
 				'len' => 1
-			)
-		)
-	),
+            ]
+        ]
+    ],
 	/**
 	 * Document Handler functions
 	 */
-	'DocumentHandler' => array(
-		'methods' => array(
-			'getPatientDocuments' => array(
+	'DocumentHandler' => [
+		'methods' => [
+			'getPatientDocuments' => [
 				'len' => 1
-			),
-			'getPatientDocument' => array(
+            ],
+			'getPatientDocument' => [
 				'len' => 1
-			),
-			'addPatientDocument' => array(
+            ],
+			'addPatientDocument' => [
 				'len' => 1
-			),
-			'updatePatientDocument' => array(
+            ],
+			'updatePatientDocument' => [
 				'len' => 1
-			),
-			'destroyPatientDocument' => array(
+            ],
+			'destroyPatientDocument' => [
 				'len' => 1
-			),
-			'createTempDocument' => array(
+            ],
+			'createTempDocument' => [
 				'len' => 1
-			),
-			'createRawTempDocument' => array(
+            ],
+			'createRawTempDocument' => [
 				'len' => 1
-			),
-			'destroyTempDocument' => array(
+            ],
+			'destroyTempDocument' => [
 				'len' => 1
-			),
-			'transferTempDocument' => array(
+            ],
+			'transferTempDocument' => [
 				'len' => 1
-			),
-			'uploadDocument' => array(
+            ],
+			'uploadDocument' => [
 				'formHandler' => true,
 				'len' => 1
-			),
-			'getDocumentsTemplates' => array(
+            ],
+			'getDocumentsTemplates' => [
 				'len' => 1
-			),
-			'addDocumentsTemplates' => array(
+            ],
+			'addDocumentsTemplates' => [
 				'len' => 1
-			),
-			'updateDocumentsTemplates' => array(
+            ],
+			'updateDocumentsTemplates' => [
 				'len' => 1
-			),
-			'getHeadersAndFootersTemplates' => array(
+            ],
+			'getHeadersAndFootersTemplates' => [
 				'len' => 1
-			),
-			'getDefaultDocumentsTemplates' => array(
+            ],
+			'getDefaultDocumentsTemplates' => [
 				'len' => 1
-			),
-			'createDocument' => array(
+            ],
+			'createDocument' => [
 				'len' => 1
-			),
-			'createDocumentDoctorsNote' => array(
+            ],
+			'createDocumentDoctorsNote' => [
 				'len' => 1
-			),
-			'checkDocHash' => array(
+            ],
+			'checkDocHash' => [
 				'len' => 1
-			)
-		)
-	),
-	'DoctorsNotes' => array(
-		'methods' => array(
-			'getDoctorsNotes' => array(
+            ]
+        ]
+    ],
+	'DoctorsNotes' => [
+		'methods' => [
+			'getDoctorsNotes' => [
 				'len' => 1
-			),
-			'getDoctorsNote' => array(
+            ],
+			'getDoctorsNote' => [
 				'len' => 1
-			),
-			'addDoctorsNote' => array(
+            ],
+			'addDoctorsNote' => [
 				'len' => 1
-			),
-			'updateDoctorsNote' => array(
+            ],
+			'updateDoctorsNote' => [
 				'len' => 1
-			),
-			'destroyDoctorsNote' => array(
+            ],
+			'destroyDoctorsNote' => [
 				'len' => 1
-			)
-		)
-	),
-	'File' => array(
-		'methods' => array(
-			'savePatientBase64Document' => array(
+            ]
+        ]
+    ],
+	'File' => [
+		'methods' => [
+			'savePatientBase64Document' => [
 				'len' => 1
-			)
-		)
-	),
-	'CronJob' => array(
-		'methods' => array(
-			'run' => array(
+            ]
+        ]
+    ],
+	'CronJob' => [
+		'methods' => [
+			'run' => [
 				'len' => 0
-			)
-		)
-	),
-	'i18nRouter' => array(
-		'methods' => array(
-			'getTranslation' => array(
+            ]
+        ]
+    ],
+	'i18nRouter' => [
+		'methods' => [
+			'getTranslation' => [
 				'len' => 0
-			),
-			'getDefaultLanguage' => array(
+            ],
+			'getDefaultLanguage' => [
 				'len' => 0
-			),
-			'getAvailableLanguages' => array(
+            ],
+			'getAvailableLanguages' => [
 				'len' => 0
-			)
-		)
-	),
-	'SiteSetup' => array(
-		'methods' => array(
-			'checkDatabaseCredentials' => array(
+            ]
+        ]
+    ],
+	'SiteSetup' => [
+		'methods' => [
+			'checkDatabaseCredentials' => [
 				'len' => 1
-			),
-			'checkRequirements' => array(
+            ],
+			'checkRequirements' => [
 				'len' => 0
-			),
-			'setSiteDirBySiteId' => array(
+            ],
+			'setSiteDirBySiteId' => [
 				'len' => 1
-			),
-			'createDatabaseStructure' => array(
+            ],
+			'createDatabaseStructure' => [
 				'len' => 1
-			),
-			'loadDatabaseData' => array(
+            ],
+			'loadDatabaseData' => [
 				'len' => 1
-			),
-			'createSiteAdmin' => array(
+            ],
+			'createSiteAdmin' => [
 				'len' => 1
-			),
-			'createSConfigurationFile' => array(
+            ],
+			'createSConfigurationFile' => [
 				'len' => 1
-			),
-			'loadCode' => array(
+            ],
+			'loadCode' => [
 				'len' => 1
-			)
-		)
-	),
-	'Applications' => array(
-		'methods' => array(
-			'getApplications' => array(
+            ]
+        ]
+    ],
+	'Applications' => [
+		'methods' => [
+			'getApplications' => [
 				'len' => 1
-			),
-			'addApplication' => array(
+            ],
+			'addApplication' => [
 				'len' => 1
-			),
-			'updateApplication' => array(
+            ],
+			'updateApplication' => [
 				'len' => 1
-			),
-			'deleteApplication' => array(
+            ],
+			'deleteApplication' => [
 				'len' => 1
-			)
-		)
-	),
-	'HL7Server' => array(
-		'methods' => array(
-			'getServers' => array(
+            ]
+        ]
+    ],
+	'HL7Server' => [
+		'methods' => [
+			'getServers' => [
 				'len' => 1
-			),
-			'addServer' => array(
+            ],
+			'addServer' => [
 				'len' => 1
-			),
-			'updateServer' => array(
+            ],
+			'updateServer' => [
 				'len' => 1
-			),
-			'deleteServer' => array(
+            ],
+			'deleteServer' => [
 				'len' => 1
-			),
-		)
-	),
-	'HL7Clients' => array(
-		'methods' => array(
-			'getClients' => array(
+            ],
+        ]
+    ],
+	'HL7Clients' => [
+		'methods' => [
+			'getClients' => [
 				'len' => 1
-			),
-			'addClient' => array(
+            ],
+			'addClient' => [
 				'len' => 1
-			),
-			'updateClient' => array(
+            ],
+			'updateClient' => [
 				'len' => 1
-			),
-			'deleteClient' => array(
+            ],
+			'deleteClient' => [
 				'len' => 1
-			)
-		)
-	),
-	'HL7ServerHandler' => array(
-		'methods' => array(
-			'start' => array(
+            ]
+        ]
+    ],
+	'HL7ServerHandler' => [
+		'methods' => [
+			'start' => [
 				'len' => 1
-			),
-			'stop' => array(
+            ],
+			'stop' => [
 				'len' => 1
-			),
-			'status' => array(
+            ],
+			'status' => [
 				'len' => 1
-			)
-		)
-	),
-	'HL7Messages' => array(
-		'methods' => array(
-			'getMessages' => array(
+            ]
+        ]
+    ],
+	'HL7Messages' => [
+		'methods' => [
+			'getMessages' => [
 				'len' => 1
-			),
-			'getMessage' => array(
+            ],
+			'getMessage' => [
 				'len' => 1
-			),
-			'getMessageById' => array(
+            ],
+			'getMessageById' => [
 				'len' => 1
-			),
-			'sendVXU' => array(
+            ],
+			'sendVXU' => [
 				'len' => 1
-			)
-		)
-	),
-	'Encryption' => array(
-		'methods' => array(
-			'Encrypt' => array(
+            ],
+			'broadcastADT' => [
 				'len' => 1
-			),
-			'Decrypt' => array(
+            ],
+			'sendADT' => [
 				'len' => 1
-			)
-		)
-	),
-	'Test' => array(
-		'methods' => array(
-			't1' => array(
+            ]
+        ]
+    ],
+	'Encryption' => [
+		'methods' => [
+			'Encrypt' => [
+				'len' => 1
+            ],
+			'Decrypt' => [
+				'len' => 1
+            ]
+        ]
+    ],
+	'Test' => [
+		'methods' => [
+			't1' => [
 				'len' => 0
-			),
-			't2' => array(
+            ],
+			't2' => [
 				'len' => 1
-			)
-		)
-	)
-);
+            ]
+        ]
+    ]
+];

@@ -25,8 +25,7 @@ Ext.define('App.model.patient.PatientsOrderObservation', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Results/Observations'
+			type: 'int'
 		},
 		{
 			name: 'result_id',

@@ -51,6 +51,11 @@ Ext.define('App.model.administration.HL7Client', {
 			comment: 'socket or http'
 		},
 		{
+			name: 'allow_messages',
+			type: 'array',
+			dataType: 'longtext'
+		},
+		{
 			name: 'address',
 			type: 'string',
 			comment: 'URL IP'

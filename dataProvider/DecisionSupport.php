@@ -148,7 +148,9 @@ class DecisionSupport {
 	public function getAlerts($params){
 		$this->Patient = new Patient($params->pid);
 		$this->setRules($params->alertType);
-		$alerts = array();
+
+		$alerts = [];
+
 		foreach($this->rules as $rule){
 			$alert = $this->ckRule($rule);
 			if($alert !== false){
@@ -156,25 +158,22 @@ class DecisionSupport {
 				$alerts[] = $rule;
 			}
 		}
+
 		return $alerts;
 	}
 
 	private function setRules($alertType, $category = 'C'){
 		$params = new stdClass();
-
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'active';
 		$params->filter[0]->value = 1;
-
 		$params->filter[1] = new stdClass();
 		$params->filter[1]->property = 'alert_type';
 		$params->filter[1]->value = $alertType;
-
 		$params->filter[2] = new stdClass();
 		$params->filter[2]->property = 'category';
 		$params->filter[2]->value = $category;
 
-		// get support rules
 		$this->rules = $this->getDecisionSupportRules($params);
 		$this->rules = $this->rules['data'];
 
@@ -184,6 +183,9 @@ class DecisionSupport {
 		// change property to filter concepts
 		$params->filter[0]->property = 'rule_id';
 		$params->filter[1]->property = 'concept_type';
+
+		Matcha::pauseLog(true);
+
 		foreach($this->rules as $i => $rule){
 			$params->filter[0]->value = $rule['id'];
 
@@ -210,6 +212,8 @@ class DecisionSupport {
 		}
 		// unset params since will not be use again
 		unset($params);
+
+		Matcha::pauseLog(false);
 	}
 
 	/**
@@ -385,16 +389,21 @@ class DecisionSupport {
 			$count = 0;
 			foreach($rule['concepts']['LAB'] as $concept){
 				$observations = $this->Orders->getOrderResultObservationsByPidAndCode($this->Patient->getPatientPid(), $concept['concept_code']);
-				if(empty($observations)) continue;
+
+				if(empty($observations) && $concept['frequency_operator'] != '<') continue;
+
 				$frequency = 0;
 				foreach($observations as $observation){
-					if($this->compare($observation['value'], $concept['value_operator'], $concept['value'])){
-						if($this->isWithInterval($observation['result_date'], $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d H:i:s')){
+					if($concept['value'] == '' || $this->compare($observation['value'], $concept['value_operator'], $concept['value'])){
+
+						if($this->isWithInterval($observation['result_date'], $concept['frequency_interval'], $concept['frequency_operator'], 'Y-m-d')){
 							$frequency++;
 							if($concept['frequency'] == $frequency) break;
 						}
+
 					}
 				}
+
 				if($concept['frequency_operator'] == '' || $this->compare($frequency, $concept['frequency_operator'], $concept['frequency'])){
 					$count++;
 				}

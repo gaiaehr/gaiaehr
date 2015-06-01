@@ -38,12 +38,12 @@ class SnomedCodes {
 	         ORDER BY sct_problem_list.OCCURRENCE DESC";
 
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
+		$sth->execute([':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%']);
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return array(
+		return [
 			'totals' => count($results),
 		    'data' => array_slice($results, $params->start, $params->limit)
-		);
+		];
 	}
 
 	public function liveProcedureCodeSearch($params) {
@@ -55,12 +55,12 @@ class SnomedCodes {
 	         ORDER BY Occurrence DESC";
 
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
+		$sth->execute([':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%']);
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return array(
+		return [
 			'totals' => count($results),
 		    'data' => array_slice($results, $params->start, $params->limit)
-		);
+		];
 	}
 
 	public function liveCodeSearch($params) {
@@ -72,12 +72,12 @@ class SnomedCodes {
 	              OR sct_concepts.ConceptId LIKE :c2";
 
 		$sth = $this->conn->prepare($sql);
-		$sth->execute(array(':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%'));
+		$sth->execute([':c1' => '%'.$params->query.'%', ':c2' => $params->query.'%']);
 		$results = $sth->fetchAll(PDO::FETCH_ASSOC);
-		return array(
+		return [
 			'totals' => count($results),
 		    'data' => array_slice($results, $params->start, $params->limit)
-		);
+		];
 	}
 
 	public function updateLiveProcedureCodeSearch($params) {

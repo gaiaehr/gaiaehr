@@ -99,7 +99,8 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 		{
 			name: 'observation_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
+			dataType: 'date',
+			dateFormat: 'Y-m-d',
 			index: true
 		},
 		{

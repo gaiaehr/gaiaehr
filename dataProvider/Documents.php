@@ -74,14 +74,14 @@ class Documents {
 		$data = get_object_vars($params);
 		$id = $data['id'];
 		unset($data['id'], $data['date']);
-		$this->db->setSQL($this->db->sqlBind($data, 'patient_documents', 'U', array('id' => $id)));
+		$this->db->setSQL($this->db->sqlBind($data, 'patient_documents', 'U', ['id' => $id]));
 		$this->db->execLog();
 		return $params;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function setArraySizeOfTokenArray($tokens) {
-		$givingValuesToTokens = array();
+		$givingValuesToTokens = [];
 		foreach($tokens as $tok){
 			array_push($givingValuesToTokens, '');
 		}
@@ -93,7 +93,7 @@ class Documents {
 		$patientData = $this->getAllPatientData($pid);
 		$age = $this->patient->getPatientAgeByDOB($patientData['DOB']);
 		$user = new User();
-		$patienInformation = array(
+		$patienInformation = [
 			'[PATIENT_NAME]' => $patientData['fname'],
 			'[PATIENT_ID]' => $patientData['pid'],
 			'[PATIENT_FULL_NAME]' => $this->patient->getPatientFullNameByPid($patientData['pid']),
@@ -117,7 +117,7 @@ class Documents {
 			'[PATIENT_GUARDIANS_NAME]' => $patientData['guardians_name'],
 			'[PATIENT_EMERGENCY_CONTACT]' => $patientData['emer_contact'],
 			'[PATIENT_EMERGENCY_PHONE]' => $patientData['emer_phone'],
-			'[PATIENT_PROVIDER]' => $user->getUserFullNameById($patientData['provider']),
+			'[PATIENT_PROVIDER]' => is_numeric($patientData['provider']) ? $user->getUserFullNameById($patientData['provider']) : '',
 			'[PATIENT_PHARMACY]' => $patientData['pharmacy'],
 			'[PATIENT_AGE]' => $age['DMY']['years'],
 			'[PATIENT_OCCUPATION]' => $patientData['occupation'],
@@ -185,7 +185,7 @@ class Documents {
 			//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_STATE]' => $patientData['tertiary_subscriber_employer_state'],
 			//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_COUNTRY]' => $patientData['tertiary_subscriber_employer_country'],
 			//            '[PATIENT_TERTIARY_SUBSCRIBER_EMPLOYER_ZIPCODE]' => $patientData['tertiary_subscriber_zip_code']
-		);
+		];
 
 		unset($user);
 		foreach($tokens as $i => $tok){
@@ -237,10 +237,10 @@ class Documents {
 			}
 		}
 
-		$cpt = array();
-		$dx = array();
-		$hcpc = array();
-		$cvx = array();
+		$cpt = [];
+		$dx = [];
+		$hcpc = [];
+		$cvx = [];
 
 		if(isset($encounterCodes['rows'])){
 			foreach($encounterCodes['rows'] as $code){
@@ -274,7 +274,7 @@ class Documents {
 
 		$encounter = $encounter['encounter'];
 
-		$encounterInformation = array(
+		$encounterInformation = [
 			'[ENCOUNTER_START_DATE]' => $encounter['service_date'],
 			'[ENCOUNTER_END_DATE]' => $encounter['close_date'],
 			'[ENCOUNTER_BRIEF_DESCRIPTION]' => $encounter['brief_description'],
@@ -322,7 +322,7 @@ class Documents {
 			// =>$this->tokensForEncountersList($preventivecaredismiss,16),
 			//            '[]'
 			// =>$this->tokensForEncountersList($preventivecaredismiss,16)
-		);
+		];
 
 		foreach($tokens as $i => $tok){
 			if(isset($encounterInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)){
@@ -420,7 +420,7 @@ class Documents {
 
 	private function getCurrentTokensData($allNeededInfo, $tokens) {
 
-		$currentInformation = array(
+		$currentInformation = [
 			'[CURRENT_DATE]' => date('d-m-Y'),
 			'[CURRENT_USER_NAME]' => $_SESSION['user']['name'],
 			'[CURRENT_USER_FULL_NAME]' => $_SESSION['user']['name'],
@@ -429,7 +429,7 @@ class Documents {
 			'[CURRENT_USER_DM_LICENSE_NUMBER]',
 			'[CURRENT_USER_NPI_LICENSE_NUMBER]',
 			'[LINE]' => '<hr>'
-		);
+		];
 		foreach($tokens as $i => $tok){
 			if(isset($currentInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)){
 				$allNeededInfo[$i] = $currentInformation[$tok];
@@ -442,7 +442,7 @@ class Documents {
 	private function getClinicTokensData($allNeededInfo, $tokens) {
 		$facility = new Facilities();
 		$facilityInfo = $facility->getActiveFacilitiesById($_SESSION['user']['facility']);
-		$clinicInformation = array(
+		$clinicInformation = [
 			'[FACILITY_NAME]' => $facilityInfo['name'],
 			'[FACILITY_PHONE]' => $facilityInfo['phone'],
 			'[FACILITY_FAX]' => $facilityInfo['fax'],
@@ -456,7 +456,7 @@ class Documents {
 			'[FACILITY_SERVICE_LOCATION]' => $facilityInfo['service_location'],
 			'[FACILITY_BILLING_LOCATION]' => $facilityInfo['billing_location'],
 			'[FACILITY_FACILITY_NPI]' => $facilityInfo['npi']
-		);
+		];
 		unset($facility);
 		foreach($tokens as $i => $tok){
 			if(isset($clinicInformation[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)){
@@ -477,16 +477,16 @@ class Documents {
 		$this->pdf->SetCreator('TCPDF');
 		$this->pdf->SetAuthor($_SESSION['user']['name']);
 
-		$this->pdf->setHeaderFont(Array(
+		$this->pdf->setHeaderFont([
 			'helvetica',
 			'',
 			14
-		));
-		$this->pdf->setFooterFont(Array(
+		]);
+		$this->pdf->setFooterFont([
 			'helvetica',
 			'',
 			8
-		));
+		]);
 		$this->pdf->SetDefaultMonospacedFont('courier');
 		$this->pdf->SetMargins(15, 27, 15);
 		$this->pdf->SetHeaderMargin(5);
@@ -559,7 +559,7 @@ class Documents {
 		$data = $referral->getPatientReferral($params->referralId);
 		if($data === false)
 			return $allNeededInfo;
-		$info = array(
+		$info = [
 			'[REFERRAL_ID]' => $data['id'],
 			'[REFERRAL_DATE]' => $data['referral_date'],
 			'[REFERRAL_REASON]' => $data['referal_reason'],
@@ -568,7 +568,7 @@ class Documents {
 			'[REFERRAL_RISK_LEVEL]' => $data['risk_level'],
 			'[REFERRAL_BY_TEXT]' => $data['refer_by_text'],
 			'[REFERRAL_TO_TEXT]' => $data['refer_to_text']
-		);
+		];
 		unset($referral);
 		foreach($tokens as $i => $tok){
 			if(isset($info[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)){
@@ -584,7 +584,7 @@ class Documents {
 		$data = $DoctorsNotes->getDoctorsNote($params->docNoteid);
 		if($data === false)
 			return $allNeededInfo;
-		$info = array(
+		$info = [
 			'[DOC_NOTE_ID]' => $data['id'],
 			'[DOC_NOTE_CREATE_DATE]' => $data['create_date'],
 			'[DOC_NOTE_ORDER_DATE]' => $data['order_date'],
@@ -593,7 +593,7 @@ class Documents {
 //			'[DOC_NOTE_RETURN_DATE]' => $data['return_date'],
 			'[DOC_NOTE_RESTRICTIONS]' => $this->arrayToOrderedList($data['restrictions']),
 			'[DOC_NOTE_COMMENTS]' => $data['comments']
-		);
+		];
 		unset($referral);
 		foreach($tokens as $i => $tok){
 			if(isset($info[$tok]) && ($allNeededInfo[$i] == '' || $allNeededInfo[$i] == null)){

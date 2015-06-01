@@ -51,7 +51,35 @@ class Immunizations {
 	 * @return array
 	 */
 	public function getPatientImmunizations($params){
-		return $this->i->load($params)->all();
+		return $this->i->load($params)->leftJoin(
+			[
+				'title' => 'administered_title',
+				'fname' => 'administered_fname',
+			  	'mname' => 'administered_mname',
+				'lname' => 'administered_lname',
+			],
+			'users',
+			'administered_uid',
+			'id'
+		)->all();
+	}
+
+	/**
+	 * @param stdClass $params
+	 * @return array
+	 */
+	public function getPatientImmunization($params){
+		return $this->i->load($params)->leftJoin(
+			[
+				'title' => 'administered_title',
+				'fname' => 'administered_fname',
+			  	'mname' => 'administered_mname',
+				'lname' => 'administered_lname',
+			],
+			'users',
+			'administered_uid',
+			'id'
+		)->one();
 	}
 
 	/**
@@ -72,11 +100,18 @@ class Immunizations {
 	}
 
 	public function getPatientImmunizationsByPid($pid){
-		$params = new stdClass();
-		$params->filter[0] = new stdClass();
-		$params->filter[0]->property = 'pid';
-		$params->filter[0]->value = $pid;
-		return $this->i->load($params)->all();
+		$this->i->addFilter('pid', $pid);
+		return $this->i->load()->leftJoin(
+			[
+				'title' => 'administered_title',
+				'fname' => 'administered_fname',
+				'mname' => 'administered_mname',
+				'lname' => 'administered_lname',
+			],
+			'users',
+			'administered_uid',
+			'id'
+		)->all();
 	}
 
 	/**
@@ -84,23 +119,61 @@ class Immunizations {
 	 * @return array
 	 */
 	public function getImmunizationsByEncounterID($eid){
-		$params = new stdClass();
-		$params->filter[0] = new stdClass();
-		$params->filter[0]->property = 'eid';
-		$params->filter[0]->value = $eid;
-		return $this->i->load($params)->all();
+		$this->i->addFilter('eid', $eid);
+		return $this->i->load()->leftJoin(
+			[
+				'title' => 'administered_title',
+				'fname' => 'administered_fname',
+				'mname' => 'administered_mname',
+				'lname' => 'administered_lname',
+			],
+			'users',
+			'administered_uid',
+			'id'
+		)->all();
+	}
+
+	public function getImmunizationsAdministeredByEid($eid){
+		$this->i->addFilter('eid', $eid);
+		$this->i->addFilter('administered_uid', null, '!=');
+		$this->i->addFilter('administered_uid', 0, '!=');
+		return $this->i->load()->leftJoin(
+			[
+				'title' => 'administered_title',
+				'fname' => 'administered_fname',
+				'mname' => 'administered_mname',
+				'lname' => 'administered_lname',
+			],
+			'users',
+			'administered_uid',
+			'id'
+		)->all();
+	}
+
+	public function getImmunizationsAdministeredByPid($pid){
+		$this->i->addFilter('pid', $pid);
+		$this->i->addFilter('administered_uid', null, '!=');
+		$this->i->addFilter('administered_uid', 0, '!=');
+		return $this->i->load()->leftJoin(
+			[
+				'title' => 'administered_title',
+				'fname' => 'administered_fname',
+				'mname' => 'administered_mname',
+				'lname' => 'administered_lname',
+			],
+			'users',
+			'administered_uid',
+			'id'
+		)->all();
 	}
 
 	public function sendVXU($params){
 		$model = MatchaModel::setSenchaModel('App.model.patient.Patient');
-		$p = new stdClass();
-		$p->filter[0] = new stdClass();
-		$p->filter[0]->property = 'pid';
-		$p->filter[0]->value = $params->pid;
-		$data = array();
+		$model->addFilter('pid', $params->pid);
+		$data = [];
 		$data['to'] = $params->to;
-		$data['patient'] = $model->load($p)->one();
-		$data['immunizations'] = array();
+		$data['patient'] = $model->load()->one();
+		$data['immunizations'] = [];
 		foreach($params->immunizations As $i){
 			$data['immunizations'][] = $this->i->load($i)->one();
 		}
@@ -109,7 +182,7 @@ class Immunizations {
 
 	public function getCVXCodesByStatus($status = 'Active') {
 		$sth = $this->conn->prepare("SELECT * FROM cvx_codes WHERE `status` = ?");
-		$sth->execute(array($status));
+		$sth->execute([$status]);
 		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
@@ -127,17 +200,17 @@ class Immunizations {
 		$sth = $this->conn->prepare('INSERT INTO `cvx_codes` (`cvx_code`, `name`, `description`, `note`, `status`, `update_date`)
 										  VALUES (?,?,?,?,?,?)');
 		foreach($xml as $cvx){
-			$sth->execute(array(
+			$sth->execute([
 				trim($cvx->CVXCode),
 				trim($cvx->ShortDescription),
 				trim($cvx->FullVaccinename),
 				trim($cvx->Notes),
 				trim($cvx->Status),
 				(date('Y-m-d H:i:s', strtotime($cvx->LastUpdated)))
-			));
+			]);
 		}
 
-		return array('success' => true);
+		return ['success' => true];
 	}
 
 	public function updateMVXCodes() {
@@ -150,7 +223,7 @@ class Immunizations {
 										  VALUES (?,?,?,?,?,?,?,?)');
 		foreach($xml AS $vac){
 			$vac = get_object_vars($vac);
-			$sth->execute(array(
+			$sth->execute([
 				trim($vac['Value'][0]),
 				trim($vac['Value'][1]),
 				trim($vac['Value'][2]),
@@ -159,32 +232,31 @@ class Immunizations {
 				trim($vac['Value'][5]),
 				trim($vac['Value'][6]),
 				(date('Y-m-d H:i:s', strtotime($vac['Value'][7])))
-			));
+			]);
 		}
-		return array('success' => true);
+		return ['success' => true];
 	}
 
 	public function getImmunizationLiveSearch(stdClass $params) {
 		$sth = $this->conn->prepare("SELECT * FROM cvx_codes
 							WHERE (cvx_code   LIKE ?
 							   OR `name` 	  LIKE ?
-							   OR description LIKE ?)
-							  AND (`status` = '1' OR `status` = 'Active')");
+							   OR description LIKE ?)");
 		$q = $params->query.'%';
 		$qq = '%'.$params->query.'%';
-		$sth->execute(array($q , $q, $qq));
+		$sth->execute([$q , $q, $qq]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
-		return array(
+		return [
 			'totals' => $total,
 			'rows' => $records
-		);
+		];
 	}
 
 	public function getMvxByCode($code) {
 		$sth = $this->conn->prepare('SELECT * FROM cvx_mvx WHERE mvx_code = ?');
-		$sth->execute(array($code));
+		$sth->execute([$code]);
 		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
@@ -197,7 +269,7 @@ class Immunizations {
 
 	public function getImmunizationsByEid($eid) {
 		$sth = $this->conn->prepare('SELECT * FROM patient_immunizations WHERE eid = ?');
-		$sth->execute(array($eid));
+		$sth->execute([$eid]);
 		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
@@ -208,7 +280,7 @@ class Immunizations {
 									   FROM cvx_cpt
 									   JOIN cpt_codes ON cvx_cpt.cpt = cpt_codes.code
 									  WHERE cvx_cpt.cvx = ? AND (cvx_cpt.active = \'1\' OR cvx_cpt.active = \'Active\')');
-		$sth->execute(array($cvx));
+		$sth->execute([$cvx]);
 		return $sth->fetchAll(PDO::FETCH_ASSOC);
 	}
 
@@ -225,10 +297,10 @@ class Immunizations {
 		foreach($lines as $line){
 			$data = explode('|', $line);
 			if(count($data) < 4) continue;
-			$sth->execute(array(trim($data[4]), trim($data[0]), '1'));
+			$sth->execute([trim($data[4]), trim($data[0]), '1']);
 		}
 
-		return array('success' => true);
+		return ['success' => true];
 	}
 
 }

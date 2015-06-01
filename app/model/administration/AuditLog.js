@@ -59,6 +59,72 @@ Ext.define('App.model.administration.AuditLog', {
 			comment: 'Event description'
 		},
 		{
+			name: 'user_title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_lname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'patient_lname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'user_name',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				var str = '';
+				if(record.data.user_title) str += record.data.user_title + ' ';
+				if(record.data.user_fname) str += record.data.user_fname + ' ';
+				if(record.data.user_mname) str += record.data.user_mname + ' ';
+				if(record.data.user_lname) str += record.data.user_lname;
+				return str;
+			}
+		},
+		{
+			name: 'patient_name',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				var str = '';
+				if(record.data.patient_title) str += record.data.patient_title + ' ';
+				if(record.data.patient_fname) str += record.data.patient_fname + ' ';
+				if(record.data.patient_mname) str += record.data.patient_mname + ' ';
+				if(record.data.patient_lname) str += record.data.patient_lname;
+				return str;
+			}
+		},
+		{
 			name: 'date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s',

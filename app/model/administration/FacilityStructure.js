@@ -75,6 +75,9 @@ Ext.define('App.model.administration.FacilityStructure', {
 			create: 'Facilities.addFacilityConfig',
 			update: 'Facilities.updateFacilityConfig',
 			destroy: 'Facilities.deleteFacilityConfig'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	}
 });

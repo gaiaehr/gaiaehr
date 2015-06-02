@@ -2283,13 +2283,7 @@ INSERT INTO `documents_templates` (`id`, `title`, `template_type`, `body`, `date
   (11, 'testDOC', 'documenttemplate', 'Name: [PATIENT_FULL_NAME]&nbsp; ID:[PATIENT_ID]<br>Encounter Date: [ENCOUNTER_DATE_START]<br>Birth date: [PATIENT_BIRTHDATE]<br>Age: [PATIENT_AGE]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [PATIENT_PICTURE]<br>Vitals<br>Height:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_HEIGHT_IN]<br>Weight:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_WEIGHT_LBS]<br>Temperature:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_TEMP_FAHRENHEIT]<br>Blood Pressure:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_BP_SYSTOLIC]/[ENCOUNTER_BP_DIASTOLIC]<br>Respiration:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_RESPIRATION]<br>Pulse:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_PULSE]<br>BMI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_BMI]<br>BMI Status:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ENCOUNTER_BMI_STATUS]<br>Subjective:<br>[ENCOUNTER_SUBJECTIVE]<br>Objective:<br>[ENCOUNTER_OBJECTIVE]<br>Assessment:<br>[ENCOUNTER_ASSESMENT]<br>Plan:<br>[ENCOUNTER_PLAN]<br><br><br>', '2012-07-04 19:41:23', NULL, NULL, 1, NULL);
 
 INSERT INTO `facility` (`id`, `code`, `name`, `legal_name`, `attn`, `phone`, `fax`, `address`, `address_cont`, `city`, `state`, `postal_code`, `country_code`, `service_location`, `billing_location`, `pos_code`, `ssn`, `ein`, `clia`, `fda`, `npi`, `ess`, `lic`, `active`) VALUES
-  (1, '0', 'CLINICA LAS AME GUAYNABO', 'CLINICA LAS AME GUAYNABO', '', '787-789-1919', '', 'AVE CASA LINDA 1 STE 101', 'CARR 177 LOS FILTROS', 'BAYAMON', 'PR', '00959-7891', 'USA', 0, 0, '11', '660559600', '', '', '', '1326096058', '', '', 1),
-  (2, '10', 'DE DIEGO AMBULATORY CLINI', 'DE DIEGO AMBULATORY CLINI', '', '', '', '150  DE DIEGO', '', 'SANTURCE', 'PR', '00922-0000', 'USA', 0, 0, '22', '', '', '', '', '', '', '', 1),
-  (3, '11', 'HOSPITAL AUXILIO MUTUO', 'HOSPITAL AUXILIO MUTUO', '', '', '', 'AVE PONCE DE LEON', '', 'RIO PIEDRA', 'PR', '00919-1104', 'USA', 0, 0, '21', '', '', '', '', '', '', '', 1),
-  (4, '12', 'HOSPITAL ASHFORD PRESBYTE', 'HOSPITAL ASHFORD PRESBYTE', '', '', '', '1451 AVE ASHFORD', '', 'SANTURCE', 'PR', '00936-1511', 'USA', 0, 0, '21', '', '', '', '', '', '', '', 1),
-  (5, '13', 'HOSPITAL SAN JORGE', 'HOSPITAL SAN JORGE', '', '', '', '258 SAN JORGE ST', '', 'SANTUCE', 'PR', '00912-0000', 'USA', 0, 0, '21', '', '', '', '', '', '', '', 1),
-  (6, '14', 'HOSPITAL HIMA SAN PABLO', 'HOSPITAL HIMA SAN PABLO', '', '', '', 'CALLE SANTA CRUZ 70', 'URB SANTA CRUZ', 'BAYAMON', 'PR', '00961-7052', 'USA', 0, 0, '24', '', '', '', '', '', '', '', 1),
-  (7, '', 'Get Well Clinic', '', '', '555-555-1002', '', '1002 Healthcare Dr', '', 'Portland', 'OR', '97005', 'USA', 1, 0, '', '', '', '', '', '', '', '', 1);
+  (1, '', 'Get Well Clinic', '', '', '555-555-1002', '', '1002 Healthcare Dr', '', 'Portland', 'OR', '97005', 'USA', 1, 0, '', '', '', '', '', '', '', '', 1);
 
 INSERT INTO `facility_structures` (`id`, `fid`, `foreign_id`, `foreign_type`, `parentId`, `active`) VALUES
   (31, 1, 1, 'D', 'f1', NULL),
@@ -2301,17 +2295,7 @@ INSERT INTO `facility_structures` (`id`, `fid`, `foreign_id`, `foreign_type`, `p
   (37, 1, 5, 'S', '31', NULL),
   (38, 1, 6, 'S', '31', NULL),
   (39, 1, 7, 'S', '31', NULL),
-  (40, 1, 8, 'S', '31', NULL),
-  (41, 1, 48, 'S', '33', 0),
-  (42, 1, 49, 'S', '33', 0),
-  (43, 1, 50, 'S', '33', NULL),
-  (44, 1, 51, 'S', '33', NULL),
-  (46, 1, 2, 'D', 'f2', NULL),
-  (47, 1, 52, 'S', '33', 0),
-  (50, 1, 17, 'S', '32', 0),
-  (51, 1, 17, 'S', '46', 0),
-  (57, 1, 2, 'D', 'f7', 0),
-  (58, 1, 17, 'S', '57', 0);
+  (40, 1, 8, 'S', '31', NULL);
 
 INSERT INTO `floor_plans` (`id`, `title`, `facility_id`, `active`) VALUES
   (1, 'Emergency Example', 1, 1),
@@ -3828,11 +3812,7 @@ INSERT INTO `pool_areas` (`id`, `title`, `floor_plan_id`, `facility_id`, `sequen
   (1, 'Check In', NULL, 1, 0, 1),
   (2, 'Triage', NULL, 1, 0, 1),
   (3, 'Physician', 1, 1, 0, 1),
-  (4, 'Checkout', NULL, 1, 0, 1),
-  (5, 'Check In', NULL, 2, 0, 1),
-  (6, 'Triage', NULL, 2, 0, 1),
-  (7, 'Physician', 1, 2, 0, 1),
-  (8, 'Checkout', NULL, 2, 0, 1);
+  (4, 'Checkout', NULL, 1, 0, 1);
 
 INSERT INTO `soap_snippets` (`id`, `parentId`, `specialty_id`, `index`, `text`, `category`, `leaf`, `title`) VALUES
   (1, 'root', '34', 0, 'Catarro', 'objective', 0, NULL),

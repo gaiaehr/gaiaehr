@@ -164,7 +164,7 @@ class SiteSetup {
 				'status' => $status
 			];
 			// try chmod sites folder and check chmod after that
-			$status = ($this->is__writable(dirname(__FILE__).'/sites') ? 'Ok' : 'Fail');
+			$status = ($this->is__writable(dirname(__FILE__).'/sites/') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'Sites dir writable by Web Server',
 				'status' => $status

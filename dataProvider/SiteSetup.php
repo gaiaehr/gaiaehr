@@ -117,6 +117,29 @@ class SiteSetup {
 		}
 	}
 
+	function is__writable($path) {
+		if ($path{strlen($path)-1}=='/'){
+			return $this->is__writable($path . uniqid(mt_rand()) . '.tmp');
+		}
+
+		if (file_exists($path)) {
+			if (!($f = @fopen($path, 'r+'))){
+				return false;
+			}
+
+			fclose($f);
+			return true;
+		}
+
+		if (!($f = @fopen($path, 'w'))){
+			return false;
+		}
+
+		fclose($f);
+		unlink($path);
+		return true;
+	}
+
 	/*
 	 * Verify: checkRequirements
 	 */
@@ -141,7 +164,7 @@ class SiteSetup {
 				'status' => $status
 			];
 			// try chmod sites folder and check chmod after that
-			$status = (is_writable('sites') ? 'Ok' : 'Fail');
+			$status = ($this->is__writable(dirname(__FILE__).'/sites') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'Sites dir writable by Web Server',
 				'status' => $status

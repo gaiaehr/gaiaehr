@@ -42,10 +42,10 @@ class SiteSetup {
 			$sth = $this->conn->prepare("USE $params->dbName");
 
 			if($success && $sth->execute() !== false){
-				return array(
+				return [
 					'success' => false,
 					'error' => 'Database name is used. Please, use a different Database name'
-				);
+				];
 			}
 		} else {
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
@@ -53,20 +53,20 @@ class SiteSetup {
 		if($success){
 			$maxAllowPacket = $this->setMaxAllowedPacket();
 			if($maxAllowPacket !== true){
-				return array(
+				return [
 					'success' => false,
 					'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user<br>max_allowed_packet = ' . $maxAllowPacket
-				);
+				];
 			}
-			return array(
+			return [
 				'success' => true,
 				'dbInfo' => $params
-			);
+			];
 		} else {
-			return array(
+			return [
 				'success' => false,
 				'error' => 'Could not connect to sql server!<br>Please, check database information and try again'
-			);
+			];
 		}
 	}
 
@@ -89,11 +89,11 @@ class SiteSetup {
 
 	function databaseConn($host, $port, $dbName, $dbUser, $dbPass) {
 		try {
-			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass, array(
+			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass, [
 				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 				PDO::ATTR_PERSISTENT => false,
 				PDO::ATTR_TIMEOUT => 7600
-			));
+			]);
 			return true;
 		} catch(PDOException $e) {
 			$this->err = $e->getMessage();
@@ -122,7 +122,7 @@ class SiteSetup {
 	 */
 	public function checkRequirements() {
 		try {
-			$row = array();
+			$row = [];
 			// check if ...
 			//		$status = (empty($_SESSION['sites']['sites']) ? 'Ok' : 'Fail');
 			//		$row[]  = array(
@@ -130,65 +130,65 @@ class SiteSetup {
 			//		);
 			// verified that php 5.4.0 or later is installed
 			$status = (version_compare(phpversion(), '5.4.0', '>=') ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP 5.4 + installed',
 				'status' => $status
-			);
+			];
 			// Check if get_magic_quotes_gpc is off
 			$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'get_magic_quotes_gpc off/disabled',
 				'status' => $status
-			);
+			];
 			// try chmod sites folder and check chmod after that
-			$status = (chmod('sites', 0755) ? 'Ok' : 'Fail');
-			$row[] = array(
+			$status = (is_writable('sites') ? 'Ok' : 'Fail');
+			$row[] = [
 				'msg' => 'Sites dir writable by Web Server',
 				'status' => $status
-			);
+			];
 			// check if safe_mode is off
 			$status = (!ini_get('safe_mode') ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP safe mode off',
 				'status' => $status
-			);
+			];
 			// check if PDO
 			$status = (class_exists('PDO') ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP class PDO',
 				'status' => $status
-			);
+			];
 			// check if ZipArchive is enable
 			$status = (function_exists("gzcompress") ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP class zlib',
 				'status' => $status
-			);
+			];
 			// check if ZipArchive is enable
 			$status = (function_exists('curl_version') ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP Curl installed',
 				'status' => $status
-			);
+			];
 			// check for mcrypt is installed in PHP
 			$status = (function_exists('mcrypt_encrypt') ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP MCrypt installed',
 				'status' => $status
-			);
+			];
 			// check if PDO object exists
 			$status = (defined('PDO::ATTR_DRIVER_NAME') ? 'Ok' : 'Fail');
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP PDO installed',
 				'status' => $status
-			);
+			];
 			// check if GD exists
 			$status = (extension_loaded('gd') && function_exists('gd_info') ? 'Ok' : 'Fail');
 
-			$row[] = array(
+			$row[] = [
 				'msg' => 'PHP GD Installed',
 				'status' => $status
-			);
+			];
 
 			return $row;
 		} catch(Exception $e) {
@@ -204,30 +204,30 @@ class SiteSetup {
 				if(chmod($siteDir, 0755)){
 					if((mkdir("$siteDir/patients", 0755, true) && chmod("$siteDir/patients", 0755)) && (mkdir("$siteDir/documents", 0755, true) && chmod("$siteDir/documents", 0755)) && (mkdir("$siteDir/temp", 0755, true) && chmod("$siteDir/temp", 0755)) && (mkdir("$siteDir/trash", 0755, true) && chmod("$siteDir/trash", 0755))
 					){
-						return array('success' => true);
+						return ['success' => true];
 					} else {
-						return array(
+						return [
 							'success' => false,
 							'error' => 'Something went wrong creating site sub directories'
-						);
+						];
 					}
 				} else {
-					return array(
+					return [
 						'success' => false,
 						'error' => 'Unable to set "/sites/' . $siteId . '" write permissions,<br>Please, check "/sites/' . $siteId . '" directory write permissions'
-					);
+					];
 				}
 			} else {
-				return array(
+				return [
 					'success' => false,
 					'error' => 'Unable to create Site directory,<br>Please, check "/sites" directory write permissions'
-				);
+				];
 			}
 		} else {
-			return array(
+			return [
 				'success' => false,
 				'error' => 'Site ID already in use.<br>Please, choose another Site ID'
-			);
+			];
 		}
 	}
 
@@ -246,42 +246,42 @@ class SiteSetup {
 			if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
 
 				if($this->loadDatabaseStructure()){
-					return array('success' => true);
+					return ['success' => true];
 				} else {
 
 					FileManager::rmdir_recursive("sites/$params->siteId");
-					return array(
+					return [
 						'success' => false,
 						'error' => $this->conn->errorInfo()
-					);
+					];
 				}
 
 			} else {
 
 				FileManager::rmdir_recursive("sites/$params->siteId");
-				return array(
+				return [
 					'success' => false,
 					'error' => $this->err
-				);
+				];
 			}
 		} elseif($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)) {
 			if($this->loadDatabaseStructure()){
-				return array('success' => true);
+				return ['success' => true];
 			} else {
 
 				FileManager::rmdir_recursive("sites/$params->siteId");
-				return array(
+				return [
 					'success' => false,
 					'error' => $this->conn->errorInfo()
-				);
+				];
 			}
 		} else {
 
 			FileManager::rmdir_recursive("sites/$params->siteId");
-			return array(
+			return [
 				'success' => false,
 				'error' => $this->err
-			);
+			];
 		}
 	}
 
@@ -306,32 +306,32 @@ class SiteSetup {
 			if(file_exists($sqlFile = 'sql/gaiadb_install_data.sql')){
 				$query = file_get_contents($sqlFile);
 				if($this->conn->exec($query) !== false){
-					return array('success' => true);
+					return ['success' => true];
 				} else {
 					FileManager::rmdir_recursive("sites/$params->siteId");
 					if(isset($params->rootUser))
 						$this->dropDatabase($params->dbName);
-					return array(
+					return [
 						'success' => false,
 						'error' => $this->conn->errorInfo()
-					);
+					];
 				}
 
 			} else {
 				FileManager::rmdir_recursive("sites/$params->siteId");
 				if(isset($params->rootUser))
 					$this->dropDatabase($params->dbName);
-				return array(
+				return [
 					'success' => false,
 					'error' => 'Unable find installation data file'
-				);
+				];
 			}
 		} else {
 			FileManager::rmdir_recursive("sites/$params->siteId");
-			return array(
+			return [
 				'success' => false,
 				'error' => $this->err
-			);
+			];
 		}
 	}
 
@@ -344,7 +344,7 @@ class SiteSetup {
 		if(file_exists($conf = 'sites/conf.example.php')){
 			if(($params->AESkey = ACL::createRandomKey()) !== false){
 				$buffer = file_get_contents($conf);
-				$search = array(
+				$search = [
 					'#host#',
 					'#user#',
 					'#pass#',
@@ -356,8 +356,8 @@ class SiteSetup {
 					'#timezone#',
 					'#sitename#',
 					'#hl7Port#'
-				);
-				$replace = array(
+				];
+				$replace = [
 					$params->dbHost,
 					$params->dbUser,
 					$params->dbPass,
@@ -370,7 +370,7 @@ class SiteSetup {
 					$params->siteId,
 					9100
 					// TODO check other sites and +1 to the highest port
-				);
+				];
 				$newConf = str_replace($search, $replace, $buffer);
 				$siteDir = "sites/$params->siteId";
 				$conf_file = ("$siteDir/conf.php");
@@ -379,27 +379,27 @@ class SiteSetup {
 				fclose($handle);
 				chmod($conf_file, 0644);
 				if(file_exists($conf_file)){
-					return array(
+					return [
 						'success' => true,
 						'AESkey' => $params->AESkey
-					);
+					];
 				} else {
-					return array(
+					return [
 						'success' => false,
 						'error' => "Unable to create $siteDir/conf.php file"
-					);
+					];
 				}
 			} else {
-				return array(
+				return [
 					'success' => false,
 					'error' => 'Unable to Generate AES 32 bit key'
-				);
+				];
 			}
 		} else {
-			return array(
+			return [
 				'success' => false,
 				'error' => 'Unable to Find sites/conf.example.php'
-			);
+			];
 		}
 	}
 
@@ -421,7 +421,7 @@ class SiteSetup {
 		$u->addUser($admin);
 		session_unset();
 		session_destroy();
-		return array('success' => true);
+		return ['success' => true];
 	}
 
 	public function loadCode($code) {

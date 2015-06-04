@@ -45,7 +45,7 @@ class SiteSetup {
 				if($sth->execute() !== false){
 					return [
 						'success' => false,
-						'error' => 'Database name is used. Please, use a different Database name'
+						'error' => 'Database name is used. Please, use a different Database name. ' . $this->err
 					];
 				}
 			}
@@ -69,7 +69,7 @@ class SiteSetup {
 		} else {
 			return [
 				'success' => false,
-				'error' => 'Could not connect to sql server!<br>Please, check database information and try again'
+				'error' => 'Could not connect to sql server!!! Please, check database information and try again. ' . $this->err
 			];
 		}
 	}

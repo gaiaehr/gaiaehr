@@ -39,17 +39,21 @@ class SiteSetup {
 	public function checkDatabaseCredentials(stdClass $params) {
 		if(isset($params->rootUser)){
 			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
-			$sth = $this->conn->prepare("USE $params->dbName");
 
-			if($success && $sth->execute() !== false){
-				return [
-					'success' => false,
-					'error' => 'Database name is used. Please, use a different Database name'
-				];
+			if($success){
+				$sth = $this->conn->prepare("USE $params->dbName");
+				if($sth->execute() !== false){
+					return [
+						'success' => false,
+						'error' => 'Database name is used. Please, use a different Database name'
+					];
+				}
 			}
 		} else {
 			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
 		}
+
+
 		if($success){
 			$maxAllowPacket = $this->setMaxAllowedPacket();
 			if($maxAllowPacket !== true){
@@ -164,7 +168,7 @@ class SiteSetup {
 				'status' => $status
 			];
 			// try chmod sites folder and check chmod after that
-			$status = ($this->is__writable(dirname(__FILE__).'/sites/') ? 'Ok' : 'Fail');
+			$status = ($this->is__writable(dirname(dirname(__FILE__)).'/sites/') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'Sites dir writable by Web Server',
 				'status' => $status

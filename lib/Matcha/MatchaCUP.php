@@ -375,7 +375,7 @@ class MatchaCUP {
 	 * @param $onMainTable
 	 * @param $onMergeTable
 	 * @param string $operator
-	 * @return $this
+	 * @return MatchaCUP
 	 */
 	public function leftJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns);

@@ -35,6 +35,10 @@ Ext.define('App.model.administration.Department', {
 			name: 'title',
 			type: 'string',
 			len: 100
+		},
+		{
+			name: 'active',
+			type: 'bool'
 		}
 	],
 	proxy: {

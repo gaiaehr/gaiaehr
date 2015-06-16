@@ -148,9 +148,19 @@
 			frameShim: 'img.ux-miframe-shim'
 		},
 
+		iframeMessageListener: null,
+
 		afterRender: function(container){
 			var me = this, frame;
 			me.callParent();
+
+			if(me.iframeMessageListener){
+				if (window.addEventListener){
+					addEventListener("message", me.iframeMessageListener, false);
+				} else {
+					attachEvent("onmessage", me.iframeMessageListener);
+				}
+			}
 
 			if(me.frameShim){
 				me.frameShim.autoBoxAdjust = false;
@@ -347,6 +357,16 @@
 				frame.remove();
 			}
 			me.deleteMembers('frameElement', 'frameShim');
+
+			if(me.iframeMessageListener){
+				if (window.addEventListener){
+					removeEventListener("message", me.iframeMessageListener, false);
+				} else {
+					detachEvent("onmessage", me.iframeMessageListener);
+				}
+			}
+
+
 			me.callParent();
 		}
 

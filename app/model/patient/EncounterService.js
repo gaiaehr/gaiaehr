@@ -132,6 +132,9 @@ Ext.define('App.model.patient.EncounterService', {
 			create: 'Services.addEncounterService',
 			update: 'Services.updateEncounterService',
 			destroy: 'Services.removeEncounterService'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	}
 });

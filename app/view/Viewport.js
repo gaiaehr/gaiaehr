@@ -1250,34 +1250,7 @@ Ext.define('App.view.Viewport', {
     },
 
     onDocumentView: function(id, type){
-	    var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-		    src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id + '&token=' + app.user.token,
-		    win;
-
-	    if(typeof type != 'undefined') src += '&temp=' + type;
-
-	    win = Ext.create('App.view.patient.windows.DocumentViewer',{
-		    documentType: type,
-		    documentId: id,
-		    items:[
-			    {
-				    xtype:'miframe',
-				    autoMask:false,
-				    src: src
-			    }
-		    ]
-	    });
-
-	    if(windows.length > 0){
-		    var last = windows[(windows.length - 1)];
-		    for(var i=0; i < windows.length; i++){
-			    windows[i].toFront();
-		    }
-		    win.showAt((last.x + 25), (last.y + 5));
-
-	    }else{
-		    win.show();
-	    }
+	    app.getController('DocumentViewer').doDocumentView(id, type);
     },
 
     /**
@@ -1302,7 +1275,7 @@ Ext.define('App.view.Viewport', {
 //		            me.VisitCheckout.el.mask(_('loading...'));
 	            }else if(data.patientData.eid && a('access_encounters')){
 //		            me.Encounter.el.mask(_('loading...'));
-	            }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
+	            }else if(data.patientData.floorPlanId === null || data.patientData.floorPlanId === 0){
 //		            me.Summary.el.mask(_('loading...'));
 	            }
 

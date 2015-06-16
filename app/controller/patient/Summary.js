@@ -58,25 +58,25 @@ Ext.define('App.controller.patient.Summary', {
 				itemdblclick: me.onPatientSummaryEncounterDblClick
 			},
 			'#PatientSummaryDisclosuresPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			},
 			'#PatientSummeryNotesPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			},
 			'#PatientSummaryRemindersPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			},
 			'#PatientSummaryVitalsPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			},
 			'#PatientEncounterHistoryPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			},
 			'#PatientSummaryDocumentsPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			},
 			'#PatientSummaryPreventiveCareAlertsPanel': {
-				show: me.reloadGrid
+				activate: me.reloadGrid
 			}
 		});
 
@@ -101,24 +101,23 @@ Ext.define('App.controller.patient.Summary', {
 
 	reloadGrid:function(grid){
 		var store;
+
 		if(grid.itemId == 'PatientSummaryVitalsPanel'){
 			store = grid.down('vitalsdataview').getStore();
 		}else{
 			store = grid.getStore();
 		}
 
-		store.clearFilter(true);
+		//store.clearFilter(true);
 		store.load({
-			params: {
-				pid: app.patient.pid
-			},
+			//params: {
+			//	pid: app.patient.pid
+			//},
 			filters:[
-				[
-					{
-						property:'pid',
-						value: app.patient.pid
-					}
-				]
+				{
+					property:'pid',
+					value: app.patient.pid
+				}
 			]
 		})
 	}

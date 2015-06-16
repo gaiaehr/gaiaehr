@@ -86,7 +86,7 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this,
 			record = me.getEncounterDetailForm().getForm().getRecord();
 
-		if(record.data.provider_uid == 0){
+		if(record.data.provider_uid === 0){
 			if(me.getEncounterSpecialtyCmb()) me.getEncounterSpecialtyCmb().setVisible(false);
 
 		}else{

@@ -108,7 +108,7 @@ Ext.define('App.controller.Scanner', {
 		};
 
 		me.ws.onerror = function(){
-			app.msg(_('oops'), _('scanner_connection_error'), true);
+			app.msg(_('oops'), _('no_scanner_service_found'), true);
 		};
 
 		me.ws.onmessage = function(evt){
@@ -172,8 +172,8 @@ Ext.define('App.controller.Scanner', {
 	initScan: function(){
 		this.getScanWindow();
 		this.getScannerWindow().show();
-		if(this.getScannerCombo().getValue() != ''){
-			this.doScan();
-		}
+		//if(this.getScannerCombo().getValue() !== ''){
+		//	this.doScan();
+		//}
 	}
 });

@@ -42,6 +42,8 @@ Ext.define('App.controller.DocumentViewer', {
 		});
 	},
 
+
+
 	onArchiveBtnClick: function(btn){
 		var win = btn.up('window'),
 			form = win.down('form').getForm(),
@@ -87,6 +89,41 @@ Ext.define('App.controller.DocumentViewer', {
 
 	onViewerDocumentsWinClose: function(win){
 		DocumentHandler.destroyTempDocument({id: win.documentId});
+	},
+
+	doDocumentView: function(id, type){
+		var windows = Ext.ComponentQuery.query('documentviewerwindow'),
+			src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id + '&token=' + app.user.token,
+			win;
+
+		if(typeof type != 'undefined') src += '&temp=' + type;
+
+		win = Ext.create('App.view.patient.windows.DocumentViewer',{
+			documentType: type,
+			documentId: id,
+			items:[
+				{
+					xtype:'miframe',
+					autoMask:false,
+					src: src,
+					iframeMessageListener: function(event){
+						if (event.origin !== window.location.origin) return;
+						app.fireEvent('documentedit', eval('(' + event.data + ')'));
+					}
+				}
+			]
+		});
+
+		if(windows.length > 0){
+			var last = windows[(windows.length - 1)];
+			for(var i=0; i < windows.length; i++){
+				windows[i].toFront();
+			}
+			win.showAt((last.x + 25), (last.y + 5));
+
+		}else{
+			win.show();
+		}
 	}
 
 

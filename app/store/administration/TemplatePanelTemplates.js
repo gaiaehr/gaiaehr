@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.Reminders', {
-	extend: 'Ext.data.Store',
-	model: 'App.model.patient.Reminders'
+Ext.define('App.store.administration.TemplatePanelTemplates', {
+	model: 'App.model.administration.TemplatePanelTemplate',
+	extend: 'Ext.data.Store'
 });

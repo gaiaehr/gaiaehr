@@ -482,7 +482,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param record
 	 */
 	procedureEdit: function(view, record){
-		if(record.data.code_text != '' || record.data.code != ''){
+		if(record.data.code_text !== '' || record.data.code !== ''){
 			this.pWin.setTitle(record.data.code_text + ' [' + record.data.code + ']');
 		}else{
 			this.pWin.setTitle(_('new_procedure'));

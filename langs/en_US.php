@@ -1499,7 +1499,7 @@ $LANG = array(
     'signed'                                => 'Signed',
     'received'                              => 'Received',
     'result_signed'                         => 'Result Signed',
-    'scanner_connection_error'              => 'Scanner Connection Error',
+    'no_scanner_service_found'             => 'No Scanner Service Found',
     'na'                                    => 'N/A',
     'immediate'                             => 'Immediate',
     'urgent'                                => 'Urgent',
@@ -1584,6 +1584,9 @@ $LANG = array(
     'refresh'                               => 'Refresh',
     'download'                              => 'Download',
     'problems'                              => 'Problems',
+    'no_templates_found'                    => 'No Templates Found',
+    'add_templates_message'                 => 'Would you like to add this templates to this encounter?',
+
 
     'amendment_approval_confirmation'       => 'This will approve the amendment and commit any changes to the patient record, would you like to continue?',
 );

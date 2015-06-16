@@ -179,49 +179,921 @@ Ext.define('Ext.ux.form.SearchField', {
         }
     }
 });
-Ext.define('App.controller.AlwaysOnTop', {
-	extend: 'Ext.app.Controller',
+Ext.define('Ext.ux.statusbar.StatusBar', {
+    extend: 'Ext.toolbar.Toolbar',
+    alternateClassName: 'Ext.ux.StatusBar',
+    alias: 'widget.statusbar',
+    requires: ['Ext.toolbar.TextItem'],
+    /**
+     * @cfg {String} statusAlign
+     * The alignment of the status element within the overall StatusBar layout.  When the StatusBar is rendered,
+     * it creates an internal div containing the status text and icon.  Any additional Toolbar items added in the
+     * StatusBar's {@link #cfg-items} config, or added via {@link #method-add} or any of the supported add* methods, will be
+     * rendered, in added order, to the opposite side.  The status element is greedy, so it will automatically
+     * expand to take up all sapce left over by any other items.  Example usage:
+     *
+     *     // Create a left-aligned status bar containing a button,
+     *     // separator and text item that will be right-aligned (default):
+     *     Ext.create('Ext.Panel', {
+     *         title: 'StatusBar',
+     *         // etc.
+     *         bbar: Ext.create('Ext.ux.statusbar.StatusBar', {
+     *             defaultText: 'Default status text',
+     *             id: 'status-id',
+     *             items: [{
+     *                 text: 'A Button'
+     *             }, '-', 'Plain Text']
+     *         })
+     *     });
+     *
+     *     // By adding the statusAlign config, this will create the
+     *     // exact same toolbar, except the status and toolbar item
+     *     // layout will be reversed from the previous example:
+     *     Ext.create('Ext.Panel', {
+     *         title: 'StatusBar',
+     *         // etc.
+     *         bbar: Ext.create('Ext.ux.statusbar.StatusBar', {
+     *             defaultText: 'Default status text',
+     *             id: 'status-id',
+     *             statusAlign: 'right',
+     *             items: [{
+     *                 text: 'A Button'
+     *             }, '-', 'Plain Text']
+     *         })
+     *     });
+     */
+    /**
+     * @cfg {String} [defaultText='']
+     * The default {@link #text} value.  This will be used anytime the status bar is cleared with the
+     * `useDefaults:true` option.
+     */
+    /**
+     * @cfg {String} [defaultIconCls='']
+     * The default {@link #iconCls} value (see the iconCls docs for additional details about customizing the icon).
+     * This will be used anytime the status bar is cleared with the `useDefaults:true` option.
+     */
+    /**
+     * @cfg {String} text
+     * A string that will be <b>initially</b> set as the status message.  This string
+     * will be set as innerHTML (html tags are accepted) for the toolbar item.
+     * If not specified, the value set for {@link #defaultText} will be used.
+     */
+    /**
+     * @cfg {String} [iconCls='']
+     * A CSS class that will be **initially** set as the status bar icon and is
+     * expected to provide a background image.
+     *
+     * Example usage:
+     *
+     *     // Example CSS rule:
+     *     .x-statusbar .x-status-custom {
+     *         padding-left: 25px;
+     *         background: transparent url(images/custom-icon.gif) no-repeat 3px 2px;
+     *     }
+     *
+     *     // Setting a default icon:
+     *     var sb = Ext.create('Ext.ux.statusbar.StatusBar', {
+     *         defaultIconCls: 'x-status-custom'
+     *     });
+     *
+     *     // Changing the icon:
+     *     sb.setStatus({
+     *         text: 'New status',
+     *         iconCls: 'x-status-custom'
+     *     });
+     */
 
-	alwaysOnTopManager: null,
+    /**
+     * @cfg {String} cls
+     * The base class applied to the containing element for this component on render.
+     */
+    cls : 'x-statusbar',
+    /**
+     * @cfg {String} busyIconCls
+     * The default {@link #iconCls} applied when calling {@link #showBusy}.
+     * It can be overridden at any time by passing the `iconCls` argument into {@link #showBusy}.
+     */
+    busyIconCls : 'x-status-busy',
+    /**
+     * @cfg {String} busyText
+     * The default {@link #text} applied when calling {@link #showBusy}.
+     * It can be overridden at any time by passing the `text` argument into {@link #showBusy}.
+     */
+    busyText : 'Loading...',
+    /**
+     * @cfg {Number} autoClear
+     * The number of milliseconds to wait after setting the status via
+     * {@link #setStatus} before automatically clearing the status text and icon.
+     * Note that this only applies when passing the `clear` argument to {@link #setStatus}
+     * since that is the only way to defer clearing the status.  This can
+     * be overridden by specifying a different `wait` value in {@link #setStatus}.
+     * Calls to {@link #clearStatus} always clear the status bar immediately and ignore this value.
+     */
+    autoClear : 5000,
 
-	init: function() {
-		this.control({
-			'component{isFloating()}': {
-				'render': function (component, options) {
-					this.onComponentRender(component, options);
-				}
-			}
-		});
-		/* Uncommenting the code below makes sure that all Ext.window.MessageBoxes stay on top. */
-		/*
-		 Ext.override(Ext.window.MessageBox, {
-		 alwaysOnTop: true
-		 });
-		 */
-		/* Uncommenting the code below makes sure that all form errormessages stay on top.
-		 Necessary if you have a form inside a alwaysOnTop window. */
-		/*
-		 Ext.override(Ext.tip.ToolTip, {
-		 alwaysOnTop: true
-		 });
-		 */
-	},
+    /**
+     * @cfg {String} emptyText
+     * The text string to use if no text has been set. If there are no other items in
+     * the toolbar using an empty string (`''`) for this value would end up in the toolbar
+     * height collapsing since the empty string will not maintain the toolbar height.
+     * Use `''` if the toolbar should collapse in height vertically when no text is
+     * specified and there are no other items in the toolbar.
+     */
+    emptyText : '&#160;',
 
-	onComponentRender: function (component, options) {
-		if (component.alwaysOnTop) {
-			if (!this.alwaysOnTopManager) {
-				this.alwaysOnTopManager = Ext.create('Ext.ZIndexManager');
-			}
-			this.alwaysOnTopManager.register(component);
-		}
-		if (this.alwaysOnTopManager) {
-			/* Making sure the alwaysOnTopManager always has the highest zseed */
-			if (Ext.ZIndexManager.zBase > this.alwaysOnTopManager.zseed) {
-				this.alwaysOnTopManager.zseed = this.alwaysOnTopManager.getNextZSeed();
-			}
-		}
-	}
+    // private
+    activeThreadId : 0,
 
+    // private
+    initComponent : function(){
+        var right = this.statusAlign === 'right';
+
+        this.callParent(arguments);
+        this.currIconCls = this.iconCls || this.defaultIconCls;
+        this.statusEl = Ext.create('Ext.toolbar.TextItem', {
+            cls: 'x-status-text ' + (this.currIconCls || ''),
+            text: this.text || this.defaultText || ''
+        });
+
+        if (right) {
+            this.cls += ' x-status-right';
+            this.add('->');
+            this.add(this.statusEl);
+        } else {
+            this.insert(0, this.statusEl);
+            this.insert(1, '->');
+        }
+    },
+
+    /**
+     * Sets the status {@link #text} and/or {@link #iconCls}. Also supports automatically clearing the
+     * status that was set after a specified interval.
+     *
+     * Example usage:
+     *
+     *     // Simple call to update the text
+     *     statusBar.setStatus('New status');
+     *
+     *     // Set the status and icon, auto-clearing with default options:
+     *     statusBar.setStatus({
+     *         text: 'New status',
+     *         iconCls: 'x-status-custom',
+     *         clear: true
+     *     });
+     *
+     *     // Auto-clear with custom options:
+     *     statusBar.setStatus({
+     *         text: 'New status',
+     *         iconCls: 'x-status-custom',
+     *         clear: {
+     *             wait: 8000,
+     *             anim: false,
+     *             useDefaults: false
+     *         }
+     *     });
+     *
+     * @param {Object/String} config A config object specifying what status to set, or a string assumed
+     * to be the status text (and all other options are defaulted as explained below). A config
+     * object containing any or all of the following properties can be passed:
+     *
+     * @param {String} config.text The status text to display.  If not specified, any current
+     * status text will remain unchanged.
+     *
+     * @param {String} config.iconCls The CSS class used to customize the status icon (see
+     * {@link #iconCls} for details). If not specified, any current iconCls will remain unchanged.
+     *
+     * @param {Boolean/Number/Object} config.clear Allows you to set an internal callback that will
+     * automatically clear the status text and iconCls after a specified amount of time has passed. If clear is not
+     * specified, the new status will not be auto-cleared and will stay until updated again or cleared using
+     * {@link #clearStatus}. If `true` is passed, the status will be cleared using {@link #autoClear},
+     * {@link #defaultText} and {@link #defaultIconCls} via a fade out animation. If a numeric value is passed,
+     * it will be used as the callback interval (in milliseconds), overriding the {@link #autoClear} value.
+     * All other options will be defaulted as with the boolean option.  To customize any other options,
+     * you can pass an object in the format:
+     * 
+     * @param {Number} config.clear.wait The number of milliseconds to wait before clearing
+     * (defaults to {@link #autoClear}).
+     * @param {Boolean} config.clear.anim False to clear the status immediately once the callback
+     * executes (defaults to true which fades the status out).
+     * @param {Boolean} config.clear.useDefaults False to completely clear the status text and iconCls
+     * (defaults to true which uses {@link #defaultText} and {@link #defaultIconCls}).
+     *
+     * @return {Ext.ux.statusbar.StatusBar} this
+     */
+    setStatus : function(o) {
+        var me = this;
+
+        o = o || {};
+        Ext.suspendLayouts();
+        if (Ext.isString(o)) {
+            o = {text:o};
+        }
+        if (o.text !== undefined) {
+            me.setText(o.text);
+        }
+        if (o.iconCls !== undefined) {
+            me.setIcon(o.iconCls);
+        }
+
+        if (o.clear) {
+            var c = o.clear,
+                wait = me.autoClear,
+                defaults = {useDefaults: true, anim: true};
+
+            if (Ext.isObject(c)) {
+                c = Ext.applyIf(c, defaults);
+                if (c.wait) {
+                    wait = c.wait;
+                }
+            } else if (Ext.isNumber(c)) {
+                wait = c;
+                c = defaults;
+            } else if (Ext.isBoolean(c)) {
+                c = defaults;
+            }
+
+            c.threadId = this.activeThreadId;
+            Ext.defer(me.clearStatus, wait, me, [c]);
+        }
+        Ext.resumeLayouts(true);
+        return me;
+    },
+
+    /**
+     * Clears the status {@link #text} and {@link #iconCls}. Also supports clearing via an optional fade out animation.
+     *
+     * @param {Object} [config] A config object containing any or all of the following properties.  If this
+     * object is not specified the status will be cleared using the defaults below:
+     * @param {Boolean} config.anim True to clear the status by fading out the status element (defaults
+     * to false which clears immediately).
+     * @param {Boolean} config.useDefaults True to reset the text and icon using {@link #defaultText} and
+     * {@link #defaultIconCls} (defaults to false which sets the text to '' and removes any existing icon class).
+     *
+     * @return {Ext.ux.statusbar.StatusBar} this
+     */
+    clearStatus : function(o) {
+        o = o || {};
+
+        var me = this,
+            statusEl = me.statusEl;
+
+        if (o.threadId && o.threadId !== me.activeThreadId) {
+            // this means the current call was made internally, but a newer
+            // thread has set a message since this call was deferred.  Since
+            // we don't want to overwrite a newer message just ignore.
+            return me;
+        }
+
+        var text = o.useDefaults ? me.defaultText : me.emptyText,
+            iconCls = o.useDefaults ? (me.defaultIconCls ? me.defaultIconCls : '') : '';
+
+        if (o.anim) {
+            // animate the statusEl Ext.Element
+            statusEl.el.puff({
+                remove: false,
+                useDisplay: true,
+                callback: function() {
+                    statusEl.el.show();
+                    me.setStatus({
+                        text: text,
+                        iconCls: iconCls
+                    });
+                }
+            });
+        } else {
+             me.setStatus({
+                 text: text,
+                 iconCls: iconCls
+             });
+        }
+        return me;
+    },
+
+    /**
+     * Convenience method for setting the status text directly.  For more flexible options see {@link #setStatus}.
+     * @param {String} text (optional) The text to set (defaults to '')
+     * @return {Ext.ux.statusbar.StatusBar} this
+     */
+    setText : function(text) {
+        var me = this;
+        me.activeThreadId++;
+        me.text = text || '';
+        if (me.rendered) {
+            me.statusEl.setText(me.text);
+        }
+        return me;
+    },
+
+    /**
+     * Returns the current status text.
+     * @return {String} The status text
+     */
+    getText : function(){
+        return this.text;
+    },
+
+    /**
+     * Convenience method for setting the status icon directly.  For more flexible options see {@link #setStatus}.
+     * See {@link #iconCls} for complete details about customizing the icon.
+     * @param {String} iconCls (optional) The icon class to set (defaults to '', and any current icon class is removed)
+     * @return {Ext.ux.statusbar.StatusBar} this
+     */
+    setIcon : function(cls) {
+        var me = this;
+
+        me.activeThreadId++;
+        cls = cls || '';
+
+        if (me.rendered) {
+            if (me.currIconCls) {
+                me.statusEl.removeCls(me.currIconCls);
+                me.currIconCls = null;
+            }
+            if (cls.length > 0) {
+                me.statusEl.addCls(cls);
+                me.currIconCls = cls;
+            }
+        } else {
+            me.currIconCls = cls;
+        }
+        return me;
+    },
+
+    /**
+     * Convenience method for setting the status text and icon to special values that are pre-configured to indicate
+     * a "busy" state, usually for loading or processing activities.
+     *
+     * @param {Object/String} config (optional) A config object in the same format supported by {@link #setStatus}, or a
+     * string to use as the status text (in which case all other options for setStatus will be defaulted).  Use the
+     * `text` and/or `iconCls` properties on the config to override the default {@link #busyText}
+     * and {@link #busyIconCls} settings. If the config argument is not specified, {@link #busyText} and
+     * {@link #busyIconCls} will be used in conjunction with all of the default options for {@link #setStatus}.
+     * @return {Ext.ux.statusbar.StatusBar} this
+     */
+    showBusy : function(o){
+        if (Ext.isString(o)) {
+            o = { text: o };
+        }
+        o = Ext.applyIf(o || {}, {
+            text: this.busyText,
+            iconCls: this.busyIconCls
+        });
+        return this.setStatus(o);
+    }
+});
+
+Ext.define('Ext.ux.LiveSearchGridPanel', {
+    extend: 'Ext.grid.Panel',
+    requires: [
+        'Ext.toolbar.TextItem',
+        'Ext.form.field.Checkbox',
+        'Ext.form.field.Text',
+        'Ext.ux.statusbar.StatusBar'
+    ],
+    
+    /**
+     * @private
+     * search value initialization
+     */
+    searchValue: null,
+    
+    /**
+     * @private
+     * The row indexes where matching strings are found. (used by previous and next buttons)
+     */
+    indexes: [],
+    
+    /**
+     * @private
+     * The row index of the first search, it could change if next or previous buttons are used.
+     */
+    currentIndex: null,
+    
+    /**
+     * @private
+     * The generated regular expression used for searching.
+     */
+    searchRegExp: null,
+    
+    /**
+     * @private
+     * Case sensitive mode.
+     */
+    caseSensitive: false,
+    
+    /**
+     * @private
+     * Regular expression mode.
+     */
+    regExpMode: false,
+    
+    /**
+     * @cfg {String} matchCls
+     * The matched string css classe.
+     */
+    matchCls: 'x-livesearch-match',
+    
+    defaultStatusText: 'Nothing Found',
+    
+    // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
+    initComponent: function() {
+        var me = this;
+        me.tbar = ['Search',{
+                 xtype: 'textfield',
+                 name: 'searchField',
+                 hideLabel: true,
+                 width: 200,
+                 listeners: {
+                     change: {
+                         fn: me.onTextFieldChange,
+                         scope: this,
+                         buffer: 100
+                     }
+                 }
+            }, {
+                xtype: 'button',
+                text: '&lt;',
+                tooltip: 'Find Previous Row',
+                handler: me.onPreviousClick,
+                scope: me
+            },{
+                xtype: 'button',
+                text: '&gt;',
+                tooltip: 'Find Next Row',
+                handler: me.onNextClick,
+                scope: me
+            }, '-', {
+                xtype: 'checkbox',
+                hideLabel: true,
+                margin: '0 0 0 4px',
+                handler: me.regExpToggle,
+                scope: me                
+            }, 'Regular expression', {
+                xtype: 'checkbox',
+                hideLabel: true,
+                margin: '0 0 0 4px',
+                handler: me.caseSensitiveToggle,
+                scope: me
+            }, 'Case sensitive'];
+
+        me.bbar = Ext.create('Ext.ux.StatusBar', {
+            defaultText: me.defaultStatusText,
+            name: 'searchStatusBar'
+        });
+        
+        me.callParent(arguments);
+    },
+    
+    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input 
+    afterRender: function() {
+        var me = this;
+        me.callParent(arguments);
+        me.textField = me.down('textfield[name=searchField]');
+        me.statusBar = me.down('statusbar[name=searchStatusBar]');
+    },
+    // detects html tag
+    tagsRe: /<[^>]*>/gm,
+    
+    // DEL ASCII code
+    tagsProtect: '\x0f',
+    
+    // detects regexp reserved word
+    regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
+    
+    /**
+     * In normal mode it returns the value with protected regexp characters.
+     * In regular expression mode it returns the raw value except if the regexp is invalid.
+     * @return {String} The value to process or null if the textfield value is blank or invalid.
+     * @private
+     */
+    getSearchValue: function() {
+        var me = this,
+            value = me.textField.getValue();
+            
+        if (value === '') {
+            return null;
+        }
+        if (!me.regExpMode) {
+            value = value.replace(me.regExpProtect, function(m) {
+                return '\\' + m;
+            });
+        } else {
+            try {
+                new RegExp(value);
+            } catch (error) {
+                me.statusBar.setStatus({
+                    text: error.message,
+                    iconCls: 'x-status-error'
+                });
+                return null;
+            }
+            // this is stupid
+            if (value === '^' || value === '$') {
+                return null;
+            }
+        }
+
+        return value;
+    },
+    
+    /**
+     * Finds all strings that matches the searched value in each grid cells.
+     * @private
+     */
+     onTextFieldChange: function() {
+         var me = this,
+             count = 0;
+
+         me.view.refresh();
+         // reset the statusbar
+         me.statusBar.setStatus({
+             text: me.defaultStatusText,
+             iconCls: ''
+         });
+
+         me.searchValue = me.getSearchValue();
+         me.indexes = [];
+         me.currentIndex = null;
+
+         if (me.searchValue !== null) {
+             me.searchRegExp = new RegExp(me.searchValue, 'g' + (me.caseSensitive ? '' : 'i'));
+             
+             
+             me.store.each(function(record, idx) {
+                 var td = Ext.fly(me.view.getNode(idx)).down('td'),
+                     cell, matches, cellHTML;
+                 while(td) {
+                     cell = td.down('.x-grid-cell-inner');
+                     matches = cell.dom.innerHTML.match(me.tagsRe);
+                     cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
+                     
+                     // populate indexes array, set currentIndex, and replace wrap matched string in a span
+                     cellHTML = cellHTML.replace(me.searchRegExp, function(m) {
+                        count += 1;
+                        if (Ext.Array.indexOf(me.indexes, idx) === -1) {
+                            me.indexes.push(idx);
+                        }
+                        if (me.currentIndex === null) {
+                            me.currentIndex = idx;
+                        }
+                        return '<span class="' + me.matchCls + '">' + m + '</span>';
+                     });
+                     // restore protected tags
+                     Ext.each(matches, function(match) {
+                        cellHTML = cellHTML.replace(me.tagsProtect, match); 
+                     });
+                     // update cell html
+                     cell.dom.innerHTML = cellHTML;
+                     td = td.next();
+                 }
+             }, me);
+
+             // results found
+             if (me.currentIndex !== null) {
+                 me.getSelectionModel().select(me.currentIndex);
+                 me.statusBar.setStatus({
+                     text: count + ' matche(s) found.',
+                     iconCls: 'x-status-valid'
+                 });
+             }
+         }
+
+         // no results found
+         if (me.currentIndex === null) {
+             me.getSelectionModel().deselectAll();
+         }
+
+         // force textfield focus
+         me.textField.focus();
+     },
+    
+    /**
+     * Selects the previous row containing a match.
+     * @private
+     */   
+    onPreviousClick: function() {
+        var me = this,
+            idx;
+            
+        if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
+            me.currentIndex = me.indexes[idx - 1] || me.indexes[me.indexes.length - 1];
+            me.getSelectionModel().select(me.currentIndex);
+         }
+    },
+    
+    /**
+     * Selects the next row containing a match.
+     * @private
+     */    
+    onNextClick: function() {
+         var me = this,
+             idx;
+             
+         if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
+            me.currentIndex = me.indexes[idx + 1] || me.indexes[0];
+            me.getSelectionModel().select(me.currentIndex);
+         }
+    },
+    
+    /**
+     * Switch to case sensitive mode.
+     * @private
+     */    
+    caseSensitiveToggle: function(checkbox, checked) {
+        this.caseSensitive = checked;
+        this.onTextFieldChange();
+    },
+    
+    /**
+     * Switch to regular expression mode
+     * @private
+     */
+    regExpToggle: function(checkbox, checked) {
+        this.regExpMode = checked;
+        this.onTextFieldChange();
+    }
+});
+/*!
+ * Ext JS Library 4.0
+ * Copyright(c) 2006-2011 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
+ */
+
+/**
+ * Barebones iframe implementation. For serious iframe work, see the
+ * ManagedIFrame extension
+ * (http://www.sencha.com/forum/showthread.php?71961).
+ */
+Ext.define('Ext.ux.IFrame', {
+    extend: 'Ext.Component',
+
+    alias: 'widget.uxiframe',
+
+    loadMask: 'Loading...',
+
+    src: 'about:blank',
+
+    renderTpl: [
+        '<iframe src="{src}" name="{frameName}" width="100%" height="100%" frameborder="0"></iframe>'
+    ],
+
+    initComponent: function () {
+        this.callParent();
+
+        this.frameName = this.frameName || this.id + '-frame';
+
+        this.addEvents(
+            'beforeload',
+            'load'
+        );
+
+        Ext.apply(this.renderSelectors, {
+            iframeEl: 'iframe'
+        });
+    },
+
+    initEvents : function() {
+        var me = this;
+        me.callParent();
+        me.iframeEl.on('load', me.onLoad, me);
+    },
+
+    initRenderData: function() {
+        return Ext.apply(this.callParent(), {
+            src: this.src,
+            frameName: this.frameName
+        });
+    },
+
+    getBody: function() {
+        var doc = this.getDoc();
+        return doc.body || doc.documentElement;
+    },
+
+    getDoc: function() {
+        try {
+            return this.getWin().document;
+        } catch (ex) {
+            return null;
+        }
+    },
+
+    getWin: function() {
+        var me = this,
+            name = me.frameName,
+            win = Ext.isIE
+                ? me.iframeEl.dom.contentWindow
+                : window.frames[name];
+        return win;
+    },
+
+    getFrame: function() {
+        var me = this;
+        return me.iframeEl.dom;
+    },
+
+    beforeDestroy: function () {
+        this.cleanupListeners(true);
+        this.callParent();
+    },
+    
+    cleanupListeners: function(destroying){
+        var doc, prop;
+
+        if (this.rendered) {
+            try {
+                doc = this.getDoc();
+                if (doc) {
+                    Ext.EventManager.removeAll(doc);
+                    if (destroying) {
+                        for (prop in doc) {
+                            if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
+                                delete doc[prop];
+                            }
+                        }
+                    }
+                }
+            } catch(e) { }
+        }
+    },
+
+    onLoad: function() {
+        var me = this,
+            doc = me.getDoc(),
+            fn = me.onRelayedEvent;
+
+        if (doc) {
+            try {
+                Ext.EventManager.removeAll(doc);
+
+                // These events need to be relayed from the inner document (where they stop
+                // bubbling) up to the outer document. This has to be done at the DOM level so
+                // the event reaches listeners on elements like the document body. The effected
+                // mechanisms that depend on this bubbling behavior are listed to the right
+                // of the event.
+                Ext.EventManager.on(doc, {
+                    mousedown: fn, // menu dismisal (MenuManager) and Window onMouseDown (toFront)
+                    mousemove: fn, // window resize drag detection
+                    mouseup: fn,   // window resize termination
+                    click: fn,     // not sure, but just to be safe
+                    dblclick: fn,  // not sure again
+                    scope: me
+                });
+            } catch(e) {
+                // cannot do this xss
+            }
+
+            // We need to be sure we remove all our events from the iframe on unload or we're going to LEAK!
+            Ext.EventManager.on(this.getWin(), 'beforeunload', me.cleanupListeners, me);
+
+            this.el.unmask();
+            this.fireEvent('load', this);
+
+        } else if(me.src && me.src != '') {
+
+            this.el.unmask();
+            this.fireEvent('error', this);
+        }
+
+
+    },
+
+    onRelayedEvent: function (event) {
+        // relay event from the iframe's document to the document that owns the iframe...
+
+        var iframeEl = this.iframeEl,
+
+            // Get the left-based iframe position
+            iframeXY = Ext.Element.getTrueXY(iframeEl),
+            originalEventXY = event.getXY(),
+
+            // Get the left-based XY position.
+            // This is because the consumer of the injected event (Ext.EventManager) will
+            // perform its own RTL normalization.
+            eventXY = Ext.EventManager.getPageXY(event.browserEvent);
+
+        // the event from the inner document has XY relative to that document's origin,
+        // so adjust it to use the origin of the iframe in the outer document:
+        event.xy = [iframeXY[0] + eventXY[0], iframeXY[1] + eventXY[1]];
+
+        event.injectEvent(iframeEl); // blame the iframe for the event...
+
+        event.xy = originalEventXY; // restore the original XY (just for safety)
+    },
+
+    load: function (src) {
+        var me = this,
+            text = me.loadMask,
+            frame = me.getFrame();
+
+        if (me.fireEvent('beforeload', me, src) !== false) {
+            if (text && me.el) {
+                me.el.mask(text);
+            }
+
+            frame.src = me.src = (src || me.src);
+        }
+    }
+});
+
+Ext.define('Ext.ux.DataTip', function(DataTip) {
+
+//  Target the body (if the host is a Panel), or, if there is no body, the main Element.
+    function onHostRender() {
+        var e = this.isXType('panel') ? this.body : this.el;
+        if (this.dataTip.renderToTarget) {
+            this.dataTip.render(e);
+        }
+        this.dataTip.setTarget(e);
+    }
+
+    function updateTip(tip, data) {
+        if (tip.rendered) {
+            if (tip.host.fireEvent('beforeshowtip', tip.eventHost, tip, data) === false) {
+                return false;
+            }
+            tip.update(data);
+        } else {
+            if (Ext.isString(data)) {
+                tip.html = data;
+            } else {
+                tip.data = data;
+            }
+        }
+    }
+
+    function beforeViewTipShow(tip) {
+        var rec = this.view.getRecord(tip.triggerElement),
+            data;
+
+        if (rec) {
+            data = tip.initialConfig.data ? Ext.apply(tip.initialConfig.data, rec.data) : rec.data;
+            return updateTip(tip, data);
+        } else {
+            return false;
+        }
+    }
+
+    function beforeFormTipShow(tip) {
+        var field = Ext.getCmp(tip.triggerElement.id);
+        if (field && (field.tooltip || tip.tpl)) {
+            return updateTip(tip, field.tooltip || field);
+        } else {
+            return false;
+        }
+    }
+
+    return {
+        extend: 'Ext.tip.ToolTip',
+
+        mixins: {
+            plugin: 'Ext.AbstractPlugin'
+        },
+
+        alias: 'plugin.datatip',
+
+        lockableScope: 'both',
+
+        constructor: function(config) {
+            var me = this;
+            me.callParent([config]);
+            me.mixins.plugin.constructor.call(me, config);
+        },
+
+        init: function(host) {
+            var me = this;
+
+            me.mixins.plugin.init.call(me, host);
+            host.dataTip = me;
+            me.host = host;
+
+            if (host.isXType('tablepanel')) {
+                me.view = host.getView();
+                if (host.ownerLockable) {
+                    me.host = host.ownerLockable;
+                }
+                me.delegate = me.delegate || me.view.getDataRowSelector();
+                me.on('beforeshow', beforeViewTipShow);
+            } else if (host.isXType('dataview')) {
+                me.view = me.host;
+                me.delegate = me.delegate || host.itemSelector;
+                me.on('beforeshow', beforeViewTipShow);
+            } else if (host.isXType('form')) {
+                me.delegate = '.' + Ext.form.Labelable.prototype.formItemCls;
+                me.on('beforeshow', beforeFormTipShow);
+            } else if (host.isXType('combobox')) {
+                me.view = host.getPicker();
+                me.delegate = me.delegate || me.view.getItemSelector();
+                me.on('beforeshow', beforeViewTipShow);
+            }
+            if (host.rendered) {
+                onHostRender.call(host);
+            } else {
+                host.onRender = Ext.Function.createSequence(host.onRender, onHostRender);
+            }
+        }
+    };
 });
 /*!
  * Ext.ux.RatingField
@@ -706,106 +1578,6 @@ Ext.define('App.ux.grid.GridToHtml', {
     }
 });
 
-Ext.define('App.ux.ActivityMonitor', {
-	singleton: true,
-	controller: null,
-	ui: null,
-	runner: null,
-	task: null,
-	lastActive: null,
-
-	ready: false,
-	verbose: false,
-	interval: (1000 * 60), //1 minute
-	maxInactive: (1000 * 60 * 2), //5 minutes
-
-	init: function(config){
-		if(!config){
-			config = {};
-		}
-
-		Ext.apply(this, config, {
-			runner: new Ext.util.TaskRunner(),
-			ui: Ext.getBody(),
-			task: {
-				run: this.monitorUI,
-				interval: config.interval || this.interval,
-				scope: this
-			}
-		});
-		this.ready = true;
-	},
-
-	isReady: function(){
-		return this.ready;
-	},
-
-	isActive: Ext.emptyFn,
-	isInactive: Ext.emptyFn,
-
-	start: function(){
-		if(!this.isReady()){
-			this.log('Please run ActivityMonitor.init()');
-			return false;
-		}
-
-		this.ui.on('mousemove', this.captureActivity, this);
-		this.ui.on('keydown', this.captureActivity, this);
-
-		this.lastActive = new Date();
-		this.log('ActivityMonitor has been started.');
-
-		this.runner.start(this.task);
-
-		return true;
-	},
-
-	stop: function(){
-		if(!this.isReady()){
-			this.log('Please run ActivityMonitor.init()');
-			return false;
-		}
-
-		this.runner.stop(this.task);
-		this.lastActive = null;
-
-		this.ui.un('mousemove', this.captureActivity);
-		this.ui.un('keydown', this.captureActivity);
-
-		this.log('ActivityMonitor has been stopped.');
-
-		return true;
-	},
-
-	captureActivity: function(eventObj, el, eventOptions){
-		if(this.controller.logoutWarinigWindow)
-			this.controller.cancelAutoLogout();
-		this.lastActive = new Date();
-	},
-
-	monitorUI: function(){
-		var now = new Date(), inactive = (now - this.lastActive);
-
-		if(inactive >= this.maxInactive){
-			this.log('MAXIMUM INACTIVE TIME HAS BEEN REACHED');
-			this.stop();
-			//remove event listeners
-
-			this.isInactive();
-		}
-		else{
-			this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + ' SECONDS)');
-			this.isActive();
-		}
-	},
-
-	log: function(msg){
-		if(this.verbose){
-			window.console.log(msg);
-		}
-	}
-});
-
 Ext.define('App.ux.grid.Printer', {
     requires: 'Ext.XTemplate',
     statics: {
@@ -994,65 +1766,106 @@ Ext.define('App.ux.grid.Printer', {
     }
 });
 
-Ext.define('App.ux.LiveImmunizationSearch', {
-	extend: 'Ext.form.ComboBox',
-	xtype: 'immunizationlivesearch',
-	hideLabel: true,
-	displayField: 'name',
-	valueField: 'cvx_code',
-	emptyText: _('search_for_a_immunizations') + '...',
-	typeAhead: true,
-	minChars: 1,
-	initComponent: function(){
-		var me = this;
+Ext.define('App.ux.ActivityMonitor', {
+	singleton: true,
+	controller: null,
+	ui: null,
+	runner: null,
+	task: null,
+	lastActive: null,
 
-		Ext.define('liveImmunizationSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'id', type: 'int'},
-				{name: 'cvx_code', type: 'string'},
-				{name: 'name', type: 'string'},
-				{name: 'description', type: 'string'},
-				{name: 'note', type: 'string'},
-				{name: 'status', type: 'string'},
-				{name: 'update_date', type: 'date', dateFormat: 'Y-m-d H:i:s'}
-			],
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'Immunizations.getImmunizationLiveSearch'
-				},
-				reader: {
-					totalProperty: 'totals',
-					root: 'rows'
-				}
+	ready: false,
+	verbose: false,
+	interval: (1000 * 60), //1 minute
+	maxInactive: (1000 * 60 * 2), //5 minutes
+
+	init: function(config){
+		if(!config){
+			config = {};
+		}
+
+		Ext.apply(this, config, {
+			runner: new Ext.util.TaskRunner(),
+			ui: Ext.getBody(),
+			task: {
+				run: this.monitorUI,
+				interval: config.interval || this.interval,
+				scope: this
 			}
 		});
+		this.ready = true;
+	},
 
-		me.store = Ext.create('Ext.data.Store', {
-			model: 'liveImmunizationSearchModel',
-			pageSize: 10,
-			autoLoad: false
-		});
+	isReady: function(){
+		return this.ready;
+	},
 
-		Ext.apply(this, {
-			store: me.store,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function(){
-					return '<div class="search-item">CVX - {cvx_code}: <span style="font-weight: normal;" class="list-status-{status}">{name} ({status})</span></div>';
-				}
-			},
-			pageSize: 10
-		});
+	isActive: Ext.emptyFn,
+	isInactive: Ext.emptyFn,
 
-		me.callParent();
+	start: function(){
+		if(!this.isReady()){
+			this.log('Please run ActivityMonitor.init()');
+			return false;
+		}
+
+		this.ui.on('mousemove', this.captureActivity, this);
+		this.ui.on('keydown', this.captureActivity, this);
+
+		this.lastActive = new Date();
+		this.log('ActivityMonitor has been started.');
+
+		this.runner.start(this.task);
+
+		return true;
+	},
+
+	stop: function(){
+		if(!this.isReady()){
+			this.log('Please run ActivityMonitor.init()');
+			return false;
+		}
+
+		this.runner.stop(this.task);
+		this.lastActive = null;
+
+		this.ui.un('mousemove', this.captureActivity);
+		this.ui.un('keydown', this.captureActivity);
+
+		this.log('ActivityMonitor has been stopped.');
+
+		return true;
+	},
+
+	captureActivity: function(eventObj, el, eventOptions){
+		if(this.controller.logoutWarinigWindow)
+			this.controller.cancelAutoLogout();
+		this.lastActive = new Date();
+	},
+
+	monitorUI: function(){
+		var now = new Date(), inactive = (now - this.lastActive);
+
+		if(inactive >= this.maxInactive){
+			this.log('MAXIMUM INACTIVE TIME HAS BEEN REACHED');
+			this.stop();
+			//remove event listeners
+
+			this.isInactive();
+		}
+		else{
+			this.log('CURRENTLY INACTIVE FOR ' + Math.floor(inactive / 1000) + ' SECONDS)');
+			this.isActive();
+		}
+	},
+
+	log: function(msg){
+		if(this.verbose){
+			window.console.log(msg);
+		}
 	}
 });
+
 Ext.define('App.ux.AbstractPanel', {
 
     calculatePercent:function(percent, value){
@@ -1421,6 +2234,65 @@ Ext.define('App.ux.LiveICDXSearch', {
 		trigger2.addClsOnOver('x-form-trigger-over');
 	}
 });
+Ext.define('App.ux.LiveImmunizationSearch', {
+	extend: 'Ext.form.ComboBox',
+	xtype: 'immunizationlivesearch',
+	hideLabel: true,
+	displayField: 'name',
+	valueField: 'cvx_code',
+	emptyText: _('search_for_a_immunizations') + '...',
+	typeAhead: true,
+	minChars: 1,
+	initComponent: function(){
+		var me = this;
+
+		Ext.define('liveImmunizationSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'id', type: 'int'},
+				{name: 'cvx_code', type: 'string'},
+				{name: 'name', type: 'string'},
+				{name: 'description', type: 'string'},
+				{name: 'note', type: 'string'},
+				{name: 'status', type: 'string'},
+				{name: 'update_date', type: 'date', dateFormat: 'Y-m-d H:i:s'}
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'Immunizations.getImmunizationLiveSearch'
+				},
+				reader: {
+					totalProperty: 'totals',
+					root: 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'liveImmunizationSearchModel',
+			pageSize: 10,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store: me.store,
+			listConfig: {
+				loadingText: _('searching') + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function(){
+					return '<div class="search-item">CVX - {cvx_code}: <span style="font-weight: normal;" class="list-status-{status}">{name} ({status})</span></div>';
+				}
+			},
+			pageSize: 10
+		});
+
+		me.callParent();
+	}
+});
 Ext.define('App.ux.LiveMedicationSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.medicationlivetsearch',
@@ -1658,161 +2530,6 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 		me.callParent();
 	}
 }); 
-Ext.define('App.model.administration.MedicationInstruction', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'rxinstructions'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'rxcui',
-			type: 'string',
-			index: true
-		},
-		{
-			name: 'occurrence',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'instruction',
-			type: 'string',
-			len: 140
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Rxnorm.getMedicationInstructions',
-			create: 'Rxnorm.addMedicationInstruction',
-			update: 'Rxnorm.updateMedicationInstructions',
-			destroy: 'Rxnorm.destroyMedicationInstructions'
-		},
-		remoteGroup: false
-	}
-});
-
-
-Ext.define('App.ux.LiveRXNORMSearch', {
-	extend: 'Ext.form.ComboBox',
-	requires:[
-		'App.model.administration.MedicationInstruction'
-	],
-	alias: 'widget.rxnormlivetsearch',
-	hideLabel: true,
-	displayField: 'STR',
-	valueField: 'RXCUI',
-	initComponent: function(){
-		var me = this;
-
-		Ext.define('liveRXNORMSearchModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{
-					name: 'RXCUI',
-					type: 'string'
-				},
-				{
-					name: 'CODE',
-					type: 'string'
-				},
-				{
-					name: 'NDC',
-					type: 'string'
-				},
-				{
-					name: 'STR',
-					type: 'string',
-					convert: function(v){
-						var regex = /\(.*\) | \(.*\)|\(.*\)/g;
-						return v.replace(regex, '');
-					}
-				},
-				{
-					name: 'DST',
-					type: 'auto'
-				},
-				{
-					name: 'DRT',
-					type: 'auto'
-				},
-				{
-					name: 'DDF',
-					type: 'auto'
-				},
-				{
-					name: 'DDFA',
-					type: 'auto'
-				},
-				{
-					name: 'RXN_QUANTITY',
-					type: 'auto'
-				},
-				{
-					name: 'SAB',
-					type: 'auto'
-				},
-				{
-					name: 'RXAUI',
-					type: 'auto'
-				},
-				{
-					name: 'CodeType',
-					defaultValue: 'RXNORM'
-				}
-			],
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'Rxnorm.getRXNORMLiveSearch'
-				},
-				reader: {
-					totalProperty: 'totals',
-					root: 'rows'
-				}
-			},
-			hasMany: [
-				{
-					model: 'App.model.administration.MedicationInstruction',
-					name: 'instructions',
-					primaryKey: 'RXCUI',
-					foreignKey: 'rxcui'
-				}
-			]
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model: 'liveRXNORMSearchModel',
-			pageSize: 25,
-			autoLoad: false
-		});
-
-		Ext.apply(this, {
-			store: me.store,
-			emptyText: _('search') + '...',
-			typeAhead: false,
-			hideTrigger: true,
-			minChars: 3,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function(){
-					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
-				}
-			},
-			pageSize: 25
-		});
-
-		me.callParent();
-	}
-});
 Ext.define('App.ux.LivePatientSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patienlivetsearch',
@@ -2234,6 +2951,1104 @@ Ext.define('App.ux.PhotoIdWindow',
 		window.webcam.snap();
 	}
 }); 
+Ext.define('App.ux.PatientEncounterCombo', {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.patientEncounterCombo',
+	hideLabel: true,
+	displayField: 'display_string',
+	valueField: 'eid',
+	emptyText: _('search') + '...',
+	width: 400,
+	editable: false,
+	initComponent: function(){
+		var me = this;
+
+		Ext.define('patientEncounterComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{
+					name: 'eid',
+					type: 'int'
+				},
+				{
+					name: 'brief_description',
+					type: 'string'
+				},
+				{
+					name: 'service_date',
+					type: 'date',
+					dateFormat: 'Y-m-d H:i:s'
+				},
+				{
+					name: 'close_date',
+					type: 'date',
+					dateFormat: 'Y-m-d H:i:s'
+				},
+				{
+					name: 'display_string',
+					type: 'string',
+					convert: function(v, record){
+						return Ext.Date.format(record.data.service_date, g("date_time_display_format")) + ' - ' + Ext.String.ellipsis(record.data.brief_description, 25);
+					}
+				}
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'Encounter.getEncounters'
+				},
+				reader: {
+					totalProperty: 'totals',
+					root: 'rows'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'patientEncounterComboModel',
+			pageSize: 500,
+			autoLoad: false,
+			sorters: [
+				{
+					property: 'service_date',
+					direction: 'DESC'
+				}
+			]
+		});
+
+		me.callParent();
+
+	}
+
+});
+Ext.define('App.ux.RenderPanel', {
+	extend: 'Ext.container.Container',
+	alias: 'widget.renderpanel',
+	cls: 'RenderPanel',
+	layout: 'border',
+	frame: false,
+	border: false,
+	pageLayout: 'fit',
+	pageBody: [],
+	pageTitle: '',
+	pageButtons: null,
+	pageTBar: null,
+	pageBBar: null,
+	pagePadding: null,
+	showRating: false,
+
+	initComponent: function(){
+		var me = this;
+		Ext.apply(me, {
+			items: [
+				me.mainHeader = Ext.widget('container', {
+					cls: 'RenderPanel-header',
+					itemId: 'RenderPanel-header',
+					region: 'north',
+					layout: 'hbox',
+					height: 30
+				}),
+				{
+					cls: 'RenderPanel-body-container',
+					itemId: 'RenderPanel-body-container',
+					xtype: 'container',
+					region: 'center',
+					layout: 'fit',
+					padding: this.pagePadding == null ? 5 : this.pagePadding,
+					items: [
+						me.mainBoddy = Ext.widget('panel', {
+							cls: 'RenderPanel-body',
+							frame: true,
+							border: false,
+							itemId: 'pageLayout',
+							defaults: { frame: false, border: false, autoScroll: true },
+							layout: me.pageLayout,
+							items: me.pageBody,
+							tbar: me.pageTBar,
+							bbar: me.pageBBar,
+							buttons: me.pageButtons
+						})
+					]
+				}
+			]
+		});
+
+		me.pageTitleDiv = me.mainHeader.add(
+			Ext.widget('container', {
+				cls: 'panel_title',
+				html: me.pageTitle
+			})
+		);
+
+		me.pageReadOnlyDiv = me.mainHeader.add(
+			Ext.widget('container') // placeholder
+		);
+
+		if(me.showRating){
+			me.pageRankingDiv = me.mainHeader.add(
+				Ext.widget('ratingField', {
+					flex: 1,
+					listeners: {
+						scope: me,
+						click: function(field, val){
+							Patient.setPatientRating({pid: app.patient.pid, rating: val}, function(){
+								app.msg('Sweet!', _('record_saved'))
+							});
+						}
+					}
+				})
+			);
+		}
+
+		me.pageTimerDiv = me.mainHeader.add(
+			Ext.widget('container', {
+				style: 'float:right',
+				width: 200
+			})
+		);
+
+		me.callParent(arguments);
+	},
+
+	updateTitle: function(pageTitle, readOnly, timer){
+		this.pageTitleDiv.update(pageTitle);
+		this.pageReadOnlyDiv.update(readOnly ? _('read_only') : '');
+		this.pageTimerDiv.update(timer);
+	},
+
+	getPageHeader: function(){
+		return this.getComponent('RenderPanel-header');
+	},
+
+	getPageBodyContainer: function(){
+		return this.getComponent('RenderPanel-body-container');
+	},
+
+	getPageBody: function(){
+		return this.mainBoddy;
+	},
+
+	onActive: function(callback){
+		if(typeof callback == 'function') callback(true);
+	}
+
+
+});
+
+Ext.define('App.ux.form.fields.Help', {
+    extend       : 'Ext.Img',
+    alias        : 'widget.helpbutton',
+    src          : 'resources/images/icons/icohelp.png',
+    height       : 16,
+    width        : 16,
+    margin       : '3 10',
+    helpMsg      : _('help_message'),
+    initComponent: function() {
+        var me = this;
+        me.listeners = {
+            render: function(c) {
+                me.setToolTip(c.getEl());
+            }
+        };
+        me.callParent();
+    },
+
+    setToolTip: function(el) {
+        Ext.create('Ext.tip.ToolTip', {
+            target      : el,
+            dismissDelay: 0,
+            html        : this.helpMsg
+        });
+    }
+});
+Ext.define('App.ux.form.fields.Checkbox', {
+	extend        : 'Ext.form.field.Checkbox',
+	alias         : 'widget.mitos.checkbox',
+	inputValue    : '1',
+	uncheckedValue: '0'
+});
+Ext.define('App.ux.form.fields.ColorPicker', {
+    extend: 'Ext.form.field.Trigger',
+    alias: 'widget.colorcombo',
+    triggerTip: 'Please select a color.',
+    onTriggerClick: function(){
+        var me = this;
+        picker = Ext.create('Ext.picker.Color', {
+            pickerField: this,
+            ownerCt: this,
+            renderTo: document.body,
+            floating: true,
+            hidden: true,
+            focusOnShow: true,
+            style: {
+                backgroundColor: "#fff"
+            },
+            listeners: {
+                scope: this,
+                select: function(field, value, opts){
+                    me.setValue('#' + value);
+                    me.inputEl.setStyle({backgroundColor: value});
+                    picker.hide();
+                },
+                show: function(field, opts){
+                    field.getEl().monitorMouseLeave(500, field.hide, field);
+                }
+            }
+        });
+        picker.alignTo(me.inputEl, 'tl-bl?');
+        picker.show(me.inputEl);
+    }
+});
+Ext.define('App.ux.form.fields.Currency',{
+    extend: 'Ext.form.field.Number', //Extending the NumberField
+    alias: 'widget.mitos.currency', //Defining the xtype,
+    currencySymbol: g('gbl_currency_symbol'),
+    useThousandSeparator: true,
+    thousandSeparator: ',',
+    alwaysDisplayDecimals: true,
+    fieldStyle: 'text-align: right;',
+    hideTrigger: true,
+
+    initComponent: function () {
+        if(this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ','){
+            this.thousandSeparator = '.';
+        }else if (this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.'){
+            this.decimalSeparator = ',';
+        }
+        this.callParent(arguments);
+    },
+
+    setValue: function (value) {
+        App.ux.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
+
+        this.setRawValue(this.getFormattedValue(this.getValue()));
+    },
+
+    getFormattedValue: function (value) {
+        if(Ext.isEmpty(value) || !this.hasFormat()){
+            return value;
+        }else{
+            var neg = null;
+
+            value = ( neg = value < 0) ? value * -1 : value;
+            value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
+
+            if(this.useThousandSeparator) {
+                if(this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator)){
+                    throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
+                }
+
+                if(this.thousandSeparator == this.decimalSeparator){
+                    throw ('NumberFormatException: invalid thousandSeparator, thousand separator must be different from decimalSeparator.');
+                }
+
+                value = value.toString();
+
+                var ps = value.split('.');
+                ps[1] = ps[1] ? ps[1] : null;
+
+                var whole = ps[0];
+
+                var r = /(\d+)(\d{3})/;
+
+                var ts = this.thousandSeparator;
+
+                while (r.test(whole))
+                    whole = whole.replace(r, '$1' + ts + '$2');
+
+                value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
+            }
+
+            return Ext.String.format('{0}{1}{2}', ( neg ? '-' : ''), (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol), value);
+        }
+    },
+    /**
+     * overrides parseValue to remove the format applied by this class
+     */
+    parseValue: function (value) {
+        //Replace the currency symbol and thousand separator
+        return App.ux.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
+    },
+    /**
+     * Remove only the format added by this class to let the superclass validate with it's rules.
+     * @param {Object} value
+     */
+    removeFormat: function (value) {
+        if (Ext.isEmpty(value) || !this.hasFormat())
+            return value;
+        else {
+			value = value.toString().replace(this.currencySymbol, '');
+
+            value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
+
+            return value;
+        }
+    },
+    /**
+     * Remove the format before validating the the value.
+     * @param {Number} value
+     */
+    getErrors: function (value) {
+        return App.ux.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
+    },
+
+    hasFormat: function () {
+        return this.decimalSeparator != '.' || (this.useThousandSeparator == true && this.getRawValue() != null) || !Ext.isEmpty(this.currencySymbol) || this.alwaysDisplayDecimals;
+    },
+    /**
+     * Display the numeric value with the fixed decimal precision and without the format using the setRawValue, don't need to do a setValue because we don't want a double
+     * formatting and process of the value because beforeBlur perform a getRawValue and then a setValue.
+     */
+    onFocus: function () {
+        this.setRawValue(this.removeFormat(this.getRawValue()));
+
+        this.callParent(arguments);
+    }
+});
+Ext.define('App.ux.form.fields.CustomTrigger', {
+	extend: 'Ext.form.field.Trigger',
+	alias: 'widget.customtrigger',
+	hideLabel    : true,
+	triggerTip: _('click_to_clear_selection'),
+	qtip: _('clearable_combo_box'),
+	trigger1Class:'x-form-select-trigger',
+	trigger2Class:'x-form-clear-trigger',
+
+	onRender:function (ct, position) {
+		this.callParent(arguments);
+		var id = this.getId();
+
+		this.triggerConfig = {
+			tag:'div', cls:'x-form-twin-triggers', style:'display:block;', cn:[
+				{tag:"img", style:Ext.isIE ? 'margin-left:0;height:21px' : '', src:Ext.BLANK_IMAGE_URL, id:"trigger2" + id, name:"trigger2" + id, cls:"x-form-trigger " + this.trigger2Class}
+			]};
+		this.triggerEl.replaceWith(this.triggerConfig);
+		this.triggerEl.on('mouseup', function() {
+			this.destroy();
+		}, this);
+		var trigger2 = Ext.get("trigger2" + id);
+		trigger2.addClsOnOver('x-form-trigger-over');
+	}
+});
+Ext.define('App.ux.form.fields.DateTime', {
+	extend: 'Ext.form.FieldContainer',
+	mixins: {
+		field: 'Ext.form.field.Field'
+	},
+	alias : 'widget.mitos.datetime',
+
+	combineErrors: true,
+	msgTarget    : 'under',
+	layout       : 'hbox',
+	readOnly     : false,
+	allowBlank   : true,
+
+	/**
+	 * @cfg {String} dateFormat
+	 * The default is 'Y-m-d'
+	 */
+	dateFormat    : 'Y-m-d',
+	/**
+	 * @cfg {String} timeFormat
+	 * The default is 'H:i:s'
+	 */
+	timeFormat    : 'g:i a',
+	/**
+	 * @cfg {String} dateTimeFormat
+	 * The format used when submitting the combined value.
+	 * Defaults to 'Y-m-d H:i:s'
+	 */
+	dateTimeFormat: 'Y-m-d H:i:s',
+	/**
+	 * @cfg {Object} dateConfig
+	 * Additional config options for the date field.
+	 */
+	dateConfig    : {},
+	/**
+	 * @cfg {Object} timeConfig
+	 * Additional config options for the time field.
+	 */
+	timeConfig    : {},
+
+
+	// properties
+
+	dateValue: null, // Holds the actual date
+	/**
+	 * @property dateField
+	 * @type Ext.form.field.Date
+	 */
+	dateField: null,
+	/**
+	 * @property timeField
+	 * @type Ext.form.field.Time
+	 */
+	timeField: null,
+
+	initComponent: function() {
+		var me = this;
+		me.items = me.items || [];
+
+		me.dateConfig.allowBlank = me.allowBlank;
+
+		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
+			format     : me.dateFormat,
+			flex       : 1,
+            emptyText  : _('date'),
+            margin     : 0,
+			submitValue: false
+		}, me.dateConfig));
+		me.items.push(me.dateField);
+
+		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
+			format     : me.timeFormat,
+			flex       : 1,
+            emptyText  : _('time'),
+            margin     : 0,
+			submitValue: false
+		}, me.timeConfig));
+		me.items.push(me.timeField);
+
+		for(var i = 0; i < me.items.length; i++) {
+			me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
+			me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
+			me.items[i].on('specialkey', function(field, event) {
+				var key = event.getKey(),
+					tab = key == event.TAB;
+
+				if(tab && me.focussedItem == me.dateField) {
+					event.stopEvent();
+					me.timeField.focus();
+					return;
+				}
+
+				me.fireEvent('specialkey', field, event);
+			});
+		}
+
+		if(me.layout == 'vbox') me.height = 44;
+
+		me.callParent();
+
+		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
+//		this.inputEl = {
+//			dom         : {},
+//			swallowEvent: function() {
+//			}
+//		};
+
+		me.initField();
+	},
+
+	focus: function() {
+		this.callParent();
+		this.dateField.focus();
+	},
+
+	onItemFocus: function(item) {
+		if(this.blurTask) this.blurTask.cancel();
+		this.focussedItem = item;
+	},
+
+	onItemBlur: function(item) {
+		var me = this;
+		if(item != me.focussedItem) return;
+		// 100ms to focus a new item that belongs to us, otherwise we will assume the user left the field
+		me.blurTask = new Ext.util.DelayedTask(function() {
+			me.fireEvent('blur', me);
+		});
+		me.blurTask.delay(100);
+	},
+
+	getValue: function() {
+		var value = null,
+			date = this.dateField.getSubmitValue(),
+			time = this.timeField.getSubmitValue();
+
+		if(date) {
+			if(time) {
+				var format = this.getFormat();
+				value = Ext.Date.parse(date + ' ' + time, format);
+			}
+			else {
+				value = this.dateField.getValue();
+			}
+		}
+		return value;
+	},
+
+	getSubmitValue: function() {
+		var value = this.getValue();
+		return value ? Ext.Date.format(value, this.dateTimeFormat) : null;
+	},
+
+	setValue: function(value) {
+		if(Ext.isString(value)) {
+			value = Ext.Date.parse(value, this.dateTimeFormat);
+		}
+		this.dateField.setValue(value);
+		this.timeField.setValue(value);
+	},
+
+	getFormat    : function() {
+		return (this.dateField.submitFormat || this.dateField.format) + " " + (this.timeField.submitFormat || this.timeField.format);
+	},
+
+	// Bug? A field-mixin submits the data from getValue, not getSubmitValue
+	getSubmitData: function() {
+		var me = this,
+			data = null;
+		if(!me.disabled && me.submitValue && !me.isFileUpload()) {
+			data = {};
+			data[me.getName()] = '' + me.getSubmitValue();
+		}
+		return data;
+	},
+
+    setReadOnly:function(value){
+        this.dateField.setReadOnly(value);
+        this.timeField.setReadOnly(value);
+    },
+
+	setMaxValue:function(date){
+		this.dateField.setMaxValue(date);
+	}
+});
+
+//eo file
+Ext.define('App.ux.form.fields.MultiText', {
+	extend: 'Ext.form.FieldContainer',
+	xtype: 'multitextfield',
+	layout: {
+		type:'vbox',
+		align: 'stretch'
+	},
+	name: null,
+	numbers: true,
+	initComponent: function(){
+		var me = this;
+
+		me.lastField = null;
+
+		me.callParent();
+		me.addField();
+	},
+
+	addField:function(value){
+		var me = this;
+
+		me.lastField = me.add({
+			xtype:'textfield',
+			name: '_' + me.name,
+			anchor: '100%',
+			value: value || '',
+			labelWidth: 20,
+			margin: '0 0 5 0',
+			enableKeyEvents: true
+		});
+		if(me.numbers) me.lastField.setFieldLabel((me.items.items.indexOf(me.lastField) + 1).toString());
+		me.lastField.on('keyup', this.onFieldKeyUp, this);
+
+	},
+
+	onFieldKeyUp:function(field, e){
+		if(e.getKey() == e.TAB) return;
+
+		var me = this,
+			index = me.items.items.indexOf(field),
+			totals =  me.items.items.length,
+			isLast = (index + 1) == totals,
+			isNextToLast = (index + 2) == totals;
+
+		if(isLast && field.getValue().length > 0 && this.lastField == field && !(e.getKey() == e.DELETE || e.getKey() == e.BACKSPACE)){
+			this.addField();
+			me.doLayout();
+		}else if(isNextToLast && field.getValue().length == 0 && me.lastField != field){
+			me.remove(me.lastField);
+			me.doLayout();
+			me.lastField = field;
+		}
+	},
+
+	setValue:function(data){
+		var me = this;
+
+		me.removeAll(true);
+
+		if(Ext.isString(data) && data != ''){
+			me.addField(data);
+		}else if(Ext.isArray(data)){
+			for(var i=0; i < data.length; i++){
+				me.addField(data[i]);
+			}
+		}
+		me.addField('');
+	},
+
+	getValue:function(){
+		var me = this,
+			values = me.up('form').getForm().getValues()['_' + me.name];
+		if(values[values.length - 1] == '') Ext.Array.erase(values, values.length - 1, 1);
+		return values;
+	}
+});
+Ext.define('App.ux.form.fields.plugin.BadgeText', {
+	extend: 'Ext.AbstractPlugin',
+	alias: 'plugin.badgetext',
+
+	disableBg: 'gray',
+	enableBg: 'red',
+	textSize: 15,
+	textColor: 'white',
+	defaultText: ' ',
+	disableOpacity: 0,
+	align: 'left',
+	text: ' ',
+	disable: true,
+	button: null,
+	/**
+	 *
+	 * @param button
+	 */
+	init: function(button){
+
+		var me = this;
+
+		me.button = button;
+		me.text = me.defaultText;
+
+		button.on('render', me.addBadgeEl, me);
+
+		Ext.apply(button,{
+
+			setBadgeText:function(text){
+
+				me.disable = typeof text == 'undefined' || text === me.defaultText;
+				me.text = !me.disable ? text : me.defaultText;
+				if (button.rendered) {
+					button.badgeEl.update(text.toString ? text.toString() : text);
+					if (Ext.isStrict && Ext.isIE8) {
+						button.el.repaint();
+					}
+					me.setDisabled(me.disable);
+				}
+				return button;
+			},
+
+			getBadgeText:function(){
+				return me.text;
+			}
+
+
+		});
+
+	},
+
+	/**
+	 *
+	 * @param button
+	 */
+	addBadgeEl: function(button){
+		var me = this,
+			styles = {
+				'position': 'absolute',
+				'background-color': me.disableBg,
+				'font-size': me.textSize + 'px',
+				'color': me.textColor,
+				'padding': '1px 5px',
+				'index': 50,
+				'top': '-3px',
+				'border-radius': '15px',
+				'font-weight': 'bold',
+				'text-shadow': 'rgba(0, 0, 0, 0.5) 0 -0.08em 0',
+				'box-shadow': 'rgba(0, 0, 0, 0.3) 0 0.1em 0.1em',
+				'cursor':'pointer'
+			};
+
+		if(me.align == 'left'){
+			styles.left = '-3px';
+		}else{
+			styles.right = '-3px';
+		}
+
+		button.badgeEl = Ext.DomHelper.append(button.el, { tag:'div', cls:'badgeText x-unselectable'}, true);
+		button.badgeEl.setOpacity(me.disableOpacity);
+		button.badgeEl.setStyle(styles);
+		button.badgeEl.update(me.text.toString ? me.text.toString() : me.text);
+
+		button.el.setStyle({
+			overflow: 'hidden'
+		});
+
+	},
+
+	/**
+	 *
+	 */
+	onBadgeClick:function(){
+		var me = this;
+		me.button.fireEvent('badgeclick', me.button, me.text)
+	},
+
+	/**
+	 *
+	 * @param disable
+	 */
+	setDisabled:function(disable){
+		var me = this;
+
+		me.button.badgeEl.setStyle({
+			'background-color': (disable ? me.disableBg : me.enableBg),
+			//'color': (disable ? 'black' : 'white'),
+			'opacity': (disable ? me.disableOpacity : 1)
+		});
+
+		me.button.badgeEl.clearListeners();
+		if(!disable) me.button.badgeEl.on('click', me.onBadgeClick, me, { preventDefault: true, stopEvent:true });
+
+	}
+});
+Ext.define('App.ux.form.AdvanceForm', {
+    extend: 'Ext.AbstractPlugin',
+    alias: 'plugin.advanceform',
+    /**
+     * @cfg {Boolean} syncAcl
+     * Sync access control, true to allow the store to sync.
+     */
+    syncAcl: true,
+    /**
+     * @cfg {Boolean} autoSync
+     * True to autosave the form every time values is change, Default to false.
+     */
+    autoSync: false,
+    /**
+     * True to add a tool component to the form panel. Default to true.
+     * @cfg {Boolean} autoSyncTool
+     */
+    autoSyncTool:true,
+    /**
+     * @cfg {int} syncDelay
+     * Autosave de delay to sync the form store. Default to 3000.
+     */
+    syncDelay: 3000,
+    /**
+     * @cfg {int} transition
+     * Time of Fx background color transition. Default to 2000.
+     */
+    transition: 2000,
+    /**
+     * Init function
+     * @param form
+     */
+    init: function(form){
+        this.callParent(arguments);
+        form.pugin = this;
+        this.formPanel = form;
+        this.formPanel.autoSync = this.autoSync;
+        this.formPanel.on('beforerender', this.setFieldEvent, this);
+        this.form = this.formPanel.getForm();
+        this.form.loadRecord = this.loadRecord;
+        if(this.autoSyncTool) this.addTool();
+    },
+    /**
+     * Overrides the form basic loadRecord()
+     * @param record
+     * @return {*|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic}
+     */
+    loadRecord: function(record){
+        var form = this,
+	        formPanel = form.owner,
+	        plugin = this.owner.pugin,
+	        rec;
+
+	    if(!record) return form;
+
+	    form.isLoading = true;
+        form._record = record;
+        plugin.setFormFieldsClean(false);
+        record.store.on('write', plugin.onStoreWrite, plugin);
+        record.store.on('beforesync', function(store, operation){
+            formPanel.fireEvent('beforesync', store, operation);
+        }, plugin);
+        record.store.on('update', function(store, operation){
+            formPanel.fireEvent('update', store, operation);
+        }, plugin);
+        form.setValues(record.data);
+        formPanel.fireEvent('recordloaded', form, record);
+        form.isLoading = false;
+        return form;
+    },
+    /**
+     * After store write clean form fields and fire write event on form
+     * @param store
+     * @param operation
+     */
+    onStoreWrite: function(store, operation){
+        this.setFormFieldsClean(this.transition);
+        this.formPanel.fireEvent('write', store, operation);
+        app.msg('Sweet!', 'Record Saved');
+        delete this.bufferSyncFormFn;
+    },
+    /**
+     * Set on keyup or handler based on xtype
+     * @param form
+     */
+    setFieldEvent: function(form){
+        var fields = form.getForm().getFields().items;
+        for(var i = 0; i < fields.length; i++){
+            if(fields[i].xtype == 'textfield' || fields[i].xtype == 'textareafield'){
+                fields[i].enableKeyEvents = true;
+                fields[i].on('keyup', this.setFieldCondition, this);
+	            fields[i].on('change', this.setFieldCondition, this);
+            }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'checkbox'){
+                fields[i].scope = this;
+                fields[i].handler = this.setFieldCondition;
+	            fields[i].on('change', this.setFieldCondition, this);
+            }else if(fields[i].xtype == 'datefield'){
+                fields[i].on('select', this.setFieldCondition, this);
+	            fields[i].on('change', this.setFieldCondition, this);
+            }else{
+                fields[i].on('select', this.setFieldCondition, this);
+            }
+        }
+    },
+    /**
+     * Set field condition dirty or clean based on field getSubmitValue()
+     * @param field
+     */
+    setFieldCondition: function(field){
+        var me = this,
+	        record = me.form.getRecord(),
+	        store = record ? record.store : null,
+	        obj = {},
+	        valueChanged,
+	        el = me.getFieldEl(field);
+
+	    if(store == null) return;
+
+        if((!me.form.isLoading && field.xtype != 'radiofield') || (!me.form.isLoading && field.xtype == 'radiofield' && field.checked)){
+            obj[field.name] = field.getSubmitValue();
+            record.set(obj);
+            valueChanged = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
+            if(valueChanged === true){
+                me.setFieldDirty(field, el, true, me.transition);
+            }else{
+                me.setFieldDirty(field, el, false, me.transition);
+            }
+            if(this.formPanel.autoSync && this.syncAcl){
+                if(typeof me.bufferSyncFormFn == 'undefined'){
+                    me.bufferSyncFormFn = Ext.Function.createBuffered(function(){
+                        store.sync();
+                    }, me.syncDelay);
+                    me.bufferSyncFormFn();
+                }else{
+                    if(valueChanged === true){
+                        me.bufferSyncFormFn();
+                    }else{
+                        me.setFormFieldsClean(me.transition);
+                        delete me.bufferSyncFormFn;
+                    }
+                }
+            }
+        }
+    },
+    /**
+     * Set field background if dirty == true
+     * @param field
+     * @param el
+     * @param dirty
+     * @param transition
+     */
+    setFieldDirty: function(field, el, dirty, transition){
+        transition = Ext.isNumber(transition) ? transition : 0;
+        if((field.el.hasChanged && !dirty) || (!field.el.hasChanged && dirty)){
+            field.el.hasChanged = dirty;
+            Ext.create('Ext.fx.Animator', {
+                target: el,
+                duration: transition, // 10 seconds
+                keyframes: {
+                    0: {
+                        backgroundColor: dirty ? 'FFFFFF' : 'FFDDDD'
+                    },
+                    100: {
+                        backgroundColor: dirty ? 'FFDDDD' : 'FFFFFF'
+                    }
+                },
+                listeners: {
+                    keyframe: function(fx, keyframe){
+                        if(keyframe == 1){
+                            if(dirty){
+                                el.setStyle({'background-image': 'none'});
+                            }else{
+                                Ext.Function.defer(function(){
+                                    el.setStyle({'background-image': null});
+                                }, transition - 400);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    },
+    /**
+     * Get the field main element to change background.
+     * Some fields are managed different.
+     * @param field
+     * @return {*}
+     */
+    getFieldEl: function(field){
+        if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
+            return field.inputEl;
+        }else if(field.xtype == 'radiofield'){
+            return field.ownerCt.el;
+        }else if(field.xtype == 'checkbox'){
+            return field.el;
+        }else{
+            return field.el; // leave this for now
+        }
+    },
+    /**
+     * This will set all the fields that has change
+     */
+    setFormFieldsClean: function(transition){
+        var me = this, fields = me.form.getFields().items, el;
+        for(var i = 0; i < fields.length; i++){
+            el = me.getFieldEl(fields[i]);
+            if(typeof fields[i].el != 'undefined' && fields[i].el.hasChanged){
+                me.setFieldDirty(fields[i], el, false, transition);
+            }
+        }
+    },
+
+    addTool:function(){
+        var me = this,
+            bar = me.formPanel.getDockedItems()[0],
+            cls = me.formPanel.autoSync ? 'autosave' : '';
+
+        if(bar && me.autoSyncTool){
+            bar.insert(0, Ext.create('Ext.panel.Tool',{
+                type:'save',
+                cls:cls,
+                tooltip: 'Autosave',
+                handler: function(event, toolEl, panel, tool){
+                    me.formPanel.autoSync = !me.formPanel.autoSync;
+                    if(me.formPanel.autoSync){
+                        tool.addCls('autosave');
+                    }else{
+                        tool.removeCls('autosave');
+                    }
+                    app.msg('Sweet!','AutoSave is ' + (me.formPanel.autoSync ? 'On' : 'Off'));
+                }
+            }));
+        }
+    }
+});
+Ext.define('App.ux.form.fields.Percent',{
+    extend: 'Ext.form.field.Number', //Extending the NumberField
+    alias: 'widget.mitos.percent', //Defining the xtype,
+    currencySymbol: '%',
+    useThousandSeparator: false,
+    thousandSeparator: ',',
+    alwaysDisplayDecimals: true,
+    fieldStyle: 'text-align: right;',
+    hideTrigger: true,
+
+    initComponent: function () {
+        if (this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ','){
+            this.thousandSeparator = '.';
+        }else if(this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.'){
+            this.decimalSeparator = ',';
+        }
+        this.callParent(arguments);
+    },
+
+    setValue: function (value) {
+        App.ux.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
+
+        this.setRawValue(this.getFormattedValue(this.getValue()));
+    },
+
+    getFormattedValue: function (value) {
+        if (Ext.isEmpty(value) || !this.hasFormat()){
+            return value;
+        }else{
+            var neg = null;
+
+            value = ( neg = value < 0) ? value * -1 : value;
+            value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
+
+            if (this.useThousandSeparator) {
+                if(this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator)){
+                    throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
+                }
+
+                if(this.thousandSeparator == this.decimalSeparator){
+                    throw ('NumberFormatException: invalid thousandSeparator, thousand separator must be different from decimalSeparator.');
+                }
+
+                value = value.toString();
+
+                var ps = value.split('.');
+                ps[1] = ps[1] ? ps[1] : null;
+
+                var whole = ps[0];
+
+                var r = /(\d+)(\d{3})/;
+
+                var ts = this.thousandSeparator;
+
+                while (r.test(whole))
+                    whole = whole.replace(r, '$1' + ts + '$2');
+
+                value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
+            }
+
+            return Ext.String.format('{0}{1}{2}', (neg ? '-' : ''), value, (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol));
+        }
+    },
+    /**
+     * overrides parseValue to remove the format applied by this class
+     */
+    parseValue: function (value) {
+        //Replace the currency symbol and thousand separator
+        return App.ux.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
+    },
+    /**
+     * Remove only the format added by this class to let the superclass validate with it's rules.
+     * @param {Object} value
+     */
+    removeFormat: function (value) {
+        if (Ext.isEmpty(value) || !this.hasFormat()){
+            return value;
+        }else{
+            value = value.toString().replace(this.currencySymbol, '');
+
+            value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
+
+            return value;
+        }
+    },
+    /**
+     * Remove the format before validating the the value.
+     * @param {Number} value
+     */
+    getErrors: function (value) {
+        return App.ux.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
+    },
+
+    hasFormat: function () {
+        return this.decimalSeparator != '.' || (this.useThousandSeparator == true && this.getRawValue() != null) || !Ext.isEmpty(this.currencySymbol) || this.alwaysDisplayDecimals;
+    },
+    /**
+     * Display the numeric value with the fixed decimal precision and without the format using the setRawValue, don't need to do a setValue because we don't want a double
+     * formatting and process of the value because beforeBlur perform a getRawValue and then a setValue.
+     */
+    onFocus: function () {
+        this.setRawValue(this.removeFormat(this.getRawValue()));
+
+        this.callParent(arguments);
+    }
+});
 (function(){
 
 	var Element = Ext.core.Element,
@@ -2366,9 +4181,19 @@ Ext.define('App.ux.PhotoIdWindow',
 			frameShim: 'img.ux-miframe-shim'
 		},
 
+		iframeMessageListener: null,
+
 		afterRender: function(container){
 			var me = this, frame;
 			me.callParent();
+
+			if(me.iframeMessageListener){
+				if (window.addEventListener){
+					addEventListener("message", me.iframeMessageListener, false);
+				} else {
+					attachEvent("onmessage", me.iframeMessageListener);
+				}
+			}
 
 			if(me.frameShim){
 				me.frameShim.autoBoxAdjust = false;
@@ -2565,6 +4390,16 @@ Ext.define('App.ux.PhotoIdWindow',
 				frame.remove();
 			}
 			me.deleteMembers('frameElement', 'frameShim');
+
+			if(me.iframeMessageListener){
+				if (window.addEventListener){
+					removeEventListener("message", me.iframeMessageListener, false);
+				} else {
+					detachEvent("onmessage", me.iframeMessageListener);
+				}
+			}
+
+
 			me.callParent();
 		}
 
@@ -3765,1110 +5600,12 @@ Ext.define('App.ux.PhotoIdWindow',
 
 }());
 
-Ext.define('App.ux.PatientEncounterCombo', {
-	extend: 'Ext.form.ComboBox',
-	alias: 'widget.patientEncounterCombo',
-	hideLabel: true,
-	displayField: 'display_string',
-	valueField: 'eid',
-	emptyText: _('search') + '...',
-	width: 400,
-	editable: false,
-	initComponent: function(){
-		var me = this;
-
-		Ext.define('patientEncounterComboModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{
-					name: 'eid',
-					type: 'int'
-				},
-				{
-					name: 'brief_description',
-					type: 'string'
-				},
-				{
-					name: 'service_date',
-					type: 'date',
-					dateFormat: 'Y-m-d H:i:s'
-				},
-				{
-					name: 'close_date',
-					type: 'date',
-					dateFormat: 'Y-m-d H:i:s'
-				},
-				{
-					name: 'display_string',
-					type: 'string',
-					convert: function(v, record){
-						return Ext.Date.format(record.data.service_date, g("date_time_display_format")) + ' - ' + Ext.String.ellipsis(record.data.brief_description, 25);
-					}
-				}
-			],
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'Encounter.getEncounters'
-				},
-				reader: {
-					totalProperty: 'totals',
-					root: 'rows'
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model: 'patientEncounterComboModel',
-			pageSize: 500,
-			autoLoad: false,
-			sorters: [
-				{
-					property: 'service_date',
-					direction: 'DESC'
-				}
-			]
-		});
-
-		me.callParent();
-
-	}
-
-});
-Ext.define('App.ux.RenderPanel', {
-	extend: 'Ext.container.Container',
-	alias: 'widget.renderpanel',
-	cls: 'RenderPanel',
-	layout: 'border',
-	frame: false,
-	border: false,
-	pageLayout: 'fit',
-	pageBody: [],
-	pageTitle: '',
-	pageButtons: null,
-	pageTBar: null,
-	pageBBar: null,
-	pagePadding: null,
-	showRating: false,
-
-	initComponent: function(){
-		var me = this;
-		Ext.apply(me, {
-			items: [
-				me.mainHeader = Ext.widget('container', {
-					cls: 'RenderPanel-header',
-					itemId: 'RenderPanel-header',
-					region: 'north',
-					layout: 'hbox',
-					height: 30
-				}),
-				{
-					cls: 'RenderPanel-body-container',
-					itemId: 'RenderPanel-body-container',
-					xtype: 'container',
-					region: 'center',
-					layout: 'fit',
-					padding: this.pagePadding == null ? 5 : this.pagePadding,
-					items: [
-						me.mainBoddy = Ext.widget('panel', {
-							cls: 'RenderPanel-body',
-							frame: true,
-							border: false,
-							itemId: 'pageLayout',
-							defaults: { frame: false, border: false, autoScroll: true },
-							layout: me.pageLayout,
-							items: me.pageBody,
-							tbar: me.pageTBar,
-							bbar: me.pageBBar,
-							buttons: me.pageButtons
-						})
-					]
-				}
-			]
-		});
-
-		me.pageTitleDiv = me.mainHeader.add(
-			Ext.widget('container', {
-				cls: 'panel_title',
-				html: me.pageTitle
-			})
-		);
-
-		me.pageReadOnlyDiv = me.mainHeader.add(
-			Ext.widget('container') // placeholder
-		);
-
-		if(me.showRating){
-			me.pageRankingDiv = me.mainHeader.add(
-				Ext.widget('ratingField', {
-					flex: 1,
-					listeners: {
-						scope: me,
-						click: function(field, val){
-							Patient.setPatientRating({pid: app.patient.pid, rating: val}, function(){
-								app.msg('Sweet!', _('record_saved'))
-							});
-						}
-					}
-				})
-			);
-		}
-
-		me.pageTimerDiv = me.mainHeader.add(
-			Ext.widget('container', {
-				style: 'float:right',
-				width: 200
-			})
-		);
-
-		me.callParent(arguments);
-	},
-
-	updateTitle: function(pageTitle, readOnly, timer){
-		this.pageTitleDiv.update(pageTitle);
-		this.pageReadOnlyDiv.update(readOnly ? _('read_only') : '');
-		this.pageTimerDiv.update(timer);
-	},
-
-	getPageHeader: function(){
-		return this.getComponent('RenderPanel-header');
-	},
-
-	getPageBodyContainer: function(){
-		return this.getComponent('RenderPanel-body-container');
-	},
-
-	getPageBody: function(){
-		return this.mainBoddy;
-	},
-
-	onActive: function(callback){
-		if(typeof callback == 'function') callback(true);
-	}
-
-
-});
-
-Ext.define('App.ux.form.fields.Help', {
-    extend       : 'Ext.Img',
-    alias        : 'widget.helpbutton',
-    src          : 'resources/images/icons/icohelp.png',
-    height       : 16,
-    width        : 16,
-    margin       : '3 10',
-    helpMsg      : _('help_message'),
-    initComponent: function() {
-        var me = this;
-        me.listeners = {
-            render: function(c) {
-                me.setToolTip(c.getEl());
-            }
-        };
-        me.callParent();
-    },
-
-    setToolTip: function(el) {
-        Ext.create('Ext.tip.ToolTip', {
-            target      : el,
-            dismissDelay: 0,
-            html        : this.helpMsg
-        });
-    }
-});
-Ext.define('App.ux.form.fields.Checkbox', {
-	extend        : 'Ext.form.field.Checkbox',
-	alias         : 'widget.mitos.checkbox',
-	inputValue    : '1',
-	uncheckedValue: '0'
-});
-Ext.define('App.ux.form.fields.ColorPicker', {
-    extend: 'Ext.form.field.Trigger',
-    alias: 'widget.colorcombo',
-    triggerTip: 'Please select a color.',
-    onTriggerClick: function(){
-        var me = this;
-        picker = Ext.create('Ext.picker.Color', {
-            pickerField: this,
-            ownerCt: this,
-            renderTo: document.body,
-            floating: true,
-            hidden: true,
-            focusOnShow: true,
-            style: {
-                backgroundColor: "#fff"
-            },
-            listeners: {
-                scope: this,
-                select: function(field, value, opts){
-                    me.setValue('#' + value);
-                    me.inputEl.setStyle({backgroundColor: value});
-                    picker.hide();
-                },
-                show: function(field, opts){
-                    field.getEl().monitorMouseLeave(500, field.hide, field);
-                }
-            }
-        });
-        picker.alignTo(me.inputEl, 'tl-bl?');
-        picker.show(me.inputEl);
-    }
-});
-Ext.define('App.ux.form.fields.Currency',{
-    extend: 'Ext.form.field.Number', //Extending the NumberField
-    alias: 'widget.mitos.currency', //Defining the xtype,
-    currencySymbol: g('gbl_currency_symbol'),
-    useThousandSeparator: true,
-    thousandSeparator: ',',
-    alwaysDisplayDecimals: true,
-    fieldStyle: 'text-align: right;',
-    hideTrigger: true,
-
-    initComponent: function () {
-        if(this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ','){
-            this.thousandSeparator = '.';
-        }else if (this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.'){
-            this.decimalSeparator = ',';
-        }
-        this.callParent(arguments);
-    },
-
-    setValue: function (value) {
-        App.ux.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
-
-        this.setRawValue(this.getFormattedValue(this.getValue()));
-    },
-
-    getFormattedValue: function (value) {
-        if(Ext.isEmpty(value) || !this.hasFormat()){
-            return value;
-        }else{
-            var neg = null;
-
-            value = ( neg = value < 0) ? value * -1 : value;
-            value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
-
-            if(this.useThousandSeparator) {
-                if(this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator)){
-                    throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
-                }
-
-                if(this.thousandSeparator == this.decimalSeparator){
-                    throw ('NumberFormatException: invalid thousandSeparator, thousand separator must be different from decimalSeparator.');
-                }
-
-                value = value.toString();
-
-                var ps = value.split('.');
-                ps[1] = ps[1] ? ps[1] : null;
-
-                var whole = ps[0];
-
-                var r = /(\d+)(\d{3})/;
-
-                var ts = this.thousandSeparator;
-
-                while (r.test(whole))
-                    whole = whole.replace(r, '$1' + ts + '$2');
-
-                value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
-            }
-
-            return Ext.String.format('{0}{1}{2}', ( neg ? '-' : ''), (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol), value);
-        }
-    },
-    /**
-     * overrides parseValue to remove the format applied by this class
-     */
-    parseValue: function (value) {
-        //Replace the currency symbol and thousand separator
-        return App.ux.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
-    },
-    /**
-     * Remove only the format added by this class to let the superclass validate with it's rules.
-     * @param {Object} value
-     */
-    removeFormat: function (value) {
-        if (Ext.isEmpty(value) || !this.hasFormat())
-            return value;
-        else {
-			value = value.toString().replace(this.currencySymbol, '');
-
-            value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
-
-            return value;
-        }
-    },
-    /**
-     * Remove the format before validating the the value.
-     * @param {Number} value
-     */
-    getErrors: function (value) {
-        return App.ux.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
-    },
-
-    hasFormat: function () {
-        return this.decimalSeparator != '.' || (this.useThousandSeparator == true && this.getRawValue() != null) || !Ext.isEmpty(this.currencySymbol) || this.alwaysDisplayDecimals;
-    },
-    /**
-     * Display the numeric value with the fixed decimal precision and without the format using the setRawValue, don't need to do a setValue because we don't want a double
-     * formatting and process of the value because beforeBlur perform a getRawValue and then a setValue.
-     */
-    onFocus: function () {
-        this.setRawValue(this.removeFormat(this.getRawValue()));
-
-        this.callParent(arguments);
-    }
-});
-Ext.define('App.ux.form.fields.CustomTrigger', {
-	extend: 'Ext.form.field.Trigger',
-	alias: 'widget.customtrigger',
-	hideLabel    : true,
-	triggerTip: _('click_to_clear_selection'),
-	qtip: _('clearable_combo_box'),
-	trigger1Class:'x-form-select-trigger',
-	trigger2Class:'x-form-clear-trigger',
-
-	onRender:function (ct, position) {
-		this.callParent(arguments);
-		var id = this.getId();
-
-		this.triggerConfig = {
-			tag:'div', cls:'x-form-twin-triggers', style:'display:block;', cn:[
-				{tag:"img", style:Ext.isIE ? 'margin-left:0;height:21px' : '', src:Ext.BLANK_IMAGE_URL, id:"trigger2" + id, name:"trigger2" + id, cls:"x-form-trigger " + this.trigger2Class}
-			]};
-		this.triggerEl.replaceWith(this.triggerConfig);
-		this.triggerEl.on('mouseup', function() {
-			this.destroy();
-		}, this);
-		var trigger2 = Ext.get("trigger2" + id);
-		trigger2.addClsOnOver('x-form-trigger-over');
-	}
-});
-Ext.define('App.ux.form.fields.MultiText', {
-	extend: 'Ext.form.FieldContainer',
-	xtype: 'multitextfield',
-	layout: {
-		type:'vbox',
-		align: 'stretch'
-	},
-	name: null,
-	numbers: true,
-	initComponent: function(){
-		var me = this;
-
-		me.lastField = null;
-
-		me.callParent();
-		me.addField();
-	},
-
-	addField:function(value){
-		var me = this;
-
-		me.lastField = me.add({
-			xtype:'textfield',
-			name: '_' + me.name,
-			anchor: '100%',
-			value: value || '',
-			labelWidth: 20,
-			margin: '0 0 5 0',
-			enableKeyEvents: true
-		});
-		if(me.numbers) me.lastField.setFieldLabel((me.items.items.indexOf(me.lastField) + 1).toString());
-		me.lastField.on('keyup', this.onFieldKeyUp, this);
-
-	},
-
-	onFieldKeyUp:function(field, e){
-		if(e.getKey() == e.TAB) return;
-
-		var me = this,
-			index = me.items.items.indexOf(field),
-			totals =  me.items.items.length,
-			isLast = (index + 1) == totals,
-			isNextToLast = (index + 2) == totals;
-
-		if(isLast && field.getValue().length > 0 && this.lastField == field && !(e.getKey() == e.DELETE || e.getKey() == e.BACKSPACE)){
-			this.addField();
-			me.doLayout();
-		}else if(isNextToLast && field.getValue().length == 0 && me.lastField != field){
-			me.remove(me.lastField);
-			me.doLayout();
-			me.lastField = field;
-		}
-	},
-
-	setValue:function(data){
-		var me = this;
-
-		me.removeAll(true);
-
-		if(Ext.isString(data) && data != ''){
-			me.addField(data);
-		}else if(Ext.isArray(data)){
-			for(var i=0; i < data.length; i++){
-				me.addField(data[i]);
-			}
-		}
-		me.addField('');
-	},
-
-	getValue:function(){
-		var me = this,
-			values = me.up('form').getForm().getValues()['_' + me.name];
-		if(values[values.length - 1] == '') Ext.Array.erase(values, values.length - 1, 1);
-		return values;
-	}
-});
-Ext.define('App.ux.form.fields.plugin.BadgeText', {
-	extend: 'Ext.AbstractPlugin',
-	alias: 'plugin.badgetext',
-
-	disableBg: 'gray',
-	enableBg: 'red',
-	textSize: 15,
-	textColor: 'white',
-	defaultText: ' ',
-	disableOpacity: 0,
-	align: 'left',
-	text: ' ',
-	disable: true,
-	button: null,
-	/**
-	 *
-	 * @param button
-	 */
-	init: function(button){
-
-		var me = this;
-
-		me.button = button;
-		me.text = me.defaultText;
-
-		button.on('render', me.addBadgeEl, me);
-
-		Ext.apply(button,{
-
-			setBadgeText:function(text){
-
-				me.disable = typeof text == 'undefined' || text === me.defaultText;
-				me.text = !me.disable ? text : me.defaultText;
-				if (button.rendered) {
-					button.badgeEl.update(text.toString ? text.toString() : text);
-					if (Ext.isStrict && Ext.isIE8) {
-						button.el.repaint();
-					}
-					me.setDisabled(me.disable);
-				}
-				return button;
-			},
-
-			getBadgeText:function(){
-				return me.text;
-			}
-
-
-		});
-
-	},
-
-	/**
-	 *
-	 * @param button
-	 */
-	addBadgeEl: function(button){
-		var me = this,
-			styles = {
-				'position': 'absolute',
-				'background-color': me.disableBg,
-				'font-size': me.textSize + 'px',
-				'color': me.textColor,
-				'padding': '1px 5px',
-				'index': 50,
-				'top': '-3px',
-				'border-radius': '15px',
-				'font-weight': 'bold',
-				'text-shadow': 'rgba(0, 0, 0, 0.5) 0 -0.08em 0',
-				'box-shadow': 'rgba(0, 0, 0, 0.3) 0 0.1em 0.1em',
-				'cursor':'pointer'
-			};
-
-		if(me.align == 'left'){
-			styles.left = '-3px';
-		}else{
-			styles.right = '-3px';
-		}
-
-		button.badgeEl = Ext.DomHelper.append(button.el, { tag:'div', cls:'badgeText x-unselectable'}, true);
-		button.badgeEl.setOpacity(me.disableOpacity);
-		button.badgeEl.setStyle(styles);
-		button.badgeEl.update(me.text.toString ? me.text.toString() : me.text);
-
-		button.el.setStyle({
-			overflow: 'hidden'
-		});
-
-	},
-
-	/**
-	 *
-	 */
-	onBadgeClick:function(){
-		var me = this;
-		me.button.fireEvent('badgeclick', me.button, me.text)
-	},
-
-	/**
-	 *
-	 * @param disable
-	 */
-	setDisabled:function(disable){
-		var me = this;
-
-		me.button.badgeEl.setStyle({
-			'background-color': (disable ? me.disableBg : me.enableBg),
-			//'color': (disable ? 'black' : 'white'),
-			'opacity': (disable ? me.disableOpacity : 1)
-		});
-
-		me.button.badgeEl.clearListeners();
-		if(!disable) me.button.badgeEl.on('click', me.onBadgeClick, me, { preventDefault: true, stopEvent:true });
-
-	}
-});
-Ext.define('App.ux.form.fields.DateTime', {
-	extend: 'Ext.form.FieldContainer',
-	mixins: {
-		field: 'Ext.form.field.Field'
-	},
-	alias : 'widget.mitos.datetime',
-
-	combineErrors: true,
-	msgTarget    : 'under',
-	layout       : 'hbox',
-	readOnly     : false,
-	allowBlank   : true,
-
-	/**
-	 * @cfg {String} dateFormat
-	 * The default is 'Y-m-d'
-	 */
-	dateFormat    : 'Y-m-d',
-	/**
-	 * @cfg {String} timeFormat
-	 * The default is 'H:i:s'
-	 */
-	timeFormat    : 'g:i a',
-	/**
-	 * @cfg {String} dateTimeFormat
-	 * The format used when submitting the combined value.
-	 * Defaults to 'Y-m-d H:i:s'
-	 */
-	dateTimeFormat: 'Y-m-d H:i:s',
-	/**
-	 * @cfg {Object} dateConfig
-	 * Additional config options for the date field.
-	 */
-	dateConfig    : {},
-	/**
-	 * @cfg {Object} timeConfig
-	 * Additional config options for the time field.
-	 */
-	timeConfig    : {},
-
-
-	// properties
-
-	dateValue: null, // Holds the actual date
-	/**
-	 * @property dateField
-	 * @type Ext.form.field.Date
-	 */
-	dateField: null,
-	/**
-	 * @property timeField
-	 * @type Ext.form.field.Time
-	 */
-	timeField: null,
-
-	initComponent: function() {
-		var me = this;
-		me.items = me.items || [];
-
-		me.dateConfig.allowBlank = me.allowBlank;
-
-		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
-			format     : me.dateFormat,
-			flex       : 1,
-            emptyText  : _('date'),
-            margin     : 0,
-			submitValue: false
-		}, me.dateConfig));
-		me.items.push(me.dateField);
-
-		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
-			format     : me.timeFormat,
-			flex       : 1,
-            emptyText  : _('time'),
-            margin     : 0,
-			submitValue: false
-		}, me.timeConfig));
-		me.items.push(me.timeField);
-
-		for(var i = 0; i < me.items.length; i++) {
-			me.items[i].on('focus', Ext.bind(me.onItemFocus, me));
-			me.items[i].on('blur', Ext.bind(me.onItemBlur, me));
-			me.items[i].on('specialkey', function(field, event) {
-				var key = event.getKey(),
-					tab = key == event.TAB;
-
-				if(tab && me.focussedItem == me.dateField) {
-					event.stopEvent();
-					me.timeField.focus();
-					return;
-				}
-
-				me.fireEvent('specialkey', field, event);
-			});
-		}
-
-		if(me.layout == 'vbox') me.height = 44;
-
-		me.callParent();
-
-		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
-//		this.inputEl = {
-//			dom         : {},
-//			swallowEvent: function() {
-//			}
-//		};
-
-		me.initField();
-	},
-
-	focus: function() {
-		this.callParent();
-		this.dateField.focus();
-	},
-
-	onItemFocus: function(item) {
-		if(this.blurTask) this.blurTask.cancel();
-		this.focussedItem = item;
-	},
-
-	onItemBlur: function(item) {
-		var me = this;
-		if(item != me.focussedItem) return;
-		// 100ms to focus a new item that belongs to us, otherwise we will assume the user left the field
-		me.blurTask = new Ext.util.DelayedTask(function() {
-			me.fireEvent('blur', me);
-		});
-		me.blurTask.delay(100);
-	},
-
-	getValue: function() {
-		var value = null,
-			date = this.dateField.getSubmitValue(),
-			time = this.timeField.getSubmitValue();
-
-		if(date) {
-			if(time) {
-				var format = this.getFormat();
-				value = Ext.Date.parse(date + ' ' + time, format);
-			}
-			else {
-				value = this.dateField.getValue();
-			}
-		}
-		return value;
-	},
-
-	getSubmitValue: function() {
-		var value = this.getValue();
-		return value ? Ext.Date.format(value, this.dateTimeFormat) : null;
-	},
-
-	setValue: function(value) {
-		if(Ext.isString(value)) {
-			value = Ext.Date.parse(value, this.dateTimeFormat);
-		}
-		this.dateField.setValue(value);
-		this.timeField.setValue(value);
-	},
-
-	getFormat    : function() {
-		return (this.dateField.submitFormat || this.dateField.format) + " " + (this.timeField.submitFormat || this.timeField.format);
-	},
-
-	// Bug? A field-mixin submits the data from getValue, not getSubmitValue
-	getSubmitData: function() {
-		var me = this,
-			data = null;
-		if(!me.disabled && me.submitValue && !me.isFileUpload()) {
-			data = {};
-			data[me.getName()] = '' + me.getSubmitValue();
-		}
-		return data;
-	},
-
-    setReadOnly:function(value){
-        this.dateField.setReadOnly(value);
-        this.timeField.setReadOnly(value);
-    },
-
-	setMaxValue:function(date){
-		this.dateField.setMaxValue(date);
-	}
-});
-
-//eo file
-Ext.define('App.ux.form.fields.Percent',{
-    extend: 'Ext.form.field.Number', //Extending the NumberField
-    alias: 'widget.mitos.percent', //Defining the xtype,
-    currencySymbol: '%',
-    useThousandSeparator: false,
-    thousandSeparator: ',',
-    alwaysDisplayDecimals: true,
-    fieldStyle: 'text-align: right;',
-    hideTrigger: true,
-
-    initComponent: function () {
-        if (this.useThousandSeparator && this.decimalSeparator == ',' && this.thousandSeparator == ','){
-            this.thousandSeparator = '.';
-        }else if(this.allowDecimals && this.thousandSeparator == '.' && this.decimalSeparator == '.'){
-            this.decimalSeparator = ',';
-        }
-        this.callParent(arguments);
-    },
-
-    setValue: function (value) {
-        App.ux.form.fields.Currency.superclass.setValue.call(this, value != null ? value.toString().replace('.', this.decimalSeparator) : value);
-
-        this.setRawValue(this.getFormattedValue(this.getValue()));
-    },
-
-    getFormattedValue: function (value) {
-        if (Ext.isEmpty(value) || !this.hasFormat()){
-            return value;
-        }else{
-            var neg = null;
-
-            value = ( neg = value < 0) ? value * -1 : value;
-            value = this.allowDecimals && this.alwaysDisplayDecimals ? value.toFixed(this.decimalPrecision) : value;
-
-            if (this.useThousandSeparator) {
-                if(this.useThousandSeparator && Ext.isEmpty(this.thousandSeparator)){
-                    throw ('NumberFormatException: invalid thousandSeparator, property must has a valid character.');
-                }
-
-                if(this.thousandSeparator == this.decimalSeparator){
-                    throw ('NumberFormatException: invalid thousandSeparator, thousand separator must be different from decimalSeparator.');
-                }
-
-                value = value.toString();
-
-                var ps = value.split('.');
-                ps[1] = ps[1] ? ps[1] : null;
-
-                var whole = ps[0];
-
-                var r = /(\d+)(\d{3})/;
-
-                var ts = this.thousandSeparator;
-
-                while (r.test(whole))
-                    whole = whole.replace(r, '$1' + ts + '$2');
-
-                value = whole + (ps[1] ? this.decimalSeparator + ps[1] : '');
-            }
-
-            return Ext.String.format('{0}{1}{2}', (neg ? '-' : ''), value, (Ext.isEmpty(this.currencySymbol) ? '' : this.currencySymbol));
-        }
-    },
-    /**
-     * overrides parseValue to remove the format applied by this class
-     */
-    parseValue: function (value) {
-        //Replace the currency symbol and thousand separator
-        return App.ux.form.fields.Currency.superclass.parseValue.call(this, this.removeFormat(value));
-    },
-    /**
-     * Remove only the format added by this class to let the superclass validate with it's rules.
-     * @param {Object} value
-     */
-    removeFormat: function (value) {
-        if (Ext.isEmpty(value) || !this.hasFormat()){
-            return value;
-        }else{
-            value = value.toString().replace(this.currencySymbol, '');
-
-            value = this.useThousandSeparator ? value.replace(new RegExp('[' + this.thousandSeparator + ']', 'g'), '') : value;
-
-            return value;
-        }
-    },
-    /**
-     * Remove the format before validating the the value.
-     * @param {Number} value
-     */
-    getErrors: function (value) {
-        return App.ux.form.fields.Currency.superclass.getErrors.call(this, this.removeFormat(value));
-    },
-
-    hasFormat: function () {
-        return this.decimalSeparator != '.' || (this.useThousandSeparator == true && this.getRawValue() != null) || !Ext.isEmpty(this.currencySymbol) || this.alwaysDisplayDecimals;
-    },
-    /**
-     * Display the numeric value with the fixed decimal precision and without the format using the setRawValue, don't need to do a setValue because we don't want a double
-     * formatting and process of the value because beforeBlur perform a getRawValue and then a setValue.
-     */
-    onFocus: function () {
-        this.setRawValue(this.removeFormat(this.getRawValue()));
-
-        this.callParent(arguments);
-    }
-});
 Ext.define('App.ux.form.Panel', {
 	extend   : 'Ext.form.Panel',
 	alias    : 'widget.mitos.form',
 	bodyStyle: 'padding: 10px;',
 	autoWidth: true,
 	border   : false
-});
-Ext.define('App.ux.form.AdvanceForm', {
-    extend: 'Ext.AbstractPlugin',
-    alias: 'plugin.advanceform',
-    /**
-     * @cfg {Boolean} syncAcl
-     * Sync access control, true to allow the store to sync.
-     */
-    syncAcl: true,
-    /**
-     * @cfg {Boolean} autoSync
-     * True to autosave the form every time values is change, Default to false.
-     */
-    autoSync: false,
-    /**
-     * True to add a tool component to the form panel. Default to true.
-     * @cfg {Boolean} autoSyncTool
-     */
-    autoSyncTool:true,
-    /**
-     * @cfg {int} syncDelay
-     * Autosave de delay to sync the form store. Default to 3000.
-     */
-    syncDelay: 3000,
-    /**
-     * @cfg {int} transition
-     * Time of Fx background color transition. Default to 2000.
-     */
-    transition: 2000,
-    /**
-     * Init function
-     * @param form
-     */
-    init: function(form){
-        this.callParent(arguments);
-        form.pugin = this;
-        this.formPanel = form;
-        this.formPanel.autoSync = this.autoSync;
-        this.formPanel.on('beforerender', this.setFieldEvent, this);
-        this.form = this.formPanel.getForm();
-        this.form.loadRecord = this.loadRecord;
-        if(this.autoSyncTool) this.addTool();
-    },
-    /**
-     * Overrides the form basic loadRecord()
-     * @param record
-     * @return {*|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic}
-     */
-    loadRecord: function(record){
-        var form = this,
-	        formPanel = form.owner,
-	        plugin = this.owner.pugin,
-	        rec;
-
-	    if(!record) return form;
-
-	    form.isLoading = true;
-        form._record = record;
-        plugin.setFormFieldsClean(false);
-        record.store.on('write', plugin.onStoreWrite, plugin);
-        record.store.on('beforesync', function(store, operation){
-            formPanel.fireEvent('beforesync', store, operation);
-        }, plugin);
-        record.store.on('update', function(store, operation){
-            formPanel.fireEvent('update', store, operation);
-        }, plugin);
-        form.setValues(record.data);
-        formPanel.fireEvent('recordloaded', form, record);
-        form.isLoading = false;
-        return form;
-    },
-    /**
-     * After store write clean form fields and fire write event on form
-     * @param store
-     * @param operation
-     */
-    onStoreWrite: function(store, operation){
-        this.setFormFieldsClean(this.transition);
-        this.formPanel.fireEvent('write', store, operation);
-        app.msg('Sweet!', 'Record Saved');
-        delete this.bufferSyncFormFn;
-    },
-    /**
-     * Set on keyup or handler based on xtype
-     * @param form
-     */
-    setFieldEvent: function(form){
-        var fields = form.getForm().getFields().items;
-        for(var i = 0; i < fields.length; i++){
-            if(fields[i].xtype == 'textfield' || fields[i].xtype == 'textareafield'){
-                fields[i].enableKeyEvents = true;
-                fields[i].on('keyup', this.setFieldCondition, this);
-	            fields[i].on('change', this.setFieldCondition, this);
-            }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'checkbox'){
-                fields[i].scope = this;
-                fields[i].handler = this.setFieldCondition;
-	            fields[i].on('change', this.setFieldCondition, this);
-            }else if(fields[i].xtype == 'datefield'){
-                fields[i].on('select', this.setFieldCondition, this);
-	            fields[i].on('change', this.setFieldCondition, this);
-            }else{
-                fields[i].on('select', this.setFieldCondition, this);
-            }
-        }
-    },
-    /**
-     * Set field condition dirty or clean based on field getSubmitValue()
-     * @param field
-     */
-    setFieldCondition: function(field){
-        var me = this,
-	        record = me.form.getRecord(),
-	        store = record ? record.store : null,
-	        obj = {},
-	        valueChanged,
-	        el = me.getFieldEl(field);
-
-	    if(store == null) return;
-
-        if((!me.form.isLoading && field.xtype != 'radiofield') || (!me.form.isLoading && field.xtype == 'radiofield' && field.checked)){
-            obj[field.name] = field.getSubmitValue();
-            record.set(obj);
-            valueChanged = (Object.getOwnPropertyNames(record.getChanges()).length !== 0);
-            if(valueChanged === true){
-                me.setFieldDirty(field, el, true, me.transition);
-            }else{
-                me.setFieldDirty(field, el, false, me.transition);
-            }
-            if(this.formPanel.autoSync && this.syncAcl){
-                if(typeof me.bufferSyncFormFn == 'undefined'){
-                    me.bufferSyncFormFn = Ext.Function.createBuffered(function(){
-                        store.sync();
-                    }, me.syncDelay);
-                    me.bufferSyncFormFn();
-                }else{
-                    if(valueChanged === true){
-                        me.bufferSyncFormFn();
-                    }else{
-                        me.setFormFieldsClean(me.transition);
-                        delete me.bufferSyncFormFn;
-                    }
-                }
-            }
-        }
-    },
-    /**
-     * Set field background if dirty == true
-     * @param field
-     * @param el
-     * @param dirty
-     * @param transition
-     */
-    setFieldDirty: function(field, el, dirty, transition){
-        transition = Ext.isNumber(transition) ? transition : 0;
-        if((field.el.hasChanged && !dirty) || (!field.el.hasChanged && dirty)){
-            field.el.hasChanged = dirty;
-            Ext.create('Ext.fx.Animator', {
-                target: el,
-                duration: transition, // 10 seconds
-                keyframes: {
-                    0: {
-                        backgroundColor: dirty ? 'FFFFFF' : 'FFDDDD'
-                    },
-                    100: {
-                        backgroundColor: dirty ? 'FFDDDD' : 'FFFFFF'
-                    }
-                },
-                listeners: {
-                    keyframe: function(fx, keyframe){
-                        if(keyframe == 1){
-                            if(dirty){
-                                el.setStyle({'background-image': 'none'});
-                            }else{
-                                Ext.Function.defer(function(){
-                                    el.setStyle({'background-image': null});
-                                }, transition - 400);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    },
-    /**
-     * Get the field main element to change background.
-     * Some fields are managed different.
-     * @param field
-     * @return {*}
-     */
-    getFieldEl: function(field){
-        if(field.xtype == 'textfield' || field.xtype == 'textareafield'){
-            return field.inputEl;
-        }else if(field.xtype == 'radiofield'){
-            return field.ownerCt.el;
-        }else if(field.xtype == 'checkbox'){
-            return field.el;
-        }else{
-            return field.el; // leave this for now
-        }
-    },
-    /**
-     * This will set all the fields that has change
-     */
-    setFormFieldsClean: function(transition){
-        var me = this, fields = me.form.getFields().items, el;
-        for(var i = 0; i < fields.length; i++){
-            el = me.getFieldEl(fields[i]);
-            if(typeof fields[i].el != 'undefined' && fields[i].el.hasChanged){
-                me.setFieldDirty(fields[i], el, false, transition);
-            }
-        }
-    },
-
-    addTool:function(){
-        var me = this,
-            bar = me.formPanel.getDockedItems()[0],
-            cls = me.formPanel.autoSync ? 'autosave' : '';
-
-        if(bar && me.autoSyncTool){
-            bar.insert(0, Ext.create('Ext.panel.Tool',{
-                type:'save',
-                cls:cls,
-                tooltip: 'Autosave',
-                handler: function(event, toolEl, panel, tool){
-                    me.formPanel.autoSync = !me.formPanel.autoSync;
-                    if(me.formPanel.autoSync){
-                        tool.addCls('autosave');
-                    }else{
-                        tool.removeCls('autosave');
-                    }
-                    app.msg('Sweet!','AutoSave is ' + (me.formPanel.autoSync ? 'On' : 'Off'));
-                }
-            }));
-        }
-    }
 });
 
 Ext.define('App.ux.grid.DeleteColumn', {
@@ -6564,14 +7301,6 @@ Ext.define('App.ux.combo.CVXManufacturersForCvx', {
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.ux.combo.MedicationInstructions', {
-	extend: 'Ext.form.ComboBox',
-	xtype: 'medicationinstructionscombo',
-	queryMode: 'local',
-	displayField: 'instruction',
-	valueField: 'instruction',
-	store: Ext.create('App.store.administration.MedicationInstructions')
-});
 Ext.define('App.ux.combo.EncounterICDS', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.encountericdscombo',
@@ -6749,6 +7478,515 @@ Ext.define('App.ux.combo.FloorPlanAreas', {
 		me.callParent(arguments);
 	}
 });
+Ext.define('App.model.administration.FloorPlanZones', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'floor_plans_zones',
+		comment: 'Floor Plan Zones'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Floor Plan Zones ID'
+		},
+		{
+			name: 'floor_plan_id',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 40,
+			index: true
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'type',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'bg_color',
+			type: 'string',
+			lem: 10,
+			useNull: true
+		},
+		{
+			name: 'border_color',
+			type: 'string',
+			lem: 10,
+			useNull: true
+		},
+		{
+			name: 'scale',
+			type: 'string',
+			lem: 30,
+			defaultValue: 'medium'
+		},
+		{
+			name: 'width',
+			type: 'int',
+			useNull: true
+		},
+		{
+			name: 'height',
+			type: 'int',
+			useNull: true
+		},
+		{
+			name: 'x',
+			type: 'int'
+		},
+		{
+			name: 'y',
+			type: 'int'
+		},
+		{
+			name: 'show_priority_color',
+			type: 'bool'
+		},
+		{
+			name: 'show_patient_preview',
+			type: 'bool'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			index: true
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'FloorPlans.getFloorPlanZones',
+			create: 'FloorPlans.createFloorPlanZone',
+			update: 'FloorPlans.updateFloorPlanZone',
+			destroy: 'FloorPlans.removeFloorPlanZone'
+		}
+	}
+});
+Ext.define('App.store.administration.FloorPlanZones', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.administration.FloorPlanZones',
+	autoSync: false,
+	autoLoad: false
+});
+/**
+ * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
+ * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
+ * for editing. There is a button to save or cancel all changes for the edit.
+ *
+ * The field that will be used for the editor is defined at the
+ * {@link Ext.grid.column.Column#editor editor}. The editor can be a field instance or a field configuration.
+ * If an editor is not specified for a particular column then that column won't be editable and the value of
+ * the column will be displayed.
+ *
+ * The editor may be shared for each column in the grid, or a different one may be specified for each column.
+ * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
+ * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
+ *
+ *     @example
+ *     Ext.create('Ext.data.Store', {
+ *         storeId:'simpsonsStore',
+ *         fields:['name', 'email', 'phone'],
+ *         data: [
+ *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
+ *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
+ *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
+ *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
+ *         ]
+ *     });
+ *
+ *     Ext.create('Ext.grid.Panel', {
+ *         title: 'Simpsons',
+ *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
+ *         columns: [
+ *             {header: 'Name',  dataIndex: 'name', editor: 'textfield'},
+ *             {header: 'Email', dataIndex: 'email', flex:1,
+ *                 editor: {
+ *                     xtype: 'textfield',
+ *                     allowBlank: false
+ *                 }
+ *             },
+ *             {header: 'Phone', dataIndex: 'phone'}
+ *         ],
+ *         selType: 'rowmodel',
+ *         plugins: [
+ *             Ext.create('Ext.grid.plugin.RowEditing', {
+ *                 clicksToEdit: 1
+ *             })
+ *         ],
+ *         height: 200,
+ *         width: 400,
+ *         renderTo: Ext.getBody()
+ *     });
+ */
+Ext.define('App.ux.grid.RowFormEditing', {
+	extend: 'Ext.grid.plugin.Editing',
+	alias: 'plugin.rowformediting',
+	requires: [
+		'App.ux.grid.RowFormEditor'
+	],
+
+	lockableScope: 'top',
+
+	editStyle: 'row',
+
+	enableRemove: false,
+	enableAddBtn: false,
+	addBtnText: 'Add',
+	addBtnIconCls: null,
+	toolbarDock: 'top',
+
+	fieldDefaults: {},
+
+	saveBtnEnabled: false,
+	/**
+	 * @cfg {Boolean} autoSync
+	 * True to automatically Sync any pending changes during complete edit method.
+	 * False to force the user to explicitly sync all pending changes. Defaults to true.
+	 */
+	autoSync: true,
+	/**
+	 * @cfg {Boolean} autoCancel
+	 * True to automatically cancel any pending changes when the row editor begins editing a new row.
+	 * False to force the user to explicitly cancel the pending changes. Defaults to true.
+	 */
+	autoCancel: true,
+
+	/**
+	 * @cfg {Number} clicksToMoveEditor
+	 * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
+	 * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
+	 */
+
+	/**
+	 * @cfg {Boolean} errorSummary
+	 * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
+	 * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
+	 */
+	errorSummary: false,
+
+	/**
+	 * @event beforeedit
+	 * Fires before row editing is triggered.
+	 *
+	 * @param {Ext.grid.plugin.Editing} editor
+	 * @param {Object} e An edit event with the following properties:
+	 *
+	 * - grid - The grid this editor is on
+	 * - view - The grid view
+	 * - store - The grid store
+	 * - record - The record being edited
+	 * - row - The grid table row
+	 * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+	 * - rowIdx - The row index that is being edited
+	 * - colIdx - The column index that initiated the edit
+	 * - cancel - Set this to true to cancel the edit or return false from your handler.
+	 */
+
+	/**
+	 * @event canceledit
+	 * Fires when the user has started editing a row but then cancelled the edit
+	 * @param {Object} grid The grid
+	 */
+
+	/**
+	 * @event edit
+	 * Fires after a row is edited. Usage example:
+	 *
+	 *     grid.on('edit', function(editor, e) {
+     *         // commit the changes right after editing finished
+     *         e.record.commit();
+     *     };
+	 *
+	 * @param {Ext.grid.plugin.Editing} editor
+	 * @param {Object} e An edit event with the following properties:
+	 *
+	 * - grid - The grid this editor is on
+	 * - view - The grid view
+	 * - store - The grid store
+	 * - record - The record being edited
+	 * - row - The grid table row
+	 * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+	 * - rowIdx - The row index that is being edited
+	 * - colIdx - The column index that initiated the edit
+	 */
+	/**
+	 * @event validateedit
+	 * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
+	 * edit event object has the following properties
+	 *
+	 * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
+	 * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
+	 * and then setting the field's new value in the Record directly:
+	 *
+	 *     grid.on('validateedit', function(editor, e) {
+     *       var myTargetRow = 6;
+     *
+     *       if (e.rowIdx == myTargetRow) {
+     *         e.cancel = true;
+     *         e.record.data[e.field]
+     *
+     * - grid - The grid this editor is on
+     * - view - The grid view
+     * - store - The grid store
+     * - record - The record being edited
+     * - row - The grid table row
+     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+	 * - rowIdx - The row index that is being edited
+	 * - colIdx - The column index that initiated the edit
+	 * - cancel - Set this to true to cancel the edit or return false from your handler.
+	 */
+
+	constructor: function(){
+		var me = this;
+		me.callParent(arguments);
+
+		if(!me.clicksToMoveEditor){
+			me.clicksToMoveEditor = me.clicksToEdit;
+		}
+
+		me.autoCancel = !!me.autoCancel;
+	},
+
+	init: function(grid){
+		var me = this;
+		me.callParent(arguments);
+
+		if(me.enableAddBtn){
+			var t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
+				grid.addDocked({ xtype: 'toolbar', dock: me.toolbarDock })[0];
+
+			t.add({
+				xtype: 'button',
+				text: me.addBtnText,
+				iconCls: me.addBtnIconCls,
+				handler: me.doAddRecord,
+				scope: me
+			});
+
+		}
+
+		me.grid.on('beforeselect', me.editHandler, me);
+		me.grid.on('beforecellclick', me.editHandler, me);
+		me.grid.on('beforecelldblclick', me.editHandler, me);
+		me.grid.on('beforecellmousedown', me.editHandler, me);
+	},
+
+	editHandler: function(){
+		return !this.editing;
+	},
+
+	doAddRecord: function(){
+		var me = this,
+			grid = me.grid,
+			store = grid.store;
+
+		me.cancelEdit();
+		store.insert(0, {});
+		me.startEdit(0, 0);
+
+	},
+
+	//    init: function(grid) {
+	//        this.callParent([grid]);
+	//    },
+
+	/**
+	 * @private
+	 * AbstractComponent calls destroy on all its plugins at destroy time.
+	 */
+	destroy: function(){
+		var me = this;
+		Ext.destroy(me.editor);
+		me.callParent(arguments);
+	},
+
+	/**
+	 * Starts editing the specified record, using the specified Column definition to define which field is being edited.
+	 * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+	 * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
+	 * @return {Boolean} `true` if editing was started, `false` otherwise.
+	 */
+	startEdit: function(record, columnHeader){
+		var me = this,
+			editor = me.getEditor(),
+			context;
+
+		if(editor.beforeEdit() !== false){
+			context = me.callParent(arguments);
+			if(context){
+				me.context = context;
+
+				// If editing one side of a lockable grid, cancel any edit on the other side.
+				if(me.lockingPartner){
+					me.lockingPartner.cancelEdit();
+				}
+				editor.startEdit(context.record, context.column, context);
+				return true;
+			}
+		}
+		return false;
+	},
+
+	// private
+	cancelEdit: function(){
+		var me = this;
+
+		if(me.editing){
+			me.getEditor().cancelEdit();
+			me.callParent(arguments);
+
+			if(me.autoCancel) me.view.store.rejectChanges();
+
+			me.fireEvent('canceledit', me.context);
+			return;
+		}
+		// If we aren't editing, return true to allow the event to bubble
+		return true;
+	},
+
+	// private
+	completeEdit: function(){
+		var me = this;
+
+		if(me.editing && me.validateEdit()){
+			me.editing = false;
+			me.fireEvent('edit', me, me.context);
+		}
+	},
+
+	completeRemove: function(){
+		var me = this;
+
+		if(me.editing){
+			me.getEditor().completeRemove();
+			me.fireEvent('completeremove', me, me.context);
+		}
+
+	},
+
+	// private
+	validateEdit: function(){
+		var me = this,
+			editor = me.editor,
+			context = me.context,
+			record = context.record,
+			originalValues = {},
+			newValues = editor.getForm().getValues();
+
+
+		Ext.Object.each(newValues, function(key){
+			originalValues[key] = record.get(key);
+		});
+
+		Ext.apply(context, {
+			newValues: newValues,
+			originalValues: originalValues
+		});
+
+		return me.fireEvent('validateedit', me, context) !== false && !context.cancel && me.getEditor().completeEdit();
+	},
+
+	// private
+	getEditor: function(){
+		var me = this;
+
+		if(!me.editor){
+			me.editor = me.initEditor();
+		}
+		return me.editor;
+	},
+
+	// @private
+	initEditor: function(){
+		return new App.ux.grid.RowFormEditor(this.initEditorConfig());
+	},
+
+	initEditorConfig: function(){
+		var me = this,
+			grid = me.grid,
+			view = me.view,
+			headerCt = grid.headerCt,
+			btns = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
+			b,
+			bLen = btns.length,
+			cfg = {
+				autoCancel: me.autoCancel,
+				errorSummary: me.errorSummary,
+				saveBtnEnabled: me.disableValidation,
+				fields: headerCt.getGridColumns(),
+				hidden: true,
+				view: view,
+				// keep a reference..
+				editingPlugin: me,
+				renderTo: view.el
+			},
+			item;
+
+		for(b = 0; b < bLen; b++){
+			item = btns[b];
+
+			if(Ext.isDefined(me[item])){
+				cfg[item] = me[item];
+			}
+		}
+		return cfg;
+	},
+
+	// private
+	initEditTriggers: function(){
+		var me = this,
+			view = me.view,
+			moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
+
+		me.callParent(arguments);
+
+		if(me.clicksToMoveEditor !== me.clicksToEdit){
+			me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
+		}
+	},
+
+	startEditByClick: function(){
+		var me = this;
+		if(!me.editing || me.clicksToMoveEditor === me.clicksToEdit){
+			me.callParent(arguments);
+		}
+	},
+
+	moveEditorByClick: function(){
+		var me = this;
+		if(me.editing){
+			me.superclass.onCellClick.apply(me, arguments);
+		}
+	},
+
+	onCellClick: function(view, cell, colIdx, record, row, rowIdx, e){
+		var me = this;
+
+		if(me.autoCancel){
+			me.view.store.rejectChanges();
+			if(me.editor) me.editor.rejectChildStoresChanges();
+		}
+		me.callParent(arguments);
+	},
+
+	// private
+	setColumnField: function(column, field){
+		var me = this;
+		editor.removeField(column);
+		me.callParent(arguments);
+		me.getEditor().setField(column.field, column);
+	}
+});
+
 Ext.define('App.ux.combo.FloorPlanZones', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'floorplanazonescombo',
@@ -7341,45 +8579,6 @@ Ext.define('App.ux.combo.PayingEntity', {
 	}
 });
 
-Ext.define('App.ux.combo.PaymentCategory', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.paymentcategorycombo',
-	initComponent: function() {
-		var me = this;
-
-		Ext.define('PaymentCategoryModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 49
-				}
-			}
-		});
-
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PaymentCategoryModel',
-			autoLoad: true
-		});
-
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : _('select'),
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
-});
 Ext.define('App.ux.combo.PaymentMethod', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.paymentmethodcombo',
@@ -7405,6 +8604,45 @@ Ext.define('App.ux.combo.PaymentMethod', {
 
 		me.store = Ext.create('Ext.data.Store', {
 			model   : 'PaymentMethodModel',
+			autoLoad: true
+		});
+
+		Ext.apply(this, {
+			editable    : false,
+			queryMode   : 'local',
+			displayField: 'option_name',
+			valueField  : 'option_value',
+			emptyText   : _('select'),
+			store       : me.store
+		}, null);
+		me.callParent(arguments);
+	}
+});
+Ext.define('App.ux.combo.PaymentCategory', {
+	extend       : 'Ext.form.ComboBox',
+	alias        : 'widget.mitos.paymentcategorycombo',
+	initComponent: function() {
+		var me = this;
+
+		Ext.define('PaymentCategoryModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{name: 'option_name', type: 'string' },
+				{name: 'option_value', type: 'string' }
+			],
+			proxy : {
+				type       : 'direct',
+				api        : {
+					read: CombosData.getOptionsByListId
+				},
+				extraParams: {
+					list_id: 49
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model   : 'PaymentCategoryModel',
 			autoLoad: true
 		});
 
@@ -7890,12 +9128,6 @@ Ext.define('App.ux.combo.Sex', {
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.ux.combo.SmokingStatus', {
-	extend: 'App.ux.combo.Combo',
-	alias: 'widget.mitos.smokingstatuscombo',
-	list: 58,
-	loadStore: true
-});
 Ext.define('App.ux.combo.Surgery', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.surgerycombo',
@@ -7934,6 +9166,12 @@ Ext.define('App.ux.combo.Surgery', {
 		}, null);
 		me.callParent(arguments);
 	}
+});
+Ext.define('App.ux.combo.SmokingStatus', {
+	extend: 'App.ux.combo.Combo',
+	alias: 'widget.mitos.smokingstatuscombo',
+	list: 58,
+	loadStore: true
 });
 Ext.define('App.ux.combo.TaxId', {
 	extend       : 'Ext.form.ComboBox',
@@ -8363,6 +9601,137 @@ Ext.define('App.ux.combo.YesNo', {
 		me.callParent(arguments);
 	}
 });
+Ext.define('App.ux.window.Window', {
+	extend       : 'Ext.window.Window',
+	autoHeight   : true,
+	modal        : true,
+	border       : true,
+	autoScroll   : true,
+	resizable    : false,
+	closeAction  : 'hide',
+	initComponent: function() {
+		this.callParent(arguments);
+	},
+
+	updateTitle: function(pageTitle, readOnly) {
+		this.setTitle(pageTitle + (readOnly ? '[ Read Only ]' : ''));
+	},
+
+	setReadOnly: function() {
+		var forms = this.query('form'),
+			readOnly = app.patient.readOnly;
+		for(var j = 0; j < forms.length; j++) {
+			var form = forms[j], items;
+			if(form.readOnly != readOnly){
+				form.readOnly = readOnly;
+				items = form.getForm().getFields().items;
+				for(var k = 0; k < items.length; k++) {
+					items[k].setReadOnly(readOnly);
+				}
+			}
+		}
+		return readOnly;
+	},
+
+	setButtonsDisabled:function(buttons){
+		var disable = app.patient.readOnly;
+		for(var i = 0; i < buttons.length; i++) {
+			var btn = buttons[i];
+			if(btn.disabled != disable){
+				btn.disabled = disable;
+				btn.setDisabled(disable)
+			}
+		}
+	},
+
+	checkIfCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	patientInfoAlert: function() {
+		var patient = app.getCurrPatient();
+
+		Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
+	},
+
+	currPatientError: function() {
+		Ext.Msg.show({
+			title  : 'Oops! ' + _('no_patient_selected'),
+			msg    : _('select_patient_patient_live_search'),
+			scope  : this,
+			buttons: Ext.Msg.OK,
+			icon   : Ext.Msg.ERROR,
+			fn     : function() {
+				this.goBack();
+			}
+		});
+	},
+
+	getFormItems: function(formPanel, formToRender, callback) {
+		formPanel.removeAll();
+
+		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
+			var items = eval(response.result);
+			formPanel.add(items);
+			if(typeof callback == 'function') {
+				callback(formPanel, items, true);
+			}
+		});
+	},
+
+	boolRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		}
+		return val;
+	},
+
+	alertRenderer: function(val) {
+		if(val == '1' || val == true || val == 'true') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
+		} else if(val == '0' || val == false || val == 'false') {
+			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
+		}
+		return val;
+	},
+
+	warnRenderer:function(val, metaData, record){
+        var toolTip = record.data.warningMsg ? ' data-qtip="'+record.data.warningMsg+'" ' : '';
+        if(val == '1' || val == true || val == 'true') {
+            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
+        }
+    },
+
+	onExpandRemoveMask: function(cmb) {
+		cmb.picker.loadMask.destroy()
+	},
+
+	strToLowerUnderscores: function(str) {
+		return str.toLowerCase().replace(/ /gi, "_");
+	},
+	getCurrPatient: function() {
+		return app.getCurrPatient();
+	},
+
+	getApp: function() {
+		return app.getApp();
+	},
+
+	msg: function(title, format) {
+		app.msg(title, format)
+	},
+
+	passwordVerificationWin: function(callback) {
+		var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
+			callback(btn, password);
+		});
+		var f = msg.textField.getInputId();
+		document.getElementById(f).type = 'password';
+		return msg;
+	}
+});
 Ext.define('App.view.search.PatientSearch',
 {
 	extend : 'App.ux.RenderPanel',
@@ -8571,499 +9940,44 @@ Ext.define('Modules.Module', {
 		Ext.getHeaad().appendChild(link);
 	}
 });
-Ext.define('App.ux.window.Window', {
-	extend       : 'Ext.window.Window',
-	autoHeight   : true,
-	modal        : true,
-	border       : true,
-	autoScroll   : true,
-	resizable    : false,
-	closeAction  : 'hide',
-	initComponent: function() {
-		this.callParent(arguments);
+Ext.define('App.model.administration.MedicationInstruction', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'rxinstructions'
 	},
-
-	updateTitle: function(pageTitle, readOnly) {
-		this.setTitle(pageTitle + (readOnly ? '[ Read Only ]' : ''));
-	},
-
-	setReadOnly: function() {
-		var forms = this.query('form'),
-			readOnly = app.patient.readOnly;
-		for(var j = 0; j < forms.length; j++) {
-			var form = forms[j], items;
-			if(form.readOnly != readOnly){
-				form.readOnly = readOnly;
-				items = form.getForm().getFields().items;
-				for(var k = 0; k < items.length; k++) {
-					items[k].setReadOnly(readOnly);
-				}
-			}
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'rxcui',
+			type: 'string',
+			index: true
+		},
+		{
+			name: 'occurrence',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'instruction',
+			type: 'string',
+			len: 140
 		}
-		return readOnly;
-	},
-
-	setButtonsDisabled:function(buttons){
-		var disable = app.patient.readOnly;
-		for(var i = 0; i < buttons.length; i++) {
-			var btn = buttons[i];
-			if(btn.disabled != disable){
-				btn.disabled = disable;
-				btn.setDisabled(disable)
-			}
-		}
-	},
-
-	checkIfCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	patientInfoAlert: function() {
-		var patient = app.getCurrPatient();
-
-		Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
-	},
-
-	currPatientError: function() {
-		Ext.Msg.show({
-			title  : 'Oops! ' + _('no_patient_selected'),
-			msg    : _('select_patient_patient_live_search'),
-			scope  : this,
-			buttons: Ext.Msg.OK,
-			icon   : Ext.Msg.ERROR,
-			fn     : function() {
-				this.goBack();
-			}
-		});
-	},
-
-	getFormItems: function(formPanel, formToRender, callback) {
-		formPanel.removeAll();
-
-		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-			var items = eval(response.result);
-			formPanel.add(items);
-			if(typeof callback == 'function') {
-				callback(formPanel, items, true);
-			}
-		});
-	},
-
-	boolRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		}
-		return val;
-	},
-
-	alertRenderer: function(val) {
-		if(val == '1' || val == true || val == 'true') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';
-		} else if(val == '0' || val == false || val == 'false') {
-			return '<img style="padding-left: 13px" src="resources/images/icons/yes.gif" />';
-		}
-		return val;
-	},
-
-	warnRenderer:function(val, metaData, record){
-        var toolTip = record.data.warningMsg ? ' data-qtip="'+record.data.warningMsg+'" ' : '';
-        if(val == '1' || val == true || val == 'true') {
-            return '<img src="resources/images/icons/icoImportant.png" ' + toolTip + ' />';
-        }
-    },
-
-	onExpandRemoveMask: function(cmb) {
-		cmb.picker.loadMask.destroy()
-	},
-
-	strToLowerUnderscores: function(str) {
-		return str.toLowerCase().replace(/ /gi, "_");
-	},
-	getCurrPatient: function() {
-		return app.getCurrPatient();
-	},
-
-	getApp: function() {
-		return app.getApp();
-	},
-
-	msg: function(title, format) {
-		app.msg(title, format)
-	},
-
-	passwordVerificationWin: function(callback) {
-		var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
-			callback(btn, password);
-		});
-		var f = msg.textField.getInputId();
-		document.getElementById(f).type = 'password';
-		return msg;
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Rxnorm.getMedicationInstructions',
+			create: 'Rxnorm.addMedicationInstruction',
+			update: 'Rxnorm.updateMedicationInstructions',
+			destroy: 'Rxnorm.destroyMedicationInstructions'
+		},
+		remoteGroup: false
 	}
 });
-Ext.define('Ext.ux.statusbar.StatusBar', {
-    extend: 'Ext.toolbar.Toolbar',
-    alternateClassName: 'Ext.ux.StatusBar',
-    alias: 'widget.statusbar',
-    requires: ['Ext.toolbar.TextItem'],
-    /**
-     * @cfg {String} statusAlign
-     * The alignment of the status element within the overall StatusBar layout.  When the StatusBar is rendered,
-     * it creates an internal div containing the status text and icon.  Any additional Toolbar items added in the
-     * StatusBar's {@link #cfg-items} config, or added via {@link #method-add} or any of the supported add* methods, will be
-     * rendered, in added order, to the opposite side.  The status element is greedy, so it will automatically
-     * expand to take up all sapce left over by any other items.  Example usage:
-     *
-     *     // Create a left-aligned status bar containing a button,
-     *     // separator and text item that will be right-aligned (default):
-     *     Ext.create('Ext.Panel', {
-     *         title: 'StatusBar',
-     *         // etc.
-     *         bbar: Ext.create('Ext.ux.statusbar.StatusBar', {
-     *             defaultText: 'Default status text',
-     *             id: 'status-id',
-     *             items: [{
-     *                 text: 'A Button'
-     *             }, '-', 'Plain Text']
-     *         })
-     *     });
-     *
-     *     // By adding the statusAlign config, this will create the
-     *     // exact same toolbar, except the status and toolbar item
-     *     // layout will be reversed from the previous example:
-     *     Ext.create('Ext.Panel', {
-     *         title: 'StatusBar',
-     *         // etc.
-     *         bbar: Ext.create('Ext.ux.statusbar.StatusBar', {
-     *             defaultText: 'Default status text',
-     *             id: 'status-id',
-     *             statusAlign: 'right',
-     *             items: [{
-     *                 text: 'A Button'
-     *             }, '-', 'Plain Text']
-     *         })
-     *     });
-     */
-    /**
-     * @cfg {String} [defaultText='']
-     * The default {@link #text} value.  This will be used anytime the status bar is cleared with the
-     * `useDefaults:true` option.
-     */
-    /**
-     * @cfg {String} [defaultIconCls='']
-     * The default {@link #iconCls} value (see the iconCls docs for additional details about customizing the icon).
-     * This will be used anytime the status bar is cleared with the `useDefaults:true` option.
-     */
-    /**
-     * @cfg {String} text
-     * A string that will be <b>initially</b> set as the status message.  This string
-     * will be set as innerHTML (html tags are accepted) for the toolbar item.
-     * If not specified, the value set for {@link #defaultText} will be used.
-     */
-    /**
-     * @cfg {String} [iconCls='']
-     * A CSS class that will be **initially** set as the status bar icon and is
-     * expected to provide a background image.
-     *
-     * Example usage:
-     *
-     *     // Example CSS rule:
-     *     .x-statusbar .x-status-custom {
-     *         padding-left: 25px;
-     *         background: transparent url(images/custom-icon.gif) no-repeat 3px 2px;
-     *     }
-     *
-     *     // Setting a default icon:
-     *     var sb = Ext.create('Ext.ux.statusbar.StatusBar', {
-     *         defaultIconCls: 'x-status-custom'
-     *     });
-     *
-     *     // Changing the icon:
-     *     sb.setStatus({
-     *         text: 'New status',
-     *         iconCls: 'x-status-custom'
-     *     });
-     */
 
-    /**
-     * @cfg {String} cls
-     * The base class applied to the containing element for this component on render.
-     */
-    cls : 'x-statusbar',
-    /**
-     * @cfg {String} busyIconCls
-     * The default {@link #iconCls} applied when calling {@link #showBusy}.
-     * It can be overridden at any time by passing the `iconCls` argument into {@link #showBusy}.
-     */
-    busyIconCls : 'x-status-busy',
-    /**
-     * @cfg {String} busyText
-     * The default {@link #text} applied when calling {@link #showBusy}.
-     * It can be overridden at any time by passing the `text` argument into {@link #showBusy}.
-     */
-    busyText : 'Loading...',
-    /**
-     * @cfg {Number} autoClear
-     * The number of milliseconds to wait after setting the status via
-     * {@link #setStatus} before automatically clearing the status text and icon.
-     * Note that this only applies when passing the `clear` argument to {@link #setStatus}
-     * since that is the only way to defer clearing the status.  This can
-     * be overridden by specifying a different `wait` value in {@link #setStatus}.
-     * Calls to {@link #clearStatus} always clear the status bar immediately and ignore this value.
-     */
-    autoClear : 5000,
-
-    /**
-     * @cfg {String} emptyText
-     * The text string to use if no text has been set. If there are no other items in
-     * the toolbar using an empty string (`''`) for this value would end up in the toolbar
-     * height collapsing since the empty string will not maintain the toolbar height.
-     * Use `''` if the toolbar should collapse in height vertically when no text is
-     * specified and there are no other items in the toolbar.
-     */
-    emptyText : '&#160;',
-
-    // private
-    activeThreadId : 0,
-
-    // private
-    initComponent : function(){
-        var right = this.statusAlign === 'right';
-
-        this.callParent(arguments);
-        this.currIconCls = this.iconCls || this.defaultIconCls;
-        this.statusEl = Ext.create('Ext.toolbar.TextItem', {
-            cls: 'x-status-text ' + (this.currIconCls || ''),
-            text: this.text || this.defaultText || ''
-        });
-
-        if (right) {
-            this.cls += ' x-status-right';
-            this.add('->');
-            this.add(this.statusEl);
-        } else {
-            this.insert(0, this.statusEl);
-            this.insert(1, '->');
-        }
-    },
-
-    /**
-     * Sets the status {@link #text} and/or {@link #iconCls}. Also supports automatically clearing the
-     * status that was set after a specified interval.
-     *
-     * Example usage:
-     *
-     *     // Simple call to update the text
-     *     statusBar.setStatus('New status');
-     *
-     *     // Set the status and icon, auto-clearing with default options:
-     *     statusBar.setStatus({
-     *         text: 'New status',
-     *         iconCls: 'x-status-custom',
-     *         clear: true
-     *     });
-     *
-     *     // Auto-clear with custom options:
-     *     statusBar.setStatus({
-     *         text: 'New status',
-     *         iconCls: 'x-status-custom',
-     *         clear: {
-     *             wait: 8000,
-     *             anim: false,
-     *             useDefaults: false
-     *         }
-     *     });
-     *
-     * @param {Object/String} config A config object specifying what status to set, or a string assumed
-     * to be the status text (and all other options are defaulted as explained below). A config
-     * object containing any or all of the following properties can be passed:
-     *
-     * @param {String} config.text The status text to display.  If not specified, any current
-     * status text will remain unchanged.
-     *
-     * @param {String} config.iconCls The CSS class used to customize the status icon (see
-     * {@link #iconCls} for details). If not specified, any current iconCls will remain unchanged.
-     *
-     * @param {Boolean/Number/Object} config.clear Allows you to set an internal callback that will
-     * automatically clear the status text and iconCls after a specified amount of time has passed. If clear is not
-     * specified, the new status will not be auto-cleared and will stay until updated again or cleared using
-     * {@link #clearStatus}. If `true` is passed, the status will be cleared using {@link #autoClear},
-     * {@link #defaultText} and {@link #defaultIconCls} via a fade out animation. If a numeric value is passed,
-     * it will be used as the callback interval (in milliseconds), overriding the {@link #autoClear} value.
-     * All other options will be defaulted as with the boolean option.  To customize any other options,
-     * you can pass an object in the format:
-     * 
-     * @param {Number} config.clear.wait The number of milliseconds to wait before clearing
-     * (defaults to {@link #autoClear}).
-     * @param {Boolean} config.clear.anim False to clear the status immediately once the callback
-     * executes (defaults to true which fades the status out).
-     * @param {Boolean} config.clear.useDefaults False to completely clear the status text and iconCls
-     * (defaults to true which uses {@link #defaultText} and {@link #defaultIconCls}).
-     *
-     * @return {Ext.ux.statusbar.StatusBar} this
-     */
-    setStatus : function(o) {
-        var me = this;
-
-        o = o || {};
-        Ext.suspendLayouts();
-        if (Ext.isString(o)) {
-            o = {text:o};
-        }
-        if (o.text !== undefined) {
-            me.setText(o.text);
-        }
-        if (o.iconCls !== undefined) {
-            me.setIcon(o.iconCls);
-        }
-
-        if (o.clear) {
-            var c = o.clear,
-                wait = me.autoClear,
-                defaults = {useDefaults: true, anim: true};
-
-            if (Ext.isObject(c)) {
-                c = Ext.applyIf(c, defaults);
-                if (c.wait) {
-                    wait = c.wait;
-                }
-            } else if (Ext.isNumber(c)) {
-                wait = c;
-                c = defaults;
-            } else if (Ext.isBoolean(c)) {
-                c = defaults;
-            }
-
-            c.threadId = this.activeThreadId;
-            Ext.defer(me.clearStatus, wait, me, [c]);
-        }
-        Ext.resumeLayouts(true);
-        return me;
-    },
-
-    /**
-     * Clears the status {@link #text} and {@link #iconCls}. Also supports clearing via an optional fade out animation.
-     *
-     * @param {Object} [config] A config object containing any or all of the following properties.  If this
-     * object is not specified the status will be cleared using the defaults below:
-     * @param {Boolean} config.anim True to clear the status by fading out the status element (defaults
-     * to false which clears immediately).
-     * @param {Boolean} config.useDefaults True to reset the text and icon using {@link #defaultText} and
-     * {@link #defaultIconCls} (defaults to false which sets the text to '' and removes any existing icon class).
-     *
-     * @return {Ext.ux.statusbar.StatusBar} this
-     */
-    clearStatus : function(o) {
-        o = o || {};
-
-        var me = this,
-            statusEl = me.statusEl;
-
-        if (o.threadId && o.threadId !== me.activeThreadId) {
-            // this means the current call was made internally, but a newer
-            // thread has set a message since this call was deferred.  Since
-            // we don't want to overwrite a newer message just ignore.
-            return me;
-        }
-
-        var text = o.useDefaults ? me.defaultText : me.emptyText,
-            iconCls = o.useDefaults ? (me.defaultIconCls ? me.defaultIconCls : '') : '';
-
-        if (o.anim) {
-            // animate the statusEl Ext.Element
-            statusEl.el.puff({
-                remove: false,
-                useDisplay: true,
-                callback: function() {
-                    statusEl.el.show();
-                    me.setStatus({
-                        text: text,
-                        iconCls: iconCls
-                    });
-                }
-            });
-        } else {
-             me.setStatus({
-                 text: text,
-                 iconCls: iconCls
-             });
-        }
-        return me;
-    },
-
-    /**
-     * Convenience method for setting the status text directly.  For more flexible options see {@link #setStatus}.
-     * @param {String} text (optional) The text to set (defaults to '')
-     * @return {Ext.ux.statusbar.StatusBar} this
-     */
-    setText : function(text) {
-        var me = this;
-        me.activeThreadId++;
-        me.text = text || '';
-        if (me.rendered) {
-            me.statusEl.setText(me.text);
-        }
-        return me;
-    },
-
-    /**
-     * Returns the current status text.
-     * @return {String} The status text
-     */
-    getText : function(){
-        return this.text;
-    },
-
-    /**
-     * Convenience method for setting the status icon directly.  For more flexible options see {@link #setStatus}.
-     * See {@link #iconCls} for complete details about customizing the icon.
-     * @param {String} iconCls (optional) The icon class to set (defaults to '', and any current icon class is removed)
-     * @return {Ext.ux.statusbar.StatusBar} this
-     */
-    setIcon : function(cls) {
-        var me = this;
-
-        me.activeThreadId++;
-        cls = cls || '';
-
-        if (me.rendered) {
-            if (me.currIconCls) {
-                me.statusEl.removeCls(me.currIconCls);
-                me.currIconCls = null;
-            }
-            if (cls.length > 0) {
-                me.statusEl.addCls(cls);
-                me.currIconCls = cls;
-            }
-        } else {
-            me.currIconCls = cls;
-        }
-        return me;
-    },
-
-    /**
-     * Convenience method for setting the status text and icon to special values that are pre-configured to indicate
-     * a "busy" state, usually for loading or processing activities.
-     *
-     * @param {Object/String} config (optional) A config object in the same format supported by {@link #setStatus}, or a
-     * string to use as the status text (in which case all other options for setStatus will be defaulted).  Use the
-     * `text` and/or `iconCls` properties on the config to override the default {@link #busyText}
-     * and {@link #busyIconCls} settings. If the config argument is not specified, {@link #busyText} and
-     * {@link #busyIconCls} will be used in conjunction with all of the default options for {@link #setStatus}.
-     * @return {Ext.ux.statusbar.StatusBar} this
-     */
-    showBusy : function(o){
-        if (Ext.isString(o)) {
-            o = { text: o };
-        }
-        o = Ext.applyIf(o || {}, {
-            text: this.busyText,
-            iconCls: this.busyIconCls
-        });
-        return this.setStatus(o);
-    }
-});
 
 Ext.define('App.model.administration.CPT', {
 	extend: 'Ext.data.Model',
@@ -9127,687 +10041,122 @@ Ext.define('App.model.administration.CPT', {
 		}
 	}
 });
-Ext.define('Ext.ux.LiveSearchGridPanel', {
-    extend: 'Ext.grid.Panel',
-    requires: [
-        'Ext.toolbar.TextItem',
-        'Ext.form.field.Checkbox',
-        'Ext.form.field.Text',
-        'Ext.ux.statusbar.StatusBar'
-    ],
-    
-    /**
-     * @private
-     * search value initialization
-     */
-    searchValue: null,
-    
-    /**
-     * @private
-     * The row indexes where matching strings are found. (used by previous and next buttons)
-     */
-    indexes: [],
-    
-    /**
-     * @private
-     * The row index of the first search, it could change if next or previous buttons are used.
-     */
-    currentIndex: null,
-    
-    /**
-     * @private
-     * The generated regular expression used for searching.
-     */
-    searchRegExp: null,
-    
-    /**
-     * @private
-     * Case sensitive mode.
-     */
-    caseSensitive: false,
-    
-    /**
-     * @private
-     * Regular expression mode.
-     */
-    regExpMode: false,
-    
-    /**
-     * @cfg {String} matchCls
-     * The matched string css classe.
-     */
-    matchCls: 'x-livesearch-match',
-    
-    defaultStatusText: 'Nothing Found',
-    
-    // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
-    initComponent: function() {
-        var me = this;
-        me.tbar = ['Search',{
-                 xtype: 'textfield',
-                 name: 'searchField',
-                 hideLabel: true,
-                 width: 200,
-                 listeners: {
-                     change: {
-                         fn: me.onTextFieldChange,
-                         scope: this,
-                         buffer: 100
-                     }
-                 }
-            }, {
-                xtype: 'button',
-                text: '&lt;',
-                tooltip: 'Find Previous Row',
-                handler: me.onPreviousClick,
-                scope: me
-            },{
-                xtype: 'button',
-                text: '&gt;',
-                tooltip: 'Find Next Row',
-                handler: me.onNextClick,
-                scope: me
-            }, '-', {
-                xtype: 'checkbox',
-                hideLabel: true,
-                margin: '0 0 0 4px',
-                handler: me.regExpToggle,
-                scope: me                
-            }, 'Regular expression', {
-                xtype: 'checkbox',
-                hideLabel: true,
-                margin: '0 0 0 4px',
-                handler: me.caseSensitiveToggle,
-                scope: me
-            }, 'Case sensitive'];
-
-        me.bbar = Ext.create('Ext.ux.StatusBar', {
-            defaultText: me.defaultStatusText,
-            name: 'searchStatusBar'
-        });
-        
-        me.callParent(arguments);
-    },
-    
-    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input 
-    afterRender: function() {
-        var me = this;
-        me.callParent(arguments);
-        me.textField = me.down('textfield[name=searchField]');
-        me.statusBar = me.down('statusbar[name=searchStatusBar]');
-    },
-    // detects html tag
-    tagsRe: /<[^>]*>/gm,
-    
-    // DEL ASCII code
-    tagsProtect: '\x0f',
-    
-    // detects regexp reserved word
-    regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
-    
-    /**
-     * In normal mode it returns the value with protected regexp characters.
-     * In regular expression mode it returns the raw value except if the regexp is invalid.
-     * @return {String} The value to process or null if the textfield value is blank or invalid.
-     * @private
-     */
-    getSearchValue: function() {
-        var me = this,
-            value = me.textField.getValue();
-            
-        if (value === '') {
-            return null;
-        }
-        if (!me.regExpMode) {
-            value = value.replace(me.regExpProtect, function(m) {
-                return '\\' + m;
-            });
-        } else {
-            try {
-                new RegExp(value);
-            } catch (error) {
-                me.statusBar.setStatus({
-                    text: error.message,
-                    iconCls: 'x-status-error'
-                });
-                return null;
-            }
-            // this is stupid
-            if (value === '^' || value === '$') {
-                return null;
-            }
-        }
-
-        return value;
-    },
-    
-    /**
-     * Finds all strings that matches the searched value in each grid cells.
-     * @private
-     */
-     onTextFieldChange: function() {
-         var me = this,
-             count = 0;
-
-         me.view.refresh();
-         // reset the statusbar
-         me.statusBar.setStatus({
-             text: me.defaultStatusText,
-             iconCls: ''
-         });
-
-         me.searchValue = me.getSearchValue();
-         me.indexes = [];
-         me.currentIndex = null;
-
-         if (me.searchValue !== null) {
-             me.searchRegExp = new RegExp(me.searchValue, 'g' + (me.caseSensitive ? '' : 'i'));
-             
-             
-             me.store.each(function(record, idx) {
-                 var td = Ext.fly(me.view.getNode(idx)).down('td'),
-                     cell, matches, cellHTML;
-                 while(td) {
-                     cell = td.down('.x-grid-cell-inner');
-                     matches = cell.dom.innerHTML.match(me.tagsRe);
-                     cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
-                     
-                     // populate indexes array, set currentIndex, and replace wrap matched string in a span
-                     cellHTML = cellHTML.replace(me.searchRegExp, function(m) {
-                        count += 1;
-                        if (Ext.Array.indexOf(me.indexes, idx) === -1) {
-                            me.indexes.push(idx);
-                        }
-                        if (me.currentIndex === null) {
-                            me.currentIndex = idx;
-                        }
-                        return '<span class="' + me.matchCls + '">' + m + '</span>';
-                     });
-                     // restore protected tags
-                     Ext.each(matches, function(match) {
-                        cellHTML = cellHTML.replace(me.tagsProtect, match); 
-                     });
-                     // update cell html
-                     cell.dom.innerHTML = cellHTML;
-                     td = td.next();
-                 }
-             }, me);
-
-             // results found
-             if (me.currentIndex !== null) {
-                 me.getSelectionModel().select(me.currentIndex);
-                 me.statusBar.setStatus({
-                     text: count + ' matche(s) found.',
-                     iconCls: 'x-status-valid'
-                 });
-             }
-         }
-
-         // no results found
-         if (me.currentIndex === null) {
-             me.getSelectionModel().deselectAll();
-         }
-
-         // force textfield focus
-         me.textField.focus();
-     },
-    
-    /**
-     * Selects the previous row containing a match.
-     * @private
-     */   
-    onPreviousClick: function() {
-        var me = this,
-            idx;
-            
-        if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
-            me.currentIndex = me.indexes[idx - 1] || me.indexes[me.indexes.length - 1];
-            me.getSelectionModel().select(me.currentIndex);
-         }
-    },
-    
-    /**
-     * Selects the next row containing a match.
-     * @private
-     */    
-    onNextClick: function() {
-         var me = this,
-             idx;
-             
-         if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
-            me.currentIndex = me.indexes[idx + 1] || me.indexes[0];
-            me.getSelectionModel().select(me.currentIndex);
-         }
-    },
-    
-    /**
-     * Switch to case sensitive mode.
-     * @private
-     */    
-    caseSensitiveToggle: function(checkbox, checked) {
-        this.caseSensitive = checked;
-        this.onTextFieldChange();
-    },
-    
-    /**
-     * Switch to regular expression mode
-     * @private
-     */
-    regExpToggle: function(checkbox, checked) {
-        this.regExpMode = checked;
-        this.onTextFieldChange();
-    }
-});
-/**
- * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
- * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
- * for editing. There is a button to save or cancel all changes for the edit.
- *
- * The field that will be used for the editor is defined at the
- * {@link Ext.grid.column.Column#editor editor}. The editor can be a field instance or a field configuration.
- * If an editor is not specified for a particular column then that column won't be editable and the value of
- * the column will be displayed.
- *
- * The editor may be shared for each column in the grid, or a different one may be specified for each column.
- * An appropriate field type should be chosen to match the data structure that it will be editing. For example,
- * to edit a date, it would be useful to specify {@link Ext.form.field.Date} as the editor.
- *
- *     @example
- *     Ext.create('Ext.data.Store', {
- *         storeId:'simpsonsStore',
- *         fields:['name', 'email', 'phone'],
- *         data: [
- *             {"name":"Lisa", "email":"lisa@simpsons.com", "phone":"555-111-1224"},
- *             {"name":"Bart", "email":"bart@simpsons.com", "phone":"555--222-1234"},
- *             {"name":"Homer", "email":"home@simpsons.com", "phone":"555-222-1244"},
- *             {"name":"Marge", "email":"marge@simpsons.com", "phone":"555-222-1254"}
- *         ]
- *     });
- *
- *     Ext.create('Ext.grid.Panel', {
- *         title: 'Simpsons',
- *         store: Ext.data.StoreManager.lookup('simpsonsStore'),
- *         columns: [
- *             {header: 'Name',  dataIndex: 'name', editor: 'textfield'},
- *             {header: 'Email', dataIndex: 'email', flex:1,
- *                 editor: {
- *                     xtype: 'textfield',
- *                     allowBlank: false
- *                 }
- *             },
- *             {header: 'Phone', dataIndex: 'phone'}
- *         ],
- *         selType: 'rowmodel',
- *         plugins: [
- *             Ext.create('Ext.grid.plugin.RowEditing', {
- *                 clicksToEdit: 1
- *             })
- *         ],
- *         height: 200,
- *         width: 400,
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('App.ux.grid.RowFormEditing', {
-	extend: 'Ext.grid.plugin.Editing',
-	alias: 'plugin.rowformediting',
-	requires: [
-		'App.ux.grid.RowFormEditor'
+Ext.define('App.ux.LiveRXNORMSearch', {
+	extend: 'Ext.form.ComboBox',
+	requires:[
+		'App.model.administration.MedicationInstruction'
 	],
-
-	lockableScope: 'top',
-
-	editStyle: 'row',
-
-	enableRemove: false,
-	enableAddBtn: false,
-	addBtnText: 'Add',
-	addBtnIconCls: null,
-	toolbarDock: 'top',
-
-	fieldDefaults: {},
-
-	saveBtnEnabled: false,
-	/**
-	 * @cfg {Boolean} autoSync
-	 * True to automatically Sync any pending changes during complete edit method.
-	 * False to force the user to explicitly sync all pending changes. Defaults to true.
-	 */
-	autoSync: true,
-	/**
-	 * @cfg {Boolean} autoCancel
-	 * True to automatically cancel any pending changes when the row editor begins editing a new row.
-	 * False to force the user to explicitly cancel the pending changes. Defaults to true.
-	 */
-	autoCancel: true,
-
-	/**
-	 * @cfg {Number} clicksToMoveEditor
-	 * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
-	 * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
-	 */
-
-	/**
-	 * @cfg {Boolean} errorSummary
-	 * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
-	 * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
-	 */
-	errorSummary: false,
-
-	/**
-	 * @event beforeedit
-	 * Fires before row editing is triggered.
-	 *
-	 * @param {Ext.grid.plugin.Editing} editor
-	 * @param {Object} e An edit event with the following properties:
-	 *
-	 * - grid - The grid this editor is on
-	 * - view - The grid view
-	 * - store - The grid store
-	 * - record - The record being edited
-	 * - row - The grid table row
-	 * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-	 * - rowIdx - The row index that is being edited
-	 * - colIdx - The column index that initiated the edit
-	 * - cancel - Set this to true to cancel the edit or return false from your handler.
-	 */
-
-	/**
-	 * @event canceledit
-	 * Fires when the user has started editing a row but then cancelled the edit
-	 * @param {Object} grid The grid
-	 */
-
-	/**
-	 * @event edit
-	 * Fires after a row is edited. Usage example:
-	 *
-	 *     grid.on('edit', function(editor, e) {
-     *         // commit the changes right after editing finished
-     *         e.record.commit();
-     *     };
-	 *
-	 * @param {Ext.grid.plugin.Editing} editor
-	 * @param {Object} e An edit event with the following properties:
-	 *
-	 * - grid - The grid this editor is on
-	 * - view - The grid view
-	 * - store - The grid store
-	 * - record - The record being edited
-	 * - row - The grid table row
-	 * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-	 * - rowIdx - The row index that is being edited
-	 * - colIdx - The column index that initiated the edit
-	 */
-	/**
-	 * @event validateedit
-	 * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
-	 * edit event object has the following properties
-	 *
-	 * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
-	 * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
-	 * and then setting the field's new value in the Record directly:
-	 *
-	 *     grid.on('validateedit', function(editor, e) {
-     *       var myTargetRow = 6;
-     *
-     *       if (e.rowIdx == myTargetRow) {
-     *         e.cancel = true;
-     *         e.record.data[e.field]
-     *
-     * - grid - The grid this editor is on
-     * - view - The grid view
-     * - store - The grid store
-     * - record - The record being edited
-     * - row - The grid table row
-     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-	 * - rowIdx - The row index that is being edited
-	 * - colIdx - The column index that initiated the edit
-	 * - cancel - Set this to true to cancel the edit or return false from your handler.
-	 */
-
-	constructor: function(){
+	alias: 'widget.rxnormlivetsearch',
+	hideLabel: true,
+	displayField: 'STR',
+	valueField: 'RXCUI',
+	initComponent: function(){
 		var me = this;
-		me.callParent(arguments);
 
-		if(!me.clicksToMoveEditor){
-			me.clicksToMoveEditor = me.clicksToEdit;
-		}
-
-		me.autoCancel = !!me.autoCancel;
-	},
-
-	init: function(grid){
-		var me = this;
-		me.callParent(arguments);
-
-		if(me.enableAddBtn){
-			var t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
-				grid.addDocked({ xtype: 'toolbar', dock: me.toolbarDock })[0];
-
-			t.add({
-				xtype: 'button',
-				text: me.addBtnText,
-				iconCls: me.addBtnIconCls,
-				handler: me.doAddRecord,
-				scope: me
-			});
-
-		}
-
-		me.grid.on('beforeselect', me.editHandler, me);
-		me.grid.on('beforecellclick', me.editHandler, me);
-		me.grid.on('beforecelldblclick', me.editHandler, me);
-		me.grid.on('beforecellmousedown', me.editHandler, me);
-	},
-
-	editHandler: function(){
-		return !this.editing;
-	},
-
-	doAddRecord: function(){
-		var me = this,
-			grid = me.grid,
-			store = grid.store;
-
-		me.cancelEdit();
-		store.insert(0, {});
-		me.startEdit(0, 0);
-
-	},
-
-	//    init: function(grid) {
-	//        this.callParent([grid]);
-	//    },
-
-	/**
-	 * @private
-	 * AbstractComponent calls destroy on all its plugins at destroy time.
-	 */
-	destroy: function(){
-		var me = this;
-		Ext.destroy(me.editor);
-		me.callParent(arguments);
-	},
-
-	/**
-	 * Starts editing the specified record, using the specified Column definition to define which field is being edited.
-	 * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
-	 * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
-	 * @return {Boolean} `true` if editing was started, `false` otherwise.
-	 */
-	startEdit: function(record, columnHeader){
-		var me = this,
-			editor = me.getEditor(),
-			context;
-
-		if(editor.beforeEdit() !== false){
-			context = me.callParent(arguments);
-			if(context){
-				me.context = context;
-
-				// If editing one side of a lockable grid, cancel any edit on the other side.
-				if(me.lockingPartner){
-					me.lockingPartner.cancelEdit();
+		Ext.define('liveRXNORMSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{
+					name: 'RXCUI',
+					type: 'string'
+				},
+				{
+					name: 'CODE',
+					type: 'string'
+				},
+				{
+					name: 'NDC',
+					type: 'string'
+				},
+				{
+					name: 'STR',
+					type: 'string',
+					convert: function(v){
+						var regex = /\(.*\) | \(.*\)|\(.*\)/g;
+						return v.replace(regex, '');
+					}
+				},
+				{
+					name: 'DST',
+					type: 'auto'
+				},
+				{
+					name: 'DRT',
+					type: 'auto'
+				},
+				{
+					name: 'DDF',
+					type: 'auto'
+				},
+				{
+					name: 'DDFA',
+					type: 'auto'
+				},
+				{
+					name: 'RXN_QUANTITY',
+					type: 'auto'
+				},
+				{
+					name: 'SAB',
+					type: 'auto'
+				},
+				{
+					name: 'RXAUI',
+					type: 'auto'
+				},
+				{
+					name: 'CodeType',
+					defaultValue: 'RXNORM'
 				}
-				editor.startEdit(context.record, context.column, context);
-				return true;
-			}
-		}
-		return false;
-	},
-
-	// private
-	cancelEdit: function(){
-		var me = this;
-
-		if(me.editing){
-			me.getEditor().cancelEdit();
-			me.callParent(arguments);
-
-			if(me.autoCancel) me.view.store.rejectChanges();
-
-			me.fireEvent('canceledit', me.context);
-			return;
-		}
-		// If we aren't editing, return true to allow the event to bubble
-		return true;
-	},
-
-	// private
-	completeEdit: function(){
-		var me = this;
-
-		if(me.editing && me.validateEdit()){
-			me.editing = false;
-			me.fireEvent('edit', me, me.context);
-		}
-	},
-
-	completeRemove: function(){
-		var me = this;
-
-		if(me.editing){
-			me.getEditor().completeRemove();
-			me.fireEvent('completeremove', me, me.context);
-		}
-
-	},
-
-	// private
-	validateEdit: function(){
-		var me = this,
-			editor = me.editor,
-			context = me.context,
-			record = context.record,
-			originalValues = {},
-			newValues = editor.getForm().getValues();
-
-
-		Ext.Object.each(newValues, function(key){
-			originalValues[key] = record.get(key);
-		});
-
-		Ext.apply(context, {
-			newValues: newValues,
-			originalValues: originalValues
-		});
-
-		return me.fireEvent('validateedit', me, context) !== false && !context.cancel && me.getEditor().completeEdit();
-	},
-
-	// private
-	getEditor: function(){
-		var me = this;
-
-		if(!me.editor){
-			me.editor = me.initEditor();
-		}
-		return me.editor;
-	},
-
-	// @private
-	initEditor: function(){
-		return new App.ux.grid.RowFormEditor(this.initEditorConfig());
-	},
-
-	initEditorConfig: function(){
-		var me = this,
-			grid = me.grid,
-			view = me.view,
-			headerCt = grid.headerCt,
-			btns = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
-			b,
-			bLen = btns.length,
-			cfg = {
-				autoCancel: me.autoCancel,
-				errorSummary: me.errorSummary,
-				saveBtnEnabled: me.disableValidation,
-				fields: headerCt.getGridColumns(),
-				hidden: true,
-				view: view,
-				// keep a reference..
-				editingPlugin: me,
-				renderTo: view.el
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'Rxnorm.getRXNORMLiveSearch'
+				},
+				reader: {
+					totalProperty: 'totals',
+					root: 'rows'
+				}
 			},
-			item;
+			hasMany: [
+				{
+					model: 'App.model.administration.MedicationInstruction',
+					name: 'instructions',
+					primaryKey: 'RXCUI',
+					foreignKey: 'rxcui'
+				}
+			]
+		});
 
-		for(b = 0; b < bLen; b++){
-			item = btns[b];
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'liveRXNORMSearchModel',
+			pageSize: 25,
+			autoLoad: false
+		});
 
-			if(Ext.isDefined(me[item])){
-				cfg[item] = me[item];
-			}
-		}
-		return cfg;
-	},
+		Ext.apply(this, {
+			store: me.store,
+			emptyText: _('search') + '...',
+			typeAhead: false,
+			hideTrigger: true,
+			minChars: 3,
+			listConfig: {
+				loadingText: _('searching') + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function(){
+					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
+				}
+			},
+			pageSize: 25
+		});
 
-	// private
-	initEditTriggers: function(){
-		var me = this,
-			view = me.view,
-			moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
-
-		me.callParent(arguments);
-
-		if(me.clicksToMoveEditor !== me.clicksToEdit){
-			me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
-		}
-	},
-
-	startEditByClick: function(){
-		var me = this;
-		if(!me.editing || me.clicksToMoveEditor === me.clicksToEdit){
-			me.callParent(arguments);
-		}
-	},
-
-	moveEditorByClick: function(){
-		var me = this;
-		if(me.editing){
-			me.superclass.onCellClick.apply(me, arguments);
-		}
-	},
-
-	onCellClick: function(view, cell, colIdx, record, row, rowIdx, e){
-		var me = this;
-
-		if(me.autoCancel){
-			me.view.store.rejectChanges();
-			if(me.editor) me.editor.rejectChildStoresChanges();
-		}
-		me.callParent(arguments);
-	},
-
-	// private
-	setColumnField: function(column, field){
-		var me = this;
-		editor.removeField(column);
-		me.callParent(arguments);
-		me.getEditor().setField(column.field, column);
+		me.callParent();
 	}
 });
-
 Ext.define('App.store.administration.CPT', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.administration.CPT'
@@ -9990,166 +10339,6 @@ Ext.define('App.model.miscellaneous.AddressBook', {
 		},
 		reader: {
 			totalProperty: 'totals',
-			root: 'data'
-		}
-	}
-});
-Ext.define('App.model.miscellaneous.Amendment', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'patient_amendments'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'portal_id',
-			type: 'int'
-		},
-		{
-			name: 'pid',
-			type: 'int'
-		},
-		{
-			name: 'amendment_type',
-			type: 'string',
-			len: 1,
-			comment: 'P = patient or D = Doctor or O = organization'
-		},
-		{
-			name: 'amendment_data',
-			type: 'array',
-			dataType: 'mediumtext'
-		},
-		{
-			name: 'amendment_message',
-			type: 'string',
-			dataType: 'text'
-		},
-		{
-			name: 'amendment_status',
-			type: 'string',
-			len: 1,
-			comment: 'W = waiting or A = approved or D = denied or C = canceled'
-		},
-		{
-			name: 'response_message',
-			type: 'string',
-			len: 500,
-			comment: 'denial or approval reason'
-		},
-		{
-			name: 'is_read',
-			type: 'bool'
-		},
-		{
-			name: 'is_viewed',
-			type: 'bool'
-		},
-		{
-			name: 'is_synced',
-			type: 'bool'
-		},
-		{
-			name: 'assigned_to_uid',
-			type: 'int'
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		},
-		{
-			name: 'response_uid',
-			type: 'int'
-		},
-		{
-			name: 'approved_by',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'assigned_date',
-			type: 'date',
-			comment: 'Assigned date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'response_date',
-			type: 'date',
-			comment: 'create date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'cancel_date',
-			type: 'date',
-			comment: 'create date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'cancel_by',
-			type: 'string',
-			len: 15,
-			comment: 'U for user P patient and ID'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			comment: 'create date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			comment: 'last update date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'responded_by',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				if(record.data.amendment_status === 'A'){
-					return record.data.response_title + ' ' + record.data.response_fname + ' ' + record.data.response_mname + ' ' + record.data.response_lname;
-				}else{
-					return '';
-				}
-			}
-		},
-		{
-			name: 'response_title',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'response_fname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'response_mname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'response_lname',
-			type: 'string',
-			store: false
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Amendments.getAmendments',
-			create: 'Amendments.addAmendment',
-			update: 'Amendments.updateAmendment'
-		},
-		reader: {
 			root: 'data'
 		}
 	}
@@ -10415,214 +10604,6 @@ Ext.define('App.model.patient.SmokeStatus', {
 			update: 'SocialHistory.updateSmokeStatus'
 		}
 	}
-});
-Ext.define('App.model.administration.AclGroup', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'acl_groups'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'title',
-			type: 'string'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			index: true
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'ACL.getAclGroups',
-			create: 'ACL.addAclGroup',
-			update: 'ACL.updateAclGroup'
-		},
-		reader: {
-			root: 'data'
-		}
-	}
-});
-
-Ext.define('App.model.administration.AclGroupPerm', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'title',
-			type: 'string'
-		},
-		{
-			name: 'group_id',
-			type: 'int'
-		},
-		{
-			name: 'category',
-			type: 'string'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'ACL.getGroupPerms',
-			create: 'ACL.updateGroupPerms',
-			update: 'ACL.updateGroupPerms'
-		},
-		reader: {
-			type: 'json',
-			root: 'data'
-		}
-	}
-});
-Ext.define('App.model.administration.AclPermissions', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'acl_permissions'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'perm_key',
-			type: 'string',
-			index: true
-		},
-		{
-			name: 'perm_name',
-			type: 'string'
-		},
-		{
-			name: 'perm_cat',
-			type: 'string'
-		},
-		{
-			name: 'seq',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			index: true
-		}
-	]
-});
-Ext.define('App.model.administration.AclRolePermissions', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'acl_role_perms'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'role_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'perm_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'value',
-			type: 'bool'
-		},
-		{
-			name: 'add_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		}
-	]
-});
-
-Ext.define('App.model.administration.AclRoles', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'acl_roles',
-		comment: 'Access Control List Roles'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'role_name',
-			type: 'string'
-		},
-		{
-			name: 'group_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'seq',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			index: true
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'ACL.getAclRoles',
-			create: 'ACL.addAclRole',
-			update: 'ACL.updateAclRole'
-		},
-		reader: {
-			root: 'data'
-		}
-	}
-});
-Ext.define('App.model.administration.AclUserRoles', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'acl_user_roles',
-		comment: 'Access List User Roles'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'role_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'add_date',
-			type: 'date',
-			dataType: 'timestamp',
-			defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-		}
-	]
-});
-Ext.define('App.store.administration.AclGroups', {
-    model: 'App.model.administration.AclGroup',
-    extend: 'Ext.data.Store'
-});
-Ext.define('App.store.administration.AclGroupPerms', {
-    model: 'App.model.administration.AclGroupPerm',
-    extend: 'Ext.data.Store'
 });
 Ext.define('App.model.administration.ActiveProblems', {
 	extend: 'Ext.data.Model',
@@ -11071,99 +11052,6 @@ Ext.define('App.model.administration.FloorPlans', {
 			create: 'FloorPlans.createFloorPlan',
 			update: 'FloorPlans.updateFloorPlan',
 			destroy: 'FloorPlans.removeFloorPlan'
-		}
-	}
-});
-Ext.define('App.model.administration.FloorPlanZones', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'floor_plans_zones',
-		comment: 'Floor Plan Zones'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'Floor Plan Zones ID'
-		},
-		{
-			name: 'floor_plan_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'code',
-			type: 'string',
-			len: 40,
-			index: true
-		},
-		{
-			name: 'title',
-			type: 'string',
-			len: 180
-		},
-		{
-			name: 'type',
-			type: 'string',
-			len: 100
-		},
-		{
-			name: 'bg_color',
-			type: 'string',
-			lem: 10,
-			useNull: true
-		},
-		{
-			name: 'border_color',
-			type: 'string',
-			lem: 10,
-			useNull: true
-		},
-		{
-			name: 'scale',
-			type: 'string',
-			lem: 30,
-			defaultValue: 'medium'
-		},
-		{
-			name: 'width',
-			type: 'int',
-			useNull: true
-		},
-		{
-			name: 'height',
-			type: 'int',
-			useNull: true
-		},
-		{
-			name: 'x',
-			type: 'int'
-		},
-		{
-			name: 'y',
-			type: 'int'
-		},
-		{
-			name: 'show_priority_color',
-			type: 'bool'
-		},
-		{
-			name: 'show_patient_preview',
-			type: 'bool'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			index: true
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'FloorPlans.getFloorPlanZones',
-			create: 'FloorPlans.createFloorPlanZone',
-			update: 'FloorPlans.updateFloorPlanZone',
-			destroy: 'FloorPlans.removeFloorPlanZone'
 		}
 	}
 });
@@ -12003,6 +11891,60 @@ Ext.define('App.model.administration.AuditLog', {
 		}
 	}
 });
+Ext.define('App.model.administration.Modules', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'modules',
+		comment: 'Modules'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'name',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'description',
+			type: 'string'
+		},
+		{
+			name: 'enable',
+			type: 'bool'
+		},
+		{
+			name: 'installed_version',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'licensekey',
+			type: 'string'
+		},
+		{
+			name: 'localkey',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Modules.getActiveModules',
+			update: 'Modules.updateModule'
+		},
+		writer: {
+			writeAllFields: true
+		}
+	}
+});
 Ext.define('App.model.administration.Medications', {
 	extend: 'Ext.data.Model',
 	fields: [
@@ -12059,57 +12001,6 @@ Ext.define('App.model.administration.Medications', {
 		filterParam: 'query',
 		encodeFilters: function(filters){
 			return filters[0].value;
-		}
-	}
-});
-Ext.define('App.model.administration.Modules', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'modules',
-		comment: 'Modules'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'title',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'name',
-			type: 'string',
-			len: 100
-		},
-		{
-			name: 'description',
-			type: 'string'
-		},
-		{
-			name: 'enable',
-			type: 'bool'
-		},
-		{
-			name: 'installed_version',
-			type: 'string',
-			len: 20
-		},
-		{
-			name: 'licensekey',
-			type: 'string'
-		},
-		{
-			name: 'localkey',
-			type: 'string'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Modules.getActiveModules',
-			update: 'Modules.updateModule'
 		}
 	}
 });
@@ -12343,6 +12234,596 @@ Ext.define('App.model.administration.PreventiveCareMedications', {
 	]
 
 });
+Ext.define('App.model.administration.ProviderCredentialization', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'provider_credentializations'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'provider_id',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'insurance_company_id',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'insurance_company_name',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'start_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d',
+			index: true
+		},
+		{
+			name: 'end_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d',
+			index: true
+		},
+		{
+			name: 'credentialization_notes',
+			type: 'string'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
+				var now = new Date();
+
+				return record.data.start_date <= now && record.data.end_date >= now
+			}
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Providers.getProviderCredentializations',
+			create: 'Providers.addProviderCredentialization',
+			update: 'Providers.updateProviderCredentialization',
+			destroy: 'Providers.deleteProviderCredentialization'
+		},
+		reader: {
+			root: 'data'
+		}
+	}
+});
+Ext.define('App.model.administration.ReferringProviderFacility', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'referring_providers_facilities'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'referring_provider_id',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'name',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'address',
+			type: 'string',
+			len: 35
+		},
+		{
+			name: 'address_cont',
+			type: 'string',
+			len: 35
+		},
+		{
+			name: 'city',
+			type: 'string',
+			len: 35
+		},
+		{
+			name: 'state',
+			type: 'string',
+			len: 35
+		},
+		{
+			name: 'postal_code',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'country',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'taxonomy',
+			type: 'string',
+			len: 40,
+			comment: 'taxonomy',
+			defaultValue: '207Q00000X'
+		},
+		{
+			name: 'accept_mc',
+			type: 'bool',
+			comment: 'Accepts Medicare'
+		},
+		{
+			name: 'email',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'direct_address',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'phone_number',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'fax_number',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 600
+		},
+		{
+			name: 'is_default',
+			type: 'bool'
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'ReferringProviders.getReferringProviderFacilities',
+			create: 'ReferringProviders.addReferringProviderFacility',
+			update: 'ReferringProviders.updateReferringProviderFacility'
+		}
+	}
+});
+
+Ext.define('App.model.administration.ReferringProvider', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'referring_providers'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'fname',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'mname',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'lname',
+			type: 'string',
+			len: 120
+		},
+		{
+			name: 'upin',
+			type: 'string',
+			len: 25,
+			comment: 'Carrier Claim Referring Physician UPIN Number'
+		},
+		{
+			name: 'lic',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'npi',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'fda',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'ess',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'ssn',
+			type: 'string',
+			len: 25,
+			comment: 'federal tax id'
+		},
+		{
+			name: 'taxonomy',
+			type: 'string',
+			len: 40,
+			comment: 'taxonomy',
+			defaultValue: '207Q00000X'
+		},
+		{
+			name: 'accept_mc',
+			type: 'bool',
+			comment: 'Accepts Medicare'
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 600
+		},
+		{
+			name: 'email',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'direct_address',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'phone_number',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'fax_number',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'cel_number',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'ReferringProviders.getReferringProviders',
+			create: 'ReferringProviders.addReferringProvider',
+			update: 'ReferringProviders.updateReferringProvider'
+		},
+		reader: {
+			root: 'data'
+		}
+	},
+	hasMany: [
+		{
+			model: 'App.model.administration.ReferringProviderFacility',
+			name: 'facilities',
+			foreignKey: 'referring_provider_id'
+		}
+	]
+});
+Ext.define('App.model.administration.Services', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'services',
+		comment: 'Services'
+	},
+	fields: [
+		{name: 'id', type: 'string', comment: 'Services ID'},
+		{name: 'code_text', type: 'string'},
+		{name: 'sg_code', type: 'string'},
+		{name: 'long_desc', type: 'string'},
+		{name: 'code_text_short', type: 'string'},
+		{name: 'code', type: 'string'},
+		{name: 'code_type', type: 'string'},
+		{name: 'modifier', type: 'string'},
+		{name: 'units', type: 'string'},
+		{name: 'fee', type: 'int'},
+		{name: 'superbill', type: 'string'},
+		{name: 'related_code', type: 'string'},
+		{name: 'taxrates', type: 'string'},
+		{name: 'active', type: 'bool'},
+		{name: 'reportable', type: 'string'},
+		{name: 'has_children', type: 'bool'},
+		////////////////////////////////////
+		{name: 'sex', type: 'string'},
+		{name: 'age_start', type: 'int'},
+		{name: 'age_end', type: 'int'},
+		{name: 'times_to_perform', type: 'int'},
+		{name: 'frequency_number', type: 'int'},
+		{name: 'frequency_time', type: 'string'},
+		{name: 'pregnant', type: 'bool'},
+		{name: 'only_once', type: 'bool'},
+		{name: 'active_problems', type: 'string'},
+		{name: 'medications', type: 'string'},
+		{name: 'labs', type: 'string'},
+		{name: 'has_children', type: 'bool'},
+		{name: 'class', type: 'string'}
+	]
+
+});
+Ext.define('App.model.administration.Specialty', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'specialties',
+		comment: 'Providers Specialties'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'taxonomy',
+			type: 'string',
+			len: 30
+		},
+		{
+			name: 'modality',
+			type: 'string',
+			len: 50
+		},
+		{
+			name: 'ges',
+			type: 'string',
+			len: 5
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		},
+		{
+			name: 'text_details',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return record.data.id + ': ' + record.data.title;
+			}
+		},
+		{
+			name: 'combo_text',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return record.data.id + ': ' + record.data.title + ' ' + (record.data.active ? ('(' + _('not_active') + ')') : '');
+			}
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Specialties.getSpecialties',
+			create: 'Specialties.addSpecialty',
+			update: 'Specialties.updateSpecialty'
+		},
+		reader: {
+			root: 'data'
+		}
+	}
+});
+
+Ext.define('App.model.administration.TemplatePanel', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'template_panels'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'specialty_id',
+			type: 'int'
+		},
+		{
+			name: 'description',
+			type: 'string',
+			len: 300
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'TemplatePanels.getTemplatePanels',
+			create: 'TemplatePanels.createTemplatePanel',
+			update: 'TemplatePanels.updateTemplatePanel',
+			destroy: 'TemplatePanels.deleteTemplatePanel'
+		},
+		reader: {
+			root: 'data'
+		}
+	},
+	hasMany: [
+		{
+			model: 'App.model.administration.TemplatePanelTemplate',
+			name: 'templates',
+			foreignKey: 'panel_id',
+			storeConfig: {
+				groupField: 'template_type'
+			}
+		}
+	]
+});
+
+Ext.define('App.model.administration.TemplatePanelTemplate', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'template_panels_templates'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'panel_id',
+			type: 'int'
+		},
+		{
+			name: 'template_type',
+			type: 'string',
+			len: 80,
+			comment: 'rx lab rad etc'
+		},
+		{
+			name: 'description',
+			type: 'string',
+			len: 300
+		},
+		{
+			name: 'template_data',
+			type: 'string',
+			dataType: 'mediumtext'
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'TemplatePanels.getTemplatePanelTemplates',
+			create: 'TemplatePanels.createTemplatePanelTemplate',
+			update: 'TemplatePanels.updateTemplatePanelTemplate',
+			destroy: 'TemplatePanels.deleteTemplatePanelTemplate'
+		},
+		reader: {
+			root: 'data'
+		}
+	}
+});
+
 Ext.define('App.model.administration.TransactionLog', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -12506,46 +12987,6 @@ Ext.define('App.model.administration.TransactionLog', {
 
 	}
 });
-Ext.define('App.model.administration.Services', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'services',
-		comment: 'Services'
-	},
-	fields: [
-		{name: 'id', type: 'string', comment: 'Services ID'},
-		{name: 'code_text', type: 'string'},
-		{name: 'sg_code', type: 'string'},
-		{name: 'long_desc', type: 'string'},
-		{name: 'code_text_short', type: 'string'},
-		{name: 'code', type: 'string'},
-		{name: 'code_type', type: 'string'},
-		{name: 'modifier', type: 'string'},
-		{name: 'units', type: 'string'},
-		{name: 'fee', type: 'int'},
-		{name: 'superbill', type: 'string'},
-		{name: 'related_code', type: 'string'},
-		{name: 'taxrates', type: 'string'},
-		{name: 'active', type: 'bool'},
-		{name: 'reportable', type: 'string'},
-		{name: 'has_children', type: 'bool'},
-		////////////////////////////////////
-		{name: 'sex', type: 'string'},
-		{name: 'age_start', type: 'int'},
-		{name: 'age_end', type: 'int'},
-		{name: 'times_to_perform', type: 'int'},
-		{name: 'frequency_number', type: 'int'},
-		{name: 'frequency_time', type: 'string'},
-		{name: 'pregnant', type: 'bool'},
-		{name: 'only_once', type: 'bool'},
-		{name: 'active_problems', type: 'string'},
-		{name: 'medications', type: 'string'},
-		{name: 'labs', type: 'string'},
-		{name: 'has_children', type: 'bool'},
-		{name: 'class', type: 'string'}
-	]
-
-});
 Ext.define('App.model.administration.XtypesComboModel', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -12564,298 +13005,6 @@ Ext.define('App.model.administration.XtypesComboModel', {
 		}
 	},
 	autoLoad: true
-});
-Ext.define('App.model.administration.DecisionSupportRuleConcept', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'support_rule_concepts'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'rule_id',
-			type: 'int',
-			comment: 'support_rule.id'
-		},
-		{
-			name: 'concept_type',
-			type: 'string',
-			len: 10,
-			comment: 'PROC PROB MEDI SOCI ALLE LAB VITA'
-		},
-		{
-			name: 'concept_text',
-			type: 'string',
-			len: 25
-		},
-		{
-			name: 'concept_code',
-			type: 'string',
-			len: 25
-		},
-		{
-			name: 'concept_code_type',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'frequency',
-			type: 'int',
-			len: 3
-		},
-		{
-			name: 'frequency_interval',
-			type: 'string',
-			len: 3,
-			comment: '1D = one day 2M = two month 1Y = one year'
-		},
-		{
-			name: 'frequency_operator',
-			type: 'string',
-			len: 5,
-			comment: '== != <= >= < >',
-			convert: function(v){
-				return Ext.util.Format.htmlDecode(v);
-			}
-		},
-		{
-			name: 'value_operator',
-			type: 'string',
-			len: 5,
-			comment: '== != <= >= < >',
-			convert: function(v){
-				return Ext.util.Format.htmlDecode(v);
-			}
-		},
-		{
-			name: 'value',
-			type: 'string',
-			len: 10
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'DecisionSupport.getDecisionSupportRuleConcepts',
-			create: 'DecisionSupport.addDecisionSupportRuleConcept',
-			update: 'DecisionSupport.updateDecisionSupportRuleConcept',
-			destroy: 'DecisionSupport.deleteDecisionSupportRuleConcept'
-		}
-	}
-});
-Ext.define('App.model.administration.DecisionSupportRule', {
-	extend: 'Ext.data.Model',
-	requires: 'App.model.administration.DecisionSupportRuleConcept',
-	table: {
-		name: 'support_rules'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'category',
-			type: 'string',
-			len: 10,
-			defaultValue: 'C',
-			comment: 'C = Clinical A = Administrative'
-		},
-		{
-			name: 'alert_type',
-			type: 'string',
-			len: 2,
-			defaultValue: 'P',
-			comment: 'A = Active P = Passive'
-		},
-		{
-			name: 'description',
-			type: 'string'
-		},
-		{
-			name: 'service_type',
-			type: 'string',
-			len: 10,
-			comment: 'PROC IMMU DX MEDI LAB RAD'
-		},
-		{
-			name: 'service_text',
-			type: 'string'
-		},
-		{
-			name: 'service_code',
-			type: 'string',
-			len: 25
-		},
-		{
-			name: 'service_code_type',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'age_start',
-			type: 'int',
-			defaultValue: '0'
-		},
-		{
-			name: 'age_end',
-			type: 'int',
-			defaultValue: '0'
-		},
-		{
-			name: 'sex',
-			type: 'string',
-			len: 5
-		},
-		{
-			name: 'warning',
-			type: 'string',
-			len: 5,
-			comment: 'examples 1W or 5M or 1Y'
-		},
-		{
-			name: 'past_due',
-			type: 'string',
-			len: 5,
-			comment: 'examples 1W or 5M or 1Y'
-		},
-		{
-			name: 'reference',
-			type: 'string'
-		},
-		{
-			name: 'active',
-			type: 'bool'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'DecisionSupport.getDecisionSupportRules',
-			create: 'DecisionSupport.addDecisionSupportRule',
-			update: 'DecisionSupport.updateDecisionSupportRule',
-			destroy: 'DecisionSupport.deleteDecisionSupportRule'
-		},
-		reader: {
-			root: 'data'
-		}
-	},
-	hasMany: [
-		{
-			model: 'App.model.administration.DecisionSupportRuleConcept',
-			name: 'concepts',
-			foreignKey: 'rule_id'
-		}
-	]
-});
-Ext.define('App.model.miscellaneous.OfficeNotes', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'office_notes',
-		comment: 'Office Notes'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'Office Notes ID'
-		},
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'body',
-			type: 'string'
-		},
-		{
-			name: 'user',
-			type: 'string'
-		},
-		{
-			name: 'facility_id',
-			type: 'string'
-		},
-		{
-			name: 'activity',
-			type: 'string'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'OfficeNotes.getOfficeNotes',
-			create: 'OfficeNotes.addOfficeNotes',
-			update: 'OfficeNotes.updateOfficeNotes'
-		}
-	}
-});
-Ext.define('App.model.account.VoucherLine', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'accvoucherline',
-		comment: 'Voucher / Receipt'
-	},
-	//	triggers:[
-	//		{
-	//			name: 'onVoucherLineDelete',
-	//			time: 'after',
-	//			event: 'delete',
-	//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId} AND date = [new Date()]'
-	//		},
-	//		{
-	//			name: 'onVoucherLineInsert',
-	//			time: 'AFTER',
-	//			event: 'INSERT',
-	//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId}'
-	//		}
-	//	],
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'createUid', type: 'int'},
-		{name: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'writeUid', type: 'int'},
-		{name: 'writeDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-
-		{name: 'voucherId', type: 'int', comment: 'Voucher'},
-		{name: 'accountId', type: 'int', comment: 'Account'},
-		{name: 'moveLineId', type: 'int', comment: 'Journal Item'},
-		//      {name: 'companyId',             type: 'int', comment:'Company (Not Used)'},
-		//      {name: 'accountAnalyticId',     type: 'int', comment:'Analytic Account (Not Used)'},
-
-		{name: 'reconcile', type: 'bool', defaultValue: false, comment: 'Full Reconcile'},
-
-		{name: 'code', type: 'string', comment: 'COPAY/CPT/HCPCS/SKU codes'},
-		{name: 'name', type: 'string', comment: 'Description'},
-		{name: 'type', type: 'string', comment: 'debit/credit'},
-
-		{name: 'amountUnreconciled', type: 'float', comment: 'Open Balance'},
-		{name: 'amountUntax', type: 'float', comment: 'Untax Amount'},
-		{name: 'amountOriginal', type: 'float', comment: 'Default Amount'},
-		{name: 'amount', type: 'float', comment: 'Amount'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'AccVoucher.getVoucherLines',
-			create: 'AccVoucher.addVoucherLine',
-			update: 'AccVoucher.updateVoucherLine',
-			destroy: 'AccVoucher.destroyVoucherLine'
-		}
-	},
-	associations: [
-		{
-			type: 'belongsTo',
-			model: 'App.model.account.Voucher',
-			foreignKey: 'voucherId',
-			setterName: 'setVoucher',
-			getterName: 'getVoucher'
-		}
-	]
 });
 Ext.define('App.model.administration.User', {
 	extend: 'Ext.data.Model',
@@ -13138,6 +13287,272 @@ Ext.define('App.model.administration.User', {
 	]
 });
 
+Ext.define('App.model.miscellaneous.OfficeNotes', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'office_notes',
+		comment: 'Office Notes'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Office Notes ID'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'body',
+			type: 'string'
+		},
+		{
+			name: 'user',
+			type: 'string'
+		},
+		{
+			name: 'facility_id',
+			type: 'string'
+		},
+		{
+			name: 'activity',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'OfficeNotes.getOfficeNotes',
+			create: 'OfficeNotes.addOfficeNotes',
+			update: 'OfficeNotes.updateOfficeNotes'
+		}
+	}
+});
+Ext.define('App.model.miscellaneous.Amendment', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'patient_amendments'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'portal_id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'amendment_type',
+			type: 'string',
+			len: 1,
+			comment: 'P = patient or D = Doctor or O = organization'
+		},
+		{
+			name: 'amendment_data',
+			type: 'array',
+			dataType: 'mediumtext'
+		},
+		{
+			name: 'amendment_message',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
+			name: 'amendment_status',
+			type: 'string',
+			len: 1,
+			comment: 'W = waiting or A = approved or D = denied or C = canceled'
+		},
+		{
+			name: 'response_message',
+			type: 'string',
+			len: 500,
+			comment: 'denial or approval reason'
+		},
+		{
+			name: 'is_read',
+			type: 'bool'
+		},
+		{
+			name: 'is_viewed',
+			type: 'bool'
+		},
+		{
+			name: 'is_synced',
+			type: 'bool'
+		},
+		{
+			name: 'assigned_to_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'response_uid',
+			type: 'int'
+		},
+		{
+			name: 'approved_by',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'assigned_date',
+			type: 'date',
+			comment: 'Assigned date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'response_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'cancel_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'cancel_by',
+			type: 'string',
+			len: 15,
+			comment: 'U for user P patient and ID'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'responded_by',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				if(record.data.amendment_status === 'A'){
+					return record.data.response_title + ' ' + record.data.response_fname + ' ' + record.data.response_mname + ' ' + record.data.response_lname;
+				}else{
+					return '';
+				}
+			}
+		},
+		{
+			name: 'response_title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'response_fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'response_mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'response_lname',
+			type: 'string',
+			store: false
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Amendments.getAmendments',
+			create: 'Amendments.addAmendment',
+			update: 'Amendments.updateAmendment'
+		},
+		reader: {
+			root: 'data'
+		}
+	}
+});
+Ext.define('App.model.account.VoucherLine', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'accvoucherline',
+		comment: 'Voucher / Receipt'
+	},
+	//	triggers:[
+	//		{
+	//			name: 'onVoucherLineDelete',
+	//			time: 'after',
+	//			event: 'delete',
+	//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId} AND date = [new Date()]'
+	//		},
+	//		{
+	//			name: 'onVoucherLineInsert',
+	//			time: 'AFTER',
+	//			event: 'INSERT',
+	//			definition:'UPDATE accvoucher SET `status` = \'changed\' WHERE id = {voucherId}'
+	//		}
+	//	],
+	fields: [
+		{name: 'id', type: 'int'},
+		{name: 'createUid', type: 'int'},
+		{name: 'createDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+		{name: 'writeUid', type: 'int'},
+		{name: 'writeDate', type: 'date', dateFormat: 'Y-m-d H:i:s'},
+
+		{name: 'voucherId', type: 'int', comment: 'Voucher'},
+		{name: 'accountId', type: 'int', comment: 'Account'},
+		{name: 'moveLineId', type: 'int', comment: 'Journal Item'},
+		//      {name: 'companyId',             type: 'int', comment:'Company (Not Used)'},
+		//      {name: 'accountAnalyticId',     type: 'int', comment:'Analytic Account (Not Used)'},
+
+		{name: 'reconcile', type: 'bool', defaultValue: false, comment: 'Full Reconcile'},
+
+		{name: 'code', type: 'string', comment: 'COPAY/CPT/HCPCS/SKU codes'},
+		{name: 'name', type: 'string', comment: 'Description'},
+		{name: 'type', type: 'string', comment: 'debit/credit'},
+
+		{name: 'amountUnreconciled', type: 'float', comment: 'Open Balance'},
+		{name: 'amountUntax', type: 'float', comment: 'Untax Amount'},
+		{name: 'amountOriginal', type: 'float', comment: 'Default Amount'},
+		{name: 'amount', type: 'float', comment: 'Amount'}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'AccVoucher.getVoucherLines',
+			create: 'AccVoucher.addVoucherLine',
+			update: 'AccVoucher.updateVoucherLine',
+			destroy: 'AccVoucher.destroyVoucherLine'
+		}
+	},
+	associations: [
+		{
+			type: 'belongsTo',
+			model: 'App.model.account.Voucher',
+			foreignKey: 'voucherId',
+			setterName: 'setVoucher',
+			getterName: 'getVoucher'
+		}
+	]
+});
 Ext.define('App.model.account.Voucher', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -13505,6 +13920,1255 @@ Ext.define('App.model.navigation.Navigation', {
 		}
 	}
 });
+// Created dynamically by Matcha::connect
+// Create date: 2013-07-28 18:48:17
+
+Ext.define('App.model.patient.Vitals', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_vitals',
+		comment: 'Vitals'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Vital ID'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'auth_uid',
+			type: 'int'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'weight_lbs',
+			type: 'string',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'weight_kg',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'height_in',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'height_cm',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'bp_systolic',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'bp_diastolic',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'pulse',
+			type: 'int',
+			useNull: true,
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
+		},
+		{
+			name: 'respiration',
+			type: 'int',
+			useNull: true,
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
+		},
+		{
+			name: 'temp_f',
+			type: 'float',
+			useNull: true,
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
+		},
+		{
+			name: 'temp_c',
+			type: 'float',
+			useNull: true,
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
+		},
+		{
+			name: 'temp_location',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'oxygen_saturation',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'head_circumference_in',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'head_circumference_cm',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'waist_circumference_in',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'waist_circumference_cm',
+			type: 'float',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'bmi',
+			type: 'float',
+			useNull: true,
+			len: 10,
+			convert: function(v){
+				return v > 0 ? v : null;
+			}
+		},
+		{
+			name: 'bmi_status',
+			type: 'string',
+			useNull: true,
+			len: 10
+		},
+		{
+			name: 'other_notes',
+			type: 'string',
+			len: 600
+		},
+		{
+			name: 'bp_systolic_normal',
+			type: 'int',
+			defaultValue: 120,
+			store: false
+		},
+		{
+			name: 'bp_diastolic_normal',
+			type: 'int',
+			defaultValue: 80,
+			store: false
+		},
+		{
+			name: 'group_date',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return Ext.Date.format(record.data.date, 'Y-m-d');
+			}
+		},
+		{
+			name: 'administer_by',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'authorized_by',
+			type: 'string',
+			store: false
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Vitals.getVitals',
+			create: 'Vitals.addVitals',
+			update: 'Vitals.updateVitals'
+		}
+	},
+	belongsTo: {
+		model: 'App.model.patient.Encounter',
+		foreignKey: 'eid'
+	}
+});
+
+Ext.define('App.model.patient.FamilyHistory', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'patient_family_history'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'auth_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'tuberculosis',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'emphysema',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'asthma',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'hypertension',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'heart_murmur',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'rheumatic_fever',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'heart_attak',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'angina',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'stroke',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'high_cholesterol',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'vascular_graft',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'mitral_valve_prolapse',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'hepatitis_a',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'hepatitis_b',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'hepatitis_c',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'kidney',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'std',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'ulcers',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'diabetes',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'thyroid',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'hemophilia',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'anemia',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'cancer',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'hiv_aids',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'osteoarthritis',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'rheumatoid_arthritis',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'seizures',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'dementia',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'anxiety',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'depression',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'eating_disorder',
+			type: 'string',
+			len: 60
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'FamilyHistory.getFamilyHistory',
+			create: 'FamilyHistory.addFamilyHistory',
+			update: 'FamilyHistory.updateFamilyHistory'
+		}
+	},
+	belongsTo: {
+		model: 'App.model.patient.Encounter',
+		foreignKey: 'eid'
+	}
+});
+
+Ext.define('App.model.patient.ReviewOfSystems', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_review_of_systems',
+		comment: 'Review of system'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'weight_change',
+			type: 'bool'
+		},
+		{
+			name: 'weakness',
+			type: 'bool'
+		},
+		{
+			name: 'fatigue',
+			type: 'bool'
+		},
+		{
+			name: 'anorexia',
+			type: 'bool'
+		},
+		{
+			name: 'fever',
+			type: 'bool'
+		},
+		{
+			name: 'chills',
+			type: 'bool'
+		},
+		{
+			name: 'night_sweats',
+			type: 'bool'
+		},
+		{
+			name: 'insomnia',
+			type: 'bool'
+		},
+		{
+			name: 'irritability',
+			type: 'bool'
+		},
+		{
+			name: 'heat_or_cold',
+			type: 'bool'
+		},
+		{
+			name: 'intolerance',
+			type: 'bool'
+		},
+		{
+			name: 'change_in_vision',
+			type: 'bool'
+		},
+		{
+			name: 'eye_pain',
+			type: 'bool'
+		},
+		{
+			name: 'family_history_of_glaucoma',
+			type: 'bool'
+		},
+		{
+			name: 'irritation',
+			type: 'bool'
+		},
+		{
+			name: 'redness',
+			type: 'bool'
+		},
+		{
+			name: 'excessive_tearing',
+			type: 'bool'
+		},
+		{
+			name: 'double_vision',
+			type: 'bool'
+		},
+		{
+			name: 'blind_spots',
+			type: 'bool'
+		},
+		{
+			name: 'photophobia',
+			type: 'bool'
+		},
+		{
+			name: 'hearing_loss',
+			type: 'bool'
+		},
+		{
+			name: 'discharge',
+			type: 'bool'
+		},
+		{
+			name: 'pain',
+			type: 'bool'
+		},
+		{
+			name: 'vertigo',
+			type: 'bool'
+		},
+		{
+			name: 'tinnitus',
+			type: 'bool'
+		},
+		{
+			name: 'frequent_colds',
+			type: 'bool'
+		},
+		{
+			name: 'sore_throat',
+			type: 'bool'
+		},
+		{
+			name: 'sinus_problems',
+			type: 'bool'
+		},
+		{
+			name: 'post_nasal_drip',
+			type: 'bool'
+		},
+		{
+			name: 'nosebleed',
+			type: 'bool'
+		},
+		{
+			name: 'snoring',
+			type: 'bool'
+		},
+		{
+			name: 'apnea',
+			type: 'bool'
+		},
+		{
+			name: 'breast_mass',
+			type: 'bool'
+		},
+		{
+			name: 'abnormal_mammogram',
+			type: 'bool'
+		},
+		{
+			name: 'biopsy',
+			type: 'bool'
+		},
+		{
+			name: 'cough',
+			type: 'bool'
+		},
+		{
+			name: 'sputum',
+			type: 'bool'
+		},
+		{
+			name: 'shortness_of_breath',
+			type: 'bool'
+		},
+		{
+			name: 'wheezing',
+			type: 'bool'
+		},
+		{
+			name: 'hemoptysis',
+			type: 'bool'
+		},
+		{
+			name: 'asthma',
+			type: 'bool'
+		},
+		{
+			name: 'copd',
+			type: 'bool'
+		},
+		{
+			name: 'thyroid_problems',
+			type: 'bool'
+		},
+		{
+			name: 'diabetes',
+			type: 'bool'
+		},
+		{
+			name: 'abnormal_blood_test',
+			type: 'bool'
+		},
+		{
+			name: 'chest_pain',
+			type: 'bool'
+		},
+		{
+			name: 'palpitation',
+			type: 'bool'
+		},
+		{
+			name: 'syncope',
+			type: 'bool'
+		},
+		{
+			name: 'pnd',
+			type: 'bool'
+		},
+		{
+			name: 'doe',
+			type: 'bool'
+		},
+		{
+			name: 'orthopnea',
+			type: 'bool'
+		},
+		{
+			name: 'peripheral',
+			type: 'bool'
+		},
+		{
+			name: 'edema',
+			type: 'bool'
+		},
+		{
+			name: 'leg_pain_cramping',
+			type: 'bool'
+		},
+		{
+			name: 'arrythmia',
+			type: 'bool'
+		},
+		{
+			name: 'heart_problem',
+			type: 'bool'
+		},
+		{
+			name: 'history_of_heart_murmur',
+			type: 'bool'
+		},
+		{
+			name: 'polyuria',
+			type: 'bool'
+		},
+		{
+			name: 'polydypsia',
+			type: 'bool'
+		},
+		{
+			name: 'dysuria',
+			type: 'bool'
+		},
+		{
+			name: 'hematuria',
+			type: 'bool'
+		},
+		{
+			name: 'frequency',
+			type: 'bool'
+		},
+		{
+			name: 'urgency',
+			type: 'bool'
+		},
+		{
+			name: 'utis',
+			type: 'bool'
+		},
+		{
+			name: 'incontinence',
+			type: 'bool'
+		},
+		{
+			name: 'renal_stones',
+			type: 'bool'
+		},
+		{
+			name: 'hesitancy',
+			type: 'bool'
+		},
+		{
+			name: 'dribbling',
+			type: 'bool'
+		},
+		{
+			name: 'stream',
+			type: 'bool'
+		},
+		{
+			name: 'nocturia',
+			type: 'bool'
+		},
+		{
+			name: 'erections',
+			type: 'bool'
+		},
+		{
+			name: 'ejaculations',
+			type: 'bool'
+		},
+		{
+			name: 'cancer',
+			type: 'bool'
+		},
+		{
+			name: 'psoriasis',
+			type: 'bool'
+		},
+		{
+			name: 'acne',
+			type: 'bool'
+		},
+		{
+			name: 'disease',
+			type: 'bool'
+		},
+		{
+			name: 'other',
+			type: 'bool'
+		},
+		{
+			name: 'anemia',
+			type: 'bool'
+		},
+		{
+			name: 'hiv',
+			type: 'bool'
+		},
+		{
+			name: 'f_h_blood_problems',
+			type: 'bool'
+		},
+		{
+			name: 'hai_status',
+			type: 'bool'
+		},
+		{
+			name: 'allergies',
+			type: 'bool'
+		},
+		{
+			name: 'bleeding_problems',
+			type: 'bool'
+		},
+		{
+			name: 'frequent_illness',
+			type: 'bool'
+		},
+		{
+			name: 'dysphagia',
+			type: 'bool'
+		},
+		{
+			name: 'heartburn',
+			type: 'bool'
+		},
+		{
+			name: 'food_intolerance',
+			type: 'bool'
+		},
+		{
+			name: 'belching',
+			type: 'bool'
+		},
+		{
+			name: 'bloating',
+			type: 'bool'
+		},
+		{
+			name: 'flatulence',
+			type: 'bool'
+		},
+		{
+			name: 'nausea',
+			type: 'bool'
+		},
+		{
+			name: 'vomiting',
+			type: 'bool'
+		},
+		{
+			name: 'jaundice',
+			type: 'bool'
+		},
+		{
+			name: 'h_o_hepatitis',
+			type: 'bool'
+		},
+		{
+			name: 'hematemesis',
+			type: 'bool'
+		},
+		{
+			name: 'diarrhea',
+			type: 'bool'
+		},
+		{
+			name: 'hematochezia',
+			type: 'bool'
+		},
+		{
+			name: 'changed_bowel',
+			type: 'bool'
+		},
+		{
+			name: 'constipation',
+			type: 'bool'
+		},
+		{
+			name: 'female_g',
+			type: 'bool'
+		},
+		{
+			name: 'female_p',
+			type: 'bool'
+		},
+		{
+			name: 'female_ap',
+			type: 'bool'
+		},
+		{
+			name: 'lmp',
+			type: 'bool'
+		},
+		{
+			name: 'female_lc',
+			type: 'bool'
+		},
+		{
+			name: 'menopause',
+			type: 'bool'
+		},
+		{
+			name: 'flow',
+			type: 'bool'
+		},
+		{
+			name: 'abnormal_hair_growth',
+			type: 'bool'
+		},
+		{
+			name: 'menarche',
+			type: 'bool'
+		},
+		{
+			name: 'symptoms',
+			type: 'bool'
+		},
+		{
+			name: 'f_h_female_hirsutism_striae',
+			type: 'bool'
+		},
+		{
+			name: 'anxiety',
+			type: 'bool'
+		},
+		{
+			name: 'depression',
+			type: 'bool'
+		},
+		{
+			name: 'psychiatric_medication',
+			type: 'bool'
+		},
+		{
+			name: 'social_difficulties',
+			type: 'bool'
+		},
+		{
+			name: 'psychiatric_diagnosis',
+			type: 'bool'
+		},
+		{
+			name: 'fms',
+			type: 'bool'
+		},
+		{
+			name: 'swelling',
+			type: 'bool'
+		},
+		{
+			name: 'Warm',
+			type: 'bool'
+		},
+		{
+			name: 'muscle',
+			type: 'bool'
+		},
+		{
+			name: 'stiffness',
+			type: 'bool'
+		},
+		{
+			name: 'aches',
+			type: 'bool'
+		},
+		{
+			name: 'arthritis',
+			type: 'bool'
+		},
+		{
+			name: 'chronic_joint_pain',
+			type: 'bool'
+		},
+		{
+			name: 'loc',
+			type: 'bool'
+		},
+		{
+			name: 'stroke',
+			type: 'bool'
+		},
+		{
+			name: 'paralysis',
+			type: 'bool'
+		},
+		{
+			name: 'tia',
+			type: 'bool'
+		},
+		{
+			name: 'numbness',
+			type: 'bool'
+		},
+		{
+			name: 'memory_problems',
+			type: 'bool'
+		},
+		{
+			name: 'seizures',
+			type: 'bool'
+		},
+		{
+			name: 'intellectual_decline',
+			type: 'bool'
+		},
+		{
+			name: 'dementia',
+			type: 'bool'
+		},
+		{
+			name: 'headache',
+			type: 'bool'
+		},
+		{
+			name: 'cons_weakness',
+			type: 'bool'
+		},
+		{
+			name: 'brest_discharge',
+			type: 'bool'
+		},
+		{
+			name: 'fem_frequency',
+			type: 'bool'
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			dataType: 'mediumtext'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			update: 'Encounter.updateReviewOfSystems'
+		}
+	},
+	belongsTo: {
+		model: 'App.model.patient.Encounter',
+		foreignKey: 'eid'
+	}
+});
+
+Ext.define('App.model.patient.HCFAOptions', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_1500_options'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'uid',
+			type: 'int'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'employment_related',
+			type: 'bool'
+		},
+		{
+			name: 'auto_accident',
+			type: 'bool'
+		},
+		{
+			name: 'state',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'other_accident',
+			type: 'bool'
+		},
+		{
+			name: 'similar_illness_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'unable_to_work_from',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'unable_to_work_to',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'hops_date_to',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'out_lab_used',
+			type: 'bool'
+		},
+		{
+			name: 'amount_charges',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'medicaid_resubmission_code',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'medicaid_original_reference_number',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'prior_authorization_number',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'replacement_claim',
+			type: 'bool'
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			dataType: 'text'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			update: 'Encounter.updateHCFA'
+		}
+	},
+	belongsTo: {
+		model: 'App.model.patient.Encounter',
+		foreignKey: 'eid'
+	}
+});
+Ext.define('App.model.patient.EncounterService', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'encounter_services'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'eid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'reference_type',
+			type: 'string',
+			len: 40,
+			index: true
+		},
+		{
+			name: 'reference_id',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'billing_reference',
+			type: 'string',
+			len: 20,
+			index: true
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 40,
+			index: true
+		},
+		{
+			name: 'code_type',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'code_text',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
+			name: 'units',
+			type: 'int',
+			len: 5
+		},
+		{
+			name: 'tooth',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'surface',
+			type: 'string',
+			len: 5
+		},
+		{
+			name: 'cavity_quadrant',
+			type: 'string',
+			len: 2
+		},
+		{
+			name: 'modifiers',
+			type: 'array'
+		},
+		{
+			name: 'dx_group_id',
+			type: 'int'
+		},
+		{
+			name: 'dx_pointers',
+			type: 'array'
+		},
+		{
+			name: 'status',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'date_create',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'date_update',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Services.getEncounterServices',
+			create: 'Services.addEncounterService',
+			update: 'Services.updateEncounterService',
+			destroy: 'Services.removeEncounterService'
+		},
+		writer: {
+			writeAllFields: true
+		}
+	}
+});
 Ext.define('App.model.patient.encounter.snippetTree', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -13637,6 +15301,134 @@ Ext.define('App.model.patient.encounter.Procedures', {
 		}
 	}
 });
+Ext.define('App.model.patient.AppointmentRequest', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'patient_appointment_requests'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'appointment_id',
+			type: 'int'
+		},
+		{
+			name: 'requested_uid',
+			type: 'int'
+		},
+		{
+			name: 'approved_uid',
+			type: 'int'
+		},
+		{
+			name: 'is_approved',
+			type: 'bool',
+			persist: false,
+			convert: function(v, record){
+				return record.data.approved_uid > 1;
+			}
+		},
+		{
+			name: 'requested_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'approved_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'notes',
+			type: 'string'
+		},
+		{
+			name: 'procedure1',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'procedure1_code',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'procedure1_code_type',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'procedure2',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'procedure2_code',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'procedure2_code_type',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'procedure3',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'procedure3_code',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'procedure3_code_type',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'AppointmentRequest.getAppointmentRequests',
+			create: 'AppointmentRequest.addAppointmentRequest',
+			update: 'AppointmentRequest.updateAppointmentRequest',
+			destroy: 'AppointmentRequest.deleteAppointmentRequest'
+		}
+	}
+});
+
 Ext.define('App.model.patient.AdvanceDirective', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -14184,125 +15976,6 @@ Ext.define('App.model.patient.DoctorsNote', {
 		}
 	}
 });
-Ext.define('App.model.patient.EncounterService', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'encounter_services'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'pid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'eid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'reference_type',
-			type: 'string',
-			len: 40,
-			index: true
-		},
-		{
-			name: 'reference_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'billing_reference',
-			type: 'string',
-			len: 20,
-			index: true
-		},
-		{
-			name: 'code',
-			type: 'string',
-			len: 40,
-			index: true
-		},
-		{
-			name: 'code_type',
-			type: 'string',
-			len: 40
-		},
-		{
-			name: 'code_text',
-			type: 'string',
-			dataType: 'text'
-		},
-		{
-			name: 'units',
-			type: 'int',
-			len: 5
-		},
-		{
-			name: 'tooth',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'surface',
-			type: 'string',
-			len: 5
-		},
-		{
-			name: 'cavity_quadrant',
-			type: 'string',
-			len: 2
-		},
-		{
-			name: 'modifiers',
-			type: 'array'
-		},
-		{
-			name: 'dx_group_id',
-			type: 'int'
-		},
-		{
-			name: 'dx_pointers',
-			type: 'array'
-		},
-		{
-			name: 'status',
-			type: 'string',
-			len: 20
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		},
-		{
-			name: 'date_create',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'date_update',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Services.getEncounterServices',
-			create: 'Services.addEncounterService',
-			update: 'Services.updateEncounterService',
-			destroy: 'Services.removeEncounterService'
-		}
-	}
-});
 Ext.define('App.model.patient.EventHistory', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -14337,119 +16010,236 @@ Ext.define('App.model.patient.EventHistory', {
 });
 
 
-Ext.define('App.model.patient.HCFAOptions', {
+Ext.define('App.model.patient.Encounter', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'encounter_1500_options'
+		name: 'encounters',
+		comment: 'Encounter Data'
 	},
 	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'pid',
-			type: 'int'
-		},
 		{
 			name: 'eid',
 			type: 'int'
 		},
 		{
-			name: 'uid',
-			type: 'int'
+			name: 'pid',
+			type: 'int',
+			index: true
 		},
 		{
-			name: 'date',
+			name: 'rid',
+			type: 'string',
+			len: 80,
+			comment: 'reference ID'
+		},
+		{
+			name: 'open_uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'provider_uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'supervisor_uid',
+			type: 'int',
+			index: true
+		},
+		{
+			name: 'requires_supervisor',
+			type: 'bool',
+			index: true,
+			defaultValue: false
+		},
+		{
+			name: 'technician_uid',
+			type: 'int',
+			useNull: true,
+			index: true
+		},
+		{
+			name: 'specialty_id',
+			type: 'int',
+			useNull: true,
+			index: true
+		},
+		{
+			name: 'service_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s',
+			index: true
+		},
+		{
+			name: 'close_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
-			name: 'employment_related',
-			type: 'bool'
+			name: 'onset_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		},
 		{
-			name: 'auto_accident',
-			type: 'bool'
+			name: 'priority',
+			type: 'string',
+			len: 60
 		},
 		{
-			name: 'state',
+			name: 'brief_description',
+			type: 'string',
+			len: 600,
+			comment: 'chief complaint'
+		},
+		{
+			name: 'visit_category',
 			type: 'string',
 			len: 80
 		},
 		{
-			name: 'other_accident',
+			name: 'facility',
+			type: 'int',
+			len: 1,
+			index: true
+		},
+		{
+			name: 'billing_stage',
+			type: 'int',
+			len: 1,
+			index: true
+		},
+		{
+			name: 'followup_time',
+			type: 'string',
+			len: 25
+		},
+		{
+			name: 'followup_facility',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'review_immunizations',
 			type: 'bool'
 		},
 		{
-			name: 'similar_illness_date',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'unable_to_work_from',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'unable_to_work_to',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'hops_date_to',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'out_lab_used',
+			name: 'review_allergies',
 			type: 'bool'
 		},
 		{
-			name: 'amount_charges',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'medicaid_resubmission_code',
-			type: 'string',
-			len: 15
-		},
-		{
-			name: 'medicaid_original_reference_number',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'prior_authorization_number',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'replacement_claim',
+			name: 'review_active_problems',
 			type: 'bool'
 		},
 		{
-			name: 'notes',
+			name: 'review_alcohol',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'review_smoke',
+			type: 'bool'
+		},
+		{
+			name: 'review_pregnant',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'review_surgery',
+			type: 'bool'
+		},
+		{
+			name: 'review_dental',
+			type: 'bool'
+		},
+		{
+			name: 'review_medications',
+			type: 'bool'
+		},
+		{
+			name: 'message',
 			type: 'string',
 			dataType: 'text'
+		},
+		{
+			name: 'patient_class',
+			type: 'string'
+		},
+		{
+			name: 'referring_physician',
+			type: 'string'
 		}
 	],
+	idProperty: 'eid',
 	proxy: {
 		type: 'direct',
 		api: {
-			update: 'Encounter.updateHCFA'
+			read: 'Encounter.getEncounters',
+			create: 'Encounter.createEncounter',
+			update: 'Encounter.updateEncounter'
+		},
+		reader: {
+			root: 'encounter'
 		}
 	},
-	belongsTo: {
-		model: 'App.model.patient.Encounter',
-		foreignKey: 'eid'
+	hasMany: [
+		{
+			model: 'App.model.patient.Vitals',
+			name: 'vitals',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.ReviewOfSystems',
+			name: 'reviewofsystems',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.FamilyHistory',
+			name: 'familyhistory',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.SOAP',
+			name: 'soap',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.HCFAOptions',
+			name: 'hcfaoptions',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.EncounterService',
+			name: 'services',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		},
+		{
+			model: 'App.model.patient.AppointmentRequest',
+			name: 'appointmentrequests',
+			primaryKey: 'eid',
+			foreignKey: 'eid'
+		}
+	],
+	isClose: function(){
+		return typeof this.data.close_date != 'undefined' && this.data.close_date != null;
+	},
+
+	isSigned: function(){
+		return typeof this.data.provider_uid != 'undefined' && this.data.provider_uid != null && this.data.provider_uid != 0;
+	},
+
+	isCoSigned: function(){
+		return typeof this.data.supervisor_uid != 'undefined' && this.data.supervisor_uid != null && this.data.supervisor_uid != 0;
 	}
 });
+
 Ext.define('App.model.patient.CVXCodes', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -14938,7 +16728,7 @@ Ext.define('App.model.patient.Medications', {
 			type: 'bool',
 			store: false,
 			convert: function(v, record){
-				return record.data.end_date == null;
+				return record.data.end_date === null;
 			}
 		},
 		{
@@ -15132,504 +16922,6 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 		}
 	}
 });
-Ext.define('App.model.patient.Patient',{
-    extend: 'Ext.data.Model',
-    requires: [
-        'App.model.patient.Insurance',
-        'App.model.patient.Allergies',
-        'App.model.patient.Medications',
-        'App.model.patient.PatientActiveProblem'
-    ],
-    table: {
-        name: 'patient'
-    },
-    fields: [
-        {
-            name: 'pid',
-            type: 'int',
-            comment: 'patient ID'
-        },
-        {
-            name: 'title',
-            type: 'string',
-            comment: 'Title Mr. Sr.',
-            len: 10
-        },
-        {
-            name: 'fname',
-            type: 'string',
-            comment: 'first name',
-            index: true,
-            len: 60
-        },
-        {
-            name: 'mname',
-            type: 'string',
-            comment: 'middle name',
-            index: true,
-            len: 40
-        },
-        {
-            name: 'lname',
-            type: 'string',
-            comment: 'last name',
-            index: true,
-            len: 60
-        },
-        {
-            name: 'fullname',
-            type: 'string',
-            store: false,
-            convert: function(v, record){
-                var foo = '';
-                if(record.data.title){
-                    foo += record.data.title + ' ';
-                }
-                if(record.data.fname){
-                    foo += record.data.fname + ' ';
-                }
-                if(record.data.mname){
-                    foo += record.data.mname + ' ';
-                }
-                if(record.data.lname){
-                    foo += record.data.lname + ' ';
-                }
-                return foo.trim();
-            }
-        },
-        {
-            name: 'sex',
-            type: 'string',
-            comment: 'sex',
-            index: true,
-            len: 10
-        },
-        {
-            name: 'DOB',
-            type: 'date',
-            comment: 'day of birth',
-            dateFormat: 'Y-m-d H:i:s',
-            index: true,
-            defaultValue: '0000-00-00 00:00:00'
-        },
-        {
-            name: 'DOBFormatted',
-            type: 'string',
-            persist: false,
-            convert: function(v, record){
-                return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
-            }
-        },
-        {
-            name: 'marital_status',
-            type: 'string',
-            comment: 'marital status',
-            len: 40
-        },
-        {
-            name: 'SS',
-            type: 'string',
-            index: true,
-            comment: 'social security',
-            len: 40
-        },
-        {
-            name: 'pubpid',
-            type: 'string',
-            index: true,
-            comment: 'external reference id',
-            len: 40
-        },
-        {
-            name: 'pubaccount',
-            type: 'string',
-            index: true,
-            comment: 'external reference account',
-            len: 40
-        },
-        {
-            name: 'record_number',
-            type: 'string',
-            persist: false,
-            convert: function(v, record){
-                return g('display_pubpid') ? record.data.pubpid : record.data.pid;
-            }
-        },
-        {
-            name: 'drivers_license',
-            type: 'string',
-            index: true,
-            comment: 'driver licence #',
-            len: 40
-        },
-        {
-            name: 'drivers_license_state',
-            type: 'string',
-            len: 40
-        },
-        {
-            name: 'drivers_license_exp',
-            type: 'date',
-            dataType: 'date',
-            dateFormat: 'Y-m-d'
-        },
-        {
-            name: 'address',
-            type: 'string',
-            comment: 'address',
-            len: 80
-        },
-        {
-            name: 'city',
-            type: 'string',
-            comment: 'city',
-            len: 40
-        },
-        {
-            name: 'state',
-            type: 'string',
-            comment: 'state',
-            len: 40
-        },
-        {
-            name: 'country',
-            type: 'string',
-            comment: 'country',
-            len: 40
-        },
-        {
-            name: 'zipcode',
-            type: 'string',
-            comment: 'postal code',
-            len: 10
-        },
-        {
-            name: 'fulladdress',
-            type: 'string',
-            persist: false,
-            convert: false
-        },
-        {
-            name: 'home_phone',
-            type: 'string',
-            index: true,
-            comment: 'home phone #',
-            len: 15
-        },
-        {
-            name: 'mobile_phone',
-            type: 'string',
-            index: true,
-            comment: 'mobile phone #',
-            len: 15
-        },
-        {
-            name: 'work_phone',
-            type: 'string',
-            index: true,
-            comment: 'work phone #',
-            len: 15
-        },
-        {
-            name: 'phones',
-            type: 'string',
-            persist: false,
-            convert: false
-        },
-        {
-            name: 'email',
-            type: 'string',
-            index: true,
-            comment: 'email',
-            len: 80
-        },
-        {
-            name: 'mothers_name',
-            type: 'string',
-            comment: 'mother name',
-            len: 40
-        },
-        {
-            name: 'guardians_name',
-            type: 'string',
-            comment: 'guardians name',
-            len: 40
-        },
-        {
-            name: 'emer_contact',
-            type: 'string',
-            comment: 'emergency contact',
-            len: 40
-        },
-        {
-            name: 'emer_phone',
-            type: 'string',
-            comment: 'emergency phone #',
-            len: 15
-        },
-        {
-            name: 'provider',
-            type: 'string',
-            comment: 'default provider',
-            len: 40
-        },
-        {
-            name: 'pharmacy',
-            type: 'string',
-            comment: 'default pharmacy',
-            len: 40
-        },
-        {
-            name: 'hipaa_notice',
-            type: 'string',
-            comment: 'HIPAA notice status',
-            len: 40
-        },
-        {
-            name: 'race',
-            type: 'string',
-            comment: 'race',
-            len: 40
-        },
-        {
-            name: 'ethnicity',
-            type: 'string',
-            comment: 'ethnicity',
-            len: 40
-        },
-        {
-            name: 'language',
-            type: 'string',
-            comment: 'language',
-            len: 10
-        },
-        {
-            name: 'allow_leave_msg',
-            type: 'bool'
-        },
-        {
-            name: 'allow_voice_msg',
-            type: 'bool'
-        },
-        {
-            name: 'allow_mail_msg',
-            type: 'bool'
-        },
-        {
-            name: 'allow_sms',
-            type: 'bool'
-        },
-        {
-            name: 'allow_email',
-            type: 'bool'
-        },
-        {
-            name: 'allow_immunization_registry',
-            type: 'bool'
-        },
-        {
-            name: 'allow_immunization_info_sharing',
-            type: 'bool'
-        },
-        {
-            name: 'allow_health_info_exchange',
-            type: 'bool'
-        },
-        {
-            name: 'allow_patient_web_portal',
-            type: 'bool'
-        },
-        {
-            name: 'occupation',
-            type: 'string',
-            comment: 'patient occupation',
-            len: 40
-        },
-        {
-            name: 'employer_name',
-            type: 'string',
-            comment: 'employer name',
-            len: 40
-        },
-        {
-            name: 'employer_address',
-            type: 'string',
-            comment: 'employer address',
-            len: 40
-        },
-        {
-            name: 'employer_city',
-            type: 'string',
-            comment: 'employer city',
-            len: 40
-        },
-        {
-            name: 'employer_state',
-            type: 'string',
-            comment: 'employer state',
-            len: 40
-        },
-        {
-            name: 'employer_country',
-            type: 'string',
-            comment: 'employer country',
-            len: 40
-        },
-        {
-            name: 'employer_postal_code',
-            type: 'string',
-            comment: 'employer postal code',
-            len: 10
-        },
-        {
-            name: 'rating',
-            type: 'int',
-            comment: 'patient stars rating'
-        },
-        {
-            name: 'image',
-            type: 'string',
-            dataType: 'mediumtext',
-            comment: 'patient image base64 string'
-        },
-        {
-            name: 'qrcode',
-            type: 'string',
-            dataType: 'mediumtext',
-            comment: 'patient QRCode base64 string'
-        },
-        {
-            name: 'birth_place',
-            type: 'string',
-            len: 150
-        },
-        {
-            name: 'birth_multiple',
-            type: 'bool'
-        },
-        {
-            name: 'birth_order',
-            type: 'int',
-            defaultValue: 1,
-            len: 2
-        },
-        {
-            name: 'is_veteran',
-            type: 'string',
-            len: 1
-        },
-        {
-            name: 'deceased',
-            type: 'string',
-            len: 1
-        },
-        {
-            name: 'death_date',
-            type: 'date',
-            dateFormat: 'Y-m-d H:i:s'
-        },
-        {
-            name: 'alias',
-            type: 'string',
-            len: 80
-        },
-        {
-            name: 'citizenship',
-            type: 'string',
-            len: 80
-        },
-        {
-            name: 'primary_facility',
-            type: 'int'
-        },
-        {
-            name: 'primary_provider',
-            type: 'int'
-        },
-        {
-            name: 'address_cont',
-            type: 'string'
-        },
-        {
-            name: 'work_phone_ext',
-            type: 'string'
-        },
-        {
-            name: 'administrative_status',
-            type: 'string',
-            comment: 'active | inactive | merged',
-            len: 15
-        },
-        {
-            name: 'create_uid',
-            type: 'int',
-            comment: 'create user ID'
-        },
-        {
-            name: 'update_uid',
-            type: 'int',
-            comment: 'update user ID'
-        },
-        {
-            name: 'create_date',
-            type: 'date',
-            comment: 'create date',
-            dateFormat: 'Y-m-d H:i:s'
-        },
-        {
-            name: 'update_date',
-            type: 'date',
-            comment: 'last update date',
-            dateFormat: 'Y-m-d H:i:s'
-        },
-        {
-            name: 'portal_password',
-            type: 'string',
-            dataType: 'blob',
-            encrypt: true
-        },
-        {
-            name: 'portal_username',
-            type: 'string'
-        }
-    ],
-    idProperty: 'pid',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: 'Patient.getPatients',
-            create: 'Patient.savePatient',
-            update: 'Patient.savePatient'
-        }
-    },
-    hasMany: [
-        {
-            model: 'App.model.patient.Insurance',
-            name: 'insurance',
-            primaryKey: 'pid',
-            foreignKey: 'pid'
-        },
-        {
-            model: 'App.model.patient.Allergies',
-            name: 'allergies',
-            primaryKey: 'pid',
-            foreignKey: 'pid'
-        },
-        {
-            model: 'App.model.patient.Medications',
-            name: 'medications',
-            primaryKey: 'pid',
-            foreignKey: 'pid'
-        },
-        {
-            model: 'App.model.patient.PatientActiveProblem',
-            name: 'activeproblems',
-            primaryKey: 'pid',
-            foreignKey: 'pid'
-        }
-    ]
-});
-
 Ext.define('App.model.patient.PatientArrivalLog', {
 	extend: 'Ext.data.Model',
 	fields: [
@@ -16712,55 +18004,6 @@ Ext.define('App.model.patient.PreventiveCare', {
 		}
 	}
 });
-Ext.define('App.model.patient.ProgressNotesHistory', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{
-			name: 'service_date',
-			type: 'date'
-		},
-		{
-			name: 'brief_description',
-			type: 'string'
-		},
-		{
-			name: 'subjective',
-			type: 'string'
-		},
-		{
-			name: 'objective',
-			type: 'string'
-		},
-		{
-			name: 'assessment',
-			type: 'string'
-		},
-		{
-			name: 'plan',
-			type: 'string'
-		},
-		{
-			name: 'progress',
-			type: 'string',
-			convert: function(v, record){
-				var str = '';
-				str += '<b>' + _('service_date') + ':</b> ' + Ext.Date.format(record.data.service_date, g('date_time_display_format')) + '<br>';
-				str += '<b>' + _('chief_complaint') + ':</b> ' + Ext.String.htmlDecode(record.data.brief_description) + '<br>';
-				str += '<b>' + _('subjective') + ':</b> ' + Ext.String.htmlDecode(record.data.subjective) + '<br>';
-				str += '<b>' + _('objective') + ':</b> ' + Ext.String.htmlDecode(record.data.objective) + '<br>';
-				str += '<b>' + _('assessment') + ':</b> ' + Ext.String.htmlDecode(record.data.assessment) + '<br>';
-				str += '<b>' + _('plan') + ':</b> ' + Ext.String.htmlDecode(record.data.plan) + '<br>';
-				return str;
-			}
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Encounter.getSoapHistory'
-		}
-	}
-});
 Ext.define('App.model.patient.QRCptCodes', {
 	extend: 'Ext.data.Model',
 	fields: [
@@ -16966,6 +18209,11 @@ Ext.define('App.model.patient.Reminders', {
 			name: 'user_name',
 			type: 'string',
 			store: false
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			defaultValue: true
 		}
 	],
 	proxy: {
@@ -16974,6 +18222,9 @@ Ext.define('App.model.patient.Reminders', {
 			read: 'Reminders.getReminders',
 			create: 'Reminders.addReminder',
 			update: 'Reminders.updateReminder'
+		},
+		reader: {
+			root: 'data'
 		}
 	}
 });
@@ -17005,598 +18256,6 @@ Ext.define('App.model.patient.Surgery', {
 		}
 	}
 });
-Ext.define('App.model.patient.ReviewOfSystems', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'encounter_review_of_systems',
-		comment: 'Review of system'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'pid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'eid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'uid',
-			type: 'int'
-		},
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'weight_change',
-			type: 'bool'
-		},
-		{
-			name: 'weakness',
-			type: 'bool'
-		},
-		{
-			name: 'fatigue',
-			type: 'bool'
-		},
-		{
-			name: 'anorexia',
-			type: 'bool'
-		},
-		{
-			name: 'fever',
-			type: 'bool'
-		},
-		{
-			name: 'chills',
-			type: 'bool'
-		},
-		{
-			name: 'night_sweats',
-			type: 'bool'
-		},
-		{
-			name: 'insomnia',
-			type: 'bool'
-		},
-		{
-			name: 'irritability',
-			type: 'bool'
-		},
-		{
-			name: 'heat_or_cold',
-			type: 'bool'
-		},
-		{
-			name: 'intolerance',
-			type: 'bool'
-		},
-		{
-			name: 'change_in_vision',
-			type: 'bool'
-		},
-		{
-			name: 'eye_pain',
-			type: 'bool'
-		},
-		{
-			name: 'family_history_of_glaucoma',
-			type: 'bool'
-		},
-		{
-			name: 'irritation',
-			type: 'bool'
-		},
-		{
-			name: 'redness',
-			type: 'bool'
-		},
-		{
-			name: 'excessive_tearing',
-			type: 'bool'
-		},
-		{
-			name: 'double_vision',
-			type: 'bool'
-		},
-		{
-			name: 'blind_spots',
-			type: 'bool'
-		},
-		{
-			name: 'photophobia',
-			type: 'bool'
-		},
-		{
-			name: 'hearing_loss',
-			type: 'bool'
-		},
-		{
-			name: 'discharge',
-			type: 'bool'
-		},
-		{
-			name: 'pain',
-			type: 'bool'
-		},
-		{
-			name: 'vertigo',
-			type: 'bool'
-		},
-		{
-			name: 'tinnitus',
-			type: 'bool'
-		},
-		{
-			name: 'frequent_colds',
-			type: 'bool'
-		},
-		{
-			name: 'sore_throat',
-			type: 'bool'
-		},
-		{
-			name: 'sinus_problems',
-			type: 'bool'
-		},
-		{
-			name: 'post_nasal_drip',
-			type: 'bool'
-		},
-		{
-			name: 'nosebleed',
-			type: 'bool'
-		},
-		{
-			name: 'snoring',
-			type: 'bool'
-		},
-		{
-			name: 'apnea',
-			type: 'bool'
-		},
-		{
-			name: 'breast_mass',
-			type: 'bool'
-		},
-		{
-			name: 'abnormal_mammogram',
-			type: 'bool'
-		},
-		{
-			name: 'biopsy',
-			type: 'bool'
-		},
-		{
-			name: 'cough',
-			type: 'bool'
-		},
-		{
-			name: 'sputum',
-			type: 'bool'
-		},
-		{
-			name: 'shortness_of_breath',
-			type: 'bool'
-		},
-		{
-			name: 'wheezing',
-			type: 'bool'
-		},
-		{
-			name: 'hemoptysis',
-			type: 'bool'
-		},
-		{
-			name: 'asthma',
-			type: 'bool'
-		},
-		{
-			name: 'copd',
-			type: 'bool'
-		},
-		{
-			name: 'thyroid_problems',
-			type: 'bool'
-		},
-		{
-			name: 'diabetes',
-			type: 'bool'
-		},
-		{
-			name: 'abnormal_blood_test',
-			type: 'bool'
-		},
-		{
-			name: 'chest_pain',
-			type: 'bool'
-		},
-		{
-			name: 'palpitation',
-			type: 'bool'
-		},
-		{
-			name: 'syncope',
-			type: 'bool'
-		},
-		{
-			name: 'pnd',
-			type: 'bool'
-		},
-		{
-			name: 'doe',
-			type: 'bool'
-		},
-		{
-			name: 'orthopnea',
-			type: 'bool'
-		},
-		{
-			name: 'peripheral',
-			type: 'bool'
-		},
-		{
-			name: 'edema',
-			type: 'bool'
-		},
-		{
-			name: 'leg_pain_cramping',
-			type: 'bool'
-		},
-		{
-			name: 'arrythmia',
-			type: 'bool'
-		},
-		{
-			name: 'heart_problem',
-			type: 'bool'
-		},
-		{
-			name: 'history_of_heart_murmur',
-			type: 'bool'
-		},
-		{
-			name: 'polyuria',
-			type: 'bool'
-		},
-		{
-			name: 'polydypsia',
-			type: 'bool'
-		},
-		{
-			name: 'dysuria',
-			type: 'bool'
-		},
-		{
-			name: 'hematuria',
-			type: 'bool'
-		},
-		{
-			name: 'frequency',
-			type: 'bool'
-		},
-		{
-			name: 'urgency',
-			type: 'bool'
-		},
-		{
-			name: 'utis',
-			type: 'bool'
-		},
-		{
-			name: 'incontinence',
-			type: 'bool'
-		},
-		{
-			name: 'renal_stones',
-			type: 'bool'
-		},
-		{
-			name: 'hesitancy',
-			type: 'bool'
-		},
-		{
-			name: 'dribbling',
-			type: 'bool'
-		},
-		{
-			name: 'stream',
-			type: 'bool'
-		},
-		{
-			name: 'nocturia',
-			type: 'bool'
-		},
-		{
-			name: 'erections',
-			type: 'bool'
-		},
-		{
-			name: 'ejaculations',
-			type: 'bool'
-		},
-		{
-			name: 'cancer',
-			type: 'bool'
-		},
-		{
-			name: 'psoriasis',
-			type: 'bool'
-		},
-		{
-			name: 'acne',
-			type: 'bool'
-		},
-		{
-			name: 'disease',
-			type: 'bool'
-		},
-		{
-			name: 'other',
-			type: 'bool'
-		},
-		{
-			name: 'anemia',
-			type: 'bool'
-		},
-		{
-			name: 'hiv',
-			type: 'bool'
-		},
-		{
-			name: 'f_h_blood_problems',
-			type: 'bool'
-		},
-		{
-			name: 'hai_status',
-			type: 'bool'
-		},
-		{
-			name: 'allergies',
-			type: 'bool'
-		},
-		{
-			name: 'bleeding_problems',
-			type: 'bool'
-		},
-		{
-			name: 'frequent_illness',
-			type: 'bool'
-		},
-		{
-			name: 'dysphagia',
-			type: 'bool'
-		},
-		{
-			name: 'heartburn',
-			type: 'bool'
-		},
-		{
-			name: 'food_intolerance',
-			type: 'bool'
-		},
-		{
-			name: 'belching',
-			type: 'bool'
-		},
-		{
-			name: 'bloating',
-			type: 'bool'
-		},
-		{
-			name: 'flatulence',
-			type: 'bool'
-		},
-		{
-			name: 'nausea',
-			type: 'bool'
-		},
-		{
-			name: 'vomiting',
-			type: 'bool'
-		},
-		{
-			name: 'jaundice',
-			type: 'bool'
-		},
-		{
-			name: 'h_o_hepatitis',
-			type: 'bool'
-		},
-		{
-			name: 'hematemesis',
-			type: 'bool'
-		},
-		{
-			name: 'diarrhea',
-			type: 'bool'
-		},
-		{
-			name: 'hematochezia',
-			type: 'bool'
-		},
-		{
-			name: 'changed_bowel',
-			type: 'bool'
-		},
-		{
-			name: 'constipation',
-			type: 'bool'
-		},
-		{
-			name: 'female_g',
-			type: 'bool'
-		},
-		{
-			name: 'female_p',
-			type: 'bool'
-		},
-		{
-			name: 'female_ap',
-			type: 'bool'
-		},
-		{
-			name: 'lmp',
-			type: 'bool'
-		},
-		{
-			name: 'female_lc',
-			type: 'bool'
-		},
-		{
-			name: 'menopause',
-			type: 'bool'
-		},
-		{
-			name: 'flow',
-			type: 'bool'
-		},
-		{
-			name: 'abnormal_hair_growth',
-			type: 'bool'
-		},
-		{
-			name: 'menarche',
-			type: 'bool'
-		},
-		{
-			name: 'symptoms',
-			type: 'bool'
-		},
-		{
-			name: 'f_h_female_hirsutism_striae',
-			type: 'bool'
-		},
-		{
-			name: 'anxiety',
-			type: 'bool'
-		},
-		{
-			name: 'depression',
-			type: 'bool'
-		},
-		{
-			name: 'psychiatric_medication',
-			type: 'bool'
-		},
-		{
-			name: 'social_difficulties',
-			type: 'bool'
-		},
-		{
-			name: 'psychiatric_diagnosis',
-			type: 'bool'
-		},
-		{
-			name: 'fms',
-			type: 'bool'
-		},
-		{
-			name: 'swelling',
-			type: 'bool'
-		},
-		{
-			name: 'Warm',
-			type: 'bool'
-		},
-		{
-			name: 'muscle',
-			type: 'bool'
-		},
-		{
-			name: 'stiffness',
-			type: 'bool'
-		},
-		{
-			name: 'aches',
-			type: 'bool'
-		},
-		{
-			name: 'arthritis',
-			type: 'bool'
-		},
-		{
-			name: 'chronic_joint_pain',
-			type: 'bool'
-		},
-		{
-			name: 'loc',
-			type: 'bool'
-		},
-		{
-			name: 'stroke',
-			type: 'bool'
-		},
-		{
-			name: 'paralysis',
-			type: 'bool'
-		},
-		{
-			name: 'tia',
-			type: 'bool'
-		},
-		{
-			name: 'numbness',
-			type: 'bool'
-		},
-		{
-			name: 'memory_problems',
-			type: 'bool'
-		},
-		{
-			name: 'seizures',
-			type: 'bool'
-		},
-		{
-			name: 'intellectual_decline',
-			type: 'bool'
-		},
-		{
-			name: 'dementia',
-			type: 'bool'
-		},
-		{
-			name: 'headache',
-			type: 'bool'
-		},
-		{
-			name: 'cons_weakness',
-			type: 'bool'
-		},
-		{
-			name: 'brest_discharge',
-			type: 'bool'
-		},
-		{
-			name: 'fem_frequency',
-			type: 'bool'
-		},
-		{
-			name: 'notes',
-			type: 'string',
-			dataType: 'mediumtext'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			update: 'Encounter.updateReviewOfSystems'
-		}
-	},
-	belongsTo: {
-		model: 'App.model.patient.Encounter',
-		foreignKey: 'eid'
-	}
-});
-
 Ext.define('App.model.patient.VectorGraph', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -17661,216 +18320,6 @@ Ext.define('App.model.patient.VisitPayment', {
 		}
 	}
 });
-// Created dynamically by Matcha::connect
-// Create date: 2013-07-28 18:48:17
-
-Ext.define('App.model.patient.Vitals', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'encounter_vitals',
-		comment: 'Vitals'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'Vital ID'
-		},
-		{
-			name: 'pid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'eid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'uid',
-			type: 'int'
-		},
-		{
-			name: 'auth_uid',
-			type: 'int'
-		},
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'weight_lbs',
-			type: 'string',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'weight_kg',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'height_in',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'height_cm',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'bp_systolic',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'bp_diastolic',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'pulse',
-			type: 'int',
-			useNull: true,
-			len: 10,
-			convert: function(v){
-				return v > 0 ? v : null;
-			}
-		},
-		{
-			name: 'respiration',
-			type: 'int',
-			useNull: true,
-			len: 10,
-			convert: function(v){
-				return v > 0 ? v : null;
-			}
-		},
-		{
-			name: 'temp_f',
-			type: 'float',
-			useNull: true,
-			len: 10,
-			convert: function(v){
-				return v > 0 ? v : null;
-			}
-		},
-		{
-			name: 'temp_c',
-			type: 'float',
-			useNull: true,
-			len: 10,
-			convert: function(v){
-				return v > 0 ? v : null;
-			}
-		},
-		{
-			name: 'temp_location',
-			type: 'string',
-			len: 40
-		},
-		{
-			name: 'oxygen_saturation',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'head_circumference_in',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'head_circumference_cm',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'waist_circumference_in',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'waist_circumference_cm',
-			type: 'float',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'bmi',
-			type: 'float',
-			useNull: true,
-			len: 10,
-			convert: function(v){
-				return v > 0 ? v : null;
-			}
-		},
-		{
-			name: 'bmi_status',
-			type: 'string',
-			useNull: true,
-			len: 10
-		},
-		{
-			name: 'other_notes',
-			type: 'string',
-			len: 600
-		},
-		{
-			name: 'bp_systolic_normal',
-			type: 'int',
-			defaultValue: 120,
-			store: false
-		},
-		{
-			name: 'bp_diastolic_normal',
-			type: 'int',
-			defaultValue: 80,
-			store: false
-		},
-		{
-			name: 'group_date',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				return Ext.Date.format(record.data.date, 'Y-m-d');
-			}
-		},
-		{
-			name: 'administer_by',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'authorized_by',
-			type: 'string',
-			store: false
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Vitals.getVitals',
-			create: 'Vitals.addVitals',
-			update: 'Vitals.updateVitals'
-		}
-	},
-	belongsTo: {
-		model: 'App.model.patient.Encounter',
-		foreignKey: 'eid'
-	}
-});
-
 Ext.define('App.model.patient.charts.BMIForAge', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -18808,6 +19257,517 @@ Ext.define('App.store.patient.CheckoutAlertArea', {
 });
 
 
+Ext.define('App.model.patient.Patient', {
+	extend: 'Ext.data.Model',
+	requires: [
+		'App.model.patient.Insurance',
+		'App.model.patient.Allergies',
+		'App.model.patient.Medications',
+		'App.model.patient.PatientActiveProblem'
+	],
+	table: {
+		name: 'patient'
+	},
+	fields: [
+		{
+			name: 'pid',
+			type: 'int',
+			comment: 'patient ID'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			comment: 'Title Mr. Sr.',
+			len: 10
+		},
+		{
+			name: 'fname',
+			type: 'string',
+			comment: 'first name',
+			index: true,
+			len: 60
+		},
+		{
+			name: 'mname',
+			type: 'string',
+			comment: 'middle name',
+			index: true,
+			len: 40
+		},
+		{
+			name: 'lname',
+			type: 'string',
+			comment: 'last name',
+			index: true,
+			len: 60
+		},
+		{
+			name: 'fullname',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				var foo = '';
+				if(record.data.title){
+					foo += record.data.title + ' ';
+				}
+				if(record.data.fname){
+					foo += record.data.fname + ' ';
+				}
+				if(record.data.mname){
+					foo += record.data.mname + ' ';
+				}
+				if(record.data.lname){
+					foo += record.data.lname + ' ';
+				}
+				return foo.trim();
+			}
+		},
+		{
+			name: 'sex',
+			type: 'string',
+			comment: 'sex',
+			index: true,
+			len: 10
+		},
+		{
+			name: 'DOB',
+			type: 'date',
+			comment: 'day of birth',
+			dateFormat: 'Y-m-d H:i:s',
+			index: true,
+			defaultValue: '0000-00-00 00:00:00'
+		},
+		{
+			name: 'DOBFormatted',
+			type: 'string',
+			persist: false,
+			convert: function(v, record){
+				return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
+			}
+		},
+		{
+			name: 'marital_status',
+			type: 'string',
+			comment: 'marital status',
+			len: 40
+		},
+		{
+			name: 'SS',
+			type: 'string',
+			index: true,
+			comment: 'social security',
+			len: 40
+		},
+		{
+			name: 'pubpid',
+			type: 'string',
+			index: true,
+			comment: 'external reference id',
+			len: 40
+		},
+		{
+			name: 'pubaccount',
+			type: 'string',
+			index: true,
+			comment: 'external reference account',
+			len: 40
+		},
+		{
+			name: 'record_number',
+			type: 'string',
+			persist: false,
+			convert: function(v, record){
+				return g('display_pubpid') ? record.data.pubpid : record.data.pid;
+			}
+		},
+		{
+			name: 'drivers_license',
+			type: 'string',
+			index: true,
+			comment: 'driver licence #',
+			len: 40
+		},
+		{
+			name: 'drivers_license_state',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'drivers_license_exp',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'address',
+			type: 'string',
+			comment: 'address',
+			len: 80
+		},
+		{
+			name: 'city',
+			type: 'string',
+			comment: 'city',
+			len: 40
+		},
+		{
+			name: 'state',
+			type: 'string',
+			comment: 'state',
+			len: 40
+		},
+		{
+			name: 'country',
+			type: 'string',
+			comment: 'country',
+			len: 40
+		},
+		{
+			name: 'zipcode',
+			type: 'string',
+			comment: 'postal code',
+			len: 10
+		},
+		{
+			name: 'fulladdress',
+			type: 'string',
+			persist: false,
+			convert: false
+		},
+		{
+			name: 'home_phone',
+			type: 'string',
+			index: true,
+			comment: 'home phone #',
+			len: 15
+		},
+		{
+			name: 'mobile_phone',
+			type: 'string',
+			index: true,
+			comment: 'mobile phone #',
+			len: 15
+		},
+		{
+			name: 'work_phone',
+			type: 'string',
+			index: true,
+			comment: 'work phone #',
+			len: 15
+		},
+		{
+			name: 'phones',
+			type: 'string',
+			persist: false,
+			convert: false
+		},
+		{
+			name: 'email',
+			type: 'string',
+			index: true,
+			comment: 'email',
+			len: 80
+		},
+		{
+			name: 'mothers_name',
+			type: 'string',
+			comment: 'mother name',
+			len: 40
+		},
+		{
+			name: 'guardians_name',
+			type: 'string',
+			comment: 'guardians name',
+			len: 40
+		},
+		{
+			name: 'emer_contact',
+			type: 'string',
+			comment: 'emergency contact',
+			len: 40
+		},
+		{
+			name: 'emer_phone',
+			type: 'string',
+			comment: 'emergency phone #',
+			len: 15
+		},
+		{
+			name: 'provider',
+			type: 'string',
+			comment: 'default provider',
+			len: 40
+		},
+		{
+			name: 'pharmacy',
+			type: 'string',
+			comment: 'default pharmacy',
+			len: 40
+		},
+		{
+			name: 'hipaa_notice',
+			type: 'string',
+			comment: 'HIPAA notice status',
+			len: 40
+		},
+		{
+			name: 'race',
+			type: 'string',
+			comment: 'race',
+			len: 40
+		},
+		{
+			name: 'ethnicity',
+			type: 'string',
+			comment: 'ethnicity',
+			len: 40
+		},
+		{
+			name: 'language',
+			type: 'string',
+			comment: 'language',
+			len: 10
+		},
+		{
+			name: 'allow_leave_msg',
+			type: 'bool'
+		},
+		{
+			name: 'allow_voice_msg',
+			type: 'bool'
+		},
+		{
+			name: 'allow_mail_msg',
+			type: 'bool'
+		},
+		{
+			name: 'allow_sms',
+			type: 'bool'
+		},
+		{
+			name: 'allow_email',
+			type: 'bool'
+		},
+		{
+			name: 'allow_immunization_registry',
+			type: 'bool'
+		},
+		{
+			name: 'allow_immunization_info_sharing',
+			type: 'bool'
+		},
+		{
+			name: 'allow_health_info_exchange',
+			type: 'bool'
+		},
+		{
+			name: 'allow_patient_web_portal',
+			type: 'bool'
+		},
+		{
+			name: 'occupation',
+			type: 'string',
+			comment: 'patient occupation',
+			len: 40
+		},
+		{
+			name: 'employer_name',
+			type: 'string',
+			comment: 'employer name',
+			len: 40
+		},
+		{
+			name: 'employer_address',
+			type: 'string',
+			comment: 'employer address',
+			len: 40
+		},
+		{
+			name: 'employer_city',
+			type: 'string',
+			comment: 'employer city',
+			len: 40
+		},
+		{
+			name: 'employer_state',
+			type: 'string',
+			comment: 'employer state',
+			len: 40
+		},
+		{
+			name: 'employer_country',
+			type: 'string',
+			comment: 'employer country',
+			len: 40
+		},
+		{
+			name: 'employer_postal_code',
+			type: 'string',
+			comment: 'employer postal code',
+			len: 10
+		},
+		{
+			name: 'rating',
+			type: 'int',
+			comment: 'patient stars rating'
+		},
+		{
+			name: 'image',
+			type: 'string',
+			dataType: 'mediumtext',
+			comment: 'patient image base64 string'
+		},
+		{
+			name: 'qrcode',
+			type: 'string',
+			dataType: 'mediumtext',
+			comment: 'patient QRCode base64 string'
+		},
+		{
+			name: 'birth_place',
+			type: 'string',
+			len: 150
+		},
+		{
+			name: 'birth_multiple',
+			type: 'bool'
+		},
+		{
+			name: 'birth_order',
+			type: 'int',
+			defaultValue: 1,
+			len: 2
+		},
+		{
+			name: 'is_veteran',
+			type: 'string',
+			len: 1
+		},
+		{
+			name: 'deceased',
+			type: 'string',
+			len: 1
+		},
+		{
+			name: 'death_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'alias',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'citizenship',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'primary_facility',
+			type: 'int'
+		},
+		{
+			name: 'primary_provider',
+			type: 'int'
+		},
+		{
+			name: 'address_cont',
+			type: 'string'
+		},
+		{
+			name: 'work_phone_ext',
+			type: 'string'
+		},
+		{
+			name: 'administrative_status',
+			type: 'string',
+			comment: 'active | inactive | merged',
+			len: 15
+		},
+		{
+			name: 'create_uid',
+			type: 'int',
+			comment: 'create user ID'
+		},
+		{
+			name: 'update_uid',
+			type: 'int',
+			comment: 'update user ID'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			comment: 'create date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			comment: 'last update date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'portal_password',
+			type: 'string',
+			dataType: 'blob',
+			encrypt: true
+		},
+		{
+			name: 'portal_username',
+			type: 'string'
+		}
+	],
+	idProperty: 'pid',
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Patient.getPatients',
+			create: 'Patient.savePatient',
+			update: 'Patient.savePatient'
+		}
+	},
+	hasMany: [
+		{
+			model: 'App.model.patient.Insurance',
+			name: 'insurance',
+			primaryKey: 'pid',
+			foreignKey: 'pid'
+		},
+		{
+			model: 'App.model.patient.Allergies',
+			name: 'allergies',
+			primaryKey: 'pid',
+			foreignKey: 'pid'
+		},
+		{
+			model: 'App.model.patient.Medications',
+			name: 'medications',
+			primaryKey: 'pid',
+			foreignKey: 'pid'
+		},
+		{
+			model: 'App.model.patient.PatientActiveProblem',
+			name: 'activeproblems',
+			primaryKey: 'pid',
+			foreignKey: 'pid'
+		}
+	],
+	indexes: {
+		live_search_index: {
+			unique: false,
+			columns: [
+				'pid',
+				'pubpid',
+				'fname',
+				'mname',
+				'lname',
+				'SS'
+			]
+		}
+	}
+});
+
 Ext.define('App.model.patient.PatientPossibleDuplicate', {
 	extend: 'App.model.patient.Patient',
 	proxy: {
@@ -19194,6 +20154,36 @@ Ext.define('App.view.dashboard.panel.DailyVisits', {
 	}
 });
 
+Ext.define('App.view.areas.FloorPlan', {
+	extend: 'App.ux.RenderPanel',
+	itemId: 'FloorPlanPanel',
+	pageTitle: _('area_floor_plan'),
+	pageBody: [
+		{
+			xtype: 'panel',
+			title: _('floor_plans'),
+			layout: 'absolute',
+			itemId: 'FloorPlanPatientZonePanel',
+			tbar: [
+				'->',
+				{
+					xtype: 'floorplanareascombo',
+					fieldLabel: _('area'),
+					labelWidth: 40,
+					itemId: 'FloorPlanAreasCombo'
+				}
+			],
+			tools: [
+				{
+					type: 'refresh',
+					handler: function(){
+						App.app.getController('areas.FloorPlan').setZones();
+					}
+				}
+			]
+		}
+	]
+});
 Ext.define('App.view.messages.Messages', {
 	extend: 'App.ux.RenderPanel',
 	id: 'panelMessages',
@@ -19658,36 +20648,6 @@ Ext.define('App.view.messages.Messages', {
 	}
 });
 
-Ext.define('App.view.areas.FloorPlan', {
-	extend: 'App.ux.RenderPanel',
-	itemId: 'FloorPlanPanel',
-	pageTitle: _('area_floor_plan'),
-	pageBody: [
-		{
-			xtype: 'panel',
-			title: _('floor_plans'),
-			layout: 'absolute',
-			itemId: 'FloorPlanPatientZonePanel',
-			tbar: [
-				'->',
-				{
-					xtype: 'floorplanareascombo',
-					fieldLabel: _('area'),
-					labelWidth: 40,
-					itemId: 'FloorPlanAreasCombo'
-				}
-			],
-			tools: [
-				{
-					type: 'refresh',
-					handler: function(){
-						App.app.getController('areas.FloorPlan').setZones();
-					}
-				}
-			]
-		}
-	]
-});
 Ext.define('App.view.patient.charts.BPPulseTemp',
 {
 	extend : 'Ext.container.Container',
@@ -20486,6 +21446,10 @@ Ext.define('App.view.patient.charts.HeightForStature',
 
 	}
 }); 
+Ext.define('App.store.patient.AppointmentRequests', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.patient.AppointmentRequest'
+});
 Ext.define('App.view.patient.encounter.AppointmentRequestGrid', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -20537,6 +21501,28 @@ Ext.define('App.view.patient.encounter.AppointmentRequestGrid', {
 		}
 	]
 
+
+});
+Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
+	extend: 'Ext.form.Panel',
+	xtype: 'hcafaoptions',
+
+	pid: null,
+	eid: null,
+
+	initComponent: function(){
+		var me = this;
+		me.callParent();
+		me.loadHCFAForm();
+	},
+
+	loadHCFAForm: function(){
+		var me = this;
+
+		me.getFormItems(this, 10, function(panel){
+
+		});
+	}
 
 });
 Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
@@ -20912,28 +21898,6 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
         });
     }
 
-
-});
-Ext.define('App.view.patient.encounter.HealthCareFinancingAdministrationOptions', {
-	extend: 'Ext.form.Panel',
-	xtype: 'hcafaoptions',
-
-	pid: null,
-	eid: null,
-
-	initComponent: function(){
-		var me = this;
-		me.callParent();
-		me.loadHCFAForm();
-	},
-
-	loadHCFAForm: function(){
-		var me = this;
-
-		me.getFormItems(this, 10, function(panel){
-
-		});
-	}
 
 });
 Ext.define('App.view.patient.encounter.ICDs', {
@@ -21514,46 +22478,6 @@ Ext.define('App.view.patient.DoctorsNotes', {
 		}
 	]
 });
-Ext.define('App.view.patient.EncounterDocumentsGrid', {
-	extend: 'Ext.grid.Panel',
-	requires: [
-		'Ext.grid.feature.Grouping'
-	],
-	xtype: 'encounterdocumentsgrid',
-	title: _('documents'),
-	split: true,
-	features: [
-		{
-			ftype: 'grouping',
-			collapsible: false,
-			groupHeaderTpl: '{name}\'s'
-		}
-	],
-	selType: 'checkboxmodel',
-	store: Ext.create('Ext.data.Store', {
-		fields: ['id', 'record_id', 'description', 'document_type', 'controller', 'method'],
-		proxy: {
-			type: 'memory'
-		},
-		groupField: 'document_type'
-	}),
-	columns: [
-		{
-			header: _('description'),
-			dataIndex: 'description',
-			flex: 1
-		}
-	],
-	tools: [
-		{
-			type:'print',
-			itemId: 'EncounterDocumentsPrintBtn'
-		}
-	],
-	loadDocs: function(eid){
-		App.app.getController('patient.encounter.EncounterDocuments').loadDocumentsByEid(this, eid);
-	}
-});
 Ext.define('App.store.patient.PatientImmunization', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.patient.PatientImmunization'
@@ -21752,6 +22676,46 @@ Ext.define('App.view.patient.ItemsToReview', {
 		}
 	]
 });
+Ext.define('App.view.patient.EncounterDocumentsGrid', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.feature.Grouping'
+	],
+	xtype: 'encounterdocumentsgrid',
+	title: _('documents'),
+	split: true,
+	features: [
+		{
+			ftype: 'grouping',
+			collapsible: false,
+			groupHeaderTpl: '{name}\'s'
+		}
+	],
+	selType: 'checkboxmodel',
+	store: Ext.create('Ext.data.Store', {
+		fields: ['id', 'record_id', 'description', 'document_type', 'controller', 'method'],
+		proxy: {
+			type: 'memory'
+		},
+		groupField: 'document_type'
+	}),
+	columns: [
+		{
+			header: _('description'),
+			dataIndex: 'description',
+			flex: 1
+		}
+	],
+	tools: [
+		{
+			type:'print',
+			itemId: 'EncounterDocumentsPrintBtn'
+		}
+	],
+	loadDocs: function(eid){
+		App.app.getController('patient.encounter.EncounterDocuments').loadDocumentsByEid(this, eid);
+	}
+});
 Ext.define('App.view.patient.CheckoutAlertsView',
 {
 	extend : 'Ext.view.View',
@@ -21781,57 +22745,6 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 	}
 });
 
-Ext.define('App.view.patient.NewPatient', {
-	extend: 'App.ux.RenderPanel',
-	pageTitle: _('patient_entry_form'),
-	initComponent: function(){
-
-		var me = this;
-
-		me.pageBody = [
-			me.newPatientPanel = Ext.create('App.view.patient.Patient')
-		];
-		me.callParent(arguments);
-
-	},
-	/**
-	 *
-	 * @param {function} callback
-	 */
-	confirmationWin: function(callback){
-		Ext.Msg.show({
-			title: _('please_confirm') + '...',
-			msg: _('do_you_want_to_create_a_new_patient'),
-			icon: Ext.MessageBox.QUESTION,
-			buttons: Ext.Msg.YESNO,
-			scope: this,
-			fn: function(btn){
-				callback(btn);
-			}
-		});
-	},
-
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 * @param {function} [callback] - callback
-	 */
-	onActive: function(callback){
-		var me = this;
-		this.confirmationWin(function(btn){
-			if(btn == 'yes'){
-				me.newPatientPanel.loadNew();
-				app.unsetPatient(null, true);
-				callback(true);
-			}else{
-				app.nav.goBack();
-				callback(false);
-			}
-		});
-	}
-});
 Ext.define('App.view.patient.Vitals', {
 	extend: 'Ext.panel.Panel',
 	requires: [
@@ -22162,6 +23075,57 @@ Ext.define('App.view.patient.Vitals', {
 	}
 });
 
+Ext.define('App.view.patient.NewPatient', {
+	extend: 'App.ux.RenderPanel',
+	pageTitle: _('patient_entry_form'),
+	initComponent: function(){
+
+		var me = this;
+
+		me.pageBody = [
+			me.newPatientPanel = Ext.create('App.view.patient.Patient')
+		];
+		me.callParent(arguments);
+
+	},
+	/**
+	 *
+	 * @param {function} callback
+	 */
+	confirmationWin: function(callback){
+		Ext.Msg.show({
+			title: _('please_confirm') + '...',
+			msg: _('do_you_want_to_create_a_new_patient'),
+			icon: Ext.MessageBox.QUESTION,
+			buttons: Ext.Msg.YESNO,
+			scope: this,
+			fn: function(btn){
+				callback(btn);
+			}
+		});
+	},
+
+	/**
+	 * This function is called from Viewport.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 * @param {function} [callback] - callback
+	 */
+	onActive: function(callback){
+		var me = this;
+		this.confirmationWin(function(btn){
+			if(btn == 'yes'){
+				me.newPatientPanel.loadNew();
+				app.unsetPatient(null, true);
+				callback(true);
+			}else{
+				app.nav.goBack();
+				callback(false);
+			}
+		});
+	}
+});
 Ext.define('App.view.patient.ProgressNote', {
 	extend           : 'Ext.panel.Panel',
     alias            : 'widget.progressnote',
@@ -22559,6 +23523,145 @@ Ext.define('App.view.patient.ProgressNote', {
 
 });
 
+Ext.define('App.view.patient.RemindersAlert', {
+	extend: 'Ext.window.Window',
+	requires: [
+		'Ext.grid.plugin.RowEditing'
+	],
+	title: _('reminders'),
+	width: 700,
+	closeAction: 'hide',
+	initComponent: function(){
+
+		var me = this;
+
+		me.items = [
+			{
+				xtype: 'grid',
+				itemId: 'RemindersAlertGrid',
+				margin: 5,
+				frame : true,
+				store: Ext.create('App.store.patient.Reminders'),
+				plugins: {
+					ptype: 'cellediting',
+					autoCancel: false,
+					errorSummary: false,
+					clicksToEdit: 2
+				},
+				columns: [
+					{
+						xtype: 'datecolumn',
+						text: _('date'),
+						format: g('date_display_format'),
+						dataIndex: 'date'
+					},
+					{
+						text: _('note'),
+						dataIndex: 'body',
+						flex: 1
+					},
+					{
+						text: _('active'),
+						width: 50,
+						dataIndex: 'active',
+						renderer: function(v, m, r){
+							return app.boolRenderer(v, m, r);
+						},
+						editor: {
+							xtype: 'checkbox'
+						}
+					}
+				]
+			}
+		];
+
+
+
+		me.callParent();
+
+	},
+	buttons: [
+		'->',
+		{
+			text: _('ok'),
+			itemId: 'RemindersAlertOkBtn'
+		},
+		'-',
+		{
+			text: _('cancel'),
+			itemId: 'RemindersAlertCancelBtn'
+		}
+	]
+});
+Ext.define('App.store.patient.Reminders', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.patient.Reminders'
+});
+Ext.define('App.view.patient.Reminders', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.plugin.RowEditing'
+
+	],
+	xtype: 'patientreminderspanel',
+	title: _('reminders'),
+	store: Ext.create('App.store.patient.Reminders'),
+	plugins: {
+		ptype:'rowediting',
+		autoCancel: false,
+		errorSummary: false,
+		clicksToEdit: 2
+	},
+	columns: [
+		{
+			xtype: 'datecolumn',
+			text: _('date'),
+			format: 'Y-m-d',
+			dataIndex: 'date'
+		},
+		{
+			header: _('type'),
+			dataIndex: 'type',
+			width: 200,
+			editor: {
+				xtype: 'gaiaehr.combo',
+				list: 130
+			}
+		},
+		{
+			text: _('note'),
+			dataIndex: 'body',
+			flex: 1,
+			editor: {
+				xtype: 'textfield'
+			}
+		},
+		{
+			text: _('user'),
+			width: 225,
+			dataIndex: 'user_name'
+		},
+		{
+			text: _('active'),
+			width: 50,
+			dataIndex: 'active',
+			renderer: function(v, m, r){
+				return app.boolRenderer(v, m, r);
+			},
+			editor: {
+				xtype: 'checkbox'
+			}
+		}
+	],
+	tbar: [
+		'->',
+		{
+			text: _('add_reminder'),
+			iconCls: 'icoAdd',
+			itemId: 'RemindersAddBtn'
+		}
+	]
+});
 Ext.define('App.store.patient.PatientsOrders', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.patient.PatientsOrders',
@@ -25373,6 +26476,10 @@ Ext.define('App.model.administration.Department', {
 			name: 'title',
 			type: 'string',
 			len: 100
+		},
+		{
+			name: 'active',
+			type: 'bool'
 		}
 	],
 	proxy: {
@@ -25393,94 +26500,6 @@ Ext.define('App.store.administration.Departments', {
 	requires: ['App.model.administration.Department'],
 	model: 'App.model.administration.Department'
 });
-Ext.define('App.model.administration.Specialty', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'specialties',
-		comment: 'Providers Specialties'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'code',
-			type: 'string',
-			len: 100
-		},
-		{
-			name: 'title',
-			type: 'string',
-			len: 100
-		},
-		{
-			name: 'taxonomy',
-			type: 'string',
-			len: 30
-		},
-		{
-			name: 'modality',
-			type: 'string',
-			len: 50
-		},
-		{
-			name: 'ges',
-			type: 'string',
-			len: 5
-		},
-		{
-			name: 'active',
-			type: 'bool'
-		},
-		{
-			name: 'text_details',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				return record.data.id + ': ' + record.data.title;
-			}
-		},
-		{
-			name: 'combo_text',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				return record.data.id + ': ' + record.data.title + ' ' + (record.data.active ? ('(' + _('not_active') + ')') : '');
-			}
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Specialties.getSpecialties',
-			create: 'Specialties.addSpecialty',
-			update: 'Specialties.updateSpecialty'
-		},
-		reader: {
-			root: 'data'
-		}
-	}
-});
-
 Ext.define('App.store.administration.Specialties', {
     model: 'App.model.administration.Specialty',
     extend: 'Ext.data.Store'
@@ -27719,1032 +28738,6 @@ Ext.define('App.view.administration.Globals', {
 });
 
 
-Ext.define('App.view.administration.Layout', {
-    extend: 'App.ux.RenderPanel',
-    id: 'panelLayout',
-    pageTitle: _('layout_form_editor'),
-    pageLayout: 'border',
-    initComponent: function(){
-        var me = this;
-
-        me.currForm = null;
-        me.currField = null;
-
-	    /**
-	     *
-	     * @type {App.store.administration.LayoutTree}
-	     */
-        me.fieldsGridStore = Ext.create('App.store.administration.LayoutTree');
-
-        /**
-         * Xtype Combobox store
-         */
-        me.fieldXTypesStore = Ext.create('App.store.administration.XtypesComboModel');
-
-        /**
-         * Forms grid store (left grid)
-         */
-        me.formsGridStore = Ext.create('App.store.administration.FormsList');
-
-        /**
-         * Field available on this form as parent items (fieldset / fieldcontainer )
-         * use to get the "Child of" combobox data
-         */
-        me.parentFieldsStore = Ext.create('App.store.administration.ParentFields');
-
-        /**
-         * This are the select lists available to use for comboboxes
-         * this lists can be created an modified at "Lists" administration panel.
-         */
-        me.selectListoptionsStore = Ext.create('App.store.administration.FormListOptions');
-
-        /**
-         * This grid only available if the field is a Combobox
-         */
-        me.selectListGrid = Ext.create('Ext.grid.Panel', {
-            store: me.selectListoptionsStore,
-            collapseMode: 'mini',
-            height:200,
-            split: true,
-            border: false,
-            titleCollapse: false,
-            hideCollapseTool: true,
-            collapsible: true,
-            collapsed: true,
-            columns: [
-                {
-                    text: _('name'),
-                    flex: 1,
-                    sortable: false,
-                    dataIndex: 'option_name'
-                },
-                {
-                    text: _('value'),
-                    flex: 1,
-                    sortable: false,
-                    dataIndex: 'option_value'
-                }
-            ]
-        });
-
-        /**
-         * form to create and modified the fields
-         */
-        me.fieldForm = Ext.create('Ext.form.Panel', {
-            flex:2,
-            border: false,
-            autoScroll: true,
-            fieldDefaults: {
-                msgTarget: 'side',
-                labelWidth: 100
-            },
-            defaults: {
-                anchor: '100%'
-            },
-            items: [
-                {
-                    fieldLabel: _('type'),
-                    xtype: 'combo',
-                    name: 'xtype',
-                    displayField: 'name',
-                    valueField: 'value',
-                    allowBlank: false,
-                    editable: false,
-                    store: me.fieldXTypesStore,
-                    queryMode: 'local',
-                    margin: '5 5 5 10',
-                    itemId: 'xtype',
-                    listeners: {
-                        scope: me,
-                        change: me.onXtypeChange
-                    }
-                },
-                {
-                    fieldLabel: _('child_of'),
-                    xtype: 'combo',
-                    name: 'parentId',
-                    displayField: 'name',
-                    valueField: 'value',
-                    editable: false,
-                    hideTrigger: true,
-	                allowBlank: false,
-                    store: me.parentFieldsStore,
-                    queryMode: 'local',
-                    margin: '5 5 5 10',
-                    emptyText: 'None',
-                    itemId: 'parentFields',
-                    listeners: {
-                        scope: me,
-                        expand: me.onParentFieldsExpand
-                    }
-                },
-                {
-                    xtype: 'fieldset',
-                    itemId: 'aditionalProperties',
-                    title: _('aditional_properties'),
-                    margin: '0 5 5 5',
-                    defaults: {
-                        anchor: '100%'
-                    },
-                    items: [
-                        {
-                            fieldLabel: _('title'),
-                            xtype: 'textfield',
-                            name: 'title',
-                            itemId: 'title',
-                            allowBlank: false,
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('field_label'),
-                            xtype: 'textfield',
-                            name: 'fieldLabel',
-                            itemId: 'fieldLabel',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('box_label'),
-                            xtype: 'textfield',
-                            name: 'boxLabel',
-                            itemId: 'boxLabel',
-                            allowBlank: false,
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('label_width'),
-                            xtype: 'textfield',
-                            name: 'labelWidth',
-                            itemId: 'labelWidth',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('hide_label'),
-                            xtype: 'checkbox',
-                            name: 'hideLabel',
-                            itemId: 'hideLabel',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('empty_text'),
-                            xtype: 'textfield',
-                            name: 'emptyText',
-                            itemId: 'emptyText',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('layout'),
-                            xtype: 'textfield',
-                            name: 'layout',
-                            itemId: 'layout',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('name'),
-                            xtype: 'textfield',
-                            name: 'name',
-                            itemId: 'name',
-                            allowBlank: false,
-                            hidden: true,
-	                        listeners:{
-		                        scope:me,
-		                        change: me.onNameValueChange
-	                        }
-                        },
-                        {
-                            fieldLabel: _('input_value'),
-                            xtype: 'textfield',
-                            name: 'inputValue',
-                            itemId: 'inputValue',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('width'),
-                            xtype: 'textfield',
-                            name: 'width',
-                            itemId: 'width',
-                            emptyText: 'ei. 5 for 5px',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('height'),
-                            xtype: 'textfield',
-                            name: 'height',
-                            itemId: 'height',
-                            emptyText: 'ei. 5 for 5px',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('anchor'),
-                            xtype: 'textfield',
-                            name: 'anchor',
-                            itemId: 'anchor',
-                            emptyText: 'ei. 100%',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('flex'),
-                            xtype: 'checkbox',
-                            name: 'flex',
-                            itemId: 'flex',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('collapsible'),
-                            xtype: 'checkbox',
-                            name: 'collapsible',
-                            itemId: 'collapsible',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('checkbox_toggle'),
-                            xtype: 'checkbox',
-                            name: 'checkboxToggle',
-                            itemId: 'checkboxToggle',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('collapsed'),
-                            xtype: 'checkbox',
-                            name: 'collapsed',
-                            itemId: 'collapsed',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('margin'),
-                            xtype: 'textfield',
-                            name: 'margin',
-                            itemId: 'margin',
-                            emptyText: 'ei. 5 5 5 5',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('column_width'),
-                            xtype: 'textfield',
-                            name: 'columnWidth',
-                            itemId: 'columnWidth',
-                            emptyText: 'ei. .5',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('is_required'),
-                            xtype: 'checkbox',
-                            name: 'allowBlank',
-                            itemId: 'allowBlank',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('min_length'),
-                            xtype: 'numberfield',
-                            name: 'minLength',
-                            itemId: 'minLength',
-	                        minValue: 0,
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('max_length'),
-                            xtype: 'numberfield',
-                            name: 'maxLength',
-                            itemId: 'maxLength',
-	                        minValue: 0,
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('value'),
-                            xtype: 'textfield',
-                            name: 'value',
-                            itemId: 'value',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('max_value'),
-                            xtype: 'textfield',
-                            name: 'maxValue',
-                            itemId: 'maxValue',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('min_value'),
-                            xtype: 'textfield',
-                            name: 'minValue',
-                            itemId: 'minValue',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('max_value'),
-                            xtype: 'timefield',
-                            name: 'maxValue',
-                            itemId: 'timeMaxValue',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('min_value'),
-                            xtype: 'timefield',
-                            name: 'minValue',
-                            itemId: 'timeMinValue',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('grow'),
-                            xtype: 'checkbox',
-                            name: 'grow',
-                            itemId: 'grow',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('grow_min'),
-                            xtype: 'textfield',
-                            name: 'growMin',
-                            itemId: 'growMin',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('grow_max'),
-                            xtype: 'textfield',
-                            name: 'growMax',
-                            itemId: 'growMax',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('increment'),
-                            xtype: 'textfield',
-                            name: 'increment',
-                            itemId: 'increment',
-                            hidden: true
-                        },
-                        {
-                            fieldLabel: _('list_options'),
-                            xtype: 'mitos.listscombo',
-                            name: 'list_id',
-                            itemId: 'list_id',
-                            hidden: true,
-                            allowBlank: false,
-                            listeners: {
-                                scope: me,
-                                change: me.onSelectListSelect
-                            }
-                        },
-	                    {
-		                    fieldLabel: _('code'),
-		                    xtype: 'textfield',
-		                    name: 'code',
-		                    itemId: 'code',
-		                    emptyText: 'ei. SNOMED:254687942 or ICD10:H25.091',
-		                    hidden: true
-	                    },
-	                    {
-		                    fieldLabel: _('item_id'),
-		                    xtype: 'textfield',
-		                    name: 'itemId',
-		                    itemId: 'itemId',
-		                    emptyText: 'sencha itemId',
-		                    hidden: true
-	                    },
-	                    {
-		                    fieldLabel: _('action'),
-		                    xtype: 'textfield',
-		                    name: 'action',
-		                    itemId: 'action',
-		                    emptyText: 'sencha action',
-		                    hidden: true
-	                    }
-                    ]
-                }
-            ]
-        });
-
-        /**
-         * this container holds the form and the select list grid.
-         * remember that the select list grid only shows if
-         * the field xtype is a combobox
-         */
-        me.formContainer = Ext.create('Ext.panel.Panel', {
-            title: _('field_configuration'),
-            border: true,
-            split: true,
-            width: 390,
-            region: 'east',
-            layout: {
-                type:'vbox',
-                align:'stretch'
-            },
-            bodyStyle: 'background-color:#fff!important',
-            items: [
-	            me.fieldForm,
-	            me.selectListGrid
-            ],
-            buttons:[
-                {
-                    text: _('delete'),
-                    iconCls: 'icoDeleteBlack',
-                    scope: me,
-                    handler: me.onFieldDelete
-                },
-                {
-                    text: _('reset'),
-                    iconCls: 'icoReload',
-                    scope: me,
-                    handler: me.onFormReset
-                },
-                {
-                    text: _('save'),
-                    iconCls: 'save',
-                    scope: me,
-                    handler: me.onFieldSave
-                }
-            ],
-            dockedItems: [
-                {
-                    xtype: 'toolbar',
-                    items: [
-                        '->',
-                        {
-                            text: _('add_new'),
-                            iconCls: 'icoAddRecord',
-                            scope: me,
-                            handler: me.onFormReset
-                        },
-                        '-',
-                        {
-                            text: _('add_child'),
-                            iconCls: 'icoAddRecord',
-                            itemId: 'addChild',
-                            disabled: true,
-                            scope: me,
-                            handler: me.onAddChild
-                        },
-                        '-',
-                        {
-                            text: _('form_preview'),
-                            iconCls: 'icoPreview',
-                            enableToggle: true,
-                            listeners: {
-                                scope: me,
-                                toggle: me.onFormPreview
-                            }
-                        }
-                    ]
-                }
-            ]
-        });
-
-        /**
-         * This is the fields associated with the current Form selected
-         */
-        me.fieldsGrid = Ext.create('Ext.tree.Panel', {
-            store: me.fieldsGridStore,
-            region: 'center',
-            border: true,
-            sortable: false,
-            rootVisible: false,
-            title: _('field_editor_demographics'),
-            viewConfig: {
-                plugins: {
-                    ptype: 'treeviewdragdrop',
-	                expandDelay:0,
-                    allowParentInsert: false
-                },
-                listeners: {
-                    scope: me,
-                    drop: me.onDragDrop,
-	                itemkeydown: me.onFieldKeyDown
-                }
-            },
-            columns: [
-                {
-                    xtype: 'treecolumn',
-                    text: _('field_type'),
-                    sortable: false,
-                    dataIndex: 'xtype',
-                    width: 200,
-                    align: 'left'
-                },
-                {
-                    text: _('title'),
-                    sortable: false,
-                    dataIndex: 'title',
-                    width: 100,
-                    align: 'left'
-                },
-                {
-                    text: _('label'),
-                    sortable: false,
-                    dataIndex: 'fieldLabel',
-                    flex: 1,
-                    align: 'left'
-                }
-            ],
-            listeners: {
-                scope: me,
-	            selectionchange: me.onFieldsGridSelectionChange
-            }
-        });
-
-        /**
-         * Form grid will show the available forms to modified.
-         * the user will not have the options to create
-         * forms, just to modified the fields of existing forms.
-         */
-        me.formsGrid = Ext.create('Ext.grid.Panel', {
-            title: _('form_list'),
-            region: 'west',
-            store: me.formsGridStore,
-            width: 200,
-            border: true,
-            split: true,
-            hideHeaders: true,
-            columns: [
-                {
-                    dataIndex: 'id',
-                    hidden: true
-                },
-                {
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'name'
-                }
-            ],
-            listeners: {
-                scope: me,
-                itemclick: me.onFormGridItemClick
-            }
-        });
-
-        /**
-         * this panel will render the current form to preview
-         * all the changes done.
-         */
-        me.fromPreview = Ext.create('Ext.form.Panel', {
-            region: 'south',
-            height: 300,
-            collapsible: true,
-            titleCollapse: false,
-            hideCollapseTool: true,
-            collapsed: true,
-            border: true,
-            split: true,
-            collapseMode: 'header',
-            bodyStyle: 'padding: 5px',
-            layout: 'anchor',
-            fieldDefaults: {
-                msgTarget: 'side'
-            },
-            tools: [
-                {
-                    itemId: 'refresh',
-                    type: 'refresh',
-                    scope: me,
-                    handler: me.previewFormRender
-                }
-            ]
-        });
-        me.pageBody = [
-	        me.fieldsGrid,
-	        me.formsGrid,
-	        me.formContainer,
-	        me.fromPreview
-        ];
-        me.callParent(arguments);
-    },
-
-    /**
-     * if the form is valid send the POST request
-     */
-    onFieldSave: function(){
-        var me = this,
-            form = me.fieldForm.getForm(),
-            record = form.getRecord(),
-            store = me.fieldsGridStore,
-            parentNode = store.getNodeById(record.data.parentId) || store.getRootNode(),
-            values = form.getValues();
-
-        if(form.isValid()){
-
-            values.form_id = record.data.form_id;
-            values.leaf = (values.xtype != 'fieldcontainer' && values.xtype != 'fieldset');
-            record.set(values);
-
-            if(record.data.id == ''){
-	            parentNode.appendChild(record);
-            }
-
-            me.fieldsGridStore.sync({
-               success:function(batch, options){
-                   me.previewFormRender();
-                   me.loadCurrFormParentField();
-
-	               say(batch);
-	               say(options);
-
-                   // this is the quick way to apply the return changes to the model
-	               if(record.data.id == ''){
-		               say(batch.proxy.reader.rawData.id);
-		               record.set({ id: batch.proxy.reader.rawData.id });
-		               record.commit();
-	               }
-
-	               me.fieldsGrid.getSelectionModel().select(record);
-                   me.msg('Sweet!', _('record_saved'));
-               },
-               failure:function(batch){
-
-	               record.remove();
-
-	               me.msg('Oops!', batch.proxy.reader.rawData.message, true);
-                   me.loadFieldsGrid();
-               }
-           });
-        }
-    },
-
-	/**
-	 * Delete Field logic
-	 * @param record
-	 */
-	deleteField:function(record){
-		var me = this;
-
-		say(record.childNodes);
-
-		if(record.childNodes.length > 0){
-			me.msg(_('oops'), _('children_fields_must_be_remove_first'), true);
-			return;
-		}
-
-		Ext.Msg.show({
-			title: _('please_confirm') + '...',
-			icon: Ext.MessageBox.QUESTION,
-			msg: _('delete_this_field'),
-			buttons: Ext.Msg.YESNO,
-			scope: this,
-			fn: function(btn){
-				if(btn == 'yes'){
-					record.remove();
-					me.fieldsGridStore.sync({
-						success:function(){
-							me.previewFormRender();
-							me.msg('Sweet!', _('record_removed'));
-						},
-						failure:function(batch){
-							me.msg('Oops!', batch.proxy.reader.rawData.message, true);
-							me.loadFieldsGrid();
-						}
-					});
-				}
-			}
-		});
-	},
-
-	/**
-	 *
-	 * @param view
-	 * @param record
-	 * @param item
-	 * @param idex
-	 * @param e
-	 */
-	onFieldKeyDown:function(view, record, item, idex, e){
-		if(e.getKey() == e.DELETE){
-			this.deleteField(record);
-		}
-	},
-
-    /**
-     *
-     */
-    onFieldDelete: function(){
-        var me = this,
-	        form = me.fieldForm.getForm(),
-	        record = form.getRecord();
-
-	    me.deleteField(record);
-    },
-
-    /**
-     *
-     * @param node
-     * @param data
-     * @param overModel
-     */
-    onDragDrop: function(node, data, overModel){
-        var me = this;
-
-        me.fieldsGridStore.sync({
-            success:function(){
-                me.previewFormRender();
-                me.msg('Sweet!', 'Field Updated');
-            },
-            failure:function(batch){
-                Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
-                me.loadFieldsGrid();
-            }
-        });
-    },
-
-    /**
-     * This is to reset the Form and load
-     * a new Model with the currForm id
-     */
-    onFormReset: function(){
-        var me = this,
-            formPanel = me.fieldForm,
-            form = formPanel.getForm(),
-            selection = me.fieldsGrid.getSelectionModel(),
-	        record = Ext.create('App.model.administration.LayoutTree', {
-		        form_id: me.currForm,
-		        parentId: 'root'
-	        });
-
-	    selection.deselectAll();
-
-        form.reset();
-        form.loadRecord(record);
-    },
-
-	onNameValueChange:function(field, value){
-		field.setDisabled(field.up('form').getForm().getRecord().data.id != 0);
-	},
-
-    /**
-     *
-     * load a new model with the form_id and parentId values.
-     * This is the easy way to add a child to a fieldset or fieldcontainer.
-     */
-    onAddChild: function(){
-        var me = this,
-            formPanel = me.fieldForm,
-            form = formPanel.getForm(),
-            row = me.fieldsGrid.getSelectionModel();
-
-        row.deselectAll();
-        form.reset();
-
-        form.loadRecord(
-            Ext.create('App.model.administration.LayoutTree',{
-                form_id: me.currForm,
-                parentId: me.currField
-            })
-        );
-    },
-
-    /**
-     *
-     * This will load the current field data to the form,
-     * set the currField, and enable the Add Child btn if
-     * the field allows child items (fieldset or fieldcontainer)
-     *
-     * @param sm
-     * @param records
-     */
-    onFieldsGridSelectionChange: function(sm, records){
-        var me = this,
-            formPanel = me.fieldForm,
-            form = formPanel.getForm();
-
-	    if(records.length > 0){
-		    form.loadRecord(records[0]);
-		    me.currField = records[0].data.id;
-		    if(records[0].data.xtype == 'fieldset' || records[0].data.xtype == 'fieldcontainer'){
-			    me.formContainer.down('toolbar').getComponent('addChild').enable();
-		    }else{
-			    me.formContainer.down('toolbar').getComponent('addChild').disable();
-		    }
-		    formPanel.el.unmask();
-	    }else{
-		    me.onFormReset();
-	    }
-    },
-
-    /**
-     *
-     * @param DataView
-     * @param record
-     */
-    onFormGridItemClick: function(DataView, record){
-        var me = this;
-
-        me.currForm = record.get('id');
-        me.fieldsGrid.setTitle(_('field_editor') + ' (' + record.get('name') + ')');
-        me.loadFieldsGrid();
-        me.onFormReset();
-    },
-
-    /**
-     *
-     * This will load the Select List options. This Combobox shows only when
-     * a Type of Combobox is selected
-     *
-     * @param combo
-     * @param value
-     */
-    onSelectListSelect: function(combo, value){
-        var me = this;
-
-        me.selectListoptionsStore.load({
-            params: {
-                list_id: value
-            }
-        });
-    },
-
-    /**
-     *
-     * This is to handle a error when loading a combobox store.
-     *
-     * @param combo
-     */
-    onParentFieldsExpand: function(combo){
-        combo.picker.loadMask.destroy();
-    },
-
-    /**
-     * onXtypeChange will search the combo value and enable/disable
-     * the fields appropriate for the xtype selected
-     *
-     * @param combo
-     * @param value
-     */
-    onXtypeChange: function(combo, value){
-        var me = this;
-
-        if(value == 'combobox'){
-            me.selectListGrid.setTitle(_('select_list_options'));
-            me.selectListGrid.expand();
-            me.selectListGrid.enable();
-        }else{
-            me.selectListGrid.setTitle('');
-            me.selectListGrid.collapse();
-            me.selectListGrid.disable();
-        }
-
-        /**
-         *
-         * @param searchStr
-         */
-        Array.prototype.find = function(searchStr){
-            var returnArray = false;
-
-            for(var i = 0; i < this.length; i++){
-                if(typeof (searchStr) == 'function'){
-                    if(searchStr.test(this[i])){
-                        if(!returnArray){
-                            returnArray = [];
-                        }
-                        returnArray.push(i);
-                    }
-                }else{
-                    if(this[i] === searchStr){
-                        if(!returnArray){
-                            returnArray = [];
-                        }
-                        returnArray.push(i);
-                    }
-                }
-            }
-
-            return returnArray;
-        };
-
-        var addProp = me.fieldForm.getComponent('aditionalProperties');
-        var is = addProp.items.keys;
-
-        /**
-         *
-         * @param items
-         */
-        function enableItems(items){
-            for(var i = 0; i < is.length; i++){
-                if(!items.find(is[i])){
-                    addProp.getComponent(is[i]).hide();
-                    addProp.getComponent(is[i]).disable();
-                }else{
-                    addProp.getComponent(is[i]).show();
-                    addProp.getComponent(is[i]).enable();
-                }
-            }
-        }
-
-        var items;
-        if(value == 'fieldset'){
-            items = ['itemId', 'action', 'title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
-        }else if(value == 'fieldcontainer'){
-            items = ['itemId', 'action', 'fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
-        }else if(value == 'combobox'){
-            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
-        }else if(value == 'checkbox'){
-            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
-        }else if(value == 'textfield'){
-            items = ['itemId', 'action', 'name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
-        }else if(value == 'textareafield'){
-            items = ['itemId', 'action', 'name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
-        }else if(value == 'numberfield'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
-        }else if(value == 'timefield'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
-        }else if(value == 'radiofield'){
-            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
-        }else if(value == 'datefield' || value == 'mitos.datetime'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
-        }else if(value == 'checkboxwithfamilyhistory'){
-	        items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
-        }else{
-            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
-        }
-        enableItems(items);
-    },
-
-    /**
-     *
-     * On toggle down/true expand the preview panel and re-render the form
-     *
-     * @param btn
-     * @param toggle
-     */
-    onFormPreview: function(btn, toggle){
-        var me = this;
-
-        if(toggle === true){
-            me.fromPreview.expand(false);
-            me.previewFormRender();
-        }else{
-            me.fromPreview.collapse(false);
-        }
-    },
-
-    /**
-     *
-     *  this function re-render the preview form
-     */
-    previewFormRender: function(){
-        var me = this,
-	        form = this.fromPreview;
-
-        if(form.collapsed !== true){
-            form.el.mask();
-            me.getFormItems(form, me.currForm, function(){
-                form.el.unmask();
-            });
-        }
-
-    },
-
-    /**
-     *
-     *  re-load the fields grid (main TreeGrid)
-     *  check if a form is selected, if not the select the first choice
-     *  save the form id inside this.currForm and load the grid and the
-     *  parent fields of this form.
-     *
-     *  parentFieldsStore is use to create the child of select list
-     */
-    loadFieldsGrid: function(){
-        var me = this;
-
-        me.fieldsGridStore.load({
-            params: {
-                currForm: me.currForm
-            }
-        });
-
-        me.loadCurrFormParentField();
-        me.previewFormRender();
-        me.fieldsGrid.doLayout()
-    },
-
-    loadCurrFormParentField:function(){
-	    var me = this;
-	    me.parentFieldsStore.load({ params:{ currForm: me.currForm } });
-    },
-
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive: function(callback){
-        var me = this,
-	        sm = me.formsGrid.getSelectionModel();
-
-        if(me.currForm === null){
-            me.formsGridStore.load({
-	            filters:[
-		            {
-			            property:'active',
-			            value:1
-		            }
-	            ],
-                callback:function(records){
-	                sm.select(records[0]);
-	                me.currForm = records[0].data.id;
-	                me.loadFieldsGrid();
-	                me.onFormReset();
-                }
-            });
-        }
-
-        callback(true);
-    }
-}); 
 Ext.define('App.view.administration.Lists', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLists',
@@ -29109,83 +29102,6 @@ Ext.define('App.view.administration.Lists', {
     }
 });
 
-Ext.define('App.view.administration.Modules', {
-    extend: 'App.ux.RenderPanel',
-    id: 'panelModules',
-    pageTitle: _('modules'),
-    initComponent: function(){
-        var me = this;
-
-        // *************************************************************************************
-        // Module Data Store
-        // *************************************************************************************
-        me.store = Ext.create('App.store.administration.Modules');
-
-        me.grid = Ext.create('Ext.grid.Panel', {
-            store: me.store,
-            plugins: [
-                me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2,
-                    errorSummary : false
-                })
-            ],
-            columns: [
-                {
-                    text: _('title'),
-                    width: 200,
-                    sortable: true,
-                    dataIndex: 'title'
-                },
-                {
-                    text: _('description'),
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'description'
-                },
-                {
-                    text: _('version'),
-                    width: 100,
-                    sortable: true,
-                    dataIndex: 'installed_version'
-                },
-                {
-                    text: _('key_if_required'),
-                    flex: 1,
-                    sortable: true,
-                    dataIndex: 'licensekey',
-                    editor:{
-                        xtype:'textfield'
-                    }
-                },
-                {
-                    text: _('enabled?'),
-                    width: 60,
-                    sortable: true,
-                    renderer: me.boolRenderer,
-                    dataIndex: 'enable',
-                    editor:{
-                        xtype:'checkbox'
-                    }
-                }
-            ]
-        });
-        me.pageBody = [ me.grid ];
-        me.callParent(arguments);
-    },
-
-
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive: function(callback){
-        this.store.load();
-        callback(true);
-    }
-});
-
 Ext.define('App.view.administration.AuditLog', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: _('audit_log'),
@@ -29544,6 +29460,83 @@ Ext.define('App.view.administration.Medications',
 	}
 });
 //ens servicesPage class
+Ext.define('App.view.administration.Modules', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelModules',
+    pageTitle: _('modules'),
+    initComponent: function(){
+        var me = this;
+
+        // *************************************************************************************
+        // Module Data Store
+        // *************************************************************************************
+        me.store = Ext.create('App.store.administration.Modules');
+
+        me.grid = Ext.create('Ext.grid.Panel', {
+            store: me.store,
+            plugins: [
+                me.edditing = Ext.create('Ext.grid.plugin.RowEditing', {
+                    clicksToEdit: 2,
+                    errorSummary : false
+                })
+            ],
+            columns: [
+                {
+                    text: _('title'),
+                    width: 200,
+                    sortable: true,
+                    dataIndex: 'title'
+                },
+                {
+                    text: _('description'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'description'
+                },
+                {
+                    text: _('version'),
+                    width: 100,
+                    sortable: true,
+                    dataIndex: 'installed_version'
+                },
+                {
+                    text: _('key_if_required'),
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'licensekey',
+                    editor:{
+                        xtype:'textfield'
+                    }
+                },
+                {
+                    text: _('enabled?'),
+                    width: 60,
+                    sortable: true,
+                    renderer: me.boolRenderer,
+                    dataIndex: 'enable',
+                    editor:{
+                        xtype:'checkbox'
+                    }
+                }
+            ]
+        });
+        me.pageBody = [ me.grid ];
+        me.callParent(arguments);
+    },
+
+
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        this.store.load();
+        callback(true);
+    }
+});
+
 Ext.define('App.view.administration.FloorPlans', {
     extend: 'App.ux.RenderPanel',
     id: 'panelFloorPlans',
@@ -30578,102 +30571,86 @@ Ext.define('App.view.administration.PreventiveCare',
 	}
 });
 //ens servicesPage class
-Ext.define('App.view.administration.Roles', {
-	extend: 'App.ux.RenderPanel',
-	requires: [
-		'App.ux.combo.XCombo',
-		'Ext.grid.plugin.CellEditing',
-		'Ext.ux.DataTip'
-	],
-	itemId: 'AdministrationRolePanel',
-	pageTitle: _('roles_and_permissions'),
-	pageBody: [
+Ext.define('App.model.administration.AclGroup', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'acl_groups'
+	},
+	fields: [
 		{
-			xtype:'grid',
-			bodyStyle: 'background-color:white',
-			itemId: 'AdministrationRoleGrid',
-			frame: true,
-			columnLines: true,
-			tbar: [
-				{
-					xtype: 'xcombo',
-					emptyText: _('select'),
-					labelWidth: 50,
-					width: 250,
-					valueField: 'id',
-					displayField: 'title',
-					queryMode: 'local',
-					store: Ext.create('App.store.administration.AclGroups'),
-					itemId: 'AdministrationRoleGroupCombo',
-					windowConfig: {
-						title: _('add_group')
-					},
-					formConfig: {
-						border: false,
-						bodyPadding: 10,
-						items: [
-							{
-								xtype: 'textfield',
-								fieldLabel: _('group_name'),
-								name: 'title'
-							},
-							{
-								xtype: 'checkbox',
-								fieldLabel: _('active'),
-								name: 'active'
-							}
-						]
-					}
-				},
-				'-',
-				'->',
-				'-',
-				{
-					xtype: 'button',
-					text: _('add_role'),
-					iconCls: 'icoAdd',
-					action: 'adminAclAddRole'
-				},
-				'-'
-			],
-			//    selModel: {
-			//        selType: 'cellmodel'
-			//    },
-			features: [
-				{
-					ftype: 'grouping'
-				}
-			],
-			plugins: [
-				{
-					ptype: 'cellediting',
-					clicksToEdit: 1
-				},
-				{
-					ptype: 'datatip',
-					tpl: _('click_to_edit')
-				}
-			],
-			columns: [
-				{
-					text: 'Permission',
-					width: 250,
-					locked: true
-				}
-			]
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string'
+		},
+		{
+			name: 'active',
+			type: 'bool',
+			index: true
 		}
 	],
-	pageButtons: [
-		{
-			text: _('cancel'),
-			cls: 'cancelBtn',
-			action: 'adminAclCancel'
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'ACL.getAclGroups',
+			create: 'ACL.addAclGroup',
+			update: 'ACL.updateAclGroup'
 		},
-		'-',
+		reader: {
+			root: 'data'
+		}
+	}
+});
+
+Ext.define('App.store.administration.AclGroups', {
+    model: 'App.model.administration.AclGroup',
+    extend: 'Ext.data.Store'
+});
+Ext.define('App.view.administration.practice.Practice', {
+	extend: 'App.ux.RenderPanel',
+	xtype: 'practicepanel',
+	pageTitle: _('practice_settings'),
+	requires: [
+		'App.view.administration.practice.Facilities',
+		'App.view.administration.practice.FacilityConfig',
+		'App.view.administration.practice.Laboratories',
+		'App.view.administration.practice.Pharmacies',
+		'App.view.administration.practice.ProviderNumbers',
+		'App.view.administration.practice.ReferringProviders',
+//		'App.view.administration.practice.Specialties'
+	],
+	pageBody: [
 		{
-			text: _('save'),
-			cls: 'saveBtn',
-			action: 'adminAclSave'
+			xtype: 'tabpanel',
+			activeTab: 0,
+			items: [
+				{
+					xtype: 'pharmaciespanel'
+				},
+				{
+					xtype: 'laboratoriespanel'
+				},
+				{
+					xtype: 'insurancecompaniespanel'
+				},
+				{
+					xtype: 'providersnumberspanel'
+				},
+				{
+					xtype: 'referringproviderspanel'
+				},
+//				{
+//					xtype: 'specialtiespanel'
+//				},
+				{
+					xtype: 'facilitiespanel'
+				},
+				{
+					xtype: 'facilityconfigpanel'
+				}
+			]
 		}
 	]
 });
@@ -31018,6 +30995,158 @@ Ext.define('App.view.administration.ExternalDataLoads',{
 		this.setCurrentCodesInfo();
 		callback(true);
 	}
+});
+
+Ext.define('App.view.miscellaneous.Amendments', {
+	extend: 'App.ux.RenderPanel',
+	requires: [
+		'Ext.ux.SlidingPager'
+	],
+	itemId: 'AmendmentsPanel',
+	pageTitle: _('amendments'),
+
+	initComponent: function(){
+
+		var me = this;
+
+		me.controller = App.app.getController('miscellaneous.Amendments');
+
+		me.pageBody = [
+			{
+				xtype:'grid',
+				itemId: 'AmendmentsGrid',
+				store: me.store = Ext.create('App.store.miscellaneous.Amendments',{
+					remoteFilter: true,
+					remoteSort: true,
+					sorters:[
+						{
+							property: 'cancel_date',
+							direction: 'DESC'
+						}
+					]
+				}),
+				columns:[
+					{
+						text: _('type'),
+						width: 70,
+						dataIndex: 'amendment_type',
+						renderer: function(v, meta, record){
+							var str;
+
+							if(v === 'P'){
+								str = _('patient');
+							}else if(v === 'D'){
+								str = _('doctor');
+							}else if(v === 'O'){
+								str = _('organization');
+							}else{
+								str = v;
+							}
+
+							return me.newRenderer(str, meta, record);
+						}
+					},
+					{
+						text: _('dates'),
+						columns: [
+							{
+								text: _('received'),
+								width: 130,
+								dataIndex: 'create_date',
+								renderer: me.dateNewRenderer
+							},
+							{
+								text: _('responded'),
+								width: 130,
+								dataIndex: 'response_date',
+								renderer: me.dateNewRenderer
+							},
+							{
+								text: _('appended'),
+								width: 130,
+								dataIndex: 'response_date',
+								renderer: function(v, meta, record){
+									if(record.data.amendment_status == 'A'){
+										return me.dateNewRenderer(v, meta, record);
+									}else{
+										return me.dateNewRenderer(null, meta, record);
+									}
+								}
+							}
+						]
+					},
+					{
+						text: _('message'),
+						flex: 1,
+						dataIndex: 'amendment_message',
+						renderer: me.newRenderer
+					},
+					{
+						text: _('response_message'),
+						flex: 1,
+						dataIndex: 'response_message',
+						renderer: me.newRenderer
+					},
+					{
+						text: _('status'),
+						width: 100,
+						dataIndex: 'amendment_status',
+						renderer: function(v, meta, record){
+							var str;
+
+							if(v === 'W'){
+								str = _('waiting_response');
+							}else if(v === 'A'){
+								str = _('approved');
+							}else if(v === 'D'){
+								str = _('denied');
+							}else if(v === 'C'){
+								str = _('canceled');
+							}else if(v === 'E'){
+								str = _('error');
+							}else{
+								str = v;
+							}
+
+							me.controller.updateIsViewed(record);
+
+							return me.newRenderer(str, meta, record);
+						}
+					},
+					{
+						text: _('approved_denied_by'),
+						width: 200,
+						dataIndex: 'responded_by',
+						renderer: me.newRenderer
+					}
+				],
+				bbar: {
+					xtype: 'pagingtoolbar',
+					pageSize: 25,
+					store: me.store,
+					displayInfo: true,
+					plugins: new Ext.ux.SlidingPager()
+				}
+			}
+		];
+
+		me.callParent();
+	},
+
+	newRenderer: function(v, meta, record){
+		if(!record.data.is_read){
+			meta.style = 'font-weight:bold';
+		}
+		return v;
+	},
+
+	dateNewRenderer: function(v, meta, record){
+		if(!record.data.is_read){
+			meta.style = 'font-weight:bold';
+		}
+		return Ext.Date.format(v, g('date_time_display_format'));
+	}
+
 });
 
 Ext.define('App.view.miscellaneous.MySettings',
@@ -31617,158 +31746,6 @@ Ext.define('App.view.miscellaneous.Websearch',
 });
 //ens UserPage class
 
-Ext.define('App.view.miscellaneous.Amendments', {
-	extend: 'App.ux.RenderPanel',
-	requires: [
-		'Ext.ux.SlidingPager'
-	],
-	itemId: 'AmendmentsPanel',
-	pageTitle: _('amendments'),
-
-	initComponent: function(){
-
-		var me = this;
-
-		me.controller = App.app.getController('miscellaneous.Amendments');
-
-		me.pageBody = [
-			{
-				xtype:'grid',
-				itemId: 'AmendmentsGrid',
-				store: me.store = Ext.create('App.store.miscellaneous.Amendments',{
-					remoteFilter: true,
-					remoteSort: true,
-					sorters:[
-						{
-							property: 'cancel_date',
-							direction: 'DESC'
-						}
-					]
-				}),
-				columns:[
-					{
-						text: _('type'),
-						width: 70,
-						dataIndex: 'amendment_type',
-						renderer: function(v, meta, record){
-							var str;
-
-							if(v === 'P'){
-								str = _('patient');
-							}else if(v === 'D'){
-								str = _('doctor');
-							}else if(v === 'O'){
-								str = _('organization');
-							}else{
-								str = v;
-							}
-
-							return me.newRenderer(str, meta, record);
-						}
-					},
-					{
-						text: _('dates'),
-						columns: [
-							{
-								text: _('received'),
-								width: 130,
-								dataIndex: 'create_date',
-								renderer: me.dateNewRenderer
-							},
-							{
-								text: _('responded'),
-								width: 130,
-								dataIndex: 'response_date',
-								renderer: me.dateNewRenderer
-							},
-							{
-								text: _('appended'),
-								width: 130,
-								dataIndex: 'response_date',
-								renderer: function(v, meta, record){
-									if(record.data.amendment_status == 'A'){
-										return me.dateNewRenderer(v, meta, record);
-									}else{
-										return me.dateNewRenderer(null, meta, record);
-									}
-								}
-							}
-						]
-					},
-					{
-						text: _('message'),
-						flex: 1,
-						dataIndex: 'amendment_message',
-						renderer: me.newRenderer
-					},
-					{
-						text: _('response_message'),
-						flex: 1,
-						dataIndex: 'response_message',
-						renderer: me.newRenderer
-					},
-					{
-						text: _('status'),
-						width: 100,
-						dataIndex: 'amendment_status',
-						renderer: function(v, meta, record){
-							var str;
-
-							if(v === 'W'){
-								str = _('waiting_response');
-							}else if(v === 'A'){
-								str = _('approved');
-							}else if(v === 'D'){
-								str = _('denied');
-							}else if(v === 'C'){
-								str = _('canceled');
-							}else if(v === 'E'){
-								str = _('error');
-							}else{
-								str = v;
-							}
-
-							me.controller.updateIsViewed(record);
-
-							return me.newRenderer(str, meta, record);
-						}
-					},
-					{
-						text: _('approved_denied_by'),
-						width: 200,
-						dataIndex: 'responded_by',
-						renderer: me.newRenderer
-					}
-				],
-				bbar: {
-					xtype: 'pagingtoolbar',
-					pageSize: 25,
-					store: me.store,
-					displayInfo: true,
-					plugins: new Ext.ux.SlidingPager()
-				}
-			}
-		];
-
-		me.callParent();
-	},
-
-	newRenderer: function(v, meta, record){
-		if(!record.data.is_read){
-			meta.style = 'font-weight:bold';
-		}
-		return v;
-	},
-
-	dateNewRenderer: function(v, meta, record){
-		if(!record.data.is_read){
-			meta.style = 'font-weight:bold';
-		}
-		return Ext.Date.format(v, g('date_time_display_format'));
-	}
-
-});
-
 Ext.define('App.view.signature.SignatureWindow', {
 	extend      : 'Ext.window.Window',
 	title       : _('please_sign'),
@@ -31816,10 +31793,6 @@ Ext.define('App.view.signature.SignatureWindow', {
 });
 Ext.define('App.store.miscellaneous.AddressBook', {
 	model: 'App.model.miscellaneous.AddressBook',
-	extend: 'Ext.data.Store'
-});
-Ext.define('App.store.miscellaneous.Amendments', {
-	model: 'App.model.miscellaneous.Amendment',
 	extend: 'Ext.data.Store'
 });
 Ext.define('App.store.patient.CarePlanGoals', {
@@ -31907,30 +31880,6 @@ Ext.define('App.store.administration.DocumentsTemplates', {
 	},
 	autoSync: true,
 	autoLoad: false
-}); 
-Ext.define('App.store.administration.ExternalDataLoads',
-{
-	model : 'App.model.administration.ExternalDataLoads',
-	extend : 'Ext.data.Store',
-	constructor : function(config)
-	{
-		var me = this;
-		me.proxy =
-		{
-			type : 'direct',
-			api :
-			{
-				read : ExternalDataUpdate.getCodeFiles
-			},
-			extraParams :
-			{
-				codeType : config.codeType
-			}
-		};
-		me.callParent(arguments);
-	},
-	remoteSort : false,
-	autoLoad : false
 }); 
 Ext.define('App.store.administration.DocumentToken', {
     model: 'App.model.administration.DocumentToken',
@@ -32354,6 +32303,30 @@ Ext.define('App.store.administration.DocumentToken', {
         }
     ]
 });
+Ext.define('App.store.administration.ExternalDataLoads',
+{
+	model : 'App.model.administration.ExternalDataLoads',
+	extend : 'Ext.data.Store',
+	constructor : function(config)
+	{
+		var me = this;
+		me.proxy =
+		{
+			type : 'direct',
+			api :
+			{
+				read : ExternalDataUpdate.getCodeFiles
+			},
+			extraParams :
+			{
+				codeType : config.codeType
+			}
+		};
+		me.callParent(arguments);
+	},
+	remoteSort : false,
+	autoLoad : false
+}); 
 Ext.define('App.store.administration.Facility', {
     model: 'App.model.administration.Facility',
     extend: 'Ext.data.Store',
@@ -32373,12 +32346,6 @@ Ext.define('App.store.administration.FloorPlans', {
 	autoSync: false,
 	autoLoad: false
 }); 
-Ext.define('App.store.administration.FloorPlanZones', {
-	extend: 'Ext.data.Store',
-	model: 'App.model.administration.FloorPlanZones',
-	autoSync: false,
-	autoLoad: false
-});
 Ext.define('App.store.administration.FormListOptions', {
     model: 'App.model.administration.FormListOptions',
     extend: 'Ext.data.Store',
@@ -32490,14 +32457,7 @@ Ext.define('App.store.administration.Medications',{
 }); 
 Ext.define('App.store.administration.Modules', {
     model: 'App.model.administration.Modules',
-    extend: 'Ext.data.Store',
-    proxy: {
-        type: 'direct',
-        api: {
-            read: 'Modules.getActiveModules',
-            update: 'Modules.updateModule'
-        }
-    }
+    extend: 'Ext.data.Store'
 });
 Ext.define('App.store.administration.ParentFields', {
 	model: 'App.model.administration.ParentFields',
@@ -32548,6 +32508,21 @@ Ext.define('App.store.administration.PreventiveCareActiveProblems', {
 	remoteSort: false,
 	autoLoad: false
 });
+Ext.define('App.store.administration.PreventiveCareLabs', {
+	model: 'App.model.administration.PreventiveCareLabs',
+	extend: 'Ext.data.Store',
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'PreventiveCare.getGuideLineLabs',
+			create: 'PreventiveCare.addGuideLineLabs',
+			destroy: 'PreventiveCare.removeGuideLineLabs',
+			update: 'PreventiveCare.updateGuideLineLabs'
+		}
+	},
+	remoteSort: false,
+	autoLoad: false
+}); 
 Ext.define('App.store.administration.PreventiveCareMedications', {
 	model: 'App.model.administration.PreventiveCareMedications',
 	extend: 'Ext.data.Store',
@@ -32566,21 +32541,6 @@ Ext.define('App.store.administration.ProviderCredentializations', {
     model: 'App.model.administration.ProviderCredentialization',
     extend: 'Ext.data.Store'
 });
-Ext.define('App.store.administration.PreventiveCareLabs', {
-	model: 'App.model.administration.PreventiveCareLabs',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'PreventiveCare.getGuideLineLabs',
-			create: 'PreventiveCare.addGuideLineLabs',
-			destroy: 'PreventiveCare.removeGuideLineLabs',
-			update: 'PreventiveCare.updateGuideLineLabs'
-		}
-	},
-	remoteSort: false,
-	autoLoad: false
-}); 
 Ext.define('App.store.administration.Services', {
 	model: 'App.model.administration.Services',
 	extend: 'Ext.data.Store',
@@ -32618,6 +32578,1032 @@ Ext.define('App.store.administration.User', {
     extend: 'Ext.data.Store',
     autoLoad: false
 }); 
+Ext.define('App.view.administration.Layout', {
+    extend: 'App.ux.RenderPanel',
+    id: 'panelLayout',
+    pageTitle: _('layout_form_editor'),
+    pageLayout: 'border',
+    initComponent: function(){
+        var me = this;
+
+        me.currForm = null;
+        me.currField = null;
+
+	    /**
+	     *
+	     * @type {App.store.administration.LayoutTree}
+	     */
+        me.fieldsGridStore = Ext.create('App.store.administration.LayoutTree');
+
+        /**
+         * Xtype Combobox store
+         */
+        me.fieldXTypesStore = Ext.create('App.store.administration.XtypesComboModel');
+
+        /**
+         * Forms grid store (left grid)
+         */
+        me.formsGridStore = Ext.create('App.store.administration.FormsList');
+
+        /**
+         * Field available on this form as parent items (fieldset / fieldcontainer )
+         * use to get the "Child of" combobox data
+         */
+        me.parentFieldsStore = Ext.create('App.store.administration.ParentFields');
+
+        /**
+         * This are the select lists available to use for comboboxes
+         * this lists can be created an modified at "Lists" administration panel.
+         */
+        me.selectListoptionsStore = Ext.create('App.store.administration.FormListOptions');
+
+        /**
+         * This grid only available if the field is a Combobox
+         */
+        me.selectListGrid = Ext.create('Ext.grid.Panel', {
+            store: me.selectListoptionsStore,
+            collapseMode: 'mini',
+            height:200,
+            split: true,
+            border: false,
+            titleCollapse: false,
+            hideCollapseTool: true,
+            collapsible: true,
+            collapsed: true,
+            columns: [
+                {
+                    text: _('name'),
+                    flex: 1,
+                    sortable: false,
+                    dataIndex: 'option_name'
+                },
+                {
+                    text: _('value'),
+                    flex: 1,
+                    sortable: false,
+                    dataIndex: 'option_value'
+                }
+            ]
+        });
+
+        /**
+         * form to create and modified the fields
+         */
+        me.fieldForm = Ext.create('Ext.form.Panel', {
+            flex:2,
+            border: false,
+            autoScroll: true,
+            fieldDefaults: {
+                msgTarget: 'side',
+                labelWidth: 100
+            },
+            defaults: {
+                anchor: '100%'
+            },
+            items: [
+                {
+                    fieldLabel: _('type'),
+                    xtype: 'combo',
+                    name: 'xtype',
+                    displayField: 'name',
+                    valueField: 'value',
+                    allowBlank: false,
+                    editable: false,
+                    store: me.fieldXTypesStore,
+                    queryMode: 'local',
+                    margin: '5 5 5 10',
+                    itemId: 'xtype',
+                    listeners: {
+                        scope: me,
+                        change: me.onXtypeChange
+                    }
+                },
+                {
+                    fieldLabel: _('child_of'),
+                    xtype: 'combo',
+                    name: 'parentId',
+                    displayField: 'name',
+                    valueField: 'value',
+                    editable: false,
+                    hideTrigger: true,
+	                allowBlank: false,
+                    store: me.parentFieldsStore,
+                    queryMode: 'local',
+                    margin: '5 5 5 10',
+                    emptyText: 'None',
+                    itemId: 'parentFields',
+                    listeners: {
+                        scope: me,
+                        expand: me.onParentFieldsExpand
+                    }
+                },
+                {
+                    xtype: 'fieldset',
+                    itemId: 'aditionalProperties',
+                    title: _('aditional_properties'),
+                    margin: '0 5 5 5',
+                    defaults: {
+                        anchor: '100%'
+                    },
+                    items: [
+                        {
+                            fieldLabel: _('title'),
+                            xtype: 'textfield',
+                            name: 'title',
+                            itemId: 'title',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('field_label'),
+                            xtype: 'textfield',
+                            name: 'fieldLabel',
+                            itemId: 'fieldLabel',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('box_label'),
+                            xtype: 'textfield',
+                            name: 'boxLabel',
+                            itemId: 'boxLabel',
+                            allowBlank: false,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('label_width'),
+                            xtype: 'textfield',
+                            name: 'labelWidth',
+                            itemId: 'labelWidth',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('hide_label'),
+                            xtype: 'checkbox',
+                            name: 'hideLabel',
+                            itemId: 'hideLabel',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('empty_text'),
+                            xtype: 'textfield',
+                            name: 'emptyText',
+                            itemId: 'emptyText',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('layout'),
+                            xtype: 'textfield',
+                            name: 'layout',
+                            itemId: 'layout',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('name'),
+                            xtype: 'textfield',
+                            name: 'name',
+                            itemId: 'name',
+                            allowBlank: false,
+                            hidden: true,
+	                        listeners:{
+		                        scope:me,
+		                        change: me.onNameValueChange
+	                        }
+                        },
+                        {
+                            fieldLabel: _('input_value'),
+                            xtype: 'textfield',
+                            name: 'inputValue',
+                            itemId: 'inputValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('width'),
+                            xtype: 'textfield',
+                            name: 'width',
+                            itemId: 'width',
+                            emptyText: 'ei. 5 for 5px',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('height'),
+                            xtype: 'textfield',
+                            name: 'height',
+                            itemId: 'height',
+                            emptyText: 'ei. 5 for 5px',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('anchor'),
+                            xtype: 'textfield',
+                            name: 'anchor',
+                            itemId: 'anchor',
+                            emptyText: 'ei. 100%',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('flex'),
+                            xtype: 'checkbox',
+                            name: 'flex',
+                            itemId: 'flex',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('collapsible'),
+                            xtype: 'checkbox',
+                            name: 'collapsible',
+                            itemId: 'collapsible',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('checkbox_toggle'),
+                            xtype: 'checkbox',
+                            name: 'checkboxToggle',
+                            itemId: 'checkboxToggle',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('collapsed'),
+                            xtype: 'checkbox',
+                            name: 'collapsed',
+                            itemId: 'collapsed',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('margin'),
+                            xtype: 'textfield',
+                            name: 'margin',
+                            itemId: 'margin',
+                            emptyText: 'ei. 5 5 5 5',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('column_width'),
+                            xtype: 'textfield',
+                            name: 'columnWidth',
+                            itemId: 'columnWidth',
+                            emptyText: 'ei. .5',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('is_required'),
+                            xtype: 'checkbox',
+                            name: 'allowBlank',
+                            itemId: 'allowBlank',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('min_length'),
+                            xtype: 'numberfield',
+                            name: 'minLength',
+                            itemId: 'minLength',
+	                        minValue: 0,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('max_length'),
+                            xtype: 'numberfield',
+                            name: 'maxLength',
+                            itemId: 'maxLength',
+	                        minValue: 0,
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('value'),
+                            xtype: 'textfield',
+                            name: 'value',
+                            itemId: 'value',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('max_value'),
+                            xtype: 'textfield',
+                            name: 'maxValue',
+                            itemId: 'maxValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('min_value'),
+                            xtype: 'textfield',
+                            name: 'minValue',
+                            itemId: 'minValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('max_value'),
+                            xtype: 'timefield',
+                            name: 'maxValue',
+                            itemId: 'timeMaxValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('min_value'),
+                            xtype: 'timefield',
+                            name: 'minValue',
+                            itemId: 'timeMinValue',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('grow'),
+                            xtype: 'checkbox',
+                            name: 'grow',
+                            itemId: 'grow',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('grow_min'),
+                            xtype: 'textfield',
+                            name: 'growMin',
+                            itemId: 'growMin',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('grow_max'),
+                            xtype: 'textfield',
+                            name: 'growMax',
+                            itemId: 'growMax',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('increment'),
+                            xtype: 'textfield',
+                            name: 'increment',
+                            itemId: 'increment',
+                            hidden: true
+                        },
+                        {
+                            fieldLabel: _('list_options'),
+                            xtype: 'mitos.listscombo',
+                            name: 'list_id',
+                            itemId: 'list_id',
+                            hidden: true,
+                            allowBlank: false,
+                            listeners: {
+                                scope: me,
+                                change: me.onSelectListSelect
+                            }
+                        },
+	                    {
+		                    fieldLabel: _('code'),
+		                    xtype: 'textfield',
+		                    name: 'code',
+		                    itemId: 'code',
+		                    emptyText: 'ei. SNOMED:254687942 or ICD10:H25.091',
+		                    hidden: true
+	                    },
+	                    {
+		                    fieldLabel: _('item_id'),
+		                    xtype: 'textfield',
+		                    name: 'itemId',
+		                    itemId: 'itemId',
+		                    emptyText: 'sencha itemId',
+		                    hidden: true
+	                    },
+	                    {
+		                    fieldLabel: _('action'),
+		                    xtype: 'textfield',
+		                    name: 'action',
+		                    itemId: 'action',
+		                    emptyText: 'sencha action',
+		                    hidden: true
+	                    }
+                    ]
+                }
+            ]
+        });
+
+        /**
+         * this container holds the form and the select list grid.
+         * remember that the select list grid only shows if
+         * the field xtype is a combobox
+         */
+        me.formContainer = Ext.create('Ext.panel.Panel', {
+            title: _('field_configuration'),
+            border: true,
+            split: true,
+            width: 390,
+            region: 'east',
+            layout: {
+                type:'vbox',
+                align:'stretch'
+            },
+            bodyStyle: 'background-color:#fff!important',
+            items: [
+	            me.fieldForm,
+	            me.selectListGrid
+            ],
+            buttons:[
+                {
+                    text: _('delete'),
+                    iconCls: 'icoDeleteBlack',
+                    scope: me,
+                    handler: me.onFieldDelete
+                },
+                {
+                    text: _('reset'),
+                    iconCls: 'icoReload',
+                    scope: me,
+                    handler: me.onFormReset
+                },
+                {
+                    text: _('save'),
+                    iconCls: 'save',
+                    scope: me,
+                    handler: me.onFieldSave
+                }
+            ],
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    items: [
+                        '->',
+                        {
+                            text: _('add_new'),
+                            iconCls: 'icoAddRecord',
+                            scope: me,
+                            handler: me.onFormReset
+                        },
+                        '-',
+                        {
+                            text: _('add_child'),
+                            iconCls: 'icoAddRecord',
+                            itemId: 'addChild',
+                            disabled: true,
+                            scope: me,
+                            handler: me.onAddChild
+                        },
+                        '-',
+                        {
+                            text: _('form_preview'),
+                            iconCls: 'icoPreview',
+                            enableToggle: true,
+                            listeners: {
+                                scope: me,
+                                toggle: me.onFormPreview
+                            }
+                        }
+                    ]
+                }
+            ]
+        });
+
+        /**
+         * This is the fields associated with the current Form selected
+         */
+        me.fieldsGrid = Ext.create('Ext.tree.Panel', {
+            store: me.fieldsGridStore,
+            region: 'center',
+            border: true,
+            sortable: false,
+            rootVisible: false,
+            title: _('field_editor_demographics'),
+            viewConfig: {
+                plugins: {
+                    ptype: 'treeviewdragdrop',
+	                expandDelay:0,
+                    allowParentInsert: false
+                },
+                listeners: {
+                    scope: me,
+                    drop: me.onDragDrop,
+	                itemkeydown: me.onFieldKeyDown
+                }
+            },
+            columns: [
+                {
+                    xtype: 'treecolumn',
+                    text: _('field_type'),
+                    sortable: false,
+                    dataIndex: 'xtype',
+                    width: 200,
+                    align: 'left'
+                },
+                {
+                    text: _('title'),
+                    sortable: false,
+                    dataIndex: 'title',
+                    width: 100,
+                    align: 'left'
+                },
+                {
+                    text: _('label'),
+                    sortable: false,
+                    dataIndex: 'fieldLabel',
+                    flex: 1,
+                    align: 'left'
+                }
+            ],
+            listeners: {
+                scope: me,
+	            selectionchange: me.onFieldsGridSelectionChange
+            }
+        });
+
+        /**
+         * Form grid will show the available forms to modified.
+         * the user will not have the options to create
+         * forms, just to modified the fields of existing forms.
+         */
+        me.formsGrid = Ext.create('Ext.grid.Panel', {
+            title: _('form_list'),
+            region: 'west',
+            store: me.formsGridStore,
+            width: 200,
+            border: true,
+            split: true,
+            hideHeaders: true,
+            columns: [
+                {
+                    dataIndex: 'id',
+                    hidden: true
+                },
+                {
+                    flex: 1,
+                    sortable: true,
+                    dataIndex: 'name'
+                }
+            ],
+            listeners: {
+                scope: me,
+                itemclick: me.onFormGridItemClick
+            }
+        });
+
+        /**
+         * this panel will render the current form to preview
+         * all the changes done.
+         */
+        me.fromPreview = Ext.create('Ext.form.Panel', {
+            region: 'south',
+            height: 300,
+            collapsible: true,
+            titleCollapse: false,
+            hideCollapseTool: true,
+            collapsed: true,
+            border: true,
+            split: true,
+            collapseMode: 'header',
+            bodyStyle: 'padding: 5px',
+            layout: 'anchor',
+            fieldDefaults: {
+                msgTarget: 'side'
+            },
+            tools: [
+                {
+                    itemId: 'refresh',
+                    type: 'refresh',
+                    scope: me,
+                    handler: me.previewFormRender
+                }
+            ]
+        });
+        me.pageBody = [
+	        me.fieldsGrid,
+	        me.formsGrid,
+	        me.formContainer,
+	        me.fromPreview
+        ];
+        me.callParent(arguments);
+    },
+
+    /**
+     * if the form is valid send the POST request
+     */
+    onFieldSave: function(){
+        var me = this,
+            form = me.fieldForm.getForm(),
+            record = form.getRecord(),
+            store = me.fieldsGridStore,
+            parentNode = store.getNodeById(record.data.parentId) || store.getRootNode(),
+            values = form.getValues();
+
+        if(form.isValid()){
+
+            values.form_id = record.data.form_id;
+            values.leaf = (values.xtype != 'fieldcontainer' && values.xtype != 'fieldset');
+            record.set(values);
+
+            if(record.data.id == ''){
+	            parentNode.appendChild(record);
+            }
+
+            me.fieldsGridStore.sync({
+               success:function(batch, options){
+                   me.previewFormRender();
+                   me.loadCurrFormParentField();
+
+	               say(batch);
+	               say(options);
+
+                   // this is the quick way to apply the return changes to the model
+	               if(record.data.id == ''){
+		               say(batch.proxy.reader.rawData.id);
+		               record.set({ id: batch.proxy.reader.rawData.id });
+		               record.commit();
+	               }
+
+	               me.fieldsGrid.getSelectionModel().select(record);
+                   me.msg('Sweet!', _('record_saved'));
+               },
+               failure:function(batch){
+
+	               record.remove();
+
+	               me.msg('Oops!', batch.proxy.reader.rawData.message, true);
+                   me.loadFieldsGrid();
+               }
+           });
+        }
+    },
+
+	/**
+	 * Delete Field logic
+	 * @param record
+	 */
+	deleteField:function(record){
+		var me = this;
+
+		say(record.childNodes);
+
+		if(record.childNodes.length > 0){
+			me.msg(_('oops'), _('children_fields_must_be_remove_first'), true);
+			return;
+		}
+
+		Ext.Msg.show({
+			title: _('please_confirm') + '...',
+			icon: Ext.MessageBox.QUESTION,
+			msg: _('delete_this_field'),
+			buttons: Ext.Msg.YESNO,
+			scope: this,
+			fn: function(btn){
+				if(btn == 'yes'){
+					record.remove();
+					me.fieldsGridStore.sync({
+						success:function(){
+							me.previewFormRender();
+							me.msg('Sweet!', _('record_removed'));
+						},
+						failure:function(batch){
+							me.msg('Oops!', batch.proxy.reader.rawData.message, true);
+							me.loadFieldsGrid();
+						}
+					});
+				}
+			}
+		});
+	},
+
+	/**
+	 *
+	 * @param view
+	 * @param record
+	 * @param item
+	 * @param idex
+	 * @param e
+	 */
+	onFieldKeyDown:function(view, record, item, idex, e){
+		if(e.getKey() == e.DELETE){
+			this.deleteField(record);
+		}
+	},
+
+    /**
+     *
+     */
+    onFieldDelete: function(){
+        var me = this,
+	        form = me.fieldForm.getForm(),
+	        record = form.getRecord();
+
+	    me.deleteField(record);
+    },
+
+    /**
+     *
+     * @param node
+     * @param data
+     * @param overModel
+     */
+    onDragDrop: function(node, data, overModel){
+        var me = this;
+
+        me.fieldsGridStore.sync({
+            success:function(){
+                me.previewFormRender();
+                me.msg('Sweet!', 'Field Updated');
+            },
+            failure:function(batch){
+                Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                me.loadFieldsGrid();
+            }
+        });
+    },
+
+    /**
+     * This is to reset the Form and load
+     * a new Model with the currForm id
+     */
+    onFormReset: function(){
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm(),
+            selection = me.fieldsGrid.getSelectionModel(),
+	        record = Ext.create('App.model.administration.LayoutTree', {
+		        form_id: me.currForm,
+		        parentId: 'root'
+	        });
+
+	    selection.deselectAll();
+
+        form.reset();
+        form.loadRecord(record);
+    },
+
+	onNameValueChange:function(field, value){
+		field.setDisabled(field.up('form').getForm().getRecord().data.id != 0);
+	},
+
+    /**
+     *
+     * load a new model with the form_id and parentId values.
+     * This is the easy way to add a child to a fieldset or fieldcontainer.
+     */
+    onAddChild: function(){
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm(),
+            row = me.fieldsGrid.getSelectionModel();
+
+        row.deselectAll();
+        form.reset();
+
+        form.loadRecord(
+            Ext.create('App.model.administration.LayoutTree',{
+                form_id: me.currForm,
+                parentId: me.currField
+            })
+        );
+    },
+
+    /**
+     *
+     * This will load the current field data to the form,
+     * set the currField, and enable the Add Child btn if
+     * the field allows child items (fieldset or fieldcontainer)
+     *
+     * @param sm
+     * @param records
+     */
+    onFieldsGridSelectionChange: function(sm, records){
+        var me = this,
+            formPanel = me.fieldForm,
+            form = formPanel.getForm();
+
+	    if(records.length > 0){
+		    form.loadRecord(records[0]);
+		    me.currField = records[0].data.id;
+		    if(records[0].data.xtype == 'fieldset' || records[0].data.xtype == 'fieldcontainer'){
+			    me.formContainer.down('toolbar').getComponent('addChild').enable();
+		    }else{
+			    me.formContainer.down('toolbar').getComponent('addChild').disable();
+		    }
+		    formPanel.el.unmask();
+	    }else{
+		    me.onFormReset();
+	    }
+    },
+
+    /**
+     *
+     * @param DataView
+     * @param record
+     */
+    onFormGridItemClick: function(DataView, record){
+        var me = this;
+
+        me.currForm = record.get('id');
+        me.fieldsGrid.setTitle(_('field_editor') + ' (' + record.get('name') + ')');
+        me.loadFieldsGrid();
+        me.onFormReset();
+    },
+
+    /**
+     *
+     * This will load the Select List options. This Combobox shows only when
+     * a Type of Combobox is selected
+     *
+     * @param combo
+     * @param value
+     */
+    onSelectListSelect: function(combo, value){
+        var me = this;
+
+        me.selectListoptionsStore.load({
+            params: {
+                list_id: value
+            }
+        });
+    },
+
+    /**
+     *
+     * This is to handle a error when loading a combobox store.
+     *
+     * @param combo
+     */
+    onParentFieldsExpand: function(combo){
+        combo.picker.loadMask.destroy();
+    },
+
+    /**
+     * onXtypeChange will search the combo value and enable/disable
+     * the fields appropriate for the xtype selected
+     *
+     * @param combo
+     * @param value
+     */
+    onXtypeChange: function(combo, value){
+        var me = this;
+
+        if(value == 'combobox'){
+            me.selectListGrid.setTitle(_('select_list_options'));
+            me.selectListGrid.expand();
+            me.selectListGrid.enable();
+        }else{
+            me.selectListGrid.setTitle('');
+            me.selectListGrid.collapse();
+            me.selectListGrid.disable();
+        }
+
+        /**
+         *
+         * @param searchStr
+         */
+        Array.prototype.find = function(searchStr){
+            var returnArray = false;
+
+            for(var i = 0; i < this.length; i++){
+                if(typeof (searchStr) == 'function'){
+                    if(searchStr.test(this[i])){
+                        if(!returnArray){
+                            returnArray = [];
+                        }
+                        returnArray.push(i);
+                    }
+                }else{
+                    if(this[i] === searchStr){
+                        if(!returnArray){
+                            returnArray = [];
+                        }
+                        returnArray.push(i);
+                    }
+                }
+            }
+
+            return returnArray;
+        };
+
+        var addProp = me.fieldForm.getComponent('aditionalProperties');
+        var is = addProp.items.keys;
+
+        /**
+         *
+         * @param items
+         */
+        function enableItems(items){
+            for(var i = 0; i < is.length; i++){
+                if(!items.find(is[i])){
+                    addProp.getComponent(is[i]).hide();
+                    addProp.getComponent(is[i]).disable();
+                }else{
+                    addProp.getComponent(is[i]).show();
+                    addProp.getComponent(is[i]).enable();
+                }
+            }
+        }
+
+        var items;
+        if(value == 'fieldset'){
+            items = ['itemId', 'action', 'title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
+        }else if(value == 'fieldcontainer'){
+            items = ['itemId', 'action', 'fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
+        }else if(value == 'combobox'){
+            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
+        }else if(value == 'checkbox'){
+            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
+        }else if(value == 'textfield'){
+            items = ['itemId', 'action', 'name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
+        }else if(value == 'textareafield'){
+            items = ['itemId', 'action', 'name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
+        }else if(value == 'numberfield'){
+            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+        }else if(value == 'timefield'){
+            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+        }else if(value == 'radiofield'){
+            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
+        }else if(value == 'datefield' || value == 'mitos.datetime'){
+            items = ['itemId', 'action', 'name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+        }else if(value == 'checkboxwithfamilyhistory'){
+	        items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
+        }else{
+            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+        }
+        enableItems(items);
+    },
+
+    /**
+     *
+     * On toggle down/true expand the preview panel and re-render the form
+     *
+     * @param btn
+     * @param toggle
+     */
+    onFormPreview: function(btn, toggle){
+        var me = this;
+
+        if(toggle === true){
+            me.fromPreview.expand(false);
+            me.previewFormRender();
+        }else{
+            me.fromPreview.collapse(false);
+        }
+    },
+
+    /**
+     *
+     *  this function re-render the preview form
+     */
+    previewFormRender: function(){
+        var me = this,
+	        form = this.fromPreview;
+
+        if(form.collapsed !== true){
+            form.el.mask();
+            me.getFormItems(form, me.currForm, function(){
+                form.el.unmask();
+            });
+        }
+
+    },
+
+    /**
+     *
+     *  re-load the fields grid (main TreeGrid)
+     *  check if a form is selected, if not the select the first choice
+     *  save the form id inside this.currForm and load the grid and the
+     *  parent fields of this form.
+     *
+     *  parentFieldsStore is use to create the child of select list
+     */
+    loadFieldsGrid: function(){
+        var me = this;
+
+        me.fieldsGridStore.load({
+            params: {
+                currForm: me.currForm
+            }
+        });
+
+        me.loadCurrFormParentField();
+        me.previewFormRender();
+        me.fieldsGrid.doLayout()
+    },
+
+    loadCurrFormParentField:function(){
+	    var me = this;
+	    me.parentFieldsStore.load({ params:{ currForm: me.currForm } });
+    },
+
+    /**
+     * This function is called from Viewport.js when
+     * this panel is selected in the navigation panel.
+     * place inside this function all the functions you want
+     * to call every this panel becomes active
+     */
+    onActive: function(callback){
+        var me = this,
+	        sm = me.formsGrid.getSelectionModel();
+
+        if(me.currForm === null){
+            me.formsGridStore.load({
+	            filters:[
+		            {
+			            property:'active',
+			            value:1
+		            }
+	            ],
+                callback:function(records){
+	                sm.select(records[0]);
+	                me.currForm = records[0].data.id;
+	                me.loadFieldsGrid();
+	                me.onFormReset();
+                }
+            });
+        }
+
+        callback(true);
+    }
+}); 
 Ext.define('App.store.administration.XtypesComboModel', {
 	model: 'App.model.administration.XtypesComboModel',
 	extend: 'Ext.data.Store',
@@ -32633,6 +33619,10 @@ Ext.define('App.store.miscellaneous.OfficeNotes', {
 	extend    : 'Ext.data.Store',
 	model     : 'App.model.miscellaneous.OfficeNotes',
 	autoLoad  : false
+});
+Ext.define('App.store.miscellaneous.Amendments', {
+	model: 'App.model.miscellaneous.Amendment',
+	extend: 'Ext.data.Store'
 });
 Ext.define('App.store.account.VoucherLine', {
 	extend: 'Ext.data.Store',
@@ -32684,6 +33674,10 @@ Ext.define('App.store.patient.encounter.Procedures', {
     extend: 'Ext.data.Store',
 	autoLoad:false
 });
+Ext.define('App.store.patient.AdvanceDirectives', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.patient.AdvanceDirective'
+});
 Ext.define('App.store.patient.CptCodes', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.CptCodes',
@@ -32705,6 +33699,12 @@ Ext.define('App.store.patient.Disclosures', {
 Ext.define('App.store.patient.EncounterServices', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.patient.EncounterService'
+});
+Ext.define('App.store.patient.Encounters', {
+	extend: 'Ext.data.Store',
+	requires: ['App.model.patient.Encounter'],
+	model: 'App.model.patient.Encounter',
+	remoteSort: true
 });
 Ext.define('App.store.patient.CVXCodes', {
 	extend: 'Ext.data.Store',
@@ -32842,15 +33842,6 @@ Ext.define('App.store.patient.PreventiveCare', {
 
 
 
-Ext.define('App.store.patient.ProgressNotesHistory', {
-	extend: 'Ext.data.Store',
-	requires:['App.model.patient.ProgressNotesHistory'],
-	model: 'App.model.patient.ProgressNotesHistory',
-	remoteFilter: false
-});
-
-
-
 Ext.define('App.store.patient.QRCptCodes', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.QRCptCodes',
@@ -32865,12 +33856,6 @@ Ext.define('App.store.patient.Referrals', {
 
 
 
-Ext.define('App.store.patient.Reminders', {
-	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.Reminders',
-	remoteSort: false,
-	autoLoad  : false
-});
 Ext.define('App.store.patient.Surgery', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Surgery',
@@ -33178,6 +34163,118 @@ Ext.define('App.controller.administration.FacilityStructure', {
 	}
 
 });
+Ext.define('App.controller.administration.HL7', {
+	extend: 'Ext.app.Controller',
+
+	refs: [
+		{
+			ref: 'HL7ServersPanel',
+			selector: 'hl7serverspanel'
+		},
+		{
+			ref: 'HL7ServersGrid',
+			selector: '#hl7serversgrid'
+		},
+		{
+			ref: 'HL7ClientsGrid',
+			selector: '#hl7clientsgrid'
+		}
+	],
+
+	init: function(){
+		var me = this;
+
+		me.control({
+			'hl7serverspanel': {
+				activate: me.onHL7ServersPanelActive
+			},
+			'#hl7serversgrid': {
+				beforeedit: me.onHL7ServersGridBeforeEdit,
+				validateedit: me.onHL7ServersGridValidateEdit
+			},
+			'#hl7serversgrid #addHL7ServerBtn': {
+				click: me.onAddHL7ServerBtnClick
+			},
+			'#hl7serversgrid #removeHL7ServerBtn': {
+				click: me.onRemoveHL7ServerBtnClick
+			},
+			'#hl7clientsgrid #addHL7ClientBtn': {
+				click: me.onAddHL7ClientBtnClick
+			},
+			'#hl7clientsgrid #removeHL7ClientBtn': {
+				click: me.onRemoveHL7ClientBtnClick
+			}
+		});
+
+	},
+
+	onAddHL7ServerBtnClick: function(){
+		var me = this,
+			grid = me.getHL7ServersGrid(),
+			store = grid.getStore();
+
+		grid.editingPlugin.cancelEdit();
+		store.insert(0, {});
+		grid.editingPlugin.startEdit(0, 0);
+	},
+
+	onAddHL7ClientBtnClick: function(){
+		var me = this,
+			grid = me.getHL7ClientsGrid(),
+			store = grid.getStore();
+
+		grid.editingPlugin.cancelEdit();
+		store.insert(0, {});
+		grid.editingPlugin.startEdit(0, 0);
+	},
+
+	onRemoveHL7ServerBtnClick: function(){
+
+	},
+
+	onRemoveHL7ClientBtnClick: function(){
+
+	},
+
+	serverStartHandler: function(record){
+		HL7ServerHandler.start({ id: record.data.id, ip: record.data.ip, port: record.data.port }, function(provider, response){
+			record.set({'online': response.result.online, token: response.result.token});
+			record.commit();
+		});
+	},
+
+	serverStopHandler: function(record){
+		HL7ServerHandler.stop({ token: record.data.token, ip: record.data.ip, port: record.data.port }, function(provider, response){
+			record.set({'online': response.result.online});
+			record.commit();
+		});
+	},
+
+	onHL7ServersPanelActive: function(){
+		this.reloadStore();
+	},
+
+	reloadStore: function(){
+		this.getHL7ServersGrid().getStore().load();
+		this.getHL7ClientsGrid().getStore().load();
+	},
+
+	onHL7ServersGridBeforeEdit: function(plugin, e){
+		var multiField = plugin.editor.query('multitextfield')[0],
+			data = e.record.data.allow_ips;
+
+		Ext.Function.defer(function(){
+			multiField.setValue(data);
+		}, 10);
+	},
+
+	onHL7ServersGridValidateEdit: function(plugin, e){
+		var multiField = plugin.editor.query('multitextfield')[0],
+			values = multiField.getValue();
+		e.record.set({ allow_ips: values });
+	}
+
+});
 Ext.define('App.controller.administration.DecisionSupport', {
 	extend: 'Ext.app.Controller',
 
@@ -33462,118 +34559,6 @@ Ext.define('App.controller.administration.DecisionSupport', {
 	}
 
 });
-Ext.define('App.controller.administration.HL7', {
-	extend: 'Ext.app.Controller',
-
-	refs: [
-		{
-			ref: 'HL7ServersPanel',
-			selector: 'hl7serverspanel'
-		},
-		{
-			ref: 'HL7ServersGrid',
-			selector: '#hl7serversgrid'
-		},
-		{
-			ref: 'HL7ClientsGrid',
-			selector: '#hl7clientsgrid'
-		}
-	],
-
-	init: function(){
-		var me = this;
-
-		me.control({
-			'hl7serverspanel': {
-				activate: me.onHL7ServersPanelActive
-			},
-			'#hl7serversgrid': {
-				beforeedit: me.onHL7ServersGridBeforeEdit,
-				validateedit: me.onHL7ServersGridValidateEdit
-			},
-			'#hl7serversgrid #addHL7ServerBtn': {
-				click: me.onAddHL7ServerBtnClick
-			},
-			'#hl7serversgrid #removeHL7ServerBtn': {
-				click: me.onRemoveHL7ServerBtnClick
-			},
-			'#hl7clientsgrid #addHL7ClientBtn': {
-				click: me.onAddHL7ClientBtnClick
-			},
-			'#hl7clientsgrid #removeHL7ClientBtn': {
-				click: me.onRemoveHL7ClientBtnClick
-			}
-		});
-
-	},
-
-	onAddHL7ServerBtnClick: function(){
-		var me = this,
-			grid = me.getHL7ServersGrid(),
-			store = grid.getStore();
-
-		grid.editingPlugin.cancelEdit();
-		store.insert(0, {});
-		grid.editingPlugin.startEdit(0, 0);
-	},
-
-	onAddHL7ClientBtnClick: function(){
-		var me = this,
-			grid = me.getHL7ClientsGrid(),
-			store = grid.getStore();
-
-		grid.editingPlugin.cancelEdit();
-		store.insert(0, {});
-		grid.editingPlugin.startEdit(0, 0);
-	},
-
-	onRemoveHL7ServerBtnClick: function(){
-
-	},
-
-	onRemoveHL7ClientBtnClick: function(){
-
-	},
-
-	serverStartHandler: function(record){
-		HL7ServerHandler.start({ id: record.data.id, ip: record.data.ip, port: record.data.port }, function(provider, response){
-			record.set({'online': response.result.online, token: response.result.token});
-			record.commit();
-		});
-	},
-
-	serverStopHandler: function(record){
-		HL7ServerHandler.stop({ token: record.data.token, ip: record.data.ip, port: record.data.port }, function(provider, response){
-			record.set({'online': response.result.online});
-			record.commit();
-		});
-	},
-
-	onHL7ServersPanelActive: function(){
-		this.reloadStore();
-	},
-
-	reloadStore: function(){
-		this.getHL7ServersGrid().getStore().load();
-		this.getHL7ClientsGrid().getStore().load();
-	},
-
-	onHL7ServersGridBeforeEdit: function(plugin, e){
-		var multiField = plugin.editor.query('multitextfield')[0],
-			data = e.record.data.allow_ips;
-
-		Ext.Function.defer(function(){
-			multiField.setValue(data);
-		}, 10);
-	},
-
-	onHL7ServersGridValidateEdit: function(plugin, e){
-		var multiField = plugin.editor.query('multitextfield')[0],
-			values = multiField.getValue();
-		e.record.set({ allow_ips: values });
-	}
-
-});
 Ext.define('App.controller.administration.Practice', {
     extend: 'Ext.app.Controller',
 
@@ -33672,228 +34657,6 @@ Ext.define('App.controller.administration.ReferringProviders', {
 	}
 
 });
-Ext.define('App.controller.administration.Roles', {
-	extend: 'Ext.app.Controller',
-
-	requires: [
-		'App.model.administration.AclGroupPerm'
-	],
-
-	refs: [
-		{
-			ref: 'AdministrationRoleGroupCombo',
-			selector: '#AdministrationRoleGroupCombo'
-		},
-		{
-			ref: 'AdministrationRoleGrid',
-			selector: '#AdministrationRoleGrid'
-		}
-	],
-
-	init: function(){
-		this.control({
-			'#AdministrationRolePanel': {
-				render: this.onAdministrationRolePanelRender
-			},
-			'#AdministrationRoleGrid': {
-				beforeedit: this.beforeCellEdit
-			},
-			'#AdministrationRoleGroupCombo': {
-				select: this.doAdministrationRoleGridReconfigure
-			},
-			'button[action=adminAclAddRole]': {
-				click: this.doAddRole
-			},
-			'button[action=adminAclSave]': {
-				click: this.doSaveAcl
-			},
-			'button[action=adminAclCancel]': {
-				click: this.doCancelAcl
-			}
-		});
-	},
-
-	onAdministrationRolePanelRender: function(){
-		var me = this,
-			cmb = me.getAdministrationRoleGroupCombo(),
-			store = cmb.getStore();
-
-		store.load({
-			callback: function(records){
-				cmb.select(records[0]);
-				me.doAdministrationRoleGridReconfigure();
-			}
-		});
-
-	},
-
-	doSaveAcl: function(){
-		var me = this,
-			store = this.getAdministrationRoleGrid().getStore();
-
-		if(store.getUpdatedRecords().length > 0){
-			me.getAdministrationRoleGrid().el.mask(_('saving'));
-		}
-
-		store.sync({
-			callback: function(response){
-				app.msg(_('sweet'), _('record_saved'));
-				me.getAdministrationRoleGrid().el.unmask();
-			}
-		});
-	},
-
-	doCancelAcl: function(){
-		this.getAdministrationRoleGrid().getStore().rejectChanges();
-	},
-
-	beforeCellEdit: function(editor, e){
-		return e.field != 'title';
-	},
-
-	doAdministrationRoleGridReconfigure: function(){
-		var me = this,
-			cmb = me.getAdministrationRoleGroupCombo(),
-			group_id = cmb.getValue(),
-			grid = me.getAdministrationRoleGrid(),
-			fields = [
-				{
-					name: 'id',
-					type: 'int'
-				},
-				{
-					name: 'title',
-					type: 'string'
-				},
-				{
-					name: 'group_id',
-					type: 'int'
-				},
-				{
-					name: 'category',
-					type: 'string'
-				}
-			], columns, store, model;
-
-		// add mask to view while we get the data and grid configurations
-		grid.view.el.mask('Loading');
-		// Ext.direct method to get grid configuration and data
-
-		ACL.getGroupPerms({group_id: group_id}, function(response){
-			// new columns
-			columns = response.columns;
-
-			// set model fields merging default fields and role fields
-			fields = fields.concat(response.fields);
-			me.getModel('administration.AclGroupPerm').setFields(fields);
-
-			var store = Ext.create('Ext.data.Store', {
-				model: 'App.model.administration.AclGroupPerm',
-				groupField: 'category'
-			});
-
-			// add raw data to the store
-			store.loadRawData(response.data);
-
-			// add the checkbox editor and renderer to role fields
-			for(var i = 0; i < columns.length; i++){
-				columns[i].editor = {xtype: "checkbox"};
-				columns[i].renderer = app.boolRenderer;
-			}
-
-			columns.push({
-				flex: 1
-			});
-
-			// reconfigure grid
-			grid.reconfigure(store, columns);
-			// remove grid view mask
-			grid.view.el.unmask();
-
-		});
-	},
-
-	doAddRole: function(){
-		var me = this,
-			record = Ext.create('App.model.administration.AclRoles', {
-				group_id: me.getAdministrationRoleGroupCombo().getValue()
-			});
-
-		me.getRoleWindow().show();
-		me.roleWindow.down('form').getForm().loadRecord(record);
-	},
-
-	doSaveRole: function(){
-		var me = this,
-			panel = me.roleWindow.down('form'),
-			form = panel.getForm(),
-			record = form.getRecord(),
-			values = form.getValues();
-
-		if(form.isValid()){
-			panel.el.mask(_('be_right_back'));
-			record.set(values);
-			record.save({
-				callback: function(rec){
-					me.doAdministrationRoleGridReconfigure();
-					panel.el.unmask();
-					me.roleWindow.close();
-				}
-			});
-		}
-	},
-
-	doCancelRole: function(){
-		this.roleWindow.close();
-	},
-
-	getRoleWindow: function(){
-		var me = this;
-
-		me.roleWindow = Ext.widget('window', {
-			title: _('new_role'),
-			items: [
-				{
-					xtype: 'form',
-					border: false,
-					bodyPadding: 10,
-					items: [
-						{
-							xtype: 'textfield',
-							fieldLabel: _('role_name'),
-							name: 'role_name',
-							allowBlank: false
-						},
-						{
-							xtype: 'checkbox',
-							fieldLabel: _('active'),
-							name: 'active'
-						}
-					]
-				}
-			],
-			buttons: [
-				{
-					text: _('cancel'),
-					cls: 'cancelBtn',
-					scope: me,
-					handler: me.doCancelRole,
-					action: 'adminAclRoleCancel'
-				},
-				{
-					text: _('save'),
-					cls: 'saveBtn',
-					scope: me,
-					handler: me.doSaveRole,
-					action: 'adminAclRoleSave'
-				}
-			]
-		});
-
-		return me.roleWindow;
-	}
-
-});
 Ext.define('App.controller.administration.Specialties', {
 	extend: 'Ext.app.Controller',
 
@@ -33931,6 +34694,202 @@ Ext.define('App.controller.administration.Specialties', {
 			active: 1
 		});
 		grid.editingPlugin.startEdit(0, 0);
+	}
+
+});
+Ext.define('App.controller.administration.TemplatePanels', {
+	extend: 'Ext.app.Controller',
+
+	requires: [],
+
+	refs: [
+		{
+			ref: 'TemplatePanelsWindow',
+			selector: '#TemplatePanelsWindow'
+		},
+		{
+			ref: 'TemplatePanelsGrid',
+			selector: '#TemplatePanelsGrid'
+		},
+		{
+			ref: 'TemplatePanelsCombo',
+			selector: '#TemplatePanelsCombo'
+		},
+		{
+			ref: 'SoapTemplatesBtn',
+			selector: '#SoapTemplatesBtn'
+		},
+		{
+			ref: 'encounterPanel',
+			selector: '#encounterPanel'
+		},
+		{
+			ref: 'soapPanel',
+			selector: '#soapPanel'
+		},
+		{
+			ref: 'soapForm',
+			selector: '#soapForm'
+		}
+	],
+
+	init: function(){
+		var me = this;
+
+		me.control({
+			'viewport': {
+				encounterload: me.onEncounterLoad
+			},
+			'#soapPanel': {
+				activate: me.onSoapPanelActivate,
+				afterrender: me.onSoapPanelAfterRender
+			},
+			'#TemplatePanelsCombo': {
+				select: me.onTemplatePanelsComboSelect
+			},
+			'#SoapTemplatesBtn': {
+				click: me.onSoapTemplatesBtnClick
+			},
+			'#TemplatePanelsAddBtn': {
+				click: me.onTemplatePanelsAddBtnClick
+			},
+			'#TemplatePanelsCancelBtn': {
+				click: me.onTemplatePanelsCancelBtnClick
+			}
+		});
+
+	},
+
+	onEncounterLoad: function(encounter){
+
+		if(!this.getTemplatePanelsWindow()){
+			Ext.create('App.view.patient.windows.TemplatePanels');
+		}
+
+		var me = this,
+			store = me.getTemplatePanelsCombo().getStore();
+
+		store.load({
+			filters: [
+				{
+					property: 'specialty_id',
+					value: encounter.get('specialty_id')
+				},
+				{
+					property: 'active',
+					value: 1
+				}
+			]
+		});
+	},
+
+	onSoapPanelAfterRender: function(){
+		this.getSoapForm().getDockedItems('toolbar[dock="bottom"]')[0].insert(0,{
+			xtype: 'button',
+			text: _('templates'),
+			itemId: 'SoapTemplatesBtn'
+		});
+	},
+
+	onSoapPanelActivate: function(){
+		var hasTemplates = this.getTemplatePanelsCombo().getStore().data.items.length > 0,
+			btn = this.getSoapTemplatesBtn();
+
+		if(hasTemplates){
+			btn.disabled = false;
+			btn.setDisabled(false);
+			btn.setTooltip(_('clinical_templates'));
+		}else{
+			btn.disabled = true;
+			btn.setDisabled(true);
+			btn.setTooltip(_('no_templates_found'));
+		}
+
+	},
+
+	onSoapTemplatesBtnClick: function(){
+		this.doTemplatePanelsWindowShow();
+	},
+
+	onTemplatePanelsComboSelect: function(cmb, records){
+		var me = this,
+			grid = me.getTemplatePanelsGrid(),
+			sm = grid.getSelectionModel(),
+			store = records[0].templates();
+
+		grid.reconfigure(store);
+		store.load({
+			callback: function(){
+				sm.selectAll();
+			}
+		});
+	},
+
+	doTemplatePanelsWindowShow: function(){
+		this.getTemplatePanelsGrid().getStore().removeAll();
+		this.getTemplatePanelsCombo().reset();
+		return this.getTemplatePanelsWindow().show();
+	},
+
+	onTemplatePanelsAddBtnClick: function(){
+		var me = this,
+			cmb = me.getTemplatePanelsCombo(),
+			records = me.getTemplatePanelsGrid().getSelectionModel().getSelection();
+
+		if(!cmb.isValid()) return;
+
+		if(records.length === 0){
+			app.msg(_('oops'), _('no_templates_to_add'), true);
+			return;
+		}
+
+		Ext.Msg.show({
+			title: _('wait'),
+			msg: _('add_templates_message'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes'){
+					me.doAddTemplates(records);
+					me.getTemplatePanelsWindow().close();
+				}
+			}
+		});
+	},
+
+	doAddTemplates: function(templates){
+
+		for(var i = 0; i < templates.length; i++){
+
+			var type = templates[i].get('template_type'),
+				data = eval('(' + templates[i].data.template_data + ')');
+
+			if(!data) {
+				say('Error: data eval issue -- ' + templates[i].data.template_data);
+				continue;
+			}
+
+			switch (type){
+
+				case 'LAB':
+					App.app.getController('patient.LabOrders').doAddOrderByTemplate(data);
+					break;
+				case 'RAD':
+					App.app.getController('patient.RadOrders').doAddOrderByTemplate(data);
+					break;
+				case 'RX':
+					App.app.getController('patient.RxOrders').doAddOrderByTemplate(data);
+					break;
+				default:
+					say('Error: no template_type found -- ' + type);
+					continue;
+					break;
+			}
+		}
+	},
+
+	onTemplatePanelsCancelBtnClick: function(){
+		this.getTemplatePanelsWindow().close();
 	}
 
 });
@@ -35047,6 +36006,50 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 	}
 
 });
+Ext.define('App.controller.AlwaysOnTop', {
+	extend: 'Ext.app.Controller',
+
+	alwaysOnTopManager: null,
+
+	init: function() {
+		this.control({
+			'component{isFloating()}': {
+				'render': function (component, options) {
+					this.onComponentRender(component, options);
+				}
+			}
+		});
+		/* Uncommenting the code below makes sure that all Ext.window.MessageBoxes stay on top. */
+		/*
+		 Ext.override(Ext.window.MessageBox, {
+		 alwaysOnTop: true
+		 });
+		 */
+		/* Uncommenting the code below makes sure that all form errormessages stay on top.
+		 Necessary if you have a form inside a alwaysOnTop window. */
+		/*
+		 Ext.override(Ext.tip.ToolTip, {
+		 alwaysOnTop: true
+		 });
+		 */
+	},
+
+	onComponentRender: function (component, options) {
+		if (component.alwaysOnTop) {
+			if (!this.alwaysOnTopManager) {
+				this.alwaysOnTopManager = Ext.create('Ext.ZIndexManager');
+			}
+			this.alwaysOnTopManager.register(component);
+		}
+		if (this.alwaysOnTopManager) {
+			/* Making sure the alwaysOnTopManager always has the highest zseed */
+			if (Ext.ZIndexManager.zBase > this.alwaysOnTopManager.zseed) {
+				this.alwaysOnTopManager.zseed = this.alwaysOnTopManager.getNextZSeed();
+			}
+		}
+	}
+
+});
 Ext.define('App.controller.Cron', {
     extend: 'Ext.app.Controller',
 
@@ -35405,6 +36408,71 @@ Ext.define('App.controller.InfoButton', {
 			)
 		});
 	}
+
+
+});
+Ext.define('App.controller.KeyCommands', {
+    extend: 'Ext.app.Controller',
+	refs: [
+        {
+            ref:'viewport',
+            selector:'viewport'
+        }
+	],
+
+
+	init: function() {
+		var me = this,
+			body = Ext.getBody();
+
+		body.on('keyup', me.onKeyUp, me);
+
+	},
+
+	onKeyUp: function(e, t, eOpts){
+
+		say('onKeyUp');
+
+		if(e.getKey() == e.ALT || e.getKey() == e.CTRL || e.getKey() == e.SHIFT){
+			return;
+		}
+
+		if(e.altKey && e.ctrlKey && e.shiftKey){
+			var action = '';
+
+			if(e.getKey() == e.A){
+				action = 'allergies';
+			}else if(e.getKey() == e.I){
+				action = 'immunization';
+			}else if(e.getKey() == e.M){
+				action = 'medications';
+			}else if(e.getKey() == e.P){
+				action = 'activeproblems';
+			}else if(e.getKey() == e.R){
+				action = 'laboratories';
+			}else if(e.getKey() == e.C){
+				action = 'social';
+
+			// close window
+			}else if(e.getKey() == e.W){
+				var cmp = Ext.getCmp(e.getTarget(null, null, true).id);
+
+				if(cmp.xtype == 'window'){
+					cmp.close();
+				}else{
+					var win = cmp.up('window');
+					if(win) win.close();
+				}
+				return;
+			}
+
+			if(action != ''){
+				app.onMedicalWin(action);
+			}
+
+		}
+	}
+
 
 
 });
@@ -35853,185 +36921,6 @@ Ext.define('App.controller.Navigation', {
 		return false;
 	}
 
-});
-Ext.define('App.controller.Scanner', {
-	extend: 'Ext.app.Controller',
-	requires: [
-		'App.view.scanner.Window'
-	],
-	refs: [
-		{
-			ref: 'ScannerWindow',
-			selector: '#ScannerWindow'
-		},
-		{
-			ref: 'ScannerImage',
-			selector: '#ScannerImage'
-		},
-		{
-			ref: 'ScannerCombo',
-			selector: '#ScannerCombo'
-		},
-		{
-			ref: 'ScannerScanBtn',
-			selector: '#ScannerScanBtn'
-		},
-		{
-			ref: 'ScannerOkBtn',
-			selector: '#ScannerOkBtn'
-		}
-	],
-
-	/**
-	 *
-	 */
-	ws: null,
-
-	connected: false,
-
-	init: function(){
-		var me = this;
-
-		me.control({
-			'viewport': {
-				afterrender: me.doWebSocketConnect
-			},
-			'#ScannerWindow': {
-				show: me.onScannerWindowShow,
-				close: me.onScannerWindowClose
-			},
-			'#ScannerScanBtn': {
-				click: me.onScannerScanBtnClick
-			},
-			'#ScannerImageEditBtn': {
-				toggle: me.onScannerImageEditBtnClick
-			},
-			'#ScannerOkBtn': {
-				click: me.onScannerOkBtnClick
-			}
-		});
-	},
-
-	onScannerScanBtnClick: function(){
-		this.doScan();
-	},
-
-	doLoadScannersCombo: function(data){
-		var combo = this.getScannerCombo(),
-			store = combo.getStore();
-
-		store.loadData(data);
-		var checked = store.findRecord('Checked', 'true');
-		if(checked){
-			combo.select(checked);
-		}
-	},
-
-	doLoadScannedDocument: function(data){
-		var me = this,
-			image = me.getScannerImage();
-
-		image.setSrc('data:image/png;base64,' + data);
-		me.getScannerWindow().body.el.unmask();
-		me.getScannerWindow().doComponentLayout();
-		me.getScannerWindow().down('toolbar').enable();
-	},
-
-	getSources: function(){
-		var me = this;
-		me.ws.send('getSources');
-	},
-
-	onScannerWindowShow: function(){
-		//this.doWebSocketConnect();
-	},
-
-	onScannerWindowClose: function(){
-		//this.ws.close();
-	},
-
-	doWebSocketConnect: function(){
-		var me = this;
-
-		if(me.connected) return;
-		me.ws = new WebSocket('wss://localhost:8443/TwainService');
-
-		me.ws.onopen = function(evt){
-			me.conencted = true;
-			me.getScanWindow();
-			me.getSources();
-			app.fireEvent('scanconnected', this);
-		};
-
-		me.ws.onerror = function(){
-			app.msg(_('oops'), _('scanner_connection_error'), true);
-		};
-
-		me.ws.onmessage = function(evt){
-			var response = eval('(' + evt.data + ')');
-
-			if(response.action == 'getSources'){
-				me.doLoadScannersCombo(response.data);
-			}else if(response.action == 'getDocument'){
-				me.doLoadScannedDocument(response.data);
-			}
-		};
-
-		me.ws.onclose = function(e){
-			me.conencted = false;
-			app.fireEvent('scandisconnected', this);
-		};
-	},
-
-	onScannerImageEditBtnClick: function(btn, pressed){
-		if(pressed){
-			this.dkrm = new Darkroom('#ScannerImage', {
-				save: false,
-				replaceDom: false
-			});
-			btn.setText(_('editing'));
-		}else{
-			this.dkrm.selfDestroy();
-			delete this.dkrm;
-			btn.setText(_('edit'));
-		}
-
-		this.getScannerScanBtn().setDisabled(pressed);
-		this.getScannerOkBtn().setDisabled(pressed);
-	},
-
-	getDocument: function(){
-		return this.getScannerImage().imgEl.dom.src;
-	},
-
-	doScan: function(){
-		var me = this,
-			combo = this.getScannerCombo();
-
-		me.getScannerWindow().down('toolbar').disable();
-		me.getScannerWindow().body.el.mask(_('scanning_document'));
-		me.ws.send('getDocument:' + combo.getValue());
-	},
-
-	onScannerOkBtnClick: function(){
-		app.fireEvent('scancompleted', this, this.getDocument());
-		this.getScannerWindow().close();
-	},
-
-	getScanWindow: function(){
-		if(!this.getScannerWindow()){
-			Ext.create('App.view.scanner.Window');
-		}
-		return this.getScannerWindow();
-	},
-
-	initScan: function(){
-		this.getScanWindow();
-		this.getScannerWindow().show();
-		if(this.getScannerCombo().getValue() != ''){
-			this.doScan();
-		}
-	}
 });
 Ext.define('App.controller.ScriptCam', {
 	extend: 'Ext.app.Controller',
@@ -36651,6 +37540,181 @@ Ext.define('App.controller.patient.Allergies', {
 		});
 	}
 
+});
+Ext.define('App.controller.patient.AppointmentRequests', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		{
+			ref: 'AppointmentRequestWindow',
+			selector: '#AppointmentRequestWindow'
+		},
+		{
+			ref: 'AppointmentRequestGrid',
+			selector: '#AppointmentRequestGrid'
+		},
+		{
+			ref: 'AppointmentRequestForm',
+			selector: '#AppointmentRequestForm'
+		},
+		{
+			ref: 'AppointmentRequestAddBtn',
+			selector: '#AppointmentRequestAddBtn'
+		},
+		{
+			ref: 'AppointmentRequestRequestedField',
+			selector: '#AppointmentRequestRequestedField'
+		}
+	],
+
+	init: function(){
+		var me = this;
+		me.control({
+			'viewport':{
+				beforeencounterload: me.onAppEncounterLoad
+			},
+			'#AppointmentRequestGrid':{
+				itemdblclick: me.onAppointmentRequestGridItemDblClick
+			},
+			'#AppointmentRequestWindow':{
+				close: me.onAppointmentRequestWindowClose
+			},
+			'#AppointmentRequestAddBtn':{
+				click: me.onAppointmentRequestAddBtnClick
+			},
+			'#AppointmentRequestSaveBtn':{
+				click: me.onAppointmentRequestSaveBtnClick
+			},
+			'#AppointmentRequestCancelBtn':{
+				click: me.onAppointmentRequestCancelBtnClick
+			},
+			'#AppointmentRequestDateField > button':{
+				click: me.onAppointmentRequestDateFieldButtonsClick
+			},
+			'#AppointmentRequestProcedureFieldSet > combobox':{
+				select: me.onAppointmentRequestProcedureFieldSetCombosSelect
+			}
+		});
+	},
+
+	onAppointmentRequestGridItemDblClick: function(grid, record){
+		this.getEditWindow(record);
+	},
+
+	onAppEncounterLoad: function(encounter){
+
+		say('onAppEncounterLoad');
+		say(encounter);
+
+		this.getAppointmentRequestGrid().reconfigure(encounter.appointmentrequests());
+
+		encounter.appointmentrequests().load();
+
+	},
+
+	onAppointmentRequestDateFieldButtonsClick: function(btn){
+		var now = new Date(),
+			date;
+
+		switch (btn.action){
+			case '1D':
+				date = Ext.Date.add(now, Ext.Date.DAY, 1);
+				break;
+			case '1W':
+				date = Ext.Date.add(now, Ext.Date.DAY, 7);
+				break;
+			case '2W':
+				date = Ext.Date.add(now, Ext.Date.DAY, 14);
+				break;
+			case '3W':
+				date = Ext.Date.add(now, Ext.Date.DAY, 21);
+				break;
+			case '1M':
+				date = Ext.Date.add(now, Ext.Date.MONTH, 1);
+				break;
+			case '3M':
+				date = Ext.Date.add(now, Ext.Date.MONTH, 3);
+				break;
+			case '6M':
+				date = Ext.Date.add(now, Ext.Date.MONTH, 6);
+				break;
+			case '1Y':
+				date = Ext.Date.add(now, Ext.Date.YEAR, 1);
+				break;
+			case '2Y':
+				date = Ext.Date.add(now, Ext.Date.YEAR, 2);
+				break;
+			case '3Y':
+				date = Ext.Date.add(now, Ext.Date.YEAR, 3);
+				break;
+			default:
+				date = now;
+		}
+
+		this.getAppointmentRequestRequestedField().setValue(date);
+	},
+
+	onAppointmentRequestAddBtnClick: function(){
+
+		var record = Ext.create('App.model.patient.AppointmentRequest',{
+			pid: app.patient.pid,
+			eid: app.patient.eid,
+			requested_uid: app.user.id,
+			create_uid: app.user.id,
+			create_date: new Date()
+		});
+
+		this.getEditWindow(record);
+	},
+
+	onAppointmentRequestProcedureFieldSetCombosSelect: function(cmb, records){
+		var record = this.getAppointmentRequestForm().getForm().getRecord(),
+			values = {};
+
+		values[cmb.name] = records[0].data.FullySpecifiedName;
+		values[cmb.name + '_code'] = records[0].data.ConceptId;
+		values[cmb.name + '_code_type'] = records[0].data.CodeType;
+		record.set(values);
+	},
+
+	onAppointmentRequestSaveBtnClick:function(btn){
+		var form = this.getAppointmentRequestForm().getForm(),
+			record = form.getRecord(),
+			values = form.getValues(),
+			store = this.getAppointmentRequestGrid().getStore();
+
+		if(form.isValid()){
+			record.set(values);
+			if(!record.store){
+				store.add(record);
+			}
+			store.sync();
+		}
+
+		btn.up('window').close();
+	},
+
+	getEditWindow: function(record){
+		if(!this.getAppointmentRequestWindow()){
+			Ext.create('App.view.patient.encounter.AppointmentRequestWindow');
+		}
+		this.getAppointmentRequestWindow().show();
+
+		if(record){
+			this.getAppointmentRequestForm().getForm().loadRecord(record);
+		}
+
+	},
+
+	onAppointmentRequestCancelBtnClick:function(btn){
+		btn.up('window').close();
+	},
+
+	onAppointmentRequestWindowClose:function(){
+		this.getAppointmentRequestForm().getForm().reset(true);
+	}
 });
 Ext.define('App.controller.patient.CarePlanGoals', {
 	extend: 'Ext.app.Controller',
@@ -38665,6 +39729,44 @@ Ext.define('App.controller.patient.Patient', {
 	}
 
 });
+Ext.define('App.controller.patient.ProgressNotesHistory', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		{
+			ref:'EncounterProgressNotesHistoryGrid',
+			selector: '#EncounterProgressNotesHistoryGrid'
+		}
+	],
+
+	init: function(){
+		var me = this;
+		me.control({
+			'#EncounterProgressNotesHistoryGrid': {
+				afterrender: me.onEncounterProgressNotesHistoryGridAfterRender
+			},
+			//'#ProgressNotesHistorySearchField': {
+			//	render: me.onEncounterProgressNotesHistoryGridRender
+			//}
+		});
+	},
+
+	onEncounterProgressNotesHistoryGridAfterRender: function(grid){
+		//grid.getStore().load();
+	},
+
+	loadPatientProgressHistory: function(pid, eid){
+		var store = this.getEncounterProgressNotesHistoryGrid().getStore();
+
+		store.getProxy().extraParams = { pid:pid, eid:eid };
+		if(this.getEncounterProgressNotesHistoryGrid().rendered){
+			store.load();
+		}
+	}
+
+});
 Ext.define('App.controller.patient.RadOrders', {
 	extend: 'Ext.app.Controller',
 	requires: [],
@@ -38804,6 +39906,149 @@ Ext.define('App.controller.patient.RadOrders', {
 		}
 
 		return '<div style="color:' + color + '">' + v + '</div>';
+	},
+
+	doAddOrderByTemplate: function(data){
+		var me = this,
+			grid = me.getLabOrdersGrid(),
+			store = grid.getStore();
+
+		data.pid = app.patient.pid;
+		data.eid = app.patient.eid;
+		data.uid = app.user.id;
+		data.date_ordered = new Date();
+		data.order_type = 'rad';
+		data.status = 'Pending';
+		data.priority = 'Normal';
+
+		store.add(data);
+		store.sync({
+			success: function(){
+				app.msg(_('sweet'), data.description + ' ' + _('added'));
+			}
+		});
+
+	}
+
+});
+Ext.define('App.controller.patient.Reminders', {
+	extend: 'Ext.app.Controller',
+	requires: [],
+	refs: [
+		{
+			ref: 'RemindersAddBtn',
+			selector: '#RemindersAddBtn'
+		}
+	],
+
+	init: function(){
+		var me = this;
+		me.control({
+			'viewport': {
+				encounterload: me.onEncounterOpen,
+				patientset: me.onPatientSet
+			},
+			'#RemindersAddBtn': {
+				click: me.onRemindersAddBtnClick
+			},
+			'#RemindersAlertOkBtn': {
+				click: me.onRemindersAlertOkBtnClick
+			},
+			'#RemindersAlertCancelBtn': {
+				click: me.onRemindersAlertCancelBtnClick
+			}
+		});
+	},
+
+	onRemindersAddBtnClick: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.store;
+
+		grid.plugins[0].cancelEdit();
+		store.insert(0, {
+			date: new Date(),
+			pid: app.patient.pid,
+			uid: app.user.id,
+			eid: app.patient.eid
+		});
+		grid.plugins[0].startEdit(0, 0);
+	},
+
+	onRemindersAlertOkBtnClick: function(btn){
+		var win = btn.up('window'),
+			store = win.down('grid').getStore();
+
+		store.sync();
+		win.close();
+	},
+
+	onRemindersAlertCancelBtnClick: function(btn){
+		var win = btn.up('window'),
+			store = win.down('grid').getStore();
+
+		store.rejectChanges();
+		win.close();
+	},
+
+	onPatientSet: function(patient){
+		this.getPatientReminders('Administrative', patient.pid);
+	},
+
+	onEncounterOpen: function(encounterRecord){
+		this.getPatientReminders('Clinical', encounterRecord.data.pid);
+	},
+
+	getPatientReminders: function(type, pid){
+		var me = this,
+			action = 'RemindersAlertWindow' + type,
+			query = Ext.ComponentQuery.query('window[action=' + action + ']'),
+			store,
+			win;
+
+		if(query.length === 0){
+			win = Ext.create('App.view.patient.RemindersAlert',{
+				title: _('reminders') + ' (' + _(type.toLowerCase()) + ')',
+				action: action
+			});
+		}else{
+			win = query[0];
+		}
+
+		store = win.down('grid').getStore();
+		win.close();
+		store.load({
+			filters: [
+				{
+					property: 'pid',
+					value: pid
+				},
+				{
+					property: 'type',
+					value: type
+				},
+				{
+					property: 'active',
+					value: true
+				}
+			],
+			callback: function(records){
+				if(records.length > 0){
+					me.playSound();
+					win.show();
+				}
+			}
+		});
+	},
+
+	playSound: function(){
+		if(!this.alertAudio){
+			this.alertAudio = Ext.core.DomHelper.append(Ext.getBody(), {
+				html: '<audio autoplay id="reminderAlert" ><source src="resources/audio/sweetalertsound4.wav" type="audio/wav"></audio>'
+			}, true);
+		}else{
+			this.alertAudio.dom.firstChild.currentTime=0;
+			this.alertAudio.dom.firstChild.play();
+		}
 	}
 
 });
@@ -39097,8 +40342,8 @@ Ext.define('App.controller.patient.RxOrders', {
 	},
 
 	onRxOrdersGridSelectionChange: function(sm, selected){
-		this.getCloneRxOrderBtn().setDisabled(selected.length == 0);
-		this.getPrintRxOrderBtn().setDisabled(selected.length == 0);
+		this.getCloneRxOrderBtn().setDisabled(selected.length === 0);
+		this.getPrintRxOrderBtn().setDisabled(selected.length === 0);
 	},
 
 	onRxNormOrderLiveSearchBeforeSelect: function(combo, record){
@@ -39167,6 +40412,8 @@ Ext.define('App.controller.patient.RxOrders', {
 				}
 			}
 		});
+
+		return true;
 
 	},
 
@@ -39274,7 +40521,7 @@ Ext.define('App.controller.patient.RxOrders', {
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
 
-			if(data.ref_order != ''){
+			if(data.ref_order !== ''){
 				var refs = data.ref_order.split('~');
 				if(refs.length >= 3){
 					references = 'Rx Reference#: ' + refs[2];
@@ -39296,19 +40543,19 @@ Ext.define('App.controller.patient.RxOrders', {
 				text += '<u>' + _('instructions') + '</u>: ' + data.directions + '<br>';
 
 				var dxs = (data.dxs.join ? data.dxs.join(', ') : data.dxs);
-				if(dxs && dxs != ''){
+				if(dxs && dxs !== ''){
 					text += '<u>' + _('dx') + '</u>: ' + (data.dxs.join ? data.dxs.join(', ') : data.dxs) + '<br>';
 				}
 
-				if(data.notes != ''){
+				if(data.notes !== ''){
 					text += '<u>' + _('notes_to_pharmacist') + '</u>: ' + data.notes + '<br>';
 				}
 
-				if(references != ''){
+				if(references !== ''){
 					text += '<u>References</u>: ' + references + '<br>';
 				}
 
-				if(data.system_notes != ''){
+				if(data.system_notes !== ''){
 					text += '<b>' + data.system_notes + '</b><br>';
 				}
 
@@ -39349,6 +40596,28 @@ Ext.define('App.controller.patient.RxOrders', {
 				}
 			]);
 		}
+	},
+
+	doAddOrderByTemplate: function(data){
+		var me = this,
+			grid = me.getRxOrdersGrid(),
+			store = grid.getStore(),
+			newDate = new Date();
+
+		data.pid = app.patient.pid;
+		data.eid = app.patient.eid;
+		data.uid = app.user.id;
+		data.date_ordered = newDate;
+		data.begin_date = newDate;
+		data.created_date = newDate;
+
+		store.add(data);
+		store.sync({
+			success: function(){
+				app.msg(_('sweet'), data.STR + ' ' + _('added'));
+			}
+		});
+
 	}
 
 });
@@ -39585,114 +40854,6 @@ Ext.define('App.controller.patient.Social', {
 		this.loadSmokeStore();
 		this.getSmokingStatusCombo().reset();
 
-	}
-
-});
-Ext.define('App.controller.patient.Summary', {
-	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
-	refs: [
-		{
-			ref: 'PatientSummaryPanel',
-			selector: 'PatientSummaryPanel'
-		},
-		{
-			ref: 'PatientDocumentPanel',
-			selector: 'patientdocumentspanel'
-		},
-		{
-			ref: 'PatientCcdPanel',
-			selector: 'patientccdpanel'
-		},
-		{
-			ref: 'ReferralPanelGrid',
-			selector: 'patientreferralspanel'
-		},
-		{
-			ref: 'AddReferralBtn',
-			selector: 'button[action=addReferralBtn]'
-		},
-		{
-			ref: 'PrintReferralBtn',
-			selector: '#printReferralBtn'
-		}
-	],
-
-	init: function(){
-		var me = this;
-		me.control({
-			'#PatientSummaryPanel': {
-				activate: me.onPatientSummaryPanel
-			},
-			'#PatientSummaryEncountersPanel': {
-				itemdblclick: me.onPatientSummaryEncounterDblClick
-			},
-			'#PatientSummaryDisclosuresPanel': {
-				show: me.reloadGrid
-			},
-			'#PatientSummeryNotesPanel': {
-				show: me.reloadGrid
-			},
-			'#PatientSummaryRemindersPanel': {
-				show: me.reloadGrid
-			},
-			'#PatientSummaryVitalsPanel': {
-				show: me.reloadGrid
-			},
-			'#PatientEncounterHistoryPanel': {
-				show: me.reloadGrid
-			},
-			'#PatientSummaryDocumentsPanel': {
-				show: me.reloadGrid
-			},
-			'#PatientSummaryPreventiveCareAlertsPanel': {
-				show: me.reloadGrid
-			}
-		});
-
-		me.nav = me.getController('Navigation');
-	},
-
-	onPatientSummaryPanel: function(panel){
-		var params = this.nav.getExtraParams();
-
-		if(params){
-			if(params.document){
-				panel.down('tabpanel').setActiveTab(this.getPatientDocumentPanel());
-			}else if(params.ccd){
-				panel.down('tabpanel').setActiveTab(this.getPatientCcdPanel());
-			}
-		}
-	},
-
-	onPatientSummaryEncounterDblClick: function(grid, record){
-		app.openEncounter(record.data.eid);
-	},
-
-	reloadGrid:function(grid){
-		var store;
-		if(grid.itemId == 'PatientSummaryVitalsPanel'){
-			store = grid.down('vitalsdataview').getStore();
-		}else{
-			store = grid.getStore();
-		}
-
-		store.clearFilter(true);
-		store.load({
-			params: {
-				pid: app.patient.pid
-			},
-			filters:[
-				[
-					{
-						property:'pid',
-						value: app.patient.pid
-					}
-				]
-			]
-		})
 	}
 
 });
@@ -40186,6 +41347,113 @@ Ext.define('App.controller.patient.Vitals', {
 	}
 
 });
+Ext.define('App.controller.patient.Summary', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		{
+			ref: 'PatientSummaryPanel',
+			selector: 'PatientSummaryPanel'
+		},
+		{
+			ref: 'PatientDocumentPanel',
+			selector: 'patientdocumentspanel'
+		},
+		{
+			ref: 'PatientCcdPanel',
+			selector: 'patientccdpanel'
+		},
+		{
+			ref: 'ReferralPanelGrid',
+			selector: 'patientreferralspanel'
+		},
+		{
+			ref: 'AddReferralBtn',
+			selector: 'button[action=addReferralBtn]'
+		},
+		{
+			ref: 'PrintReferralBtn',
+			selector: '#printReferralBtn'
+		}
+	],
+
+	init: function(){
+		var me = this;
+		me.control({
+			'#PatientSummaryPanel': {
+				activate: me.onPatientSummaryPanel
+			},
+			'#PatientSummaryEncountersPanel': {
+				itemdblclick: me.onPatientSummaryEncounterDblClick
+			},
+			'#PatientSummaryDisclosuresPanel': {
+				activate: me.reloadGrid
+			},
+			'#PatientSummeryNotesPanel': {
+				activate: me.reloadGrid
+			},
+			'#PatientSummaryRemindersPanel': {
+				activate: me.reloadGrid
+			},
+			'#PatientSummaryVitalsPanel': {
+				activate: me.reloadGrid
+			},
+			'#PatientEncounterHistoryPanel': {
+				activate: me.reloadGrid
+			},
+			'#PatientSummaryDocumentsPanel': {
+				activate: me.reloadGrid
+			},
+			'#PatientSummaryPreventiveCareAlertsPanel': {
+				activate: me.reloadGrid
+			}
+		});
+
+		me.nav = me.getController('Navigation');
+	},
+
+	onPatientSummaryPanel: function(panel){
+		var params = this.nav.getExtraParams();
+
+		if(params){
+			if(params.document){
+				panel.down('tabpanel').setActiveTab(this.getPatientDocumentPanel());
+			}else if(params.ccd){
+				panel.down('tabpanel').setActiveTab(this.getPatientCcdPanel());
+			}
+		}
+	},
+
+	onPatientSummaryEncounterDblClick: function(grid, record){
+		app.openEncounter(record.data.eid);
+	},
+
+	reloadGrid:function(grid){
+		var store;
+
+		if(grid.itemId == 'PatientSummaryVitalsPanel'){
+			store = grid.down('vitalsdataview').getStore();
+		}else{
+			store = grid.getStore();
+		}
+
+		//store.clearFilter(true);
+		store.load({
+			//params: {
+			//	pid: app.patient.pid
+			//},
+			filters:[
+				{
+					property:'pid',
+					value: app.patient.pid
+				}
+			]
+		})
+	}
+
+});
 Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 	extend: 'Ext.app.Controller',
 	requires: [],
@@ -40482,218 +41750,207 @@ Ext.define('App.controller.patient.encounter.EncounterSign', {
 	}
 
 });
-Ext.define('App.model.patient.FamilyHistory', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'patient_family_history'
-	},
-	fields: [
+Ext.define('App.controller.patient.encounter.SuperBill', {
+	extend: 'Ext.app.Controller',
+	requires: [
+
+	],
+	refs: [
+		// super bill stuff
 		{
-			name: 'id',
-			type: 'int'
+			ref: 'SuperBillGrid',
+			selector: 'superbillpanel'
 		},
 		{
-			name: 'pid',
-			type: 'int',
-			index: true
+			ref: 'SuperBillServiceAddBtn',
+			selector: '#SuperBillServiceAddBtn'
 		},
 		{
-			name: 'eid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'auth_uid',
-			type: 'int'
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'tuberculosis',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'emphysema',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'asthma',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hypertension',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'heart_murmur',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'rheumatic_fever',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'heart_attak',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'angina',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'stroke',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'high_cholesterol',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'vascular_graft',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'mitral_valve_prolapse',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hepatitis_a',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hepatitis_b',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hepatitis_c',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'kidney',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'std',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'ulcers',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'diabetes',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'thyroid',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hemophilia',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'anemia',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'cancer',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hiv_aids',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'osteoarthritis',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'rheumatoid_arthritis',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'seizures',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'dementia',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'anxiety',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'depression',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'eating_disorder',
-			type: 'string',
-			len: 60
+			ref: 'SuperBillEncounterDxCombo',
+			selector: '#SuperBillEncounterDxCombo'
 		}
 	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'FamilyHistory.getFamilyHistory',
-			create: 'FamilyHistory.addFamilyHistory',
-			update: 'FamilyHistory.updateFamilyHistory'
-		}
-	},
-	belongsTo: {
-		model: 'App.model.patient.Encounter',
-		foreignKey: 'eid'
-	}
-});
 
+	init: function(){
+		var me = this;
+
+		this.control({
+			'viewport': {
+				immunizationedit: me.onImmunizationEdit
+			},
+			'superbillpanel': {
+				beforeedit: me.onSuperBillGridBeforeEdit
+			},
+			'#SuperBillServiceAddBtn': {
+				click: me.onSuperBillServiceAddBtnClick
+			},
+			'#SuperCptSearchCmb': {
+				select: me.onSuperCptSearchCmbSelect
+			}
+		});
+	},
+
+	onImmunizationEdit:function(controller, record){
+		var serviceRecords = this.getServiceFormEncounterRecord('cvx', record.data.id);
+
+		if(serviceRecords.length == 0){
+			this.promptAddService(record, 'cvx');
+		}
+
+	},
+
+	promptAddService: function(record, type){
+		var me = this;
+
+		Ext.Msg.show({
+			title: _('wait'),
+			msg: _('super_bill_prompt_add_question'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+
+				if(btn == 'yes'){
+					me.addService(record, type);
+				}
+			}
+		});
+	},
+
+	addService: function(record, type){
+		var me = this;
+
+		if(type == 'cvx'){
+			Immunizations.getCptByCvx(record.data.code, function(services){
+				if(services.length == 0){
+					app.msg(_('oops'), _('no_service_code_found'), true);
+				} else if(services.length == 1){
+					me.doAddService(record, type, services[0]);
+				}else{
+
+				}
+			});
+		}
+
+	},
+
+	doAddService: function(record, type, service, callback){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services(),
+			serviceData = {
+				pid: record.data.pid,
+				eid: record.data.eid,
+				units: 1,
+				reference_type: type,
+				reference_id: record.data.id,
+				code: service ? service.data.code : record.data.code,
+				code_type: service ? service.data.code_type : record.data.code_type,
+				code_text: service ? service.data.code_text : record.data.code_text,
+				create_uid: app.user.id,
+				date_create: new Date()
+			};
+
+		if(record.data.tooth){
+			serviceData.tooth = record.data.tooth;
+		}
+
+		if(record.data.surfaceString){
+			serviceData.surface = record.data.surfaceString;
+		}
+
+		if(record.data.cavity_quadrant){
+			serviceData.cavity_quadrant = record.data.cavity_quadrant;
+		}
+
+		var records = store.add(serviceData);
+
+		store.sync({
+			callback:function(){
+				app.msg(_('sweet'), _('service_added'));
+				if(typeof callback == 'function') callback(records[0]);
+			}
+		});
+	},
+
+	getServiceRecord: function(reference_id){
+		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
+
+		return store.getById(reference_id);
+	},
+
+	onSuperBillGridBeforeEdit: function(plugin, context){
+
+		this.getSuperBillEncounterDxCombo().getStore().load({
+			filters: [
+				{
+					property: 'eid',
+					value: context.record.data.eid
+				}
+			]
+		});
+	},
+
+	// super bill stuff
+	onSuperBillServiceAddBtnClick: function(){
+		var me = this,
+			grid = me.getSuperBillGrid(),
+			store = grid.getStore(),
+			encounter = me.getController('patient.encounter.EncounterSign').encounter;
+
+		grid.editingPlugin.cancelEdit();
+		var records = store.add({
+			pid: encounter.data.pid,
+			eid: encounter.data.eid,
+			units: 1,
+			create_uid: app.user.id,
+			date_create: new Date()
+		});
+		grid.editingPlugin.startEdit(records[0], 0);
+	},
+
+	onSuperCptSearchCmbSelect: function(cmb, records){
+		var record = cmb.up('form').getForm().getRecord();
+
+		record.set({
+			code: records[0].data.code,
+			code_type: records[0].data.code_type
+		});
+	},
+
+	onRemoveService: function(record){
+		var me = this;
+
+		//TODO: handle the remove logic
+		record.destroy();
+
+	},
+
+	reconfigureSupperBillGrid: function(store){
+		this.getSuperBillGrid().reconfigure(store);
+	},
+
+	getServiceFormEncounterRecord: function(referenceType, referenceId){
+		var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord(),
+			services = [];
+
+		if(encounter == null) return services;
+
+		var store = encounter.services(),
+			records = store.data.items,
+			len = store.data.items.length;
+
+		for(var i = 0; i < len; i++){
+			var record = records[i];
+
+			if(record.data.reference_type == referenceType && record.data.reference_id == referenceId){
+				Ext.Array.push(services, record);
+			}
+		}
+
+		return services;
+	}
+
+
+
+});
 Ext.define('App.controller.patient.encounter.SOAP', {
 	extend: 'Ext.app.Controller',
 
@@ -40950,207 +42207,6 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	setRecordButton: function(recording){
 		this.getSpeechBtn().setIconCls(recording ? 'speech-icon-active' : 'speech-icon-inactive');
 	}
-
-});
-Ext.define('App.controller.patient.encounter.SuperBill', {
-	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
-	refs: [
-		// super bill stuff
-		{
-			ref: 'SuperBillGrid',
-			selector: 'superbillpanel'
-		},
-		{
-			ref: 'SuperBillServiceAddBtn',
-			selector: '#SuperBillServiceAddBtn'
-		},
-		{
-			ref: 'SuperBillEncounterDxCombo',
-			selector: '#SuperBillEncounterDxCombo'
-		}
-	],
-
-	init: function(){
-		var me = this;
-
-		this.control({
-			'viewport': {
-				immunizationedit: me.onImmunizationEdit
-			},
-			'superbillpanel': {
-				beforeedit: me.onSuperBillGridBeforeEdit
-			},
-			'#SuperBillServiceAddBtn': {
-				click: me.onSuperBillServiceAddBtnClick
-			},
-			'#SuperCptSearchCmb': {
-				select: me.onSuperCptSearchCmbSelect
-			}
-		});
-	},
-
-	onImmunizationEdit:function(controller, record){
-		var serviceRecords = this.getServiceFormEncounterRecord('cvx', record.data.id);
-
-		if(serviceRecords.length == 0){
-			this.promptAddService(record, 'cvx');
-		}
-
-	},
-
-	promptAddService: function(record, type){
-		var me = this;
-
-		Ext.Msg.show({
-			title: _('wait'),
-			msg: _('super_bill_prompt_add_question'),
-			buttons: Ext.Msg.YESNO,
-			icon: Ext.Msg.QUESTION,
-			fn: function(btn){
-
-				if(btn == 'yes'){
-					me.addService(record, type);
-				}
-			}
-		});
-	},
-
-	addService: function(record, type){
-		var me = this;
-
-		if(type == 'cvx'){
-			Immunizations.getCptByCvx(record.data.code, function(services){
-				if(services.length == 0){
-					app.msg(_('oops'), _('no_service_code_found'), true);
-				} else if(services.length == 1){
-					me.doAddService(record, type, services[0]);
-				}else{
-
-				}
-			});
-		}
-
-	},
-
-	doAddService: function(record, type, service, callback){
-		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services(),
-			serviceData = {
-				pid: record.data.pid,
-				eid: record.data.eid,
-				units: 1,
-				reference_type: type,
-				reference_id: record.data.id,
-				code: service ? service.data.code : record.data.code,
-				code_type: service ? service.data.code_type : record.data.code_type,
-				code_text: service ? service.data.code_text : record.data.code_text,
-				create_uid: app.user.id,
-				date_create: new Date()
-			};
-
-		if(record.data.tooth){
-			serviceData.tooth = record.data.tooth;
-		}
-
-		if(record.data.surfaceString){
-			serviceData.surface = record.data.surfaceString;
-		}
-
-		if(record.data.cavity_quadrant){
-			serviceData.cavity_quadrant = record.data.cavity_quadrant;
-		}
-
-		var records = store.add(serviceData);
-
-		store.sync({
-			callback:function(){
-				app.msg(_('sweet'), _('service_added'));
-				if(typeof callback == 'function') callback(records[0]);
-			}
-		});
-	},
-
-	getServiceRecord: function(reference_id){
-		var store = this.getController('patient.encounter.Encounter').getEncounterRecord().services();
-
-		return store.getById(reference_id);
-	},
-
-	onSuperBillGridBeforeEdit: function(plugin, context){
-
-		this.getSuperBillEncounterDxCombo().getStore().load({
-			filters: [
-				{
-					property: 'eid',
-					value: context.record.data.eid
-				}
-			]
-		});
-	},
-
-	// super bill stuff
-	onSuperBillServiceAddBtnClick: function(){
-		var me = this,
-			grid = me.getSuperBillGrid(),
-			store = grid.getStore(),
-			encounter = me.getController('patient.encounter.EncounterSign').encounter;
-
-		grid.editingPlugin.cancelEdit();
-		var records = store.add({
-			pid: encounter.data.pid,
-			eid: encounter.data.eid,
-			units: 1,
-			create_uid: app.user.id,
-			date_create: new Date()
-		});
-		grid.editingPlugin.startEdit(records[0], 0);
-	},
-
-	onSuperCptSearchCmbSelect: function(cmb, records){
-		var record = cmb.up('form').getForm().getRecord();
-
-		record.set({
-			code: records[0].data.code,
-			code_type: records[0].data.code_type
-		});
-	},
-
-	onRemoveService: function(record){
-		var me = this;
-
-		//TODO: handle the remove logic
-		record.destroy();
-
-	},
-
-	reconfigureSupperBillGrid: function(store){
-		this.getSuperBillGrid().reconfigure(store);
-	},
-
-	getServiceFormEncounterRecord: function(referenceType, referenceId){
-		var encounter = this.getController('patient.encounter.Encounter').getEncounterRecord(),
-			services = [];
-
-		if(encounter == null) return services;
-
-		var store = encounter.services(),
-			records = store.data.items,
-			len = store.data.items.length;
-
-		for(var i = 0; i < len; i++){
-			var record = records[i];
-
-			if(record.data.reference_type == referenceType && record.data.reference_id == referenceId){
-				Ext.Array.push(services, record);
-			}
-		}
-
-		return services;
-	}
-
-
 
 });
 Ext.define('App.model.patient.EncounterDx', {
@@ -41779,6 +42835,98 @@ Ext.define('App.view.patient.Medications', {
 
 
 });
+Ext.define('App.view.patient.AdvanceDirectives', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+
+	],
+	xtype: 'patientadvancedirectivepanel',
+	title: _('advance_directives'),
+	columnLines: true,
+	store: Ext.create('App.store.patient.AdvanceDirectives', {
+		remoteFilter: true,
+		autoSync: false
+	}),
+	columns: [
+		{
+			text: _('directive'),
+			flex: 1,
+			dataIndex: 'code_text',
+			editor:{
+				xtype:'gaiaehr.combo',
+				list: 129,
+				loadStore: true
+			}
+		},
+		{
+			text: _('status'),
+			dataIndex: 'status_code_text',
+			flex: 1,
+			editor:{
+				xtype:'gaiaehr.combo',
+				list: 128,
+				loadStore: true
+			}
+		},
+		{
+			text: _('notes'),
+			flex: 2,
+			dataIndex: 'notes',
+			editor:{
+				xtype:'textfield'
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			text: _('start_date'),
+			dataIndex: 'start_date',
+			editor:{
+				xtype:'datefield'
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			text: _('end_date'),
+			dataIndex: 'end_date',
+			editor:{
+				xtype:'datefield'
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			text: _('verified_date'),
+			dataIndex: 'verified_date',
+			editor:{
+				xtype:'datefield'
+			}
+		}
+	],
+	plugins: [
+		{
+			ptype:'rowediting',
+			errorSummary: false
+		}
+	],
+	tbar:[
+		'->',
+		{
+			text: _('add_new'),
+			itemId: 'AdvanceDirectiveAddBtn',
+			action: 'encounterRecordAdd',
+			iconCls: 'icoAdd'
+		}
+	],
+	bbar: [
+		'->',
+		{
+			text: _('review'),
+			itemId: 'AdvanceDirectiveReviewBtn',
+			action: 'encounterRecordAdd'
+		}
+	]
+
+
+});
 Ext.define('App.view.patient.LabOrders', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -41939,540 +43087,131 @@ Ext.define('App.view.patient.LabOrders', {
 //		selectionchange: me.onSelectionChange
 //	}
 });
-Ext.define('App.view.patient.RadOrders', {
+Ext.define('App.view.patient.SupperBill', {
 	extend: 'Ext.grid.Panel',
 	requires: [
 		'Ext.grid.plugin.RowEditing',
-		'Ext.grid.feature.Grouping',
-		'Ext.selection.CheckboxModel',
-		'App.ux.combo.Combo',
-		'App.ux.LiveRadsSearch'
+		'App.ux.LiveCPTSearch',
+		'App.ux.combo.EncounterICDS'
 	],
-	xtype: 'patientradorderspanel',
-	title: _('xray_ct_orders'),
+	xtype: 'superbillpanel',
+	store: Ext.create('App.store.patient.EncounterServices'),
 	columnLines: true,
-	itemId: 'RadOrders',
-	store: Ext.create('App.store.patient.PatientsOrders', {
-		storeId: 'RadOrderStore',
-		groupField: 'date_ordered',
-		remoteFilter: true,
-		pageSize: 200,
-		sorters: [
-			{
-				property: 'date_ordered',
-				direction: 'DESC'
-			}
-		]
-	}),
-	selModel: Ext.create('Ext.selection.CheckboxModel', {
-		showHeaderCheckbox: false
-	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowediting',
-			clicksToEdit: 2
+			errorSummary: false
 		}
 	],
 	columns: [
 		{
 			xtype: 'actioncolumn',
 			width: 20,
+			menuDisabled: true,
 			items: [
 				{
-					icon: 'resources/images/icons/cross.png',
-					tooltip: _('remove')
-//					scope: me,
-//					handler: me.onRemoveClick
+					icon: 'resources/images/icons/delete.png',
+					tooltip: _('remove'),
+					handler: function(view, rowIndex, colIndex, item, e, record){
+						return App.app.getController('patient.encounter.SuperBill').onRemoveService(record);
+					}
 				}
 			]
 		},
 		{
-			header: _('order#'),
-			width: 60,
-			dataIndex: 'id'
-		},
-		{
-			header: _('status'),
-			width: 75,
-			dataIndex: 'status',
+			header: _('units'),
+			dataIndex: 'units',
+			width: 40,
+			menuDisabled: true,
 			editor: {
-				xtype: 'gaiaehr.combo',
-				list: 40
-			},
-			renderer: function(v){
-				return app.getController('patient.RadOrders').radOrdersGridStatusColumnRenderer(v)
-			}
-		},
-		{
-			xtype: 'datecolumn',
-			header: _('date_ordered'),
-			width: 100,
-			dataIndex: 'date_ordered',
-			format: 'Y-m-d',
-			editor: {
-				xtype: 'datefield'
+				xtype: 'numberfield',
+				minValue: 1,
+				allowBlank: false
 			}
 		},
 		{
 			header: _('code'),
-			width: 100,
-			dataIndex: 'code'
+			dataIndex: 'code',
+			menuDisabled: true,
+			width: 75
 		},
 		{
-			header: _('description'),
+			text: _('service'),
+			dataIndex: 'code_text',
 			flex: 1,
-			dataIndex: 'description',
+			menuDisabled: true,
 			editor: {
-				xtype: 'radslivetsearch',
-				itemId: 'radOrderliveSearch'
+				xtype: 'livecptsearch',
+				itemId: 'SuperCptSearchCmb',
+				valueField: 'code_text_medium',
+				allowBlank: false
 			}
 		},
 		{
-			header: _('notes'),
-			flex: 1,
-			dataIndex: 'note',
+			header: _('modifiers'),
+			dataIndex: 'modifiers',
+			width: 100,
+			menuDisabled: true,
 			editor: {
 				xtype: 'textfield'
 			}
 		},
 		{
-			header: _('priority'),
-			width: 100,
-			dataIndex: 'priority',
-			editor: {
-				xtype: 'gaiaehr.combo',
-				list: 98
-			}
-		},
-		{
-			xtype: 'datecolumn',
-			header: _('date_collected'),
-			width: 100,
-			dataIndex: 'date_collected',
-			format: 'Y-m-d',
-			editor: {
-				xtype: 'datefield'
-			}
-		}
-	],
-	tbar: [
-		{
-			text: _('eRad'),
-			iconCls: 'icoSend',
-			itemId: 'electronicRadOrderBtn'
-		},
-		'-',
-		'->',
-		'-',
-		{
-			xtype: 'button',
-			text: _('new_order'),
-			iconCls: 'icoAdd',
-			action: 'encounterRecordAdd',
-			itemId: 'newRadOrderBtn'
-		},
-		'-',
-		{
-			text: _('print'),
-			iconCls: 'icoPrint',
-			disabled: true,
-			margin: '0 5 0 0',
-			itemId: 'printRadOrderBtn'
-		}
-	]
-});
-Ext.define('App.view.patient.RxOrders', {
-	extend: 'Ext.grid.Panel',
-	requires: [
-		'App.ux.grid.RowFormEditing',
-		'Ext.grid.feature.Grouping',
-		'Ext.selection.CheckboxModel',
-		'App.ux.combo.PrescriptionHowTo',
-		'App.ux.combo.PrescriptionTypes',
-		'App.ux.combo.EncounterICDS',
-		'App.ux.combo.MedicationInstructions',
-		'App.ux.LiveRXNORMSearch',
-		'App.ux.form.fields.plugin.HelpIcon'
-	],
-	xtype: 'patientrxorderspanel',
-	title: _('rx_orders'),
-	columnLines: true,
-	itemId: 'RxOrderGrid',
-	store: Ext.create('App.store.patient.Medications', {
-		storeId: 'RxOrderStore',
-		groupField: 'date_ordered',
-		remoteFilter: true,
-		pageSize: 200,
-		sorters: [
-			{
-				property: 'date_ordered',
-				direction: 'DESC'
-			}
-		]
-	}),
-	selModel: Ext.create('Ext.selection.CheckboxModel', {
-		showHeaderCheckbox: false
-	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
-	plugins: [
-		{
-			ptype: 'rowformediting',
-			clicksToEdit: 2,
-			items: [
-				{
-					xtype: 'container',
-					layout: {
-						type: 'hbox',
-						align: 'stretch'
-					},
-					itemId: 'RxOrderGridFormContainer',
-					items: [
-						{
-							xtype: 'container',
-							layout: 'anchor',
-							itemId: 'RxOrderGridFormContainerOne',
-							items: [
-								{
-									xtype: 'datefield',
-									fieldLabel: _('order_date'),
-									format: 'Y-m-d',
-									name: 'date_ordered',
-									allowBlank: false,
-									margin: '0 0 5 0'
-								},
-								{
-									xtype: 'rxnormlivetsearch',
-									itemId: 'RxNormOrderLiveSearch',
-									hideLabel: false,
-									fieldLabel: _('medication'),
-									width: 700,
-									name: 'STR',
-									maxLength: 105,
-									displayField: 'STR',
-									valueField: 'STR',
-									vtype: 'nonspecialcharactersrequired',
-									allowBlank: false
-								},
-								{
-									xtype: 'container',
-									margin: '5 0',
-									layout: {
-										type: 'hbox'
-									},
-									items: [
-										{
-											xtype: 'numberfield',
-											width: 170,
-											fieldLabel: _('dispense'),
-											minValue: 0.001,
-											maxValue: 99999,
-											name: 'dispense',
-											decimalPrecision: 3,
-											maxLength: 10,
-											allowBlank: false,
-											fixPrecision: function(value){
-												var me = this,
-													nan = isNaN(value),
-													precision = me.decimalPrecision;
-
-												if(nan || !value){
-													return nan ? '' : value;
-												}else if(!me.allowDecimals || precision <= 0){
-													precision = 0;
-												}
-												var num = String(value);
-												if(num.indexOf('.') !== -1){
-													var numArr = num.split(".");
-													if(numArr.length == 1){
-														return Number(num);
-													}else{
-														return Number(numArr[0] + "." + numArr[1].charAt(0) + numArr[1].charAt(1) + numArr[1].charAt(2));
-													}
-												}else{
-													return Number(num);
-												}
-												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
-											}
-										},
-										{
-											xtype: 'numberfield',
-											width: 130,
-											fieldLabel: _('days_supply'),
-											labelAlign: 'right',
-											labelWidth: 75,
-											minValue: 1,
-											maxValue: 630,
-											allowDecimals: false,
-											name: 'days_supply'
-										},
-										{
-											xtype: 'numberfield',
-											width: 100,
-											fieldLabel: _('refill'),
-											labelAlign: 'right',
-											labelWidth: 40,
-											maxValue: 99,
-											minValue: 0,
-											name: 'refill',
-											vtype: 'numeric',
-											allowBlank: false
-										},
-										{
-											xtype: 'encountericdscombo',
-											itemId: 'RxEncounterDxCombo',
-											fieldLabel: _('dx'),
-											labelAlign: 'right',
-											labelWidth: 30,
-											width: 295,
-											name: 'dxs'
-										}
-									]
-								},
-								{
-									xtype: 'medicationinstructionscombo',
-									itemId: 'RxOrderMedicationInstructionsCombo',
-									width: 700,
-									fieldLabel: _('instructions'),
-									name: 'directions',
-									maxLength: 140,
-									validateOnBlur: true,
-									vtype: 'nonspecialcharactersrequired',
-									allowBlank: false
-								},
-								{
-									xtype: 'textfield',
-									width: 680,
-									fieldLabel: '*' + _('notes_to_pharmacist'),
-									itemId: 'RxOrderGridFormNotesField',
-									name: 'notes',
-									plugins:[
-										{
-											ptype: 'helpicon',
-											helpMsg: _('rx_notes_to_pharmacist_warning')
-										}
-									],
-									maxLength: 210
-								},
-								{
-									xtype: 'container',
-									html: ' *' + _('rx_notes_to_pharmacist_warning'),
-									margin: '0 0 0 100'
-								}
-							]
-						},
-						{
-							xtype: 'container',
-							layout: 'anchor',
-							itemId: 'RxOrderGridFormContainerTwo',
-							padding: '25 0 0 0',
-							items: [
-								{
-									xtype: 'container',
-									layout: 'hbox',
-									items:[
-										{
-											xtype: 'checkboxfield',
-											fieldLabel: _('daw'),
-											tooltip: _('dispensed_as_written'),
-											width: 90,
-											labelWidth: 70,
-											labelAlign: 'right',
-											name: 'daw',
-											margin: '0 0 5 0'
-										},
-										{
-											xtype: 'checkboxfield',
-											fieldLabel: _('is_comp'),
-											tooltip: _('is_compound'),
-											width: 85,
-											labelWidth: 65,
-											labelAlign: 'right',
-											name: 'is_compound',
-											itemId: 'RxOrderCompCheckBox',
-											margin: '0 0 5 0'
-										},
-										{
-											xtype: 'checkboxfield',
-											fieldLabel: _('is_sply'),
-											tooltip: _('is_supply'),
-											width: 85,
-											labelWidth: 65,
-											labelAlign: 'right',
-											name: 'is_supply',
-											itemId: 'RxOrderSplyCheckBox',
-											margin: '0 0 5 0'
-										}
-									]
-								},
-								{
-									xtype: 'datefield',
-									fieldLabel: _('begin_date'),
-									labelWidth: 70,
-									labelAlign: 'right',
-									width: 258,
-									format: 'Y-m-d',
-									name: 'begin_date',
-									margin: '0 0 5 0',
-									allowBlank: false
-								},
-								{
-									xtype: 'datefield',
-									fieldLabel: _('end_date'),
-									labelWidth: 70,
-									labelAlign: 'right',
-									format: 'Y-m-d',
-									width: 258,
-									name: 'end_date'
-								}
-							]
-						},
-						{
-							xtype: 'fieldset',
-							title: _('active_drug_allergies'),
-							html: _('none'),
-							margin: '25 0 5 10',
-							flex: 1
-						}
-					]
-				}
-			]
-		}
-	],
-	columns: [
-		{
-			xtype: 'actioncolumn',
-			width: 20,
-			items: [
-				{
-					icon: 'resources/images/icons/cross.png',
-					tooltip: _('remove')
-				}
-			]
-		},
-		{
-			xtype: 'datecolumn',
-			header: _('date_ordered'),
-			dataIndex: 'date_ordered',
-			format: 'Y-m-d'
-		},
-		{
-			header: _('medication'),
-			flex: 1,
-			dataIndex: 'STR'
-		},
-		{
-			header: _('daw'),
-			width: 40,
-			dataIndex: 'daw',
-			tooltip: _('dispensed_as_written'),
-			renderer: function(v){
-				return app.boolRenderer(v);
-			}
-		},
-		{
-			header: _('dispense'),
-			width: 60,
-			dataIndex: 'dispense'
-		},
-		{
-			header: _('refill'),
+			header: _('tooth'),
+			dataIndex: 'tooth',
 			width: 50,
-			dataIndex: 'refill'
+			menuDisabled: true
 		},
 		{
-			header: _('instructions'),
-			flex: 1,
-			dataIndex: 'directions'
-		},
-		{
-			header: _('related_dx'),
-			width: 200,
-			dataIndex: 'dxs',
-			renderer: function(v){
-				return v == false || v == 'false' || v[0] == false ? '' : v;
+			header: _('surface'),
+			dataIndex: 'surface',
+			width: 60,
+			menuDisabled: true,
+			renderer: function(value, meta, record){
+				var len = value.length,
+					str = '',
+					isMolar = App.app.getController('Modules.dental.controller.Plan').isMolar(record.data.tooth);
+
+				for(var i = 0; i < len; i++){
+					if(value[i] == '0') continue;
+
+					if(value[i] == 'OI'){
+						str += isMolar ? 'O' : 'I';
+					}else if(value[i] == 'BF'){
+						str += isMolar ? 'B' : 'F';
+					}else{
+						str += value[i];
+					}
+				}
+				return str;
 			}
 		},
 		{
-			xtype: 'datecolumn',
-			format: 'Y-m-d',
-			header: _('begin_date'),
-			width: 75,
-			dataIndex: 'begin_date'
-		},
-		{
-			xtype: 'datecolumn',
-			header: _('end_date'),
-			width: 75,
-			format: 'Y-m-d',
-			dataIndex: 'end_date'
+			header: _('diagnosis'),
+			dataIndex: 'dx_pointers',
+			menuDisabled: true,
+			width: 250,
+			editor: {
+				xtype: 'encountericdscombo',
+				itemId: 'SuperBillEncounterDxCombo',
+				allowBlank: false
+			}
 		}
 	],
-	tbar: [
-		'->',
-		'-',
+	dockedItems: [
 		{
-			text: _('new_order'),
-			iconCls: 'icoAdd',
-			action: 'encounterRecordAdd',
-			itemId: 'newRxOrderBtn'
-		},
-		'-',
-		{
-			text: _('clone_order'),
-			iconCls: 'icoAdd',
-			disabled: true,
-			margin: '0 5 0 0',
-			action: 'encounterRecordAdd',
-			itemId: 'cloneRxOrderBtn'
-		},
-		'-',
-		{
-			text: _('print'),
-			iconCls: 'icoPrint',
-			disabled: true,
-			margin: '0 5 0 0',
-			itemId: 'printRxOrderBtn'
+			xtype: 'toolbar',
+			dock: 'top',
+			items: [
+				'->',
+				{
+					text: _('service'),
+					iconCls: 'icoAdd',
+					itemId: 'SuperBillServiceAddBtn'
+				}
+			]
 		}
 	]
-});
-Ext.define('App.view.dashboard.panel.Portlet', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.portlet',
-    layout: 'fit',
-    anchor: '100%',
-    frame: true,
-    closable: true,
-    collapsible: true,
-    animCollapse: true,
-    draggable: {
-        moveOnDrag: false
-    },
-    cls: 'x-portlet',
-
-    // Override Panel's default doClose to provide a custom fade out effect
-    // when a portlet is removed from the portal
-    doClose: function() {
-        if (!this.closing) {
-            this.closing = true;
-            this.el.animate({
-                opacity: 0,
-                callback: function(){
-                    this.fireEvent('close', this);
-                    this[this.closeAction]();
-                },
-                scope: this
-            });
-        }
-    }
 });
 Ext.define('App.ux.combo.EncounterSupervisors', {
 	extend: 'Ext.form.ComboBox',
@@ -42517,6 +43256,36 @@ Ext.define('App.ux.combo.EncounterSupervisors', {
 		me.callParent(arguments);
 	}
 }); 
+Ext.define('App.view.dashboard.panel.Portlet', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.portlet',
+    layout: 'fit',
+    anchor: '100%',
+    frame: true,
+    closable: true,
+    collapsible: true,
+    animCollapse: true,
+    draggable: {
+        moveOnDrag: false
+    },
+    cls: 'x-portlet',
+
+    // Override Panel's default doClose to provide a custom fade out effect
+    // when a portlet is removed from the portal
+    doClose: function() {
+        if (!this.closing) {
+            this.closing = true;
+            this.el.animate({
+                opacity: 0,
+                callback: function(){
+                    this.fireEvent('close', this);
+                    this[this.closeAction]();
+                },
+                scope: this
+            });
+        }
+    }
+});
 Ext.define('App.ux.grid.AreasViewDropZone', {
 	extend: 'Ext.grid.ViewDropZone',
 
@@ -42602,90 +43371,6 @@ Ext.define('App.ux.grid.AreasDragDrop', {
 		}
 	}
 });
-Ext.define('App.ux.AddTabButton', {
-	alias: 'plugin.AddTabButton',
-	extend: 'Ext.AbstractPlugin',
-
-	// start defaults
-	toolTip: 'Add Tab',     // add btn ToolTip
-	iconCls: null,          // add btn icon class
-	btnText: '+',           // add btn text, button text is not use if iconCls is set
-	forceText: false,       // use the btnText even if an icon is used
-
-	panelConfig: {              // default config for new added panel
-		xtype: 'panel',
-		title: 'New Tab',
-		closable: true,
-		hidden: false
-	},
-	// end defaults
-
-	constructor: function(config){
-		this.panelConfig = Ext.apply(this.panelConfig, config.tabConfig || {});
-		this.callParent(arguments);
-	},
-
-	/**
-	 * @param tabPanel
-	 */
-	init: function(tabPanel){
-		var me = this;
-
-		// set tabPanel global
-		me.tabPanel = tabPanel;
-
-		if(tabPanel instanceof Ext.TabPanel){
-			// add add btn tab to the TabBar
-			me.btn = me.tabPanel.getTabBar().add({
-				xtype: 'tab',
-				minWidth: 25,
-				text: me.iconCls && !me.forceText ? '' : me.btnText, // if icon is used remove text
-				iconCls: me.iconCls,
-				tooltip: me.toolTip,
-				handler: me.onAddTabClick,
-				closable: false,
-				scope: me
-			});
-
-			// fix the tab margin and padding
-			me.btn.on('render', function(){
-				if(me.iconCls && !me.forceText){
-					var style;
-					if(me.tabPanel.tabPosition == 'top'){
-						style = 'margin: 0 0 3px 0; padding: 0';
-					} else if(me.tabPanel.tabPosition == 'bottom'){
-						style = 'margin: 3px 0 0 0; padding: 0';
-					}
-					me.btn.btnWrap.applyStyles(style);
-				}
-			});
-		}
-	},
-
-	/**
-	 *  Adds new Tab to TabPanel
-	 */
-	onAddTabClick: function(){
-		var tab = this.tabPanel.add(this.panelConfig);
-		this.tabPanel.setActiveTab(tab);
-	},
-
-	/**
-	 * disable or enable the Add button
-	 * @param value
-	 */
-	setDisabled: function(value){
-		this.btn.setDisabled(value);
-	},
-
-	/**
-	 * hide or show the Add button
-	 * @param value
-	 */
-	setVisible: function(value){
-		this.btn.setVisible(value);
-	}
-});
 Ext.define('App.view.patient.encounter.CarePlanGoals', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -42717,6 +43402,188 @@ Ext.define('App.view.patient.encounter.CarePlanGoals', {
 		}
 	]
 });
+Ext.define('App.ux.LiveSnomedProcedureSearch', {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.snomedliveproceduresearch',
+	hideLabel: true,
+	displayField: 'FullySpecifiedName',
+	valueField: 'ConceptId',
+	emptyText: _('search') + '...',
+	typeAhead: false,
+	hideTrigger: true,
+	minChars: 3,
+	initComponent: function(){
+		var me = this;
+
+		Ext.define('liveSnomedProcedureSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{
+					name: 'ConceptId',
+					type: 'string'
+				},
+				{
+					name: 'FullySpecifiedName',
+					type: 'string'
+				},
+				{
+					name: 'CodeType',
+					type: 'string',
+					defaultValue: 'SNOMED-CT'
+				},
+				{
+					name: 'Occurrence',
+					type: 'int'
+				}
+			],
+			idProperty: 'ConceptId',
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'SnomedCodes.liveProcedureCodeSearch',
+					update: 'SnomedCodes.updateLiveProcedureCodeSearch'
+				},
+				reader: {
+					totalProperty: 'totals',
+					root: 'data'
+				}
+			}
+		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'liveSnomedProcedureSearchModel',
+			pageSize: 25,
+			autoLoad: false
+		});
+
+		Ext.apply(this, {
+			store: me.store,
+			listConfig: {
+				loadingText: _('searching') + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function(){
+					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
+				}
+			},
+			pageSize: 25
+		});
+
+		me.callParent();
+
+		me.on('select', function(cmb, records){
+			records[0].set({
+				Occurrence: records[0].data.Occurrence + 1
+			});
+			records[0].save();
+		});
+	}
+});
+Ext.define('App.view.patient.encounter.AdministeredMedications', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.plugin.RowEditing',
+		'App.ux.LiveRXNORMSearch',
+		'App.ux.LiveSigsSearch',
+		'App.ux.LiveUserSearch',
+		'App.ux.form.fields.DateTime'
+	],
+	xtype: 'administeredmedications',
+	itemId: 'AdministeredMedicationsGrid',
+	frame: true,
+	store: Ext.create('App.store.patient.Medications', {
+		autoSync: false
+	}),
+	columns: [
+		//{
+		//	xtype: 'actioncolumn',
+		//	width: 25,
+		//	items: [
+		//		{
+		//			icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+		//			tooltip: 'Get Info',
+		//			handler: function(grid, rowIndex, colIndex, item, e, record){
+		//				App.app.getController('InfoButton').doGetInfo(record.data.RXCUI, 'RXCUI', record.data.STR);
+		//			}
+		//		}
+		//	]
+		//},
+		{
+			header: _('medication'),
+			flex: 1,
+			minWidth: 150,
+			dataIndex: 'STR',
+			editor: {
+				xtype: 'rxnormlivetsearch',
+				itemId: 'AdministeredMedicationsLiveSearch',
+				displayField: 'STR',
+				valueField: 'STR',
+				action: 'medication',
+				allowBlank: false
+			},
+			renderer: function(v, mets, record){
+				var codes = '';
+				if(record.data.RXCUI != ''){
+					codes += ' <b>RxNorm:</b> ' + record.data.RXCUI;
+				}
+				if(record.data.NDC != ''){
+					codes += ' <b>NDC:</b> ' + record.data.NDC;
+				}
+				codes = codes != '' ? (' (' + codes + ' )') : '';
+				return v + codes;
+			}
+		},
+		{
+			text: _('directions'),
+			dataIndex: 'directions',
+			flex: 1,
+			editor: {
+				xtype: 'textfield'
+			}
+		},
+		{
+			text: _('administered_by'),
+			dataIndex: 'administered_by',
+			width: 150,
+			editor: {
+				xtype: 'userlivetsearch',
+				acl: 'administer_medications',
+				valueField: 'fullname',
+				forceSelection: false,
+				itemId: 'AdministeredMedicationsUserLiveSearch'
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			text: _('date'),
+			dataIndex: 'administered_date',
+			width: 120,
+			format: g('date_time_display_format'),
+			editor: {
+				xtype: 'mitos.datetime'
+			}
+		}
+	],
+	plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+		autoCancel: false,
+		errorSummary: false,
+		clicksToEdit: 2
+	}),
+	tbar: [
+		_('administered_medications'),
+		'->',
+		{
+			text: _('medication'),
+			itemId: 'AdministeredMedicationsAddBtn',
+			action: 'encounterRecordAdd',
+			iconCls: 'icoAdd'
+		}
+	]
+
+
+});
 Ext.define('App.view.patient.DecisionSupportWarningPanel', {
 	extend: 'Ext.panel.Panel',
 	xtype: 'decisionsupportwarningpanel',
@@ -42741,190 +43608,6 @@ Ext.define('App.view.patient.DecisionSupportWarningPanel', {
 		}
 	]
 });
-/*!
- * Ext JS Library 4.0
- * Copyright(c) 2006-2011 Sencha Inc.
- * licensing@sencha.com
- * http://www.sencha.com/license
- */
-
-/**
- * Barebones iframe implementation. For serious iframe work, see the
- * ManagedIFrame extension
- * (http://www.sencha.com/forum/showthread.php?71961).
- */
-Ext.define('Ext.ux.IFrame', {
-    extend: 'Ext.Component',
-
-    alias: 'widget.uxiframe',
-
-    loadMask: 'Loading...',
-
-    src: 'about:blank',
-
-    renderTpl: [
-        '<iframe src="{src}" name="{frameName}" width="100%" height="100%" frameborder="0"></iframe>'
-    ],
-
-    initComponent: function () {
-        this.callParent();
-
-        this.frameName = this.frameName || this.id + '-frame';
-
-        this.addEvents(
-            'beforeload',
-            'load'
-        );
-
-        Ext.apply(this.renderSelectors, {
-            iframeEl: 'iframe'
-        });
-    },
-
-    initEvents : function() {
-        var me = this;
-        me.callParent();
-        me.iframeEl.on('load', me.onLoad, me);
-    },
-
-    initRenderData: function() {
-        return Ext.apply(this.callParent(), {
-            src: this.src,
-            frameName: this.frameName
-        });
-    },
-
-    getBody: function() {
-        var doc = this.getDoc();
-        return doc.body || doc.documentElement;
-    },
-
-    getDoc: function() {
-        try {
-            return this.getWin().document;
-        } catch (ex) {
-            return null;
-        }
-    },
-
-    getWin: function() {
-        var me = this,
-            name = me.frameName,
-            win = Ext.isIE
-                ? me.iframeEl.dom.contentWindow
-                : window.frames[name];
-        return win;
-    },
-
-    getFrame: function() {
-        var me = this;
-        return me.iframeEl.dom;
-    },
-
-    beforeDestroy: function () {
-        this.cleanupListeners(true);
-        this.callParent();
-    },
-    
-    cleanupListeners: function(destroying){
-        var doc, prop;
-
-        if (this.rendered) {
-            try {
-                doc = this.getDoc();
-                if (doc) {
-                    Ext.EventManager.removeAll(doc);
-                    if (destroying) {
-                        for (prop in doc) {
-                            if (doc.hasOwnProperty && doc.hasOwnProperty(prop)) {
-                                delete doc[prop];
-                            }
-                        }
-                    }
-                }
-            } catch(e) { }
-        }
-    },
-
-    onLoad: function() {
-        var me = this,
-            doc = me.getDoc(),
-            fn = me.onRelayedEvent;
-
-        if (doc) {
-            try {
-                Ext.EventManager.removeAll(doc);
-
-                // These events need to be relayed from the inner document (where they stop
-                // bubbling) up to the outer document. This has to be done at the DOM level so
-                // the event reaches listeners on elements like the document body. The effected
-                // mechanisms that depend on this bubbling behavior are listed to the right
-                // of the event.
-                Ext.EventManager.on(doc, {
-                    mousedown: fn, // menu dismisal (MenuManager) and Window onMouseDown (toFront)
-                    mousemove: fn, // window resize drag detection
-                    mouseup: fn,   // window resize termination
-                    click: fn,     // not sure, but just to be safe
-                    dblclick: fn,  // not sure again
-                    scope: me
-                });
-            } catch(e) {
-                // cannot do this xss
-            }
-
-            // We need to be sure we remove all our events from the iframe on unload or we're going to LEAK!
-            Ext.EventManager.on(this.getWin(), 'beforeunload', me.cleanupListeners, me);
-
-            this.el.unmask();
-            this.fireEvent('load', this);
-
-        } else if(me.src && me.src != '') {
-
-            this.el.unmask();
-            this.fireEvent('error', this);
-        }
-
-
-    },
-
-    onRelayedEvent: function (event) {
-        // relay event from the iframe's document to the document that owns the iframe...
-
-        var iframeEl = this.iframeEl,
-
-            // Get the left-based iframe position
-            iframeXY = Ext.Element.getTrueXY(iframeEl),
-            originalEventXY = event.getXY(),
-
-            // Get the left-based XY position.
-            // This is because the consumer of the injected event (Ext.EventManager) will
-            // perform its own RTL normalization.
-            eventXY = Ext.EventManager.getPageXY(event.browserEvent);
-
-        // the event from the inner document has XY relative to that document's origin,
-        // so adjust it to use the origin of the iframe in the outer document:
-        event.xy = [iframeXY[0] + eventXY[0], iframeXY[1] + eventXY[1]];
-
-        event.injectEvent(iframeEl); // blame the iframe for the event...
-
-        event.xy = originalEventXY; // restore the original XY (just for safety)
-    },
-
-    load: function (src) {
-        var me = this,
-            text = me.loadMask,
-            frame = me.getFrame();
-
-        if (me.fireEvent('beforeload', me, src) !== false) {
-            if (text && me.el) {
-                me.el.mask(text);
-            }
-
-            frame.src = me.src = (src || me.src);
-        }
-    }
-});
-
 Ext.define('App.view.patient.Documents', {
 	extend: 'Ext.panel.Panel',
 	requires: [
@@ -43367,24 +44050,250 @@ Ext.define('App.ux.grid.Button', {
 		return [];
 	}
 });
-Ext.define('App.ux.combo.ActiveSpecialties', {
-	extend: 'Ext.form.ComboBox',
-	xtype: 'activespecialtiescombo',
-	displayField: 'text_details',
-	valueField: 'id',
+Ext.define('App.ux.combo.XCombo', {
+	extend: 'Ext.form.field.ComboBox',
+	xtype: 'xcombo',
+
+	trigger1Class: 'x-form-select-trigger',
+	trigger2Class: 'x-form-add-trigger',
+	trigger3Class: 'x-form-update-trigger',
+
 	editable: false,
-	emptyText: _('select'),
-	queryMode: 'local',
-	store: Ext.create('App.store.administration.Specialties',{
-		filters: [
-			{
-				property:'active',
-				value: true
-			}
-		],
-		pageSize: 500,
-		autoLoad: true
-	})
+
+	addTooltip: 'Add Item',
+	saveText: 'Save',
+	cancelText: 'Cancel',
+	maskText: 'Saving Data',
+
+	windowConfig: {
+		title: 'New Record',
+		modal: true
+	},
+
+	formConfig: {
+		width: 400,
+		height: 240,
+		border: false,
+		html: 'Form placeholder, please add a formConfig property<br>' +
+			'Exmaple:<br>' +
+			'<pre>' +
+			'{<br>' +
+			'   ptype: "comboadd",<br>' +
+			'   windowConfig: {<br>' +
+			'       title: "New Record"<br>' +
+			'       modal: true<br>' +
+			'   }<br>' +
+			'   formConfig: {<br>' +
+			'       width: 600,<br>' +
+			'       height: 400,<br>' +
+			'       border: false,<br>' +
+			'       items:[ {...},{...} ]<br>' +
+			'   }<br>' +
+			'}<br>' +
+			'</pre>'
+	},
+
+	initComponent: function (config) {
+		var me = this;
+
+		me.addEvents(
+			'cancel',
+			'beforesync',
+			'sync',
+			'failure'
+		);
+
+		me.on('select', me.setUpdateTrigger, me);
+
+		me.callParent(arguments);
+	},
+
+	onRender: function (ct, position) {
+
+		var me = this,
+			id = me.getId();
+
+		me.callParent(arguments);
+
+		me.triggerWidth = 51;
+
+		me.triggerConfig = {
+			tag: 'td',
+			valign: 'top',
+			cls: 'x-trigger-cell',
+			style: 'width:34px',
+			cn: [
+				{
+					tag: "img",
+					src: Ext.BLANK_IMAGE_URL,
+					id: "trigger1" + id,
+					name: "trigger1" + id,
+					style: "float:left",
+					cls: "x-form-trigger " + this.trigger1Class,
+					role: 'button'
+				},
+				{
+					tag: "img",
+					src: Ext.BLANK_IMAGE_URL,
+					id: "trigger2" + id,
+					name: "trigger2" + id,
+					style: "float:left",
+					cls: "x-form-trigger " + this.trigger2Class,
+					role: 'button'
+				},
+				{
+					tag: "img",
+					src: Ext.BLANK_IMAGE_URL,
+					id: "trigger3" + id,
+					name: "trigger3" + id,
+					style: "float:left;display:none",
+					cls: "x-form-trigger " + this.trigger3Class,
+					role: 'button'
+				}
+			]
+		};
+
+		me.triggerCell.replaceWith(me.triggerConfig);
+
+		me.trigger1 = Ext.get("trigger1" + id);
+		me.trigger2 = Ext.get("trigger2" + id);
+		me.trigger3 = Ext.get("trigger3" + id);
+
+		me.trigger1.on('mouseup', me.triggerClick, me);
+		me.trigger2.on('mouseup', me.triggerClick, me);
+		me.trigger3.on('mouseup', me.triggerClick, me);
+
+		me.trigger1.addClsOnOver('x-form-trigger-over');
+		me.trigger2.addClsOnOver('x-form-trigger-over');
+		me.trigger3.addClsOnOver('x-form-trigger-over');
+	},
+
+	setUpdateTrigger: function () {
+		if (!this.trigger3.isVisible()) {
+			this.setWidth(this.getWidth() + 17);
+			this.triggerCell.setWidth(51);
+			this.trigger3.show();
+		}
+	},
+
+	triggerClick: function (e) {
+		var id = this.getId();
+		if (e.target.name == "trigger1" + id) {
+			this.onTriggerClick();
+		} else if (e.target.name == "trigger2" + id) {
+			this.onTriggerAddClick();
+		} else if (e.target.name == "trigger3" + id) {
+			this.onTriggerUpdateClick();
+		}
+	},
+
+	/**
+	 * Start the window
+	 */
+	onTriggerAddClick: function () {
+		var me = this;
+		me.reset();
+		me.getWindow().show();
+		me.uWindow.down('form').getForm().loadRecord(me.getNewRecord());
+	},
+
+	/**
+	 * Start the window
+	 */
+	onTriggerUpdateClick: function () {
+		var me = this;
+		me.getWindow().show();
+		me.uWindow.down('form').getForm().loadRecord(me.getSelectedRecord());
+	},
+
+	getSelectedRecord: function () {
+		return this.findRecordByValue(this.getValue());
+	},
+
+	getNewRecord: function () {
+		return Ext.create(this.getStore().model);
+	},
+
+	/**
+	 * Creates a new window
+	 */
+	getWindow: function () {
+		var me = this;
+
+		me.uWindow = Ext.widget('window', {
+			items: [Ext.widget('form', me.formConfig)],
+			buttons: [
+				{
+					text: me.cancelText,
+					scope: me,
+					handler: me.doCancelRecord
+				},
+				{
+					text: me.saveText,
+					scope: me,
+					handler: me.doSaveRecord
+				}
+			]
+		});
+
+		return Ext.apply(me.uWindow, me.windowConfig);
+	},
+
+	/**
+	 * Saves the record and to combobox sotore everything
+	 */
+	doSaveRecord: function () {
+		var me = this,
+			panel = me.uWindow.down('form'),
+			form = panel.getForm(),
+			record = form.getRecord(),
+			values = form.getValues(),
+			index = me.store.indexOf(record);
+
+		record.set(values);
+		if (index == -1) me.store.add(record);
+
+		if (me.store.getNewRecords().length || me.store.getUpdatedRecords().length) {
+			panel.el.mask(me.maskText);
+			// fires the beforesync event and add the values to the store
+			me.fireEvent('beforesync', me.store, record);
+
+			me.store.sync({
+				// hanlde sync success
+				success: function(batch, options) {
+					say('success');
+					me.select(record);
+					me.fireEvent('sync', me.store, record, batch, options);
+				},
+				// handle sync failure
+				failure: function() {
+					me.fireEvent('failure', me.store, record, batch, options);
+					say('failure');
+				},
+				// handle all request
+				callback: function() {
+					panel.el.unmask();
+					form.reset();
+					me.uWindow.close();
+				}
+			});
+		} else {
+			form.reset();
+			me.uWindow.close();
+		}
+	},
+
+	/**
+	 * Cancels everything
+	 */
+	doCancelRecord: function () {
+		var me = this,
+			form = me.uWindow.down('form').getForm();
+
+		me.fireEvent('cancel', me, me.form, me.store);
+		form.reset();
+		me.uWindow.close();
+	}
 });
 Ext.define("App.ux.form.fields.plugin.PasswordStrength", {
 	extend : "Ext.AbstractPlugin",
@@ -43495,6 +44404,142 @@ Ext.define("App.ux.form.fields.plugin.PasswordStrength", {
 		return score;
 	}
 });
+Ext.define('App.ux.combo.ActiveSpecialties', {
+	extend: 'Ext.form.ComboBox',
+	xtype: 'activespecialtiescombo',
+	displayField: 'text_details',
+	valueField: 'id',
+	editable: false,
+	emptyText: _('select'),
+	queryMode: 'local',
+	store: Ext.create('App.store.administration.Specialties',{
+		filters: [
+			{
+				property:'active',
+				value: true
+			}
+		],
+		pageSize: 500,
+		autoLoad: true
+	})
+});
+Ext.define('App.ux.AddTabButton', {
+	alias: 'plugin.AddTabButton',
+	extend: 'Ext.AbstractPlugin',
+
+	// start defaults
+	toolTip: 'Add Tab',     // add btn ToolTip
+	iconCls: null,          // add btn icon class
+	btnText: '+',           // add btn text, button text is not use if iconCls is set
+	forceText: false,       // use the btnText even if an icon is used
+
+	panelConfig: {              // default config for new added panel
+		xtype: 'panel',
+		title: 'New Tab',
+		closable: true,
+		hidden: false
+	},
+	// end defaults
+
+	constructor: function(config){
+		this.panelConfig = Ext.apply(this.panelConfig, config.tabConfig || {});
+		this.callParent(arguments);
+	},
+
+	/**
+	 * @param tabPanel
+	 */
+	init: function(tabPanel){
+		var me = this;
+
+		// set tabPanel global
+		me.tabPanel = tabPanel;
+
+		if(tabPanel instanceof Ext.TabPanel){
+			// add add btn tab to the TabBar
+			me.btn = me.tabPanel.getTabBar().add({
+				xtype: 'tab',
+				minWidth: 25,
+				text: me.iconCls && !me.forceText ? '' : me.btnText, // if icon is used remove text
+				iconCls: me.iconCls,
+				tooltip: me.toolTip,
+				handler: me.onAddTabClick,
+				closable: false,
+				scope: me
+			});
+
+			// fix the tab margin and padding
+			me.btn.on('render', function(){
+				if(me.iconCls && !me.forceText){
+					var style;
+					if(me.tabPanel.tabPosition == 'top'){
+						style = 'margin: 0 0 3px 0; padding: 0';
+					} else if(me.tabPanel.tabPosition == 'bottom'){
+						style = 'margin: 3px 0 0 0; padding: 0';
+					}
+					me.btn.btnWrap.applyStyles(style);
+				}
+			});
+		}
+	},
+
+	/**
+	 *  Adds new Tab to TabPanel
+	 */
+	onAddTabClick: function(){
+		var tab = this.tabPanel.add(this.panelConfig);
+		this.tabPanel.setActiveTab(tab);
+	},
+
+	/**
+	 * disable or enable the Add button
+	 * @param value
+	 */
+	setDisabled: function(value){
+		this.btn.setDisabled(value);
+	},
+
+	/**
+	 * hide or show the Add button
+	 * @param value
+	 */
+	setVisible: function(value){
+		this.btn.setVisible(value);
+	}
+});
+Ext.define('App.model.administration.AclGroupPerm', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string'
+		},
+		{
+			name: 'group_id',
+			type: 'int'
+		},
+		{
+			name: 'category',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'ACL.getGroupPerms',
+			create: 'ACL.updateGroupPerms',
+			update: 'ACL.updateGroupPerms'
+		},
+		reader: {
+			type: 'json',
+			root: 'data'
+		}
+	}
+});
 Ext.define('App.view.patient.windows.ArchiveDocument', {
 	extend: 'Ext.window.Window',
 	xtype: 'patientarchivedocumentwindow',
@@ -43551,6 +44596,71 @@ Ext.define('App.view.patient.windows.ArchiveDocument', {
 		{
 			text: _('archive'),
 			itemId: 'archiveBtn'
+		}
+	]
+});
+Ext.define('App.view.scanner.Window', {
+	extend: 'Ext.window.Window',
+	xtype: 'scannerwindow',
+	itemId: 'ScannerWindow',
+	autoScroll: true,
+	width: 1000,
+	minHeight: 500,
+	maxHeight: 700,
+	closeAction: 'hide'
+	,	title: _('scanner'),
+	layout: {
+		type: 'hbox'
+	},
+	items: [
+		{
+			xtype: 'image',
+			flex: 1,
+			id: 'ScannerImage',
+			style: 'background-color:white',
+			itemId: 'ScannerImage'
+		}
+	],
+	buttons: [
+		{
+			text: _('edit'),
+			enableToggle: true,
+			itemId: 'ScannerImageEditBtn'
+		},
+		'-',
+		{
+			xtype: 'combobox',
+			itemId: 'ScannerCombo',
+			editable: false,
+			queryMode: 'local',
+			displayField: 'Name',
+			valueField: 'Name',
+			flex: 1,
+			store: Ext.create('Ext.data.Store', {
+				fields: [
+					{
+						name: 'Name',
+						type: 'string'
+					},
+					{
+						name: 'Version',
+						type: 'string'
+					},
+					{
+						name: 'Checked',
+						type: 'string'
+					}
+				]
+			})
+		},
+		{
+			text: _('scan'),
+			itemId: 'ScannerScanBtn'
+		},
+		'-',
+		{
+			text: _('ok'),
+			itemId: 'ScannerOkBtn'
 		}
 	]
 });
@@ -43785,85 +44895,6 @@ Ext.define('App.ux.combo.ReferringProviders', {
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.view.patient.SmokingStatus', {
-	extend: 'Ext.grid.Panel',
-	requires: [
-		'Ext.grid.plugin.RowEditing',
-		'App.store.patient.SmokeStatus',
-		'App.ux.combo.SmokingStatus'
-	],
-	xtype: 'patientsmokingstatusgrid',
-	itemId: 'PatientSmokingStatusGrid',
-	columnLines: true,
-	store: Ext.create('App.store.patient.SmokeStatus', {
-		remoteFilter: true
-	}),
-	plugins: [
-		{
-			ptype: 'rowediting'
-		}
-	],
-	columns: [
-		{
-			xtype: 'datecolumn',
-			text: _('date'),
-			dataIndex: 'create_date',
-			format: 'Y-m-d',
-			width: 120
-		},
-		{
-			text: _('status'),
-			dataIndex: 'status',
-			width: 250,
-			renderer: function(v, meta, record){
-				return v + ' (' + record.data.status_code +')';
-			}
-		},
-		{
-			text: _('counseling_given'),
-			dataIndex: 'counseling',
-			width: 120,
-			editor: {
-				xtype: 'checkbox'
-			},
-			renderer: function(v){
-				return app.boolRenderer(v);
-			}
-		},
-		{
-			text: _('note'),
-			dataIndex: 'note',
-			flex: 1,
-			editor: {
-				xtype: 'textfield'
-			}
-		},
-		{
-			xtype: 'datecolumn',
-			format: 'Y-m-d',
-			text: _('start_date'),
-			dataIndex: 'start_date',
-			width: 120,
-			editor: {
-				xtype: 'datefield',
-				format: g('date_display_format'),
-				submitFormat: 'Y-m-d'
-			}
-		}
-	],
-	tbar: [
-		{
-			xtype: 'tbtext',
-			text: _('smoking_status'),
-			width: 100
-		},
-		{
-			xtype: 'mitos.smokingstatuscombo',
-			itemId: 'socialsmokingstatuscombo',
-			width: 250
-		}
-	]
-});
 Ext.define('App.ux.LiveSnomedProblemSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.snomedliveproblemsearch',
@@ -43943,6 +44974,85 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 		});
 	}
 });
+Ext.define('App.view.patient.SmokingStatus', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.plugin.RowEditing',
+		'App.store.patient.SmokeStatus',
+		'App.ux.combo.SmokingStatus'
+	],
+	xtype: 'patientsmokingstatusgrid',
+	itemId: 'PatientSmokingStatusGrid',
+	columnLines: true,
+	store: Ext.create('App.store.patient.SmokeStatus', {
+		remoteFilter: true
+	}),
+	plugins: [
+		{
+			ptype: 'rowediting'
+		}
+	],
+	columns: [
+		{
+			xtype: 'datecolumn',
+			text: _('date'),
+			dataIndex: 'create_date',
+			format: 'Y-m-d',
+			width: 120
+		},
+		{
+			text: _('status'),
+			dataIndex: 'status',
+			width: 250,
+			renderer: function(v, meta, record){
+				return v + ' (' + record.data.status_code +')';
+			}
+		},
+		{
+			text: _('counseling_given'),
+			dataIndex: 'counseling',
+			width: 120,
+			editor: {
+				xtype: 'checkbox'
+			},
+			renderer: function(v){
+				return app.boolRenderer(v);
+			}
+		},
+		{
+			text: _('note'),
+			dataIndex: 'note',
+			flex: 1,
+			editor: {
+				xtype: 'textfield'
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			format: 'Y-m-d',
+			text: _('start_date'),
+			dataIndex: 'start_date',
+			width: 120,
+			editor: {
+				xtype: 'datefield',
+				format: g('date_display_format'),
+				submitFormat: 'Y-m-d'
+			}
+		}
+	],
+	tbar: [
+		{
+			xtype: 'tbtext',
+			text: _('smoking_status'),
+			width: 100
+		},
+		{
+			xtype: 'mitos.smokingstatuscombo',
+			itemId: 'socialsmokingstatuscombo',
+			width: 250
+		}
+	]
+});
 Ext.define('App.ux.LiveSnomedSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.snomedlivesearch',
@@ -44009,113 +45119,48 @@ Ext.define('App.ux.LiveSnomedSearch', {
 		me.callParent();
 	}
 });
-Ext.define('App.ux.combo.ComboResettable', {
+Ext.define('App.ux.LiveRadsSearch', {
 	extend: 'Ext.form.ComboBox',
-	triggerTip: _('click_to_clear_selection'),
-	spObj: '',
-	spForm: '',
-	spExtraParam: '',
-	qtip: _('clearable_combo_box'),
-
-	trigger1Class: 'x-form-select-trigger',
-	trigger2Class: 'x-form-clear-trigger',
-
-	onRender: function(ct, position){
-		this.callParent(arguments);
-		var id = this.getId();
-		this.triggerConfig = {
-			tag: 'div',
-			cls: 'x-form-twin-triggers',
-			style: 'display:block;',
-			cn: [
-				{
-					tag: "img",
-					style: Ext.isIE ? 'margin-left:0;height:21px' : '',
-					src: Ext.BLANK_IMAGE_URL,
-					id: "trigger2" + id,
-					name: "trigger2" + id,
-					cls: "x-form-trigger " + this.trigger2Class
-				}
-			]
-		};
-		this.triggerEl.replaceWith(this.triggerConfig);
-
-		this.triggerEl.on('mouseup', function(e){
-			if(e.target.name == "trigger2" + id){
-				this.reset();
-				this.oldValue = null;
-				if(this.spObj !== '' && this.spExtraParam !== ''){
-					Ext.getCmp(this.spObj).store.setExtraParam(this.spExtraParam, '');
-					Ext.getCmp(this.spObj).store.load()
-				}
-				if(this.spForm !== ''){
-					Ext.getCmp(this.spForm).getForm().reset();
-				}
-				this.fireEvent('fieldreset', this);
-			}
-
-		}, this);
-
-		var trigger2 = Ext.get("trigger2" + id);
-		trigger2.addClsOnOver('x-form-trigger-over');
-	}
-}); 
-Ext.define('App.ux.LiveSnomedProcedureSearch', {
-	extend: 'Ext.form.ComboBox',
-	alias: 'widget.snomedliveproceduresearch',
+	alias: 'widget.radslivetsearch',
 	hideLabel: true,
-	displayField: 'FullySpecifiedName',
-	valueField: 'ConceptId',
-	emptyText: _('search') + '...',
-	typeAhead: false,
-	hideTrigger: true,
-	minChars: 3,
+
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('liveSnomedProcedureSearchModel', {
+		Ext.define('liveRadLoincSearchModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{
-					name: 'ConceptId',
-					type: 'string'
-				},
-				{
-					name: 'FullySpecifiedName',
-					type: 'string'
-				},
-				{
-					name: 'CodeType',
-					type: 'string',
-					defaultValue: 'SNOMED-CT'
-				},
-				{
-					name: 'Occurrence',
-					type: 'int'
-				}
+				{ name: 'id' },
+				{ name: 'loinc_name' },
+				{ name: 'loinc_number' },
+				{ name: 'code_type', defaultValue: 'LOINC' }
 			],
-			idProperty: 'ConceptId',
 			proxy: {
 				type: 'direct',
 				api: {
-					read: 'SnomedCodes.liveProcedureCodeSearch',
-					update: 'SnomedCodes.updateLiveProcedureCodeSearch'
+					read: 'Laboratories.getRadLoincLiveSearch'
 				},
 				reader: {
 					totalProperty: 'totals',
-					root: 'data'
+					root: 'rows'
 				}
 			}
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model: 'liveSnomedProcedureSearchModel',
-			pageSize: 25,
+			model: 'liveRadLoincSearchModel',
+			pageSize: 10,
 			autoLoad: false
 		});
 
 		Ext.apply(this, {
 			store: me.store,
+			displayField: 'loinc_name',
+			valueField: 'loinc_name',
+			emptyText: _('search') + '...',
+			typeAhead: false,
+			hideTrigger: true,
+			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				//emptyText	: 'No matching posts found.',
@@ -44123,542 +45168,19 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 				// Custom rendering template for each item
 				//---------------------------------------------------------------------
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
+					return '<div class="search-item"><h3>{loinc_name} ({loinc_number})</h3></div>';
 				}
 			},
-			pageSize: 25
+			pageSize: 10
 		});
 
 		me.callParent();
-
-		me.on('select', function(cmb, records){
-			records[0].set({
-				Occurrence: records[0].data.Occurrence + 1
-			});
-			records[0].save();
-		});
 	}
 });
-Ext.define('App.model.administration.Allergies', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'allergies',
-		comment: 'Allergies'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'allergy',
-			type: 'string',
-			len: 500,
-			comment: 'Allergy Name'
-		},
-		{
-			name: 'allergy_term',
-			type: 'string'
-		},
-		{
-			name: 'allergy_code',
-			type: 'string',
-			len: 20
-		},
-		{
-			name: 'allergy_code_type',
-			type: 'string',
-			len: 15
-		},
-		{
-			name: 'allergy_type',
-			type: 'string',
-			len: 5,
-			comment: 'PT = Preferred Term, SN = Systematic Name, SY = Synonym, CD = Code, TR = Trade'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Allergies.searchAllergiesData'
-		},
-		reader: {
-			root: 'data'
-		}
-	}
+Ext.define('App.store.administration.MedicationInstructions', {
+	extend: 'Ext.data.Store',
+	model: 'App.model.administration.MedicationInstruction'
 });
-Ext.define('App.ux.form.fields.CheckBoxWithText', {
-	extend: 'Ext.form.FieldContainer',
-	mixins: {
-		field: 'Ext.form.field.Field'
-	},
-	xtype: 'checkboxwithtext',
-	layout: 'hbox',
-	boxLabel: 'boxLabel',
-	emptyText: '',
-	readOnly: false,
-//	combineErrors: true,
-	msgTarget: 'under',
-	width: 400,
-
-	inputValue: '1',
-	uncheckedValue: '0',
-
-	initComponent: function(){
-		var me = this;
-
-		me.items = me.items || [];
-
-		me.items = [
-			{
-				xtype:'checkbox',
-				boxLabel: me.boxLabel,
-				submitValue: false,
-				inputValue: me.inputValue,
-				width: 130,
-				margin: '0 10 0 0'
-			}
-		];
-
-		me.textField = me.textField || {
-			xtype:'textfield'
-		};
-
-		Ext.apply(me.textField , {
-			submitValue: false,
-			flex: 1,
-			hidden: true,
-			emptyText: me.emptyText
-		});
-
-		me.items.push(me.textField);
-
-		if(me.layout == 'vbox') me.height = 44;
-
-		me.callParent();
-
-		me.chekboxField = me.items.items[0];
-		me.textField = me.items.items[1];
-
-		me.chekboxField.on('change', me.setTextField, me);
-
-		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
-//		this.inputEl = {
-//			dom: {},
-//			swallowEvent: function(){
-//			}
-//		};
-//
-		me.initField();
-	},
-
-	setTextField: function(checkbox, value){
-		if(value == 0 || value == 'off' || value == false){
-			this.textField.reset();
-			this.textField.hide();
-		}else{
-			this.textField.show();
-		}
-	},
-
-	getValue: function(){
-		var value = '',
-			ckValue = this.chekboxField.getSubmitValue(),
-			txtValue = this.textField.getSubmitValue() || '';
-
-		if(ckValue)    value = ckValue + '~' + txtValue;
-		return value;
-	},
-
-	getSubmitValue: function(){
-		return this.getValue();
-	},
-
-	setValue: function(value){
-		if(value && value.split){
-			var val = value.split('~');
-			this.chekboxField.setValue(val[0] || 0);
-			this.textField.setValue(val[1] || '');
-			return;
-		}
-		this.chekboxField.setValue(0);
-		this.textField.setValue('');
-	},
-
-	// Bug? A field-mixin submits the data from getValue, not getSubmitValue
-	getSubmitData: function(){
-		var me = this,
-			data = null;
-		if(!me.disabled && me.submitValue && !me.isFileUpload()){
-			data = {};
-			data[me.getName()] = '' + me.getSubmitValue();
-		}
-		return data;
-	},
-
-	setReadOnly: function(value){
-		this.chekboxField.setReadOnly(value);
-		this.textField.setReadOnly(value);
-	}
-});
-Ext.define('App.model.patient.AppointmentRequest', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'patient_appointment_requests'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'pid',
-			type: 'int'
-		},
-		{
-			name: 'eid',
-			type: 'int'
-		},
-		{
-			name: 'appointment_id',
-			type: 'int'
-		},
-		{
-			name: 'requested_uid',
-			type: 'int'
-		},
-		{
-			name: 'approved_uid',
-			type: 'int'
-		},
-		{
-			name: 'is_approved',
-			type: 'bool',
-			persist: false,
-			convert: function(v, record){
-				return record.data.approved_uid > 1;
-			}
-		},
-		{
-			name: 'requested_date',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'approved_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'notes',
-			type: 'string'
-		},
-		{
-			name: 'procedure1',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'procedure1_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'procedure1_code_type',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'procedure2',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'procedure2_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'procedure2_code_type',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'procedure3',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'procedure3_code',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'procedure3_code_type',
-			type: 'string',
-			len: 10
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'AppointmentRequest.getAppointmentRequests',
-			create: 'AppointmentRequest.addAppointmentRequest',
-			update: 'AppointmentRequest.updateAppointmentRequest',
-			destroy: 'AppointmentRequest.deleteAppointmentRequest'
-		}
-	}
-});
-
-Ext.define('App.model.patient.Encounter', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'encounters',
-		comment: 'Encounter Data'
-	},
-	fields: [
-		{
-			name: 'eid',
-			type: 'int'
-		},
-		{
-			name: 'pid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'rid',
-			type: 'string',
-			len: 80,
-			comment: 'reference ID'
-		},
-		{
-			name: 'open_uid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'provider_uid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'supervisor_uid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'requires_supervisor',
-			type: 'bool',
-			index: true,
-			defaultValue: false
-		},
-		{
-			name: 'technician_uid',
-			type: 'int',
-			useNull: true,
-			index: true
-		},
-		{
-			name: 'specialty_id',
-			type: 'int',
-			useNull: true,
-			index: true
-		},
-		{
-			name: 'service_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
-			index: true
-		},
-		{
-			name: 'close_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'onset_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'priority',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'brief_description',
-			type: 'string',
-			len: 600,
-			comment: 'chief complaint'
-		},
-		{
-			name: 'visit_category',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'facility',
-			type: 'int',
-			len: 1,
-			index: true
-		},
-		{
-			name: 'billing_stage',
-			type: 'int',
-			len: 1,
-			index: true
-		},
-		{
-			name: 'followup_time',
-			type: 'string',
-			len: 25
-		},
-		{
-			name: 'followup_facility',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'review_immunizations',
-			type: 'bool'
-		},
-		{
-			name: 'review_allergies',
-			type: 'bool'
-		},
-		{
-			name: 'review_active_problems',
-			type: 'bool'
-		},
-		{
-			name: 'review_alcohol',
-			type: 'string',
-			len: 40
-		},
-		{
-			name: 'review_smoke',
-			type: 'bool'
-		},
-		{
-			name: 'review_pregnant',
-			type: 'string',
-			len: 40
-		},
-		{
-			name: 'review_surgery',
-			type: 'bool'
-		},
-		{
-			name: 'review_dental',
-			type: 'bool'
-		},
-		{
-			name: 'review_medications',
-			type: 'bool'
-		},
-		{
-			name: 'message',
-			type: 'string',
-			dataType: 'text'
-		},
-		{
-			name: 'patient_class',
-			type: 'string'
-		},
-		{
-			name: 'referring_physician',
-			type: 'string'
-		}
-	],
-	idProperty: 'eid',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Encounter.getEncounters',
-			create: 'Encounter.createEncounter',
-			update: 'Encounter.updateEncounter'
-		},
-		reader: {
-			root: 'encounter'
-		}
-	},
-	hasMany: [
-		{
-			model: 'App.model.patient.Vitals',
-			name: 'vitals',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		},
-		{
-			model: 'App.model.patient.ReviewOfSystems',
-			name: 'reviewofsystems',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		},
-		{
-			model: 'App.model.patient.FamilyHistory',
-			name: 'familyhistory',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		},
-		{
-			model: 'App.model.patient.SOAP',
-			name: 'soap',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		},
-		{
-			model: 'App.model.patient.HCFAOptions',
-			name: 'hcfaoptions',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		},
-		{
-			model: 'App.model.patient.EncounterService',
-			name: 'services',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		},
-		{
-			model: 'App.model.patient.AppointmentRequest',
-			name: 'appointmentrequests',
-			primaryKey: 'eid',
-			foreignKey: 'eid'
-		}
-	],
-	isClose: function(){
-		return typeof this.data.close_date != 'undefined' && this.data.close_date != null;
-	},
-
-	isSigned: function(){
-		return typeof this.data.provider_uid != 'undefined' && this.data.provider_uid != null && this.data.provider_uid != 0;
-	},
-
-	isCoSigned: function(){
-		return typeof this.data.supervisor_uid != 'undefined' && this.data.supervisor_uid != null && this.data.supervisor_uid != 0;
-	}
-});
-
 Ext.define('App.model.patient.SOAP', {
 	extend: 'Ext.data.Model',
 	requires: [
@@ -45006,248 +45528,6 @@ Ext.define('App.view.patient.windows.Charts', {
     }
 });
 
-Ext.define('App.view.patient.windows.Orders', {
-	extend: 'App.ux.window.Window',
-	requires:[
-		'App.view.patient.LabOrders',
-		'App.view.patient.RadOrders',
-		'App.view.patient.RxOrders',
-		'App.view.patient.DoctorsNotes'
-	],
-	title: _('order_window'),
-	closeAction: 'hide',
-	bodyStyle: 'background-color:#fff',
-	modal: true,
-	buttons: [
-		{
-			text: _('close'),
-			handler: function(btn){
-				btn.up('window').close();
-			}
-		}
-	],
-	initComponent: function(){
-		var me = this;
-
-		me.items = [
-			me.tabPanel = Ext.create('Ext.tab.Panel', {
-				margin: 5,
-				height: Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600,
-				width: Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
-				plain: true,
-				items: [
-					/**
-					 * LAB ORDERS PANEL
-					 */
-					{
-						xtype: 'patientlaborderspanel'
-					},
-					/**
-					 * X-RAY PANEL
-					 */
-					{
-						xtype: 'patientradorderspanel'
-					},
-					/**
-					 * PRESCRIPTION PANEL
-					 */
-					{
-						xtype:'patientrxorderspanel'
-					},
-					/**
-					 * DOCTORS NOTE
-					 */
-					{
-						xtype: 'patientdoctorsnotepanel'
-					}
-				]
-
-			})
-		];
-
-		me.buttons = [
-			{
-				text: _('close'),
-				scope: me,
-				handler: function(){
-					me.close();
-				}
-			}
-		];
-		/**
-		 * windows listeners
-		 * @type {{scope: *, show: Function, hide: Function}}
-		 */
-		me.listeners = {
-			scope: me,
-			show: me.onWinShow,
-			hide: me.onWinHide
-		};
-		me.callParent(arguments);
-	},
-
-	/**
-	 * OK!
-	 * @param action
-	 */
-	cardSwitch: function(action){
-		var me = this,
-			tabPanel = me.tabPanel,
-			activePanel = tabPanel.getActiveTab(),
-			toPanel =  tabPanel.query('#'+ action)[0];
-
-		if(activePanel == toPanel){
-			activePanel.fireEvent('activate', activePanel);
-		}else{
-			tabPanel.setActiveTab(toPanel);
-			me.setWindowTitle(toPanel.title);
-		}
-	},
-
-	setWindowTitle:function(title){
-		this.setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
-	},
-
-
-	/**
-	 * OK!
-	 * On window shows
-	 */
-	onWinShow: function(){
-		var me = this,
-			p = me.down('tabpanel'),
-			w = Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
-			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
-
-		p.setSize(w, h);
-
-		me.alignTo(Ext.getBody(), 'c-c');
-		/**
-		 * Fire Event
-		 */
-		me.fireEvent('orderswindowshow', me);
-		/**
-		 * read only stuff
-		 */
-		me.setTitle(app.patient.name + ' - ' + _('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + _('read_mode') + ']</span>' : ''));
-		me.setReadOnly(app.patient.readOnly);
-	},
-
-	/**
-	 * OK!
-	 * Loads patientDocumentsStore with new documents
-	 */
-	onWinHide: function(){
-		var me = this;
-		/**
-		 * Fire Event
-		 */
-		me.fireEvent('orderswindowhide', me);
-		if(app.getActivePanel().$className == 'App.view.patient.Summary'){
-			app.getActivePanel().loadStores();
-		}
-
-	}
-
-});
-Ext.define('App.view.dashboard.panel.PortalColumn', {
-	extend     : 'Ext.container.Container',
-	alias      : 'widget.portalcolumn',
-
-    requires: [
-        'Ext.layout.container.Anchor',
-        'App.view.dashboard.panel.Portlet'
-    ],
-
-    layout: 'anchor',
-    defaultType: 'portlet',
-    cls: 'x-portal-column'
-	//
-	// This is a class so that it could be easily extended
-	// if necessary to provide additional behavior.
-	//
-});
-Ext.define('App.view.dashboard.panel.PortalPanel', {
-	extend: 'Ext.panel.Panel',
-	alias: 'widget.portalpanel',
-	requires: [
-		'Ext.layout.container.Column',
-
-		'App.view.dashboard.panel.PortalDropZone',
-		'App.view.dashboard.panel.PortalColumn'
-	],
-
-	cls: 'x-portal',
-	bodyCls: 'x-portal-body',
-	defaultType: 'portalcolumn',
-	//componentLayout: 'body',
-	autoScroll: true,
-
-	manageHeight: false,
-
-	initComponent: function(){
-		var me = this;
-
-		// Implement a Container beforeLayout call from the layout to this Container
-		this.layout = {
-			type: 'column'
-		};
-		this.callParent();
-
-		this.addEvents({
-			validatedrop: true,
-			beforedragover: true,
-			dragover: true,
-			beforedrop: true,
-			drop: true
-		});
-	},
-
-	// Set columnWidth, and set first and last column classes to allow exact CSS targeting.
-	beforeLayout: function(){
-		var items = this.layout.getLayoutItems(),
-			len = items.length,
-			firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
-			i, item, last;
-
-		for(i = 0; i < len; i++){
-			item = items[i];
-			item.columnWidth = 1 / len;
-			last = (i == len - 1);
-
-			if(!i){ // if (first)
-				if(last){
-					item.addCls(firstAndLast);
-				}else{
-					item.addCls('x-portal-column-first');
-					item.removeCls('x-portal-column-last');
-				}
-			}else if(last){
-				item.addCls('x-portal-column-last');
-				item.removeCls('x-portal-column-first');
-			}else{
-				item.removeCls(firstAndLast);
-			}
-		}
-
-		return this.callParent(arguments);
-	},
-
-	// private
-	initEvents: function(){
-		this.callParent();
-		this.dd = Ext.create('App.view.dashboard.panel.PortalDropZone', this, this.dropConfig);
-	},
-
-	// private
-	beforeDestroy: function(){
-		if(this.dd){
-			this.dd.unreg();
-		}
-		this.callParent();
-	}
-});
-
 Ext.define('App.view.patient.windows.EncounterCheckOut', {
 	extend: 'App.ux.window.Window',
 	requires: [
@@ -45415,6 +45695,104 @@ Ext.define('App.view.patient.windows.EncounterCheckOut', {
 		}
 	]
 });
+Ext.define('App.view.dashboard.panel.PortalColumn', {
+	extend     : 'Ext.container.Container',
+	alias      : 'widget.portalcolumn',
+
+    requires: [
+        'Ext.layout.container.Anchor',
+        'App.view.dashboard.panel.Portlet'
+    ],
+
+    layout: 'anchor',
+    defaultType: 'portlet',
+    cls: 'x-portal-column'
+	//
+	// This is a class so that it could be easily extended
+	// if necessary to provide additional behavior.
+	//
+});
+Ext.define('App.view.dashboard.panel.PortalPanel', {
+	extend: 'Ext.panel.Panel',
+	alias: 'widget.portalpanel',
+	requires: [
+		'Ext.layout.container.Column',
+
+		'App.view.dashboard.panel.PortalDropZone',
+		'App.view.dashboard.panel.PortalColumn'
+	],
+
+	cls: 'x-portal',
+	bodyCls: 'x-portal-body',
+	defaultType: 'portalcolumn',
+	//componentLayout: 'body',
+	autoScroll: true,
+
+	manageHeight: false,
+
+	initComponent: function(){
+		var me = this;
+
+		// Implement a Container beforeLayout call from the layout to this Container
+		this.layout = {
+			type: 'column'
+		};
+		this.callParent();
+
+		this.addEvents({
+			validatedrop: true,
+			beforedragover: true,
+			dragover: true,
+			beforedrop: true,
+			drop: true
+		});
+	},
+
+	// Set columnWidth, and set first and last column classes to allow exact CSS targeting.
+	beforeLayout: function(){
+		var items = this.layout.getLayoutItems(),
+			len = items.length,
+			firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
+			i, item, last;
+
+		for(i = 0; i < len; i++){
+			item = items[i];
+			item.columnWidth = 1 / len;
+			last = (i == len - 1);
+
+			if(!i){ // if (first)
+				if(last){
+					item.addCls(firstAndLast);
+				}else{
+					item.addCls('x-portal-column-first');
+					item.removeCls('x-portal-column-last');
+				}
+			}else if(last){
+				item.addCls('x-portal-column-last');
+				item.removeCls('x-portal-column-first');
+			}else{
+				item.removeCls(firstAndLast);
+			}
+		}
+
+		return this.callParent(arguments);
+	},
+
+	// private
+	initEvents: function(){
+		this.callParent();
+		this.dd = Ext.create('App.view.dashboard.panel.PortalDropZone', this, this.dropConfig);
+	},
+
+	// private
+	beforeDestroy: function(){
+		if(this.dd){
+			this.dd.unreg();
+		}
+		this.callParent();
+	}
+});
+
 Ext.define('App.view.areas.PatientPoolAreas', {
 	extend: 'App.ux.RenderPanel',
 
@@ -45571,1341 +45949,6 @@ Ext.define('App.view.areas.PatientPoolAreas', {
 		if(typeof callback == 'function') callback(true);
 	}
 });
-Ext.define('App.view.patient.Patient', {
-	extend: 'Ext.panel.Panel',
-	requires: [
-		'App.ux.AddTabButton'
-	],
-	layout: {
-		type: 'vbox',
-		align: 'stretch'
-	},
-	xtype: 'patientdeomgraphics',
-	itemId: 'PatientDemographicsPanel',
-	newPatient: true,
-	pid: null,
-	// default patient photo ID placeholder
-	defaultPatientImage: 'data:image/jpeg;base64,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Q3B0bmJvb2wAAAAAAENsYnJib29sAAAAAABSZ3NNYm9vbAAAAAAAQ3JuQ2Jvb2wAAAAAAENudENib29sAAAAAABMYmxzYm9vbAAAAAAATmd0dmJvb2wAAAAAAEVtbERib29sAAAAAABJbnRyYm9vbAAAAAAAQmNrZ09iamMAAAABAAAAAAAAUkdCQwAAAAMAAAAAUmQgIGRvdWJAb+AAAAAAAAAAAABHcm4gZG91YkBv4AAAAAAAAAAAAEJsICBkb3ViQG/gAAAAAAAAAAAAQnJkVFVudEYjUmx0AAAAAAAAAAAAAAAAQmxkIFVudEYjUmx0AAAAAAAAAAAAAAAAUnNsdFVudEYjUHhsQFIAk4AAAAAAAAAKdmVjdG9yRGF0YWJvb2wBAAAAAFBnUHNlbnVtAAAAAFBnUHMAAAAAUGdQQwAAAABMZWZ0VW50RiNSbHQAAAAAAAAAAAAAAABUb3AgVW50RiNSbHQAAAAAAAAAAAAAAABTY2wgVW50RiNQcmNAWQAAAAAAAAAAABBjcm9wV2hlblByaW50aW5nYm9vbAAAAAAOY3JvcFJlY3RCb3R0b21sb25nAAAAAAAAAAxjcm9wUmVjdExlZnRsb25nAAAAAAAAAA1jcm9wUmVjdFJpZ2h0bG9uZwAAAAAAAAALY3JvcFJlY3RUb3Bsb25nAAAAAAA4QklNA+0AAAAAABAASAJOAAEAAQBIAk4AAQABOEJJTQQmAAAAAAAOAAAAAAAAAAAAAD+AAAA4QklNA/IAAAAAAAoAAP///////wAAOEJJTQQNAAAAAAAEAAAAHjhCSU0EGQAAAAAABAAAAB44QklNA/MAAAAAAAkAAAAAAAAAAAEAOEJJTScQAAAAAAAKAAEAAAAAAAAAAThCSU0D9QAAAAAASAAvZmYAAQBsZmYABgAAAAAAAQAvZmYAAQChmZoABgAAAAAAAQAyAAAAAQBaAAAABgAAAAAAAQA1AAAAAQAtAAAABgAAAAAAAThCSU0D+AAAAAAAcAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAA4QklNBAAAAAAAAAIAADhCSU0EAgAA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eXBlL1Jlc291cmNlRXZlbnQjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAxMi0wNC0yNFQxNjozMDoyNi0wNDowMCIgeG1wOk1vZGlmeURhdGU9IjIwMTItMTEtMTlUMjM6MjY6NDQtMDQ6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMTItMTEtMTlUMjM6MjY6NDQtMDQ6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvanBlZyIgcGhvdG9zaG9wOkxlZ2FjeUlQVENEaWdlc3Q9IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAxIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUY0MEQzMUJDMjMyRTIxMUE1NzhERjExOTIzOEY2MTMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDczMkY4ODg3Q0FGRTExMUIxNzRGM0Y5REZEMjcyREQiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowNzMyRjg4ODdDQUZFMTExQjE3NEYzRjlERkQyNzJERCI+IDxwaG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+IDxyZGY6QmFnPiA8cmRmOmxpPnhtcC5kaWQ6MDczMkY4ODg3Q0FGRTExMUIxNzRGM0Y5REZEMjcyREQ8L3JkZjpsaT4gPC9yZGY6QmFnPiA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDowNzMyRjg4ODdDQUZFMTExQjE3NEYzRjlERkQyNzJERCIgc3RFdnQ6d2hlbj0iMjAxMi0wNC0yNFQxNjozMDoyNi0wNDowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBpbWFnZS9wbmcgdG8gaW1hZ2UvanBlZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MDgzMkY4ODg3Q0FGRTExMUIxNzRGM0Y5REZEMjcyREQiIHN0RXZ0OndoZW49IjIwMTItMDYtMDVUMjI6MDg6NDAtMDQ6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo5RjQwRDMxQkMyMzJFMjExQTU3OERGMTE5MjM4RjYxMyIgc3RFdnQ6d2hlbj0iMjAxMi0xMS0xOVQyMzoyNjo0NC0wNDowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDw/eHBhY2tldCBlbmQ9InciPz7/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdCIFhZWiAHzgACAAkABgAxAABhY3NwTVNGVAAAAABJRUMgc1JHQgAAAAAAAAAAAAAAAQAA9tYA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1eX1KEdXZjh2hpamtsbW5vZnd4eXp7fH1+f3SFhoeIiYqLjI2Oj4OUlZaXmJmam5ydnp+So6SlpqeoqaqrrK2ur6/9oADAMBAAIRAxEAPwDf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//0N/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//R3+Pfuvde9+691737r3Xvfuvde9+690RDvj+Zb8K/jruCq2Z2D3dgqrflFK8FZsXY9Hld/bpoKqO/ko8vR7UospS7frEtzFkZ6RxcXFj7917oAsX/ADsPghUVcUG4N09i7GoZZFRc3urrLcRxCamCrJPLttNxVlPDzcvJCqqBdiPfuvdWRdV9x9V947TpN9dP9gbU7I2jWM0UWd2hmqLM0UdSqq0lFWGkleXHZGAMPJTVCxTx39SD37r3Qle/de697917r3v3Xuve/de697917r//0t/j37r3Xvfuvde9+691737r3WvZ/Pc/mG7t+NextsfGzpbcFVtvtXuHCVue3hu3EVJps5svrFaqbEQ0+Eq4XSoxmd3vk6aqgjrIyJqSjoqgxlJZYZY/dbAJNB1qXdV7t23smjqdxZenGUzuRqJmV6omaREWRgSXcszvNJd2YksxPPvfT3Qs1PyH23uOCXF5XB0v2s6NCS0K8Bhp+tvwD710x1w+JnzI7L+CvyCoezOqMxXz7SbK0kG+uv5a6RNvdg7LklSWuwWUpCXpRkqWnlkONr9BnoKkK6koZY5PdXILGo4dfRY627B2v2x19sjs/ZNeuU2h2DtXA7y23XgKrVOF3HjKbK495Y1Z/DUCmqlEsZN45AynkH37qnS29+691737r3Xvfuvde9+691//09/j37r3Xvfuvde9+691737r3Xz6P52O9sjvP+ZV8gYayZnpdmDYGycPEzs602PxPX+2ayeKIH9CzZjJ1cxA41ysfz796dX8k6qxMjlFjudK3sObcm/H5/PvfTnWMEqbj37r3XVQ7SBmYm4AHP8AgoX37r3W/h/Iv3tkd5/y3OmYcnUNUz7MzfY2yYZXJLjHYve+Zr8VTkm5K0eNy0UKf0jjUfj3rpjq3r37r3Xvfuvde9+691737r3X/9Tf49+691737r3Xvfuvde9+6918+z+dzs2o2d/Mv78mlVhS7xp+ut6Y92XSJYMn11tigqSl/wBSplsTUpf+qH+nv3l1cfAeqqPe+nOve/de6xTkqpP5+v8AvH+8Hn37r3W/1/Iz2bVbR/lr9HzVsfin3hlOyd5hLWb7XK9g7io8dI35PnxmMhkB/KsPeumOrdffuvde9+691737r3Xri9r8/W35t/W3v3Xuv//V3+Pfuvde9+691737r3Xvfuvdad//AApZ6aqsP3J8e+/qOhP8L3rsPM9X5qujQmKLObHzU24sQtWw4WoyWJ3hOsN/1JQPb9J9+6svxDrWkBuAf8P+R/7z7307137917rpKSsydZRYrHUs9dkMlV09BQUVNG0tTWVtZMkFLS08SAtLPUTyKiqOWYgD37r3X08/i91OnRHxy6N6cCKk/W3VWx9o5EoQyzZnD7eoKbOVQZeGNXmFnlJ5uX+p966Y6Hj37r3Xvfuvde9+691g0H7ryXOn7fRbm1/Jqv8A0vb37r3X/9bf3BBFxyLkf7EEgj/YEe/de679+691737r3XvfuvdES/mRfFHBfMX4idqdV1tEk27Mdha3fXVuRCBqnE9lbUxtdW7denc8pDm1ebFVXBJo6+Ww1aSPde6+b1TFgpVwQyEqysCpVlNipUgEEN9fe+n+pJFgx/1P19+691dL/Ig+KOD+RvzK/v8A70oY8nsr424Wg7M/h8yCWkyXYNRlUouu6StRgQ0GPrqaqywBNnmxcaMCjMDrpotUAefW+J791Xr3v3Xuve/de697917r3v3Xuv/X39lAAsP9Ux/27k/72ffuvdcvfuvde9+691737r3WKWWKGKSWeSOKGKN5JpZWVIo4kBaSSR3IRI0QEkk2A+vv3Xuvls9s0uCou2+06XatZTZHbFP2PviDbmQopFlo6/AxbnyceHraSRPTJTVePWOSNhwVYEce99P9ID37r3W2p/wmVg23Fs75aTR19A28KvdPVsdXi/LEMnFtqgxW72x2Q8BPmagqcpkqqPWAVEkViQSL66ab8P2dbS3v3Veve/de697917r3v3Xuve/de6//0N/j37r3XvfuvdJLd+/djde4uTOb+3ntTZGFiDNLl93bhxG28YgQXYvXZiro6UaR9fV7917qtDun+c58GOpI6ykwO/c33huSnSUQ4DpfbtXueCaZRaNTu/INhtjeF5OC8eRmYC5CG1j7r3Wv/wDNz+bP8t/lztzO9adc7Th+N/Smchnx+ehhzb5HsLeOEqEaCpxuf3TDBSx47DV8BInocdTwGVGaKaonhZlPutinnw6ofzeBocCTT/eLXVQYh3iUJChW/wCldTM31+pJ/wBb3vp7pO0vgabTOLxM3qINiAT9VItyPfuvdGz+N2/u8Pjt2Jhu4/jfv+XbO88XG1PLHqiejzWHmeKeu29uLFVCTY3P4XINAnlpqiPSHRJEKSxxyL49Ufy62dvj1/P725U0lBg/lx0Xu7rnOokcFZv3q6mbeWx6uQBRJX1W2amsTdeAgY3Pip5My39CPp7103T06uC6g+dfxA74FPH1h8hOtM7k6pYzFtzIZ+Hau7ryEWQ7R3YuD3LqDccUpFx9ffuvdGyVgwDKQysAQQbgg8ggj6g+/de679+691737r3X/9HZ/wDnl/OJ+PfwxP8AczBUs3dvdVZTST02xNq5WmosLt5WeWClqd87q8GRXEfczRkw0dNTVlbNHZ2SKKSOVvdbAJ4dUO9i/wA0X+YL8gRPWV3auL+O2yq0s9NtbqHHQ4LLR0ri8Qq965OTK7y+7EZGpqatpYy1yEX6D2OrUT16IlurP7MrslJn+xt77k7J3I2tp8xvDcWU3PlJpG9T+SvzVZXVchZhc3b37qnQb5XvfaOGjeDbeEpVZRZHESEiw4Nrfj3vp/oB91dw7i3EZI/MaeBiQEjOiym/4HHv3XugkmmlqHZ5XZmY3JJ1Hk3+p/xPv3XusX0synj/AH3B9+690oMLubK4SZJqKpkjKkGwc24I/F7e/de6MHtr5DVdNGlNm6KKtisFYyIjlhex+ov+PfuvdChTb96h3YgTK4mmpZZOS6oifWxJ4H4/w966Y6Ml1j3z3t1IIaj49fKDsvY8FPpem23/AHpqs5tAlDdUk2buRsxtaVb8eqkJt7917qyTo3+f3291Xn8VtD5ndX4ffG2KuaOn/wBK3VNNHt/c9ND5EWXIZPZ1VUvtrPyRISzxUc2IIXlFkI0e/dep6dbF3+zd/HL/AEAf7ND/AKVdt/6D/wC6/wDe7++3ml8P8M8/2P2n8M8X8X/j/wDFf8h/hvg+++//AMn8Xl9Hv3Xuv//Sqj/vTkKjJTZzIVkmUy9XXrlKvI5KSasqqmt+5aseaaaWYySNLM5LXP04Gn37q54HpRZbs/dWZGiqybxx20iOmDRIABYABne3HvdOt6Pn0jJslPUMTPUTSk/XWzNwR/Qm/Fvfur9RzOjHkkD/AABt/tr+/de64+ZP8f8Abe/de695V/2r/kk+/de678q3tzf/AFvfuvdd6x/j/vH/ABX37r3XtY/x/wB4/wCK+/de65rOVN1LAj6EXuB9eOffuvdOtDubLYyRXpMhUwsvIsxIv/rE2t7917p33Dv7Oblx9NjsvURVMNJP5oZDGwmD+N47NIzEadMhtYD37r3Tj/pd7C/0Z/6Hv70Zb/Rz/eL+9X92vup/4d/F/t/t/N4dejRb1aLadXqtfn37r3X/06bKf7HwR2/iHm9X6/t/FfUdH6Ob+O1/9q+nHvfTg1edepUWq/Nvof8AXt/j/j791cdZTq5/2P8Ar3/5F/vPv3XusP7n4/2P6vr/ALD37r3XY8n5/r/tXv3XupA1fjVb/C/v3XusTeXVxa3+P1/3n/D37r3XR+7/ABa3+N/+I9+6910PvLj9P1H9ffuvdTF1afVbVbn62vf8f4f8R7917qK3l1/i1/z/AL6309+691xbyafVa3NrfW1z9fxf+n+Pv3Xuu/3dP5/T/wAnaf8Aob37r3X/2Q==',
-	// default insurance image placeholder
-	defaultInsImage: 'data:image/jpeg;base64,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c2VudW0AAAAAUGdQcwAAAABQZ1BDAAAAAExlZnRVbnRGI1JsdAAAAAAAAAAAAAAAAFRvcCBVbnRGI1JsdAAAAAAAAAAAAAAAAFNjbCBVbnRGI1ByY0BZAAAAAAAAAAAAEGNyb3BXaGVuUHJpbnRpbmdib29sAAAAAA5jcm9wUmVjdEJvdHRvbWxvbmcAAAAAAAAADGNyb3BSZWN0TGVmdGxvbmcAAAAAAAAADWNyb3BSZWN0UmlnaHRsb25nAAAAAAAAAAtjcm9wUmVjdFRvcGxvbmcAAAAAADhCSU0D7QAAAAAAEABIAAAAAQABAEgAAAABAAE4QklNBCYAAAAAAA4AAAAAAAAAAAAAP4AAADhCSU0D8gAAAAAACgAA////////AAA4QklNBA0AAAAAAAQAAAB4OEJJTQQZAAAAAAAEAAAAHjhCSU0D8wAAAAAACQAAAAAAAAAAAQA4QklNJxAAAAAAAAoAAQAAAAAAAAABOEJJTQP1AAAAAABIAC9mZgABAGxmZgAGAAAAAAABAC9mZgABAKGZmgAGAAAAAAABADIAAAABAFoAAAAGAAAAAAABADUAAAABAC0AAAAGAAAAAAABOEJJTQP4AAAAAABwAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAAAD/////////////////////////////A+gAADhCSU0EAAAAAAAAAgAIOEJJTQQCAAAAAAASAAAAAAAAAAAAAAAAAAAAAAAAOEJJTQQwAAAAAAAJAQEBAQEBAQEBADhCSU0ELQAAAAAAAgAAOEJJTQQIAAAAAAAQAAAAAQAAAkAAAAJAAAAAADhCSU0EHgAAAAAABAAAAAA4QklNBBoAAAAAA0cAAAAGAAAAAAAAAAAAAACZAAAA/QAAAAkAaQBuAHMAdQByAGEAbgBjAGUAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAP0AAACZAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAEAAAAAAABudWxsAAAAAgAAAAZib3VuZHNPYmpjAAAAAQAAAAAAAFJjdDEAAAAEAAAAAFRvcCBsb25nAAAAAAAA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OnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAxMy0wNi0wNlQyMzo1OTo1NS0wNDowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAxMy0wOS0xNlQxMTowMTozMC0wNDowMCIgeG1wOk1vZGlmeURhdGU9IjIwMTMtMDktMTZUMTE6MDE6MzAtMDQ6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Rjg2RjNEOTVEQjFFRTMxMThBNTM5OTE5MTgzMjBCMEUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RkE5ODgwNUMyNUNGRTIxMUEzM0FBQ0U5MEZCMDc0MTUiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpGQTk4ODA1QzI1Q0ZFMjExQTMzQUFDRTkwRkIwNzQxNSIgZGM6Zm9ybWF0PSJpbWFnZS9qcGVnIiBwaG90b3Nob3A6TGVnYWN5SVBUQ0RpZ2VzdD0iMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDEiIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6RkE5ODgwNUMyNUNGRTIxMUEzM0FBQ0U5MEZCMDc0MTUiIHN0RXZ0OndoZW49IjIwMTMtMDYtMDZUMjM6NTk6NTUtMDQ6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpGQjk4ODA1QzI1Q0ZFMjExQTMzQUFDRTkwRkIwNzQxNSIgc3RFdnQ6d2hlbj0iMjAxMy0wNi0wNlQyMzo1OTo1NS0wNDowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkY4NkYzRDk1REIxRUUzMTE4QTUzOTkxOTE4MzIwQjBFIiBzdEV2dDp3aGVuPSIyMDEzLTA5LTE2VDExOjAxOjMwLTA0OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPD94cGFja2V0IGVuZD0idyI/Pv/iDFhJ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ACITQVEHMmEUcQhCgSORFVKhYhYzCbEkwdFDcvAX4YI0JZJTGGNE8aKyJjUZVDZFZCcKc4OTRnTC0uLyVWV1VjeEhaOzw9Pj8ykalKS0xNTk9JWltcXV5fUoR1dmOHaGlqa2xtbm9md3h5ent8fX5/dIWGh4iJiouMjY6Pg5SVlpeYmZqbnJ2en5KjpKWmp6ipqqusra6vr/2gAMAwEAAhEDEQA/AN/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//Q3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//0t/j37r3XvfuvdEX+d+zMP2Ltn4/bD3A1YmD3d8n+vdv5VsfOlNXLQZPa3YFLUmkqJIaiOGoEch0sUcA/g+/de6Qv/DWXxl/5Xezv/QqxX/2M+/de69/w1l8Zf8Ald7O/wDQqxX/ANjPv3Xuvf8ADWXxl/5Xezv/AEKsV/8AYz7917r3/DWXxl/5Xezv/QqxX/2M+/de6RXZX8tL46bT653/ALqxdX2O2T21srdW4MctVubGTUrV+GwVfkaMVMSbdieWnNRTLrUMpZbgEfX37r3R7fjZ/wBk69Bf+IV6s/8AeGwXv3Xuhq9+690l971W6qHZe767YuNoszvej2vn6rZ2HyUiRY7Lbqp8TVzbexuQlkyGJjjoq7LpDFKzVVMBG5JljHrHuvdV0/6U/wCad/3jZ0r/AOf3D/8A2/ffuvde/wBKf807/vGzpX/z+4f/AO377917r3+lP+ad/wB42dK/+f3D/wD2/ffuvde/0p/zTv8AvGzpX/z+4f8A+377917r3+lP+ad/3jZ0r/5/cP8A/b99+6917/Sn/NO/7xs6V/8AP7h//t++/de69/pT/mnf942dK/8An9w//wBv337r3Xv9Kf8ANO/7xs6V/wDP7h//ALfvv3Xuvf6U/wCad/3jZ0r/AOf3D/8A2/ffuvde/wBKf807/vGzpX/z+4f/AO377917r3+lP+ad/wB42dK/+f3D/wD2/ffuvde/0p/zTv8AvGzpX/z+4f8A+377917r3+lP+ad/3jZ0r/5/cP8A/b99+6917/Sn/NO/7xs6V/8AP7h//t++/de69/pT/mnf942dK/8An9w//wBv337r3Xv9Kf8ANO/7xs6V/wDP7h//ALfvv3Xuvf6U/wCad/3jZ0r/AOf3D/8A2/ffuvde/wBKf807/vGzpX/z+4f/AO377917qz737r3Xvfuvde9+691//9Pf49+691737r3RRPln/wADvit/4t31Z/7z2/ffuvdG79+691737r3Xvfuvde9+690F3eH/ADJXt/8A8Rd2B/7yeW9+690zfGz/ALJ16C/8Qr1Z/wC8NgvfuvdDV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/1N/j37r3XvfuvdFE+Wf/AAO+K3/i3fVn/vPb99+690bv37r3Xvfuvde9+691737r3QXd4f8AMle3/wDxF3YH/vJ5b37r3TN8bP8AsnXoL/xCvVn/ALw2C9+690NXv3XukvvfPZHa2y937nw+363duX25tfP57F7VxpnGR3NkcRiavIUO38eaWiyVSK3M1NOtNF46aok8kg0xubKfde6rp/2e35Ff96++6v8Aqfvn/wC0r7917r3+z2/Ir/vX33V/1P3z/wDaV9+6917/AGe35Ff96++6v+p++f8A7Svv3Xuvf7Pb8iv+9ffdX/U/fP8A9pX37r3Xv9nt+RX/AHr77q/6n75/+0r7917r3+z2/Ir/AL1991f9T98//aV9+6917/Z7fkV/3r77q/6n75/+0r7917r3+z2/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Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//R3+Pfuvde9+690GHc2+9x9Z9bbk3vtPr7N9p7gwn8H/h+w9utXLmM7/Es9i8RVfZtjcLuKtH8Loq+Ssk0Uc37VO19C3dfde6Ih/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de69/s9vyK/71991f9T98/8A2lffuvde/wBnt+RX/evvur/qfvn/AO0r7917r3+z2/Ir/vX33V/1P3z/APaV9+6917/Z7fkV/wB6++6v+p++f/tK+/de69/s9vyK/wC9ffdX/U/fP/2lffuvde/2e35Ff96++6v+p++f/tK+/de69/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de69/s9vyK/71991f9T98/8A2lffuvde/wBnt+RX/evvur/qfvn/AO0r7917r3+z2/Ir/vX33V/1P3z/APaV9+6917/Z7fkV/wB6++6v+p++f/tK+/de69/s9vyK/wC9ffdX/U/fP/2lffuvde/2e35Ff96++6v+p++f/tK+/de69/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de69/s9vyK/71991f9T98/8A2lffuvde/wBnt+RX/evvur/qfvn/AO0r7917r3+z2/Ir/vX33V/1P3z/APaV9+6917/Z7fkV/wB6++6v+p++f/tK+/de69/s9vyK/wC9ffdX/U/fP/2lffuvde/2e35Ff96++6v+p++f/tK+/de69/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de6s+9+691737r3Xvfuvdf/S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//9Pf49+691737r3QYdzds7c6N623J2luyizeR2/tf+D/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9B/7EDtH/wCzb37r3Xv+G7/h3/z6D/2IHaP/ANm3v3Xuvf8ADd/w7/59B/7EDtH/AOzb37r3Xv8Ahu/4d/8APoP/AGIHaP8A9m3v3Xuvf8N3/Dv/AJ9B/wCxA7R/+zb37r3Xv+G7/h3/AM+g/wDYgdo//Zt7917r3/Dd/wAO/wDn0H/sQO0f/s29+6917/hu/wCHf/PoP/Ygdo//AGbe/de69/w3f8O/+fQf+xA7R/8As29+6917/hu/4d/8+g/9iB2j/wDZt7917r3/AA3f8O/+fQf+xA7R/wDs29+6917/AIbv+Hf/AD6D/wBiB2j/APZt7917o6nv3Xuve/de697917r/19/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//Q3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//0t/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//Z',
-	// default QRCode image placeholder
-	defaultQRCodeImage: 'data:image/jpeg;base64,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',
-
-	initComponent: function(){
-		var me = this;
-
-		me.store = Ext.create('App.store.patient.Patient');
-		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
-
-		me.compactDemographics = eval(g('compact_demographics'));
-
-		me.insPanel = Ext.widget('tabpanel', {
-			itemId: 'PatientInsurancesPanel',
-			flex: 1,
-			defaults: {
-				autoScroll: true,
-				padding: 10
-			},
-			plugins: [
-				{
-					ptype: 'AddTabButton',
-					iconCls: 'icoAdd',
-					toolTip: _('new_insurance'),
-					btnText: _('add_insurance'),
-					forceText: true,
-					tabConfig: {
-						xtype: 'form',
-						border: false,
-						bodyBorder: false
-					}
-				}
-			],
-			listeners: {
-				scope: me,
-				beforeadd: me.insurancePanelAdd
-			}
-		});
-
-		var configs = {
-			items: [
-				me.demoForm = Ext.widget('form', {
-					action: 'demoFormPanel',
-					itemId: 'PatientDemographicForm',
-					type: 'anchor',
-					border: false,
-					autoScroll: true,
-					padding: (me.compactDemographics ? 0 : 10),
-					fieldDefaults: {
-						labelAlign: 'right',
-						msgTarget: 'side'
-					}
-				})
-			]
-		};
-
-		if(me.compactDemographics){
-			configs.items.push(me.insPanel);
-		}
-
-		configs.bbar = [
-			{
-				xtype: 'button',
-				action: 'readOnly',
-				text: _('possible_duplicates'),
-				minWidth: 75,
-				itemId: 'PatientPossibleDuplicatesBtn'
-			},
-			'-',
-			'->',
-			'-',
-			{
-				xtype: 'button',
-				action: 'readOnly',
-				text: _('save'),
-				itemId: 'PatientDemographicSaveBtn',
-				minWidth: 75,
-				scope: me,
-				handler: me.formSave
-			},
-			'-',
-			{
-				xtype: 'button',
-				text: _('cancel'),
-				action: 'readOnly',
-				itemId: 'PatientDemographicCancelBtn',
-				minWidth: 75,
-				scope: me,
-				handler: me.formCancel
-			}
-		];
-
-		configs.listeners = {
-			scope: me,
-			beforerender: me.beforePanelRender
-		};
-
-		Ext.apply(me, configs);
-
-		me.callParent(arguments);
-
-		if(!me.compactDemographics){
-
-			Ext.Function.defer(function(){
-				me.insPanel.title = _('insurance');
-				me.insPanel.addDocked({
-					xtype: 'toolbar',
-					dock: 'bottom',
-					items: [
-						'->',
-						'-',
-						{
-							xtype: 'button',
-							action: 'readOnly',
-							text: _('save'),
-							minWidth: 75,
-							scope: me,
-							handler: me.formSave
-						},
-						'-',
-						{
-							xtype: 'button',
-							text: _('cancel'),
-							action: 'readOnly',
-							minWidth: 75,
-							scope: me,
-							handler: me.formCancel
-						}
-					]
-				});
-
-				me.up('tabpanel').insert(1, me.insPanel);
-			}, 300);
-		}
-	},
-
-	beforePanelRender: function(){
-		var me = this,
-			whoPanel;
-
-		me.getFormItems(me.demoForm, 1, function(formPanel){
-
-			var form = me.demoForm.getForm(),
-				fname = form.findField('fname'),
-				mname = form.findField('mname'),
-				lname = form.findField('lname'),
-				address = form.findField('address'),
-				address_cont = form.findField('address_cont'),
-				city = form.findField('city'),
-
-				sex = form.findField('sex'),
-				dob = form.findField('DOB'),
-				zipcode = form.findField('zipcode'),
-				home_phone = form.findField('home_phone'),
-				mobile_phone = form.findField('mobile_phone'),
-				emer_phone = form.findField('emer_phone'),
-				work_phone = form.findField('work_phone'),
-				work_phone_ext = form.findField('work_phone_ext'),
-				email = form.findField('email'),
-				phone_reg = new RegExp(g('phone_validation_format')),
-				zipcode_reg = new RegExp(g('zipcode_validation_format'));
-
-			if(fname) fname.vtype = 'nonspecialcharacters';
-			if(mname) mname.vtype = 'nonspecialcharacters';
-			if(lname) lname.vtype = 'nonspecialcharacters';
-			if(address) address.vtype = 'nonspecialcharacters';
-			if(address_cont) address_cont.vtype = 'nonspecialcharacters';
-			if(city) city.vtype = 'nonspecialcharacters';
-
-			if(email) email.vtype = 'email';
-			if(zipcode) zipcode.regex = zipcode_reg;
-			if(home_phone) home_phone.regex = phone_reg;
-			if(mobile_phone) mobile_phone.regex = phone_reg;
-			if(emer_phone) emer_phone.regex = phone_reg;
-			if(work_phone) work_phone.regex = phone_reg;
-			if(work_phone_ext) work_phone_ext.regex = new RegExp('^[0-9]*$');
-			if(dob) dob.setMaxValue(new Date());
-
-			if(me.newPatient){
-				var crtl = App.app.getController('patient.Patient');
-
-				fname.on('blur', crtl.checkForPossibleDuplicates, crtl);
-				lname.on('blur', crtl.checkForPossibleDuplicates, crtl);
-				sex.on('blur', crtl.checkForPossibleDuplicates, crtl);
-				dob.dateField.on('blur', crtl.checkForPossibleDuplicates, crtl);
-			}else{
-				whoPanel = formPanel.query('[action=DemographicWhoFieldSet]')[0];
-				whoPanel.insert(0,
-					me.patientImages = Ext.create('Ext.panel.Panel', {
-						action: 'patientImage',
-						layout: 'hbox',
-						style: 'float:right',
-						bodyPadding: 5,
-						height: 160,
-						width: 255,
-						items: [
-							{
-								xtype: 'image',
-								width: 119,
-								height: 119,
-								itemId: 'image',
-								margin: '0 5 0 0',
-								src: me.defaultPatientImage
-							},
-							{
-								xtype: 'textareafield',
-								name: 'image',
-								hidden: true
-							},
-							{
-								xtype: 'image',
-								itemId: 'qrcode',
-								width: 119,
-								height: 119,
-								margin: 0,
-								src: me.defaultQRCodeImage
-							}
-						],
-						bbar: [
-							'-',
-							{
-								text: _('take_picture'),
-								action: 'onWebCam'
-								//				                handler: me.getPhotoIdWindow
-							},
-							'-',
-							'->',
-							'-',
-							{
-								text: _('print_qrcode'),
-								scope: me,
-								handler: function(){
-									window.printQRCode(app.patient.pid);
-								}
-							},
-							'-'
-						]
-					})
-				);
-			}
-		});
-
-		/**
-		 *
-		 */
-		me.getFormItems(null, 11, function(panel, items){
-
-			items.unshift({
-				xtype: 'panel',
-				style: 'float:right',
-				height: 182,
-				width: 255,
-				itemId: 'insContainer',
-				items: [
-					{
-						xtype: 'image',
-						action: 'insImage',
-						width: 253,
-						height: 153,
-						src: me.defaultInsImage
-					},
-					{
-						xtype: 'textareafield',
-						action: 'insImage',
-						name: 'image',
-						hidden: true
-					}
-				],
-				bbar: [
-					'->',
-					'-',
-					{
-						text: _('upload'),
-						action: 'onWebCam'
-					},
-					'-'
-				]
-			});
-
-			me.insuranceFormItmes = items;
-
-		});
-
-	},
-
-	insurancePanelAdd: function(tapPanel, form){
-		var me = this,
-			rec = form.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
-
-		form.title = _('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : _('new')) + ')';
-
-		form.add(me.insuranceFormItmes);
-
-		me.insuranceFormLoadRecord(form, rec);
-		if(rec.data.image !== '') form.down('image').setSrc(rec.data.image);
-	},
-
-	getValidInsurances: function(){
-		var me = this,
-			forms = me.insPanel.items.items,
-			records = [],
-			form,
-			rec;
-
-		for(var i = 0; i < forms.length; i++){
-			form = forms[i].getForm();
-			if(!form.isValid()){
-				me.insPanel.setActiveTab(forms[i]);
-				return false;
-			}
-
-			rec = form.getRecord();
-
-			app.fireEvent('beforepatientinsuranceset', form, rec);
-
-			rec.set(form.getValues());
-
-			app.fireEvent('afterpatientinsuranceset', form, rec);
-
-			records.push(rec);
-		}
-
-		return records;
-	},
-
-	getPatientImages: function(record){
-		var me = this;
-		if(me.patientImages) me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
-		if(me.patientImages) me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
-	},
-
-	/**
-	 * verify the patient required info and add a yellow background if empty
-	 */
-	verifyPatientRequiredInfo: function(){
-		var me = this,
-			field;
-		me.patientAlertsStore.load({
-			scope: me,
-			params: {pid: me.pid},
-			callback: function(records, operation, success){
-				for(var i = 0; i < records.length; i++){
-					field = me.demoForm.getForm().findField(records[i].data.name);
-					if(records[i].data.val){
-						if(field) field.removeCls('x-field-yellow');
-					}else{
-						if(field) field.addCls('x-field-yellow');
-					}
-				}
-			}
-		});
-	},
-
-	/**
-	 * allow to edit the field if the filed has no data
-	 * @param fields
-	 */
-	readOnlyFields: function(fields){
-		//        for(var i = 0; i < fields.items.length; i++){
-		//            var f = fields.items[i], v = f.getValue(), n = f.name;
-		//            if(n == 'SS' || n == 'DOB' || n == 'sex'){
-		//                if(v == null || v == ''){
-		//                    f.setReadOnly(false);
-		//                }else{
-		//                    f.setReadOnly(true);
-		//                }
-		//            }
-		//        }
-	},
-
-	copyData: function(combo, records){
-		var form = this.demoForm.getForm(),
-			values,
-			patientData;
-
-		if(combo.value == 'self'){
-
-			values = form.getValues();
-
-			patientData = {
-				primary_subscriber_title: values.title,
-				primary_subscriber_fname: values.fname,
-				primary_subscriber_mname: values.mname,
-				primary_subscriber_lname: values.lname,
-				primary_subscriber_street: values.address,
-				primary_subscriber_city: values.city,
-				primary_subscriber_state: values.state,
-				primary_subscriber_country: values.country,
-				primary_subscriber_zip_code: values.zipcode,
-				primary_subscriber_phone: values.home_phone,
-				primary_subscriber_employer: values.employer_name,
-				primary_subscriber_employer_street: values.employer_address,
-				primary_subscriber_employer_city: values.employer_city,
-				primary_subscriber_employer_state: values.employer_state,
-				primary_subscriber_employer_country: values.employer_country,
-				primary_subscriber_employer_zip_code: values.employer_postal_code
-			};
-
-			form.setValues(patientData);
-		}
-	},
-
-	insuranceFormLoadRecord: function(form, record){
-		form.getForm().loadRecord(record);
-		app.fireEvent('insurancerecordload', form, record);
-	},
-
-	formSave: function(){
-		var me = this,
-			form = me.demoForm.getForm(),
-			record = form.getRecord(),
-			values = form.getValues(),
-			insRecs = me.getValidInsurances();
-
-		if(form.isValid() && insRecs !== false){
-			record.set(values);
-
-			// fire global event
-			app.fireEvent('beforedemographicssave', record, me);
-
-			record.save({
-				scope: me,
-				callback: function(record){
-
-					app.setPatient(record.data.pid, null, function(){
-
-						var insStore = record.insurance();
-						for(var i = 0; i < insRecs.length; i++){
-							if(insRecs[i].data.id === 0) insStore.add(insRecs[i]);
-						}
-						insStore.sync();
-
-						if(me.newPatient){
-							app.openPatientSummary();
-						}else{
-							me.getPatientImages(record);
-							me.verifyPatientRequiredInfo();
-							me.readOnlyFields(form.getFields());
-						}
-					});
-
-					// fire global event
-					app.fireEvent('afterdemographicssave', record, me);
-
-					me.msg('Sweet!', _('record_saved'));
-					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
-				}
-			});
-		}else{
-			me.msg(_('oops'), _('missing_required_data'), true);
-		}
-	},
-
-	formCancel: function(btn){
-		var form = btn.up('form').getForm(), record = form.getRecord();
-		form.loadRecord(record);
-	},
-
-	loadNew: function(){
-		var patient = Ext.create('App.model.patient.Patient', {
-			'create_uid': app.user.id,
-			'update_uid': app.user.id,
-			'create_date': new Date(),
-			'update_date': new Date(),
-			'DOB': '0000-00-00 00:00:00'
-		});
-
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		app.AuditLog('Patient new record created');
-		this.demoForm.getForm().loadRecord(patient);
-	},
-
-	loadPatient: function(pid){
-		var me = this,
-			form = me.demoForm.getForm();
-
-		me.pid = pid;
-
-		form.reset();
-
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		app.AuditLog('Patient record viewed');
-
-		app.patient.record.insurance().load({
-			filters: [
-				{
-					property: 'pid',
-					value: app.patient.record.data.pid
-				}
-			],
-			callback: function(records){
-
-				form.loadRecord(app.patient.record);
-				me.setReadOnly(app.patient.readOnly);
-				me.setButtonsDisabled(me.query('button[action="readOnly"]'));
-				me.getPatientImages(app.patient.record);
-				me.verifyPatientRequiredInfo();
-
-				me.insPanel.removeAll(true);
-				for(var i = 0; i < records.length; i++){
-					me.insPanel.add({
-						xtype: 'form',
-						border: false,
-						bodyBorder: false,
-						insurance: records[i]
-					});
-				}
-
-				if(me.insPanel.items.length !== 0) me.insPanel.setActiveTab(0);
-			}
-		});
-
-	}
-});
-Ext.define('App.view.patient.Summary', {
-	extend: 'App.ux.RenderPanel',
-	pageTitle: _('patient_summary'),
-	pageLayout: 'border',
-	requires: [
-		'Ext.XTemplate',
-		'Ext.ux.IFrame',
-		'App.view.patient.Documents',
-		'App.view.patient.CCD',
-		'App.ux.ManagedIframe',
-
-		'App.view.patient.Patient'
-	],
-	itemId: 'PatientSummaryPanel',
-	showRating: true,
-	pid: null,
-	demographicsData: null,
-	initComponent: function(){
-		var me = this;
-
-		me.stores = [];
-
-		app.on('patientset', function(patient){
-			if(!me.hidden){
-				me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
-			}
-
-		}, me);
-
-		me.pageBody = [
-			me.tabPanel = Ext.widget('tabpanel', {
-				flex: 1,
-				margin: '3 0 0 0',
-				bodyPadding: 0,
-				frame: false,
-				border: false,
-				plain: true,
-				region: 'center',
-				layout: 'fit',
-				itemId: 'PatientSummaryTabPanel'
-			})
-		];
-
-		me.sidePanelItems = [];
-
-		if(a('access_patient_visits')){
-
-			me.stores.push(me.patientEncountersStore = Ext.create('App.store.patient.Encounters', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('encounters'),
-				itemId: 'PatientSummaryEncountersPanel',
-				hideHeaders: true,
-				store: me.patientEncountersStore,
-				columns: [
-					{
-						xtype: 'datecolumn',
-						width: 80,
-						dataIndex: 'service_date',
-						format: g('date_display_format')
-					},
-					{
-						dataIndex: 'brief_description',
-						flex: 1
-					}
-				]
-			});
-		}
-
-		if(a('access_patient_medications')){
-
-			me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('active_medications'),
-				itemId: 'PatientSummaryMedicationsPanel',
-				hideHeaders: true,
-				store: me.patientMedicationsStore,
-				tools: [
-					{
-						xtype: 'button',
-						text: _('details'),
-						action: 'medications',
-						scope: me,
-						handler: me.medicalWin
-					}
-				],
-				columns: [
-					{
-						header: _('name'),
-						dataIndex: 'STR',
-						flex: 1
-					},
-					{
-						text: _('alert'),
-						width: 55,
-						dataIndex: 'alert',
-						renderer: me.boolRenderer
-					}
-				]
-			});
-		}
-
-		if(a('access_patient_immunizations')){
-
-			me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('immunizations'),
-				itemId: 'PatientSummaryImmunizationPanel',
-				hideHeaders: true,
-				store: me.immuCheckListStore,
-				region: 'center',
-				tools: [
-					{
-						xtype: 'button',
-						text: _('details'),
-						action: 'immunization',
-						scope: me,
-						handler: me.medicalWin
-					}
-				],
-				columns: [
-					{
-
-						header: _('name'),
-						dataIndex: 'vaccine_name',
-						flex: 1
-					},
-					{
-						text: _('alert'),
-						width: 55,
-						dataIndex: 'alert',
-						renderer: me.alertRenderer
-					}
-				]
-			});
-		}
-
-		if(a('access_patient_allergies')){
-
-			me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('allergies'),
-				itemId: 'PatientSummaryAllergiesPanel',
-				hideHeaders: true,
-				store: me.patientAllergiesListStore,
-				region: 'center',
-				tools: [
-					{
-						xtype: 'button',
-						text: _('details'),
-						action: 'allergies',
-						scope: me,
-						handler: me.medicalWin
-					}
-				],
-				columns: [
-					{
-						header: _('name'),
-						dataIndex: 'allergy',
-						flex: 1
-					},
-					{
-						text: _('alert'),
-						width: 55,
-						dataIndex: 'alert',
-						renderer: me.boolRenderer
-					}
-				]
-			});
-		}
-
-		if(a('access_active_problems')){
-
-			me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems', {
-				autoLoad: false
-			}));
-
-			Ext.Array.push(me.sidePanelItems, {
-				xtype: 'grid',
-				title: _('active_problems'),
-				itemId: 'PatientSummaryActiveProblemsPanel',
-				hideHeaders: true,
-				store: me.patientActiveProblemsStore,
-				tools: [
-					{
-						xtype: 'button',
-						text: _('details'),
-						action: 'issues',
-						scope: me,
-						handler: me.medicalWin
-					}
-				],
-				columns: [
-					{
-
-						header: _('name'),
-						dataIndex: 'code',
-						flex: 1
-					},
-					{
-						text: _('alert'),
-						width: 55,
-						dataIndex: 'alert',
-						renderer: me.boolRenderer
-					}
-				]
-
-			});
-		}
-
-		if(a('access_patient_calendar_events')){
-
-			//me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
-			//	autoLoad: false
-			//}));
-			//
-			//Ext.Array.push(me.sidePanelItems, {
-			//	xtype: 'grid',
-			//	title: _('appointments'),
-			//	itemId: 'AppointmentsPanel',
-			//	hideHeaders: true,
-			//	disableSelection: true,
-			//	store: me.patientCalendarEventsStore,
-			//	columns: [
-			//		{
-			//			xtype: 'datecolumn',
-			//			format: 'F j, Y, g:i a',
-			//			dataIndex: 'start',
-			//			flex: 1
-			//		}
-			//	]
-			//});
-		}
-
-		if(me.sidePanelItems.length > 0){
-			me.sidePanel = Ext.widget('panel', {
-				width: 250,
-				bodyPadding: 0,
-				frame: false,
-				border: false,
-				bodyBorder: true,
-				region: 'east',
-				split: true,
-				layout: {
-					type: 'vbox',
-					align: 'stretch'
-				},
-				defaults: {
-					margin: '5 5 0 5'
-				},
-				items: me.sidePanelItems
-			});
-
-			Ext.Array.push(me.pageBody, me.sidePanel);
-
-		}
-
-		if(a('access_demographics')){
-			me.demographics = me.tabPanel.add({
-				xtype: 'patientdeomgraphics',
-				newPatient: false,
-				autoScroll: true,
-				title: _('demographics')
-			});
-		}
-
-		if(a('access_patient_disclosures')){
-			me.tabPanel.add({
-				xtype: 'grid',
-				title: _('disclosures'),
-				itemId: 'PatientSummaryDisclosuresPanel',
-				bodyPadding: 0,
-				store: Ext.create('App.store.patient.Disclosures', {
-					autoSync: false,
-					autoLoad: false
-				}),
-				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 2
-				}),
-				columns: [
-					{
-						xtype: 'datecolumn',
-						format: 'Y-m-d',
-						text: _('date'),
-						dataIndex: 'date'
-					},
-					{
-						header: _('type'),
-						dataIndex: 'type',
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('description'),
-						dataIndex: 'description',
-						flex: 1,
-						editor: {
-							xtype: 'textfield'
-						}
-					}
-				],
-				tbar: [
-					{
-						text: _('disclosure'),
-						iconCls: 'icoAdd',
-						action: 'disclosure',
-						handler: me.onAddNew
-					}
-				]
-			});
-		}
-
-		if(a('access_patient_notes')){
-			me.tabPanel.add({
-				title: _('notes'),
-				itemId: 'PatientSummeryNotesPanel',
-				xtype: 'grid',
-				bodyPadding: 0,
-				store: Ext.create('App.store.patient.Notes', {
-					autoSync: false,
-					autoLoad: false
-				}),
-				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 2
-
-				}),
-				columns: [
-					{
-						xtype: 'datecolumn',
-						text: _('date'),
-						format: 'Y-m-d',
-						dataIndex: 'date'
-					},
-					{
-						header: _('type'),
-						dataIndex: 'type',
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('note'),
-						dataIndex: 'body',
-						flex: 1,
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('user'),
-						width: 225,
-						dataIndex: 'user_name'
-					}
-				],
-				tbar: [
-					{
-						text: _('add_note'),
-						iconCls: 'icoAdd',
-						action: 'note',
-						handler: me.onAddNew
-					}
-				]
-			});
-		}
-
-		if(a('access_patient_reminders')){
-			me.tabPanel.add({
-				title: _('reminders'),
-				itemId: 'PatientSummaryRemindersPanel',
-				xtype: 'grid',
-				bodyPadding: 0,
-				store: Ext.create('App.store.patient.Reminders', {
-					autoLoad: false,
-					autoSync: false
-				}),
-				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 2
-
-				}),
-				columns: [
-					{
-						xtype: 'datecolumn',
-						text: _('date'),
-						format: 'Y-m-d',
-						dataIndex: 'date'
-					},
-					{
-						header: _('type'),
-						dataIndex: 'type',
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('note'),
-						dataIndex: 'body',
-						flex: 1,
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('user'),
-						width: 225,
-						dataIndex: 'user_name'
-					}
-				],
-				tbar: [
-					{
-						text: _('add_reminder'),
-						iconCls: 'icoAdd',
-						action: 'reminder',
-						handler: me.onAddNew
-					}
-				]
-			})
-		}
-
-		//		if(a('access_patient_vitals')){
-		//			me.tabPanel.add({
-		//				xtype: 'vitalspanel'
-		//			})
-		//		}
-
-		if(a('access_patient_history')){
-			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
-			me.tabPanel.add({
-				title: _('history'),
-				xtype: 'grid',
-				itemId: 'PatientEncounterHistoryPanel',
-				store: Ext.create('App.store.patient.Encounters', {
-					autoLoad: false
-				}),
-				columns: [
-					{
-						header: _('date'),
-						dataIndex: 'service_date'
-					},
-					{
-						header: _('event'),
-						dataIndex: 'brief_description',
-						flex: true
-					},
-					{
-						header: _('visit_category'),
-						dataIndex: 'visit_category'
-					}
-				]
-			})
-		}
-
-		if(a('access_patient_documents')){
-			//            me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
-			me.tabPanel.add({
-				xtype: 'patientdocumentspanel',
-				border: false
-			})
-		}
-
-		if(a('access_patient_preventive_care_alerts')){
-			//me.tabPanel.add({
-			//	title: _('dismissed_preventive_care_alerts'),
-			//	xtype: 'grid',
-			//	itemId: 'PatientSummaryPreventiveCareAlertsPanel',
-			//	store: Ext.create('App.store.patient.DismissedAlerts', {
-			//		//listeners
-			//	}),
-			//	columns: [
-			//		{
-			//			header: _('description'),
-			//			dataIndex: 'description'
-			//		},
-			//		{
-			//			xtype: 'datecolumn',
-			//			header: _('date'),
-			//			dataIndex: 'date',
-			//			format: 'Y-m-d'
-			//
-			//		},
-			//		{
-			//			header: _('reason'),
-			//			dataIndex: 'reason',
-			//			flex: true
-			//
-			//		},
-			//		{
-			//			header: _('observation'),
-			//			dataIndex: 'observation',
-			//			flex: true
-			//		},
-			//		{
-			//			header: _('dismissed'),
-			//			dataIndex: 'dismiss',
-			//			width: 60,
-			//			renderer: me.boolRenderer
-			//		}
-			//	],
-			//	plugins: Ext.create('App.ux.grid.RowFormEditing', {
-			//		autoCancel: false,
-			//		errorSummary: false,
-			//		clicksToEdit: 1,
-			//		items: [
-			//			{
-			//				title: 'general',
-			//				xtype: 'container',
-			//				padding: 10,
-			//				layout: 'vbox',
-			//				items: [
-			//					{
-			//						/**
-			//						 * Line one
-			//						 */
-			//						xtype: 'fieldcontainer',
-			//						layout: 'hbox',
-			//						defaults: {
-			//							margin: '0 10 5 0'
-			//						},
-			//						items: [
-			//							{
-			//								xtype: 'textfield',
-			//								name: 'reason',
-			//								fieldLabel: _('reason'),
-			//								width: 585,
-			//								labelWidth: 70,
-			//								action: 'reason'
-			//							}
-			//						]
-			//
-			//					},
-			//					{
-			//						/**
-			//						 * Line two
-			//						 */
-			//						xtype: 'fieldcontainer',
-			//						layout: 'hbox',
-			//						defaults: {
-			//							margin: '0 10 5 0'
-			//						},
-			//						items: [
-			//							{
-			//								xtype: 'textfield',
-			//								fieldLabel: _('observation'),
-			//								name: 'observation',
-			//								width: 250,
-			//								labelWidth: 70,
-			//								action: 'observation'
-			//							},
-			//							{
-			//								fieldLabel: _('date'),
-			//								xtype: 'datefield',
-			//								action: 'date',
-			//								width: 200,
-			//								labelWidth: 40,
-			//								format: g('date_display_format'),
-			//								name: 'date'
-			//
-			//							},
-			//							{
-			//								xtype: 'checkboxfield',
-			//								name: 'dismiss',
-			//								fieldLabel: _('dismiss_alert')
-			//
-			//							}
-			//						]
-			//
-			//					}
-			//				]
-			//			}
-			//		]
-			//
-			//	})
-			//});
-		}
-
-//		if(a('access_patient_billing')){
-//			me.tabPanel.add({
-//				xtype: 'panel',
-//				action: 'balancePanel',
-//				itemId: 'balancePanel',
-//				title: _('billing'),
-//				html: _('account_balance') + ': '
-//
-//			});
-//		}
-
-		if(a('access_patient_ccd')){
-			me.reportPanel = me.tabPanel.add({
-				xtype: 'patientccdpanel'
-			});
-		}
-
-		me.callParent();
-	},
-
-	onAddNew: function(btn){
-		var grid = btn.up('grid'),
-			store = grid.store,
-			record;
-
-		if(btn.action == 'disclosure'){
-			record = {
-				date: new Date(),
-				pid: app.patient.pid,
-				active: 1
-			};
-		}else if(btn.action == 'note' || btn.action == 'reminder'){
-			record = {
-				date: new Date(),
-				pid: app.patient.pid,
-				uid: app.user.id,
-				eid: app.patient.eid
-			};
-		}
-
-		grid.plugins[0].cancelEdit();
-		store.insert(0, record);
-		grid.plugins[0].startEdit(0, 0);
-	},
-
-	medicalWin: function(btn){
-		app.onMedicalWin(btn.action);
-	},
-
-	/**
-	 * verify the patient required info and add a yellow background if empty
-	 */
-	verifyPatientRequiredInfo: function(){
-		var me = this, formPanel = me.query('[action="demoFormPanel"]')[0], field;
-		me.patientAlertsStore.load({
-			scope: me,
-			params: {
-				pid: me.pid
-			},
-			callback: function(records, operation, success){
-				for(var i = 0; i < records.length; i++){
-					field = formPanel.getForm().findField(records[i].data.name);
-					if(records[i].data.val){
-						if(field) field.removeCls('x-field-yellow');
-					}else{
-						if(field) field.addCls('x-field-yellow');
-					}
-				}
-			}
-		});
-	},
-
-	/**
-	 * load all the stores in the summaryStores array
-	 */
-	loadStores: function(){
-		var me = this;
-
-		for(var i = 0; i < me.stores.length; i++){
-			me.stores[i].clearFilter(true);
-			me.stores[i].load({
-				params: {
-					pid: me.pid
-				},
-				filters: [
-					{
-						property: 'pid',
-						value: me.pid
-					}
-				]
-			});
-		}
-	},
-
-	loadPatient: function(){
-		var me = this,
-			billingPanel;
-
-		me.el.mask(_('loading...'));
-		/**
-		 * convenient way to refer to current pid within this panel
-		 * @type {*}
-		 */
-		me.pid = app.patient.pid;
-		/**
-		 * get current set patient info
-		 * @type {*}
-		 */
-		var patient = app.patient;
-
-		/**
-		 * update panel main title to reflect the patient name and if the patient is read only
-		 */
-		me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
-		/**
-		 * verify if the patient is on read only mode
-		 */
-		me.setReadOnly(app.patient.readOnly);
-		me.setButtonsDisabled(me.query('button[action="readOnly"]'));
-
-		if(a('access_demographics')) me.demographics.loadPatient(me.pid);
-
-//		/**
-//		 * get billing info if user has access
-//		 */
-//		if(a('access_patient_billing')){
-//			billingPanel = me.tabPanel.getComponent('balancePanel');
-//			Fees.getPatientBalance({pid: me.pid},
-//				function(balance){
-//					billingPanel.update(_('account_balance') + ': $' + balance);
-//				}
-//			);
-//		}
-		/**
-		 * reset tab panel to the first tap
-		 */
-		me.tabPanel.setActiveTab(0);
-		/**
-		 * load all the stores
-		 */
-		me.loadStores();
-		me.el.unmask();
-	},
-	/**
-	 * This function is called from Viewport.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive: function(callback){
-		var me = this;
-		if(me.checkIfCurrPatient()){
-			me.loadPatient();
-			if(typeof callback == 'function') callback(true);
-		}else{
-			callback(false);
-			me.pid = null;
-			me.currPatientError();
-		}
-	}
-});
-Ext.define('App.view.administration.practice.Practice', {
-	extend: 'App.ux.RenderPanel',
-	xtype: 'practicepanel',
-	pageTitle: _('practice_settings'),
-	requires: [
-		'App.view.administration.practice.Facilities',
-		'App.view.administration.practice.FacilityConfig',
-		'App.view.administration.practice.Laboratories',
-		'App.view.administration.practice.Pharmacies',
-		'App.view.administration.practice.ProviderNumbers',
-		'App.view.administration.practice.ReferringProviders',
-//		'App.view.administration.practice.Specialties'
-	],
-	pageBody: [
-		{
-			xtype: 'tabpanel',
-			activeTab: 0,
-			items: [
-				{
-					xtype: 'pharmaciespanel'
-				},
-				{
-					xtype: 'laboratoriespanel'
-				},
-				{
-					xtype: 'insurancecompaniespanel'
-				},
-				{
-					xtype: 'providersnumberspanel'
-				},
-				{
-					xtype: 'referringproviderspanel'
-				},
-//				{
-//					xtype: 'specialtiespanel'
-//				},
-				{
-					xtype: 'facilitiespanel'
-				},
-				{
-					xtype: 'facilityconfigpanel'
-				}
-			]
-		}
-	]
-});
-
 Ext.define('App.view.administration.DataManager', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: 'Data Manager',
@@ -47829,6 +46872,106 @@ Ext.define('App.view.administration.Documents', {
 		me.defaultsDocumentsStore.load();
 		callback(true);
 	}
+});
+
+Ext.define('App.view.administration.Roles', {
+	extend: 'App.ux.RenderPanel',
+	requires: [
+		'App.ux.combo.XCombo',
+		'Ext.grid.plugin.CellEditing',
+		'Ext.ux.DataTip'
+	],
+	itemId: 'AdministrationRolePanel',
+	pageTitle: _('roles_and_permissions'),
+	pageBody: [
+		{
+			xtype:'grid',
+			bodyStyle: 'background-color:white',
+			itemId: 'AdministrationRoleGrid',
+			frame: true,
+			columnLines: true,
+			tbar: [
+				{
+					xtype: 'xcombo',
+					emptyText: _('select'),
+					labelWidth: 50,
+					width: 250,
+					valueField: 'id',
+					displayField: 'title',
+					queryMode: 'local',
+					store: Ext.create('App.store.administration.AclGroups'),
+					itemId: 'AdministrationRoleGroupCombo',
+					windowConfig: {
+						title: _('add_group')
+					},
+					formConfig: {
+						border: false,
+						bodyPadding: 10,
+						items: [
+							{
+								xtype: 'textfield',
+								fieldLabel: _('group_name'),
+								name: 'title'
+							},
+							{
+								xtype: 'checkbox',
+								fieldLabel: _('active'),
+								name: 'active'
+							}
+						]
+					}
+				},
+				'-',
+				'->',
+				'-',
+				{
+					xtype: 'button',
+					text: _('add_role'),
+					iconCls: 'icoAdd',
+					action: 'adminAclAddRole'
+				},
+				'-'
+			],
+			//    selModel: {
+			//        selType: 'cellmodel'
+			//    },
+			features: [
+				{
+					ftype: 'grouping'
+				}
+			],
+			plugins: [
+				{
+					ptype: 'cellediting',
+					clicksToEdit: 1
+				},
+				{
+					ptype: 'datatip',
+					tpl: _('click_to_edit')
+				}
+			],
+			columns: [
+				{
+					text: 'Permission',
+					width: 250,
+					locked: true
+				}
+			]
+		}
+	],
+	pageButtons: [
+		{
+			text: _('cancel'),
+			cls: 'cancelBtn',
+			action: 'adminAclCancel'
+		},
+		'-',
+		{
+			text: _('save'),
+			cls: 'saveBtn',
+			action: 'adminAclSave'
+		}
+	]
 });
 
 Ext.define('App.view.administration.Users', {
@@ -48968,11 +48111,1424 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 	}
 }); 
 
-Ext.define('App.store.patient.Encounters', {
-	extend: 'Ext.data.Store',
-	requires: ['App.model.patient.Encounter'],
-	model: 'App.model.patient.Encounter',
-	remoteSort: true
+Ext.define('App.view.patient.Patient', {
+	extend: 'Ext.panel.Panel',
+	requires: [
+		'App.ux.AddTabButton'
+	],
+	layout: {
+		type: 'vbox',
+		align: 'stretch'
+	},
+	xtype: 'patientdeomgraphics',
+	itemId: 'PatientDemographicsPanel',
+	newPatient: true,
+	pid: null,
+	// default patient photo ID placeholder
+	defaultPatientImage: 'data:image/jpeg;base64,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Q3B0bmJvb2wAAAAAAENsYnJib29sAAAAAABSZ3NNYm9vbAAAAAAAQ3JuQ2Jvb2wAAAAAAENudENib29sAAAAAABMYmxzYm9vbAAAAAAATmd0dmJvb2wAAAAAAEVtbERib29sAAAAAABJbnRyYm9vbAAAAAAAQmNrZ09iamMAAAABAAAAAAAAUkdCQwAAAAMAAAAAUmQgIGRvdWJAb+AAAAAAAAAAAABHcm4gZG91YkBv4AAAAAAAAAAAAEJsICBkb3ViQG/gAAAAAAAAAAAAQnJkVFVudEYjUmx0AAAAAAAAAAAAAAAAQmxkIFVudEYjUmx0AAAAAAAAAAAAAAAAUnNsdFVudEYjUHhsQFIAk4AAAAAAAAAKdmVjdG9yRGF0YWJvb2wBAAAAAFBnUHNlbnVtAAAAAFBnUHMAAAAAUGdQQwAAAABMZWZ0VW50RiNSbHQAAAAAAAAAAAAAAABUb3AgVW50RiNSbHQAAAAAAAAAAAAAAABTY2wgVW50RiNQcmNAWQAAAAAAAAAAABBjcm9wV2hlblByaW50aW5nYm9vbAAAAAAOY3JvcFJlY3RCb3R0b21sb25nAAAAAAAAAAxjcm9wUmVjdExlZnRsb25nAAAAAAAAAA1jcm9wUmVjdFJpZ2h0bG9uZwAAAAAAAAALY3JvcFJlY3RUb3Bsb25nAAAAAAA4QklNA+0AAAAAABAASAJOAAEAAQBIAk4AAQABOEJJTQQmAAAAAAAOAAAAAAAAAAAAAD+AAAA4QklNA/IAAAAAAAoAAP///////wAAOEJJTQQNAAAAAAAEAAAAHjhCSU0EGQAAAAAABAAAAB44QklNA/MAAAAAAAkAAAAAAAAAAAEAOEJJTScQAAAAAAAKAAEAAAAAAAAAAThCSU0D9QAAAAAASAAvZmYAAQBsZmYABgAAAAAAAQAvZmYAAQChmZoABgAAAAAAAQAyAAAAAQBaAAAABgAAAAAAAQA1AAAAAQAtAAAABgAAAAAAAThCSU0D+AAAAAAAcAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAA4QklNBAAAAAAAAAIAADhCSU0EAgAA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eXBlL1Jlc291cmNlRXZlbnQjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAxMi0wNC0yNFQxNjozMDoyNi0wNDowMCIgeG1wOk1vZGlmeURhdGU9IjIwMTItMTEtMTlUMjM6MjY6NDQtMDQ6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMTItMTEtMTlUMjM6MjY6NDQtMDQ6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvanBlZyIgcGhvdG9zaG9wOkxlZ2FjeUlQVENEaWdlc3Q9IjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAxIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUY0MEQzMUJDMjMyRTIxMUE1NzhERjExOTIzOEY2MTMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MDczMkY4ODg3Q0FGRTExMUIxNzRGM0Y5REZEMjcyREQiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowNzMyRjg4ODdDQUZFMTExQjE3NEYzRjlERkQyNzJERCI+IDxwaG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+IDxyZGY6QmFnPiA8cmRmOmxpPnhtcC5kaWQ6MDczMkY4ODg3Q0FGRTExMUIxNzRGM0Y5REZEMjcyREQ8L3JkZjpsaT4gPC9yZGY6QmFnPiA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDowNzMyRjg4ODdDQUZFMTExQjE3NEYzRjlERkQyNzJERCIgc3RFdnQ6d2hlbj0iMjAxMi0wNC0yNFQxNjozMDoyNi0wNDowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBpbWFnZS9wbmcgdG8gaW1hZ2UvanBlZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6MDgzMkY4ODg3Q0FGRTExMUIxNzRGM0Y5REZEMjcyREQiIHN0RXZ0OndoZW49IjIwMTItMDYtMDVUMjI6MDg6NDAtMDQ6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo5RjQwRDMxQkMyMzJFMjExQTU3OERGMTE5MjM4RjYxMyIgc3RFdnQ6d2hlbj0iMjAxMi0xMS0xOVQyMzoyNjo0NC0wNDowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDw/eHBhY2tldCBlbmQ9InciPz7/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdCIFhZWiAHzgACAAkABgAxAABhY3NwTVNGVAAAAABJRUMgc1JHQgAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLUhQICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFjcHJ0AAABUAAAADNkZXNjAAABhAAAAGx3dHB0AAAB8AAAABRia3B0AAACBAAAABRyWFlaAAACGAAAABRnWFlaAAACLAAAABRiWFlaAAACQAAAABRkbW5kAAACVAAAAHBkbWRkAAACxAAAAIh2dWVkAAADTAAAAIZ2aWV3AAAD1AAAACRsdW1pAAAD+AAAABRtZWFzAAAEDAAAACR0ZWNoAAAEMAAAAAxyVFJDAAAEPAAACAxnVFJDAAAEPAAACAxiVFJDAAAEPAAACAx0ZXh0AAAAAENvcHlyaWdodCAoYykgMTk5OCBIZXdsZXR0LVBhY2thcmQgQ29tcGFueQAAZGVzYwAAAAAAAAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAPNRAAEAAAABFsxYWVogAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z2Rlc2MAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENvbmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHZpZXcAAAAAABOk/gAUXy4AEM8UAAPtzAAEEwsAA1yeAAAAAVhZWiAAAAAAAEwJVgBQAAAAVx/nbWVhcwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAo8AAAACc2lnIAAAAABDUlQgY3VydgAAAAAAAAQAAAAABQAKAA8AFAAZAB4AIwAoAC0AMgA3ADsAQABFAEoATwBUAFkAXgBjAGgAbQByAHcAfACBAIYAiwCQAJUAmgCfAKQAqQCuALIAtwC8AMEAxgDLANAA1QDbAOAA5QDrAPAA9gD7AQEBBwENARMBGQEfASUBKwEyATgBPgFFAUwBUgFZAWABZwFuAXUBfAGDAYsBkgGaAaEBqQGxAbkBwQHJAdEB2QHhAekB8gH6AgMCDAIUAh0CJgIvAjgCQQJLAlQCXQJnAnECegKEAo4CmAKiAqwCtgLBAssC1QLgAusC9QMAAwsDFgMhAy0DOANDA08DWgNmA3IDfgOKA5YDogOuA7oDxwPTA+AD7AP5BAYEEwQgBC0EOwRIBFUEYwRxBH4EjASaBKgEtgTEBNME4QTwBP4FDQUcBSsFOgVJBVgFZwV3BYYFlgWmBbUFxQXVBeUF9gYGBhYGJwY3BkgGWQZqBnsGjAadBq8GwAbRBuMG9QcHBxkHKwc9B08HYQd0B4YHmQesB78H0gflB/gICwgfCDIIRghaCG4IggiWCKoIvgjSCOcI+wkQCSUJOglPCWQJeQmPCaQJugnPCeUJ+woRCicKPQpUCmoKgQqYCq4KxQrcCvMLCwsiCzkLUQtpC4ALmAuwC8gL4Qv5DBIMKgxDDFwMdQyODKcMwAzZDPMNDQ0mDUANWg10DY4NqQ3DDd4N+A4TDi4OSQ5kDn8Omw62DtIO7g8JDyUPQQ9eD3oPlg+zD88P7BAJECYQQxBhEH4QmxC5ENcQ9RETETERTxFtEYwRqhHJEegSBxImEkUSZBKEEqMSwxLjEwMTIxNDE2MTgxOkE8UT5RQGFCcUSRRqFIsUrRTOFPAVEhU0FVYVeBWbFb0V4BYDFiYWSRZsFo8WshbWFvoXHRdBF2UXiReuF9IX9xgbGEAYZRiKGK8Y1Rj6GSAZRRlrGZEZtxndGgQaKhpRGncanhrFGuwbFBs7G2MbihuyG9ocAhwqHFIcexyjHMwc9R0eHUcdcB2ZHcMd7B4WHkAeah6UHr4e6R8THz4faR+UH78f6iAVIEEgbCCYIMQg8CEcIUghdSGhIc4h+yInIlUigiKvIt0jCiM4I2YjlCPCI/AkHyRNJHwkqyTaJQklOCVoJZclxyX3JicmVyaHJrcm6CcYJ0kneierJ9woDSg/KHEooijUKQYpOClrKZ0p0CoCKjUqaCqbKs8rAis2K2krnSvRLAUsOSxuLKIs1y0MLUEtdi2rLeEuFi5MLoIuty7uLyQvWi+RL8cv/jA1MGwwpDDbMRIxSjGCMbox8jIqMmMymzLUMw0zRjN/M7gz8TQrNGU0njTYNRM1TTWHNcI1/TY3NnI2rjbpNyQ3YDecN9c4FDhQOIw4yDkFOUI5fzm8Ofk6Njp0OrI67zstO2s7qjvoPCc8ZTykPOM9Ij1hPaE94D4gPmA+oD7gPyE/YT+iP+JAI0BkQKZA50EpQWpBrEHuQjBCckK1QvdDOkN9Q8BEA0RHRIpEzkUSRVVFmkXeRiJGZ0arRvBHNUd7R8BIBUhLSJFI10kdSWNJqUnwSjdKfUrESwxLU0uaS+JMKkxyTLpNAk1KTZNN3E4lTm5Ot08AT0lPk0/dUCdQcVC7UQZRUFGbUeZSMVJ8UsdTE1NfU6pT9lRCVI9U21UoVXVVwlYPVlxWqVb3V0RXklfgWC9YfVjLWRpZaVm4WgdaVlqmWvVbRVuVW+VcNVyGXNZdJ114XcleGl5sXr1fD19hX7NgBWBXYKpg/GFPYaJh9WJJYpxi8GNDY5dj62RAZJRk6WU9ZZJl52Y9ZpJm6Gc9Z5Nn6Wg/aJZo7GlDaZpp8WpIap9q92tPa6dr/2xXbK9tCG1gbbluEm5rbsRvHm94b9FwK3CGcOBxOnGVcfByS3KmcwFzXXO4dBR0cHTMdSh1hXXhdj52m3b4d1Z3s3gReG54zHkqeYl553pGeqV7BHtje8J8IXyBfOF9QX2hfgF+Yn7CfyN/hH/lgEeAqIEKgWuBzYIwgpKC9INXg7qEHYSAhOOFR4Wrhg6GcobXhzuHn4gEiGmIzokziZmJ/opkisqLMIuWi/yMY4zKjTGNmI3/jmaOzo82j56QBpBukNaRP5GokhGSepLjk02TtpQglIqU9JVflcmWNJaflwqXdZfgmEyYuJkkmZCZ/JpomtWbQpuvnByciZz3nWSd0p5Anq6fHZ+Ln/qgaaDYoUehtqImopajBqN2o+akVqTHpTilqaYapoum/adup+CoUqjEqTepqaocqo+rAqt1q+msXKzQrUStuK4trqGvFq+LsACwdbDqsWCx1rJLssKzOLOutCW0nLUTtYq2AbZ5tvC3aLfguFm40blKucK6O7q1uy67p7whvJu9Fb2Pvgq+hL7/v3q/9cBwwOzBZ8Hjwl/C28NYw9TEUcTOxUvFyMZGxsPHQce/yD3IvMk6ybnKOMq3yzbLtsw1zLXNNc21zjbOts83z7jQOdC60TzRvtI/0sHTRNPG1EnUy9VO1dHWVdbY11zX4Nhk2OjZbNnx2nba+9uA3AXcit0Q3ZbeHN6i3ynfr+A24L3hROHM4lPi2+Nj4+vkc+T85YTmDeaW5x/nqegy6LzpRunQ6lvq5etw6/vshu0R7ZzuKO6070DvzPBY8OXxcvH/8ozzGfOn9DT0wvVQ9d72bfb794r4Gfio+Tj5x/pX+uf7d/wH/Jj9Kf26/kv+3P9t////7gAOQWRvYmUAZEAAAAAB/9sAhAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAgICAgICAgICAgIDAwMDAwMDAwMDAQEBAQEBAQEBAQECAgECAgMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwP/wAARCABkAGQDAREAAhEBAxEB/90ABAAN/8QBogAAAAYCAwEAAAAAAAAAAAAABwgGBQQJAwoCAQALAQAABgMBAQEAAAAAAAAAAAAGBQQDBwIIAQkACgsQAAIBAwQBAwMCAwMDAgYJdQECAwQRBRIGIQcTIgAIMRRBMiMVCVFCFmEkMxdScYEYYpElQ6Gx8CY0cgoZwdE1J+FTNoLxkqJEVHNFRjdHYyhVVlcassLS4vJkg3SThGWjs8PT4yk4ZvN1Kjk6SElKWFlaZ2hpanZ3eHl6hYaHiImKlJWWl5iZmqSlpqeoqaq0tba3uLm6xMXGx8jJytTV1tfY2drk5ebn6Onq9PX29/j5+hEAAgEDAgQEAwUEBAQGBgVtAQIDEQQhEgUxBgAiE0FRBzJhFHEIQoEjkRVSoWIWMwmxJMHRQ3LwF+GCNCWSUxhjRPGisiY1GVQ2RWQnCnODk0Z0wtLi8lVldVY3hIWjs8PT4/MpGpSktMTU5PSVpbXF1eX1KEdXZjh2hpamtsbW5vZnd4eXp7fH1+f3SFhoeIiYqLjI2Oj4OUlZaXmJmam5ydnp+So6SlpqeoqaqrrK2ur6/9oADAMBAAIRAxEAPwDf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//0N/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//R3+Pfuvde9+691737r3Xvfuvde9+690RDvj+Zb8K/jruCq2Z2D3dgqrflFK8FZsXY9Hld/bpoKqO/ko8vR7UospS7frEtzFkZ6RxcXFj7917oAsX/ADsPghUVcUG4N09i7GoZZFRc3urrLcRxCamCrJPLttNxVlPDzcvJCqqBdiPfuvdWRdV9x9V947TpN9dP9gbU7I2jWM0UWd2hmqLM0UdSqq0lFWGkleXHZGAMPJTVCxTx39SD37r3Qle/de697917r3v3Xuve/de697917r//0t/j37r3Xvfuvde9+691737r3WvZ/Pc/mG7t+NextsfGzpbcFVtvtXuHCVue3hu3EVJps5svrFaqbEQ0+Eq4XSoxmd3vk6aqgjrIyJqSjoqgxlJZYZY/dbAJNB1qXdV7t23smjqdxZenGUzuRqJmV6omaREWRgSXcszvNJd2YksxPPvfT3Qs1PyH23uOCXF5XB0v2s6NCS0K8Bhp+tvwD710x1w+JnzI7L+CvyCoezOqMxXz7SbK0kG+uv5a6RNvdg7LklSWuwWUpCXpRkqWnlkONr9BnoKkK6koZY5PdXILGo4dfRY627B2v2x19sjs/ZNeuU2h2DtXA7y23XgKrVOF3HjKbK495Y1Z/DUCmqlEsZN45AynkH37qnS29+691737r3Xvfuvde9+691//09/j37r3Xvfuvde9+691737r3Xz6P52O9sjvP+ZV8gYayZnpdmDYGycPEzs602PxPX+2ayeKIH9CzZjJ1cxA41ysfz796dX8k6qxMjlFjudK3sObcm/H5/PvfTnWMEqbj37r3XVQ7SBmYm4AHP8AgoX37r3W/h/Iv3tkd5/y3OmYcnUNUz7MzfY2yYZXJLjHYve+Zr8VTkm5K0eNy0UKf0jjUfj3rpjq3r37r3Xvfuvde9+691737r3X/9Tf49+691737r3Xvfuvde9+6918+z+dzs2o2d/Mv78mlVhS7xp+ut6Y92XSJYMn11tigqSl/wBSplsTUpf+qH+nv3l1cfAeqqPe+nOve/de6xTkqpP5+v8AvH+8Hn37r3W/1/Iz2bVbR/lr9HzVsfin3hlOyd5hLWb7XK9g7io8dI35PnxmMhkB/KsPeumOrdffuvde9+691737r3Xri9r8/W35t/W3v3Xuv//V3+Pfuvde9+691737r3Xvfuvdad//AApZ6aqsP3J8e+/qOhP8L3rsPM9X5qujQmKLObHzU24sQtWw4WoyWJ3hOsN/1JQPb9J9+6svxDrWkBuAf8P+R/7z7307137917rpKSsydZRYrHUs9dkMlV09BQUVNG0tTWVtZMkFLS08SAtLPUTyKiqOWYgD37r3X08/i91OnRHxy6N6cCKk/W3VWx9o5EoQyzZnD7eoKbOVQZeGNXmFnlJ5uX+p966Y6Hj37r3Xvfuvde9+691g0H7ryXOn7fRbm1/Jqv8A0vb37r3X/9bf3BBFxyLkf7EEgj/YEe/de679+691737r3XvfuvdES/mRfFHBfMX4idqdV1tEk27Mdha3fXVuRCBqnE9lbUxtdW7denc8pDm1ebFVXBJo6+Ww1aSPde6+b1TFgpVwQyEqysCpVlNipUgEEN9fe+n+pJFgx/1P19+691dL/Ig+KOD+RvzK/v8A70oY8nsr424Wg7M/h8yCWkyXYNRlUouu6StRgQ0GPrqaqywBNnmxcaMCjMDrpotUAefW+J791Xr3v3Xuve/de697917r3v3Xuv/X39lAAsP9Ux/27k/72ffuvdcvfuvde9+691737r3WKWWKGKSWeSOKGKN5JpZWVIo4kBaSSR3IRI0QEkk2A+vv3Xuvls9s0uCou2+06XatZTZHbFP2PviDbmQopFlo6/AxbnyceHraSRPTJTVePWOSNhwVYEce99P9ID37r3W2p/wmVg23Fs75aTR19A28KvdPVsdXi/LEMnFtqgxW72x2Q8BPmagqcpkqqPWAVEkViQSL66ab8P2dbS3v3Veve/de697917r3v3Xuve/de6//0N/j37r3XvfuvdJLd+/djde4uTOb+3ntTZGFiDNLl93bhxG28YgQXYvXZiro6UaR9fV7917qtDun+c58GOpI6ykwO/c33huSnSUQ4DpfbtXueCaZRaNTu/INhtjeF5OC8eRmYC5CG1j7r3Wv/wDNz+bP8t/lztzO9adc7Th+N/Smchnx+ehhzb5HsLeOEqEaCpxuf3TDBSx47DV8BInocdTwGVGaKaonhZlPutinnw6ofzeBocCTT/eLXVQYh3iUJChW/wCldTM31+pJ/wBb3vp7pO0vgabTOLxM3qINiAT9VItyPfuvdGz+N2/u8Pjt2Jhu4/jfv+XbO88XG1PLHqiejzWHmeKeu29uLFVCTY3P4XINAnlpqiPSHRJEKSxxyL49Ufy62dvj1/P725U0lBg/lx0Xu7rnOokcFZv3q6mbeWx6uQBRJX1W2amsTdeAgY3Pip5My39CPp7103T06uC6g+dfxA74FPH1h8hOtM7k6pYzFtzIZ+Hau7ryEWQ7R3YuD3LqDccUpFx9ffuvdGyVgwDKQysAQQbgg8ggj6g+/de679+691737r3X/9HZ/wDnl/OJ+PfwxP8AczBUs3dvdVZTST02xNq5WmosLt5WeWClqd87q8GRXEfczRkw0dNTVlbNHZ2SKKSOVvdbAJ4dUO9i/wA0X+YL8gRPWV3auL+O2yq0s9NtbqHHQ4LLR0ri8Qq965OTK7y+7EZGpqatpYy1yEX6D2OrUT16IlurP7MrslJn+xt77k7J3I2tp8xvDcWU3PlJpG9T+SvzVZXVchZhc3b37qnQb5XvfaOGjeDbeEpVZRZHESEiw4Nrfj3vp/oB91dw7i3EZI/MaeBiQEjOiym/4HHv3XugkmmlqHZ5XZmY3JJ1Hk3+p/xPv3XusX0synj/AH3B9+690oMLubK4SZJqKpkjKkGwc24I/F7e/de6MHtr5DVdNGlNm6KKtisFYyIjlhex+ov+PfuvdChTb96h3YgTK4mmpZZOS6oifWxJ4H4/w966Y6Ml1j3z3t1IIaj49fKDsvY8FPpem23/AHpqs5tAlDdUk2buRsxtaVb8eqkJt7917qyTo3+f3291Xn8VtD5ndX4ffG2KuaOn/wBK3VNNHt/c9ND5EWXIZPZ1VUvtrPyRISzxUc2IIXlFkI0e/dep6dbF3+zd/HL/AEAf7ND/AKVdt/6D/wC6/wDe7++3ml8P8M8/2P2n8M8X8X/j/wDFf8h/hvg+++//AMn8Xl9Hv3Xuv//Sqj/vTkKjJTZzIVkmUy9XXrlKvI5KSasqqmt+5aseaaaWYySNLM5LXP04Gn37q54HpRZbs/dWZGiqybxx20iOmDRIABYABne3HvdOt6Pn0jJslPUMTPUTSk/XWzNwR/Qm/Fvfur9RzOjHkkD/AABt/tr+/de64+ZP8f8Abe/de695V/2r/kk+/de678q3tzf/AFvfuvdd6x/j/vH/ABX37r3XtY/x/wB4/wCK+/de65rOVN1LAj6EXuB9eOffuvdOtDubLYyRXpMhUwsvIsxIv/rE2t7917p33Dv7Oblx9NjsvURVMNJP5oZDGwmD+N47NIzEadMhtYD37r3Tj/pd7C/0Z/6Hv70Zb/Rz/eL+9X92vup/4d/F/t/t/N4dejRb1aLadXqtfn37r3X/06bKf7HwR2/iHm9X6/t/FfUdH6Ob+O1/9q+nHvfTg1edepUWq/Nvof8AXt/j/j791cdZTq5/2P8Ar3/5F/vPv3XusP7n4/2P6vr/ALD37r3XY8n5/r/tXv3XupA1fjVb/C/v3XusTeXVxa3+P1/3n/D37r3XR+7/ABa3+N/+I9+6910PvLj9P1H9ffuvdTF1afVbVbn62vf8f4f8R7917qK3l1/i1/z/AL6309+691xbyafVa3NrfW1z9fxf+n+Pv3Xuu/3dP5/T/wAnaf8Aob37r3X/2Q==',
+	// default insurance image placeholder
+	defaultInsImage: 'data:image/jpeg;base64,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c2VudW0AAAAAUGdQcwAAAABQZ1BDAAAAAExlZnRVbnRGI1JsdAAAAAAAAAAAAAAAAFRvcCBVbnRGI1JsdAAAAAAAAAAAAAAAAFNjbCBVbnRGI1ByY0BZAAAAAAAAAAAAEGNyb3BXaGVuUHJpbnRpbmdib29sAAAAAA5jcm9wUmVjdEJvdHRvbWxvbmcAAAAAAAAADGNyb3BSZWN0TGVmdGxvbmcAAAAAAAAADWNyb3BSZWN0UmlnaHRsb25nAAAAAAAAAAtjcm9wUmVjdFRvcGxvbmcAAAAAADhCSU0D7QAAAAAAEABIAAAAAQABAEgAAAABAAE4QklNBCYAAAAAAA4AAAAAAAAAAAAAP4AAADhCSU0D8gAAAAAACgAA////////AAA4QklNBA0AAAAAAAQAAAB4OEJJTQQZAAAAAAAEAAAAHjhCSU0D8wAAAAAACQAAAAAAAAAAAQA4QklNJxAAAAAAAAoAAQAAAAAAAAABOEJJTQP1AAAAAABIAC9mZgABAGxmZgAGAAAAAAABAC9mZgABAKGZmgAGAAAAAAABADIAAAABAFoAAAAGAAAAAAABADUAAAABAC0AAAAGAAAAAAABOEJJTQP4AAAAAABwAAD/////////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP////////////////////////////8D6AAAAAD/////////////////////////////A+gAADhCSU0EAAAAAAAAAgAIOEJJTQQCAAAAAAASAAAAAAAAAAAAAAAAAAAAAAAAOEJJTQQwAAAAAAAJAQEBAQEBAQEBADhCSU0ELQAAAAAAAgAAOEJJTQQIAAAAAAAQAAAAAQAAAkAAAAJAAAAAADhCSU0EHgAAAAAABAAAAAA4QklNBBoAAAAAA0cAAAAGAAAAAAAAAAAAAACZAAAA/QAAAAkAaQBuAHMAdQByAGEAbgBjAGUAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAP0AAACZAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAEAAAAAAABudWxsAAAAAgAAAAZib3VuZHNPYmpjAAAAAQAAAAAAAFJjdDEAAAAEAAAAAFRvcCBsb25nAAAAAAAA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OnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAxMy0wNi0wNlQyMzo1OTo1NS0wNDowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAxMy0wOS0xNlQxMTowMTozMC0wNDowMCIgeG1wOk1vZGlmeURhdGU9IjIwMTMtMDktMTZUMTE6MDE6MzAtMDQ6MDAiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6Rjg2RjNEOTVEQjFFRTMxMThBNTM5OTE5MTgzMjBCMEUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RkE5ODgwNUMyNUNGRTIxMUEzM0FBQ0U5MEZCMDc0MTUiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpGQTk4ODA1QzI1Q0ZFMjExQTMzQUFDRTkwRkIwNzQxNSIgZGM6Zm9ybWF0PSJpbWFnZS9qcGVnIiBwaG90b3Nob3A6TGVnYWN5SVBUQ0RpZ2VzdD0iMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDEiIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6RkE5ODgwNUMyNUNGRTIxMUEzM0FBQ0U5MEZCMDc0MTUiIHN0RXZ0OndoZW49IjIwMTMtMDYtMDZUMjM6NTk6NTUtMDQ6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpGQjk4ODA1QzI1Q0ZFMjExQTMzQUFDRTkwRkIwNzQxNSIgc3RFdnQ6d2hlbj0iMjAxMy0wNi0wNlQyMzo1OTo1NS0wNDowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkY4NkYzRDk1REIxRUUzMTE4QTUzOTkxOTE4MzIwQjBFIiBzdEV2dDp3aGVuPSIyMDEzLTA5LTE2VDExOjAxOjMwLTA0OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPD94cGFja2V0IGVuZD0idyI/Pv/iDFhJQ0NfUFJPRklMRQABAQAADEhMaW5vAhAAAG1udHJSR0IgWFlaIAfOAAIACQAGADEAAGFjc3BNU0ZUAAAAAElFQyBzUkdCAAAAAAAAAAAAAAABAAD21gABAAAAANMtSFAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWNwcnQAAAFQAAAAM2Rlc2MAAAGEAAAAbHd0cHQAAAHwAAAAFGJrcHQAAAIEAAAAFHJYWVoAAAIYAAAAFGdYWVoAAAIsAAAAFGJYWVoAAAJAAAAAFGRtbmQAAAJUAAAAcGRtZGQAAALEAAAAiHZ1ZWQAAANMAAAAhnZpZXcAAAPUAAAAJGx1bWkAAAP4AAAAFG1lYXMAAAQMAAAAJHRlY2gAAAQwAAAADHJUUkMAAAQ8AAAIDGdUUkMAAAQ8AAAIDGJUUkMAAAQ8AAAIDHRleHQAAAAAQ29weXJpZ2h0IChjKSAxOTk4IEhld2xldHQtUGFja2FyZCBDb21wYW55AABkZXNjAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAEnNSR0IgSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABYWVogAAAAAAAA81EAAQAAAAEWzFhZWiAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAG+iAAA49QAAA5BYWVogAAAAAAAAYpkAALeFAAAY2lhZWiAAAAAAAAAkoAAAD4QAALbPZGVzYwAAAAAAAAAWSUVDIGh0dHA6Ly93d3cuaWVjLmNoAAAAAAAAAAAAAAAWSUVDIGh0dHA6Ly93d3cuaWVjLmNoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRlc2MAAAAAAAAALklFQyA2MTk2Ni0yLjEgRGVmYXVsdCBSR0IgY29sb3VyIHNwYWNlIC0gc1JHQgAAAAAAAAAAAAAALklFQyA2MTk2Ni0yLjEgRGVmYXVsdCBSR0IgY29sb3VyIHNwYWNlIC0gc1JHQgAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAACxSZWZlcmVuY2UgVmlld2luZyBDb25kaXRpb24gaW4gSUVDNjE5NjYtMi4xAAAAAAAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdmlldwAAAAAAE6T+ABRfLgAQzxQAA+3MAAQTCwADXJ4AAAABWFlaIAAAAAAATAlWAFAAAABXH+dtZWFzAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAACjwAAAAJzaWcgAAAAAENSVCBjdXJ2AAAAAAAABAAAAAAFAAoADwAUABkAHgAjACgALQAyADcAOwBAAEUASgBPAFQAWQBeAGMAaABtAHIAdwB8AIEAhgCLAJAAlQCaAJ8ApACpAK4AsgC3ALwAwQDGAMsA0ADVANsA4ADlAOsA8AD2APsBAQEHAQ0BEwEZAR8BJQErATIBOAE+AUUBTAFSAVkBYAFnAW4BdQF8AYMBiwGSAZoBoQGpAbEBuQHBAckB0QHZAeEB6QHyAfoCAwIMAhQCHQImAi8COAJBAksCVAJdAmcCcQJ6AoQCjgKYAqICrAK2AsECywLVAuAC6wL1AwADCwMWAyEDLQM4A0MDTwNaA2YDcgN+A4oDlgOiA64DugPHA9MD4APsA/kEBgQTBCAELQQ7BEgEVQRjBHEEfgSMBJoEqAS2BMQE0wThBPAE/gUNBRwFKwU6BUkFWAVnBXcFhgWWBaYFtQXFBdUF5QX2BgYGFgYnBjcGSAZZBmoGewaMBp0GrwbABtEG4wb1BwcHGQcrBz0HTwdhB3QHhgeZB6wHvwfSB+UH+AgLCB8IMghGCFoIbgiCCJYIqgi+CNII5wj7CRAJJQk6CU8JZAl5CY8JpAm6Cc8J5Qn7ChEKJwo9ClQKagqBCpgKrgrFCtwK8wsLCyILOQtRC2kLgAuYC7ALyAvhC/kMEgwqDEMMXAx1DI4MpwzADNkM8w0NDSYNQA1aDXQNjg2pDcMN3g34DhMOLg5JDmQOfw6bDrYO0g7uDwkPJQ9BD14Peg+WD7MPzw/sEAkQJhBDEGEQfhCbELkQ1xD1ERMRMRFPEW0RjBGqEckR6BIHEiYSRRJkEoQSoxLDEuMTAxMjE0MTYxODE6QTxRPlFAYUJxRJFGoUixStFM4U8BUSFTQVVhV4FZsVvRXgFgMWJhZJFmwWjxayFtYW+hcdF0EXZReJF64X0hf3GBsYQBhlGIoYrxjVGPoZIBlFGWsZkRm3Gd0aBBoqGlEadxqeGsUa7BsUGzsbYxuKG7Ib2hwCHCocUhx7HKMczBz1HR4dRx1wHZkdwx3sHhYeQB5qHpQevh7pHxMfPh9pH5Qfvx/qIBUgQSBsIJggxCDwIRwhSCF1IaEhziH7IiciVSKCIq8i3SMKIzgjZiOUI8Ij8CQfJE0kfCSrJNolCSU4JWgllyXHJfcmJyZXJocmtyboJxgnSSd6J6sn3CgNKD8ocSiiKNQpBik4KWspnSnQKgIqNSpoKpsqzysCKzYraSudK9EsBSw5LG4soizXLQwtQS12Last4S4WLkwugi63Lu4vJC9aL5Evxy/+MDUwbDCkMNsxEjFKMYIxujHyMioyYzKbMtQzDTNGM38zuDPxNCs0ZTSeNNg1EzVNNYc1wjX9Njc2cjauNuk3JDdgN5w31zgUOFA4jDjIOQU5Qjl/Obw5+To2OnQ6sjrvOy07azuqO+g8JzxlPKQ84z0iPWE9oT3gPiA+YD6gPuA/IT9hP6I/4kAjQGRApkDnQSlBakGsQe5CMEJyQrVC90M6Q31DwEQDREdEikTORRJFVUWaRd5GIkZnRqtG8Ec1R3tHwEgFSEtIkUjXSR1JY0mpSfBKN0p9SsRLDEtTS5pL4kwqTHJMuk0CTUpNk03cTiVObk63TwBPSU+TT91QJ1BxULtRBlFQUZtR5lIxUnxSx1MTU19TqlP2VEJUj1TbVShVdVXCVg9WXFapVvdXRFeSV+BYL1h9WMtZGllpWbhaB1pWWqZa9VtFW5Vb5Vw1XIZc1l0nXXhdyV4aXmxevV8PX2Ffs2AFYFdgqmD8YU9homH1YklinGLwY0Njl2PrZEBklGTpZT1lkmXnZj1mkmboZz1nk2fpaD9olmjsaUNpmmnxakhqn2r3a09rp2v/bFdsr20IbWBtuW4SbmtuxG8eb3hv0XArcIZw4HE6cZVx8HJLcqZzAXNdc7h0FHRwdMx1KHWFdeF2Pnabdvh3VnezeBF4bnjMeSp5iXnnekZ6pXsEe2N7wnwhfIF84X1BfaF+AX5ifsJ/I3+Ef+WAR4CogQqBa4HNgjCCkoL0g1eDuoQdhICE44VHhauGDoZyhteHO4efiASIaYjOiTOJmYn+imSKyoswi5aL/IxjjMqNMY2Yjf+OZo7OjzaPnpAGkG6Q1pE/kaiSEZJ6kuOTTZO2lCCUipT0lV+VyZY0lp+XCpd1l+CYTJi4mSSZkJn8mmia1ZtCm6+cHJyJnPedZJ3SnkCerp8dn4uf+qBpoNihR6G2oiailqMGo3aj5qRWpMelOKWpphqmi6b9p26n4KhSqMSpN6mpqhyqj6sCq3Wr6axcrNCtRK24ri2uoa8Wr4uwALB1sOqxYLHWskuywrM4s660JbSctRO1irYBtnm28Ldot+C4WbjRuUq5wro7urW7LrunvCG8m70VvY++Cr6Evv+/er/1wHDA7MFnwePCX8Lbw1jD1MRRxM7FS8XIxkbGw8dBx7/IPci8yTrJuco4yrfLNsu2zDXMtc01zbXONs62zzfPuNA50LrRPNG+0j/SwdNE08bUSdTL1U7V0dZV1tjXXNfg2GTY6Nls2fHadtr724DcBdyK3RDdlt4c3qLfKd+v4DbgveFE4cziU+Lb42Pj6+Rz5PzlhOYN5pbnH+ep6DLovOlG6dDqW+rl63Dr++yG7RHtnO4o7rTvQO/M8Fjw5fFy8f/yjPMZ86f0NPTC9VD13vZt9vv3ivgZ+Kj5OPnH+lf65/t3/Af8mP0p/br+S/7c/23////uAA5BZG9iZQBkQAAAAAH/2wCEAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAgICAgICAgICAgMDAwMDAwMDAwMBAQEBAQEBAQEBAQICAQICAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA//AABEIAJkA/QMBEQACEQEDEQH/3QAEACD/xAGiAAAABgIDAQAAAAAAAAAAAAAHCAYFBAkDCgIBAAsBAAAGAwEBAQAAAAAAAAAAAAYFBAMHAggBCQAKCxAAAgEDBAEDAwIDAwMCBgl1AQIDBBEFEgYhBxMiAAgxFEEyIxUJUUIWYSQzF1JxgRhikSVDobHwJjRyChnB0TUn4VM2gvGSokRUc0VGN0djKFVWVxqywtLi8mSDdJOEZaOzw9PjKThm83UqOTpISUpYWVpnaGlqdnd4eXqFhoeIiYqUlZaXmJmapKWmp6ipqrS1tre4ubrExcbHyMnK1NXW19jZ2uTl5ufo6er09fb3+Pn6EQACAQMCBAQDBQQEBAYGBW0BAgMRBCESBTEGACITQVEHMmEUcQhCgSORFVKhYhYzCbEkwdFDcvAX4YI0JZJTGGNE8aKyJjUZVDZFZCcKc4OTRnTC0uLyVWV1VjeEhaOzw9Pj8ykalKS0xNTk9JWltcXV5fUoR1dmOHaGlqa2xtbm9md3h5ent8fX5/dIWGh4iJiouMjY6Pg5SVlpeYmZqbnJ2en5KjpKWmp6ipqqusra6vr/2gAMAwEAAhEDEQA/AN/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//Q3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//0t/j37r3XvfuvdEX+d+zMP2Ltn4/bD3A1YmD3d8n+vdv5VsfOlNXLQZPa3YFLUmkqJIaiOGoEch0sUcA/g+/de6Qv/DWXxl/5Xezv/QqxX/2M+/de69/w1l8Zf8Ald7O/wDQqxX/ANjPv3Xuvf8ADWXxl/5Xezv/AEKsV/8AYz7917r3/DWXxl/5Xezv/QqxX/2M+/de6RXZX8tL46bT653/ALqxdX2O2T21srdW4MctVubGTUrV+GwVfkaMVMSbdieWnNRTLrUMpZbgEfX37r3R7fjZ/wBk69Bf+IV6s/8AeGwXv3Xuhq9+690l971W6qHZe767YuNoszvej2vn6rZ2HyUiRY7Lbqp8TVzbexuQlkyGJjjoq7LpDFKzVVMBG5JljHrHuvdV0/6U/wCad/3jZ0r/AOf3D/8A2/ffuvde/wBKf807/vGzpX/z+4f/AO377917r3+lP+ad/wB42dK/+f3D/wD2/ffuvde/0p/zTv8AvGzpX/z+4f8A+377917r3+lP+ad/3jZ0r/5/cP8A/b99+6917/Sn/NO/7xs6V/8AP7h//t++/de69/pT/mnf942dK/8An9w//wBv337r3Xv9Kf8ANO/7xs6V/wDP7h//ALfvv3Xuvf6U/wCad/3jZ0r/AOf3D/8A2/ffuvde/wBKf807/vGzpX/z+4f/AO377917r3+lP+ad/wB42dK/+f3D/wD2/ffuvde/0p/zTv8AvGzpX/z+4f8A+377917r3+lP+ad/3jZ0r/5/cP8A/b99+6917/Sn/NO/7xs6V/8AP7h//t++/de69/pT/mnf942dK/8An9w//wBv337r3Xv9Kf8ANO/7xs6V/wDP7h//ALfvv3Xuvf6U/wCad/3jZ0r/AOf3D/8A2/ffuvde/wBKf807/vGzpX/z+4f/AO377917qz737r3Xvfuvde9+691//9Pf49+691737r3RRPln/wADvit/4t31Z/7z2/ffuvdG79+691737r3Xvfuvde9+690F3eH/ADJXt/8A8Rd2B/7yeW9+690zfGz/ALJ16C/8Qr1Z/wC8NgvfuvdDV7917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuve/de697917r3v3Xuv/1N/j37r3XvfuvdFE+Wf/AAO+K3/i3fVn/vPb99+690bv37r3Xvfuvde9+691737r3QXd4f8AMle3/wDxF3YH/vJ5b37r3TN8bP8AsnXoL/xCvVn/ALw2C9+690NXv3XukvvfPZHa2y937nw+363duX25tfP57F7VxpnGR3NkcRiavIUO38eaWiyVSK3M1NOtNF46aok8kg0xubKfde6rp/2e35Ff96++6v8Aqfvn/wC0r7917r3+z2/Ir/vX33V/1P3z/wDaV9+6917/AGe35Ff96++6v+p++f8A7Svv3Xuvf7Pb8iv+9ffdX/U/fP8A9pX37r3Xv9nt+RX/AHr77q/6n75/+0r7917r3+z2/Ir/AL1991f9T98//aV9+6917/Z7fkV/3r77q/6n75/+0r7917r3+z2/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Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//R3+Pfuvde9+690GHc2+9x9Z9bbk3vtPr7N9p7gwn8H/h+w9utXLmM7/Es9i8RVfZtjcLuKtH8Loq+Ssk0Uc37VO19C3dfde6Ih/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de69/s9vyK/71991f9T98/8A2lffuvde/wBnt+RX/evvur/qfvn/AO0r7917r3+z2/Ir/vX33V/1P3z/APaV9+6917/Z7fkV/wB6++6v+p++f/tK+/de69/s9vyK/wC9ffdX/U/fP/2lffuvde/2e35Ff96++6v+p++f/tK+/de69/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de69/s9vyK/71991f9T98/8A2lffuvde/wBnt+RX/evvur/qfvn/AO0r7917r3+z2/Ir/vX33V/1P3z/APaV9+6917/Z7fkV/wB6++6v+p++f/tK+/de69/s9vyK/wC9ffdX/U/fP/2lffuvde/2e35Ff96++6v+p++f/tK+/de69/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de69/s9vyK/71991f9T98/8A2lffuvde/wBnt+RX/evvur/qfvn/AO0r7917r3+z2/Ir/vX33V/1P3z/APaV9+6917/Z7fkV/wB6++6v+p++f/tK+/de69/s9vyK/wC9ffdX/U/fP/2lffuvde/2e35Ff96++6v+p++f/tK+/de69/s9vyK/71991f8AU/fP/wBpX37r3Xv9nt+RX/evvur/AKn75/8AtK+/de6s+9+691737r3Xvfuvdf/S3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//9Pf49+691737r3QYdzds7c6N623J2luyizeR2/tf+D/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9B/7EDtH/wCzb37r3Xv+G7/h3/z6D/2IHaP/ANm3v3Xuvf8ADd/w7/59B/7EDtH/AOzb37r3Xv8Ahu/4d/8APoP/AGIHaP8A9m3v3Xuvf8N3/Dv/AJ9B/wCxA7R/+zb37r3Xv+G7/h3/AM+g/wDYgdo//Zt7917r3/Dd/wAO/wDn0H/sQO0f/s29+6917/hu/wCHf/PoP/Ygdo//AGbe/de69/w3f8O/+fQf+xA7R/8As29+6917/hu/4d/8+g/9iB2j/wDZt7917r3/AA3f8O/+fQf+xA7R/wDs29+6917/AIbv+Hf/AD6D/wBiB2j/APZt7917o6nv3Xuve/de697917r/19/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//Q3+Pfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691//9Hf49+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3X//0t/j37r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvde9+691737r3Xvfuvdf//Z',
+	// default QRCode image placeholder
+	defaultQRCodeImage: 'data:image/jpeg;base64,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',
+
+	initComponent: function(){
+		var me = this;
+
+		me.store = Ext.create('App.store.patient.Patient');
+		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
+
+		me.compactDemographics = eval(g('compact_demographics'));
+
+		me.insPanel = Ext.widget('tabpanel', {
+			itemId: 'PatientInsurancesPanel',
+			flex: 1,
+			defaults: {
+				autoScroll: true,
+				padding: 10
+			},
+			plugins: [
+				{
+					ptype: 'AddTabButton',
+					iconCls: 'icoAdd',
+					toolTip: _('new_insurance'),
+					btnText: _('add_insurance'),
+					forceText: true,
+					tabConfig: {
+						xtype: 'form',
+						border: false,
+						bodyBorder: false
+					}
+				}
+			],
+			listeners: {
+				scope: me,
+				beforeadd: me.insurancePanelAdd
+			}
+		});
+
+		var configs = {
+			items: [
+				me.demoForm = Ext.widget('form', {
+					action: 'demoFormPanel',
+					itemId: 'PatientDemographicForm',
+					type: 'anchor',
+					border: false,
+					autoScroll: true,
+					padding: (me.compactDemographics ? 0 : 10),
+					fieldDefaults: {
+						labelAlign: 'right',
+						msgTarget: 'side'
+					}
+				})
+			]
+		};
+
+		if(me.compactDemographics){
+			configs.items.push(me.insPanel);
+		}
+
+		configs.bbar = [
+			{
+				xtype: 'button',
+				action: 'readOnly',
+				text: _('possible_duplicates'),
+				minWidth: 75,
+				itemId: 'PatientPossibleDuplicatesBtn'
+			},
+			'-',
+			'->',
+			'-',
+			{
+				xtype: 'button',
+				action: 'readOnly',
+				text: _('save'),
+				itemId: 'PatientDemographicSaveBtn',
+				minWidth: 75,
+				scope: me,
+				handler: me.formSave
+			},
+			'-',
+			{
+				xtype: 'button',
+				text: _('cancel'),
+				action: 'readOnly',
+				itemId: 'PatientDemographicCancelBtn',
+				minWidth: 75,
+				scope: me,
+				handler: me.formCancel
+			}
+		];
+
+		configs.listeners = {
+			scope: me,
+			beforerender: me.beforePanelRender
+		};
+
+		Ext.apply(me, configs);
+
+		me.callParent(arguments);
+
+		if(!me.compactDemographics){
+
+			Ext.Function.defer(function(){
+				me.insPanel.title = _('insurance');
+				me.insPanel.addDocked({
+					xtype: 'toolbar',
+					dock: 'bottom',
+					items: [
+						'->',
+						'-',
+						{
+							xtype: 'button',
+							action: 'readOnly',
+							text: _('save'),
+							minWidth: 75,
+							scope: me,
+							handler: me.formSave
+						},
+						'-',
+						{
+							xtype: 'button',
+							text: _('cancel'),
+							action: 'readOnly',
+							minWidth: 75,
+							scope: me,
+							handler: me.formCancel
+						}
+					]
+				});
+
+				me.up('tabpanel').insert(1, me.insPanel);
+			}, 300);
+		}
+	},
+
+	beforePanelRender: function(){
+		var me = this,
+			whoPanel;
+
+		me.getFormItems(me.demoForm, 1, function(formPanel){
+
+			var form = me.demoForm.getForm(),
+				fname = form.findField('fname'),
+				mname = form.findField('mname'),
+				lname = form.findField('lname'),
+				address = form.findField('address'),
+				address_cont = form.findField('address_cont'),
+				city = form.findField('city'),
+
+				sex = form.findField('sex'),
+				dob = form.findField('DOB'),
+				zipcode = form.findField('zipcode'),
+				home_phone = form.findField('home_phone'),
+				mobile_phone = form.findField('mobile_phone'),
+				emer_phone = form.findField('emer_phone'),
+				work_phone = form.findField('work_phone'),
+				work_phone_ext = form.findField('work_phone_ext'),
+				email = form.findField('email'),
+				phone_reg = new RegExp(g('phone_validation_format')),
+				zipcode_reg = new RegExp(g('zipcode_validation_format'));
+
+			if(fname) fname.vtype = 'nonspecialcharacters';
+			if(mname) mname.vtype = 'nonspecialcharacters';
+			if(lname) lname.vtype = 'nonspecialcharacters';
+			if(address) address.vtype = 'nonspecialcharacters';
+			if(address_cont) address_cont.vtype = 'nonspecialcharacters';
+			if(city) city.vtype = 'nonspecialcharacters';
+
+			if(email) email.vtype = 'email';
+			if(zipcode) zipcode.regex = zipcode_reg;
+			if(home_phone) home_phone.regex = phone_reg;
+			if(mobile_phone) mobile_phone.regex = phone_reg;
+			if(emer_phone) emer_phone.regex = phone_reg;
+			if(work_phone) work_phone.regex = phone_reg;
+			if(work_phone_ext) work_phone_ext.regex = new RegExp('^[0-9]*$');
+			if(dob) dob.setMaxValue(new Date());
+
+			if(me.newPatient){
+				var crtl = App.app.getController('patient.Patient');
+
+				fname.on('blur', crtl.checkForPossibleDuplicates, crtl);
+				lname.on('blur', crtl.checkForPossibleDuplicates, crtl);
+				sex.on('blur', crtl.checkForPossibleDuplicates, crtl);
+				dob.dateField.on('blur', crtl.checkForPossibleDuplicates, crtl);
+			}else{
+				whoPanel = formPanel.query('[action=DemographicWhoFieldSet]')[0];
+				whoPanel.insert(0,
+					me.patientImages = Ext.create('Ext.panel.Panel', {
+						action: 'patientImage',
+						layout: 'hbox',
+						style: 'float:right',
+						bodyPadding: 5,
+						height: 160,
+						width: 255,
+						items: [
+							{
+								xtype: 'image',
+								width: 119,
+								height: 119,
+								itemId: 'image',
+								margin: '0 5 0 0',
+								src: me.defaultPatientImage
+							},
+							{
+								xtype: 'textareafield',
+								name: 'image',
+								hidden: true
+							},
+							{
+								xtype: 'image',
+								itemId: 'qrcode',
+								width: 119,
+								height: 119,
+								margin: 0,
+								src: me.defaultQRCodeImage
+							}
+						],
+						bbar: [
+							'-',
+							{
+								text: _('take_picture'),
+								action: 'onWebCam'
+								//				                handler: me.getPhotoIdWindow
+							},
+							'-',
+							'->',
+							'-',
+							{
+								text: _('print_qrcode'),
+								scope: me,
+								handler: function(){
+									window.printQRCode(app.patient.pid);
+								}
+							},
+							'-'
+						]
+					})
+				);
+			}
+		});
+
+		/**
+		 *
+		 */
+		me.getFormItems(null, 11, function(panel, items){
+
+			items.unshift({
+				xtype: 'panel',
+				style: 'float:right',
+				height: 182,
+				width: 255,
+				itemId: 'insContainer',
+				items: [
+					{
+						xtype: 'image',
+						action: 'insImage',
+						width: 253,
+						height: 153,
+						src: me.defaultInsImage
+					},
+					{
+						xtype: 'textareafield',
+						action: 'insImage',
+						name: 'image',
+						hidden: true
+					}
+				],
+				bbar: [
+					'->',
+					'-',
+					{
+						text: _('upload'),
+						action: 'onWebCam'
+					},
+					'-'
+				]
+			});
+
+			me.insuranceFormItmes = items;
+
+		});
+
+	},
+
+	insurancePanelAdd: function(tapPanel, form){
+		var me = this,
+			rec = form.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
+
+		form.title = _('insurance') + ' (' + (rec.data.insurance_type ? rec.data.insurance_type : _('new')) + ')';
+
+		form.add(me.insuranceFormItmes);
+
+		me.insuranceFormLoadRecord(form, rec);
+		if(rec.data.image !== '') form.down('image').setSrc(rec.data.image);
+	},
+
+	getValidInsurances: function(){
+		var me = this,
+			forms = me.insPanel.items.items,
+			records = [],
+			form,
+			rec;
+
+		for(var i = 0; i < forms.length; i++){
+			form = forms[i].getForm();
+			if(!form.isValid()){
+				me.insPanel.setActiveTab(forms[i]);
+				return false;
+			}
+
+			rec = form.getRecord();
+
+			app.fireEvent('beforepatientinsuranceset', form, rec);
+
+			rec.set(form.getValues());
+
+			app.fireEvent('afterpatientinsuranceset', form, rec);
+
+			records.push(rec);
+		}
+
+		return records;
+	},
+
+	getPatientImages: function(record){
+		var me = this;
+		if(me.patientImages) me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
+		if(me.patientImages) me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
+	},
+
+	/**
+	 * verify the patient required info and add a yellow background if empty
+	 */
+	verifyPatientRequiredInfo: function(){
+		var me = this,
+			field;
+		me.patientAlertsStore.load({
+			scope: me,
+			params: {pid: me.pid},
+			callback: function(records, operation, success){
+				for(var i = 0; i < records.length; i++){
+					field = me.demoForm.getForm().findField(records[i].data.name);
+					if(records[i].data.val){
+						if(field) field.removeCls('x-field-yellow');
+					}else{
+						if(field) field.addCls('x-field-yellow');
+					}
+				}
+			}
+		});
+	},
+
+	/**
+	 * allow to edit the field if the filed has no data
+	 * @param fields
+	 */
+	readOnlyFields: function(fields){
+		//        for(var i = 0; i < fields.items.length; i++){
+		//            var f = fields.items[i], v = f.getValue(), n = f.name;
+		//            if(n == 'SS' || n == 'DOB' || n == 'sex'){
+		//                if(v == null || v == ''){
+		//                    f.setReadOnly(false);
+		//                }else{
+		//                    f.setReadOnly(true);
+		//                }
+		//            }
+		//        }
+	},
+
+	copyData: function(combo, records){
+		var form = this.demoForm.getForm(),
+			values,
+			patientData;
+
+		if(combo.value == 'self'){
+
+			values = form.getValues();
+
+			patientData = {
+				primary_subscriber_title: values.title,
+				primary_subscriber_fname: values.fname,
+				primary_subscriber_mname: values.mname,
+				primary_subscriber_lname: values.lname,
+				primary_subscriber_street: values.address,
+				primary_subscriber_city: values.city,
+				primary_subscriber_state: values.state,
+				primary_subscriber_country: values.country,
+				primary_subscriber_zip_code: values.zipcode,
+				primary_subscriber_phone: values.home_phone,
+				primary_subscriber_employer: values.employer_name,
+				primary_subscriber_employer_street: values.employer_address,
+				primary_subscriber_employer_city: values.employer_city,
+				primary_subscriber_employer_state: values.employer_state,
+				primary_subscriber_employer_country: values.employer_country,
+				primary_subscriber_employer_zip_code: values.employer_postal_code
+			};
+
+			form.setValues(patientData);
+		}
+	},
+
+	insuranceFormLoadRecord: function(form, record){
+		form.getForm().loadRecord(record);
+		app.fireEvent('insurancerecordload', form, record);
+	},
+
+	formSave: function(){
+		var me = this,
+			form = me.demoForm.getForm(),
+			record = form.getRecord(),
+			values = form.getValues(),
+			insRecs = me.getValidInsurances();
+
+		if(form.isValid() && insRecs !== false){
+			record.set(values);
+
+			// fire global event
+			app.fireEvent('beforedemographicssave', record, me);
+
+			record.save({
+				scope: me,
+				callback: function(record){
+
+					app.setPatient(record.data.pid, null, function(){
+
+						var insStore = record.insurance();
+						for(var i = 0; i < insRecs.length; i++){
+							if(insRecs[i].data.id === 0) insStore.add(insRecs[i]);
+						}
+						insStore.sync();
+
+						if(me.newPatient){
+							app.openPatientSummary();
+						}else{
+							me.getPatientImages(record);
+							me.verifyPatientRequiredInfo();
+							me.readOnlyFields(form.getFields());
+						}
+					});
+
+					// fire global event
+					app.fireEvent('afterdemographicssave', record, me);
+
+					me.msg('Sweet!', _('record_saved'));
+					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
+				}
+			});
+		}else{
+			me.msg(_('oops'), _('missing_required_data'), true);
+		}
+	},
+
+	formCancel: function(btn){
+		var form = btn.up('form').getForm(), record = form.getRecord();
+		form.loadRecord(record);
+	},
+
+	loadNew: function(){
+		var patient = Ext.create('App.model.patient.Patient', {
+			'create_uid': app.user.id,
+			'update_uid': app.user.id,
+			'create_date': new Date(),
+			'update_date': new Date(),
+			'DOB': '0000-00-00 00:00:00'
+		});
+
+		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+		app.AuditLog('Patient new record created');
+		this.demoForm.getForm().loadRecord(patient);
+	},
+
+	loadPatient: function(pid){
+		var me = this,
+			form = me.demoForm.getForm();
+
+		me.pid = pid;
+
+		form.reset();
+
+		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
+		app.AuditLog('Patient record viewed');
+
+		app.patient.record.insurance().load({
+			filters: [
+				{
+					property: 'pid',
+					value: app.patient.record.data.pid
+				}
+			],
+			callback: function(records){
+
+				form.loadRecord(app.patient.record);
+				me.setReadOnly(app.patient.readOnly);
+				me.setButtonsDisabled(me.query('button[action="readOnly"]'));
+				me.getPatientImages(app.patient.record);
+				me.verifyPatientRequiredInfo();
+
+				me.insPanel.removeAll(true);
+				for(var i = 0; i < records.length; i++){
+					me.insPanel.add({
+						xtype: 'form',
+						border: false,
+						bodyBorder: false,
+						insurance: records[i]
+					});
+				}
+
+				if(me.insPanel.items.length !== 0) me.insPanel.setActiveTab(0);
+			}
+		});
+
+	}
+});
+Ext.define('App.view.patient.Summary', {
+	extend: 'App.ux.RenderPanel',
+	pageTitle: _('patient_summary'),
+	pageLayout: 'border',
+	requires: [
+		'Ext.XTemplate',
+		'Ext.ux.IFrame',
+		'App.view.patient.Documents',
+		'App.view.patient.CCD',
+		'App.ux.ManagedIframe',
+
+		'App.view.patient.Patient',
+		'App.view.patient.Reminders'
+	],
+	itemId: 'PatientSummaryPanel',
+	showRating: true,
+	pid: null,
+	demographicsData: null,
+	initComponent: function(){
+		var me = this;
+
+		me.stores = [];
+
+		app.on('patientset', function(patient){
+			if(!me.hidden){
+				me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+			}
+
+		}, me);
+
+		me.pageBody = [
+			me.tabPanel = Ext.widget('tabpanel', {
+				flex: 1,
+				margin: '3 0 0 0',
+				bodyPadding: 0,
+				frame: false,
+				border: false,
+				plain: true,
+				region: 'center',
+				layout: 'fit',
+				itemId: 'PatientSummaryTabPanel'
+			})
+		];
+
+		me.sidePanelItems = [];
+
+		if(a('access_patient_visits')){
+
+			me.stores.push(me.patientEncountersStore = Ext.create('App.store.patient.Encounters', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: _('encounters'),
+				itemId: 'PatientSummaryEncountersPanel',
+				hideHeaders: true,
+				store: me.patientEncountersStore,
+				columns: [
+					{
+						xtype: 'datecolumn',
+						width: 80,
+						dataIndex: 'service_date',
+						format: g('date_display_format')
+					},
+					{
+						dataIndex: 'brief_description',
+						flex: 1
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_medications')){
+
+			me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: _('active_medications'),
+				itemId: 'PatientSummaryMedicationsPanel',
+				hideHeaders: true,
+				store: me.patientMedicationsStore,
+				tools: [
+					{
+						xtype: 'button',
+						text: _('details'),
+						action: 'medications',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+						header: _('name'),
+						dataIndex: 'STR',
+						flex: 1
+					},
+					{
+						text: _('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.boolRenderer
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_immunizations')){
+
+			me.stores.push(me.immuCheckListStore = Ext.create('App.store.patient.ImmunizationCheck', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: _('immunizations'),
+				itemId: 'PatientSummaryImmunizationPanel',
+				hideHeaders: true,
+				store: me.immuCheckListStore,
+				region: 'center',
+				tools: [
+					{
+						xtype: 'button',
+						text: _('details'),
+						action: 'immunization',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+
+						header: _('name'),
+						dataIndex: 'vaccine_name',
+						flex: 1
+					},
+					{
+						text: _('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.alertRenderer
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_allergies')){
+
+			me.stores.push(me.patientAllergiesListStore = Ext.create('App.store.patient.Allergies', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: _('allergies'),
+				itemId: 'PatientSummaryAllergiesPanel',
+				hideHeaders: true,
+				store: me.patientAllergiesListStore,
+				region: 'center',
+				tools: [
+					{
+						xtype: 'button',
+						text: _('details'),
+						action: 'allergies',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+						header: _('name'),
+						dataIndex: 'allergy',
+						flex: 1
+					},
+					{
+						text: _('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.boolRenderer
+					}
+				]
+			});
+		}
+
+		if(a('access_active_problems')){
+
+			me.stores.push(me.patientActiveProblemsStore = Ext.create('App.store.patient.PatientActiveProblems', {
+				autoLoad: false
+			}));
+
+			Ext.Array.push(me.sidePanelItems, {
+				xtype: 'grid',
+				title: _('active_problems'),
+				itemId: 'PatientSummaryActiveProblemsPanel',
+				hideHeaders: true,
+				store: me.patientActiveProblemsStore,
+				tools: [
+					{
+						xtype: 'button',
+						text: _('details'),
+						action: 'issues',
+						scope: me,
+						handler: me.medicalWin
+					}
+				],
+				columns: [
+					{
+
+						header: _('name'),
+						dataIndex: 'code',
+						flex: 1
+					},
+					{
+						text: _('alert'),
+						width: 55,
+						dataIndex: 'alert',
+						renderer: me.boolRenderer
+					}
+				]
+
+			});
+		}
+
+		if(a('access_patient_calendar_events')){
+
+			//me.stores.push(me.patientCalendarEventsStore = Ext.create('App.store.patient.PatientCalendarEvents', {
+			//	autoLoad: false
+			//}));
+			//
+			//Ext.Array.push(me.sidePanelItems, {
+			//	xtype: 'grid',
+			//	title: _('appointments'),
+			//	itemId: 'AppointmentsPanel',
+			//	hideHeaders: true,
+			//	disableSelection: true,
+			//	store: me.patientCalendarEventsStore,
+			//	columns: [
+			//		{
+			//			xtype: 'datecolumn',
+			//			format: 'F j, Y, g:i a',
+			//			dataIndex: 'start',
+			//			flex: 1
+			//		}
+			//	]
+			//});
+		}
+
+		if(me.sidePanelItems.length > 0){
+			me.sidePanel = Ext.widget('panel', {
+				width: 250,
+				bodyPadding: 0,
+				frame: false,
+				border: false,
+				bodyBorder: true,
+				region: 'east',
+				split: true,
+				layout: {
+					type: 'vbox',
+					align: 'stretch'
+				},
+				defaults: {
+					margin: '5 5 0 5'
+				},
+				items: me.sidePanelItems
+			});
+
+			Ext.Array.push(me.pageBody, me.sidePanel);
+
+		}
+
+		if(a('access_demographics')){
+			me.demographics = me.tabPanel.add({
+				xtype: 'patientdeomgraphics',
+				newPatient: false,
+				autoScroll: true,
+				title: _('demographics')
+			});
+		}
+
+		if(a('access_patient_disclosures')){
+			me.tabPanel.add({
+				xtype: 'grid',
+				title: _('disclosures'),
+				itemId: 'PatientSummaryDisclosuresPanel',
+				bodyPadding: 0,
+				store: Ext.create('App.store.patient.Disclosures', {
+					autoSync: false,
+					autoLoad: false
+				}),
+				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+					autoCancel: false,
+					errorSummary: false,
+					clicksToEdit: 2
+				}),
+				columns: [
+					{
+						xtype: 'datecolumn',
+						format: 'Y-m-d',
+						text: _('date'),
+						dataIndex: 'date'
+					},
+					{
+						header: _('type'),
+						dataIndex: 'type',
+						editor: {
+							xtype: 'textfield'
+						}
+					},
+					{
+						text: _('description'),
+						dataIndex: 'description',
+						flex: 1,
+						editor: {
+							xtype: 'textfield'
+						}
+					}
+				],
+				tbar: [
+					{
+						text: _('disclosure'),
+						iconCls: 'icoAdd',
+						action: 'disclosure',
+						handler: me.onAddNew
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_notes')){
+			me.tabPanel.add({
+				title: _('notes'),
+				itemId: 'PatientSummeryNotesPanel',
+				xtype: 'grid',
+				bodyPadding: 0,
+				store: Ext.create('App.store.patient.Notes', {
+					autoSync: false,
+					autoLoad: false
+				}),
+				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
+					autoCancel: false,
+					errorSummary: false,
+					clicksToEdit: 2
+
+				}),
+				columns: [
+					{
+						xtype: 'datecolumn',
+						text: _('date'),
+						format: 'Y-m-d',
+						dataIndex: 'date'
+					},
+					{
+						header: _('type'),
+						dataIndex: 'type',
+						editor: {
+							xtype: 'textfield'
+						}
+					},
+					{
+						text: _('note'),
+						dataIndex: 'body',
+						flex: 1,
+						editor: {
+							xtype: 'textfield'
+						}
+					},
+					{
+						text: _('user'),
+						width: 225,
+						dataIndex: 'user_name'
+					}
+				],
+				tbar: [
+					{
+						text: _('add_note'),
+						iconCls: 'icoAdd',
+						action: 'note',
+						handler: me.onAddNew
+					}
+				]
+			});
+		}
+
+		if(a('access_patient_reminders')){
+			me.tabPanel.add({
+				itemId: 'PatientSummaryRemindersPanel',
+				xtype: 'patientreminderspanel',
+				bodyPadding: 0
+			});
+		}
+
+		if(a('access_patient_documents')){
+			me.tabPanel.add({
+				xtype: 'patientdocumentspanel',
+				border: false
+			})
+		}
+
+		if(a('access_patient_preventive_care_alerts')){
+			//me.tabPanel.add({
+			//	title: _('dismissed_preventive_care_alerts'),
+			//	xtype: 'grid',
+			//	itemId: 'PatientSummaryPreventiveCareAlertsPanel',
+			//	store: Ext.create('App.store.patient.DismissedAlerts', {
+			//		//listeners
+			//	}),
+			//	columns: [
+			//		{
+			//			header: _('description'),
+			//			dataIndex: 'description'
+			//		},
+			//		{
+			//			xtype: 'datecolumn',
+			//			header: _('date'),
+			//			dataIndex: 'date',
+			//			format: 'Y-m-d'
+			//
+			//		},
+			//		{
+			//			header: _('reason'),
+			//			dataIndex: 'reason',
+			//			flex: true
+			//
+			//		},
+			//		{
+			//			header: _('observation'),
+			//			dataIndex: 'observation',
+			//			flex: true
+			//		},
+			//		{
+			//			header: _('dismissed'),
+			//			dataIndex: 'dismiss',
+			//			width: 60,
+			//			renderer: me.boolRenderer
+			//		}
+			//	],
+			//	plugins: Ext.create('App.ux.grid.RowFormEditing', {
+			//		autoCancel: false,
+			//		errorSummary: false,
+			//		clicksToEdit: 1,
+			//		items: [
+			//			{
+			//				title: 'general',
+			//				xtype: 'container',
+			//				padding: 10,
+			//				layout: 'vbox',
+			//				items: [
+			//					{
+			//						/**
+			//						 * Line one
+			//						 */
+			//						xtype: 'fieldcontainer',
+			//						layout: 'hbox',
+			//						defaults: {
+			//							margin: '0 10 5 0'
+			//						},
+			//						items: [
+			//							{
+			//								xtype: 'textfield',
+			//								name: 'reason',
+			//								fieldLabel: _('reason'),
+			//								width: 585,
+			//								labelWidth: 70,
+			//								action: 'reason'
+			//							}
+			//						]
+			//
+			//					},
+			//					{
+			//						/**
+			//						 * Line two
+			//						 */
+			//						xtype: 'fieldcontainer',
+			//						layout: 'hbox',
+			//						defaults: {
+			//							margin: '0 10 5 0'
+			//						},
+			//						items: [
+			//							{
+			//								xtype: 'textfield',
+			//								fieldLabel: _('observation'),
+			//								name: 'observation',
+			//								width: 250,
+			//								labelWidth: 70,
+			//								action: 'observation'
+			//							},
+			//							{
+			//								fieldLabel: _('date'),
+			//								xtype: 'datefield',
+			//								action: 'date',
+			//								width: 200,
+			//								labelWidth: 40,
+			//								format: g('date_display_format'),
+			//								name: 'date'
+			//
+			//							},
+			//							{
+			//								xtype: 'checkboxfield',
+			//								name: 'dismiss',
+			//								fieldLabel: _('dismiss_alert')
+			//
+			//							}
+			//						]
+			//
+			//					}
+			//				]
+			//			}
+			//		]
+			//
+			//	})
+			//});
+		}
+
+		if(a('access_patient_ccd')){
+			me.reportPanel = me.tabPanel.add({
+				xtype: 'patientccdpanel'
+			});
+		}
+
+		me.callParent();
+	},
+
+	onAddNew: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.store,
+			record;
+
+		if(btn.action == 'disclosure'){
+			record = {
+				date: new Date(),
+				pid: app.patient.pid,
+				active: 1
+			};
+		}else if(btn.action == 'note'){
+			record = {
+				date: new Date(),
+				pid: app.patient.pid,
+				uid: app.user.id,
+				eid: app.patient.eid
+			};
+		}
+
+		grid.plugins[0].cancelEdit();
+		store.insert(0, record);
+		grid.plugins[0].startEdit(0, 0);
+	},
+
+	medicalWin: function(btn){
+		app.onMedicalWin(btn.action);
+	},
+
+	/**
+	 * verify the patient required info and add a yellow background if empty
+	 */
+	verifyPatientRequiredInfo: function(){
+		var me = this, formPanel = me.query('[action="demoFormPanel"]')[0], field;
+		me.patientAlertsStore.load({
+			scope: me,
+			params: {
+				pid: me.pid
+			},
+			callback: function(records, operation, success){
+				for(var i = 0; i < records.length; i++){
+					field = formPanel.getForm().findField(records[i].data.name);
+					if(records[i].data.val){
+						if(field) field.removeCls('x-field-yellow');
+					}else{
+						if(field) field.addCls('x-field-yellow');
+					}
+				}
+			}
+		});
+	},
+
+	/**
+	 * load all the stores in the summaryStores array
+	 */
+	loadStores: function(){
+		var me = this;
+
+		for(var i = 0; i < me.stores.length; i++){
+			me.stores[i].clearFilter(true);
+			me.stores[i].load({
+				params: {
+					pid: me.pid
+				},
+				filters: [
+					{
+						property: 'pid',
+						value: me.pid
+					}
+				]
+			});
+		}
+	},
+
+	loadPatient: function(){
+		var me = this,
+			billingPanel;
+
+		me.el.mask(_('loading...'));
+		/**
+		 * convenient way to refer to current pid within this panel
+		 * @type {*}
+		 */
+		me.pid = app.patient.pid;
+		/**
+		 * get current set patient info
+		 * @type {*}
+		 */
+		var patient = app.patient;
+
+		/**
+		 * update panel main title to reflect the patient name and if the patient is read only
+		 */
+		me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+		/**
+		 * verify if the patient is on read only mode
+		 */
+		me.setReadOnly(app.patient.readOnly);
+		me.setButtonsDisabled(me.query('button[action="readOnly"]'));
+
+		if(a('access_demographics')) me.demographics.loadPatient(me.pid);
+
+//		/**
+//		 * get billing info if user has access
+//		 */
+//		if(a('access_patient_billing')){
+//			billingPanel = me.tabPanel.getComponent('balancePanel');
+//			Fees.getPatientBalance({pid: me.pid},
+//				function(balance){
+//					billingPanel.update(_('account_balance') + ': $' + balance);
+//				}
+//			);
+//		}
+		/**
+		 * reset tab panel to the first tap
+		 */
+		me.tabPanel.setActiveTab(0);
+		/**
+		 * load all the stores
+		 */
+		me.loadStores();
+		me.el.unmask();
+	},
+	/**
+	 * This function is called from Viewport.js when
+	 * this panel is selected in the navigation panel.
+	 * place inside this function all the functions you want
+	 * to call every this panel becomes active
+	 */
+	onActive: function(callback){
+		var me = this;
+		if(me.checkIfCurrPatient()){
+			me.loadPatient();
+			if(typeof callback == 'function') callback(true);
+		}else{
+			callback(false);
+			me.pid = null;
+			me.currPatientError();
+		}
+	}
+});
+Ext.define('App.controller.administration.Roles', {
+	extend: 'Ext.app.Controller',
+
+	requires: [
+		'App.model.administration.AclGroupPerm'
+	],
+
+	refs: [
+		{
+			ref: 'AdministrationRoleGroupCombo',
+			selector: '#AdministrationRoleGroupCombo'
+		},
+		{
+			ref: 'AdministrationRoleGrid',
+			selector: '#AdministrationRoleGrid'
+		}
+	],
+
+	init: function(){
+		this.control({
+			'#AdministrationRolePanel': {
+				render: this.onAdministrationRolePanelRender
+			},
+			'#AdministrationRoleGrid': {
+				beforeedit: this.beforeCellEdit
+			},
+			'#AdministrationRoleGroupCombo': {
+				select: this.doAdministrationRoleGridReconfigure
+			},
+			'button[action=adminAclAddRole]': {
+				click: this.doAddRole
+			},
+			'button[action=adminAclSave]': {
+				click: this.doSaveAcl
+			},
+			'button[action=adminAclCancel]': {
+				click: this.doCancelAcl
+			}
+		});
+	},
+
+	onAdministrationRolePanelRender: function(){
+		var me = this,
+			cmb = me.getAdministrationRoleGroupCombo(),
+			store = cmb.getStore();
+
+		store.load({
+			callback: function(records){
+				cmb.select(records[0]);
+				me.doAdministrationRoleGridReconfigure();
+			}
+		});
+
+	},
+
+	doSaveAcl: function(){
+		var me = this,
+			store = this.getAdministrationRoleGrid().getStore();
+
+		if(store.getUpdatedRecords().length > 0){
+			me.getAdministrationRoleGrid().el.mask(_('saving'));
+		}
+
+		store.sync({
+			callback: function(response){
+				app.msg(_('sweet'), _('record_saved'));
+				me.getAdministrationRoleGrid().el.unmask();
+			}
+		});
+	},
+
+	doCancelAcl: function(){
+		this.getAdministrationRoleGrid().getStore().rejectChanges();
+	},
+
+	beforeCellEdit: function(editor, e){
+		return e.field != 'title';
+	},
+
+	doAdministrationRoleGridReconfigure: function(){
+		var me = this,
+			cmb = me.getAdministrationRoleGroupCombo(),
+			group_id = cmb.getValue(),
+			grid = me.getAdministrationRoleGrid(),
+			fields = [
+				{
+					name: 'id',
+					type: 'int'
+				},
+				{
+					name: 'title',
+					type: 'string'
+				},
+				{
+					name: 'group_id',
+					type: 'int'
+				},
+				{
+					name: 'category',
+					type: 'string'
+				}
+			], columns, store, model;
+
+		// add mask to view while we get the data and grid configurations
+		grid.view.el.mask('Loading');
+		// Ext.direct method to get grid configuration and data
+
+		ACL.getGroupPerms({group_id: group_id}, function(response){
+			// new columns
+			columns = response.columns;
+
+			// set model fields merging default fields and role fields
+			fields = fields.concat(response.fields);
+			me.getModel('administration.AclGroupPerm').setFields(fields);
+
+			var store = Ext.create('Ext.data.Store', {
+				model: 'App.model.administration.AclGroupPerm',
+				groupField: 'category'
+			});
+
+			// add raw data to the store
+			store.loadRawData(response.data);
+
+			// add the checkbox editor and renderer to role fields
+			for(var i = 0; i < columns.length; i++){
+				columns[i].editor = {xtype: "checkbox"};
+				columns[i].renderer = app.boolRenderer;
+			}
+
+			columns.push({
+				flex: 1
+			});
+
+			// reconfigure grid
+			grid.reconfigure(store, columns);
+			// remove grid view mask
+			grid.view.el.unmask();
+
+		});
+	},
+
+	doAddRole: function(){
+		var me = this,
+			record = Ext.create('App.model.administration.AclRoles', {
+				group_id: me.getAdministrationRoleGroupCombo().getValue()
+			});
+
+		me.getRoleWindow().show();
+		me.roleWindow.down('form').getForm().loadRecord(record);
+	},
+
+	doSaveRole: function(){
+		var me = this,
+			panel = me.roleWindow.down('form'),
+			form = panel.getForm(),
+			record = form.getRecord(),
+			values = form.getValues();
+
+		if(form.isValid()){
+			panel.el.mask(_('be_right_back'));
+			record.set(values);
+			record.save({
+				callback: function(rec){
+					me.doAdministrationRoleGridReconfigure();
+					panel.el.unmask();
+					me.roleWindow.close();
+				}
+			});
+		}
+	},
+
+	doCancelRole: function(){
+		this.roleWindow.close();
+	},
+
+	getRoleWindow: function(){
+		var me = this;
+
+		me.roleWindow = Ext.widget('window', {
+			title: _('new_role'),
+			items: [
+				{
+					xtype: 'form',
+					border: false,
+					bodyPadding: 10,
+					items: [
+						{
+							xtype: 'textfield',
+							fieldLabel: _('role_name'),
+							name: 'role_name',
+							allowBlank: false
+						},
+						{
+							xtype: 'checkbox',
+							fieldLabel: _('active'),
+							name: 'active'
+						}
+					]
+				}
+			],
+			buttons: [
+				{
+					text: _('cancel'),
+					cls: 'cancelBtn',
+					scope: me,
+					handler: me.doCancelRole,
+					action: 'adminAclRoleCancel'
+				},
+				{
+					text: _('save'),
+					cls: 'saveBtn',
+					scope: me,
+					handler: me.doSaveRole,
+					action: 'adminAclRoleSave'
+				}
+			]
+		});
+
+		return me.roleWindow;
+	}
+
 });
 Ext.define('App.controller.DocumentViewer', {
     extend: 'Ext.app.Controller',
@@ -49018,6 +49574,8 @@ Ext.define('App.controller.DocumentViewer', {
 		});
 	},
 
+
+
 	onArchiveBtnClick: function(btn){
 		var win = btn.up('window'),
 			form = win.down('form').getForm(),
@@ -49030,7 +49588,7 @@ Ext.define('App.controller.DocumentViewer', {
 			DocumentHandler.transferTempDocument(values, function(provider, response){
 
 				if(response.result.success){
-					if(dual){
+					if(window.dual){
 						dual.msg(_('sweet'), 'document_transferred');
 					}else{
 						app.msg(_('sweet'), 'document_transferred');
@@ -49063,9 +49621,223 @@ Ext.define('App.controller.DocumentViewer', {
 
 	onViewerDocumentsWinClose: function(win){
 		DocumentHandler.destroyTempDocument({id: win.documentId});
+	},
+
+	doDocumentView: function(id, type){
+		var windows = Ext.ComponentQuery.query('documentviewerwindow'),
+			src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id + '&token=' + app.user.token,
+			win;
+
+		if(typeof type != 'undefined') src += '&temp=' + type;
+
+		win = Ext.create('App.view.patient.windows.DocumentViewer',{
+			documentType: type,
+			documentId: id,
+			items:[
+				{
+					xtype:'miframe',
+					autoMask:false,
+					src: src,
+					iframeMessageListener: function(event){
+						if (event.origin !== window.location.origin) return;
+						app.fireEvent('documentedit', eval('(' + event.data + ')'));
+					}
+				}
+			]
+		});
+
+		if(windows.length > 0){
+			var last = windows[(windows.length - 1)];
+			for(var i=0; i < windows.length; i++){
+				windows[i].toFront();
+			}
+			win.showAt((last.x + 25), (last.y + 5));
+
+		}else{
+			win.show();
+		}
 	}
 
 
+});
+Ext.define('App.controller.Scanner', {
+	extend: 'Ext.app.Controller',
+	requires: [
+		'App.view.scanner.Window'
+	],
+	refs: [
+		{
+			ref: 'ScannerWindow',
+			selector: '#ScannerWindow'
+		},
+		{
+			ref: 'ScannerImage',
+			selector: '#ScannerImage'
+		},
+		{
+			ref: 'ScannerCombo',
+			selector: '#ScannerCombo'
+		},
+		{
+			ref: 'ScannerScanBtn',
+			selector: '#ScannerScanBtn'
+		},
+		{
+			ref: 'ScannerOkBtn',
+			selector: '#ScannerOkBtn'
+		}
+	],
+
+	/**
+	 *
+	 */
+	ws: null,
+
+	connected: false,
+
+	init: function(){
+		var me = this;
+
+		me.control({
+			'viewport': {
+				afterrender: me.doWebSocketConnect
+			},
+			'#ScannerWindow': {
+				show: me.onScannerWindowShow,
+				close: me.onScannerWindowClose
+			},
+			'#ScannerScanBtn': {
+				click: me.onScannerScanBtnClick
+			},
+			'#ScannerImageEditBtn': {
+				toggle: me.onScannerImageEditBtnClick
+			},
+			'#ScannerOkBtn': {
+				click: me.onScannerOkBtnClick
+			}
+		});
+	},
+
+	onScannerScanBtnClick: function(){
+		this.doScan();
+	},
+
+	doLoadScannersCombo: function(data){
+		var combo = this.getScannerCombo(),
+			store = combo.getStore();
+
+		store.loadData(data);
+		var checked = store.findRecord('Checked', 'true');
+		if(checked){
+			combo.select(checked);
+		}
+	},
+
+	doLoadScannedDocument: function(data){
+		var me = this,
+			image = me.getScannerImage();
+
+		image.setSrc('data:image/png;base64,' + data);
+		me.getScannerWindow().body.el.unmask();
+		me.getScannerWindow().doComponentLayout();
+		me.getScannerWindow().down('toolbar').enable();
+	},
+
+	getSources: function(){
+		var me = this;
+		me.ws.send('getSources');
+	},
+
+	onScannerWindowShow: function(){
+		//this.doWebSocketConnect();
+	},
+
+	onScannerWindowClose: function(){
+		//this.ws.close();
+	},
+
+	doWebSocketConnect: function(){
+		var me = this;
+
+		if(me.connected) return;
+		me.ws = new WebSocket('wss://localhost:8443/TwainService');
+
+		me.ws.onopen = function(evt){
+			me.conencted = true;
+			me.getScanWindow();
+			me.getSources();
+			app.fireEvent('scanconnected', this);
+		};
+
+		me.ws.onerror = function(){
+			app.msg(_('oops'), _('no_scanner_service_found'), true);
+		};
+
+		me.ws.onmessage = function(evt){
+			var response = eval('(' + evt.data + ')');
+
+			if(response.action == 'getSources'){
+				me.doLoadScannersCombo(response.data);
+			}else if(response.action == 'getDocument'){
+				me.doLoadScannedDocument(response.data);
+			}
+		};
+
+		me.ws.onclose = function(e){
+			me.conencted = false;
+			app.fireEvent('scandisconnected', this);
+		};
+	},
+
+	onScannerImageEditBtnClick: function(btn, pressed){
+		if(pressed){
+			this.dkrm = new Darkroom('#ScannerImage', {
+				save: false,
+				replaceDom: false
+			});
+			btn.setText(_('editing'));
+		}else{
+			this.dkrm.selfDestroy();
+			delete this.dkrm;
+			btn.setText(_('edit'));
+		}
+
+		this.getScannerScanBtn().setDisabled(pressed);
+		this.getScannerOkBtn().setDisabled(pressed);
+	},
+
+	getDocument: function(){
+		return this.getScannerImage().imgEl.dom.src;
+	},
+
+	doScan: function(){
+		var me = this,
+			combo = this.getScannerCombo();
+
+		me.getScannerWindow().down('toolbar').disable();
+		me.getScannerWindow().body.el.mask(_('scanning_document'));
+		me.ws.send('getDocument:' + combo.getValue());
+	},
+
+	onScannerOkBtnClick: function(){
+		app.fireEvent('scancompleted', this, this.getDocument());
+		this.getScannerWindow().close();
+	},
+
+	getScanWindow: function(){
+		if(!this.getScannerWindow()){
+			Ext.create('App.view.scanner.Window');
+		}
+		return this.getScannerWindow();
+	},
+
+	initScan: function(){
+		this.getScanWindow();
+		this.getScannerWindow().show();
+		//if(this.getScannerCombo().getValue() !== ''){
+		//	this.doScan();
+		//}
+	}
 });
 Ext.define('App.controller.Notification', {
 	extend: 'Ext.app.Controller',
@@ -49311,7 +50083,8 @@ Ext.define('App.controller.patient.Documents', {
 		me.control({
 			'viewport': {
 				scanconnected: me.onScanConnected,
-				scandisconnected: me.onScanDisconnected
+				scandisconnected: me.onScanDisconnected,
+				documentedit: me.onDocumentEdit
 			},
 			'patientdocumentspanel': {
 				activate: me.onPatientDocumentPanelActive
@@ -49341,6 +50114,35 @@ Ext.define('App.controller.patient.Documents', {
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	onDocumentEdit: function(data){
+
+		var store = this.getPatientDocumentGrid().getStore(),
+			record = store.getById(data.save.id);
+
+		if(record){
+			var src = data.save.document.split(',');
+
+			record.set({ document: (src[1] || src[0]) });
+			record.save({
+				success: function(){
+					if(window.dual){
+						dual.msg('sweet', _('record_saved'));
+					}else{
+						app.msg('sweet', _('record_saved'));
+					}
+				},
+				failure: function(){
+					if(window.dual){
+						dual.msg('oops', _('record_error'), true);
+					}else{
+						app.msg('oops', _('record_error'), true);
+					}
+				}
+			})
+		}
+
 	},
 
 	onScanConnected: function(){
@@ -49697,7 +50499,7 @@ Ext.define('App.controller.patient.LabOrders', {
 	},
 
 	onLabOrdersGridSelectionChange: function(sm, selected){
-		this.getPrintLabOrderBtn().setDisabled(selected.length == 0);
+		this.getPrintLabOrderBtn().setDisabled(selected.length === 0);
 	},
 
 	onLoincSearchSelect: function(cmb, records){
@@ -49784,20 +50586,46 @@ Ext.define('App.controller.patient.LabOrders', {
 	labOrdersGridStatusColumnRenderer:function(v){
 		var color = 'black';
 
-		if(v == 'Canceled'){
-			color = 'red';
-		}else if(v == 'Pending'){
-			color = 'orange';
-		}else if(v == 'Routed'){
-			color = 'blue';
-		}else if(v == 'Complete'){
-			color = 'green';
+		switch(v){
+			case 'Canceled':
+				color = 'red';
+				break;
+			case 'Pending':
+				color = 'orange';
+				break;
+			case 'Routed':
+				color = 'blue';
+				break;
+			case 'Complete':
+				color = 'green';
+				break;
+			default:
+				color = '';
 		}
 
 		return '<div style="color:' + color + '">' + v + '</div>';
+	},
+
+	doAddOrderByTemplate: function(data){
+		var me = this,
+			grid = me.getLabOrdersGrid(),
+			store = grid.getStore();
+
+		data.pid = app.patient.pid;
+		data.eid = app.patient.eid;
+		data.uid = app.user.id;
+		data.date_ordered = new Date();
+		data.order_type = 'lab';
+		data.status = 'Pending';
+		data.priority = 'Normal';
+
+		store.add(data);
+		store.sync({
+			success: function(){
+				app.msg(_('sweet'), data.description + ' ' + _('added'));
+			}
+		});
 	}
-
-
 });
 Ext.define('App.controller.patient.Results', {
 	extend: 'Ext.app.Controller',
@@ -50264,7 +51092,7 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this,
 			record = me.getEncounterDetailForm().getForm().getRecord();
 
-		if(record.data.provider_uid == 0){
+		if(record.data.provider_uid === 0){
 			if(me.getEncounterSpecialtyCmb()) me.getEncounterSpecialtyCmb().setVisible(false);
 
 		}else{
@@ -50695,32 +51523,6 @@ Ext.define('App.view.patient.Referrals', {
 		}
 	]
 });
-Ext.define('App.view.patient.SocialPanel', {
-	extend: 'Ext.panel.Panel',
-	requires: [
-		'App.view.patient.SmokingStatus',
-		'App.view.patient.SocialHistory'
-	],
-	xtype: 'patientsocialpanel',
-	title: _('social'),
-	border: false,
-	bodyBorder: false,
-	layout: {
-		type: 'vbox',
-		align: 'stretch'
-	},
-	items: [
-		{
-			xtype: 'patientsmokingstatusgrid',
-			margin: '0 0 5 0',
-			flex: 1
-		},
-		{
-			xtype: 'patientsocialhistorypanel',
-			flex: 2
-		}
-	]
-});
 Ext.define('App.view.patient.ActiveProblems', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -50900,6 +51702,32 @@ Ext.define('App.view.patient.ActiveProblems', {
 		action: 'encounterRecordAdd'
 	}]
 });
+Ext.define('App.view.patient.SocialPanel', {
+	extend: 'Ext.panel.Panel',
+	requires: [
+		'App.view.patient.SmokingStatus',
+		'App.view.patient.SocialHistory'
+	],
+	xtype: 'patientsocialpanel',
+	title: _('social'),
+	border: false,
+	bodyBorder: false,
+	layout: {
+		type: 'vbox',
+		align: 'stretch'
+	},
+	items: [
+		{
+			xtype: 'patientsmokingstatusgrid',
+			margin: '0 0 5 0',
+			flex: 1
+		},
+		{
+			xtype: 'patientsocialhistorypanel',
+			flex: 2
+		}
+	]
+});
 Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -51003,18 +51831,152 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		}
 	]
 });
-Ext.define('App.ux.combo.Specialties', {
-	extend: 'App.ux.combo.ComboResettable',
-	xtype: 'specialtiescombo',
-	displayField: 'text_details',
-	valueField: 'id',
-	editable: false,
-	emptyText: _('select'),
-	queryMode: 'local',
-	store: Ext.create('App.store.administration.Specialties',{
-		pageSize: 500,
-		autoLoad: true
-	})
+Ext.define('App.view.patient.RadOrders', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'Ext.grid.plugin.RowEditing',
+		'Ext.grid.feature.Grouping',
+		'Ext.selection.CheckboxModel',
+		'App.ux.combo.Combo',
+		'App.ux.LiveRadsSearch'
+	],
+	xtype: 'patientradorderspanel',
+	title: _('xray_ct_orders'),
+	columnLines: true,
+	itemId: 'RadOrders',
+	store: Ext.create('App.store.patient.PatientsOrders', {
+		storeId: 'RadOrderStore',
+		groupField: 'date_ordered',
+		remoteFilter: true,
+		pageSize: 200,
+		sorters: [
+			{
+				property: 'date_ordered',
+				direction: 'DESC'
+			}
+		]
+	}),
+	selModel: Ext.create('Ext.selection.CheckboxModel', {
+		showHeaderCheckbox: false
+	}),
+	features: [
+		{
+			ftype: 'grouping'
+		}
+	],
+	plugins: [
+		{
+			ptype: 'rowediting',
+			clicksToEdit: 2
+		}
+	],
+	columns: [
+		{
+			xtype: 'actioncolumn',
+			width: 20,
+			items: [
+				{
+					icon: 'resources/images/icons/cross.png',
+					tooltip: _('remove')
+//					scope: me,
+//					handler: me.onRemoveClick
+				}
+			]
+		},
+		{
+			header: _('order#'),
+			width: 60,
+			dataIndex: 'id'
+		},
+		{
+			header: _('status'),
+			width: 75,
+			dataIndex: 'status',
+			editor: {
+				xtype: 'gaiaehr.combo',
+				list: 40
+			},
+			renderer: function(v){
+				return app.getController('patient.RadOrders').radOrdersGridStatusColumnRenderer(v)
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			header: _('date_ordered'),
+			width: 100,
+			dataIndex: 'date_ordered',
+			format: 'Y-m-d',
+			editor: {
+				xtype: 'datefield'
+			}
+		},
+		{
+			header: _('code'),
+			width: 100,
+			dataIndex: 'code'
+		},
+		{
+			header: _('description'),
+			flex: 1,
+			dataIndex: 'description',
+			editor: {
+				xtype: 'radslivetsearch',
+				itemId: 'radOrderliveSearch'
+			}
+		},
+		{
+			header: _('notes'),
+			flex: 1,
+			dataIndex: 'note',
+			editor: {
+				xtype: 'textfield'
+			}
+		},
+		{
+			header: _('priority'),
+			width: 100,
+			dataIndex: 'priority',
+			editor: {
+				xtype: 'gaiaehr.combo',
+				list: 98
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			header: _('date_collected'),
+			width: 100,
+			dataIndex: 'date_collected',
+			format: 'Y-m-d',
+			editor: {
+				xtype: 'datefield'
+			}
+		}
+	],
+	tbar: [
+		{
+			text: _('eRad'),
+			iconCls: 'icoSend',
+			itemId: 'electronicRadOrderBtn'
+		},
+		'-',
+		'->',
+		'-',
+		{
+			xtype: 'button',
+			text: _('new_order'),
+			iconCls: 'icoAdd',
+			action: 'encounterRecordAdd',
+			itemId: 'newRadOrderBtn'
+		},
+		'-',
+		{
+			text: _('print'),
+			iconCls: 'icoPrint',
+			disabled: true,
+			margin: '0 5 0 0',
+			itemId: 'printRadOrderBtn'
+		}
+	]
 });
 Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 	extend: 'Ext.window.Window',
@@ -51122,6 +52084,853 @@ Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 			itemId: 'CarePlanGoalsNewFormSaveBtn'
 		}
 	]
+});
+Ext.define('App.ux.combo.MedicationInstructions', {
+	extend: 'Ext.form.ComboBox',
+	xtype: 'medicationinstructionscombo',
+	queryMode: 'local',
+	displayField: 'instruction',
+	valueField: 'instruction',
+	store: Ext.create('App.store.administration.MedicationInstructions')
+});
+Ext.define('App.ux.form.fields.plugin.HelpIcon', {
+	extend: 'Ext.AbstractPlugin',
+	alias: 'plugin.helpicon',
+	iconSrc: 'resources/images/icons/icohelp.png',
+	iconHeight: 16,
+	iconWidth: 16,
+	iconMargin: '0 5',
+	init: function(field){
+		field.on('render', this.addHelpIcon, this);
+	},
+	addHelpIcon: function(field){
+		var me = this,
+			tpl = '<td><img src="' + me.iconSrc + '" height="' + me.iconHeight + '" width="' + me.iconWidth + '" style="margin:' + me.iconMargin + '"></td>',
+			tplDom;
+
+		tplDom = Ext.DomHelper.append(field.inputRow, tpl, true);
+
+		Ext.create('Ext.tip.ToolTip', {
+			target: tplDom,
+			dismissDelay: 0,
+			html: me.helpMsg || field.helpMsg || 'Help Message...'
+		});
+	}
+});
+Ext.define('App.ux.combo.ComboResettable', {
+	extend: 'Ext.form.ComboBox',
+	triggerTip: _('click_to_clear_selection'),
+	spObj: '',
+	spForm: '',
+	spExtraParam: '',
+	qtip: _('clearable_combo_box'),
+
+	trigger1Class: 'x-form-select-trigger',
+	trigger2Class: 'x-form-clear-trigger',
+
+	onRender: function(ct, position){
+		this.callParent(arguments);
+		var id = this.getId();
+		this.triggerConfig = {
+			tag: 'div',
+			cls: 'x-form-twin-triggers',
+			style: 'display:block;',
+			cn: [
+				{
+					tag: "img",
+					style: Ext.isIE ? 'margin-left:0;height:21px' : '',
+					src: Ext.BLANK_IMAGE_URL,
+					id: "trigger2" + id,
+					name: "trigger2" + id,
+					cls: "x-form-trigger " + this.trigger2Class
+				}
+			]
+		};
+		this.triggerEl.replaceWith(this.triggerConfig);
+
+		this.triggerEl.on('mouseup', function(e){
+			if(e.target.name == "trigger2" + id){
+				this.reset();
+				this.oldValue = null;
+				if(this.spObj !== '' && this.spExtraParam !== ''){
+					Ext.getCmp(this.spObj).store.setExtraParam(this.spExtraParam, '');
+					Ext.getCmp(this.spObj).store.load()
+				}
+				if(this.spForm !== ''){
+					Ext.getCmp(this.spForm).getForm().reset();
+				}
+				this.fireEvent('fieldreset', this);
+			}
+
+		}, this);
+
+		var trigger2 = Ext.get("trigger2" + id);
+		trigger2.addClsOnOver('x-form-trigger-over');
+	}
+}); 
+Ext.define('App.ux.form.SearchField', {
+	extend: 'Ext.form.field.Trigger',
+
+	alias: 'widget.gaiasearchfield',
+
+	trigger1Cls: Ext.baseCSSPrefix + 'form-clear-trigger',
+
+	trigger2Cls: Ext.baseCSSPrefix + 'form-search-trigger',
+
+	hasSearch : false,
+	paramName : 'query',
+
+	filterFn: null,
+
+	initComponent: function() {
+		var me = this;
+
+		me.callParent(arguments);
+
+		me.on('specialkey', function(f, e){
+			if (e.getKey() == e.ENTER) {
+				me.onTrigger2Click();
+			}
+		});
+
+		// We're going to use filtering
+		me.store.remoteFilter = me.filterFn === null;
+
+		if(!me.store.remoteFilter) return;
+
+		// Set up the proxy to encode the filter in the simplest way as a name/value pair
+
+		// If the Store has not been *configured* with a filterParam property, then use our filter parameter name
+		if (!me.store.proxy.hasOwnProperty('filterParam')) {
+			me.store.proxy.filterParam = me.paramName;
+		}
+		me.store.proxy.encodeFilters = function(filters) {
+			return filters[0].value;
+		}
+	},
+
+	afterRender: function(){
+		this.callParent();
+		this.triggerCell.item(0).setDisplayed(false);
+	},
+
+	onTrigger1Click : function(){
+		var me = this;
+
+		if (me.hasSearch) {
+			me.setValue('');
+			me.store.clearFilter();
+			me.hasSearch = false;
+			me.triggerCell.item(0).setDisplayed(false);
+			me.updateLayout();
+		}
+	},
+
+	onTrigger2Click : function(){
+		var me = this,
+			value = me.getValue();
+
+		if (value.length > 0) {
+			// Param name is ignored here since we use custom encoding in the proxy.
+			// id is used by the Store to replace any previous filter
+
+			if(me.store.remoteFilter){
+				me.store.filter({
+					id: me.paramName,
+					property: me.paramName,
+					value: value
+				});
+			}else{
+				me.store.filter({
+					id: me.paramName,
+					filterFn: function(record){
+						return me.filterFn(record, value);
+					}
+				});
+			}
+
+			me.hasSearch = true;
+			me.triggerCell.item(0).setDisplayed(true);
+			me.updateLayout();
+		}
+	}
+});
+Ext.define('App.model.administration.Allergies', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'allergies',
+		comment: 'Allergies'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'allergy',
+			type: 'string',
+			len: 500,
+			comment: 'Allergy Name'
+		},
+		{
+			name: 'allergy_term',
+			type: 'string'
+		},
+		{
+			name: 'allergy_code',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'allergy_code_type',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'allergy_type',
+			type: 'string',
+			len: 5,
+			comment: 'PT = Preferred Term, SN = Systematic Name, SY = Synonym, CD = Code, TR = Trade'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Allergies.searchAllergiesData'
+		},
+		reader: {
+			root: 'data'
+		}
+	}
+});
+Ext.define('App.ux.form.fields.CheckBoxWithText', {
+	extend: 'Ext.form.FieldContainer',
+	mixins: {
+		field: 'Ext.form.field.Field'
+	},
+	xtype: 'checkboxwithtext',
+	layout: 'hbox',
+	boxLabel: 'boxLabel',
+	emptyText: '',
+	readOnly: false,
+//	combineErrors: true,
+	msgTarget: 'under',
+	width: 400,
+
+	inputValue: '1',
+	uncheckedValue: '0',
+
+	initComponent: function(){
+		var me = this;
+
+		me.items = me.items || [];
+
+		me.items = [
+			{
+				xtype:'checkbox',
+				boxLabel: me.boxLabel,
+				submitValue: false,
+				inputValue: me.inputValue,
+				width: 130,
+				margin: '0 10 0 0'
+			}
+		];
+
+		me.textField = me.textField || {
+			xtype:'textfield'
+		};
+
+		Ext.apply(me.textField , {
+			submitValue: false,
+			flex: 1,
+			hidden: true,
+			emptyText: me.emptyText
+		});
+
+		me.items.push(me.textField);
+
+		if(me.layout == 'vbox') me.height = 44;
+
+		me.callParent();
+
+		me.chekboxField = me.items.items[0];
+		me.textField = me.items.items[1];
+
+		me.chekboxField.on('change', me.setTextField, me);
+
+		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
+//		this.inputEl = {
+//			dom: {},
+//			swallowEvent: function(){
+//			}
+//		};
+//
+		me.initField();
+	},
+
+	setTextField: function(checkbox, value){
+		if(value == 0 || value == 'off' || value == false){
+			this.textField.reset();
+			this.textField.hide();
+		}else{
+			this.textField.show();
+		}
+	},
+
+	getValue: function(){
+		var value = '',
+			ckValue = this.chekboxField.getSubmitValue(),
+			txtValue = this.textField.getSubmitValue() || '';
+
+		if(ckValue)    value = ckValue + '~' + txtValue;
+		return value;
+	},
+
+	getSubmitValue: function(){
+		return this.getValue();
+	},
+
+	setValue: function(value){
+		if(value && value.split){
+			var val = value.split('~');
+			this.chekboxField.setValue(val[0] || 0);
+			this.textField.setValue(val[1] || '');
+			return;
+		}
+		this.chekboxField.setValue(0);
+		this.textField.setValue('');
+	},
+
+	// Bug? A field-mixin submits the data from getValue, not getSubmitValue
+	getSubmitData: function(){
+		var me = this,
+			data = null;
+		if(!me.disabled && me.submitValue && !me.isFileUpload()){
+			data = {};
+			data[me.getName()] = '' + me.getSubmitValue();
+		}
+		return data;
+	},
+
+	setReadOnly: function(value){
+		this.chekboxField.setReadOnly(value);
+		this.textField.setReadOnly(value);
+	}
+});
+Ext.define('App.view.patient.RxOrders', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'App.ux.grid.RowFormEditing',
+		'Ext.grid.feature.Grouping',
+		'Ext.selection.CheckboxModel',
+		'App.ux.combo.PrescriptionHowTo',
+		'App.ux.combo.PrescriptionTypes',
+		'App.ux.combo.EncounterICDS',
+		'App.ux.combo.MedicationInstructions',
+		'App.ux.LiveRXNORMSearch',
+		'App.ux.form.fields.plugin.HelpIcon'
+	],
+	xtype: 'patientrxorderspanel',
+	title: _('rx_orders'),
+	columnLines: true,
+	itemId: 'RxOrderGrid',
+	store: Ext.create('App.store.patient.Medications', {
+		storeId: 'RxOrderStore',
+		groupField: 'date_ordered',
+		remoteFilter: true,
+		pageSize: 200,
+		sorters: [
+			{
+				property: 'date_ordered',
+				direction: 'DESC'
+			}
+		]
+	}),
+	selModel: Ext.create('Ext.selection.CheckboxModel', {
+		showHeaderCheckbox: false
+	}),
+	features: [
+		{
+			ftype: 'grouping'
+		}
+	],
+	plugins: [
+		{
+			ptype: 'rowformediting',
+			clicksToEdit: 2,
+			items: [
+				{
+					xtype: 'container',
+					layout: {
+						type: 'hbox',
+						align: 'stretch'
+					},
+					itemId: 'RxOrderGridFormContainer',
+					items: [
+						{
+							xtype: 'container',
+							layout: 'anchor',
+							itemId: 'RxOrderGridFormContainerOne',
+							items: [
+								{
+									xtype: 'datefield',
+									fieldLabel: _('order_date'),
+									format: 'Y-m-d',
+									name: 'date_ordered',
+									allowBlank: false,
+									margin: '0 0 5 0'
+								},
+								{
+									xtype: 'rxnormlivetsearch',
+									itemId: 'RxNormOrderLiveSearch',
+									hideLabel: false,
+									fieldLabel: _('medication'),
+									width: 700,
+									name: 'STR',
+									maxLength: 105,
+									displayField: 'STR',
+									valueField: 'STR',
+									vtype: 'nonspecialcharactersrequired',
+									allowBlank: false
+								},
+								{
+									xtype: 'container',
+									margin: '5 0',
+									layout: {
+										type: 'hbox'
+									},
+									items: [
+										{
+											xtype: 'numberfield',
+											width: 170,
+											fieldLabel: _('dispense'),
+											minValue: 0.001,
+											maxValue: 99999,
+											name: 'dispense',
+											decimalPrecision: 3,
+											maxLength: 10,
+											allowBlank: false,
+											fixPrecision: function(value){
+												var me = this,
+													nan = isNaN(value),
+													precision = me.decimalPrecision;
+
+												if(nan || !value){
+													return nan ? '' : value;
+												}else if(!me.allowDecimals || precision <= 0){
+													precision = 0;
+												}
+												var num = String(value);
+												if(num.indexOf('.') !== -1){
+													var numArr = num.split(".");
+													if(numArr.length == 1){
+														return Number(num);
+													}else{
+														return Number(numArr[0] + "." + numArr[1].charAt(0) + numArr[1].charAt(1) + numArr[1].charAt(2));
+													}
+												}else{
+													return Number(num);
+												}
+												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
+											}
+										},
+										{
+											xtype: 'numberfield',
+											width: 130,
+											fieldLabel: _('days_supply'),
+											labelAlign: 'right',
+											labelWidth: 75,
+											minValue: 1,
+											maxValue: 630,
+											allowDecimals: false,
+											name: 'days_supply'
+										},
+										{
+											xtype: 'numberfield',
+											width: 100,
+											fieldLabel: _('refill'),
+											labelAlign: 'right',
+											labelWidth: 40,
+											maxValue: 99,
+											minValue: 0,
+											name: 'refill',
+											vtype: 'numeric',
+											allowBlank: false
+										},
+										{
+											xtype: 'encountericdscombo',
+											itemId: 'RxEncounterDxCombo',
+											fieldLabel: _('dx'),
+											labelAlign: 'right',
+											labelWidth: 30,
+											width: 295,
+											name: 'dxs'
+										}
+									]
+								},
+								{
+									xtype: 'medicationinstructionscombo',
+									itemId: 'RxOrderMedicationInstructionsCombo',
+									width: 700,
+									fieldLabel: _('instructions'),
+									name: 'directions',
+									maxLength: 140,
+									validateOnBlur: true,
+									vtype: 'nonspecialcharactersrequired',
+									allowBlank: false
+								},
+								{
+									xtype: 'textfield',
+									width: 680,
+									fieldLabel: '*' + _('notes_to_pharmacist'),
+									itemId: 'RxOrderGridFormNotesField',
+									name: 'notes',
+									plugins:[
+										{
+											ptype: 'helpicon',
+											helpMsg: _('rx_notes_to_pharmacist_warning')
+										}
+									],
+									maxLength: 210
+								},
+								{
+									xtype: 'container',
+									html: ' *' + _('rx_notes_to_pharmacist_warning'),
+									margin: '0 0 0 100'
+								}
+							]
+						},
+						{
+							xtype: 'container',
+							layout: 'anchor',
+							itemId: 'RxOrderGridFormContainerTwo',
+							padding: '25 0 0 0',
+							items: [
+								{
+									xtype: 'container',
+									layout: 'hbox',
+									items:[
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: _('daw'),
+											tooltip: _('dispensed_as_written'),
+											width: 90,
+											labelWidth: 70,
+											labelAlign: 'right',
+											name: 'daw',
+											margin: '0 0 5 0'
+										},
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: _('is_comp'),
+											tooltip: _('is_compound'),
+											width: 85,
+											labelWidth: 65,
+											labelAlign: 'right',
+											name: 'is_compound',
+											itemId: 'RxOrderCompCheckBox',
+											margin: '0 0 5 0'
+										},
+										{
+											xtype: 'checkboxfield',
+											fieldLabel: _('is_sply'),
+											tooltip: _('is_supply'),
+											width: 85,
+											labelWidth: 65,
+											labelAlign: 'right',
+											name: 'is_supply',
+											itemId: 'RxOrderSplyCheckBox',
+											margin: '0 0 5 0'
+										}
+									]
+								},
+								{
+									xtype: 'datefield',
+									fieldLabel: _('begin_date'),
+									labelWidth: 70,
+									labelAlign: 'right',
+									width: 258,
+									format: 'Y-m-d',
+									name: 'begin_date',
+									margin: '0 0 5 0',
+									allowBlank: false
+								},
+								{
+									xtype: 'datefield',
+									fieldLabel: _('end_date'),
+									labelWidth: 70,
+									labelAlign: 'right',
+									format: 'Y-m-d',
+									width: 258,
+									name: 'end_date'
+								}
+							]
+						},
+						{
+							xtype: 'fieldset',
+							title: _('active_drug_allergies'),
+							html: _('none'),
+							margin: '25 0 5 10',
+							flex: 1
+						}
+					]
+				}
+			]
+		}
+	],
+	columns: [
+		{
+			xtype: 'actioncolumn',
+			width: 20,
+			items: [
+				{
+					icon: 'resources/images/icons/cross.png',
+					tooltip: _('remove')
+				}
+			]
+		},
+		{
+			xtype: 'datecolumn',
+			header: _('date_ordered'),
+			dataIndex: 'date_ordered',
+			format: 'Y-m-d'
+		},
+		{
+			header: _('medication'),
+			flex: 1,
+			dataIndex: 'STR'
+		},
+		{
+			header: _('daw'),
+			width: 40,
+			dataIndex: 'daw',
+			tooltip: _('dispensed_as_written'),
+			renderer: function(v){
+				return app.boolRenderer(v);
+			}
+		},
+		{
+			header: _('dispense'),
+			width: 60,
+			dataIndex: 'dispense'
+		},
+		{
+			header: _('refill'),
+			width: 50,
+			dataIndex: 'refill'
+		},
+		{
+			header: _('instructions'),
+			flex: 1,
+			dataIndex: 'directions'
+		},
+		{
+			header: _('related_dx'),
+			width: 200,
+			dataIndex: 'dxs',
+			renderer: function(v){
+				return v == false || v == 'false' || v[0] == false ? '' : v;
+			}
+		},
+		{
+			xtype: 'datecolumn',
+			format: 'Y-m-d',
+			header: _('begin_date'),
+			width: 75,
+			dataIndex: 'begin_date'
+		},
+		{
+			xtype: 'datecolumn',
+			header: _('end_date'),
+			width: 75,
+			format: 'Y-m-d',
+			dataIndex: 'end_date'
+		}
+	],
+	tbar: [
+		'->',
+		'-',
+		{
+			text: _('new_order'),
+			iconCls: 'icoAdd',
+			action: 'encounterRecordAdd',
+			itemId: 'newRxOrderBtn'
+		},
+		'-',
+		{
+			text: _('clone_order'),
+			iconCls: 'icoAdd',
+			disabled: true,
+			margin: '0 5 0 0',
+			action: 'encounterRecordAdd',
+			itemId: 'cloneRxOrderBtn'
+		},
+		'-',
+		{
+			text: _('print'),
+			iconCls: 'icoPrint',
+			disabled: true,
+			margin: '0 5 0 0',
+			itemId: 'printRxOrderBtn'
+		}
+	]
+});
+Ext.define('App.view.patient.windows.Orders', {
+	extend: 'App.ux.window.Window',
+	requires:[
+		'App.view.patient.LabOrders',
+		'App.view.patient.RadOrders',
+		'App.view.patient.RxOrders',
+		'App.view.patient.DoctorsNotes'
+	],
+	title: _('order_window'),
+	closeAction: 'hide',
+	bodyStyle: 'background-color:#fff',
+	modal: true,
+	buttons: [
+		{
+			text: _('close'),
+			handler: function(btn){
+				btn.up('window').close();
+			}
+		}
+	],
+	initComponent: function(){
+		var me = this;
+
+		me.items = [
+			me.tabPanel = Ext.create('Ext.tab.Panel', {
+				margin: 5,
+				height: Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600,
+				width: Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
+				plain: true,
+				items: [
+					/**
+					 * LAB ORDERS PANEL
+					 */
+					{
+						xtype: 'patientlaborderspanel'
+					},
+					/**
+					 * X-RAY PANEL
+					 */
+					{
+						xtype: 'patientradorderspanel'
+					},
+					/**
+					 * PRESCRIPTION PANEL
+					 */
+					{
+						xtype:'patientrxorderspanel'
+					},
+					/**
+					 * DOCTORS NOTE
+					 */
+					{
+						xtype: 'patientdoctorsnotepanel'
+					}
+				]
+
+			})
+		];
+
+		me.buttons = [
+			{
+				text: _('close'),
+				scope: me,
+				handler: function(){
+					me.close();
+				}
+			}
+		];
+		/**
+		 * windows listeners
+		 * @type {{scope: *, show: Function, hide: Function}}
+		 */
+		me.listeners = {
+			scope: me,
+			show: me.onWinShow,
+			hide: me.onWinHide
+		};
+		me.callParent(arguments);
+	},
+
+	/**
+	 * OK!
+	 * @param action
+	 */
+	cardSwitch: function(action){
+		var me = this,
+			tabPanel = me.tabPanel,
+			activePanel = tabPanel.getActiveTab(),
+			toPanel =  tabPanel.query('#'+ action)[0];
+
+		if(activePanel == toPanel){
+			activePanel.fireEvent('activate', activePanel);
+		}else{
+			tabPanel.setActiveTab(toPanel);
+			me.setWindowTitle(toPanel.title);
+		}
+	},
+
+	setWindowTitle:function(title){
+		this.setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
+	},
+
+
+	/**
+	 * OK!
+	 * On window shows
+	 */
+	onWinShow: function(){
+		var me = this,
+			p = me.down('tabpanel'),
+			w = Ext.getBody().getWidth() < 1550 ? (Ext.getBody().getWidth() - 50) : 1500,
+			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
+
+		p.setSize(w, h);
+
+		me.alignTo(Ext.getBody(), 'c-c');
+		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowshow', me);
+		/**
+		 * read only stuff
+		 */
+		me.setTitle(app.patient.name + ' - ' + _('orders') + (app.patient.readOnly ? ' - <span style="color:red">[' + _('read_mode') + ']</span>' : ''));
+		me.setReadOnly(app.patient.readOnly);
+	},
+
+	/**
+	 * OK!
+	 * Loads patientDocumentsStore with new documents
+	 */
+	onWinHide: function(){
+		var me = this;
+		/**
+		 * Fire Event
+		 */
+		me.fireEvent('orderswindowhide', me);
+		if(app.getActivePanel().$className == 'App.view.patient.Summary'){
+			app.getActivePanel().loadStores();
+		}
+
+	}
+
+});
+Ext.define('App.ux.combo.Specialties', {
+	extend: 'App.ux.combo.ComboResettable',
+	xtype: 'specialtiescombo',
+	displayField: 'text_details',
+	valueField: 'id',
+	editable: false,
+	emptyText: _('select'),
+	queryMode: 'local',
+	store: Ext.create('App.store.administration.Specialties',{
+		pageSize: 500,
+		autoLoad: true
+	})
 });
 Ext.define('App.view.patient.encounter.SOAP', {
 	extend: 'Ext.panel.Panel',
@@ -51589,7 +53398,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 * @param record
 	 */
 	procedureEdit: function(view, record){
-		if(record.data.code_text != '' || record.data.code != ''){
+		if(record.data.code_text !== '' || record.data.code !== ''){
 			this.pWin.setTitle(record.data.code_text + ' [' + record.data.code + ']');
 		}else{
 			this.pWin.setTitle(_('new_procedure'));
@@ -51723,6 +53532,45 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		}
 		me.snippetStore.sync();
 	}
+});
+Ext.define('App.view.patient.encounter.ProgressNotesHistory', {
+	extend: 'Ext.grid.Panel',
+	requires: [
+		'App.ux.form.SearchField'
+	],
+	xtype: 'progressnoteshistory',
+	title: _('history'),
+	hideHeaders: true,
+	initComponent: function(){
+
+		var me = this;
+
+		me.store = Ext.create('App.store.patient.ProgressNotesHistory');
+
+		me.columns = [
+			{
+				dataIndex: 'progress',
+				flex: 1
+			}
+		];
+
+		me.tbar = [
+			{
+				xtype: 'gaiasearchfield',
+				emptyText: _('search'),
+				flex: 1,
+				itemId: 'ProgressNotesHistorySearchField',
+				store: me.store,
+				filterFn: function(record, value){
+					return record.data.progress.search(new RegExp(value, 'ig')) !== -1;
+
+				}
+			}
+		];
+
+		me.callParent();
+	}
+
 });
 Ext.define('App.ux.LiveAllergiesSearch', {
 	extend: 'Ext.form.ComboBox',
@@ -52208,45 +54056,6 @@ Ext.define('App.view.patient.encounter.FamilyHistory', {
 		me.callParent();
 		me.getFormItems(me, 12);
 	}
-});
-Ext.define('App.view.patient.encounter.ProgressNotesHistory', {
-	extend: 'Ext.grid.Panel',
-	requires: [
-		'App.ux.form.SearchField'
-	],
-	xtype: 'progressnoteshistory',
-	title: _('history'),
-	hideHeaders: true,
-	initComponent: function(){
-
-		var me = this;
-
-		me.store = Ext.create('App.store.patient.ProgressNotesHistory');
-
-		me.columns = [
-			{
-				dataIndex: 'progress',
-				flex: 1
-			}
-		];
-
-		me.tbar = [
-			{
-				xtype: 'gaiasearchfield',
-				emptyText: _('search'),
-				flex: 1,
-				itemId: 'ProgressNotesHistorySearchField',
-				store: me.store,
-				filterFn: function(record, value){
-					return record.data.progress.search(new RegExp(value, 'ig')) !== -1;
-
-				}
-			}
-		];
-
-		me.callParent();
-	}
-
 });
 Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
@@ -53272,104 +55081,6 @@ Ext.define('App.view.patient.Encounter', {
 	}
 });
 
-Ext.define('App.ux.form.fields.UploadBase64', {
-	extend: 'Ext.window.Window',
-	requires: [
-		'Ext.form.field.File'
-	],
-
-	xtype: 'uploadbase64field',
-	bodyPadding: 10,
-	base64: '',
-	ready: false,
-
-	title: _('upload'),
-	items: [
-		{
-			xtype: 'fileuploadfield',
-			width: 300
-		}
-	],
-	buttons: [
-		{
-			text: _('cancel')
-		},
-		{
-			text: _('upload')
-		}
-	],
-
-	allowExtensions: null,
-
-	initComponent: function(){
-		var me = this;
-
-		me.callParent();
-
-		me.uValue = '';
-		me.uField = me.getComponent(0);
-		me.uDock = me.getDockedItems('toolbar[dock="bottom"]')[0];
-		me.uCancel = me.uDock.getComponent(0);
-		me.uUpload = me.uDock.getComponent(1);
-
-		me.uCancel.on('click', me.onCancel, me);
-		me.uUpload.on('click', me.onUpload, me);
-
-	},
-
-	doUpload: function(){
-		var me = this,
-			fr = new FileReader();
-
-		me.uValue = me.uField.getValue();
-
-		if(me.allowExtensions){
-			var re;
-
-			if(Ext.isArray(me.allowExtensions)){
-				re = new RegExp(me.allowExtensions.join('|'));
-			}else{
-				re = new RegExp(me.allowExtensions + '$');
-			}
-
-			if(!re.exec(me.uValue)){
-				app.msg(_('oops'), Ext.String.format(_('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
-				return;
-			}
-		}
-
-		me.setReady(false);
-		fr.onload = function(e){
-			me.base64 = e.target.result;
-			me.setReady(true);
-			me.fireEvent('uploadready', me, me.base64);
-			me.close();
-		};
-
-		fr.readAsDataURL(me.uField.extractFileInput().files[0]);
-	},
-
-	onCancel: function(){
-		return this.close();
-	},
-
-	onUpload: function(){
-		this.doUpload();
-	},
-
-	isReady: function(){
-		return this.ready;
-	},
-
-	setReady: function(ready){
-		return this.ready = ready;
-	},
-
-	getValue: function(){
-		return this.uValue;
-	}
-
-});
 Ext.define('App.view.Viewport', {
     extend: 'Ext.Viewport',
     // app settings
@@ -54604,34 +56315,7 @@ Ext.define('App.view.Viewport', {
     },
 
     onDocumentView: function(id, type){
-	    var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-		    src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id + '&token=' + app.user.token,
-		    win;
-
-	    if(typeof type != 'undefined') src += '&temp=' + type;
-
-	    win = Ext.create('App.view.patient.windows.DocumentViewer',{
-		    documentType: type,
-		    documentId: id,
-		    items:[
-			    {
-				    xtype:'miframe',
-				    autoMask:false,
-				    src: src
-			    }
-		    ]
-	    });
-
-	    if(windows.length > 0){
-		    var last = windows[(windows.length - 1)];
-		    for(var i=0; i < windows.length; i++){
-			    windows[i].toFront();
-		    }
-		    win.showAt((last.x + 25), (last.y + 5));
-
-	    }else{
-		    win.show();
-	    }
+	    app.getController('DocumentViewer').doDocumentView(id, type);
     },
 
     /**
@@ -54656,7 +56340,7 @@ Ext.define('App.view.Viewport', {
 //		            me.VisitCheckout.el.mask(_('loading...'));
 	            }else if(data.patientData.eid && a('access_encounters')){
 //		            me.Encounter.el.mask(_('loading...'));
-	            }else if(data.patientData.floorPlanId == null || data.patientData.floorPlanId == 0){
+	            }else if(data.patientData.floorPlanId === null || data.patientData.floorPlanId === 0){
 //		            me.Summary.el.mask(_('loading...'));
 	            }
 
@@ -54857,4 +56541,2499 @@ Ext.define('App.view.Viewport', {
 		return foo;
 	}
 
+});
+
+Ext.define('App.ux.form.fields.UploadBase64', {
+	extend: 'Ext.window.Window',
+	requires: [
+		'Ext.form.field.File'
+	],
+
+	xtype: 'uploadbase64field',
+	bodyPadding: 10,
+	base64: '',
+	ready: false,
+
+	title: _('upload'),
+	items: [
+		{
+			xtype: 'fileuploadfield',
+			width: 300
+		}
+	],
+	buttons: [
+		{
+			text: _('cancel')
+		},
+		{
+			text: _('upload')
+		}
+	],
+
+	allowExtensions: null,
+
+	initComponent: function(){
+		var me = this;
+
+		me.callParent();
+
+		me.uValue = '';
+		me.uField = me.getComponent(0);
+		me.uDock = me.getDockedItems('toolbar[dock="bottom"]')[0];
+		me.uCancel = me.uDock.getComponent(0);
+		me.uUpload = me.uDock.getComponent(1);
+
+		me.uCancel.on('click', me.onCancel, me);
+		me.uUpload.on('click', me.onUpload, me);
+
+	},
+
+	doUpload: function(){
+		var me = this,
+			fr = new FileReader();
+
+		me.uValue = me.uField.getValue();
+
+		if(me.allowExtensions){
+			var re;
+
+			if(Ext.isArray(me.allowExtensions)){
+				re = new RegExp(me.allowExtensions.join('|'));
+			}else{
+				re = new RegExp(me.allowExtensions + '$');
+			}
+
+			if(!re.exec(me.uValue)){
+				app.msg(_('oops'), Ext.String.format(_('only_extensions_{0}_allowed'), me.allowExtensions.join ? me.allowExtensions.join(', ') : me.allowExtensions ), true);
+				return;
+			}
+		}
+
+		me.setReady(false);
+		fr.onload = function(e){
+			me.base64 = e.target.result;
+			me.setReady(true);
+			me.fireEvent('uploadready', me, me.base64);
+			me.close();
+		};
+
+		fr.readAsDataURL(me.uField.extractFileInput().files[0]);
+	},
+
+	onCancel: function(){
+		return this.close();
+	},
+
+	onUpload: function(){
+		this.doUpload();
+	},
+
+	isReady: function(){
+		return this.ready;
+	},
+
+	setReady: function(ready){
+		return this.ready = ready;
+	},
+
+	getValue: function(){
+		return this.uValue;
+	}
+
+});
+Ext.define('App.ux.form.fields.BoxSelect', {
+    extend:'Ext.form.field.ComboBox',
+    alias: ['widget.comboboxselect', 'widget.boxselect'],
+    requires: ['Ext.selection.Model', 'Ext.data.Store'],
+
+    //
+    // Begin configuration options related to the underlying store
+    //
+
+    /**
+     * @cfg {String} valueParam
+     * The name of the parameter used to load unknown records into the store. If left unspecified, {@link #valueField}
+     * will be used.
+     */
+
+    //
+    // End of configuration options related to the underlying store
+    //
+
+
+
+    //
+    // Begin configuration options related to selected values
+    //
+
+    /**
+     * @cfg {Boolean}
+     * If set to `true`, allows the combo field to hold more than one value at a time, and allows selecting multiple
+     * items from the dropdown list. The combo's text field will show all selected values using the template
+     * defined by {@link #labelTpl}.
+     *
+
+     */
+    multiSelect: true,
+
+    /**
+     * @cfg {String/Ext.XTemplate} labelTpl
+     * The [XTemplate](http://docs.sencha.com/ext-js/4-1/#!/api/Ext.XTemplate) to use for the inner
+     * markup of the labelled items. Defaults to the configured {@link #displayField}
+     */
+
+    /**
+	 * @cfg {Boolean}
+     * @inheritdoc
+     *
+     * When {@link #forceSelection} is `false`, new records can be created by the user as they
+     * are typed. These records are **not** added to the combo's store. This creation
+     * is triggered by typing the configured 'delimiter', and can be further configured using the
+     * {@link #createNewOnEnter} and {@link #createNewOnBlur} configuration options.
+     *
+     * This functionality is primarily useful with BoxSelect components for things
+     * such as an email address.
+     */
+    forceSelection: true,
+
+    /**
+	 * @cfg {Boolean}
+     * Has no effect if {@link #forceSelection} is `true`.
+     *
+	 * With {@link #createNewOnEnter} set to `true`, the creation described in
+     * {@link #forceSelection} will also be triggered by the 'enter' key.
+	 */
+    createNewOnEnter: false,
+
+    /**
+	 * @cfg {Boolean}
+     * Has no effect if {@link #forceSelection} is `true`.
+     *
+     * With {@link #createNewOnBlur} set to `true`, the creation described in
+     * {@link #forceSelection} will also be triggered when the field loses focus.
+     *
+     * Please note that this behavior is also affected by the configuration options
+     * {@link #autoSelect} and {@link #selectOnTab}. If those are true and an existing
+     * item would have been selected as a result, the partial text the user has entered will
+	 * be discarded and the existing item will be added to the selection.
+	 */
+    createNewOnBlur: false,
+
+    /**
+     * @cfg {Boolean}
+     * Has no effect if {@link #multiSelect} is `false`.
+     *
+     * Controls the formatting of the form submit value of the field as returned by {@link #getSubmitValue}
+     *
+     * - `true` for the field value to submit as a json encoded array in a single GET/POST variable
+     * - `false` for the field to submit as an array of GET/POST variables
+     */
+    encodeSubmitValue: false,
+
+    //
+    // End of configuration options related to selected values
+    //
+
+
+
+    //
+    // Configuration options related to pick list behavior
+    //
+
+    /**
+     * @cfg {Boolean}
+     * `true` to activate the trigger when clicking in empty space in the field. Note that the
+     * subsequent behavior of this is controlled by the field's {@link #triggerAction}.
+     * This behavior is similar to that of a basic ComboBox with {@link #editable} `false`.
+     */
+    triggerOnClick: true,
+
+    /**
+	 * @cfg {Boolean}
+     * - `true` to have each selected value fill to the width of the form field
+     * - `false to have each selected value size to its displayed contents
+	 */
+    stacked: false,
+
+    /**
+	 * @cfg {Boolean}
+     * Has no effect if {@link #multiSelect} is `false`
+     *
+     * `true` to keep the pick list expanded after each selection from the pick list
+     * `false` to automatically collapse the pick list after a selection is made
+	 */
+    pinList: true,
+
+    /**
+     * @cfg {Boolean}
+     * True to hide the currently selected values from the drop down list. These items are hidden via
+     * css to maintain simplicity in store and filter management.
+     *
+     * - `true` to hide currently selected values from the drop down pick list
+     * - `false` to keep the item in the pick list as a selected item
+     */
+    filterPickList: false,
+
+    //
+    // End of configuration options related to pick list behavior
+    //
+
+
+
+    //
+    // Configuration options related to text field behavior
+    //
+
+    /**
+     * @cfg {Boolean}
+     * @inheritdoc
+     */
+    selectOnFocus: true,
+
+    /**
+     * @cfg {Boolean}
+     *
+     * `true` if this field should automatically grow and shrink vertically to its content.
+     * Note that this overrides the natural trigger grow functionality, which is used to size
+     * the field horizontally.
+     */
+    grow: true,
+
+    /**
+     * @cfg {Number/Boolean}
+     * Has no effect if {@link #grow} is `false`
+     *
+     * The minimum height to allow when {@link #grow} is `true`, or `false` to allow for
+     * natural vertical growth based on the current selected values. See also {@link #growMax}.
+     */
+    growMin: false,
+
+    /**
+     * @cfg {Number/Boolean}
+     * Has no effect if {@link #grow} is `false`
+     *
+     * The maximum height to allow when {@link #grow} is `true`, or `false` to allow for
+     * natural vertical growth based on the current selected values. See also {@link #growMin}.
+     */
+    growMax: false,
+
+    /**
+     * @cfg growAppend
+     * @hide
+     * Currently unsupported by BoxSelect since this is used for horizontal growth and
+     * BoxSelect only supports vertical growth.
+     */
+    /**
+     * @cfg growToLongestValue
+     * @hide
+     * Currently unsupported by BoxSelect since this is used for horizontal growth and
+     * BoxSelect only supports vertical growth.
+     */
+
+    //
+    // End of configuration options related to text field behavior
+    //
+
+
+    //
+    // Event signatures
+    //
+
+    /**
+     * @event autosize
+     * Fires when the **{@link #autoSize}** function is triggered and the field is resized according to the
+     * {@link #grow}/{@link #growMin}/{@link #growMax} configs as a result. This event provides a hook for the
+     * developer to apply additional logic at runtime to resize the field if needed.
+     * @param {Ext.ux.form.field.BoxSelect} this This BoxSelect field
+     * @param {Number} height The new field height
+     */
+
+    //
+    // End of event signatures
+    //
+
+
+
+    //
+    // Configuration options that will break things if messed with
+    //
+
+    /**
+     * @private
+     */
+    fieldSubTpl: [
+        '<div id="{cmpId}-listWrapper" class="x-boxselect {fieldCls} {typeCls}">',
+        '<ul id="{cmpId}-itemList" class="x-boxselect-list x-tab-default">',
+        '<li id="{cmpId}-inputElCt" class="x-boxselect-input">',
+        '<div id="{cmpId}-emptyEl" class="{emptyCls}">{emptyText}</div>',
+        '<input id="{cmpId}-inputEl" type="{type}" ',
+        '<tpl if="name">name="{name}" </tpl>',
+        '<tpl if="value"> value="{[Ext.util.Format.htmlEncode(values.value)]}"</tpl>',
+        '<tpl if="size">size="{size}" </tpl>',
+        '<tpl if="tabIdx">tabIndex="{tabIdx}" </tpl>',
+        '<tpl if="disabled"> disabled="disabled"</tpl>',
+        'class="x-boxselect-input-field {inputElCls}" autocomplete="off">',
+        '</li>',
+        '</ul>',
+        '</div>',
+        {
+            compiled: true,
+            disableFormats: true
+        }
+    ],
+
+    /**
+     * @private
+     */
+    childEls: [ 'listWrapper', 'itemList', 'inputEl', 'inputElCt', 'emptyEl' ],
+
+    /**
+     * @private
+     */
+    componentLayout: 'boxselectfield',
+
+    /**
+     * @private
+     */
+    emptyInputCls: 'x-boxselect-emptyinput',
+
+    /**
+     * @inheritdoc
+     *
+     * Initialize additional settings and enable simultaneous typeAhead and multiSelect support
+     * @protected
+	 */
+    initComponent: function() {
+        var me = this,
+        typeAhead = me.typeAhead;
+
+        if (typeAhead && !me.editable) {
+            Ext.Error.raise('If typeAhead is enabled the combo must be editable: true -- please change one of those settings.');
+        }
+
+        Ext.apply(me, {
+            typeAhead: false
+        });
+
+        me.callParent();
+
+        me.typeAhead = typeAhead;
+
+        me.selectionModel = new Ext.selection.Model({
+            store: me.valueStore,
+            mode: 'MULTI',
+            lastFocused: null,
+            onSelectChange: function(record, isSelected, suppressEvent, commitFn) {
+                commitFn();
+            }
+        });
+
+        if (!Ext.isEmpty(me.delimiter) && me.multiSelect) {
+            me.delimiterRegexp = new RegExp(String(me.delimiter).replace(/[$%()*+.?\[\\\]{|}]/g, "\\$&"));
+        }
+    },
+
+    /**
+	 * Register events for management controls of labelled items
+     * @protected
+	 */
+    initEvents: function() {
+        var me = this;
+
+        me.callParent(arguments);
+
+        if (!me.enableKeyEvents) {
+            me.mon(me.inputEl, 'keydown', me.onKeyDown, me);
+        }
+        me.mon(me.inputEl, 'paste', me.onPaste, me);
+        me.mon(me.listWrapper, 'click', me.onItemListClick, me);
+
+        // I would prefer to use relayEvents here to forward these events on, but I want
+        // to pass the field instead of exposing the underlying selection model
+        me.mon(me.selectionModel, {
+            'selectionchange': function(selModel, selectedRecs) {
+                me.applyMultiselectItemMarkup();
+                me.fireEvent('valueselectionchange', me, selectedRecs);
+            },
+            'focuschange': function(selectionModel, oldFocused, newFocused) {
+                me.fireEvent('valuefocuschange', me, oldFocused, newFocused);
+            },
+            scope: me
+        });
+    },
+
+    /**
+     * @inheritdoc
+     *
+	 * Create a store for the records of our current value based on the main store's model
+     * @protected
+	 */
+    onBindStore: function(store, initial) {
+        var me = this;
+
+        if (store) {
+            me.valueStore = new Ext.data.Store({
+                model: store.model,
+                proxy: {
+                    type: 'memory'
+                }
+            });
+            me.mon(me.valueStore, 'datachanged', me.applyMultiselectItemMarkup, me);
+            if (me.selectionModel) {
+                me.selectionModel.bindStore(me.valueStore);
+            }
+        }
+    },
+
+    /**
+     * @inheritdoc
+     *
+     * Remove the selected value store and associated listeners
+     * @protected
+     */
+    onUnbindStore: function(store) {
+        var me = this,
+        valueStore = me.valueStore;
+
+        if (valueStore) {
+            if (me.selectionModel) {
+                me.selectionModel.setLastFocused(null);
+                me.selectionModel.deselectAll();
+                me.selectionModel.bindStore(null);
+            }
+            me.mun(valueStore, 'datachanged', me.applyMultiselectItemMarkup, me);
+            valueStore.destroy();
+            me.valueStore = null;
+        }
+
+        me.callParent(arguments);
+    },
+
+    /**
+     * @inheritdoc
+     *
+	 * Add refresh tracking to the picker for selection management
+     * @protected
+	 */
+    createPicker: function() {
+        var me = this,
+        picker = me.callParent(arguments);
+
+        me.mon(picker, {
+            'beforerefresh': me.onBeforeListRefresh,
+            scope: me
+        });
+
+        if (me.filterPickList) {
+            picker.addCls('x-boxselect-hideselections');
+        }
+
+        return picker;
+    },
+
+    /**
+     * @inheritdoc
+     *
+	 * Clean up selected values management controls
+     * @protected
+	 */
+    onDestroy: function() {
+        var me = this;
+
+        Ext.destroyMembers(me, 'valueStore', 'selectionModel');
+
+        me.callParent(arguments);
+    },
+
+    /**
+     * Add empty text support to initial render.
+     * @protected
+     */
+    getSubTplData: function() {
+        var me = this,
+            data = me.callParent(),
+            isEmpty = me.emptyText && data.value.length < 1;
+
+        data.value = '';
+        if (isEmpty) {
+            data.emptyText = me.emptyText;
+            data.emptyCls = me.emptyCls;
+            data.inputElCls = me.emptyInputCls;
+        } else {
+            data.emptyText = '';
+            data.emptyCls = me.emptyInputCls;
+            data.inputElCls = '';
+        }
+
+        return data;
+    },
+
+    /**
+     * @inheritdoc
+     *
+	 * Overridden to avoid use of placeholder, as our main input field is often empty
+     * @protected
+	 */
+    afterRender: function() {
+        var me = this;
+
+        if (Ext.supports.Placeholder && me.inputEl && me.emptyText) {
+            delete me.inputEl.dom.placeholder;
+        }
+
+        me.bodyEl.applyStyles('vertical-align:top');
+
+        if (me.grow) {
+            if (Ext.isNumber(me.growMin) && (me.growMin > 0)) {
+                me.listWrapper.applyStyles('min-height:'+me.growMin+'px');
+            }
+            if (Ext.isNumber(me.growMax) && (me.growMax > 0)) {
+                me.listWrapper.applyStyles('max-height:'+me.growMax+'px');
+            }
+        }
+
+        if (me.stacked === true) {
+            me.itemList.addCls('x-boxselect-stacked');
+        }
+
+        if (!me.multiSelect) {
+            me.itemList.addCls('x-boxselect-singleselect');
+        }
+
+        me.applyMultiselectItemMarkup();
+
+        me.callParent(arguments);
+    },
+
+    /**
+	 * Overridden to search entire unfiltered store since already selected values
+     * can span across multiple store page loads and other filtering. Overlaps
+     * some with {@link #isFilteredRecord}, but findRecord is used by the base component
+     * for various logic so this logic is applied here as well.
+     * @protected
+	 */
+    findRecord: function(field, value) {
+        var ds = this.store,
+        matches;
+
+        if (!ds) {
+            return false;
+        }
+
+        matches = ds.queryBy(function(rec, id) {
+            return rec.isEqual(rec.get(field), value);
+        });
+
+        return (matches.getCount() > 0) ? matches.first() : false;
+    },
+
+    /**
+	 * Overridden to map previously selected records to the "new" versions of the records
+	 * based on value field, if they are part of the new store load
+     * @protected
+	 */
+    onLoad: function() {
+        var me = this,
+        valueField = me.valueField,
+        valueStore = me.valueStore,
+        changed = false;
+
+        if (valueStore) {
+            if (!Ext.isEmpty(me.value) && (valueStore.getCount() == 0)) {
+                me.setValue(me.value, false, true);
+            }
+
+            valueStore.suspendEvents();
+            valueStore.each(function(rec) {
+                var r = me.findRecord(valueField, rec.get(valueField)),
+                i = r ? valueStore.indexOf(rec) : -1;
+                if (i >= 0) {
+                    valueStore.removeAt(i);
+                    valueStore.insert(i, r);
+                    changed = true;
+                }
+            });
+            valueStore.resumeEvents();
+            if (changed) {
+                valueStore.fireEvent('datachanged', valueStore);
+            }
+        }
+
+        me.callParent(arguments);
+    },
+
+    /**
+	 * Used to determine if a record is filtered out of the current store's data set,
+     * for determining if a currently selected value should be retained.
+     *
+     * Slightly complicated logic. A record is considered filtered and should be retained if:
+     *
+     * - It is not in the combo store and the store has no filter or it is in the filtered data set
+     *   (Happens when our selected value is just part of a different load, page or query)
+     * - It is not in the combo store and forceSelection is false and it is in the value store
+     *   (Happens when our selected value was created manually)
+     *
+	 * @private
+	 */
+    isFilteredRecord: function(record) {
+        var me = this,
+        store = me.store,
+        valueField = me.valueField,
+        storeRecord,
+        filtered = false;
+
+        storeRecord = store.findExact(valueField, record.get(valueField));
+
+        filtered = ((storeRecord === -1) && (!store.snapshot || (me.findRecord(valueField, record.get(valueField)) !== false)));
+
+        filtered = filtered || (!filtered && (storeRecord === -1) && (me.forceSelection !== true) &&
+            (me.valueStore.findExact(valueField, record.get(valueField)) >= 0));
+
+        return filtered;
+    },
+
+    /**
+     * @inheritdoc
+     *
+	 * Overridden to allow for continued querying with multiSelect selections already made
+     * @protected
+	 */
+    doRawQuery: function() {
+        var me = this,
+        rawValue = me.inputEl.dom.value;
+
+        if (me.multiSelect) {
+            rawValue = rawValue.split(me.delimiter).pop();
+        }
+
+        this.doQuery(rawValue, false, true);
+    },
+
+    /**
+	 * When the picker is refreshing, we should ignore selection changes. Otherwise
+	 * the value of our field will be changing just because our view of the choices is.
+     * @protected
+	 */
+    onBeforeListRefresh: function() {
+        this.ignoreSelection++;
+    },
+
+    /**
+	 * When the picker is refreshing, we should ignore selection changes. Otherwise
+	 * the value of our field will be changing just because our view of the choices is.
+     * @protected
+	 */
+    onListRefresh: function() {
+        this.callParent(arguments);
+        if (this.ignoreSelection > 0) {
+            --this.ignoreSelection;
+        }
+    },
+
+    /**
+	 * Overridden to preserve current labelled items when list is filtered/paged/loaded
+	 * and does not include our current value. See {@link #isFilteredRecord}
+     * @private
+	 */
+    onListSelectionChange: function(list, selectedRecords) {
+        var me = this,
+        valueStore = me.valueStore,
+        mergedRecords = [],
+        i;
+
+        // Only react to selection if it is not called from setValue, and if our list is
+        // expanded (ignores changes to the selection model triggered elsewhere)
+        if ((me.ignoreSelection <= 0) && me.isExpanded) {
+            // Pull forward records that were already selected or are now filtered out of the store
+            valueStore.each(function(rec) {
+                if (Ext.Array.contains(selectedRecords, rec) || me.isFilteredRecord(rec)) {
+                    mergedRecords.push(rec);
+                }
+            });
+            mergedRecords = Ext.Array.merge(mergedRecords, selectedRecords);
+
+            i = Ext.Array.intersect(mergedRecords, valueStore.getRange()).length;
+            if ((i != mergedRecords.length) || (i != me.valueStore.getCount())) {
+                me.setValue(mergedRecords, false);
+                if (!me.multiSelect || !me.pinList) {
+                    Ext.defer(me.collapse, 1, me);
+                }
+                if (valueStore.getCount() > 0) {
+                    me.fireEvent('select', me, valueStore.getRange());
+                }
+            }
+            me.inputEl.focus();
+            if (!me.pinList) {
+                me.inputEl.dom.value = '';
+            }
+            if (me.selectOnFocus) {
+                me.inputEl.dom.select();
+            }
+        }
+    },
+
+    /**
+     * Overridden to use valueStore instead of valueModels, for inclusion of
+     * filtered records. See {@link #isFilteredRecord}
+     * @private
+     */
+    syncSelection: function() {
+        var me = this,
+        picker = me.picker,
+        valueField = me.valueField,
+        pickStore, selection, selModel;
+
+        if (picker) {
+            pickStore = picker.store;
+
+            // From the value, find the Models that are in the store's current data
+            selection = [];
+            if (me.valueStore) {
+                me.valueStore.each(function(rec) {
+                    var i = pickStore.findExact(valueField, rec.get(valueField));
+                    if (i >= 0) {
+                        selection.push(pickStore.getAt(i));
+                    }
+                });
+            }
+
+            // Update the selection to match
+            me.ignoreSelection++;
+            selModel = picker.getSelectionModel();
+            selModel.deselectAll();
+            if (selection.length > 0) {
+                selModel.select(selection);
+            }
+            if (me.ignoreSelection > 0) {
+                --me.ignoreSelection;
+            }
+        }
+    },
+
+    /**
+	 * Overridden to align to itemList size instead of inputEl
+     */
+    doAlign: function(){
+        var me = this,
+            picker = me.picker,
+            aboveSfx = '-above',
+            isAbove;
+
+        me.picker.alignTo(me.listWrapper, me.pickerAlign, me.pickerOffset);
+        // add the {openCls}-above class if the picker was aligned above
+        // the field due to hitting the bottom of the viewport
+        isAbove = picker.el.getY() < me.inputEl.getY();
+        me.bodyEl[isAbove ? 'addCls' : 'removeCls'](me.openCls + aboveSfx);
+        picker[isAbove ? 'addCls' : 'removeCls'](picker.baseCls + aboveSfx);
+    },
+
+    /**
+     * Overridden to preserve scroll position of pick list when list is realigned
+     */
+    alignPicker: function() {
+        var me = this,
+            picker = me.picker,
+            pickerScrollPos = picker.getTargetEl().dom.scrollTop;
+
+        me.callParent(arguments);
+
+        if (me.isExpanded) {
+            if (me.matchFieldWidth) {
+                // Auto the height (it will be constrained by min and max width) unless there are no records to display.
+                picker.setWidth(me.listWrapper.getWidth());
+            }
+
+            picker.getTargetEl().dom.scrollTop = pickerScrollPos;
+        }
+    },
+
+    /**
+	 * Get the current cursor position in the input field, for key-based navigation
+	 * @private
+	 */
+    getCursorPosition: function() {
+        var cursorPos;
+        if (Ext.isIE) {
+            cursorPos = document.selection.createRange();
+            cursorPos.collapse(true);
+            cursorPos.moveStart("character", -this.inputEl.dom.value.length);
+            cursorPos = cursorPos.text.length;
+        } else {
+            cursorPos = this.inputEl.dom.selectionStart;
+        }
+        return cursorPos;
+    },
+
+    /**
+	 * Check to see if the input field has selected text, for key-based navigation
+	 * @private
+	 */
+    hasSelectedText: function() {
+        var sel, range;
+        if (Ext.isIE) {
+            sel = document.selection;
+            range = sel.createRange();
+            return (range.parentElement() == this.inputEl.dom);
+        } else {
+            return this.inputEl.dom.selectionStart != this.inputEl.dom.selectionEnd;
+        }
+    },
+
+    /**
+	 * Handles keyDown processing of key-based selection of labelled items.
+     * Supported keyboard controls:
+     *
+     * - If pick list is expanded
+     *
+     *     - `CTRL-A` will select all the items in the pick list
+     *
+     * - If the cursor is at the beginning of the input field and there are values present
+     *
+     *     - `CTRL-A` will highlight all the currently selected values
+     *     - `BACKSPACE` and `DELETE` will remove any currently highlighted selected values
+     *     - `RIGHT` and `LEFT` will move the current highlight in the appropriate direction
+     *     - `SHIFT-RIGHT` and `SHIFT-LEFT` will add to the current highlight in the appropriate direction
+     *
+     * @protected
+	 */
+    onKeyDown: function(e, t) {
+        var me = this,
+        key = e.getKey(),
+        rawValue = me.inputEl.dom.value,
+        valueStore = me.valueStore,
+        selModel = me.selectionModel,
+        stopEvent = false;
+
+        if (me.readOnly || me.disabled || !me.editable) {
+            return;
+        }
+
+        if (me.isExpanded && (key == e.A && e.ctrlKey)) {
+            // CTRL-A when picker is expanded - add all items in current picker store page to current value
+            me.select(me.getStore().getRange());
+            selModel.setLastFocused(null);
+            selModel.deselectAll();
+            me.collapse();
+            me.inputEl.focus();
+            stopEvent = true;
+        } else if ((valueStore.getCount() > 0) &&
+                ((rawValue == '') || ((me.getCursorPosition() === 0) && !me.hasSelectedText()))) {
+            // Keyboard navigation of current values
+            var lastSelectionIndex = (selModel.getCount() > 0) ? valueStore.indexOf(selModel.getLastSelected() || selModel.getLastFocused()) : -1;
+
+            if ((key == e.BACKSPACE) || (key == e.DELETE)) {
+                if (lastSelectionIndex > -1) {
+                    if (selModel.getCount() > 1) {
+                        lastSelectionIndex = -1;
+                    }
+                    me.valueStore.remove(selModel.getSelection());
+                } else {
+                    me.valueStore.remove(me.valueStore.last());
+                }
+                selModel.clearSelections();
+                me.setValue(me.valueStore.getRange());
+                if (lastSelectionIndex > 0) {
+                    selModel.select(lastSelectionIndex - 1);
+                }
+                stopEvent = true;
+            } else if ((key == e.RIGHT) || (key == e.LEFT)) {
+                if ((lastSelectionIndex == -1) && (key == e.LEFT)) {
+                    selModel.select(valueStore.last());
+                    stopEvent = true;
+                } else if (lastSelectionIndex > -1) {
+                    if (key == e.RIGHT) {
+                        if (lastSelectionIndex < (valueStore.getCount() - 1)) {
+                            selModel.select(lastSelectionIndex + 1, e.shiftKey);
+                            stopEvent = true;
+                        } else if (!e.shiftKey) {
+                            selModel.setLastFocused(null);
+                            selModel.deselectAll();
+                            stopEvent = true;
+                        }
+                    } else if ((key == e.LEFT) && (lastSelectionIndex > 0)) {
+                        selModel.select(lastSelectionIndex - 1, e.shiftKey);
+                        stopEvent = true;
+                    }
+                }
+            } else if (key == e.A && e.ctrlKey) {
+                selModel.selectAll();
+                stopEvent = e.A;
+            }
+            me.inputEl.focus();
+        }
+
+        if (stopEvent) {
+            me.preventKeyUpEvent = stopEvent;
+            e.stopEvent();
+            return;
+        }
+
+        // Prevent key up processing for enter if it is being handled by the picker
+        if (me.isExpanded && (key == e.ENTER) && me.picker.highlightedItem) {
+            me.preventKeyUpEvent = true;
+        }
+
+        if (me.enableKeyEvents) {
+            me.callParent(arguments);
+        }
+
+        if (!e.isSpecialKey() && !e.hasModifier()) {
+            me.selectionModel.setLastFocused(null);
+            me.selectionModel.deselectAll();
+            me.inputEl.focus();
+        }
+    },
+
+    /**
+	 * Handles auto-selection and creation of labelled items based on this field's
+     * delimiter, as well as the keyUp processing of key-based selection of labelled items.
+     * @protected
+	 */
+    onKeyUp: function(e, t) {
+        var me = this,
+        rawValue = me.inputEl.dom.value;
+
+        if (me.preventKeyUpEvent) {
+            e.stopEvent();
+            if ((me.preventKeyUpEvent === true) || (e.getKey() === me.preventKeyUpEvent)) {
+                delete me.preventKeyUpEvent;
+            }
+            return;
+        }
+
+        if (me.multiSelect && (me.delimiterRegexp && me.delimiterRegexp.test(rawValue)) ||
+                ((me.createNewOnEnter === true) && e.getKey() == e.ENTER)) {
+            rawValue = Ext.Array.clean(rawValue.split(me.delimiterRegexp));
+            me.inputEl.dom.value = '';
+            me.setValue(me.valueStore.getRange().concat(rawValue));
+            me.inputEl.focus();
+        }
+
+        me.callParent([e,t]);
+    },
+
+    /**
+     * Handles auto-selection of labelled items based on this field's delimiter when pasting
+     * a list of values in to the field (e.g., for email addresses)
+     * @protected
+     */
+    onPaste: function(e, t) {
+        var me = this,
+            rawValue = me.inputEl.dom.value,
+            clipboard = (e && e.browserEvent && e.browserEvent.clipboardData) ? e.browserEvent.clipboardData : false;
+
+        if (me.multiSelect && (me.delimiterRegexp && me.delimiterRegexp.test(rawValue))) {
+            if (clipboard && clipboard.getData) {
+                if (/text\/plain/.test(clipboard.types)) {
+                    rawValue = clipboard.getData('text/plain');
+                } else if (/text\/html/.test(clipboard.types)) {
+                    rawValue = clipboard.getData('text/html');
+                }
+            }
+
+            rawValue = Ext.Array.clean(rawValue.split(me.delimiterRegexp));
+            me.inputEl.dom.value = '';
+            me.setValue(me.valueStore.getRange().concat(rawValue));
+            me.inputEl.focus();
+        }
+    },
+
+    /**
+     * Overridden to handle key navigation of pick list when list is filtered. Because we
+     * want to avoid complexity that could be introduced by modifying the store's contents,
+     * (e.g., always having to search back through and remove values when they might
+     * be re-sent by the server, adding the values back in their previous position when
+     * they are removed from the current selection, etc.), we handle this filtering
+     * via a simple css rule. However, for the moment since those DOM nodes still exist
+     * in the list we have to hijack the highlighting methods for the picker's BoundListKeyNav
+     * to appropriately skip over these hidden nodes. This is a less than ideal solution,
+     * but it centralizes all of the complexity of this problem in to this one method.
+     * @protected
+     */
+    onExpand: function() {
+        var me = this,
+            keyNav = me.listKeyNav;
+
+        me.callParent(arguments);
+
+        if (keyNav || !me.filterPickList) {
+            return;
+        }
+        keyNav = me.listKeyNav;
+        keyNav.highlightAt = function(index) {
+            var boundList = this.boundList,
+                item = boundList.all.item(index),
+                len = boundList.all.getCount(),
+                direction;
+
+            if (item && item.hasCls('x-boundlist-selected')) {
+                if ((index == 0) || !boundList.highlightedItem || (boundList.indexOf(boundList.highlightedItem) < index)) {
+                    direction = 1;
+                } else {
+                    direction = -1;
+                }
+                do {
+                    index = index + direction;
+                    item = boundList.all.item(index);
+                } while ((index > 0) && (index < len) && item.hasCls('x-boundlist-selected'));
+
+                if (item.hasCls('x-boundlist-selected')) {
+                    return;
+                }
+            }
+
+            if (item) {
+                item = item.dom;
+                boundList.highlightItem(item);
+                boundList.getTargetEl().scrollChildIntoView(item, false);
+            }
+        };
+    },
+
+    /**
+	 * Overridden to get and set the DOM value directly for type-ahead suggestion (bypassing get/setRawValue)
+     * @protected
+	 */
+    onTypeAhead: function() {
+        var me = this,
+        displayField = me.displayField,
+        inputElDom = me.inputEl.dom,
+        valueStore = me.valueStore,
+        boundList = me.getPicker(),
+        record, newValue, len, selStart;
+
+        if (me.filterPickList) {
+            var fn = this.createFilterFn(displayField, inputElDom.value);
+            record = me.store.findBy(function(rec) {
+                return ((valueStore.indexOfId(rec.getId()) === -1) && fn(rec));
+            });
+            record = (record === -1) ? false : me.store.getAt(record);
+        } else {
+            record = me.store.findRecord(displayField, inputElDom.value);
+        }
+
+        if (record) {
+            newValue = record.get(displayField);
+            len = newValue.length;
+            selStart = inputElDom.value.length;
+            boundList.highlightItem(boundList.getNode(record));
+            if (selStart !== 0 && selStart !== len) {
+                inputElDom.value = newValue;
+                me.selectText(selStart, newValue.length);
+            }
+        }
+    },
+
+    /**
+	 * Delegation control for selecting and removing labelled items or triggering list collapse/expansion
+     * @protected
+	 */
+    onItemListClick: function(evt, el, o) {
+        var me = this,
+        itemEl = evt.getTarget('.x-boxselect-item'),
+        closeEl = itemEl ? evt.getTarget('.x-boxselect-item-close') : false;
+
+        if (me.readOnly || me.disabled) {
+            return;
+        }
+
+        evt.stopPropagation();
+
+        if (itemEl) {
+            if (closeEl) {
+                me.removeByListItemNode(itemEl);
+                if (me.valueStore.getCount() > 0) {
+                    me.fireEvent('select', me, me.valueStore.getRange());
+                }
+            } else {
+                me.toggleSelectionByListItemNode(itemEl, evt.shiftKey);
+            }
+            me.inputEl.focus();
+        } else {
+            if (me.selectionModel.getCount() > 0) {
+                me.selectionModel.setLastFocused(null);
+                me.selectionModel.deselectAll();
+            }
+            if (me.triggerOnClick) {
+                me.onTriggerClick();
+            }
+        }
+    },
+
+    /**
+	 * Build the markup for the labelled items. Template must be built on demand due to ComboBox initComponent
+	 * lifecycle for the creation of on-demand stores (to account for automatic valueField/displayField setting)
+     * @private
+	 */
+    getMultiSelectItemMarkup: function() {
+        var me = this;
+
+        if (!me.multiSelectItemTpl) {
+            if (!me.labelTpl) {
+                me.labelTpl = Ext.create('Ext.XTemplate',
+                    '{[values.' + me.displayField + ']}'
+                );
+            } else if (Ext.isString(me.labelTpl) || Ext.isArray(me.labelTpl)) {
+                me.labelTpl = Ext.create('Ext.XTemplate', me.labelTpl);
+            }
+
+            me.multiSelectItemTpl = [
+            '<tpl for=".">',
+            '<li class="x-boxselect-item ',
+            '<tpl if="this.isSelected(values.'+ me.valueField + ')">',
+            ' selected',
+            '</tpl>',
+            '" qtip="{[typeof values === "string" ? values : values.' + me.displayField + ']}">' ,
+            '<div class="x-boxselect-item-text">{[typeof values === "string" ? values : this.getItemLabel(values)]}</div>',
+            '<div class="x-tab-close-btn x-boxselect-item-close"></div>' ,
+            '</li>' ,
+            '</tpl>',
+            {
+                compile: true,
+                disableFormats: true,
+                isSelected: function(value) {
+                    var i = me.valueStore.findExact(me.valueField, value);
+                    if (i >= 0) {
+                        return me.selectionModel.isSelected(me.valueStore.getAt(i));
+                    }
+                    return false;
+                },
+                getItemLabel: function(values) {
+                    return me.getTpl('labelTpl').apply(values);
+                }
+            }
+            ];
+        }
+
+        return this.getTpl('multiSelectItemTpl').apply(Ext.Array.pluck(this.valueStore.getRange(), 'data'));
+    },
+
+    /**
+	 * Update the labelled items rendering
+     * @private
+	 */
+    applyMultiselectItemMarkup: function() {
+        var me = this,
+        itemList = me.itemList,
+        item;
+
+        if (itemList) {
+            while ((item = me.inputElCt.prev()) != null) {
+                item.remove();
+            }
+            me.inputElCt.insertHtml('beforeBegin', me.getMultiSelectItemMarkup());
+        }
+
+        Ext.Function.defer(function() {
+            if (me.picker && me.isExpanded) {
+                me.alignPicker();
+            }
+            if (me.hasFocus && me.inputElCt && me.listWrapper) {
+                me.inputElCt.scrollIntoView(me.listWrapper);
+            }
+        }, 15);
+    },
+
+    /**
+	 * Returns the record from valueStore for the labelled item node
+	 */
+    getRecordByListItemNode: function(itemEl) {
+        var me = this,
+        itemIdx = 0,
+        searchEl = me.itemList.dom.firstChild;
+
+        while (searchEl && searchEl.nextSibling) {
+            if (searchEl == itemEl) {
+                break;
+            }
+            itemIdx++;
+            searchEl = searchEl.nextSibling;
+        }
+        itemIdx = (searchEl == itemEl) ? itemIdx : false;
+
+        if (itemIdx === false) {
+            return false;
+        }
+
+        return me.valueStore.getAt(itemIdx);
+    },
+
+    /**
+	 * Toggle of labelled item selection by node reference
+	 */
+    toggleSelectionByListItemNode: function(itemEl, keepExisting) {
+        var me = this,
+        rec = me.getRecordByListItemNode(itemEl),
+        selModel = me.selectionModel;
+
+        if (rec) {
+            if (selModel.isSelected(rec)) {
+                if (selModel.isFocused(rec)) {
+                    selModel.setLastFocused(null);
+                }
+                selModel.deselect(rec);
+            } else {
+                selModel.select(rec, keepExisting);
+            }
+        }
+    },
+
+    /**
+	 * Removal of labelled item by node reference
+	 */
+    removeByListItemNode: function(itemEl) {
+        var me = this,
+        rec = me.getRecordByListItemNode(itemEl);
+
+        if (rec) {
+            me.valueStore.remove(rec);
+            me.setValue(me.valueStore.getRange());
+        }
+    },
+
+    /**
+     * @inheritdoc
+	 * Intercept calls to getRawValue to pretend there is no inputEl for rawValue handling,
+	 * so that we can use inputEl for user input of just the current value.
+	 */
+    getRawValue: function() {
+        var me = this,
+        inputEl = me.inputEl,
+        result;
+
+        me.inputEl = false;
+        result = me.callParent(arguments);
+        me.inputEl = inputEl;
+
+        return result;
+    },
+
+    /**
+     * @inheritdoc
+	 * Intercept calls to setRawValue to pretend there is no inputEl for rawValue handling,
+	 * so that we can use inputEl for user input of just the current value.
+	 */
+    setRawValue: function(value) {
+        var me = this,
+        inputEl = me.inputEl,
+        result;
+
+        me.inputEl = false;
+        result = me.callParent([value]);
+        me.inputEl = inputEl;
+
+        return result;
+    },
+
+    /**
+	 * Adds a value or values to the current value of the field
+	 * @param {Mixed} value The value or values to add to the current value, see {@link #setValue}
+	 */
+    addValue: function(value) {
+        var me = this;
+        if (value) {
+            me.setValue(Ext.Array.merge(me.value, Ext.Array.from(value)));
+        }
+    },
+
+    /**
+	 * Removes a value or values from the current value of the field
+	 * @param {Mixed} value The value or values to remove from the current value, see {@link #setValue}
+	 */
+    removeValue: function(value) {
+        var me = this;
+
+        if (value) {
+            me.setValue(Ext.Array.difference(me.value, Ext.Array.from(value)));
+        }
+    },
+
+    /**
+     * Sets the specified value(s) into the field. The following value formats are recognised:
+     *
+     * - Single Values
+     *
+     *     - A string associated to this field's configured {@link #valueField}
+     *     - A record containing at least this field's configured {@link #valueField} and {@link #displayField}
+     *
+     * - Multiple Values
+     *
+     *     - If {@link #multiSelect} is `true`, a string containing multiple strings as
+     *       specified in the Single Values section above, concatenated in to one string
+     *       with each entry separated by this field's configured {@link #delimiter}
+     *     - An array of strings as specified in the Single Values section above
+     *     - An array of records as specified in the Single Values section above
+     *
+     * In any of the string formats above, the following occurs if an associated record cannot be found:
+     *
+     * 1. If {@link #forceSelection} is `false`, a new record of the {@link #store}'s configured model type
+     *    will be created using the given value as the {@link #displayField} and {@link #valueField}.
+     *    This record will be added to the current value, but it will **not** be added to the store.
+     * 2. If {@link #forceSelection} is `true` and {@link #queryMode} is `remote`, the list of unknown
+     *    values will be submitted as a call to the {@link #store}'s load as a parameter named by
+     *    the {@link #valueParam} with values separated by the configured {@link #delimiter}.
+     *    ** This process will cause setValue to asynchronously process. ** This will only be attempted
+     *    once. Any unknown values that the server does not return records for will be removed.
+     * 3. Otherwise, unknown values will be removed.
+     *
+     * @param {Mixed} value The value(s) to be set, see method documentation for details
+     * @return {Ext.form.field.Field/Boolean} this, or `false` if asynchronously querying for unknown values
+	 */
+    setValue: function(value, doSelect, skipLoad) {
+        var me = this,
+        valueStore = me.valueStore,
+        valueField = me.valueField,
+        record, len, i, valueRecord, h,
+        unknownValues = [];
+
+        if (Ext.isEmpty(value)) {
+            value = null;
+        }
+        if (Ext.isString(value) && me.multiSelect) {
+            value = value.split(me.delimiter);
+        }
+        value = Ext.Array.from(value, true);
+
+        for (i = 0, len = value.length; i < len; i++) {
+            record = value[i];
+            if (!record || !record.isModel) {
+                valueRecord = valueStore.findExact(valueField, record);
+                if (valueRecord >= 0) {
+                    value[i] = valueStore.getAt(valueRecord);
+                } else {
+                    valueRecord = me.findRecord(valueField, record);
+                    if (!valueRecord) {
+                        if (me.forceSelection) {
+                            unknownValues.push(record);
+                        } else {
+                            valueRecord = {};
+                            valueRecord[me.valueField] = record;
+                            valueRecord[me.displayField] = record;
+                            valueRecord = new me.valueStore.model(valueRecord);
+                        }
+                    }
+                    if (valueRecord) {
+                        value[i] = valueRecord;
+                    }
+                }
+            }
+        }
+
+        if ((skipLoad !== true) && (unknownValues.length > 0) && (me.queryMode === 'remote')) {
+            var params = {};
+            params[me.valueParam || me.valueField] = unknownValues.join(me.delimiter);
+            me.store.load({
+                params: params,
+                callback: function() {
+                    if (me.itemList) {
+                        me.itemList.unmask();
+                    }
+                    me.setValue(value, doSelect, true);
+                    me.autoSize();
+                    me.lastQuery = false;
+                }
+            });
+            return false;
+        }
+
+        // For single-select boxes, use the last good (formal record) value if possible
+        if (!me.multiSelect && (value.length > 0)) {
+            for (i = value.length - 1; i >= 0; i--) {
+                if (value[i].isModel) {
+                    value = value[i];
+                    break;
+                }
+            }
+            if (Ext.isArray(value)) {
+                value = value[value.length - 1];
+            }
+        }
+
+        return me.callParent([value, doSelect]);
+    },
+
+    /**
+     * Returns the records for the field's current value
+     * @return {Array} The records for the field's current value
+     */
+    getValueRecords: function() {
+        return this.valueStore.getRange();
+    },
+
+    /**
+     * @inheritdoc
+     * Overridden to optionally allow for submitting the field as a json encoded array.
+     */
+    getSubmitData: function() {
+        var me = this,
+        val = me.callParent(arguments);
+
+        if (me.multiSelect && me.encodeSubmitValue && val && val[me.name]) {
+            val[me.name] = Ext.encode(val[me.name]);
+        }
+
+        return val;
+    },
+
+    /**
+	 * Overridden to clear the input field if we are auto-setting a value as we blur.
+     * @protected
+	 */
+    mimicBlur: function() {
+        var me = this;
+
+        if (me.selectOnTab && me.picker && me.picker.highlightedItem) {
+            me.inputEl.dom.value = '';
+        }
+
+        me.callParent(arguments);
+    },
+
+    /**
+	 * Overridden to handle partial-input selections more directly
+	 */
+    assertValue: function() {
+        var me = this,
+        rawValue = me.inputEl.dom.value,
+        rec = !Ext.isEmpty(rawValue) ? me.findRecordByDisplay(rawValue) : false,
+        value = false;
+
+        if (!rec && !me.forceSelection && me.createNewOnBlur && !Ext.isEmpty(rawValue)) {
+            value = rawValue;
+        } else if (rec) {
+            value = rec;
+        }
+
+        if (value) {
+            me.addValue(value);
+        }
+
+        me.inputEl.dom.value = '';
+
+        me.collapse();
+    },
+
+    /**
+	 * Expand record values for evaluating change and fire change events for UI to respond to
+	 */
+    checkChange: function() {
+        if (!this.suspendCheckChange && !this.isDestroyed) {
+            var me = this,
+            valueStore = me.valueStore,
+            lastValue = me.lastValue || '',
+            valueField = me.valueField,
+            newValue = Ext.Array.map(Ext.Array.from(me.value), function(val) {
+                if (val.isModel) {
+                    return val.get(valueField);
+                }
+                return val;
+            }, this).join(this.delimiter),
+            isEqual = me.isEqual(newValue, lastValue);
+
+            if (!isEqual || ((newValue.length > 0 && valueStore.getCount() < newValue.length))) {
+                valueStore.suspendEvents();
+                valueStore.removeAll();
+                if (Ext.isArray(me.valueModels)) {
+                    valueStore.add(me.valueModels);
+                }
+                valueStore.resumeEvents();
+                valueStore.fireEvent('datachanged', valueStore);
+
+                if (!isEqual) {
+                    me.lastValue = newValue;
+                    me.fireEvent('change', me, newValue, lastValue);
+                    me.onChange(newValue, lastValue);
+                }
+            }
+        }
+    },
+
+    /**
+     * Overridden to be more accepting of varied value types
+     */
+    isEqual: function(v1, v2) {
+        var fromArray = Ext.Array.from,
+            valueField = this.valueField,
+            i, len, t1, t2;
+
+        v1 = fromArray(v1);
+        v2 = fromArray(v2);
+        len = v1.length;
+
+        if (len !== v2.length) {
+            return false;
+        }
+
+        for(i = 0; i < len; i++) {
+            t1 = v1[i].isModel ? v1[i].get(valueField) : v1[i];
+            t2 = v2[i].isModel ? v2[i].get(valueField) : v2[i];
+            if (t1 !== t2) {
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    /**
+	 * Overridden to use value (selection) instead of raw value and to avoid the use of placeholder
+	 */
+    applyEmptyText : function() {
+        var me = this,
+        emptyText = me.emptyText,
+        inputEl, isEmpty;
+
+        if (me.rendered && emptyText) {
+            isEmpty = Ext.isEmpty(me.value) && !me.hasFocus;
+            inputEl = me.inputEl;
+            if (isEmpty) {
+                inputEl.dom.value = '';
+                me.emptyEl.update(emptyText);
+                me.emptyEl.addCls(me.emptyCls);
+                me.emptyEl.removeCls(me.emptyInputCls);
+                me.listWrapper.addCls(me.emptyCls);
+                me.inputEl.addCls(me.emptyInputCls);
+            } else {
+                me.emptyEl.addCls(me.emptyInputCls);
+                me.emptyEl.removeCls(me.emptyCls);
+                me.listWrapper.removeCls(me.emptyCls);
+                me.inputEl.removeCls(me.emptyInputCls);
+            }
+            me.autoSize();
+        }
+    },
+
+    /**
+	 * Overridden to use inputEl instead of raw value and to avoid the use of placeholder
+	 */
+    preFocus : function(){
+        var me = this,
+        inputEl = me.inputEl,
+        emptyText = me.emptyText,
+        isEmpty = (inputEl.dom.value == '');
+
+        me.emptyEl.addCls(me.emptyInputCls);
+        me.emptyEl.removeCls(me.emptyCls);
+        me.listWrapper.removeCls(me.emptyCls);
+        me.inputEl.removeCls(me.emptyInputCls);
+
+        if (me.selectOnFocus || isEmpty) {
+            inputEl.dom.select();
+        }
+    },
+
+    /**
+	 * Intercept calls to onFocus to add focusCls, because the base field
+     * classes assume this should be applied to inputEl
+	 */
+    onFocus: function() {
+        var me = this,
+        focusCls = me.focusCls,
+        itemList = me.itemList;
+
+        if (focusCls && itemList) {
+            itemList.addCls(focusCls);
+        }
+
+        me.callParent(arguments);
+    },
+
+    /**
+	 * Intercept calls to onBlur to remove focusCls, because the base field
+     * classes assume this should be applied to inputEl
+	 */
+    onBlur: function() {
+        var me = this,
+        focusCls = me.focusCls,
+        itemList = me.itemList;
+
+        if (focusCls && itemList) {
+            itemList.removeCls(focusCls);
+        }
+
+        me.callParent(arguments);
+    },
+
+    /**
+	 * Intercept calls to renderActiveError to add invalidCls, because the base
+     * field classes assume this should be applied to inputEl
+	 */
+    renderActiveError: function() {
+        var me = this,
+        invalidCls = me.invalidCls,
+        itemList = me.itemList,
+        hasError = me.hasActiveError();
+
+        if (invalidCls && itemList) {
+            itemList[hasError ? 'addCls' : 'removeCls'](me.invalidCls + '-field');
+        }
+
+        me.callParent(arguments);
+    },
+
+    /**
+     * Initiate auto-sizing for height based on {@link #grow}, if applicable.
+     */
+    autoSize: function() {
+        var me = this,
+        height;
+
+        if (me.grow && me.rendered) {
+            me.autoSizing = true;
+            me.updateLayout();
+        }
+
+        return me;
+    },
+
+    /**
+     * Track height change to fire {@link #event-autosize} event, when applicable.
+     */
+    afterComponentLayout: function() {
+        var me = this,
+            width;
+
+        if (me.autoSizing) {
+            height = me.getHeight();
+            if (height !== me.lastInputHeight) {
+                if (me.isExpanded) {
+                    me.alignPicker();
+                }
+                me.fireEvent('autosize', me, height);
+                me.lastInputHeight = height;
+                delete me.autoSizing;
+            }
+        }
+    }
+});
+
+/**
+ * Ensures the input element takes up the maximum amount of remaining list width,
+ * or the entirety of the list width if too little space remains. In this case,
+ * the list height will be automatically increased to accomodate the new line. This
+ * growth will not occur if {@link Ext.ux.form.field.BoxSelect#multiSelect} or
+ * {@link Ext.ux.form.field.BoxSelect#grow} is false.
+ */
+Ext.define('Ext.ux.layout.component.field.BoxSelectField', {
+    /* Begin Definitions */
+    alias: ['layout.boxselectfield'],
+    extend: 'Ext.layout.component.field.Trigger',
+
+    /* End Definitions */
+
+    type: 'boxselectfield',
+
+    /*For proper calculations we need our field to be sized.*/
+    waitForOuterWidthInDom:true,
+
+    beginLayout: function(ownerContext) {
+        var me = this,
+            owner = me.owner;
+
+        me.callParent(arguments);
+
+        ownerContext.inputElCtContext = ownerContext.getEl('inputElCt');
+        owner.inputElCt.setStyle('width','');
+
+        me.skipInputGrowth = !owner.grow || !owner.multiSelect;
+    },
+
+    beginLayoutFixed: function(ownerContext, width, suffix) {
+        var me = this,
+            owner = ownerContext.target;
+
+        owner.triggerEl.setStyle('height', '24px');
+
+        me.callParent(arguments);
+
+        if (ownerContext.heightModel.fixed && ownerContext.lastBox) {
+            owner.listWrapper.setStyle('height', ownerContext.lastBox.height+'px');
+            owner.itemList.setStyle('height', '100%');
+        }
+        /*No inputElCt calculations here!*/
+    },
+
+    /*Calculate and cache value of input container.*/
+    publishInnerWidth:function(ownerContext) {
+        //var me = this,
+        //    owner = me.owner,
+        //    width = owner.itemList.getWidth(true) - 10,
+        //    lastEntry = owner.inputElCt.prev(null, true);
+        //if (lastEntry && !owner.stacked) {
+        //    lastEntry = Ext.fly(lastEntry);
+        //    width = width - lastEntry.getOffsetsTo(lastEntry.up(''))[0] - lastEntry.getWidth();
+        //}
+        //if (!me.skipInputGrowth && (width < 35)) {
+        //    width = width - 10;
+        //} else if (width < 1) {
+        //    width = 1;
+        //}
+        //ownerContext.inputElCtContext.setWidth(width);
+    }
+});
+
+Ext.define('App.view.patient.windows.CCDImportPreview', {
+	extend: 'Ext.window.Window',
+	xtype: 'ccdimportpreviewwindow',
+	title: _('reconciled_preview'),
+	bodyStyle: 'background-color:#fff',
+	modal: true,
+	layout: {
+		type: 'vbox',
+		align: 'stretch'
+	},
+	width: 750,
+	maxHeight: 800,
+	autoScroll: true,
+	bodyPadding: 5,
+	defaults: {
+		xtype: 'grid',
+		height: 123,
+		frame: true,
+		hideHeaders: true,
+		columnLines: true,
+		multiSelect: true,
+		disableSelection: true,
+		margin: '0 0 5 0'
+	},
+	dockedItems: [
+		{
+			xtype: 'toolbar',
+			dock: 'bottom',
+			ui: 'footer',
+			items: [
+				'->',
+				{
+					text: _('import'),
+					minWidth: 70,
+					itemId: 'CcdImportPreviewWindowImportBtn'
+				},
+				'-',
+				{
+					text: _('cancel'),
+					minWidth: 70,
+					itemId: 'CcdImportPreviewWindowCancelBtn'
+				}
+			]
+		}
+	],
+	initComponent: function(){
+
+		var me = this;
+
+		me.items = [
+			{
+				xtype: 'form',
+				frame: true,
+				title: _('patient'),
+				itemId: 'CcdImportPreviewPatientForm',
+				flex: 1,
+				height: 145,
+				autoScroll: true,
+				layout: 'column',
+				items: [
+					{
+						xtype: 'container',
+						defaults: {
+							xtype: 'displayfield',
+							labelWidth: 45,
+							labelAlign: 'right',
+							margin: 0
+						},
+						columnWidth: 0.5,
+						items: [
+							{
+								fieldLabel: _('rec_num'),
+								name: 'record_number'
+							},
+							{
+								fieldLabel: _('name'),
+								name: 'fullname'
+							},
+							{
+								fieldLabel: _('sex'),
+								name: 'sex'
+							},
+							{
+								fieldLabel: _('dob'),
+								name: 'DOBFormatted'
+							},
+							{
+								fieldLabel: _('race'),
+								name: 'race_text'
+							}
+						]
+					},
+					{
+						xtype: 'container',
+						defaults: {
+							xtype: 'displayfield',
+							labelWidth: 60,
+							labelAlign: 'right',
+							margin: 0
+						},
+						columnWidth: 0.5,
+						items: [
+							{
+								fieldLabel: _('ethnicity'),
+								name: 'ethnicity_text'
+							},
+							{
+								fieldLabel: _('language'),
+								name: 'language'
+							},
+							{
+								fieldLabel: _('address'),
+								name: 'fulladdress',
+								value: 'fulladdress'
+							},
+							{
+								fieldLabel: _('phones'),
+								name: 'phones',
+								value: '000-000-000 (H)'
+							}
+						]
+					}
+				]
+			},
+			{
+				title: _('active_problems'),
+				store: Ext.create('App.store.patient.PatientActiveProblems'),
+				itemId: 'CcdImportPreviewActiveProblemsGrid',
+				columns: [
+					{
+						dataIndex: 'code_text',
+						flex: 1,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'begin_date',
+						width: 100,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'end_date',
+						width: 100,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'status',
+						width: 60,
+						renderer: me.importedRenderer
+					}
+				]
+			},
+			{
+				title: _('medications'),
+				store: Ext.create('App.store.patient.Medications'),
+				itemId: 'CcdImportPreviewMedicationsGrid',
+				columns: [
+					{
+						dataIndex: 'STR',
+						flex: 1,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'begin_date',
+						width: 100,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'end_date',
+						width: 100,
+						renderer: me.importedRenderer
+					}
+				]
+			},
+			{
+				title: _('allergies'),
+				store: Ext.create('App.store.patient.Allergies'),
+				itemId: 'CcdImportPreviewAllergiesGrid',
+				margin: 0,
+				columns: [
+					{
+						dataIndex: 'allergy',
+						flex: 1,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'reaction',
+						width: 150,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'severity',
+						width: 100,
+						renderer: me.importedRenderer
+					},
+					{
+						dataIndex: 'status',
+						width: 60,
+						renderer: me.importedRenderer
+					}
+				]
+			}
+		];
+
+		me.callParent();
+
+	},
+
+	importedRenderer:function(v, meta, record){
+		if(!record.data.id || record.data.id === 0){
+			meta.tdCls = 'btnBlueBackground'
+		}
+
+		return Ext.isDate(v) ? Ext.Date.format(v, g('date_display_format')) : v;
+	}
+
+});
+Ext.define('App.view.patient.windows.CCDImport', {
+	extend: 'Ext.window.Window',
+	requires: [
+		'App.view.patient.windows.CCDImportPreview'
+	],
+	xtype: 'ccdimportwindow',
+	title: _('ccd_viewer_and_import'),
+	bodyStyle: 'background-color:#fff',
+	modal: true,
+	layout: {
+		type: 'vbox',
+		align: 'stretch'
+	},
+	width: 1500,
+	maxHeight: 800,
+	autoScroll: true,
+	ccdData: null,
+	items: [
+		{
+			xtype: 'container',
+			layout: 'column',
+			padding: 5,
+			items: [
+				{
+					xtype: 'panel',
+					title: _('import_data'),
+					columnWidth: 0.5,
+					frame: true,
+					margin: '0 5 0 0',
+					layout: {
+						type: 'vbox',
+						align: 'stretch'
+					},
+					defaults: {
+						xtype: 'grid',
+						height: 123,
+						frame: true,
+						hideHeaders: true,
+						columnLines: true,
+						multiSelect: true,
+						margin: '0 0 5 0'
+					},
+					items: [
+						{
+							xtype: 'form',
+							frame: true,
+							title: _('patient'),
+							itemId: 'CcdImportPatientForm',
+							flex: 1,
+							height: 148,
+							autoScroll: true,
+							layout: 'column',
+							items: [
+								{
+									xtype: 'container',
+									defaults: {
+										xtype: 'displayfield',
+										labelWidth: 45,
+										labelAlign: 'right',
+										margin: 0
+									},
+									columnWidth: 0.5,
+									items: [
+										{
+											fieldLabel: _('rec_num'),
+											name: 'record_number'
+										},
+										{
+											fieldLabel: _('name'),
+											name: 'fullname'
+										},
+										{
+											fieldLabel: _('sex'),
+											name: 'sex'
+										},
+										{
+											fieldLabel: _('dob'),
+											name: 'DOBFormatted'
+										},
+										{
+											fieldLabel: _('race'),
+											name: 'race_text'
+										}
+									]
+								},
+								{
+									xtype: 'container',
+									defaults: {
+										xtype: 'displayfield',
+										labelWidth: 60,
+										labelAlign: 'right',
+										margin: 0
+									},
+									columnWidth: 0.5,
+									items: [
+										{
+											fieldLabel: _('ethnicity'),
+											name: 'ethnicity_text'
+										},
+										{
+											fieldLabel: _('language'),
+											name: 'language'
+										},
+										{
+											fieldLabel: _('address'),
+											name: 'fulladdress',
+											value: 'fulladdress'
+										},
+										{
+											fieldLabel: _('phones'),
+											name: 'phones',
+											value: '000-000-000 (H)'
+										}
+									]
+								}
+							]
+						},
+						{
+							title: _('active_problems'),
+							store: Ext.create('App.store.patient.PatientActiveProblems'),
+							itemId: 'CcdImportActiveProblemsGrid',
+							selType: 'checkboxmodel',
+							columns: [
+								{
+									dataIndex: 'code_text',
+									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'begin_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'end_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									dataIndex: 'status',
+									width: 60
+								}
+							]
+						},
+						{
+							title: _('medications'),
+							store: Ext.create('App.store.patient.Medications'),
+							itemId: 'CcdImportMedicationsGrid',
+							selType: 'checkboxmodel',
+							columns: [
+								{
+									dataIndex: 'STR',
+									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'begin_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'end_date',
+									width: 100,
+									format: g('date_display_format')
+								}
+							]
+						},
+						{
+							title: _('allergies'),
+							store: Ext.create('App.store.patient.Allergies'),
+							itemId: 'CcdImportAllergiesGrid',
+							selType: 'checkboxmodel',
+							margin: 0,
+							columns: [
+								{
+									dataIndex: 'allergy',
+									flex: 1
+								},
+								{
+									dataIndex: 'reaction',
+									width: 150
+								},
+								{
+									dataIndex: 'severity',
+									width: 100
+								},
+								{
+									dataIndex: 'status',
+									width: 60
+								}
+							]
+						}
+					]
+				},
+				{
+					xtype: 'panel',
+					title: _('system_data'),
+					columnWidth: 0.5,
+					frame: true,
+					layout: {
+						type: 'vbox',
+						align: 'stretch'
+					},
+					tools:[
+						{
+							xtype: 'patienlivetsearch',
+							emptyText: _('import_and_merge_with') + '...',
+							itemId: 'CcdImportWindowPatientSearchField',
+							width: 300,
+							height: 18
+						}
+					],
+					defaults: {
+						xtype: 'grid',
+						height: 123,
+						frame: true,
+						hideHeaders: true,
+						columnLines: true,
+						multiSelect: true,
+						disableSelection: true,
+						margin: '0 0 5 0'
+					},
+					items: [
+						{
+							xtype: 'form',
+							frame: true,
+							title: _('patient'),
+							itemId: 'CcdPatientPatientForm',
+							flex: 1,
+							height: 146,
+							autoScroll: true,
+							layout: 'column',
+							items: [
+								{
+									xtype: 'container',
+									defaults: {
+										xtype: 'displayfield',
+										labelWidth: 45,
+										labelAlign: 'right',
+										margin: 0
+									},
+									columnWidth: 0.5,
+									items: [
+										{
+											fieldLabel: _('rec_num'),
+											name: 'record_number'
+										},
+										{
+											fieldLabel: _('name'),
+											name: 'fullname'
+										},
+										{
+											fieldLabel: _('sex'),
+											name: 'sex'
+										},
+										{
+											fieldLabel: _('dob'),
+											name: 'DOBFormatted'
+										},
+										{
+											fieldLabel: _('race'),
+											name: 'race_text'
+										}
+									]
+								},
+								{
+									xtype: 'container',
+									defaults: {
+										xtype: 'displayfield',
+										labelWidth: 60,
+										labelAlign: 'right',
+										margin: 0
+									},
+									columnWidth: 0.5,
+									items: [
+										{
+											fieldLabel: _('ethnicity'),
+											name: 'ethnicity_text'
+										},
+										{
+											fieldLabel: _('language'),
+											name: 'language'
+										},
+										{
+											fieldLabel: _('address'),
+											name: 'fulladdress',
+											value: 'fulladdress'
+										},
+										{
+											fieldLabel: _('phones'),
+											name: 'phones',
+											value: '000-000-000 (H)'
+										}
+									]
+								}
+							]
+						},
+						{
+							title: _('active_problems'),
+							store: Ext.create('App.store.patient.PatientActiveProblems'),
+							itemId: 'CcdPatientActiveProblemsGrid',
+							//selType: 'checkboxmodel',
+							columns: [
+								{
+									dataIndex: 'code_text',
+									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'begin_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'end_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									dataIndex: 'status',
+									width: 60
+								}
+							]
+						},
+						{
+							title: _('medications'),
+							store: Ext.create('App.store.patient.Medications'),
+							itemId: 'CcdPatientMedicationsGrid',
+							//selType: 'checkboxmodel',
+							columns: [
+								{
+									dataIndex: 'STR',
+									flex: 1
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'begin_date',
+									width: 100,
+									format: g('date_display_format')
+								},
+								{
+									xtype: 'datecolumn',
+									dataIndex: 'end_date',
+									width: 100,
+									format: g('date_display_format')
+								}
+							]
+						},
+						{
+							title: _('allergies'),
+							store: Ext.create('App.store.patient.Allergies'),
+							itemId: 'CcdPatientAllergiesGrid',
+							//selType: 'checkboxmodel',
+							margin: 0,
+							columns: [
+								{
+									dataIndex: 'allergy',
+									flex: 1
+								},
+								{
+									dataIndex: 'reaction',
+									width: 150
+								},
+								{
+									dataIndex: 'severity',
+									width: 100
+								},
+								{
+									dataIndex: 'status',
+									width: 60
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	dockedItems: [
+		{
+			xtype: 'toolbar',
+			dock: 'bottom',
+			ui: 'footer',
+			items: [
+				{
+					text: _('view_raw_ccd'),
+					itemId: 'CcdImportWindowViewRawCcdBtn'
+				},
+				'->',
+				{
+					xtype: 'checkboxfield',
+					fieldLabel: _('select_all'),
+					labelWidth: 55,
+					labelAlign: 'right',
+					itemId: 'CcdImportWindowSelectAllField'
+				},
+				'-',
+				{
+					text: _('preview'),
+					minWidth: 70,
+					itemId: 'CcdImportWindowPreviewBtn'
+				},
+				'-',
+				{
+					text: _('close'),
+					minWidth: 70,
+					itemId: 'CcdImportWindowCloseBtn'
+				}
+			]
+		}
+	]
+});
+Ext.define('App.ux.combo.Departments', {
+	extend: 'Ext.form.ComboBox',
+	xtype: 'depatmentscombo',
+	editable: false,
+	queryMode: 'local',
+	valueField: 'id',
+	displayField: 'title',
+	emptyText: _('select'),
+	store: Ext.create('App.store.administration.Departments', {
+		autoLoad: true
+	})
+});
+Ext.define('App.model.patient.ProgressNotesHistory', {
+	extend: 'Ext.data.Model',
+	fields: [
+		{
+			name: 'service_date',
+			type: 'date'
+		},
+		{
+			name: 'brief_description',
+			type: 'string'
+		},
+		{
+			name: 'subjective',
+			type: 'string'
+		},
+		{
+			name: 'objective',
+			type: 'string'
+		},
+		{
+			name: 'assessment',
+			type: 'string'
+		},
+		{
+			name: 'plan',
+			type: 'string'
+		},
+		{
+			name: 'progress',
+			type: 'string',
+			convert: function(v, record){
+				var str = '';
+				str += '<b>' + _('service_date') + ':</b> ' + Ext.Date.format(record.data.service_date, g('date_time_display_format')) + '<br>';
+				str += '<b>' + _('chief_complaint') + ':</b> ' + Ext.String.htmlDecode(record.data.brief_description) + '<br>';
+				str += '<b>' + _('subjective') + ':</b> ' + Ext.String.htmlDecode(record.data.subjective) + '<br>';
+				str += '<b>' + _('objective') + ':</b> ' + Ext.String.htmlDecode(record.data.objective) + '<br>';
+				str += '<b>' + _('assessment') + ':</b> ' + Ext.String.htmlDecode(record.data.assessment) + '<br>';
+				str += '<b>' + _('plan') + ':</b> ' + Ext.String.htmlDecode(record.data.plan) + '<br>';
+				return str;
+			}
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Encounter.getSoapHistory'
+		}
+	}
+});
+Ext.define('App.store.patient.ProgressNotesHistory', {
+	extend: 'Ext.data.Store',
+	requires:['App.model.patient.ProgressNotesHistory'],
+	model: 'App.model.patient.ProgressNotesHistory',
+	remoteFilter: false
+});
+
+
+
+Ext.define('App.store.administration.TemplatePanels', {
+	model: 'App.model.administration.TemplatePanel',
+	extend: 'Ext.data.Store'
+});
+Ext.define('App.view.patient.windows.TemplatePanels', {
+	extend: 'App.ux.window.Window',
+	title: _('templates'),
+	closeAction: 'hide',
+	layout: 'fit',
+	modal: true,
+	width: 600,
+	height: 300,
+	itemId: 'TemplatePanelsWindow',
+	bodyPadding: 5,
+	tbar: [
+		{
+			xtype: 'combobox',
+			store: Ext.create('App.store.administration.TemplatePanels'),
+			displayField: 'description',
+			valueField: 'id',
+			itemId: 'TemplatePanelsCombo',
+			width: 300,
+			editable: false,
+			allowBlank: false,
+			queryMode: 'local'
+		}
+	],
+	items: [
+		{
+			xtype: 'grid',
+			frame: true,
+			itemId: 'TemplatePanelsGrid',
+			selType: 'checkboxmodel',
+			features: [
+				{
+					ftype:'grouping',
+					groupHeaderTpl: '{name}',
+					collapsible: false
+				}
+			],
+			columns: [
+				{
+					text: _('description'),
+					dataIndex: 'description',
+					flex: 1,
+					sortable: false,
+					groupable: false,
+					hideable: false,
+					menuDisabled: true
+				}
+			]
+		}
+	],
+	buttons: [
+		{
+			text: _('add'),
+			itemId: 'TemplatePanelsAddBtn'
+		},
+		{
+			text: _('cancel'),
+			itemId: 'TemplatePanelsCancelBtn'
+		}
+	]
 });

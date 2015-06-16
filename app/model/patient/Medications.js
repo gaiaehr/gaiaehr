@@ -203,7 +203,7 @@ Ext.define('App.model.patient.Medications', {
 			type: 'bool',
 			store: false,
 			convert: function(v, record){
-				return record.data.end_date == null;
+				return record.data.end_date === null;
 			}
 		},
 		{

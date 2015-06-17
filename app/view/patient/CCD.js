@@ -85,6 +85,13 @@ Ext.define('App.view.patient.CCD', {
 		},
 		'-',
 		{
+			text: _('archive'),
+			margin: '0 0 5 0',
+			itemId: 'archiveCcdBtn',
+			icon: 'resources/images/icons/archive_16.png'
+		},
+		'-',
+		{
 			text: 'Print',
 			iconCls: 'icon-print',
 			itemId: 'printCcdBtn'

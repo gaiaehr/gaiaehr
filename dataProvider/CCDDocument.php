@@ -341,6 +341,36 @@ class CCDDocument {
 	}
 
 	/**
+	 * Method view()
+	 */
+	public function archive() {
+		try {
+			header('Content-type: application/xml');
+			$xml = $this->xml->saveXML();
+			$name = $this->getFileName() . '.xml';
+			$date = date('Y-m-d H:i:s');
+			$document = new stdClass();
+			$document->pid = $this->pid;
+			$document->eid = $this->eid;
+			$document->uid = $_SESSION['user']['id'];
+			$document->docType = 'C-CDA';
+			$document->name = $name;
+			$document->date = $date;
+			$document->note = '';
+			$document->title = 'C-CDA';
+			$document->encrypted = 0;
+			$document->document = base64_encode($xml);
+			include_once(ROOT . '/dataProvider/DocumentHandler.php');
+			$DocumentHandler = new DocumentHandler();
+			$DocumentHandler->addPatientDocument($document);
+			unset($DocumentHandler, $document, $name, $date);
+			print $xml;
+		} catch(Exception $e) {
+			print $e->getMessage();
+		}
+	}
+
+	/**
 	 * Method get()
 	 */
 	public function get() {
@@ -360,7 +390,7 @@ class CCDDocument {
 			 * Create a ZIP archive for delivery
 			 */
 			$dir = site_temp_path . '/';
-			$filename = $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
+			$filename = $this->getFileName();
 			$file = $this->zipIt($dir, $filename);
 			/**
 			 * Stream the file to the client
@@ -374,6 +404,10 @@ class CCDDocument {
 			print $e->getMessage();
 		}
 
+	}
+
+	private function getFileName(){
+	    return strtolower(str_replace(' ', '', $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname']));
 	}
 
 	/**
@@ -4897,6 +4931,8 @@ if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
 		$ccd->view();
 	} elseif($_REQUEST['action'] == 'export') {
 		$ccd->export();
+	} elseif($_REQUEST['action'] == 'archive') {
+		$ccd->archive();
 	}
 }
 

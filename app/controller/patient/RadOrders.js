@@ -155,6 +155,28 @@ Ext.define('App.controller.patient.RadOrders', {
 		}
 
 		return '<div style="color:' + color + '">' + v + '</div>';
+	},
+
+	doAddOrderByTemplate: function(data){
+		var me = this,
+			grid = me.getLabOrdersGrid(),
+			store = grid.getStore();
+
+		data.pid = app.patient.pid;
+		data.eid = app.patient.eid;
+		data.uid = app.user.id;
+		data.date_ordered = new Date();
+		data.order_type = 'rad';
+		data.status = 'Pending';
+		data.priority = 'Normal';
+
+		store.add(data);
+		store.sync({
+			success: function(){
+				app.msg(_('sweet'), data.description + ' ' + _('added'));
+			}
+		});
+
 	}
 
 });

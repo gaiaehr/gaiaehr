@@ -3387,7 +3387,7 @@ CREATE TABLE `patient_zone` (
   `time_out` datetime DEFAULT NULL,
   `provider_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `IK_pid_timeout` (`pid`,`time_out`),
+  KEY `IK_pid_timeout` (`pid`,`time_out`),
   KEY `IK_zone_id` (`zone_id`),
   KEY `IK_time_out` (`time_out`),
   KEY `IK_pid` (`pid`),

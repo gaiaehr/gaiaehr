@@ -27,7 +27,8 @@ Ext.define('App.view.patient.Summary', {
 		'App.view.patient.CCD',
 		'App.ux.ManagedIframe',
 
-		'App.view.patient.Patient'
+		'App.view.patient.Patient',
+		'App.view.patient.Reminders'
 	],
 	itemId: 'PatientSummaryPanel',
 	showRating: true,
@@ -403,95 +404,13 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_patient_reminders')){
 			me.tabPanel.add({
-				title: _('reminders'),
 				itemId: 'PatientSummaryRemindersPanel',
-				xtype: 'grid',
-				bodyPadding: 0,
-				store: Ext.create('App.store.patient.Reminders', {
-					autoLoad: false,
-					autoSync: false
-				}),
-				plugins: Ext.create('Ext.grid.plugin.RowEditing', {
-					autoCancel: false,
-					errorSummary: false,
-					clicksToEdit: 2
-
-				}),
-				columns: [
-					{
-						xtype: 'datecolumn',
-						text: _('date'),
-						format: 'Y-m-d',
-						dataIndex: 'date'
-					},
-					{
-						header: _('type'),
-						dataIndex: 'type',
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('note'),
-						dataIndex: 'body',
-						flex: 1,
-						editor: {
-							xtype: 'textfield'
-						}
-					},
-					{
-						text: _('user'),
-						width: 225,
-						dataIndex: 'user_name'
-					}
-				],
-				tbar: [
-					{
-						text: _('add_reminder'),
-						iconCls: 'icoAdd',
-						action: 'reminder',
-						handler: me.onAddNew
-					}
-				]
-			})
-		}
-
-		//		if(a('access_patient_vitals')){
-		//			me.tabPanel.add({
-		//				xtype: 'vitalspanel'
-		//			})
-		//		}
-
-		if(a('access_patient_history')){
-			//            me.stores.push(me.encounterEventHistoryStore = Ext.create('App.store.patient.Encounters'));
-			me.tabPanel.add({
-				title: _('history'),
-				xtype: 'grid',
-				itemId: 'PatientEncounterHistoryPanel',
-				store: Ext.create('App.store.patient.Encounters', {
-					autoLoad: false,
-					remoteFilter: true
-				}),
-				columns: [
-					{
-						header: _('date'),
-						dataIndex: 'service_date'
-					},
-					{
-						header: _('event'),
-						dataIndex: 'brief_description',
-						flex: true
-					},
-					{
-						header: _('visit_category'),
-						dataIndex: 'visit_category'
-					}
-				]
-			})
+				xtype: 'patientreminderspanel',
+				bodyPadding: 0
+			});
 		}
 
 		if(a('access_patient_documents')){
-			//            me.stores.push(me.patientDocumentsStore = Ext.create('App.store.patient.PatientDocuments'));
 			me.tabPanel.add({
 				xtype: 'patientdocumentspanel',
 				border: false
@@ -613,17 +532,6 @@ Ext.define('App.view.patient.Summary', {
 			//});
 		}
 
-//		if(a('access_patient_billing')){
-//			me.tabPanel.add({
-//				xtype: 'panel',
-//				action: 'balancePanel',
-//				itemId: 'balancePanel',
-//				title: _('billing'),
-//				html: _('account_balance') + ': '
-//
-//			});
-//		}
-
 		if(a('access_patient_ccd')){
 			me.reportPanel = me.tabPanel.add({
 				xtype: 'patientccdpanel'
@@ -644,7 +552,7 @@ Ext.define('App.view.patient.Summary', {
 				pid: app.patient.pid,
 				active: 1
 			};
-		}else if(btn.action == 'note' || btn.action == 'reminder'){
+		}else if(btn.action == 'note'){
 			record = {
 				date: new Date(),
 				pid: app.patient.pid,

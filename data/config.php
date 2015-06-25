@@ -58,7 +58,40 @@ $API = [
 	        'getVisitCheckOutCharges' => [
 		        'len' => 1
             ]
-
+        ]
+    ],
+    'TemplatePanels' => [
+        'methods' => [
+            'getTemplatePanels' => [
+                'len' => 1
+            ],
+            'getTemplatePanel' => [
+                'len' => 1
+            ],
+            'createTemplatePanel' => [
+                'len' => 1
+            ],
+            'updateTemplatePanel' => [
+                'len' => 1
+            ],
+            'deleteTemplatePanel' => [
+                'len' => 1
+            ],
+            'getTemplatePanelTemplates' => [
+                'len' => 1
+            ],
+            'getTemplatePanelTemplate' => [
+                'len' => 1
+            ],
+            'createTemplatePanelTemplate' => [
+                'len' => 1
+            ],
+            'updateTemplatePanelTemplate' => [
+                'len' => 1
+            ],
+            'deleteTemplatePanelTemplate' => [
+                'len' => 1
+            ]
         ]
     ],
     'AdvanceDirective' => [

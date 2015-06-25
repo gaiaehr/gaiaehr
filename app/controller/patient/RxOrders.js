@@ -125,8 +125,8 @@ Ext.define('App.controller.patient.RxOrders', {
 	},
 
 	onRxOrdersGridSelectionChange: function(sm, selected){
-		this.getCloneRxOrderBtn().setDisabled(selected.length == 0);
-		this.getPrintRxOrderBtn().setDisabled(selected.length == 0);
+		this.getCloneRxOrderBtn().setDisabled(selected.length === 0);
+		this.getPrintRxOrderBtn().setDisabled(selected.length === 0);
 	},
 
 	onRxNormOrderLiveSearchBeforeSelect: function(combo, record){
@@ -195,6 +195,8 @@ Ext.define('App.controller.patient.RxOrders', {
 				}
 			}
 		});
+
+		return true;
 
 	},
 
@@ -302,7 +304,7 @@ Ext.define('App.controller.patient.RxOrders', {
 		for(i = 0; i < items.length; i++){
 			data = items[i].data;
 
-			if(data.ref_order != ''){
+			if(data.ref_order !== ''){
 				var refs = data.ref_order.split('~');
 				if(refs.length >= 3){
 					references = 'Rx Reference#: ' + refs[2];
@@ -324,19 +326,19 @@ Ext.define('App.controller.patient.RxOrders', {
 				text += '<u>' + _('instructions') + '</u>: ' + data.directions + '<br>';
 
 				var dxs = (data.dxs.join ? data.dxs.join(', ') : data.dxs);
-				if(dxs && dxs != ''){
+				if(dxs && dxs !== ''){
 					text += '<u>' + _('dx') + '</u>: ' + (data.dxs.join ? data.dxs.join(', ') : data.dxs) + '<br>';
 				}
 
-				if(data.notes != ''){
+				if(data.notes !== ''){
 					text += '<u>' + _('notes_to_pharmacist') + '</u>: ' + data.notes + '<br>';
 				}
 
-				if(references != ''){
+				if(references !== ''){
 					text += '<u>References</u>: ' + references + '<br>';
 				}
 
-				if(data.system_notes != ''){
+				if(data.system_notes !== ''){
 					text += '<b>' + data.system_notes + '</b><br>';
 				}
 
@@ -377,6 +379,28 @@ Ext.define('App.controller.patient.RxOrders', {
 				}
 			]);
 		}
+	},
+
+	doAddOrderByTemplate: function(data){
+		var me = this,
+			grid = me.getRxOrdersGrid(),
+			store = grid.getStore(),
+			newDate = new Date();
+
+		data.pid = app.patient.pid;
+		data.eid = app.patient.eid;
+		data.uid = app.user.id;
+		data.date_ordered = newDate;
+		data.begin_date = newDate;
+		data.created_date = newDate;
+
+		store.add(data);
+		store.sync({
+			success: function(){
+				app.msg(_('sweet'), data.STR + ' ' + _('added'));
+			}
+		});
+
 	}
 
 });

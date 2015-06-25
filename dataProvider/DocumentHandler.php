@@ -131,14 +131,36 @@ class DocumentHandler {
 	 */
 	public function updatePatientDocument($params){
 		$this->setPatientDocumentModel();
-		/** lets unset the actual document data (can not be updated) */
 		if(is_array($params)){
 			foreach($params as $i => $param){
-				unset($params[$i]->document);
+				if(!isset($params[$i]->document)) continue;
+
+				$doc = $this->d->load(['id' => $params[$i]->id])->one();
+
+				/** remove the mime type */
+				$params[$i]->document = $this->trimBase64($params[$i]->document);
+
+				/** encrypted if necessary */
+				if($doc['encrypted']){
+					$params[$i]->document = MatchaUtils::encrypt($params[$i]->document);
+				};
+				$params[$i]->hash = hash('sha256', $params[$i]->document);
 			}
 		}else{
-			unset($params->document);
+			if(isset($params->document)){
+
+				$doc = $this->d->load(['id' => $params->id])->one();
+
+				/** remove the mime type */
+				$params->document = $this->trimBase64($params->document);
+				/** encrypted if necessary */
+				if($doc['encrypted']){
+					$params->document = MatchaUtils::encrypt($params->document);
+				};
+				$params->hash = hash('sha256', $params->document);
+			}
 		}
+
 		return $this->d->save($params);
 	}
 
@@ -152,7 +174,10 @@ class DocumentHandler {
 		return $this->d->destroy($params);
 	}
 
-
+	/**
+	 * @param $params
+	 * @return object|stdClass
+	 */
 	public function createTempDocument($params){
 		$this->setPatientDocumentTempModel();
 		$params = (object) $params;
@@ -170,7 +195,10 @@ class DocumentHandler {
 		return $record;
 	}
 
-
+	/**
+	 * @param $params
+	 * @return object|stdClass
+	 */
 	public function createRawTempDocument($params){
 		$this->setPatientDocumentTempModel();
 		$params = (object) $params;
@@ -197,7 +225,7 @@ class DocumentHandler {
 		$this->setPatientDocumentModel();
 		$this->setPatientDocumentTempModel();
 		$record = $this->t->load($params)->one();
-		if($record == false) return array('success' => false);
+		if($record == false) return ['success' => false];
 
 		$params->document = $record['document'];
 		$params->date = date('Y-m-d H:i:s');
@@ -206,7 +234,7 @@ class DocumentHandler {
 
 		$params = $this->addPatientDocument($params);
 		unset($params['data']->document);
-		return array('success' => true, 'record' => $params['data']);
+		return ['success' => true, 'record' => $params['data']];
 	}
 
 	private function trimBase64($base64){
@@ -252,9 +280,9 @@ class DocumentHandler {
 
 			//print_r($data);
 
-			return array('success' => true, 'doc' => array('id' => $data['data']->id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path));
+			return ['success' => true, 'doc' => ['id' => $data['data']->id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path]];
 		} else{
-			return array('success' => false, 'error' => 'Document could not be created');
+			return ['success' => false, 'error' => 'Document could not be created'];
 		}
 	}
 
@@ -292,12 +320,16 @@ class DocumentHandler {
 			$data->encrypted = $params->encrypted;
 			$data = $this->d->save($data);
 
-			return array('success' => true, 'doc' => array('id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()));
+			return ['success' => true, 'doc' => ['id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()]];
 		} else{
-			return array('success' => false, 'error' => 'File could not be uploaded');
+			return ['success' => false, 'error' => 'File could not be uploaded'];
 		}
 	}
 
+	/**
+	 * @param $id
+	 * @return bool
+	 */
 	public function deleteDocumentById($id){
 		$path = $this->getDocumentPathById($id);
 		if(unlink($path)){
@@ -311,26 +343,43 @@ class DocumentHandler {
 
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function getDocumentUrl(){
 		return $_SESSION['site']['url'] . '/patients/' . $this->pid . '/' . strtolower(str_replace(' ', '_', $this->docType)) . '/' . $this->fileName;
 	}
 
+	/**
+	 * @param $id
+	 * @return string
+	 */
 	public function getDocumentPathById($id){
 		$this->db->setSQL("SELECT * FROM patient_documents WHERE id = '$id'");
 		$doc = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 		return site_path . '/patients/' . $doc['pid'] . '/' . strtolower(str_replace(' ', '_', $doc['docType'])) . '/' . $doc['name'];
 	}
 
+	/**
+	 * @param $file
+	 * @return string
+	 */
 	protected function reNameFile($file){
 		$foo = explode('.', $file['filePath']['name']);
 		$ext = end($foo);
 		return $this->fileName = $this->setName() . '.' . $ext;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function nameFile(){
 		return $this->fileName = $this->setName() . '.pdf';
 	}
 
+	/**
+	 * @return int
+	 */
 	protected function setName(){
 		$name = time();
 		while(file_exists($this->workingDir . '/' . $name)){
@@ -339,6 +388,10 @@ class DocumentHandler {
 		return $name;
 	}
 
+	/**
+	 * @param $params
+	 * @return string
+	 */
 	protected function getPatientDir($params){
 		if(is_array($params)){
 			$this->pid = $params['pid'];
@@ -354,21 +407,34 @@ class DocumentHandler {
 		return $this->workingDir = $path;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getDocumentsTemplates(){
 		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 'documenttemplate'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getDefaultDocumentsTemplates(){
 		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 'defaulttemplate'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getHeadersAndFootersTemplates(){
 		$this->db->setSQL("SELECT * FROM documents_templates WHERE template_type = 'headerorfootertemplate'");
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return stdClass
+	 */
 	public function addDocumentsTemplates(stdClass $params){
 		$data = get_object_vars($params);
 		$data['created_by_uid'] = $_SESSION['user']['id'];
@@ -378,20 +444,28 @@ class DocumentHandler {
 		return $params;
 	}
 
+	/**
+	 * @param stdClass $params
+	 * @return stdClass
+	 */
 	public function updateDocumentsTemplates(stdClass $params){
 		$data = get_object_vars($params);
 		$data['updated_by_uid'] = $_SESSION['user']['id'];
 		unset($data['id']);
-		$this->db->setSQL($this->db->sqlBind($data, 'documents_templates', 'U', array('id' => $params->id)));
+		$this->db->setSQL($this->db->sqlBind($data, 'documents_templates', 'U', ['id' => $params->id]));
 		$this->db->execLog();
 		return $params;
 
 	}
 
+	/**
+	 * @param $doc
+	 * @return array
+	 */
 	public function checkDocHash($doc){
 		$doc = $this->getPatientDocument($doc->id);
 		$hash = hash('sha256', $doc['document']);
-		return array('success' => $doc['hash'] == $hash, 'msg' => 'Stored Hash:' . $doc['hash'] . '<br>File hash:' . $hash);
+		return ['success' => $doc['hash'] == $hash, 'msg' => 'Stored Hash:' . $doc['hash'] . '<br>File hash:' . $hash];
 	}
 
 }

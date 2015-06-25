@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.Reminders', {
+Ext.define('App.model.administration.TemplatePanelTemplate', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'patient_reminders'
+		name: 'template_panels_templates'
 	},
 	fields: [
 		{
@@ -27,59 +27,40 @@ Ext.define('App.model.patient.Reminders', {
 			type: 'int'
 		},
 		{
-			name: 'eid',
-			type: 'int',
-			index: true
+			name: 'panel_id',
+			type: 'int'
 		},
 		{
-			name: 'pid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'uid',
-			type: 'int',
-			index: true
-		},
-
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
-			index: true
-		},
-		{
-			name: 'body',
-			type: 'string',
-			len: 600
-		},
-		{
-			name: 'type',
+			name: 'template_type',
 			type: 'string',
 			len: 80,
-			index: true
+			comment: 'rx lab rad etc'
 		},
 		{
-			name: 'user_name',
+			name: 'description',
 			type: 'string',
-			store: false
+			len: 300
+		},
+		{
+			name: 'template_data',
+			type: 'string',
+			dataType: 'mediumtext'
 		},
 		{
 			name: 'active',
-			type: 'bool',
-			defaultValue: true
+			type: 'bool'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Reminders.getReminders',
-			create: 'Reminders.addReminder',
-			update: 'Reminders.updateReminder'
+			read: 'TemplatePanels.getTemplatePanelTemplates',
+			create: 'TemplatePanels.createTemplatePanelTemplate',
+			update: 'TemplatePanels.updateTemplatePanelTemplate',
+			destroy: 'TemplatePanels.deleteTemplatePanelTemplate'
 		},
 		reader: {
 			root: 'data'
 		}
 	}
 });
-

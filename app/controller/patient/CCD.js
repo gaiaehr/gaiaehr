@@ -47,6 +47,9 @@ Ext.define('App.controller.patient.CCD', {
 			'#viewCcdBtn': {
 				click: me.onViewCcdBtnClick
 			},
+			'#archiveCcdBtn': {
+				click: me.onArchiveCcdBtnClick
+			},
 			'#exportCcdBtn': {
 				click: me.onExportCcdBtnClick
 			},
@@ -75,6 +78,17 @@ Ext.define('App.controller.patient.CCD', {
 			'&token=' + app.user.token
 		);
 		app.AuditLog('Patient summary CCD viewed');
+	},
+
+	onArchiveCcdBtnClick: function(btn){
+		btn.up('panel').query('miframe')[0].setSrc(
+			'dataProvider/CCDDocument.php?action=archive&site=' + window.site +
+			'&pid=' + app.patient.pid +
+			'&eid=' + this.getEid(btn) +
+			'&exclude=' + this.getExclusions(btn) +
+			'&token=' + app.user.token
+		);
+		app.AuditLog('Patient summary CCD archived');
 	},
 
 	onExportCcdBtnClick: function(btn){

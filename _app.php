@@ -140,7 +140,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<!-- this is the compiled/minified version -->
-<!--		<script type="text/javascript" src="app/app.min.js?_v<?php print VERSION ?>"></script>-->
+<!--		<script type="text/javascript" src="app/app.min.js?_v--><?php //print VERSION ?><!--"></script>-->
 
 		<script type="text/javascript">
             /**
@@ -372,6 +372,9 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.ReferringProviderFacility',
 	                'administration.ReferringProvider',
 	                'administration.Services',
+	                'administration.Specialty',
+	                'administration.TemplatePanel',
+	                'administration.TemplatePanelTemplate',
 	                'administration.TransactionLog',
 	                'administration.User',
 	                'administration.XtypesComboModel',
@@ -630,6 +633,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.NewPatient',
 	                'patient.Summary',
 	                'patient.ProgressNote',
+	                'patient.RemindersAlert',
+	                'patient.Reminders',
 	                'patient.Results',
 	                'patient.SocialHistory',
 	                'patient.Visits',
@@ -692,6 +697,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'administration.ReferringProviders',
 	                'administration.Roles',
 	                'administration.Specialties',
+	                'administration.TemplatePanels',
 	                'administration.Users',
 
 	                'areas.FloorPlan',
@@ -738,6 +744,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.ProgressNotesHistory',
 	                'patient.RadOrders',
 	                'patient.Referrals',
+	                'patient.Reminders',
 	                'patient.Results',
 	                'patient.RxOrders',
 	                'patient.Social',

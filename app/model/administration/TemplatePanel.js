@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.Reminders', {
+Ext.define('App.model.administration.TemplatePanel', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'patient_reminders'
+		name: 'template_panels'
 	},
 	fields: [
 		{
@@ -27,59 +27,39 @@ Ext.define('App.model.patient.Reminders', {
 			type: 'int'
 		},
 		{
-			name: 'eid',
-			type: 'int',
-			index: true
+			name: 'specialty_id',
+			type: 'int'
 		},
 		{
-			name: 'pid',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'uid',
-			type: 'int',
-			index: true
-		},
-
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
-			index: true
-		},
-		{
-			name: 'body',
+			name: 'description',
 			type: 'string',
-			len: 600
-		},
-		{
-			name: 'type',
-			type: 'string',
-			len: 80,
-			index: true
-		},
-		{
-			name: 'user_name',
-			type: 'string',
-			store: false
+			len: 300
 		},
 		{
 			name: 'active',
-			type: 'bool',
-			defaultValue: true
+			type: 'bool'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Reminders.getReminders',
-			create: 'Reminders.addReminder',
-			update: 'Reminders.updateReminder'
+			read: 'TemplatePanels.getTemplatePanels',
+			create: 'TemplatePanels.createTemplatePanel',
+			update: 'TemplatePanels.updateTemplatePanel',
+			destroy: 'TemplatePanels.deleteTemplatePanel'
 		},
 		reader: {
 			root: 'data'
 		}
-	}
+	},
+	hasMany: [
+		{
+			model: 'App.model.administration.TemplatePanelTemplate',
+			name: 'templates',
+			foreignKey: 'panel_id',
+			storeConfig: {
+				groupField: 'template_type'
+			}
+		}
+	]
 });
-

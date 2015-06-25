@@ -42,7 +42,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	}
 
 	function get_mime_type($file) {
-		$mime_types = array(
+		$mime_types = [
 			"pdf" => "application/pdf",
 			"exe" => "application/octet-stream",
 			"zip" => "application/zip",
@@ -54,6 +54,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 			"png" => "image/png",
 			"jpeg" => "image/jpg",
 			"jpg" => "image/jpg",
+			"bmp" => "image/bmp",
 			"mp3" => "audio/mpeg",
 			"wav" => "audio/x-wav",
 			"mpeg" => "video/mpeg",
@@ -69,7 +70,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 			"htm" => "text/html",
 			"html" => "text/html",
 			"xml" => "text/xml"
-		);
+		];
 
 		$foo = explode('.', $file);
 		$extension = strtolower(end($foo));
@@ -85,7 +86,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return $document;
 	}
 
-	if(isset($_REQUEST['temp'])){
+	$isTemp = isset($_REQUEST['temp']);
+
+	if($isTemp){
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocumentsTemp');
 		$doc = $d->load($_REQUEST['id'])->one();
 		if($doc === false){
@@ -93,6 +96,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		}
 		$doc = (object) $doc;
 		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
+		$doc->is_temp = 'true';
 		$document = base64ToBinary($doc->document);
 
 	}else{
@@ -102,15 +106,58 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 			die('No Document Found, Please contact Support Desk. Thank You!');
 		}
 		$doc = (object) $doc;
+		$doc->is_temp = 'false';
 		$document = base64ToBinary($doc->document, $doc->encrypted);
 	}
 
-	header('Content-Type: ' . get_mime_type($doc->name));
-	header('Content-Disposition: inline; filename="' . $doc->name . '"');
-	header('Content-Transfer-Encoding: BINARY');
-	header('Content-Length: ' . strlen($document));
-	header('Accept-Ranges: bytes');
-    print $document;
+	$mineType = get_mime_type($doc->name);
+
+	if(preg_match('/^image/', $mineType)){
+		$document = base64_encode($document);
+
+		$html = <<<HTML
+<!doctype html>
+<html>
+	<head>
+	 	<meta charset="UTF-8">
+	  	<link rel="stylesheet" href="../lib/darkroomjs/build/css/darkroom.min.css">
+	</head>
+	<body>
+       	<div class="image-container target">
+	      	<img src="data:{$mineType};base64,{$document}" style="width:100%;" alt="" id="target" crossOrigin="anonymous">
+        </div>
+		<script src="../lib/darkroomjs/vendor/fabric.js" data-illuminations="true"></script>
+		<script src="../lib/darkroomjs/build/js/darkroom.min.js" data-illuminations="true"></script>
+		<script data-illuminations="true">
+	    var dkrm = new Darkroom('#target', {
+	        plugins: {
+		        save: '$doc->is_temp' == 'true' ? false : {
+		        	callback: function(){
+                		var msg = '{"save":{"id":{$doc->id},"document":"'+dkrm.snapshotImage()+'" }}';
+                		window.parent.postMessage(msg, '*');
+		        	}
+		        },
+		        crop: {
+		            quickCropKey: 67, //key "c"
+	        	}
+        	}
+	    });
+	  </script>
+	</body>
+</html>
+HTML;
+
+		print $html;
+
+	}else{
+		header('Content-Type: ' . $mineType, true);
+		header('Content-Disposition: inline; filename="' . $doc->name . '"');
+		header('Content-Transfer-Encoding: BINARY');
+		header('Content-Length: ' . strlen($document));
+		header('Accept-Ranges: bytes');
+		print $document;
+	}
+
 } else {
 	print 'Not Authorized to be here, Please contact Support Desk. Thank You!';
 }

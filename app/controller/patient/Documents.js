@@ -72,7 +72,8 @@ Ext.define('App.controller.patient.Documents', {
 		me.control({
 			'viewport': {
 				scanconnected: me.onScanConnected,
-				scandisconnected: me.onScanDisconnected
+				scandisconnected: me.onScanDisconnected,
+				documentedit: me.onDocumentEdit
 			},
 			'patientdocumentspanel': {
 				activate: me.onPatientDocumentPanelActive
@@ -102,6 +103,35 @@ Ext.define('App.controller.patient.Documents', {
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	onDocumentEdit: function(data){
+
+		var store = this.getPatientDocumentGrid().getStore(),
+			record = store.getById(data.save.id);
+
+		if(record){
+			var src = data.save.document.split(',');
+
+			record.set({ document: (src[1] || src[0]) });
+			record.save({
+				success: function(){
+					if(window.dual){
+						dual.msg('sweet', _('record_saved'));
+					}else{
+						app.msg('sweet', _('record_saved'));
+					}
+				},
+				failure: function(){
+					if(window.dual){
+						dual.msg('oops', _('record_error'), true);
+					}else{
+						app.msg('oops', _('record_error'), true);
+					}
+				}
+			})
+		}
+
 	},
 
 	onScanConnected: function(){

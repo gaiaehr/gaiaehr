@@ -71,7 +71,7 @@ Ext.define('App.controller.patient.LabOrders', {
 	},
 
 	onLabOrdersGridSelectionChange: function(sm, selected){
-		this.getPrintLabOrderBtn().setDisabled(selected.length == 0);
+		this.getPrintLabOrderBtn().setDisabled(selected.length === 0);
 	},
 
 	onLoincSearchSelect: function(cmb, records){
@@ -158,18 +158,44 @@ Ext.define('App.controller.patient.LabOrders', {
 	labOrdersGridStatusColumnRenderer:function(v){
 		var color = 'black';
 
-		if(v == 'Canceled'){
-			color = 'red';
-		}else if(v == 'Pending'){
-			color = 'orange';
-		}else if(v == 'Routed'){
-			color = 'blue';
-		}else if(v == 'Complete'){
-			color = 'green';
+		switch(v){
+			case 'Canceled':
+				color = 'red';
+				break;
+			case 'Pending':
+				color = 'orange';
+				break;
+			case 'Routed':
+				color = 'blue';
+				break;
+			case 'Complete':
+				color = 'green';
+				break;
+			default:
+				color = '';
 		}
 
 		return '<div style="color:' + color + '">' + v + '</div>';
+	},
+
+	doAddOrderByTemplate: function(data){
+		var me = this,
+			grid = me.getLabOrdersGrid(),
+			store = grid.getStore();
+
+		data.pid = app.patient.pid;
+		data.eid = app.patient.eid;
+		data.uid = app.user.id;
+		data.date_ordered = new Date();
+		data.order_type = 'lab';
+		data.status = 'Pending';
+		data.priority = 'Normal';
+
+		store.add(data);
+		store.sync({
+			success: function(){
+				app.msg(_('sweet'), data.description + ' ' + _('added'));
+			}
+		});
 	}
-
-
 });

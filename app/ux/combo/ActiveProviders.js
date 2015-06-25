@@ -66,12 +66,6 @@ Ext.define('App.ux.combo.ActiveProviders', {
 			autoLoad: true
 		});
 
-//		Ext.apply(this, {
-//			editable: false,
-//			queryMode: 'local',
-//			emptyText: _('select'),
-//			store: me.store
-//		});
 		me.callParent(arguments);
 	}
 }); 

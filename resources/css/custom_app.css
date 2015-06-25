@@ -7,6 +7,20 @@
     font-family: 'OpenSans-CondLight';
     src: url('../fonts/OpenSans-CondLight.ttf');
 }
+
+.x-tab.order-tab {
+    background: #c3d2db;
+    background-image: none;
+}
+.x-tab.order-tab.x-over,
+.x-tab.order-tab.x-tab-active {
+    background: #d2e1ea;
+}
+
+.order-btn {
+    background: #c3d2db;
+}
+
 .list-status-Inactive {
     color: #ff0000 !important;
 }

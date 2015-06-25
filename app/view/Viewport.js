@@ -604,7 +604,6 @@ Ext.define('App.view.Viewport', {
         me.MedicalWindow = Ext.create('App.view.patient.windows.Medical');
         me.ChartsWindow = Ext.create('App.view.patient.windows.Charts');
         me.PaymentEntryWindow = Ext.create('App.view.fees.PaymentEntryWindow');
-        me.PatientOrdersWindow = Ext.create('App.view.patient.windows.Orders');
         me.newEncounterWindow = Ext.create('App.view.patient.windows.NewEncounter');
 
         if(a('access_encounter_checkout')){
@@ -704,16 +703,6 @@ Ext.define('App.view.Viewport', {
      */
     onChartsWin: function(){
         this.ChartsWindow.show();
-    },
-
-    /**
-     * Show the Document window dialog.
-     */
-    onNewDocumentsWin: function(action){
-        this.PatientOrdersWindow.eid = this.patient.eid;
-        this.PatientOrdersWindow.pid = this.patient.pid;
-        this.PatientOrdersWindow.show();
-        this.PatientOrdersWindow.cardSwitch(action);
     },
 
     onWebCamComplete: function(msg){

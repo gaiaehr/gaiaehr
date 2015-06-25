@@ -417,7 +417,7 @@ class CCDDocument {
 	 */
 	public function save($toDir, $fileName) {
 		try {
-			$filename = $fileName ? $fileName : $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname'];
+			$filename = $fileName ? $fileName : $this->getFileName();
 			$this->zipIt($toDir, $filename);
 		} catch(Exception $e) {
 			print $e->getMessage();

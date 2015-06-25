@@ -156,7 +156,7 @@ class CombosData {
 		if($this->U == null)
 			$this->U = MatchaModel::setSenchaModel('App.model.administration.User');
 
-		$sql = 'SELECT users.id AS option_value, CONCAT_WS(\' \', users.title, users.lname) as option_name
+		$sql = 'SELECT users.id AS option_value, CONCAT(users.title, \' \', users.lname, \', \', users.fname) as option_name
 			      FROM `users`
 				 WHERE active = \'1\' AND authorized = \'1\' AND (npi IS NOT null AND npi != \'\')
 				 ORDER BY option_name ASC';

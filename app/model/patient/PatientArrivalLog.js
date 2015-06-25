@@ -37,6 +37,9 @@ Ext.define('App.model.patient.PatientArrivalLog', {
 			create: 'PoolArea.addPatientArrivalLog',
 			update: 'PoolArea.updatePatientArrivalLog',
 			destroy: 'PoolArea.removePatientArrivalLog'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	}
 });

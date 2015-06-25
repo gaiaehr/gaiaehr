@@ -156,7 +156,7 @@ Ext.define('App.controller.patient.Vitals', {
 			btn = me.getVitalSignBtn();
 
 		this.doUpdateBlocks(records);
-		if(records.length == 0 || records[0].data.auth_uid > 0){
+		if(records.length === 0 || records[0].data.auth_uid > 0){
 			btn.disable();
 		}else{
 			btn.enable();
@@ -171,6 +171,8 @@ Ext.define('App.controller.patient.Vitals', {
 			app.msg(_('oops'),_('multi_select_signed_records_not_authorized'), true);
 			return false;
 		}
+
+		return true;
 
 	},
 
@@ -193,7 +195,7 @@ Ext.define('App.controller.patient.Vitals', {
 	},
 
 	onHistoryGridBeforeEdit: function(plugin, context){
-		if(context.record.data.auth_uid != 0){
+		if(context.record.data.auth_uid !== 0){
 			app.msg(_('oops'), _('this_record_can_not_be_modified_because_it_has_been_signed_by') + ' ' + context.record.data.authorized_by, true);
 			return false;
 		}
@@ -224,14 +226,18 @@ Ext.define('App.controller.patient.Vitals', {
 		app.fireEvent('beforevitalssigned', records);
 
 		app.passwordVerificationWin(function(btn, password){
+
 			if(btn == 'ok'){
+
 				User.verifyUserPass(password, function(provider, response){
 					if(response.result){
+
 						for(var i = 0; i < records.length; i++){
 							records[i].set({
 								auth_uid: app.user.id
 							});
 						}
+
 						records[0].store.sync({
 							callback: function(){
 								app.msg('Sweet!', _('vitals_signed'));
@@ -262,6 +268,7 @@ Ext.define('App.controller.patient.Vitals', {
 
 	doUpdateBlocks: function(records){
 		var me = this;
+
 		if(records.length > 0){
 			me.getBpBlock().update(me.getBlockTemplate('bp', records[0]));
 			if(me.isMetric()){
@@ -286,6 +293,7 @@ Ext.define('App.controller.patient.Vitals', {
 				me.getWeighBlock().update(me.getBlockTemplate('weight_lbs', false));
 				me.getHeightBlock().update(me.getBlockTemplate('height_in', false));
 			}
+
 			me.getBmiBlock().update(me.getBlockTemplate('bmi', false));
 			me.getNotesBlock().update(me.getBlockTemplate('other_notes', false));
 		}
@@ -308,28 +316,28 @@ Ext.define('App.controller.patient.Vitals', {
 			}else if(property == 'temp_c' || property == 'temp_f'){
 				title = _('temp');
 				symbol = property == 'temp_c' ? '&deg;C' : '&deg;F';
-				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
-				extra = record.data.temp_location == '' ? '--' : record.data.temp_location;
+				value = record.data[property] === null || record.data[property] === '' ? '--' : record.data[property] + symbol;
+				extra = record.data.temp_location === '' ? '--' : record.data.temp_location;
 
 			}else if(property == 'weight_lbs' || property == 'weight_kg'){
 				title = _('weight');
 				//				symbol = property == 'weight_lbs' ? ' lbs' : ' kg';
-				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
+				value = record.data[property] === null || record.data[property] === '' ? '--' : record.data[property] + symbol;
 				extra = property == 'weight_lbs' ? 'lbs/oz' : 'Kg';
 
 			}else if(property == 'height_in' || property == 'height_cm'){
 				title = _('height');
 				symbol = property == 'height_in' ? ' in' : ' cm';
-				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property] + symbol;
+				value = record.data[property] === null || record.data[property] === '' ? '--' : record.data[property] + symbol;
 
 			}else if(property == 'bmi'){
 				title = _(property);
-				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
-				extra = record.data.bmi_status == '' ? '--' : record.data.bmi_status;
+				value = record.data[property] === null || record.data[property] === '' ? '--' : record.data[property];
+				extra = record.data.bmi_status === '' ? '--' : record.data.bmi_status;
 
 			}else if(property == 'other_notes'){
 				title = _('notes');
-				value = record.data[property] == null || record.data[property] == '' ? '--' : record.data[property];
+				value = record.data[property] === null || record.data[property] === '' ? '--' : record.data[property];
 				align = 'left'
 			}
 		}else{
@@ -354,12 +362,14 @@ Ext.define('App.controller.patient.Vitals', {
 
 	doReconfigureGrid: function(store){
 		var me = this;
+
 		store.sort([
 			{
 				property: 'date',
 				direction: 'DESC'
 			}
 		]);
+
 		store.on('write', me.onVitalStoreWrite, me);
 		me.getVitalsHistoryGrid().reconfigure(store);
 		me.getVitalsHistoryGrid().getSelectionModel().select(0);

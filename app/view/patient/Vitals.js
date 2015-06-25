@@ -27,6 +27,8 @@ Ext.define('App.view.patient.Vitals', {
 	layout: 'border',
 	bodyPadding: 5,
 	items: [
+
+		// VITALS HEADER BLOCKS
 		{
 			xtype: 'container',
 			height: 100,
@@ -86,7 +88,7 @@ Ext.define('App.view.patient.Vitals', {
 			],
 			viewConfig: {
 				getRowClass: function(record, rowIndex, rowParams, store){
-					return record.data.auth_uid == 0 ? 'unsignedVital' : '';
+					return record.data.auth_uid === 0 ? 'unsignedVital' : '';
 				}
 			},
 			tbar: [
@@ -168,7 +170,7 @@ Ext.define('App.view.patient.Vitals', {
 					enableKeyEvents: true
 				},
 				renderer:function(v){
-					return v == 0 || v == null ? '' : v + '&deg;F'
+					return v === 0 || v === null ? '' : v + '&deg;F'
 				}
 			});
 		}else{
@@ -183,7 +185,7 @@ Ext.define('App.view.patient.Vitals', {
 					enableKeyEvents: true
 				},
 				renderer:function(v){
-					return v == 0 || v == null ? '' : v + '&deg;C'
+					return v === 0 || v === null ? '' : v + '&deg;C'
 				}
 			});
 		}
@@ -209,7 +211,7 @@ Ext.define('App.view.patient.Vitals', {
 					enableKeyEvents: true
 				},
 				renderer:function(v){
-					return v == 0 || v == null ? '' : v + ' lbs/oz'
+					return v === 0 || v === null ? '' : v + ' lbs/oz'
 				}
 			});
 			columns.push({
@@ -223,7 +225,7 @@ Ext.define('App.view.patient.Vitals', {
 					enableKeyEvents: true
 				},
 				renderer:function(v){
-					return v == 0 || v == null ? '' : v + ' in'
+					return v === 0 || v === null ? '' : v + ' in'
 				}
 			});
 		}else{
@@ -238,7 +240,7 @@ Ext.define('App.view.patient.Vitals', {
 					enableKeyEvents: true
 				},
 				renderer:function(v){
-					return v == 0 || v == null ? '' : v + ' kg'
+					return v === 0 || v === null ? '' : v + ' kg'
 				}
 			});
 			columns.push({
@@ -252,7 +254,7 @@ Ext.define('App.view.patient.Vitals', {
 					enableKeyEvents: true
 				},
 				renderer:function(v){
-					return v == 0 || v == null ? '' : v + ' cm'
+					return v === 0 || v === null ? '' : v + ' cm'
 				}
 			});
 		}
@@ -266,7 +268,7 @@ Ext.define('App.view.patient.Vitals', {
 				vtype: 'numeric'
 			},
 			renderer:function(v){
-				return v == 0 || v == null ? '' : v;
+				return v === 0 || v === null ? '' : v;
 			}
 		});
 
@@ -278,7 +280,7 @@ Ext.define('App.view.patient.Vitals', {
 				vtype: 'numeric'
 			},
 			renderer:function(v){
-				return v == 0 || v == null ? '' : v;
+				return v === 0 || v === null ? '' : v;
 			}
 		});
 

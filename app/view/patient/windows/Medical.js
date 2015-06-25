@@ -32,7 +32,11 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.SocialPanel',
 		'App.view.patient.Allergies',
 		'App.view.patient.AdvanceDirectives',
-		'App.view.patient.CognitiveAndFunctionalStatus'
+		'App.view.patient.CognitiveAndFunctionalStatus',
+		'App.view.patient.LabOrders',
+		'App.view.patient.RadOrders',
+		'App.view.patient.RxOrders',
+		'App.view.patient.DoctorsNotes'
 	],
 
 	initComponent: function(){
@@ -83,6 +87,30 @@ Ext.define('App.view.patient.windows.Medical', {
 					{
 						xtype: 'patientreferralspanel',
 						itemId: 'referrals'
+					},
+					/**
+					 * DOCTORS NOTE
+					 */
+					{
+						xtype: 'patientdoctorsnotepanel'
+					},
+					/**
+					 * LAB ORDERS PANEL
+					 */
+					{
+						xtype: 'patientlaborderspanel'
+					},
+					/**
+					 * X-RAY PANEL
+					 */
+					{
+						xtype: 'patientradorderspanel'
+					},
+					/**
+					 * PRESCRIPTION PANEL
+					 */
+					{
+						xtype:'patientrxorderspanel'
 					}
 				]
 			}

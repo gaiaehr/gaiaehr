@@ -24,7 +24,7 @@ Ext.define('App.view.patient.CognitiveAndFunctionalStatus', {
 		'App.store.patient.CognitiveAndFunctionalStatus'
 	],
 	xtype: 'patientcognitiveandfunctionalstatuspanel',
-	title: _('cognitive_and_functional_status'),
+	title: _('cog_and_func_status'),
 	columnLines: true,
 	store: Ext.create('App.store.patient.CognitiveAndFunctionalStatus', {
 		remoteFilter: true

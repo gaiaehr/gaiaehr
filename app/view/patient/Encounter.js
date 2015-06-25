@@ -31,9 +31,9 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.FamilyHistory',
 		'App.view.patient.encounter.ProgressNotesHistory',
 		'App.view.patient.ProgressNote',
+		'App.view.patient.DecisionSupportWarningPanel',
 		'App.ux.combo.EncounterPriority',
-		'App.ux.combo.ActiveProviders',
-		'App.view.patient.DecisionSupportWarningPanel'
+		'App.ux.combo.ActiveProviders'
 	],
 
 	enableCPT: eval(g('enable_encounter_cpt')),
@@ -405,31 +405,26 @@ Ext.define('App.view.patient.Encounter', {
 				},
 				'-',
 				{
+					text: _('new_doctors_note'),
+					action: 'DoctorsNotes'
+				},
+				'-',
+				{
 					text: _('lab_orders'),
 					action: 'LabOrders',
-					scope: me,
-					handler: me.newDoc
+					cls: 'order-btn'
 				},
 				'-',
 				{
 					text: _('xray_ct_orders'),
 					action: 'RadOrders',
-					scope: me,
-					handler: me.newDoc
+					cls: 'order-btn'
 				},
 				'-',
 				{
 					text: _('rx_orders'),
 					action: 'RxOrderGrid',
-					scope: me,
-					handler: me.newDoc
-				},
-				'-',
-				{
-					text: _('new_doctors_note'),
-					action: 'DoctorsNotes',
-					scope: me,
-					handler: me.newDoc
+					cls: 'order-btn'
 				},
 				'-',
 				'->',
@@ -467,10 +462,6 @@ Ext.define('App.view.patient.Encounter', {
 		me.callParent();
 		me.down('panel').addDocked(me.panelToolBar);
 
-	},
-
-	newDoc: function(btn){
-		app.onNewDocumentsWin(btn.action)
 	},
 
 	/**
@@ -885,7 +876,7 @@ Ext.define('App.view.patient.Encounter', {
 	 */
 	encounterTimer: function(){
 		var me = this, timer = me.timer(me.currEncounterStartDate, new Date());
-		if(app.patient.pid != null){
+		if(app.patient.pid !== null){
 			me.updateTitle(app.patient.name + ' - ' + app.patient.sexSymbol + ' - ' + app.patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('open_encounter') + ')', app.patient.readOnly, timer);
 		}else{
 			me.stopTimer();
@@ -988,8 +979,10 @@ Ext.define('App.view.patient.Encounter', {
 	},
 
 	getButtonsToDisable: function(){
-		var me = this, buttons = [];
-		if(me.ButtonsToDisable == null){
+		var me = this,
+			buttons = [];
+
+		if(me.ButtonsToDisable === null || typeof me.ButtonsToDisable == 'undefined'){
 			if(me.vitalsPanel) buttons.concat(buttons, me.vitalsPanel.query('button'));
 			if(me.reviewSysPanel) buttons.concat(buttons, me.reviewSysPanel.query('button'));
 			if(me.reviewSysCkPanel) buttons.concat(buttons, me.reviewSysCkPanel.query('button'));
@@ -1001,6 +994,7 @@ Ext.define('App.view.patient.Encounter', {
 			if(app.checkoutWindow) buttons.concat(buttons, app.checkoutWindow.query('button'));
 			me.ButtonsToDisable = buttons;
 		}
+
 		return me.ButtonsToDisable;
 	},
 

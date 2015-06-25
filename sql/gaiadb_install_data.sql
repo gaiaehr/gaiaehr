@@ -3395,7 +3395,7 @@ INSERT INTO `forms_layout` (`id`, `name`, `form_data`, `model`, `active`) VALUES
   (8, 'Review of Systems', 'encounter_review_of_systems', 'App.model.patient.ReviewOfSystems', 1),
   (9, 'Review of Systems Check', 'encounter_review_of_systems_check', '', 0),
   (10, 'HCFA 1500 Options', 'encounter_hcfa_1500_options', 'App.model.patient.HCFAOptions', 1),
-  (11, 'Insurance', 'patient_insurances', 'App.model.patient.Insurance', 1),
+  (11, 'Insurance', 'patient_insurances', 'App.model.patient.Insurance', 0),
   (12, 'Family History', 'patient_family_history', 'App.model.patient.FamilyHistory', 1);
 
 INSERT INTO `geo_country_reference` (`countries_id`, `countries_name`, `countries_iso_code_2`, `countries_iso_code_3`) VALUES

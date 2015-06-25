@@ -28,6 +28,9 @@ Ext.define('App.view.patient.RadOrders', {
 	xtype: 'patientradorderspanel',
 	title: _('xray_ct_orders'),
 	columnLines: true,
+	tabConfig: {
+		cls: 'order-tab'
+	},
 	itemId: 'RadOrders',
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		storeId: 'RadOrderStore',

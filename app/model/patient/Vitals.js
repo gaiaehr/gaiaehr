@@ -4,8 +4,7 @@
 Ext.define('App.model.patient.Vitals', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'encounter_vitals',
-		comment: 'Vitals'
+		name: 'encounter_vitals'
 	},
 	fields: [
 		{
@@ -200,6 +199,9 @@ Ext.define('App.model.patient.Vitals', {
 			read: 'Vitals.getVitals',
 			create: 'Vitals.addVitals',
 			update: 'Vitals.updateVitals'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	},
 	belongsTo: {

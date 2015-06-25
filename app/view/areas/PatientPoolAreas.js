@@ -126,6 +126,13 @@ Ext.define('App.view.areas.PatientPoolAreas', {
 							header: _('patient_name'),
 							flex: 1,
 							dataIndex: 'name'
+						},
+						{
+							xtype: 'datecolumn',
+							header: _('time_in'),
+							width: 100,
+							dataIndex: 'time_in',
+							format: g('time_display_format')
 						}
 					],
 					viewConfig: {

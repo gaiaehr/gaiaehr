@@ -29,9 +29,7 @@ class SoapHandler {
 		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 
 		include_once(str_replace('\\', '/', dirname(__FILE__)) . '/../../registry.php');
-
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
-
 		include_once(ROOT . '/classes/MatchaHelper.php');
 
 		if(isset($params->Provider)){

@@ -34,6 +34,11 @@ Ext.define('App.model.areas.PoolDropAreas', {
 		{
 			name: 'pic',
 			type: 'string'
+		},
+		{
+			name: 'time_in',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	]
 });

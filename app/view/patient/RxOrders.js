@@ -32,6 +32,9 @@ Ext.define('App.view.patient.RxOrders', {
 	xtype: 'patientrxorderspanel',
 	title: _('rx_orders'),
 	columnLines: true,
+	tabConfig: {
+		cls: 'order-tab'
+	},
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.Medications', {
 		storeId: 'RxOrderStore',

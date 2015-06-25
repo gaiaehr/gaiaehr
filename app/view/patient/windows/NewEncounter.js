@@ -102,8 +102,6 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 
 				// placeholder
 
-
-
 			} else{
 				app.accessDenied();
 			}

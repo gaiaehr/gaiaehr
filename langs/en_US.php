@@ -1403,6 +1403,7 @@ $LANG = array(
 	'plan_date'         	                => 'Plan Date',
 	'functional_status'                     => 'Functional Status',
 	'cognitive_and_functional_status'       => 'Cognitive and Functional Status',
+	'cog_and_func_status'                   => 'Cog. and Func. Status',
 	'direct_address'                        => 'Direct Address',
 	'attachment'                            => 'Attachment',
 	'attachments'                           => 'Attachments',
@@ -1586,6 +1587,15 @@ $LANG = array(
     'problems'                              => 'Problems',
     'no_templates_found'                    => 'No Templates Found',
     'add_templates_message'                 => 'Would you like to add this templates to this encounter?',
+    'dob_sex_ss'                            => 'DOB/Sex/S.S.',
+    'expiration_date'                       => 'Expiration Date',
+    'subscriber'                            => 'Subscriber',
+    'employer'                              => 'Employer',
+    'ss'                                    => 'S.S.',
+    'country'                               => 'Country',
+    'time_in'                               => 'Time In',
+    'time_out'                              => 'Time Out',
+
 
 
     'amendment_approval_confirmation'       => 'This will approve the amendment and commit any changes to the patient record, would you like to continue?',

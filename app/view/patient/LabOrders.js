@@ -29,6 +29,9 @@ Ext.define('App.view.patient.LabOrders', {
 	title: _('lab_orders'),
 	itemId: 'LabOrders',
 	columnLines: true,
+	tabConfig: {
+		cls: 'order-tab'
+	},
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		storeId: 'LabOrderStore',
 		groupField: 'date_ordered',

@@ -2929,7 +2929,7 @@ CREATE TABLE `patient_insurances` (
   `pid` int(11) DEFAULT NULL,
   `insurance_id` int(11) DEFAULT NULL,
   `insurance_type` varchar(1) DEFAULT NULL COMMENT 'P = primary S = supplemental C =complementary D = Disable',
-  `effective_date` date NOT NULL,
+  `effective_date` date DEFAULT NULL,
   `expiration_date` date DEFAULT NULL,
   `group_number` varchar(40) DEFAULT NULL COMMENT 'group number',
   `policy_number` varchar(40) DEFAULT NULL,

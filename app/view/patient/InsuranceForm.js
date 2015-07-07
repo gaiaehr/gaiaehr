@@ -25,9 +25,10 @@ Ext.define('App.view.patient.InsuranceForm', {
 	xtype: 'patientinsuranceform',
 	border: false,
 	bodyBorder: false,
+	closable: true,
 	fieldDefaults: {
 		labelAlign: 'right',
-		labelWidth: 140,
+		labelWidth: 140
 	},
 	items: [
 		{
@@ -43,6 +44,7 @@ Ext.define('App.view.patient.InsuranceForm', {
 							xtype: 'fieldset',
 							title: _('insurance'),
 							width: 660,
+							margin: 0,
 							items: [
 								{
 									xtype: 'fieldcontainer',
@@ -151,6 +153,7 @@ Ext.define('App.view.patient.InsuranceForm', {
 							xtype: 'fieldset',
 							title: _('subscriber'),
 							width: 660,
+							style: 'background-color: beige',
 							items: [
 								{
 									xtype: 'gaiaehr.combo',

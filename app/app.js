@@ -15168,8 +15168,7 @@ Ext.define('App.model.patient.EncounterService', {
 Ext.define('App.model.patient.encounter.snippetTree', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'soap_snippets',
-		comment: 'Snippet Tree'
+		name: 'soap_snippets'
 	},
 	fields: [
 		{
@@ -51265,26 +51264,28 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 	onSnippetSaveBtnClick: function(){
 		var me = this,
 			win = me.getSnippetWindow(),
-			store = me.getSnippetsTreePanel().getStore(),
 			form = me.getSnippetForm().getForm(),
 			values = form.getValues(),
 			record = form.getRecord(),
-			isNew = record.data.id == '';
-
-		record.set(values);
+			isNew = record.data.id === '' || record.data.id === 0;
 
 		if(form.isValid()){
 
+			record.set(values);
+
 			if(isNew) win.parentRecord.appendChild(record);
 
-			store.sync({
-				success: function(){
+			record.save({
+				success: function(record, reuqest){
+					record.set({ id: reuqest.response.result.id });
+					record.commit();
 					app.msg(_('sweet'), _('record_saved'));
 				},
 				failure: function(){
 					app.msg(_('oops'), _('record_error'), true);
 				}
 			});
+
 
 			me.getSnippetWindow().close();
 		}
@@ -51293,7 +51294,7 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 	onSnippetCancelBtnClick: function(){
 		var record = this.getSnippetForm().getForm().getRecord();
 
-		if(record.data.id == '') record.destroy();
+		if(record.data.id === '' || record.data.id === 0) record.destroy();
 		this.getSnippetWindow().close();
 	},
 
@@ -51320,16 +51321,13 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 		me.getSnippetFormTextField().hide();
 		me.getSnippetFormTextField().disable();
 
-		if(selection.length == 0){
+		if(selection.length === 0){
 			parentRecord = store.getRootNode();
 		}else if(selection[0].data.leaf){
 			parentRecord = selection[0].parentNode;
 		}else{
 			parentRecord = selection[0];
 		}
-
-
-		say(tree.action);
 
 		newRecord = Ext.create('App.model.patient.encounter.snippetTree', {
 			parentId: parentRecord.data.id,
@@ -51340,14 +51338,29 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 
 		win.parentRecord = parentRecord;
 
-		say(newRecord);
-
 		me.getSnippetForm().getForm().loadRecord(newRecord);
 	},
 
 	onSnippetBtnEdit: function(grid, rowIndex, colIndex, actionItem, event, record){
+
 		this.getSnippetEditWindow();
-		this.getSnippetForm().getForm().loadRecord(record);
+
+		var me = this,
+			field = me.getSnippetFormTextField(),
+			win = me.getSnippetWindow(),
+			form = me.getSnippetForm().getForm();
+
+		if(record.get('leaf')){
+			win.setTitle(_('title') + ' (' + _('required') + ')');
+			field.show();
+			field.enable();
+		}else{
+			win.setTitle(_('title') + ' (' + _('optional') + ')');
+			field.hide();
+			field.disable();
+		}
+
+		form.loadRecord(record);
 	}
 
 });
@@ -52897,7 +52910,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					renderer: function(v, meta, record){
 						var toolTip = record.data.text ? ' data-qtip="' + record.data.text + '" ' : '';
 
-						return '<span ' + toolTip + '>' + (v != '' ? v : record.data.text) + '</span>'
+						return '<span ' + toolTip + '>' + (v !== '' ? v : record.data.text) + '</span>'
 					}
 				},
 				{
@@ -53346,8 +53359,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 */
 	onSnippetDblClick: function(view, record){
 
-
-
 		if(record.data.leaf){
 			var me = this,
 				form = me.form.getForm(),
@@ -53356,10 +53367,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				text = record.data.text,
 				value = field.getValue(),
 				PhIndex = text.indexOf('??'),
-				textArea = me.phWindow.down('textarea');
+				textArea = me.phWindow.down('textarea'),
+				glue = value.substr(value.length - 1) == ' ' ? '' : ' ';
 
 			if(PhIndex == -1){
-				field.setValue(value + me.closeSentence(text));
+				field.setValue(value + glue + text);
 			}else{
 				me.phWindow.show();
 				textArea.setValue(text);
@@ -53382,9 +53394,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			action = me.snippets.action.split('-'),
 			field = form.findField(action[0]),
 			value = field.getValue(),
-			text = textArea.getValue();
+			text = textArea.getValue(),
+			glue = value.substr(value.length - 1) == ' ' ? '' : ' ';
 
-		field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
+		field.setValue(value + glue + text);
 		me.phWindow.close();
 		textArea.reset();
 	},
@@ -53406,17 +53419,17 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		if(e.getKey() == e.ENTER) this.onPhWindowSubmit();
 	},
 
-	/**
-	 * This will add a period to the end of the sentence if last character is not a . ? or
-	 * @param sentence
-	 * @return {*|String|String|String|String|String|String|String|String|String|String}
-	 */
-	closeSentence: function(sentence){
-		var v = Ext.String.trim(sentence),
-			c = v.charAt(v.length - 1);
-		if(v == '') return v;
-		return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
-	},
+	///**
+	// * This will add a period to the end of the sentence if last character is not a . ? or
+	// * @param sentence
+	// * @return {*|String|String|String|String|String|String|String|String|String|String}
+	// */
+	//closeSentence: function(sentence){
+	//	var v = Ext.String.trim(sentence),
+	//		c = v.charAt(v.length - 1);
+	//	if(v == '') return v;
+	//	return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
+	//},
 
 	/**
 	 *

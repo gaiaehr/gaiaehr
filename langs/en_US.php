@@ -1595,6 +1595,8 @@ $LANG = array(
     'country'                               => 'Country',
     'time_in'                               => 'Time In',
     'time_out'                              => 'Time Out',
+    'required'                              => 'Required',
+    'optional'                              => 'Optional',
 
 
 

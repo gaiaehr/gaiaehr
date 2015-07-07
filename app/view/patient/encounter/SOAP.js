@@ -81,7 +81,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 					renderer: function(v, meta, record){
 						var toolTip = record.data.text ? ' data-qtip="' + record.data.text + '" ' : '';
 
-						return '<span ' + toolTip + '>' + (v != '' ? v : record.data.text) + '</span>'
+						return '<span ' + toolTip + '>' + (v !== '' ? v : record.data.text) + '</span>'
 					}
 				},
 				{
@@ -530,8 +530,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	 */
 	onSnippetDblClick: function(view, record){
 
-
-
 		if(record.data.leaf){
 			var me = this,
 				form = me.form.getForm(),
@@ -540,10 +538,11 @@ Ext.define('App.view.patient.encounter.SOAP', {
 				text = record.data.text,
 				value = field.getValue(),
 				PhIndex = text.indexOf('??'),
-				textArea = me.phWindow.down('textarea');
+				textArea = me.phWindow.down('textarea'),
+				glue = value.substr(value.length - 1) == ' ' ? '' : ' ';
 
 			if(PhIndex == -1){
-				field.setValue(value + me.closeSentence(text));
+				field.setValue(value + glue + text);
 			}else{
 				me.phWindow.show();
 				textArea.setValue(text);
@@ -566,9 +565,10 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			action = me.snippets.action.split('-'),
 			field = form.findField(action[0]),
 			value = field.getValue(),
-			text = textArea.getValue();
+			text = textArea.getValue(),
+			glue = value.substr(value.length - 1) == ' ' ? '' : ' ';
 
-		field.setValue(me.closeSentence(value) + ' ' + me.closeSentence(text));
+		field.setValue(value + glue + text);
 		me.phWindow.close();
 		textArea.reset();
 	},
@@ -590,17 +590,17 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		if(e.getKey() == e.ENTER) this.onPhWindowSubmit();
 	},
 
-	/**
-	 * This will add a period to the end of the sentence if last character is not a . ? or
-	 * @param sentence
-	 * @return {*|String|String|String|String|String|String|String|String|String|String}
-	 */
-	closeSentence: function(sentence){
-		var v = Ext.String.trim(sentence),
-			c = v.charAt(v.length - 1);
-		if(v == '') return v;
-		return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
-	},
+	///**
+	// * This will add a period to the end of the sentence if last character is not a . ? or
+	// * @param sentence
+	// * @return {*|String|String|String|String|String|String|String|String|String|String}
+	// */
+	//closeSentence: function(sentence){
+	//	var v = Ext.String.trim(sentence),
+	//		c = v.charAt(v.length - 1);
+	//	if(v == '') return v;
+	//	return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
+	//},
 
 	/**
 	 *

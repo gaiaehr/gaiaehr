@@ -69,26 +69,28 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 	onSnippetSaveBtnClick: function(){
 		var me = this,
 			win = me.getSnippetWindow(),
-			store = me.getSnippetsTreePanel().getStore(),
 			form = me.getSnippetForm().getForm(),
 			values = form.getValues(),
 			record = form.getRecord(),
-			isNew = record.data.id == '';
-
-		record.set(values);
+			isNew = record.data.id === '' || record.data.id === 0;
 
 		if(form.isValid()){
 
+			record.set(values);
+
 			if(isNew) win.parentRecord.appendChild(record);
 
-			store.sync({
-				success: function(){
+			record.save({
+				success: function(record, reuqest){
+					record.set({ id: reuqest.response.result.id });
+					record.commit();
 					app.msg(_('sweet'), _('record_saved'));
 				},
 				failure: function(){
 					app.msg(_('oops'), _('record_error'), true);
 				}
 			});
+
 
 			me.getSnippetWindow().close();
 		}
@@ -97,7 +99,7 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 	onSnippetCancelBtnClick: function(){
 		var record = this.getSnippetForm().getForm().getRecord();
 
-		if(record.data.id == '') record.destroy();
+		if(record.data.id === '' || record.data.id === 0) record.destroy();
 		this.getSnippetWindow().close();
 	},
 
@@ -124,16 +126,13 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 		me.getSnippetFormTextField().hide();
 		me.getSnippetFormTextField().disable();
 
-		if(selection.length == 0){
+		if(selection.length === 0){
 			parentRecord = store.getRootNode();
 		}else if(selection[0].data.leaf){
 			parentRecord = selection[0].parentNode;
 		}else{
 			parentRecord = selection[0];
 		}
-
-
-		say(tree.action);
 
 		newRecord = Ext.create('App.model.patient.encounter.snippetTree', {
 			parentId: parentRecord.data.id,
@@ -144,14 +143,29 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 
 		win.parentRecord = parentRecord;
 
-		say(newRecord);
-
 		me.getSnippetForm().getForm().loadRecord(newRecord);
 	},
 
 	onSnippetBtnEdit: function(grid, rowIndex, colIndex, actionItem, event, record){
+
 		this.getSnippetEditWindow();
-		this.getSnippetForm().getForm().loadRecord(record);
+
+		var me = this,
+			field = me.getSnippetFormTextField(),
+			win = me.getSnippetWindow(),
+			form = me.getSnippetForm().getForm();
+
+		if(record.get('leaf')){
+			win.setTitle(_('title') + ' (' + _('required') + ')');
+			field.show();
+			field.enable();
+		}else{
+			win.setTitle(_('title') + ' (' + _('optional') + ')');
+			field.hide();
+			field.disable();
+		}
+
+		form.loadRecord(record);
 	}
 
 });

@@ -37,9 +37,9 @@ class Snippets {
 		if(isset($params->filter)){
 			return $this->Snippet->load($params)->all();
 		} elseif(isset($params->id)){
-			return $this->Snippet->load(array('parentId' => $params->id))->all();
+			return $this->Snippet->load(['parentId' => $params->id])->all();
 		} else{
-			return array();
+			return [];
 		}
 	}
 

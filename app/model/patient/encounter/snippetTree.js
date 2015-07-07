@@ -19,8 +19,7 @@
 Ext.define('App.model.patient.encounter.snippetTree', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'soap_snippets',
-		comment: 'Snippet Tree'
+		name: 'soap_snippets'
 	},
 	fields: [
 		{

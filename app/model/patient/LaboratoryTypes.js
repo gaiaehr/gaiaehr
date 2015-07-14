@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,20 +18,16 @@
 
 Ext.define('App.model.patient.LaboratoryTypes', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'laboratorytypes',
-		comment:'Laboratory Types'
-	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Laboratory Types ID'},
+		{name: 'id', type: 'int', comment: 'Laboratory Types ID'},
 		{name: 'label', type: 'string'},
 		{name: 'fields' }
 
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Laboratories.getActiveLaboratoryTypes
+		api: {
+			read: 'Laboratories.getActiveLaboratoryTypes'
 		}
 	}
 });

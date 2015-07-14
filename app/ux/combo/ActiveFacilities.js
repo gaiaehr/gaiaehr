@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,45 +18,41 @@
 
 Ext.define('App.ux.combo.ActiveFacilities', {
 	extend: 'Ext.form.ComboBox',
-	alias: 'widget.mitos.activefacilitiescombo',
+	xtype: 'activefacilitiescombo',
+	storeAutoLoad: true,
+	editable: false,
+	queryMode: 'local',
+	valueField: 'option_value',
+	displayField: 'option_name',
+	emptyText: _('select'),
 	initComponent: function(){
 		var me = this;
 
-		Ext.define('ActiveFacilitiesComboModel',
-			{
-				extend: 'Ext.data.Model',
-				fields: [
-					{
-						name: 'option_name',
-						type: 'string'
-					},
-					{
-						name: 'option_value',
-						type: 'int'
-					}
-				],
-				proxy: {
-					type: 'direct',
-					api: {
-						read: CombosData.getActiveFacilities
-					}
+		Ext.define('ActiveFacilitiesComboModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{
+					name: 'option_name',
+					type: 'string'
+				},
+				{
+					name: 'option_value',
+					type: 'int'
 				}
-			});
-
-		me.store = Ext.create('Ext.data.Store',
-			{
-				model: 'ActiveFacilitiesComboModel',
-				autoLoad: true
-			});
-
-		Ext.apply(this, {
-			editable: false,
-			queryMode: 'local',
-			valueField: 'option_value',
-			displayField: 'option_name',
-			emptyText: i18n('select'),
-			store: me.store
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'CombosData.getActiveFacilities'
+				}
+			}
 		});
+
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'ActiveFacilitiesComboModel',
+			autoLoad: me.storeAutoLoad
+		});
+
 		me.callParent(arguments);
 	}
 });

@@ -13,7 +13,7 @@ Ext.define('App.ux.combo.Medications', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: CombosData.getOptionsByListId
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 74
@@ -31,7 +31,7 @@ Ext.define('App.ux.combo.Medications', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

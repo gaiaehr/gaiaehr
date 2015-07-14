@@ -66,8 +66,14 @@ Ext.define('App.ux.form.AdvanceForm', {
      * @return {*|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic|Ext.form.Basic}
      */
     loadRecord: function(record){
-        var form = this, formPanel = form.owner, plugin = this.owner.pugin, rec;
-        form.isLoading = true;
+        var form = this,
+	        formPanel = form.owner,
+	        plugin = this.owner.pugin,
+	        rec;
+
+	    if(!record) return form;
+
+	    form.isLoading = true;
         form._record = record;
         plugin.setFormFieldsClean(false);
         record.store.on('write', plugin.onStoreWrite, plugin);
@@ -104,7 +110,7 @@ Ext.define('App.ux.form.AdvanceForm', {
                 fields[i].enableKeyEvents = true;
                 fields[i].on('keyup', this.setFieldCondition, this);
 	            fields[i].on('change', this.setFieldCondition, this);
-            }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'mitos.checkbox' || fields[i].xtype == 'checkbox'){
+            }else if(fields[i].xtype == 'radiofield' || fields[i].xtype == 'checkbox'){
                 fields[i].scope = this;
                 fields[i].handler = this.setFieldCondition;
 	            fields[i].on('change', this.setFieldCondition, this);
@@ -114,7 +120,6 @@ Ext.define('App.ux.form.AdvanceForm', {
             }else{
                 fields[i].on('select', this.setFieldCondition, this);
             }
-
         }
     },
     /**
@@ -122,7 +127,15 @@ Ext.define('App.ux.form.AdvanceForm', {
      * @param field
      */
     setFieldCondition: function(field){
-        var me = this, record = me.form.getRecord(), store = record.store, obj = {}, valueChanged, el = me.getFieldEl(field);
+        var me = this,
+	        record = me.form.getRecord(),
+	        store = record ? record.store : null,
+	        obj = {},
+	        valueChanged,
+	        el = me.getFieldEl(field);
+
+	    if(store == null) return;
+
         if((!me.form.isLoading && field.xtype != 'radiofield') || (!me.form.isLoading && field.xtype == 'radiofield' && field.checked)){
             obj[field.name] = field.getSubmitValue();
             record.set(obj);
@@ -198,7 +211,7 @@ Ext.define('App.ux.form.AdvanceForm', {
             return field.inputEl;
         }else if(field.xtype == 'radiofield'){
             return field.ownerCt.el;
-        }else if(field.xtype == 'mitos.checkbox' || field.xtype == 'checkbox'){
+        }else if(field.xtype == 'checkbox'){
             return field.el;
         }else{
             return field.el; // leave this for now

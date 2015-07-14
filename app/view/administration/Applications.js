@@ -1,25 +1,25 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.administration.Applications', {
     extend: 'App.ux.RenderPanel',
-    id: 'panelApplications',
-    pageTitle: i18n('applications'),
+    pageTitle: _('applications'),
+
     initComponent: function(){
         var me = this;
 
@@ -54,7 +54,7 @@ Ext.define('App.view.administration.Applications', {
 
                 },
                 {
-                    text: i18n('name'),
+                    text: _('name'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'app_name',
@@ -64,13 +64,13 @@ Ext.define('App.view.administration.Applications', {
                     }
                 },
                 {
-                    text: i18n('private_key'),
+                    text: _('private_key'),
                     flex: 1,
                     sortable: true,
                     dataIndex: 'pvt_key'
                 },
                 {
-                    text: i18n('active?'),
+                    text: _('active?'),
                     width: 50,
                     sortable: true,
                     renderer: me.boolRenderer,
@@ -82,7 +82,7 @@ Ext.define('App.view.administration.Applications', {
             ],
             tbar:[
                 {
-                    text:i18n('add'),
+                    text:_('add'),
                     iconCls:'icoAdd',
                     scope:me,
                     handler:me.addApplication
@@ -107,7 +107,7 @@ Ext.define('App.view.administration.Applications', {
                     me.store.remove(record);
                     me.store.sync({
                         callback:function(){
-                            me.msg('Sweet!', i18n('record_removed'))
+                            me.msg('Sweet!', _('record_removed'))
                         }
                     });
                 }

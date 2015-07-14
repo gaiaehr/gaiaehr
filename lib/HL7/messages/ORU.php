@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once (str_replace('\\', '/',__DIR__).'/Message.php');
+include_once(dirname(__FILE__) . '/Message.php');
 
 class ORU extends Message {
 
-	function __construct($hl7){
+	function __construct($hl7) {
 		parent::__construct($hl7);
 	}
 
-	function __destruct(){
+	function __destruct() {
 		parent::__destruct();
 	}
 
-	protected function Events($event){
+	protected function Events($event) {
 		$events = array(
 			'R01' => array(
 				'MSH' => array('required' => true),
@@ -44,7 +44,7 @@ class ORU extends Message {
 								'NTE' => array('repeatable' => true),
 								'NK1' => array('repeatable' => true),
 								'VISIT' => array(
-									'items'=> array(
+									'items' => array(
 										'PV1' => array('required' => true),
 										'PV2' => array(),
 									)

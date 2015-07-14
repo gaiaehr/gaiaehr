@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 Ext.define('App.view.signature.SignatureWindow', {
 	extend      : 'Ext.window.Window',
-	title       : i18n('please_sign'),
+	title       : _('please_sign'),
 	closeAction : 'hide',
 	height      : 250,
 	width       : 500,
@@ -32,12 +32,12 @@ Ext.define('App.view.signature.SignatureWindow', {
 
         me.buttons = [
             {
-                text: i18n('save'),
+                text: _('save'),
                 scope:me,
                 handler:me.signatureSave
             },
             {
-                text: i18n('reset'),
+                text: _('reset'),
                 scope:me,
                 handler:me.signatureCancel
             }

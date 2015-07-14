@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 Ext.define('Modules.reportcenter.view.ReportPanel', {
     extend: 'App.ux.RenderPanel',
     id: 'panelReportPanel',
-    pageTitle: i18n('report_center'),
+    pageTitle: _('report_center'),
     pageLayout: {
         type: 'vbox',
         align: 'stretch'
@@ -51,14 +51,14 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
             items:[{}],
             buttons: [
                 {
-                    text: i18n('generate_report'),
+                    text: _('generate_report'),
                     iconCls: 'icoReport',
                     scope: me,
                     handler: me.generateReport
                 },
                 '-',
                 {
-                    text: i18n('get_pdf'),
+                    text: _('get_pdf'),
                     iconCls: 'icoReport',
                     disabled:true,
                     itemId:'pdf',
@@ -67,7 +67,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
                 },
                 '-',
                 {
-                    text: i18n('reset'),
+                    text: _('reset'),
                     iconCls: 'delete',
                     scope: me,
                     handler: me.resetRenderContainer
@@ -90,7 +90,7 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
                 dock: 'top',
                 items: [
                     {
-                        text: i18n('back'),
+                        text: _('back'),
                         iconCls: 'icoArrowLeftSmall',
                         handler: me.goToReportCenter
                     }

@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ Ext.define('App.view.patient.LaboratoryResults', {
     selectedItemCls  : 'vitals-column-selected',
     loadMask         : true,
     singleSelect     : true,
-	emptyText        : '<div style="color: #cbcbcb; font-size: 40px; text-align:center">' + i18n('no_laboratory_results_to_display') + '</div>',
+	emptyText        : '<div style="color: #cbcbcb; font-size: 40px; text-align:center">' + _('no_laboratory_results_to_display') + '</div>',
 	initComponent: function() {
 		var me = this;
         me.tpl = '<table>' +

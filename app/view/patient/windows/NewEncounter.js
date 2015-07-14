@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,118 +17,144 @@
  */
 
 Ext.define('App.view.patient.windows.NewEncounter', {
-    extend:'Ext.window.Window',
-    title:i18n('new_encounter_form'),
-    closeAction:'hide',
-    closable:false,
-    modal:true,
-    width:660,
+	extend: 'Ext.window.Window',
+	itemId: 'EncounterDetailWindow',
+	title: _('encounter'),
+	closeAction: 'hide',
+	closable: false,
+	modal: true,
+	width: 660,
 
-    initComponent:function(){
-        var me = this;
+	initComponent: function(){
+		var me = this;
 
-        me.store = Ext.create('App.store.patient.Encounter');
-        Ext.apply(me,{
-            items:[
-                me.encForm = Ext.create('Ext.form.Panel',{
-                    border:false,
-                    bodyPadding:'10 10 0 10'
-                })
-            ],
-            buttons:[
-                {
-                    text:i18n('create_encounter'),
-                    action:'encounter',
-                    scope:me,
-                    handler:me.createNewEncounter
-                },
-                {
-                    text:i18n('cancel'),
-                    scope:me,
-                    handler:me.cancelNewEnc
-                }
-            ],
-            listeners:{
-                show:me.checkValidation
-            }
-        }, me);
+		me.store = Ext.create('App.store.patient.Encounters');
 
-        me.getFormItems(this.encForm, 5);
-        me.callParent(arguments);
-    },
+		Ext.apply(me, {
+			items: [
+				me.encForm = Ext.create('Ext.form.Panel', {
+					itemId: 'EncounterDetailForm',
+					border: false,
+					bodyPadding: '10 10 0 10'
+				})
+			],
+			buttons: [
+				{
+					text: _('save'),
+					action: 'encounter',
+					scope: me,
+					handler: me.onFormSave
+				},
+				{
+					text: _('cancel'),
+					scope: me,
+					handler: me.cancelNewEnc
+				}
+			],
+			listeners: {
+				show: me.checkValidation,
+				hide: me.resetRecord
+			}
+		}, me);
 
-    checkValidation:function(){
-        if(app.patient.pid){
-            if(acl['add_encounters']){
-                var me = this,
-                    form = me.down('form').getForm();
-                me.setForm(form);
-                Encounter.checkOpenEncounters(function(provider, response){
-                    if(response.result.encounter){
-                        Ext.Msg.show({
-                            title:'Oops! ' + i18n('open_encounters_found') + '...',
-                            msg:i18n('do_you_want_to') + ' <strong>' + i18n('continue_creating_the_new_encounters') + '</strong><br>"' + i18n('click_no_to_review_encounter_history') + '"',
-                            buttons:Ext.Msg.YESNO,
-                            icon:Ext.Msg.QUESTION,
-                            fn:function(btn){
-                                if(btn != 'yes'){
-                                    me.hide();
-                                    form.reset();
-                                }
-                            }
-                        });
-                    }
-                });
-            }else{
-                app.accessDenied();
-            }
-        }else{
-            app.currPatientError();
-        }
-    },
+		me.getFormItems(this.encForm, 5);
 
-    setForm:function(form){
-        var model;
-        form.reset();
-        model = Ext.ModelManager.getModel('App.model.patient.Encounter');
-        model = Ext.ModelManager.create({
-            pid:app.patient.pid,
-            service_date:new Date()
-        }, model);
-        return form.loadRecord(model);
-    },
+		me.callParent(arguments);
+	},
 
-    createNewEncounter:function(btn){
-        var me = this,
-            form = me.encForm.getForm(),
-            values = form.getValues();
+	checkValidation: function(){
+		if(app.patient.pid){
+			var me = this,
+				form = me.down('form').getForm(),
+				record = form.getRecord();
 
-        if(form.isValid()){
-            if(acl['add_encounters']){
-                values.pid = app.patient.pid;
-                me.store.add(values);
-                me.store.sync({
-                    callback:function(batch, options){
-                        if(options.operations.create){
-                            var data = options.operations.create[0].data;
-                            app.patientButtonRemoveCls();
-                            app.patientBtn.addCls(data.priority);
-                            app.openEncounter(data.eid);
-                            me.close();
-                        }
-                    }
-                });
-            }else{
-                btn.up('window').close();
-                app.accessDenied();
-            }
-        }
-    },
+			if(!record && a('add_encounters')){
 
+				me.loadRecord(
+					Ext.create('App.model.patient.Encounter', {
+						pid: app.patient.pid,
+						service_date: new Date(),
+						priority: 'Minimal',
+						open_uid: app.user.id,
+						facility: app.user.facility,
+						billing_facility: app.user.facility,
+						brief_description: g('default_chief_complaint')
+					})
+				);
 
-    cancelNewEnc:function(){
-        this.close();
-        app.openPatientSummary();
-    }
+				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
+					if(response.result.encounter){
+						Ext.Msg.show({
+							title: 'Oops! ' + _('open_encounters_found') + '...',
+							msg: _('do_you_want_to') + ' <strong>' + _('continue_creating_the_new_encounters') + '</strong><br>"' + _('click_no_to_review_encounter_history') + '"',
+							buttons: Ext.Msg.YESNO,
+							icon: Ext.Msg.QUESTION,
+							fn: function(btn){
+								if(btn != 'yes'){
+									me.hide();
+									form.reset();
+								}
+							}
+						});
+					}
+				});
+			} else if(record && a('edit_encounters')){
+
+				// placeholder
+
+			} else{
+				app.accessDenied();
+			}
+		}else{
+			app.currPatientError();
+		}
+	},
+
+	onFormSave: function(btn){
+		var me = this,
+			form = me.encForm.getForm(),
+			values = form.getValues(),
+			record = form.getRecord(),
+			isNew = record.data.eid === 0 ;
+
+		say('isValid');
+		say(form.isValid());
+
+		if(form.isValid()){
+			if((isNew && a('add_encounters') || (!isNew && a('edit_encounters')))){
+				record.set(values);
+
+				record.save({
+					callback: function(record){
+						if(isNew){
+							var data = record.data;
+							app.patientButtonRemoveCls();
+							app.patientBtn.addCls(data.priority);
+							app.openEncounter(data.eid);
+						}
+						me.close();
+					}
+				});
+			}else{
+				btn.up('window').close();
+				app.accessDenied();
+			}
+		}
+	},
+
+	loadRecord: function(record){
+		say(record);
+
+		this.encForm.getForm().loadRecord(record);
+	},
+
+	resetRecord: function(){
+		this.down('form').getForm().reset(true);
+		delete this.down('form').getForm()._record;
+	},
+
+	cancelNewEnc: function(){
+		this.close();
+	}
 
 });

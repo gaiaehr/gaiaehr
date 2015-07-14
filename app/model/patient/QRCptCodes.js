@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,33 +17,29 @@
  */
 
 Ext.define('App.model.patient.QRCptCodes', {
-    extend: 'Ext.data.Model',
-	table: {
-		name:'qrcptcodes',
-		comment:'QR CPT Codes'
-	},
-    fields: [
-        {name: 'id', type: 'int', comment: 'QR CPT Code ID'},
-        {name: 'eid', type:'int'},
-        {name: 'code', type: 'string'},
-        {name: 'code_text', type: 'string'},
-        {name: 'code_text_medium', type: 'string'},
-        {name: 'place_of_service', type: 'string'},
-        {name: 'emergency', type: 'bool'},
-        {name: 'charge', type: 'string'},
-        {name: 'days_of_units', type: 'string'},
-        {name: 'essdt_plan', type: 'string'},
-        {name: 'modifiers', type: 'string'},
-        {name: 'status', type: 'int', defaultValue: 0}
-    ],
-    proxy : {
-        type  : 'direct',
-        api   : {
-            read: Services.getCptCodes
-        },
-        reader: {
-            root         : 'rows',
-            totalProperty: 'totals'
-        }
-    }
+	extend: 'Ext.data.Model',
+	fields: [
+		{name: 'id', type: 'int', comment: 'QR CPT Code ID'},
+		{name: 'eid', type: 'int'},
+		{name: 'code', type: 'string'},
+		{name: 'code_text', type: 'string'},
+		{name: 'code_text_medium', type: 'string'},
+		{name: 'place_of_service', type: 'string'},
+		{name: 'emergency', type: 'bool'},
+		{name: 'charge', type: 'string'},
+		{name: 'days_of_units', type: 'string'},
+		{name: 'essdt_plan', type: 'string'},
+		{name: 'modifiers', type: 'string'},
+		{name: 'status', type: 'int', defaultValue: 0}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Services.getCptCodes'
+		},
+		reader: {
+			root: 'rows',
+			totalProperty: 'totals'
+		}
+	}
 });

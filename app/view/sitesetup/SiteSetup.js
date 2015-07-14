@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.sitesetup.SiteSetup',
@@ -22,7 +22,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 		title:'GaiaEHR Site Setup',
 		bodyPadding:5,
 		y:90,
-		width:900,
+		width:902,
 		height:500,
 		modal:false,
 		resizable:false,
@@ -337,9 +337,9 @@ Ext.define('App.view.sitesetup.SiteSetup',
 													allowBlank:true
 												},
 												{
-													fieldLabel:'SQL Server Host (or IP address)',
+													fieldLabel:'SQL Server Host or IP address',
 													name:'dbHost',
-													value:'localhost',
+													value:'127.0.0.1',
 													allowBlank:false
 												},
 												{
@@ -587,6 +587,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														name:'ICD9',
 														inputValue:'1',
 														action:'code',
+														disabled: true,
 														plugins:[
 															{
 																ptype:'helpicon',
@@ -600,6 +601,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 														name:'ICD10',
 														inputValue:'1',
 														action:'code',
+														disabled: true,
 														plugins:[
 															{
 																ptype:'helpicon',

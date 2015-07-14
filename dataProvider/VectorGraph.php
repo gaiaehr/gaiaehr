@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once($_SESSION['root'] . '/classes/Age.php');
-include_once($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
+include_once(ROOT . '/classes/Age.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
 
 class VectorGraph
 {
@@ -211,9 +211,11 @@ class VectorGraph
 
 	private function getGraphCurves($type, $sex)
 	{
-		$this->db->setSQL("SELECT * FROM vector_graphs WHERE type = '$type' AND sex = '$sex'");
+		$conn = Matcha::getConn();
+		$sth = $conn->prepare("SELECT * FROM vector_graphs WHERE type = :type AND sex = :sex");
+		$sth->execute(array(':type' => $type, ':sex' => $sex));
 		$records = array();
-		foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
+		foreach($sth->fetchAll(PDO::FETCH_ASSOC) as $row){
 			unset($row['type'], $row['sex'], $row['L'], $row['M'], $row['S']);
 			foreach($row as $key => $val){
 				if($val == null)

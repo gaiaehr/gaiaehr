@@ -17,25 +17,45 @@
  */
 
 if(!defined('_GaiaEXEC')) die('No direct access allowed.');
-$lang = (isset($_SESSION['site']['localization']) ? $_SESSION['site']['localization'] : 'en_US');
-$site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>GaiaEHR Logon Screen</title>
-    <script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
+    <script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js"></script>
     <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
     <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 
     <link rel="shortcut icon" href="favicon.ico">
-    <script src="JSrouter.php"></script>
-    <script src="data/api.php"></script>
     <script type="text/javascript">
-        var app, site = '<?php print $site ?>', localization = '<?php print $lang ?>';
-        function i18n(key){ return lang[key] || key; }
-        function say(a){ console.log(a); }
+        var app,
+            acl = {},
+            lang = {},
+            globals = {},
+            site = '<?php print $site ?>',
+            localization = '<?php print site_default_localization ?>';
+    </script>
+    <script src="JSrouter.php?site=<?php print $site ?>"></script>
+    <script src="data/api.php?site=<?php print $site ?>"></script>
+    <script type="text/javascript">
+
+        window.i18n = window._ = function(key){
+            return window.lang[key] || '*'+key+'*';
+        };
+
+        window.say = function(args){
+	        console.log.apply(this, arguments);
+        };
+
+        window.g = function(global){
+	        return window.globals[global] || false;
+        };
+
+        window.a = function(acl){
+	        return window.acl[acl] || false;
+        };
+
         Ext.Loader.setConfig({
             enabled: true,
             disableCaching: true,
@@ -52,7 +72,9 @@ $site = (isset($_SESSION['site']['dir']) ? $_SESSION['site']['dir'] : false);
     </script>
 </head>
 <body id="login">
-<div id="copyright">GaiaEHR | <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">Copyright
-    Notice</a></div>
+<div id="msg-div"></div>
+<div id="copyright" style=" margin:0; overflow: auto; width: 100%; bottom: 0; left:0; padding: 5px 10px; ">
+	<div style="float: left">Copyright (C) 2011 GaiaEHR (Electronic Health Records) |:|  Open Source Software operating under <a href="javascript:void(0)" onClick="Ext.getCmp('winCopyright').show();">GPLv3</a> |:| v<?php print VERSION ?></div>
+    <div style="float: right;">by <a href="http://tranextgen.com/" target="_blank">The Right Answer, Inc.</a></div>
 </body>
 </html>

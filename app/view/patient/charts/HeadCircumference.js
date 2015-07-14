@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',
 			}],
 			series : [
 			{
-				title : i18n('circumference_cm'),
+				title : _('circumference_cm'),
 				type : 'scatter',
 				axis : 'left',
 				xField : 'age',

@@ -6,7 +6,7 @@
  * Time: 4:06 PM
  * To change this template use File | Settings | File Templates.
  */
-include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+include_once (dirname(__FILE__).'/Segments.php');
 
 
 class OBR extends Segments{
@@ -18,19 +18,17 @@ class OBR extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'OBR';
-		$this->rawSeg[1] = $this->getType('SI');
-		$this->rawSeg[2] = $this->getType('EI');
-		$this->rawSeg[3] = $this->getType('EI');
-		$this->rawSeg[4] = $this->getType('CE');
-		$this->rawSeg[5] = $this->getType('ID');
-		$this->rawSeg[6] = $this->getType('TS');
-		$this->rawSeg[7] = $this->getType('TS');
-		$this->rawSeg[8] = $this->getType('TS');
-		$this->rawSeg[9] = $this->getType('CQ');
-		$this->rawSeg[10] = $this->getType('XCN');
+		parent::__construct($hl7, 'OBR');
+		$this->setField(1, 'SI', 4);
+		$this->setField(2, 'EI', 22);
+		$this->setField(3, 'EI', 22);
+		$this->setField(4, 'CE', 250, true);
+		$this->setField(5, 'ID', 2);
+		$this->setField(6, 'TS', 26);
+		$this->setField(7, 'TS', 26);
+		$this->setField(8, 'TS', 26);
+		$this->setField(9, 'CQ', 20);
+		$this->setField(10, 'XCN', 250, false, true);
 		/**
 		 * OBR-11 Specimen Action Code
 		 * A    Add ordered tests to the existing specimen
@@ -41,10 +39,10 @@ class OBR extends Segments{
 		 * R    Revised order
 		 * S    Schedule the tests specified below
 		 */
-		$this->rawSeg[11] = $this->getType('ID');
-		$this->rawSeg[12] = $this->getType('CE');
-		$this->rawSeg[13] = $this->getType('ST');
-		$this->rawSeg[14] = $this->getType('TS');
+		$this->setField(11, 'ID', 1);
+		$this->setField(12, 'CE', 250);
+		$this->setField(13, 'ST', 300);
+		$this->setField(14, 'TS', 26);
 		/**
 		 * OBR-15 Specimen Source
 		 * B Blind Sample
@@ -53,15 +51,15 @@ class OBR extends Segments{
 		 * Q Control specimen
 		 * R Replicate (of patient sample as a control)
 		 */
-		$this->rawSeg[15] = $this->getType('SPS');
-		$this->rawSeg[16] = $this->getType('XCN');
-		$this->rawSeg[17] = $this->getType('XTN');
-		$this->rawSeg[18] = $this->getType('ST');
-		$this->rawSeg[19] = $this->getType('ST');
-		$this->rawSeg[20] = $this->getType('ST');
-		$this->rawSeg[21] = $this->getType('ST');
-		$this->rawSeg[22] = $this->getType('TS');
-		$this->rawSeg[23] = $this->getType('MOC');
+		$this->setField(15, 'SPS', 300);
+		$this->setField(16, 'XCN', 250, false, true);
+		$this->setField(17, 'XTN', 250, false, true);
+		$this->setField(18, 'ST', 60);
+		$this->setField(19, 'ST', 60);
+		$this->setField(20, 'ST', 60);
+		$this->setField(21, 'ST', 60);
+		$this->setField(22, 'TS', 60);
+		$this->setField(23, 'MOC', 40);
 		/**
 		 * OBR-24 Diagnostic Serv Sect ID
 		 * AU   Audiology
@@ -104,7 +102,7 @@ class OBR extends Segments{
 		 * VR   Virology
 		 * XRC  Cineradiograph
 		 */
-		$this->rawSeg[24] = $this->getType('ID');
+		$this->setField(24, 'ID', 10);
 		/**
 		 * OBR-25 Result Status
 		 * O    Order received; specimen not yet received
@@ -119,11 +117,11 @@ class OBR extends Segments{
 		 * Y    No order on record for this test. (Used only on queries)
 		 * Z    No record of this patient. (Used only on queries)
 		 */
-		$this->rawSeg[25] = $this->getType('ID');
-		$this->rawSeg[26] = $this->getType('PRL');
-		$this->rawSeg[27] = $this->getType('TQ');
-		$this->rawSeg[28] = $this->getType('XCN');
-		$this->rawSeg[29] = $this->getType('EIP');
+		$this->setField(25, 'ID', 1);
+		$this->setField(26, 'PRL', 400);
+		$this->setField(27, 'TQ', 200, false, true);
+		$this->setField(28, 'XCN', 250, false, true);
+		$this->setField(29, 'EIP', 200);
 		/**
 		 * OBR-30 Transportation Mode
 		 * CART     Cart - patient travels on cart or gurney
@@ -131,48 +129,48 @@ class OBR extends Segments{
 		 * WALK     Patient walks to diagnostic service
 		 * WHLC     Wheelchair
 		 */
-		$this->rawSeg[30] = $this->getType('ID');
-		$this->rawSeg[31] = $this->getType('CE');
-		$this->rawSeg[32] = $this->getType('NDL');
-		$this->rawSeg[33] = $this->getType('NDL');
-		$this->rawSeg[34] = $this->getType('NDL');
-		$this->rawSeg[35] = $this->getType('NDL');
-		$this->rawSeg[36] = $this->getType('TS');
-		$this->rawSeg[37] = $this->getType('NM');
-		$this->rawSeg[38] = $this->getType('CE');
-		$this->rawSeg[39] = $this->getType('CE');
-		$this->rawSeg[40] = $this->getType('CE');
+		$this->setField(30, 'ID', 1);
+		$this->setField(31, 'CE', 250, false, true);
+		$this->setField(32, 'NDL', 200);
+		$this->setField(33, 'NDL', 200, false, true);
+		$this->setField(34, 'NDL', 200, false, true);
+		$this->setField(35, 'NDL', 200, false, true);
+		$this->setField(36, 'TS', 26);
+		$this->setField(37, 'NM', 4);
+		$this->setField(38, 'CE', 250, false, true);
+		$this->setField(39, 'CE', 250, false, true);
+		$this->setField(40, 'CE', 250);
 		/**
 		 * OBR-41 Transport Arranged
 		 * A    Arranged
 		 * N    Not Arranged
 		 * U    Unknown
 		 */
-		$this->rawSeg[41] = $this->getType('ID');
+		$this->setField(41, 'ID', 30);
 		/**
 		 * OBR-42 Escort Required
 		 * R    Required
 		 * N    Not Required
 		 * U    Unknown
 		 */
-		$this->rawSeg[42] = $this->getType('ID');
-		$this->rawSeg[43] = $this->getType('CE');
-		$this->rawSeg[44] = $this->getType('CE');
-		$this->rawSeg[45] = $this->getType('CE');
-		$this->rawSeg[46] = $this->getType('CE');
+		$this->setField(42, 'ID', 1);
+		$this->setField(43, 'CE', 250, false, true);
+		$this->setField(44, 'CE', 250);
+		$this->setField(45, 'CE', 250, false, true);
+		$this->setField(46, 'CE', 250, false, true);
 		/**
 		 * OBR-47 Filler Supplemental Service Information
 		 * The SNOMED DICOM Micro-glossary (SDM) or private (local) entries.
 		 */
-		$this->rawSeg[47] = $this->getType('CE');
-		$this->rawSeg[48] = $this->getType('CWE');
-		$this->rawSeg[49] = $this->getType('IS');
+		$this->setField(47, 'CE', 250);
+		$this->setField(48, 'CWE', 250);
+		$this->setField(49, 'IS', 2);
 		/**
 		 * OBR-49 Result Handling
 		 * F    Film-with-patient
 		 * N    Notify provider when ready
 		 */
-		$this->rawSeg[50] = $this->getType('CWE');
+		$this->setField(50, 'CWE', 250);
 
 
 	}

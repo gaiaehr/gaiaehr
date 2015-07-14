@@ -1,19 +1,19 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 Ext.define('App.view.patient.VisitCheckout', {
@@ -49,7 +49,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 					},
 					items:[
 						me.invoicePanel = Ext.widget('panel',{
-							title:i18n('services_charges'),
+							title:_('services_charges'),
 							border:true,
 							frame:true,
 							bodyBorder:true,
@@ -79,14 +79,14 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     items:[
                                                         {
                                                             icon:'resources/images/icons/delete.png',
-                                                            tooltip:i18n('remove'),
+                                                            tooltip:_('remove'),
                                                             scope:me,
                                                             handler:me.onRemoveCharge
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    header:i18n('item'),
+                                                    header:_('item'),
                                                     dataIndex:'name',
                                                     flex:1,
                                                     editor:{
@@ -95,14 +95,14 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     }
                                                 },
                                                 {
-                                                    header:i18n('price'),
+                                                    header:_('price'),
                                                     width:80,
                                                     dataIndex:'amountOriginal',
                                                     align:'right',
                                                     renderer:me.currencyRenderer
                                                 },
                                                 {
-                                                    header:i18n('charge'),
+                                                    header:_('charge'),
                                                     width:80,
                                                     dataIndex:'amount',
                                                     align:'right',
@@ -132,7 +132,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     width:150,
                                                     items:[
                                                         me.total = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('total'),
+                                                            fieldLabel:_('total'),
                                                             labelWidth:70,
                                                             anchor:'100%',
                                                             labelAlign:'right',
@@ -140,14 +140,14 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                             margin:'2 0 1 0'
                                                         }),
                                                         me.paid = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('paid'),
+                                                            fieldLabel:_('paid'),
                                                             labelWidth:70,
                                                             anchor:'100%',
                                                             labelAlign:'right',
                                                             margin:'1 0'
                                                         }),
                                                         me.balance = Ext.widget('mitos.currency',{
-                                                            fieldLabel:i18n('balance'),
+                                                            fieldLabel:_('balance'),
                                                             labelWidth:70,
                                                             anchor:'100%',
                                                             labelAlign:'right',
@@ -169,7 +169,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                             xtype:'fieldset',
                                             layout:'column',
                                             margin:'5 10',
-                                            title:i18n('payment'),
+                                            title:_('payment'),
                                             items:[
                                                 me.billingNotes = Ext.widget('textarea',{
                                                     xtype:'textarea',
@@ -177,7 +177,7 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     name:'notes',
                                                     columnWidth:.5,
                                                     height:85,
-                                                    emptyText:i18n('additional_billing_notes')
+                                                    emptyText:_('additional_billing_notes')
 
                                                 }),
                                                 {
@@ -187,19 +187,19 @@ Ext.define('App.view.patient.VisitCheckout', {
                                                     margin:'0 0 0 15',
                                                     items:[
                                                         me.method = Ext.widget('mitos.paymentmethodcombo',{
-                                                            fieldLabel: i18n('payment_method'),
+                                                            fieldLabel: _('payment_method'),
                                                             labelWidth: 100,
                                                             name: 'method',
                                                             anchor:'100%'
                                                         }),
                                                         me.ref = Ext.widget('textfield',{
-                                                            fieldLabel: i18n('reference_#'),
+                                                            fieldLabel: _('reference_#'),
                                                             labelWidth: 100,
                                                             name: 'reference',
                                                             anchor:'100%'
                                                         }),
                                                         me.amount = Ext.widget('mitos.currency',{
-                                                            fieldLabel: i18n('amount'),
+                                                            fieldLabel: _('amount'),
                                                             xtype: 'mitos.currency',
                                                             labelWidth: 100,
                                                             name: 'amount',
@@ -216,13 +216,13 @@ Ext.define('App.view.patient.VisitCheckout', {
 							buttons:[
 								'->',
 								{
-									text:i18n('save_and_print'),
+									text:_('save_and_print'),
 									scope:me,
                                     action:'saveprint',
 									handler:me.onInvoiceSave
 								},
 								{
-									text:i18n('save'),
+									text:_('save'),
 									scope:me,
                                     action:'save',
 									handler:me.onInvoiceSave
@@ -233,8 +233,8 @@ Ext.define('App.view.patient.VisitCheckout', {
 								render:me.onInvoicePanelRender
 							}
 						}),
-						me.docsGrid = Ext.widget('documentsimplegrid', {
-							title:i18n('documents'),
+						me.docsGrid = Ext.widget('encounterdocumentsgrid', {
+							title:_('documents'),
 							frame:true,
 							margin:'5 5 0 0',
 							flex:1
@@ -247,7 +247,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 					defaults:{ height:170 },
 					items:[
 						me.notesReminders = Ext.widget('form', {
-							title:i18n('notes_and_reminders'),
+							title:_('notes_and_reminders'),
 							frame:true,
 							flex:2,
 							action:'formnotes',
@@ -259,39 +259,39 @@ Ext.define('App.view.patient.VisitCheckout', {
 							items:[
 								{
 									xtype:'displayfield',
-									fieldLabel:i18n('message'),
+									fieldLabel:_('message'),
 									name:'message'
 								},
 								{
 									xtype:'textfield',
-									fieldLabel:i18n('note'),
+									fieldLabel:_('note'),
 									name:'new_note',
 									action:'notes'
 								},
 								{
 									xtype:'textfield',
 									grow:true,
-									fieldLabel:i18n('reminders'),
+									fieldLabel:_('reminders'),
 									name:'new_reminder',
 									action:'notes'
 								}
 							],
 							buttons:[
 								{
-									text:i18n('reset'),
+									text:_('reset'),
 									scope:me,
 									handler:me.resetNotes
 								},
 								'-',
 								{
-									text:i18n('save'),
+									text:_('save'),
 									scope:me,
 									handler:me.onCheckoutSaveNotes
 								}
 							]
 						}),
 						me.followUp = Ext.widget('form', {
-							title:i18n('followup_information'),
+							title:_('followup_information'),
 							frame:true,
 							flex:1,
 							margin:'5 5 5 0',
@@ -304,19 +304,19 @@ Ext.define('App.view.patient.VisitCheckout', {
 							},
 							items:[
 								{
-									fieldLabel:i18n('time'),
+									fieldLabel:_('time'),
 									xtype:'textfield',
 									name:'followup_time'
 								},
 								{
-									fieldLabel:i18n('facility'),
-									xtype:'mitos.activefacilitiescombo',
+									fieldLabel:_('facility'),
+									xtype:'activefacilitiescombo',
 									name:'followup_facility'
 								}
 							],
 							buttons:[
 								{
-									text:i18n('schedule_appointment'),
+									text:_('schedule_appointment'),
 									scope:me,
 									handler:me.scheduleAppointment
 								}
@@ -336,7 +336,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 		grid.getHeader().add(
 			{
 				xtype:'button',
-				text:i18n('service'),
+				text:_('service'),
 				iconCls:'icoAdd',
 				margin:'0 5 0 0',
 				scope:me,
@@ -344,7 +344,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 			},
 			{
 				xtype:'button',
-				text:i18n('copay'),
+				text:_('copay'),
 				iconCls:'icoAdd',
 				margin:'0 5 0 0',
 				scope:me,
@@ -352,7 +352,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 			}
 //			{
 //				xtype:'button',
-//				text:i18n('payment'),
+//				text:_('payment'),
 //				iconCls:'icoAdd',
 //				scope:me,
 //				handler:me.onAddPaymentClick
@@ -450,12 +450,15 @@ Ext.define('App.view.patient.VisitCheckout', {
 		values.eid = me.eid;
 		values.uid = app.user.id;
 		values.type = 'administrative';
+
+		// TODO: fix this method...
+
 		if(form.isValid()){
 			Patient.addPatientNoteAndReminder(values, function(provider, response){
 				if(response.result.success){
-					app.msg('Sweet!', i18n('note_and_reminder'));
+					app.msg('Sweet!', _('note_and_reminder'));
 				}else{
-					app.msg('Oops!', i18n('note_entry_error'));
+					app.msg('Oops!', _('note_entry_error'));
 				}
 			});
 		}
@@ -538,10 +541,12 @@ Ext.define('App.view.patient.VisitCheckout', {
         return 100 * ( percent / value );
     },
 
-	setPanel:function(){
+	setVoucher:function(){
 		var me = this;
 		me.docsGrid.loadDocs(me.eid);
+
 		me.getVisitOtherInfo();
+
 		me.VisitVoucherStore.load({
 			filters:[
 				{
@@ -554,14 +559,19 @@ Ext.define('App.view.patient.VisitCheckout', {
 				}
 			],
             callback:function(records, operation, success){
+
 	            var voucher = records[0];
+
 				if(voucher){
+
 					voucher.voucherlines().load({
 						callback:function(){
 							say('hello');
 						}
 					});
+
 				}else{
+
 					AccVoucher.getVisitCheckOutCharges({pid:me.pid,eid:me.eid},function(provicer,response){
 						var charges = response.result;
 						if(charges.length > 0){
@@ -616,6 +626,14 @@ Ext.define('App.view.patient.VisitCheckout', {
 		}
 	},
 
+	setVisitPanel:function(){
+		this.pid = app.patient.pid;
+		this.eid = app.patient.eid;
+		this.uid = app.user.id;
+		this.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + _('visit_checkout') + ')');
+		this.setVoucher();
+	},
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
@@ -625,11 +643,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 	onActive:function(callback){
 		var me = this;
 		if(app.patient.pid && app.patient.eid){
-			me.pid = app.patient.pid;
-			me.eid = app.patient.eid;
-			me.uid = app.user.id;
-			me.updateTitle(app.patient.name + ' - #' + app.patient.pid + ' (' + i18n('visit_checkout') + ')');
-			me.setPanel();
+			me.setVisitPanel();
 			callback(true);
 		}else{
 			callback(false);

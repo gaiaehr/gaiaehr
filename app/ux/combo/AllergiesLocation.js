@@ -13,7 +13,7 @@ Ext.define('App.ux.combo.AllergiesLocation', {
 			proxy : {
 				type       : 'direct',
 				api        : {
-					read: CombosData.getOptionsByListId
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 79
@@ -31,7 +31,7 @@ Ext.define('App.ux.combo.AllergiesLocation', {
 			queryMode   : 'local',
 			displayField: 'option_name',
 			valueField  : 'option_value',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

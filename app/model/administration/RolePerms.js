@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.RolePerms',{
-	extend : 'Ext.data.Model',
+Ext.define('App.model.administration.RolePerms', {
+	extend: 'Ext.data.Model',
 	fields: [
 		{
 			name: 'id',
@@ -56,6 +56,10 @@ Ext.define('App.model.administration.RolePerms',{
 			type: 'bool'
 		},
 		{
+			name: 'role-referrer',
+			type: 'bool'
+		},
+		{
 			name: 'role-administrator',
 			type: 'bool'
 		}
@@ -63,8 +67,8 @@ Ext.define('App.model.administration.RolePerms',{
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Roles.getRolePerms,
-			update: Roles.updateRolePerm
+			read: 'Roles.getRolePerms',
+			update: 'Roles.updateRolePerm'
 		},
 		reader: {
 			type: 'json',

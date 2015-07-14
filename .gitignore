@@ -7,3 +7,7 @@ registry.php
 /.settings
 /*.iml
 /*.stackdump
+
+modules/worklist
+modules/messaging
+modules/dental

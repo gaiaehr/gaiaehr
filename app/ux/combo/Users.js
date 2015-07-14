@@ -35,7 +35,7 @@ Ext.define('App.ux.combo.Users', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'name',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent();

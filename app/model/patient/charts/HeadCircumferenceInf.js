@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@
  */
 
 Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'headcircumferenceinf',
-		comment:'Head Circumference Information'
+		name: 'headcircumferenceinf',
+		comment: 'Head Circumference Information'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Head Circumference Information ID'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Head Circumference Information ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},
@@ -36,17 +36,17 @@ Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
 		{name: 'P95', type: 'float'},
 		{name: 'P97', type: 'float'}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'VectorGraph.getGraphData'
 		},
-		reader     : {
+		reader: {
 			type: 'json'
 		},
-        extraParams:{
-            type:4
-        }
+		extraParams: {
+			type: 4
+		}
 	}
 
 });

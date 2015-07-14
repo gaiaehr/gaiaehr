@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,46 +20,50 @@
 Ext.define('App.model.patient.CVXCodes', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'cvx_codes',
-		comment:'Immunizations - CVX'
+		name: 'cvx_codes',
+		comment: 'Immunizations  CVX'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Immunization ID'
-        },
-        {
-	        name: 'cvx_code',
-	        type: 'int'
-        },
-        {
-	        name: 'name',
-	        type: 'string'
-        },
-        {
-	        name: 'description',
-	        type: 'string'
-        },
-
 		{
-			name: 'note',
+			name: 'id',
+			type: 'int',
+			comment: 'Immunization ID'
+		},
+		{
+			name: 'cvx_code',
+			type: 'int',
+			len: 10
+		},
+		{
+			name: 'name',
 			type: 'string'
 		},
 		{
+			name: 'description',
+			type: 'string',
+			dataType: 'text'
+		},
+
+		{
+			name: 'note',
+			type: 'string',
+			dataType: 'text'
+		},
+		{
 			name: 'status',
-			type: 'string'
+			type: 'string',
+			len: 25
 		},
 		{
 			name: 'update_date',
 			type: 'date',
-			dateFormat:'Y-m-d H:i:s'
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read: Medical.getImmunizationsList
+		api: {
+			read: 'Immunizations.getImmunizationsList'
 		}
 	}
 });

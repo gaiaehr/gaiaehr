@@ -11,7 +11,7 @@ if(!isset($_SESSION)){
     session_start();
     session_cache_limiter('private');
 }
-include_once($_SESSION['root'].'/classes/MatchaHelper.php');
+include_once(ROOT.'/classes/MatchaHelper.php');
 
 echo '<pre>';
 $db = new MatchaHelper();

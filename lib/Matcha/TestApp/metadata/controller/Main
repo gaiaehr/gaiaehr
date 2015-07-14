@@ -1,0 +1,193 @@
+{
+    "type": "Ext.app.Controller",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "Main"
+    },
+    "designerId": "26e7ce5b-388f-4f62-a6f3-855e31258b0e",
+    "cn": [
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "#usersgrid",
+                "designer|targetType": "Ext.grid.Panel",
+                "fn": "onGridpanelAfterRender",
+                "implHandler": [
+                    "this.getUsersGrid().getStore().load();"
+                ],
+                "name": "afterrender",
+                "scope": "me"
+            },
+            "designerId": "001885ad-40ba-4e6a-b1b7-40bd1d89f7e7"
+        },
+        {
+            "type": "controllerref",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "ref": "usersGrid",
+                "selector": "#usersgrid"
+            },
+            "designerId": "55c6f7a1-cf77-42f7-a5e1-081b2f56d4f3"
+        },
+        {
+            "type": "controllerref",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "ref": "addBtn",
+                "selector": "#addBtn"
+            },
+            "designerId": "1c3a8158-eb44-4cf8-922d-985788358705"
+        },
+        {
+            "type": "controllerref",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "ref": "removeBtn",
+                "selector": "#removeBtn"
+            },
+            "designerId": "0168974e-9fe6-49f7-9c7f-11de0416e1e9"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "#addBtn",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onAddButtonClick",
+                "implHandler": [
+                    "var grid = this.getUsersGrid(),",
+                    "    plugin = grid.editingPlugin,",
+                    "    store = grid.getStore(),",
+                    "    records;",
+                    "",
+                    "plugin.cancelEdit();",
+                    "",
+                    "records = store.add({",
+                    "    fullname:'New User',",
+                    "    active:true",
+                    "});",
+                    "",
+                    "plugin.startEdit(records[0], 2);"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "designerId": "4d5ff7c4-70a8-477b-9cf2-f4e7942daeca"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "#removeBtn",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onRemoveButtonClick",
+                "implHandler": [
+                    "var grid = this.getUsersGrid(),",
+                    "    plugin = grid.editingPlugin,",
+                    "    store = grid.getStore(),",
+                    "    records = grid.getSelectionModel().getSelection();",
+                    "",
+                    "plugin.cancelEdit();",
+                    "",
+                    "store.remove(records[0]);",
+                    "store.sync();"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "designerId": "ac7e3009-bacf-4831-a2c4-578cbe6724b8"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "#usersgrid",
+                "designer|params": [
+                    "plugin"
+                ],
+                "designer|targetType": null,
+                "fn": "onCancelEdit",
+                "implHandler": [
+                    "plugin.view.getStore().rejectChanges();"
+                ],
+                "name": "canceledit",
+                "scope": "me"
+            },
+            "designerId": "0874a9fe-51f0-4ff4-83b6-ed8f34b2e164"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "#usersgrid",
+                "designer|params": [
+                    "plugin"
+                ],
+                "designer|targetType": null,
+                "fn": "onEdit",
+                "implHandler": [
+                    "plugin.view.getStore().sync();"
+                ],
+                "name": "edit",
+                "scope": "me"
+            },
+            "designerId": "8ce611f9-31bb-4e9d-9f33-c03fd591c3bc"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "#usersgrid",
+                "designer|targetType": "Ext.grid.Panel",
+                "fn": "onGridpanelSelectionChange",
+                "implHandler": [
+                    "this.getRemoveBtn().setDisabled(selected.length === 0);"
+                ],
+                "name": "selectionchange",
+                "scope": "me"
+            },
+            "designerId": "ecbc6aed-499f-4f30-b651-cc0f8e067e22"
+        }
+    ]
+}

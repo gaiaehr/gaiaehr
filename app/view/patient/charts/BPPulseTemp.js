@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 
 		me.items = [
 		{
-			title : i18n('blood_pressure'),
+			title : _('blood_pressure'),
 			margin : 5,
 			items : [
 			{
@@ -52,7 +52,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				},
 				axes : [
 				{
-					title : i18n('blood_pressure'),
+					title : _('blood_pressure'),
 					type : 'Numeric',
 					position : 'left',
 					fields : ['bp_systolic', 'bp_diastolic', 'bp_systolic_normal', 'bp_diastolic_normal'],
@@ -67,7 +67,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('date'),
+					title : _('date'),
 					type : 'Time',
 					dateFormat : 'Y-m-d h:i:s a',
 					position : 'bottom',
@@ -75,7 +75,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				}],
 				series : [
 				{
-					title : i18n('systolic'),
+					title : _('systolic'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -103,7 +103,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('diastolic'),
+					title : _('diastolic'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -126,7 +126,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 						trackMouse : true,
 						renderer : function(storeItem, item)
 						{
-							this.update(i18n('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n('diastolic') + ': ' + storeItem.get('bp_diastolic'));
+							this.update(_('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + _('diastolic') + ': ' + storeItem.get('bp_diastolic'));
 						}
 					}
 
@@ -183,7 +183,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				},
 				axes : [
 				{
-					title : i18n('pulse_per_min'),
+					title : _('pulse_per_min'),
 					type : 'Numeric',
 					position : 'left',
 					fields : ['pulse'],
@@ -198,7 +198,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('date'),
+					title : _('date'),
 					type : 'Time',
 					dateFormat : 'Y-m-d h:i:s a',
 					position : 'bottom',
@@ -207,7 +207,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				}],
 				series : [
 				{
-					title : i18n('pulse'),
+					title : _('pulse'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -230,14 +230,14 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 						trackMouse : true,
 						renderer : function(storeItem, item)
 						{
-							this.update(i18n('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n('pulse_per_min') + ': ' + storeItem.get('pulse'));
+							this.update(_('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + _('pulse_per_min') + ': ' + storeItem.get('pulse'));
 						}
 					}
 				}]
 			}]
 		},
 		{
-			title : i18n('temperature'),
+			title : _('temperature'),
 			margin : '0 5 5 5',
 			items : [
 			{
@@ -252,7 +252,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				},
 				axes : [
 				{
-					title : i18n('temp_fahrenheits'),
+					title : _('temp_fahrenheits'),
 					type : 'Numeric',
 					position : 'left',
 					fields : ['temp_f'],
@@ -267,7 +267,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 					}
 				},
 				{
-					title : i18n('date'),
+					title : _('date'),
 					type : 'Time',
 					dateFormat : 'Y-m-d h:i:s a',
 					position : 'bottom',
@@ -276,7 +276,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 				}],
 				series : [
 				{
-					title : i18n('temp_fahrenheits'),
+					title : _('temp_fahrenheits'),
 					type : 'line',
 					axis : 'left',
 					xField : 'date',
@@ -299,7 +299,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 						trackMouse : true,
 						renderer : function(storeItem, item)
 						{
-							this.update(i18n('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + i18n('temp_fahrenheits') + ': ' + storeItem.get('temp_f'));
+							this.update(_('date') + ': ' + Ext.Date.format(storeItem.get('date'), 'Y-m-d h:i:s a') + '<br>' + _('temp_fahrenheits') + ': ' + storeItem.get('temp_f'));
 						}
 					}
 				}]

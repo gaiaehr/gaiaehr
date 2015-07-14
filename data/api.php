@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,6 +17,52 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// dynamic class and methods loading test
+
+//$dir = dirname(__FILE__) . '/../dataProvider';
+//$exclude = array(
+//	'HL7Messages.php',
+//	'HL7Server.php',
+//	'HL7ServerHandler.php',
+//	'DocumentPDF.php'
+//);
+//ob_start();
+//$output = array();
+//if ($handle = opendir($dir)) {
+//	while (false !== ($entry = readdir($handle))) {
+//		if ($entry != '.' && $entry != '..') {
+//			if(preg_match('/.*\.php/', $entry) && !in_array($entry, $exclude)){
+//				try{
+//					include_once ($dir . '/' . $entry);
+//					$cls = str_replace('.php', '', $entry);
+//					$class = new ReflectionClass($cls);
+//					$methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+//					$buffer = array();
+//
+//					foreach ($methods as $method) {
+//						if(!preg_match('/^__/', $method->getName())){
+//
+//							$buffer[] =  array(
+//								'name' => $method->getName(),
+//								'len' => $method->getNumberOfParameters() > 0 ? 1 : 0
+//							);
+//						}
+//					}
+//					$output[$cls]['methods'] = $buffer;
+//				}catch (Exception $e){
+//
+//				}
+//			}
+//		}
+//	}
+//	closedir($handle);
+//}
+//ob_end_clean();
+//print '<pre>';
+//print_r($output);
+//exit;
+
+
 if(!isset($_SESSION)) {
     session_name('GaiaEHR');
     session_start();
@@ -24,8 +70,11 @@ if(!isset($_SESSION)) {
 }
 
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
-    require_once ('../classes/MatchaHelper.php');
-    include_once($_SESSION['root'] . '/dataProvider/Modules.php');
+	if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+	require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+	require_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
+    require_once(ROOT . '/classes/MatchaHelper.php');
+    include_once(ROOT . '/dataProvider/Modules.php');
     $m = new Modules();
 }
 /*

@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/AccAccount.php');
+include_once (ROOT . '/dataProvider/AccAccount.php');
 
 class AccVoucher extends AccAccount {
 
@@ -30,8 +30,8 @@ class AccVoucher extends AccAccount {
     function __construct()
     {
 	    parent::__construct();
-	    if($this->voucher == NULL) $this->voucher = Matcha::setSenchaModel('App.model.account.Voucher');
-	    if($this->voucherLine == NULL) $this->voucherLine = Matcha::setSenchaModel('App.model.account.VoucherLine');
+	    if($this->voucher == NULL) $this->voucher = MatchaModel::setSenchaModel('App.model.account.Voucher');
+//	    if($this->voucherLine == NULL) $this->voucherLine = MatchaModel::setSenchaModel('App.model.account.VoucherLine');
         return;
     }
 

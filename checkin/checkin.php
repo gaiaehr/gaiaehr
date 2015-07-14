@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         <title>GaiaEHR :: Check In</title>
-        <script type="text/javascript" src="lib/extjs-4.1.1a/ext-all.js"></script>
-            <link rel="stylesheet" type="text/css" href="lib/extjs-4.1.1a/resources/css/ext-neptune.css">
+	    <script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js"></script>
+            <link rel="stylesheet" type="text/css" href="lib/<?php print EXTJS ?>/resources/css/ext-all-neptune.css">
         <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css" >
         <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css" >
 

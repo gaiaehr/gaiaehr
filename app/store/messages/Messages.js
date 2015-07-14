@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,22 +19,5 @@
 Ext.define('App.store.messages.Messages', {
     model: 'App.model.messages.Messages',
     extend: 'Ext.data.Store',
-    proxy :
-    {
-        type : 'direct',
-        api :
-        {
-            read : Messages.getMessages,
-            create : Messages.sendNewMessage,
-            update : Messages.replyMessage,
-            destroy : Messages.deleteMessage
-        },
-        reader :
-        {
-            type : 'json',
-            root : 'messages',
-            totalProperty : 'totals'
-        }
-    },
     autoLoad : false
 });

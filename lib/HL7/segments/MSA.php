@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+include_once (dirname(__FILE__).'/Segments.php');
 
 class MSA extends Segments{
 
@@ -25,9 +25,8 @@ class MSA extends Segments{
 	}
 
 	function __construct($hl7){
-		parent::__construct($hl7);
-		$this->rawSeg = array();
-		$this->rawSeg[0] = 'MSA';
+		parent::__construct($hl7, 'MSA');
+
 		/**
 		 * MSA-1 Acknowledgment Code
 		 * AA Original mode: Application Accept - Enhanced mode: Application acknowledgment: Accept
@@ -36,12 +35,12 @@ class MSA extends Segments{
 		 * CE Enhanced mode: Accept acknowledgment: Commit Error
 		 * CR Enhanced mode: Accept acknowledgment: Commit Reject
 		 */
-		$this->rawSeg[1] = $this->getType('ID');
-		$this->rawSeg[2] = $this->getType('ST');
-		$this->rawSeg[3] = $this->getType('ST');
-		$this->rawSeg[4] = $this->getType('NM');
-		$this->rawSeg[5] = null; //The MSA-5 was deprecated as of v2.2 standard
-		$this->rawSeg[6] = $this->getType('CE');
+		$this->setField(1, 'ID', 2, true);
+		$this->setField(2, 'ST', 20, true);
+		$this->setField(3, 'ST', 80);
+		$this->setField(4, 'NM', 15);
+		$this->setFieldValue(5, null); //The MSA-5 was deprecated as of v2.2 standard
+		$this->setField(6, 'CE', 250);
 
 	}
 }

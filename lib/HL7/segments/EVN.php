@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 if(!class_exists('Segments')){
-	include_once (str_replace('\\', '/',__DIR__).'/Segments.php');
+	include_once (dirname(__FILE__).'/Segments.php');
 }
 
 class EVN extends Segments{

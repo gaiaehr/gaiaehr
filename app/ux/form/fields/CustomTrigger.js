@@ -2,8 +2,8 @@ Ext.define('App.ux.form.fields.CustomTrigger', {
 	extend: 'Ext.form.field.Trigger',
 	alias: 'widget.customtrigger',
 	hideLabel    : true,
-	triggerTip: i18n('click_to_clear_selection'),
-	qtip: i18n('clearable_combo_box'),
+	triggerTip: _('click_to_clear_selection'),
+	qtip: _('clearable_combo_box'),
 	trigger1Class:'x-form-select-trigger',
 	trigger2Class:'x-form-clear-trigger',
 

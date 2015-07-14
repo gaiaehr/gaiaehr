@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Services.php');
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
+include_once (ROOT . '/dataProvider/Services.php');
+include_once (ROOT . '/dataProvider/Insurance.php');
 
 class AccAccount
 {
@@ -31,26 +31,31 @@ class AccAccount
      */
 	protected $services;
     /**
-     * @var Patient
+     * @var Insurance
      */
-	protected $patient;
-
+	protected $insurance;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $account = NULL;
+	/**
+	 * @var MatchaCUP
+	 */
 	protected $accountType = NULL;
 
     function __construct()
     {
-        if($this->acount == NULL) $this->account = Matcha::setSenchaModel('App.model.account.Account');
-	    if($this->acountType == NULL) $this->accountType = Matcha::setSenchaModel('App.model.account.AccountType');
+//      if($this->account == NULL) $this->account = MatchaModel::setSenchaModel('App.model.account.Account');
+//	    if($this->accountType == NULL) $this->accountType = MatchaModel::setSenchaModel('App.model.account.AccountType');
         $this->services = new Services();
-        $this->patient  = new Patient();
+        $this->insurance  = new Insurance();
         return;
     }
 
 	public function getVisitCheckOutCharges(stdClass $params)
     {
         $invoice = array();
-        $insurance = $this->patient->getPatientPrimaryInsuranceByPid($params->pid);
+        $insurance = $this->insurance->getPatientPrimaryInsuranceByPid($params->pid);
         if($insurance !== false){
             $invoice[] = array(
                 'code' => 'COPAY',

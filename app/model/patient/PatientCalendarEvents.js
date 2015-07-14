@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@
  */
 
 Ext.define('App.model.patient.PatientCalendarEvents', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'patientcalendarevents',
-		comment:'Patient Calendar Events'
+		name: 'patientcalendarevents',
+		comment: 'Patient Calendar Events'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Patient Calendar Event ID'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Patient Calendar Event ID'},
 		{name: 'user_id', type: 'int'},
 		{name: 'category', type: 'int'},
 		{name: 'facility', type: 'int'},
@@ -31,8 +31,8 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 		{name: 'patient_id', type: 'int'},
 		{name: 'title', type: 'string'},
 		{name: 'status', type: 'string'},
-		{name: 'start', type: 'date', dateFormat:'Y-m-d H:s:i'},
-		{name: 'end', type: 'date', dateFormat:'Y-m-d H:s:i'},
+		{name: 'start', type: 'date', dateFormat: 'Y-m-d H:s:i'},
+		{name: 'end', type: 'date', dateFormat: 'Y-m-d H:s:i'},
 		{name: 'data', type: 'string'},
 		{name: 'rrule', type: 'string'},
 		{name: 'loc', type: 'string'},
@@ -40,10 +40,10 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 		{name: 'url', type: 'string'},
 		{name: 'ad', type: 'string'}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: Calendar.getPatientFutureEvents
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Calendar.getPatientFutureEvents'
 		}
 	}
 });

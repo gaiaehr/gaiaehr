@@ -5,6 +5,18 @@
  * New Styles
  * by GI Technologies, 2011
  *============================================================*/
+.icoSing {
+	background-image: url(../images/icons/pen.png) !important;
+}
+.icoLogo {
+	background-image: url(../images/icons/icoLogo.png) !important;
+}
+.speech-icon-active {
+	background-image: url(../images/icons/record-active.png) !important;
+}
+.speech-icon-inactive {
+	background-image: url(../images/icons/record-inactive.png) !important;
+}
 .icoUnlocked {
 	background-image: url(../images/icons/unlocked.png) !important;
 }
@@ -13,6 +25,9 @@
 }
 .icoLogout {
 	background-image: url(../images/icons/logout.png) !important;
+}
+.icoCopy {
+	background-image: url(../images/icons/copy.png) !important;
 }
 .icoUser {
 	background-image: url(../images/icons/user.png) !important;
@@ -50,7 +65,7 @@
 }
 
 .x-tree-icon-leaf {
-	background-image: url(../images/icons/list.png) !important;
+	background-image: url(../images/icons/list.png);
 }
 
 .topheader .x-panel-body {
@@ -96,7 +111,7 @@
 	background-image: url(../images/icons/facilities.png) !important;
 }
 
-.delete, .close {
+.delete, .close, .icoCancel {
 	background-image: url(../images/icons/delete.png) !important;
 }
 
@@ -110,6 +125,14 @@
 
 .icoPatientInfo {
 	background-image: url(../images/icons/icoPatientInfo.png) !important;
+}
+
+.icoHome {
+	background-image: url(../images/icons/icoHome.png) !important;
+}
+
+.icoCalendar2 {
+	background-image: url(../images/icons/icoCalendar2.png) !important;
 }
 
 .icoZoneAreas {

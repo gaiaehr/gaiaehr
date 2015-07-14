@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,49 +25,68 @@ Ext.define('App.model.administration.Facility', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Facility ID'
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'name',
 			type: 'string',
+			len: 120,
 			comment: 'Facility Name'
 		},
 		{
-			name: 'active',
-			type: 'bool'
+			name: 'legal_name',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'attn',
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'phone',
-			type: 'string'
+			type: 'string',
+			len: 25
 		},
 		{
 			name: 'fax',
-			type: 'string'
+			type: 'string',
+			len: 25
 		},
 		{
-			name: 'street',
-			type: 'string'
+			name: 'address',
+			type: 'string',
+			len: 120
+		},
+		{
+			name: 'address_cont',
+			type: 'string',
+			len: 120
 		},
 		{
 			name: 'city',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'state',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'postal_code',
-			type: 'string'
+			type: 'string',
+			len: 15
 		},
 		{
 			name: 'country_code',
-			type: 'string'
-		},
-		{
-			name: 'federal_ein',
-			type: 'string'
+			type: 'string',
+			len: 5
 		},
 		{
 			name: 'service_location',
@@ -78,44 +97,60 @@ Ext.define('App.model.administration.Facility', {
 			type: 'bool'
 		},
 		{
-			name: 'accepts_assignment',
-			type: 'bool'
-		},
-		{
 			name: 'pos_code',
-			type: 'string'
+			type: 'string',
+			len: 3
 		},
 		{
-			name: 'x12_sender_id',
-			type: 'string'
+			name: 'ssn',
+			type: 'string',
+			len: 15
 		},
 		{
-			name: 'attn',
-			type: 'string'
+			name: 'ein',
+			type: 'string',
+			len: 15
 		},
 		{
-			name: 'domain_identifier',
-			type: 'string'
+			name: 'clia',
+			type: 'string',
+			len: 15
 		},
 		{
-			name: 'facility_npi',
-			type: 'string'
+			name: 'fda',
+			type: 'string',
+			len: 15
 		},
 		{
-			name: 'tax_id_type',
-			type: 'string'
+			name: 'npi',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'lic',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'ess',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'active',
+			type: 'bool'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Facilities.getFacilities,
-			create: Facilities.addFacility,
-			update: Facilities.updateFacility,
-			destroy: Facilities.deleteFacility
+			read: 'Facilities.getFacilities',
+			create: 'Facilities.addFacility',
+			update: 'Facilities.updateFacility',
+			destroy: 'Facilities.deleteFacility'
 		}
 	},
-	reader:{
+	reader: {
 		totalProperty: 'total',
 		root: 'data'
 	}

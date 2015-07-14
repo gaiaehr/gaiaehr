@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@
  */
 
 Ext.define('App.model.patient.charts.StatureForAge', {
-	extend   : 'Ext.data.Model',
+	extend: 'Ext.data.Model',
 	table: {
-		name:'statureforage',
-		comment:'Stature For Age'
+		name: 'statureforage',
+		comment: 'Stature For Age'
 	},
-	fields   : [
-        {name: 'id', type: 'int', comment: 'Stature For Age ID'},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Stature For Age ID'},
 		{name: 'age', type: 'float'},
 		{name: 'PP', type: 'float'},
 		{name: 'P3', type: 'float'},
@@ -36,17 +36,17 @@ Ext.define('App.model.patient.charts.StatureForAge', {
 		{name: 'P95', type: 'float'},
 		{name: 'P97', type: 'float'}
 	],
-	proxy    : {
-		type       : 'direct',
-		api        : {
-			read: VectorGraph.getGraphData
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'VectorGraph.getGraphData'
 		},
-		reader     : {
+		reader: {
 			type: 'json'
 		},
-        extraParams:{
-            type:7
-        }
+		extraParams: {
+			type: 7
+		}
 	}
 
 });

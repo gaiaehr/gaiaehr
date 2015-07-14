@@ -86,12 +86,12 @@ class MatchaUtils extends Matcha
      * function __recursiveArraySearch($needle,$haystack):
      * An recursive array search method
      */
-    static public function __recursiveArraySearch($needle,$haystack)
+    static public function __recursiveArraySearch($needle, $haystack)
     {
-        foreach($haystack as $key=>$value)
+        foreach($haystack as $key => $value)
         {
-            $current_key=$key;
-            if($needle===$value OR (is_array($value) && MatchaUtils::__recursiveArraySearch($needle,$value) !== false)) return $current_key;
+            $current_key = $key;
+            if($needle === $value || (is_array($value) && MatchaUtils::__recursiveArraySearch($needle, $value) !== false)) return $current_key;
         }
         return false;
     }
@@ -129,14 +129,22 @@ class MatchaUtils extends Matcha
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
 		$cryptText = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, $text, MCRYPT_MODE_ECB, $iv);
-		return $cryptText;
+		return base64_encode($cryptText);
 	}
 
 	static public function __decrypt($text){
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-		$deCryptText = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, $text, MCRYPT_MODE_ECB, $iv);
+		$deCryptText = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, Matcha::$__secretKey, base64_decode($text), MCRYPT_MODE_ECB, $iv);
 		return trim($deCryptText);
+	}
+
+	static public function encrypt($text){
+		return self::__encrypt($text);
+	}
+
+	static public function decrypt($text){
+		return self::__decrypt($text);
 	}
 }
 //print $pass = MatchaUtils::__encrypt("pass");

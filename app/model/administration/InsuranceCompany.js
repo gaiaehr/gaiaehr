@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,138 +25,90 @@ Ext.define('App.model.administration.InsuranceCompany', {
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Insurance ID'
-		},
-		{
-			name: 'name',
-			type: 'string'
-		},
-		{
-			name: 'attn',
-			type: 'string'
-		},
-		{
-			name: 'cms_id',
-			type: 'string'
-		},
-		{
-			name: 'freeb_type',
-			type: 'string'
-		},
-		{
-			name: 'x12_receiver_id',
-			type: 'string'
-		},
-		{
-			name: 'x12_default_partner_id',
-			type: 'string'
-		},
-		{
-			name: 'alt_cms_id',
-			type: 'string'
-		},
-		{
-			name: 'address_id',
 			type: 'int'
 		},
 		{
-			name: 'line1',
+			name: 'code',
 			type: 'string',
-			store: false
+			len: 80,
+			index: true,
+			comment: 'use to reference the insurance to another software'
 		},
 		{
-			name: 'line2',
+			name: 'name',
 			type: 'string',
-			store: false
+			len: 120
+		},
+		{
+			name: 'attn',
+			type: 'string',
+			len: 120
+		},
+		{
+			name: 'address1',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'address2',
+			type: 'string',
+			len: 100
 		},
 		{
 			name: 'city',
 			type: 'string',
-			store: false
+			len: 80
 		},
 		{
 			name: 'state',
 			type: 'string',
-			store: false
+			len: 80
 		},
 		{
-			name: 'zip',
+			name: 'zip_code',
 			type: 'string',
-			store: false
-		},
-		{
-			name: 'plus_four',
-			type: 'string',
-			store: false
+			len: 15
 		},
 		{
 			name: 'country',
 			type: 'string',
-			store: false
+			len: 80
+		},
+		{
+			name: 'phone1',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'phone2',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'fax',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'dx_type',
+			type: 'string',
+			len: 5
 		},
 		{
 			name: 'address_full',
 			type: 'string',
-			store: false
+			store: false,
+			convert: function(v, record){
+				return record.data.address1 + ' ' +  record.data.address2 + ' ' +  record.data.city + ' ' +  record.data.state + ', ' +  record.data.zip_code;
+			}
 		},
 		{
-			name: 'phone_id',
-			type: 'int'
-		},
-		{
-			name: 'phone_country_code',
+			name: 'combo_text',
 			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_area_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_prefix',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_number',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_full',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_id',
-			type: 'int'
-		},
-		{
-			name: 'fax_country_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_area_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_prefix',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_number',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_full',
-			type: 'string',
-			store: false
+			store: false,
+			convert: function(v, record){
+				return record.data.id + ': ' + (record.data.name ? record.data.name : ' * ' ) + ' ' + (!record.data.active ? ('(' +  _('inactive') + ')') : '') ;
+			}
 		},
 		{
 			name: 'active',
@@ -166,9 +118,12 @@ Ext.define('App.model.administration.InsuranceCompany', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: Practice.getInsurances,
-			create: Practice.addInsurance,
-			update: Practice.updateInsurance
+			read: 'Insurance.getInsuranceCompanies',
+			create: 'Insurance.addInsuranceCompany',
+			update: 'Insurance.updateInsuranceCompany'
+		},
+		reader: {
+			root: 'data'
 		}
 	}
 });

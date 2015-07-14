@@ -2,7 +2,7 @@
 //============================================================+
 // File name   : example_061.php
 // Begin       : 2010-05-24
-// Last Update : 2010-08-08
+// Last Update : 2014-01-25
 //
 // Description : Example 061 for TCPDF class
 //               XHTML + CSS
@@ -12,9 +12,6 @@
 // (c) Copyright:
 //               Nicola Asuni
 //               Tecnick.com LTD
-//               Manor Coach House, Church Hill
-//               Aldershot, Hants, GU12 4RQ
-//               UK
 //               www.tecnick.com
 //               info@tecnick.com
 //============================================================+
@@ -27,8 +24,8 @@
  * @since 2010-05-25
  */
 
-require_once('../config/lang/eng.php');
-require_once('../tcpdf.php');
+// Include the main TCPDF library (search for installation path).
+require_once('tcpdf_include.php');
 
 // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -50,19 +47,22 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-//set margins
+// set margins
 $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
-//set auto page breaks
+// set auto page breaks
 $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-//set image scale factor
+// set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-//set some language-dependent strings
-$pdf->setLanguageArray($l);
+// set some language-dependent strings (optional)
+if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+	require_once(dirname(__FILE__).'/lang/eng.php');
+	$pdf->setLanguageArray($l);
+}
 
 // ---------------------------------------------------------
 
@@ -138,6 +138,15 @@ $html = <<<EOF
 		border-color: green #FF00FF blue red;
 		text-align: center;
 	}
+	.lowercase {
+		text-transform: lowercase;
+	}
+	.uppercase {
+		text-transform: uppercase;
+	}
+	.capitalize {
+		text-transform: capitalize;
+	}
 </style>
 
 <h1 class="title">Example of <i style="color:#990000">XHTML + CSS</i></h1>
@@ -146,7 +155,12 @@ $html = <<<EOF
 
 <p id="second">Example of paragraph with ID selector. <span>Fusce et felis vitae diam lobortis sollicitudin. Aenean tincidunt accumsan nisi, id vehicula quam laoreet elementum. Phasellus egestas interdum erat, et viverra ipsum ultricies ac. Praesent sagittis augue at augue volutpat eleifend. Cras nec orci neque. Mauris bibendum posuere blandit. Donec feugiat mollis dui sit amet pellentesque. Sed a enim justo. Donec tincidunt, nisl eget elementum aliquam, odio ipsum ultrices quam, eu porttitor ligula urna at lorem. Donec varius, eros et convallis laoreet, ligula tellus consequat felis, ut ornare metus tellus sodales velit. Duis sed diam ante. Ut rutrum malesuada massa, vitae consectetur ipsum rhoncus sed. Suspendisse potenti. Pellentesque a congue massa.</span></p>
 
-<div class="test">example of DIV with border and fill.<br />Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sed imperdiet lectus.</div>
+<div class="test">example of DIV with border and fill.
+<br />Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+<br /><span class="lowercase">text-transform <b>LOWERCASE</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+<br /><span class="uppercase">text-transform <b>uppercase</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+<br /><span class="capitalize">text-transform <b>cAPITALIZE</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+</div>
 
 <br />
 
@@ -205,60 +219,37 @@ $pdf->writeHTML($html, true, false, true, false, '');
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// *******************************************************************
-// HTML TIPS & TRICKS
-// *******************************************************************
+// add a page
+$pdf->AddPage();
 
-// REMOVE CELL PADDING
-//
-// $pdf->SetCellPadding(0);
-// 
-// This is used to remove any additional vertical space inside a 
-// single cell of text.
+$html = '
+<h1>HTML TIPS & TRICKS</h1>
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+<h3>REMOVE CELL PADDING</h3>
+<pre>$pdf->SetCellPadding(0);</pre>
+This is used to remove any additional vertical space inside a single cell of text.
 
-// REMOVE TAG TOP AND BOTTOM MARGINS
-//
-// $tagvs = array('p' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 0, 'n' => 0)));
-// $pdf->setHtmlVSpace($tagvs);
-// 
-// Since the CSS margin command is not yet implemented on TCPDF, you
-// need to set the spacing of block tags using the following method.
+<h3>REMOVE TAG TOP AND BOTTOM MARGINS</h3>
+<pre>$tagvs = array(\'p\' => array(0 => array(\'h\' => 0, \'n\' => 0), 1 => array(\'h\' => 0, \'n\' => 0)));
+$pdf->setHtmlVSpace($tagvs);</pre>
+Since the CSS margin command is not yet implemented on TCPDF, you need to set the spacing of block tags using the following method.
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+<h3>SET LINE HEIGHT</h3>
+<pre>$pdf->setCellHeightRatio(1.25);</pre>
+You can use the following method to fine tune the line height (the number is a percentage relative to font height).
 
-// SET LINE HEIGHT
-//
-// $pdf->setCellHeightRatio(1.25);
-// 
-// You can use the following method to fine tune the line height
-// (the number is a percentage relative to font height).
+<h3>CHANGE THE PIXEL CONVERSION RATIO</h3>
+<pre>$pdf->setImageScale(0.47);</pre>
+This is used to adjust the conversion ratio between pixels and document units. Increase the value to get smaller objects.<br />
+Since you are using pixel unit, this method is important to set theright zoom factor.<br /><br />
+Suppose that you want to print a web page larger 1024 pixels to fill all the available page width.<br />
+An A4 page is larger 210mm equivalent to 8.268 inches, if you subtract 13mm (0.512") of margins for each side, the remaining space is 184mm (7.244 inches).<br />
+The default resolution for a PDF document is 300 DPI (dots per inch), so you have 7.244 * 300 = 2173.2 dots (this is the maximum number of points you can print at 300 DPI for the given width).<br />
+The conversion ratio is approximatively 1024 / 2173.2 = 0.47 px/dots<br />
+If the web page is larger 1280 pixels, on the same A4 page the conversion ratio to use is 1280 / 2173.2 = 0.59 pixels/dots';
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// CHANGE THE PIXEL CONVERSION RATIO
-//
-// $pdf->setImageScale(0.47);
-// 
-// This is used to adjust the conversion ratio between pixels and 
-// document units. Increase the value to get smaller objects.
-// Since you are using pixel unit, this method is important to set the
-// right zoom factor.
-// 
-// Suppose that you want to print a web page larger 1024 pixels to 
-// fill all the available page width.
-// An A4 page is larger 210mm equivalent to 8.268 inches, if you 
-// subtract 13mm (0.512") of margins for each side, the remaining 
-// space is 184mm (7.244 inches).
-// The default resolution for a PDF document is 300 DPI (dots per 
-// inch), so you have 7.244 * 300 = 2173.2 dots (this is the maximum 
-// number of points you can print at 300 DPI for the given width).
-// The conversion ratio is approximatively 1024 / 2173.2 = 0.47 px/dots
-// If the web page is larger 1280 pixels, on the same A4 page the 
-// conversion ratio to use is 1280 / 2173.2 = 0.59 pixels/dots
-
-// *******************************************************************
+// output the HTML content
+$pdf->writeHTML($html, true, false, true, false, '');
 
 // reset pointer to the last page
 $pdf->lastPage();
@@ -269,5 +260,5 @@ $pdf->lastPage();
 $pdf->Output('example_061.pdf', 'I');
 
 //============================================================+
-// END OF FILE                                                
+// END OF FILE
 //============================================================+

@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 Ext.define('App.view.patient.windows.ArrivalLog', {
 	extend: 'App.ux.window.Window',
-	title      : i18n('patient_arrival_log'),
+	title      : _('patient_arrival_log'),
 	closeAction: 'hide',
     layout     : 'fit',
 	modal      : true,
@@ -36,7 +36,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 		me.tbar = [
             {
                 xtype       : 'patienlivetsearch',
-                fieldLabel  : i18n('look_for_patient'),
+                fieldLabel  : _('look_for_patient'),
                 width       : 400,
                 hideLabel:false,
                 enableKeyEvents:true,
@@ -49,7 +49,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 		    },
             '-',
             {
-                text: i18n('add_new_patient'),
+                text: _('add_new_patient'),
                 iconCls:'icoAddRecord',
                 action:'newPatientBtn',
                 disabled:true,
@@ -76,32 +76,32 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
                         items: [
                             {
                                 icon: 'resources/images/icons/delete.png',  // Use a URL in the icon config
-                                tooltip: i18n('remove'),
+                                tooltip: _('remove'),
                                 scope:me,
                                 handler: me.onPatientRemove
                             }
                         ]
                     },
                     {
-                        header: i18n('time'),
+                        header: _('time'),
                         dataIndex:'time',
 	                    width:130
                     },
                     {
-                        header: i18n('record') + ' #',
+                        header: _('record') + ' #',
                         dataIndex:'pid'
                     },
                     {
-                        header: i18n('patient_name'),
+                        header: _('patient_name'),
                         dataIndex:'name',
                         flex:1
                     },
                     {
-                        header: i18n('insurance'),
+                        header: _('insurance'),
                         dataIndex:'insurance'
                     },
                     {
-                        header: i18n('area'),
+                        header: _('area'),
                         dataIndex:'area'
                     },
                     {
@@ -164,9 +164,9 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
             record = store.getAt(rowIndex);
 	    Encounter.checkForAnOpenedEncounterByPid({pid:record.data.pid,date:Ext.Date.format(new Date(), 'Y-m-d H:i:s')}, function(provider, response){
 		    if(response.result) {
-			    me.msg('Oops!', i18n('patient_have_a_opened_encounter'));
+			    me.msg('Oops!', _('patient_have_a_opened_encounter'));
 		    } else {
-			    me.msg('Sweet!', i18n('patient_have_been_removed'));
+			    me.msg('Sweet!', _('patient_have_been_removed'));
 			    store.remove(record);
 		    }
 	    });

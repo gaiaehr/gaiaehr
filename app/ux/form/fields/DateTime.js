@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +28,11 @@ Ext.define('App.ux.form.fields.DateTime', {
 	},
 	alias : 'widget.mitos.datetime',
 
-	//configurables
-
 	combineErrors: true,
 	msgTarget    : 'under',
 	layout       : 'hbox',
 	readOnly     : false,
+	allowBlank   : true,
 
 	/**
 	 * @cfg {String} dateFormat
@@ -44,7 +43,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 	 * @cfg {String} timeFormat
 	 * The default is 'H:i:s'
 	 */
-	timeFormat    : 'g:i:s a',
+	timeFormat    : 'g:i a',
 	/**
 	 * @cfg {String} dateTimeFormat
 	 * The format used when submitting the combined value.
@@ -81,10 +80,12 @@ Ext.define('App.ux.form.fields.DateTime', {
 		var me = this;
 		me.items = me.items || [];
 
+		me.dateConfig.allowBlank = me.allowBlank;
+
 		me.dateField = Ext.create('Ext.form.field.Date', Ext.apply({
 			format     : me.dateFormat,
 			flex       : 1,
-            emptyText  : i18n('date'),
+            emptyText  : _('date'),
             margin     : 0,
 			submitValue: false
 		}, me.dateConfig));
@@ -93,7 +94,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.timeField = Ext.create('Ext.form.field.Time', Ext.apply({
 			format     : me.timeFormat,
 			flex       : 1,
-            emptyText  : i18n('time'),
+            emptyText  : _('time'),
             margin     : 0,
 			submitValue: false
 		}, me.timeConfig));
@@ -121,11 +122,11 @@ Ext.define('App.ux.form.fields.DateTime', {
 		me.callParent();
 
 		// this dummy is necessary because Ext.Editor will not check whether an inputEl is present or not
-		this.inputEl = {
-			dom         : {},
-			swallowEvent: function() {
-			}
-		};
+//		this.inputEl = {
+//			dom         : {},
+//			swallowEvent: function() {
+//			}
+//		};
 
 		me.initField();
 	},
@@ -198,7 +199,11 @@ Ext.define('App.ux.form.fields.DateTime', {
     setReadOnly:function(value){
         this.dateField.setReadOnly(value);
         this.timeField.setReadOnly(value);
-    }
+    },
+
+	setMaxValue:function(date){
+		this.dateField.setMaxValue(date);
+	}
 });
 
 //eo file

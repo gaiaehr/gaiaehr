@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\reportcenter\dataProvider;
 
-if (!isset($_SESSION))
-{
+if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
-include_once ('Reports.php');
-include_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
-include_once ($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
-include_once ($_SESSION['root'] . '/dataProvider/Encounter.php');
-include_once ($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
-class Clinical extends Reports
-{
+include_once('Reports.php');
+include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
+include_once(ROOT . '/dataProvider/i18nRouter.php');
+
+class ClinicMeasures extends Reports {
 	private $db;
 	private $user;
 	private $patient;
@@ -40,18 +40,17 @@ class Clinical extends Reports
 	/*
 	 * The first thing all classes do, the construct.
 	 */
-	function __construct()
-	{
+	function __construct() {
 		parent::__construct();
-		$this -> db = new MatchaHelper();
-		$this -> user = new User();
-		$this -> patient = new Patient();
-		$this -> encounter = new Encounter();
+		$this ->db = new \MatchaHelper();
+		$this ->user = new \User();
+		$this ->patient = new \Patient();
+		$this ->encounter = new \Encounter();
 
 		return;
 	}
 
-	public function getAmbulatoryClinicalQualityMeasures(){
+	public function getAmbulatoryClinicalQualityMeasures() {
 		$acqm = array();
 		$acqm['NQF0001'] = 'Asthma Assesment';
 		$acqm['NQF0002'] = 'Pharyngitis - Children';
@@ -98,7 +97,8 @@ class Clinical extends Reports
 		$acqm['NQF0575'] = 'Diabetes Control: Hemoglobin A1c < 8.0%';
 		return $acqm;
 	}
-	public function getStandardMeasures(){
+
+	public function getStandardMeasures() {
 		$sm = array();
 		$sm[] = 'Adult Weight Screening and Follow-Up';
 		$sm[] = 'Cancer Screening: Colon Cancer Screening';
@@ -122,7 +122,6 @@ class Clinical extends Reports
 		$sm[] = 'Education: Exercise';
 		$sm[] = 'Measurement: BMI';
 	}
-
 
 }
 

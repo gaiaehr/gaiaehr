@@ -1,6 +1,7 @@
 <?php
 /**
- * GaiaEHR
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +23,13 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 ob_start();
-require_once ($_SESSION['root'] . '/classes/MatchaHelper.php');
-include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
-include_once($_SESSION['root'] . '/dataProvider/Globals.php');
+if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+require_once(dirname(__FILE__) . '/registry.php');
+require_once(dirname(__FILE__) . '/sites/'.$_REQUEST['site'].'/conf.php');
+require_once(dirname(__FILE__) . '/classes/MatchaHelper.php');
+include_once(dirname(__FILE__) . '/dataProvider/i18nRouter.php');
+include_once(dirname(__FILE__) . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');
-
 
 // check if is emergency access....
 if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess']){
@@ -42,37 +45,53 @@ $i18n = i18nRouter::getTranslation();
 print 'lang = '. json_encode( $i18n ).';';
 
 // Output all the globals settings on the database.
-$global = Globals::getGlobals();
-$global['root'] = $_SESSION['root'];
-$global['url']  = $_SESSION['url'];
-$global['site']  = $_SESSION['site']['dir'];
+$global = Globals::setGlobals();
+$global['root'] = ROOT;
+$global['url']  = URL;
+$global['host']  = HOST;
+$global['site']  = site_dir;
 
 print 'globals = '. json_encode( $global ).';';
 
-if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true))
-{
-	include_once($_SESSION['root'] . '/dataProvider/ACL.php');
-	include_once($_SESSION['root'] . '/dataProvider/User.php');
+if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)){
+	include_once(dirname(__FILE__) . '/dataProvider/ACL.php');
+	include_once(dirname(__FILE__) . '/dataProvider/Facilities.php');
+	include_once(dirname(__FILE__) . '/dataProvider/User.php');
 
-	$acl = new ACL();
+	$ACL = new ACL();
 	$perms = array();
 	/*
 	 * Look for user permissions and pass it to a PHP variable.
 	 * This variable will be used in JavaScript code
 	 * look at it as a PHP to JavaScript variable conversion.
 	 */
-	foreach($acl->getAllUserPermsAccess() AS $perm){
+	foreach($ACL->getAllUserPermsAccess() AS $perm){
 		$perms[$perm['perm']] = $perm['value'];
 	}
-	$user = new User();
-	$userData = $user->getCurrentUserBasicData();
+	unset($ACL);
+
+	$User = new User();
+	$userData = $User->getCurrentUserBasicData();
 	$userData['token'] = $_SESSION['user']['token'];
-	Globals::setGlobals();
+	$userData['facility'] = $_SESSION['user']['facility'];
+	$userData['localization'] = $_SESSION['user']['localization'];
+	unset($User);
+
+	$Facilities = new Facilities();
+	$structure = $Facilities->geFacilitiesStructure();
+	unset($Facilities);
+
 	/*
 	 * Pass all the PHP to JavaScript
 	 */
-	print 'acl = '. json_encode($perms).';';
-	print 'user = '. json_encode($userData).';';
-	print 'settings.site_url = "'. $_SESSION['site']['url'] .'";';
+	print 'window.acl = ' . json_encode($perms) . ';';
+	print 'window.user = ' . json_encode($userData) . ';';
+	print 'window.structure = ' . json_encode($structure) . ';';
+	print 'window.settings.site_url = "' . $global['url'] . '";';
+
+	if(isset($_SESSION['styles'])){
+		print 'window.styles = ' . json_encode($_SESSION['styles']) . ';';
+	}
+
 }
 

@@ -1,819 +1,371 @@
 /**
- GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.administration.Globals',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelGlobals',
-	pageTitle : 'GaiaEHR ' + i18n('global_settings'),
-	uses : ['App.ux.form.fields.Checkbox'],
-	initComponent : function()
-	{
+Ext.define('App.view.administration.Globals', {
+	extend: 'App.ux.RenderPanel',
+	id: 'panelGlobals',
+	pageTitle: 'GaiaEHR ' + _('global_settings'),
+	uses: ['App.ux.form.fields.Checkbox'],
+	initComponent: function(){
 		var me = this;
 		// *************************************************************************************
 		// Global Data store
 		// *************************************************************************************
-		me.store = Ext.create('App.store.administration.Globals');
+		me.store = Ext.create('App.store.administration.Globals',{
+			groupField: 'gl_category',
+			remoteSort: false,
+			autoSync: true,
+			pageSize: 500,
+			sorters: [
+				{
+					sorterFn: function(o1, o2){
 
-		//------------------------------------------------------------------------------
-		// When the data is loaded semd values to de form
-		//------------------------------------------------------------------------------
-		me.store.on('load', function()
-		{
-			var rec = me.store.getAt(0);
-			// get the record from the store
-			me.globalFormPanel.getForm().loadRecord(rec);
-		});
-		// *************************************************************************************
-		// DataStores for all static combos
-		// *************************************************************************************
-		me.default_top_pane_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('dashboard'),
-				"option_id" : "app/dashboard/dashboard.ejs.php"
-			},
-			{
-				"title" : i18n('calendar'),
-				"option_id" : "app/calendar/calendar.ejs.php"
-			},
-			{
-				"title" : i18n('messages'),
-				"option_id" : "app/messages/messages.ejs.php"
-			}]
-		});
-		me.fullname_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['format', 'option_id'],
-			data : [
-			{
-				"format" : i18n('last_first_middle'),
-				"option_id" : "0"
-			},
-			{
-				"format" : i18n('first_middle_last'),
-				"option_id" : "1"
-			}]
-		});
-		me.main_navigation_menu_left_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('main_navigation_menu_left'),
-				"option_id" : "west"
-			},
-			{
-				"title" : i18n('main_navigation_menu_right'),
-				"option_id" : "east"
-			}]
-		});
-		me.css_header_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('grey_default'),
-				"option_id" : "ext-all-gray.css"
-			},
-			{
-				"title" : i18n('blue'),
-				"option_id" : "ext-all.css"
-			},
-			{
-				"title" : i18n('access'),
-				"option_id" : "ext-all-access.css"
-			}]
-		});
-		me.full_new_patient_form_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('oldstyle_static_form_without_search_or_duplication_check'),
-				"option_id" : "0"
-			},
-			{
-				"title" : i18n('all_demographics_fields_with_search_and_duplication_check'),
-				"option_id" : "1"
-			},
-			{
-				"title" : i18n('mandatory_or_specified_fields_only_search_and_dup_check'),
-				"option_id" : "2"
-			},
-			{
-				"title" : i18n('mandatory_or_specified_fields_only_dup_check_no_search'),
-				"option_id" : "3"
-			}]
-		});
-		me.patient_search_results_style_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('encounter_statistics'),
-				"option_id" : "0"
-			},
-			{
-				"title" : i18n('mandatory_and_specified_fields'),
-				"option_id" : "1"
-			}]
-		});
-		me.units_of_measurement_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('show_both_us_and_metric_main_unit_is_us'),
-				"option_id" : "1"
-			},
-			{
-				"title" : i18n('show_both_us_and_metric_main_unit_is_metric'),
-				"option_id" : "2"
-			},
-			{
-				"title" : i18n('show_us_only'),
-				"option_id" : "3"
-			},
-			{
-				"title" : i18n('show_metric_only'),
-				"option_id" : "4"
-			}]
-		});
-		me.date_display_format_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('yyyy_mm_dd'),
-				"option_id" : "Y-m-d"
-			},
-			{
-				"title" : i18n('mm_dd_yyyy'),
-				"option_id" : "m/d/Y"
-			},
-			{
-				"title" : i18n('dd_mm_yyyy'),
-				"option_id" : "d/m/Y"
-			}]
-		});
-		me.time_display_format_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('24_hr'),
-				"option_id" : "H:i"
-			},
-			{
-				"title" : i18n['12 hr'],
-				"option_id" : "g:i a"
-			}]
-		});
-		me.currency_decimals_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('0'),
-				"option_id" : "0"
-			},
-			{
-				"title" : i18n('1'),
-				"option_id" : "1"
-			},
-			{
-				"title" : i18n('2'),
-				"option_id" : "2"
-			}]
-		});
-		me.currency_dec_point_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('comma'),
-				"option_id" : ","
-			},
-			{
-				"title" : i18n('period'),
-				"option_id" : "."
-			}]
-		});
-		me.currency_thousands_sep_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('comma'),
-				"option_id" : ","
-			},
-			{
-				"title" : i18n('period'),
-				"option_id" : "."
-			},
-			{
-				"title" : i18n('space'),
-				"option_id" : " "
-			},
-			{
-				"title" : i18n('none'),
-				"option_id" : ""
-			}]
-		});
-		me.EMAIL_METHOD_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : "PHPMAIL",
-				"option_id" : "PHPMAIL"
-			},
-			{
-				"title" : "SENDMAIL",
-				"option_id" : "SENDMAIL"
-			},
-			{
-				"title" : "SMTP",
-				"option_id" : "SMTP"
-			}]
-		});
-		me.state_country_data_type_store = Ext.create('Ext.data.Store',
-		{
-			fields : ['title', 'option_id'],
-			data : [
-			{
-				"title" : i18n('text_field'),
-				"option_id" : "2"
-			},
-			{
-				"title" : i18n('single_selection_list'),
-				"option_id" : "1"
-			},
-			{
-				"title" : i18n('single_selection_list_with_ability_to_add_to_the_list'),
-				"option_id" : "26"
-			}]
-		});
-		//**************************************************************************
-		// Dummy Store
-		//**************************************************************************
-		me.dummyStore = new Ext.data.ArrayStore(
-		{
-			fields : ['title', 'option_id'],
-			data : [[i18n('option_1'), 'Option 1'], [i18n('option_2'), 'Option 2'], [i18n('option_3'), 'Option 3'], [i18n('option_5'), 'Option 5'], [i18n('option_6'), 'Option 6'], [i18n('option_7'), 'Option 7']]
-		});
-		//**************************************************************************
-		// Global Form Panel
-		//**************************************************************************
-		me.globalFormPanel = Ext.create('App.ux.form.Panel',
-		{
-			layout : 'fit',
-			autoScroll : true,
-			bodyStyle : 'padding: 0;',
-			fieldDefaults :
-			{
-				msgTarget : 'side',
-				labelWidth : 220,
-				width : 520
-			},
-			defaults :
-			{
-				anchor : '100%'
-			},
-			items : [
-			{
-				xtype : 'tabpanel',
-				activeTab : 0,
-				defaults :
-				{
-					bodyStyle : 'padding:10px',
-					autoScroll : true
-				},
-				items : [
-				{
-					title : i18n('appearance'),
-					defaults :
-					{
-						anchor : '100%'
-					},
-					items : [
-                        {
-                            xtype : 'combo',
-                            fieldLabel : i18n('main_top_pane_screen'),
-                            name : 'default_top_pane',
-                            displayField : 'title',
-                            valueField : 'option_id',
-                            editable : false,
-                            store : me.default_top_pane_store
-                        },
-                        {
-                            xtype : 'combo',
-                            fieldLabel : i18n('layout_style'),
-                            name : 'main_navigation_menu_left',
-                            displayField : 'title',
-                            valueField : 'option_id',
-                            editable : false,
-                            store : me.main_navigation_menu_left_store
-                        },
-                        {
-                            xtype : 'combo',
-                            fieldLabel : i18n('theme'),
-                            name : 'css_header',
-                            displayField : 'title',
-                            valueField : 'option_id',
-                            editable : false,
-                            store : me.css_header_store
-                        },
-                        {
-                            xtype : 'textfield',
-                            fieldLabel : i18n('navigation_area_width'),
-                            name : 'gbl_nav_area_width'
-                        }
-                    ]
-				},
-				{
-					title : 'Locale',
-					defaultType : 'textfield',
-					items : [
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('fullname_format'),
-						name : 'fullname',
-						displayField : 'format',
-						valueField : 'option_id',
-						editable : false,
-						store : me.fullname_store
-					},
-					{
-						xtype : 'languagescombo',
-						fieldLabel : i18n('default_language'),
-						name : 'language_default'
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('units_for_visits_forms'),
-						name : 'units_of_measurement',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.units_of_measurement_store
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('telephone_country_code'),
-						name : 'phone_country_code'
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('date_display_format'),
-						name : 'date_display_format',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.date_display_format_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('time_display_format'),
-						name : 'time_display_format',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.time_display_format_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('currency_decimal_places'),
-						name : 'currency_decimals',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.currency_decimals_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('currency_decimal_point_symbol'),
-						name : 'currency_dec_point',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.currency_dec_point_store
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('currency_thousands_separator'),
-						name : 'currency_thousands_sep',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.currency_thousands_sep_store
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('currency_designator'),
-						name : 'gbl_currency_symbol'
-					}]
-				},
-				{
-					title : 'Features',
-					defaultType : 'mitos.checkbox',
-					items : [
-                        {
-                            fieldLabel : i18n('autosave_forms'),
-                            name : 'autosave'
-                        },
-                        {
-                            fieldLabel : i18n('disable_chart_tracker'),
-                            name : 'disable_charts'
-                        },
-                        {
-                            fieldLabel : i18n('disable_immunizations'),
-                            name : 'disable_immunizations'
-                        },
-                        {
-                            fieldLabel : i18n('disable_prescriptions'),
-                            name : 'disable_prescriptions'
-                        },
-    //					{
-    //						fieldLabel : i18n('restrict_users_to_facilities'),
-    //						name : 'restrict_user_facility'
-    //					},
-                        {
-                            fieldLabel : i18n('force_billing_widget_open'),
-                            name : 'force_billing_widget_open'
-                        },
-                        {
-                            fieldLabel : i18n('actiate_ccr_ccd_reporting'),
-                            name : 'activate_ccr_ccd_report'
-                        }
-                    ]
-				},
-//				{
-//					title : i18n('calendar'),
-//					defaultType : 'combo',
-//					items : [
-//                        {
-//                            xtype : 'mitos.checkbox',
-//                            fieldLabel : i18n('disable_calendar'),
-//                            name : 'Cal1'
-//                        },
-//                        {
-//                            fieldLabel : i18n('calendar_starting_hour'),
-//                            name : 'Cal2',
-//                            displayField : 'title',
-//                            valueField : 'option_id',
-//                            editable : false,
-//                            store : me.dummyStore
-//                        },
-//                        {
-//                            fieldLabel : i18n('calendar_ending_hour'),
-//                            name : 'Cal3',
-//                            displayField : 'title',
-//                            valueField : 'option_id',
-//                            editable : false,
-//                            store : me.dummyStore
-//                        },
-//                        {
-//                            fieldLabel : i18n('calendar_interval'),
-//                            name : 'Cal4',
-//                            displayField : 'title',
-//                            valueField : 'option_id',
-//                            editable : false,
-//                            store : me.dummyStore
-//                        },
-//                        {
-//                            fieldLabel : i18n('appointment_display_style'),
-//                            name : 'Cal5',
-//                            displayField : 'title',
-//                            valueField : 'option_id',
-//                            editable : false,
-//                            store : me.dummyStore
-//                        },
-//                        {
-//                            xtype : 'mitos.checkbox',
-//                            fieldLabel : i18n('provider_see_entire_calendar'),
-//                            name : 'Cal6'
-//                        },
-//                        {
-//                            xtype : 'mitos.checkbox',
-//                            fieldLabel : i18n('auto_create_new_encounters'),
-//                            name : 'Cal7'
-//                        },
-//                        {
-//                            fieldLabel : i18n('appointment_event_color'),
-//                            name : 'Cal8',
-//                            displayField : 'title',
-//                            valueField : 'option_id',
-//                            editable : false,
-//                            store : me.dummyStore
-//                        }
-//                    ]
-//				},
-				{
-					title : 'Security',
-					defaultType : 'textfield',
-					items : [
-					{
-						fieldLabel : i18n('idle_session_timeout_seconds'),
-						name : 'timeout'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('require_strong_passwords'),
-						name : 'secure_password',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.dummyStore
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('require_unique_passwords'),
-						name : 'password_history'
-					},
-					{
-						fieldLabel : i18n('defaults_password_expiration_days'),
-						name : 'password_expiration_days'
-					},
-					{
-						fieldLabel : i18n('password_expiration_grace_period'),
-						name : 'password_grace_time'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('enable_clients_ssl'),
-						name : 'is_client_ssl_enabled'
-					},
-					{
-						fieldLabel : i18n('path_to_ca_certificate_file'),
-						name : 'certificate_authority_crt'
-					},
-					{
-						fieldLabel : i18n('path_to_ca_key_file'),
-						name : 'certificate_authority_key'
-					},
-					{
-						fieldLabel : i18n('client_certificate_expiration_days'),
-						name : 'client_certificate_valid_in_days'
-					},
-					{
-						fieldLabel : i18n('emergency_login_email_address'),
-						name : 'Emergency_Login_email_id'
-					}]
-				},
-				{
-					title : i18n('notifications'),
-					defaultType : 'textfield',
-					items : [
-					{
-						fieldLabel : i18n('notification_email_address'),
-						name : 'practice_return_email_path'
-					},
-					{
-						xtype : 'combo',
-						fieldLabel : i18n('email_transport_method'),
-						name : 'EMAIL_METHOD',
-						displayField : 'title',
-						valueField : 'option_id',
-						editable : false,
-						store : me.EMAIL_METHOD_store
-					},
-					{
-						fieldLabel : i18n('smpt_server_hostname'),
-						name : 'SMTP_HOST'
-					},
-					{
-						fieldLabel : i18n('smpt_server_port_number'),
-						name : 'SMTP_PORT'
-					},
-					{
-						fieldLabel : i18n('smpt_user_for_authentication'),
-						name : 'SMTP_USER'
-					},
-					{
-						fieldLabel : i18n('smpt_password_for_authentication'),
-						name : 'SMTP_PASS'
-					},
-					{
-						fieldLabel : i18n('email_notification_hours'),
-						name : 'EMAIL_NOTIFICATION_HOUR'
-					},
-					{
-						fieldLabel : i18n('sms_notification_hours'),
-						name : 'SMS_NOTIFICATION_HOUR'
-					},
-					{
-						fieldLabel : i18n('sms_gateway_usarname'),
-						name : 'SMS_GATEWAY_USENAME'
-					},
-					{
-						fieldLabel : i18n('sms_gateway_password'),
-						name : 'SMS_GATEWAY_PASSWORD'
-					},
-					{
-						fieldLabel : i18n('sms_gateway_api_Key'),
-						name : 'SMS_GATEWAY_APIKEY'
-					}]
-				},
-				{
-					title : i18n('logging'),
-					defaultType : 'mitos.checkbox',
-					items : [
-					{
-						fieldLabel : i18n('enable_audit_logging'),
-						name : 'enable_auditlog'
-					},
-					{
-						fieldLabel : i18n('audit_logging_patient_record'),
-						name : 'audit_events_patient'
-					},
-					{
-						fieldLabel : i18n('audid_logging_scheduling'),
-						name : 'audit_events_scheduling'
-					},
-					{
-						fieldLabel : i18n('audid_logging_order'),
-						name : 'audit_events_order'
-					},
-					{
-						fieldLabel : i18n('audid_logging_security_administration'),
-						name : 'audit_events_security'
-					},
-					{
-						fieldLabel : i18n('audid_logging_backups'),
-						name : 'audit_events_backup'
-					},
-					{
-						fieldLabel : i18n('audid_logging_miscellaeous'),
-						name : 'audit_events_other'
-					},
-					{
-						fieldLabel : i18n('audid_logging_select_query'),
-						name : 'audit_events_query'
-					},
-					{
-						fieldLabel : i18n('enable_atna_auditing'),
-						name : 'enable_atna_audit'
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('atna_audit_host'),
-						name : 'atna_audit_host'
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('atna_audit_post'),
-						name : 'atna_audit_port'
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('atna_audit_local_certificate'),
-						name : 'atna_audit_localcert'
-					},
-					{
-						xtype : 'textfield',
-						fieldLabel : i18n('atna_audit_ca_certificate'),
-						name : 'atna_audit_cacert'
-					}]
-				},
-				{
-					title : i18n('miscellaneous'),
-					defaultType : 'textfield',
-					items : [
-					{
-						fieldLabel : i18n('state_list'),
-						name : 'state_list'
-					},
-					{
-						fieldLabel : i18n('country_list'),
-						name : 'country_list'
-					},
-					{
-						fieldLabel : i18n('print_command'),
-						name : 'print_command'
-					},
-					{
-						fieldLabel : i18n('default_reason_for_visit'),
-						name : 'default_chief_complaint'
-					},
-					{
-						fieldLabel : i18n('patient_id_category_name'),
-						name : 'patient_id_category_name'
-					},
-					{
-						fieldLabel : i18n('patient_photo_category_name'),
-						name : 'patient_photo_category_name'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('medicare_referrer_is_renderer'),
-						name : 'MedicareReferrerIsRenderer'
-					},
-					{
-						fieldLabel : i18n('final_close_date_yyy_mm_dd'),
-						name : 'post_to_date_benchmark'
-					},
-					{
-						xtype : 'mitos.checkbox',
-						fieldLabel : i18n('enable_scanner_support'),
-						name : 'enable_scanner'
-					},
-					{
-						fieldLabel : i18n('scanner_directory'),
-						name : 'scanner_output_directory'
-					}]
-				},
-				{
-					title : i18n('connectors'),
-					items : [{
-                        xtype:'fieldset',
-                        defaultType : 'textfield',
-                        title: i18n('enable_lab_exchange'),
-                        collapsible: true,
-                        items:[
-                            {
-                                fieldLabel : i18n('lab_exchange_site_id'),
-                                name : 'Conn2'
-                            },
-                            {
-                                fieldLabel : i18n('lab_exchange_token_id'),
-                                name : 'Conn3'
-                            },
-                            {
-                                fieldLabel : i18n('lab_exchange_site_address'),
-                                name : 'Conn4'
-                            }
-                        ]
-                    },
-                    {
-                        xtype:'fieldset',
-                        defaultType : 'textfield',
-                        title: i18n('enable_portal'),
-                        collapsible: true,
-                        items:[
-                            {
-                                xtype: 'checkbox',
-                                fieldLabel : i18n('enable_portal'),
-                                name : 'portal_enable'
-                            },
-                            {
-                                fieldLabel : i18n('portal_url'),
-                                name : 'portal_url'
-                            },
-                            {
-                                fieldLabel : i18n('portal_port'),
-                                name : 'portal_port'
-                            }
-                        ]
-                    }]
-				}],
-				dockedItems : [
-				{
-					xtype : 'toolbar',
-					dock : 'top',
-					items : [
-					{
-						text : i18n('save_configuration'),
-						iconCls : 'save',
-						handler : function()
-						{
-							var form = me.globalFormPanel.getForm();
-							me.onGloblasSave(form, me.store);
+						var getCat = function(o){
+								var name = o.get('gl_category');
+
+								say(name);
+
+								if (name === 'General') {
+									return 1;
+								} else if (name === 'Locale') {
+									return 2;
+								} else if (name === 'Clinical') {
+									return 3;
+								} else if (name === 'Email') {
+									return 4;
+								} else if (name === 'Audit') {
+									return 5;
+								} else if (name === 'Fax/Scanner') {
+									return 6;
+								} else {
+									return 7;
+								}
+							},
+							cat1 = getCat(o1),
+							cat2 = getCat(o2);
+
+						if (cat1 === cat2) {
+							return 0;
 						}
-					}]
-				}]
-			}]
+
+						return cat1 < cat2 ? -1 : 1;
+					}
+				}
+			]
 		});
-		me.pageBody = [me.globalFormPanel];
+
+
+		//region Store Region
+		me.default_top_pane_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('dashboard'),
+					"option_id": "app/dashboard/dashboard.ejs.php"
+				},
+				{
+					"title": _('calendar'),
+					"option_id": "app/calendar/calendar.ejs.php"
+				},
+				{
+					"title": _('messages'),
+					"option_id": "app/messages/messages.ejs.php"
+				}
+			]
+		});
+		me.fullname_store = Ext.create('Ext.data.Store', {
+			fields: ['format', 'option_id'],
+			data: [
+				{
+					"format": _('last_first_middle'),
+					"option_id": "0"
+				},
+				{
+					"format": _('first_middle_last'),
+					"option_id": "1"
+				}
+			]
+		});
+		me.main_navigation_menu_left_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('main_navigation_menu_left'),
+					"option_id": "west"
+				},
+				{
+					"title": _('main_navigation_menu_right'),
+					"option_id": "east"
+				}
+			]
+		});
+		me.css_header_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('grey_default'),
+					"option_id": "ext-all-gray.css"
+				},
+				{
+					"title": _('blue'),
+					"option_id": "ext-all.css"
+				},
+				{
+					"title": _('access'),
+					"option_id": "ext-all-access.css"
+				}
+			]
+		});
+		me.full_new_patient_form_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('oldstyle_static_form_without_search_or_duplication_check'),
+					"option_id": "0"
+				},
+				{
+					"title": _('all_demographics_fields_with_search_and_duplication_check'),
+					"option_id": "1"
+				},
+				{
+					"title": _('mandatory_or_specified_fields_only_search_and_dup_check'),
+					"option_id": "2"
+				},
+				{
+					"title": _('mandatory_or_specified_fields_only_dup_check_no_search'),
+					"option_id": "3"
+				}
+			]
+		});
+		me.patient_search_results_style_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('encounter_statistics'),
+					"option_id": "0"
+				},
+				{
+					"title": _('mandatory_and_specified_fields'),
+					"option_id": "1"
+				}
+			]
+		});
+		me.units_of_measurement_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('show_both_us_and_metric_main_unit_is_us'),
+					"option_id": "1"
+				},
+				{
+					"title": _('show_both_us_and_metric_main_unit_is_metric'),
+					"option_id": "2"
+				},
+				{
+					"title": _('show_us_only'),
+					"option_id": "3"
+				},
+				{
+					"title": _('show_metric_only'),
+					"option_id": "4"
+				}
+			]
+		});
+		me.date_display_format_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('yyyy_mm_dd'),
+					"option_id": "Y-m-d"
+				},
+				{
+					"title": _('mm_dd_yyyy'),
+					"option_id": "m/d/Y"
+				},
+				{
+					"title": _('dd_mm_yyyy'),
+					"option_id": "d/m/Y"
+				}
+			]
+		});
+		me.time_display_format_store = Ext.create('Ext.data.Store',	{
+				fields: ['title', 'option_id'],
+				data: [
+					{
+						"title": _('24_hr'),
+						"option_id": "H:i"
+					},
+					{
+						"title": i18n['12 hr'],
+						"option_id": "g:i a"
+					}
+				]
+			});
+		me.currency_decimals_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('0'),
+					"option_id": "0"
+				},
+				{
+					"title": _('1'),
+					"option_id": "1"
+				},
+				{
+					"title": _('2'),
+					"option_id": "2"
+				}
+			]
+		});
+		me.currency_dec_point_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('comma'),
+					"option_id": ","
+				},
+				{
+					"title": _('period'),
+					"option_id": "."
+				}
+			]
+		});
+		me.currency_thousands_sep_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('comma'),
+					"option_id": ","
+				},
+				{
+					"title": _('period'),
+					"option_id": "."
+				},
+				{
+					"title": _('space'),
+					"option_id": " "
+				},
+				{
+					"title": _('none'),
+					"option_id": ""
+				}
+			]
+		});
+		me.EMAIL_METHOD_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": "PHPMAIL",
+					"option_id": "PHPMAIL"
+				},
+				{
+					"title": "SENDMAIL",
+					"option_id": "SENDMAIL"
+				},
+				{
+					"title": "SMTP",
+					"option_id": "SMTP"
+				}
+			]
+		});
+		me.state_country_data_type_store = Ext.create('Ext.data.Store', {
+			fields: ['title', 'option_id'],
+			data: [
+				{
+					"title": _('text_field'),
+					"option_id": "2"
+				},
+				{
+					"title": _('single_selection_list'),
+					"option_id": "1"
+				},
+				{
+					"title": _('single_selection_list_with_ability_to_add_to_the_list'),
+					"option_id": "26"
+				}
+			]
+		});
+		me.dummyStore = new Ext.data.ArrayStore({
+			fields: ['title', 'option_id'],
+			data: [
+				[_('option_1'), 'Option 1'],
+				[_('option_2'), 'Option 2'],
+				[_('option_3'), 'Option 3'],
+				[_('option_5'), 'Option 5'],
+				[_('option_6'), 'Option 6'],
+				[_('option_7'), 'Option 7']
+			]
+		});
+		//region end
+
+
+		me.grid = Ext.create('Ext.grid.Panel',{
+			store: me.store,
+			features: [
+				{
+					ftype:'grouping',
+					groupHeaderTpl: _('category') + ': {name}'
+				}
+			],
+			plugins:[
+				{
+					ptype:'cellediting'
+				}
+			],
+			columns:[
+				{
+					text:_('title'),
+					dataIndex:'gl_name',
+					flex:1
+				},
+				{
+					text:_('value'),
+					dataIndex:'gl_value',
+					flex:1,
+					editor:{
+						xtype:'textfield'
+					}
+				},
+				{
+					text:_('category'),
+					dataIndex:'gl_category'
+				}
+			]
+		});
+
+		me.pageBody = [ me.grid ];
+
 		me.callParent(arguments);
-	}, // end of initComponent
-	onGloblasSave : function(form, store)
-	{
+	},
+
+	/**
+	 *
+	 * @param form
+	 * @param store
+	 */
+	onGloblasSave: function(form, store){
 		var record = form.getRecord(), values = form.getValues();
-		Globals.updateGlobals(values, function()
-		{
+		Globals.updateGlobals(values, function(){
 			store.load();
 		});
 
-		this.msg(i18n('new_global_configuration_saved'), i18n('refresh_the_application'));
+		this.msg(_('new_global_configuration_saved'), _('refresh_the_application'));
 	},
 	/**
 	 * This function is called from Viewport.js when
@@ -821,10 +373,9 @@ Ext.define('App.view.administration.Globals',
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive : function(callback)
-	{
+	onActive: function(callback){
 		this.store.load();
 		callback(true);
 	}
 });
-//ens LogPage class
+

@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 Ext.define('App.view.fees.PaymentEntryWindow', {
     extend: 'Ext.window.Window',
-    title: i18n('add_new_payment'),
+    title: _('add_new_payment'),
     closeAction: 'hide',
     modal: true,
     initComponent: function(){
@@ -38,7 +38,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout: 'hbox',
                         items: [
                             {
-                                fieldLabel: i18n('paying_entity'),
+                                fieldLabel: _('paying_entity'),
                                 xtype: 'mitos.payingentitycombo',
                                 name: 'paying_entity',
                                 action: 'new_payment',
@@ -47,7 +47,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'patienlivetsearch',
-                                fieldLabel: i18n('from'),
+                                fieldLabel: _('from'),
                                 hideLabel: false,
                                 name: 'payer_id',
                                 action: 'new_payment',
@@ -58,7 +58,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'textfield',
-                                fieldLabel: i18n('no'),
+                                fieldLabel: _('no'),
                                 action: 'new_payment',
                                 name: 'check_number',
                                 labelWidth: 47,
@@ -72,7 +72,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         layout: 'hbox',
                         items: [
                             {
-                                fieldLabel: i18n('payment_method'),
+                                fieldLabel: _('payment_method'),
                                 xtype: 'mitos.paymentmethodcombo',
                                 action: 'new_payment',
                                 labelWidth: 98,
@@ -81,7 +81,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'mitos.billingfacilitiescombo',
-                                fieldLabel: i18n('pay_to'),
+                                fieldLabel: _('pay_to'),
                                 action: 'new_payment',
                                 labelWidth: 42,
                                 name: 'pay_to',
@@ -90,7 +90,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                             },
                             {
                                 xtype: 'mitos.currency',
-                                fieldLabel: i18n('amount'),
+                                fieldLabel: _('amount'),
                                 action: 'new_payment',
                                 name: 'amount',
                                 labelWidth: 47,
@@ -101,16 +101,16 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                         ]
                     },
                     {
-                        fieldLabel: i18n('post_to_date'),
+                        fieldLabel: _('post_to_date'),
                         xtype: 'datefield',
                         name: 'post_to_date',
                         action: 'new_payment',
-                        format: globals['date_display_format'],
+                        format: g('date_display_format'),
                         labelWidth: 98,
                         width: 220
                     },
                     {
-                        fieldLabel: i18n('note'),
+                        fieldLabel: _('note'),
                         xtype: 'textareafield',
                         grow: true,
                         action: 'new_payment',
@@ -123,13 +123,13 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
         ];
         me.buttons = [
             {
-                text: i18n('save'),
+                text: _('save'),
                 scope: me,
                 handler: me.onPaymentSave
             },
             '-',
             {
-                text: i18n('reset'),
+                text: _('reset'),
                 scope: me,
                 handler: me.resetNewPayment
             }
@@ -148,7 +148,7 @@ Ext.define('App.view.fees.PaymentEntryWindow', {
                     form.reset();
                     me.hide();
                 }else{
-                    app.msg('Oops!', i18n('payment_entry_error'))
+                    app.msg('Oops!', _('payment_entry_error'))
                 }
             });
         }

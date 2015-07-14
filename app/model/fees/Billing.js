@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,74 +16,72 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define( 'App.model.fees.Billing',
-{
-	extend : 'Ext.data.Model',
-	table: {
-		name:'billing',
-		comment:'Billing'
-	},
-	fields : [
+Ext.define('App.model.fees.Billing',
 	{
-		name : 'eid',
-		type : 'int '
-	},
-	{
-		name : 'pid',
-		type : 'int'
-	},
-	{
-		name : 'patientName',
-		type : 'string'
-	},
-	{
-		name : 'primaryProvider',
-		type : 'string'
-	},
-	{
-		name : 'encounterProvider',
-		type : 'string'
-	},
-	{
-		name : 'supervisorProvider',
-		type : 'string'
-	},
-	{
-		name : 'facility',
-		type : 'string'
-	},
-	{
-		name : 'billing_facility',
-		type : 'string'
-	},
-	{
-		name : 'service_date',
-		type : 'string'
-	},
-	{
-		name : 'close_date',
-		type : 'string'
-	},
-	{
-		name : 'billing_stage',
-		type : 'int'
-	},
-	{
-		name : 'icdxCodes',
-		type : 'auto'
-	}],
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : Fees.getFilterEncountersBillingData
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'billing',
+			comment: 'Billing'
 		},
-		reader :
-		{
-			root : 'encounters',
-			totalProperty : 'totals'
+		fields: [
+			{
+				name: 'eid',
+				type: 'int '
+			},
+			{
+				name: 'pid',
+				type: 'int'
+			},
+			{
+				name: 'patientName',
+				type: 'string'
+			},
+			{
+				name: 'primaryProvider',
+				type: 'string'
+			},
+			{
+				name: 'encounterProvider',
+				type: 'string'
+			},
+			{
+				name: 'supervisorProvider',
+				type: 'string'
+			},
+			{
+				name: 'facility',
+				type: 'string'
+			},
+			{
+				name: 'billing_facility',
+				type: 'string'
+			},
+			{
+				name: 'service_date',
+				type: 'string'
+			},
+			{
+				name: 'close_date',
+				type: 'string'
+			},
+			{
+				name: 'billing_stage',
+				type: 'int'
+			},
+			{
+				name: 'dxCodes',
+				type: 'auto'
+			}
+		],
+		proxy: {
+			type: 'direct',
+			api: {
+				read: 'Fees.getFilterEncountersBillingData'
+			},
+			reader: {
+				root: 'encounters',
+				totalProperty: 'totals'
+			}
 		}
-	}
 
-} );
+	});

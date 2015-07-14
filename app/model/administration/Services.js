@@ -19,9 +19,9 @@
 Ext.define('App.model.administration.Services', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'services',
-		comment:'Services'
-	},	
+		name: 'services',
+		comment: 'Services'
+	},
 	fields: [
 		{name: 'id', type: 'string', comment: 'Services ID'},
 		{name: 'code_text', type: 'string'},
@@ -38,7 +38,8 @@ Ext.define('App.model.administration.Services', {
 		{name: 'taxrates', type: 'string'},
 		{name: 'active', type: 'bool'},
 		{name: 'reportable', type: 'string'},
-        ////////////////////////////////////
+		{name: 'has_children', type: 'bool'},
+		////////////////////////////////////
 		{name: 'sex', type: 'string'},
 		{name: 'age_start', type: 'int'},
 		{name: 'age_end', type: 'int'},

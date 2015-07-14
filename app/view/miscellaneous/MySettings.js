@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@ Ext.define('App.view.miscellaneous.MySettings',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelMySettings',
-	pageTitle : i18n('my_settings'),
-	uses : ['App.ux.GridPanel'],
+	pageTitle : _('my_settings'),
+	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
 		var panel = this;
@@ -45,7 +45,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n('appearance_settings'),
+				title : _('appearance_settings'),
 				collapsible : true,
 				defaultType : 'textfield',
 				layout : 'anchor',
@@ -78,7 +78,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n('locale_settings'),
+				title : _('locale_settings'),
 				collapsible : true,
 				defaultType : 'textfield',
 				layout : 'anchor',
@@ -111,7 +111,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 			},
 			{
 				xtype : 'fieldset',
-				title : i18n('calendar_settings'),
+				title : _('calendar_settings'),
 				collapsible : true,
 				defaultType : 'textfield',
 				layout : 'anchor',
@@ -148,7 +148,7 @@ Ext.define('App.view.miscellaneous.MySettings',
 				dock : 'top',
 				items : [
 				{
-					text : i18n('save'),
+					text : _('save'),
 					iconCls : 'save',
 					id : 'cmdSave',
 					disabled : true,

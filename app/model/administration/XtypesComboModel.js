@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,21 +17,21 @@
  */
 
 Ext.define('App.model.administration.XtypesComboModel', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'xtypescombo',
-        comment:'XTYPE Combos'
-    },
-    fields: [
-        { name: 'id', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'value', type: 'string' }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: CombosData.getFiledXtypes
-        }
-    },
-    autoLoad: true
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'xtypescombo',
+		comment: 'XTYPE Combos'
+	},
+	fields: [
+		{ name: 'id', type: 'string' },
+		{ name: 'name', type: 'string' },
+		{ name: 'value', type: 'string' }
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'CombosData.getFiledXtypes'
+		}
+	},
+	autoLoad: true
 });

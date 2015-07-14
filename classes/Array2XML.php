@@ -33,7 +33,7 @@
 
 class Array2XML {
 
-    private static $xml = null;
+    public static $xml = null;
     private static $encoding = 'UTF-8';
 
     /**
@@ -141,6 +141,7 @@ class Array2XML {
 
     /**
      * Get the root XML node, if there isn't one, create it.
+     * @return DOMDocument
      */
     private static function getXMLRoot(){
         if(empty(self::$xml)) {

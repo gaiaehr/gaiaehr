@@ -32,6 +32,8 @@ class MatchaErrorHandler extends Matcha
         // construct the exception error
         $trace = $errorException->getTrace();
         $constructErrorMessage = 'Exception: "';
+        $constructErrorMessage .= MatchaModel::$fileModel;
+        $constructErrorMessage .= ' Message: "';
         $constructErrorMessage .= $errorException->getMessage();
         $constructErrorMessage .= '" @ ';
         if($trace[0]['class'] != '') {

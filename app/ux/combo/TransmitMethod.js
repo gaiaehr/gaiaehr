@@ -20,7 +20,7 @@ Ext.define('App.ux.combo.TransmitMethod', {
 			displayField: 'name',
 			valueField  : 'id',
 			queryMode   : 'local',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.storeTrsmit
 		}, null);
 		me.callParent();

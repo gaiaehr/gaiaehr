@@ -41,6 +41,13 @@ Ext.define('App.controller.Login', {
 
         window.ExtDirectManagerProvider.setUrl(server.url+'data/appRouter.php');
         if(App.isNative) me.saveServerData(App.server);
+
+	    Ext.Viewport.add(Ext.create('App.view.MainTabletView'));
+
+	    App.user = {};
+	    App.user.id = 1;
+	    me.getLoginWindow().destroy();
+
         DataProvider.authProcedures.login(values, function(response){
             Ext.Viewport.unmask();
             if(response.success){

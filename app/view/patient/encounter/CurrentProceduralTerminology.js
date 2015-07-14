@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
         me.referenceCptStore = Ext.create('App.store.patient.QRCptCodes');
 
-        me.encounterCptStore = Ext.create('App.store.patient.CptCodes', {
+        me.encounterCptStore = Ext.create('App.store.patient.EncounterServices', {
             autoSync:true,
             listeners:{
                 scope:me,
@@ -47,9 +47,9 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
             errorSummary:false,
             clicksToEdit:1,
             enableRemove:true,
-            formItems:[
+            items:[
                 {
-                    fieldLabel: i18n('full_description'),
+                    fieldLabel: _('full_description'),
                     xtype:'displayfield',
                     name:'code_text',
                     anchor:'100%'
@@ -66,18 +66,18 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             defaults:{ xtype:'textfield' },
                             items:[
                                 {
-                                    fieldLabel: i18n('place_of_service'),
+                                    fieldLabel: _('place_of_service'),
                                     name:'place_of_service',
                                     anchor:'100%'
                                 },
                                 {
                                     xtype:'checkbox',
                                     labelWidth:105,
-                                    fieldLabel: i18n('emergency') + '?',
+                                    fieldLabel: _('emergency') + '?',
                                     name:'emergency'
                                 },
                                 {
-                                    fieldLabel: i18n('charges'),
+                                    fieldLabel: _('charges'),
                                     name:'charge',
                                     anchor:'100%'
                                 }
@@ -91,15 +91,15 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             defaults:{ xtype:'textfield', anchor:'100%', labelWidth:110 },
                             items:[
                                 {
-                                    fieldLabel: i18n('days_of_units'),
+                                    fieldLabel: _('days_of_units'),
                                     name:'days_of_units'
                                 },
                                 {
-                                    fieldLabel: i18n('essdt_fam_plan'),
+                                    fieldLabel: _('essdt_fam_plan'),
                                     name:'essdt_plan'
                                 },
                                 {
-                                    fieldLabel: i18n('modifiers'),
+                                    fieldLabel: _('modifiers'),
                                     xtype:'livecptsearch',
                                     hideLabel:false,
                                     name:'modifiers'
@@ -112,7 +112,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                 },
                 {
                     xtype:'liveicdxsearch',
-                    fieldLabel: i18n('diagnosis'),
+                    fieldLabel: _('diagnosis'),
                     hideLabel:false,
                     name:'diagnosis'
                 }
@@ -126,7 +126,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
         me.items = [
             {
                 xtype:'panel',
-                title: i18n('cpt_search'),
+                title: _('cpt_search'),
                 itemId:'leftCol',
                 region:'west',
                 width:450,
@@ -142,7 +142,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                 items:[
                     {
                         xtype:'fieldset',
-                        title: i18n('cpt_quick_reference_options'),
+                        title: _('cpt_quick_reference_options'),
                         padding:'10 15',
                         margin:'0 0 3 0',
                         layout:'anchor',
@@ -156,9 +156,9 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             store:Ext.create('Ext.data.Store', {
                                 fields:['name', 'value'],
                                 data:[
-                                    { name: i18n('show_related_cpt_for_current_diagnostics'), value:0 },
-                                    { name: i18n('show_cpt_history_for_this_patient'), value:1 },
-                                    { name: i18n('show_cpt_commonly_used_by_clinic'), value:2 }
+                                    { name: _('show_related_cpt_for_current_diagnostics'), value:0 },
+                                    { name: _('show_cpt_history_for_this_patient'), value:1 },
+                                    { name: _('show_cpt_commonly_used_by_clinic'), value:2 }
                                 ]
                             }),
                             listeners:{
@@ -184,13 +184,13 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         },
                         columns:[
                             {
-                                text: i18n('code'),
+                                text: _('code'),
                                 width:70,
                                 sortable:true,
                                 dataIndex:'code'
                             },
                             {
-                                text: i18n('description'),
+                                text: _('description'),
                                 flex:1,
                                 sortable:true,
                                 dataIndex:'code_text_medium'
@@ -205,7 +205,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
             },
             {
                 xtype:'panel',
-                title: i18n('encounter_cpts'),
+                title: _('encounter_cpts'),
                 region:'center',
                 itemId:'rightCol',
                 bodyStyle:'background-color:#fff',
@@ -217,7 +217,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                 items:[
                     {
                         xtype:'fieldset',
-                        title: i18n('cpt_live_sarch'),
+                        title: _('cpt_live_sarch'),
                         padding:'10 15',
                         margin:'0 0 3 0',
                         layout:'anchor',
@@ -237,19 +237,19 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         store:me.encounterCptStore,
                         columns:[
                             {
-                                text: i18n('code'),
+                                text: _('code'),
                                 width:70,
                                 sortable:true,
                                 dataIndex:'code'
                             },
                             {
-                                text: i18n('description'),
+                                text: _('description'),
                                 flex:1,
                                 sortable:true,
                                 dataIndex:'code_text'
                             },
                             {
-                                text: i18n('status'),
+                                text: _('status'),
                                 width:50,
                                 sortable:true,
                                 dataIndex:'status',
@@ -258,7 +258,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                         ],
                         tbar:[
                             {
-                                text: i18n('quick_reference'),
+                                text: _('quick_reference'),
                                 action:'referenceCptBtn',
                                 enableToggle:true,
                                 scope:me,
@@ -266,7 +266,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
                             },
                             '->',
                             {
-                                text: i18n('reload'),
+                                text: _('reload'),
                                 handler: function(){
                                     me.encounterCptStoreLoad(null);
                                 }
@@ -331,7 +331,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
 
 
     onCompleteRemove:function () {
-        app.msg('Sweet!', i18n('cpt_removed_from_this_encounter'));
+        app.msg('Sweet!', _('cpt_removed_from_this_encounter'));
     },
 
     onLiveCptSelect:function (btn, record) {
@@ -354,7 +354,7 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
     },
 
     onCptDropped:function(node, data, dropRecord, dropPosition, dropFunction){
-        app.msg('Sweet!', i18n('cpt_added_to_this_encounter'));
+        app.msg('Sweet!', _('cpt_added_to_this_encounter'));
         this.cptFormEdit.cancelEdit();
         var store = dropRecord.store,
             dropIndex = store.indexOf(dropRecord),
@@ -376,8 +376,13 @@ Ext.define('App.view.patient.encounter.CurrentProceduralTerminology', {
     encounterCptStoreLoad:function(pid, eid, callback){
         this.pid = pid ? pid : this.pid;
         this.eid = eid ? eid : this.eid;
-        this.encounterCptStore.proxy.extraParams = {eid:this.eid, filter:null};
         this.encounterCptStore.load({
+            filters:[
+                {
+                    property:'eid',
+                    value: this.eid
+                }
+            ],
             callback:function(){
                 callback ? callback() : null;
             }

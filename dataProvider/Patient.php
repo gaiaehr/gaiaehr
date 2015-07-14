@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,783 +17,721 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Person.php');
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/dataProvider/User.php');
-include_once ($_SESSION['root'] . '/dataProvider/ACL.php');
+include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/ACL.php');
 
-class Patient
-{
-    /**
-     * @var MatchaHelper
-     */
-    private $db;
-    /**
-     * @var User
-     */
-    private $user;
-    /**
-     * @var
-     */
-    private $patient = null;
+class Patient {
 
-    /**
-     * @var MatchaCUP
-     */
-    private $p = null;
-    /**
-     * @var MatchaCUP
-     */
-    private $i = null;
+	/**
+	 * @var User
+	 */
+	private $user;
+	/**
+	 * @var
+	 */
+	private $patient;
+
 	/**
 	 * @var MatchaCUP
 	 */
-    private $d = null;
+	public $p;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $e;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $d;
+	/**
+	 * @var MatchaCUP
+	 */
+	private $c;
 
-    /**
-     * @var PoolArea
-     */
-    //private $poolArea;
-    function __construct($pid = null)
-    {
-        $this->db   = new MatchaHelper();
-        $this->user = new User();
-        $this->acl  = new ACL();
-        $this->setPatient($pid);
-        return;
-    }
-    /**
-     * MATCHA CUPs (Sencha Models)
-     */
-    private function setPatientModel(){
-        if($this->p == null) $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
-    }
-    private function setInsuranceModels(){
-        if($this->i == null) $this->i = MatchaModel::setSenchaModel('App.model.patient.Insurance');
-    }
-    private function setDocumentModel(){
-        if($this->d == null) $this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
-    }
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function getPatients(stdClass $params){
-        $this->setPatientModel();
-        return $this->p->load($params)->all();
-    }
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function savePatient($params){
-        $this->setPatientModel();
-	    $fullName = Person::fullname($params->fname, $params->mname, $params->lname);
-	    $params->qrcode = $this->createPatientQrCode($this->patient['pid'], $fullName);
-        $this->patient = $this->p->save($params);
-        $this->patient['fullname'] = $fullName;
-        $this->createPatientDir($this->patient['pid']);
-        return $this->patient;
-    }
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function getInsurances(stdClass $params){
-        $this->setInsuranceModels();
-        return $this->i->load($params)->all();
-    }
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function saveInsurance($params){
-        $this->setInsuranceModels();
-        return $this->i->save($params);
-    }
-    /**
-     * @param $pid
-     * @return mixed
-     */
-    protected function setPatient($pid)
-    {
-        if($pid != null && ($this->patient == null || $this->patient != $pid)){
-            $this->setPatientModel();
-            $this->patient = $this->p->load($pid)->one();
-            $this->patient['pic'] = $this->patient['image'];
-            $this->patient['age'] = $this->getPatientAge();
-            $_SESSION['patient']['pid']  = $this->patient['pid'];
-            $_SESSION['patient']['name'] = $this->getPatientFullName();
-        }
-    }
-    /**
-     * @param $pid
-     * @return mixed
-     */
-    public function unsetPatient($pid)
-    {
-        if($pid != null) $this->patientChartInByPid($pid);
-        $_SESSION['patient']['pid']  = null;
-        $_SESSION['patient']['name'] = null;
-        return;
-    }
-    /**
-     * @param $pid
-     * @return array
-     */
-    public function getPatientDemographicDataByPid($pid)
-    {
-        $this->setPatient($pid);
-        return $this->patient;
-    }
-    /**
-     * @param stdClass $params
-     * @return array
-     */
-    public function getPatientDemographicData(stdClass $params)
-    {
-        $pid = (isset($params->pid) ? $params->pid : $_SESSION['patient']['pid']);
-        return $this->setPatient($pid);
-    }
-    /**
-     * @param $name
-     * @return array
-     */
-    public function createNewPatientOnlyName($name)
-    {
-        $params = new stdClass();
-        $foo = explode(' ', $name);
-        $params->fname = trim($foo[0]);
-        $params->mname = '';
-        $params->lname = '';
-        if(count($foo) == 2){
-            $params->lname = trim($foo[1]);
-        }elseif(count($foo) >= 3) {
-            $params->mname = (isset($foo[1])) ? trim($foo[1]) : '';
-            unset($foo[0], $foo[1]);
-            $params->lname = '';
-            foreach($foo as $fo){
-                $params->lname .= $params->lname . ' ' . $fo . ' ';
-            }
-            $params->lname = trim($params->lname);
-        }
-        $params->create_uid = $_SESSION['user']['id'];
-        $params->create_uid = $_SESSION['user']['id'];
-        $params->create_date = Time::getLocalTime();
-        $params->update_date = Time::getLocalTime();
-        $patient = $this->savePatient($params);
-        return array('success' => true, 'patient' => array('pid' => $patient['pid'], 'fullname' => $patient['fullname']));
-    }
-    /**
-     * @param stdClass $params
-     * @return mixed
-     */
-    public function createNewPatient(stdClass $params)
-    {
-        return $this->savePatient($params);
-    }
-    /**
-     * @param $pid
-     * @internal param $pid
-     * @return mixed
-     */
-    public function getPatientSetDataByPid($pid)
-    {
-        // stow char of previous patient
-        if(isset($_SESSION['patient']) && $_SESSION['patient']['pid'] != null){
-            $this->patientChartInByPid($_SESSION['patient']['pid']);
-        }
-        include_once ($_SESSION['root'] . '/dataProvider/PoolArea.php');
-        $this->setPatient($pid);
-        $poolArea   = new PoolArea();
+	/**
+	 * @var PoolArea
+	 */
+	//private $poolArea;
+	function __construct($pid = null) {
+		$this->user = new User();
+		$this->acl = new ACL();
+		$this->setPatient($pid);
+		return;
+	}
 
-        $p          = $this->isPatientChartOutByPid($this->patient['pid']);
-        $area       = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setPatientModel() {
+		if($this->p == null){
+			return $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+		}
+		return $this->p;
+	}
 
-        if($p === false || (is_array($p) && $p['uid'] == $_SESSION['user']['id'])){
-            $this->patientChartOutByPid($this->patient['pid'], $area['area_id']);
-            $_SESSION['patient']['readOnly'] = false;
-        }else{
-            $_SESSION['patient']['readOnly'] = true;
-        }
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setDocumentModel() {
+		if($this->d == null){
+			return $this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+		}
+		return $this->d;
+	}
 
-        return array(
-            'patient' => array(
-                'pid' => $this->patient['pid'],
-                'name' => $_SESSION['patient']['name'],
-                'pic' => $this->patient['image'],
-                'sex' => $this->getPatientSex(),
-                'dob' => $dob = $this->getPatientDOB(),
-                'age' => $this->getPatientAge(),
-                'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id'])),
-                'priority' => (empty($area) ? null : $area['priority']),
-                'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0)
-            ),
-            'readOnly' => $_SESSION['patient']['readOnly'],
-            'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
-            'user' => ($p === false ? null : $this->user->getUserFullNameById($p['uid'])),
-            'area' => ($p === false ? null : $poolArea->getAreaTitleById($p['pool_area_id']))
-        );
-    }
-    /**
-     * @return array
-     */
-    public function getPatientAge()
-    {
-        return $this->getPatientAgeByDOB($this->patient['DOB']);
-    }
-    /**
-     * @param $dob
-     * @internal param $birthday
-     * @return array
-     */
-    public function getPatientAgeByDOB($dob)
-    {
-        if($this->patient['DOB'] != '0000-00-00 00:00:00'){
-            $today         = new DateTime(date('Y-m-d'));
-            $t             = new DateTime(date($dob));
-            $age['days']   = $t->diff($today)->d;
-            $age['months'] = $t->diff($today)->m;
-            $age['years']  = $t->diff($today)->y;
-            if($age['years'] >= 2){
-                $ageStr = $age['years'] . ' yr(s)';
-            }else{
-                if($age['years'] >= 1){
-                    $ageStr = 12 + $age['months'] . ' mo(s)';
-                }else{
-                    if($age['months'] >= 1){
-                        $ageStr = $age['months'] . ' mo(s) and ' . $age['days'] . ' day(s)';
-                    }else{
-                        $ageStr = $age['days'] . ' day(s)';
-                    }
-                }
-            }
-            return array(
-                'DMY' => $age, 'str' => $ageStr
-            );
-        }else{
-            return array(
-                'DMY' => array(
-                    'years'=>0,
-                    'months'=>0,
-                    'days'=>0
-                ), 'str' => '<span style="color:red">Age</span>'
-            );
-        }
-    }
-    /**
-     * @param stdClass $params
-     * @return object
-     */
-    public function setPatientRating(stdClass $params){
-        $this->setPatientModel();
-        return $this->p->save($params);
-    }
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setChartCheckoutModel() {
+		if($this->c == null){
+			return $this->c = MatchaModel::setSenchaModel('App.model.patient.PatientChartCheckOut');
+		}
+		return $this->c;
+	}
 
-    public function createPatientQrCode($pid, $fullname)
-    {
-        $data         = '{"name":"' . $fullname . '","pid":' . $pid . ',"ehr": "GaiaEHR"}';
-        include ($_SESSION['root'] . '/lib/phpqrcode/qrlib.php');
-	    ob_start();
-	    QRCode::png($data, false, 'Q', 2, 2);
-	    $imageString = base64_encode( ob_get_contents() );
-	    ob_end_clean();
-	    return $imageString;
-    }
+	/**
+	 * @return MatchaCUP
+	 */
+	public function setPatientEncounterModel() {
+		if($this->e == null){
+			$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
+		}
+		return $this->e;
+	}
+
+	/**
+	 * @param stdClass $params
+	 *
+	 * @return mixed
+	 */
+	public function getPatients($params) {
+		$this->setPatientModel();
+		return $this->p->load($params)->all();
+	}
+
+	/**
+	 * @param stdClass $params
+	 *
+	 * @return mixed
+	 */
+	public function savePatient($params) {
+		$this->setPatientModel();
+
+		if(isset($params->fullname)){
+			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $params->fullname);
+		}else if(isset($params->fname) && isset($params->mname) && isset($params->lname)){
+			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], Person::fullname($params->fname, $params->mname, $params->lname));
+		}
+
+		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
+		$params->update_date = date('Y-m-d H:i:s');
+		$this->patient = (object) $this->p->save($params);
+		$this->createPatientDir($this->patient->pid);
+		return $this->patient;
+	}
 
 
-    /**
-     * @return mixed
-     */
-    protected function getCurrPid()
-    {
-        return $_SESSION['patient']['pid'];
-    }
+	/**
+	 * @param $pid
+	 *
+	 * @return mixed
+	 */
+	protected function setPatient($pid) {
+		return $this->getPatientByPid($pid);
+	}
 
-    public function isCurrPatientOnReadMode()
-    {
-        return $_SESSION['patient']['readOnly'];
-    }
+	/**
+	 * @return array
+	 */
+	public function getPatient() {
+		return $this->patient;
+	}
 
-    /**
-     * @return string
-     */
-    public function getPatientFullName()
-    {
-        return Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
-    }
+	/**
+	 * @param $pid
+	 *
+	 * @return mixed
+	 */
+	public function getPatientByPid($pid) {
+		$this->setPatientModel();
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value = $pid;
+		$this->patient = $this->p->load($params)->one();
+		if($this->patient !== false){
+			$this->patient['pic'] = $this->patient['image'];
+			$this->patient['age'] = $this->getPatientAge();
+			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+		}
+		unset($params);
+		return $this->patient;
+	}
 
-    /**
-     * @param $pid
-     * @return string
-     */
-    public function getPatientFullNameByPid($pid)
-    {
-        $this->db->setSQL("SELECT fname,mname,lname FROM patient WHERE pid = '$pid'");
-        $p = $this->db->fetchRecord();
-        return Person::fullname($p['fname'], $p['mname'], $p['lname']);
-    }
+	/**
+	 * @param $pubpid
+	 *
+	 * @return mixed
+	 */
+	public function getPatientByPublicId($pubpid) {
+		$this->setPatientModel();
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pubpid';
+		$params->filter[0]->value = $pubpid;
+		$this->patient = $this->p->load($params)->one();
+		if($this->patient !== false){
+			$this->patient['pic'] = $this->patient['image'];
+			$this->patient['age'] = $this->getPatientAge();
+			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+		}
+		unset($params);
+		return $this->patient;
+	}
 
-    /**
-     * @param $pid
-     * @return string
-     */
-    public function getPatientFullAddressByPid($pid)
-    {
-        $this->db->setSQL("SELECT address,city,state,zipcode FROM patient WHERE pid = '$pid'");
-        $p = $this->db->fetchRecord();
-        return Person::fulladdress($p['address'], null, $p['city'], $p['state'], $p['zipcode']);
-    }
+	/**
+	 * @param $username
+	 *
+	 * @return mixed
+	 */
+	public function getPatientByUsername($username) {
 
-    /**
-     * @param \stdClass $params
-     * @internal param $search
-     * @internal param $start
-     * @internal param $limit
-     * @return array
-     * @TODO: The search must be case-insensitive
-     */
-    public function patientLiveSearch(stdClass $params)
-    {
-        $this->db->setSQL("SELECT pid,pubpid,fname,lname,mname,DOB,SS
-                             FROM patient
-                            WHERE fname LIKE '$params->query%'
-                               OR lname LIKE '$params->query%'
-                               OR mname LIKE '$params->query%'
-                               OR pid 	LIKE '$params->query%'
-                               OR SS 	LIKE '%$params->query'");
-        $rows = array();
-        foreach($this->db->fetchRecords(PDO::FETCH_CLASS) as $row){
-            $row->fullname = Person::fullname($row->fname, $row->mname, $row->lname);
-            unset($row->fname, $row->mname, $row->lname);
-            array_push($rows, $row);
-        }
-        $total = count($rows);
-        $rows  = array_slice($rows, $params->start, $params->limit);
-        return array(
-            'totals' => $total, 'rows' => $rows
-        );
-    }
+		$this->setPatientModel();
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'portal_username';
+		$params->filter[0]->value = $username;
+		$this->patient = $this->p->load($params)->one();
 
+		if($this->patient !== false){
+			$this->patient['pic'] = $this->patient['image'];
+			$this->patient['age'] = $this->getPatientAge();
+			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+		}
 
+		unset($params);
 
-    private function createPatientDir($pid)
-    {
-        $path = $_SESSION['site']['path'] . '/patients/' . $pid;
-        if(!file_exists($path)){
-            if(mkdir($path, 0777, true)){
-                chmod($path, 0777);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
+		return $this->patient;
+	}
 
-//    public function createDefaultPhotoId($pid)
-//    {
-//        $newImg = $_SESSION['site']['path'] . '/patients/' . $pid . '/patientPhotoId.jpg';
-//        copy($_SESSION['root'] . '/resources/images/icons/patientPhotoId.jpg', $newImg);
-//        return;
-//    }
+	/**
+	 * @param $pid
+	 *
+	 * @return mixed
+	 */
+	public function unsetPatient($pid) {
+		if($pid != null)
+			$this->patientChartInByPid($pid);
+		return;
+	}
 
-    public function getPatientAddressById($pid)
-    {
-        $this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
-        $p       = $this->db->fetchRecord();
-        $address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
-        return $address;
-    }
+	/**
+	 * @param $pid
+	 *
+	 * @return array
+	 */
+	public function getPatientDemographicDataByPid($pid) {
+		$this->setPatient($pid);
+		return $this->patient;
+	}
 
-    public function getPatientArrivalLogWarningByPid($pid)
-    {
-        $this->db->setSQL("SELECT pid
-							 FROM patient
-							WHERE pid = '$pid'
-							  AND (sex IS NULL
-							  OR DOB IS NULL)");
-        $alert = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return !empty($alert);
-    }
+	/**
+	 * @param stdClass $params
+	 *
+	 * @return array
+	 */
+	public function getPatientDemographicData(stdClass $params) {
+		return $this->setPatient($params->pid);
+	}
 
-    public function addPatientNoteAndReminder(stdClass $params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id'], $data['message']);
-        $data2         = $data;
-        $data['body']  = $data['new_reminder'];
-        $data2['body'] = $data['new_note'];
-        unset($data['new_note'], $data['new_reminder'], $data2['new_note'], $data2['new_reminder']);
-        $this->db->setSQL($this->db->sqlBind($data2, 'patient_reminders', 'I'));
-        $this->db->execLog();
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'I'));
-        $this->db->execLog();
-        if($this->db->lastInsertId == 0){
-            return array('success' => false);
-        } else {
-            return array('success' => true);
-        }
-    }
+	/**
+	 * @param $name
+	 *
+	 * @return array
+	 */
+	public function createNewPatientOnlyName($name) {
+		$params = new stdClass();
+		$foo = explode(' ', $name);
+		$params->fname = trim($foo[0]);
+		$params->mname = '';
+		$params->lname = '';
+		if(count($foo) == 2){
+			$params->lname = trim($foo[1]);
+		} elseif(count($foo) >= 3) {
+			$params->mname = (isset($foo[1])) ? trim($foo[1]) : '';
+			unset($foo[0], $foo[1]);
+			$params->lname = '';
+			foreach($foo as $fo){
+				$params->lname .= $params->lname . ' ' . $fo . ' ';
+			}
+			$params->lname = trim($params->lname);
+		}
+		$params->create_uid = $_SESSION['user']['id'];
+		$params->create_uid = $_SESSION['user']['id'];
+		$params->create_date = date('Y-m-d H:i:s');
+		$params->update_date = date('Y-m-d H:i:s');
+		$patient = $this->savePatient($params);
+		return [
+			'success' => true,
+			'patient' => [
+				'pid' => $patient->pid
+			]
+		];
+	}
 
-    public function addPatientNotes(stdClass $params)
-    {
-        unset($params->id);
-        $data = get_object_vars($params);
-        unset($data['user_name']);
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'I'));
-        $this->db->execLog();
-        $params->id        = $this->db->lastInsertId;
-        $params->user_name = $this->user->getUserNameById($params->uid);
-        return $params;
-    }
+	/**
+	 * @param stdClass $params
+	 *
+	 * @return mixed
+	 */
+	public function createNewPatient(stdClass $params) {
+		return $this->savePatient($params);
+	}
 
-    public function addPatientReminders(stdClass $params)
-    {
-        unset($params->id);
-        $data = get_object_vars($params);
-        unset($data['user_name']);
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_reminders', 'I'));
-        $this->db->execLog();
-        $params->id        = $this->db->lastInsertId;
-        $params->user_name = $this->user->getUserNameById($params->uid);
-        return $params;
-    }
+	/**
+	 * @param $params
+	 *
+	 * @return array
+	 */
+	public function getPatientSetDataByPid($params) {
 
-    public function updatePatientNotes(stdClass $params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id'], $data['user_name']);
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'U', array('id' => $params->id)));
-        $this->db->execLog();
-        return $params;
-    }
+		include_once(ROOT . '/dataProvider/PoolArea.php');
+		$this->setPatient($params->pid);
+		$poolArea = new PoolArea();
 
-    public function updatePatientReminders(stdClass $params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id'], $data['user_name']);
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_reminders', 'U', array('id' => $params->id)));
-        $this->db->execLog();
-        return $params;
+		$area = $poolArea->getCurrentPatientPoolAreaByPid($this->patient['pid']);
+		$chart = $this->patientChartOutByPid($this->patient['pid'], $area['area_id']);
 
-    }
+		return [
+			'patient' => [
+				'pid' => $this->patient['pid'],
+				'pubpid' => $this->patient['pubpid'],
+				'name' => $this->getPatientFullName(),
+				'pic' => $this->patient['image'],
+				'sex' => $this->getPatientSex(),
+				'dob' => $this->getPatientDOB(),
+				'age' => $this->getPatientAge(),
+				'area' => $area['poolArea'],
+				'priority' => (empty($area) ? null : $area['priority']),
+				'rating' => (isset($this->patient['rating']) ? $this->patient['rating'] : 0),
+			    'record' => $this->patient
+			],
+			'chart' => [
+				'readOnly' => $chart->read_only == '1',
+				'overrideReadOnly' => $this->acl->hasPermission('override_readonly'),
+				'outUser' => isset($chart->outChart->uid) ? $this->user->getUserFullNameById($chart->outChart->uid) : 0,
+				'outArea' => isset($chart->outChart->pool_area_id) ? $poolArea->getAreaTitleById($chart->outChart->pool_area_id) : 0,
+			]
+		];
+	}
 
-    public function getPatientNotes(stdClass $params)
-    {
-        $reminders = array();
-        $this->db->setSQL("SELECT * FROM patient_notes WHERE pid = '$params->pid'");
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-            $row['user_name'] = $this->user->getUserNameById($row['uid']);
-            $reminders[]      = $row;
-        }
-        return $reminders;
-    }
+	/**
+	 * @return array
+	 */
+	public function getPatientAge() {
+		return $this->getPatientAgeByDOB($this->patient['DOB']);
+	}
 
-    public function getPatientReminders(stdClass $params)
-    {
-        $reminders = array();
-        $this->db->setSQL("SELECT * FROM patient_reminders WHERE pid = '$params->pid'");
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $row){
-            $row['user_name'] = $this->user->getUserNameById($row['uid']);
-            $reminders[]      = $row;
-        }
-        return $reminders;
-    }
+	/**
+	 * @param $dob
+	 * @param string $from
+	 *
+	 * @return array
+	 * @internal param $birthday
+	 */
+	public static function getPatientAgeByDOB($dob, $from = 'now') {
+		if($dob != '0000-00-00 00:00:00'){
+			$from = $from == 'now' ? new DateTime(date('Y-m-d')) : $from;
+			$t = new DateTime(date($dob));
+			$age['days'] = $t->diff($from)->d;
+			$age['months'] = $t->diff($from)->m;
+			$age['years'] = $t->diff($from)->y;
+			if($age['years'] >= 2){
+				$ageStr = $age['years'] . ' yr(s)';
+			} else {
+				if($age['years'] >= 1){
+					$ageStr = 12 + $age['months'] . ' mo(s)';
+				} else {
+					if($age['months'] >= 1){
+						$ageStr = $age['months'] . ' mo(s) and ' . $age['days'] . ' day(s)';
+					} else {
+						$ageStr = $age['days'] . ' day(s)';
+					}
+				}
+			}
+			return [
+				'DMY' => $age,
+				'str' => $ageStr
+			];
+		} else {
+			return [
+				'DMY' => [
+					'years' => 0,
+					'months' => 0,
+					'days' => 0
+				],
+				'str' => '<span style="color:red">Age</span>'
+			];
+		}
+	}
 
-    ///////////////////////////////////////////////////////
-    public function getDOBByPid($pid)
-    {
-        $this->db->setSQL("SELECT DOB FROM patient WHERE pid = '$pid'");
-        $p = $this->db->fetchRecord();
-        return $p['DOB'];
-    }
+	/**
+	 * @param stdClass $params
+	 *
+	 * @return object
+	 */
+	public function setPatientRating(stdClass $params) {
+		$this->setPatientModel();
+		return $this->p->save($params);
+	}
 
-    public function getPatientDOB()
-    {
-        return $this->patient['DOB'];
-    }
+	public function createPatientQrCode($pid, $fullname) {
+		$data = '{"name":"' . $fullname . '","pid":' . $pid . ',"ehr": "GaiaEHR"}';
+		include(ROOT . '/lib/phpqrcode/qrlib.php');
+		ob_start();
+		QRCode::png($data, false, 'Q', 2, 2);
+		$imageString = base64_encode(ob_get_contents());
+		ob_end_clean();
+		return 'data:image/jpeg;base64,' . $imageString;
+	}
 
-    public function getPatientDOBByPid($pid)
-    {
-        $this->db->setSQL("SELECT DOB
-                           FROM patient
-                           WHERE pid ='$pid'");
-        $patient = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return $patient['DOB'];
-    }
+	/**
+	 * @return string
+	 */
+	public function getPatientFullName() {
+		return Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+	}
 
+	/**
+	 * @param $pid
+	 *
+	 * @return string
+	 */
+	public function getPatientFullNameByPid($pid) {
+		$this->setPatientModel();
+		$p = $this->p->sql("SELECT fname,mname,lname FROM patient WHERE pid = '$pid'")->one();
+		return Person::fullname($p['fname'], $p['mname'], $p['lname']);
+	}
 
+	/**
+	 * @param $pid
+	 *
+	 * @return string
+	 */
+	public function getPatientFullAddressByPid($pid) {
+		$this->setPatientModel();
+		$p = $this->p->sql("SELECT address,city,state,zipcode FROM patient WHERE pid = '$pid'")->one();
+		return Person::fulladdress($p['address'], null, $p['city'], $p['state'], $p['zipcode']);
+	}
 
-    public function getPatientAgeByPid($pid)
-    {
-        $this->db->setSQL("SELECT DOB FROM patient WHERE pid ='$pid'");
-        $p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return $this->getPatientAgeByDOB($p['DOB']);
-    }
+	public function patientLiveSearch(stdClass $params) {
+		$this->setPatientModel();
+		$conn = Matcha::getConn();
+		$whereValues = [];
+		$where = [];
+		$queries = explode(' ', $params->query);
+		foreach($queries as $index => $query){
+			$query = trim($query);
+			$where[] = " (pubpid REGEXP :pubpid{$index} OR fname LIKE :fname{$index} OR lname LIKE :lname{$index} OR mname LIKE :mname{$index} OR DOB LIKE :DOB{$index} OR pid LIKE :pid{$index} OR SS LIKE :ss{$index}) ";
 
-    /**
-     * @return array
-     */
-    public function getPatientSex()
-    {
-        return $this->patient['sex'];
-    }
+			$whereValues[':fname'.$index] = $query . '%';
+			$whereValues[':lname'.$index] = $query . '%';
+			$whereValues[':mname'.$index] = $query . '%';
 
-    /**
-     * @param $pid
-     * @return array
-     */
-    public function getPatientSexByPid($pid)
-    {
-        $this->db->setSQL("SELECT sex
-                           FROM patient
-                           WHERE pid ='$pid'");
-        $p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return $p['sex'];
-    }
+			if($index == 0){
+				if(preg_match('/^(.)-(.*)-(.{2})$/', $query, $matches)){
+					$whereValues[':pubpid' . $index] = '^' . $matches[1] . '-' . str_pad($matches[2], 15, '0', STR_PAD_LEFT) . '-' . $matches[3] . '$';
+				}elseif(preg_match('/^(.)-(.*)$/', $query, $matches)){
+					$whereValues[':pubpid' . $index] = '^' . $matches[1] . '-' . str_pad($matches[2], 15, '0', STR_PAD_LEFT);
+				}elseif(preg_match('/(.*)-(.{2})$/', $query, $matches)){
+					$whereValues[':pubpid' . $index] = str_pad($matches[1], 15, '0', STR_PAD_LEFT) . '-' . $matches[2];
+				}else{
+					$whereValues[':pubpid'.$index] = trim($query, '-') . '-.{2}$';
+				}
+			}else{
+				$whereValues[':pubpid'.$index] = trim($query, '-') . '-.{2}$';
+			}
 
-    public function getPatientSexIntByPid($pid)
-    {
-        return (strtolower($this->getPatientSexByPid($pid)) == 'female' ? 1 : 2);
-    }
+			$whereValues[':DOB'.$index] = $query . '%';
+			$whereValues[':pid'.$index] = $query . '%';
+			$whereValues[':ss'.$index] = '%' . $query;
+		}
+		$sth = $conn->prepare('SELECT pid, pubpid, fname, lname, mname, DOB, SS, sex, email, home_phone, mobile_phone
+ 								 FROM `patient` WHERE ' . implode(' AND ', $where) . ' LIMIT 300');
+		$sth->execute($whereValues);
+		$patients = $sth->fetchAll(PDO::FETCH_ASSOC);
+		return [
+			'totals' => count($patients),
+			'rows' => array_slice($patients, $params->start, $params->limit)
+		];
+	}
 
-    public function getPatientPregnantStatusByPid($pid)
-    {
-        $this->db->setSQL("SELECT * FROM encounters WHERE pid ='$pid' ORDER BY eid desc ");
-        $p = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return $p['review_pregnant'];
-    }
+	private function createPatientDir($pid) {
+		$path = site_path . '/patients/' . $pid;
+		if(!file_exists($path)){
+			if(mkdir($path, 0777, true)){
+				chmod($path, 0777);
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
 
-    public function getPatientActiveProblemsById($pid, $tablexx, $columnName)
-    {
-        $this->db->setSQL("SELECT $columnName FROM $tablexx WHERE pid ='$pid'");
-        $records = array();
-        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
-            if(!isset($rec['end_date']) || $rec['end_date'] != null || $rec['end_date'] != '0000-00-00 00:00:00'){
-                $records[] = $rec;
-            }
-        }
-        return $records;
-    }
+	public function getPatientAddressById($pid) {
+		$this->setPatientModel();
+		$p = $this->p->load(['pid' => $pid])->one();
+		$address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
+		return $address;
+	}
 
-    public function getPatientDocuments(stdClass $params)
-    {
-	    $this->setDocumentModel();
-	    $docs = $this->d->load($params)->all();
-	    if(isset($docs['data'])){
-		    foreach($docs['data'] AS $index => $row){
-			    $docs['data'][$index]['user_name'] = $this->user->getUserNameById($row['uid']);
-		    }
-	    }
-        return $docs;
-    }
+	public function getPatientArrivalLogWarningByPid($pid) {
+		$this->setPatientModel();
+		$alert = $this->p->sql("SELECT pid FROM patient WHERE pid = '$pid' AND (sex IS NULL OR DOB IS NULL)")->one();
+		return $alert !== false;
+	}
 
-//    private function getPatientSurgeryByPatientID($pid)
-//    {
-//        $this->db->setSQL("SELECT * FROM patient_surgery WHERE pid='$pid'");
-//        $records = array();
-//        foreach($this->db->fetchRecords(PDO::FETCH_ASSOC) as $rec){
-//            $rec['alert'] = ($rec['end_date'] == null || $rec['end_date'] == '0000-00-00 00:00:00') ? 1 : 0;
-//            $records[]    = $rec;
-//        }
-//        return $records;
-//    }
+	/** Patient Charts */
+	public function patientChartOutByPid($pid, $pool_area_id) {
+		$this->setChartCheckoutModel();
+		$outChart = $this->isPatientChartOutByPid($pid);
+		$params = new stdClass();
+		$params->pid = $pid;
+		$params->uid = $_SESSION['user']['id'];
+		$params->chart_out_time = date('Y-m-d H:i:s');
+		$params->pool_area_id = $pool_area_id;
+		$params->read_only = $outChart === false ? '0' : '1';
+		$params = (object) $this->c->save($params);
+		$params->outChart = $outChart;
+		return $params;
+	}
 
-    public function getPatientInsurancesCardsUrlByPid($pid)
-    {
-        $records = array();
-        $this->db->setSQL("SELECT url
-                           FROM patient_documents
-                           WHERE pid='$pid'
-                           AND  docType='Primary Insurance'
-                           ORDER BY id DESC");
-        $records['Primary'] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        $this->db->setSQL("SELECT url
-                           FROM patient_documents
-                           WHERE pid='$pid'
-                           AND  docType='Secondary Insurance'
-                           ORDER BY id DESC");
-        $records['Secondary'] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        $this->db->setSQL("SELECT url
-                           FROM patient_documents
-                           WHERE pid='$pid'
-                           AND  docType='Tertiary Insurance'
-                           ORDER BY id DESC");
-        $records['Tertiary'] = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        return $records;
-    }
+	public function patientChartInByPid($pid) {
+		$this->setChartCheckoutModel();
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'uid';
+		$filters->filter[0]->value = $_SESSION['user']['id'];
+		$filters->filter[2] = new stdClass();
+		$filters->filter[2]->property = 'pid';
+		$filters->filter[2]->value = $pid;
+		$filters->filter[3] = new stdClass();
+		$filters->filter[3]->property = 'chart_in_time';
+		$filters->filter[3]->value = null;
+		$chart = $this->c->load($filters)->one();
+		unset($filters);
+		if($chart !== false){
+			$chart = (object) $chart;
+			$chart->chart_in_time = date('Y-m-d H:i:s');
+			return $this->c->save($chart);
+		}
+		return false;
+	}
 
-    public function getMeaningfulUserAlertByPid(stdClass $params)
-    {
-        $record = array();
-        $this->db->setSQL("SELECT `language`,
-                                  race,
-                                  ethnicity,
-                                  fname,
-                                  lname,
-                                  sex,
-                                  DOB
-                           FROM patient
-                           WHERE pid = '$params->pid'");
-        $patientdata = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        foreach($patientdata as $key => $val){
-            $val      = ($val == null || $val == '') ? false : true;
-            $record[] = array(
-                'name' => $key, 'val' => $val
-            );
-        }
-        return $record;
-    }
+	public function patientChartInByUserId($uid) {
+		$this->setChartCheckoutModel();
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'uid';
+		$filters->filter[0]->value = $uid;
+		$filters->filter[1] = new stdClass();
+		$filters->filter[1]->property = 'chart_in_time';
+		$filters->filter[1]->value = null;
+		$chart = $this->c->load($filters)->one();
+		unset($filters);
+		if($chart !== false){
+			$chart = (object) $chart;
+			$chart->chart_in_time = date('Y-m-d H:i:s');
+			return $this->c->save($chart);
+		}
+		return false;
+	}
 
-    public function addPatientNoteByPid($pid, $body, $eid = null)
-    {
-        $data['pid']  = $pid;
-        $data['uid']  = $_SESSION['user']['id'];
-        $data['date'] = Time::getLocalTime();
-        $data['body'] = $body;
-        $data['eid']  = $eid;
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_notes', 'I'));
-        $this->db->execLog();
-        return;
-    }
+	public function isPatientChartOutByPid($pid) {
+		$this->setChartCheckoutModel();
+		$filters = new stdClass();
+		$filters->filter[0] = new stdClass();
+		$filters->filter[0]->property = 'pid';
+		$filters->filter[0]->value = $pid;
+		$filters->filter[1] = new stdClass();
+		$filters->filter[1]->property = 'chart_in_time';
+		$filters->filter[1]->value = null;
+		$result = $this->c->load($filters)->one();
+		unset($filters);
+		return $result;
+	}
 
-    public function addPatientReminderByPid($pid, $body, $eid = null)
-    {
-        $data['pid']  = $pid;
-        $data['uid']  = $_SESSION['user']['id'];
-        $data['date'] = Time::getLocalTime();
-        $data['body'] = $body;
-        $data['eid']  = $eid;
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_reminders', 'I'));
-        $this->db->execLog();
-        return;
-    }
+	///////////////////////////////////////////////////////
+	public function getDOBByPid($pid) {
+		$this->setPatientModel();
+		$p = $this->p->load(['pid'=>$pid])->one();
+		return $p['DOB'];
+	}
 
-    public function getPatientPhotoSrc()
-    {
-        return $this->patient['image'];
-    }
+	public function getPatientDOB() {
+		return $this->patient['DOB'];
+	}
 
-    public function getPatientPhotoSrcIdByPid($pid = null)
-    {
-        $pid = ($pid == null) ? $_SESSION['patient']['pid'] : $pid;
-	    $this->setPatientModel();
-	    $patient =  $this->p->load($pid)->one();
-        return $patient['image'];
-    }
+	public function getPatientDOBByPid($pid) {
+		return $this->getDOBByPid($pid);
+	}
 
-    //******************************************************************************************************************
-    // patient charts
-    //******************************************************************************************************************
-    public function patientChartOutByPid($pid, $pool_area_id)
-    {
-        $data['pid']            = $pid;
-        $data['uid']            = $_SESSION['user']['id'];
-        $data['chart_out_time'] = Time::getLocalTime();
-        $data['pool_area_id']   = $pool_area_id;
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_out_chart', 'I'));
-        $this->db->execLog();
-    }
+	public function getPatientAgeByPid($pid) {
+		return $this->getPatientAgeByDOB($this->getDOBByPid($pid));
+	}
 
-    public function patientChartInByPid($pid)
-    {
-        if(!$_SESSION['patient']['readOnly']){
-            $chart_in_time = Time::getLocalTime();
-            $this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE pid = '$pid' AND chart_in_time IS NULL");
-            $this->db->execLog();
-        }
-    }
+	public function getPatientPid() {
+		return $this->patient['pid'];
+	}
 
-    public function patientChartInByUserId($uid)
-    {
-        $chart_in_time = Time::getLocalTime();
-        $this->db->setSQL("UPDATE patient_out_chart SET chart_in_time = '$chart_in_time' WHERE uid = '$uid' AND chart_in_time IS NULL");
-        $this->db->execLog();
-    }
+	public function getPatientSex() {
+		return $this->patient['sex'];
+	}
 
-    public function isPatientChartOutByPid($pid)
-    {
-        $this->db->setSQL("SELECT id, uid, pool_area_id FROM patient_out_chart WHERE pid = '$pid' AND chart_in_time IS NULL");
-        $chart = $this->db->fetchRecord();
-        if(empty($chart)){
-            return false;
-        } else {
-            return $chart;
-        }
-    }
+	public function getPatientSS() {
+		return $this->patient['SS'];
+	}
 
-    //**************************************************************************************************
-    // Disclosures
-    //**************************************************************************************************
-    public function getPatientDisclosures(stdClass $params)
-    {
-        $this->db->setSQL("SELECT * FROM patient_disclosures WHERE pid = '$params->pid'");
-        return $this->db->fetchRecords();
-    }
+	public function getPatientSexByPid($pid) {
+		$this->setPatientModel();
+		$p = $this->p->load(['pid'=>$pid])->one();
+		return $p['sex'];
+	}
 
-    public function createPatientDisclosure(stdClass $params)
-    {
-        unset($params->id);
-        $params->active = 1;
-        $data           = get_object_vars($params);
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_disclosures', 'I'));
-        $this->db->execLog();
-        $params->id = $this->db->lastInsertId;
-        return $params;
-    }
+	public function getPatientSexIntByPid($pid) {
+		return (strtolower($this->getPatientSexByPid($pid)) == 'female' ? 1 : 2);
+	}
 
-    public function updatePatientDisclosure(stdClass $params)
-    {
-        $data = get_object_vars($params);
-        unset($data['id']);
-        $this->db->setSQL($this->db->sqlBind($data, 'patient_disclosures', 'U', array('id' => $params->id)));
-        $this->db->execLog();
-        return $params;
-    }
+	public function getPatientPregnantStatusByPid($pid) {
+		$this->setPatientEncounterModel();
+		$p = $this->e->sql("SELECT e.* FROM encounters as e WHERE e.eid = (
+							SELECT  MAX(ee.eid) as eid FROM encounters as ee WHERE ee.pid = '$pid')")->one();
+		return $p['review_pregnant'];
+	}
 
+	public function getPatientActiveProblemsById($pid, $tablexx, $columnName) {
+		$records = $this->p->sql("SELECT $columnName FROM $tablexx WHERE pid ='$pid'")->all();
+		$rows = [];
+		foreach($records as $record){
+			if(!isset($record['end_date']) || $record['end_date'] != null || $record['end_date'] != '0000-00-00 00:00:00'){
+				$rows[] = $record;
+			}
+		}
+		return $records;
+	}
 
-    //**************************************************************************************************
-    // Insurance
-    //**************************************************************************************************
-    public function getPatientPrimaryInsuranceByPid($pid)
-    {
-        $this->db->setSQL("SELECT * FROM patient_insurances WHERE pid = '$pid' AND type = '1' ORDER BY subscriberDob ASC");
-        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        if(!empty($rec)){
-            return $rec;
-        }else{
-            return false;
-        }
-    }
+	public function getPatientDocuments(stdClass $params) {
+		$this->setDocumentModel();
+		$docs = $this->d->load($params)->all();
+		if(isset($docs['data'])){
+			foreach($docs['data'] AS $index => $row){
+				$docs['data'][$index]['user_name'] = $this->user->getUserNameById($row['uid']);
+			}
+		}
+		return $docs;
+	}
 
-    public function getPatientSecondaryInsuranceByPid($pid)
-    {
-        $this->db->setSQL("SELECT * FROM patient_insurances WHERE pid = '$pid' AND type = '1' ORDER BY subscriberDob DESC");
-        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        if(!empty($rec)){
-            return $rec;
-        }else{
-            return false;
-        }
-    }
+	public function getMeaningfulUserAlertByPid(stdClass $params) {
+		$record = [];
 
-    public function getPatientTertiaryInsuranceByPid($pid)
-    {
-        $this->db->setSQL("SELECT * FROM patient_insurances WHERE pid = '$pid' AND type = '2' ORDER BY subscriberDob DESC");
-        $rec = $this->db->fetchRecord(PDO::FETCH_ASSOC);
-        if(!empty($rec)){
-            return $rec;
-        }else{
-            return false;
-        }
-    }
+		$this->setPatientModel();
+		$patient = $this->p->load($params->pid, ['language', 'race', 'ethnicity', 'fname', 'lname', 'sex', 'DOB',])->one();
+		foreach($patient as $key => $val){
+			$val = ($val == null || $val == '') ? false : true;
+			$record[] = [
+				'name' => $key,
+				'val' => $val
+			];
+		}
+		return $record;
+	}
 
+	public function getPatientPhotoSrc() {
+		return $this->patient['image'];
+	}
+
+	public function getPatientPhotoSrcIdByPid($pid) {
+		$this->setPatientModel();
+		$patient = $this->p->load($pid)->one();
+		return $patient['image'];
+	}
+
+	/**
+	 * @param $params
+	 * @return mixed
+	 */
+	public function getPossibleDuplicatesByFilters($params) {
+		$this->setPatientModel();
+
+//		$sql = "SELECT *
+//				  FROM `patient`
+// 				 WHERE `fname` SOUNDS LIKE 'sudipto'"
+
+		return [];
+	}
+
+	/**
+	 * @param $params
+	 * @param $includeDateOfBirth
+	 *
+	 * @return mixed
+	 */
+	public function getPossibleDuplicatesByDemographic($params, $includeDateOfBirth = false) {
+		$this->setPatientModel();
+		$sql = "SELECT *
+				  FROM `patient`
+ 				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
+ 				   AND `lname` SOUNDS LIKE '{$params->lname}'
+ 				   AND `sex` = '{$params->sex}'";
+
+		if($includeDateOfBirth){
+			$sql = " AND `DOB` = '{$params->DOB}'";
+		}
+
+		if(isset($params->pid) && $params->pid != 0){
+			$sql .= " AND `pid` != '{$params->pid}'";
+		}
+
+		$results = $this->p->sql($sql)->all();
+		return ['total' => count($results), 'data' => $results];
+	}
 
 }
 
-//$p = new Patient();
-//print '<pre>';
-//print_r($p->getPatientTertiaryInsuranceByPid(1));
-//print $p->getPatientAppointmentsByPid(1);
+//DROP FUNCTION IF EXISTS UC_FIRST;
+//CREATE FUNCTION UC_FIRST(oldWord VARCHAR(255)) RETURNS VARCHAR(255) RETURN CONCAT(UCASE(SUBSTRING(oldWord, 1, 1)),SUBSTRING(oldWord, 2));
+//
+//
+//
+//
+//DROP FUNCTION IF EXISTS UC_DELIMETER;# MySQL returned an empty result set (i.e. zero rows).
+//
+//DELIMITER //
+//CREATE FUNCTION UC_DELIMETER(oldName VARCHAR(255), delim VARCHAR(1), trimSpaces BOOL) RETURNS VARCHAR(255)
+//BEGIN
+//  SET @oldString := oldName;
+//  SET @newString := "";
+//
+//  tokenLoop: LOOP
+//    IF trimSpaces THEN SET @oldString := TRIM(BOTH " " FROM @oldString); END IF;
+//
+//    SET @splitPoint := LOCATE(delim, @oldString);
+//
+//    IF @splitPoint = 0 THEN
+//      SET @newString := CONCAT(@newString, UC_FIRST(@oldString));
+//      LEAVE tokenLoop;
+//    END IF;
+//
+//    SET @newString := CONCAT(@newString, UC_FIRST(SUBSTRING(@oldString, 1, @splitPoint)));
+//    SET @oldString := SUBSTRING(@oldString, @splitPoint+1);
+//  END LOOP tokenLoop;
+//
+//  RETURN @newString;
+//END//
+//# MySQL returned an empty result set (i.e. zero rows).
+//
+//DELIMITER ;
+

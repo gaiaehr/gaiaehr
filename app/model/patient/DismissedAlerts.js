@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,12 +18,9 @@
 
 Ext.define('App.model.patient.DismissedAlerts', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'dismissedalerts',
-		comment:'Dismissed Alerts'
-	},
+
 	fields: [
-        {name: 'id', type: 'int', comment: 'Dismissed Alerts ID'},
+		{name: 'id', type: 'int', comment: 'Dismissed Alerts ID'},
 		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
 		{name: 'preventive_care_id', type: 'int'},
 		{name: 'reason', type: 'string'},
@@ -31,11 +28,11 @@ Ext.define('App.model.patient.DismissedAlerts', {
 		{name: 'dismiss', type: 'bool'},
 		{name: 'description', type: 'string'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : PreventiveCare.getPreventiveCareDismissedAlertsByPid,
-			update: PreventiveCare.updatePreventiveCareDismissedAlertsByPid
+		api: {
+			read: 'PreventiveCare.getPreventiveCareDismissedAlertsByPid',
+			update: 'PreventiveCare.updatePreventiveCareDismissedAlertsByPid'
 		}
 	}
 });

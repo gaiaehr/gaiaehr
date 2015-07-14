@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,12 @@ if(!isset($_SESSION)){
 	session_start();
 	session_cache_limiter('private');
 }
+
+//error_reporting(0);
+//@ini_set('display_errors', 0);
+
 define('_GaiaEXEC', 1);
+
 class BogusAction
 {
 	public $action;
@@ -33,10 +38,14 @@ class BogusAction
 }
 $isForm   = false;
 $isUpload = false;
-if(isset($HTTP_RAW_POST_DATA)){
+$data = file_get_contents('php://input');
+
+if(isset($data)){
 	header('Content-Type: text/javascript');
-	$data = json_decode($HTTP_RAW_POST_DATA);
-	if(isset($_REQUEST['module'])) $data->module = $_REQUEST['module'];
+	$data = json_decode($data);
+	if(isset($_REQUEST['module'])){
+		$data->module = $_REQUEST['module'];
+	}
 } else {
 	if(isset($_POST['extAction'])){
 		$isForm       = true;
@@ -68,6 +77,7 @@ include_once('../dataProvider/Modules.php');
 include_once('../dataProvider/Applications.php');
 include_once('../classes/Sessions.php');
 include_once('config.php');
+
 $modules = new Modules();
 $app = new Applications();
 $appAccess = $app->hasAccess($pvtKey);

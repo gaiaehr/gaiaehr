@@ -1,10 +1,7 @@
-<meta http-equiv="Expires" content="0">
-<meta http-equiv="Last-Modified" content="0">
-<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
-<meta http-equiv="Pragma" content="no-cache">
 <?php
 /**
- * GaiaEHR
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+header('Access-Control-Allow-Origin: *');
 session_name('GaiaEHR');
 session_start();
 session_cache_limiter('private');
 define('_GaiaEXEC', 1);
 
+if(isset($_SESSION['hooks'])){
+	unset($_SESSION['hooks']);
+}
+
 //include_once('classes/Mobile_Detect.php');
 //$mobile = new Mobile_Detect();
-$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
 $mDebug = false;
 //if($mobile->isMobile() || $mDebug){
@@ -39,14 +39,6 @@ $mDebug = false;
 	 * and mobile_detect class is used to detect mobile browsers.
 	 */
 	include_once('registry.php');
-	/**
-	 * set the site using the url parameter site, or default if not given
-	 */
-	if(file_exists('sites/' . $site . '/conf.php')){
-		include_once('sites/' . $site . '/conf.php');
-	} else {
-		$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
-	};
 	/**
 	 * Make the auth process
 	 * lets check for 4 things to allow the user in
@@ -65,14 +57,18 @@ $mDebug = false;
 		if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode']){
 			include_once('checkin/checkin.php');
 		} else {
-			include_once('_app.php');
+			if(isset($_REQUEST['dual']) && $_REQUEST['dual']){
+				include_once('_dual.php');
+			}else{
+				include_once('_app.php');
+			}
 		}
 	} else { // Make the logon process or Setup process
 		/**
 		 * If no directory is found inside sites dir run the setup wizard,
 		 * if a directory is found inside sites dir run the logon screen
 		 */
-		if(count($_SESSION['sites']) < 1){
+		if(sites_count == 0){
 			unset($_SESSION['site']);
             $_SESSION['install'] = true;
 			include_once('_install.php');

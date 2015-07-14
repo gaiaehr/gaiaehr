@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -22,14 +22,13 @@ Ext.define('Modules.reportcenter.model.MedicationReport', {
         {name: 'pid', type: 'int'},
         {name: 'fullname', type: 'string'},
         {name: 'medication', type: 'string'},
-        {name: 'take_pills', type: 'string'},
         {name: 'type', type: 'string'},
         {name: 'instructions', type: 'string'}
 	],
 	proxy : {
 		type: 'direct',
 		api : {
-			read  : Rx.getPrescriptionsFromAndToAndPid
+			read  : 'Rx.getPrescriptionsFromAndToAndPid'
 		}
 	}
 });

@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,24 +17,21 @@
  */
 
 Ext.define('App.model.fees.PaymentTransactions',
-{
-	extend : 'Ext.data.Model',
-	table: {
-		name:'paymenttransactions',
-		comment:'Payment Transactions'
-	},
-	fields : [],
-	proxy :
 	{
-		type : 'direct',
-		api :
-		{
-			read : Fees.getPaymentsBySearch
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'paymenttransactions',
+			comment: 'Payment Transactions'
 		},
-		reader :
-		{
-			root : 'rows',
-			totalProperty : 'totals'
+		fields: [],
+		proxy: {
+			type: 'direct',
+			api: {
+				read: 'Fees.getPaymentsBySearch'
+			},
+			reader: {
+				root: 'rows',
+				totalProperty: 'totals'
+			}
 		}
-	}
-}); 
+	});

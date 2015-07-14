@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,57 +16,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if (!isset($_SESSION)){
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
-}
+class HL7ServerHandler {
 
-if( isset($_SESSION['user']) &&
-	isset($_SESSION['user']['auth']) &&
-	$_SESSION['user']['auth'] &&
-	isset($_SESSION['user']['token']) &&
-	$_SESSION['user']['token'] != $_REQUEST['token']){
+	public function start(stdClass $params){
 
-	function checkStatus($port){
+		$server = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
+		$data = new stdClass();
+		$data->id = $params->id;
+		$data->token = $params->token = md5(time());
+		$server->save($data);
+
+		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "' . $params->ip . '" ' . $params->port . ' "' . ROOT . '/dataProvider" "HL7Server" "Process" "default" "'.$params->token.'"';
+		if (substr(php_uname(), 0, 7) == "Windows"){
+			pclose(popen("start /B ". $cmd, "r"));
+		}
+		else {
+			exec($cmd . " > /dev/null &");
+		}
+		sleep(2);
+		return $this->status($params);
+	}
+
+	public function stop($params){
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		return @socket_connect($socket, '127.0.0.1', $port);
+		@socket_connect($socket, $params->ip, $params->port);
+		$msg = $params->token;
+		@socket_write($socket, $msg, strlen($msg));
+		@socket_recv($socket, $response, 1024*10, MSG_WAITALL);
+		@socket_close($socket);
+		sleep(3);
+		return $this->status($params);
 	}
 
-	$port = $_SESSION['site']['hl7']['port'];
-
-	switch($_REQUEST['action']){
-		case 'start':
-			$cmd = 'php -f "C:\inetpub\wwwroot\gaiaehr\lib\HL7\HL7Server.php" -- "C:/inetpub/wwwroot/gaiaehr/dataProvider" "default" "HL7Server" "Process" "9100"';
-			if (substr(php_uname(), 0, 7) == "Windows"){
-				pclose(popen("start /B ". $cmd, "r"));
-			}
-			else {
-				exec($cmd . " > /dev/null &");
-			}
-			break;
-		case 'stop':
-			$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-			@socket_connect($socket, '127.0.0.1', $port);
-			$msg = 'shutdown';
-			@socket_write($socket, $msg, strlen($msg));
-			@socket_recv($socket, $response, 1024*10, MSG_WAITALL);
-			@socket_close($socket);
-			print json_encode(array('online'=>checkStatus($port)));
-			break;
-		case 'status':
-			print json_encode(array('online'=>checkStatus($port)));
-			break;
-		default:
-			die('Action Error!');
-			break;
+	public function status($params){
+		$params = (object) $params;
+		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+		$status = @socket_connect($socket, $params->ip, $params->port);
+		unset($socket);
+		$token = isset($params->token) ? $params->token : '';
+		return array('online' => $status, 'token' => $token);
 	}
 
-}else{
-	die('Not Authorized!');
 }
 
 
-//print '<pre>';
-//$hl7 = new HL7Messages();
-//print_r($hl7->sendVXU());

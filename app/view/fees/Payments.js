@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ Ext.define('App.view.fees.Payments',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPayments',
-	pageTitle : i18n('payments'),
+	pageTitle : _('payments'),
 	initComponent : function()
 	{
 		var me = this;
@@ -33,7 +33,7 @@ Ext.define('App.view.fees.Payments',
 		 */
 		me.searchPanel = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n('search'),
+			title : _('search'),
 			layout : 'border',
 			items : [
 			{
@@ -51,7 +51,7 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('paying_entity'),
+						fieldLabel : _('paying_entity'),
 						itemId : 'fieldPayingEntityCombo',
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
@@ -59,7 +59,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'patienlivetsearch',
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						hideLabel : false,
 						itemId : 'fieldPatient',
 						name : 'from',
@@ -70,7 +70,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n('no'),
+						fieldLabel : _('no'),
 						itemId : 'fieldPatientNo',
 						name : 'transaction_number',
 						labelWidth : 45,
@@ -88,7 +88,7 @@ Ext.define('App.view.fees.Payments',
 					{
 						xtype : 'mitos.billingfacilitiescombo',
 						itemId : 'fieldFacility',
-						fieldLabel : i18n('pay_to'),
+						fieldLabel : _('pay_to'),
 						labelWidth : 95,
 						width : 470
 					}]
@@ -99,18 +99,18 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						itemId : 'fieldFromDate',
 						xtype : 'datefield',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						labelWidth : 95,
 						width : 230
 					},
 					{
-						fieldLabel : i18n('to'),
+						fieldLabel : _('to'),
 						xtype : 'datefield',
 						itemId : 'fieldToDate',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						margin : '0 0 0 25',
 						labelWidth : 42,
 						width : 230
@@ -118,12 +118,12 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n('search'),
+					text : _('search'),
 					handler: me.onSearchButton,
 					scope : me
 				}, '-',
 				{
-					text : i18n('reset'),
+					text : _('reset'),
 					scope : me,
 					handler: me.onFormResetButton
 					// TODO: Create the function event to reset the form.
@@ -135,20 +135,20 @@ Ext.define('App.view.fees.Payments',
 				store : me.encountersPaymentsStore,
 				columns : [
 				{
-					header : i18n('service_date')
+					header : _('service_date')
 				},
 				{
-					header : i18n('patient_name')
+					header : _('patient_name')
 				},
 				{
-					header : i18n('insurance')
+					header : _('insurance')
 				},
 				{
-					header : i18n('billing_notes'),
+					header : _('billing_notes'),
 					flex : 1
 				},
 				{
-					header : i18n('balance_due')
+					header : _('balance_due')
 				}]
 			}]
 		});
@@ -159,7 +159,7 @@ Ext.define('App.view.fees.Payments',
 		 */
 		me.detailPanel = Ext.create('Ext.panel.Panel',
 		{
-			title : i18n('detail'),
+			title : _('detail'),
 			layout : 'border',
 			items : [
 			{
@@ -175,14 +175,14 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('paying_entity'),
+						fieldLabel : _('paying_entity'),
 						xtype : 'mitos.payingentitycombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'patienlivetsearch',
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						hideLabel : false,
 						itemId : 'patientFrom',
 						name : 'from',
@@ -193,7 +193,7 @@ Ext.define('App.view.fees.Payments',
 					},
 					{
 						xtype : 'textfield',
-						fieldLabel : i18n('no'),
+						fieldLabel : _('no'),
 						name : 'transaction_number',
 						labelWidth : 45,
 						width : 230,
@@ -207,21 +207,21 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('payment_method'),
+						fieldLabel : _('payment_method'),
 						xtype : 'mitos.paymentmethodcombo',
 						labelWidth : 95,
 						width : 230
 					},
 					{
 						xtype : 'mitos.billingfacilitiescombo',
-						fieldLabel : i18n('pay_to'),
+						fieldLabel : _('pay_to'),
 						labelWidth : 42,
 						width : 470,
 						margin : '0 0 0 25'
 					},
 					{
 						xtype : 'mitos.currency',
-						fieldLabel : i18n('amount'),
+						fieldLabel : _('amount'),
 						name : 'amount',
 						labelWidth : 45,
 						width : 230,
@@ -235,16 +235,16 @@ Ext.define('App.view.fees.Payments',
 					layout : 'hbox',
 					items : [
 					{
-						fieldLabel : i18n('from'),
+						fieldLabel : _('from'),
 						xtype : 'datefield',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						labelWidth : 95,
 						width : 230
 					},
 					{
-						fieldLabel : i18n('to'),
+						fieldLabel : _('to'),
 						xtype : 'datefield',
-						format: globals['date_display_format'],
+						format: g('date_display_format'),
 						margin : '0 0 0 25',
 						labelWidth : 42,
 						width : 230
@@ -252,13 +252,13 @@ Ext.define('App.view.fees.Payments',
 				}],
 				buttons : [
 				{
-					text : i18n('save')
+					text : _('save')
 				}, '-',
 				{
-					text : i18n('reset')
+					text : _('reset')
 				}, '->',
 				{
-					text : i18n('add_payment'),
+					text : _('add_payment'),
 					scope : me,
 					handler : me.onAddPaymentClick
 
@@ -282,20 +282,20 @@ Ext.define('App.view.fees.Payments',
 				}),
 				columns : [
 				{
-					header : i18n('service_date')
+					header : _('service_date')
 				},
 				{
-					header : i18n('patient_name')
+					header : _('patient_name')
 				},
 				{
-					header : i18n('insurance')
+					header : _('insurance')
 				},
 				{
-					header : i18n('billing_notes'),
+					header : _('billing_notes'),
 					flex : 1
 				},
 				{
-					header : i18n('balance_due')
+					header : _('balance_due')
 				}]
 			}]
 		});

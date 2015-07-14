@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,12 +18,8 @@
 
 Ext.define('App.model.patient.PreventiveCare', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'preventivecare',
-		comment:'Preventive Care'
-	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Preventive Care ID'},
+		{name: 'id', type: 'int', comment: 'Preventive Care ID'},
 		{name: 'pid', type: 'int'},
 		{name: 'eid', type: 'int'},
 		{name: 'uid', type: 'int'},
@@ -35,11 +31,11 @@ Ext.define('App.model.patient.PreventiveCare', {
 		{name: 'reason'},
 		{name: 'alert', type: 'bool'}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			update: PreventiveCare.addPreventivePatientDismiss,
-			read  : PreventiveCare.getPreventiveCareCheck
+		api: {
+			update: 'PreventiveCare.addPreventivePatientDismiss',
+			read: 'PreventiveCare.getPreventiveCareCheck'
 		}
 	}
 });

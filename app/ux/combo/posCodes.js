@@ -6,38 +6,48 @@
  * Time: 4:45 PM
  */
 Ext.define('App.ux.combo.posCodes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.poscodescombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.mitos.poscodescombo',
+	initComponent: function(){
 		var me = this;
 
 		Ext.define('PosCodesModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'code', type: 'string' },
-				{name: 'title', type: 'string' }
+				{
+					name: 'code',
+					type: 'string'
+				},
+				{
+					name: 'title',
+					type: 'string',
+					convert: function(v, record){
+						return record.data.code + ' - '+ v;
+					}
+				}
 			],
-			proxy : {
+			proxy: {
 				type: 'direct',
-				api : {
-					read: CombosData.getPosCodes
+				api: {
+					read: 'CombosData.getPosCodes'
 				}
 			}
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'PosCodesModel',
+			model: 'PosCodesModel',
 			autoLoad: true
 		});
 
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'code',
+		Ext.apply(me, {
+			editable: false,
+			queryMode: 'local',
+			valueField: 'code',
 			displayField: 'title',
-			emptyText   : i18n('select'),
-			store       : me.store
-		}, null);
+			emptyText: _('select'),
+			store: me.store
+		});
+
 		me.callParent();
-	} // end initComponent
+	}
 });

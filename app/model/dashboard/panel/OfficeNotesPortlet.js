@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,23 +17,23 @@
  */
 
 Ext.define('App.model.dashboard.panel.OfficeNotesPortlet', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'officenotesportlet',
-        comment:'Office Notes Porlet'
-    },
-    fields: [
-        {name: 'id', type: 'int', comment: 'Office Notes ID'},
-        {name: 'date', type: 'date', dateFormat: 'c'},
-        {name: 'body', type: 'string'},
-        {name: 'user', type: 'string'},
-        {name: 'facility_id', type: 'string'},
-        {name: 'activity', type: 'string'}
-    ],
-    proxy : {
-        type: 'direct',
-        api : {
-            read: OfficeNotes.getOfficeNotes
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'officenotesportlet',
+		comment: 'Office Notes Porlet'
+	},
+	fields: [
+		{name: 'id', type: 'int', comment: 'Office Notes ID'},
+		{name: 'date', type: 'date', dateFormat: 'c'},
+		{name: 'body', type: 'string'},
+		{name: 'user', type: 'string'},
+		{name: 'facility_id', type: 'string'},
+		{name: 'activity', type: 'string'}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'OfficeNotes.getOfficeNotes'
+		}
+	}
 });

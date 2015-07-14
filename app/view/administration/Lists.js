@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 Ext.define('App.view.administration.Lists', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLists',
-    pageTitle: i18n('select_list_options'),
+    pageTitle: _('select_list_options'),
     pageLayout: 'border',
     uses: [
         'App.ux.form.Panel',
@@ -28,63 +28,66 @@ Ext.define('App.view.administration.Lists', {
     initComponent: function(){
         var me = this;
 
-        me.currList = null;
-        me.currTask = null;
+
         /**
          * Store
          */
         me.listsStore = Ext.create('App.store.administration.Lists');
-        me.optionsStore = Ext.create('App.store.administration.ListOptions');
+        me.optionsStore = Ext.create('App.store.administration.ListOptions',{
+	        remoteFilter:true
+        });
 
         /**
          * RowEditor Classes
          */
         me.optionsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-            autoCancel: false,
-            errorSummary: false
+//            autoCancel: false,
+//            errorSummary: false
         });
-        me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-            autoCancel: false,
-            errorSummary: false
+
+	    me.listsRowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+//            autoCancel: false,
+//            errorSummary: false
         });
+
         /**
          * Lists Grid
          */
         me.listsGrid = Ext.create('Ext.grid.Panel', {
             store: me.listsStore,
             itemId: 'listsGrid',
-            plugins: [me.listsRowEditing],
+            plugins: [ me.listsRowEditing ],
             width: 320,
             margin: '0 2 0 0',
             region: 'west',
             columns: [
                 {
-	                width: 25,
-                    sortable: false,
+	                width: 30,
                     dataIndex: 'id'
                 },
                 {
-                    text: i18n('select_lists'),
+                    text: _('select_lists'),
                     flex: 1,
                     sortable: false,
                     dataIndex: 'title',
                     editor: {
+	                    xtype:'textfield',
                         allowBlank: false
                     }
                 },
                 {
-                    text: i18n('active'),
+                    text: _('active'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'active',
                     renderer: me.boolRenderer,
                     editor: {
-                        xtype: 'mitos.checkbox',
+                        xtype: 'checkbox',
                         padding: '0 0 0 18'
                     }
                 },
                 {
-                    text: i18n('in_use'),
+                    text: _('in_use'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'in_use',
@@ -101,20 +104,20 @@ Ext.define('App.view.administration.Lists', {
                     dock: 'top',
                     items: [
                         {
-                            text: i18n('new_list'),
+                            text: _('new_list'),
                             iconCls: 'icoAddRecord',
                             scope: me,
                             handler: me.onNewList
                         },
                         '->',
                         {
-                            text: i18n('delete_list'),
+                            text: _('delete_list'),
                             iconCls: 'icoDeleteBlack',
                             itemId: 'listDeleteBtn',
                             disabled: true,
                             scope: me,
                             handler: me.onListDelete,
-                            tooltip: i18n('can_be_disable')
+                            tooltip: _('can_be_disable')
                         }
                     ]
                 }
@@ -132,7 +135,7 @@ Ext.define('App.view.administration.Lists', {
             viewConfig: {
                 plugins: {
                     ptype: 'gridviewdragdrop',
-                    dragText: i18n('drag_and_drop_reorganize')
+                    dragText: _('drag_and_drop_reorganize')
                 },
                 listeners: {
                     scope: me,
@@ -140,8 +143,11 @@ Ext.define('App.view.administration.Lists', {
                 }
             },
             columns: [
+	            {
+		            xtype: 'rownumberer'
+	            },
                 {
-                    text: i18n('option_title'),
+                    text: _('option_title'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'option_name',
@@ -155,7 +161,7 @@ Ext.define('App.view.administration.Lists', {
                     }
                 },
                 {
-                    text: i18n('option_value'),
+                    text: _('option_value'),
                     width: 200,
                     sortable: true,
                     dataIndex: 'option_value',
@@ -164,24 +170,43 @@ Ext.define('App.view.administration.Lists', {
                         itemId: 'optionValueTextField'
                     }
                 },
+	            {
+		            text: _('code'),
+		            sortable: true,
+		            dataIndex: 'code',
+		            width: 120,
+		            editor: {
+			            allowBlank: true
+		            }
+	            },
+	            {
+		            text: _('code_type'),
+		            sortable: true,
+		            dataIndex: 'code_type',
+		            width: 100,
+		            editor: {
+			            allowBlank: true
+		            }
+	            },
                 {
-                    text: i18n('notes'),
+                    text: _('notes'),
                     sortable: true,
                     dataIndex: 'notes',
                     flex: 1,
+	                width: 100,
                     editor: {
                         allowBlank: true
                     }
                 },
                 {
-                    text: i18n('active'),
+                    text: _('active'),
                     width: 55,
                     sortable: false,
                     dataIndex: 'active',
                     renderer: me.boolRenderer,
                     editor: {
-                        xtype: 'mitos.checkbox',
-                        padding: '0 0 0 18'
+                        xtype: 'checkbox',
+                        margin: 0
                     }
                 }
             ],
@@ -190,7 +215,7 @@ Ext.define('App.view.administration.Lists', {
                     xtype: 'toolbar',
                     dock: 'top',
                     items: ['->', {
-                        text: i18n('add_option'),
+                        text: _('add_option'),
                         iconCls: 'icoAddRecord',
                         scope: me,
                         handler: me.onNewOption
@@ -201,50 +226,67 @@ Ext.define('App.view.administration.Lists', {
         me.pageBody = [me.listsGrid, me.optionsGrid];
         me.callParent(arguments);
     },
+
     /**
      * This wll load a new record to the grid
      * and start the rowEditor
      */
     onNewList: function(){
         var me = this;
-
         me.listsRowEditing.cancelEdit();
         me.listsStore.insert(0, Ext.create('App.model.administration.Lists'));
         me.listsRowEditing.startEdit(0, 0);
-
     },
+
     /**
      *
      * @param grid
      * @param selected
      */
     onListsGridClick: function(grid, selected){
-        var me = this, deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'), inUse = !!selected.data.in_use == '1';
-        me.currList = selected.data.id;
-        me.optionsStore.load({params:{list_id: me.currList}});
+        var me = this,
+	        deleteBtn = me.listsGrid.down('toolbar').getComponent('listDeleteBtn'),
+	        inUse = !!selected.data.in_use == '1',
+	        listId = selected.data.id;
+
+	    me.optionsStore.clearFilter(true);
+	    me.optionsStore.filter([
+		    {
+			    property:'list_id',
+			    value: listId
+		    }
+	    ]);
         inUse ? deleteBtn.disable() : deleteBtn.enable();
     },
+
     /**
      * This wll load a new record to the grid
      * and start the rowEditor
      */
     onNewOption: function(){
-        var me = this, m;
-        me.optionsRowEditing.cancelEdit();
-        m = Ext.create('App.model.administration.ListOptions', {
-            list_id: me.currList
-        });
-        me.optionsStore.insert(0, m);
-        me.optionsRowEditing.startEdit(0, 0);
+        var me = this,
+	        listId = me.getCurrList(),
+	        m;
+
+	    if(listId !== false){
+		    me.optionsRowEditing.cancelEdit();
+		    m = Ext.create('App.model.administration.ListOptions', {
+			    list_id: listId
+		    });
+		    me.optionsStore.insert(0, m);
+		    me.optionsRowEditing.startEdit(0, 0);
+	    }
     },
+
     /**
      * Set the Option Value same as Option Title
      * @param a
      */
     onOptionTitleChange: function(a){
-        var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
-        field.setValue(value);
+//        var value = a.getValue(), field = a.up('container').getComponent('optionValueTextField');
+//        field.setValue(value);
     },
+
     /**
      * Logic to sort the options
      * @param node
@@ -252,20 +294,28 @@ Ext.define('App.view.administration.Lists', {
      * @param overModel
      */
     onDragDrop: function(node, data, overModel){
-        var me = this, items = overModel.stores[0].data.items, gridItmes = [];
+        var me = this,
+	        items = overModel.stores[0].data.items,
+	        listId = me.getCurrList(),
+	        gridItems = [];
+
         for(var i = 0; i < items.length; i++){
-            gridItmes.push(items[i].data.id);
+	        Ext.Array.push(gridItems, items[i].data.id);
         }
+
         var params = {
             list_id: data.records[0].data.list_id,
-            fields: gridItmes
+            fields: gridItems
         };
+
         Lists.sortOptions(params, function(){
-            me.optionsStore.load({
-                    params: {
-                        list_id: me.currList
-                    }
-                });
+	        me.optionsStore.clearFilter(true);
+	        me.optionsStore.filter([
+		        {
+			        property:'list_id',
+			        value: listId
+		        }
+	        ]);
         });
     },
     /**
@@ -281,9 +331,9 @@ Ext.define('App.view.administration.Lists', {
 
         if(!record.data.in_use){
             Ext.Msg.show({
-                title: i18n('please_confirm') + '...',
+                title: _('please_confirm') + '...',
                 icon: Ext.MessageBox.QUESTION,
-                msg: i18n('delete_this_record'),
+                msg: _('delete_this_record'),
                 buttons: Ext.Msg.YESNO,
                 scope: me,
                 fn: function(btn){
@@ -291,20 +341,31 @@ Ext.define('App.view.administration.Lists', {
                         store.remove(record);
                         store.sync({
                             success:function(){
-                                me.msg('Sweet!', i18n('record_deleted'));
-                                me.optionsStore.load();
+                                me.msg('Sweet!', _('record_deleted'));
+                                me.optionsStore.removeAll();
                             },
                             failure:function(){
-                                me.msg('Oops!', i18n('unable_to_delete') + ' "' + record.data.title, true);
+                                me.msg('Oops!', _('unable_to_delete') + ' "' + record.data.title, true);
                             }
                         });
                     }
                 }
             });
         }else{
-            Ext.Msg.alert('Oops!', i18n('unable_to_delete') + ' "' + record.data.title + '"<br>' + i18n('list_currently_used_forms') + '.');
+            Ext.Msg.alert('Oops!', _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
         }
     },
+
+	getCurrList: function(){
+		var records = this.listsGrid.getSelectionModel().getSelection();
+
+		if(records.length > 0){
+			return records[0].data.id;
+		}
+
+		return false;
+
+	},
 
     /**
      * This function is called from Viewport.js when
@@ -315,7 +376,6 @@ Ext.define('App.view.administration.Lists', {
     onActive: function(callback){
         var me = this;
         me.listsStore.load();
-        me.optionsStore.load();
         callback(true);
     }
 });

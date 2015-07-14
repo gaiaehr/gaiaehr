@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +21,17 @@ Ext.define('Modules.patienteducation.Main', {
 	init : function()	{
 		var me = this;
 
-        app.checkoutWindow.on('render', function(win){
+		if(app.checkoutWindow){
+			app.checkoutWindow.on('render', function(win){
 
-            win.getDockedItems('toolbar[dock="bottom"]')[0].insert(0,[{
-                xtype:'button',
-                text:i18n('patient_education'),
-                handler:me.onPatientEducation
-            },'->']);
+				win.getDockedItems('toolbar[dock="bottom"]')[0].insert(0,[{
+					xtype:'button',
+					text:_('patient_education'),
+					handler:me.onPatientEducation
+				},'->']);
 
-        });
+			});
+		}
 
 		me.callParent();
 	},
@@ -39,7 +41,6 @@ Ext.define('Modules.patienteducation.Main', {
         var win = btn.up('window'),
             pid = win.pid,
             eid = win.eid;
-
         say(pid);
         say(eid);
         say('patient education pressed');

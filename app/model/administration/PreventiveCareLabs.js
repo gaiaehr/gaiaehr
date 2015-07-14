@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 Ext.define('App.model.administration.PreventiveCareLabs', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'preventivecarelabs',
-		comment:'Preventive Care Labs'
-	},	
+		name: 'preventivecarelabs',
+		comment: 'Preventive Care Labs'
+	},
 	fields: [
 		{name: 'id', type: 'int'},
 		{name: 'value_name', type: 'string'},

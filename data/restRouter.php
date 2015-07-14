@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 define('_GaiaEXEC', 1);
-$_SESSION['root'] = 'C:/inetpub/wwwroot/gaiaehr';
-include_once($_SESSION['root'] . '/classes/Arrays.php');
+ROOT = 'C:/inetpub/wwwroot/gaiaehr';
+include_once(ROOT . '/classes/Arrays.php');
 /**
  * verify private key
  */

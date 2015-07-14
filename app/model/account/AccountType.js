@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,31 +19,70 @@
 Ext.define('App.model.account.AccountType', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'accaccounttype',
-		comment:'Account',
-		data:'App.data.account.AccountType'
+		name: 'accaccounttype',
+		comment: 'Account',
+		data: 'App.data.account.AccountType'
 	},
 	fields: [
-		{name: 'id',                type: 'int'},
-		{name: 'createUid',         type: 'int'},
-		{name: 'createDate',        type: 'date', dateFormat:'Y-m-d H:i:s'},
-		{name: 'writeUid',          type: 'int'},
-		{name: 'writeDate',         type: 'date', dateFormat:'Y-m-d H:i:s'},
-
-		{name: 'closeMethod',       type: 'string', comment:'Name'},
-		{name: 'note',              type: 'string', comment:'Code'},
-		{name: 'code',              type: 'string', comment:'Shortcut'},
-		{name: 'note',              type: 'string', comment:'Internal Notes'},
-		{name: 'name',              type: 'string', comment:'Outgoing Currencies Rate'},
-		{name: 'reportType',        type: 'string', comment:'Internal Type'}
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'createUid',
+			type: 'int'
+		},
+		{
+			name: 'createDate',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'writeUid',
+			type: 'int'
+		},
+		{
+			name: 'writeDate',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'closeMethod',
+			type: 'string',
+			comment: 'Name'
+		},
+		{
+			name: 'note',
+			type: 'string', comment: 'Code'
+		},
+		{
+			name: 'code',
+			type: 'string',
+			comment: 'Shortcut'
+		},
+		{
+			name: 'note',
+			type: 'string',
+			comment: 'Internal Notes'
+		},
+		{
+			name: 'name',
+			type: 'string',
+			comment: 'Outgoing Currencies Rate'
+		},
+		{
+			name: 'reportType',
+			type: 'string',
+			comment: 'Internal Type'
+		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: AccAccount.getAccount,
-			create: AccAccount.addAccount,
-			update: AccAccount.updateAccount,
-			destroy: AccAccount.destroyAccount
+			read: 'AccAccount.getAccount',
+			create: 'AccAccount.addAccount',
+			update: 'AccAccount.updateAccount',
+			destroy: 'AccAccount.destroyAccount'
 		}
 	}
 });

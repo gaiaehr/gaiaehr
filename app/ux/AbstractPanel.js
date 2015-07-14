@@ -1,22 +1,21 @@
-/*
- GaiaEHR (Electronic Health Records)
- AbstractPanel.js
- UX
- Copyright (C) 2012 Ernesto Rodriguez
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * GaiaEHR (Electronic Health Records)
+ * Copyright (C) 2013 Certun, LLC.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 
 Ext.define('App.ux.AbstractPanel', {
 
@@ -52,7 +51,7 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
 	goBack: function() {
-		app.goBack();
+		app.nav.goBack();
 	},
 
 	checkIfCurrPatient: function() {
@@ -62,13 +61,13 @@ Ext.define('App.ux.AbstractPanel', {
 	patientInfoAlert: function() {
 		var patient = app.getCurrPatient();
 
-		Ext.Msg.alert(i18n('status'), i18n('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
+		Ext.Msg.alert(_('status'), _('patient') + ': ' + patient.name + ' (' + patient.pid + ')');
 	},
 
 	currPatientError: function() {
 		Ext.Msg.show({
-			title  : 'Oops! ' + i18n('no_patient_selected'),
-			msg    : i18n('select_patient_patient_live_search'),
+			title  : 'Oops! ' + _('no_patient_selected'),
+			msg    : _('select_patient_patient_live_search'),
 			scope  : this,
 			buttons: Ext.Msg.OK,
 			icon   : Ext.Msg.ERROR,
@@ -142,7 +141,7 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
     passwordVerificationWin:function(callback){
-        var msg = Ext.Msg.prompt(i18n('password_verification'), i18n('please_enter_your_password') + ':', function(btn, password) {
+        var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
             callback(btn, password);
         });
         var f = msg.textField.getInputId();

@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\patienteducation\dataProvider;
 
-include_once ($_SESSION['root'] . '/classes/XML2Array.php');
+include_once (ROOT . '/classes/XML2Array.php');
 
 class MedlinePlus
 {
@@ -49,7 +50,7 @@ class MedlinePlus
         if($coding == 'LOINC') $this->codingSystem = 'mainSearchCriteria.v.cs=2.16.840.1.113883.6.1';
         $urlBuilder = $this->medlineUrl . $this->codingSystem . '&mainSearchCriteria.v.c=' . $code;
         $xmlData = simplexml_load_file($urlBuilder);
-        return XML2Array::createArray($xmlData);
+        return \XML2Array::createArray($xmlData);
     }
 
 }

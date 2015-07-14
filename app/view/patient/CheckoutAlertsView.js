@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,21 @@ Ext.define('App.view.patient.CheckoutAlertsView',
 	itemSelector : 'div.alert-div',
 	loadMask : true,
 	singleSelect : true,
-	emptyText : '<span style="color: #616161; font-size: 12px;">Sweet! ' + i18n('no_alerts_found') + '.</span>',
+	emptyText : '<span style="color: #616161; font-size: 12px;">Sweet! ' + _('no_alerts_found') + '.</span>',
 	initComponent : function()
 	{
 		var me = this;
 
-		me.tpl = '  <table>' + '           <tpl for=".">' + '               <tr class="alert-div>' + '               <div class="alert-div">' + '                   <img class="alert-img" src="{icon}" />' + '                   <div class="alert-msg">{alert}</div>' + '               </div>' + '               </tr>' + '           </tpl>' + '       </table>';
+		me.tpl = '<table>' +
+			'<tpl for=".">' +
+			'<tr class="alert-div>' +
+			'<div class="alert-div">' +
+			'<img class="alert-img" src="{icon}" />' +
+			'<div class="alert-msg">{alert}</div>' +
+			'</div>' +
+			'</tr>' +
+			'</tpl>' +
+			'</table>';
 
 		me.callParent(arguments);
 	}

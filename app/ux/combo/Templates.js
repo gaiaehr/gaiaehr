@@ -1,36 +1,52 @@
 Ext.define('App.ux.combo.Templates', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.templatescombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.documentstemplatescombo',
+	initComponent: function(){
 		var me = this;
 
-		Ext.define('TemplatesComboModel', {
+		Ext.define('DocumentsTemplatesComboModel', {
 			extend: 'Ext.data.Model',
 			fields: [
-				{name: 'title', type: 'string' },
-				{name: 'body'}
+				{
+					name: 'id',
+					type: 'int'
+				},
+				{
+					name: 'title',
+					type: 'string'
+				},
+				{
+					name: 'body',
+					type: 'string'
+				}
 			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getTemplatesTypes
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'CombosData.getTemplatesTypes'
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'TemplatesComboModel',
-			autoLoad: false
+		Ext.apply(this, {
+			editable: false,
+			displayField: 'title',
+			valueField: 'id',
+			queryMode: 'local',
+			emptyText: _('select'),
+			store: Ext.create('Ext.data.Store', {
+				model: 'DocumentsTemplatesComboModel',
+				autoLoad: false
+			})
 		});
 
-		Ext.apply(this, {
-			editable    : false,
-			//queryMode   : 'local',
-			displayField: 'title',
-			valueField  : 'title',
-			emptyText   : i18n('select'),
-			store       : me.store
-		}, null);
 		me.callParent(arguments);
+
+		me.listeners = {
+			scope: me,
+			beforerender:function(){
+				me.getStore().load();
+			}
+		}
 	}
 });

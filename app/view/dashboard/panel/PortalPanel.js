@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,24 +17,24 @@
  */
 
 Ext.define('App.view.dashboard.panel.PortalPanel', {
-	extend  : 'Ext.panel.Panel',
-	alias   : 'widget.portalpanel',
+	extend: 'Ext.panel.Panel',
+	alias: 'widget.portalpanel',
 	requires: [
-        'Ext.layout.container.Column',
+		'Ext.layout.container.Column',
 
-        'App.view.dashboard.panel.PortalDropZone',
-        'App.view.dashboard.panel.PortalColumn'
+		'App.view.dashboard.panel.PortalDropZone',
+		'App.view.dashboard.panel.PortalColumn'
 	],
 
-	cls            : 'x-portal',
-	bodyCls        : 'x-portal-body',
-	defaultType    : 'portalcolumn',
-	componentLayout: 'body',
-	autoScroll     : true,
+	cls: 'x-portal',
+	bodyCls: 'x-portal-body',
+	defaultType: 'portalcolumn',
+	//componentLayout: 'body',
+	autoScroll: true,
 
-    manageHeight: false,
+	manageHeight: false,
 
-    initComponent: function() {
+	initComponent: function(){
 		var me = this;
 
 		// Implement a Container beforeLayout call from the layout to this Container
@@ -44,55 +44,55 @@ Ext.define('App.view.dashboard.panel.PortalPanel', {
 		this.callParent();
 
 		this.addEvents({
-			validatedrop  : true,
+			validatedrop: true,
 			beforedragover: true,
-			dragover      : true,
-			beforedrop    : true,
-			drop          : true
+			dragover: true,
+			beforedrop: true,
+			drop: true
 		});
 	},
 
 	// Set columnWidth, and set first and last column classes to allow exact CSS targeting.
-    beforeLayout: function() {
-        var items = this.layout.getLayoutItems(),
-            len = items.length,
-            firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
-            i, item, last;
+	beforeLayout: function(){
+		var items = this.layout.getLayoutItems(),
+			len = items.length,
+			firstAndLast = ['x-portal-column-first', 'x-portal-column-last'],
+			i, item, last;
 
-        for (i = 0; i < len; i++) {
-            item = items[i];
-            item.columnWidth = 1 / len;
-            last = (i == len-1);
+		for(i = 0; i < len; i++){
+			item = items[i];
+			item.columnWidth = 1 / len;
+			last = (i == len - 1);
 
-            if (!i) { // if (first)
-                if (last) {
-                    item.addCls(firstAndLast);
-                } else {
-                    item.addCls('x-portal-column-first');
-                    item.removeCls('x-portal-column-last');
-                }
-            } else if (last) {
-                item.addCls('x-portal-column-last');
-                item.removeCls('x-portal-column-first');
-            } else {
-                item.removeCls(firstAndLast);
-            }
-        }
+			if(!i){ // if (first)
+				if(last){
+					item.addCls(firstAndLast);
+				}else{
+					item.addCls('x-portal-column-first');
+					item.removeCls('x-portal-column-last');
+				}
+			}else if(last){
+				item.addCls('x-portal-column-last');
+				item.removeCls('x-portal-column-first');
+			}else{
+				item.removeCls(firstAndLast);
+			}
+		}
 
-        return this.callParent(arguments);
-    },
+		return this.callParent(arguments);
+	},
 
 	// private
-	initEvents   : function() {
+	initEvents: function(){
 		this.callParent();
 		this.dd = Ext.create('App.view.dashboard.panel.PortalDropZone', this, this.dropConfig);
 	},
 
 	// private
-    beforeDestroy : function() {
-        if (this.dd) {
-            this.dd.unreg();
-        }
-        this.callParent();
-    }
+	beforeDestroy: function(){
+		if(this.dd){
+			this.dd.unreg();
+		}
+		this.callParent();
+	}
 });

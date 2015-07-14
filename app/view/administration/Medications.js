@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ Ext.define('App.view.administration.Medications',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelMedications',
-	pageTitle : i18n('medications'),
+	pageTitle : _('medications'),
 
 	initComponent : function()
 	{
@@ -29,44 +29,44 @@ Ext.define('App.view.administration.Medications',
 
 		me.storeMedications = Ext.create('App.store.administration.Medications');
 
-		me.medicationsGrid = Ext.create('App.ux.GridPanel',
+		me.medicationsGrid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
 			store : me.storeMedications,
 			columns : [
 			{
 				width : 70,
-				header : i18n('number'),
+				header : _('number'),
 				dataIndex : 'PRODUCTNDC',
 				sortable : true
 			},
 			{
 				width : 80,
-				header : i18n('name'),
+				header : _('name'),
 				dataIndex : 'PROPRIETARYNAME',
 				sortable : true
 			},
 			{
 				width : 200,
-				header : i18n('active_component'),
+				header : _('active_component'),
 				dataIndex : 'NONPROPRIETARYNAME',
 				sortable : true
 			},
 			{
 				width : 175,
-				header : i18n('dosage'),
+				header : _('dosage'),
 				dataIndex : 'DOSAGEFORMNAME',
 				sortable : true
 			},
 			{
 				width : 45,
-				header : i18n('number'),
+				header : _('number'),
 				dataIndex : 'ACTIVE_NUMERATOR_STRENGTH',
 				sortable : true
 			},
 			{
 				flex : 1,
-				header : i18n('unit'),
+				header : _('unit'),
 				dataIndex : 'ACTIVE_INGRED_UNIT',
 				sortable : true
 			}],
@@ -76,7 +76,7 @@ Ext.define('App.view.administration.Medications',
 				errorSummary : false,
 				clicksToEdit : 1,
 				enableRemove : true,
-				formItems : [
+				items : [
 				{
 
 					title : 'general',
@@ -97,7 +97,7 @@ Ext.define('App.view.administration.Medications',
 						items : [
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('name'),
+							fieldLabel : _('name'),
 							width : 150,
 							labelWidth : 50,
 							name : 'PROPRIETARYNAME'
@@ -105,7 +105,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('active_component'),
+							fieldLabel : _('active_component'),
 							width : 350,
 							labelWidth : 125,
 							name : 'NONPROPRIETARYNAME'
@@ -114,7 +114,7 @@ Ext.define('App.view.administration.Medications',
 
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('dosage'),
+							fieldLabel : _('dosage'),
 							width : 200,
 							labelWidth : 50,
 							name : 'DOSAGEFORMNAME'
@@ -135,7 +135,7 @@ Ext.define('App.view.administration.Medications',
 						items : [
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('code'),
+							fieldLabel : _('code'),
 							labelWidth : 50,
 							width : 150,
 							name : 'PRODUCTNDC'
@@ -143,7 +143,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : i18n('dosis'),
+							fieldLabel : _('dosis'),
 							margin : '0 0 5 0',
 							value : 0,
 							minValue : 0,
@@ -168,7 +168,7 @@ Ext.define('App.view.administration.Medications',
 			{
 				store : me.storeMedications,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager'),
 				items : ['-',
                     {
@@ -179,7 +179,7 @@ Ext.define('App.view.administration.Medications',
                     '-',
                     {
                         xtype : 'textfield',
-                        emptyText : i18n('search'),
+                        emptyText : _('search'),
                         enableKeyEvents : true,
                         itemId : 'query',
                         listeners :
@@ -191,7 +191,7 @@ Ext.define('App.view.administration.Medications',
                     },
                     '-',
                     {
-                        text : i18n('reset'),
+                        text : _('reset'),
                         scope : me,
                         handler : me.onFieldReset
                     },

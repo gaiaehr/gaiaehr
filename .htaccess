@@ -3,3 +3,19 @@
     Header set Access-Control-Allow-Headers "origin, x-requested-with, content-type"
     Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
 </IfModule>
+
+#RewriteEngine on
+#
+#
+#RewriteCond %{REQUEST_FILENAME} !-l
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_URI} /([a-z]{2}_[A-Z]{2}|[a-z]{2})/$
+#RewriteRule ^([a-z]{2}_[A-Z]{2}|[a-z]{2})/(.*)$ $2?lang=$1 [L,QSA]
+#
+#RewriteCond %{REQUEST_FILENAME} !-l
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_URI} /([a-z]{2}_[A-Z]{2}|[a-z]{2})/(\w*)/$
+#RewriteRule ^([a-z]{2}_[A-Z]{2}|[a-z]{2})/(\w*)/(.*) $3?lang=$1&site=$2 [L,QSA]
+

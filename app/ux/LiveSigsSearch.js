@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,72 +16,72 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.ux.LiveSigsSearch',{
-		extend:'Ext.form.field.ComboBox',
-		alias:'widget.livesigssearch',
+Ext.define('App.ux.LiveSigsSearch', {
+	extend: 'Ext.form.field.ComboBox',
+	alias: 'widget.livesigssearch',
 
-		initComponent:function(){
-			var me = this;
+	initComponent: function(){
+		var me = this;
 
-			Ext.define('liveSigsSearchModel',{
-				extend:'Ext.data.Model',
-				fields:[
-					{ name:'option_value', type:'string' },
-					{ name:'option_name', type:'string'    }
-				],
-				proxy:{
-					type:'direct',
-					api:{
-						read:Prescriptions.getSigCodesByQuery
-					}
+		Ext.define('liveSigsSearchModel', {
+			extend: 'Ext.data.Model',
+			fields: [
+				{ name: 'option_value', type: 'string' },
+				{ name: 'option_name', type: 'string'    }
+			],
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'Prescriptions.getSigCodesByQuery'
 				}
-			});
+			}
+		});
 
-			me.store = Ext.create('Ext.data.Store',{
-				model:'liveSigsSearchModel',
-				pageSize:25,
-				autoLoad:false
-			});
+		me.store = Ext.create('Ext.data.Store', {
+			model: 'liveSigsSearchModel',
+			pageSize: 25,
+			autoLoad: false
+		});
 
-			Ext.apply(me,{
-				store:me.store,
-				displayField:'option_value',
-				valueField:'option_value',
-				emptyText:i18n('search') + '...',
-				typeAhead:false,
-				hideTrigger:true,
-				minChars:1,
-				anchor:'100%',
-				listConfig:{
-					loadingText:i18n('searching') + '...',
-					//emptyText	: 'No matching posts found.',
-					//---------------------------------------------------------------------
-					// Custom rendering template for each item
-					//---------------------------------------------------------------------
-					getInnerTpl:function(){
-						return '<div class="search-item">{option_value} ({option_name})</div>';
-					}
-				},
-//				pageSize:25,
-				listeners:{
-					scope:me,
-					beforeselect:me.onBeforeSigSelect,
-					select:me.onBeSigSelect
+		Ext.apply(me, {
+			store: me.store,
+			displayField: 'option_value',
+			valueField: 'option_value',
+			emptyText: _('search') + '...',
+			typeAhead: false,
+			hideTrigger: true,
+			minChars: 1,
+			anchor: '100%',
+			listConfig: {
+				loadingText: _('searching') + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
+				getInnerTpl: function(){
+					return '<div class="search-item">{option_value} ({option_name})</div>';
 				}
-			});
+			},
+			//				pageSize:25,
+			listeners: {
+				scope: me,
+				beforeselect: me.onBeforeSigSelect,
+				select: me.onBeSigSelect
+			}
+		});
 
-			me.callParent(arguments);
-		},
+		me.callParent(arguments);
+	},
 
-		onBeforeSigSelect:function(cmb, record){
-			say(cmb);
-			say(record);
-		},
+	onBeforeSigSelect: function(cmb, record){
+		say(cmb);
+		say(record);
+	},
 
-		onBeSigSelect:function(cmb, record){
-			say(cmb);
-			say(record);
-		}
+	onBeSigSelect: function(cmb, record){
+		say(cmb);
+		say(record);
+	}
 
 
-	});
+});

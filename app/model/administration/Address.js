@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -83,24 +83,24 @@ Ext.define('App.model.administration.Address', {
 			type: 'string'
 		},
 		{
-			name: 'foreign_id',
-			type: 'int'
-		},
-		{
 			name: 'fulladdress',
 			type: 'string',
 			store: false,
 			convert: function(v, record){
 				return Ext.String.trim(
 					record.data.line1 + ' ' +
-					record.data.line2 + ' ' +
-					record.data.city + ', ' +
-					record.data.state + ' ' +
-					record.data.zip + '-' +
-					record.data.plus_four + ' ' +
-					record.data.country
+						record.data.line2 + ' ' +
+						record.data.city + ', ' +
+						record.data.state + ' ' +
+						record.data.zip + '-' +
+						record.data.plus_four + ' ' +
+						record.data.country
 				).replace('  ', ' ');
 			}
+		},
+		{
+			name: 'foreign_id',
+			type: 'int'
 		}
 	]
 });

@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-session_name("GaiaEHR");
-session_start();
-session_cache_limiter('private');
-require_once ($_SESSION['root'] . "/classes/XMLParser.class.php");
+if(!isset($_SESSION)){
+	session_name('GaiaEHR');
+	session_start();
+	session_cache_limiter('private');
+}
+if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+include_once ('../registry.php');
+require_once (ROOT . '/classes/XMLParser.class.php');
 //--------------------------------------------------------------------------------
 // lets declare few vars for later use.
 //--------------------------------------------------------------------------------
@@ -188,4 +191,3 @@ print_r(json_encode(array(
 	'totals' => $totals,
 	'row' => $rows
 )));
-?>

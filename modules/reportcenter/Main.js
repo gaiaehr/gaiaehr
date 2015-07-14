@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,27 +17,28 @@
  */
 
 Ext.define('Modules.reportcenter.Main', {
-	extend : 'Modules.Module',
-	init : function()
-	{
+	extend: 'Modules.Module',
+	init: function(){
 		var me = this;
 		/**
 		 * @param panel     (Ext.component)     Component to add to MainPanel
 		 */
 		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportCenter'));
 		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportPanel'));
+
+		me.getController('Modules.reportcenter.controller.Dashboard');
+
 		/**
-		 * funtion to add navigation links
+		 * function to add navigation links
 		 * @param parentId  (string)            navigation node parent ID,
 		 * @param node      (object || array)   navigation node configuration properties
 		 */
-		me.addNavigationNodes('root',
-		{
-			text : i18n('report_center'),
-			leaf : true,
-			cls : 'file',
-			iconCls : 'icoReport',
-			id : 'Modules.reportcenter.view.ReportCenter'
+		me.addNavigationNodes('root', {
+			text: _('report_center'),
+			leaf: true,
+			cls: 'file',
+			iconCls: 'icoReport',
+			id: 'Modules.reportcenter.view.ReportCenter'
 		});
 		me.callParent();
 	}

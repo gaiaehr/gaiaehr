@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,64 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class Procedures
-{
+class Procedures {
 	/**
 	 * @var bool|MatchaCUP
 	 */
 	private $p;
 
-    function __construct()
-    {
-	    $this->db = new MatchaHelper();
+	function __construct() {
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.encounter.Procedures');
-        return;
-    }
+	}
 
-	public function loadProcedures($params){
+	public function getPatientProcedures($params) {
 		return $this->p->load($params)->all();
 	}
 
-	public function saveProcedure($params){
+	public function getPatientProcedure($params) {
+		return $this->p->load($params)->one();
+	}
+
+	public function saveProcedure($params) {
 		return $this->p->save($params);
 	}
 
-	public function destroyProcedure($params){
+	public function destroyProcedure($params) {
 		return $this->p->destroy($params);
+	}
+
+	public function getPatientProceduresByPid($pid) {
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
+		return $this->p->load($params)->all();
+	}
+
+	public function getPatientProceduresByEid($eid) {
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'eid';
+		$params->filter[0]->value =  $eid;
+		return $this->p->load($params)->all();
+	}
+
+	public function getPatientProceduresByPidAndCode($pid, $code) {
+		$params =  new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'pid';
+		$params->filter[0]->value =  $pid;
+
+		$params->filter[1] = new stdClass();
+		$params->filter[1]->property = 'code';
+		$params->filter[1]->value =  $code;
+		return $this->p->load($params)->all();
+	}
+
+
+	// TODO: REMOVE
+	public function loadProcedures($params) {
+		return $this->p->load($params)->all();
 	}
 
 }

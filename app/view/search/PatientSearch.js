@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@ Ext.define('App.view.search.PatientSearch',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelPatientSearch',
-	pageTitle : i18n('advance_patient_search'),
+	pageTitle : _('advance_patient_search'),
 	pageLayout : 'border',
-	uses : ['App.ux.GridPanel'],
+	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
 		var me = this;
@@ -37,7 +37,7 @@ Ext.define('App.view.search.PatientSearch',
 			items : [
 			{
 				xtype : 'fieldcontainer',
-				fieldLabel : i18n('name'),
+				fieldLabel : _('name'),
 				layout : 'hbox',
 				defaults :
 				{
@@ -46,24 +46,24 @@ Ext.define('App.view.search.PatientSearch',
 				items : [
 				{
 					xtype : 'textfield',
-					emptyText : i18n('first_name'),
+					emptyText : _('first_name'),
 					name : 'fname'
 				},
 				{
 					xtype : 'textfield',
-					emptyText : i18n('middle_name'),
+					emptyText : _('middle_name'),
 					name : 'mname'
 				},
 				{
 					xtype : 'textfield',
-					emptyText : i18n('last_name'),
+					emptyText : _('last_name'),
 					name : 'lname'
 				}]
 			}],
 
 			buttons : [
 			{
-				text : i18n('search'),
+				text : _('search'),
 				iconCls : 'save',
 				handler : function()
 				{
@@ -71,9 +71,9 @@ Ext.define('App.view.search.PatientSearch',
 				}
 			}, '-',
 			{
-				text : i18n('reset'),
+				text : _('reset'),
 				iconCls : 'save',
-				tooltip : i18n('hide_selected_office_note'),
+				tooltip : _('hide_selected_office_note'),
 				handler : function()
 				{
 					//TODO: Finish me.
@@ -81,7 +81,7 @@ Ext.define('App.view.search.PatientSearch',
 			}]
 		});
 		
-		me.grid = Ext.create('App.ux.GridPanel',
+		me.grid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
 			//store    : me.store,
@@ -94,20 +94,20 @@ Ext.define('App.view.search.PatientSearch',
 			},
 			{
 				width : 150,
-				header : i18n('date'),
+				header : _('date'),
 				sortable : true,
 				dataIndex : 'date',
 				renderer : Ext.util.Format.dateRenderer('Y-m-d H:i:s')
 			},
 			{
 				width : 150,
-				header : i18n('user'),
+				header : _('user'),
 				sortable : true,
 				dataIndex : 'user'
 			},
 			{
 				flex : 1,
-				header : i18n('note'),
+				header : _('note'),
 				sortable : true,
 				dataIndex : 'body'
 			}],
@@ -115,7 +115,7 @@ Ext.define('App.view.search.PatientSearch',
 			{
 				store : me.store,
 				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
+				emptyMsg : _('no_office_notes_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				})

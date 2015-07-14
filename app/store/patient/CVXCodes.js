@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,10 @@
 
 Ext.define('App.store.patient.CVXCodes', {
 	extend: 'Ext.data.Store',
-	model     : 'App.model.patient.CVXCodes',
+	requires: ['App.model.patient.CVXCodes'],
+	model: 'App.model.patient.CVXCodes',
 	remoteSort: false,
-	autoLoad  : false
+	autoLoad: false
 });
+
 

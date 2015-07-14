@@ -30,7 +30,7 @@ Ext.define('App.ux.combo.Lists', {
 			queryMode   : 'local',
 			valueField  : 'id',
 			displayField: 'title',
-			emptyText   : i18n('select'),
+			emptyText   : _('select'),
 			store       : me.store
 		}, null);
 		me.callParent(arguments);

@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\reportcenter\dataProvider;
 
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
-include_once('Reports.php');
-include_once($_SESSION['root'] . '/classes/MatchaHelper.php');
-include_once($_SESSION['root'] . '/dataProvider/Patient.php');
-include_once($_SESSION['root'] . '/dataProvider/User.php');
-include_once($_SESSION['root'] . '/dataProvider/Encounter.php');
-include_once($_SESSION['root'] . '/dataProvider/i18nRouter.php');
 
-class ImmunizationsReport extends Reports
-{
+include_once('Reports.php');
+include_once(ROOT . '/classes/MatchaHelper.php');
+include_once(ROOT . '/dataProvider/User.php');
+include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Encounter.php');
+
+class ImmunizationsReport extends Reports {
 	private $db;
 	private $user;
 	private $patient;
@@ -39,26 +39,26 @@ class ImmunizationsReport extends Reports
 	/*
 	 * The first thing all classes do, the construct.
 	 */
-	function __construct()
-	{
+	function __construct() {
 		parent::__construct();
-		$this->db = new MatchaHelper();
-		$this->user = new User();
-		$this->patient = new Patient();
-		$this->encounter = new Encounter();
+		$this->db = new \MatchaHelper();
+		$this->user = new \User();
+		$this->patient = new \Patient();
+		$this->encounter = new \Encounter();
 
 		return;
 	}
 
-	public function createImmunizationsReport(stdClass $params)
-	{
+	public function createImmunizationsReport(\stdClass $params) {
 		ob_end_clean();
 		$Url = $this->ReportBuilder($params->html, 10);
-		return array('success' => true, 'url' => $Url);
+		return array(
+			'success' => true,
+			'url' => $Url
+		);
 	}
 
-	public function getImmunizationsReport(stdClass $params)
-	{
+	public function getImmunizationsReport(\stdClass $params) {
 		$params->to = ($params->to == '') ? date('Y-m-d') : $params->to;
 		$from = $params->from;
 		$to = $params->to;
@@ -66,9 +66,10 @@ class ImmunizationsReport extends Reports
 		$sql = " SELECT *
 	               FROM patient_immunizations
 	              WHERE create_date BETWEEN '$from 00:00:00' AND '$to 23:59:59'";
-		if(isset($immu) && $immu != '') $sql .= " AND immunization_id = '$immu'";
+		if(isset($immu) && $immu != '')
+			$sql .= " AND immunization_id = '$immu'";
 		$this->db->setSQL($sql);
-		$records = $this->db->fetchRecords(PDO::FETCH_ASSOC);
+		$records = $this->db->fetchRecords(\PDO::FETCH_ASSOC);
 		foreach($records AS $num => $rec){
 			$records[$num]['fullname'] = $this->patient->getPatientFullNameByPid($rec['pid']);
 		}

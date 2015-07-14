@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,235 +17,244 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-include_once ($_SESSION['root'] . '/dataProvider/Person.php');
-include_once ($_SESSION['root'] . '/classes/AES.php');
+include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/ACL.php');
 
-class User
-{
+class User {
 
 	/**
-	 * @var bool|MatchaCUP|null
+	 * @var MatchaCUP
 	 */
-	private $u = NULL;
+	private $u;
+
+
 	/**
-	 * @var
+	 * @var ACL
 	 */
-	private $user;
-	/**
-	 * @var MatchaHelper
-	 */
-	private $db;
+	private $acl;
 
+	function __construct(){
+		$this->acl = new ACL();
+		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+	}
 
-    function __construct()
-    {
-        $this->db = new MatchaHelper();
-	    $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
-        return;
-    }
+	public function getUsers($params){
+		$users = $this->u->load($params)->all();
+		foreach($users['data'] as $index => $user){
+			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+			$users['data'][$index] = (object) $user;
+		}
+		return $users;
+	}
 
-    //------------------------------------------------------------------------------------------------------------------
-    // Main Sencha Model Getter and Setters
-    //------------------------------------------------------------------------------------------------------------------
-    public function saveUser($params)
-    {
-        return $this->u->save($params);
-    }
+	public function getUser($params){
+		$user = $this->u->load($params)->one();
+		if($user !== false){
+			$user = isset($user['data']) ? $user['data'] : $user;
+			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		}
+		return $user;
+	}
 
-    public function getUsers(stdClass $params)
-    {
-        $rows = array();
-        foreach ($this->u->load($params)->all() as $row)
-        {
-            $row['fullname'] = Person::fullname($row['fname'], $row['mname'], $row['lname']);
-            unset($row['password'], $row['pwd_history1'], $row['pwd_history2']);
-            array_push($rows, $row);
-        }
-        return $rows;
-    }
+	public function getUserByUid($uid){
+		$user = $this->u->load($uid)->one();
+		if($user !== false){
+			$user = isset($user['data']) ? $user['data'] : $user;
+			$user['fullname'] = Person::fullname($user['fname'], $user['mname'], $user['lname']);
+			unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		}
+		return $user;
+	}
 
-    public function addUser(stdClass $params)
-    {
-        try
-        {
-            if(!$this->usernameExist($params->username))
-            {
-                unset($params->fullname);
+	public function addUser(stdClass $params){
+		try{
+			if(!$this->usernameExist($params->username)){
 
-                if (isset($params->taxonomy) && $params->taxonomy == '') unset($params->taxonomy);
+				unset($params->fullname, $params->pwd_history1, $params->pwd_history2);
+				$user = (object) $this->u->save($params);
+				$user = (object) isset($user->data) ? $user->data : $user;
+				unset($user->password, $user->pwd_history1, $user->pwd_history2);
+				$user->fullname = Person::fullname($user->fname, $user->mname, $user->lname);
+				$user->password = '';
+				return (object) $user;
+			} else{
+				throw new Exception("Username \"$params->username\" exist, please try a different username");
+			}
+		} catch(Exception $e){
+			return $e;
+		}
+	}
 
-	            // handle passwords
-	            $aes = $this->getAES();
-	            $params->password = $aes->encrypt($params->password);
-                unset($params->pwd_history1, $params->pwd_history2);
-	            // save new user
-                $this->user = $this->u->save($params);
+	public function updateUser(stdClass $params){
+		unset($params->pwd_history1, $params->pwd_history2);
+		if(isset($params->password) && $params->password == ''){
+			unset($params->password);
+		}
+		$user = $this->u->save($params);
+//		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		return (object) $user;
+	}
 
-	            unset($this->user['password'], $this->user['pwd_history1'], $this->user['pwd_history2']);
-	            $this->user['fullname'] = Person::fullname($params->fname, $params->mname, $params->lname);
-	            $this->user['password'] = '';
-                return $this->user;
-            }
-            else
-            {
-                throw new Exception("Username \"$params->username\" exist, please try a different username");
-            }
-        }
-        catch (Exception $e)
-        {
-            return $e;
-        }
-    }
+	public function updatePassword(stdClass $params){
+		$user = $this->u->load($params->id)->one();
 
-    public function updateUser(stdClass $params)
-    {
-        $password = $params->password;
-        unset($params->password, $params->pwd_history1, $params->pwd_history2);
-        $this->user = $this->u->save($params);
-        if($password) $this->changePassword($password);
-        return $params;
-    }
+		if($user === false){
+			return ['success' => false, 'message' => 'user not found'];
+		}
+		$user = isset($user['data']) ? $user['data'] : $user;
+		if($user['password'] != $params->old_password){
+			return ['success' => false, 'message' => 'wrong_password_error'];
+		}
 
-    //------------------------------------------------------------------------------------------------------------------
-    // Extra methods
-    // This methods are used by the view to gather extra data from the store or the model
-    //------------------------------------------------------------------------------------------------------------------
-    public function setUserByUid($uid)
-    {
-        $this->user = $this->u->load($uid)->one();
-    }
+		if( $user['password'] == $params->new_password ||
+			$user['pwd_history1'] == $params->new_password ||
+			$user['pwd_history2'] == $params->new_password){
+			return ['success' => false, 'message' => 'password_history_error'];
+		}
 
-    public function setUser($params)
-    {
-        $this->user = $this->u->load($params)->one();
-    }
+		$rec = new stdClass();
+		$rec->id = $params->id;
+		$rec->password = $params->new_password;
+		$rec->pwd_history1 = $user['password'];
+		$rec->pwd_history2 = $user['pwd_history1'];
+		$this->u->save($rec);
+		return ['success' => true];
+	}
 
-    public function usernameExist($username)
-    {
-        $user = $this->u->load(array('username' => $username))->one();
-        return !empty($user);
-    }
+	public function usernameExist($username){
+		$user = $this->u->load(['username' => $username])->one();
+		return $user !== false;
+	}
 
-    private function getAES()
-    {
-        return new AES($_SESSION['site']['AESkey']);
-    }
+	public function getCurrentUserId(){
+		return isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : 0;
+	}
 
-    public function getCurrentUserId()
-    {
-        return $_SESSION['user']['id'];
-    }
+	public function getCurrentUserTitleLastName(){
+		$user = $this->u->load($this->getCurrentUserId(), ['title', 'lname'])->one();
+		return $user['title'] . ' ' . $user['lname'];
+	}
 
-    public function getCurrentUserTitleLastName()
-    {
-        $userResult = $this->u->load($this->getCurrentUserId(), array('title', 'lname'))->one();
-        return $userResult['title'] . ' ' . $userResult['lname'];
-    }
+	public function getUserNameById($id){
+		$user = $this->u->load($id)->one();
+		return $user['title'] . ' ' . $user['lname'];
+	}
 
-    public function getUserNameById($id)
-    {
-        $userResult = $this->u->load($id)->one();
-        $userName = $userResult['title'] . ' ' . $userResult['lname'];
-        return $userName;
-    }
+	public function getUserFullNameById($id){
+		$user = $this->u->load($id)->one();
+		return Person::fullname($user['fname'], $user['mname'], $user['lname']);
+	}
 
-    public function getUserFullNameById($id)
-    {
-        $userResult = $this->u->load($id)->one();
-        $userName = Person::fullname($userResult['fname'], $userResult['mname'], $userResult['lname']);
-        return $userName;
-    }
+	public function getCurrentUserData(){
+		$user = $this->u->load($this->getCurrentUserId())->one();
+		unset($user['password'], $user['pwd_history1'], $user['pwd_history2']);
+		return $user;
+	}
 
-    public function getCurrentUserData()
-    {
-        $userResult = $this->u->load($this->getCurrentUserId())->one();
-        return $userResult;
-    }
+	public function getCurrentUserBasicData(){
+		$user = $this->u->load($this->getCurrentUserId(), ['id', 'npi', 'title', 'fname', 'mname', 'lname'])->one();
+		return $user;
+	}
 
-    public function getCurrentUserBasicData()
-    {
-        $userResult = $this->u->load($this->getCurrentUserId(), array('id', 'title', 'fname', 'mname', 'lname'))->one();
-        return $userResult;
-    }
+	public function updateMyAccount(stdClass $params){
+		$data = new $params;
+		unset($data->password, $data->pwd_history1, $data->pwd_history2);
+		return $this->u->save($data);
+	}
 
-    public function chechPasswordHistory(stdClass $params)
-    {
-        $aes = $this->getAES();
-        $id = $params->id;
-        $aesPwd = $aes->encrypt($params->password);
-        $this->db->setSQL("SELECT password, pwd_history1, pwd_history2  FROM users WHERE id='$id'");
-        $pwds = $this->db->fetchRecord();
-        if ($pwds['password'] == $aesPwd || $pwds['pwd_history1'] == $aesPwd || $pwds['pwd_history2'] == $aesPwd)
-        {
-            return array('error' => true);
-        }
-        else
-        {
-            return array('error' => false);
-        }
-    }
+	public function verifyUserPass($pass, $uid = null){
+		$user = $this->u->load(
+			[
+				'id' => isset($uid) ? $uid : $_SESSION['user']['id'],
+				'authorized' => '1'
+			],
+			[
+				'password'
+			]
+		)->one();
+		return $user['password'] == $pass;
+	}
 
-    public function changePassword($newpassword)
-    {
-        $aes = $this->getAES();
-        $aesPwd = $aes->encrypt($newpassword);
+	public function getProviders(){
+		$records = [];
+		$records[] = ['name' => 'All', 'id' => 'all'];
+		$users = $this->u->load(['role_id' => 2])->all();
+		foreach($users As $row){
+			$row['name'] = $this->getUserNameById($row['id']);
+			$records[] = $row;
+		}
+		return $records;
+	}
 
-        $id = $this->user['id'];
-        $this->db->setSQL("SELECT password, pwd_history1 FROM users WHERE id = '$id'");
-        $pwds = $this->db->fetchRecord(PDO::FETCH_ASSOC);
+	public function getActiveProviders(){
+//		$records = array();
+//		$records[] = array('option_name' => 'Select', 'option_value' => '');
+		$this->u->addFilter('npi', '', '!=');
+		$this->u->addFilter('active', 1);
+//		$users = $this->u->load()->all();
+//		foreach($users As $row){
+//			$foo = array();
+//			$foo['option_name'] = $row['title'] . Person::fullname($row['fname'],$row['mname'],$row['lname']);
+//			$foo['option_value'] = $row['id'];
+//			$records[] = $foo;
+//		}
+		return $this->u->load()->all();
+	}
 
-        $params = new stdClass();
-        $params->id = $id;
-        $params->password = $aesPwd;
-        $params->pwd_history1 = $pwds['password'];
-        $params->pwd_history2 = $pwds['pwd_history1'];
-        $this->u->save($params);
-        return;
-    }
+	public function getUserRolesByCurrentUserOrUserId($uid = null){
+		$user = $this->u->load($uid == null ? $_SESSION['user']['id'] : $uid)->one();
+		return $user;
+	}
 
-    public function changeMyPassword(stdClass $params)
-    {
-        $this->user['id'] = $params->id;
-        return array('success' => true);
-    }
+	public function getUserByNPI($npi){
+		$params = new stdClass();
+		$params->filter[0] = new stdClass();
+		$params->filter[0]->property = 'NPI';
+		$params->filter[0]->value = $npi;
+		return $this->getUser($params);
+	}
 
-    public function updateMyAccount(stdClass $params)
-    {
-        $data  = new $params;
-        unset($data->password, $data->pwd_history1, $data->pwd_history2);
-        $this->user = $this->u->save($data);
-        if($params->password != '') $this->changePassword($params->password);
-        $this->u->save($params);
-        return array('success' => true);
-    }
+	public function userLiveSearch($params){
+		$acls = isset($params->acl) ? explode('&' , $params->acl) : false;
 
-    public function verifyUserPass($pass)
-    {
-        $aes = new AES($_SESSION['site']['AESkey']);
-        $userResult = $this->u->load( array('id' => $_SESSION['user']['id'], 'password' => $aes->encrypt($pass), 'authorized'=>'1'), array('username') )->one();
-        $count = count($userResult);
-        return ($count != 0) ? 1 : 2;
-    }
+		if($acls === false){
+			$params->query = $params->query . '%';
+			$this->u->sql('SELECT `u`.*, `ar`.`role_name` AS role FROM users as u
+					    LEFT JOIN `acl_roles` AS ar ON `ar`.`id` = `u`.`role_id`
+						    WHERE `u`.`fname` LIKE ?
+						       OR `u`.`lname` LIKE ?
+						       OR `u`.`username` LIKE ?');
+			$records = $this->u->all([$params->query, $params->query, $params->query ]);
+		}else{
 
-    public function getProviders()
-    {
-        $records = array();
-        $records[] = array('name' => 'All', 'id' => 'all');
-        foreach($this->u->load(array('role_id' => 2))->all() As $row)
-        {
-            $row['name'] = $this->getUserNameById($row['id']);
-            $records[] = $row;
-        }
-        return $records;
-    }
+			foreach($acls as &$acl){
+				$acl = '`ap`.`perm_key` = \'' . $acl . '\'';
+			}
+			$count = count($acls);
+			$where = implode(' OR ',  $acls);
+			$sql = "SELECT `u`.*, `ar`.`role_name` AS role FROM users AS u
+                 	LEFT JOIN `acl_roles` AS ar ON `ar`.`id` = `u`.`role_id`
+ 					WHERE `u`.`id` IN (
+					    SELECT  `up`.`id` FROM `users` AS up
+					    LEFT JOIN `acl_role_perms` AS arp ON `arp`.`role_id` = `up`.`role_id`
+					    LEFT JOIN `acl_permissions` AS ap ON `ap`.`id` = `arp`.`perm_id`
+ 						WHERE `arp`.`value` = 1 AND ( {$where} )
+					   	GROUP BY `up`.`id`
+					    HAVING COUNT(`up`.`id`) = {$count}
+					) AND (
+		                fname LIKE ? OR lname LIKE ? OR username LIKE ?
+	                )";
 
-    public function getUserRolesByCurrentUserOrUserId($uid = null)
-    {
-        $uid = ($uid == null) ? $_SESSION['user']['id'] : $uid;
-        return $this->u->load($uid)->one();
-    }
+			$this->u->sql($sql);
+			$params->query = $params->query . '%';
+			$records = $this->u->all([ $params->query, $params->query, $params->query ]);
+		}
 
+		return [
+			'total' => count($records),
+		    'data' => array_slice($records, $params->start, $params->limit)
+		];
+	}
 }
-
-//$u = new User();
-//print_r($u->getUserByUsername('demo'));

@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,70 +19,125 @@
 Ext.define('App.model.patient.Allergies', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_allergies',
-		comment:'Patient Allergies'
+		name: 'patient_allergies',
+		comment: 'Patient Allergies'
 	},
 	fields: [
 		{
 			name: 'id',
-			type: 'int',
-			comment: 'Patient Allergies ID'
+			type: 'int'
 		},
 		{
 			name: 'eid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'pid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'allergy_type',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'allergy_type_code',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'allergy_type_code_type',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'allergy',
+			len: 80,
 			type: 'string'
 		},
 		{
 			name: 'allergy_code',
 			type: 'string',
+			len: 20,
 			comment: 'RxNORM RXCUI code if food allergy'
 		},
 		{
-			name: 'location',
+			name: 'allergy_code_type',
+			len: 20,
 			type: 'string'
 		},
 		{
-			name: 'allergy',
+			name: 'location',
+			len: 80,
+			type: 'string'
+		},
+		{
+			name: 'reaction',
+			len: 80,
+			type: 'string'
+		},
+		{
+			name: 'reaction_code',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'reaction_code_type',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'severity',
+			len: 80,
+			type: 'string'
+		},
+		{
+			name: 'severity_code',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'severity_code_type',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'status',
+			len: 15,
+			type: 'string'
+		},
+		{
+			name: 'status_code',
+			len: 20,
+			type: 'string'
+		},
+		{
+			name: 'status_code_type',
+			len: 20,
 			type: 'string'
 		},
 		{
 			name: 'begin_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'end_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
-			name: 'reaction',
-			type: 'string'
-		},
-		{
-			name: 'location',
-			type: 'string'
-		},
-		{
-			name: 'severity',
-			type: 'string'
-		},
-        {
-	        name: 'active',
-	        type: 'bool',
-	        store: false,
-	        convert: function(v, record){
+			name: 'active',
+			type: 'bool',
+			store: false,
+			convert: function(v, record){
 				return record.data.end_date == '' || record.data.end_date == null;
-	        }
-        },
+			}
+		},
 		{
 			name: 'created_uid',
 			type: 'int'
@@ -94,7 +149,8 @@ Ext.define('App.model.patient.Allergies', {
 		{
 			name: 'create_date',
 			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'},
+			dateFormat: 'Y-m-d H:i:s'
+		},
 		{
 			name: 'update_date',
 			type: 'date',
@@ -102,12 +158,12 @@ Ext.define('App.model.patient.Allergies', {
 			defaultValue: 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
 		}
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read  : Medical.getPatientAllergies,
-			create: Medical.addPatientAllergies,
-			update: Medical.updatePatientAllergies
+		api: {
+			read: 'Allergies.getPatientAllergies',
+			create: 'Allergies.addPatientAllergy',
+			update: 'Allergies.updatePatientAllergy'
 		}
 	}
 });

@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,89 +17,81 @@
  */
 
 Ext.define('App.model.fees.Checkout',
-{
-	extend : 'Ext.data.Model',
-	table: {
-		name:'checkout',
-		comment:'Checkout'
-	},
-	fields : [
 	{
-		name : 'id',
-		type : 'int',
-        dataType: 'bigint',
-        len: 20,
-        primaryKey : true,
-        autoIncrement : true,
-        allowNull : false,
-        store: true,
-        comment: 'Checkout ID'
-	},
-	{
-		name : 'time',
-		type : 'string'
-	},
-	{
-		name : 'follow_up_facility',
-		type : 'string'
-	},
-	{
-		name : 'note',
-		type : 'string'
-	},
-	{
-		name : 'reminder',
-		type : 'string'
-	},
-	{
-		name : 'patient_name',
-		type : 'string'
-	},
-	{
-		name : 'encounter_number',
-		type : 'int'
-	},
-	{
-		name : 'transaction_facility',
-		type : 'string'
-	},
-	{
-		name : 'transaction_number',
-		type : 'int'
-	},
-	{
-		name : 'transaction_date',
-		type : 'date',
-		dateFormat : 'Y-m-d H:i:s'
-	},
-	{
-		name : 'payment_amount',
-		type : 'string'
-	},
-	{
-		name : 'paying_entity',
-		type : 'string'
-	},
-	{
-		name : 'post_to_date',
-		type : 'date',
-		dateFormat : 'Y-m-d H:i:s'
-	},
-	{
-		name : 'check_number',
-		type : 'int'
-	}],
-	proxy :
-	{
-		type : 'direct',
-		api :
-		{
-			read : Fees.getPaymentsBySearch
+		extend: 'Ext.data.Model',
+		table: {
+			name: 'checkout',
+			comment: 'Checkout'
 		},
-		reader :
-		{
-			root : 'rows',
-			totalProperty : 'totals'
+		fields: [
+			{
+				name: 'id',
+				type: 'int',
+				comment: 'Checkout ID'
+			},
+			{
+				name: 'time',
+				type: 'string'
+			},
+			{
+				name: 'follow_up_facility',
+				type: 'string'
+			},
+			{
+				name: 'note',
+				type: 'string'
+			},
+			{
+				name: 'reminder',
+				type: 'string'
+			},
+			{
+				name: 'patient_name',
+				type: 'string'
+			},
+			{
+				name: 'encounter_number',
+				type: 'int'
+			},
+			{
+				name: 'transaction_facility',
+				type: 'string'
+			},
+			{
+				name: 'transaction_number',
+				type: 'int'
+			},
+			{
+				name: 'transaction_date',
+				type: 'date',
+				dateFormat: 'Y-m-d H:i:s'
+			},
+			{
+				name: 'payment_amount',
+				type: 'string'
+			},
+			{
+				name: 'paying_entity',
+				type: 'string'
+			},
+			{
+				name: 'post_to_date',
+				type: 'date',
+				dateFormat: 'Y-m-d H:i:s'
+			},
+			{
+				name: 'check_number',
+				type: 'int'
+			}
+		],
+		proxy: {
+			type: 'direct',
+			api: {
+				read: 'Fees.getPaymentsBySearch'
+			},
+			reader: {
+				root: 'rows',
+				totalProperty: 'totals'
+			}
 		}
-	}
-}); 
+	});

@@ -1,0 +1,83 @@
+<?xml version ='1.0' encoding ='UTF-8' ?>
+
+<wsdl:definitions name="blueButtonRepository"
+                  targetNamespace="org.gaiaehr.soap"
+                  xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="org.gaiaehr.soap"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <wsdl:types>
+        <xs:schema elementFormDefault="unqualified"
+                   targetNamespace="org.gaiaehr.soap"
+                   version="1.0"
+                   xmlns:tns="org.gaiaehr.soap"
+                   xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+            <xs:element name="getDocumentResponse" type="tns:getDocumentResponse" />
+
+            <xs:complexType name="getDocumentResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="1" name="success" type="xs:boolean" />
+                    <xs:element minOccurs="0" name="document" type="xs:string" />
+                    <xs:element minOccurs="0" name="message" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:element name="getDocumentRequest" type="tns:getDocumentRequest" />
+            <xs:complexType name="getDocumentRequest">
+                <xs:sequence>
+                    <xs:element minOccurs="1" name="pid" type="xs:string" />
+                    <xs:element minOccurs="1" name="document" type="xs:string" />
+                    <xs:element minOccurs="0" name="site" type="xs:string" />
+                    <xs:element minOccurs="0" name="facility" type="xs:string" />
+                </xs:sequence>
+            </xs:complexType>
+
+        </xs:schema>
+    </wsdl:types>
+
+    <!-- MESSAGES -->
+
+    <wsdl:message name="getDocumentRequest">
+        <part name="parameters" element="tns:getDocumentRequest" />
+    </wsdl:message>
+
+    <wsdl:message name="getDocumentResponse">
+        <part name="parameters" element="tns:getDocumentResponse" />
+    </wsdl:message>
+
+    <!-- PORT TYPE -->
+
+    <wsdl:portType name="SimpleHello">
+        <wsdl:operation name='getDocument'>
+            <wsdl:input message='tns:getDocumentRequest' />
+            <wsdl:output message='tns:getDocumentResponse' />
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <!-- BINDINGS -->
+    <wsdl:binding name="SimpleHelloPortBinding" type="tns:SimpleHello">
+        <soap:binding style='rpc' transport='http://schemas.xmlsoap.org/soap/http' />
+
+        <wsdl:operation name='getDocument'>
+            <soap:operation soapAction='getDocument' />
+            <wsdl:input>
+                <soap:body use='literal' />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use='literal' />
+            </wsdl:output>
+        </wsdl:operation>
+
+    </wsdl:binding>
+    <!-- SERVICE -->
+    <wsdl:service name="SimpleHelloService">
+        <wsdl:port name="SimpleHelloPort" binding="tns:SimpleHelloPortBinding">
+            <soap:address location='http://localhost/gaiaehr/dataProvider/SOAP/Server.php' />
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

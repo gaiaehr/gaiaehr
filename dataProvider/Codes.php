@@ -1,7 +1,7 @@
 <?php
 /**
 GaiaEHR (Electronic Health Records)
-Copyright (C) 2013 Certun, inc.
+Copyright (C) 2013 Certun, LLC.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,11 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-$_SESSION['site']['flops'] = 0;
-
-include_once ($_SESSION['root'] . '/classes/Time.php');
-include_once ($_SESSION['root'] . '/classes/FileManager.php');
+include_once (ROOT . '/classes/Time.php');
+include_once (ROOT . '/classes/FileManager.php');
 
 class Codes
 {
@@ -758,7 +755,7 @@ class Codes
 
 	private function getCodeDir()
 	{
-		return $_SESSION['root'] . '/contrib/' . strtolower($this->codeType);
+		return ROOT . '/contrib/' . strtolower($this->codeType);
 	}
 
 	public function getCurrentCodesInfo()

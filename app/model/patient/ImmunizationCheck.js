@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,22 +18,18 @@
 
 Ext.define('App.model.patient.ImmunizationCheck', {
 	extend: 'Ext.data.Model',
-	table: {
-		name:'immunizationcheck',
-		comment:'Immunization Check'
-	},
 	fields: [
-        {name: 'id', type: 'int', comment: 'Immunization Check ID'},
-        {name: 'pid', type: 'int'},
-        {name: 'code', type: 'int'},
+		{name: 'id', type: 'int', comment: 'Immunization Check ID'},
+		{name: 'pid', type: 'int'},
+		{name: 'code', type: 'int'},
 		{name: 'vaccine_name', type: 'string'},
 		{name: 'alert', type: 'bool'}
 
 	],
-	proxy : {
+	proxy: {
 		type: 'direct',
-		api : {
-			read: Medical.getPatientImmunizations
+		api: {
+			read: 'Immunizations.getPatientImmunizations'
 		}
 	}
 });

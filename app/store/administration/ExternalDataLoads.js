@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,26 +17,23 @@
  */
 
 Ext.define('App.store.administration.ExternalDataLoads',
-{
-	model : 'App.model.administration.ExternalDataLoads',
-	extend : 'Ext.data.Store',
-	constructor : function(config)
 	{
-		var me = this;
-		me.proxy =
-		{
-			type : 'direct',
-			api :
+		model: 'App.model.administration.ExternalDataLoads',
+		extend: 'Ext.data.Store',
+		constructor: function(config){
+			var me = this;
+			me.proxy =
 			{
-				read : ExternalDataUpdate.getCodeFiles
-			},
-			extraParams :
-			{
-				codeType : config.codeType
-			}
-		};
-		me.callParent(arguments);
-	},
-	remoteSort : false,
-	autoLoad : false
-}); 
+				type: 'direct',
+				api: {
+					read: 'ExternalDataUpdate.getCodeFiles'
+				},
+				extraParams: {
+					codeType: config.codeType
+				}
+			};
+			me.callParent(arguments);
+		},
+		remoteSort: false,
+		autoLoad: false
+	});

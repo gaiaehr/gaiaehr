@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,132 +19,208 @@
 Ext.define('App.model.patient.Medications', {
 	extend: 'Ext.data.Model',
 	table: {
-		name:'patient_medications',
-		comment:'Patient Medications'
+		name: 'patient_medications',
+		comment: 'Patient Medications'
 	},
 	fields: [
-        {
-	        name: 'id',
-	        type: 'int',
-	        comment: 'Medications ID'
-        },
 		{
-			name: 'pid',
+			name: 'id',
 			type: 'int'
 		},
 		{
+			name: 'pid',
+			type: 'int',
+			index: true
+		},
+		{
 			name: 'eid',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'uid',
 			type: 'int'
 		},
 		{
-			name: 'prescription_id',
-			type: 'int'
+			name: 'ref_order',
+			type: 'string',
+			len: 100,
+			comment: 'reference order number'
 		},
 		{
 			name: 'STR',
-			type: 'string'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'CODE',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'RXCUI',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
-			name: 'ICDS',
-			type: 'string'
+			name: 'NDC',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'dxs',
+			type: 'array'
 		},
 		{
 			name: 'dose',
-			type: 'string'
-		},
-		{
-			name: 'take_pills',
-			type: 'int'
+			type: 'string',
+			len: 180
 		},
 		{
 			name: 'form',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'route',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
-			name: 'prescription_often',
-			type: 'string'
-		},
-		{
-			name: 'prescription_when',
+			name: 'directions',
 			type: 'string'
 		},
 		{
 			name: 'dispense',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
 			name: 'refill',
-			type: 'string'
+			type: 'string',
+			len: 80
 		},
 		{
-			name: 'date_ordered',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			name: 'potency_code',
+			type: 'string',
+			len: 10
 		},
 		{
-			name: 'create_date',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			name: 'days_supply',
+			type: 'int',
+			useNull: true
 		},
 		{
-			name: 'begin_date',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
+			name: 'daw',
+			type: 'bool',
+			useNull: true,
+			comment: 'Dispensed As Written'
 		},
 		{
-			name: 'end_date',
-			type:'date',
-			dateFormat:'Y-m-d H:i:s'
-		},
-
-		{
-			name: 'outcome',
-			type: 'string'
+			name: 'notes',
+			type: 'string',
+			len: 210
 		},
 		{
-			name: 'ocurrence',
-			type: 'string'
+			name: 'system_notes',
+			type: 'string',
+			len: 210
+		},
+		{
+			name: 'is_compound',
+			type: 'bool'
+		},
+		{
+			name: 'is_supply',
+			type: 'bool'
+		},
+		{
+			name: 'prescription_id',
+			type: 'int'
 		},
 		{
 			name: 'referred_by',
-			type: 'string'
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'administered_uid',
+			type: 'int'
+		},
+		{
+			name: 'administered_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'administered_by',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return record.data.title + ' ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
+			}
+		},
+		{
+			name: 'title',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'fname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'mname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'lname',
+			type: 'string',
+			store: false
+		},
+		{
+			name: 'date_ordered',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'begin_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
+		},
+		{
+			name: 'end_date',
+			type: 'date',
+			dataType: 'date',
+			dateFormat: 'Y-m-d'
 		},
 		{
 			name: 'active',
 			type: 'bool',
 			store: false,
 			convert: function(v, record){
-				return record.data.end_date == null;
+				return record.data.end_date === null;
 			}
-		}
-
-
-	],
-	proxy : {
-		type: 'direct',
-		api : {
-			read  : Medical.getPatientMedications,
-			create: Medical.addPatientMedications,
-			update: Medical.updatePatientMedications,
-			destroy: Medical.deletePatientMedications
 		},
-		remoteGroup:false
+		{
+			name: 'created_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Medications.getPatientMedications',
+			create: 'Medications.addPatientMedication',
+			update: 'Medications.updatePatientMedication',
+			destroy: 'Medications.destroyPatientMedication'
+		},
+		remoteGroup: false
 	}
 });
 

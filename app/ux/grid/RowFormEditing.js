@@ -1,17 +1,17 @@
 /*
 
-This file is part of Ext JS 4
+ This file is part of Ext JS 4
 
-Copyright (c) 2011 Sencha Inc
+ Copyright (c) 2011 Sencha Inc
 
-Contact:  http://www.sencha.com/contact
+ Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+ GNU General Public License Usage
+ This file may be used under the terms of the GNU General Public License version 3.0 as published by the Free Software Foundation and appearing in the file LICENSE included in the packaging of this file.  Please review the following information to ensure the GNU General Public License version 3.0 requirements will be met: http://www.gnu.org/copyleft/gpl.html.
 
-If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+ If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
 
-*/
+ */
 /**
  * The Ext.grid.plugin.RowEditing plugin injects editing at a row level for a Grid. When editing begins,
  * a small floating dialog will be shown for the appropriate row. Each editable column will show a field
@@ -63,100 +63,106 @@ If you are unsure which license is appropriate for your use, please contact the 
  *     });
  */
 Ext.define('App.ux.grid.RowFormEditing', {
-    extend: 'Ext.grid.plugin.Editing',
-    alias: 'plugin.rowformediting',
+	extend: 'Ext.grid.plugin.Editing',
+	alias: 'plugin.rowformediting',
+	requires: [
+		'App.ux.grid.RowFormEditor'
+	],
 
-    requires: [
-        'App.ux.grid.RowFormEditor'
-    ],
+	lockableScope: 'top',
 
-    editStyle: 'row',
+	editStyle: 'row',
 
-	enableRemove:false,
+	enableRemove: false,
+	enableAddBtn: false,
+	addBtnText: 'Add',
+	addBtnIconCls: null,
+	toolbarDock: 'top',
 
+	fieldDefaults: {},
 
-	saveBtnEnabled:false,
-    /**
-     * @cfg {Boolean} autoSync
-     * True to automatically Sync any pending changes during complete edit method.
-     * False to force the user to explicitly sync all pending changes. Defaults to true.
-     */
-    autoSync: true,
-    /**
-     * @cfg {Boolean} autoCancel
-     * True to automatically cancel any pending changes when the row editor begins editing a new row.
-     * False to force the user to explicitly cancel the pending changes. Defaults to true.
-     */
-    autoCancel: true,
+	saveBtnEnabled: false,
+	/**
+	 * @cfg {Boolean} autoSync
+	 * True to automatically Sync any pending changes during complete edit method.
+	 * False to force the user to explicitly sync all pending changes. Defaults to true.
+	 */
+	autoSync: true,
+	/**
+	 * @cfg {Boolean} autoCancel
+	 * True to automatically cancel any pending changes when the row editor begins editing a new row.
+	 * False to force the user to explicitly cancel the pending changes. Defaults to true.
+	 */
+	autoCancel: true,
 
-    /**
-     * @cfg {Number} clicksToMoveEditor
-     * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
-     * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
-     */
+	/**
+	 * @cfg {Number} clicksToMoveEditor
+	 * The number of clicks to move the row editor to a new row while it is visible and actively editing another row.
+	 * This will default to the same value as {@link Ext.grid.plugin.Editing#clicksToEdit clicksToEdit}.
+	 */
 
-    /**
-     * @cfg {Boolean} errorSummary
-     * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
-     * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
-     */
-    errorSummary: true,
+	/**
+	 * @cfg {Boolean} errorSummary
+	 * True to show a {@link Ext.tip.ToolTip tooltip} that summarizes all validation errors present
+	 * in the row editor. Set to false to prevent the tooltip from showing. Defaults to true.
+	 */
+	errorSummary: false,
 
-    /**
-     * @event beforeedit
-     * Fires before row editing is triggered.
-     *
-     * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event with the following properties:
-     *
-     * - grid - The grid this editor is on
-     * - view - The grid view
-     * - store - The grid store
-     * - record - The record being edited
-     * - row - The grid table row
-     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-     * - rowIdx - The row index that is being edited
-     * - colIdx - The column index that initiated the edit
-     * - cancel - Set this to true to cancel the edit or return false from your handler.
-     */
-    
-    /**
-     * @event canceledit
-     * Fires when the user has started editing a row but then cancelled the edit
-     * @param {Object} grid The grid
-     */
-    
-    /**
-     * @event edit
-     * Fires after a row is edited. Usage example:
-     *
-     *     grid.on('edit', function(editor, e) {
+	/**
+	 * @event beforeedit
+	 * Fires before row editing is triggered.
+	 *
+	 * @param {Ext.grid.plugin.Editing} editor
+	 * @param {Object} e An edit event with the following properties:
+	 *
+	 * - grid - The grid this editor is on
+	 * - view - The grid view
+	 * - store - The grid store
+	 * - record - The record being edited
+	 * - row - The grid table row
+	 * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+	 * - rowIdx - The row index that is being edited
+	 * - colIdx - The column index that initiated the edit
+	 * - cancel - Set this to true to cancel the edit or return false from your handler.
+	 */
+
+	/**
+	 * @event canceledit
+	 * Fires when the user has started editing a row but then cancelled the edit
+	 * @param {Object} grid The grid
+	 */
+
+	/**
+	 * @event edit
+	 * Fires after a row is edited. Usage example:
+	 *
+	 *     grid.on('edit', function(editor, e) {
      *         // commit the changes right after editing finished
      *         e.record.commit();
      *     };
-     *
-     * @param {Ext.grid.plugin.Editing} editor
-     * @param {Object} e An edit event with the following properties:
-     *
-     * - grid - The grid this editor is on
-     * - view - The grid view
-     * - store - The grid store
-     * - record - The record being edited
-     * - row - The grid table row
-     * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-     * - rowIdx - The row index that is being edited
-     * - colIdx - The column index that initiated the edit
-     */
-    /**
-     * @event validateedit
-     * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
-     * edit event object has the following properties
-     *
-     * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
-     * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
-     * and then setting the field's new value in the Record directly:
-     *
-     *     grid.on('validateedit', function(editor, e) {
+	 *
+	 * @param {Ext.grid.plugin.Editing} editor
+	 * @param {Object} e An edit event with the following properties:
+	 *
+	 * - grid - The grid this editor is on
+	 * - view - The grid view
+	 * - store - The grid store
+	 * - record - The record being edited
+	 * - row - The grid table row
+	 * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
+	 * - rowIdx - The row index that is being edited
+	 * - colIdx - The column index that initiated the edit
+	 */
+	/**
+	 * @event validateedit
+	 * Fires after a cell is edited, but before the value is set in the record. Return false to cancel the change. The
+	 * edit event object has the following properties
+	 *
+	 * Usage example showing how to remove the red triangle (dirty record indicator) from some records (not all). By
+	 * observing the grid's validateedit event, it can be cancelled if the edit occurs on a targeted row (for example)
+	 * and then setting the field's new value in the Record directly:
+	 *
+	 *     grid.on('validateedit', function(editor, e) {
      *       var myTargetRow = 6;
      *
      *       if (e.rowIdx == myTargetRow) {
@@ -169,277 +175,249 @@ Ext.define('App.ux.grid.RowFormEditing', {
      * - record - The record being edited
      * - row - The grid table row
      * - column - The grid {@link Ext.grid.column.Column Column} defining the column that initiated the edit
-     * - rowIdx - The row index that is being edited
-     * - colIdx - The column index that initiated the edit
-     * - cancel - Set this to true to cancel the edit or return false from your handler.
-     */
+	 * - rowIdx - The row index that is being edited
+	 * - colIdx - The column index that initiated the edit
+	 * - cancel - Set this to true to cancel the edit or return false from your handler.
+	 */
 
-    constructor: function() {
-        var me = this;
-        me.callParent(arguments);
+	constructor: function(){
+		var me = this;
+		me.callParent(arguments);
 
-        if (!me.clicksToMoveEditor) {
-            me.clicksToMoveEditor = me.clicksToEdit;
-        }
+		if(!me.clicksToMoveEditor){
+			me.clicksToMoveEditor = me.clicksToEdit;
+		}
 
-        me.autoCancel = !!me.autoCancel;
-    },
+		me.autoCancel = !!me.autoCancel;
+	},
 
-    init: function(grid) {
-        this.callParent([grid]);
-    },
+	init: function(grid){
+		var me = this;
+		me.callParent(arguments);
 
-    /**
-     * @private
-     * AbstractComponent calls destroy on all its plugins at destroy time.
-     */
-    destroy: function() {
-        var me = this;
-        Ext.destroy(me.editor);
-        me.callParent(arguments);
-    },
+		if(me.enableAddBtn){
+			var t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
+				grid.addDocked({ xtype: 'toolbar', dock: me.toolbarDock })[0];
 
-    /**
-     * Starts editing the specified record, using the specified Column definition to define which field is being edited.
-     * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
-     */
-    startEdit: function(record) {
-        var me = this,
-            editor = me.getEditor();
-	    if (me.callParent(arguments) === false) {
-            return false;
-        }
+			t.add({
+				xtype: 'button',
+				text: me.addBtnText,
+				iconCls: me.addBtnIconCls,
+				handler: me.doAddRecord,
+				scope: me
+			});
 
-        // Fire off our editor
-        if (editor.beforeEdit() !== false) {
-            editor.startEdit(me.context.record);
-        }
-	    return true;
-    },
+		}
 
-    // private
-    cancelEdit: function() {
-        var me = this;
+		me.grid.on('beforeselect', me.editHandler, me);
+		me.grid.on('beforecellclick', me.editHandler, me);
+		me.grid.on('beforecelldblclick', me.editHandler, me);
+		me.grid.on('beforecellmousedown', me.editHandler, me);
+	},
 
-        if (me.editing) {
-            me.getEditor().cancelEdit();
-            me.callParent(arguments);
-            
-            me.fireEvent('canceledit', me.context);
-        }
-    },
+	editHandler: function(){
+		return !this.editing;
+	},
 
-    // private
-    completeEdit: function() {
-        var me = this;
+	doAddRecord: function(){
+		var me = this,
+			grid = me.grid,
+			store = grid.store;
 
-        if (me.editing && me.validateEdit()) {
-            me.editing = false;
-            me.fireEvent('edit', me, me.context);
-        }
-    },
+		me.cancelEdit();
+		store.insert(0, {});
+		me.startEdit(0, 0);
 
-    completeRemove:function(){
-        var me = this;
+	},
 
-        if (me.editing) {
-            me.getEditor().completeRemove();
-            me.fireEvent('completeremove', me, me.context);
-        }
+	//    init: function(grid) {
+	//        this.callParent([grid]);
+	//    },
 
-    },
+	/**
+	 * @private
+	 * AbstractComponent calls destroy on all its plugins at destroy time.
+	 */
+	destroy: function(){
+		var me = this;
+		Ext.destroy(me.editor);
+		me.callParent(arguments);
+	},
 
-    // private
-    validateEdit: function() {
-        var me             = this,
-            editor         = me.editor,
-            context        = me.context,
-            record         = context.record,
-            newValues      = {},
-            originalValues = {},
-            editors        = editor.getForm().getFields().items,
-            e,
-            eLen           = editors.length,
-            name, item;
+	/**
+	 * Starts editing the specified record, using the specified Column definition to define which field is being edited.
+	 * @param {Ext.data.Model} record The Store data record which backs the row to be edited.
+	 * @param {Ext.data.Model} columnHeader The Column object defining the column to be edited.
+	 * @return {Boolean} `true` if editing was started, `false` otherwise.
+	 */
+	startEdit: function(record, columnHeader){
+		var me = this,
+			editor = me.getEditor(),
+			context;
 
-        for (e = 0; e < eLen; e++) {
-            item = editors[e];
-            name = item.name;
+		if(editor.beforeEdit() !== false){
+			context = me.callParent(arguments);
+			if(context){
+				me.context = context;
 
-            newValues[name]      = item.getValue();
-            originalValues[name] = record.get(name);
-        }
+				// If editing one side of a lockable grid, cancel any edit on the other side.
+				if(me.lockingPartner){
+					me.lockingPartner.cancelEdit();
+				}
+				editor.startEdit(context.record, context.column, context);
+				return true;
+			}
+		}
+		return false;
+	},
 
-        Ext.apply(context, {
-            newValues      : newValues,
-            originalValues : originalValues
-        });
+	// private
+	cancelEdit: function(){
+		var me = this;
 
-        return me.callParent(arguments) && me.getEditor().completeEdit();
-    },
+		if(me.editing){
+			me.getEditor().cancelEdit();
+			me.callParent(arguments);
 
-    // private
-    getEditor: function() {
-        var me = this;
-        if (!me.editor) {
-            me.editor = me.initEditor();
-        }
-        return me.editor;
-    },
+			if(me.autoCancel) me.view.store.rejectChanges();
 
-    // private
-    initEditor: function() {
-	    if(this.view.el){
-		    var me       = this,
-			    grid     = me.grid,
-			    view     = me.view,
-			    headerCt = grid.headerCt,
-			    btns     = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
-			    b,
-			    bLen     = btns.length,
-			    cfg      = {
-				    autoCancel: me.autoCancel,
-				    errorSummary: me.errorSummary,
-				    saveBtnEnabled: me.disableValidation,
-				    fields: headerCt.getGridColumns(),
-				    hidden: true,
+			me.fireEvent('canceledit', me.context);
+			return;
+		}
+		// If we aren't editing, return true to allow the event to bubble
+		return true;
+	},
 
-				    // keep a reference..
-				    editingPlugin: me,
-				    renderTo: view.el
-			    },
-			    item;
+	// private
+	completeEdit: function(){
+		var me = this;
 
-		    for (b = 0; b < bLen; b++) {
-			    item = btns[b];
+		if(me.editing && me.validateEdit()){
+			me.editing = false;
+			me.fireEvent('edit', me, me.context);
+		}
+	},
 
-			    if (Ext.isDefined(me[item])) {
-				    cfg[item] = me[item];
-			    }
-		    }
+	completeRemove: function(){
+		var me = this;
 
-		    return Ext.create('App.ux.grid.RowFormEditor', cfg);
-	    }
+		if(me.editing){
+			me.getEditor().completeRemove();
+			me.fireEvent('completeremove', me, me.context);
+		}
 
-    },
+	},
 
-    // private
-    initEditTriggers: function() {
-        var me = this,
-            moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
+	// private
+	validateEdit: function(){
+		var me = this,
+			editor = me.editor,
+			context = me.context,
+			record = context.record,
+			originalValues = {},
+			newValues = editor.getForm().getValues();
 
-        me.callParent(arguments);
 
-        if (me.clicksToMoveEditor !== me.clicksToEdit) {
-            me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
-        }
-    },
+		Ext.Object.each(newValues, function(key){
+			originalValues[key] = record.get(key);
+		});
 
-    addHeaderEvents: function(){
-        var me = this;
-        me.callParent();
+		Ext.apply(context, {
+			newValues: newValues,
+			originalValues: originalValues
+		});
 
-        me.mon(me.grid.headerCt, {
-            scope: me,
-            columnresize: me.onColumnResize,
-            columnhide: me.onColumnHide,
-            columnshow: me.onColumnShow,
-            columnmove: me.onColumnMove
-        });
-    },
+		return me.fireEvent('validateedit', me, context) !== false && !context.cancel && me.getEditor().completeEdit();
+	},
 
-    startEditByClick: function() {
-        var me = this;
-        if (!me.editing || me.clicksToMoveEditor === me.clicksToEdit) {
-            me.callParent(arguments);
-        }
-    },
+	// private
+	getEditor: function(){
+		var me = this;
 
-    moveEditorByClick: function() {
-        var me = this;
-        if (me.editing) {
-            me.superclass.onCellClick.apply(me, arguments);
-        }
-    },
+		if(!me.editor){
+			me.editor = me.initEditor();
+		}
+		return me.editor;
+	},
 
-    // private
-    onColumnAdd: function(ct, column) {
-        if (column.isHeader) {
-            var me = this,
-                editor;
+	// @private
+	initEditor: function(){
+		return new App.ux.grid.RowFormEditor(this.initEditorConfig());
+	},
 
-            me.initFieldAccessors(column);
-            editor = me.getEditor();
+	initEditorConfig: function(){
+		var me = this,
+			grid = me.grid,
+			view = me.view,
+			headerCt = grid.headerCt,
+			btns = ['saveBtnText', 'cancelBtnText', 'errorsText', 'dirtyText'],
+			b,
+			bLen = btns.length,
+			cfg = {
+				autoCancel: me.autoCancel,
+				errorSummary: me.errorSummary,
+				saveBtnEnabled: me.disableValidation,
+				fields: headerCt.getGridColumns(),
+				hidden: true,
+				view: view,
+				// keep a reference..
+				editingPlugin: me,
+				renderTo: view.el
+			},
+			item;
 
-            if (editor && editor.onColumnAdd) {
-                editor.onColumnAdd(column);
-            }
-        }
-    },
+		for(b = 0; b < bLen; b++){
+			item = btns[b];
 
-    // private
-    onColumnRemove: function(ct, column) {
-        if (column.isHeader) {
-            var me = this,
-                editor = me.getEditor();
+			if(Ext.isDefined(me[item])){
+				cfg[item] = me[item];
+			}
+		}
+		return cfg;
+	},
 
-            if (editor && editor.onColumnRemove) {
-                editor.onColumnRemove(column);
-            }
-            me.removeFieldAccessors(column);
-        }
-    },
+	// private
+	initEditTriggers: function(){
+		var me = this,
+			view = me.view,
+			moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
 
-    // private
-    onColumnResize: function(ct, column, width) {
-        if (column.isHeader) {
-            var me = this,
-                editor = me.getEditor();
+		me.callParent(arguments);
 
-            if (editor && editor.onColumnResize) {
-                editor.onColumnResize(column, width);
-            }
-        }
-    },
+		if(me.clicksToMoveEditor !== me.clicksToEdit){
+			me.mon(me.view, 'cell' + moveEditorEvent, me.moveEditorByClick, me);
+		}
+	},
 
-    // private
-    onColumnHide: function(ct, column) {
-        // no isHeader check here since its already a columnhide event.
-        var me = this,
-            editor = me.getEditor();
+	startEditByClick: function(){
+		var me = this;
+		if(!me.editing || me.clicksToMoveEditor === me.clicksToEdit){
+			me.callParent(arguments);
+		}
+	},
 
-        if (editor && editor.onColumnHide) {
-            editor.onColumnHide(column);
-        }
-    },
+	moveEditorByClick: function(){
+		var me = this;
+		if(me.editing){
+			me.superclass.onCellClick.apply(me, arguments);
+		}
+	},
 
-    // private
-    onColumnShow: function(ct, column) {
-        // no isHeader check here since its already a columnshow event.
-        var me = this,
-            editor = me.getEditor();
+	onCellClick: function(view, cell, colIdx, record, row, rowIdx, e){
+		var me = this;
 
-        if (editor && editor.onColumnShow) {
-            editor.onColumnShow(column);
-        }
-    },
+		if(me.autoCancel){
+			me.view.store.rejectChanges();
+			if(me.editor) me.editor.rejectChildStoresChanges();
+		}
+		me.callParent(arguments);
+	},
 
-    // private
-    onColumnMove: function(ct, column, fromIdx, toIdx) {
-        // no isHeader check here since its already a columnmove event.
-        var me = this,
-            editor = me.getEditor();
-
-        if (editor && editor.onColumnMove) {
-            editor.onColumnMove(column, fromIdx, toIdx);
-        }
-    },
-
-    // private
-    setColumnField: function(column, field) {
-        var me = this;
-        me.callParent(arguments);
-        me.getEditor().setField(column.field, column);
-    }
+	// private
+	setColumnField: function(column, field){
+		var me = this;
+		editor.removeField(column);
+		me.callParent(arguments);
+		me.getEditor().setField(column.field, column);
+	}
 });
-

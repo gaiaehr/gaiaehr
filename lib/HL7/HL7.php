@@ -1,7 +1,7 @@
 <?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class HL7 {
 	 */
 	function getSendingApplication(){
 		$seg = $this->getSegment('MSH');
-		if(isset($seg->data)) return $seg->data[3][1];
+		if(isset($seg->data)) return $seg->data[3][1] != '' ? $seg->data[3][1] : $seg->data[3][2];
 		return null;
 	}
 
@@ -54,7 +54,7 @@ class HL7 {
 	 */
 	function getSendingFacility(){
 		$seg = $this->getSegment('MSH');
-		if(isset($seg->data)) return $seg->data[4][1];
+		if(isset($seg->data)) return $seg->data[4][1] != '' ? $seg->data[4][1] : $seg->data[4][2];
 		return null;
 	}
 
@@ -149,7 +149,7 @@ class HL7 {
 	function addSegment($segment){
 		try{
 			if(!class_exists($segment)){
-				include_once(str_replace('\\', '/',__DIR__)."/segments/$segment.php");
+				include_once(dirname(__FILE__)."/segments/$segment.php");
 			}
 			$this->segments[] = new $segment($this);
 			return end($this->segments);
@@ -198,8 +198,12 @@ class HL7 {
 	 * @return Message
 	 */
 	function readMessage($msg){
+		$msg = trim($msg);
+		$segments = explode(chr(0x0d), $msg);
 
-		$segments = explode(PHP_EOL, $msg);
+		if(count($segments) < 2){
+			$segments = preg_split("/\n/", $msg);
+		}
 
 		foreach($segments AS $segment){
 			$this->readSegment($segment);
@@ -209,7 +213,9 @@ class HL7 {
 		if(strlen($type) !== 3) return false;
 
 		if(!class_exists($type)){
-			include_once (str_replace('\\', '/',__DIR__)."/messages/$type.php");
+			$file = dirname(__FILE__)."/messages/$type.php";
+			if(!file_exists($file)) return false;
+			include_once ($file);
 		}
 
 		$this->message = new $type($this);
@@ -226,13 +232,15 @@ class HL7 {
 	 * @return string|Segments
 	 */
 	function readSegment($segment){
-		$seg = substr($segment, 0, 3);
+		$seg = substr(trim($segment), 0, 3);
 
 		if(strlen($seg) !== 3) return false;
 
 		if($seg != ''){
 			if(!class_exists($seg)){
-				include_once (str_replace('\\', '/',__DIR__)."/segments/$seg.php");
+				$file = dirname(__FILE__)."/segments/$seg.php";
+				if(!file_exists($file)) return false;
+				include_once ($file);
 			}
 			$this->segments[] = new $seg($this);
 			end($this->segments)->parse($segment);
@@ -241,33 +249,32 @@ class HL7 {
 	}
 
 	function time($time, $format = 'Y-m-d H:i:s'){
-		$foo = explode('-',$time);
-		$time = $foo[0];
+
 		switch(strlen($time)){
 			case 4:
-				$rawFormat = 'Y';
+				$time = preg_replace('/^([0-9]{4})$/', '$1-01-01 00:00:00', $time);
 				break;
 			case 6:
-				$rawFormat = 'Ym';
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})$/', '$1-$2-01 00:00:00', $time);
 				break;
 			case 8:
-				$rawFormat = 'Ymd';
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 00:00:00', $time);
 				break;
 			case 10:
-				$rawFormat = 'YmdH';
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:00:00', $time);
 				break;
 			case 12:
-				$rawFormat = 'YmdHi';
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:00', $time);
 				break;
-			default:
-				$rawFormat = 'YmdHis';
+			case 14:
+				$time = preg_replace('/^([0-9]{4})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})([0-9]{2})$/', '$1-$2-$3 $4:$5:$6', $time);
 				break;
 		}
-
-		$foo = date_create_from_format($rawFormat, $time);
-		if($foo !== false) return date_format(date_create_from_format($rawFormat, $time), $format);
-		return null;
-
+		if($time == '' || $format == 'Y-m-d H:i:s'){
+			return $time;
+		}else{
+			return date($format, strtotime($time));
+		}
 	}
 
 	/**

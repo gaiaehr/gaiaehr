@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,26 +17,56 @@
  */
 
 Ext.define('App.model.administration.Modules', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'modules',
-        comment:'Modules'
-    },
-    fields: [
-        { name: 'id', type: 'int', comment: 'Modules ID'},
-        { name: 'title', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'description', type: 'string' },
-        { name: 'enable', type: 'bool' },
-        { name: 'installed_version', type: 'string' },
-        { name: 'licensekey', type: 'string' },
-        { name: 'localkey', type: 'string' }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: Modules.getActiveModules,
-            update: Modules.updateModule
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'modules',
+		comment: 'Modules'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'name',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'description',
+			type: 'string'
+		},
+		{
+			name: 'enable',
+			type: 'bool'
+		},
+		{
+			name: 'installed_version',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'licensekey',
+			type: 'string'
+		},
+		{
+			name: 'localkey',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Modules.getActiveModules',
+			update: 'Modules.updateModule'
+		},
+		writer: {
+			writeAllFields: true
+		}
+	}
 });

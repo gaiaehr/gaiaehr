@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 Ext.define('App.view.administration.Encryption', {
 	extend:'App.ux.RenderPanel',
-	pageTitle:i18n('encryption'),
+	pageTitle:_('encryption'),
 	initComponent:function(){
 		var me = this;
 
@@ -33,7 +33,7 @@ Ext.define('App.view.administration.Encryption', {
 
 		me.pageTBar = [
 			{
-				text:i18n('encrypt'),
+				text:_('encrypt'),
 				enableToggle:true,
 				toggleGroup:'encryption',
 				scope:me,
@@ -41,7 +41,7 @@ Ext.define('App.view.administration.Encryption', {
 			},
 			'-',
 			{
-				text:i18n('decrypt'),
+				text:_('decrypt'),
 				enableToggle:true,
 				toggleGroup:'encryption',
 				scope:me,

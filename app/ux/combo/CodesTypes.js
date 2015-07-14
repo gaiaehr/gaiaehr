@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 Ext.define('App.ux.combo.CodesTypes', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.codestypescombo',
-	initComponent: function() {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.mitos.codestypescombo',
+	initComponent: function(){
 		var me = this;
 
 		Ext.define('CodesTypesModel', {
@@ -27,10 +27,10 @@ Ext.define('App.ux.combo.CodesTypes', {
 				{name: 'option_name', type: 'string' },
 				{name: 'option_value', type: 'string' }
 			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
+			proxy: {
+				type: 'direct',
+				api: {
+					read: 'CombosData.getOptionsByListId'
 				},
 				extraParams: {
 					list_id: 56
@@ -39,17 +39,17 @@ Ext.define('App.ux.combo.CodesTypes', {
 		});
 
 		me.store = Ext.create('Ext.data.Store', {
-			model   : 'CodesTypesModel',
+			model: 'CodesTypesModel',
 			autoLoad: true
 		});
 
 		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			valueField  : 'option_value',
+			editable: false,
+			queryMode: 'local',
+			valueField: 'option_value',
 			displayField: 'option_name',
-			emptyText   : i18n('select'),
-			store       : me.store
+			emptyText: _('select'),
+			store: me.store
 		}, null);
 		me.callParent(arguments);
 	}

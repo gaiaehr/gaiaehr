@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -17,19 +17,40 @@
  */
 
 Ext.define('App.model.administration.FormsList', {
-    extend: 'Ext.data.Model',
-    table: {
-        name:'formslist',
-        comment:'Form List'
-    },
-    fields: [
-        { name: 'id', type: 'string' },
-        { name: 'name', type: 'string' }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: FormLayoutBuilder.getForms
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'forms_layout',
+		comment: 'Form List'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'name',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'form_data',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'model',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'active',
+			type: 'bool'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'FormLayoutBuilder.getForms'
+		}
+	}
 });

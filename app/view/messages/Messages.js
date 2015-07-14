@@ -1,6 +1,6 @@
 /**
  GaiaEHR (Electronic Health Records)
- Copyright (C) 2013 Certun, inc.
+ Copyright (C) 2013 Certun, LLC.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -16,23 +16,20 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.messages.Messages',
-{
-	extend : 'App.ux.RenderPanel',
-	id : 'panelMessages',
-	pageTitle : i18n('messages') + ' (' + i18n('inbox') + ')',
-	pageLayout : 'border',
-	defaults :
-	{
-		split : true
+Ext.define('App.view.messages.Messages', {
+	extend: 'App.ux.RenderPanel',
+	id: 'panelMessages',
+	pageTitle: _('messages') + ' (' + _('inbox') + ')',
+	pageLayout: 'border',
+	defaults: {
+		split: true
 	},
-	uses : [
-        'App.ux.LivePatientSearch',
-        'App.ux.combo.MsgStatus',
-        'App.ux.combo.MsgNoteType',
-        'App.ux.combo.Users'],
-	initComponent : function()
-	{
+	uses: [
+		'App.ux.LivePatientSearch',
+		'App.ux.combo.MsgStatus',
+		'App.ux.combo.MsgNoteType',
+		'App.ux.combo.Users'],
+	initComponent: function(){
 
 		var me = this;
 
@@ -44,271 +41,271 @@ Ext.define('App.view.messages.Messages',
 		/**
 		 * Message GridPanel
 		 */
-		me.msgGrid = Ext.create('Ext.grid.Panel',
-		{
-			store : me.storeMsgs,
-			region : 'center',
-			border : true,
-			viewConfig :
-			{
-				forceFit : true,
-				stripeRows : true
+		me.msgGrid = Ext.create('Ext.grid.Panel', {
+			store: me.storeMsgs,
+			region: 'center',
+			border: true,
+			viewConfig: {
+				forceFit: true,
+				stripeRows: true
 			},
-			listeners :
-			{
-				scope : this,
-				itemclick : this.onItemClick
+			listeners: {
+				scope: this,
+				itemclick: this.onItemClick
 			},
-			columns : [
-			{
-				header : i18n('status'),
-				sortable : true,
-				dataIndex : 'message_status',
-				width : 70
-			},
-			{
-				header : i18n('from'),
-				sortable : true,
-				dataIndex : 'from_user',
-				width : 200
-			},
-			{
-				header : i18n('to'),
-				sortable : true,
-				dataIndex : 'to_user',
-				width : 200
-			},
-			{
-				header : i18n('patient'),
-				sortable : true,
-				dataIndex : 'patient_name',
-				width : 200
-			},
-			{
-				header : i18n('subject'),
-				sortable : true,
-				dataIndex : 'subject',
-				flex : 1
-			},
-			{
-				header : i18n('type'),
-				sortable : true,
-				dataIndex : 'note_type',
-				width : 100
-			}],
-			tbar : Ext.create('Ext.PagingToolbar',
-			{
-				store : me.storeMsgs,
-				displayInfo : true,
-				emptyMsg : i18n('no_office_notes_to_display'),
-				plugins : Ext.create('Ext.ux.SlidingPager',
+			columns: [
 				{
+					header: _('status'),
+					sortable: true,
+					dataIndex: 'message_status',
+					width: 70
+				},
+				{
+					header: _('from'),
+					sortable: true,
+					dataIndex: 'from_user',
+					width: 200
+				},
+				{
+					header: _('to'),
+					sortable: true,
+					dataIndex: 'to_user',
+					width: 200
+				},
+				{
+					header: _('patient'),
+					sortable: true,
+					dataIndex: 'patient_name',
+					width: 200
+				},
+				{
+					header: _('subject'),
+					sortable: true,
+					dataIndex: 'subject',
+					flex: 1
+				},
+				{
+					header: _('type'),
+					sortable: true,
+					dataIndex: 'note_type',
+					width: 100
+				}
+			],
+			tbar: Ext.create('Ext.PagingToolbar',
+				{
+					store: me.storeMsgs,
+					displayInfo: true,
+					emptyMsg: _('no_office_notes_to_display'),
+					plugins: Ext.create('Ext.ux.SlidingPager',
+						{
+						}),
+					items: ['-',
+						{
+							text: _('delete'),
+							cls: 'winDelete',
+							iconCls: 'delete',
+							itemId: 'deleteMsg',
+							disabled: true,
+							scope: me,
+							handler: me.onDelete
+						}, '-',
+						{
+							text: _('inbox'),
+							action: 'inbox',
+							enableToggle: true,
+							toggleGroup: 'message',
+							pressed: true,
+							scope: me,
+							handler: me.messagesType
+						}, '-',
+						{
+							text: _('sent'),
+							action: 'sent',
+							enableToggle: true,
+							toggleGroup: 'message',
+							scope: me,
+							handler: me.messagesType
+						}, '-',
+						{
+							text: _('trash'),
+							action: 'trash',
+							enableToggle: true,
+							toggleGroup: 'message',
+							scope: me,
+							handler: me.messagesType
+						}, '-']
 				}),
-				items : ['-',
+			bbar: [
 				{
-					text : i18n('delete'),
-					cls : 'winDelete',
-					iconCls : 'delete',
-					itemId : 'deleteMsg',
-					disabled : true,
-					scope : me,
-					handler : me.onDelete
-				}, '-',
+					text: _('new_message'),
+					iconCls: 'newMessage',
+					itemId: 'newMsg',
+					handler: function(){
+						me.onNewMessage();
+					}
+				},
+				'-',
 				{
-					text : i18n('inbox'),
-					action : 'inbox',
-					enableToggle : true,
-					toggleGroup : 'message',
-					pressed : true,
-					scope : me,
-					handler : me.messagesType
-				}, '-',
-				{
-					text : i18n('sent'),
-					action : 'sent',
-					enableToggle : true,
-					toggleGroup : 'message',
-					scope : me,
-					handler : me.messagesType
-				}, '-',
-				{
-					text : i18n('trash'),
-					action : 'trash',
-					enableToggle : true,
-					toggleGroup : 'message',
-					scope : me,
-					handler : me.messagesType
-				}, '-']
-			}),
-			bbar : [
-			{
-				text : i18n('new_message'),
-				iconCls : 'newMessage',
-				itemId : 'newMsg',
-				handler : function()
-				{
-					me.onNewMessage();
-				}
-			}, '-',
-			{
-				text : i18n('reply'),
-				iconCls : 'edit',
-				itemId : 'replyMsg',
-				disabled : true,
-				handler : function()
-				{
-					me.action('reply');
-				}
-			}, '-']
+					text: _('reply'),
+					iconCls: 'edit',
+					itemId: 'replyMsg',
+					disabled: true,
+					handler: function(){
+						me.action('reply');
+					}
+				},
+				'-'
+			]
 		});
 		/**
 		 * Form to send and replay messages
 		 */
-		me.msgForm = Ext.create('Ext.form.Panel',
-		{
-			region : 'south',
-			height : 340,
-			cls : 'msgForm',
-			layout :
-			{
-				type : 'vbox',
-				align : 'stretch'
+		me.msgForm = Ext.create('Ext.form.Panel', {
+			region: 'south',
+			height: 340,
+			cls: 'msgForm',
+			layout: {
+				type: 'vbox',
+				align: 'stretch'
 			},
-			fieldDefaults :
-			{
-				labelWidth : 60,
-				margin : 5,
-				anchor : '100%'
+			fieldDefaults: {
+				labelWidth: 60,
+				margin: 5,
+				anchor: '100%'
 			},
-			items : [
-			{
-				xtype : 'container',
-				height : 95,
-				cls : 'message-form-header',
-				padding : '5 0',
-				layout : 'anchor',
-				items : [
+			items: [
 				{
-					xtype : 'container',
-					layout : 'column',
-					items : [
-					{
-						xtype : 'container',
-						layout : 'anchor',
-						columnWidth : '.50',
-						items : [
+					xtype: 'container',
+					height: 95,
+					cls: 'message-form-header',
+					padding: '5 0',
+					layout: 'anchor',
+					items: [
 						{
-							xtype : 'patienlivetsearch',
-							fieldLabel : i18n('patient'),
-							emptyText : i18n('no_patient_selected'),
-							itemId : 'patientCombo',
-							name : 'pid',
-							hideLabel : false
+							xtype: 'container',
+							layout: 'column',
+							items: [
+								{
+									xtype: 'container',
+									layout: 'anchor',
+									columnWidth: '.50',
+									items: [
+										{
+											xtype: 'patienlivetsearch',
+											fieldLabel: _('patient'),
+											emptyText: _('no_patient_selected'),
+											itemId: 'patientCombo',
+											name: 'pid',
+											hideLabel: false
+										},
+										{
+											xtype: 'textfield',
+											fieldLabel: _('patient'),
+											itemId: 'patientField',
+											name: 'patient_name',
+											readOnly: true,
+											hidden: true
+										},
+										{
+											xtype: 'userscombo',
+											name: 'to_id',
+											fieldLabel: _('to'),
+											validateOnChange: false,
+											allowBlank: false
+										}
+									]
+								},
+								{
+									xtype: 'container',
+									layout: 'anchor',
+									columnWidth: '.50',
+									items: [
+										{
+											xtype: 'msgnotetypecombo',
+											name: 'note_type',
+											fieldLabel: _('type'),
+											listeners: {
+												scope: me,
+												select: me.onChange
+											}
+										},
+										{
+											xtype: 'msgstatuscombo',
+											name: 'message_status',
+											fieldLabel: _('status'),
+											listeners: {
+												scope: me,
+												select: me.onChange
+											}
+										}
+									]
+								}
+							]
 						},
 						{
-							xtype : 'textfield',
-							fieldLabel : i18n('patient'),
-							itemId : 'patientField',
-							name : 'patient_name',
-							readOnly : true,
-							hidden : true
-						},
-						{
-							xtype : 'userscombo',
-							name : 'to_id',
-							fieldLabel : i18n('to'),
-							validateOnChange : false,
-							allowBlank : false
-						}]
-					},
-					{
-						xtype : 'container',
-						layout : 'anchor',
-						columnWidth : '.50',
-						items : [
-						{
-							xtype : 'msgnotetypecombo',
-							name : 'note_type',
-							fieldLabel : i18n('type'),
-							listeners :
-							{
-								scope : me,
-								select : me.onChange
-							}
-						},
-						{
-							xtype : 'msgstatuscombo',
-							name : 'message_status',
-							fieldLabel : i18n('status'),
-							listeners :
-							{
-								scope : me,
-								select : me.onChange
-							}
-						}]
-					}]
+							xtype: 'textfield',
+							fieldLabel: _('subject'),
+							name: 'subject',
+							margin: '0 5 5 5'
+						}
+					]
 				},
 				{
-					xtype : 'textfield',
-					fieldLabel : i18n('subject'),
-					name : 'subject',
-					margin : '0 5 5 5'
-				}]
-			},
-			{
-				xtype : 'htmleditor',
-				name : 'body',
-				itemId : 'bodyMsg',
-				flex : 1,
-				readOnly : true,
-				allowBlank : false
-			},
-			//				{
-			//					xtype           : 'htmleditor',
-			//					name            : 'curr_msg',
-			//					itemId          : 'currMsg',
-			//					height          : 204,
-			//					allowBlank      : false,
-			//					validateOnChange: false,
-			//					hidden          : true
-			//				},
-			{
-				xtype : 'textfield',
-				hidden : true,
-				name : 'id'
-			},
-			{
-				xtype : 'textfield',
-				hidden : true,
-				name : 'pid'
-			},
-			{
-				xtype : 'textfield',
-				hidden : true,
-				name : 'reply_id'
-			}],
-			bbar : [
-			{
-				text : i18n('send'),
-				iconCls : 'save',
-				itemId : 'sendMsg',
-				scope : me,
-				handler : me.onSend
-			}, '-',
-			{
-				text : i18n('delete'),
-				cls : 'winDelete',
-				iconCls : 'delete',
-				itemId : 'deleteMsg',
-				margin : '0 3 0 0',
-				disabled : true,
-				scope : me,
-				handler : me.onDelete
-			}],
-			listeners :
-			{
-				scope : me,
-				afterrender : me.onFormRender
+					xtype: 'htmleditor',
+					name: 'body',
+					itemId: 'bodyMsg',
+					flex: 1,
+					readOnly: true,
+					allowBlank: false
+				},
+				//				{
+				//					xtype           : 'htmleditor',
+				//					name            : 'curr_msg',
+				//					itemId          : 'currMsg',
+				//					height          : 204,
+				//					allowBlank      : false,
+				//					validateOnChange: false,
+				//					hidden          : true
+				//				},
+				{
+					xtype: 'textfield',
+					hidden: true,
+					name: 'id'
+				},
+				{
+					xtype: 'textfield',
+					hidden: true,
+					name: 'pid'
+				},
+				{
+					xtype: 'textfield',
+					hidden: true,
+					name: 'reply_id'
+				}
+			],
+			bbar: [
+				{
+					text: _('send'),
+					iconCls: 'save',
+					itemId: 'sendMsg',
+					scope: me,
+					handler: me.onSend
+				},
+				'-',
+				{
+					text: _('delete'),
+					cls: 'winDelete',
+					iconCls: 'delete',
+					itemId: 'deleteMsg',
+					margin: '0 3 0 0',
+					disabled: true,
+					scope: me,
+					handler: me.onDelete
+				}
+			],
+			listeners: {
+				scope: me,
+				afterrender: me.onFormRender
 
 			}
 		});
@@ -317,19 +314,17 @@ Ext.define('App.view.messages.Messages',
 
 	}, // End initComponent
 
-	messagesType : function(btn)
-	{
+	messagesType: function(btn){
 		this.updateTitle('Messages (' + Ext.String.capitalize(btn.action) + ')');
 		this.storeMsgs.proxy.extraParams =
 		{
-			get : btn.action
+			get: btn.action
 		};
 		this.storeMsgs.load();
 
 	},
 
-	onFormRender : function()
-	{
+	onFormRender: function(){
 		this.msgForm.getComponent('bodyMsg').setReadOnly(true);
 		this.onNewMessage();
 	},
@@ -339,46 +334,40 @@ Ext.define('App.view.messages.Messages',
 	 * with message_status value set to New, and
 	 * note_type value set to Unassigned
 	 */
-	onNewMessage : function()
-	{
-		var form = this.msgForm;
+	onNewMessage: function(){
+		var form = this.msgForm,
+			record = Ext.create('App.model.messages.Messages', {
+				message_status: _('new'),
+				note_type: _('unassigned')
+			});
+		say(record);
 		form.getForm().reset();
-        form.getForm().loadRecord(
-            Ext.create('App.store.messages.Messages',{
-                message_status : i18n('new'),
-                note_type : i18n('unassigned')
-		    })
-        );
+		form.getForm().loadRecord(record);
 		this.action('new');
 	},
 
 	/**
 	 * @param btn
 	 */
-	onSend : function(btn)
-	{
+	onSend: function(btn){
 		var form = btn.up('form').getForm(), store = this.storeMsgs;
 
-		if (form.isValid())
-		{
+		if(form.isValid()){
 			var record = form.getRecord(), values = form.getValues(), storeIndex = store.indexOf(record);
 
-			if (storeIndex == -1)
-			{
+			if(storeIndex == -1){
 				store.add(values);
 			}
-			else
-			{
+			else{
 				record.set(values);
 			}
 			store.sync();
 			store.load();
 			this.onNewMessage();
-			this.msg('Sweet!', i18n('message_sent'));
+			this.msg('Sweet!', _('message_sent'));
 		}
-		else
-		{
-			this.msg('Oops!', i18n('please_complete_all_required_fields') + '.');
+		else{
+			this.msg('Oops!', _('please_complete_all_required_fields') + '.');
 		}
 	},
 
@@ -386,47 +375,42 @@ Ext.define('App.view.messages.Messages',
 	 * onDelete will show an alert msg to confirm,
 	 * delete the message and prepare the form for a new message
 	 */
-	onDelete : function()
-	{
+	onDelete: function(){
 		var form = this.msgForm.getForm(), store = this.storeMsgs;
 		Ext.Msg.show(
-		{
-			title : i18n('please_confirm') + '...',
-			icon : Ext.MessageBox.QUESTION,
-			msg : i18n('are_you_sure_to_delete_this_message'),
-			buttons : Ext.Msg.YESNO,
-			scope : this,
-			fn : function(btn)
 			{
-				if (btn == 'yes')
-				{
-					var currentRec = form.getRecord();
-					store.remove(currentRec);
-					store.destroy();
-					this.onNewMessage();
-					this.msg('Sweet!', i18n('sent_to_trash'));
+				title: _('please_confirm') + '...',
+				icon: Ext.MessageBox.QUESTION,
+				msg: _('are_you_sure_to_delete_this_message'),
+				buttons: Ext.Msg.YESNO,
+				scope: this,
+				fn: function(btn){
+					if(btn == 'yes'){
+						var currentRec = form.getRecord();
+						store.remove(currentRec);
+						store.destroy();
+						this.onNewMessage();
+						this.msg('Sweet!', _('sent_to_trash'));
+					}
 				}
-			}
-		});
+			});
 	},
-	onChange : function(combo, record)
-	{
+	onChange: function(combo, record){
 		var me = this, form = combo.up('form').getForm();
 
-		if (form.getRecord().data.id)
-		{
-			var id = form.getRecord().data.id, col = combo.name, val = record[0].data.option_id, params =
-			{
-				id : id,
-				col : col,
-				val : val
-			};
+		if(form.getRecord().data.id){
+			var id = form.getRecord().data.id,
+				col = combo.name,
+				val = record[0].data.option_id, params = {
+					id: id,
+					col: col,
+					val: val
+				};
 
 			/**
 			 * Ext.direct function
 			 */
-			Messages.updateMessage(params, function()
-			{
+			Messages.updateMessage(params, function(){
 				me.storeMsgs.load();
 			});
 
@@ -442,8 +426,7 @@ Ext.define('App.view.messages.Messages',
 	 * @param record
 	 * @namespace record.data.from_id
 	 */
-	onItemClick : function(view, record)
-	{
+	onItemClick: function(view, record){
 		record.data.to_id = record.data.from_id;
 		this.msgForm.getForm().loadRecord(record);
 		this.action('old');
@@ -455,11 +438,9 @@ Ext.define('App.view.messages.Messages',
 	 *
 	 * @param action
 	 */
-	action : function(action)
-	{
+	action: function(action){
 		var sm = this.msgGrid.getSelectionModel(), form = this.msgForm, patientCombo = form.query('combo[itemId="patientCombo"]')[0], patientField = form.query('textfield[itemId="patientField"]')[0], bodyMsg = form.getComponent('bodyMsg'), currMsg = form.getComponent('currMsg'), deletebtn1 = this.query('button[itemId="deleteMsg"]')[0], deletebtn2 = this.query('button[itemId="deleteMsg"]')[1], replybtn = this.query('button[itemId="replyMsg"]')[0], sendbtn = this.query('button[itemId="sendMsg"]')[0];
-		if (action == 'new')
-		{
+		if(action == 'new'){
 			bodyMsg.setReadOnly(false);
 			patientCombo.show();
 			patientField.hide();
@@ -469,9 +450,7 @@ Ext.define('App.view.messages.Messages',
 			sendbtn.enable();
 			sm.deselectAll();
 		}
-		else
-		if (action == 'old')
-		{
+		else if(action == 'old'){
 			bodyMsg.setReadOnly(true);
 			patientCombo.hide();
 			patientField.show();
@@ -480,9 +459,7 @@ Ext.define('App.view.messages.Messages',
 			replybtn.enable();
 			sendbtn.disable();
 		}
-		else
-		if (action == 'reply')
-		{
+		else if(action == 'reply'){
 			var msg = bodyMsg.getValue();
 			bodyMsg.setValue('<br><br><br><qoute style="margin-left: 10px; padding-left: 10px; border-left: solid 3px #cccccc; display: block;">' + msg + '</quote>');
 			bodyMsg.setReadOnly(false);
@@ -497,8 +474,7 @@ Ext.define('App.view.messages.Messages',
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive : function(callback)
-	{
+	onActive: function(callback){
 		this.storeMsgs.load();
 		callback(true);
 	}

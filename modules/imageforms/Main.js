@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,19 @@ Ext.define('Modules.imageforms.Main',{
     extend: 'Modules.Module',
     init: function(){
         var me = this;
-        me.encPanel = Ext.getCmp('panelEncounter');
-        me.imgFormPanel = me.encPanel.encounterTabPanel.add(Ext.create('Modules.imageforms.view.EncounterImageFormsPanel'));
+
+	    this.getController('Modules.imageforms.controller.ImageForm');
+
+	    me.control({
+		    'tabpanel[action=encounterTabPanel]':{
+			    beforerender:function(panel){
+				    me.imgFormPanel = panel.add(
+					    Ext.create('Modules.imageforms.view.EncounterImageFormsPanel')
+				    );
+			    }
+		    }
+	    });
+
     }
 
 });

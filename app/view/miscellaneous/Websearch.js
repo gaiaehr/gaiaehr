@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,9 @@ Ext.define('App.view.miscellaneous.Websearch',
 {
 	extend : 'App.ux.RenderPanel',
 	id : 'panelWebsearch',
-	pageTitle : i18n('national_library'),
+	pageTitle : _('national_library'),
 	pageLayout : 'border',
-	uses : ['App.ux.GridPanel'],
+	uses : ['Ext.grid.Panel'],
 	initComponent : function()
 	{
 
@@ -53,10 +53,10 @@ Ext.define('App.view.miscellaneous.Websearch',
 			items : [
 			{
 				xtype : 'radiogroup',
-				fieldLabel : i18n('search_by'),
+				fieldLabel : _('search_by'),
 				items : [
                     {
-                        boxLabel : i18n('heath_topics'),
+                        boxLabel : _('heath_topics'),
                         name : 'type',
                         inputValue : 'health_topics'
                     },
@@ -100,7 +100,7 @@ Ext.define('App.view.miscellaneous.Websearch',
             page.termField = Ext.create('Ext.form.ComboBox',
             {
                 name: 'term',
-                fieldLabel: i18n('code_term') + ':',
+                fieldLabel: _('code_term') + ':',
                 store: page.codingStore,
                 anchor : '100%',
                 queryMode: 'local',
@@ -117,7 +117,7 @@ Ext.define('App.view.miscellaneous.Websearch',
             }),
             page.searchField = Ext.create('Ext.form.field.Text',
 			{
-				emptyText : i18n('web_search') + '...',
+				emptyText : _('web_search') + '...',
 				enableKeyEvents : true,
 				hideLabel : true,
 				anchor : '100%',
@@ -153,7 +153,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 		{
 			return Ext.String.format('<div class="topic"><span class="search_title">{0}</span><br><span class="search_source">{1}</span><br><span class="search_snippet" style="white-space: normal;">{2}</span></div>', value, record.get('source') || "Unknown", record.get('snippet') || "Unknown");
 		};
-		page.onotesGrid = Ext.create('App.ux.GridPanel',
+		page.onotesGrid = Ext.create('Ext.grid.Panel',
 		{
 			margin : '0 0 2 0',
 			region : 'center',
@@ -161,14 +161,14 @@ Ext.define('App.view.miscellaneous.Websearch',
 			viewConfig :
 			{
 				deferEmptyText : false,
-				emptyText : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + i18n('nothing_found') + '!</p>',
+				emptyText : '<p class="search_nothing_found" style="padding: 10px 0 0 20px; font-size: 24px">' + _('nothing_found') + '!</p>',
 				stripeRows : true,
-				loadingText : i18n('searching') + '... ' + i18n('please_wait')
+				loadingText : _('searching') + '... ' + _('please_wait')
 			},
 			columns : [
 			{
 				flex : 1,
-				header : i18n('search_results'),
+				header : _('search_results'),
 				sortable : true,
 				dataIndex : 'title',
 				renderer : page.searchRow
@@ -187,7 +187,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 			{
 				store : page.store,
 				displayInfo : true,
-				emptyMsg : i18n('nothing_to_display'),
+				emptyMsg : _('nothing_to_display'),
 				plugins : Ext.create('Ext.ux.SlidingPager',
 				{
 				})
@@ -212,7 +212,7 @@ Ext.define('App.view.miscellaneous.Websearch',
 			layout : 'fit',
 			frame : true,
 			bodyBorder : true,
-			tpl : Ext.create('Ext.XTemplate', '<div class="search_container">', '<div class="search_data">', '<h3 class="search_title">' + i18n('title') + ': {title}</h3>', '<h4 class="search_source">' + i18n('source') + ': {source}</h4>', '</div>', '<div class="search_body">{FullSummary}</div>', '</div>')
+			tpl : Ext.create('Ext.XTemplate', '<div class="search_container">', '<div class="search_data">', '<h3 class="search_title">' + _('title') + ': {title}</h3>', '<h4 class="search_source">' + _('source') + ': {source}</h4>', '</div>', '<div class="search_body">{FullSummary}</div>', '</div>')
 		});
 
 		page.pageBody = [page.searchPanel, page.onotesGrid, page.viewPanel];

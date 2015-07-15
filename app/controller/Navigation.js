@@ -120,7 +120,7 @@ Ext.define('App.controller.Navigation', {
 	},
 
 	setUrlParams:function(params){
-		var url = './#!/';
+		var url = '#!/';
 		if(params.length > 0) url += params.join('/');
 		window.location = url;
 	},

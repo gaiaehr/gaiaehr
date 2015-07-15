@@ -85,6 +85,8 @@ if(!isset($_SESSION['styles'])){
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');
 
+	unset($_SESSION['site']['error']);
+
 	// load modules hooks
 	if(!isset($_SESSION['hooks'])){
 

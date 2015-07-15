@@ -375,7 +375,7 @@ class MatchaCUP {
 	 * @param $onMainTable
 	 * @param $onMergeTable
 	 * @param string $operator
-	 * @return $this
+	 * @return MatchaCUP
 	 */
 	public function leftJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns);
@@ -391,7 +391,7 @@ class MatchaCUP {
 	 * @param $onMainTable
 	 * @param $onMergeTable
 	 * @param string $operator
-	 * @return $this
+	 * @return MatchaCUP
 	 */
 	public function rightJoin($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns);
@@ -407,7 +407,7 @@ class MatchaCUP {
 	 * @param $onMainTable
 	 * @param $onMergeTable
 	 * @param string $operator
-	 * @return $this
+	 * @return MatchaCUP
 	 */
 	public function join($columns  = '*', $table, $onMainTable, $onMergeTable, $operator = '='){
 		$columns = $this->joinColumnHandler($columns);

@@ -12784,7 +12784,6 @@ Ext.define('App.model.administration.TemplatePanel', {
 		}
 	]
 });
-
 Ext.define('App.model.administration.TemplatePanelTemplate', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -15269,15 +15268,37 @@ Ext.define('App.model.patient.encounter.Procedures', {
 		},
 		{
 			name: 'code',
-			type: 'string'
+			type: 'string',
+			len: 40
 		},
 		{
 			name: 'code_text',
-			type: 'string'
+			type: 'string',
+			len: 300
 		},
 		{
 			name: 'code_type',
-			type: 'string'
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'status_code',
+			type: 'string',
+			len: 40
+		},
+		{
+			name: 'status_code_text',
+			type: 'string',
+			len: 300
+		},
+		{
+			name: 'status_code_type',
+			type: 'string',
+			len: 15
+		},
+		{
+			name: 'encounter_dx_id',
+			type: 'int'
 		},
 		{
 			name: 'observation',

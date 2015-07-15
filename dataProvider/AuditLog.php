@@ -44,6 +44,7 @@ class AuditLog {
 
 		foreach($records['data'] as &$record){
 			$checksum = crc32($record['uid'] . $record['fid'] . $record['date'] . $record['table_name'] . $record['sql_string'] . serialize($record['data']));
+
 			$record['is_valid'] = $record['checksum'] == $checksum;
 		}
 

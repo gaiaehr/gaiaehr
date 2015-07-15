@@ -37,7 +37,7 @@ if(!defined('VERSION'))	define('VERSION', '1.0.102');
 if(!defined('EXTJS')) define('EXTJS', 'extjs-4.2.1');
 
 // sites values
-$_SESSION['sites'] = array();
+$_SESSION['sites'] = [];
 
 if(!defined('sites_count')){
 	$sitedir = ROOT . '/sites/';
@@ -78,12 +78,14 @@ $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERV
 $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 
 if(!isset($_SESSION['styles'])){
-	$_SESSION['styles'] = array();
+	$_SESSION['styles'] = [];
 }
 
 
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');
+
+	unset($_SESSION['site']['error']);
 
 	// load modules hooks
 	if(!isset($_SESSION['hooks'])){
@@ -93,7 +95,7 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 		$modules = $Modules->getEnabledModules();
 		unset($Modules);
 
-		$_SESSION['styles'] = array();
+		$_SESSION['styles'] = [];
 
 		foreach($modules as $module){
 
@@ -125,14 +127,14 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 				$attributes = explode('_', $method->name);
 				if(count($attributes) != 3) continue;
 
-				$_SESSION['hooks'][$attributes[1]][$attributes[2]][$attributes[0]]['hooks'][$method->class]  = array(
+				$_SESSION['hooks'][$attributes[1]][$attributes[2]][$attributes[0]]['hooks'][$method->class]  = [
 					'method' => $method->name,
 					'file' => $HooksFile
-				);
+				];
 			}
 		}
 	}
 } else {
-	$_SESSION['site'] = array('error' => 'Site configuration file not found, Please contact Support Desk. Thanks!');
+	$_SESSION['site'] = ['error' => 'Site configuration file not found, Please contact Support Desk. Thanks!'];
 };
 

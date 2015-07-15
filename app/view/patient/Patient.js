@@ -467,6 +467,7 @@ Ext.define('App.view.patient.Patient', {
 
 					me.insTabPanel.add(
 						Ext.widget('patientinsuranceform', {
+							closable: false,
 							insurance: records[i]
 						})
 					);

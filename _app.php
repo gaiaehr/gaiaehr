@@ -140,7 +140,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="app/ux/VTypes.js"></script>
 
 		<!-- this is the compiled/minified version -->
-<!--		<script type="text/javascript" src="app/app.min.js?_v--><?php //print VERSION ?><!--"></script>-->
+
+		<?php if(HOST != 'localhost') { ?>
+			<script type="text/javascript" src="app/app.min.js?_v<?php print VERSION ?>"></script>
+		<?php } ?>
 
 		<script type="text/javascript">
             /**

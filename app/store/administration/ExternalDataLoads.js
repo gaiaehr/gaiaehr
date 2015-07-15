@@ -17,26 +17,23 @@
  */
 
 Ext.define('App.store.administration.ExternalDataLoads',
-{
-	model : 'App.model.administration.ExternalDataLoads',
-	extend : 'Ext.data.Store',
-	constructor : function(config)
 	{
-		var me = this;
-		me.proxy =
-		{
-			type : 'direct',
-			api :
+		model: 'App.model.administration.ExternalDataLoads',
+		extend: 'Ext.data.Store',
+		constructor: function(config){
+			var me = this;
+			me.proxy =
 			{
-				read : ExternalDataUpdate.getCodeFiles
-			},
-			extraParams :
-			{
-				codeType : config.codeType
-			}
-		};
-		me.callParent(arguments);
-	},
-	remoteSort : false,
-	autoLoad : false
-}); 
+				type: 'direct',
+				api: {
+					read: 'ExternalDataUpdate.getCodeFiles'
+				},
+				extraParams: {
+					codeType: config.codeType
+				}
+			};
+			me.callParent(arguments);
+		},
+		remoteSort: false,
+		autoLoad: false
+	});

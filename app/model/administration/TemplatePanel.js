@@ -28,7 +28,8 @@ Ext.define('App.model.administration.TemplatePanel', {
 		},
 		{
 			name: 'specialty_id',
-			type: 'int'
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'description',
@@ -36,8 +37,19 @@ Ext.define('App.model.administration.TemplatePanel', {
 			len: 300
 		},
 		{
+			name: 'sex',
+			type: 'string',
+			len: 1,
+			index: true
+		},
+		{
+			name: 'order',
+			type: 'int'
+		},
+		{
 			name: 'active',
-			type: 'bool'
+			type: 'bool',
+			index: true
 		}
 	],
 	proxy: {

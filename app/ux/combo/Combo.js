@@ -104,32 +104,36 @@ Ext.define('App.ux.combo.Combo', {
 	},
 
 	setFieldBgColor: function(cmb, value){
-		var me = this,
-			record = cmb.findRecordByValue(value);
 
-		if(cmb.getStore().isLoading()){
-			cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
-			if(cmb.tries > 2) return;
+		var me = this;
 
-			Ext.Function.defer(function(){
-				me.setFieldBgColor(cmb, value);
-			}, 1000);
-		}else{
-			if(record !== false && record.data.code_type == 'bgcolor'){
-				cmb.inputEl.setStyle({
-					'background-color': record.data.bg_color,
-					'background-image': 'none',
-					'color': record.data.color
-				});
-			}else{
+		Ext.Function.defer(function(){
+			var	record = cmb.findRecordByValue(value);
+
+			if(cmb.getStore().isLoading()){
 				cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
 				if(cmb.tries > 2) return;
 
 				Ext.Function.defer(function(){
 					me.setFieldBgColor(cmb, value);
 				}, 1000);
+			}else{
+				if(record !== false && record.data.code_type == 'bgcolor'){
+					cmb.inputEl.setStyle({
+						'background-color': record.data.bg_color,
+						'background-image': 'none',
+						'color': record.data.color
+					});
+				}else{
+					cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
+					if(cmb.tries > 2) return;
+
+					Ext.Function.defer(function(){
+						me.setFieldBgColor(cmb, value);
+					}, 1000);
+				}
 			}
-		}
+		}, 100);
 	},
 
 	getContrastYIQ: function(hexcolor){

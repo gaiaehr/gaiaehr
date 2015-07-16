@@ -1020,7 +1020,18 @@ class ExternalDataUpdate {
 		return true;
 	}
 
+	/**
+	 * Method: loadSnomedData
+	 * A method to load an parse the SNOMED Downloaded .zip file
+	 * when it is parsed, inject the TXT file into the database.
+	 * @param $dir
+	 * @param $sub_path
+	 */
 	private function loadSnomedData($dir, $sub_path) {
+		// This max executin time, is temporary
+		// Match should control this time, in INIT time of loading the library
+		// And it should be configurable too.
+		@ini_set('max_execution_time', 0);
 
 		if(is_dir($dir . $sub_path) && $handle = opendir($dir . $sub_path)){
 
@@ -1069,8 +1080,8 @@ class ExternalDataUpdate {
 						], $load_script);
 					}
 					if(isset($new_str)){
+						// Execute the Query
 						$this->db->conn()->exec($new_str);
-						//$stmt->execute();
 					}
 
 				}

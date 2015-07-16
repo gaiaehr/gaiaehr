@@ -117,6 +117,7 @@ Ext.define('App.view.areas.PatientPoolAreas', {
 					store: store,
 					floorPlanId: areas[i].floor_plan_id,
 					columns: [
+						Ext.create('Ext.grid.RowNumberer'),
 						{
 							header: _('record') + ' #',
 							width: 100,

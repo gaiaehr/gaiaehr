@@ -70,8 +70,8 @@ Ext.define('App.ux.form.fields.HtmlEditor', {
 			fnBlur = Ext.bind(me.onHtmlEditorBlur, me),
 			fnFocus = Ext.bind(me.onHtmlEditorFocus, me);
 
-		say('onInitializeHtmlEditor');
-		say(frameWin);
+		//say('onInitializeHtmlEditor');
+		//say(frameWin);
 
 		if(frameWin.attachEvent){
 			frameWin.addEventListener('blur', fnBlur);

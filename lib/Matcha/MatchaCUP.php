@@ -330,7 +330,7 @@ class MatchaCUP {
 
 				// filter/where
 				if($isSimpleLoadRequest){
-					$_where = ' WHERE `' . $this->primaryKey . '` = \'' . $where->{$this->primaryKey} . '\'';
+					$_where = " WHERE `{$this->table}`.`{$this->primaryKey}` = '" . $where->{$this->primaryKey} . '\'';
 				} elseif((isset($where->filter) && isset($where->filter[0]->property)) || isset($this->filters)) {
 
 					if(isset($where->filter)){

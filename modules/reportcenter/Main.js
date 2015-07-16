@@ -18,15 +18,19 @@
 
 Ext.define('Modules.reportcenter.Main', {
 	extend: 'Modules.Module',
+
+	requires:[
+		'Modules.reportcenter.view.ReportCenter',
+		'Modules.reportcenter.view.ReportPanel'
+	],
+
 	init: function(){
 		var me = this;
-		/**
-		 * @param panel     (Ext.component)     Component to add to MainPanel
-		 */
-		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportCenter'));
-		me.addAppPanel(Ext.create('Modules.reportcenter.view.ReportPanel'));
 
+		me.getController('Modules.reportcenter.controller.Administration');
+		me.getController('Modules.reportcenter.controller.Clinical');
 		me.getController('Modules.reportcenter.controller.Dashboard');
+		me.getController('Modules.reportcenter.controller.Reports');
 
 		/**
 		 * function to add navigation links
@@ -40,6 +44,7 @@ Ext.define('Modules.reportcenter.Main', {
 			iconCls: 'icoReport',
 			id: 'Modules.reportcenter.view.ReportCenter'
 		});
+
 		me.callParent();
 	}
 }); 

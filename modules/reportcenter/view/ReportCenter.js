@@ -104,7 +104,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						layout: 'hbox',
 						defaults: { margin: '0 10 5 0' },
 						items: [
-
 							{
 								xtype: 'datefield',
 								fieldLabel: _('from'),
@@ -141,9 +140,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 								name: 'drug',
 								width: 350
 							}
-
 						]
-
 					}
 				],
 				fn: Rx.createPrescriptionsDispensations,
@@ -716,7 +713,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	 * place inside this function all the functions you want
 	 * to call every this panel becomes active
 	 */
-	onActive: function(callback){
+	onActive: function(callback)
+	{
 		callback(true);
 	}
 

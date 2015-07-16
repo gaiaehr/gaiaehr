@@ -114,8 +114,10 @@ class MatchaCUP {
 	 */
 	private $orFilterProperties = [];
 
-
-
+	/**
+	 * @var array
+	 */
+	private $extraValues = [];
 
 	/**
 	 * @var array
@@ -235,11 +237,20 @@ class MatchaCUP {
 				$this->isSenchaRequest = false;
 				// columns
 				if($columns == null){
-					$columnsx = '`' . $this->table .'`' . '.*';
+					$_columns = '`' . $this->table .'`' . '.*';
 				} elseif(is_array($columns)) {
-					$columnsx = '`' . implode('`,`'.$this->table.'`.`', $columns) . '`';
+					$_columns = '`' . implode('`,`'.$this->table.'`.`', $columns) . '`';
 				} else {
-					$columnsx = '`' . $this->table .'`.`' . $columns . '`';
+					$_columns = '`' . $this->table .'`.`' . $columns . '`';
+				}
+
+				if(is_array($this->extraValues) && !empty($this->extraValues)){
+					$_extra_values = [];
+					foreach($this->extraValues as $value => $as){
+						$_extra_values[] = "'{$value}' AS $as";
+					}
+					$extra_values = implode(',',$_extra_values);
+					$_columns .= ', ' . $extra_values;
 				}
 
 				// where
@@ -260,7 +271,7 @@ class MatchaCUP {
 					$wherex = ' WHERE ' . $wherex;
 				}
 				// sql build
-				$this->sql = "SELECT $columnsx FROM `" . $this->table . "` $wherex";
+				$this->sql = "SELECT $_columns FROM `" . $this->table . "` $wherex";
 			} else {
 				$tmp = (array) $where;
 				$this->isSenchaRequest = !empty($tmp);
@@ -319,7 +330,7 @@ class MatchaCUP {
 
 				// filter/where
 				if($isSimpleLoadRequest){
-					$_where = ' WHERE `' . $this->primaryKey . '` = \'' . $where->{$this->primaryKey} . '\'';
+					$_where = " WHERE `{$this->table}`.`{$this->primaryKey}` = '" . $where->{$this->primaryKey} . '\'';
 				} elseif((isset($where->filter) && isset($where->filter[0]->property)) || isset($this->filters)) {
 
 					if(isset($where->filter)){
@@ -360,8 +371,19 @@ class MatchaCUP {
 					$_where = '';
 				}
 
-				$this->nolimitsql = "SELECT `$this->table`.* FROM `" . $this->table . "` $_where $_group $_sort";
-				$this->sql = "SELECT `$this->table`.* FROM `" . $this->table . "` $_where $_group $_sort $_limits";
+				$columns = "`{$this->table}`.*";
+				if(is_array($this->extraValues) && !empty($this->extraValues)){
+					$_extra_values = [];
+					foreach($this->extraValues as $value => $as){
+						$_extra_values[] = "'{$value}' AS $as";
+					}
+					$extra_values = implode(',',$_extra_values);
+					$columns .= ', ' . $extra_values;
+				}
+
+
+				$this->nolimitsql = "SELECT $columns FROM `" . $this->table . "` $_where $_group $_sort";
+				$this->sql = "SELECT $columns FROM `" . $this->table . "` $_where $_group $_sort $_limits";
 			}
 			return $this;
 		} catch(PDOException $e) {
@@ -1271,5 +1293,14 @@ class MatchaCUP {
 	 */
 	public function setPersistAssociations($enable){
 		$this->persistAssociations = $enable;
+	}
+
+	/**
+	 * @param array $columns
+	 * @return MatchaCUP
+	 */
+	public function setExtraValues($columns){
+		$this->extraValues = $columns;
+		return $this;
 	}
 }

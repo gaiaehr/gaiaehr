@@ -21,11 +21,16 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	id: 'panelReportCenter',
 	pageTitle: _('report_center'),
 
+	requires:[
+		
+	],
+
 	initComponent: function(){
 		var me = this;
 
 		me.reports = Ext.create('Ext.panel.Panel', {
-			layout: 'auto'
+			layout: 'auto',
+			itemId: 'ReportCenterPanel'
 		});
 		me.pageBody = [ me.reports ];
 
@@ -35,7 +40,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 		 * this indicator will also be the logic for field rendering.
 		 */
 		me.patientCategory = me.addCategory(_('patient_reports'), 260);
+
 		me.ClientListReport = me.addReportByCategory(me.patientCategory, _('client_list_report'), function(btn){
+
 
 			if(!me.clientListStore) me.clientListStore = Ext.create('Modules.reportcenter.store.ClientList');
 
@@ -64,7 +71,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						width: 350
 					}
 				],
-				fn: ClientList.CreateClientList,
+				fn: 'ClientList.CreateClientList',
 				store: me.clientListStore,
 				columns: [
 					{
@@ -91,6 +98,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 			});
 		});
 
+
 		me.Rx = me.addReportByCategory(me.patientCategory, _('rx'), function(btn){
 			if(!me.medicationStore) me.medicationStore = Ext.create('Modules.reportcenter.store.MedicationReport');
 
@@ -104,6 +112,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						layout: 'hbox',
 						defaults: { margin: '0 10 5 0' },
 						items: [
+
 							{
 								xtype: 'datefield',
 								fieldLabel: _('from'),
@@ -140,10 +149,12 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 								name: 'drug',
 								width: 350
 							}
+
 						]
+
 					}
 				],
-				fn: Rx.createPrescriptionsDispensations,
+				fn: 'Rx.createPrescriptionsDispensations',
 				store: me.medicationStore,
 				columns: [
 					{
@@ -338,7 +349,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						]
 					}
 				],
-				fn: Clinical.createClinicalReport,
+				fn: 'Clinical.createClinicalReport',
 				store: me.clinicalStore,
 				columns: [
 					{
@@ -406,7 +417,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						width: 350
 					}
 				],
-				fn: ImmunizationsReport.createImmunizationsReport,
+				fn: 'ImmunizationsReport.createImmunizationsReport',
 				store: me.immunizationReportStore,
 				columns: [
 					{
@@ -556,7 +567,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 						format: 'Y-m-d'
 					}
 				],
-				fn: SuperBill.CreateSuperBill
+				fn: 'SuperBill.CreateSuperBill'
 			});
 		});
 
@@ -617,7 +628,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 
 					}
 				],
-				fn: Appointments.CreateAppointmentsReport,
+				fn: 'Appointments.CreateAppointmentsReport',
 				store: me.appointmentsReportStore,
 				columns: [
 					{
@@ -660,62 +671,23 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 				]
 			});
 		});
+
 		me.callParent(arguments);
 	},
 
-	/**
-	 * Function to add categories with the respective with to the
-	 * Report Center Panel
-	 */
-	addCategory: function(category, width){
-		var me = this;
-		return me.reports.add(Ext.create('Ext.container.Container', {
-			cls: 'CategoryContainer',
-			width: width,
-			layout: 'anchor',
-			items: [
-				{
-					xtype: 'container',
-					cls: 'title',
-					margin: '0 0 5 0',
-					html: category
-				}
-			]
-		}));
-	},
-
-	/**
-	 * Function to add Items to the category
-	 */
-	addReportByCategory: function(category, text, fn){
-		return category.add(Ext.create('Ext.button.Button', {
-			cls: 'CategoryContainerItem',
-			anchor: '100%',
-			margin: '0 0 5 0',
-			textAlign: 'left',
-			text: text,
-			handler: fn
-		}));
-	},
 
 	/**
 	 * Function to call the report panel.
 	 * Remember the report fields are dynamically rendered.
 	 */
 	goToReportPanelAndSetPanel: function(config){
-		var panel = app.MainPanel.getLayout().setActiveItem('panelReportPanel');
-		panel.setReportPanel(config);
-	},
+		var nav = app.getController('Navigation');
 
-	/**
-	 * This function is called from MitosAPP.js when
-	 * this panel is selected in the navigation panel.
-	 * place inside this function all the functions you want
-	 * to call every this panel becomes active
-	 */
-	onActive: function(callback)
-	{
-		callback(true);
+		nav.navigateTo('Modules.reportcenter.view.ReportPanel');
+
+		Ext.Function.defer(function(){
+			var panel = nav.getPanelByCls('Modules.reportcenter.view.ReportPanel');
+			panel.setReportPanel(config);
+		}, 200);
 	}
-
 });

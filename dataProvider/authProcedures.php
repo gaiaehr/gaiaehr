@@ -77,11 +77,27 @@ class authProcedures {
 
 		//-------------------------------------------
 		// Username & password match
+		// Only bring authorized and active users.
 		//-------------------------------------------
 		$u = MatchaModel::setSenchaModel('App.model.administration.User');
 		$user = $u->load(
-			array('username' => $params->authUser, 'authorized' => 1),
-			array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'npi', 'password')
+			array(
+				'username' => $params->authUser,
+				'authorized' => 1,
+				'active' => 1
+			),
+			array(
+				'id',
+				'username',
+				'title',
+				'fname',
+				'mname',
+				'lname',
+				'email',
+				'facility_id',
+				'npi',
+				'password'
+			)
 		)->one();
 
 		if($user === false || $params->authPass != $user['password']){

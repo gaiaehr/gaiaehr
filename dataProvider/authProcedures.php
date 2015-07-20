@@ -77,11 +77,27 @@ class authProcedures {
 
 		//-------------------------------------------
 		// Username & password match
+		// Only bring authorized and active users.
 		//-------------------------------------------
 		$u = MatchaModel::setSenchaModel('App.model.administration.User');
 		$user = $u->load(
-			array('username' => $params->authUser, 'authorized' => 1),
-			array('id', 'username', 'title', 'fname', 'mname', 'lname', 'email', 'facility_id', 'npi', 'password')
+			array(
+				'username' => $params->authUser,
+				'authorized' => 1,
+				'active' => 1
+			),
+			array(
+				'id',
+				'username',
+				'title',
+				'fname',
+				'mname',
+				'lname',
+				'email',
+				'facility_id',
+				'npi',
+				'password'
+			)
 		)->one();
 
 		if($user === false || $params->authPass != $user['password']){
@@ -133,14 +149,24 @@ class authProcedures {
 	}
 
 	/**
+	 * unAuth
+	 * A method executed from GaiaEHR to logout the user and destroys the session
 	 * @static
 	 * @return mixed
 	 */
 	public function unAuth(){
-		$this->session->logoutSession();
-		session_unset();
-		session_destroy();
-		return;
+		try
+		{
+			$this->session->logoutSession();
+			session_unset();
+			session_destroy();
+			return;
+		}
+		catch(Exception $ErrorObject)
+		{
+			// TODO: Configure a way to return the Exceptions to the GaiaEHR Client
+			return;
+		}
 	}
 
 	/**

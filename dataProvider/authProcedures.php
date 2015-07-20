@@ -133,14 +133,23 @@ class authProcedures {
 	}
 
 	/**
+	 * unAuth
+	 * A method executed from GaiaEHR to logout the user and destroys the session
 	 * @static
 	 * @return mixed
 	 */
 	public function unAuth(){
-		$this->session->logoutSession();
-		session_unset();
-		session_destroy();
-		return;
+		try
+		{
+			$this->session->logoutSession();
+			session_unset();
+			session_destroy();
+			return;
+		}
+		catch(Exception $ErrorObject)
+		{
+			return;
+		}
 	}
 
 	/**

@@ -164,6 +164,7 @@ class authProcedures {
 		}
 		catch(Exception $ErrorObject)
 		{
+			// TODO: Configure a way to return the Exceptions to the GaiaEHR Client
 			return;
 		}
 	}

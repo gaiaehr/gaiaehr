@@ -27,24 +27,35 @@ class Lists extends MatchaHelper
     private $ComboListOptions = NULL;
     private $FormFieldOptions = NULL;
 
-    //------------------------------------------------------------------------------------------------------------------
-    // Main Sencha Model Getter and Setters
-    //------------------------------------------------------------------------------------------------------------------
+    /**
+	 * Main Sencha Model Getter and Setters
+	 * @param stdClass $params
+	 * @return mixed
+     */
 	public function getOptions(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+        if($this->ComboListOptions == NULL)
+		{
+			$this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		}
         return $this->ComboListOptions->load($params)->all();
 	}
 
 	public function addOption(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+        if($this->ComboListOptions == NULL)
+		{
+			$this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		}
 		return $this->ComboListOptions->save($params);
 	}
 
 	public function updateOption(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+        if($this->ComboListOptions == NULL)
+		{
+			$this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		}
 		return $this->ComboListOptions->save($params);
 	}
 
@@ -53,13 +64,18 @@ class Lists extends MatchaHelper
 		return array('success' => true);
 	}
 
-    //------------------------------------------------------------------------------------------------------------------
-    // Extra methods
-    // This methods are used by the view to gather extra data from the store or the model
-    //------------------------------------------------------------------------------------------------------------------
+    /**
+	 * Extra methods
+	 * This methods are used by the view to gather extra data from the store or the model
+	 * @param stdClass $params
+	 * @return array
+     */
 	public function sortOptions(stdClass $params)
 	{
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+        if($this->ComboListOptions == NULL)
+		{
+			$this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+		}
 		$data = get_object_vars($params);
 		$pos  = 10;
 		foreach($data['fields'] as $field)
@@ -75,8 +91,14 @@ class Lists extends MatchaHelper
 
 	public function getLists($params)
 	{
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
-        if($this->FormFieldOptions == NULL) $this->FormFieldOptions = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
+        if($this->ComboList == NULL)
+		{
+			$this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+		}
+        if($this->FormFieldOptions == NULL)
+		{
+			$this->FormFieldOptions = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
+		}
 		$Combos = array();
 		foreach($this->ComboList->load($params)->all() as $Combo)
         {
@@ -93,29 +115,67 @@ class Lists extends MatchaHelper
 
 	public function addList(stdClass $params)
 	{
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
-		return $this->ComboList->save($params);
+		try
+		{
+			if($this->ComboList == NULL)
+			{
+				$this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+			}
+			return $this->ComboList->save($params);
+		}
+		catch(Exception $ErrorObject)
+		{
+			return array('success' => false);
+		}
 	}
 
+	/**
+	 * updateList
+	 * Method to update a master list record
+	 * @param stdClass $params
+	 * @return array|object
+	 */
 	public function updateList(stdClass $params)
 	{
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
-		return $this->ComboList->save($params);
+		try
+		{
+			if($this->ComboList == NULL)
+			{
+				$this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+			}
+			return $this->ComboList->save($params);
+		}
+		catch(Exception $ErrorObject)
+		{
+			return array('success' => false);
+		}
 	}
 
+	/**
+	 * deleteList
+	 * Delete a master list from the database, this method is called from the GaiaEHR Web Client
+	 * @param stdClass $params
+	 * @return array
+	 */
 	public function deleteList(stdClass $params)
 	{
-        if($this->FormFieldOptions == NULL) $this->FormFieldOptions = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
-        if($this->ComboList == NULL) $this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
-        if($this->ComboListOptions == NULL) $this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-		if($this->FormFieldOptions->load(array('oname'=>'list_id', 'ovalue'=>$params->id))->rowCount() == 0)
-        {
-            $this->ComboListOptions->destroy($params);
-            $this->ComboList->destroy($params);
+		try
+		{
+			// Check if the model is already loaded, if it is loaded, do not load it again.
+			if($this->ComboList == NULL)
+			{
+				$this->ComboList = MatchaModel::setSenchaModel('App.model.administration.Lists');
+			}
+			if($this->ComboListOptions == NULL)
+			{
+				$this->ComboListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+			}
+			$this->ComboListOptions->destroy($params);
+			$this->ComboList->destroy($params);
 			return array('success' => true);
 		}
-        else
-        {
+		catch(Exception $ErrorObject)
+		{
 			return array('success' => false);
 		}
 	}

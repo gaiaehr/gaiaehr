@@ -155,12 +155,12 @@ class Rxnorm {
 									AND TTY = 'IN'
 									 OR TTY = 'PIN'
 									 OR TTY = 'BN')
-									AND STR LIKE :q1
-									OR RXCUI LIKE :q2
+									AND RXCUI LIKE :q1
+									OR STR LIKE :q2
 							 	 GROUP BY RXCUI LIMIT 100");
 		$sth->execute([
-			':q1' => '%'.$params->query.'%',
-			':q2' => $params->query.'%'
+			':q2' => '%'.$params->query.'%',
+			':q1' => $params->query.'%'
 		]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);

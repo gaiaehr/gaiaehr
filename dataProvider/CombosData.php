@@ -66,9 +66,9 @@ class CombosData {
 	 */
 	private $DT;
 
-	//------------------------------------------------------------------------------------------------------------------
-	// Main Sencha Model Getter and Setters
-	//------------------------------------------------------------------------------------------------------------------
+	/**
+	 * Main Sencha Model Getter and Setters
+	 */
 	public function getOptionsByListId(stdClass $params){
 		if($this->CL == null)
 			$this->CL = MatchaModel::setSenchaModel('App.model.administration.Lists');

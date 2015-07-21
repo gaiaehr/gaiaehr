@@ -192,7 +192,7 @@ Ext.define('App.view.patient.Allergies', {
 								itemId: 'allergyReactionCombo',
 								name: 'reaction',
 								width: 230,
-								list: 131,
+								list: 82,
 								labelWidth: 70,
 								allowBlank: false
 							},

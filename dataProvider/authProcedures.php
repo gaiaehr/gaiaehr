@@ -21,6 +21,18 @@ include_once(ROOT . '/classes/Sessions.php');
 include_once(ROOT . '/classes/Crypt.php');
 include_once(ROOT . '/dataProvider/Patient.php');
 
+/**
+ * set_error_handler it's a PHP function to overwrite the errors that PHP spit out, in costume way
+ * TODO: This is a temporary fix, this function should be part of Match::Connect
+ */
+set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
+	// error was suppressed with the @-operator
+	if (0 === error_reporting()) {
+		return false;
+	}
+	throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+});
+
 class authProcedures {
 
 	private $session;

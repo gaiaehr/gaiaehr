@@ -158,7 +158,10 @@ class Rxnorm {
 									AND STR LIKE :q1
 									OR RXCUI LIKE :q2
 							 	 GROUP BY RXCUI LIMIT 100");
-		$sth->execute([':q1' => '%'.$params->query.'%', ':q2' => $params->query.'%']);
+		$sth->execute([
+			':q1' => '%'.$params->query.'%',
+			':q2' => $params->query.'%'
+		]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);

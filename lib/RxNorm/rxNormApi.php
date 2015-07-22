@@ -7,15 +7,63 @@ class rxNormApi extends APIBaseClass {
 	public static $api_url = 'http://rxnav.nlm.nih.gov/REST';
 
 	public $sourceTypes = Array(
-		'GS', 'MDDB', 'MMSL', 'MMX', 'MSH', 'MTHFDA', 'MTHSPL', 'NDDF', 'NDFRT', 'RXNORM', 'SNOMEDCT', 'VANDF',
+		'GS',
+		'MDDB',
+		'MMSL',
+		'MMX',
+		'MSH',
+		'MTHFDA',
+		'MTHSPL',
+		'NDDF',
+		'NDFRT',
+		'RXNORM',
+		'SNOMEDCT',
+		'VANDF',
 	);
 
 	public $idTypes = Array(
-		'AMPID', 'GCN_SEQNO', 'GFC', 'GPPC', 'HIC_SEQN', 'LISTING_SEQ_NO', 'MESH', 'MMSL_CODE', 'NDC', 'NUI', 'SNOMEDCT', 'SPL_SET_ID', 'UMLSCUI', 'UNII_CODE', 'VUID'
+		'AMPID',
+		'GCN_SEQNO',
+		'GFC',
+		'GPPC',
+		'HIC_SEQN',
+		'LISTING_SEQ_NO',
+		'MESH',
+		'MMSL_CODE',
+		'NDC',
+		'NUI',
+		'SNOMEDCT',
+		'SPL_SET_ID',
+		'UMLSCUI',
+		'UNII_CODE',
+		'VUID'
 	);
 
 	public $relaTypes = Array(
-		'consists_of', 'constitutes', 'contained_in', 'contains', 'dose_form_of', 'form_of', 'has_dose_form', 'has_form', 'has_ingredient', 'has_ingredients', 'has_part', 'has_precise_ingredient', 'has_quantified_form', 'has_tradename', 'ingredient_of', 'ingredients_of', 'inverse_isa', 'isa', 'part_of', 'precise_ingredient_of', 'quantified_form_of', 'reformulated_to', 'reformulation_of', 'tradename_of'
+		'consists_of',
+		'constitutes',
+		'contained_in',
+		'contains',
+		'dose_form_of',
+		'form_of',
+		'has_dose_form',
+		'has_form',
+		'has_ingredient',
+		'has_ingredients',
+		'has_part',
+		'has_precise_ingredient',
+		'has_quantified_form',
+		'has_tradename',
+		'ingredient_of',
+		'ingredients_of',
+		'inverse_isa',
+		'isa',
+		'part_of',
+		'precise_ingredient_of',
+		'quantified_form_of',
+		'reformulated_to',
+		'reformulation_of',
+		'tradename_of'
 	);
 
 	public function __construct($url = null)

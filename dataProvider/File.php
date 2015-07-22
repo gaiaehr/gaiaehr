@@ -126,11 +126,17 @@ class File {
 	 */
 	public function fileExt($contentType){
 		$contentType = preg_replace('/^\w*:|;\w*$/', '', $contentType);
-		$map = array('application/pdf' => '.pdf', 'image/gif' => '.gif', 'image/jpeg' => '.jpg', 'image/png' => '.png', 'text/plain' => '.txt', 'text/xml' => '.xml');
+		$map = array(
+			'application/pdf' => '.pdf',
+			'image/gif' => '.gif',
+			'image/jpeg' => '.jpg',
+			'image/png' => '.png',
+			'text/plain' => '.txt',
+			'text/xml' => '.xml'
+		);
 		if(isset($map[$contentType])){
 			return $map[$contentType];
 		}
-
 		$this->error = true;
 		$this->errorMsg = 'Unsupported document content type '. $contentType;
 		return '.txt';

@@ -1354,7 +1354,6 @@ $LANG = array(
 	'referring_providers'                   => 'Referring Providers',
 	'lic'                                   => 'LIC.',
 	'phone_number'                          => 'Phone Number',
-	'cel_number'                            => 'Cel Number',
 	'fax_number'                            => 'Fax Number',
 	'codes'                                 => 'Codes',
 	'pending'                               => 'Pending',

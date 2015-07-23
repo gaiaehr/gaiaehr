@@ -478,7 +478,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.SmokeStatus',
 	                'patient.PatientPossibleDuplicates',
 
-
                 /**
                  * Load all the stores used by GaiaEHR
                  * this includes ComboBoxes, and other stores used by the web application
@@ -585,11 +584,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'areas.PatientAreas',
 	                'areas.PoolAreas',
 	                'areas.PoolDropAreas'
-
                 ],
                 views:[
-
-
 	                /**
 	                 * Load the patient window related panels
 	                 */

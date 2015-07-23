@@ -94,6 +94,15 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 				{
+					text: _('dispense'),
+					dataIndex: 'dispense',
+					with: 200,
+					editor: {
+						xtype: 'textfield',
+						maxLength: 40
+					}
+				},
+				{
 					text: _('administered'),
 					columns:[
 						{

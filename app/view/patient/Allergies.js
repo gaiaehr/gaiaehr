@@ -25,7 +25,7 @@ Ext.define('App.view.patient.Allergies', {
 		'App.ux.LiveAllergiesSearch',
 
 		'App.ux.combo.Allergies',
-		'App.ux.combo.AllergiesAbdominal',
+		'App.ux.combo.AllergiesReaction',
 		'App.ux.combo.AllergiesTypes',
 		'App.ux.combo.AllergiesLocation',
 		'App.ux.combo.AllergiesSeverity'

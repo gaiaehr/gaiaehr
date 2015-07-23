@@ -54,7 +54,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 				},
 				{
 					flex: 1,
-					text: _('cel_number'),
+					text: _('cell_number'),
 					sortable: true,
 					dataIndex: 'cel_number'
 				},
@@ -242,7 +242,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: _('cel_number'),
+									fieldLabel: _('cell_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'cel_number'

@@ -49,7 +49,11 @@ $mDebug = false;
 	 * (to make sure ths user hasn't been out for a long time)
 	 *
 	 */
-	if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true && $_SESSION['user']['site'] == $site && $_SESSION['inactive']['life'] < $_SESSION['inactive']['time']){
+	if(isset($_SESSION['user']) &&
+		$_SESSION['user']['auth'] == true &&
+		$_SESSION['user']['site'] == $site &&
+		$_SESSION['inactive']['life'] < $_SESSION['inactive']['time'])
+	{
 		/**
 		 * if mobile go to mobile app, else go to app
 		 */

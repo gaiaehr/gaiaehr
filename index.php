@@ -16,10 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+// Securing the Session
+// TODO: This should be handled by Matcha::Connect
+//session_set_cookie_params(null,null,'localhost',false, true);
+
 header('Access-Control-Allow-Origin: *');
 session_name('GaiaEHR');
-session_start();
 session_cache_limiter('private');
+session_start();
 define('_GaiaEXEC', 1);
 
 if(isset($_SESSION['hooks'])){

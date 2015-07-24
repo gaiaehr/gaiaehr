@@ -15,9 +15,6 @@ Ext.define('App.controller.Header', {
 
 	init: function() {
 		var me = this;
-
-
-
 	},
 
 	/**

@@ -99,13 +99,23 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	             * Using a anonymous function, in javascript.
 	             * Is not intended to be used globally just this once.
 	             */
-                document.write('<script type="text/javascript" src="lib/<?php print EXTJS ?>/locale/' + i18n('i18nExtFile') + '?_v' + version + '"><\/script>');
+                document.write('<script type="text/javascript" src="lib/<?php print EXTJS ?>/locale/' +
+					i18n('i18nExtFile') +
+					'?_v' +
+					version +
+					'"><\/script>'
+				);
 
 	            /**
 	             * Modules Styles
 	             */
 	            for(var s = 0; s < window.styles.length; s++){
-		            document.write('<link rel="stylesheet" type="text/style" href="' + window.styles[s] + '?_v' + version + '"><\/link>');
+		            document.write('<link rel="stylesheet" type="text/style" href="'+
+						window.styles[s] +
+						'?_v' +
+						version +
+						'"><\/link>'
+					);
 	            }
 
             })();
@@ -129,8 +139,12 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			Ext.direct.Manager.on('exception', function(e, o){
 				say(e);
 				app.alert(
-					'<p><span style="font-weight:bold">'+ (e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +'</span></p><hr>' +
-						'<p>'+ (typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +'</p>',
+					'<p><span style="font-weight:bold">'+
+					(e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +
+					'</span></p><hr>' +
+					'<p>'+
+					(typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +
+					'</p>',
 					'error'
 				);
 			});
@@ -464,7 +478,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.SmokeStatus',
 	                'patient.PatientPossibleDuplicates',
 
-
                 /**
                  * Load all the stores used by GaiaEHR
                  * this includes ComboBoxes, and other stores used by the web application
@@ -571,11 +584,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'areas.PatientAreas',
 	                'areas.PoolAreas',
 	                'areas.PoolDropAreas'
-
                 ],
                 views:[
-
-
 	                /**
 	                 * Load the patient window related panels
 	                 */

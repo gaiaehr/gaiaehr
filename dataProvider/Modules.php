@@ -35,7 +35,6 @@ class Modules {
 		$this->modulesDir = ROOT . '/modules/';
 		$this->m = MatchaModel::setSenchaModel('App.model.administration.Modules');
 		$this->setNewModules();
-
 	}
 
 	/**
@@ -176,7 +175,6 @@ class Modules {
 			$ModuleConfig = $this->getModuleConfig($module);
 			if($ModuleConfig['active']){
 				$moduleRecord = $this->m->load(['name' => $ModuleConfig['name']])->one();
-
 				if(empty($moduleRecord)){
 					$data = new stdClass();
 					$data->title = $ModuleConfig['title'];

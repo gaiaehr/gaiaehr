@@ -143,7 +143,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : _('dosis'),
+							fieldLabel : _('dose'),
 							margin : '0 0 5 0',
 							value : 0,
 							minValue : 0,

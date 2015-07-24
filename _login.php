@@ -26,7 +26,6 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
     <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
-
     <link rel="shortcut icon" href="favicon.ico">
     <script type="text/javascript">
         var app,

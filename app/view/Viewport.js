@@ -190,7 +190,6 @@ Ext.define('App.view.Viewport', {
 		    });
 	    }
 
-
 	    if(a('add_encounters')){
             me.patientCreateEncounterBtn = me.HeaderLeft.add({
                 xtype: 'button',
@@ -1256,36 +1255,24 @@ Ext.define('App.view.Viewport', {
             },
 
             notifyDrop: function(dd, e, data){
-//                say('drop record');
-//                say(data.patientData);
                 app.MainPanel.el.unmask();
 
 	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
-//		            me.VisitCheckout.el.mask(_('loading...'));
+                    //...
 	            }else if(data.patientData.eid && a('access_encounters')){
-//		            me.Encounter.el.mask(_('loading...'));
 	            }else if(data.patientData.floorPlanId === null || data.patientData.floorPlanId === 0){
-//		            me.Summary.el.mask(_('loading...'));
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
-
                     // if encounter id is set and pool area is check out....  go to Patient Checkout panel
                     if(data.patientData.eid && data.patientData.poolArea == 'Checkout'){
-
-//	                    say('checkOutPatient');
                         me.checkOutPatient(data.patientData.eid);
-
                     // if encounter id is set and and user has access to encounter area... go to Encounter panel
                     // and open the encounter
                     }else if(data.patientData.eid && a('access_encounters')){
-
-//	                    say('openEncounter');
                         me.openEncounter(data.patientData.eid);
                     // else go to patient summary
                     }else{
-
-//	                    say('openEncounter');
                         me.openPatientSummary();
                     }
                 });
@@ -1306,21 +1293,16 @@ Ext.define('App.view.Viewport', {
      * This folder will hold modules created by third-party.
      */
     loadModules: function(){
-        //say('*** Loading Modules ***');
-
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
-
 	            try{
 		            App.app.getController('Modules.' + modules[i].dir + '.Main');
 	            }catch(error){
 					app.msg(_('oops'), (_('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
 	            }
             }
-
 	        app.doLayout();
-
         });
     },
 

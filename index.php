@@ -19,7 +19,7 @@
 
 // Securing the Session
 // TODO: This should be handled by Matcha::Connect
-session_set_cookie_params(null,null,'localhost',false, true);
+session_set_cookie_params(null,'gaiaehr','localhost',false, true);
 
 header('Access-Control-Allow-Origin: *');
 session_name('GaiaEHR');

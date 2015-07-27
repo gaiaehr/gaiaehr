@@ -1595,4 +1595,8 @@ $LANG = array(
     'required'                              => 'Required',
     'optional'                              => 'Optional',
     'amendment_approval_confirmation'       => 'This will approve the amendment and commit any changes to the patient record, would you like to continue?',
+    'table'                                 => 'Table',
+    'sql'                                   => 'SQL',
+    'data'                                  => 'Data',
+    'valid'                                 => 'Valid'
 );

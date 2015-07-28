@@ -239,12 +239,6 @@ Ext.define('App.view.administration.Users', {
 															name: 'role_id',
 															allowBlank: false
 														}
-														//												{
-														//													width: 275,
-														//													xtype: 'textfield',
-														//													fieldLabel: _('taxonomy'),
-														//													name: 'taxonomy'
-														//												}
 													]
 												}
 											]
@@ -348,7 +342,9 @@ Ext.define('App.view.administration.Users', {
 													width: 150,
 													dataIndex: 'insurance_company_id',
 													renderer: function(v, meta, record){
-														return record.data.insurance_company_id + ': ' + record.data.insurance_company_name;
+														return record.data.insurance_company_id +
+															': ' +
+															record.data.insurance_company_name;
 													}
 												},
 												{

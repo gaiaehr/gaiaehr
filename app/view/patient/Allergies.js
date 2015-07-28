@@ -184,7 +184,6 @@ Ext.define('App.view.patient.Allergies', {
 								width: 225,
 								list: 79,
 								labelWidth: 70
-
 							},
 							{
 								xtype: 'gaiaehr.combo',
@@ -192,7 +191,7 @@ Ext.define('App.view.patient.Allergies', {
 								itemId: 'allergyReactionCombo',
 								name: 'reaction',
 								width: 230,
-								list: 82,
+								queryMode : 'local',
 								labelWidth: 70,
 								allowBlank: false
 							},

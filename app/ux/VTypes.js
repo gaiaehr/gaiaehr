@@ -29,20 +29,17 @@ Ext.apply(Ext.form.VTypes, {
 	},
 	nonspecialcharactersrequiredText: _('vtype_empty_3chr'),
 
-	// ---------------------------------------
-	// Validate Empty fields, empty field not allowed
-	// Less than 3 characters will be no good
-	// ---------------------------------------
-
+	/**
+	 * Validate against 3 characters minimum
+	 */
 	empty_3chr: function(val, field){
 		return val.length > 2;
 	},
 	empty_3chrText: _('vtype_empty_3chr'),
 
-	// ---------------------------------------
-	// Validate Empty fields, empty field not allowed
-	// Less than 7 characters will be no good
-	// ---------------------------------------
+	/**
+	 * Validate against 7 characters minimum
+	 */
 	empty_7chr: function(val, field){
 		return val.length > 6;
 	},
@@ -125,7 +122,7 @@ Ext.apply(Ext.form.VTypes, {
 	postalCode: function(val, field){
 		var regexObj =
 		{
-			canada: /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ]( )?\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i, //i for case-insensitive
+			canada: /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ]( )?\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i,
 			usa: /^\d{5}(-\d{4})?$/
 		};
 		// check for canada at first

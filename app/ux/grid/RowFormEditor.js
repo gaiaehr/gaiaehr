@@ -440,8 +440,6 @@ Ext.define('App.ux.grid.RowFormEditor', {
 				me.showToolTip();
 			}
 		}
-
-
 		// render display fields so they honor the column renderer/template
 		Ext.Array.forEach(me.query('>displayfield'), function(field) {
 			me.renderColumnData(field, record);

@@ -109,33 +109,6 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			items: buttons
 		}];
 
-
-		//        me.buttons = [{
-		//            action: 'update',
-		//            xtype: 'button',
-		//            handler: plugin.completeEdit,
-		//            scope: plugin,
-		//            text: me.saveBtnText,
-		//            disabled: !me.isValid,
-		//            minWidth: Ext.panel.Panel.prototype.minButtonWidth
-		//        },
-		//        {
-		//            xtype: 'button',
-		//            handler: plugin.cancelEdit,
-		//            scope: plugin,
-		//            text: me.cancelBtnText,
-		//            minWidth: Ext.panel.Panel.prototype.minButtonWidth
-		//        }];
-		//        if(plugin.enableRemove){
-		//            me.buttons.push({
-		//                xtype: 'button',
-		//                handler: plugin.completeRemove,
-		//                scope: plugin,
-		//                text: me.removeBtnText,
-		//                minWidth: Ext.panel.Panel.prototype.minButtonWidth
-		//            });
-		//        }
-
 		me.callParent(arguments);
 		form = me.getForm();
 		me.setFields();
@@ -434,12 +407,13 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			form = me.getForm(),
 			fields = form.getFields().items,
 			containers = me.query('container');
-		for(var i=0; i < fields.length; i++){
-			me.mon(fields[i], 'change', me.onFieldValueChange, me);
-		}
-		for(var k=0; k < containers.length; k++){
-			me.mon(containers[k], 'resize', me.resizeEditor, me);
-		}
+
+        for(var i=0; i < fields.length; i++){
+            me.mon(fields[i], 'change', me.onFieldValueChange, me);
+        }
+        for(var k=0; k < containers.length; k++){
+            me.mon(containers[k], 'resize', me.resizeEditor, me);
+        }
 	},
 
 	loadRecord: function(record) {

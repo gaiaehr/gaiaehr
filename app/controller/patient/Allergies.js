@@ -92,7 +92,7 @@ Ext.define('App.controller.patient.Allergies', {
 				select: me.onAllergyLiveSearchSelect
 			},
 			'#allergyLocationCombo': {
-				select: me.onAllergyLocationComboSelect
+				change: me.onAllergyLocationComboChange
 			},
 
 
@@ -142,8 +142,6 @@ Ext.define('App.controller.patient.Allergies', {
 			status_code: records[0].data.code,
 			status_code_type: records[0].data.code_type
 		});
-
-		say(record);
 	},
 
 	onAllergyLiveSearchSelect: function(cmb, records){
@@ -179,10 +177,9 @@ Ext.define('App.controller.patient.Allergies', {
 			allergy_type_code: record.data.code,
 			allergy_type_code_type: record.data.code_type
 		});
-
 	},
 
-	onAllergyLocationComboSelect: function(combo, record){
+	onAllergyLocationComboChange: function(combo, record){
 		var me = this,
 			list,
 			value = combo.getValue();

@@ -322,8 +322,14 @@ Ext.define('App.view.patient.Patient', {
 
 	getPatientImages: function(record){
 		var me = this;
-		if(me.patientImages) me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
-		if(me.patientImages) me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
+		if(me.patientImages)
+		{
+			me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
+		}
+		if(me.patientImages)
+		{
+			me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
+		}
 	},
 
 	/**

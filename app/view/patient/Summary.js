@@ -41,7 +41,17 @@ Ext.define('App.view.patient.Summary', {
 
 		app.on('patientset', function(patient){
 			if(!me.hidden){
-				me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+				me.updateTitle(
+					patient.name +
+					' - ' +
+					patient.sexSymbol +
+					' - ' +
+					patient.age.str +
+					' - (' +
+					_('patient_summary') +
+					')',
+					app.patient.readOnly, null
+				);
 			}
 
 		}, me);
@@ -361,7 +371,6 @@ Ext.define('App.view.patient.Summary', {
 					autoCancel: false,
 					errorSummary: false,
 					clicksToEdit: 2
-
 				}),
 				columns: [
 					{

@@ -1598,5 +1598,7 @@ $LANG = array(
     'table'                                 => 'Table',
     'sql'                                   => 'SQL',
     'data'                                  => 'Data',
-    'valid'                                 => 'Valid'
+    'valid'                                 => 'Valid',
+    'action'                                => 'Action',
+    'item_id'                               => 'Item ID'
 );

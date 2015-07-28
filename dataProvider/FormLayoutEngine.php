@@ -326,12 +326,6 @@ class FormLayoutEngine {
 		$data = [];
 
 		foreach($options as $i => $option){
-
-//			$isInt = false;
-//			if($i === 0 && is_numeric($option['option_value'])) {
-//				$fields[1]['type'] = 'int';
-//			}
-
 			$data[] = [
 				'option_name' => $option['option_name'],
 				'option_value' => $option['option_value']

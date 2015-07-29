@@ -21,9 +21,7 @@
 // TODO: This should be handled by Matcha::Connect
 session_set_cookie_params(null,'gaiaehr','localhost',false, true);
 
-// Is already in .htaccess
-// header('Access-Control-Allow-Origin: *');
-
+header('Access-Control-Allow-Origin: *');
 session_name('GaiaEHR');
 session_cache_limiter('private');
 session_start();

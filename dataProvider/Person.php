@@ -20,8 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Person
 {
 
-	public static function fullname($fname, $mname, $lname)
+	public static function fullname($fname, $mname, $lname, $capitalize = true)
 	{
+		if($capitalize){
+			$fname = ucwords(strtolower($fname));
+			$mname = ucwords(strtolower($mname));
+			$lname = ucwords(strtolower($lname));
+		}
+
 		if (isset($_SESSION['globals']) && isset($_SESSION['globals']['fullname']))
 		{
 			switch($_SESSION['globals']['fullname'])

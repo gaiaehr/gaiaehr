@@ -63,13 +63,7 @@ class SoapHandler {
 				'Error' => 'Error: HTTP 403 Access Forbidden'
 			];
 		}
-
 		$patient = $this->getPatient($params);
-
-		error_log(print_r($patient, true));
-		error_log(substr($patient->DateOfBirth, 0, 10));
-		error_log(gettype($patient->WebPortalAccess));
-
 		$response = [
 			'Success' => false,
 			'Error' => 'Not Authorized'
@@ -502,7 +496,6 @@ class SoapHandler {
 		print_r($error);
 		$contents = ob_get_contents();
 		ob_end_clean();
-		error_log($contents);
 	}
 
 	private function convertPatient($data, $inbound) {

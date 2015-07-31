@@ -9,3 +9,4 @@ modules/worklist
 modules/messaging
 modules/dental
 sites/*/*
+/GaiaEHR.iml

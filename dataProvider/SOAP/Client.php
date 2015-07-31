@@ -27,7 +27,7 @@ try{
 
 	$request->patient = new stdClass();
 	$request->patient->Pid = 3;
-	$request->patient->RecordNumber = 'A-000000000000021-00';
+	$request->patient->PatientAccount = 'A-000000000000021-00';
 	$request->patient->FirstName = 'RAMOS';
 	$request->patient->MiddleName = '';
 	$request->patient->LastName = 'JESSICA RAMOS';

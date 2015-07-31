@@ -17,6 +17,42 @@
  */
 
 
+Ext.override(Ext.form.Basic, {
+
+	loadRecord: function(record) {
+        this._record = record;
+
+		// added the loadrecord to the form panel
+        this.owner.fireEvent('loadrecord', this, this._record);
+
+		return this.setValues(record.getData());
+    },
+
+	reset: function(resetRecord) {
+		Ext.suspendLayouts();
+
+		var me     = this,
+			fields = me.getFields().items,
+			f,
+			fLen   = fields.length;
+
+		for (f = 0; f < fLen; f++) {
+			fields[f].reset();
+		}
+
+		Ext.resumeLayouts(true);
+
+		if (resetRecord === true) {
+			delete me._record;
+		}
+
+		// added reset event to the form panel
+		me.owner.fireEvent('reset', this);
+
+		return me;
+	},
+});
+
 Ext.override(Ext.data.writer.Writer, {
 	writeAllFields: false
 });

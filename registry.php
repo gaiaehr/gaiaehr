@@ -81,7 +81,6 @@ if(!isset($_SESSION['styles'])){
 	$_SESSION['styles'] = [];
 }
 
-
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');
 

@@ -74,9 +74,6 @@ Ext.define('App.view.administration.Roles', {
 				},
 				'-'
 			],
-			//    selModel: {
-			//        selType: 'cellmodel'
-			//    },
 			features: [
 				{
 					ftype: 'grouping'

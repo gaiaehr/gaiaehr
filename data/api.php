@@ -68,7 +68,7 @@ if(!isset($_SESSION)){
 	session_cache_limiter('private');
 }
 
-if(isset($_SESSION['install']) && $_SESSION['install'] != true){
+if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['install'] != true)){
 	if(!defined('_GaiaEXEC'))
 		define('_GaiaEXEC', 1);
 	$site  = isset($_REQUEST['site']) ? $_REQUEST['site'] : 'default';
@@ -109,7 +109,7 @@ function getREMOTING_API($API, $moduleDir = false) {
 		'url' => $url,
 		'type' => 'remoting',
 		'actions' => $actions,
-		'timeout' => 7600000
+		'timeout' => 760000000
 	]);
 }
 

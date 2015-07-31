@@ -104,7 +104,7 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 						}
 						app.notification.add(
 							'new_amendment_notification',
-							_('unread_amendment') + ' (' + response.total + ')',
+							_('pending_amendment') + ' (' + response.total + ')',
 							messages,
 							'miscellaneous.Amendments',
 							'onNewAmendmentClick'

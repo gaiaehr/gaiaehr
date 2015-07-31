@@ -55,10 +55,6 @@ class SoapHandler {
 
 
 	public function PatientPortalAuthorize($params){
-
-//		error_log('PatientPortalAuthorize');
-
-
 		$this->constructor($params);
 
 		if(!$this->isAuth()){
@@ -67,18 +63,7 @@ class SoapHandler {
 				'Error' => 'Error: HTTP 403 Access Forbidden'
 			];
 		}
-
-//		$params->RecordNumber = 'C-000000000045478-00';
-//		$params->DOB = '1941-01-09';
-//		$params->Username = 'fulano';
-//		$params->Password = 'qwerty';
-
 		$patient = $this->getPatient($params);
-
-//		error_log(print_r($patient, true));
-//		error_log(substr($patient->DateOfBirth, 0, 10));
-//		error_log(gettype($patient->WebPortalAccess));
-
 		$response = [
 			'Success' => false,
 			'Error' => 'Not Authorized'
@@ -475,19 +460,15 @@ class SoapHandler {
 	 * @return mixed|object
 	 */
 	private function getPatient($patient) {
-
 		require_once(ROOT . '/dataProvider/Patient.php');
 		$Patient = new Patient();
-
-//		if(isset($patient->Username)){
-//			$patient = $Patient->getPatientByUsername($patient->Username);
-//		} else
-		if(isset($patient->RecordNumber)){
-			$patient = $Patient->getPatientByPublicId($patient->RecordNumber);
-
-		} else {
+		if(isset($patient->PatientAccount))
+		{
+			$patient = $Patient->getPatientByUsername($patient->PatientAccount);
+		}
+		else
+		{
 			$patient = $Patient->getPatientByPid($patient->Pid);
-
 		}
 		unset($Patient);
 		return $this->patient = $patient !== false ? $this->convertPatient($patient, false) : $patient;
@@ -515,7 +496,6 @@ class SoapHandler {
 		print_r($error);
 		$contents = ob_get_contents();
 		ob_end_clean();
-		error_log($contents);
 	}
 
 	private function convertPatient($data, $inbound) {

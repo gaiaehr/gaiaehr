@@ -5786,33 +5786,6 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			items: buttons
 		}];
 
-
-		//        me.buttons = [{
-		//            action: 'update',
-		//            xtype: 'button',
-		//            handler: plugin.completeEdit,
-		//            scope: plugin,
-		//            text: me.saveBtnText,
-		//            disabled: !me.isValid,
-		//            minWidth: Ext.panel.Panel.prototype.minButtonWidth
-		//        },
-		//        {
-		//            xtype: 'button',
-		//            handler: plugin.cancelEdit,
-		//            scope: plugin,
-		//            text: me.cancelBtnText,
-		//            minWidth: Ext.panel.Panel.prototype.minButtonWidth
-		//        }];
-		//        if(plugin.enableRemove){
-		//            me.buttons.push({
-		//                xtype: 'button',
-		//                handler: plugin.completeRemove,
-		//                scope: plugin,
-		//                text: me.removeBtnText,
-		//                minWidth: Ext.panel.Panel.prototype.minButtonWidth
-		//            });
-		//        }
-
 		me.callParent(arguments);
 		form = me.getForm();
 		me.setFields();
@@ -6111,12 +6084,13 @@ Ext.define('App.ux.grid.RowFormEditor', {
 			form = me.getForm(),
 			fields = form.getFields().items,
 			containers = me.query('container');
-		for(var i=0; i < fields.length; i++){
-			me.mon(fields[i], 'change', me.onFieldValueChange, me);
-		}
-		for(var k=0; k < containers.length; k++){
-			me.mon(containers[k], 'resize', me.resizeEditor, me);
-		}
+
+        for(var i=0; i < fields.length; i++){
+            me.mon(fields[i], 'change', me.onFieldValueChange, me);
+        }
+        for(var k=0; k < containers.length; k++){
+            me.mon(containers[k], 'resize', me.resizeEditor, me);
+        }
 	},
 
 	loadRecord: function(record) {
@@ -9935,7 +9909,7 @@ Ext.define('Modules.Module', {
 	},
 
 	insertToHead: function(link){
-		Ext.getHeaad().appendChild(link);
+		Ext.getHead().appendChild(link);
 	}
 });
 Ext.define('App.model.administration.MedicationInstruction', {
@@ -10188,6 +10162,10 @@ Ext.define('App.ux.LiveRadiologySearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
+				//emptyText	: 'No matching posts found.',
+				//---------------------------------------------------------------------
+				// Custom rendering template for each item
+				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{code_text_short} ({code})</h3></div>';
 				}
@@ -10198,145 +10176,145 @@ Ext.define('App.ux.LiveRadiologySearch', {
 		me.callParent();
 	}
 });
-//Ext.define('App.model.miscellaneous.AddressBook', {
-//	extend: 'Ext.data.Model',
-//	table: {
-//		name: 'address_book',
-//		comment: 'Address Book'
-//	},
-//	fields: [
-//		{
-//			name: 'id',
-//			type: 'int'
-//		},
-//		{
-//			name: 'title',
-//			type: 'string',
-//			len: 10
-//		},
-//		{
-//			name: 'fname',
-//			type: 'string',
-//			len: 80,
-//			index: true
-//		},
-//		{
-//			name: 'mname',
-//			type: 'string',
-//			len: 80,
-//			index: true
-//		},
-//		{
-//			name: 'lname',
-//			type: 'string',
-//			len: 80,
-//			index: true
-//		},
-//		{
-//			name: 'email',
-//			type: 'string',
-//			len: 100,
-//			index: true
-//		},
-//		{
-//			name: 'direct_address',
-//			type: 'string',
-//			len: 150,
-//			index: true
-//		},
-//		{
-//			name: 'url',
-//			type: 'string',
-//			len: 150
-//		},
-//		{
-//			name: 'organization',
-//			type: 'string',
-//			len: 160
-//		},
-//		{
-//			name: 'street',
-//			type: 'string',
-//			len: 180
-//		},
-//		{
-//			name: 'street_cont',
-//			type: 'string',
-//			len: 180
-//		},
-//		{
-//			name: 'city',
-//			type: 'string',
-//			len: 80,
-//			index: true
-//		},
-//		{
-//			name: 'state',
-//			type: 'string',
-//			len: 100,
-//			index: true
-//		},
-//		{
-//			name: 'zip',
-//			type: 'string',
-//			len: 15,
-//			index: true
-//		},
-//		{
-//			name: 'country',
-//			type: 'string',
-//			len: 160
-//		},
-//		{
-//			name: 'phone',
-//			type: 'string',
-//			len: 20,
-//			index: true
-//		},
-//		{
-//			name: 'phone2',
-//			type: 'string',
-//			len: 20
-//		},
-//		{
-//			name: 'mobile',
-//			type: 'string',
-//			len: 20,
-//			comment: 'cell phone'
-//		},
-//		{
-//			name: 'fax',
-//			type: 'string',
-//			len: 20
-//		},
-//		{
-//			name: 'fullname',
-//			type: 'string',
-//			store: false,
-//			convert: function(v, record){
-//				return record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
-//			}
-//		},
-//		{
-//			name: 'notes',
-//			type: 'string',
-//			len: 600
-//		}
-//	],
-//	proxy: {
-//		type: 'direct',
-//		api: {
-//			read: 'AddressBook.getContacts',
-//			create: 'AddressBook.addContact',
-//			update: 'AddressBook.updateContact',
-//			destroy: 'AddressBook.destroyContact'
-//		},
-//		reader: {
-//			totalProperty: 'totals',
-//			root: 'data'
-//		}
-//	}
-//});
+Ext.define('App.model.miscellaneous.AddressBook', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'address_book',
+		comment: 'Address Book'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'fname',
+			type: 'string',
+			len: 80,
+			index: true
+		},
+		{
+			name: 'mname',
+			type: 'string',
+			len: 80,
+			index: true
+		},
+		{
+			name: 'lname',
+			type: 'string',
+			len: 80,
+			index: true
+		},
+		{
+			name: 'email',
+			type: 'string',
+			len: 100,
+			index: true
+		},
+		{
+			name: 'direct_address',
+			type: 'string',
+			len: 150,
+			index: true
+		},
+		{
+			name: 'url',
+			type: 'string',
+			len: 150
+		},
+		{
+			name: 'organization',
+			type: 'string',
+			len: 160
+		},
+		{
+			name: 'street',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'street_cont',
+			type: 'string',
+			len: 180
+		},
+		{
+			name: 'city',
+			type: 'string',
+			len: 80,
+			index: true
+		},
+		{
+			name: 'state',
+			type: 'string',
+			len: 100,
+			index: true
+		},
+		{
+			name: 'zip',
+			type: 'string',
+			len: 15,
+			index: true
+		},
+		{
+			name: 'country',
+			type: 'string',
+			len: 160
+		},
+		{
+			name: 'phone',
+			type: 'string',
+			len: 20,
+			index: true
+		},
+		{
+			name: 'phone2',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'mobile',
+			type: 'string',
+			len: 20,
+			comment: 'cell phone'
+		},
+		{
+			name: 'fax',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'fullname',
+			type: 'string',
+			store: false,
+			convert: function(v, record){
+				return record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
+			}
+		},
+		{
+			name: 'notes',
+			type: 'string',
+			len: 600
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'AddressBook.getContacts',
+			create: 'AddressBook.addContact',
+			update: 'AddressBook.updateContact',
+			destroy: 'AddressBook.destroyContact'
+		},
+		reader: {
+			totalProperty: 'totals',
+			root: 'data'
+		}
+	}
+});
 Ext.define('App.model.patient.CarePlanGoal', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -28053,7 +28031,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 				},
 				{
 					flex: 1,
-					text: _('cel_number'),
+					text: _('cell_number'),
 					sortable: true,
 					dataIndex: 'cel_number'
 				},
@@ -28241,7 +28219,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: _('cel_number'),
+									fieldLabel: _('cell_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'cel_number'
@@ -29382,7 +29360,7 @@ Ext.define('App.view.administration.Medications',
 						},
 						{
 							xtype : 'textfield',
-							fieldLabel : _('dosis'),
+							fieldLabel : _('dose'),
 							margin : '0 0 5 0',
 							value : 0,
 							minValue : 0,
@@ -36334,9 +36312,6 @@ Ext.define('App.controller.Header', {
 
 	init: function() {
 		var me = this;
-
-
-
 	},
 
 	/**
@@ -36768,7 +36743,7 @@ Ext.define('App.controller.Navigation', {
 	},
 
 	setUrlParams:function(params){
-		var url = './#!/';
+		var url = '#!/';
 		if(params.length > 0) url += params.join('/');
 		window.location = url;
 	},
@@ -37390,7 +37365,7 @@ Ext.define('App.controller.patient.Allergies', {
 				select: me.onAllergyLiveSearchSelect
 			},
 			'#allergyLocationCombo': {
-				select: me.onAllergyLocationComboSelect
+				change: me.onAllergyLocationComboChange
 			},
 
 
@@ -37440,8 +37415,6 @@ Ext.define('App.controller.patient.Allergies', {
 			status_code: records[0].data.code,
 			status_code_type: records[0].data.code_type
 		});
-
-		say(record);
 	},
 
 	onAllergyLiveSearchSelect: function(cmb, records){
@@ -37477,10 +37450,9 @@ Ext.define('App.controller.patient.Allergies', {
 			allergy_type_code: record.data.code,
 			allergy_type_code_type: record.data.code_type
 		});
-
 	},
 
-	onAllergyLocationComboSelect: function(combo, record){
+	onAllergyLocationComboChange: function(combo, record){
 		var me = this,
 			list,
 			value = combo.getValue();
@@ -42820,6 +42792,15 @@ Ext.define('App.view.patient.Medications', {
 					}
 				},
 				{
+					text: _('dispense'),
+					dataIndex: 'dispense',
+					with: 200,
+					editor: {
+						xtype: 'textfield',
+						maxLength: 40
+					}
+				},
+				{
 					text: _('administered'),
 					columns:[
 						{
@@ -45082,10 +45063,6 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
 				}
@@ -46023,6 +46000,7 @@ Ext.define('App.view.areas.PatientPoolAreas', {
 					store: store,
 					floorPlanId: areas[i].floor_plan_id,
 					columns: [
+						Ext.create('Ext.grid.RowNumberer'),
 						{
 							header: _('record') + ' #',
 							width: 100,
@@ -53543,10 +53521,6 @@ Ext.define('App.ux.LiveAllergiesSearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{allergy}<span style="font-weight: normal"> ({allergy_code}) </span></h3></div>';
 				}
@@ -53566,7 +53540,7 @@ Ext.define('App.view.patient.Allergies', {
 		'App.ux.LiveAllergiesSearch',
 
 		'App.ux.combo.Allergies',
-		'App.ux.combo.AllergiesAbdominal',
+		'App.ux.combo.AllergiesReaction',
 		'App.ux.combo.AllergiesTypes',
 		'App.ux.combo.AllergiesLocation',
 		'App.ux.combo.AllergiesSeverity'
@@ -53725,7 +53699,6 @@ Ext.define('App.view.patient.Allergies', {
 								width: 225,
 								list: 79,
 								labelWidth: 70
-
 							},
 							{
 								xtype: 'gaiaehr.combo',
@@ -53733,7 +53706,7 @@ Ext.define('App.view.patient.Allergies', {
 								itemId: 'allergyReactionCombo',
 								name: 'reaction',
 								width: 230,
-								list: 82,
+								queryMode : 'local',
 								labelWidth: 70,
 								allowBlank: false
 							},
@@ -55222,7 +55195,6 @@ Ext.define('App.view.Viewport', {
 		    });
 	    }
 
-
 	    if(a('add_encounters')){
             me.patientCreateEncounterBtn = me.HeaderLeft.add({
                 xtype: 'button',
@@ -56288,36 +56260,24 @@ Ext.define('App.view.Viewport', {
             },
 
             notifyDrop: function(dd, e, data){
-//                say('drop record');
-//                say(data.patientData);
                 app.MainPanel.el.unmask();
 
 	            if(data.patientData.eid && data.patientData.poolArea == 'Check Out'){
-//		            me.VisitCheckout.el.mask(_('loading...'));
+                    //...
 	            }else if(data.patientData.eid && a('access_encounters')){
-//		            me.Encounter.el.mask(_('loading...'));
 	            }else if(data.patientData.floorPlanId === null || data.patientData.floorPlanId === 0){
-//		            me.Summary.el.mask(_('loading...'));
 	            }
 
 	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
-
                     // if encounter id is set and pool area is check out....  go to Patient Checkout panel
                     if(data.patientData.eid && data.patientData.poolArea == 'Checkout'){
-
-//	                    say('checkOutPatient');
                         me.checkOutPatient(data.patientData.eid);
-
                     // if encounter id is set and and user has access to encounter area... go to Encounter panel
                     // and open the encounter
                     }else if(data.patientData.eid && a('access_encounters')){
-
-//	                    say('openEncounter');
                         me.openEncounter(data.patientData.eid);
                     // else go to patient summary
                     }else{
-
-//	                    say('openEncounter');
                         me.openPatientSummary();
                     }
                 });
@@ -56338,21 +56298,16 @@ Ext.define('App.view.Viewport', {
      * This folder will hold modules created by third-party.
      */
     loadModules: function(){
-        //say('*** Loading Modules ***');
-
         Modules.getEnabledModules(function(provider, response){
             var modules = response.result;
             for(var i = 0; i < modules.length; i++){
-
 	            try{
 		            App.app.getController('Modules.' + modules[i].dir + '.Main');
 	            }catch(error){
 					app.msg(_('oops'), (_('unable_to_load_module') + ' ' + modules[i].title + '<br>Error: ' +  error), true);
 	            }
             }
-
 	        app.doLayout();
-
         });
     },
 

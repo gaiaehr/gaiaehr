@@ -826,7 +826,7 @@ $functions[] = [
 			'document' => 'GaiaEHR site'
 		],
 		[
-			'name' => 'RecordNumber',
+			'name' => 'PatientAccount',
 			'type' => 'string',
 			'minOccurs' => '1'
 		],
@@ -834,11 +834,6 @@ $functions[] = [
 			'name' => 'DateOfBirth',
 			'type' => 'string',
 			'minOccurs' => '1'
-		],
-		[
-			'name' => 'Username',
-			'type' => 'string',
-			'minOccurs' => '0'
 		],
 		[
 			'name' => 'Password',

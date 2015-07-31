@@ -99,6 +99,6 @@ Ext.define('Modules.Module', {
 	},
 
 	insertToHead: function(link){
-		Ext.getHeaad().appendChild(link);
+		Ext.getHead().appendChild(link);
 	}
 });

@@ -1161,10 +1161,15 @@ class MatchaCUP {
 					}
 				}
 				/**
-				 * do not trim bool values
+				 * Do not trim bool, null, objects, or arrays values
 				 */
 				if($this->autoTrim &&
-                    ($type != 'bool' && $type != 'int' && $data[$col] != null && !is_object($data[$col]))
+                    ($type != 'bool' &&
+						$type != 'int' &&
+						$data[$col] != null &&
+						!is_object($data[$col]) &&
+						!is_array($data[$col])
+					)
                 ){
                     error_log('ErrorX: '.$data[$col]);
 					$record[$col] = trim($data[$col]);

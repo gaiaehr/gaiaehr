@@ -1600,5 +1600,6 @@ $LANG = array(
     'data'                                  => 'Data',
     'valid'                                 => 'Valid',
     'action'                                => 'Action',
-    'item_id'                               => 'Item ID'
+    'item_id'                               => 'Item ID',
+    'pending_amendment'                     => 'Pending Amendment(s)'
 );

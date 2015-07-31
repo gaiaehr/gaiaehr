@@ -1136,18 +1136,21 @@ class MatchaCUP {
 			 * $properties['store'] is set and is not true OR
 			 * $properties['persist'] is set and is not true OR
 			 */
-			if((!isset($properties['store']) || $properties['store']) && (!isset($properties['persist']) || $properties['persist'])){
-				$type = $properties['type'];
+			if((!isset($properties['store']) ||
+                    $properties['store']) &&
+                    (!isset($properties['persist']) || $properties['persist'])
+            ){
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else {
+                    $type = (isset($properties['type']) ? $properties['type'] : $properties['dataType']);
 					if($type == 'string' && is_string($data[$col])){
 						$data[$col] = html_entity_decode($data[$col]);
 					} elseif($type == 'date') {
 						if($data[$col] === ''){
 							$data[$col] = '0000-00-00';
 						}
-						//						$data[$col] = ($data[$col] == '' || is_null($data[$col]) ? '0000-00-00' : $data[$col]);
+						//$data[$col] = ($data[$col] == '' || is_null($data[$col]) ? '0000-00-00' : $data[$col]);
 					} elseif($type == 'array') {
 						if($data[$col] == ''){
 							$data[$col] = null;
@@ -1160,7 +1163,10 @@ class MatchaCUP {
 				/**
 				 * do not trim bool values
 				 */
-				if($this->autoTrim && ($type != 'bool' && $type != 'int' && $data[$col] != null)){
+				if($this->autoTrim &&
+                    ($type != 'bool' && $type != 'int' && $data[$col] != null && !is_object($data[$col]))
+                ){
+                    error_log('ErrorX: '.$data[$col]);
 					$record[$col] = trim($data[$col]);
 				} else {
 					$record[$col] = $data[$col];

@@ -92,6 +92,7 @@ class SoapHandler {
 	}
 
 	/**
+	 * Method to handle patient amendments from the Patient Portal
 	 * @param $params
 	 * @return array
 	 */
@@ -535,6 +536,7 @@ class SoapHandler {
 	}
 
 	/**
+	 * This is the Mapping variable
 	 * @var array
 	 */
 	private $demographicsMap = [

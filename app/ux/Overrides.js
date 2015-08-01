@@ -53,9 +53,176 @@ Ext.override(Ext.form.Basic, {
 	},
 });
 
+Ext.override(Ext.button.Button, {
+
+    acl: true,
+
+    beforeRender: function () {
+        var me = this,
+            autoEl = me.autoEl,
+            href = me.getHref(),
+            hrefTarget = me.hrefTarget;
+
+        // added
+        if(me.acl === false){
+            me.hidden = true;
+            me.disabled = true;
+        }
+
+
+        if (!me.disabled) {
+            autoEl.tabIndex = me.tabIndex;
+        }
+
+        if (href) {
+            autoEl.href = href;
+            if (hrefTarget) {
+                autoEl.target = hrefTarget;
+            }
+        }
+
+        me.callParent();
+
+        // Add all needed classes to the protoElement.
+        me.oldCls = me.getComponentCls();
+        me.addClsWithUI(me.oldCls);
+
+        // Apply the renderData to the template args
+        Ext.applyIf(me.renderData, me.getTemplateArgs());
+    },
+
+    enable: function(silent) {
+        var me = this;
+
+        //added
+        if(me.acl === false) {
+            say('enable access denied (ACL)');
+            return me;
+        }
+
+        me.callParent(arguments);
+
+        me.removeClsWithUI('disabled');
+        if (me.rendered) {
+            me.el.dom.setAttribute('tabIndex', me.tabIndex);
+        }
+
+        return me;
+    },
+
+
+
+});
+
+Ext.override(Ext.AbstractComponent, {
+
+    setDisabled : function(disabled) {
+
+        // added
+        if(!disabled && this.acl === false) {
+            say('setDisabled access denied (ACL)');
+            return this;
+        }
+
+        return this[disabled ? 'disable': 'enable']();
+    },
+
+    setVisible : function(visible) {
+
+        // added
+        if(visible && this.acl === false) {
+            say('setVisible access denied (ACL)');
+            return this;
+        }
+
+        return this[visible ? 'show': 'hide']();
+    },
+});
+
+
+Ext.override(Ext.Component, {
+
+    show: function(animateTarget, cb, scope) {
+        var me = this,
+            rendered = me.rendered;
+
+        // added
+        if(me.acl === false) {
+            say('show access denied (ACL)');
+            return me;
+        }
+
+
+        if (me.hierarchicallyHidden || (me.floating && !rendered && me.isHierarchicallyHidden())) {
+            // If this is a hierarchically hidden floating component, we need to stash
+            // the arguments to this call so that the call can be deferred until the next
+            // time syncHidden() is called.
+            if (!rendered) {
+                // If the component has not yet been rendered it requires special treatment.
+                // Normally, for rendered components we can just set the pendingShow property
+                // and syncHidden() listens to events in the hierarchyEventSource and calls
+                // show() when this component becomes hierarchically visible.  However,
+                // if the component has not yet been rendered the hierarchy event listeners
+                // have not yet been attached (since Floating is initialized during the
+                // render phase.  This means we have to initialize the hierarchy event
+                // listeners right now to ensure that the component will show itself when
+                // it becomes hierarchically visible.
+                me.initHierarchyEvents();
+            }
+            // defer the show call until next syncHidden(), but ignore animateTarget.
+            if (arguments.length > 1) {
+                arguments[0] = null;
+                me.pendingShow = arguments;
+            } else {
+                me.pendingShow = true;
+            }
+        } else if (rendered && me.isVisible()) {
+            if (me.toFrontOnShow && me.floating) {
+                me.toFront();
+            }
+        } else {
+            if (me.fireEvent('beforeshow', me) !== false) {
+                me.hidden = false;
+                delete this.getHierarchyState().hidden;
+                // Render on first show if there is an autoRender config, or if this
+                // is a floater (Window, Menu, BoundList etc).
+
+                // We suspend layouts here because floaters/autoRenders
+                // will layout when onShow is called. If the render succeeded,
+                // the layout will be trigger inside onShow, so we don't flush
+                // in the first block. If, for some reason we couldn't render, then
+                // we resume layouts and force a flush because we don't know if something
+                // will force it.
+                Ext.suspendLayouts();
+                if (!rendered && (me.autoRender || me.floating)) {
+                    me.doAutoRender();
+                    rendered = me.rendered;
+                }
+
+                if (rendered) {
+                    me.beforeShow();
+                    Ext.resumeLayouts();
+                    me.onShow.apply(me, arguments);
+                    me.afterShow.apply(me, arguments);
+                } else {
+                    Ext.resumeLayouts(true);
+                }
+            } else {
+                me.onShowVeto();
+            }
+        }
+        return me;
+    },
+
+});
+
+
 Ext.override(Ext.data.writer.Writer, {
 	writeAllFields: false
 });
+
+
+
 
 Ext.override(Ext.data.proxy.Server, {
     // remoteGroup default to true

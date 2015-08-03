@@ -258,20 +258,16 @@ class MatchaModel extends Matcha {
 			$jsSenchaModel = self::__getFileContent($fileModel);
 			if(!$jsSenchaModel)
 				throw new Exception("Error opening the Sencha model file.");
-			// remove functions at the end
-			if(preg_match("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
-				$jsSenchaModel = preg_replace("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL . '});';
-			}
+			// remove converts
+			$jsSenchaModel = preg_replace('/(?:convert:)+(?<after1>[^}]+\}+,)/i', '', $jsSenchaModel); // Ending with },
+			$jsSenchaModel = preg_replace('/(?:convert:)+(?<after1>[^}]+\}+)/i', '', $jsSenchaModel); // Ending with }
 			// get the actual Sencha Model.
 			preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
 			$jsSenchaModel = $match['extmodel'];
-			// clean convert functions with false
-			$jsSenchaModel = preg_replace('/function\(.*\){([\s\S])*?},/', "false },", $jsSenchaModel);
 			// unnecessary Ext.define functions
 			$jsSenchaModel = preg_replace('/(?P<spaces>[\t\n\r ])|(?P<sencha>[\d(),.:;A-Za-z{}]+?)|(?P<properties>\'[^\n\r\']+\')/', '$2$3', $jsSenchaModel);
 			// add quotes to proxy Ext.Direct functions
 			//$jsSenchaModel = preg_replace("/(read|create|update|destroy)([:])((\w|\.)*)/", "$1$2'$3'", $jsSenchaModel);
-
 			// wrap with double quotes to all the properties
 			$jsSenchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $jsSenchaModel);
 			// wrap with double quotes float numbers

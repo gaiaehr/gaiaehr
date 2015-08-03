@@ -258,7 +258,7 @@ class MatchaModel extends Matcha {
 			$jsSenchaModel = self::__getFileContent($fileModel);
 			if(!$jsSenchaModel)
 				throw new Exception("Error opening the Sencha model file.");
-			// remove converts on the model, Match will not use them
+			// remove converts on the model, Matcha will not use them
 			$jsSenchaModel = preg_replace('/(?:convert:)+(?<after1>[^}]+\}+,)/i', '', $jsSenchaModel); // Ending with },
 			$jsSenchaModel = preg_replace('/,[^:cenortv]+convert:[^}]+\}/i', '', $jsSenchaModel); // Ending with }
 			// get the actual Sencha Model.

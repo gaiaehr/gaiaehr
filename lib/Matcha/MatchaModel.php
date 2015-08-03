@@ -259,8 +259,12 @@ class MatchaModel extends Matcha {
 			if(!$jsSenchaModel)
 				throw new Exception("Error opening the Sencha model file.");
 			// remove converts on the model, Matcha will not use them
-			$jsSenchaModel = preg_replace('/(?:convert:)+(?<after1>[^}]+\}+,)/i', '', $jsSenchaModel); // Ending with },
-			$jsSenchaModel = preg_replace('/,[^:cenortv]+convert:[^}]+\}/i', '', $jsSenchaModel); // Ending with }
+            // Ending with },
+            // Ending with }
+            // And replace function with false values
+			$jsSenchaModel = preg_replace('/(?:convert:)+(?<after1>[^}]+\}+,)/i', '', $jsSenchaModel);
+			$jsSenchaModel = preg_replace('/,[^:cenortv]+convert:[^}]+\}/i', '', $jsSenchaModel);
+            $jsSenchaModel = preg_replace('/(?:function)+[^}]+\}+/', 'false', $jsSenchaModel);
 			// get the actual Sencha Model.
 			preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
 			$jsSenchaModel = $match['extmodel'];

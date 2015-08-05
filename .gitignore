@@ -3,4 +3,4 @@ sites/*/*
 temp/
 GaiaEHR
 GaiaEHR.iml
-modules
+modules/

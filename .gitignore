@@ -1,7 +1,8 @@
 .idea
 sites/*/*
-temp/
+temp/*
 GaiaEHR
 GaiaEHR.iml
 modules/*/*
 contrib/snomed/*
+temp

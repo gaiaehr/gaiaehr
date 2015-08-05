@@ -297,37 +297,46 @@ class MatchaModel extends Matcha {
         // Removes all Sencha and Custome functions in the model
         $Rows = explode("\n", $SenchaModel);
 
-        // Reset the count for the Curly Braces
-        // and Function Found
+        // Declare variables
         $CurlyBraceCount = 0;
         $FunctionFound = false;
-        foreach($Rows as $Row => $Data) {
+        $TopCommaPosition = null;
+        foreach($Rows as $RowIndex => $RowData) {
+            // Reset the variables
             $CanTerminate = false;
             // Ok, found a function
-            if(stripos($Data, 'function') !== false) $FunctionFound = true;
+            if(stripos($RowData, 'function') !== false) $FunctionFound = true;
             // If a function is found start deleting lines and count
             // curly braces.
             if($FunctionFound) {
-                // if the function is in between or at bottom
-                // remove the above comma
-                if(isset($Rows[$Row-1])) {
-                    if (strpos($Rows[$Row - 1], ',') !== false)
-                        $Rows[$Row - 1] = substr($Rows[$Row - 1], 0, -1);
-                }
-                // Delete lines until we find the closing curly brace
-                // this will be possible if the CurlyBraceCount is 0
-                if (strpos($Data, '{') !== false) $CurlyBraceCount++;
-                if ($CurlyBraceCount >= 1) {
-                    unset($Rows[$Row]);
+                // Record the position of the top
+                if(isset($Rows[$RowIndex-1]) && strpos($Rows[$RowIndex - 1], ',') !== false)
+                    $TopCommaPosition = $RowIndex - 1;
+                // If a open curly brace is found count it
+                if (strpos($RowData, '{') !== false) $CurlyBraceCount++;
+                // Delete lines until we find the ending closing curly brace
+                // or if a function is found. If the ending closing curly
+                // brace is found, then the deletion of line can terminate.
+                if ($CurlyBraceCount > 0) {
+                    unset($Rows[$RowIndex]);
                     $CanTerminate = true;
                 }elseif($FunctionFound){
-                    unset($Rows[$Row]);
+                    unset($Rows[$RowIndex]);
                 }
-                if (strpos($Data, '}') !== false) $CurlyBraceCount--;
-                if ($CurlyBraceCount == 0 && $CanTerminate) $FunctionFound = false;
+                // If a curly brace without a comma was found just count minus 1
+                // curly brace. But if a curly brace with a comma was found
+                // count minus 1 curly brace, and tell not remove the comma.
+                if (strpos($RowData, '}') !== false && strpos($RowData, '},') === false) {
+                    $CurlyBraceCount--;
+                    if (strpos($Rows[$TopCommaPosition], ',') !== false)
+                        $Rows[$TopCommaPosition] = substr($Rows[$TopCommaPosition], 0, -1);
+                } elseif(strpos(trim($RowData), '},') !== false){
+                    $CurlyBraceCount--;
+                    unset($Rows[$RowIndex]);
+                    $FunctionFound = false;
+                }
             }
         }
-        $Rows = array_values($Rows);
         $SenchaModel = implode("\n", $Rows);
 
         // get the actual Sencha Model. without comments

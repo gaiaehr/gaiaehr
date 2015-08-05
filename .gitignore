@@ -8,5 +8,6 @@ modules/erx
 modules/imageforms
 modules/phimail
 sites/*/*
-GaiaEHR/*
 temp/
+GaiaEHR
+GaiaEHR.iml

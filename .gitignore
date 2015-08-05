@@ -3,6 +3,6 @@ sites/*/*
 temp/*
 GaiaEHR
 GaiaEHR.iml
-modules/*/*
 contrib/snomed/*
 temp
+/modules/*/*

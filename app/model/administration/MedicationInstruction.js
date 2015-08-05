@@ -17,40 +17,40 @@
  */
 
 Ext.define('App.model.administration.MedicationInstruction', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'rxinstructions'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'rxcui',
-			type: 'string',
-			index: true
-		},
-		{
-			name: 'occurrence',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'instruction',
-			type: 'string',
-			len: 140
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Rxnorm.getMedicationInstructions',
-			create: 'Rxnorm.addMedicationInstruction',
-			update: 'Rxnorm.updateMedicationInstructions',
-			destroy: 'Rxnorm.destroyMedicationInstructions'
-		},
-		remoteGroup: false
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'rxinstructions'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'rxcui',
+            type: 'string',
+            index: true
+        },
+        {
+            name: 'occurrence',
+            type: 'int',
+            index: true
+        },
+        {
+            name: 'instruction',
+            type: 'string',
+            len: 140
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Rxnorm.getMedicationInstructions',
+            create: 'Rxnorm.addMedicationInstruction',
+            update: 'Rxnorm.updateMedicationInstructions',
+            destroy: 'Rxnorm.destroyMedicationInstructions'
+        },
+        remoteGroup: false
+    }
 });
 

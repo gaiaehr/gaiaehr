@@ -22,24 +22,75 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 		name: 'patientcalendarevents',
 		comment: 'Patient Calendar Events'
 	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Patient Calendar Event ID'},
-		{name: 'user_id', type: 'int'},
-		{name: 'category', type: 'int'},
-		{name: 'facility', type: 'int'},
-		{name: 'billing_facillity', type: 'int'},
-		{name: 'patient_id', type: 'int'},
-		{name: 'title', type: 'string'},
-		{name: 'status', type: 'string'},
-		{name: 'start', type: 'date', dateFormat: 'Y-m-d H:s:i'},
-		{name: 'end', type: 'date', dateFormat: 'Y-m-d H:s:i'},
-		{name: 'data', type: 'string'},
-		{name: 'rrule', type: 'string'},
-		{name: 'loc', type: 'string'},
-		{name: 'notes', type: 'string'},
-		{name: 'url', type: 'string'},
-		{name: 'ad', type: 'string'}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Patient Calendar Event ID'
+        },
+        {
+            name: 'user_id',
+            type: 'int'
+        },
+        {
+            name: 'category',
+            type: 'int'
+        },
+        {
+            name: 'facility',
+            type: 'int'
+        },
+        {
+            name: 'billing_facillity',
+            type: 'int'
+        },
+        {
+            name: 'patient_id',
+            type: 'int'
+        },
+        {
+            name: 'title',
+            type: 'string'
+        },
+        {
+            name: 'status',
+            type: 'string'
+        },
+        {
+            name: 'start',
+            type: 'date',
+            dateFormat: 'Y-m-d H:s:i'
+        },
+        {
+            name: 'end',
+            type: 'date',
+            dateFormat: 'Y-m-d H:s:i'
+        },
+        {
+            name: 'data',
+            type: 'string'
+        },
+        {
+            name: 'rrule',
+            type: 'string'
+        },
+        {
+            name: 'loc',
+            type: 'string'
+        },
+        {
+            name: 'notes',
+            type: 'string'
+        },
+        {
+            name: 'url',
+            type: 'string'
+        },
+        {
+            name: 'ad',
+            type: 'string'
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {

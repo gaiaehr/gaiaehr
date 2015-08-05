@@ -19,16 +19,47 @@
 Ext.define('App.model.patient.PatientArrivalLog', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'id', type: 'int', comment: 'Patient Arrival Log ID'},
-		{name: 'area_id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'time', type: 'string'},
-		{name: 'name', type: 'string'},
-		{name: 'status', type: 'string'},
-		{name: 'area', type: 'string'},
-		{name: 'warning', type: 'bool'},
-		{name: 'warningMsg', type: 'string'},
-		{name: 'isNew', type: 'bool'}
+		{
+            name: 'id',
+            type: 'int',
+            comment: 'Patient Arrival Log ID'
+        },
+		{
+            name: 'area_id',
+            type: 'int'
+        },
+		{
+            name: 'pid',
+            type: 'int'
+        },
+		{
+            name: 'time',
+            type: 'string'
+        },
+		{
+            name: 'name',
+            type: 'string'
+        },
+		{
+            name: 'status',
+            type: 'string'
+        },
+		{
+            name: 'area',
+            type: 'string'
+        },
+		{
+            name: 'warning',
+            type: 'bool'
+        },
+		{
+            name: 'warningMsg',
+            type: 'string'
+        },
+		{
+            name: 'isNew',
+            type: 'bool'
+        }
 	],
 	proxy: {
 		type: 'direct',

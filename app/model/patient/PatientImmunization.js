@@ -94,9 +94,6 @@ Ext.define('App.model.patient.PatientImmunization', {
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-
-				say(record.data);
-
 				return record.data.administered_title + ' ' +
 					record.data.administered_fname + ' ' +
 					(record.data.administered_mname || '') + ' ' +

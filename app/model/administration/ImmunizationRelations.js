@@ -17,29 +17,46 @@
  */
 
 Ext.define('App.model.administration.ImmunizationRelations', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'immunizationrelations',
-		comment: 'Immunization Relations'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Immunization Relations ID'},
-		{name: 'immunization_id', type: 'int'},
-		{name: 'foreign_id', type: 'int'},
-		{name: 'code' },
-		{name: 'code_text', type: 'string' },
-		{name: 'code_type' }
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'immunizationrelations',
+        comment: 'Immunization Relations'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Immunization Relations ID'
+        },
+        {
+            name: 'immunization_id',
+            type: 'int'
+        },
+        {
+            name: 'foreign_id',
+            type: 'int'
+        },
+        {
+            name: 'code'
+        },
+        {
+            name: 'code_text',
+            type: 'string'
+        },
+        {
+            name: 'code_type'
+        }
 
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'PreventiveCare.getRelations',
-			create: 'PreventiveCare.addRelations',
-			destroy: 'PreventiveCare.removeRelations'
-		},
-		writer: {
-			writeAllFields: true
-		}
-	}
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'PreventiveCare.getRelations',
+            create: 'PreventiveCare.addRelations',
+            destroy: 'PreventiveCare.removeRelations'
+        },
+        writer: {
+            writeAllFields: true
+        }
+    }
 });

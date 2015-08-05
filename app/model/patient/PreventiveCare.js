@@ -18,19 +18,48 @@
 
 Ext.define('App.model.patient.PreventiveCare', {
 	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int', comment: 'Preventive Care ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'description'},
-		{name: 'date', dateFormat: 'Y-m-d'},
-		{name: 'observation'},
-		{name: 'type'},
-		{name: 'dismiss'},
-		{name: 'reason'},
-		{name: 'alert', type: 'bool'}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Preventive Care ID'
+        },
+        {
+            name: 'pid',
+            type: 'int'
+        },
+        {
+            name: 'eid',
+            type: 'int'
+        },
+        {
+            name: 'uid',
+            type: 'int'
+        },
+        {
+            name: 'description'
+        },
+        {
+            name: 'date',
+            dateFormat: 'Y-m-d'
+        },
+        {
+            name: 'observation'
+        },
+        {
+            name: 'type'
+        },
+        {
+            name: 'dismiss'
+        },
+        {
+            name: 'reason'
+        },
+        {
+            name: 'alert',
+            type: 'bool'
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {

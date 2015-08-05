@@ -22,19 +22,50 @@ Ext.define('App.model.patient.PatientLabsResults', {
 		name: 'patientlabsresults',
 		comment: 'Patient Labs Results'
 	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Patient Labs Results ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'auth_uid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'document_id', type: 'int'},
-		{name: 'document_url'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:s:i'},
-		{name: 'data'},
-		{name: 'columns'},
-		{name: 'parent_id'}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Patient Labs Results ID'
+        },
+        {
+            name: 'pid',
+            type: 'int'
+        },
+        {
+            name: 'uid',
+            type: 'int'
+        },
+        {
+            name: 'auth_uid',
+            type: 'int'
+        },
+        {
+            name: 'eid',
+            type: 'int'
+        },
+        {
+            name: 'document_id',
+            type: 'int'
+        },
+        {
+            name: 'document_url'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:s:i'
+        },
+        {
+            name: 'data'
+        },
+        {
+            name: 'columns'
+        },
+        {
+            name: 'parent_id'
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {

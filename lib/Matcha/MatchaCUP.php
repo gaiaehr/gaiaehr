@@ -1171,7 +1171,6 @@ class MatchaCUP {
 						!is_array($data[$col])
 					)
                 ){
-                    error_log('ErrorX: '.$data[$col]);
 					$record[$col] = trim($data[$col]);
 				} else {
 					$record[$col] = $data[$col];

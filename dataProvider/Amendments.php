@@ -57,6 +57,15 @@ class Amendments {
 		return $this->a->save($params);
 	}
 
+    /**
+     * This method will update the patient demographic data into the database
+     * Remember that this method is also used by the Amendments Request to change
+     * the patient demographic data.
+     *
+     * TODO: Return the response back to GaiaPHR
+     * @param $params
+     * @return array|object
+     */
 	public function updateAmendment($params) {
 		return $this->a->save($params);
 	}
@@ -84,9 +93,7 @@ class Amendments {
 			$filter->filter[2]->property = 'assigned_to_uid';
 			$filter->filter[2]->value = '0';
 		}
-
 		return $this->getAmendments($filter);
-
 	}
 
 	public function getUnViewedAmendments($getUnAssigned){
@@ -108,9 +115,7 @@ class Amendments {
 			$filter->filter[2]->property = 'assigned_to_uid';
 			$filter->filter[2]->value = '0';
 		}
-
 		return $this->getAmendments($filter);
-
 	}
 
 }

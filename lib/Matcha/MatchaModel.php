@@ -258,28 +258,9 @@ class MatchaModel extends Matcha {
 			$jsSenchaModel = self::__getFileContent($fileModel);
 			if(!$jsSenchaModel)
 				throw new Exception("Error opening the Sencha model file.");
-			// remove functions at the end
-			if(preg_match("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", $jsSenchaModel)){
-				$jsSenchaModel = preg_replace("/(?<!convert\: )function\([\r\n\t\w \-!$%^&*()_+|~=`\[\]:\";'<>?,.\/{}]*/", '" "', $jsSenchaModel) . PHP_EOL . '});';
-			}
-			// get the actual Sencha Model.
-			preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $jsSenchaModel, $match);
-			$jsSenchaModel = $match['extmodel'];
-			// clean convert functions with false
-			$jsSenchaModel = preg_replace('/function\(.*\){([\s\S])*?},/', "false },", $jsSenchaModel);
-			// unnecessary Ext.define functions
-			$jsSenchaModel = preg_replace('/(?P<spaces>[\t\n\r ])|(?P<sencha>[\d(),.:;A-Za-z{}]+?)|(?P<properties>\'[^\n\r\']+\')/', '$2$3', $jsSenchaModel);
-			// add quotes to proxy Ext.Direct functions
-			//$jsSenchaModel = preg_replace("/(read|create|update|destroy)([:])((\w|\.)*)/", "$1$2'$3'", $jsSenchaModel);
 
-			// wrap with double quotes to all the properties
-			$jsSenchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $jsSenchaModel);
-			// wrap with double quotes float numbers
-			$jsSenchaModel = preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $jsSenchaModel);
-
-			// replace single quotes for double quotes
-			// TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
-			$jsSenchaModel = preg_replace("(')", '"', $jsSenchaModel);
+            $jsSenchaModel = self::__CleanSenchaModel($jsSenchaModel);
+            //error_log(print_r($jsSenchaModel,true));
 
 			$model = (array)json_decode($jsSenchaModel, true);
 			if(!count($model))
@@ -299,6 +280,74 @@ class MatchaModel extends Matcha {
 			MatchaErrorHandler::__errorProcess($e);
 			return false;
 		}
+	}
+
+    /**
+     * Method to Clean the Sencha Model file from JS functions, variables, loops, ect.
+     * @param $SenchaModel
+     * @return mixed
+     */
+	static public function __CleanSenchaModel($SenchaModel)
+	{
+        // Fist convert to CFLF to LF of the Sencha Model
+        // This will deal with Linux, Apple and Windows
+        $SenchaModel = str_replace("\r\n", "\n", $SenchaModel);
+        $SenchaModel = str_replace("\r", "\n", $SenchaModel);
+
+        // Removes all Sencha and Custome functions in the model
+        $Rows = explode("\n", $SenchaModel);
+
+        // Reset the count for the Curly Braces
+        // and Function Found
+        $CurlyBraceCount = 0;
+        $FunctionFound = false;
+        foreach($Rows as $Row => $Data) {
+            $CanTerminate = false;
+            // Ok, found a function
+            if(stripos($Data, 'function') !== false) $FunctionFound = true;
+            // If a function is found start deleting lines and count
+            // curly braces.
+            if($FunctionFound) {
+                // if the function is in between or at bottom
+                // remove the above comma
+                if(isset($Rows[$Row-1])) {
+                    if (strpos($Rows[$Row - 1], ',') !== false)
+                        $Rows[$Row - 1] = substr($Rows[$Row - 1], 0, -1);
+                }
+                // Delete lines until we find the closing curly brace
+                // this will be possible if the CurlyBraceCount is 0
+                if (strpos($Data, '{') !== false) $CurlyBraceCount++;
+                if ($CurlyBraceCount >= 1) {
+                    unset($Rows[$Row]);
+                    $CanTerminate = true;
+                }elseif($FunctionFound){
+                    unset($Rows[$Row]);
+                }
+                if (strpos($Data, '}') !== false) $CurlyBraceCount--;
+                if ($CurlyBraceCount == 0 && $CanTerminate) $FunctionFound = false;
+            }
+        }
+        $Rows = array_values($Rows);
+        $SenchaModel = implode("\n", $Rows);
+
+        // get the actual Sencha Model. without comments
+        preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $SenchaModel, $match);
+        $SenchaModel = $match['extmodel'];
+
+        // unnecessary Ext.define functions
+        $SenchaModel = preg_replace('/(?P<spaces>[\t\n\r ])|(?P<sencha>[\d(),.:;A-Za-z{}]+?)|(?P<properties>\'[^\n\r\']+\')/', '$2$3', $SenchaModel);
+
+        // wrap with double quotes to all the properties
+        $SenchaModel = preg_replace('/(,|\{)(\w*):/', "$1\"$2\":", $SenchaModel);
+
+        // wrap with double quotes float numbers
+        $SenchaModel = preg_replace("/([0-9]+\.[0-9]+)/", "\"$1\"", $SenchaModel);
+
+        // replace single quotes for double quotes
+        // TODO: refine this to make sure doesn't replace apostrophes used in comments. example: don't
+        $SenchaModel = preg_replace("(')", '"', $SenchaModel);
+
+        return $SenchaModel;
 	}
 
 	/**
@@ -688,7 +737,7 @@ class MatchaModel extends Matcha {
 			case 'SMALLINT';
 			case 'MEDIUMINT';
 			case 'INT';
-			case 'INTEGER';
+            case 'INTEGER';
 			case 'BIGINT':
 				$SenchaType = 'int';
 				break;

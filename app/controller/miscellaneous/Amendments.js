@@ -293,7 +293,6 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 
 		messageField.allowBlank = true;
 
-
 		Ext.Msg.show({
 			title: _('wait'),
 			msg: _('amendment_approval_confirmation'),
@@ -327,14 +326,12 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 					record.save({
 						callback: function(){
 							app.msg(_('sweet'), _('record_saved'));
-
 							app.setPatient(record.data.pid, null, function(){
 								app.openPatientSummary();
 							});
 
 						}
 					});
-
 					me.getAmendmentDetailsWindow().close();
 				}
 			}

@@ -17,87 +17,86 @@
  */
 
 Ext.define('App.model.administration.ProviderCredentialization', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'provider_credentializations'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'provider_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'insurance_company_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'insurance_company_name',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'start_date',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d',
-			index: true
-		},
-		{
-			name: 'end_date',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d',
-			index: true
-		},
-		{
-			name: 'credentialization_notes',
-			type: 'string'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			store: false,
-			convert: function(v, record){
-				var now = new Date();
-
-				return record.data.start_date <= now && record.data.end_date >= now
-			}
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Providers.getProviderCredentializations',
-			create: 'Providers.addProviderCredentialization',
-			update: 'Providers.updateProviderCredentialization',
-			destroy: 'Providers.deleteProviderCredentialization'
-		},
-		reader: {
-			root: 'data'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'provider_credentializations'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'provider_id',
+            type: 'int',
+            index: true
+        },
+        {
+            name: 'insurance_company_id',
+            type: 'int',
+            index: true
+        },
+        {
+            name: 'insurance_company_name',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'start_date',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d',
+            index: true
+        },
+        {
+            name: 'end_date',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d',
+            index: true
+        },
+        {
+            name: 'credentialization_notes',
+            type: 'string'
+        },
+        {
+            name: 'active',
+            type: 'bool',
+            store: false,
+            convert: function (v, record) {
+                var now = new Date();
+                return record.data.start_date <= now && record.data.end_date >= now
+            }
+        },
+        {
+            name: 'create_uid',
+            type: 'int'
+        },
+        {
+            name: 'create_date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'update_uid',
+            type: 'int'
+        },
+        {
+            name: 'update_date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Providers.getProviderCredentializations',
+            create: 'Providers.addProviderCredentialization',
+            update: 'Providers.updateProviderCredentialization',
+            destroy: 'Providers.deleteProviderCredentialization'
+        },
+        reader: {
+            root: 'data'
+        }
+    }
 });

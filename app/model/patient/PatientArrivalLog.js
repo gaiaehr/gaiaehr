@@ -50,8 +50,8 @@ Ext.define('App.model.patient.PatientArrivalLog', {
         },
 		{
             name: 'warning',
-            type: 'bool' +
-            ''},
+            type: 'bool'
+        },
 		{
             name: 'warningMsg',
             type: 'string'

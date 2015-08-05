@@ -19,8 +19,17 @@
 Ext.define('App.model.patient.PatientsLabOrderItems', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{ name: 'id', type: 'int' },
-		{ name: 'loinc', type: 'string' },
-		{ name: 'title', type: 'string' }
+		{
+            name: 'id',
+            type: 'int'
+        },
+		{
+            name: 'loinc',
+            type: 'string'
+        },
+		{
+            name: 'title',
+            type: 'string'
+        }
 	]
 });

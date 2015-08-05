@@ -19,14 +19,37 @@
 Ext.define('App.model.patient.EncounterCPTsICDs', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{ name: 'id', type: 'string' },
-		{ name: 'pid', type: 'int' },
-		{ name: 'eid', type: 'int' },
-		{ name: 'code', type: 'string' },
-		{ name: 'code_type', type: 'string' },
-		{ name: 'code_text_medium', type: 'string' },
-		{ name: 'dx_pointers', type: 'string' },
-		{ name: 'dx_children'}
+		{
+			name: 'id',
+			type: 'string'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'eid',
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'string'
+		},
+		{
+			name: 'code_type',
+			type: 'string'
+		},
+		{
+			name: 'code_text_medium',
+			type: 'string'
+		},
+		{
+			name: 'dx_pointers',
+			type: 'string'
+		},
+		{
+			name: 'dx_children'
+		}
 	],
 	proxy: {
 		type: 'direct',

@@ -17,40 +17,40 @@
  */
 
 Ext.define('App.model.administration.Lists', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'combo_lists',
-		comment: 'Combo List'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'List Options ID'
-		},
-		{
-			name: 'title',
-			type: 'string',
-			comment: 'Title of the combo'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			comment: 'Active?'
-		},
-		{
-			name: 'in_use',
-			type: 'bool',
-			persist: false
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Lists.getLists',
-			create: 'Lists.addList',
-			update: 'Lists.updateList',
-			destroy: 'Lists.deleteList'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'combo_lists',
+        comment: 'Combo List'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'List Options ID'
+        },
+        {
+            name: 'title',
+            type: 'string',
+            comment: 'Title of the combo'
+        },
+        {
+            name: 'active',
+            type: 'bool',
+            comment: 'Active?'
+        },
+        {
+            name: 'in_use',
+            type: 'bool',
+            persist: false
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Lists.getLists',
+            create: 'Lists.addList',
+            update: 'Lists.updateList',
+            destroy: 'Lists.deleteList'
+        }
+    }
 });

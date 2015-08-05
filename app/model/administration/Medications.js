@@ -17,61 +17,61 @@
  */
 
 Ext.define('App.model.administration.Medications', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{
-			name: 'RXCUI',
-			type: 'auto'
-		},
-		{
-			name: 'CODE',
-			type: 'auto'
-		},
-		{
-			name: 'STR',
-			type: 'auto'
-		},
-		{
-			name: 'DST',
-			type: 'auto'
-		},
-		{
-			name: 'DRT',
-			type: 'auto'
-		},
-		{
-			name: 'DDF',
-			type: 'auto'
-		},
-		{
-			name: 'DDFA',
-			type: 'auto'
-		},
-		{
-			name: 'RXN_QUANTITY',
-			type: 'auto'
-		},
-		{
-			name: 'SAB',
-			type: 'auto'
-		},
-		{
-			name: 'RXAUI',
-			type: 'auto'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Rxnorm.getRXNORMList'
-		},
-		reader: {
-			totalProperty: 'totals',
-			root: 'data'
-		},
-		filterParam: 'query',
-		encodeFilters: function(filters){
-			return filters[0].value;
-		}
-	}
+    extend: 'Ext.data.Model',
+    fields: [
+        {
+            name: 'RXCUI',
+            type: 'auto'
+        },
+        {
+            name: 'CODE',
+            type: 'auto'
+        },
+        {
+            name: 'STR',
+            type: 'auto'
+        },
+        {
+            name: 'DST',
+            type: 'auto'
+        },
+        {
+            name: 'DRT',
+            type: 'auto'
+        },
+        {
+            name: 'DDF',
+            type: 'auto'
+        },
+        {
+            name: 'DDFA',
+            type: 'auto'
+        },
+        {
+            name: 'RXN_QUANTITY',
+            type: 'auto'
+        },
+        {
+            name: 'SAB',
+            type: 'auto'
+        },
+        {
+            name: 'RXAUI',
+            type: 'auto'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Rxnorm.getRXNORMList'
+        },
+        reader: {
+            totalProperty: 'totals',
+            root: 'data'
+        },
+        filterParam: 'query',
+        encodeFilters: function (filters) {
+            return filters[0].value;
+        }
+    }
 });

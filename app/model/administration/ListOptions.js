@@ -17,67 +17,67 @@
  */
 
 Ext.define('App.model.administration.ListOptions', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'combo_lists_options',
-		comment: 'Combo List Options'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'List Options ID'
-		},
-		{
-			name: 'list_id',
-			type: 'int',
-			comment: 'List ID'
-		},
-		{
-			name: 'option_value',
-			type: 'string',
-			comment: 'Value'
-		},
-		{
-			name: 'option_name',
-			type: 'string',
-			comment: 'Name'
-		},
-		{
-			name: 'code',
-			type: 'string',
-			len: 15,
-			index: true,
-			comment: 'value code'
-		},
-		{
-			name: 'code_type',
-			type: 'string',
-			len: 10,
-			comment: 'CPT4 LOINC SNOMEDCT ICD9 ICD10 RXNORM'
-		},
-		{
-			name: 'seq',
-			type: 'int',
-			comment: 'Sequence'
-		},
-		{
-			name: 'notes',
-			type: 'string',
-			comment: 'Notes'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			comment: 'Active?'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Lists.getOptions',
-			create: 'Lists.addOption',
-			update: 'Lists.updateOption'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'combo_lists_options',
+        comment: 'Combo List Options'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'List Options ID'
+        },
+        {
+            name: 'list_id',
+            type: 'int',
+            comment: 'List ID'
+        },
+        {
+            name: 'option_value',
+            type: 'string',
+            comment: 'Value'
+        },
+        {
+            name: 'option_name',
+            type: 'string',
+            comment: 'Name'
+        },
+        {
+            name: 'code',
+            type: 'string',
+            len: 15,
+            index: true,
+            comment: 'value code'
+        },
+        {
+            name: 'code_type',
+            type: 'string',
+            len: 10,
+            comment: 'CPT4 LOINC SNOMEDCT ICD9 ICD10 RXNORM'
+        },
+        {
+            name: 'seq',
+            type: 'int',
+            comment: 'Sequence'
+        },
+        {
+            name: 'notes',
+            type: 'string',
+            comment: 'Notes'
+        },
+        {
+            name: 'active',
+            type: 'bool',
+            comment: 'Active?'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Lists.getOptions',
+            create: 'Lists.addOption',
+            update: 'Lists.updateOption'
+        }
+    }
 });

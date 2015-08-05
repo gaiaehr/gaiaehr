@@ -1,0 +1,53 @@
+{
+	"title": "Image Base Form",
+	"name": "imageforms",
+	"version": "1.0.0",
+	"extjs_version": "4.1.1a",
+	"author": "Ernesto J Rodriguez",
+	"description": "Module to add image forms functionality",
+	"dir": "imageforms",
+	"active": true,
+	"debug": false,
+	"locales": [
+		"en_US",
+		"es_PR"
+	],
+	"actionsAPI": {
+		"ImageForm": {
+			"methods": {
+				"getImages": {
+					"len": 1
+				},
+				"addImage": {
+					"len": 1
+				},
+				"updateImage": {
+					"len": 1
+				},
+				"destroyImage": {
+					"len": 1
+				}
+			}
+		}
+	},
+	"extjs": [
+		{
+			"file": "ModuleModel.js",
+			"path": "model/"
+		},
+		{
+			"file": "store/ModuleStore.js",
+			"path": "store/"
+		},
+		{
+			"file": "view/reportCenter.js",
+			"path": "view/"
+		}
+	],
+	"install": [
+		{
+			"file": "sql/install_schema.sql"
+		}
+	]
+
+}

@@ -1,13 +1,6 @@
 .idea
-modules/worklist
-modules/dental
-modules/advancetasks
-modules/appointments
-modules/billing
-modules/erx
-modules/imageforms
-modules/phimail
 sites/*/*
 temp/
 GaiaEHR
 GaiaEHR.iml
+modules

@@ -4,3 +4,13 @@ temp/
 GaiaEHR
 GaiaEHR.iml
 modules/*/*
+modules/advancetasks
+modules/appointments
+modules/billing
+modules/dental
+modules/erx
+modules/imageforms
+modules/patienteducation
+modules/phimail
+modules/reportcenter
+modules/worklist

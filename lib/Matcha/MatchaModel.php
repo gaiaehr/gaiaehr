@@ -260,7 +260,6 @@ class MatchaModel extends Matcha {
 				throw new Exception("Error opening the Sencha model file.");
 
             $jsSenchaModel = self::__CleanSenchaModel($jsSenchaModel);
-            //error_log(print_r($jsSenchaModel,true));
 
 			$model = (array)json_decode($jsSenchaModel, true);
 			if(!count($model))
@@ -289,6 +288,9 @@ class MatchaModel extends Matcha {
      */
 	static public function __CleanSenchaModel($SenchaModel)
 	{
+        // Delete blank lines from the SenchaModel string
+        $SenchaModel = preg_replace('/^[ \t]*[\r\n]+/m', '', $SenchaModel);
+
         // Fist convert to CFLF to LF of the Sencha Model
         // This will deal with Linux, Apple and Windows
         $SenchaModel = str_replace("\r\n", "\n", $SenchaModel);
@@ -296,38 +298,47 @@ class MatchaModel extends Matcha {
 
         // Removes all Sencha and Custome functions in the model
         $Rows = explode("\n", $SenchaModel);
-
         // Reset the count for the Curly Braces
         // and Function Found
         $CurlyBraceCount = 0;
         $FunctionFound = false;
-        foreach($Rows as $Row => $Data) {
-            $CanTerminate = false;
+        $TopCommaLinePosition = null;
+        $OpenBraceFound = false;
+        foreach ($Rows as $RowIndex => $RowData) {
             // Ok, found a function
-            if(stripos($Data, 'function') !== false) $FunctionFound = true;
+            if (stripos($RowData, 'function') !== false) {
+                $FunctionFound = true;
+                $OpenBraceFound = false;
+            }
             // If a function is found start deleting lines and count
             // curly braces.
-            if($FunctionFound) {
-                // if the function is in between or at bottom
-                // remove the above comma
-                if(isset($Rows[$Row-1])) {
-                    if (strpos($Rows[$Row - 1], ',') !== false)
-                        $Rows[$Row - 1] = substr($Rows[$Row - 1], 0, -1);
+            if ($FunctionFound) {
+                // Detect and record the position of the first comma
+                if(isset($Rows[$RowIndex-1]) && strpos($Rows[$RowIndex-1], ',') !== false)
+                    $TopCommaLinePosition = $RowIndex-1;
+                // Found a curly brace, and also
+                if (strpos($RowData, '{') !== false) {
+                    $CurlyBraceCount++;
+                    $OpenBraceFound = true;
                 }
-                // Delete lines until we find the closing curly brace
-                // this will be possible if the CurlyBraceCount is 0
-                if (strpos($Data, '{') !== false) $CurlyBraceCount++;
-                if ($CurlyBraceCount >= 1) {
-                    unset($Rows[$Row]);
-                    $CanTerminate = true;
-                }elseif($FunctionFound){
-                    unset($Rows[$Row]);
+                if (strpos($RowData, '}') !== false) $CurlyBraceCount--;
+                // If we found a function and the curly brace count are more than
+                // one, delete the line.
+                if ($FunctionFound && $CurlyBraceCount > 0) unset($Rows[$RowIndex]);
+                // If the curly brace count if 0, delete the last brace.
+                if($CurlyBraceCount == 0) unset($Rows[$RowIndex]);
+                // If the count of curly braces are 0 and the first brace has
+                // been found, now we can call off the Function Found.
+                if($CurlyBraceCount == 0 && $OpenBraceFound) $FunctionFound = false;
+                if($FunctionFound == false)
+                {
+                    if(strpos($Rows[$RowIndex+1], '},') !== false)
+                        $Rows[$TopCommaLinePosition] = substr($Rows[$TopCommaLinePosition], 0, -1);
+                    if(strpos($Rows[$RowIndex+1], '});') !== false)
+                        $Rows[$TopCommaLinePosition] = substr($Rows[$TopCommaLinePosition], 0, -1);
                 }
-                if (strpos($Data, '}') !== false) $CurlyBraceCount--;
-                if ($CurlyBraceCount == 0 && $CanTerminate) $FunctionFound = false;
             }
         }
-        $Rows = array_values($Rows);
         $SenchaModel = implode("\n", $Rows);
 
         // get the actual Sencha Model. without comments

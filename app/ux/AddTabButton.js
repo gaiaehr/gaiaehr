@@ -81,6 +81,7 @@ Ext.define('App.ux.AddTabButton', {
 	 */
 	onAddTabClick: function(){
 		var tab = this.tabPanel.add(this.panelConfig);
+		this.tabPanel.fireEvent('tabclick', tab, this.tabPanel);
 		this.tabPanel.setActiveTab(tab);
 	},
 

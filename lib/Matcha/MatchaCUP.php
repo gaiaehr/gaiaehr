@@ -1131,12 +1131,20 @@ class MatchaCUP {
 
 		foreach($columns as $col){
 			$properties = (array)MatchaModel::__getFieldProperties($col, $this->model);
-			/**
-			 * Don't parse the value (skip it) if...
-			 * $properties['store'] is set and is not true OR
-			 * $properties['persist'] is set and is not true OR
-			 */
-            $type = (isset($properties['dataType']) ? $properties['dataType'] : $properties['type']);
+            // Check if the type property is set
+            // but if the dataType is also defined
+            // make use the dataType property (more database oriented)
+            // if either type and dataType are defined auto set string
+            if(isset($properties['type'])) {
+                $type = $properties['type'];
+            } elseif(isset($properties['dataType'])){
+                $type = $properties['dataType'];
+            }else{
+                $type = 'string';
+            }
+            // Don't parse the value (skip it) if...
+            // $properties['store'] is set and is not true OR
+            // $properties['persist'] is set and is not true OR
 			if((!isset($properties['store']) ||
                     $properties['store']) &&
                     (!isset($properties['persist']) || $properties['persist'])

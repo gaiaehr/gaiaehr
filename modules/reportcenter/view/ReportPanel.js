@@ -137,11 +137,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
 	 * @return {*}
 	 */
 	getPDFPanel: function(src){
-		//-----------------------------------------------------------------------
-		// PDF render panel
-		// Just create the panel and do not display the PDF yet, until
-		// the user click create report.
-		//-----------------------------------------------------------------------
 		return this.renderContainer.add(Ext.create('App.ux.ManagedIframe', {
 			src: src
 		}));

@@ -1136,6 +1136,7 @@ class MatchaCUP {
 			 * $properties['store'] is set and is not true OR
 			 * $properties['persist'] is set and is not true OR
 			 */
+            $type = (isset($properties['dataType']) ? $properties['dataType'] : $properties['type']);
 			if((!isset($properties['store']) ||
                     $properties['store']) &&
                     (!isset($properties['persist']) || $properties['persist'])
@@ -1143,7 +1144,6 @@ class MatchaCUP {
 				if($this->encryptedFields !== false && in_array($col, $this->encryptedFields)){
 					$data[$col] = $this->dataEncrypt($data[$col]);
 				} else {
-                    $type = (isset($properties['type']) ? $properties['type'] : $properties['dataType']);
 					if($type == 'string' && is_string($data[$col])){
 						$data[$col] = html_entity_decode($data[$col]);
 					} elseif($type == 'date') {

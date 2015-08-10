@@ -1601,5 +1601,7 @@ $LANG = array(
     'valid'                                 => 'Valid',
     'action'                                => 'Action',
     'item_id'                               => 'Item ID',
-    'pending_amendment'                     => 'Pending Amendment(s)'
+    'pending_amendment'                     => 'Pending Amendment(s)',
+    'stat'                                  => 'STAT',
+    'routine'                               => 'Routine',
 );

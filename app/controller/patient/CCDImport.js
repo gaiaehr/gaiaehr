@@ -156,27 +156,41 @@ Ext.define('App.controller.patient.CCDImport', {
 		this.doLoadCcdData(win.ccdData);
 	},
 
+    /*
+    Event when the CDA Import and Viewer shows up.
+    Also will check for duplicates in the database and if a posible duplicate is found
+    show the posible duplicate window
+     */
 	doLoadCcdData: function(data){
 		var me = this,
-            systemPatient,
-			pForm = me.getCcdImportPatientForm().getForm(),
-			//ePanel = me.getCcdImportEncounterForm(),
-			//eForm = ePanel.getForm(),
+			ccdPatientForm = me.getCcdImportPatientForm().getForm(),
 			patient = Ext.create('App.model.patient.Patient', data.patient);
 
-		pForm.loadRecord(patient);
+        ccdPatientForm.loadRecord(patient);
+
+        App.app.getController('patient.Patient').lookForPossibleDuplicates(
+            {
+                fname: patient.data.fname,
+                lname: patient.data.lname,
+                sex: patient.data.sex,
+                DOB: patient.data.DOB
+            },
+            'ccdImportDuplicateAction',
+            function(patient) {
+            }
+        );
 
 		// list 59 ethnicity
 		// list 14 race
 		if(data.patient.race && data.patient.race !== ''){
 			CombosData.getDisplayValueByListIdAndOptionValue(14, data.patient.race, function(response){
-				pForm.findField('race_text').setValue(response);
+                ccdPatientForm.findField('race_text').setValue(response);
 			});
 		}
 
 		if(data.patient.ethnicity && data.patient.ethnicity !== ''){
 			CombosData.getDisplayValueByListIdAndOptionCode(59, data.patient.ethnicity, function(response){
-				pForm.findField('ethnicity_text').setValue(response);
+                ccdPatientForm.findField('ethnicity_text').setValue(response);
 			});
 		}
 
@@ -192,6 +206,27 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
 		}
 	},
+
+    /*
+     Event fired when in the duplicate window data grid double click on an item
+     this method will copy the patient information selected from the data grid, into
+     the system information panel.
+     */
+    onPossiblePatientDuplicatesGridItemDblClick:function(grid, record){
+        var me = this,
+            cmb = me.getCcdImportWindowPatientSearchField(),
+            systemPatientForm = me.getCcdPatientPatientForm().getForm(),
+            store = cmb.getStore(),
+            win = grid.up('window');
+
+        if(win.action != 'ccdImportDuplicateAction') return;
+
+        store.removeAll();
+        me.doLoadMergePatientData(record.data.pid);
+        cmb.select(record);
+        win.close();
+        me.promptVerifyPatientImport();
+    },
 
 	reconfigureGrid: function(getter, data){
 		var me = this,
@@ -250,33 +285,10 @@ Ext.define('App.controller.patient.CCDImport', {
 				patient.activeproblems().load();
 			}
 		});
-
 	},
 
 	onCcdImportWindowCloseBtnClick: function(){
 		this.getCcdImportWindow().close();
-	},
-
-	onPossiblePatientDuplicatesGridItemDblClick:function(grid, record){
-		var me = this,
-			cmb = me.getCcdImportWindowPatientSearchField(),
-			store = cmb.getStore(),
-			records,
-			win = grid.up('window');
-
-		if(win.action != 'ccdImportDuplicateAction') return;
-
-		store.removeAll();
-		records = store.add({
-			pid: record.data.pid,
-			fname: record.data.fname,
-			mname: record.data.mname,
-			lname: record.data.lname
-		});
-
-		cmb.select(records[0]);
-		win.close();
-		me.promptVerifyPatientImport();
 	},
 
 	onCcdImportWindowPreviewBtnClick: function(){
@@ -460,13 +472,12 @@ Ext.define('App.controller.patient.CCDImport', {
 			now = new Date(),
 			pid = patient.data.pid,
 
-		// mandatory...
+		// Get all the stores of the dataGrids
 			problems = me.getCcdImportPreviewActiveProblemsGrid().getStore().data.items,
 			medications = me.getCcdImportPreviewMedicationsGrid().getStore().data.items,
-			allergies = me.getCcdImportPreviewAllergiesGrid().getStore().data.items,
-			i, len;
+			allergies = me.getCcdImportPreviewAllergiesGrid().getStore().data.items;
 
-		// allergies
+		// Allergies
 		for(Index = 0; Index < allergies.length; Index++){
 
 			if(allergies[Index].data.id && allergies[Index].data.id > 0)  continue;
@@ -480,7 +491,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			allergies[Index].save();
 		}
 
-		// medications
+		// Medications
 		for(Index = 0; Index < medications.length; Index++){
 
 			if(medications[Index].data.id && medications[Index].data.id > 0)  continue;
@@ -494,7 +505,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			medications[Index].save();
 		}
 
-		// problems
+		// Problems
 		for(Index = 0; Index < problems.length; Index++){
 
 			if(problems[Index].data.id && problems[Index].data.id > 0)  continue;
@@ -530,8 +541,8 @@ Ext.define('App.controller.patient.CCDImport', {
 		var me = this,
 			grids = me.getCcdImportWindow().query('grid');
 
-		for(var i = 0; i < grids.length; i++){
-			var sm = grids[i].getSelectionModel();
+		for(var Index = 0; Index < grids.length; Index++){
+			var sm = grids[Index].getSelectionModel();
 			if(selected){
 				sm.selectAll();
 			}else{

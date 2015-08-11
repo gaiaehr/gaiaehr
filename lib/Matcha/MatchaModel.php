@@ -306,7 +306,8 @@ class MatchaModel extends Matcha {
         $OpenBraceFound = false;
         foreach ($Rows as $RowIndex => $RowData) {
             // Ok, found a function
-            if (stripos($RowData, 'function') !== false) {
+            $CompressedLine = str_replace(" ", "", $RowData);
+            if (stripos($CompressedLine, ':function(') !== false){
                 $FunctionFound = true;
                 $OpenBraceFound = false;
             }

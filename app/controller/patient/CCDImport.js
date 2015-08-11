@@ -31,7 +31,6 @@ Ext.define('App.controller.patient.CCDImport', {
 			selector: 'ccdimportpreviewwindow'
 		},
 
-
 		// import patient...
 		{
 			ref: 'CcdImportPatientForm',
@@ -143,7 +142,6 @@ Ext.define('App.controller.patient.CCDImport', {
 				click: me.onCcdImportPreviewWindowCancelBtnClick
 			}
 		});
-
 	},
 
 	CcdImport: function(ccdData){
@@ -160,6 +158,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	doLoadCcdData: function(data){
 		var me = this,
+            systemPatient,
 			pForm = me.getCcdImportPatientForm().getForm(),
 			//ePanel = me.getCcdImportEncounterForm(),
 			//eForm = ePanel.getForm(),

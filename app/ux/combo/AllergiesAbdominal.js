@@ -41,8 +41,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 					}
 				}
 			});
-
-
+            
 			Ext.apply(this,{
 				editable: false,
 				queryMode: 'local',

@@ -467,48 +467,45 @@ Ext.define('App.controller.patient.CCDImport', {
 			i, len;
 
 		// allergies
-		len = allergies.length;
-		for(i = 0; i < len; i++){
+		for(Index = 0; Index < allergies.length; Index++){
 
-			if(allergies[i].data.id && allergies[i].data.id > 0)  continue;
+			if(allergies[Index].data.id && allergies[Index].data.id > 0)  continue;
 
-			allergies[i].set({
-				pid: pid,
-				created_uid: app.patient.id,
-				create_date: now
-			});
-
-			allergies[i].save();
+			allergies[Index].set({
+                pid: pid,
+                created_uid: app.patient.id,
+                create_date: now
+            });
+            allergies[Index].setDirty();
+			allergies[Index].save();
 		}
 
 		// medications
-		len = medications.length;
-		for(i = 0; i < len; i++){
+		for(Index = 0; Index < medications.length; Index++){
 
-			if(medications[i].data.id && medications[i].data.id > 0)  continue;
+			if(medications[Index].data.id && medications[Index].data.id > 0)  continue;
 
-			medications[i].set({
+			medications[Index].set({
 				pid: pid,
 				created_uid: app.patient.id,
 				create_date: now
 			});
-
-			medications[i].save();
+            medications[Index].setDirty();
+			medications[Index].save();
 		}
 
 		// problems
-		len = problems.length;
-		for(i = 0; i < len; i++){
+		for(Index = 0; Index < problems.length; Index++){
 
-			if(problems[i].data.id && problems[i].data.id > 0)  continue;
+			if(problems[Index].data.id && problems[Index].data.id > 0)  continue;
 
-			problems[i].set({
+			problems[Index].set({
 				pid: pid,
 				created_uid: app.patient.id,
 				create_date: now
 			});
-
-			problems[i].save({
+            problems[Index].setDirty();
+			problems[Index].save({
 				callback: function(){
 
 					me.getCcdImportWindow().close();

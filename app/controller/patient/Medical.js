@@ -96,7 +96,11 @@ Ext.define('App.controller.patient.Medical', {
 	},
 
 	setWindowTitle:function(title){
-		this.getMedicalWindow().setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
+		this.getMedicalWindow().setTitle(
+            app.patient.name +
+            ' (' + title + ') ' +
+            (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :'')
+        );
 	}
 
 

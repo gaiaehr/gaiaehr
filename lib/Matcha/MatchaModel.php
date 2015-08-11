@@ -296,8 +296,13 @@ class MatchaModel extends Matcha {
         $SenchaModel = str_replace("\r\n", "\n", $SenchaModel);
         $SenchaModel = str_replace("\r", "\n", $SenchaModel);
 
+        // get the actual Sencha Model. without comments
+        preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $SenchaModel, $match);
+        $SenchaModel = $match['extmodel'];
+
         // Removes all Sencha and Custome functions in the model
         $Rows = explode("\n", $SenchaModel);
+
         // Reset the count for the Curly Braces
         // and Function Found
         $CurlyBraceCount = 0;
@@ -341,10 +346,6 @@ class MatchaModel extends Matcha {
             }
         }
         $SenchaModel = implode("\n", $Rows);
-
-        // get the actual Sencha Model. without comments
-        preg_match('/Ext\.define\([a-zA-Z0-9\',. ]+(?P<extmodel>.+)\);/si', $SenchaModel, $match);
-        $SenchaModel = $match['extmodel'];
 
         // unnecessary Ext.define functions
         $SenchaModel = preg_replace('/(?P<spaces>[\t\n\r ])|(?P<sencha>[\d(),.:;A-Za-z{}]+?)|(?P<properties>\'[^\n\r\']+\')/', '$2$3', $SenchaModel);

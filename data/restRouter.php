@@ -17,13 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: Temporary fix, for the timezone. We have to make use of the .htaccess
+if(!defined('site_timezone')) define('site_timezone', 'America/Puerto_Rico');
+date_default_timezone_set(site_timezone);
+ini_set('date.timezone',site_timezone);
+
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
 }
 define('_GaiaEXEC', 1);
-ROOT = 'C:/inetpub/wwwroot/gaiaehr';
+define(ROOT, 'C:/inetpub/wwwroot/gaiaehr');
 include_once(ROOT . '/classes/Arrays.php');
 /**
  * verify private key

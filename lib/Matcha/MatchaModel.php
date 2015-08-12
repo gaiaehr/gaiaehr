@@ -336,11 +336,16 @@ class MatchaModel extends Matcha {
                 // If the count of curly braces are 0 and the first brace has
                 // been found, now we can call off the Function Found.
                 if($CurlyBraceCount == 0 && $OpenBraceFound) $FunctionFound = false;
-                if($FunctionFound == false)
-                {
-                    if(strpos($Rows[$RowIndex+1], '},') !== false)
+                // Delete the ending commas
+                if ($FunctionFound == false) {
+                    if (strpos($Rows[$RowIndex + 1], '},') !== false ||
+                        strpos($Rows[$TopCommaLinePosition], '},') !== false)
                         $Rows[$TopCommaLinePosition] = substr($Rows[$TopCommaLinePosition], 0, -1);
-                    if(strpos($Rows[$RowIndex+1], '});') !== false)
+                    if (strpos($Rows[$RowIndex + 1], '],') !== false ||
+                        strpos($Rows[$TopCommaLinePosition], '],') !== false)
+                        $Rows[$TopCommaLinePosition] = substr($Rows[$TopCommaLinePosition], 0, -1);
+                    if (strpos($Rows[$RowIndex + 1], '});') !== false ||
+                        strpos($Rows[$TopCommaLinePosition], '});') !== false)
                         $Rows[$TopCommaLinePosition] = substr($Rows[$TopCommaLinePosition], 0, -1);
                 }
             }

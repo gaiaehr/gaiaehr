@@ -1538,7 +1538,7 @@ $LANG = array(
     'reconciled'                            => 'Reconciled',
     'preview'                               => 'Preview',
     'import_data'                           => 'Import Data',
-    'system_data'                           => 'System Data',
+    'system_data_ro'                           => 'System Data (Read Only)',
     'reconciled_preview'                    => 'Reconciled Preview',
     'rec_num'                               => 'Rec#',
     'amendment'                             => 'Amendment',
@@ -1604,4 +1604,6 @@ $LANG = array(
     'pending_amendment'                     => 'Pending Amendment(s)',
     'stat'                                  => 'STAT',
     'routine'                               => 'Routine',
+    'missing_required_data'                 => 'Missing Required Fields',
+    'nothing_to_merge'                      => 'Nothing to merge'
 );

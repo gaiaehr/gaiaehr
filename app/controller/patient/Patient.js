@@ -120,7 +120,6 @@ Ext.define('App.controller.patient.Patient', {
 		var win = this.getPossiblePatientDuplicatesWindow();
 		win.fireEvent('continue', win);
 		win.close();
-
 	}
 
 });

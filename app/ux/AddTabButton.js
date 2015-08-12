@@ -25,7 +25,6 @@ Ext.define('App.ux.AddTabButton', {
 	iconCls: null,          // add btn icon class
 	btnText: '+',           // add btn text, button text is not use if iconCls is set
 	forceText: false,       // use the btnText even if an icon is used
-
 	panelConfig: {              // default config for new added panel
 		xtype: 'panel',
 		title: 'New Tab',
@@ -58,6 +57,7 @@ Ext.define('App.ux.AddTabButton', {
 				tooltip: me.toolTip,
 				handler: me.onAddTabClick,
 				closable: false,
+				acl: me.acl,
 				scope: me
 			});
 
@@ -81,7 +81,7 @@ Ext.define('App.ux.AddTabButton', {
 	 */
 	onAddTabClick: function(){
 		var tab = this.tabPanel.add(this.panelConfig);
-		this.tabPanel.fireEvent('tabclick', tab, this.tabPanel);
+		this.tabPanel.fireEvent('newtabclick', tab, this.tabPanel);
 		this.tabPanel.setActiveTab(tab);
 	},
 

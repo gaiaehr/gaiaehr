@@ -121,13 +121,11 @@ Ext.define('App.view.patient.windows.CCDImport', {
 										},
 										{
 											fieldLabel: _('address'),
-											name: 'fulladdress',
-											value: 'fulladdress'
+											name: 'fulladdress'
 										},
 										{
 											fieldLabel: _('phones'),
-											name: 'phones',
-											value: '000-000-000 (H)'
+											name: 'phones'
 										}
 									]
 								}
@@ -214,7 +212,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 				},
 				{
 					xtype: 'panel',
-					title: _('system_data'),
+					title: _('system_data_ro'),
 					columnWidth: 0.5,
 					frame: true,
 					layout: {
@@ -303,13 +301,11 @@ Ext.define('App.view.patient.windows.CCDImport', {
 										},
 										{
 											fieldLabel: _('address'),
-											name: 'fulladdress',
-											value: 'fulladdress'
+											name: 'fulladdress'
 										},
 										{
 											fieldLabel: _('phones'),
-											name: 'phones',
-											value: '000-000-000 (H)'
+											name: 'phones'
 										}
 									]
 								}

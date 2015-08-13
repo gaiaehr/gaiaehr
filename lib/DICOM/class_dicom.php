@@ -297,9 +297,9 @@ class dicom_convert {
 		$this->file = $this->jpg_file . '.dcm';
 		$xml2dcm_cmd = BIN_XML2DCM . " $temp_xml " . $this->file;
 		$out = Execute($xml2dcm_cmd);
-		if($out){
-			return ($out);
-		}
+//		if($out){
+//			return ($out);
+//		}
 		unlink($temp_xml); // NO LONGER NEEDED
 
 		// Add the JPEG image to the DCM we just made

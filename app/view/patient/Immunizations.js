@@ -188,7 +188,7 @@ Ext.define('App.view.patient.Immunizations', {
 												fieldLabel: _('units'),
 												name: 'administer_units',
 												labelWidth: 30,
-												width: 180,
+												width: 150,
                                                 loadStore: true,
                                                 queryMode: 'local',
                                                 list: 131

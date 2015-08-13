@@ -131,7 +131,7 @@ class HL7Messages {
 		$this->type = 'ADT';
 
 		// MSH
-		$msh = $this->setMSH();
+		$msh = $this->setMSH(true);
 		$msh->setValue('9.1', 'ADT');
 		$msh->setValue('9.2', $event);
 		$msh->setValue('9.3', 'ADT_A01');
@@ -290,7 +290,7 @@ class HL7Messages {
 		$msh = $this->setMSH();
 		$msh->setValue('9.1', 'VXU');
 		$msh->setValue('9.2', 'V04');
-//		$msh->setValue('9.3', 'VXU_V04');
+		$msh->setValue('9.3', 'VXU_V04');
 		// PID
 		$this->setPID();
 		// PV1
@@ -308,6 +308,9 @@ class HL7Messages {
 			// ROC
 			$roc = $this->hl7->addSegment('ORC');
 			$roc->setValue('1', 'RE'); //HL70119
+			$roc->setValue('3.1', 'GAIA10001');
+			$roc->setValue('3.2', $immu['id']);
+
 			// RXA
 			$rxa = $this->hl7->addSegment('RXA');
 			$rxa->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
@@ -321,7 +324,7 @@ class HL7Messages {
 				$rxa->setValue('6', $immu['administer_amount']); //Administered Amount
 				$rxa->setValue('7.1', $immu['administer_amount']); //Identifier
 				$rxa->setValue('7.2', 'millimeters'); //Text
-				$rxa->setValue('7.3', 'ISO+'); //Name of Coding System HL70396
+				$rxa->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
 			} else {
 				$rxa->setValue('6', '999'); //Administered Amount
 			}
@@ -361,7 +364,7 @@ class HL7Messages {
 
 
 
-	private function setMSH() {
+	private function setMSH($includeNPI = false) {
 		$this->setEncounter();
 
 		// set these globally
@@ -371,8 +374,11 @@ class HL7Messages {
 		$msh = $this->hl7->addSegment('MSH');
 		$msh->setValue('3.1', 'GaiaEHR'); // Sending Application
 		$msh->setValue('4.1', addslashes(substr($this->from['name'], 0, 20))); // Sending Facility
-		$msh->setValue('4.2', $this->from['npi']);
-		$msh->setValue('4.3', 'NPI');
+		if($includeNPI){
+			$msh->setValue('4.2', $this->from['npi']);
+			$msh->setValue('4.3', 'NPI');
+		}
+
 		$msh->setValue('5.1', $this->to['application_name']); // Receiving Application
 		$msh->setValue('6.1', $this->to['facility']); // Receiving Facility
 		$msh->setValue('7.1', date('YmdHis')); // Message Date Time
@@ -409,12 +415,17 @@ class HL7Messages {
 
 		$pid->setValue('1', 1);
 
-		if($this->notEmpty($this->patient->pubpid)){
-			$pid->setValue('2.3', $this->patient->pubpid);
-		}
+//		if($this->notEmpty($this->patient->pubpid)){
+//			$pid->setValue('2.3', $this->patient->pubpid);
+//		}else if($this->notEmpty($this->patient->pid)){
+//			$pid->setValue('2.3', $this->patient->pid);
+//		}
+//		if($this->notEmpty($this->patient->pubpid)){
+//			$pid->setValue('3.1', $this->patient->pubpid);
 		if($this->notEmpty($this->patient->pid)){
 			$pid->setValue('3.1', $this->patient->pid);
 		}
+		$pid->setValue('3.4', 'GaiaEHR');
 		$pid->setValue('3.5', 'MR'); // IDNumber Type (HL70203) MR = Medical Record
 
 		if($this->patient->age['DMY']['years'] == 0){

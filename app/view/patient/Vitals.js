@@ -129,7 +129,7 @@ Ext.define('App.view.patient.Vitals', {
 				format: 'Y-m-d g:i a',
 				width: 180,
 				editor:{
-					xtype: 'gaiaehr.datetime',
+					xtype: 'mitos.datetime',
 					timeFormat: 'g:i a'
 				}
 			},

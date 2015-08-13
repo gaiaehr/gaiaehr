@@ -26,7 +26,7 @@ Ext.define('App.ux.form.fields.DateTime', {
 	mixins: {
 		field: 'Ext.form.field.Field'
 	},
-	alias : 'widget.gaiaehr.datetime',
+	alias : 'widget.mitos.datetime',
 
 	combineErrors: true,
 	msgTarget    : 'under',

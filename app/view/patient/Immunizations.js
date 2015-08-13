@@ -226,7 +226,7 @@ Ext.define('App.view.patient.Immunizations', {
 												name: 'route'
 											},
 											{
-                                                xtype: 'gaiaehr.datetime',
+                                                xtype: 'mitos.datetime',
 												fieldLabel: _('date_administered'),
 												width: 320,
 												labelWidth: 115,

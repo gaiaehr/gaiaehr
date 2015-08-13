@@ -236,7 +236,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					allowBlank: false,
 					forceSelection: true,
 					labelWidth: 60,
-					displayField: 'recipient_application',
+					displayField: 'application_name',
 					valueField: 'id',
 					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[

@@ -1,6 +1,6 @@
-Ext.define('App.ux.combo.Combo', {
+Ext.define('App.ux.combo.ComboOptionList', {
     extend: 'Ext.form.ComboBox',
-    alias: 'widget.gaiaehr.comboOptionList',
+    alias: 'widget.gaiaehr.listcombo',
     displayField: 'option_value',
     valueField: 'option_value',
     emptyText: _('select'),
@@ -22,7 +22,7 @@ Ext.define('App.ux.combo.Combo', {
 
     initComponent: function () {
         var me = this,
-            model = me.id + 'ComboModel';
+            model = me.id + 'ComboOptionModel';
 
         Ext.define(model, {
             extend: 'Ext.data.Model',

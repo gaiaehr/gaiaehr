@@ -282,6 +282,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.combo.CalendarStatus',
 		            'App.ux.combo.CodesTypes',
 		            'App.ux.combo.Combo',
+                    'App.ux.combo.ComboOptionList',
 		            'App.ux.combo.CVXManufacturers',
 		            'App.ux.combo.CVXManufacturersForCvx',
 		            'App.ux.combo.EncounterICDS',

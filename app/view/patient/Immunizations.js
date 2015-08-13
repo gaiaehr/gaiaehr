@@ -24,8 +24,7 @@ Ext.define('App.view.patient.Immunizations', {
 		'App.ux.grid.RowFormEditing',
 		'App.store.patient.CVXCodes',
 		'App.ux.form.fields.DateTime',
-		'App.ux.LiveUserSearch',
-        'App.ux.combo.comboOptionList'
+		'App.ux.LiveUserSearch'
 	],
 	xtype: 'patientimmunizationspanel',
 	title: _('immunizations'),
@@ -184,7 +183,7 @@ Ext.define('App.view.patient.Immunizations', {
 												width: 160
 											},
 											{
-                                                xtype: 'gaiaehr.comboOptionList',
+                                                xtype: 'gaiaehr.listcombo',
 												fieldLabel: _('units'),
 												name: 'administer_units',
 												labelWidth: 30,
@@ -194,10 +193,10 @@ Ext.define('App.view.patient.Immunizations', {
                                                 list: 131
 											},
 											{
+                                                xtype: 'gaiaehr.combo',
 												fieldLabel: _('administration_site'),
 												width: 320,
-												labelWidth: 130,
-												xtype: 'gaiaehr.combo',
+												labelWidth: 110,
 												list: 119,
 												queryMode: 'local',
 												loadStore: true,

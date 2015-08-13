@@ -4,6 +4,9 @@
     Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
 </IfModule>
 
+#RewriteEngine On
+#RewriteRule (.*) temp/timezone.php?args=$1 [QSA]
+
 #RewriteEngine on
 #
 #

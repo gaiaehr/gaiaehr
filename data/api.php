@@ -62,11 +62,6 @@
 //print_r($output);
 //exit;
 
-// TODO: Temporary fix, for the timezone. We have to make use of the .htaccess
-if(!defined('site_timezone')) define('site_timezone', 'America/Puerto_Rico');
-date_default_timezone_set(site_timezone);
-ini_set('date.timezone',site_timezone);
-
 if(!isset($_SESSION)){
 	session_name('GaiaEHR');
 	session_start();

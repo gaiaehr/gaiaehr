@@ -939,7 +939,7 @@ Ext.define('App.view.administration.Layout', {
             items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
         }else if(value == 'radiofield'){
             items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
-        }else if(value == 'datefield' || value == 'mitos.datetime'){
+        }else if(value == 'datefield' || value == 'gaiaehr.datetime'){
             items = ['itemId', 'action', 'name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
         }else if(value == 'checkboxwithfamilyhistory'){
 	        items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];

@@ -97,7 +97,7 @@ Ext.define('App.view.patient.encounter.AdministeredMedications', {
 			width: 120,
 			format: g('date_time_display_format'),
 			editor: {
-				xtype: 'mitos.datetime'
+				xtype: 'gaiaehr.datetime'
 			}
 		}
 	],

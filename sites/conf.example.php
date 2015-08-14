@@ -47,3 +47,6 @@ if(!defined('site_url')) define('site_url', URL .'sites/'.site_id);
 if(!defined('site_path')) define('site_path', str_replace('\\', '/', dirname(__FILE__)));
 if(!defined('site_temp_url')) define('site_temp_url', site_url .'/temp');
 if(!defined('site_temp_path')) define('site_temp_path', site_path . '/temp');
+
+date_default_timezone_set(site_timezone);
+ini_set('date.timezone',site_timezone);

@@ -1,10 +1,5 @@
 <?php
 
-// TODO: Temporary fix, for the timezone. We have to make use of the .htaccess
-if(!defined('site_timezone')) define('site_timezone', 'America/Puerto_Rico');
-date_default_timezone_set(site_timezone);
-ini_set('date.timezone',site_timezone);
-
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
@@ -23,11 +18,15 @@ ini_set('date.timezone',site_timezone);
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 if(!isset($_SESSION)){
-	@session_name('GaiaEHR');
-	setcookie(session_name(),session_id(),time() + 60);
-	@session_start();
-	@session_cache_limiter('private');
+    session_cache_limiter('private');
+    session_cache_expire(30);
+    session_regenerate_id(false);
+    session_name('GaiaEHR');
+    session_start();
+    setcookie(session_name(),session_id(),time()+600, '/', 'localhost', false, true);
 }
+
+define('_GaiaEXEC', 1);
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
 if(!defined('_GaiaEXEC'))
 	define('_GaiaEXEC', 1);

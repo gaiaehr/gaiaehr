@@ -177,26 +177,26 @@ Ext.define('App.view.patient.Immunizations', {
 										items: [
 
 											{
-
 												xtype: 'numberfield',
 												fieldLabel: _('amount'),
 												name: 'administer_amount',
 												width: 160
 											},
 											{
-
-												xtype: 'textfield',
+                                                xtype: 'gaiaehr.listcombo',
 												fieldLabel: _('units'),
 												name: 'administer_units',
-												labelWidth: 50,
-												width: 125
-
+												labelWidth: 30,
+												width: 150,
+                                                loadStore: true,
+                                                queryMode: 'local',
+                                                list: 131
 											},
 											{
+                                                xtype: 'gaiaehr.combo',
 												fieldLabel: _('administration_site'),
 												width: 320,
-												labelWidth: 130,
-												xtype: 'gaiaehr.combo',
+												labelWidth: 110,
 												list: 119,
 												queryMode: 'local',
 												loadStore: true,
@@ -226,13 +226,15 @@ Ext.define('App.view.patient.Immunizations', {
 												name: 'route'
 											},
 											{
+                                                xtype: 'mitos.datetime',
 												fieldLabel: _('date_administered'),
 												width: 320,
 												labelWidth: 115,
-												xtype: 'mitos.datetime',
 												dateTimeFormat: 'Y-m-d H:i:s',
-												name: 'administered_date'
-											}
+												name: 'administered_date',
+                                                vtype: 'date',
+                                                allowBlank: false
+                                            }
 										]
 
 									},

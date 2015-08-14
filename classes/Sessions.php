@@ -73,10 +73,10 @@ class Sessions {
 	public function updateSession(){
 		$id = $_SESSION['session_id'];
 		$last_request = $_SESSION['inactive']['timeout'] = time();
-		//Matcha::pauseLog(true);
+		Matcha::pauseLog(true);
 		$conn = Matcha::getConn();
 		$conn->exec("UPDATE `users_sessions` SET `last_request` = '{$last_request}' WHERE `id` = '{$id}'");
-		//Matcha::pauseLog(false);
+		Matcha::pauseLog(false);
 		return true;
 	}
 

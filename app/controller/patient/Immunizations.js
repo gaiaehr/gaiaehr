@@ -265,17 +265,18 @@ Ext.define('App.controller.patient.Immunizations', {
 	doSendVxu:function(){
 		var me = this,
 			sm = me.getImmunizationsGrid().getSelectionModel(),
-			foo = sm.getSelection(),
+            ImmunizationSelection = sm.getSelection(),
 			params = {},
 			immunizations = [];
 
 		if(me.vxuTo.isValid()){
 
-			for(var i=0; i < foo.length; i++){
-				immunizations.push(foo[i].data.id);
+			for(var i=0; i < ImmunizationSelection.length; i++){
+				immunizations.push(ImmunizationSelection[i].data.id);
+                say(foo[i].data);
+                params.pid = ImmunizationSelection[i].data.pid;
 			}
 
-			params.pid = me.pid;
 			params.from = me.vxuFrom.getValue();
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
@@ -285,9 +286,9 @@ Ext.define('App.controller.patient.Immunizations', {
 			HL7Messages.sendVXU(params, function(provider, response){
 				me.vxuWindow.el.unmask();
 				if(response.result.success){
-					app.msg(_('sweet!'), _('message_sent'));
+					app.msg(_('sweet'), _('message_sent'));
 				}else{
-					app.msg(_('oops!'), _('message_error'), true);
+					app.msg(_('oops'), _('message_error'), true);
 				}
 				me.vxuWindow.close();
 				sm.deselectAll();

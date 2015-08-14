@@ -225,141 +225,155 @@ class HL7Messages {
 	 * @throws Exception
 	 */
 	function sendServiceORM($to, $from, $service, $orderControl){
-		$service = (object) $service;
-		$this->to = $to;
-		$this->from = $from;
-		$this->patient = $service->pid;
-		$this->encounter = $service->eid;
-		$this->type = 'ORM';
+        try
+        {
+            $service = (object) $service;
+            $this->to = $to;
+            $this->from = $from;
+            $this->patient = $service->pid;
+            $this->encounter = $service->eid;
+            $this->type = 'ORM';
 
-		// MSH
-		$msh = $this->setMSH();
-		$msh->setValue('9.1', 'ORM');
-		$msh->setValue('9.2', 'O01');
-//		$msh->setValue('9.3', 'ORM_O01');
-		// PID
-		$this->setPID();
-		// PV1
-		$this->setPV1();
-		// ORC
-		$this->setORC($service, $orderControl);
-		// OBR
-		$this->setOBR($service, 1);
-
-
-		if(is_array($service->dx_pointers)){
-			$dxIndex = 1;
-			foreach($service->dx_pointers as $dx){
-				$this->setDG1($dx, $dxIndex);
-				$dxIndex++;
-			}
-
-		}
+            // MSH
+            $msh = $this->setMSH();
+            $msh->setValue('9.1', 'ORM');
+            $msh->setValue('9.2', 'O01');
+    //		$msh->setValue('9.3', 'ORM_O01');
+            // PID
+            $this->setPID();
+            // PV1
+            $this->setPV1();
+            // ORC
+            $this->setORC($service, $orderControl);
+            // OBR
+            $this->setOBR($service, 1);
 
 
-		$msgRecord = $this->saveMsg();
+            if(is_array($service->dx_pointers)){
+                $dxIndex = 1;
+                foreach($service->dx_pointers as $dx){
+                    $this->setDG1($dx, $dxIndex);
+                    $dxIndex++;
+                }
 
-		if($this->to['route'] == 'file'){
-			$response = $this->Save();
-		} else {
-			$response = $this->Send();
-		}
+            }
 
-		$msgRecord->response = $response['message'];
+            $msgRecord = $this->saveMsg();
 
-		if($response['success']){
-			$msgRecord->status = 3;
-			$this->m->save($msgRecord);
-		}else{
-			$msgRecord->status = preg_match('/^socket/', $response['message']) ? 2 : 4; // if socket error put back in queue
-			$msgRecord->error = $response['message'];
-			$this->m->save($msgRecord);
-		}
+            if($this->to['route'] == 'file'){
+                $response = $this->Save();
+            } else {
+                $response = $this->Send();
+            }
+
+            $msgRecord->response = $response['message'];
+
+            if($response['success']){
+                $msgRecord->status = 3;
+                $this->m->save($msgRecord);
+            }else{
+                $msgRecord->status = preg_match('/^socket/', $response['message']) ? 2 : 4; // if socket error put back in queue
+                $msgRecord->error = $response['message'];
+                $this->m->save($msgRecord);
+            }
+            return ['success' => true];
+        }
+        catch(Exception $Error)
+        {
+            return ['success' => false];
+        }
 
 	}
 
 	function sendVXU($params) {
-		// set these globally to be used by MSH and PID
-		$this->to = $params->to;
-		$this->from = $params->from;
-		$this->patient = $params->pid;
-		$this->encounter = isset($params->eid) ? $params->eid : 0;
-		$this->type = 'VXU';
+        try
+        {
+            // set these globally to be used by MSH and PID
+            $this->to = $params->to;
+            $this->from = $params->from;
+            $this->patient = $params->pid;
+            $this->encounter = isset($params->eid) ? $params->eid : 0;
+            $this->type = 'VXU';
 
-		// MSH
-		$msh = $this->setMSH();
-		$msh->setValue('9.1', 'VXU');
-		$msh->setValue('9.2', 'V04');
-		$msh->setValue('9.3', 'VXU_V04');
-		// PID
-		$this->setPID();
-		// PV1
-		$this->setPV1();
+            // MSH
+            $msh = $this->setMSH();
+            $msh->setValue('9.1', 'VXU');
+            $msh->setValue('9.2', 'V04');
+            $msh->setValue('9.3', 'VXU_V04');
+            // PID
+            $this->setPID();
+            // PV1
+            $this->setPV1();
 
-		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
-		include_once(ROOT . '/dataProvider/Immunizations.php');
-		$immunization = new Immunizations();
+            $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
+            include_once(ROOT . '/dataProvider/Immunizations.php');
+            $immunization = new Immunizations();
 
-		// immunizations loop
-		foreach($params->immunizations AS $i){
+            // immunizations loop
+            foreach($params->immunizations AS $i){
 
-			$immu = $this->i->load($i)->one();
+                $immu = $this->i->load($i)->one();
 
-			// ROC
-			$roc = $this->hl7->addSegment('ORC');
-			$roc->setValue('1', 'RE'); //HL70119
-			$roc->setValue('3.1', 'GAIA10001');
-			$roc->setValue('3.2', $immu['id']);
+                // ROC
+                $roc = $this->hl7->addSegment('ORC');
+                $roc->setValue('1', 'RE'); //HL70119
+                $roc->setValue('3.1', 'GAIA10001');
+                $roc->setValue('3.2', $immu['id']);
 
-			// RXA
-			$rxa = $this->hl7->addSegment('RXA');
-			$rxa->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
-			$rxa->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
-			//Administered Code
-			$rxa->setValue('5.1', $immu['code']); //Identifier
-			$rxa->setValue('5.2', $immu['vaccine_name']); //Text
-			$rxa->setValue('5.3', $immu['code_type']); //Name of Coding System
+                // RXA
+                $rxa = $this->hl7->addSegment('RXA');
+                $rxa->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
+                $rxa->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
+                //Administered Code
+                $rxa->setValue('5.1', $immu['code']); //Identifier
+                $rxa->setValue('5.2', $immu['vaccine_name']); //Text
+                $rxa->setValue('5.3', $immu['code_type']); //Name of Coding System
 
-			if($this->isPresent($immu['administer_amount'])){
-				$rxa->setValue('6', $immu['administer_amount']); //Administered Amount
-				$rxa->setValue('7.1', $immu['administer_amount']); //Identifier
-				$rxa->setValue('7.2', 'millimeters'); //Text
-				$rxa->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
-			} else {
-				$rxa->setValue('6', '999'); //Administered Amount
-			}
+                if($this->isPresent($immu['administer_amount'])){
+                    $rxa->setValue('6', $immu['administer_amount']); //Administered Amount
+                    $rxa->setValue('7.1', $immu['administer_amount']); //Identifier
+                    $rxa->setValue('7.2', 'millimeters'); //Text
+                    $rxa->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
+                } else {
+                    $rxa->setValue('6', '999'); //Administered Amount
+                }
 
-			$rxa->setValue('15', $immu['lot_number']); //Substance LotNumbers
+                $rxa->setValue('15', $immu['lot_number']); //Substance LotNumbers
 
-			// get immunization manufacturer info
-			$mvx = $immunization->getMvxByCode($immu['manufacturer']);
-			$mText = isset($mvx['manufacturer']) ? $mvx['manufacturer'] : '';
-			//Substance ManufacturerName
-			$rxa->setValue('17.1', $immu['manufacturer']); //Identifier
-			$rxa->setValue('17.2', $mText); //Text
-			$rxa->setValue('17.3', 'MVX'); //Name of Coding System HL70396
+                // get immunization manufacturer info
+                $mvx = $immunization->getMvxByCode($immu['manufacturer']);
+                $mText = isset($mvx['manufacturer']) ? $mvx['manufacturer'] : '';
+                //Substance ManufacturerName
+                $rxa->setValue('17.1', $immu['manufacturer']); //Identifier
+                $rxa->setValue('17.2', $mText); //Text
+                $rxa->setValue('17.3', 'MVX'); //Name of Coding System HL70396
+                $rxa->setValue('21', 'A'); //Action Code
+            }
 
-			$rxa->setValue('21', 'A'); //Action Code
-		}
+            $msgRecord = $this->saveMsg();
 
-		$msgRecord = $this->saveMsg();
+            if($this->to['route'] == 'file'){
+                $response = $this->Save();
+            } else {
+                $response = $this->Send();
+            }
 
-		if($this->to['route'] == 'file'){
-			$response = $this->Save();
-		} else {
-			$response = $this->Send();
-		}
+            $msgRecord->response = $response['message'];
 
-		$msgRecord->response = $response['message'];
-
-		if($response['success']){
-			$msgRecord->status = 3;
-			$this->m->save($msgRecord);
-		}else{
-			$msgRecord->status = preg_match('/^socket/', $response['message']) ? 2 : 4; // if socket error put back in queue
-			$msgRecord->error = $response['message'];
-			$this->m->save($msgRecord);
-		}
+            if($response['success']){
+                $msgRecord->status = 3;
+                $this->m->save($msgRecord);
+            }else{
+                $msgRecord->status = preg_match('/^socket/', $response['message']) ? 2 : 4; // if socket error put back in queue
+                $msgRecord->error = $response['message'];
+                $this->m->save($msgRecord);
+            }
+            return ['success' => true];
+        }
+        catch(Exception $Error)
+        {
+            return ['success' => false];
+        }
 	}
 
 

@@ -557,10 +557,11 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->is_veteran)){
 			$pid->setValue('27.1', $this->patient->is_veteran);
 		}
-		if($this->notEmpty($this->patient->death_date)){
-			$pid->setValue('29.1', $this->date($this->patient->death_date));
+        if($this->notEmpty($this->patient->death_date) && $this->notEmpty($this->patient->deceased))
+        {
+            $pid->setValue('29.1', $this->date($this->patient->death_date));
             $pid->setValue('30', 'Y');
-		}
+        }
 		if($this->notEmpty($this->patient->update_date)){
 			$pid->setValue('33.1', $this->date($this->patient->update_date));
 		}

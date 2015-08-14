@@ -255,7 +255,6 @@ class HL7Messages {
                     $this->setDG1($dx, $dxIndex);
                     $dxIndex++;
                 }
-
             }
 
             $msgRecord = $this->saveMsg();
@@ -331,8 +330,8 @@ class HL7Messages {
 
                 if($this->isPresent($immu['administer_amount'])){
                     $rxa->setValue('6', $immu['administer_amount']); //Administered Amount
-                    $rxa->setValue('7.1', $immu['administer_amount']); //Identifier
-                    $rxa->setValue('7.2', 'millimeters'); //Text
+                    $rxa->setValue('7.1', $immu['administer_units']); //Identifier
+                    $rxa->setValue('7.2', $immu['administer_units']); // Text
                     $rxa->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
                 } else {
                     $rxa->setValue('6', '999'); //Administered Amount
@@ -560,10 +559,8 @@ class HL7Messages {
 		}
 		if($this->notEmpty($this->patient->death_date)){
 			$pid->setValue('29.1', $this->date($this->patient->death_date));
+            $pid->setValue('30', 'Y');
 		}
-//		if($this->notEmpty($this->patient->deceased)){
-//			$pid->setValue('30', $this->patient->deceased);
-//		}
 		if($this->notEmpty($this->patient->update_date)){
 			$pid->setValue('33.1', $this->date($this->patient->update_date));
 		}

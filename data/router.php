@@ -19,11 +19,11 @@
  */
 if(!isset($_SESSION)){
     session_cache_limiter('private');
-    session_cache_expire(30);
+    session_cache_expire(1);
     session_regenerate_id(false);
     session_name('GaiaEHR');
     session_start();
-    setcookie(session_name(),session_id(),time()+600, '/', 'localhost', false, true);
+    setcookie(session_name(),session_id(),time()+60, '/', 'localhost', false, true);
 }
 
 define('_GaiaEXEC', 1);

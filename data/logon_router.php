@@ -18,10 +18,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 if(!isset($_SESSION)){
-    session_name ("GaiaEHR" );
-    session_start();
     session_cache_limiter('private');
+    session_cache_expire(30);
+    session_regenerate_id(false);
+    session_name('GaiaEHR');
+    session_start();
+    setcookie(session_name(),session_id(),time()+600, '/', 'localhost', false, true);
 }
+define('_GaiaEXEC', 1);
 require('config.php');
 /**
  *

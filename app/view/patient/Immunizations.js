@@ -226,13 +226,15 @@ Ext.define('App.view.patient.Immunizations', {
 												name: 'route'
 											},
 											{
+                                                xtype: 'mitos.datetime',
 												fieldLabel: _('date_administered'),
 												width: 320,
 												labelWidth: 115,
-												xtype: 'mitos.datetime',
 												dateTimeFormat: 'Y-m-d H:i:s',
-												name: 'administered_date'
-											}
+												name: 'administered_date',
+                                                vtype: 'date',
+                                                allowBlank: false
+                                            }
 										]
 
 									},

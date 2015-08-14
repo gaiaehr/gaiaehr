@@ -17,13 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Securing the Session
-// TODO: This should be handled by Matcha::Connect
-//session_set_cookie_params(null, null, $_SERVER['HTTP_HOST'], false, true);
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+header("Pragma: no-cache"); // HTTP 1.0.
+header("Expires: 0"); // Proxies.
 
-session_name('GaiaEHR');
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 100);
+
 session_cache_limiter('private');
+session_cache_expire(30);
+session_regenerate_id(false);
+session_name('GaiaEHR');
 session_start();
+setcookie(session_name(),session_id(),time()+600, '/', 'localhost', false, true);
+
 define('_GaiaEXEC', 1);
 
 if(isset($_SESSION['hooks'])){

@@ -24,6 +24,7 @@ ini_set('date.timezone',site_timezone);
  */
 if(!isset($_SESSION)){
 	@session_name('GaiaEHR');
+	setcookie(session_name(),session_id(),time() + 60);
 	@session_start();
 	@session_cache_limiter('private');
 }

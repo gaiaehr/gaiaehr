@@ -19,12 +19,16 @@
 
 // Securing the Session
 // TODO: This should be handled by Matcha::Connect
-session_set_cookie_params(null, null, $_SERVER['HTTP_HOST'], false, true);
+//session_set_cookie_params(null, null, $_SERVER['HTTP_HOST'], false, true);
 
 session_name('GaiaEHR');
 session_cache_limiter('private');
 session_start();
 define('_GaiaEXEC', 1);
+
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+header('Pragma: no-cache'); // HTTP 1.0.
+header('Expires: 0'); // Proxies.
 
 if(isset($_SESSION['hooks'])){
 	unset($_SESSION['hooks']);

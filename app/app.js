@@ -6117,8 +6117,6 @@ Ext.define('App.ux.grid.RowFormEditor', {
 				me.showToolTip();
 			}
 		}
-
-
 		// render display fields so they honor the column renderer/template
 		Ext.Array.forEach(me.query('>displayfield'), function(field) {
 			me.renderColumnData(field, record);
@@ -6557,8 +6555,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 					}
 				}
 			});
-
-
+            
 			Ext.apply(this,{
 				editable: false,
 				queryMode: 'local',
@@ -6890,314 +6887,314 @@ Ext.define('App.ux.combo.CodesTypes', {
 	}
 });
 Ext.define('App.ux.combo.Combo', {
-	extend: 'Ext.form.ComboBox',
-	alias: 'widget.gaiaehr.combo',
-	displayField: 'option_name',
-	valueField: 'option_value',
-	emptyText: _('select'),
-	forceSelection: false,
+    extend: 'Ext.form.ComboBox',
+    alias: 'widget.gaiaehr.combo',
+    displayField: 'option_name',
+    valueField: 'option_value',
+    emptyText: _('select'),
+    forceSelection: false,
 
-	/**
-	 * List ID
-	 */
-	list: null,
-	/**
-	 * Auto Load Store
-	 */
-	loadStore: false,
-	/**
-	 * value data type
-	 */
-	valueDataType: 'string',
+    /**
+     * List ID
+     */
+    list: null,
+    /**
+     * Auto Load Store
+     */
+    loadStore: false,
+    /**
+     * value data type
+     */
+    valueDataType: 'string',
 
 
-	initComponent: function(){
-		var me = this,
-			model = me.id + 'ComboModel';
+    initComponent: function () {
+        var me = this,
+            model = me.id + 'ComboModel';
 
-		Ext.define(model, {
-			extend: 'Ext.data.Model',
-			fields: [
-				{
-					name: 'option_name',
-					type: 'string'
-				},
-				{
-					name: 'option_value',
-					type: me.valueDataType
-				},
-				{
-					name: 'code',
-					type: 'string'
-				},
-				{
-					name: 'code_type',
-					type: 'string'
-				},
-				{
-					name: 'color',
-					type: 'string'
-				},
-				{
-					name: 'extraListClass',
-					type: 'string'
-				},
-				{
-					name: 'bg_color',
-					type: 'string',
-					convert: function(v, record){
-						if(record.data.code_type == 'bgcolor'){
-							var bg_color = record ? record.data.code : '#FFFFFF';
-							record.set({color: me.getContrastYIQ(bg_color), extraListClass:'listwith'});
-							return bg_color;
-						}
-					}
+        Ext.define(model, {
+            extend: 'Ext.data.Model',
+            fields: [
+                {
+                    name: 'option_name',
+                    type: 'string'
+                },
+                {
+                    name: 'option_value',
+                    type: me.valueDataType
+                },
+                {
+                    name: 'code',
+                    type: 'string'
+                },
+                {
+                    name: 'code_type',
+                    type: 'string'
+                },
+                {
+                    name: 'color',
+                    type: 'string'
+                },
+                {
+                    name: 'extraListClass',
+                    type: 'string'
+                },
+                {
+                    name: 'bg_color',
+                    type: 'string',
+                    convert: function (v, record) {
+                        if (record.data.code_type == 'bgcolor') {
+                            var bg_color = record ? record.data.code : '#FFFFFF';
+                            record.set({color: me.getContrastYIQ(bg_color), extraListClass: 'listwith'});
+                            return bg_color;
+                        }
+                    }
 
-				}
-			],
-			proxy: {
-				type: 'direct',
-				api: {
-					read: 'CombosData.getOptionsByListId'
-				},
-				extraParams: {
-					list_id: me.list
-				}
-			},
-			idProperty: 'option_value'
-		});
+                }
+            ],
+            proxy: {
+                type: 'direct',
+                api: {
+                    read: 'CombosData.getOptionsByListId'
+                },
+                extraParams: {
+                    list_id: me.list
+                }
+            },
+            idProperty: 'option_value'
+        });
 
-		me.store = Ext.create('Ext.data.Store', {
-			model: model,
-			autoLoad: me.loadStore
-		});
+        me.store = Ext.create('Ext.data.Store', {
+            model: model,
+            autoLoad: me.loadStore
+        });
 
-		me.listConfig = {
-			itemTpl: new Ext.XTemplate(
-				'<tpl if="this.hasColorBg(code_type)">' +
-				'   <div class="combo-list-icon" style="background-color:{bg_color}">&#160;</div>{option_name}',
-				'<tpl else>' +
-				'   {option_name}',
-				'</tpl>',
-				{
-					hasColorBg: function(code_type){
-						return code_type == 'bgcolor';
-					}
-				}
-			)
-		};
+        me.listConfig = {
+            itemTpl: new Ext.XTemplate(
+                '<tpl if="this.hasColorBg(code_type)">' +
+                '   <div class="combo-list-icon" style="background-color:{bg_color}">&#160;</div>{option_name}',
+                '<tpl else>' +
+                '   {option_name}',
+                '</tpl>',
+                {
+                    hasColorBg: function (code_type) {
+                        return code_type == 'bgcolor';
+                    }
+                }
+            )
+        };
 
-		me.callParent(arguments);
+        me.callParent(arguments);
 
-		me.on('change', function(cmb, value){
-			me.setFieldBgColor(cmb, value);
-		});
-	},
+        me.on('change', function (cmb, value) {
+            me.setFieldBgColor(cmb, value);
+        });
+    },
 
-	setFieldBgColor: function(cmb, value){
+    setFieldBgColor: function (cmb, value) {
 
-		var me = this;
+        var me = this;
 
-		Ext.Function.defer(function(){
-			var	record = cmb.findRecordByValue(value);
+        Ext.Function.defer(function () {
+            var record = cmb.findRecordByValue(value);
 
-			if(cmb.getStore().isLoading()){
-				cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
-				if(cmb.tries > 2) return;
+            if (cmb.getStore().isLoading()) {
+                cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
+                if (cmb.tries > 2) return;
 
-				Ext.Function.defer(function(){
-					me.setFieldBgColor(cmb, value);
-				}, 1000);
-			}else{
-				if(record !== false && record.data.code_type == 'bgcolor'){
-					cmb.inputEl.setStyle({
-						'background-color': record.data.bg_color,
-						'background-image': 'none',
-						'color': record.data.color
-					});
-				}else{
-					cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
-					if(cmb.tries > 2) return;
+                Ext.Function.defer(function () {
+                    me.setFieldBgColor(cmb, value);
+                }, 1000);
+            } else {
+                if (record !== false && record.data.code_type == 'bgcolor') {
+                    cmb.inputEl.setStyle({
+                        'background-color': record.data.bg_color,
+                        'background-image': 'none',
+                        'color': record.data.color
+                    });
+                } else {
+                    cmb.tries = cmb.tries ? cmb.tries + 1 : 1;
+                    if (cmb.tries > 2) return;
 
-					Ext.Function.defer(function(){
-						me.setFieldBgColor(cmb, value);
-					}, 1000);
-				}
-			}
-		}, 100);
-	},
+                    Ext.Function.defer(function () {
+                        me.setFieldBgColor(cmb, value);
+                    }, 1000);
+                }
+            }
+        }, 100);
+    },
 
-	getContrastYIQ: function(hexcolor){
-		if(hexcolor[0] != '#'){
-			hexcolor = this.getHexColor(hexcolor);
-		}
-		hexcolor = hexcolor.replace('#', '');
+    getContrastYIQ: function (hexcolor) {
+        if (hexcolor[0] != '#') {
+            hexcolor = this.getHexColor(hexcolor);
+        }
+        hexcolor = hexcolor.replace('#', '');
 
-		var r = parseInt(hexcolor.substr(0, 2), 16);
-		var g = parseInt(hexcolor.substr(2, 2), 16);
-		var b = parseInt(hexcolor.substr(4, 2), 16);
-		var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-		return (yiq >= 129) ? 'black' : 'white';
-	},
+        var r = parseInt(hexcolor.substr(0, 2), 16);
+        var g = parseInt(hexcolor.substr(2, 2), 16);
+        var b = parseInt(hexcolor.substr(4, 2), 16);
+        var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return (yiq >= 129) ? 'black' : 'white';
+    },
 
-	getHexColor: function(n){
-		n = n.toLowerCase();
-		var nar = {
-				"aliceblue": "#f0f8ff",
-				"antiquewhite": "#faebd7",
-				"aqua": "#00ffff",
-				"aquamarine": "#7fffd4",
-				"azure": "#f0ffff",
-				"beige": "#f5f5dc",
-				"bisque": "#ffe4c4",
-				"black": "#000000",
-				"blanchedalmond": "#ffebcd",
-				"blue": "#0000ff",
-				"blueviolet": "#8a2be2",
-				"brown": "#a52a2a",
-				"burlywood": "#deb887",
-				"cadetblue": "#5f9ea0",
-				"chartreuse": "#7fff00",
-				"chocolate": "#d2691e",
-				"coral": "#ff7f50",
-				"cornflowerblue": "#6495ed",
-				"cornsilk": "#fff8dc",
-				"crimson": "#dc143c",
-				"cyan": "#00ffff",
-				"darkblue": "#00008b",
-				"darkcyan": "#008b8b",
-				"darkgoldenrod": "#b8860b",
-				"darkgray": "#a9a9a9",
-				"darkgrey": "#a9a9a9",
-				"darkgreen": "#006400",
-				"darkkhaki": "#bdb76b",
-				"darkmagenta": "#8b008b",
-				"darkolivegreen": "#556b2f",
-				"darkorange": "#ff8c00",
-				"darkorchid": "#9932cc",
-				"darkred": "#8b0000",
-				"darksalmon": "#e9967a",
-				"darkseagreen": "#8fbc8f",
-				"darkslateblue": "#483d8b",
-				"darkslategray": "#2f4f4f",
-				"darkslategrey": "#2f4f4f",
-				"darkturquoise": "#00ced1",
-				"darkviolet": "#9400d3",
-				"deeppink": "#ff1493",
-				"deepskyblue": "#00bfff",
-				"dimgray": "#696969",
-				"dimgrey": "#696969",
-				"dodgerblue": "#1e90ff",
-				"firebrick": "#b22222",
-				"floralwhite": "#fffaf0",
-				"forestgreen": "#228b22",
-				"fuchsia": "#ff00ff",
-				"gainsboro": "#dcdcdc",
-				"ghostwhite": "#f8f8ff",
-				"gold": "#ffd700",
-				"goldenrod": "#daa520",
-				"gray": "#808080",
-				"grey": "#808080",
-				"green": "#008000",
-				"greenyellow": "#adff2f",
-				"honeydew": "#f0fff0",
-				"hotpink": "#ff69b4",
-				"indianred": "#cd5c5c",
-				"indigo": "#4b0082",
-				"ivory": "#fffff0",
-				"khaki": "#f0e68c",
-				"lavender": "#e6e6fa",
-				"lavenderblush": "#fff0f5",
-				"lawngreen": "#7cfc00",
-				"lemonchiffon": "#fffacd",
-				"lightblue": "#add8e6",
-				"lightcoral": "#f08080",
-				"lightcyan": "#e0ffff",
-				"lightgoldenrodyellow": "#fafad2",
-				"lightgray": "#d3d3d3",
-				"lightgrey": "#d3d3d3",
-				"lightgreen": "#90ee90",
-				"lightpink": "#ffb6c1",
-				"lightsalmon": "#ffa07a",
-				"lightseagreen": "#20b2aa",
-				"lightskyblue": "#87cefa",
-				"lightslategray": "#778899",
-				"lightslategrey": "#778899",
-				"lightsteelblue": "#b0c4de",
-				"lightyellow": "#ffffe0",
-				"lime": "#00ff00",
-				"limegreen": "#32cd32",
-				"linen": "#faf0e6",
-				"magenta": "#ff00ff",
-				"maroon": "#800000",
-				"mediumaquamarine": "#66cdaa",
-				"mediumblue": "#0000cd",
-				"mediumorchid": "#ba55d3",
-				"mediumpurple": "#9370d8",
-				"mediumseagreen": "#3cb371",
-				"mediumslateblue": "#7b68ee",
-				"mediumspringgreen": "#00fa9a",
-				"mediumturquoise": "#48d1cc",
-				"mediumvioletred": "#c71585",
-				"midnightblue": "#191970",
-				"mintcream": "#f5fffa",
-				"mistyrose": "#ffe4e1",
-				"moccasin": "#ffe4b5",
-				"navajowhite": "#ffdead",
-				"navy": "#000080",
-				"oldlace": "#fdf5e6",
-				"olive": "#808000",
-				"olivedrab": "#6b8e23",
-				"orange": "#ffa500",
-				"orangered": "#ff4500",
-				"orchid": "#da70d6",
-				"palegoldenrod": "#eee8aa",
-				"palegreen": "#98fb98",
-				"paleturquoise": "#afeeee",
-				"palevioletred": "#d87093",
-				"papayawhip": "#ffefd5",
-				"peachpuff": "#ffdab9",
-				"peru": "#cd853f",
-				"pink": "#ffc0cb",
-				"plum": "#dda0dd",
-				"powderblue": "#b0e0e6",
-				"purple": "#800080",
-				"red": "#ff0000",
-				"rosybrown": "#bc8f8f",
-				"royalblue": "#4169e1",
-				"saddlebrown": "#8b4513",
-				"salmon": "#fa8072",
-				"sandybrown": "#f4a460",
-				"seagreen": "#2e8b57",
-				"seashell": "#fff5ee",
-				"sienna": "#a0522d",
-				"silver": "#c0c0c0",
-				"skyblue": "#87ceeb",
-				"slateblue": "#6a5acd",
-				"slategray": "#708090",
-				"slategrey": "#708090",
-				"snow": "#fffafa",
-				"springgreen": "#00ff7f",
-				"steelblue": "#4682b4",
-				"tan": "#d2b48c",
-				"teal": "#008080",
-				"thistle": "#d8bfd8",
-				"tomato": "#ff6347",
-				"turquoise": "#40e0d0",
-				"violet": "#ee82ee",
-				"wheat": "#f5deb3",
-				"white": "#ffffff",
-				"whitesmoke": "#f5f5f5",
-				"yellow": "#ffff00",
-				"yellowgreen": "#9acd32"
-			},
-			r = nar[n];
-		if(r === undefined){
-			return "Invalid Color Name";
-		}
+    getHexColor: function (n) {
+        n = n.toLowerCase();
+        var nar = {
+                "aliceblue": "#f0f8ff",
+                "antiquewhite": "#faebd7",
+                "aqua": "#00ffff",
+                "aquamarine": "#7fffd4",
+                "azure": "#f0ffff",
+                "beige": "#f5f5dc",
+                "bisque": "#ffe4c4",
+                "black": "#000000",
+                "blanchedalmond": "#ffebcd",
+                "blue": "#0000ff",
+                "blueviolet": "#8a2be2",
+                "brown": "#a52a2a",
+                "burlywood": "#deb887",
+                "cadetblue": "#5f9ea0",
+                "chartreuse": "#7fff00",
+                "chocolate": "#d2691e",
+                "coral": "#ff7f50",
+                "cornflowerblue": "#6495ed",
+                "cornsilk": "#fff8dc",
+                "crimson": "#dc143c",
+                "cyan": "#00ffff",
+                "darkblue": "#00008b",
+                "darkcyan": "#008b8b",
+                "darkgoldenrod": "#b8860b",
+                "darkgray": "#a9a9a9",
+                "darkgrey": "#a9a9a9",
+                "darkgreen": "#006400",
+                "darkkhaki": "#bdb76b",
+                "darkmagenta": "#8b008b",
+                "darkolivegreen": "#556b2f",
+                "darkorange": "#ff8c00",
+                "darkorchid": "#9932cc",
+                "darkred": "#8b0000",
+                "darksalmon": "#e9967a",
+                "darkseagreen": "#8fbc8f",
+                "darkslateblue": "#483d8b",
+                "darkslategray": "#2f4f4f",
+                "darkslategrey": "#2f4f4f",
+                "darkturquoise": "#00ced1",
+                "darkviolet": "#9400d3",
+                "deeppink": "#ff1493",
+                "deepskyblue": "#00bfff",
+                "dimgray": "#696969",
+                "dimgrey": "#696969",
+                "dodgerblue": "#1e90ff",
+                "firebrick": "#b22222",
+                "floralwhite": "#fffaf0",
+                "forestgreen": "#228b22",
+                "fuchsia": "#ff00ff",
+                "gainsboro": "#dcdcdc",
+                "ghostwhite": "#f8f8ff",
+                "gold": "#ffd700",
+                "goldenrod": "#daa520",
+                "gray": "#808080",
+                "grey": "#808080",
+                "green": "#008000",
+                "greenyellow": "#adff2f",
+                "honeydew": "#f0fff0",
+                "hotpink": "#ff69b4",
+                "indianred": "#cd5c5c",
+                "indigo": "#4b0082",
+                "ivory": "#fffff0",
+                "khaki": "#f0e68c",
+                "lavender": "#e6e6fa",
+                "lavenderblush": "#fff0f5",
+                "lawngreen": "#7cfc00",
+                "lemonchiffon": "#fffacd",
+                "lightblue": "#add8e6",
+                "lightcoral": "#f08080",
+                "lightcyan": "#e0ffff",
+                "lightgoldenrodyellow": "#fafad2",
+                "lightgray": "#d3d3d3",
+                "lightgrey": "#d3d3d3",
+                "lightgreen": "#90ee90",
+                "lightpink": "#ffb6c1",
+                "lightsalmon": "#ffa07a",
+                "lightseagreen": "#20b2aa",
+                "lightskyblue": "#87cefa",
+                "lightslategray": "#778899",
+                "lightslategrey": "#778899",
+                "lightsteelblue": "#b0c4de",
+                "lightyellow": "#ffffe0",
+                "lime": "#00ff00",
+                "limegreen": "#32cd32",
+                "linen": "#faf0e6",
+                "magenta": "#ff00ff",
+                "maroon": "#800000",
+                "mediumaquamarine": "#66cdaa",
+                "mediumblue": "#0000cd",
+                "mediumorchid": "#ba55d3",
+                "mediumpurple": "#9370d8",
+                "mediumseagreen": "#3cb371",
+                "mediumslateblue": "#7b68ee",
+                "mediumspringgreen": "#00fa9a",
+                "mediumturquoise": "#48d1cc",
+                "mediumvioletred": "#c71585",
+                "midnightblue": "#191970",
+                "mintcream": "#f5fffa",
+                "mistyrose": "#ffe4e1",
+                "moccasin": "#ffe4b5",
+                "navajowhite": "#ffdead",
+                "navy": "#000080",
+                "oldlace": "#fdf5e6",
+                "olive": "#808000",
+                "olivedrab": "#6b8e23",
+                "orange": "#ffa500",
+                "orangered": "#ff4500",
+                "orchid": "#da70d6",
+                "palegoldenrod": "#eee8aa",
+                "palegreen": "#98fb98",
+                "paleturquoise": "#afeeee",
+                "palevioletred": "#d87093",
+                "papayawhip": "#ffefd5",
+                "peachpuff": "#ffdab9",
+                "peru": "#cd853f",
+                "pink": "#ffc0cb",
+                "plum": "#dda0dd",
+                "powderblue": "#b0e0e6",
+                "purple": "#800080",
+                "red": "#ff0000",
+                "rosybrown": "#bc8f8f",
+                "royalblue": "#4169e1",
+                "saddlebrown": "#8b4513",
+                "salmon": "#fa8072",
+                "sandybrown": "#f4a460",
+                "seagreen": "#2e8b57",
+                "seashell": "#fff5ee",
+                "sienna": "#a0522d",
+                "silver": "#c0c0c0",
+                "skyblue": "#87ceeb",
+                "slateblue": "#6a5acd",
+                "slategray": "#708090",
+                "slategrey": "#708090",
+                "snow": "#fffafa",
+                "springgreen": "#00ff7f",
+                "steelblue": "#4682b4",
+                "tan": "#d2b48c",
+                "teal": "#008080",
+                "thistle": "#d8bfd8",
+                "tomato": "#ff6347",
+                "turquoise": "#40e0d0",
+                "violet": "#ee82ee",
+                "wheat": "#f5deb3",
+                "white": "#ffffff",
+                "whitesmoke": "#f5f5f5",
+                "yellow": "#ffff00",
+                "yellowgreen": "#9acd32"
+            },
+            r = nar[n];
+        if (r === undefined) {
+            return "Invalid Color Name";
+        }
 
-		return r;
-	}
+        return r;
+    }
 
 
 });
@@ -9913,41 +9910,41 @@ Ext.define('Modules.Module', {
 	}
 });
 Ext.define('App.model.administration.MedicationInstruction', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'rxinstructions'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'rxcui',
-			type: 'string',
-			index: true
-		},
-		{
-			name: 'occurrence',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'instruction',
-			type: 'string',
-			len: 140
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Rxnorm.getMedicationInstructions',
-			create: 'Rxnorm.addMedicationInstruction',
-			update: 'Rxnorm.updateMedicationInstructions',
-			destroy: 'Rxnorm.destroyMedicationInstructions'
-		},
-		remoteGroup: false
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'rxinstructions'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'rxcui',
+            type: 'string',
+            index: true
+        },
+        {
+            name: 'occurrence',
+            type: 'int',
+            index: true
+        },
+        {
+            name: 'instruction',
+            type: 'string',
+            len: 140
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Rxnorm.getMedicationInstructions',
+            create: 'Rxnorm.addMedicationInstruction',
+            update: 'Rxnorm.updateMedicationInstructions',
+            destroy: 'Rxnorm.destroyMedicationInstructions'
+        },
+        remoteGroup: false
+    }
 });
 
 
@@ -11131,46 +11128,80 @@ Ext.define('App.model.administration.Globals', {
 	}
 });
 Ext.define('App.model.administration.HeadersAndFooters', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'headersandfooters',
-		comment: 'Headers And Footers'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Headers and Footers ID'},
-		{name: 'title', type: 'string' },
-		{name: 'template_type', type: 'string' },
-		{name: 'body', type: 'string' },
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s' }
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'headersandfooters',
+        comment: 'Headers And Footers'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Headers and Footers ID'
+        },
+        {
+            name: 'title',
+            type: 'string'
+        },
+        {
+            name: 'template_type',
+            type: 'string'
+        },
+        {
+            name: 'body',
+            type: 'string'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        }
 
-	]
+    ]
 });
 Ext.define('App.model.administration.ImmunizationRelations', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'immunizationrelations',
-		comment: 'Immunization Relations'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Immunization Relations ID'},
-		{name: 'immunization_id', type: 'int'},
-		{name: 'foreign_id', type: 'int'},
-		{name: 'code' },
-		{name: 'code_text', type: 'string' },
-		{name: 'code_type' }
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'immunizationrelations',
+        comment: 'Immunization Relations'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Immunization Relations ID'
+        },
+        {
+            name: 'immunization_id',
+            type: 'int'
+        },
+        {
+            name: 'foreign_id',
+            type: 'int'
+        },
+        {
+            name: 'code'
+        },
+        {
+            name: 'code_text',
+            type: 'string'
+        },
+        {
+            name: 'code_type'
+        }
 
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'PreventiveCare.getRelations',
-			create: 'PreventiveCare.addRelations',
-			destroy: 'PreventiveCare.removeRelations'
-		},
-		writer: {
-			writeAllFields: true
-		}
-	}
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'PreventiveCare.getRelations',
+            create: 'PreventiveCare.addRelations',
+            destroy: 'PreventiveCare.removeRelations'
+        },
+        writer: {
+            writeAllFields: true
+        }
+    }
 });
 Ext.define('App.model.administration.InsuranceCompany', {
 	extend: 'Ext.data.Model',
@@ -11633,107 +11664,107 @@ Ext.define('App.model.administration.LayoutTree', {
 	}
 });
 Ext.define('App.model.administration.ListOptions', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'combo_lists_options',
-		comment: 'Combo List Options'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'List Options ID'
-		},
-		{
-			name: 'list_id',
-			type: 'int',
-			comment: 'List ID'
-		},
-		{
-			name: 'option_value',
-			type: 'string',
-			comment: 'Value'
-		},
-		{
-			name: 'option_name',
-			type: 'string',
-			comment: 'Name'
-		},
-		{
-			name: 'code',
-			type: 'string',
-			len: 15,
-			index: true,
-			comment: 'value code'
-		},
-		{
-			name: 'code_type',
-			type: 'string',
-			len: 10,
-			comment: 'CPT4 LOINC SNOMEDCT ICD9 ICD10 RXNORM'
-		},
-		{
-			name: 'seq',
-			type: 'int',
-			comment: 'Sequence'
-		},
-		{
-			name: 'notes',
-			type: 'string',
-			comment: 'Notes'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			comment: 'Active?'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Lists.getOptions',
-			create: 'Lists.addOption',
-			update: 'Lists.updateOption'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'combo_lists_options',
+        comment: 'Combo List Options'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'List Options ID'
+        },
+        {
+            name: 'list_id',
+            type: 'int',
+            comment: 'List ID'
+        },
+        {
+            name: 'option_value',
+            type: 'string',
+            comment: 'Value'
+        },
+        {
+            name: 'option_name',
+            type: 'string',
+            comment: 'Name'
+        },
+        {
+            name: 'code',
+            type: 'string',
+            len: 15,
+            index: true,
+            comment: 'value code'
+        },
+        {
+            name: 'code_type',
+            type: 'string',
+            len: 10,
+            comment: 'CPT4 LOINC SNOMEDCT ICD9 ICD10 RXNORM'
+        },
+        {
+            name: 'seq',
+            type: 'int',
+            comment: 'Sequence'
+        },
+        {
+            name: 'notes',
+            type: 'string',
+            comment: 'Notes'
+        },
+        {
+            name: 'active',
+            type: 'bool',
+            comment: 'Active?'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Lists.getOptions',
+            create: 'Lists.addOption',
+            update: 'Lists.updateOption'
+        }
+    }
 });
 Ext.define('App.model.administration.Lists', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'combo_lists',
-		comment: 'Combo List'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'List Options ID'
-		},
-		{
-			name: 'title',
-			type: 'string',
-			comment: 'Title of the combo'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			comment: 'Active?'
-		},
-		{
-			name: 'in_use',
-			type: 'bool',
-			persist: false
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Lists.getLists',
-			create: 'Lists.addList',
-			update: 'Lists.updateList',
-			destroy: 'Lists.deleteList'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'combo_lists',
+        comment: 'Combo List'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'List Options ID'
+        },
+        {
+            name: 'title',
+            type: 'string',
+            comment: 'Title of the combo'
+        },
+        {
+            name: 'active',
+            type: 'bool',
+            comment: 'Active?'
+        },
+        {
+            name: 'in_use',
+            type: 'bool',
+            persist: false
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Lists.getLists',
+            create: 'Lists.addList',
+            update: 'Lists.updateList',
+            destroy: 'Lists.deleteList'
+        }
+    }
 });
 Ext.define('App.model.administration.AuditLog', {
 	extend: 'Ext.data.Model',
@@ -11864,303 +11895,309 @@ Ext.define('App.model.administration.AuditLog', {
 	}
 });
 Ext.define('App.model.administration.Modules', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'modules',
-		comment: 'Modules'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'title',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'name',
-			type: 'string',
-			len: 100
-		},
-		{
-			name: 'description',
-			type: 'string'
-		},
-		{
-			name: 'enable',
-			type: 'bool'
-		},
-		{
-			name: 'installed_version',
-			type: 'string',
-			len: 20
-		},
-		{
-			name: 'licensekey',
-			type: 'string'
-		},
-		{
-			name: 'localkey',
-			type: 'string'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Modules.getActiveModules',
-			update: 'Modules.updateModule'
-		},
-		writer: {
-			writeAllFields: true
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'modules',
+        comment: 'Modules'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'title',
+            type: 'string',
+            len: 80
+        },
+        {
+            name: 'name',
+            type: 'string',
+            len: 100
+        },
+        {
+            name: 'description',
+            type: 'string'
+        },
+        {
+            name: 'enable',
+            type: 'bool'
+        },
+        {
+            name: 'installed_version',
+            type: 'string',
+            len: 20
+        },
+        {
+            name: 'licensekey',
+            type: 'string'
+        },
+        {
+            name: 'localkey',
+            type: 'string'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Modules.getActiveModules',
+            update: 'Modules.updateModule'
+        },
+        writer: {
+            writeAllFields: true
+        }
+    }
 });
 Ext.define('App.model.administration.Medications', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{
-			name: 'RXCUI',
-			type: 'auto'
-		},
-		{
-			name: 'CODE',
-			type: 'auto'
-		},
-		{
-			name: 'STR',
-			type: 'auto'
-		},
-		{
-			name: 'DST',
-			type: 'auto'
-		},
-		{
-			name: 'DRT',
-			type: 'auto'
-		},
-		{
-			name: 'DDF',
-			type: 'auto'
-		},
-		{
-			name: 'DDFA',
-			type: 'auto'
-		},
-		{
-			name: 'RXN_QUANTITY',
-			type: 'auto'
-		},
-		{
-			name: 'SAB',
-			type: 'auto'
-		},
-		{
-			name: 'RXAUI',
-			type: 'auto'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Rxnorm.getRXNORMList'
-		},
-		reader: {
-			totalProperty: 'totals',
-			root: 'data'
-		},
-		filterParam: 'query',
-		encodeFilters: function(filters){
-			return filters[0].value;
-		}
-	}
+    extend: 'Ext.data.Model',
+    fields: [
+        {
+            name: 'RXCUI',
+            type: 'auto'
+        },
+        {
+            name: 'CODE',
+            type: 'auto'
+        },
+        {
+            name: 'STR',
+            type: 'auto'
+        },
+        {
+            name: 'DST',
+            type: 'auto'
+        },
+        {
+            name: 'DRT',
+            type: 'auto'
+        },
+        {
+            name: 'DDF',
+            type: 'auto'
+        },
+        {
+            name: 'DDFA',
+            type: 'auto'
+        },
+        {
+            name: 'RXN_QUANTITY',
+            type: 'auto'
+        },
+        {
+            name: 'SAB',
+            type: 'auto'
+        },
+        {
+            name: 'RXAUI',
+            type: 'auto'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Rxnorm.getRXNORMList'
+        },
+        reader: {
+            totalProperty: 'totals',
+            root: 'data'
+        },
+        filterParam: 'query',
+        encodeFilters: function (filters) {
+            return filters[0].value;
+        }
+    }
 });
 Ext.define('App.model.administration.ParentFields', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'parentfields',
-		comment: 'Parent Fields'
-	},
-	fields: [
-		{ name: 'name', type: 'string' },
-		{ name: 'value', type: 'string' }
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'FormLayoutBuilder.getParentFields'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'parentfields',
+        comment: 'Parent Fields'
+    },
+    fields: [
+        {
+            name: 'name',
+            type: 'string'
+        },
+        {
+            name: 'value',
+            type: 'string'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'FormLayoutBuilder.getParentFields'
+        }
+    }
 });
 Ext.define('App.model.administration.Pharmacies', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'pharmacies',
-		comment: 'Pharmacies'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'name',
-			type: 'string'
-		},
-		{
-			name: 'transmit_method',
-			type: 'string'
-		},
-		{
-			name: 'email',
-			type: 'string'
-		},
-		{
-			name: 'address_id',
-			type: 'int'
-		},
-		{
-			name: 'line1',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'line2',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'city',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'state',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'zip',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'plus_four',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'country',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'address_full',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_id',
-			type: 'int'
-		},
-		{
-			name: 'phone_country_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_area_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_prefix',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_number',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'phone_full',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_id',
-			type: 'int'
-		},
-		{
-			name: 'fax_country_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_area_code',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_prefix',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_number',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'fax_full',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'active',
-			type: 'bool'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Practice.getPharmacies',
-			create: 'Practice.addPharmacy',
-			update: 'Practice.updatePharmacy'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'pharmacies',
+        comment: 'Pharmacies'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'name',
+            type: 'string'
+        },
+        {
+            name: 'transmit_method',
+            type: 'string'
+        },
+        {
+            name: 'email',
+            type: 'string'
+        },
+        {
+            name: 'address_id',
+            type: 'int'
+        },
+        {
+            name: 'line1',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'line2',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'city',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'state',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'zip',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'plus_four',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'country',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'address_full',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'phone_id',
+            type: 'int'
+        },
+        {
+            name: 'phone_country_code',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'phone_area_code',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'phone_prefix',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'phone_number',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'phone_full',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'fax_id',
+            type: 'int'
+        },
+        {
+            name: 'fax_country_code',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'fax_area_code',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'fax_prefix',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'fax_number',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'fax_full',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'active',
+            type: 'bool'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Practice.getPharmacies',
+            create: 'Practice.addPharmacy',
+            update: 'Practice.updatePharmacy'
+        }
+    }
 });
 Ext.define('App.model.administration.PreventiveCare', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'preventivecare',
-		comment: 'Preventive Care'
-	},
-	fields: [
-		{name: 'id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'preventive_care_id', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'description', type: 'string'},
-		{name: 'age_start', type: 'string'},
-		{name: 'age_end', type: 'string'},
-		{name: 'sex', type: 'string'},
-		{name: 'pregnant', type: 'bool'},
-		{name: 'frequency', type: 'string'},
-		{name: 'category_id', type: 'string'},
-		{name: 'code', type: 'string'},
-		{name: 'coding_system', type: 'string'},
-		{name: 'dismiss', type: 'bool'},
-		{name: 'frequency_type', type: 'string'},
-		{name: 'reason', type: 'string'},
-		{name: 'times_to_perform', type: 'string'},
-		{name: 'doc_url1', type: 'string'},
-		{name: 'doc_url2', type: 'string'},
-		{name: 'doc_url3', type: 'string'},
-		{name: 'active', type: 'bool'}
-	]
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'preventivecare',
+        comment: 'Preventive Care'
+    },
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'pid', type: 'int'},
+        {name: 'preventive_care_id', type: 'int'},
+        {name: 'uid', type: 'int'},
+        {name: 'description', type: 'string'},
+        {name: 'age_start', type: 'string'},
+        {name: 'age_end', type: 'string'},
+        {name: 'sex', type: 'string'},
+        {name: 'pregnant', type: 'bool'},
+        {name: 'frequency', type: 'string'},
+        {name: 'category_id', type: 'string'},
+        {name: 'code', type: 'string'},
+        {name: 'coding_system', type: 'string'},
+        {name: 'dismiss', type: 'bool'},
+        {name: 'frequency_type', type: 'string'},
+        {name: 'reason', type: 'string'},
+        {name: 'times_to_perform', type: 'string'},
+        {name: 'doc_url1', type: 'string'},
+        {name: 'doc_url2', type: 'string'},
+        {name: 'doc_url3', type: 'string'},
+        {name: 'active', type: 'bool'}
+    ]
 
 });
 Ext.define('App.model.administration.PreventiveCareActiveProblems', {
@@ -12207,89 +12244,88 @@ Ext.define('App.model.administration.PreventiveCareMedications', {
 
 });
 Ext.define('App.model.administration.ProviderCredentialization', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'provider_credentializations'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'provider_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'insurance_company_id',
-			type: 'int',
-			index: true
-		},
-		{
-			name: 'insurance_company_name',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'start_date',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d',
-			index: true
-		},
-		{
-			name: 'end_date',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d',
-			index: true
-		},
-		{
-			name: 'credentialization_notes',
-			type: 'string'
-		},
-		{
-			name: 'active',
-			type: 'bool',
-			store: false,
-			convert: function(v, record){
-				var now = new Date();
-
-				return record.data.start_date <= now && record.data.end_date >= now
-			}
-		},
-		{
-			name: 'create_uid',
-			type: 'int'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_uid',
-			type: 'int'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Providers.getProviderCredentializations',
-			create: 'Providers.addProviderCredentialization',
-			update: 'Providers.updateProviderCredentialization',
-			destroy: 'Providers.deleteProviderCredentialization'
-		},
-		reader: {
-			root: 'data'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'provider_credentializations'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'provider_id',
+            type: 'int',
+            index: true
+        },
+        {
+            name: 'insurance_company_id',
+            type: 'int',
+            index: true
+        },
+        {
+            name: 'insurance_company_name',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'start_date',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d',
+            index: true
+        },
+        {
+            name: 'end_date',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d',
+            index: true
+        },
+        {
+            name: 'credentialization_notes',
+            type: 'string'
+        },
+        {
+            name: 'active',
+            type: 'bool',
+            store: false,
+            convert: function (v, record) {
+                var now = new Date();
+                return record.data.start_date <= now && record.data.end_date >= now
+            }
+        },
+        {
+            name: 'create_uid',
+            type: 'int'
+        },
+        {
+            name: 'create_date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'update_uid',
+            type: 'int'
+        },
+        {
+            name: 'update_date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Providers.getProviderCredentializations',
+            create: 'Providers.addProviderCredentialization',
+            update: 'Providers.updateProviderCredentialization',
+            destroy: 'Providers.deleteProviderCredentialization'
+        },
+        reader: {
+            root: 'data'
+        }
+    }
 });
 Ext.define('App.model.administration.ReferringProviderFacility', {
 	extend: 'Ext.data.Model',
@@ -12808,186 +12844,195 @@ Ext.define('App.model.administration.TemplatePanelTemplate', {
 });
 
 Ext.define('App.model.administration.TransactionLog', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'audit_transaction_log',
-		comment: 'Data INSERT UPDATE DELETE Logs'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int'
-		},
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
-			comment: 'Date of the event'
-		},
-		{
-			name: 'pid',
-			type: 'int',
-			comment: 'Patient ID'
-		},
-		{
-			name: 'eid',
-			type: 'int',
-			comment: 'Encounter ID'
-		},
-		{
-			name: 'uid',
-			type: 'int',
-			comment: 'User ID'
-		},
-		{
-			name: 'fid',
-			type: 'int',
-			comment: 'Facility ID'
-		},
-		{
-			name: 'event',
-			type: 'string',
-			len: 10,
-			comment: 'Event UPDATE INSERT DELETE'
-		},
-		{
-			name: 'table_name',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'sql_string',
-			type: 'string',
-			dataType: 'mediumtext'
-		},
-		{
-			name: 'data',
-			type: 'array',
-			dataType: 'mediumtext',
-			comment: 'serialized data',
-			convert: function(v, record){
-				return record.serializeEventData(v);
-			}
-		},
-		{
-			name: 'ip',
-			type: 'string',
-			len: 40
-		},
-		{
-			name: 'user_title',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_fname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_mname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_lname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_title',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_fname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_mname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_lname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_name',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				var str = '';
-				if(record.data.user_title) str += record.data.user_title + ' ';
-				if(record.data.user_fname) str += record.data.user_fname + ' ';
-				if(record.data.user_mname) str += record.data.user_mname + ' ';
-				if(record.data.user_lname) str += record.data.user_lname;
-				return str;
-			}
-		},
-		{
-			name: 'patient_name',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				var str = '';
-				if(record.data.patient_title) str += record.data.patient_title + ' ';
-				if(record.data.patient_fname) str += record.data.patient_fname + ' ';
-				if(record.data.patient_mname) str += record.data.patient_mname + ' ';
-				if(record.data.patient_lname) str += record.data.patient_lname;
-				return str;
-			}
-		},
-		{
-			name: 'is_valid',
-			type: 'bool',
-			store: false
-		},
-		{
-			name: 'checksum',
-			type: 'string',
-			len: 80
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'AuditLog.getLogs'
-		},
-		reader: {
-			root: 'data'
-		}
-	},
-	serializeEventData: function(data){
-		var str = '';
-		Ext.Object.each(data, function(key, value) {
-			str += key+ ' - ' + value + '<br>';
-		});
-		return str;
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'audit_transaction_log',
+        comment: 'Data INSERT UPDATE DELETE Logs'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s',
+            comment: 'Date of the event'
+        },
+        {
+            name: 'pid',
+            type: 'int',
+            comment: 'Patient ID'
+        },
+        {
+            name: 'eid',
+            type: 'int',
+            comment: 'Encounter ID'
+        },
+        {
+            name: 'uid',
+            type: 'int',
+            comment: 'User ID'
+        },
+        {
+            name: 'fid',
+            type: 'int',
+            comment: 'Facility ID'
+        },
+        {
+            name: 'event',
+            type: 'string',
+            len: 10,
+            comment: 'Event UPDATE INSERT DELETE'
+        },
+        {
+            name: 'table_name',
+            type: 'string',
+            len: 60
+        },
+        {
+            name: 'sql_string',
+            type: 'string',
+            dataType: 'mediumtext'
+        },
+        {
+            name: 'data',
+            type: 'array',
+            dataType: 'mediumtext',
+            comment: 'serialized data',
+            convert: function (v, record) {
+                return record.serializeEventData(v);
+            }
+        },
+        {
+            name: 'ip',
+            type: 'string',
+            len: 40
+        },
+        {
+            name: 'user_title',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'user_fname',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'user_mname',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'user_lname',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'patient_title',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'patient_fname',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'patient_mname',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'patient_lname',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'user_name',
+            type: 'string',
+            store: false,
+            convert: function (v, record) {
+                var str = '';
+                if (record.data.user_title) str += record.data.user_title + ' ';
+                if (record.data.user_fname) str += record.data.user_fname + ' ';
+                if (record.data.user_mname) str += record.data.user_mname + ' ';
+                if (record.data.user_lname) str += record.data.user_lname;
+                return str;
+            }
+        },
+        {
+            name: 'patient_name',
+            type: 'string',
+            store: false,
+            convert: function (v, record) {
+                var str = '';
+                if (record.data.patient_title) str += record.data.patient_title + ' ';
+                if (record.data.patient_fname) str += record.data.patient_fname + ' ';
+                if (record.data.patient_mname) str += record.data.patient_mname + ' ';
+                if (record.data.patient_lname) str += record.data.patient_lname;
+                return str;
+            }
+        },
+        {
+            name: 'is_valid',
+            type: 'bool',
+            store: false
+        },
+        {
+            name: 'checksum',
+            type: 'string',
+            len: 80
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'AuditLog.getLogs'
+        },
+        reader: {
+            root: 'data'
+        }
+    },
+    serializeEventData: function (data) {
+        var str = '';
+        Ext.Object.each(data, function (key, value) {
+            str += key + ' - ' + value + '<br>';
+        });
+        return str;
 
 
-	}
+    }
 });
 Ext.define('App.model.administration.XtypesComboModel', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'xtypescombo',
-		comment: 'XTYPE Combos'
-	},
-	fields: [
-		{ name: 'id', type: 'string' },
-		{ name: 'name', type: 'string' },
-		{ name: 'value', type: 'string' }
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'CombosData.getFiledXtypes'
-		}
-	},
-	autoLoad: true
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'xtypescombo',
+        comment: 'XTYPE Combos'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'string'
+        },
+        {
+            name: 'name',
+            type: 'string'
+        },
+        {
+            name: 'value',
+            type: 'string'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'CombosData.getFiledXtypes'
+        }
+    },
+    autoLoad: true
 });
 Ext.define('App.model.administration.User', {
 	extend: 'Ext.data.Model',
@@ -13893,8 +13938,15 @@ Ext.define('App.model.fees.PaymentTransactions',
 Ext.define('App.model.navigation.Navigation', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'text', type: 'string'},
-		{name: 'disabled', type: 'bool', defaultValue: false}
+		{
+            name: 'text',
+            type: 'string'
+        },
+		{
+            name: 'disabled',
+            type: 'bool',
+            defaultValue: false
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -15780,14 +15832,33 @@ Ext.define('App.model.patient.CptCodes', {
 Ext.define('App.model.patient.Dental', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'id', type: 'int', comment: 'Dental Data ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'cdt_code', type: 'string'},
-		{name: 'description', type: 'string'},
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Dental Data ID'},
+		{
+			name: 'eid',
+			type: 'int'},
+		{
+			name: 'pid',
+			type: 'int'},
+		{
+			name: 'created_uid',
+			type: 'int'},
+		{
+			name: 'updated_uid',
+			type: 'int'},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'cdt_code',
+			type: 'string'},
+		{
+			name: 'description',
+			type: 'string'},
 		{
 			name: 'begin_date',
 			type: 'date',
@@ -15798,11 +15869,26 @@ Ext.define('App.model.patient.Dental', {
 			type: 'date',
 			dateFormat: 'Y-m-d'
 		},
-		{name: 'ocurrence', type: 'string'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-		{name: 'destination', type: 'string'},
-		{name: 'alert', type: 'bool'}
+		{
+			name: 'ocurrence',
+			type: 'string'
+		},
+		{
+			name: 'referred_by',
+			type: 'string'
+		},
+		{
+			name: 'outcome',
+			type: 'string'
+		},
+		{
+			name: 'destination',
+			type: 'string'
+		},
+		{
+			name: 'alert',
+			type: 'bool'
+		}
 	],
 	proxy: {
 		type: 'direct',
@@ -15878,13 +15964,34 @@ Ext.define('App.model.patient.DismissedAlerts', {
 	extend: 'Ext.data.Model',
 
 	fields: [
-		{name: 'id', type: 'int', comment: 'Dismissed Alerts ID'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'preventive_care_id', type: 'int'},
-		{name: 'reason', type: 'string'},
-		{name: 'observation', type: 'string'},
-		{name: 'dismiss', type: 'bool'},
-		{name: 'description', type: 'string'}
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Dismissed Alerts ID'
+		},
+		{
+			name: 'date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'},
+		{
+			name: 'preventive_care_id',
+			type: 'int'},
+		{
+			name: 'reason',
+			type: 'string'
+		},
+		{
+			name: 'observation',
+			type: 'string'
+		},
+		{
+			name: 'dismiss',
+			type: 'bool'
+		},
+		{
+			name: 'description',
+			type: 'string'
+		}
 	],
 	proxy: {
 		type: 'direct',
@@ -16299,12 +16406,27 @@ Ext.define('App.model.patient.CVXCodes', {
 Ext.define('App.model.patient.ImmunizationCheck', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'id', type: 'int', comment: 'Immunization Check ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'code', type: 'int'},
-		{name: 'vaccine_name', type: 'string'},
-		{name: 'alert', type: 'bool'}
-
+		{
+			name: 'id',
+			type: 'int',
+			comment: 'Immunization Check ID'
+		},
+		{
+			name: 'pid',
+			type: 'int'
+		},
+		{
+			name: 'code',
+			type: 'int'
+		},
+		{
+			name: 'vaccine_name',
+			type: 'string'
+		},
+		{
+			name: 'alert',
+			type: 'bool'
+		}
 	],
 	proxy: {
 		type: 'direct',
@@ -16316,9 +16438,18 @@ Ext.define('App.model.patient.ImmunizationCheck', {
 Ext.define('App.model.patient.LaboratoryTypes', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'id', type: 'int', comment: 'Laboratory Types ID'},
-		{name: 'label', type: 'string'},
-		{name: 'fields' }
+		{
+            name: 'id',
+            type: 'int',
+            comment: 'Laboratory Types ID'
+        },
+		{
+            name: 'label',
+            type: 'string'
+        },
+		{
+            name: 'fields'
+        }
 
 	],
 	proxy: {
@@ -16337,9 +16468,19 @@ Ext.define('App.model.patient.MeaningfulUseAlert', {
 		comment: 'Meaningful Use Alert'
 	},
 	fields: [
-		{name: 'id', type: 'int', comment: 'Meaningful Use Alert ID'},
-		{name: 'name', type: 'string'},
-		{name: 'val', type: 'bool'}
+		{
+            name: 'id',
+            type: 'int',
+            comment: 'Meaningful Use Alert ID'
+        },
+		{
+            name: 'name',
+            type: 'string'
+        },
+		{
+            name: 'val',
+            type: 'bool'
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -16931,16 +17072,47 @@ Ext.define('App.model.patient.PatientActiveProblem', {
 Ext.define('App.model.patient.PatientArrivalLog', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'id', type: 'int', comment: 'Patient Arrival Log ID'},
-		{name: 'area_id', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'time', type: 'string'},
-		{name: 'name', type: 'string'},
-		{name: 'status', type: 'string'},
-		{name: 'area', type: 'string'},
-		{name: 'warning', type: 'bool'},
-		{name: 'warningMsg', type: 'string'},
-		{name: 'isNew', type: 'bool'}
+		{
+            name: 'id',
+            type: 'int',
+            comment: 'Patient Arrival Log ID'
+        },
+		{
+            name: 'area_id',
+            type: 'int'
+        },
+		{
+            name: 'pid',
+            type: 'int'
+        },
+		{
+            name: 'time',
+            type: 'string'
+        },
+		{
+            name: 'name',
+            type: 'string'
+        },
+		{
+            name: 'status',
+            type: 'string'
+        },
+		{
+            name: 'area',
+            type: 'string'
+        },
+		{
+            name: 'warning',
+            type: 'bool'
+        },
+		{
+            name: 'warningMsg',
+            type: 'string'
+        },
+		{
+            name: 'isNew',
+            type: 'bool'
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -16961,24 +17133,75 @@ Ext.define('App.model.patient.PatientCalendarEvents', {
 		name: 'patientcalendarevents',
 		comment: 'Patient Calendar Events'
 	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Patient Calendar Event ID'},
-		{name: 'user_id', type: 'int'},
-		{name: 'category', type: 'int'},
-		{name: 'facility', type: 'int'},
-		{name: 'billing_facillity', type: 'int'},
-		{name: 'patient_id', type: 'int'},
-		{name: 'title', type: 'string'},
-		{name: 'status', type: 'string'},
-		{name: 'start', type: 'date', dateFormat: 'Y-m-d H:s:i'},
-		{name: 'end', type: 'date', dateFormat: 'Y-m-d H:s:i'},
-		{name: 'data', type: 'string'},
-		{name: 'rrule', type: 'string'},
-		{name: 'loc', type: 'string'},
-		{name: 'notes', type: 'string'},
-		{name: 'url', type: 'string'},
-		{name: 'ad', type: 'string'}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Patient Calendar Event ID'
+        },
+        {
+            name: 'user_id',
+            type: 'int'
+        },
+        {
+            name: 'category',
+            type: 'int'
+        },
+        {
+            name: 'facility',
+            type: 'int'
+        },
+        {
+            name: 'billing_facillity',
+            type: 'int'
+        },
+        {
+            name: 'patient_id',
+            type: 'int'
+        },
+        {
+            name: 'title',
+            type: 'string'
+        },
+        {
+            name: 'status',
+            type: 'string'
+        },
+        {
+            name: 'start',
+            type: 'date',
+            dateFormat: 'Y-m-d H:s:i'
+        },
+        {
+            name: 'end',
+            type: 'date',
+            dateFormat: 'Y-m-d H:s:i'
+        },
+        {
+            name: 'data',
+            type: 'string'
+        },
+        {
+            name: 'rrule',
+            type: 'string'
+        },
+        {
+            name: 'loc',
+            type: 'string'
+        },
+        {
+            name: 'notes',
+            type: 'string'
+        },
+        {
+            name: 'url',
+            type: 'string'
+        },
+        {
+            name: 'ad',
+            type: 'string'
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {
@@ -17163,9 +17386,6 @@ Ext.define('App.model.patient.PatientImmunization', {
 			type: 'string',
 			store: false,
 			convert: function(v, record){
-
-				say(record.data);
-
 				return record.data.administered_title + ' ' +
 					record.data.administered_fname + ' ' +
 					(record.data.administered_mname || '') + ' ' +
@@ -17251,19 +17471,50 @@ Ext.define('App.model.patient.PatientLabsResults', {
 		name: 'patientlabsresults',
 		comment: 'Patient Labs Results'
 	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Patient Labs Results ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'auth_uid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'document_id', type: 'int'},
-		{name: 'document_url'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:s:i'},
-		{name: 'data'},
-		{name: 'columns'},
-		{name: 'parent_id'}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Patient Labs Results ID'
+        },
+        {
+            name: 'pid',
+            type: 'int'
+        },
+        {
+            name: 'uid',
+            type: 'int'
+        },
+        {
+            name: 'auth_uid',
+            type: 'int'
+        },
+        {
+            name: 'eid',
+            type: 'int'
+        },
+        {
+            name: 'document_id',
+            type: 'int'
+        },
+        {
+            name: 'document_url'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:s:i'
+        },
+        {
+            name: 'data'
+        },
+        {
+            name: 'columns'
+        },
+        {
+            name: 'parent_id'
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {
@@ -17277,9 +17528,18 @@ Ext.define('App.model.patient.PatientLabsResults', {
 Ext.define('App.model.patient.PatientsLabOrderItems', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{ name: 'id', type: 'int' },
-		{ name: 'loinc', type: 'string' },
-		{ name: 'title', type: 'string' }
+		{
+            name: 'id',
+            type: 'int'
+        },
+		{
+            name: 'loinc',
+            type: 'string'
+        },
+		{
+            name: 'title',
+            type: 'string'
+        }
 	]
 });
 Ext.define('App.model.patient.PatientSocialHistory', {
@@ -17968,18 +18228,56 @@ Ext.define('App.model.patient.PatientsPrescriptions', {
 Ext.define('App.model.patient.PatientsXrayCtOrders', {
 	extend: 'Ext.data.Model',
 	fields: [
-		{name: 'id', type: 'int', comment: 'Patients XrayCt Orders ID'},
-		{ name: 'eid', type: 'int' },
-		{ name: 'pid', type: 'int' },
-		{ name: 'uid', type: 'int' },
-		{ name: 'description', type: 'string' },
-		{ name: 'date_created', type: 'date', dateFormat: 'Y-m-d H:i:s' },
-		{ name: 'laboratory_id', type: 'int' },
-		{ name: 'document_id', type: 'int' },
-		{ name: 'order_type', type: 'string', defaultValue: 'rad' },
-		{ name: 'order_items', type: 'string' },
-		{ name: 'note', type: 'string' },
-		{ name: 'docUrl', type: 'string' }
+		{
+            name: 'id',
+            type: 'int',
+            comment: 'Patients XrayCt Orders ID'
+        },
+		{
+            name: 'eid',
+            type: 'int'
+        },
+		{
+            name: 'pid',
+            type: 'int'
+        },
+		{
+            name: 'uid',
+            type: 'int'
+        },
+		{
+            name: 'description',
+            type: 'string' },
+		{
+            name: 'date_created',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+		{
+            name: 'laboratory_id',
+            type: 'int'
+        },
+		{
+            name: 'document_id',
+            type: 'int'
+        },
+		{
+            name: 'order_type',
+            type: 'string',
+            defaultValue: 'rad'
+        },
+		{
+            name: 'order_items',
+            type: 'string'
+        },
+		{
+            name: 'note',
+            type: 'string'
+        },
+		{
+            name: 'docUrl',
+            type: 'string'
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -17992,19 +18290,48 @@ Ext.define('App.model.patient.PatientsXrayCtOrders', {
 });
 Ext.define('App.model.patient.PreventiveCare', {
 	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int', comment: 'Preventive Care ID'},
-		{name: 'pid', type: 'int'},
-		{name: 'eid', type: 'int'},
-		{name: 'uid', type: 'int'},
-		{name: 'description'},
-		{name: 'date', dateFormat: 'Y-m-d'},
-		{name: 'observation'},
-		{name: 'type'},
-		{name: 'dismiss'},
-		{name: 'reason'},
-		{name: 'alert', type: 'bool'}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Preventive Care ID'
+        },
+        {
+            name: 'pid',
+            type: 'int'
+        },
+        {
+            name: 'eid',
+            type: 'int'
+        },
+        {
+            name: 'uid',
+            type: 'int'
+        },
+        {
+            name: 'description'
+        },
+        {
+            name: 'date',
+            dateFormat: 'Y-m-d'
+        },
+        {
+            name: 'observation'
+        },
+        {
+            name: 'type'
+        },
+        {
+            name: 'dismiss'
+        },
+        {
+            name: 'reason'
+        },
+        {
+            name: 'alert',
+            type: 'bool'
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {
@@ -18015,20 +18342,58 @@ Ext.define('App.model.patient.PreventiveCare', {
 });
 Ext.define('App.model.patient.QRCptCodes', {
 	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int', comment: 'QR CPT Code ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'code', type: 'string'},
-		{name: 'code_text', type: 'string'},
-		{name: 'code_text_medium', type: 'string'},
-		{name: 'place_of_service', type: 'string'},
-		{name: 'emergency', type: 'bool'},
-		{name: 'charge', type: 'string'},
-		{name: 'days_of_units', type: 'string'},
-		{name: 'essdt_plan', type: 'string'},
-		{name: 'modifiers', type: 'string'},
-		{name: 'status', type: 'int', defaultValue: 0}
-	],
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'QR CPT Code ID'
+        },
+        {
+            name: 'eid',
+            type: 'int'
+        },
+        {
+            name: 'code',
+            type: 'string'
+        },
+        {
+            name: 'code_text',
+            type: 'string'
+        },
+        {
+            name: 'code_text_medium',
+            type: 'string'
+        },
+        {
+            name: 'place_of_service',
+            type: 'string'
+        },
+        {
+            name: 'emergency',
+            type: 'bool'
+        },
+        {
+            name: 'charge',
+            type: 'string'
+        },
+        {
+            name: 'days_of_units',
+            type: 'string'
+        },
+        {
+            name: 'essdt_plan',
+            type: 'string'
+        },
+        {
+            name: 'modifiers',
+            type: 'string'
+        },
+        {
+            name: 'status',
+            type: 'int',
+            defaultValue: 0
+        }
+    ],
 	proxy: {
 		type: 'direct',
 		api: {
@@ -18240,366 +18605,792 @@ Ext.define('App.model.patient.Reminders', {
 
 
 Ext.define('App.model.patient.Surgery', {
-	extend: 'Ext.data.Model',
-	fields: [
-		{name: 'id', type: 'int', comment: 'Surgery ID'},
-		{name: 'eid', type: 'int'},
-		{name: 'pid', type: 'int'},
-		{name: 'created_uid', type: 'int'},
-		{name: 'updated_uid', type: 'int'},
-		{name: 'create_date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'surgery', type: 'string'},
-		{name: 'surgery_id', type: 'string'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'referred_by', type: 'string'},
-		{name: 'outcome', type: 'string'},
-		{name: 'notes', type: 'string'},
-		{name: 'alert', type: 'bool'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Medical.getPatientSurgery',
-			create: 'Medical.addPatientSurgery',
-			update: 'Medical.updatePatientSurgery'
-		}
-	}
+    extend: 'Ext.data.Model',
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Surgery ID'
+        },
+        {
+            name: 'eid',
+            type: 'int'
+        },
+        {
+            name: 'pid',
+            type: 'int'
+        },
+        {
+            name: 'created_uid',
+            type: 'int'
+        },
+        {
+            name: 'updated_uid',
+            type: 'int'
+        },
+        {
+            name: 'create_date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'surgery',
+            type: 'string'
+        },
+        {
+            name: 'surgery_id',
+            type: 'string'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'referred_by',
+            type: 'string'
+        },
+        {
+            name: 'outcome',
+            type: 'string'
+        },
+        {
+            name: 'notes',
+            type: 'string'
+        },
+        {
+            name: 'alert',
+            type: 'bool'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Medical.getPatientSurgery',
+            create: 'Medical.addPatientSurgery',
+            update: 'Medical.updatePatientSurgery'
+        }
+    }
 });
 Ext.define('App.model.patient.VectorGraph', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'vectorgraph',
-		comment: 'Vector Graphics'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Vector Graphics ID'},
-		{name: 'age_mos', type: 'float'},
-		{name: 'height', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P85', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'vectorgraph',
+        comment: 'Vector Graphics'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Vector Graphics ID'
+        },
+        {
+            name: 'age_mos',
+            type: 'float'
+        },
+        {
+            name: 'height',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P85',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        }
+    }
 
 });
 Ext.define('App.model.patient.VisitPayment', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'visitpayment',
-		comment: 'Visit Payment'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Visit Payment ID'},
-		{name: 'no', type: 'int'},
-		{name: 'date', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'facility', type: 'string'},
-		{name: 'received_from', type: 'string'},
-		{name: 'amount', type: 'string'},
-		{name: 'for_payment_of', type: 'string'},
-		{name: 'paid_by', type: 'string'},
-		{name: 'description', type: 'string'},
-		{name: 'next_appointment', type: 'date', dateFormat: 'Y-m-d H:i:s'},
-		{name: 'accounted_amount', type: 'string'},
-		{name: 'payment_amount', type: 'string'},
-		{name: 'balance_due', type: 'string'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Encounter.Checkout'
-		},
-		reader: {
-			type: 'json'
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'visitpayment',
+        comment: 'Visit Payment'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Visit Payment ID'
+        },
+        {
+            name: 'no',
+            type: 'int'
+        },
+        {
+            name: 'date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'facility',
+            type: 'string'
+        },
+        {
+            name: 'received_from',
+            type: 'string'
+        },
+        {
+            name: 'amount',
+            type: 'string'
+        },
+        {
+            name: 'for_payment_of',
+            type: 'string'
+        },
+        {
+            name: 'paid_by',
+            type: 'string'
+        },
+        {
+            name: 'description',
+            type: 'string'
+        },
+        {
+            name: 'next_appointment',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'accounted_amount',
+            type: 'string'
+        },
+        {
+            name: 'payment_amount',
+            type: 'string'
+        },
+        {
+            name: 'balance_due',
+            type: 'string'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Encounter.Checkout'
+        },
+        reader: {
+            type: 'json'
+        }
+    }
 });
 Ext.define('App.model.patient.charts.BMIForAge', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'bmiforage',
-		comment: 'BMI For Age'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'BMI For Age ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 8
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'bmiforage',
+        comment: 'BMI For Age'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'BMI For Age ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 8
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.HeadCircumferenceInf', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'headcircumferenceinf',
-		comment: 'Head Circumference Information'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Head Circumference Information ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 4
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'headcircumferenceinf',
+        comment: 'Head Circumference Information'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Head Circumference Information ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 4
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.LengthForAgeInf', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'lengthforageinf',
-		comment: 'Length For Age Information'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Length For Age Information ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 2
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'lengthforageinf',
+        comment: 'Length For Age Information'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Length For Age Information ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 2
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.StatureForAge', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'statureforage',
-		comment: 'Stature For Age'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Stature For Age ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 7
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'statureforage',
+        comment: 'Stature For Age'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Stature For Age ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 7
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.WeightForAge', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'weightforage',
-		comment: 'Weight For Age'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Weight For Age ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 6
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'weightforage',
+        comment: 'Weight For Age'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Weight For Age ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 6
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.WeightForAgeInf', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'weightforageinf',
-		comment: 'Weight For Age Information'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Weight For Age Information ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 1
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'weightforageinf',
+        comment: 'Weight For Age Information'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Weight For Age Information ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 1
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.WeightForRecumbentInf', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'weightforrecumbentinf',
-		comment: 'Weight For Recumbent Information'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Weight For Recumbent Information ID'},
-		{name: 'age', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 3
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'weightforrecumbentinf',
+        comment: 'Weight For Recumbent Information'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Weight For Recumbent Information ID'
+        },
+        {
+            name: 'age',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 3
+        }
+    }
 
 });
 Ext.define('App.model.patient.charts.WeightForStature', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'weightforstature',
-		comment: 'Weight For Stature'
-	},
-	fields: [
-		{name: 'id', type: 'int', comment: 'Weight For Stature ID'},
-		{name: 'height', type: 'float'},
-		{name: 'PP', type: 'float'},
-		{name: 'P3', type: 'float'},
-		{name: 'P5', type: 'float'},
-		{name: 'P10', type: 'float'},
-		{name: 'P25', type: 'float'},
-		{name: 'P50', type: 'float'},
-		{name: 'P75', type: 'float'},
-		{name: 'P85', type: 'float'},
-		{name: 'P90', type: 'float'},
-		{name: 'P95', type: 'float'},
-		{name: 'P97', type: 'float'}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'VectorGraph.getGraphData'
-		},
-		reader: {
-			type: 'json'
-		},
-		extraParams: {
-			type: 5
-		}
-	}
+    extend: 'Ext.data.Model',
+    table: {
+        name: 'weightforstature',
+        comment: 'Weight For Stature'
+    },
+    fields: [
+        {
+            name: 'id',
+            type: 'int',
+            comment: 'Weight For Stature ID'
+        },
+        {
+            name: 'height',
+            type: 'float'
+        },
+        {
+            name: 'PP',
+            type: 'float'
+        },
+        {
+            name: 'P3',
+            type: 'float'
+        },
+        {
+            name: 'P5',
+            type: 'float'
+        },
+        {
+            name: 'P10',
+            type: 'float'
+        },
+        {
+            name: 'P25',
+            type: 'float'
+        },
+        {
+            name: 'P50',
+            type: 'float'
+        },
+        {
+            name: 'P75',
+            type: 'float'
+        },
+        {
+            name: 'P85',
+            type: 'float'
+        },
+        {
+            name: 'P90',
+            type: 'float'
+        },
+        {
+            name: 'P95',
+            type: 'float'
+        },
+        {
+            name: 'P97',
+            type: 'float'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'VectorGraph.getGraphData'
+        },
+        reader: {
+            type: 'json'
+        },
+        extraParams: {
+            type: 5
+        }
+    }
 
 });
 Ext.define('App.model.areas.PatientArea', {
@@ -19270,514 +20061,515 @@ Ext.define('App.store.patient.CheckoutAlertArea', {
 
 
 Ext.define('App.model.patient.Patient', {
-	extend: 'Ext.data.Model',
-	requires: [
-		'App.model.patient.Insurance',
-		'App.model.patient.Allergies',
-		'App.model.patient.Medications',
-		'App.model.patient.PatientActiveProblem'
-	],
-	table: {
-		name: 'patient'
-	},
-	fields: [
-		{
-			name: 'pid',
-			type: 'int',
-			comment: 'patient ID'
-		},
-		{
-			name: 'title',
-			type: 'string',
-			comment: 'Title Mr. Sr.',
-			len: 10
-		},
-		{
-			name: 'fname',
-			type: 'string',
-			comment: 'first name',
-			index: true,
-			len: 60
-		},
-		{
-			name: 'mname',
-			type: 'string',
-			comment: 'middle name',
-			index: true,
-			len: 40
-		},
-		{
-			name: 'lname',
-			type: 'string',
-			comment: 'last name',
-			index: true,
-			len: 60
-		},
-		{
-			name: 'fullname',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				var foo = '';
-				if(record.data.title){
-					foo += record.data.title + ' ';
-				}
-				if(record.data.fname){
-					foo += record.data.fname + ' ';
-				}
-				if(record.data.mname){
-					foo += record.data.mname + ' ';
-				}
-				if(record.data.lname){
-					foo += record.data.lname + ' ';
-				}
-				return foo.trim();
-			}
-		},
-		{
-			name: 'sex',
-			type: 'string',
-			comment: 'sex',
-			index: true,
-			len: 10
-		},
-		{
-			name: 'DOB',
-			type: 'date',
-			comment: 'day of birth',
-			dateFormat: 'Y-m-d H:i:s',
-			index: true,
-			defaultValue: '0000-00-00 00:00:00'
-		},
-		{
-			name: 'DOBFormatted',
-			type: 'string',
-			persist: false,
-			convert: function(v, record){
-				return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
-			}
-		},
-		{
-			name: 'marital_status',
-			type: 'string',
-			comment: 'marital status',
-			len: 40
-		},
-		{
-			name: 'SS',
-			type: 'string',
-			index: true,
-			comment: 'social security',
-			len: 40
-		},
-		{
-			name: 'pubpid',
-			type: 'string',
-			index: true,
-			comment: 'external reference id',
-			len: 40
-		},
-		{
-			name: 'pubaccount',
-			type: 'string',
-			index: true,
-			comment: 'external reference account',
-			len: 40
-		},
-		{
-			name: 'record_number',
-			type: 'string',
-			persist: false,
-			convert: function(v, record){
-				return g('display_pubpid') ? record.data.pubpid : record.data.pid;
-			}
-		},
-		{
-			name: 'drivers_license',
-			type: 'string',
-			index: true,
-			comment: 'driver licence #',
-			len: 40
-		},
-		{
-			name: 'drivers_license_state',
-			type: 'string',
-			len: 40
-		},
-		{
-			name: 'drivers_license_exp',
-			type: 'date',
-			dataType: 'date',
-			dateFormat: 'Y-m-d'
-		},
-		{
-			name: 'address',
-			type: 'string',
-			comment: 'address',
-			len: 80
-		},
-		{
-			name: 'city',
-			type: 'string',
-			comment: 'city',
-			len: 40
-		},
-		{
-			name: 'state',
-			type: 'string',
-			comment: 'state',
-			len: 40
-		},
-		{
-			name: 'country',
-			type: 'string',
-			comment: 'country',
-			len: 40
-		},
-		{
-			name: 'zipcode',
-			type: 'string',
-			comment: 'postal code',
-			len: 10
-		},
-		{
-			name: 'fulladdress',
-			type: 'string',
-			persist: false,
-			convert: false
-		},
-		{
-			name: 'home_phone',
-			type: 'string',
-			index: true,
-			comment: 'home phone #',
-			len: 15
-		},
-		{
-			name: 'mobile_phone',
-			type: 'string',
-			index: true,
-			comment: 'mobile phone #',
-			len: 15
-		},
-		{
-			name: 'work_phone',
-			type: 'string',
-			index: true,
-			comment: 'work phone #',
-			len: 15
-		},
-		{
-			name: 'phones',
-			type: 'string',
-			persist: false,
-			convert: false
-		},
-		{
-			name: 'email',
-			type: 'string',
-			index: true,
-			comment: 'email',
-			len: 80
-		},
-		{
-			name: 'mothers_name',
-			type: 'string',
-			comment: 'mother name',
-			len: 40
-		},
-		{
-			name: 'guardians_name',
-			type: 'string',
-			comment: 'guardians name',
-			len: 40
-		},
-		{
-			name: 'emer_contact',
-			type: 'string',
-			comment: 'emergency contact',
-			len: 40
-		},
-		{
-			name: 'emer_phone',
-			type: 'string',
-			comment: 'emergency phone #',
-			len: 15
-		},
-		{
-			name: 'provider',
-			type: 'string',
-			comment: 'default provider',
-			len: 40
-		},
-		{
-			name: 'pharmacy',
-			type: 'string',
-			comment: 'default pharmacy',
-			len: 40
-		},
-		{
-			name: 'hipaa_notice',
-			type: 'string',
-			comment: 'HIPAA notice status',
-			len: 40
-		},
-		{
-			name: 'race',
-			type: 'string',
-			comment: 'race',
-			len: 40
-		},
-		{
-			name: 'ethnicity',
-			type: 'string',
-			comment: 'ethnicity',
-			len: 40
-		},
-		{
-			name: 'language',
-			type: 'string',
-			comment: 'language',
-			len: 10
-		},
-		{
-			name: 'allow_leave_msg',
-			type: 'bool'
-		},
-		{
-			name: 'allow_voice_msg',
-			type: 'bool'
-		},
-		{
-			name: 'allow_mail_msg',
-			type: 'bool'
-		},
-		{
-			name: 'allow_sms',
-			type: 'bool'
-		},
-		{
-			name: 'allow_email',
-			type: 'bool'
-		},
-		{
-			name: 'allow_immunization_registry',
-			type: 'bool'
-		},
-		{
-			name: 'allow_immunization_info_sharing',
-			type: 'bool'
-		},
-		{
-			name: 'allow_health_info_exchange',
-			type: 'bool'
-		},
-		{
-			name: 'allow_patient_web_portal',
-			type: 'bool'
-		},
-		{
-			name: 'occupation',
-			type: 'string',
-			comment: 'patient occupation',
-			len: 40
-		},
-		{
-			name: 'employer_name',
-			type: 'string',
-			comment: 'employer name',
-			len: 40
-		},
-		{
-			name: 'employer_address',
-			type: 'string',
-			comment: 'employer address',
-			len: 40
-		},
-		{
-			name: 'employer_city',
-			type: 'string',
-			comment: 'employer city',
-			len: 40
-		},
-		{
-			name: 'employer_state',
-			type: 'string',
-			comment: 'employer state',
-			len: 40
-		},
-		{
-			name: 'employer_country',
-			type: 'string',
-			comment: 'employer country',
-			len: 40
-		},
-		{
-			name: 'employer_postal_code',
-			type: 'string',
-			comment: 'employer postal code',
-			len: 10
-		},
-		{
-			name: 'rating',
-			type: 'int',
-			comment: 'patient stars rating'
-		},
-		{
-			name: 'image',
-			type: 'string',
-			dataType: 'mediumtext',
-			comment: 'patient image base64 string'
-		},
-		{
-			name: 'qrcode',
-			type: 'string',
-			dataType: 'mediumtext',
-			comment: 'patient QRCode base64 string'
-		},
-		{
-			name: 'birth_place',
-			type: 'string',
-			len: 150
-		},
-		{
-			name: 'birth_multiple',
-			type: 'bool'
-		},
-		{
-			name: 'birth_order',
-			type: 'int',
-			defaultValue: 1,
-			len: 2
-		},
-		{
-			name: 'is_veteran',
-			type: 'string',
-			len: 1
-		},
-		{
-			name: 'deceased',
-			type: 'string',
-			len: 1
-		},
-		{
-			name: 'death_date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'alias',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'citizenship',
-			type: 'string',
-			len: 80
-		},
-		{
-			name: 'primary_facility',
-			type: 'int'
-		},
-		{
-			name: 'primary_provider',
-			type: 'int'
-		},
-		{
-			name: 'address_cont',
-			type: 'string'
-		},
-		{
-			name: 'work_phone_ext',
-			type: 'string'
-		},
-		{
-			name: 'administrative_status',
-			type: 'string',
-			comment: 'active | inactive | merged',
-			len: 15
-		},
-		{
-			name: 'create_uid',
-			type: 'int',
-			comment: 'create user ID'
-		},
-		{
-			name: 'update_uid',
-			type: 'int',
-			comment: 'update user ID'
-		},
-		{
-			name: 'create_date',
-			type: 'date',
-			comment: 'create date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'update_date',
-			type: 'date',
-			comment: 'last update date',
-			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'portal_password',
-			type: 'string',
-			dataType: 'blob',
-			encrypt: true
-		},
-		{
-			name: 'portal_username',
-			type: 'string'
-		}
-	],
-	idProperty: 'pid',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Patient.getPatients',
-			create: 'Patient.savePatient',
-			update: 'Patient.savePatient'
-		}
-	},
-	hasMany: [
-		{
-			model: 'App.model.patient.Insurance',
-			name: 'insurance',
-			primaryKey: 'pid',
-			foreignKey: 'pid'
-		},
-		{
-			model: 'App.model.patient.Allergies',
-			name: 'allergies',
-			primaryKey: 'pid',
-			foreignKey: 'pid'
-		},
-		{
-			model: 'App.model.patient.Medications',
-			name: 'medications',
-			primaryKey: 'pid',
-			foreignKey: 'pid'
-		},
-		{
-			model: 'App.model.patient.PatientActiveProblem',
-			name: 'activeproblems',
-			primaryKey: 'pid',
-			foreignKey: 'pid'
-		}
-	],
-	indexes: {
-		live_search_index: {
-			unique: false,
-			columns: [
-				'pid',
-				'pubpid',
-				'fname',
-				'mname',
-				'lname',
-				'SS'
-			]
-		}
-	}
+    extend: 'Ext.data.Model',
+    requires: [
+        'App.model.patient.Insurance',
+        'App.model.patient.Allergies',
+        'App.model.patient.Medications',
+        'App.model.patient.PatientActiveProblem'
+    ],
+    table: {
+        name: 'patient'
+    },
+    fields: [
+        {
+            name: 'pid',
+            type: 'int',
+            comment: 'patient ID'
+        },
+        {
+            name: 'title',
+            type: 'string',
+            comment: 'Title Mr. Sr.',
+            len: 10
+        },
+        {
+            name: 'fname',
+            type: 'string',
+            comment: 'first name',
+            index: true,
+            len: 60
+        },
+        {
+            name: 'mname',
+            type: 'string',
+            comment: 'middle name',
+            index: true,
+            len: 40
+        },
+        {
+            name: 'lname',
+            type: 'string',
+            comment: 'last name',
+            index: true,
+            len: 60
+        },
+        {
+            name: 'fullname',
+            type: 'string',
+            store: false,
+            convert: function (v, record) {
+                var foo = '';
+                if (record.data.title) {
+                    foo += record.data.title + ' ';
+                }
+                if (record.data.fname) {
+                    foo += record.data.fname + ' ';
+                }
+                if (record.data.mname) {
+                    foo += record.data.mname + ' ';
+                }
+                if (record.data.lname) {
+                    foo += record.data.lname + ' ';
+                }
+                return foo.trim();
+            }
+        },
+        {
+            name: 'sex',
+            type: 'string',
+            comment: 'sex',
+            index: true,
+            len: 10
+        },
+        {
+            name: 'DOB',
+            type: 'date',
+            comment: 'day of birth',
+            dateFormat: 'Y-m-d H:i:s',
+            index: true,
+            defaultValue: '0000-00-00 00:00:00'
+        },
+        {
+            name: 'DOBFormatted',
+            type: 'string',
+            persist: false,
+            convert: function (v, record) {
+                return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
+            }
+        },
+        {
+            name: 'marital_status',
+            type: 'string',
+            comment: 'marital status',
+            len: 40
+        },
+        {
+            name: 'SS',
+            type: 'string',
+            index: true,
+            comment: 'social security',
+            len: 40
+        },
+        {
+            name: 'pubpid',
+            type: 'string',
+            index: true,
+            comment: 'external reference id',
+            len: 40
+        },
+        {
+            name: 'pubaccount',
+            type: 'string',
+            index: true,
+            comment: 'external reference account',
+            len: 40
+        },
+        {
+            name: 'record_number',
+            type: 'string',
+            persist: false,
+            convert: function (v, record)
+            {
+                return g('display_pubpid') ? record.data.pubpid : record.data.pid;
+            }
+        },
+        {
+            name: 'drivers_license',
+            type: 'string',
+            index: true,
+            comment: 'driver licence #',
+            len: 40
+        },
+        {
+            name: 'drivers_license_state',
+            type: 'string',
+            len: 40
+        },
+        {
+            name: 'drivers_license_exp',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d'
+        },
+        {
+            name: 'address',
+            type: 'string',
+            comment: 'address',
+            len: 80
+        },
+        {
+            name: 'city',
+            type: 'string',
+            comment: 'city',
+            len: 40
+        },
+        {
+            name: 'state',
+            type: 'string',
+            comment: 'state',
+            len: 40
+        },
+        {
+            name: 'country',
+            type: 'string',
+            comment: 'country',
+            len: 40
+        },
+        {
+            name: 'zipcode',
+            type: 'string',
+            comment: 'postal code',
+            len: 10
+        },
+        {
+            name: 'fulladdress',
+            type: 'string',
+            persist: false,
+            convert: false
+        },
+        {
+            name: 'home_phone',
+            type: 'string',
+            index: true,
+            comment: 'home phone #',
+            len: 15
+        },
+        {
+            name: 'mobile_phone',
+            type: 'string',
+            index: true,
+            comment: 'mobile phone #',
+            len: 15
+        },
+        {
+            name: 'work_phone',
+            type: 'string',
+            index: true,
+            comment: 'work phone #',
+            len: 15
+        },
+        {
+            name: 'phones',
+            type: 'string',
+            persist: false,
+            convert: false
+        },
+        {
+            name: 'email',
+            type: 'string',
+            index: true,
+            comment: 'email',
+            len: 80
+        },
+        {
+            name: 'mothers_name',
+            type: 'string',
+            comment: 'mother name',
+            len: 40
+        },
+        {
+            name: 'guardians_name',
+            type: 'string',
+            comment: 'guardians name',
+            len: 40
+        },
+        {
+            name: 'emer_contact',
+            type: 'string',
+            comment: 'emergency contact',
+            len: 40
+        },
+        {
+            name: 'emer_phone',
+            type: 'string',
+            comment: 'emergency phone #',
+            len: 15
+        },
+        {
+            name: 'provider',
+            type: 'string',
+            comment: 'default provider',
+            len: 40
+        },
+        {
+            name: 'pharmacy',
+            type: 'string',
+            comment: 'default pharmacy',
+            len: 40
+        },
+        {
+            name: 'hipaa_notice',
+            type: 'string',
+            comment: 'HIPAA notice status',
+            len: 40
+        },
+        {
+            name: 'race',
+            type: 'string',
+            comment: 'race',
+            len: 40
+        },
+        {
+            name: 'ethnicity',
+            type: 'string',
+            comment: 'ethnicity',
+            len: 40
+        },
+        {
+            name: 'language',
+            type: 'string',
+            comment: 'language',
+            len: 10
+        },
+        {
+            name: 'allow_leave_msg',
+            type: 'bool'
+        },
+        {
+            name: 'allow_voice_msg',
+            type: 'bool'
+        },
+        {
+            name: 'allow_mail_msg',
+            type: 'bool'
+        },
+        {
+            name: 'allow_sms',
+            type: 'bool'
+        },
+        {
+            name: 'allow_email',
+            type: 'bool'
+        },
+        {
+            name: 'allow_immunization_registry',
+            type: 'bool'
+        },
+        {
+            name: 'allow_immunization_info_sharing',
+            type: 'bool'
+        },
+        {
+            name: 'allow_health_info_exchange',
+            type: 'bool'
+        },
+        {
+            name: 'allow_patient_web_portal',
+            type: 'bool'
+        },
+        {
+            name: 'occupation',
+            type: 'string',
+            comment: 'patient occupation',
+            len: 40
+        },
+        {
+            name: 'employer_name',
+            type: 'string',
+            comment: 'employer name',
+            len: 40
+        },
+        {
+            name: 'employer_address',
+            type: 'string',
+            comment: 'employer address',
+            len: 40
+        },
+        {
+            name: 'employer_city',
+            type: 'string',
+            comment: 'employer city',
+            len: 40
+        },
+        {
+            name: 'employer_state',
+            type: 'string',
+            comment: 'employer state',
+            len: 40
+        },
+        {
+            name: 'employer_country',
+            type: 'string',
+            comment: 'employer country',
+            len: 40
+        },
+        {
+            name: 'employer_postal_code',
+            type: 'string',
+            comment: 'employer postal code',
+            len: 10
+        },
+        {
+            name: 'rating',
+            type: 'int',
+            comment: 'patient stars rating'
+        },
+        {
+            name: 'image',
+            type: 'string',
+            dataType: 'mediumtext',
+            comment: 'patient image base64 string'
+        },
+        {
+            name: 'qrcode',
+            type: 'string',
+            dataType: 'mediumtext',
+            comment: 'patient QRCode base64 string'
+        },
+        {
+            name: 'birth_place',
+            type: 'string',
+            len: 150
+        },
+        {
+            name: 'birth_multiple',
+            type: 'bool'
+        },
+        {
+            name: 'birth_order',
+            type: 'int',
+            defaultValue: 1,
+            len: 2
+        },
+        {
+            name: 'is_veteran',
+            type: 'string',
+            len: 1
+        },
+        {
+            name: 'deceased',
+            type: 'string',
+            len: 1
+        },
+        {
+            name: 'death_date',
+            type: 'date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'alias',
+            type: 'string',
+            len: 80
+        },
+        {
+            name: 'citizenship',
+            type: 'string',
+            len: 80
+        },
+        {
+            name: 'primary_facility',
+            type: 'int'
+        },
+        {
+            name: 'primary_provider',
+            type: 'int'
+        },
+        {
+            name: 'address_cont',
+            type: 'string'
+        },
+        {
+            name: 'work_phone_ext',
+            type: 'string'
+        },
+        {
+            name: 'administrative_status',
+            type: 'string',
+            comment: 'active | inactive | merged',
+            len: 15
+        },
+        {
+            name: 'create_uid',
+            type: 'int',
+            comment: 'create user ID'
+        },
+        {
+            name: 'update_uid',
+            type: 'int',
+            comment: 'update user ID'
+        },
+        {
+            name: 'create_date',
+            type: 'date',
+            comment: 'create date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'update_date',
+            type: 'date',
+            comment: 'last update date',
+            dateFormat: 'Y-m-d H:i:s'
+        },
+        {
+            name: 'portal_password',
+            type: 'string',
+            dataType: 'blob',
+            encrypt: true
+        },
+        {
+            name: 'portal_username',
+            type: 'string'
+        }
+    ],
+    idProperty: 'pid',
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'Patient.getPatients',
+            create: 'Patient.savePatient',
+            update: 'Patient.savePatient'
+        }
+    },
+    hasMany: [
+        {
+            model: 'App.model.patient.Insurance',
+            name: 'insurance',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.Allergies',
+            name: 'allergies',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.Medications',
+            name: 'medications',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.PatientActiveProblem',
+            name: 'activeproblems',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        }
+    ],
+    indexes: {
+        live_search_index: {
+            unique: false,
+            columns: [
+                'pid',
+                'pubpid',
+                'fname',
+                'mname',
+                'lname',
+                'SS'
+            ]
+        }
+    }
 });
 
 Ext.define('App.model.patient.PatientPossibleDuplicate', {
@@ -35733,7 +36525,7 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 						}
 						app.notification.add(
 							'new_amendment_notification',
-							_('unread_amendment') + ' (' + response.total + ')',
+							_('pending_amendment') + ' (' + response.total + ')',
 							messages,
 							'miscellaneous.Amendments',
 							'onNewAmendmentClick'
@@ -35922,7 +36714,6 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 
 		messageField.allowBlank = true;
 
-
 		Ext.Msg.show({
 			title: _('wait'),
 			msg: _('amendment_approval_confirmation'),
@@ -35956,14 +36747,12 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 					record.save({
 						callback: function(){
 							app.msg(_('sweet'), _('record_saved'));
-
 							app.setPatient(record.data.pid, null, function(){
 								app.openPatientSummary();
 							});
 
 						}
 					});
-
 					me.getAmendmentDetailsWindow().close();
 				}
 			}
@@ -38040,7 +38829,6 @@ Ext.define('App.controller.patient.CCDImport', {
 			selector: 'ccdimportpreviewwindow'
 		},
 
-
 		// import patient...
 		{
 			ref: 'CcdImportPatientForm',
@@ -38152,7 +38940,6 @@ Ext.define('App.controller.patient.CCDImport', {
 				click: me.onCcdImportPreviewWindowCancelBtnClick
 			}
 		});
-
 	},
 
 	CcdImport: function(ccdData){
@@ -38167,26 +38954,41 @@ Ext.define('App.controller.patient.CCDImport', {
 		this.doLoadCcdData(win.ccdData);
 	},
 
+    /*
+    Event when the CDA Import and Viewer shows up.
+    Also will check for duplicates in the database and if a posible duplicate is found
+    show the posible duplicate window
+     */
 	doLoadCcdData: function(data){
 		var me = this,
-			pForm = me.getCcdImportPatientForm().getForm(),
-			//ePanel = me.getCcdImportEncounterForm(),
-			//eForm = ePanel.getForm(),
+			ccdPatientForm = me.getCcdImportPatientForm().getForm(),
 			patient = Ext.create('App.model.patient.Patient', data.patient);
 
-		pForm.loadRecord(patient);
+        ccdPatientForm.loadRecord(patient);
+
+        App.app.getController('patient.Patient').lookForPossibleDuplicates(
+            {
+                fname: patient.data.fname,
+                lname: patient.data.lname,
+                sex: patient.data.sex,
+                DOB: patient.data.DOB
+            },
+            'ccdImportDuplicateAction',
+            function(patient) {
+            }
+        );
 
 		// list 59 ethnicity
 		// list 14 race
 		if(data.patient.race && data.patient.race !== ''){
 			CombosData.getDisplayValueByListIdAndOptionValue(14, data.patient.race, function(response){
-				pForm.findField('race_text').setValue(response);
+                ccdPatientForm.findField('race_text').setValue(response);
 			});
 		}
 
 		if(data.patient.ethnicity && data.patient.ethnicity !== ''){
 			CombosData.getDisplayValueByListIdAndOptionCode(59, data.patient.ethnicity, function(response){
-				pForm.findField('ethnicity_text').setValue(response);
+                ccdPatientForm.findField('ethnicity_text').setValue(response);
 			});
 		}
 
@@ -38202,6 +39004,27 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
 		}
 	},
+
+    /*
+     Event fired when in the duplicate window data grid double click on an item
+     this method will copy the patient information selected from the data grid, into
+     the system information panel.
+     */
+    onPossiblePatientDuplicatesGridItemDblClick:function(grid, record){
+        var me = this,
+            cmb = me.getCcdImportWindowPatientSearchField(),
+            systemPatientForm = me.getCcdPatientPatientForm().getForm(),
+            store = cmb.getStore(),
+            win = grid.up('window');
+
+        if(win.action != 'ccdImportDuplicateAction') return;
+
+        store.removeAll();
+        me.doLoadMergePatientData(record.data.pid);
+        cmb.select(record);
+        win.close();
+        me.promptVerifyPatientImport();
+    },
 
 	reconfigureGrid: function(getter, data){
 		var me = this,
@@ -38260,33 +39083,10 @@ Ext.define('App.controller.patient.CCDImport', {
 				patient.activeproblems().load();
 			}
 		});
-
 	},
 
 	onCcdImportWindowCloseBtnClick: function(){
 		this.getCcdImportWindow().close();
-	},
-
-	onPossiblePatientDuplicatesGridItemDblClick:function(grid, record){
-		var me = this,
-			cmb = me.getCcdImportWindowPatientSearchField(),
-			store = cmb.getStore(),
-			records,
-			win = grid.up('window');
-
-		if(win.action != 'ccdImportDuplicateAction') return;
-
-		store.removeAll();
-		records = store.add({
-			pid: record.data.pid,
-			fname: record.data.fname,
-			mname: record.data.mname,
-			lname: record.data.lname
-		});
-
-		cmb.select(records[0]);
-		win.close();
-		me.promptVerifyPatientImport();
 	},
 
 	onCcdImportWindowPreviewBtnClick: function(){
@@ -38470,55 +39270,51 @@ Ext.define('App.controller.patient.CCDImport', {
 			now = new Date(),
 			pid = patient.data.pid,
 
-		// mandatory...
+		// Get all the stores of the dataGrids
 			problems = me.getCcdImportPreviewActiveProblemsGrid().getStore().data.items,
 			medications = me.getCcdImportPreviewMedicationsGrid().getStore().data.items,
-			allergies = me.getCcdImportPreviewAllergiesGrid().getStore().data.items,
-			i, len;
+			allergies = me.getCcdImportPreviewAllergiesGrid().getStore().data.items;
 
-		// allergies
-		len = allergies.length;
-		for(i = 0; i < len; i++){
+		// Allergies
+		for(Index = 0; Index < allergies.length; Index++){
 
-			if(allergies[i].data.id && allergies[i].data.id > 0)  continue;
+			if(allergies[Index].data.id && allergies[Index].data.id > 0)  continue;
 
-			allergies[i].set({
-				pid: pid,
-				created_uid: app.patient.id,
-				create_date: now
-			});
-
-			allergies[i].save();
+			allergies[Index].set({
+                pid: pid,
+                created_uid: app.patient.id,
+                create_date: now
+            });
+            allergies[Index].setDirty();
+			allergies[Index].save();
 		}
 
-		// medications
-		len = medications.length;
-		for(i = 0; i < len; i++){
+		// Medications
+		for(Index = 0; Index < medications.length; Index++){
 
-			if(medications[i].data.id && medications[i].data.id > 0)  continue;
+			if(medications[Index].data.id && medications[Index].data.id > 0)  continue;
 
-			medications[i].set({
+			medications[Index].set({
 				pid: pid,
 				created_uid: app.patient.id,
 				create_date: now
 			});
-
-			medications[i].save();
+            medications[Index].setDirty();
+			medications[Index].save();
 		}
 
-		// problems
-		len = problems.length;
-		for(i = 0; i < len; i++){
+		// Problems
+		for(Index = 0; Index < problems.length; Index++){
 
-			if(problems[i].data.id && problems[i].data.id > 0)  continue;
+			if(problems[Index].data.id && problems[Index].data.id > 0)  continue;
 
-			problems[i].set({
+			problems[Index].set({
 				pid: pid,
 				created_uid: app.patient.id,
 				create_date: now
 			});
-
-			problems[i].save({
+            problems[Index].setDirty();
+			problems[Index].save({
 				callback: function(){
 
 					me.getCcdImportWindow().close();
@@ -38543,8 +39339,8 @@ Ext.define('App.controller.patient.CCDImport', {
 		var me = this,
 			grids = me.getCcdImportWindow().query('grid');
 
-		for(var i = 0; i < grids.length; i++){
-			var sm = grids[i].getSelectionModel();
+		for(var Index = 0; Index < grids.length; Index++){
+			var sm = grids[Index].getSelectionModel();
 			if(selected){
 				sm.selectAll();
 			}else{
@@ -39179,7 +39975,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					allowBlank: false,
 					forceSelection: true,
 					labelWidth: 60,
-					displayField: 'recipient_application',
+					displayField: 'application_name',
 					valueField: 'id',
 					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
@@ -39208,17 +40004,17 @@ Ext.define('App.controller.patient.Immunizations', {
 	doSendVxu:function(){
 		var me = this,
 			sm = me.getImmunizationsGrid().getSelectionModel(),
-			foo = sm.getSelection(),
+            ImmunizationSelection = sm.getSelection(),
 			params = {},
 			immunizations = [];
 
 		if(me.vxuTo.isValid()){
 
-			for(var i=0; i < foo.length; i++){
-				immunizations.push(foo[i].data.id);
+			for(var i=0; i < ImmunizationSelection.length; i++){
+				immunizations.push(ImmunizationSelection[i].data.id);
+                params.pid = ImmunizationSelection[i].data.pid;
 			}
 
-			params.pid = me.pid;
 			params.from = me.vxuFrom.getValue();
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
@@ -39228,9 +40024,9 @@ Ext.define('App.controller.patient.Immunizations', {
 			HL7Messages.sendVXU(params, function(provider, response){
 				me.vxuWindow.el.unmask();
 				if(response.result.success){
-					app.msg(_('sweet!'), _('message_sent'));
+					app.msg(_('sweet'), _('message_sent'));
 				}else{
-					app.msg(_('oops!'), _('message_error'), true);
+					app.msg(_('oops'), _('message_error'), true);
 				}
 				me.vxuWindow.close();
 				sm.deselectAll();
@@ -39485,7 +40281,11 @@ Ext.define('App.controller.patient.Medical', {
 	},
 
 	setWindowTitle:function(title){
-		this.getMedicalWindow().setTitle(app.patient.name + ' (' + title + ') ' + (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :''));
+		this.getMedicalWindow().setTitle(
+            app.patient.name +
+            ' (' + title + ') ' +
+            (app.patient.readOnly ? '-  <span style="color:red">[Read Mode]</span>' :'')
+        );
 	}
 
 
@@ -39806,7 +40606,6 @@ Ext.define('App.controller.patient.Patient', {
 		var win = this.getPossiblePatientDuplicatesWindow();
 		win.fireEvent('continue', win);
 		win.close();
-
 	}
 
 });
@@ -41165,7 +41964,6 @@ Ext.define('App.controller.patient.Vitals', {
 								app.msg('Sweet!', _('vitals_signed'));
 //								me.getProgressNote();
 								app.AuditLog('Patient vitals authorized');
-
 								app.fireEvent('vitalssigned', records);
 							}
 						});
@@ -41254,7 +42052,7 @@ Ext.define('App.controller.patient.Vitals', {
 
 			}else if(property == 'bmi'){
 				title = _(property);
-				value = record.data[property] === null || record.data[property] === '' ? '--' : record.data[property];
+				value = record.data[property] === null || record.data[property] === '' ? '--' : this.decimalRound10(record.data[property], -1);
 				extra = record.data.bmi_status === '' ? '--' : record.data.bmi_status;
 
 			}else if(property == 'other_notes'){
@@ -41435,7 +42233,48 @@ Ext.define('App.controller.patient.Vitals', {
 	 */
 	isMetric:function(){
 		return g('units_of_measurement') == 'metric';
-	}
+	},
+
+    /*
+    decimalAdjust:
+        Method to correctly round numbers, with decimals.
+        Thanks, to the excellentt guys a Mozilla Developer Network
+        https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+     */
+    decimalAdjust: function(type, value, exp) {
+        // If the exp is undefined or zero...
+        if (typeof exp === 'undefined' || +exp === 0) {
+            return Math[type](value);
+        }
+        value = +value;
+        exp = +exp;
+        // If the value is not a number or the exp is not an integer...
+        if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+            return NaN;
+        }
+        // Shift
+        value = value.toString().split('e');
+        value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+        // Shift back
+        value = value.toString().split('e');
+        return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+    },
+
+    /*
+     decimalRound10:
+        Method to correctly round numbers, with decimals.
+        Thanks, to the excellentt guys a Mozilla Developer Network
+        https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/round
+     */
+    decimalRound10: function(value, exp) {
+        return this.decimalAdjust('round', value, exp);
+    },
+    floorRound10: function(value, exp) {
+        return decimalAdjust('floor', value, exp);
+    },
+    ceilRound10: function(value, exp) {
+        return decimalAdjust('ceil', value, exp);
+    }
 
 });
 Ext.define('App.controller.patient.Summary', {
@@ -42535,26 +43374,26 @@ Ext.define('App.view.patient.Immunizations', {
 										items: [
 
 											{
-
 												xtype: 'numberfield',
 												fieldLabel: _('amount'),
 												name: 'administer_amount',
 												width: 160
 											},
 											{
-
-												xtype: 'textfield',
+                                                xtype: 'gaiaehr.listcombo',
 												fieldLabel: _('units'),
 												name: 'administer_units',
-												labelWidth: 50,
-												width: 125
-
+												labelWidth: 30,
+												width: 150,
+                                                loadStore: true,
+                                                queryMode: 'local',
+                                                list: 131
 											},
 											{
+                                                xtype: 'gaiaehr.combo',
 												fieldLabel: _('administration_site'),
 												width: 320,
-												labelWidth: 130,
-												xtype: 'gaiaehr.combo',
+												labelWidth: 110,
 												list: 119,
 												queryMode: 'local',
 												loadStore: true,
@@ -42584,13 +43423,15 @@ Ext.define('App.view.patient.Immunizations', {
 												name: 'route'
 											},
 											{
+                                                xtype: 'mitos.datetime',
 												fieldLabel: _('date_administered'),
 												width: 320,
 												labelWidth: 115,
-												xtype: 'mitos.datetime',
 												dateTimeFormat: 'Y-m-d H:i:s',
-												name: 'administered_date'
-											}
+												name: 'administered_date',
+                                                vtype: 'date',
+                                                allowBlank: false
+                                            }
 										]
 
 									},
@@ -44542,7 +45383,6 @@ Ext.define('App.ux.AddTabButton', {
 	iconCls: null,          // add btn icon class
 	btnText: '+',           // add btn text, button text is not use if iconCls is set
 	forceText: false,       // use the btnText even if an icon is used
-
 	panelConfig: {              // default config for new added panel
 		xtype: 'panel',
 		title: 'New Tab',
@@ -44575,6 +45415,7 @@ Ext.define('App.ux.AddTabButton', {
 				tooltip: me.toolTip,
 				handler: me.onAddTabClick,
 				closable: false,
+				acl: me.acl,
 				scope: me
 			});
 
@@ -44598,6 +45439,7 @@ Ext.define('App.ux.AddTabButton', {
 	 */
 	onAddTabClick: function(){
 		var tab = this.tabPanel.add(this.panelConfig);
+		this.tabPanel.fireEvent('newtabclick', tab, this.tabPanel);
 		this.tabPanel.setActiveTab(tab);
 	},
 
@@ -47046,9 +47888,6 @@ Ext.define('App.view.administration.Roles', {
 				},
 				'-'
 			],
-			//    selModel: {
-			//        selType: 'cellmodel'
-			//    },
 			features: [
 				{
 					ftype: 'grouping'
@@ -47311,12 +48150,6 @@ Ext.define('App.view.administration.Users', {
 															name: 'role_id',
 															allowBlank: false
 														}
-														//												{
-														//													width: 275,
-														//													xtype: 'textfield',
-														//													fieldLabel: _('taxonomy'),
-														//													name: 'taxonomy'
-														//												}
 													]
 												}
 											]
@@ -47420,7 +48253,9 @@ Ext.define('App.view.administration.Users', {
 													width: 150,
 													dataIndex: 'insurance_company_id',
 													renderer: function(v, meta, record){
-														return record.data.insurance_company_id + ': ' + record.data.insurance_company_name;
+														return record.data.insurance_company_id +
+															': ' +
+															record.data.insurance_company_name;
 													}
 												},
 												{
@@ -48531,8 +49366,14 @@ Ext.define('App.view.patient.Patient', {
 
 	getPatientImages: function(record){
 		var me = this;
-		if(me.patientImages) me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
-		if(me.patientImages) me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
+		if(me.patientImages)
+		{
+			me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
+		}
+		if(me.patientImages)
+		{
+			me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
+		}
 	},
 
 	/**
@@ -48714,7 +49555,17 @@ Ext.define('App.view.patient.Summary', {
 
 		app.on('patientset', function(patient){
 			if(!me.hidden){
-				me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+				me.updateTitle(
+					patient.name +
+					' - ' +
+					patient.sexSymbol +
+					' - ' +
+					patient.age.str +
+					' - (' +
+					_('patient_summary') +
+					')',
+					app.patient.readOnly, null
+				);
 			}
 
 		}, me);
@@ -49034,7 +49885,6 @@ Ext.define('App.view.patient.Summary', {
 					autoCancel: false,
 					errorSummary: false,
 					clicksToEdit: 2
-
 				}),
 				columns: [
 					{
@@ -58504,13 +59354,11 @@ Ext.define('App.view.patient.windows.CCDImport', {
 										},
 										{
 											fieldLabel: _('address'),
-											name: 'fulladdress',
-											value: 'fulladdress'
+											name: 'fulladdress'
 										},
 										{
 											fieldLabel: _('phones'),
-											name: 'phones',
-											value: '000-000-000 (H)'
+											name: 'phones'
 										}
 									]
 								}
@@ -58597,7 +59445,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 				},
 				{
 					xtype: 'panel',
-					title: _('system_data'),
+					title: _('system_data_ro'),
 					columnWidth: 0.5,
 					frame: true,
 					layout: {
@@ -58686,13 +59534,11 @@ Ext.define('App.view.patient.windows.CCDImport', {
 										},
 										{
 											fieldLabel: _('address'),
-											name: 'fulladdress',
-											value: 'fulladdress'
+											name: 'fulladdress'
 										},
 										{
 											fieldLabel: _('phones'),
-											name: 'phones',
-											value: '000-000-000 (H)'
+											name: 'phones'
 										}
 									]
 								}

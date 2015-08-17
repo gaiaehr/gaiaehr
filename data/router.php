@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
     session_regenerate_id(false);
     session_name('GaiaEHR');
     session_start();
-    setcookie(session_name(),session_id(),time()+60, '/', 'localhost', false, true);
+    setcookie(session_name(),session_id(),time()+60, '/gaiaehr/', null, false, true);
 }
 
 define('_GaiaEXEC', 1);
@@ -118,51 +118,62 @@ function doRpc($cdata) {
 		$a = $API[$action];
 
 		$method = $cdata->method;
-		$mdef = $a['methods'][$method];
-		if(!$mdef){
-			throw new Exception("Call to undefined method: $method on action $action");
-		}
 
-		$r = array(
-			'type' => 'rpc',
-			'tid' => $cdata->tid,
-			'action' => $action,
-			'method' => $method
-		);
-		if(isset($module)){
-			require_once(ROOT . "/modules/$module/dataProvider/$action.php");
-			$action = "\\modules\\$module\\dataProvider\\$action";
-			$o = new $action();
-		} else {
-			require_once(ROOT . "/dataProvider/$action.php");
-			$o = new $action();
-		}
+		if(
+			(isset($_SESSION['user']) && isset($_SESSION['user']['auth']) && $_SESSION['user']['auth']) ||
+			($action == 'authProcedures' && $method == 'login') ||
+			($action == 'CombosData' && $method == 'getActiveFacilities') ||
+			($action == 'i18nRouter' && $method == 'getAvailableLanguages')
+		){
 
-		if(isset($mdef['len'])){
-			$params = isset($cdata->data) && is_array($cdata->data) ? $cdata->data : array();
-		} else {
-			$params = array($cdata->data);
-		}
-
-		if(isset($_SESSION['hooks']) && isset($_SESSION['hooks'][$action][$method]['Before'])){
-			foreach($_SESSION['hooks'][$action][$method]['Before']['hooks'] as $i => $hook){
-				include_once($hook['file']);
-				$Hook = new $i();
-				$params = array(call_user_func_array(array($Hook, $hook['method']), $params));
-				unset($Hook);
+			$mdef = $a['methods'][$method];
+			if(!$mdef){
+				throw new Exception("Call to undefined method: $method on action $action");
 			}
-		}
 
-		$r['result'] = call_user_func_array(array($o, $method), $params);
-		unset($o);
-
-		if(isset($_SESSION['hooks']) && isset($_SESSION['hooks'][$action][$method]['After'])){
-			foreach($_SESSION['hooks'][$action][$method]['After']['hooks'] as $i => $hook){
-				include_once($hook['file']);
-				$Hook = new $i();
-				$r['result'] = call_user_func(array($Hook, $hook['method']), $r['result']);
-				unset($Hook);
+			$r = array(
+				'type' => 'rpc',
+				'tid' => $cdata->tid,
+				'action' => $action,
+				'method' => $method
+			);
+			if(isset($module)){
+				require_once(ROOT . "/modules/$module/dataProvider/$action.php");
+				$action = "\\modules\\$module\\dataProvider\\$action";
+				$o = new $action();
+			} else {
+				require_once(ROOT . "/dataProvider/$action.php");
+				$o = new $action();
 			}
+
+			if(isset($mdef['len'])){
+				$params = isset($cdata->data) && is_array($cdata->data) ? $cdata->data : array();
+			} else {
+				$params = array($cdata->data);
+			}
+
+			if(isset($_SESSION['hooks']) && isset($_SESSION['hooks'][$action][$method]['Before'])){
+				foreach($_SESSION['hooks'][$action][$method]['Before']['hooks'] as $i => $hook){
+					include_once($hook['file']);
+					$Hook = new $i();
+					$params = array(call_user_func_array(array($Hook, $hook['method']), $params));
+					unset($Hook);
+				}
+			}
+
+			$r['result'] = call_user_func_array(array($o, $method), $params);
+			unset($o);
+
+			if(isset($_SESSION['hooks']) && isset($_SESSION['hooks'][$action][$method]['After'])){
+				foreach($_SESSION['hooks'][$action][$method]['After']['hooks'] as $i => $hook){
+					include_once($hook['file']);
+					$Hook = new $i();
+					$r['result'] = call_user_func(array($Hook, $hook['method']), $r['result']);
+					unset($Hook);
+				}
+			}
+		}else{
+			throw new Exception('Not Authorized');
 		}
 
 	} catch(Exception $e) {

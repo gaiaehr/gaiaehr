@@ -273,7 +273,6 @@ Ext.define('App.controller.patient.Immunizations', {
 
 			for(var i=0; i < ImmunizationSelection.length; i++){
 				immunizations.push(ImmunizationSelection[i].data.id);
-                say(foo[i].data);
                 params.pid = ImmunizationSelection[i].data.pid;
 			}
 

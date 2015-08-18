@@ -66,7 +66,5 @@ class NK1 extends Segments{
 		$this->setField(37, 'ST', 4);
 		$this->setField(38, 'ST', 4);
 		$this->setField(39, 'IS', 4);
-
-
 	}
 }

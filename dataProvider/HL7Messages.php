@@ -313,9 +313,8 @@ class HL7Messages {
             $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 
             // PD1 - 3.4.10 PD1 - Patient Additional Demographic Segment
+            // If the Publicity is set, on the patient compile this HL7 Message line
             if($this->patient->publicity) {
-                // If the Publicity is set, on the patient.
-                // Compile this HL7 Message line
                 $PD1 = $this->hl7->addSegment('PD1');
                 $filters->filter[0]->property = 'list_id';
                 $filters->filter[0]->value = 132;
@@ -334,7 +333,7 @@ class HL7Messages {
             include_once(ROOT . '/dataProvider/Immunizations.php');
             $immunization = new Immunizations();
 
-            // immunizations loop
+            // Immunizations loop
             foreach($params->immunizations AS $i){
 
                 $immu = $this->i->load($i)->one();
@@ -393,7 +392,21 @@ class HL7Messages {
                 $RXR->setValue('2.3', $Record['code_type']);
 
                 // OBX - 7.4.2 OBX - Observation/Result Segment
-                $obxCount = 1;
+                // OBX|1|CE|64994-7^Vaccine funding program eligibility category^LN|1|V05^VFC eligible - Federally Qualified Health Center Patient
+                // (under-insured)^HL70064||||||F|||20120701|||VXC40^Eligibility captured at the immunization level^CDCPHINVS
+                $obxCount = 0;
+//                $OBX = $this->hl7->addSegment('OBX');
+//                $OBX->setValue('1', $obxCount);
+//                $OBX->setValue('2', 'CE');
+//                $OBX->setValue('3.1', '64994-7');
+//                $OBX->setValue('3.2', 'Vaccine funding program eligibility category');
+//                $OBX->setValue('3.3', 'LN');
+//                $OBX->setValue('4', '1'); // This value, should be the ID of the Billing
+//                $OBX->setValue('5.1', $immu['option_value']);
+//                $OBX->setValue('5.2', $immu['vaccine_name']);
+//                $OBX->setValue('5.3', $immu['code_type']);
+//                $OBX->setValue('11', 'F');
+                $obxCount++;
                 $OBX = $this->hl7->addSegment('OBX');
                 $OBX->setValue('1', $obxCount);
                 $OBX->setValue('2', 'CE');

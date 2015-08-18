@@ -58,11 +58,11 @@ Ext.define('App.model.fees.Billing',
 			},
 			{
 				name: 'service_date',
-				type: 'string'
+				type: 'date'
 			},
 			{
 				name: 'close_date',
-				type: 'string'
+				type: 'date'
 			},
 			{
 				name: 'billing_stage',

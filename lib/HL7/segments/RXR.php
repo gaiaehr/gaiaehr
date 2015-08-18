@@ -158,6 +158,42 @@ class RXR extends Segments{
         $this->setField(34, 'ST', 250); // Alternate Identifier
         $this->setField(35, 'ST', 250); // Alternate Text
         $this->setField(36, 'ID', 250); // Name of Alternate Coding System
+
+        /**
+         * 4.14.2.6 RXR-6 Administration Site Modifier (CWE) 01670
+         *
+         * Components:
+         * <Identifier (ST)> ^
+         * <Text (ST)> ^
+         * <Name of Coding System (ID)> ^
+         * <Alternate Identifier (ST)> ^
+         * <Alternate Text (ST)> ^
+         * <Name of Alternate Coding System (ID)> ^
+         * <Coding System Version ID (ST)> ^
+         * <Alternate Coding System Version ID (ST)> ^
+         * <Original Text (ST)>
+         *
+         * Definition:
+         * This field contains a modifier which modifies the meaning of RXR-2 Administration Site.
+         * The code table used in this field is dependent upon the code table used in RXR-2 Administration site. If
+         * RXR-2 employs HL7 Table 0550 – Body Parts, then this field may only be populated with values from HL7
+         * Table 0495 – Body Parts Modifier. If RXR-2 employs HL7 Table 0163 – Body Site, then RXR-6 should not
+         * be populated. In the case of other code sets (e.g., SNOMED) in RXR-2, RXR-6 may only be populated if
+         * modifiers are defined within, or related to, that code set.
+         *
+         * Condition Rule:
+         * This field may only be populated if RXR-2 Administration Site is populated. This field is
+         * not required if RXR-2 is populated.
+         */
+        $this->setField(37, 'ST', 250, false); // Identifier
+        $this->setField(38, 'ST', 250, false); // Text
+        $this->setField(39, 'ID', 250, false); // Name of Coding System
+        $this->setField(40, 'ST', 250, false); // Alternate Identifier
+        $this->setField(41, 'ST', 250, false); // Alternate Text
+        $this->setField(42, 'ID', 250, false); // Name of Alternate Coding System
+        $this->setField(43, 'ST', 250, false); // Coding System Version ID
+        $this->setField(44, 'ST', 250, false); // Alternate Coding System Version ID
+        $this->setField(45, 'ST', 250, false); // Original Text
     }
 
 

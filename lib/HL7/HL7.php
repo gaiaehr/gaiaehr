@@ -188,6 +188,7 @@ class HL7 {
 	function getMessage(){
 		$msg = '';
 		foreach($this->segments As $segment){
+            error_log(print_r($segment,true));
 			$msg .= $segment->build();
 		}
 		return $msg;

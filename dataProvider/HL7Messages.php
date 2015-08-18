@@ -349,21 +349,29 @@ class HL7Messages {
                 $RXA->setValue('21', 'A'); //Action Code
 
                 // RXR - 4.14.2 RXR - Pharmacy/Treatment Route Segment
-                // RXR|IM^Intramuscular^HL70162|LD^Left Arm^HL70163
+                $RXR = $this->hl7->addSegment('RXR');
                 $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
                 $params = new stdClass();
                 $params->filter[0] = new stdClass();
                 $params->filter[1] = new stdClass();
+                // Route
                 $params->filter[0]->property = 'list_id';
                 $params->filter[0]->value = 6;
                 $params->filter[1]->property = 'code';
                 $params->filter[1]->value = $immu['route'];
-                $Route = $ListOptions->load($params)->one();
-
-                $RXR = $this->hl7->addSegment('RXR');
-                $RXR->setValue('1.1', $Route['option_value']);
-                $RXR->setValue('1.2', $Route['option_name']);
-                $RXR->setValue('1.3', $Route['code_type']);
+                $Record = $ListOptions->load($params)->one();
+                $RXR->setValue('1.1', $Record['option_value']);
+                $RXR->setValue('1.2', $Record['option_name']);
+                $RXR->setValue('1.3', $Record['code_type']);
+                // Administration Site
+                $params->filter[0]->property = 'list_id';
+                $params->filter[0]->value = 119;
+                $params->filter[1]->property = 'code';
+                $params->filter[1]->value = $immu['administration_site'];
+                $Record = $ListOptions->load($params)->one();
+                $RXR->setValue('2.1', $Record['option_value']);
+                $RXR->setValue('2.2', $Record['option_name']);
+                $RXR->setValue('2.3', $Record['code_type']);
             }
 
             $msgRecord = $this->saveMsg();

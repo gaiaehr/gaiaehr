@@ -304,6 +304,32 @@ class HL7Messages {
             // PV1
             $this->setPV1();
 
+            // Variable Objects to pass filter to MatchaCup
+            $filters = new stdClass();
+            $filters->filter[0] = new stdClass();
+            $filters->filter[1] = new stdClass();
+
+            // Load the List option model, to do lookups in the Value Code Sets
+            $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+
+            // PD1 - 3.4.10 PD1 - Patient Additional Demographic Segment
+            if($this->patient->publicity) {
+                // If the Publicity is set, on the patient.
+                // Compile this HL7 Message line
+                $PD1 = $this->hl7->addSegment('PD1');
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 132;
+                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->value = $this->patient->publicity;
+                $Record = $ListOptions->load($filters)->one();
+                $PD1->setValue('11.1', $Record['option_value']);
+                $PD1->setValue('11.2', $Record['option_name']);
+                $PD1->setValue('11.3', $Record['code_type']);
+                $PD1->setValue('16', 'A');
+                $PD1->setValue('17', $this->date($this->patient->create_date, false));
+                $PD1->setValue('18', $this->date($this->patient->create_date, false));
+            }
+
             $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
             include_once(ROOT . '/dataProvider/Immunizations.php');
             $immunization = new Immunizations();
@@ -313,13 +339,13 @@ class HL7Messages {
 
                 $immu = $this->i->load($i)->one();
 
-                // ORC
+                // ORC - 4.5.1 ORC - Commoon Order Segment
                 $ORC = $this->hl7->addSegment('ORC');
                 $ORC->setValue('1', 'RE'); //HL70119
                 $ORC->setValue('3.1', 'GAIA10001');
                 $ORC->setValue('3.2', $immu['id']);
 
-                // RXA
+                // RXA - 4.14.7 RXA - Pharmacy/Treatment Administration Segment
                 $RXA = $this->hl7->addSegment('RXA');
                 $RXA->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
                 $RXA->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
@@ -327,7 +353,6 @@ class HL7Messages {
                 $RXA->setValue('5.1', $immu['code']); //Identifier
                 $RXA->setValue('5.2', $immu['vaccine_name']); //Text
                 $RXA->setValue('5.3', $immu['code_type']); //Name of Coding System
-
                 if($this->isPresent($immu['administer_amount'])){
                     $RXA->setValue('6', $immu['administer_amount']); //Administered Amount
                     $RXA->setValue('7.1', $immu['administer_units']); //Identifier
@@ -336,9 +361,7 @@ class HL7Messages {
                 } else {
                     $RXA->setValue('6', '999'); //Administered Amount
                 }
-
                 $RXA->setValue('15', $immu['lot_number']); //Substance LotNumbers
-
                 // get immunization manufacturer info
                 $mvx = $immunization->getMvxByCode($immu['manufacturer']);
                 $mText = isset($mvx['manufacturer']) ? $mvx['manufacturer'] : '';
@@ -350,28 +373,58 @@ class HL7Messages {
 
                 // RXR - 4.14.2 RXR - Pharmacy/Treatment Route Segment
                 $RXR = $this->hl7->addSegment('RXR');
-                $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
-                $params = new stdClass();
-                $params->filter[0] = new stdClass();
-                $params->filter[1] = new stdClass();
                 // Route
-                $params->filter[0]->property = 'list_id';
-                $params->filter[0]->value = 6;
-                $params->filter[1]->property = 'code';
-                $params->filter[1]->value = $immu['route'];
-                $Record = $ListOptions->load($params)->one();
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 6;
+                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->value = $immu['route'];
+                $Record = $ListOptions->load($filters)->one();
                 $RXR->setValue('1.1', $Record['option_value']);
                 $RXR->setValue('1.2', $Record['option_name']);
                 $RXR->setValue('1.3', $Record['code_type']);
                 // Administration Site
-                $params->filter[0]->property = 'list_id';
-                $params->filter[0]->value = 119;
-                $params->filter[1]->property = 'code';
-                $params->filter[1]->value = $immu['administration_site'];
-                $Record = $ListOptions->load($params)->one();
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 119;
+                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->value = $immu['administration_site'];
+                $Record = $ListOptions->load($filters)->one();
                 $RXR->setValue('2.1', $Record['option_value']);
                 $RXR->setValue('2.2', $Record['option_name']);
                 $RXR->setValue('2.3', $Record['code_type']);
+
+                // OBX - 7.4.2 OBX - Observation/Result Segment
+                $obxCount = 1;
+                $OBX = $this->hl7->addSegment('OBX');
+                $OBX->setValue('1', $obxCount);
+                $OBX->setValue('2', 'CE');
+                $OBX->setValue('3.1', '30956-7');
+                $OBX->setValue('3.2', 'vaccine type');
+                $OBX->setValue('3.3', 'LN');
+                $OBX->setValue('4', $immu['id']);
+                $OBX->setValue('5.1', $immu['code']);
+                $OBX->setValue('5.2', $immu['vaccine_name']);
+                $OBX->setValue('5.3', $immu['code_type']);
+                $OBX->setValue('11', 'F');
+                $obxCount++;
+                $OBX = $this->hl7->addSegment('OBX');
+                $OBX->setValue('1', $obxCount);
+                $OBX->setValue('2', 'TS');
+                $OBX->setValue('3.1', '29768-9');
+                $OBX->setValue('3.2', 'Date vaccine information statement published');
+                $OBX->setValue('3.3', 'LN');
+                $OBX->setValue('4', $immu['id']);
+                $OBX->setValue('5', $this->date($immu['education_doc_published'], false));
+                $OBX->setValue('11', 'F');
+                $obxCount++;
+                $OBX = $this->hl7->addSegment('OBX');
+                $OBX->setValue('1', $obxCount);
+                $OBX->setValue('2', 'TS');
+                $OBX->setValue('3.1', '29769-7');
+                $OBX->setValue('3.2', 'Date vaccine information statement presented');
+                $OBX->setValue('3.3', 'LN');
+                $OBX->setValue('4', $immu['id']);
+                $OBX->setValue('5', $this->date($immu['education_date'], false));
+                $OBX->setValue('11', 'F');
             }
 
             $msgRecord = $this->saveMsg();
@@ -599,7 +652,6 @@ class HL7Messages {
 	private function setPV1(){
 
 		if($this->encounter === false) return;
-
 
 		$pv1 = $this->hl7->addSegment('PV1');
 		$pv1->setValue('1', 1);
@@ -906,9 +958,14 @@ class HL7Messages {
 		return $this->c->load($params)->all();
 	}
 
-	private function date($date) {
-		$date = str_replace([' ',':','-'], '', $date);
-		return $date;
+	private function date($date, $returnTime = true) {
+		//$date = str_replace([' ',':','-'], '', $date);
+        $dateObject = new DateTime($date);
+        if($returnTime) {
+            return $dateObject->format('YmdHis');
+        } else {
+            return $dateObject->format('Ymd');
+        }
 	}
 
 	private function phone($phone) {

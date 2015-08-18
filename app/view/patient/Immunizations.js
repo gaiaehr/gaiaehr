@@ -195,7 +195,7 @@ Ext.define('App.view.patient.Immunizations', {
 											{
                                                 xtype: 'gaiaehr.combo',
 												fieldLabel: _('administration_site'),
-												width: 320,
+												width: 295,
 												labelWidth: 110,
 												list: 119,
 												queryMode: 'local',
@@ -294,7 +294,14 @@ Ext.define('App.view.patient.Immunizations', {
 										margin: '0 0 0 5',
 										fieldLabel: _('education'),
 										name: 'education_date'
-									}
+									},
+                                    {
+                                        xtype: 'datefield',
+                                        width: 250,
+                                        margin: '0 0 0 5',
+                                        fieldLabel: _('doc_published'),
+                                        name: 'education_doc_published'
+                                    }
 								]
 							},
 							{

@@ -141,6 +141,12 @@ Ext.define('App.model.patient.PatientImmunization', {
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
 		},
+        {
+            name: 'education_doc_published',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d'
+        },
 		{
 			name: 'note',
 			type: 'string',

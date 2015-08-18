@@ -1,9 +1,4 @@
-/**
- * Generated dynamically by Matcha::Connect
- * Create date: 2015-04-07 13:57:58
- */
-
-Ext.define('App.model.patient.Patient', {
+/** * Generated dynamically by Matcha::Connect * Create date: 2015-08-18 15:36:14 */Ext.define('App.model.patient.Patient',{
     extend: 'Ext.data.Model',
     requires: [
         'App.model.patient.Insurance',
@@ -50,23 +45,7 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'fullname',
             type: 'string',
-            store: false,
-            convert: function (v, record) {
-                var foo = '';
-                if (record.data.title) {
-                    foo += record.data.title + ' ';
-                }
-                if (record.data.fname) {
-                    foo += record.data.fname + ' ';
-                }
-                if (record.data.mname) {
-                    foo += record.data.mname + ' ';
-                }
-                if (record.data.lname) {
-                    foo += record.data.lname + ' ';
-                }
-                return foo.trim();
-            }
+            store: false
         },
         {
             name: 'sex',
@@ -86,10 +65,7 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'DOBFormatted',
             type: 'string',
-            persist: false,
-            convert: function (v, record) {
-                return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
-            }
+            persist: false
         },
         {
             name: 'marital_status',
@@ -121,11 +97,7 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'record_number',
             type: 'string',
-            persist: false,
-            convert: function (v, record)
-            {
-                return g('display_pubpid') ? record.data.pubpid : record.data.pid;
-            }
+            persist: false
         },
         {
             name: 'drivers_license',
@@ -463,6 +435,10 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'portal_username',
             type: 'string'
+        },
+        {
+            name: 'publicity',
+            type: 'string'
         }
     ],
     idProperty: 'pid',
@@ -513,4 +489,4 @@ Ext.define('App.model.patient.Patient', {
             ]
         }
     }
-});
+});

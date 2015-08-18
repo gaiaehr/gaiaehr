@@ -313,43 +313,57 @@ class HL7Messages {
 
                 $immu = $this->i->load($i)->one();
 
-                // ROC
-                $roc = $this->hl7->addSegment('ORC');
-                $roc->setValue('1', 'RE'); //HL70119
-                $roc->setValue('3.1', 'GAIA10001');
-                $roc->setValue('3.2', $immu['id']);
+                // ORC
+                $ORC = $this->hl7->addSegment('ORC');
+                $ORC->setValue('1', 'RE'); //HL70119
+                $ORC->setValue('3.1', 'GAIA10001');
+                $ORC->setValue('3.2', $immu['id']);
 
                 // RXA
-                $rxa = $this->hl7->addSegment('RXA');
-                $rxa->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
-                $rxa->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
+                $RXA = $this->hl7->addSegment('RXA');
+                $RXA->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
+                $RXA->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
                 //Administered Code
-                $rxa->setValue('5.1', $immu['code']); //Identifier
-                $rxa->setValue('5.2', $immu['vaccine_name']); //Text
-                $rxa->setValue('5.3', $immu['code_type']); //Name of Coding System
+                $RXA->setValue('5.1', $immu['code']); //Identifier
+                $RXA->setValue('5.2', $immu['vaccine_name']); //Text
+                $RXA->setValue('5.3', $immu['code_type']); //Name of Coding System
 
                 if($this->isPresent($immu['administer_amount'])){
-                    $rxa->setValue('6', $immu['administer_amount']); //Administered Amount
-                    $rxa->setValue('7.1', $immu['administer_units']); //Identifier
-                    $rxa->setValue('7.2', $immu['administer_units']); // Text
-                    $rxa->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
+                    $RXA->setValue('6', $immu['administer_amount']); //Administered Amount
+                    $RXA->setValue('7.1', $immu['administer_units']); //Identifier
+                    $RXA->setValue('7.2', $immu['administer_units']); // Text
+                    $RXA->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
                 } else {
-                    $rxa->setValue('6', '999'); //Administered Amount
+                    $RXA->setValue('6', '999'); //Administered Amount
                 }
 
-                // RXR
-                $rxa = $this->hl7->addSegment('RXR');
-
-                $rxa->setValue('15', $immu['lot_number']); //Substance LotNumbers
+                $RXA->setValue('15', $immu['lot_number']); //Substance LotNumbers
 
                 // get immunization manufacturer info
                 $mvx = $immunization->getMvxByCode($immu['manufacturer']);
                 $mText = isset($mvx['manufacturer']) ? $mvx['manufacturer'] : '';
                 //Substance ManufacturerName
-                $rxa->setValue('17.1', $immu['manufacturer']); //Identifier
-                $rxa->setValue('17.2', $mText); //Text
-                $rxa->setValue('17.3', 'MVX'); //Name of Coding System HL70396
-                $rxa->setValue('21', 'A'); //Action Code
+                $RXA->setValue('17.1', $immu['manufacturer']); //Identifier
+                $RXA->setValue('17.2', $mText); //Text
+                $RXA->setValue('17.3', 'MVX'); //Name of Coding System HL70396
+                $RXA->setValue('21', 'A'); //Action Code
+
+                // RXR - 4.14.2 RXR - Pharmacy/Treatment Route Segment
+                // RXR|IM^Intramuscular^HL70162|LD^Left Arm^HL70163
+                $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+                $params = new stdClass();
+                $params->filter[0] = new stdClass();
+                $params->filter[1] = new stdClass();
+                $params->filter[0]->property = 'list_id';
+                $params->filter[0]->value = 6;
+                $params->filter[1]->property = 'code';
+                $params->filter[1]->value = $immu['route'];
+                $Route = $ListOptions->load($params)->one();
+
+                $RXR = $this->hl7->addSegment('RXR');
+                $RXR->setValue('1.1', $Route['option_value']);
+                $RXR->setValue('1.2', $Route['option_name']);
+                $RXR->setValue('1.3', $Route['code_type']);
             }
 
             $msgRecord = $this->saveMsg();

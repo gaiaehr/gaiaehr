@@ -337,6 +337,9 @@ class HL7Messages {
                     $rxa->setValue('6', '999'); //Administered Amount
                 }
 
+                // RXR
+                $rxa = $this->hl7->addSegment('RXR');
+
                 $rxa->setValue('15', $immu['lot_number']); //Substance LotNumbers
 
                 // get immunization manufacturer info
@@ -374,8 +377,6 @@ class HL7Messages {
             return ['success' => false];
         }
 	}
-
-
 
 	private function setMSH($includeNPI = false) {
 		$this->setEncounter();
@@ -458,6 +459,7 @@ class HL7Messages {
 		}
 
 		if($this->notEmpty($this->patient->mothers_name)){
+            $pid->setValue('6.1', $this->patient->mothers_name);
 			$pid->setValue('6.2', $this->patient->mothers_name);
 		}
 		if($this->notEmpty($this->patient->DOB)){
@@ -490,7 +492,7 @@ class HL7Messages {
 			$pid->setValue('11.6', $this->patient->country);
 		}
 		if($this->notEmpty($this->patient->address)){
-			$pid->setValue('11.7', 'P'); // Address Type P = Permanent
+			$pid->setValue('11.7', 'L'); // Address Type L = Legal Address
 		}
 
 		$pid->setValue('11.9', '25025');
@@ -522,15 +524,18 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->SS)){
 			$pid->setValue('19', $this->patient->SS);
 		}
+
+        // Patient Drivers License Information
 		if($this->notEmpty($this->patient->drivers_license)){
 			$pid->setValue('20.1', $this->patient->drivers_license);
+            if($this->notEmpty($this->patient->drivers_license_state)){
+                $pid->setValue('20.2', $this->patient->drivers_license_state);
+            }
+            if($this->notEmpty($this->patient->drivers_license_exp)){
+                $pid->setValue('20.3', $this->date($this->patient->drivers_license_exp));
+            }
 		}
-		if($this->notEmpty($this->patient->drivers_license_state)){
-			$pid->setValue('20.2', $this->patient->drivers_license_state);
-		}
-		if($this->notEmpty($this->patient->drivers_license_exp)){
-			$pid->setValue('20.3', $this->date($this->patient->drivers_license_exp));
-		}
+
 		if($this->notEmpty($this->patient->ethnicity)){
 			if($this->patient->ethnicity == 'H'){
 				$pid->setValue('22.1', '2135-2');

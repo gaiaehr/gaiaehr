@@ -16,37 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.view.patient.encounter.FamilyHistory', {
-	extend: 'Ext.form.Panel',
-	xtype: 'familyhistorypanel',
+Ext.define('App.view.patient.windows.FamilyHistory', {
+	extend: 'Ext.window.Window',
+	xtype: 'familyhistorywindow',
 	requires: [
 		'App.ux.form.fields.CheckBoxWithFamilyRelation'
 	],
-	itemId: 'familyHistoryPanel',
 	title: _('family_history'),
-	autoScroll: true,
-	frame: true,
-	bodyPadding: 10,
+	width: 600,
+	height: 400,
+	layout: 'fit',
+	closeAction: 'hide',
 	bodyStyle: 'background-color:white',
-
-	plugins: {
-		ptype: 'advanceform',
-		autoSync: g('autosave'),
-		syncAcl: a('edit_family_history')
-	},
-
+	items: [
+		{
+			xtype: 'form',
+			bodyPadding: 10,
+			autoScroll: true,
+			itemId: 'FamilyHistoryForm'
+		}
+	],
 	buttons: [
 		{
+			text: _('cancel'),
+			iconCls: 'icoCancel',
+			itemId: 'FamilyHistoryWindowCancelBtn'
+		},
+		{
 			text: _('save'),
-			iconCls: 'save',
-			action: 'encounterRecordAdd',
-			itemId: 'familyHistorySaveBtn'
+			iconCls: 'icoAdd',
+			itemId: 'FamilyHistoryWindowSaveBtn'
 		}
 	],
 
 	initComponent: function(){
 		var me = this;
 		me.callParent();
-		me.getFormItems(me, 12);
+		me.getFormItems(me.down('form'), 12);
 	}
 });

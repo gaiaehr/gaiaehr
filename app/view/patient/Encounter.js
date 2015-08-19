@@ -28,7 +28,6 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
-		'App.view.patient.encounter.FamilyHistory',
 		'App.view.patient.encounter.ProgressNotesHistory',
 		'App.view.patient.ProgressNote',
 		'App.view.patient.DecisionSupportWarningPanel',
@@ -203,11 +202,11 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableFamilyHistory && a('access_family_history')){
-			me.familyHistoryPanel = me.encounterTabPanel.add(
-				Ext.create('App.view.patient.encounter.FamilyHistory')
-			);
-		}
+		//if(me.enableFamilyHistory && a('access_family_history')){
+		//	me.familyHistoryPanel = me.encounterTabPanel.add(
+		//		Ext.create('App.view.patient.encounter.FamilyHistory')
+		//	);
+		//}
 
 		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
@@ -345,7 +344,7 @@ Ext.define('App.view.patient.Encounter', {
 							}
 						}
 					]
-				}),
+				})
 			]
 
 		});
@@ -372,6 +371,11 @@ Ext.define('App.view.patient.Encounter', {
 				{
 					text: _('active_problems') + ' ',
 					action: 'activeproblems'
+				},
+				'-',
+				{
+					text: _('family_history') + ' ',
+					action: 'familyhistory'
 				},
 				'-',
 				{
@@ -651,19 +655,19 @@ Ext.define('App.view.patient.Encounter', {
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
 
-				if(me.familyHistoryPanel){
-					store = me.encounter.familyhistory();
-					store.on('write', me.getProgressNote, me);
-					if(!store.last()){
-						store.add({
-							pid: data.pid,
-							eid: data.eid,
-							create_uid: app.user.id,
-							create_date: new Date()
-						});
-					}
-					me.familyHistoryPanel.getForm().loadRecord(store.last());
-				}
+				//if(me.familyHistoryPanel){
+				//	store = me.encounter.familyhistory();
+				//	store.on('write', me.getProgressNote, me);
+				//	if(!store.last()){
+				//		store.add({
+				//			pid: data.pid,
+				//			eid: data.eid,
+				//			create_uid: app.user.id,
+				//			create_date: new Date()
+				//		});
+				//	}
+				//	me.familyHistoryPanel.getForm().loadRecord(store.last());
+				//}
 
 				if(me.reviewSysCkPanel){
 					store = me.encounter.reviewofsystemschecks();

@@ -23,8 +23,16 @@ Ext.define('App.controller.patient.FamilyHistory', {
 	],
 	refs: [
 		{
-			ref: 'FamilyHistoryPanel',
-			selector: 'familyhistorypanel'
+			ref: 'FamilyHistoryWindow',
+			selector: 'familyhistorywindow'
+		},
+		{
+			ref: 'FamilyHistoryGrid',
+			selector: 'patientfamilyhistorypanel'
+		},
+		{
+			ref: 'FamilyHistoryForm',
+			selector: '#FamilyHistoryForm'
 		},
 		{
 			ref: 'FamilyHistorySaveBtn',
@@ -35,22 +43,91 @@ Ext.define('App.controller.patient.FamilyHistory', {
 	init: function(){
 		var me = this;
 		me.control({
-			'#familyHistorySaveBtn': {
-				click: me.onFamilyHistoryPanelSaveBtnClick
+			'patientfamilyhistorypanel': {
+				activate: me.onFamilyHistoryGridActivate
+			},
+			'#FamilyHistoryGridAddBtn': {
+				click: me.onFamilyHistoryGridAddBtnClick
+			},
+			'#FamilyHistoryWindowSaveBtn': {
+				click: me.onFamilyHistoryWindowSaveBtnClick
+			},
+			'#FamilyHistoryWindowCancelBtn': {
+				click: me.onFamilyHistoryWindowCancelBtnClick
 			}
 		});
 	},
 
-	onFamilyHistoryPanelSaveBtnClick: function(btn){
-		var form = btn.up('form').getForm(),
+	onFamilyHistoryGridActivate: function(grid){
+		var store = grid.getStore();
+
+		store.clearFilter(true);
+		store.load({
+			filters: [
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			]
+		});
+	},
+
+	onFamilyHistoryGridAddBtnClick:function(){
+		this.showFamilyHistoryWindow();
+		this.getFamilyHistoryForm().getForm().reset();
+	},
+
+	showFamilyHistoryWindow: function(){
+		if(!this.getFamilyHistoryWindow()){
+			Ext.create('App.view.patient.windows.FamilyHistory');
+		}
+		this.getFamilyHistoryWindow().show();
+	},
+
+	onFamilyHistoryWindowSaveBtnClick:function(){
+		var grid = this.getFamilyHistoryGrid(),
+			form = this.getFamilyHistoryForm().getForm(),
+			store = grid.getStore(),
 			values = form.getValues(),
-			record = form.getRecord();
+			histories = [];
 
-		values.update_uid = app.user.id;
-		values.update_date = new Date();
+		say('form.isValid()');
+		say(form.isValid());
 
-		record.set(values);
-		record.store.sync();
+
+		if(!form.isValid()) return;
+
+
+		Ext.Object.each(values, function(key, value){
+
+			if(value == '0~0') return;
+
+			var foo = value.split('~'),
+				condition = foo[0].split(':'),
+				relation = foo[1].split(':');
+
+			Ext.Array.push(histories, {
+				pid: app.patient.pid,
+				eid: app.patient.eid,
+				relation: relation[2],
+				relation_code: relation[1],
+				relation_code_type: relation[0],
+				condition: condition[2],
+				condition_code: condition[1],
+				condition_code_type: condition[0],
+				create_uid: app.user.id,
+				create_date: new Date()
+			});
+		});
+
+		store.add(histories);
+		store.sync();
+		this.getFamilyHistoryWindow().close();
+
+	},
+
+	onFamilyHistoryWindowCancelBtnClick:function(){
+		this.getFamilyHistoryWindow().close();
 	}
 
 });

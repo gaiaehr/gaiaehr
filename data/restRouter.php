@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
     session_regenerate_id(false);
     session_name('GaiaEHR');
     session_start();
-    setcookie(session_name(),session_id(),time()+60, '/gaiaehr/', null, false, true);
+    setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
 }
 define('_GaiaEXEC', 1);
 define(ROOT, 'C:/inetpub/wwwroot/gaiaehr');

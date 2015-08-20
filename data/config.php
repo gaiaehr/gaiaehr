@@ -332,6 +332,25 @@ $API = [
             ]
         ]
     ],
+    'PatientContacts' => [
+        'methods' => [
+            'getContacts' => [
+                'len' => 1
+            ],
+            'getContact' => [
+                'len' => 1
+            ],
+            'addContact' => [
+                'len' => 1
+            ],
+            'updateContact' => [
+                'len' => 1
+            ],
+            'destroyContact' => [
+                'len' => 1
+            ]
+        ]
+    ],
     'Reminders' => [
         'methods' => [
             'getReminders' => [

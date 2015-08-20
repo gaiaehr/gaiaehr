@@ -314,7 +314,7 @@ Ext.define('App.view.patient.Summary', {
                 title: _('patient_contacts'),
                 itemId: 'PatientSummaryContactsPanel',
                 bodyPadding: 0,
-                store: Ext.create('App.store.patient.Contacts', {
+                store: Ext.create('App.store.patient.PatientContacts', {
                     autoSync: false,
                     autoLoad: false
                 }),
@@ -326,7 +326,7 @@ Ext.define('App.view.patient.Summary', {
                     },
                     {
                         header: _('relationship'),
-                        dataIndex: 'relationship'
+                        dataIndex: 'relationship_name'
                     },
                     {
                         text: _('address'),

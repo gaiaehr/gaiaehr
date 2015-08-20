@@ -329,6 +329,41 @@ class HL7Messages {
                 $PD1->setValue('18', $this->date($this->patient->create_date, false));
             }
 
+            // NK1 - 3.4.5 NK1 - Next of Kin / Associated Parties Segment
+            $PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
+            $filters->filter[0]->property = 'pid';
+            $filters->filter[0]->value = $params->pid;
+            $filters->filter[1] = new stdClass();
+            $Records = $PatientContacts->load($filters)->all();
+            $transactionID = 0;
+            foreach($Records as $Record)
+            {
+                $transactionID++;
+                $PD1 = $this->hl7->addSegment('NK1');
+                $PD1->setValue('1', $transactionID);
+                $PD1->setValue('2.1', $Record['middle_name'] .' '.$Record['last_name']);
+                $PD1->setValue('2.2', $Record['first_name']);
+                $PD1->setValue('2.7', 'L');
+                $PD1->setValue('3.1', $Record['relationship']);
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 134;
+                $filters->filter[1]->property = 'option_value';
+                $filters->filter[1]->value = $Record['relationship'];
+                $List = $ListOptions->load($filters)->one();
+                $PD1->setValue('3.2', $List['option_name']);
+                $PD1->setValue('3.3', $List['code_type']);
+                $PD1->setValue('4.1', $Record['street_mailing_address']);
+                $PD1->setValue('4.3', $Record['city']);
+                $PD1->setValue('4.4', $Record['state']);
+                $PD1->setValue('4.5', $Record['zip']);
+                $PD1->setValue('4.6', $Record['country']);
+                $PD1->setValue('4.7', 'L');
+                $PD1->setValue('5.2', 'PRN');
+                $PD1->setValue('5.3', 'PH');
+                $PD1->setValue('5.6', $Record['phone_area_code']);
+                $PD1->setValue('5.7', $Record['phone_local_number']);
+            }
+
             $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
             include_once(ROOT . '/dataProvider/Immunizations.php');
             $immunization = new Immunizations();
@@ -375,7 +410,7 @@ class HL7Messages {
                 // Route
                 $filters->filter[0]->property = 'list_id';
                 $filters->filter[0]->value = 6;
-                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->property = 'option_value';
                 $filters->filter[1]->value = $immu['route'];
                 $Record = $ListOptions->load($filters)->one();
                 $RXR->setValue('1.1', $Record['option_value']);
@@ -546,10 +581,21 @@ class HL7Messages {
 			$pid->setValue('5.7', 'L');
 		}
 
-		if($this->notEmpty($this->patient->mothers_name)){
-            $pid->setValue('6.1', $this->patient->mothers_name);
-			$pid->setValue('6.2', $this->patient->mothers_name);
+        // This has to be taken on Patient Contacts
+        $PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
+        $filters = new stdClass();
+        $filters->filter[0] = new stdClass();
+        $filters->filter[1] = new stdClass();
+        $filters->filter[0]->property = 'pid';
+        $filters->filter[0]->value = $this->patient->pid;
+        $filters->filter[1]->property = 'relationship';
+        $filters->filter[1]->value = 'MTH';
+        $Record = $PatientContacts->load($filters)->one();
+		if($this->notEmpty($Record)){
+            $pid->setValue('6.1', $Record['first_name'].' '.$Record['middle_name'].' '.$Record['last_name']);
+			$pid->setValue('6.2', $Record['first_name'].' '.$Record['middle_name'].' '.$Record['last_name']);
 		}
+
 		if($this->notEmpty($this->patient->DOB)){
 			$pid->setValue('7.1', $this->date($this->patient->DOB));
 		}

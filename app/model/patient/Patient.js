@@ -1,4 +1,9 @@
-/** * Generated dynamically by Matcha::Connect * Create date: 2015-08-18 15:36:14 */Ext.define('App.model.patient.Patient',{
+/**
+ * Generated dynamically by Matcha::Connect
+ * Create date: 2015-08-18 15:36:14
+ */
+
+Ext.define('App.model.patient.Patient',{
     extend: 'Ext.data.Model',
     requires: [
         'App.model.patient.Insurance',
@@ -188,28 +193,10 @@
             len: 80
         },
         {
-            name: 'mothers_name',
-            type: 'string',
-            comment: 'mother name',
-            len: 40
-        },
-        {
-            name: 'guardians_name',
-            type: 'string',
-            comment: 'guardians name',
-            len: 40
-        },
-        {
             name: 'emer_contact',
             type: 'string',
             comment: 'emergency contact',
             len: 40
-        },
-        {
-            name: 'emer_phone',
-            type: 'string',
-            comment: 'emergency phone #',
-            len: 15
         },
         {
             name: 'provider',
@@ -489,4 +476,4 @@
             ]
         }
     }
-});
+});

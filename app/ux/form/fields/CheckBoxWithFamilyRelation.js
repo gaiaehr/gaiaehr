@@ -45,14 +45,18 @@ Ext.define('App.ux.form.fields.CheckBoxWithFamilyRelation', {
 			txtValue;
 
 		if(ckValue != '0'){
+
+			ckValue += ':' + this.chekboxField.boxLabel;
+
 			var store = this.textField.getStore(),
 				rec = store.getById(this.textField.getSubmitValue());
-			txtValue = rec ? rec.data.code_type + ':' + rec.data.code : '0';
+			txtValue = rec ? rec.get('code_type') + ':' + rec.get('code') + ':' + rec.get('option_name') : '0';
 		}else{
 			txtValue = '0';
 		}
 
 		if(ckValue)    value = ckValue + '~' + txtValue;
+
 		return value;
 	},
 

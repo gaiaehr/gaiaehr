@@ -773,7 +773,7 @@ class MatchaCUP {
 			return $this->record;
 
 		} catch(PDOException $e) {
-			return MatchaErrorHandler::__errorProcess($e);
+			return MatchaErrorHandler::__errorProcess($e, $this);
 		}
 	}
 

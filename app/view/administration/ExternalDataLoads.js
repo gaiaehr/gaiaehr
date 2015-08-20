@@ -159,7 +159,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 
 							xtype: 'filefield',
 							name: 'filePath',
-							buttonText: i18n['Select file'] + '...',
+							buttonText: _('upload'),
 							emptyText: _('data_file'),
 							width: 350,
 							labelWidth: 50,

@@ -51,12 +51,7 @@ class RXR extends Segments{
          * cases, the entire code can be included in this field as a "locally-defined code" for the CE data type.
          * Refer to User-Defined Table 0162 - Route Of Administration for valid values.
          */
-        $this->setField(1, 'ST', 250, true); // Identifier
-        $this->setField(2, 'ST', 250, true); // Text
-        $this->setField(3, 'ID', 250, true); // Name of Coding System
-        $this->setField(4, 'ST', 250, false); // Alternate Identifier
-        $this->setField(5, 'ST', 250, false); // Alternate Text
-        $this->setField(6, 'ID', 250, false); // Name of Alternate Coding System
+        $this->setField(1, 'CE', 250, true);
 
         /**
          * RXR-2 Administration Site (CWE) 00310
@@ -78,15 +73,7 @@ class RXR extends Segments{
          * Body Site may also be employed. Other appropriate external code sets (e.g., SNOMED) may also be
          * employed.
          */
-        $this->setField(7, 'ST', 250, false); // Identifier
-        $this->setField(8, 'ST', 250, false); // Text
-        $this->setField(9, 'ID', 250, false); // Name of Coding System
-        $this->setField(10, 'ST', 250, false); // Alternate Identifier
-        $this->setField(11, 'ST', 250, false); // Alternate Text
-        $this->setField(12, 'ID', 250, false); // Name of Alternate Coding System
-        $this->setField(13, 'ST', 250, false); // Coding System Version ID
-        $this->setField(14, 'ST', 250, false); // Alternate Coding System Version ID
-        $this->setField(15, 'ST', 250, false); // Original Text
+        $this->setField(2, 'ST', 250, false);
 
         /**
          * RXR-3 Administration Device (CE) 00311
@@ -103,12 +90,7 @@ class RXR extends Segments{
          * treatment. Common examples are IV-sets of different types. Refer to User-defined Table 0164 -
          * Administration device for valid entries.
          */
-        $this->setField(16, 'ST', 250, false); // Identifier
-        $this->setField(17, 'ST', 250, false); // Text
-        $this->setField(18, 'ID', 250, false); // Name of Coding System
-        $this->setField(19, 'ST', 250, false); // Alternate Identifier
-        $this->setField(20, 'ST', 250, false); // Alternate Text
-        $this->setField(21, 'ID', 250, false); // Name of Alternate Coding System
+        $this->setField(3, 'CE', 250, false); // Identifier
 
         /**
          * RXR-4 Administration Method (CWE) 00312
@@ -127,15 +109,7 @@ class RXR extends Segments{
          * Definition: This field identifies the specific method requested for the administration of the drug or
          * treatment to the patient. Refer To User-defined Table 0165 – Administration Method for valid values.
          */
-        $this->setField(22, 'ST', 250, false); // Identifier
-        $this->setField(23, 'ST', 250, false); // Text
-        $this->setField(24, 'ID', 250, false); // Name of Coding System
-        $this->setField(25, 'ST', 250, false); // Alternate Identifier
-        $this->setField(26, 'ST', 250, false); // Alternate Text
-        $this->setField(27, 'ID', 250, false); // Name of Alternate Coding System
-        $this->setField(28, 'ST', 250, false); // Coding System Version ID
-        $this->setField(29, 'ST', 250, false); // Alternate Coding System Version ID
-        $this->setField(30, 'ST', 250, false); // Original Text
+        $this->setField(4, 'CWE', 250, false);
 
         /**
          * 4.14.2.5 RXR-5 Routing Instruction (CE) 01315
@@ -152,12 +126,35 @@ class RXR extends Segments{
          * one route of administration is possible. A typical case would be designating which IV line should be used
          * when more than one IV line is a possible route for injection.
          */
-        $this->setField(31, 'ST', 250); // Identifier
-        $this->setField(32, 'ST', 250); // Text
-        $this->setField(33, 'ID', 250); // Name of Coding System
-        $this->setField(34, 'ST', 250); // Alternate Identifier
-        $this->setField(35, 'ST', 250); // Alternate Text
-        $this->setField(36, 'ID', 250); // Name of Alternate Coding System
+        $this->setField(5, 'CE', 250);
+
+        /**
+         * 4.14.2.6 RXR-6 Administration Site Modifier (CWE) 01670
+         *
+         * Components:
+         * <Identifier (ST)> ^
+         * <Text (ST)> ^
+         * <Name of Coding System (ID)> ^
+         * <Alternate Identifier (ST)> ^
+         * <Alternate Text (ST)> ^
+         * <Name of Alternate Coding System (ID)> ^
+         * <Coding System Version ID (ST)> ^
+         * <Alternate Coding System Version ID (ST)> ^
+         * <Original Text (ST)>
+         *
+         * Definition:
+         * This field contains a modifier which modifies the meaning of RXR-2 Administration Site.
+         * The code table used in this field is dependent upon the code table used in RXR-2 Administration site. If
+         * RXR-2 employs HL7 Table 0550 – Body Parts, then this field may only be populated with values from HL7
+         * Table 0495 – Body Parts Modifier. If RXR-2 employs HL7 Table 0163 – Body Site, then RXR-6 should not
+         * be populated. In the case of other code sets (e.g., SNOMED) in RXR-2, RXR-6 may only be populated if
+         * modifiers are defined within, or related to, that code set.
+         *
+         * Condition Rule:
+         * This field may only be populated if RXR-2 Administration Site is populated. This field is
+         * not required if RXR-2 is populated.
+         */
+        $this->setField(6, 'CWE', 250, false);
     }
 
 

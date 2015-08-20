@@ -56,6 +56,7 @@ Ext.define('App.controller.Navigation', {
 				beforerender: me.onNavigationBeforeRender
 			},
 			'panel[action=mainNavPanel]':{
+				render: me.onNavRender,
 				beforecollapse: me.onNavCollapsed,
 				beforeexpand: me.onNavExpanded
 			}
@@ -114,7 +115,7 @@ Ext.define('App.controller.Navigation', {
 	 * this logic can be move to here eventually...
 	 */
 	afterNavigationLoad: function(){
-		app.fullMode ? app.navColumn.expand() : app.navColumn.collapse();
+		//app.fullMode ? app.navColumn.expand() : app.navColumn.collapse();
 		app.removeAppMask();
 		this.navigateToDefault();
 	},
@@ -218,6 +219,18 @@ Ext.define('App.controller.Navigation', {
 	 */
 	getClassByNavRef: function(ref) {
 		return ref.replace(/_/g, '.');
+	},
+
+	/**
+	 *
+	 * @param panel
+	 */
+	onNavRender: function(panel){
+		if(panel.collapsed){
+			this.onNavCollapsed();
+		}else{
+			this.onNavExpanded();
+		}
 	},
 
 	/**

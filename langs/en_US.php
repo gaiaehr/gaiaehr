@@ -1579,6 +1579,7 @@ $LANG = array(
     'procedure_two'                         => 'Procedure Two',
     'procedure_three'                       => 'Procedure Three',
     'education'                             => 'Education',
+    'doc_published'                         => 'Pub. Published',
     'plan_of_care'                          => 'Plan Of Care',
     'exclude'                               => 'Exclude',
     'refresh'                               => 'Refresh',

@@ -36,7 +36,8 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.LabOrders',
 		'App.view.patient.RadOrders',
 		'App.view.patient.RxOrders',
-		'App.view.patient.DoctorsNotes'
+		'App.view.patient.DoctorsNotes',
+		'App.view.patient.FamilyHistory'
 	],
 
 	initComponent: function(){
@@ -63,6 +64,10 @@ Ext.define('App.view.patient.windows.Medical', {
 					{
 						xtype: 'patientactiveproblemspanel',
 						itemId: 'activeproblems'
+					},
+					{
+						xtype: 'patientfamilyhistorypanel',
+						itemId: 'familyhistory'
 					},
 					{
 						xtype: 'patientadvancedirectivepanel',

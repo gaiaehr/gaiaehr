@@ -304,52 +304,140 @@ class HL7Messages {
             // PV1
             $this->setPV1();
 
+            // Variable Objects to pass filter to MatchaCup
+            $filters = new stdClass();
+            $filters->filter[0] = new stdClass();
+            $filters->filter[1] = new stdClass();
+
+            // Load the List option model, to do lookups in the Value Code Sets
+            $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
+
+            // PD1 - 3.4.10 PD1 - Patient Additional Demographic Segment
+            // If the Publicity is set, on the patient compile this HL7 Message line
+            if($this->patient->publicity) {
+                $PD1 = $this->hl7->addSegment('PD1');
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 132;
+                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->value = $this->patient->publicity;
+                $Record = $ListOptions->load($filters)->one();
+                $PD1->setValue('11.1', $Record['option_value']);
+                $PD1->setValue('11.2', $Record['option_name']);
+                $PD1->setValue('11.3', $Record['code_type']);
+                $PD1->setValue('16', 'A');
+                $PD1->setValue('17', $this->date($this->patient->create_date, false));
+                $PD1->setValue('18', $this->date($this->patient->create_date, false));
+            }
+
             $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
             include_once(ROOT . '/dataProvider/Immunizations.php');
             $immunization = new Immunizations();
 
-            // immunizations loop
+            // Immunizations loop
             foreach($params->immunizations AS $i){
 
                 $immu = $this->i->load($i)->one();
 
-                // ROC
-                $roc = $this->hl7->addSegment('ORC');
-                $roc->setValue('1', 'RE'); //HL70119
-                $roc->setValue('3.1', 'GAIA10001');
-                $roc->setValue('3.2', $immu['id']);
+                // ORC - 4.5.1 ORC - Commoon Order Segment
+                $ORC = $this->hl7->addSegment('ORC');
+                $ORC->setValue('1', 'RE'); //HL70119
+                $ORC->setValue('3.1', 'GAIA10001');
+                $ORC->setValue('3.2', $immu['id']);
 
-                // RXA
-                $rxa = $this->hl7->addSegment('RXA');
-                $rxa->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
-                $rxa->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
+                // RXA - 4.14.7 RXA - Pharmacy/Treatment Administration Segment
+                $RXA = $this->hl7->addSegment('RXA');
+                $RXA->setValue('3.1', $this->date($immu['administered_date'])); //Date/Time Start of Administration
+                $RXA->setValue('4.1', $this->date($immu['administered_date'])); //Date/Time End of Administration
                 //Administered Code
-                $rxa->setValue('5.1', $immu['code']); //Identifier
-                $rxa->setValue('5.2', $immu['vaccine_name']); //Text
-                $rxa->setValue('5.3', $immu['code_type']); //Name of Coding System
-
+                $RXA->setValue('5.1', $immu['code']); //Identifier
+                $RXA->setValue('5.2', $immu['vaccine_name']); //Text
+                $RXA->setValue('5.3', $immu['code_type']); //Name of Coding System
                 if($this->isPresent($immu['administer_amount'])){
-                    $rxa->setValue('6', $immu['administer_amount']); //Administered Amount
-                    $rxa->setValue('7.1', $immu['administer_units']); //Identifier
-                    $rxa->setValue('7.2', $immu['administer_units']); // Text
-                    $rxa->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
+                    $RXA->setValue('6', $immu['administer_amount']); //Administered Amount
+                    $RXA->setValue('7.1', $immu['administer_units']); //Identifier
+                    $RXA->setValue('7.2', $immu['administer_units']); // Text
+                    $RXA->setValue('7.3', 'UCUM'); //Name of Coding System HL70396
                 } else {
-                    $rxa->setValue('6', '999'); //Administered Amount
+                    $RXA->setValue('6', '999'); //Administered Amount
                 }
-
-                // RXR
-                $rxa = $this->hl7->addSegment('RXR');
-
-                $rxa->setValue('15', $immu['lot_number']); //Substance LotNumbers
-
+                $RXA->setValue('15', $immu['lot_number']); //Substance LotNumbers
                 // get immunization manufacturer info
                 $mvx = $immunization->getMvxByCode($immu['manufacturer']);
                 $mText = isset($mvx['manufacturer']) ? $mvx['manufacturer'] : '';
                 //Substance ManufacturerName
-                $rxa->setValue('17.1', $immu['manufacturer']); //Identifier
-                $rxa->setValue('17.2', $mText); //Text
-                $rxa->setValue('17.3', 'MVX'); //Name of Coding System HL70396
-                $rxa->setValue('21', 'A'); //Action Code
+                $RXA->setValue('17.1', $immu['manufacturer']); //Identifier
+                $RXA->setValue('17.2', $mText); //Text
+                $RXA->setValue('17.3', 'MVX'); //Name of Coding System HL70396
+                $RXA->setValue('21', 'A'); //Action Code
+
+                // RXR - 4.14.2 RXR - Pharmacy/Treatment Route Segment
+                $RXR = $this->hl7->addSegment('RXR');
+                // Route
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 6;
+                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->value = $immu['route'];
+                $Record = $ListOptions->load($filters)->one();
+                $RXR->setValue('1.1', $Record['option_value']);
+                $RXR->setValue('1.2', $Record['option_name']);
+                $RXR->setValue('1.3', $Record['code_type']);
+                // Administration Site
+                $filters->filter[0]->property = 'list_id';
+                $filters->filter[0]->value = 119;
+                $filters->filter[1]->property = 'code';
+                $filters->filter[1]->value = $immu['administration_site'];
+                $Record = $ListOptions->load($filters)->one();
+                $RXR->setValue('2.1', $Record['option_value']);
+                $RXR->setValue('2.2', $Record['option_name']);
+                $RXR->setValue('2.3', $Record['code_type']);
+
+                // OBX - 7.4.2 OBX - Observation/Result Segment
+                // OBX|1|CE|64994-7^Vaccine funding program eligibility category^LN|1|V05^VFC eligible - Federally Qualified Health Center Patient
+                // (under-insured)^HL70064||||||F|||20120701|||VXC40^Eligibility captured at the immunization level^CDCPHINVS
+                $obxCount = 0;
+//                $OBX = $this->hl7->addSegment('OBX');
+//                $OBX->setValue('1', $obxCount);
+//                $OBX->setValue('2', 'CE');
+//                $OBX->setValue('3.1', '64994-7');
+//                $OBX->setValue('3.2', 'Vaccine funding program eligibility category');
+//                $OBX->setValue('3.3', 'LN');
+//                $OBX->setValue('4', '1'); // This value, should be the ID of the Billing
+//                $OBX->setValue('5.1', $immu['option_value']);
+//                $OBX->setValue('5.2', $immu['vaccine_name']);
+//                $OBX->setValue('5.3', $immu['code_type']);
+//                $OBX->setValue('11', 'F');
+                $obxCount++;
+                $OBX = $this->hl7->addSegment('OBX');
+                $OBX->setValue('1', $obxCount);
+                $OBX->setValue('2', 'CE');
+                $OBX->setValue('3.1', '30956-7');
+                $OBX->setValue('3.2', 'vaccine type');
+                $OBX->setValue('3.3', 'LN');
+                $OBX->setValue('4', $immu['id']);
+                $OBX->setValue('5.1', $immu['code']);
+                $OBX->setValue('5.2', $immu['vaccine_name']);
+                $OBX->setValue('5.3', $immu['code_type']);
+                $OBX->setValue('11', 'F');
+                $obxCount++;
+                $OBX = $this->hl7->addSegment('OBX');
+                $OBX->setValue('1', $obxCount);
+                $OBX->setValue('2', 'TS');
+                $OBX->setValue('3.1', '29768-9');
+                $OBX->setValue('3.2', 'Date vaccine information statement published');
+                $OBX->setValue('3.3', 'LN');
+                $OBX->setValue('4', $immu['id']);
+                $OBX->setValue('5', $this->date($immu['education_doc_published'], false));
+                $OBX->setValue('11', 'F');
+                $obxCount++;
+                $OBX = $this->hl7->addSegment('OBX');
+                $OBX->setValue('1', $obxCount);
+                $OBX->setValue('2', 'TS');
+                $OBX->setValue('3.1', '29769-7');
+                $OBX->setValue('3.2', 'Date vaccine information statement presented');
+                $OBX->setValue('3.3', 'LN');
+                $OBX->setValue('4', $immu['id']);
+                $OBX->setValue('5', $this->date($immu['education_date'], false));
+                $OBX->setValue('11', 'F');
             }
 
             $msgRecord = $this->saveMsg();
@@ -577,7 +665,6 @@ class HL7Messages {
 	private function setPV1(){
 
 		if($this->encounter === false) return;
-
 
 		$pv1 = $this->hl7->addSegment('PV1');
 		$pv1->setValue('1', 1);
@@ -884,9 +971,14 @@ class HL7Messages {
 		return $this->c->load($params)->all();
 	}
 
-	private function date($date) {
-		$date = str_replace([' ',':','-'], '', $date);
-		return $date;
+	private function date($date, $returnTime = true) {
+		//$date = str_replace([' ',':','-'], '', $date);
+        $dateObject = new DateTime($date);
+        if($returnTime) {
+            return $dateObject->format('YmdHis');
+        } else {
+            return $dateObject->format('Ymd');
+        }
 	}
 
 	private function phone($phone) {

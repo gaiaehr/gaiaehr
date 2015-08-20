@@ -131,7 +131,6 @@ class Segments {
 					continue;
 				}
 
-
 				if(is_array($value)){
 					$array[$index] = $this->toString($value, $glue + 1);
 					$buffer[] = $array[$index][0];
@@ -165,8 +164,6 @@ class Segments {
 				array_unshift($fields, 'MSH');
 				$fields[1] = '|';
 			}
-
-
 
 			$isSubField = $glue > 0;
 

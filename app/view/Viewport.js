@@ -31,7 +31,11 @@ Ext.define('App.view.Viewport', {
 
 	// end app settings
     initComponent: function(){
-        Ext.tip.QuickTipManager.init();
+
+	    Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
+
+
+	    Ext.tip.QuickTipManager.init();
         var me = this;
 
 	    me.user.getFullName = function(){
@@ -253,7 +257,7 @@ Ext.define('App.view.Viewport', {
 				    {
 					    xtype: 'patienlivetsearch',
 					    emptyText: _('patient_live_search') + '...',
-					    width: (me.fullMode ? 300 : 300),
+					    width: 300,
 					    listeners: {
 						    scope: me,
 						    select: me.liveSearchSelect,
@@ -399,6 +403,8 @@ Ext.define('App.view.Viewport', {
             split: true,
             collapsible: true,
             collapsed: false,
+	        stateId: 'mainNavPanel',
+	        stateful: true,
             items: [
                 {
                     xtype: 'treepanel',
@@ -514,7 +520,7 @@ Ext.define('App.view.Viewport', {
          * Footer Panel
          */
         me.Footer = Ext.create('Ext.container.Container', {
-            height: me.fullMode ? 30 : 60,
+            height: 30,
             split: false,
             padding: '3 0',
             region: 'south',
@@ -613,24 +619,22 @@ Ext.define('App.view.Viewport', {
             type: 'border',
             padding: 3
         };
+
         me.defaults = {
             split: true
         };
-        me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
-        me.listeners = {
+
+	    me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
+
+	    me.listeners = {
 	        scope: me,
             render: me.appRender,
             beforerender: me.beforeAppRender
         };
         me.callParent(arguments);
-        me.signature = Ext.create('App.view.signature.SignatureWindow');
 
+	    me.signature = Ext.create('App.view.signature.SignatureWindow');
 
-	    //CCDDocumentParse.getTestCCD('CCDA Example_b2 AMB.xml', function(response){
-	    //
-		 //   App.app.getController('patient.CCDImport').CcdImport(response.ccd);
-	    //
-	    //});
 
     },
 

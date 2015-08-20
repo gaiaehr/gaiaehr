@@ -57,6 +57,9 @@ Ext.define('App.controller.patient.Summary', {
 			'#PatientSummaryEncountersPanel': {
 				itemdblclick: me.onPatientSummaryEncounterDblClick
 			},
+            '#PatientSummaryContactsPanel': {
+                activate: me.reloadGrid
+            },
 			'#PatientSummaryDisclosuresPanel': {
 				activate: me.reloadGrid
 			},

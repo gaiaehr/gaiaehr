@@ -1609,5 +1609,8 @@ $LANG = array(
     'routine'                               => 'Routine',
     'missing_required_data'                 => 'Missing Required Fields',
     'nothing_to_merge'                      => 'Nothing to merge',
-    'submit_hl7_vxu'                        => 'Submit HL7 VXU'
+    'submit_hl7_vxu'                        => 'Submit HL7 VXU',
+    'patient_contacts'                      => 'Patient Contacts',
+    'area_code'                             => 'Area Code',
+    'local_number'                          => 'Local Number'
 );

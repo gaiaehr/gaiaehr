@@ -218,7 +218,7 @@ class FormLayoutEngine {
 		$rawStr = json_encode($items);
 
 		if(Globals::getGlobal('compact_demographics') && $params->formToRender == 1){
-			$rawStr = "Ext.widget('tabpanel',{border:false,height:240,defaults:{autoScroll:true},items:$rawStr})";
+			$rawStr = "Ext.widget('tabpanel',{border:false,height:300,defaults:{autoScroll:true},items:$rawStr})";
 		}
 
 		$regex = '("\w*?":|"Ext\.create|\)"\})';

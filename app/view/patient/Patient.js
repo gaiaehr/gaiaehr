@@ -30,10 +30,7 @@ Ext.define('App.view.patient.Patient', {
 	itemId: 'PatientDemographicsPanel',
 	newPatient: true,
 	pid: null,
-	// default patient photo ID placeholder
 	defaultPatientImage: 'resources/images/patientPhotoPlaceholder.jpg',
-
-	// default QRCode image placeholder
 	defaultQRCodeImage: 'resources/images/QRCodeImage.png',
 
 	initComponent: function(){
@@ -322,11 +319,15 @@ Ext.define('App.view.patient.Patient', {
 		var me = this;
 		if(me.patientImages)
 		{
-			me.patientImages.getComponent('image').setSrc((record.data.image !== '' ? record.data.image : me.defaultPatientImage));
+			me.patientImages.getComponent('image').setSrc(
+                (record.data.image !== '' ? record.data.image : me.defaultPatientImage)
+            );
 		}
 		if(me.patientImages)
 		{
-			me.patientImages.getComponent('qrcode').setSrc((record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage));
+			me.patientImages.getComponent('qrcode').setSrc(
+                (record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage)
+            );
 		}
 	},
 

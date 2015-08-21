@@ -69,7 +69,7 @@
 		/*
 		 * @cfg {String} src (optional) Uri to load into the frame
 		 */
-		src: null,
+		src: 'about:blank',
 
 		/*
 		 * @cfg {Boolean} autoMask True to display a loadMask during page content changes

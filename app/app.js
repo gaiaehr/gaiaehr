@@ -13740,11 +13740,11 @@ Ext.define('App.model.fees.Billing',
 			},
 			{
 				name: 'service_date',
-				type: 'string'
+				type: 'date'
 			},
 			{
 				name: 'close_date',
-				type: 'string'
+				type: 'date'
 			},
 			{
 				name: 'billing_stage',
@@ -14188,8 +14188,34 @@ Ext.define('App.model.patient.FamilyHistory', {
 			index: true
 		},
 		{
-			name: 'auth_uid',
-			type: 'int'
+			name: 'condition',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'condition_code',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'condition_code_type',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'relation',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'relation_code',
+			type: 'string',
+			len: 60
+		},
+		{
+			name: 'relation_code_type',
+			type: 'string',
+			len: 60
 		},
 		{
 			name: 'create_uid',
@@ -14208,161 +14234,6 @@ Ext.define('App.model.patient.FamilyHistory', {
 			name: 'update_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s'
-		},
-		{
-			name: 'tuberculosis',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'emphysema',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'asthma',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hypertension',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'heart_murmur',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'rheumatic_fever',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'heart_attak',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'angina',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'stroke',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'high_cholesterol',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'vascular_graft',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'mitral_valve_prolapse',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hepatitis_a',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hepatitis_b',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hepatitis_c',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'kidney',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'std',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'ulcers',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'diabetes',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'thyroid',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hemophilia',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'anemia',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'cancer',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'hiv_aids',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'osteoarthritis',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'rheumatoid_arthritis',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'seizures',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'dementia',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'anxiety',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'depression',
-			type: 'string',
-			len: 60
-		},
-		{
-			name: 'eating_disorder',
-			type: 'string',
-			len: 60
 		}
 	],
 	proxy: {
@@ -17433,6 +17304,12 @@ Ext.define('App.model.patient.PatientImmunization', {
 			dataType: 'date',
 			dateFormat: 'Y-m-d'
 		},
+        {
+            name: 'education_doc_published',
+            type: 'date',
+            dataType: 'date',
+            dateFormat: 'Y-m-d'
+        },
 		{
 			name: 'note',
 			type: 'string',
@@ -20060,7 +19937,7 @@ Ext.define('App.store.patient.CheckoutAlertArea', {
 });
 
 
-Ext.define('App.model.patient.Patient', {
+Ext.define('App.model.patient.Patient',{
     extend: 'Ext.data.Model',
     requires: [
         'App.model.patient.Insurance',
@@ -20107,23 +19984,7 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'fullname',
             type: 'string',
-            store: false,
-            convert: function (v, record) {
-                var foo = '';
-                if (record.data.title) {
-                    foo += record.data.title + ' ';
-                }
-                if (record.data.fname) {
-                    foo += record.data.fname + ' ';
-                }
-                if (record.data.mname) {
-                    foo += record.data.mname + ' ';
-                }
-                if (record.data.lname) {
-                    foo += record.data.lname + ' ';
-                }
-                return foo.trim();
-            }
+            store: false
         },
         {
             name: 'sex',
@@ -20143,10 +20004,7 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'DOBFormatted',
             type: 'string',
-            persist: false,
-            convert: function (v, record) {
-                return Ext.Date.format(record.data.DOB, g('date_time_display_format'));
-            }
+            persist: false
         },
         {
             name: 'marital_status',
@@ -20178,11 +20036,7 @@ Ext.define('App.model.patient.Patient', {
         {
             name: 'record_number',
             type: 'string',
-            persist: false,
-            convert: function (v, record)
-            {
-                return g('display_pubpid') ? record.data.pubpid : record.data.pid;
-            }
+            persist: false
         },
         {
             name: 'drivers_license',
@@ -20273,28 +20127,10 @@ Ext.define('App.model.patient.Patient', {
             len: 80
         },
         {
-            name: 'mothers_name',
-            type: 'string',
-            comment: 'mother name',
-            len: 40
-        },
-        {
-            name: 'guardians_name',
-            type: 'string',
-            comment: 'guardians name',
-            len: 40
-        },
-        {
             name: 'emer_contact',
             type: 'string',
             comment: 'emergency contact',
             len: 40
-        },
-        {
-            name: 'emer_phone',
-            type: 'string',
-            comment: 'emergency phone #',
-            len: 15
         },
         {
             name: 'provider',
@@ -20519,6 +20355,10 @@ Ext.define('App.model.patient.Patient', {
         },
         {
             name: 'portal_username',
+            type: 'string'
+        },
+        {
+            name: 'publicity',
             type: 'string'
         }
     ],
@@ -31604,7 +31444,7 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 
 							xtype: 'filefield',
 							name: 'filePath',
-							buttonText: i18n['Select file'] + '...',
+							buttonText: _('upload'),
 							emptyText: _('data_file'),
 							width: 350,
 							labelWidth: 50,
@@ -37468,6 +37308,7 @@ Ext.define('App.controller.Navigation', {
 				beforerender: me.onNavigationBeforeRender
 			},
 			'panel[action=mainNavPanel]':{
+				render: me.onNavRender,
 				beforecollapse: me.onNavCollapsed,
 				beforeexpand: me.onNavExpanded
 			}
@@ -37526,7 +37367,7 @@ Ext.define('App.controller.Navigation', {
 	 * this logic can be move to here eventually...
 	 */
 	afterNavigationLoad: function(){
-		app.fullMode ? app.navColumn.expand() : app.navColumn.collapse();
+		//app.fullMode ? app.navColumn.expand() : app.navColumn.collapse();
 		app.removeAppMask();
 		this.navigateToDefault();
 	},
@@ -37630,6 +37471,18 @@ Ext.define('App.controller.Navigation', {
 	 */
 	getClassByNavRef: function(ref) {
 		return ref.replace(/_/g, '.');
+	},
+
+	/**
+	 *
+	 * @param panel
+	 */
+	onNavRender: function(panel){
+		if(panel.collapsed){
+			this.onNavCollapsed();
+		}else{
+			this.onNavExpanded();
+		}
 	},
 
 	/**
@@ -39671,8 +39524,16 @@ Ext.define('App.controller.patient.FamilyHistory', {
 	],
 	refs: [
 		{
-			ref: 'FamilyHistoryPanel',
-			selector: 'familyhistorypanel'
+			ref: 'FamilyHistoryWindow',
+			selector: 'familyhistorywindow'
+		},
+		{
+			ref: 'FamilyHistoryGrid',
+			selector: 'patientfamilyhistorypanel'
+		},
+		{
+			ref: 'FamilyHistoryForm',
+			selector: '#FamilyHistoryForm'
 		},
 		{
 			ref: 'FamilyHistorySaveBtn',
@@ -39683,22 +39544,91 @@ Ext.define('App.controller.patient.FamilyHistory', {
 	init: function(){
 		var me = this;
 		me.control({
-			'#familyHistorySaveBtn': {
-				click: me.onFamilyHistoryPanelSaveBtnClick
+			'patientfamilyhistorypanel': {
+				activate: me.onFamilyHistoryGridActivate
+			},
+			'#FamilyHistoryGridAddBtn': {
+				click: me.onFamilyHistoryGridAddBtnClick
+			},
+			'#FamilyHistoryWindowSaveBtn': {
+				click: me.onFamilyHistoryWindowSaveBtnClick
+			},
+			'#FamilyHistoryWindowCancelBtn': {
+				click: me.onFamilyHistoryWindowCancelBtnClick
 			}
 		});
 	},
 
-	onFamilyHistoryPanelSaveBtnClick: function(btn){
-		var form = btn.up('form').getForm(),
+	onFamilyHistoryGridActivate: function(grid){
+		var store = grid.getStore();
+
+		store.clearFilter(true);
+		store.load({
+			filters: [
+				{
+					property: 'pid',
+					value: app.patient.pid
+				}
+			]
+		});
+	},
+
+	onFamilyHistoryGridAddBtnClick:function(){
+		this.showFamilyHistoryWindow();
+		this.getFamilyHistoryForm().getForm().reset();
+	},
+
+	showFamilyHistoryWindow: function(){
+		if(!this.getFamilyHistoryWindow()){
+			Ext.create('App.view.patient.windows.FamilyHistory');
+		}
+		this.getFamilyHistoryWindow().show();
+	},
+
+	onFamilyHistoryWindowSaveBtnClick:function(){
+		var grid = this.getFamilyHistoryGrid(),
+			form = this.getFamilyHistoryForm().getForm(),
+			store = grid.getStore(),
 			values = form.getValues(),
-			record = form.getRecord();
+			histories = [];
 
-		values.update_uid = app.user.id;
-		values.update_date = new Date();
+		say('form.isValid()');
+		say(form.isValid());
 
-		record.set(values);
-		record.store.sync();
+
+		if(!form.isValid()) return;
+
+
+		Ext.Object.each(values, function(key, value){
+
+			if(value == '0~0') return;
+
+			var foo = value.split('~'),
+				condition = foo[0].split(':'),
+				relation = foo[1].split(':');
+
+			Ext.Array.push(histories, {
+				pid: app.patient.pid,
+				eid: app.patient.eid,
+				relation: relation[2],
+				relation_code: relation[1],
+				relation_code_type: relation[0],
+				condition: condition[2],
+				condition_code: condition[1],
+				condition_code_type: condition[0],
+				create_uid: app.user.id,
+				create_date: new Date()
+			});
+		});
+
+		store.add(histories);
+		store.sync();
+		this.getFamilyHistoryWindow().close();
+
+	},
+
+	onFamilyHistoryWindowCancelBtnClick:function(){
+		this.getFamilyHistoryWindow().close();
 	}
 
 });
@@ -42318,6 +42248,9 @@ Ext.define('App.controller.patient.Summary', {
 			'#PatientSummaryEncountersPanel': {
 				itemdblclick: me.onPatientSummaryEncounterDblClick
 			},
+            '#PatientSummaryContactsPanel': {
+                activate: me.reloadGrid
+            },
 			'#PatientSummaryDisclosuresPanel': {
 				activate: me.reloadGrid
 			},
@@ -43392,7 +43325,7 @@ Ext.define('App.view.patient.Immunizations', {
 											{
                                                 xtype: 'gaiaehr.combo',
 												fieldLabel: _('administration_site'),
-												width: 320,
+												width: 295,
 												labelWidth: 110,
 												list: 119,
 												queryMode: 'local',
@@ -43491,7 +43424,14 @@ Ext.define('App.view.patient.Immunizations', {
 										margin: '0 0 0 5',
 										fieldLabel: _('education'),
 										name: 'education_date'
-									}
+									},
+                                    {
+                                        xtype: 'datefield',
+                                        width: 250,
+                                        margin: '0 0 0 5',
+                                        fieldLabel: _('doc_published'),
+                                        name: 'education_doc_published'
+                                    }
 								]
 							},
 							{
@@ -44702,11 +44642,11 @@ Ext.define('App.view.patient.Documents', {
 				layout: 'fit',
 				frame: true,
 				itemId: 'patientDocumentViewerPanel',
-				style: 'background-color:white',
+				style: 'background-color:#e7e7e7',
 				items: [
 					{
 						xtype: 'miframe',
-						style: 'background-color:white',
+						style: 'background-color:#e7e7e7',
 						autoMask: false,
 						itemId: 'patientDocumentViewerFrame'
 					}
@@ -49614,7 +49554,6 @@ Ext.define('App.view.patient.Summary', {
 		}
 
 		if(a('access_patient_medications')){
-
 			me.stores.push(me.patientMedicationsStore = Ext.create('App.store.patient.Medications', {
 				autoLoad: false
 			}));
@@ -49814,12 +49753,211 @@ Ext.define('App.view.patient.Summary', {
 		}
 
 		if(a('access_demographics')){
+
+            // Dynamically Generated by Form Builder Engine
 			me.demographics = me.tabPanel.add({
 				xtype: 'patientdeomgraphics',
 				newPatient: false,
 				autoScroll: true,
 				title: _('demographics')
 			});
+
+            // Patient Contacts
+            me.tabPanel.add({
+                xtype: 'grid',
+                title: _('patient_contacts'),
+                itemId: 'PatientSummaryContactsPanel',
+                bodyPadding: 0,
+                store: Ext.create('App.store.patient.PatientContacts', {
+                    autoSync: false,
+                    autoLoad: false
+                }),
+                columns: [
+                    {
+                        text: _('name'),
+                        dataIndex: 'fullname',
+                        flex: 1
+                    },
+                    {
+                        header: _('relationship'),
+                        dataIndex: 'relationship_name'
+                    },
+                    {
+                        text: _('address'),
+                        dataIndex: 'street_mailing_address'
+                    },
+                    {
+                        text: _('city'),
+                        dataIndex: 'city'
+                    },
+                    {
+                        text: _('state'),
+                        dataIndex: 'state'
+                    },
+                    {
+                        text: _('zip'),
+                        dataIndex: 'zip'
+                    },
+                    {
+                        text: _('country'),
+                        dataIndex: 'country'
+                    },
+                    {
+                        text: _('phone'),
+                        dataIndex: 'phone_compiled'
+                    },
+                    {
+                        text: _('date_created'),
+                        dataIndex: 'created_date'
+                    }
+                ],
+                plugins: Ext.create('App.ux.grid.RowFormEditing', {
+                autoCancel: false,
+                errorSummary: false,
+                clicksToEdit: 2,
+                items: [
+                    {
+                        xtype: 'container',
+                        layout: 'vbox',
+                        defaults: {
+                            layout: '100%',
+                            margin: '5 10 0 0'
+                        },
+                        items: [
+                            {
+                                xtype: 'fieldcontainer',
+                                layout: 'hbox',
+                                fieldLabel: _('name'),
+                                defaults: {
+                                    layout: '100%',
+                                    xtype: 'textfield'
+                                },
+                                items: [
+                                    {
+                                        name: 'first_name',
+                                        emptyText: _('first_name'),
+                                        width: 150,
+                                        maxLength: 100,
+                                        allowBlank: false
+                                    },
+                                    {
+                                        name: 'middle_name',
+                                        emptyText: _('middle_name'),
+                                        width: 120,
+                                        maxLength: 100
+                                    },
+                                    {
+                                        name: 'last_name',
+                                        emptyText: _('last_name'),
+                                        width: 150,
+                                        maxLength: 100
+                                    }
+                                ]
+                            },
+                            {
+                                xtype: 'gaiaehr.listcombo',
+                                fieldLabel: _('relationship'),
+                                name: 'relationship',
+                                displayField: 'option_name',
+                                valueField: 'option_value',
+                                width: 350,
+                                loadStore: true,
+                                queryMode: 'local',
+                                list: 134
+                            },
+                            {
+                                xtype: 'fieldcontainer',
+                                layout: 'hbox',
+                                fieldLabel: _('phone'),
+                                defaults: {
+                                    xtype: 'textfield',
+                                    vtype: 'numeric'
+                                },
+                                items: [
+                                    {
+                                        name: 'phone_use_code',
+                                        emptyText: _('code'),
+                                        width: 50,
+                                        maxLength: 4
+                                    },
+                                    {
+                                        name: 'phone_area_code',
+                                        emptyText: _('area_code'),
+                                        width: 50,
+                                        maxLength: 4
+                                    },
+                                    {
+                                        name: 'phone_local_number',
+                                        emptyText: _('local_number'),
+                                        width: 120,
+                                        maxLength: 7
+                                    }
+                                ]
+                            },
+                            {
+                                fieldLabel: _('address'),
+                                xtype: 'textfield',
+                                name: 'street_mailing_address',
+                                emptyText: _('street'),
+                                width: 610,
+                                maxLength: 200
+                            },
+                            {
+                                xtype: 'fieldcontainer',
+                                layout: 'hbox',
+                                fieldLabel: _('address_cont'),
+                                defaults: {
+                                    xtype: 'textfield'
+                                },
+                                items: [
+                                    {
+                                        name: 'city',
+                                        emptyText: _('city'),
+                                        width: 125,
+                                        maxLength: 70
+                                    },
+                                    {
+                                        xtype: 'gaiaehr.listcombo',
+                                        name: 'state',
+                                        emptyText: _('state'),
+                                        displayField: 'option_name',
+                                        valueField: 'option_value',
+                                        width: 125,
+                                        loadStore: true,
+                                        queryMode: 'local',
+                                        list: 20
+                                    },
+                                    {
+                                        xtype: 'gaiaehr.listcombo',
+                                        name: 'country',
+                                        emptyText: _('country'),
+                                        displayField: 'option_name',
+                                        valueField: 'option_value',
+                                        width: 125,
+                                        loadStore: true,
+                                        queryMode: 'local',
+                                        list: 3
+                                    },
+                                    {
+                                        emptyText: _('zip'),
+                                        name: 'zip',
+                                        width: 125,
+                                        maxLength: 20
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]}),
+                tbar: [
+                    {
+                        text: _('add_contact'),
+                        iconCls: 'icoAdd',
+                        action: 'patientContact',
+                        handler: me.onAddNew
+                    }
+                ]
+            });
 		}
 
 		if(a('access_patient_disclosures')){
@@ -50082,7 +50220,13 @@ Ext.define('App.view.patient.Summary', {
 				uid: app.user.id,
 				eid: app.patient.eid
 			};
-		}
+		}else if(btn.action == 'patientContact'){
+            record = {
+                created_date: new Date(),
+                pid: app.patient.pid,
+                uid: app.user.id
+            };
+        }
 
 		grid.plugins[0].cancelEdit();
 		store.insert(0, record);
@@ -54628,7 +54772,8 @@ Ext.define('App.view.patient.windows.Medical', {
 		'App.view.patient.LabOrders',
 		'App.view.patient.RadOrders',
 		'App.view.patient.RxOrders',
-		'App.view.patient.DoctorsNotes'
+		'App.view.patient.DoctorsNotes',
+		'App.view.patient.FamilyHistory'
 	],
 
 	initComponent: function(){
@@ -54655,6 +54800,10 @@ Ext.define('App.view.patient.windows.Medical', {
 					{
 						xtype: 'patientactiveproblemspanel',
 						itemId: 'activeproblems'
+					},
+					{
+						xtype: 'patientfamilyhistorypanel',
+						itemId: 'familyhistory'
 					},
 					{
 						xtype: 'patientadvancedirectivepanel',
@@ -54789,14 +54938,18 @@ Ext.define('App.ux.form.fields.CheckBoxWithFamilyRelation', {
 			txtValue;
 
 		if(ckValue != '0'){
+
+			ckValue += ':' + this.chekboxField.boxLabel;
+
 			var store = this.textField.getStore(),
 				rec = store.getById(this.textField.getSubmitValue());
-			txtValue = rec ? rec.data.code_type + ':' + rec.data.code : '0';
+			txtValue = rec ? rec.get('code_type') + ':' + rec.get('code') + ':' + rec.get('option_name') : '0';
 		}else{
 			txtValue = '0';
 		}
 
 		if(ckValue)    value = ckValue + '~' + txtValue;
+
 		return value;
 	},
 
@@ -54819,40 +54972,6 @@ Ext.define('App.ux.form.fields.CheckBoxWithFamilyRelation', {
 		this.textField.setValue('');
 	}
 });
-Ext.define('App.view.patient.encounter.FamilyHistory', {
-	extend: 'Ext.form.Panel',
-	xtype: 'familyhistorypanel',
-	requires: [
-		'App.ux.form.fields.CheckBoxWithFamilyRelation'
-	],
-	itemId: 'familyHistoryPanel',
-	title: _('family_history'),
-	autoScroll: true,
-	frame: true,
-	bodyPadding: 10,
-	bodyStyle: 'background-color:white',
-
-	plugins: {
-		ptype: 'advanceform',
-		autoSync: g('autosave'),
-		syncAcl: a('edit_family_history')
-	},
-
-	buttons: [
-		{
-			text: _('save'),
-			iconCls: 'save',
-			action: 'encounterRecordAdd',
-			itemId: 'familyHistorySaveBtn'
-		}
-	],
-
-	initComponent: function(){
-		var me = this;
-		me.callParent();
-		me.getFormItems(me, 12);
-	}
-});
 Ext.define('App.view.patient.Encounter', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: _('encounter'),
@@ -54865,7 +54984,6 @@ Ext.define('App.view.patient.Encounter', {
 		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
-		'App.view.patient.encounter.FamilyHistory',
 		'App.view.patient.encounter.ProgressNotesHistory',
 		'App.view.patient.ProgressNote',
 		'App.view.patient.DecisionSupportWarningPanel',
@@ -55040,11 +55158,11 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableFamilyHistory && a('access_family_history')){
-			me.familyHistoryPanel = me.encounterTabPanel.add(
-				Ext.create('App.view.patient.encounter.FamilyHistory')
-			);
-		}
+		//if(me.enableFamilyHistory && a('access_family_history')){
+		//	me.familyHistoryPanel = me.encounterTabPanel.add(
+		//		Ext.create('App.view.patient.encounter.FamilyHistory')
+		//	);
+		//}
 
 		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
@@ -55182,7 +55300,7 @@ Ext.define('App.view.patient.Encounter', {
 							}
 						}
 					]
-				}),
+				})
 			]
 
 		});
@@ -55209,6 +55327,11 @@ Ext.define('App.view.patient.Encounter', {
 				{
 					text: _('active_problems') + ' ',
 					action: 'activeproblems'
+				},
+				'-',
+				{
+					text: _('family_history') + ' ',
+					action: 'familyhistory'
 				},
 				'-',
 				{
@@ -55488,19 +55611,19 @@ Ext.define('App.view.patient.Encounter', {
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
 
-				if(me.familyHistoryPanel){
-					store = me.encounter.familyhistory();
-					store.on('write', me.getProgressNote, me);
-					if(!store.last()){
-						store.add({
-							pid: data.pid,
-							eid: data.eid,
-							create_uid: app.user.id,
-							create_date: new Date()
-						});
-					}
-					me.familyHistoryPanel.getForm().loadRecord(store.last());
-				}
+				//if(me.familyHistoryPanel){
+				//	store = me.encounter.familyhistory();
+				//	store.on('write', me.getProgressNote, me);
+				//	if(!store.last()){
+				//		store.add({
+				//			pid: data.pid,
+				//			eid: data.eid,
+				//			create_uid: app.user.id,
+				//			create_date: new Date()
+				//		});
+				//	}
+				//	me.familyHistoryPanel.getForm().loadRecord(store.last());
+				//}
 
 				if(me.reviewSysCkPanel){
 					store = me.encounter.reviewofsystemschecks();
@@ -55886,7 +56009,11 @@ Ext.define('App.view.Viewport', {
 
 	// end app settings
     initComponent: function(){
-        Ext.tip.QuickTipManager.init();
+
+	    Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
+
+
+	    Ext.tip.QuickTipManager.init();
         var me = this;
 
 	    me.user.getFullName = function(){
@@ -56108,7 +56235,7 @@ Ext.define('App.view.Viewport', {
 				    {
 					    xtype: 'patienlivetsearch',
 					    emptyText: _('patient_live_search') + '...',
-					    width: (me.fullMode ? 300 : 300),
+					    width: 300,
 					    listeners: {
 						    scope: me,
 						    select: me.liveSearchSelect,
@@ -56254,6 +56381,8 @@ Ext.define('App.view.Viewport', {
             split: true,
             collapsible: true,
             collapsed: false,
+	        stateId: 'mainNavPanel',
+	        stateful: true,
             items: [
                 {
                     xtype: 'treepanel',
@@ -56369,7 +56498,7 @@ Ext.define('App.view.Viewport', {
          * Footer Panel
          */
         me.Footer = Ext.create('Ext.container.Container', {
-            height: me.fullMode ? 30 : 60,
+            height: 30,
             split: false,
             padding: '3 0',
             region: 'south',
@@ -56468,24 +56597,22 @@ Ext.define('App.view.Viewport', {
             type: 'border',
             padding: 3
         };
+
         me.defaults = {
             split: true
         };
-        me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
-        me.listeners = {
+
+	    me.items = [me.Header, me.navColumn, me.MainPanel, me.Footer];
+
+	    me.listeners = {
 	        scope: me,
             render: me.appRender,
             beforerender: me.beforeAppRender
         };
         me.callParent(arguments);
-        me.signature = Ext.create('App.view.signature.SignatureWindow');
 
+	    me.signature = Ext.create('App.view.signature.SignatureWindow');
 
-	    //CCDDocumentParse.getTestCCD('CCDA Example_b2 AMB.xml', function(response){
-	    //
-		 //   App.app.getController('patient.CCDImport').CcdImport(response.ccd);
-	    //
-	    //});
 
     },
 

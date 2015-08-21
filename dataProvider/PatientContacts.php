@@ -22,26 +22,28 @@ class PatientContacts {
     /**
      * @var MatchaCUP
      */
-    private $c;
+    private $C;
 
     function __construct(){
-        if(!$this->c) $this->c = MatchaModel::setSenchaModel('App.model.patient.Contacts');
+        if(!$this->C) $this->C = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
     }
 
     public function getContacts($params){
-        return $this->c->load($params)->all();
+        return $this->C->load($params)->leftJoin([
+            'option_name' => 'relationship_name'
+        ], 'combo_lists_options', 'relationship', 'option_value')->all();
     }
 
     public function getContact($params){
-        return $this->c->load($params)->one();
+        return $this->C->load($params)->one();
     }
 
     public function addContact($params){
-        return $this->c->save($params);
+        return $this->C->save($params);
     }
 
     public function updateContact($params){
-        return $this->c->save($params);
+        return $this->C->save($params);
     }
 
     public function destroyContact($params){

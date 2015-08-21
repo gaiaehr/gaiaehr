@@ -274,7 +274,6 @@ Ext.define('App.view.patient.Patient', {
 
 	},
 
-
 	insurancePanelAdd: function(tapPanel, panel){
 		var me = this,
 			record = panel.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
@@ -413,7 +412,6 @@ Ext.define('App.view.patient.Patient', {
 					app.fireEvent('afterdemographicssave', record, me);
 
 					me.msg('Sweet!', _('record_saved'));
-					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});

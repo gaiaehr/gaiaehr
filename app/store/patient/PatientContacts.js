@@ -16,8 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.Contacts', {
+Ext.define('App.store.patient.PatientContacts', {
 	extend: 'Ext.data.Store',
-	model: 'App.model.patient.Contacts',
+	model: 'App.model.patient.PatientContacts',
 	remoteSort: true
 });

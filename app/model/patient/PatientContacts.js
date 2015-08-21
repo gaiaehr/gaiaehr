@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.patient.Contacts', {
+Ext.define('App.model.patient.PatientContacts', {
 	extend: 'Ext.data.Model',
 	table: {
 		name: 'patient_contacts',
@@ -64,6 +64,12 @@ Ext.define('App.model.patient.Contacts', {
 			type: 'string',
             len: 20
 		},
+        {
+            name: 'relationship_name',
+            type: 'string',
+            len: 20,
+            store: false
+        },
 		{
 			name: 'street_mailing_address',
 			type: 'string',

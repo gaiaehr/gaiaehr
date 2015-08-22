@@ -18,7 +18,6 @@ Ext.define('App.controller.KeyCommands', {
 
 	onKeyUp: function(e, t, eOpts){
 
-		say('onKeyUp');
 
 		if(e.getKey() == e.ALT || e.getKey() == e.CTRL || e.getKey() == e.SHIFT){
 			return;

@@ -4102,7 +4102,7 @@ Ext.define('App.ux.form.fields.Percent',{
 		/*
 		 * @cfg {String} src (optional) Uri to load into the frame
 		 */
-		src: null,
+		src: 'about:blank',
 
 		/*
 		 * @cfg {Boolean} autoMask True to display a loadMask during page content changes
@@ -37069,7 +37069,6 @@ Ext.define('App.controller.KeyCommands', {
 
 	onKeyUp: function(e, t, eOpts){
 
-		say('onKeyUp');
 
 		if(e.getKey() == e.ALT || e.getKey() == e.CTRL || e.getKey() == e.SHIFT){
 			return;

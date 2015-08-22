@@ -89,7 +89,7 @@ Ext.define('App.ux.RenderPanel', {
 						scope: me,
 						click: function(field, val){
 							Patient.setPatientRating({pid: app.patient.pid, rating: val}, function(){
-								app.msg('Sweet!', _('record_saved'))
+								app.msg(_('sweet'), _('record_saved'))
 							});
 						}
 					}

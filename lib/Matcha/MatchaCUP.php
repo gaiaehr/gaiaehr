@@ -601,7 +601,6 @@ class MatchaCUP {
 	 * @return mixed
 	 */
 	public function one($where = null) {
-		//		return $this->sql;
 		try {
 			$where = isset($where) ? $where : $this->where;
 			$sth = Matcha::$__conn->prepare($this->sql);

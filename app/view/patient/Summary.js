@@ -569,13 +569,6 @@ Ext.define('App.view.patient.Summary', {
 				eid: app.patient.eid
 			};
 		}
-        //else if(btn.action == 'patientContact'){
-        //    record = {
-        //        created_date: new Date(),
-        //        pid: app.patient.pid,
-        //        uid: app.user.id
-        //    };
-        //}
 
 		grid.plugins[0].cancelEdit();
 		store.insert(0, record);

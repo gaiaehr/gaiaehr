@@ -410,7 +410,7 @@ Ext.define('App.view.patient.Patient', {
                                 text: _('add_contact'),
                                 iconCls: 'icoAdd',
                                 action: 'patientContact',
-                                handler: me.onAddNew
+                                handler: me.onAddNewContact
                             }
                         ]
                     })
@@ -418,6 +418,22 @@ Ext.define('App.view.patient.Patient', {
 			}
 		});
 	},
+
+    onAddNewContact: function(btn){
+        var grid = btn.up('grid'),
+            store = grid.store,
+            record;
+
+        record = {
+            created_date: new Date(),
+            pid: app.patient.pid,
+            uid: app.user.id
+        };
+
+        grid.plugins[0].cancelEdit();
+        store.insert(0, record);
+        grid.plugins[0].startEdit(0, 0);
+    },
 
 	insurancePanelAdd: function(tapPanel, panel){
 		var me = this,

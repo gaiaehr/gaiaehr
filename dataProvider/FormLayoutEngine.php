@@ -96,11 +96,13 @@ class FormLayoutEngine {
 		 * define $items as an array to push all the $item into.
 		 */
 		$items = [];
+
+        $formName = null;
 		/**
 		 * get the form parent fields
 		 */
 
-		$records = $this->ff->sql("SELECT ff.*
+		$records = $this->ff->sql("SELECT ff.*, fl.name as LayoutName
                          FROM `forms_fields` AS ff
                     LEFT JOIN `forms_layout` AS fl
                            ON ff.`form_id` = fl.`id`
@@ -112,6 +114,7 @@ class FormLayoutEngine {
 		 * for each parent item lets get all the options and children items
 		 */
 		foreach($records as $item){
+            $formName = $item['LayoutName'];
 			/**
 			 * get parent field options using the parent item "id" as parameter and
 			 * store the return array in $opts.
@@ -222,7 +225,7 @@ class FormLayoutEngine {
 		$rawStr = json_encode($items);
 
 		if(Globals::getGlobal('compact_demographics') && $params->formToRender == 1){
-			$rawStr = "Ext.widget('tabpanel',{border:false,height:300,defaults:{autoScroll:true},items:$rawStr})";
+			$rawStr = "Ext.create('Ext.tab.Panel', {itemId:'$formName',border:false,height:300,defaults:{autoScroll:true},items:$rawStr})";
 		}
 
 		$regex = '("\w*?":|"Ext\.create|\)"\})';
@@ -233,7 +236,6 @@ class FormLayoutEngine {
 		}
 		$itemsJsArray = str_replace('"', '\'', str_replace($rawItems[0], $cleanItems, $rawStr));
 		return preg_replace("/(\w)(')(\w)/i", "$1\'$3", $itemsJsArray);
-		//return $items;
 	}
 
 	/**

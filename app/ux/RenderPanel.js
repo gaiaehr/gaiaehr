@@ -36,6 +36,7 @@ Ext.define('App.ux.RenderPanel', {
 
 	initComponent: function(){
 		var me = this;
+
 		Ext.apply(me, {
 			items: [
 				me.mainHeader = Ext.widget('container', {

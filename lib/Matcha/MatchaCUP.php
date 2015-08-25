@@ -437,22 +437,9 @@ class MatchaCUP {
 	}
 
 	private function joinTableHandler($columns, $join) {
-		$this->nolimitsql = str_replace('FROM', ', ' . $columns . ' FROM', $this->nolimitsql);
-		$this->sql = str_replace('FROM', ', ' . $columns . ' FROM', $this->sql);
-		if(preg_match('/WHERE/', $this->sql)){
-			$this->sql = str_replace('WHERE', $join . ' WHERE', $this->sql);
-		} elseif(preg_match('/LIMIT/', $this->sql)) {
-			$this->sql = str_replace('LIMIT', $join . ' LIMIT', $this->sql);
-		} else {
-			$this->sql = $this->sql . $join;
-		}
-		if(preg_match('/WHERE/', $this->nolimitsql)){
-			$this->nolimitsql = str_replace('WHERE', $join . ' WHERE', $this->nolimitsql);
-		} elseif(preg_match('/LIMIT/', $this->nolimitsql)) {
-			$this->nolimitsql = str_replace('LIMIT', $join . ' LIMIT', $this->nolimitsql);
-		} else {
-			$this->nolimitsql = $this->nolimitsql . $join;
-		}
+
+		$this->nolimitsql = preg_replace('/(FROM\s*`.*?`)/', (', ' . $columns .' $1 ' . $join), $this->nolimitsql);
+		$this->sql = preg_replace('/(FROM\s*`.*?`)/',  (', ' . $columns . ' $1 ' . $join), $this->sql);
 	}
 
 	private function joinColumnHandler($columns) {
@@ -601,7 +588,6 @@ class MatchaCUP {
 	 * @return mixed
 	 */
 	public function one($where = null) {
-		//		return $this->sql;
 		try {
 			$where = isset($where) ? $where : $this->where;
 			$sth = Matcha::$__conn->prepare($this->sql);

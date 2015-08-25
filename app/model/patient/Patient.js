@@ -129,74 +129,10 @@ Ext.define('App.model.patient.Patient',{
             len: 80
         },
         {
-            name: 'city',
-            type: 'string',
-            comment: 'city',
-            len: 40
-        },
-        {
-            name: 'state',
-            type: 'string',
-            comment: 'state',
-            len: 40
-        },
-        {
-            name: 'country',
-            type: 'string',
-            comment: 'country',
-            len: 40
-        },
-        {
-            name: 'zipcode',
-            type: 'string',
-            comment: 'postal code',
-            len: 10
-        },
-        {
             name: 'fulladdress',
             type: 'string',
             persist: false,
             convert: false
-        },
-        {
-            name: 'home_phone',
-            type: 'string',
-            index: true,
-            comment: 'home phone #',
-            len: 15
-        },
-        {
-            name: 'mobile_phone',
-            type: 'string',
-            index: true,
-            comment: 'mobile phone #',
-            len: 15
-        },
-        {
-            name: 'work_phone',
-            type: 'string',
-            index: true,
-            comment: 'work phone #',
-            len: 15
-        },
-        {
-            name: 'phones',
-            type: 'string',
-            persist: false,
-            convert: false
-        },
-        {
-            name: 'email',
-            type: 'string',
-            index: true,
-            comment: 'email',
-            len: 80
-        },
-        {
-            name: 'emer_contact',
-            type: 'string',
-            comment: 'emergency contact',
-            len: 40
         },
         {
             name: 'provider',

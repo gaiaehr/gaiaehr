@@ -62,14 +62,13 @@
 //print_r($output);
 //exit;
 
-if(!isset($_SESSION)){
-    session_cache_limiter('private');
-    session_cache_expire(1);
-    session_regenerate_id(false);
-    session_name('GaiaEHR');
-    session_start();
-    setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
-}
+session_cache_limiter('private');
+session_cache_expire(1);
+session_regenerate_id(false);
+session_name('GaiaEHR');
+session_start();
+setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
+
 define('_GaiaEXEC', 1);
 
 if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['install'] != true)){

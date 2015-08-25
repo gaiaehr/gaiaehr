@@ -1612,5 +1612,6 @@ $LANG = array(
     'submit_hl7_vxu'                        => 'Submit HL7 VXU',
     'patient_contacts'                      => 'Patient Contacts',
     'area_code'                             => 'Area Code',
-    'local_number'                          => 'Local Number'
+    'local_number'                          => 'Local Number',
+    'field_updated'                         => 'Field Updated'
 );

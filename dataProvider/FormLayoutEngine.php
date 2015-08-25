@@ -100,7 +100,7 @@ class FormLayoutEngine {
 		 * get the form parent fields
 		 */
 
-		$records = $this->ff->sql("Select ff.*
+		$records = $this->ff->sql("SELECT ff.*
                          FROM `forms_fields` AS ff
                     LEFT JOIN `forms_layout` AS fl
                            ON ff.`form_id` = fl.`id`
@@ -139,7 +139,11 @@ class FormLayoutEngine {
 			 */
 			$item['items'] = $this->getChildItems($item['id']);
 			if($item['xtype'] == 'fieldset' && $item['title'] == 'Assessment'){
-				$item['items'][] = ['xtype' => 'icdsfieldset', 'emptyText' => 'Search For Diagnosis Codes', 'name' => 'dxCodes'];
+				$item['items'][] = [
+                    'xtype' => 'icdsfieldset',
+                    'emptyText' => 'Search For Diagnosis Codes',
+                    'name' => 'dxCodes'
+                ];
 			}
 			/**
 			 * lets check if this item has a child items. If not, the unset the $item['Items']
@@ -243,9 +247,10 @@ class FormLayoutEngine {
 	function getChildItems($parentId){
 		$this->setModels();
 		$items = [];
-
-
-		$records = $this->ff->sql("Select * FROM `forms_fields` WHERE `parentId` = '$parentId' ORDER BY `x_index` ASC, `id` ASC")->all();
+		$records = $this->ff->sql("SELECT *
+		    FROM `forms_fields`
+		    WHERE `parentId` = '$parentId'
+		    ORDER BY `x_index` ASC, `id` ASC")->all();
 
 		foreach($records as $item){
 			$opts = $this->getItemsOptions($item['id']);
@@ -290,7 +295,16 @@ class FormLayoutEngine {
 		foreach($options as $option => $value){
 			$foo[$option] = $value;
 
-			if($value == 'temp_f' || $value == 'temp_c' || $value == 'weight_lbs' || $value == 'weight_kg' || $value == 'height_cm' || $value == 'height_in' || $value == 'head_circumference_cm' || $value == 'head_circumference_in' || $value == 'waist_circumference_cm' || $value == 'waist_circumference_in'
+			if($value == 'temp_f' ||
+                $value == 'temp_c' ||
+                $value == 'weight_lbs' ||
+                $value == 'weight_kg' ||
+                $value == 'height_cm' ||
+                $value == 'height_in' ||
+                $value == 'head_circumference_cm' ||
+                $value == 'head_circumference_in' ||
+                $value == 'waist_circumference_cm' ||
+                $value == 'waist_circumference_in'
 			){
 				$foo['enableKeyEvents'] = true;
 			}

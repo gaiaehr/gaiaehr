@@ -629,12 +629,12 @@ Ext.define('App.view.administration.Layout', {
                    me.previewFormRender();
                    me.loadCurrFormParentField();
 
-	               say(batch);
-	               say(options);
+	               //say(batch);
+	               //say(options);
 
                    // this is the quick way to apply the return changes to the model
 	               if(record.data.id == ''){
-		               say(batch.proxy.reader.rawData.id);
+		               //say(batch.proxy.reader.rawData.id);
 		               record.set({ id: batch.proxy.reader.rawData.id });
 		               record.commit();
 	               }
@@ -660,7 +660,7 @@ Ext.define('App.view.administration.Layout', {
 	deleteField:function(record){
 		var me = this;
 
-		say(record.childNodes);
+		//say(record.childNodes);
 
 		if(record.childNodes.length > 0){
 			me.msg(_('oops'), _('children_fields_must_be_remove_first'), true);
@@ -728,10 +728,10 @@ Ext.define('App.view.administration.Layout', {
         me.fieldsGridStore.sync({
             success:function(){
                 me.previewFormRender();
-                me.msg('Sweet!', 'Field Updated');
+                me.msg(_('sweet'), _('field_updated'));
             },
             failure:function(batch){
-                Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                Ext.Msg.alert(_('oops'), batch.proxy.reader.rawData.error);
                 me.loadFieldsGrid();
             }
         });
@@ -752,7 +752,6 @@ Ext.define('App.view.administration.Layout', {
 	        });
 
 	    selection.deselectAll();
-
         form.reset();
         form.loadRecord(record);
     },
@@ -922,29 +921,177 @@ Ext.define('App.view.administration.Layout', {
 
         var items;
         if(value == 'fieldset'){
-            items = ['itemId', 'action', 'title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
+            items = [
+                'itemId',
+                'action',
+                'title',
+                'collapsible',
+                'collapsed',
+                'checkboxToggle',
+                'margin',
+                'columnWidth',
+                'layout'
+            ];
         }else if(value == 'fieldcontainer'){
-            items = ['itemId', 'action', 'fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
+            items = [
+                'itemId',
+                'action',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'width',
+                'layout',
+                'margin',
+                'columnWidth'
+            ];
         }else if(value == 'combobox'){
-            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'emptyText',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'margin',
+                'allowBlank',
+                'list_id'
+            ];
         }else if(value == 'checkbox'){
-            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'boxLabel',
+                'inputValue',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'margin'
+            ];
         }else if(value == 'textfield'){
-            items = ['itemId', 'action', 'name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'anchor',
+                'emptyText',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'allowBlank',
+                'margin',
+                'minLength',
+                'maxLength'
+            ];
         }else if(value == 'textareafield'){
-            items = ['itemId', 'action', 'name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'anchor',
+                'height',
+                'emptyText',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'allowBlank',
+                'grow',
+                'growMin',
+                'growMax',
+                'margin',
+                'minLength',
+                'maxLength'
+            ];
         }else if(value == 'numberfield'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'value',
+                'emptyText',
+                'maxValue',
+                'minValue',
+                'increment',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin'
+            ];
         }else if(value == 'timefield'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'value',
+                'emptyText',
+                'timeMaxValue',
+                'timeMinValue',
+                'increment',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin'
+            ];
         }else if(value == 'radiofield'){
-            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'boxLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin',
+                'inputValue'
+            ];
         }else if(value == 'datefield' || value == 'mitos.datetime'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'value',
+                'layout',
+                'emptyText',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'allowBlank',
+                'margin'
+            ];
         }else if(value == 'checkboxwithfamilyhistory'){
-	        items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
+	        items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'boxLabel',
+                'inputValue',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'margin',
+                'code'
+            ];
         }else{
-            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'emptyText',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin'
+            ];
         }
         enableItems(items);
     },

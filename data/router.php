@@ -17,14 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if(!isset($_SESSION)){
-    session_cache_limiter('private');
-    session_cache_expire(1);
-    session_regenerate_id(false);
-    session_name('GaiaEHR');
-    session_start();
-    setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
-}
+
+session_cache_limiter('private');
+session_cache_expire(1);
+session_regenerate_id(false);
+session_name('GaiaEHR');
+session_start();
+setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
 
 define('_GaiaEXEC', 1);
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';

@@ -30,9 +30,14 @@ class PatientContacts {
     }
 
     public function getContacts($params){
-        return $this->Contacts->load($params)->leftJoin([
-            'option_name' => 'relationship_name'
-        ], 'combo_lists_options', 'relationship', 'option_value')->all();
+        // TODO: This has to be corrected, it does not take Sencha params correctly.
+        return $this->Contacts->sql("SELECT *,
+            combo_lists_options.option_name as relationship_name
+            FROM patient_contacts
+            LEFT JOIN combo_lists_options
+            ON relationship = option_value
+            WHERE combo_lists_options.list_id=134
+            AND patient_contacts.pid = ".$params->filter[0]->value)->all();
     }
 
     public function getContact($params){

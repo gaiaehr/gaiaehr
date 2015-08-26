@@ -43,6 +43,12 @@ class HL7Messages {
 	 * @var MatchaCUP HL7Client
 	 */
 	private $c;
+
+    /**
+     * @var bool|MatchaCUP Patient Contacts
+     */
+    private $PatientContacts;
+
 	/**
 	 * @var MatchaCUP PatientImmunization
 	 */
@@ -92,6 +98,7 @@ class HL7Messages {
 		$this->hl7 = new HL7();
 		$this->conn = Matcha::getConn();
 		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+        $this->PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
 		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
 		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 		$this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
@@ -313,13 +320,21 @@ class HL7Messages {
             $ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 
             // PD1 - 3.4.10 PD1 - Patient Additional Demographic Segment
-            // If the Publicity is set, on the patient compile this HL7 Message line
-            if($this->patient->publicity) {
+            // If the Publicity is set, on the patient contacts compile this HL7 Message line
+            $filters = new stdClass();
+            $filters->filter[0] = new stdClass();
+            $filters->filter[1] = new stdClass();
+            $filters->filter[0]->property = 'pid';
+            $filters->filter[0]->value = $this->patient->pid;
+            $filters->filter[1]->property = 'relationship';
+            $filters->filter[1]->value = 'SEL';
+            $ContactRecord = $this->PatientContacts->load($filters)->one();
+            if($this->notEmpty($ContactRecord)) {
                 $PD1 = $this->hl7->addSegment('PD1');
                 $filters->filter[0]->property = 'list_id';
                 $filters->filter[0]->value = 132;
                 $filters->filter[1]->property = 'code';
-                $filters->filter[1]->value = $this->patient->publicity;
+                $filters->filter[1]->value = $ContactRecord->publicity;
                 $Record = $ListOptions->load($filters)->one();
                 $PD1->setValue('11.1', $Record['option_value']);
                 $PD1->setValue('11.2', $Record['option_name']);
@@ -330,11 +345,10 @@ class HL7Messages {
             }
 
             // NK1 - 3.4.5 NK1 - Next of Kin / Associated Parties Segment
-            $PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
             $filters->filter[0]->property = 'pid';
             $filters->filter[0]->value = $params->pid;
             $filters->filter[1] = new stdClass();
-            $Records = $PatientContacts->load($filters)->all();
+            $Records = $this->PatientContacts->load($filters)->all();
             $transactionID = 0;
             foreach($Records as $Record)
             {
@@ -582,7 +596,6 @@ class HL7Messages {
 		}
 
         // This has to be taken on Patient Contacts
-        $PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
         $filters = new stdClass();
         $filters->filter[0] = new stdClass();
         $filters->filter[1] = new stdClass();
@@ -590,7 +603,7 @@ class HL7Messages {
         $filters->filter[0]->value = $this->patient->pid;
         $filters->filter[1]->property = 'relationship';
         $filters->filter[1]->value = 'MTH';
-        $Record = $PatientContacts->load($filters)->one();
+        $Record = $this->PatientContacts->load($filters)->one();
 		if($this->notEmpty($Record)){
             $pid->setValue('6.1', $Record['first_name'].' '.$Record['middle_name'].' '.$Record['last_name']);
 			$pid->setValue('6.2', $Record['first_name'].' '.$Record['middle_name'].' '.$Record['last_name']);

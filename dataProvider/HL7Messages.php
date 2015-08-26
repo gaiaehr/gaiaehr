@@ -603,10 +603,20 @@ class HL7Messages {
         $filters->filter[0]->value = $this->patient->pid;
         $filters->filter[1]->property = 'relationship';
         $filters->filter[1]->value = 'MTH';
-        $Record = $this->PatientContacts->load($filters)->one();
-		if($this->notEmpty($Record)){
-            $pid->setValue('6.1', $Record['first_name'].' '.$Record['middle_name'].' '.$Record['last_name']);
-			$pid->setValue('6.2', $Record['first_name'].' '.$Record['middle_name'].' '.$Record['last_name']);
+        $ContactRecord = $this->PatientContacts->load($filters)->one();
+		if($this->notEmpty($ContactRecord)){
+            $pid->setValue(
+                '6.1',
+                $ContactRecord['first_name'].' '.
+                $ContactRecord['middle_name'].' '.
+                $ContactRecord['last_name']
+            );
+			$pid->setValue(
+                '6.2',
+                $ContactRecord['first_name'].' '.
+                $ContactRecord['middle_name'].' '.
+                $ContactRecord['last_name']
+            );
 		}
 
 		if($this->notEmpty($this->patient->DOB)){
@@ -623,33 +633,50 @@ class HL7Messages {
 			$pid->setValue('10.2', $this->hl7->race($this->patient->race)); //Race Text
 			$pid->setValue('10.3', 'CDCREC'); // Race Name of Coding System
 		}
-		if($this->notEmpty($this->patient->address))
-			$pid->setValue('11.1.1', $this->patient->address);
 
-		if($this->notEmpty($this->patient->city))
-			$pid->setValue('11.3', $this->patient->city);
+        // Patient Address taken Patient Contact (SELF)
+        $filters = new stdClass();
+        $filters->filter[0] = new stdClass();
+        $filters->filter[1] = new stdClass();
+        $filters->filter[0]->property = 'pid';
+        $filters->filter[0]->value = $this->patient->pid;
+        $filters->filter[1]->property = 'relationship';
+        $filters->filter[1]->value = 'SEL';
+        $ContactRecord = $this->PatientContacts->load($filters)->one();
+        if($this->notEmpty($ContactRecord['street_mailing_address'])) {
+            if ($this->notEmpty($ContactRecord['street_mailing_address']))
+                $pid->setValue('11.1.1', $ContactRecord['street_mailing_address']);
 
-		if($this->notEmpty($this->patient->state)){
-			$pid->setValue('11.4', $this->patient->state);
-		}
-		if($this->notEmpty($this->patient->zipcode)){
-			$pid->setValue('11.5', $this->patient->zipcode);
-		}
-		if($this->notEmpty($this->patient->country)){
-			$pid->setValue('11.6', $this->patient->country);
-		}
-		if($this->notEmpty($this->patient->address)){
-			$pid->setValue('11.7', 'L'); // Address Type L = Legal Address
-		}
+            if ($this->notEmpty($ContactRecord['city']))
+                $pid->setValue('11.3', $ContactRecord['city']);
 
-		$pid->setValue('11.9', '25025');
+            if ($this->notEmpty($ContactRecord['state'])) {
+                $pid->setValue('11.4', $ContactRecord['state']);
+            }
+            if ($this->notEmpty($ContactRecord['zip'])) {
+                $pid->setValue('11.5', $ContactRecord['zip']);
+            }
+            if ($this->notEmpty($ContactRecord['country'])) {
+                $pid->setValue('11.6', $ContactRecord['country']);
+            }
+            if ($this->notEmpty($ContactRecord['street_mailing_address'])) {
+                $pid->setValue('11.7', 'L'); // Address Type L = Legal Address
+            }
+            $pid->setValue('11.9', '25025');
+        }
+        // Patient Phone Number taken from Patient Contact (SELF)
+		if($this->notEmpty($ContactRecord['phone_use_code']) &&
+            $this->notEmpty($ContactRecord['phone_area_code']) &&
+            $this->notEmpty($ContactRecord['phone_local_number'])){
 
-		if($this->notEmpty($this->patient->home_phone)){
-			$phone = $this->phone($this->patient->home_phone);
+			$phone = $this->phone(
+                $ContactRecord['phone_use_code'].
+                $ContactRecord['phone_area_code'].
+                $ContactRecord['phone_local_number']);
 
 			$pid->setValue('13.2', 'PRN'); // PhoneNumber‐Home
-			$pid->setValue('13.6', $phone['zip']); // Area/City Code
-			$pid->setValue('13.7',  $phone['number']); // LocalNumber
+			$pid->setValue('13.6', $ContactRecord['zip']); // Area/City Code
+			$pid->setValue('13.7', $phone); // LocalNumber
 		}
 //		if($this->notEmpty($this->patient->work_phone)){
 //		    $phone = $this->phone($this->patient->work_phone);

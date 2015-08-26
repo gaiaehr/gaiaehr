@@ -1613,5 +1613,6 @@ $LANG = array(
     'contacts'                              => 'Contacts',
     'area_code'                             => 'Area Code',
     'local_number'                          => 'Local Number',
-    'field_updated'                         => 'Field Updated'
+    'field_updated'                         => 'Field Updated',
+    'publicity'                             => 'Publicity'
 );

@@ -265,6 +265,11 @@ Ext.define('App.view.patient.Patient', {
                             {
                                 header: _('relationship'),
                                 dataIndex: 'relationship_name'
+                            },
+                            {
+                                header: _('active'),
+                                dataIndex: 'active',
+                                renderer: me.boolRenderer
                             }
                         ],
                         plugins: Ext.create('App.ux.grid.RowFormEditing', {
@@ -274,131 +279,167 @@ Ext.define('App.view.patient.Patient', {
                             items: [
                                 {
                                     xtype: 'container',
-                                    layout: 'vbox',
+                                    layout: 'hbox',
                                     defaults: {
-                                        layout: '100%',
                                         margin: '5 10 0 0'
                                     },
-                                    items: [
+                                    items:[
                                         {
-                                            xtype: 'fieldcontainer',
-                                            layout: 'hbox',
-                                            fieldLabel: _('name'),
+                                            xtype: 'container',
+                                            layout: 'vbox',
                                             defaults: {
-                                                layout: '100%',
-                                                xtype: 'textfield'
+                                                layout: '50%',
+                                                margin: '5 10 0 0'
                                             },
                                             items: [
                                                 {
-                                                    name: 'first_name',
-                                                    emptyText: _('first_name'),
-                                                    width: 150,
-                                                    maxLength: 100,
-                                                    allowBlank: false
+                                                    xtype: 'fieldcontainer',
+                                                    layout: 'hbox',
+                                                    fieldLabel: _('name'),
+                                                    defaults: {
+                                                        layout: '100%',
+                                                        xtype: 'textfield'
+                                                    },
+                                                    items: [
+                                                        {
+                                                            name: 'first_name',
+                                                            emptyText: _('first_name'),
+                                                            width: 150,
+                                                            maxLength: 100,
+                                                            allowBlank: false
+                                                        },
+                                                        {
+                                                            name: 'middle_name',
+                                                            emptyText: _('middle_name'),
+                                                            width: 120,
+                                                            maxLength: 100
+                                                        },
+                                                        {
+                                                            name: 'last_name',
+                                                            emptyText: _('last_name'),
+                                                            width: 150,
+                                                            maxLength: 100
+                                                        }
+                                                    ]
                                                 },
                                                 {
-                                                    name: 'middle_name',
-                                                    emptyText: _('middle_name'),
-                                                    width: 120,
-                                                    maxLength: 100
+                                                    xtype: 'gaiaehr.listcombo',
+                                                    fieldLabel: _('relationship'),
+                                                    name: 'relationship',
+                                                    displayField: 'option_name',
+                                                    valueField: 'option_value',
+                                                    width: 350,
+                                                    loadStore: true,
+                                                    queryMode: 'local',
+                                                    list: 134
                                                 },
                                                 {
-                                                    name: 'last_name',
-                                                    emptyText: _('last_name'),
-                                                    width: 150,
-                                                    maxLength: 100
+                                                    xtype: 'fieldcontainer',
+                                                    layout: 'hbox',
+                                                    fieldLabel: _('phone'),
+                                                    defaults: {
+                                                        xtype: 'textfield',
+                                                        vtype: 'numeric'
+                                                    },
+                                                    items: [
+                                                        {
+                                                            name: 'phone_use_code',
+                                                            emptyText: _('code'),
+                                                            width: 50,
+                                                            maxLength: 4
+                                                        },
+                                                        {
+                                                            name: 'phone_area_code',
+                                                            emptyText: _('area_code'),
+                                                            width: 50,
+                                                            maxLength: 4
+                                                        },
+                                                        {
+                                                            name: 'phone_local_number',
+                                                            emptyText: _('local_number'),
+                                                            width: 120,
+                                                            maxLength: 7
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    fieldLabel: _('address'),
+                                                    xtype: 'textfield',
+                                                    name: 'street_mailing_address',
+                                                    emptyText: _('street'),
+                                                    width: 610,
+                                                    maxLength: 200
+                                                },
+                                                {
+                                                    xtype: 'fieldcontainer',
+                                                    layout: 'hbox',
+                                                    fieldLabel: _('address_cont'),
+                                                    defaults: {
+                                                        xtype: 'textfield'
+                                                    },
+                                                    items: [
+                                                        {
+                                                            name: 'city',
+                                                            emptyText: _('city'),
+                                                            width: 125,
+                                                            maxLength: 70
+                                                        },
+                                                        {
+                                                            xtype: 'gaiaehr.listcombo',
+                                                            name: 'state',
+                                                            emptyText: _('state'),
+                                                            displayField: 'option_name',
+                                                            valueField: 'option_value',
+                                                            width: 125,
+                                                            loadStore: true,
+                                                            queryMode: 'local',
+                                                            list: 20
+                                                        },
+                                                        {
+                                                            xtype: 'gaiaehr.listcombo',
+                                                            name: 'country',
+                                                            emptyText: _('country'),
+                                                            displayField: 'option_name',
+                                                            valueField: 'option_value',
+                                                            width: 125,
+                                                            loadStore: true,
+                                                            queryMode: 'local',
+                                                            list: 3
+                                                        },
+                                                        {
+                                                            emptyText: _('zip'),
+                                                            name: 'zip',
+                                                            width: 125,
+                                                            maxLength: 20
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         },
                                         {
-                                            xtype: 'gaiaehr.listcombo',
-                                            fieldLabel: _('relationship'),
-                                            name: 'relationship',
-                                            displayField: 'option_name',
-                                            valueField: 'option_value',
-                                            width: 350,
-                                            loadStore: true,
-                                            queryMode: 'local',
-                                            list: 134
-                                        },
-                                        {
                                             xtype: 'fieldcontainer',
-                                            layout: 'hbox',
-                                            fieldLabel: _('phone'),
+                                            layout: 'vbox',
                                             defaults: {
-                                                xtype: 'textfield',
-                                                vtype: 'numeric'
+                                                layout: '50%',
+                                                margin: '5 10 0 0'
                                             },
                                             items: [
                                                 {
-                                                    name: 'phone_use_code',
-                                                    emptyText: _('code'),
-                                                    width: 50,
-                                                    maxLength: 4
-                                                },
-                                                {
-                                                    name: 'phone_area_code',
-                                                    emptyText: _('area_code'),
-                                                    width: 50,
-                                                    maxLength: 4
-                                                },
-                                                {
-                                                    name: 'phone_local_number',
-                                                    emptyText: _('local_number'),
-                                                    width: 120,
-                                                    maxLength: 7
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            fieldLabel: _('address'),
-                                            xtype: 'textfield',
-                                            name: 'street_mailing_address',
-                                            emptyText: _('street'),
-                                            width: 610,
-                                            maxLength: 200
-                                        },
-                                        {
-                                            xtype: 'fieldcontainer',
-                                            layout: 'hbox',
-                                            fieldLabel: _('address_cont'),
-                                            defaults: {
-                                                xtype: 'textfield'
-                                            },
-                                            items: [
-                                                {
-                                                    name: 'city',
-                                                    emptyText: _('city'),
-                                                    width: 125,
-                                                    maxLength: 70
-                                                },
-                                                {
                                                     xtype: 'gaiaehr.listcombo',
-                                                    name: 'state',
-                                                    emptyText: _('state'),
+                                                    name: 'publicity',
+                                                    fieldLabel: _('publicity'),
+                                                    emptyText: _('select'),
                                                     displayField: 'option_name',
                                                     valueField: 'option_value',
-                                                    width: 125,
+                                                    width: 400,
                                                     loadStore: true,
                                                     queryMode: 'local',
-                                                    list: 20
+                                                    list: 132
                                                 },
                                                 {
-                                                    xtype: 'gaiaehr.listcombo',
-                                                    name: 'country',
-                                                    emptyText: _('country'),
-                                                    displayField: 'option_name',
-                                                    valueField: 'option_value',
-                                                    width: 125,
-                                                    loadStore: true,
-                                                    queryMode: 'local',
-                                                    list: 3
-                                                },
-                                                {
-                                                    emptyText: _('zip'),
-                                                    name: 'zip',
-                                                    width: 125,
-                                                    maxLength: 20
+                                                    xtype: 'checkboxfield',
+                                                    name: 'active',
+                                                    fieldLabel: _('active')
                                                 }
                                             ]
                                         }

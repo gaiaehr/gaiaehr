@@ -34,20 +34,20 @@ Ext.define('App.controller.patient.Patient', {
 
 	init: function(){
 		var me = this;
-		//me.control({
-		//	'#PossiblePatientDuplicatesWindow': {
-		//		close: me.onPossiblePatientDuplicatesWindowCLose
-		//	},
-		//	'#PossiblePatientDuplicatesWindow > grid': {
-		//		itemdblclick: me.onPossiblePatientDuplicatesGridItemDblClick
-		//	},
-		//	'#PatientPossibleDuplicatesBtn': {
-		//		click: me.onPatientPossibleDuplicatesBtnClick
-		//	},
-		//	'#PossiblePatientDuplicatesContinueBtn': {
-		//		click: me.onPossiblePatientDuplicatesContinueBtnClick
-		//	}
-		//});
+		me.control({
+			'#PossiblePatientDuplicatesWindow': {
+				close: me.onPossiblePatientDuplicatesWindowCLose
+			},
+			'#PossiblePatientDuplicatesWindow > grid': {
+				itemdblclick: me.onPossiblePatientDuplicatesGridItemDblClick
+			},
+			'#PatientPossibleDuplicatesBtn': {
+				click: me.onPatientPossibleDuplicatesBtnClick
+			},
+			'#PossiblePatientDuplicatesContinueBtn': {
+				click: me.onPossiblePatientDuplicatesContinueBtnClick
+			}
+		});
 	},
 
 	doCapitalizeEachLetterOnKeyUp: function(){

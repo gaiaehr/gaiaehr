@@ -203,10 +203,12 @@ Ext.define('App.controller.patient.Documents', {
 		var grid = btn.up('grid');
 
 		if(pressed){
-			grid.view.features[0].enable();
 			grid.getStore().group(btn.action);
+			grid.query('#' + btn.action)[0].hide();
+			btn.disable();
 		}else{
-			grid.view.features[0].disable();
+			grid.query('#' + btn.action)[0].show();
+			btn.enable();
 		}
 	},
 
@@ -240,7 +242,7 @@ Ext.define('App.controller.patient.Documents', {
 			message;
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
-			message = _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
+			message = '<b>' + _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '</b><br>' + Ext.String.htmlDecode(response.result.msg);
 
 			if(window.dual){
 				dual.msg(_(success ? 'sweet' : 'oops'), message, !success)
@@ -332,7 +334,6 @@ Ext.define('App.controller.patient.Documents', {
 				}else{
 					app.msg(_('oops'), _('document_error'), true);
 				}
-
 			}
 		})
 	},

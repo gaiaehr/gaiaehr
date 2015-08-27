@@ -65,11 +65,12 @@ class Medical {
 	function __construct(){
 		$this->db = new MatchaHelper();
 
-		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
-		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
-		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
-//		$this->ap = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
-//		$this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
+        if(!isset($this->p))
+            $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+        if(!isset($this->a))
+            $this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+        if(!isset($this->i))
+            $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
 
 		$this->laboratories = new Laboratories();
 		$this->rxnorm = new Rxnorm();

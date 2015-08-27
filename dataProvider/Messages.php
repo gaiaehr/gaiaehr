@@ -35,11 +35,11 @@ class Messages extends MatchaHelper {
 		$messages = array();
 		$Where = new stdClass();
 
-		if($this->Patient == null)
+        if(!isset($this->Patient))
 			$this->Patient = MatchaModel::setSenchaModel('App.model.patient.Patient');
-		if($this->User == null)
+        if(!isset($this->User))
 			$this->User = MatchaModel::setSenchaModel('App.model.administration.User');
-		if($this->Messages == null)
+        if(!isset($this->Messages))
 			$this->Messages = MatchaModel::setSenchaModel('App.model.messages.Messages');
 
 		$uid = $_SESSION['user']['id'];

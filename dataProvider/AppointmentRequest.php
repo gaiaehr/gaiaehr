@@ -22,7 +22,8 @@ class AppointmentRequest {
 	private $a;
 
 	public function __construct() {
-		$this->a = MatchaModel::setSenchaModel('App.model.patient.AppointmentRequest');
+        if($this->a == NULL)
+            $this->a = MatchaModel::setSenchaModel('App.model.patient.AppointmentRequest');
 	}
 
 	public function getAppointmentRequests($params) {

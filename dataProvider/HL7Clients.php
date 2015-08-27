@@ -25,7 +25,8 @@ class HL7Clients {
 	protected $c;
 
 	function __construct() {
-		$this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
+        if(!isset($this->c))
+            $this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
 	}
 
 	public function getClients($params) {

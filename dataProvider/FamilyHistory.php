@@ -25,7 +25,8 @@ class FamilyHistory {
 	private $fh;
 
 	function __construct(){
-		$this->fh = MatchaModel::setSenchaModel('App.model.patient.FamilyHistory');
+        if(!isset($this->fh))
+            $this->fh = MatchaModel::setSenchaModel('App.model.patient.FamilyHistory');
 	}
 
     //------------------------------------------------------------------------------------------------------------------

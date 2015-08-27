@@ -23,7 +23,8 @@ class Specialties {
 	private $s;
 
 	function __construct(){
-		$this->s = MatchaModel::setSenchaModel('App.model.administration.Specialty');
+        if(!isset($this->s))
+            $this->s = MatchaModel::setSenchaModel('App.model.administration.Specialty');
 	}
 
 	public function getSpecialties($params){

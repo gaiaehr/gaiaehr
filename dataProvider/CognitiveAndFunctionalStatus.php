@@ -23,7 +23,8 @@ class CognitiveAndFunctionalStatus {
 	private $c;
 
 	function __construct(){
-		$this->c = MatchaModel::setSenchaModel('App.model.patient.CognitiveAndFunctionalStatus');
+        if($this->c == NULL)
+            $this->c = MatchaModel::setSenchaModel('App.model.patient.CognitiveAndFunctionalStatus');
 	}
 
 	public function getPatientCognitiveAndFunctionalStatuses($params){

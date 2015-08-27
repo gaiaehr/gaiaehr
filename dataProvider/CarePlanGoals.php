@@ -23,7 +23,8 @@ class CarePlanGoals {
 	private $c;
 
 	function __construct(){
-		$this->c = MatchaModel::setSenchaModel('App.model.patient.CarePlanGoal');
+        if($this->c == NULL)
+            $this->c = MatchaModel::setSenchaModel('App.model.patient.CarePlanGoal');
 	}
 
 	public function getPatientCarePlanGoals($params){

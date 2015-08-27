@@ -28,8 +28,8 @@ class Snippets {
 	// Main Sencha Model Getter and Setters
 	//------------------------------------------------------------------------------------------------------------------
 	private function setSnippetModel(){
-		if($this->Snippet == null)
-			$this->Snippet = MatchaModel::setSenchaModel('App.model.patient.encounter.snippetTree');
+        if(!isset($this->Snippet))
+            $this->Snippet = MatchaModel::setSenchaModel('App.model.patient.encounter.snippetTree');
 	}
 
 	public function getSoapSnippets($params){

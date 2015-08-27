@@ -22,7 +22,8 @@ class Referrals {
 	private $r;
 
 	function __construct(){
-		$this->r = MatchaModel::setSenchaModel('App.model.patient.Referral');
+        if(!isset($this->p))
+            $this->r = MatchaModel::setSenchaModel('App.model.patient.Referral');
 	}
 
 	public function getPatientReferrals($params){

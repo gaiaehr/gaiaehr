@@ -22,7 +22,8 @@ class Applications {
 	private $a;
 
 	public function __construct() {
-		$this->a = MatchaModel::setSenchaModel('App.model.administration.Applications');
+        if($this->a == NULL)
+            $this->a = MatchaModel::setSenchaModel('App.model.administration.Applications');
 	}
 
 	public function getApplications($params) {

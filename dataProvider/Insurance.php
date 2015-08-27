@@ -25,9 +25,12 @@ class Insurance {
 	private $pi;
 
 	function __construct(){
-		$this->ic = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
-		$this->in = MatchaModel::setSenchaModel('App.model.administration.InsuranceNumber');
-		$this->pi = MatchaModel::setSenchaModel('App.model.patient.Insurance');
+        if(!isset($this->ic))
+            $this->ic = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
+        if(!isset($this->in))
+            $this->in = MatchaModel::setSenchaModel('App.model.administration.InsuranceNumber');
+        if(!isset($this->pi))
+            $this->pi = MatchaModel::setSenchaModel('App.model.patient.Insurance');
 	}
 
 	/** Companies */

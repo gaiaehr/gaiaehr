@@ -33,7 +33,8 @@ class Immunizations {
 
 	function __construct() {
 		$this->conn = Matcha::getConn();
-		$this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
+        if(!isset($this->i))
+            $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
 		return;
 	}
 

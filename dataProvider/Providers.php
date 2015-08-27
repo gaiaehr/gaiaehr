@@ -23,9 +23,8 @@ class Providers {
 	private $pc;
 
 	function getProviderCredentializationModel(){
-		if(!isset($this->pc)){
-			$this->pc = MatchaModel::setSenchaModel('App.model.administration.ProviderCredentialization');
-		}
+        if(!isset($this->pc))
+            $this->pc = MatchaModel::setSenchaModel('App.model.administration.ProviderCredentialization');
 		return $this->pc;
 	}
 

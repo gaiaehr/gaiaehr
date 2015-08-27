@@ -25,7 +25,8 @@ class Amendments {
 	private $a;
 
 	function __construct() {
-		$this->a = MatchaModel::setSenchaModel('App.model.miscellaneous.Amendment');
+        if($this->a == NULL)
+            $this->a = MatchaModel::setSenchaModel('App.model.miscellaneous.Amendment');
 		$this->a->setOrFilterProperties(['assigned_to_uid']);
 	}
 

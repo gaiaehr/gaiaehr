@@ -25,8 +25,8 @@ class AuditLog {
 	private $t;
 
 	function __construct() {
-		//		$this->l = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
-		$this->t = MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
+        if ($this->t == NULL)
+            $this->t = MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
 	}
 
 	public function getLogs($params) {

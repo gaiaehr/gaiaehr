@@ -30,7 +30,8 @@ class Vitals {
 	private $User;
 
 	function __construct() {
-		$this->v = MatchaModel::setSenchaModel('App.model.patient.Vitals');
+        if(!isset($this->v))
+            $this->v = MatchaModel::setSenchaModel('App.model.patient.Vitals');
 		$this->User = new User();
 	}
 

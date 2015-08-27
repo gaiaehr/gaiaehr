@@ -27,8 +27,10 @@ class ReferringProviders {
 	private $f;
 
 	function __construct(){
-		$this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
-		$this->f = MatchaModel::setSenchaModel('App.model.administration.ReferringProviderFacility');
+        if(!isset($this->r))
+            $this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
+        if(!isset($this->f))
+            $this->f = MatchaModel::setSenchaModel('App.model.administration.ReferringProviderFacility');
 	}
 
 	public function getReferringProviders($params){

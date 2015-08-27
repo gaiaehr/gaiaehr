@@ -106,17 +106,24 @@ class HL7Server {
 		new MatchaHelper();
 
 		/** HL7 Models */
-		$this->s = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
-		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
-		$this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
+        if(!isset($this->s))
+            $this->s = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
+        if(!isset($this->m))
+            $this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
+        if(!isset($this->r))
+            $this->r = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
 
 		/** Patient Model */
-		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+        if(!isset($this->p))
+            $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 
 		/** Order Models */
-		$this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
-		$this->pResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
-		$this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
+        if(!isset($this->pOrder))
+            $this->pOrder = MatchaModel::setSenchaModel('App.model.patient.PatientsOrders');
+        if(!isset($this->pResult))
+            $this->pResult = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderResult');
+        if(!isset($this->pObservation))
+            $this->pObservation = MatchaModel::setSenchaModel('App.model.patient.PatientsOrderObservation');
 		$this->server = $this->getServerByPort($port);
 	}
 

@@ -91,12 +91,12 @@ class Encounter {
 		$this->diagnosis = new DiagnosisCodes();
 		$this->FamilyHistory = new FamilyHistory();
 
-		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
-		$this->ros = MatchaModel::setSenchaModel('App.model.patient.ReviewOfSystems');
-		$this->soap = MatchaModel::setSenchaModel('App.model.patient.SOAP');
-		$this->d = MatchaModel::setSenchaModel('App.model.patient.Dictation');
-		$this->hcfa = MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
-		$this->edx = MatchaModel::setSenchaModel('App.model.patient.EncounterDx');
+        if(!isset($this->e)) $this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
+        if(!isset($this->ros)) $this->ros = MatchaModel::setSenchaModel('App.model.patient.ReviewOfSystems');
+        if(!isset($this->soap)) $this->soap = MatchaModel::setSenchaModel('App.model.patient.SOAP');
+        if(!isset($this->d)) $this->d = MatchaModel::setSenchaModel('App.model.patient.Dictation');
+        if(!isset($this->hcfa)) $this->hcfa = MatchaModel::setSenchaModel('App.model.patient.HCFAOptions');
+        if(!isset($this->edx)) $this->edx = MatchaModel::setSenchaModel('App.model.patient.EncounterDx');
 	}
 
 	private function setEid($eid) {

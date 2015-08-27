@@ -41,7 +41,8 @@ class File {
 	private $fileSystemStore = false;
 
 	function __construct(){
-		$this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
+        if(!isset($this->d))
+            $this->d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 		$this->encrypt = isset($_SESSION['globals']['enable_document_encryption']) && $_SESSION['globals']['enable_document_encryption'];
 	}
 

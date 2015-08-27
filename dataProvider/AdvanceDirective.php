@@ -27,7 +27,8 @@ class AdvanceDirective {
 
 
 	function __construct() {
-		$this->a = MatchaModel::setSenchaModel('App.model.patient.AdvanceDirective');
+        if($this->a == NULL)
+            $this->a = MatchaModel::setSenchaModel('App.model.patient.AdvanceDirective');
 	}
 
 	public function getPatientAdvanceDirectives($params){

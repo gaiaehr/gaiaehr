@@ -32,7 +32,8 @@ class Services {
 
 	function __construct() {
 		$this->conn = Matcha::getConn();
-		$this->s = MatchaModel::setSenchaModel('App.model.patient.EncounterService');
+        if(!isset($this->s))
+            $this->s = MatchaModel::setSenchaModel('App.model.patient.EncounterService');
 	}
 
 	public function getEncounterServices($params){

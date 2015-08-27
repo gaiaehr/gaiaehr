@@ -33,9 +33,12 @@ class Roles
 	private $arp;
 
 	function __construct(){
-		$this->ar = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
-		$this->ap = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
-		$this->arp = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
+        if(!isset($this->ar))
+            $this->ar = MatchaModel::setSenchaModel('App.model.administration.AclRoles');
+        if(!isset($this->ap))
+            $this->ap = MatchaModel::setSenchaModel('App.model.administration.AclPermissions');
+        if(!isset($this->arp))
+            $this->arp = MatchaModel::setSenchaModel('App.model.administration.AclRolePermissions');
 	}
 
 	/**

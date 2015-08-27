@@ -25,7 +25,7 @@ class PatientContacts {
     private $Contacts;
 
     function __construct(){
-        if(!$this->Contacts)
+        if(!isset($this->Contacts))
             $this->Contacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
     }
 

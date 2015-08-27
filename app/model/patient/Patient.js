@@ -358,10 +358,6 @@ Ext.define('App.model.patient.Patient',{
         {
             name: 'portal_username',
             type: 'string'
-        },
-        {
-            name: 'publicity',
-            type: 'string'
         }
     ],
     idProperty: 'pid',

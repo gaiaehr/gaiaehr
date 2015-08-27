@@ -128,6 +128,12 @@ Ext.define('App.model.patient.PatientContacts', {
             len: 17
         },
         {
+            name: 'publicity',
+            type: 'string',
+            len: 3
+
+        },
+        {
             name: 'active',
             type: 'bool'
         },

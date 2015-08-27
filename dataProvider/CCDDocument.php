@@ -17,13 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//print 'hello';
-//exit;
-
 if(!isset($_SESSION)){
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
+    session_cache_limiter('private');
+    session_cache_expire(1);
+    session_regenerate_id(false);
+    session_name('GaiaEHR');
+    session_start();
+    setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
 }
 if(!defined('_GaiaEXEC')){
 	define('_GaiaEXEC', 1);
@@ -34,6 +34,7 @@ include_once(ROOT . '/classes/UUID.php');
 include_once(ROOT . '/classes/Array2XML.php');
 
 include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 include_once(ROOT . '/dataProvider/Insurance.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Rxnorm.php');
@@ -90,6 +91,10 @@ class CCDDocument {
 	 * @var Patient
 	 */
 	private $Patient;
+    /**
+     * @var
+     */
+    private $PatientContacts;
 	/**
 	 * @var User
 	 */
@@ -221,6 +226,7 @@ class CCDDocument {
 		$this->CombosData = new CombosData();
 		$this->User = new User();
 		$this->Patient = new Patient();
+        $this->PatientContacts = new PatientContacts();
 		$this->facility = $this->Facilities->getCurrentFacility(true);
 	}
 
@@ -407,7 +413,11 @@ class CCDDocument {
 	}
 
 	private function getFileName(){
-	    return strtolower(str_replace(' ', '', $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname']));
+	    return strtolower(str_replace(
+            ' ',
+            '',
+            $this->pid . "-" . $this->patientData['fname'] . $this->patientData['lname']
+        ));
 	}
 
 	/**
@@ -566,6 +576,7 @@ class CCDDocument {
 		$patientData = $this->patientData;
 		$Insurance = new Insurance();
 		$insuranceData = $Insurance->getPatientPrimaryInsuranceByPid($this->pid);
+        $PatientContactRecord = $this->PatientContacts->getSelfContact($this->pid);
 
 		$recordTarget['patientRole']['id'] = [
 			'@attributes' => [
@@ -574,9 +585,32 @@ class CCDDocument {
 			]
 		];
 
-		$recordTarget['patientRole']['addr'] = $this->addressBuilder('HP', $patientData['address'], $patientData['city'], $patientData['state'], $patientData['zipcode'], $patientData['country'], date('Ymd'));
+        // If the Self Contact information address is set, include it in the CCD
+        if(isset($PatientContactRecord['street_mailing_address'])) {
+            $recordTarget['patientRole']['addr'] = $this->addressBuilder(
+                'HP',
+                $PatientContactRecord['street_mailing_address'],
+                $PatientContactRecord['city'],
+                $PatientContactRecord['state'],
+                $PatientContactRecord['zip'],
+                $PatientContactRecord['country'],
+                date('Ymd')
+            );
+        }
 
-		$recordTarget['patientRole']['telecom'] = $this->telecomBuilder($patientData['home_phone'], 'H');
+        // If the Self Contact information phone is present, include it in the CCD
+        if(isset($PatientContactRecord['phone_use_code']) &&
+            isset($PatientContactRecord['phone_area_code']) &&
+            isset($PatientContactRecord['phone_local_number'])
+        ){
+            $recordTarget['patientRole']['telecom'] = $this->telecomBuilder(
+                $PatientContactRecord['phone_use_code'].
+                $PatientContactRecord['phone_area_code'].
+                $PatientContactRecord['phone_local_number'],
+                'H'
+            );
+        }
+
 
 		$recordTarget['patientRole']['patient']['name'] = [
 			'@attributes' => [
@@ -679,10 +713,22 @@ class CCDDocument {
 			];
 		}
 
-		$recordTarget['patientRole']['patient']['birthplace']['place']['addr'] = $this->addressBuilder(false, false, false, false, false, '');
+		$recordTarget['patientRole']['patient']['birthplace']['place']['addr'] = $this->addressBuilder(
+            false,
+            false,
+            false,
+            false,
+            false,
+            ''
+        );
 
 		if(isset($patientData['language']) && $patientData['language'] != ''){
-			$recordTarget['patientRole']['patient']['languageCommunication']['languageCode']['@attributes']['code'] = $patientData['language'];
+			$recordTarget['patientRole']
+            ['patient']
+            ['languageCommunication']
+            ['languageCode']
+            ['@attributes']
+            ['code'] = $patientData['language'];
 		} else {
 			$recordTarget['patientRole']['patient']['languageCommunication']['languageCode']['@attributes']['nullFlavor'] = 'NI';
 		}
@@ -695,7 +741,14 @@ class CCDDocument {
 		];
 		$org['name']['prefix'] = $this->facility['name'];
 		$org['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
-		$org['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$org['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
 		$recordTarget['patientRole']['providerOrganization'] = $org;
 
@@ -725,7 +778,14 @@ class CCDDocument {
 				]
 			]
 		];
-		$author['assignedAuthor']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$author['assignedAuthor']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
 		$author['assignedAuthor']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
 
@@ -753,7 +813,14 @@ class CCDDocument {
 
 		$author['assignedAuthor']['representedOrganization']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
 
-		$author['assignedAuthor']['representedOrganization']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$author['assignedAuthor']['representedOrganization']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
 		return $author;
 	}
@@ -778,9 +845,17 @@ class CCDDocument {
 			]
 		];
 
-		$custodian['assignedCustodian']['representedCustodianOrganization']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
+		$custodian['assignedCustodian']['representedCustodianOrganization']['telecom'] = $this->telecomBuilder(
+            $this->facility['phone'], 'WP'
+        );
 
-		$custodian['assignedCustodian']['representedCustodianOrganization']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$custodian['assignedCustodian']['representedCustodianOrganization']['addr'] = $this->addressBuilder(
+            'WP', $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
 		return $custodian;
 	}
@@ -836,7 +911,14 @@ class CCDDocument {
 			]
 		];
 
-		$authenticator['assignedEntity']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$authenticator['assignedEntity']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
 		$authenticator['assignedEntity']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
 		$authenticator['assignedEntity']['assignedPerson'] = [
@@ -913,9 +995,19 @@ class CCDDocument {
 			]
 		];
 
-		$documentationOf['serviceEvent']['performer']['assignedEntity']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$documentationOf['serviceEvent']['performer']['assignedEntity']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
-		$documentationOf['serviceEvent']['performer']['assignedEntity']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
+		$documentationOf['serviceEvent']['performer']['assignedEntity']['telecom'] = $this->telecomBuilder(
+            $this->facility['phone'],
+            'WP'
+        );
 
 		$documentationOf['serviceEvent']['performer']['assignedEntity']['assignedPerson'] = [
 			'name' => [
@@ -936,9 +1028,18 @@ class CCDDocument {
 			]
 		];
 
-		$documentationOf['serviceEvent']['performer']['assignedEntity']['representedOrganization']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
+		$documentationOf['serviceEvent']['performer']['assignedEntity']['representedOrganization']['telecom'] =
+            $this->telecomBuilder($this->facility['phone'], 'WP');
 
-		$documentationOf['serviceEvent']['performer']['assignedEntity']['representedOrganization']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$documentationOf['serviceEvent']['performer']['assignedEntity']['representedOrganization']['addr'] =
+            $this->addressBuilder(
+                'WP',
+                $this->facility['address'] . ' ' . $this->facility['address_cont'],
+                $this->facility['city'],
+                $this->facility['state'],
+                $this->facility['postal_code'],
+                $this->facility['country_code']
+            );
 
 		return $documentationOf;
 	}
@@ -1032,7 +1133,14 @@ class CCDDocument {
 					'name' => [
 						'prefix' => $this->encounterFacility['name']
 					],
-					'addr' => $this->addressBuilder('WP', $this->encounterFacility['address'] . ' ' . $this->encounterFacility['address_cont'], $this->encounterFacility['city'], $this->encounterFacility['state'], $this->encounterFacility['postal_code'], $this->encounterFacility['country_code']),
+					'addr' => $this->addressBuilder(
+                        'WP',
+                        $this->encounterFacility['address'] . ' ' . $this->encounterFacility['address_cont'],
+                        $this->encounterFacility['city'],
+                        $this->encounterFacility['state'],
+                        $this->encounterFacility['postal_code'],
+                        $this->encounterFacility['country_code']
+                    ),
 				]
 			]
 		];
@@ -1054,7 +1162,14 @@ class CCDDocument {
 			'root' => '2.16.840.1.113883.4.6'
 		];
 
-		$informant['assignedEntity']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$informant['assignedEntity']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 		$informant['assignedEntity']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
 
 		$informant['assignedEntity']['assignedPerson'] = [
@@ -1078,7 +1193,14 @@ class CCDDocument {
 			'extension' => $this->facility['id']
 		];
 
-		$dataEnterer['assignedEntity']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$dataEnterer['assignedEntity']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 		$dataEnterer['assignedEntity']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
 
 		$dataEnterer['assignedEntity']['assignedPerson'] = [
@@ -1169,7 +1291,15 @@ class CCDDocument {
 
 		$performer['assignedEntity']['representedOrganization']['name'] = $facility->name;
 		$performer['assignedEntity']['representedOrganization']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
-		$performer['assignedEntity']['representedOrganization']['addr'] = $this->addressBuilder('WP', $this->facility['address'] . ' ' . $this->facility['address_cont'], $this->facility['city'], $this->facility['state'], $this->facility['postal_code'], $this->facility['country_code']);
+		$performer['assignedEntity']['representedOrganization']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'].' '.$this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
+
 
 		return $performer;
 	}

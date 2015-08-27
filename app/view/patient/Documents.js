@@ -37,7 +37,7 @@ Ext.define('App.view.patient.Documents', {
 				remoteSort: false,
 				autoSync: false,
 				pageSize: 200,
-				groupField: 'groupDate'
+				groupField: 'docType'
 			}),
 			docCtrl = App.app.getController('patient.Documents');
 
@@ -52,8 +52,9 @@ Ext.define('App.view.patient.Documents', {
 				features: [
 					{
 						ftype: 'grouping',
+						hideGroupedHeader: true,
 						groupHeaderTpl: Ext.create('Ext.XTemplate',
-							'Group: {name:this.getGroupName}',
+							'{columnName}: {name:this.getGroupName}',
 							{
 								getGroupName: function(name){
 									return docCtrl.getGroupName(name);
@@ -77,31 +78,33 @@ Ext.define('App.view.patient.Documents', {
 							return 'x-grid-icon-padding';
 						}
 					},
+					//{
+					//	xtype: 'actioncolumn',
+					//	width: 23,
+					//	icon: 'resources/images/icons/delete.png',
+					//	tooltip: _('delete'),
+					//	hidden: !eval(a('delete_patient_documents')),
+					//	handler: function(grid, rowIndex, colIndex, item, e, recprd){
+					//
+					//
+					//		alert('hello');
+					//
+					//	},
+					//	getClass: function(){
+					//		return 'x-grid-icon-padding';
+					//	}
+					//},
 					{
-						xtype: 'actioncolumn',
-						width: 23,
-						icon: 'resources/images/icons/delete.png',
-						tooltip: _('delete'),
-						hidden: !eval(a('delete_patient_documents')),
-						handler: function(grid, rowIndex, colIndex, item, e, recprd){
-
-
-							alert('hello');
-
-						},
-						getClass: function(){
-							return 'x-grid-icon-padding';
-						}
-					},
-					{
-						header: _('type'),
-						dataIndex: 'docType'
+						header: _('category'),
+						dataIndex: 'docType',
+						itemId: 'docType'
 					},
 					{
 						xtype: 'datecolumn',
 						header: _('date'),
-						dataIndex: 'date',
-						format: 'Y-m-d'
+						dataIndex: 'groupDate',
+						format: 'Y-m-d',
+						itemId: 'groupDate'
 
 					},
 					{
@@ -132,17 +135,18 @@ Ext.define('App.view.patient.Documents', {
 					_('group_by') + ':',
 					{
 						xtype: 'button',
-						text: _('date'),
+						text: _('category'),
 						enableToggle: true,
-						action: 'groupDate',
+						action: 'docType',
 						pressed: true,
+						disabled: true,
 						toggleGroup: 'documentgridgroup'
 					},
 					{
 						xtype: 'button',
-						text: _('type'),
+						text: _('date'),
 						enableToggle: true,
-						action: 'docType',
+						action: 'groupDate',
 						toggleGroup: 'documentgridgroup'
 					},
 					'->',

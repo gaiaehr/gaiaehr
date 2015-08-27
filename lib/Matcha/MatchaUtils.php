@@ -33,6 +33,18 @@ class MatchaUtils extends Matcha
         return $tabs;
     }
 
+
+    /**
+     * function Carbon():
+     * Method to enable the use of Carbon class Plugin
+     * @return Carbon\Carbon
+     */
+    static public function Carbon()
+    {
+        require_once('plugins/Carbon/Carbon.php');
+        return new Carbon();
+    }
+
     /**
      * function __recursiveArraySearch($needle,$haystack):
      * An recursive array search method

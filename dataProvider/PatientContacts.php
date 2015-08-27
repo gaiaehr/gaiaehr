@@ -62,13 +62,14 @@ class PatientContacts {
      * @return mixed
      */
     public function getSelfContact($pid) {
-        return $this->Contacts->sql("SELECT *,
+        error_log(print_r($pid,true));
+        return $this->Contacts->sql('SELECT *,
             combo_lists_options.option_name as relationship_name
             FROM patient_contacts
             LEFT JOIN combo_lists_options
             ON relationship = option_value
             WHERE combo_lists_options.list_id=134
-            AND patient_contacts.relationship = 'SEL'
-            AND patient_contacts.pid = ".$pid)->all();
+            AND patient_contacts.relationship="SEL"
+            AND patient_contacts.pid = '.$pid)->all();
     }
 }

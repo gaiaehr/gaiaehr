@@ -576,7 +576,7 @@ class CCDDocument {
 		$patientData = $this->patientData;
 		$Insurance = new Insurance();
 		$insuranceData = $Insurance->getPatientPrimaryInsuranceByPid($this->pid);
-        $PatientContactRecord = $this->PatientContacts->getSelfContact((int)$this->pid);
+        $PatientContactRecord = $this->PatientContacts->getSelfContact($this->pid);
 
 		$recordTarget['patientRole']['id'] = [
 			'@attributes' => [
@@ -585,17 +585,32 @@ class CCDDocument {
 			]
 		];
 
-		$recordTarget['patientRole']['addr'] = $this->addressBuilder(
-            'HP',
-            $PatientContactRecord['address'],
-            $PatientContactRecord['city'],
-            $PatientContactRecord['state'],
-            $PatientContactRecord['zip'],
-            $PatientContactRecord['country'],
-            date('Ymd')
-        );
+        // If the Self Contact information address is set, include it in the CCD
+        if(isset($PatientContactRecord['street_mailing_address'])) {
+            $recordTarget['patientRole']['addr'] = $this->addressBuilder(
+                'HP',
+                $PatientContactRecord['street_mailing_address'],
+                $PatientContactRecord['city'],
+                $PatientContactRecord['state'],
+                $PatientContactRecord['zip'],
+                $PatientContactRecord['country'],
+                date('Ymd')
+            );
+        }
 
-		$recordTarget['patientRole']['telecom'] = $this->telecomBuilder($patientData['home_phone'], 'H');
+        // If the Self Contact information phone is present, include it in the CCD
+        if(isset($PatientContactRecord['phone_use_code']) &&
+            isset($PatientContactRecord['phone_area_code']) &&
+            isset($PatientContactRecord['phone_local_number'])
+        ){
+            $recordTarget['patientRole']['telecom'] = $this->telecomBuilder(
+                $PatientContactRecord['phone_use_code'].
+                $PatientContactRecord['phone_area_code'].
+                $PatientContactRecord['phone_local_number'],
+                'H'
+            );
+        }
+
 
 		$recordTarget['patientRole']['patient']['name'] = [
 			'@attributes' => [

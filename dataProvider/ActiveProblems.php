@@ -25,7 +25,8 @@ class ActiveProblems {
 	private $a;
 
 	function __construct() {
-		$this->a = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
+        if($this->a == null)
+            $this->a = MatchaModel::setSenchaModel('App.model.patient.PatientActiveProblem');
 	}
 
 	public function getPatientActiveProblems($params) {
@@ -33,9 +34,25 @@ class ActiveProblems {
 			$groups = new stdClass();
 			$groups->group[0] = new stdClass();
 			$groups->group[0]->property = 'code';
-			return $this->a->load($params)->group($groups)->all();
-		}
-		return $this->a->load($params)->all();
+			$records = $this->a->load($params)->group($groups)->all();
+            foreach($records as $i => $record){
+                if(strtotime($record['end_date']) &&
+                    strtotime($record['end_date']) <= strtotime(date('Y-m-d')) &&
+                    $record['end_date'] != '0000-00-00'){
+                    unset($records[$i]);
+                }
+            }
+		}else{
+            $records = $this->a->load($params)->all();
+            foreach($records as $i => $record) {
+                if (strtotime($record['end_date']) &&
+                    strtotime($record['end_date']) <= strtotime(date('Y-m-d')) &&
+                    $record['end_date'] != '0000-00-00') {
+                    unset($records[$i]);
+                }
+            }
+        }
+		return array_values($records);
 	}
 
 	public function getPatientActiveProblem($params) {
@@ -68,7 +85,7 @@ class ActiveProblems {
 				unset($records[$i]);
 			}
 		}
-		return $records;
+		return array_values($records);
 	}
 
     public function getPatientAllProblemsByPid($pid){
@@ -95,7 +112,7 @@ class ActiveProblems {
                 unset($records[$i]);
             }
         }
-		return $records;
+		return array_values($records);
 	}
 
 	public function getPatientActiveProblemByPidAndCode($pid, $code){
@@ -115,7 +132,7 @@ class ActiveProblems {
 				unset($records[$i]);
 			}
 		}
-		return $records;
+		return array_values($records);
 	}
 
 }

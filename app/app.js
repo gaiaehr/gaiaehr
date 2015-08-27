@@ -2587,18 +2587,6 @@ Ext.define('App.ux.LivePatientSearch', {
 				{
 					name: 'SS',
 					type: 'string'
-				},
-				{
-					name: 'email',
-					type: 'string'
-				},
-				{
-					name: 'home_phone',
-					type: 'string'
-				},
-				{
-					name: 'mobile_phone',
-					type: 'string'
 				}
 			],
 			proxy: {
@@ -3039,6 +3027,7 @@ Ext.define('App.ux.RenderPanel', {
 
 	initComponent: function(){
 		var me = this;
+
 		Ext.apply(me, {
 			items: [
 				me.mainHeader = Ext.widget('container', {
@@ -20063,74 +20052,10 @@ Ext.define('App.model.patient.Patient',{
             len: 80
         },
         {
-            name: 'city',
-            type: 'string',
-            comment: 'city',
-            len: 40
-        },
-        {
-            name: 'state',
-            type: 'string',
-            comment: 'state',
-            len: 40
-        },
-        {
-            name: 'country',
-            type: 'string',
-            comment: 'country',
-            len: 40
-        },
-        {
-            name: 'zipcode',
-            type: 'string',
-            comment: 'postal code',
-            len: 10
-        },
-        {
             name: 'fulladdress',
             type: 'string',
             persist: false,
             convert: false
-        },
-        {
-            name: 'home_phone',
-            type: 'string',
-            index: true,
-            comment: 'home phone #',
-            len: 15
-        },
-        {
-            name: 'mobile_phone',
-            type: 'string',
-            index: true,
-            comment: 'mobile phone #',
-            len: 15
-        },
-        {
-            name: 'work_phone',
-            type: 'string',
-            index: true,
-            comment: 'work phone #',
-            len: 15
-        },
-        {
-            name: 'phones',
-            type: 'string',
-            persist: false,
-            convert: false
-        },
-        {
-            name: 'email',
-            type: 'string',
-            index: true,
-            comment: 'email',
-            len: 80
-        },
-        {
-            name: 'emer_contact',
-            type: 'string',
-            comment: 'emergency contact',
-            len: 40
         },
         {
             name: 'provider',
@@ -20355,10 +20280,6 @@ Ext.define('App.model.patient.Patient',{
         },
         {
             name: 'portal_username',
-            type: 'string'
-        },
-        {
-            name: 'publicity',
             type: 'string'
         }
     ],
@@ -33835,12 +33756,12 @@ Ext.define('App.view.administration.Layout', {
                    me.previewFormRender();
                    me.loadCurrFormParentField();
 
-	               say(batch);
-	               say(options);
+	               //say(batch);
+	               //say(options);
 
                    // this is the quick way to apply the return changes to the model
 	               if(record.data.id == ''){
-		               say(batch.proxy.reader.rawData.id);
+		               //say(batch.proxy.reader.rawData.id);
 		               record.set({ id: batch.proxy.reader.rawData.id });
 		               record.commit();
 	               }
@@ -33866,7 +33787,7 @@ Ext.define('App.view.administration.Layout', {
 	deleteField:function(record){
 		var me = this;
 
-		say(record.childNodes);
+		//say(record.childNodes);
 
 		if(record.childNodes.length > 0){
 			me.msg(_('oops'), _('children_fields_must_be_remove_first'), true);
@@ -33934,10 +33855,10 @@ Ext.define('App.view.administration.Layout', {
         me.fieldsGridStore.sync({
             success:function(){
                 me.previewFormRender();
-                me.msg('Sweet!', 'Field Updated');
+                me.msg(_('sweet'), _('field_updated'));
             },
             failure:function(batch){
-                Ext.Msg.alert('Oops!', batch.proxy.reader.rawData.error);
+                Ext.Msg.alert(_('oops'), batch.proxy.reader.rawData.error);
                 me.loadFieldsGrid();
             }
         });
@@ -33958,7 +33879,6 @@ Ext.define('App.view.administration.Layout', {
 	        });
 
 	    selection.deselectAll();
-
         form.reset();
         form.loadRecord(record);
     },
@@ -34128,29 +34048,177 @@ Ext.define('App.view.administration.Layout', {
 
         var items;
         if(value == 'fieldset'){
-            items = ['itemId', 'action', 'title', 'collapsible', 'collapsed', 'checkboxToggle', 'margin', 'columnWidth', 'layout'];
+            items = [
+                'itemId',
+                'action',
+                'title',
+                'collapsible',
+                'collapsed',
+                'checkboxToggle',
+                'margin',
+                'columnWidth',
+                'layout'
+            ];
         }else if(value == 'fieldcontainer'){
-            items = ['itemId', 'action', 'fieldLabel', 'labelWidth', 'hideLabel', 'width', 'layout', 'margin', 'columnWidth'];
+            items = [
+                'itemId',
+                'action',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'width',
+                'layout',
+                'margin',
+                'columnWidth'
+            ];
         }else if(value == 'combobox'){
-            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'allowBlank', 'list_id'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'emptyText',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'margin',
+                'allowBlank',
+                'list_id'
+            ];
         }else if(value == 'checkbox'){
-            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'boxLabel',
+                'inputValue',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'margin'
+            ];
         }else if(value == 'textfield'){
-            items = ['itemId', 'action', 'name', 'width', 'anchor', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'margin', 'minLength', 'maxLength'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'anchor',
+                'emptyText',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'allowBlank',
+                'margin',
+                'minLength',
+                'maxLength'
+            ];
         }else if(value == 'textareafield'){
-            items = ['itemId', 'action', 'name', 'width', 'anchor', 'height', 'emptyText', 'fieldLabel', 'hideLabel', 'labelWidth', 'allowBlank', 'grow', 'growMin', 'growMax', 'margin', 'minLength', 'maxLength'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'anchor',
+                'height',
+                'emptyText',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'allowBlank',
+                'grow',
+                'growMin',
+                'growMax',
+                'margin',
+                'minLength',
+                'maxLength'
+            ];
         }else if(value == 'numberfield'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'maxValue', 'minValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'value',
+                'emptyText',
+                'maxValue',
+                'minValue',
+                'increment',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin'
+            ];
         }else if(value == 'timefield'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'emptyText', 'timeMaxValue', 'timeMinValue', 'increment', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'value',
+                'emptyText',
+                'timeMaxValue',
+                'timeMinValue',
+                'increment',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin'
+            ];
         }else if(value == 'radiofield'){
-            items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'labelWidth', 'hideLabel', 'margin', 'inputValue'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'boxLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin',
+                'inputValue'
+            ];
         }else if(value == 'datefield' || value == 'mitos.datetime'){
-            items = ['itemId', 'action', 'name', 'width', 'value', 'layout', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'allowBlank', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'value',
+                'layout',
+                'emptyText',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'allowBlank',
+                'margin'
+            ];
         }else if(value == 'checkboxwithfamilyhistory'){
-	        items = ['itemId', 'action', 'name', 'width', 'boxLabel', 'inputValue', 'fieldLabel', 'hideLabel', 'labelWidth', 'margin', 'code'];
+	        items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'boxLabel',
+                'inputValue',
+                'fieldLabel',
+                'hideLabel',
+                'labelWidth',
+                'margin',
+                'code'
+            ];
         }else{
-            items = ['itemId', 'action', 'name', 'width', 'emptyText', 'fieldLabel', 'labelWidth', 'hideLabel', 'margin'];
+            items = [
+                'itemId',
+                'action',
+                'name',
+                'width',
+                'emptyText',
+                'fieldLabel',
+                'labelWidth',
+                'hideLabel',
+                'margin'
+            ];
         }
         enableItems(items);
     },
@@ -44512,7 +44580,7 @@ Ext.define('App.view.patient.Documents', {
 				remoteSort: false,
 				autoSync: false,
 				pageSize: 200,
-				groupField: 'groupDate'
+				groupField: 'docType'
 			}),
 			docCtrl = App.app.getController('patient.Documents');
 
@@ -44527,8 +44595,9 @@ Ext.define('App.view.patient.Documents', {
 				features: [
 					{
 						ftype: 'grouping',
+						hideGroupedHeader: true,
 						groupHeaderTpl: Ext.create('Ext.XTemplate',
-							'Group: {name:this.getGroupName}',
+							'{columnName}: {name:this.getGroupName}',
 							{
 								getGroupName: function(name){
 									return docCtrl.getGroupName(name);
@@ -44552,31 +44621,33 @@ Ext.define('App.view.patient.Documents', {
 							return 'x-grid-icon-padding';
 						}
 					},
+					//{
+					//	xtype: 'actioncolumn',
+					//	width: 23,
+					//	icon: 'resources/images/icons/delete.png',
+					//	tooltip: _('delete'),
+					//	hidden: !eval(a('delete_patient_documents')),
+					//	handler: function(grid, rowIndex, colIndex, item, e, recprd){
+					//
+					//
+					//		alert('hello');
+					//
+					//	},
+					//	getClass: function(){
+					//		return 'x-grid-icon-padding';
+					//	}
+					//},
 					{
-						xtype: 'actioncolumn',
-						width: 23,
-						icon: 'resources/images/icons/delete.png',
-						tooltip: _('delete'),
-						hidden: !eval(a('delete_patient_documents')),
-						handler: function(grid, rowIndex, colIndex, item, e, recprd){
-
-
-							alert('hello');
-
-						},
-						getClass: function(){
-							return 'x-grid-icon-padding';
-						}
-					},
-					{
-						header: _('type'),
-						dataIndex: 'docType'
+						header: _('category'),
+						dataIndex: 'docType',
+						itemId: 'docType'
 					},
 					{
 						xtype: 'datecolumn',
 						header: _('date'),
-						dataIndex: 'date',
-						format: 'Y-m-d'
+						dataIndex: 'groupDate',
+						format: 'Y-m-d',
+						itemId: 'groupDate'
 
 					},
 					{
@@ -44607,17 +44678,18 @@ Ext.define('App.view.patient.Documents', {
 					_('group_by') + ':',
 					{
 						xtype: 'button',
-						text: _('date'),
+						text: _('category'),
 						enableToggle: true,
-						action: 'groupDate',
+						action: 'docType',
 						pressed: true,
+						disabled: true,
 						toggleGroup: 'documentgridgroup'
 					},
 					{
 						xtype: 'button',
-						text: _('type'),
+						text: _('date'),
 						enableToggle: true,
-						action: 'docType',
+						action: 'groupDate',
 						toggleGroup: 'documentgridgroup'
 					},
 					'->',
@@ -49019,8 +49091,13 @@ Ext.define('App.view.patient.Patient', {
 	initComponent: function(){
 		var me = this;
 
+		say('Hello 1');
+
 		me.store = Ext.create('App.store.patient.Patient');
 		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
+		me.patientContacsStore = Ext.create('App.store.patient.PatientContacts', {
+			autoLoad: false
+		});
 
 		me.compactDemographics = eval(g('compact_demographics'));
 
@@ -49106,6 +49183,7 @@ Ext.define('App.view.patient.Patient', {
 			scope: me,
 			beforerender: me.beforePanelRender
 		};
+		say('Hello 2');
 
 		Ext.apply(me, configs);
 
@@ -49148,7 +49226,8 @@ Ext.define('App.view.patient.Patient', {
 
 	beforePanelRender: function(){
 		var me = this,
-			whoPanel;
+			whoPanel,
+			PatientContactsTab;
 
 		me.getFormItems(me.demoForm, 1, function(formPanel){
 
@@ -49156,36 +49235,13 @@ Ext.define('App.view.patient.Patient', {
 				fname = form.findField('fname'),
 				mname = form.findField('mname'),
 				lname = form.findField('lname'),
-				address = form.findField('address'),
-				address_cont = form.findField('address_cont'),
-				city = form.findField('city'),
-
 				sex = form.findField('sex'),
-				dob = form.findField('DOB'),
-				zipcode = form.findField('zipcode'),
-				home_phone = form.findField('home_phone'),
-				mobile_phone = form.findField('mobile_phone'),
-				emer_phone = form.findField('emer_phone'),
-				work_phone = form.findField('work_phone'),
-				work_phone_ext = form.findField('work_phone_ext'),
-				email = form.findField('email'),
-				phone_reg = new RegExp(g('phone_validation_format')),
-				zipcode_reg = new RegExp(g('zipcode_validation_format'));
+				dob = form.findField('DOB');
 
 			if(fname) fname.vtype = 'nonspecialcharacters';
 			if(mname) mname.vtype = 'nonspecialcharacters';
 			if(lname) lname.vtype = 'nonspecialcharacters';
-			if(address) address.vtype = 'nonspecialcharacters';
-			if(address_cont) address_cont.vtype = 'nonspecialcharacters';
-			if(city) city.vtype = 'nonspecialcharacters';
 
-			if(email) email.vtype = 'email';
-			if(zipcode) zipcode.regex = zipcode_reg;
-			if(home_phone) home_phone.regex = phone_reg;
-			if(mobile_phone) mobile_phone.regex = phone_reg;
-			if(emer_phone) emer_phone.regex = phone_reg;
-			if(work_phone) work_phone.regex = phone_reg;
-			if(work_phone_ext) work_phone_ext.regex = new RegExp('^[0-9]*$');
 			if(dob) dob.setMaxValue(new Date());
 
 			if(me.newPatient){
@@ -49233,7 +49289,7 @@ Ext.define('App.view.patient.Patient', {
 							{
 								text: _('take_picture'),
 								action: 'onWebCam'
-								//				                handler: me.getPhotoIdWindow
+								//handler: me.getPhotoIdWindow
 							},
 							'-',
 							'->',
@@ -49249,13 +49305,239 @@ Ext.define('App.view.patient.Patient', {
 						]
 					})
 				);
+
+				//Patient Contacts
+				PatientContactsTab = Ext.ComponentQuery.query('#Demographics')[0];
+				PatientContactsTab.add(
+					me.patientContacts = Ext.create('Ext.grid.Panel', {
+						itemId: 'PatientSummaryContactsPanel',
+						bodyPadding: 0,
+						title: _('contacts'),
+						store: me.patientContacsStore,
+						columns: [
+							{
+								text: _('name'),
+								dataIndex: 'fullname',
+								flex: 1
+							},
+							{
+								header: _('relationship'),
+								dataIndex: 'relationship_name'
+							},
+							{
+								header: _('active'),
+								dataIndex: 'active',
+								renderer: me.boolRenderer
+							}
+						],
+						plugins: Ext.create('App.ux.grid.RowFormEditing', {
+							autoCancel: false,
+							errorSummary: false,
+							clicksToEdit: 2,
+							items: [
+								{
+									xtype: 'container',
+									layout: 'hbox',
+									defaults: {
+										margin: '5 10 0 0'
+									},
+									items: [
+										{
+											xtype: 'container',
+											layout: 'vbox',
+											defaults: {
+												layout: '50%',
+												margin: '5 10 0 0'
+											},
+											items: [
+												{
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													fieldLabel: _('name'),
+													defaults: {
+														layout: '100%',
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															name: 'first_name',
+															emptyText: _('first_name'),
+															width: 150,
+															maxLength: 100,
+															allowBlank: false
+														},
+														{
+															name: 'middle_name',
+															emptyText: _('middle_name'),
+															width: 120,
+															maxLength: 100
+														},
+														{
+															name: 'last_name',
+															emptyText: _('last_name'),
+															width: 150,
+															maxLength: 100
+														}
+													]
+												},
+												{
+													xtype: 'gaiaehr.listcombo',
+													fieldLabel: _('relationship'),
+													name: 'relationship',
+													displayField: 'option_name',
+													valueField: 'option_value',
+													width: 350,
+													loadStore: true,
+													queryMode: 'local',
+													list: 134
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													fieldLabel: _('phone'),
+													defaults: {
+														xtype: 'textfield',
+														vtype: 'numeric'
+													},
+													items: [
+														{
+															name: 'phone_use_code',
+															emptyText: _('code'),
+															width: 50,
+															maxLength: 4
+														},
+														{
+															name: 'phone_area_code',
+															emptyText: _('area_code'),
+															width: 50,
+															maxLength: 4
+														},
+														{
+															name: 'phone_local_number',
+															emptyText: _('local_number'),
+															width: 120,
+															maxLength: 7
+														}
+													]
+												},
+												{
+													fieldLabel: _('address'),
+													xtype: 'textfield',
+													name: 'street_mailing_address',
+													emptyText: _('street'),
+													width: 610,
+													maxLength: 200
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													fieldLabel: _('address_cont'),
+													defaults: {
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															name: 'city',
+															emptyText: _('city'),
+															width: 125,
+															maxLength: 70
+														},
+														{
+															xtype: 'gaiaehr.listcombo',
+															name: 'state',
+															emptyText: _('state'),
+															displayField: 'option_name',
+															valueField: 'option_value',
+															width: 125,
+															loadStore: true,
+															queryMode: 'local',
+															list: 20
+														},
+														{
+															xtype: 'gaiaehr.listcombo',
+															name: 'country',
+															emptyText: _('country'),
+															displayField: 'option_name',
+															valueField: 'option_value',
+															width: 125,
+															loadStore: true,
+															queryMode: 'local',
+															list: 3
+														},
+														{
+															emptyText: _('zip'),
+															name: 'zip',
+															width: 125,
+															maxLength: 20
+														}
+													]
+												}
+											]
+										},
+										{
+											xtype: 'fieldcontainer',
+											layout: 'vbox',
+											defaults: {
+												layout: '50%',
+												margin: '5 10 0 0'
+											},
+											items: [
+												{
+													xtype: 'gaiaehr.listcombo',
+													name: 'publicity',
+													fieldLabel: _('publicity'),
+													emptyText: _('select'),
+													displayField: 'option_name',
+													valueField: 'option_value',
+													width: 400,
+													loadStore: true,
+													queryMode: 'local',
+													list: 132
+												},
+												{
+													xtype: 'checkboxfield',
+													name: 'active',
+													fieldLabel: _('active')
+												}
+											]
+										}
+									]
+								}
+							]
+						}),
+						tbar: [
+							{
+								text: _('add_contact'),
+								iconCls: 'icoAdd',
+								action: 'patientContact',
+								handler: me.onAddNewContact
+							}
+						]
+					})
+				);
 			}
 		});
 	},
 
+	onAddNewContact: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.store,
+			record;
+
+		record = {
+			created_date: new Date(),
+			pid: app.patient.pid,
+			uid: app.user.id
+		};
+
+		grid.plugins[0].cancelEdit();
+		store.insert(0, record);
+		grid.plugins[0].startEdit(0, 0);
+	},
+
 	insurancePanelAdd: function(tapPanel, panel){
 		var me = this,
-			record = panel.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
+			record = panel.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
 
 		panel.title = _('insurance') + ' (' + (record.data.insurance_type ? record.data.insurance_type : _('new')) + ')';
 
@@ -49263,12 +49545,10 @@ Ext.define('App.view.patient.Patient', {
 		if(record.data.image !== '') panel.down('image').setSrc(record.data.image);
 	},
 
-
 	insuranceFormLoadRecord: function(form, record){
 		form.getForm().loadRecord(record);
 		app.fireEvent('insurancerecordload', form, record);
 	},
-
 
 	getValidInsurances: function(){
 		var me = this,
@@ -49283,35 +49563,44 @@ Ext.define('App.view.patient.Patient', {
 				me.insTabPanel.setActiveTab(forms[i]);
 				return false;
 			}
-
 			rec = form.getRecord();
-
 			app.fireEvent('beforepatientinsuranceset', form, rec);
-
 			rec.set(form.getValues());
-
 			app.fireEvent('afterpatientinsuranceset', form, rec);
-
 			records.push(rec);
 		}
-
 		return records;
 	},
 
 	getPatientImages: function(record){
 		var me = this;
-		if(me.patientImages)
-		{
+		if(me.patientImages){
 			me.patientImages.getComponent('image').setSrc(
-                (record.data.image !== '' ? record.data.image : me.defaultPatientImage)
-            );
+				(record.data.image !== '' ? record.data.image : me.defaultPatientImage)
+			);
 		}
-		if(me.patientImages)
-		{
+		if(me.patientImages){
 			me.patientImages.getComponent('qrcode').setSrc(
-                (record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage)
-            );
+				(record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage)
+			);
 		}
+	},
+
+	getPatientContacts: function(pid){
+		var me = this;
+
+		me.patientContacsStore.clearFilter(true);
+		me.patientContacsStore.load({
+			params: {
+				pid: pid
+			},
+			filters: [
+				{
+					property: 'pid',
+					value: pid
+				}
+			]
+		});
 	},
 
 	/**
@@ -49394,7 +49683,7 @@ Ext.define('App.view.patient.Patient', {
 					// fire global event
 					app.fireEvent('afterdemographicssave', record, me);
 
-					me.msg('Sweet!', _('record_saved'));
+					me.msg(_('sweet'), _('record_saved'));
 					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});
@@ -49433,6 +49722,8 @@ Ext.define('App.view.patient.Patient', {
 		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 		app.AuditLog('Patient record viewed');
 
+		me.getPatientContacts(pid);
+
 		app.patient.record.insurance().load({
 			filters: [
 				{
@@ -49445,26 +49736,22 @@ Ext.define('App.view.patient.Patient', {
 				form.loadRecord(app.patient.record);
 				me.setReadOnly(app.patient.readOnly);
 				me.setButtonsDisabled(me.query('button[action="readOnly"]'));
-				me.getPatientImages(app.patient.record);
 				me.verifyPatientRequiredInfo();
 
 				// set the insurance panel
 				me.insTabPanel.removeAll(true);
 				for(var i = 0; i < records.length; i++){
-
 					me.insTabPanel.add(
 						Ext.widget('patientinsuranceform', {
 							closable: false,
 							insurance: records[i]
 						})
 					);
-
 				}
 
 				if(me.insTabPanel.items.length !== 0) me.insTabPanel.setActiveTab(0);
 			}
 		});
-
 	}
 });
 Ext.define('App.view.patient.Summary', {
@@ -49750,210 +50037,12 @@ Ext.define('App.view.patient.Summary', {
 		}
 
 		if(a('access_demographics')){
-
             // Dynamically Generated by Form Builder Engine
-			me.demographics = me.tabPanel.add({
+            me.demographics = me.tabPanel.add({
 				xtype: 'patientdeomgraphics',
 				newPatient: false,
 				autoScroll: true,
 				title: _('demographics')
-			});
-
-            // Patient Contacts
-            me.tabPanel.add({
-                xtype: 'grid',
-                title: _('patient_contacts'),
-                itemId: 'PatientSummaryContactsPanel',
-                bodyPadding: 0,
-                store: Ext.create('App.store.patient.PatientContacts', {
-                    autoSync: false,
-                    autoLoad: false
-                }),
-                columns: [
-                    {
-                        text: _('name'),
-                        dataIndex: 'fullname',
-                        flex: 1
-                    },
-                    {
-                        header: _('relationship'),
-                        dataIndex: 'relationship_name'
-                    },
-                    {
-                        text: _('address'),
-                        dataIndex: 'street_mailing_address'
-                    },
-                    {
-                        text: _('city'),
-                        dataIndex: 'city'
-                    },
-                    {
-                        text: _('state'),
-                        dataIndex: 'state'
-                    },
-                    {
-                        text: _('zip'),
-                        dataIndex: 'zip'
-                    },
-                    {
-                        text: _('country'),
-                        dataIndex: 'country'
-                    },
-                    {
-                        text: _('phone'),
-                        dataIndex: 'phone_compiled'
-                    },
-                    {
-                        text: _('date_created'),
-                        dataIndex: 'created_date'
-                    }
-                ],
-                plugins: Ext.create('App.ux.grid.RowFormEditing', {
-                autoCancel: false,
-                errorSummary: false,
-                clicksToEdit: 2,
-                items: [
-                    {
-                        xtype: 'container',
-                        layout: 'vbox',
-                        defaults: {
-                            layout: '100%',
-                            margin: '5 10 0 0'
-                        },
-                        items: [
-                            {
-                                xtype: 'fieldcontainer',
-                                layout: 'hbox',
-                                fieldLabel: _('name'),
-                                defaults: {
-                                    layout: '100%',
-                                    xtype: 'textfield'
-                                },
-                                items: [
-                                    {
-                                        name: 'first_name',
-                                        emptyText: _('first_name'),
-                                        width: 150,
-                                        maxLength: 100,
-                                        allowBlank: false
-                                    },
-                                    {
-                                        name: 'middle_name',
-                                        emptyText: _('middle_name'),
-                                        width: 120,
-                                        maxLength: 100
-                                    },
-                                    {
-                                        name: 'last_name',
-                                        emptyText: _('last_name'),
-                                        width: 150,
-                                        maxLength: 100
-                                    }
-                                ]
-                            },
-                            {
-                                xtype: 'gaiaehr.listcombo',
-                                fieldLabel: _('relationship'),
-                                name: 'relationship',
-                                displayField: 'option_name',
-                                valueField: 'option_value',
-                                width: 350,
-                                loadStore: true,
-                                queryMode: 'local',
-                                list: 134
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                layout: 'hbox',
-                                fieldLabel: _('phone'),
-                                defaults: {
-                                    xtype: 'textfield',
-                                    vtype: 'numeric'
-                                },
-                                items: [
-                                    {
-                                        name: 'phone_use_code',
-                                        emptyText: _('code'),
-                                        width: 50,
-                                        maxLength: 4
-                                    },
-                                    {
-                                        name: 'phone_area_code',
-                                        emptyText: _('area_code'),
-                                        width: 50,
-                                        maxLength: 4
-                                    },
-                                    {
-                                        name: 'phone_local_number',
-                                        emptyText: _('local_number'),
-                                        width: 120,
-                                        maxLength: 7
-                                    }
-                                ]
-                            },
-                            {
-                                fieldLabel: _('address'),
-                                xtype: 'textfield',
-                                name: 'street_mailing_address',
-                                emptyText: _('street'),
-                                width: 610,
-                                maxLength: 200
-                            },
-                            {
-                                xtype: 'fieldcontainer',
-                                layout: 'hbox',
-                                fieldLabel: _('address_cont'),
-                                defaults: {
-                                    xtype: 'textfield'
-                                },
-                                items: [
-                                    {
-                                        name: 'city',
-                                        emptyText: _('city'),
-                                        width: 125,
-                                        maxLength: 70
-                                    },
-                                    {
-                                        xtype: 'gaiaehr.listcombo',
-                                        name: 'state',
-                                        emptyText: _('state'),
-                                        displayField: 'option_name',
-                                        valueField: 'option_value',
-                                        width: 125,
-                                        loadStore: true,
-                                        queryMode: 'local',
-                                        list: 20
-                                    },
-                                    {
-                                        xtype: 'gaiaehr.listcombo',
-                                        name: 'country',
-                                        emptyText: _('country'),
-                                        displayField: 'option_name',
-                                        valueField: 'option_value',
-                                        width: 125,
-                                        loadStore: true,
-                                        queryMode: 'local',
-                                        list: 3
-                                    },
-                                    {
-                                        emptyText: _('zip'),
-                                        name: 'zip',
-                                        width: 125,
-                                        maxLength: 20
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]}),
-                tbar: [
-                    {
-                        text: _('add_contact'),
-                        iconCls: 'icoAdd',
-                        action: 'patientContact',
-                        handler: me.onAddNew
-                    }
-                ]
             });
 		}
 
@@ -50217,13 +50306,7 @@ Ext.define('App.view.patient.Summary', {
 				uid: app.user.id,
 				eid: app.patient.eid
 			};
-		}else if(btn.action == 'patientContact'){
-            record = {
-                created_date: new Date(),
-                pid: app.patient.pid,
-                uid: app.user.id
-            };
-        }
+		}
 
 		grid.plugins[0].cancelEdit();
 		store.insert(0, record);
@@ -50298,7 +50381,17 @@ Ext.define('App.view.patient.Summary', {
 		/**
 		 * update panel main title to reflect the patient name and if the patient is read only
 		 */
-		me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - (' + _('patient_summary') + ')', app.patient.readOnly, null);
+		me.updateTitle(
+            patient.name +
+            ' - ' +
+            patient.sexSymbol +
+            ' - ' +
+            patient.age.str +
+            ' - (' +
+            _('patient_summary') +
+            ')',
+            app.patient.readOnly, null
+        );
 		/**
 		 * verify if the patient is on read only mode
 		 */
@@ -51252,10 +51345,12 @@ Ext.define('App.controller.patient.Documents', {
 		var grid = btn.up('grid');
 
 		if(pressed){
-			grid.view.features[0].enable();
 			grid.getStore().group(btn.action);
+			grid.query('#' + btn.action)[0].hide();
+			btn.disable();
 		}else{
-			grid.view.features[0].disable();
+			grid.query('#' + btn.action)[0].show();
+			btn.enable();
 		}
 	},
 
@@ -51289,7 +51384,7 @@ Ext.define('App.controller.patient.Documents', {
 			message;
 		DocumentHandler.checkDocHash(rec.data, function(provider, response){
 			success = response.result.success;
-			message = _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '<br>' + response.result.msg;
+			message = '<b>' + _(success ? 'hash_validation_passed' : 'hash_validation_failed') + '</b><br>' + Ext.String.htmlDecode(response.result.msg);
 
 			if(window.dual){
 				dual.msg(_(success ? 'sweet' : 'oops'), message, !success)
@@ -51381,7 +51476,6 @@ Ext.define('App.controller.patient.Documents', {
 				}else{
 					app.msg(_('oops'), _('document_error'), true);
 				}
-
 			}
 		})
 	},

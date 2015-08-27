@@ -31,16 +31,18 @@ Ext.define('App.view.patient.Patient', {
 	newPatient: true,
 	pid: null,
 	defaultPatientImage: 'resources/images/patientPhotoPlaceholder.jpg',
-    defaultQRCodeImage: 'resources/images/QRCodeImage.png',
+	defaultQRCodeImage: 'resources/images/QRCodeImage.png',
 
 	initComponent: function(){
 		var me = this;
 
+		say('Hello 1');
+
 		me.store = Ext.create('App.store.patient.Patient');
 		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
-        me.patientContacsStore = Ext.create('App.store.patient.PatientContacts', {
-            autoLoad: false
-        });
+		me.patientContacsStore = Ext.create('App.store.patient.PatientContacts', {
+			autoLoad: false
+		});
 
 		me.compactDemographics = eval(g('compact_demographics'));
 
@@ -126,6 +128,7 @@ Ext.define('App.view.patient.Patient', {
 			scope: me,
 			beforerender: me.beforePanelRender
 		};
+		say('Hello 2');
 
 		Ext.apply(me, configs);
 
@@ -169,7 +172,7 @@ Ext.define('App.view.patient.Patient', {
 	beforePanelRender: function(){
 		var me = this,
 			whoPanel,
-            PatientContactsTab;
+			PatientContactsTab;
 
 		me.getFormItems(me.demoForm, 1, function(formPanel){
 
@@ -248,237 +251,238 @@ Ext.define('App.view.patient.Patient', {
 					})
 				);
 
-                //Patient Contacts
-                PatientContactsTab = Ext.ComponentQuery.query('#Demographics')[0];
-                PatientContactsTab.add(
-                    me.patientContacts = Ext.create('Ext.grid.Panel', {
-                        itemId: 'PatientSummaryContactsPanel',
-                        bodyPadding: 0,
-                        title: _('contacts'),
-                        store: me.patientContacsStore,
-                        columns: [
-                            {
-                                text: _('name'),
-                                dataIndex: 'fullname',
-                                flex: 1
-                            },
-                            {
-                                header: _('relationship'),
-                                dataIndex: 'relationship_name'
-                            },
-                            {
-                                header: _('active'),
-                                dataIndex: 'active',
-                                renderer: me.boolRenderer
-                            }
-                        ],
-                        plugins: Ext.create('App.ux.grid.RowFormEditing', {
-                            autoCancel: false,
-                            errorSummary: false,
-                            clicksToEdit: 2,
-                            items: [
-                                {
-                                    xtype: 'container',
-                                    layout: 'hbox',
-                                    defaults: {
-                                        margin: '5 10 0 0'
-                                    },
-                                    items:[
-                                        {
-                                            xtype: 'container',
-                                            layout: 'vbox',
-                                            defaults: {
-                                                layout: '50%',
-                                                margin: '5 10 0 0'
-                                            },
-                                            items: [
-                                                {
-                                                    xtype: 'fieldcontainer',
-                                                    layout: 'hbox',
-                                                    fieldLabel: _('name'),
-                                                    defaults: {
-                                                        layout: '100%',
-                                                        xtype: 'textfield'
-                                                    },
-                                                    items: [
-                                                        {
-                                                            name: 'first_name',
-                                                            emptyText: _('first_name'),
-                                                            width: 150,
-                                                            maxLength: 100,
-                                                            allowBlank: false
-                                                        },
-                                                        {
-                                                            name: 'middle_name',
-                                                            emptyText: _('middle_name'),
-                                                            width: 120,
-                                                            maxLength: 100
-                                                        },
-                                                        {
-                                                            name: 'last_name',
-                                                            emptyText: _('last_name'),
-                                                            width: 150,
-                                                            maxLength: 100
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    xtype: 'gaiaehr.listcombo',
-                                                    fieldLabel: _('relationship'),
-                                                    name: 'relationship',
-                                                    displayField: 'option_name',
-                                                    valueField: 'option_value',
-                                                    width: 350,
-                                                    loadStore: true,
-                                                    queryMode: 'local',
-                                                    list: 134
-                                                },
-                                                {
-                                                    xtype: 'fieldcontainer',
-                                                    layout: 'hbox',
-                                                    fieldLabel: _('phone'),
-                                                    defaults: {
-                                                        xtype: 'textfield',
-                                                        vtype: 'numeric'
-                                                    },
-                                                    items: [
-                                                        {
-                                                            name: 'phone_use_code',
-                                                            emptyText: _('code'),
-                                                            width: 50,
-                                                            maxLength: 4
-                                                        },
-                                                        {
-                                                            name: 'phone_area_code',
-                                                            emptyText: _('area_code'),
-                                                            width: 50,
-                                                            maxLength: 4
-                                                        },
-                                                        {
-                                                            name: 'phone_local_number',
-                                                            emptyText: _('local_number'),
-                                                            width: 120,
-                                                            maxLength: 7
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    fieldLabel: _('address'),
-                                                    xtype: 'textfield',
-                                                    name: 'street_mailing_address',
-                                                    emptyText: _('street'),
-                                                    width: 610,
-                                                    maxLength: 200
-                                                },
-                                                {
-                                                    xtype: 'fieldcontainer',
-                                                    layout: 'hbox',
-                                                    fieldLabel: _('address_cont'),
-                                                    defaults: {
-                                                        xtype: 'textfield'
-                                                    },
-                                                    items: [
-                                                        {
-                                                            name: 'city',
-                                                            emptyText: _('city'),
-                                                            width: 125,
-                                                            maxLength: 70
-                                                        },
-                                                        {
-                                                            xtype: 'gaiaehr.listcombo',
-                                                            name: 'state',
-                                                            emptyText: _('state'),
-                                                            displayField: 'option_name',
-                                                            valueField: 'option_value',
-                                                            width: 125,
-                                                            loadStore: true,
-                                                            queryMode: 'local',
-                                                            list: 20
-                                                        },
-                                                        {
-                                                            xtype: 'gaiaehr.listcombo',
-                                                            name: 'country',
-                                                            emptyText: _('country'),
-                                                            displayField: 'option_name',
-                                                            valueField: 'option_value',
-                                                            width: 125,
-                                                            loadStore: true,
-                                                            queryMode: 'local',
-                                                            list: 3
-                                                        },
-                                                        {
-                                                            emptyText: _('zip'),
-                                                            name: 'zip',
-                                                            width: 125,
-                                                            maxLength: 20
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            xtype: 'fieldcontainer',
-                                            layout: 'vbox',
-                                            defaults: {
-                                                layout: '50%',
-                                                margin: '5 10 0 0'
-                                            },
-                                            items: [
-                                                {
-                                                    xtype: 'gaiaehr.listcombo',
-                                                    name: 'publicity',
-                                                    fieldLabel: _('publicity'),
-                                                    emptyText: _('select'),
-                                                    displayField: 'option_name',
-                                                    valueField: 'option_value',
-                                                    width: 400,
-                                                    loadStore: true,
-                                                    queryMode: 'local',
-                                                    list: 132
-                                                },
-                                                {
-                                                    xtype: 'checkboxfield',
-                                                    name: 'active',
-                                                    fieldLabel: _('active')
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]}),
-                        tbar: [
-                            {
-                                text: _('add_contact'),
-                                iconCls: 'icoAdd',
-                                action: 'patientContact',
-                                handler: me.onAddNewContact
-                            }
-                        ]
-                    })
-                );
+				//Patient Contacts
+				PatientContactsTab = Ext.ComponentQuery.query('#Demographics')[0];
+				PatientContactsTab.add(
+					me.patientContacts = Ext.create('Ext.grid.Panel', {
+						itemId: 'PatientSummaryContactsPanel',
+						bodyPadding: 0,
+						title: _('contacts'),
+						store: me.patientContacsStore,
+						columns: [
+							{
+								text: _('name'),
+								dataIndex: 'fullname',
+								flex: 1
+							},
+							{
+								header: _('relationship'),
+								dataIndex: 'relationship_name'
+							},
+							{
+								header: _('active'),
+								dataIndex: 'active',
+								renderer: me.boolRenderer
+							}
+						],
+						plugins: Ext.create('App.ux.grid.RowFormEditing', {
+							autoCancel: false,
+							errorSummary: false,
+							clicksToEdit: 2,
+							items: [
+								{
+									xtype: 'container',
+									layout: 'hbox',
+									defaults: {
+										margin: '5 10 0 0'
+									},
+									items: [
+										{
+											xtype: 'container',
+											layout: 'vbox',
+											defaults: {
+												layout: '50%',
+												margin: '5 10 0 0'
+											},
+											items: [
+												{
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													fieldLabel: _('name'),
+													defaults: {
+														layout: '100%',
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															name: 'first_name',
+															emptyText: _('first_name'),
+															width: 150,
+															maxLength: 100,
+															allowBlank: false
+														},
+														{
+															name: 'middle_name',
+															emptyText: _('middle_name'),
+															width: 120,
+															maxLength: 100
+														},
+														{
+															name: 'last_name',
+															emptyText: _('last_name'),
+															width: 150,
+															maxLength: 100
+														}
+													]
+												},
+												{
+													xtype: 'gaiaehr.listcombo',
+													fieldLabel: _('relationship'),
+													name: 'relationship',
+													displayField: 'option_name',
+													valueField: 'option_value',
+													width: 350,
+													loadStore: true,
+													queryMode: 'local',
+													list: 134
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													fieldLabel: _('phone'),
+													defaults: {
+														xtype: 'textfield',
+														vtype: 'numeric'
+													},
+													items: [
+														{
+															name: 'phone_use_code',
+															emptyText: _('code'),
+															width: 50,
+															maxLength: 4
+														},
+														{
+															name: 'phone_area_code',
+															emptyText: _('area_code'),
+															width: 50,
+															maxLength: 4
+														},
+														{
+															name: 'phone_local_number',
+															emptyText: _('local_number'),
+															width: 120,
+															maxLength: 7
+														}
+													]
+												},
+												{
+													fieldLabel: _('address'),
+													xtype: 'textfield',
+													name: 'street_mailing_address',
+													emptyText: _('street'),
+													width: 610,
+													maxLength: 200
+												},
+												{
+													xtype: 'fieldcontainer',
+													layout: 'hbox',
+													fieldLabel: _('address_cont'),
+													defaults: {
+														xtype: 'textfield'
+													},
+													items: [
+														{
+															name: 'city',
+															emptyText: _('city'),
+															width: 125,
+															maxLength: 70
+														},
+														{
+															xtype: 'gaiaehr.listcombo',
+															name: 'state',
+															emptyText: _('state'),
+															displayField: 'option_name',
+															valueField: 'option_value',
+															width: 125,
+															loadStore: true,
+															queryMode: 'local',
+															list: 20
+														},
+														{
+															xtype: 'gaiaehr.listcombo',
+															name: 'country',
+															emptyText: _('country'),
+															displayField: 'option_name',
+															valueField: 'option_value',
+															width: 125,
+															loadStore: true,
+															queryMode: 'local',
+															list: 3
+														},
+														{
+															emptyText: _('zip'),
+															name: 'zip',
+															width: 125,
+															maxLength: 20
+														}
+													]
+												}
+											]
+										},
+										{
+											xtype: 'fieldcontainer',
+											layout: 'vbox',
+											defaults: {
+												layout: '50%',
+												margin: '5 10 0 0'
+											},
+											items: [
+												{
+													xtype: 'gaiaehr.listcombo',
+													name: 'publicity',
+													fieldLabel: _('publicity'),
+													emptyText: _('select'),
+													displayField: 'option_name',
+													valueField: 'option_value',
+													width: 400,
+													loadStore: true,
+													queryMode: 'local',
+													list: 132
+												},
+												{
+													xtype: 'checkboxfield',
+													name: 'active',
+													fieldLabel: _('active')
+												}
+											]
+										}
+									]
+								}
+							]
+						}),
+						tbar: [
+							{
+								text: _('add_contact'),
+								iconCls: 'icoAdd',
+								action: 'patientContact',
+								handler: me.onAddNewContact
+							}
+						]
+					})
+				);
 			}
 		});
 	},
 
-    onAddNewContact: function(btn){
-        var grid = btn.up('grid'),
-            store = grid.store,
-            record;
+	onAddNewContact: function(btn){
+		var grid = btn.up('grid'),
+			store = grid.store,
+			record;
 
-        record = {
-            created_date: new Date(),
-            pid: app.patient.pid,
-            uid: app.user.id
-        };
+		record = {
+			created_date: new Date(),
+			pid: app.patient.pid,
+			uid: app.user.id
+		};
 
-        grid.plugins[0].cancelEdit();
-        store.insert(0, record);
-        grid.plugins[0].startEdit(0, 0);
-    },
+		grid.plugins[0].cancelEdit();
+		store.insert(0, record);
+		grid.plugins[0].startEdit(0, 0);
+	},
 
 	insurancePanelAdd: function(tapPanel, panel){
 		var me = this,
-			record = panel.insurance || Ext.create('App.model.patient.Insurance', { pid: me.pid });
+			record = panel.insurance || Ext.create('App.model.patient.Insurance', {pid: me.pid});
 
 		panel.title = _('insurance') + ' (' + (record.data.insurance_type ? record.data.insurance_type : _('new')) + ')';
 
@@ -486,12 +490,10 @@ Ext.define('App.view.patient.Patient', {
 		if(record.data.image !== '') panel.down('image').setSrc(record.data.image);
 	},
 
-
 	insuranceFormLoadRecord: function(form, record){
 		form.getForm().loadRecord(record);
 		app.fireEvent('insurancerecordload', form, record);
 	},
-
 
 	getValidInsurances: function(){
 		var me = this,
@@ -517,35 +519,34 @@ Ext.define('App.view.patient.Patient', {
 
 	getPatientImages: function(record){
 		var me = this;
-		if(me.patientImages)
-		{
+		if(me.patientImages){
 			me.patientImages.getComponent('image').setSrc(
-                (record.data.image !== '' ? record.data.image : me.defaultPatientImage)
-            );
+				(record.data.image !== '' ? record.data.image : me.defaultPatientImage)
+			);
 		}
-		if(me.patientImages)
-		{
+		if(me.patientImages){
 			me.patientImages.getComponent('qrcode').setSrc(
-                (record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage)
-            );
+				(record.data.qrcode !== '' ? record.data.qrcode : me.defaultQRCodeImage)
+			);
 		}
 	},
 
-    getPatientContacts: function(pid){
-        var me = this;
-        me.patientContacsStore.clearFilter(true);
-        me.patientContacsStore.load({
-            params: {
-                pid: pid
-            },
-            filters: [
-                {
-                    property: 'pid',
-                    value: pid
-                }
-            ]
-        });
-    },
+	getPatientContacts: function(pid){
+		var me = this;
+
+		me.patientContacsStore.clearFilter(true);
+		me.patientContacsStore.load({
+			params: {
+				pid: pid
+			},
+			filters: [
+				{
+					property: 'pid',
+					value: pid
+				}
+			]
+		});
+	},
 
 	/**
 	 * verify the patient required info and add a yellow background if empty
@@ -666,7 +667,7 @@ Ext.define('App.view.patient.Patient', {
 		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
 		app.AuditLog('Patient record viewed');
 
-        me.getPatientContacts(pid);
+		me.getPatientContacts(pid);
 
 		app.patient.record.insurance().load({
 			filters: [

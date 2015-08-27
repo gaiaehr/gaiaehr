@@ -699,7 +699,10 @@ class CCDDocument {
 				'@attributes' => [
 					'code' => $patientData['ethnicity'] == 'H' ? '2135-2' : '2186-5',
 					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
-					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(59, $patientData['ethnicity']),
+					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(
+                        59,
+                        $patientData['ethnicity']
+                    ),
 					'codeSystem' => '2.16.840.1.113883.6.238'
 				]
 			];
@@ -787,7 +790,10 @@ class CCDDocument {
             $this->facility['country_code']
         );
 
-		$author['assignedAuthor']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
+		$author['assignedAuthor']['telecom'] = $this->telecomBuilder(
+            $this->facility['phone'],
+            'WP'
+        );
 
 		$author['assignedAuthor']['assignedPerson'] = [
 			'@attributes' => [
@@ -3060,7 +3066,7 @@ class CCDDocument {
 	private function setProblemsSection() {
 
 		$ActiveProblems = new ActiveProblems();
-		$problemsData = $ActiveProblems->getPatientActiveProblemByPid($this->pid);
+		$problemsData = $ActiveProblems->getPatientAllProblemsByPid($this->pid);
 		unset($ActiveProblems);
 
 		if($this->isExcluded('problems') || empty($problemsData)){

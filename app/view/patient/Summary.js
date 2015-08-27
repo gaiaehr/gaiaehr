@@ -159,7 +159,6 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-
 						header: _('name'),
 						dataIndex: 'vaccine_name',
 						flex: 1
@@ -235,9 +234,8 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-
 						header: _('name'),
-						dataIndex: 'code',
+						dataIndex: 'code_text',
 						flex: 1
 					},
 					{

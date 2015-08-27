@@ -58,16 +58,28 @@ class ActiveProblems {
 		$params =  new stdClass();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'pid';
-		$params->filter[0]->value =  $pid;
+		$params->filter[0]->value = $pid;
 		$records = $this->a->load($params)->all();
 		unset($params);
 		foreach($records as $i => $record){
-			if(strtotime($record['end_date']) < strtotime(date('Y-m-d')) && $record['end_date'] != '0000-00-00'){
+			if(strtotime($record['end_date']) &&
+                strtotime($record['end_date']) <= strtotime(date('Y-m-d')) &&
+                $record['end_date'] != '0000-00-00'){
 				unset($records[$i]);
 			}
 		}
 		return $records;
 	}
+
+    public function getPatientAllProblemsByPid($pid){
+        $params =  new stdClass();
+        $params->filter[0] = new stdClass();
+        $params->filter[0]->property = 'pid';
+        $params->filter[0]->value = $pid;
+        $records = $this->a->load($params)->all();
+        unset($params);
+        return $records;
+    }
 
 	public function getPatientActiveProblemByEid($eid){
 		$params =  new stdClass();
@@ -76,6 +88,13 @@ class ActiveProblems {
 		$params->filter[0]->value =  $eid;
 		$records = $this->a->load($params)->all();
 		unset($params);
+        foreach($records as $i => $record){
+            if(strtotime($record['end_date']) &&
+                strtotime($record['end_date']) <= strtotime(date('Y-m-d')) &&
+                $record['end_date'] != '0000-00-00'){
+                unset($records[$i]);
+            }
+        }
 		return $records;
 	}
 
@@ -90,7 +109,9 @@ class ActiveProblems {
 		$records = $this->a->load($params)->all();
 		unset($params);
 		foreach($records as $i => $record){
-			if(strtotime($record['end_date']) < strtotime(date('Y-m-d')) && $record['end_date'] != '0000-00-00'){
+			if(strtotime($record['end_date']) &&
+                strtotime($record['end_date']) <= strtotime(date('Y-m-d')) &&
+                $record['end_date'] != '0000-00-00'){
 				unset($records[$i]);
 			}
 		}

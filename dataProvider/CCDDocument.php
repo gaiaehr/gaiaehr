@@ -3066,8 +3066,9 @@ class CCDDocument {
 	private function setProblemsSection() {
 
 		$ActiveProblems = new ActiveProblems();
-		$problemsData = $ActiveProblems->getPatientActiveProblemByPid($this->pid);
+		$problemsData = $ActiveProblems->getPatientAllProblemsByPid($this->pid);
 		unset($ActiveProblems);
+        error_log(print_r($problemsData,true));
 
 		if($this->isExcluded('problems') || empty($problemsData)){
 			$problems['@attributes'] = [

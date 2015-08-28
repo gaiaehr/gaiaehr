@@ -180,34 +180,50 @@ Ext.define('App.ux.grid.LiveSearchGridPanel', {
 			me.store.each(function(record, idx){
 
 				var td = Ext.fly(me.view.getNode(record)).down('td'),
-					cell, matches, cellHTML;
+					cell, matches, cellHTML, is_special;
+
 
 				while(td){
+
+					is_special = false;
+
 					cell = td.down('.x-grid-cell-inner');
 					matches = cell.dom.innerHTML.match(me.tagsRe);
 					cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
 
-					// populate indexes array, set currentIndex, and replace wrap matched string in a span
-					cellHTML = cellHTML.replace(me.searchRegExp, function(m){
-						count += 1;
-						if(Ext.Array.indexOf(me.indexes, record) === -1){
-							me.indexes.push(record);
+					if(matches){
+						for(var i = 0; i < matches.length; i++){
+							if(matches[i].indexOf('x-grid-row-checker') !== -1){
+								is_special = true;
+								break;
+							}
 						}
-						if(me.currentIndex === null){
-							me.currentIndex = record;
-						}
+					}
 
-						return '<span class="' + me.matchCls + '">' + m + '</span>';
-					});
 
-					say(cellHTML);
+					if(!is_special){
+						// populate indexes array, set currentIndex, and replace wrap matched string in a span
+						cellHTML = cellHTML.replace(me.searchRegExp, function(m){
+							count += 1;
+							if(Ext.Array.indexOf(me.indexes, record) === -1){
+								me.indexes.push(record);
+							}
+							if(me.currentIndex === null){
+								me.currentIndex = record;
+							}
 
-					// restore protected tags
-					Ext.each(matches, function(match){
-						cellHTML = cellHTML.replace(me.tagsProtect, match);
-					});
-					// update cell html
-					cell.dom.innerHTML = cellHTML;
+							return '<span class="' + me.matchCls + '">' + m + '</span>';
+						});
+
+						// restore protected tags
+						Ext.each(matches, function(match){
+							cellHTML = cellHTML.replace(me.tagsProtect, match);
+						});
+						// update cell html
+						cell.dom.innerHTML = cellHTML;
+					}
+
+
 					td = td.next();
 				}
 

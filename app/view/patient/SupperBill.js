@@ -76,6 +76,20 @@ Ext.define('App.view.patient.SupperBill', {
 				allowBlank: false
 			}
 		},
+        {
+            text: _('financial'),
+            dataIndex: 'financial_class',
+            flex: 1,
+            menuDisabled: true,
+            editor: {
+                xtype: 'gaiaehr.listcombo',
+                displayField: 'option_name',
+                valueField: 'option_value',
+                loadStore: true,
+                queryMode: 'local',
+                list: 135
+            }
+        },
 		{
 			header: _('modifiers'),
 			dataIndex: 'modifiers',

@@ -19,6 +19,7 @@
 Ext.define('App.view.patient.Documents', {
 	extend: 'Ext.panel.Panel',
 	requires: [
+		'App.ux.grid.LiveSearchGridPanel',
 		'App.ux.combo.Templates',
 		'Ext.grid.plugin.RowEditing',
 		'App.store.patient.PatientDocuments',
@@ -43,7 +44,7 @@ Ext.define('App.view.patient.Documents', {
 
 		me.items = [
 			{
-				xtype: 'grid',
+				xtype: 'gridlivesearch',
 				region: 'west',
 				split: true,
 				flex: 1,

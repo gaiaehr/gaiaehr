@@ -38,6 +38,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<title>GaiaEHR :: Loading...</title>
 		<link rel="stylesheet" type="text/css" href="resources/css/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
+<!--		<link rel="stylesheet" type="text/css" href="resources/css/carbon/carbon.css">-->
 		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 		<link rel="stylesheet" type="text/css" href="lib/darkroomjs/build/css/darkroom.min.css">
@@ -202,6 +203,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'Ext.ux.SlidingPager',
 		            'Ext.ux.PreviewPlugin',
 		            'Ext.ux.form.SearchField',
+
+		            'App.ux.grid.LiveSearchGridPanel',
 		            'App.ux.RatingField',
 		            'App.ux.grid.GridToHtml',
 		            'App.ux.grid.Printer',

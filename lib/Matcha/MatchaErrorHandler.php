@@ -50,15 +50,6 @@ class MatchaErrorHandler extends Matcha {
 
 		// normal output - to Apache error.log
 		error_log('Matcha::connect: ' . $constructErrorMessage);
-
-		// Browser Debug Feature - Plugin
-		$browserName = MatchaUtils::BrowserOS()->getBrowser();
-		//        if($__browserDebug)
-		//        {
-		//            if($browserName == Browser::BROWSER_FIREFOX) MatchaUtils::FirePHP()->getInstance(true)->log($constructErrorMessage, 'FirePHP -> ');
-		////            if($browserName == Browser::BROWSER_CHROME) MatchaUtils::ChromePHP()->log('ChromePHP -> '.$constructErrorMessage);
-		//        }
-
 		return $errorException;
 	}
 

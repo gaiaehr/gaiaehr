@@ -3282,14 +3282,15 @@ class CCDDocument {
 					];
 				}
 
-				$entry['act']['entryRelationship']['observation']['value'] = [
-					'@attributes' => [
-						'xsi:type' => 'CD',
-						'code' => $item['code'],
-						'codeSystemName' => $item['code_type'],
-						'codeSystem' => $this->codes[$item['code_type']]
-					]
-				];
+                $entry['act']['entryRelationship']['observation']['value'] = [
+                    '@attributes' => [
+                        'xsi:type' => 'CD',
+                        'code' => $item['code'],
+                        'codeSystemName' => $item['code_type'],
+                        'codeSystem' => $this->codes[$item['code_type']]
+                    ]
+                ];
+
 				$entry['act']['entryRelationship']['observation']['entryRelationship'] = [
 					'@attributes' => [
 						'typeCode' => 'REFR'

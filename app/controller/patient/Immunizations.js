@@ -80,7 +80,13 @@ Ext.define('App.controller.patient.Immunizations', {
 			},
 			'#patientImmunizationsEditFormAdministeredByField':{
 				select: me.onPatientImmunizationsEditFormAdministeredByFieldSelect
-			}
+			},
+            '#SubmitImmunizationWindow #ActiveFacilitiesCombo':{
+                change: me.onActiveFacilitiesChange
+            },
+            '#SubmitImmunizationWindow #ApplicationCombo':{
+                change: me.onApplicationChange
+            }
 		});
 	},
 
@@ -187,6 +193,7 @@ Ext.define('App.controller.patient.Immunizations', {
 		return Ext.widget('window',{
 			title: _('submit_hl7_vxu'),
 			closable: false,
+            itemId: 'SubmitImmunizationWindow',
 			modal: true,
 			bodyStyle:'background-color:white',
 			defaults:{
@@ -219,6 +226,7 @@ Ext.define('App.controller.patient.Immunizations', {
 				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
 					fieldLabel: _('send_from'),
 					emptyText: _('select'),
+                    itemId: 'ActiveFacilitiesCombo',
 					labelWidth: 60,
 					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
@@ -234,6 +242,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					fieldLabel: _('send_to'),
 					emptyText: _('select'),
 					allowBlank: false,
+                    itemId: 'ApplicationCombo',
 					forceSelection: true,
 					labelWidth: 60,
 					displayField: 'application_name',
@@ -250,14 +259,18 @@ Ext.define('App.controller.patient.Immunizations', {
 				{
 					text: _('send'),
 					scope: me,
+                    itemId: 'send',
 					handler: me.doSendVxu,
-                    action: 'send'
+                    action: 'send',
+                    disabled: true
 				},
                 {
                     text: _('download'),
                     scope: me,
+                    itemId: 'download',
                     handler: me.doSendVxu,
-                    action: 'download'
+                    action: 'download',
+                    disabled: true
                 },
 				{
 					text:_('cancel'),
@@ -268,6 +281,34 @@ Ext.define('App.controller.patient.Immunizations', {
 			]
 		}).show();
 	},
+
+    /**
+     * Only activate the send, & download button when facilities and application has been
+     * selected
+     * @param me
+     * @param newValue
+     * @param oldValue
+     */
+    onActiveFacilitiesChange: function(me, newValue, oldValue){
+        if(Ext.ComponentQuery.query('#ApplicationCombo')[0].getValue()){
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #send')[0].setDisabled(false);
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #download')[0].setDisabled(false);
+        }
+    },
+
+    /**
+     * Only activate the send, & download button when facilities and application has been
+     * selected
+     * @param me
+     * @param newValue
+     * @param oldValue
+     */
+    onApplicationChange: function(me, newValue, oldValue){
+        if(Ext.ComponentQuery.query('#ActiveFacilitiesCombo')[0].getValue()){
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #send')[0].setDisabled(false);
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #download')[0].setDisabled(false);
+        }
+    },
 
 	doSendVxu:function(btn){
 		var me = this,

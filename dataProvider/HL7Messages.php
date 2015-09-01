@@ -501,8 +501,8 @@ class HL7Messages {
 
             // Download the message
             if($params->delivery == 'download') {
-                $this->Download();
-                return ['success' => true];
+                $this->Download($this->patient);
+                return;
             }
 
             if($this->to['route'] == 'file'){
@@ -533,20 +533,17 @@ class HL7Messages {
      * Method to download the HL7 Message via web browser.
      * @return array
      */
-    public function Download(){
+    public function Download($pid){
         try{
-
-            //$this->msg->message
-            $string1 = 'Some data some data some data';
-
             $zip = new ZipArchive();
-            $filename = "test.zip";
+            $pid = preg_replace('/[^a-z0-9]/i', '_', $pid);
+            $filename = $pid.".zip";
 
             if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
                 exit("cannot open <$filename>\n");
             }
 
-            $zip->addFromString("string1.txt", $string1);
+            $zip->addFromString($pid.".HL7", $this->msg->message);
             $zip->close();
 
             header("Pragma: public");
@@ -559,9 +556,9 @@ class HL7Messages {
             header("Content-Transfer-Encoding: binary");
             // make sure the file size isn't cached
             clearstatcache();
-            header("Content-Length: ".filesize('test.zip'));
+            header("Content-Length: ".filesize($filename));
             // output the file
-            readfile('test.zip');
+            readfile($filename);
 
         }catch (Exception $e){
             return array(

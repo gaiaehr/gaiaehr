@@ -499,6 +499,12 @@ class HL7Messages {
 
             $msgRecord = $this->saveMsg();
 
+            // Download the message
+            if($params->delivery == 'download') {
+                $this->Download();
+                return ['success' => true];
+            }
+
             if($this->to['route'] == 'file'){
                 $response = $this->Save();
             } else {
@@ -522,6 +528,48 @@ class HL7Messages {
             return ['success' => false];
         }
 	}
+
+    /**
+     * Method to download the HL7 Message via web browser.
+     * @return array
+     */
+    public function Download(){
+        try{
+
+            //$this->msg->message
+            $string1 = 'Some data some data some data';
+
+            $zip = new ZipArchive();
+            $filename = "test.zip";
+
+            if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
+                exit("cannot open <$filename>\n");
+            }
+
+            $zip->addFromString("string1.txt", $string1);
+            $zip->close();
+
+            header("Pragma: public");
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header("Content-type: application/octet-stream");
+            header("Content-Disposition: attachment; filename=\"".$filename."\"");
+            header("Content-Transfer-Encoding: binary");
+            // make sure the file size isn't cached
+            clearstatcache();
+            header("Content-Length: ".filesize('test.zip'));
+            // output the file
+            readfile('test.zip');
+
+        }catch (Exception $e){
+            return array(
+                'success' => false,
+                'message' => $e->getMessage()
+            );
+        }
+    }
 
 	private function setMSH($includeNPI = false) {
 		$this->setEncounter();

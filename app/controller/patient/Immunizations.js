@@ -250,8 +250,15 @@ Ext.define('App.controller.patient.Immunizations', {
 				{
 					text: _('send'),
 					scope: me,
-					handler: me.doSendVxu
+					handler: me.doSendVxu,
+                    action: 'send'
 				},
+                {
+                    text: _('download'),
+                    scope: me,
+                    handler: me.doSendVxu,
+                    action: 'download'
+                },
 				{
 					text:_('cancel'),
 					handler:function(){
@@ -262,7 +269,7 @@ Ext.define('App.controller.patient.Immunizations', {
 		}).show();
 	},
 
-	doSendVxu:function(){
+	doSendVxu:function(btn){
 		var me = this,
 			sm = me.getImmunizationsGrid().getSelectionModel(),
             ImmunizationSelection = sm.getSelection(),
@@ -279,6 +286,7 @@ Ext.define('App.controller.patient.Immunizations', {
 			params.from = me.vxuFrom.getValue();
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
+            params.delivery = btn.action;
 
 			me.vxuWindow.el.mask(_('sending'));
 

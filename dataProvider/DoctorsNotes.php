@@ -25,7 +25,8 @@ class DoctorsNotes {
 	private $n;
 
 	function __construct(){
-		$this->n = MatchaModel::setSenchaModel('App.model.patient.DoctorsNote');
+        if($this->n == NULL)
+            $this->n = MatchaModel::setSenchaModel('App.model.patient.DoctorsNote');
 	}
 
 	public function getDoctorsNotes($params){

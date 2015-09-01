@@ -35,7 +35,8 @@ class User {
 
 	function __construct(){
 		$this->acl = new ACL();
-		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+        if(!isset($this->u))
+            $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
 	}
 
 	public function getUsers($params){

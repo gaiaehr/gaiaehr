@@ -76,8 +76,10 @@ class DecisionSupport {
 	private $rules = null;
 
 	function __construct() {
-		$this->r = MatchaModel::setSenchaModel('App.model.administration.DecisionSupportRule');
-		$this->rc = MatchaModel::setSenchaModel('App.model.administration.DecisionSupportRuleConcept');
+        if($this->r == NULL)
+            $this->r = MatchaModel::setSenchaModel('App.model.administration.DecisionSupportRule');
+        if($this->rc == NULL)
+            $this->rc = MatchaModel::setSenchaModel('App.model.administration.DecisionSupportRuleConcept');
 		$this->Orders = new Orders();
 		$this->Vitals = new Vitals();
 		$this->Allergies = new Allergies();

@@ -24,7 +24,8 @@ class PatientZone {
 	private $pz;
 
 	function __construct(){
-		$this->pz = MatchaModel::setSenchaModel('App.model.patient.PatientZone');
+        if(!isset($this->pz))
+            $this->pz = MatchaModel::setSenchaModel('App.model.patient.PatientZone');
 	}
 
 	public function addPatientToZone($params){

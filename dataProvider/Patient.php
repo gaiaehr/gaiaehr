@@ -64,7 +64,7 @@ class Patient {
 	 * @return MatchaCUP
 	 */
 	public function setPatientModel() {
-		if($this->p == null)
+        if(!isset($this->p))
             return $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
 	}
 

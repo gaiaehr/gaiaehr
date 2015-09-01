@@ -55,21 +55,22 @@ class FormLayoutEngine {
 		$this->setComboListModel();
 		$this->setComboListOptionsModel();
 		$this->setFieldOptionModel();
-		$this->ff = MatchaModel::setSenchaModel('App.model.administration.FormField');
+        if(!isset($this->ff))
+            $this->ff = MatchaModel::setSenchaModel('App.model.administration.FormField');
 	}
 
 	private function setFieldOptionModel(){
-		if($this->o == null)
+        if(!isset($this->o))
 			$this->o = MatchaModel::setSenchaModel('App.model.administration.FormFieldOptions');
 	}
 
 	private function setComboListModel(){
-		if($this->cl == null)
+        if(!isset($this->cl))
 			$this->cl = MatchaModel::setSenchaModel('App.model.administration.Lists');
 	}
 
 	private function setComboListOptionsModel(){
-		if($this->clo == null)
+        if(!isset($this->clo))
 			$this->clo = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 	}
 

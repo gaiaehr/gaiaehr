@@ -511,7 +511,7 @@ class MatchaCUP {
 				continue;
 
 			$sortDirection = (isset($sort->direction) ? $sort->direction : '');
-			$sortArray[] = $sort->property . ' ' . $sortDirection;
+			$sortArray[] = '`' .$sort->property . '` ' . $sortDirection;
 
 		}
 		return $sortArray;

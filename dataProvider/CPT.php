@@ -25,7 +25,8 @@ class CPT {
 	private $c;
 
 	function __construct() {
-		$this->c = MatchaModel::setSenchaModel('App.model.administration.CPT');
+        if($this->c == NULL)
+            $this->c = MatchaModel::setSenchaModel('App.model.administration.CPT');
 	}
 
 	public function getCPTs($params){

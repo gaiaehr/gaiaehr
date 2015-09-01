@@ -51,15 +51,15 @@ class Practice
     }
 
 	private function setPharmacyModel(){
-		if(is_null($this->p)) $this->p = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
+        if(!isset($this->p)) $this->p = MatchaModel::setSenchaModel('App.model.administration.Pharmacies');
 	}
 
 	private function setLaboratoryModel(){
-		if(is_null($this->l)) $this->l = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
+        if(!isset($this->l)) $this->l = MatchaModel::setSenchaModel('App.model.administration.Laboratories');
 	}
 
 	private function setInsuranceCompanyModel(){
-		if(is_null($this->i)) $this->i = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
+        if(!isset($this->i)) $this->i = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
 	}
 
 	//**********************************************************************************

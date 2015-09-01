@@ -97,14 +97,22 @@ class HL7Messages {
 	function __construct() {
 		$this->hl7 = new HL7();
 		$this->conn = Matcha::getConn();
-		$this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
-        $this->PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
-		$this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
-		$this->u = MatchaModel::setSenchaModel('App.model.administration.User');
-		$this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
-		$this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
-		$this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
-		$this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if(!isset($this->p))
+            $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+        if(!isset($this->PatientContacts))
+            $this->PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
+        if(!isset($this->e))
+            $this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
+        if(!isset($this->u))
+            $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
+        if(!isset($this->r))
+            $this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
+        if(!isset($this->m))
+            $this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
+        if(!isset($this->c))
+            $this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
+        if(!isset($this->f))
+            $this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
 	}
 
 	function broadcastADT($params){

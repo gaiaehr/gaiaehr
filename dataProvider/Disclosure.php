@@ -25,7 +25,8 @@ class Disclosure {
 	private $d;
 
 	function __construct(){
-		$this->d = MatchaModel::setSenchaModel('App.model.patient.Disclosures');
+        if($this->d == NULL)
+            $this->d = MatchaModel::setSenchaModel('App.model.patient.Disclosures');
 	}
 
 	public function getDisclosures($params){

@@ -50,7 +50,8 @@ class FormLayoutBuilder {
 	function __construct(){
 		$this->db = new MatchaHelper();
 		$this->conn = Matcha::getConn();
-		$this->ff = MatchaModel::setSenchaModel('App.model.administration.FormField');
+        if(!isset($this->ff))
+            $this->ff = MatchaModel::setSenchaModel('App.model.administration.FormField');
 	}
 
 	/**

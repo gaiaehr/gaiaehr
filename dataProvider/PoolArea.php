@@ -59,15 +59,13 @@ class PoolArea {
 	}
 
 	private function setPaModel(){
-		if(!isset($this->pa)){
-			$this->pa = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
-		}
+		if(!isset($this->pa))
+            $this->pa = MatchaModel::setSenchaModel('App.model.areas.PoolArea');
 	}
 
 	private function setPpModel(){
-		if(!isset($this->pp)){
-			$this->pp = MatchaModel::setSenchaModel('App.model.areas.PatientPool');
-		}
+		if(!isset($this->pp))
+            $this->pp = MatchaModel::setSenchaModel('App.model.areas.PatientPool');
 	}
 
 	public function getPatientsArrivalLog(stdClass $params) {

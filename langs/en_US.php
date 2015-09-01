@@ -1614,5 +1614,6 @@ $LANG = array(
     'area_code'                             => 'Area Code',
     'local_number'                          => 'Local Number',
     'field_updated'                         => 'Field Updated',
-    'publicity'                             => 'Publicity'
+    'publicity'                             => 'Publicity',
+    'financial'                             => 'Financial'
 );

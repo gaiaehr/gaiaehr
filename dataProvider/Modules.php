@@ -33,7 +33,8 @@ class Modules {
 
 	function __construct() {
 		$this->modulesDir = ROOT . '/modules/';
-		$this->m = MatchaModel::setSenchaModel('App.model.administration.Modules');
+        if(!isset($this->m))
+            $this->m = MatchaModel::setSenchaModel('App.model.administration.Modules');
 		$this->setNewModules();
 	}
 

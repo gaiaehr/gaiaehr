@@ -30,7 +30,8 @@ class Allergies {
 	private $d;
 
 	function __construct() {
-		$this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
+        if($this->a == NULL)
+            $this->a = MatchaModel::setSenchaModel('App.model.patient.Allergies');
 	}
 
 	private function setAdminAllergyModel(){

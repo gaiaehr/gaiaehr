@@ -33,6 +33,7 @@ class MatchaUtils extends Matcha
         return $tabs;
     }
 
+
     /**
      * function Carbon():
      * Method to enable the use of Carbon class Plugin
@@ -42,44 +43,6 @@ class MatchaUtils extends Matcha
     {
         require_once('plugins/Carbon/Carbon.php');
         return new Carbon();
-    }
-
-    /**
-     * function BrowserOS():
-     * Method to enable the use of BrowserDetect class Plugin
-     * The class will also detect the client operating system.
-     * @return Browser
-     */
-    static public function BrowserOS()
-    {
-        require_once('plugins/BrowserDetect/Browser.php');
-        return new Browser();
-    }
-
-    /**
-     * function ChromePHP():
-     * Method to enable the use of ChromePHP class Plugin
-     * This class is used by MatchaErrorHandler, but you can use it
-     * to send console messages to Chrome Web Browser.
-     * @return mixed
-     */
-    static public function ChromePHP()
-    {
-//        require_once('plugins/ChromePHP/ChromePhp.php');
-//        return ChromePhp()->getInstance();
-    }
-
-    /**
-     * function FirePHP():
-     * Method to enable the use of FirePHP class Plugin
-     * This class is used by MatchaErrorHandler, but you can use it
-     * to send console messages to (Firefox Browser) FirePHP Plugin
-     * @return FirePHP
-     */
-    static public function FirePHP()
-    {
-        require_once('plugins/FirePHPCore-0.3.2/FirePHP.class.php');
-        return new FirePHP();
     }
 
     /**

@@ -25,7 +25,7 @@ class PatientContacts {
     private $Contacts;
 
     function __construct(){
-        if(!$this->Contacts)
+        if(!isset($this->Contacts))
             $this->Contacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
     }
 
@@ -62,7 +62,6 @@ class PatientContacts {
      * @return mixed
      */
     public function getSelfContact($pid) {
-        error_log(print_r($pid,true));
         return $this->Contacts->sql('SELECT *,
             combo_lists_options.option_name as relationship_name
             FROM patient_contacts

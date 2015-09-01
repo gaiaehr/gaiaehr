@@ -106,6 +106,17 @@ Ext.define('App.model.patient.EncounterService', {
 			type: 'string',
 			len: 20
 		},
+        {
+            name: 'financial_class',
+            type: 'string',
+            len: 4
+        },
+        {
+            name: 'financial_name',
+            type: 'string',
+            len: 4,
+            store: false
+        },
 		{
 			name: 'create_uid',
 			type: 'int'

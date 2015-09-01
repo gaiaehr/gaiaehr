@@ -23,7 +23,8 @@ class Procedures {
 	private $p;
 
 	function __construct() {
-		$this->p = MatchaModel::setSenchaModel('App.model.patient.encounter.Procedures');
+        if(!isset($this->p))
+            $this->p = MatchaModel::setSenchaModel('App.model.patient.encounter.Procedures');
 	}
 
 	public function getPatientProcedures($params) {

@@ -33,17 +33,15 @@ class Laboratories {
 
 	function __construct() {
 		$this->conn = Matcha::getConn();
-
 		$this->db = new MatchaHelper();
-		//	    if($this->LP == null) $this->LO = MatchaModel::setSenchaModel('App.model.administration.LabPanels');
-		if($this->LO == null)
+        if(!isset($this->LO))
 			$this->LO = MatchaModel::setSenchaModel('App.model.administration.LabObservations');
 		return;
 	}
 
-	//------------------------------------------------------------------------------------------------------------------
-	// Main Sencha Model Getter and Setters
-	//------------------------------------------------------------------------------------------------------------------
+	/**
+	 * Main Sencha Model Getter and Setters
+	 */
 	public function getLoincPanels(stdClass $params) {
 		$sth = $this->conn->prepare("SELECT DISTINCT l.loinc_num as id,
                                   l.long_common_name as code_text,

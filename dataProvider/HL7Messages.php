@@ -49,6 +49,11 @@ class HL7Messages {
      */
     private $PatientContacts;
 
+    /**
+     * @var MatchaCUP Encounter Services
+     */
+    private $EncounterServices;
+
 	/**
 	 * @var MatchaCUP PatientImmunization
 	 */
@@ -101,6 +106,8 @@ class HL7Messages {
             $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
         if(!isset($this->PatientContacts))
             $this->PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
+        if(!isset($this->EncounterServices))
+            $this->EncounterServices = MatchaModel::setSenchaModel('App.model.patient.EncounterService');
         if(!isset($this->e))
             $this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
         if(!isset($this->u))
@@ -388,14 +395,16 @@ class HL7Messages {
 
             $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
             include_once(ROOT . '/dataProvider/Immunizations.php');
+            include_once(ROOT . '/dataProvider/EncounterService.php');
             $immunization = new Immunizations();
+            $EncounterServices = new Services();
 
             // Immunizations loop
             foreach($params->immunizations AS $i){
 
                 $immu = $this->i->load($i)->one();
 
-                // ORC - 4.5.1 ORC - Commoon Order Segment
+                // ORC - 4.5.1 ORC - Common Order Segment
                 $ORC = $this->hl7->addSegment('ORC');
                 $ORC->setValue('1', 'RE'); //HL70119
                 $ORC->setValue('3.1', 'GAIA10001');

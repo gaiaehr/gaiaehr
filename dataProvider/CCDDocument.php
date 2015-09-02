@@ -151,30 +151,7 @@ class CCDDocument {
 		'ps' => '2.16.840.1.113883.3.88.11.32.1'
 		// Patient Summary
 	];
-	/**
-	 * @var array
-	 */
-	private $codes = [
-		'CPT' => '2.16.840.1.113883.6.12',
-		'CPT4' => '2.16.840.1.113883.6.12',
-		'CPT-4' => '2.16.840.1.113883.6.12',
-		'ICD9' => '2.16.840.1.113883.6.42',
-		'ICD-9' => '2.16.840.1.113883.6.42',
-		'ICD10' => '2.16.840.1.113883.6.3',
-		'ICD-10' => '2.16.840.1.113883.6.3',
-		'LN' => '2.16.840.1.113883.6.1',
-		'LOINC' => '2.16.840.1.113883.6.1',
-		'NDC' => '2.16.840.1.113883.6.6',
-		'RXNORM' => '2.16.840.1.113883.6.88',
-		'SNOMED' => '2.16.840.1.113883.6.96',
-		'SNOMEDCT' => '2.16.840.1.113883.6.96',
-		'SNOMED-CT' => '2.16.840.1.113883.6.96',
-		'NPI' => '2.16.840.1.113883.4.6',
-		'UNII' => '2.16.840.1.113883.4.9',
-		'NCI' => '2.16.840.1.113883.3.26.1.1',
-		'ActPriority' => '2.16.840.1.113883.1.11.16866',
-	    'TAXONOMY' => '2.16.840.1.114222.4.11.106'
-	];
+
 	/**
 	 * @var array
 	 */
@@ -229,6 +206,65 @@ class CCDDocument {
         $this->PatientContacts = new PatientContacts();
 		$this->facility = $this->Facilities->getCurrentFacility(true);
 	}
+
+    /**
+     * Return the pertinent OID of a certain code system name
+     * @param $codeSystem
+     * @return string
+     */
+    function codes($codeSystem){
+        if(isset($codeSystem)) return '';
+        switch($codeSystem)
+        {
+            case 'CPT':
+                return '2.16.840.1.113883.6.12';
+                break;
+            case 'CPT4':
+            case 'CPT-4':
+                return '2.16.840.1.113883.6.12';
+                break;
+            case 'ICD9':
+            case 'ICD-9':
+                return '2.16.840.1.113883.6.42';
+                break;
+            case 'ICD10':
+            case 'ICD-10':
+                return '2.16.840.1.113883.6.3';
+                break;
+            case 'LN':
+            case 'LOINC':
+                return '2.16.840.1.113883.6.1';
+                break;
+            case 'NDC':
+                return '2.16.840.1.113883.6.6';
+                break;
+            case 'RXNORM':
+                return '2.16.840.1.113883.6.88';
+                break;
+            case 'SNOMED':
+            case 'SNOMEDCT':
+            case 'SNOMED-CT':
+                return '2.16.840.1.113883.6.96';
+                break;
+            case 'NPI':
+                return '2.16.840.1.113883.4.6';
+                break;
+            case 'UNII':
+                return '2.16.840.1.113883.4.9';
+                break;
+            case 'NCI':
+                return '2.16.840.1.113883.3.26.1.1';
+                break;
+            case 'ActPriority':
+                return '2.16.840.1.113883.1.11.16866';
+                break;
+            case 'TAXONOMY':
+                return '2.16.840.1.114222.4.11.106';
+                break;
+            default:
+                return '';
+        }
+    }
 
 	/**
 	 * @param $pid
@@ -1537,7 +1573,7 @@ class CCDDocument {
 						'code' => [
 							'@attributes' => [
 								'code' => $item['code'],
-								'codeSystem' => $this->codes[$item['code_type']],
+								'codeSystem' => $this->codes($item['code_type']),
 								'displayName' => $item['code_text']
 							]
 						],
@@ -2860,7 +2896,7 @@ class CCDDocument {
 							'@attributes' => [
 								'code' => $item['code'],
 								'codeSystemName' => $item['code_type'],
-								'codeSystem' => $this->codes[$item['code_type']],
+								'codeSystem' => $this->codes($item['code_type']),
 								'displayName' => $item['description']
 							]
 						],
@@ -3033,7 +3069,7 @@ class CCDDocument {
 							'@attributes' => [
 								'code' => $item['goal_code'],
 								'codeSystemName' => $item['goal_code_type'],
-								'codeSystem' => $this->codes[$item['goal_code_type']],
+								'codeSystem' => $this->codes($item['goal_code_type']),
 								'displayName' => htmlentities($item['goal']),
 							]
 						],
@@ -3282,14 +3318,15 @@ class CCDDocument {
 					];
 				}
 
-				$entry['act']['entryRelationship']['observation']['value'] = [
-					'@attributes' => [
-						'xsi:type' => 'CD',
-						'code' => $item['code'],
-						'codeSystemName' => $item['code_type'],
-						'codeSystem' => $this->codes[$item['code_type']]
-					]
-				];
+                $entry['act']['entryRelationship']['observation']['value'] = [
+                    '@attributes' => [
+                        'xsi:type' => 'CD',
+                        'code' => $item['code'],
+                        'codeSystemName' => $item['code_type'],
+                        'codeSystem' => $this->codes($item['code_type'])
+                    ]
+                ];
+
 				$entry['act']['entryRelationship']['observation']['entryRelationship'] = [
 					'@attributes' => [
 						'typeCode' => 'REFR'
@@ -3575,7 +3612,7 @@ class CCDDocument {
 						'code' => $item['allergy_type_code'],
 						'displayName' => $item['allergy_type'],
 						'codeSystemName' => $item['allergy_type_code_type'],
-						'codeSystem' => $this->codes[$item['allergy_type_code_type']]
+						'codeSystem' => $this->codes($item['allergy_type_code_type'])
 					]
 				];
 
@@ -3596,7 +3633,7 @@ class CCDDocument {
 									'code' => $item['allergy_code'],
 									'displayName' => $item['allergy'],
 									'codeSystemName' => $item['allergy_code_type'],
-									'codeSystem' => $this->codes[$item['allergy_code_type']]
+									'codeSystem' => $this->codes($item['allergy_code_type'])
 								]
 							]
 						]
@@ -3674,7 +3711,7 @@ class CCDDocument {
 						'code' => $item['status_code'],
 						'displayName' => $item['status'],
 						'codeSystemName' => $item['status_code_type'],
-						'codeSystem' => $this->codes[$item['status_code_type']]
+						'codeSystem' => $this->codes($item['status_code_type'])
 					]
 				];
 
@@ -3755,7 +3792,7 @@ class CCDDocument {
 						'code' => $item['reaction_code'],
 						'displayName' => $item['reaction'],
 						'codeSystemName' => $item['reaction_code_type'],
-						'codeSystem' => $this->codes[$item['reaction_code_type']]
+						'codeSystem' => $this->codes($item['reaction_code_type'])
 					]
 				];
 
@@ -3834,7 +3871,7 @@ class CCDDocument {
 						'code' => $item['severity_code'],
 						'displayName' => $item['severity'],
 						'codeSystemName' => $item['severity_code_type'],
-						'codeSystem' => $this->codes[$item['severity_code_type']]
+						'codeSystem' => $this->codes($item['severity_code_type'])
 					]
 				];
 
@@ -3950,7 +3987,7 @@ class CCDDocument {
 							'code' => $smokingStatus['status_code'],
 							'displayName' => $smokingStatus['status'],
 							'codeSystemName' => $smokingStatus['status_code_type'],
-							'codeSystem' => $this->codes[$smokingStatus['status_code_type']]
+							'codeSystem' => $this->codes($smokingStatus['status_code_type'])
 						]
 					]
 				]
@@ -4051,7 +4088,7 @@ class CCDDocument {
 					'code' => [
 						'@attributes' => [
 							'code' => $socialHistoryEntry['category_code'],
-							'codeSystem' => $this->codes[$socialHistoryEntry['category_code_type']],
+							'codeSystem' => $this->codes($socialHistoryEntry['category_code_type']),
 							'codeSystemName' => $socialHistoryEntry['category_code_text'],
 							'displayName' => $socialHistoryEntry['category_code_text']
 						]
@@ -4288,7 +4325,7 @@ class CCDDocument {
 								'code' => $item['code'],
 								'displayName' => $item['description'],
 								'codeSystemName' => $item['code_type'],
-								'codeSystem' => $this->codes[$item['code_type']]
+								'codeSystem' => $this->codes($item['code_type'])
 							]
 						],
 						/**
@@ -4352,7 +4389,7 @@ class CCDDocument {
 								'@attributes' => [
 									'code' => $obs['code'],
 									'codeSystemName' => $obs['code_type'],
-									'codeSystem' => $this->codes[$obs['code_type']],
+									'codeSystem' => $this->codes($obs['code_type']),
 									'displayName' => $obs['code_text']
 								]
 							],
@@ -4579,7 +4616,7 @@ class CCDDocument {
 					'@attributes' => [
 						'code' => $item['category_code'],
 						'codeSystemName' => $item['category_code_type'],
-						'codeSystem' => $this->codes[$item['category_code_type']],
+						'codeSystem' => $this->codes($item['category_code_type']),
 						'displayName' => $item['category']
 					]
 				];
@@ -4635,7 +4672,7 @@ class CCDDocument {
 						'xsi:type' => 'CD',
 						'code' => $item['code'],
 						'codeSystemName' => $item['code_type'],
-						'codeSystem' => $this->codes[$item['code_type']],
+						'codeSystem' => $this->codes($item['code_type']),
 						'displayName' => $item['code_text']
 					]
 				];
@@ -4744,7 +4781,7 @@ class CCDDocument {
 							'@attributes' => [
 								// CPT4 Visit code 99200 <-> 99299
 								'code' => '99200',
-								'codeSystem' => $this->codes['CPT4'],
+								'codeSystem' => $this->codes('CPT4'),
 							]
 						],
 						/**

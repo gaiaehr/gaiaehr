@@ -1602,34 +1602,50 @@ Ext.define('App.ux.grid.LiveSearchGridPanel', {
 			me.store.each(function(record, idx){
 
 				var td = Ext.fly(me.view.getNode(record)).down('td'),
-					cell, matches, cellHTML;
+					cell, matches, cellHTML, is_special;
+
 
 				while(td){
+
+					is_special = false;
+
 					cell = td.down('.x-grid-cell-inner');
 					matches = cell.dom.innerHTML.match(me.tagsRe);
 					cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
 
-					// populate indexes array, set currentIndex, and replace wrap matched string in a span
-					cellHTML = cellHTML.replace(me.searchRegExp, function(m){
-						count += 1;
-						if(Ext.Array.indexOf(me.indexes, record) === -1){
-							me.indexes.push(record);
+					if(matches){
+						for(var i = 0; i < matches.length; i++){
+							if(matches[i].indexOf('x-grid-row-checker') !== -1){
+								is_special = true;
+								break;
+							}
 						}
-						if(me.currentIndex === null){
-							me.currentIndex = record;
-						}
+					}
 
-						return '<span class="' + me.matchCls + '">' + m + '</span>';
-					});
 
-					say(cellHTML);
+					if(!is_special){
+						// populate indexes array, set currentIndex, and replace wrap matched string in a span
+						cellHTML = cellHTML.replace(me.searchRegExp, function(m){
+							count += 1;
+							if(Ext.Array.indexOf(me.indexes, record) === -1){
+								me.indexes.push(record);
+							}
+							if(me.currentIndex === null){
+								me.currentIndex = record;
+							}
 
-					// restore protected tags
-					Ext.each(matches, function(match){
-						cellHTML = cellHTML.replace(me.tagsProtect, match);
-					});
-					// update cell html
-					cell.dom.innerHTML = cellHTML;
+							return '<span class="' + me.matchCls + '">' + m + '</span>';
+						});
+
+						// restore protected tags
+						Ext.each(matches, function(match){
+							cellHTML = cellHTML.replace(me.tagsProtect, match);
+						});
+						// update cell html
+						cell.dom.innerHTML = cellHTML;
+					}
+
+
 					td = td.next();
 				}
 
@@ -15307,6 +15323,17 @@ Ext.define('App.model.patient.EncounterService', {
 			type: 'string',
 			len: 20
 		},
+        {
+            name: 'financial_class',
+            type: 'string',
+            len: 4
+        },
+        {
+            name: 'financial_name',
+            type: 'string',
+            len: 4,
+            store: false
+        },
 		{
 			name: 'create_uid',
 			type: 'int'
@@ -40089,7 +40116,13 @@ Ext.define('App.controller.patient.Immunizations', {
 			},
 			'#patientImmunizationsEditFormAdministeredByField':{
 				select: me.onPatientImmunizationsEditFormAdministeredByFieldSelect
-			}
+			},
+            '#SubmitImmunizationWindow #ActiveFacilitiesCombo':{
+                change: me.onActiveFacilitiesChange
+            },
+            '#SubmitImmunizationWindow #ApplicationCombo':{
+                change: me.onApplicationChange
+            }
 		});
 	},
 
@@ -40196,6 +40229,7 @@ Ext.define('App.controller.patient.Immunizations', {
 		return Ext.widget('window',{
 			title: _('submit_hl7_vxu'),
 			closable: false,
+            itemId: 'SubmitImmunizationWindow',
 			modal: true,
 			bodyStyle:'background-color:white',
 			defaults:{
@@ -40228,6 +40262,7 @@ Ext.define('App.controller.patient.Immunizations', {
 				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
 					fieldLabel: _('send_from'),
 					emptyText: _('select'),
+                    itemId: 'ActiveFacilitiesCombo',
 					labelWidth: 60,
 					store: Ext.create('App.store.administration.HL7Clients',{
 						filters:[
@@ -40243,6 +40278,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					fieldLabel: _('send_to'),
 					emptyText: _('select'),
 					allowBlank: false,
+                    itemId: 'ApplicationCombo',
 					forceSelection: true,
 					labelWidth: 60,
 					displayField: 'application_name',
@@ -40259,8 +40295,19 @@ Ext.define('App.controller.patient.Immunizations', {
 				{
 					text: _('send'),
 					scope: me,
-					handler: me.doSendVxu
+                    itemId: 'send',
+					handler: me.doSendVxu,
+                    action: 'send',
+                    disabled: true
 				},
+                {
+                    text: _('download'),
+                    scope: me,
+                    itemId: 'download',
+                    handler: me.doSendVxu,
+                    action: 'download',
+                    disabled: true
+                },
 				{
 					text:_('cancel'),
 					handler:function(){
@@ -40271,7 +40318,35 @@ Ext.define('App.controller.patient.Immunizations', {
 		}).show();
 	},
 
-	doSendVxu:function(){
+    /**
+     * Only activate the send, & download button when facilities and application has been
+     * selected
+     * @param me
+     * @param newValue
+     * @param oldValue
+     */
+    onActiveFacilitiesChange: function(me, newValue, oldValue){
+        if(Ext.ComponentQuery.query('#ApplicationCombo')[0].getValue()){
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #send')[0].setDisabled(false);
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #download')[0].setDisabled(false);
+        }
+    },
+
+    /**
+     * Only activate the send, & download button when facilities and application has been
+     * selected
+     * @param me
+     * @param newValue
+     * @param oldValue
+     */
+    onApplicationChange: function(me, newValue, oldValue){
+        if(Ext.ComponentQuery.query('#ActiveFacilitiesCombo')[0].getValue()){
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #send')[0].setDisabled(false);
+            Ext.ComponentQuery.query('#SubmitImmunizationWindow #download')[0].setDisabled(false);
+        }
+    },
+
+	doSendVxu:function(btn){
 		var me = this,
 			sm = me.getImmunizationsGrid().getSelectionModel(),
             ImmunizationSelection = sm.getSelection(),
@@ -40288,6 +40363,7 @@ Ext.define('App.controller.patient.Immunizations', {
 			params.from = me.vxuFrom.getValue();
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
+            params.delivery = btn.action;
 
 			me.vxuWindow.el.mask(_('sending'));
 
@@ -44371,6 +44447,20 @@ Ext.define('App.view.patient.SupperBill', {
 				allowBlank: false
 			}
 		},
+        {
+            text: _('financial'),
+            dataIndex: 'financial_class',
+            flex: 1,
+            menuDisabled: true,
+            editor: {
+                xtype: 'gaiaehr.listcombo',
+                displayField: 'option_name',
+                valueField: 'option_value',
+                loadStore: true,
+                queryMode: 'local',
+                list: 135
+            }
+        },
 		{
 			header: _('modifiers'),
 			dataIndex: 'modifiers',
@@ -44920,7 +45010,7 @@ Ext.define('App.view.patient.Documents', {
 						xtype: 'datecolumn',
 						header: _('date'),
 						dataIndex: 'groupDate',
-						format: 'Y-m-d',
+						format: g('date_display_format'),
 						itemId: 'groupDate'
 
 					},
@@ -44984,7 +45074,10 @@ Ext.define('App.view.patient.Documents', {
 				xtype: 'panel',
 				region: 'center',
 				flex: 2,
-				layout: 'fit',
+				layout: {
+					type: 'vbox',
+					align: 'stretch'
+				},
 				frame: true,
 				itemId: 'patientDocumentViewerPanel',
 				style: 'background-color:#e7e7e7',
@@ -44993,6 +45086,7 @@ Ext.define('App.view.patient.Documents', {
 						xtype: 'miframe',
 						style: 'background-color:#e7e7e7',
 						autoMask: false,
+						flex: 1,
 						itemId: 'patientDocumentViewerFrame'
 					}
 				]
@@ -50171,7 +50265,6 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-
 						header: _('name'),
 						dataIndex: 'vaccine_name',
 						flex: 1
@@ -50247,9 +50340,8 @@ Ext.define('App.view.patient.Summary', {
 				],
 				columns: [
 					{
-
 						header: _('name'),
-						dataIndex: 'code',
+						dataIndex: 'code_text',
 						flex: 1
 					},
 					{

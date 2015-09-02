@@ -104,7 +104,7 @@ Ext.define('App.view.patient.Documents', {
 						xtype: 'datecolumn',
 						header: _('date'),
 						dataIndex: 'groupDate',
-						format: 'Y-m-d',
+						format: g('date_display_format'),
 						itemId: 'groupDate'
 
 					},
@@ -168,7 +168,10 @@ Ext.define('App.view.patient.Documents', {
 				xtype: 'panel',
 				region: 'center',
 				flex: 2,
-				layout: 'fit',
+				layout: {
+					type: 'vbox',
+					align: 'stretch'
+				},
 				frame: true,
 				itemId: 'patientDocumentViewerPanel',
 				style: 'background-color:#e7e7e7',
@@ -177,6 +180,7 @@ Ext.define('App.view.patient.Documents', {
 						xtype: 'miframe',
 						style: 'background-color:#e7e7e7',
 						autoMask: false,
+						flex: 1,
 						itemId: 'patientDocumentViewerFrame'
 					}
 				]

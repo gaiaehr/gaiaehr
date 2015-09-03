@@ -460,7 +460,9 @@ class HL7Messages {
                 // OBX - 7.4.2 OBX - Observation/Result Segment
                 $filters->filter[0]->property = 'eid';
                 $filters->filter[0]->value = $immu['eid'];
-                $Records = $EncounterServices->getEncounterServices($filters);
+                $filters->filter[1]->property = 'pid';
+                $filters->filter[1]->value = $immu['pid'];
+                $Records = $EncounterServices->getEncounterServicesByEIDandPID($filters);
                 $obxCount = 1;
                 foreach($Records as $Record) {
                     $OBX = $this->hl7->addSegment('OBX');

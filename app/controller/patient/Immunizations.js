@@ -22,6 +22,10 @@ Ext.define('App.controller.patient.Immunizations', {
 
 	],
 	refs: [
+        {
+            ref: 'SubmitImmunizationWindow',
+            selector: '#SubmitImmunizationWindow'
+        },
 		{
 			ref: 'ImmunizationPanel',
 			selector: 'patientimmunizationspanel'

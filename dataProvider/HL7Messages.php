@@ -550,16 +550,17 @@ class HL7Messages {
      * Method to download the HL7 Message via web browser.
      * @return array
      */
-    public function Download($pid){
+    public function downloadVXU($params){
         try{
             $zip = new ZipArchive();
-            $pid = preg_replace('/[^a-z0-9]/i', '_', $pid);
-            $filename = $pid.".zip";
+            $pid = preg_replace('/[^a-z0-9]/i', '_', $params->pid);
+            $filename = $params->pid.".zip";
 
             if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
-                exit("cannot open <$filename>\n");
+                throw new Exception("cannot open <$filename>");
             }
 
+            $this->sendVXU($params);
             $zip->addFromString($pid.".HL7", $this->msg->message);
             $zip->close();
 

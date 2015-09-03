@@ -33,7 +33,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				site = '<?php print $site ?>',
 				requires;
 		</script>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="utf-8" http-equiv="encoding">
 		<title>GaiaEHR</title>
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">

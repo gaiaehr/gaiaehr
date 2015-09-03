@@ -395,7 +395,7 @@ class HL7Messages {
 
             $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
             include_once(ROOT . '/dataProvider/Immunizations.php');
-            include_once(ROOT . '/dataProvider/EncounterService.php');
+            include_once(ROOT . '/dataProvider/Services.php');
             $immunization = new Immunizations();
             $EncounterServices = new Services();
 
@@ -458,21 +458,27 @@ class HL7Messages {
                 $RXR->setValue('2.3', $Record['code_type']);
 
                 // OBX - 7.4.2 OBX - Observation/Result Segment
-                // OBX|1|CE|64994-7^Vaccine funding program eligibility category^LN|1|V05^VFC eligible - Federally Qualified Health Center Patient
-                // (under-insured)^HL70064||||||F|||20120701|||VXC40^Eligibility captured at the immunization level^CDCPHINVS
-                $obxCount = 0;
-//                $OBX = $this->hl7->addSegment('OBX');
-//                $OBX->setValue('1', $obxCount);
-//                $OBX->setValue('2', 'CE');
-//                $OBX->setValue('3.1', '64994-7');
-//                $OBX->setValue('3.2', 'Vaccine funding program eligibility category');
-//                $OBX->setValue('3.3', 'LN');
-//                $OBX->setValue('4', '1'); // This value, should be the ID of the Billing
-//                $OBX->setValue('5.1', $immu['option_value']);
-//                $OBX->setValue('5.2', $immu['vaccine_name']);
-//                $OBX->setValue('5.3', $immu['code_type']);
-//                $OBX->setValue('11', 'F');
-                $obxCount++;
+                $filters->filter[0]->property = 'eid';
+                $filters->filter[0]->value = $immu['eid'];
+                $Records = $EncounterServices->getEncounterServices($filters);
+                $obxCount = 1;
+                foreach($Records as $Record) {
+                    $OBX = $this->hl7->addSegment('OBX');
+                    $OBX->setValue('1', $obxCount);
+                    $OBX->setValue('2', 'CE');
+                    $OBX->setValue('3.1', '64994-7');
+                    $OBX->setValue('3.2', 'Vaccine funding program eligibility category');
+                    $OBX->setValue('3.3', 'LN');
+                    $OBX->setValue('4', $Record['eid']);
+                    $OBX->setValue('5.1', $Record['financial_class']);
+                    $OBX->setValue('5.2', $Record['financial_name']);
+                    $OBX->setValue('5.3', $Record['code_type']);
+                    $OBX->setValue('11', 'F');
+                    $OBX->setValue('17.1', 'VXC40');
+                    $OBX->setValue('17.2', 'Eligibility captured at the immunization level');
+                    $OBX->setValue('17.3', 'CDCPHINVS');
+                    $obxCount++;
+                }
                 $OBX = $this->hl7->addSegment('OBX');
                 $OBX->setValue('1', $obxCount);
                 $OBX->setValue('2', 'CE');

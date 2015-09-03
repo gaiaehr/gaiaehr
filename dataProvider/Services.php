@@ -38,11 +38,16 @@ class Services {
 
 	public function getEncounterServices($params){
 		return $this->s->sql("SELECT *,
-            CLO.option_name as financial_name
-            FROM encounter_services as ES
-            LEFT JOIN combo_lists_options as CLO
-            ON (ES.financial_class = CLO.option_value) AND (CLO.list_id=135)
-            WHERE ES.eid=".$params->filter[0]->value)->all();
+                                CLO.option_name as financial_name,
+                                CLO.code_type as code_type
+                            FROM
+                                encounter_services as ES
+                            LEFT JOIN
+                                combo_lists_options as CLO
+                            ON
+                                (ES.financial_class = CLO.option_value) AND (CLO.list_id=135)
+                            WHERE
+                                ES.eid=".$params->filter[0]->value)->all();
 	}
 
 	public function getEncounterService($params){

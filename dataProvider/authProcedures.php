@@ -152,6 +152,8 @@ class authProcedures {
 				'user' => array(
 					'id' => $_SESSION['user']['id'],
 					'name' => $_SESSION['user']['name'],
+					'npi' => $_SESSION['user']['npi'],
+					'site' => $_SESSION['user']['site'],
 					'email' => $_SESSION['user']['email'],
 					'facility' => $_SESSION['user']['facility'],
 				    'localization' => $params->lang

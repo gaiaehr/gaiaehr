@@ -75,6 +75,7 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 
 	$User = new User();
 	$userData = $User->getCurrentUserBasicData();
+	$userData['site'] = $_SESSION['user']['site'];
 	$userData['token'] = $_SESSION['user']['token'];
 	$userData['facility'] = $_SESSION['user']['facility'];
 	$userData['localization'] = $_SESSION['user']['localization'];

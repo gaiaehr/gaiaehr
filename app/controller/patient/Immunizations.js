@@ -335,54 +335,31 @@ Ext.define('App.controller.patient.Immunizations', {
                 params.pid = ImmunizationSelection[i].data.pid;
             }
 
-            params.from = me.vxuFrom.getValue();
-            params.to = me.vxuTo.getValue();
-            params.immunizations = immunizations;
-            params.delivery = btn.action;
-
             me.vxuWindow.el.mask(_('download'));
 
-            form = Ext.create('Ext.form.Panel', {
-                defaultType: 'textfield',
-                renderTo: 'downloadHL7',
-                items: [
-                    {
-                        name: 'from',
-                        value: me.vxuFrom.getValue()
-                    },
-                    {
-                        name: 'to',
-                        value: me.vxuTo.getValue()
-                    },
-                    {
-                        name: 'immunizations',
-                        value: immunizations
-                    },
-                    {
-                        name: 'delivery',
-                        value: btn.action
-                    }
-                ]
+            Ext.create('Ext.form.Panel', {
+                renderTo: Ext.getBody(),
+                standardSubmit: true,
+                url: 'dataProvider/Download.php'
+            }).submit({
+                params: {
+                    'from': me.vxuFrom.getValue(),
+                    'to': me.vxuTo.getValue(),
+                    'immunizations': immunizations
+                },
+                success: function(form, action) {
+
+                    //Remote.AuditLog.Create({
+                    //    description: 'C-CDA Downloaded',
+                    //    actor_id: App.app.getController('Patient').getPatientPid()
+                    //});
+                }
             });
-            form.getForm().doAction('standardsubmit',{
-                method : 'POST',
-                standardSubmit:true,
-                url : 'http://www.mysite.com'
-            });
+
             me.vxuWindow.el.unmask();
             me.vxuWindow.close();
             sm.deselectAll();
 
-            //HL7Messages.downloadVXU(params, function(provider, response){
-            //    me.vxuWindow.el.unmask();
-            //    if(response.result.success){
-            //        app.msg(_('sweet'), _('message_sent'));
-            //    }else{
-            //        app.msg(_('oops'), _('message_error'), true);
-            //    }
-            //    me.vxuWindow.close();
-            //    sm.deselectAll();
-            //});
         }
     },
 

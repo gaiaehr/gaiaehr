@@ -22,6 +22,10 @@ Ext.define('App.controller.patient.Immunizations', {
 
 	],
 	refs: [
+        {
+            ref: 'SubmitImmunizationWindow',
+            selector: '#SubmitImmunizationWindow'
+        },
 		{
 			ref: 'ImmunizationPanel',
 			selector: 'patientimmunizationspanel'
@@ -244,6 +248,7 @@ Ext.define('App.controller.patient.Immunizations', {
 					allowBlank: false,
                     itemId: 'ApplicationCombo',
 					forceSelection: true,
+                    editable: false,
 					labelWidth: 60,
 					displayField: 'application_name',
 					valueField: 'id',
@@ -256,6 +261,11 @@ Ext.define('App.controller.patient.Immunizations', {
 						]
 					})
 				}),
+                {
+                    xtype: 'uxiframe',
+                    itemId: 'downloadHL7',
+                    hidden: true
+                },
 				{
 					text: _('send'),
 					scope: me,
@@ -268,7 +278,7 @@ Ext.define('App.controller.patient.Immunizations', {
                     text: _('download'),
                     scope: me,
                     itemId: 'download',
-                    handler: me.doSendVxu,
+                    handler: me.doDownloadVxu,
                     action: 'download',
                     disabled: true
                 },
@@ -310,6 +320,72 @@ Ext.define('App.controller.patient.Immunizations', {
         }
     },
 
+    doDownloadVxu:function(btn){
+        var me = this,
+            sm = me.getImmunizationsGrid().getSelectionModel(),
+            ImmunizationSelection = sm.getSelection(),
+            params = {},
+            immunizations = [],
+            form;
+
+        if(me.vxuTo.isValid()){
+
+            for(var i=0; i < ImmunizationSelection.length; i++){
+                immunizations.push(ImmunizationSelection[i].data.id);
+                params.pid = ImmunizationSelection[i].data.pid;
+            }
+
+            params.from = me.vxuFrom.getValue();
+            params.to = me.vxuTo.getValue();
+            params.immunizations = immunizations;
+            params.delivery = btn.action;
+
+            me.vxuWindow.el.mask(_('download'));
+
+            form = Ext.create('Ext.form.Panel', {
+                defaultType: 'textfield',
+                renderTo: 'downloadHL7',
+                items: [
+                    {
+                        name: 'from',
+                        value: me.vxuFrom.getValue()
+                    },
+                    {
+                        name: 'to',
+                        value: me.vxuTo.getValue()
+                    },
+                    {
+                        name: 'immunizations',
+                        value: immunizations
+                    },
+                    {
+                        name: 'delivery',
+                        value: btn.action
+                    }
+                ]
+            });
+            form.getForm().doAction('standardsubmit',{
+                method : 'POST',
+                standardSubmit:true,
+                url : 'http://www.mysite.com'
+            });
+            me.vxuWindow.el.unmask();
+            me.vxuWindow.close();
+            sm.deselectAll();
+
+            //HL7Messages.downloadVXU(params, function(provider, response){
+            //    me.vxuWindow.el.unmask();
+            //    if(response.result.success){
+            //        app.msg(_('sweet'), _('message_sent'));
+            //    }else{
+            //        app.msg(_('oops'), _('message_error'), true);
+            //    }
+            //    me.vxuWindow.close();
+            //    sm.deselectAll();
+            //});
+        }
+    },
+
 	doSendVxu:function(btn){
 		var me = this,
 			sm = me.getImmunizationsGrid().getSelectionModel(),
@@ -327,7 +403,6 @@ Ext.define('App.controller.patient.Immunizations', {
 			params.from = me.vxuFrom.getValue();
 			params.to = me.vxuTo.getValue();
 			params.immunizations = immunizations;
-            params.delivery = btn.action;
 
 			me.vxuWindow.el.mask(_('sending'));
 

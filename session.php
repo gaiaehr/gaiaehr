@@ -9,9 +9,12 @@
 
 if (!isset($_SESSION))
 {
-	session_name('GaiaEHR');
-	session_start();
-	session_cache_limiter('private');
+    session_cache_limiter('private');
+    session_cache_expire(1);
+    session_regenerate_id(false);
+    session_name('GaiaEHR');
+    session_start();
+    setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
 }
 print '<pre>';
 print_r($_SESSION);

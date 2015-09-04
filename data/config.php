@@ -2124,6 +2124,9 @@ $API = [
 			'sendVXU' => [
 				'len' => 1
             ],
+            'downloadVXU' => [
+                'len' => 1
+            ],
 			'broadcastADT' => [
 				'len' => 1
             ],

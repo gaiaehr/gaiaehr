@@ -44470,36 +44470,36 @@ Ext.define('App.view.patient.SupperBill', {
 				xtype: 'textfield'
 			}
 		},
-		{
-			header: _('tooth'),
-			dataIndex: 'tooth',
-			width: 50,
-			menuDisabled: true
-		},
-		{
-			header: _('surface'),
-			dataIndex: 'surface',
-			width: 60,
-			menuDisabled: true,
-			renderer: function(value, meta, record){
-				var len = value.length,
-					str = '',
-					isMolar = App.app.getController('Modules.dental.controller.Plan').isMolar(record.data.tooth);
-
-				for(var i = 0; i < len; i++){
-					if(value[i] == '0') continue;
-
-					if(value[i] == 'OI'){
-						str += isMolar ? 'O' : 'I';
-					}else if(value[i] == 'BF'){
-						str += isMolar ? 'B' : 'F';
-					}else{
-						str += value[i];
-					}
-				}
-				return str;
-			}
-		},
+		//{
+		//	header: _('tooth'),
+		//	dataIndex: 'tooth',
+		//	width: 50,
+		//	menuDisabled: true
+		//},
+		//{
+		//	header: _('surface'),
+		//	dataIndex: 'surface',
+		//	width: 60,
+		//	menuDisabled: true,
+		//	renderer: function(value, meta, record){
+		//		var len = value.length,
+		//			str = '',
+		//			isMolar = App.app.getController('Modules.dental.controller.Plan').isMolar(record.data.tooth);
+        //
+		//		for(var i = 0; i < len; i++){
+		//			if(value[i] == '0') continue;
+        //
+		//			if(value[i] == 'OI'){
+		//				str += isMolar ? 'O' : 'I';
+		//			}else if(value[i] == 'BF'){
+		//				str += isMolar ? 'B' : 'F';
+		//			}else{
+		//				str += value[i];
+		//			}
+		//		}
+		//		return str;
+		//	}
+		//},
 		{
 			header: _('diagnosis'),
 			dataIndex: 'dx_pointers',

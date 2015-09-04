@@ -49,6 +49,11 @@ class HL7Messages {
      */
     private $PatientContacts;
 
+    /**
+     * @var MatchaCUP Encounter Services
+     */
+    private $EncounterServices;
+
 	/**
 	 * @var MatchaCUP PatientImmunization
 	 */
@@ -101,6 +106,8 @@ class HL7Messages {
             $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
         if(!isset($this->PatientContacts))
             $this->PatientContacts = MatchaModel::setSenchaModel('App.model.patient.PatientContacts');
+        if(!isset($this->EncounterServices))
+            $this->EncounterServices = MatchaModel::setSenchaModel('App.model.patient.EncounterService');
         if(!isset($this->e))
             $this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
         if(!isset($this->u))
@@ -388,14 +395,16 @@ class HL7Messages {
 
             $this->i = MatchaModel::setSenchaModel('App.model.patient.PatientImmunization');
             include_once(ROOT . '/dataProvider/Immunizations.php');
+            include_once(ROOT . '/dataProvider/Services.php');
             $immunization = new Immunizations();
+            $EncounterServices = new Services();
 
             // Immunizations loop
             foreach($params->immunizations AS $i){
 
                 $immu = $this->i->load($i)->one();
 
-                // ORC - 4.5.1 ORC - Commoon Order Segment
+                // ORC - 4.5.1 ORC - Common Order Segment
                 $ORC = $this->hl7->addSegment('ORC');
                 $ORC->setValue('1', 'RE'); //HL70119
                 $ORC->setValue('3.1', 'GAIA10001');
@@ -449,21 +458,29 @@ class HL7Messages {
                 $RXR->setValue('2.3', $Record['code_type']);
 
                 // OBX - 7.4.2 OBX - Observation/Result Segment
-                // OBX|1|CE|64994-7^Vaccine funding program eligibility category^LN|1|V05^VFC eligible - Federally Qualified Health Center Patient
-                // (under-insured)^HL70064||||||F|||20120701|||VXC40^Eligibility captured at the immunization level^CDCPHINVS
-                $obxCount = 0;
-//                $OBX = $this->hl7->addSegment('OBX');
-//                $OBX->setValue('1', $obxCount);
-//                $OBX->setValue('2', 'CE');
-//                $OBX->setValue('3.1', '64994-7');
-//                $OBX->setValue('3.2', 'Vaccine funding program eligibility category');
-//                $OBX->setValue('3.3', 'LN');
-//                $OBX->setValue('4', '1'); // This value, should be the ID of the Billing
-//                $OBX->setValue('5.1', $immu['option_value']);
-//                $OBX->setValue('5.2', $immu['vaccine_name']);
-//                $OBX->setValue('5.3', $immu['code_type']);
-//                $OBX->setValue('11', 'F');
-                $obxCount++;
+                $filters->filter[0]->property = 'eid';
+                $filters->filter[0]->value = $immu['eid'];
+                $filters->filter[1]->property = 'pid';
+                $filters->filter[1]->value = $immu['pid'];
+                $Records = $EncounterServices->getEncounterServicesByEIDandPID($filters);
+                $obxCount = 1;
+                foreach($Records as $Record) {
+                    $OBX = $this->hl7->addSegment('OBX');
+                    $OBX->setValue('1', $obxCount);
+                    $OBX->setValue('2', 'CE');
+                    $OBX->setValue('3.1', '64994-7');
+                    $OBX->setValue('3.2', 'Vaccine funding program eligibility category');
+                    $OBX->setValue('3.3', 'LN');
+                    $OBX->setValue('4', $Record['eid']);
+                    $OBX->setValue('5.1', $Record['financial_class']);
+                    $OBX->setValue('5.2', $Record['financial_name']);
+                    $OBX->setValue('5.3', $Record['code_type']);
+                    $OBX->setValue('11', 'F');
+                    $OBX->setValue('17.1', 'VXC40');
+                    $OBX->setValue('17.2', 'Eligibility captured at the immunization level');
+                    $OBX->setValue('17.3', 'CDCPHINVS');
+                    $obxCount++;
+                }
                 $OBX = $this->hl7->addSegment('OBX');
                 $OBX->setValue('1', $obxCount);
                 $OBX->setValue('2', 'CE');
@@ -533,16 +550,17 @@ class HL7Messages {
      * Method to download the HL7 Message via web browser.
      * @return array
      */
-    public function Download($pid){
+    public function downloadVXU($params){
         try{
             $zip = new ZipArchive();
-            $pid = preg_replace('/[^a-z0-9]/i', '_', $pid);
-            $filename = $pid.".zip";
+            $pid = preg_replace('/[^a-z0-9]/i', '_', $params->pid);
+            $filename = $params->pid.".zip";
 
             if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
-                exit("cannot open <$filename>\n");
+                throw new Exception("cannot open <$filename>");
             }
 
+            $this->sendVXU($params);
             $zip->addFromString($pid.".HL7", $this->msg->message);
             $zip->close();
 

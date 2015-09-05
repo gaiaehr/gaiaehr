@@ -73,9 +73,9 @@ Ext.define('App.view.administration.Users', {
 					renderer: me.boolRenderer
 				},
 				{
-					text: _('calendar_q'),
+					text: _('is_attending'),
 					sortable: true,
-					dataIndex: 'calendar',
+					dataIndex: 'is_attending',
 					renderer: me.boolRenderer
 				}
 			],
@@ -267,6 +267,11 @@ Ext.define('App.view.administration.Users', {
 											margin: '20 10 0 0',
 											items: [
 												{
+													xtype: 'checkbox',
+													fieldLabel: _('is_attending'),
+													name: 'is_attending'
+												},
+												{
 													xtype: 'textfield',
 													fieldLabel: _('federal_tax_id'),
 													name: 'fedtaxid'
@@ -288,7 +293,6 @@ Ext.define('App.view.administration.Users', {
 													name: 'npi',
 													maxLength: 10,
 													vtype: 'npi'
-
 												},
 												{
 													xtype: 'activespecialtiescombo',

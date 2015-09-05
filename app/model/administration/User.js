@@ -133,6 +133,11 @@ Ext.define('App.model.administration.User', {
 			len: 10
 		},
 		{
+			name: 'is_attending',
+			type: 'bool',
+			index: true
+		},
+		{
 			name: 'npi',
 			type: 'string',
 			comment: 'National Provider Identifier',

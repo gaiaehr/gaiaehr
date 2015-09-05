@@ -1615,5 +1615,7 @@ $LANG = array(
     'local_number'                          => 'Local Number',
     'field_updated'                         => 'Field Updated',
     'publicity'                             => 'Publicity',
-    'financial'                             => 'Financial'
+    'financial'                             => 'Financial',
+    'attending_physician'                   => 'Attending Physician',
+    'is_attending'                          => 'Is Attending',
 );

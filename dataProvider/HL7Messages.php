@@ -516,12 +516,6 @@ class HL7Messages {
 
             $msgRecord = $this->saveMsg();
 
-            // Download the message
-            if($params->delivery == 'download') {
-                $this->Download($this->patient);
-                return;
-            }
-
             if($this->to['route'] == 'file'){
                 $response = $this->Save();
             } else {

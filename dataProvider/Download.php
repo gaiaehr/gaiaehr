@@ -18,14 +18,14 @@
  */
 
 // TODO: Make a better Download procedure for the HL7 Message
-include_once(ROOT . '/lib/HL7/HL7Message.php');
-
-$HL7 = new HL7Messages();
-$Parameters = new stdClass();
-$Parameters->pid = $_REQUEST['pid'];
-$Parameters->from = $_REQUEST['from'];
-$Parameters->to = $_REQUEST['to'];
-$HL7->sendVXU($Parameters);
+//include_once(ROOT . '/lib/HL7/HL7Message.php');
+//
+//$HL7 = new HL7Messages();
+//$Parameters = new stdClass();
+//$Parameters->pid = $_REQUEST['pid'];
+//$Parameters->from = $_REQUEST['from'];
+//$Parameters->to = $_REQUEST['to'];
+//$HL7->sendVXU($Parameters);
 
 header('Content-Description: HL7 File Download');
 header('Content-Type: text/plain');
@@ -33,4 +33,5 @@ header('Content-Disposition: attachment; filename=' . $_REQUEST['pid'].'-'.date(
 header('Expires: 0');
 header('Cache-Control: must-revalidate');
 header('Pragma: public');
-echo $_REQUEST['payload'];
+echo "Hi Download!";
+//echo $HL7->saveMsg();

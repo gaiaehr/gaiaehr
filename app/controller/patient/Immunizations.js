@@ -224,7 +224,12 @@ Ext.define('App.controller.patient.Immunizations', {
 							'</tpl>' +
 							'</ul>'
 					)
-				}
+				},
+                {
+                    xtype: 'uxiframe',
+                    itemId: 'downloadHL7',
+                    hidden: true
+                }
 			],
 			buttons:[
 				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
@@ -261,11 +266,6 @@ Ext.define('App.controller.patient.Immunizations', {
 						]
 					})
 				}),
-                {
-                    xtype: 'uxiframe',
-                    itemId: 'downloadHL7',
-                    hidden: true
-                },
 				{
 					text: _('send'),
 					scope: me,
@@ -336,13 +336,13 @@ Ext.define('App.controller.patient.Immunizations', {
             }
 
             me.vxuWindow.el.mask(_('download'));
-
             Ext.create('Ext.form.Panel', {
-                renderTo: Ext.getBody(),
+                renderTo: Ext.ComponentQuery.query('#SubmitImmunizationWindow #downloadHL7')[0].el,
                 standardSubmit: true,
                 url: 'dataProvider/Download.php'
             }).submit({
                 params: {
+                    'pid': params.pid,
                     'from': me.vxuFrom.getValue(),
                     'to': me.vxuTo.getValue(),
                     'immunizations': immunizations

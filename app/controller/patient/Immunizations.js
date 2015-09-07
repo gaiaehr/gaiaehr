@@ -348,11 +348,7 @@ Ext.define('App.controller.patient.Immunizations', {
                     'immunizations': immunizations
                 },
                 success: function(form, action) {
-
-                    //Remote.AuditLog.Create({
-                    //    description: 'C-CDA Downloaded',
-                    //    actor_id: App.app.getController('Patient').getPatientPid()
-                    //});
+                    // Audit log here
                 }
             });
 

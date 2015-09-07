@@ -39,6 +39,7 @@ $Parameters = new stdClass();
 $Parameters->pid = $_REQUEST['pid'];
 $Parameters->from = $_REQUEST['from'];
 $Parameters->to = $_REQUEST['to'];
+$Parameters->delivery = 'download';
 $Parameters->immunizations = json_decode($_REQUEST['immunizations'], true);
 $HL7->sendVXU($Parameters);
 

@@ -515,6 +515,9 @@ class HL7Messages {
             }
 
             $msgRecord = $this->saveMsg();
+            if(isset($params->delivery) && $params->delivery = 'download'){
+                return;
+            }
 
             if($this->to['route'] == 'file'){
                 $response = $this->Save();

@@ -345,7 +345,7 @@ Ext.define('App.controller.patient.Immunizations', {
                     'pid': params.pid,
                     'from': me.vxuFrom.getValue(),
                     'to': me.vxuTo.getValue(),
-                    'immunizations': immunizations
+                    'immunizations': Ext.encode(immunizations)
                 },
                 success: function(form, action) {
                     // Audit log here

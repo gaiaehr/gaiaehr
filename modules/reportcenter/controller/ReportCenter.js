@@ -22,10 +22,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
 	],
 	refs: [
-		{
-			ref: 'ReportCenterPanel',
-			selector: '#ReportCenterPanel'
-		}
+		//{
+		//	ref: 'ReportCenterPanel',
+		//	selector: '#ReportCenterPanel'
+		//}
 	],
 
 	/**
@@ -33,19 +33,19 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 	 * Report Center Panel
 	 */
 	addCategory: function(category, width){
-		return this.getReportCenterPanel().add(Ext.create('Ext.container.Container', {
-			cls: 'CategoryContainer',
-			width: width,
-			layout: 'anchor',
-			items: [
-				{
-					xtype: 'container',
-					cls: 'title',
-					margin: '0 0 5 0',
-					html: category
-				}
-			]
-		}));
+		//return this.getReportCenterPanel().add(Ext.create('Ext.container.Container', {
+		//	cls: 'CategoryContainer',
+		//	width: width,
+		//	layout: 'anchor',
+		//	items: [
+		//		{
+		//			xtype: 'container',
+		//			cls: 'title',
+		//			margin: '0 0 5 0',
+		//			html: category
+		//		}
+		//	]
+		//}));
 	},
 
 	/**

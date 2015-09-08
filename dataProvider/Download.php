@@ -18,13 +18,29 @@
  */
 
 // TODO: Make a better Download procedure for the HL7 Message
-include_once(ROOT . '/lib/HL7/HL7Message.php');
+session_cache_limiter('private');
+session_cache_expire(1);
+session_regenerate_id(false);
+session_name('GaiaEHR');
+session_start();
+setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
+define('_GaiaEXEC', 1);
+
+$site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
+if(!defined('_GaiaEXEC'))
+    define('_GaiaEXEC', 1);
+require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+$conf = ROOT . '/sites/' . $site . '/conf.php';
+require_once(ROOT . '/sites/' . $site . '/conf.php');
+include_once(ROOT.'/dataProvider/HL7Messages.php');
 
 $HL7 = new HL7Messages();
 $Parameters = new stdClass();
 $Parameters->pid = $_REQUEST['pid'];
 $Parameters->from = $_REQUEST['from'];
 $Parameters->to = $_REQUEST['to'];
+$Parameters->delivery = 'download';
+$Parameters->immunizations = json_decode($_REQUEST['immunizations'], true);
 $HL7->sendVXU($Parameters);
 
 header('Content-Description: HL7 File Download');
@@ -33,4 +49,4 @@ header('Content-Disposition: attachment; filename=' . $_REQUEST['pid'].'-'.date(
 header('Expires: 0');
 header('Cache-Control: must-revalidate');
 header('Pragma: public');
-echo $_REQUEST['payload'];
+echo $HL7->saveMsg()->message;

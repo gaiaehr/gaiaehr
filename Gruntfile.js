@@ -47,6 +47,7 @@ module.exports = function(grunt){
 					'app/ux/form/fields/DateTime.js',
 					'app/ux/form/fields/MultiText.js',
 					'app/ux/form/fields/plugin/BadgeText.js',
+					'app/ux/form/fields/plugin/ReadOnlyLabel.js',
 					'app/ux/form/AdvanceForm.js',
 					'app/ux/form/fields/Percent.js',
 					'app/ux/ManagedIframe.js',

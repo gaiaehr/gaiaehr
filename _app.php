@@ -262,6 +262,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.form.fields.MultiText',
 		            'App.ux.form.fields.Percent',
 		            'App.ux.form.fields.plugin.BadgeText',
+		            'App.ux.form.fields.plugin.ReadOnlyLabel',
 		            'App.ux.form.AdvanceForm',
 		            'App.ux.form.Panel',
 		            'App.ux.grid.DeleteColumn',

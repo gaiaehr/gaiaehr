@@ -3986,6 +3986,70 @@ Ext.define('App.ux.form.fields.plugin.BadgeText', {
 
 	}
 });
+Ext.define('App.ux.form.fields.plugin.ReadOnlyLabel', {
+	extend: 'Ext.AbstractPlugin',
+	alias: 'plugin.readonlylabel',
+
+	align: 'right',
+
+	text: _('read_only'),
+	textBg: 'red',
+	textSize: '14',
+	textColor: 'white',
+	textOpacity: .7,
+
+	/**
+	 *
+	 * @param field
+	 */
+	init: function(field){
+		var  me = this;
+
+		field.on('render', me.onRender, me);
+		field.on('writeablechange', me.setReadOnly, me);
+
+	},
+
+	setReadOnly: function(field, readOnly){
+		field.readOnlyEl.setVisible(readOnly);
+	},
+
+	onRender: function(field){
+		this.addReadOnlyEl(field);
+	},
+
+	/**
+	 *
+	 * @param field
+	 */
+	addReadOnlyEl: function(field){
+		var me = this,
+			styles = {
+				'position': 'absolute',
+				'background-color': me.textBg,
+				'font-size': me.textSize + 'px',
+				'color': me.textColor,
+				'padding': '5px 10px',
+				'index': 50,
+				'top': '10px',
+				'border-radius': '15px',
+				'visibility': 'hidden'
+			};
+
+		if(me.align == 'left'){
+			styles.left = '10px';
+		}else{
+			styles.right = '10px';
+		}
+
+		field.readOnlyEl = Ext.DomHelper.append(field.el, { tag:'div', cls:'badgeText x-unselectable'}, true);
+		field.readOnlyEl.setOpacity(me.textOpacity);
+		field.readOnlyEl.setStyle(styles);
+		field.readOnlyEl.update(me.text.toString ? me.text.toString() : me.text);
+
+	}
+
+});
 Ext.define('App.ux.form.AdvanceForm', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.advanceform',
@@ -40265,7 +40329,12 @@ Ext.define('App.controller.patient.Immunizations', {
 							'</tpl>' +
 							'</ul>'
 					)
-				}
+				},
+                {
+                    xtype: 'uxiframe',
+                    itemId: 'downloadHL7',
+                    hidden: true
+                }
 			],
 			buttons:[
 				me.vxuFrom = Ext.create('App.ux.combo.ActiveFacilities',{
@@ -40302,11 +40371,6 @@ Ext.define('App.controller.patient.Immunizations', {
 						]
 					})
 				}),
-                {
-                    xtype: 'uxiframe',
-                    itemId: 'downloadHL7',
-                    hidden: true
-                },
 				{
 					text: _('send'),
 					scope: me,
@@ -40376,54 +40440,27 @@ Ext.define('App.controller.patient.Immunizations', {
                 params.pid = ImmunizationSelection[i].data.pid;
             }
 
-            params.from = me.vxuFrom.getValue();
-            params.to = me.vxuTo.getValue();
-            params.immunizations = immunizations;
-            params.delivery = btn.action;
-
             me.vxuWindow.el.mask(_('download'));
+            Ext.create('Ext.form.Panel', {
+                renderTo: Ext.ComponentQuery.query('#SubmitImmunizationWindow #downloadHL7')[0].el,
+                standardSubmit: true,
+                url: 'dataProvider/Download.php'
+            }).submit({
+                params: {
+                    'pid': params.pid,
+                    'from': me.vxuFrom.getValue(),
+                    'to': me.vxuTo.getValue(),
+                    'immunizations': Ext.encode(immunizations)
+                },
+                success: function(form, action) {
+                    // Audit log here
+                }
+            });
 
-            form = Ext.create('Ext.form.Panel', {
-                defaultType: 'textfield',
-                renderTo: 'downloadHL7',
-                items: [
-                    {
-                        name: 'from',
-                        value: me.vxuFrom.getValue()
-                    },
-                    {
-                        name: 'to',
-                        value: me.vxuTo.getValue()
-                    },
-                    {
-                        name: 'immunizations',
-                        value: immunizations
-                    },
-                    {
-                        name: 'delivery',
-                        value: btn.action
-                    }
-                ]
-            });
-            form.getForm().doAction('standardsubmit',{
-                method : 'POST',
-                standardSubmit:true,
-                url : 'http://www.mysite.com'
-            });
             me.vxuWindow.el.unmask();
             me.vxuWindow.close();
             sm.deselectAll();
 
-            //HL7Messages.downloadVXU(params, function(provider, response){
-            //    me.vxuWindow.el.unmask();
-            //    if(response.result.success){
-            //        app.msg(_('sweet'), _('message_sent'));
-            //    }else{
-            //        app.msg(_('oops'), _('message_error'), true);
-            //    }
-            //    me.vxuWindow.close();
-            //    sm.deselectAll();
-            //});
         }
     },
 

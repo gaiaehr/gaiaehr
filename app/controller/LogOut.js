@@ -129,8 +129,8 @@ Ext.define('App.controller.LogOut', {
 			if(app.patient.pid) Patient.unsetPatient(app.patient.pid);
 			authProcedures.unAuth(function(){
 				nav.navigateTo('App.view.login.Login', null, true);
+				window.onbeforeunload = null;
 				window.location.reload();
-
 			});
 		}else{
 			Ext.Msg.show({
@@ -144,6 +144,7 @@ Ext.define('App.controller.LogOut', {
 						authProcedures.unAuth(function(){
 							me.ActivityMonitor(false);
 							nav.navigateTo('App.view.login.Login', null, true);
+							window.onbeforeunload = null;
 							window.location.reload();
 						});
 					}

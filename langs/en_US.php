@@ -1618,4 +1618,5 @@ $LANG = array(
     'financial'                             => 'Financial',
     'attending_physician'                   => 'Attending Physician',
     'is_attending'                          => 'Is Attending',
+    'you_should_logout_before_quiting'      => 'You Should Logout Before Quiting',
 );

@@ -4016,6 +4016,7 @@ Ext.define('App.ux.form.fields.plugin.ReadOnlyLabel', {
 
 	onRender: function(field){
 		this.addReadOnlyEl(field);
+		this.setReadOnly(field, field.readOnly);
 	},
 
 	/**
@@ -4032,7 +4033,7 @@ Ext.define('App.ux.form.fields.plugin.ReadOnlyLabel', {
 				'padding': '5px 10px',
 				'index': 50,
 				'top': '10px',
-				'border-radius': '15px',
+				'border-radius': '5px',
 				'visibility': 'hidden'
 			};
 

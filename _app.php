@@ -87,6 +87,10 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	            return eval(window.acl[acl]) || false;
             };
 
+            window.onbeforeunload = function(){
+	            return _('you_should_logout_before_quiting');
+            };
+
             ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );
             AppClipboard = new ZeroClipboard();
             AppClipboard.on("complete", function (client, args) {

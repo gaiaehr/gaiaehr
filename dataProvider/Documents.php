@@ -49,7 +49,6 @@ class Documents {
 		return;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function getArrayWithTokensNeededByDocumentID($id) {
 		$this->db->setSQL("SELECT title, body FROM documents_templates WHERE id = '$id' ");
 		$record = $this->db->fetchRecord(PDO::FETCH_ASSOC);
@@ -59,19 +58,16 @@ class Documents {
 		return $tokensfound[0];
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function getTemplateBodyById($id) {
 		$this->db->setSQL("SELECT title, body FROM documents_templates WHERE id = '$id' ");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function getAllPatientData($pid) {
 		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function updateDocumentsTitle(stdClass $params) {
 		$data = get_object_vars($params);
 		$id = $data['id'];
@@ -81,7 +77,6 @@ class Documents {
 		return $params;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function setArraySizeOfTokenArray($tokens) {
 		$givingValuesToTokens = [];
 		foreach($tokens as $tok){
@@ -90,7 +85,6 @@ class Documents {
 		return $givingValuesToTokens;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_PatientTokensData($pid, $allNeededInfo, $tokens) {
 
         // Code reference: Relationship codes as specified by HL7. v2: Added 'Household' concept
@@ -164,11 +158,8 @@ class Documents {
 			'[PATIENT_PICTURE]' => '<img src="' . $patientData['image'] . '" style="width:100px;height:100px">',
 			'[PATIENT_QRCODE]' => '<img src="' . $patientData['qrcode'] . '" style="width:100px;height:100px">',
 
-			// ////////////////////////////////
 			'[PATIENT_TABACCO]' => 'tabaco',
-			// //////////////////////////////////////////////////////
 			'[PATIENT_ALCOHOL]' => 'alcohol',
-			// ////////////////////////////////////////////////////
 			//            '[PATIENT_BALANCE]' => '$' . $this->fees->getPatientBalanceByPid($pid),
 			//            '[PATIENT_PRIMARY_PLAN]' => $patientData['primary_plan_name'],
 			//            '[PATIENT_PRIMARY_EFFECTIVE_DATE]' => $patientData['primary_effective_date'],
@@ -232,7 +223,6 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_EncounterTokensData($eid, $allNeededInfo, $tokens) {
 
 		$params = new stdClass();
@@ -368,7 +358,6 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private function tokensForEncountersList($Array, $typeoflist) {
 		$html = '';
 		if($typeoflist == 1){
@@ -452,8 +441,6 @@ class Documents {
 		return ($Array == null || $Array == '') ? '' : $html;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	private function getCurrentTokensData($allNeededInfo, $tokens) {
 
 		$currentInformation = [
@@ -474,7 +461,6 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private function getClinicTokensData($allNeededInfo, $tokens) {
 		$facility = new Facilities();
 		$facilityInfo = $facility->getActiveFacilitiesById($_SESSION['user']['facility']);
@@ -501,10 +487,6 @@ class Documents {
 		}
 		return $allNeededInfo;
 	}
-
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function PDFDocumentBuilder($params, $path = '') {
 		$pid = $params->pid;

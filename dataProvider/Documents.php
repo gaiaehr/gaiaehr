@@ -18,6 +18,8 @@
  */
 
 include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/Referrals.php');
@@ -90,7 +92,17 @@ class Documents {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_PatientTokensData($pid, $allNeededInfo, $tokens) {
-		$patientData = $this->getAllPatientData($pid);
+
+        // Code reference: Relationship codes as specified by HL7. v2: Added 'Household' concept
+        // https://phinvads.cdc.gov/vads/ViewValueSet.action?id=6FD34BBC-617F-DD11-B38D-00188B398520#
+        $patientContact = new PatientContacts();
+        $contactSelf = $patientContact->getContactByType($pid, 'SEL');
+        $contactGuardian = $patientContact->getContactByType($pid, 'GRD');
+        $contactMother = $patientContact->getContactByType($pid, 'MTH');
+        $contactEmergency = $patientContact->getContactByType($pid, 'EMC');
+        $contactEmployer = $patientContact->getContactByType($pid, 'EMR');
+
+        $patientData = $this->getAllPatientData($pid);
 		$age = $this->patient->getPatientAgeByDOB($patientData['DOB']);
 		$user = new User();
 		$patienInformation = [
@@ -105,23 +117,47 @@ class Documents {
 			'[PATIENT_EXTERNAL_ID]' => $patientData['pubpid'],
 			'[PATIENT_DRIVERS_LICENSE]' => $patientData['drivers_license'],
 			'[PATIENT_ADDRESS]' => $patientData['address'],
-			'[PATIENT_CITY]' => $patientData['city'],
-			'[PATIENT_STATE]' => $patientData['state'],
-			'[PATIENT_COUNTRY]' => $patientData['country'],
-			'[PATIENT_ZIPCODE]' => $patientData['zipcode'],
-			'[PATIENT_HOME_PHONE]' => $patientData['home_phone'],
-			'[PATIENT_MOBILE_PHONE]' => $patientData['mobile_phone'],
-			'[PATIENT_WORK_PHONE]' => $patientData['work_phone'],
+			'[PATIENT_CITY]' => $contactSelf['city'],
+			'[PATIENT_STATE]' => $contactSelf['state'],
+			'[PATIENT_COUNTRY]' => $contactSelf['country'],
+			'[PATIENT_ZIPCODE]' => $contactSelf['zip'],
+			'[PATIENT_HOME_PHONE]' => $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_area_code'].'-'.
+                $contactSelf['phone_local_number'],
+			'[PATIENT_MOBILE_PHONE]' => $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_area_code'].'-'.
+                $contactSelf['phone_local_number'],
+			'[PATIENT_WORK_PHONE]' => $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_area_code'].'-'.
+                $contactSelf['phone_local_number'],
 			'[PATIENT_EMAIL]' => $patientData['email'],
-			'[PATIENT_MOTHERS_NAME]' => $patientData['mothers_name'],
-			'[PATIENT_GUARDIANS_NAME]' => $patientData['guardians_name'],
-			'[PATIENT_EMERGENCY_CONTACT]' => $patientData['emer_contact'],
-			'[PATIENT_EMERGENCY_PHONE]' => $patientData['emer_phone'],
+			'[PATIENT_MOTHERS_NAME]' => Person::fullname(
+                $contactMother['first_name'],
+                $contactMother['middle_name'],
+                $contactMother['last_name']
+            ),
+			'[PATIENT_GUARDIANS_NAME]' => Person::fullname(
+                $contactGuardian['first_name'],
+                $contactGuardian['middle_name'],
+                $contactGuardian['last_name']
+            ),
+			'[PATIENT_EMERGENCY_CONTACT]' => Person::fullname(
+                $contactEmergency['first_name'],
+                $contactEmergency['middle_name'],
+                $contactEmergency['last_name']
+            ),
+			'[PATIENT_EMERGENCY_PHONE]' => $contactEmergency['phone_use_code'].'-'.
+                $contactEmergency['phone_area_code'].'-'.
+                $contactEmergency['phone_local_number'],
 			'[PATIENT_PROVIDER]' => is_numeric($patientData['provider']) ? $user->getUserFullNameById($patientData['provider']) : '',
 			'[PATIENT_PHARMACY]' => $patientData['pharmacy'],
 			'[PATIENT_AGE]' => $age['DMY']['years'],
 			'[PATIENT_OCCUPATION]' => $patientData['occupation'],
-			'[PATIENT_EMPLOYEER]' => $patientData['employer_name'],
+			'[PATIENT_EMPLOYEER]' => Person::fullname(
+                $contactEmployer['first_name'],
+                $contactEmployer['middle_name'],
+                $contactEmployer['last_name']
+            ),
 			'[PATIENT_RACE]' => $patientData['race'],
 			'[PATIENT_ETHNICITY]' => $patientData['ethnicity'],
 			'[PATIENT_LENGUAGE]' => $patientData['language'],

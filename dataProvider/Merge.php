@@ -47,7 +47,7 @@ class Merge {
 			$this->conn->commit();
 			return true;
 		}catch (Exception $e){
-			//error_log($e->getMessage());
+			error_log($e->getMessage());
 			$this->conn->rollBack();
 			return false;
 		}

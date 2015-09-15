@@ -725,7 +725,6 @@ class Patient {
                 isset($contact['zipcode']) ? $contact['zipcode'] : ''
             );
         }
-        error_log(print_r($results,true));
 		return [
             'total' => count($results),
             'data' => $results

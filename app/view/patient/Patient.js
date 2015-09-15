@@ -128,7 +128,6 @@ Ext.define('App.view.patient.Patient', {
 			scope: me,
 			beforerender: me.beforePanelRender
 		};
-		say('Hello 2');
 
 		Ext.apply(me, configs);
 

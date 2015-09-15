@@ -165,7 +165,6 @@ Ext.define('App.controller.patient.CCDImport', {
 		var me = this,
 			ccdPatientForm = me.getCcdImportPatientForm().getForm(),
 			patient = Ext.create('App.model.patient.Patient', data.patient);
-
         ccdPatientForm.loadRecord(patient);
 
         App.app.getController('patient.Patient').lookForPossibleDuplicates(

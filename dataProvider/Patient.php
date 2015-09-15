@@ -119,7 +119,10 @@ class Patient {
 		if(isset($params->fullname)){
 			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $params->fullname);
 		}else if(isset($params->fname) && isset($params->mname) && isset($params->lname)){
-			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], Person::fullname($params->fname, $params->mname, $params->lname));
+			$params->qrcode = $this->createPatientQrCode(
+                $this->patient['pid'],
+                Person::fullname($params->fname, $params->mname, $params->lname)
+            );
 		}
 
 		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
@@ -161,7 +164,7 @@ class Patient {
 		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+			$this->patient['name'] = $this->getPatientFullName();
 		}
 		unset($params);
 		return $this->patient;
@@ -182,7 +185,7 @@ class Patient {
 		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+			$this->patient['name'] = $this->getPatientFullName();
 		}
 		unset($params);
 		return $this->patient;
@@ -205,7 +208,7 @@ class Patient {
 		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+			$this->patient['name'] = $this->getPatientFullName();
 		}
 
 		unset($params);

@@ -132,6 +132,7 @@ class CCDDocumentParse {
 		}
 
 		// address
+        // TODO: Here we need to create a new Patient Contact record.
 		$a = isset($dom['addr']) ? $dom['addr'] : [];
 		$patient->address = isset($a['streetAddressLine']) ? $a['streetAddressLine'] : '';
 		$patient->city = isset($a['city']) ? $a['city'] : '';

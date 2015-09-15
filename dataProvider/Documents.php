@@ -110,48 +110,73 @@ class Documents {
 			'[PATIENT_SOCIAL_SECURITY]' => $patientData['SS'],
 			'[PATIENT_EXTERNAL_ID]' => $patientData['pubpid'],
 			'[PATIENT_DRIVERS_LICENSE]' => $patientData['drivers_license'],
-			'[PATIENT_ADDRESS]' => $patientData['address'],
-			'[PATIENT_CITY]' => $contactSelf['city'],
-			'[PATIENT_STATE]' => $contactSelf['state'],
-			'[PATIENT_COUNTRY]' => $contactSelf['country'],
-			'[PATIENT_ZIPCODE]' => $contactSelf['zip'],
-			'[PATIENT_HOME_PHONE]' => $contactSelf['phone_use_code'].'-'.
+			'[PATIENT_ADDRESS]' => isset($contactSelf['street_mailing_address']) ? $contactSelf['street_mailing_address'] : '',
+			'[PATIENT_CITY]' => isset($contactSelf['city']) ? $contactSelf['city'] : '',
+			'[PATIENT_STATE]' => isset($contactSelf['state']) ? $contactSelf['state'] : '',
+			'[PATIENT_COUNTRY]' => isset($contactSelf['country']) ? $contactSelf['country'] : '',
+			'[PATIENT_ZIPCODE]' => isset($contactSelf['zip']) ? $contactSelf['zip'] : '',
+
+            //
+			'[PATIENT_HOME_PHONE]' => isset($contactSelf['phone_local_number']) ?
+                $contactSelf['phone_use_code'].'-'.
                 $contactSelf['phone_area_code'].'-'.
-                $contactSelf['phone_local_number'],
-			'[PATIENT_MOBILE_PHONE]' => $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_local_number'] : '',
+
+            // TODO: Add a field for mobile phone in the patient contacts
+			'[PATIENT_MOBILE_PHONE]' => isset($contactSelf['phone_local_number']) ?
+                $contactSelf['phone_use_code'].'-'.
                 $contactSelf['phone_area_code'].'-'.
-                $contactSelf['phone_local_number'],
-			'[PATIENT_WORK_PHONE]' => $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_local_number'] : '',
+
+            // TODO: Add a field for work phone in the paient contacts
+			'[PATIENT_WORK_PHONE]' => isset($contactSelf['phone_local_number']) ?
+                $contactSelf['phone_use_code'].'-'.
                 $contactSelf['phone_area_code'].'-'.
-                $contactSelf['phone_local_number'],
-			'[PATIENT_EMAIL]' => $patientData['email'],
-			'[PATIENT_MOTHERS_NAME]' => Person::fullname(
-                $contactMother['first_name'],
-                $contactMother['middle_name'],
-                $contactMother['last_name']
-            ),
-			'[PATIENT_GUARDIANS_NAME]' => Person::fullname(
-                $contactGuardian['first_name'],
-                $contactGuardian['middle_name'],
-                $contactGuardian['last_name']
-            ),
-			'[PATIENT_EMERGENCY_CONTACT]' => Person::fullname(
-                $contactEmergency['first_name'],
-                $contactEmergency['middle_name'],
-                $contactEmergency['last_name']
-            ),
-			'[PATIENT_EMERGENCY_PHONE]' => $contactEmergency['phone_use_code'].'-'.
+                $contactSelf['phone_local_number'] : '',
+
+            // TODO: Add a field for email on the patient contact table, and model
+			'[PATIENT_EMAIL]' => '',
+			'[PATIENT_MOTHERS_NAME]' => isset($contactMother['first_name']) ?
+                Person::fullname(
+                    $contactMother['first_name'],
+                    $contactMother['middle_name'],
+                    $contactMother['last_name']
+                ) : '',
+
+			'[PATIENT_GUARDIANS_NAME]' => isset($contactGuardian['first_name']) ?
+                Person::fullname(
+                    $contactGuardian['first_name'],
+                    $contactGuardian['middle_name'],
+                    $contactGuardian['last_name']
+                ) : '',
+
+			'[PATIENT_EMERGENCY_CONTACT]' => isset($contactEmergency['first_name']) ?
+                Person::fullname(
+                    $contactEmergency['first_name'],
+                    $contactEmergency['middle_name'],
+                    $contactEmergency['last_name']
+                ) : '',
+
+            // TODO: Create a method to parse a phone number in the person dataProvider
+			'[PATIENT_EMERGENCY_PHONE]' => isset($contactEmergency['phone_local_number']) ?
+                $contactEmergency['phone_use_code'].'-'.
                 $contactEmergency['phone_area_code'].'-'.
-                $contactEmergency['phone_local_number'],
-			'[PATIENT_PROVIDER]' => is_numeric($patientData['provider']) ? $user->getUserFullNameById($patientData['provider']) : '',
+                $contactEmergency['phone_local_number'] : '',
+
+			'[PATIENT_PROVIDER]' => is_numeric($patientData['provider']) ?
+                $user->getUserFullNameById($patientData['provider']) : '',
+
 			'[PATIENT_PHARMACY]' => $patientData['pharmacy'],
 			'[PATIENT_AGE]' => $age['DMY']['years'],
 			'[PATIENT_OCCUPATION]' => $patientData['occupation'],
-			'[PATIENT_EMPLOYEER]' => Person::fullname(
-                $contactEmployer['first_name'],
-                $contactEmployer['middle_name'],
-                $contactEmployer['last_name']
-            ),
+
+			'[PATIENT_EMPLOYEER]' => isset($contactEmployer['first_name']) ?
+                Person::fullname(
+                    $contactEmployer['first_name'],
+                    $contactEmployer['middle_name'],
+                    $contactEmployer['last_name']
+                ) : '',
+
 			'[PATIENT_RACE]' => $patientData['race'],
 			'[PATIENT_ETHNICITY]' => $patientData['ethnicity'],
 			'[PATIENT_LENGUAGE]' => $patientData['language'],

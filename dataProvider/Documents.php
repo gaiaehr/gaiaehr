@@ -128,7 +128,7 @@ class Documents {
                 $contactSelf['phone_area_code'].'-'.
                 $contactSelf['phone_local_number'] : '',
 
-            // TODO: Add a field for work phone in the paient contacts
+            // TODO: Add a field for work phone in the patient contacts
 			'[PATIENT_WORK_PHONE]' => isset($contactSelf['phone_local_number']) ?
                 $contactSelf['phone_use_code'].'-'.
                 $contactSelf['phone_area_code'].'-'.

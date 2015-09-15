@@ -129,6 +129,11 @@ Ext.define('App.model.patient.Patient',{
             convert: false
         },
         {
+            name: 'phones',
+            type: 'string',
+            store: false
+        },
+        {
             name: 'provider',
             type: 'string',
             comment: 'default provider',
@@ -306,14 +311,6 @@ Ext.define('App.model.patient.Patient',{
         {
             name: 'primary_provider',
             type: 'int'
-        },
-        {
-            name: 'address_cont',
-            type: 'string'
-        },
-        {
-            name: 'work_phone_ext',
-            type: 'string'
         },
         {
             name: 'administrative_status',

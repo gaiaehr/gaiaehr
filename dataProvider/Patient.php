@@ -724,6 +724,9 @@ class Patient {
                 isset($contact['state']) ? $contact['state'] : '',
                 isset($contact['zipcode']) ? $contact['zipcode'] : ''
             );
+            $results[$index]['phones'] = isset($contact['phone_local_number']) ?
+                $contact['phone_use_code'].'-'.$contact['phone_area_code'].'-'.$contact['phone_local_number'] :
+                '';
         }
 		return [
             'total' => count($results),

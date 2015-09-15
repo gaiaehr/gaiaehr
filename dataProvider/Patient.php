@@ -427,9 +427,15 @@ class Patient {
 	 * @return string
 	 */
 	public function getPatientFullAddressByPid($pid) {
-		$this->setPatientModel();
-		$p = $this->p->sql("SELECT address,city,state,zipcode FROM patient WHERE pid = '$pid'")->one();
-		return Person::fulladdress($p['address'], null, $p['city'], $p['state'], $p['zipcode']);
+        $patientContact = new PatientContacts();
+        $record = $patientContact->getSelfContact($pid);
+		return Person::fulladdress(
+            $record['address'],
+            null,
+            $record['city'],
+            $record['state'],
+            $record['zipcode']
+        );
 	}
 
 	public function patientLiveSearch(stdClass $params) {
@@ -489,9 +495,9 @@ class Patient {
 	}
 
 	public function getPatientAddressById($pid) {
-		$this->setPatientModel();
-		$p = $this->p->load(['pid' => $pid])->one();
-		$address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
+        $patientContact = new PatientContacts();
+        $record = $patientContact->getSelfContact($pid);
+		$address = $record['address'] . ' <br>' . $record['city'] . ',  ' . $record['state'] . ' ' . $record['country'];
 		return $address;
 	}
 

@@ -48,7 +48,7 @@ Ext.define('App.model.patient.Patient',{
             len: 60
         },
         {
-            name: 'fullname',
+            name: 'name',
             type: 'string',
             store: false
         },

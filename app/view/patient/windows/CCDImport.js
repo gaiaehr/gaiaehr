@@ -85,7 +85,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 										},
 										{
 											fieldLabel: _('name'),
-											name: 'fullname'
+											name: 'name'
 										},
 										{
 											fieldLabel: _('sex'),
@@ -265,7 +265,7 @@ Ext.define('App.view.patient.windows.CCDImport', {
 										},
 										{
 											fieldLabel: _('name'),
-											name: 'fullname'
+											name: 'name'
 										},
 										{
 											fieldLabel: _('sex'),

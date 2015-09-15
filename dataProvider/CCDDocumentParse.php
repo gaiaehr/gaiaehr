@@ -19,6 +19,7 @@
 include_once(ROOT . '/classes/Array2XML.php');
 include_once(ROOT . '/classes/XML2Array.php');
 include_once(ROOT . '/dataProvider/SnomedCodes.php');
+include_once(ROOT . '/dataProvider/Person.php');
 
 class CCDDocumentParse {
 
@@ -165,6 +166,7 @@ class CCDDocumentParse {
 		$patient->fname = $names['fname'];
 		$patient->mname = $names['mname'];
 		$patient->lname = $names['lname'];
+        $patient->name = Person::fullname($names['fname'], $names['mname'], $names['lname']);
 		//gender
 		if(!isset($dom['patient']['administrativeGenderCode'])){
 			throw new Exception('Error: Patient gender is required');

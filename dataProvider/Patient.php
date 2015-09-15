@@ -20,6 +20,7 @@
 include_once(ROOT . '/dataProvider/Person.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/ACL.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 
 class Patient {
 
@@ -48,6 +49,11 @@ class Patient {
 	 * @var MatchaCUP
 	 */
 	private $c;
+
+    /**
+     * @var MatchaCUP
+     */
+    private $patientContacts;
 
 	/**
 	 * @var PoolArea
@@ -687,7 +693,8 @@ class Patient {
  				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
  				   AND `lname` SOUNDS LIKE '{$params->lname}'
  				   AND `sex` = '{$params->sex}'";
-
+        //$this->setPatientContactModel();
+        $this->patientContacts = new PatientContacts();
 		if($includeDateOfBirth){
 			$sql = " AND `DOB` = '{$params->DOB}'";
 		}
@@ -697,7 +704,26 @@ class Patient {
 		}
 
 		$results = $this->p->sql($sql)->all();
-		return ['total' => count($results), 'data' => $results];
+        foreach($results as $index => $record ){
+            $contact = $this->patientContacts->getSelfContact($record['pid']);
+            $results[$index]['name'] = Person::fullname(
+                $record['fname'],
+                $record['mname'],
+                $record['lname']
+            );
+            $results[$index]['fulladdress'] = Person::fulladdress(
+                isset($contact['address']) ? $contact['address'] : '',
+                null,
+                isset($contact['city']) ? $contact['city'] : '',
+                isset($contact['state']) ? $contact['state'] : '',
+                isset($contact['zipcode']) ? $contact['zipcode'] : ''
+            );
+        }
+        error_log(print_r($results,true));
+		return [
+            'total' => count($results),
+            'data' => $results
+        ];
 	}
 
 }

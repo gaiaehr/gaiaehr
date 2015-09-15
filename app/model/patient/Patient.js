@@ -123,12 +123,6 @@ Ext.define('App.model.patient.Patient',{
             dateFormat: 'Y-m-d'
         },
         {
-            name: 'address',
-            type: 'string',
-            comment: 'address',
-            len: 80
-        },
-        {
             name: 'fulladdress',
             type: 'string',
             persist: false,
@@ -391,6 +385,12 @@ Ext.define('App.model.patient.Patient',{
         {
             model: 'App.model.patient.PatientActiveProblem',
             name: 'activeproblems',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.PatientContacts',
+            name: 'contacts',
             primaryKey: 'pid',
             foreignKey: 'pid'
         }

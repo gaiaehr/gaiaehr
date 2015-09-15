@@ -66,13 +66,13 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 
 								'<tr>' +
 								'<td><b>' + _('patient') + ':</b></td>' +
-								'<td>' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname + ' (' + record.data.sex + ') ' + record.data.DOBFormatted + '</td>' +
+								'<td>' + record.data.name + ' (' + record.data.sex + ') ' + record.data.DOBFormatted + '</td>' +
 								'</tr>' +
 
 								'</tr>' +
 								'<tr>' +
 								'<td><b>' + _('address') + ':</b></td>' +
-								'<td>' + record.data.address + ' ' + record.data.address_cont + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + '</td>' +
+								'<td>' + record.data.fulladdress + '</td>' +
 								'</tr>' +
 
 								'<tr>' +

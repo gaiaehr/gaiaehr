@@ -69,6 +69,25 @@ class PatientContacts {
             ON relationship = option_value
             WHERE combo_lists_options.list_id=134
             AND patient_contacts.relationship="SEL"
+            AND patient_contacts.active=1
             AND patient_contacts.pid = '.$pid)->all();
     }
+
+    /**
+     * Method to get the contacts by type.
+     * @param $pid
+     * @return mixed
+     */
+    public function getContactByType($pid, $type) {
+        return $this->Contacts->sql("SELECT *,
+            combo_lists_options.option_name as relationship_name
+            FROM patient_contacts
+            LEFT JOIN combo_lists_options
+            ON relationship = option_value
+            WHERE combo_lists_options.list_id=134
+            AND patient_contacts.relationship='$type'
+            AND patient_contacts.active=1
+            AND patient_contacts.pid = $pid")->one();
+    }
+
 }

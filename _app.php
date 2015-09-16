@@ -88,7 +88,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
             };
 
             window.onbeforeunload = function(){
-	            return _('you_should_logout_before_quiting');
+	            return _('you_should_logout_before_quitting');
             };
 
             ZeroClipboard.config( { moviePath: 'lib/ZeroClipboard/ZeroClipboard.swf' } );

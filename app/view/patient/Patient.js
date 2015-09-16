@@ -36,8 +36,6 @@ Ext.define('App.view.patient.Patient', {
 	initComponent: function(){
 		var me = this;
 
-		say('Hello 1');
-
 		me.store = Ext.create('App.store.patient.Patient');
 		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
 		me.patientContacsStore = Ext.create('App.store.patient.PatientContacts', {
@@ -128,7 +126,6 @@ Ext.define('App.view.patient.Patient', {
 			scope: me,
 			beforerender: me.beforePanelRender
 		};
-		say('Hello 2');
 
 		Ext.apply(me, configs);
 

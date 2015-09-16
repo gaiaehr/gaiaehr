@@ -18,6 +18,8 @@
  */
 
 include_once(ROOT . '/dataProvider/Patient.php');
+include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/Encounter.php');
 include_once(ROOT . '/dataProvider/Referrals.php');
@@ -47,7 +49,6 @@ class Documents {
 		return;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function getArrayWithTokensNeededByDocumentID($id) {
 		$this->db->setSQL("SELECT title, body FROM documents_templates WHERE id = '$id' ");
 		$record = $this->db->fetchRecord(PDO::FETCH_ASSOC);
@@ -57,19 +58,16 @@ class Documents {
 		return $tokensfound[0];
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function getTemplateBodyById($id) {
 		$this->db->setSQL("SELECT title, body FROM documents_templates WHERE id = '$id' ");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function getAllPatientData($pid) {
 		$this->db->setSQL("SELECT * FROM patient WHERE pid = '$pid'");
 		return $this->db->fetchRecord(PDO::FETCH_ASSOC);
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function updateDocumentsTitle(stdClass $params) {
 		$data = get_object_vars($params);
 		$id = $data['id'];
@@ -79,7 +77,6 @@ class Documents {
 		return $params;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function setArraySizeOfTokenArray($tokens) {
 		$givingValuesToTokens = [];
 		foreach($tokens as $tok){
@@ -88,9 +85,17 @@ class Documents {
 		return $givingValuesToTokens;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_PatientTokensData($pid, $allNeededInfo, $tokens) {
-		$patientData = $this->getAllPatientData($pid);
+        // Code reference: Relationship codes as specified by HL7. v2: Added 'Household' concept
+        // https://phinvads.cdc.gov/vads/ViewValueSet.action?id=6FD34BBC-617F-DD11-B38D-00188B398520#
+        $patientContact = new PatientContacts();
+        $contactSelf = $patientContact->getContactByType($pid, 'SEL');
+        $contactGuardian = $patientContact->getContactByType($pid, 'GRD');
+        $contactMother = $patientContact->getContactByType($pid, 'MTH');
+        $contactEmergency = $patientContact->getContactByType($pid, 'EMC');
+        $contactEmployer = $patientContact->getContactByType($pid, 'EMR');
+
+        $patientData = $this->getAllPatientData($pid);
 		$age = $this->patient->getPatientAgeByDOB($patientData['DOB']);
 		$user = new User();
 		$patienInformation = [
@@ -104,35 +109,81 @@ class Documents {
 			'[PATIENT_SOCIAL_SECURITY]' => $patientData['SS'],
 			'[PATIENT_EXTERNAL_ID]' => $patientData['pubpid'],
 			'[PATIENT_DRIVERS_LICENSE]' => $patientData['drivers_license'],
-			'[PATIENT_ADDRESS]' => $patientData['address'],
-			'[PATIENT_CITY]' => $patientData['city'],
-			'[PATIENT_STATE]' => $patientData['state'],
-			'[PATIENT_COUNTRY]' => $patientData['country'],
-			'[PATIENT_ZIPCODE]' => $patientData['zipcode'],
-			'[PATIENT_HOME_PHONE]' => $patientData['home_phone'],
-			'[PATIENT_MOBILE_PHONE]' => $patientData['mobile_phone'],
-			'[PATIENT_WORK_PHONE]' => $patientData['work_phone'],
-			'[PATIENT_EMAIL]' => $patientData['email'],
-			'[PATIENT_MOTHERS_NAME]' => $patientData['mothers_name'],
-			'[PATIENT_GUARDIANS_NAME]' => $patientData['guardians_name'],
-			'[PATIENT_EMERGENCY_CONTACT]' => $patientData['emer_contact'],
-			'[PATIENT_EMERGENCY_PHONE]' => $patientData['emer_phone'],
-			'[PATIENT_PROVIDER]' => is_numeric($patientData['provider']) ? $user->getUserFullNameById($patientData['provider']) : '',
+			'[PATIENT_ADDRESS]' => isset($contactSelf['street_mailing_address']) ? $contactSelf['street_mailing_address'] : '',
+			'[PATIENT_CITY]' => isset($contactSelf['city']) ? $contactSelf['city'] : '',
+			'[PATIENT_STATE]' => isset($contactSelf['state']) ? $contactSelf['state'] : '',
+			'[PATIENT_COUNTRY]' => isset($contactSelf['country']) ? $contactSelf['country'] : '',
+			'[PATIENT_ZIPCODE]' => isset($contactSelf['zip']) ? $contactSelf['zip'] : '',
+
+            //
+			'[PATIENT_HOME_PHONE]' => isset($contactSelf['phone_local_number']) ?
+                $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_area_code'].'-'.
+                $contactSelf['phone_local_number'] : '',
+
+            // TODO: Add a field for mobile phone in the patient contacts
+			'[PATIENT_MOBILE_PHONE]' => isset($contactSelf['phone_local_number']) ?
+                $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_area_code'].'-'.
+                $contactSelf['phone_local_number'] : '',
+
+            // TODO: Add a field for work phone in the patient contacts
+			'[PATIENT_WORK_PHONE]' => isset($contactSelf['phone_local_number']) ?
+                $contactSelf['phone_use_code'].'-'.
+                $contactSelf['phone_area_code'].'-'.
+                $contactSelf['phone_local_number'] : '',
+
+            // TODO: Add a field for email on the patient contact table, and model
+			'[PATIENT_EMAIL]' => '',
+			'[PATIENT_MOTHERS_NAME]' => isset($contactMother['first_name']) ?
+                Person::fullname(
+                    $contactMother['first_name'],
+                    $contactMother['middle_name'],
+                    $contactMother['last_name']
+                ) : '',
+
+			'[PATIENT_GUARDIANS_NAME]' => isset($contactGuardian['first_name']) ?
+                Person::fullname(
+                    $contactGuardian['first_name'],
+                    $contactGuardian['middle_name'],
+                    $contactGuardian['last_name']
+                ) : '',
+
+			'[PATIENT_EMERGENCY_CONTACT]' => isset($contactEmergency['first_name']) ?
+                Person::fullname(
+                    $contactEmergency['first_name'],
+                    $contactEmergency['middle_name'],
+                    $contactEmergency['last_name']
+                ) : '',
+
+            // TODO: Create a method to parse a phone number in the person dataProvider
+			'[PATIENT_EMERGENCY_PHONE]' => isset($contactEmergency['phone_local_number']) ?
+                $contactEmergency['phone_use_code'].'-'.
+                $contactEmergency['phone_area_code'].'-'.
+                $contactEmergency['phone_local_number'] : '',
+
+			'[PATIENT_PROVIDER]' => is_numeric($patientData['provider']) ?
+                $user->getUserFullNameById($patientData['provider']) : '',
+
 			'[PATIENT_PHARMACY]' => $patientData['pharmacy'],
 			'[PATIENT_AGE]' => $age['DMY']['years'],
 			'[PATIENT_OCCUPATION]' => $patientData['occupation'],
-			'[PATIENT_EMPLOYEER]' => $patientData['employer_name'],
+
+			'[PATIENT_EMPLOYEER]' => isset($contactEmployer['first_name']) ?
+                Person::fullname(
+                    $contactEmployer['first_name'],
+                    $contactEmployer['middle_name'],
+                    $contactEmployer['last_name']
+                ) : '',
+
 			'[PATIENT_RACE]' => $patientData['race'],
 			'[PATIENT_ETHNICITY]' => $patientData['ethnicity'],
 			'[PATIENT_LENGUAGE]' => $patientData['language'],
 			'[PATIENT_PICTURE]' => '<img src="' . $patientData['image'] . '" style="width:100px;height:100px">',
 			'[PATIENT_QRCODE]' => '<img src="' . $patientData['qrcode'] . '" style="width:100px;height:100px">',
 
-			// ////////////////////////////////
 			'[PATIENT_TABACCO]' => 'tabaco',
-			// //////////////////////////////////////////////////////
 			'[PATIENT_ALCOHOL]' => 'alcohol',
-			// ////////////////////////////////////////////////////
 			//            '[PATIENT_BALANCE]' => '$' . $this->fees->getPatientBalanceByPid($pid),
 			//            '[PATIENT_PRIMARY_PLAN]' => $patientData['primary_plan_name'],
 			//            '[PATIENT_PRIMARY_EFFECTIVE_DATE]' => $patientData['primary_effective_date'],
@@ -196,7 +247,6 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public function get_EncounterTokensData($eid, $allNeededInfo, $tokens) {
 
 		$params = new stdClass();
@@ -332,7 +382,6 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private function tokensForEncountersList($Array, $typeoflist) {
 		$html = '';
 		if($typeoflist == 1){
@@ -416,8 +465,6 @@ class Documents {
 		return ($Array == null || $Array == '') ? '' : $html;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	private function getCurrentTokensData($allNeededInfo, $tokens) {
 
 		$currentInformation = [
@@ -438,7 +485,6 @@ class Documents {
 		return $allNeededInfo;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private function getClinicTokensData($allNeededInfo, $tokens) {
 		$facility = new Facilities();
 		$facilityInfo = $facility->getActiveFacilitiesById($_SESSION['user']['facility']);
@@ -465,10 +511,6 @@ class Documents {
 		}
 		return $allNeededInfo;
 	}
-
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public function PDFDocumentBuilder($params, $path = '') {
 		$pid = $params->pid;

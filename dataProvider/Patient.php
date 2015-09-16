@@ -20,6 +20,7 @@
 include_once(ROOT . '/dataProvider/Person.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/ACL.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 
 class Patient {
 
@@ -48,6 +49,11 @@ class Patient {
 	 * @var MatchaCUP
 	 */
 	private $c;
+
+    /**
+     * @var MatchaCUP
+     */
+    private $patientContacts;
 
 	/**
 	 * @var PoolArea
@@ -119,7 +125,10 @@ class Patient {
 		if(isset($params->fullname)){
 			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], $params->fullname);
 		}else if(isset($params->fname) && isset($params->mname) && isset($params->lname)){
-			$params->qrcode = $this->createPatientQrCode($this->patient['pid'], Person::fullname($params->fname, $params->mname, $params->lname));
+			$params->qrcode = $this->createPatientQrCode(
+                $this->patient['pid'],
+                Person::fullname($params->fname, $params->mname, $params->lname)
+            );
 		}
 
 		$params->update_uid = isset($_SESSION['user']['id']) ? $_SESSION['user']['id'] : '0';
@@ -161,7 +170,7 @@ class Patient {
 		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+			$this->patient['name'] = $this->getPatientFullName();
 		}
 		unset($params);
 		return $this->patient;
@@ -182,7 +191,7 @@ class Patient {
 		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+			$this->patient['name'] = $this->getPatientFullName();
 		}
 		unset($params);
 		return $this->patient;
@@ -205,7 +214,7 @@ class Patient {
 		if($this->patient !== false){
 			$this->patient['pic'] = $this->patient['image'];
 			$this->patient['age'] = $this->getPatientAge();
-			$this->patient['name'] = Person::fullname($this->patient['fname'], $this->patient['mname'], $this->patient['lname']);
+			$this->patient['name'] = $this->getPatientFullName();
 		}
 
 		unset($params);
@@ -418,9 +427,15 @@ class Patient {
 	 * @return string
 	 */
 	public function getPatientFullAddressByPid($pid) {
-		$this->setPatientModel();
-		$p = $this->p->sql("SELECT address,city,state,zipcode FROM patient WHERE pid = '$pid'")->one();
-		return Person::fulladdress($p['address'], null, $p['city'], $p['state'], $p['zipcode']);
+        $patientContact = new PatientContacts();
+        $record = $patientContact->getSelfContact($pid);
+		return Person::fulladdress(
+            $record['street_mailing_address'],
+            null,
+            $record['city'],
+            $record['state'],
+            $record['zip']
+        );
 	}
 
 	public function patientLiveSearch(stdClass $params) {
@@ -480,9 +495,9 @@ class Patient {
 	}
 
 	public function getPatientAddressById($pid) {
-		$this->setPatientModel();
-		$p = $this->p->load(['pid' => $pid])->one();
-		$address = $p['address'] . ' <br>' . $p['city'] . ',  ' . $p['state'] . ' ' . $p['country'];
+        $patientContact = new PatientContacts();
+        $record = $patientContact->getSelfContact($pid);
+		$address = $record['address'] . ' <br>' . $record['city'] . ',  ' . $record['state'] . ' ' . $record['country'];
 		return $address;
 	}
 
@@ -684,7 +699,8 @@ class Patient {
  				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
  				   AND `lname` SOUNDS LIKE '{$params->lname}'
  				   AND `sex` = '{$params->sex}'";
-
+        //$this->setPatientContactModel();
+        $this->patientContacts = new PatientContacts();
 		if($includeDateOfBirth){
 			$sql = " AND `DOB` = '{$params->DOB}'";
 		}
@@ -694,7 +710,28 @@ class Patient {
 		}
 
 		$results = $this->p->sql($sql)->all();
-		return ['total' => count($results), 'data' => $results];
+        foreach($results as $index => $record ){
+            $contact = $this->patientContacts->getSelfContact($record['pid']);
+            $results[$index]['name'] = Person::fullname(
+                $record['fname'],
+                $record['mname'],
+                $record['lname']
+            );
+            $results[$index]['fulladdress'] = Person::fulladdress(
+                isset($contact['street_mailing_address']) ? $contact['street_mailing_address'] : '',
+                null,
+                isset($contact['city']) ? $contact['city'] : '',
+                isset($contact['state']) ? $contact['state'] : '',
+                isset($contact['zip']) ? $contact['zip'] : ''
+            );
+            $results[$index]['phones'] = isset($contact['phone_local_number']) ?
+                $contact['phone_use_code'].'-'.$contact['phone_area_code'].'-'.$contact['phone_local_number'] :
+                '';
+        }
+		return [
+            'total' => count($results),
+            'data' => $results
+        ];
 	}
 
 }

@@ -185,7 +185,15 @@ class Practice
 	    }elseif(is_object($this->i)){
 		    $this->i->save($params);
 	    }
-	    $params->address_full = Address::fullAddress($params->line1, $params->line2, $params->city, $params->state, $params->zip, $params->plus_four, $params->country);
+	    $params->address_full = Address::fullAddress(
+            $params->line1,
+            $params->line2,
+            $params->city,
+            $params->state,
+            $params->zip,
+            $params->plus_four,
+            $params->country
+        );
 	    return $params;
     }
 
@@ -202,7 +210,15 @@ class Practice
         $o->country = $params->country;
         $this->address->save($o);
 	    unset($o);
-	    $params->address_full = Address::fullAddress($params->line1, $params->line2, $params->city, $params->state, $params->zip, $params->plus_four, $params->country);
+	    $params->address_full = Address::fullAddress(
+            $params->line1,
+            $params->line2,
+            $params->city,
+            $params->state,
+            $params->zip,
+            $params->plus_four,
+            $params->country
+        );
 	    return $params;
     }
 
@@ -215,7 +231,15 @@ class Practice
 	    $record['zip'] = $a['zip'];
 	    $record['plus_four'] = $a['plus_four'];
 	    $record['country'] = $a['country'];
-	    $record['address_full'] = Address::fullAddress($a['line1'], $a['line2'], $a['city'], $a['state'], $a['zip'], $a['plus_four'], $a['country']);
+	    $record['address_full'] = Address::fullAddress(
+            $a['line1'],
+            $a['line2'],
+            $a['city'],
+            $a['state'],
+            $a['zip'],
+            $a['plus_four'],
+            $a['country']
+        );
         return $record;
     }
     private function getPhones($record){
@@ -248,7 +272,12 @@ class Practice
 	    $p->foreign_id = $params->id;
 	    $record = $this->phone->save($p);
 	    $params->phone_id = $record['id'];
-	    $params->phone_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    $params->phone_full = Phone::fullPhone(
+            $record['country_code'],
+            $record['area_code'],
+            $record['prefix'],
+            $record['number']
+        );
 		unset($p, $record);
 	    $f = new stdClass();
 	    $f->country_code = $params->fax_country_code;
@@ -260,7 +289,12 @@ class Practice
 	    $f->foreign_id = $params->id;
 	    $record = $this->phone->save($f);
 	    $params->fax_id = $record['id'];
-	    $params->fax_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    $params->fax_full = Phone::fullPhone(
+            $record['country_code'],
+            $record['area_code'],
+            $record['prefix'],
+            $record['number']
+        );
 	    unset($f, $record);
 	    if(is_object($this->p)){
 		    $this->p->save($params);
@@ -283,7 +317,12 @@ class Practice
 	    $p->foreign_type = $foreignType;
 	    $p->foreign_id = $params->id;
 	    $record = $this->phone->save($p);
-	    $params->phone_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    $params->phone_full = Phone::fullPhone(
+            $record['country_code'],
+            $record['area_code'],
+            $record['prefix'],
+            $record['number']
+        );
 	    unset($p, $record);
 	    $f = new stdClass();
 	    $f->id = $params->fax_id;
@@ -295,7 +334,12 @@ class Practice
 	    $f->foreign_type = $foreignType;
 	    $f->foreign_id = $params->id;
 	    $record = $this->phone->save($f);
-	    $params->fax_full = Phone::fullPhone($record['country_code'], $record['area_code'], $record['prefix'], $record['number']);
+	    $params->fax_full = Phone::fullPhone(
+            $record['country_code'],
+            $record['area_code'],
+            $record['prefix'],
+            $record['number']
+        );
 	    unset($f, $record);
 	    return $params;
     }

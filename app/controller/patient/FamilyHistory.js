@@ -89,14 +89,12 @@ Ext.define('App.controller.patient.FamilyHistory', {
 			form = this.getFamilyHistoryForm().getForm(),
 			store = grid.getStore(),
 			values = form.getValues(),
-			histories = [];
+			histories = [],
+			isValid =  true;
 
-		say('form.isValid()');
-		say(form.isValid());
-
-
-		if(!form.isValid()) return;
-
+		//say('form.isValid()');
+		//say(form.isValid());
+		//if(!form.isValid()) return;
 
 		Ext.Object.each(values, function(key, value){
 
@@ -105,6 +103,10 @@ Ext.define('App.controller.patient.FamilyHistory', {
 			var foo = value.split('~'),
 				condition = foo[0].split(':'),
 				relation = foo[1].split(':');
+
+			if(isValid && relation[0] == '0'){
+				isValid = false;
+			}
 
 			Ext.Array.push(histories, {
 				pid: app.patient.pid,
@@ -119,6 +121,16 @@ Ext.define('App.controller.patient.FamilyHistory', {
 				create_date: new Date()
 			});
 		});
+
+		if(histories.length == 0){
+			app.msg(_('oops'), _('no_history_selected'), true);
+			return;
+		}
+
+		if(!isValid){
+			app.msg(_('oops'), _('missing_required_information'), true);
+			return;
+		}
 
 		store.add(histories);
 		store.sync();

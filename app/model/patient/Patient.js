@@ -48,7 +48,7 @@ Ext.define('App.model.patient.Patient',{
             len: 60
         },
         {
-            name: 'fullname',
+            name: 'name',
             type: 'string',
             store: false
         },
@@ -123,16 +123,15 @@ Ext.define('App.model.patient.Patient',{
             dateFormat: 'Y-m-d'
         },
         {
-            name: 'address',
-            type: 'string',
-            comment: 'address',
-            len: 80
-        },
-        {
             name: 'fulladdress',
             type: 'string',
             persist: false,
             convert: false
+        },
+        {
+            name: 'phones',
+            type: 'string',
+            store: false
         },
         {
             name: 'provider',
@@ -314,14 +313,6 @@ Ext.define('App.model.patient.Patient',{
             type: 'int'
         },
         {
-            name: 'address_cont',
-            type: 'string'
-        },
-        {
-            name: 'work_phone_ext',
-            type: 'string'
-        },
-        {
             name: 'administrative_status',
             type: 'string',
             comment: 'active | inactive | merged',
@@ -391,6 +382,12 @@ Ext.define('App.model.patient.Patient',{
         {
             model: 'App.model.patient.PatientActiveProblem',
             name: 'activeproblems',
+            primaryKey: 'pid',
+            foreignKey: 'pid'
+        },
+        {
+            model: 'App.model.patient.PatientContacts',
+            name: 'contacts',
             primaryKey: 'pid',
             foreignKey: 'pid'
         }

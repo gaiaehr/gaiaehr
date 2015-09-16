@@ -53,9 +53,9 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 						dataIndex: 'fullname',
 						flex: 1,
 						renderer: function(v, meta, record){
-							var phone = record.data.home_phone !== '' ? record.data.home_phone : '000-000-0000',
+							var phone = record.data.phones !== '' ? record.data.phones : '000-000-0000',
 								driver_lic = record.data.drivers_license !== '' ? record.data.drivers_license : '0000000000';
-
+                            //say(record);
 							return '<table cellpadding="1" cellspacing="0" border="0" width="100%" style="font-size: 12px;">' +
 								'<tbody>' +
 
@@ -66,13 +66,13 @@ Ext.define('App.view.patient.windows.PossibleDuplicates', {
 
 								'<tr>' +
 								'<td><b>' + _('patient') + ':</b></td>' +
-								'<td>' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname + ' (' + record.data.sex + ') ' + record.data.DOBFormatted + '</td>' +
+								'<td>' + record.data.name + ' (' + record.data.sex + ') ' + record.data.DOBFormatted + '</td>' +
 								'</tr>' +
 
 								'</tr>' +
 								'<tr>' +
 								'<td><b>' + _('address') + ':</b></td>' +
-								'<td>' + record.data.address + ' ' + record.data.address_cont + ' ' + record.data.city + ' ' + record.data.state + ' ' + record.data.zipcode + '</td>' +
+								'<td>' + record.data.fulladdress + '</td>' +
 								'</tr>' +
 
 								'<tr>' +

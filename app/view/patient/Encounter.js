@@ -475,7 +475,6 @@ Ext.define('App.view.patient.Encounter', {
 	onToolbarBtnHandler: function(btn){
 		if(btn.action == 'encounter'){
 			app.updateEncounter(this.encounter);
-
 		}else{
 			app.onMedicalWin(btn.action);
 		}

@@ -293,7 +293,6 @@ Ext.define('App.view.patient.Summary', {
 			});
 
 			Ext.Array.push(me.pageBody, me.sidePanel);
-
 		}
 
 		if(a('access_demographics')){

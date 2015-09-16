@@ -43,7 +43,14 @@ class AuditLog {
 		], 'patient', 'pid', 'pid')->all();
 
 		foreach($records['data'] as &$record){
-			$checksum = crc32($record['uid'] . $record['fid'] . $record['date'] . $record['table_name'] . $record['sql_string'] . serialize($record['data']));
+			$checksum = crc32(
+                $record['uid'] .
+                $record['fid'] .
+                $record['date'] .
+                $record['table_name'] .
+                $record['sql_string'] .
+                serialize($record['data'])
+            );
 
 			$record['is_valid'] = $record['checksum'] == $checksum;
 		}
@@ -67,7 +74,14 @@ class AuditLog {
 		], 'patient', 'pid', 'pid')->one();
 
 		if($record !== false){
-			$checksum = crc32($record['uid'] . $record['fid'] . $record['data']['date'] . $record['data']['table_name'] . $record['data']['sql_string'] . serialize($record['data']['data']));
+			$checksum = crc32(
+                $record['uid'] .
+                $record['fid'] .
+                $record['data']['date'] .
+                $record['data']['table_name'] .
+                $record['data']['sql_string'] .
+                serialize($record['data']['data'])
+            );
 			$record['data']['is_valid'] = $record['data']['checksum'] == $checksum;
 		}
 

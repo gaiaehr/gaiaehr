@@ -30,8 +30,6 @@ Ext.define('App.view.Viewport', {
     initComponent: function(){
 
 	    Ext.state.Manager.setProvider(Ext.create('Ext.state.CookieProvider'));
-
-
 	    Ext.tip.QuickTipManager.init();
         var me = this;
 
@@ -74,7 +72,6 @@ Ext.define('App.view.Viewport', {
          * @type {*}
          */
         //me.User = Ext.ModelManager.getModel('App.model.administration.AuditLog');
-
 
         /**
          * This store will handle the patient pool area
@@ -266,8 +263,6 @@ Ext.define('App.view.Viewport', {
 			    ]
 		    });
 	    }
-
-
 
 	    if(a('add_patient')){
 		    me.HeaderLeft.add({
@@ -631,8 +626,6 @@ Ext.define('App.view.Viewport', {
         me.callParent(arguments);
 
 	    me.signature = Ext.create('App.view.signature.SignatureWindow');
-
-
     },
 
 	getUserFullname: function(){
@@ -646,7 +639,6 @@ Ext.define('App.view.Viewport', {
 	onFacilitySelect:function(cmb, records){
 		var me = this;
 		Facilities.setFacility(records[0].data.option_value, function(provider, response){
-
 			if(records[0].data.option_value == response.result){
 				// set user global facility value
 				app.user.facility = records[0].data.option_value;
@@ -658,7 +650,6 @@ Ext.define('App.view.Viewport', {
 				me.getPatientsInPoolArea();
 			}
 		});
-
 	},
 
 	onFacilityComboLoad:function(store, records){
@@ -789,10 +780,6 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	//*****************************************************************
-
-
-
 	/*
 	 * Show the Create New Encounter panel.
 	 */
@@ -821,36 +808,24 @@ Ext.define('App.view.Viewport', {
         var me = this,
 	        cls = me.nav.getNavRefByClass('App.view.patient.Summary'),
 	        panel =  me.nav[cls];
-
 		if(panel && panel == me.nav.activePanel) panel.loadPatient();
-
         me.nav.navigateTo('App.view.patient.Summary');
-
-
     },
 
 	openDashboard: function(){
         var me = this,
 	        cls = me.nav.getNavRefByClass('App.view.dashboard.Dashboard'),
 	        panel =  me.nav[cls];
-
 		if(panel && panel == me.nav.activePanel) panel.loadPatient();
-
         me.nav.navigateTo('App.view.dashboard.Dashboard');
-
-
     },
 
 	openCalendar: function(){
         var me = this,
 	        cls = me.nav.getNavRefByClass('Modules.appointments.view.Calendar'),
 	        panel =  me.nav[cls];
-
 		//if(panel && panel == me.nav.activePanel) panel.loadPatient();
-
         me.nav.navigateTo('Modules.appointments.view.Calendar');
-
-
     },
 
 	stowPatientRecord: function(){
@@ -916,7 +891,6 @@ Ext.define('App.view.Viewport', {
             });
         }
     },
-
 
 	setEncounterClose:function(close){
 		this.patient.encounterIsClose = close;
@@ -1342,7 +1316,7 @@ Ext.define('App.view.Viewport', {
      */
     accessDenied: function(){
         Ext.Msg.show({
-            title: 'Oops!',
+            title: _('oops'),
             msg: _('access_denied'),
             buttons: Ext.Msg.OK,
             icon: Ext.Msg.ERROR

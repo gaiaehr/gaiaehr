@@ -132,7 +132,7 @@ class CCDDocumentParse {
 		}
 
 		// address
-        // TODO: Here we need to create a new Patient Contact record.
+        // TODO: Here we need to create a new Patient Contact record. (Self)
 		$a = isset($dom['addr']) ? $dom['addr'] : [];
 		$patient->address = isset($a['streetAddressLine']) ? $a['streetAddressLine'] : '';
 		$patient->city = isset($a['city']) ? $a['city'] : '';
@@ -212,6 +212,7 @@ class CCDDocumentParse {
 		//$patient->religion = '';
 
 		//guardian
+        // TODO: Here we need to create a new Patient Contact record. (Guardian)
 		if(isset($dom['patient']['guardian'])){
 			// do a bit more...
 			// lets just save the name for now
@@ -318,7 +319,12 @@ class CCDDocumentParse {
 			return $allergies;
 		}
 
-		$section = $this->document['ClinicalDocument']['component']['structuredBody']['component'][$this->index['allergies']]['section'];
+		$section = $this->document['ClinicalDocument']
+                   ['component']
+                   ['structuredBody']
+                   ['component']
+                   [$this->index['allergies']]
+                    ['section'];
 
 		if(!isset($section['entry'])){
 			return $allergies;
@@ -619,17 +625,10 @@ class CCDDocumentParse {
 
 
 				}elseif(isset($obs['procedure'])){
-
-					//TODO
-
-
+					//TODO Finish me!.
 				}
-
-
 			}
-
 			$result->result_date = $result_date;
-
 			$results[] = $result;
 		}
 

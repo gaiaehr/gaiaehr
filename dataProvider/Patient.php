@@ -430,11 +430,11 @@ class Patient {
         $patientContact = new PatientContacts();
         $record = $patientContact->getSelfContact($pid);
 		return Person::fulladdress(
-            $record['address'],
+            $record['street_mailing_address'],
             null,
             $record['city'],
             $record['state'],
-            $record['zipcode']
+            $record['zip']
         );
 	}
 

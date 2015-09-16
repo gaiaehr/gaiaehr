@@ -718,11 +718,11 @@ class Patient {
                 $record['lname']
             );
             $results[$index]['fulladdress'] = Person::fulladdress(
-                isset($contact['address']) ? $contact['address'] : '',
+                isset($contact['street_mailing_address']) ? $contact['street_mailing_address'] : '',
                 null,
                 isset($contact['city']) ? $contact['city'] : '',
                 isset($contact['state']) ? $contact['state'] : '',
-                isset($contact['zipcode']) ? $contact['zipcode'] : ''
+                isset($contact['zip']) ? $contact['zip'] : ''
             );
             $results[$index]['phones'] = isset($contact['phone_local_number']) ?
                 $contact['phone_use_code'].'-'.$contact['phone_area_code'].'-'.$contact['phone_local_number'] :

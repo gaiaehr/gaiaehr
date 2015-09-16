@@ -147,7 +147,7 @@ Ext.define('App.model.patient.PatientContacts', {
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'PatientContacts.getContact',
+			read: 'PatientContacts.getContacts',
 			create: 'PatientContacts.addContact',
 			update: 'PatientContacts.updateContact'
 		}

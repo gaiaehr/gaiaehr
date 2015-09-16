@@ -95,6 +95,8 @@ class Documents {
         $contactEmergency = $patientContact->getContactByType($pid, 'EMC');
         $contactEmployer = $patientContact->getContactByType($pid, 'EMR');
 
+        error_log(print_r($contactSelf,true));
+
         $patientData = $this->getAllPatientData($pid);
 		$age = $this->patient->getPatientAgeByDOB($patientData['DOB']);
 		$user = new User();

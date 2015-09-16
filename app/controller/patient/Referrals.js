@@ -55,12 +55,12 @@ Ext.define('App.controller.patient.Referrals', {
 
 	init: function(){
 		var me = this;
+
 		me.control({
 			'patientreferralspanel': {
 				activate: me.onReferralActive,
 				selectionchange: me.onGridSelectionChange,
 				beforeedit: me.onGridBeforeEdit
-
 			},
 			'button[action=addReferralBtn]': {
 				click: me.onAddReferralBtnClicked
@@ -77,7 +77,6 @@ Ext.define('App.controller.patient.Referrals', {
 			'#printReferralBtn': {
 				click: me.onPrintReferralBtnClick
 			},
-
 			'#ReferralProviderCombo':{
 				select: me.onReferralProviderComboSelect
 			},
@@ -116,18 +115,15 @@ Ext.define('App.controller.patient.Referrals', {
 			grid = me.getReferralPanelGrid(),
 			sm = grid.getSelectionModel(),
 			selection = sm.getSelection();
-
 		grid.view.el.mask(_('generating_documents'));
-
 		for(var i=0; i < selection.length; i++){
 			var params = {
-					pid: me.pid,
-					eid: me.eid,
+					pid: app.patient.pid,
+					eid: app.patient.eid,
 					referralId: selection[i].data.id,
 					templateId: 10,
 					docType: 'Referral'
 				};
-
 			DocumentHandler.createTempDocument(params, function(provider, response){
 				if(window.dual){
 					dual.onDocumentView(response.result.id, 'Referral');

@@ -86,7 +86,6 @@ class Documents {
 	}
 
 	public function get_PatientTokensData($pid, $allNeededInfo, $tokens) {
-
         // Code reference: Relationship codes as specified by HL7. v2: Added 'Household' concept
         // https://phinvads.cdc.gov/vads/ViewValueSet.action?id=6FD34BBC-617F-DD11-B38D-00188B398520#
         $patientContact = new PatientContacts();

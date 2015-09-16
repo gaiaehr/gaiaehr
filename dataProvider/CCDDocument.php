@@ -363,7 +363,12 @@ class CCDDocument {
 			/**
 			 * Build the CCR XML Object
 			 */
-			Array2XML::init('1.0', 'UTF-8', true, ['xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"']);
+			Array2XML::init(
+                '1.0',
+                'UTF-8',
+                true,
+                ['xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"']
+            );
 			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
 		} catch(Exception $e) {
 			print $e->getMessage();
@@ -769,7 +774,12 @@ class CCDDocument {
             ['@attributes']
             ['code'] = $patientData['language'];
 		} else {
-			$recordTarget['patientRole']['patient']['languageCommunication']['languageCode']['@attributes']['nullFlavor'] = 'NI';
+			$recordTarget['patientRole']
+            ['patient']
+            ['languageCommunication']
+            ['languageCode']
+            ['@attributes']
+            ['nullFlavor'] = 'NI';
 		}
 
 		$org = [];
@@ -853,7 +863,9 @@ class CCDDocument {
 			]
 		];
 
-		$author['assignedAuthor']['representedOrganization']['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
+		$author['assignedAuthor']
+        ['representedOrganization']
+        ['telecom'] = $this->telecomBuilder($this->facility['phone'], 'WP');
 
 		$author['assignedAuthor']['representedOrganization']['addr'] = $this->addressBuilder(
             'WP',

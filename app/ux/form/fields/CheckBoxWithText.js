@@ -133,5 +133,9 @@ Ext.define('App.ux.form.fields.CheckBoxWithText', {
 	setReadOnly: function(value){
 		this.chekboxField.setReadOnly(value);
 		this.textField.setReadOnly(value);
+	},
+
+	isValid: function(){
+		return this.chekboxField.isValid() && this.textField.isValid();
 	}
 });

@@ -1618,6 +1618,8 @@ $LANG = array(
     'financial'                             => 'Financial',
     'attending_physician'                   => 'Attending Physician',
     'is_attending'                          => 'Is Attending',
-    'you_should_logout_before_quitting'      => 'You Should Logout Before Quitting',
-    'condition'                             => 'Condition'
+    'you_should_logout_before_quitting'     => 'You Should Logout Before Quitting',
+    'condition'                             => 'Condition',
+    'no_history_selected'                   => 'No History Selected',
+    'missing_required_information'          => 'Missing Required Information'
 );

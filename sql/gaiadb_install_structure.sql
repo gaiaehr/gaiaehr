@@ -1,162 +1,33 @@
--- MySQL dump 10.13  Distrib 5.6.13, for osx10.6 (i386)
---
--- Host: localhost    Database: gaiadb
--- ------------------------------------------------------
--- Server version	5.5.42-log
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `RXNCUI`
---
-
-DROP TABLE IF EXISTS `RXNCUI`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `RXNCUI` (
-  `cui1` varchar(8) DEFAULT NULL,
-  `ver_start` varchar(40) DEFAULT NULL,
-  `ver_end` varchar(40) DEFAULT NULL,
-  `cardinality` varchar(8) DEFAULT NULL,
-  `cui2` varchar(8) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `RXNCUICHANGES`
---
-
-DROP TABLE IF EXISTS `RXNCUICHANGES`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `RXNCUICHANGES` (
-  `RXAUI` varchar(8) DEFAULT NULL,
-  `CODE` varchar(50) DEFAULT NULL,
-  `SAB` varchar(20) DEFAULT NULL,
-  `TTY` varchar(20) DEFAULT NULL,
-  `STR` varchar(3000) DEFAULT NULL,
-  `OLD_RXCUI` varchar(8) NOT NULL,
-  `NEW_RXCUI` varchar(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `RXNDOC`
---
-
-DROP TABLE IF EXISTS `RXNDOC`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `RXNDOC` (
-  `DOCKEY` varchar(50) NOT NULL,
-  `VALUE` varchar(1000) DEFAULT NULL,
-  `TYPE` varchar(50) NOT NULL,
-  `EXPL` varchar(1000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `RXNSAB`
---
-
-DROP TABLE IF EXISTS `RXNSAB`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `RXNSAB` (
-  `VCUI` varchar(8) DEFAULT NULL,
-  `RCUI` varchar(8) DEFAULT NULL,
-  `VSAB` varchar(40) DEFAULT NULL,
-  `RSAB` varchar(20) NOT NULL,
-  `SON` varchar(3000) DEFAULT NULL,
-  `SF` varchar(20) DEFAULT NULL,
-  `SVER` varchar(20) DEFAULT NULL,
-  `VSTART` varchar(10) DEFAULT NULL,
-  `VEND` varchar(10) DEFAULT NULL,
-  `IMETA` varchar(10) DEFAULT NULL,
-  `RMETA` varchar(10) DEFAULT NULL,
-  `SLC` varchar(1000) DEFAULT NULL,
-  `SCC` varchar(1000) DEFAULT NULL,
-  `SRL` int(11) DEFAULT NULL,
-  `TFR` int(11) DEFAULT NULL,
-  `CFR` int(11) DEFAULT NULL,
-  `CXTY` varchar(50) DEFAULT NULL,
-  `TTYL` varchar(300) DEFAULT NULL,
-  `ATNL` varchar(1000) DEFAULT NULL,
-  `LAT` varchar(3) DEFAULT NULL,
-  `CENC` varchar(20) DEFAULT NULL,
-  `CURVER` varchar(1) DEFAULT NULL,
-  `SABIN` varchar(1) DEFAULT NULL,
-  `SSN` varchar(3000) DEFAULT NULL,
-  `SCIT` varchar(4000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `RXNSTY`
---
-
-DROP TABLE IF EXISTS `RXNSTY`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `RXNSTY` (
-  `RXCUI` varchar(8) NOT NULL,
-  `TUI` varchar(4) DEFAULT NULL,
-  `STN` varchar(100) DEFAULT NULL,
-  `STY` varchar(50) DEFAULT NULL,
-  `ATUI` varchar(11) DEFAULT NULL,
-  `CVF` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `_sencha_model`
---
-
-DROP TABLE IF EXISTS `_sencha_model`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `_sencha_model` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `model` varchar(150) DEFAULT NULL,
-  `modelData` varchar(21000) DEFAULT NULL,
-  `modelLastChange` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MEMORY DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `acl_groups`
 --
 
 DROP TABLE IF EXISTS `acl_groups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `acl_groups` (
+CREATE TABLE IF NOT EXISTS `acl_groups` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IK_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `acl_permissions`
 --
 
 DROP TABLE IF EXISTS `acl_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `acl_permissions` (
+CREATE TABLE IF NOT EXISTS `acl_permissions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `perm_key` varchar(255) DEFAULT NULL,
   `perm_name` varchar(255) DEFAULT NULL COMMENT 'Permission Name',
@@ -168,17 +39,16 @@ CREATE TABLE `acl_permissions` (
   KEY `IK_perm_key` (`perm_key`),
   KEY `IK_seq` (`seq`),
   KEY `IK_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=156 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `acl_role_perms`
 --
 
 DROP TABLE IF EXISTS `acl_role_perms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `acl_role_perms` (
+CREATE TABLE IF NOT EXISTS `acl_role_perms` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` tinyint(1) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
@@ -187,17 +57,16 @@ CREATE TABLE `acl_role_perms` (
   PRIMARY KEY (`id`),
   KEY `IK_role_id` (`role_id`),
   KEY `IK_perm_id` (`perm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1098 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1126 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `acl_roles`
 --
 
 DROP TABLE IF EXISTS `acl_roles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `acl_roles` (
+CREATE TABLE IF NOT EXISTS `acl_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(255) DEFAULT NULL COMMENT 'Role Name',
   `seq` int(11) DEFAULT NULL,
@@ -207,17 +76,16 @@ CREATE TABLE `acl_roles` (
   KEY `IK_group_id` (`group_id`),
   KEY `IK_seq` (`seq`),
   KEY `IK_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `acl_user_perms`
 --
 
 DROP TABLE IF EXISTS `acl_user_perms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `acl_user_perms` (
+CREATE TABLE IF NOT EXISTS `acl_user_perms` (
   `id` bigint(20) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
   `value` int(11) DEFAULT NULL COMMENT 'Value',
@@ -226,17 +94,16 @@ CREATE TABLE `acl_user_perms` (
   PRIMARY KEY (`id`),
   KEY `IK_perm_id` (`perm_id`),
   KEY `IK_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `acl_user_roles`
 --
 
 DROP TABLE IF EXISTS `acl_user_roles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `acl_user_roles` (
+CREATE TABLE IF NOT EXISTS `acl_user_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) NOT NULL,
   `role_id` bigint(20) NOT NULL,
@@ -244,17 +111,16 @@ CREATE TABLE `acl_user_roles` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `role_id` (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `address_book`
 --
 
 DROP TABLE IF EXISTS `address_book`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `address_book` (
+CREATE TABLE IF NOT EXISTS `address_book` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(10) DEFAULT NULL,
   `fname` varchar(80) DEFAULT NULL,
@@ -285,17 +151,16 @@ CREATE TABLE `address_book` (
   KEY `zip` (`zip`),
   KEY `phone` (`phone`),
   KEY `direct_address` (`direct_address`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Address Book';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Address Book' AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `addresses`
 --
 
 DROP TABLE IF EXISTS `addresses`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `addresses` (
+CREATE TABLE IF NOT EXISTS `addresses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `line1` varchar(255) DEFAULT NULL,
   `line2` varchar(255) DEFAULT NULL,
@@ -312,17 +177,14 @@ CREATE TABLE `addresses` (
   `address_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 --
 -- Table structure for table `allergies`
 --
 
 DROP TABLE IF EXISTS `allergies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `allergies` (
+CREATE TABLE IF NOT EXISTS `allergies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `allergy` varchar(500) NOT NULL COMMENT 'Allergy Name',
   `allergy_term` varchar(255) NOT NULL,
@@ -331,33 +193,29 @@ CREATE TABLE `allergies` (
   `allergy_type` varchar(5) NOT NULL COMMENT 'PT = Preferred Term, SN = Systematic Name, SY = Synonym, CD = Code, TR = Trade',
   PRIMARY KEY (`id`),
   KEY `allergy_code` (`allergy_code`,`allergy_term`)
-) ENGINE=InnoDB AUTO_INCREMENT=552244 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=552244 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `applications`
 --
 
 DROP TABLE IF EXISTS `applications`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `applications` (
+CREATE TABLE IF NOT EXISTS `applications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `app_name` varchar(120) DEFAULT NULL,
   `pvt_key` varchar(80) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Table structure for table `audit_log`
 --
 
 DROP TABLE IF EXISTS `audit_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `audit_log` (
+CREATE TABLE IF NOT EXISTS `audit_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL COMMENT 'Encounter ID',
   `pid` int(11) DEFAULT NULL COMMENT 'Patient ID',
@@ -370,17 +228,16 @@ CREATE TABLE `audit_log` (
   KEY `pid` (`pid`),
   KEY `uid` (`uid`),
   KEY `fid` (`fid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5901 DEFAULT CHARSET=utf8 COMMENT='Audit Logs';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Audit Logs' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `audit_transaction_log`
 --
 
 DROP TABLE IF EXISTS `audit_transaction_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `audit_transaction_log` (
+CREATE TABLE IF NOT EXISTS `audit_transaction_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL COMMENT 'Date of the event',
   `pid` int(11) DEFAULT NULL COMMENT 'Patient ID',
@@ -397,47 +254,112 @@ CREATE TABLE `audit_transaction_log` (
   KEY `pid` (`pid`),
   KEY `eid` (`eid`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=166191 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs' AUTO_INCREMENT=723805 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `calendar_categories`
+--
+
+DROP TABLE IF EXISTS `calendar_categories`;
+CREATE TABLE IF NOT EXISTS `calendar_categories` (
+  `catid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `catname` varchar(160) DEFAULT NULL,
+  `catcolor` varchar(10) DEFAULT NULL,
+  `catdesc` varchar(255) DEFAULT NULL,
+  `duration` bigint(20) NOT NULL DEFAULT '0',
+  `cattype` int(11) DEFAULT NULL COMMENT 'Category Type',
+  PRIMARY KEY (`catid`),
+  KEY `basic_cat` (`catname`,`catcolor`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `calendar_events`
+--
+
+DROP TABLE IF EXISTS `calendar_events`;
+CREATE TABLE IF NOT EXISTS `calendar_events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL COMMENT 'patient id of the event patient',
+  `uid` int(11) DEFAULT NULL COMMENT 'user id of the event owner',
+  `category` int(11) DEFAULT NULL COMMENT 'Ty of calendar category',
+  `facility` int(11) DEFAULT NULL COMMENT 'faccility id',
+  `billing_facility` int(11) DEFAULT NULL,
+  `title` varchar(180) DEFAULT NULL,
+  `status` varchar(80) DEFAULT NULL,
+  `start` datetime NOT NULL,
+  `end` datetime NOT NULL,
+  `rrule` varchar(80) DEFAULT NULL,
+  `loc` varchar(160) DEFAULT NULL,
+  `notes` varchar(600) DEFAULT NULL,
+  `url` varchar(180) DEFAULT NULL,
+  `ad` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cdt_codes`
 --
 
 DROP TABLE IF EXISTS `cdt_codes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cdt_codes` (
+CREATE TABLE IF NOT EXISTS `cdt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(10) DEFAULT NULL,
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=594 DEFAULT CHARSET=latin1 COMMENT='Dental Codes';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Dental Codes' AUTO_INCREMENT=594 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `claims`
+--
+
+DROP TABLE IF EXISTS `claims`;
+CREATE TABLE IF NOT EXISTS `claims` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `patient_id` int(11) NOT NULL,
+  `encounter_id` int(11) NOT NULL,
+  `version` int(10) unsigned NOT NULL,
+  `payer_id` int(11) NOT NULL DEFAULT '0',
+  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `payer_type` tinyint(4) NOT NULL DEFAULT '0',
+  `bill_process` tinyint(2) NOT NULL DEFAULT '0',
+  `bill_time` datetime DEFAULT NULL,
+  `process_time` datetime DEFAULT NULL,
+  `process_file` varchar(255) DEFAULT NULL,
+  `target` varchar(30) DEFAULT NULL,
+  `x12_partner_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `combo_lists`
 --
 
 DROP TABLE IF EXISTS `combo_lists`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `combo_lists` (
+CREATE TABLE IF NOT EXISTS `combo_lists` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL COMMENT 'Title of the combo',
   `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=136 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `combo_lists_options`
 --
 
 DROP TABLE IF EXISTS `combo_lists_options`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `combo_lists_options` (
+CREATE TABLE IF NOT EXISTS `combo_lists_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `list_id` int(11) NOT NULL DEFAULT '0' COMMENT 'List ID',
   `option_value` varchar(255) NOT NULL DEFAULT '' COMMENT 'Value',
@@ -448,18 +370,18 @@ CREATE TABLE `combo_lists_options` (
   `notes` varchar(255) DEFAULT NULL COMMENT 'Notes',
   `active` tinyint(1) DEFAULT NULL COMMENT 'Active?',
   PRIMARY KEY (`id`,`list_id`,`option_value`),
-  KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=1216 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `code` (`code`),
+  KEY `IK_code` (`code`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3021 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cpt_codes`
 --
 
 DROP TABLE IF EXISTS `cpt_codes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cpt_codes` (
+CREATE TABLE IF NOT EXISTS `cpt_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ConceptID` bigint(20) NOT NULL,
   `code` varchar(50) NOT NULL,
@@ -469,32 +391,30 @@ CREATE TABLE `cpt_codes` (
   `active` tinyint(1) DEFAULT NULL,
   `isRadiology` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9640 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9640 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cpt_icd`
 --
 
 DROP TABLE IF EXISTS `cpt_icd`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cpt_icd` (
+CREATE TABLE IF NOT EXISTS `cpt_icd` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cpt` varchar(40) NOT NULL,
   `icd` varchar(40) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=450629 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=450629 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cvx_codes`
 --
 
 DROP TABLE IF EXISTS `cvx_codes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cvx_codes` (
+CREATE TABLE IF NOT EXISTS `cvx_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cvx_code` varchar(6) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -504,33 +424,31 @@ CREATE TABLE `cvx_codes` (
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `code` (`description`)
-) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=335 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cvx_cpt`
 --
 
 DROP TABLE IF EXISTS `cvx_cpt`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cvx_cpt` (
+CREATE TABLE IF NOT EXISTS `cvx_cpt` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cvx` varchar(25) DEFAULT NULL,
   `cpt` varchar(25) DEFAULT NULL,
   `active` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=109 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `cvx_mvx`
 --
 
 DROP TABLE IF EXISTS `cvx_mvx`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cvx_mvx` (
+CREATE TABLE IF NOT EXISTS `cvx_mvx` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cdc_product_name` varchar(255) DEFAULT NULL,
   `description` text,
@@ -541,32 +459,51 @@ CREATE TABLE `cvx_mvx` (
   `product_name_status` varchar(255) DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=184 DEFAULT CHARSET=latin1 COMMENT='CVX munufactures';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='CVX munufactures' AUTO_INCREMENT=184 ;
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `departments`
+-- Table structure for table `dat9397d`
 --
 
-DROP TABLE IF EXISTS `departments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `departments` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `code` varchar(5) DEFAULT NULL,
-  `title` varchar(100) DEFAULT NULL,
+DROP TABLE IF EXISTS `dat9397d`;
+CREATE TABLE IF NOT EXISTS `dat9397d` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `DOC_CODE` char(3) NOT NULL,
+  `DOC_LNAME` varchar(60) DEFAULT NULL,
+  `DOC_FNAME` varchar(35) DEFAULT NULL,
+  `DOC_INIT_NAME` varchar(25) DEFAULT NULL,
+  `DOC_ADD_01` varchar(55) DEFAULT NULL,
+  `DOC_ADD_02` varchar(55) DEFAULT NULL,
+  `DOC_CITY` varchar(35) DEFAULT NULL,
+  `DOC_STATE` char(2) DEFAULT NULL,
+  `DOC_ZIP` varchar(15) DEFAULT NULL,
+  `DOC_SOC_SEC` varchar(15) DEFAULT NULL,
+  `DOC_LIC_NO` varchar(15) DEFAULT NULL,
+  `DOC_UPIN` varchar(30) DEFAULT NULL,
+  `DOC_ACCEPT_MC` char(1) DEFAULT NULL,
+  `DOC_ESS_NO` varchar(15) DEFAULT NULL,
+  `DOC_ENTITY` char(1) DEFAULT NULL,
+  `DOC_NATIONAL_ID` varchar(30) DEFAULT NULL,
+  `DS_LName` varchar(50) DEFAULT NULL,
+  `DS_FName` varchar(50) DEFAULT NULL,
+  `DS_ID` varchar(50) DEFAULT NULL,
+  `DS_Modalities` varchar(50) DEFAULT NULL,
+  `User_Id` varchar(15) DEFAULT NULL,
+  `Doc_GES` varchar(1) DEFAULT NULL,
+  `doc_active` char(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=114 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `documents_templates`
 --
 
 DROP TABLE IF EXISTS `documents_templates`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `documents_templates` (
+CREATE TABLE IF NOT EXISTS `documents_templates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(50) DEFAULT NULL,
   `template_type` varchar(50) DEFAULT NULL,
@@ -578,34 +515,164 @@ CREATE TABLE `documents_templates` (
   `updated_by_uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `template_type` (`template_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drug_inventory`
+--
+
+DROP TABLE IF EXISTS `drug_inventory`;
+CREATE TABLE IF NOT EXISTS `drug_inventory` (
+  `inventory_id` int(11) NOT NULL AUTO_INCREMENT,
+  `drug_id` int(11) NOT NULL,
+  `lot_number` varchar(20) DEFAULT NULL,
+  `expiration` date DEFAULT NULL,
+  `manufacturer` varchar(255) DEFAULT NULL,
+  `on_hand` int(11) NOT NULL DEFAULT '0',
+  `warehouse_id` varchar(31) NOT NULL DEFAULT '',
+  `vendor_id` bigint(20) NOT NULL DEFAULT '0',
+  `last_notify` date NOT NULL DEFAULT '0000-00-00',
+  `destroy_date` date DEFAULT NULL,
+  `destroy_method` varchar(255) DEFAULT NULL,
+  `destroy_witness` varchar(255) DEFAULT NULL,
+  `destroy_notes` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`inventory_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drug_sales`
+--
+
+DROP TABLE IF EXISTS `drug_sales`;
+CREATE TABLE IF NOT EXISTS `drug_sales` (
+  `sale_id` int(11) NOT NULL AUTO_INCREMENT,
+  `drug_id` int(11) NOT NULL,
+  `inventory_id` int(11) NOT NULL,
+  `prescription_id` int(11) NOT NULL DEFAULT '0',
+  `pid` int(11) NOT NULL DEFAULT '0',
+  `encounter` int(11) NOT NULL DEFAULT '0',
+  `user` varchar(255) DEFAULT NULL,
+  `sale_date` date NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT '0',
+  `fee` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `billed` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'indicates if the sale is posted to accounting',
+  `xfer_inventory_id` int(11) NOT NULL DEFAULT '0',
+  `distributor_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id',
+  `notes` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`sale_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drug_templates`
+--
+
+DROP TABLE IF EXISTS `drug_templates`;
+CREATE TABLE IF NOT EXISTS `drug_templates` (
+  `drug_id` int(11) NOT NULL,
+  `selector` varchar(255) NOT NULL DEFAULT '',
+  `dosage` varchar(10) DEFAULT NULL,
+  `period` int(11) NOT NULL DEFAULT '0',
+  `quantity` int(11) NOT NULL DEFAULT '0',
+  `refills` int(11) NOT NULL DEFAULT '0',
+  `taxrates` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`drug_id`,`selector`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drugs`
+--
+
+DROP TABLE IF EXISTS `drugs`;
+CREATE TABLE IF NOT EXISTS `drugs` (
+  `drug_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `ndc_number` varchar(20) NOT NULL DEFAULT '',
+  `on_order` int(11) NOT NULL DEFAULT '0',
+  `reorder_point` int(11) NOT NULL DEFAULT '0',
+  `last_notify` date NOT NULL DEFAULT '0000-00-00',
+  `reactions` text,
+  `form` int(3) NOT NULL DEFAULT '0',
+  `size` float unsigned NOT NULL DEFAULT '0',
+  `unit` int(11) NOT NULL DEFAULT '0',
+  `route` int(11) NOT NULL DEFAULT '0',
+  `substitute` int(11) NOT NULL DEFAULT '0',
+  `related_code` varchar(255) NOT NULL DEFAULT '' COMMENT 'may reference a related codes.code',
+  `cyp_factor` float NOT NULL DEFAULT '0' COMMENT 'quantity representing a years supply',
+  `active` tinyint(1) DEFAULT '1' COMMENT '0 = inactive, 1 = active',
+  `allow_combining` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1 = allow filling an order from multiple lots',
+  `allow_multiple` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = allow multiple lots at one warehouse',
+  PRIMARY KEY (`drug_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eligibility_response`
+--
+
+DROP TABLE IF EXISTS `eligibility_response`;
+CREATE TABLE IF NOT EXISTS `eligibility_response` (
+  `response_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `response_description` varchar(255) DEFAULT NULL,
+  `response_status` enum('A','D') NOT NULL DEFAULT 'A',
+  `response_vendor_id` bigint(20) DEFAULT NULL,
+  `response_create_date` date DEFAULT NULL,
+  `response_modify_date` date DEFAULT NULL,
+  PRIMARY KEY (`response_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `eligibility_verification`
+--
+
+DROP TABLE IF EXISTS `eligibility_verification`;
+CREATE TABLE IF NOT EXISTS `eligibility_verification` (
+  `verification_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `response_id` bigint(20) DEFAULT NULL,
+  `insurance_id` bigint(20) DEFAULT NULL,
+  `eligibility_check_date` datetime DEFAULT NULL,
+  `copay` int(11) DEFAULT NULL,
+  `deductible` int(11) DEFAULT NULL,
+  `deductiblemet` enum('Y','N') DEFAULT 'Y',
+  `create_date` date DEFAULT NULL,
+  PRIMARY KEY (`verification_id`),
+  KEY `insurance_id` (`insurance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `emergencies`
 --
 
 DROP TABLE IF EXISTS `emergencies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `emergencies` (
+CREATE TABLE IF NOT EXISTS `emergencies` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) NOT NULL,
   `eid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_1500_options`
 --
 
 DROP TABLE IF EXISTS `encounter_1500_options`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_1500_options` (
+CREATE TABLE IF NOT EXISTS `encounter_1500_options` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL,
@@ -627,17 +694,16 @@ CREATE TABLE `encounter_1500_options` (
   `replacement_claim` tinyint(1) DEFAULT NULL,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_dictation`
 --
 
 DROP TABLE IF EXISTS `encounter_dictation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_dictation` (
+CREATE TABLE IF NOT EXISTS `encounter_dictation` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -648,17 +714,16 @@ CREATE TABLE `encounter_dictation` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_dx`
 --
 
 DROP TABLE IF EXISTS `encounter_dx`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_dx` (
+CREATE TABLE IF NOT EXISTS `encounter_dx` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -673,17 +738,16 @@ CREATE TABLE `encounter_dx` (
   KEY `uid` (`uid`),
   KEY `IK_dx_group` (`dx_group`),
   KEY `IK_dx_order` (`dx_order`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_family_history`
 --
 
 DROP TABLE IF EXISTS `encounter_family_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_family_history` (
+CREATE TABLE IF NOT EXISTS `encounter_family_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -691,34 +755,32 @@ CREATE TABLE `encounter_family_history` (
   `auth_uid` int(11) DEFAULT NULL,
   `tuberculosis` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_history`
 --
 
 DROP TABLE IF EXISTS `encounter_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_history` (
+CREATE TABLE IF NOT EXISTS `encounter_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
   `date` datetime DEFAULT NULL COMMENT 'date created',
   `user` varchar(255) DEFAULT NULL,
   `event` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_procedures`
 --
 
 DROP TABLE IF EXISTS `encounter_procedures`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_procedures` (
+CREATE TABLE IF NOT EXISTS `encounter_procedures` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
   `eid` int(11) DEFAULT NULL COMMENT 'Encounter ID',
@@ -726,24 +788,27 @@ CREATE TABLE `encounter_procedures` (
   `update_uid` int(11) DEFAULT NULL COMMENT 'update user ID',
   `create_date` datetime DEFAULT NULL COMMENT 'create date',
   `update_date` datetime DEFAULT NULL COMMENT 'last update date',
-  `code` varchar(255) DEFAULT NULL COMMENT 'procedure code',
-  `code_text` varchar(255) DEFAULT NULL COMMENT 'procedure description',
-  `code_type` varchar(255) DEFAULT NULL COMMENT 'CPT/ICD-10-PCS/ICD-9-CM/SNOMED/CDT',
+  `code` varchar(40) DEFAULT NULL,
+  `code_text` varchar(300) DEFAULT NULL,
+  `code_type` varchar(15) DEFAULT NULL,
   `observation` varchar(255) DEFAULT NULL COMMENT 'observation found',
   `uid` int(11) DEFAULT NULL,
   `procedure_date` datetime DEFAULT NULL COMMENT 'when procedure has done',
+  `encounter_dx_id` int(11) DEFAULT NULL,
+  `status_code` varchar(40) DEFAULT NULL,
+  `status_code_text` varchar(300) DEFAULT NULL,
+  `status_code_type` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Patient Encounter Procedures';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patient Encounter Procedures' AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_review_of_systems`
 --
 
 DROP TABLE IF EXISTS `encounter_review_of_systems`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_review_of_systems` (
+CREATE TABLE IF NOT EXISTS `encounter_review_of_systems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -889,17 +954,16 @@ CREATE TABLE `encounter_review_of_systems` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_review_of_systems_check`
 --
 
 DROP TABLE IF EXISTS `encounter_review_of_systems_check`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_review_of_systems_check` (
+CREATE TABLE IF NOT EXISTS `encounter_review_of_systems_check` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT '0',
   `eid` bigint(20) NOT NULL,
@@ -1014,17 +1078,16 @@ CREATE TABLE `encounter_review_of_systems_check` (
   `scoliosis` text,
   `lupus` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_services`
 --
 
 DROP TABLE IF EXISTS `encounter_services`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_services` (
+CREATE TABLE IF NOT EXISTS `encounter_services` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -1046,6 +1109,7 @@ CREATE TABLE `encounter_services` (
   `tooth` varchar(10) DEFAULT NULL,
   `surface` varchar(5) DEFAULT NULL,
   `cavity_quadrant` varchar(2) DEFAULT NULL,
+  `financial_class` varchar(4) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IK_pid` (`pid`),
   KEY `IK_eid` (`eid`),
@@ -1053,17 +1117,16 @@ CREATE TABLE `encounter_services` (
   KEY `IK_reference_id` (`reference_id`),
   KEY `IK_code` (`code`),
   KEY `IK_billing_reference` (`billing_reference`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_soap`
 --
 
 DROP TABLE IF EXISTS `encounter_soap`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_soap` (
+CREATE TABLE IF NOT EXISTS `encounter_soap` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -1077,17 +1140,16 @@ CREATE TABLE `encounter_soap` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounter_vitals`
 --
 
 DROP TABLE IF EXISTS `encounter_vitals`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounter_vitals` (
+CREATE TABLE IF NOT EXISTS `encounter_vitals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -1116,17 +1178,16 @@ CREATE TABLE `encounter_vitals` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `encounters`
 --
 
 DROP TABLE IF EXISTS `encounters`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `encounters` (
+CREATE TABLE IF NOT EXISTS `encounters` (
   `eid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Encounter ID',
   `pid` int(11) DEFAULT NULL,
   `open_uid` int(11) DEFAULT NULL,
@@ -1171,17 +1232,561 @@ CREATE TABLE `encounters` (
   KEY `IK_requires_supervisor` (`requires_supervisor`),
   KEY `IK_specialty_id` (`specialty_id`),
   KEY `IK_technician_uid` (`technician_uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_accounts`
+--
+
+DROP TABLE IF EXISTS `erx_accounts`;
+CREATE TABLE IF NOT EXISTS `erx_accounts` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `accountId` int(11) DEFAULT NULL,
+  `username` varchar(40) DEFAULT NULL,
+  `password` blob,
+  `ActiveEndTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_directory_sync_log`
+--
+
+DROP TABLE IF EXISTS `erx_directory_sync_log`;
+CREATE TABLE IF NOT EXISTS `erx_directory_sync_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `directoryId` int(11) DEFAULT NULL COMMENT 'id of the server sync log',
+  `downloadType` varchar(2) DEFAULT NULL COMMENT 'F = full and N = nightly',
+  `success` tinyint(1) DEFAULT NULL,
+  `downloadDate` datetime DEFAULT NULL COMMENT 'date when download was done',
+  `directoryType` varchar(15) DEFAULT NULL COMMENT 'organization or provider',
+  PRIMARY KEY (`id`),
+  KEY `downloadType` (`downloadType`),
+  KEY `downloadDate` (`downloadDate`),
+  KEY `directoryType` (`directoryType`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=55 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_messages`
+--
+
+DROP TABLE IF EXISTS `erx_messages`;
+CREATE TABLE IF NOT EXISTS `erx_messages` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `createDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `orderId` varchar(20) DEFAULT NULL,
+  `messageId` varchar(80) DEFAULT NULL,
+  `relatesToMessageId` varchar(80) DEFAULT NULL,
+  `rawMsg` mediumtext,
+  `rawRes` mediumtext,
+  `status` varchar(5) DEFAULT NULL,
+  `error` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='erx messages' AUTO_INCREMENT=369 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_ncpdp_codes`
+--
+
+DROP TABLE IF EXISTS `erx_ncpdp_codes`;
+CREATE TABLE IF NOT EXISTS `erx_ncpdp_codes` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `subset_code` varchar(10) DEFAULT NULL,
+  `subset_term` varchar(100) DEFAULT NULL,
+  `code` varchar(10) DEFAULT NULL,
+  `ncpdp_term` text,
+  `ncit_term` text,
+  `ncit_definition` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=502 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_organizations_directory`
+--
+
+DROP TABLE IF EXISTS `erx_organizations_directory`;
+CREATE TABLE IF NOT EXISTS `erx_organizations_directory` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `NCPDPID` varchar(7) DEFAULT NULL,
+  `StoreNumber` varchar(35) DEFAULT NULL,
+  `OrganizationName` varchar(100) DEFAULT NULL,
+  `AddressLine1` varchar(35) DEFAULT NULL,
+  `AddressLine2` varchar(35) DEFAULT NULL,
+  `City` varchar(35) DEFAULT NULL,
+  `State` varchar(2) DEFAULT NULL,
+  `Zip` varchar(10) DEFAULT NULL,
+  `StandardizedAddressLine1` varchar(35) DEFAULT NULL,
+  `StandardizedAddressLine2` varchar(35) DEFAULT NULL,
+  `StandardizedCity` varchar(35) DEFAULT NULL,
+  `StandardizedState` varchar(2) DEFAULT NULL,
+  `StandardizedZip` varchar(10) DEFAULT NULL,
+  `PhonePrimary` varchar(25) DEFAULT NULL,
+  `Fax` varchar(25) DEFAULT NULL,
+  `Email` varchar(80) DEFAULT NULL,
+  `AlternatePhoneNumbers` varchar(25) DEFAULT NULL,
+  `ActiveStartTime` varchar(255) DEFAULT NULL,
+  `ActiveEndTime` varchar(255) DEFAULT NULL,
+  `ServiceLevel` varchar(50) DEFAULT NULL,
+  `PartnerAccount` varchar(35) DEFAULT NULL,
+  `LastModifiedDate` varchar(255) DEFAULT NULL,
+  `CrossStreet` varchar(35) DEFAULT NULL,
+  `RecordChange` mediumtext,
+  `OldServiceLevel` varchar(255) DEFAULT NULL,
+  `Version` varchar(9) DEFAULT NULL,
+  `NPI` varchar(10) DEFAULT NULL,
+  `SpecialtyType` varchar(140) DEFAULT NULL,
+  `FileID` varchar(35) DEFAULT NULL,
+  `StateLicenseNumber` varchar(35) DEFAULT NULL,
+  `MedicareNumber` varchar(35) DEFAULT NULL,
+  `MedicaidNumber` varchar(35) DEFAULT NULL,
+  `PPONumber` varchar(35) DEFAULT NULL,
+  `PayerID` varchar(35) DEFAULT NULL,
+  `BINLocationNumber` varchar(35) DEFAULT NULL,
+  `DEANumber` varchar(35) DEFAULT NULL,
+  `HIN` varchar(35) DEFAULT NULL,
+  `SecondaryCoverage` varchar(35) DEFAULT NULL,
+  `NAICCode` varchar(35) DEFAULT NULL,
+  `PromotionNumber` varchar(35) DEFAULT NULL,
+  `SocialSecurity` varchar(35) DEFAULT NULL,
+  `PriorAuthorization` varchar(255) DEFAULT NULL,
+  `MutuallyDefined` varchar(35) DEFAULT NULL,
+  `DirectAddress` varchar(255) DEFAULT NULL,
+  `OrganizationType` varchar(35) DEFAULT NULL,
+  `OrganizationID` varchar(10) DEFAULT NULL,
+  `ParentOrganizationID` varchar(10) DEFAULT NULL,
+  `Latitude` varchar(10) DEFAULT NULL,
+  `Longitude` varchar(10) DEFAULT NULL,
+  `Precise` varchar(1) DEFAULT NULL,
+  `UseCases` varchar(255) DEFAULT NULL,
+  `downloadedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `NCPDPID` (`NCPDPID`),
+  KEY `StoreNumber` (`StoreNumber`),
+  KEY `OrganizationName` (`OrganizationName`),
+  KEY `City` (`City`),
+  KEY `State` (`State`),
+  KEY `Zip` (`Zip`),
+  KEY `StandardizedCity` (`StandardizedCity`),
+  KEY `StandardizedState` (`StandardizedState`),
+  KEY `StandardizedZip` (`StandardizedZip`),
+  KEY `PhonePrimary` (`PhonePrimary`),
+  KEY `Fax` (`Fax`),
+  KEY `Email` (`Email`),
+  KEY `SpecialtyType` (`SpecialtyType`),
+  KEY `IK_downloadedDate` (`downloadedDate`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9300 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_organizations_directory_old`
+--
+
+DROP TABLE IF EXISTS `erx_organizations_directory_old`;
+CREATE TABLE IF NOT EXISTS `erx_organizations_directory_old` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `NCPDPID` varchar(7) DEFAULT NULL,
+  `StoreNumber` varchar(35) DEFAULT NULL,
+  `OrganizationName` varchar(100) DEFAULT NULL,
+  `AddressLine1` varchar(35) DEFAULT NULL,
+  `AddressLine2` varchar(35) DEFAULT NULL,
+  `City` varchar(35) DEFAULT NULL,
+  `State` varchar(2) DEFAULT NULL,
+  `Zip` varchar(10) DEFAULT NULL,
+  `StandardizedAddressLine1` varchar(35) DEFAULT NULL,
+  `StandardizedAddressLine2` varchar(35) DEFAULT NULL,
+  `StandardizedCity` varchar(35) DEFAULT NULL,
+  `StandardizedState` varchar(2) DEFAULT NULL,
+  `StandardizedZip` varchar(10) DEFAULT NULL,
+  `PhonePrimary` varchar(25) DEFAULT NULL,
+  `Fax` varchar(25) DEFAULT NULL,
+  `Email` varchar(80) DEFAULT NULL,
+  `AlternatePhoneNumbers` varchar(25) DEFAULT NULL,
+  `ActiveStartTime` varchar(255) DEFAULT NULL,
+  `ActiveEndTime` varchar(255) DEFAULT NULL,
+  `ServiceLevel` varchar(50) DEFAULT NULL,
+  `PartnerAccount` varchar(35) DEFAULT NULL,
+  `LastModifiedDate` varchar(255) DEFAULT NULL,
+  `CrossStreet` varchar(35) DEFAULT NULL,
+  `RecordChange` mediumtext,
+  `OldServiceLevel` varchar(255) DEFAULT NULL,
+  `Version` varchar(9) DEFAULT NULL,
+  `NPI` varchar(10) DEFAULT NULL,
+  `SpecialtyType` varchar(140) DEFAULT NULL,
+  `FileID` varchar(35) DEFAULT NULL,
+  `StateLicenseNumber` varchar(35) DEFAULT NULL,
+  `MedicareNumber` varchar(35) DEFAULT NULL,
+  `MedicaidNumber` varchar(35) DEFAULT NULL,
+  `PPONumber` varchar(35) DEFAULT NULL,
+  `PayerID` varchar(35) DEFAULT NULL,
+  `BINLocationNumber` varchar(35) DEFAULT NULL,
+  `DEANumber` varchar(35) DEFAULT NULL,
+  `HIN` varchar(35) DEFAULT NULL,
+  `SecondaryCoverage` varchar(35) DEFAULT NULL,
+  `NAICCode` varchar(35) DEFAULT NULL,
+  `PromotionNumber` varchar(35) DEFAULT NULL,
+  `SocialSecurity` varchar(35) DEFAULT NULL,
+  `PriorAuthorization` varchar(255) DEFAULT NULL,
+  `MutuallyDefined` varchar(35) DEFAULT NULL,
+  `DirectAddress` varchar(255) DEFAULT NULL,
+  `OrganizationType` varchar(35) DEFAULT NULL,
+  `OrganizationID` varchar(10) DEFAULT NULL,
+  `ParentOrganizationID` varchar(10) DEFAULT NULL,
+  `Latitude` varchar(10) DEFAULT NULL,
+  `Longitude` varchar(10) DEFAULT NULL,
+  `Precise` varchar(1) DEFAULT NULL,
+  `UseCases` varchar(255) DEFAULT NULL,
+  `downloadedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `NCPDPID` (`NCPDPID`),
+  KEY `StoreNumber` (`StoreNumber`),
+  KEY `OrganizationName` (`OrganizationName`),
+  KEY `City` (`City`),
+  KEY `State` (`State`),
+  KEY `Zip` (`Zip`),
+  KEY `StandardizedCity` (`StandardizedCity`),
+  KEY `StandardizedState` (`StandardizedState`),
+  KEY `StandardizedZip` (`StandardizedZip`),
+  KEY `PhonePrimary` (`PhonePrimary`),
+  KEY `Fax` (`Fax`),
+  KEY `Email` (`Email`),
+  KEY `SpecialtyType` (`SpecialtyType`),
+  KEY `IK_downloadedDate` (`downloadedDate`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9251 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_prescriber`
+--
+
+DROP TABLE IF EXISTS `erx_prescriber`;
+CREATE TABLE IF NOT EXISTS `erx_prescriber` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `accountId` int(11) DEFAULT NULL,
+  `SPI` varchar(255) DEFAULT NULL,
+  `DEA` varchar(255) DEFAULT NULL,
+  `StateLicenseNumber` varchar(255) DEFAULT NULL,
+  `SpecialtyCodePrimary` varchar(255) DEFAULT NULL,
+  `Prefix` varchar(255) DEFAULT NULL,
+  `LastName` varchar(255) DEFAULT NULL,
+  `FirstName` varchar(255) DEFAULT NULL,
+  `MiddleName` varchar(255) DEFAULT NULL,
+  `Suffix` varchar(255) DEFAULT NULL,
+  `ClinicName` varchar(255) DEFAULT NULL,
+  `AddressLine1` varchar(255) DEFAULT NULL,
+  `AddressLine2` varchar(255) DEFAULT NULL,
+  `City` varchar(255) DEFAULT NULL,
+  `State` varchar(255) DEFAULT NULL,
+  `ZipCode` varchar(255) DEFAULT NULL,
+  `StandardizedAddressLine1` varchar(255) DEFAULT NULL,
+  `StandardizedAddressLine2` varchar(255) DEFAULT NULL,
+  `StandardizedCity` varchar(255) DEFAULT NULL,
+  `StandardizedState` varchar(255) DEFAULT NULL,
+  `StandardizedZip` varchar(255) DEFAULT NULL,
+  `PhonePrimary` varchar(255) DEFAULT NULL,
+  `Fax` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) DEFAULT NULL,
+  `AlternatePhoneNumbers` mediumtext,
+  `ActiveStartTime` datetime DEFAULT NULL,
+  `ActiveEndTime` datetime DEFAULT NULL,
+  `ServiceLevel` mediumtext,
+  `PartnerAccount` varchar(255) DEFAULT NULL,
+  `LastModifiedDate` varchar(255) DEFAULT NULL,
+  `RecordChange` varchar(255) DEFAULT NULL,
+  `OldServiceLevel` varchar(255) DEFAULT NULL,
+  `Version` varchar(255) DEFAULT NULL,
+  `NPI` varchar(255) DEFAULT NULL,
+  `NPILocation` varchar(255) DEFAULT NULL,
+  `SpecialtyType` mediumtext,
+  `FileID` varchar(255) DEFAULT NULL,
+  `MedicareNumber` varchar(255) DEFAULT NULL,
+  `MedicaidNumber` varchar(255) DEFAULT NULL,
+  `DentistLicenseNumber` varchar(255) DEFAULT NULL,
+  `UPIN` varchar(255) DEFAULT NULL,
+  `PPONumber` varchar(255) DEFAULT NULL,
+  `SocialSecurity` varchar(255) DEFAULT NULL,
+  `PriorAuthorization` varchar(255) DEFAULT NULL,
+  `MutuallyDefined` varchar(255) DEFAULT NULL,
+  `InStoreNCPDPID` varchar(255) DEFAULT NULL,
+  `DirectAddress` varchar(255) DEFAULT NULL,
+  `UseCases` mediumtext,
+  `AvailableRoutes` varchar(255) DEFAULT NULL,
+  `OrganizationID` varchar(255) DEFAULT NULL,
+  `Latitude` varchar(255) DEFAULT NULL,
+  `Longitude` varchar(255) DEFAULT NULL,
+  `Precise` varchar(255) DEFAULT NULL,
+  `SpecialtyQualifier` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_prescriptions`
+--
+
+DROP TABLE IF EXISTS `erx_prescriptions`;
+CREATE TABLE IF NOT EXISTS `erx_prescriptions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `spi` varchar(35) DEFAULT NULL,
+  `ncpdpid` varchar(35) DEFAULT NULL,
+  `createDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `orderId` int(11) DEFAULT NULL COMMENT 'patient_medication.id',
+  `messageId` varchar(80) DEFAULT NULL,
+  `rxcui` varchar(35) DEFAULT NULL,
+  `ndc` varchar(35) DEFAULT NULL,
+  `description` varchar(105) DEFAULT NULL,
+  `directions` varchar(300) DEFAULT NULL,
+  `daw` tinyint(1) DEFAULT NULL,
+  `quantity` varchar(255) DEFAULT NULL,
+  `refills` int(11) DEFAULT NULL,
+  `dxs` varchar(200) DEFAULT NULL,
+  `notes` varchar(300) DEFAULT NULL,
+  `written_date` datetime DEFAULT NULL,
+  `status` varchar(5) DEFAULT NULL,
+  `error` varchar(300) DEFAULT NULL,
+  `ncit_code` varchar(35) DEFAULT NULL,
+  `relatesToMessageId` varchar(80) DEFAULT NULL,
+  `dea` varchar(35) DEFAULT NULL,
+  `days_supply` int(11) DEFAULT NULL,
+  `flag` varchar(5) DEFAULT NULL,
+  `isRead` tinyint(1) DEFAULT NULL,
+  `rxReferenceNumber` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`),
+  KEY `uid` (`uid`),
+  KEY `spi` (`spi`),
+  KEY `ncpdpid` (`ncpdpid`),
+  KEY `orderId` (`orderId`),
+  KEY `messageId` (`messageId`),
+  KEY `relatesToMessageId` (`relatesToMessageId`),
+  KEY `IK_orderId` (`orderId`),
+  KEY `IK_rxReferenceNumber` (`rxReferenceNumber`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='erx messages' AUTO_INCREMENT=113 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_providers_directory`
+--
+
+DROP TABLE IF EXISTS `erx_providers_directory`;
+CREATE TABLE IF NOT EXISTS `erx_providers_directory` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `SPI` varchar(255) DEFAULT NULL,
+  `DEA` varchar(255) DEFAULT NULL,
+  `StateLicenseNumber` varchar(255) DEFAULT NULL,
+  `SpecialtyCodePrimary` varchar(255) DEFAULT NULL,
+  `Prefix` varchar(255) DEFAULT NULL,
+  `LastName` varchar(255) DEFAULT NULL,
+  `FirstName` varchar(255) DEFAULT NULL,
+  `MiddleName` varchar(255) DEFAULT NULL,
+  `Suffix` varchar(255) DEFAULT NULL,
+  `ClinicName` varchar(255) DEFAULT NULL,
+  `AddressLine1` varchar(255) DEFAULT NULL,
+  `AddressLine2` varchar(255) DEFAULT NULL,
+  `City` varchar(255) DEFAULT NULL,
+  `State` varchar(255) DEFAULT NULL,
+  `ZipCode` varchar(255) DEFAULT NULL,
+  `StandardizedAddressLine1` varchar(255) DEFAULT NULL,
+  `StandardizedAddressLine2` varchar(255) DEFAULT NULL,
+  `StandardizedCity` varchar(255) DEFAULT NULL,
+  `StandardizedState` varchar(255) DEFAULT NULL,
+  `StandardizedZip` varchar(255) DEFAULT NULL,
+  `PhonePrimary` varchar(255) DEFAULT NULL,
+  `Fax` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) DEFAULT NULL,
+  `AlternatePhoneNumbers` mediumtext,
+  `ActiveStartTime` datetime DEFAULT NULL,
+  `ActiveEndTime` datetime DEFAULT NULL,
+  `ServiceLevel` varchar(255) DEFAULT NULL,
+  `PartnerAccount` varchar(255) DEFAULT NULL,
+  `LastModifiedDate` varchar(255) DEFAULT NULL,
+  `RecordChange` varchar(255) DEFAULT NULL,
+  `OldServiceLevel` varchar(255) DEFAULT NULL,
+  `Version` varchar(255) DEFAULT NULL,
+  `NPI` varchar(255) DEFAULT NULL,
+  `NPILocation` varchar(255) DEFAULT NULL,
+  `SpecialtyType` varchar(255) DEFAULT NULL,
+  `FileID` varchar(255) DEFAULT NULL,
+  `MedicareNumber` varchar(255) DEFAULT NULL,
+  `MedicaidNumber` varchar(255) DEFAULT NULL,
+  `DentistLicenseNumber` varchar(255) DEFAULT NULL,
+  `UPIN` varchar(255) DEFAULT NULL,
+  `PPONumber` varchar(255) DEFAULT NULL,
+  `SocialSecurity` varchar(255) DEFAULT NULL,
+  `PriorAuthorization` varchar(255) DEFAULT NULL,
+  `MutuallyDefined` varchar(255) DEFAULT NULL,
+  `InStoreNCPDPID` varchar(255) DEFAULT NULL,
+  `DirectAddress` varchar(255) DEFAULT NULL,
+  `UseCases` varchar(255) DEFAULT NULL,
+  `AvailableRoutes` varchar(255) DEFAULT NULL,
+  `OrganizationID` varchar(255) DEFAULT NULL,
+  `Latitude` varchar(255) DEFAULT NULL,
+  `Longitude` varchar(255) DEFAULT NULL,
+  `Precise` varchar(255) DEFAULT NULL,
+  `SpecialtyQualifier` varchar(255) DEFAULT NULL,
+  `downloadedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IK_downloadedDate` (`downloadedDate`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_providers_directory_old`
+--
+
+DROP TABLE IF EXISTS `erx_providers_directory_old`;
+CREATE TABLE IF NOT EXISTS `erx_providers_directory_old` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `SPI` varchar(255) DEFAULT NULL,
+  `DEA` varchar(255) DEFAULT NULL,
+  `StateLicenseNumber` varchar(255) DEFAULT NULL,
+  `SpecialtyCodePrimary` varchar(255) DEFAULT NULL,
+  `Prefix` varchar(255) DEFAULT NULL,
+  `LastName` varchar(255) DEFAULT NULL,
+  `FirstName` varchar(255) DEFAULT NULL,
+  `MiddleName` varchar(255) DEFAULT NULL,
+  `Suffix` varchar(255) DEFAULT NULL,
+  `ClinicName` varchar(255) DEFAULT NULL,
+  `AddressLine1` varchar(255) DEFAULT NULL,
+  `AddressLine2` varchar(255) DEFAULT NULL,
+  `City` varchar(255) DEFAULT NULL,
+  `State` varchar(255) DEFAULT NULL,
+  `ZipCode` varchar(255) DEFAULT NULL,
+  `StandardizedAddressLine1` varchar(255) DEFAULT NULL,
+  `StandardizedAddressLine2` varchar(255) DEFAULT NULL,
+  `StandardizedCity` varchar(255) DEFAULT NULL,
+  `StandardizedState` varchar(255) DEFAULT NULL,
+  `StandardizedZip` varchar(255) DEFAULT NULL,
+  `PhonePrimary` varchar(255) DEFAULT NULL,
+  `Fax` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) DEFAULT NULL,
+  `AlternatePhoneNumbers` mediumtext,
+  `ActiveStartTime` datetime DEFAULT NULL,
+  `ActiveEndTime` datetime DEFAULT NULL,
+  `ServiceLevel` varchar(255) DEFAULT NULL,
+  `PartnerAccount` varchar(255) DEFAULT NULL,
+  `LastModifiedDate` varchar(255) DEFAULT NULL,
+  `RecordChange` varchar(255) DEFAULT NULL,
+  `OldServiceLevel` varchar(255) DEFAULT NULL,
+  `Version` varchar(255) DEFAULT NULL,
+  `NPI` varchar(255) DEFAULT NULL,
+  `NPILocation` varchar(255) DEFAULT NULL,
+  `SpecialtyType` varchar(255) DEFAULT NULL,
+  `FileID` varchar(255) DEFAULT NULL,
+  `MedicareNumber` varchar(255) DEFAULT NULL,
+  `MedicaidNumber` varchar(255) DEFAULT NULL,
+  `DentistLicenseNumber` varchar(255) DEFAULT NULL,
+  `UPIN` varchar(255) DEFAULT NULL,
+  `PPONumber` varchar(255) DEFAULT NULL,
+  `SocialSecurity` varchar(255) DEFAULT NULL,
+  `PriorAuthorization` varchar(255) DEFAULT NULL,
+  `MutuallyDefined` varchar(255) DEFAULT NULL,
+  `InStoreNCPDPID` varchar(255) DEFAULT NULL,
+  `DirectAddress` varchar(255) DEFAULT NULL,
+  `UseCases` varchar(255) DEFAULT NULL,
+  `AvailableRoutes` varchar(255) DEFAULT NULL,
+  `OrganizationID` varchar(255) DEFAULT NULL,
+  `Latitude` varchar(255) DEFAULT NULL,
+  `Longitude` varchar(255) DEFAULT NULL,
+  `Precise` varchar(255) DEFAULT NULL,
+  `SpecialtyQualifier` varchar(255) DEFAULT NULL,
+  `downloadedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IK_downloadedDate` (`downloadedDate`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `erx_refill_requests`
+--
+
+DROP TABLE IF EXISTS `erx_refill_requests`;
+CREATE TABLE IF NOT EXISTS `erx_refill_requests` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `isRead` tinyint(1) DEFAULT NULL,
+  `pid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `createDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `orderId` int(11) DEFAULT NULL COMMENT 'patient_medication.id',
+  `messageId` varchar(80) DEFAULT NULL,
+  `relatesToMessageId` varchar(80) DEFAULT NULL,
+  `responseMessageId` varchar(80) DEFAULT NULL,
+  `PatientData` mediumtext,
+  `PharmacyData` mediumtext,
+  `PrescriberData` mediumtext,
+  `RxReferenceNumber` varchar(200) DEFAULT NULL,
+  `PharmacyNCPDPID` varchar(35) DEFAULT NULL,
+  `PrescriberSPI` varchar(35) DEFAULT NULL,
+  `DispensedDescription` varchar(200) DEFAULT NULL,
+  `DispensedCoded` varchar(25) DEFAULT NULL,
+  `DispensedQuantity` varchar(255) DEFAULT NULL,
+  `DispensedDEASchedule` varchar(10) DEFAULT NULL,
+  `DispensedPotencyUnitCode` varchar(10) DEFAULT NULL,
+  `DispensedDaysSupply` varchar(11) DEFAULT NULL,
+  `DispensedDirections` varchar(300) DEFAULT NULL,
+  `DispensedRefills` varchar(11) DEFAULT NULL,
+  `DispensedSubstitutions` tinyint(1) DEFAULT NULL,
+  `DispensedWrittenDate` varchar(15) DEFAULT NULL,
+  `DispensedWrittenTime` varchar(15) DEFAULT NULL,
+  `DispensedLastFillDate` varchar(15) DEFAULT NULL,
+  `DispensedLastFillTime` varchar(15) DEFAULT NULL,
+  `DispensedDxs` mediumtext,
+  `DispensedNotes` varchar(300) DEFAULT NULL,
+  `PrescribedDescription` varchar(200) DEFAULT NULL,
+  `PrescribedCoded` varchar(25) DEFAULT NULL,
+  `PrescribedQuantity` varchar(255) DEFAULT NULL,
+  `PrescribedDEASchedule` varchar(10) DEFAULT NULL,
+  `PrescribedPotencyUnitCode` varchar(10) DEFAULT NULL,
+  `PrescribedDaysSupply` varchar(11) DEFAULT NULL,
+  `PrescribedDirections` varchar(300) DEFAULT NULL,
+  `PrescribedRefills` varchar(11) DEFAULT NULL,
+  `PrescribedSubstitutions` tinyint(1) DEFAULT NULL,
+  `PrescribedDxs` mediumtext,
+  `PrescribedWrittenDate` varchar(15) DEFAULT NULL,
+  `PrescribedWrittenTime` varchar(15) DEFAULT NULL,
+  `PrescribedLastFillDate` varchar(15) DEFAULT NULL,
+  `PrescribedLastFillTime` varchar(15) DEFAULT NULL,
+  `PrescribedNotes` varchar(300) DEFAULT NULL,
+  `RequestedRefills` varchar(11) DEFAULT NULL,
+  `ResponseDate` datetime DEFAULT NULL,
+  `ResponseRefills` varchar(11) DEFAULT NULL,
+  `ResponseStatus` varchar(35) DEFAULT NULL,
+  `ResponseNotes` varchar(300) DEFAULT NULL,
+  `status` varchar(35) DEFAULT NULL,
+  `error` varchar(300) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='erx messages' AUTO_INCREMENT=71 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `facility`
 --
 
 DROP TABLE IF EXISTS `facility`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `facility` (
+CREATE TABLE IF NOT EXISTS `facility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(80) DEFAULT NULL,
   `name` varchar(120) DEFAULT NULL COMMENT 'Facility Name',
@@ -1207,17 +1812,16 @@ CREATE TABLE `facility` (
   `lic` varchar(15) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `facility_structures`
 --
 
 DROP TABLE IF EXISTS `facility_structures`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `facility_structures` (
+CREATE TABLE IF NOT EXISTS `facility_structures` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `fid` int(11) DEFAULT NULL,
   `foreign_id` int(11) DEFAULT NULL,
@@ -1229,17 +1833,31 @@ CREATE TABLE `facility_structures` (
   KEY `foreign_id` (`foreign_id`),
   KEY `foreign_type` (`foreign_type`),
   KEY `parentId` (`parentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COMMENT='Facilities Dept and Specialties';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Facilities Dept and Specialties' AUTO_INCREMENT=59 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fee_sheet_options`
+--
+
+DROP TABLE IF EXISTS `fee_sheet_options`;
+CREATE TABLE IF NOT EXISTS `fee_sheet_options` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `fs_category` varchar(63) DEFAULT NULL,
+  `fs_option` varchar(63) DEFAULT NULL,
+  `fs_codes` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `floor_plans`
 --
 
 DROP TABLE IF EXISTS `floor_plans`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `floor_plans` (
+CREATE TABLE IF NOT EXISTS `floor_plans` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(180) DEFAULT NULL COMMENT 'Floor Title',
   `facility_id` int(11) DEFAULT NULL COMMENT 'facility ID',
@@ -1248,17 +1866,16 @@ CREATE TABLE `floor_plans` (
   KEY `facility_id` (`facility_id`),
   KEY `active` (`active`),
   KEY `IK_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `floor_plans_zones`
 --
 
 DROP TABLE IF EXISTS `floor_plans_zones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `floor_plans_zones` (
+CREATE TABLE IF NOT EXISTS `floor_plans_zones` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `floor_plan_id` int(11) DEFAULT NULL,
   `code` varchar(40) DEFAULT NULL,
@@ -1279,33 +1896,66 @@ CREATE TABLE `floor_plans_zones` (
   KEY `active` (`active`),
   KEY `IK_active` (`active`),
   KEY `IK_code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=54 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `form_misc_billing_options`
+--
+
+DROP TABLE IF EXISTS `form_misc_billing_options`;
+CREATE TABLE IF NOT EXISTS `form_misc_billing_options` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` datetime DEFAULT NULL,
+  `pid` bigint(20) DEFAULT NULL,
+  `user` varchar(255) DEFAULT NULL,
+  `groupname` varchar(255) DEFAULT NULL,
+  `authorized` tinyint(4) DEFAULT NULL,
+  `activity` tinyint(4) DEFAULT NULL,
+  `employment_related` tinyint(1) DEFAULT NULL,
+  `auto_accident` tinyint(1) DEFAULT NULL,
+  `accident_state` varchar(2) DEFAULT NULL,
+  `other_accident` tinyint(1) DEFAULT NULL,
+  `outside_lab` tinyint(1) DEFAULT NULL,
+  `lab_amount` decimal(5,2) DEFAULT NULL,
+  `is_unable_to_work` tinyint(1) DEFAULT NULL,
+  `off_work_from` date DEFAULT NULL,
+  `off_work_to` date DEFAULT NULL,
+  `is_hospitalized` tinyint(1) DEFAULT NULL,
+  `hospitalization_date_from` date DEFAULT NULL,
+  `hospitalization_date_to` date DEFAULT NULL,
+  `medicaid_resubmission_code` varchar(10) DEFAULT NULL,
+  `medicaid_original_reference` varchar(15) DEFAULT NULL,
+  `prior_auth_number` varchar(20) DEFAULT NULL,
+  `comments` varchar(255) DEFAULT NULL,
+  `replacement_claim` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `forms_field_options`
 --
 
 DROP TABLE IF EXISTS `forms_field_options`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `forms_field_options` (
+CREATE TABLE IF NOT EXISTS `forms_field_options` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `field_id` varchar(255) DEFAULT NULL COMMENT 'Field ID',
   `options` text COMMENT 'Field Options JSON Format',
   PRIMARY KEY (`id`),
   KEY `field_id` (`field_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1638 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1639 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `forms_fields`
 --
 
 DROP TABLE IF EXISTS `forms_fields`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `forms_fields` (
+CREATE TABLE IF NOT EXISTS `forms_fields` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `form_id` int(11) DEFAULT NULL,
   `xtype` varchar(80) COLLATE latin1_bin DEFAULT NULL,
@@ -1314,67 +1964,63 @@ CREATE TABLE `forms_fields` (
   PRIMARY KEY (`id`),
   KEY `form_id` (`form_id`),
   KEY `parentId` (`parentId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1263 DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_bin AUTO_INCREMENT=1263 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `forms_layout`
 --
 
 DROP TABLE IF EXISTS `forms_layout`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `forms_layout` (
+CREATE TABLE IF NOT EXISTS `forms_layout` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(80) DEFAULT NULL,
   `form_data` varchar(80) DEFAULT NULL,
   `model` varchar(80) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `geo_country_reference`
 --
 
 DROP TABLE IF EXISTS `geo_country_reference`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `geo_country_reference` (
+CREATE TABLE IF NOT EXISTS `geo_country_reference` (
   `countries_id` int(5) NOT NULL AUTO_INCREMENT,
   `countries_name` varchar(64) DEFAULT NULL,
   `countries_iso_code_2` char(2) NOT NULL DEFAULT '',
   `countries_iso_code_3` char(3) NOT NULL DEFAULT '',
   PRIMARY KEY (`countries_id`),
   KEY `IDX_COUNTRIES_NAME` (`countries_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=240 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `geo_zone_reference`
 --
 
 DROP TABLE IF EXISTS `geo_zone_reference`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `geo_zone_reference` (
+CREATE TABLE IF NOT EXISTS `geo_zone_reference` (
   `zone_id` int(5) NOT NULL AUTO_INCREMENT,
   `zone_country_id` int(5) NOT NULL DEFAULT '0',
   `zone_code` varchar(5) DEFAULT NULL,
   `zone_name` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`zone_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=84 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `globals`
 --
 
 DROP TABLE IF EXISTS `globals`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `globals` (
+CREATE TABLE IF NOT EXISTS `globals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `gl_name` varchar(255) DEFAULT NULL COMMENT 'Global Setting Unique Name or Key',
   `gl_index` int(11) DEFAULT NULL COMMENT 'Global Setting Index',
@@ -1382,17 +2028,30 @@ CREATE TABLE `globals` (
   `gl_category` varchar(255) DEFAULT NULL COMMENT 'Category',
   PRIMARY KEY (`id`),
   KEY `gl_name` (`gl_name`,`gl_index`)
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=133 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+CREATE TABLE IF NOT EXISTS `groups` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` longtext,
+  `user` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `hcpcs_codes`
 --
 
 DROP TABLE IF EXISTS `hcpcs_codes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hcpcs_codes` (
+CREATE TABLE IF NOT EXISTS `hcpcs_codes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `HCPCS_CD` varchar(5) DEFAULT NULL,
   `HCPCS_LONG_DESC_TXT` varchar(255) DEFAULT NULL,
@@ -1420,17 +2079,16 @@ CREATE TABLE `hcpcs_codes` (
   `HCPCS_ACTN_CD` varchar(1) DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1' COMMENT '0 = inactive, 1 = active',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `hl7_clients`
 --
 
 DROP TABLE IF EXISTS `hl7_clients`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hl7_clients` (
+CREATE TABLE IF NOT EXISTS `hl7_clients` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `facility` varchar(80) DEFAULT NULL COMMENT 'Facility Name',
   `physical_address` varchar(1000) DEFAULT NULL COMMENT 'Facility Name',
@@ -1443,17 +2101,16 @@ CREATE TABLE `hl7_clients` (
   `route` varchar(255) DEFAULT NULL COMMENT 'socket or http',
   `allow_messages` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='hl7 Clients';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='hl7 Clients' AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `hl7_messages`
 --
 
 DROP TABLE IF EXISTS `hl7_messages`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hl7_messages` (
+CREATE TABLE IF NOT EXISTS `hl7_messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `msg_type` varchar(15) DEFAULT NULL COMMENT 'example VXU ADT OBX',
   `message` mediumtext COMMENT 'Original HL7 message',
@@ -1470,17 +2127,16 @@ CREATE TABLE `hl7_messages` (
   KEY `msg_type` (`msg_type`),
   KEY `status` (`status`),
   KEY `error` (`error`)
-) ENGINE=InnoDB AUTO_INCREMENT=422 DEFAULT CHARSET=utf8 COMMENT='hl7 messages data';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='hl7 messages data' AUTO_INCREMENT=565 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `hl7_servers`
 --
 
 DROP TABLE IF EXISTS `hl7_servers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hl7_servers` (
+CREATE TABLE IF NOT EXISTS `hl7_servers` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `server_name` varchar(255) DEFAULT NULL,
   `allow_messages` longtext,
@@ -1489,17 +2145,16 @@ CREATE TABLE `hl7_servers` (
   `ip` varchar(40) DEFAULT NULL,
   `token` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_dx_order_code`
 --
 
 DROP TABLE IF EXISTS `icd10_dx_order_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_dx_order_code` (
+CREATE TABLE IF NOT EXISTS `icd10_dx_order_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `dx_code` varchar(7) DEFAULT NULL,
   `formatted_dx_code` varchar(10) DEFAULT NULL,
@@ -1511,17 +2166,16 @@ CREATE TABLE `icd10_dx_order_code` (
   UNIQUE KEY `dx_id` (`dx_id`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=79504 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=79504 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_gem_dx_10_9`
 --
 
 DROP TABLE IF EXISTS `icd10_gem_dx_10_9`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_gem_dx_10_9` (
+CREATE TABLE IF NOT EXISTS `icd10_gem_dx_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `dx_icd10_source` varchar(7) DEFAULT NULL,
   `dx_icd9_target` varchar(5) DEFAULT NULL,
@@ -1529,17 +2183,16 @@ CREATE TABLE `icd10_gem_dx_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=78841 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78841 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_gem_dx_9_10`
 --
 
 DROP TABLE IF EXISTS `icd10_gem_dx_9_10`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_gem_dx_9_10` (
+CREATE TABLE IF NOT EXISTS `icd10_gem_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `dx_icd9_source` varchar(5) DEFAULT NULL,
   `dx_icd10_target` varchar(7) DEFAULT NULL,
@@ -1547,17 +2200,16 @@ CREATE TABLE `icd10_gem_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23913 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23913 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_gem_pcs_10_9`
 --
 
 DROP TABLE IF EXISTS `icd10_gem_pcs_10_9`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_gem_pcs_10_9` (
+CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_10_9` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pcs_icd10_source` varchar(7) DEFAULT NULL,
   `pcs_icd9_target` varchar(5) DEFAULT NULL,
@@ -1565,17 +2217,16 @@ CREATE TABLE `icd10_gem_pcs_10_9` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=82570 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=82570 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_gem_pcs_9_10`
 --
 
 DROP TABLE IF EXISTS `icd10_gem_pcs_9_10`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_gem_pcs_9_10` (
+CREATE TABLE IF NOT EXISTS `icd10_gem_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pcs_icd9_source` varchar(5) DEFAULT NULL,
   `pcs_icd10_target` varchar(7) DEFAULT NULL,
@@ -1583,17 +2234,16 @@ CREATE TABLE `icd10_gem_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69363 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=69363 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_pcs_order_code`
 --
 
 DROP TABLE IF EXISTS `icd10_pcs_order_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_pcs_order_code` (
+CREATE TABLE IF NOT EXISTS `icd10_pcs_order_code` (
   `pcs_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `pcs_code` varchar(7) DEFAULT NULL,
   `valid_for_coding` char(1) DEFAULT NULL,
@@ -1604,17 +2254,16 @@ CREATE TABLE `icd10_pcs_order_code` (
   UNIQUE KEY `pcs_id` (`pcs_id`),
   KEY `pcs_code` (`pcs_code`),
   KEY `active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=72764 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=72764 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_reimbr_dx_9_10`
 --
 
 DROP TABLE IF EXISTS `icd10_reimbr_dx_9_10`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_reimbr_dx_9_10` (
+CREATE TABLE IF NOT EXISTS `icd10_reimbr_dx_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(8) DEFAULT NULL,
   `code_cnt` tinyint(4) DEFAULT NULL,
@@ -1627,17 +2276,16 @@ CREATE TABLE `icd10_reimbr_dx_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69834 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=69834 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd10_reimbr_pcs_9_10`
 --
 
 DROP TABLE IF EXISTS `icd10_reimbr_pcs_9_10`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd10_reimbr_pcs_9_10` (
+CREATE TABLE IF NOT EXISTS `icd10_reimbr_pcs_9_10` (
   `map_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(8) DEFAULT NULL,
   `code_cnt` tinyint(4) DEFAULT NULL,
@@ -1650,17 +2298,16 @@ CREATE TABLE `icd10_reimbr_pcs_9_10` (
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `map_id` (`map_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71919 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71919 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd9_dx_code`
 --
 
 DROP TABLE IF EXISTS `icd9_dx_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd9_dx_code` (
+CREATE TABLE IF NOT EXISTS `icd9_dx_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `dx_code` varchar(5) DEFAULT NULL,
   `formatted_dx_code` varchar(6) DEFAULT NULL,
@@ -1672,34 +2319,32 @@ CREATE TABLE `icd9_dx_code` (
   KEY `dx_code` (`dx_code`),
   KEY `formatted_dx_code` (`formatted_dx_code`),
   KEY `active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=14568 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14568 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd9_dx_long_code`
 --
 
 DROP TABLE IF EXISTS `icd9_dx_long_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd9_dx_long_code` (
+CREATE TABLE IF NOT EXISTS `icd9_dx_long_code` (
   `dx_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `dx_code` varchar(5) DEFAULT NULL,
   `long_desc` varchar(300) DEFAULT NULL,
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `dx_id` (`dx_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14568 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14568 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd9_sg_code`
 --
 
 DROP TABLE IF EXISTS `icd9_sg_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd9_sg_code` (
+CREATE TABLE IF NOT EXISTS `icd9_sg_code` (
   `sg_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sg_code` varchar(5) DEFAULT NULL,
   `formatted_sg_code` varchar(6) DEFAULT NULL,
@@ -1711,34 +2356,32 @@ CREATE TABLE `icd9_sg_code` (
   KEY `sg_code` (`sg_code`),
   KEY `formatted_sg_code` (`formatted_sg_code`),
   KEY `active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=3879 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3879 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `icd9_sg_long_code`
 --
 
 DROP TABLE IF EXISTS `icd9_sg_long_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `icd9_sg_long_code` (
+CREATE TABLE IF NOT EXISTS `icd9_sg_long_code` (
   `sq_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sg_code` varchar(5) DEFAULT NULL,
   `long_desc` varchar(300) DEFAULT NULL,
   `active` tinyint(4) DEFAULT '0',
   `revision` int(11) DEFAULT '0',
   UNIQUE KEY `sq_id` (`sq_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3879 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3879 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `immunizations`
 --
 
 DROP TABLE IF EXISTS `immunizations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `immunizations` (
+CREATE TABLE IF NOT EXISTS `immunizations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code_text` varchar(255) NOT NULL DEFAULT '',
   `code_text_short` varchar(24) NOT NULL DEFAULT '',
@@ -1766,33 +2409,31 @@ CREATE TABLE `immunizations` (
   `active_problems` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `immunizations_relations`
 --
 
 DROP TABLE IF EXISTS `immunizations_relations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `immunizations_relations` (
+CREATE TABLE IF NOT EXISTS `immunizations_relations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `immunization_id` bigint(20) DEFAULT NULL,
   `foreign_id` bigint(20) DEFAULT NULL,
   `code_type` varchar(255) DEFAULT NULL COMMENT 'medication,active problem or labs',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `insurance_companies`
 --
 
 DROP TABLE IF EXISTS `insurance_companies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `insurance_companies` (
+CREATE TABLE IF NOT EXISTS `insurance_companies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(80) DEFAULT NULL COMMENT 'use to reference the insurance to another software',
   `name` varchar(120) DEFAULT NULL,
@@ -1811,17 +2452,16 @@ CREATE TABLE `insurance_companies` (
   PRIMARY KEY (`id`),
   KEY `IK_external_ref` (`code`),
   KEY `IK_code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=196 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `insurance_numbers`
 --
 
 DROP TABLE IF EXISTS `insurance_numbers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `insurance_numbers` (
+CREATE TABLE IF NOT EXISTS `insurance_numbers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `provider_id` int(11) NOT NULL DEFAULT '0',
   `insurance_company_id` int(11) DEFAULT NULL,
@@ -1831,33 +2471,31 @@ CREATE TABLE `insurance_numbers` (
   `rendering_provider_number` varchar(20) DEFAULT NULL,
   `rendering_provider_number_type` varchar(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `issue_encounter`
 --
 
 DROP TABLE IF EXISTS `issue_encounter`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `issue_encounter` (
+CREATE TABLE IF NOT EXISTS `issue_encounter` (
   `pid` int(11) NOT NULL,
   `list_id` int(11) NOT NULL,
   `encounter` int(11) NOT NULL,
   `resolved` tinyint(1) NOT NULL,
   PRIMARY KEY (`pid`,`list_id`,`encounter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `laboratories`
 --
 
 DROP TABLE IF EXISTS `laboratories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `laboratories` (
+CREATE TABLE IF NOT EXISTS `laboratories` (
   `id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `transmit_method` varchar(255) DEFAULT NULL,
@@ -1868,16 +2506,15 @@ CREATE TABLE `laboratories` (
   `fax_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `labs_guidelines`
 --
 
 DROP TABLE IF EXISTS `labs_guidelines`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `labs_guidelines` (
+CREATE TABLE IF NOT EXISTS `labs_guidelines` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(250) DEFAULT NULL,
   `less_than` float DEFAULT NULL,
@@ -1886,17 +2523,16 @@ CREATE TABLE `labs_guidelines` (
   `preventive_care_id` int(11) DEFAULT NULL,
   `value_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `labs_loinc`
 --
 
 DROP TABLE IF EXISTS `labs_loinc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `labs_loinc` (
+CREATE TABLE IF NOT EXISTS `labs_loinc` (
   `LOINC_NUM` varchar(255) NOT NULL,
   `COMPONENT` text,
   `PROPERTY` text,
@@ -1922,16 +2558,15 @@ CREATE TABLE `labs_loinc` (
   `COMMON_ORDER_RANK` text,
   `ANSWER_LIST_TYPE` text
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `labs_panels`
 --
 
 DROP TABLE IF EXISTS `labs_panels`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `labs_panels` (
+CREATE TABLE IF NOT EXISTS `labs_panels` (
   `id` bigint(20) NOT NULL,
   `code_text_short` varchar(255) DEFAULT NULL,
   `parent_id` bigint(20) DEFAULT NULL,
@@ -1948,16 +2583,15 @@ CREATE TABLE `labs_panels` (
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `labs_preventive_care`
 --
 
 DROP TABLE IF EXISTS `labs_preventive_care`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `labs_preventive_care` (
+CREATE TABLE IF NOT EXISTS `labs_preventive_care` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `label` text,
   `unit` text,
@@ -1967,17 +2601,16 @@ CREATE TABLE `labs_preventive_care` (
   `coding` text,
   `code` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=133 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `log`
 --
 
 DROP TABLE IF EXISTS `log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log` (
+CREATE TABLE IF NOT EXISTS `log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,
   `event` varchar(255) DEFAULT NULL,
@@ -1991,17 +2624,16 @@ CREATE TABLE `log` (
   `crt_user` varchar(255) DEFAULT NULL,
   `ip` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `loinc`
 --
 
 DROP TABLE IF EXISTS `loinc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `loinc` (
+CREATE TABLE IF NOT EXISTS `loinc` (
   `loinc_num` varchar(10) NOT NULL,
   `component` varchar(255) DEFAULT NULL,
   `property` varchar(30) DEFAULT NULL,
@@ -2012,6 +2644,99 @@ CREATE TABLE `loinc` (
   `class` varchar(20) DEFAULT NULL,
   `source` varchar(8) DEFAULT NULL,
   `date_last_changed` datetime DEFAULT NULL,
+  `chng_type` varchar(3) DEFAULT NULL,
+  `DefinitionDescription` text,
+  `status` varchar(11) DEFAULT NULL,
+  `consumer_name` varchar(255) DEFAULT NULL,
+  `classtype` int(11) DEFAULT NULL,
+  `formula` varchar(255) DEFAULT NULL,
+  `species` varchar(20) DEFAULT NULL,
+  `exmpl_answers` text,
+  `survey_quest_text` text,
+  `survey_quest_src` varchar(50) DEFAULT NULL,
+  `unitsrequired` varchar(1) DEFAULT NULL,
+  `submitted_units` varchar(30) DEFAULT NULL,
+  `relatednames2` text,
+  `shortname` varchar(40) DEFAULT NULL,
+  `order_obs` varchar(15) DEFAULT NULL,
+  `cdisc_common_tests` varchar(1) DEFAULT NULL,
+  `hl7_field_subfield_id` varchar(50) DEFAULT NULL,
+  `external_copyright_notice` text,
+  `example_units` varchar(255) DEFAULT NULL,
+  `long_common_name` varchar(255) DEFAULT NULL,
+  `UnitsAndRange` text,
+  `document_section` varchar(255) DEFAULT NULL,
+  `example_ucum_units` varchar(255) DEFAULT NULL,
+  `example_si_ucum_units` varchar(255) DEFAULT NULL,
+  `status_reason` varchar(9) DEFAULT NULL,
+  `status_text` text,
+  `change_reason_public` text,
+  `common_test_rank` int(11) DEFAULT NULL,
+  `common_order_rank` int(11) DEFAULT NULL,
+  `common_si_test_rank` int(11) DEFAULT NULL,
+  `hl7_attachment_structure` varchar(15) DEFAULT NULL,
+  `ExternalCopyrightLink` varchar(255) DEFAULT NULL,
+  `PanelType` varchar(50) DEFAULT NULL,
+  `AskAtOrderEntry` varchar(255) DEFAULT NULL,
+  `AssociatedObservations` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`loinc_num`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loinc_extra`
+--
+
+DROP TABLE IF EXISTS `loinc_extra`;
+CREATE TABLE IF NOT EXISTS `loinc_extra` (
+  `LOINC_NUM` varchar(7) NOT NULL,
+  `HAS_CHILDREN` tinyint(1) NOT NULL,
+  `HAS_PARENT` tinyint(1) NOT NULL,
+  `ALIAS` varchar(140) DEFAULT NULL,
+  `DEFAULT_UNIT` varchar(25) DEFAULT NULL,
+  `RANGE_START` varchar(15) DEFAULT NULL,
+  `RANGE_END` varchar(15) DEFAULT NULL,
+  `SECONDARY_CODE` varchar(15) DEFAULT NULL,
+  `SECONDARY_CODE_TYPE` varchar(10) DEFAULT NULL,
+  `DESCRIPTION` varchar(255) DEFAULT NULL,
+  `ACTIVE` tinyint(1) NOT NULL,
+  KEY `LOINC_NUM` (`LOINC_NUM`),
+  KEY `HAS_CHILDREN` (`HAS_CHILDREN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loinc_map_to`
+--
+
+DROP TABLE IF EXISTS `loinc_map_to`;
+CREATE TABLE IF NOT EXISTS `loinc_map_to` (
+  `loinc` varchar(10) NOT NULL DEFAULT '',
+  `map_to` varchar(10) NOT NULL DEFAULT '',
+  `comment` text,
+  PRIMARY KEY (`loinc`,`map_to`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `loinc_old`
+--
+
+DROP TABLE IF EXISTS `loinc_old`;
+CREATE TABLE IF NOT EXISTS `loinc_old` (
+  `loinc_num` varchar(10) NOT NULL,
+  `component` varchar(255) DEFAULT NULL,
+  `property` varchar(30) DEFAULT NULL,
+  `time_aspct` varchar(15) DEFAULT NULL,
+  `system` varchar(100) DEFAULT NULL,
+  `scale_typ` varchar(30) DEFAULT NULL,
+  `method_typ` varchar(50) DEFAULT NULL,
+  `class` varchar(20) DEFAULT NULL,
+  `source` varchar(8) DEFAULT NULL,
+  `date_last_changed` varchar(8) DEFAULT NULL,
   `chng_type` varchar(3) DEFAULT NULL,
   `comments` text,
   `status` varchar(11) DEFAULT NULL,
@@ -2050,58 +2775,17 @@ CREATE TABLE `loinc` (
   `common_order_rank` int(11) DEFAULT NULL,
   `common_si_test_rank` int(11) DEFAULT NULL,
   `hl7_attachment_structure` varchar(15) DEFAULT NULL,
-  `ExternalCopyrightLink` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`loinc_num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `loinc_extra`
---
-
-DROP TABLE IF EXISTS `loinc_extra`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `loinc_extra` (
-  `LOINC_NUM` varchar(7) NOT NULL,
-  `HAS_CHILDREN` tinyint(1) NOT NULL,
-  `HAS_PARENT` tinyint(1) NOT NULL,
-  `ALIAS` varchar(140) DEFAULT NULL,
-  `DEFAULT_UNIT` varchar(25) DEFAULT NULL,
-  `RANGE_START` varchar(15) DEFAULT NULL,
-  `RANGE_END` varchar(15) DEFAULT NULL,
-  `SECONDARY_CODE` varchar(15) DEFAULT NULL,
-  `SECONDARY_CODE_TYPE` varchar(10) DEFAULT NULL,
-  `DESCRIPTION` varchar(255) DEFAULT NULL,
-  `ACTIVE` tinyint(1) NOT NULL,
-  KEY `LOINC_NUM` (`LOINC_NUM`),
-  KEY `HAS_CHILDREN` (`HAS_CHILDREN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `loinc_map_to`
---
-
-DROP TABLE IF EXISTS `loinc_map_to`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `loinc_map_to` (
-  `loinc` varchar(10) NOT NULL DEFAULT '',
-  `map_to` varchar(10) NOT NULL DEFAULT '',
-  `comment` text,
-  PRIMARY KEY (`loinc`,`map_to`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `loinc_panels`
 --
 
 DROP TABLE IF EXISTS `loinc_panels`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `loinc_panels` (
+CREATE TABLE IF NOT EXISTS `loinc_panels` (
   `PARENT_ID` int(11) DEFAULT NULL,
   `PARENT_LOINC` varchar(7) DEFAULT NULL,
   `PARENT_NAME` varchar(255) DEFAULT NULL,
@@ -2133,20 +2817,18 @@ CREATE TABLE `loinc_panels` (
   KEY `PARENT_ID` (`PARENT_ID`),
   KEY `LOINC_NUM` (`LOINC_NUM`),
   KEY `LOINC_NAME` (`LOINC_NAME`),
-  KEY `LOINC_NUM_2` (`LOINC_NUM`),
   KEY `PARENT_LOINC` (`PARENT_LOINC`),
   FULLTEXT KEY `DISPLAY_NAME_FOR_FORM` (`DISPLAY_NAME_FOR_FORM`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `loinc_source_organization`
 --
 
 DROP TABLE IF EXISTS `loinc_source_organization`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `loinc_source_organization` (
+CREATE TABLE IF NOT EXISTS `loinc_source_organization` (
   `copyright_id` varchar(255) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `copyright` text,
@@ -2154,16 +2836,29 @@ CREATE TABLE `loinc_source_organization` (
   `url` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`copyright_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `map_to`
+--
+
+DROP TABLE IF EXISTS `map_to`;
+CREATE TABLE IF NOT EXISTS `map_to` (
+  `loinc` varchar(10) NOT NULL DEFAULT '',
+  `map_to` varchar(10) NOT NULL DEFAULT '',
+  `comment` text,
+  PRIMARY KEY (`loinc`,`map_to`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `medications`
 --
 
 DROP TABLE IF EXISTS `medications`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `medications` (
+CREATE TABLE IF NOT EXISTS `medications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `PRODUCTNDC` text,
   `PRODUCTTYPENAME` text,
@@ -2183,17 +2878,16 @@ CREATE TABLE `medications` (
   `PHARM_CLASSES` text,
   `DEASCHEDULE` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `messages`
 --
 
 DROP TABLE IF EXISTS `messages`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `messages` (
+CREATE TABLE IF NOT EXISTS `messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` varchar(255) DEFAULT NULL COMMENT 'Date of message',
   `body` text COMMENT 'Message',
@@ -2211,17 +2905,16 @@ CREATE TABLE `messages` (
   `to_deleted` tinyint(1) DEFAULT NULL COMMENT 'Deleted to the user',
   `from_deleted` tinyint(1) DEFAULT NULL COMMENT 'Deleted from the source',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Messages';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Messages' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `modules`
 --
 
 DROP TABLE IF EXISTS `modules`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `modules` (
+CREATE TABLE IF NOT EXISTS `modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
   `enable` tinyint(1) DEFAULT NULL,
@@ -2232,17 +2925,16 @@ CREATE TABLE `modules` (
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=238 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=238 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `modules_data`
 --
 
 DROP TABLE IF EXISTS `modules_data`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `modules_data` (
+CREATE TABLE IF NOT EXISTS `modules_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `module_id` int(11) DEFAULT NULL,
   `version` varchar(50) DEFAULT NULL,
@@ -2250,17 +2942,16 @@ CREATE TABLE `modules_data` (
   `data` longtext,
   PRIMARY KEY (`id`),
   KEY `data` (`data`(767))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='this table if a convivnient table to store module related data';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='this table if a convivnient table to store module related data' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `notes`
 --
 
 DROP TABLE IF EXISTS `notes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `notes` (
+CREATE TABLE IF NOT EXISTS `notes` (
   `id` int(11) NOT NULL DEFAULT '0',
   `foreign_id` int(11) NOT NULL DEFAULT '0',
   `note` varchar(255) DEFAULT NULL,
@@ -2272,16 +2963,15 @@ CREATE TABLE `notes` (
   KEY `foreign_id_2` (`foreign_id`),
   KEY `date` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `notification_log`
 --
 
 DROP TABLE IF EXISTS `notification_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `notification_log` (
+CREATE TABLE IF NOT EXISTS `notification_log` (
   `iLogId` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(7) NOT NULL,
   `pc_eid` int(11) unsigned DEFAULT NULL,
@@ -2298,17 +2988,16 @@ CREATE TABLE `notification_log` (
   `pc_endTime` time NOT NULL,
   `dSentDateTime` datetime NOT NULL,
   PRIMARY KEY (`iLogId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `notification_settings`
 --
 
 DROP TABLE IF EXISTS `notification_settings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `notification_settings` (
+CREATE TABLE IF NOT EXISTS `notification_settings` (
   `SettingsId` int(3) NOT NULL AUTO_INCREMENT,
   `Send_SMS_Before_Hours` int(3) NOT NULL,
   `Send_Email_Before_Hours` int(3) NOT NULL,
@@ -2317,17 +3006,16 @@ CREATE TABLE `notification_settings` (
   `SMS_gateway_apikey` varchar(100) NOT NULL,
   `type` varchar(50) NOT NULL,
   PRIMARY KEY (`SettingsId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `office_notes`
 --
 
 DROP TABLE IF EXISTS `office_notes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `office_notes` (
+CREATE TABLE IF NOT EXISTS `office_notes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,
   `body` varchar(255) DEFAULT NULL,
@@ -2335,17 +3023,16 @@ CREATE TABLE `office_notes` (
   `facility_id` varchar(255) DEFAULT NULL,
   `activity` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Office Notes';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Office Notes' AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient`
 --
 
 DROP TABLE IF EXISTS `patient`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient` (
+CREATE TABLE IF NOT EXISTS `patient` (
   `pid` bigint(20) NOT NULL AUTO_INCREMENT,
   `pubpid` varchar(40) DEFAULT NULL COMMENT 'external reference id',
   `title` varchar(10) DEFAULT NULL COMMENT 'Title Mr. Sr.',
@@ -2359,19 +3046,6 @@ CREATE TABLE `patient` (
   `drivers_license` varchar(40) DEFAULT NULL COMMENT 'driver licence #',
   `drivers_license_state` varchar(40) DEFAULT NULL,
   `drivers_license_exp` date DEFAULT NULL,
-  `address` varchar(80) DEFAULT NULL COMMENT 'address',
-  `city` varchar(40) DEFAULT NULL COMMENT 'city',
-  `state` varchar(40) DEFAULT NULL COMMENT 'state',
-  `country` varchar(40) DEFAULT NULL COMMENT 'country',
-  `zipcode` varchar(10) DEFAULT NULL COMMENT 'postal code',
-  `home_phone` varchar(15) DEFAULT NULL COMMENT 'home phone #',
-  `mobile_phone` varchar(15) DEFAULT NULL COMMENT 'mobile phone #',
-  `work_phone` varchar(15) DEFAULT NULL COMMENT 'work phone #',
-  `email` varchar(80) DEFAULT NULL COMMENT 'email',
-  `mothers_name` varchar(40) DEFAULT NULL COMMENT 'mother name',
-  `guardians_name` varchar(40) DEFAULT NULL COMMENT 'guardians name',
-  `emer_contact` varchar(40) DEFAULT NULL COMMENT 'emergency contact',
-  `emer_phone` varchar(15) DEFAULT NULL COMMENT 'emergency phone #',
   `provider` varchar(40) DEFAULT NULL COMMENT 'default provider',
   `pharmacy` varchar(40) DEFAULT NULL COMMENT 'default pharmacy',
   `hipaa_notice` varchar(40) DEFAULT NULL COMMENT 'HIPAA notice status',
@@ -2413,8 +3087,6 @@ CREATE TABLE `patient` (
   `update_uid` int(11) DEFAULT NULL COMMENT 'update user ID',
   `create_date` datetime DEFAULT NULL COMMENT 'create date',
   `update_date` datetime DEFAULT NULL COMMENT 'last update date',
-  `address_cont` varchar(255) DEFAULT NULL,
-  `work_phone_ext` varchar(255) DEFAULT NULL,
   `portal_password` blob,
   `portal_username` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`pid`),
@@ -2426,25 +3098,35 @@ CREATE TABLE `patient` (
   KEY `SS` (`SS`),
   KEY `pubpid` (`pubpid`),
   KEY `drivers_license` (`drivers_license`),
-  KEY `home_phone` (`home_phone`),
-  KEY `mobile_phone` (`mobile_phone`),
-  KEY `work_phone` (`work_phone`),
-  KEY `email` (`email`),
   KEY `LiveSearchIndex` (`pid`,`pubpid`,`fname`,`mname`,`lname`,`SS`),
   KEY `pubaccount` (`pubaccount`),
-  KEY `IK_DOB` (`DOB`),
-  KEY `IK_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9550 DEFAULT CHARSET=utf8 COMMENT='Patients/Demographics';
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `IK_DOB` (`DOB`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patients/Demographics' AUTO_INCREMENT=9567 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_account`
+--
+
+DROP TABLE IF EXISTS `patient_account`;
+CREATE TABLE IF NOT EXISTS `patient_account` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT '0',
+  `eid` bigint(20) NOT NULL,
+  `uid` varchar(255) DEFAULT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_active_problems`
 --
 
 DROP TABLE IF EXISTS `patient_active_problems`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_active_problems` (
+CREATE TABLE IF NOT EXISTS `patient_active_problems` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2466,17 +3148,16 @@ CREATE TABLE `patient_active_problems` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=48 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_advance_directives`
 --
 
 DROP TABLE IF EXISTS `patient_advance_directives`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_advance_directives` (
+CREATE TABLE IF NOT EXISTS `patient_advance_directives` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
@@ -2498,17 +3179,16 @@ CREATE TABLE `patient_advance_directives` (
   PRIMARY KEY (`id`),
   KEY `IK_eid` (`eid`),
   KEY `IK_pid` (`pid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_allergies`
 --
 
 DROP TABLE IF EXISTS `patient_allergies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_allergies` (
+CREATE TABLE IF NOT EXISTS `patient_allergies` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2537,17 +3217,16 @@ CREATE TABLE `patient_allergies` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=58 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_amendments`
 --
 
 DROP TABLE IF EXISTS `patient_amendments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_amendments` (
+CREATE TABLE IF NOT EXISTS `patient_amendments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `portal_id` int(11) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
@@ -2571,17 +3250,16 @@ CREATE TABLE `patient_amendments` (
   `is_viewed` tinyint(1) DEFAULT NULL,
   `is_synced` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=64 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_appointment_requests`
 --
 
 DROP TABLE IF EXISTS `patient_appointment_requests`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_appointment_requests` (
+CREATE TABLE IF NOT EXISTS `patient_appointment_requests` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2602,17 +3280,16 @@ CREATE TABLE `patient_appointment_requests` (
   `create_uid` int(11) DEFAULT NULL,
   `update_uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_care_plan_goals`
 --
 
 DROP TABLE IF EXISTS `patient_care_plan_goals`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_care_plan_goals` (
+CREATE TABLE IF NOT EXISTS `patient_care_plan_goals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2626,17 +3303,16 @@ CREATE TABLE `patient_care_plan_goals` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Patient Care Plan Goals';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patient Care Plan Goals' AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_chart_checkout`
 --
 
 DROP TABLE IF EXISTS `patient_chart_checkout`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_chart_checkout` (
+CREATE TABLE IF NOT EXISTS `patient_chart_checkout` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
@@ -2645,17 +3321,16 @@ CREATE TABLE `patient_chart_checkout` (
   `pool_area_id` int(11) DEFAULT NULL,
   `read_only` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=685 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1827 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_cognitive_functional_status`
 --
 
 DROP TABLE IF EXISTS `patient_cognitive_functional_status`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_cognitive_functional_status` (
+CREATE TABLE IF NOT EXISTS `patient_cognitive_functional_status` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2676,17 +3351,248 @@ CREATE TABLE `patient_cognitive_functional_status` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Patient Cognitive Functional Status';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Patient Cognitive Functional Status' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_contacts`
+--
+
+DROP TABLE IF EXISTS `patient_contacts`;
+CREATE TABLE IF NOT EXISTS `patient_contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
+  `relationship` varchar(20) NOT NULL,
+  `street_mailing_address` varchar(200) DEFAULT NULL,
+  `city` varchar(70) DEFAULT NULL,
+  `state` varchar(70) DEFAULT NULL,
+  `zip` varchar(20) DEFAULT NULL,
+  `country` varchar(20) DEFAULT NULL,
+  `phone_use_code` varchar(17) DEFAULT NULL,
+  `phone_area_code` varchar(17) DEFAULT NULL,
+  `phone_local_number` varchar(17) DEFAULT NULL,
+  `contact_role` varchar(17) DEFAULT NULL,
+  `publicity` varchar(3) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `created_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Patient Contacts' AUTO_INCREMENT=5 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental`
+--
+
+DROP TABLE IF EXISTS `patient_dental`;
+CREATE TABLE IF NOT EXISTS `patient_dental` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
+  `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
+  `title` varchar(50) DEFAULT NULL,
+  `diagnosis_code` varchar(100) DEFAULT NULL,
+  `begin_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `ocurrence` varchar(50) DEFAULT NULL,
+  `referred_by` varchar(50) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
+  `updated_uid` bigint(20) DEFAULT NULL COMMENT 'updated by User ID',
+  `outcome` varchar(50) DEFAULT NULL,
+  `destination` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental_conditions`
+--
+
+DROP TABLE IF EXISTS `patient_dental_conditions`;
+CREATE TABLE IF NOT EXISTS `patient_dental_conditions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `plan_id` int(11) DEFAULT NULL,
+  `tooth` varchar(5) DEFAULT NULL,
+  `condition` varchar(40) DEFAULT NULL,
+  `notes` text,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IK_pid` (`pid`),
+  KEY `IK_eid` (`eid`),
+  KEY `IK_uid` (`uid`),
+  KEY `IK_plan_id` (`plan_id`),
+  KEY `IK_tooth` (`tooth`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental_missing_teeth`
+--
+
+DROP TABLE IF EXISTS `patient_dental_missing_teeth`;
+CREATE TABLE IF NOT EXISTS `patient_dental_missing_teeth` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `tooth` varchar(5) DEFAULT NULL,
+  `notes` text,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IK_pid` (`pid`),
+  KEY `IK_eid` (`eid`),
+  KEY `IK_uid` (`uid`),
+  KEY `IK_tooth` (`tooth`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental_plan_items`
+--
+
+DROP TABLE IF EXISTS `patient_dental_plan_items`;
+CREATE TABLE IF NOT EXISTS `patient_dental_plan_items` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `plan_id` int(11) DEFAULT NULL,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `provider_uid` int(11) DEFAULT NULL,
+  `technician_uid` int(11) DEFAULT NULL,
+  `specialty_id` int(11) DEFAULT NULL,
+  `billing_reference` int(11) DEFAULT NULL,
+  `code` varchar(10) DEFAULT NULL,
+  `code_text` varchar(255) DEFAULT NULL,
+  `code_type` varchar(10) DEFAULT NULL,
+  `tooth` varchar(255) DEFAULT NULL,
+  `surface` mediumtext,
+  `cavity_quadrant` varchar(2) DEFAULT NULL,
+  `status` varchar(40) DEFAULT NULL,
+  `notes` varchar(255) DEFAULT NULL,
+  `planDate` date DEFAULT NULL,
+  `procedure_type` varchar(10) DEFAULT NULL,
+  `patient_fee` float(10,2) DEFAULT NULL,
+  `insurance_fee` float(10,2) DEFAULT NULL,
+  `entry_status` varchar(40) DEFAULT NULL,
+  `require_tooth` tinyint(1) DEFAULT NULL,
+  `require_surface` tinyint(1) DEFAULT NULL,
+  `dx_text` varchar(255) DEFAULT NULL,
+  `dx_text_code` varchar(10) DEFAULT NULL,
+  `dx_text_code_type` varchar(10) DEFAULT NULL,
+  `complete_date` date DEFAULT NULL,
+  `anesthetic` varchar(60) DEFAULT NULL,
+  `anesthetic_type` varchar(40) DEFAULT NULL,
+  `anesthetic_amount` float(10,2) DEFAULT NULL,
+  `anesthetic_lot` varchar(40) DEFAULT NULL,
+  `anesthetic_exp` date DEFAULT NULL,
+  `doctor_fee` float(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='dental plan item = procedures' AUTO_INCREMENT=10 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental_plans`
+--
+
+DROP TABLE IF EXISTS `patient_dental_plans`;
+CREATE TABLE IF NOT EXISTS `patient_dental_plans` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `provider_uid` int(11) DEFAULT NULL,
+  `facility_id` int(11) DEFAULT NULL,
+  `has_enclosures` tinyint(1) DEFAULT NULL,
+  `is_orthodontics` tinyint(1) DEFAULT NULL,
+  `appliance_placed_date` datetime DEFAULT NULL,
+  `months_of_treatment` tinyint(1) DEFAULT NULL,
+  `replacements_of_prosthesis` tinyint(1) DEFAULT NULL,
+  `prior_placements_date` datetime DEFAULT NULL,
+  `accident_resulting_from` varchar(25) DEFAULT NULL,
+  `accident_date` datetime DEFAULT NULL,
+  `accident_state` varchar(25) DEFAULT NULL,
+  `notes` varchar(300) DEFAULT NULL,
+  `create_uid` int(11) DEFAULT NULL,
+  `update_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `is_accident` tinyint(1) DEFAULT NULL,
+  `pre_authorization_number` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IK_facility_id` (`facility_id`),
+  KEY `IK_pid` (`pid`),
+  KEY `IK_eid` (`eid`),
+  KEY `IK_provider_uid` (`provider_uid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='patient dental plans' AUTO_INCREMENT=7 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental_prob_chart_items`
+--
+
+DROP TABLE IF EXISTS `patient_dental_prob_chart_items`;
+CREATE TABLE IF NOT EXISTS `patient_dental_prob_chart_items` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `chart_id` int(11) DEFAULT NULL COMMENT 'probing chart ID',
+  `tooth` varchar(2) DEFAULT NULL,
+  `missing` tinyint(1) DEFAULT NULL,
+  `facial_mob` varchar(1) DEFAULT NULL,
+  `facial_bld` text,
+  `facial_cal` text,
+  `facial_pla` text,
+  `facial_sup` text,
+  `facial_cej` text,
+  `facial_pd` text,
+  `lingual_cej` text,
+  `lingual_pd` text,
+  `lingual_bld` text,
+  `lingual_cal` text,
+  `lingual_pla` text,
+  `lingual_sup` text,
+  PRIMARY KEY (`id`),
+  KEY `chart_id` (`chart_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='patient dental Probing chart' AUTO_INCREMENT=65 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_dental_prob_charts`
+--
+
+DROP TABLE IF EXISTS `patient_dental_prob_charts`;
+CREATE TABLE IF NOT EXISTS `patient_dental_prob_charts` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `createDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  `notes` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='patient dental Probing chart' AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_disclosures`
 --
 
 DROP TABLE IF EXISTS `patient_disclosures`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_disclosures` (
+CREATE TABLE IF NOT EXISTS `patient_disclosures` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2699,17 +3605,16 @@ CREATE TABLE `patient_disclosures` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_doctors_notes`
 --
 
 DROP TABLE IF EXISTS `patient_doctors_notes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_doctors_notes` (
+CREATE TABLE IF NOT EXISTS `patient_doctors_notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
@@ -2724,17 +3629,16 @@ CREATE TABLE `patient_doctors_notes` (
   PRIMARY KEY (`id`),
   KEY `eid` (`eid`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_documents`
 --
 
 DROP TABLE IF EXISTS `patient_documents`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_documents` (
+CREATE TABLE IF NOT EXISTS `patient_documents` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(120) DEFAULT NULL COMMENT 'external reference id',
   `pid` int(11) DEFAULT NULL,
@@ -2756,86 +3660,74 @@ CREATE TABLE `patient_documents` (
   KEY `docType` (`docType`),
   KEY `date` (`date`),
   KEY `IK_code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=27 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_documents_temp`
 --
 
 DROP TABLE IF EXISTS `patient_documents_temp`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_documents_temp` (
+CREATE TABLE IF NOT EXISTS `patient_documents_temp` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `create_date` datetime DEFAULT NULL,
   `document` longtext,
   `document_name` varchar(180) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Patient Documents Temporary Storage';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patient Documents Temporary Storage' AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_erx_messages`
+--
+
+DROP TABLE IF EXISTS `patient_erx_messages`;
+CREATE TABLE IF NOT EXISTS `patient_erx_messages` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` int(11) DEFAULT NULL,
+  `eid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL,
+  `createDate` datetime DEFAULT NULL,
+  `updateDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='patient erx messages' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_family_history`
 --
 
 DROP TABLE IF EXISTS `patient_family_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_family_history` (
+CREATE TABLE IF NOT EXISTS `patient_family_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
-  `auth_uid` int(11) DEFAULT NULL,
   `create_uid` int(11) DEFAULT NULL,
   `update_uid` int(11) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
-  `emphysema` varchar(60) DEFAULT NULL,
-  `tuberculosis` varchar(60) DEFAULT NULL,
-  `asthma` varchar(60) DEFAULT NULL,
-  `hypertension` varchar(60) DEFAULT NULL,
-  `heart_murmur` varchar(60) DEFAULT NULL,
-  `rheumatic_fever` varchar(60) DEFAULT NULL,
-  `heart_attak` varchar(60) DEFAULT NULL,
-  `angina` varchar(60) DEFAULT NULL,
-  `stroke` varchar(60) DEFAULT NULL,
-  `high_cholesterol` varchar(60) DEFAULT NULL,
-  `vascular_graft` varchar(60) DEFAULT NULL,
-  `mitral_valve_prolapse` varchar(60) DEFAULT NULL,
-  `hepatitis_a` varchar(60) DEFAULT NULL,
-  `hepatitis_b` varchar(60) DEFAULT NULL,
-  `hepatitis_c` varchar(60) DEFAULT NULL,
-  `kidney` varchar(60) DEFAULT NULL,
-  `std` varchar(60) DEFAULT NULL,
-  `ulcers` varchar(60) DEFAULT NULL,
-  `diabetes` varchar(60) DEFAULT NULL,
-  `thyroid` varchar(60) DEFAULT NULL,
-  `hemophilia` varchar(60) DEFAULT NULL,
-  `anemia` varchar(60) DEFAULT NULL,
-  `cancer` varchar(60) DEFAULT NULL,
-  `hiv_aids` varchar(60) DEFAULT NULL,
-  `osteoarthritis` varchar(60) DEFAULT NULL,
-  `rheumatoid_arthritis` varchar(60) DEFAULT NULL,
-  `seizures` varchar(60) DEFAULT NULL,
-  `dementia` varchar(60) DEFAULT NULL,
-  `anxiety` varchar(60) DEFAULT NULL,
-  `depression` varchar(60) DEFAULT NULL,
-  `eating_disorder` varchar(60) DEFAULT NULL,
+  `condition` varchar(60) DEFAULT NULL,
+  `condition_code` varchar(60) DEFAULT NULL,
+  `condition_code_type` varchar(60) DEFAULT NULL,
+  `relation` varchar(60) DEFAULT NULL,
+  `relation_code` varchar(60) DEFAULT NULL,
+  `relation_code_type` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_images`
 --
 
 DROP TABLE IF EXISTS `patient_images`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_images` (
+CREATE TABLE IF NOT EXISTS `patient_images` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2853,17 +3745,16 @@ CREATE TABLE `patient_images` (
   KEY `update_uid` (`update_uid`),
   KEY `create_date` (`create_date`),
   KEY `update_date` (`update_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='patient images added in the image form panel';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='patient images added in the image form panel' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_immunizations`
 --
 
 DROP TABLE IF EXISTS `patient_immunizations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_immunizations` (
+CREATE TABLE IF NOT EXISTS `patient_immunizations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -2878,6 +3769,7 @@ CREATE TABLE `patient_immunizations` (
   `administered_uid` int(11) DEFAULT NULL,
   `manufacturer` varchar(180) DEFAULT NULL,
   `education_date` date DEFAULT NULL,
+  `education_doc_published` date DEFAULT NULL,
   `note` varchar(300) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `created_uid` bigint(20) DEFAULT NULL COMMENT 'created by User ID',
@@ -2889,17 +3781,16 @@ CREATE TABLE `patient_immunizations` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_insurance_covers`
 --
 
 DROP TABLE IF EXISTS `patient_insurance_covers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_insurance_covers` (
+CREATE TABLE IF NOT EXISTS `patient_insurance_covers` (
   `id` varchar(60) NOT NULL,
   `insurance_id` int(11) DEFAULT NULL,
   `cover_radiology` varchar(40) DEFAULT NULL,
@@ -2914,16 +3805,15 @@ CREATE TABLE `patient_insurance_covers` (
   KEY `IK_cover_emergency` (`cover_emergency`),
   KEY `IK_cover_inpatient` (`cover_inpatient`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_insurances`
 --
 
 DROP TABLE IF EXISTS `patient_insurances`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_insurances` (
+CREATE TABLE IF NOT EXISTS `patient_insurances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(40) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
@@ -2964,17 +3854,16 @@ CREATE TABLE `patient_insurances` (
   KEY `IK_insurance_type` (`insurance_type`),
   KEY `IK_cover_medical` (`cover_medical`),
   KEY `IK_cover_dental` (`cover_dental`)
-) ENGINE=InnoDB AUTO_INCREMENT=8770 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8771 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_labs`
 --
 
 DROP TABLE IF EXISTS `patient_labs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_labs` (
+CREATE TABLE IF NOT EXISTS `patient_labs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
@@ -2984,34 +3873,32 @@ CREATE TABLE `patient_labs` (
   `date` datetime DEFAULT NULL,
   `parent_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_labs_results`
 --
 
 DROP TABLE IF EXISTS `patient_labs_results`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_labs_results` (
+CREATE TABLE IF NOT EXISTS `patient_labs_results` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_lab_id` int(11) DEFAULT NULL,
   `observation_loinc` varchar(255) DEFAULT NULL,
   `observation_value` varchar(255) DEFAULT NULL,
   `unit` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_medications`
 --
 
 DROP TABLE IF EXISTS `patient_medications`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_medications` (
+CREATE TABLE IF NOT EXISTS `patient_medications` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -3046,17 +3933,16 @@ CREATE TABLE `patient_medications` (
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_notes`
 --
 
 DROP TABLE IF EXISTS `patient_notes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_notes` (
+CREATE TABLE IF NOT EXISTS `patient_notes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -3070,17 +3956,16 @@ CREATE TABLE `patient_notes` (
   KEY `uid` (`uid`),
   KEY `date` (`date`),
   KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_order_results`
 --
 
 DROP TABLE IF EXISTS `patient_order_results`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_order_results` (
+CREATE TABLE IF NOT EXISTS `patient_order_results` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `ordered_uid` int(11) DEFAULT NULL,
@@ -3111,17 +3996,16 @@ CREATE TABLE `patient_order_results` (
   KEY `IK_ordered_uid` (`ordered_uid`),
   KEY `IK_signed_uid` (`signed_uid`),
   KEY `IK_pid` (`pid`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='Patients Results OBR';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patients Results OBR' AUTO_INCREMENT=26 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_order_results_observations`
 --
 
 DROP TABLE IF EXISTS `patient_order_results_observations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_order_results_observations` (
+CREATE TABLE IF NOT EXISTS `patient_order_results_observations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `result_id` int(11) DEFAULT NULL COMMENT 'Order ID',
   `code` varchar(255) DEFAULT NULL COMMENT 'OBX 3',
@@ -3144,17 +4028,16 @@ CREATE TABLE `patient_order_results_observations` (
   PRIMARY KEY (`id`),
   KEY `result_id` (`result_id`),
   KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8 COMMENT='Order Result Observations OBX';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Order Result Observations OBX' AUTO_INCREMENT=68 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_orders`
 --
 
 DROP TABLE IF EXISTS `patient_orders`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_orders` (
+CREATE TABLE IF NOT EXISTS `patient_orders` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
   `eid` int(11) DEFAULT NULL COMMENT 'encounter id',
@@ -3177,17 +4060,16 @@ CREATE TABLE `patient_orders` (
   KEY `date_collected` (`date_collected`),
   KEY `priority` (`priority`),
   KEY `status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_pools`
 --
 
 DROP TABLE IF EXISTS `patient_pools`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_pools` (
+CREATE TABLE IF NOT EXISTS `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL COMMENT 'user id that is treating the patient',
@@ -3206,17 +4088,16 @@ CREATE TABLE `patient_pools` (
   KEY `IK_appointment_id` (`appointment_id`),
   KEY `IK_parent_id` (`parent_id`),
   KEY `IK_provider_id` (`provider_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=122 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_prescriptions`
 --
 
 DROP TABLE IF EXISTS `patient_prescriptions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_prescriptions` (
+CREATE TABLE IF NOT EXISTS `patient_prescriptions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `eid` bigint(20) DEFAULT NULL,
@@ -3225,17 +4106,16 @@ CREATE TABLE `patient_prescriptions` (
   `note` varchar(255) DEFAULT NULL,
   `document_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_referrals`
 --
 
 DROP TABLE IF EXISTS `patient_referrals`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_referrals` (
+CREATE TABLE IF NOT EXISTS `patient_referrals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL COMMENT 'encounter id',
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
@@ -3261,17 +4141,16 @@ CREATE TABLE `patient_referrals` (
   PRIMARY KEY (`id`),
   KEY `eid` (`eid`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Patients Referrals';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patients Referrals' AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_reminders`
 --
 
 DROP TABLE IF EXISTS `patient_reminders`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_reminders` (
+CREATE TABLE IF NOT EXISTS `patient_reminders` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -3279,23 +4158,23 @@ CREATE TABLE `patient_reminders` (
   `date` datetime DEFAULT NULL,
   `body` varchar(600) DEFAULT NULL,
   `type` varchar(80) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `uid` (`uid`),
   KEY `date` (`date`),
   KEY `eid` (`eid`),
   KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_smoke_status`
 --
 
 DROP TABLE IF EXISTS `patient_smoke_status`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_smoke_status` (
+CREATE TABLE IF NOT EXISTS `patient_smoke_status` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL COMMENT 'encounter id',
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
@@ -3313,17 +4192,16 @@ CREATE TABLE `patient_smoke_status` (
   PRIMARY KEY (`id`),
   KEY `eid` (`eid`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='Patient Smoke status';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patient Smoke status' AUTO_INCREMENT=12 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_social_history`
 --
 
 DROP TABLE IF EXISTS `patient_social_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_social_history` (
+CREATE TABLE IF NOT EXISTS `patient_social_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL COMMENT 'encounter id',
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
@@ -3343,17 +4221,16 @@ CREATE TABLE `patient_social_history` (
   PRIMARY KEY (`id`),
   KEY `eid` (`eid`),
   KEY `pid` (`pid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Patient Social History';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Patient Social History' AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_surgery`
 --
 
 DROP TABLE IF EXISTS `patient_surgery`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_surgery` (
+CREATE TABLE IF NOT EXISTS `patient_surgery` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL COMMENT 'patient ID',
   `eid` bigint(20) DEFAULT NULL COMMENT 'encounter ID',
@@ -3368,17 +4245,16 @@ CREATE TABLE `patient_surgery` (
   `outcome` varchar(50) DEFAULT NULL,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_zone`
 --
 
 DROP TABLE IF EXISTS `patient_zone`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `patient_zone` (
+CREATE TABLE IF NOT EXISTS `patient_zone` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
   `uid` int(11) DEFAULT NULL COMMENT 'user ID who assigned the patient to this zone',
@@ -3387,22 +4263,65 @@ CREATE TABLE `patient_zone` (
   `time_out` datetime DEFAULT NULL,
   `provider_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `IK_pid_timeout` (`pid`,`time_out`),
   KEY `IK_zone_id` (`zone_id`),
   KEY `IK_time_out` (`time_out`),
   KEY `IK_pid` (`pid`),
-  KEY `IK_provider_id` (`provider_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `IK_provider_id` (`provider_id`),
+  KEY `IK_pid_timeout` (`pid`,`time_out`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment_transactions`
+--
+
+DROP TABLE IF EXISTS `payment_transactions`;
+CREATE TABLE IF NOT EXISTS `payment_transactions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `paying_entity` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `payer_id` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `payment_method` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `pay_to` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `post_to_date` datetime DEFAULT NULL,
+  `check_number` varchar(255) DEFAULT NULL,
+  `amount` int(255) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `date_created` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Entity that maintains patient''s account transactions ' AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+DROP TABLE IF EXISTS `payments`;
+CREATE TABLE IF NOT EXISTS `payments` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pid` bigint(20) NOT NULL DEFAULT '0',
+  `dtime` datetime NOT NULL,
+  `encounter` bigint(20) NOT NULL DEFAULT '0',
+  `user` varchar(255) DEFAULT NULL,
+  `method` varchar(255) DEFAULT NULL,
+  `source` varchar(255) DEFAULT NULL,
+  `amount1` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `amount2` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `posted1` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `posted2` decimal(12,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `pharmacies`
 --
 
 DROP TABLE IF EXISTS `pharmacies`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pharmacies` (
+CREATE TABLE IF NOT EXISTS `pharmacies` (
   `id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `transmit_method` varchar(255) DEFAULT NULL,
@@ -3413,16 +4332,13 @@ CREATE TABLE `pharmacies` (
   `fax_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `phone_numbers`
 --
 
 DROP TABLE IF EXISTS `phone_numbers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `phone_numbers` (
+CREATE TABLE IF NOT EXISTS `phone_numbers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `country_code` varchar(5) DEFAULT NULL,
   `area_code` char(3) DEFAULT NULL,
@@ -3432,17 +4348,16 @@ CREATE TABLE `phone_numbers` (
   `foreign_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `foreign_id` (`foreign_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `phones`
 --
 
 DROP TABLE IF EXISTS `phones`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `phones` (
+CREATE TABLE IF NOT EXISTS `phones` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `create_uid` int(11) DEFAULT NULL COMMENT 'create user ID',
   `write_uid` int(11) DEFAULT NULL COMMENT 'update user ID',
@@ -3457,17 +4372,16 @@ CREATE TABLE `phones` (
   `foreign_id` int(11) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='User/Contacts phones';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='User/Contacts phones' AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `pnotes`
 --
 
 DROP TABLE IF EXISTS `pnotes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pnotes` (
+CREATE TABLE IF NOT EXISTS `pnotes` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `to_id` bigint(20) NOT NULL COMMENT 'user ID receiving the message',
   `from_id` bigint(20) NOT NULL COMMENT 'user ID sending the message',
@@ -3483,17 +4397,16 @@ CREATE TABLE `pnotes` (
   `subject` varchar(254) DEFAULT NULL,
   `note_type` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `pool_areas`
 --
 
 DROP TABLE IF EXISTS `pool_areas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pool_areas` (
+CREATE TABLE IF NOT EXISTS `pool_areas` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(80) DEFAULT NULL,
   `floor_plan_id` bigint(20) DEFAULT NULL,
@@ -3501,17 +4414,81 @@ CREATE TABLE `pool_areas` (
   `sequence` int(11) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prescriptions`
+--
+
+DROP TABLE IF EXISTS `prescriptions`;
+CREATE TABLE IF NOT EXISTS `prescriptions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `patient_id` int(11) DEFAULT NULL,
+  `filled_by_id` int(11) DEFAULT NULL,
+  `pharmacy_id` int(11) DEFAULT NULL,
+  `date_added` date DEFAULT NULL,
+  `date_modified` date DEFAULT NULL,
+  `provider_id` int(11) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `drug` varchar(150) DEFAULT NULL,
+  `drug_id` int(11) NOT NULL DEFAULT '0',
+  `form` int(3) DEFAULT NULL,
+  `dosage` varchar(100) DEFAULT NULL,
+  `quantity` varchar(31) DEFAULT NULL,
+  `size` float unsigned DEFAULT NULL,
+  `unit` int(11) DEFAULT NULL,
+  `route` int(11) DEFAULT NULL,
+  `interval` int(11) DEFAULT NULL,
+  `substitute` int(11) DEFAULT NULL,
+  `refills` int(11) DEFAULT NULL,
+  `per_refill` int(11) DEFAULT NULL,
+  `filled_date` date DEFAULT NULL,
+  `medication` int(11) DEFAULT NULL,
+  `note` text,
+  `active` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `preventive_care_guidelines`
+--
+
+DROP TABLE IF EXISTS `preventive_care_guidelines`;
+CREATE TABLE IF NOT EXISTS `preventive_care_guidelines` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `concept_id` bigint(20) DEFAULT NULL,
+  `description` text,
+  `age_start` text,
+  `age_end` text,
+  `sex` text,
+  `pregnant` tinyint(1) NOT NULL DEFAULT '0',
+  `frequency` text,
+  `category_id` text,
+  `code` text,
+  `coding_system` text,
+  `frequency_type` text,
+  `times_to_perform` text,
+  `active_problems` text,
+  `medications` text,
+  `doc_url1` text,
+  `doc_url2` text,
+  `doc_url3` text,
+  `active` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=260 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `preventive_care_inactive_patient`
 --
 
 DROP TABLE IF EXISTS `preventive_care_inactive_patient`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `preventive_care_inactive_patient` (
+CREATE TABLE IF NOT EXISTS `preventive_care_inactive_patient` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -3522,17 +4499,128 @@ CREATE TABLE `preventive_care_inactive_patient` (
   `date` date DEFAULT NULL,
   `observation` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prices`
+--
+
+DROP TABLE IF EXISTS `prices`;
+CREATE TABLE IF NOT EXISTS `prices` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `code` varchar(25) DEFAULT NULL,
+  `codeType` int(10) DEFAULT NULL,
+  `insuranceCompanyId` bigint(20) DEFAULT NULL,
+  `price` decimal(19,2) NOT NULL DEFAULT '0.00' COMMENT 'price in local currency',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `procedure_order`
+--
+
+DROP TABLE IF EXISTS `procedure_order`;
+CREATE TABLE IF NOT EXISTS `procedure_order` (
+  `procedure_order_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `procedure_type_id` bigint(20) NOT NULL COMMENT 'references procedure_type.procedure_type_id',
+  `provider_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id',
+  `patient_id` bigint(20) NOT NULL COMMENT 'references patient_data.pid',
+  `encounter_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references form_encounter.encounter',
+  `date_collected` datetime DEFAULT NULL COMMENT 'time specimen collected',
+  `date_ordered` date DEFAULT NULL,
+  `order_priority` varchar(31) NOT NULL DEFAULT '',
+  `order_status` varchar(31) NOT NULL DEFAULT '' COMMENT 'pending,routed,complete,canceled',
+  `patient_instructions` text NOT NULL,
+  `activity` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0 if deleted',
+  `control_id` bigint(20) NOT NULL COMMENT 'This is the CONTROL ID that is sent back from lab',
+  PRIMARY KEY (`procedure_order_id`),
+  KEY `datepid` (`date_ordered`,`patient_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `procedure_report`
+--
+
+DROP TABLE IF EXISTS `procedure_report`;
+CREATE TABLE IF NOT EXISTS `procedure_report` (
+  `procedure_report_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `procedure_order_id` bigint(20) DEFAULT NULL COMMENT 'references procedure_order.procedure_order_id',
+  `date_collected` datetime DEFAULT NULL,
+  `date_report` date DEFAULT NULL,
+  `source` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id, who entered this data',
+  `specimen_num` varchar(63) NOT NULL DEFAULT '',
+  `report_status` varchar(31) NOT NULL DEFAULT '' COMMENT 'received,complete,error',
+  `review_status` varchar(31) NOT NULL DEFAULT 'received' COMMENT 'panding reivew status: received,reviewed',
+  PRIMARY KEY (`procedure_report_id`),
+  KEY `procedure_order_id` (`procedure_order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `procedure_result`
+--
+
+DROP TABLE IF EXISTS `procedure_result`;
+CREATE TABLE IF NOT EXISTS `procedure_result` (
+  `procedure_result_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `procedure_report_id` bigint(20) NOT NULL COMMENT 'references procedure_report.procedure_report_id',
+  `procedure_type_id` bigint(20) NOT NULL COMMENT 'references procedure_type.procedure_type_id',
+  `date` datetime DEFAULT NULL COMMENT 'lab-provided date specific to this result',
+  `facility` varchar(255) NOT NULL DEFAULT '' COMMENT 'lab-provided testing facility ID',
+  `units` varchar(31) NOT NULL DEFAULT '',
+  `result` varchar(255) NOT NULL DEFAULT '',
+  `range` varchar(255) NOT NULL DEFAULT '',
+  `abnormal` varchar(31) NOT NULL DEFAULT '' COMMENT 'no,yes,high,low',
+  `comments` text NOT NULL COMMENT 'comments from the lab',
+  `document_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references documents.id if this result is a document',
+  `result_status` varchar(31) NOT NULL DEFAULT '' COMMENT 'preliminary, cannot be done, final, corrected, incompete...etc.',
+  PRIMARY KEY (`procedure_result_id`),
+  KEY `procedure_report_id` (`procedure_report_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `procedure_type`
+--
+
+DROP TABLE IF EXISTS `procedure_type`;
+CREATE TABLE IF NOT EXISTS `procedure_type` (
+  `procedure_type_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `parent` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references procedure_type.procedure_type_id',
+  `name` varchar(63) NOT NULL DEFAULT '' COMMENT 'name for this category, procedure or result type',
+  `lab_id` bigint(20) NOT NULL DEFAULT '0' COMMENT 'references users.id, 0 means default to parent',
+  `procedure_code` varchar(31) NOT NULL DEFAULT '' COMMENT 'code identifying this procedure',
+  `procedure_type` varchar(31) NOT NULL DEFAULT '' COMMENT 'see list proc_type',
+  `body_site` varchar(31) NOT NULL DEFAULT '' COMMENT 'where to do injection, e.g. arm, buttok',
+  `specimen` varchar(31) NOT NULL DEFAULT '' COMMENT 'blood, urine, saliva, etc.',
+  `route_admin` varchar(31) NOT NULL DEFAULT '' COMMENT 'oral, injection',
+  `laterality` varchar(31) NOT NULL DEFAULT '' COMMENT 'left, right, ...',
+  `description` varchar(255) NOT NULL DEFAULT '' COMMENT 'descriptive text for procedure_code',
+  `standard_code` varchar(255) NOT NULL DEFAULT '' COMMENT 'industry standard code type and code (e.g. CPT4:12345)',
+  `related_code` varchar(255) NOT NULL DEFAULT '' COMMENT 'suggested code(s) for followup services if result is abnormal',
+  `units` varchar(31) NOT NULL DEFAULT '' COMMENT 'default for procedure_result.units',
+  `range` varchar(255) NOT NULL DEFAULT '' COMMENT 'default for procedure_result.range',
+  `seq` int(11) NOT NULL DEFAULT '0' COMMENT 'sequence number for ordering',
+  PRIMARY KEY (`procedure_type_id`),
+  KEY `parent` (`parent`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `provider_credentializations`
 --
 
 DROP TABLE IF EXISTS `provider_credentializations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `provider_credentializations` (
+CREATE TABLE IF NOT EXISTS `provider_credentializations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `provider_id` int(11) DEFAULT NULL,
   `insurance_company_id` int(11) DEFAULT NULL,
@@ -3548,17 +4636,16 @@ CREATE TABLE `provider_credentializations` (
   KEY `IK_insurance_company_id` (`insurance_company_id`),
   KEY `IK_start_date` (`start_date`),
   KEY `IK_end_date` (`end_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=391 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=391 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `referring_providers`
 --
 
 DROP TABLE IF EXISTS `referring_providers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `referring_providers` (
+CREATE TABLE IF NOT EXISTS `referring_providers` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `create_uid` int(11) DEFAULT NULL COMMENT 'create user ID',
   `update_uid` int(11) DEFAULT NULL COMMENT 'update user ID',
@@ -3585,17 +4672,16 @@ CREATE TABLE `referring_providers` (
   `fda` varchar(25) DEFAULT NULL,
   `ess` varchar(25) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Referring Providers';
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Referring Providers' AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `referring_providers_facilities`
 --
 
 DROP TABLE IF EXISTS `referring_providers_facilities`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `referring_providers_facilities` (
+CREATE TABLE IF NOT EXISTS `referring_providers_facilities` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `referring_provider_id` int(11) DEFAULT NULL,
   `name` varchar(80) DEFAULT NULL,
@@ -3620,17 +4706,16 @@ CREATE TABLE `referring_providers_facilities` (
   `update_uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IK_referring_provider_id` (`referring_provider_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `rxinstructions`
 --
 
 DROP TABLE IF EXISTS `rxinstructions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rxinstructions` (
+CREATE TABLE IF NOT EXISTS `rxinstructions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `rxcui` varchar(255) DEFAULT NULL,
   `occurrence` int(11) DEFAULT NULL,
@@ -3638,17 +4723,16 @@ CREATE TABLE `rxinstructions` (
   PRIMARY KEY (`id`),
   KEY `IK_rxcui` (`rxcui`),
   KEY `IK_occurrence` (`occurrence`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `rxnatomarchive`
 --
 
 DROP TABLE IF EXISTS `rxnatomarchive`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rxnatomarchive` (
+CREATE TABLE IF NOT EXISTS `rxnatomarchive` (
   `RXAUI` varchar(8) NOT NULL,
   `AUI` varchar(10) DEFAULT NULL,
   `STR` varchar(4000) NOT NULL,
@@ -3669,16 +4753,15 @@ CREATE TABLE `rxnatomarchive` (
   KEY `X_RXNATOMARCHIVE_RXCUI` (`RXCUI`),
   KEY `X_RXNATOMARCHIVE_MERGED_TO` (`MERGED_TO_RXCUI`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `rxnconso`
 --
 
 DROP TABLE IF EXISTS `rxnconso`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rxnconso` (
+CREATE TABLE IF NOT EXISTS `rxnconso` (
   `RXCUI` varchar(8) NOT NULL,
   `LAT` varchar(3) NOT NULL DEFAULT 'ENG',
   `TS` varchar(1) DEFAULT NULL,
@@ -3704,16 +4787,61 @@ CREATE TABLE `rxnconso` (
   KEY `X_RXNCONSO_SAB` (`SAB`) USING BTREE,
   KEY `X_RXNCONSO_SEARCH` (`STR`(255),`RXCUI`,`SAB`,`TTY`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rxncui`
+--
+
+DROP TABLE IF EXISTS `rxncui`;
+CREATE TABLE IF NOT EXISTS `rxncui` (
+  `cui1` varchar(8) DEFAULT NULL,
+  `ver_start` varchar(40) DEFAULT NULL,
+  `ver_end` varchar(40) DEFAULT NULL,
+  `cardinality` varchar(8) DEFAULT NULL,
+  `cui2` varchar(8) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rxncuichanges`
+--
+
+DROP TABLE IF EXISTS `rxncuichanges`;
+CREATE TABLE IF NOT EXISTS `rxncuichanges` (
+  `RXAUI` varchar(8) DEFAULT NULL,
+  `CODE` varchar(50) DEFAULT NULL,
+  `SAB` varchar(20) DEFAULT NULL,
+  `TTY` varchar(20) DEFAULT NULL,
+  `STR` varchar(3000) DEFAULT NULL,
+  `OLD_RXCUI` varchar(8) NOT NULL,
+  `NEW_RXCUI` varchar(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rxndoc`
+--
+
+DROP TABLE IF EXISTS `rxndoc`;
+CREATE TABLE IF NOT EXISTS `rxndoc` (
+  `DOCKEY` varchar(50) NOT NULL,
+  `VALUE` varchar(1000) DEFAULT NULL,
+  `TYPE` varchar(50) NOT NULL,
+  `EXPL` varchar(1000) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `rxnrel`
 --
 
 DROP TABLE IF EXISTS `rxnrel`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rxnrel` (
+CREATE TABLE IF NOT EXISTS `rxnrel` (
   `RXCUI1` varchar(8) DEFAULT NULL,
   `RXAUI1` varchar(8) DEFAULT NULL,
   `STYPE1` varchar(50) DEFAULT NULL,
@@ -3734,16 +4862,50 @@ CREATE TABLE `rxnrel` (
   KEY `X_RXNREL_RXCUI2` (`RXCUI2`),
   KEY `X_RXNREL_RELA` (`RELA`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rxnsab`
+--
+
+DROP TABLE IF EXISTS `rxnsab`;
+CREATE TABLE IF NOT EXISTS `rxnsab` (
+  `VCUI` varchar(8) DEFAULT NULL,
+  `RCUI` varchar(8) DEFAULT NULL,
+  `VSAB` varchar(40) DEFAULT NULL,
+  `RSAB` varchar(20) NOT NULL,
+  `SON` varchar(3000) DEFAULT NULL,
+  `SF` varchar(20) DEFAULT NULL,
+  `SVER` varchar(20) DEFAULT NULL,
+  `VSTART` varchar(10) DEFAULT NULL,
+  `VEND` varchar(10) DEFAULT NULL,
+  `IMETA` varchar(10) DEFAULT NULL,
+  `RMETA` varchar(10) DEFAULT NULL,
+  `SLC` varchar(1000) DEFAULT NULL,
+  `SCC` varchar(1000) DEFAULT NULL,
+  `SRL` int(11) DEFAULT NULL,
+  `TFR` int(11) DEFAULT NULL,
+  `CFR` int(11) DEFAULT NULL,
+  `CXTY` varchar(50) DEFAULT NULL,
+  `TTYL` varchar(300) DEFAULT NULL,
+  `ATNL` varchar(1000) DEFAULT NULL,
+  `LAT` varchar(3) DEFAULT NULL,
+  `CENC` varchar(20) DEFAULT NULL,
+  `CURVER` varchar(1) DEFAULT NULL,
+  `SABIN` varchar(1) DEFAULT NULL,
+  `SSN` varchar(3000) DEFAULT NULL,
+  `SCIT` varchar(4000) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `rxnsat`
 --
 
 DROP TABLE IF EXISTS `rxnsat`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rxnsat` (
+CREATE TABLE IF NOT EXISTS `rxnsat` (
   `RXCUI` varchar(8) DEFAULT NULL,
   `LUI` varchar(8) DEFAULT NULL,
   `SUI` varchar(8) DEFAULT NULL,
@@ -3764,16 +4926,31 @@ CREATE TABLE `rxnsat` (
   KEY `X_RXNSAT_SAB` (`SAB`) USING BTREE,
   KEY `X_RXNSAT_SEARCH` (`RXCUI`,`SAB`,`ATN`(255),`ATV`(255)) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rxnsty`
+--
+
+DROP TABLE IF EXISTS `rxnsty`;
+CREATE TABLE IF NOT EXISTS `rxnsty` (
+  `RXCUI` varchar(8) NOT NULL,
+  `TUI` varchar(4) DEFAULT NULL,
+  `STN` varchar(100) DEFAULT NULL,
+  `STY` varchar(50) DEFAULT NULL,
+  `ATUI` varchar(11) DEFAULT NULL,
+  `CVF` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_concepts`
 --
 
 DROP TABLE IF EXISTS `sct_concepts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_concepts` (
+CREATE TABLE IF NOT EXISTS `sct_concepts` (
   `ConceptId` bigint(20) NOT NULL,
   `ConceptStatus` int(11) NOT NULL,
   `FullySpecifiedName` varchar(255) NOT NULL,
@@ -3782,19 +4959,17 @@ CREATE TABLE `sct_concepts` (
   `IsPrimitive` tinyint(1) NOT NULL,
   PRIMARY KEY (`ConceptId`),
   KEY `X_SNOMEDID` (`SNOMEDID`),
-  KEY `X_FullySpecifiedName` (`FullySpecifiedName`),
-  KEY `IsPrimitive` (`IsPrimitive`)
+  KEY `X_FullySpecifiedName` (`FullySpecifiedName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_descriptions`
 --
 
 DROP TABLE IF EXISTS `sct_descriptions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_descriptions` (
+CREATE TABLE IF NOT EXISTS `sct_descriptions` (
   `DescriptionId` bigint(20) NOT NULL,
   `DescriptionStatus` int(11) NOT NULL,
   `ConceptId` bigint(20) NOT NULL,
@@ -3803,19 +4978,18 @@ CREATE TABLE `sct_descriptions` (
   `DescriptionType` int(11) NOT NULL,
   `LanguageCode` varchar(8) NOT NULL,
   PRIMARY KEY (`DescriptionId`),
-  KEY `X_Term` (`Term`),
-  KEY `ConceptId` (`ConceptId`)
+  KEY `X_ConceptId` (`ConceptId`),
+  KEY `X_Term` (`Term`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_problem_list`
 --
 
 DROP TABLE IF EXISTS `sct_problem_list`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_problem_list` (
+CREATE TABLE IF NOT EXISTS `sct_problem_list` (
   `SNOMED_CID` varchar(15) NOT NULL,
   `SNOMED_FSN` varchar(255) NOT NULL,
   `SNOMED_CONCEPT_STATUS` varchar(20) NOT NULL,
@@ -3829,32 +5003,30 @@ CREATE TABLE `sct_problem_list` (
   PRIMARY KEY (`SNOMED_CID`),
   KEY `X_SNOMED_FSN` (`SNOMED_FSN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_procedure_list`
 --
 
 DROP TABLE IF EXISTS `sct_procedure_list`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_procedure_list` (
+CREATE TABLE IF NOT EXISTS `sct_procedure_list` (
   `ConceptId` varchar(15) CHARACTER SET utf8 NOT NULL,
   `FullySpecifiedName` varchar(255) CHARACTER SET utf8 NOT NULL,
   `Occurrence` int(11) NOT NULL,
   PRIMARY KEY (`ConceptId`),
   KEY `X_FullySpecifiedName` (`FullySpecifiedName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_relationships`
 --
 
 DROP TABLE IF EXISTS `sct_relationships`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_relationships` (
+CREATE TABLE IF NOT EXISTS `sct_relationships` (
   `RelationshipId` bigint(20) NOT NULL,
   `ConceptId1` bigint(20) NOT NULL,
   `RelationshipType` bigint(20) NOT NULL,
@@ -3863,20 +5035,19 @@ CREATE TABLE `sct_relationships` (
   `Refinability` int(11) NOT NULL,
   `RelationshipGroup` int(11) NOT NULL,
   PRIMARY KEY (`RelationshipId`),
-  KEY `ConceptId2` (`ConceptId2`),
-  KEY `ConceptId1` (`ConceptId1`),
-  KEY `RelationshipType` (`RelationshipType`)
+  KEY `X_ConceptId1` (`ConceptId1`),
+  KEY `X_ConceptId2` (`ConceptId2`),
+  KEY `X_RelationshipType` (`RelationshipType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_relationships_icd10`
 --
 
 DROP TABLE IF EXISTS `sct_relationships_icd10`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_relationships_icd10` (
+CREATE TABLE IF NOT EXISTS `sct_relationships_icd10` (
   `TARGETID` varchar(15) NOT NULL,
   `TARGETSCHEMEID` varchar(50) NOT NULL,
   `TARGETCODES` varchar(50) NOT NULL,
@@ -3885,16 +5056,15 @@ CREATE TABLE `sct_relationships_icd10` (
   KEY `X_TARGETID` (`TARGETID`),
   KEY `X_TARGETCODES` (`TARGETCODES`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_relationships_icd9`
 --
 
 DROP TABLE IF EXISTS `sct_relationships_icd9`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_relationships_icd9` (
+CREATE TABLE IF NOT EXISTS `sct_relationships_icd9` (
   `TARGETID` varchar(15) NOT NULL,
   `TARGETSCHEMEID` varchar(50) NOT NULL,
   `TARGETCODES` varchar(50) NOT NULL,
@@ -3903,16 +5073,15 @@ CREATE TABLE `sct_relationships_icd9` (
   KEY `X_TARGETID` (`TARGETID`),
   KEY `X_TARGETCODES` (`TARGETCODES`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `sct_relationships_loinc`
 --
 
 DROP TABLE IF EXISTS `sct_relationships_loinc`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sct_relationships_loinc` (
+CREATE TABLE IF NOT EXISTS `sct_relationships_loinc` (
   `LoincNum` varchar(7) NOT NULL,
   `Component` varchar(150) NOT NULL,
   `Property` varchar(25) NOT NULL,
@@ -3927,16 +5096,15 @@ CREATE TABLE `sct_relationships_loinc` (
   KEY `X_LoincNum` (`LoincNum`),
   KEY `X_ConceptId` (`ConceptId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `soap_snippets`
 --
 
 DROP TABLE IF EXISTS `soap_snippets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `soap_snippets` (
+CREATE TABLE IF NOT EXISTS `soap_snippets` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `parentId` varchar(20) DEFAULT NULL,
   `specialty_id` varchar(11) DEFAULT NULL,
@@ -3949,17 +5117,32 @@ CREATE TABLE `soap_snippets` (
   KEY `parentId` (`parentId`),
   KEY `category` (`category`),
   KEY `IK_specialty_id` (`specialty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=65 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `source_organization`
+--
+
+DROP TABLE IF EXISTS `source_organization`;
+CREATE TABLE IF NOT EXISTS `source_organization` (
+  `copyright_id` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `copyright` text,
+  `terms_of_use` text,
+  `url` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`copyright_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `specialties`
 --
 
 DROP TABLE IF EXISTS `specialties`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `specialties` (
+CREATE TABLE IF NOT EXISTS `specialties` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(100) DEFAULT NULL,
   `title` varchar(100) DEFAULT NULL,
@@ -3972,17 +5155,16 @@ CREATE TABLE `specialties` (
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=58 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `standardized_tables_track`
 --
 
 DROP TABLE IF EXISTS `standardized_tables_track`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `standardized_tables_track` (
+CREATE TABLE IF NOT EXISTS `standardized_tables_track` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code_type` varchar(50) DEFAULT NULL,
   `imported_date` datetime DEFAULT NULL,
@@ -3992,17 +5174,16 @@ CREATE TABLE `standardized_tables_track` (
   `revision_date` varchar(255) DEFAULT NULL COMMENT 'revision of standardized tables that were imported',
   `file_checksum` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=39 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `support_rule_concepts`
 --
 
 DROP TABLE IF EXISTS `support_rule_concepts`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `support_rule_concepts` (
+CREATE TABLE IF NOT EXISTS `support_rule_concepts` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `rule_id` int(11) DEFAULT NULL COMMENT 'support_rule.id',
   `concept_type` varchar(10) DEFAULT NULL COMMENT 'PROC PROB MEDI SOCI ALLE LAB VITA',
@@ -4015,17 +5196,16 @@ CREATE TABLE `support_rule_concepts` (
   `value` varchar(10) DEFAULT NULL,
   `value_operator` varchar(5) DEFAULT NULL COMMENT '== != <= >= < >',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `support_rules`
 --
 
 DROP TABLE IF EXISTS `support_rules`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `support_rules` (
+CREATE TABLE IF NOT EXISTS `support_rules` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `category` varchar(10) DEFAULT NULL COMMENT 'C = Clinical A = Administrative',
   `alert_type` varchar(2) DEFAULT NULL COMMENT 'A = Active P = Passive',
@@ -4042,48 +5222,80 @@ CREATE TABLE `support_rules` (
   `reference` varchar(255) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `surgeries`
 --
 
 DROP TABLE IF EXISTS `surgeries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `surgeries` (
+CREATE TABLE IF NOT EXISTS `surgeries` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) DEFAULT NULL,
   `type_num` bigint(255) DEFAULT NULL,
   `surgery` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=369 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=369 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `template_panels`
+--
+
+DROP TABLE IF EXISTS `template_panels`;
+CREATE TABLE IF NOT EXISTS `template_panels` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `specialty_id` int(11) DEFAULT NULL,
+  `description` varchar(300) DEFAULT NULL,
+  `sex` varchar(1) DEFAULT NULL,
+  `order` int(11) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `IK_sex` (`sex`),
+  KEY `IK_specialty_id` (`specialty_id`),
+  KEY `IK_active` (`active`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `template_panels_templates`
+--
+
+DROP TABLE IF EXISTS `template_panels_templates`;
+CREATE TABLE IF NOT EXISTS `template_panels_templates` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `panel_id` int(11) DEFAULT NULL,
+  `template_type` varchar(80) DEFAULT NULL COMMENT 'rx lab rad etc',
+  `description` varchar(300) DEFAULT NULL,
+  `template_data` mediumtext,
+  `active` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- Table structure for table `user_settings`
 --
 
 DROP TABLE IF EXISTS `user_settings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_settings` (
+CREATE TABLE IF NOT EXISTS `user_settings` (
   `setting_user` bigint(20) NOT NULL DEFAULT '0',
   `setting_label` varchar(63) NOT NULL,
   `setting_value` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`setting_user`,`setting_label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(40) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL COMMENT 'acl_user_roles relation',
@@ -4125,6 +5337,7 @@ CREATE TABLE `users` (
   `create_date` datetime DEFAULT NULL COMMENT 'create date',
   `update_date` datetime DEFAULT NULL COMMENT 'last update date',
   `providerCode` varchar(40) DEFAULT NULL,
+  `is_attending` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fname` (`fname`),
   KEY `mname` (`mname`),
@@ -4137,33 +5350,32 @@ CREATE TABLE `users` (
   KEY `IK_taxonomy` (`taxonomy`),
   KEY `IK_calendar` (`calendar`),
   KEY `IK_phone` (`phone`),
-  KEY `IK_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=520 DEFAULT CHARSET=utf8 COMMENT='User accounts';
-/*!40101 SET character_set_client = @saved_cs_client */;
+  KEY `IK_active` (`active`),
+  KEY `IK_is_attending` (`is_attending`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='User accounts' AUTO_INCREMENT=522 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users_facility`
 --
 
 DROP TABLE IF EXISTS `users_facility`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users_facility` (
+CREATE TABLE IF NOT EXISTS `users_facility` (
   `tablename` varchar(64) NOT NULL,
   `table_id` int(11) NOT NULL,
   `facility_id` int(11) NOT NULL,
   PRIMARY KEY (`tablename`,`table_id`,`facility_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='joins users or patient_data to facility table';
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users_sessions`
 --
 
 DROP TABLE IF EXISTS `users_sessions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users_sessions` (
+CREATE TABLE IF NOT EXISTS `users_sessions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sid` varchar(255) DEFAULT NULL COMMENT 'Session ID',
   `uid` int(11) DEFAULT NULL COMMENT 'User ID',
@@ -4171,17 +5383,16 @@ CREATE TABLE `users_sessions` (
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3803 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4402 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `vector_graphs`
 --
 
 DROP TABLE IF EXISTS `vector_graphs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `vector_graphs` (
+CREATE TABLE IF NOT EXISTS `vector_graphs` (
   `type` int(11) NOT NULL,
   `sex` int(11) NOT NULL,
   `age_mos` float DEFAULT NULL,
@@ -4200,16 +5411,15 @@ CREATE TABLE `vector_graphs` (
   `P95` float NOT NULL,
   `P97` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `version`
 --
 
 DROP TABLE IF EXISTS `version`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `version` (
+CREATE TABLE IF NOT EXISTS `version` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `v_major` int(11) NOT NULL DEFAULT '0',
   `v_minor` int(11) NOT NULL DEFAULT '0',
@@ -4217,17 +5427,16 @@ CREATE TABLE `version` (
   `v_tag` varchar(31) NOT NULL DEFAULT '',
   `v_database` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `x12_partners`
 --
 
 DROP TABLE IF EXISTS `x12_partners`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `x12_partners` (
+CREATE TABLE IF NOT EXISTS `x12_partners` (
   `id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `id_number` varchar(255) DEFAULT NULL,
@@ -4243,73 +5452,7 @@ CREATE TABLE `x12_partners` (
   `x12_per06` varchar(80) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping routines for database 'gaiadb'
---
-/*!50003 DROP FUNCTION IF EXISTS `UC_DELIMETER` */;
-ALTER DATABASE `gaiadb` CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `UC_DELIMETER`(oldName VARCHAR(255), delim VARCHAR(1), trimSpaces BOOL) RETURNS varchar(255) CHARSET latin1
-  BEGIN
-    SET @oldString := oldName;
-    SET @newString := "";
-
-    tokenLoop: LOOP
-      IF trimSpaces THEN SET @oldString := TRIM(BOTH " " FROM @oldString); END IF;
-
-      SET @splitPoint := LOCATE(delim, @oldString);
-
-      IF @splitPoint = 0 THEN
-        SET @newString := CONCAT(@newString, UC_FIRST(@oldString));
-        LEAVE tokenLoop;
-      END IF;
-
-      SET @newString := CONCAT(@newString, UC_FIRST(SUBSTRING(@oldString, 1, @splitPoint)));
-      SET @oldString := SUBSTRING(@oldString, @splitPoint+1);
-    END LOOP tokenLoop;
-
-    RETURN @newString;
-  END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP FUNCTION IF EXISTS `UC_FIRST` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = '' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `UC_FIRST`(oldWord VARCHAR(255)) RETURNS varchar(255) CHARSET latin1
-  RETURN CONCAT(UCASE(SUBSTRING(oldWord, 1, 1)), LCASE(SUBSTRING(oldWord, 2))) ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2015-06-01 14:01:13

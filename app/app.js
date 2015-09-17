@@ -4524,7 +4524,14 @@ Ext.define('App.ux.form.fields.Percent',{
 			frameShim: 'img.ux-miframe-shim'
 		},
 
-		iframeMessageListener: null,
+		iframeMessageListener: function(event){
+
+			if(event.origin !== window.location.origin) return;
+			if(!event.data.match(/^documentedit/)) return;
+
+			var data = event.data.replace(/^documentedit/, '');
+			app.fireEvent('documentedit', eval('(' + data + ')'));
+		},
 
 		afterRender: function(container){
 			var me = this, frame;
@@ -4532,9 +4539,9 @@ Ext.define('App.ux.form.fields.Percent',{
 
 			if(me.iframeMessageListener){
 				if (window.addEventListener){
-					addEventListener("message", me.iframeMessageListener, false);
+					window.addEventListener("message", me.iframeMessageListener, false);
 				} else {
-					attachEvent("onmessage", me.iframeMessageListener);
+					window.attachEvent("onmessage", me.iframeMessageListener);
 				}
 			}
 
@@ -51259,11 +51266,7 @@ Ext.define('App.controller.DocumentViewer', {
 				{
 					xtype:'miframe',
 					autoMask:false,
-					src: src,
-					iframeMessageListener: function(event){
-						if (event.origin !== window.location.origin) return;
-						app.fireEvent('documentedit', eval('(' + event.data + ')'));
-					}
+					src: src
 				}
 			]
 		});

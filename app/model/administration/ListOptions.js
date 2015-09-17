@@ -31,11 +31,13 @@ Ext.define('App.model.administration.ListOptions', {
         {
             name: 'list_id',
             type: 'int',
+	        index: true,
             comment: 'List ID'
         },
         {
             name: 'option_value',
             type: 'string',
+            index: true,
             comment: 'Value'
         },
         {

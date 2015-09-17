@@ -179,6 +179,12 @@ class SiteSetup {
 				'msg' => 'PHP safe mode off',
 				'status' => $status
 			];
+            // check if ZipArchive
+            $status = (class_exists('ZipArchive') ? 'Ok' : 'Fail');
+            $row[] = [
+                'msg' => 'PHP class ZipArchive',
+                'status' => $status
+            ];
 			// check if PDO
 			$status = (class_exists('PDO') ? 'Ok' : 'Fail');
 			$row[] = [
@@ -247,69 +253,65 @@ class SiteSetup {
 			} else {
 				return [
 					'success' => false,
-					'error' => 'Unable to create Site directory,<br>Please, check "/sites" directory write permissions'
+					'error' => 'Unable to create Site directory, Please, check "/sites" directory write permissions'
 				];
 			}
 		} else {
 			return [
 				'success' => false,
-				'error' => 'Site ID already in use.<br>Please, choose another Site ID'
+				'error' => 'Site ID already in use. Please, choose another Site ID'
 			];
 		}
 	}
 
 	public function createDatabaseStructure(stdClass $params) {
-		if(isset($params->rootUser) && $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass)){
-			$sth = $this->conn->prepare("
+        try{
+            if(isset($params->rootUser) && $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass)){
+                $sth = $this->conn->prepare("
                 CREATE DATABASE `$params->dbName`;
                 CREATE USER '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass';
                 GRANT USAGE ON *.* TO  '$params->dbUser'@'$params->dbHost' IDENTIFIED BY  '$params->dbPass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
                 GRANT ALL PRIVILEGES ON `$params->dbName`.* TO '$params->dbUser'@'$params->dbHost' WITH GRANT OPTION;
 			    FLUSH PRIVILEGES;
 			");
-			$sth->execute();
-			$error = $this->conn->errorInfo();
+                $sth->execute();
+                $error = $this->conn->errorInfo();
 
-			if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
+                if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
 
-				if($this->loadDatabaseStructure()){
-					return ['success' => true];
-				} else {
+                    if($this->loadDatabaseStructure()){
+                        return ['success' => true];
+                    } else {
 
-					FileManager::rmdir_recursive("sites/$params->siteId");
-					return [
-						'success' => false,
-						'error' => $this->conn->errorInfo()
-					];
-				}
+                        FileManager::rmdir_recursive("sites/$params->siteId");
+                        throw new Exception($this->conn->errorInfo());
+                    }
 
-			} else {
+                } else {
 
-				FileManager::rmdir_recursive("sites/$params->siteId");
-				return [
-					'success' => false,
-					'error' => $this->err
-				];
-			}
-		} elseif($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)) {
-			if($this->loadDatabaseStructure()){
-				return ['success' => true];
-			} else {
+                    FileManager::rmdir_recursive("sites/$params->siteId");
+                    throw new Exception($this->err);
+                }
+            } elseif($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)) {
+                if($this->loadDatabaseStructure()){
+                    return ['success' => true];
+                } else {
 
-				FileManager::rmdir_recursive("sites/$params->siteId");
-				return [
-					'success' => false,
-					'error' => $this->conn->errorInfo()
-				];
-			}
-		} else {
+                    FileManager::rmdir_recursive("sites/$params->siteId");
+                    throw new Exception($this->conn->errorInfo());
+                }
+            } else {
 
-			FileManager::rmdir_recursive("sites/$params->siteId");
-			return [
-				'success' => false,
-				'error' => $this->err
-			];
-		}
+                FileManager::rmdir_recursive("sites/$params->siteId");
+                throw new Exception($this->err);
+            }
+        } catch(Exception $Error){
+            return [
+                'success' => false,
+                'error' => $Error->getMessage()
+            ];
+        }
+
 	}
 
 	public function loadDatabaseStructure() {
@@ -431,24 +433,31 @@ class SiteSetup {
 	}
 
 	public function createSiteAdmin($params) {
-		include_once(ROOT . '/sites/' . $params->siteId . '/conf.php');
-		include_once(ROOT . '/dataProvider/User.php');
-		$u = new User();
-		$admin = new stdClass();
-		$admin->title = 'Mr.';
-		$admin->fname = 'Administrator';
-		$admin->mname = '';
-		$admin->lname = 'Administrator';
-		$admin->username = $params->adminUsername;
-		$admin->password = $params->adminPassword;
-		$admin->authorized = 1;
-		$admin->active = 1;
-		$admin->role_id = 8;
-		$admin->facility_id = 1;
-		$u->addUser($admin);
-		session_unset();
-		session_destroy();
-		return ['success' => true];
+        try {
+            include_once(ROOT . '/sites/' . $params->siteId . '/conf.php');
+            include_once(ROOT . '/dataProvider/User.php');
+            $u = new User();
+            $admin = new stdClass();
+            $admin->title = 'Mr.';
+            $admin->fname = 'Administrator';
+            $admin->mname = '';
+            $admin->lname = 'Administrator';
+            $admin->username = $params->adminUsername;
+            $admin->password = $params->adminPassword;
+            $admin->authorized = 1;
+            $admin->active = 1;
+            $admin->role_id = 8;
+            $admin->facility_id = 1;
+            $u->addUser($admin);
+            session_unset();
+            session_destroy();
+            return ['success' => true];
+        } catch(Exception $Error){
+            return [
+                'success' => false,
+                'error' => $Error->getMessage()
+            ];
+        }
 	}
 
 	public function loadCode($code) {

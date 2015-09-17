@@ -330,38 +330,36 @@ class SiteSetup {
 	}
 
 	public function loadDatabaseData(stdClass $params) {
-		ini_set('memory_limit', '-1');
-		if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
-			if(file_exists($sqlFile = 'sql/gaiadb_install_data.sql')){
-				$query = file_get_contents($sqlFile);
-				if($this->conn->exec($query) !== false){
-					return ['success' => true];
-				} else {
-					FileManager::rmdir_recursive("sites/$params->siteId");
-					if(isset($params->rootUser))
-						$this->dropDatabase($params->dbName);
-					return [
-						'success' => false,
-						'error' => $this->conn->errorInfo()
-					];
-				}
+        try {
+            ini_set('memory_limit', '-1');
+            if ($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)) {
+                if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql')) {
+                    $query = file_get_contents($sqlFile);
+                    if ($this->conn->exec($query) !== false) {
+                        return ['success' => true];
+                    } else {
+                        FileManager::rmdir_recursive("sites/$params->siteId");
+                        if (isset($params->rootUser))
+                            $this->dropDatabase($params->dbName);
+                        throw new Exception($this->conn->errorInfo());
+                    }
 
-			} else {
-				FileManager::rmdir_recursive("sites/$params->siteId");
-				if(isset($params->rootUser))
-					$this->dropDatabase($params->dbName);
-				return [
-					'success' => false,
-					'error' => 'Unable find installation data file'
-				];
-			}
-		} else {
-			FileManager::rmdir_recursive("sites/$params->siteId");
-			return [
-				'success' => false,
-				'error' => $this->err
-			];
-		}
+                } else {
+                    FileManager::rmdir_recursive("sites/$params->siteId");
+                    if (isset($params->rootUser))
+                        $this->dropDatabase($params->dbName);
+                    throw new Exception('Unable find installation data file');
+                }
+            } else {
+                FileManager::rmdir_recursive("sites/$params->siteId");
+                throw new Exception($this->err);
+            }
+        } catch(Exception $Error) {
+            return [
+                'success' => false,
+                'error' => $Error->getMessage()
+            ];
+        }
 	}
 
 	function dropDatabase($dbName) {
@@ -370,66 +368,64 @@ class SiteSetup {
 	}
 
 	public function createSConfigurationFile($params) {
-		if(file_exists($conf = 'sites/conf.example.php')){
-			if(($params->AESkey = ACL::createRandomKey()) !== false){
-				$buffer = file_get_contents($conf);
-				$search = [
-					'#host#',
-					'#user#',
-					'#pass#',
-					'#db#',
-					'#port#',
-					'#key#',
-					'#lang#',
-					'#theme#',
-					'#timezone#',
-					'#sitename#',
-					'#hl7Port#'
-				];
-				$replace = [
-					$params->dbHost,
-					$params->dbUser,
-					$params->dbPass,
-					$params->dbName,
-					$params->dbPort,
-					$params->AESkey,
-					$params->lang,
-					$params->theme,
-					$params->timezone,
-					$params->siteId,
-					9100
-					// TODO check other sites and +1 to the highest port
-				];
-				$newConf = str_replace($search, $replace, $buffer);
-				$siteDir = "sites/$params->siteId";
-				$conf_file = ("$siteDir/conf.php");
-				$handle = fopen($conf_file, 'w');
-				fwrite($handle, $newConf);
-				fclose($handle);
-				chmod($conf_file, 0644);
-				if(file_exists($conf_file)){
-					return [
-						'success' => true,
-						'AESkey' => $params->AESkey
-					];
-				} else {
-					return [
-						'success' => false,
-						'error' => "Unable to create $siteDir/conf.php file"
-					];
-				}
-			} else {
-				return [
-					'success' => false,
-					'error' => 'Unable to Generate AES 32 bit key'
-				];
-			}
-		} else {
-			return [
-				'success' => false,
-				'error' => 'Unable to Find sites/conf.example.php'
-			];
-		}
+        try {
+            if (file_exists($conf = 'sites/conf.example.php')) {
+                if (($params->AESkey = ACL::createRandomKey()) !== false) {
+                    $buffer = file_get_contents($conf);
+                    $search = [
+                        '#host#',
+                        '#user#',
+                        '#pass#',
+                        '#db#',
+                        '#port#',
+                        '#key#',
+                        '#lang#',
+                        '#theme#',
+                        '#timezone#',
+                        '#sitename#',
+                        '#hl7Port#'
+                    ];
+                    $replace = [
+                        $params->dbHost,
+                        $params->dbUser,
+                        $params->dbPass,
+                        $params->dbName,
+                        $params->dbPort,
+                        $params->AESkey,
+                        $params->lang,
+                        $params->theme,
+                        $params->timezone,
+                        $params->siteId,
+                        9100
+                        // TODO check other sites and +1 to the highest port
+                    ];
+                    $newConf = str_replace($search, $replace, $buffer);
+                    $siteDir = "sites/$params->siteId";
+                    $conf_file = ("$siteDir/conf.php");
+                    $handle = fopen($conf_file, 'w');
+                    fwrite($handle, $newConf);
+                    fclose($handle);
+                    chmod($conf_file, 0644);
+                    if (file_exists($conf_file)) {
+                        return [
+                            'success' => true,
+                            'AESkey' => $params->AESkey
+                        ];
+                    } else {
+                        throw new Exception("Unable to create $siteDir/conf.php file");
+                    }
+                } else {
+                    throw new Exception('Unable to Generate AES 32 bit key');
+                }
+            } else {
+                throw new Exception('Unable to Find sites/conf.example.php');
+            }
+        } catch(Exception $Error){
+            return [
+                'success' => false,
+                'error' => $Error->getMessage()
+            ];
+        }
 	}
 
 	public function createSiteAdmin($params) {

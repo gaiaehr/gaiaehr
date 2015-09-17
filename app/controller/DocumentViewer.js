@@ -105,11 +105,7 @@ Ext.define('App.controller.DocumentViewer', {
 				{
 					xtype:'miframe',
 					autoMask:false,
-					src: src,
-					iframeMessageListener: function(event){
-						if (event.origin !== window.location.origin) return;
-						app.fireEvent('documentedit', eval('(' + event.data + ')'));
-					}
+					src: src
 				}
 			]
 		});

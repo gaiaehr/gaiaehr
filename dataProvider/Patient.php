@@ -111,7 +111,12 @@ class Patient {
 	 */
 	public function getPatients($params) {
 		$this->setPatientModel();
-		return $this->p->load($params)->all();
+        $Records = $this->p->load($params)->all();
+        // Compile custom fields
+        foreach($Records as $Index => $Record){
+            $Records[$Index]['name'] = Person::fullname($Record['fname'], $Record['mname'], $Record['lname']);
+        }
+		return $Records;
 	}
 
 	/**

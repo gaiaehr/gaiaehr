@@ -19,7 +19,7 @@
 Ext.define('App.controller.patient.CCDImport', {
 	extend: 'Ext.app.Controller',
 	requires: [
-
+        'App.view.patient.windows.PossibleDuplicates'
 	],
 	refs: [
 		{
@@ -257,9 +257,8 @@ Ext.define('App.controller.patient.CCDImport', {
 
 		App.model.patient.Patient.load(pid, {
 			success: function(patient) {
-
+                say(patient);
 				pForm.loadRecord(patient);
-
 				if(patient.data.race && patient.data.race !== ''){
 					CombosData.getDisplayValueByListIdAndOptionValue(14, patient.data.race, function(response){
 						pForm.findField('race_text').setValue(response);
@@ -533,6 +532,9 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	onPossiblePatientDuplicatesContinueBtnClick:function(btn){
 		if(btn.up('window').action != 'ccdImportDuplicateAction') return;
+        if(this.getCcdImportPreviewPatientForm()){
+
+        }
 		this.promptVerifyPatientImport(this.getCcdImportPreviewPatientForm().getRecord());
 	},
 
@@ -562,7 +564,6 @@ Ext.define('App.controller.patient.CCDImport', {
 			callback: function(record){
 				app.onDocumentView(record.data.id, 'ccd');
 				say(record.data.id);
-
 			}
 		});
 	}

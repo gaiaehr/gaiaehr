@@ -281,9 +281,8 @@ Ext.define('App.controller.patient.CCDImport', {
 					});
 				}
 
-                if(patient.data.pid && patient.data.pid !== '') {
+                if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        say(response);
                         phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
                         pForm.findField('phones').setValue(phone);
                     });

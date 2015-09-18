@@ -348,6 +348,9 @@ $API = [
             ],
             'destroyContact' => [
                 'len' => 1
+            ],
+            'getSelfContact' => [
+                'len' => 1
             ]
         ]
     ],

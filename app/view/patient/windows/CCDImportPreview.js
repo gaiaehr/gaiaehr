@@ -92,7 +92,7 @@ Ext.define('App.view.patient.windows.CCDImportPreview', {
 							},
 							{
 								fieldLabel: _('name'),
-								name: 'fullname'
+								name: 'name'
 							},
 							{
 								fieldLabel: _('sex'),

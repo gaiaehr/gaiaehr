@@ -3996,7 +3996,7 @@ Ext.define('App.ux.form.fields.plugin.ReadOnlyLabel', {
 	textBg: 'red',
 	textSize: '14',
 	textColor: 'white',
-	textOpacity: .7,
+	textOpacity: .4,
 
 	/**
 	 *
@@ -24544,7 +24544,6 @@ Ext.define('App.view.patient.Reminders', {
 	extend: 'Ext.grid.Panel',
 	requires: [
 		'Ext.grid.plugin.RowEditing'
-
 	],
 	xtype: 'patientreminderspanel',
 	title: _('reminders'),
@@ -39114,7 +39113,7 @@ Ext.define('App.controller.patient.CCD', {
 Ext.define('App.controller.patient.CCDImport', {
 	extend: 'Ext.app.Controller',
 	requires: [
-
+        'App.view.patient.windows.PossibleDuplicates'
 	],
 	refs: [
 		{
@@ -39259,7 +39258,8 @@ Ext.define('App.controller.patient.CCDImport', {
 	doLoadCcdData: function(data){
 		var me = this,
 			ccdPatientForm = me.getCcdImportPatientForm().getForm(),
-			patient = Ext.create('App.model.patient.Patient', data.patient);
+			patient = Ext.create('App.model.patient.Patient', data.patient),
+            phone;
         ccdPatientForm.loadRecord(patient);
 
         App.app.getController('patient.Patient').lookForPossibleDuplicates(
@@ -39276,6 +39276,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
 		// list 59 ethnicity
 		// list 14 race
+        // phone from Patient Contacts
 		if(data.patient.race && data.patient.race !== ''){
 			CombosData.getDisplayValueByListIdAndOptionValue(14, data.patient.race, function(response){
                 ccdPatientForm.findField('race_text').setValue(response);
@@ -39287,6 +39288,13 @@ Ext.define('App.controller.patient.CCDImport', {
                 ccdPatientForm.findField('ethnicity_text').setValue(response);
 			});
 		}
+
+        if(data.patient.pid && data.patient.pid !== '') {
+            PatientContacts.getSelfContact(data.patient.pid, function (response) {
+                phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                ccdPatientForm.findField('phones').setValue(phone);
+            });
+        }
 
 		if(data){
 			if(data.allergies && data.allergies.length > 0){
@@ -39348,13 +39356,13 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	doLoadMergePatientData: function(pid){
 		var me = this,
-			pForm = me.getCcdPatientPatientForm().getForm();
+			pForm = me.getCcdPatientPatientForm().getForm(),
+            phone;
 
 		App.model.patient.Patient.load(pid, {
 			success: function(patient) {
 
 				pForm.loadRecord(patient);
-
 				if(patient.data.race && patient.data.race !== ''){
 					CombosData.getDisplayValueByListIdAndOptionValue(14, patient.data.race, function(response){
 						pForm.findField('race_text').setValue(response);
@@ -39366,6 +39374,13 @@ Ext.define('App.controller.patient.CCDImport', {
 						pForm.findField('ethnicity_text').setValue(response);
 					});
 				}
+
+                if(patient.data.pid) {
+                    PatientContacts.getSelfContact(patient.data.pid, function (response) {
+                        phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                        pForm.findField('phones').setValue(phone);
+                    });
+                }
 
 				me.getCcdPatientMedicationsGrid().reconfigure(patient.medications());
 				patient.medications().load({
@@ -39403,7 +39418,9 @@ Ext.define('App.controller.patient.CCDImport', {
 
 			isMerge = mergePatient !== undefined,
 
-			i, store, records;
+			i, store, records,
+
+            phone;
 
 		// check is merge and nothing is selected
 		if(
@@ -39437,6 +39454,13 @@ Ext.define('App.controller.patient.CCDImport', {
 					pForm.findField('ethnicity_text').setValue(response);
 				});
 			}
+
+            if(mergePatient.data.pid && mergePatient.data.pid !== '') {
+                PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
+                    phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                    pForm.findField('phones').setValue(phone);
+                });
+            }
 		}else{
 			me.getCcdImportPreviewPatientForm().getForm().loadRecord(importPatient);
 
@@ -39451,6 +39475,12 @@ Ext.define('App.controller.patient.CCDImport', {
 					pForm.findField('ethnicity_text').setValue(response);
 				});
 			}
+            if(importPatient.data.pid && importPatient.data.pid !== '') {
+                PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
+                    phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                    pForm.findField('phones').setValue(phone);
+                });
+            }
 		}
 
 		if(reconcile){
@@ -39628,6 +39658,9 @@ Ext.define('App.controller.patient.CCDImport', {
 
 	onPossiblePatientDuplicatesContinueBtnClick:function(btn){
 		if(btn.up('window').action != 'ccdImportDuplicateAction') return;
+        if(this.getCcdImportPreviewPatientForm()){
+
+        }
 		this.promptVerifyPatientImport(this.getCcdImportPreviewPatientForm().getRecord());
 	},
 
@@ -39657,7 +39690,6 @@ Ext.define('App.controller.patient.CCDImport', {
 			callback: function(record){
 				app.onDocumentView(record.data.id, 'ccd');
 				say(record.data.id);
-
 			}
 		});
 	}
@@ -59795,7 +59827,7 @@ Ext.define('App.view.patient.windows.CCDImportPreview', {
 							},
 							{
 								fieldLabel: _('name'),
-								name: 'fullname'
+								name: 'name'
 							},
 							{
 								fieldLabel: _('sex'),

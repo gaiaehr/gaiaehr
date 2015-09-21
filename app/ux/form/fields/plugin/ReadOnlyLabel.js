@@ -8,7 +8,7 @@ Ext.define('App.ux.form.fields.plugin.ReadOnlyLabel', {
 	textBg: 'red',
 	textSize: '14',
 	textColor: 'white',
-	textOpacity: .7,
+	textOpacity: .4,
 
 	/**
 	 *

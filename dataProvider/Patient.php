@@ -710,7 +710,6 @@ class Patient {
  				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
  				   AND `lname` SOUNDS LIKE '{$params->lname}'
  				   AND `sex` = '{$params->sex}'";
-        //$this->setPatientContactModel();
         $this->patientContacts = new PatientContacts();
 		if($includeDateOfBirth){
 			$sql = " AND `DOB` = '{$params->DOB}'";

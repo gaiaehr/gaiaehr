@@ -588,7 +588,6 @@ class Patient {
 		return $result;
 	}
 
-	///////////////////////////////////////////////////////
 	public function getDOBByPid($pid) {
 		$this->setPatientModel();
 		$p = $this->p->load(['pid'=>$pid])->one();

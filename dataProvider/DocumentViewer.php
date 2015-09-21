@@ -27,7 +27,9 @@ if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_
 if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 require_once(ROOT . '/sites/'. $_REQUEST['site'] .'/conf.php');
+
 ini_set('memory_limit', '256M');
+ini_set('max_execution_time', 5);
 
 if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	/**
@@ -122,7 +124,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	 	<meta charset="UTF-8">
 	  	<link rel="stylesheet" href="../lib/darkroomjs/build/css/darkroom.min.css">
 	</head>
-	<body>
+	<body style="overflow: hidden">
        	<div class="image-container target">
 	      	<img src="data:{$mineType};base64,{$document}" style="width:100%;" alt="" id="target" crossOrigin="anonymous">
         </div>
@@ -135,15 +137,11 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		        save: '$doc->is_temp' == 'true' ? false : {
 		        	callback: function(){
                 		var msg = 'documentedit{"save":{"id":{$doc->id},"document":"'+dkrm.snapshotImage()+'" }}';
-
-//                		console.log(msg);
-//                		console.log(window.parent);
-
                 		window.parent.postMessage(msg, '*');
 		        	}
 		        },
 		        crop: {
-		            quickCropKey: 67, //key "c"
+		            quickCropKey: 67
 	        	}
         	}
 	    });

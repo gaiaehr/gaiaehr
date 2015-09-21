@@ -722,7 +722,7 @@ class Patient {
 
 		$results = $this->p->sql($sql)->all();
         foreach($results as $index => $record ){
-            $contact = $this->patientContacts->getSelfContact($record['pid']);
+            $contact = $this->patientContacts->getSelfContact($record['pid'])[0];
             $results[$index]['name'] = Person::fullname(
                 $record['fname'],
                 $record['mname'],

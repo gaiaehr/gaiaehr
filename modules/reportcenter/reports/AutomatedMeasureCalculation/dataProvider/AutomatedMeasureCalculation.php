@@ -21,4 +21,97 @@ namespace modules\reportcenter\dataProvider;
 class AutomatedMeasureCalculation extends Reports{
 
 
+    /**
+     * getProblemList
+     * Method to generate the data for Problem List
+     * @param int $Stage
+     */
+    function getProblemListMeasure($Stage = 2){
+
+    }
+
+    function getMedicationListMeasure($Stage = 2){
+
+    }
+
+    function getMedicationAllergyListMeasure($Stage = 2){
+
+    }
+
+    function getCPOEMeasure($Stage = 2){
+
+    }
+
+    function geteRXMeasure($Stage = 2){
+
+    }
+
+    function getDemographicsMeasure($Stage = 2){
+
+    }
+
+    function getVitalSignsMeasure($Stage = 2){
+
+    }
+
+    function getSmokingStatusMeasure($Stage = 2){
+
+    }
+
+    function getLabResultsMeasure($Stage = 2){
+
+    }
+
+    function getPatientRemindersMeasure($Stage = 2){
+
+    }
+
+    function getViewDownloadTransmitMeasure($Stage = 2){
+
+    }
+
+    function getClinicalSummaryMeasure($Stage = 2){
+
+    }
+
+    function getPatientEducationMeasure($Stage = 2){
+
+    }
+
+    function getMedicationReconciliationMeasure($Stage = 2){
+
+    }
+
+    function getSummaryOfCareMeasure($Stage = 2){
+
+    }
+
+    function getSecureMessaginMeasure($Stage = 2){
+
+    }
+
+    function getImagingMeasure($Stage = 2){
+
+    }
+
+    function getFamilyHistoryMeasure($Stage = 2){
+
+    }
+
+    function geteNotesMeasure($Stage = 2){
+
+    }
+
+    function getAdvanceDirectivesMeasure($Stage = 2){
+
+    }
+
+    function getLabEHtoEPMeasure($Stage = 2){
+
+    }
+
+    function eMarMeasure($Stage = 2){
+
+    }
+
 }

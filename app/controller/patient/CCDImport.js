@@ -595,7 +595,6 @@ Ext.define('App.controller.patient.CCDImport', {
 		record.save({
 			callback: function(record){
 				app.onDocumentView(record.data.id, 'ccd');
-				say(record.data.id);
 			}
 		});
 	}

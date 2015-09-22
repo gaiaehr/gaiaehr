@@ -94,7 +94,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getSmokingStatusMeasure
      * Method to generate the data for Smoking Status
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getSmokingStatusMeasure($Parameters = null, $Stage = 2){
 
@@ -104,7 +104,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getLabResultsMeasure
      * Method to generate the data for Lab Results
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getLabResultsMeasure($Parameters = null, $Stage = 2){
 
@@ -114,7 +114,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getProblemList
      * Method to generate the data for Problem List
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getPatientRemindersMeasure($Parameters = null, $Stage = 2){
 
@@ -124,7 +124,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getViewDownloadTransmitMeasure
      * Method to generate the data for View Download & Transmit
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getViewDownloadTransmitMeasure($Parameters = null, $Stage = 2){
 
@@ -134,7 +134,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getClinicalSummaryMeasure
      * Method to generate the data for Clinical Summary
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getClinicalSummaryMeasure($Parameters = null, $Stage = 2){
 
@@ -144,7 +144,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getPatientEducationMeasure
      * Method to generate the data for Patient Education
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getPatientEducationMeasure($Parameters = null, $Stage = 2){
 
@@ -154,7 +154,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getMedicationReconciliationMeasure
      * Method to generate the data for Medication Reconciliation
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getMedicationReconciliationMeasure($Parameters = null, $Stage = 2){
 
@@ -164,7 +164,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getSummaryOfCareMeasure
      * Method to generate the data for Summary Of Care
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getSummaryOfCareMeasure($Parameters = null, $Stage = 2){
 
@@ -174,7 +174,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getSecureMessagingMeasure
      * Method to generate the data for Secure Messaging
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getSecureMessagingMeasure($Parameters = null, $Stage = 2){
 
@@ -184,7 +184,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getImagingMeasure
      * Method to generate the data for Imaging
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getImagingMeasure($Parameters = null, $Stage = 2){
 
@@ -194,7 +194,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getFamilyHistoryMeasure
      * Method to generate the data for Family History
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getFamilyHistoryMeasure($Parameters = null, $Stage = 2){
 
@@ -204,7 +204,7 @@ class AutomatedMeasureCalculation extends Reports{
      * geteNotesMeasure
      * Method to generate the data for eNotes
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function geteNotesMeasure($Parameters = null, $Stage = 2){
 
@@ -214,7 +214,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getAdvanceDirectivesMeasure
      * Method to generate the data for Advance Directives
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getAdvanceDirectivesMeasure($Parameters = null, $Stage = 2){
 
@@ -224,7 +224,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getLabEHtoEPMeasure
      * Method to generate the data for Lab EH to EP
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getLabEHtoEPMeasure($Parameters = null, $Stage = 2){
 
@@ -234,7 +234,7 @@ class AutomatedMeasureCalculation extends Reports{
      * eMarMeasure
      * Method to generate the data for eMar
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function eMarMeasure($Parameters = null, $Stage = 2){
 

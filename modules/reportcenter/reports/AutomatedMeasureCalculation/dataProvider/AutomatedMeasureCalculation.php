@@ -20,97 +20,223 @@ namespace modules\reportcenter\dataProvider;
 
 class AutomatedMeasureCalculation extends Reports{
 
+    /**
+     * getProblemListMeasure
+     * Method to generate the data for Problem List
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getProblemListMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getMedicationListMeasure
+     * Method to generate the data for Medication List
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getMedicationListMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getMedicationAllergyListMeasure
+     * Method to generate the data for Medication Allergy List
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getMedicationAllergyListMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getCPOEMeasure
+     * Method to generate the data for CPOE
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getCPOEMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * geteRXMeasure
+     * Method to generate the data for eRX
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function geteRXMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getDemographicsMeasure
+     * Method to generate the data for Demographics
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getDemographicsMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getVitalSignsMeasure
+     * Method to generate the data for Vital Signs
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getVitalSignsMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getSmokingStatusMeasure
+     * Method to generate the data for Smoking Status
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getSmokingStatusMeasure($Parameters = null, $Stage = 2){
+
+    }
+
+    /**
+     * getLabResultsMeasure
+     * Method to generate the data for Lab Results
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getLabResultsMeasure($Parameters = null, $Stage = 2){
+
+    }
 
     /**
      * getProblemList
      * Method to generate the data for Problem List
+     * @param null $Parameters
      * @param int $Stage
      */
-    function getProblemListMeasure($Stage = 2){
+    function getPatientRemindersMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getMedicationListMeasure($Stage = 2){
+    /**
+     * getViewDownloadTransmitMeasure
+     * Method to generate the data for View Download & Transmit
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getViewDownloadTransmitMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getMedicationAllergyListMeasure($Stage = 2){
+    /**
+     * getClinicalSummaryMeasure
+     * Method to generate the data for Clinical Summary
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getClinicalSummaryMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getCPOEMeasure($Stage = 2){
+    /**
+     * getPatientEducationMeasure
+     * Method to generate the data for Patient Education
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getPatientEducationMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function geteRXMeasure($Stage = 2){
+    /**
+     * getMedicationReconciliationMeasure
+     * Method to generate the data for Medication Reconciliation
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getMedicationReconciliationMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getDemographicsMeasure($Stage = 2){
+    /**
+     * getSummaryOfCareMeasure
+     * Method to generate the data for Summary Of Care
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getSummaryOfCareMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getVitalSignsMeasure($Stage = 2){
+    /**
+     * getSecureMessagingMeasure
+     * Method to generate the data for Secure Messaging
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getSecureMessagingMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getSmokingStatusMeasure($Stage = 2){
+    /**
+     * getImagingMeasure
+     * Method to generate the data for Imaging
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getImagingMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getLabResultsMeasure($Stage = 2){
+    /**
+     * getFamilyHistoryMeasure
+     * Method to generate the data for Family History
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getFamilyHistoryMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getPatientRemindersMeasure($Stage = 2){
+    /**
+     * geteNotesMeasure
+     * Method to generate the data for eNotes
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function geteNotesMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getViewDownloadTransmitMeasure($Stage = 2){
+    /**
+     * getAdvanceDirectivesMeasure
+     * Method to generate the data for Advance Directives
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getAdvanceDirectivesMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getClinicalSummaryMeasure($Stage = 2){
+    /**
+     * getLabEHtoEPMeasure
+     * Method to generate the data for Lab EH to EP
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function getLabEHtoEPMeasure($Parameters = null, $Stage = 2){
 
     }
 
-    function getPatientEducationMeasure($Stage = 2){
-
-    }
-
-    function getMedicationReconciliationMeasure($Stage = 2){
-
-    }
-
-    function getSummaryOfCareMeasure($Stage = 2){
-
-    }
-
-    function getSecureMessaginMeasure($Stage = 2){
-
-    }
-
-    function getImagingMeasure($Stage = 2){
-
-    }
-
-    function getFamilyHistoryMeasure($Stage = 2){
-
-    }
-
-    function geteNotesMeasure($Stage = 2){
-
-    }
-
-    function getAdvanceDirectivesMeasure($Stage = 2){
-
-    }
-
-    function getLabEHtoEPMeasure($Stage = 2){
-
-    }
-
-    function eMarMeasure($Stage = 2){
+    /**
+     * eMarMeasure
+     * Method to generate the data for eMar
+     * @param null $Parameters
+     * @param int $Stage
+     */
+    function eMarMeasure($Parameters = null, $Stage = 2){
 
     }
 

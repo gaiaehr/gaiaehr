@@ -45,19 +45,22 @@ class AutomatedMeasureCalculation extends Reports{
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
             switch($Stage){
                 default:
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
                         FROM
                         (SELECT count(distinct(patient.pid)) AS DENOM
-		                    FROM patient
-		                    INNER JOIN encounters ON patient.pid = encounters.pid
-		                    WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
-	                    (SELECT count(distinct(patient.pid)) As NUME
-		                    FROM patient
-		                    INNER JOIN encounters ON patient.pid = encounters.pid
-		                    INNER JOIN patient_active_problems ON patient.pid = patient_active_problems.pid
-		                    WHERE encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS HAVINGPPROBLEMS;";
+                            FROM patient
+                            INNER JOIN encounters ON patient.pid = encounters.pid
+                            AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+                            AND encounters.provider_uid = $provider_id) AS UNIQUEPATIENTS,
+                        (SELECT count(distinct(patient.pid)) AS NUME
+                            FROM patient
+                            INNER JOIN encounters ON patient.pid = encounters.pid
+                            AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+                            AND encounters.provider_uid = $provider_id
+                            INNER JOIN patient_active_problems ON patient.pid = patient_active_problems.pid) AS HAVINGPPROBLEMS";
                     break;
             }
         } catch(\Exception $Error) {
@@ -90,19 +93,20 @@ class AutomatedMeasureCalculation extends Reports{
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
             switch($Stage){
                 default:
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
                         FROM
-                        (SELECT count(distinct(patient.pid)) AS DENOM
-                            FROM patient
-                            INNER JOIN encounters ON patient.pid = encounters.pid
-		                    WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
-	                    (SELECT count(distinct(patient.pid)) As NUME
+	                    (SELECT count(distinct(patient.pid)) AS DENOM
 		                    FROM patient
-		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    INNER JOIN encounters ON patient.pid = encounters.pid AND encounters.provider_uid = 3
+		                    WHERE encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS UNIQUEPATIENTS,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
 		                    INNER JOIN patient_medications ON patient.pid = patient_medications.pid
-		                    WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS HAVINGMEDICATIONS;";
+		                    INNER JOIN encounters ON patient.pid = encounters.pid AND encounters.provider_uid = 3
+		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS HAVINGMEDICATIONS;";
                     break;
             }
         } catch(\Exception $Error) {
@@ -135,19 +139,22 @@ class AutomatedMeasureCalculation extends Reports{
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
             switch($Stage){
                 default:
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
-                        FROM
-                            (SELECT count(distinct(patient.pid)) AS DENOM
-		                        FROM patient
-                                INNER JOIN encounters ON patient.pid = encounters.pid
-		                        WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
-	                        (SELECT count(distinct(patient.pid)) As NUME
-		                        FROM patient
-		                        INNER JOIN encounters ON patient.pid = encounters.pid
-		                        INNER JOIN patient_allergies ON patient.pid = patient_allergies.pid
-		                        WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS HAVINGMEDALLERGIES;";
+	                    FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.provider_uid = $provider_id
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
+                            INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
+		                    INNER JOIN patient_allergies ON patient.pid = patient_allergies.pid) AS HAVINGMEDALLERGIES";
                     break;
             }
         } catch(\Exception $Error) {
@@ -162,6 +169,7 @@ class AutomatedMeasureCalculation extends Reports{
      * @return \Exception
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
+    // TODO: Revise the SQL Statement, is wrong.
     function getCPOEMeasure_Medications($Parameters = null, $Stage = '2'){
         $SQL = '';
         try{
@@ -183,17 +191,20 @@ class AutomatedMeasureCalculation extends Reports{
             switch($Stage){
                 case '1':
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
-                        FROM
-                            (SELECT count(distinct(patient.pid)) AS DENOM
-		                        FROM patient
-		                        INNER JOIN  encounters ON patient.pid = encounters.pid
-		                        INNER JOIN patient_medications ON patient.pid = patient_medications.pid
-		                        WHERE (encounters.service_date BETWEEN '$begin_date' AND '$end_date')
-		                        AND patient_medications.uid = $provider_id) AS UNIQUEPATIENTS,
-	                        (SELECT count(distinct(patient.pid)) as NUME
-		                        FROM patient
-		                        INNER JOIN patient_medications ON patient.pid = patient_medications.pid
-		                        AND patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS";
+	                    FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+		                    FROM patient
+		                    INNER JOIN patient_medications ON patient.pid = patient_medications.pid
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id) AS UNIQUEPATIENTS,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
+		                    INNER JOIN  encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
+		                    INNER JOIN patient_medications ON patient.pid = patient_medications.pid
+		                    AND patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS;";
                     break;
                 case '2':
                 case '2A':
@@ -240,10 +251,7 @@ class AutomatedMeasureCalculation extends Reports{
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
             switch($Stage){
-                case '1':
-                    $SQL = "";
-                    break;
-                case '2':
+                default:
                     $SQL ="SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
                         FROM
                             (SELECT count(patient_orders.pid) AS DENOM
@@ -253,6 +261,49 @@ class AutomatedMeasureCalculation extends Reports{
 	                        (SELECT count(patient_orders.pid) as NUME
 		                        FROM patient_orders
 		                        WHERE patient_orders.order_type = 'lab') AS HAVINGLABORDERS";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
+    }
+
+    /**
+     * getCPOEMeasure_Radiology
+     * Method to generate the data for CPOE Radiology Orders
+     * @param null $Parameters
+     * @return \Exception
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     */
+    function getCPOEMeasure_Radiology($Parameters = null, $Stage = '2'){
+        $SQL = '';
+        try{
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for CPOE Laboratory Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for CPOE Laboratory Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for CPOE Laboratory Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for CPOE Laboratory Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for CPOE Laboratory Measure');
+            // Stage selector
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
+            switch($Stage){
+                default:
+                    $SQL ="SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+                        FROM
+                            (SELECT count(patient_orders.pid) AS DENOM
+		                        FROM patient_orders
+		                        WHERE patient_orders.date_ordered BETWEEN '$begin_date' AND '$end_date'
+		                        AND patient_orders.uid = $provider_id) AS UNIQUEMEDICATIONS,
+	                        (SELECT count(patient_orders.pid) as NUME
+		                        FROM patient_orders
+		                        WHERE patient_orders.order_type = 'rad') AS HAVINGRADORDERS";
                     break;
             }
         } catch(\Exception $Error) {

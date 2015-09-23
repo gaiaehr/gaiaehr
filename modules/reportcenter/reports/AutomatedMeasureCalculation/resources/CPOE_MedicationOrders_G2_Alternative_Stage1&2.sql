@@ -5,21 +5,19 @@
 ## Numerator:  Number of medication orders in the denominator recorded using CPOE
 ##
 SELECT count(distinct(patient_medications.pid)) as NUME
-FROM 
-    patient_medications
-WHERE 
-	patient_medications.date_ordered IS NOT NULL;
+FROM patient_medications
+WHERE patient_medications.date_ordered IS NOT NULL
+AND patient_medications.date_ordered BETWEEN '2010-01-01' AND '2015-12-30'
+AND patient_medications.uid = 1;
   
 ##
 ## Extract the Denominator :: Denominator
 ## Denominator:  Number of medication orders created by an EP during the EHR reporting period
 ##
 SELECT count(distinct(patient_medications.pid)) AS DENOM
-FROM 
-    patient_medications
-WHERE 
-	patient_medications.date_ordered BETWEEN '2010-01-01' AND '2015-12-30';
-    
+FROM patient_medications
+WHERE (patient_medications.date_ordered BETWEEN '2010-01-01' AND '2015-12-30')
+AND patient_medications.uid = 1;
 
 ##
 ## Compiled Numerator and Denominator

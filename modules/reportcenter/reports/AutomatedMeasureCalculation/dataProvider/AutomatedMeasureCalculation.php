@@ -369,8 +369,42 @@ class AutomatedMeasureCalculation extends Reports{
 
             // Stage selector
             switch($Stage){
-                default:
-                    $SQL ="";
+                case '1':
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+	                    FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30'
+		                    AND encounters.provider_uid = 3) AS UNIQUEMEDICATIONS,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
+                            INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30'
+		                    AND encounters.provider_uid = 3
+		                    WHERE patient.race IS NOT NULL
+		                    AND patient.ethnicity IS NOT NULL
+		                    AND patient.language IS NOT NULL
+		                    AND (patient.DOB IS NOT NULL AND patient.DOB != '0000-00-00')
+		                    AND patient.sex IS NOT NULL) AS HAVINGMEDORDERS";
+                    break;
+                case '2':
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+	                    FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30'
+		                    AND encounters.provider_uid = 3) AS UNIQUEMEDICATIONS,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
+                            INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30'
+		                    AND encounters.provider_uid = 3
+		                    WHERE patient.race IS NOT NULL
+		                    AND patient.ethnicity IS NOT NULL
+		                    AND patient.language IS NOT NULL
+		                    AND (patient.DOB IS NOT NULL AND patient.DOB != '0000-00-00')) AS HAVINGMEDORDERS";
                     break;
             }
         } catch(\Exception $Error) {

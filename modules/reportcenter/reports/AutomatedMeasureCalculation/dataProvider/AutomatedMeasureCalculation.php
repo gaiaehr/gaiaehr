@@ -24,6 +24,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getProblemListMeasure
      * Method to generate the data for Problem List
      * @param null $Parameters
+     * @return \Exception
      * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
      * No Stage 2 Measure - Same as 1
      */
@@ -64,11 +65,41 @@ class AutomatedMeasureCalculation extends Reports{
      * getMedicationListMeasure
      * Method to generate the data for Medication List
      * @param null $Parameters
+     * @return \Exception
      * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
      * No Stage 2 Measure - Same as 1
      */
     function getMedicationListMeasure($Parameters = null, $Stage = 1){
-
+        $SQL = '';
+        try{
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for Medication List Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for Medication List Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for Medication List Measure');
+            // Stage selector
+            switch($Stage){
+                default:
+                    $begin_date = $Parameters['begin_date'];
+                    $end_date = $Parameters['end_date'];
+                    $SQL = "SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+                        FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+                            FROM patient
+                            INNER JOIN encounters ON patient.pid = encounters.pid
+		                    WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
+	                    (SELECT count(distinct(patient.pid)) As NUME
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    INNER JOIN patient_medications ON patient.pid = patient_medications.pid
+		                    WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS HAVINGMEDICATIONS;";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
     }
 
     /**

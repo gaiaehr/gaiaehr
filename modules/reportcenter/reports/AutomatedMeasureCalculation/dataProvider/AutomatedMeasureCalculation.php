@@ -24,9 +24,10 @@ class AutomatedMeasureCalculation extends Reports{
      * getProblemListMeasure
      * Method to generate the data for Problem List
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
+     * No Stage 2 Measure - Same as 1
      */
-    function getProblemListMeasure($Parameters = null, $Stage = 2){
+    function getProblemListMeasure($Parameters = null, $Stage = 1){
 
     }
 
@@ -34,9 +35,10 @@ class AutomatedMeasureCalculation extends Reports{
      * getMedicationListMeasure
      * Method to generate the data for Medication List
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
+     * No Stage 2 Measure - Same as 1
      */
-    function getMedicationListMeasure($Parameters = null, $Stage = 2){
+    function getMedicationListMeasure($Parameters = null, $Stage = 1){
 
     }
 
@@ -44,9 +46,10 @@ class AutomatedMeasureCalculation extends Reports{
      * getMedicationAllergyListMeasure
      * Method to generate the data for Medication Allergy List
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
+     * No Stage 2 Measure - Same as 1
      */
-    function getMedicationAllergyListMeasure($Parameters = null, $Stage = 2){
+    function getMedicationAllergyListMeasure($Parameters = null, $Stage = 1){
 
     }
 
@@ -54,7 +57,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getCPOEMeasure
      * Method to generate the data for CPOE
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getCPOEMeasure($Parameters = null, $Stage = 2){
 
@@ -64,7 +67,7 @@ class AutomatedMeasureCalculation extends Reports{
      * geteRXMeasure
      * Method to generate the data for eRX
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function geteRXMeasure($Parameters = null, $Stage = 2){
 
@@ -74,7 +77,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getDemographicsMeasure
      * Method to generate the data for Demographics
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getDemographicsMeasure($Parameters = null, $Stage = 2){
 
@@ -84,7 +87,7 @@ class AutomatedMeasureCalculation extends Reports{
      * getVitalSignsMeasure
      * Method to generate the data for Vital Signs
      * @param null $Parameters
-     * @param int $Stage
+     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getVitalSignsMeasure($Parameters = null, $Stage = 2){
 

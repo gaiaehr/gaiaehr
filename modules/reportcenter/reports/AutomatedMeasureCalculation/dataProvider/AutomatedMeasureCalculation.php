@@ -110,7 +110,36 @@ class AutomatedMeasureCalculation extends Reports{
      * No Stage 2 Measure - Same as 1
      */
     function getMedicationAllergyListMeasure($Parameters = null, $Stage = 1){
-
+        $SQL = '';
+        try{
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for Medication List Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for Medication List Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for Medication List Measure');
+            // Stage selector
+            switch($Stage){
+                default:
+                    $begin_date = $Parameters['begin_date'];
+                    $end_date = $Parameters['end_date'];
+                    $SQL = "SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+                        FROM
+                            (SELECT count(distinct(patient.pid)) AS DENOM
+		                        FROM patient
+                                INNER JOIN encounters ON patient.pid = encounters.pid
+		                        WHERE encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS UNIQUEPATIENTS,
+	                        (SELECT count(distinct(patient.pid)) As NUME
+		                        FROM patient
+		                        INNER JOIN encounters ON patient.pid = encounters.pid
+		                        INNER JOIN patient_allergies ON patient.pid = patient_allergies.pid
+		                        WHERE encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS HAVINGMEDALLERGIES;";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
     }
 
     /**

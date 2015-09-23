@@ -345,6 +345,7 @@ class AutomatedMeasureCalculation extends Reports{
      * Method to generate the data for Demographics
      * @param null $Parameters
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @return \Exception
      */
     function getDemographicsMeasure($Parameters = null, $Stage = '2'){
         try{
@@ -375,13 +376,13 @@ class AutomatedMeasureCalculation extends Reports{
                         (SELECT count(distinct(patient.pid)) AS DENOM
 		                    FROM patient
 		                    INNER JOIN encounters ON patient.pid = encounters.pid
-		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30'
-		                    AND encounters.provider_uid = 3) AS UNIQUEMEDICATIONS,
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id) AS UNIQUEMEDICATIONS,
 	                    (SELECT count(distinct(patient.pid)) as NUME
 		                    FROM patient
                             INNER JOIN encounters ON patient.pid = encounters.pid
-		                    AND encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30'
-		                    AND encounters.provider_uid = 3
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
 		                    WHERE patient.race IS NOT NULL
 		                    AND patient.ethnicity IS NOT NULL
 		                    AND patient.language IS NOT NULL
@@ -417,9 +418,61 @@ class AutomatedMeasureCalculation extends Reports{
      * Method to generate the data for Vital Signs
      * @param null $Parameters
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @return \Exception
      */
     function getVitalSignsMeasure($Parameters = null, $Stage = '2'){
+        try{
 
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for Demographics Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for Demographics Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for Demographics Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for Demographics Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for Demographics Measure');
+
+            // Consume Parameters
+            $SQL = '';
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
+            switch($Stage){
+                case '1':
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+	                    FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
+		                    WHERE (DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(patient.DOB)), '%Y') + 0) > 2) AS UNIQUEPATIENT,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+                            AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
+		                    INNER JOIN encounters_vitals ON patient.pid = encounters_vitals.pid
+                            AND encounters_vitals.height_in IS NOT NULL
+		                    AND encounters_vitals.height_cm IS NOT NULL
+		                    AND encounters_vitals.weight_kg IS NOT NULL
+		                    AND encounters_vitals.weight_lbs IS NOT NULL
+		                    AND encounters_vitals.bp_systolic IS NOT NULL
+		                    AND encounters_vitals.bp_diastolic IS NOT NULL
+		                    WHERE (DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(patient.DOB)), '%Y') + 0) > 2) AS HAVINGRESULTS";
+                    break;
+                case '2':
+                    $SQL = "";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
     }
 
     /**

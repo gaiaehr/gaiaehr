@@ -1,4 +1,4 @@
-## Ambulatory 	  	  	  	  	  	  	  	  	  	  	 
+## Ambulatory
 
 ##
 ## Extract the Numerator :: Numerator

@@ -1,5 +1,10 @@
 ##
-## Extract the Numerator
+## Ambulatory
+##
+
+##
+## Extract teh Numerator
+## Numerator:  Number of patients in the denominator who have at least one entry (or an indication that no problems are known) recorded as structured data in their problem list
 ##
 select *
 from 
@@ -11,6 +16,7 @@ where
   
 ##
 ## Extract the Denominator
+## Denominator:  Number of unique patients seen by the EP during the EHR reporting period
 ##
 select count(distinct(patient.pid)) AS DENOM
 from 
@@ -23,7 +29,7 @@ where
 ##
 ## Compiled Numerator and Denominator
 ##
-SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
 FROM (SELECT count(distinct(patient.pid)) AS DENOM
 		FROM 
 			patient

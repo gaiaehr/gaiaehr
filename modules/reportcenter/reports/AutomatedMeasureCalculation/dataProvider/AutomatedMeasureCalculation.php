@@ -25,25 +25,27 @@ class AutomatedMeasureCalculation extends Reports{
      * Method to generate the data for Problem List
      * @param null $Parameters
      * @return \Exception
-     * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
+     * @param string $Stage : Selection of the stage data to generate (1) : Default is 1
      * No Stage 2 Measure - Same as 1
      */
-    function getProblemListMeasure($Parameters = null, $Stage = 1){
+    function getProblemListMeasure($Parameters = null, $Stage = '1'){
         $SQL = '';
         try{
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for Problem List Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for Problem List Measure');
             if(!isset($Parameters['begin_date']))
                 throw new \Exception('No [begin_date] parameter provided for Problem List Measure');
             if(!isset($Parameters['end_date']))
                 throw new \Exception('No [end_date] parameter provided for Problem List Measure');
             // Stage selector
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
             switch($Stage){
                 default:
-                    $begin_date = $Parameters['begin_date'];
-                    $end_date = $Parameters['end_date'];
-                    $SQL = "SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
                         FROM
                         (SELECT count(distinct(patient.pid)) AS DENOM
 		                    FROM patient
@@ -66,25 +68,27 @@ class AutomatedMeasureCalculation extends Reports{
      * Method to generate the data for Medication List
      * @param null $Parameters
      * @return \Exception
-     * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
+     * @param string $Stage : Selection of the stage data to generate (1) : Default is 1
      * No Stage 2 Measure - Same as 1
      */
-    function getMedicationListMeasure($Parameters = null, $Stage = 1){
+    function getMedicationListMeasure($Parameters = null, $Stage = '1'){
         $SQL = '';
         try{
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for Medication List Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for Medication List Measure');
             if(!isset($Parameters['begin_date']))
                 throw new \Exception('No [begin_date] parameter provided for Medication List Measure');
             if(!isset($Parameters['end_date']))
                 throw new \Exception('No [end_date] parameter provided for Medication List Measure');
             // Stage selector
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
             switch($Stage){
                 default:
-                    $begin_date = $Parameters['begin_date'];
-                    $end_date = $Parameters['end_date'];
-                    $SQL = "SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
                         FROM
                         (SELECT count(distinct(patient.pid)) AS DENOM
                             FROM patient
@@ -106,35 +110,38 @@ class AutomatedMeasureCalculation extends Reports{
      * getMedicationAllergyListMeasure
      * Method to generate the data for Medication Allergy List
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1) : Default is 1
+     * @return \Exception
+     * @param string $Stage : Selection of the stage data to generate (1) : Default is 1
      * No Stage 2 Measure - Same as 1
      */
-    function getMedicationAllergyListMeasure($Parameters = null, $Stage = 1){
+    function getMedicationAllergyListMeasure($Parameters = null, $Stage = '1'){
         $SQL = '';
         try{
             // Validation
             if(!isset($Parameters))
-                throw new \Exception('No parameters provided for Medication List Measure');
+                throw new \Exception('No parameters provided for Medication Allergies Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for Medication Allergies Measure');
             if(!isset($Parameters['begin_date']))
-                throw new \Exception('No [begin_date] parameter provided for Medication List Measure');
+                throw new \Exception('No [begin_date] parameter provided for Medication Allergies Measure');
             if(!isset($Parameters['end_date']))
-                throw new \Exception('No [end_date] parameter provided for Medication List Measure');
+                throw new \Exception('No [end_date] parameter provided for Medication Allergies Measure');
             // Stage selector
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
             switch($Stage){
                 default:
-                    $begin_date = $Parameters['begin_date'];
-                    $end_date = $Parameters['end_date'];
-                    $SQL = "SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
                         FROM
                             (SELECT count(distinct(patient.pid)) AS DENOM
 		                        FROM patient
                                 INNER JOIN encounters ON patient.pid = encounters.pid
-		                        WHERE encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS UNIQUEPATIENTS,
+		                        WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
 	                        (SELECT count(distinct(patient.pid)) As NUME
 		                        FROM patient
 		                        INNER JOIN encounters ON patient.pid = encounters.pid
 		                        INNER JOIN patient_allergies ON patient.pid = patient_allergies.pid
-		                        WHERE encounters.service_date BETWEEN '2010-01-01' AND '2015-12-30') AS HAVINGMEDALLERGIES;";
+		                        WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS HAVINGMEDALLERGIES;";
                     break;
             }
         } catch(\Exception $Error) {
@@ -146,19 +153,63 @@ class AutomatedMeasureCalculation extends Reports{
      * getCPOEMeasure
      * Method to generate the data for CPOE
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @return \Exception
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getCPOEMeasure($Parameters = null, $Stage = 2){
-
+    function getCPOEMeasure($Parameters = null, $Stage = '2'){
+        $SQL = '';
+        try{
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for CPOE Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for CPOE Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for CPOE Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for CPOE Measure');
+            // Stage selector
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
+            switch($Stage){
+                case '1':
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+                        FROM
+                            (SELECT count(distinct(patient.pid)) AS DENOM
+		                        FROM patient
+		                        INNER JOIN  encounters ON patient.pid = encounters.pid
+		                        INNER JOIN patient_medications ON patient.pid = patient_medications.pid
+		                        WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
+	                        (SELECT count(distinct(patient.pid)) as NUME
+		                        FROM patient
+		                        INNER JOIN patient_medications ON patient.pid = patient_medications.pid
+		                        AND patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS";
+                    break;
+                case '2':
+                case '2A':
+                case '1A':
+                    $SQL ="SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+                        FROM
+                        (SELECT count(distinct(patient_medications.pid)) AS DENOM
+		                    FROM patient_medications
+		                    WHERE patient_medications.date_ordered BETWEEN '$begin_date' AND '$end_date') AS UNIQUEMEDICATIONS,
+	                    (SELECT count(distinct(patient_medications.pid)) as NUME
+		                    FROM patient_medications
+		                    WHERE patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS;";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
     }
 
     /**
      * geteRXMeasure
      * Method to generate the data for eRX
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function geteRXMeasure($Parameters = null, $Stage = 2){
+    function geteRXMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -166,9 +217,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getDemographicsMeasure
      * Method to generate the data for Demographics
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getDemographicsMeasure($Parameters = null, $Stage = 2){
+    function getDemographicsMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -176,9 +227,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getVitalSignsMeasure
      * Method to generate the data for Vital Signs
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getVitalSignsMeasure($Parameters = null, $Stage = 2){
+    function getVitalSignsMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -186,9 +237,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getSmokingStatusMeasure
      * Method to generate the data for Smoking Status
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getSmokingStatusMeasure($Parameters = null, $Stage = 2){
+    function getSmokingStatusMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -196,9 +247,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getLabResultsMeasure
      * Method to generate the data for Lab Results
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getLabResultsMeasure($Parameters = null, $Stage = 2){
+    function getLabResultsMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -206,9 +257,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getProblemList
      * Method to generate the data for Problem List
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getPatientRemindersMeasure($Parameters = null, $Stage = 2){
+    function getPatientRemindersMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -216,9 +267,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getViewDownloadTransmitMeasure
      * Method to generate the data for View Download & Transmit
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getViewDownloadTransmitMeasure($Parameters = null, $Stage = 2){
+    function getViewDownloadTransmitMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -226,9 +277,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getClinicalSummaryMeasure
      * Method to generate the data for Clinical Summary
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getClinicalSummaryMeasure($Parameters = null, $Stage = 2){
+    function getClinicalSummaryMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -236,9 +287,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getPatientEducationMeasure
      * Method to generate the data for Patient Education
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getPatientEducationMeasure($Parameters = null, $Stage = 2){
+    function getPatientEducationMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -246,9 +297,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getMedicationReconciliationMeasure
      * Method to generate the data for Medication Reconciliation
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getMedicationReconciliationMeasure($Parameters = null, $Stage = 2){
+    function getMedicationReconciliationMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -256,9 +307,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getSummaryOfCareMeasure
      * Method to generate the data for Summary Of Care
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getSummaryOfCareMeasure($Parameters = null, $Stage = 2){
+    function getSummaryOfCareMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -266,9 +317,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getSecureMessagingMeasure
      * Method to generate the data for Secure Messaging
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getSecureMessagingMeasure($Parameters = null, $Stage = 2){
+    function getSecureMessagingMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -276,9 +327,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getImagingMeasure
      * Method to generate the data for Imaging
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getImagingMeasure($Parameters = null, $Stage = 2){
+    function getImagingMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -286,9 +337,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getFamilyHistoryMeasure
      * Method to generate the data for Family History
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getFamilyHistoryMeasure($Parameters = null, $Stage = 2){
+    function getFamilyHistoryMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -296,9 +347,9 @@ class AutomatedMeasureCalculation extends Reports{
      * geteNotesMeasure
      * Method to generate the data for eNotes
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function geteNotesMeasure($Parameters = null, $Stage = 2){
+    function geteNotesMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -306,9 +357,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getAdvanceDirectivesMeasure
      * Method to generate the data for Advance Directives
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getAdvanceDirectivesMeasure($Parameters = null, $Stage = 2){
+    function getAdvanceDirectivesMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -316,9 +367,9 @@ class AutomatedMeasureCalculation extends Reports{
      * getLabEHtoEPMeasure
      * Method to generate the data for Lab EH to EP
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getLabEHtoEPMeasure($Parameters = null, $Stage = 2){
+    function getLabEHtoEPMeasure($Parameters = null, $Stage = '2'){
 
     }
 
@@ -326,9 +377,9 @@ class AutomatedMeasureCalculation extends Reports{
      * eMarMeasure
      * Method to generate the data for eMar
      * @param null $Parameters
-     * @param int $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function eMarMeasure($Parameters = null, $Stage = 2){
+    function eMarMeasure($Parameters = null, $Stage = '2'){
 
     }
 

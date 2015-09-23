@@ -1,5 +1,12 @@
 ##
+## Ambulatory
+##
+
+
+##
 ## Extract the Numerator
+## Numerator:  Number of patients in the denominator who have at least one entry (or an indication that no medications are prescribed) 
+## recorded as structured data in their medication list
 ##
 SELECT count(distinct(patient.pid)) as NUME
 FROM 
@@ -11,6 +18,7 @@ WHERE
   
 ##
 ## Extract the Denominator
+## Denominator:  Number of unique patients seen by the EP during the EHR reporting period
 ##
 SELECT count(distinct(patient.pid)) AS DENOM
 FROM 
@@ -23,7 +31,7 @@ WHERE
 ##
 ## Compiled Numerator and Denominator
 ##
-SELECT *, ROUND(DENOM/NUME,2) AS PERCENT
+SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
 FROM (SELECT count(distinct(patient.pid)) AS DENOM
 		FROM 
 			patient

@@ -4,34 +4,35 @@
 ## Extract the Numerator :: Numerator
 ## Numerator:  Number of laboratory orders in the denominator recorded using CPOE
 ##
-SELECT count(distinct(patient_medications.pid)) as NUME
+SELECT count(patient_orders.pid) as NUME
 FROM 
-    patient_medications
+    patient_orders
 WHERE 
-	patient_medications.date_ordered IS NOT NULL;
+	patient_orders.order_type = 'lab';
   
 ##
 ## Extract the Denominator :: Denominator
 ## Denominator: Number of laboratory orders created by an EP during the EHR reporting period
 ##
-SELECT count(distinct(patient_medications.pid)) AS DENOM
+SELECT count(patient_orders.pid) AS DENOM
 FROM 
-    patient_medications
+    patient_orders
 WHERE 
-	patient_medications.date_ordered BETWEEN '2010-01-01' AND '2015-12-30';
+	patient_orders.date_ordered BETWEEN '2010-01-01' AND '2015-12-30'
+    AND patient_orders.uid = 1;
     
 
 ##
 ## Compiled Numerator and Denominator
 ##
 SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
-FROM (SELECT count(distinct(patient_medications.pid)) AS DENOM
+FROM (SELECT count(patient_orders.pid) AS DENOM
 		FROM 
-			patient_medications
+			patient_orders
+		WHERE patient_orders.date_ordered BETWEEN '2010-01-01' AND '2015-12-30'
+		AND patient_orders.uid = 1) AS UNIQUEMEDICATIONS,
+	(SELECT count(patient_orders.pid) as NUME
+		FROM 
+			patient_orders
 		WHERE 
-			(patient_medications.date_ordered BETWEEN '2010-01-01' AND '2015-12-30')
-            AND patient_medications.uid = 1) AS UNIQUEMEDICATIONS,
-	(SELECT count(distinct(patient_medications.pid)) as NUME
-		FROM 
-			patient_medications
-		WHERE patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS;
+			patient_orders.order_type = 'lab') AS HAVINGLABORDERS;

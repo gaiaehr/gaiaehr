@@ -167,15 +167,15 @@ class AutomatedMeasureCalculation extends Reports{
         try{
             // Validation
             if(!isset($Parameters))
-                throw new \Exception('No parameters provided for CPOE Measure');
+                throw new \Exception('No parameters provided for CPOE Medications Measure');
             if(!isset($Stage))
-                throw new \Exception('No Stage provided for CPOE Measure');
+                throw new \Exception('No Stage provided for CPOE Medications Measure');
             if(!isset($Parameters['begin_date']))
-                throw new \Exception('No [begin_date] parameter provided for CPOE Measure');
+                throw new \Exception('No [begin_date] parameter provided for CPOE Medications Measure');
             if(!isset($Parameters['end_date']))
-                throw new \Exception('No [end_date] parameter provided for CPOE Measure');
+                throw new \Exception('No [end_date] parameter provided for CPOE Medications Measure');
             if(!isset($Parameters['provider_id']))
-                throw new \Exception('No [provider_id] parameter provided for CPOE Measure');
+                throw new \Exception('No [provider_id] parameter provided for CPOE Medications Measure');
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
@@ -207,6 +207,52 @@ class AutomatedMeasureCalculation extends Reports{
 	                    (SELECT count(distinct(patient_medications.pid)) as NUME
 		                    FROM patient_medications
 		                    WHERE patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS;";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
+    }
+
+    /**
+     * getCPOEMeasure_Laboratory
+     * Method to generate the data for CPOE Laboratory Orders
+     * @param null $Parameters
+     * @return \Exception
+     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     */
+    function getCPOEMeasure_Laboratory($Parameters = null, $Stage = '2'){
+        $SQL = '';
+        try{
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for CPOE Laboratory Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for CPOE Laboratory Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for CPOE Laboratory Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for CPOE Laboratory Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for CPOE Laboratory Measure');
+            // Stage selector
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
+            switch($Stage){
+                case '1':
+                    $SQL = "";
+                    break;
+                case '2':
+                    $SQL ="SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+                        FROM
+                            (SELECT count(patient_orders.pid) AS DENOM
+		                        FROM patient_orders
+		                        WHERE patient_orders.date_ordered BETWEEN '$begin_date' AND '$end_date'
+		                        AND patient_orders.uid = $provider_id) AS UNIQUEMEDICATIONS,
+	                        (SELECT count(patient_orders.pid) as NUME
+		                        FROM patient_orders
+		                        WHERE patient_orders.order_type = 'lab') AS HAVINGLABORDERS";
                     break;
             }
         } catch(\Exception $Error) {

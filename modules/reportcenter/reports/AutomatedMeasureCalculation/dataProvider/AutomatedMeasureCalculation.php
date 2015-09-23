@@ -29,7 +29,6 @@ class AutomatedMeasureCalculation extends Reports{
      * No Stage 2 Measure - Same as 1
      */
     function getProblemListMeasure($Parameters = null, $Stage = '1'){
-        $SQL = '';
         try{
             // Validation
             if(!isset($Parameters))
@@ -42,10 +41,11 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [end_date] parameter provided for Problem List Measure');
             if(!isset($Parameters['provider_id']))
                 throw new \Exception('No [provider_id] parameter provided for  Problem List Measure');
-            // Stage selector
+            // Consume Parameters
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
+            // Stage selector
             switch($Stage){
                 default:
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -77,8 +77,8 @@ class AutomatedMeasureCalculation extends Reports{
      * No Stage 2 Measure - Same as 1
      */
     function getMedicationListMeasure($Parameters = null, $Stage = '1'){
-        $SQL = '';
         try{
+
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for Medication List Measure');
@@ -90,10 +90,14 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [end_date] parameter provided for Medication List Measure');
             if(!isset($Parameters['provider_id']))
                 throw new \Exception('No [provider_id] parameter provided for  Medication List Measure');
-            // Stage selector
+
+            // Consume Parameters
+            $SQL = '';
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
             switch($Stage){
                 default:
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -123,8 +127,8 @@ class AutomatedMeasureCalculation extends Reports{
      * No Stage 2 Measure - Same as 1
      */
     function getMedicationAllergyListMeasure($Parameters = null, $Stage = '1'){
-        $SQL = '';
         try{
+
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for Medication Allergies Measure');
@@ -136,10 +140,14 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [end_date] parameter provided for Medication Allergies Measure');
             if(!isset($Parameters['provider_id']))
                 throw new \Exception('No [provider_id] parameter provided for  Medication Allergies Measure');
-            // Stage selector
+
+            // Consume Parameters
+            $SQL = '';
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
             switch($Stage){
                 default:
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -171,8 +179,8 @@ class AutomatedMeasureCalculation extends Reports{
      */
     // TODO: Revise the SQL Statement, is wrong.
     function getCPOEMeasure_Medications($Parameters = null, $Stage = '2'){
-        $SQL = '';
         try{
+
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for CPOE Medications Measure');
@@ -184,10 +192,14 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [end_date] parameter provided for CPOE Medications Measure');
             if(!isset($Parameters['provider_id']))
                 throw new \Exception('No [provider_id] parameter provided for CPOE Medications Measure');
-            // Stage selector
+
+            // Consume Parameters
+            $SQL = '';
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
             switch($Stage){
                 case '1':
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -233,8 +245,8 @@ class AutomatedMeasureCalculation extends Reports{
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getCPOEMeasure_Laboratory($Parameters = null, $Stage = '2'){
-        $SQL = '';
         try{
+
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for CPOE Laboratory Measure');
@@ -246,10 +258,14 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [end_date] parameter provided for CPOE Laboratory Measure');
             if(!isset($Parameters['provider_id']))
                 throw new \Exception('No [provider_id] parameter provided for CPOE Laboratory Measure');
-            // Stage selector
+
+            // Consume Parameters
+            $SQL = '';
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
             switch($Stage){
                 default:
                     $SQL ="SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -276,8 +292,8 @@ class AutomatedMeasureCalculation extends Reports{
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getCPOEMeasure_Radiology($Parameters = null, $Stage = '2'){
-        $SQL = '';
         try{
+
             // Validation
             if(!isset($Parameters))
                 throw new \Exception('No parameters provided for CPOE Laboratory Measure');
@@ -289,10 +305,13 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [end_date] parameter provided for CPOE Laboratory Measure');
             if(!isset($Parameters['provider_id']))
                 throw new \Exception('No [provider_id] parameter provided for CPOE Laboratory Measure');
-            // Stage selector
+
+            // Consume Parameters
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
             $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
             switch($Stage){
                 default:
                     $SQL ="SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -328,7 +347,35 @@ class AutomatedMeasureCalculation extends Reports{
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
     function getDemographicsMeasure($Parameters = null, $Stage = '2'){
+        try{
 
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for Demographics Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for Demographics Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for Demographics Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for Demographics Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for Demographics Measure');
+
+            // Consume Parameters
+            $SQL = '';
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
+            switch($Stage){
+                default:
+                    $SQL ="";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
     }
 
     /**

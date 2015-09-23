@@ -40,6 +40,8 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [begin_date] parameter provided for Problem List Measure');
             if(!isset($Parameters['end_date']))
                 throw new \Exception('No [end_date] parameter provided for Problem List Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for  Problem List Measure');
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
@@ -83,6 +85,8 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [begin_date] parameter provided for Medication List Measure');
             if(!isset($Parameters['end_date']))
                 throw new \Exception('No [end_date] parameter provided for Medication List Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for  Medication List Measure');
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
@@ -126,6 +130,8 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [begin_date] parameter provided for Medication Allergies Measure');
             if(!isset($Parameters['end_date']))
                 throw new \Exception('No [end_date] parameter provided for Medication Allergies Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for  Medication Allergies Measure');
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
@@ -150,13 +156,13 @@ class AutomatedMeasureCalculation extends Reports{
     }
 
     /**
-     * getCPOEMeasure
-     * Method to generate the data for CPOE
+     * getCPOEMeasure_Medications
+     * Method to generate the data for CPOE Medication Orders
      * @param null $Parameters
      * @return \Exception
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      */
-    function getCPOEMeasure($Parameters = null, $Stage = '2'){
+    function getCPOEMeasure_Medications($Parameters = null, $Stage = '2'){
         $SQL = '';
         try{
             // Validation
@@ -168,9 +174,12 @@ class AutomatedMeasureCalculation extends Reports{
                 throw new \Exception('No [begin_date] parameter provided for CPOE Measure');
             if(!isset($Parameters['end_date']))
                 throw new \Exception('No [end_date] parameter provided for CPOE Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for CPOE Measure');
             // Stage selector
             $begin_date = $Parameters['begin_date'];
             $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
             switch($Stage){
                 case '1':
                     $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
@@ -179,7 +188,8 @@ class AutomatedMeasureCalculation extends Reports{
 		                        FROM patient
 		                        INNER JOIN  encounters ON patient.pid = encounters.pid
 		                        INNER JOIN patient_medications ON patient.pid = patient_medications.pid
-		                        WHERE encounters.service_date BETWEEN '$begin_date' AND '$end_date') AS UNIQUEPATIENTS,
+		                        WHERE (encounters.service_date BETWEEN '$begin_date' AND '$end_date')
+		                        AND patient_medications.uid = $provider_id) AS UNIQUEPATIENTS,
 	                        (SELECT count(distinct(patient.pid)) as NUME
 		                        FROM patient
 		                        INNER JOIN patient_medications ON patient.pid = patient_medications.pid
@@ -192,7 +202,8 @@ class AutomatedMeasureCalculation extends Reports{
                         FROM
                         (SELECT count(distinct(patient_medications.pid)) AS DENOM
 		                    FROM patient_medications
-		                    WHERE patient_medications.date_ordered BETWEEN '$begin_date' AND '$end_date') AS UNIQUEMEDICATIONS,
+		                    WHERE (patient_medications.date_ordered BETWEEN '$begin_date' AND '$end_date')
+		                    AND patient_medications.uid = $provider_id) AS UNIQUEMEDICATIONS,
 	                    (SELECT count(distinct(patient_medications.pid)) as NUME
 		                    FROM patient_medications
 		                    WHERE patient_medications.date_ordered IS NOT NULL) AS HAVINGMEDORDERS;";

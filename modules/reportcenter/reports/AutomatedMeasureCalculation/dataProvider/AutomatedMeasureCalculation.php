@@ -420,6 +420,7 @@ class AutomatedMeasureCalculation extends Reports{
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
      * @return \Exception
      */
+    // TODO: Pending answer from oue certification house
     function getVitalSignsMeasure($Parameters = null, $Stage = '2'){
         try{
 
@@ -480,9 +481,52 @@ class AutomatedMeasureCalculation extends Reports{
      * Method to generate the data for Smoking Status
      * @param null $Parameters
      * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
+     * @return \Exception
      */
     function getSmokingStatusMeasure($Parameters = null, $Stage = '2'){
+        try{
 
+            // Validation
+            if(!isset($Parameters))
+                throw new \Exception('No parameters provided for Demographics Measure');
+            if(!isset($Stage))
+                throw new \Exception('No Stage provided for Demographics Measure');
+            if(!isset($Parameters['begin_date']))
+                throw new \Exception('No [begin_date] parameter provided for Demographics Measure');
+            if(!isset($Parameters['end_date']))
+                throw new \Exception('No [end_date] parameter provided for Demographics Measure');
+            if(!isset($Parameters['provider_id']))
+                throw new \Exception('No [provider_id] parameter provided for Demographics Measure');
+
+            // Consume Parameters
+            $SQL = '';
+            $begin_date = $Parameters['begin_date'];
+            $end_date = $Parameters['end_date'];
+            $provider_id = $Parameters['provider_id'];
+
+            // Stage selector
+            switch($Stage){
+                default:
+                    $SQL = "SELECT *, ROUND((NUME/DENOM*100)) AS PERCENT
+	                    FROM
+                        (SELECT count(distinct(patient.pid)) AS DENOM
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
+		                    WHERE (DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(patient.DOB)), '%Y') + 0) >= 13) AS UNIQUEPATIENTS,
+	                    (SELECT count(distinct(patient.pid)) as NUME
+		                    FROM patient
+		                    INNER JOIN encounters ON patient.pid = encounters.pid
+		                    AND encounters.service_date BETWEEN '$begin_date' AND '$end_date'
+		                    AND encounters.provider_uid = $provider_id
+		                    INNER JOIN patient_smoke_status ON patient.pid = patient_smoke_status.pid
+		                    WHERE (DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW())-TO_DAYS(patient.DOB)), '%Y') + 0) >= 13) AS HAVINGSMOKE;";
+                    break;
+            }
+        } catch(\Exception $Error) {
+            return $Error;
+        }
     }
 
     /**

@@ -649,24 +649,4 @@ class AutomatedMeasureCalculation extends Reports{
 
     }
 
-    /**
-     * getLabEHtoEPMeasure
-     * Method to generate the data for Lab EH to EP
-     * @param null $Parameters
-     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
-     */
-    function getLabEHtoEPMeasure($Parameters = null, $Stage = '2'){
-
-    }
-
-    /**
-     * eMarMeasure
-     * Method to generate the data for eMar
-     * @param null $Parameters
-     * @param string $Stage : Selection of the stage data to generate (1 or 2) : Default is 2
-     */
-    function eMarMeasure($Parameters = null, $Stage = '2'){
-
-    }
-
 }

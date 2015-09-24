@@ -444,9 +444,9 @@ class Patient {
             return Person::fulladdress(
                 $record['street_mailing_address'],
                 null,
-                $record[0]['city'],
-                $record[0]['state'],
-                $record[0]['zip']
+                $record['city'],
+                $record['state'],
+                $record['zip']
             );
         }
 	}
@@ -512,7 +512,7 @@ class Patient {
         $record = $patientContact->getSelfContact($pid);
         $address = '';
         if(isset($record)) {
-            $address = $record[0]['address'].' <br>'.$record[0]['city'].',  '.$record[0]['state'].' '.$record[0]['country'];
+            $address = $record['address'].' <br>'.$record['city'].',  '.$record['state'].' '.$record['country'];
         }
 		return $address;
 	}
@@ -733,15 +733,15 @@ class Patient {
             );
             if(isset($contact)) {
                 $results[$index]['fulladdress'] = Person::fulladdress(
-                    isset($contact[0]['street_mailing_address']) ? $contact[0]['street_mailing_address'] : '',
+                    isset($contact['street_mailing_address']) ? $contact['street_mailing_address'] : '',
                     null,
-                    isset($contact[0]['city']) ? $contact[0]['city'] : '',
-                    isset($contact[0]['state']) ? $contact[0]['state'] : '',
-                    isset($contact[0]['zip']) ? $contact[0]['zip'] : ''
+                    isset($contact['city']) ? $contact['city'] : '',
+                    isset($contact['state']) ? $contact['state'] : '',
+                    isset($contact['zip']) ? $contact['zip'] : ''
                 );
-                $results[$index]['phones'] = isset($contact[0]['phone_local_number'])
+                $results[$index]['phones'] = isset($contact['phone_local_number'])
                     ?
-                    $contact[0]['phone_use_code'] . '-' . $contact[0]['phone_area_code'] . '-' . $contact[0]['phone_local_number']
+                    $contact['phone_use_code'] . '-' . $contact['phone_area_code'] . '-' . $contact['phone_local_number']
                     :
                     '';
             }

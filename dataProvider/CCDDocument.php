@@ -630,24 +630,24 @@ class CCDDocument {
         if(isset($PatientContactRecord['street_mailing_address'])) {
             $recordTarget['patientRole']['addr'] = $this->addressBuilder(
                 'HP',
-                $PatientContactRecord[0]['street_mailing_address'],
-                $PatientContactRecord[0]['city'],
-                $PatientContactRecord[0]['state'],
-                $PatientContactRecord[0]['zip'],
-                $PatientContactRecord[0]['country'],
+                $PatientContactRecord['street_mailing_address'],
+                $PatientContactRecord['city'],
+                $PatientContactRecord['state'],
+                $PatientContactRecord['zip'],
+                $PatientContactRecord['country'],
                 date('Ymd')
             );
         }
 
         // If the Self Contact information phone is present, include it in the CCD
-        if(isset($PatientContactRecord[0]['phone_use_code']) &&
-            isset($PatientContactRecord[0]['phone_area_code']) &&
-            isset($PatientContactRecord[0]['phone_local_number'])
+        if(isset($PatientContactRecord['phone_use_code']) &&
+            isset($PatientContactRecord['phone_area_code']) &&
+            isset($PatientContactRecord['phone_local_number'])
         ){
             $recordTarget['patientRole']['telecom'] = $this->telecomBuilder(
-                $PatientContactRecord[0]['phone_use_code'].
-                $PatientContactRecord[0]['phone_area_code'].
-                $PatientContactRecord[0]['phone_local_number'],
+                $PatientContactRecord['phone_use_code'].
+                $PatientContactRecord['phone_area_code'].
+                $PatientContactRecord['phone_local_number'],
                 'H'
             );
         }

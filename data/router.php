@@ -112,7 +112,7 @@ function doRpc($cdata) {
 		// GaiaEHR does not recognized this transaction ID.');
 		//            }
 		//        }
-		if(!isset($API[$cdata->action])){
+		if(!isset($cdata->action)){
 			throw new Exception('Call to undefined action: ' . $cdata->action);
 		}
 		$action = $cdata->action;

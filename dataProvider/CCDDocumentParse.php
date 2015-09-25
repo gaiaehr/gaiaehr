@@ -20,6 +20,7 @@ include_once(ROOT . '/classes/Array2XML.php');
 include_once(ROOT . '/classes/XML2Array.php');
 include_once(ROOT . '/dataProvider/SnomedCodes.php');
 include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 
 class CCDDocumentParse {
 
@@ -64,30 +65,36 @@ class CCDDocumentParse {
 			$code = isset($component['section']['code']['@attributes']['code']) ? $component['section']['code']['@attributes']['code'] : '';
 
 			//Advance Directives ???
-			if($code == '48765-2'){
-				$this->index['allergies'] = $index;
-			} elseif($code == '10160-0') {
-				$this->index['medications'] = $index;
-			} elseif($code == '11450-4') {
-				$this->index['problems'] = $index;
-			} elseif($code == '47519-4') {
-				$this->index['procedures'] = $index;
-			} elseif($code == '30954-2') {
-				$this->index['results'] = $index;
-			} elseif($code == '46240-8') {
-				$this->index['encounters'] = $index;
-			} elseif($code == '51847-2') {
-				$this->index['assessments'] = $index;
-			} elseif($code == '46239-0') {
-				$this->index['chiefcomplaint'] = $index;
-			} else {
-
-				$tplId = isset($component['section']['templateId']['@attributes']['root']) ? $component['section']['templateId']['@attributes']['root'] : '';
-
-				if($tplId == '2.16.840.1.113883.10.20.22.2.21.1'){
-					$this->index['advancedirectives'] = $index;
-				}
-			}
+            switch($code){
+                case '48765-2':
+                    $this->index['allergies'] = $index;
+                    break;
+                case '10160-0':
+                    $this->index['medications'] = $index;
+                    break;
+                case '11450-4':
+                    $this->index['problems'] = $index;
+                    break;
+                case '47519-4':
+                    $this->index['procedures'] = $index;
+                    break;
+                case '30954-2':
+                    $this->index['results'] = $index;
+                    break;
+                case '46240-8':
+                    $this->index['encounters'] = $index;
+                    break;
+                case '51847-2':
+                    $this->index['assessments'] = $index;
+                    break;
+                case '46239-0':
+                    $this->index['chiefcomplaint'] = $index;
+                    break;
+                default:
+                    $tplId = isset($component['section']['templateId']['@attributes']['root']) ? $component['section']['templateId']['@attributes']['root'] : '';
+                    if($tplId == '2.16.840.1.113883.10.20.22.2.21.1') $this->index['advancedirectives'] = $index;
+                    break;
+            }
 		}
 	}
 
@@ -134,6 +141,7 @@ class CCDDocumentParse {
 		// address
         // TODO: Here we need to create a new Patient Contact record. (Self)
 		$a = isset($dom['addr']) ? $dom['addr'] : [];
+        //$PatientContact = new PatientContacts();
 		$patient->address = isset($a['streetAddressLine']) ? $a['streetAddressLine'] : '';
 		$patient->city = isset($a['city']) ? $a['city'] : '';
 		$patient->state = isset($a['state']) ? $a['state'] : '';

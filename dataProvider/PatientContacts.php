@@ -70,7 +70,7 @@ class PatientContacts {
             WHERE combo_lists_options.list_id=134
             AND patient_contacts.relationship="SEL"
             AND patient_contacts.active=1
-            AND patient_contacts.pid = '.$pid)->all();
+            AND patient_contacts.pid = '.$pid)->one();
     }
 
     /**

@@ -21,6 +21,7 @@ include_once(ROOT . '/dataProvider/Person.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/ACL.php');
 include_once(ROOT . '/dataProvider/PatientContacts.php');
+include_once(ROOT . '/dataProvider/Lists.php');
 
 class Patient {
 
@@ -54,6 +55,11 @@ class Patient {
      * @var MatchaCUP
      */
     private $patientContacts;
+
+    /**
+     * @var MatchaCUP
+     */
+    private $ComboListOptions;
 
 	/**
 	 * @var PoolArea
@@ -111,7 +117,12 @@ class Patient {
 	 */
 	public function getPatients($params) {
 		$this->setPatientModel();
-		return $this->p->load($params)->all();
+        $Records = $this->p->load($params)->all();
+        // Compile custom fields
+        foreach($Records as $Index => $Record){
+            $Records[$Index]['name'] = Person::fullname($Record['fname'], $Record['mname'], $Record['lname']);
+        }
+		return $Records;
 	}
 
 	/**
@@ -429,13 +440,15 @@ class Patient {
 	public function getPatientFullAddressByPid($pid) {
         $patientContact = new PatientContacts();
         $record = $patientContact->getSelfContact($pid);
-		return Person::fulladdress(
-            $record['street_mailing_address'],
-            null,
-            $record['city'],
-            $record['state'],
-            $record['zip']
-        );
+        if(isset($record)) {
+            return Person::fulladdress(
+                $record['street_mailing_address'],
+                null,
+                $record['city'],
+                $record['state'],
+                $record['zip']
+            );
+        }
 	}
 
 	public function patientLiveSearch(stdClass $params) {
@@ -497,7 +510,10 @@ class Patient {
 	public function getPatientAddressById($pid) {
         $patientContact = new PatientContacts();
         $record = $patientContact->getSelfContact($pid);
-		$address = $record['address'] . ' <br>' . $record['city'] . ',  ' . $record['state'] . ' ' . $record['country'];
+        $address = '';
+        if(isset($record)) {
+            $address = $record['address'].' <br>'.$record['city'].',  '.$record['state'].' '.$record['country'];
+        }
 		return $address;
 	}
 
@@ -577,7 +593,6 @@ class Patient {
 		return $result;
 	}
 
-	///////////////////////////////////////////////////////
 	public function getDOBByPid($pid) {
 		$this->setPatientModel();
 		$p = $this->p->load(['pid'=>$pid])->one();
@@ -699,7 +714,6 @@ class Patient {
  				 WHERE `fname` SOUNDS LIKE '{$params->fname}'
  				   AND `lname` SOUNDS LIKE '{$params->lname}'
  				   AND `sex` = '{$params->sex}'";
-        //$this->setPatientContactModel();
         $this->patientContacts = new PatientContacts();
 		if($includeDateOfBirth){
 			$sql = " AND `DOB` = '{$params->DOB}'";
@@ -717,16 +731,20 @@ class Patient {
                 $record['mname'],
                 $record['lname']
             );
-            $results[$index]['fulladdress'] = Person::fulladdress(
-                isset($contact['street_mailing_address']) ? $contact['street_mailing_address'] : '',
-                null,
-                isset($contact['city']) ? $contact['city'] : '',
-                isset($contact['state']) ? $contact['state'] : '',
-                isset($contact['zip']) ? $contact['zip'] : ''
-            );
-            $results[$index]['phones'] = isset($contact['phone_local_number']) ?
-                $contact['phone_use_code'].'-'.$contact['phone_area_code'].'-'.$contact['phone_local_number'] :
-                '';
+            if(isset($contact)) {
+                $results[$index]['fulladdress'] = Person::fulladdress(
+                    isset($contact['street_mailing_address']) ? $contact['street_mailing_address'] : '',
+                    null,
+                    isset($contact['city']) ? $contact['city'] : '',
+                    isset($contact['state']) ? $contact['state'] : '',
+                    isset($contact['zip']) ? $contact['zip'] : ''
+                );
+                $results[$index]['phones'] = isset($contact['phone_local_number'])
+                    ?
+                    $contact['phone_use_code'] . '-' . $contact['phone_area_code'] . '-' . $contact['phone_local_number']
+                    :
+                    '';
+            }
         }
 		return [
             'total' => count($results),

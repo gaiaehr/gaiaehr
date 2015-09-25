@@ -22,7 +22,7 @@ Ext.define('App.store.sitesetup.Requirements', {
     proxy:{
         type:'direct',
         api:{
-            read:SiteSetup.checkRequirements
+            read: 'SiteSetup.checkRequirements'
         }
     },
     autoLoad:false

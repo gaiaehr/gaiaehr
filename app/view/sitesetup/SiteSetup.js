@@ -56,6 +56,8 @@ Ext.define('App.view.sitesetup.SiteSetup',
 			 */
 			me.step = [];
 
+            me.AESKey;
+
 			/*
 			 * Store: requirementsStore
 			 */
@@ -842,52 +844,90 @@ Ext.define('App.view.sitesetup.SiteSetup',
 
 			me.installationPregress.show();
 			me.siteConfigurationContainer.el.mask('Installing New Site');
-			me.installationPregress.updateProgress(0, 'Creating Directory and Sub Directories');
-			SiteSetup.setSiteDirBySiteId(values.siteId, function(provider, response){
-				if(response.result.success){
 
-					me.installationPregress.updateProgress(.1, 'Creating Database Structure and Tables', true);
-					SiteSetup.createDatabaseStructure(values, function(provider, response){
-						if(response.result.success){
+            if(me.setSiteDirBySiteId(values.siteId)) return;
+            if(me.createDatabaseStructure(values)) return;
+            if(me.loadDatabaseData(values)) return;
+            if(me.createSConfigurationFile(values)) return;
+            if(me.createSiteAdmin(values)) return;
 
-							me.installationPregress.updateProgress(.2, 'Dumping Data Into Database', true);
-							SiteSetup.loadDatabaseData(values, function(provider, response){
-								if(response.result.success){
+            values['AESkey'] = me.AESKey;
+            for(var i = 0; i < codeFields.length; i++){
+                if(codeFields[i].getValue()) codes.push(codeFields[i].name);
+            }
+            me.installProgress = .5;
+            me.loadCodes(codes, function() {
+                me.installationPregress.updateProgress(1, 'Done!', true);
+                me.siteConfigurationContainer.el.unmask();
 
-									me.installationPregress.updateProgress(.4, 'Creating Configuration File', true);
-									SiteSetup.createSConfigurationFile(values, function(provider, response){
-										if(response.result.success){
-											values['AESkey'] = response.result.AESkey;
-											me.installationPregress.updateProgress(.6, 'Creating Administrator User', true);
-											SiteSetup.createSiteAdmin(values, function(provider, response){
-												if(response.result.success){
+                me.step[3] = {success: true};
+                me.okToGoNext(true);
+                values.siteURL = values.siteId != 'default' ? document.URL + '?site=' + values.siteId : document.URL;
 
-													for(var i = 0; i < codeFields.length; i++){
-														if(codeFields[i].getValue()) codes.push(codeFields[i].name);
-													}
-													me.installProgress = .5;
-													me.loadCodes(codes, function(){
-														me.installationPregress.updateProgress(1, 'Done!', true);
-														me.siteConfigurationContainer.el.unmask();
-
-														me.step[3] = { success:true };
-														me.okToGoNext(true);
-														values.siteURL = values.siteId != 'default' ? document.URL + '?site=' + values.siteId : document.URL;
-
-														me.onComplete(values)
-													});
-												}
-											});
-										}
-									});
-								}
-							});
-						}
-					});
-
-				}
-			});
+                me.onComplete(values)
+            });
 		},
+
+        setSiteDirBySiteId: function(siteId){
+            this.installationPregress.updateProgress(0, 'Creating Directory and Sub Directories');
+            SiteSetup.setSiteDirBySiteId(siteId, function(provider, response) {
+                if(response.result.success){
+                    return true;
+                } else {
+                    Ext.Msg.alert('Error', response.result.error);
+                    return false;
+                }
+            });
+        },
+
+        createDatabaseStructure: function(values){
+            this.installationPregress.updateProgress(.1, 'Creating Database Structure and Tables', true);
+            SiteSetup.createDatabaseStructure(values, function(provider, response) {
+                if(response.result.success){
+                    return true;
+                } else {
+                    Ext.Msg.alert('Error', response.result.error);
+                    return false;
+                }
+            });
+        },
+
+        loadDatabaseData: function(values){
+            this.installationPregress.updateProgress(.2, 'Dumping Data Into Database', true);
+            SiteSetup.loadDatabaseData(values, function(provider, response) {
+                if(response.result.success){
+                    return true;
+                } else {
+                    Ext.Msg.alert('Error', response.result.error);
+                    return false;
+                }
+            });
+        },
+
+        createSConfigurationFile: function(values){
+            this.installationPregress.updateProgress(.4, 'Creating Configuration File', true);
+            SiteSetup.createSConfigurationFile(values, function(provider, response) {
+                if(response.result.success){
+                    this.AESKey = response.result.AESkey;
+                    return true;
+                } else {
+                    Ext.Msg.alert('Error', response.result.error);
+                    return false;
+                }
+            });
+        },
+
+        createSiteAdmin: function(values){
+            this.installationPregress.updateProgress(.6, 'Creating Administrator User', true);
+            SiteSetup.createSiteAdmin(values, function(provider, response) {
+                if(response.result.success){
+                    return true;
+                } else {
+                    Ext.Msg.alert('Error', response.result.error);
+                    return false;
+                }
+            });
+        },
 
 		/*
 		 * Event: loadCodes

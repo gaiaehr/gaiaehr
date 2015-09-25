@@ -24,7 +24,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <meta content="utf-8" http-equiv="encoding">
     <title>GaiaEHR :: New Site Setup</title>
     <script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js"></script>
-    <link rel="stylesheet" type="text/css" href="resources/css/ext-all.css">
+    <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
     <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
 

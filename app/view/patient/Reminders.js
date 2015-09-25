@@ -20,7 +20,6 @@ Ext.define('App.view.patient.Reminders', {
 	extend: 'Ext.grid.Panel',
 	requires: [
 		'Ext.grid.plugin.RowEditing'
-
 	],
 	xtype: 'patientreminderspanel',
 	title: _('reminders'),

@@ -18,6 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: This ROUTER much be part of Matcha::Connect to handle request from the client, this way the Matcha::Connect is in control
+
 session_cache_limiter('private');
 session_cache_expire(1);
 session_regenerate_id(false);
@@ -110,7 +112,7 @@ function doRpc($cdata) {
 		// GaiaEHR does not recognized this transaction ID.');
 		//            }
 		//        }
-		if(!isset($API[$cdata->action])){
+		if(!isset($cdata->action)){
 			throw new Exception('Call to undefined action: ' . $cdata->action);
 		}
 		$action = $cdata->action;
@@ -119,10 +121,21 @@ function doRpc($cdata) {
 		$method = $cdata->method;
 
 		if(
+            // TODO: Create a config file for those classes and methods that not require authorization
+            // TODO: Create am authorization for the SiteSetup. This has security flaws
 			(isset($_SESSION['user']) && isset($_SESSION['user']['auth']) && $_SESSION['user']['auth']) ||
 			($action == 'authProcedures' && $method == 'login') ||
 			($action == 'CombosData' && $method == 'getActiveFacilities') ||
-			($action == 'i18nRouter' && $method == 'getAvailableLanguages')
+			($action == 'i18nRouter' && $method == 'getAvailableLanguages') ||
+            ($action == 'SiteSetup' && $method == 'checkRequirements') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'checkDatabaseCredentials') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'setSiteDirBySiteId') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'createDatabaseStructure') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'createSConfigurationFile') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'createSiteAdmin') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'loadDatabaseData') || // Used by SiteSetup
+            ($action == 'CombosData' && $method == 'getTimeZoneList') || // Used by SiteSetup
+            ($action == 'CombosData' && $method == 'getThemes') // Used by SiteSetup
 		){
 
 			$mdef = $a['methods'][$method];

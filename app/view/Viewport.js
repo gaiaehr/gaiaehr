@@ -1212,7 +1212,7 @@ Ext.define('App.view.Viewport', {
         });
     },
 
-    onDocumentView: function(id, type){
+    onDocumentView: function(id, type, site){
 	    app.getController('DocumentViewer').doDocumentView(id, type, site);
     },
 

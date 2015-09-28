@@ -76,7 +76,8 @@ Ext.define('App.controller.patient.Documents', {
 				documentedit: me.onDocumentEdit
 			},
 			'patientdocumentspanel': {
-				activate: me.onPatientDocumentPanelActive
+				activate: me.onPatientDocumentPanelActive,
+				beforerender: me.onPatientDocumentBeforeRender
 			},
 			'patientdocumentspanel #patientDocumentGrid': {
 				selectionchange: me.onPatientDocumentGridSelectionChange
@@ -103,6 +104,10 @@ Ext.define('App.controller.patient.Documents', {
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	onPatientDocumentBeforeRender: function(){
+		this.setViewerSite(app.user.site);
 	},
 
 	onDocumentEdit: function(data){
@@ -156,9 +161,9 @@ Ext.define('App.controller.patient.Documents', {
 		var frame = sm.view.panel.up('panel').query('#patientDocumentViewerFrame')[0];
 
 		if(records.length > 0){
-			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&token=' + app.user.token + '&id=' + records[0].data.id);
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + this.site + '&token=' + app.user.token + '&id=' + records[0].data.id);
 		}else{
-			frame.setSrc('dataProvider/DocumentViewer.php?site=' + site + '&token=' + app.user.token);
+			frame.setSrc('dataProvider/DocumentViewer.php?site=' + this.site + '&token=' + app.user.token);
 		}
 	},
 
@@ -432,5 +437,9 @@ Ext.define('App.controller.patient.Documents', {
 		};
 
 		reader.readAsDataURL(files[0]);
+	},
+
+	setViewerSite: function(site){
+		this.site = site;
 	}
 });

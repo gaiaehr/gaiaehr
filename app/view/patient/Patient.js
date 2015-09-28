@@ -601,7 +601,7 @@ Ext.define('App.view.patient.Patient', {
 				scope: me,
 				callback: function(record){
 
-					app.setPatient(record.data.pid, null, function(){
+					app.setPatient(record.data.pid, null, null, function(){
 
 						var insStore = record.insurance();
 

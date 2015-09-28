@@ -58,7 +58,7 @@ Ext.define('App.controller.patient.Patient', {
 
 		if(this.getPossiblePatientDuplicatesWindow().action != 'openPatientSummary') return;
 
-		app.setPatient(record.data.pid, null, function(){
+		app.setPatient(record.data.pid, null, null, function(){
 			app.openPatientSummary();
 			grid.up('window').close();
 		});

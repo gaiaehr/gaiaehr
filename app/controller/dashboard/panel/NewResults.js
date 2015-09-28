@@ -51,7 +51,7 @@ Ext.define('App.controller.dashboard.panel.NewResults', {
 	onDashboardNewResultsGridItemDoubleClick: function(grid, record){
 		grid.el.mask(_('please_wait'));
 
-		app.setPatient(record.data.pid, null, function(){
+		app.setPatient(record.data.pid, null, null, function(){
 			app.openPatientSummary();
 			app.onMedicalWin('laboratories');
 			grid.el.unmask();

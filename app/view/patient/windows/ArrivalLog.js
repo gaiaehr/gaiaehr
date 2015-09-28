@@ -180,7 +180,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
         var me = this,
             data = record.data;
 	    // TODO: pass priority!
-        app.setPatient(data.pid, data.name, function(){
+        app.setPatient(data.pid, data.name, null, function(){
             app.openPatientSummary();
         });
         me.close();

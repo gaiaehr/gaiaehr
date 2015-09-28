@@ -552,7 +552,7 @@ Ext.define('App.controller.patient.CCDImport', {
 					me.getCcdImportWindow().close();
 					me.getCcdImportPreviewWindow().close();
 
-					app.setPatient(pid, null, function(){
+					app.setPatient(pid, null, null, function(){
 						app.openPatientSummary();
 					});
 

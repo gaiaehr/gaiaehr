@@ -745,7 +745,7 @@ Ext.define('App.view.Viewport', {
                         emergency = response.result.emergency;
                         if(response.result.success){
 
-                            me.setPatient(emergency.pid, emergency.eid, function(){
+                            me.setPatient(emergency.pid, emergency.eid, null, function(){
                                 me.openEncounter(emergency.eid);
                             });
                             me.msg('Sweet!', emergency.name + ' ' + _('created'))
@@ -885,7 +885,7 @@ Ext.define('App.view.Viewport', {
 	        post = selection[0];
 
         if(post){
-            me.setPatient(post.get('pid'), null, function(){
+            me.setPatient(post.get('pid'), null, null, function(){
 	            combo.reset();
                 me.openPatientSummary();
             });
@@ -900,11 +900,11 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-    setPatient: function(pid, eid, callback){
+    setPatient: function(pid, eid, site, callback){
         var me = this;
 	    me.unsetPatient(null, true);
 
-        Patient.getPatientSetDataByPid({ pid:pid, prevPid:me.patient.pid }, function(provider, response){
+        Patient.getPatientSetDataByPid({ pid:pid, prevPid:me.patient.pid, site:site }, function(provider, response){
             var data = response.result,
                 msg1,
                 msg2;
@@ -1238,7 +1238,7 @@ Ext.define('App.view.Viewport', {
 	            }else if(data.patientData.floorPlanId === null || data.patientData.floorPlanId === 0){
 	            }
 
-	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
+	            me.setPatient(data.patientData.pid, data.patientData.eid, null, function(){
                     // if encounter id is set and pool area is check out....  go to Patient Checkout panel
                     if(data.patientData.eid && data.patientData.poolArea == 'Checkout'){
                         me.checkOutPatient(data.patientData.eid);
@@ -1292,7 +1292,7 @@ Ext.define('App.view.Viewport', {
 	    var me = this,
 		    params = me.nav.getUrlParams();
 		if(params[1]){
-			me.setPatient(params[1], null, function(){
+			me.setPatient(params[1], null, null, function(){
 				Ext.Function.defer(function(){
 					me.nav.navigateTo('App.view.patient.Summary');
 				}, 500);

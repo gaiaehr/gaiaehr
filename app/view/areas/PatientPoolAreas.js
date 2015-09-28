@@ -162,7 +162,7 @@ Ext.define('App.view.areas.PatientPoolAreas', {
 	onPatientDblClick: function(store, record){
 		var data = record.data;
 		// TODO: set priority
-		app.setPatient(data.pid, data.name, function(){
+		app.setPatient(data.pid, data.name, null, function(){
 			app.openPatientSummary();
 		});
 	},

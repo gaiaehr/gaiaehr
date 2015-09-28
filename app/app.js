@@ -20276,7 +20276,7 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
         var me = this,
             data = record.data;
 	    // TODO: pass priority!
-        app.setPatient(data.pid, data.name, function(){
+        app.setPatient(data.pid, data.name, null, function(){
             app.openPatientSummary();
         });
         me.close();
@@ -36289,7 +36289,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 	},
 
 	onZoneClicked: function(btn){
-		app.setPatient(btn.data.pid, btn.data.name, function(){
+		app.setPatient(btn.data.pid, btn.data.name, null, function(){
 			btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
 		});
 	},
@@ -36631,7 +36631,7 @@ Ext.define('App.controller.dashboard.panel.NewResults', {
 	onDashboardNewResultsGridItemDoubleClick: function(grid, record){
 		grid.el.mask(_('please_wait'));
 
-		app.setPatient(record.data.pid, null, function(){
+		app.setPatient(record.data.pid, null, null, function(){
 			app.openPatientSummary();
 			app.onMedicalWin('laboratories');
 			grid.el.unmask();
@@ -36909,7 +36909,7 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 			me.getAmendmentDetailsResponseText().hide();
 			me.getAmendmentDetailsResponseText().setText('');
 
-			app.setPatient(record.data.pid, null, function(patient){
+			app.setPatient(record.data.pid, null, null, function(patient){
 				if(patient.pid === null){
 					app.msg(_('oops'), _('patient_not_found'), true);
 					me.getAmendmentDetailsApproveBtn().setDisabled(!a('amendments_response'));
@@ -37030,7 +37030,7 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 					record.save({
 						callback: function(){
 							app.msg(_('sweet'), _('record_saved'));
-							app.setPatient(record.data.pid, null, function(){
+							app.setPatient(record.data.pid, null, null, function(){
 								app.openPatientSummary();
 							});
 
@@ -39291,7 +39291,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39361,8 +39361,8 @@ Ext.define('App.controller.patient.CCDImport', {
 
 		App.model.patient.Patient.load(pid, {
 			success: function(patient) {
-
 				pForm.loadRecord(patient);
+
 				if(patient.data.race && patient.data.race !== ''){
 					CombosData.getDisplayValueByListIdAndOptionValue(14, patient.data.race, function(response){
 						pForm.findField('race_text').setValue(response);
@@ -39377,7 +39377,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                        phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39457,7 +39457,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                    phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39477,7 +39477,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.data.phone_use_code + '-' + response.data.phone_area_code + '-' + response.data.phone_local_number
+                    phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39646,7 +39646,7 @@ Ext.define('App.controller.patient.CCDImport', {
 					me.getCcdImportWindow().close();
 					me.getCcdImportPreviewWindow().close();
 
-					app.setPatient(pid, null, function(){
+					app.setPatient(pid, null, null, function(){
 						app.openPatientSummary();
 					});
 
@@ -41058,7 +41058,7 @@ Ext.define('App.controller.patient.Patient', {
 
 		if(this.getPossiblePatientDuplicatesWindow().action != 'openPatientSummary') return;
 
-		app.setPatient(record.data.pid, null, function(){
+		app.setPatient(record.data.pid, null, null, function(){
 			app.openPatientSummary();
 			grid.up('window').close();
 		});
@@ -47430,7 +47430,7 @@ Ext.define('App.view.areas.PatientPoolAreas', {
 	onPatientDblClick: function(store, record){
 		var data = record.data;
 		// TODO: set priority
-		app.setPatient(data.pid, data.name, function(){
+		app.setPatient(data.pid, data.name, null, function(){
 			app.openPatientSummary();
 		});
 	},
@@ -50192,7 +50192,7 @@ Ext.define('App.view.patient.Patient', {
 				scope: me,
 				callback: function(record){
 
-					app.setPatient(record.data.pid, null, function(){
+					app.setPatient(record.data.pid, null, null, function(){
 
 						var insStore = record.insurance();
 
@@ -57343,7 +57343,7 @@ Ext.define('App.view.Viewport', {
                         emergency = response.result.emergency;
                         if(response.result.success){
 
-                            me.setPatient(emergency.pid, emergency.eid, function(){
+                            me.setPatient(emergency.pid, emergency.eid, null, function(){
                                 me.openEncounter(emergency.eid);
                             });
                             me.msg('Sweet!', emergency.name + ' ' + _('created'))
@@ -57483,7 +57483,7 @@ Ext.define('App.view.Viewport', {
 	        post = selection[0];
 
         if(post){
-            me.setPatient(post.get('pid'), null, function(){
+            me.setPatient(post.get('pid'), null, null, function(){
 	            combo.reset();
                 me.openPatientSummary();
             });
@@ -57498,11 +57498,11 @@ Ext.define('App.view.Viewport', {
 		}
 	},
 
-    setPatient: function(pid, eid, callback){
+    setPatient: function(pid, eid, site, callback){
         var me = this;
 	    me.unsetPatient(null, true);
 
-        Patient.getPatientSetDataByPid({ pid:pid, prevPid:me.patient.pid }, function(provider, response){
+        Patient.getPatientSetDataByPid({ pid:pid, prevPid:me.patient.pid, site:site }, function(provider, response){
             var data = response.result,
                 msg1,
                 msg2;
@@ -57836,7 +57836,7 @@ Ext.define('App.view.Viewport', {
 	            }else if(data.patientData.floorPlanId === null || data.patientData.floorPlanId === 0){
 	            }
 
-	            me.setPatient(data.patientData.pid, data.patientData.eid, function(){
+	            me.setPatient(data.patientData.pid, data.patientData.eid, null, function(){
                     // if encounter id is set and pool area is check out....  go to Patient Checkout panel
                     if(data.patientData.eid && data.patientData.poolArea == 'Checkout'){
                         me.checkOutPatient(data.patientData.eid);
@@ -57890,7 +57890,7 @@ Ext.define('App.view.Viewport', {
 	    var me = this,
 		    params = me.nav.getUrlParams();
 		if(params[1]){
-			me.setPatient(params[1], null, function(){
+			me.setPatient(params[1], null, null, function(){
 				Ext.Function.defer(function(){
 					me.nav.navigateTo('App.view.patient.Summary');
 				}, 500);

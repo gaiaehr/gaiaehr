@@ -234,7 +234,7 @@ Ext.define('App.controller.areas.FloorPlan', {
 	},
 
 	onZoneClicked: function(btn){
-		app.setPatient(btn.data.pid, btn.data.name, function(){
+		app.setPatient(btn.data.pid, btn.data.name, null, function(){
 			btn.data.eid ? app.openEncounter(btn.data.eid) : app.openPatientSummary();
 		});
 	},

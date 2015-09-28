@@ -205,7 +205,7 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 			me.getAmendmentDetailsResponseText().hide();
 			me.getAmendmentDetailsResponseText().setText('');
 
-			app.setPatient(record.data.pid, null, function(patient){
+			app.setPatient(record.data.pid, null, null, function(patient){
 				if(patient.pid === null){
 					app.msg(_('oops'), _('patient_not_found'), true);
 					me.getAmendmentDetailsApproveBtn().setDisabled(!a('amendments_response'));
@@ -326,7 +326,7 @@ Ext.define('App.controller.miscellaneous.Amendments', {
 					record.save({
 						callback: function(){
 							app.msg(_('sweet'), _('record_saved'));
-							app.setPatient(record.data.pid, null, function(){
+							app.setPatient(record.data.pid, null, null, function(){
 								app.openPatientSummary();
 							});
 

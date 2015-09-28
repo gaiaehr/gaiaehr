@@ -784,9 +784,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
                     'patient.encounter.SuperBill'
                 ],
                 launch: function() {
-
                     App.Current = this;
-
                     CronJob.run(function(){
                         say('Loading GaiaEHR');
                         window.app = Ext.create('App.view.Viewport');

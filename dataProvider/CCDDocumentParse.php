@@ -20,6 +20,7 @@ include_once(ROOT . '/classes/Array2XML.php');
 include_once(ROOT . '/classes/XML2Array.php');
 include_once(ROOT . '/dataProvider/SnomedCodes.php');
 include_once(ROOT . '/dataProvider/Person.php');
+include_once(ROOT . '/dataProvider/PatientContacts.php');
 
 class CCDDocumentParse {
 
@@ -140,6 +141,7 @@ class CCDDocumentParse {
 		// address
         // TODO: Here we need to create a new Patient Contact record. (Self)
 		$a = isset($dom['addr']) ? $dom['addr'] : [];
+        //$PatientContact = new PatientContacts();
 		$patient->address = isset($a['streetAddressLine']) ? $a['streetAddressLine'] : '';
 		$patient->city = isset($a['city']) ? $a['city'] : '';
 		$patient->state = isset($a['state']) ? $a['state'] : '';

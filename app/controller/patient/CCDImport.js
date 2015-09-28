@@ -197,7 +197,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -283,7 +283,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -363,7 +363,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -383,7 +383,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -595,7 +595,6 @@ Ext.define('App.controller.patient.CCDImport', {
 		record.save({
 			callback: function(record){
 				app.onDocumentView(record.data.id, 'ccd');
-				say(record.data.id);
 			}
 		});
 	}

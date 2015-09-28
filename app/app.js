@@ -39291,7 +39291,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39377,7 +39377,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39457,7 +39457,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39477,7 +39477,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response[0].phone_use_code + '-' + response[0].phone_area_code + '-' + response[0].phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39689,7 +39689,6 @@ Ext.define('App.controller.patient.CCDImport', {
 		record.save({
 			callback: function(record){
 				app.onDocumentView(record.data.id, 'ccd');
-				say(record.data.id);
 			}
 		});
 	}
@@ -51284,9 +51283,10 @@ Ext.define('App.controller.DocumentViewer', {
 		DocumentHandler.destroyTempDocument({id: win.documentId});
 	},
 
-	doDocumentView: function(id, type){
+	doDocumentView: function(id, type, site){
+
 		var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-			src = 'dataProvider/DocumentViewer.php?site='+ site +'&id='+id + '&token=' + app.user.token,
+			src = 'dataProvider/DocumentViewer.php?site=' + site || app.user.site + '&id=' + id + '&token=' + app.user.token,
 			win;
 
 		if(typeof type != 'undefined') src += '&temp=' + type;
@@ -57811,7 +57811,7 @@ Ext.define('App.view.Viewport', {
     },
 
     onDocumentView: function(id, type){
-	    app.getController('DocumentViewer').doDocumentView(id, type);
+	    app.getController('DocumentViewer').doDocumentView(id, type, site);
     },
 
     /**

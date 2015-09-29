@@ -17523,6 +17523,11 @@ Ext.define('App.model.patient.PatientDocuments', {
 			dateFormat: 'Y-m-d',
 			store: false,
 			convert: function(v, record){
+				say('groupDate');
+				say(record.data.date);
+				say(record.get('date'));
+				say(Ext.Date.format(record.get('date'), 'Y-m-d'));
+
 				return Ext.Date.format(record.data.date, 'Y-m-d');
 			}
 		},

@@ -46,6 +46,26 @@ class Medications {
 			->all();
 	}
 
+    public function getPatientMedicationsOrders($params){
+
+        $params->filter[1] = new stdClass();
+        $params->filter[1] = 'date_ordered IS NOT NULL';
+
+        if(isset($params->reconciled) && $params->reconciled == true){
+            $groups = new stdClass();
+            $groups->group[0] = new stdClass();
+            $groups->group[0]->property = 'RXCUI';
+
+            return $this->m->load($params)
+                ->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')
+                ->group($groups)->all();
+        }
+
+        return $this->m->load($params)
+            ->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')
+            ->all();
+    }
+
 	public function getPatientMedication($params) {
 		return $this->m->load($params)
 			->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')

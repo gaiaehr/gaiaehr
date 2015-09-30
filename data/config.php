@@ -1075,6 +1075,9 @@ $API = [
 			'getPatientMedications' => [
 				'len' => 1
             ],
+            'getPatientMedicationsOrders' => [
+                'len' => 1
+            ],
 			'getPatientMedication' => [
 				'len' => 1
             ],

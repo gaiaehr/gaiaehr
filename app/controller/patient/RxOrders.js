@@ -224,8 +224,8 @@ Ext.define('App.controller.patient.RxOrders', {
 		var me = this;
 
 		Ext.Msg.show({
-			title: 'Wait!',
-			msg: 'Are you sure you want to clone this prescription?',
+			title: _('wait'),
+			msg: _('sure_you_want_clone_prescription'),
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -296,7 +296,16 @@ Ext.define('App.controller.patient.RxOrders', {
 		if(isSingleColumnTable){
 			columns = [''];
 		}else{
-			columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+			columns = [
+                'Description',
+                'Instructions',
+                'Dispense',
+                'Refill',
+                'Days Supply',
+                'Dx',
+                'Notes',
+                'References'
+            ];
 		}
 
 		params.orderItems.push(columns);

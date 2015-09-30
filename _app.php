@@ -559,6 +559,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.LaboratoryTypes',
 	                'patient.MeaningfulUseAlert',
 	                'patient.Medications',
+                    'patient.RxOrders',
 	                'patient.Notes',
 	                'patient.Patient',
                     'patient.PatientContacts',

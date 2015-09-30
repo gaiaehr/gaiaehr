@@ -42,7 +42,17 @@ Ext.define('App.view.patient.LabOrders', {
 				property: 'date_ordered',
 				direction: 'DESC'
 			}
-		]
+		],
+        proxy: {
+            type: 'direct',
+            api: {
+                read: 'Orders.getPatientLabOrders',
+                create: 'Orders.addPatientOrder',
+                update: 'Orders.updatePatientOrder',
+                destroy: 'Orders.deletePatientOrder'
+            },
+            remoteGroup: false
+        }
 	}),
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false

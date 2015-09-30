@@ -64,6 +64,10 @@ class Orders {
 	 */
 	public function getPatientOrders($params){
 		$this->setOrders();
+        $params->filter[2] = new stdClass();
+        $params->filter[2]->property = 'priority';
+        $params->filter[2]->operator = '<>';
+        $params->filter[2]->value = '';
 		return $this->o->load($params)->all();
 	}
 

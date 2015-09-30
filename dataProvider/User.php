@@ -258,4 +258,34 @@ class User {
 		    'data' => array_slice($records, $params->start, $params->limit)
 		];
 	}
+
+	public function getUsersByAcl($acl){
+
+		$acls = explode('&' , $acl);
+		foreach($acls as &$acl){
+			$acl = '`ap`.`perm_key` = \'' . $acl . '\'';
+		}
+		$count = count($acls);
+		$where = implode(' OR ',  $acls);
+
+		$sql = "SELECT `u`.*, `ar`.`role_name` AS role FROM users AS u
+                 	LEFT JOIN `acl_roles` AS ar ON `ar`.`id` = `u`.`role_id`
+ 					WHERE `u`.`id` IN (
+					    SELECT  `up`.`id` FROM `users` AS up
+					    LEFT JOIN `acl_role_perms` AS arp ON `arp`.`role_id` = `up`.`role_id`
+					    LEFT JOIN `acl_permissions` AS ap ON `ap`.`id` = `arp`.`perm_id`
+ 						WHERE `arp`.`value` = 1 AND ( {$where} )
+					   	GROUP BY `up`.`id`
+					    HAVING COUNT(`up`.`id`) = {$count}
+					) AND (
+		                active = 1
+	                )";
+
+		$records = $this->u->sql($sql)->all();
+
+		return [
+			'total' => count($records),
+			'data' => $records
+		];
+	}
 }

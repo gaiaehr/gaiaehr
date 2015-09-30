@@ -43,13 +43,16 @@ Ext.define('App.view.patient.Medications', {
 			action: 'patientMedicationsListGrid',
 			itemId: 'patientMedicationsGrid',
 			columnLines: true,
+            features: [{ftype:'grouping'}],
 			store: Ext.create('App.store.patient.Medications', {
-				autoSync: false
+				autoSync: false,
+                startCollapsed: true
 			}),
 			columns: [
 				{
 					xtype: 'actioncolumn',
 					width: 25,
+                    groupable: false,
 					items: [
 						{
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
@@ -63,6 +66,8 @@ Ext.define('App.view.patient.Medications', {
 				{
 					header: _('medication'),
 					flex: 1,
+                    groupable: true,
+                    hidden: true,
 					minWidth: 200,
 					dataIndex: 'STR',
 					editor: {
@@ -88,6 +93,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					text: _('directions'),
 					dataIndex: 'directions',
+                    groupable: false,
 					flex: 1,
 					editor: {
 						xtype: 'textfield'
@@ -96,6 +102,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					text: _('dispense'),
 					dataIndex: 'dispense',
+                    groupable: false,
 					with: 200,
 					editor: {
 						xtype: 'textfield',
@@ -104,6 +111,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					text: _('administered'),
+                    groupable: false,
 					columns:[
 						{
 							text: _('user'),
@@ -130,6 +138,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					xtype: 'datecolumn',
+                    groupable: false,
 					format: 'Y-m-d',
 					header: _('begin_date'),
 					width: 90,
@@ -139,6 +148,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					xtype: 'datecolumn',
+                    groupable: false,
 					format: 'Y-m-d',
 					header: _('end_date'),
 					width: 90,
@@ -152,6 +162,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					header: _('active?'),
+                    groupable: false,
 					width: 60,
 					dataIndex: 'active',
 					renderer: function(v){

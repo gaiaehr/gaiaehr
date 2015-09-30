@@ -92,7 +92,7 @@ class Matcha {
 				$dbPass = (string)$databaseParameters['pass'];
 
 				self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
-					PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+					//PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
 					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 					PDO::ATTR_PERSISTENT => false,
 				));

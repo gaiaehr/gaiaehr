@@ -49,7 +49,8 @@ class Medications {
     public function getPatientMedicationsOrders($params){
 
         $params->filter[1] = new stdClass();
-        $params->filter[1] = 'date_ordered IS NOT NULL';
+        $params->filter[1]->property = 'date_ordered';
+        $params->filter[1]->operator = 'IS NOT NULL';
 
         if(isset($params->reconciled) && $params->reconciled == true){
             $groups = new stdClass();

@@ -233,7 +233,6 @@ class MatchaCUP {
 
 			if(is_null($where) && (isset($this->filters) || isset($this->sorters)))
 				$where = new stdClass();
-
 			if(!is_object($where)){
 				$this->isSenchaRequest = false;
 				// columns
@@ -259,7 +258,6 @@ class MatchaCUP {
 					$where = $this->ifDataEncrypt($this->primaryKey, $where);
 					$where = $this->where($where);
 					$wherex = "`{$this->table}`.`$this->primaryKey`= $where ";
-
 				} elseif(is_array($where)) {
 					$wherex = self::parseWhereArray($where);
 				} elseif(is_string($where)) {

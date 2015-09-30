@@ -469,6 +469,9 @@ $API = [
 			'getPatientOrders' => [
 				'len' => 1
             ],
+            'getPatientLabOrders' => [
+                'len' => 1
+            ],
 			'addPatientOrder' => [
 				'len' => 1
             ],

@@ -1621,5 +1621,6 @@ $LANG = array(
     'you_should_logout_before_quitting'     => 'You Should Logout Before Quitting',
     'condition'                             => 'Condition',
     'no_history_selected'                   => 'No History Selected',
-    'missing_required_information'          => 'Missing Required Information'
+    'missing_required_information'          => 'Missing Required Information',
+    'sure_you_want_clone_prescription'      => 'Are you sure you want to clone this prescription?'
 );

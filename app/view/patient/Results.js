@@ -58,6 +58,19 @@ Ext.define('App.view.patient.Results', {
 						}
 					]
 				},
+                {
+                    xtype: 'datecolumn',
+                    format: 'Y-m-d',
+                    header: _('date_ordered'),
+                    dataIndex: 'date_ordered',
+                    menuDisabled: true,
+                    resizable: false,
+                    width: 100,
+                    editor: {
+                        xtype: 'datefield',
+                        allowBlank: false
+                    }
+                },
 				{
 					header: _('orders'),
 					dataIndex: 'description',

@@ -59,6 +59,20 @@ Ext.define('App.view.patient.Results', {
 					]
 				},
                 {
+                    header: _('type'),
+                    width: 80,
+                    dataIndex: 'order_type',
+                    align: 'center',
+                    renderer: function(value){
+                        if(value === 'lab'){
+                            return 'Laboratory';
+                        }
+                        if(value === 'rad'){
+                            return 'Radiology';
+                        }
+                    }
+                },
+                {
                     xtype: 'datecolumn',
                     format: 'Y-m-d',
                     header: _('date_ordered'),

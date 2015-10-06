@@ -86,6 +86,16 @@ Ext.define('App.model.patient.PatientDocuments', {
 			defaultValue: 0
 		},
 		{
+			name: 'entered_in_error',
+			type: 'bool',
+			defaultValue: 0
+		},
+		{
+			name: 'error_note',
+			type: 'string',
+			len: 300
+		},
+		{
 			name: 'groupDate',
 			type: 'date',
 			store: false,

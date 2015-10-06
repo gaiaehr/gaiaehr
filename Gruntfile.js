@@ -242,6 +242,7 @@ module.exports = function(grunt){
 					'app/view/patient/windows/DocumentViewer.js',
 					'app/view/patient/windows/NewEncounter.js',
 					'app/view/patient/windows/ArrivalLog.js',
+					'app/view/patient/windows/DocumentErrorNote.js',
 					'app/store/patient/CheckoutAlertArea.js',
 					'app/model/patient/Patient.js',
 					'app/model/patient/PatientPossibleDuplicate.js',

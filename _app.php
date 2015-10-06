@@ -609,6 +609,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	                'patient.windows.NewEncounter',
 	                'patient.windows.ArrivalLog',
 	                'patient.windows.EncounterCheckOut',
+	                'patient.windows.DocumentErrorNote',
 	                /**
 	                 * Load the patient related panels
 	                 */

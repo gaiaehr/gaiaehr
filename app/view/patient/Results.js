@@ -386,15 +386,23 @@ Ext.define('App.view.patient.Results', {
                     ]
                 },
                 {
-                    xtype: 'container',
+                    xtype: 'form',
                     title: _('radiology_result'),
-                    itemId: 'RadiologyResultForm',
+                    itemId: 'radiologyResultForm',
+                    frame: true,
+                    layout: {
+                        type: 'border'
+                    },
+                    items: [
+                        {
+                        }
+                    ],
                     dockedItems: [
                         {
                             xtype: 'toolbar',
                             dock: 'bottom',
                             ui: 'footer',
-                            itemId: 'OrderResultBottomToolbar',
+                            itemId: 'radiologyResultBottomToolbar',
                             defaults: {
                                 minWidth: 75
                             },

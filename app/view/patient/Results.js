@@ -387,7 +387,8 @@ Ext.define('App.view.patient.Results', {
                 },
                 {
                     xtype: 'container',
-                    title: _('radiology_result')
+                    title: _('radiology_result'),
+                    itemId: 'RadiologyResultForm',
                 }
             ]
         }

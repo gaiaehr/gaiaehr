@@ -1286,6 +1286,7 @@ $LANG = array(
 	'children_fields_must_be_remove_first'  => 'Children fields must be removed first',
 	'order'                                 => 'Order',
 	'order_result'                          => 'Order Result',
+    'radiology_result'                      => 'Radiology Result',
 	'lab_order'                             => 'Lab Order',
 	'report_info'                           => 'Report Info',
 	'report_date'                           => 'Report Date',

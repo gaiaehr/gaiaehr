@@ -17518,6 +17518,16 @@ Ext.define('App.model.patient.PatientDocuments', {
 			defaultValue: 0
 		},
 		{
+			name: 'entered_in_error',
+			type: 'bool',
+			defaultValue: 0
+		},
+		{
+			name: 'error_note',
+			type: 'string',
+			len: 300
+		},
+		{
 			name: 'groupDate',
 			type: 'date',
 			store: false,
@@ -20302,6 +20312,45 @@ Ext.define('App.view.patient.windows.ArrivalLog', {
 
 });
 
+Ext.define('App.view.patient.windows.DocumentErrorNote', {
+	extend: 'Ext.window.Window',
+	xtype: 'patientdocumenterrornotewindow',
+	draggable: false,
+	modal: true,
+	autoShow: true,
+	title: _('error_note'),
+	items: [
+		{
+			xtype: 'form',
+			bodyPadding: 10,
+			width: 400,
+			items: [
+				{
+
+					xtype: 'textareafield',
+					anchor: '100%',
+					labelWidth: 70,
+					labelAlign: 'top',
+					name: 'error_note',
+					allowBlank: false
+				}
+			]
+		}
+	],
+	buttons: [
+		{
+			text: _('cancel'),
+			itemId: 'DocumentErrorNoteCancelBtn',
+			handler: function(btn){
+				btn.up('window').close();
+			}
+		},
+		{
+			text: _('save'),
+			itemId: 'DocumentErrorNoteSaveBtn'
+		}
+	]
+});
 Ext.define('App.store.patient.CheckoutAlertArea', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.CheckoutAlertArea',
@@ -23443,8 +23492,8 @@ Ext.define('App.store.patient.PatientActiveProblems', {
 Ext.define('App.store.patient.Medications', {
 	extend: 'Ext.data.Store',
 	model     : 'App.model.patient.Medications',
-//    remoteSort: false,
-//	autoLoad  : false
+    groupField: 'STR',
+    startCollapsed: true
 });
 Ext.define('App.view.patient.ItemsToReview', {
 	extend: 'Ext.panel.Panel',
@@ -24660,6 +24709,33 @@ Ext.define('App.view.patient.Results', {
 						}
 					]
 				},
+                {
+                    header: _('type'),
+                    width: 80,
+                    dataIndex: 'order_type',
+                    align: 'center',
+                    renderer: function(value){
+                        if(value === 'lab'){
+                            return 'Laboratory';
+                        }
+                        if(value === 'rad'){
+                            return 'Radiology';
+                        }
+                    }
+                },
+                {
+                    xtype: 'datecolumn',
+                    format: 'Y-m-d',
+                    header: _('date_ordered'),
+                    dataIndex: 'date_ordered',
+                    menuDisabled: true,
+                    resizable: false,
+                    width: 100,
+                    editor: {
+                        xtype: 'datefield',
+                        allowBlank: false
+                    }
+                },
 				{
 					header: _('orders'),
 					dataIndex: 'description',
@@ -41835,8 +41911,8 @@ Ext.define('App.controller.patient.RxOrders', {
 		var me = this;
 
 		Ext.Msg.show({
-			title: 'Wait!',
-			msg: 'Are you sure you want to clone this prescription?',
+			title: _('wait'),
+			msg: _('sure_you_want_clone_prescription'),
 			buttons: Ext.Msg.YESNO,
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
@@ -41907,7 +41983,16 @@ Ext.define('App.controller.patient.RxOrders', {
 		if(isSingleColumnTable){
 			columns = [''];
 		}else{
-			columns = ['Description', 'Instructions', 'Dispense', 'Refill', 'Days Supply', 'Dx', 'Notes', 'References'];
+			columns = [
+                'Description',
+                'Instructions',
+                'Dispense',
+                'Refill',
+                'Days Supply',
+                'Dx',
+                'Notes',
+                'References'
+            ];
 		}
 
 		params.orderItems.push(columns);
@@ -44106,13 +44191,16 @@ Ext.define('App.view.patient.Medications', {
 			action: 'patientMedicationsListGrid',
 			itemId: 'patientMedicationsGrid',
 			columnLines: true,
+            features: [{ftype:'grouping'}],
 			store: Ext.create('App.store.patient.Medications', {
-				autoSync: false
+				autoSync: false,
+                startCollapsed: true
 			}),
 			columns: [
 				{
 					xtype: 'actioncolumn',
 					width: 25,
+                    groupable: false,
 					items: [
 						{
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
@@ -44126,6 +44214,8 @@ Ext.define('App.view.patient.Medications', {
 				{
 					header: _('medication'),
 					flex: 1,
+                    groupable: true,
+                    hidden: true,
 					minWidth: 200,
 					dataIndex: 'STR',
 					editor: {
@@ -44151,6 +44241,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					text: _('directions'),
 					dataIndex: 'directions',
+                    groupable: false,
 					flex: 1,
 					editor: {
 						xtype: 'textfield'
@@ -44159,6 +44250,7 @@ Ext.define('App.view.patient.Medications', {
 				{
 					text: _('dispense'),
 					dataIndex: 'dispense',
+                    groupable: false,
 					with: 200,
 					editor: {
 						xtype: 'textfield',
@@ -44167,6 +44259,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					text: _('administered'),
+                    groupable: false,
 					columns:[
 						{
 							text: _('user'),
@@ -44193,6 +44286,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					xtype: 'datecolumn',
+                    groupable: false,
 					format: 'Y-m-d',
 					header: _('begin_date'),
 					width: 90,
@@ -44202,6 +44296,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					xtype: 'datecolumn',
+                    groupable: false,
 					format: 'Y-m-d',
 					header: _('end_date'),
 					width: 90,
@@ -44215,6 +44310,7 @@ Ext.define('App.view.patient.Medications', {
 				},
 				{
 					header: _('active?'),
+                    groupable: false,
 					width: 60,
 					dataIndex: 'active',
 					renderer: function(v){
@@ -44418,7 +44514,17 @@ Ext.define('App.view.patient.LabOrders', {
 				property: 'date_ordered',
 				direction: 'DESC'
 			}
-		]
+		],
+        proxy: {
+            type: 'direct',
+            api: {
+                read: 'Orders.getPatientLabOrders',
+                create: 'Orders.addPatientOrder',
+                update: 'Orders.updatePatientOrder',
+                destroy: 'Orders.deletePatientOrder'
+            },
+            remoteGroup: false
+        }
 	}),
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
@@ -45172,14 +45278,26 @@ Ext.define('App.view.patient.Documents', {
 					{
 						header: _('category'),
 						dataIndex: 'docType',
-						itemId: 'docType'
+						itemId: 'docType',
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
+							return v;
+						}
 					},
 					{
 						xtype: 'datecolumn',
 						header: _('date'),
 						dataIndex: 'groupDate',
 						format: g('date_display_format'),
-						itemId: 'groupDate'
+						itemId: 'groupDate',
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
+							return v;
+						}
 
 					},
 					{
@@ -45189,13 +45307,22 @@ Ext.define('App.view.patient.Documents', {
 						editor: {
 							xtype: 'textfield',
 							action: 'title'
+						},
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
+							return v;
 						}
 					},
 					{
 						header: _('encrypted'),
 						dataIndex: 'encrypted',
 						width: 70,
-						renderer: function(v){
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
 							return app.boolRenderer(v);
 						}
 					}
@@ -51734,6 +51861,10 @@ Ext.define('App.controller.patient.Documents', {
 		{
 			ref: 'DocumentUploadBtn',
 			selector: 'patientdocumentspanel #documentUploadBtn'
+		},
+		{
+			ref: 'PatientDocumentErrorNoteWindow',
+			selector: 'patientdocumenterrornotewindow'
 		}
 	],
 
@@ -51772,11 +51903,59 @@ Ext.define('App.controller.patient.Documents', {
 			},
 			'#patientDocumentUploadWindow #scanBtn': {
 				click: me.onDocumentUploadScanBtnClick
+			},
+
+
+			'#DocumentErrorNoteSaveBtn': {
+				click: me.onDocumentErrorNoteSaveBtnClick
 			}
 		});
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	setDocumentInError: function(document_record){
+		var me = this;
+
+		Ext.Msg.show({
+			title: _('wait'),
+			msg: _('document_entered_in_error_message'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes'){
+					var win = me.showPatientDocumentErrorNoteWindow();
+					win.down('form').getForm().loadRecord(document_record);
+				}
+			}
+		});
+	},
+
+	onDocumentErrorNoteSaveBtnClick: function(){
+		var me = this,
+			win = me.getPatientDocumentErrorNoteWindow(),
+			form = win.down('form').getForm(),
+			values = form.getValues(),
+			record = form.getRecord();
+
+
+		if(form.isValid()){
+			values.entered_in_error = true;
+			record.set(values);
+			record.save({
+				success: function(){
+					win.close();
+				}
+			});
+		}
+	},
+
+	showPatientDocumentErrorNoteWindow: function(){
+		if(!this.getPatientDocumentErrorNoteWindow()){
+			Ext.create('App.view.patient.windows.DocumentErrorNote');
+		}
+		return this.getPatientDocumentErrorNoteWindow().show();
 	},
 
 	onPatientDocumentBeforeRender: function(){
@@ -51791,7 +51970,7 @@ Ext.define('App.controller.patient.Documents', {
 		if(record){
 			var src = data.save.document.split(',');
 
-			record.set({ document: (src[1] || src[0]) });
+			record.set({document: (src[1] || src[0])});
 			record.save({
 				success: function(){
 					if(window.dual){
@@ -51861,7 +52040,7 @@ Ext.define('App.controller.patient.Documents', {
 		]);
 	},
 
-	doSelectDocument:function(store){
+	doSelectDocument: function(store){
 		var me = this,
 			grid = me.activePAnel.down('grid'),
 			params = me.nav.getExtraParams();
@@ -51894,14 +52073,14 @@ Ext.define('App.controller.patient.Documents', {
 		this.setDocumentUploadWindow('click');
 	},
 
-	setDocumentUploadWindow:function(action){
+	setDocumentUploadWindow: function(action){
 		var record = this.getNewPatientDocumentRecord(),
 			win = this.getUploadWindow(action);
 		win.down('form').getForm().loadRecord(record);
 		return win;
 	},
 
-	getNewPatientDocumentRecord:function(){
+	getNewPatientDocumentRecord: function(){
 		return Ext.create('App.model.patient.PatientDocuments', {
 			pid: app.patient.pid,
 			eid: app.patient.eid,
@@ -52035,7 +52214,7 @@ Ext.define('App.controller.patient.Documents', {
 		document.ondrop = function(e){
 			e.preventDefault();
 			me.unSetDropMask();
-			if(me.dropMask && (e.target == me.dropMask.maskEl.dom  || e.target == me.dropMask.msgEl.dom)){
+			if(me.dropMask && (e.target == me.dropMask.maskEl.dom || e.target == me.dropMask.msgEl.dom)){
 				me.dropHandler(e.dataTransfer.files);
 			}
 			return false;
@@ -52048,8 +52227,7 @@ Ext.define('App.controller.patient.Documents', {
 		};
 	},
 
-
-	setDropMask:function(){
+	setDropMask: function(){
 		var me = this,
 			dropPanel = me.getPatientDocumentViewerFrame();
 
@@ -52065,33 +52243,33 @@ Ext.define('App.controller.patient.Documents', {
 				});
 				me.dropMask.show();
 
-				me.dropMask.maskEl.dom.addEventListener('dragenter', function(e) {
+				me.dropMask.maskEl.dom.addEventListener('dragenter', function(e){
 					e.preventDefault();
 					e.target.classList.add('validdrop');
 					return false;
 				});
 
-				me.dropMask.maskEl.dom.addEventListener('dragleave', function(e) {
+				me.dropMask.maskEl.dom.addEventListener('dragleave', function(e){
 					e.preventDefault();
 					e.target.classList.remove('validdrop');
 					return false;
 				});
-  			}else{
+			}else{
 				me.dropMask.show();
 			}
 
 		}
 	},
 
-	unSetDropMask:function(){
+	unSetDropMask: function(){
 		this.dnding = false;
 		if(this.dropMask){
 			this.dropMask.hide();
 		}
 	},
 
-	dropHandler:function(files){
-//		say(files);
+	dropHandler: function(files){
+		//		say(files);
 		var me = this,
 			win = me.setDocumentUploadWindow('drop'),
 			form = win.down('form').getForm(),
@@ -54130,7 +54308,7 @@ Ext.define('App.view.patient.RxOrders', {
 		cls: 'order-tab'
 	},
 	itemId: 'RxOrderGrid',
-	store: Ext.create('App.store.patient.Medications', {
+	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
 		groupField: 'date_ordered',
 		remoteFilter: true,

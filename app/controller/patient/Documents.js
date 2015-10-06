@@ -61,6 +61,10 @@ Ext.define('App.controller.patient.Documents', {
 		{
 			ref: 'DocumentUploadBtn',
 			selector: 'patientdocumentspanel #documentUploadBtn'
+		},
+		{
+			ref: 'PatientDocumentErrorNoteWindow',
+			selector: 'patientdocumenterrornotewindow'
 		}
 	],
 
@@ -99,11 +103,59 @@ Ext.define('App.controller.patient.Documents', {
 			},
 			'#patientDocumentUploadWindow #scanBtn': {
 				click: me.onDocumentUploadScanBtnClick
+			},
+
+
+			'#DocumentErrorNoteSaveBtn': {
+				click: me.onDocumentErrorNoteSaveBtnClick
 			}
 		});
 
 		me.nav = this.getController('Navigation');
 		this.initDocumentDnD();
+	},
+
+	setDocumentInError: function(document_record){
+		var me = this;
+
+		Ext.Msg.show({
+			title: _('wait'),
+			msg: _('document_entered_in_error_message'),
+			buttons: Ext.Msg.YESNO,
+			icon: Ext.Msg.QUESTION,
+			fn: function(btn){
+				if(btn == 'yes'){
+					var win = me.showPatientDocumentErrorNoteWindow();
+					win.down('form').getForm().loadRecord(document_record);
+				}
+			}
+		});
+	},
+
+	onDocumentErrorNoteSaveBtnClick: function(){
+		var me = this,
+			win = me.getPatientDocumentErrorNoteWindow(),
+			form = win.down('form').getForm(),
+			values = form.getValues(),
+			record = form.getRecord();
+
+
+		if(form.isValid()){
+			values.entered_in_error = true;
+			record.set(values);
+			record.save({
+				success: function(){
+					win.close();
+				}
+			});
+		}
+	},
+
+	showPatientDocumentErrorNoteWindow: function(){
+		if(!this.getPatientDocumentErrorNoteWindow()){
+			Ext.create('App.view.patient.windows.DocumentErrorNote');
+		}
+		return this.getPatientDocumentErrorNoteWindow().show();
 	},
 
 	onPatientDocumentBeforeRender: function(){
@@ -118,7 +170,7 @@ Ext.define('App.controller.patient.Documents', {
 		if(record){
 			var src = data.save.document.split(',');
 
-			record.set({ document: (src[1] || src[0]) });
+			record.set({document: (src[1] || src[0])});
 			record.save({
 				success: function(){
 					if(window.dual){
@@ -188,7 +240,7 @@ Ext.define('App.controller.patient.Documents', {
 		]);
 	},
 
-	doSelectDocument:function(store){
+	doSelectDocument: function(store){
 		var me = this,
 			grid = me.activePAnel.down('grid'),
 			params = me.nav.getExtraParams();
@@ -221,14 +273,14 @@ Ext.define('App.controller.patient.Documents', {
 		this.setDocumentUploadWindow('click');
 	},
 
-	setDocumentUploadWindow:function(action){
+	setDocumentUploadWindow: function(action){
 		var record = this.getNewPatientDocumentRecord(),
 			win = this.getUploadWindow(action);
 		win.down('form').getForm().loadRecord(record);
 		return win;
 	},
 
-	getNewPatientDocumentRecord:function(){
+	getNewPatientDocumentRecord: function(){
 		return Ext.create('App.model.patient.PatientDocuments', {
 			pid: app.patient.pid,
 			eid: app.patient.eid,
@@ -362,7 +414,7 @@ Ext.define('App.controller.patient.Documents', {
 		document.ondrop = function(e){
 			e.preventDefault();
 			me.unSetDropMask();
-			if(me.dropMask && (e.target == me.dropMask.maskEl.dom  || e.target == me.dropMask.msgEl.dom)){
+			if(me.dropMask && (e.target == me.dropMask.maskEl.dom || e.target == me.dropMask.msgEl.dom)){
 				me.dropHandler(e.dataTransfer.files);
 			}
 			return false;
@@ -375,8 +427,7 @@ Ext.define('App.controller.patient.Documents', {
 		};
 	},
 
-
-	setDropMask:function(){
+	setDropMask: function(){
 		var me = this,
 			dropPanel = me.getPatientDocumentViewerFrame();
 
@@ -392,33 +443,33 @@ Ext.define('App.controller.patient.Documents', {
 				});
 				me.dropMask.show();
 
-				me.dropMask.maskEl.dom.addEventListener('dragenter', function(e) {
+				me.dropMask.maskEl.dom.addEventListener('dragenter', function(e){
 					e.preventDefault();
 					e.target.classList.add('validdrop');
 					return false;
 				});
 
-				me.dropMask.maskEl.dom.addEventListener('dragleave', function(e) {
+				me.dropMask.maskEl.dom.addEventListener('dragleave', function(e){
 					e.preventDefault();
 					e.target.classList.remove('validdrop');
 					return false;
 				});
-  			}else{
+			}else{
 				me.dropMask.show();
 			}
 
 		}
 	},
 
-	unSetDropMask:function(){
+	unSetDropMask: function(){
 		this.dnding = false;
 		if(this.dropMask){
 			this.dropMask.hide();
 		}
 	},
 
-	dropHandler:function(files){
-//		say(files);
+	dropHandler: function(files){
+		//		say(files);
 		var me = this,
 			win = me.setDocumentUploadWindow('drop'),
 			form = win.down('form').getForm(),

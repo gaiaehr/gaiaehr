@@ -98,14 +98,26 @@ Ext.define('App.view.patient.Documents', {
 					{
 						header: _('category'),
 						dataIndex: 'docType',
-						itemId: 'docType'
+						itemId: 'docType',
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
+							return v;
+						}
 					},
 					{
 						xtype: 'datecolumn',
 						header: _('date'),
 						dataIndex: 'groupDate',
 						format: g('date_display_format'),
-						itemId: 'groupDate'
+						itemId: 'groupDate',
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
+							return v;
+						}
 
 					},
 					{
@@ -115,13 +127,22 @@ Ext.define('App.view.patient.Documents', {
 						editor: {
 							xtype: 'textfield',
 							action: 'title'
+						},
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
+							return v;
 						}
 					},
 					{
 						header: _('encrypted'),
 						dataIndex: 'encrypted',
 						width: 70,
-						renderer: function(v){
+						renderer: function(v, meta, record){
+							if(record.get('entered_in_error')){
+								meta.tdCls += ' entered-in-error '
+							}
 							return app.boolRenderer(v);
 						}
 					}

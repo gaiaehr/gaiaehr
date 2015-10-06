@@ -1623,5 +1623,7 @@ $LANG = array(
     'condition'                             => 'Condition',
     'no_history_selected'                   => 'No History Selected',
     'missing_required_information'          => 'Missing Required Information',
-    'sure_you_want_clone_prescription'      => 'Are you sure you want to clone this prescription?'
+    'sure_you_want_clone_prescription'      => 'Are you sure you want to clone this prescription?',
+    'document_entered_in_error_message'     => 'Are you sure you want to flag this document as "Entered in Error"?',
+    'error_note'                            => 'Error Note'
 );

@@ -112,7 +112,13 @@ Ext.define('App.view.patient.Results', {
 					text: _('new_order'),
 					itemId: 'OrderResultNewOrderBtn',
 					iconCls: 'icoAdd'
-				}
+				},
+                '|',
+                {
+                    text: _('new_radiology'),
+                    itemId: 'ResultNewRadiologyBtn',
+                    iconCls: 'icoAdd'
+                }
 			]
 		},
         {

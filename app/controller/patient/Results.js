@@ -301,18 +301,8 @@ Ext.define('App.controller.patient.Results', {
 		var observationStore = record.observations(),
 			observations = observationStore.data.items;
 
-
 		record.set(values);
-
-		say('saveOrderResult');
-		//say(form);
-		//say(values);
-		//say(record);
-		//say(order[0]);
-
-
-
-		record.save({
+        record.save({
 			success: function(rec){
 
 				say(rec.data.id);

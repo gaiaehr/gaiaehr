@@ -81,6 +81,9 @@ Ext.define('App.controller.patient.Results', {
 			'#OrderResultNewOrderBtn': {
 				click: me.onOrderResultNewOrderBtnClick
 			},
+            '#ResultNewRadiologyBtn': {
+                click: me.onResultNewRadiologyBtnClick
+            },
 			'#OrderResultSignBtn': {
 				click: me.onOrderResultSignBtnClick
 			}
@@ -140,6 +143,10 @@ Ext.define('App.controller.patient.Results', {
 		});
 		grid.editingPlugin.startEdit(records[0], 0);
 	},
+
+    onResultNewRadiologyBtnClick: function(btn){
+
+    },
 
 	onResultPanelActive: function(){
 		this.setResultPanel();

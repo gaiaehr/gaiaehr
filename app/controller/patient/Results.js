@@ -344,10 +344,8 @@ Ext.define('App.controller.patient.Results', {
 						//});
 					}
 				});
-
 				order[0].set({status: 'Received'});
 				order[0].save();
-
 				app.msg(_('sweet'), _('record_saved'));
 			}
 		});

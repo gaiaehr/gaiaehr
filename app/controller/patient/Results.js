@@ -28,11 +28,11 @@ Ext.define('App.controller.patient.Results', {
 		},
 		{
 			ref: 'resultForm',
-			selector: 'patientresultspanel > form'
+			selector: 'patientresultspanel #OrderResultForm'
 		},
 		{
 			ref: 'observationsGrid',
-			selector: 'patientresultspanel > form > grid[action=observations]'
+			selector: 'patientresultspanel #observationsGrid'
 		},
 		{
 			ref: 'ordersGrid',
@@ -53,7 +53,11 @@ Ext.define('App.controller.patient.Results', {
 		{
 			ref: 'OrderResultSignBtn',
 			selector: '#OrderResultSignBtn'
-		}
+		},
+        {
+            ref: 'DocumentTypeTab',
+            selector: 'patientresultspanel #documentTypeTab'
+        }
 	],
 
 	init: function(){
@@ -98,7 +102,7 @@ Ext.define('App.controller.patient.Results', {
 
 				User.verifyUserPass(password, function(success){
 					if(success){
-						var form = me.getResultForm().getForm(),
+						var form = me.getResultForm(),
 							record = form.getRecord();
 
 						say(record);
@@ -171,6 +175,11 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onOrderSelectionChange: function(model, records){
+        if(records[0].data.order_type === 'lab') {
+            this.getDocumentTypeTab().setActiveTab(0);
+        } else if(records[0].data.order_type === 'rad') {
+            this.getDocumentTypeTab().setActiveTab(1);
+        }
 		if(records.length > 0){
 			this.getOrderResult(records[0]);
 		}else{
@@ -181,7 +190,7 @@ Ext.define('App.controller.patient.Results', {
 	getOrderResult: function(orderRecord){
 
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			resultsStore = orderRecord.results(),
 			observationGrid = me.getObservationsGrid(),
 			observationStore;
@@ -231,7 +240,7 @@ Ext.define('App.controller.patient.Results', {
 
 	resetOrderResultForm: function(){
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			observationGrid = me.getObservationsGrid(),
 			store = Ext.create('App.store.patient.PatientsOrderObservations');
 
@@ -242,7 +251,7 @@ Ext.define('App.controller.patient.Results', {
 
 	onSaveOrderResultClicked: function(){
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			values = form.getValues(),
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
@@ -344,7 +353,7 @@ Ext.define('App.controller.patient.Results', {
 
 	onOrderDocumentViewBtnClicked: function(){
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			record = form.getRecord(),
 			foo = record.data.documentId.split('|'),
 			type = null,

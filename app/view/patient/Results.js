@@ -31,6 +31,7 @@ Ext.define('App.view.patient.Results', {
 	items: [
 		{
 			xtype: 'grid',
+            itemId: 'orderResultsGrid',
 			action: 'orders',
 			region: 'center',
 			split: true,
@@ -109,13 +110,13 @@ Ext.define('App.view.patient.Results', {
 			bbar: [
 				'->',
 				{
-					text: _('new_order'),
+					text: _('new_lab_result'),
 					itemId: 'OrderResultNewOrderBtn',
 					iconCls: 'icoAdd'
 				},
                 '|',
                 {
-                    text: _('new_radiology'),
+                    text: _('new_radiology_result'),
                     itemId: 'ResultNewRadiologyBtn',
                     iconCls: 'icoAdd'
                 }
@@ -129,7 +130,7 @@ Ext.define('App.view.patient.Results', {
             height: 400,
             items: [
                 {
-                    title: _('order_result'),
+                    title: _('lab_observations'),
                     xtype: 'form',
                     frame: true,
                     itemId: 'OrderResultForm',
@@ -148,6 +149,7 @@ Ext.define('App.view.patient.Results', {
                         {
                             xtype: 'panel',
                             title: _('report_info'),
+                            itemId: 'reportInfoForm',
                             region: 'west',
                             collapsible: true,
                             autoScroll: true,
@@ -238,6 +240,7 @@ Ext.define('App.view.patient.Results', {
                         },
                         {
                             xtype: 'grid',
+                            itemId: 'observationsGrid',
                             action: 'observations',
                             flex: 1,
                             region: 'center',
@@ -393,7 +396,7 @@ Ext.define('App.view.patient.Results', {
                 },
                 {
                     xtype: 'form',
-                    title: _('radiology_result'),
+                    title: _('radiology_observations'),
                     itemId: 'radiologyResultForm',
                     frame: true,
                     layout: {

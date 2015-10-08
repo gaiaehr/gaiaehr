@@ -175,16 +175,18 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onOrderSelectionChange: function(model, records){
-        if(records[0].data.order_type === 'lab') {
-            this.getDocumentTypeTab().setActiveTab(0);
-        } else if(records[0].data.order_type === 'rad') {
-            this.getDocumentTypeTab().setActiveTab(1);
+        if(records[0]) {
+            if (records[0].data.order_type === 'lab') {
+                this.getDocumentTypeTab().setActiveTab(0);
+            } else if (records[0].data.order_type === 'rad') {
+                this.getDocumentTypeTab().setActiveTab(1);
+            }
+            if (records.length > 0) {
+                this.getOrderResult(records[0]);
+            } else {
+                this.resetOrderResultForm();
+            }
         }
-		if(records.length > 0){
-			this.getOrderResult(records[0]);
-		}else{
-			this.resetOrderResultForm();
-		}
 	},
 
 	getOrderResult: function(orderRecord){

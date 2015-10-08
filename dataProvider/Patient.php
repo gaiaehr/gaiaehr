@@ -21,7 +21,6 @@ include_once(ROOT . '/dataProvider/Person.php');
 include_once(ROOT . '/dataProvider/User.php');
 include_once(ROOT . '/dataProvider/ACL.php');
 include_once(ROOT . '/dataProvider/PatientContacts.php');
-include_once(ROOT . '/dataProvider/Lists.php');
 
 class Patient {
 
@@ -55,11 +54,6 @@ class Patient {
      * @var MatchaCUP
      */
     private $patientContacts;
-
-    /**
-     * @var MatchaCUP
-     */
-    private $ComboListOptions;
 
 	/**
 	 * @var PoolArea

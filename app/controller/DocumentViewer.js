@@ -42,8 +42,6 @@ Ext.define('App.controller.DocumentViewer', {
 		});
 	},
 
-
-
 	onArchiveBtnClick: function(btn){
 		var win = btn.up('window'),
 			form = win.down('form').getForm(),

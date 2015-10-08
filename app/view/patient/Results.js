@@ -55,7 +55,11 @@ Ext.define('App.view.patient.Results', {
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
-								App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.description);
+								App.app.getController('InfoButton').doGetInfo(
+                                    record.data.code,
+                                    record.data.code_type,
+                                    record.data.description
+                                );
 							}
 						}
 					]
@@ -261,7 +265,11 @@ Ext.define('App.view.patient.Results', {
                                             icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
                                             tooltip: 'Get Info',
                                             handler: function(grid, rowIndex, colIndex, item, e, record){
-                                                App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.code_text);
+                                                App.app.getController('InfoButton').doGetInfo(
+                                                    record.data.code,
+                                                    record.data.code_type,
+                                                    record.data.code_text
+                                                );
                                             }
                                         }
                                     ]

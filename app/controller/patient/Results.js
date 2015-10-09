@@ -105,8 +105,6 @@ Ext.define('App.controller.patient.Results', {
 						var form = me.getResultForm(),
 							record = form.getRecord();
 
-						say(record);
-
 						record.set({signed_uid: app.user.id});
 						record.save({
 							success: function(){
@@ -148,6 +146,7 @@ Ext.define('App.controller.patient.Results', {
 		grid.editingPlugin.startEdit(records[0], 0);
 	},
 
+    // TODO: Finish me.
     onResultNewRadiologyBtnClick: function(btn){
 
     },
@@ -277,7 +276,6 @@ Ext.define('App.controller.patient.Results', {
 							docType: 'lab',
 							title: 'Lab #' + values.lab_order_id + ' Result',
 							document: e.target.result
-
 						};
 
 					File.savePatientBase64Document(params, function(provider, response){
@@ -291,9 +289,7 @@ Ext.define('App.controller.patient.Results', {
 
 				};
 			})(files[0]);
-
 			reader.readAsDataURL(files[0]);
-
 		}else{
 			me.saveOrderResult(form, values);
 		}
@@ -307,19 +303,12 @@ Ext.define('App.controller.patient.Results', {
 			order = sm.getSelection(),
 			observationData = [];
 
-		//		me.getObservationsGrid().editingPlugin.cancelEdit();
-
 		var observationStore = record.observations(),
 			observations = observationStore.data.items;
 
 		record.set(values);
         record.save({
 			success: function(rec){
-
-				say(rec.data.id);
-				say(rec);
-				say(observationStore.data.items);
-				say(observationStore.data.items);
 
 				for(var i = 0; i < observations.length; i++){
 					observations[i].set({result_id: rec.data.id});

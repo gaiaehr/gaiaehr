@@ -11,5 +11,8 @@ $LANG = array(
 	// End of the items
     'week_report'         					=> 'Week Report',
     'report_center'							=> 'Report Center Basic',
-    'available_reports'                     => 'Available Reports'
+    'available_reports'                     => 'Available Reports',
+    'report_name'                           => 'Report Name',
+    'report_description'                    => 'Report Description',
+    'category'                              => 'Category'
 );

@@ -25,16 +25,31 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
     itemId: 'ReportCenterPanel',
     pageBody: [
         {
-            xtype: 'form',
+            xtype: 'gridpanel',
             title: _('available_reports'),
             frame: false,
             layout: {
                 type: 'border'
             },
-            items: [
+            store: Ext.create('Modules.reportcenter.store.ReportList', {
+                remoteFilter: true,
+                remoteSort: true
+            }),
+            columns: [
                 {
+                    text: _('category'),
+                    dataIndex: 'category'
+                },
+                {
+                    text: _('report_name'),
+                    dataIndex: 'report_name'
+                },
+                {
+                    text: _('report_description'),
+                    dataIndex: 'report_description',
+                    flex: 1
                 }
-            ]
+            ],
         }
     ]
 

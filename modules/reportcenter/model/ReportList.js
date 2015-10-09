@@ -30,6 +30,10 @@ Ext.define('Modules.reportcenter.model.ReportList', {
         {
             name: 'report_description',
             type: 'string'
+        },
+        {
+            name: 'category',
+            type: 'string'
         }
     ],
     proxy : {

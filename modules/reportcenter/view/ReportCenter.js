@@ -18,21 +18,24 @@
 
 Ext.define('Modules.reportcenter.view.ReportCenter', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelReportCenter',
+    requires:[
+
+    ],
 	pageTitle: _('report_center'),
-
-	requires:[
-		
-	],
-
-	initComponent: function() {
-        var me = this;
-
-        me.reports = Ext.create('Ext.panel.Panel', {
-            layout: 'auto',
-            itemId: 'ReportCenterPanel'
-        });
-        me.pageBody = [me.reports];
-    }
+    itemId: 'ReportCenterPanel',
+    pageBody: [
+        {
+            xtype: 'form',
+            title: _('available_reports'),
+            frame: false,
+            layout: {
+                type: 'border'
+            },
+            items: [
+                {
+                }
+            ]
+        }
+    ]
 
 });

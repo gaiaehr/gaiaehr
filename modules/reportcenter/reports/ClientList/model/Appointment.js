@@ -16,23 +16,26 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.view.ReportCenter', {
-	extend: 'App.ux.RenderPanel',
-	id: 'panelReportCenter',
-	pageTitle: _('report_center'),
-
-	requires:[
-		
-	],
-
-	initComponent: function() {
-        var me = this;
-
-        me.reports = Ext.create('Ext.panel.Panel', {
-            layout: 'auto',
-            itemId: 'ReportCenterPanel'
-        });
-        me.pageBody = [me.reports];
+Ext.define('Modules.reportcenter.model.AtomatedMeasureCalculation', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'point',
+            type: 'string'
+        },
+        {
+            name: 'stage',
+            type: 'int'
+        }
+    ],
+    proxy : {
+        type: 'direct',
+        api : {
+            read  : 'AtomatedMeasureCalculation.getPoints'
+        }
     }
-
 });

@@ -1104,7 +1104,6 @@ $LANG = array(
 	'close_tab'								=> 'Close Tab',
 	'items'									=> 'Items',
 	'modules'								=> 'Modules',
-	'report_center'							=> 'Report Center Basic',
 	'patient_reports'						=> 'Patient Reports',
     'patient_list'         					=> 'Patient List',
     'prescriptions_and_dispensations'		=> 'Prescriptions and Dispensations',

@@ -1,6 +1,7 @@
+<?php
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, LLC.
+ * Copyright (C) 2015 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,30 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace modules\reportcenter\dataProvider;
 
-Ext.define('Modules.reportcenter.Main', {
-	extend: 'Modules.Module',
+class ReportList extends Reports {
 
-	requires:[
-		'Modules.reportcenter.view.ReportCenter'
-	],
+    /**
+     * Get the available reports in the /report directory
+     * this will include OpenSource ones and commercial ones.
+     */
+    public function getAvailableReports(){
 
-	init: function(){
-		var me = this;
+    }
 
-		/**
-		 * function to add navigation links
-		 * @param parentId  (string)            navigation node parent ID,
-		 * @param node      (object || array)   navigation node configuration properties
-		 */
-		me.addNavigationNodes('root', {
-			text: _('report_center'),
-			leaf: true,
-			cls: 'file',
-			iconCls: 'icoReport',
-			id: 'Modules.reportcenter.view.ReportCenter'
-		});
-
-		me.callParent();
-	}
-}); 
+}

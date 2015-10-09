@@ -7,8 +7,6 @@
 $LANG = array(
 	// This items are used internally by the GaiaEHR Application.
 	'en_US'									=> 'English (USA)',
-	'i18nExtFile'							=> 'ext-lang-en.js',
+	'i18nExtFile'							=> 'ext-lang-en.js'
 	// End of the items
-    'week_report'         					=> 'Week Report',
-    'report_center'							=> 'Report Center Basic'
 );

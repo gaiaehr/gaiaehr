@@ -20,5 +20,15 @@ Ext.define('Modules.reportcenter.store.ReportList', {
     extend      : 'Ext.data.Store',
     model       : 'Modules.reportcenter.model.ReportList',
     remoteSort  : true,
-    autoLoad    : true
+    autoLoad    : true,
+    proxy : {
+        type: 'direct',
+        api : {
+            read  : 'ReportList.getAvailableReports'
+        }
+    },
+    reader: {
+        totalProperty: 'total',
+        root: 'data'
+    }
 });

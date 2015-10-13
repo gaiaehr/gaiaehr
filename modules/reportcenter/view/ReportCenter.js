@@ -26,9 +26,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             itemId: 'reportCenterGrid',
             title: _('available_reports'),
             frame: false,
-            layout: {
-                type: 'fit'
-            },
             store: Ext.create('Modules.reportcenter.store.ReportList'),
             columns: [
                 {
@@ -42,6 +39,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 {
                     text: _('report_name'),
                     dataIndex: 'report_name'
+                },
+                {
+                    text: _('version'),
+                    dataIndex: 'version'
                 },
                 {
                     text: _('report_description'),

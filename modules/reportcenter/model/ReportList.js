@@ -38,16 +38,10 @@ Ext.define('Modules.reportcenter.model.ReportList', {
         {
             name: 'author',
             type: 'string'
+        },
+        {
+            name: 'version',
+            type: 'string'
         }
-    ],
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : 'ReportList.getAvailableReports'
-        }
-    },
-    reader: {
-        totalProperty: 'total',
-        root: 'data'
-    }
+    ]
 });

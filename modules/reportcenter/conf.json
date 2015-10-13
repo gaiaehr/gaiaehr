@@ -4,7 +4,7 @@
 	"version":"1.0.0",
 	"extjs_version":"4.1.1",
 	"author":"Gino Rivera Falú",
-	"description":"A report center for GaiaEHR, has all the necessary report for start ups.",
+	"description":"GaiaEHR Available Report.",
 	"dir":"reportcenter",
 	"active":true,
 	"debug":false,
@@ -69,7 +69,7 @@
             "methods":{
                 "getAvailableReports":
                 {
-                    "len":0
+                    "len":1
                 }
             }
         }

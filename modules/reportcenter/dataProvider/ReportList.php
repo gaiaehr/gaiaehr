@@ -24,8 +24,22 @@ class ReportList extends Reports {
      * Get the available reports in the /report directory
      * this will include OpenSource ones and commercial ones.
      */
-    public function getAvailableReports(){
-
+    public function getAvailableReports() {
+        try
+        {
+            if ($handle = opendir('../reports')) {
+                while (false !== ($entry = readdir($handle))) {
+                    error_log("$entry\n");
+                }
+                closedir($handle);
+            } else {
+                throw new \Exception('Error: Reports directory not found.');
+            }
+        }
+        catch(\Exception $Error)
+        {
+            return $Error;
+        }
     }
 
 }

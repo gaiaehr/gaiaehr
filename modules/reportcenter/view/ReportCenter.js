@@ -29,7 +29,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             title: _('available_reports'),
             frame: false,
             layout: {
-                type: 'border'
+                type: 'fit'
             },
             store: Ext.create('Modules.reportcenter.store.ReportList', {
                 remoteFilter: true,
@@ -49,7 +49,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     dataIndex: 'report_description',
                     flex: 1
                 }
-            ],
+            ]
         }
     ]
 

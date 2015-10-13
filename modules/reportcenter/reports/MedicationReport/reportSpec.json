@@ -13,9 +13,13 @@
     "es_PR"
   ],
   "actionsAPI":{
-    "Appointment":{
+    "Rx":{
       "methods":{
-        "getAppointmentList":
+        "createPrescriptionsDispensations":
+        {
+          "len":1
+        },
+        "getPrescriptionsFromAndToAndPid":
         {
           "len":1
         }

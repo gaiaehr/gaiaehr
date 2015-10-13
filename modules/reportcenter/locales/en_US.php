@@ -10,7 +10,7 @@ $LANG = array(
 	'i18nExtFile'							=> 'ext-lang-en.js',
 	// End of the items
     'week_report'         					=> 'Week Report',
-    'report_center'							=> 'Report Center Basic',
+    'report_center'							=> 'Report Center',
     'available_reports'                     => 'Available Reports',
     'report_name'                           => 'Report Name',
     'report_description'                    => 'Report Description',

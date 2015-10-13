@@ -33,18 +33,6 @@
 				}
 			}
 		},
-		"Rx":{
-			"methods":{
-				"createPrescriptionsDispensations":
-				{
-					"len":1
-				},
-				"getPrescriptionsFromAndToAndPid":
-				{
-					"len":1
-				}
-			}
-		},
 		"ImmunizationsReport":{
 			"methods":{
 				"createImmunizationsReport":
@@ -69,18 +57,6 @@
 				}
 			}
 		},
-		"Appointments":{
-			"methods":{
-				"CreateAppointmentsReport":
-				{
-					"len":1
-				},
-				"getAppointmentsList":
-				{
-					"len":1
-				}
-			}
-		},
 		"Encounters":{
 			"methods":{
 				"CreateEncountersReport":
@@ -88,7 +64,15 @@
 					"len":1
 				}
 			}
-		}
+		},
+        "ReportList":{
+            "methods":{
+                "getAvailableReports":
+                {
+                    "len":1
+                }
+            }
+        }
 	},
 	"extjs":[
 		{

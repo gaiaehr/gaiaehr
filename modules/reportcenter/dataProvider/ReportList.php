@@ -39,9 +39,9 @@ class ReportList
             {
                 while (false !== ($entry = readdir($handle)))
                 {
+                    if($entry == '.' || $entry == '..') continue;
                     if(is_dir("../modules/reportcenter/reports/$entry"))
                     {
-                        if($entry == '.' || $entry == '..') continue;
                         $filePointer = "../modules/reportcenter/reports/$entry/reportSpec.json";
                         if(file_exists($filePointer) && is_readable($filePointer))
                         {

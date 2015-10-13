@@ -45,5 +45,9 @@ Ext.define('Modules.reportcenter.model.ReportList', {
         api : {
             read  : 'ReportList.getAvailableReports'
         }
+    },
+    reader: {
+        totalProperty: 'total',
+        root: 'data'
     }
 });

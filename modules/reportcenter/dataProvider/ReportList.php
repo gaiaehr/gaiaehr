@@ -61,7 +61,7 @@ class ReportList
             }
             $compileResults['total'] = $Index;
             $compileResults['data'] = $AvailableReports;
-            return (object)$compileResults;
+            return $compileResults;
         }
         catch(\Exception $Error)
         {

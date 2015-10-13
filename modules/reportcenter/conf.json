@@ -69,7 +69,7 @@
             "methods":{
                 "getAvailableReports":
                 {
-                    "len":1
+                    "len":0
                 }
             }
         }

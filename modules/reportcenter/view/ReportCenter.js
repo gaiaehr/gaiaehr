@@ -18,23 +18,18 @@
 
 Ext.define('Modules.reportcenter.view.ReportCenter', {
 	extend: 'App.ux.RenderPanel',
-    requires:[
-
-    ],
 	pageTitle: _('report_center'),
     itemId: 'ReportCenterPanel',
     pageBody: [
         {
             xtype: 'gridpanel',
+            itemId: 'reportCenterGrid',
             title: _('available_reports'),
             frame: false,
             layout: {
                 type: 'fit'
             },
-            store: Ext.create('Modules.reportcenter.store.ReportList', {
-                remoteFilter: true,
-                remoteSort: true
-            }),
+            store: Ext.create('Modules.reportcenter.store.ReportList'),
             columns: [
                 {
                     text: _('category'),

@@ -42,7 +42,6 @@ class ReportList
                         if(file_exists($filePointer) && is_readable($filePointer))
                         {
                             $fileContent = json_decode(file_get_contents($filePointer), true);
-                            error_log(print_r($fileContent,true));
                             $AvailableReports[$Index]['id'] = $Index;
                             $AvailableReports[$Index]['report_name'] = $fileContent['title'];
                             $AvailableReports[$Index]['report_description'] = $fileContent['description'];

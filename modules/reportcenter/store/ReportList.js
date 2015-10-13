@@ -19,6 +19,6 @@
 Ext.define('Modules.reportcenter.store.ReportList', {
     extend: 'Ext.data.Store',
     model     : 'Modules.reportcenter.model.ReportList',
-    remoteSort: false,
-    autoLoad  : false
+    remoteSort: true,
+    autoLoad  : true
 });

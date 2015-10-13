@@ -15,5 +15,6 @@ $LANG = array(
     'available_reports'                     => 'Informes disponibles',
     'report_name'                           => 'Nombre del informe',
     'report_description'                    => 'Descripción del reporte',
-    'category'                              => 'Categoría'
+    'category'                              => 'Categoría',
+    'author'                                => 'Autor'
 );

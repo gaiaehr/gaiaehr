@@ -30,6 +30,7 @@ class ReportList
         try
         {
             $AvailableReports = array();
+            $compileResults = array();
             $Index = 0;
             if ($handle = opendir('../modules/reportcenter/reports'))
             {
@@ -58,7 +59,9 @@ class ReportList
             {
                 throw new \Exception('Error: Reports directory not found.');
             }
-            return (object)$AvailableReports;
+            $compileResults['total'] = $Index;
+            $compileResults['data'] = $AvailableReports;
+            return (object)$compileResults;
         }
         catch(\Exception $Error)
         {

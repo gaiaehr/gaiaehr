@@ -7,8 +7,6 @@
   "description":"Report that show the appointment of a patient.",
   "dir":"reportcenter/reports/Clinical",
   "category":"General",
-  "active":true,
-  "debug":false,
   "locales": [
     "en_US",
     "es_PR"

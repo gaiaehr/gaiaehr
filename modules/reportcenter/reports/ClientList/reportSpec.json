@@ -7,7 +7,6 @@
   "description":"Report that display the all clients.",
   "dir":"reportcenter/reports/ClientList",
   "category":"General",
-  "active":true,
   "locales": [
     "en_US",
     "es_PR"

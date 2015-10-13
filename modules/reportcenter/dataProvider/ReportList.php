@@ -25,6 +25,8 @@ class ReportList
     /**
      * Get the available reports in the /report directory
      * this will include OpenSource ones and commercial ones.
+     * All the mini-reports modules have to be installed in this
+     * directory.
      */
     public function getAvailableReports()
     {

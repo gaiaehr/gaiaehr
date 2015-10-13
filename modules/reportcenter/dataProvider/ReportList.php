@@ -18,23 +18,48 @@
  */
 namespace modules\reportcenter\dataProvider;
 
-class ReportList extends Reports {
+class ReportList
+{
 
     /**
      * Get the available reports in the /report directory
      * this will include OpenSource ones and commercial ones.
      */
-    public function getAvailableReports() {
+    public function getAvailableReports()
+    {
         try
         {
-            if ($handle = opendir('../reports')) {
-                while (false !== ($entry = readdir($handle))) {
-                    error_log("$entry\n");
+            $AvailableReports = array();
+            $Index = 0;
+            if ($handle = opendir('../modules/reportcenter/reports'))
+            {
+                while (false !== ($entry = readdir($handle)))
+                {
+                    if(is_dir("../modules/reportcenter/reports/$entry"))
+                    {
+                        if($entry == '.' || $entry == '..') continue;
+                        $filePointer = "../modules/reportcenter/reports/$entry/reportSpec.json";
+                        if(file_exists($filePointer) && is_readable($filePointer))
+                        {
+                            $fileContent = json_decode(file_get_contents($filePointer), true);
+                            error_log(print_r($fileContent,true));
+                            $AvailableReports[$Index]['id'] = $Index;
+                            $AvailableReports[$Index]['report_name'] = $fileContent['title'];
+                            $AvailableReports[$Index]['report_description'] = $fileContent['description'];
+                            $AvailableReports[$Index]['category'] = $fileContent['category'];
+                            $AvailableReports[$Index]['version'] = $fileContent['version'];
+                            $AvailableReports[$Index]['author'] = $fileContent['author'];
+                            $Index++;
+                        }
+                    }
                 }
                 closedir($handle);
-            } else {
+            }
+            else
+            {
                 throw new \Exception('Error: Reports directory not found.');
             }
+            return (object)$AvailableReports;
         }
         catch(\Exception $Error)
         {

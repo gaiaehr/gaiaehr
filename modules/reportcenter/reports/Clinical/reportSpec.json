@@ -1,26 +1,27 @@
 {
-  "title":"Appointment Report",
-  "name":"appointmentReport",
+  "title":"Clinical Report",
+  "name":"clinicalReport",
   "version":"0.1",
   "extjs_version":"4.1.1",
-  "author":"Gino Rivera Falú",
+  "author": "TRA NextGen, Inc (c) 2015",
   "description":"Report that show the appointment of a patient.",
-  "dir":"reportcenter/reports/appointment",
+  "dir":"reportcenter/reports/Clinical",
+  "category":"General",
   "active":true,
   "debug":false,
   "locales": [
     "en_US",
     "es_PR"
   ],
-  "actionsAPI":{
-    "Appointment":{
-      "methods":{
-        "getAppointmentList":
-        {
-          "len":1
+  "actionsAPI": {
+    "Appointment": {
+      "methods": {
+        "getAppointmentList": {
+          "len": 1
         }
       }
-    },
+    }
+  },
   "install":[
     {
       "file":"model/AutomatedMeasureCalculation.js",

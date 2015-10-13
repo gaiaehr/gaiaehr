@@ -41,6 +41,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     dataIndex: 'category'
                 },
                 {
+                    text: _('author'),
+                    dataIndex: 'author'
+                },
+                {
                     text: _('report_name'),
                     dataIndex: 'report_name'
                 },

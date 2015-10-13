@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, LLC.
+ * Copyright (C) 2015 TRA NextGen, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -27,14 +27,14 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             title: _('available_reports'),
             frame: false,
             store: Ext.create('Modules.reportcenter.store.ReportList'),
+            features: [{
+                ftype:'grouping'
+            }],
             columns: [
                 {
                     text: _('category'),
-                    dataIndex: 'category'
-                },
-                {
-                    text: _('author'),
-                    dataIndex: 'author'
+                    dataIndex: 'category',
+                    hidden: true
                 },
                 {
                     text: _('report_name'),
@@ -43,6 +43,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 {
                     text: _('version'),
                     dataIndex: 'version'
+                },
+                {
+                    text: _('author'),
+                    dataIndex: 'author'
                 },
                 {
                     text: _('report_description'),

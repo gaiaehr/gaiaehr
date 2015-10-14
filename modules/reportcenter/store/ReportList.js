@@ -21,14 +21,14 @@ Ext.define('Modules.reportcenter.store.ReportList', {
     model       : 'Modules.reportcenter.model.ReportList',
     remoteSort  : true,
     autoLoad    : true,
+    groupField: 'category',
     proxy : {
         type: 'direct',
         api : {
             read  : 'ReportList.getAvailableReports'
+        },
+        reader: {
+            root: 'data'
         }
-    },
-    reader: {
-        totalProperty: 'total',
-        root: 'data'
     }
 });

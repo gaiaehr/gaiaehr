@@ -46,6 +46,37 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     flex: 1
                 }
             ]
+        },
+        {
+            xtype: 'window',
+            itemId: 'reportWindow',
+            closeAction: 'hide',
+            hidden: true,
+            title: _('report_window'),
+            width: 700,
+            height: 800,
+            maximizable: true,
+            maximized: false,
+            minimizable: false,
+            modal: false,
+            items:[
+                {
+                    xtype: 'form',
+                    region: 'north',
+                    height: 150,
+                    border: true,
+                    html: '<p>Filters!</p>'
+                },
+                {
+                    xtype: 'splitter'
+                },
+                {
+                    xtype: 'form',
+                    region: 'south',
+                    border: true,
+                    html: '<p>Report render!</p>'
+                }
+            ]
         }
     ]
 

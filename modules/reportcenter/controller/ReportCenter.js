@@ -30,6 +30,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'ReportPanel',
             selector: '#reportPanel'
+        },
+        {
+            ref: 'ReportWindow',
+            selector: '#reportWindow'
         }
 	],
 
@@ -47,7 +51,9 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
-        //App.navigateTo('Modules.reportcenter.view.ReportPanel', null, false);
+        this.getReportWindow().show();
+        this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
+
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){

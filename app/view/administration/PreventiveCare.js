@@ -70,7 +70,7 @@ Ext.define('App.view.administration.PreventiveCare',
 				width : 30,
 				items : [
 				{
-					icon : 'resources/images/icons/delete.png', // Use a URL in the icon config
+					icon : 'resources/images/icons/delete.png',
 					tooltip : _('remove'),
 					handler : function(grid, rowIndex, colIndex)
 					{
@@ -431,7 +431,6 @@ Ext.define('App.view.administration.PreventiveCare',
 								edit : me.afterLabTimeEdit
 
 							}
-
 						}),
 						bbar :
 						{
@@ -474,7 +473,7 @@ Ext.define('App.view.administration.PreventiveCare',
 
 		me.pageBody = [me.guidelineGrid];
 		me.callParent(arguments);
-	}, // end of initComponent
+	},
 
 	onServiceEdit : function(context, e)
 	{

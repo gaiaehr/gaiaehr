@@ -22,10 +22,6 @@ Ext.define('App.view.administration.Roles', {
 
 	initComponent: function(){
 		var me = this;
-		//******************************************************************************
-		// Roles Store
-		//******************************************************************************
-
 		me.grid = Ext.create('Ext.grid.Panel', {
 			bodyStyle: 'background-color:white',
 			store: Ext.create('App.store.administration.RolePerms'),

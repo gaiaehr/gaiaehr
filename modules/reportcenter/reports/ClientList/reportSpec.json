@@ -1,31 +1,29 @@
 {
-  "title":"Appointment Report",
-  "name":"appointmentReport",
+  "title":"Client List",
+  "name":"ClientList",
   "version":"0.1",
   "extjs_version":"4.1.1",
-  "author":"Gino Rivera Falú",
-  "description":"Report that show the appointment of a patient.",
-  "dir":"reportcenter/reports/appointment",
-  "active":true,
-  "debug":false,
+  "author": "TRA NextGen, Inc (c) 2015",
+  "description":"Report that display the all clients.",
+  "dir":"reportcenter/reports/ClientList",
+  "category":"General",
   "locales": [
     "en_US",
     "es_PR"
   ],
-  "actionsAPI":{
-    "Appointment":{
-      "methods":{
-        "getAppointmentList":
-        {
-          "len":1
+  "actionsAPI": {
+    "Appointment": {
+      "methods": {
+        "getAppointmentList": {
+          "len": 1
         }
       }
-    },
+    }
+  },
   "install":[
     {
       "file":"model/AutomatedMeasureCalculation.js",
       "file":"dataProvider/AutomatedMeasureCalculation.php"
     }
   ]
-
 }

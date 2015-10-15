@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2013 Certun, LLC.
+ * Copyright (C) 2015 TRA NextGen, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,45 +22,19 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
 	],
 	refs: [
-		//{
-		//	ref: 'ReportCenterPanel',
-		//	selector: '#ReportCenterPanel'
-		//}
+		{
+			ref: 'ReportCenterPanel',
+			selector: '#ReportCenterPanel'
+		},
+        {
+            ref: 'ReportCenterGrid',
+            selector: '#reportCenterGrid'
+        }
 	],
 
-	/**
-	 * Function to add categories with the respective with to the
-	 * Report Center Panel
-	 */
-	addCategory: function(category, width){
-		//return this.getReportCenterPanel().add(Ext.create('Ext.container.Container', {
-		//	cls: 'CategoryContainer',
-		//	width: width,
-		//	layout: 'anchor',
-		//	items: [
-		//		{
-		//			xtype: 'container',
-		//			cls: 'title',
-		//			margin: '0 0 5 0',
-		//			html: category
-		//		}
-		//	]
-		//}));
-	},
+    init: function(){
+        var me = this;
 
-	/**
-	 * Function to add Items to the category
-	 */
-	addReportByCategory: function(category, text, handler){
-		return category.add(Ext.create('Ext.button.Button', {
-			cls: 'CategoryContainerItem',
-			anchor: '100%',
-			margin: '0 0 5 0',
-			textAlign: 'left',
-			text: text,
-			handler: handler
-		}));
-	},
-
+    }
 
 });

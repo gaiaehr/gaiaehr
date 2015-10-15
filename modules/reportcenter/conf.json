@@ -4,7 +4,7 @@
 	"version":"1.0.0",
 	"extjs_version":"4.1.1",
 	"author":"Gino Rivera Falú",
-	"description":"A report center for GaiaEHR, has all the necessary report for start ups.",
+	"description":"GaiaEHR Available Report.",
 	"dir":"reportcenter",
 	"active":true,
 	"debug":false,
@@ -28,18 +28,6 @@
 					"len":1
 				},
 				"getClientList":
-				{
-					"len":1
-				}
-			}
-		},
-		"Rx":{
-			"methods":{
-				"createPrescriptionsDispensations":
-				{
-					"len":1
-				},
-				"getPrescriptionsFromAndToAndPid":
 				{
 					"len":1
 				}
@@ -69,18 +57,6 @@
 				}
 			}
 		},
-		"Appointments":{
-			"methods":{
-				"CreateAppointmentsReport":
-				{
-					"len":1
-				},
-				"getAppointmentsList":
-				{
-					"len":1
-				}
-			}
-		},
 		"Encounters":{
 			"methods":{
 				"CreateEncountersReport":
@@ -88,7 +64,15 @@
 					"len":1
 				}
 			}
-		}
+		},
+        "ReportList":{
+            "methods":{
+                "getAvailableReports":
+                {
+                    "len":1
+                }
+            }
+        }
 	},
 	"extjs":[
 		{

@@ -1,4 +1,3 @@
-<?php
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2015 TRA NextGen, Inc.
@@ -16,17 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-$LANG = array(
 
-	// This items are used internally by the GaiaEHR Application.
-	'en_US'									=> 'Español (Puerto Rico)',
-	'i18nExtFile'							=> 'ext-lang-es.js',
-	// End of the items
-    'week_report'         					=> 'Reporte Semanal',
-    'report_center'							=> 'Centro de informes',
-    'available_reports'                     => 'Informes disponibles',
-    'report_name'                           => 'Nombre del informe',
-    'report_description'                    => 'Descripción del reporte',
-    'category'                              => 'Categoría',
-    'author'                                => 'Autor'
-);
+Ext.define('Modules.reportcenter.store.Appointment', {
+	extend: 'Ext.data.Store',
+	model     : 'Modules.reportcenter.model.Appointment',
+    remoteSort: false,
+	autoLoad  : false
+});

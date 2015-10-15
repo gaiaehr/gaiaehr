@@ -38,12 +38,19 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         me.control({
             '#reportCenterGrid': {
                 itemdblclick: me.onReportCenterGridRowDblClick
+            },
+            '#ReportCenterPanel':{
+                beforeshow: me.onReportCenterPanelBeforeShow
             }
         });
     },
 
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
 
+    },
+
+    onReportCenterPanelBeforeShow: function(eOpts){
+        this.getReportCenterGrid().getStore().load();
     }
 
 });

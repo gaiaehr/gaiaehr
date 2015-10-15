@@ -20,7 +20,7 @@ Ext.define('Modules.reportcenter.store.ReportList', {
     extend      : 'Ext.data.Store',
     model       : 'Modules.reportcenter.model.ReportList',
     remoteSort  : true,
-    autoLoad    : true,
+    autoLoad    : false,
     groupField: 'category',
     proxy : {
         type: 'direct',

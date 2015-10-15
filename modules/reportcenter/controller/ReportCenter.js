@@ -35,6 +35,15 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     init: function(){
         var me = this;
 
+        me.control({
+            '#reportCenterGrid': {
+                itemdblclick: me.onReportCenterGridRowDblClick
+            }
+        });
+    },
+
+    onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
+
     }
 
 });

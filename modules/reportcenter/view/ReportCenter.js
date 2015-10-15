@@ -7,6 +7,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: _('report_center'),
     itemId: 'ReportCenterPanel',
+    requires: [
+        'Modules.reportcenter.view.ReportPanel'
+    ],
     pageBody: [
         {
             xtype: 'gridpanel',

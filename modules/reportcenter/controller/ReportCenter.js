@@ -18,9 +18,6 @@
 
 Ext.define('Modules.reportcenter.controller.ReportCenter', {
 	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
 	refs: [
 		{
 			ref: 'ReportCenterPanel',
@@ -29,6 +26,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'ReportCenterGrid',
             selector: '#reportCenterGrid'
+        },
+        {
+            ref: 'ReportPanel',
+            selector: '#reportPanel'
         }
 	],
 
@@ -46,7 +47,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
-
+        //App.navigateTo('Modules.reportcenter.view.ReportPanel', null, false);
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){

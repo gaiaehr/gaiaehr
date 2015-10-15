@@ -27,6 +27,7 @@ Ext.define('Modules.reportcenter.Main', {
 		var me = this;
 
         me.getController('Modules.reportcenter.controller.ReportCenter');
+        me.nav = me.getController('Navigation');
 
 		/**
 		 * function to add navigation links

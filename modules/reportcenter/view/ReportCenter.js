@@ -63,6 +63,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 {
                 },
                 {
+                    xtype: 'splitter'
+                },
+                {
                     xtype: 'panel',
                     height: 600,
                     region: 'center',

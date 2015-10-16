@@ -36,8 +36,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             selector: '#reportWindow'
         },
         {
-            ref: 'ReportFilters',
-            selector: '#reportWindow #reportFilters'
+            ref: 'ReportFilterPanel',
+            selector: 'reportFilter'
         }
 	],
 
@@ -57,9 +57,55 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
         this.getReportWindow().remove('reportFilter');
         Ext.require('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm');
-        this.getReportWindow().insert(0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm'));
+        this.getReportWindow().insert(
+            0,
+            Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
+        );
+        this.addButtonsForReport();
         this.getReportWindow().show();
         this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
+    },
+
+    /**
+     * Add the buttons for the filterForm, this will be added to all the reports
+     */
+    addButtonsForReport: function(){
+        this.getReportFilterPanel().add(new Ext.toolbar.Toolbar({
+            dockedItems: [
+                {
+                    xtype: 'toolbar',
+                    dock: 'right',
+                    width: 100,
+                    itemId: 'filterFormButtons',
+                    items: [
+                        {
+                            xtype: 'button',
+                            text: 'PDF',
+                            itemId: 'renderPDF',
+                            width: 98
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'HTML',
+                            itemId: 'renderHTML',
+                            width: 98
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'XML',
+                            itemId: 'renderXML',
+                            width: 98
+                        },
+                        {
+                            xtype: 'button',
+                            text: 'Close',
+                            itemId: 'close',
+                            width: 98
+                        }
+                    ]
+                }
+            ]
+        }));
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){

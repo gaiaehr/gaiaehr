@@ -16,8 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.Filters', {
-
-
-
+Ext.define('Modules.reportcenter.reports.Clinical.filtersForm', {
+    extend: 'Ext.form.Panel',
+    xtype: 'reportFilter',
+    title: _('filters'),
+    itemId: 'Clinical',
+    collapsible: true,
+    height: 150,
+    fieldDefaults: {
+        labelWidth: 60,
+        margin: 5,
+        anchor: '100%'
+    },
+    bodyPadding: 2,
+    items:[
+        {
+            xtype: 'textfield',
+            name: 'name',
+            fieldLabel: 'Name',
+            allowBlank: false
+        }
+    ]
 });

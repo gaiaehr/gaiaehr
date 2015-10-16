@@ -29,5 +29,6 @@ $LANG = array(
     'report_description'                    => 'Descripción del reporte',
     'category'                              => 'Categoría',
     'author'                                => 'Autor',
-    'report_window'                         => 'Ventana de informe'
+    'report_window'                         => 'Ventana de informe',
+    'filters'                               => 'Filtros'
 );

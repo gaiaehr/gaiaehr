@@ -63,17 +63,23 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 {
                     xtype: 'form',
                     region: 'north',
+                    title: _('filters'),
+                    collapsible: true,
                     height: 150,
-                    border: true,
+                    fieldDefaults: {
+                        labelWidth: 60,
+                        margin: 5,
+                        anchor: '100%'
+                    },
                     html: '<p>Filters!</p>'
                 },
                 {
-                    xtype: 'splitter'
-                },
-                {
-                    xtype: 'form',
-                    region: 'south',
-                    border: true,
+                    xtype: 'panel',
+                    height: 600,
+                    region: 'center',
+                    layout: {
+                        align: 'stretch'
+                    },
                     html: '<p>Report render!</p>'
                 }
             ]

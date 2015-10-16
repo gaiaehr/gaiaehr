@@ -34,6 +34,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'ReportWindow',
             selector: '#reportWindow'
+        },
+        {
+            ref: 'ReportFilters',
+            selector: '#reportWindow #reportFilters'
         }
 	],
 
@@ -51,9 +55,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
+        this.getReportFilters().removeAll();
+        say(item.data.reportDir);
+        this.getReportFilters().insert(0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm'));
         this.getReportWindow().show();
         this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
-
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){

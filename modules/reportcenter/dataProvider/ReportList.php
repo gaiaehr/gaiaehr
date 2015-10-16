@@ -48,6 +48,7 @@ class ReportList
                             $fileContent = json_decode(file_get_contents($filePointer), true);
                             $AvailableReports[$Index]['id'] = $Index;
                             $AvailableReports[$Index]['report_name'] = $fileContent['title'];
+                            $AvailableReports[$Index]['reportDir'] = $fileContent['reportDir'];
                             $AvailableReports[$Index]['report_description'] = $fileContent['description'];
                             $AvailableReports[$Index]['category'] = $fileContent['category'];
                             $AvailableReports[$Index]['version'] = $fileContent['version'];

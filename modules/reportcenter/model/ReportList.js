@@ -28,6 +28,10 @@ Ext.define('Modules.reportcenter.model.ReportList', {
             type: 'string'
         },
         {
+            name: 'reportDir',
+            type: 'string'
+        },
+        {
             name: 'report_description',
             type: 'string'
         },

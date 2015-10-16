@@ -72,7 +72,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         margin: 5,
                         anchor: '100%'
                     },
-                    html: '<p>Filters!</p>'
+                    items:[
+
+                    ]
                 },
                 {
                     xtype: 'panel',

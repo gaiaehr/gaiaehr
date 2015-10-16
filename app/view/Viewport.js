@@ -726,10 +726,9 @@ Ext.define('App.view.Viewport', {
         this.nav.navigateTo('App.view.patient.NewPatient');
     },
 
-	//*****************************************************************
-	//** EMERGENCY STUFF **********************************************
-	//*****************************************************************
-
+    /**
+     * EMERGENCY STUFF
+     */
 	createEmergency: function(){
         var me = this,
 	        emergency;
@@ -780,7 +779,7 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	/*
+	/**
 	 * Show the Create New Encounter panel.
 	 */
     createNewEncounter: function(){

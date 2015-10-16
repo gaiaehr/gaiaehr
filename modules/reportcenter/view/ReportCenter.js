@@ -61,20 +61,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             modal: false,
             items:[
                 {
-                    xtype: 'form',
-                    region: 'north',
-                    itemId: 'reportFilters',
-                    title: _('filters'),
-                    collapsible: true,
-                    height: 150,
-                    fieldDefaults: {
-                        labelWidth: 60,
-                        margin: 5,
-                        anchor: '100%'
-                    },
-                    items:[
-
-                    ]
                 },
                 {
                     xtype: 'panel',

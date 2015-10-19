@@ -20748,9 +20748,11 @@ Ext.define('App.model.patient.Patient',{
             foreignKey: 'pid'
         }
     ],
-    indexes: {
-        live_search_index: {
-            unique: false,
+    indexes: [
+        {
+            name: 'live_search_index',
+            choice: 'INDEX',
+            type: 'BTREE',
             columns: [
                 'pid',
                 'pubpid',
@@ -20760,7 +20762,7 @@ Ext.define('App.model.patient.Patient',{
                 'SS'
             ]
         }
-    }
+    ]
 });
 
 Ext.define('App.model.patient.PatientPossibleDuplicate', {
@@ -24672,6 +24674,7 @@ Ext.define('App.view.patient.Results', {
 	requires: [
 		'Ext.grid.plugin.CellEditing',
 		'Ext.grid.plugin.RowEditing',
+        'Ext.tab.Panel',
 		'App.store.patient.PatientsOrders',
 		'App.ux.LiveLabsSearch'
 	],
@@ -24681,6 +24684,7 @@ Ext.define('App.view.patient.Results', {
 	items: [
 		{
 			xtype: 'grid',
+            itemId: 'orderResultsGrid',
 			action: 'orders',
 			region: 'center',
 			split: true,
@@ -24704,7 +24708,11 @@ Ext.define('App.view.patient.Results', {
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
-								App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.description);
+								App.app.getController('InfoButton').doGetInfo(
+                                    record.data.code,
+                                    record.data.code_type,
+                                    record.data.description
+                                );
 							}
 						}
 					]
@@ -24759,278 +24767,337 @@ Ext.define('App.view.patient.Results', {
 			bbar: [
 				'->',
 				{
-					text: _('new_order'),
+					text: _('new_lab_result'),
 					itemId: 'OrderResultNewOrderBtn',
 					iconCls: 'icoAdd'
-				}
+				},
+                '|',
+                {
+                    text: _('new_radiology_result'),
+                    itemId: 'ResultNewRadiologyBtn',
+                    iconCls: 'icoAdd'
+                }
 			]
 		},
-		{
-			xtype: 'form',
-			title: _('order_result'),
-			region: 'south',
-			height: 400,
-			frame: true,
-			split: true,
-			itemId: 'OrderResultForm',
-			layout: {
-				type: 'border'
-			},
-			tools: [
-				{
-					xtype: 'button',
-					text: _('view_document'),
-					icon: 'resources/images/icons/icoView.png',
-					action: 'orderDocumentViewBtn'
-				}
-			],
-			items: [
-				{
-					xtype: 'panel',
-					title: _('report_info'),
-					region: 'west',
-					collapsible: true,
-					autoScroll: true,
-					width: 260,
-					bodyPadding: 5,
-					split: true,
-					layout: {
-						type: 'vbox',
-						align: 'stretch'
-					},
-					items: [
-						{
-							xtype: 'fieldset',
-							title: _('report_info'),
-							defaults: {
-								xtype: 'textfield',
-								anchor: '100%'
-							},
-							layout: 'anchor',
-							items: [
-								{
-									xtype: 'datefield',
-									fieldLabel: _('report_date'),
-									name: 'result_date',
-									format: 'Y-m-d',
-									allowBlank: false
-								},
-								{
-									fieldLabel: _('report_number'),
-									name: 'lab_order_id',
-									allowBlank: false
-								},
-								{
-									fieldLabel: _('status'),
-									name: 'result_status'
-								},
-								{
-									xtype: 'datefield',
-									fieldLabel: _('observation_date'),
-									name: 'observation_date',
-									format: 'Y-m-d',
-									allowBlank: false
-								},
-								{
-									fieldLabel: _('specimen'),
-									name: 'specimen_text'
-								},
-								{
-									xtype: 'textareafield',
-									fieldLabel: _('specimen_notes'),
-									name: 'specimen_notes',
-									height: 50
-								},
-								{
-									xtype: 'filefield',
-									labelAlign: 'top',
-									fieldLabel: _('upload_document'),
-									action: 'orderresultuploadfield',
-									submitValue: false
-								}
-							]
-						},
-						{
-							xtype: 'fieldset',
-							title: _('laboratory_info'),
-							defaults: {
-								xtype: 'textfield',
-								anchor: '100%'
-							},
-							layout: 'anchor',
-							margin: 0,
-							collapsible: true,
-							collapsed: true,
-							items: [
-								{
-									fieldLabel: _('name'),
-									name: 'lab_name'
-								},
-								{
-									xtype: 'textareafield',
-									fieldLabel: _('address'),
-									name: 'lab_address',
-									height: 50
-								}
-							]
-						}
-					]
-				},
-				{
-					xtype: 'grid',
-					action: 'observations',
-					flex: 1,
-					region: 'center',
-					split: true,
-					columnLines: true,
-					plugins: [
-						{
-							ptype: 'cellediting',
-							clicksToEdit: 1
-						}
-					],
-					columns: [
-						{
-							xtype: 'actioncolumn',
-							width: 25,
-							items: [
-								{
-									icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
-									tooltip: 'Get Info',
-									handler: function(grid, rowIndex, colIndex, item, e, record){
-										App.app.getController('InfoButton').doGetInfo(record.data.code, record.data.code_type, record.data.code_text);
-									}
-								}
-							]
-						},
-						{
-							text: _('name'),
-							menuDisabled: true,
-							dataIndex: 'code_text',
-							width: 350
-						},
-						{
-							text: _('value'),
-							menuDisabled: true,
-							dataIndex: 'value',
-							width: 180,
-							editor: {
-								xtype: 'textfield'
-							},
-							renderer: function(v, meta, record){
-								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
-									orange = ['L', 'H', 'A', 'W', 'MS'],
-									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
-									green = ['N'];
+        {
+            xtype: 'tabpanel',
+            region: 'south',
+            split: true,
+            itemId: 'documentTypeTab',
+            height: 400,
+            items: [
+                {
+                    title: _('lab_observations'),
+                    xtype: 'form',
+                    frame: true,
+                    itemId: 'OrderResultForm',
+                    layout: {
+                        type: 'border'
+                    },
+                    tools: [
+                        {
+                            xtype: 'button',
+                            text: _('view_document'),
+                            icon: 'resources/images/icons/icoView.png',
+                            action: 'orderDocumentViewBtn'
+                        }
+                    ],
+                    items: [
+                        {
+                            xtype: 'panel',
+                            title: _('report_info'),
+                            itemId: 'reportInfoForm',
+                            region: 'west',
+                            collapsible: true,
+                            autoScroll: true,
+                            width: 260,
+                            bodyPadding: 5,
+                            split: true,
+                            layout: {
+                                type: 'vbox',
+                                align: 'stretch'
+                            },
+                            items: [
+                                {
+                                    xtype: 'fieldset',
+                                    title: _('report_info'),
+                                    defaults: {
+                                        xtype: 'textfield',
+                                        anchor: '100%'
+                                    },
+                                    layout: 'anchor',
+                                    items: [
+                                        {
+                                            xtype: 'datefield',
+                                            fieldLabel: _('report_date'),
+                                            name: 'result_date',
+                                            format: 'Y-m-d',
+                                            allowBlank: false
+                                        },
+                                        {
+                                            fieldLabel: _('report_number'),
+                                            name: 'lab_order_id',
+                                            allowBlank: false
+                                        },
+                                        {
+                                            fieldLabel: _('status'),
+                                            name: 'result_status'
+                                        },
+                                        {
+                                            xtype: 'datefield',
+                                            fieldLabel: _('observation_date'),
+                                            name: 'observation_date',
+                                            format: 'Y-m-d',
+                                            allowBlank: false
+                                        },
+                                        {
+                                            fieldLabel: _('specimen'),
+                                            name: 'specimen_text'
+                                        },
+                                        {
+                                            xtype: 'textareafield',
+                                            fieldLabel: _('specimen_notes'),
+                                            name: 'specimen_notes',
+                                            height: 50
+                                        },
+                                        {
+                                            xtype: 'filefield',
+                                            labelAlign: 'top',
+                                            fieldLabel: _('upload_document'),
+                                            action: 'orderresultuploadfield',
+                                            submitValue: false
+                                        }
+                                    ]
+                                },
+                                {
+                                    xtype: 'fieldset',
+                                    title: _('laboratory_info'),
+                                    defaults: {
+                                        xtype: 'textfield',
+                                        anchor: '100%'
+                                    },
+                                    layout: 'anchor',
+                                    margin: 0,
+                                    collapsible: true,
+                                    collapsed: true,
+                                    items: [
+                                        {
+                                            fieldLabel: _('name'),
+                                            name: 'lab_name'
+                                        },
+                                        {
+                                            xtype: 'textareafield',
+                                            fieldLabel: _('address'),
+                                            name: 'lab_address',
+                                            height: 50
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            xtype: 'grid',
+                            itemId: 'observationsGrid',
+                            action: 'observations',
+                            flex: 1,
+                            region: 'center',
+                            split: true,
+                            columnLines: true,
+                            plugins: [
+                                {
+                                    ptype: 'cellediting',
+                                    clicksToEdit: 1
+                                }
+                            ],
+                            columns: [
+                                {
+                                    xtype: 'actioncolumn',
+                                    width: 25,
+                                    items: [
+                                        {
+                                            icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+                                            tooltip: 'Get Info',
+                                            handler: function(grid, rowIndex, colIndex, item, e, record){
+                                                App.app.getController('InfoButton').doGetInfo(
+                                                    record.data.code,
+                                                    record.data.code_type,
+                                                    record.data.code_text
+                                                );
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    text: _('name'),
+                                    menuDisabled: true,
+                                    dataIndex: 'code_text',
+                                    width: 350
+                                },
+                                {
+                                    text: _('value'),
+                                    menuDisabled: true,
+                                    dataIndex: 'value',
+                                    width: 180,
+                                    editor: {
+                                        xtype: 'textfield'
+                                    },
+                                    renderer: function(v, meta, record){
+                                        var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
+                                            orange = ['L', 'H', 'A', 'W', 'MS'],
+                                            blue = ['B', 'S', 'U', 'D', 'R', 'I'],
+                                            green = ['N'];
 
-								if(Ext.Array.contains(green, record.data.abnormal_flag)){
-									return '<span style="color:green;">' + v + '</span>';
-								}else if(Ext.Array.contains(blue, record.data.abnormal_flag)){
-									return '<span style="color:blue;">' + v + '</span>';
-								}else if(Ext.Array.contains(orange, record.data.abnormal_flag)){
-									return '<span style="color:orange;">' + v + '</span>';
-								}else if(Ext.Array.contains(red, record.data.abnormal_flag)){
-									return '<span style="color:red;">' + v + '</span>';
-								}else{
-									return v;
-								}
-							}
-						},
-						{
-							text: _('units'),
-							menuDisabled: true,
-							dataIndex: 'units',
-							width: 75,
-							editor: {
-								xtype: 'textfield'
-							}
-						},
-						{
-							text: _('abnormal'),
-							menuDisabled: true,
-							dataIndex: 'abnormal_flag',
-							width: 75,
-							editor: {
-								xtype: 'textfield'
-							},
-							renderer: function(v, attr){
-								var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
-									orange = ['L', 'H', 'A', 'W', 'MS'],
-									blue = ['B', 'S', 'U', 'D', 'R', 'I'],
-									green = ['N'];
+                                        if(Ext.Array.contains(green, record.data.abnormal_flag)){
+                                            return '<span style="color:green;">' + v + '</span>';
+                                        }else if(Ext.Array.contains(blue, record.data.abnormal_flag)){
+                                            return '<span style="color:blue;">' + v + '</span>';
+                                        }else if(Ext.Array.contains(orange, record.data.abnormal_flag)){
+                                            return '<span style="color:orange;">' + v + '</span>';
+                                        }else if(Ext.Array.contains(red, record.data.abnormal_flag)){
+                                            return '<span style="color:red;">' + v + '</span>';
+                                        }else{
+                                            return v;
+                                        }
+                                    }
+                                },
+                                {
+                                    text: _('units'),
+                                    menuDisabled: true,
+                                    dataIndex: 'units',
+                                    width: 75,
+                                    editor: {
+                                        xtype: 'textfield'
+                                    }
+                                },
+                                {
+                                    text: _('abnormal'),
+                                    menuDisabled: true,
+                                    dataIndex: 'abnormal_flag',
+                                    width: 75,
+                                    editor: {
+                                        xtype: 'textfield'
+                                    },
+                                    renderer: function(v, attr){
+                                        var red = ['LL', 'HH', '>', '<', 'AA', 'VS'],
+                                            orange = ['L', 'H', 'A', 'W', 'MS'],
+                                            blue = ['B', 'S', 'U', 'D', 'R', 'I'],
+                                            green = ['N'];
 
-								if(Ext.Array.contains(green, v)){
-									return '<span style="color:green;">' + v + '</span>';
-								}else if(Ext.Array.contains(blue, v)){
-									return '<span style="color:blue;">' + v + '</span>';
-								}else if(Ext.Array.contains(orange, v)){
-									return '<span style="color:orange;">' + v + '</span>';
-								}else if(Ext.Array.contains(red, v)){
-									return '<span style="color:red;">' + v + '</span>';
-								}else{
-									return v;
-								}
-							}
-						},
-						{
-							text: _('range'),
-							menuDisabled: true,
-							dataIndex: 'reference_rage',
-							width: 150,
-							editor: {
-								xtype: 'textfield'
-							}
-						},
-						{
-							text: _('notes'),
-							menuDisabled: true,
-							dataIndex: 'notes',
-							width: 300,
-							editor: {
-								xtype: 'textfield'
-							}
-						},
-						{
-							text: _('status'),
-							menuDisabled: true,
-							dataIndex: 'observation_result_status',
-							width: 60,
-							editor: {
-								xtype: 'textfield'
-							}
-						}
-					]
-				}
-			],
-			dockedItems: [
-				{
-					xtype: 'toolbar',
-					dock: 'bottom',
-					ui: 'footer',
-					itemId: 'OrderResultBottomToolbar',
-					defaults: {
-						minWidth: 75
-					},
-					items: [
-						{
-							text: _('sign'),
-							iconCls: 'icoSing',
-							disabled: true,
-							itemId: 'OrderResultSignBtn'
-						},
-						'->',
-						{
-							text: _('reset'),
-							action: 'orderResultResetBtn'
-						},
-						{
-							text: _('save'),
-							action: 'orderResultSaveBtn'
-						}
-					]
-				}
-			]
-		}
+                                        if(Ext.Array.contains(green, v)){
+                                            return '<span style="color:green;">' + v + '</span>';
+                                        }else if(Ext.Array.contains(blue, v)){
+                                            return '<span style="color:blue;">' + v + '</span>';
+                                        }else if(Ext.Array.contains(orange, v)){
+                                            return '<span style="color:orange;">' + v + '</span>';
+                                        }else if(Ext.Array.contains(red, v)){
+                                            return '<span style="color:red;">' + v + '</span>';
+                                        }else{
+                                            return v;
+                                        }
+                                    }
+                                },
+                                {
+                                    text: _('range'),
+                                    menuDisabled: true,
+                                    dataIndex: 'reference_rage',
+                                    width: 150,
+                                    editor: {
+                                        xtype: 'textfield'
+                                    }
+                                },
+                                {
+                                    text: _('notes'),
+                                    menuDisabled: true,
+                                    dataIndex: 'notes',
+                                    width: 300,
+                                    editor: {
+                                        xtype: 'textfield'
+                                    }
+                                },
+                                {
+                                    text: _('status'),
+                                    menuDisabled: true,
+                                    dataIndex: 'observation_result_status',
+                                    width: 60,
+                                    editor: {
+                                        xtype: 'textfield'
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    dockedItems: [
+                        {
+                            xtype: 'toolbar',
+                            dock: 'bottom',
+                            ui: 'footer',
+                            itemId: 'OrderResultBottomToolbar',
+                            defaults: {
+                                minWidth: 75
+                            },
+                            items: [
+                                {
+                                    text: _('sign'),
+                                    iconCls: 'icoSing',
+                                    disabled: true,
+                                    itemId: 'OrderResultSignBtn'
+                                },
+                                '->',
+                                {
+                                    text: _('reset'),
+                                    action: 'orderResultResetBtn'
+                                },
+                                {
+                                    text: _('save'),
+                                    action: 'orderResultSaveBtn'
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    xtype: 'form',
+                    title: _('radiology_observations'),
+                    itemId: 'radiologyResultForm',
+                    frame: true,
+                    layout: {
+                        type: 'border'
+                    },
+                    items: [
+                        {
+                        }
+                    ],
+                    dockedItems: [
+                        {
+                            xtype: 'toolbar',
+                            dock: 'bottom',
+                            ui: 'footer',
+                            itemId: 'radiologyResultBottomToolbar',
+                            defaults: {
+                                minWidth: 75
+                            },
+                            items: [
+                                {
+                                    text: _('sign'),
+                                    iconCls: 'icoSing',
+                                    disabled: true,
+                                    itemId: 'radiologyResultSignBtn'
+                                },
+                                '->',
+                                {
+                                    text: _('reset'),
+                                    action: 'radiologyResultResetBtn'
+                                },
+                                {
+                                    text: _('save'),
+                                    action: 'radiologyResultSaveBtn'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
 	]
 });
 Ext.define('App.store.patient.PatientSocialHistory', {
@@ -31046,7 +31113,7 @@ Ext.define('App.view.administration.PreventiveCare',
 				width : 30,
 				items : [
 				{
-					icon : 'resources/images/icons/delete.png', // Use a URL in the icon config
+					icon : 'resources/images/icons/delete.png',
 					tooltip : _('remove'),
 					handler : function(grid, rowIndex, colIndex)
 					{
@@ -31407,7 +31474,6 @@ Ext.define('App.view.administration.PreventiveCare',
 								edit : me.afterLabTimeEdit
 
 							}
-
 						}),
 						bbar :
 						{
@@ -31450,7 +31516,7 @@ Ext.define('App.view.administration.PreventiveCare',
 
 		me.pageBody = [me.guidelineGrid];
 		me.callParent(arguments);
-	}, // end of initComponent
+	},
 
 	onServiceEdit : function(context, e)
 	{
@@ -38075,7 +38141,6 @@ Ext.define('App.controller.Navigation', {
 		}
 		if(!this.altIsDown) return;
 		this.getViewport().fireEvent('navkey', e, e.getKey());
-//		say('navkey');
 	},
 
 	captureUpKey:function(e){
@@ -51366,8 +51431,6 @@ Ext.define('App.controller.DocumentViewer', {
 		});
 	},
 
-
-
 	onArchiveBtnClick: function(btn){
 		var win = btn.up('window'),
 			form = win.down('form').getForm(),
@@ -51939,11 +52002,13 @@ Ext.define('App.controller.patient.Documents', {
 			values = form.getValues(),
 			record = form.getRecord();
 
-
 		if(form.isValid()){
 			values.entered_in_error = true;
 			record.set(values);
 			record.save({
+				params: {
+					site: record.site ? record.site : null
+				},
 				success: function(){
 					win.close();
 				}
@@ -52489,11 +52554,11 @@ Ext.define('App.controller.patient.Results', {
 		},
 		{
 			ref: 'resultForm',
-			selector: 'patientresultspanel > form'
+			selector: 'patientresultspanel #OrderResultForm'
 		},
 		{
 			ref: 'observationsGrid',
-			selector: 'patientresultspanel > form > grid[action=observations]'
+			selector: 'patientresultspanel #observationsGrid'
 		},
 		{
 			ref: 'ordersGrid',
@@ -52514,7 +52579,11 @@ Ext.define('App.controller.patient.Results', {
 		{
 			ref: 'OrderResultSignBtn',
 			selector: '#OrderResultSignBtn'
-		}
+		},
+        {
+            ref: 'DocumentTypeTab',
+            selector: 'patientresultspanel #documentTypeTab'
+        }
 	],
 
 	init: function(){
@@ -52542,6 +52611,9 @@ Ext.define('App.controller.patient.Results', {
 			'#OrderResultNewOrderBtn': {
 				click: me.onOrderResultNewOrderBtnClick
 			},
+            '#ResultNewRadiologyBtn': {
+                click: me.onResultNewRadiologyBtnClick
+            },
 			'#OrderResultSignBtn': {
 				click: me.onOrderResultSignBtnClick
 			}
@@ -52556,10 +52628,8 @@ Ext.define('App.controller.patient.Results', {
 
 				User.verifyUserPass(password, function(success){
 					if(success){
-						var form = me.getResultForm().getForm(),
+						var form = me.getResultForm(),
 							record = form.getRecord();
-
-						say(record);
 
 						record.set({signed_uid: app.user.id});
 						record.save({
@@ -52602,6 +52672,11 @@ Ext.define('App.controller.patient.Results', {
 		grid.editingPlugin.startEdit(records[0], 0);
 	},
 
+    // TODO: Finish me.
+    onResultNewRadiologyBtnClick: function(btn){
+
+    },
+
 	onResultPanelActive: function(){
 		this.setResultPanel();
 	},
@@ -52625,17 +52700,24 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onOrderSelectionChange: function(model, records){
-		if(records.length > 0){
-			this.getOrderResult(records[0]);
-		}else{
-			this.resetOrderResultForm();
-		}
+        if(records[0]) {
+            if (records[0].data.order_type === 'lab') {
+                this.getDocumentTypeTab().setActiveTab(0);
+            } else if (records[0].data.order_type === 'rad') {
+                this.getDocumentTypeTab().setActiveTab(1);
+            }
+            if (records.length > 0) {
+                this.getOrderResult(records[0]);
+            } else {
+                this.resetOrderResultForm();
+            }
+        }
 	},
 
 	getOrderResult: function(orderRecord){
 
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			resultsStore = orderRecord.results(),
 			observationGrid = me.getObservationsGrid(),
 			observationStore;
@@ -52685,7 +52767,7 @@ Ext.define('App.controller.patient.Results', {
 
 	resetOrderResultForm: function(){
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			observationGrid = me.getObservationsGrid(),
 			store = Ext.create('App.store.patient.PatientsOrderObservations');
 
@@ -52696,7 +52778,7 @@ Ext.define('App.controller.patient.Results', {
 
 	onSaveOrderResultClicked: function(){
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			values = form.getValues(),
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
@@ -52720,7 +52802,6 @@ Ext.define('App.controller.patient.Results', {
 							docType: 'lab',
 							title: 'Lab #' + values.lab_order_id + ' Result',
 							document: e.target.result
-
 						};
 
 					File.savePatientBase64Document(params, function(provider, response){
@@ -52734,9 +52815,7 @@ Ext.define('App.controller.patient.Results', {
 
 				};
 			})(files[0]);
-
 			reader.readAsDataURL(files[0]);
-
 		}else{
 			me.saveOrderResult(form, values);
 		}
@@ -52750,29 +52829,12 @@ Ext.define('App.controller.patient.Results', {
 			order = sm.getSelection(),
 			observationData = [];
 
-		//		me.getObservationsGrid().editingPlugin.cancelEdit();
-
 		var observationStore = record.observations(),
 			observations = observationStore.data.items;
 
-
 		record.set(values);
-
-		say('saveOrderResult');
-		//say(form);
-		//say(values);
-		//say(record);
-		//say(order[0]);
-
-
-
-		record.save({
+        record.save({
 			success: function(rec){
-
-				say(rec.data.id);
-				say(rec);
-				say(observationStore.data.items);
-				say(observationStore.data.items);
 
 				for(var i = 0; i < observations.length; i++){
 					observations[i].set({result_id: rec.data.id});
@@ -52797,10 +52859,8 @@ Ext.define('App.controller.patient.Results', {
 						//});
 					}
 				});
-
 				order[0].set({status: 'Received'});
 				order[0].save();
-
 				app.msg(_('sweet'), _('record_saved'));
 			}
 		});
@@ -52808,7 +52868,7 @@ Ext.define('App.controller.patient.Results', {
 
 	onOrderDocumentViewBtnClicked: function(){
 		var me = this,
-			form = me.getResultForm().getForm(),
+			form = me.getResultForm(),
 			record = form.getRecord(),
 			foo = record.data.documentId.split('|'),
 			type = null,
@@ -57516,10 +57576,9 @@ Ext.define('App.view.Viewport', {
         this.nav.navigateTo('App.view.patient.NewPatient');
     },
 
-	//*****************************************************************
-	//** EMERGENCY STUFF **********************************************
-	//*****************************************************************
-
+    /**
+     * EMERGENCY STUFF
+     */
 	createEmergency: function(){
         var me = this,
 	        emergency;
@@ -57570,7 +57629,7 @@ Ext.define('App.view.Viewport', {
 		});
 	},
 
-	/*
+	/**
 	 * Show the Create New Encounter panel.
 	 */
     createNewEncounter: function(){

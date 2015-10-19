@@ -1,6 +1,7 @@
 {
   "title":"Immunization Report",
   "name":"immunizationReport",
+  "reportDir":"ImmunizationReport",
   "version":"0.1",
   "extjs_version":"4.1.1",
   "author": "TRA NextGen, Inc (c) 2015",

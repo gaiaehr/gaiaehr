@@ -18,8 +18,7 @@
 
 Ext.define('Modules.reportcenter.view.ReportPanel', {
 	extend: 'App.ux.RenderPanel',
-	id: 'panelReportPanel',
-	pageTitle: _('report_center'),
+	itemId: 'reportPanel',
 	pageLayout: {
 		type: 'vbox',
 		align: 'stretch'
@@ -45,7 +44,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
 			collapsible: true,
 			buttonAlign: 'left',
 			layout: 'column',
-			// Draw the buttons to render and clear the report panel view.
 			items: [{}],
 			buttons: [
 				{
@@ -160,7 +158,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
 			this.renderContainer.removeAll(true);
 			delete this.grid;
 			form.reportFn({html: html}, function(provider, response){
-
 				me.pdf = me.getPDFPanel(response.result.url);
 			});
 		}else{
@@ -175,7 +172,6 @@ Ext.define('Modules.reportcenter.view.ReportPanel', {
 		this.renderContainer.removeAll(true);
 		delete this.grid;
 		delete this.pdf;
-
 	},
 
 	/**

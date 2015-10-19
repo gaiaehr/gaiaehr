@@ -16,22 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.controller.Reports', {
-	extend: 'Ext.app.Controller',
-	requires: [
-
-	],
-	refs: [
-
-	],
-
-	init: function(){
-		var me = this;
-
-		me.control({
-
-		});
-
-	}
-
+Ext.define('Modules.reportcenter.reports.ImmunizationReport.filtersForm', {
+    extend: 'Ext.form.Panel',
+    xtype: 'reportFilter',
+    title: _('filters'),
+    itemId: 'ImmunizationReport',
+    collapsible: true,
+    height: 150,
+    fieldDefaults: {
+        labelWidth: 60,
+        margin: 5,
+        anchor: '100%'
+    },
+    bodyPadding: 2,
+    items:[
+        {
+            xtype: 'textfield',
+            name: 'name',
+            fieldLabel: 'Name',
+            allowBlank: false
+        }
+    ]
 });

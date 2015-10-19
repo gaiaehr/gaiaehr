@@ -1,6 +1,6 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * Copyright (C) 2015 TRA NextGen, Inc.
+ * Copyright (C) 2013 Certun, LLC.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.store.ReportList', {
-    extend      : 'Ext.data.Store',
-    model       : 'Modules.reportcenter.model.ReportList',
-    remoteSort  : true,
-    autoLoad    : false,
-    groupField: 'category',
-    proxy : {
-        type: 'direct',
-        api : {
-            read  : 'ReportList.getAvailableReports'
-        },
-        reader: {
-            root: 'data'
-        }
-    }
+Ext.define('App.model.administration.DocumentData', {
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'documents_data',
+		uuid: true
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'string'
+		},
+		{
+			name: 'document',
+			type: 'string',
+			dataType: 'longblob'
+		}
+	]
 });

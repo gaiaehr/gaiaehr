@@ -299,7 +299,6 @@ Ext.define('App.controller.Navigation', {
 		}
 		if(!this.altIsDown) return;
 		this.getViewport().fireEvent('navkey', e, e.getKey());
-//		say('navkey');
 	},
 
 	captureUpKey:function(e){

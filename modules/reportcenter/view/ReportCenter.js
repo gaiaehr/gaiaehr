@@ -7,7 +7,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	extend: 'App.ux.RenderPanel',
 	pageTitle: _('report_center'),
     itemId: 'ReportCenterPanel',
+    requires: [
+        'Modules.reportcenter.view.ReportPanel'
+    ],
     pageBody: [
+        // Report List
         {
             xtype: 'gridpanel',
             itemId: 'reportCenterGrid',
@@ -41,6 +45,30 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     text: _('report_description'),
                     dataIndex: 'report_description',
                     flex: 1
+                }
+            ]
+        },
+
+        // Report Viewer
+        {
+            xtype: 'window',
+            itemId: 'reportWindow',
+            closeAction: 'hide',
+            hidden: true,
+            title: _('report_window'),
+            width: 800,
+            height: 900,
+            layout: 'fit',
+            maximizable: false,
+            maximized: false,
+            minimizable: false,
+            modal: false,
+            items:[
+                {
+                    xtype: 'panel',
+                    region: 'center',
+                    border: true,
+                    html: '<p>Report render!</p>'
                 }
             ]
         }

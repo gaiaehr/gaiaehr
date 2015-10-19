@@ -392,9 +392,11 @@ Ext.define('App.model.patient.Patient',{
             foreignKey: 'pid'
         }
     ],
-    indexes: {
-        live_search_index: {
-            unique: false,
+    indexes: [
+        {
+            name: 'live_search_index',
+            choice: 'INDEX',
+            type: 'BTREE',
             columns: [
                 'pid',
                 'pubpid',
@@ -404,5 +406,5 @@ Ext.define('App.model.patient.Patient',{
                 'SS'
             ]
         }
-    }
+    ]
 });

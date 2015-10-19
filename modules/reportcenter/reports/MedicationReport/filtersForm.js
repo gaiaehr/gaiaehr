@@ -16,42 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.controller.Dashboard', {
-	extend: 'Ext.app.Controller',
-	requires: [
-		'Modules.reportcenter.view.dashboard.WeekVisitsPortlet',
-		'App.view.dashboard.panel.Portlet'
-	],
-	refs: [
-		{
-			ref: 'DashboardColumnOne',
-			selector: '#dashboard-col-1'
-		},
-		{
-			ref: 'DashboardColumnTwo',
-			selector: '#dashboard-col-2'
-		}
-	],
-
-	init: function(){
-		var me = this;
-
-		me.control({
-
-		});
-
-		if(me.getDashboardColumnTwo()){
-			me.getDashboardColumnTwo().add({
-				xtype: 'portlet',
-				title: _('week_report'),
-				items: [
-					{
-						xtype: 'weekvisitsportlet',
-						height: 400
-					}
-				]
-			});
-		}
-	},
-
+Ext.define('Modules.reportcenter.reports.MedicationReport.filtersForm', {
+    extend: 'Ext.form.Panel',
+    xtype: 'reportFilter',
+    title: _('filters'),
+    itemId: 'MedicationReport',
+    collapsible: true,
+    height: 150,
+    fieldDefaults: {
+        labelWidth: 60,
+        margin: 5,
+        anchor: '100%'
+    },
+    bodyPadding: 2,
+    items:[
+        {
+            xtype: 'textfield',
+            name: 'name',
+            fieldLabel: 'Name',
+            allowBlank: false
+        }
+    ]
 });

@@ -113,6 +113,12 @@ Ext.define('App.model.patient.PatientDocuments', {
 			name: 'document',
 			type: 'string',
 			dataType: 'longblob'
+		},
+		{
+			name: 'site',
+			type: 'string',
+			store: false,
+			useNull: true
 		}
 	],
 	proxy: {

@@ -125,6 +125,22 @@ class DocumentHandler {
 	}
 
 	/**
+	 * This logic is to eventually split the document into multiples tables
+	 * using the sencha model instance
+	 *
+	 * @param $document
+	 */
+	private function addDocumentData(&$document){
+
+		$instance = floor($document->id / 100000);
+		$document_model = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $instance);
+
+		return $document;
+
+	}
+
+
+	/**
 	 * @param $params
 	 *
 	 * @return array

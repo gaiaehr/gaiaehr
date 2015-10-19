@@ -16,32 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.Main', {
-	extend: 'Modules.Module',
-
-	requires:[
-		'Modules.reportcenter.view.ReportCenter'
-	],
-
-	init: function(){
-		var me = this;
-
-        me.getController('Modules.reportcenter.controller.ReportCenter');
-        me.nav = me.getController('Navigation');
-
-		/**
-		 * function to add navigation links
-		 * @param parentId  (string)            navigation node parent ID,
-		 * @param node      (object || array)   navigation node configuration properties
-		 */
-		me.addNavigationNodes('root', {
-			text: _('report_center'),
-			leaf: true,
-			cls: 'file',
-			iconCls: 'icoReport',
-			id: 'Modules.reportcenter.view.ReportCenter'
-		});
-
-		me.callParent();
-	}
-}); 
+Ext.define('Modules.reportcenter.reports.Clinical.filtersForm', {
+    extend: 'Ext.form.Panel',
+    xtype: 'reportFilter',
+    title: _('filters'),
+    itemId: 'Clinical',
+    collapsible: true,
+    height: 150,
+    fieldDefaults: {
+        labelWidth: 60,
+        margin: 5,
+        anchor: '100%'
+    },
+    bodyPadding: 2,
+    items:[
+        {
+            xtype: 'textfield',
+            name: 'name',
+            fieldLabel: 'Name',
+            allowBlank: false
+        }
+    ]
+});

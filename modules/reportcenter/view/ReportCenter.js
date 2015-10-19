@@ -11,6 +11,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
         'Modules.reportcenter.view.ReportPanel'
     ],
     pageBody: [
+        // Report List
         {
             xtype: 'gridpanel',
             itemId: 'reportCenterGrid',
@@ -47,6 +48,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 }
             ]
         },
+
+        // Report Viewer
         {
             xtype: 'window',
             itemId: 'reportWindow',
@@ -55,23 +58,16 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             title: _('report_window'),
             width: 800,
             height: 900,
-            maximizable: true,
+            layout: 'fit',
+            maximizable: false,
             maximized: false,
             minimizable: false,
             modal: false,
             items:[
                 {
-                },
-                {
-                    xtype: 'splitter'
-                },
-                {
                     xtype: 'panel',
-                    height: 600,
                     region: 'center',
-                    layout: {
-                        align: 'stretch'
-                    },
+                    border: true,
                     html: '<p>Report render!</p>'
                 }
             ]

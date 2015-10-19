@@ -64,7 +64,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportWindow().insert(
             0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
         );
-        this.addButtonsForReport();
+        //this.addButtonsForReport();
         this.getReportWindow().show();
         this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
     },
@@ -73,33 +73,34 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
      * Add the buttons for the filterForm, this will be added to all the reports
      */
     addButtonsForReport: function(){
-        this.getReportFilterPanel().addDocked([
-            {
-                xtype: 'button',
+        this.getReportFilterPanel().add([{
+            dockedItems: [{
+                xtype: 'toolbar',
                 dock: 'right',
-                text: 'PDF'
-            }],
-            [{
-                xtype: 'button',
-                dock: 'right',
-                text: 'HTML'
-            }],
-            [{
-                xtype: 'button',
-                dock: 'right',
-                text: 'XML'
-            }],
-            [{
-                xtype: 'button',
-                dock: 'right',
-                text: 'Plain Text'
-            }],
-            [{
-                xtype: 'button',
-                dock: 'right',
-                text: 'Close'
-            }
-        ]);
+                items: [
+                    {
+                        xtype: 'button',
+                        text: 'PDF'
+                    },
+                    {
+                        xtype: 'button',
+                        text: 'HTML'
+                    },
+                    {
+                        xtype: 'button',
+                        text: 'XML'
+                    },
+                    {
+                        xtype: 'button',
+                        text: 'Plain Text'
+                    },
+                    {
+                        xtype: 'button',
+                        text: 'Close'
+                    }
+                ]
+            }]
+        }]);
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){

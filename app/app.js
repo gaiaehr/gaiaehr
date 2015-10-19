@@ -17545,6 +17545,12 @@ Ext.define('App.model.patient.PatientDocuments', {
 			name: 'document',
 			type: 'string',
 			dataType: 'longblob'
+		},
+		{
+			name: 'site',
+			type: 'string',
+			store: false,
+			useNull: true
 		}
 	],
 	proxy: {
@@ -52000,15 +52006,14 @@ Ext.define('App.controller.patient.Documents', {
 			win = me.getPatientDocumentErrorNoteWindow(),
 			form = win.down('form').getForm(),
 			values = form.getValues(),
-			record = form.getRecord();
+			document_record = form.getRecord(),
+			site = document_record.site ? document_record.site : null;
 
 		if(form.isValid()){
 			values.entered_in_error = true;
-			record.set(values);
-			record.save({
-				params: {
-					site: record.site ? record.site : null
-				},
+			values.site = site;
+			document_record.set(values);
+			document_record.save({
 				success: function(){
 					win.close();
 				}
@@ -52053,7 +52058,6 @@ Ext.define('App.controller.patient.Documents', {
 				}
 			})
 		}
-
 	},
 
 	onScanConnected: function(){

@@ -189,7 +189,6 @@ Ext.define('App.controller.patient.Documents', {
 				}
 			})
 		}
-
 	},
 
 	onScanConnected: function(){

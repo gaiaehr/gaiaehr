@@ -16,24 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('Modules.reportcenter.reports.Appointment.filtersForm', {
+Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm', {
     extend: 'Ext.form.Panel',
+    requires:[
+        'Ext.form.field.Date'
+    ],
     xtype: 'reportFilter',
+    region: 'north',
     title: _('filters'),
-    itemId: 'AppointmentFilters',
+    itemId: 'AutomatedMeasureCalculationFilters',
     collapsible: true,
-    height: 150,
+    height: 200,
+    split: true,
+    border: true,
     fieldDefaults: {
         labelWidth: 60,
         margin: 5,
-        anchor: '100%'
+        anchor: '50%'
     },
     bodyPadding: 2,
     items:[
         {
-            xtype: 'textfield',
-            name: 'name',
-            fieldLabel: 'Name',
+            xtype: 'datefield ',
+            name: 'begin_date',
+            fieldLabel: _('begin_date'),
+            allowBlank: false
+        },
+        {
+            xtype: 'datefield ',
+            name: 'end_date',
+            fieldLabel: _('end_date'),
             allowBlank: false
         }
     ]

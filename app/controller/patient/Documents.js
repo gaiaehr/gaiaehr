@@ -139,11 +139,13 @@ Ext.define('App.controller.patient.Documents', {
 			values = form.getValues(),
 			record = form.getRecord();
 
-
 		if(form.isValid()){
 			values.entered_in_error = true;
 			record.set(values);
 			record.save({
+				params: {
+					site: record.site ? record.site : null
+				},
 				success: function(){
 					win.close();
 				}

@@ -75,13 +75,19 @@ class MatchaMemory extends Matcha
      * MySQL HEAP(Memory) table
      * @param null $senchaModelName
      * @param array $senchaModelArray
+     * @param null $instance
      * @return bool
      */
-    public static function __storeSenchaModel($senchaModelName = NULL, $senchaModelArray = array())
+    public static function __storeSenchaModel($senchaModelName = NULL, $senchaModelArray = array(), $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
+
+            if(isset($instance)){
+                $senchaModelName .= '_' . $instance;
+            }
+
             self::__destroySenchaMemoryModel($senchaModelName);
             $sql = "INSERT INTO `_sencha_model` (model, modelData, modelLastChange)
             VALUES ('$senchaModelName', '".serialize($senchaModelArray)."',
@@ -101,13 +107,19 @@ class MatchaMemory extends Matcha
      * Method to get the sencha model from the server side memory(HEAP)
      * and return a Array.
      * @param null $senchaModel
+     * @param null $instance
      * @return bool|mixed
      */
-    public static function __getModelFromMemory($senchaModel = NULL)
+    public static function __getModelFromMemory($senchaModel = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
+
+            if(isset($instance)){
+                $senchaModel .= '_' . $instance;
+            }
+
             $model = self::$__conn->query("SELECT * FROM _sencha_model WHERE model='$senchaModel';")->fetch();
             if(is_array($model)) return unserialize($model['modelData']); else return false;
         }
@@ -122,13 +134,19 @@ class MatchaMemory extends Matcha
      * function __getModelLastChange($senchaModel = NULL):
      * Method to get the last modified date in Unix TIMESTAMP format
      * @param null $senchaModel
+     * @param null $instance
      * @return bool
      */
-    public static function __getSenchaModelLastChange($senchaModel = NULL)
+    public static function __getSenchaModelLastChange($senchaModel = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
+
+            if(isset($instance)){
+                $senchaModel .= '_' . $instance;
+            }
+
             $model = self::$__conn->query("SELECT * FROM _sencha_model WHERE model='$senchaModel';")->fetch();
             if(is_array($model)) return strtotime($model['modelLastChange']); else return false;
         }
@@ -139,18 +157,23 @@ class MatchaMemory extends Matcha
         }
     }
 
-
     /**
      * function __isModelInMemory($senchaModel = NULL):
      * Method to check if a sencha model is loaded into memory.
      * @param null $senchaModel
+     * @param null $instance
      * @return bool
      */
-    public static function __isModelInMemory($senchaModel = NULL)
+    public static function __isModelInMemory($senchaModel = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
+
+            if(isset($instance)){
+                $senchaModel .= '_' . $instance;
+            }
+
             $model = self::$__conn->query("SELECT * FROM _sencha_model WHERE model='$senchaModel';")->fetch();
             if(is_array($model)) return true; else return false;
         }
@@ -165,13 +188,19 @@ class MatchaMemory extends Matcha
      * function __destroySenchaMemoryModel($senchaModel = NULL):
      * Method to delete a sencha model stored in memory.
      * @param null $senchaModel
+     * @param null $instance
      * @return bool
      */
-    public static function __destroySenchaMemoryModel($senchaModel = NULL)
+    public static function __destroySenchaMemoryModel($senchaModel = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
+
+            if(isset($instance)){
+                $senchaModel .= '_' . $instance;
+            }
+
             self::$__conn->query("DELETE FROM _sencha_model WHERE model='$senchaModel';");
             return true;
         }

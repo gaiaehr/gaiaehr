@@ -45,32 +45,34 @@ class MatchaModel extends Matcha {
 	 *
 	 * @param string $fileModel 'App.model.Example'
 	 * @param bool $force for to read the sencha model file (skip the MatchaMemory)
+	 * @param null $instance
 	 * @return bool success
 	 *
 	 */
 
-	static public function __SenchaModel($fileModel, $force = false) {
+	static public function __SenchaModel($fileModel, $force = false, $instance = null) {
 		try {
 			self::$fileModel = $fileModel;
 
 			// skip this entire routine if freeze option is true
 			if(self::$__freeze){
-				self::$__senchaModel = self::__getSenchaModel($fileModel);
+				self::$__senchaModel = self::__getSenchaModel($fileModel, $instance);
 				return true;
 			}
 
 			self::$__senchaModel = [];
 			// check the difference in dates of the Sencha model file and the stored Sencha model on the server memory,
 			// if there are equal go ahead and load the model from memory and quit the procedure
-			if(!$force && self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel)){
-				self::$__senchaModel = MatchaMemory::__getModelFromMemory($fileModel);
+			if(!$force && self::__getFileModifyDate($fileModel) == MatchaMemory::__getSenchaModelLastChange($fileModel, $instance)){
+				self::$__senchaModel = MatchaMemory::__getModelFromMemory($fileModel, $instance);
 				return true;
 			}
 
 			// get the model of the table from the sencha .js file
-			self::$__senchaModel = self::__getSenchaModel($fileModel);
-			if(!self::$__senchaModel['fields'])
+			self::$__senchaModel = self::__getSenchaModel($fileModel, $instance);
+			if(!self::$__senchaModel['fields']){
 				return false;
+			}
 
 			// get model fields
 			$modelFields = (array)self::$__senchaModel['fields'];
@@ -83,21 +85,25 @@ class MatchaModel extends Matcha {
 			self::$tableIdProperties = $modelFields[$tableIdIndex];
 
 			// check if the table property is an array, if not return the array is a table string.
-			$table = (string)(is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
+			$table = (string) (is_array(self::$__senchaModel['table']) ? self::$__senchaModel['table']['name'] : self::$__senchaModel['table']);
 
 			// verify the existence of the table if it does not exist create it
 			$recordSet = self::$__conn->query("SHOW TABLES LIKE '" . $table . "';");
-			if(isset($recordSet))
+			if(isset($recordSet)){
 				self::__createTable($table);
+			}
 
 			// if id property is not set in sencha model look for propertyId.
-			if($modelFields[$tableIdIndex] === false)
+			if($modelFields[$tableIdIndex] === false){
 				unset($modelFields[$tableIdIndex]);
+			}
 
 			// unset the fields that will noe be store int the database
-			foreach($modelFields as $key => $field)
-				if((isset($field['store']) && $field['store'] === false) || isset($field['persist']) && $field['persist'] === false)
+			foreach($modelFields as $key => $field){
+				if((isset($field['store']) && $field['store'] === false) || isset($field['persist']) && $field['persist'] === false){
 					unset($modelFields[$key]);
+				}
+			}
 
 			// get the table column information and remove the id column
 			$tableColumns = self::$__conn->query("SHOW FULL COLUMNS IN " . $table . ";")->fetchAll(PDO::FETCH_ASSOC);
@@ -107,10 +113,12 @@ class MatchaModel extends Matcha {
 			$columnsSenchaNames = [];
 
 			// get all the column names of each model (Sencha and Database-table)
-			foreach($tableColumns as $column)
+			foreach($tableColumns as $column){
 				$columnsTableNames[] = $column['Field'];
-			foreach($modelFields as $column)
+			}
+			foreach($modelFields as $column){
 				$columnsSenchaNames[] = (isset($column['mapping']) ? $column['mapping'] : $column['name']);
+			}
 
 			// get all the column that are not present in the database-table
 			$differentCreateColumns = array_diff($columnsSenchaNames, $columnsTableNames);
@@ -220,10 +228,10 @@ class MatchaModel extends Matcha {
 							if($indexChange)
 								$change = 'true';
 
-							//                            error_log($table);
-							//                            error_log($field['name']);
-							//                            error_log(var_dump($toIndex));
-							//                            error_log(var_dump($indexChange));
+							//error_log($table);
+							//error_log($field['name']);
+							//error_log(var_dump($toIndex));
+							//error_log(var_dump($indexChange));
 
 							// Modify the column on the database
 							if($change == 'true')
@@ -249,31 +257,49 @@ class MatchaModel extends Matcha {
 	 * model file and store it.
 	 *
 	 * @param string $fileModel 'App.model.Example'
+	 * @param null $instance
 	 * @return array|bool model array or failure
 	 *
 	 */
-	static public function __getSenchaModel($fileModel) {
+	static public function __getSenchaModel($fileModel, $instance = null) {
 		try {
 			// Getting Sencha model as a namespace
 			$jsSenchaModel = self::__getFileContent($fileModel);
-			if(!$jsSenchaModel)
+
+			if(!$jsSenchaModel){
 				throw new Exception("Error opening the Sencha model file.");
+			}
 
             $jsSenchaModel = self::__CleanSenchaModel($jsSenchaModel);
 
 			$model = (array)json_decode($jsSenchaModel, true);
-			if(!count($model))
+
+			if(isset($instance)){
+				if(is_array($model['table'])){
+					$model['table']['name'] .= '_' . $instance;
+				}else{
+					$model['table'] .= '_' . $instance;
+				}
+			}
+
+			if(!count($model)){
 				throw new Exception("Something went wrong converting it to an array. Model('$fileModel'). JSON Error: " . self::__JSONErrorTranslate(json_last_error()));
+			}
 
 			// check if there are a defined table from the model
-			if(!isset($model['table']))
+			if(!isset($model['table'])){
 				throw new Exception("Table property is not defined on Sencha Model. 'table:'");
-			// check if there are a defined fields from the model
-			if(!isset($model['fields']))
-				throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
+			}
 
-			if(!MatchaMemory::__storeSenchaModel($fileModel, $model))
+			// check if there are a defined fields from the model
+			if(!isset($model['fields'])){
+				throw new Exception("Fields property is not defined on Sencha Model. 'fields:'");
+			}
+
+			if(!MatchaMemory::__storeSenchaModel($fileModel, $model, $instance)){
 				throw new Exception("Error storing sencha model into memory.");
+			}
+
 			return $model;
 		} catch(Exception $e) {
 			MatchaErrorHandler::__errorProcess($e);
@@ -497,10 +523,14 @@ class MatchaModel extends Matcha {
 	 * function setSenchaModel($senchaModel = array()):
 	 * The first thing to do, to begin using Matcha
 	 * This will load the Sencha Model to Matcha and do it's magic.
+	 * @param array $senchaModel
+	 * @param bool $force
+	 * @param null $instance
+	 * @return bool|MatchaCUP
 	 */
-	static public function setSenchaModel($senchaModel = []) {
+	static public function setSenchaModel($senchaModel = [], $force = false, $instance = null) {
 		try {
-			if(self::__SenchaModel($senchaModel)){
+			if(self::__SenchaModel($senchaModel, $force, $instance)){
 				$MatchaCUP = new MatchaCUP;
 				$MatchaCUP->setModel(self::$__senchaModel);
 				return $MatchaCUP;

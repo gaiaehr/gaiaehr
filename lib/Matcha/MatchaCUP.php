@@ -994,6 +994,7 @@ class MatchaCUP {
 		} else {
 			$this->table = false;
 		}
+
 		$this->date = new DateTime();
 		$this->primaryKey = MatchaModel::__getTablePrimaryKeyColumnName($this->table);
 		$this->fields = MatchaModel::__getFields($this->model);

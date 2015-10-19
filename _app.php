@@ -60,7 +60,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <div id="msg-div"></div>
 
         <!-- Ext library -->
-		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-dev.js"></script>
+		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js"></script>
 
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php?site=<?php print $site ?>"></script>

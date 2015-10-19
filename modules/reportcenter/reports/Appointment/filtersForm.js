@@ -37,13 +37,13 @@ Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm
     bodyPadding: 2,
     items:[
         {
-            xtype: 'datefield ',
+            xtype: 'date',
             name: 'begin_date',
             fieldLabel: _('begin_date'),
             allowBlank: false
         },
         {
-            xtype: 'datefield ',
+            xtype: 'date',
             name: 'end_date',
             fieldLabel: _('end_date'),
             allowBlank: false

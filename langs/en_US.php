@@ -1121,6 +1121,7 @@ $LANG = array(
 	'create_report'							=> 'Create Report',
 	'create_pdf'							=> 'Create PDF',
 	'create_html'							=> 'Create HTML',
+    'create_text'							=> 'Create Text',
 	'last_visit'							=> 'Last Visit',
 	'id'									=> 'ID',
 	'zipcode'								=> 'Zip Code',

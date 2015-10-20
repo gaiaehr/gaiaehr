@@ -17,19 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once('../../../lib/tcpdf/tcpdf.php');
-
 class ReportGenerator
 {
 
     private $request;
     private $reportDir;
+    private $conn;
+    private $site;
+
+    function __construct($site = 'default')
+    {
+        $this->site = $site;
+        if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+        require_once('../../../registry.php');
+        require_once("../../../sites/$this->site/conf.php");
+        require_once('../../../classes/MatchaHelper.php');
+
+        require_once('../../../lib/tcpdf/tcpdf.php');
+        require_once('../../../classes/Array2XML.php');
+    }
 
     function setRequest($REQUEST)
     {
         if(!isset($REQUEST)) return;
         $this->request = json_decode($REQUEST['params'], true);
         $this->reportDir = $this->request['reportDir'];
+        unset($this->request['reportDir']);
     }
 
     function getXSLDocument()
@@ -52,6 +65,38 @@ class ReportGenerator
             return $Error;
         }
     }
+
+    function getXMLDocument()
+    {
+        try
+        {
+            $this->conn = Matcha::getConn();
+            $filePointer = "../reports/$this->reportDir/reportStatement.sql";
+
+            if(file_exists($filePointer) && is_readable($filePointer))
+            {
+                // Get the SQL content
+                $fileContent = file_get_contents($filePointer);
+                $RunSQL = $this->conn->prepare($fileContent);
+
+                // Copy all the request variables into the ExecuteValues
+                $PrepareField = [];
+                foreach($this->request as $field)
+                {
+                    array_push($PrepareField, array(':'.$field['name'] => $field['value']));
+                }
+
+                $RunSQL->execute($PrepareField);
+                $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
+                error_log(print_r($records,true));
+            }
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error,true));
+            return $Error;
+        }
+    }
 }
 
 /**
@@ -61,5 +106,6 @@ header('Content-Type: application/xslt+xml');
 
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
+$rg->getXMLDocument();
 echo $rg->getXSLDocument();
 

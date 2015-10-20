@@ -19,7 +19,6 @@
  include_once(ROOT.'/dataProvider/User.php');
 class Vitals {
 
-
 	/**
 	 * @var MatchaCUP
 	 */

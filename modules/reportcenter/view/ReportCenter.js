@@ -58,19 +58,56 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             title: _('report_window'),
             width: 800,
             height: 900,
-            layout: 'fit',
+            layout: {
+                type:'vbox',
+                align: 'stretch'
+            },
             maximizable: false,
             maximized: false,
             minimizable: false,
             modal: false,
             items:[
                 {
+                    xtype: 'splitter'
+                },
+                {
                     xtype: 'panel',
-                    region: 'center',
-                    border: true,
-                    html: '<p>Report render!</p>'
+                    itemId: 'reportRender',
+                    padding: 2,
+                    flex: 1,
+                    split: true,
+                    border: true
                 }
-            ]
+            ],
+            dockedItems: [{
+                xtype: 'toolbar',
+                dock: 'top',
+                items: [
+                    {
+                        xtype: 'button',
+                        text: _('create_pdf'),
+                        itemId: 'createPdf'
+                    },
+                    '-',
+                    {
+                        xtype: 'button',
+                        text: _('create_html'),
+                        itemId: 'createHtml'
+                    },
+                    '-',
+                    {
+                        xtype: 'button',
+                        text: _('create_text'),
+                        itemId: 'createText'
+                    },
+                    '->',
+                    {
+                        xtype: 'button',
+                        text: 'Close',
+                        itemId: 'close'
+                    }
+                ]
+            }]
         }
     ]
 

@@ -85,7 +85,6 @@ Ext.define('App.view.administration.Documents', {
 			region: 'north',
 			width: 250,
 			border: true,
-			split: true,
 			store: me.defaultsDocumentsStore,
 			hideHeaders: true,
 			columns: [

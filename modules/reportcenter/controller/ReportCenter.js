@@ -36,12 +36,12 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             selector: '#reportWindow'
         },
         {
-            ref: 'ReportFilterButtons',
-            selector: '#reportWindow #filterFormButtons'
-        },
-        {
             ref: 'ReportFilterPanel',
             selector: '#reportWindow reportFilter'
+        },
+        {
+            ref: 'ReportRenderPanel',
+            selector: '#reportWindow #reportRender'
         }
 	],
 
@@ -54,6 +54,18 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             },
             '#ReportCenterPanel':{
                 beforeshow: me.onReportCenterPanelBeforeShow
+            },
+            '#reportWindow #close':{
+                click: me.onClose
+            },
+            '#reportWindow #createPdf':{
+                click: me.onCreatePDF
+            },
+            '#reportWindow #createHtml':{
+                click: me.onCreateHTML
+            },
+            '#reportWindow #createText':{
+                click: me.onCreateText
             }
         });
     },
@@ -64,47 +76,55 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportWindow().insert(
             0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
         );
-        //this.addButtonsForReport();
         this.getReportWindow().show();
         this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
     },
 
-    /**
-     * Add the buttons for the filterForm, this will be added to all the reports
-     */
-    addButtonsForReport: function(){
-        this.getReportFilterPanel().add([{
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'right',
-                items: [
-                    {
-                        xtype: 'button',
-                        text: 'PDF'
-                    },
-                    {
-                        xtype: 'button',
-                        text: 'HTML'
-                    },
-                    {
-                        xtype: 'button',
-                        text: 'XML'
-                    },
-                    {
-                        xtype: 'button',
-                        text: 'Plain Text'
-                    },
-                    {
-                        xtype: 'button',
-                        text: 'Close'
-                    }
-                ]
-            }]
-        }]);
-    },
-
     onReportCenterPanelBeforeShow: function(eOpts){
         this.getReportCenterGrid().getStore().load();
+    },
+
+    onClose: function(){
+        this.getReportWindow().close();
+    },
+
+    onCreatePDF: function(){
+        var form = this.getReportFilterPanel().getForm(),
+            fields = form.getFields(),
+            parameters = {},
+            Index,
+            me = this;
+
+        //me.getReportRenderPanel().loadMask(_('loading'));
+        parameters.reportDir = this.getReportFilterPanel().getItemId();
+
+        for(Index = 0; Index < fields.items.length; Index++) {
+            parameters[Index] = {};
+            parameters[Index].name = fields.items[Index].name;
+            parameters[Index].value = fields.items[Index].value;
+        }
+
+        Ext.Ajax.request({
+            url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
+            params: {
+                params: JSON.stringify(parameters)
+            },
+            success: function(response){
+                var XSLDocument = response.responseText;
+                me.getReportRenderPanel().update(XSLDocument);
+                //me.getReportRenderPanel().unmask();
+            }
+        });
+    },
+
+    onCreateHTML: function(){
+        var form = this.getReportFilterPanel().getForm(),
+            fields = form.getFields();
+    },
+
+    onCreateText: function(){
+        var form = this.getReportFilterPanel().getForm(),
+            fields = form.getFields();
     }
 
 });

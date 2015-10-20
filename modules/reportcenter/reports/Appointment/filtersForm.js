@@ -24,26 +24,25 @@ Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm
     xtype: 'reportFilter',
     region: 'north',
     title: _('filters'),
-    itemId: 'AutomatedMeasureCalculationFilters',
+    itemId: 'Appointment',
     collapsible: true,
     height: 200,
-    split: true,
     border: true,
     fieldDefaults: {
-        labelWidth: 60,
+        labelWidth: 90,
         margin: 5,
         anchor: '50%'
     },
     bodyPadding: 2,
     items:[
         {
-            xtype: 'datefield ',
+            xtype: 'datefield',
             name: 'begin_date',
             fieldLabel: _('begin_date'),
             allowBlank: false
         },
         {
-            xtype: 'datefield ',
+            xtype: 'datefield',
             name: 'end_date',
             fieldLabel: _('end_date'),
             allowBlank: false

@@ -151,7 +151,6 @@ Ext.define('App.view.patient.Documents', {
 					autoCancel: true,
 					errorSummary: false,
 					clicksToEdit: 2
-
 				}),
 				tbar: [
 					_('group_by') + ':',

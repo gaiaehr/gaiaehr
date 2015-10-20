@@ -39,7 +39,7 @@ Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm
             name: 'begin_date',
             fieldLabel: _('begin_date'),
             allowBlank: false,
-            width: 320,
+            width: 300,
             format: g('date_display_format'),
             submitFormat: 'Y-m-d'
         },
@@ -47,7 +47,7 @@ Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm
             xtype: 'datefield',
             name: 'end_date',
             fieldLabel: _('end_date'),
-            width: 320,
+            width: 300,
             allowBlank: false,
             format: g('date_display_format'),
             submitFormat: 'Y-m-d'
@@ -56,7 +56,7 @@ Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm
             xtype: 'activeproviderscombo',
             fieldLabel: _('provider'),
             name: 'provider_id',
-            width: 400,
+            width: 450,
             allowBlank: false,
             displayField: 'option_name',
             valueField: 'id',

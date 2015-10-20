@@ -19,7 +19,9 @@
 
 namespace modules\reportcenter\dataProvider;
 
-require_once('../../../lib/XML2/Array2XML.php');
+include_once('../../../registry.php');
+include_once('../../../classes/MatchaHelper.php');
+require_once('../../../classes/Array2XML.php');
 
 class ReportXML
 {
@@ -30,6 +32,8 @@ class ReportXML
 
     function getSQLFile($reportDir)
     {
+        $fo = new \MatchaHelper();
+
         $filePointer = "../reports/$reportDir/reportStatement.sql";
         if(file_exists($filePointer) && is_readable($filePointer))
         {

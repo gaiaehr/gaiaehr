@@ -34,22 +34,32 @@ class ReportGenerator
 
     function getXSLDocument()
     {
-        $filePointer = "../reports/$this->reportDir/report.xsl";
-        if(file_exists($filePointer) && is_readable($filePointer))
+        try
         {
-            return 'Got it!';
+            $filePointer = "../reports/$this->reportDir/report.xsl";
+            if(file_exists($filePointer) && is_readable($filePointer))
+            {
+                $fileContent = file_get_contents($filePointer);
+                return $fileContent;
+            }
+            else
+            {
+                throw new Exception("Could not read the XSL file or the file does not exist.");
+            }
         }
-        else
+        catch(Exception $Error)
         {
-            return $filePointer . ' : Not got it!';
+            return $Error;
         }
     }
 }
 
+/**
+ * This will combile the XML and the XSL
+ */
+header('Content-Type: application/xslt+xml');
+
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
-error_log(
-    print_r(
-        $rg->getXSLDocument(), true
-    )
-);
+echo $rg->getXSLDocument();
+

@@ -38,6 +38,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'ReportFilterPanel',
             selector: '#reportWindow reportFilter'
+        },
+        {
+            ref: 'ReportRenderPanel',
+            selector: '#reportWindow #reportRender'
         }
 	],
 
@@ -88,8 +92,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         var form = this.getReportFilterPanel().getForm(),
             fields = form.getFields(),
             parameters = {},
-            Index;
+            Index,
+            me = this;
 
+        //me.getReportRenderPanel().loadMask(_('loading'));
         parameters.reportDir = this.getReportFilterPanel().getItemId();
 
         for(Index = 0; Index < fields.items.length; Index++) {
@@ -104,8 +110,9 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 params: JSON.stringify(parameters)
             },
             success: function(response){
-                var text = response.responseText;
-                // process server response here
+                var XSLDocument = response.responseText;
+                me.getReportRenderPanel().update(XSLDocument);
+                //me.getReportRenderPanel().unmask();
             }
         });
     },

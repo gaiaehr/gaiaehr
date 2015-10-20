@@ -72,10 +72,11 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     xtype: 'panel',
+                    itemId: 'reportRender',
+                    padding: 2,
                     flex: 1,
                     split: true,
-                    border: true,
-                    html: '<p>Report render!</p>'
+                    border: true
                 }
             ],
             dockedItems: [{

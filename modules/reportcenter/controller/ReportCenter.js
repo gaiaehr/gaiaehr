@@ -95,6 +95,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             Index,
             me = this;
 
+        if(!form.isValid()) {
+            Ext.Msg.alert(_('error'), _('please_check_form'));
+            return;
+        }
+
         parameters.reportDir = this.getReportFilterPanel().getItemId();
 
         for(Index = 0; Index < fields.items.length; Index++) {

@@ -59,7 +59,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 click: me.onPrint
             },
             '#reportWindow #createPdf':{
-                click: me.onCreatePDF
+                click: me.onCreatePDF,
+                beforeshow: me.onReportWindowBeforeShow
             },
             '#reportWindow #createHtml':{
                 click: me.onCreateHTML
@@ -82,6 +83,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
     onReportCenterPanelBeforeShow: function(eOpts){
         this.getReportCenterGrid().getStore().load();
+    },
+
+    onReportWindowBeforeShow: function(){
+        this.getReportWindow().remove('reportFilter');
+        this.getReportRenderPanel().update('', true);
     },
 
     onPrint: function(){

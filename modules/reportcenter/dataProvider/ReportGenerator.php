@@ -87,13 +87,15 @@ class ReportGenerator
                     $PrepareField[':'.$field['name']] = $field['value'];
                 }
 
+                // Also copy all the request variables to Return variable to XML
                 foreach($this->request as $field)
                 {
                     $ReturnFilter[$field['name']] = $field['value'];
                 }
 
                 $RunSQL->execute($PrepareField);
-                $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);$ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
+                $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
+                $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true,$ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(
                     'filters' => $ReturnFilter,

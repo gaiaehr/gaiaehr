@@ -55,8 +55,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             '#ReportCenterPanel':{
                 beforeshow: me.onReportCenterPanelBeforeShow
             },
-            '#reportWindow #close':{
-                click: me.onClose
+            '#reportWindow #print':{
+                click: me.onPrint
             },
             '#reportWindow #createPdf':{
                 click: me.onCreatePDF
@@ -84,8 +84,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportCenterGrid().getStore().load();
     },
 
-    onClose: function(){
-        this.getReportWindow().close();
+    onPrint: function(){
+
     },
 
     onCreatePDF: function(){

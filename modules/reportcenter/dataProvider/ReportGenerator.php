@@ -17,3 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+// Verify that the REQUEST are populated.
+if(isset($_REQUEST) OR empty($_REQUEST)) return;
+
+require_once('../../../lib/tcpdf/tcpdf.php');
+require_once('../../../lib/XML2/Array2XML.php');

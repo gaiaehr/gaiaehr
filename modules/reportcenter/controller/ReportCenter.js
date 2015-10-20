@@ -96,6 +96,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             parameters[Index].value = fields.items[Index].value;
         }
 
+        parameters.reportDir = this.getReportFilterPanel().getItemId();
+
         Ext.Ajax.request({
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: parameters,

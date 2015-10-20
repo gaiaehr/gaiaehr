@@ -124,7 +124,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             },
             success: function(response){
                 var XSLDocument = response.responseText;
-                me.getReportRenderPanel().update(XSLDocument);
+                me.getReportRenderPanel().update(XSLDocument, true);
             }
         });
     },

@@ -95,13 +95,26 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             Index,
             me = this;
 
-        //me.getReportRenderPanel().loadMask(_('loading'));
         parameters.reportDir = this.getReportFilterPanel().getItemId();
 
         for(Index = 0; Index < fields.items.length; Index++) {
             parameters[Index] = {};
-            parameters[Index].name = fields.items[Index].name;
-            parameters[Index].value = fields.items[Index].value;
+            switch(fields.items[Index].xtype){
+                case 'datefield':
+                    parameters[Index].name = fields.items[Index].name;
+                    if(fields.items[Index].submitFormat) {
+                        parameters[Index].value = Ext.util.Format.date(
+                            fields.items[Index].value, fields.items[Index].submitFormat
+                        );
+                    } else {
+                        parameters[Index].value = fields.items[Index].value;
+                    }
+                    break;
+                default:
+                    parameters[Index].name = fields.items[Index].name;
+                    parameters[Index].value = fields.items[Index].value;
+                    break;
+            }
         }
 
         Ext.Ajax.request({
@@ -112,7 +125,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             success: function(response){
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument);
-                //me.getReportRenderPanel().unmask();
             }
         });
     },

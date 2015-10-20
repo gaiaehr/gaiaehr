@@ -86,7 +86,7 @@ class ReportGenerator
                     array_push($PrepareField, array(':'.$field['name'] => $field['value']));
                 }
 
-                $RunSQL->execute($PrepareField);
+                $RunSQL->execute($PrepareField[0]);
                 $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
                 error_log(print_r($records,true));
             }

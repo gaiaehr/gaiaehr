@@ -55,6 +55,10 @@ class ReportList
                             $AvailableReports[$Index]['author'] = $fileContent['author'];
                             $Index++;
                         }
+                        else
+                        {
+                            throw new \Exception("The Report Specification JSON file, can't be read or does not exist.");
+                        }
                     }
                 }
                 closedir($handle);

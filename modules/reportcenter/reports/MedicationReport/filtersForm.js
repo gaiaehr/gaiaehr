@@ -24,7 +24,7 @@ Ext.define('Modules.reportcenter.reports.AutomatedMeasureCalculation.filtersForm
     xtype: 'reportFilter',
     region: 'north',
     title: _('filters'),
-    itemId: 'AutomatedMeasureCalculationFilters',
+    itemId: 'MedicationReport',
     collapsible: true,
     height: 200,
     border: true,

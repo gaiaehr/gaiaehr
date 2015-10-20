@@ -17,9 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-// Verify that the REQUEST are populated.
-if(!isset($_REQUEST)) return;
-
 require_once('../../../lib/tcpdf/tcpdf.php');
 
+class ReportGenerator
+{
+
+    private $request;
+    private $reportDir;
+
+    function setRequest($REQUEST)
+    {
+        if(!isset($REQUEST)) return;
+        $this->request = json_decode($REQUEST['params'], true);
+        $this->reportDir = $this->request['reportDir'];
+    }
+
+    function getXSLDocument()
+    {
+        $filePointer = "../reports/$this->reportDir/report.xsl";
+        if(file_exists($filePointer) && is_readable($filePointer))
+        {
+            return 'Got it!';
+        }
+        else
+        {
+            return $filePointer . ' : Not got it!';
+        }
+    }
+}
+
+$rg = new ReportGenerator();
+$rg->setRequest($_REQUEST);
+error_log(
+    print_r(
+        $rg->getXSLDocument(), true
+    )
+);

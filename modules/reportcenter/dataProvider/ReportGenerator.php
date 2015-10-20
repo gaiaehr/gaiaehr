@@ -73,6 +73,8 @@ class ReportGenerator
             $this->conn = Matcha::getConn();
             $filePointer = "../reports/$this->reportDir/reportStatement.sql";
 
+            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+
             if(file_exists($filePointer) && is_readable($filePointer))
             {
                 // Get the SQL content
@@ -80,15 +82,18 @@ class ReportGenerator
                 $RunSQL = $this->conn->prepare($fileContent);
 
                 // Copy all the request variables into the ExecuteValues
-                $PrepareField = [];
                 foreach($this->request as $field)
                 {
-                    array_push($PrepareField, array(':'.$field['name'] => $field['value']));
+                    $PrepareField[':'.$field['name']] = $field['value'];
                 }
 
                 $RunSQL->execute($PrepareField);
                 $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
-                error_log(print_r($records,true));
+                $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="../reports/'.$this->reportDir.'/report.xsl"';
+                Array2XML::init('1.0', 'UTF-8', true,$ExtraAttributes);
+                $xml = Array2XML::createXML('records', array('record' => $records));
+                return $xml->saveXML();
+
             }
         }
         catch(Exception $Error)
@@ -103,9 +108,7 @@ class ReportGenerator
  * This will combile the XML and the XSL
  */
 header('Content-Type: application/xslt+xml');
-
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
-$rg->getXMLDocument();
-echo $rg->getXSLDocument();
+echo $rg->getXMLDocument();
 

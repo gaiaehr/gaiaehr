@@ -1627,5 +1627,6 @@ $LANG = array(
     'document_entered_in_error_message'     => 'Are you sure you want to flag this document as "Entered in Error"?',
     'error_note'                            => 'Error Note',
     'new_radiology_result'                  => 'New radiology result',
-    'lab_observations'                      => 'Laboratory Observations'
+    'lab_observations'                      => 'Laboratory Observations',
+    'cell_number'                           => 'Mobile Number'
 );

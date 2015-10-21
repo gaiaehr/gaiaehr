@@ -138,7 +138,7 @@ switch($rg->format)
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         $html2pdf = new HTML2PDF('P','A4','en');
         $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
-
+        $html2pdf->Output('exemple.pdf');
         break;
     case 'text':
         break;

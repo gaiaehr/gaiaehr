@@ -142,8 +142,5 @@ switch($rg->format)
         $PDFDocument = base64_encode($html2pdf->Output('exemple.pdf', "S"));
         echo '<object data="data:application/pdf;base64,'.$PDFDocument.'" type="application/pdf" width="100%" height="100%"></object>';
         break;
-    case 'text':
-        // TODO: Create a report that show the text result, if not show the XML source.
-        break;
 }
 

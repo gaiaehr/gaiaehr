@@ -95,12 +95,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         text: _('create_html'),
                         itemId: 'createHtml'
                     },
-                    '-',
-                    {
-                        xtype: 'button',
-                        text: _('create_text'),
-                        itemId: 'createText'
-                    },
                     '->',
                     {
                         xtype: 'button',

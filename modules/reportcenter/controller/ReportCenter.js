@@ -111,11 +111,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getPrintButton().enable();
     },
 
-    onCreateText: function(){
-        this.generateDocument('text');
-        this.getPrintButton().enable();
-    },
-
     generateDocument: function(format){
         var form = this.getReportFilterPanel().getForm(),
             fields = form.getFields(),

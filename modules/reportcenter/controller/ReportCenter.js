@@ -55,12 +55,14 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             '#ReportCenterPanel':{
                 beforeshow: me.onReportCenterPanelBeforeShow
             },
+            '#reportWindow':{
+                beforehide: me.onReportWindowBeforeHide
+            },
             '#reportWindow #print':{
                 click: me.onPrint
             },
             '#reportWindow #createPdf':{
-                click: me.onCreatePDF,
-                beforeshow: me.onReportWindowBeforeShow
+                click: me.onCreatePDF
             },
             '#reportWindow #createHtml':{
                 click: me.onCreateHTML
@@ -85,8 +87,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportCenterGrid().getStore().load();
     },
 
-    onReportWindowBeforeShow: function(){
-        this.getReportWindow().remove('reportFilter');
+    onReportWindowBeforeHide: function(){
         this.getReportRenderPanel().update('', true);
     },
 

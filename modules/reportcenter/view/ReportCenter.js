@@ -103,8 +103,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     '->',
                     {
                         xtype: 'button',
-                        text: 'Close',
-                        itemId: 'close'
+                        text: _('print'),
+                        itemId: 'print'
                     }
                 ]
             }]

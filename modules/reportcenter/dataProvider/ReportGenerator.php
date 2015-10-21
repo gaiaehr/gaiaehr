@@ -45,23 +45,23 @@ class ReportGenerator
         unset($this->request['reportDir']);
     }
 
-    function getXSLDocument()
+    function getXSLTemplate()
     {
         try
         {
             $filePointer = "../reports/$this->reportDir/report.xsl";
             if(file_exists($filePointer) && is_readable($filePointer))
             {
-                $fileContent = file_get_contents($filePointer);
-                return $fileContent;
+                return file_get_contents($filePointer);
             }
             else
             {
-                throw new Exception("Could not read the XSL file or the file does not exist.");
+                throw new Exception('Error: Not XSLT file was found or is readable.');
             }
         }
         catch(Exception $Error)
         {
+            error_log(print_r($Error,true));
             return $Error;
         }
     }
@@ -87,13 +87,25 @@ class ReportGenerator
                     $PrepareField[':'.$field['name']] = $field['value'];
                 }
 
+                // Also copy all the request variables to Return variable to XML
+                foreach($this->request as $field)
+                {
+                    $ReturnFilter[$field['name']] = $field['value'];
+                }
+
                 $RunSQL->execute($PrepareField);
                 $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
-                $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="../reports/'.$this->reportDir.'/report.xsl"';
+                $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true,$ExtraAttributes);
-                $xml = Array2XML::createXML('records', array('record' => $records));
+                $xml = Array2XML::createXML('records', array(
+                    'filters' => $ReturnFilter,
+                    'record' => $records
+                ));
                 return $xml->saveXML();
-
+            }
+            else
+            {
+                throw new Exception('Error: Not SQL Statement file was found or is readable.');
             }
         }
         catch(Exception $Error)
@@ -105,10 +117,12 @@ class ReportGenerator
 }
 
 /**
- * This will combile the XML and the XSL
+ * This will combine the XML and the XSL
  */
 header('Content-Type: application/xslt+xml');
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
-echo $rg->getXMLDocument();
 
+$xslt = new XSLTProcessor();
+$xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
+echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));

@@ -29,5 +29,6 @@ $LANG = array(
     'category'                              => 'Category',
     'author'                                => 'Author',
     'report_window'                         => 'Report Window',
-    'filters'                               => 'Filters'
+    'filters'                               => 'Filters',
+    'please_check_form'                     => 'Please check the filters field for this report'
 );

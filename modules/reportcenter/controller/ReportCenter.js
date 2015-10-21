@@ -96,7 +96,9 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onPrint: function(){
-
+        var iframe = Ext.ComponentQuery.query('#reportWindow #reportRender')[0].el;
+        say(iframe);
+        //iframe.contentWindow.document.execCommand('print', false, null);
     },
 
     onCreatePDF: function(){

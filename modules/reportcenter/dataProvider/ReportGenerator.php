@@ -119,6 +119,7 @@ class ReportGenerator
 
 /**
  * This will combine the XML and the XSL
+ * or generate the HTML, Text
  */
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
@@ -133,7 +134,6 @@ switch($rg->format)
         echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
         break;
     case 'pdf':
-        header('Content-Type: application/pdf');
         require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
         $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));

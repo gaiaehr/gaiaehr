@@ -72,6 +72,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     xtype: 'uxiframe',
+                    autoScroll: true,
                     itemId: 'reportRender',
                     baseCls: 'x-panel-body',
                     flex: 1,

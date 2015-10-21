@@ -127,6 +127,7 @@ switch($rg->format)
 {
     case 'html':
         header('Content-Type: application/xslt+xml');
+        header('Content-Disposition: inline; filename="report.html"');
         $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
@@ -138,9 +139,11 @@ switch($rg->format)
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         $html2pdf = new HTML2PDF('P','A4','en');
         $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
-        $html2pdf->Output('exemple.pdf');
+        $PDFDocument = base64_encode($html2pdf->Output('exemple.pdf', "S"));
+        echo '<object data="data:application/pdf;base64,'.$PDFDocument.'" type="application/pdf" width="100%" height="100%"></object>';
         break;
     case 'text':
+        // TODO: Create a report that show the text result, if not show the XML source.
         break;
 }
 

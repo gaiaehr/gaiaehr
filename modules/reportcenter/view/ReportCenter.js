@@ -71,9 +71,9 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     xtype: 'splitter'
                 },
                 {
-                    xtype: 'panel',
+                    xtype: 'uxiframe',
                     itemId: 'reportRender',
-                    padding: 2,
+                    baseCls: 'x-panel-body',
                     flex: 1,
                     split: true,
                     border: true

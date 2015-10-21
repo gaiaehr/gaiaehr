@@ -114,14 +114,20 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             Index,
             me = this;
 
+        // Validate the form, check if a field as a validation rule
         if(!form.isValid()) {
             Ext.Msg.alert(_('error'), _('please_check_form'));
             return;
         }
 
+        this.getReportWindow().getEl().mask(_('loading'));
+
+        // Create some extra parameter to send to the server.
         parameters.reportDir = this.getReportFilterPanel().getItemId();
         parameters.format = format;
 
+        // Evaluates every field in the form, extrat the submitFormat and other
+        // things.
         for(Index = 0; Index < fields.items.length; Index++) {
             parameters[Index] = {};
             switch(fields.items[Index].xtype){
@@ -142,6 +148,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         }
 
+        // Send the request to display the report
         Ext.Ajax.request({
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
@@ -150,8 +157,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             success: function(response){
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument, true);
+                me.getReportWindow().getEl().unmask();
             }
         });
+
     }
 
 });

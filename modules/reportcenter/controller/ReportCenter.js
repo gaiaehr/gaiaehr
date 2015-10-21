@@ -42,6 +42,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'ReportRenderPanel',
             selector: '#reportWindow #reportRender'
+        },
+        {
+            ref: 'PrintButton',
+            selector: '#reportWindow #print'
         }
 	],
 
@@ -97,14 +101,17 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
     onCreatePDF: function(){
         this.generateDocument('pdf');
+        this.getPrintButton().disable();
     },
 
     onCreateHTML: function(){
         this.generateDocument('html');
+        this.getPrintButton().enable();
     },
 
     onCreateText: function(){
         this.generateDocument('text');
+        this.getPrintButton().enable();
     },
 
     generateDocument: function(format){

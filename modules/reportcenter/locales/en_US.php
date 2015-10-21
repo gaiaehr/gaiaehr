@@ -30,5 +30,7 @@ $LANG = array(
     'author'                                => 'Author',
     'report_window'                         => 'Report Window',
     'filters'                               => 'Filters',
-    'please_check_form'                     => 'Please check the filters field for this report'
+    'please_check_form'                     => 'Please check the filters fields for this report',
+    'encounter_range'                       => 'Encounter Range',
+    'extra_filters'                         => 'Extra filters'
 );

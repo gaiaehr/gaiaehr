@@ -30,5 +30,8 @@ $LANG = array(
     'category'                              => 'Categoría',
     'author'                                => 'Autor',
     'report_window'                         => 'Ventana de informe',
-    'filters'                               => 'Filtros'
+    'filters'                               => 'Filtros',
+    'please_check_form'                     => 'Por favor, compruebe los campos de filtros para este informe',
+    'encounter_range'                       => 'Rango de encuentro',
+    'extra_filters'                         => 'Filtros adicionales'
 );

@@ -22,6 +22,7 @@ class ReportGenerator
 
     private $request;
     private $reportDir;
+    public $format;
     private $conn;
     private $site;
 
@@ -32,8 +33,6 @@ class ReportGenerator
         require_once('../../../registry.php');
         require_once("../../../sites/$this->site/conf.php");
         require_once('../../../classes/MatchaHelper.php');
-
-        require_once('../../../lib/tcpdf/tcpdf.php');
         require_once('../../../classes/Array2XML.php');
     }
 
@@ -42,7 +41,9 @@ class ReportGenerator
         if(!isset($REQUEST)) return;
         $this->request = json_decode($REQUEST['params'], true);
         $this->reportDir = $this->request['reportDir'];
+        $this->format = $this->request['format'];
         unset($this->request['reportDir']);
+        unset($this->request['format']);
     }
 
     function getXSLTemplate()
@@ -119,10 +120,27 @@ class ReportGenerator
 /**
  * This will combine the XML and the XSL
  */
-header('Content-Type: application/xslt+xml');
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
 
-$xslt = new XSLTProcessor();
-$xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
-echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
+switch($rg->format)
+{
+    case 'html':
+        header('Content-Type: application/xslt+xml');
+        $xslt = new XSLTProcessor();
+        $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
+        echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
+        break;
+    case 'pdf':
+        header('Content-Type: application/pdf');
+        require_once('../../../lib/html2pdf-3.0b/html2pdf.php');
+        $xslt = new XSLTProcessor();
+        $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
+        $html2pdf = new HTML2PDF('P','A4','en');
+        $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
+
+        break;
+    case 'text':
+        break;
+}
+

@@ -96,6 +96,18 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onCreatePDF: function(){
+        this.generateDocument('pdf');
+    },
+
+    onCreateHTML: function(){
+        this.generateDocument('html');
+    },
+
+    onCreateText: function(){
+        this.generateDocument('text');
+    },
+
+    generateDocument: function(format){
         var form = this.getReportFilterPanel().getForm(),
             fields = form.getFields(),
             parameters = {},
@@ -108,6 +120,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         }
 
         parameters.reportDir = this.getReportFilterPanel().getItemId();
+        parameters.format = format;
 
         for(Index = 0; Index < fields.items.length; Index++) {
             parameters[Index] = {};
@@ -139,16 +152,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 me.getReportRenderPanel().update(XSLDocument, true);
             }
         });
-    },
-
-    onCreateHTML: function(){
-        var form = this.getReportFilterPanel().getForm(),
-            fields = form.getFields();
-    },
-
-    onCreateText: function(){
-        var form = this.getReportFilterPanel().getForm(),
-            fields = form.getFields();
     }
 
 });

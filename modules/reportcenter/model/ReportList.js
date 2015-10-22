@@ -46,6 +46,18 @@ Ext.define('Modules.reportcenter.model.ReportList', {
         {
             name: 'version',
             type: 'string'
+        },
+        {
+            name: 'width',
+            type: 'int'
+        },
+        {
+            name: 'height',
+            type: 'int'
+        },
+        {
+            name: 'filterHeight',
+            type: 'int'
         }
     ]
 });

@@ -53,6 +53,9 @@ class ReportList
                             $AvailableReports[$Index]['category'] = $fileContent['category'];
                             $AvailableReports[$Index]['version'] = $fileContent['version'];
                             $AvailableReports[$Index]['author'] = $fileContent['author'];
+                            $AvailableReports[$Index]['width'] = $fileContent['width'];
+                            $AvailableReports[$Index]['height'] = $fileContent['height'];
+                            $AvailableReports[$Index]['filterHeight'] = $fileContent['filterHeight'];
                             $Index++;
                         }
                         else

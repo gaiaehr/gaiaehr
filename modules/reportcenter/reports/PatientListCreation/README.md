@@ -1,4 +1,4 @@
-# Patient List Creation Report #
+# Patient List Report #
 
 This report complies with the ONC 170.314(a)(14) Patient List Creation.
 

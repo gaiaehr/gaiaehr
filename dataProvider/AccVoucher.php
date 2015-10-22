@@ -21,6 +21,18 @@ include_once (ROOT . '/dataProvider/AccAccount.php');
 
 class AccVoucher extends AccAccount {
 
+    public $AllowedMethods = [
+        'getVoucher',
+        'addVoucher',
+        'updateVoucher',
+        'destroyVoucher',
+        'getVoucherLines',
+        'addVoucherLine',
+        'updateVoucherLine',
+        'destroyVoucherLine',
+        'getVisitCheckOutCharges'
+    ];
+
     /**
      * MatchaCup
      */

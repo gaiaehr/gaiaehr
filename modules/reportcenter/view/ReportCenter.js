@@ -56,8 +56,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             closeAction: 'hide',
             hidden: true,
             title: _('report_window'),
-            width: 800,
-            height: 900,
             layout: {
                 type:'vbox',
                 align: 'stretch'

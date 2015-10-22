@@ -6,7 +6,6 @@
   "width": 600,
   "height": 800,
   "filterHeight": 120,
-  "extjs_version":"4.1.1",
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Show all the patient that has immunization attributed to them.",
   "dir":"reportcenter/reports/ImmunizationReport",

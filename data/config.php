@@ -113,6 +113,25 @@ $API = [
             ]
         ]
     ],
+    'IpAccessRules' => [
+        'methods' => [
+            'getIpAccessRules' => [
+                'len' => 1
+            ],
+            'getIpAccessRule' => [
+                'len' => 1
+            ],
+            'createIpAccessRule' => [
+                'len' => 1
+            ],
+            'updateIpAccessRule' => [
+                'len' => 1
+            ],
+            'deleteIpAccessRule' => [
+                'len' => 1
+            ]
+        ]
+    ],
     'AppointmentRequest' => [
         'methods' => [
             'getAppointmentRequests' => [

@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Modules', {
+Ext.define('App.model.administration.IpAccessRule', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'modules',
-		comment: 'Modules'
+		name: 'ip_access_rules'
 	},
 	fields: [
 		{
@@ -28,45 +27,55 @@ Ext.define('App.model.administration.Modules', {
 			type: 'int'
 		},
 		{
-			name: 'title',
+			name: 'ip',
 			type: 'string',
-			len: 80
+			len: 40
 		},
 		{
-			name: 'name',
+			name: 'country_code',
 			type: 'string',
-			len: 100
+			len: 130
 		},
 		{
-			name: 'description',
-			type: 'string'
-		},
-		{
-			name: 'enable',
-			type: 'bool'
-		},
-		{
-			name: 'installed_version',
+			name: 'rule',
 			type: 'string',
-			len: 20
+			len: 10
 		},
 		{
-			name: 'licensekey',
-			type: 'string'
+			name: 'weight',
+			type: 'int',
+			index: true
 		},
 		{
-			name: 'localkey',
-			type: 'string'
+			name: 'active',
+			type: 'bool',
+			index: true
+		},
+		{
+			name: 'create_uid',
+			type: 'int'
+		},
+		{
+			name: 'update_uid',
+			type: 'int'
+		},
+		{
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
+		},
+		{
+			name: 'update_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Modules.getActiveModules',
-			update: 'Modules.updateModule'
-		},
-		writer: {
-			writeAllFields: true
+			read: 'IpAccessRules.getIpAccessRules',
+			create: 'IpAccessRules.createIpAccessRule',
+			update: 'IpAccessRules.updateIpAccessRule'
 		}
 	}
 });

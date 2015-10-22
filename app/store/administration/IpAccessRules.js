@@ -12,30 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU General Public  License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.ParentFields', {
-    extend: 'Ext.data.Model',
-    table: {
-        name: 'parentfields',
-        comment: 'Parent Fields'
-    },
-    fields: [
-        {
-            name: 'name',
-            type: 'string'
-        },
-        {
-            name: 'value',
-            type: 'string'
-        }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: 'FormLayoutBuilder.getParentFields'
-        }
-    }
+
+Ext.define('App.store.administration.IpAccessRules', {
+    model: 'App.model.administration.IpAccessRule',
+    extend: 'Ext.data.Store'
 });

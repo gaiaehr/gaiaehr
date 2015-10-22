@@ -10,19 +10,5 @@
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Report for Patient list creation with appropriate filters.",
   "dir":"reportcenter/reports/PatientListCreation",
-  "category":"ONC Meaningful Use",
-  "locales": [
-    "en_US",
-    "es_PR"
-  ],
-  "actionsAPI": {
-    "AutomatedMeasureCalculation": {
-      "methods": {
-        "getProblemListMeasure": {
-          "len": 1
-        }
-      }
-    }
-  }
-
+  "category":"ONC Meaningful Use"
 }

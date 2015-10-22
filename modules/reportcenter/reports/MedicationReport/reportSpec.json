@@ -10,27 +10,5 @@
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Information about medication attributed to a patient.",
   "dir":"reportcenter/reports/MedicationReport",
-  "category":"General",
-  "locales": [
-    "en_US",
-    "es_PR"
-  ],
-  "actionsAPI": {
-    "Rx": {
-      "methods": {
-        "createPrescriptionsDispensations": {
-          "len": 1
-        },
-        "getPrescriptionsFromAndToAndPid": {
-          "len": 1
-        }
-      }
-    }
-  },
-  "install":[
-    {
-      "file":"model/AutomatedMeasureCalculation.js",
-      "file":"dataProvider/AutomatedMeasureCalculation.php"
-    }
-  ]
+  "category":"General"
 }

@@ -10,24 +10,5 @@
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Show all the patient that has immunization attributed to them.",
   "dir":"reportcenter/reports/ImmunizationReport",
-  "category":"General",
-  "locales": [
-    "en_US",
-    "es_PR"
-  ],
-  "actionsAPI": {
-    "Appointment": {
-      "methods": {
-        "getAppointmentList": {
-          "len": 1
-        }
-      }
-    }
-  },
-  "install":[
-    {
-      "file":"model/AutomatedMeasureCalculation.js",
-      "file":"dataProvider/AutomatedMeasureCalculation.php"
-    }
-  ]
+  "category":"General"
 }

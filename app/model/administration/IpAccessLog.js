@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.model.administration.Modules', {
+Ext.define('App.model.administration.IpAccessLog', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'modules',
-		comment: 'Modules'
+		name: 'ip_access_log'
 	},
 	fields: [
 		{
@@ -28,45 +27,30 @@ Ext.define('App.model.administration.Modules', {
 			type: 'int'
 		},
 		{
-			name: 'title',
+			name: 'ip',
 			type: 'string',
-			len: 80
+			len: 40
 		},
 		{
-			name: 'name',
+			name: 'country_code',
 			type: 'string',
-			len: 100
+			len: 130
 		},
 		{
-			name: 'description',
-			type: 'string'
-		},
-		{
-			name: 'enable',
-			type: 'bool'
-		},
-		{
-			name: 'installed_version',
+			name: 'event',
 			type: 'string',
-			len: 20
+			len: 10
 		},
 		{
-			name: 'licensekey',
-			type: 'string'
-		},
-		{
-			name: 'localkey',
-			type: 'string'
+			name: 'create_date',
+			type: 'date',
+			dateFormat: 'Y-m-d H:i:s'
 		}
 	],
 	proxy: {
 		type: 'direct',
 		api: {
-			read: 'Modules.getActiveModules',
-			update: 'Modules.updateModule'
-		},
-		writer: {
-			writeAllFields: true
+			read: 'IpAccessRules.getIpAccessLogs'
 		}
 	}
 });

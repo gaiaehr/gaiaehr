@@ -3616,7 +3616,6 @@ Ext.define('App.ux.form.fields.DateTime', {
 	alias : 'widget.mitos.datetime',
 
 	combineErrors: true,
-	msgTarget    : 'under',
 	layout       : 'hbox',
 	readOnly     : false,
 	allowBlank   : true,
@@ -12247,58 +12246,58 @@ Ext.define('App.model.administration.AuditLog', {
 	}
 });
 Ext.define('App.model.administration.Modules', {
-    extend: 'Ext.data.Model',
-    table: {
-        name: 'modules',
-        comment: 'Modules'
-    },
-    fields: [
-        {
-            name: 'id',
-            type: 'int'
-        },
-        {
-            name: 'title',
-            type: 'string',
-            len: 80
-        },
-        {
-            name: 'name',
-            type: 'string',
-            len: 100
-        },
-        {
-            name: 'description',
-            type: 'string'
-        },
-        {
-            name: 'enable',
-            type: 'bool'
-        },
-        {
-            name: 'installed_version',
-            type: 'string',
-            len: 20
-        },
-        {
-            name: 'licensekey',
-            type: 'string'
-        },
-        {
-            name: 'localkey',
-            type: 'string'
-        }
-    ],
-    proxy: {
-        type: 'direct',
-        api: {
-            read: 'Modules.getActiveModules',
-            update: 'Modules.updateModule'
-        },
-        writer: {
-            writeAllFields: true
-        }
-    }
+	extend: 'Ext.data.Model',
+	table: {
+		name: 'modules',
+		comment: 'Modules'
+	},
+	fields: [
+		{
+			name: 'id',
+			type: 'int'
+		},
+		{
+			name: 'title',
+			type: 'string',
+			len: 80
+		},
+		{
+			name: 'name',
+			type: 'string',
+			len: 100
+		},
+		{
+			name: 'description',
+			type: 'string'
+		},
+		{
+			name: 'enable',
+			type: 'bool'
+		},
+		{
+			name: 'installed_version',
+			type: 'string',
+			len: 20
+		},
+		{
+			name: 'licensekey',
+			type: 'string'
+		},
+		{
+			name: 'localkey',
+			type: 'string'
+		}
+	],
+	proxy: {
+		type: 'direct',
+		api: {
+			read: 'Modules.getActiveModules',
+			update: 'Modules.updateModule'
+		},
+		writer: {
+			writeAllFields: true
+		}
+	}
 });
 Ext.define('App.model.administration.Medications', {
     extend: 'Ext.data.Model',
@@ -45402,7 +45401,6 @@ Ext.define('App.view.patient.Documents', {
 					autoCancel: true,
 					errorSummary: false,
 					clicksToEdit: 2
-
 				}),
 				tbar: [
 					_('group_by') + ':',
@@ -48288,7 +48286,6 @@ Ext.define('App.view.administration.Documents', {
 			region: 'north',
 			width: 250,
 			border: true,
-			split: true,
 			store: me.defaultsDocumentsStore,
 			hideHeaders: true,
 			columns: [

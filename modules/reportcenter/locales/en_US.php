@@ -32,5 +32,6 @@ $LANG = array(
     'filters'                               => 'Filters',
     'please_check_form'                     => 'Please check the filters fields for this report',
     'encounter_range'                       => 'Encounter Range',
-    'extra_filters'                         => 'Extra filters'
+    'extra_filters'                         => 'Extra filters',
+    'choose_filter'                         => 'Choose Filter'
 );

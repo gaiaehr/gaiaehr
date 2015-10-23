@@ -22,6 +22,10 @@ namespace modules\reportcenter\dataProvider;
 class ReportList
 {
 
+    public $AllowedMethods = [
+        'getAvailableReports'
+    ];
+
     /**
      * Get the available reports in the /report directory
      * this will include OpenSource ones and commercial ones.

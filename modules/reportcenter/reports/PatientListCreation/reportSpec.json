@@ -1,13 +1,13 @@
 {
-  "title":"Patient List Creation Report 170.314(a)(14)",
+  "title":"Patient List Report 170.314(a)(14)",
   "name":"patientListCreationReport",
   "reportDir":"PatientListCreation",
   "version":"0.1",
-  "width": 600,
+  "width": 900,
   "height": 800,
   "filterHeight": 120,
   "author": "TRA NextGen, Inc (c) 2015",
-  "description":"Report for Patient list creation with appropriate filters.",
+  "description":"Report for Patient list with dynamic filters.",
   "dir":"reportcenter/reports/PatientListCreation",
   "category":"ONC Meaningful Use"
 }

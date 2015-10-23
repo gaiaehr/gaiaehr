@@ -22,27 +22,44 @@ class ReportGenerator
 
     private $request;
     private $reportDir;
+    public $format;
     private $conn;
     private $site;
 
     function __construct($site = 'default')
     {
-        $this->site = $site;
-        if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-        require_once('../../../registry.php');
-        require_once("../../../sites/$this->site/conf.php");
-        require_once('../../../classes/MatchaHelper.php');
-
-        require_once('../../../lib/tcpdf/tcpdf.php');
-        require_once('../../../classes/Array2XML.php');
+        try
+        {
+            $this->site = $site;
+            if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+            require_once('../../../registry.php');
+            require_once("../../../sites/$this->site/conf.php");
+            require_once('../../../classes/MatchaHelper.php');
+            require_once('../../../classes/Array2XML.php');
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error,true));
+            return $Error;
+        }
     }
 
     function setRequest($REQUEST)
     {
-        if(!isset($REQUEST)) return;
-        $this->request = json_decode($REQUEST['params'], true);
-        $this->reportDir = $this->request['reportDir'];
-        unset($this->request['reportDir']);
+        try
+        {
+            if(!isset($REQUEST)) return;
+            $this->request = json_decode($REQUEST['params'], true);
+            $this->reportDir = $this->request['reportDir'];
+            $this->format = $this->request['format'];
+            unset($this->request['reportDir']);
+            unset($this->request['format']);
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error,true));
+            return $Error;
+        }
     }
 
     function getXSLTemplate()
@@ -73,6 +90,8 @@ class ReportGenerator
             $this->conn = Matcha::getConn();
             $filePointer = "../reports/$this->reportDir/reportStatement.sql";
 
+            // Important connection parameter, this will allow multiple
+            // prepare tags with the same name.
             $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
             if(file_exists($filePointer) && is_readable($filePointer))
@@ -118,11 +137,29 @@ class ReportGenerator
 
 /**
  * This will combine the XML and the XSL
+ * or generate the HTML, Text
  */
-header('Content-Type: application/xslt+xml');
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
 
-$xslt = new XSLTProcessor();
-$xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
-echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
+switch($rg->format)
+{
+    case 'html':
+        header('Content-Type: application/xslt+xml');
+        header('Content-Disposition: inline; filename="report.html"');
+        $xslt = new XSLTProcessor();
+        $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
+        echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
+        break;
+    case 'pdf':
+        require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
+        $xslt = new XSLTProcessor();
+        $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
+        $html2pdf = new HTML2PDF('P','A4','en');
+        $html2pdf->pdf->SetAuthor('GaiaEHR');
+        $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
+        $PDFDocument = base64_encode($html2pdf->Output('exemple.pdf', "S"));
+        echo '<object data="data:application/pdf;base64,'.$PDFDocument.'" type="application/pdf" width="100%" height="100%"></object>';
+        break;
+}
+

@@ -29,7 +29,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     text: _('report_name'),
-                    dataIndex: 'report_name',
+                    dataIndex: 'title',
                     width: 300
                 },
                 {
@@ -43,7 +43,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     text: _('report_description'),
-                    dataIndex: 'report_description',
+                    dataIndex: 'description',
                     flex: 1
                 }
             ]
@@ -56,8 +56,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             closeAction: 'hide',
             hidden: true,
             title: _('report_window'),
-            width: 800,
-            height: 900,
             layout: {
                 type:'vbox',
                 align: 'stretch'
@@ -71,9 +69,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     xtype: 'splitter'
                 },
                 {
-                    xtype: 'panel',
+                    xtype: 'uxiframe',
+                    autoScroll: true,
                     itemId: 'reportRender',
-                    padding: 2,
+                    baseCls: 'x-panel-body',
                     flex: 1,
                     split: true,
                     border: true
@@ -93,12 +92,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         xtype: 'button',
                         text: _('create_html'),
                         itemId: 'createHtml'
-                    },
-                    '-',
-                    {
-                        xtype: 'button',
-                        text: _('create_text'),
-                        itemId: 'createText'
                     },
                     '->',
                     {

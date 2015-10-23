@@ -29,7 +29,6 @@ Ext.define('App.ux.form.fields.DateTime', {
 	alias : 'widget.mitos.datetime',
 
 	combineErrors: true,
-	msgTarget    : 'under',
 	layout       : 'hbox',
 	readOnly     : false,
 	allowBlank   : true,

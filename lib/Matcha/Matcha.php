@@ -24,6 +24,7 @@ include_once(MATCHA_ROOT . 'MatchaModel.php');
 include_once(MATCHA_ROOT . 'MatchaUtils.php');
 include_once(MATCHA_ROOT . 'MatchaMemory.php');
 include_once(MATCHA_ROOT . 'MatchaSession.php');
+include_once(MATCHA_ROOT . 'MatchaRouter.php');
 
 // Include the Matcha Threads if the PHP Thread class exists
 if(class_exists('Thread'))

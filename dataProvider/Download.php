@@ -23,7 +23,7 @@ session_cache_expire(1);
 session_regenerate_id(false);
 session_name('GaiaEHR');
 session_start();
-setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
+setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
 define('_GaiaEXEC', 1);
 
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';

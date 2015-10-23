@@ -30,5 +30,16 @@ $LANG = array(
     'author'                                => 'Author',
     'report_window'                         => 'Report Window',
     'filters'                               => 'Filters',
-    'please_check_form'                     => 'Please check the filters field for this report'
+    'please_check_form'                     => 'Please check the filters fields for this report',
+    'encounter_range'                       => 'Encounter Range',
+    'extra_filters'                         => 'Extra filters',
+    'choose_filter'                         => 'Choose Filter',
+    'add_filter'                            => 'Add Filter',
+    'choose_operator'                       => 'Choose Operator',
+    'equals'                                => 'Equals',
+    'greater_than'                          => 'Greater than',
+    'less_than'                             => 'Less than',
+    'greater_or_equal'                      => 'Greater than or equal to',
+    'less_or_equal'                         => 'Less than or equal to',
+    'not_equal'                             => 'Not equal'
 );

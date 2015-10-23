@@ -24,10 +24,31 @@ class MatchaSession extends Matcha
     private $__httponly = true;
 
 
-    public function initializeSession()
+    public function initializeSession($name = 'Matcha', $cache = true, $charset = 'utf-8')
     {
         try
         {
+            header('Content-type: text/html; charset='.$charset);
+
+            // HTTP 1.1.
+            if ($cache) header("Cache-Control: no-cache, no-store, must-revalidate");
+
+            // HTTP 1.0.
+            if ($cache) header("Pragma: no-cache");
+
+            // Proxies.
+            if ($cache) header("Expires: 0");
+
+            ini_set('session.gc_probability', 1);
+            ini_set('session.gc_divisor', 100);
+
+            session_cache_limiter('private');
+            session_cache_expire(1);
+            session_regenerate_id(false);
+            session_name($name);
+            session_start();
+            setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
+
             // Securing the Session
             $lifetime = 1800;
             session_cache_limiter('private');
@@ -49,7 +70,7 @@ class MatchaSession extends Matcha
         }
     }
 
-    public function setValue($Paramer){
+    public function setValue($Parameter){
         try
         {
         }
@@ -60,9 +81,10 @@ class MatchaSession extends Matcha
         }
     }
 
-    public function getValue($Paramer){
+    public function getValue($Parameter){
         try
         {
+            return $_SESSION[$Parameter];
         }
         catch(PDOException $e)
         {
@@ -71,9 +93,10 @@ class MatchaSession extends Matcha
         }
     }
 
-    public function getAllValue($Paramer){
+    public function getAllValues($Parameter){
         try
         {
+
         }
         catch(PDOException $e)
         {

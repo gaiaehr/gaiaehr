@@ -42,6 +42,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'ReportRenderPanel',
             selector: '#reportWindow #reportRender'
+        },
+        {
+            ref: 'PrintButton',
+            selector: '#reportWindow #print'
         }
 	],
 
@@ -79,8 +83,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportWindow().insert(
             0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
         );
+        this.getReportWindow().setHeight(item.data.height);
+        this.getReportWindow().setWidth(item.data.width);
+        this.getReportFilterPanel().setHeight(item.data.filterHeight);
         this.getReportWindow().show();
-        this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
+        this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.title + ' )');
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){
@@ -92,23 +99,42 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onPrint: function(){
-
+        var iframe = Ext.ComponentQuery.query('#reportWindow #reportRender')[0].el;
+        say(iframe);
+        //iframe.contentWindow.document.execCommand('print', false, null);
     },
 
     onCreatePDF: function(){
+        this.generateDocument('pdf');
+        this.getPrintButton().disable();
+    },
+
+    onCreateHTML: function(){
+        this.generateDocument('html');
+        this.getPrintButton().enable();
+    },
+
+    generateDocument: function(format){
         var form = this.getReportFilterPanel().getForm(),
             fields = form.getFields(),
             parameters = {},
             Index,
             me = this;
 
+        // Validate the form, check if a field as a validation rule
         if(!form.isValid()) {
             Ext.Msg.alert(_('error'), _('please_check_form'));
             return;
         }
 
-        parameters.reportDir = this.getReportFilterPanel().getItemId();
+        this.getReportWindow().getEl().mask(_('loading'));
 
+        // Create some extra parameter to send to the server.
+        parameters.reportDir = this.getReportFilterPanel().getItemId();
+        parameters.format = format;
+
+        // Evaluates every field in the form, extrat the submitFormat and other
+        // things.
         for(Index = 0; Index < fields.items.length; Index++) {
             parameters[Index] = {};
             switch(fields.items[Index].xtype){
@@ -129,6 +155,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         }
 
+        // Send the request to display the report
         Ext.Ajax.request({
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
@@ -137,18 +164,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             success: function(response){
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument, true);
+                me.getReportWindow().getEl().unmask();
             }
         });
-    },
 
-    onCreateHTML: function(){
-        var form = this.getReportFilterPanel().getForm(),
-            fields = form.getFields();
-    },
-
-    onCreateText: function(){
-        var form = this.getReportFilterPanel().getForm(),
-            fields = form.getFields();
     }
 
 });

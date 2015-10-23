@@ -43,6 +43,10 @@ class AccAccount
 	 */
 	protected $accountType = NULL;
 
+    public $AllowedMethods = [
+
+    ];
+
     function __construct()
     {
         $this->services = new Services();

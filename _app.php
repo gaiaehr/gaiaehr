@@ -128,7 +128,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
             Ext.Loader.setConfig({
                 enabled: true,
-                disableCaching: false,
+                disableCaching: true,
                 paths: {
                     'Ext': 'lib/<?php print EXTJS ?>/src',
                     'Ext.ux': 'lib/extjs-4.2.1/examples/ux',

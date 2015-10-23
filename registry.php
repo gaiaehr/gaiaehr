@@ -89,6 +89,19 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 
 	unset($_SESSION['site']['error']);
 
+	//check for ip access
+	if(!isset($_SESSION['access_blocked'])){
+		include_once(ROOT. '/dataProvider/IpAccessRules.php');
+		$IpAccessRules = new IpAccessRules();
+		$_SESSION['access_blocked'] = $IpAccessRules->isBlocked();
+	}
+
+	if($_SESSION['access_blocked']){
+		header("HTTP/1.1 401 Unauthorized");
+		header('Location: 401.html');
+		exit;
+	}
+
 	// load modules hooks
 	if(!isset($_SESSION['hooks'])){
 

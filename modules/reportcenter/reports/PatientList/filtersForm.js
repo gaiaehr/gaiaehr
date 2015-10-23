@@ -18,6 +18,7 @@
 
 /**
  * Filter available for the Patient List Report (Store)
+ * @type {Ext.data.Store}
  */
 var filters = Ext.create('Ext.data.Store', {
     fields: [
@@ -71,6 +72,10 @@ var filtersCollected = Ext.create('Ext.data.Store', {
     ]
 });
 
+/**
+ * Store of operators for the filter
+ * @type {Ext.data.Store}
+ */
 var operators = Ext.create('Ext.data.Store', {
     fields: [
         'id',
@@ -113,7 +118,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     xtype: 'reportFilter',
     region: 'north',
     title: _('filters'),
-    itemId: 'AutomatedMeasureCalculation',
+    itemId: 'PatientList',
     collapsible: true,
     border: true,
     items:[
@@ -124,7 +129,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             selType: 'rowmodel',
             plugins: [
                 Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2
+                    clicksToEdit: 2,
+                    itemId: 'filterRowEditor'
                 })
             ],
             columns: [
@@ -132,6 +138,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     text: _('filter'),
                     sortable: false,
                     dataIndex: 'filterName',
+                    hideable: false,
                     width: 200,
                     editor: {
                         xtype: 'combo',
@@ -146,6 +153,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     text: _('operator'),
                     sortable: false,
                     dataIndex: 'operator',
+                    hideable: false,
                     width: 40,
                     editor: {
                         xtype: 'combo',
@@ -159,6 +167,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 {
                     text: _('value'),
                     sortable: false,
+                    hideable: false,
                     dataIndex: 'filterValue',
                     flex: 1
                 }
@@ -183,8 +192,16 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 xtype: 'button',
                 text: _('add_filter'),
                 listeners:{
-                    click: {
-
+                    click: function(e, eOpts){
+                        var rowEditor = Ext.ComponentQuery.query('reportFilter #filterRowEditor')[0];
+                        say(rowEditor);
+                        rowEditor.cancelEdit();
+                        filtersCollected.loadRawData({
+                            "filterName":"",
+                            "operator":"",
+                            "filterValue":""
+                        },true);
+                        rowEditor.startEdit(0, 0);
                     }
                 }
             }

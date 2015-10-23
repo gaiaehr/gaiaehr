@@ -149,7 +149,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     width: 40,
                     editor: {
                         xtype: 'combo',
-                        name: 'filter',
+                        name: 'operator',
                         fieldLabel: _('choose_operator'),
                         store: operators,
                         displayField: 'name',

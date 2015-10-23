@@ -27,29 +27,80 @@ var filters = Ext.create('Ext.data.Store', {
     data : [
         {
             "id": 'provider',
-            "name": 'Provider'
+            "name": 'Provider',
+            "type": "int"
         },
         {
             "id": 'allergy',
-            "name": 'Allergies'
+            "name": 'Allergies',
+            "type": "string"
         },
         {
             "id": 'problem',
-            "name": 'Problems'
+            "name": 'Problems',
+            "type": "string"
         },
         {
             "id": 'medication',
-            "name": 'Medications'
+            "name": 'Medications',
+            "type": "string"
+        },
+        {
+            "id": 'encounter_begin_date',
+            "name": 'Encounter Begin Date',
+            "type": "date"
+        },
+        {
+            "id": 'encounter_end_date',
+            "name": 'Encounter End Date',
+            "type": "date"
         }
     ]
 });
 
+/**
+ * This is the store where the filters are collected from user input
+ * @type {Ext.data.Store}
+ */
 var filtersCollected = Ext.create('Ext.data.Store', {
     fields: [
         'id',
         'filterName',
         'operator',
         'filterValue'
+    ]
+});
+
+var operators = Ext.create('Ext.data.Store', {
+    fields: [
+        'id',
+        'operator'
+    ],
+    data : [
+        {
+            "id": '=',
+            "operator": _('equals')
+        },
+        {
+            "id": '>',
+            "name": _('greater_than')
+        },
+        {
+            "id": '<',
+            "name": _('less_than')
+        },
+        {
+            "id": '>=',
+            "name": _('greater_or_equal')
+        },
+        {
+            "id": '<=',
+            "name": _('less_or_equal')
+        },
+        {
+            "id": '<>',
+            "name": _('not_equal')
+        }
     ]
 });
 
@@ -70,18 +121,40 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             xtype: 'grid',
             store: filtersCollected,
             border: false,
+            selType: 'rowmodel',
+            plugins: [
+                Ext.create('Ext.grid.plugin.RowEditing', {
+                    clicksToEdit: 2
+                })
+            ],
             columns: [
                 {
                     text: _('filter'),
                     sortable: false,
                     dataIndex: 'filterName',
-                    width: 200
+                    width: 200,
+                    editor: {
+                        xtype: 'combo',
+                        name: 'filter',
+                        fieldLabel: _('choose_filter'),
+                        store: filters,
+                        displayField: 'name',
+                        valueField: 'id'
+                    }
                 },
                 {
                     text: _('operator'),
                     sortable: false,
                     dataIndex: 'operator',
-                    width: 40
+                    width: 40,
+                    editor: {
+                        xtype: 'combo',
+                        name: 'filter',
+                        fieldLabel: _('choose_operator'),
+                        store: operators,
+                        displayField: 'name',
+                        valueField: 'id'
+                    }
                 },
                 {
                     text: _('value'),
@@ -99,6 +172,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             '->',
             {
                 xtype: 'combo',
+                name: 'filter',
                 fieldLabel: _('choose_filter'),
                 store: filters,
                 displayField: 'name',
@@ -107,7 +181,12 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             '-',
             {
                 xtype: 'button',
-                text: _('add_filter')
+                text: _('add_filter'),
+                listeners:{
+                    click: {
+
+                    }
+                }
             }
         ]
     }]

@@ -34,6 +34,13 @@ $LANG = array(
     'please_check_form'                     => 'Por favor, compruebe los campos de filtros para este informe',
     'encounter_range'                       => 'Rango de encuentro',
     'extra_filters'                         => 'Filtros adicionales',
-    'choose_filter'                         => 'Seleccione Filtro',
-    'add_filter'                            => 'Agregar Filtro'
+    'choose_filter'                         => 'Elija Filtro',
+    'add_filter'                            => 'Agregar Filtro',
+    'choose_operator'                       => 'Elija operador',
+    'equals'                                => 'Equivale',
+    'greater_than'                          => 'Mas grande que',
+    'less_than'                             => 'Menos que',
+    'greater_or_equal'                      => 'Mayor qué o igual a',
+    'less_or_equal'                         => 'Menos que o igual a',
+    'not_equal'                             => 'No es igual'
 );

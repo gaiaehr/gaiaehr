@@ -87,7 +87,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportWindow().setWidth(item.data.width);
         this.getReportFilterPanel().setHeight(item.data.filterHeight);
         this.getReportWindow().show();
-        this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.report_name + ' )');
+        this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.title + ' )');
     },
 
     onReportCenterPanelBeforeShow: function(eOpts){

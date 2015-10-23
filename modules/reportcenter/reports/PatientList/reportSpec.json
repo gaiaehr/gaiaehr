@@ -5,7 +5,7 @@
   "version":"0.1",
   "width": 900,
   "height": 800,
-  "filterHeight": 120,
+  "filterHeight": 250,
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Report for Patient list with dynamic filters.",
   "dir":"reportcenter/reports/PatientList",

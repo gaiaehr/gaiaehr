@@ -44,6 +44,15 @@ var filters = Ext.create('Ext.data.Store', {
     ]
 });
 
+var filtersCollected = Ext.create('Ext.data.Store', {
+    fields: [
+        'id',
+        'filterName',
+        'operator',
+        'filterValue'
+    ]
+});
+
 Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     extend: 'Ext.form.Panel',
     requires:[
@@ -55,37 +64,52 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     title: _('filters'),
     itemId: 'AutomatedMeasureCalculation',
     collapsible: true,
-    height: 100,
     border: true,
-    bodyPadding: 2,
-    layout: 'column',
     items:[
         {
-            xtype: 'combo',
-            fieldLabel: _('choose_filter'),
-            store: filters,
-            queryMode: 'local',
-            displayField: 'name',
-            valueField: 'id',
-            listeners: {
-                select: {
-
+            xtype: 'grid',
+            store: filtersCollected,
+            border: false,
+            columns: [
+                {
+                    text: _('filter'),
+                    sortable: false,
+                    dataIndex: 'filterName',
+                    width: 200
+                },
+                {
+                    text: _('operator'),
+                    sortable: false,
+                    dataIndex: 'operator',
+                    width: 40
+                },
+                {
+                    text: _('value'),
+                    sortable: false,
+                    dataIndex: 'filterValue',
+                    flex: 1
                 }
-            }
-        },
-        {
-
-        },
-        '-',
-        {
-            xtype: 'button',
-            text: _('add'),
-            listeners: {
-                click: {
-
-                }
-            }
+            ]
         }
-    ]
+    ],
+    dockedItems: [{
+        xtype: 'toolbar',
+        dock: 'top',
+        items: [
+            '->',
+            {
+                xtype: 'combo',
+                fieldLabel: _('choose_filter'),
+                store: filters,
+                displayField: 'name',
+                valueField: 'id'
+            },
+            '-',
+            {
+                xtype: 'button',
+                text: _('add_filter')
+            }
+        ]
+    }]
 
 });

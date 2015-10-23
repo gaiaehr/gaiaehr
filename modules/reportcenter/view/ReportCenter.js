@@ -29,7 +29,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     text: _('report_name'),
-                    dataIndex: 'report_name',
+                    dataIndex: 'title',
                     width: 300
                 },
                 {
@@ -43,7 +43,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     text: _('report_description'),
-                    dataIndex: 'report_description',
+                    dataIndex: 'description',
                     flex: 1
                 }
             ]
@@ -56,8 +56,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             closeAction: 'hide',
             hidden: true,
             title: _('report_window'),
-            width: 800,
-            height: 900,
             layout: {
                 type:'vbox',
                 align: 'stretch'

@@ -3,29 +3,11 @@
   "name":"clinicalReport",
   "reportDir":"Clinical",
   "version":"0.1",
-  "extjs_version":"4.1.1",
+  "width": 600,
+  "height": 800,
+  "filterHeight": 120,
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Report that show the appointment of a patient.",
   "dir":"reportcenter/reports/Clinical",
-  "category":"General",
-  "locales": [
-    "en_US",
-    "es_PR"
-  ],
-  "actionsAPI": {
-    "Appointment": {
-      "methods": {
-        "getAppointmentList": {
-          "len": 1
-        }
-      }
-    }
-  },
-  "install":[
-    {
-      "file":"model/AutomatedMeasureCalculation.js",
-      "file":"dataProvider/AutomatedMeasureCalculation.php"
-    }
-  ]
-
+  "category":"General"
 }

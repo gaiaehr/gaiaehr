@@ -28,22 +28,38 @@ class ReportGenerator
 
     function __construct($site = 'default')
     {
-        $this->site = $site;
-        if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-        require_once('../../../registry.php');
-        require_once("../../../sites/$this->site/conf.php");
-        require_once('../../../classes/MatchaHelper.php');
-        require_once('../../../classes/Array2XML.php');
+        try
+        {
+            $this->site = $site;
+            if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
+            require_once('../../../registry.php');
+            require_once("../../../sites/$this->site/conf.php");
+            require_once('../../../classes/MatchaHelper.php');
+            require_once('../../../classes/Array2XML.php');
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error,true));
+            return $Error;
+        }
     }
 
     function setRequest($REQUEST)
     {
-        if(!isset($REQUEST)) return;
-        $this->request = json_decode($REQUEST['params'], true);
-        $this->reportDir = $this->request['reportDir'];
-        $this->format = $this->request['format'];
-        unset($this->request['reportDir']);
-        unset($this->request['format']);
+        try
+        {
+            if(!isset($REQUEST)) return;
+            $this->request = json_decode($REQUEST['params'], true);
+            $this->reportDir = $this->request['reportDir'];
+            $this->format = $this->request['format'];
+            unset($this->request['reportDir']);
+            unset($this->request['format']);
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error,true));
+            return $Error;
+        }
     }
 
     function getXSLTemplate()
@@ -74,6 +90,8 @@ class ReportGenerator
             $this->conn = Matcha::getConn();
             $filePointer = "../reports/$this->reportDir/reportStatement.sql";
 
+            // Important connection parameter, this will allow multiple
+            // prepare tags with the same name.
             $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
             if(file_exists($filePointer) && is_readable($filePointer))
@@ -138,6 +156,7 @@ switch($rg->format)
         $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         $html2pdf = new HTML2PDF('P','A4','en');
+        $html2pdf->pdf->SetAuthor('GaiaEHR');
         $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
         $PDFDocument = base64_encode($html2pdf->Output('exemple.pdf', "S"));
         echo '<object data="data:application/pdf;base64,'.$PDFDocument.'" type="application/pdf" width="100%" height="100%"></object>';

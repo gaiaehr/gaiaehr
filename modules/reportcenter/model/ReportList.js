@@ -24,7 +24,7 @@ Ext.define('Modules.reportcenter.model.ReportList', {
             type: 'int'
         },
         {
-            name: 'report_name',
+            name: 'title',
             type: 'string'
         },
         {
@@ -32,7 +32,7 @@ Ext.define('Modules.reportcenter.model.ReportList', {
             type: 'string'
         },
         {
-            name: 'report_description',
+            name: 'description',
             type: 'string'
         },
         {
@@ -46,6 +46,18 @@ Ext.define('Modules.reportcenter.model.ReportList', {
         {
             name: 'version',
             type: 'string'
+        },
+        {
+            name: 'width',
+            type: 'int'
+        },
+        {
+            name: 'height',
+            type: 'int'
+        },
+        {
+            name: 'filterHeight',
+            type: 'int'
         }
     ]
 });

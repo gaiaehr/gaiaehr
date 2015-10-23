@@ -26,6 +26,10 @@ var filters = Ext.create('Ext.data.Store', {
     ],
     data : [
         {
+            "id": 'provider',
+            "name": 'Provider'
+        },
+        {
             "id": 'allergy',
             "name": 'Allergies'
         },
@@ -65,6 +69,19 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             valueField: 'id',
             listeners: {
                 select: {
+
+                }
+            }
+        },
+        {
+
+        },
+        '-',
+        {
+            xtype: 'button',
+            text: _('add'),
+            listeners: {
+                click: {
 
                 }
             }

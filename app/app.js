@@ -12009,6 +12009,9 @@ Ext.define('App.model.administration.LayoutTree', {
 			create: 'FormLayoutBuilder.createFormField',
 			update: 'FormLayoutBuilder.updateFormField',
 			destroy: 'FormLayoutBuilder.removeFormField'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	}
 });
@@ -20709,7 +20712,153 @@ Ext.define('App.model.patient.Patient',{
         },
         {
             name: 'portal_username',
-            type: 'string'
+            type: 'string',
+	        len: 40
+        },
+	    {
+		    name: 'phone_publicity',
+		    type: 'string',
+		    len: 10
+	    },
+        {
+            name: 'phone_home',
+            type: 'string',
+	        len: 25
+        },
+        {
+            name: 'phone_mobile',
+            type: 'string',
+	        len: 25
+        },
+        {
+            name: 'phone_work',
+            type: 'string',
+	        len: 25
+        },
+        {
+            name: 'phone_work_ext',
+            type: 'string',
+	        len: 25
+        },
+	    {
+		    name: 'phone_fax',
+		    type: 'string',
+		    len: 25
+	    },
+        {
+            name: 'email',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'postal_address',
+            type: 'string',
+	        len: 40
+        },
+        {
+            name: 'postal_address_cont',
+            type: 'string',
+	        len: 40
+        },
+        {
+            name: 'postal_city',
+            type: 'string',
+	        len: 35
+        },
+        {
+            name: 'postal_state',
+            type: 'string',
+	        len: 35
+        },
+        {
+            name: 'postal_zip',
+            type: 'string',
+	        len: 35
+        },
+        {
+            name: 'physical_address',
+            type: 'string',
+	        len: 40
+        },
+        {
+            name: 'physical_address_cont',
+            type: 'string',
+	        len: 40
+        },
+        {
+            name: 'physical_city',
+            type: 'string',
+	        len: 35
+        },
+        {
+            name: 'physical_state',
+            type: 'string',
+	        len: 35
+        },
+        {
+            name: 'physical_zip',
+            type: 'string',
+	        len: 35
+        },
+	    {
+		    name: 'guardians_relation',
+		    type: 'string',
+		    len: 20
+	    },
+        {
+            name: 'guardians_fname',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'guardians_mname',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'guardians_lname',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'guardians_phone',
+            type: 'string',
+	        len: 20
+        },
+        {
+            name: 'guardians_phone_type',
+            type: 'string',
+	        len: 10
+        },
+        {
+            name: 'emergency_contact_relation',
+            type: 'string',
+	        len: 20
+        },
+        {
+            name: 'emergency_contact_fname',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'emergency_contact_mname',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'emergency_contact_lname',
+            type: 'string',
+	        len: 80
+        },
+        {
+            name: 'emergency_contact_phone',
+            type: 'string',
+	        len: 20
+        },
+        {
+            name: 'emergency_contact_phone_type',
+            type: 'string',
+            len: 10
         }
     ],
     idProperty: 'pid',

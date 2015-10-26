@@ -38111,9 +38111,32 @@ Ext.define('App.controller.Navigation', {
 	 * this logic can be move to here eventually...
 	 */
 	afterNavigationLoad: function(){
-		//app.fullMode ? app.navColumn.expand() : app.navColumn.collapse();
+		var me = this;
+
 		app.removeAppMask();
-		this.navigateToDefault();
+		me.navigateToDefault();
+
+		Ext.Function.defer(function(){
+			me.doSortCategory('administration')
+		}, 500);
+	},
+
+	doSortCategory: function(category){
+		var store = this.getMainNav().getStore().getNodeById(category);
+
+		if(!store) return;
+		store.sort(function(node1, node2){
+			var text1 = node1.get('text'),
+				text2 = node2.get('text');
+
+			if(text1 > text2){
+				return 1;
+			}else if(text1 < text2){
+				return -1;
+			}else{
+				return 0;
+			}
+		});
 	},
 
 	setUrlParams:function(params){

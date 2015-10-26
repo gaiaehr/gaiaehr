@@ -8,7 +8,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	pageTitle: _('report_center'),
     itemId: 'ReportCenterPanel',
     requires: [
-        'Modules.reportcenter.view.ReportPanel'
     ],
     pageBody: [
         // Report List

@@ -199,6 +199,9 @@ Ext.define('App.model.administration.LayoutTree', {
 			create: 'FormLayoutBuilder.createFormField',
 			update: 'FormLayoutBuilder.updateFormField',
 			destroy: 'FormLayoutBuilder.removeFormField'
+		},
+		writer: {
+			writeAllFields: true
 		}
 	}
 });

@@ -314,7 +314,9 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 text: _('remove_filter'),
                 listeners:{
                     click: function(e, eOpts){
-
+                        var Grid = Ext.ComponentQuery.query('reportFilter #patientFilters')[0],
+                            Selection = Grid.getSelectionModel().getSelection();
+                        filtersCollectedStore.remove(Selection);
                     }
                 }
             }

@@ -20,41 +20,51 @@
  * Filter available for the Patient List Report (Store)
  * @type {Ext.data.Store}
  */
-var filters = Ext.create('Ext.data.Store', {
+var filtersStore = Ext.create('Ext.data.Store', {
     fields: [
-        'id',
-        'name'
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'name',
+            type: 'string'
+        },
+        {
+            name: 'value',
+            string: 'string'
+        }
     ],
     data : [
         {
-            "id": 'provider',
-            "name": 'Provider',
-            "type": "int"
+            "id": 0,
+            "value": 'provider',
+            "name": 'Provider'
         },
         {
-            "id": 'allergy',
-            "name": 'Allergies',
-            "type": "string"
+            "id": 1,
+            "value": 'allergy',
+            "name": 'Allergies'
         },
         {
-            "id": 'problem',
-            "name": 'Problems',
-            "type": "string"
+            "id": 2,
+            "value": 'problem',
+            "name": 'Problems'
         },
         {
-            "id": 'medication',
-            "name": 'Medications',
-            "type": "string"
+            "id": 3,
+            "value": 'medication',
+            "name": 'Medications'
         },
         {
-            "id": 'encounter_begin_date',
-            "name": 'Encounter Begin Date',
-            "type": "date"
+            "id": 4,
+            "value": 'encounter_begin_date',
+            "name": 'Encounter Begin Date'
         },
         {
-            "id": 'encounter_end_date',
-            "name": 'Encounter End Date',
-            "type": "date"
+            "id": 5,
+            "value": 'encounter_end_date',
+            "name": 'Encounter End Date'
         }
     ]
 });
@@ -81,17 +91,32 @@ Ext.define('FiltersCollected', {
     ]
 });
 
-/**
- * This is the store where the filters are collected from user input
- * @type {Ext.data.Store}
- */
-var filtersCollected = Ext.create('Ext.data.Store', {
+var filtersCollectedStore = Ext.create('Ext.data.Store', {
     model: 'FiltersCollected',
+    autoLoad: false,
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'name',
+            type: 'string'
+        },
+        {
+            name: 'operator',
+            type: 'string'
+        },
+        {
+            name: 'filterValue',
+            type: 'string'
+        }
+    ],
+    data: [{}],
     proxy: {
         type: 'memory',
         reader: {
-            type: 'json',
-            root: 'FiltersCollected'
+            type: 'json'
         }
     }
 });
@@ -108,7 +133,7 @@ var rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
  * Store of operators for the filter
  * @type {Ext.data.Store}
  */
-var operators = Ext.create('Ext.data.Store', {
+var operatorsStore = Ext.create('Ext.data.Store', {
     fields: [
         'id',
         'operator',
@@ -165,8 +190,9 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     items:[
         {
             xtype: 'grid',
-            store: filtersCollected,
+            store: filtersCollectedStore,
             border: false,
+            flex: 1,
             itemId: 'patientFilters',
             selType: 'rowmodel',
             plugins: [
@@ -181,10 +207,10 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     width: 200,
                     editor: {
                         xtype: 'combo',
-                        name: 'filter',
-                        store: filters,
+                        name: 'filterName',
+                        store: filtersStore,
                         displayField: 'name',
-                        valueField: 'id',
+                        valueField: 'value',
                         listeners:{
                             select: function(records, eOpts ){
                                 var Grid = Ext.ComponentQuery.query('reportFilter #patientFilters')[0],
@@ -193,7 +219,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                                     case 'provider':
                                         ValueColumn.setEditor({
                                             xtype: 'activeproviderscombo',
-                                            name: 'provider',
+                                            name: 'value',
                                             allowBlank: false,
                                             flex: 1,
                                             displayField: 'option_name',
@@ -204,7 +230,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                                         ValueColumn.setEditor({
                                             xtype: 'allergieslivesearch',
                                             itemId: 'allergySearchCombo',
-                                            name: 'allergy',
+                                            name: 'value',
                                             enableKeyEvents: true,
                                             flex: 1,
                                             allowBlank: false
@@ -214,7 +240,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                                         ValueColumn.setEditor({
                                             xtype: 'snomedliveproblemsearch',
                                             itemId: 'problemSearchCombo',
-                                            name: 'problem',
+                                            name: 'value',
                                             enableKeyEvents: true,
                                             flex: 1,
                                             allowBlank: false
@@ -224,7 +250,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                                         ValueColumn.setEditor({
                                             xtype: 'medicationlivetsearch',
                                             itemId: 'medicationSearchCombo',
-                                            name: 'medication',
+                                            name: 'value',
                                             enableKeyEvents: true,
                                             flex: 1,
                                             allowBlank: false
@@ -233,7 +259,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                                     case 'encounter_begin_date':
                                         ValueColumn.setEditor({
                                             xtype: 'datefield',
-                                            name: 'begin_date',
+                                            name: 'value',
                                             flex: 1,
                                             allowBlank: false,
                                             format: g('date_display_format'),
@@ -243,7 +269,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                                     case 'encounter_end_date':
                                         ValueColumn.setEditor({
                                             xtype: 'datefield',
-                                            name: 'end_date',
+                                            name: 'value',
                                             flex: 1,
                                             allowBlank: false,
                                             format: g('date_display_format'),
@@ -264,7 +290,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     editor: {
                         xtype: 'combo',
                         name: 'operator',
-                        store: operators,
+                        store: operatorsStore,
                         displayField: 'operatorName',
                         valueField: 'operator'
                     }
@@ -273,7 +299,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     text: _('value'),
                     sortable: false,
                     hideable: false,
-                    dataIndex: 'filterValue',
+                    dataIndex: 'value',
                     flex: 1
                 }
             ]
@@ -290,7 +316,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 listeners:{
                     click: function(e, eOpts){
                         rowEditor.cancelEdit();
-                        filtersCollected.add({
+                        filtersCollectedStore.add({
                             "filterName":"",
                             "operatorName":"",
                             "filterValue":""

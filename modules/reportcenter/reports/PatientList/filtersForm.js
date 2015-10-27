@@ -69,30 +69,10 @@ var filtersStore = Ext.create('Ext.data.Store', {
     ]
 });
 
-Ext.define('FiltersCollected', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {
-            name: 'id',
-            type: 'int'
-        },
-        {
-            name: 'filterName',
-            type: 'string'
-        },
-        {
-            name: 'operator',
-            type: 'string'
-        },
-        {
-            name: 'filterValue',
-            type: 'string'
-        }
-    ]
-});
-
+/**
+ * @type {Ext.data.Store}
+ */
 var filtersCollectedStore = Ext.create('Ext.data.Store', {
-    model: 'FiltersCollected',
     autoLoad: false,
     fields: [
         {
@@ -100,33 +80,25 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             type: 'int'
         },
         {
-            name: 'name',
-            type: 'string'
-        },
-        {
             name: 'operator',
             type: 'string'
         },
         {
-            name: 'filterValue',
+            name: 'filter',
+            type: 'string'
+        },
+        {
+            name: 'value',
             type: 'string'
         }
     ],
-    data: [{}],
+    data: [],
     proxy: {
         type: 'memory',
         reader: {
             type: 'json'
         }
     }
-});
-
-/**
- * @type {Ext.grid.plugin.RowEditing}
- */
-var rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
-    clicksToEdit: 2,
-    itemId: 'filterRowEditor'
 });
 
 /**
@@ -173,6 +145,14 @@ var operatorsStore = Ext.create('Ext.data.Store', {
     ]
 });
 
+/**
+ * @type {Ext.grid.plugin.RowEditing}
+ */
+var rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
+    clicksToEdit: 2,
+    itemId: 'filterRowEditor'
+});
+
 Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     extend: 'Ext.form.Panel',
     requires:[
@@ -192,7 +172,11 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             xtype: 'grid',
             store: filtersCollectedStore,
             border: false,
-            flex: 1,
+            height: 400,
+            layout: {
+                type:'vbox',
+                align: 'stretch'
+            },
             itemId: 'patientFilters',
             selType: 'rowmodel',
             plugins: [
@@ -202,12 +186,12 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 {
                     text: _('filter'),
                     sortable: false,
-                    dataIndex: 'filterName',
+                    dataIndex: 'filter',
                     hideable: false,
                     width: 200,
                     editor: {
                         xtype: 'combo',
-                        name: 'filterName',
+                        name: 'filter',
                         store: filtersStore,
                         displayField: 'name',
                         valueField: 'value',
@@ -317,11 +301,20 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     click: function(e, eOpts){
                         rowEditor.cancelEdit();
                         filtersCollectedStore.add({
-                            "filterName":"",
-                            "operatorName":"",
-                            "filterValue":""
+                            "filter":"",
+                            "operator":"",
+                            "value":""
                         });
-                        rowEditor.startEdit(0, 0);
+                        rowEditor.startEdit(filtersCollectedStore.getCount()-1, 0);
+                    }
+                }
+            },
+            {
+                xtype: 'button',
+                text: _('remove_filter'),
+                listeners:{
+                    click: function(e, eOpts){
+
                     }
                 }
             }

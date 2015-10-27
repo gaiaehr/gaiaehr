@@ -42,5 +42,6 @@ $LANG = array(
     'less_than'                             => 'Menos que',
     'greater_or_equal'                      => 'Mayor qué o igual a',
     'less_or_equal'                         => 'Menos que o igual a',
-    'not_equal'                             => 'No es igual'
+    'not_equal'                             => 'No es igual',
+    'remove_filter'                         => 'Remover filtro'
 );

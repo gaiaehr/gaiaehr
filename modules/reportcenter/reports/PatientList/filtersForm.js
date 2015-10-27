@@ -96,6 +96,9 @@ var filtersCollected = Ext.create('Ext.data.Store', {
     }
 });
 
+/**
+ * @type {Ext.grid.plugin.RowEditing}
+ */
 var rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
     clicksToEdit: 2,
     itemId: 'filterRowEditor'
@@ -149,12 +152,14 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     extend: 'Ext.form.Panel',
     requires:[
         'Ext.form.field.Date',
-        'App.ux.combo.ActiveProviders'
+        'App.ux.combo.ActiveProviders',
+        'App.ux.combo.Allergies',
+        'App.ux.LiveMedicationSearch',
+        'App.ux.LiveSnomedProblemSearch'
     ],
     xtype: 'reportFilter',
     region: 'north',
     title: _('filters'),
-    itemId: 'PatientList',
     collapsible: true,
     border: true,
     items:[
@@ -162,6 +167,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             xtype: 'grid',
             store: filtersCollected,
             border: false,
+            itemId: 'patientFilters',
             selType: 'rowmodel',
             plugins: [
                 rowEditor
@@ -178,11 +184,74 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         name: 'filter',
                         store: filters,
                         displayField: 'name',
-                        valueField: 'id'
-                    },
-                    listeners:{
-                        select: function(records, eOpts ){
-                            say(records);
+                        valueField: 'id',
+                        listeners:{
+                            select: function(records, eOpts ){
+                                var Grid = Ext.ComponentQuery.query('reportFilter #patientFilters')[0],
+                                    ValueColumn = Grid.columns[2];
+                                switch(records.value) {
+                                    case 'provider':
+                                        ValueColumn.setEditor({
+                                            xtype: 'activeproviderscombo',
+                                            name: 'provider',
+                                            allowBlank: false,
+                                            flex: 1,
+                                            displayField: 'option_name',
+                                            valueField: 'id'
+                                        });
+                                        break;
+                                    case 'allergy':
+                                        ValueColumn.setEditor({
+                                            xtype: 'allergieslivesearch',
+                                            itemId: 'allergySearchCombo',
+                                            name: 'allergy',
+                                            enableKeyEvents: true,
+                                            flex: 1,
+                                            allowBlank: false
+                                        });
+                                        break;
+                                    case 'problem':
+                                        ValueColumn.setEditor({
+                                            xtype: 'snomedliveproblemsearch',
+                                            itemId: 'problemSearchCombo',
+                                            name: 'problem',
+                                            enableKeyEvents: true,
+                                            flex: 1,
+                                            allowBlank: false
+                                        });
+                                        break;
+                                    case 'medication':
+                                        ValueColumn.setEditor({
+                                            xtype: 'medicationlivetsearch',
+                                            itemId: 'medicationSearchCombo',
+                                            name: 'medication',
+                                            enableKeyEvents: true,
+                                            flex: 1,
+                                            allowBlank: false
+                                        });
+                                        break;
+                                    case 'encounter_begin_date':
+                                        ValueColumn.setEditor({
+                                            xtype: 'datefield',
+                                            name: 'begin_date',
+                                            flex: 1,
+                                            allowBlank: false,
+                                            format: g('date_display_format'),
+                                            submitFormat: 'Y-m-d'
+                                        });
+                                        break;
+                                    case 'encounter_end_date':
+                                        ValueColumn.setEditor({
+                                            xtype: 'datefield',
+                                            name: 'end_date',
+                                            flex: 1,
+                                            allowBlank: false,
+                                            format: g('date_display_format'),
+                                            submitFormat: 'Y-m-d'
+                                        });
+                                        break;
+                                }
+                            }
                         }
                     }
                 },

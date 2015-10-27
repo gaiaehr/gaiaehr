@@ -84,11 +84,23 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             type: 'string'
         },
         {
+            name: 'display_operator',
+            type: 'string'
+        },
+        {
             name: 'filter',
             type: 'string'
         },
         {
+            name: 'display_filter',
+            type: 'string'
+        },
+        {
             name: 'value',
+            type: 'string'
+        },
+        {
+            name: 'display_value',
             type: 'string'
         }
     ],

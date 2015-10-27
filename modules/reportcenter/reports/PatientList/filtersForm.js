@@ -59,17 +59,46 @@ var filters = Ext.create('Ext.data.Store', {
     ]
 });
 
+Ext.define('FiltersCollected', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {
+            name: 'id',
+            type: 'int'
+        },
+        {
+            name: 'filterName',
+            type: 'string'
+        },
+        {
+            name: 'operator',
+            type: 'string'
+        },
+        {
+            name: 'filterValue',
+            type: 'string'
+        }
+    ]
+});
+
 /**
  * This is the store where the filters are collected from user input
  * @type {Ext.data.Store}
  */
 var filtersCollected = Ext.create('Ext.data.Store', {
-    fields: [
-        'id',
-        'filterName',
-        'operator',
-        'filterValue'
-    ]
+    model: 'FiltersCollected',
+    proxy: {
+        type: 'memory',
+        reader: {
+            type: 'json',
+            root: 'FiltersCollected'
+        }
+    }
+});
+
+var rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
+    clicksToEdit: 2,
+    itemId: 'filterRowEditor'
 });
 
 /**
@@ -79,32 +108,39 @@ var filtersCollected = Ext.create('Ext.data.Store', {
 var operators = Ext.create('Ext.data.Store', {
     fields: [
         'id',
-        'operator'
+        'operator',
+        'operatorName'
     ],
     data : [
         {
-            "id": '=',
-            "operator": _('equals')
+            "id": 0,
+            "operator": '=',
+            "operatorName": _('equals')
         },
         {
-            "id": '>',
-            "name": _('greater_than')
+            "id": 1,
+            "operator": '>',
+            "operatorName": _('greater_than')
         },
         {
-            "id": '<',
-            "name": _('less_than')
+            "id": 2,
+            "operator": '<',
+            "operatorName": _('less_than')
         },
         {
-            "id": '>=',
-            "name": _('greater_or_equal')
+            "id": 3,
+            "operator": '>=',
+            "operatorName": _('greater_or_equal')
         },
         {
-            "id": '<=',
-            "name": _('less_or_equal')
+            "id": 4,
+            "operator": '<=',
+            "operatorName": _('less_or_equal')
         },
         {
-            "id": '<>',
-            "name": _('not_equal')
+            "id": 5,
+            "operator": '<>',
+            "operatorName": _('not_equal')
         }
     ]
 });
@@ -128,10 +164,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             border: false,
             selType: 'rowmodel',
             plugins: [
-                Ext.create('Ext.grid.plugin.RowEditing', {
-                    clicksToEdit: 2,
-                    itemId: 'filterRowEditor'
-                })
+                rowEditor
             ],
             columns: [
                 {
@@ -143,10 +176,14 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     editor: {
                         xtype: 'combo',
                         name: 'filter',
-                        fieldLabel: _('choose_filter'),
                         store: filters,
                         displayField: 'name',
                         valueField: 'id'
+                    },
+                    listeners:{
+                        select: function(records, eOpts ){
+                            say(records);
+                        }
                     }
                 },
                 {
@@ -154,14 +191,13 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     sortable: false,
                     dataIndex: 'operator',
                     hideable: false,
-                    width: 40,
+                    width: 120,
                     editor: {
                         xtype: 'combo',
                         name: 'operator',
-                        fieldLabel: _('choose_operator'),
                         store: operators,
-                        displayField: 'name',
-                        valueField: 'id'
+                        displayField: 'operatorName',
+                        valueField: 'operator'
                     }
                 },
                 {
@@ -180,27 +216,16 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
         items: [
             '->',
             {
-                xtype: 'combo',
-                name: 'filter',
-                fieldLabel: _('choose_filter'),
-                store: filters,
-                displayField: 'name',
-                valueField: 'id'
-            },
-            '-',
-            {
                 xtype: 'button',
                 text: _('add_filter'),
                 listeners:{
                     click: function(e, eOpts){
-                        var rowEditor = Ext.ComponentQuery.query('reportFilter #filterRowEditor')[0];
-                        say(rowEditor);
                         rowEditor.cancelEdit();
-                        filtersCollected.loadRawData({
+                        filtersCollected.add({
                             "filterName":"",
-                            "operator":"",
+                            "operatorName":"",
                             "filterValue":""
-                        },true);
+                        });
                         rowEditor.startEdit(0, 0);
                     }
                 }

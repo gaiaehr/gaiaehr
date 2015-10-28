@@ -192,7 +192,27 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
      * @param grid
      */
     generateFromGrid: function(format){
-        var store = this.getReportFilterPanel().getStore();
+        var store = this.getReportFilterPanel().getStore(),
+            parameters = {};
+
+        this.getReportWindow().getEl().mask(_('loading'));
+
+        // Create some extra parameter to send to the server.
+        parameters.reportDir = this.getReportFilterPanel().getItemId();
+        parameters.format = format;
+
+        // Send the request to display the report
+        Ext.Ajax.request({
+            url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
+            params: {
+                params: JSON.stringify(parameters)
+            },
+            success: function(response){
+                var XSLDocument = response.responseText;
+                me.getReportRenderPanel().update(XSLDocument, true);
+                me.getReportWindow().getEl().unmask();
+            }
+        });
     }
 
 });

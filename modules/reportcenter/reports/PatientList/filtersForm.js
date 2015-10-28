@@ -32,7 +32,7 @@ var filtersStore = Ext.create('Ext.data.Store', {
         },
         {
             name: 'value',
-            string: 'string'
+            type: 'string'
         }
     ],
     data : [
@@ -308,6 +308,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     }
                 }
             },
+            '-',
             {
                 xtype: 'button',
                 text: _('remove_filter'),

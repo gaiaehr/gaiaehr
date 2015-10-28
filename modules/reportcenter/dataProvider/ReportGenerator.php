@@ -23,6 +23,7 @@ class ReportGenerator
     private $request;
     private $reportDir;
     public $format;
+    public $fromGrid;
     private $conn;
     private $site;
 
@@ -52,8 +53,10 @@ class ReportGenerator
             $this->request = json_decode($REQUEST['params'], true);
             $this->reportDir = $this->request['reportDir'];
             $this->format = $this->request['format'];
+            $this->fromGrid = $this->request['grid'];
             unset($this->request['reportDir']);
             unset($this->request['format']);
+            unset($this->request['grid']);
         }
         catch(Exception $Error)
         {

@@ -148,6 +148,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         // Create some extra parameter to send to the server.
         parameters.reportDir = this.getReportFilterPanel().getItemId();
         parameters.format = format;
+        parameters.grid = false;
 
         // Evaluates every field in the form, extrat the submitFormat and other
         // things.
@@ -193,13 +194,21 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
      */
     generateFromGrid: function(format){
         var store = this.getReportFilterPanel().getStore(),
+            records = store.getRange(),
             parameters = {};
 
-        this.getReportWindow().getEl().mask(_('loading'));
+        //this.getReportWindow().getEl().mask(_('loading'));
 
         // Create some extra parameter to send to the server.
         parameters.reportDir = this.getReportFilterPanel().getItemId();
         parameters.format = format;
+        parameters.grid = true;
+
+        // Evaluates every field in the form, extrat the submitFormat and other
+        // things.
+        for(var Index in records) {
+            parameters[Index] = records[Index].getData(true);
+        }
 
         // Send the request to display the report
         Ext.Ajax.request({

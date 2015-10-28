@@ -105,12 +105,28 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onCreatePDF: function(){
-        this.generateDocument('pdf');
+        var panelClass = Ext.getClass(this.getReportFilterPanel()).superclass.self.getName();
+        switch(panelClass){
+            case 'Ext.form.Panel':
+                this.generateDocument('pdf');
+                break;
+            case 'Ext.grid.Panel':
+                this.generateFromGrid('pdf');
+                break;
+        }
         this.getPrintButton().disable();
     },
 
     onCreateHTML: function(){
-        this.generateDocument('html');
+        var panelClass = Ext.getClass(this.getReportFilterPanel()).superclass.self.getName();
+        switch(panelClass){
+            case 'Ext.form.Panel':
+                this.generateDocument('html');
+                break;
+            case 'Ext.grid.Panel':
+                this.generateFromGrid('html');
+                break;
+        }
         this.getPrintButton().enable();
     },
 
@@ -168,6 +184,15 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         });
 
+    },
+
+    /**
+     * If the form is a grid containing [filter, operator, & values]
+     * process the grid as a form.
+     * @param grid
+     */
+    generateFromGrid: function(format){
+        var store = this.getReportFilterPanel().getStore();
     }
 
 });

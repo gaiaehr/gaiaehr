@@ -73,7 +73,6 @@ var filtersStore = Ext.create('Ext.data.Store', {
  * @type {Ext.data.Store}
  */
 var filtersCollectedStore = Ext.create('Ext.data.Store', {
-    autoLoad: false,
     fields: [
         {
             name: 'id',
@@ -166,7 +165,7 @@ var rowEditor = Ext.create('Ext.grid.plugin.RowEditing', {
 });
 
 Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
-    extend: 'Ext.form.Panel',
+    extend: 'Ext.grid.Panel',
     requires:[
         'Ext.form.field.Date',
         'App.ux.combo.ActiveProviders',
@@ -175,130 +174,118 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
         'App.ux.LiveSnomedProblemSearch'
     ],
     xtype: 'reportFilter',
+    store: filtersCollectedStore,
     region: 'north',
     title: _('filters'),
     collapsible: true,
     border: true,
-    items:[
+    selType: 'rowmodel',
+    plugins: [
+        rowEditor
+    ],
+    columns: [
         {
-            xtype: 'grid',
-            store: filtersCollectedStore,
-            border: false,
-            height: 400,
-            layout: {
-                type:'vbox',
-                align: 'stretch'
-            },
-            itemId: 'patientFilters',
-            selType: 'rowmodel',
-            plugins: [
-                rowEditor
-            ],
-            columns: [
-                {
-                    text: _('filter'),
-                    sortable: false,
-                    dataIndex: 'filter',
-                    hideable: false,
-                    width: 200,
-                    editor: {
-                        xtype: 'combo',
-                        name: 'filter',
-                        store: filtersStore,
-                        displayField: 'name',
-                        valueField: 'value',
-                        listeners:{
-                            select: function(records, eOpts ){
-                                var Grid = Ext.ComponentQuery.query('reportFilter #patientFilters')[0],
-                                    ValueColumn = Grid.columns[2];
-                                switch(records.value) {
-                                    case 'provider':
-                                        ValueColumn.setEditor({
-                                            xtype: 'activeproviderscombo',
-                                            name: 'value',
-                                            allowBlank: false,
-                                            flex: 1,
-                                            displayField: 'option_name',
-                                            valueField: 'id'
-                                        });
-                                        break;
-                                    case 'allergy':
-                                        ValueColumn.setEditor({
-                                            xtype: 'allergieslivesearch',
-                                            itemId: 'allergySearchCombo',
-                                            name: 'value',
-                                            enableKeyEvents: true,
-                                            flex: 1,
-                                            allowBlank: false
-                                        });
-                                        break;
-                                    case 'problem':
-                                        ValueColumn.setEditor({
-                                            xtype: 'snomedliveproblemsearch',
-                                            itemId: 'problemSearchCombo',
-                                            name: 'value',
-                                            enableKeyEvents: true,
-                                            flex: 1,
-                                            allowBlank: false
-                                        });
-                                        break;
-                                    case 'medication':
-                                        ValueColumn.setEditor({
-                                            xtype: 'medicationlivetsearch',
-                                            itemId: 'medicationSearchCombo',
-                                            name: 'value',
-                                            enableKeyEvents: true,
-                                            flex: 1,
-                                            allowBlank: false
-                                        });
-                                        break;
-                                    case 'encounter_begin_date':
-                                        ValueColumn.setEditor({
-                                            xtype: 'datefield',
-                                            name: 'value',
-                                            flex: 1,
-                                            allowBlank: false,
-                                            format: g('date_display_format'),
-                                            submitFormat: 'Y-m-d'
-                                        });
-                                        break;
-                                    case 'encounter_end_date':
-                                        ValueColumn.setEditor({
-                                            xtype: 'datefield',
-                                            name: 'value',
-                                            flex: 1,
-                                            allowBlank: false,
-                                            format: g('date_display_format'),
-                                            submitFormat: 'Y-m-d'
-                                        });
-                                        break;
-                                }
-                            }
+            text: _('filter'),
+            sortable: false,
+            dataIndex: 'filter',
+            hideable: false,
+            width: 200,
+            editor: {
+                xtype: 'combo',
+                name: 'filter',
+                store: filtersStore,
+                displayField: 'name',
+                valueField: 'value',
+                listeners:{
+                    select: function(records, eOpts ){
+                        var Grid = Ext.ComponentQuery.query('reportFilter')[0],
+                            ValueColumn = Grid.columns[2];
+                        switch(records.value) {
+                            case 'provider':
+                                ValueColumn.setEditor({
+                                    xtype: 'activeproviderscombo',
+                                    name: 'value',
+                                    allowBlank: false,
+                                    flex: 1,
+                                    displayField: 'option_name',
+                                    valueField: 'id'
+                                });
+                                break;
+                            case 'allergy':
+                                ValueColumn.setEditor({
+                                    xtype: 'allergieslivesearch',
+                                    itemId: 'allergySearchCombo',
+                                    name: 'value',
+                                    enableKeyEvents: true,
+                                    flex: 1,
+                                    allowBlank: false
+                                });
+                                break;
+                            case 'problem':
+                                ValueColumn.setEditor({
+                                    xtype: 'snomedliveproblemsearch',
+                                    itemId: 'problemSearchCombo',
+                                    name: 'value',
+                                    enableKeyEvents: true,
+                                    flex: 1,
+                                    allowBlank: false
+                                });
+                                break;
+                            case 'medication':
+                                ValueColumn.setEditor({
+                                    xtype: 'medicationlivetsearch',
+                                    itemId: 'medicationSearchCombo',
+                                    name: 'value',
+                                    enableKeyEvents: true,
+                                    flex: 1,
+                                    allowBlank: false
+                                });
+                                break;
+                            case 'encounter_begin_date':
+                                ValueColumn.setEditor({
+                                    xtype: 'datefield',
+                                    name: 'value',
+                                    flex: 1,
+                                    allowBlank: false,
+                                    format: g('date_display_format'),
+                                    submitFormat: 'Y-m-d'
+                                });
+                                break;
+                            case 'encounter_end_date':
+                                ValueColumn.setEditor({
+                                    xtype: 'datefield',
+                                    name: 'value',
+                                    flex: 1,
+                                    allowBlank: false,
+                                    format: g('date_display_format'),
+                                    submitFormat: 'Y-m-d'
+                                });
+                                break;
                         }
                     }
-                },
-                {
-                    text: _('operator'),
-                    sortable: false,
-                    dataIndex: 'operator',
-                    hideable: false,
-                    width: 120,
-                    editor: {
-                        xtype: 'combo',
-                        name: 'operator',
-                        store: operatorsStore,
-                        displayField: 'operatorName',
-                        valueField: 'operator'
-                    }
-                },
-                {
-                    text: _('value'),
-                    sortable: false,
-                    hideable: false,
-                    dataIndex: 'value',
-                    flex: 1
                 }
-            ]
+            }
+        },
+        {
+            text: _('operator'),
+            sortable: false,
+            dataIndex: 'operator',
+            hideable: false,
+            width: 120,
+            editor: {
+                xtype: 'combo',
+                name: 'operator',
+                store: operatorsStore,
+                displayField: 'operatorName',
+                valueField: 'operator'
+            }
+        },
+        {
+            text: _('value'),
+            sortable: false,
+            hideable: false,
+            dataIndex: 'value',
+            flex: 1
         }
     ],
     dockedItems: [{
@@ -326,8 +313,9 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 text: _('remove_filter'),
                 listeners:{
                     click: function(e, eOpts){
-                        var Grid = Ext.ComponentQuery.query('reportFilter #patientFilters')[0],
+                        var Grid = Ext.ComponentQuery.query('reportFilter')[0],
                             Selection = Grid.getSelectionModel().getSelection();
+                        rowEditor.cancelEdit();
                         filtersCollectedStore.remove(Selection);
                     }
                 }

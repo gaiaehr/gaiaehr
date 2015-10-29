@@ -98,6 +98,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportRenderPanel().update('', true);
     },
 
+    /**
+     * Print report event, this procedure will print the report in the printer.
+     * TODO: Finish me.
+     */
     onPrint: function(){
         var iframe = Ext.ComponentQuery.query('#reportWindow #reportRender')[0].el;
         say(iframe);
@@ -182,6 +186,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument, true);
                 me.getReportWindow().getEl().unmask();
+            },
+            failure: function(response, opts) {
+                me.getReportWindow().getEl().unmask();
+                Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
             }
         });
 

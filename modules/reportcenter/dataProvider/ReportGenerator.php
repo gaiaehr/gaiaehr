@@ -104,17 +104,35 @@ class ReportGenerator
                 $fileContent = file_get_contents($filePointer);
                 $RunSQL = $this->conn->prepare($fileContent);
 
-                // Copy all the request variables into the ExecuteValues
                 error_log(print_r($this->request,true));
-                foreach($this->request as $field)
+
+                // Copy all the request variables into the Prepared Values,
+                // also check if it came from the grid form and normal form.
+                // This because we need to do a POST-PREPARE the SQL statement
+                if($this->fromGrid)
                 {
-                    $PrepareField[':'.$field['name']] = $field['value'];
+
+                }
+                else
+                {
+                    foreach($this->request as $field)
+                    {
+                        $PrepareField[':'.$field['name']] = $field['value'];
+                    }
                 }
 
-                // Also copy all the request variables to Return variable to XML
-                foreach($this->request as $field)
+                // Copy all the request filter variables to the XML,
+                // also check if it came from the grid form and normal form.
+                // This because we need to do a POST-PREPARE the SQL statement
+                if($this->fromGrid)
                 {
-                    $ReturnFilter[$field['name']] = $field['value'];
+
+                }
+                else
+                {
+                    foreach ($this->request as $field) {
+                        $ReturnFilter[$field['name']] = $field['value'];
+                    }
                 }
 
                 $RunSQL->execute($PrepareField);

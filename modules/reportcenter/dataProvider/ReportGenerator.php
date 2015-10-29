@@ -57,6 +57,7 @@ class ReportGenerator
             unset($this->request['reportDir']);
             unset($this->request['format']);
             unset($this->request['grid']);
+            error_log(print_r($this->request, true));
         }
         catch(Exception $Error)
         {
@@ -76,7 +77,7 @@ class ReportGenerator
             }
             else
             {
-                throw new Exception('Error: Not XSLT file was found or is readable.');
+                throw new Exception('Error: Not XSLT file was found or readable.');
             }
         }
         catch(Exception $Error)
@@ -104,6 +105,7 @@ class ReportGenerator
                 $RunSQL = $this->conn->prepare($fileContent);
 
                 // Copy all the request variables into the ExecuteValues
+                error_log(print_r($this->request,true));
                 foreach($this->request as $field)
                 {
                     $PrepareField[':'.$field['name']] = $field['value'];
@@ -127,7 +129,7 @@ class ReportGenerator
             }
             else
             {
-                throw new Exception('Error: Not SQL Statement file was found or is readable.');
+                throw new Exception('Error: Not SQL Statement file was found or readable.');
             }
         }
         catch(Exception $Error)
@@ -158,11 +160,11 @@ switch($rg->format)
         require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
         $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
-        $html2pdf = new HTML2PDF('P','A4','en');
+        $html2pdf = new HTML2PDF('P', 'A4', 'en');
         $html2pdf->pdf->SetAuthor('GaiaEHR');
         $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
         $PDFDocument = base64_encode($html2pdf->Output('exemple.pdf', "S"));
-        echo '<object data="data:application/pdf;base64,'.$PDFDocument.'" type="application/pdf" width="100%" height="100%"></object>';
+        echo '<object data="data:application/pdf;base64,' . $PDFDocument . '" type="application/pdf" width="100%" height="100%"></object>';
         break;
 }
 

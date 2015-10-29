@@ -87,11 +87,11 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             type: 'string'
         },
         {
-            name: 'filter',
+            name: 'name',
             type: 'string'
         },
         {
-            name: 'display_filter',
+            name: 'display_name',
             type: 'string'
         },
         {
@@ -187,12 +187,12 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
         {
             text: _('filter'),
             sortable: false,
-            dataIndex: 'filter',
+            dataIndex: 'name',
             hideable: false,
             width: 200,
             editor: {
                 xtype: 'combo',
-                name: 'filter',
+                name: 'name',
                 store: filtersStore,
                 displayField: 'name',
                 valueField: 'value',

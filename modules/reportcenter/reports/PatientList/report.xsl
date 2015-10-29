@@ -9,11 +9,11 @@
                 <div style="padding: 5px">
                     <h1>170.314(G)(2) Automated Measure Calculation</h1>
                     <p>
-                        <span class="filter">Provider Name: </span><xsl:value-of select="records/filters/provider_name"/><br/>
-                        <span class="filter">Begin Date: </span><xsl:value-of select="records/filters/begin_date"/><br/>
-                        <span class="filter">End Date: </span><xsl:value-of select="records/filters/end_date"/><br/>
+                        <span class="filter"><strong>Provider Name:</strong> </span><xsl:value-of select="records/filters/provider_name"/><br/>
+                        <span class="filter"><strong>Begin Date:</strong> </span><xsl:value-of select="records/filters/begin_date"/><br/>
+                        <span class="filter"><strong>End Date:</strong> </span><xsl:value-of select="records/filters/end_date"/><br/>
                     </p>
-                    <table class="report" width="100%" cellspacing="0" cellpadding="1">
+                    <table class="report" width="100%">
                         <tr>
                             <th class="report" style="text-align: left;">Description</th>
                             <th class="report">Denominator</th>

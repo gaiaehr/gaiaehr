@@ -197,18 +197,21 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             records = store.getRange(),
             parameters = {};
 
-        //this.getReportWindow().getEl().mask(_('loading'));
+        this.getReportWindow().getEl().mask(_('loading'));
 
         // Create some extra parameter to send to the server.
         parameters.reportDir = this.getReportFilterPanel().getItemId();
         parameters.format = format;
         parameters.grid = true;
 
-        // Evaluates every field in the form, extrat the submitFormat and other
+        // Evaluates every field in the form, extract the submitFormat and other
         // things.
         for(var Index in records) {
-            parameters[Index] = {};
-            parameters[Index] = records[Index].getData(true);
+            parameters[Index] = {
+                'name': records[Index].getData(true)['name'],
+                'operator': records[Index].getData(true)['operator'],
+                'value': records[Index].getData(true)['value']
+            };
         }
 
         // Send the request to display the report

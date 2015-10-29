@@ -105,12 +105,28 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onCreatePDF: function(){
-        this.generateDocument('pdf');
+        var panelClass = Ext.getClass(this.getReportFilterPanel()).superclass.self.getName();
+        switch(panelClass){
+            case 'Ext.form.Panel':
+                this.generateDocument('pdf');
+                break;
+            case 'Ext.grid.Panel':
+                this.generateFromGrid('pdf');
+                break;
+        }
         this.getPrintButton().disable();
     },
 
     onCreateHTML: function(){
-        this.generateDocument('html');
+        var panelClass = Ext.getClass(this.getReportFilterPanel()).superclass.self.getName();
+        switch(panelClass){
+            case 'Ext.form.Panel':
+                this.generateDocument('html');
+                break;
+            case 'Ext.grid.Panel':
+                this.generateFromGrid('html');
+                break;
+        }
         this.getPrintButton().enable();
     },
 
@@ -132,6 +148,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         // Create some extra parameter to send to the server.
         parameters.reportDir = this.getReportFilterPanel().getItemId();
         parameters.format = format;
+        parameters.grid = false;
 
         // Evaluates every field in the form, extrat the submitFormat and other
         // things.
@@ -168,6 +185,43 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         });
 
+    },
+
+    /**
+     * If the form is a grid containing [filter, operator, & values]
+     * process the grid as a form.
+     * @param grid
+     */
+    generateFromGrid: function(format){
+        var store = this.getReportFilterPanel().getStore(),
+            records = store.getRange(),
+            parameters = {};
+
+        //this.getReportWindow().getEl().mask(_('loading'));
+
+        // Create some extra parameter to send to the server.
+        parameters.reportDir = this.getReportFilterPanel().getItemId();
+        parameters.format = format;
+        parameters.grid = true;
+
+        // Evaluates every field in the form, extrat the submitFormat and other
+        // things.
+        for(var Index in records) {
+            parameters[Index] = records[Index].getData(true);
+        }
+
+        // Send the request to display the report
+        Ext.Ajax.request({
+            url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
+            params: {
+                params: JSON.stringify(parameters)
+            },
+            success: function(response){
+                var XSLDocument = response.responseText;
+                me.getReportRenderPanel().update(XSLDocument, true);
+                me.getReportWindow().getEl().unmask();
+            }
+        });
     }
 
 });

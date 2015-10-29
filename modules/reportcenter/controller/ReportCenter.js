@@ -215,15 +215,19 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         }
 
         // Send the request to display the report
-        Ext.Ajax.request({
+        Ext.Ajax.request( {
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
                 params: JSON.stringify(parameters)
             },
-            success: function(response){
+            success: function(response) {
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument, true);
                 me.getReportWindow().getEl().unmask();
+            },
+            failure: function(response, opts) {
+                me.getReportWindow().getEl().unmask();
+                Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
             }
         });
     }

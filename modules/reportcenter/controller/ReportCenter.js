@@ -78,7 +78,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
-        this.getReportWindow().remove('reportFilter');
+        this.getReportWindow().remove(Ext.ComponentQuery.query('reportFilter')[0] , true);
         Ext.require('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm');
         this.getReportWindow().insert(
             0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
@@ -98,6 +98,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportRenderPanel().update('', true);
     },
 
+    /**
+     * Print report event, this procedure will print the report in the printer.
+     * TODO: Finish me.
+     */
     onPrint: function(){
         var iframe = Ext.ComponentQuery.query('#reportWindow #reportRender')[0].el;
         say(iframe);
@@ -182,6 +186,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument, true);
                 me.getReportWindow().getEl().unmask();
+            },
+            failure: function(response, opts) {
+                me.getReportWindow().getEl().unmask();
+                Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
             }
         });
 
@@ -197,29 +205,37 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             records = store.getRange(),
             parameters = {};
 
-        //this.getReportWindow().getEl().mask(_('loading'));
+        this.getReportWindow().getEl().mask(_('loading'));
 
         // Create some extra parameter to send to the server.
         parameters.reportDir = this.getReportFilterPanel().getItemId();
         parameters.format = format;
         parameters.grid = true;
 
-        // Evaluates every field in the form, extrat the submitFormat and other
+        // Evaluates every field in the form, extract the submitFormat and other
         // things.
         for(var Index in records) {
-            parameters[Index] = records[Index].getData(true);
+            parameters[Index] = {
+                'name': records[Index].getData(true)['name'],
+                'operator': records[Index].getData(true)['operator'],
+                'value': records[Index].getData(true)['value']
+            };
         }
 
         // Send the request to display the report
-        Ext.Ajax.request({
+        Ext.Ajax.request( {
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
                 params: JSON.stringify(parameters)
             },
-            success: function(response){
+            success: function(response) {
                 var XSLDocument = response.responseText;
                 me.getReportRenderPanel().update(XSLDocument, true);
                 me.getReportWindow().getEl().unmask();
+            },
+            failure: function(response, opts) {
+                me.getReportWindow().getEl().unmask();
+                Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
             }
         });
     }

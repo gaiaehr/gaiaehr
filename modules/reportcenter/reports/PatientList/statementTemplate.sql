@@ -1,13 +1,15 @@
 -- Set all the variables
 -- SET @Provider = 6;
 SET @Provider = null;
--- SET @StartDate = '2015-01-01';
--- SET @EndDate = '2015-12-31';
+SET @StartDate = '2016-01-01';
+-- SET @StartDate = null;
+-- SET @EndDate = '2010-12-31';
+SET @EndDate = null;
 -- SET @ProblemCode = '195967001';
 SET @ProblemCode = null;
 
 -- Display all the patient fields
-SELECT patient.* 
+SELECT service_date, patient.* 
 FROM patient
 
 -- Join the Active Problems
@@ -19,11 +21,19 @@ SELECT distinct(pid) AS pid, code
 
 -- Join the Encounters
 LEFT JOIN (
-SELECT distinct(pid) AS pid, provider_uid
+SELECT pid, provider_uid, service_date
 	FROM encounters
 ) encounters ON patient.pid = encounters.pid
+-- Filter by Encounter Service Date @StartDate Only
+AND CASE
+	WHEN (@StartDate IS NOT NULL AND @EndDate IS NULL)
+	THEN (encounters.service_date BETWEEN @StartDate AND NOW())
+    ELSE 1=1
+END
 
-
+--
+-- WHERE CLAUSE
+--
 -- Filter by Patient Active Problems
 WHERE CASE 
 	WHEN @ProblemCode IS NOT NULL 

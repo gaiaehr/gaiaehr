@@ -299,6 +299,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 listeners:{
                     click: function(e, eOpts){
                         rowEditor.cancelEdit();
+                        filtersCollectedStore.commitChanges();
                         filtersCollectedStore.add({
                             "filter":"",
                             "operator":"",
@@ -318,6 +319,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                             Selection = Grid.getSelectionModel().getSelection();
                         rowEditor.cancelEdit();
                         filtersCollectedStore.remove(Selection);
+                        filtersCollectedStore.commitChanges();
                     }
                 }
             }

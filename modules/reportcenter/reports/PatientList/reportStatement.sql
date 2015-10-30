@@ -1,17 +1,13 @@
 -- Set all the variables
--- SET @Provider = 6;
-SET @Provider = null;
--- SET @StartDate = '2015-10-01';
-SET @StartDate = null;
--- SET @EndDate = '2010-12-31';
-SET @EndDate = null;
--- SET @ProblemCode = '195967001';
-SET @ProblemCode = null;
-SET @MedicationCode = null;
--- SET @MedicationCode = '731167';
+SET @Provider = :provider_id;
+SET @StartDate = :begin_date;
+SET @EndDate = :end_date;
+SET @ProblemCode = :problem_code;
+SET @MedicationCode = :medication_code;
+SET @MedicationAllergyCode = :allergy_code;
 
 -- Display all the patient fields
-SELECT patient.* 
+SELECT patient.*
 FROM patient
 
 --
@@ -27,6 +23,7 @@ SELECT distinct(pid) AS pid, code as problem_code
 		THEN patient_active_problems.code = @ProblemCode 
 		ELSE 1=1 
 	END
+    LIMIT 1
 ) patient_active_problems ON patient.pid = patient_active_problems.pid
 
 -- Join the Encounters
@@ -55,6 +52,7 @@ SELECT distinct(pid) as pid, provider_uid, service_date
 		THEN encounters.provider_uid = @Provider 
 		ELSE 1=1 
 	END
+    LIMIT 1
 ) encounters ON patient.pid = encounters.pid
 
 -- Join Medications
@@ -66,13 +64,27 @@ SELECT distinct(pid) AS pid, CODE as medication_code
 		WHEN @MedicationCode IS NOT NULL
 		THEN patient_medications.code = @MedicationCode
     ELSE 1=1
-END
+	END
+    LIMIT 1
 ) patient_medications ON patient.pid = patient_medications.pid
+
+-- Join Medication Allergies
+LEFT JOIN (
+SELECT distinct(pid) AS pid, allergy_code
+	FROM patient_allergies
+    -- Filter by Medication Allergy
+    WHERE CASE
+		WHEN @MedicationAllergyCode IS NOT NULL
+		THEN patient_allergies.allergy_code = @MedicationAllergyCode
+    ELSE 1=1
+	END
+    LIMIT 1
+) patient_allergies ON patient_allergies.pid = patient.pid
+
 
 --
 -- WHERE CLAUSE
 --
-
 -- Filter by Medication
 WHERE CASE
 	WHEN @MedicationCode IS NOT NULL
@@ -109,4 +121,11 @@ AND CASE
 	WHEN @ProblemCode IS NOT NULL 
 	THEN patient_active_problems.problem_code = @ProblemCode 
 	ELSE 1=1 
+END
+
+-- Filter by Medication Allergy
+AND CASE
+	WHEN @MedicationAllergyCode IS NOT NULL
+	THEN patient_allergies.allergy_code = @MedicationAllergyCode
+	ELSE 1=1
 END

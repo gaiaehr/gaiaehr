@@ -185,12 +185,19 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             dataIndex: 'name',
             hideable: false,
             width: 200,
+            renderer: function(value){
+                //var record = filtersStore.getAt(
+                //    filtersStore.find('value', value)
+                //);
+                return value; // record.data.name;
+            },
             editor: {
                 xtype: 'combo',
                 name: 'name',
                 store: filtersStore,
                 displayField: 'name',
                 valueField: 'value',
+                editable: false,
                 listeners:{
                     select: function(records, eOpts ){
                         var Grid = Ext.ComponentQuery.query('reportFilter')[0],
@@ -267,12 +274,19 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             dataIndex: 'operator',
             hideable: false,
             width: 120,
+            renderer: function(value) {
+                return operatorsStore.getAt(
+                    operatorsStore.findExact('operator', value)
+                ).get('operatorName');
+                return value;
+            },
             editor: {
                 xtype: 'combo',
                 name: 'operator',
                 store: operatorsStore,
                 displayField: 'operatorName',
-                valueField: 'operator'
+                valueField: 'operator',
+                editable: false
             }
         },
         {
@@ -280,7 +294,13 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             sortable: false,
             hideable: false,
             dataIndex: 'value',
-            flex: 1
+            flex: 1,
+            renderer: function(value){
+                //var record = operatorsStore.getAt(
+                //    operatorsStore.find('operator', value)
+                //);
+                return value;
+            }
         }
     ],
     dockedItems: [{
@@ -315,7 +335,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         rowEditor.cancelEdit();
                         filtersCollectedStore.remove(Selection);
                         filtersCollectedStore.commitChanges();
-
                         // Add the filter back to the filtersStore
                         switch(Selection[0].data.name){
                             case 'provider':

@@ -1,5 +1,5 @@
 {
-  "title":"Patient List Report",
+  "title":"170.314 (a)(14) Patient list",
   "name":"patientListReport",
   "reportDir":"PatientList",
   "version":"0.1",
@@ -7,7 +7,7 @@
   "height": 800,
   "filterHeight": 250,
   "author": "TRA NextGen, Inc (c) 2015",
-  "description":"Report for Patient list with dynamic filters.",
+  "description":"Enable a user to electronically and dynamically select, sort, access, and create patient lists by: date and time; and based on each one and at least one combination of the following data: (i) Problems; (ii) Medications; (iii) Medication allergies; (iv) Demographics (v) Laboratory tests and values/results; and (vi) Ambulatory setting only. Patient communication preferences.",
   "dir":"reportcenter/reports/PatientList",
   "category":"ONC Meaningful Use"
 }

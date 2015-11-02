@@ -7,7 +7,7 @@
             </HEAD>
             <body>
                 <div style="padding: 5px">
-                    <h1>170.314(G)(2) Patient List</h1>
+                    <h1>170.314 (a)(14) Patient list</h1>
                     <p>
                         <span class="filter"><strong>Provider Name:</strong> </span><xsl:value-of select="records/filters/provider_name"/><br/>
                         <span class="filter"><strong>Begin Date:</strong> </span><xsl:value-of select="records/filters/begin_date"/><br/>

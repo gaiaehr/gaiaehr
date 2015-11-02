@@ -83,23 +83,11 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             type: 'string'
         },
         {
-            name: 'display_operator',
-            type: 'string'
-        },
-        {
             name: 'name',
             type: 'string'
         },
         {
-            name: 'display_name',
-            type: 'string'
-        },
-        {
             name: 'value',
-            type: 'string'
-        },
-        {
-            name: 'display_value',
             type: 'string'
         }
     ],
@@ -108,6 +96,13 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
         type: 'memory',
         reader: {
             type: 'json'
+        }
+    },
+    listeners:{
+        update: function(store, record, operation, modifiedFieldNames, eOpts){
+            filtersStore.removeAt(
+                filtersStore.find('value', record.data.name)
+            );
         }
     }
 });
@@ -320,6 +315,52 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         rowEditor.cancelEdit();
                         filtersCollectedStore.remove(Selection);
                         filtersCollectedStore.commitChanges();
+
+                        // Add the filter back to the filtersStore
+                        switch(Selection[0].data.name){
+                            case 'provider':
+                                filtersStore.add({
+                                    "id": 0,
+                                    "value": 'provider',
+                                    "name": 'Provider'
+                                });
+                                break;
+                            case 'allergy':
+                                filtersStore.add({
+                                    "id": 1,
+                                    "value": 'allergy',
+                                    "name": 'Allergies'
+                                });
+                                break;
+                            case 'problem':
+                                filtersStore.add({
+                                    "id": 2,
+                                    "value": 'problem',
+                                    "name": 'Problems'
+                                });
+                                break;
+                            case 'medication':
+                                filtersStore.add({
+                                    "id": 3,
+                                    "value": 'medication',
+                                    "name": 'Medications'
+                                });
+                                break;
+                            case 'encounter_begin_date':
+                                filtersStore.add({
+                                    "id": 4,
+                                    "value": 'encounter_begin_date',
+                                    "name": 'Encounter Begin Date'
+                                });
+                                break;
+                            case 'encounter_end_date':
+                                filtersStore.add({
+                                    "id": 5,
+                                    "value": 'encounter_end_date',
+                                    "name": 'Encounter End Date'
+                                });
+                                break;
+                        }
                     }
                 }
             }

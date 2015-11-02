@@ -13,7 +13,7 @@ SET @MedicationAllergyCode = null;
 -- SET @MedicationAllergyCode = '1191';
 
 -- Display all the patient fields
-SELECT problem_code, allergy_code, patient.* 
+SELECT patient.* 
 FROM patient
 
 --

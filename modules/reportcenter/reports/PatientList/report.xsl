@@ -15,17 +15,17 @@
                     </p>
                     <table class="report" width="100%">
                         <tr>
-                            <th class="report" style="text-align: left;">Description</th>
-                            <th class="report">Denominator</th>
-                            <th class="report">Numerator</th>
-                            <th class="report">Percent</th>
+                            <th class="report" style="text-align: left;">Name</th>
+                            <th class="report">Gender</th>
+                            <th class="report">DOB</th>
+                            <th class="report">Marital Status</th>
                         </tr>
                         <xsl:for-each select="records/record">
                             <tr>
-                                <td class="report"><xsl:value-of select="DESCRIPTION"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="DENOM"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="NUME"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="PERCENT"/>%</td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="title"/> <xsl:value-of select="fname"/> <xsl:value-of select="mname"/> <xsl:value-of select="lname"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="sex"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="DOB"/></td>
+                                <td class="report"><xsl:value-of select="marital_status"/></td>
                             </tr>
                         </xsl:for-each>
                     </table>

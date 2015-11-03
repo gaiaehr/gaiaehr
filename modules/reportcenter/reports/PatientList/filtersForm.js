@@ -98,8 +98,8 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             type: 'json'
         }
     },
-    listeners:{
-        update: function(store, record, operation, modifiedFieldNames, eOpts){
+    listeners: {
+        update: function (store, record, operation, modifiedFieldNames, eOpts) {
             filtersStore.removeAt(
                 filtersStore.find('value', record.data.name)
             );
@@ -399,48 +399,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 }
             }
         ]
-    }],
-
-    filterData: function(filter){
-        var data = [{
-            "id": 0,
-            "value": 'provider',
-            "name": 'Provider'
-        },
-        {
-            "id": 1,
-            "value": 'allergy',
-            "name": 'Allergies'
-        },
-        {
-            "id": 2,
-            "value": 'problem',
-            "name": 'Problems'
-        },
-        {
-            "id": 3,
-            "value": 'medication',
-            "name": 'Medications'
-        },
-        {
-            "id": 4,
-            "value": 'encounter_begin_date',
-            "name": 'Encounter Begin Date'
-        },
-        {
-            "id": 5,
-            "value": 'encounter_end_date',
-            "name": 'Encounter End Date'
-        }];
-
-        if(filter)
-        {
-            return data.filter(function(o){return o.value == value;});
-        }
-        else
-        {
-            return data;
-        }
-    }
+    }]
 
 });

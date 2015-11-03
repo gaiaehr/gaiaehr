@@ -111,7 +111,7 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 if($this->fromGrid)
                 {
-
+                    // ...
                 }
                 else
                 {
@@ -126,7 +126,7 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 if($this->fromGrid)
                 {
-
+                    // ...
                 }
                 else
                 {

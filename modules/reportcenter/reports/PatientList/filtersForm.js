@@ -186,10 +186,11 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             hideable: false,
             width: 200,
             renderer: function(value){
-                //var record = filtersStore.getAt(
-                //    filtersStore.find('value', value)
-                //);
-                return value; // record.data.name;
+                try {
+                    return filtersStore.findRecord('value', value).get('name');
+                } catch(err) {
+                    return value;
+                }
             },
             editor: {
                 xtype: 'combo',
@@ -275,10 +276,11 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             hideable: false,
             width: 120,
             renderer: function(value) {
-                return operatorsStore.getAt(
-                    operatorsStore.findExact('operator', value)
-                ).get('operatorName');
-                return value;
+                try {
+                    return operatorsStore.findRecord('operator', value).get('operatorName');
+                } catch(err) {
+                    return value;
+                }
             },
             editor: {
                 xtype: 'combo',

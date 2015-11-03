@@ -17,12 +17,12 @@
  */
 
 Ext.define('Modules.reportcenter.controller.ReportCenter', {
-	extend: 'Ext.app.Controller',
-	refs: [
-		{
-			ref: 'ReportCenterPanel',
-			selector: '#ReportCenterPanel'
-		},
+    extend: 'Ext.app.Controller',
+    refs: [
+        {
+            ref: 'ReportCenterPanel',
+            selector: '#ReportCenterPanel'
+        },
         {
             ref: 'ReportCenterGrid',
             selector: '#reportCenterGrid'
@@ -47,11 +47,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             ref: 'PrintButton',
             selector: '#reportWindow #print'
         }
-	],
+    ],
 
     init: function(){
         var me = this;
-
         me.control({
             '#reportCenterGrid': {
                 itemdblclick: me.onReportCenterGridRowDblClick

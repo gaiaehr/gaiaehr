@@ -98,8 +98,8 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             type: 'json'
         }
     },
-    listeners:{
-        update: function(store, record, operation, modifiedFieldNames, eOpts){
+    listeners: {
+        update: function (store, record, operation, modifiedFieldNames, eOpts) {
             filtersStore.removeAt(
                 filtersStore.find('value', record.data.name)
             );
@@ -186,10 +186,24 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             hideable: false,
             width: 200,
             renderer: function(value){
-                //var record = filtersStore.getAt(
-                //    filtersStore.find('value', value)
-                //);
-                return value; // record.data.name;
+                try {
+                    switch(value){
+                        case 'provider':
+                            return 'Provider';
+                        case 'allergy':
+                            return 'Allergies';
+                        case 'problem':
+                            return 'Problems';
+                        case 'medication':
+                            return 'Medications';
+                        case 'encounter_begin_date':
+                            return 'Encounter Begin Date';
+                        case 'encounter_end_date':
+                            return 'Encounter End Date';
+                    }
+                } catch(err) {
+                    return value;
+                }
             },
             editor: {
                 xtype: 'combo',
@@ -275,10 +289,11 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             hideable: false,
             width: 120,
             renderer: function(value) {
-                return operatorsStore.getAt(
-                    operatorsStore.findExact('operator', value)
-                ).get('operatorName');
-                return value;
+                try {
+                    return operatorsStore.findRecord('operator', value).get('operatorName');
+                } catch(err) {
+                    return value;
+                }
             },
             editor: {
                 xtype: 'combo',

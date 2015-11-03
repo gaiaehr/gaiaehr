@@ -805,26 +805,26 @@ li .Deceased {
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 7px;
+    width: 10px;
+    height: 10px;
     margin: 0;
 }
 
 ::-webkit-scrollbar-track-piece {
     background-color: #fff;
-    -webkit-border-radius: 4px;
+    -webkit-border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:vertical {
     height: 50px;
     background-color: #ccc;
-    -webkit-border-radius: 3px;
+    -webkit-border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:horizontal {
     height: 50px;
     background-color: #ccc;
-    -webkit-border-radius: 3px;
+    -webkit-border-radius: 5px;
 }
 
 .timer {

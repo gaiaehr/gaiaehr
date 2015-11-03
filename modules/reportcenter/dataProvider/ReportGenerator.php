@@ -49,7 +49,8 @@ class ReportGenerator
     {
         try
         {
-            if(!isset($REQUEST)) return;
+            if(!isset($REQUEST)) throw new Exception('No request was sent by the client.');
+            if(isset($_REQUEST['site'])) $this->site = $_REQUEST['site'];
             $this->request = json_decode($REQUEST['params'], true);
             $this->reportDir = $this->request['reportDir'];
             $this->format = $this->request['format'];
@@ -57,7 +58,6 @@ class ReportGenerator
             unset($this->request['reportDir']);
             unset($this->request['format']);
             unset($this->request['grid']);
-            error_log(print_r($this->request, true));
         }
         catch(Exception $Error)
         {
@@ -91,20 +91,17 @@ class ReportGenerator
     {
         try
         {
-            $this->conn = Matcha::getConn();
             $filePointer = "../reports/$this->reportDir/reportStatement.sql";
-
-            // Important connection parameter, this will allow multiple
-            // prepare tags with the same name.
-            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-
             if(file_exists($filePointer) && is_readable($filePointer))
             {
+                // Important connection parameter, this will allow multiple
+                // prepare tags with the same name.
+                $this->conn = Matcha::getConn();
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+
                 // Get the SQL content
                 $fileContent = file_get_contents($filePointer);
                 $RunSQL = $this->conn->prepare($fileContent);
-
-                error_log(print_r($this->request,true));
 
                 // Copy all the request variables into the Prepared Values,
                 // also check if it came from the grid form and normal form.
@@ -126,7 +123,13 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 if($this->fromGrid)
                 {
-                    // ...
+                    foreach ($this->request as $field)
+                    {
+                        $ReturnFilter[$field['name']] = array(
+                            'value' => $field['value'],
+                            'operator' => $field['operator']
+                        );
+                    }
                 }
                 else
                 {
@@ -138,7 +141,7 @@ class ReportGenerator
                 $RunSQL->execute($PrepareField);
                 $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
-                Array2XML::init('1.0', 'UTF-8', true,$ExtraAttributes);
+                Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(
                     'filters' => $ReturnFilter,
                     'record' => $records

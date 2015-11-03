@@ -179,6 +179,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         Ext.Ajax.request({
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
+                site: app.user.site,
                 params: JSON.stringify(parameters)
             },
             success: function(response){
@@ -225,6 +226,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         Ext.Ajax.request( {
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
+                site: app.user.site,
                 params: JSON.stringify(parameters)
             },
             success: function(response) {

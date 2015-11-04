@@ -169,6 +169,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
         'App.ux.LiveSnomedProblemSearch'
     ],
     xtype: 'reportFilter',
+    itemId: 'PatientList',
     store: filtersCollectedStore,
     region: 'north',
     title: _('filters'),

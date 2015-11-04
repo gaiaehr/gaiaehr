@@ -50,14 +50,11 @@ class ReportGenerator
         try
         {
             if(!isset($REQUEST)) throw new Exception('No request was sent by the client.');
-            if(isset($_REQUEST['site'])) $this->site = $_REQUEST['site'];
+            if(isset($REQUEST['site'])) $this->site = $REQUEST['site'];
             $this->request = json_decode($REQUEST['params'], true);
-            $this->reportDir = $this->request['reportDir'];
-            $this->format = $this->request['format'];
-            $this->fromGrid = $this->request['grid'];
-            unset($this->request['reportDir']);
-            unset($this->request['format']);
-            unset($this->request['grid']);
+            $this->reportDir = $REQUEST['reportDir'];
+            $this->format = $REQUEST['format'];
+            $this->fromGrid = $REQUEST['grid'];
         }
         catch(Exception $Error)
         {
@@ -105,41 +102,24 @@ class ReportGenerator
                 // Copy all the request variables into the Prepared Values,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
-                if($this->fromGrid)
+                foreach($this->request as $field)
                 {
-                    foreach($this->request as $field)
-                    {
-                        $PrepareField[':' . $field['name']] = $field['value'];
-                    }
-                }
-                else
-                {
-                    foreach($this->request as $field)
-                    {
-                        $PrepareField[':'.$field['name']] = $field['value'];
-                    }
+                    $PrepareField[':' . $field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $PrepareField[':' . $field['name']]['value'] = $field['value'];
                 }
 
                 // Copy all the request filter variables to the XML,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
-                if($this->fromGrid)
+                foreach ($this->request as $field)
                 {
-                    foreach ($this->request as $field)
-                    {
-                        $ReturnFilter[$field['name']] = [
-                            'value' => $field['value'],
-                            'operator' => $field['operator']
-                        ];
-                    }
-                }
-                else
-                {
-                    foreach ($this->request as $field) {
-                        $ReturnFilter[$field['name']] = $field['value'];
-                    }
+                    $ReturnFilter[$field['name']] = [
+                        'operator' => (isset($field['operator']) ? $field['operator'] : '='),
+                        'value' => $field['value']
+                    ];
                 }
 
+                error_log(print_r($PrepareField,true));
                  // Run all the SQL Statement in the file, with run all queries we
                  // mean all the SQL divided by `;`
                 $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
@@ -187,19 +167,20 @@ class ReportGenerator
         foreach($variables as $key => $variable)
         {
             $prepareKey = trim($key);
-            if(is_numeric($variable))
+            if(is_numeric($variable['value']))
             {
-                $prepareVariable = $variable;
+                $prepareVariable = $variable['value'];
             }
-            elseif($variable == null)
+            elseif($variable['value'] == null)
             {
                 $prepareVariable = "null";
             }
             else
             {
-                $prepareVariable = "'{$variable}'";
+                $prepareVariable = "'{$variable['value']}'";
             }
             $sqlStatement = str_ireplace($prepareKey, $prepareVariable, $sqlStatement);
+            $sqlStatement = str_ireplace($key.'_operator', $variable['operator'], $sqlStatement);
         }
         return $sqlStatement;
     }

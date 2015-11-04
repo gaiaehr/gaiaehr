@@ -1,10 +1,17 @@
 -- Set all the variables
-SET @Provider = :provider_id;
-SET @StartDate = :begin_date;
-SET @EndDate = :end_date;
-SET @ProblemCode = :problem_code;
-SET @MedicationCode = :medication_code;
-SET @MedicationAllergyCode = :allergy_code;
+-- SET @Provider = :provider_id;
+-- SET @StartDate = :begin_date;
+-- SET @EndDate = :end_date;
+-- SET @ProblemCode = :problem_code;
+-- SET @MedicationCode = :medication_code;
+-- SET @MedicationAllergyCode = :allergy_code;
+
+SET @Provider = null;
+SET @StartDate = null;
+SET @EndDate = null;
+SET @ProblemCode = null;
+SET @MedicationCode = null;
+SET @MedicationAllergyCode = null;
 
 -- Display all the patient fields
 SELECT patient.*

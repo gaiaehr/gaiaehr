@@ -125,10 +125,10 @@ class ReportGenerator
                 {
                     foreach ($this->request as $field)
                     {
-                        $ReturnFilter[$field['name']] = array(
+                        $ReturnFilter[$field['name']] = [
                             'value' => $field['value'],
                             'operator' => $field['operator']
-                        );
+                        ];
                     }
                 }
                 else

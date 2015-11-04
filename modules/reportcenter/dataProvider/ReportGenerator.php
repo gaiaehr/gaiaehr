@@ -146,7 +146,12 @@ class ReportGenerator
                 $Queries = explode(';', $PreparedSQL);
                 foreach($Queries as $Query)
                 {
-                    if(strlen(trim($Query)) > 0) $records[] = $this->conn->query($Query)->fetchAll(PDO::FETCH_ASSOC);
+                    if(strlen(trim($Query)) > 0)
+                    {
+                        $SQL = $this->conn->prepare($Query);
+                        $SQL->execute();
+                        $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                    }
                 }
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
@@ -168,6 +173,15 @@ class ReportGenerator
         }
     }
 
+    /**
+     * Process the SQL statement to put in place the variables [:var] and put the real value
+     * also it smart enough to write single quote when it is alpha-numeric and no quotes when
+     * is number.
+     *
+     * @param string $sqlStatement
+     * @param array $variables
+     * @return mixed|string
+     */
     function PostPrepare($sqlStatement = '', $variables = array())
     {
         foreach($variables as $key => $variable)

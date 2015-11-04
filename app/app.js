@@ -45538,9 +45538,8 @@ Ext.define('App.view.patient.Documents', {
 							if(record.get('entered_in_error')){
 								meta.tdCls += ' entered-in-error '
 							}
-							return v;
+							return v != null ? Ext.Date.format(v, g('date_display_format')) : '-';
 						}
-
 					},
 					{
 						header: _('title'),

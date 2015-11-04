@@ -99,7 +99,7 @@ class ReportGenerator
                 $this->conn = Matcha::getConn();
                 $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-                // Get the SQL content
+                // Get the report SQL statement content
                 $fileContent = file_get_contents($filePointer);
 
                 // Copy all the request variables into the Prepared Values,

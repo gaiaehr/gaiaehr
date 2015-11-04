@@ -97,18 +97,20 @@ class ReportGenerator
                 // Important connection parameter, this will allow multiple
                 // prepare tags with the same name.
                 $this->conn = Matcha::getConn();
-                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
                 // Get the SQL content
                 $fileContent = file_get_contents($filePointer);
-                $RunSQL = $this->conn->prepare($fileContent);
 
                 // Copy all the request variables into the Prepared Values,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
                 if($this->fromGrid)
                 {
-                    // ...
+                    foreach($this->request as $field)
+                    {
+                        $PrepareField[':' . $field['name']] = $field['value'];
+                    }
                 }
                 else
                 {
@@ -138,13 +140,19 @@ class ReportGenerator
                     }
                 }
 
-                $RunSQL->execute($PrepareField);
-                $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
+                 // Run all the SQL Statement in the file, with run all queries we
+                 // mean all the SQL divided by `;`
+                $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
+                $Queries = explode(';', $PreparedSQL);
+                foreach($Queries as $Query)
+                {
+                    if(strlen(trim($Query)) > 0) $records[] = $this->conn->query($Query)->fetchAll(PDO::FETCH_ASSOC);
+                }
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(
                     'filters' => $ReturnFilter,
-                    'record' => $records
+                    'record' => $records[count($records)-1]
                 ));
                 return $xml->saveXML();
             }
@@ -158,6 +166,28 @@ class ReportGenerator
             error_log(print_r($Error,true));
             return $Error;
         }
+    }
+
+    function PostPrepare($sqlStatement = '', $variables = array())
+    {
+        foreach($variables as $key => $variable)
+        {
+            $prepareKey = trim($key);
+            if(is_numeric($variable))
+            {
+                $prepareVariable = $variable;
+            }
+            elseif($variable == null)
+            {
+                $prepareVariable = "null";
+            }
+            else
+            {
+                $prepareVariable = "'{$variable}'";
+            }
+            $sqlStatement = str_ireplace($prepareKey, $prepareVariable, $sqlStatement);
+        }
+        return $sqlStatement;
     }
 }
 

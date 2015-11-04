@@ -1,21 +1,14 @@
 -- Set all the variables
--- SET @Provider = :provider_id;
--- SET @StartDate = :begin_date;
--- SET @EndDate = :end_date;
--- SET @ProblemCode = :problem_code;
--- SET @MedicationCode = :medication_code;
--- SET @MedicationAllergyCode = :allergy_code;
-
-SET @Provider = null;
-SET @StartDate = null;
-SET @EndDate = null;
-SET @ProblemCode = null;
-SET @MedicationCode = null;
-SET @MedicationAllergyCode = null;
+SET @Provider = :provider_id;
+SET @ProviderOperator = :provider_operator;
+SET @StartDate = :begin_date;
+SET @EndDate = :end_date;
+SET @ProblemCode = :problem_code;
+SET @MedicationCode = :medication_code;
+SET @MedicationAllergyCode = :allergy_code;
 
 -- Display all the patient fields
-SELECT patient.*
-FROM patient
+SELECT patient.* FROM patient
 
 --
 -- JOIN CLAUSE
@@ -135,4 +128,4 @@ AND CASE
 	WHEN @MedicationAllergyCode IS NOT NULL
 	THEN patient_allergies.allergy_code = @MedicationAllergyCode
 	ELSE 1=1
-END
+END;

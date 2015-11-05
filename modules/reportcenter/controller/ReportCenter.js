@@ -105,28 +105,12 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     onCreatePDF: function(){
-        var panelClass = Ext.getClass(this.getReportFilterPanel()).superclass.self.getName();
-        switch(panelClass){
-            case 'Ext.form.Panel':
-                this.generateDocument('pdf');
-                break;
-            case 'Ext.grid.Panel':
-                this.generateFromGrid('pdf');
-                break;
-        }
+        this.generateDocument('pdf');
         this.getPrintButton().disable();
     },
 
     onCreateHTML: function(){
-        var panelClass = Ext.getClass(this.getReportFilterPanel()).superclass.self.getName();
-        switch(panelClass){
-            case 'Ext.form.Panel':
-                this.generateDocument('html');
-                break;
-            case 'Ext.grid.Panel':
-                this.generateFromGrid('html');
-                break;
-        }
+        this.generateDocument('html');
         this.getPrintButton().enable();
     },
 
@@ -173,7 +157,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             params: {
                 reportDir: this.getReportFilterPanel().getItemId(),
                 format: format,
-                grid: false,
                 site: app.user.site,
                 params: JSON.stringify(parameters)
             },
@@ -188,51 +171,5 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         });
 
-    },
-
-    /**
-     * If the form is a grid containing [filter, operator, & values]
-     * process the grid as a form.
-     * @param grid
-     */
-    generateFromGrid: function(format, callback){
-        var store = this.getReportFilterPanel().getStore(),
-            records = store.getRange(),
-            parameters = {},
-            me = this;
-
-        this.getReportWindow().getEl().mask(_('loading'));
-
-        // Evaluates every field in the form, extract the
-        // submitFormat and other things.
-        for(var Index in records) {
-            parameters[Index] = {
-                'name': records[Index].getData(true)['name'],
-                'operator': records[Index].getData(true)['operator'],
-                'value': records[Index].getData(true)['value']
-            };
-        }
-
-        // Send the request to display the report
-        Ext.Ajax.request( {
-            url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
-            params: {
-                reportDir: this.getReportFilterPanel().getItemId(),
-                format: format,
-                grid: true,
-                site: app.user.site,
-                params: JSON.stringify(parameters)
-            },
-            success: function(response) {
-                var XSLDocument = response.responseText;
-                me.getReportRenderPanel().update(XSLDocument, true);
-                me.getReportWindow().getEl().unmask();
-            },
-            failure: function(response, opts) {
-                me.getReportWindow().getEl().unmask();
-                Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
-            }
-        });
     }
-
 });

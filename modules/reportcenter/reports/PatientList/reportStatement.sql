@@ -51,7 +51,6 @@ SELECT distinct(pid) as pid, provider_uid, service_date
 		THEN encounters.provider_uid = @Provider
 		ELSE 1=1 
 	END
-    LIMIT 1
 ) encounters ON patient.pid = encounters.pid
 
 -- Join Medications
@@ -127,4 +126,4 @@ AND CASE
 	WHEN @MedicationAllergyCode IS NOT NULL
 	THEN patient_allergies.allergy_code = @MedicationAllergyCode
 	ELSE 1=1
-END;
+END

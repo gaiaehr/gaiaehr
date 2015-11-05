@@ -28,7 +28,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     xtype: 'reportFilter',
     region: 'north',
     title: _('filters'),
-    itemId: 'AutomatedMeasureCalculation',
+    itemId: 'PatientList',
     collapsible: true,
     height: 100,
     border: true,

@@ -111,10 +111,8 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 foreach ($this->request as $field)
                 {
-                    $ReturnFilter[$field['name']] = [
-                        'operator' => (isset($field['operator']) ? $field['operator'] : '='),
-                        'value' => $field['value']
-                    ];
+                    $ReturnFilter[$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $ReturnFilter[$field['name']]['value'] = $field['value'];
                 }
 
                 // Prepare all the variable fields in the SQL Statement
@@ -163,7 +161,6 @@ class ReportGenerator
      */
     function PostPrepare($sqlStatement = '', $variables = array())
     {
-        error_log(print_r($variables,true));
         foreach($variables as $key => $variable)
         {
             $prepareKey = trim($key);
@@ -196,18 +193,19 @@ $rg->setRequest($_REQUEST);
 $date = new DateTime();
 $Stamp = $date->format('Ymd-His');
 
+$xslt = new XSLTProcessor();
+$xslt->registerPHPFunctions();
+
 switch($rg->format)
 {
     case 'html':
         header('Content-Type: application/xslt+xml');
         header('Content-Disposition: inline; filename='.strtolower($rg->reportDir).'-'.$Stamp.'".html"');
-        $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
         break;
     case 'pdf':
         require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
-        $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         $html2pdf = new HTML2PDF('P', 'A4', 'en');
         $html2pdf->pdf->SetAuthor('GaiaEHR');

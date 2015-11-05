@@ -23,7 +23,6 @@ class ReportGenerator
     private $request;
     public $reportDir;
     public $format;
-    public $fromGrid;
     private $conn;
     private $site;
 
@@ -54,7 +53,6 @@ class ReportGenerator
             $this->request = json_decode($REQUEST['params'], true);
             $this->reportDir = $REQUEST['reportDir'];
             $this->format = $REQUEST['format'];
-            $this->fromGrid = $REQUEST['grid'];
         }
         catch(Exception $Error)
         {
@@ -119,11 +117,11 @@ class ReportGenerator
                     ];
                 }
 
-                error_log(print_r($PrepareField,true));
-                 // Run all the SQL Statement in the file, with run all queries we
-                 // mean all the SQL divided by `;`
+                // Prepare all the variable fields in the SQL Statement
                 $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
                 $Queries = explode(';', $PreparedSQL);
+
+                // Run all the SQL Statement separated by `;` in the file
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)
@@ -133,6 +131,7 @@ class ReportGenerator
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }
                 }
+
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(
@@ -180,7 +179,8 @@ class ReportGenerator
                 $prepareVariable = "'{$variable['value']}'";
             }
             $sqlStatement = str_ireplace($prepareKey, $prepareVariable, $sqlStatement);
-            $sqlStatement = str_ireplace($key.'_operator', $variable['operator'], $sqlStatement);
+            $sqlStatement = str_ireplace($prepareKey.'_operator', $variable['operator'], $sqlStatement);
+            error_log(print_r($prepareKey.'_operator',true));
         }
         return $sqlStatement;
     }

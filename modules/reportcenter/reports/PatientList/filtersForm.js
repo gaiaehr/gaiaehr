@@ -103,9 +103,73 @@ var filtersCollectedStore = Ext.create('Ext.data.Store', {
             filtersStore.removeAt(
                 filtersStore.find('value', record.data.name)
             );
+        },
+        beforeprefetch: function(store, operation, eOpts) {
+            say(store);
+            //var nulledData = [{
+            //        "filter":"provider",
+            //        "operator":"=",
+            //        "value":"null"
+            //    },
+            //    {
+            //        "filter":"allergy",
+            //        "operator":"=",
+            //        "value":"null"
+            //    },
+            //    {
+            //        "filter":"problem",
+            //        "operator":"=",
+            //        "value":"null"
+            //    },
+            //    {
+            //        "filter":"medication",
+            //        "operator":"=",
+            //        "value":"null"
+            //    },
+            //    {
+            //        "filter":"encounter_begin_date",
+            //        "operator":"=",
+            //        "value":"null"
+            //    },
+            //    {
+            //        "filter":"encounter_end_date",
+            //        "operator":"=",
+            //        "value":"null"
+            //    }
+            //];
+            //if(filtersCollectedStore.findRecord('name', 'provider'))
+            //{
+            //    say(filtersCollectedStore);
+            //    deleteProperty(nulledData, 'provider');
+            //}
+            //if(filtersCollectedStore.findRecord('name', 'allergy'))
+            //    deleteProperty(nulledData, 'allergy');
+            //if(filtersCollectedStore.findRecord('name', 'problem'))
+            //    deleteProperty(nulledData, 'problem');
+            //if(filtersCollectedStore.findRecord('name', 'medication'))
+            //    deleteProperty(nulledData, 'medication');
+            //if(filtersCollectedStore.findRecord('name', 'encounter_begin_date'))
+            //    deleteProperty(nulledData, 'encounter_begin_date');
+            //if(filtersCollectedStore.findRecord('name', 'encounter_end_date'))
+            //    deleteProperty(nulledData, 'encounter_end_date');
+            //
+            //filtersCollectedStore.add(nulledData);
+            return true;
         }
     }
 });
+
+/**
+ * Delete properties from object by looping and comparing values
+ * @param obj
+ * @param value
+ */
+function deleteProperty( obj, value ){
+    for( var key in obj ) {
+        if( typeof obj[key] === 'object' ) deleteProperty( obj[key] );
+        if( obj[key] === value ) delete obj[key];
+    }
+}
 
 /**
  * Store of operators for the filter

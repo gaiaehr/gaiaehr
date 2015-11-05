@@ -1,7 +1,7 @@
 -- Set all the variables
-SET @Provider = :provider_id;
-SET @StartDate = :begin_date;
-SET @EndDate = :end_date;
+SET @Provider = :provider;
+SET @StartDate = :encounter_begin_date;
+SET @EndDate = :encounter_end_date;
 SET @ProblemCode = :problem_code;
 SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;

@@ -69,9 +69,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             },
             '#reportWindow #createHtml':{
                 click: me.onCreateHTML
-            },
-            '#reportWindow #createText':{
-                click: me.onCreateText
             }
         });
     },
@@ -98,7 +95,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     /**
-     * Print report event, this procedure will print the report in the printer.
+     * Print report event, this procedure will print the report on the printer.
      * TODO: Finish me.
      */
     onPrint: function(){
@@ -206,8 +203,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
         this.getReportWindow().getEl().mask(_('loading'));
 
-        // Evaluates every field in the form, extract the submitFormat and other
-        // things.
+        // Evaluates every field in the form, extract the
+        // submitFormat and other things.
         for(var Index in records) {
             parameters[Index] = {
                 'name': records[Index].getData(true)['name'],

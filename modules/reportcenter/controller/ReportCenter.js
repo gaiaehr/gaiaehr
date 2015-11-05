@@ -148,11 +148,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
         this.getReportWindow().getEl().mask(_('loading'));
 
-        // Create some extra parameter to send to the server.
-        parameters.reportDir = this.getReportFilterPanel().getItemId();
-        parameters.format = format;
-        parameters.grid = false;
-
         // Evaluates every field in the form, extrat the submitFormat and other
         // things.
         for(Index = 0; Index < fields.items.length; Index++) {
@@ -179,6 +174,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         Ext.Ajax.request({
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
+                reportDir: this.getReportFilterPanel().getItemId(),
+                format: format,
+                grid: false,
+                site: app.user.site,
                 params: JSON.stringify(parameters)
             },
             success: function(response){
@@ -202,14 +201,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     generateFromGrid: function(format){
         var store = this.getReportFilterPanel().getStore(),
             records = store.getRange(),
-            parameters = {};
+            parameters = {},
+            me = this;
 
         this.getReportWindow().getEl().mask(_('loading'));
-
-        // Create some extra parameter to send to the server.
-        parameters.reportDir = this.getReportFilterPanel().getItemId();
-        parameters.format = format;
-        parameters.grid = true;
 
         // Evaluates every field in the form, extract the submitFormat and other
         // things.
@@ -225,6 +220,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         Ext.Ajax.request( {
             url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
             params: {
+                reportDir: this.getReportFilterPanel().getItemId(),
+                format: format,
+                grid: true,
+                site: app.user.site,
                 params: JSON.stringify(parameters)
             },
             success: function(response) {

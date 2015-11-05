@@ -21,7 +21,7 @@ class ReportGenerator
 {
 
     private $request;
-    private $reportDir;
+    public $reportDir;
     public $format;
     public $fromGrid;
     private $conn;
@@ -49,15 +49,12 @@ class ReportGenerator
     {
         try
         {
-            if(!isset($REQUEST)) return;
+            if(!isset($REQUEST)) throw new Exception('No request was sent by the client.');
+            if(isset($REQUEST['site'])) $this->site = $REQUEST['site'];
             $this->request = json_decode($REQUEST['params'], true);
-            $this->reportDir = $this->request['reportDir'];
-            $this->format = $this->request['format'];
-            $this->fromGrid = $this->request['grid'];
-            unset($this->request['reportDir']);
-            unset($this->request['format']);
-            unset($this->request['grid']);
-            error_log(print_r($this->request, true));
+            $this->reportDir = $REQUEST['reportDir'];
+            $this->format = $REQUEST['format'];
+            $this->fromGrid = $REQUEST['grid'];
         }
         catch(Exception $Error)
         {
@@ -91,57 +88,56 @@ class ReportGenerator
     {
         try
         {
-            $this->conn = Matcha::getConn();
             $filePointer = "../reports/$this->reportDir/reportStatement.sql";
-
-            // Important connection parameter, this will allow multiple
-            // prepare tags with the same name.
-            $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-
             if(file_exists($filePointer) && is_readable($filePointer))
             {
-                // Get the SQL content
-                $fileContent = file_get_contents($filePointer);
-                $RunSQL = $this->conn->prepare($fileContent);
+                // Important connection parameter, this will allow multiple
+                // prepare tags with the same name.
+                $this->conn = Matcha::getConn();
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-                error_log(print_r($this->request,true));
+                // Get the report SQL statement content
+                $fileContent = file_get_contents($filePointer);
 
                 // Copy all the request variables into the Prepared Values,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
-                if($this->fromGrid)
+                foreach($this->request as $field)
                 {
-                    // ...
-                }
-                else
-                {
-                    foreach($this->request as $field)
-                    {
-                        $PrepareField[':'.$field['name']] = $field['value'];
-                    }
+                    $PrepareField[':' . $field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $PrepareField[':' . $field['name']]['value'] = $field['value'];
                 }
 
                 // Copy all the request filter variables to the XML,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
-                if($this->fromGrid)
+                foreach ($this->request as $field)
                 {
-                    // ...
-                }
-                else
-                {
-                    foreach ($this->request as $field) {
-                        $ReturnFilter[$field['name']] = $field['value'];
-                    }
+                    $ReturnFilter[$field['name']] = [
+                        'operator' => (isset($field['operator']) ? $field['operator'] : '='),
+                        'value' => $field['value']
+                    ];
                 }
 
-                $RunSQL->execute($PrepareField);
-                $records = $RunSQL->fetchAll(PDO::FETCH_ASSOC);
+                error_log(print_r($PrepareField,true));
+                 // Run all the SQL Statement in the file, with run all queries we
+                 // mean all the SQL divided by `;`
+                $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
+                $Queries = explode(';', $PreparedSQL);
+                foreach($Queries as $Query)
+                {
+                    if(strlen(trim($Query)) > 0)
+                    {
+                        $SQL = $this->conn->prepare($Query);
+                        $SQL->execute();
+                        $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                    }
+                }
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
-                Array2XML::init('1.0', 'UTF-8', true,$ExtraAttributes);
+                Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(
                     'filters' => $ReturnFilter,
-                    'record' => $records
+                    'record' => $records[count($records)-1]
                 ));
                 return $xml->saveXML();
             }
@@ -156,6 +152,38 @@ class ReportGenerator
             return $Error;
         }
     }
+
+    /**
+     * Process the SQL statement to put in place the variables [:var] and put the real value
+     * also it smart enough to write single quote when it is alpha-numeric and no quotes when
+     * is number.
+     *
+     * @param string $sqlStatement
+     * @param array $variables
+     * @return mixed|string
+     */
+    function PostPrepare($sqlStatement = '', $variables = array())
+    {
+        foreach($variables as $key => $variable)
+        {
+            $prepareKey = trim($key);
+            if(is_numeric($variable['value']))
+            {
+                $prepareVariable = $variable['value'];
+            }
+            elseif($variable['value'] == null)
+            {
+                $prepareVariable = "null";
+            }
+            else
+            {
+                $prepareVariable = "'{$variable['value']}'";
+            }
+            $sqlStatement = str_ireplace($prepareKey, $prepareVariable, $sqlStatement);
+            $sqlStatement = str_ireplace($key.'_operator', $variable['operator'], $sqlStatement);
+        }
+        return $sqlStatement;
+    }
 }
 
 /**
@@ -165,11 +193,14 @@ class ReportGenerator
 $rg = new ReportGenerator();
 $rg->setRequest($_REQUEST);
 
+$date = new DateTime();
+$Stamp = $date->format('Ymd-His');
+
 switch($rg->format)
 {
     case 'html':
         header('Content-Type: application/xslt+xml');
-        header('Content-Disposition: inline; filename="report.html"');
+        header('Content-Disposition: inline; filename='.strtolower($rg->reportDir).'-'.$Stamp.'".html"');
         $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
@@ -181,7 +212,7 @@ switch($rg->format)
         $html2pdf = new HTML2PDF('P', 'A4', 'en');
         $html2pdf->pdf->SetAuthor('GaiaEHR');
         $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
-        $PDFDocument = base64_encode($html2pdf->Output('exemple.pdf', "S"));
+        $PDFDocument = base64_encode($html2pdf->Output(strtolower($rg->reportDir).'-'.$Stamp.'.pdf', "S"));
         echo '<object data="data:application/pdf;base64,' . $PDFDocument . '" type="application/pdf" width="100%" height="100%"></object>';
         break;
 }

@@ -1,6 +1,7 @@
 -- Set all the variables
 -- SET @Provider = 6;
 SET @Provider = null;
+SET @ProviderOperator = '=';
 -- SET @StartDate = '2015-10-01';
 SET @StartDate = null;
 -- SET @EndDate = '2010-12-31';

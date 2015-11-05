@@ -163,6 +163,7 @@ class ReportGenerator
      */
     function PostPrepare($sqlStatement = '', $variables = array())
     {
+        error_log(print_r($variables,true));
         foreach($variables as $key => $variable)
         {
             $prepareKey = trim($key);
@@ -180,7 +181,6 @@ class ReportGenerator
             }
             $sqlStatement = str_ireplace($prepareKey, $prepareVariable, $sqlStatement);
             $sqlStatement = str_ireplace($prepareKey.'_operator', $variable['operator'], $sqlStatement);
-            error_log(print_r($prepareKey.'_operator',true));
         }
         return $sqlStatement;
     }

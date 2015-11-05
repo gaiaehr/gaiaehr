@@ -195,7 +195,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
      * process the grid as a form.
      * @param grid
      */
-    generateFromGrid: function(format){
+    generateFromGrid: function(format, callback){
         var store = this.getReportFilterPanel().getStore(),
             records = store.getRange(),
             parameters = {},

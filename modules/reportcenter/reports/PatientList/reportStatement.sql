@@ -1,7 +1,7 @@
 -- Set all the variables
 SET @Provider = :provider;
-SET @StartDate = :encounter_begin_date;
-SET @EndDate = :encounter_end_date;
+SET @StartDate = :begin_date;
+SET @EndDate = :end_date;
 SET @ProblemCode = :problem_code;
 SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
@@ -19,7 +19,7 @@ SELECT distinct(pid) AS pid, code as problem_code
     -- Filter by Patient Active Problems
     WHERE CASE 
 		WHEN @ProblemCode IS NOT NULL 
-		THEN patient_active_problems.code :problem_code_operator @ProblemCode
+		THEN patient_active_problems.code = @ProblemCode
 		ELSE 1=1 
 	END
     LIMIT 1
@@ -48,7 +48,7 @@ SELECT distinct(pid) as pid, provider_uid, service_date
     -- Filter by Provider
 	AND CASE 
 		WHEN @Provider IS NOT NULL 
-		THEN encounters.provider_uid :provider_id_operator @Provider
+		THEN encounters.provider_uid = @Provider
 		ELSE 1=1 
 	END
     LIMIT 1
@@ -61,7 +61,7 @@ SELECT distinct(pid) AS pid, CODE as medication_code
     -- Filter by Medication
     WHERE CASE
 		WHEN @MedicationCode IS NOT NULL
-		THEN patient_medications.code :medication_code_operator @MedicationCode
+		THEN patient_medications.code = @MedicationCode
     ELSE 1=1
 	END
     LIMIT 1
@@ -74,7 +74,7 @@ SELECT distinct(pid) AS pid, allergy_code
     -- Filter by Medication Allergy
     WHERE CASE
 		WHEN @MedicationAllergyCode IS NOT NULL
-		THEN patient_allergies.allergy_code :allergy_code_operator @MedicationAllergyCode
+		THEN patient_allergies.allergy_code = @MedicationAllergyCode
     ELSE 1=1
 	END
     LIMIT 1
@@ -87,14 +87,14 @@ SELECT distinct(pid) AS pid, allergy_code
 -- Filter by Medication
 WHERE CASE
 	WHEN @MedicationCode IS NOT NULL
-	THEN patient_medications.medication_code :medication_code_operator @MedicationCode
+	THEN patient_medications.medication_code = @MedicationCode
 	ELSE 1=1
 END
 
 -- Filter by Provider
 AND CASE 
 	WHEN @Provider IS NOT NULL 
-	THEN encounters.provider_uid :provider_id_operator @Provider
+	THEN encounters.provider_uid = @Provider
 	ELSE 1=1 
 END
 
@@ -118,13 +118,13 @@ END
 -- Filter by Patient Active Problems
 AND CASE 
 	WHEN @ProblemCode IS NOT NULL 
-	THEN patient_active_problems.problem_code :problem_code_operator @ProblemCode
+	THEN patient_active_problems.problem_code = @ProblemCode
 	ELSE 1=1 
 END
 
 -- Filter by Medication Allergy
 AND CASE
 	WHEN @MedicationAllergyCode IS NOT NULL
-	THEN patient_allergies.allergy_code :allergy_code_operator @MedicationAllergyCode
+	THEN patient_allergies.allergy_code = @MedicationAllergyCode
 	ELSE 1=1
 END;

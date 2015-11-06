@@ -90,7 +90,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     name: 'provider_name',
                     value: ''
                 },
-                ,
                 {
                     xtype: 'allergieslivesearch',
                     fieldLabel: _('allergy'),
@@ -99,7 +98,19 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     width: 400,
                     enableKeyEvents: true,
                     flex: 1,
-                    value: null
+                    value: null,
+                    listeners: {
+                        select: function(combo, records, eOpts){
+                            var allergyName = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
+                            allergyName.setValue(records[0].data.option_name);
+                        }
+                    }
+                },
+                {
+                    xtype: 'hiddenfield',
+                    itemId: 'allergy_name',
+                    name: 'allergy_name',
+                    value: ''
                 },
                 {
                     xtype: 'snomedliveproblemsearch',

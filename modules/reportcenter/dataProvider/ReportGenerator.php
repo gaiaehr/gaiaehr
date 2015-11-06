@@ -23,7 +23,6 @@ class ReportGenerator
     private $request;
     public $reportDir;
     public $format;
-    public $fromGrid;
     private $conn;
     private $site;
 
@@ -54,7 +53,6 @@ class ReportGenerator
             $this->request = json_decode($REQUEST['params'], true);
             $this->reportDir = $REQUEST['reportDir'];
             $this->format = $REQUEST['format'];
-            $this->fromGrid = $REQUEST['grid'];
         }
         catch(Exception $Error)
         {
@@ -113,17 +111,15 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 foreach ($this->request as $field)
                 {
-                    $ReturnFilter[$field['name']] = [
-                        'operator' => (isset($field['operator']) ? $field['operator'] : '='),
-                        'value' => $field['value']
-                    ];
+                    $ReturnFilter[$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $ReturnFilter[$field['name']]['value'] = $field['value'];
                 }
 
-                error_log(print_r($PrepareField,true));
-                 // Run all the SQL Statement in the file, with run all queries we
-                 // mean all the SQL divided by `;`
+                // Prepare all the variable fields in the SQL Statement
                 $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
                 $Queries = explode(';', $PreparedSQL);
+
+                // Run all the SQL Statement separated by `;` in the file
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)
@@ -133,6 +129,7 @@ class ReportGenerator
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }
                 }
+
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(
@@ -180,7 +177,7 @@ class ReportGenerator
                 $prepareVariable = "'{$variable['value']}'";
             }
             $sqlStatement = str_ireplace($prepareKey, $prepareVariable, $sqlStatement);
-            $sqlStatement = str_ireplace($key.'_operator', $variable['operator'], $sqlStatement);
+            $sqlStatement = str_ireplace($prepareKey.'_operator', $variable['operator'], $sqlStatement);
         }
         return $sqlStatement;
     }
@@ -196,18 +193,19 @@ $rg->setRequest($_REQUEST);
 $date = new DateTime();
 $Stamp = $date->format('Ymd-His');
 
+$xslt = new XSLTProcessor();
+$xslt->registerPHPFunctions();
+
 switch($rg->format)
 {
     case 'html':
         header('Content-Type: application/xslt+xml');
         header('Content-Disposition: inline; filename='.strtolower($rg->reportDir).'-'.$Stamp.'".html"');
-        $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
         break;
     case 'pdf':
         require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
-        $xslt = new XSLTProcessor();
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
         $html2pdf = new HTML2PDF('P', 'A4', 'en');
         $html2pdf->pdf->SetAuthor('GaiaEHR');

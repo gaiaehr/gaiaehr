@@ -79,8 +79,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     valueField: 'id',
                     listeners: {
                         select: function(combo, records, eOpts){
-                            var providerName = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
-                            providerName.setValue(records[0].data.option_name);
+                            var fieldName = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
+                            fieldName.setValue(records[0].data.option_name);
                         }
                     }
                 },
@@ -101,8 +101,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     value: null,
                     listeners: {
                         select: function(combo, records, eOpts){
-                            var allergyName = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
-                            allergyName.setValue(records[0].data.option_name);
+                            var fieldName = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
+                            fieldName.setValue(records[0].data.allergy);
                         }
                     }
                 },
@@ -119,7 +119,19 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     name: 'problem_code',
                     enableKeyEvents: true,
                     flex: 1,
-                    value: null
+                    value: null,
+                    listeners: {
+                        select: function(combo, records, eOpts){
+                            var fieldName = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
+                            fieldName.setValue(records[0].data.FullySpecifiedName);
+                        }
+                    }
+                },
+                {
+                    xtype: 'hiddenfield',
+                    itemId: 'problem_name',
+                    name: 'problem_name',
+                    value: ''
                 },
                 {
                     xtype: 'medicationlivetsearch',
@@ -128,7 +140,19 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     name: 'medication_code',
                     enableKeyEvents: true,
                     flex: 1,
-                    value: null
+                    value: null,
+                    listeners: {
+                        select: function(combo, records, eOpts){
+                            var fieldName = Ext.ComponentQuery.query('reportFilter #medication_name')[0];
+                            fieldName.setValue(records[0].data.PROPRIETARYNAME);
+                        }
+                    }
+                },
+                {
+                    xtype: 'hiddenfield',
+                    itemId: 'medication_name',
+                    name: 'medication_name',
+                    value: ''
                 }
             ]
         }

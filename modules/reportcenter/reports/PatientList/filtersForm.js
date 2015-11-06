@@ -102,7 +102,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     listeners: {
                         select: function(combo, records, eOpts){
                             var fieldName = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
-                            fieldName.setValue(records[0].data.option_name);
+                            fieldName.setValue(records[0].data.allergy);
                         }
                     }
                 },
@@ -123,7 +123,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     listeners: {
                         select: function(combo, records, eOpts){
                             var fieldName = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
-                            fieldName.setValue(records[0].data.option_name);
+                            fieldName.setValue(records[0].data.FullySpecifiedName);
                         }
                     }
                 },
@@ -144,7 +144,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     listeners: {
                         select: function(combo, records, eOpts){
                             var fieldName = Ext.ComponentQuery.query('reportFilter #medication_name')[0];
-                            fieldName.setValue(records[0].data.option_name);
+                            fieldName.setValue(records[0].data.PROPRIETARYNAME);
                         }
                     }
                 },

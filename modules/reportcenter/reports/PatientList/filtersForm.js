@@ -94,6 +94,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 {
                     xtype: 'allergieslivesearch',
                     fieldLabel: _('allergy'),
+                    hideLabel: false,
                     name: 'allergy_code',
                     width: 400,
                     enableKeyEvents: true,
@@ -102,6 +103,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 },
                 {
                     xtype: 'snomedliveproblemsearch',
+                    hideLabel: false,
                     fieldLabel: _('problem'),
                     name: 'problem_code',
                     enableKeyEvents: true,
@@ -110,6 +112,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 },
                 {
                     xtype: 'medicationlivetsearch',
+                    hideLabel: false,
                     fieldLabel: _('medication'),
                     name: 'medication_code',
                     enableKeyEvents: true,

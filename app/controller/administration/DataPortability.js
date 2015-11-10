@@ -44,7 +44,7 @@ Ext.define('App.controller.administration.DataPortability', {
 		});
 
 		this.getDataPortabilityPanel().add(iframe);
-		this.getDataPortabilityPanel().update('<p>Download will begin shortly...</p><p>This could take several minutes, depending on the amount of patients stored</p>');
+		this.getDataPortabilityPanel().update(_('download_shortly'));
 	}
 
 });

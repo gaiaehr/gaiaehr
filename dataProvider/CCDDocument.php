@@ -652,6 +652,7 @@ class CCDDocument {
             );
         }
 
+		// Patient Name
 		$recordTarget['patientRole']['patient']['name'] = [
 			'@attributes' => [
 				'use' => 'L'
@@ -691,6 +692,7 @@ class CCDDocument {
 			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Male';
 		}
 
+		// Patient Date of Birth
 		$recordTarget['patientRole']['patient']['birthTime'] = [
 			'@attributes' => [
 				'value' => preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $patientData['DOB'])
@@ -716,6 +718,7 @@ class CCDDocument {
 			];
 		}
 
+		// Patient Race
 		if(isset($patientData['race']) && $patientData['race'] != ''){
 			$recordTarget['patientRole']['patient']['raceCode'] = [
 				'@attributes' => [
@@ -735,6 +738,7 @@ class CCDDocument {
 			];
 		}
 
+		// Patient Ethnicity
 		if(isset($patientData['ethnicity']) && $patientData['ethnicity'] != ''){
 			$recordTarget['patientRole']['patient']['ethnicGroupCode'] = [
 				'@attributes' => [
@@ -766,6 +770,7 @@ class CCDDocument {
             ''
         );
 
+		// Patient Prefered language
 		if(isset($patientData['language']) && $patientData['language'] != ''){
 			$recordTarget['patientRole']
             ['patient']
@@ -1725,7 +1730,7 @@ class CCDDocument {
 				 */
 				$date = $this->parseDate($item['date']);
 
-				/**
+                /**
 				 * date
 				 */
 				$vitals['text']['table']['thead']['tr'][0]['th'][] = [
@@ -1749,7 +1754,12 @@ class CCDDocument {
 				$vitals['text']['table']['tbody']['tr'][2]['td'][] = [
 					'@value' => $item['bp_systolic'] . '/' . $item['bp_diastolic'] . ' mmHg'
 				];
-
+                /**
+                 * BMI (Body Mass Index)
+                 */
+                $vitals['text']['table']['tbody']['tr'][3]['td'][] = [
+                    '@value' => $item['bmi'] . ' kg/m2'
+                ];
 				/**
 				 * Code Entry
 				 */
@@ -1963,8 +1973,50 @@ class CCDDocument {
 										]
 									]
 								]
-
-							]
+							],
+                            [
+                                'observation' => [
+                                    '@attributes' => [
+                                        'classCode' => 'OBS',
+                                        'moodCode' => 'EVN'
+                                    ],
+                                    'templateId' => [
+                                        '@attributes' => [
+                                            'root' => '2.16.840.1.113883.10.20.22.4.2'
+                                        ]
+                                    ],
+                                    'id' => [
+                                        '@attributes' => [
+                                            'root' => UUID::v4()
+                                        ]
+                                    ],
+                                    'code' => [
+                                        '@attributes' => [
+                                            'code' => '39156-5',
+                                            'codeSystemName' => 'LOINC',
+                                            'codeSystem' => '2.16.840.1.113883.6.1',
+                                            'displayName' => 'Body mass index (BMI) [Ratio]'
+                                        ]
+                                    ],
+                                    'statusCode' => [
+                                        '@attributes' => [
+                                            'code' => 'completed'
+                                        ]
+                                    ],
+                                    'effectiveTime' => [
+                                        '@attributes' => [
+                                            'value' => $date
+                                        ]
+                                    ],
+                                    'value' => [
+                                        '@attributes' => [
+                                            'xsi:type' => 'PQ',
+                                            'value' => $item['bmi'],
+                                            'unit' => 'kg/m2'
+                                        ]
+                                    ]
+                                ]
+                            ]
 						]
 					]
 				];

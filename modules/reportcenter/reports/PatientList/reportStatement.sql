@@ -7,7 +7,9 @@ SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
 
 -- Display all the patient fields
-SELECT patient.* FROM patient
+-- Display all the patient fields
+SELECT patient.*, Race.option_name as Race, Ethnicity.option_name as Ethnicity
+FROM patient
 
 --
 -- JOIN CLAUSE
@@ -79,6 +81,13 @@ SELECT distinct(pid) AS pid, allergy_code
     LIMIT 1
 ) patient_allergies ON patient_allergies.pid = patient.pid
 
+-- Join Combo List Options for Race
+LEFT JOIN combo_lists_options as Race ON Race.option_value = patient.race
+AND Race.list_id = 14
+
+-- Join Combo List Options for Ethnicity
+LEFT JOIN combo_lists_options as Ethnicity ON Ethnicity.option_value = patient.ethnicity
+AND Ethnicity.list_id = 59
 
 --
 -- WHERE CLAUSE

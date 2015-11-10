@@ -54,6 +54,8 @@
                         <th class="report">DOB</th>
                         <th class="report">Marital Status</th>
                         <th class="report">Occupation</th>
+                        <th class="report">Race</th>
+                        <th class="report">Ethnicity</th>
                     </tr>
                     <xsl:for-each select="records/record">
                         <tr>
@@ -62,6 +64,8 @@
                             <td class="report" style="text-align: center;"><xsl:value-of select="php:function('date', 'jS M, Y', number(DOB))"/></td>
                             <td class="report" style="text-align: center;"><xsl:value-of select="marital_status"/></td>
                             <td class="report" style="text-align: center;"><xsl:value-of select="occupation"/></td>
+                            <td class="report" style="text-align: center;"><xsl:value-of select="Race"/></td>
+                            <td class="report" style="text-align: center;"><xsl:value-of select="Ethnicity"/></td>
                         </tr>
                     </xsl:for-each>
                 </table>

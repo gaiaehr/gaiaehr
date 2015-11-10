@@ -2152,15 +2152,7 @@ class CCDDocument {
 						'@attributes' => [
 							'value' => $date
 						]
-					],
-					//'routeCode' => array(
-					//  '@attributes' => array(
-					//	    'code' => 'C28161',
-					//	    'codeSystem' => '2.16.840.1.113883.3.26.1.1',
-					//      'codeSystemName' => 'NCI Thesaurus',
-					//	    'displayName' => 'INTRAMUSCULAR',
-					//  )
-					//),
+					]
 				];
 
 				if(isset($item['administer_amount']) && $item['administer_amount'] != ''){
@@ -2352,13 +2344,7 @@ class CCDDocument {
 									],
 									[
 										'@value' => 'Status'
-									],
-									//									array(
-									//										'@value' => 'Indications' // diagnosis
-									//									),
-									//									array(
-									//										'@value' => 'Fill Instructions' //1 refill Generic Substitition Allowed
-									//									)
+									]
 								]
 							]
 						]
@@ -2573,6 +2559,7 @@ class CCDDocument {
 		}
 		unset($medicationsData, $medications);
 	}
+
 	/**
 	 * Method setMedicationsAdministeredSection()
 	 */

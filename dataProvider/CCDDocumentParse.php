@@ -57,6 +57,7 @@ class CCDDocumentParse {
 			$data[$i] = $com;
 		}
 
+		// Building the document
 		$this->styledXml = Array2XML::createXML('ClinicalDocument', $data)->saveXML();
 		unset($data);
 

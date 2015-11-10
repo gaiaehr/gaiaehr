@@ -652,7 +652,6 @@ class CCDDocument {
             );
         }
 
-
 		$recordTarget['patientRole']['patient']['name'] = [
 			'@attributes' => [
 				'use' => 'L'
@@ -685,6 +684,7 @@ class CCDDocument {
 			]
 		];
 
+		// Patient Sex
 		if($patientData['sex'] == 'F'){
 			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Female';
 		} elseif($patientData['sex'] == 'M') {

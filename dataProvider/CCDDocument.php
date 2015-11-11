@@ -2948,7 +2948,7 @@ class CCDDocument {
                     'mediaType' => 'text/xml',
                     'representation' => 'B64'
                 ],
-                base64_encode()
+                base64_encode('')
             ],
             'assignedEntity' => [
                 'id' => [

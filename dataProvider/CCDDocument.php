@@ -1759,7 +1759,16 @@ class CCDDocument {
 										'@value' => 'Blood Pressure'
 									]
 								]
-
+							],
+							[
+                                'th' => [
+                                    [
+                                        '@attributes' => [
+                                            'align' => 'left'
+                                        ],
+                                        '@value' => 'BMI (Body Mass Index)'
+                                    ]
+                                ]
 							]
 						]
 					]
@@ -3990,23 +3999,6 @@ class CCDDocument {
 
 		$SocialHistory = new SocialHistory();
 
-		$socialHistory = [
-			'templateId' => [
-				'@attributes' => [
-					'root' => '2.16.840.1.113883.10.20.22.2.17'
-				]
-			],
-			'code' => [
-				'@attributes' => [
-					'code' => '29762-2',
-					'codeSystemName' => 'LOINC',
-					'codeSystem' => '2.16.840.1.113883.6.1'
-				]
-			],
-			'title' => 'Social History',
-			'text' => ''
-		];
-
 		if($this->isExcluded('social')) {
 			$socialHistory['@attributes'] = [
 				'nullFlavor' => 'NI'
@@ -4015,21 +4007,39 @@ class CCDDocument {
 			return;
 		};
 
-		/***************************************************************************************************************
-		 * Smoking Status Observation - This clinical statement represents a patient's current smoking
-		 * status. The vocabulary selected for this clinical statement is the best approximation of the
-		 * statuses in Meaningful Use (MU) Stage 1.
-		 *
-		 * If the patient is a smoker (77176002), the effectiveTime/low element must be present. If the patient
-		 * is an ex-smoker (8517006), both the effectiveTime/low and effectiveTime/high element must be present.
-		 *
-		 * The smoking status value set includes a special code to communicate if the smoking status is unknown
-		 * which is different from how Consolidated CDA generally communicates unknown information.
-		 */
-		$smokingStatus = $SocialHistory->getSocialHistoryByPidAndCode($this->pid, 'smoking_status');
+        /**
+         * Smoking Status Observation - This clinical statement represents a patient's current smoking
+         * status. The vocabulary selected for this clinical statement is the best approximation of the
+         * statuses in Meaningful Use (MU) Stage 1.
+         *
+         * If the patient is a smoker (77176002), the effectiveTime/low element must be present. If the patient
+         * is an ex-smoker (8517006), both the effectiveTime/low and effectiveTime/high element must be present.
+         *
+         * The smoking status value set includes a special code to communicate if the smoking status is unknown
+         * which is different from how Consolidated CDA generally communicates unknown information.
+         */
+        $smokingStatus = $SocialHistory->getSocialHistoryByPidAndCode($this->pid, 'smoking_status');
 
 		if(count($smokingStatus) > 0){
 			$smokingStatus = end($smokingStatus);
+
+            $socialHistory = [
+                'templateId' => [
+                    '@attributes' => [
+                        'root' => '2.16.840.1.113883.10.20.22.2.17'
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => '29762-2',
+                        'codeSystemName' => 'LOINC',
+                        'codeSystem' => '2.16.840.1.113883.6.1',
+                        'displayName' => "Social History"
+                    ]
+                ],
+                'title' => 'Social History',
+                'text' => $smokingStatus['note']
+            ];
 
 			$socialHistory['entry'][] = [
 				'@attributes' => [
@@ -4090,7 +4100,7 @@ class CCDDocument {
 		}
 		unset($smokingStatus);
 
-		/***************************************************************************************************************
+		/**
 		 * This Social History Observation defines the patient's occupational, personal (e.g., lifestyle),
 		 * social, and environmental history and health risk factors, as well as administrative data such
 		 * as marital status, race, ethnicity, and religious affiliation.

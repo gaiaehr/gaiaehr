@@ -2910,6 +2910,170 @@ class CCDDocument {
      */
     private function setCareOfPlanSection(){
 
+        // 1.1 - Care Plan (NEW)
+        $careOfPlan['template'] = [
+            '@attributes' => [
+                'root' => '2.16.840.1.113883.10.20.22.1.15'
+            ]
+        ];
+        $careOfPlan['id'] = [
+            '@attributes' => [
+                'root' => UUID::v4()
+            ]
+        ];
+        $planOfCare['code'] = [
+            '@attributes' => [
+                'code' => 'CarePlan-X',
+                'codeSystemName' => 'LOINC',
+                'codeSystem' => '2.16.840.1.113883.6.1'
+            ]
+        ];
+
+        // 1.1.1 - authenticator
+        // This authenticator represents patient agreement or sign-off of the Care Plan
+        $careOfPlan['authenticator'] = [
+            'time' => [
+                '@attributes' => [
+                    'value' => '' // Date of the patient sign-off
+                ]
+            ],
+            'signatureCode' => [
+                '@attributes' => [
+                    'code' => 'S'
+                ]
+            ],
+            'sdtc:signatureText' => [
+                '@attributes' => [
+                    'mediaType' => 'text/xml',
+                    'representation' => 'B64'
+                ],
+                base64_encode()
+            ],
+            'assignedEntity' => [
+                'id' => [
+                    '@attributes' => [
+                        'extension' => '996-756-495',
+                        'root' => '2.16.840.1.113883.19.5'
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => 'ONESELF',
+                        'displayName' => 'Oneself',
+                        'codeSystem' => '2.16.840.1.113883.5.111',
+                        'codeSystemName' => 'HL7 Role code'
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.2 - participant - Patient Itself
+        // This participant represents the Care Plan Review. If the date in the time element is in the past,
+        // then this review has already taken place. If the date in the time element is in the future,
+        // then this is the date of the next scheduled review.
+        $careOfPlan['participant'] = [
+            '@attributes' => [
+                'typeCode' => 'IND'
+            ],
+            'functionCode' => [
+                '@attributes' => [
+                    'code' => '425268008',
+                    'codeSystem' => '2.16.840.1.113883.6.96',
+                    'codeSystemName' => 'SNOMED CT',
+                    'displayName' => 'Review of Care Plan'
+                ]
+            ],
+            'time' => [
+                '@attributes' => [
+                    'value' => '' // Check the participant description for more info.
+                ]
+            ],
+            // Code	Code System	Print Name
+            // ONESELF  RoleCode    self
+            // MTH      RoleCode	mother
+            // FTH      RoleCode	father
+            // DAU      RoleCode	natural daughter
+            // SON      RoleCode	natural son
+            // DAUINLAW	RoleCode	daughter in-law
+            // SONINLAW	RoleCode	son in-law
+            // GUARD	RoleCode	guardian
+            // HPOWATT	RoleCode	healthcare power of attorney
+            'associatedEntity' => [
+                '@attributes' => [
+                    'classCode' => 'ONESELF'
+                ],
+                'id' => [
+                    '@attributes' => [
+                        'root' => UUID::v4()
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.3 - participant - Care giver (Mother, Father, Guardian, ect.)
+        // This participant identifies individuals who support the patient such as a relative or caregiver.
+        $careOfPlan['participant'] = [
+            '@attributes' => [
+                'typeCode' => 'IND'
+            ],
+            'functionCode' => [
+                '@attributes' => [
+                    'code' => '407543004',
+                    'displayName' => 'Primary Carer',
+                    'codeSystem' => '2.16.840.1.113883.6.96',
+                    'codeSystemName' => 'SNOMED-CT'
+                ]
+            ],
+            'associatedEntity' => [
+                '@attributes' => [
+                    'classCode' => 'CAREGIVER'
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => '', // TODO: Take this information from Patient Contacts
+                        'codeSystem' => '2.16.840.1.113883.5.111'
+                    ]
+                ],
+                'addr' => [
+                    'streetAddressLine' => '', // TODO: Take this information from Patient Contacts
+                    'city' => '', // TODO: Take this information from Patient Contacts
+                    'state' => '', // TODO: Take this information from Patient Contacts
+                    'postalCode' => '', // TODO: Take this information from Patient Contacts
+                    'country' => '' // TODO: Take this information from Patient Contacts
+                ],
+                'telecom' => [
+                    'value' => '', // TODO: Take this information from Patient Contacts
+                    'use' => '' // TODO: Take this information from Patient Contacts
+                ],
+                'associatedPerson' => [
+                    'name' => [
+                        'prefix' => '', // TODO: Take this information from Patient Contacts
+                        'given' => '', // TODO: Take this information from Patient Contacts
+                        'family' => '' // TODO: Take this information from Patient Contacts
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.4 - documentationOf
+        // The documentationOf relationship in a Care Plan contains the representation of providers who are
+        // wholly or partially responsible for the safety and well-being of a subject of care.
+        $careOfPlan['documentationOf'] = [
+            'serviceEvent' => [
+                '@attributes' => [
+                    'classCode' => 'PCPR'
+                ],
+                'effectiveTime' => '' // TODO: ??? Don't know what date will be.
+            ]
+        ];
+
+        // 1.1.5 - performer
+        // The performer(s) represents the healthcare providers involved in the current or historical care of
+        // the patient.The patient’s key healthcare providers would be listed here which would include the
+        // primary physician and any active consulting physicians, therapists, counselors, and care team members.
+        $careOfPlan['performer'] = [
+
+        ];
     }
 
 	/**

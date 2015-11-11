@@ -3159,6 +3159,148 @@ class CCDDocument {
                 ]
             ]
         ];
+
+        // 1.1.7 - structuredBody
+        //
+        // * 2.22 - Health Concerns Section (NEW)
+        // [1..1] Only one
+        // The Health Concerns section contains data that describes an interest or worry about a health state or
+        // process that has the potential to require attention, intervention or management.
+        //
+        // * Goals Section (NEW)
+        // [1..1] Only one
+        // This template represents patient Goals.  A goal is a defined outcome or condition to be achieved in
+        // the process of patient care. Goals include patient-defined goals (e.g., alleviation of health concerns,
+        // positive outcomes from interventions, longevity, function, symptom management, comfort) and
+        // clinician-specific goals to achieve desired and agreed upon outcomes.
+        //
+        // * Interventions Section (V2)
+        // [1..1] Only one
+        // This template represents Interventions.  Interventions are actions taken to maximize the prospects of
+        // achieving the patient’s or provider’s goals of care, including the removal of barriers to success.
+        // Interventions can be planned, ordered, historical, etc.
+        //
+        // Interventions include actions that may be ongoing (e.g. maintenance medications that the patient is taking,
+        // or monitoring the patient’s health status or the status of an intervention).
+        //
+        // Instructions are a subset of interventions and may include self-care instructions.
+        // Instructions are information or directions to the patient and other providers including how to care
+        // for the individual’s condition, what to do at home, when to call for help, any additional appointments,
+        // testing, and changes to the medication list or medication instructions, clinical guidelines and a
+        // summary of best practice.
+        //
+        // * Health Status Evaluations/Outcomes Section (NEW)
+        // [1..1] Only one
+        // This template contains observations regarding the outcome of care resulting from the interventions used to
+        // treat the patient. These observations represent status, at points in time, related to established
+        // care plan goals and/or interventions.
+        $careOfPlan['structuredBody'] = [];
+
+
+        // * 2.22 - Health Concerns Section (NEW)
+        // [1..1] Only one
+        // The Health Concerns section contains data that describes an interest or worry about a health state or
+        // process that has the potential to require attention, intervention or management.
+        $structuredBody_Section['section'] = [
+            'templateId' => [
+                'root' => '2.16.840.1.113883.10.20.22.2.58'
+            ],
+            'code' => [
+                '@attributes' => [
+                    'code' => '46030-3',
+                    'displayName' => 'Health Conditions Section',
+                    'codeSystem' => '2.16.840.1.113883.6.1',
+                    'codeSystemName' => 'LOINC'
+                ],
+                'title' => 'Health Concerns Section',
+                'text' => '',
+                // 3.40	- Health Status Observation (V2)
+                // This template represents  information about the overall health status of the patient.
+                // To represent the impact of a specific problem or concern related to the patient's expected
+                // health outcome use the Prognosis Observation Template 2.16.840.1.113883.10.20.22.4.113.
+                'entry' => [
+                    'observation' => [
+                        '@attributes' => [
+                            'classCode' => 'OBS',
+                            'moodCode' => 'EVN'
+                        ],
+                        'templateId' => [
+                            '@attributes' => [
+                                'root' => '2.16.840.1.113883.10.20.22.4.5'
+                            ]
+                        ],
+                        'code' => [
+                            '@attributes' => [
+                                'code' => '11323-3',
+                                'codeSystem' => '2.16.840.1.113883.6.1',
+                                'codeSystemName' => 'LOINC',
+                                'displayName' => 'Health status'
+                            ]
+                        ],
+                        'text' => [
+                            'reference' => [
+                                '@attributes' => [
+                                    'value' => '"#healthstatus' // Narrated Health Status Observation
+                                ]
+                            ]
+                        ],
+                        'statusCode' => [
+                            '@attributes' => [
+                                'code' => 'completed'
+                            ]
+                        ],
+                        // Value Set: 193. HealthStatus (V2) 2.16.840.1.113883.1.11.20.12.2
+                        // Represents the general health status of the patient.
+                        // Only one [1..1]
+                        //
+                        // Code	        Code System	Print Name
+                        // 81323004     SNOMED CT	Alive and well
+                        // 313386006	SNOMED CT	In remission
+                        // 162467007	SNOMED CT	Symptom free
+                        // 161901003	SNOMED CT	Chronically ill
+                        // 271593001	SNOMED CT	Severely ill
+                        // 21134002     SNOMED CT	Disabled
+                        // 161045001	SNOMED CT	Severely disabled
+                        // 135818000	SNOMED CT	General health poor
+                        // 135815002	SNOMED CT	General health good
+                        // 135816001	SNOMED CT	General health excellent
+                        // TODO: May be we need to modify the database and GaiaEHR to support this code
+                        'value' => [
+                            '@attributes' => [
+                                'xsi:type' => 'CD',
+                                'code' => '81323004',
+                                'codeSystem' => '2.16.840.1.113883.6.96',
+                                'codeSystemName' => 'SNOMED CT',
+                                'displayName' => 'Alive and well'
+                            ]
+                        ]
+                    ]
+                ],
+                // 3.39	Health Concern Act (NEW)
+                // at least one [1..*]
+                // This template represents a health concern. It is a wrapper for health concerns derived from a
+                // variety of sources within an EHR (such as Problem List, Family History, Social History,
+                // Social Worker Note, etc.).
+                //
+                // A Health Concern Act can represent a health concern that a patient currently has. Health
+                // concerns require intervention(s) to increase the likelihood of achieving the patient’s or
+                // providers’ goals of care.
+                //
+                // A Health Concern Act can also represent a health concern that is a risk. A risk is a clinical
+                // or socioeconomic condition that the patient doesn't currently have, but the risk for developing
+                // that condition rises to the level of concern such that an intervention and/or monitoring are needed.
+                //
+                // The code on the Health Concern Act is set to differentiate between the two types of health concerns.
+                'entry' => [
+                    'act' => [
+                        '@attributes' => [
+                            'templateId' => '2.16.840.1.113883.10.20.22.4.132'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
     }
 
 	/**

@@ -4822,17 +4822,6 @@ class CCDDocument {
 		unset($functionalStatusData, $functionalStatus);
 	}
 
-	private function getCarePlan(){
-		$carePlan = [];
-
-		return $carePlan;
-	}
-
-	private function getSmokingStatus(){
-		$smoke = [];
-		return $smoke;
-	}
-
 	/**
 	 * Method setEncountersSection() TODO
 	 */

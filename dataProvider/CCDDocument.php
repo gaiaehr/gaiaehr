@@ -433,15 +433,11 @@ class CCDDocument {
 	 */
 	public function export() {
 		try {
-			/**
-			 * Create a ZIP archive for delivery
-			 */
+            // Create a ZIP archive for delivery
 			$dir = site_temp_path . '/';
 			$filename = $this->getFileName();
 			$file = $this->zipIt($dir, $filename);
-			/**
-			 * Stream the file to the client
-			 */
+            // Stream the file to the client
 			header('Content-Type: application/zip');
 			header('Content-Length: ' . filesize($file));
 			header('Content-Disposition: attachment; filename="' . $filename . '.zip' . '"');
@@ -611,6 +607,10 @@ class CCDDocument {
 
 	/**
 	 * Method getRecordTarget()
+     *
+     * The recordTarget records the administrative and demographic data of the patient whose health information
+     * is described by the clinical document; each recordTarget must contain at least one patientRole element
+     *
 	 * @return array
 	 */
 	private function getRecordTarget() {
@@ -652,7 +652,7 @@ class CCDDocument {
             );
         }
 
-
+		// Patient Name
 		$recordTarget['patientRole']['patient']['name'] = [
 			'@attributes' => [
 				'use' => 'L'
@@ -676,21 +676,24 @@ class CCDDocument {
 			];
 		}
 
+        // values are M, F, or UM more info...
+        // http://phinvads.cdc.gov/vads/ViewValueSet.action?id=8DE75E17-176B-DE11-9B52-0015173D1785
 		$recordTarget['patientRole']['patient']['administrativeGenderCode'] = [
 			'@attributes' => [
 				'code' => $patientData['sex'],
-				// values are M, F, or UM more info... http://phinvads.cdc.gov/vads/ViewValueSet.action?id=8DE75E17-176B-DE11-9B52-0015173D1785
 				'codeSystemName' => 'AdministrativeGender',
 				'codeSystem' => '2.16.840.1.113883.5.1'
 			]
 		];
 
+		// Patient Sex
 		if($patientData['sex'] == 'F'){
 			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Female';
 		} elseif($patientData['sex'] == 'M') {
 			$recordTarget['patientRole']['patient']['administrativeGenderCode']['@attributes']['displayName'] = 'Male';
 		}
 
+		// Patient Date of Birth
 		$recordTarget['patientRole']['patient']['birthTime'] = [
 			'@attributes' => [
 				'value' => preg_replace('/(\d{4})-(\d{2})-(\d{2}) \d{2}:\d{2}:\d{2}/', '$1$2$3', $patientData['DOB'])
@@ -716,6 +719,7 @@ class CCDDocument {
 			];
 		}
 
+		// Patient Race
 		if(isset($patientData['race']) && $patientData['race'] != ''){
 			$recordTarget['patientRole']['patient']['raceCode'] = [
 				'@attributes' => [
@@ -735,6 +739,7 @@ class CCDDocument {
 			];
 		}
 
+		// Patient Ethnicity
 		if(isset($patientData['ethnicity']) && $patientData['ethnicity'] != ''){
 			$recordTarget['patientRole']['patient']['ethnicGroupCode'] = [
 				'@attributes' => [
@@ -766,6 +771,7 @@ class CCDDocument {
             ''
         );
 
+		// Patient Prefered language
 		if(isset($patientData['language']) && $patientData['language'] != ''){
 			$recordTarget['patientRole']
             ['patient']
@@ -808,6 +814,10 @@ class CCDDocument {
 
 	/**
 	 * Method getAuthor()
+     *
+     * The author element represents the creator of the clinical document.
+     * The author may be a device, or a person. The person is the patient or the patient’s advocate.
+     *
 	 * @return array
 	 */
 	private function getAuthor() {
@@ -848,7 +858,7 @@ class CCDDocument {
 			],
 			'name' => [
 				'given' => $this->user['fname'],
-				'family' => $this->user['lname'],
+				'family' => $this->user['lname']
 			]
 		];
 
@@ -881,6 +891,16 @@ class CCDDocument {
 
 	/**
 	 * Method getCustodian()
+     *
+     * The custodian element represents the organization or person that is in charge of maintaining the document.
+     * The custodian is the steward that is entrusted with the care of the document. Every CDA document has
+     * exactly one custodian. The custodian participation satisfies the CDA definition of Stewardship.
+     * Because CDA is an exchange standard and may not represent the original form of the authenticated document
+     * (e.g., CDA could include scanned copy of original), the custodian represents the steward of the
+     * original source document. The custodian may be the document originator, a health information exchange,
+     * or other responsible party. Also, the custodian may be the patient or an organization acting on behalf
+     * of the patient, such as a PHR organization.
+     *
 	 * @return array
 	 */
 	private function getCustodian() {
@@ -916,6 +936,11 @@ class CCDDocument {
 
 	/**
 	 * Method getInformationRecipient()
+     *
+     * The informationRecipient element records the intended recipient of the information at the time the document
+     * is created. For example, in cases where the intended recipient of the document is the patient's
+     * health chart, set the receivedOrganization to be the scoping organization for that chart.
+     *
 	 * @return array
 	 */
 	private function getInformationRecipient() {
@@ -924,8 +949,7 @@ class CCDDocument {
 				'informationRecipient' => [
 					'name' => [
 						'given' => $this->primaryProvider['fname'],
-						'family' => $this->primaryProvider['lname'],
-
+						'family' => $this->primaryProvider['lname']
 					],
 				],
 				'receivedOrganization' => [
@@ -941,6 +965,10 @@ class CCDDocument {
 
 	/**
 	 * Method getAuthenticator()
+     *
+     * The combined @root and @extension  attributes to record the authenticator’s identity in a
+     * secure, trusted, and unique way.
+     *
 	 * @return array
 	 */
 	private function getAuthenticator() {
@@ -978,8 +1006,7 @@ class CCDDocument {
 		$authenticator['assignedEntity']['assignedPerson'] = [
 			'name' => [
 				'given' => $this->user['fname'],
-				'family' => $this->user['lname'],
-
+				'family' => $this->user['lname']
 			]
 		];
 
@@ -1003,7 +1030,7 @@ class CCDDocument {
 				],
 				'effectiveTime' => [
 					'@attributes' => [
-						'xsi:type' => 'IVL_TS',
+						'xsi:type' => 'IVL_TS'
 					],
 					'low' => [
 						'@attributes' => [
@@ -1067,7 +1094,7 @@ class CCDDocument {
 			'name' => [
 				'prefix' => $this->user['title'],
 				'given' => $this->user['fname'],
-				'family' => $this->user['lname'],
+				'family' => $this->user['lname']
 			]
 		];
 
@@ -1100,6 +1127,16 @@ class CCDDocument {
 
 	/**
 	 * Method getComponentOf()
+     *
+     * The componentOf element contains the encompassing encounter for the document. The encompassing encounter
+     * represents the setting of the clinical encounter during which the document act(s) or ServiceEvent(s) occurred.
+     *
+     * In order to represent providers associated with a specific encounter, they are recorded within the
+     * encompassingEncounter as participants.
+     *
+     * In a CCD, the encompassingEncounter may be used when documenting a specific encounter and its participants.
+     * All relevant encounters in a CCD may be listed in the encounters section.
+     *
 	 * @return mixed
 	 */
 	private function getComponentOf() {
@@ -1229,7 +1266,7 @@ class CCDDocument {
 		$informant['assignedEntity']['assignedPerson'] = [
 			'name' => [
 				'given' => $this->primaryProvider['fname'],
-				'family' => $this->primaryProvider['lname'],
+				'family' => $this->primaryProvider['lname']
 			]
 		];
 
@@ -1238,6 +1275,12 @@ class CCDDocument {
 
 	/**
 	 * Method getInformant()
+     *
+     * The dataEnterer element represents the person who transferred the content, written or dictated,
+     * into the clinical document. To clarify, an author provides the content found within the header or
+     * body of a document, subject to their own interpretation; a dataEnterer adds an author's
+     * information to the electronic system.
+     *
 	 * @return array
 	 */
 	private function getDataEnterer() {
@@ -1260,7 +1303,7 @@ class CCDDocument {
 		$dataEnterer['assignedEntity']['assignedPerson'] = [
 			'name' => [
 				'given' => $this->primaryProvider['fname'],
-				'family' => $this->primaryProvider['lname'],
+				'family' => $this->primaryProvider['lname']
 			]
 		];
 
@@ -1302,7 +1345,7 @@ class CCDDocument {
 		];
 		$performer['assignedEntity']['addr'] = [
 			'@attributes' => [
-				'use' => 'HP',
+				'use' => 'HP'
 			],
 			'streetAddressLine' => [
 				'@value' => (isset($user->street) ? $user->street : '')
@@ -1339,7 +1382,7 @@ class CCDDocument {
 			'name' => [
 				'prefix' => $this->primaryProvider['title'],
 				'given' => $this->primaryProvider['fname'],
-				'family' => $this->primaryProvider['lname'],
+				'family' => $this->primaryProvider['lname']
 			]
 		];
 
@@ -1379,7 +1422,7 @@ class CCDDocument {
 						'code' => '29299-5',
 						'codeSystem' => '2.16.840.1.113883.6.1',
 						'codeSystemName' => 'LOINC',
-						'displayName' => 'Reason for Visit',
+						'displayName' => 'Reason for Visit'
 					]
 				],
 				'title' => 'Reason for Visit',
@@ -1463,7 +1506,7 @@ class CCDDocument {
 						'code' => '42349-1',
 						'codeSystem' => '2.16.840.1.113883.6.1',
 						'codeSystemName' => 'LOINC',
-						'displayName' => 'Reason for Referral',
+						'displayName' => 'Reason for Referral'
 					]
 				],
 				'title' => 'Reason for Referral',
@@ -1624,7 +1667,15 @@ class CCDDocument {
 
 	/**
 	 * Method setVitalsSection()
-	 */
+     *
+     * The Vital Signs section contains relevant vital signs for the context and use case of the document type,
+     * such as blood pressure, heart rate, respiratory rate, height, weight, body mass index, head circumference,
+     * pulse oximetry, temperature and body surface area. The section should include notable vital signs such
+     * as the most recent, maximum and/or minimum, baseline, or relevant trends.
+     *
+     * Vital signs are represented in the same way as other results, but are aggregated into their own section
+     * to follow clinical conventions.
+     */
 	private function setVitalsSection() {
 		$Vitals = new Vitals();
 		$vitalsData = $Vitals->getVitalsByPid($this->pid);
@@ -1710,7 +1761,16 @@ class CCDDocument {
 										'@value' => 'Blood Pressure'
 									]
 								]
-
+							],
+							[
+                                'th' => [
+                                    [
+                                        '@attributes' => [
+                                            'align' => 'left'
+                                        ],
+                                        '@value' => 'BMI (Body Mass Index)'
+                                    ]
+                                ]
 							]
 						]
 					]
@@ -1720,39 +1780,29 @@ class CCDDocument {
 			$vitals['entry'] = [];
 
 			foreach($vitalsData as $item){
-				/**
-				 * strip date (yyyy-mm-dd hh:mm:ss => yyyymmdd)
-				 */
+                // strip date (yyyy-mm-dd hh:mm:ss => yyyymmdd)
 				$date = $this->parseDate($item['date']);
-
-				/**
-				 * date
-				 */
+                // Date
 				$vitals['text']['table']['thead']['tr'][0]['th'][] = [
 					'@value' => date('F j, Y', strtotime($item['date']))
 				];
-				/**
-				 * Height
-				 */
+                // Height
 				$vitals['text']['table']['tbody']['tr'][0]['td'][] = [
 					'@value' => $item['height_cm'] . ' cm'
 				];
-				/**
-				 * Weight
-				 */
+                // Weight
 				$vitals['text']['table']['tbody']['tr'][1]['td'][] = [
 					'@value' => $item['weight_kg'] . ' kg'
 				];
-				/**
-				 * Blood Pressure
-				 */
+				// Blood Pressure
 				$vitals['text']['table']['tbody']['tr'][2]['td'][] = [
 					'@value' => $item['bp_systolic'] . '/' . $item['bp_diastolic'] . ' mmHg'
 				];
-
-				/**
-				 * Code Entry
-				 */
+                // BMI (Body Mass Index)
+                $vitals['text']['table']['tbody']['tr'][3]['td'][] = [
+                    '@value' => $item['bmi'] . ' kg/m2'
+                ];
+				// Code Entry
 				$entry = [
 					'@attributes' => [
 						'typeCode' => 'DRIV'
@@ -1963,8 +2013,50 @@ class CCDDocument {
 										]
 									]
 								]
-
-							]
+							],
+                            [
+                                'observation' => [
+                                    '@attributes' => [
+                                        'classCode' => 'OBS',
+                                        'moodCode' => 'EVN'
+                                    ],
+                                    'templateId' => [
+                                        '@attributes' => [
+                                            'root' => '2.16.840.1.113883.10.20.22.4.2'
+                                        ]
+                                    ],
+                                    'id' => [
+                                        '@attributes' => [
+                                            'root' => UUID::v4()
+                                        ]
+                                    ],
+                                    'code' => [
+                                        '@attributes' => [
+                                            'code' => '39156-5',
+                                            'codeSystemName' => 'LOINC',
+                                            'codeSystem' => '2.16.840.1.113883.6.1',
+                                            'displayName' => 'Body mass index (BMI) [Ratio]'
+                                        ]
+                                    ],
+                                    'statusCode' => [
+                                        '@attributes' => [
+                                            'code' => 'completed'
+                                        ]
+                                    ],
+                                    'effectiveTime' => [
+                                        '@attributes' => [
+                                            'value' => $date
+                                        ]
+                                    ],
+                                    'value' => [
+                                        '@attributes' => [
+                                            'xsi:type' => 'PQ',
+                                            'value' => $item['bmi'],
+                                            'unit' => 'kg/m2'
+                                        ]
+                                    ]
+                                ]
+                            ]
 						]
 					]
 				];
@@ -2088,7 +2180,7 @@ class CCDDocument {
 							'xsi:type' => 'CE',
 							'code' => 'IMMUNIZ',
 							'codeSystem' => '2.16.840.1.113883.5.4',
-							'codeSystemName' => 'ActCode',
+							'codeSystemName' => 'ActCode'
 						]
 					],
 					'statusCode' => [
@@ -2100,15 +2192,7 @@ class CCDDocument {
 						'@attributes' => [
 							'value' => $date
 						]
-					],
-					//'routeCode' => array(
-					//  '@attributes' => array(
-					//	    'code' => 'C28161',
-					//	    'codeSystem' => '2.16.840.1.113883.3.26.1.1',
-					//      'codeSystemName' => 'NCI Thesaurus',
-					//	    'displayName' => 'INTRAMUSCULAR',
-					//  )
-					//),
+					]
 				];
 
 				if(isset($item['administer_amount']) && $item['administer_amount'] != ''){
@@ -2186,7 +2270,10 @@ class CCDDocument {
 							'code' => $administered_by['taxonomy'],
 							'codeSystem' => '2.16.840.1.114222.4.11.1066',
 							'codeSystemName' => 'NUCC Health Care Provider Taxonomy',
-							'displayName' => $administered_by['title'] . ' ' . $administered_by['fname'] . ' ' . $administered_by['mname'] . ' ' . $administered_by['lname']
+							'displayName' => $administered_by['title'] . ' ' .
+                                            $administered_by['fname'] . ' ' .
+                                            $administered_by['mname'] . ' ' .
+                                            $administered_by['lname']
 						]
 					];
 				} else {
@@ -2245,6 +2332,11 @@ class CCDDocument {
 
 	/**
 	 * Method setMedicationsSection()
+     *
+     * The Medications Section contains a patient's current medications and pertinent medication history.
+     * At a minimum, the currently active medications are listed. An entire medication history is an option.
+     * The section can describe a patient's prescription and dispense history and information about
+     * intended drug monitoring.
 	 */
 	private function setMedicationsSection() {
 
@@ -2300,13 +2392,7 @@ class CCDDocument {
 									],
 									[
 										'@value' => 'Status'
-									],
-									//									array(
-									//										'@value' => 'Indications' // diagnosis
-									//									),
-									//									array(
-									//										'@value' => 'Fill Instructions' //1 refill Generic Substitition Allowed
-									//									)
+									]
 								]
 							]
 						]
@@ -2521,8 +2607,13 @@ class CCDDocument {
 		}
 		unset($medicationsData, $medications);
 	}
+
 	/**
 	 * Method setMedicationsAdministeredSection()
+     *
+     * The Medications Administered Section contains medications and fluids administered during a procedure.
+     * The section may also contain the procedure's encounter or other activity, excluding anesthetic medications.
+     * This section is not intended for ongoing medications and medication history.
 	 */
 	private function setMedicationsAdministeredSection() {
 
@@ -2787,23 +2878,450 @@ class CCDDocument {
 		unset($medicationsData, $medications);
 	}
 
+    /**
+     * CARE PLAN FRAMEWORK
+     *
+     * A Care Plan is a consensus-driven dynamic plan that represents all of a patient’s and Care Team Members’
+     * A Care Plan is a consensus-driven dynamic plan that represents all of a patient’s and Care Team Members’
+     * prioritized concerns, goals, and planned interventions. It serves as a blueprint shared by all
+     * Care Team Members, including the patient, to guide the Care Team Members (including Patients,
+     * their caregivers, providers and patient’s care. A Care Plan integrates multiple interventions proposed by
+     * multiple providers and disciplines for multiple conditions.
+     *
+     * A Care Plan represents one or more Plan(s) of Care and serves to reconcile and resolve conflicts between
+     * the various Plans of Care developed for a specific patient by different providers. While both a plan of
+     * care and a care plan include the patient’s life goals and require Care Team Members (including patients)
+     * to prioritize goals and interventions, the reconciliation process becomes more complex as the number of
+     * plans of care increases. The Care Plan also serves to enable longitudinal coordination of care.
+     *
+     * The CDA Care Plan represents an instance of this dynamic Care Plan at a point in time.
+     * The CDA document itself is NOT dynamic.
+     *
+     * Key differentiators between a Care Plan CDA and CCD (another “snapshot in time” document):
+     * •  Requires relationships between various acts:
+     * o  Health Concerns
+     * o  Problems
+     * o  Interventions
+     * o  Goals
+     * o  Outcomes
+     * •  Provides the ability to identify patient and provider priorities with each act
+     * •  Provides a header participant to indicate occurrences of Care Plan review
+     *
+     */
+    private function setCareOfPlanSection(){
+
+        // 1.1 - Care Plan (NEW)
+        $careOfPlan['template'] = [
+            '@attributes' => [
+                'root' => '2.16.840.1.113883.10.20.22.1.15'
+            ]
+        ];
+        $careOfPlan['id'] = [
+            '@attributes' => [
+                'root' => UUID::v4()
+            ]
+        ];
+        $planOfCare['code'] = [
+            '@attributes' => [
+                'code' => 'CarePlan-X',
+                'codeSystemName' => 'LOINC',
+                'codeSystem' => '2.16.840.1.113883.6.1'
+            ]
+        ];
+
+        // 1.1.1 - authenticator
+        // [0..1] Zero or one
+        // This authenticator represents patient agreement or sign-off of the Care Plan
+        $careOfPlan['authenticator'] = [
+            'time' => [
+                '@attributes' => [
+                    'value' => '' // Date of the patient sign-off
+                ]
+            ],
+            'signatureCode' => [
+                '@attributes' => [
+                    'code' => 'S'
+                ]
+            ],
+            'sdtc:signatureText' => [
+                '@attributes' => [
+                    'mediaType' => 'text/xml',
+                    'representation' => 'B64'
+                ],
+                base64_encode('')
+            ],
+            'assignedEntity' => [
+                'id' => [
+                    '@attributes' => [
+                        'extension' => '996-756-495',
+                        'root' => '2.16.840.1.113883.19.5'
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => 'ONESELF',
+                        'displayName' => 'Oneself',
+                        'codeSystem' => '2.16.840.1.113883.5.111',
+                        'codeSystemName' => 'HL7 Role code'
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.2 - participant - Patient Itself
+        // [0..*] Zero or more
+        // This participant represents the Care Plan Review. If the date in the time element is in the past,
+        // then this review has already taken place. If the date in the time element is in the future,
+        // then this is the date of the next scheduled review.
+        $careOfPlan['participant'] = [
+            '@attributes' => [
+                'typeCode' => 'IND'
+            ],
+            'functionCode' => [
+                '@attributes' => [
+                    'code' => '425268008',
+                    'codeSystem' => '2.16.840.1.113883.6.96',
+                    'codeSystemName' => 'SNOMED CT',
+                    'displayName' => 'Review of Care Plan'
+                ]
+            ],
+            'time' => [
+                '@attributes' => [
+                    'value' => '' // Check the participant description for more info.
+                ]
+            ],
+            // Code	Code System	Print Name
+            // ONESELF  RoleCode    self
+            // MTH      RoleCode	mother
+            // FTH      RoleCode	father
+            // DAU      RoleCode	natural daughter
+            // SON      RoleCode	natural son
+            // DAUINLAW	RoleCode	daughter in-law
+            // SONINLAW	RoleCode	son in-law
+            // GUARD	RoleCode	guardian
+            // HPOWATT	RoleCode	healthcare power of attorney
+            'associatedEntity' => [
+                '@attributes' => [
+                    'classCode' => 'ONESELF'
+                ],
+                'id' => [
+                    '@attributes' => [
+                        'root' => UUID::v4()
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.3 - participant - Care giver (Mother, Father, Guardian, ect.)
+        // [0..*] Zero or more
+        // This participant identifies individuals who support the patient such as a relative or caregiver.
+        $careOfPlan['participant'] = [
+            '@attributes' => [
+                'typeCode' => 'IND'
+            ],
+            'functionCode' => [
+                '@attributes' => [
+                    'code' => '407543004',
+                    'displayName' => 'Primary Carer',
+                    'codeSystem' => '2.16.840.1.113883.6.96',
+                    'codeSystemName' => 'SNOMED-CT'
+                ]
+            ],
+            'associatedEntity' => [
+                '@attributes' => [
+                    'classCode' => 'CAREGIVER'
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => '', // TODO: Take this information from Patient Contacts
+                        'codeSystem' => '2.16.840.1.113883.5.111'
+                    ]
+                ],
+                'addr' => [
+                    'streetAddressLine' => '', // TODO: Take this information from Patient Contacts
+                    'city' => '', // TODO: Take this information from Patient Contacts
+                    'state' => '', // TODO: Take this information from Patient Contacts
+                    'postalCode' => '', // TODO: Take this information from Patient Contacts
+                    'country' => '' // TODO: Take this information from Patient Contacts
+                ],
+                'telecom' => [
+                    'value' => '', // TODO: Take this information from Patient Contacts
+                    'use' => '' // TODO: Take this information from Patient Contacts
+                ],
+                'associatedPerson' => [
+                    'name' => [
+                        'prefix' => '', // TODO: Take this information from Patient Contacts
+                        'given' => '', // TODO: Take this information from Patient Contacts
+                        'family' => '' // TODO: Take this information from Patient Contacts
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.4 - documentationOf
+        // [1..1] Only one
+        // The documentationOf relationship in a Care Plan contains the representation of providers who are
+        // wholly or partially responsible for the safety and well-being of a subject of care.
+        $careOfPlan['documentationOf'] = [
+            'serviceEvent' => [
+                '@attributes' => [
+                    'classCode' => 'PCPR'
+                ],
+                'effectiveTime' => '' // TODO: ??? Don't know what date will be.
+            ]
+        ];
+
+        // 1.1.5 - performer
+        // [1..*] - Multiple entries
+        // The performer(s) represents the healthcare providers involved in the current or historical care of
+        // the patient.The patient’s key healthcare providers would be listed here which would include the
+        // primary physician and any active consulting physicians, therapists, counselors, and care team members.
+        $careOfPlan['performer'] = [
+            '@attributes' => [
+                'typeCode' => 'PRF'
+            ],
+            'time' => [
+                '@attributes' => [
+                    'value' => '' // TODO: ??? Don't know what date will be.
+                ]
+            ],
+            'assignedEntity' => [
+                'id' => [
+                    '@attributes' => [
+                        'extension' => '', // TODO: What value ???
+                        'root' => UUID::v4()
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => '59058001',
+                        'codeSystem' => '2.16.840.1.113883.6.96',
+                        'codeSystemName' => 'SNOMED CT',
+                        'displayName' => 'General Physician'
+                    ]
+                ],
+                'addr' => [
+                    'streetAddressLine' => '', // TODO: Take this information from provider
+                    'city' => '', // TODO: Take this information from provider
+                    'state' => '', // TODO: Take this information from provider
+                    'postalCode' => '', // TODO: Take this information from provider
+                    'country' => '' // TODO: Take this information from provider
+                ],
+                'telecom' => [
+                    'value' => '', // TODO: Take this information from provider
+                    'use' => '' // TODO: Take this information from provider
+                ],
+                'associatedPerson' => [
+                    'name' => [
+                        'prefix' => '', // TODO: Take this information from provider
+                        'given' => '', // TODO: Take this information from provider
+                        'family' => '' // TODO: Take this information from provider
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.6 - relatedDocument
+        // [0..1] Zero or more
+        // The Care Plan is continually evolving and dynamic. The Care Plan CDA instance is NOT dynamic.
+        // Each time a Care Plan CDA is generated it represents a snapshot in time of the Care Plan at that moment.
+        // Whenever a care provider or patient generates a Care Plan, it should be noted through relatedDocument
+        // whether the current Care Plan replaces or appends another Care Plan. The relatedDocumentTypeCode
+        // indicates whether the current document is an addendum to the ParentDocument (APND (append)) or the
+        // current document is a replacement of the ParentDocument (RPLC (replace)).
+        $careOfPlan['relatedDocument'] = [
+            '@attributes' => [
+                'typeCode' => 'RPLC'
+            ],
+            'parentDocument' => [
+                'id' => [
+                    '@attributes' => [
+                        'root' => UUID::v4()
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => 'CarePlan-X',
+                        'codeSystem' => '2.16.840.1.113883.6.1',
+                        'codeSystemName' => 'LOINC',
+                        'displayName' => 'Care Plan'
+                    ]
+                ],
+                'setId' => [
+                    '@attributes' => [
+                        'root' => UUID::v4()
+                    ]
+                ],
+                'versionNumber' => [
+                    '@attributes' => [
+                        'value' => '1'
+                    ]
+                ]
+            ]
+        ];
+
+        // 1.1.7 - structuredBody
+        //
+        // * 2.22 - Health Concerns Section (NEW)
+        // [1..1] Only one
+        // The Health Concerns section contains data that describes an interest or worry about a health state or
+        // process that has the potential to require attention, intervention or management.
+        //
+        // * Goals Section (NEW)
+        // [1..1] Only one
+        // This template represents patient Goals.  A goal is a defined outcome or condition to be achieved in
+        // the process of patient care. Goals include patient-defined goals (e.g., alleviation of health concerns,
+        // positive outcomes from interventions, longevity, function, symptom management, comfort) and
+        // clinician-specific goals to achieve desired and agreed upon outcomes.
+        //
+        // * Interventions Section (V2)
+        // [1..1] Only one
+        // This template represents Interventions.  Interventions are actions taken to maximize the prospects of
+        // achieving the patient’s or provider’s goals of care, including the removal of barriers to success.
+        // Interventions can be planned, ordered, historical, etc.
+        //
+        // Interventions include actions that may be ongoing (e.g. maintenance medications that the patient is taking,
+        // or monitoring the patient’s health status or the status of an intervention).
+        //
+        // Instructions are a subset of interventions and may include self-care instructions.
+        // Instructions are information or directions to the patient and other providers including how to care
+        // for the individual’s condition, what to do at home, when to call for help, any additional appointments,
+        // testing, and changes to the medication list or medication instructions, clinical guidelines and a
+        // summary of best practice.
+        //
+        // * Health Status Evaluations/Outcomes Section (NEW)
+        // [1..1] Only one
+        // This template contains observations regarding the outcome of care resulting from the interventions used to
+        // treat the patient. These observations represent status, at points in time, related to established
+        // care plan goals and/or interventions.
+        $careOfPlan['structuredBody'] = [];
+
+
+        // * 2.22 - Health Concerns Section (NEW)
+        // [1..1] Only one
+        // The Health Concerns section contains data that describes an interest or worry about a health state or
+        // process that has the potential to require attention, intervention or management.
+        $structuredBody_Section['section'] = [
+            'templateId' => [
+                'root' => '2.16.840.1.113883.10.20.22.2.58'
+            ],
+            'code' => [
+                '@attributes' => [
+                    'code' => '46030-3',
+                    'displayName' => 'Health Conditions Section',
+                    'codeSystem' => '2.16.840.1.113883.6.1',
+                    'codeSystemName' => 'LOINC'
+                ],
+                'title' => 'Health Concerns Section',
+                'text' => '',
+                // 3.40	- Health Status Observation (V2)
+                // This template represents  information about the overall health status of the patient.
+                // To represent the impact of a specific problem or concern related to the patient's expected
+                // health outcome use the Prognosis Observation Template 2.16.840.1.113883.10.20.22.4.113.
+                'entry' => [
+                    'observation' => [
+                        '@attributes' => [
+                            'classCode' => 'OBS',
+                            'moodCode' => 'EVN'
+                        ],
+                        'templateId' => [
+                            '@attributes' => [
+                                'root' => '2.16.840.1.113883.10.20.22.4.5'
+                            ]
+                        ],
+                        'code' => [
+                            '@attributes' => [
+                                'code' => '11323-3',
+                                'codeSystem' => '2.16.840.1.113883.6.1',
+                                'codeSystemName' => 'LOINC',
+                                'displayName' => 'Health status'
+                            ]
+                        ],
+                        'text' => [
+                            'reference' => [
+                                '@attributes' => [
+                                    'value' => '"#healthstatus' // Narrated Health Status Observation
+                                ]
+                            ]
+                        ],
+                        'statusCode' => [
+                            '@attributes' => [
+                                'code' => 'completed'
+                            ]
+                        ],
+                        // Value Set: 193. HealthStatus (V2) 2.16.840.1.113883.1.11.20.12.2
+                        // Represents the general health status of the patient.
+                        // Only one [1..1]
+                        //
+                        // Code	        Code System	Print Name
+                        // 81323004     SNOMED CT	Alive and well
+                        // 313386006	SNOMED CT	In remission
+                        // 162467007	SNOMED CT	Symptom free
+                        // 161901003	SNOMED CT	Chronically ill
+                        // 271593001	SNOMED CT	Severely ill
+                        // 21134002     SNOMED CT	Disabled
+                        // 161045001	SNOMED CT	Severely disabled
+                        // 135818000	SNOMED CT	General health poor
+                        // 135815002	SNOMED CT	General health good
+                        // 135816001	SNOMED CT	General health excellent
+                        // TODO: May be we need to modify the database and GaiaEHR to support this code
+                        'value' => [
+                            '@attributes' => [
+                                'xsi:type' => 'CD',
+                                'code' => '81323004',
+                                'codeSystem' => '2.16.840.1.113883.6.96',
+                                'codeSystemName' => 'SNOMED CT',
+                                'displayName' => 'Alive and well'
+                            ]
+                        ]
+                    ]
+                ],
+                // 3.39	Health Concern Act (NEW)
+                // at least one [1..*]
+                // This template represents a health concern. It is a wrapper for health concerns derived from a
+                // variety of sources within an EHR (such as Problem List, Family History, Social History,
+                // Social Worker Note, etc.).
+                //
+                // A Health Concern Act can represent a health concern that a patient currently has. Health
+                // concerns require intervention(s) to increase the likelihood of achieving the patient’s or
+                // providers’ goals of care.
+                //
+                // A Health Concern Act can also represent a health concern that is a risk. A risk is a clinical
+                // or socioeconomic condition that the patient doesn't currently have, but the risk for developing
+                // that condition rises to the level of concern such that an intervention and/or monitoring are needed.
+                //
+                // The code on the Health Concern Act is set to differentiate between the two types of health concerns.
+
+                // ACTS:
+                // Health Concerns Section (NEW) (required)
+                // Goal Observation (NEW) (optional)
+                'entry' => [
+                    'act' => [
+                        '@attributes' => [
+                            'templateId' => '2.16.840.1.113883.10.20.22.4.132'
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+    }
+
 	/**
 	 * Method setPlanOfCareSection() TODO
 	 */
 	private function setPlanOfCareSection() {
 
-		/**
-		 * Table moodCode Values
-		 * -----------------------------------------------------------------------
-		 * Code             | Definition
-		 * -----------------------------------------------------------------------
-		 * EVN (event)      | The entry defines an actual occurrence of an event.
-		 * INT (intent)     | The entry is intended or planned.
-		 * PRMS (promise)   | A commitment to perform the stated entry.
-		 * PRP (proposal)   | A proposal that the stated entry be performed.
-		 * RQO (request)    | A request or order to perform the stated entry.
-		 * -----------------------------------------------------------------------
-		 */
+		// Table moodCode Values
+        // -----------------------------------------------------------------------
+        // Code             | Definition
+        // -----------------------------------------------------------------------
+        // EVN (event)      | The entry defines an actual occurrence of an event.
+        // INT (intent)     | The entry is intended or planned.
+        // PRMS (promise)   | A commitment to perform the stated entry.
+        // PRP (proposal)   | A proposal that the stated entry be performed.
+        // RQO (request)    | A request or order to perform the stated entry.
+        // -----------------------------------------------------------------------
 		$Orders = new Orders();
 		$planOfCareData['OBS'] = $Orders->getOrderWithoutResultsByPid($this->pid);
 
@@ -2813,7 +3331,10 @@ class CCDDocument {
 		$CarePlanGoals = new CarePlanGoals();
 		$planOfCareData['PROC'] = $CarePlanGoals->getPatientCarePlanGoalsByPid($this->pid);
 
-		$hasData = !empty($planOfCareData['OBS']) || !empty($planOfCareData['ACT']) || !empty($planOfCareData['ENC']) || !empty($planOfCareData['PROC']);
+		$hasData = !empty($planOfCareData['OBS']) ||
+                    !empty($planOfCareData['ACT']) ||
+                    !empty($planOfCareData['ENC']) ||
+                    !empty($planOfCareData['PROC']);
 
 		if($this->isExcluded('planofcare') || !$hasData){
 			$planOfCare['@attributes'] = [
@@ -2870,9 +3391,7 @@ class CCDDocument {
 			$planOfCare['text']['table']['tbody']['tr'] = [];
 			$planOfCare['entry'] = [];
 
-			/**
-			 * Observations...
-			 */
+			// Observations
 			foreach($planOfCareData['OBS'] as $item){
 				$planOfCare['text']['table']['tbody']['tr'][] = [
 					'td' => [
@@ -2928,9 +3447,7 @@ class CCDDocument {
 				];
 			}
 
-			/**
-			 * Activities...
-			 */
+			// Activities
 			foreach($planOfCareData['ACT'] as $item){
 				$planOfCare['text']['table']['tbody']['tr'][] = [
 					'td' => [
@@ -3110,6 +3627,10 @@ class CCDDocument {
 
 	/**
 	 * Method setProblemsSection()
+     *
+     * This section lists and describes all relevant clinical problems at the time the document is generated.
+     * At a minimum, all pertinent current and historical problems should be listed.  Overall health status may
+     * be represented in this section.
 	 */
 	private function setProblemsSection() {
 
@@ -3230,8 +3751,8 @@ class CCDDocument {
 						],
 						'statusCode' => [
 							'@attributes' => [
-								'code' => 'active',
-								// active ||  suspended ||  aborted ||  completed
+                                // active ||  suspended ||  aborted ||  completed
+								'code' => 'active'
 							]
 						]
 					]
@@ -3239,7 +3760,7 @@ class CCDDocument {
 
 				$entry['act']['effectiveTime'] = [
 					'@attributes' => [
-						'xsi:type' => 'IVL_TS',
+						'xsi:type' => 'IVL_TS'
 					]
 				];
 				$entry['act']['effectiveTime']['low'] = [
@@ -3280,16 +3801,15 @@ class CCDDocument {
 								'root' => UUID::v4()
 							]
 						],
-						/**
-						 *  404684003    SNOMEDCT    Finding
-						 *    409586006    SNOMEDCT    Complaint
-						 *    282291009    SNOMEDCT    Diagnosis
-						 *    64572001    SNOMEDCT    Condition
-						 *    248536006    SNOMEDCT    Functional limitation
-						 *    418799008    SNOMEDCT    Symptom
-						 *    55607006    SNOMEDCT    Problem
-						 *    373930000    SNOMEDCT    Cognitive function finding
-						 */
+
+						 // 404684003    SNOMEDCT    Finding
+						 // 409586006    SNOMEDCT    Complaint
+						 // 282291009    SNOMEDCT    Diagnosis
+						 // 64572001    SNOMEDCT    Condition
+						 // 248536006    SNOMEDCT    Functional limitation
+						 // 418799008    SNOMEDCT    Symptom
+						 // 55607006    SNOMEDCT    Problem
+						 // 373930000    SNOMEDCT    Cognitive function finding
 						'code' => [
 							'@attributes' => [
 								'code' => '55607006',
@@ -3300,7 +3820,7 @@ class CCDDocument {
 						],
 						'statusCode' => [
 							'@attributes' => [
-								'code' => 'completed',
+								'code' => 'completed'
 							]
 						]
 					]
@@ -3308,7 +3828,7 @@ class CCDDocument {
 
 				$entry['act']['entryRelationship']['observation']['effectiveTime'] = [
 					'@attributes' => [
-						'xsi:type' => 'IVL_TS',
+						'xsi:type' => 'IVL_TS'
 					]
 				];
 				$entry['act']['entryRelationship']['observation']['effectiveTime']['low'] = [
@@ -3366,11 +3886,10 @@ class CCDDocument {
 								'code' => 'completed'
 							]
 						],
-						/**
-						 * 55561003     SNOMEDCT    Active
-						 * 73425007     SNOMEDCT    Inactive
-						 * 413322009    SNOMEDCT    Resolved
-						 */
+
+						 // 55561003     SNOMEDCT    Active
+						 // 73425007     SNOMEDCT    Inactive
+						 // 413322009    SNOMEDCT    Resolved
 						'value' => [
 							'@attributes' => [
 								'xsi:type' => 'CD',
@@ -3382,7 +3901,6 @@ class CCDDocument {
 						]
 					]
 				];
-
 				$problems['entry'][] = $entry;
 				unset($entry);
 			}
@@ -3506,15 +4024,16 @@ class CCDDocument {
 							'@attributes' => [
 								'code' => '48765-2',
 								'codeSystemName' => 'LOINC',
-								'codeSystem' => '2.16.840.1.113883.6.1',
+								'codeSystem' => '2.16.840.1.113883.6.1'
 							]
 						]
 					]
 				];
 
 				$entry['act']['statusCode'] = [
-					'@attributes' => [ // use snomed code for active
-					                   'code' => $item['status_code'] == '55561003' ? 'active' : 'completed',
+					'@attributes' => [
+                        // use snomed code for active
+                       'code' => $item['status_code'] == '55561003' ? 'active' : 'completed'
 					]
 				];
 
@@ -3571,8 +4090,9 @@ class CCDDocument {
 					]
 				];
 
+                // If it is unknown when the allergy began, this effectiveTime
+                // SHALL contain low/@nullFLavor="UNK" (CONF:9103)
 				$entry['act']['entryRelationship']['observation']['effectiveTime'] = [
-					// If it is unknown when the allergy began, this effectiveTime SHALL contain low/@nullFLavor="UNK" (CONF:9103)
 					'@attributes' => [
 						'xsi:type' => 'IVL_TS',
 					]
@@ -3606,18 +4126,15 @@ class CCDDocument {
 					];
 				}
 
-				/**
-				 * 420134006    SNOMEDCT    Propensity to adverse reactions
-				 * 418038007    SNOMEDCT    Propensity to adverse reactions to substance
-				 * 419511003    SNOMEDCT    Propensity to adverse reactions to drug
-				 * 418471000    SNOMEDCT    Propensity to adverse reactions to food
-				 * 419199007    SNOMEDCT    Allergy to substance
-				 * 416098002    SNOMEDCT    Drug allergy
-				 * 414285001    SNOMEDCT    Food allergy
-				 * 59037007     SNOMEDCT    Drug intolerance
-				 * 235719002    SNOMEDCT    Food intolerance
-				 */
-
+				 // 420134006    SNOMEDCT    Propensity to adverse reactions
+				 // 418038007    SNOMEDCT    Propensity to adverse reactions to substance
+				 // 419511003    SNOMEDCT    Propensity to adverse reactions to drug
+				 // 418471000    SNOMEDCT    Propensity to adverse reactions to food
+				 // 419199007    SNOMEDCT    Allergy to substance
+				 // 416098002    SNOMEDCT    Drug allergy
+				 // 414285001    SNOMEDCT    Food allergy
+				 // 59037007     SNOMEDCT    Drug intolerance
+				 // 235719002    SNOMEDCT    Food intolerance
 				$entry['act']['entryRelationship']['observation']['value'] = [
 					'@attributes' => [
 						'xsi:type' => 'CD',
@@ -3685,7 +4202,7 @@ class CCDDocument {
 
 				$entryRelationship['observation']['effectiveTime'] = [
 					'@attributes' => [
-						'xsi:type' => 'IVL_TS',
+						'xsi:type' => 'IVL_TS'
 					]
 				];
 
@@ -3907,23 +4424,6 @@ class CCDDocument {
 
 		$SocialHistory = new SocialHistory();
 
-		$socialHistory = [
-			'templateId' => [
-				'@attributes' => [
-					'root' => '2.16.840.1.113883.10.20.22.2.17'
-				]
-			],
-			'code' => [
-				'@attributes' => [
-					'code' => '29762-2',
-					'codeSystemName' => 'LOINC',
-					'codeSystem' => '2.16.840.1.113883.6.1'
-				]
-			],
-			'title' => 'Social History',
-			'text' => ''
-		];
-
 		if($this->isExcluded('social')) {
 			$socialHistory['@attributes'] = [
 				'nullFlavor' => 'NI'
@@ -3932,21 +4432,39 @@ class CCDDocument {
 			return;
 		};
 
-		/***************************************************************************************************************
-		 * Smoking Status Observation - This clinical statement represents a patient's current smoking
-		 * status. The vocabulary selected for this clinical statement is the best approximation of the
-		 * statuses in Meaningful Use (MU) Stage 1.
-		 *
-		 * If the patient is a smoker (77176002), the effectiveTime/low element must be present. If the patient
-		 * is an ex-smoker (8517006), both the effectiveTime/low and effectiveTime/high element must be present.
-		 *
-		 * The smoking status value set includes a special code to communicate if the smoking status is unknown
-		 * which is different from how Consolidated CDA generally communicates unknown information.
-		 */
-		$smokingStatus = $SocialHistory->getSocialHistoryByPidAndCode($this->pid, 'smoking_status');
+        /**
+         * Smoking Status Observation - This clinical statement represents a patient's current smoking
+         * status. The vocabulary selected for this clinical statement is the best approximation of the
+         * statuses in Meaningful Use (MU) Stage 1.
+         *
+         * If the patient is a smoker (77176002), the effectiveTime/low element must be present. If the patient
+         * is an ex-smoker (8517006), both the effectiveTime/low and effectiveTime/high element must be present.
+         *
+         * The smoking status value set includes a special code to communicate if the smoking status is unknown
+         * which is different from how Consolidated CDA generally communicates unknown information.
+         */
+        $smokingStatus = $SocialHistory->getSocialHistoryByPidAndCode($this->pid, 'smoking_status');
 
 		if(count($smokingStatus) > 0){
 			$smokingStatus = end($smokingStatus);
+
+            $socialHistory = [
+                'templateId' => [
+                    '@attributes' => [
+                        'root' => '2.16.840.1.113883.10.20.22.2.17'
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => '29762-2',
+                        'codeSystemName' => 'LOINC',
+                        'codeSystem' => '2.16.840.1.113883.6.1',
+                        'displayName' => "Social History"
+                    ]
+                ],
+                'title' => 'Social History',
+                'text' => $smokingStatus['note']
+            ];
 
 			$socialHistory['entry'][] = [
 				'@attributes' => [
@@ -3971,12 +4489,12 @@ class CCDDocument {
 					],
 					'statusCode' => [
 						'@attributes' => [
-							'code' => 'completed',
+							'code' => 'completed'
 						]
 					],
 					'effectiveTime' => [
 						'@attributes' => [
-							'xsi:type' => 'IVL_TS',
+							'xsi:type' => 'IVL_TS'
 						],
 						'low' => [
 							'@attributes' => [
@@ -3984,15 +4502,14 @@ class CCDDocument {
 							]
 						]
 					],
-					/**
-					 * Code             System      Print Name
-					 * 449868002        SNOMEDCT    Current every day smoker
-					 * 428041000124106  SNOMEDCT    Current some day smoker
-					 * 8517006          SNOMEDCT    Former smoker
-					 * 266919005        SNOMEDCT    Never smoker (Never Smoked)
-					 * 77176002         SNOMEDCT    Smoker, current status unknown
-					 * 266927001        SNOMEDCT    Unknown if ever smoked
-					 */
+
+					 // Code             System      Print Name
+					 // 449868002        SNOMEDCT    Current every day smoker
+					 // 428041000124106  SNOMEDCT    Current some day smoker
+					 // 8517006          SNOMEDCT    Former smoker
+					 // 266919005        SNOMEDCT    Never smoker (Never Smoked)
+					 // 77176002         SNOMEDCT    Smoker, current status unknown
+					 // 266927001        SNOMEDCT    Unknown if ever smoked
 					'value' => [
 						'@attributes' => [
 							'xsi:type' => 'CD',
@@ -4007,7 +4524,7 @@ class CCDDocument {
 		}
 		unset($smokingStatus);
 
-		/***************************************************************************************************************
+		/**
 		 * This Social History Observation defines the patient's occupational, personal (e.g., lifestyle),
 		 * social, and environmental history and health risk factors, as well as administrative data such
 		 * as marital status, race, ethnicity, and religious affiliation.
@@ -4085,18 +4602,17 @@ class CCDDocument {
 							'root' => UUID::v4()
 						]
 					],
-					/**
-					 * Code            System    Print Name
-					 * 229819007    SNOMEDCT    Tobacco use and exposure
-					 * 256235009    SNOMEDCT    Exercise
-					 * 160573003    SNOMEDCT    Alcohol intake
-					 * 364393001    SNOMEDCT    Nutritional observable
-					 * 364703007    SNOMEDCT    Employment detail
-					 * 425400000    SNOMEDCT    Toxic exposure status
-					 * 363908000    SNOMEDCT    Details of drug misuse behavior
-					 * 228272008    SNOMEDCT    Health-related behavior
-					 * 105421008    SNOMEDCT    Educational Achievement
-					 */
+
+					 // Code            System    Print Name
+					 // 229819007    SNOMEDCT    Tobacco use and exposure
+					 // 256235009    SNOMEDCT    Exercise
+					 // 160573003    SNOMEDCT    Alcohol intake
+					 // 364393001    SNOMEDCT    Nutritional observable
+					 // 364703007    SNOMEDCT    Employment detail
+					 // 425400000    SNOMEDCT    Toxic exposure status
+					 // 363908000    SNOMEDCT    Details of drug misuse behavior
+					 // 228272008    SNOMEDCT    Health-related behavior
+					 // 105421008    SNOMEDCT    Educational Achievement
 					'code' => [
 						'@attributes' => [
 							'code' => $socialHistoryEntry['category_code'],
@@ -4107,7 +4623,7 @@ class CCDDocument {
 					],
 					'statusCode' => [
 						'@attributes' => [
-							'code' => 'completed',
+							'code' => 'completed'
 						]
 					]
 				]
@@ -4115,7 +4631,7 @@ class CCDDocument {
 
 			$entry['observation']['effectiveTime'] = [
 				'@attributes' => [
-					'xsi:type' => 'IVL_TS',
+					'xsi:type' => 'IVL_TS'
 				]
 			];
 
@@ -4249,7 +4765,28 @@ class CCDDocument {
 
 	/**
 	 * Method setResultsSection()
-	 */
+     *
+     * The Results section contains observations of results generated by laboratories, imaging procedures,
+     * and other procedures. These coded result observations are contained within a Results Organizer in
+     * the Results Section. The scope includes observations such as
+     * hematology, chemistry, serology, virology, toxicology, microbiology, plain x-ray, ultrasound, CT, MRI,
+     * angiography, echocardiography, nuclear medicine, pathology, and procedure observations.
+     *
+     * The section often includes notable results such as abnormal values or relevant trends, and could
+     * contain all results for the period of time being documented.
+     *
+     * Laboratory results are typically generated by laboratories providing analytic services in areas such as
+     * chemistry, hematology, serology, histology, cytology, anatomic pathology, microbiology, and/or virology.
+     * These observations are based on analysis of specimens obtained from the patient and submitted to the laboratory.
+     *
+     * Imaging results are typically generated by a clinician reviewing the output of an imaging procedure,
+     * such as where a cardiologist reports the left ventricular ejection fraction based on the review of a
+     * cardiac echocardiogram.
+     *
+     * Procedure results are typically generated by a clinician to provide more granular information about
+     * component observations made during  a procedure, such as where a gastroenterologist reports the size
+     * of a polyp observed during a colonoscopy.
+     */
 	private function setResultsSection() {
 
 		$Orders = new Orders();
@@ -4318,8 +4855,8 @@ class CCDDocument {
 					],
 					'organizer' => [
 						'@attributes' => [
+                            // CLUSTER || BATTERY
 							'classCode' => 'CLUSTER',
-							// CLUSTER || BATTERY
 							'moodCode' => 'EVN'
 						],
 						'templateId' => [
@@ -4340,18 +4877,16 @@ class CCDDocument {
 								'codeSystem' => $this->codes($item['code_type'])
 							]
 						],
-						/**
-						 * Code         System      Print Name
-						 * aborted      ActStatus   aborted
-						 * active       ActStatus   active
-						 * cancelled    ActStatus   cancelled
-						 * completed    ActStatus   completed
-						 * held         ActStatus   held
-						 * suspended    ActStatus   suspended
-						 */
+                        // Code         System      Print Name
+                        // aborted      ActStatus   aborted
+                        // active       ActStatus   active
+                        // cancelled    ActStatus   cancelled
+                        // completed    ActStatus   completed
+						// held         ActStatus   held
+                        // suspended    ActStatus   suspended
 						'statusCode' => [
 							'@attributes' => [
-								'code' => 'completed',
+								'code' => 'completed'
 							]
 						],
 						'component' => []
@@ -4405,15 +4940,14 @@ class CCDDocument {
 									'displayName' => $obs['code_text']
 								]
 							],
-							/**
-							 * Code         System      Print Name
-							 * aborted      ActStatus   aborted
-							 * active       ActStatus   active
-							 * cancelled    ActStatus   cancelled
-							 * completed    ActStatus   completed
-							 * held         ActStatus   held
-							 * suspended    ActStatus   suspended
-							 */
+
+							 // Code         System      Print Name
+							 // aborted      ActStatus   aborted
+							 // active       ActStatus   active
+							 // cancelled    ActStatus   cancelled
+							 // completed    ActStatus   completed
+							 // held         ActStatus   held
+							 // suspended    ActStatus   suspended
 							'statusCode' => [
 								'@attributes' => [
 									'code' => 'completed'
@@ -4475,7 +5009,6 @@ class CCDDocument {
 
 					$ranges = preg_split("/to|-/", $obs['reference_rage']);
 					if(is_array($ranges) && count($ranges) > 2){
-
 						$component['observation']['referenceRange'] = [
 							'observationRange' => [
 								'value' => [
@@ -4522,7 +5055,16 @@ class CCDDocument {
 	}
 
 	/**
-	 * Method setFunctionalStatusSection() TODO
+	 * Method setFunctionalStatusSection()
+	 *
+	 * The Functional Status Section contains observations and assessments of a patient's physical abilities.
+	 * A patient’s functional status may include information regarding the patient’s general function
+	 * such as ambulation, ability to perform Activities of Daily Living (ADLs)
+	 * (e.g., bathing, dressing, feeding, grooming) or Instrumental Activities of Daily Living (IADLs)
+	 * (e.g., shopping, using a telephone, balancing a check book). Problems that impact function
+	 * (e.g., dyspnea, dysphagia) can be contained in the section.
+	 *
+	 * TODO: Need some finishing...
 	 */
 	private function setFunctionalStatusSection() {
 
@@ -4635,24 +5177,24 @@ class CCDDocument {
 
 				$entry['observation']['statusCode'] = [
 					'@attributes' => [
-						'code' => 'completed',
+						'code' => 'completed'
 					]
 				];
 
 				if($item['begin_date'] != '0000-00-00'){
 					$entry['observation']['effectiveTime'] = [
 						'@attributes' => [
-							'value' => $this->parseDate($item['created_date']),
+							'value' => $this->parseDate($item['created_date'])
 						]
 					];
 				} elseif($item['end_date'] != '0000-00-00') {
 					$entry['observation']['effectiveTime'] = [
 						'@attributes' => [
-							'xsi:type' => 'IVL_TS',
+							'xsi:type' => 'IVL_TS'
 						],
 						'low' => [
 							'@attributes' => [
-								'value' => $this->parseDate($item['begin_date']),
+								'value' => $this->parseDate($item['begin_date'])
 							]
 						],
 						'high' => [
@@ -4664,16 +5206,16 @@ class CCDDocument {
 				} else {
 					$entry['observation']['effectiveTime'] = [
 						'@attributes' => [
-							'xsi:type' => 'IVL_TS',
+							'xsi:type' => 'IVL_TS'
 						],
 						'low' => [
 							'@attributes' => [
-								'value' => $this->parseDate($item['begin_date']),
+								'value' => $this->parseDate($item['begin_date'])
 							]
 						],
 						'high' => [
 							'@attributes' => [
-								'value' => $this->parseDate($item['end_date']),
+								'value' => $this->parseDate($item['end_date'])
 							]
 						]
 					];
@@ -4780,7 +5322,6 @@ class CCDDocument {
 						],
 						'templateId' => [
 							'@attributes' => [
-								//2.16.840.1.113883.3.88.11.83.127
 								'root' => '2.16.840.1.113883.10.20.22.4.49'
 							]
 						],
@@ -4793,26 +5334,25 @@ class CCDDocument {
 							'@attributes' => [
 								// CPT4 Visit code 99200 <-> 99299
 								'code' => '99200',
-								'codeSystem' => $this->codes('CPT4'),
+								'codeSystem' => $this->codes('CPT4')
 							]
 						],
-						/**
-						 * Code         System      Print Name
-						 * aborted      ActStatus   aborted
-						 * active       ActStatus   active
-						 * cancelled    ActStatus   cancelled
-						 * completed    ActStatus   completed
-						 * held         ActStatus   held
-						 * suspended    ActStatus   suspended
-						 */
+
+						 // Code         System      Print Name
+						 // aborted      ActStatus   aborted
+						 // active       ActStatus   active
+						 // cancelled    ActStatus   cancelled
+						 // completed    ActStatus   completed
+						 // held         ActStatus   held
+						 // suspended    ActStatus   suspended
 						'statusCode' => [
 							'@attributes' => [
-								'code' => 'completed',
+								'code' => 'completed'
 							]
 						],
 						'effectiveTime' => [
 							'@attributes' => [
-								'xsi:type' => 'IVL_TS',
+								'xsi:type' => 'IVL_TS'
 							],
 							// low date is required
 							'low' => [
@@ -4826,10 +5366,8 @@ class CCDDocument {
 								]
 							]
 						],
+                        // Encounter Diagnosis
 						'entryRelationship' => [
-							/*************************************
-							 * Encounter Diagnosis
-							 */
 							[
 								'@attributes' => [
 									'typeCode' => 'SUBJ',
@@ -4847,14 +5385,11 @@ class CCDDocument {
 									'code' => [
 										'@attributes' => [
 											'code' => '29308-4',
-											'codeSystem' => '2.16.840.1.113883.6.1',
-
+											'codeSystem' => '2.16.840.1.113883.6.1'
 										]
 									],
+                                    // Problem Observation
 									'entryRelationship' => [
-										/*************************************
-										 * Problem Observation
-										 */
 										[
 											'@attributes' => [
 												'typeCode' => 'SUBJ',
@@ -4874,22 +5409,20 @@ class CCDDocument {
 														'root' => UUID::v4()
 													]
 												],
-												/**
-												 * Code             System      Print Name
-												 * 404684003        SNOMEDCT    Finding
-												 * 409586006        SNOMEDCT    Complaint
-												 * 282291009        SNOMEDCT    Diagnosis
-												 * 64572001         SNOMEDCT    Condition
-												 * 248536006        SNOMEDCT    Functional limitation
-												 * 418799008        SNOMEDCT    Symptom
-												 * 55607006         SNOMEDCT    Problem
-												 * 373930000        SNOMEDCT    Cognitive function finding
-												 */
+
+												// Code             System      Print Name
+												// 404684003        SNOMEDCT    Finding
+												// 409586006        SNOMEDCT    Complaint
+												// 282291009        SNOMEDCT    Diagnosis
+												// 64572001         SNOMEDCT    Condition
+												// 248536006        SNOMEDCT    Functional limitation
+												// 418799008        SNOMEDCT    Symptom
+												// 55607006         SNOMEDCT    Problem
+												// 373930000        SNOMEDCT    Cognitive function finding
 												'code' => [
 													'@attributes' => [
 														'code' => '282291009',
-														'codeSystem' => '2.16.840.1.113883.6.96',
-
+														'codeSystem' => '2.16.840.1.113883.6.96'
 													],
 													'originalText' => 'Original text'
 												],
@@ -4898,17 +5431,15 @@ class CCDDocument {
 														'code' => 'completed'
 													]
 												],
+                                                // SNOMEDCT problem list
 												'value' => [
 													'@attributes' => [
 														'xsi:type' => 'CD',
-														// SNOMEDCT problem list
 														'value' => '20150123'
 													]
 												],
+                                                // Problem Status
 												'entryRelationship' => [
-													/*************************************
-													 *  Problem Status
-													 */
 													[
 														'@attributes' => [
 															'typeCode' => 'REFR',
@@ -4926,7 +5457,7 @@ class CCDDocument {
 															'code' => [
 																'@attributes' => [
 																	'code' => '33999-4',
-																	'codeSystem' => '2.16.840.1.113883.6.1',
+																	'codeSystem' => '2.16.840.1.113883.6.1'
 																]
 															],
 															'statusCode' => [
@@ -4934,12 +5465,10 @@ class CCDDocument {
 																	'code' => 'completed'
 																]
 															],
-															/**
-															 * Code         System      Print Name
-															 * 55561003     SNOMEDCT    Active
-															 * 73425007     SNOMEDCT    Inactive
-															 * 413322009    SNOMEDCT    Resolved
-															 */
+															// Code         System      Print Name
+															// 55561003     SNOMEDCT    Active
+															// 73425007     SNOMEDCT    Inactive
+                                                            // 413322009    SNOMEDCT    Resolved
 															'value' => [
 																'@attributes' => [
 																	'xsi:type' => 'CD',
@@ -4948,9 +5477,7 @@ class CCDDocument {
 															]
 														]
 													],
-													/*************************************
-													 *  Health Status Observation
-													 */
+                                                    // Health Status Observation
 													[
 														'@attributes' => [
 															'typeCode' => 'REFR',
@@ -4968,20 +5495,17 @@ class CCDDocument {
 															'code' => [
 																'@attributes' => [
 																	'code' => '11323-3',
-																	'codeSystem' => '2.16.840.1.113883.6.1',
-
+																	'codeSystem' => '2.16.840.1.113883.6.1'
 																]
 															],
-															/**
-															 * Code         System      Print Name
-															 * 81323004     SNOMEDCT    Alive and well
-															 * 313386006    SNOMEDCT    In remission
-															 * 162467007    SNOMEDCT    Symptom free
-															 * 161901003    SNOMEDCT    Chronically ill
-															 * 271593001    SNOMEDCT    Severely ill
-															 * 21134002     SNOMEDCT    Disabled
-															 * 161045001    SNOMEDCT    Severely disabled
-															 */
+															// Code         System      Print Name
+															// 81323004     SNOMEDCT    Alive and well
+															// 313386006    SNOMEDCT    In remission
+															// 162467007    SNOMEDCT    Symptom free
+															// 161901003    SNOMEDCT    Chronically ill
+															// 271593001    SNOMEDCT    Severely ill
+															// 21134002     SNOMEDCT    Disabled
+                                                            // 161045001    SNOMEDCT    Severely disabled
 															'value' => [
 																'@attributes' => [
 																	'xsi:type' => 'CD',
@@ -5024,7 +5548,15 @@ class CCDDocument {
 		return $phone;
 	}
 
-	private function addressBuilder($use, $streetAddressLine, $city, $state, $zipcode, $country, $useablePeriod = null) {
+	private function addressBuilder(
+        $use,
+        $streetAddressLine,
+        $city,
+        $state,
+        $zipcode,
+        $country,
+        $useablePeriod = null) {
+
 		$addr = [];
 
 		if($use !== false){
@@ -5094,12 +5626,7 @@ class CCDDocument {
  * Handle the request only if pid and action is available
  */
 if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
-
-	//	if(!isset($_REQUEST['token']) || str_replace(' ', '+', $_REQUEST['token']) != $_SESSION['user']['token'])
-	//		die('Not Authorized!');
-	/**
-	 * Check token for security
-	 */
+	// Check token for security
 	include_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
 	include_once(ROOT . '/classes/MatchaHelper.php');
 	$ccd = new CCDDocument();

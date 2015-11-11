@@ -1121,7 +1121,6 @@ $LANG = array(
 	'create_report'							=> 'Create Report',
 	'create_pdf'							=> 'Create PDF',
 	'create_html'							=> 'Create HTML',
-    'create_text'							=> 'Create Text',
 	'last_visit'							=> 'Last Visit',
 	'id'									=> 'ID',
 	'zipcode'								=> 'Zip Code',
@@ -1628,5 +1627,6 @@ $LANG = array(
     'error_note'                            => 'Error Note',
     'new_radiology_result'                  => 'New radiology result',
     'lab_observations'                      => 'Laboratory Observations',
-    'cell_number'                           => 'Mobile Number'
+    'cell_number'                           => 'Mobile Number',
+    'download_shortly'                      => '<p>Download will begin shortly...</p><p>This could take several minutes, depending on the amount of patients stored</p>'
 );

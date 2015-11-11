@@ -1,20 +1,13 @@
 -- Set all the variables
--- SET @Provider = 6;
-SET @Provider = null;
-SET @ProviderOperator = '=';
--- SET @StartDate = '2015-10-01';
+SET @Provider = 6;
 SET @StartDate = null;
--- SET @EndDate = '2010-12-31';
 SET @EndDate = null;
--- SET @ProblemCode = '195967001';
 SET @ProblemCode = null;
 SET @MedicationCode = null;
--- SET @MedicationCode = '731167';
 SET @MedicationAllergyCode = null;
--- SET @MedicationAllergyCode = '1191';
 
 -- Display all the patient fields
-SELECT patient.* 
+SELECT patient.*, Race.option_name as Race, Ethnicity.option_name as Ethnicity
 FROM patient
 
 --
@@ -27,7 +20,7 @@ SELECT distinct(pid) AS pid, code as problem_code
     -- Filter by Patient Active Problems
     WHERE CASE 
 		WHEN @ProblemCode IS NOT NULL 
-		THEN patient_active_problems.code = @ProblemCode 
+		THEN patient_active_problems.code = @ProblemCode
 		ELSE 1=1 
 	END
     LIMIT 1
@@ -56,10 +49,9 @@ SELECT distinct(pid) as pid, provider_uid, service_date
     -- Filter by Provider
 	AND CASE 
 		WHEN @Provider IS NOT NULL 
-		THEN encounters.provider_uid = @Provider 
+		THEN encounters.provider_uid = @Provider
 		ELSE 1=1 
 	END
-    LIMIT 1
 ) encounters ON patient.pid = encounters.pid
 
 -- Join Medications
@@ -89,6 +81,14 @@ SELECT distinct(pid) AS pid, allergy_code
 ) patient_allergies ON patient_allergies.pid = patient.pid
 
 
+-- Join Combo List Options for Race
+LEFT JOIN combo_lists_options as Race ON Race.option_value = patient.race
+AND Race.list_id = 14
+
+-- Join Combo List Options for Ethnicity
+LEFT JOIN combo_lists_options as Ethnicity ON Ethnicity.option_value = patient.ethnicity
+AND Ethnicity.list_id = 59
+
 --
 -- WHERE CLAUSE
 --
@@ -102,7 +102,7 @@ END
 -- Filter by Provider
 AND CASE 
 	WHEN @Provider IS NOT NULL 
-	THEN encounters.provider_uid = @Provider 
+	THEN encounters.provider_uid = @Provider
 	ELSE 1=1 
 END
 
@@ -126,7 +126,7 @@ END
 -- Filter by Patient Active Problems
 AND CASE 
 	WHEN @ProblemCode IS NOT NULL 
-	THEN patient_active_problems.problem_code = @ProblemCode 
+	THEN patient_active_problems.problem_code = @ProblemCode
 	ELSE 1=1 
 END
 

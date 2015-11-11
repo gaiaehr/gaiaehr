@@ -3291,6 +3291,10 @@ class CCDDocument {
                 // that condition rises to the level of concern such that an intervention and/or monitoring are needed.
                 //
                 // The code on the Health Concern Act is set to differentiate between the two types of health concerns.
+
+                // ACTS:
+                // Health Concerns Section (NEW) (required)
+                // Goal Observation (NEW) (optional)
                 'entry' => [
                     'act' => [
                         '@attributes' => [

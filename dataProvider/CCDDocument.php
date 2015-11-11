@@ -2930,6 +2930,7 @@ class CCDDocument {
         ];
 
         // 1.1.1 - authenticator
+        // [0..1] Zero or one
         // This authenticator represents patient agreement or sign-off of the Care Plan
         $careOfPlan['authenticator'] = [
             'time' => [
@@ -2968,6 +2969,7 @@ class CCDDocument {
         ];
 
         // 1.1.2 - participant - Patient Itself
+        // [0..*] Zero or more
         // This participant represents the Care Plan Review. If the date in the time element is in the past,
         // then this review has already taken place. If the date in the time element is in the future,
         // then this is the date of the next scheduled review.
@@ -3011,6 +3013,7 @@ class CCDDocument {
         ];
 
         // 1.1.3 - participant - Care giver (Mother, Father, Guardian, ect.)
+        // [0..*] Zero or more
         // This participant identifies individuals who support the patient such as a relative or caregiver.
         $careOfPlan['participant'] = [
             '@attributes' => [
@@ -3056,6 +3059,7 @@ class CCDDocument {
         ];
 
         // 1.1.4 - documentationOf
+        // [1..1] Only one
         // The documentationOf relationship in a Care Plan contains the representation of providers who are
         // wholly or partially responsible for the safety and well-being of a subject of care.
         $careOfPlan['documentationOf'] = [
@@ -3068,11 +3072,92 @@ class CCDDocument {
         ];
 
         // 1.1.5 - performer
+        // [1..*] - Multiple entries
         // The performer(s) represents the healthcare providers involved in the current or historical care of
         // the patient.The patient’s key healthcare providers would be listed here which would include the
         // primary physician and any active consulting physicians, therapists, counselors, and care team members.
         $careOfPlan['performer'] = [
+            '@attributes' => [
+                'typeCode' => 'PRF'
+            ],
+            'time' => [
+                '@attributes' => [
+                    'value' => '' // TODO: ??? Don't know what date will be.
+                ]
+            ],
+            'assignedEntity' => [
+                'id' => [
+                    '@attributes' => [
+                        'extension' => '', // TODO: What value ???
+                        'root' => UUID::v4()
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => '59058001',
+                        'codeSystem' => '2.16.840.1.113883.6.96',
+                        'codeSystemName' => 'SNOMED CT',
+                        'displayName' => 'General Physician'
+                    ]
+                ],
+                'addr' => [
+                    'streetAddressLine' => '', // TODO: Take this information from provider
+                    'city' => '', // TODO: Take this information from provider
+                    'state' => '', // TODO: Take this information from provider
+                    'postalCode' => '', // TODO: Take this information from provider
+                    'country' => '' // TODO: Take this information from provider
+                ],
+                'telecom' => [
+                    'value' => '', // TODO: Take this information from provider
+                    'use' => '' // TODO: Take this information from provider
+                ],
+                'associatedPerson' => [
+                    'name' => [
+                        'prefix' => '', // TODO: Take this information from provider
+                        'given' => '', // TODO: Take this information from provider
+                        'family' => '' // TODO: Take this information from provider
+                    ]
+                ]
+            ]
+        ];
 
+        // 1.1.6 - relatedDocument
+        // [0..1] Zero or more
+        // The Care Plan is continually evolving and dynamic. The Care Plan CDA instance is NOT dynamic.
+        // Each time a Care Plan CDA is generated it represents a snapshot in time of the Care Plan at that moment.
+        // Whenever a care provider or patient generates a Care Plan, it should be noted through relatedDocument
+        // whether the current Care Plan replaces or appends another Care Plan. The relatedDocumentTypeCode
+        // indicates whether the current document is an addendum to the ParentDocument (APND (append)) or the
+        // current document is a replacement of the ParentDocument (RPLC (replace)).
+        $careOfPlan['relatedDocument'] = [
+            '@attributes' => [
+                'typeCode' => 'RPLC'
+            ],
+            'parentDocument' => [
+                'id' => [
+                    '@attributes' => [
+                        'root' => UUID::v4()
+                    ]
+                ],
+                'code' => [
+                    '@attributes' => [
+                        'code' => 'CarePlan-X',
+                        'codeSystem' => '2.16.840.1.113883.6.1',
+                        'codeSystemName' => 'LOINC',
+                        'displayName' => 'Care Plan'
+                    ]
+                ],
+                'setId' => [
+                    '@attributes' => [
+                        'root' => UUID::v4()
+                    ]
+                ],
+                'versionNumber' => [
+                    '@attributes' => [
+                        'value' => '1'
+                    ]
+                ]
+            ]
         ];
     }
 

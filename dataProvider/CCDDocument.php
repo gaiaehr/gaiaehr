@@ -184,6 +184,10 @@ class CCDDocument {
 	 * @var bool
 	 */
 	private $requiredPlanOfCare;
+    /**
+     * @vat bool
+     */
+    private $requiredCareOfPlan;
 	/**
 	 * @var bool
 	 */
@@ -490,6 +494,7 @@ class CCDDocument {
 			$this->requiredProblems = true;
 			$this->requiredProcedures = true;
 			$this->requiredPlanOfCare = true;
+            $this->requiredCareOfPlan = true;
 			$this->requiredResults = true;
 			$this->requiredEncounters = false;
 		}

@@ -23,6 +23,16 @@ Ext.define('App.controller.KeyCommands', {
 			return;
 		}
 
+		if(e.altKey || e.ctrlKey || e.shiftKey){
+			var event = 'KEY-';
+			if(e.altKey) event += 'ALT-';
+			if(e.ctrlKey) event += 'CTRL-';
+			if(e.shiftKey) event += 'SHIFT-';
+			event += String.fromCharCode(e.getCharCode());
+			e.event = event;
+			app.fireEvent(event, e, t);
+		}
+
 		if(e.altKey && e.ctrlKey && e.shiftKey){
 			var action = '';
 

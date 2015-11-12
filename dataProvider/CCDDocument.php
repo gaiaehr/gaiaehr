@@ -3276,31 +3276,97 @@ class CCDDocument {
                         ]
                     ]
                 ],
-                // 3.39	Health Concern Act (NEW)
-                // at least one [1..*]
-                // This template represents a health concern. It is a wrapper for health concerns derived from a
-                // variety of sources within an EHR (such as Problem List, Family History, Social History,
-                // Social Worker Note, etc.).
-                //
-                // A Health Concern Act can represent a health concern that a patient currently has. Health
-                // concerns require intervention(s) to increase the likelihood of achieving the patient’s or
-                // providers’ goals of care.
-                //
-                // A Health Concern Act can also represent a health concern that is a risk. A risk is a clinical
-                // or socioeconomic condition that the patient doesn't currently have, but the risk for developing
-                // that condition rises to the level of concern such that an intervention and/or monitoring are needed.
-                //
-                // The code on the Health Concern Act is set to differentiate between the two types of health concerns.
-
-                // ACTS:
-                // Health Concerns Section (NEW) (required)
-                // Goal Observation (NEW) (optional)
-                'entry' => [
-                    'act' => [
+                // 2.21	Goals Section
+				//This template represents patient Goals.  A goal is a defined outcome or condition to be achieved
+				// in the process of patient care. Goals include patient-defined goals (e.g., alleviation of health
+				// concerns, positive outcomes from interventions, longevity, function, symptom management, comfort)
+				// and clinician-specific goals to achieve desired and agreed upon outcomes.
+                'section' => [
+                    'templateId' => [
                         '@attributes' => [
-                            'templateId' => '2.16.840.1.113883.10.20.22.4.132'
+                            'root' => '2.16.840.1.113883.10.20.22.2.60'
                         ]
-                    ]
+                    ],
+					'code' => [
+						'code' => '61146-7',
+						'displayName' => 'Goals',
+						'codeSystem' => '2.16.840.1.113883.6.1',
+						'codeSystemName' => 'LOINC'
+					],
+					'title' => 'Goals Section',
+					'text' => '', // TODO: Narrative Goal Section
+					'entry' => [
+						// 3.37	Goal Observation
+						// This template represents a patient care goal.  A Goal Observation template may have related
+						// components that are acts, encounters, observations, procedures, substance administrations
+						// or supplies.
+						//
+						// A goal may be a patient or provider goal.  If the author is set to the
+						// recordTarget (patient), this is a patient goal.  If the author is set to a provider,
+						// this is a provider goal. If both patient and provider are set as authors, this is a
+						// negotiated goal.
+						//
+						// A goal usually has a related health concern and/or risk.
+						//
+						// A goal can have components consisting of other goals (milestones), these milestones are
+						// related to the overall goal through entryRelationships.
+						'observation' => [
+							'@attributes' => [
+								'classCode' => 'OBS',
+								'moodCode' => 'GOL'
+							],
+							'templateId' => [
+                                '@attributes' => [
+                                    'root' => '2.16.840.1.113883.10.20.22.4.44.2'
+                                ]
+							],
+                            'templateId' => [
+                                '@attributes' => [
+                                    'root' => '2.16.840.1.113883.10.20.22.4.121'
+                                ]
+                            ],
+                            'id' => [
+                                '@attributes' => [
+                                    'root' => UUID::v4()
+                                ]
+                            ],
+                            'code' => [
+                                '@attributes' => [
+                                    'code' => '252465000', // TODO: Code for the Goal Observation
+                                    'codeSystem' => '2.16.840.1.113883.6.96',
+                                    'codeSystemName' => 'SNOMED CT',
+                                    'displayName' => 'Pulse oximetry' // TODO: Name for the Goal Observation
+                                ]
+                            ],
+                            'statusCode' => [
+                                '@attributes' => [
+                                    'code' => 'active' // TODO: This should be the status of the GOAL
+                                ]
+                            ],
+                            'effectiveTime' => [
+                                '@attributes' => [
+                                    'value' => '20130902' // TODO: This should be the starting date of the Goal
+                                ]
+                            ],
+                            'value' => [
+                                '@attributes' => [
+                                    'xsi:type' => 'IVL_PQ' // TODO: This should be the coding for the measurement
+                                ],
+                                'low' => [
+                                    '@attributes' => [
+                                        'value' => '92',
+                                        'unit' => '%'
+                                    ]
+                                ]
+                            ],
+                            // If the author is set to the recordTarget (patient), this is a patient goal.
+                            // If the author is set to a provider, this is a provider goal.
+                            // If both patient and provider are set as authors, this is a negotiated goal.
+                            'author' => [
+
+                            ]
+						]
+					]
                 ]
             ]
         ];

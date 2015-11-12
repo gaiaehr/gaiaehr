@@ -3354,8 +3354,8 @@ class CCDDocument {
                                 ],
                                 'low' => [
                                     '@attributes' => [
-                                        'value' => '92',
-                                        'unit' => '%'
+                                        'value' => '92', // TODO: This should be the Goal value
+                                        'unit' => '%' // TODO: This should be the Goal value unit
                                     ]
                                 ]
                             ],
@@ -3363,7 +3363,51 @@ class CCDDocument {
                             // If the author is set to a provider, this is a provider goal.
                             // If both patient and provider are set as authors, this is a negotiated goal.
                             'author' => [
-
+                                '@attributes' => [
+                                    'typeCode' => 'AUT'
+                                ],
+                                'templateId' => [
+                                    '@attributes' => [
+                                        'root' => '2.16.840.1.113883.10.20.22.4.119'
+                                    ]
+                                ],
+                                'time' => [
+                                    '@attributes' => [
+                                        'value' => '20130730' // TODO: This should be the when the goal was established
+                                    ]
+                                ],
+                                'assignedAuthor' => [
+                                    'id' => UUID::v4(),
+                                    'code' => [
+                                        'code' => '163W00000X', // TODO: This should be the care provider
+                                        'displayName' => 'Registered nurse', // TODO: This should be the care provider
+                                        'codeSystem' => '2.16.840.1.113883.6.101', // TODO: This should be the care provider
+                                        'codeSystemName' => 'Health Care Provider Taxonomy' // TODO: This should be the care provider
+                                    ],
+                                    'assignedPerson' => [
+                                        'name' => [
+                                            'given' => 'Nurse', // TODO: This should by the care provider name
+                                            'family' => 'Florence', // TODO: This should by the care provider name
+                                            'suffix' => 'RN' // TODO: This should by the care provider name
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            'author' => [
+                                '@attributes' => [
+                                    'typeCode' => 'AUT'
+                                ],
+                                'templateId' => [
+                                    '@attributes' => [
+                                        'root' => '2.16.840.1.113883.10.20.22.4.119'
+                                    ]
+                                ],
+                                'time' => '',
+                                'assignedAuthor' => [
+                                    // TODO: This should be a pointer back to the patient ID, so you don't have to put
+                                    // all the information about the patient all over again.
+                                    'id' => ''
+                                ]
                             ]
 						]
 					]

@@ -347,6 +347,7 @@ class CCDDocument {
 				'Medications',
 				'MedicationsAdministered',
 				'PlanOfCare',
+				'CareOfPlan',
 				'Problems',
 				'Allergies',
 				'SocialHistory',
@@ -2914,6 +2915,8 @@ class CCDDocument {
      *
      */
     private function setCareOfPlanSection(){
+
+        if(!$this->requiredCareOfPlan) return;
 
         // 1.1 - Care Plan (NEW)
         $careOfPlan['template'] = [

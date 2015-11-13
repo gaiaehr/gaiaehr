@@ -120,7 +120,86 @@ Ext.override(Ext.button.Button, {
 
         // Apply the renderData to the template args
         Ext.applyIf(me.renderData, me.getTemplateArgs());
-    },
+    }
+});
+
+Ext.override(Ext.menu.Item, {
+
+    acl: true,
+
+    beforeRender: function () {
+        var me = this,
+            blank = Ext.BLANK_IMAGE_URL,
+            glyph = me.glyph,
+            glyphFontFamily = Ext._glyphFontFamily,
+            glyphParts, iconCls, arrowCls;
+
+
+        // added
+        if(me.acl === false){
+            me.hidden = true;
+            me.disabled = true;
+        }
+
+        me.callParent();
+
+        if (me.iconAlign === 'right') {
+            iconCls = me.checkChangeDisabled ? me.disabledCls : '';
+            arrowCls = Ext.baseCSSPrefix + 'menu-item-icon-right ' + me.iconCls;
+        } else {
+            iconCls = (me.iconCls || '') + (me.checkChangeDisabled ? ' ' + me.disabledCls : '');
+            arrowCls = me.menu ? me.arrowCls : '';
+        }
+
+        if (typeof glyph === 'string') {
+            glyphParts = glyph.split('@');
+            glyph = glyphParts[0];
+            glyphFontFamily = glyphParts[1];
+        }
+
+        Ext.applyIf(me.renderData, {
+            href: me.href || '#',
+            hrefTarget: me.hrefTarget,
+            icon: me.icon,
+            iconCls: iconCls,
+            glyph: glyph,
+            glyphCls: glyph ? Ext.baseCSSPrefix + 'menu-item-glyph' : undefined,
+            glyphFontFamily: glyphFontFamily,
+            hasIcon: !!(me.icon || me.iconCls || glyph),
+            iconAlign: me.iconAlign,
+            plain: me.plain,
+            text: me.text,
+            arrowCls: arrowCls,
+            blank: blank,
+            tabIndex: me.tabIndex
+        });
+    }
+
+});
+
+Ext.override(Ext.menu.Menu, {
+
+    acl: true,
+
+    beforeRender: function (){
+
+        // added
+        if(this.acl === false){
+            this.hidden = true;
+            this.disabled = true;
+        }
+
+        this.callParent(arguments);
+
+        // Menus are usually floating: true, which means they shrink wrap their items.
+        // However, when they are contained, and not auto sized, we must stretch the items.
+        if(!this.getSizeModel().width.shrinkWrap){
+            this.layout.align = 'stretch';
+        }
+    }
+});
+
+Ext.override(Ext.AbstractComponent, {
 
     enable: function(silent) {
         var me = this;
@@ -131,21 +210,23 @@ Ext.override(Ext.button.Button, {
             return me;
         }
 
-        me.callParent(arguments);
-
-        me.removeClsWithUI('disabled');
+        delete me.disableOnBoxReady;
+        me.removeCls(me.disabledCls);
         if (me.rendered) {
-            me.el.dom.setAttribute('tabIndex', me.tabIndex);
+            me.onEnable();
+        } else {
+            me.enableOnBoxReady = true;
+        }
+
+        me.disabled = false;
+        delete me.resetDisable;
+
+        if (silent !== true) {
+            me.fireEvent('enable', me);
         }
 
         return me;
     },
-
-
-
-});
-
-Ext.override(Ext.AbstractComponent, {
 
     setDisabled : function(disabled) {
 

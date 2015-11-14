@@ -35517,10 +35517,11 @@ Ext.define('App.controller.administration.DataPortability', {
 		});
 
 		this.getDataPortabilityPanel().add(iframe);
-		this.getDataPortabilityPanel().update('<p>Download will begin shortly...</p><p>This could take several minutes, depending on the amount of patients stored</p>');
+		this.getDataPortabilityPanel().update(_('download_shortly'));
 	}
 
 });
+
 Ext.define('App.controller.administration.FacilityStructure', {
 	extend: 'Ext.app.Controller',
 
@@ -37816,6 +37817,16 @@ Ext.define('App.controller.KeyCommands', {
 
 		if(e.getKey() == e.ALT || e.getKey() == e.CTRL || e.getKey() == e.SHIFT){
 			return;
+		}
+
+		if(e.altKey || e.ctrlKey || e.shiftKey){
+			var event = 'KEY-';
+			if(e.altKey) event += 'ALT-';
+			if(e.ctrlKey) event += 'CTRL-';
+			if(e.shiftKey) event += 'SHIFT-';
+			event += String.fromCharCode(e.getCharCode());
+			e.event = event;
+			app.fireEvent(event, e, t);
 		}
 
 		if(e.altKey && e.ctrlKey && e.shiftKey){

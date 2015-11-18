@@ -197,9 +197,16 @@ class CCDDocument {
 	 */
 	private $requiredEncounters;
 
+	/**
+	 * @var array
+	 */
 	private $exclude = [];
 
-	function __construct() {
+	/**
+	 * CCDDocument constructor.
+	 */
+	function __construct()
+	{
 		$this->dateNow = date('Ymd');
 		$this->timeNow = date('YmdHisO');
 		$this->Encounter = new Encounter();
@@ -217,7 +224,6 @@ class CCDDocument {
      * @return string
      */
     function codes($codeSystem){
-        if(isset($codeSystem)) return '';
         switch($codeSystem)
         {
             case 'CPT':
@@ -454,6 +460,9 @@ class CCDDocument {
 
 	}
 
+	/**
+	 * @return string
+	 */
 	private function getFileName(){
 	    return strtolower(str_replace(
             ' ',
@@ -562,7 +571,10 @@ class CCDDocument {
 		];
 		$this->xmlData['code'] = [
 			'@attributes' => [
-				'code' => '95483297'
+				'code' => '34133-9',
+                'displayName' => 'Summary of episode note',
+                'codeSystem' => '2.16.840.1.113883.6.1',
+                'codeSystemName' => 'LOINC'
 			]
 		];
 
@@ -654,7 +666,7 @@ class CCDDocument {
                 $PatientContactRecord['phone_use_code'].
                 $PatientContactRecord['phone_area_code'].
                 $PatientContactRecord['phone_local_number'],
-                'H'
+                'HP'
             );
         }
 
@@ -2526,9 +2538,7 @@ class CCDDocument {
 				$performer['assignedEntity']['telecom'] = $this->telecomBuilder($this->encounterFacility['phone'], 'WP');
 
 				$performer['assignedEntity']['representedOrganization'] = [
-					'name' => [
-						'prefix' => $this->encounterFacility['name']
-					]
+					'name' => $this->encounterFacility['name']
 				];
 
 				$performer['assignedEntity']['representedOrganization']['telecom'] = $this->telecomBuilder($this->encounterFacility['phone'], 'WP');
@@ -2578,25 +2588,6 @@ class CCDDocument {
 								'@attributes' => [
 									'nullFlavor' => 'UNK'
 								]
-							]
-						]
-					]
-				];
-
-				$entry['substanceAdministration']['precondition'] = [
-					'@attributes' => [
-						'typeCode' => 'PRCN'
-					],
-					'criterion' => [
-						'code' => [
-							'@attributes' => [
-								'nullFlavor' => 'UNK'
-							]
-						],
-						'value' => [
-							'@attributes' => [
-								'xsi:type' => 'CD',
-								'nullFlavor' => 'UNK'
 							]
 						]
 					]
@@ -2687,6 +2678,8 @@ class CCDDocument {
 				]
 			];
 
+
+            // --- 3.51 Medication Activity (V2)
 			$medications['entry'] = [];
 
 			foreach($medicationsData as $item){
@@ -2796,9 +2789,7 @@ class CCDDocument {
 				$performer['assignedEntity']['telecom'] = $this->telecomBuilder($this->encounterFacility['phone'], 'WP');
 
 				$performer['assignedEntity']['representedOrganization'] = [
-					'name' => [
-						'prefix' => $this->encounterFacility['name']
-					]
+					'name' => $this->encounterFacility['name']
 				];
 
 				$performer['assignedEntity']['representedOrganization']['telecom'] = $this->telecomBuilder($this->encounterFacility['phone'], 'WP');
@@ -4595,7 +4586,7 @@ class CCDDocument {
 					],
 					'templateId' => [
 						'@attributes' => [
-							'root' => '2.16.840.1.113883.10.20.22.4.78'
+							'root' => '2.16.840.1.113883.10.20.22.4.38.2'
 						]
 					],
 					'code' => [
@@ -4611,9 +4602,6 @@ class CCDDocument {
 						]
 					],
 					'effectiveTime' => [
-						'@attributes' => [
-							'xsi:type' => 'IVL_TS'
-						],
 						'low' => [
 							'@attributes' => [
 								'value' => $this->parseDate($smokingStatus['create_date'])
@@ -5661,7 +5649,7 @@ class CCDDocument {
 				$phone['@attributes']['use'] = $use;
 			}
 		} else {
-			$phone['@attributes']['nullFlavor'] = 'NI';
+			$phone['@attributes']['nullFlavor'] = 'UNK';
 		}
 		return $phone;
 	}
@@ -5686,7 +5674,7 @@ class CCDDocument {
 		} elseif($streetAddressLine != '') {
 			$addr['streetAddressLine']['@value'] = $streetAddressLine;
 		} else {
-			$addr['streetAddressLine']['@attributes']['nullFlavor'] = 'UNK';
+			$addr['streetAddressLine']['@attributes']['nullFlavor'] = 'NI';
 		}
 
 		if($city === false){

@@ -141,6 +141,7 @@ class encounterActivity
                 {
                     $Entry['entryRelationship'][] = [
                         '@attributes' => [
+
                             'typeCode' => 'RSON'
                         ],
                         'entry' => [

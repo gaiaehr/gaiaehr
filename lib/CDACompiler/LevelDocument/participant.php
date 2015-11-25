@@ -39,6 +39,20 @@ class participant
     }
 
     /**
+     * Give back the structure of this Entry
+     * @return array
+     */
+    public static function Structure()
+    {
+        return [
+            'code' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+            'displayName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+            'codeSystemName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+            'Narrated' => 'This playingEntity/name MAY be used for the vehicle name in text, such as Normal Saline (CONF:10087)'
+        ];
+    }
+
+    /**
      * @param $Data
      * @return array|Exception
      */
@@ -50,40 +64,50 @@ class participant
             self::Validate($Data);
 
             // Build the section
-            foreach($Data['Participants'] as $Participant) {
-                $Section[] = array(
-                    'participant' => [
+            $Document = [
+                'participant' => [
+                    '@attributes' => [
+                        'typeCode' => 'IND'
+                    ],
+                    'associatedEntity' => [
                         '@attributes' => [
-                            'typeCode' => 'IND'
+                            'classCode' => 'NOK'
                         ],
-                        'time' => [
+                        'code' => [
                             '@attributes' => [
-                                'xsi:type' => 'IVL_TS'
-                            ],
-                            'low' => $Participant['startDate'],
-                            'high' => $Participant['endDate'],
+                                'code' => $Data['relationship']['code'],
+                                'displayName' => $Data['relationship']['displayName'],
+                                'codeSystem' => Utilities::CodingSystemId($Data['relationship']['codeSystemName']),
+                                'codeSystemName' => $Data['relationship']['codeSystemName']
+                            ]
                         ],
-                        'associatedEntity' => [
-                            '@attributes' => [
-                                'classCode' => 'NOK'
-                            ],
-                            'code' => Component::PersonalAndLegalRelationshipRole($Participant['relationship']),
-                            'addr' => Component::addr(
-                                $Participant['address']['use'],
-                                $Participant['address']['streetAddressLine'],
-                                $Participant['address']['city'],
-                                $Participant['address']['state'],
-                                $Participant['address']['postalCode'],
-                                $Participant['address']['country']
-                            ),
-                            'telecom' => Component::telecom($Participant['telecom']),
-                            'name' => Component::name($Participant['name'])
-                        ]
+                        'addr' => Component::addr(
+                            $Data['address']['use'],
+                            $Data['address']['streetAddressLine'],
+                            $Data['address']['city'],
+                            $Data['address']['state'],
+                            $Data['address']['postalCode'],
+                            $Data['address']['country']
+                        ),
+                        'telecom' => Component::telecom($Data['telecom']),
+                        'name' => Component::name($Data['name'])
                     ]
-                );
+                ]
+            ];
+
+            // MAY contain zero or one [0..1] time (CONF:10004)
+            if(isset($Data['startDate']) && isset($Data['endDate']))
+            {
+                $Document['time'] = [
+                    '@attributes' => [
+                        'xsi:type' => 'IVL_TS'
+                    ],
+                    'low' => $Data['startDate'],
+                    'high' => $Data['endDate'],
+                ];
             }
 
-            return $Section;
+            return $Document;
         }
         catch (Exception $Error)
         {

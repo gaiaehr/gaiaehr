@@ -62,7 +62,10 @@ class CDA
                 $CDABuild = array_merge($CDABuild, LevelDocument\legalAuthenticator::Insert($data));
                 $CDABuild = array_merge($CDABuild, LevelDocument\custodian::Insert($data));
                 $CDABuild = array_merge($CDABuild, LevelDocument\documentationOf::Insert($data));
-                $CDABuild['documentationOf']['performer'] = LevelDocument\performer::Insert($data);
+                foreach($CDABuild['documentationOf']['performer'] as $Performer)
+                {
+                    $CDABuild['documentationOf']['performer'][] = LevelDocument\performer::Insert($Performer);
+                }
 
                 // Merge the Section Level
                 $CDABuild['component']['structuredBody'][] = LevelSection\advanceDirectives::Insert($data);

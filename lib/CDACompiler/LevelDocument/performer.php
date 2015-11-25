@@ -30,6 +30,58 @@ class performer
     }
 
     /**
+     * Give back the structure of this Entry
+     * @return array
+     */
+    public static function Structure()
+    {
+        return [
+            'npi' => '',
+            'displayName' => '',
+            'codeSystemName' => '',
+            'taxonomyCode' => '',
+            'taxonomyDisplayName' => '',
+            'taxonomyCodeSystemName' => '',
+            'address' => [
+                'use' => '',
+                'streetAddressLine' => '',
+                'city' => '',
+                'state' => '',
+                'postalCode' => '',
+                'country' => ''
+            ],
+            'telecom' => [
+                'use' => '',
+                'value' => ''
+            ],
+            'name' => [
+                'prefix' => '',
+                'prefixQualifier' => '',
+                'given' => '',
+                'givenQualifier' => '',
+                'family' => '',
+                'familyQualifier' => '',
+                'name' => '',
+                'nameQualifier' => ''
+            ],
+            'Clinic' => [
+                'telecom' => [
+                    'use' => '',
+                    'value' => ''
+                ],
+                'address' => [
+                    'use' => '',
+                    'streetAddressLine' => '',
+                    'city' => '',
+                    'state' => '',
+                    'postalCode' => '',
+                    'country' => ''
+                ]
+            ]
+        ];
+    }
+
+    /**
      * @param $Data
      * @return array|Exception
      */
@@ -41,74 +93,80 @@ class performer
             self::Validate($Data);
 
             // Build the section
-            foreach($Data['Provider'] as $Provider) {
-                $Section[] = array(
+            $Document = [
+                '@attributes' => [
+                    'typeCode' => 'PRF'
+                ],
+                'functionCode' => [
                     '@attributes' => [
-                        'typeCode' => 'PRF'
-                    ],
-                    'functionCode' => [
-                        '@attributes' => [
-                            'code' => $Provider['code'],
-                            'codeSystem' => '2.16.840.1.113883.5.88',
-                            'codeSystemName' => 'ParticipationFunction',
-                            'displayName' => Component::participationFunction($Provider['code'])
-                        ]
-                    ],
-                    'assignedEntity' => [
-                        'id' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.4.6',
-                                'extension' => $Provider['npi']
-                            ]
-                        ],
-                        'code' => Component::taxonomyCode($Provider['taxonomy']),
-                        'addr' => Component::addr(
-                            $Provider['address']['use'],
-                            $Provider['address']['streetAddressLine'],
-                            $Provider['address']['city'],
-                            $Provider['address']['state'],
-                            $Provider['address']['postalCode'],
-                            $Provider['address']['country']
-                        ),
-                        'telecom' => Component::telecom(
-                            $Provider['telecom']['use'],
-                            $Provider['telecom']['value']
-                        ),
-                        'assignedPerson' => [
-                            'name' => Component::name(
-                                $Provider['name']['prefix'],
-                                $Provider['name']['prefixQualifier'],
-                                $Provider['name']['given'],
-                                $Provider['name']['givenQualifier'],
-                                $Provider['name']['family'],
-                                $Provider['name']['familyQualifier'],
-                                $Provider['name']['name'],
-                                $Provider['name']['nameQualifier']
-                            )
-                        ],
-                        'representedOrganization' => [
-                            'id' => [
-                                'root' => '1.2.16.840.1.113883.4.6',
-                                'extension' => '219BX'
-                            ],
-                            'name' => $Data['Clinic']['name'],
-                            'telecom' => Component::telecom(
-                                $Data['Clinic']['telecom']['use'],
-                                $Data['Clinic']['telecom']['value']
-                            ),
-                            'addr' => Component::addr(
-                                $Data['Clinic']['address']['use'],
-                                $Data['Clinic']['address']['streetAddressLine'],
-                                $Data['Clinic']['address']['city'],
-                                $Data['Clinic']['address']['state'],
-                                $Data['Clinic']['address']['postalCode'],
-                                $Data['Clinic']['address']['country']
-                            )
-                        ]
+                        'code' => $Data['code'],
+                        'codeSystem' => Utilities::CodingSystemId($Data['codeSystemName']),
+                        'codeSystemName' => $Data['codeSystemName'],
+                        'displayName' => $Data['displayName']
                     ]
-                );
-            }
-            return $Section;
+                ],
+                'assignedEntity' => [
+                    'id' => [
+                        '@attributes' => [
+                            'root' => '2.16.840.1.113883.4.6',
+                            'extension' => $Data['npi']
+                        ]
+                    ],
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $Data['taxonomyCode'],
+                            'displayName' => $Data['taxonomyDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId($Data['taxonomyCodeSystemName']),
+                            'codeSystemName' => $Data['taxonomyCodeSystemName']
+                        ]
+                    ],
+                    'addr' => Component::addr(
+                        $Data['address']['use'],
+                        $Data['address']['streetAddressLine'],
+                        $Data['address']['city'],
+                        $Data['address']['state'],
+                        $Data['address']['postalCode'],
+                        $Data['address']['country']
+                    ),
+                    'telecom' => Component::telecom(
+                        $Data['telecom']['use'],
+                        $Data['telecom']['value']
+                    ),
+                    'assignedPerson' => [
+                        'name' => Component::name(
+                            $Data['name']['prefix'],
+                            $Data['name']['prefixQualifier'],
+                            $Data['name']['given'],
+                            $Data['name']['givenQualifier'],
+                            $Data['name']['family'],
+                            $Data['name']['familyQualifier'],
+                            $Data['name']['name'],
+                            $Data['name']['nameQualifier']
+                        )
+                    ],
+                    'representedOrganization' => [
+                        'id' => [
+                            'root' => '1.2.16.840.1.113883.4.6',
+                            'extension' => '219BX'
+                        ],
+                        'name' => $Data['Clinic']['name'],
+                        'telecom' => Component::telecom(
+                            $Data['Clinic']['telecom']['use'],
+                            $Data['Clinic']['telecom']['value']
+                        ),
+                        'addr' => Component::addr(
+                            $Data['Clinic']['address']['use'],
+                            $Data['Clinic']['address']['streetAddressLine'],
+                            $Data['Clinic']['address']['city'],
+                            $Data['Clinic']['address']['state'],
+                            $Data['Clinic']['address']['postalCode'],
+                            $Data['Clinic']['address']['country']
+                        )
+                    ]
+                ]
+            ];
+
+            return $Document;
         }
         catch (Exception $Error)
         {

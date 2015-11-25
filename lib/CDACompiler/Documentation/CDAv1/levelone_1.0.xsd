@@ -1,0 +1,777 @@
+<?xml version="1.0"?>
+<!--
+============================================================
+============================================================
+HL7 Clinical Document Architecture, Version 1.0
+
+CDA Levelone XML Schema
+
+Typical usage with an CDA instance document
+	<levelone
+		xmlns="urn::hl7-org/cda"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="urn::hl7-org/cda levelone_1.0.xsd">
+	...
+	</levelone>
+
+corresponding DTD Last Revised: September 18, 2000
+XML Schema last revised:
+	2004-01-05 (Kai U. Heitmann):
+	       Namespace declarations have been eliminated
+
+============================================================
+============================================================
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+	<!--
+============================================================
+============================================================
+The following system id must be changed to point to the location of the
+Header file on your system.
+============================================================
+============================================================
+-->
+	<xsd:include schemaLocation="header_1.0.xsd"/>
+	<!--
+============================================================
+============================================================
+Shared XML attributes 
+
+XML element identification
+Every XML element within a CDA document has an optional identifier,
+which must be unique within the document.
+(See 3.2.2.1.1 XML element identification). (This attribute is
+declared in the CDA Header DTD.)
+
+Confidentiality
+The confidentiality attribute can occur on any element within
+the CDA body. The CDA Header contains an optionally repeating
+element <confidentiality_cd> (see 3.2.2.2.3 Document confidentiality).
+The confidentiality attribute on CDA Body elements can reference
+one or more of the confidentiality values in the CDA Header
+using XML IDREFS. The value(s) referenced must be XML ID(s) in the
+<confidentiality_cd> element of the CDA Header.
+Confidentiality is inherited by nested content, unless overridden.
+
+Originators
+The originator attribute can occur on any element
+within the CDA body. The CDA Header contains
+optionally repeating elements <originator>
+(see 3.2.2.4.4.1 Originating person) and
+<originating_device> (see 3.2.2.5.2 Originating device).
+The originator attribute on an
+element within the CDA Body can reference one
+or more of these values using XML IDREFS.
+The value(s) referenced must be XML ID(s) in the
+<originator> or <originating_device>
+element of the CDA Header. Origination is inherited
+by nested content, unless overridden.
+
+Use of xml:lang for the language property (as in the DTD)
+deprecated in XML Schema
+============================================================
+============================================================
+-->
+	<xsd:attributeGroup name="body_atts">
+		<xsd:attributeGroup ref="common_atts"/>
+		<xsd:attribute name="originator" type="xsd:IDREFS"/>
+		<xsd:attribute name="confidentiality" type="xsd:IDREFS"/>
+		<!-- deprecated
+		<xsd:attribute ref="xml:lang" use="optional"/>
+		-->
+	</xsd:attributeGroup>
+	<xsd:group name="entries">
+		<xsd:choice>
+			<xsd:element ref="content"/>
+			<xsd:element ref="link"/>
+			<xsd:element ref="coded_entry"/>
+			<xsd:element ref="observation_media"/>
+			<xsd:element ref="local_markup"/>
+		</xsd:choice>
+	</xsd:group>
+	<xsd:group name="structures">
+		<xsd:choice>
+			<xsd:element ref="paragraph"/>
+			<xsd:element ref="list"/>
+			<xsd:element ref="table"/>
+		</xsd:choice>
+	</xsd:group>
+	<!--
+============================================================
+============================================================
+Level One Root
+
+The CDA element <levelone> is the root element of a CDA Level One document.
+The <levelone> element contains a <clinical_document_header> and a <body>.
+The <clinical_document_header> is derived from the RIM (see 3.2 CDA Header).
+The <body> is comprised of either <section> elements, or a <non_xml> element,
+which is used when the document body is in some format other then XML. A CDA
+<section> can contain "structures", nested <section> elements, and <coded_entry>
+elements. CDA structures include the <paragraph>, <list>, and <table> elements.
+These structures contain CDA "entries", which include the <content>, <link>,
+<coded_entry>, <observation_media>, and <local_markup> elements, in addition
+to plain character data.
+============================================================
+============================================================
+-->
+	<xsd:element name="levelone">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="clinical_document_header"/>
+				<xsd:element ref="body"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+============================================================
+Document body and sections
+
+The CDA <body> occurs in the <levelone> element. All CDA documents have
+exactly one <body>. The <body> contains either one or more <section>
+elements (see 3.3.2.2.2 Document sections) or a single non_xml data
+segment (see 3.3.2.2.3 Non_xml body).
+
+The CDA <section> is a container used to wrap other containers. A
+<section> can occur in the <body>, or can be nested within another
+<section>. A <section> has an optional <caption> (see 3.3.2.2.2.1
+Captions), followed by nested <section> elements or structures (see
+3.3.2.3 Document Structures), followed by optionally repeating <coded_entry>
+elements (see 3.3.2.4.4 Coded entries).
+
+The CDA <non_xml> container represents a document body that is in some
+format other than XML. CDA's <non_xml> is an encoded data type (ED),
+which is used only to reference data that is stored externally to the
+CDA Level One document.
+============================================================
+============================================================
+-->
+	<xsd:element name="body">
+		<xsd:complexType>
+			<xsd:choice>
+				<xsd:element ref="section" maxOccurs="unbounded"/>
+				<xsd:element ref="non_xml"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="section">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="caption" minOccurs="0"/>
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:group ref="structures"/>
+					<xsd:element ref="section"/>
+				</xsd:choice>
+				<xsd:element ref="coded_entry" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="non_xml-cont.model" mixed="true">
+		<xsd:complexContent mixed="true">
+			<xsd:extension base="ED-cont.model">
+				<xsd:attributeGroup ref="common_atts"/>
+				<xsd:attribute name="originator" type="xsd:IDREFS"/>
+				<xsd:attribute name="confidentiality" type="xsd:IDREFS"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="non_xml" type="non_xml-cont.model"/>
+	<!--
+============================================================
+============================================================
+Entries: 
+content, link, coded_entry, observation_media, local_markup
+
+============================================================
+============================================================
+-->
+	<!--
+============================================================
+content
+
+CDA <content> occurs in <local_markup>, table cells (<td>),
+<paragraph>, <item>, and nested within <content>. The <content>
+element contains zero or more entries (see 3.3.2.4 Document Entries). 
+
+The <content> element can nest recursively, which enables wrapping
+a string of plain text down to as small a chunk as desired. These
+<content> elements can serve as anchors, and <coded_entry.value>
+elements can reference these anchors to indicate the original text
+that supports the use of a coded entry. (See 3.3.2.4.4 Coded
+entries for more detail.)
+============================================================
+-->
+	<xsd:element name="content">
+		<xsd:complexType mixed="true">
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+				<xsd:group ref="entries"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+link
+
+The CDA <link> is a generic referencing mechanism and occurs within
+<content>, <local_markup>, table cells (<td>), or <caption>. A <link>
+contains a single required <link_html> element.
+
+The CDA <link_html> can only occur within a <link>. Each <link_html>
+has an optional local identifier (see 3.3.2.1.1 XML element identification),
+an optional set of confidentiality status flags (see 3.3.2.1.2 Confidentiality),
+and an optional set of originators (see 3.3.2.1.3 Originators). The human
+language of contained character data can be specified using the xml:lang
+attribute (see 3.3.2.1.4 Language).
+
+The CDA link mechanism is based on the HTML anchor tag. Several groups
+(see 5.4 References) are actively developing formal link specifications.
+When a suitable open standard is available and implemented, it will be
+reviewed with the intent to incorporate it into the CDA Level One specification.
+
+Multimedia that is integral to a document, and part of the attestable
+content of the document requires the use of <observation_media>
+(see 3.3.2.4.5 Observation media). Multimedia that is simply referenced
+by the document and not an integral part of the document should use <link>.
+============================================================
+-->
+	<xsd:element name="link">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="link_html"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="link_html">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+					<xsd:attribute name="name" type="xsd:string"/>
+					<xsd:attribute name="href" type="xsd:string"/>
+					<xsd:attribute name="rel" type="xsd:string"/>
+					<xsd:attribute name="rev" type="xsd:string"/>
+					<xsd:attribute name="title" type="xsd:string"/>
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+coded_entry
+
+The CDA element <coded_entry> inserts codes from HL7-recognized coding
+schemes into CDA documents. Where there are no suitable HL7-recognized
+codes available, locally-defined codes can be used. The use of <coded_entry>
+in CDA Level One is unrestricted, and the primary intent of <coded_entry>
+is to facilitate document indexing, search and retrieval, and to provide
+a standard convention for insertion of locally-meaningful codes.
+
+The <coded_entry.value> element can explicitly reference the original
+text within the document that supports the use of the code.
+============================================================
+-->
+	<xsd:element name="coded_entry">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="coded_entry.id" minOccurs="0"/>
+				<xsd:element ref="coded_entry.value"/>
+				<xsd:element ref="local_markup" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="coded_entry.id">
+		<xsd:complexType>
+			<xsd:group ref="II-cont.model"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attributeGroup ref="II-attrib.list"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="coded_entry.value">
+		<xsd:complexType>
+			<xsd:group ref="CD-cont.model"/>
+			<xsd:attributeGroup ref="CD-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+observation_media
+
+The <observation_media> element represents media that is logically a
+part of a CDA document, but is stored outside the document and incorporated
+by reference. Multimedia that is integral to a document, and part of the
+attestable content of the document, requires the use of <observation_media>.
+Multimedia that is simply referenced by the document and not an integral
+part of the document should use <link> (see 3.3.2.4.3 Links). Note that
+CDA's <observation_media> is used only to reference data that is stored
+externally.
+
+The CDA does not take advantage of ED's ability to Base64 encode images
+and other observation media and include them directly in a document
+instance file. Several groups (see 5.4 References) are actively
+developing formal specifications for packaging binary data within XML
+documents. When a suitable open standard for direct incorporation of
+binary data is available and implemented, it will be incorporated into
+the CDA Level One specification.
+============================================================
+-->
+	<xsd:element name="observation_media">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="observation_media.id" minOccurs="0"/>
+				<xsd:element ref="observation_media.value"/>
+				<xsd:element ref="local_markup" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="observation"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="observation"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="observation_media.id">
+		<xsd:complexType>
+			<xsd:group ref="II-cont.model"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attributeGroup ref="II-attrib.list"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="id"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="observation_value-cont.model" mixed="true">
+		<xsd:complexContent mixed="true">
+			<xsd:extension base="ED-cont.model">
+				<xsd:attributeGroup ref="common_atts"/>
+				<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="value"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:element name="observation_media.value" type="observation_value-cont.model"/>
+	<!--
+============================================================
+local_markup
+
+The implementation of localization in the CDA Level One Body using the
+<local_markup> element parallels the implementation described for the
+CDA Header (see 3.2.2.6 Localization).
+
+The descriptor attribute describes the element, and the value can be
+drawn from a local vocabulary domain. The ignore attribute tells the
+receiver to ignore just the <local_markup> tag (ignore="markup"), or
+to ignore the <local_markup> tag and all contained content (ignore="all").
+The render attribute indicates how the sender would render the contents.
+The value can be drawn from a local vocabulary domain. The nested <local_attr>
+element makes it easier to map local XML attribute values into the CDA.
+============================================================
+-->
+	<xsd:element name="local_markup" type="local_markup-cont.model"/>
+	<xsd:complexType name="local_markup-cont.model" mixed="true">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:group ref="entries"/>
+			<xsd:element ref="local_attr"/>
+		</xsd:choice>
+		<xsd:attribute name="ignore" default="markup">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="all"/>
+					<xsd:enumeration value="markup"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="descriptor" type="xsd:string"/>
+		<xsd:attribute name="render" type="xsd:string"/>
+	</xsd:complexType>
+	<!--
+============================================================
+============================================================
+Structures:
+paragraph, list, table
+
+============================================================
+============================================================
+-->
+	<!--
+============================================================
+paragraph
+
+The CDA <paragraph> can occur in a <section>, <item>, or table cell
+(<td>). A <paragraph> has an optional <caption> (see 3.3.2.2.2.1
+Captions), followed by zero or more <content> elements (see 3.3.2.4.2
+Content).
+============================================================
+-->
+	<xsd:element name="paragraph">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="caption" minOccurs="0"/>
+				<xsd:element ref="content" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+list and item
+
+The CDA <list> can occur in a <section>, <item>, or table cell (<td>).
+A <list> has an optional <caption> (see 3.3.2.2.2.1 Captions), and
+contains one or more <item> elements. The list_type attribute specifies
+whether the <list> is ordered or unordered (with unordered being the
+default). Use an ordered list when the ordering of list items is meaningful.
+
+The CDA <item> only occurs within a <list>. An <item> has an optional
+<caption> (see 3.3.2.2.2.1 Captions), and may contain <content>
+(see 3.3.2.4.2 Content) and nested structures (see 3.3.2.3 Document
+Structures).
+============================================================
+-->
+	<xsd:element name="list">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="caption" minOccurs="0"/>
+				<xsd:element ref="item" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="list_type" default="unordered">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="ordered"/>
+						<xsd:enumeration value="unordered"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="item">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="caption" minOccurs="0"/>
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element ref="content"/>
+					<xsd:group ref="structures"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- 
+============================================================
+table
+
+In CDA Level One, any information can be presented as a table.
+The table markup is for presentation purposes only and, unlike a
+database table, does not possess meaningful field names. The CDA
+<table> can occur in a <section> or <item>. A <table> has an optional
+<caption> (see 3.3.2.2.2.1 Captions).
+
+CDA modifies the strict XHTML table model (see 5.4 References and
+Appendix 5.3.1 Tables) by removing formatting tags and by setting
+the content model of cells to be similar to the contents of other
+CDA containers. The <th> element is modeled analogously to the
+<caption> element (see 3.3.2.2.2.1 Captions), and like the <caption>
+element, the <caption_cd> is optional and non-repeatable, and must
+occur first.
+
+Changes to the strict XHTML table model in CDA include
+(expressed as DTD):
+
+Change this:
+  <!ELEMENT caption  %Inline;>
+To this:
+  <!ELEMENT caption (#PCDATA | link | caption_cd)*>
+
+Change these XML attributes:
+  %attrs;
+To these:
+  ID ID #IMPLIED
+  confidentiality IDREFS #IMPLIED
+  originator IDREFS #IMPLIED
+  xml:lang NMTOKEN #IMPLIED
+
+Change this:
+  <!ELEMENT td %Flow;>
+to this:
+  <!ELEMENT td (#PCDATA | content | link | coded_entry |
+  observation_media | paragraph | list | local_markup)*>
+
+change this:
+  <!ELEMENT th %Flow;>
+to this:
+  <!ELEMENT th (#PCDATA | link | caption_cd)*>
+============================================================
+-->
+	<!--===== XHTML entities used in the XHTML table model ===========-->
+	<xsd:simpleType name="Character">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- a single character from [ISO10646] -->
+	<xsd:simpleType name="Length">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- nn for pixels or nn% for percentage length -->
+	<xsd:simpleType name="MultiLength">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- pixel, percentage, or relative -->
+	<xsd:simpleType name="Number">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- one or more digits -->
+	<xsd:simpleType name="Pixels">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!-- integer representing length in pixels -->
+	<xsd:simpleType name="Text">
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<!--======================= Tables =======================================-->
+	<!-- Derived from IETF HTML table standard, see [RFC1942] -->
+	<!--
+ The border attribute sets the thickness of the frame around the
+ table. The default units are screen pixels.
+
+ The frame attribute specifies which parts of the frame around
+ the table should be rendered. The values are not the same as
+ CALS to avoid a name clash with the valign attribute.
+-->
+	<xsd:simpleType name="TFrame">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="void"/>
+			<xsd:enumeration value="above"/>
+			<xsd:enumeration value="below"/>
+			<xsd:enumeration value="hsides"/>
+			<xsd:enumeration value="lhs"/>
+			<xsd:enumeration value="rhs"/>
+			<xsd:enumeration value="vsides"/>
+			<xsd:enumeration value="box"/>
+			<xsd:enumeration value="border"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+ The rules attribute defines which rules to draw between cells:
+
+ If rules is absent then assume:
+     "none" if border is absent or border="0" otherwise "all"
+-->
+	<xsd:simpleType name="TRules">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="none"/>
+			<xsd:enumeration value="groups"/>
+			<xsd:enumeration value="rows"/>
+			<xsd:enumeration value="cols"/>
+			<xsd:enumeration value="all"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- horizontal alignment attributes for cell contents
+
+  char        alignment char, e.g. char=':'
+  charoff     offset for alignment char
+-->
+	<xsd:attributeGroup name="cellhalign">
+		<xsd:attribute name="align">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="left"/>
+					<xsd:enumeration value="center"/>
+					<xsd:enumeration value="right"/>
+					<xsd:enumeration value="justify"/>
+					<xsd:enumeration value="char"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="char" type="Character"/>
+		<xsd:attribute name="charoff" type="Length"/>
+	</xsd:attributeGroup>
+	<!-- vertical alignment attributes for cell contents -->
+	<xsd:attributeGroup name="cellvalign">
+		<xsd:attribute name="valign">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="top"/>
+					<xsd:enumeration value="middle"/>
+					<xsd:enumeration value="bottom"/>
+					<xsd:enumeration value="baseline"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:element name="table">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="caption" minOccurs="0"/>
+				<xsd:choice>
+					<xsd:element ref="col" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element ref="colgroup" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:choice>
+				<xsd:element ref="thead" minOccurs="0"/>
+				<xsd:element ref="tfoot" minOccurs="0"/>
+				<xsd:choice>
+					<xsd:element ref="tbody" maxOccurs="unbounded"/>
+					<xsd:element ref="tr" maxOccurs="unbounded"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="summary" type="Text"/>
+			<xsd:attribute name="width" type="Length"/>
+			<xsd:attribute name="border" type="Pixels"/>
+			<xsd:attribute name="frame" type="TFrame"/>
+			<xsd:attribute name="rules" type="TRules"/>
+			<xsd:attribute name="cellspacing" type="Length"/>
+			<xsd:attribute name="cellpadding" type="Length"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="caption">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="link"/>
+				<xsd:element ref="caption_cd"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="body_atts"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="caption_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+colgroup groups a set of col elements. It allows you to group
+several semantically related columns together.
+-->
+	<xsd:element name="colgroup">
+		<xsd:complexType>
+			<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="col"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="span" type="Number" default="1"/>
+			<xsd:attribute name="width" type="MultiLength"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+ col elements define the alignment properties for cells in
+ one or more columns.
+
+ The width attribute specifies the width of the columns, e.g.
+
+     width=64        width in screen pixels
+     width=0.5*      relative width of 0.5
+
+ The span attribute causes the attributes of one
+ col element to apply to more than one column.
+-->
+	<xsd:element name="col">
+		<xsd:complexType>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="span" type="Number" default="1"/>
+			<xsd:attribute name="width" type="MultiLength"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+    Use thead to duplicate headers when breaking table
+    across page boundaries, or for static headers when
+    tbody sections are rendered in scrolling panel.
+
+    Use tfoot to duplicate footers when breaking table
+    across page boundaries, or for static footers when
+    tbody sections are rendered in scrolling panel.
+
+    Use multiple tbody sections when rules are needed
+    between groups of table rows.
+-->
+	<xsd:element name="thead">
+		<xsd:complexType>
+			<xsd:sequence maxOccurs="unbounded">
+				<xsd:element ref="tr"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="tfoot">
+		<xsd:complexType>
+			<xsd:sequence maxOccurs="unbounded">
+				<xsd:element ref="tr"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="tbody">
+		<xsd:complexType>
+			<xsd:sequence maxOccurs="unbounded">
+				<xsd:element ref="tr"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="tr">
+		<xsd:complexType>
+			<xsd:choice maxOccurs="unbounded">
+				<xsd:element ref="th"/>
+				<xsd:element ref="td"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- Scope is simpler than headers attribute for common tables -->
+	<xsd:simpleType name="Scope">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="row"/>
+			<xsd:enumeration value="col"/>
+			<xsd:enumeration value="rowgroup"/>
+			<xsd:enumeration value="colgroup"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!-- th is for headers, td for data and for cells acting as both -->
+	<xsd:element name="th">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="link"/>
+				<xsd:element ref="caption_cd"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="abbr" type="Text"/>
+			<xsd:attribute name="axis" type="xsd:string"/>
+			<xsd:attribute name="headers" type="xsd:IDREFS"/>
+			<xsd:attribute name="scope" type="Scope"/>
+			<xsd:attribute name="rowspan" type="Number" default="1"/>
+			<xsd:attribute name="colspan" type="Number" default="1"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="td">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:group ref="entries"/>
+				<xsd:element ref="paragraph"/>
+				<xsd:element ref="list"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="body_atts"/>
+			<xsd:attribute name="abbr" type="Text"/>
+			<xsd:attribute name="axis" type="xsd:string"/>
+			<xsd:attribute name="headers" type="xsd:IDREFS"/>
+			<xsd:attribute name="scope" type="Scope"/>
+			<xsd:attribute name="rowspan" type="Number" default="1"/>
+			<xsd:attribute name="colspan" type="Number" default="1"/>
+			<xsd:attributeGroup ref="cellhalign"/>
+			<xsd:attributeGroup ref="cellvalign"/>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

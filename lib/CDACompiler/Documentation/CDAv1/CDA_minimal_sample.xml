@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+<!DOCTYPE levelone PUBLIC "-//HL7//DTD CDA Level One 1.0//EN" "levelone_1.0.dtd">
+<levelone>
+  <clinical_document_header>
+    <id EX="a123" RT="2.16.840.1.113883.3.933"/>
+    <document_type_cd V="11488-4" S="2.16.840.1.113883.6.1" 
+      DN="Consultation note"/>
+    <origination_dttm V="2000-04-07"/>
+    <patient_encounter>
+      <id EX="KPENC1332" RT="2.16.840.1.113883.3.933"/>
+      <practice_setting_cd V="GIM" 
+        S="2.16.840.1.113883.5.10588" DN="General internal medicine clinic"/>
+      <encounter_tmr V="2000-04-07"/>
+    </patient_encounter>
+    <legal_authenticator>
+      <legal_authenticator.type_cd V="SPV"/>
+      <participation_tmr V="2000-04-08"/>
+      <signature_cd V="S"/>
+      <person>
+        <id EX="KP00017" RT="2.16.840.1.113883.3.933"/>
+        <person_name>
+          <nm>
+            <GIV V="Robert"/>
+            <FAM V="Dolin"/>
+            <SFX V="MD" QUAL="PT"/>
+          </nm>
+          <person_name.type_cd V="L" S="2.16.840.1.113883.5.200"/>
+        </person_name>
+      </person>
+    </legal_authenticator>
+    <originator>
+      <originator.type_cd V="AUT"/>
+      <participation_tmr V="2000-04-07"/>
+      <person>
+        <id EX="KP00017" RT="2.16.840.1.113883.3.933"/>
+      </person>
+    </originator>
+    <originating_organization>
+      <originating_organization.type_cd V="CST"/>
+      <organization>
+        <id EX="M345" RT="2.16.840.1.113883.3.933"/>
+        <organization.nm V="Good Health Clinic"/>
+      </organization>
+    </originating_organization>
+    <provider>
+      <provider.type_cd V="CON"/>
+      <participation_tmr V="2000-04-07"/>
+      <person>
+        <id EX="KP00017" RT="2.16.840.1.113883.3.933"/>
+      </person>
+    </provider>
+    <patient>
+      <patient.type_cd V="PATSBJ"/>
+      <person>
+        <id EX="12345" RT="2.16.840.1.113883.3.933"/>
+        <person_name>
+          <nm>
+            <GIV V="Henry"/>
+            <FAM V="Levin"/>
+            <SFX V="the 7th"/>
+          </nm>
+          <person_name.type_cd V="L" S="2.16.840.1.113883.5.200"/>
+        </person_name>
+      </person>
+      <birth_dttm V="1932-09-24"/>
+      <administrative_gender_cd V="M" S="2.16.840.1.113883.5.1"/>
+    </patient>
+  </clinical_document_header>
+  <body>
+    <section>
+      <caption>History of Present Illness</caption>
+      <paragraph>
+        <content>
+          Henry Levin, the 7th is a 67 year old male referred for further 
+          asthma management. Onset of asthma in his teens. He was hospitalized 
+          twice last year, and already twice this year. He has not been able to 
+          be weaned off steroids for the past several months. 
+        </content>
+      </paragraph>
+    </section>
+    <section>
+      <caption>Past Medical History</caption>
+      <list>
+        <item><content>Asthma</content></item>
+        <item><content>Hypertension</content></item>
+        <item><content>Osteoarthritis, right knee</content></item>
+      </list>
+    </section>
+    <section>
+      <caption>Medications</caption>
+      <list>
+        <item><content>Theodur 200mg BID</content></item>
+        <item><content>Proventil inhaler 2puffs QID PRN</content></item>
+        <item><content>Prednisone 20mg qd</content></item>
+        <item><content>HCTZ 25mg qd</content></item>
+      </list>
+    </section>
+    <section>
+      <caption>Allergies</caption>
+      <list>
+        <item><content>Penicillin - Hives</content></item>
+        <item><content>Aspirin - Wheezing</content></item>
+      </list>
+    </section>
+    <section>
+      <caption>Social History</caption>
+      <list>
+        <item>
+          <content>
+            Smoking :: 1 PPD between the ages of 20 and 55, and then he quit.
+          </content>
+        </item>
+        <item><content>Alcohol :: rare</content></item>
+      </list>
+    </section>
+    <section>
+      <caption>Physical Examination</caption>
+      <section>
+        <caption>Vital Signs</caption>
+        <list>
+          <item><content>BP 118/78</content></item>
+          <item><content>Resp 16 and unlabored</content></item>
+          <item><content>T 98.6F</content></item>
+          <item><content>HR 86 and regular</content></item>
+        </list>
+      </section>
+      <section>
+        <caption>Skin</caption>
+        <paragraph>
+          <content>Erythematous rash, palmar surface, left index finger.
+            <observation_media>
+              <observation_media.value MT="image/jpeg">
+                <REF V="rash.jpeg"/>
+              </observation_media.value>
+            </observation_media>
+          </content>
+        </paragraph>
+      </section>
+      <section>
+        <caption>Lungs</caption>
+        <paragraph>
+          <content>Clear with no wheeze. Good air flow.</content>
+        </paragraph>
+      </section>
+      <section>
+        <caption>Cardiac</caption>
+        <paragraph>
+          <content>RRR with no murmur, no S3, no S4.</content>
+        </paragraph>
+      </section>
+    </section>
+    <section>
+      <caption>Labs</caption>
+      <list>
+        <item>
+          <content>
+            CXR 02/03/1999: Hyperinflated. Normal cardiac silhouette, clear lungs.
+          </content>
+        </item>
+        <item><content>Peak Flow today: 260 l/m</content></item>
+      </list>
+    </section>
+    <section>
+      <caption>Assessment</caption>
+      <list>
+        <item>
+          <content>
+            Asthma, with prior smoking
+              history. Difficulty weaning off steroids. Will try gradual taper.
+            <coded_entry>
+              <coded_entry.value V="D2-51000" S="2.16.840.1.113883.6.5"/>
+            </coded_entry>
+          </content>
+        </item>
+        <item><content>Hypertension, well-controlled.</content></item>
+        <item><content>Contact dermatitis on finger.</content></item>
+      </list>
+    </section>
+    <section>
+      <caption>Plan</caption>
+      <list>
+        <item><content>Complete PFTs with lung volumes.</content></item>
+        <item><content>Chem-7</content></item>
+        <item>
+          <content>
+            Provide educational material on inhaler usage and peak flow self-monitoring.
+          </content>
+        </item>
+        <item>
+          <content>Decrease prednisone to 20qOD alternating with 18qOD.</content>
+        </item>
+        <item><content>Hydrocortisone cream to finger BID.</content></item>
+        <item><content>RTC 1 week.</content></item>
+      </list>
+    </section>
+  </body>
+</levelone>

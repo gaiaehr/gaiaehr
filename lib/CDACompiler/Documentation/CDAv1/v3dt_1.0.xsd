@@ -1,0 +1,1993 @@
+<?xml version="1.0"?>
+<!--
+	These are the v3 data types version 1.0 as of 2000-06-27
+	
+	Typical usage within a XML Schema for example for CDA...
+		
+	<xsd:import namespace="urn::..." schemaLocation="v3dt_1.0.xsd"/>
+
+    please also refer to the comments in the corresponding DTD
+    for the v3 data types version 1.0, named v3dt_1.0.dtd
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--
+     the following type declarations are in the order they are specified
+	 in the abstract document (except for some of the "subsidiary" types,
+	 such as ADXP for AD, which are defined before their "principle" type)
+  -->
+<!--
+    Each datatype definition contains "HL7 Processing Rules", which are
+	statements of required application level validity checks over and above
+	what the DTD/Schema expresses.  The rules are written as XPath expressions.
+	The intention is that the set of rules for each datatype will be
+	embedded in a fixed attribute and a receiving application could then
+	evaluate them and if any fail the receiving application would know
+	that the instance wasn't legal.  At present, some of the rules
+	are still expressed in the syntax that was used for this purpose
+	for the HIMSS demo.
+  -->
+<!--	 
+	The ANY in the HIMSS demo DTD was ANY in the sense of "any type",
+	which was implemented as, essentially, the union of properties from
+	all datatypes.
+	
+	Do we still need an "any type" datatype?  My guess is the answer
+	is yes (for obvservation.value, anywhere else?)...but would
+	like more input before going there.
+  -->
+<!--
+	Revsion history
+	
+	2004-01-05 (Kai U. Heitmann):
+	       Namespace declarations have been eliminated
+	
+	2002-02-25 (Kai U. Heitmann):
+		Separate v3dt schema, used and tested with the CDA schemas
+		(levelone_1.0.xsd and header_1.0.xsd). Revisited some
+		of the DTD comments
+	
+	2001-10 (Kai U. Heitmann):
+		First XML Schema draft, created with xsbrowser tool (www.xsbrowser.org)
+		amalgamating all CDA DTDs (levelone_1.0.dtd, header_1.0.dtd and v3dt_1.0.dtd)
+		into a single XML schema.
+	
+	2000-06-27:
+		a) A long history in which I didn't explicitly record revision comments.
+		b) assigned this revision number 0.9
+	
+	2000-06-28:
+		a) added this revision history section
+		b) added a "usage" comment to the top of the DTD which includes
+		   the specification of both a full URI and an FPI for this DTD
+		c) removed UPDATE_MODE (and the param entities needed to
+		   support it).  The funcationality will be handled at the
+		   general XML ITS level.
+		d) changed the definition of ED:@T to be the enumeration (ST|ED)
+		   instead of the #FIXED value ED...made ED the default
+		e) added X-DOMAIN #FIXED attributes for ED:@COMPN, ED:@IAC
+		   with their values being taken from the OID table on page 104
+		   of the Abstract doc
+		f) changed the HL7_NAME for ED:@IC, ED:@IAC, CD:@V, CD:@S, CD:@SN,
+		   CD:@SV, CD:ORIGTEXT, CS:@V, CS:@DN, CV:@V, CV:@DN, CV:@S, SV:@SN,
+		   CV:@SV, CE:@V, CE:@DN, CE:@S, CE:@SN, CE:@SV to match their spelling in
+		   the Abstract doc
+		g) fixed a bug in the declaration of ED:@IAC, including adding
+		   a param entity which enumerates the domain
+		h) corrected the HL7_NAME for ST:@MT, to be "type" instead of
+		   "media type"
+		i) removed ENTITY decl for OID, and replaced all references to that
+		   OID back to CDATA
+		j) added producer and quality properties to CD, as per the latest
+		   revision of the Abstract doc
+		k) remove CR:@V and associated attributes and added a VALUE sub-element,
+		   since the value property is of type CD
+		l) assigned this revision number 0.91
+	2000-06-29:
+		a) added an HL7-PR to CE which says that the type of any TRANSLN
+		   children must be either CV or CS
+		b) changed the attribute type of CE:@T to the enumeration (CS|CV|CE)
+		   which defaults to CE, to handle type demotion for CE
+		c) changed the HL7_NAME for CV:@V, CV:@DN, CV:@S, CV:@SN, CV:@SV,
+		   CE:@V, CE:@DN, CE:@S, CE:@SN, CE:@SV, II:@V, II:@AAN to match
+		   their spelling in the Abstract doc
+		d) changed II:@VT to II:child::VALIDTIME, since the validTime
+		   property is of type IVL<TS>, we can't do it as an attribute
+		e) changed II:@TYPE to II:child::TYPE, since the type property is
+		   of type CV, we can't do it as an attribute
+		f) removed tel.use.code.set and tel.use.code.default param entities,
+		   since they were not actually correctly used in the definition of
+		   the TEL type
+		g) changed the #FIXED value of TEL:@USE-DOMAIN to the OID from the table
+		   on p 104
+		h) removed ad.purpose.code.set param entity, since it was not actually
+		   used in the definition of the AD type
+		i) added AD:@USE-DOMAIN and #FIXED its value to the OID from the table
+		   on p. 104
+		j) removed pnxp.qualifier.code.set param entity, since it was not actually
+		   used in the definition of the PNXP type
+		k) added PN:@USE-DOMAIN and #FIXED its value to the OID from the table
+		   on p. 104
+		l) changed the required-repeating group in AD and PN content modesl to
+		   optional-repeating, to allow for NULL-able message elements
+		m) assigned this revision number 0.92
+	2000-06-30:
+		a) Added ON:@TYPE-DOMAIN, with #FIXED value from the OID table on p 104
+		b) assigned this revision number 0.921
+	2000-07-05:
+		a) added ability to specify originalText property of CD as either
+		   a child::ORIGTXT or as @ORIGTXT.
+		b) assigned this revision number 0.922
+	2000-07-19:
+		a) Removed CD:@Q since quality appears to have disappeared from the
+		   final abstract ballot doc
+		b) added processing rule to CV which says that if child::ORIGTXT is
+		   present, its @MT must have the value "text/plain"
+		c) added @ORIGTXT to appropriate subtypes of CD
+		d) added AD:@VT
+		e) re-added null.code.set param entity decl, which somehow got removed
+		f) changed QTY:@V-T,INT:@V-T and REAL:@V-T to ST
+		g) added note to INT/REAL about PINF/NINF as null flavors
+		h) added note to REAL about precision and XML Schema
+		i) changed processor rule for RTO to require a non-zero DENOM
+		   (if DENOM is not null)
+		j) consolidated the processing rules for PQ into a single rule
+		k) consolidated the processing rules for MO into a single rule
+		l) added MO:@U-DOMAIN and #FIXED its value to the OID from the table in
+		   appendix A
+		m) added note on IVL<T> that center property is not represented,
+		   but can be calculated
+		n) added preliminary xpath processing rules to IVL<T> (they may
+		   not be correct)
+		o) Added @V to all IVL<QTY> to support demotion.  Also added note
+		   that promotion of a QTY to IVL<QTY> is also not supported.
+		p) added note on all IVL<T> asking whether we want to get rid of
+		   the structured rep and go to a simple literal form?
+		q) fixed typo in attlist decl for the TYPE element and %ED-attrib.list;
+		r) changed name of HXIT_AD to HXIT_AD.VALUE and added child::VALIDTIME
+		s) added a processing rule to AD which says that either it is null
+		   or at least one address part is given
+		t) added optional child::CONFID to all T content models, so that
+		   all T are really UVN<T>
+		u) added @PROB to all T, so that all T are really UVP<T>...question:
+		   do we need a processing rule which says that we really have either
+		   a UVN<T> or a UVP<T> but not both?
+		v) added TS:@CAL-DOMAIN and #FIXED its value to the OID from the table in
+		   appendix A
+		w) added note that promotion of a QTY to PPD<QTY> is not supported.
+		   added @CAL to support newly added demotion to PPD_TS.
+		x) added QTY:@CAL to support TS as an extension of QTY
+		y) added ED:@MT-DOMAIN and #FIXED its value to the OID from the table in
+		   appendix A
+		z) expanded all param entities used as enumerated attribute type domains
+		   if the param entity was only used once...removed param entity decl
+		   as well.  Only %null.code.set; and %boolean.code.set; remain.
+		A) assigned this revision number 0.93
+	2000-07-20:
+		a) added a processing rule to ED which says that when demoted to ST,
+		   no compression algorithm can be specified and no references are
+		   allowed.
+		b) assigned this revision number 0.931
+	2000-07-21:
+		a) removed CD&CR:@P, they were added mistakenly (they're from an
+		   earlier draft of the abstract ballot)
+		b) per GS's comments, redefined CR as essentially an extension of 
+		   CD which adds child::NAME and @INV
+		c) assinged this revision number 0.932
+	2000-07-23:
+		a) made ED into a mixed content model, with "value" in PCDATA; added
+		   ED:@ENC (B64|TXT) [TXT is default]
+		b) removed ED:@ICA
+		c) removed structured form of IVL_TS, now uses literal form from 7.3.4
+		   of ballot doc
+		d) removed II:child::VALIDTIME and replaced it with II:@VT
+		e) changed II:@V to II:@EX
+		
+  -->
+<!--
+	.....Code Set null.code.set.....
+		NI      no information
+		NA      not applicable
+		UNK     unknown
+		NASK    not asked
+		ASKU    asked but unknown
+		NAV     not available
+		OTH     other
+		PINF    positive infinity
+		NINF    negative infinity
+   
+	Note 1: NP (not present) does not appear in this list, because it
+	should never be sent in an instance.  The ITS layer should give
+	the application layer a null flavor of NP for all XML elements/attributes
+	not present in the instance			
+
+	Note 2: too bad we can't use schema's NULL facilities...but since
+	they don't allow nulls on attributes AND they don't allow
+	flavors of null, we're stuck defining this ourselves.
+-->
+	<xsd:simpleType name="null.code.set">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="NI"/>
+			<xsd:enumeration value="NA"/>
+			<xsd:enumeration value="UNK"/>
+			<xsd:enumeration value="NASK"/>
+			<xsd:enumeration value="ASKU"/>
+			<xsd:enumeration value="NAV"/>
+			<xsd:enumeration value="OTH"/>
+			<xsd:enumeration value="PINF"/>
+			<xsd:enumeration value="NINF"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+<!--
+========================== Boolean (BL) ============================== 
+	HL7 processing rules
+		@NULL or @V and not(@NULL and @V)
+
+	Examples
+    	<someBL V="true"/>
+		<someOtherBL V="false"/>
+
+.....Code Set boolean.code.set.....
+     true        TRUE
+     false       FALSE
+
+======================================================================
+-->
+	<xsd:simpleType name="boolean.code.set">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="true"/>
+			<xsd:enumeration value="false"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:group name="BL-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="BL-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="BL"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="boolean.code.set"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="BL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+======================== Binary Data (BIN) =========================== 
+	The XML ITS does not need to define this datatype, since the
+	only use of it is within the ED datatype, and a complete definition
+	of the datatype is not needed for that purpose
+======================================================================
+  -->
+	<!--
+===================== Encapsulated Data (ED) ========================= 
+
+	HL7 Processing Rules
+		@V or child::REF
+		@NULL or @MT
+		THUMBNAIL[not(child::THUMBNAIL) or child::THUMBNAIL/@NULL]
+		@T='BIN' and string-length(@V)>0
+		not(@IAC) or @IA
+		@PROB >= 0 and @PROB <= 1
+		@T='ST' and (not(@COMPN) or not(child::REF) or not(child::THUMBNAIL))
+
+	Examples:
+		<someED>cellulitis of the left foot</someED>
+		<someED MT="image/png"
+		  IC="aA5mb7c8TXtu392KMsaSa2MKkAwL5LKAo2d99azAs3MdUdw">
+		  <REF V="http://radiology.iumc.edu/xrays/128s8d9ej229se32s.jpg" 
+			   VT="200007200845-0820845" />
+		  <THUMBNAIL MT="image/jpeg" ENC="B64">
+			MNYD83jmMdomSJUEdmde9j44zmMir6edjzMMIjdMDSsWdIJdksIJR3373jeu83
+			6edjzMMIjdMDSsWdIJdksIJR3373jeu83MNYD83jmMdomSJUEdmde9j44zmMir
+			...
+			omSJUEdmde9j44zmMiromSJUEdmde9j44zmMirdMDSsWdIJdksIJR3373jeu83
+			4zmMir6edjzMMIjdMDSsWdIJdksIJR3373jeu83==
+		  </THUMBNAIL>
+		</someED>
+		<someED MT="application/msword" ENC="B64" COMPN="GZ">
+		  omSJUEdmde9j44zmMiromSJUEdmde9j44zmMirdMDSsWdIJdksIJR3373jeu83
+		  6edjzMMIjdMDSsWdIJdksIJR3373jeu83MNYD83jmMdomSJUEdmde9j44zmMir
+		  ...
+		  MNYD83jmMdomSJUEdmde9j44zmMir6edjzMMIjdMDSsWdIJdksIJR3373jeu83
+		  4zmMir6edjzMMIjdMDSsWdIJdksIJR3373jeu83==
+		</someED>
+		
+	If present, the value of the IA attribute shall be base64 encoded
+	
+	See note below on the declaration of THUMBNAIL, regarding inherited
+	values for ED properties
+
+	if @IC is valued, the we know that integrityCheckAlgorithm is "SHA-1"
+	
+	value is text() node ONLY if that text() node is the first child
+	only 1st occurance of REF, THUMBNAIL, NOTE and CONFID are significant
+	
+	@ENC does not correspond to any property
+	
+	use of xml:lang for the language property (as in the DTD)
+	deprecated in XML Schema
+
+======================================================================
+-->
+	<xsd:complexType name="ED-cont.model" mixed="true">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="REF"/>
+			<xsd:element ref="THUMBNAIL"/>
+			<xsd:element ref="NOTE"/>
+			<xsd:element ref="CONFID"/>
+		</xsd:choice>
+		<xsd:attributeGroup ref="ED-attrib.list"/>
+	</xsd:complexType>
+	<xsd:attributeGroup name="ED-attrib.list">
+		<xsd:attribute name="T" default="ED">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ST"/>
+					<xsd:enumeration value="ED"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="ENC" default="TXT">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="B64"/>
+					<xsd:enumeration value="TXT"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="MT" type="xsd:string" default="text/plain"/>
+		<xsd:attribute name="MT-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="MT-DOMAIN" type="xsd:NMTOKEN" fixed="2.16.840.1.113883.6.10"/>
+		<xsd:attribute name="MT-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="COMPN">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="DF"/>
+					<xsd:enumeration value="GZ"/>
+					<xsd:enumeration value="ZL"/>
+					<xsd:enumeration value="Z"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="COMPN-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="COMPN-HL7_NAME" type="xsd:string" fixed="compression"/>
+		<xsd:attribute name="COMPN-DOMAIN" type="xsd:NMTOKEN" fixed="2.16.840.1.113883.5.1009"/>
+		<xsd:attribute name="IC" type="xsd:string"/>
+		<xsd:attribute name="IC-T" type="xsd:NMTOKEN" fixed="BIN"/>
+		<xsd:attribute name="IC-HL7_NAME" type="xsd:string" fixed="integrityCheck"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+		<!-- deprecated
+		<xsd:attribute ref="xml:lang" use="optional"/>
+		<xsd:attribute ref="xml:lang-T" use="optional"/>
+		<xsd:attribute ref="xml:lang-HL7_NAME" use="optional"/>
+		-->
+	</xsd:attributeGroup>
+	<!--
+========================== String (ST) ============================== 
+
+	HL7 Processing Rules
+	   @NULL or length(@V)>0
+ 	   @PROB >= 0 and @PROB <= 1
+
+	Examples:
+    	<someST V="required ST"/>
+
+    The value of the charset property should be
+	obtained from the encoding psuedo attribute of the XML declaration
+	...if the XML declaration or the encoding psuedo attribute is not
+	present in the instance, then the CHARSET is assumed to be UTF-8
+	(as per	the XML 1.0 Rec)
+
+	Declares the xml namespace as a fixed attribute, which is in scope
+	for this element and its children
+	
+	use of xml:lang for the language property (as in the DTD)
+	deprecated in XML Schema
+======================================================================
+-->
+	<xsd:complexType name="ST-cont.model" mixed="true">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="NOTE"/>
+			<xsd:element ref="CONFID"/>
+		</xsd:choice>
+		<xsd:attributeGroup ref="ST-attrib.list"/>
+	</xsd:complexType>
+	<xsd:attributeGroup name="ST-attrib.list">
+		<xsd:attribute name="T" type="xsd:string" fixed="ST"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="MT" type="xsd:string" fixed="text/plain"/>
+		<xsd:attribute name="MT-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="MT-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+		<!-- deprecated
+		<xsd:attribute ref="xml:lang" use="optional"/>
+		<xsd:attribute ref="xml:lang-T" use="optional"/>
+		<xsd:attribute ref="xml:lang-HL7_NAME" use="optional"/>
+		-->
+	</xsd:attributeGroup>
+	<!--
+==================== Concept Descriptor (CD) ==================== 
+
+	HL7 Processing Rules
+		@NULL or @V
+		not(@S) or @V
+		not(@V) or @DN
+		not(@ORIGTXT) or not(child::ORIGTXT)
+    	@PROB >= 0 and @PROB <= 1
+
+	Examples:    
+        <someCD T="CD" V="10.3" S="ICD" SV="99" DN="The meaning of the code"/>
+
+	need more examples!!!!
+	
+	Still need processing rules for type demotions
+	
+	rather than have a "code" attribute, simply uses the V attribute
+	(but V-HL7_NAME is still "code")
+	
+	When S and SV appear in a containing element, they are the default
+	coding system and version for subordinate codes.
+
+	You can have EITHER an ORIGTXT child element OR an ORIGTXT attribute,
+	but not both.  If @ORIGTXT is present, then its value is assumed to
+	be the ID of some other element in the current message/document, in
+	which case the value of the originalText property is the PCDATA content
+	of that element.  If @ORIGTXT is present, but doesn't resolve to
+	the ID of some element or the element it resolves to has no PCDATA content,
+	then the value of the originalText property is NULL with the
+	default flavor.  Note: with this mechanism, @ORIGTXT can only
+	point to originalText that, essentially, has a media type of
+	"text/plain".
+======================================================================
+-->
+	<xsd:group name="CD-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="TRANSLTN" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="ORIGTXT" minOccurs="0"/>
+			<xsd:element ref="MODIFIER" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="CD-attrib.list">
+		<xsd:attribute name="T" default="CD">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="CD"/>
+					<xsd:enumeration value="CE"/>
+					<xsd:enumeration value="CV"/>
+					<xsd:enumeration value="CS"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+		<xsd:attribute name="DN" type="xsd:string"/>
+		<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+		<xsd:attribute name="S" type="xsd:string"/>
+		<xsd:attribute name="S-T" type="xsd:NMTOKEN" fixed="OID"/>
+		<xsd:attribute name="S-HL7_NAME" type="xsd:string" fixed="codeSystem"/>
+		<xsd:attribute name="SN" type="xsd:string"/>
+		<xsd:attribute name="SN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="SN-HL7_NAME" type="xsd:string" fixed="codeSystemName"/>
+		<xsd:attribute name="SV" type="xsd:string"/>
+		<xsd:attribute name="SV-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="SV-HL7_NAME" type="xsd:string" fixed="codeSystemVersion"/>
+		<xsd:attribute name="ORIGTXT" type="xsd:IDREF"/>
+		<xsd:attribute name="ORIGTXT-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="ORIGTXT-HL7_NAME" type="xsd:string" fixed="originalText"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+==================== Concept Role (CR) =============================== 
+
+	HL7 Processing Rules
+		@NULL or child::VALUE
+		@PROB >= 0 and @PROB <= 1
+    
+    Examples: needed!!
+		
+	as suggested in the abstract doc, the default value for the
+	inverted property is "false"
+
+	CR is modeled essentially as an extension of CD which
+	adds the name and inverse properties (but the ITS restricts
+	the use of @S, @SN and @SV)
+======================================================================
+-->
+	<xsd:group name="CR-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NAME" minOccurs="0"/>
+			<xsd:group ref="CD-cont.model"/>
+		</xsd:sequence>
+	</xsd:group>
+	<!--
+     Unfortunately, we can't use the CD-attrib.list param entity
+	 for CR's attribute list for a number of reasons: 1) the @T's don't
+	 match; 2) CD contains @PROB which CR should have; 3) we need to
+	 supress @S, @SN and @SV.  So, we'll just dup here what we need.
+  -->
+	<xsd:attributeGroup name="CR-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CR"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+		<xsd:attribute name="DN" type="xsd:string"/>
+		<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+		<xsd:attribute name="ORIGTXT" type="xsd:IDREF"/>
+		<xsd:attribute name="ORIGTXT-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="ORIGTXT-HL7_NAME" type="xsd:string" fixed="originalText"/>
+		<xsd:attribute name="INV" type="boolean.code.set" default="false"/>
+		<xsd:attribute name="INV-T" type="xsd:NMTOKEN" fixed="BL"/>
+		<xsd:attribute name="INV-HL7_NAME" type="xsd:string" fixed="inverted"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+==================== Coded Simple Value (CS) ======================== 
+
+	HL7 Processing Rules
+		@NULL or @V
+    	@PROB >= 0 and @PROB <= 1
+    
+    Examples: needed!!
+    
+	rather than have a "code" attribute, simply uses the V attribute
+	
+	Question: where does the application get the CONTEXT, to
+	supply the values for S, SV and SN (especially when the instance
+	of CS is the value of an attribute for some other element)...
+	one option is illustrated in the declaration of TEL (see USE-DOMAIN)
+	
+	typo in the abstract doc...duplicate prose describing CNE status of CS
+======================================================================
+-->
+	<xsd:group name="CS-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="CS-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+		<xsd:attribute name="DN" type="xsd:string"/>
+		<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+==================== Coded Value (CV)) ==================== 
+
+	HL7 Processing Rules
+		@NULL or @V
+		not(@S) or @V
+		child::ORIGTXT[@MT='text/plain']
+    	@PROB >= 0 and @PROB <= 1
+    
+    Examples: needed!!
+	
+	Still need processing rules for type demotion
+	
+	rather than have a "code" attribute, simply uses the V attribute
+	
+	When S and SV appear in a containing element, they are the default coding 
+	system and version for subordinate codes.
+	
+	You can have EITHER an ORIGTXT child element OR an ORIGTXT attribute,
+	but not both.  If @ORIGTXT is present, then its value is assumed to
+	be the ID of some other element in the current message/document, in
+	which case the value of the originalText property is the PCDATA content
+	of that element.  If @ORIGTXT is present, but doesn't resolve to
+	the ID of some element or the element it resolves to has no PCDATA content,
+	then the value of the originalText property is NULL with the
+	default flavor.  Note: with this mechanism, @ORIGTXT can only
+	point to originalText that, essentially, has a media type of
+	"text/plain".
+======================================================================
+-->
+	<xsd:group name="CV-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="ORIGTXT" minOccurs="0"/>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="CV-attrib.list">
+		<xsd:attribute name="T" default="CV">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="CS"/>
+					<xsd:enumeration value="CV"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+		<xsd:attribute name="DN" type="xsd:string"/>
+		<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+		<xsd:attribute name="S" type="xsd:string"/>
+		<xsd:attribute name="S-T" type="xsd:NMTOKEN" fixed="OID"/>
+		<xsd:attribute name="S-HL7_NAME" type="xsd:string" fixed="codeSystem"/>
+		<xsd:attribute name="SN" type="xsd:string"/>
+		<xsd:attribute name="SN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="SN-HL7_NAME" type="xsd:string" fixed="codeSystemName"/>
+		<xsd:attribute name="SV" type="xsd:string"/>
+		<xsd:attribute name="SV-T" type="xsd:NMTOKEN" fixed="OID"/>
+		<xsd:attribute name="SV-HL7_NAME" type="xsd:string" fixed="codeSystemVersion"/>
+		<xsd:attribute name="ORIGTXT" type="xsd:IDREF"/>
+		<xsd:attribute name="ORIGTXT-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="ORIGTXT-HL7_NAME" type="xsd:string" fixed="originalText"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+==================== Coded With Equivalents (CE)) ==================== 
+
+	HL7 Processing Rules
+		@NULL or @V
+		not(@S) or @V
+		child::TRANSTN[@T='CV' or @T='CS']
+    	@PROB >= 0 and @PROB <= 1
+    
+    Examples: needed!!
+	
+	Still need processing rules for type demotions
+	
+	rather than have a "code" attribute, simply uses the V attribute
+	
+	When S and SV appear in a containing element, they are the default coding 
+	system and version for subordinate codes.
+
+	You can have EITHER an ORIGTXT child element OR an ORIGTXT attribute,
+	but not both.  If @ORIGTXT is present, then its value is assumed to
+	be the ID of some other element in the current message/document, in
+	which case the value of the originalText property is the PCDATA content
+	of that element.  If @ORIGTXT is present, but doesn't resolve to
+	the ID of some element or the element it resolves to has no PCDATA content,
+	then the value of the originalText property is NULL with the
+	default flavor.  Note: with this mechanism, @ORIGTXT can only
+	point to originalText that, essentially, has a media type of
+	"text/plain".
+======================================================================
+-->
+	<xsd:group name="CE-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="ORIGTXT" minOccurs="0"/>
+			<xsd:element ref="TRANSLTN" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="CE-attrib.list">
+		<xsd:attribute name="T" default="CE">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="CS"/>
+					<xsd:enumeration value="CV"/>
+					<xsd:enumeration value="CE"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+		<xsd:attribute name="DN" type="xsd:string"/>
+		<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+		<xsd:attribute name="S" type="xsd:string"/>
+		<xsd:attribute name="S-T" type="xsd:NMTOKEN" fixed="OID"/>
+		<xsd:attribute name="S-HL7_NAME" type="xsd:string" fixed="codeSystem"/>
+		<xsd:attribute name="SN" type="xsd:string"/>
+		<xsd:attribute name="SN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="SN-HL7_NAME" type="xsd:string" fixed="codeSystemName"/>
+		<xsd:attribute name="SV" type="xsd:string"/>
+		<xsd:attribute name="SV-T" type="xsd:NMTOKEN" fixed="OID"/>
+		<xsd:attribute name="SV-HL7_NAME" type="xsd:string" fixed="codeSystemVersion"/>
+		<xsd:attribute name="ORIGTXT" type="xsd:IDREF"/>
+		<xsd:attribute name="ORIGTXT-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="ORIGTXT-HL7_NAME" type="xsd:string" fixed="originalText"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+==================== ISO Object Identifier (OID) ===================== 
+	no need for a separate OID type, since it is never used
+	by itself, but only as the type of property of some other type,
+	in which case it is also used just as a CDATA attribute
+======================================================================
+-->
+	<!--
+==================== Instance Identifier (II) ======================== 
+
+	HL7 Processing Rules
+    	@NULL or @RT
+    	@PROB >= 0 and @PROB <= 1
+
+    Examples:
+    	<someII V="optional ST" RT="required OID" ANN="optional ST"
+		VT='2000-06-23-2000-07-24'/>
+
+======================================================================
+-->
+	<xsd:group name="II-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="TYPE" minOccurs="0"/>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="II-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="II"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="EX" type="xsd:string"/>
+		<xsd:attribute name="EX-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="EX-HL7_NAME" type="xsd:string" fixed="extension"/>
+		<xsd:attribute name="RT" type="xsd:string"/>
+		<xsd:attribute name="RT-T" type="xsd:NMTOKEN" fixed="OID"/>
+		<xsd:attribute name="RT-HL7_NAME" type="xsd:string" fixed="root"/>
+		<xsd:attribute name="AAN" type="xsd:string"/>
+		<xsd:attribute name="AAN-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="AAN-HL7_NAME" type="xsd:string" fixed="assigningAuthorityName"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+================= telecommunication address (TEL) =================== 
+
+	HL7 Processing Rules
+	    @NULL or @V
+ 	   @PROB >= 0 and @PROB <= 1
+  
+    Examples:
+    	<someTEL V="http://example.com/somePath" USE="WP"/>
+    	<someTEL V="tel:(358)555-1234" USE="HP EC"/>
+
+	The latest draft of the Abstract doc mentions a resovledData
+	property, although it doesn't describe that property in detail.
+	I believe the property is ill-defined and should not be present,
+	hence I haven't represented it here.
+======================================================================
+-->
+	<xsd:group name="TEL-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="TEL-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="TEL"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="URL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="USE" type="xsd:NMTOKENS"/>
+		<xsd:attribute name="USE-T" type="xsd:NMTOKEN" fixed="SET_CS"/>
+		<xsd:attribute name="USE-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1011"/>
+		<xsd:attribute name="USE-HL7_NAME" type="xsd:string" fixed="use"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="GTS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+========================== address part (ADXP) =======================
+      address part type codes are represented by sub-element GIs in the
+	  enclosing AD
+======================================================================
+-->
+	<xsd:group name="ADXP-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="ADXP-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="ADXP"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!-- 
+============== Postal and Residential Address (AD) ================== 
+
+	HL7 Processing Rules
+		@NULL or child::LIT or child::DEL or child::CNT etc.
+ 	   @PROB >= 0 and @PROB <= 1
+
+	Examples:
+	    <someAD USE="PST"/>
+ 	    	<HNR V="970"/>
+  	        <STR V="Post St"/>
+   	    	<DIR V="NE"/>
+    	    <CTY V="Alameda"/>
+     	 	<STA V="CA"/>
+      		<ZIP V="94501"/>
+    	</someAD>
+
+	formated property is represented as @V
+	
+	LIT as an ADXP type code has been removed from the latest draft of
+	the Abstract doc, with the notion being that what was formerly the content
+	of LIT should now become PCDATA...this requires a mixed content model, which
+	I'm not quite ready to introduce...so, LIT is still used here.  The problem
+	with a mixed content model in this case is that child::NOTE's could be
+	sprinkled anywhere and the semantics of that aren't defined.  Having a
+	mixed content model would also make it harder (tho not impossible) to
+	define a good content model for HXIT<AD> (unless of course, we switch
+	to a literal for for IVL<TS>, which would simplify the transfer syntax
+	but complicate the applications)
+======================================================================
+-->
+	<xsd:group name="AD-cont.model">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="LIT"/>
+				<xsd:element ref="DEL"/>
+				<xsd:element ref="CNT"/>
+				<xsd:element ref="STA"/>
+				<xsd:element ref="CTY"/>
+				<xsd:element ref="ZIP"/>
+				<xsd:element ref="STR"/>
+				<xsd:element ref="HNR"/>
+				<xsd:element ref="DIR"/>
+				<xsd:element ref="ADL"/>
+				<xsd:element ref="POB"/>
+			</xsd:choice>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="AD-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="AD"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="formated"/>
+		<xsd:attribute name="USE" type="xsd:NMTOKENS"/>
+		<xsd:attribute name="USE-T" type="xsd:NMTOKEN" fixed="SET_CS"/>
+		<xsd:attribute name="USE-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1012"/>
+		<xsd:attribute name="USE-HL7_NAME" type="xsd:string" fixed="use"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="GTS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+================== Person Name Part (PNXP) =========================== 
+
+	HL7 Processing Rules
+	    @NULL or @V
+	
+    name part type codes are represented by sub-element GIs in the
+	enclosing PN
+======================================================================
+-->
+	<xsd:group name="PNXP-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PNXP-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="PNXP"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="QUAL" type="xsd:NMTOKENS"/>
+		<xsd:attribute name="QUAL-T" type="xsd:NMTOKEN" fixed="SET_CS"/>
+		<xsd:attribute name="QUAL-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1014"/>
+		<xsd:attribute name="QUAL-HL7_NAME" type="xsd:string" fixed="qualifier"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+======================== Person Name (PN) =========================== 
+
+	HL7 Processing Rules
+	
+    The order in which the name parts are sent should represent the natural 
+    order for displaying the name. It is not required to break names down 
+    using all of the elements, although individual nations may require 
+    specific elements. Displaying a name depends on the white space rules 
+    included in the V3DT report. It may be necessary to preserve white space 
+    in certain elements.
+	
+    @PROB >= 0 and @PROB <= 1
+
+	Examples:
+		<somePN NOTE="This is an example of 'Wesley Rishel'">
+			<FAM V="Rishel" QUAL="BR RE"/>
+			<GIV V="Wesley" QUAL="BR RE"/>
+		</somePN>
+
+		<somePN NOTE="This is an example of 'Irma Corine Jongeneel-de Haas'">
+			<GIV V="Irma" QUAL="RE"/>
+			<GIV V="Corine" QUAL="RE"/>
+			<FAM V="Jongeneel" QUAL="RE SP"/>
+ 			<DEL V="-"/>
+			<FAM V="de Haas" QUAL="RE BR"/>
+		</somePN>
+
+	uses @V to represent the formated property
+======================================================================
+-->
+	<xsd:group name="PN-cont.model">
+		<xsd:sequence>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="GIV"/>
+				<xsd:element ref="MID"/>
+				<xsd:element ref="FAM"/>
+				<xsd:element ref="PFX"/>
+				<xsd:element ref="SFX"/>
+				<xsd:element ref="DEL"/>
+			</xsd:choice>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PN-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="PN"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="formated"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+===================== Organization Name (ON) ========================= 
+
+	HL7 Processing Rules
+	    @NULL or @V
+ 	   @PROB >= 0 and @PROB <= 1
+
+	Examples:
+		<someON TYPE="optional CS" V="optional ST"/>
+		
+	should this be modeled closer to AD and PN?
+======================================================================
+-->
+	<xsd:group name="ON-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="ON-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="ON"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="TYPE">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="L"/>
+					<xsd:enumeration value="A"/>
+					<xsd:enumeration value="ST"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="TYPE-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="TYPE-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1015"/>
+		<xsd:attribute name="TYPE-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+========================== Quantity (QTY) =========================== 
+
+	HL7 Processing Rules:
+	    @NULL or @V
+ 	   ###not xpath### INT|REAL|TS ::= V or PQ|MO ::= V, U?
+		not(@T='PQ' or @T='MO' or @T='TS') or @U  ### I think does the HL7-PR above
+		@PROB >= 0 and @PROB <= 1
+
+	Examples:
+	    <someQTY T="INT|REAL|PQ|MO" V="123.75" U="mg/dL"/>
+	
+	Unless @T=TS, @CAL is meaningless and should be ignored
+	
+	The cardinality/default value for QTY is defined as a param entity
+	whose starting value is "#IMPLIED".  We do it this way so that the
+	NUM and DENOM properties of RTO can take on the default value
+	"1" as specified in the abstract ballot.
+======================================================================
+-->
+	<xsd:group name="QTY-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="QTY-attrib.list">
+		<xsd:attribute name="T" default="INT">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="INT"/>
+					<xsd:enumeration value="REAL"/>
+					<xsd:enumeration value="PQ"/>
+					<xsd:enumeration value="MO"/>
+					<xsd:enumeration value="TS"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="U" type="xsd:string"/>
+		<xsd:attribute name="U-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="U-HL7_NAME" type="xsd:string" fixed="unit"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+========================== Integer (INT) ============================ 
+
+	HL7 Processing Rules:
+		@NULL or @V
+		@PROB >= 0 and @PROB <= 1
+
+	Examples:
+	    <someINT V="required ST"/>
+
+	The "exceptional" values positive and negative infinity are
+	represented as null flavors
+======================================================================
+-->
+	<xsd:group name="INT-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="INT-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="INT"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+======================== Real Number (REAL) ========================= 
+
+	HL7 Processing Rules:
+    	@NULL or @V
+    	@PROB >= 0 and @PROB <= 1
+
+ 	Examples:
+	   <someREAL V="required REAL"/>
+
+	The "exceptional" values positive and negative infinity are
+	represented as null flavors
+	
+	Note: XML Schema currently allows trailing zeros in its literals
+	of type decimal, hence we will be able to get the precision property
+	from the literals.  However, there is discussion within the WG
+	to disallow trailing zeros, and if this happens, we will have to
+	add @PREC or some such
+======================================================================
+-->
+	<xsd:group name="REAL-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="REAL-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+==================== Ratio of Quantities (RTO) ======================= 
+
+	HL7 Processing Rules:
+		@NULL or (child::NUM and not(child::NUM/@NULL))
+		@NULL or (child::DENOM[@V!='0'] and not(child::DENOM/@NULL))
+		@PROB >= 0 and @PROB <= 1
+ 
+ 	Examples:
+		<someRTO>
+			<NUM T="INT|REAL|PQ|MO" V="123.75" U="mg/dL"/>
+			<DENOM T="INT|REAL|PQ|MO" V="123.75" U="mg/dL"/>
+		</someRTO>
+	
+	How should the demotion to PQ and REAL be handled?
+======================================================================
+-->
+	<xsd:group name="RTO-cont.model">
+		<xsd:sequence>
+			<xsd:sequence minOccurs="0">
+				<xsd:element ref="NUM"/>
+				<xsd:element ref="DENOM"/>
+			</xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="RTO-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="RTO"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+====================== Physical Quantity (PQ) ======================= 
+
+	HL7 Processing Rules:
+		@NULL or (@V and @U)
+		@PROB >= 0 and @PROB <= 1
+
+	Examples:
+		<somePQ V="1123.37" U="cm"/>
+
+    Does the XML ITS have to say *anything* about about the
+	canonical form for a PQ?
+
+======================================================================
+-->
+	<xsd:group name="PQ-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PQ-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="PQ"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="U" type="xsd:string"/>
+		<xsd:attribute name="U-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="U-HL7_NAME" type="xsd:string" fixed="unit"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+====================== Monetary Amount (MO) ========================= 
+
+	HL7 Processing Rules:
+	@NULL or (@V and @U)
+	@PROB >= 0 and @PROB <= 1
+
+	Examples:
+	    <someMO V="1123.37" U="USD"/>
+
+	Why is there an MO type to begin with...why can't this just be a
+	restriction of PQ, where the domain of unit is fixed to ISO 4217?
+======================================================================
+-->
+	<xsd:group name="MO-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="MO-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="MO"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="U" type="xsd:string"/>
+		<xsd:attribute name="U-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="U-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.6.9"/>
+		<xsd:attribute name="U-HL7_NAME" type="xsd:string" fixed="currency"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+======================= Point in Time (TS) ========================== 
+
+	HL7 Processing Rules:
+    	@NULL or @V
+    	@PROB >= 0 and @PROB <= 1
+
+	Examples:
+	    <someTS V="19990924162403-0800"/>
+
+	the timezone property is conveyed as part of value (V)
+	instead of as a separate property (there is some call w/i the
+	XML Schema WG that ALL time-related datatypes in the schema spec
+	should be specified in UTC, I'm fighting that but may loose)
+	
+	offset is not represented at all (and to editorialize, I believe
+	should be removed from the abstract type, unless the epoch is also
+	added...semantically, it does no good to know that some point in
+	time is 1 day from an epoch if I don't also know what the epoch is).
+======================================================================
+-->
+	<xsd:group name="TS-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="TS-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="TS"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+<!--
+-->
+	<!-- We do not need SET<T> for all T -->
+	<!-- We do not need LIST<T> for all T -->
+	<!-- We do not need BAG<T> for all T -->
+<!--
+-->
+	<!--
+================ interval of physical quantities (IVL_PQ) ============ 
+
+    To avoid redundancy and difficulty in processing we factor the
+    units from both bounds into one unit of the interval. This
+    requires both low and high bound to have a common unit. Width,
+    however must have its own unit, since in difference-scale
+    quantities the width may be of a different unit.
+
+	HL7 Processing Rules:
+    	The following combinations of components are valid:
+
+    	@NULL or @V
+    	@PROB >= 0 and @PROB <= 1
+
+	Examples:
+	    <someIVL_PQ LOW="optional REAL" LOW_CLOSED="optional BL" HIGH="optional REAL"
+        HIGH_CLOSED="optional BL" UNIT="optional CV" WID="optional PQ"/>
+
+	The XML ITS does not support promotion of a PQ into an IVL_PQ,
+	although demotion of IVL_PQ to PQ is supported (using @V and @U)
+======================================================================
+-->
+	<xsd:group name="IVL_PQ-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="IVL_PQ-attrib.list">
+		<xsd:attribute name="T" default="IVL_PQ">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="IVL_PQ"/>
+					<xsd:enumeration value="PQ"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="U" type="xsd:string"/>
+		<xsd:attribute name="U-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="U-HL7_NAME" type="xsd:string" fixed="unit"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+================ interval of points in time (IVL_TS) ================ 
+
+    Note that DIF_TS is just an alias for PQ with a dimensional
+    constraint on the unit (PQ in the dimension of time.)
+
+	The XML ITS does not support promotion of a PQ into an IVL_PQ,
+	although demotion of IVL_PQ to PQ is supported (using @V and @U)
+
+	literals (e.g., values of @V) follow literal form from section
+	7.4.3 of abstract ballot
+======================================================================
+-->
+	<xsd:group name="IVL_TS-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="IVL_TS-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="TS"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+================= Periodic Interval of Time (PIVL) =================== 
+	no need for a separate PIVL type, since it is never used
+	by itself, but only to define the semantics of GTS
+======================================================================
+-->
+<!--
+========== Event-Related Periodic Interval of Time (EIVL) ============
+	no need for a separate EIVL type, since it is never used
+	by itself, but only to define the semantics of GTS
+======================================================================
+-->
+<!--
+================ General Timing Specification (GTS) ================== 
+
+	HL7 Processing Rules:
+
+    	The following combinations of components are valid:
+
+		@NULL or @V
+		@PROB >= 0 and @PROB <= 1
+
+	HL7 Processing Rules:
+			
+	The values of @V follow the Literal Form in section 8.3.1.3 of the
+	abstract ballot
+======================================================================
+-->
+	<xsd:group name="GTS-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="GTS-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="GTS"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="GTS"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+<!--
+-->
+	<!--
+========================== ANT<T> ==================================== 
+     no need for ANT<T> since all types defined for the XML ITS
+	 already include an optional note property
+======================================================================
+-->
+	<!--
+========================== HIST<T> =================================== 
+     no need for HIST<T> since all types defined for the XML ITS
+	 already include an optional validTime property (and hence,
+	 are HXIT<T>), and HIST<T> is simply an optionally repeating
+	 HXIT<T>
+======================================================================
+-->
+	<!--
+================ Uncertain Value-Narrative (UVN<T>) ================== 
+     no need for UVN<T> since all types defined for the XML ITS
+	 already include an optional confidence property
+======================================================================
+-->
+	<!--
+================ Uncertain Value-Probabilistic (UVP<T>) ============== 
+     no need for UVP<T> since all types defined for the XML ITS
+	 already include an optional probability property
+======================================================================
+-->
+	<!--
+============ Non-Parametric Probability Distribution (NPPD<T>) ======= 
+     no need for NPPD<T> since all types defined for the XML ITS
+	 already include an optional probability property (and hence,
+	 are already UVP<T>) and NPPD<T> is simply an optionally
+	 repeating UVP<T>
+======================================================================
+-->
+<!--
+-->
+	<!--
+========================== PPD<QTY> ================================== 
+
+	HL7 Processing Rules:
+		@NULL or @V
+
+	Examples: needed!!!
+	 
+	The XML ITS does not support promoting a QTY to a PPD<QTY>
+======================================================================
+-->
+	<xsd:group name="PPD_QTY-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PPD_QTY-attrib.list">
+		<xsd:attribute name="T" default="PPD_INT">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="PPD_INT"/>
+					<xsd:enumeration value="PPD_REAL"/>
+					<xsd:enumeration value="PPD_PQ"/>
+					<xsd:enumeration value="PPD_MO"/>
+					<xsd:enumeration value="PPD_TS"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="U" type="xsd:string"/>
+		<xsd:attribute name="U-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="U-HL7_NAME" type="xsd:string" fixed="unit"/>
+		<xsd:attribute name="SD" type="xsd:string"/>
+		<xsd:attribute name="SD-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="SD-HL7_NAME" type="xsd:string" fixed="standardDeviation"/>
+		<xsd:attribute name="SDU" type="xsd:string"/>
+		<xsd:attribute name="SDU-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="SDU-HL7_NAME" type="xsd:string" fixed="standardDeviation unit"/>
+		<xsd:attribute name="TY">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="U"/>
+					<xsd:enumeration value="N"/>
+					<xsd:enumeration value="LN"/>
+					<xsd:enumeration value="G"/>
+					<xsd:enumeration value="E"/>
+					<xsd:enumeration value="X2"/>
+					<xsd:enumeration value="T"/>
+					<xsd:enumeration value="F"/>
+					<xsd:enumeration value="B"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="TY-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="TY-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1019"/>
+		<xsd:attribute name="TY-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+========================== PPD<REAL> ================================ 
+
+	HL7 Processing Rules:
+		@NULL or @V
+
+	Examples: needed!!!
+	 
+	The abstract ballot says that @TY is of type CV...shouldn't
+	it really be of type CS since the domain is fixed and no
+	exceptions are allowed?  Assuming so, none of extra properties
+	of CV are represented
+	 
+	The XML ITS does not support promoting a REAL to a PPD<REAL>
+======================================================================
+-->
+	<xsd:group name="PPD_REAL-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PPD_REAL-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="PPD_REAL"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="SD" type="xsd:string"/>
+		<xsd:attribute name="SD-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="SD-HL7_NAME" type="xsd:string" fixed="standardDeviation"/>
+		<xsd:attribute name="TY">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="U"/>
+					<xsd:enumeration value="N"/>
+					<xsd:enumeration value="LN"/>
+					<xsd:enumeration value="G"/>
+					<xsd:enumeration value="E"/>
+					<xsd:enumeration value="X2"/>
+					<xsd:enumeration value="T"/>
+					<xsd:enumeration value="F"/>
+					<xsd:enumeration value="B"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="TY-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="TY-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1019"/>
+		<xsd:attribute name="TY-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+========================== PPD<PQ> =================================== 
+
+ 	HL7 Processing Rules:
+		@NULL or @V
+
+	Examples: needed!!!
+	 
+	The XML ITS does not support promoting a PQ to a PPD<PQ>
+======================================================================
+-->
+	<xsd:group name="PPD_PQ-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PPD_PQ-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="PPD_PQ"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="U" type="xsd:string"/>
+		<xsd:attribute name="U-T" type="xsd:NMTOKEN" fixed="ST"/>
+		<xsd:attribute name="U-HL7_NAME" type="xsd:string" fixed="unit"/>
+		<xsd:attribute name="SD" type="xsd:string"/>
+		<xsd:attribute name="SD-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="SD-HL7_NAME" type="xsd:string" fixed="standardDeviation"/>
+		<xsd:attribute name="SDU" type="xsd:string"/>
+		<xsd:attribute name="SDU-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="SDU-HL7_NAME" type="xsd:string" fixed="standardDeviation unit"/>
+		<xsd:attribute name="TY">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="U"/>
+					<xsd:enumeration value="N"/>
+					<xsd:enumeration value="LN"/>
+					<xsd:enumeration value="G"/>
+					<xsd:enumeration value="E"/>
+					<xsd:enumeration value="X2"/>
+					<xsd:enumeration value="T"/>
+					<xsd:enumeration value="F"/>
+					<xsd:enumeration value="B"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="TY-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="TY-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1019"/>
+		<xsd:attribute name="TY-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+========================== PPD<TS> =================================== 
+
+	HL7 Processing Rules:
+		@NULL or @V
+
+	Examples: needed!!!
+	 
+	The XML ITS does not support promoting a TS to a PPD<TS>
+======================================================================
+-->
+	<xsd:group name="PPD_TS-cont.model">
+		<xsd:sequence>
+			<xsd:element ref="NOTE" minOccurs="0"/>
+			<xsd:element ref="CONFID" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:group>
+	<xsd:attributeGroup name="PPD_TS-attrib.list">
+		<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="PPD_TS"/>
+		<xsd:attribute name="NULL" type="null.code.set"/>
+		<xsd:attribute name="V" type="xsd:string"/>
+		<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="value"/>
+		<xsd:attribute name="SD" type="xsd:string"/>
+		<xsd:attribute name="SD-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="SD-HL7_NAME" type="xsd:string" fixed="standardDeviation"/>
+		<xsd:attribute name="SDU" type="xsd:string"/>
+		<xsd:attribute name="SDU-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="SDU-HL7_NAME" type="xsd:string" fixed="standardDeviation unit"/>
+		<xsd:attribute name="TY">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="U"/>
+					<xsd:enumeration value="N"/>
+					<xsd:enumeration value="LN"/>
+					<xsd:enumeration value="G"/>
+					<xsd:enumeration value="E"/>
+					<xsd:enumeration value="X2"/>
+					<xsd:enumeration value="T"/>
+					<xsd:enumeration value="F"/>
+					<xsd:enumeration value="B"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="TY-T" type="xsd:NMTOKEN" fixed="CS"/>
+		<xsd:attribute name="TY-DOMAIN" type="xsd:string" fixed="2.16.840.1.113883.5.1019"/>
+		<xsd:attribute name="TY-HL7_NAME" type="xsd:string" fixed="type"/>
+		<xsd:attribute name="VT" type="xsd:string"/>
+		<xsd:attribute name="VT-T" type="xsd:NMTOKEN" fixed="IVL_TS"/>
+		<xsd:attribute name="VT-HL7_NAME" type="xsd:string" fixed="validTime"/>
+		<xsd:attribute name="PROB" type="xsd:string"/>
+		<xsd:attribute name="PROB-T" type="xsd:NMTOKEN" fixed="REAL"/>
+		<xsd:attribute name="PROB-HL7_NAME" type="xsd:string" fixed="probability"/>
+	</xsd:attributeGroup>
+	<!--
+     while some of these elements could be declared up with
+	 their main datatype, others can't since the para-enties
+	 need for them wouldn't yet have been defined; hence, we
+	 just put them all here.
+
+     Also, there are most likely HL7-PR's associated with some
+	 (all?) of these properties, but I haven't had the time to
+	 check into that
+  -->
+	<!--
+     elements required for ANT<T>
+  -->
+	<xsd:element name="NOTE">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="note"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for UVN<T>
+  -->
+	<xsd:element name="CONFID">
+		<xsd:complexType>
+			<xsd:group ref="CV-cont.model"/>
+			<xsd:attributeGroup ref="CV-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="confidence"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for ED properties
+  -->
+	<xsd:element name="REF">
+		<xsd:complexType>
+			<xsd:group ref="TEL-cont.model"/>
+			<xsd:attributeGroup ref="TEL-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="reference"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     Following the ITS note in the abstract ballot, any properties
+	 of the THUMBNAIL not specified in the instance are to be "inherited"
+	 from the enclosing ED element.
+	 
+	 Note: actually, the ITS note only mentions the type, charset and compression
+	 properties, but I think it equally applies to all properties
+  -->
+	<xsd:element name="THUMBNAIL">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="REF"/>
+				<xsd:element ref="THUMBNAIL"/>
+				<xsd:element ref="NOTE"/>
+				<xsd:element ref="CONFID"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="ED-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="thumbnail"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for CD properties (and related types)
+  -->
+	<xsd:element name="ORIGTXT">
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element ref="REF"/>
+				<xsd:element ref="THUMBNAIL"/>
+				<xsd:element ref="NOTE"/>
+				<xsd:element ref="CONFID"/>
+			</xsd:choice>
+			<xsd:attributeGroup ref="ED-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="originalText"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="MODIFIER">
+		<xsd:complexType>
+			<xsd:group ref="CR-cont.model"/>
+			<xsd:attributeGroup ref="CR-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="modifier"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TRANSLTN">
+		<xsd:complexType>
+			<xsd:group ref="CD-cont.model"/>
+			<xsd:attributeGroup ref="CD-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="translation"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for CR properties
+  -->
+	<xsd:element name="NAME">
+		<xsd:complexType>
+			<xsd:group ref="CV-cont.model"/>
+			<xsd:attributeGroup ref="CV-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="name"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for II properties
+  -->
+	<xsd:element name="TYPE">
+		<xsd:complexType>
+			<xsd:group ref="CV-cont.model"/>
+			<xsd:attributeGroup ref="CV-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="type"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for AD properties
+  -->
+	<xsd:element name="LIT">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="literal"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="DEL">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="delimiter"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CNT">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="country"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CTY">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="city"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="STA">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="state"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ZIP">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="postal code"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="STR">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="street name"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HNR">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="house number"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="DIR">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="direction"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ADL">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="address locator"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="POB">
+		<xsd:complexType>
+			<xsd:group ref="ADXP-cont.model"/>
+			<xsd:attributeGroup ref="ADXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="post office box"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for PN properties
+  -->
+	<xsd:element name="FAM">
+		<xsd:complexType>
+			<xsd:group ref="PNXP-cont.model"/>
+			<xsd:attributeGroup ref="PNXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="family"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="GIV">
+		<xsd:complexType>
+			<xsd:group ref="PNXP-cont.model"/>
+			<xsd:attributeGroup ref="PNXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="given"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="MID">
+		<xsd:complexType>
+			<xsd:group ref="PNXP-cont.model"/>
+			<xsd:attributeGroup ref="PNXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="middle"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="PFX">
+		<xsd:complexType>
+			<xsd:group ref="PNXP-cont.model"/>
+			<xsd:attributeGroup ref="PNXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="prefix"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SFX">
+		<xsd:complexType>
+			<xsd:group ref="PNXP-cont.model"/>
+			<xsd:attributeGroup ref="PNXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="suffix"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="PN.DEL">
+		<xsd:complexType>
+			<xsd:group ref="PNXP-cont.model"/>
+			<xsd:attributeGroup ref="PNXP-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="delimiter"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+     elements required for RTO properties
+-->
+	<xsd:element name="NUM">
+		<xsd:complexType>
+			<xsd:group ref="QTY-cont.model"/>
+			<xsd:attributeGroup ref="QTY-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="numerator"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="DENOM">
+		<xsd:complexType>
+			<xsd:group ref="QTY-cont.model"/>
+			<xsd:attributeGroup ref="QTY-attrib.list"/>
+			<xsd:attribute name="HL7_NAME" type="xsd:string" fixed="denominator"/>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

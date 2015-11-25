@@ -1,0 +1,1020 @@
+<?xml version="1.0"?>
+<!--
+============================================================
+============================================================
+HL7 Clinical Document Architecture, Version 1.0 
+
+CDA Header XML Schema (included by levelone_1.0.xsd)
+
+Derived from HL7 Reference Information Model, Version 0.98
+
+corresponding DTD Last Revised: September 18, 2000
+XML Schema last revised: 
+	2004-01-05 (Kai U. Heitmann):
+	       Namespace declarations have been eliminated
+
+============================================================
+============================================================
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" >
+	<!--
+============================================================
+============================================================
+Import the V3 data type DTD
+
+(The following system id must be changed to point to the location
+of the V3DT file on your system.)
+============================================================
+============================================================
+-->
+	<xsd:include schemaLocation="v3dt_1.0.xsd"/>
+	<!--
+============================================================
+============================================================
+Common attributes
+
+============================================================
+============================================================
+-->
+	<xsd:attributeGroup name="common_atts">
+		<xsd:attribute name="ID" type="xsd:ID"/>
+	</xsd:attributeGroup>
+	<!--
+============================================================
+============================================================
+The base RIM class for the DTD is Document_service
+
+============================================================
+============================================================
+-->
+	<xsd:element name="clinical_document_header">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id"/>
+				<xsd:element ref="set_id" minOccurs="0"/>
+				<xsd:element ref="version_nbr" minOccurs="0"/>
+				<xsd:element ref="document_type_cd"/>
+				<xsd:element ref="service_tmr" minOccurs="0"/>
+				<xsd:element ref="origination_dttm"/>
+				<xsd:element ref="copy_dttm" minOccurs="0"/>
+				<xsd:element ref="confidentiality_cd" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="document_relationship" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="fulfills_order" minOccurs="0"/>
+				<xsd:element ref="patient_encounter" minOccurs="0"/>
+				<xsd:element ref="authenticator" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="legal_authenticator" minOccurs="0"/>
+				<xsd:element ref="intended_recipient" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="originator" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="originating_organization" minOccurs="0"/>
+				<xsd:element ref="transcriptionist" minOccurs="0"/>
+				<xsd:element ref="provider" maxOccurs="unbounded"/>
+				<xsd:element ref="service_actor" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="patient"/>
+				<xsd:element ref="originating_device" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="service_target" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="document_service_as_clinical_document_header"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service"/>
+			<xsd:attribute name="RIM-VERSION" type="xsd:string" fixed="0.98"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+============================================================
+RIM components (classes, attributes, associations) nested under
+clinical_document_header
+
+There are four logical components of the CDA Header:
+(1) Document information; 
+(2) Encounter data; 
+(3) Service actors (such as providers); 
+(4) Service targets (such as patients). 
+
+The four components are presented in this order, similar to their
+order in the CDA Header Hierarchical Description.
+============================================================
+============================================================
+-->
+	<!--
+============================================================
+============================================================
+Document Information
+
+Document information identifies the document, defines confidentiality
+status, and describes relationships to other documents and orders. 
+============================================================
+============================================================
+-->
+	<!--
+============================================================
+Document Information :: Document Identification
+
+Elements declared in this section include:
+<id>, <set_id>, <version_nbr>, <document_type_cd>
+============================================================
+-->
+	<xsd:element name="id">
+		<xsd:complexType>
+			<xsd:group ref="II-cont.model"/>
+			<xsd:attributeGroup ref="II-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="id"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="set_id">
+		<xsd:complexType>
+			<xsd:group ref="II-cont.model"/>
+			<xsd:attributeGroup ref="II-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="set_id"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="version_nbr">
+		<xsd:complexType>
+			<xsd:group ref="INT-cont.model"/>
+			<xsd:attributeGroup ref="INT-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="version_nbr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Document Information :: Document Time Stamps
+
+Elements declared in this section include:
+<service_tmr>, <origination_dttm>, <copy_dttm>
+============================================================
+-->
+	<xsd:element name="document_type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="service_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="service_tmr">
+		<xsd:complexType>
+			<xsd:group ref="GTS-cont.model"/>
+			<xsd:attributeGroup ref="GTS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="service_tmr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="origination_dttm">
+		<xsd:complexType>
+			<xsd:group ref="TS-cont.model"/>
+			<xsd:attributeGroup ref="TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="origination_dttm"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="copy_dttm">
+		<xsd:complexType>
+			<xsd:group ref="TS-cont.model"/>
+			<xsd:attributeGroup ref="TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="copy_dttm"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Document Information :: Document Confidentiality
+
+Elements declared in this section include:
+<confidentiality_cd>
+============================================================
+-->
+	<xsd:element name="confidentiality_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="confidentiality_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Document Information :: Document Relationships
+
+Elements declared in this section include:
+<document_relationship>, <document_relationship.type_cd>,
+<related_document>, <fulfills_order>, <fulfills_order.type_cd>,
+<order>
+============================================================
+-->
+	<xsd:element name="document_relationship">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="document_relationship.type_cd"/>
+				<xsd:element ref="related_document"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="is_source_for_service_relationship"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_relationship"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="document_relationship.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="APND"/>
+						<xsd:enumeration value="RPLC"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="related_document">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id"/>
+				<xsd:element ref="set_id" minOccurs="0"/>
+				<xsd:element ref="version_nbr" minOccurs="0"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_target_service"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="fulfills_order">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="fulfills_order.type_cd"/>
+				<xsd:element ref="order" maxOccurs="unbounded"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="is_source_for_service_relationship"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_relationship"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="fulfills_order.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="FLFS"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="order">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_target_service"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+============================================================
+Encounter Data
+
+Encounter data describes the setting in which the documented encounter occurred. 
+
+Elements declared in this section include:
+<patient_encounter>, <practice_setting_cd>, <encounter_tmr>, <service_location>, <addr>
+============================================================
+============================================================
+-->
+	<xsd:element name="patient_encounter">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" minOccurs="0"/>
+				<xsd:element ref="practice_setting_cd" minOccurs="0"/>
+				<xsd:element ref="encounter_tmr"/>
+				<xsd:element ref="service_location" minOccurs="0"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="is_assigned_to_patient_encounter"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="patient_encounter"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="practice_setting_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="practice_setting_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="encounter_tmr">
+		<xsd:complexType>
+			<xsd:group ref="IVL_TS-cont.model"/>
+			<xsd:attributeGroup ref="IVL_TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="encounter_tmr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="service_location">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" minOccurs="0"/>
+				<xsd:element ref="addr" minOccurs="0"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_master_patient_service_location"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="master_patient_service_location"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="addr">
+		<xsd:complexType>
+			<xsd:group ref="AD-cont.model"/>
+			<xsd:attributeGroup ref="AD-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="addr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+============================================================
+Service Actors
+
+Service actors include those who authenticate the document, those intended
+to receive a copy of the document, document originators and transcriptionists,
+and health care providers who participated in the service(s) being documented.
+============================================================
+============================================================
+-->
+	<!--
+============================================================
+Service Actors :: People Responsible for a Clinical Document
+
+Elements declared in this section include:
+<person>, <person_name>, <effective_tmr>, <nm>, <person_name.type_cd>, <telecom>
+============================================================
+-->
+	<xsd:element name="person">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" maxOccurs="unbounded"/>
+				<xsd:element ref="person_name" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="addr" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="telecom" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="participation_of_person"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="person"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="person_name">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="effective_tmr" minOccurs="0"/>
+				<xsd:element ref="nm"/>
+				<xsd:element ref="person_name.type_cd" minOccurs="0"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_person_name"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="person_name"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="effective_tmr">
+		<xsd:complexType>
+			<xsd:group ref="IVL_TS-cont.model"/>
+			<xsd:attributeGroup ref="IVL_TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="effective_tmr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="nm">
+		<xsd:complexType>
+			<xsd:group ref="PN-cont.model"/>
+			<xsd:attributeGroup ref="PN-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="nm"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="person_name.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="telecom">
+		<xsd:complexType>
+			<xsd:group ref="TEL-cont.model"/>
+			<xsd:attributeGroup ref="TEL-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="phon"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Actors :: Authenticators
+
+Elements declared in this section include:
+<authenticator>, <authenticator.type_cd>, <participation_tmr>,
+<signature_cd>, <legal_authenticator>, <legal_authenticator.type_cd>
+============================================================
+-->
+	<xsd:element name="authenticator">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="authenticator.type_cd"/>
+				<xsd:element ref="participation_tmr"/>
+				<xsd:element ref="signature_cd"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="authenticator.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="VRF"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="participation_tmr">
+		<xsd:complexType>
+			<xsd:group ref="IVL_TS-cont.model"/>
+			<xsd:attributeGroup ref="IVL_TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="tmr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="signature_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" default="S">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="S"/>
+						<xsd:enumeration value="X"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="signature_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="legal_authenticator">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="legal_authenticator.type_cd"/>
+				<xsd:element ref="participation_tmr"/>
+				<xsd:element ref="signature_cd"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="legal_authenticator.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="SPV"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Actors :: Intended Recipients
+
+Elements declared in this section include:
+<intended_recipient>, <intended_recipient.type_cd>
+============================================================
+-->
+	<xsd:element name="intended_recipient">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="intended_recipient.type_cd"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="intended_recipient.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="TRC"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Actors :: Originators
+
+Elements declared in this section include:
+<originator>, <originator.type_cd>, <originating_organization>,
+<originating_organization.type_cd>, <organization>, <organization.nm>
+============================================================
+-->
+	<xsd:element name="originator">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="originator.type_cd"/>
+				<xsd:element ref="participation_tmr"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="originator.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="AUT"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="originating_organization">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="originating_organization.type_cd"/>
+				<xsd:element ref="organization"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="originating_organization.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="CST"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="organization">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="organization.nm" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="addr" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="participation_of_organization"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="organization"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="organization.nm">
+		<xsd:complexType>
+			<xsd:group ref="ON-cont.model"/>
+			<xsd:attributeGroup ref="ON-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="nm"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Actors :: Transcriptionist
+
+Elements declared in this section include:
+<transcriptionist>, <transcriptionist.type_cd>
+============================================================
+-->
+	<xsd:element name="transcriptionist">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="transcriptionist.type_cd"/>
+				<xsd:element ref="participation_tmr" minOccurs="0"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="transcriptionist.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="ENT"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Actors :: Healthcare providers
+
+Elements declared in this section include:
+<provider>, <provider.type_cd>, <function_cd>
+============================================================
+-->
+	<xsd:element name="provider">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="provider.type_cd"/>
+				<xsd:element ref="function_cd" minOccurs="0"/>
+				<xsd:element ref="participation_tmr" minOccurs="0"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="provider.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" default="PRF">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="ASS"/>
+						<xsd:enumeration value="CON"/>
+						<xsd:enumeration value="PRF"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="function_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="function_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Actors :: Other Service Actors
+
+Elements declared in this section include:
+<service_actor>, <service_actor.type_cd>
+============================================================
+-->
+	<xsd:element name="service_actor">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="service_actor.type_cd"/>
+				<xsd:element ref="participation_tmr" minOccurs="0"/>
+				<xsd:element ref="signature_cd" minOccurs="0"/>
+				<xsd:choice>
+					<xsd:element ref="person"/>
+					<xsd:element ref="organization"/>
+				</xsd:choice>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_actor"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_actor"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="service_actor.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+============================================================
+Service Targets
+
+Service targets include the patient, other significant participants (such
+as family members), and those devices that may have originated portions
+of the document.
+============================================================
+============================================================
+-->
+	<!--
+============================================================
+Service Targets :: Patient
+
+Elements declared in this section include:
+<patient>, <patient.type_cd>, <assigned_identifier>, <is_known_by>,
+<birth_dttm>, <administrative_gender_cd>
+============================================================
+-->
+	<xsd:element name="patient">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="patient.type_cd"/>
+				<xsd:element ref="participation_tmr" minOccurs="0"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="is_known_by" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="birth_dttm" minOccurs="0"/>
+				<xsd:element ref="administrative_gender_cd" minOccurs="0"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_target"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_target"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="patient.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" default="PATSBJ">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="PAT"/>
+						<xsd:enumeration value="PATSBJ"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="is_known_by">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" maxOccurs="unbounded"/>
+				<xsd:element ref="is_known_to"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="is_known_by"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="person_provider_association"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="is_known_to">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" maxOccurs="unbounded"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="is_known_to"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="healthcare_service_provider"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="birth_dttm">
+		<xsd:complexType>
+			<xsd:group ref="TS-cont.model"/>
+			<xsd:attributeGroup ref="TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="birth_dttm"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="administrative_gender_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="administrative_gender_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Targets :: Originating Device
+
+Elements declared in this section include:
+<originating_device>, <originating_device.type_cd>, <device>, <responsibility>,
+<responsibility.type_cd>, <responsibility_tmr>
+============================================================
+-->
+	<xsd:element name="originating_device">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="originating_device.type_cd"/>
+				<xsd:element ref="participation_tmr" minOccurs="0"/>
+				<xsd:element ref="device"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_target"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_target"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="originating_device.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CS-cont.model"/>
+			<xsd:attribute name="T" type="xsd:NMTOKEN" fixed="CS"/>
+			<xsd:attribute name="V" type="xsd:string" fixed="ODV"/>
+			<xsd:attribute name="V-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="V-HL7_NAME" type="xsd:string" fixed="code"/>
+			<xsd:attribute name="DN" type="xsd:string"/>
+			<xsd:attribute name="DN-T" type="xsd:NMTOKEN" fixed="ST"/>
+			<xsd:attribute name="DN-HL7_NAME" type="xsd:string" fixed="displayName"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="device">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="id" maxOccurs="unbounded"/>
+				<xsd:element ref="responsibility" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="participation_of_material"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="device"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="responsibility">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="responsibility.type_cd" minOccurs="0"/>
+				<xsd:element ref="responsibility_tmr" minOccurs="0"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="is_the_responsibility"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="responsibility"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="responsibility.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="responsibility_tmr">
+		<xsd:complexType>
+			<xsd:group ref="IVL_TS-cont.model"/>
+			<xsd:attributeGroup ref="IVL_TS-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="tmr"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+Service Targets :: Other Service Targets
+
+Elements declared in this section include:
+<service_target>, <service_target.type_cd>
+============================================================
+-->
+	<xsd:element name="service_target">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="service_target.type_cd"/>
+				<xsd:element ref="participation_tmr" minOccurs="0"/>
+				<xsd:element ref="person"/>
+				<xsd:element ref="local_header" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="has_service_target"/>
+			<xsd:attribute name="T" type="xsd:string" fixed="service_target"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="service_target.type_cd">
+		<xsd:complexType>
+			<xsd:group ref="CE-cont.model"/>
+			<xsd:attributeGroup ref="CE-attrib.list"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<xsd:attribute name="HL7-NAME" type="xsd:string" fixed="type_cd"/>
+		</xsd:complexType>
+	</xsd:element>
+	<!--
+============================================================
+============================================================
+Local Header Information
+
+Locally-defined markup must be used when local semantics have no
+corresponding representation in the CDA specification. CDA seeks to
+standardize the highest level of shared meaning while providing a
+clean and standard mechanism for tagging meaning that is not shared.
+This is achieved with the CDA <local_header> element. 
+
+The <local_header> element is optionally repeating, and recursive. The
+"descriptor" attribute describes the element, and the value can be
+drawn from a local vocabulary domain. The "ignore" attribute tells
+the receiver to ignore just the <local_header> tag (ignore="markup"),
+or to ignore the <local_header> tag and all contained content
+(ignore="all"). The "render" attribute indicates how the sender would
+render the contents. The value can be drawn from a local vocabulary
+domain. The language of contained character data can be specified
+using the xml:lang attribute (see 3.3.2.4.1 Character data). The
+nested <local_attr> element is provided to make it easier to map
+local XML attribute values into local markup.
+============================================================
+============================================================
+-->
+	<xsd:element name="local_header" type="local_header-cont.model"/>
+	<xsd:complexType name="local_header-cont.model" mixed="true">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element ref="local_header"/>
+			<xsd:element ref="local_attr"/>
+		</xsd:choice>
+		<xsd:attribute name="ignore" default="markup">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="all"/>
+					<xsd:enumeration value="markup"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="descriptor" type="xsd:string"/>
+		<xsd:attribute name="render" type="xsd:string"/>
+		<xsd:attributeGroup ref="common_atts"/>
+		<!-- deprecated
+		<xsd:attribute ref="xml:lang" use="optional"/>
+		-->
+	</xsd:complexType>
+	<xsd:element name="local_attr">
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:NMTOKEN" use="required"/>
+			<xsd:attribute name="value" type="xsd:string" use="required"/>
+			<xsd:attributeGroup ref="common_atts"/>
+			<!-- deprecated
+			<xsd:attribute ref="xml:lang" use="optional"/>
+			-->
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

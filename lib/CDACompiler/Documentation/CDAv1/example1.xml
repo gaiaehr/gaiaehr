@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<levelone xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="levelone_1.0.xsd">
+  <clinical_document_header>
+    <id EX="53123456" RT="2.16.840.1.113883.3.7.2.34556.1"/>
+    <document_type_cd V="11490-0" S="2.16.840.1.113883.6.1" DN="Discharge Note"/>
+    <origination_dttm V="20010412"/>
+    <provider>
+      <provider.type_cd V="CON"/>
+      <person>
+        <id EX="123456" RT="2.16.840.1.113883.3.7.2.12345.1.2"/>
+      </person>
+    </provider>
+    <patient>
+      <patient.type_cd V="PATSBJ"/>
+      <person>
+        <id EX="993534233" RT="2.16.840.1.113883.3.7.2.12345.1.2"/>
+      </person>
+    </patient>
+  </clinical_document_header>
+  <body>
+    <section>
+      <caption>Discharge Note</caption>
+      <paragraph>
+        <content> This is a very short note. </content>
+      </paragraph>
+    </section>
+  </body>
+</levelone>

@@ -76,7 +76,7 @@ class goalObservation
 
             'effectiveTime' => 'effectiveTime',
 
-            'Authors' => LevelDocument\author::Structure(),
+            'Authors' => LevelOther\authorParticipation::Structure(),
 
             'HealthConcernAct' => healthConcernAct::Structure(),
 
@@ -151,7 +151,10 @@ class goalObservation
             {
                 foreach($PortionData['Authors'] as $Author)
                 {
-                    $Entry['author'][] = LevelDocument\author::Insert($Author);
+                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                        $Author,
+                        $CompleteData
+                    );
                 }
             }
 

@@ -34,7 +34,7 @@ class handoffCommunication
     private static function Validate($PortionData)
     {
         if(count($PortionData['Authors']) < 1)
-            throw new Exception('7.	SHALL contain at least one [1..*] Author Participation (NEW)
+            throw new Exception('SHALL contain at least one [1..*] Author Participation (NEW)
             (templateId:2.16.840.1.113883.10.20.22.4.119) (CONF:31672)');
 
         if(!isset($PortionData['participant']['taxonomyCode']) &&

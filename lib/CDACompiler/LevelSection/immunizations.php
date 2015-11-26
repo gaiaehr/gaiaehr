@@ -39,6 +39,15 @@ class immunizations
     }
 
     /**
+     * @return array
+     */
+    public static function Structure()
+    {
+        return [
+        ];
+    }
+
+    /**
      * @param $Data
      * @return array|Exception
      */

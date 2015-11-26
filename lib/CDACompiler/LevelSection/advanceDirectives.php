@@ -28,19 +28,28 @@ class advanceDirectives
 
     /**
      * @param $Data
+     * @throws Exception
      */
     private static function Validate($Data)
     {
-
+        if(count($Data['AdvanceDirectiveOrganizer']) < 1)
+            throw new Exception('SHALL contain exactly one [1..1] Advance Directive Organizer (NEW)');
     }
 
     /**
-     * Build the Narrative part of this section
      * @param $Data
+     * @return mixed
      */
     public static function Narrative($Data)
     {
+        return $Data['Narrated'];
+    }
 
+    public static function Structure()
+    {
+        return [
+            'AdvanceDirectiveOrganizer' => advanceDirectiveOrganizer::Structure()
+        ];
     }
 
     /**
@@ -76,7 +85,8 @@ class advanceDirectives
                 ]
             ];
 
-            // 3.4	Advance Directive Organizer (NEW) [1..*]
+            // SHALL contain at least one [1..*] entry
+            // SHALL contain exactly one [1..1] Advance Directive Organizer (NEW)
             foreach($Data['AdvanceDirectives'] as $AdvanceDirective) {
                 $Section['component']['section']['entry'][] = [
                     '@attributes' => [

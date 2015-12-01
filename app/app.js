@@ -37825,7 +37825,6 @@ Ext.define('App.controller.KeyCommands', {
 			if(e.ctrlKey) event += 'CTRL-';
 			if(e.shiftKey) event += 'SHIFT-';
 			event += String.fromCharCode(e.getCharCode());
-			e.event = event;
 			app.fireEvent(event, e, t);
 		}
 

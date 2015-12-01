@@ -86,9 +86,15 @@ class allergyConcernAct
             ];
 
             // Compile 4.1 Author Participation (NEW) [0..*]
-            foreach ($PortionData['Authors'] as $Author)
+            if(count($PortionData['Authors']) > 0)
             {
-                $Entry['author'][] = LevelOther\authorParticipation::Insert($Author);
+                foreach ($PortionData['Authors'] as $Author)
+                {
+                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                        $Author,
+                        $CompleteData
+                    );
+                }
             }
 
 

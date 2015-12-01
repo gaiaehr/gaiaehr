@@ -64,7 +64,7 @@ use Utilities;
 use Exception;
 
 /**
- * Class functionalStatusOrganizer
+ * Class healthConcernAct
  * @package LevelEntry
  */
 class healthConcernAct
@@ -88,7 +88,7 @@ class healthConcernAct
         return [
             'effectiveTime' => 'MAY contain zero or one [0..1] effectiveTime',
 
-            'Authors' => LevelOther\authorParticipation::Structure(),
+            'Author' => LevelOther\authorParticipation::Structure(),
 
             'ProblemObservation' => LevelOther\problemObservation::Structure(),
 
@@ -199,9 +199,9 @@ class healthConcernAct
             ];
 
             // SHOULD contain zero or more [0..*] Author Participation (NEW)
-            if(count($PortionData['Authors']) > 0)
+            if(count($PortionData['Author']) > 0)
             {
-                foreach($PortionData['Authors'] as $Author)
+                foreach($PortionData['Author'] as $Author)
                 {
                     $Entry['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,

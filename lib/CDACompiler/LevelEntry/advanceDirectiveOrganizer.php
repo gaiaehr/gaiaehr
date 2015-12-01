@@ -32,6 +32,27 @@ class advanceDirectiveOrganizer
     }
 
     /**
+     * Build the Narrative part of this section
+     * @param $Data
+     */
+    public static function Narrative($Data)
+    {
+
+    }
+
+    /**
+     * Give back the structure of this Entry
+     * @return array
+     */
+    public static function Structure()
+    {
+        return [
+            'effectiveTime' => '',
+            'AdvanceDirectiveObservation' => advanceDirectiveObservation::Structure()
+        ];
+    }
+
+    /**
      * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
@@ -56,13 +77,22 @@ class advanceDirectiveOrganizer
                     'displayName' => 'Advance Healthcare Directive Status'
                 ],
                 'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => Component::time($CompleteData['AdvanceDirectives']['date'])
+                'effectiveTime' => Component::time($CompleteData['effectiveTime'])
             ];
 
-            // Compile advanceDirectiveObservation [1..*]
-            foreach ($PortionData['observations'] as $observation)
+            // SHALL contain at least one [1..*] component
+            // SHALL contain exactly one [1..1] Advance Directive Observation (V2)
+            if(count($PortionData['AdvanceDirectiveObservation']) > 0)
             {
-                $Entry['component'][] = advanceDirectiveObservation::Insert($PortionData, $CompleteData);
+                foreach ($PortionData['AdvanceDirectiveObservation'] as $AdvanceDirectiveObservation)
+                {
+                    $Entry['component'][] = [
+                        'observation' => advanceDirectiveObservation::Insert(
+                            $AdvanceDirectiveObservation,
+                            $CompleteData
+                        )
+                    ];
+                }
             }
 
             return $Entry;
@@ -71,14 +101,6 @@ class advanceDirectiveOrganizer
         {
             return $Error;
         }
-    }
-
-    /**
-     * Build the Narrative part of this section
-     * @param $Data
-     */
-    public static function Narrative($Data){
-
     }
 
 }

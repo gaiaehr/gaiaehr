@@ -56,7 +56,7 @@ class medicationActivity
      */
     private static function Validate($PortionData)
     {
-        // a. This consumable SHALL contain exactly one [1..1] Medication Information (V2)
+        // This consumable SHALL contain exactly one [1..1] Medication Information (V2)
         // (templateId:2.16.840.1.113883.10.20.22.4.23.2) (CONF:16085).
         if(!isset($PortionData['medicationInformation']))
         {

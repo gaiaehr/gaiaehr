@@ -61,14 +61,17 @@ class interventionAct
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['moodCode']))
+            throw new Exception('SHALL be selected from ValueSet Intervention moodCode');
+
         if(!isset($PortionData['code']))
-            throw new Exception('SHALL contain exactly one [1..1] effectiveTime (CONF:8834)');
+            throw new Exception('SHALL contain exactly one [1..1] code');
 
         if(!isset($PortionData['codeSystemName']))
-            throw new Exception('SHALL contain exactly one [1..1] effectiveTime (CONF:8834)');
+            throw new Exception('SHALL contain exactly one [1..1] code');
 
         if(!isset($PortionData['displayName']))
-            throw new Exception('SHALL contain exactly one [1..1] effectiveTime (CONF:8834)');
+            throw new Exception('SHALL contain exactly one [1..1] code');
     }
 
     /**

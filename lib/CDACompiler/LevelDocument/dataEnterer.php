@@ -52,9 +52,14 @@ class dataEnterer
                             '2.16.123.123.12345.1234',
                             $Data['UserCreated']['directMessageAddress']
                         ),
-                        'code' => Component::PersonalAndLegalRelationshipRole(
-                            $Data['UserCreated']['who']
-                        ),
+                        'code' => [
+                            '@attributes' => [
+                                'code' => $Data['who']['code'],
+                                'displayName' => $Data['who']['displayName'],
+                                'codeSystem' => Utilities::CodingSystemId($Data['who']['codeSystemName']),
+                                'codeSystemName' => $Data['who']['codeSystemName']
+                            ]
+                        ],
                         'addr' => Component::addr(
                             $Data['UserCreated']['address']['use'],
                             $Data['UserCreated']['address']['streetAddressLine'],

@@ -13,6 +13,9 @@ class Utilities
     {
         switch($system)
         {
+            case 'CPT-4':
+                return '2.16.840.1.113883.6.12';
+                break;
             case 'ICD-10':
                 return '2.16.840.1.113883.6.6';
                 break;

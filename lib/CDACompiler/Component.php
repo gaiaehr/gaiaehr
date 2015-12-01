@@ -519,31 +519,6 @@ class Component
     }
 
     /**
-     * taxonomyCode
-     * TODO: Finish entering all the codes.
-     * @param $code
-     * @return array
-     */
-    public static function taxonomyCode($code)
-    {
-        $displayName = '';
-        switch($code)
-        {
-            case '207QA0505X':
-                $displayName = 'Adult Medicine';
-                break;
-        }
-        return [
-            '@attributes' => [
-                'code' => $code,
-                'displayName' => $displayName,
-                'codeSystem' => Utilities::CodingSystemId('Taxonomy'),
-                'codeSystemName' => 'Healthcare Provider Taxonomy (HIPAA)'
-            ]
-        ];
-    }
-
-    /**
      * religiousAffiliationCode
      * TODO: Finish all the codes. They are incomplete.
      * @param $code
@@ -900,59 +875,6 @@ class Component
                 ]
             ];
         }
-    }
-
-    /**
-     * PersonalAndLegalRelationshipRole
-     * TODO: Finish entering all the code.
-     * @param $code
-     * @return array
-     */
-    public static function PersonalAndLegalRelationshipRole($code)
-    {
-        $displayName = null;
-        switch($code)
-        {
-            case 'ONESELF':
-                $displayName = 'Oneself';
-                break;
-            case 'ACC':
-                $displayName = 'Accident site';
-                break;
-            case 'ALL':
-                $displayName = 'Allergy clinic';
-                break;
-            case 'HOSP':
-                $displayName = 'Hospital';
-                break;
-            case 'GUARD':
-                $displayName = 'Guardian';
-                break;
-            case 'MTH':
-                $displayName = 'Mother';
-                break;
-            case 'MTH':
-                $displayName = 'Mother';
-                break;
-            case 'P':
-            case 'PT':
-                $displayName = 'Patient';
-                break;
-            case 'MTH':
-                $displayName = 'Mother';
-                break;
-            case 'HAND':
-                $displayName = 'Hand clinic';
-                break;
-        }
-        return [
-            '@attributes' => [
-                'code' => $code,
-                'displayName' => $displayName,
-                'codeSystem' => Utilities::CodingSystemId('PersonalAndLegalRelationshipRole'),
-                'codeSystemName' => 'HL7 Role Code'
-            ]
-        ];
     }
 
 }

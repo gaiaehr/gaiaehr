@@ -36,9 +36,14 @@ class assessmentAndPlan
     }
 
     /**
-     * @param $Data
-     * @return array|Exception
+     * @return array
      */
+    public static function Structure()
+    {
+        return [
+        ];
+    }
+
     /**
      * @param $PortionData
      * @param $CompleteData

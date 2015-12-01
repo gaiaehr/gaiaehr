@@ -35,6 +35,15 @@ class subjective
     }
 
     /**
+     * @return array
+     */
+    public static function Structure()
+    {
+        return [
+        ];
+    }
+
+    /**
      * @param $PortionData
      * @param $CompleteData
      * @return array|Exception

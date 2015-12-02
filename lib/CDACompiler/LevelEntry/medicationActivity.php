@@ -105,52 +105,54 @@ class medicationActivity
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'SBADM',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.16.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'statusCode' => [
+                'substanceAdministration' => [
                     '@attributes' => [
-                        'code' => $PortionData['statusCode']
-                    ]
-                ],
-                'effectiveTime' => [
-                    0 => Component::time(
-                        $PortionData['effectiveTime_medication_start'],
-                        $PortionData['effectiveTime_medication_end']
-                    ),
-                    1 => [
+                        'classCode' => 'SBADM',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.16.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'statusCode' => [
                         '@attributes' => [
-                            'xsi:type' => 'PIVL_TS',
-                            'institutionSpecified' => 'true',
-                            'operator' =>  'A'
-                        ],
-                        'period' => [
+                            'code' => $PortionData['statusCode']
+                        ]
+                    ],
+                    'effectiveTime' => [
+                        0 => Component::time(
+                            $PortionData['effectiveTime_medication_start'],
+                            $PortionData['effectiveTime_medication_end']
+                        ),
+                        1 => [
                             '@attributes' => [
-                                // Note: This effectiveTime represents the medication frequency
-                                // (e.g. administration times per day).
-                                'value' => $PortionData['effectiveTime_medication_frequency'],
-                                'unit' => $PortionData['effectiveTime_medication_frequency_unit']
+                                'xsi:type' => 'PIVL_TS',
+                                'institutionSpecified' => 'true',
+                                'operator' =>  'A'
+                            ],
+                            'period' => [
+                                '@attributes' => [
+                                    // Note: This effectiveTime represents the medication frequency
+                                    // (e.g. administration times per day).
+                                    'value' => $PortionData['effectiveTime_medication_frequency'],
+                                    'unit' => $PortionData['effectiveTime_medication_frequency_unit']
+                                ]
                             ]
                         ]
-                    ]
-                ],
-                'routeCode' => [
-                    '@attributes' => [
-                        'code' => $PortionData['routeCode'],
-                        'codeSystem' => Utilities::CodingSystemId( $PortionData['routeCodeSystemName'] ),
-                        'codeSystemName' => $PortionData['routeCodeSystemName'],
-                        'displayName' => $PortionData['routeDisplayName']
-                    ]
-                ],
-                'doseQuantity' => [
-                    '@attributes' => [
-                        'value' => $PortionData['doseQuantity']
-                    ]
-                ],
-                'consumable' => medicationInformation::Insert($PortionData['medicationInformation'], $CompleteData)
+                    ],
+                    'routeCode' => [
+                        '@attributes' => [
+                            'code' => $PortionData['routeCode'],
+                            'codeSystem' => Utilities::CodingSystemId( $PortionData['routeCodeSystemName'] ),
+                            'codeSystemName' => $PortionData['routeCodeSystemName'],
+                            'displayName' => $PortionData['routeDisplayName']
+                        ]
+                    ],
+                    'doseQuantity' => [
+                        '@attributes' => [
+                            'value' => $PortionData['doseQuantity']
+                        ]
+                    ],
+                    'consumable' => medicationInformation::Insert($PortionData['medicationInformation'], $CompleteData)
+                ]
             ];
 
             return $Entry;

@@ -34,9 +34,16 @@ class authorizationActivity
      */
     private static function Validate($PortionData)
     {
-        // 5. SHALL contain at least one [1..*] entryRelationship (CONF:8948)
+        // SHALL contain at least one [1..*] entryRelationship
         if(count($PortionData['Relationships']) < 0)
-            throw new Exception ('SHALL contain at least one [1..*] entryRelationship (CONF:8948)');
+            throw new Exception ('SHALL contain at least one [1..*] entryRelationship');
+    }
+
+    public static function Structure()
+    {
+        return [
+            'AuthorizationActivity' => 'SHALL contain at least one [1..*] entryRelationship'
+        ];
     }
 
     /**
@@ -52,20 +59,19 @@ class authorizationActivity
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.1.19'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
-                    'nullFlavor' => 'NA'
+                'act' => [
+                    '@attributes' => [
+                        'classCode' => 'ACT',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.1.19'),
+                    'id' => Component::id( Utilities::UUIDv4() )
                 ]
             ];
 
-            foreach ($PortionData['Relationships'] as $Relationship)
+            foreach ($PortionData['AuthorizationActivity'] as $AuthorizationActivity)
             {
-                $Entry['entryRelationship'][] = [
+                $Entry['act']['entryRelationship'][] = [
                     '@attributes' => [
                         'typeCode' => 'SUBJ'
                     ],
@@ -75,10 +81,10 @@ class authorizationActivity
                             'moodCode' => 'PRMS'
                         ],
                         'code' => [
-                            'code' => $Relationship['code'],
-                            'codeSystem' => $Relationship['codeSystem'],
-                            'codeSystemName' => $Relationship['codeSystemName'],
-                            'codeSystem' => Utilities::CodingSystemId( $Relationship['codeSystemName'] ),
+                            'code' => $AuthorizationActivity['code'],
+                            'codeSystem' => $AuthorizationActivity['codeSystem'],
+                            'codeSystemName' => $AuthorizationActivity['codeSystemName'],
+                            'codeSystem' => Utilities::CodingSystemId( $AuthorizationActivity['codeSystemName'] )
                         ]
                     ]
                 ];

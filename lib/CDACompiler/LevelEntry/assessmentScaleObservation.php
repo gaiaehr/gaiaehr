@@ -32,18 +32,34 @@ class assessmentScaleObservation
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['code']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
+        if(!isset($PortionData['displayName']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
+        if(!isset($PortionData['codeSystemName']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
+        if(!isset($PortionData['effectiveDate']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
     }
 
     public static function Structure()
     {
         return [
-            'assessmentScaleCode' => '',
-            'assessmentScaleName' => '',
-            'assessmentScaleSystemName' => '',
-            'status' => '',
-            'effectiveDate' => '',
-            'AssessmentScaleSupportingObservations' => assessmentScaleSupportingObservation\Structure()
+            'code' => 'SHALL contain exactly one [1..1] code',
+            'displayName' => 'SHALL contain exactly one [1..1] code',
+            'codeSystemName' => 'SHALL contain exactly one [1..1] code',
+            'effectiveDate' => 'SHALL contain exactly one [1..1] effectiveTime',
+            'AssessmentScaleSupportingObservations' => assessmentScaleSupportingObservation::Structure()
         ];
+    }
+
+    /**
+     * @param $PortionData
+     * @return mixed
+     */
+    public static function Narrative($PortionData)
+    {
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -59,30 +75,36 @@ class assessmentScaleObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.69'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
-                    'code' => $PortionData['assessmentScaleCode'],
-                    'displayName' => $PortionData['assessmentScaleName'],
-                    'codeSystem' => Utilities::CodingSystemId($PortionData['assessmentScaleSystemName']),
-                    'codeSystemName' => Utilities::CodingSystemId($PortionData['assessmentScaleSystemName']),
-                ],
-                'derivationExpr' => self::Narrative($PortionData),
-                'statusCode' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => $PortionData['status']
-                    ]
-                ],
-                'effectiveTime' => Component::effectiveTime($PortionData['effectiveDate'])
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.69'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        'code' => $PortionData['code'],
+                        'displayName' => $PortionData['displayName'],
+                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                        'codeSystemName' => $PortionData['codeSystemName'],
+                    ],
+                    'derivationExpr' => self::Narrative($PortionData),
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::effectiveTime($PortionData['effectiveDate'])
+                ]
             ];
 
-            foreach($PortionData['AssessmentScaleSupportingObservations'] as $Observation)
+            // SHOULD contain zero or more [0..*] entryRelationship
+            // SHALL contain exactly one [1..1] Assessment Scale Supporting Observation
+            if(count($PortionData['AssessmentScaleSupportingObservations']) > 0)
             {
-                $Entry['observation'] = LevelEntry\assessmentScaleSupportingObservation\Insert($Observation);
+                foreach ($PortionData['AssessmentScaleSupportingObservations'] as $AssessmentScaleSupportingObservations)
+                {
+                    $Entry['observation']['entryRelationship'][] = assessmentScaleSupportingObservation::Insert(
+                        $AssessmentScaleSupportingObservations,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Entry;
@@ -92,13 +114,4 @@ class assessmentScaleObservation
             return $Error;
         }
     }
-
-    /**
-     * Build the Narrative part of this section
-     * @param $Data
-     */
-    public static function Narrative($Data){
-
-    }
-
 }

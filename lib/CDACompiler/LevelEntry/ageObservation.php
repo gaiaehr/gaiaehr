@@ -77,27 +77,29 @@ class ageObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.31'),
-                'code' => [
-                    'code' => '445518008',
-                    'codeSystem' => Utilities::CodingSystemId('SNOMED-CT'),
-                    'codeSystemName' => 'SNOMED-CT',
-                    'displayName' => 'Age At Onset'
-                ],
-                'statusCode' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => 'completed'
-                    ]
-                ],
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'PQ',
-                        'value' => $PortionData['age'],
-                        'unit' => $PortionData['unit']
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.31'),
+                    'code' => [
+                        'code' => '445518008',
+                        'codeSystem' => Utilities::CodingSystemId('SNOMED-CT'),
+                        'codeSystemName' => 'SNOMED-CT',
+                        'displayName' => 'Age At Onset'
+                    ],
+                    'statusCode' => [
+                        '@attributes' => [
+                            'code' => 'completed'
+                        ]
+                    ],
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'PQ',
+                            'value' => $PortionData['age'],
+                            'unit' => $PortionData['unit']
+                        ]
                     ]
                 ]
             ];

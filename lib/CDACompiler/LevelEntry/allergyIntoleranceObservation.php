@@ -85,48 +85,50 @@ class allergyIntoleranceObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.7.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
-                    'code' => 'ASSERTION',
-                    'codeSystem' => '2.16.840.1.113883.5.4'
-                ],
-                'statusCode' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => 'completed'
-                    ]
-                ],
-                'effectiveTime' => Component::time($PortionData['onsetDate'], $PortionData['resolvedDate']),
-                // 11.	SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be
-                // selected from ValueSet Allergy/Adverse Event Type Value Set
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['allergyCode'],
-                        'displayName' => $PortionData['allergyDisplayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['allergyCodeSystemName']),
-                        'codeSysteName' => $PortionData['allergyCodeSystemName']
-                    ]
-                ],
-                'participant' => [
-                    '@attributes' => [
-                        'typeCode' => 'CSM'
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
                     ],
-                    'participantRole' => [
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.7.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        'code' => 'ASSERTION',
+                        'codeSystem' => '2.16.840.1.113883.5.4'
+                    ],
+                    'statusCode' => [
                         '@attributes' => [
-                            'classCode' => 'MANU'
+                            'code' => 'completed'
+                        ]
+                    ],
+                    'effectiveTime' => Component::time($PortionData['onsetDate'], $PortionData['resolvedDate']),
+                    // 11.	SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be
+                    // selected from ValueSet Allergy/Adverse Event Type Value Set
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['allergyCode'],
+                            'displayName' => $PortionData['allergyDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['allergyCodeSystemName']),
+                            'codeSysteName' => $PortionData['allergyCodeSystemName']
+                        ]
+                    ],
+                    'participant' => [
+                        '@attributes' => [
+                            'typeCode' => 'CSM'
                         ],
-                        'playingEntity' => [
-                            'code' => [
-                                '@attributes' => [
-                                    'code' => $PortionData['substanceCode'],
-                                    'displayName' => $PortionData['substanceName'],
-                                    'codeSystem' => Utilities::CodingSystemId($PortionData['substancecodeSystemName']),
-                                    'codeSystemName' => $PortionData['substancecodeSystemName']
+                        'participantRole' => [
+                            '@attributes' => [
+                                'classCode' => 'MANU'
+                            ],
+                            'playingEntity' => [
+                                'code' => [
+                                    '@attributes' => [
+                                        'code' => $PortionData['substanceCode'],
+                                        'displayName' => $PortionData['substanceName'],
+                                        'codeSystem' => Utilities::CodingSystemId($PortionData['substancecodeSystemName']),
+                                        'codeSystemName' => $PortionData['substancecodeSystemName']
+                                    ]
                                 ]
                             ]
                         ]

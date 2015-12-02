@@ -65,39 +65,52 @@ class allergyConcernAct
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.30.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
-                    'code' => 'CONC',
-                    'codeSystem' => '2.16.840.1.113883.5.6'
-                ],
-                'statusCode' => Component::statusCode($PortionData['active']),
-                'effectiveTime' => [
-                    'low' => [
-                        '@attributes' => [
-                            'low' => Component::time($PortionData['firstDate'])
+                'act' => [
+                    '@attributes' => [
+                        'classCode' => 'ACT',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.30.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        'code' => 'CONC',
+                        'codeSystem' => '2.16.840.1.113883.5.6'
+                    ],
+                    'statusCode' => Component::statusCode($PortionData['active']),
+                    'effectiveTime' => [
+                        'low' => [
+                            '@attributes' => [
+                                'low' => Component::time($PortionData['firstDate'])
+                            ]
                         ]
                     ]
                 ]
             ];
 
-            // Compile 4.1 Author Participation (NEW) [0..*]
-            if(count($PortionData['Authors']) > 0)
+            // SHOULD contain zero or more [0..*] Author Participation (NEW)
+            if(count($PortionData['Author']) > 0)
             {
-                foreach ($PortionData['Authors'] as $Author)
+                foreach ($PortionData['Author'] as $Author)
                 {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                    $Entry['act']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );
                 }
             }
 
-
+            // SHALL contain at least one [1..*] entryRelationship
+            // SHALL contain exactly one [1..1] Allergy - Intolerance Observation (V2)
+            if(count($PortionData['AllergyIntoleranceObservation']) > 0)
+            {
+                foreach ($PortionData['AllergyIntoleranceObservation'] as $AllergyIntoleranceObservation)
+                {
+                    $Entry['act']['entryRelationship'][] = allergyIntoleranceObservation::Insert(
+                        $AllergyIntoleranceObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Entry;
         }

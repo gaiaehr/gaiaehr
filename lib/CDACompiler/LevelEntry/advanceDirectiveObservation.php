@@ -76,81 +76,83 @@ class advanceDirectiveObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId(
-                    '2.16.840.1.113883.10.20.22.4.48',
-                    $PortionData['observationDate']
-                ),
-                'id' => [
+                'observation' => [
                     '@attributes' => [
-                        'root' => Utilities::UUIDv4()
-                    ]
-                ],
-                'code' => [
-                    '@attributes' => [
-                        'code' => $PortionData['didCode'],
-                        'displayName' => $PortionData['didCode'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['didCodeSystemName']),
-                        'codeSystemName' => $PortionData['didCodeSystemName']
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
                     ],
-                    'originalText' => $PortionData['didText']
-                ],
-                'statusCode' => [
-                    '@attributes' => [
-                        'code' => $PortionData['statusCode']
-                    ]
-                ],
-                'effectiveTime' => [
-                    'low' => Component::time($PortionData['beginDate']),
-                    'high' => Component::time($PortionData['endDate'])
-                ],
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['resultCode'],
-                        'displayName' => $PortionData['resultDisplayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['resultCodeSystemName']),
-                        'codeSystemName' => $PortionData['resultCodeSystemName']
-                    ],
-                    'originalText' => $PortionData['resultText']
-                ],
-                'participant' => [
-                    '@attributes' => [
-                        'typeCode' => 'VRF'
-                    ],
-                    'templateId' => [
+                    'templateId' => Component::templateId(
+                        '2.16.840.1.113883.10.20.22.4.48',
+                        $PortionData['observationDate']
+                    ),
+                    'id' => [
                         '@attributes' => [
-                            'root' => '2.16.840.1.113883.10.20.1.58'
+                            'root' => Utilities::UUIDv4()
                         ]
                     ],
-                    'time' => [
-                        'value' => Component::time($PortionData['observationDate'])
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['didCode'],
+                            'displayName' => $PortionData['didCode'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['didCodeSystemName']),
+                            'codeSystemName' => $PortionData['didCodeSystemName']
+                        ],
+                        'originalText' => $PortionData['didText']
                     ],
-                    'participantRole' => [
-                        'id' => Utilities::UUIDv4(),
-                        'code' => [
+                    'statusCode' => [
+                        '@attributes' => [
+                            'code' => $PortionData['statusCode']
+                        ]
+                    ],
+                    'effectiveTime' => [
+                        'low' => Component::time($PortionData['beginDate']),
+                        'high' => Component::time($PortionData['endDate'])
+                    ],
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['resultCode'],
+                            'displayName' => $PortionData['resultDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['resultCodeSystemName']),
+                            'codeSystemName' => $PortionData['resultCodeSystemName']
+                        ],
+                        'originalText' => $PortionData['resultText']
+                    ],
+                    'participant' => [
+                        '@attributes' => [
+                            'typeCode' => 'VRF'
+                        ],
+                        'templateId' => [
                             '@attributes' => [
-                                'code' => $PortionData['providerTaxonomyCode'],
-                                'codeSystem' => Utilities::CodingSystemId($PortionData['providerTaxonomySystem']),
-                                'codeSystemName' => $PortionData['providerTaxonomySystem'],
-                                'displayName' => $PortionData['providerTaxonomy']
+                                'root' => '2.16.840.1.113883.10.20.1.58'
                             ]
                         ],
-                        'addr' => Component::addr(
-                            $PortionData['address']['use'],
-                            $PortionData['address']['streetAddressLine'],
-                            $PortionData['address']['city'],
-                            $PortionData['address']['state'],
-                            $PortionData['address']['postalCode'],
-                            $PortionData['address']['country']
-                        ),
-                        'telecom' => Component::telecom(
-                            $PortionData['telecom']['use'],
-                            $PortionData['telecom']['value']
-                        )
+                        'time' => [
+                            'value' => Component::time($PortionData['observationDate'])
+                        ],
+                        'participantRole' => [
+                            'id' => Utilities::UUIDv4(),
+                            'code' => [
+                                '@attributes' => [
+                                    'code' => $PortionData['providerTaxonomyCode'],
+                                    'codeSystem' => Utilities::CodingSystemId($PortionData['providerTaxonomySystem']),
+                                    'codeSystemName' => $PortionData['providerTaxonomySystem'],
+                                    'displayName' => $PortionData['providerTaxonomy']
+                                ]
+                            ],
+                            'addr' => Component::addr(
+                                $PortionData['address']['use'],
+                                $PortionData['address']['streetAddressLine'],
+                                $PortionData['address']['city'],
+                                $PortionData['address']['state'],
+                                $PortionData['address']['postalCode'],
+                                $PortionData['address']['country']
+                            ),
+                            'telecom' => Component::telecom(
+                                $PortionData['telecom']['use'],
+                                $PortionData['telecom']['value']
+                            )
+                        ]
                     ]
                 ]
             ];

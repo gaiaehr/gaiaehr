@@ -30,17 +30,31 @@ class assessmentScaleSupportingObservation
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['code']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
+
+        if(!isset($PortionData['displayName']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
+
+        if(!isset($PortionData['codeSystemName']))
+            throw new Exception('SHALL contain exactly one [1..1] code');
     }
 
     private static function Structure()
     {
         return [
-            'scaleSupportingCode' => '',
-            'scaleSupportingName' => '',
-            'scaleSupportingSystemName' => '',
-            'scaleSupportingSystemName' => '',
-            'status' => ''
+            'code' => 'SHALL contain exactly one [1..1] code',
+            'displayName' => 'SHALL contain exactly one [1..1] code',
+            'codeSystemName' => 'SHALL contain exactly one [1..1] code'
         ];
+    }
+
+    /**
+     * Build the Narrative part of this section
+     * @param $Data
+     */
+    public static function Narrative($Data){
+
     }
 
     /**
@@ -56,22 +70,20 @@ class assessmentScaleSupportingObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.86'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
-                    'code' => $PortionData['scaleSupportingCode'],
-                    'displayName' => $PortionData['scaleSupportingName'],
-                    'codeSystem' => Utilities::CodingSystemId($PortionData['scaleSupportingSystemName']),
-                    'codeSystemName' => Utilities::CodingSystemId($PortionData['scaleSupportingSystemName']),
-                ],
-                'statusCode' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => $PortionData['status']
-                    ]
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.86'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        'code' => $PortionData['code'],
+                        'displayName' => $PortionData['displayName'],
+                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                        'codeSystemName' => $PortionData['codeSystemName'],
+                    ],
+                    'statusCode' => Component::statusCode('completed')
                 ]
             ];
 
@@ -81,14 +93,6 @@ class assessmentScaleSupportingObservation
         {
             return $Error;
         }
-    }
-
-    /**
-     * Build the Narrative part of this section
-     * @param $Data
-     */
-    public static function Narrative($Data){
-
     }
 
 }

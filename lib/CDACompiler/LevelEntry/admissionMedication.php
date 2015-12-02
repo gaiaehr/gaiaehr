@@ -29,21 +29,13 @@ class admissionMedication
      */
     private static function Validate($PortionData)
     {
-        // 5. SHALL contain at least one [1..*] entryRelationship (CONF:7701)
-        if(!isset($PortionData['entryRelationship']) ||
-            count($PortionData['entryRelationship']) < 0)
-        {
-            throw new Exception ('SHALL contain at least one [1..*] entryRelationship (CONF:7701)');
-        }
+
     }
 
     public static function Structure()
     {
         return [
-            medicationActivity::Structure(),
-            'Relationships' => [
-                0 => medicationActivity::Structure()
-            ]
+            'MedicationActivity' => medicationActivity::Structure()
         ];
     }
 
@@ -69,32 +61,32 @@ class admissionMedication
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.36.2'),
-                'code' => [
-                    'code' => '42346-7',
-                    'codeSystem' => '2.16.840.1.113883.6.1',
-                    'codeSystemName' => 'LOINC'
+                'act' => [
+                    '@attributes' => [
+                        'classCode' => 'ACT',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.36.2'),
+                    'code' => [
+                        'code' => '42346-7',
+                        'codeSystem' => '2.16.840.1.113883.6.1',
+                        'codeSystemName' => 'LOINC'
+                    ]
                 ]
             ];
 
-            foreach ($PortionData['Relationships'] as $Relationship)
+            // SHALL contain at least one [1..*] entryRelationship
+            // SHALL contain exactly one [1..1] Medication Activity (V2)
+            if(count($PortionData['MedicationActivity']) > 0)
             {
-                $Entry['entryRelationship'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'SUBJ'
-                    ],
-                    'substanceAdministration' => [
+                foreach ($PortionData['MedicationActivity'] as $MedicationActivity) {
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
-                            'classCode' => 'SBADM',
-                            'moodCode' => 'EVN'
-                        ]
-                    ],
-                    'substanceAdministration' => medicationActivity::Insert($Relationship, $CompleteData)
-                ];
+                            'typeCode' => 'SUBJ'
+                        ],
+                        medicationActivity::Insert($MedicationActivity, $CompleteData)
+                    ];
+                }
             }
 
             return $Entry;

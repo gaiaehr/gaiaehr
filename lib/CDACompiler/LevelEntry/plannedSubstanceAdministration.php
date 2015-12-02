@@ -65,20 +65,22 @@ class plannedSubstanceAdministration
     public static function Structure()
     {
         return [
-            'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (Act/Encounter/Procedure)',
-            'code' => 'SHALL contain exactly one [1..1] code',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code',
-            'displayName' => 'SHALL contain exactly one [1..1] code',
-            'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-            'Narrated' => 'SubstanceAdministration / Supply',
-            'Performer' => LevelDocument\performer::Structure(),
-            'Participant' => LevelDocument\participant::Structure(),
-            'PatientPriorityPreference' => patientPriorityPreference::Structure(),
-            'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
-            'Interval' => [
-                0 => [
-                    'QuantityValue' => 'Quantity Range Value',
-                    'QuantityUnit' => 'Quantity Range Unit'
+            'substanceAdministration' => [
+                'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (Act/Encounter/Procedure)',
+                'code' => 'SHALL contain exactly one [1..1] code',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code',
+                'displayName' => 'SHALL contain exactly one [1..1] code',
+                'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
+                'Narrated' => 'SubstanceAdministration / Supply',
+                'Performer' => LevelDocument\performer::Structure(),
+                'Participant' => LevelDocument\participant::Structure(),
+                'PatientPriorityPreference' => patientPriorityPreference::Structure(),
+                'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
+                'Interval' => [
+                    0 => [
+                        'QuantityValue' => 'Quantity Range Value',
+                        'QuantityUnit' => 'Quantity Range Unit'
+                    ]
                 ]
             ]
         ];

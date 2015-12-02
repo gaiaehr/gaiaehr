@@ -56,12 +56,14 @@ class patientPriorityPreference
     public static function Structure()
     {
         return [
-            'priorityOrderCode' => 'SHOULD be selected from ValueSet Priority Order',
-            'priorityOrderDisplayName' => 'SHOULD be selected from ValueSet Priority Order',
-            'priorityOrderCodeSystemName' => 'SHOULD be selected from ValueSet Priority Order',
-            'priorityLevelCode' => 'SHALL be selected from ValueSet Priority Level',
-            'priorityLevelDisplayName' => 'SHALL be selected from ValueSet Priority Level',
-            'priorityLevelCodeSystemName' => 'SHALL be selected from ValueSet Priority Level'
+            'observation' => [
+                'priorityOrderCode' => 'SHOULD be selected from ValueSet Priority Order',
+                'priorityOrderDisplayName' => 'SHOULD be selected from ValueSet Priority Order',
+                'priorityOrderCodeSystemName' => 'SHOULD be selected from ValueSet Priority Order',
+                'priorityLevelCode' => 'SHALL be selected from ValueSet Priority Level',
+                'priorityLevelDisplayName' => 'SHALL be selected from ValueSet Priority Level',
+                'priorityLevelCodeSystemName' => 'SHALL be selected from ValueSet Priority Level'
+            ]
         ];
     }
 

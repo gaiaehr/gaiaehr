@@ -50,14 +50,16 @@ class patientReferralAct
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
-            'Author' => LevelOther\authorParticipation::Structure(),
-            'DocumentReferenceClinicalReasonReferral' => actReference::Structure(),
-            'FullOrSharedCareObservation' => [
-                0 => [
-                    'code' => 'This entryRelationship represents whether the referral is for full or shared care.',
-                    'codeSystemName' => 'This entryRelationship represents whether the referral is for full or shared care.',
-                    'displayName' => 'This entryRelationship represents whether the referral is for full or shared care.'
+            'act' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
+                'Author' => LevelOther\authorParticipation::Structure(),
+                'DocumentReferenceClinicalReasonReferral' => actReference::Structure(),
+                'FullOrSharedCareObservation' => [
+                    0 => [
+                        'code' => 'This entryRelationship represents whether the referral is for full or shared care.',
+                        'codeSystemName' => 'This entryRelationship represents whether the referral is for full or shared care.',
+                        'displayName' => 'This entryRelationship represents whether the referral is for full or shared care.'
+                    ]
                 ]
             ]
         ];
@@ -115,7 +117,7 @@ class patientReferralAct
             {
                 foreach($PortionData['DocumentReferenceClinicalReasonReferral'] as $DocumentReferenceClinicalReasonReferral)
                 {
-                    $Entry['observation']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'RSON'
                         ],
@@ -133,7 +135,7 @@ class patientReferralAct
             {
                 foreach($PortionData['FullOrSharedCareObservation'] as $FullOrSharedCareObservation)
                 {
-                    $Entry['observation']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'SUBJ'
                         ],

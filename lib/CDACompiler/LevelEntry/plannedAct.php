@@ -66,15 +66,17 @@ class plannedAct
     public static function Structure()
     {
         return [
-            'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (Act/Encounter/Procedure)',
-            'code' => 'SHALL contain exactly one [1..1] code',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code',
-            'displayName' => 'SHALL contain exactly one [1..1] code',
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
-            'Performer' => LevelDocument\performer::Structure(),
-            'Participant' => LevelDocument\participant::Structure(),
-            'PatientPriorityPreference' => patientPriorityPreference::Structure(),
-            'ProviderPriorityPreference' => providerPriorityPreference::Structure()
+            'act' => [
+                'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (Act/Encounter/Procedure)',
+                'code' => 'SHALL contain exactly one [1..1] code',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code',
+                'displayName' => 'SHALL contain exactly one [1..1] code',
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
+                'Performer' => LevelDocument\performer::Structure(),
+                'Participant' => LevelDocument\participant::Structure(),
+                'PatientPriorityPreference' => patientPriorityPreference::Structure(),
+                'ProviderPriorityPreference' => providerPriorityPreference::Structure()
+            ]
         ];
     }
 

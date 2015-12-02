@@ -1,18 +1,16 @@
 <?php
 
 /**
- * 3.67	Planned Encounter (V2)
+ * 3.70	Planned Substance Administration (V2)
  *
- * The Planned Encounter represents a planned or ordered encounter. The type of encounter
- * (e.g. comprehensive outpatient visit) is represented, clinicians participating in the encounter and
- * location of the planned encounter can be captured. The priority that the patient and providers place on
- * the encounter can be represented.
+ * The Planned Substance Administration describes substance administrations that will occur.
+ * The priority of the  substance administration activity to the patient and provider is communicated through
+ * Patient Priority Preference and Provider Priority Preference. The effective time indicates the time when
+ * the substance is intended to be administered.
  *
  * Contains:
- * Indication (V2)
  * Patient Priority Preference (NEW)
  * Provider Priority Preference (NEW)
- * Service Delivery Location
  *
  */
 
@@ -25,10 +23,10 @@ use Utilities;
 use Exception;
 
 /**
- * Class plannedEncounter
+ * Class plannedSubstanceAdministration
  * @package LevelEntry
  */
-class plannedEncounter
+class plannedSubstanceAdministration
 {
     /**
      * @param $PortionData
@@ -49,7 +47,7 @@ class plannedEncounter
             throw new Exception('SHALL contain exactly one [1..1] code');
 
         if(!isset($PortionData['effectiveTime']))
-            throw new Exception('SHALL contain exactly one [1..1] effectiveTime');
+            throw new Exception('6.	SHALL contain exactly one [1..1] effectiveTime');
     }
 
     /**
@@ -58,6 +56,7 @@ class plannedEncounter
      */
     public static function Narrative($PortionData)
     {
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -66,17 +65,21 @@ class plannedEncounter
     public static function Structure()
     {
         return [
-            'encounter' => [
-                'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (Act/Encounter/Procedure)',
-                'code' => 'SHALL contain exactly one [1..1] code',
-                'codeSystemName' => 'SHALL contain exactly one [1..1] code',
-                'displayName' => 'SHALL contain exactly one [1..1] code',
-                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
-                'Performer' => LevelDocument\performer::Structure(),
-                'Participant' => LevelDocument\participant::Structure(),
-                'PatientPriorityPreference' => patientPriorityPreference::Structure(),
-                'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
-                'Indication' => indication::Structure()
+            'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (Act/Encounter/Procedure)',
+            'code' => 'SHALL contain exactly one [1..1] code',
+            'codeSystemName' => 'SHALL contain exactly one [1..1] code',
+            'displayName' => 'SHALL contain exactly one [1..1] code',
+            'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
+            'Narrated' => 'SubstanceAdministration / Supply',
+            'Performer' => LevelDocument\performer::Structure(),
+            'Participant' => LevelDocument\participant::Structure(),
+            'PatientPriorityPreference' => patientPriorityPreference::Structure(),
+            'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
+            'Interval' => [
+                0 => [
+                    'QuantityValue' => 'Quantity Range Value',
+                    'QuantityUnit' => 'Quantity Range Unit'
+                ]
             ]
         ];
     }
@@ -93,12 +96,13 @@ class plannedEncounter
             self::Validate($PortionData);
 
             $Entry = [
-                'encounter' => [
+                'substanceAdministration' => [
                     '@attributes' => [
                         'moodCode' => $PortionData['moodCode'],
-                        'classCode' => 'ENC'
+                        'classCode' => 'SBADM'
                     ],
-                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.40.2'),
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.42.2'),
+                    'text' => self::Narrative($PortionData),
                     'id' => Component::id(Utilities::UUIDv4()),
                     'code' => [
                         'code' => $PortionData['code'],
@@ -107,7 +111,7 @@ class plannedEncounter
                         'displayName' => $PortionData['displayName']
                     ],
                     'statusCode' => Component::statusCode('active'),
-                    'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                    'effectiveTime' => $PortionData['effectiveTime']
                 ]
             ];
 
@@ -116,7 +120,7 @@ class plannedEncounter
             {
                 foreach($PortionData['Performer'] as $Performer)
                 {
-                    $Entry['encounter']['performer'][] = LevelDocument\performer::Insert(
+                    $Entry['procedure']['performer'][] = LevelDocument\performer::Insert(
                         $Performer,
                         $CompleteData
                     );
@@ -128,7 +132,7 @@ class plannedEncounter
             {
                 foreach($PortionData['Participant'] as $Performer)
                 {
-                    $Entry['encounter']['participant'][] = LevelDocument\participant::Insert(
+                    $Entry['procedure']['participant'][] = LevelDocument\participant::Insert(
                         $Performer,
                         $CompleteData
                     );
@@ -141,7 +145,7 @@ class plannedEncounter
             {
                 foreach($PortionData['ServiceDeliveryLocation'] as $ServiceDeliveryLocation)
                 {
-                    $Entry['encounter']['participant'][] = [
+                    $Entry['procedure']['participant'][] = [
                         serviceDeliveryLocation::Insert(
                             $ServiceDeliveryLocation,
                             $CompleteData
@@ -156,7 +160,7 @@ class plannedEncounter
             {
                 foreach($PortionData['ProviderPriorityPreference'] as $ProviderPriorityPreference)
                 {
-                    $Entry['encounter']['entryRelationship'][] = [
+                    $Entry['procedure']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
@@ -174,30 +178,12 @@ class plannedEncounter
             {
                 foreach($PortionData['ProviderPriorityPreference'] as $ProviderPriorityPreference)
                 {
-                    $Entry['encounter']['entryRelationship'][] = [
+                    $Entry['procedure']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
                         providerPriorityPreference::Insert(
                             $ProviderPriorityPreference,
-                            $CompleteData
-                        )
-                    ];
-                }
-            }
-
-            // MAY contain zero or more [0..*] entryRelationship
-            // SHALL contain exactly one [1..1] Indication (V2)
-            if(count($PortionData['Indication']) > 0)
-            {
-                foreach($PortionData['Indication'] as $Indication)
-                {
-                    $Entry['encounter']['entryRelationship'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'RSON'
-                        ],
-                        providerPriorityPreference::Insert(
-                            $Indication,
                             $CompleteData
                         )
                     ];

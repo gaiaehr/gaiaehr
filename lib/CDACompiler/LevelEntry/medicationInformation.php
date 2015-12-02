@@ -39,6 +39,15 @@ class medicationInformation
     }
 
     /**
+     * Build the Narrative part of this section
+     * @param $Data
+     */
+    public static function Narrative($Data)
+    {
+
+    }
+
+    /**
      * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
@@ -77,12 +86,5 @@ class medicationInformation
         }
     }
 
-    /**
-     * Build the Narrative part of this section
-     * @param $Data
-     */
-    public static function Narrative($Data){
-
-    }
 
 }

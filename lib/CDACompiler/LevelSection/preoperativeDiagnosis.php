@@ -43,6 +43,9 @@ class preoperativeDiagnosis
     public static function Structure()
     {
         return [
+            'PreoperativeDiagnosis' => [
+
+            ]
         ];
     }
 

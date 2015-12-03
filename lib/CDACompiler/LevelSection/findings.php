@@ -41,6 +41,9 @@ class findings
     public static function Structure()
     {
         return [
+            'Findings' => [
+
+            ]
         ];
     }
 

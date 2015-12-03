@@ -42,7 +42,13 @@ class authorizationActivity
     public static function Structure()
     {
         return [
-            'AuthorizationActivity' => 'SHALL contain at least one [1..*] entryRelationship'
+            'AuthorizationActivity' => [
+                0 => [
+                    'code' => '',
+                    'codeSystem' => '',
+                    'codeSystemName' => ''
+                ]
+            ]
         ];
     }
 

@@ -63,16 +63,15 @@ class cognitiveStatusObservation
      */
     public static function Structure(){
         return [
-            'code' => 'SHALL contain exactly one [1..1] value (CONF:14263).
-            If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96) (CONF:14271)',
-            'displayName' => 'SHALL contain exactly one [1..1] value (CONF:14263).
-            If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96) (CONF:14271)',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] value (CONF:14263).
-            If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96) (CONF:14271)',
-            'Authors' => LevelOther\authorParticipation::Structure(),
-            'CaregiverCharacteristics' => caregiverCharacteristics::Structure(),
-            'NonMedicinalSupplyActivity' => nonMedicinalSupplyActivity::Structure(),
-            'AssessmentScaleObservation' => assessmentScaleObservation::Structure()
+            'CognitiveStatusObservation' => [
+                'code' => 'SHALL contain exactly one [1..1] value If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96)',
+                'displayName' => 'SHALL contain exactly one [1..1] value If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96)',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] value If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96)',
+                LevelOther\authorParticipation::Structure(),
+                caregiverCharacteristics::Structure(),
+                nonMedicinalSupplyActivity::Structure(),
+                assessmentScaleObservation::Structure()
+            ]
         ];
     }
 

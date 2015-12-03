@@ -42,7 +42,7 @@ class sopInstanceObservation
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData){
 
@@ -50,8 +50,10 @@ class sopInstanceObservation
 
     public static function Structure(){
         return [
-            'wadoURI' => 'SHALL contain a @value that contains a WADO reference as a URI (CONF:9249).',
-            'effectiveTime' => 'The effectiveTime, if present, SHALL contain exactly one [1..1] @value (CONF:9251).'
+            'SopInstanceObservation' => [
+                'wadoURI' => 'SHALL contain a @value that contains a WADO reference as a URI (CONF:9249).',
+                'effectiveTime' => 'The effectiveTime, if present, SHALL contain exactly one [1..1] @value (CONF:9251).'
+            ]
         ];
     }
 

@@ -49,8 +49,10 @@ class deceasedObservation
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:14855)',
-            'ProblemObservation' => problemObservation::Structure()
+            'DeceasedObservation' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:14855)',
+                problemObservation::Structure()
+            ]
         ];
     }
 

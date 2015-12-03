@@ -52,7 +52,9 @@ class coverageActivity
      */
     public static function Structure(){
         return [
-            'PolicyActivity' => policyActivity::Structure()
+            'CoverageActivity' => [
+                policyActivity::Structure()
+            ]
         ];
     }
 

@@ -22,7 +22,7 @@ use Exception;
  * Class advanceDirectiveOrganizer
  * @package LevelEntry
  */
-class medicationDispense
+class nonMedicinalSupplyActivity
 {
     /**
      * @param $PortionData
@@ -49,11 +49,13 @@ class medicationDispense
     public static function Structure()
     {
         return [
-            'statusCode' => 'SHALL contain exactly one [1..1] statusCode',
-            'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-            'quantity' => 'SHOULD contain zero or one [0..1] quantity',
-            'ProductInstance' => productInstance::Structure(),
-            'Instruction' => instruction::Structure()
+            'NonMedicinalSupplyActivity' => [
+                'statusCode' => 'SHALL contain exactly one [1..1] statusCode',
+                'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
+                'quantity' => 'SHOULD contain zero or one [0..1] quantity',
+                productInstance::Structure(),
+                instruction::Structure()
+            ]
         ];
     }
 
@@ -69,26 +71,28 @@ class medicationDispense
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'SPLY',
-                    'moodCode' => 'RQO'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.50'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => [
+                'supply' => [
                     '@attributes' => [
-                        'xsi:type' => 'IVL TS'
+                        'classCode' => 'SPLY',
+                        'moodCode' => 'RQO'
                     ],
-                    'high' => [
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.50'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => [
                         '@attributes' => [
-                            'value' => $PortionData['effectiveTime']
+                            'xsi:type' => 'IVL TS'
+                        ],
+                        'high' => [
+                            '@attributes' => [
+                                'value' => $PortionData['effectiveTime']
+                            ]
                         ]
-                    ]
-                ],
-                'quantity' => [
-                    '@attributes' => [
-                        'value' => $PortionData['quantity']
+                    ],
+                    'quantity' => [
+                        '@attributes' => [
+                            'value' => $PortionData['quantity']
+                        ]
                     ]
                 ]
             ];
@@ -96,7 +100,7 @@ class medicationDispense
             // MAY contain zero or one [0..1] participant
             // SHALL contain exactly one [1..1] Product Instance
             if(count($PortionData['ProductInstance']) > 0){
-                $Entry['participant'] = [
+                $Entry['supply']['participant'] = [
                     'participantRole'=> productInstance::Insert(
                         $PortionData['ProductInstance'][0],
                         $CompleteData
@@ -108,7 +112,7 @@ class medicationDispense
             // SHALL contain exactly one [1..1] Instruction (V2)
             if(count($PortionData['Instruction']) > 0)
             {
-                $Entry['entryRelationship'][] = [
+                $Entry['supply']['entryRelationship'][] = [
                     '@attributes' => [
                         'typeCode' => 'SUBJ'
                     ],

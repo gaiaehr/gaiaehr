@@ -45,11 +45,13 @@ class assessmentScaleObservation
     public static function Structure()
     {
         return [
-            'code' => 'SHALL contain exactly one [1..1] code',
-            'displayName' => 'SHALL contain exactly one [1..1] code',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code',
-            'effectiveDate' => 'SHALL contain exactly one [1..1] effectiveTime',
-            'AssessmentScaleSupportingObservations' => assessmentScaleSupportingObservation::Structure()
+            'AssessmentScaleObservation' => [
+                'code' => 'SHALL contain exactly one [1..1] code',
+                'displayName' => 'SHALL contain exactly one [1..1] code',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code',
+                'effectiveDate' => 'SHALL contain exactly one [1..1] effectiveTime',
+                assessmentScaleSupportingObservation::Structure()
+            ]
         ];
     }
 

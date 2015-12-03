@@ -50,7 +50,7 @@ class characteristicsOfHomeEnvironment
      */
     public static function Structure(){
         return [
-            'author' => [
+            'CharacteristicsOfHomeEnvironment' => [
                 'date' => 'The author, if present, SHALL contain exactly one [1..1] time (CONF:9434)',
                 'NPI' => 'This assignedAuthor SHALL contain exactly one [1..1] id (CONF:9436)',
                 'address' => [

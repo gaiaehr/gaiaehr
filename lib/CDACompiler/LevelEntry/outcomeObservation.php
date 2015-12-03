@@ -45,7 +45,7 @@ class outcomeObservation
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData)
     {
@@ -57,16 +57,18 @@ class outcomeObservation
     public static function Structure()
     {
         return [
-            'effectiveTime' => '??',
-            'code' => '??',
-            'displayName' => '??',
-            'codeSystemName' => '??',
-            'Author' => LevelOther\authorParticipation::Structure(),
-            'GoalObservationEvaluationReference' => actReference::Structure(),
-            'GoalObservationReasonReference' => actReference::Structure(),
-            'GoalObservation' => goalObservation::Structure(),
-            'ProgressTowardGoalObservation' => progressTowardGoalObservation::Structure(),
-            'InterventionAct' => interventionAct::Structure()
+            'outcomeObservation' => [
+                'effectiveTime' => '??',
+                'code' => '??',
+                'displayName' => '??',
+                'codeSystemName' => '??',
+                LevelOther\authorParticipation::Structure(),
+                'GoalObservationEvaluationReference' => actReference::Structure(),
+                'GoalObservationReasonReference' => actReference::Structure(),
+                goalObservation::Structure(),
+                progressTowardGoalObservation::Structure(),
+                interventionAct::Structure()
+            ]
         ];
     }
 

@@ -48,9 +48,9 @@ class boundaryObservation
 
     public static function Structure(){
         return [
-            'Values' => [
+            'BoundaryObservation' => [
                 0 => [
-                    'value' => 'SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285).'
+                    'Value' => 'SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285)'
                 ]
             ]
         ];
@@ -84,7 +84,7 @@ class boundaryObservation
             ];
 
             // 4. SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285).
-            foreach ($PortionData['Values'] as $Value)
+            foreach ($PortionData['Value'] as $Value)
             {
                 $Entry['value'][] = [
                     '@attributes' => [

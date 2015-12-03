@@ -15,7 +15,7 @@ namespace LevelSection;
 use LevelEntry;
 use Exception;
 
-class implants
+class instructions
 {
 
     /**
@@ -41,6 +41,9 @@ class implants
     public static function Structure()
     {
         return [
+            'Instructions' => [
+
+            ]
         ];
     }
 

@@ -53,6 +53,9 @@ class payers
     public static function Structure()
     {
         return [
+            'Payers' => [
+
+            ]
         ];
     }
 

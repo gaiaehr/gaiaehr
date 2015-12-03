@@ -43,6 +43,9 @@ class healthConcerns
     public static function Structure()
     {
         return [
+            'HealthConcerns' => [
+
+            ]
         ];
     }
 

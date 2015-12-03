@@ -41,6 +41,9 @@ class plannedProcedure
     public static function Structure()
     {
         return [
+            'PlannedProcedure' => [
+
+            ]
         ];
     }
 

@@ -72,21 +72,23 @@ class immunizationActivity
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:8834)',
-            'routeCode' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
-            'routeCodeSystemName' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
-            'routeDisplayName' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
-            'doseQuantityValue' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:8841)',
-            'doseQuantityUnit' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:8841)',
-            'ImmunizationMedicationInformation' => immunizationMedicationInformation::Structure(),
-            'Performer' => LevelDocument\performer::Structure(),
-            'Indication' => indication::Structure(),
-            'Instruction' => instruction::Structure(),
-            'MedicationSupplyOrder' => medicationSupplyOrder::Structure(),
-            'MedicationDispense' => medicationDispense::Structure(),
-            'ImmunizationRefusalReason' => immunizationRefusalReason::Structure(),
-            'ImmunizationRefusalReason' => immunizationRefusalReason::Structure(),
-            'SubstanceAdministeredAct' => substanceAdministeredAct::Structure()
+            'ImmunizationActivity' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:8834)',
+                'routeCode' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
+                'routeCodeSystemName' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
+                'routeDisplayName' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
+                'doseQuantityValue' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:8841)',
+                'doseQuantityUnit' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:8841)',
+                immunizationMedicationInformation::Structure(),
+                LevelDocument\performer::Structure(),
+                indication::Structure(),
+                instruction::Structure(),
+                medicationSupplyOrder::Structure(),
+                medicationDispense::Structure(),
+                immunizationRefusalReason::Structure(),
+                immunizationRefusalReason::Structure(),
+                substanceAdministeredAct::Structure()
+            ]
         ];
     }
 

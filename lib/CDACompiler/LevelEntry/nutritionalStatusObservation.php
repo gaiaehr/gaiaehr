@@ -41,9 +41,9 @@ class nutritionalStatusObservation
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
     }
 
@@ -53,11 +53,13 @@ class nutritionalStatusObservation
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
-            'code' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Nutritional Status',
-            'displayName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Nutritional Status',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Nutritional Status',
-            'NutritionAssessment' => nutritionAssessment::Structure()
+            'NutritionalStatusObservation' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
+                'code' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Nutritional Status',
+                'displayName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Nutritional Status',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Nutritional Status',
+                nutritionAssessment::Structure()
+            ]
         ];
     }
 

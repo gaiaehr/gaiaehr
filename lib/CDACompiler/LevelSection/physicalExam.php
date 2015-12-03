@@ -52,6 +52,9 @@ class physicalExam
     public static function Structure()
     {
         return [
+            'PhysicalExam' => [
+
+            ]
         ];
     }
 

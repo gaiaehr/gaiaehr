@@ -48,8 +48,10 @@ class culturalAndReligiousObservation
      */
     public static function Structure(){
         return [
-            'effectiveTime' => '',
-            'Narrated' => 'SHALL contain exactly one [1..1] value (CONF:28442).'
+            'CulturalAndReligiousObservation' => [
+                'effectiveTime' => '',
+                'Narrated' => 'SHALL contain exactly one [1..1] value (CONF:28442).'
+            ]
         ];
     }
 

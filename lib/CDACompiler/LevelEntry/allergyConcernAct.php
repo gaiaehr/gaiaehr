@@ -46,10 +46,17 @@ class allergyConcernAct
 
     }
 
+    /**
+     * @param $PortionData
+     * @return array
+     */
     public static function Structure($PortionData)
     {
         return [
-
+            'AllergyConcernAct' => [
+                'active' => '',
+                'firstDate' => ''
+            ]
         ];
     }
 

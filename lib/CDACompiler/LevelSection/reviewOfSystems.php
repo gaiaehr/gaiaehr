@@ -42,6 +42,9 @@ class reviewOfSystems
     public static function Structure()
     {
         return [
+            'ReviewOfSystems' => [
+
+            ]
         ];
     }
 

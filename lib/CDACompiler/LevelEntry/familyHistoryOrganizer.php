@@ -49,21 +49,16 @@ class familyHistoryOrganizer
     public static function Structure()
     {
         return [
-            'familyMemberCode' => 'This code SHALL contain exactly one [1..1] @code, which SHOULD be selected from
-            ValueSet Family Member Value Set 2.16.840.1.113883.1.11.19579 DYNAMIC (CONF:15247)',
-
-            'familyMemberDisplayName' => 'This code SHALL contain exactly one [1..1] @code, which SHOULD be selected from
-            ValueSet Family Member Value Set 2.16.840.1.113883.1.11.19579 DYNAMIC (CONF:15247)',
-
-            'familyMemberCodeSystemName' => 'This code SHALL contain exactly one [1..1] @code, which SHOULD be selected from
-            ValueSet Family Member Value Set 2.16.840.1.113883.1.11.19579 DYNAMIC (CONF:15247)',
-
-            'subject' => [
-                'genderCode' => 'SHALL contain exactly one [1..1] administrativeGenderCode (CONF:15974)',
-                'birthTime' => ', SHOULD contain zero or one [0..1] birthTime (CONF:15976)'
-            ],
-
-            'FamilyHistoryObservation' => familyHistoryObservation::Structure()
+            'familyHistoryOrganizer' => [
+                'familyMemberCode' => 'This code SHALL contain exactly one [1..1] @code, which SHOULD be selected from ValueSet Family Member Value Set 2.16.840.1.113883.1.11.19579 DYNAMIC',
+                'familyMemberDisplayName' => 'This code SHALL contain exactly one [1..1] @code, which SHOULD be selected from ValueSet Family Member Value Set 2.16.840.1.113883.1.11.19579 DYNAMIC',
+                'familyMemberCodeSystemName' => 'This code SHALL contain exactly one [1..1] @code, which SHOULD be selected from ValueSet Family Member Value Set 2.16.840.1.113883.1.11.19579 DYNAMIC',
+                'subject' => [
+                    'genderCode' => 'SHALL contain exactly one [1..1] administrativeGenderCode (CONF:15974)',
+                    'birthTime' => ', SHOULD contain zero or one [0..1] birthTime (CONF:15976)'
+                ],
+                familyHistoryObservation::Structure()
+            ]
         ];
     }
 

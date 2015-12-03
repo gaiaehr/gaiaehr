@@ -42,13 +42,15 @@ class medicationDispense
     public static function Structure()
     {
         return [
-            'statusCode' => 'SHALL contain exactly one [1..1] statusCode, which SHALL be selected from ValueSet Medication Fill Status',
-            'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-            'repeatNumber' => 'SHOULD contain zero or one [0..1] repeatNumber',
-            'quantity' => 'SHOULD contain zero or one [0..1] quantity',
-            'MedicationInformation' => medicationInformation::Structure(),
-            'ImmunizationMedicationInformation' => immunizationMedicationInformation::Structure(),
-            'medicationSupplyOrder' => medicationSupplyOrderInformation::Structure()
+            'MedicationDispense' => [
+                'statusCode' => 'SHALL contain exactly one [1..1] statusCode, which SHALL be selected from ValueSet Medication Fill Status',
+                'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
+                'repeatNumber' => 'SHOULD contain zero or one [0..1] repeatNumber',
+                'quantity' => 'SHOULD contain zero or one [0..1] quantity',
+                medicationInformation::Structure(),
+                immunizationMedicationInformation::Structure(),
+                medicationSupplyOrderInformation::Structure()
+            ]
         ];
     }
 

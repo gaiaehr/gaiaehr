@@ -48,9 +48,11 @@ class highestPressureUlcerStage
     public static function Structure()
     {
         return [
-            'code' => 'SHALL contain exactly one [1..1] value (CONF:14733)',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] value (CONF:14733)',
-            'displayName' => 'SHALL contain exactly one [1..1] value (CONF:14733)'
+            'HighestPressureUlcerStage' => [
+                'code' => 'SHALL contain exactly one [1..1] value (CONF:14733)',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] value (CONF:14733)',
+                'displayName' => 'SHALL contain exactly one [1..1] value (CONF:14733)'
+            ]
         ];
     }
 

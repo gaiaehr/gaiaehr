@@ -49,8 +49,10 @@ class ageObservation
     private static function Structure()
     {
         $Structure = [
-            'age' => '',
-            'unit' => ''
+            'AgeObservation' => [
+                'age' => '',
+                'unit' => ''
+            ]
         ];
         return $Structure;
     }

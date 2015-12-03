@@ -42,6 +42,9 @@ class complications
     public static function Structure()
     {
         return [
+            'Complications' => [
+
+            ]
         ];
     }
 

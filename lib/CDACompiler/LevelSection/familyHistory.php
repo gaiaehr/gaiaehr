@@ -42,6 +42,9 @@ class familyHistory
     public static function Structure()
     {
         return [
+            'FamilyHistory' => [
+
+            ]
         ];
     }
 

@@ -50,7 +50,9 @@ class cognitiveStatusOrganizer
      */
     public static function Structure(){
         return [
-            'CognitiveStatusObservation' => cognitiveStatusObservation::Structure()
+            'CognitiveStatusOrganizer' => [
+                cognitiveStatusObservation::Structure()
+            ]
         ];
     }
 

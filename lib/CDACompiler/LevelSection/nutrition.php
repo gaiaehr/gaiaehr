@@ -43,6 +43,9 @@ class nutrition
     public static function Structure()
     {
         return [
+            'Nutrition' => [
+
+            ]
         ];
     }
 

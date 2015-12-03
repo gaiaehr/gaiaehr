@@ -70,26 +70,22 @@ class medicationActivity
     public static function Structure()
     {
         return [
-            'statusCode' =>
-                'contain exactly one [1..1] statusCode, which SHALL be selected from ValueSet ActStatus (CONF:7507)',
-            'effectiveTime_medication_frequency' =>
-                'SHOULD contain zero or one [0..1] effectiveTime (CONF:7513) such that it Note: This effectiveTime
-                represents the medication frequency (e.g. administration times per day)',
-            'effectiveTime_medication_frequency_unit' =>
-                'SHOULD contain zero or one [0..1] effectiveTime (CONF:7513) such that it
-                Note: This effectiveTime represents the medication frequency (e.g. administration times per day)',
-            'effectiveTime_medication_start' =>
-                'SHALL contain exactly one [1..1] effectiveTime (CONF:7508) such that it
-                Note: This effectiveTime represents the medication duration (i.e. the time the medication was started and stopped).',
-            'effectiveTime_medication_end' =>
-                'SHALL contain exactly one [1..1] effectiveTime (CONF:7508) such that it
-                Note: This effectiveTime represents the medication duration (i.e. the time the medication was started and stopped).',
-            'routeCode' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet
-             Medication Route FDA Value Set',
-            'routeCodeSystemName' => 'Route Code System Name',
-            'routeDisplayName' => 'Route Display Name',
-            'doseQuantity' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:7516).',
-            'medicationInformation' => medicationInformation::Structure()
+            'MedicationActivity' => [
+                'statusCode' => 'contain exactly one [1..1] statusCode, which SHALL be selected from ValueSet ActStatus (CONF:7507)',
+                'effectiveTime_medication_frequency' =>'SHOULD contain zero or one [0..1] effectiveTime (CONF:7513) such that it Note: This effectiveTime
+                    represents the medication frequency (e.g. administration times per day)',
+                'effectiveTime_medication_frequency_unit' => 'SHOULD contain zero or one [0..1] effectiveTime (CONF:7513) such that it
+                    Note: This effectiveTime represents the medication frequency (e.g. administration times per day)',
+                'effectiveTime_medication_start' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:7508) such that it
+                    Note: This effectiveTime represents the medication duration (i.e. the time the medication was started and stopped).',
+                'effectiveTime_medication_end' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:7508) such that it
+                    Note: This effectiveTime represents the medication duration (i.e. the time the medication was started and stopped).',
+                'routeCode' => 'MAY contain zero or one [0..1] routeCode, which SHALL be selected from ValueSet Medication Route FDA Value Set',
+                'routeCodeSystemName' => 'Route Code System Name',
+                'routeDisplayName' => 'Route Display Name',
+                'doseQuantity' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:7516).',
+                'medicationInformation' => medicationInformation::Structure()
+            ]
         ];
     }
 

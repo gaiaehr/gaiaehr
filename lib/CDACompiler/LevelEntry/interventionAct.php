@@ -81,28 +81,30 @@ class interventionAct
     public static function Structure()
     {
         return [
-            'moodCode' => 'SHALL be selected from ValueSet Intervention moodCode',
-            'code' => 'SHALL contain exactly one [1..1] code',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code',
-            'displayName' => 'SHALL contain exactly one [1..1] code',
-            'Author' => LevelOther\authorParticipation::Structure(),
-            'AdvanceDirectiveObservation' => advanceDirectiveObservation::Structure(),
-            'ImmunizationActivity' => immunizationActivity::Structure(),
-            'MedicationActivity' => medicationActivity::Structure(),
-            'ProcedureActivityAct' => procedureActivityAct::Structure(),
-            'GoalObservation' => goalObservation::Structure(),
-            'ProcedureActivityObservation' => procedureActivityObservation::Structure(),
-            'EncounterActivity' => encounterActivity::Structure(),
-            'Instruction' => instruction::Structure(),
-            'NonMedicinalSupplyActivity' => nonMedicinalSupplyActivity::Structure(),
-            'PlannedAct' => plannedAct::Structure(),
-            'PlannedEncounter' => plannedEncounterAct::Structure(),
-            'PlannedObservation' => plannedObservation::Structure(),
-            'PlannedProcedure' => plannedProcedure::Structure(),
-            'PlannedSubstanceAdministration' => plannedSubstanceAdministration::Structure(),
-            'PlannedSupply ' => plannedSupply::Structure(),
-            'NutritionRecommendations ' => nutritionRecommendations::Structure(),
-            'ActReference ' => actReference::Structure()
+            'InterventionAct' => [
+                'moodCode' => 'SHALL be selected from ValueSet Intervention moodCode',
+                'code' => 'SHALL contain exactly one [1..1] code',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code',
+                'displayName' => 'SHALL contain exactly one [1..1] code',
+                LevelOther\authorParticipation::Structure(),
+                advanceDirectiveObservation::Structure(),
+                immunizationActivity::Structure(),
+                medicationActivity::Structure(),
+                procedureActivityAct::Structure(),
+                goalObservation::Structure(),
+                procedureActivityObservation::Structure(),
+                encounterActivity::Structure(),
+                instruction::Structure(),
+                nonMedicinalSupplyActivity::Structure(),
+                plannedAct::Structure(),
+                plannedEncounterAct::Structure(),
+                plannedObservation::Structure(),
+                plannedProcedure::Structure(),
+                plannedSubstanceAdministration::Structure(),
+                plannedSupply::Structure(),
+                nutritionRecommendations::Structure(),
+                actReference::Structure()
+            ]
         ];
     }
 

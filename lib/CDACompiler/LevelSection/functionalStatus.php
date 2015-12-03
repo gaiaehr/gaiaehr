@@ -51,6 +51,9 @@ class functionalStatus
     public static function Structure()
     {
         return [
+            'FunctionalStatus' => [
+
+            ]
         ];
     }
 

@@ -60,7 +60,11 @@ class advanceDirectiveObservation
      */
     public static function Structure()
     {
+        return [
+            'AdvanceDirectiveObservation' => [
 
+            ]
+        ];
     }
 
     /**

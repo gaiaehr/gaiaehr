@@ -41,6 +41,9 @@ class assessmentAndPlan
     public static function Structure()
     {
         return [
+            'AssessmentAndPlan' => [
+
+            ]
         ];
     }
 

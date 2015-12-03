@@ -54,9 +54,11 @@ class quantityMeasurementObservation
      */
     public static function Structure(){
         return [
-            'wadoURI' => 'SHALL contain a @value that contains a WADO reference as a URI (CONF:9249)',
-            'effectiveTime' => 'The effectiveTime, if present, SHALL contain exactly one [1..1] @value (CONF:9251)',
-            'SOPInstanceObservation' => sopInstanceObservation::Structure()
+            'QuantityMeasurementObservation' => [
+                'wadoURI' => 'SHALL contain a @value that contains a WADO reference as a URI (CONF:9249)',
+                'effectiveTime' => 'The effectiveTime, if present, SHALL contain exactly one [1..1] @value (CONF:9251)',
+                sopInstanceObservation::Structure()
+            ]
         ];
     }
 

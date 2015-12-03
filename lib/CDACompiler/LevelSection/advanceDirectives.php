@@ -48,7 +48,9 @@ class advanceDirectives
     public static function Structure()
     {
         return [
-            'AdvanceDirectiveOrganizer' => advanceDirectiveOrganizer::Structure()
+            'AdvanceDirectives' => [
+                advanceDirectiveOrganizer::Structure()
+            ]
         ];
     }
 

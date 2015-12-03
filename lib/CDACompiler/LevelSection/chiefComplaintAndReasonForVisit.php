@@ -42,6 +42,9 @@ class chiefComplaintAndReasonForVisit
     public static function Structure()
     {
         return [
+            'ChiefComplaintAndReasonForVisit' => [
+
+            ]
         ];
     }
 

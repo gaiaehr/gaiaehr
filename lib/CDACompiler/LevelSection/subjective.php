@@ -40,6 +40,9 @@ class subjective
     public static function Structure()
     {
         return [
+            'Subjective' => [
+
+            ]
         ];
     }
 

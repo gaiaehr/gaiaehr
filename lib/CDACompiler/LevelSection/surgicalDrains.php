@@ -40,6 +40,9 @@ class surgicalDrains
     public static function Structure()
     {
         return [
+            'SurgicalDrains' => [
+
+            ]
         ];
     }
 

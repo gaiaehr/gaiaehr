@@ -39,6 +39,11 @@ class familyHistoryDeathObservation
      */
     public static function Structure()
     {
+        return [
+            'FamilyHistoryDeathObservation' => [
+
+            ]
+        ];
     }
 
     /**

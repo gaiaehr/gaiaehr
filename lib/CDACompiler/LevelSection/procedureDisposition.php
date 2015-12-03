@@ -41,6 +41,9 @@ class procedureDisposition
     public static function Structure()
     {
         return [
+            'ProcedureDisposition' => [
+
+            ]
         ];
     }
 

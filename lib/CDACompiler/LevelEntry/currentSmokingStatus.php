@@ -61,15 +61,13 @@ class currentSmokingStatus
     public static function Structure()
     {
         return [
-            'effectiveTime' =>
-                'SHALL contain exactly one [1..1] effectiveTime (CONF:14814)',
-            'code' => 'SHALL contain exactly one [1..1] @code, which SHALL be selected from
-                    ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)',
-            'displayName' => 'SHALL contain exactly one [1..1] @code, which SHALL be selected from
-                    ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] @code, which SHALL be selected from
-                    ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)',
-            'author' => LevelOther\authorParticipation::Structure()
+            'CurrentSmokingStatus' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:14814)',
+                'code' => 'SHALL contain exactly one [1..1] @code, which SHALL be selected from ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)',
+                'displayName' => 'SHALL contain exactly one [1..1] @code, which SHALL be selected from ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] @code, which SHALL be selected from ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)',
+                LevelOther\authorParticipation::Structure()
+            ]
         ];
     }
 

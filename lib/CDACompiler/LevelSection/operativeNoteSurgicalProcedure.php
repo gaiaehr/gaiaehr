@@ -42,6 +42,9 @@ class operativeNoteSurgicalProcedure
     public static function Structure()
     {
         return [
+            'OperativeNoteSurgicalProcedure' => [
+
+            ]
         ];
     }
 

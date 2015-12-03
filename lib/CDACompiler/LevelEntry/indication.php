@@ -54,9 +54,11 @@ class indication
     public static function Structure()
     {
         return [
-            'code' => 'SHOULD be selected from ValueSet Problem Value Set',
-            'codeSystemName' => 'SHOULD be selected from ValueSet Problem Value Set',
-            'displayName' => 'SHOULD be selected from ValueSet Problem Value Set'
+            'Indication' => [
+                'code' => 'SHOULD be selected from ValueSet Problem Value Set',
+                'codeSystemName' => 'SHOULD be selected from ValueSet Problem Value Set',
+                'displayName' => 'SHOULD be selected from ValueSet Problem Value Set'
+            ]
         ];
     }
 

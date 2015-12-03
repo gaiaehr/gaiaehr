@@ -47,6 +47,9 @@ class encounters
     public static function Structure()
     {
         return [
+            'Encounters' => [
+
+            ]
         ];
     }
 

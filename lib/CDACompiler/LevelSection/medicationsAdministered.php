@@ -44,6 +44,9 @@ class medicationsAdministered
     public static function Structure()
     {
         return [
+            'MedicationsAdministered' => [
+
+            ]
         ];
     }
 

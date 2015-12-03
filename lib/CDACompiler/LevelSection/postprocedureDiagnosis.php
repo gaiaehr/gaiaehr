@@ -42,6 +42,9 @@ class postprocedureDiagnosis
     public static function Structure()
     {
         return [
+            'PostprocedureDiagnosis' => [
+
+            ]
         ];
     }
 

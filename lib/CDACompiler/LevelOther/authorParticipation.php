@@ -44,7 +44,9 @@ class authorParticipation
     public static function Structure()
     {
         return [
+            'AuthorParticipation' => [
 
+            ]
         ];
     }
 

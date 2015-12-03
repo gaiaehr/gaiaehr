@@ -42,6 +42,9 @@ class objective
     public static function Structure()
     {
         return [
+            'Objective' => [
+
+            ]
         ];
     }
 

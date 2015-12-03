@@ -31,9 +31,9 @@ use Exception;
 class participant
 {
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
@@ -45,29 +45,32 @@ class participant
     public static function Structure()
     {
         return [
-            'code' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
-            'displayName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
-            'codeSystemName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
-            'Narrated' => 'This playingEntity/name MAY be used for the vehicle name in text, such as Normal Saline (CONF:10087)'
+            'Participant' => [
+                'typeCode' => 'CodeSystem: HL7ParticipationType',
+                'code' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+                'displayName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+                'codeSystemName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+                'Narrated' => 'This playingEntity/name MAY be used for the vehicle name in text, such as Normal Saline (CONF:10087)'
+            ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try {
 
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             // Build the section
             $Document = [
                 'participant' => [
                     '@attributes' => [
-                        'typeCode' => 'IND'
+                        'typeCode' => $PortionData['typeCode']
                     ],
                     'associatedEntity' => [
                         '@attributes' => [
@@ -75,19 +78,19 @@ class participant
                         ],
                         'code' => [
                             '@attributes' => [
-                                'code' => $Data['relationship']['code'],
-                                'displayName' => $Data['relationship']['displayName'],
-                                'codeSystem' => Utilities::CodingSystemId($Data['relationship']['codeSystemName']),
-                                'codeSystemName' => $Data['relationship']['codeSystemName']
+                                'code' => $PortionData['relationship']['code'],
+                                'displayName' => $PortionData['relationship']['displayName'],
+                                'codeSystem' => Utilities::CodingSystemId($PortionData['relationship']['codeSystemName']),
+                                'codeSystemName' => $PortionData['relationship']['codeSystemName']
                             ]
                         ],
                         'addr' => Component::addr(
-                            $Data['address']['use'],
-                            $Data['address']['streetAddressLine'],
-                            $Data['address']['city'],
-                            $Data['address']['state'],
-                            $Data['address']['postalCode'],
-                            $Data['address']['country']
+                            $PortionData['address']['use'],
+                            $PortionData['address']['streetAddressLine'],
+                            $PortionData['address']['city'],
+                            $PortionData['address']['state'],
+                            $PortionData['address']['postalCode'],
+                            $PortionData['address']['country']
                         ),
                         'telecom' => Component::telecom($Data['telecom']),
                         'name' => Component::name($Data['name'])
@@ -96,14 +99,14 @@ class participant
             ];
 
             // MAY contain zero or one [0..1] time (CONF:10004)
-            if(isset($Data['startDate']) && isset($Data['endDate']))
+            if(isset($PortionData['startDate']) && isset($PortionData['endDate']))
             {
                 $Document['time'] = [
                     '@attributes' => [
                         'xsi:type' => 'IVL_TS'
                     ],
-                    'low' => $Data['startDate'],
-                    'high' => $Data['endDate'],
+                    'low' => $PortionData['startDate'],
+                    'high' => $PortionData['endDate'],
                 ];
             }
 

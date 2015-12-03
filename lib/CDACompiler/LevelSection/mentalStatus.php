@@ -50,6 +50,9 @@ class mentalStatus
     public static function Structure()
     {
         return [
+            'MentalStatus' => [
+
+            ]
         ];
     }
 

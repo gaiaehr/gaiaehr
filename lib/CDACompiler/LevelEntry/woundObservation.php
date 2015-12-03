@@ -21,7 +21,7 @@ use Exception;
  * Class WoundObservation
  * @package LevelEntry
  */
-class WoundObservation {
+class woundObservation {
 
     /**
      * @param $Data
@@ -29,6 +29,22 @@ class WoundObservation {
     public function Validate($Data)
     {
 
+    }
+
+    /**
+     * Build the Narrative part of this section
+     * @param $PortionData
+     */
+    public static function Narrative($PortionData){
+
+    }
+
+    public static function Structure(){
+        return [
+            'WoundObservation' => [
+
+            ]
+        ];
     }
 
     /**

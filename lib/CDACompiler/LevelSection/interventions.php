@@ -52,6 +52,9 @@ class interventions
     public static function Structure()
     {
         return [
+            'Interventions' => [
+
+            ]
         ];
     }
 

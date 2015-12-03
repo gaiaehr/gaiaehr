@@ -24,7 +24,7 @@ use Exception;
  * Class advanceDirectiveOrganizer
  * @package LevelEntry
  */
-class medicationDispense
+class mentalStatusObservation
 {
     /**
      * @param $PortionData
@@ -54,13 +54,15 @@ class medicationDispense
     public static function Structure()
     {
         return [
-            'statusCode' => 'SHALL contain exactly one [1..1] statusCode, which SHALL be selected from ValueSet Medication Fill Status',
-            'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-            'code' => 'SHOULD be selected from ValueSet Mental and Functional Status Response Value Set',
-            'codeSystemName' => 'SHOULD be selected from ValueSet Mental and Functional Status Response Value Set',
-            'displayName' => 'SHOULD be selected from ValueSet Mental and Functional Status Response Value Set',
-            'Author' =>  LevelOther\authorParticipation::Structure(),
-            'AssessmentScaleObservation' => assessmentScaleObservation::Structure()
+            'MentalStatusObservation' => [
+                'statusCode' => 'SHALL contain exactly one [1..1] statusCode, which SHALL be selected from ValueSet Medication Fill Status',
+                'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
+                'code' => 'SHOULD be selected from ValueSet Mental and Functional Status Response Value Set',
+                'codeSystemName' => 'SHOULD be selected from ValueSet Mental and Functional Status Response Value Set',
+                'displayName' => 'SHOULD be selected from ValueSet Mental and Functional Status Response Value Set',
+                LevelOther\authorParticipation::Structure(),
+                assessmentScaleObservation::Structure()
+            ]
         ];
     }
 

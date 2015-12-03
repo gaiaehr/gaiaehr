@@ -18,11 +18,27 @@ use Exception;
  * Class VitalSignObservation
  * @package LevelEntry
  */
-class VitalSignObservation {
+class vitalSignObservation {
 
-    public function Validate($Data)
+    public function Validate($PortionData)
     {
 
+    }
+
+    /**
+     * Build the Narrative part of this section
+     * @param $PortionData
+     */
+    public static function Narrative($PortionData){
+
+    }
+
+    public static function Structure(){
+        return [
+            'VitalSignObservation' => [
+
+            ]
+        ];
     }
 
     /**

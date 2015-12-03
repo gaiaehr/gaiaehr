@@ -86,74 +86,42 @@ class healthConcernAct
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'MAY contain zero or one [0..1] effectiveTime',
-
-            'Author' => LevelOther\authorParticipation::Structure(),
-
-            'ProblemObservation' => LevelOther\problemObservation::Structure(),
-
-            'AllergyIntoleranceObservation' => allergyIntoleranceObservation::Structure(),
-
-            'AssessmentScaleObservation' => assessmentScaleObservation::Structure(),
-
-            'CognitiveStatusObservation' => cognitiveStatusObservation::Structure(),
-
-            'SelfCareActivitiesADLAndIADL' => selfCareActivitiesADLAndIADL::Structure(),
-
-            'CognitiveAbilitiesObservation' => cognitiveAbilitiesObservation::Structure(),
-
-            'CurrentSmokingStatus' => currentSmokingStatus::Structure(),
-
-            'EncounterDiagnosis' => encounterDiagnosis::Structure(),
-
-            'FamilyHistoryOrganizer' => familyHistoryOrganizer::Structure(),
-
-            'FunctionalStatusObservation' => functionalStatusObservation::Structure(),
-
-            'HospitalAdmissionDiagnosis' => hospitalAdmissionDiagnosis::Structure(),
-
-            'MentalStatusObservation' => mentalStatusObservation::Structure(),
-
-            'NutritionAssessment' => nutritionAssessment::Structure(),
-
-            'PostprocedureDiagnosis' => postprocedureDiagnosis::Structure(),
-
-            'PregnancyObservation' => pregnancyObservation::Structure(),
-
-            'PreoperativeDiagnosis' => preoperativeDiagnosis::Structure(),
-
-            'ReactionObservation' => reactionObservation::Structure(),
-
-            'ResultObservation' => resultObservation::Structure(),
-
-            'SensoryAndSpeechStatus' => sensoryAndSpeechStatus::Structure(),
-
-            'SocialHistoryObservation' => socialHistoryObservation::Structure(),
-
-            'SubstanceOrDeviceAllergyIntoleranceObservation' => substanceOrDeviceAllergyIntoleranceObservation::Structure(),
-
-            'TobaccoUse' => tobaccoUse::Structure(),
-
-            'VitalSignObservation' => vitalSignObservation::Structure(),
-
-            'WoundObservation' => woundObservation::Structure(),
-
-            'CaregiverCharacteristics' => caregiverCharacteristics::Structure(),
-
-            'CulturalAndReligiousObservation' => culturalAndReligiousObservation::Structure(),
-
-            'CharacteristicsOfHomeEnvironment' => characteristicsOfHomeEnvironment::Structure(),
-
-            'NutritionalStatusObservation' => nutritionalStatusObservation::Structure(),
-
-            'ResultOrganizer' => resultOrganizer::Structure(),
-
-            'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
-
-            'ProblemConcernActCondition' => problemConcernActCondition::Structure(),
-
-            'ActReference' => actReference::Structure()
-
+            'healthConcernAct' => [
+                'effectiveTime' => 'MAY contain zero or one [0..1] effectiveTime',
+                LevelOther\authorParticipation::Structure(),
+                LevelOther\problemObservation::Structure(),
+                allergyIntoleranceObservation::Structure(),
+                assessmentScaleObservation::Structure(),
+                cognitiveStatusObservation::Structure(),
+                selfCareActivitiesADLAndIADL::Structure(),
+                cognitiveAbilitiesObservation::Structure(),
+                currentSmokingStatus::Structure(),
+                encounterDiagnosis::Structure(),
+                familyHistoryOrganizer::Structure(),
+                functionalStatusObservation::Structure(),
+                hospitalAdmissionDiagnosis::Structure(),
+                mentalStatusObservation::Structure(),
+                nutritionAssessment::Structure(),
+                postprocedureDiagnosis::Structure(),
+                pregnancyObservation::Structure(),
+                preoperativeDiagnosis::Structure(),
+                reactionObservation::Structure(),
+                resultObservation::Structure(),
+                sensoryAndSpeechStatus::Structure(),
+                socialHistoryObservation::Structure(),
+                substanceOrDeviceAllergyIntoleranceObservation::Structure(),
+                tobaccoUse::Structure(),
+                vitalSignObservation::Structure(),
+                woundObservation::Structure(),
+                caregiverCharacteristics::Structure(),
+                culturalAndReligiousObservation::Structure(),
+                characteristicsOfHomeEnvironment::Structure(),
+                nutritionalStatusObservation::Structure(),
+                resultOrganizer::Structure(),
+                providerPriorityPreference::Structure(),
+                problemConcernActCondition::Structure(),
+                actReference::Structure()
+            ]
         ];
     }
 

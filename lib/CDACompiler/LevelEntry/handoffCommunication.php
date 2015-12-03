@@ -51,19 +51,15 @@ class handoffCommunication
     public static function Structure()
     {
         return [
-            'participant' => [
-                'taxonomyCode' => 'SHOULD be selected from ValueSet Healthcare Provider Taxonomy (HIPAA)
-                2.16.840.1.114222.4.11.1066 (CONF:31676)',
-                'taxonomyCodeSystemName' => 'SHOULD be selected from ValueSet Healthcare Provider Taxonomy (HIPAA)
-                2.16.840.1.114222.4.11.1066 (CONF:31676)',
-                'taxonomyDisplayName' => 'SHOULD be selected from ValueSet Healthcare Provider Taxonomy (HIPAA)
-                2.16.840.1.114222.4.11.1066 (CONF:31676)',
-            ],
-
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:31670)',
-
-            'Authors' => LevelDocument\author::Structure()
-
+            'HandoffCommunication' => [
+                'participant' => [
+                    'taxonomyCode' => 'SHOULD be selected from ValueSet Healthcare Provider Taxonomy (HIPAA)',
+                    'taxonomyCodeSystemName' => 'SHOULD be selected from ValueSet Healthcare Provider Taxonomy (HIPAA)',
+                    'taxonomyDisplayName' => 'SHOULD be selected from ValueSet Healthcare Provider Taxonomy (HIPAA)',
+                ],
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:31670)',
+                LevelDocument\author::Structure()
+            ]
         ];
     }
 

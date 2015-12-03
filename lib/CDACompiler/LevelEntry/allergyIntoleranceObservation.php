@@ -74,6 +74,26 @@ class allergyIntoleranceObservation
 
     /**
      * @param $PortionData
+     * @return array
+     */
+    public static function Structure($PortionData)
+    {
+        return [
+            'AllergyIntoleranceObservation' => [
+                'onsetDate' => '',
+                'resolvedDate' => '',
+                'allergyCode' => '',
+                'allergyDisplayName' => '',
+                'allergyCodeSystemName' => '',
+                'substanceCode' => '',
+                'substanceName' => '',
+                'substancecodeSystemName' => ''
+            ]
+        ];
+    }
+
+    /**
+     * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
      */
@@ -102,8 +122,6 @@ class allergyIntoleranceObservation
                         ]
                     ],
                     'effectiveTime' => Component::time($PortionData['onsetDate'], $PortionData['resolvedDate']),
-                    // 11.	SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be
-                    // selected from ValueSet Allergy/Adverse Event Type Value Set
                     'value' => [
                         '@attributes' => [
                             'xsi:type' => 'CD',

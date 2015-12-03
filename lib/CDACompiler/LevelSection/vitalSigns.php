@@ -47,6 +47,9 @@ class vitalSigns
     public static function Structure()
     {
         return [
+            'VitalSigns' => [
+
+            ]
         ];
     }
 

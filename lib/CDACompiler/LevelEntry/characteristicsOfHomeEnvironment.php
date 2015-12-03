@@ -40,7 +40,7 @@ class characteristicsOfHomeEnvironment
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData)
     {
@@ -49,12 +49,11 @@ class characteristicsOfHomeEnvironment
 
     public static function Structure(){
         return [
-            'code' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet
-            Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC (CONF:28823).',
-            'systemCodeName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet
-            Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC (CONF:28823).',
-            'displayName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet
-            Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC (CONF:28823).'
+            'CharacteristicsOfHomeEnvironment' => [
+                'code' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC',
+                'systemCodeName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC',
+                'displayName' => 'SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC'
+            ]
         ];
     }
 

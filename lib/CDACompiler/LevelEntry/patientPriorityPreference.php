@@ -56,7 +56,7 @@ class patientPriorityPreference
     public static function Structure()
     {
         return [
-            'observation' => [
+            'PatientPriorityPreference' => [
                 'priorityOrderCode' => 'SHOULD be selected from ValueSet Priority Order',
                 'priorityOrderDisplayName' => 'SHOULD be selected from ValueSet Priority Order',
                 'priorityOrderCodeSystemName' => 'SHOULD be selected from ValueSet Priority Order',

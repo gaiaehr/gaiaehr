@@ -53,10 +53,12 @@ class nutritionRecommendations
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-            'code' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Recommendations',
-            'displayName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Recommendations',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Recommendations'
+            'NutritionRecommendations' => [
+                'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
+                'code' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Recommendations',
+                'displayName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Recommendations',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Recommendations'
+            ]
         ];
     }
 

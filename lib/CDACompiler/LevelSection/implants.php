@@ -38,6 +38,9 @@ class implants
     public static function Structure()
     {
         return [
+            'Implants' => [
+
+            ]
         ];
     }
 

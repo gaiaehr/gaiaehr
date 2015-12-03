@@ -35,7 +35,9 @@ class admissionMedication
     public static function Structure()
     {
         return [
-            'MedicationActivity' => medicationActivity::Structure()
+            'AdmissionMedication' => [
+                medicationActivity::Structure()
+            ]
         ];
     }
 

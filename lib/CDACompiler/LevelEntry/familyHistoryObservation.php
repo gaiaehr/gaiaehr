@@ -55,27 +55,16 @@ class familyHistoryObservation
     public static function Structure()
     {
         return [
-            'problemTypeCode' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from
-            ValueSet Problem Type 2.16.840.1.113883.3.88.12.3221.7.2 STATIC 2012-06-01 (CONF:8589)',
-
-            'problemTypeDisplayName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from
-            ValueSet Problem Type 2.16.840.1.113883.3.88.12.3221.7.2 STATIC 2012-06-01 (CONF:8589)',
-
-            'problemTypeCodeSystemName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from
-            ValueSet Problem Type 2.16.840.1.113883.3.88.12.3221.7.2 STATIC 2012-06-01 (CONF:8589)',
-
-            'problemValueCode' => 'SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code
-            SHALL be selected from ValueSet Problem Value Set 2.16.840.1.113883.3.88.12.3221.7.4 DYNAMIC (CONF:8591)',
-
-            'problemValueDisplayName' => 'SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code
-            SHALL be selected from ValueSet Problem Value Set 2.16.840.1.113883.3.88.12.3221.7.4 DYNAMIC (CONF:8591)',
-
-            'problemValueCodeSystemName' => 'SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code
-            SHALL be selected from ValueSet Problem Value Set 2.16.840.1.113883.3.88.12.3221.7.4 DYNAMIC (CONF:8591)',
-
-            'AgeObservation' => ageObservation::Structure(),
-
-            'FamilyHistoryDeathObservation' => familyHistoryDeathObservation::Structure()
+            'FamilyHistoryObservation' => [
+                'problemTypeCode' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Problem Type 2.16.840.1.113883.3.88.12.3221.7.2 STATIC 2012-06-01',
+                'problemTypeDisplayName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Problem Type 2.16.840.1.113883.3.88.12.3221.7.2 STATIC 2012-06-01',
+                'problemTypeCodeSystemName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Problem Type 2.16.840.1.113883.3.88.12.3221.7.2 STATIC 2012-06-01',
+                'problemValueCode' => 'SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be selected from ValueSet Problem Value Set 2.16.840.1.113883.3.88.12.3221.7.4 DYNAMIC',
+                'problemValueDisplayName' => 'SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be selected from ValueSet Problem Value Set 2.16.840.1.113883.3.88.12.3221.7.4 DYNAMIC',
+                'problemValueCodeSystemName' => 'SHALL contain exactly one [1..1] value with @xsi:type="CD", where the code SHALL be selected from ValueSet Problem Value Set 2.16.840.1.113883.3.88.12.3221.7.4 DYNAMIC',
+                ageObservation::Structure(),
+                familyHistoryDeathObservation::Structure()
+            ]
         ];
     }
 

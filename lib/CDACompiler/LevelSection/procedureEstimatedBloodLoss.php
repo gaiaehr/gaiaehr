@@ -43,6 +43,9 @@ class procedureEstimatedBloodLoss
     public static function Structure()
     {
         return [
+            'ProcedureEstimatedBloodLoss' => [
+
+            ]
         ];
     }
 

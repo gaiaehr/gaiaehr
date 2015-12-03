@@ -52,15 +52,15 @@ class plannedProcedure
     public static function Structure()
     {
         return [
-            'supply' => [
+            'PlannedProcedure' => [
                 'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (SubstanceAdministration/Supply)',
                 'repeatNumber' => 'SHALL contain exactly one [0..1] repeatNumber',
                 'quantity' => 'SHALL contain exactly one [0..1] quantity',
                 'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-                'Author' => LevelOther\authorParticipation::Structure(),
-                'Performer' => LevelDocument\performer::Structure(),
-                'PatientPriorityPreference' => patientPriorityPreference::Structure(),
-                'ProviderPriorityPreference' => providerPriorityPreference::Structure()
+                LevelOther\authorParticipation::Structure(),
+                LevelDocument\performer::Structure(),
+                patientPriorityPreference::Structure(),
+                providerPriorityPreference::Structure()
             ]
         ];
     }

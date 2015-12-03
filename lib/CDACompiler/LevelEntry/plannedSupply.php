@@ -53,12 +53,12 @@ class plannedSupply
     public static function Structure()
     {
         return [
-            'supply' => [
+            'PlannedSupply' => [
                 'moodCode' => 'SHALL be selected from ValueSet Plan of Care moodCode (SubstanceAdministration/Supply)',
                 'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
-                'PatientPriorityPreference' => patientPriorityPreference::Structure(),
-                'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
-                'Author' => LevelOther\authorParticipation::Structure()
+                patientPriorityPreference::Structure(),
+                providerPriorityPreference::Structure(),
+                LevelOther\authorParticipation::Structure()
             ]
         ];
     }

@@ -42,6 +42,9 @@ class assessment
     public static function Structure()
     {
         return [
+            'Assessment' => [
+
+            ]
         ];
     }
 

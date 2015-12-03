@@ -37,6 +37,9 @@ class surgeryDescription
     public static function Structure()
     {
         return [
+            'SurgeryDescription' => [
+
+            ]
         ];
     }
 

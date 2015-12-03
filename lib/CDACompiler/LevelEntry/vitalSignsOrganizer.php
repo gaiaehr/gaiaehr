@@ -38,7 +38,7 @@ use Exception;
  * Class VitalSignsOrganizer
  * @package LevelEntry
  */
-class VitalSignsOrganizer {
+class vitalSignsOrganizer {
 
     /**
      * @param $Data
@@ -50,6 +50,22 @@ class VitalSignsOrganizer {
             throw new Exception('VitalSign_Status: Shall be declared.', '5.66_1');
         if(!isset($Data['VitalSign_DateTime']))
             throw new Exception('VitalSign_DateTime: Shall be declared.', '5.66_2');
+    }
+
+    /**
+     * Build the Narrative part of this section
+     * @param $PortionData
+     */
+    public static function Narrative($PortionData){
+
+    }
+
+    public static function Structure(){
+        return [
+            'VitalSignsOrganizer' => [
+
+            ]
+        ];
     }
 
     /**

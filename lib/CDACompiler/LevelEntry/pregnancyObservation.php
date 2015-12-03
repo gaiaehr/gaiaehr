@@ -61,13 +61,13 @@ class plannedObservation
     public static function Structure()
     {
         return [
-            'observation' => [
+            'PlannedObservation' => [
                 'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime (CONF:2018)',
                 'code' => 'This value SHALL contain exactly one [1..1] @code="77386006" Pregnant (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96) (CONF:26460)',
                 'codeSystem' => 'This value SHALL contain exactly one [1..1] @code="77386006" Pregnant (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96) (CONF:26460)',
                 'displayName' => 'This value SHALL contain exactly one [1..1] @code="77386006" Pregnant (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96) (CONF:26460)',
                 'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
-                'EstimatedDateOfDelivery' => estimatedDateOfDelivery::Structure()
+                estimatedDateOfDelivery::Structure()
             ]
         ];
     }

@@ -44,10 +44,10 @@ class encounterDiagnosis
     public static function Structure()
     {
         return [
-
-            'effectiveTime' => 'effectiveTime',
-
-            'ProblemObservation' => problemObservation::Structure()
+            'EncounterDiagnosis' => [
+                'effectiveTime' => 'effectiveTime',
+                problemObservation::Structure()
+            ]
         ];
     }
 

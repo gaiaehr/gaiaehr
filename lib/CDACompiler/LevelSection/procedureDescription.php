@@ -45,6 +45,9 @@ class procedureDescription
     public static function Structure()
     {
         return [
+            'ProcedureDescription' => [
+
+            ]
         ];
     }
 

@@ -58,7 +58,7 @@ class policyActivity
     public static function Structure()
     {
         return [
-            'act' => [
+            'PolicyActivity' => [
                 'healthInsuranceCode' => 'SHOULD be selected from ValueSet Health Insurance Type Value Set',
                 'healthInsuranceCodeSystemName' => 'SHOULD be selected from ValueSet Health Insurance Type Value Set',
                 'Payer' => LevelDocument\performer::Structure(),

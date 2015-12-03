@@ -47,7 +47,7 @@ class numberOfPressureUlcersObservation
     public static function Structure()
     {
         return [
-            'PressureUlcerStage' => [
+            'NumberOfPressureUlcersObservation' => [
                 'code' => 'SHOULD be selected from ValueSet Pressure Ulcer Stage',
                 'codeSystemName' => 'SHOULD be selected from ValueSet Pressure Ulcer Stage',
                 'displayName' => 'SHOULD be selected from ValueSet Pressure Ulcer Stage'

@@ -40,6 +40,9 @@ class reasonForVisit
     public static function Structure()
     {
         return [
+            'ReasonForVisit' => [
+
+            ]
         ];
     }
 

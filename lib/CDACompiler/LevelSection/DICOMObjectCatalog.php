@@ -43,6 +43,9 @@ class DICOMObjectCatalog
     public static function Structure()
     {
         return [
+            'DICOMObjectCatalog' => [
+
+            ]
         ];
     }
 

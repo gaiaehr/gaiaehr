@@ -44,6 +44,9 @@ class immunizations
     public static function Structure()
     {
         return [
+            'Immunizations' => [
+
+            ]
         ];
     }
 

@@ -55,25 +55,16 @@ class functionalStatusObservation
     public static function Structure()
     {
         return [
-
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:13930)',
-
-            'physicalFunctionCode' => 'SHALL contain exactly one [1..1] value (CONF:13932)
-            If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96) (CONF:14234)',
-
-            'physicalFunctionDisplayName' => 'SHALL contain exactly one [1..1] value (CONF:13932)
-            If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96) (CONF:14234)',
-
-            'physicalFunctionCodeSystemName' => 'SHALL contain exactly one [1..1] value (CONF:13932)
-            If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96) (CONF:14234)',
-
-            'Authors' => LevelDocument\author::Structure(),
-
-            'NonMedicinalSupplyActivity' => nonMedicinalSupplyActivity::Structure(),
-
-            'CaregiverCharacteristics' => caregiverCharacteristics::Structure(),
-
-            'AssessmentScaleObservation' => assessmentScaleObservation::Structure()
+            'FunctionalStatusObservation' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
+                'physicalFunctionCode' => 'SHALL contain exactly one [1..1] value If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96)',
+                'physicalFunctionDisplayName' => 'SHALL contain exactly one [1..1] value If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96)',
+                'physicalFunctionCodeSystemName' => 'SHALL contain exactly one [1..1] value If xsi:type=“CD”, SHOULD contain a code from SNOMED CT (CodeSystem: 2.16.840.1.113883.6.96)',
+                LevelDocument\author::Structure(),
+                nonMedicinalSupplyActivity::Structure(),
+                caregiverCharacteristics::Structure(),
+                assessmentScaleObservation::Structure()
+            ]
         ];
     }
 

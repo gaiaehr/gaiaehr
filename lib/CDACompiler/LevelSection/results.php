@@ -58,6 +58,9 @@ class results
     public static function Structure()
     {
         return [
+            'Results' => [
+
+            ]
         ];
     }
 

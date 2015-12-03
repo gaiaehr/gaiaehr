@@ -44,6 +44,9 @@ class physicalFindingsOfSkin
     public static function Structure()
     {
         return [
+            'PhysicalFindingsOfSkin' => [
+
+            ]
         ];
     }
 

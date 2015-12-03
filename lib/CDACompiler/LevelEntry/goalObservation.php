@@ -68,35 +68,23 @@ class goalObservation
     public static function Structure()
     {
         return [
-            'goalCode' => 'SHALL contain exactly one [1..1] code (CONF:30784)',
-
-            'goalDisplayName' => 'SHALL contain exactly one [1..1] code (CONF:30784)',
-
-            'goalCodeSystemName' => 'SHALL contain exactly one [1..1] code (CONF:30784)',
-
-            'effectiveTime' => 'effectiveTime',
-
-            'Authors' => LevelOther\authorParticipation::Structure(),
-
-            'HealthConcernAct' => healthConcernAct::Structure(),
-
-            'PlannedEncounter' => plannedEncounter::Structure(),
-
-            'PlannedObservation' => plannedObservation::Structure(),
-
-            'PlannedProcedure' => plannedProcedure::Structure(),
-
-            'PlannedSubstanceAdministration' => plannedSubstanceAdministration::Structure(),
-
-            'PlannedSupply' => plannedSupply::Structure(),
-
-            'PlannedAct' => plannedAct::Structure(),
-
-            'PatientPriorityPreference' => patientPriorityPreference::Structure(),
-
-            'ProviderPriorityPreference' => providerPriorityPreference::Structure(),
-
-            'ActReference' => actReference::Structure()
+            'GoalObservation' => [
+                'goalCode' => 'SHALL contain exactly one [1..1] code (CONF:30784)',
+                'goalDisplayName' => 'SHALL contain exactly one [1..1] code (CONF:30784)',
+                'goalCodeSystemName' => 'SHALL contain exactly one [1..1] code (CONF:30784)',
+                'effectiveTime' => 'effectiveTime',
+                LevelOther\authorParticipation::Structure(),
+                healthConcernAct::Structure(),
+                plannedEncounter::Structure(),
+                plannedObservation::Structure(),
+                plannedProcedure::Structure(),
+                plannedSubstanceAdministration::Structure(),
+                plannedSupply::Structure(),
+                plannedAct::Structure(),
+                patientPriorityPreference::Structure(),
+                providerPriorityPreference::Structure(),
+                actReference::Structure()
+            ]
         ];
     }
 

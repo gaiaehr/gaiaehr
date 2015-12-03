@@ -44,14 +44,16 @@ class usRealmPersonNamePNUSFIELDED
     public static function Structure()
     {
         return [
-            'prefix' => 'SHALL contain exactly one [1..1] name',
-            'prefixQualifier' => 'SHALL contain exactly one [1..1] name',
-            'given' => 'SHALL contain exactly one [1..1] name',
-            'givenQualifier' => 'SHALL contain exactly one [1..1] name',
-            'family' => 'SHALL contain exactly one [1..1] name',
-            'familyQualifier' => 'SHALL contain exactly one [1..1] name',
-            'name' => 'SHALL contain exactly one [1..1] name',
-            'nameQualifier' => 'SHALL contain exactly one [1..1] name'
+            'USRealmPersonNamePNUSFIELDED' => [
+                'prefix' => 'SHALL contain exactly one [1..1] name',
+                'prefixQualifier' => 'SHALL contain exactly one [1..1] name',
+                'given' => 'SHALL contain exactly one [1..1] name',
+                'givenQualifier' => 'SHALL contain exactly one [1..1] name',
+                'family' => 'SHALL contain exactly one [1..1] name',
+                'familyQualifier' => 'SHALL contain exactly one [1..1] name',
+                'name' => 'SHALL contain exactly one [1..1] name',
+                'nameQualifier' => 'SHALL contain exactly one [1..1] name'
+            ]
         ];
     }
 

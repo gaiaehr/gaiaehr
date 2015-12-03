@@ -51,8 +51,8 @@ class preoperativeDiagnosis
     public static function Structure()
     {
         return [
-            'act' => [
-                'ProblemObservation' => problemObservation::Structure()
+            'PreoperativeDiagnosis' => [
+                problemObservation::Structure()
             ]
         ];
     }

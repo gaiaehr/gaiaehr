@@ -48,6 +48,21 @@ class medicationInformation
     }
 
     /**
+     * @return array
+     */
+    public static function Structure()
+    {
+        return [
+            'MedicationInformation' => [
+                'code' => '',
+                'displayName' => '',
+                'codeSystemName' => '',
+                'manufacturer' => ''
+            ]
+        ];
+    }
+
+    /**
      * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
@@ -67,7 +82,7 @@ class medicationInformation
                     'code' => [
                         'code' => $PortionData['code'],
                         'displayName' => $PortionData['displayName'],
-                        'codeSystem' => $PortionData['codeSystemName'],
+                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
                         'codeSystemName' => $PortionData['codeSystemName']
                     ]
                 ],

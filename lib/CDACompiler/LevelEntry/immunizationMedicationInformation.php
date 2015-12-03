@@ -52,14 +52,13 @@ class immunizationMedicationInformation
     public static function Structure()
     {
         return [
-            'code' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from
-            ValueSet CVX Vaccines Administered - Vaccine Set',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from
-            ValueSet CVX Vaccines Administered - Vaccine Set',
-            'displayName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from
-            ValueSet CVX Vaccines Administered - Vaccine Set',
-            'lotNumberText' => '',
-            'manufacturerOrganization' => 'SHOULD contain zero or one [0..1] manufacturerOrganization (CONF:9012)'
+            'ImmunizationMedicationInformation' => [
+                'code' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from ValueSet CVX Vaccines Administered - Vaccine Set',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from ValueSet CVX Vaccines Administered - Vaccine Set',
+                'displayName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from ValueSet CVX Vaccines Administered - Vaccine Set',
+                'lotNumberText' => '',
+                'manufacturerOrganization' => 'SHOULD contain zero or one [0..1] manufacturerOrganization (CONF:9012)'
+            ]
         ];
     }
 

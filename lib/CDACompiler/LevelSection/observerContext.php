@@ -17,7 +17,7 @@ use Component;
 use Utilities;
 use Exception;
 
-class procedures
+class observerContext
 {
     /**
      * @param $Data
@@ -42,6 +42,9 @@ class procedures
     public static function Structure()
     {
         return [
+            'observerContext' => [
+
+            ]
         ];
     }
 

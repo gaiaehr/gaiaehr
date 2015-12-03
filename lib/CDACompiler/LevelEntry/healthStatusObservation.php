@@ -49,9 +49,11 @@ class healthStatusObservation
     public static function Structure()
     {
         return [
-            'code' => 'SHALL be selected from ValueSet HealthStatus (V2)',
-            'codeSystemName' => 'SHALL be selected from ValueSet HealthStatus (V2)',
-            'displayName' => 'SHALL be selected from ValueSet HealthStatus (V2)'
+            'HealthStatusObservation' => [
+                'code' => 'SHALL be selected from ValueSet HealthStatus (V2)',
+                'codeSystemName' => 'SHALL be selected from ValueSet HealthStatus (V2)',
+                'displayName' => 'SHALL be selected from ValueSet HealthStatus (V2)'
+            ]
         ];
     }
 

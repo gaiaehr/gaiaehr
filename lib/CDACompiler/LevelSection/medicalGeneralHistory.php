@@ -46,6 +46,9 @@ class medicalGeneralHistory
     public static function Structure()
     {
         return [
+            'MedicalGeneralHistory' => [
+
+            ]
         ];
     }
 

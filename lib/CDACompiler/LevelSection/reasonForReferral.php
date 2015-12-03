@@ -41,6 +41,9 @@ class reasonForReferral
     public static function Structure()
     {
         return [
+            'ReasonForReferral' => [
+
+            ]
         ];
     }
 

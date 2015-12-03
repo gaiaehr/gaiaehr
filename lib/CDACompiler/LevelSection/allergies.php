@@ -40,7 +40,9 @@ class allergies
     public static function Structure($PortionData)
     {
         return [
-            'Allergies' => allergyConcernAct::Structure($PortionData['Allergies'])
+            'Allergies' => [
+                allergyConcernAct::Structure()
+            ]
         ];
     }
 

@@ -50,12 +50,11 @@ class immunizationRefusalReason
     public static function Structure()
     {
         return [
-            'code' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from
-            ValueSet No Immunization Reason Value Set',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from
-            ValueSet No Immunization Reason Value Set',
-            'displayName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from
-            ValueSet No Immunization Reason Value Set'
+            'ImmunizationRefusalReason' => [
+                'code' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from ValueSet No Immunization Reason Value Set',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from ValueSet No Immunization Reason Value Set',
+                'displayName' => 'SHALL contain exactly one [1..1] code, which SHALL be selected from ValueSet No Immunization Reason Value Set'
+            ]
         ];
     }
 

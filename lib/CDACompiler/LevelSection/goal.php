@@ -44,6 +44,9 @@ class goal
     public static function Structure()
     {
         return [
+            'Goal' => [
+
+            ]
         ];
     }
 

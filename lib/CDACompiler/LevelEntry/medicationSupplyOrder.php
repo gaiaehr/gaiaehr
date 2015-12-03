@@ -43,13 +43,15 @@ class medicationSupplyOrder
     public static function Structure()
     {
         return [
-            'repeatNumber' => 'SHOULD contain zero or one [0..1] repeatNumber',
-            'quantity' => 'SHOULD contain zero or one [0..1] quantity',
-            'effectiveTime_low' => 'SHOULD contain zero or one [0..1] effectiveTime',
-            'ProductImmunizationMedicationInformation' => immunizationMedicationInformation::Structure(),
-            'ProductMedicationInformation' => medicationInformation::Structure(),
-            'Author' => LevelOther\authorParticipation::Structure(),
-            'Instruction' => instruction::Structure()
+            'MedicationSupplyOrder' => [
+                'repeatNumber' => 'SHOULD contain zero or one [0..1] repeatNumber',
+                'quantity' => 'SHOULD contain zero or one [0..1] quantity',
+                'effectiveTime_low' => 'SHOULD contain zero or one [0..1] effectiveTime',
+                immunizationMedicationInformation::Structure(),
+                medicationInformation::Structure(),
+                LevelOther\authorParticipation::Structure(),
+                instruction::Structure()
+            ]
         ];
     }
 

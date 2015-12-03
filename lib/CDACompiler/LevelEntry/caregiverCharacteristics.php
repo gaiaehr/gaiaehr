@@ -37,10 +37,9 @@ class caregiverCharacteristics
             throw new Exception ('SHALL contain at least one [1..*] participant (CONF:14227).');
     }
 
-
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData)
     {
@@ -49,12 +48,14 @@ class caregiverCharacteristics
 
     public static function Structure(){
         return [
-            'statusCode' => 'SHALL contain exactly one [1..1] statusCode (CONF:14233).',
-            'Participant' => [
-                0 => [
-                    'code' => 'SHALL contain at least one [1..*] participant (CONF:14227).',
-                    'codeSystemName' => 'System Name (LOINC, SNOMED-CT)',
-                    'codeDisplayname' => 'Display Name (Mother, Father, ect.)'
+            'CaregiverCharacteristics' => [
+                'statusCode' => 'SHALL contain exactly one [1..1] statusCode (CONF:14233).',
+                'Participant' => [
+                    0 => [
+                        'code' => 'SHALL contain at least one [1..*] participant (CONF:14227).',
+                        'codeSystemName' => 'System Name (LOINC, SNOMED-CT)',
+                        'codeDisplayname' => 'Display Name (Mother, Father, ect.)'
+                    ]
                 ]
             ]
         ];

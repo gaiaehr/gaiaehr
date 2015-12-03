@@ -44,6 +44,9 @@ class problems
     public static function Structure()
     {
         return [
+            'Problems' => [
+
+            ]
         ];
     }
 

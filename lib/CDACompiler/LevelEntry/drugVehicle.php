@@ -45,10 +45,12 @@ class drugVehicle
     public static function Structure()
     {
         return [
-            'code' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
-            'displayName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
-            'codeSystemName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
-            'Narrated' => 'This playingEntity/name MAY be used for the vehicle name in text, such as Normal Saline (CONF:10087)'
+            'DrugVehicle' => [
+                'code' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+                'displayName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+                'codeSystemName' => 'This playingEntity SHALL contain exactly one [1..1] code (CONF:7493)',
+                'Narrated' => 'This playingEntity/name MAY be used for the vehicle name in text, such as Normal Saline (CONF:10087)'
+            ]
         ];
     }
 

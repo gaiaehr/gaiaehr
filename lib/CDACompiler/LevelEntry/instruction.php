@@ -51,11 +51,13 @@ class instruction
     public static function Structure()
     {
         return [
-            'code' => 'SHOULD be selected from ValueSet Problem Value Set',
-            'codeSystemName' => 'SHOULD be selected from ValueSet Problem Value Set',
-            'displayName' => 'SHOULD be selected from ValueSet Problem Value Set',
-            'Narrated' => [
-                'text' => 'SHOULD contain zero or one [0..1] text (CONF:7395)'
+            'Instruction' => [
+                'code' => 'SHOULD be selected from ValueSet Problem Value Set',
+                'codeSystemName' => 'SHOULD be selected from ValueSet Problem Value Set',
+                'displayName' => 'SHOULD be selected from ValueSet Problem Value Set',
+                'Narrated' => [
+                    'text' => 'SHOULD contain zero or one [0..1] text (CONF:7395)'
+                ]
             ]
         ];
     }

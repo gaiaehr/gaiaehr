@@ -49,11 +49,11 @@ class functionalStatusOrganizer
     public static function Structure()
     {
         return [
-            'Authors' => LevelDocument\author::Structure(),
-
-            'FunctionalStatusObservation' => functionalStatusObservation::Structure(),
-
-            'SelfCareActivities_ADL_IADL' => selfCareActivities_ADL_IADL::Structure()
+            'FunctionalStatusOrganizer' => [
+                LevelDocument\author::Structure(),
+                functionalStatusObservation::Structure(),
+                selfCareActivities_ADL_IADL::Structure()
+            ]
         ];
     }
 

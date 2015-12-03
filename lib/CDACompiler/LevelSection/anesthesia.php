@@ -45,6 +45,9 @@ class anesthesia
     public static function Structure()
     {
         return [
+            'Anesthesia' => [
+
+            ]
         ];
     }
 

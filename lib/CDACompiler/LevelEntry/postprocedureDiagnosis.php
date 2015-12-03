@@ -49,8 +49,8 @@ class postprocedureDiagnosis
     public static function Structure()
     {
         return [
-            'act' => [
-                'ProblemObservation' => problemObservation::Structure()
+            'PostprocedureDiagnosis' => [
+                problemObservation::Structure()
             ]
         ];
     }

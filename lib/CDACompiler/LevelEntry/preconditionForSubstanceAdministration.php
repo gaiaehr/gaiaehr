@@ -52,7 +52,7 @@ class preconditionForSubstanceAdministration
     public static function Structure()
     {
         return [
-            'precondition' => [
+            'PreconditionForSubstanceAdministration' => [
                 'text' => 'MAY contain zero or one [0..1] text',
                 'code' => 'SHALL be selected from ValueSet Problem Value Set',
                 'codeSystem' => 'SHALL be selected from ValueSet Problem Value Set',

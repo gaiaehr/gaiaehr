@@ -48,11 +48,13 @@ class physicianOfRecordParticipant
     public static function Structure()
     {
         return [
-            'npi' => 'SHALL contain exactly one [1..1] National Provider Identifier',
-            'dicomCode' => 'SHALL contain a valid DICOM Organizational Role from DICOM CID 7452  (Value Set 1.2.840.10008.6.1.516)(@codeSystem is 1.2.840.10008.2.16.4) or an appropriate national health care provider coding system (e.g., NUCC in the U.S., where @codeSystem is 2.16.840.1.113883.6.101)Footnote: DICOM Part 16 (NEMA PS3.16), page 631 in the 2011 edition. See ftp://medical.nema.org/medical/dicom/2011/11_16pu.pdf',
-            'dicomCodeSystemName' => 'SHALL contain a valid DICOM Organizational Role from DICOM CID 7452  (Value Set 1.2.840.10008.6.1.516)(@codeSystem is 1.2.840.10008.2.16.4) or an appropriate national health care provider coding system (e.g., NUCC in the U.S., where @codeSystem is 2.16.840.1.113883.6.101)Footnote: DICOM Part 16 (NEMA PS3.16), page 631 in the 2011 edition. See ftp://medical.nema.org/medical/dicom/2011/11_16pu.pdf',
-            'dicomDisplayName' => 'SHALL contain a valid DICOM Organizational Role from DICOM CID 7452  (Value Set 1.2.840.10008.6.1.516)(@codeSystem is 1.2.840.10008.2.16.4) or an appropriate national health care provider coding system (e.g., NUCC in the U.S., where @codeSystem is 2.16.840.1.113883.6.101)Footnote: DICOM Part 16 (NEMA PS3.16), page 631 in the 2011 edition. See ftp://medical.nema.org/medical/dicom/2011/11_16pu.pdf',
-            'assignedPerson' => LevelOther\usRealmPersonNamePNUSFIELDED::Structure()
+            'PhysicianOfRecordParticipant' => [
+                'npi' => 'SHALL contain exactly one [1..1] National Provider Identifier',
+                'dicomCode' => 'SHALL contain a valid DICOM Organizational Role from DICOM CID 7452  (Value Set 1.2.840.10008.6.1.516)(@codeSystem is 1.2.840.10008.2.16.4) or an appropriate national health care provider coding system (e.g., NUCC in the U.S., where @codeSystem is 2.16.840.1.113883.6.101)Footnote: DICOM Part 16 (NEMA PS3.16), page 631 in the 2011 edition. See ftp://medical.nema.org/medical/dicom/2011/11_16pu.pdf',
+                'dicomCodeSystemName' => 'SHALL contain a valid DICOM Organizational Role from DICOM CID 7452  (Value Set 1.2.840.10008.6.1.516)(@codeSystem is 1.2.840.10008.2.16.4) or an appropriate national health care provider coding system (e.g., NUCC in the U.S., where @codeSystem is 2.16.840.1.113883.6.101)Footnote: DICOM Part 16 (NEMA PS3.16), page 631 in the 2011 edition. See ftp://medical.nema.org/medical/dicom/2011/11_16pu.pdf',
+                'dicomDisplayName' => 'SHALL contain a valid DICOM Organizational Role from DICOM CID 7452  (Value Set 1.2.840.10008.6.1.516)(@codeSystem is 1.2.840.10008.2.16.4) or an appropriate national health care provider coding system (e.g., NUCC in the U.S., where @codeSystem is 2.16.840.1.113883.6.101)Footnote: DICOM Part 16 (NEMA PS3.16), page 631 in the 2011 edition. See ftp://medical.nema.org/medical/dicom/2011/11_16pu.pdf',
+                LevelOther\usRealmPersonNamePNUSFIELDED::Structure()
+            ]
         ];
     }
 

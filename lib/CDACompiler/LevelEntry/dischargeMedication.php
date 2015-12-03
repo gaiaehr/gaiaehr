@@ -42,7 +42,10 @@ class dischargeMedication
     public static function Structure()
     {
         return [
-            'MedicationActivity' => medicationActivity::Structure()
+            'DischargeMedication' => [
+                medicationActivity::Structure()
+            ]
+
         ];
     }
 

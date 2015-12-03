@@ -42,6 +42,9 @@ class procedureSpecimensTaken
     public static function Structure()
     {
         return [
+            'ProcedureSpecimensTaken' => [
+
+            ]
         ];
     }
 

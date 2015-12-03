@@ -50,7 +50,7 @@ class patientReferralAct
     public static function Structure()
     {
         return [
-            'act' => [
+            'PatientReferralAct' => [
                 'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
                 'Author' => LevelOther\authorParticipation::Structure(),
                 'DocumentReferenceClinicalReasonReferral' => actReference::Structure(),

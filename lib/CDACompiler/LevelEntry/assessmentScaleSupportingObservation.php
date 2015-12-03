@@ -43,9 +43,11 @@ class assessmentScaleSupportingObservation
     private static function Structure()
     {
         return [
-            'code' => 'SHALL contain exactly one [1..1] code',
-            'displayName' => 'SHALL contain exactly one [1..1] code',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code'
+            'AssessmentScaleSupportingObservation' => [
+                'code' => 'SHALL contain exactly one [1..1] code',
+                'displayName' => 'SHALL contain exactly one [1..1] code',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code'
+            ]
         ];
     }
 

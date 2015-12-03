@@ -42,6 +42,9 @@ class generalStatus
     public static function Structure()
     {
         return [
+            'GeneralStatus' => [
+
+            ]
         ];
     }
 

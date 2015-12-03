@@ -46,17 +46,19 @@ class drugMonitoringAct
     public static function Structure()
     {
         return [
-            'effectiveTime_from' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:31922)',
-            'effectiveTime_to' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:31922)',
-            'name' => [
-                'prefix' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'prefixQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'given' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'givenQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'family' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'familyQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'name' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
-                'prefixQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)'
+            'DrugMonitoringAct' => [
+                'effectiveTime_from' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:31922)',
+                'effectiveTime_to' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:31922)',
+                'name' => [
+                    'prefix' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'prefixQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'given' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'givenQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'family' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'familyQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'name' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)',
+                    'prefixQualifier' => 'This participantRole SHALL contain exactly one [1..1] playingEntity (CONF:28667)'
+                ]
             ]
         ];
     }

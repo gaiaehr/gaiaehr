@@ -47,8 +47,10 @@ class advanceDirectiveOrganizer
     public static function Structure()
     {
         return [
-            'effectiveTime' => '',
-            'AdvanceDirectiveObservation' => advanceDirectiveObservation::Structure()
+            'AdvanceDirectiveOrganizer' => [
+                'effectiveTime' => '',
+                advanceDirectiveObservation::Structure()
+            ]
         ];
     }
 

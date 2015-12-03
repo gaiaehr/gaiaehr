@@ -88,13 +88,13 @@ class problemConcernActCondition
     public static function Structure()
     {
         return [
-            'act' => [
+            'ProblemConcernActCondition' => [
                 'statusCode' => 'This statusCode SHALL contain exactly one [1..1] @code, which SHALL be selected from ValueSet ProblemAct statusCode',
                 'start_effectiveTime' => 'This effectiveTime SHALL contain exactly one [1..1] low (CONF:9032). Note: The effectiveTime/low asserts when the concern became active. This equates to the time the concern was authored in the patient\'s chart.',
                 'end_effectiveTime' => 'This effectiveTime MAY contain zero or one [0..1] high (CONF:9033). Note: The effectiveTime/high asserts when the concern was completed (e.g. when the clinician deemed there is no longer any need to track the underlying condition)',
-                'ProblemObservation' => problemObservation::Structure(),
-                'Author' => LevelOther\authorParticipation::Structure(),
-                'ProviderPriorityPreference' => providerPriorityPreference::Structure()
+                problemObservation::Structure(),
+                LevelOther\authorParticipation::Structure(),
+                providerPriorityPreference::Structure()
             ]
         ];
     }

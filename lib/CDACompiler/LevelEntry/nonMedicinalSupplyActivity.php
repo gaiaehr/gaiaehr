@@ -22,7 +22,7 @@ use Exception;
  * Class advanceDirectiveOrganizer
  * @package LevelEntry
  */
-class medicationDispense
+class nonMedicinalSupplyActivity
 {
     /**
      * @param $PortionData
@@ -49,12 +49,12 @@ class medicationDispense
     public static function Structure()
     {
         return [
-            'supply' => [
+            'NonMedicinalSupplyActivity' => [
                 'statusCode' => 'SHALL contain exactly one [1..1] statusCode',
                 'effectiveTime' => 'SHOULD contain zero or one [0..1] effectiveTime',
                 'quantity' => 'SHOULD contain zero or one [0..1] quantity',
-                'ProductInstance' => productInstance::Structure(),
-                'Instruction' => instruction::Structure()
+                productInstance::Structure(),
+                instruction::Structure()
             ]
         ];
     }

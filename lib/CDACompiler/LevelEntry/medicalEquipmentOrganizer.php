@@ -54,11 +54,13 @@ class medicalEquipmentOrganizer
     public static function Structure()
     {
         return [
-            'code' => 'This code SHOULD contain zero or one [0..1] @code (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96)',
-            'codeSystemName' => 'This code SHOULD contain zero or one [0..1] @code (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96)',
-            'displayName' => 'This code SHOULD contain zero or one [0..1] @code (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96)',
-            'NonMedicinalSupplyActivity' => nonMedicinalSupplyActivity::Structure(),
-            'ProcedureActivityProcedure' => procedureActivityProcedure::Structure()
+            'MedicalEquipmentOrganizer' => [
+                'code' => 'This code SHOULD contain zero or one [0..1] @code (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96)',
+                'codeSystemName' => 'This code SHOULD contain zero or one [0..1] @code (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96)',
+                'displayName' => 'This code SHOULD contain zero or one [0..1] @code (CodeSystem: SNOMED CT 2.16.840.1.113883.6.96)',
+                nonMedicinalSupplyActivity::Structure(),
+                procedureActivityProcedure::Structure()
+            ]
         ];
     }
 

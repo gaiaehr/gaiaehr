@@ -58,11 +58,13 @@ class nutritionAssessment
     public static function Structure()
     {
         return [
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
-            'code' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Assessment',
-            'displayName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Assessment',
-            'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Assessment',
-            'Author' => LevelOther\authorParticipation::Structure()
+            'NutritionAssessment' => [
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
+                'code' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Assessment',
+                'displayName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Assessment',
+                'codeSystemName' => 'SHALL contain exactly one [1..1] code, which SHOULD be selected from ValueSet Nutrition Assessment',
+                LevelOther\authorParticipation::Structure()
+            ]
         ];
     }
 

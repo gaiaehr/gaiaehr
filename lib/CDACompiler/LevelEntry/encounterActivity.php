@@ -45,25 +45,16 @@ class encounterActivity
     public static function Structure()
     {
         return [
-
-            'code' => 'SHOULD contain zero or one [0..1] code, which SHOULD be selected from
-            ValueSet EncounterTypeCode 2.16.840.1.113883.3.88.12.80.32 DYNAMIC (CONF:8714)',
-
-            'displayName' => 'SHOULD contain zero or one [0..1] code, which SHOULD be selected from
-            ValueSet EncounterTypeCode 2.16.840.1.113883.3.88.12.80.32 DYNAMIC (CONF:8714)',
-
-            'systemCodeName' => 'SHOULD contain zero or one [0..1] code, which SHOULD be selected from
-            ValueSet EncounterTypeCode 2.16.840.1.113883.3.88.12.80.32 DYNAMIC (CONF:8714)',
-
-            'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:8715)',
-
-            'Narrated' => 'SHOULD contain zero or one [0..1] originalText (CONF:8719)',
-
-            'performer' => LevelDocument\performer::Structure(),
-
-            'Indication' => indication::Structure(),
-
-            'EncounterDiagnosis' => encounterDiagnosis::Structure()
+            'encounterActivity' => [
+                'code' => 'SHOULD contain zero or one [0..1] code, which SHOULD be selected from ValueSet EncounterTypeCode 2.16.840.1.113883.3.88.12.80.32 DYNAMIC',
+                'displayName' => 'SHOULD contain zero or one [0..1] code, which SHOULD be selected from ValueSet EncounterTypeCode 2.16.840.1.113883.3.88.12.80.32 DYNAMIC',
+                'systemCodeName' => 'SHOULD contain zero or one [0..1] code, which SHOULD be selected from ValueSet EncounterTypeCode 2.16.840.1.113883.3.88.12.80.32 DYNAMIC',
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime (CONF:8715)',
+                'Narrated' => 'SHOULD contain zero or one [0..1] originalText (CONF:8719)',
+                LevelDocument\performer::Structure(),
+                indication::Structure(),
+                encounterDiagnosis::Structure()
+            ]
         ];
     }
 

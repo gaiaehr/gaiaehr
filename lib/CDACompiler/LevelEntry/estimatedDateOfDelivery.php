@@ -41,7 +41,9 @@ class estimatedDateOfDelivery
     public static function Structure()
     {
         return [
-            'anticipatedDate' => 'SHALL contain exactly one [1..1] value with @xsi:type="TS" (CONF:450)'
+            'EstimatedDateOfDelivery' => [
+                'anticipatedDate' => 'SHALL contain exactly one [1..1] value with @xsi:type="TS"'
+            ]
         ];
     }
 

@@ -48,6 +48,9 @@ class socialHistory
     public static function Structure()
     {
         return [
+            'SocialHistory' => [
+
+            ]
         ];
     }
 

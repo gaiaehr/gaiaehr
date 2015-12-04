@@ -55,7 +55,7 @@ class assessmentScaleSupportingObservation
      * Build the Narrative part of this section
      * @param $Data
      */
-    public static function Narrative($Data){
+    public static function Narrative($PortionData){
 
     }
 

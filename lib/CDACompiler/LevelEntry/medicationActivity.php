@@ -84,9 +84,17 @@ class medicationActivity
                 'routeCodeSystemName' => 'Route Code System Name',
                 'routeDisplayName' => 'Route Display Name',
                 'doseQuantity' => 'SHOULD contain zero or one [0..1] doseQuantity (CONF:7516).',
-                'medicationInformation' => medicationInformation::Structure()
+                medicationInformation::Structure()
             ]
         ];
+    }
+
+    /**
+     * Build the Narrative part of this section
+     * @param $PortionData
+     */
+    public static function Narrative($PortionData){
+
     }
 
     /**
@@ -157,14 +165,6 @@ class medicationActivity
         {
             return $Error;
         }
-    }
-
-    /**
-     * Build the Narrative part of this section
-     * @param $Data
-     */
-    public static function Narrative($Data){
-
     }
 
 }

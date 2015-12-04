@@ -76,7 +76,7 @@ class allergyIntoleranceObservation
      * @param $PortionData
      * @return array
      */
-    public static function Structure($PortionData)
+    public static function Structure()
     {
         return [
             'AllergyIntoleranceObservation' => [

@@ -43,7 +43,7 @@ class quantityMeasurementObservation
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData){
 

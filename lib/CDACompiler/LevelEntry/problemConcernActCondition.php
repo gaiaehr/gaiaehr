@@ -168,7 +168,7 @@ class problemConcernActCondition
             {
                 foreach($PortionData['ProblemObservation'] as $ProblemObservation)
                 {
-                    $Entry['supply']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'SUBJ'
                         ],
@@ -186,7 +186,7 @@ class problemConcernActCondition
             {
                 foreach($PortionData['ProblemObservation'] as $ProviderPriorityPreference)
                 {
-                    $Entry['supply']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'SUBJ'
                         ],

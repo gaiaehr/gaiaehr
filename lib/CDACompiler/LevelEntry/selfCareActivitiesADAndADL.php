@@ -52,7 +52,7 @@ class selfCareActivitiesADLAndIADL
      */
     public static function Narrative($PortionData)
     {
-        
+
     }
 
     /**

@@ -11,73 +11,79 @@ class Utilities
      */
     public static function CodingSystemId($system)
     {
+        $system = strtoupper($system);
         switch($system)
         {
             case 'CPT-4':
+            case 'CPT 4':
                 return '2.16.840.1.113883.6.12';
                 break;
             case 'ICD-10':
+            case 'ICD 10':
                 return '2.16.840.1.113883.6.6';
                 break;
             case 'SNOMED-CT':
+            case 'SNOMED CT':
                 return '2.16.840.1.113883.6.96';
                 break;
-            case 'ActCode':
+            case 'ACTCODE':
                 return '2.16.840.1.113883.5.4';
                 break;
-            case 'Confidentiality':
+            case 'CONFIDENTIALITY':
                 return '2.16.840.1.113883.5.25';
                 break;
-            case 'Language':
+            case 'LANGUAGE':
                 return '2.16.840.1.113883.1.11.11526';
                 break;
             case 'LOINC':
                 return '2.16.840.1.113883.6.1';
                 break;
-            case 'SocialSecurityNumber':
+            case 'SOCIALSECURITYNUMBER':
                 return '2.16.840.1.113883.4.1';
                 break;
-            case 'AdministrativeGender':
+            case 'ADMINISTRATIVEGENDER':
                 return '2.16.840.1.113883.5.1';
                 break;
-            case 'MaritalStatusCode':
+            case 'MARITALSTATUSCODE':
                 return '2.16.840.1.113883.5.2';
                 break;
-            case 'HL7 Religious Affiliation':
+            case 'HL7 RELIGIOUS AFFILIATION':
+            case 'HL7RELIGIOUSAFFILIATION':
                 return '2.16.840.1.113883.5.1076';
                 break;
-            case 'Race & Ethnicity - CDC':
+            case 'RACE & ETHNICITY - CDC':
+            case 'RACE AND ETHNICITY - CDC':
                 return '2.16.840.1.113883.6.238';
                 break;
-            case 'ResponsibleParty':
+            case 'RESPONSIBLEPARTY':
                 return '2.16.840.1.113883.1.11.19830';
                 break;
-            case 'LanguageAbilityMode':
+            case 'LANGUAGEABILITYMODE':
                 return '2.16.840.1.113883.5.60';
                 break;
-            case 'LanguageAbilityProficiency':
+            case 'LANGUAGEABILITYPROFICIENCY':
                 return '2.16.840.1.113883.5.61';
                 break;
-            case 'Religious Affiliation':
+            case 'RELIGIOUSAFILIATION':
                 return '2.16.840.1.113883.1.11.19185';
-                break;
-            case 'LanguageAbilityMode':
-                return '2.16.840.1.113883.1.11.12249';
                 break;
             case 'NUCC':
                 return '2.16.840.1.113883.6.101';
                 break;
-            case 'PersonalAndLegalRelationshipRole':
+            case 'PERSONALANDLEGALRELATIONSHIPROLE':
                 return '2.16.840.1.113883.5.111';
                 break;
-            case 'ParticipationFunction':
+            case 'PARTICIPATIONFUNCTION':
                 return '2.16.840.1.113883.5.88';
                 break;
-            case 'Taxonomy':
+            case 'TAXONOMY':
                 return '2.16.840.1.113883.4.6';
                 break;
             case 'DCMUID':
                 return '1.2.840.10008.2.6.1';
+                break;
+            case 'DCM':
+                return '1.2.840.10008.2.16.4';
                 break;
         }
     }

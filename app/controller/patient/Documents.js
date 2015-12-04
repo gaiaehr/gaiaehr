@@ -112,7 +112,7 @@ Ext.define('App.controller.patient.Documents', {
 		});
 
 		me.nav = this.getController('Navigation');
-		this.initDocumentDnD();
+		//this.initDocumentDnD();
 	},
 
 	setDocumentInError: function(document_record){

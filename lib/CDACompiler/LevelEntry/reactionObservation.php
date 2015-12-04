@@ -38,7 +38,7 @@ class reactionObservation
             throw new Exception('SHALL be selected from ValueSet Problem Value Set');
         if(!isset($PortionData['problemCodeSystemName']))
             throw new Exception('SHALL be selected from ValueSet Problem Value Set');
-        if(!isset($PortionData['problemDisplayName']) < 1)
+        if(!isset($PortionData['problemDisplayName']))
             throw new Exception('SHALL be selected from ValueSet Problem Value Set');
     }
 

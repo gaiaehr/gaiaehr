@@ -30,10 +30,10 @@ class vitalSignsOrganizer {
      * @param $Data
      * @throws Exception
      */
-    public static function Validate($Data)
+    public static function Validate($PortionData)
     {
-        if(!isset($Data['effectiveTime']))
-            throw new Exception('MAY contain zero or one [0..1] effectiveTime');
+        if(count($PortionData['VitalSignObservation']) < 1)
+            throw new Exception('SHALL contain exactly one [1..1] Vital Sign Observation (V2)');
     }
 
     /**
@@ -43,8 +43,7 @@ class vitalSignsOrganizer {
      */
     public static function Narrative($PortionData)
     {
-        if(count($PortionData['VitalSignObservation']) < 1)
-            throw new Exception('SHALL contain exactly one [1..1] Vital Sign Observation (V2)');
+
     }
 
     public static function Structure(){
@@ -69,7 +68,7 @@ class vitalSignsOrganizer {
             self::Validate($PortionData);
 
             // Compose the segment
-            $Section['organizer'] = [
+            $Entry = [
                 'organizer' => [
                     '@attributes' => [
                         'classCode' => 'CLUSTER',
@@ -115,7 +114,7 @@ class vitalSignsOrganizer {
                 }
             }
 
-            return $Section;
+            return $Entry;
         }
         catch(Exception $Error)
         {

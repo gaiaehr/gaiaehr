@@ -1,10 +1,14 @@
 <?php
 /**
- * Class Vital Sign Observation
  * 5.65 Vital Sign Observation
+ * This template provides a mechanism for grouping vital signs (e.g. grouping systolic blood
+ * pressure and diastolic blood pressure).
  *
  *
- * Example:
+ * Contains:
+ * Author Participation (NEW)
+ * Vital Sign Observation (V2)
+ *
  */
 
 namespace LevelEntry;
@@ -36,7 +40,13 @@ class vitalSignObservation {
     public static function Structure(){
         return [
             'VitalSignObservation' => [
-
+                'effectiveTime' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
+                'code' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
+                'codeSystemName' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
+                'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',
+                'displayName' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
+                'values' => 'SHALL contain exactly one [1..1] @unit, which SHALL be selected from CodeSystem UCUM',
+                'unit' => 'SHALL contain exactly one [1..1] @unit, which SHALL be selected from CodeSystem UCUM'
             ]
         ];
     }
@@ -49,14 +59,46 @@ class vitalSignObservation {
     public function insert($PortionData, $CompleteData)
     {
         try{
-            // Compose the segment
-            $Section = array(
-                '@attributes' => array(
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                )
-            );
-            return $Section;
+            $Entry = [
+                'observation' => [
+                    '@attributes' => [
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.85.2'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'displayName' => $PortionData['displayName'],
+                            'codeSystemName' => $PortionData['codeSystemName']
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'PQ',
+                            'value' => $PortionData['values'],
+                            'unit' => $PortionData['unit']
+                        ]
+                    ]
+                ]
+            ];
+
+            // SHOULD contain zero or more [0..*] Author Participation (NEW)
+            if(count($PortionData['Author']) > 0)
+            {
+                foreach ($PortionData['Author'] as $Author)
+                {
+                    $Entry['observation']['author'][] = LevelOther\authorParticipation::Insert(
+                        $Author,
+                        $CompleteData
+                    );
+                }
+            }
+
+            return $Entry;
         }
         catch(Exception $Error)
         {

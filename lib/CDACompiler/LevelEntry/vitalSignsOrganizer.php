@@ -1,7 +1,6 @@
 <?php
 
 /**
- * Class Vital Signs Organizer
  * 5.66 Vital Signs Organizer
  *
  * The Vital Signs Organizer groups vital signs, which is similar to the Result Organizer,
@@ -10,21 +9,8 @@
  * An appropriate nullFlavor can be used when a single result observation is contained in
  * the organizer, and organizer/code or organizer/id is unknown.
  *
- * Example:
- *   <organizer classCode="CLUSTER" moodCode="EVN">
- *      <templateId root="2.16.840.1.113883.10.20.22.4.26"/>
- *      <!-- Vital signs organizer template -->
- *      <id root="c6f88320-67ad-11db-bd13-0800200c9a66"/>
- *      <code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Vital signs"/>
- *      <statusCode code="completed"/>
- *      <effectiveTime value="19991114"/>
- *      <component>
- *          <observation classCode="OBS" moodCode="EVN">
- *              <templateId root="2.16.840.1.113883.10.20.22.4.27"/>
- *              ...
- *          </observation>
- *      </component>
- *  </observation>
+ * Contains:
+ *
  */
 
 namespace LevelEntry;
@@ -46,10 +32,8 @@ class vitalSignsOrganizer {
      */
     public static function Validate($Data)
     {
-        if(!isset($Data['VitalSign_Status']))
-            throw new Exception('VitalSign_Status: Shall be declared.', '5.66_1');
-        if(!isset($Data['VitalSign_DateTime']))
-            throw new Exception('VitalSign_DateTime: Shall be declared.', '5.66_2');
+        if(!isset($Data['effectiveTime']))
+            throw new Exception('MAY contain zero or one [0..1] effectiveTime');
     }
 
     /**
@@ -81,35 +65,52 @@ class vitalSignsOrganizer {
 
             // Compose the segment
             $Section['organizer'] = [
-                '@attributes' => [
-                    'classCode' => 'CLUSTER',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => [
+                'organizer' => [
                     '@attributes' => [
-                        'root' => '2.16.840.1.113883.10.20.22.4.26'
-                    ]
-                ],
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
-                    '@attributes' => [
-                        'code' => '46680005',
-                        'codeSystem' => '2.16.840.1.113883.6.96',
-                        'codeSystemName' => 'SNOMED CT',
-                        'displayName' => 'Vital signs'
-                    ]
-                ],
-                'statusCode' => [
-                    '@attributes' => [
-                        'code' => $PortionData['VitalSigns']['code']
-                    ]
-                ],
-                'effectiveTime' => [
-                    '@attributes' => [
-                        'value' => $PortionData['VitalSigns']['date']
-                    ]
+                        'classCode' => 'CLUSTER',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.26.2'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '46680005',
+                            'codeSystem' => '2.16.840.1.113883.6.96',
+                            'codeSystemName' => 'SNOMED CT',
+                            'displayName' => 'Vital signs'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime'])
                 ]
             ];
+
+            // SHOULD contain zero or more [0..*] Author Participation (NEW)
+            if(count($PortionData['Author']) > 0)
+            {
+                foreach ($PortionData['Author'] as $Author)
+                {
+                    $Entry['organizer']['author'][] = LevelOther\authorParticipation::Insert(
+                        $Author,
+                        $CompleteData
+                    );
+                }
+            }
+
+
+            // SHALL contain at least one [1..*] entryRelationship
+            // SHALL contain exactly one [1..1] Vital Sign Observation (V2)
+            if(count($PortionData['VitalSignObservation']) > 0)
+            {
+                foreach ($PortionData['VitalSignObservation'] as $VitalSignObservation)
+                {
+                    $Entry['organizer']['entryRelationship'][] = vitalSignObservation::Insert(
+                        $VitalSignObservation,
+                        $CompleteData
+                    );
+                }
+            }
+
             return $Section;
         }
         catch(Exception $Error)

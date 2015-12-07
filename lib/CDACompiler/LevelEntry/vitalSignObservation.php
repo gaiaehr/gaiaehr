@@ -26,7 +26,18 @@ class vitalSignObservation {
 
     public function Validate($PortionData)
     {
-
+        if(!isset($PortionData['code']))
+            throw new Exception('SHOULD be selected from ValueSet Vital Sign Result Value Set');
+        if(!isset($PortionData['codeSystemName']))
+            throw new Exception('SHOULD be selected from ValueSet Vital Sign Result Value Set');
+        if(!isset($PortionData['displayName']))
+            throw new Exception('SHOULD be selected from ValueSet Vital Sign Result Value Set');
+        if(!isset($PortionData['effectiveTime']))
+            throw new Exception('SHOULD be selected from ValueSet Vital Sign Result Value Set');
+        if(!isset($PortionData['values']))
+            throw new Exception('SHALL contain exactly one [1..1] @unit, which SHALL be selected from CodeSystem UCUM');
+        if(!isset($PortionData['unit']))
+            throw new Exception('SHALL contain exactly one [1..1] @unit, which SHALL be selected from CodeSystem UCUM');
     }
 
     /**
@@ -40,7 +51,6 @@ class vitalSignObservation {
     public static function Structure(){
         return [
             'VitalSignObservation' => [
-                'effectiveTime' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
                 'code' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
                 'codeSystemName' => 'SHOULD be selected from ValueSet Vital Sign Result Value Set',
                 'effectiveTime' => 'SHALL contain exactly one [1..1] effectiveTime',

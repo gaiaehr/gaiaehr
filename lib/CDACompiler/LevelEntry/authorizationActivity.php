@@ -53,6 +53,15 @@ class authorizationActivity
     }
 
     /**
+     * Build the Narrative part of this section
+     * @param $PortionData
+     */
+    public static function Narrative($PortionData)
+    {
+
+    }
+
+    /**
      * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
@@ -103,13 +112,4 @@ class authorizationActivity
             return $Error;
         }
     }
-
-    /**
-     * Build the Narrative part of this section
-     * @param $Data
-     */
-    public static function Narrative($Data){
-
-    }
-
 }

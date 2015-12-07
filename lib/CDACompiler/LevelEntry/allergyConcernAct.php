@@ -41,16 +41,15 @@ class allergyConcernAct
     /**
      * @param $Data
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
-     * @param $PortionData
      * @return array
      */
-    public static function Structure($PortionData)
+    public static function Structure()
     {
         return [
             'AllergyConcernAct' => [

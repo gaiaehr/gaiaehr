@@ -29,7 +29,8 @@ class admissionMedication
      */
     private static function Validate($PortionData)
     {
-
+        if(count($PortionData['MedicationActivity']) < 1)
+            throw new Exception('SHALL contain exactly one [1..1] Medication Activity (V2)');
     }
 
     public static function Structure()
@@ -43,9 +44,9 @@ class admissionMedication
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }

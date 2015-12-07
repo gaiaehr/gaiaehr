@@ -39,15 +39,20 @@ class vitalSignsOrganizer {
     /**
      * Build the Narrative part of this section
      * @param $PortionData
+     * @throws Exception
      */
-    public static function Narrative($PortionData){
-
+    public static function Narrative($PortionData)
+    {
+        if(count($PortionData['VitalSignObservation']) < 1)
+            throw new Exception('SHALL contain exactly one [1..1] Vital Sign Observation (V2)');
     }
 
     public static function Structure(){
         return [
             'VitalSignsOrganizer' => [
-
+                'effectiveTime' => 'MAY contain zero or one [0..1] effectiveTime',
+                LevelOther\authorParticipation::Structure(),
+                vitalSignObservation::Structure()
             ]
         ];
     }
@@ -96,7 +101,6 @@ class vitalSignsOrganizer {
                     );
                 }
             }
-
 
             // SHALL contain at least one [1..*] entryRelationship
             // SHALL contain exactly one [1..1] Vital Sign Observation (V2)

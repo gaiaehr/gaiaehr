@@ -62,7 +62,7 @@ class severityObservation
     public static function Structure()
     {
         return [
-            'SeriesAct' => [
+            'SeverityObservation' => [
                 'Narrated' => 'SHOULD contain zero or one [0..1] text',
                 'severityCode' => 'SHALL be selected from ValueSet Problem Severity',
                 'severityCodeSystemName' => 'SHALL be selected from ValueSet Problem Severity',

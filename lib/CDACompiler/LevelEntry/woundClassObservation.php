@@ -62,7 +62,7 @@ class woundClassObservation {
      * @param $CompleteData
      * @return array|\Exception|Exception
      */
-    public static function insert($PortionData, $CompleteData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try{
             // Validate first

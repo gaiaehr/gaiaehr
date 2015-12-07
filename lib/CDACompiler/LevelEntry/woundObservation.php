@@ -147,7 +147,7 @@ class woundObservation {
             {
                 foreach ($PortionData['WoundMeasurementObservation'] as $WoundMeasurementObservation)
                 {
-                    $Entry['act']['entryRelationship'][] = woundMeasurementObservation::Insert(
+                    $Entry['observation']['entryRelationship'][] = woundMeasurementObservation::Insert(
                         $WoundMeasurementObservation,
                         $CompleteData
                     );
@@ -160,7 +160,7 @@ class woundObservation {
             {
                 foreach ($PortionData['WoundCharacteristics'] as $WoundCharacteristics)
                 {
-                    $Entry['act']['entryRelationship'][] = woundCharacteristics::Insert(
+                    $Entry['observation']['entryRelationship'][] = woundCharacteristics::Insert(
                         $WoundCharacteristics,
                         $CompleteData
                     );
@@ -173,7 +173,7 @@ class woundObservation {
             {
                 foreach ($PortionData['NumberOfPressureUlcersObservation'] as $NumberOfPressureUlcersObservation)
                 {
-                    $Entry['act']['entryRelationship'][] = numberOfPressureUlcersObservation::Insert(
+                    $Entry['observation']['entryRelationship'][] = numberOfPressureUlcersObservation::Insert(
                         $NumberOfPressureUlcersObservation,
                         $CompleteData
                     );
@@ -186,7 +186,7 @@ class woundObservation {
             {
                 foreach ($PortionData['HighestPressureUlcerStage'] as $HighestPressureUlcerStage)
                 {
-                    $Entry['act']['entryRelationship'][] = highestPressureUlcerStage::Insert(
+                    $Entry['observation']['entryRelationship'][] = highestPressureUlcerStage::Insert(
                         $HighestPressureUlcerStage,
                         $CompleteData
                     );

@@ -78,30 +78,31 @@ class highestPressureUlcerStage
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.77'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
+                'observation ' => [
                     '@attributes' => [
-                        'code' => '420905001',
-                        'codeSystem' => '2.16.840.1.113883.6.96',
-                        'displayName' => 'Highest Pressure Ulcer Stage'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['code'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'displayName' => $PortionData['displayName']
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.77'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '420905001',
+                            'codeSystem' => '2.16.840.1.113883.6.96',
+                            'displayName' => 'Highest Pressure Ulcer Stage'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'displayName' => $PortionData['displayName']
+                        ]
                     ]
                 ]
-
             ];
 
             return $Entry;

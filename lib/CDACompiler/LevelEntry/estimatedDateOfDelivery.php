@@ -69,27 +69,29 @@ class estimatedDateOfDelivery
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.15.3.1'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => '11778-8',
-                        'displayName' => 'Estimated date of delivery',
-                        'codeSystem' => '2.16.840.1.113883.6.1',
-                        'codeSystemName' => 'LOINC'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'TS'
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
                     ],
-                    '@value' => $PortionData['anticipatedDate']
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.15.3.1'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '11778-8',
+                            'displayName' => 'Estimated date of delivery',
+                            'codeSystem' => '2.16.840.1.113883.6.1',
+                            'codeSystemName' => 'LOINC'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'TS'
+                        ],
+                        '@value' => $PortionData['anticipatedDate']
 
+                    ]
                 ]
             ];
 

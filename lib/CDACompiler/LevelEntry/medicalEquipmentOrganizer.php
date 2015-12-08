@@ -86,21 +86,23 @@ class medicalEquipmentOrganizer
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'CLUSTER',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.135'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
+                'organizer' => [
                     '@attributes' => [
-                        'code' => $PortionData['code'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'displayName' => $PortionData['displayName']
-                    ]
-                ],
-                'statusCode' => Component::statusCode('active')
+                        'classCode' => 'CLUSTER',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.135'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'displayName' => $PortionData['displayName']
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('active')
+                ]
             ];
 
             // MAY contain zero or more [0..*] entryRelationship
@@ -109,12 +111,10 @@ class medicalEquipmentOrganizer
             {
                 foreach($PortionData['NonMedicinalSupplyActivity'] as $NonMedicinalSupplyActivity)
                 {
-                    $Entry['component'][] = [
-                        'supply' => nonMedicinalSupplyActivity::Insert(
-                            $NonMedicinalSupplyActivity,
-                            $CompleteData
-                        )
-                    ];
+                    $Entry['organizer']['component'][] = nonMedicinalSupplyActivity::Insert(
+                        $NonMedicinalSupplyActivity,
+                        $CompleteData
+                    );
                 }
             }
 
@@ -124,12 +124,10 @@ class medicalEquipmentOrganizer
             {
                 foreach($PortionData['ProcedureActivityProcedure'] as $ProcedureActivityProcedure)
                 {
-                    $Entry['component'][] = [
-                        'procedure' => procedureActivityProcedure::Insert(
-                            $ProcedureActivityProcedure,
-                            $CompleteData
-                        )
-                    ];
+                    $Entry['organizer']['component'][] = procedureActivityProcedure::Insert(
+                        $ProcedureActivityProcedure,
+                        $CompleteData
+                    );
                 }
             }
 

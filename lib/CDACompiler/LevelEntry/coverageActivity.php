@@ -32,10 +32,8 @@ class coverageActivity
      */
     private static function Validate($PortionData)
     {
-        if(count($PortionData['PolicyActivity']) < 1){
-            throw new Exception ('SHALL contain exactly one [1..1] Policy Activity (V2)
-            (templateId:2.16.840.1.113883.10.20.22.4.61.2) (CONF:15528).');
-        }
+        if(count($PortionData['PolicyActivity']) < 1)
+            throw new Exception ('SHALL contain exactly one [1..1] Policy Activity (V2) (templateId:2.16.840.1.113883.10.20.22.4.61.2) (CONF:15528).');
     }
 
     /**
@@ -90,9 +88,11 @@ class coverageActivity
             ];
 
             // SHALL contain at least one [1..*] entryRelationship (CONF:8878)
-            if (count($PortionData['PolicyActivity']) > 0) {
-                foreach ($PortionData['PolicyActivity'] as $PolicyActivity) {
-                    $Entry['entryRelationship'][] = policyActivity::Insert(
+            if (count($PortionData['PolicyActivity']) > 0)
+            {
+                foreach ($PortionData['PolicyActivity'] as $PolicyActivity)
+                {
+                    $Entry['act']['entryRelationship'][] = policyActivity::Insert(
                         $PolicyActivity,
                         $CompleteData
                     );

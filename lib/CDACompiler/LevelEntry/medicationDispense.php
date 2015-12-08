@@ -66,22 +66,24 @@ class medicationDispense
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'SPLY',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.18.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'statusCode' => [
+                'supply' => [
                     '@attributes' => [
-                        'code' => $PortionData['statusCode']
-                    ]
-                ],
-                'effectiveTime' => Component::time($PortionData['effectiveTime']),
-                'repeatNumber' => $PortionData['repeatNumber'],
-                'quantity' => [
-                    '@attributes' => [
-                        'value' => $PortionData['quantity']
+                        'classCode' => 'SPLY',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.18.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'statusCode' => [
+                        '@attributes' => [
+                            'code' => $PortionData['statusCode']
+                        ]
+                    ],
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'repeatNumber' => $PortionData['repeatNumber'],
+                    'quantity' => [
+                        '@attributes' => [
+                            'value' => $PortionData['quantity']
+                        ]
                     ]
                 ]
             ];
@@ -89,23 +91,19 @@ class medicationDispense
             // SHOULD contain zero or one [0..1] quantity
             // SHALL contain exactly one [1..1] Medication Information (V2)
             if(count($PortionData['MedicationInformation']) > 0){
-                $Entry['product'] = [
-                    'manufacturedProduct'=> medicationInformation::Insert(
-                        $PortionData['MedicationInformation'][0],
-                        $CompleteData
-                    )
-                ];
+                $Entry['supply']['product'] = medicationInformation::Insert(
+                    $PortionData['MedicationInformation'][0],
+                    $CompleteData
+                );
             }
 
             // SHOULD contain zero or one [0..1] quantity
             // SHALL contain exactly one [1..1] Immunization Medication Information (V2)
             if(count($PortionData['ImmunizationMedicationInformation']) > 0){
-                $Entry['product'] = [
-                    'manufacturedProduct'=> immunizationMedicationInformation::Insert(
-                        $PortionData['ImmunizationMedicationInformation'][0],
-                        $CompleteData
-                    )
-                ];
+                $Entry['supply']['product'] = immunizationMedicationInformation::Insert(
+                    $PortionData['ImmunizationMedicationInformation'][0],
+                    $CompleteData
+                );
             }
 
             // MAY contain zero or more [0..*] entryRelationship
@@ -114,11 +112,11 @@ class medicationDispense
             {
                 foreach($PortionData['MedicationSupplyOrder'] as $MedicationSupplyOrder)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['supply']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'supply' => medicationSupplyOrder::Insert(
+                        medicationSupplyOrder::Insert(
                             $MedicationSupplyOrder,
                             $CompleteData
                         )

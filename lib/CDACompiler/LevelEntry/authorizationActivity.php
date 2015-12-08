@@ -34,7 +34,6 @@ class authorizationActivity
      */
     private static function Validate($PortionData)
     {
-        // SHALL contain at least one [1..*] entryRelationship
         if(count($PortionData['Relationships']) < 0)
             throw new Exception ('SHALL contain at least one [1..*] entryRelationship');
     }

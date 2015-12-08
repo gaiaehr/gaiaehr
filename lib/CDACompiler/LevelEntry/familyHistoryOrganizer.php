@@ -84,23 +84,25 @@ class familyHistoryOrganizer
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'CLUSTER',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.45'),
-                'statusCode' => Component::statusCode('completed'),
-                'subject' => [
-                    'relatedSubject' => [
-                        '@attributes' => [
-                            'classCode' => 'PRS'
-                        ],
-                        'code' => [
+                'organizer' => [
+                    '@attributes' => [
+                        'classCode' => 'CLUSTER',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.45'),
+                    'statusCode' => Component::statusCode('completed'),
+                    'subject' => [
+                        'relatedSubject' => [
                             '@attributes' => [
-                                'code' => $PortionData['familyMemberCode'],
-                                'displayName' => $PortionData['familyMemberDisplayName'],
-                                'codeSystem' => Utilities::CodingSystemId($PortionData['familyMemberCodeSystemName']),
-                                'codeSystemName' => $PortionData['familyMemberCodeSystemName']
+                                'classCode' => 'PRS'
+                            ],
+                            'code' => [
+                                '@attributes' => [
+                                    'code' => $PortionData['familyMemberCode'],
+                                    'displayName' => $PortionData['familyMemberDisplayName'],
+                                    'codeSystem' => Utilities::CodingSystemId($PortionData['familyMemberCodeSystemName']),
+                                    'codeSystemName' => $PortionData['familyMemberCodeSystemName']
+                                ]
                             ]
                         ]
                     ]
@@ -109,7 +111,7 @@ class familyHistoryOrganizer
 
             // This relatedSubject SHOULD contain zero or one [0..1] subject (CONF:15248)
             if(isset($PortionData['subject'])){
-                $Entry['subject'] = [
+                $Entry['organizer']['subject'] = [
                     'administrativeGenderCode' => [
                         '@attributes' => [
                             'code' => $PortionData['genderCode']
@@ -126,7 +128,7 @@ class familyHistoryOrganizer
             if(count($PortionData['FamilyHistoryObservation']) > 0)
             {
                 foreach($PortionData['FamilyHistoryObservation'] as $Observation)
-                $Entry['component'] = [
+                $Entry['organizer']['component'] = [
                     'observation' => familyHistoryObservation::Insert(
                         $Observation,
                         $CompleteData

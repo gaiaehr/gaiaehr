@@ -116,7 +116,7 @@ class cognitiveStatusObservation
             // SHOULD contain zero or more [0..*] Author Participation (NEW)
             if (count($PortionData['Authors']) > 0) {
                 foreach ($PortionData['Authors'] as $Author) {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                    $Entry['observation']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );
@@ -126,7 +126,7 @@ class cognitiveStatusObservation
             // MAY contain zero or more [0..*] entryRelationship (CONF:14272) such that it
             // SHALL contain exactly one [1..1] Non-Medicinal Supply Activity (V2)
             if (count($PortionData['NonMedicinalSupplyActivity']) > 0)
-                $Entry['entryRelationship'][] = nonMedicinalSupplyActivity::Insert(
+                $Entry['observation']['entryRelationship'][] = nonMedicinalSupplyActivity::Insert(
                     $PortionData['NonMedicinalSupplyActivity'],
                     $CompleteData
                 );
@@ -134,7 +134,7 @@ class cognitiveStatusObservation
             // MAY contain zero or more [0..*] entryRelationship (CONF:14272) such that it
             // SHALL contain exactly one [1..1] Caregiver Characteristics
             if (count($PortionData['CaregiverCharacteristics']) > 0)
-                $Entry['entryRelationship'][] = caregiverCharacteristics::Insert(
+                $Entry['observation']['entryRelationship'][] = caregiverCharacteristics::Insert(
                     $PortionData['CaregiverCharacteristics'],
                     $CompleteData
                 );
@@ -142,7 +142,7 @@ class cognitiveStatusObservation
             // MAY contain zero or more [0..*] entryRelationship (CONF:14272) such that it
             // b.	SHALL contain exactly one [1..1] Assessment Scale Observation
             if (count($PortionData['AssessmentScaleObservation']) > 0)
-                $Entry['entryRelationship'][] = assessmentScaleObservation::Insert(
+                $Entry['observation']['entryRelationship'][] = assessmentScaleObservation::Insert(
                     $PortionData['AssessmentScaleObservation'],
                     $CompleteData
                 );

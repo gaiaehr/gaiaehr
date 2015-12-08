@@ -78,27 +78,29 @@ class mentalStatusObservation
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.125'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
-                    'xsi:type' => 'CD',
-                    'code' => '285231000',
-                    'displayName' => 'Mental Function',
-                    'codeSystem' => '2.16.840.1.113883.6.96',
-                    'codeSystemName' => 'SNOMED CT'
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime']),
-                'value' => [
-                    'xsi:type' => 'CD',
-                    'code' => $PortionData['code'],
-                    'displayName' => $PortionData['displayName'],
-                    'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                    'codeSystemName' => $PortionData['codeSystemName']
+                'observation' => [
+                    '@attributes' => [
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.125'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        'xsi:type' => 'CD',
+                        'code' => '285231000',
+                        'displayName' => 'Mental Function',
+                        'codeSystem' => '2.16.840.1.113883.6.96',
+                        'codeSystemName' => 'SNOMED CT'
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'value' => [
+                        'xsi:type' => 'CD',
+                        'code' => $PortionData['code'],
+                        'displayName' => $PortionData['displayName'],
+                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                        'codeSystemName' => $PortionData['codeSystemName']
+                    ]
                 ]
             ];
 
@@ -107,7 +109,7 @@ class mentalStatusObservation
             {
                 foreach ($PortionData['Author'] as $Author)
                 {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                    $Entry['observation']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );
@@ -120,7 +122,7 @@ class mentalStatusObservation
             {
                 foreach($PortionData['AssessmentScaleObservation'] as $AssessmentScaleObservation)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['observation']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],

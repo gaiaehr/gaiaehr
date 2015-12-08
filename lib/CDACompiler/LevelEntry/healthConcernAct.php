@@ -147,23 +147,25 @@ class healthConcernAct
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.132'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => 'CONC',
-                        'displayName' => 'handoff communication (procedure)',
-                        'codeSystem' => '2.16.840.1.113883.5.6',
-                        'codeSystemName' => 'HL7ActClass',
-                        'displayName' => 'Concern'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('active'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                        'classCode' => 'ACT',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.132'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => 'CONC',
+                            'displayName' => 'handoff communication (procedure)',
+                            'codeSystem' => '2.16.840.1.113883.5.6',
+                            'codeSystemName' => 'HL7ActClass',
+                            'displayName' => 'Concern'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('active'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                ]
             ];
 
             // SHOULD contain zero or more [0..*] Author Participation (NEW)
@@ -171,7 +173,7 @@ class healthConcernAct
             {
                 foreach($PortionData['Author'] as $Author)
                 {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                    $Entry['act']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );
@@ -184,11 +186,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ProblemObservation'] as $ProblemObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => problemObservation::Insert(
+                        problemObservation::Insert(
                             $ProblemObservation,
                             $CompleteData
                         )
@@ -202,11 +204,11 @@ class healthConcernAct
             {
                 foreach($PortionData['AllergyIntoleranceObservation'] as $AllergyIntoleranceObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => allergyIntoleranceObservation::Insert(
+                        allergyIntoleranceObservation::Insert(
                             $AllergyIntoleranceObservation,
                             $CompleteData
                         )
@@ -220,11 +222,11 @@ class healthConcernAct
             {
                 foreach($PortionData['AssessmentScaleObservation'] as $AssessmentScaleObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => assessmentScaleObservation::Insert(
+                        assessmentScaleObservation::Insert(
                             $AssessmentScaleObservation,
                             $CompleteData
                         )
@@ -238,11 +240,11 @@ class healthConcernAct
             {
                 foreach($PortionData['SelfCareActivitiesADLAndIADL'] as $SelfCareActivitiesADLAndIADL)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => selfCareActivitiesADLAndIADL::Insert(
+                        selfCareActivitiesADLAndIADL::Insert(
                             $SelfCareActivitiesADLAndIADL,
                             $CompleteData
                         )
@@ -256,11 +258,11 @@ class healthConcernAct
             {
                 foreach($PortionData['CognitiveAbilitiesObservation'] as $CognitiveAbilitiesObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => cognitiveAbilitiesObservation::Insert(
+                        cognitiveAbilitiesObservation::Insert(
                             $CognitiveAbilitiesObservation,
                             $CompleteData
                         )
@@ -274,11 +276,11 @@ class healthConcernAct
             {
                 foreach($PortionData['CognitiveStatusObservation'] as $CognitiveStatusObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => cognitiveStatusObservation::Insert(
+                        cognitiveStatusObservation::Insert(
                             $CognitiveStatusObservation,
                             $CompleteData
                         )
@@ -310,11 +312,11 @@ class healthConcernAct
             {
                 foreach($PortionData['EncounterDiagnosis'] as $EncounterDiagnosis)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => encounterDiagnosis::Insert(
+                        encounterDiagnosis::Insert(
                             $EncounterDiagnosis,
                             $CompleteData
                         )
@@ -328,11 +330,11 @@ class healthConcernAct
             {
                 foreach($PortionData['FamilyHistoryOrganizer'] as $FamilyHistoryOrganizer)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => familyHistoryOrganizer::Insert(
+                        familyHistoryOrganizer::Insert(
                             $FamilyHistoryOrganizer,
                             $CompleteData
                         )
@@ -346,11 +348,11 @@ class healthConcernAct
             {
                 foreach($PortionData['FunctionalStatusObservation'] as $FunctionalStatusObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => functionalStatusObservation::Insert(
+                        functionalStatusObservation::Insert(
                             $FunctionalStatusObservation,
                             $CompleteData
                         )
@@ -364,11 +366,11 @@ class healthConcernAct
             {
                 foreach($PortionData['HospitalAdmissionDiagnosis'] as $HospitalAdmissionDiagnosis)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => hospitalAdmissionDiagnosis::Insert(
+                        hospitalAdmissionDiagnosis::Insert(
                             $HospitalAdmissionDiagnosis,
                             $CompleteData
                         )
@@ -382,11 +384,11 @@ class healthConcernAct
             {
                 foreach($PortionData['MentalStatusObservation'] as $MentalStatusObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => mentalStatusObservation::Insert(
+                        mentalStatusObservation::Insert(
                             $MentalStatusObservation,
                             $CompleteData
                         )
@@ -400,11 +402,11 @@ class healthConcernAct
             {
                 foreach($PortionData['NutritionAssessment'] as $NutritionAssessment)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => nutritionAssessment::Insert(
+                        nutritionAssessment::Insert(
                             $NutritionAssessment,
                             $CompleteData
                         )
@@ -418,11 +420,11 @@ class healthConcernAct
             {
                 foreach($PortionData['PostprocedureDiagnosis'] as $PostprocedureDiagnosis)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => postprocedureDiagnosis::Insert(
+                        postprocedureDiagnosis::Insert(
                             $PostprocedureDiagnosis,
                             $CompleteData
                         )
@@ -436,11 +438,11 @@ class healthConcernAct
             {
                 foreach($PortionData['PregnancyObservation'] as $PregnancyObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => pregnancyObservation::Insert(
+                        pregnancyObservation::Insert(
                             $PregnancyObservation,
                             $CompleteData
                         )
@@ -454,11 +456,11 @@ class healthConcernAct
             {
                 foreach($PortionData['PreoperativeDiagnosis'] as $PreoperativeDiagnosis)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => preoperativeDiagnosis::Insert(
+                        preoperativeDiagnosis::Insert(
                             $PreoperativeDiagnosis,
                             $CompleteData
                         )
@@ -472,11 +474,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ReactionObservation'] as $ReactionObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => reactionObservation::Insert(
+                        reactionObservation::Insert(
                             $ReactionObservation,
                             $CompleteData
                         )
@@ -490,11 +492,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ResultObservation'] as $ResultObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => resultObservation::Insert(
+                        resultObservation::Insert(
                             $ResultObservation,
                             $CompleteData
                         )
@@ -508,11 +510,11 @@ class healthConcernAct
             {
                 foreach($PortionData['SensoryAndSpeechStatus'] as $SensoryAndSpeechStatus)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => sensoryAndSpeechStatus::Insert(
+                        sensoryAndSpeechStatus::Insert(
                             $SensoryAndSpeechStatus,
                             $CompleteData
                         )
@@ -526,11 +528,11 @@ class healthConcernAct
             {
                 foreach($PortionData['SocialHistoryObservation'] as $SocialHistoryObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => socialHistoryObservation::Insert(
+                        socialHistoryObservation::Insert(
                             $SocialHistoryObservation,
                             $CompleteData
                         )
@@ -544,11 +546,11 @@ class healthConcernAct
             {
                 foreach($PortionData['SubstanceOrDeviceAllergyIntoleranceObservation'] as $SubstanceOrDeviceAllergyIntoleranceObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => substanceOrDeviceAllergyIntoleranceObservation::Insert(
+                        substanceOrDeviceAllergyIntoleranceObservation::Insert(
                             $SubstanceOrDeviceAllergyIntoleranceObservation,
                             $CompleteData
                         )
@@ -562,11 +564,11 @@ class healthConcernAct
             {
                 foreach($PortionData['TobaccoUse'] as $TobaccoUse)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => tobaccoUse::Insert(
+                        tobaccoUse::Insert(
                             $TobaccoUse,
                             $CompleteData
                         )
@@ -580,11 +582,11 @@ class healthConcernAct
             {
                 foreach($PortionData['VitalSignObservation'] as $VitalSignObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => vitalSignObservation::Insert(
+                        vitalSignObservation::Insert(
                             $VitalSignObservation,
                             $CompleteData
                         )
@@ -598,11 +600,11 @@ class healthConcernAct
             {
                 foreach($PortionData['WoundObservation'] as $WoundObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => woundObservation::Insert(
+                        woundObservation::Insert(
                             $WoundObservation,
                             $CompleteData
                         )
@@ -616,11 +618,11 @@ class healthConcernAct
             {
                 foreach($PortionData['CaregiverCharacteristics'] as $CaregiverCharacteristics)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => caregiverCharacteristics::Insert(
+                        caregiverCharacteristics::Insert(
                             $CaregiverCharacteristics,
                             $CompleteData
                         )
@@ -634,11 +636,11 @@ class healthConcernAct
             {
                 foreach($PortionData['CulturalAndReligiousObservation'] as $CulturalAndReligiousObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => culturalAndReligiousObservation::Insert(
+                        culturalAndReligiousObservation::Insert(
                             $CulturalAndReligiousObservation,
                             $CompleteData
                         )
@@ -652,11 +654,11 @@ class healthConcernAct
             {
                 foreach($PortionData['CharacteristicsOfHomeEnvironment'] as $CharacteristicsOfHomeEnvironment)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => characteristicsOfHomeEnvironment::Insert(
+                        characteristicsOfHomeEnvironment::Insert(
                             $CharacteristicsOfHomeEnvironment,
                             $CompleteData
                         )
@@ -670,11 +672,11 @@ class healthConcernAct
             {
                 foreach($PortionData['NutritionalStatusObservation'] as $NutritionalStatusObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => nutritionalStatusObservation::Insert(
+                        nutritionalStatusObservation::Insert(
                             $NutritionalStatusObservation,
                             $CompleteData
                         )
@@ -688,11 +690,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ResultOrganizer'] as $ResultOrganizer)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => resultOrganizer::Insert(
+                        resultOrganizer::Insert(
                             $ResultOrganizer,
                             $CompleteData
                         )
@@ -706,11 +708,11 @@ class healthConcernAct
             {
                 foreach($PortionData['PatientPriorityPreference'] as $PatientPriorityPreference)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => patientPriorityPreference::Insert(
+                        patientPriorityPreference::Insert(
                             $PatientPriorityPreference,
                             $CompleteData
                         )
@@ -724,11 +726,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ProviderPriorityPreference'] as $ProviderPriorityPreference)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => providerPriorityPreference::Insert(
+                        providerPriorityPreference::Insert(
                             $ProviderPriorityPreference,
                             $CompleteData
                         )
@@ -742,11 +744,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ProblemConcernActCondition'] as $ProblemConcernActCondition)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => problemConcernActCondition::Insert(
+                        problemConcernActCondition::Insert(
                             $ProblemConcernActCondition,
                             $CompleteData
                         )
@@ -760,11 +762,11 @@ class healthConcernAct
             {
                 foreach($PortionData['ActReference'] as $ActReference)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => actReference::Insert(
+                        actReference::Insert(
                             $ActReference,
                             $CompleteData
                         )

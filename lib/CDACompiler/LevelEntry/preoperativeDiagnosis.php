@@ -90,7 +90,7 @@ class preoperativeDiagnosis
             {
                 foreach($PortionData['ProblemObservation'] as $ProblemObservation)
                 {
-                    $Entry['supply']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'SUBJ'
                         ],

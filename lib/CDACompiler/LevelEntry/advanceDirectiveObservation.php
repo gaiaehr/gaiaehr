@@ -38,7 +38,7 @@ class advanceDirectiveObservation
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
     private static function Validate($PortionData)
     {
@@ -47,7 +47,7 @@ class advanceDirectiveObservation
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData)
     {

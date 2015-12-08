@@ -34,13 +34,9 @@ class ageObservation
     private static function Validate($PortionData)
     {
         if(!isset($PortionData['age']))
-        {
             throw new Exception('contain exactly one [1..1] age');
-        }
         if(!isset($PortionData['unit']))
-        {
             throw new Exception('contain exactly one [1..1] unit');
-        }
     }
 
     /**

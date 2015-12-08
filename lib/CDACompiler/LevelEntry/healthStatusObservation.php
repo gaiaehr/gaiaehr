@@ -79,38 +79,39 @@ class healthStatusObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.5'),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => '11323-3',
-                        'displayName' => 'handoff communication (procedure)',
-                        'codeSystem' => '2.16.840.1.113883.6.1',
-                        'codeSystemName' => 'LOINC',
-                        'displayName' => 'Health status'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'text' => [
-                    'reference' => [
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.5'),
+                    'code' => [
                         '@attributes' => [
-                            'value' => self::Narrative($PortionData)
+                            'code' => '11323-3',
+                            'displayName' => 'handoff communication (procedure)',
+                            'codeSystem' => '2.16.840.1.113883.6.1',
+                            'codeSystemName' => 'LOINC',
+                            'displayName' => 'Health status'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'text' => [
+                        'reference' => [
+                            '@attributes' => [
+                                'value' => self::Narrative($PortionData)
+                            ]
+                        ]
+                    ],
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'displayName' => $PortionData['displayName']
                         ]
                     ]
-                ],
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['code'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'displayName' => $PortionData['displayName']
-                    ]
                 ]
-
             ];
 
             return $Entry;

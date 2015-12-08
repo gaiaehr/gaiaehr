@@ -29,10 +29,8 @@ class caregiverCharacteristics
      */
     private static function Validate($PortionData)
     {
-        if(!isset($PortionData['statusCode'])){
+        if(!isset($PortionData['statusCode']))
             throw new Exception ('SHALL contain exactly one [1..1] statusCode (CONF:14233).');
-        }
-        // SHALL contain at least one [1..*] participant (CONF:14227).
         if(count($PortionData['Participant']) < 0)
             throw new Exception ('SHALL contain at least one [1..*] participant (CONF:14227).');
     }
@@ -74,30 +72,32 @@ class caregiverCharacteristics
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.72'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'statusCode' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => $PortionData['statusCode']
-                    ]
-                ],
-                'code' => [
-                    '@attributes' => [
-                        'code' => 'ASSERTION',
-                        'codeSystem' => '2.16.840.1.113883.5.4'
-                    ]
-                ],
-                'value' => [
-                    'xsi:type' => 'CD',
-                    'code' => '422615001',
-                    'codeSystem' => '2.16.840.1.113883.6.96',
-                    'displayName' => 'caregiver difficulty providing physical care'
-                ],
-                'participant' => self::participant($PortionData['Participant'])
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.72'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'statusCode' => [
+                        '@attributes' => [
+                            'code' => $PortionData['statusCode']
+                        ]
+                    ],
+                    'code' => [
+                        '@attributes' => [
+                            'code' => 'ASSERTION',
+                            'codeSystem' => '2.16.840.1.113883.5.4'
+                        ]
+                    ],
+                    'value' => [
+                        'xsi:type' => 'CD',
+                        'code' => '422615001',
+                        'codeSystem' => '2.16.840.1.113883.6.96',
+                        'displayName' => 'caregiver difficulty providing physical care'
+                    ],
+                    'participant' => self::participant($PortionData['Participant'])
+                ]
             ];
 
             return $Entry;
@@ -108,14 +108,14 @@ class caregiverCharacteristics
         }
     }
 
-    /**
-     * 8. SHALL contain at least one [1..*] participant (CONF:14227).
-     */
+
+    // SHALL contain at least one [1..*] participant (CONF:14227).
+    // Such participants SHALL contain exactly one [1..1] participantRole
     function participant($Participant)
     {
         foreach ($Participant as $Value)
         {
-            $Entry[] = [
+            $Entry['observation']['participant'][] = [
                 '@attributes' => [
                     'typeCode' => 'IND'
                 ],

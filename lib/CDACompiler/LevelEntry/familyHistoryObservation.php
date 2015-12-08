@@ -90,31 +90,32 @@ class familyHistoryObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.46'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => $PortionData['problemTypeCode'],
-                        'displayName' => $PortionData['problemTypeDisplayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['problemTypeCodeSystemName']),
-                        'codeSystemName' => $PortionData['problemTypeCodeSystemName']
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.46'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['problemTypeCode'],
+                            'displayName' => $PortionData['problemTypeDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['problemTypeCodeSystemName']),
+                            'codeSystemName' => $PortionData['problemTypeCodeSystemName']
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['problemValueCode'],
+                            'displayName' => $PortionData['problemValueDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['problemValueCodeSystemName']),
+                            'codeSystemName' => $PortionData['problemValueCodeSystemName']
+                        ]
                     ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime']),
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['problemValueCode'],
-                        'displayName' => $PortionData['problemValueDisplayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['problemValueCodeSystemName']),
-                        'codeSystemName' => $PortionData['problemValueCodeSystemName']
-                    ]
-
                 ]
             ];
 
@@ -122,7 +123,7 @@ class familyHistoryObservation
             // SHALL contain exactly one [1..1] Age Observation
             if(count($PortionData['AgeObservation']) > 0)
             {
-                $Entry['entryRelationship'][] = [
+                $Entry['observation']['entryRelationship'][] = [
                     '@attributes' => [
                         'typeCode' => 'SUBJ',
                         'inversionInd' => 'true'
@@ -138,7 +139,7 @@ class familyHistoryObservation
             // SHALL contain exactly one [1..1] Family History Death Observation
             if(count($PortionData['FamilyHistoryDeathObservation']) > 0)
             {
-                $Entry['entryRelationship'][] = [
+                $Entry['observation']['entryRelationship'][] = [
                     '@attributes' => [
                         'typeCode' => 'CAUS'
                     ],

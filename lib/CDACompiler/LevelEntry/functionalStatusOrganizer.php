@@ -34,12 +34,10 @@ class functionalStatusOrganizer
     private static function Validate($PortionData)
     {
         if(count($PortionData['FunctionalStatusObservation']) < 1)
-            throw new Exception('SHALL contain exactly one [1..1] Functional Status Observation (V2)
-            (templateId:2.16.840.1.113883.10.20.22.4.67.2) (CONF:14368)');
+            throw new Exception('SHALL contain exactly one [1..1] Functional Status Observation (V2)');
 
         if(count($PortionData['SelfCareActivities_ADL_IADL']) < 1)
-            throw new Exception('SHALL contain exactly one [1..1] Self-Care Activities (ADL and IADL) (NEW)
-            (templateId:2.16.840.1.113883.10.20.22.4.128) (CONF:31433)');
+            throw new Exception('SHALL contain exactly one [1..1] Self-Care Activities (ADL and IADL) (NEW)');
     }
 
     /**
@@ -52,7 +50,7 @@ class functionalStatusOrganizer
             'FunctionalStatusOrganizer' => [
                 LevelDocument\author::Structure(),
                 functionalStatusObservation::Structure(),
-                selfCareActivities_ADL_IADL::Structure()
+                selfCareActivitiesADLIADL::Structure()
             ]
         ];
     }
@@ -79,21 +77,23 @@ class functionalStatusOrganizer
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'CLUSTER',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.66.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'organizer' => [
                     '@attributes' => [
-                        'code' => 'd5',
-                        'displayName' => 'Self-Care',
-                        'codeSystem' => '2.16.840.1.113883.6.254',
-                        'codeSystemName' => 'ICF'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed')
+                        'classCode' => 'CLUSTER',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.66.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => 'd5',
+                            'displayName' => 'Self-Care',
+                            'codeSystem' => '2.16.840.1.113883.6.254',
+                            'codeSystemName' => 'ICF'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed')
+                ]
             ];
 
             // SHOULD contain zero or more [0..*] Author Participation (NEW)
@@ -102,7 +102,7 @@ class functionalStatusOrganizer
             {
                 foreach($PortionData['Authors'] as $Author)
                 {
-                    $Entry['author'][] = LevelDocument\author::Insert($Author);
+                    $Entry['organizer']['author'][] = LevelDocument\author::Insert($Author);
                 }
             }
 
@@ -113,12 +113,10 @@ class functionalStatusOrganizer
             {
                 foreach($PortionData['FunctionalStatusObservation'] as $FunctionalStatusObservation)
                 {
-                    $Entry['component'][] = [
-                        'observation' => functionalStatusObservation::Insert(
-                                $FunctionalStatusObservation,
-                                $CompleteData
-                        )
-                    ];
+                    $Entry['organizer']['component'][] = functionalStatusObservation::Insert(
+                        $FunctionalStatusObservation,
+                        $CompleteData
+                    );
                 }
             }
 
@@ -129,12 +127,10 @@ class functionalStatusOrganizer
             {
                 foreach($PortionData['SelfCareActivities_ADL_IADL'] as $SelfCareActivities_ADL_IADL)
                 {
-                    $Entry['component'][] = [
-                        'observation' => selfCareActivities_ADL_IADL::Insert(
-                            $SelfCareActivities_ADL_IADL,
-                            $CompleteData
-                        )
-                    ];
+                    $Entry['organizer']['component'][] = selfCareActivitiesADLAndIADL::Insert(
+                        $SelfCareActivities_ADL_IADL,
+                        $CompleteData
+                    );
                 }
             }
 

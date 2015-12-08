@@ -73,41 +73,35 @@ class encounterDiagnosis
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.80.2'),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => '29308-4',
-                        'displayName' => 'DIAGNOSIS',
-                        'codeSystem' => '2.16.840.1.113883.6.1',
-                        'codeSystemName' => 'LOINC'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('active'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                        'classCode' => 'ACT',
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.80.2'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '29308-4',
+                            'displayName' => 'DIAGNOSIS',
+                            'codeSystem' => '2.16.840.1.113883.6.1',
+                            'codeSystemName' => 'LOINC'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('active'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                ]
             ];
 
 
+            // SHALL contain at least one [1..*] entryRelationship (CONF:14892)
+            // SHALL contain exactly one [1..1] Problem Observation (V2)
             if(count($PortionData['ProblemObservation']) > 0)
             {
                 foreach($PortionData['ProblemObservation'] as $Observation)
                 {
-                    $Entry['entryRelationship'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'SUBJ'
-                        ],
-                        'observation' => [
-                            '@attributes' => [
-                                'classCode' => 'OBS',
-                                'moodCode' => 'ENV'
-                            ],
-                            'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.4.2'),
-                            'act' => problemObservation::Insert($Observation)
-                        ]
-                    ];
+                    $Entry['act']['entryRelationship'][] = problemObservation::Insert(
+                        $Observation,
+                        $CompleteData
+                    );
                 }
             }
 

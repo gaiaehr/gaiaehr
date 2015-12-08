@@ -30,10 +30,8 @@ class cognitiveStatusOrganizer
      */
     private static function Validate($PortionData)
     {
-        if(count($PortionData['CognitiveStatusObservation']) < 1){
-            throw new Exception ('SHALL contain exactly one [1..1]
-            Cognitive Status Observation (V2) (templateId:2.16.840.1.113883.10.20.22.4.74.2) (CONF:14381)');
-        }
+        if(count($PortionData['CognitiveStatusObservation']) < 1)
+            throw new Exception ('SHALL contain exactly one [1..1] Cognitive Status Observation (V2) (templateId:2.16.840.1.113883.10.20.22.4.74.2) (CONF:14381)');
     }
 
     /**
@@ -89,7 +87,7 @@ class cognitiveStatusOrganizer
 
             // SHALL contain at least one [1..*] component (CONF:14373)
             if (count($PortionData['CognitiveStatusObservation']) > 0)
-                $Entry['component'][] = cognitiveStatusObservation::Insert(
+                $Entry['organizer']['component'][] = cognitiveStatusObservation::Insert(
                     $PortionData['CognitiveStatusObservation'],
                     $CompleteData
                 );

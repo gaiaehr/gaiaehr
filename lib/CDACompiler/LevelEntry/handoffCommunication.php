@@ -85,31 +85,33 @@ class handoffCommunication
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.141'),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => '432138007',
-                        'displayName' => 'handoff communication (procedure)',
-                        'codeSystem' => '2.16.840.1.113883.6.96',
-                        'codeSystemName' => 'SNOMED CT'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime']),
-                'author' => LevelDocument\author::Insert($PortionData['Author']),
-                'participant' => [
-                    '@attributes' => [
-                        'typeCode' => 'IRCP'
+                        'classCode' => 'ACT',
+                        'moodCode' => 'EVN'
                     ],
-                    'participantRole' => [
-                        'code' => $PortionData['participant']['taxonomyCode'],
-                        'codeSystem' => Utilities::CodingSystemId( $PortionData['participant']['taxonomyCodeSystemName'] ),
-                        'codeSystemName' => $PortionData['participant']['taxonomyCodeSystemName'],
-                        'displayName' => $PortionData['participant']['taxonomyDisplayName']
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.141'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '432138007',
+                            'displayName' => 'handoff communication (procedure)',
+                            'codeSystem' => '2.16.840.1.113883.6.96',
+                            'codeSystemName' => 'SNOMED CT'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'author' => LevelDocument\author::Insert($PortionData['Author']),
+                    'participant' => [
+                        '@attributes' => [
+                            'typeCode' => 'IRCP'
+                        ],
+                        'participantRole' => [
+                            'code' => $PortionData['participant']['taxonomyCode'],
+                            'codeSystem' => Utilities::CodingSystemId( $PortionData['participant']['taxonomyCodeSystemName'] ),
+                            'codeSystemName' => $PortionData['participant']['taxonomyCodeSystemName'],
+                            'displayName' => $PortionData['participant']['taxonomyDisplayName']
+                        ]
                     ]
                 ]
             ];

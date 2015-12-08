@@ -80,19 +80,21 @@ class immunizationRefusalReason
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.53'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
-                    'code' => $PortionData['code'],
-                    'displayName' => $PortionData['displayName'],
-                    'codeSystemName' => $PortionData['codeSystemName'],
-                    'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName'])
-                ],
-                'statusCode' => Component::statusCode('completed')
+                'observation' => [
+                    '@attributes' => [
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.53'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        'code' => $PortionData['code'],
+                        'displayName' => $PortionData['displayName'],
+                        'codeSystemName' => $PortionData['codeSystemName'],
+                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName'])
+                    ],
+                    'statusCode' => Component::statusCode('completed')
+                ]
             ];
 
             return $Entry;

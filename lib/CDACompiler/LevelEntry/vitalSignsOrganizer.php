@@ -27,7 +27,7 @@ use Exception;
 class vitalSignsOrganizer {
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
     public static function Validate($PortionData)

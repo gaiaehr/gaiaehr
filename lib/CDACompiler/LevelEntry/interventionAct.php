@@ -130,21 +130,23 @@ class interventionAct
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => $PortionData['moodCode']
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.131'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => $PortionData['code'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'displayName' => $PortionData['displayName']
-                    ]
-                ],
-                'statusCode' => Component::statusCode('active')
+                        'classCode' => 'ACT',
+                        'moodCode' => $PortionData['moodCode']
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.131'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'displayName' => $PortionData['displayName']
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('active')
+                ]
             ];
 
             // SHOULD contain zero or more [0..*] Author Participation (NEW)
@@ -152,7 +154,7 @@ class interventionAct
             {
                 foreach($PortionData['Author'] as $Author)
                 {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                    $Entry['act']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );
@@ -165,11 +167,11 @@ class interventionAct
             {
                 foreach($PortionData['AdvanceDirectiveObservation'] as $AdvanceDirectiveObservation)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => advanceDirectiveObservation::Insert(
+                        advanceDirectiveObservation::Insert(
                             $AdvanceDirectiveObservation,
                             $CompleteData
                         )
@@ -183,11 +185,11 @@ class interventionAct
             {
                 foreach($PortionData['MedicationActivity'] as $MedicationActivity)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'substanceAdministration' => medicationActivity::Insert(
+                        medicationActivity::Insert(
                             $MedicationActivity,
                             $CompleteData
                         )
@@ -201,11 +203,11 @@ class interventionAct
             {
                 foreach($PortionData['ProcedureActivityAct'] as $ProcedureActivityAct)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => procedureActivityAct::Insert(
+                        procedureActivityAct::Insert(
                             $ProcedureActivityAct,
                             $CompleteData
                         )
@@ -219,11 +221,11 @@ class interventionAct
             {
                 foreach($PortionData['GoalObservationAct'] as $GoalObservation)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'RSON'
                         ],
-                        'observation' => goalObservation::Insert(
+                        goalObservation::Insert(
                             $GoalObservation,
                             $CompleteData
                         )
@@ -237,11 +239,11 @@ class interventionAct
             {
                 foreach($PortionData['ProcedureActivityObservation'] as $ProcedureActivityObservation)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => procedureActivityObservation::Insert(
+                        procedureActivityObservation::Insert(
                             $ProcedureActivityObservation,
                             $CompleteData
                         )
@@ -255,11 +257,11 @@ class interventionAct
             {
                 foreach($PortionData['ProcedureActivityProcedure'] as $ProcedureActivityProcedure)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'procedure' => procedureActivityProcedure::Insert(
+                        procedureActivityProcedure::Insert(
                             $ProcedureActivityProcedure,
                             $CompleteData
                         )
@@ -273,11 +275,11 @@ class interventionAct
             {
                 foreach($PortionData['EncounterActivity'] as $EncounterActivity)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'encounter' => encounterActivity::Insert(
+                        encounterActivity::Insert(
                             $EncounterActivity,
                             $CompleteData
                         )
@@ -291,11 +293,11 @@ class interventionAct
             {
                 foreach($PortionData['Instruction'] as $Instruction)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'act' => instruction::Insert(
+                        instruction::Insert(
                             $Instruction,
                             $CompleteData
                         )
@@ -309,11 +311,11 @@ class interventionAct
             {
                 foreach($PortionData['NonMedicinalSupplyActivity'] as $NonMedicinalSupplyActivity)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'supply' => nonMedicinalSupplyActivity::Insert(
+                        nonMedicinalSupplyActivity::Insert(
                             $NonMedicinalSupplyActivity,
                             $CompleteData
                         )
@@ -327,11 +329,11 @@ class interventionAct
             {
                 foreach($PortionData['PlannedAct'] as $PlannedAct)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'act' => plannedAct::Insert(
+                        plannedAct::Insert(
                             $PlannedAct,
                             $CompleteData
                         )
@@ -345,11 +347,11 @@ class interventionAct
             {
                 foreach($PortionData['PlannedEncounter'] as $PlannedEncounter)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'encounter' => plannedEncounter::Insert(
+                        plannedEncounter::Insert(
                             $PlannedEncounter,
                             $CompleteData
                         )
@@ -363,11 +365,11 @@ class interventionAct
             {
                 foreach($PortionData['PlannedObservation'] as $PlannedObservation)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'observation' => plannedObservation::Insert(
+                        plannedObservation::Insert(
                             $PlannedObservation,
                             $CompleteData
                         )
@@ -381,11 +383,11 @@ class interventionAct
             {
                 foreach($PortionData['PlannedProcedure'] as $PlannedProcedure)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'procedure' => plannedProcedure::Insert(
+                        plannedProcedure::Insert(
                             $PlannedProcedure,
                             $CompleteData
                         )
@@ -399,11 +401,11 @@ class interventionAct
             {
                 foreach($PortionData['PlannedSubstanceAdministration'] as $PlannedSubstanceAdministration)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'substanceAdministration' => plannedSubstanceAdministration::Insert(
+                        plannedSubstanceAdministration::Insert(
                             $PlannedSubstanceAdministration,
                             $CompleteData
                         )
@@ -417,11 +419,11 @@ class interventionAct
             {
                 foreach($PortionData['PlannedSupply'] as $PlannedSupply)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'supply' => plannedSupply::Insert(
+                        plannedSupply::Insert(
                             $PlannedSupply,
                             $CompleteData
                         )
@@ -435,11 +437,11 @@ class interventionAct
             {
                 foreach($PortionData['NutritionRecommendations'] as $NutritionRecommendations)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'act' => nutritionRecommendations::Insert(
+                        nutritionRecommendations::Insert(
                             $NutritionRecommendations,
                             $CompleteData
                         )
@@ -453,11 +455,11 @@ class interventionAct
             {
                 foreach($PortionData['ActReference'] as $ActReference)
                 {
-                    $Entry['entryRelationship']['entry'][] = [
+                    $Entry['act']['entryRelationship']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'act' => actReference::Insert(
+                        actReference::Insert(
                             $ActReference,
                             $CompleteData
                         )

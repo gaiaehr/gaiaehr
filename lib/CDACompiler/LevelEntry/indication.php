@@ -84,26 +84,28 @@ class indication
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.19.2'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => 'ASSERTION',
-                        'codeSystem' => '2.16.840.1.113883.5.4'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['code'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'displayName' => $PortionData['displayName']
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.19.2'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => 'ASSERTION',
+                            'codeSystem' => '2.16.840.1.113883.5.4'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'displayName' => $PortionData['displayName']
+                        ]
                     ]
                 ]
             ];

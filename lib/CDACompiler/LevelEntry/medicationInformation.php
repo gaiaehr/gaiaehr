@@ -31,7 +31,7 @@ class medicationInformation
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
     private static function Validate($PortionData)
     {
@@ -40,7 +40,7 @@ class medicationInformation
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData)
     {
@@ -75,20 +75,25 @@ class medicationInformation
             self::Validate($PortionData);
 
             // Fill the structure
-            $Entry['manufacturedProduct'] = [
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.23.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'manufacturedMaterial' => [
-                    'code' => [
-                        'code' => $PortionData['code'],
-                        'displayName' => $PortionData['displayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName']
-                    ]
-                ],
-                'manufacturerOrganization' => [
-                    'name' => [
-                        'code' => $PortionData['manufacturer']
+            $Entry = [
+                'manufacturedProduct' => [
+                    '@attributes' => [
+                        'classCode' => 'MANU'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.23.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'manufacturedMaterial' => [
+                        'code' => [
+                            'code' => $PortionData['code'],
+                            'displayName' => $PortionData['displayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName']
+                        ]
+                    ],
+                    'manufacturerOrganization' => [
+                        'name' => [
+                            'code' => $PortionData['manufacturer']
+                        ]
                     ]
                 ]
             ];

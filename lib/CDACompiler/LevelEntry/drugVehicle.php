@@ -76,31 +76,33 @@ class drugVehicle
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'MANU'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.24'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'participantRole' => [
                     '@attributes' => [
-                        'code' => '412307009',
-                        'displayName' => 'drug vehicle',
-                        'codeSystem' => '2.16.840.1.113883.6.96'
-                    ]
-                ],
-                'playingEntity' => [
-                    '@attributes' => [
-                        'classCode' => 'MMAT'
+                        'classCode' => 'MANU'
                     ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.24'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
                     'code' => [
                         '@attributes' => [
-                            'code' => $PortionData['code'],
-                            'displayName' => $PortionData['displayName'],
-                            'codeSystem' => Utilities::CodingSystemId( $PortionData['codeSystemName'] ),
-                            'codeSystemName' => $PortionData['codeSystemName']
+                            'code' => '412307009',
+                            'displayName' => 'drug vehicle',
+                            'codeSystem' => '2.16.840.1.113883.6.96'
                         ]
                     ],
-                    'name' => self::Narrative($PortionData['Narrated'])
+                    'playingEntity' => [
+                        '@attributes' => [
+                            'classCode' => 'MMAT'
+                        ],
+                        'code' => [
+                            '@attributes' => [
+                                'code' => $PortionData['code'],
+                                'displayName' => $PortionData['displayName'],
+                                'codeSystem' => Utilities::CodingSystemId( $PortionData['codeSystemName'] ),
+                                'codeSystemName' => $PortionData['codeSystemName']
+                            ]
+                        ],
+                        'name' => self::Narrative($PortionData['Narrated'])
+                    ]
                 ]
             ];
 

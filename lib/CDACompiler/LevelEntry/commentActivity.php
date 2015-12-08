@@ -13,6 +13,7 @@
 
 namespace LevelEntry;
 
+use LevelDocument;
 use LevelOther;
 use Component;
 use Utilities;
@@ -30,10 +31,7 @@ class characteristicsOfHomeEnvironment
      */
     private static function Validate($PortionData)
     {
-        if(count($PortionData['author']) < 1){
-            throw new Exception ('SHALL contain exactly one [1..1] value, which SHOULD be selected from ValueSet
-            Residence and Accommodation Type 2.16.840.1.113883.11.20.9.49 DYNAMIC (CONF:28823).');
-        }
+
     }
 
     /**
@@ -88,70 +86,35 @@ class characteristicsOfHomeEnvironment
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.64'),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => '48767-8',
-                        'codeSystem' => '2.16.840.1.113883.6.1',
-                        'codeSystemName' => 'LOINC',
-                        'displayName' => 'Annotation Comment'
-                    ]
-                ],
-                'text' => self::Narrative($PortionData)
+                        'classCode' => 'ACT',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.64'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '48767-8',
+                            'codeSystem' => '2.16.840.1.113883.6.1',
+                            'codeSystemName' => 'LOINC',
+                            'displayName' => 'Annotation Comment'
+                        ]
+                    ],
+                    'text' => self::Narrative($PortionData)
+                ]
             ];
 
             // MAY contain zero or one [0..1] author (CONF:9433).
-            if(count($PortionData['author']) > 0)
-                $Entry['author'][] = self::author($PortionData['author']);
+            if(count($PortionData['Author']) > 0)
+                $Entry['act']['author'][] = LevelDocument\author::Insert($PortionData['Author'][0]);
 
             return $Entry;
+
         }
         catch (Exception $Error)
         {
             return $Error;
         }
-    }
-
-    /**
-     * @param $PortionData
-     * @return array
-     */
-    function author($PortionData)
-    {
-        return [
-            'time' => Component::effectiveTime($PortionData['date']),
-            'assignedAuthor' => [
-                'id' => Component::id('2.16.840.1.113883.19.5', $PortionData['NPI']),
-                'addr' => Component::addr(
-                    $PortionData['address']['use'],
-                    $PortionData['address']['streetAddressLine'],
-                    $PortionData['address']['city'],
-                    $PortionData['address']['state'],
-                    $PortionData['address']['postalCode'],
-                    $PortionData['address']['country']
-                ),
-                'telecom' => Component::telecom(
-                    $PortionData['use'],
-                    $PortionData['telecom']
-                ),
-                'assignedPerson' => [
-                    'name' => Component::name(
-                        $PortionData['name']['prefix'],
-                        $PortionData['name']['prefixQualifier'],
-                        $PortionData['name']['given'],
-                        $PortionData['name']['givenQualifier'],
-                        $PortionData['name']['family'],
-                        $PortionData['name']['familyQualifier'],
-                        $PortionData['name']['name'],
-                        $PortionData['name']['nameQualifier']
-                    )
-                ]
-            ]
-        ];
     }
 
 }

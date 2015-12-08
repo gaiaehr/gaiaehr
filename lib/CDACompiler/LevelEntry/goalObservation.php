@@ -110,27 +110,29 @@ class goalObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'GOL'
-                ],
-                'templateId' => [
-                    // Observation Plan (V2) templateId
-                    0 => Component::templateId('2.16.840.1.113883.10.20.22.4.44.2'),
-                    // Goal Observation templateId
-                    1 => Component::templateId('2.16.840.1.113883.10.20.22.4.44.2')
-                ],
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => $PortionData['goalCode'],
-                        'displayName' => $PortionData['goalDisplayName'],
-                        'codeSystem' => Utilities::CodingSystemId( $PortionData['goalCodeSystemName'] ),
-                        'codeSystemName' => $PortionData['goalCodeSystemName']
-                    ]
-                ],
-                'statusCode' => Component::statusCode('active'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                        'classCode' => 'OBS',
+                        'moodCode' => 'GOL'
+                    ],
+                    'templateId' => [
+                        // Observation Plan (V2) templateId
+                        0 => Component::templateId('2.16.840.1.113883.10.20.22.4.44.2'),
+                        // Goal Observation templateId
+                        1 => Component::templateId('2.16.840.1.113883.10.20.22.4.44.2')
+                    ],
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['goalCode'],
+                            'displayName' => $PortionData['goalDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId( $PortionData['goalCodeSystemName'] ),
+                            'codeSystemName' => $PortionData['goalCodeSystemName']
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('active'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                ]
             ];
 
             // SHALL contain at least one [1..*] Author Participation (NEW)
@@ -139,7 +141,7 @@ class goalObservation
             {
                 foreach($PortionData['Authors'] as $Author)
                 {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+                    $Entry['observation']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );
@@ -153,11 +155,11 @@ class goalObservation
             {
                 foreach($PortionData['HealthConcernAct'] as $HealthConcernAct)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
-                        'act' => healthConcernAct::Insert(
+                        healthConcernAct::Insert(
                             $HealthConcernAct,
                             $CompleteData
                         )
@@ -172,16 +174,14 @@ class goalObservation
             {
                 foreach($PortionData['PlannedEncounter'] as $PlannedEncounter)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],
-                        'entry' => [
-                            'encounter' => plannedEncounter::Insert(
-                                $PlannedEncounter,
-                                $CompleteData
-                            )
-                        ]
+                        plannedEncounter::Insert(
+                            $PlannedEncounter,
+                            $CompleteData
+                        )
                     ];
                 }
             }
@@ -193,16 +193,14 @@ class goalObservation
             {
                 foreach($PortionData['PlannedObservation'] as $PlannedObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],
-                        'entry' => [
-                            'encounter' => plannedObservation::Insert(
-                                $PlannedObservation,
-                                $CompleteData
-                            )
-                        ]
+                        plannedObservation::Insert(
+                            $PlannedObservation,
+                            $CompleteData
+                        )
                     ];
                 }
             }
@@ -214,16 +212,14 @@ class goalObservation
             {
                 foreach($PortionData['PlannedProcedure'] as $PlannedProcedure)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],
-                        'entry' => [
-                            'encounter' => plannedProcedure::Insert(
-                                $PlannedObservation,
-                                $CompleteData
-                            )
-                        ]
+                        plannedProcedure::Insert(
+                            $PlannedObservation,
+                            $CompleteData
+                        )
                     ];
                 }
             }
@@ -235,16 +231,14 @@ class goalObservation
             {
                 foreach($PortionData['PlannedSubstanceAdministration'] as $PlannedSubstanceAdministration)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],
-                        'entry' => [
-                            'encounter' => plannedSubstanceAdministration::Insert(
-                                $PlannedSubstanceAdministration,
-                                $CompleteData
-                            )
-                        ]
+                        plannedSubstanceAdministration::Insert(
+                            $PlannedSubstanceAdministration,
+                            $CompleteData
+                        )
                     ];
                 }
             }
@@ -257,16 +251,14 @@ class goalObservation
             {
                 foreach($PortionData['PlannedSupply'] as $PlannedSupply)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],
-                        'entry' => [
-                            'encounter' => plannedSupply::Insert(
-                                $PlannedSupply,
-                                $CompleteData
-                            )
-                        ]
+                        plannedSupply::Insert(
+                            $PlannedSupply,
+                            $CompleteData
+                        )
                     ];
                 }
             }
@@ -278,16 +270,14 @@ class goalObservation
             {
                 foreach($PortionData['PlannedAct'] as $PlannedAct)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],
-                        'entry' => [
-                            'encounter' => plannedAct::Insert(
-                                $PlannedAct,
-                                $CompleteData
-                            )
-                        ]
+                        plannedAct::Insert(
+                            $PlannedAct,
+                            $CompleteData
+                        )
                     ];
                 }
             }
@@ -299,11 +289,11 @@ class goalObservation
             {
                 foreach($PortionData['PatientPriorityPreference'] as $PatientPriorityPreference)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'RSON'
                         ],
-                        'observation' => patientPriorityPreference::Insert(
+                        patientPriorityPreference::Insert(
                             $PatientPriorityPreference,
                             $CompleteData
                         )
@@ -318,11 +308,11 @@ class goalObservation
             {
                 foreach($PortionData['ProviderPriorityPreference'] as $ProviderPriorityPreference)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'RSON'
                         ],
-                        'observation' => providerPriorityPreference::Insert(
+                        providerPriorityPreference::Insert(
                             $ProviderPriorityPreference,
                             $CompleteData
                         )
@@ -337,7 +327,7 @@ class goalObservation
             {
                 foreach($PortionData['ActReference'] as $ActReference)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],

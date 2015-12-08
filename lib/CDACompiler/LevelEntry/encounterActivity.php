@@ -80,19 +80,21 @@ class encounterActivity
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ENC',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.49.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'translation' => [
-                    'code' => 'AMB',
-                    'codeSystem' => '2.16.840.1.113883.5.4',
-                    'displayName' => 'Ambulatory',
-                    'codeSystemName' => 'HL7 ActEncounterCode'
-                ],
-                'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                'encounter' => [
+                    '@attributes' => [
+                        'classCode' => 'ENC',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.49.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'translation' => [
+                        'code' => 'AMB',
+                        'codeSystem' => '2.16.840.1.113883.5.4',
+                        'displayName' => 'Ambulatory',
+                        'codeSystemName' => 'HL7 ActEncounterCode'
+                    ],
+                    'effectiveTime' => Component::time($PortionData['effectiveTime'])
+                ]
             ];
 
             // SHOULD contain zero or one [0..1] code, which SHOULD be selected from
@@ -101,7 +103,7 @@ class encounterActivity
                 isset($PortionData['displayName']) &&
                 isset($PortionData['systemCodeName']))
             {
-                $Entry['code'] = [
+                $Entry['encounter']['code'] = [
                     '@attributes' => [
                         'code' => $PortionData['code'],
                         'displayName' => $PortionData['displayName'],
@@ -113,7 +115,7 @@ class encounterActivity
 
             // The code, if present, SHOULD contain zero or one [0..1] originalText (CONF:8719)
             if(isset($PortionData['Narrated']))
-                $Entry['originalText'] = $PortionData['Narrated'];
+                $Entry['encounter']['originalText'] = $PortionData['Narrated'];
 
             // MAY contain zero or more [0..*] performer (CONF:8725)
             // SHALL contain exactly one [1..1] Service Delivery Location
@@ -121,18 +123,18 @@ class encounterActivity
             {
                 foreach($PortionData['Performer'] as $Performer)
                 {
-                    $Entry['performer'][] = LevelDocument\performer::Insert($Performer);
+                    $Entry['encounter']['performer'][] = LevelDocument\performer::Insert($Performer);
                 }
             }
 
             // MAY contain zero or more [0..*] entryRelationship (CONF:8722)
+            // SHALL contain exactly one [1..1] Indication (V2)
             if(count($PortionData['Indication']) > 0)
             {
                 foreach($PortionData['Indication'] as $Indication)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['encounter']['entryRelationship'][] = [
                         '@attributes' => [
-
                             'typeCode' => 'RSON'
                         ],
                         'entry' => [
@@ -146,21 +148,15 @@ class encounterActivity
             }
 
             // MAY contain zero or more [0..*] entryRelationship (CONF:15492)
+            // SHALL contain exactly one [1..1] Encounter Diagnosis (V2)
             if(count($PortionData['EncounterDiagnosis']) > 0)
             {
                 foreach($PortionData['EncounterDiagnosis'] as $EncounterDiagnosis)
                 {
-                    $Entry['entryRelationship'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'RSON'
-                        ],
-                        'entry' => [
-                            '@attributes' => [
-                                'typeCode' => 'DRIV'
-                            ],
-                            encounterDiagnosis::Insert($EncounterDiagnosis)
-                        ]
-                    ];
+                    $Entry['encounter']['entryRelationship'][] = encounterDiagnosis::Insert(
+                        $EncounterDiagnosis,
+                        $CompleteData
+                    );
                 }
             }
 

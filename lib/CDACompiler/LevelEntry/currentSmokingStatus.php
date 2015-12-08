@@ -41,13 +41,9 @@ class currentSmokingStatus
      */
     private static function Validate($PortionData)
     {
-        // This consumable SHALL contain exactly one [1..1] Medication Information (V2)
-        // (templateId:2.16.840.1.113883.10.20.22.4.23.2) (CONF:16085).
         if(!isset($PortionData['effectiveTime']))
             throw new Exception('SHALL contain exactly one [1..1] effectiveTime (CONF:14814)');
 
-        // SHALL contain exactly one [1..1] @code, which SHALL be selected from
-        // ValueSet Current Smoking Status 2.16.840.1.113883.11.20.9.38.2 DYNAMIC 2013-07-25 (CONF:14817)
         if(!isset($PortionData['code']) &&
             !isset($PortionData['displayName']) &&
             !isset($PortionData['codeSystemName']))
@@ -83,35 +79,39 @@ class currentSmokingStatus
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.78.2'),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => '229819007',
-                        'codeSystem' => '2.16.840.1.113883.6.96',
-                        'displayName' => 'Tobacco use and exposure'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => $PortionData['effectiveTime'],
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['code'],
-                        'displayName' => $PortionData['displayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName'])
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.78.2'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '229819007',
+                            'codeSystem' => '2.16.840.1.113883.6.96',
+                            'displayName' => 'Tobacco use and exposure'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => $PortionData['effectiveTime'],
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['code'],
+                            'displayName' => $PortionData['displayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName'])
+                        ]
                     ]
                 ]
             ];
 
             // SHOULD contain zero or more [0..*] Author Participation (NEW)
             // (templateId:2.16.840.1.113883.10.20.22.4.119) (CONF:31148).
-            if (count($PortionData['Authors']) > 0) {
-                foreach ($PortionData['Authors'] as $Author) {
-                    $Entry['author'][] = LevelOther\authorParticipation::Insert(
+            if (count($PortionData['Authors']) > 0)
+            {
+                foreach ($PortionData['Authors'] as $Author)
+                {
+                    $Entry['observation']['author'][] = LevelOther\authorParticipation::Insert(
                         $Author,
                         $CompleteData
                     );

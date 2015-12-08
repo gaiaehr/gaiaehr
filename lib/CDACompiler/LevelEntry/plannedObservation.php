@@ -163,12 +163,10 @@ class plannedObservation
             {
                 foreach($PortionData['ServiceDeliveryLocation'] as $ServiceDeliveryLocation)
                 {
-                    $Entry['observation']['participant'][] = [
-                        serviceDeliveryLocation::Insert(
-                            $ServiceDeliveryLocation,
-                            $CompleteData
-                        )
-                    ];
+                    $Entry['observation']['participant'][] = serviceDeliveryLocation::Insert(
+                        $ServiceDeliveryLocation,
+                        $CompleteData
+                    );
                 }
             }
 

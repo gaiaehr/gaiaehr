@@ -84,25 +84,27 @@ class instruction
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'INT'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.20.2'),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => $PortionData['code'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'displayName' => $PortionData['displayName']
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed')
+                        'classCode' => 'ACT',
+                        'moodCode' => 'INT'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.20.2'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => $PortionData['code'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName']),
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'displayName' => $PortionData['displayName']
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed')
+                ]
             ];
 
             // SHOULD contain zero or one [0..1] text
             if(isset($PortionData['Narrated']['text']))
-                $Entry['text'] = self::Narrative($PortionData);
+                $Entry['act']['text'] = self::Narrative($PortionData);
 
             return $Entry;
         }

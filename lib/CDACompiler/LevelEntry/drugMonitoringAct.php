@@ -84,55 +84,57 @@ class drugMonitoringAct
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'ACT',
-                    'moodCode' => 'INT'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.123'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'act' => [
                     '@attributes' => [
-                        'code' => '395170001',
-                        'displayName' => 'medication monitoring(regine/therapy',
-                        'codeSystem' => '2.16.840.1.113883.6.96',
-                        'codeSystemName' => 'SNOMED-CT'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => [
-                    '@attributes' => [
-                        'xsi:type' => 'IVL TS'
+                        'classCode' => 'ACT',
+                        'moodCode' => 'INT'
                     ],
-                    'low' => [
-                        '@attributes' => [
-                            'value' => $PortionData['effectiveTime_from']
-                        ]
-                    ],
-                    'high' => [
-                        '@attributes' => [
-                            'value' => $PortionData['effectiveTime_to']
-                        ]
-                    ]
-                ],
-                'participant' => [
-                    '@attributes' => [
-                        'classCode' => 'ASSIGNED'
-                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.123'),
                     'id' => Component::id( Utilities::UUIDv4() ),
-                    'playingEntity' => [
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '395170001',
+                            'displayName' => 'medication monitoring(regine/therapy',
+                            'codeSystem' => '2.16.840.1.113883.6.96',
+                            'codeSystemName' => 'SNOMED-CT'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => [
+                        '@attributes' => [
+                            'xsi:type' => 'IVL TS'
+                        ],
+                        'low' => [
+                            '@attributes' => [
+                                'value' => $PortionData['effectiveTime_from']
+                            ]
+                        ],
+                        'high' => [
+                            '@attributes' => [
+                                'value' => $PortionData['effectiveTime_to']
+                            ]
+                        ]
+                    ],
+                    'participant' => [
                         '@attributes' => [
                             'classCode' => 'ASSIGNED'
                         ],
-                        'name' => Component::name(
-                            $PortionData['name']['prefix'],
-                            $PortionData['name']['prefixQualifier'],
-                            $PortionData['name']['given'],
-                            $PortionData['name']['givenQualifier'],
-                            $PortionData['name']['family'],
-                            $PortionData['name']['familyQualifier'],
-                            $PortionData['name']['name'],
-                            $PortionData['name']['nameQualifier']
-                        )
+                        'id' => Component::id( Utilities::UUIDv4() ),
+                        'playingEntity' => [
+                            '@attributes' => [
+                                'classCode' => 'ASSIGNED'
+                            ],
+                            'name' => Component::name(
+                                $PortionData['name']['prefix'],
+                                $PortionData['name']['prefixQualifier'],
+                                $PortionData['name']['given'],
+                                $PortionData['name']['givenQualifier'],
+                                $PortionData['name']['family'],
+                                $PortionData['name']['familyQualifier'],
+                                $PortionData['name']['name'],
+                                $PortionData['name']['nameQualifier']
+                            )
+                        ]
                     ]
                 ]
             ];

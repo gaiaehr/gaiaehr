@@ -141,7 +141,7 @@ class plannedAct
             {
                 foreach($PortionData['PatientPriorityPreference'] as $PatientPriorityPreference)
                 {
-                    $Entry['observation']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
@@ -159,7 +159,7 @@ class plannedAct
             {
                 foreach($PortionData['ProviderPriorityPreference'] as $ProviderPriorityPreference)
                 {
-                    $Entry['observation']['entryRelationship'][] = [
+                    $Entry['act']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],

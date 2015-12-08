@@ -32,14 +32,11 @@ class deceasedObservation
      */
     private static function Validate($PortionData)
     {
-        // a. This consumable SHALL contain exactly one [1..1] Medication Information (V2)
-        // (templateId:2.16.840.1.113883.10.20.22.4.23.2) (CONF:16085).
         if(!isset($PortionData['effectiveTime']))
             throw new Exception('SHALL contain exactly one [1..1] effectiveTime (CONF:14814)');
 
         if(count($PortionData['ProblemObservation']) < 1)
-            throw new Exception('SHALL contain exactly one [1..1] Problem Observation (V2)
-             (templateId:2.16.840.1.113883.10.20.22.4.4.2) (CONF:14870)');
+            throw new Exception('SHALL contain exactly one [1..1] Problem Observation (V2) (templateId:2.16.840.1.113883.10.20.22.4.4.2) (CONF:14870)');
     }
 
     /**
@@ -77,35 +74,39 @@ class deceasedObservation
             // Validate first
             self::Validate($PortionData);
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.79'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => 'ASSERTION',
-                        'codeSystem' => '2.16.840.1.113883.5.4'
-                    ]
-                ],
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => $PortionData['effectiveTime'],
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => '419099009',
-                        'displayName' => 'Dead',
-                        'codeSystem' => '2.16.840.1.113883.6.96'
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.79'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => 'ASSERTION',
+                            'codeSystem' => '2.16.840.1.113883.5.4'
+                        ]
+                    ],
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => $PortionData['effectiveTime'],
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => '419099009',
+                            'displayName' => 'Dead',
+                            'codeSystem' => '2.16.840.1.113883.6.96'
+                        ]
                     ]
                 ]
             ];
 
             // SHALL contain exactly one [1..1] Problem Observation (V2)
             // (templateId:2.16.840.1.113883.10.20.22.4.4.2) (CONF:14870).
-            if (count($PortionData['ProblemObservation']) > 0) {
-                foreach ($PortionData['ProblemObservation'] as $Problem) {
-                    $Entry['entry'][] = problemObservation::Insert(
+            if (count($PortionData['ProblemObservation']) > 0)
+            {
+                foreach ($PortionData['ProblemObservation'] as $Problem)
+                {
+                    $Entry['observation']['entry'][] = problemObservation::Insert(
                         $Problem,
                         $CompleteData
                     );

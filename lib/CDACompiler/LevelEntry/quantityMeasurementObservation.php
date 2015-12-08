@@ -110,7 +110,7 @@ class quantityMeasurementObservation
             // SHALL contain exactly one [1..1] SOP Instance Observation
             // (templateId:2.16.840.1.113883.10.20.6.2.8) (CONF:16083).
             if(count($PortionData['SOPInstanceObservation'] > 0))
-                $Entry['entryRelationship'][] = sopInstanceObservation::Insert(
+                $Entry['observation']['entryRelationship'][] = sopInstanceObservation::Insert(
                     $PortionData['SOPInstanceObservation'],
                     $CompleteData
                 );

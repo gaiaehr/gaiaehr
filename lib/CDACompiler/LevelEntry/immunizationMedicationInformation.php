@@ -84,22 +84,24 @@ class immunizationMedicationInformation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'MANU'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.54.2'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'manufacturedMaterial' => [
-                    'code' => [
-                        'code' => $PortionData['code'],
-                        'displayName' => $PortionData['displayName'],
-                        'codeSystemName' => $PortionData['codeSystemName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName'])
+                'manufacturedProduct' => [
+                    '@attributes' => [
+                        'classCode' => 'MANU'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.54.2'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'manufacturedMaterial' => [
+                        'code' => [
+                            'code' => $PortionData['code'],
+                            'displayName' => $PortionData['displayName'],
+                            'codeSystemName' => $PortionData['codeSystemName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['codeSystemName'])
+                        ]
+                    ],
+                    'lotNumberText' => $PortionData['lotNumberText'],
+                    'manufacturerOrganization' => [
+                        'name' => $PortionData['manufacturerOrganization']
                     ]
-                ],
-                'lotNumberText' => $PortionData['lotNumberText'],
-                'manufacturerOrganization' => [
-                    'name' => $PortionData['manufacturerOrganization']
                 ]
             ];
 

@@ -39,7 +39,7 @@ class allergyConcernAct
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
     private static function Validate($PortionData)
     {

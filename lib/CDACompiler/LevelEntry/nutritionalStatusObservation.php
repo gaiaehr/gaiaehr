@@ -107,7 +107,7 @@ class nutritionalStatusObservation
             {
                 foreach($PortionData['NutritionAssessment'] as $NutritionAssessment)
                 {
-                    $Entry['act']['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'SUBJ'
                         ],

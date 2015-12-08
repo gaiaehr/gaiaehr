@@ -77,37 +77,39 @@ class characteristicsOfHomeEnvironment
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.6.2.13'),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => '18782-3',
-                        'codeSystem' => '2.16.840.1.113883.6.1',
-                        'codeSystemName' => 'LOINC',
-                        'displayName' => 'Study observation'
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.6.2.13'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '18782-3',
+                            'codeSystem' => '2.16.840.1.113883.6.1',
+                            'codeSystemName' => 'LOINC',
+                            'displayName' => 'Study observation'
+                        ]
+                    ],
+                    'statusCode' => [
+                        '@attributes' => [
+                            'code' => 'completed'
+                        ]
+                    ],
+                    'value' => [
+                        'xsi:type' => 'CD',
+                        'code' => $PortionData['code'],
+                        'codeSystem' => Utilities::CodingSystemId( $PortionData['systemCodeName'] ),
+                        'codeSystemName' => $PortionData['systemCodeName'],
+                        'displayName' => $PortionData['displayName']
                     ]
-                ],
-                'statusCode' => [
-                    '@attributes' => [
-                        'code' => 'completed'
-                    ]
-                ],
-                'value' => [
-                    'xsi:type' => 'CD',
-                    'code' => $PortionData['code'],
-                    'codeSystem' => Utilities::CodingSystemId( $PortionData['systemCodeName'] ),
-                    'codeSystemName' => $PortionData['systemCodeName'],
-                    'displayName' => $PortionData['displayName']
                 ]
             ];
 
             // SHALL contain exactly one [1..1] SOP Instance Observation
             // (templateId:2.16.840.1.113883.10.20.6.2.8) (CONF:16083).
             if(count($PortionData['SOPInstanceObservation'] > 0))
-                $Entry['entryRelationship'][] = sopInstanceObservation::Insert(
+                $Entry['observation']['entryRelationship'][] = sopInstanceObservation::Insert(
                     $PortionData['SOPInstanceObservation'],
                     $CompleteData
                 );
@@ -115,7 +117,7 @@ class characteristicsOfHomeEnvironment
             // SHALL contain exactly one [1..1] Quantity Measurement Observation
             // (templateId:2.16.840.1.113883.10.20.6.2.14) (CONF:16084).
             if(count($PortionData['QuantityMeasurementObservation'] > 0))
-                $Entry['entryRelationship'][] = quantityMeasurementObservation::Insert(
+                $Entry['observation']['entryRelationship'][] = quantityMeasurementObservation::Insert(
                     $PortionData['QuantityMeasurementObservation'],
                     $CompleteData
                 );

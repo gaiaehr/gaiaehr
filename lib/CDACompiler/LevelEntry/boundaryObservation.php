@@ -32,9 +32,8 @@ class boundaryObservation
      */
     private static function Validate($PortionData)
     {
-        // 5. SHALL contain at least one [1..*] entryRelationship (CONF:8948)
         if(count($PortionData['Values']) < 0)
-            throw new Exception ('SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285).');
+            throw new Exception ('SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285)');
     }
 
     /**
@@ -50,7 +49,7 @@ class boundaryObservation
         return [
             'BoundaryObservation' => [
                 0 => [
-                    'Value' => 'SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285)'
+                    'value' => 'SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285)'
                 ]
             ]
         ];
@@ -69,24 +68,26 @@ class boundaryObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.6.2.11'),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => '113036',
-                        'codeSystem' => '1.2.840.10008.2.16.4',
-                        'displayName' => 'Frames for Display'
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.6.2.11'),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '113036',
+                            'codeSystem' => '1.2.840.10008.2.16.4',
+                            'displayName' => 'Frames for Display'
+                        ]
                     ]
-                ],
+                ]
             ];
 
-            // 4. SHALL contain at least one [1..*] value with @xsi:type="INT" (CONF:9285).
-            foreach ($PortionData['Value'] as $Value)
+            // SHALL contain at least one [1..*] value with @xsi:type="INT"
+            foreach ($PortionData['value'] as $Value)
             {
-                $Entry['value'][] = [
+                $Entry['observation']['value'][] = [
                     '@attributes' => [
                         'xsi:type' => 'INT',
                         'value' => $Value['value']

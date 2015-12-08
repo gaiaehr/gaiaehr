@@ -114,32 +114,34 @@ class immunizationActivity
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'SBADM',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.52.2'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime']),
-                'routeCode' => [
+                'substanceAdministration' => [
                     '@attributes' => [
-                        'code' => $PortionData['routeCode'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['routeCodeSystemName']),
-                        'codeSystemName' => $PortionData['routeCodeSystemName'],
-                        'displayName' => $PortionData['routeDisplayName']
-                    ]
-                ],
-                'doseQuantity' => [
-                    '@attributes' => [
-                        'value' => $PortionData['doseQuantityValue'],
-                        'unit' => $PortionData['doseQuantityUnit']
-                    ]
-                ],
-                'consumable' => [
-                    'manufacturedProduct' => immunizationMedicationInformation::Insert($PortionData, $CompleteData),
-                ],
-                'performer' => LevelDocument\performer::Insert($PortionData)
+                        'classCode' => 'SBADM',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.52.2'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'routeCode' => [
+                        '@attributes' => [
+                            'code' => $PortionData['routeCode'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['routeCodeSystemName']),
+                            'codeSystemName' => $PortionData['routeCodeSystemName'],
+                            'displayName' => $PortionData['routeDisplayName']
+                        ]
+                    ],
+                    'doseQuantity' => [
+                        '@attributes' => [
+                            'value' => $PortionData['doseQuantityValue'],
+                            'unit' => $PortionData['doseQuantityUnit']
+                        ]
+                    ],
+                    'consumable' => [
+                        'manufacturedProduct' => immunizationMedicationInformation::Insert($PortionData, $CompleteData),
+                    ],
+                    'performer' => LevelDocument\performer::Insert($PortionData)
+                ]
             ];
 
             // MAY contain zero or more [0..*] entryRelationship
@@ -148,11 +150,11 @@ class immunizationActivity
             {
                 foreach($PortionData['Indication'] as $Indication)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['substanceAdministration']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'RSON'
                         ],
-                        'observation' => indication::Insert(
+                        indication::Insert(
                             $Indication,
                             $CompleteData
                         )
@@ -164,11 +166,11 @@ class immunizationActivity
             // SHALL contain exactly one [1..1] Instruction (V2)
             if(count($PortionData['Instruction']) > 0)
             {
-                $Entry['entryRelationship'][] = [
+                $Entry['substanceAdministration']['entryRelationship'][] = [
                     '@attributes' => [
                         'typeCode' => 'SUBJ'
                     ],
-                    'act' => instruction::Insert(
+                    instruction::Insert(
                         $PortionData['Instruction'][0],
                         $CompleteData
                     )
@@ -179,11 +181,11 @@ class immunizationActivity
             // SHALL contain exactly one [1..1] Medication Supply Order (V2)
             if(count($PortionData['MedicationSupplyOrder']) > 0)
             {
-                $Entry['entryRelationship'][] = [
+                $Entry['substanceAdministration']['entryRelationship'][] = [
                     '@attributes' => [
                         'typeCode' => 'REFR'
                     ],
-                    'supply' => medicationSupplyOrder::Insert(
+                    medicationSupplyOrder::Insert(
                         $PortionData['MedicationSupplyOrder'][0],
                         $CompleteData
                     )
@@ -194,11 +196,11 @@ class immunizationActivity
             // SHALL contain exactly one [1..1] Medication Dispense (V2)
             if(count($PortionData['MedicationDispense']) > 0)
             {
-                $Entry['supply'][] = [
+                $Entry['substanceAdministration']['supply'][] = [
                     '@attributes' => [
                         'typeCode' => 'REFR'
                     ],
-                    'supply' => medicationDispense::Insert(
+                    medicationDispense::Insert(
                         $PortionData['MedicationDispense'][0],
                         $CompleteData
                     )
@@ -209,11 +211,11 @@ class immunizationActivity
             // SHALL contain exactly one [1..1] Reaction Observation (V2)
             if(count($PortionData['ReactionObservation']) > 0)
             {
-                $Entry['supply'][] = [
+                $Entry['substanceAdministration']['supply'][] = [
                     '@attributes' => [
                         'typeCode' => 'CAUS'
                     ],
-                    'observation' => reactionObservation::Insert(
+                    reactionObservation::Insert(
                         $PortionData['ReactionObservation'][0],
                         $CompleteData
                     )
@@ -224,11 +226,11 @@ class immunizationActivity
             // SHALL contain exactly one [1..1] Immunization Refusal Reason
             if(count($PortionData['ImmunizationRefusalReason']) > 0)
             {
-                $Entry['supply'][] = [
+                $Entry['substanceAdministration']['supply'][] = [
                     '@attributes' => [
                         'typeCode' => 'RSON'
                     ],
-                    'observation' => immunizationRefusalReason::Insert(
+                    immunizationRefusalReason::Insert(
                         $PortionData['ImmunizationRefusalReason'][0],
                         $CompleteData
                     )
@@ -241,12 +243,12 @@ class immunizationActivity
             {
                 foreach($PortionData['SubstanceAdministeredAct'] as $SubstanceAdministeredAct)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['substanceAdministration']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP',
                             'inversionInd' => 'true'
                         ],
-                        'observation' => substanceAdministeredAct::Insert(
+                        substanceAdministeredAct::Insert(
                             $SubstanceAdministeredAct,
                             $CompleteData
                         )
@@ -260,11 +262,11 @@ class immunizationActivity
             {
                 foreach($PortionData['PreconditionForSubstanceAdministration'] as $PreconditionForSubstanceAdministration)
                 {
-                    $Entry['precondition'][] = [
+                    $Entry['substanceAdministration']['precondition'][] = [
                         '@attributes' => [
                             'typeCode' => 'PRCN'
                         ],
-                        'precondition' => preconditionForSubstanceAdministration::Insert(
+                        preconditionForSubstanceAdministration::Insert(
                             $PreconditionForSubstanceAdministration,
                             $CompleteData
                         )

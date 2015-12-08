@@ -77,21 +77,23 @@ class medicationSupplyOrder
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'SPLY',
-                    'moodCode' => 'INT'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.17.2'),
-                'id' => Component::id(Utilities::UUIDv4()),
-                'statusCode' => Component::statusCode('completed'),
-                'repeatNumber' => [
+                'supply' => [
                     '@attributes' => [
-                        'value' => $PortionData['repeatNumber']
-                    ]
-                ],
-                'quantity' => [
-                    '@attributes' => [
-                        'value' => $PortionData['quantity']
+                        'classCode' => 'SPLY',
+                        'moodCode' => 'INT'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.17.2'),
+                    'id' => Component::id(Utilities::UUIDv4()),
+                    'statusCode' => Component::statusCode('completed'),
+                    'repeatNumber' => [
+                        '@attributes' => [
+                            'value' => $PortionData['repeatNumber']
+                        ]
+                    ],
+                    'quantity' => [
+                        '@attributes' => [
+                            'value' => $PortionData['quantity']
+                        ]
                     ]
                 ]
             ];
@@ -99,7 +101,7 @@ class medicationSupplyOrder
             // MAY contain zero or one [0..1] author
             if(count($PortionData['Author']) > 0)
             {
-                $Entry['author'] = LevelOther\authorParticipation::Insert(
+                $Entry['supply']['author'] = LevelOther\authorParticipation::Insert(
                     $PortionData['Author'][0],
                     $CompleteData
                 );
@@ -108,7 +110,7 @@ class medicationSupplyOrder
             // MAY contain zero or one [0..1] entryRelationship
             // SHALL contain exactly one [1..1] Instruction (V2)
             if(count($PortionData['Instruction']) > 0){
-                $Entry['entryRelationship'] = [
+                $Entry['supply']['entryRelationship'] = [
                     '@attributes' => [
                         'typeCode' => 'SUBJ',
                         'moodCode' => 'INT'
@@ -120,36 +122,31 @@ class medicationSupplyOrder
                 ];
             }
 
-
             // MAY contain zero or one [0..1] product
             // SHALL contain exactly one [1..1] Medication Information (V2)
             if(count($PortionData['ProductMedicationInformation']) > 0)
             {
-                $Entry['product'][] = [
-                    'manufacturedProduct' => medicationInformation::Insert(
-                        $PortionData['ProductMedicationInformation'][0],
-                        $CompleteData
-                    )
-                ];
+                $Entry['supply']['product'][] = medicationInformation::Insert(
+                    $PortionData['ProductMedicationInformation'][0],
+                    $CompleteData
+                );
             }
 
             // MAY contain zero or one [0..1] product
             // SHALL contain exactly one [1..1] Immunization Medication Information (V2)
             if(count($PortionData['ProductImmunizationMedicationInformation']) > 0)
             {
-                $Entry['product'][] = [
-                    'manufacturedProduct' => immunizationMedicationInformation::Insert(
-                        $PortionData['ProductImmunizationMedicationInformation'][0],
-                        $CompleteData
-                    )
-                ];
+                $Entry['supply']['product'][] = immunizationMedicationInformation::Insert(
+                    $PortionData['ProductImmunizationMedicationInformation'][0],
+                    $CompleteData
+                );
             }
 
             // SHOULD contain zero or one [0..1] effectiveTime
             // SHALL contain exactly one [1..1] high
             if(isset($PortionData['effectiveTime_low']))
             {
-                $Entry['effectiveTime'] = [
+                $Entry['supply']['effectiveTime'] = [
                     '@attributes' => [
                         'xsi:type' => 'IVL_TS'
                     ],

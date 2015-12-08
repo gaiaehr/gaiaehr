@@ -44,23 +44,17 @@ class allergyIntoleranceObservation
     private static function Validate($PortionData)
     {
         if(!isset($PortionData['onsetDate']))
-        {
-            throw new Exception('a.	This effectiveTime SHALL contain exactly one [1..1] onsetDate (CONF:31538).');
-        }
+            throw new Exception('This effectiveTime SHALL contain exactly one [1..1] onsetDate (CONF:31538).');
 
         if(!isset($PortionData['substanceCode']) ||
             !isset($PortionData['substanceName']) ||
             !isset($PortionData['substancecodeSystemName']))
-        {
-            throw new Exception('Need substanceCode, substanceName, & substancecodeSystemName for substance ');
-        }
+                throw new Exception('Need substanceCode, substanceName, & substancecodeSystemName for substance ');
 
         if(!isset($PortionData['allergyCode']) ||
             !isset($PortionData['allergyDisplayName']) ||
             !isset($PortionData['allergyCodeSystemName']))
-        {
-            throw new Exception('Need substanceCode, substanceName, & substancecodeSystemName for substance ');
-        }
+                throw new Exception('Need substanceCode, substanceName, & substancecodeSystemName for substance ');
     }
 
     /**
@@ -73,7 +67,6 @@ class allergyIntoleranceObservation
     }
 
     /**
-     * @param $PortionData
      * @return array
      */
     public static function Structure()

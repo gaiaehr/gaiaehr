@@ -165,12 +165,10 @@ class plannedProcedure
             {
                 foreach($PortionData['ServiceDeliveryLocation'] as $ServiceDeliveryLocation)
                 {
-                    $Entry['supply']['participant'][] = [
-                        serviceDeliveryLocation::Insert(
-                            $ServiceDeliveryLocation,
-                            $CompleteData
-                        )
-                    ];
+                    $Entry['supply']['participant'][] = serviceDeliveryLocation::Insert(
+                        $ServiceDeliveryLocation,
+                        $CompleteData
+                    );
                 }
             }
 

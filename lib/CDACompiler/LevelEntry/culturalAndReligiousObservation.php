@@ -49,7 +49,6 @@ class culturalAndReligiousObservation
     public static function Structure(){
         return [
             'CulturalAndReligiousObservation' => [
-                'effectiveTime' => '',
                 'Narrated' => 'SHALL contain exactly one [1..1] value (CONF:28442).'
             ]
         ];
@@ -90,14 +89,6 @@ class culturalAndReligiousObservation
                     ]
                 ]
             ];
-
-            // effectiveTime
-            if(isset($PortionData['effectiveTime']))
-                $Entry['effectiveTime'] = [
-                    '@attributes' => [
-                        'low' => $PortionData['effectiveTime']
-                    ]
-                ];
 
             return $Entry;
         } catch (Exception $Error) {

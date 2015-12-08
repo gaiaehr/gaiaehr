@@ -90,30 +90,32 @@ class functionalStatusObservation
             self::Validate($PortionData);
 
             $Entry = [
-                '@attributes' => [
-                    'classCode' => 'OBS',
-                    'moodCode' => 'EVN'
-                ],
-                'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.67.2'),
-                'id' => Component::id( Utilities::UUIDv4() ),
-                'code' => [
+                'observation' => [
                     '@attributes' => [
-                        'code' => '364644000',
-                        'codeSystem' => '2.16.840.1.113883.6.96',
-                        'displayName' => 'functional observable',
-                        'codeSystemName' => 'SNOMED CT'
-                    ]
-                ],
-                'text' => self::Narrative($PortionData),
-                'statusCode' => Component::statusCode('completed'),
-                'effectiveTime' => Component::time($PortionData['effectiveTime']),
-                'value' => [
-                    '@attributes' => [
-                        'xsi:type' => 'CD',
-                        'code' => $PortionData['physicalFunctionCode'],
-                        'displayName' => $PortionData['physicalFunctionDisplayName'],
-                        'codeSystem' => Utilities::CodingSystemId($PortionData['physicalFunctionCodeSystemName']),
-                        'codeSystemName' => $PortionData['physicalFunctionCodeSystemName']
+                        'classCode' => 'OBS',
+                        'moodCode' => 'EVN'
+                    ],
+                    'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.4.67.2'),
+                    'id' => Component::id( Utilities::UUIDv4() ),
+                    'code' => [
+                        '@attributes' => [
+                            'code' => '364644000',
+                            'codeSystem' => '2.16.840.1.113883.6.96',
+                            'displayName' => 'functional observable',
+                            'codeSystemName' => 'SNOMED CT'
+                        ]
+                    ],
+                    'text' => self::Narrative($PortionData),
+                    'statusCode' => Component::statusCode('completed'),
+                    'effectiveTime' => Component::time($PortionData['effectiveTime']),
+                    'value' => [
+                        '@attributes' => [
+                            'xsi:type' => 'CD',
+                            'code' => $PortionData['physicalFunctionCode'],
+                            'displayName' => $PortionData['physicalFunctionDisplayName'],
+                            'codeSystem' => Utilities::CodingSystemId($PortionData['physicalFunctionCodeSystemName']),
+                            'codeSystemName' => $PortionData['physicalFunctionCodeSystemName']
+                        ]
                     ]
                 ]
             ];
@@ -124,7 +126,7 @@ class functionalStatusObservation
             {
                 foreach($PortionData['Authors'] as $Author)
                 {
-                    $Entry['author'][] = LevelDocument\author::Insert($Author);
+                    $Entry['observation']['author'][] = LevelDocument\author::Insert($Author);
                 }
             }
 
@@ -134,7 +136,7 @@ class functionalStatusObservation
             {
                 foreach($PortionData['NonMedicinalSupplyActivity'] as $NonMedicinalSupplyActivity)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
@@ -152,7 +154,7 @@ class functionalStatusObservation
             {
                 foreach($PortionData['CaregiverCharacteristics'] as $CaregiverCharacteristics)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'REFR'
                         ],
@@ -170,7 +172,7 @@ class functionalStatusObservation
             {
                 foreach($PortionData['AssessmentScaleObservation'] as $AssessmentScaleObservation)
                 {
-                    $Entry['entryRelationship'][] = [
+                    $Entry['observation']['entryRelationship'][] = [
                         '@attributes' => [
                             'typeCode' => 'COMP'
                         ],

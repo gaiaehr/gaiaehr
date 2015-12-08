@@ -24,7 +24,7 @@ class advanceDirectiveOrganizer
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
     private static function Validate($PortionData)
     {
@@ -33,7 +33,7 @@ class advanceDirectiveOrganizer
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
     public static function Narrative($PortionData)
     {

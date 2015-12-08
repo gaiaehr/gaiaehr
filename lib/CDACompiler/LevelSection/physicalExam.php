@@ -30,18 +30,18 @@ class physicalExam
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -94,13 +94,15 @@ class physicalExam
             ];
 
             // 3.110 Wound Class Observation [0..*]
-            foreach($PortionData['PhysicalExam']['WoundsClassObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    'observation' => LevelEntry\woundClassObservation::Insert($Observation, $CompleteData)
-                ];
+            if(count($PortionData['PhysicalExam']['WoundsClassObservation']) > 1) {
+                foreach ($PortionData['PhysicalExam']['WoundsClassObservation'] as $Observation) {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\woundClassObservation::Insert($Observation, $CompleteData)
+                    ];
+                }
             }
 
             return $Section;

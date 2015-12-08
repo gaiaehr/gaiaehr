@@ -28,18 +28,18 @@ class mentalStatus
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -93,51 +93,58 @@ class mentalStatus
 
             // Assessment Scale Observation [0..*]
             foreach($PortionData['MentalStatus']['AssessmentScaleObservations'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\assessmentScaleObservation::Insert($Observation, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\assessmentScaleObservation::Insert(
+                    $Observation,
+                    $CompleteData
+                );
             }
 
             // Caregiver Characteristics [0..*]
             foreach($PortionData['MentalStatus']['CareGiverCharacteristicsObservations'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\medicationsActivity::Insert($Observation, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\medicationsActivity::Insert(
+                    $Observation,
+                    $CompleteData
+                );
             }
 
             // Cognitive Abilities Observation (NEW) [0..*]
             foreach($PortionData['MentalStatus']['CognitiveAbilitiesObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\cognitiveAbilitiesObservation::Insert($Observation, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\cognitiveAbilitiesObservation::Insert(
+                    $Observation,
+                    $CompleteData
+                );
             }
 
             // Cognitive Status Observation (V2) [0..*]
             foreach($PortionData['MentalStatus']['CognitiveStatusObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\cognitiveStatusObservation::Insert($Observation, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\cognitiveStatusObservation::Insert(
+                    $Observation,
+                    $CompleteData
+                );
             }
 
             // Cognitive Status Organizer (V2) [0..*]
             foreach($PortionData['MentalStatus']['CognitiveStatusOrganizer'] as $Organizer) {
-                $Section['component']['section']['entry'][] = [
-                    'organizer' => LevelEntry\cognitiveStatusOrganizer::Insert($Organizer, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\cognitiveStatusOrganizer::Insert(
+                    $Organizer,
+                    $CompleteData
+                );
             }
 
             // Mental Status Observation (NEW)
             foreach($PortionData['MentalStatus']['MentalStatusObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\mentalStatusObservation::Insert($Observation, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\mentalStatusObservation::Insert(
+                    $Observation,
+                    $CompleteData
+                );
             }
 
             // Non-Medicinal Supply Activity (V2)
             foreach($PortionData['MentalStatus']['NonMedicinalSupply'] as $Activity) {
-                $Section['component']['section']['entry'][] = [
-                    'act' => LevelEntry\nonMedicinalSupply::Insert($Activity, $CompleteData)
-                ];
+                $Section['component']['section']['entry'][] = LevelEntry\nonMedicinalSupply::Insert(
+                    $Activity,
+                    $CompleteData
+                );
             }
 
             return $Section;

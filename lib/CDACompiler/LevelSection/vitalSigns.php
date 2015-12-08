@@ -23,20 +23,20 @@ use Exception;
 class vitalSigns
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-        if(!isset($Data['Allergies']))
+        if(!isset($PortionData['Allergies']))
             throw new Exception('2.4 Allergies Section (entries required) (V2)');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -57,12 +57,12 @@ class vitalSigns
      * @param $Data
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['VitalSigns']);
+            self::Validate($PortionData['VitalSigns']);
 
             $Section = [
                 'component' => [
@@ -81,7 +81,7 @@ class vitalSigns
                             ]
                         ],
                         'title' => 'Vital Signs',
-                        'text' => self::Narrative($Data['VitalSigns'])
+                        'text' => self::Narrative($PortionData['VitalSigns'])
                     ]
                 ]
             ];

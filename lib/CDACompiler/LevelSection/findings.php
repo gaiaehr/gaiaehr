@@ -19,20 +19,20 @@ use Exception;
 class findings
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -42,21 +42,22 @@ class findings
     {
         return [
             'Findings' => [
-
+                'Narrated' => ''
             ]
+
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['Findings']);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -75,7 +76,7 @@ class findings
                             ]
                         ],
                         'title' => 'Findings',
-                        'text' => self::Narrative($Data['Findings'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

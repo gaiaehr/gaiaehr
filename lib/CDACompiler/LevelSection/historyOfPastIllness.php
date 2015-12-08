@@ -20,18 +20,18 @@ class historyOfPastIllness
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -84,9 +84,10 @@ class historyOfPastIllness
             ];
 
             // Problem Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = [
-                'observation' => LevelEntry\problemObservation::Insert($PortionData, $CompleteData)
-            ];
+            $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
+                $PortionData,
+                $CompleteData
+            );
 
             return $Section;
         }

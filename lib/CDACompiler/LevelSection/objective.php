@@ -20,18 +20,18 @@ class objective
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -52,12 +52,12 @@ class objective
      * @param $Data
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -65,7 +65,7 @@ class objective
                         'templateId' => [
                             '@attributes' => [
                                 'root' => '2.16.840.1.113883.10.20.21.2.1',
-                                'extension' => $Data['Objective']['date']
+                                'extension' => $PortionData['Objective']['date']
                             ]
                         ],
                         'code' => [
@@ -77,7 +77,7 @@ class objective
                             ]
                         ],
                         'title' => 'Objective Data',
-                        'text' => self::Narrative($Data['Objective'])
+                        'text' => self::Narrative($PortionData['Objective'])
                     ]
                 ]
             ];

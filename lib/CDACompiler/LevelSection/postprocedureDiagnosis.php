@@ -19,19 +19,19 @@ use Exception;
 class postprocedureDiagnosis
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
         // ...
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -83,13 +83,16 @@ class postprocedureDiagnosis
             ];
 
             // Postprocedure Diagnosis (V2) [0..1]
-            foreach($PortionData['PostprocedureDiagnosis']['Activity'] as $Activity) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    'act' => LevelEntry\postprocedureDiagnosis::Insert($Activity, $CompleteData)
-                ];
+            if(count($PortionData['PostprocedureDiagnosis']['Activity'])>1)
+            {
+                foreach ($PortionData['PostprocedureDiagnosis']['Activity'] as $Activity) {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\postprocedureDiagnosis::Insert($Activity, $CompleteData)
+                    ];
+                }
             }
 
             return $Section;

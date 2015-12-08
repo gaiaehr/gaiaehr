@@ -44,20 +44,20 @@ use Exception;
 class planOfTreatment
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-        if(!isset($Data['Allergies']))
+        if(!isset($PortionData['Allergies']))
             throw new Exception('2.4 Allergies Section (entries required) (V2)');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }

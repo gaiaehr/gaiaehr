@@ -87,7 +87,7 @@ class allergies
                     '@attributes' => [
                         'typeCode' => 'DRIV'
                     ],
-                    'act' => allergyConcernAct::Insert($Allergy, $CompleteData)
+                    allergyConcernAct::Insert($Allergy, $CompleteData)
                 ];
             }
 

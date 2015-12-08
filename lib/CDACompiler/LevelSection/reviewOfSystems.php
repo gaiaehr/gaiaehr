@@ -20,18 +20,18 @@ use Exception;
 class reviewOfSystems
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -53,12 +53,12 @@ class reviewOfSystems
      * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['ReviewOfSystems']);
+            self::Validate($PortionData['ReviewOfSystems']);
 
             $Section = [
                 'component' => [

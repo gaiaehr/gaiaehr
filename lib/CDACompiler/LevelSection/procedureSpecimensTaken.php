@@ -20,18 +20,18 @@ class procedureSpecimensTaken
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -52,12 +52,12 @@ class procedureSpecimensTaken
      * @param $Data
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -65,7 +65,7 @@ class procedureSpecimensTaken
                         'templateId' => [
                             '@attributes' => [
                                 'root' => '2.16.840.1.113883.10.20.22.2.31',
-                                'extension' => $Data['ProcedureSpecimensTaken']['date']
+                                'extension' => $PortionData['ProcedureSpecimensTaken']['date']
                             ]
                         ],
                         'code' => [

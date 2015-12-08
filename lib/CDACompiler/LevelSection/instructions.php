@@ -19,18 +19,18 @@ class instructions
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -88,7 +88,7 @@ class instructions
                     '@attributes' => [
                         'typeCode' => 'DRIV'
                     ],
-                    'act' => LevelEntry\instruction::Insert($Activity, $CompleteData)
+                    LevelEntry\instruction::Insert($Activity, $CompleteData)
                 ];
             }
 

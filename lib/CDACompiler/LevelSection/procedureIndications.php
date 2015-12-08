@@ -20,18 +20,18 @@ class procedureFindings
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -84,10 +84,13 @@ class procedureFindings
             ];
 
             // Indication (V2)
-            foreach($PortionData['ProcedureIndications']['Indications'] as $Indication) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\indication::Insert($Indication, $CompleteData)
-                ];
+            if(count($PortionData['ProcedureIndications']['Indications'])>1) {
+                foreach ($PortionData['ProcedureIndications']['Indications'] as $Indication) {
+                    $Section['component']['section']['entry'][] = LevelEntry\indication::Insert(
+                        $Indication,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

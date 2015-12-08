@@ -20,18 +20,18 @@ use Exception;
 class observerContext
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -49,15 +49,15 @@ class observerContext
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -67,17 +67,17 @@ class observerContext
                                 'root' => '2.16.840.1.113883.10.20.6.2.4'
                             ]
                         ],
-                        'id' => Component\id('2.16.840.1.113883.19.5', '121008'),
+                        'id' => Component::id('2.16.840.1.113883.19.5', '121008'),
                         'assignedPerson' => [
-                            'name' => Component\name(
-                                $Data['ObserverContext']['name']['prefix'],
-                                $Data['ObserverContext']['name']['prefixQualifier'],
-                                $Data['ObserverContext']['name']['given'],
-                                $Data['ObserverContext']['name']['givenQualifier'],
-                                $Data['ObserverContext']['name']['family'],
-                                $Data['ObserverContext']['name']['familyQualifier'],
-                                $Data['Patient']['name']['name'],
-                                $Data['ObserverContext']['name']['nameQualifier']
+                            'name' => Component::name(
+                                $PortionData['ObserverContext']['name']['prefix'],
+                                $PortionData['ObserverContext']['name']['prefixQualifier'],
+                                $PortionData['ObserverContext']['name']['given'],
+                                $PortionData['ObserverContext']['name']['givenQualifier'],
+                                $PortionData['ObserverContext']['name']['family'],
+                                $PortionData['ObserverContext']['name']['familyQualifier'],
+                                $PortionData['Patient']['name']['name'],
+                                $PortionData['ObserverContext']['name']['nameQualifier']
                             )
                         ]
                     ]

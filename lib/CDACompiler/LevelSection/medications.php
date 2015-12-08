@@ -25,19 +25,19 @@ use Exception;
 class medications
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
         // ...
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -55,15 +55,16 @@ class medications
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
+     * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -89,7 +90,7 @@ class medications
                             ]
                         ],
                         'title' => 'History of Medication Use',
-                        'text' => self::Narrative($Data['Medications'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

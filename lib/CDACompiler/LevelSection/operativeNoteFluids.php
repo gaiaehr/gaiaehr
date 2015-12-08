@@ -19,6 +19,7 @@ class operativeNoteFluids
 
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {

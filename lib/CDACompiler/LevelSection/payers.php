@@ -31,18 +31,18 @@ use Exception;
 class payers
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -60,15 +60,15 @@ class payers
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['Payers']);
+            self::Validate($PortionData['Payers']);
 
             $Section = [
                 'component' => [
@@ -87,7 +87,7 @@ class payers
                             ]
                         ],
                         'title' => 'Payers',
-                        'text' => self::Narrative($Data['Payers'])
+                        'text' => self::Narrative($PortionData['Payers'])
                     ]
                 ]
             ];

@@ -19,18 +19,18 @@ use Exception;
 class reasonForReferral
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -82,12 +82,14 @@ class reasonForReferral
             ];
 
             // Patient Referral Act (NEW)
-            foreach($PortionData['ReasonForReferral']['Observations'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'organizer' => LevelEntry\patientReferralAct::Insert($Observation, $CompleteData)
-                ];
+            if(count($PortionData['ReasonForReferral']['Observations'])>1) {
+                foreach ($PortionData['ReasonForReferral']['Observations'] as $Observation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\patientReferralAct::Insert(
+                        $Observation,
+                        $CompleteData
+                    );
+                }
             }
-
 
             return $Section;
         }

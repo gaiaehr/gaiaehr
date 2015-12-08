@@ -85,10 +85,13 @@ class nutrition
             ];
 
             // Nutritional Status Observation (NEW) [0..*]
-            foreach($PortionData['Nutrition']['Observations'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\nutritionalStatusObservation::Insert($Observation, $CompleteData)
-                ];
+            if(count($PortionData['Nutrition']['Observations']) > 0) {
+                foreach ($PortionData['Nutrition']['Observations'] as $Observation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\nutritionalStatusObservation::Insert(
+                        $Observation,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

@@ -22,9 +22,9 @@ class physicalFindingsOfSkin
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
@@ -33,7 +33,7 @@ class physicalFindingsOfSkin
      * Build the Narrative part of this section
      * @param $Data
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -86,10 +86,10 @@ class physicalFindingsOfSkin
             ];
 
             // Wound Observation (NEW)
-            foreach($PortionData['PhysicalFindingsOfSkin']['WoundObservations'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'organizer' => LevelEntry\woundObservation::Insert($Observation, $CompleteData)
-                ];
+            if(count($PortionData['PhysicalFindingsOfSkin']['WoundObservations'])>1) {
+                foreach ($PortionData['PhysicalFindingsOfSkin']['WoundObservations'] as $Observation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\woundObservation::Insert($Observation, $CompleteData);
+                }
             }
 
             return $Section;

@@ -18,18 +18,18 @@ use Exception;
 class surgicalDrains
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -48,14 +48,15 @@ class surgicalDrains
 
     /**
      * @param $Data
+     * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -74,7 +75,7 @@ class surgicalDrains
                             ]
                         ],
                         'title' => 'Surgical Drains',
-                        'text' => self::Narrative($Data)
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

@@ -56,8 +56,7 @@ class DICOMObjectCatalog
      */
     public static function Insert($PortionData, $CompleteData)
     {
-        try
-        {
+        try {
             // Validate first
             self::Validate($PortionData);
 
@@ -86,10 +85,12 @@ class DICOMObjectCatalog
             ];
 
             // Study Act [1..*]
-            foreach($PortionData['DICOMObjectCatalog'] as $Catalog) {
-                $Section['component']['section']['entry'][] = [
-                    'act' => LevelEntry\studyAct::Insert($Catalog, $CompleteData)
-                ];
+            if (count($PortionData['DICOMObjectCatalog']) < 1)
+            {
+                foreach ($PortionData['DICOMObjectCatalog'] as $Catalog)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\studyAct::Insert($Catalog, $CompleteData);
+                }
             }
 
             return $Section;

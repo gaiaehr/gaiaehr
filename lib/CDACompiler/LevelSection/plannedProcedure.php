@@ -83,10 +83,13 @@ class plannedProcedure
             ];
 
             // Planned Procedure (V2) [0..*]
-            foreach($PortionData['PlannedProcedure']['PlannedProcedures'] as $PlannedProcedure) {
-                $Section['component']['section']['entry'][] = [
-                    'procedure' => LevelEntry\plannedProcedure::Insert($PlannedProcedure, $CompleteData)
-                ];
+            if(count($PortionData['PlannedProcedure']['PlannedProcedures'])>1) {
+                foreach ($PortionData['PlannedProcedure']['PlannedProcedures'] as $PlannedProcedure) {
+                    $Section['component']['section']['entry'][] = LevelEntry\plannedProcedure::Insert(
+                        $PlannedProcedure,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

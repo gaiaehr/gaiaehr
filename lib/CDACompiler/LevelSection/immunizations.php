@@ -21,19 +21,19 @@ use Exception;
 class immunizations
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
         // ...
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -51,15 +51,15 @@ class immunizations
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['Immunizations']);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -89,7 +89,7 @@ class immunizations
                     '@attributes' => [
                         'typeCode' => 'DRIV'
                     ],
-                    'act' => LevelEntry\immunizationActivity::Insert($Activity, $Data)
+                    LevelEntry\immunizationActivity::Insert($Activity, $Data)
                 ];
             }
 

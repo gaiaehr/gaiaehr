@@ -43,7 +43,8 @@ class complications
     {
         return [
             'Complications' => [
-
+                'Narrated' => '',
+                LevelEntry\problemObservation::Structure()
             ]
         ];
     }
@@ -65,8 +66,7 @@ class complications
                     'section' => [
                         'templateId' => [
                             '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.37.2',
-                                'extension' => $PortionData['AdvanceDirectives']['date']
+                                'root' => '2.16.840.1.113883.10.20.22.2.37.2'
                             ]
                         ],
                         'code' => [
@@ -84,9 +84,7 @@ class complications
             ];
 
             // Compile Problem Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = [
-                'organizer' => LevelEntry\problemObservation::Insert($PortionData, $CompleteData)
-            ];
+            $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert($PortionData, $CompleteData);
 
             return $Section;
         }

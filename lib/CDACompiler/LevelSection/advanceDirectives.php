@@ -89,7 +89,7 @@ class advanceDirectives
                     '@attributes' => [
                         'typeCode' => 'DRIV'
                     ],
-                    'organizer' => LevelEntry\advanceDirectiveOrganizer::Insert(
+                    LevelEntry\advanceDirectiveOrganizer::Insert(
                         $AdvanceDirective,
                         $CompleteData
                     )

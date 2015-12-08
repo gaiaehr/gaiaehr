@@ -21,18 +21,18 @@ class healthConcerns
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -85,14 +85,16 @@ class healthConcerns
             ];
 
             // Compile Health Status Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = [
-                'observation' => LevelEntry\healthStatusObservation::Insert($PortionData, $CompleteData)
-            ];
+            $Section['component']['section']['entry'][] = LevelEntry\healthStatusObservation::Insert(
+                $PortionData,
+                $CompleteData
+            );
 
             // Compile Health Status Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = [
-                'act' => LevelEntry\healthConcern::Insert($PortionData, $CompleteData)
-            ];
+            $Section['component']['section']['entry'][] = LevelEntry\healthConcern::Insert(
+                $PortionData,
+                $CompleteData
+            );
 
             return $Section;
         }

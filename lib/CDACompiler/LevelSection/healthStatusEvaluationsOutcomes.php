@@ -85,9 +85,10 @@ class healthStatusEvaluationsOutcomes
             ];
 
             // Outcome Observation (NEW) [1..1]
-            $Section['component']['section']['entry'][] = [
-                'observation' => LevelEntry\outcomeObservation::Insert($PortionData, $CompleteData)
-            ];
+            $Section['component']['section']['entry'][] = LevelEntry\outcomeObservation::Insert(
+                $PortionData,
+                $CompleteData
+            );
 
             return $Section;
         }

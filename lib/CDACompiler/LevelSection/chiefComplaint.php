@@ -16,22 +16,23 @@ use Exception;
 
 class chiefComplaint
 {
-
     /**
-     * @param $Data
+     * @param $PortionData
+     * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -41,7 +42,7 @@ class chiefComplaint
     {
         return [
             'ChiefComplaint' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
@@ -61,12 +62,7 @@ class chiefComplaint
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '1.3.6.1.4.1.19376.1.5.3.1.1.13.2.1',
-                                'extension' => $PortionData['AdvanceDirectives']['date']
-                            ]
-                        ],
+                        'templateId' => \Component::templateId('1.3.6.1.4.1.19376.1.5.3.1.1.13.2.1'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '10154-3',

@@ -18,13 +18,14 @@ use Exception;
 
 class complications
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -43,7 +44,7 @@ class complications
     {
         return [
             'Complications' => [
-                'Narrated' => 'SHALL contain exactly one [1..1] text (CONF:8177)',
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
                 LevelEntry\problemObservation::Structure()
             ]
         ];

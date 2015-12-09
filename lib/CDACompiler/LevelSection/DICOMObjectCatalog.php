@@ -21,18 +21,21 @@ use Exception;
 class DICOMObjectCatalog
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
+        if(count($PortionData['StudyAct'])<0)
+            throw new Exception('SHALL contain exactly one [1..1] Study Act');
+
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -44,7 +47,7 @@ class DICOMObjectCatalog
     {
         return [
             'DICOMObjectCatalog' => [
-
+                LevelEntry\studyAct::Structure()
             ]
         ];
     }

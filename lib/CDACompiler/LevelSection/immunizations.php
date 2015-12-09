@@ -26,7 +26,10 @@ class immunizations
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['ImmunizationActivity']) < 0)
+            throw new Exception('SHALL contain exactly one [1..1] Immunization Activity (V2)');
     }
 
     /**
@@ -35,7 +38,7 @@ class immunizations
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -45,7 +48,8 @@ class immunizations
     {
         return [
             'Immunizations' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\immunizationActivity::Structure()
             ]
         ];
     }
@@ -78,7 +82,7 @@ class immunizations
                             ]
                         ],
                         'title' => 'History of Immunizations',
-                        'text' => self::Narrative($PortionData['Immunizations'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

@@ -25,8 +25,10 @@ class allergies
      */
     private static function Validate($PortionData)
     {
-        if(!isset($PortionData['Allergies']))
-            throw new Exception('2.4 Allergies Section (entries required) (V2)');
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['AllergyConcernAct'])<0)
+            throw new Exception('SHALL contain exactly one [1..1] Allergy Concern Act (V2) ');
     }
 
     /**
@@ -54,12 +56,12 @@ class allergies
      * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($CompleteData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($CompleteData['Allergies']);
+            self::Validate($PortionData['Allergies']);
 
             $Section = [
                 'component' => [
@@ -78,23 +80,23 @@ class allergies
                             ]
                         ],
                         'title' => 'Allergies',
-                        'text' => self::Narrative($CompleteData['Allergies'])
+                        'text' => self::Narrative($PortionData['Narrated'])
                     ]
                 ]
             ];
 
-            // SHOULD contain zero or more [0..*] entry (CONF:7804) such that it
+            // SHOULD contain zero or more [1..*] entry (CONF:7804) such that it
             // SHALL contain exactly one [1..1] Allergy Concern Act (V2)
-            if(count($PortionData['Allergies']) > 0)
+            if(count($PortionData['AllergyConcernAct']) > 0)
             {
-                foreach ($PortionData['Allergies'] as $Allergies)
+                foreach ($PortionData['AllergyConcernAct'] as $AllergyConcernAct)
                 {
                     $Section['component']['section']['entry'][] = [
                         '@attributes' => [
                             'typeCode' => 'DRIV'
                         ],
                         LevelEntry\allergyConcernAct::Insert(
-                            $Allergies,
+                            $AllergyConcernAct,
                             $CompleteData
                         )
                     ];

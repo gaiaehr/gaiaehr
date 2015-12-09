@@ -19,20 +19,22 @@ use Exception;
 class assessment
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -42,7 +44,7 @@ class assessment
     {
         return [
             'Assessment' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
@@ -51,12 +53,12 @@ class assessment
      * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($CompleteData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($CompleteData['Assessment']);
+            self::Validate($PortionData['Assessment']);
 
             $Section = [
                 'component' => [
@@ -75,7 +77,7 @@ class assessment
                             ]
                         ],
                         'title' => 'Assessments',
-                        'text' => self::Narrative($CompleteData['Assessment'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

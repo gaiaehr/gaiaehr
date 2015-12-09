@@ -21,22 +21,22 @@ use Exception;
 class anesthesia
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-        if(!isset($Data['Anesthesia']))
-            throw new Exception('2.5 Anesthesia Section (V2) - Not found, skipping...');
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -46,21 +46,24 @@ class anesthesia
     {
         return [
             'Anesthesia' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\procedureActivityProcedure::Structure(),
+                LevelEntry\medicationActivity::Structure()
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
+     * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($CompleteData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($CompleteData['Anesthesia']);
+            self::Validate($PortionData['Anesthesia']);
 
             $Section = [
                 'component' => [
@@ -79,7 +82,7 @@ class anesthesia
                             ]
                         ],
                         'title' => 'Procedure Anesthesia',
-                        'text' => self::Narrative($CompleteData['Anesthesia'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

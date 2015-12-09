@@ -32,7 +32,9 @@ class advanceDirectives
      */
     private static function Validate($PortionData)
     {
-        if(count($PortionData['AdvanceDirectiveOrganizer']) < 1)
+        if(!isset($PortionData['Narrated']) < 1)
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['AdvanceDirectives'])<0)
             throw new Exception('SHALL contain exactly one [1..1] Advance Directive Organizer (NEW)');
     }
 
@@ -49,6 +51,7 @@ class advanceDirectives
     {
         return [
             'AdvanceDirectives' => [
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
                 LevelEntry\advanceDirectiveOrganizer::Structure()
             ]
         ];

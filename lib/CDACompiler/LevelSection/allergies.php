@@ -85,9 +85,9 @@ class allergies
 
             // SHOULD contain zero or more [0..*] entry (CONF:7804) such that it
             // SHALL contain exactly one [1..1] Allergy Concern Act (V2)
-            if(count($CompleteData['Allergies']) > 0)
+            if(count($PortionData['Allergies']) > 0)
             {
-                foreach ($CompleteData['Allergies'] as $Allergies)
+                foreach ($PortionData['Allergies'] as $Allergies)
                 {
                     $Section['component']['section']['entry'][] = [
                         '@attributes' => [

@@ -87,9 +87,18 @@ class encounters
                 ]
             ];
 
-            // Encounter Activity (V2)
-            // ...
-
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Encounter Activity (V2)
+            if(count($PortionData['EncounterActivity']) > 0)
+            {
+                foreach ($PortionData['EncounterActivity'] as $EncounterActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\encounterActivity::Insert(
+                        $EncounterActivity,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

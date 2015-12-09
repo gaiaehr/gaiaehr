@@ -84,17 +84,31 @@ class healthConcerns
                 ]
             ];
 
-            // Compile Health Status Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = LevelEntry\healthStatusObservation::Insert(
-                $PortionData,
-                $CompleteData
-            );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Health Status Observation (V2)
+            if(count($PortionData['HealthStatusObservation']) > 0)
+            {
+                foreach ($PortionData['HealthStatusObservation'] as $HealthStatusObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\healthStatusObservation::Insert(
+                        $HealthStatusObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
-            // Compile Health Status Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = LevelEntry\healthConcern::Insert(
-                $PortionData,
-                $CompleteData
-            );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Health Concern Act (NEW)
+            if(count($PortionData['HealthConcernAct']) > 0)
+            {
+                foreach ($PortionData['HealthConcernAct'] as $HealthConcernAct)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\healthConcernAct::Insert(
+                        $HealthConcernAct,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

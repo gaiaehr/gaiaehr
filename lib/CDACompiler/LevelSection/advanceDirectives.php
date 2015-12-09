@@ -84,16 +84,19 @@ class advanceDirectives
 
             // SHALL contain at least one [1..*] entry
             // SHALL contain exactly one [1..1] Advance Directive Organizer (NEW)
-            foreach($PortionData['AdvanceDirectives'] as $AdvanceDirective) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    LevelEntry\advanceDirectiveOrganizer::Insert(
-                        $AdvanceDirective,
-                        $CompleteData
-                    )
-                ];
+            if(count($PortionData['AdvanceDirectives'])>0)
+            {
+                foreach ($PortionData['AdvanceDirectives'] as $AdvanceDirective) {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\advanceDirectiveOrganizer::Insert(
+                            $AdvanceDirective,
+                            $CompleteData
+                        )
+                    ];
+                }
             }
 
             return $Section;

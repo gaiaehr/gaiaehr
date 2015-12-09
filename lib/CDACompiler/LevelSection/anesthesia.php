@@ -86,9 +86,9 @@ class anesthesia
 
             // MAY contain zero or more [0..*] entry
             // SHALL contain exactly one [1..1] Procedure Activity Procedure (V2)
-            if(count($CompleteData['ProcedureActivityProcedure']) > 0)
+            if(count($PortionData['ProcedureActivityProcedure']) > 0)
             {
-                foreach ($CompleteData['ProcedureActivityProcedure'] as $ProcedureActivityProcedure)
+                foreach ($PortionData['ProcedureActivityProcedure'] as $ProcedureActivityProcedure)
                 {
                     $Section['component']['section']['entry'][] = [
                         '@attributes' => [
@@ -104,9 +104,9 @@ class anesthesia
 
             // MAY contain zero or more [0..*] entry
             // SHALL contain exactly one [1..1] Medication Activity (V2)
-            if(count($CompleteData['MedicationActivity']) > 0)
+            if(count($PortionData['MedicationActivity']) > 0)
             {
-                foreach ($CompleteData['MedicationActivity'] as $MedicationActivity)
+                foreach ($PortionData['MedicationActivity'] as $MedicationActivity)
                 {
                     $Section['component']['section']['entry'][] = [
                         '@attributes' => [

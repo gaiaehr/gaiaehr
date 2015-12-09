@@ -20,20 +20,20 @@ class complications
 {
 
     /**
-     * @param $Data
+     * @param $PortionData
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
 
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
     /**
@@ -43,7 +43,7 @@ class complications
     {
         return [
             'Complications' => [
-                'Narrated' => '',
+                'Narrated' => 'SHALL contain exactly one [1..1] text (CONF:8177)',
                 LevelEntry\problemObservation::Structure()
             ]
         ];
@@ -83,11 +83,18 @@ class complications
                 ]
             ];
 
-            // Compile Problem Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
-                $PortionData,
-                $CompleteData
-            );
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Problem Observation (V2)
+            if(count($PortionData['ProblemObservation']) > 0)
+            {
+                foreach ($PortionData['ProblemObservation'] as $ProblemObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
+                        $ProblemObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

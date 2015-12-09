@@ -8,7 +8,6 @@
  * The assessment may be a list of specific disease entities or a narrative block.
  *
  * Contains:
- * Planned Act (V2)
  *
  */
 
@@ -80,25 +79,6 @@ class assessment
                     ]
                 ]
             ];
-
-
-            // MAY contain zero or more [0..*] entry
-            // SHALL contain exactly one [1..1] Planned Act (V2)
-            if(count($CompleteData['PlannedAct']) > 0)
-            {
-                foreach ($CompleteData['PlannedAct'] as $PlannedAct)
-                {
-                    $Section['component']['section']['entry'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'DRIV'
-                        ],
-                        LevelEntry\plannedAct::Insert(
-                            $PlannedAct,
-                            $CompleteData
-                        )
-                    ];
-                }
-            }
 
             return $Section;
         }

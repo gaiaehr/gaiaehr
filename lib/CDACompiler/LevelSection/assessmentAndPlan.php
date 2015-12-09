@@ -81,8 +81,23 @@ class assessmentAndPlan
                 ]
             ];
 
-            // 3.66	Planned Act (V2)
-            // ...
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Planned Act (V2)
+            if(count($PortionData['PlannedAct']) > 0)
+            {
+                foreach ($PortionData['PlannedAct'] as $PlannedAct)
+                {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\plannedAct::Insert(
+                            $PlannedAct,
+                            $CompleteData
+                        )
+                    ];
+                }
+            }
 
             return $Section;
         }

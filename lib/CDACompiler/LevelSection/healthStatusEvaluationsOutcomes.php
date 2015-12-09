@@ -84,11 +84,18 @@ class healthStatusEvaluationsOutcomes
                 ]
             ];
 
-            // Outcome Observation (NEW) [1..1]
-            $Section['component']['section']['entry'][] = LevelEntry\outcomeObservation::Insert(
-                $PortionData,
-                $CompleteData
-            );
+            // SHOULD contain zero or more [1..*] entry
+            // SHALL contain exactly one [1..1] Outcome Observation (NEW)
+            if(count($PortionData['OutcomeObservation']) > 0)
+            {
+                foreach ($PortionData['OutcomeObservation'] as $OutcomeObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\outcomeObservation::Insert(
+                        $OutcomeObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

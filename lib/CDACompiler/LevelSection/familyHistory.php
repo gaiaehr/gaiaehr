@@ -82,8 +82,18 @@ class familyHistory
                 ]
             ];
 
-            // 3.33	Family History Organizer
-            // ...
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Family History Organizer
+            if(count($PortionData['FamilyHistoryOrganizer']) > 0)
+            {
+                foreach ($PortionData['FamilyHistoryOrganizer'] as $FamilyHistoryOrganizer)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\familyHistoryOrganizer::Insert(
+                        $FamilyHistoryOrganizer,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

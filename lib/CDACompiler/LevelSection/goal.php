@@ -84,8 +84,18 @@ class goal
                 ]
             ];
 
-            // Goal Observation (NEW)
-            // ...
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Goal Observation (NEW)
+            if(count($PortionData['GoalObservation']) > 0)
+            {
+                foreach ($PortionData['GoalObservation'] as $GoalObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\goalObservation::Insert(
+                        $GoalObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
 
             return $Section;

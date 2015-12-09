@@ -84,13 +84,14 @@ class DICOMObjectCatalog
                 ]
             ];
 
-            // Study Act [1..*]
-            if (count($PortionData['DICOMObjectCatalog']) < 1)
+            // MAY contain zero or more [1..*] entry
+            // SHALL contain exactly one [1..1] Study Act
+            if(count($PortionData['StudyAct']) > 0)
             {
-                foreach ($PortionData['DICOMObjectCatalog'] as $Catalog)
+                foreach ($PortionData['StudyAct'] as $StudyAct)
                 {
                     $Section['component']['section']['entry'][] = LevelEntry\studyAct::Insert(
-                        $Catalog,
+                        $StudyAct,
                         $CompleteData
                     );
                 }

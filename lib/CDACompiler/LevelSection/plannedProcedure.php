@@ -82,9 +82,10 @@ class plannedProcedure
                 ]
             ];
 
-            // Planned Procedure (V2) [0..*]
-            if(count($PortionData['PlannedProcedure']['PlannedProcedures'])>1) {
-                foreach ($PortionData['PlannedProcedure']['PlannedProcedures'] as $PlannedProcedure) {
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Planned Procedure (V2)
+            if(count($PortionData['PlannedProcedure']) > 0) {
+                foreach ($PortionData['PlannedProcedure'] as $PlannedProcedure) {
                     $Section['component']['section']['entry'][] = LevelEntry\plannedProcedure::Insert(
                         $PlannedProcedure,
                         $CompleteData

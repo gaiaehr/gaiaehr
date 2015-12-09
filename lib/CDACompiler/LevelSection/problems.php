@@ -84,11 +84,32 @@ class problems
                 ]
             ];
 
-            // Health Status Observation (V2)
-            // ...
-            // Problem Concern Act (Condition) (V2)
-            // ...
+            // MAY contain zero or more [1..*] entry
+            // SHALL contain exactly one [1..1] Problem Concern Act (Condition) (V2)
+            if(count($PortionData['ProblemConcernAct']) > 0) {
+                foreach ($PortionData['ProblemConcernAct'] as $ProblemConcernAct) {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\problemConcernAct::Insert(
+                            $ProblemConcernAct,
+                            $CompleteData
+                        )
+                    ];
+                }
+            }
 
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Health Status Observation (V2)
+            if(count($PortionData['HealthStatusObservation']) > 0) {
+                foreach ($PortionData['HealthStatusObservation'] as $HealthStatusObservation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\healthStatusObservation::Insert(
+                        $HealthStatusObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

@@ -82,16 +82,14 @@ class postprocedureDiagnosis
                 ]
             ];
 
-            // Postprocedure Diagnosis (V2) [0..1]
-            if(count($PortionData['PostprocedureDiagnosis']['Activity'])>1)
-            {
-                foreach ($PortionData['PostprocedureDiagnosis']['Activity'] as $Activity) {
-                    $Section['component']['section']['entry'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'DRIV'
-                        ],
-                        LevelEntry\postprocedureDiagnosis::Insert($Activity, $CompleteData)
-                    ];
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Postprocedure Diagnosis (V2)
+            if(count($PortionData['PostprocedureDiagnosis']) > 0) {
+                foreach ($PortionData['PostprocedureDiagnosis'] as $PostprocedureDiagnosis) {
+                    $Section['component']['section']['entry'][] = LevelEntry\postprocedureDiagnosis::Insert(
+                        $PostprocedureDiagnosis,
+                        $CompleteData
+                    );
                 }
             }
 

@@ -83,15 +83,14 @@ class preoperativeDiagnosis
                 ]
             ];
 
-            // Preoperative Diagnosis (V2) [0..1]
-            if(count($PortionData['PostprocedureDiagnosis']['Activity'])>1) {
-                foreach ($PortionData['PostprocedureDiagnosis']['Activity'] as $Activity) {
-                    $Section['component']['section']['entry'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'DRIV'
-                        ],
-                        LevelEntry\preoperativeDiagnosis::Insert($Activity, $CompleteData)
-                    ];
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Preoperative Diagnosis (V2)
+            if(count($PortionData['PreoperativeDiagnosis']) > 0) {
+                foreach ($PortionData['PreoperativeDiagnosis'] as $PreoperativeDiagnosis) {
+                    $Section['component']['section']['entry'][] = LevelEntry\preoperativeDiagnosis::Insert(
+                        $PreoperativeDiagnosis,
+                        $CompleteData
+                    );
                 }
             }
 

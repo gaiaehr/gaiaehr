@@ -33,7 +33,8 @@ class functionalStatus
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -42,7 +43,7 @@ class functionalStatus
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -52,7 +53,14 @@ class functionalStatus
     {
         return [
             'FunctionalStatus' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\functionalStatusOrganizer::Structure(),
+                LevelEntry\functionalStatusObservation::Structure(),
+                LevelEntry\caregiverCharacteristics::Structure(),
+                LevelEntry\assessmentScaleObservation::Structure(),
+                LevelEntry\nonMedicinalSupplyActivity::Structure(),
+                LevelEntry\selfCareActivitiesADLAndIADL::Structure(),
+                LevelEntry\sensoryAndSpeechStatus::Structure()
             ]
         ];
     }

@@ -25,6 +25,9 @@ class generalStatus
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+
     }
 
     /**
@@ -33,7 +36,7 @@ class generalStatus
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -43,7 +46,7 @@ class generalStatus
     {
         return [
             'GeneralStatus' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }

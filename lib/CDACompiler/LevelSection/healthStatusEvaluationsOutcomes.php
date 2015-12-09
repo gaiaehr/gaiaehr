@@ -19,22 +19,25 @@ use Exception;
 
 class healthStatusEvaluationsOutcomes
 {
-
     /**
-     * @param $Data
+     * @param $PortionData
+     * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['OutcomeObservation'])<0)
+            throw new Exception('SHALL contain exactly one [1..1] Outcome Observation (NEW) ');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -44,7 +47,8 @@ class healthStatusEvaluationsOutcomes
     {
         return [
             'HealthStatusEvaluationsOutcomes' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\outcomeObservation::Structure()
             ]
         ];
     }

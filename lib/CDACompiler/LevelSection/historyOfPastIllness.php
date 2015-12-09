@@ -18,13 +18,14 @@ use Exception;
 
 class historyOfPastIllness
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -33,7 +34,7 @@ class historyOfPastIllness
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -43,7 +44,8 @@ class historyOfPastIllness
     {
         return [
             'HistoryOfPastIllness' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\problemObservation::Structure()
             ]
         ];
     }

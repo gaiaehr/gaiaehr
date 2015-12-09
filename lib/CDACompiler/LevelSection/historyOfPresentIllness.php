@@ -18,22 +18,23 @@ use Exception;
 
 class historyOfPresentIllness
 {
-
     /**
-     * @param $Data
+     * @param $PortionData
+     * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -43,31 +44,26 @@ class historyOfPresentIllness
     {
         return [
             'HistoryOfPresentIllness' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['HistoryOfPresentIllness']);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '1.3.6.1.4.1.19376.1.5.3.1.3.4.2',
-                                'extension' => $Data['HistoryOfPresentIllness']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('1.3.6.1.4.1.19376.1.5.3.1.3.4.2'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '10164-2',
@@ -77,7 +73,7 @@ class historyOfPresentIllness
                             ]
                         ],
                         'title' => 'History Of Present Illness',
-                        'text' => self::Narrative($Data['HistoryOfPresentIllness'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

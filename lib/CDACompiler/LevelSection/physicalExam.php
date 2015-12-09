@@ -93,15 +93,14 @@ class physicalExam
                 ]
             ];
 
-            // 3.110 Wound Class Observation [0..*]
-            if(count($PortionData['PhysicalExam']['WoundsClassObservation']) > 1) {
-                foreach ($PortionData['PhysicalExam']['WoundsClassObservation'] as $Observation) {
-                    $Section['component']['section']['entry'][] = [
-                        '@attributes' => [
-                            'typeCode' => 'DRIV'
-                        ],
-                        LevelEntry\woundClassObservation::Insert($Observation, $CompleteData)
-                    ];
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Wound Class Observation
+            if(count($PortionData['WoundsClassObservation']) > 0) {
+                foreach ($PortionData['WoundsClassObservation'] as $WoundsClassObservation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\woundClassObservation::Insert(
+                        $WoundsClassObservation,
+                        $CompleteData
+                    );
                 }
             }
 

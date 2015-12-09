@@ -53,7 +53,7 @@ class interventions
     {
         return [
             'Interventions' => [
-
+                LevelEntry\interventionAct::Structure()
             ]
         ];
     }
@@ -93,14 +93,17 @@ class interventions
                 ]
             ];
 
-            // 3.49	Intervention Act (NEW) [0..*]
-            foreach($PortionData['Interventions']['Activity'] as $Activity) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    LevelEntry\intervation::Insert($Activity, $CompleteData)
-                ];
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Intervention Act (NEW)
+            if(count($PortionData['InterventionAct']) > 0)
+            {
+                foreach ($PortionData['InterventionAct'] as $InterventionAct)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\interventionAct::Insert(
+                        $InterventionAct,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

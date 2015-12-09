@@ -54,7 +54,7 @@ class payers
     {
         return [
             'Payers' => [
-
+                LevelEntry\coverageActivity::Structure()
             ]
         ];
     }
@@ -63,7 +63,7 @@ class payers
      * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($PortionData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
@@ -92,8 +92,18 @@ class payers
                 ]
             ];
 
-            // Coverage Activity (V2)
-            // ...
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Coverage Activity (V2)
+            if(count($PortionData['CoverageActivity']) > 0)
+            {
+                foreach ($PortionData['CoverageActivity'] as $CoverageActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\coverageActivity::Insert(
+                        $CoverageActivity,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

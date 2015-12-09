@@ -91,12 +91,44 @@ class medicalEquipment
                 ]
             ];
 
-            // Medical Equipment Organizer (NEW)
-            // ...
-            // Non-Medicinal Supply Activity (V2)
-            // ...
-            // Procedure Activity Procedure (V2)
-            // ...
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Medical Equipment Organizer (NEW)
+            if(count($PortionData['MedicalEquipmentOrganizer']) > 0)
+            {
+                foreach ($PortionData['MedicalEquipmentOrganizer'] as $MedicalEquipmentOrganizer)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\medicalEquipmentOrganizer::Insert(
+                        $MedicalEquipmentOrganizer,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Non-Medicinal Supply Activity (V2)
+            if(count($PortionData['NonMedicinalSupplyActivity']) > 0)
+            {
+                foreach ($PortionData['NonMedicinalSupplyActivity'] as $NonMedicinalSupplyActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\nonMedicinalSupplyActivity::Insert(
+                        $NonMedicinalSupplyActivity,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Procedure Activity Procedure (V2)
+            if(count($PortionData['ProcedureActivityProcedure']) > 0)
+            {
+                foreach ($PortionData['ProcedureActivityProcedure'] as $ProcedureActivityProcedure)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\procedureActivityProcedure::Insert(
+                        $ProcedureActivityProcedure,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

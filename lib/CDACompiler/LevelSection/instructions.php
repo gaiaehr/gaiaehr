@@ -82,14 +82,17 @@ class instructions
                 ]
             ];
 
-            // 3.48	Instruction (V2) [0..*]
-            foreach($PortionData['Instructions']['Activity'] as $Activity) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    LevelEntry\instruction::Insert($Activity, $CompleteData)
-                ];
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Instruction (V2)
+            if(count($PortionData['Instruction']) > 0)
+            {
+                foreach ($PortionData['Instruction'] as $Instruction)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\instruction::Insert(
+                        $Instruction,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

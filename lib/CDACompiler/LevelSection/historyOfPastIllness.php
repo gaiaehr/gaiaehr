@@ -83,11 +83,18 @@ class historyOfPastIllness
                 ]
             ];
 
-            // Problem Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
-                $PortionData,
-                $CompleteData
-            );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Problem Observation (V2)
+            if(count($PortionData['ProblemObservation']) > 0)
+            {
+                foreach ($PortionData['ProblemObservation'] as $ProblemObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
+                        $ProblemObservation,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

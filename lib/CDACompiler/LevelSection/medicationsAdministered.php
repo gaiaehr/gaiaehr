@@ -85,14 +85,17 @@ class medicationsAdministered
                 ]
             ];
 
-            // 3.51	Medication Activity (V2) [0..*]
-            foreach($PortionData['MedicationsAdministered']['Activity'] as $Activity) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    LevelEntry\medicationsActivity::Insert($Activity, $CompleteData)
-                ];
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Medication Activity (V2)
+            if(count($PortionData['MedicationActivity']) > 0)
+            {
+                foreach ($PortionData['MedicationActivity'] as $MedicationActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\medicationActivity::Insert(
+                        $MedicationActivity,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

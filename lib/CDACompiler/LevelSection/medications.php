@@ -95,11 +95,18 @@ class medications
                 ]
             ];
 
-            // Health Status Observation (V2)
-            // ...
-            // Problem Concern Act (Condition) (V2)
-            // ...
-
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Medication Activity (V2)
+            if(count($PortionData['MedicationActivity']) > 0)
+            {
+                foreach ($PortionData['MedicationActivity'] as $MedicationActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\medicationActivity::Insert(
+                        $MedicationActivity,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

@@ -54,7 +54,7 @@ class immunizations
      * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($PortionData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
@@ -78,21 +78,23 @@ class immunizations
                             ]
                         ],
                         'title' => 'History of Immunizations',
-                        'text' => self::Narrative($Data['Immunizations'])
+                        'text' => self::Narrative($PortionData['Immunizations'])
                     ]
                 ]
             ];
 
-            // Immunization Activity (V2) [1..*]
-            foreach($Data['Immunizations']['Activities'] as $Activity) {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    LevelEntry\immunizationActivity::Insert($Activity, $Data)
-                ];
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Immunization Activity (V2)
+            if(count($PortionData['ImmunizationActivity']) > 0)
+            {
+                foreach ($PortionData['ImmunizationActivity'] as $ImmunizationActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\immunizationActivity::Insert(
+                        $ImmunizationActivity,
+                        $CompleteData
+                    );
+                }
             }
-
 
             return $Section;
         }

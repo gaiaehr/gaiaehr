@@ -44,7 +44,7 @@ class nutrition
     {
         return [
             'Nutrition' => [
-
+                LevelEntry\nutritionalStatusObservation::Structure()
             ]
         ];
     }
@@ -84,11 +84,14 @@ class nutrition
                 ]
             ];
 
-            // Nutritional Status Observation (NEW) [0..*]
-            if(count($PortionData['Nutrition']['Observations']) > 0) {
-                foreach ($PortionData['Nutrition']['Observations'] as $Observation) {
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Nutritional Status Observation (NEW)
+            if(count($PortionData['NutritionalStatusObservation']) > 0)
+            {
+                foreach ($PortionData['NutritionalStatusObservation'] as $NutritionalStatusObservation)
+                {
                     $Section['component']['section']['entry'][] = LevelEntry\nutritionalStatusObservation::Insert(
-                        $Observation,
+                        $NutritionalStatusObservation,
                         $CompleteData
                     );
                 }

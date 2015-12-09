@@ -91,60 +91,95 @@ class mentalStatus
                 ]
             ];
 
-            // Assessment Scale Observation [0..*]
-            foreach($PortionData['MentalStatus']['AssessmentScaleObservations'] as $Observation) {
-                $Section['component']['section']['entry'][] = LevelEntry\assessmentScaleObservation::Insert(
-                    $Observation,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Cognitive Status Organizer (V2)
+            if(count($PortionData['CognitiveStatusOrganizer']) > 0)
+            {
+                foreach ($PortionData['CognitiveStatusOrganizer'] as $CognitiveStatusOrganizer)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\cognitiveStatusOrganizer::Insert(
+                        $CognitiveStatusOrganizer,
+                        $CompleteData
+                    );
+                }
             }
 
-            // Caregiver Characteristics [0..*]
-            foreach($PortionData['MentalStatus']['CareGiverCharacteristicsObservations'] as $Observation) {
-                $Section['component']['section']['entry'][] = LevelEntry\medicationsActivity::Insert(
-                    $Observation,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Cognitive Status Observation (V2)
+            if(count($PortionData['CognitiveStatusObservation']) > 0)
+            {
+                foreach ($PortionData['CognitiveStatusObservation'] as $CognitiveStatusObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\cognitiveStatusObservation::Insert(
+                        $CognitiveStatusObservation,
+                        $CompleteData
+                    );
+                }
             }
 
-            // Cognitive Abilities Observation (NEW) [0..*]
-            foreach($PortionData['MentalStatus']['CognitiveAbilitiesObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = LevelEntry\cognitiveAbilitiesObservation::Insert(
-                    $Observation,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Caregiver Characteristics
+            if(count($PortionData['CaregiverCharacteristics']) > 0)
+            {
+                foreach ($PortionData['CaregiverCharacteristics'] as $CaregiverCharacteristics)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\caregiverCharacteristics::Insert(
+                        $CaregiverCharacteristics,
+                        $CompleteData
+                    );
+                }
             }
 
-            // Cognitive Status Observation (V2) [0..*]
-            foreach($PortionData['MentalStatus']['CognitiveStatusObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = LevelEntry\cognitiveStatusObservation::Insert(
-                    $Observation,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Assessment Scale Observation
+            if(count($PortionData['AssessmentScaleObservation']) > 0)
+            {
+                foreach ($PortionData['AssessmentScaleObservation'] as $AssessmentScaleObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\assessmentScaleObservation::Insert(
+                        $AssessmentScaleObservation,
+                        $CompleteData
+                    );
+                }
             }
 
-            // Cognitive Status Organizer (V2) [0..*]
-            foreach($PortionData['MentalStatus']['CognitiveStatusOrganizer'] as $Organizer) {
-                $Section['component']['section']['entry'][] = LevelEntry\cognitiveStatusOrganizer::Insert(
-                    $Organizer,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Non-Medicinal Supply Activity (V2)
+            if(count($PortionData['NonMedicinalSupplyActivity']) > 0)
+            {
+                foreach ($PortionData['NonMedicinalSupplyActivity'] as $NonMedicinalSupplyActivity)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\nonMedicinalSupplyActivity::Insert(
+                        $NonMedicinalSupplyActivity,
+                        $CompleteData
+                    );
+                }
             }
 
-            // Mental Status Observation (NEW)
-            foreach($PortionData['MentalStatus']['MentalStatusObservation'] as $Observation) {
-                $Section['component']['section']['entry'][] = LevelEntry\mentalStatusObservation::Insert(
-                    $Observation,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Cognitive Abilities Observation (NEW)
+            if(count($PortionData['CognitiveAbilitiesObservation']) > 0)
+            {
+                foreach ($PortionData['CognitiveAbilitiesObservation'] as $CognitiveAbilitiesObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\cognitiveAbilitiesObservation::Insert(
+                        $CognitiveAbilitiesObservation,
+                        $CompleteData
+                    );
+                }
             }
 
-            // Non-Medicinal Supply Activity (V2)
-            foreach($PortionData['MentalStatus']['NonMedicinalSupply'] as $Activity) {
-                $Section['component']['section']['entry'][] = LevelEntry\nonMedicinalSupply::Insert(
-                    $Activity,
-                    $CompleteData
-                );
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Mental Status Observation (NEW)
+            if(count($PortionData['MentalStatusObservation']) > 0)
+            {
+                foreach ($PortionData['MentalStatusObservation'] as $MentalStatusObservation)
+                {
+                    $Section['component']['section']['entry'][] = LevelEntry\mentalStatusObservation::Insert(
+                        $MentalStatusObservation,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

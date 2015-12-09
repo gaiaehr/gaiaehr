@@ -83,18 +83,22 @@ class allergies
                 ]
             ];
 
-            // 3.7 Allergy Concern Act (V2)
-            foreach($CompleteData['Allergies'] as $Allergies)
+            // SHOULD contain zero or more [0..*] entry (CONF:7804) such that it
+            // SHALL contain exactly one [1..1] Allergy Concern Act (V2)
+            if(count($CompleteData['Allergies']) > 0)
             {
-                $Section['component']['section']['entry'][] = [
-                    '@attributes' => [
-                        'typeCode' => 'DRIV'
-                    ],
-                    LevelEntry\allergyConcernAct::Insert(
-                        $Allergies,
-                        $CompleteData
-                    )
-                ];
+                foreach ($CompleteData['Allergies'] as $Allergies)
+                {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\allergyConcernAct::Insert(
+                            $Allergies,
+                            $CompleteData
+                        )
+                    ];
+                }
             }
 
             return $Section;

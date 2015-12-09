@@ -49,15 +49,15 @@ class assessment
     }
 
     /**
-     * @param $Data
+     * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($Data['Assessment']);
+            self::Validate($CompleteData['Assessment']);
 
             $Section = [
                 'component' => [
@@ -76,10 +76,29 @@ class assessment
                             ]
                         ],
                         'title' => 'Assessments',
-                        'text' => self::Narrative($Data['Assessment'])
+                        'text' => self::Narrative($CompleteData['Assessment'])
                     ]
                 ]
             ];
+
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Planned Act (V2)
+            if(count($CompleteData['PlannedAct']) > 0)
+            {
+                foreach ($CompleteData['PlannedAct'] as $PlannedAct)
+                {
+                    $Section['component']['section']['entry'][] = [
+                        '@attributes' => [
+                            'typeCode' => 'DRIV'
+                        ],
+                        LevelEntry\plannedAct::Insert(
+                            $PlannedAct,
+                            $CompleteData
+                        )
+                    ];
+                }
+            }
 
             return $Section;
         }

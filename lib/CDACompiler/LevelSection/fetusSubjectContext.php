@@ -20,18 +20,20 @@ use Exception;
 class fetusSubjectContext
 {
     /**
-     * @param $Data
+     * @param $PortionData
      * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
+        if(!isset($PortionData['name']))
+            throw new Exception('SHALL contain exactly one [1..1] name');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
 
     }
@@ -43,6 +45,7 @@ class fetusSubjectContext
     {
         return [
             'FetusSubjectContext' => [
+                'name' => 'SHALL contain exactly one [1..1] name'
             ]
         ];
     }

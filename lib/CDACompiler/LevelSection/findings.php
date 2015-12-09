@@ -24,6 +24,8 @@ class findings
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHOULD contain only the direct observations in the report, with topics such as Reason for Study, History, and Impression placed in separate sections.  However, in cases where the source of report content provides a single block of text not separated into these sections, that text SHALL be placed in the Findings section');
     }
 
     /**
@@ -42,7 +44,7 @@ class findings
     {
         return [
             'Findings' => [
-                'Narrated' => ''
+                'Narrated' => 'SHOULD contain only the direct observations in the report, with topics such as Reason for Study, History, and Impression placed in separate sections.  However, in cases where the source of report content provides a single block of text not separated into these sections, that text SHALL be placed in the Findings section'
             ]
 
         ];

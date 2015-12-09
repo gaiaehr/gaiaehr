@@ -34,29 +34,32 @@ class allergies
      */
     private static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
+    /**
+     * @param $PortionData
+     * @return array
+     */
     public static function Structure($PortionData)
     {
         return [
             'Allergies' => [
-                allergyConcernAct::Structure()
+                LevelEntry\allergyConcernAct::Structure()
             ]
         ];
     }
 
     /**
-     * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
      */
-    public static function Insert($PortionData, $CompleteData)
+    public static function Insert($CompleteData)
     {
         try
         {
             // Validate first
-            self::Validate($PortionData['Allergies']);
+            self::Validate($CompleteData['Allergies']);
 
             $Section = [
                 'component' => [
@@ -75,19 +78,22 @@ class allergies
                             ]
                         ],
                         'title' => 'Allergies',
-                        'text' => self::Narrative($PortionData['Allergies'])
+                        'text' => self::Narrative($CompleteData['Allergies'])
                     ]
                 ]
             ];
 
             // 3.7 Allergy Concern Act (V2)
-            foreach($PortionData['Allergies'] as $Allergy)
+            foreach($CompleteData['Allergies'] as $Allergies)
             {
                 $Section['component']['section']['entry'][] = [
                     '@attributes' => [
                         'typeCode' => 'DRIV'
                     ],
-                    allergyConcernAct::Insert($Allergy, $CompleteData)
+                    LevelEntry\allergyConcernAct::Insert(
+                        $Allergies,
+                        $CompleteData
+                    )
                 ];
             }
 

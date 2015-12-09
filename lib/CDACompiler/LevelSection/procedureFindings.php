@@ -84,10 +84,14 @@ class procedureFindings
             ];
 
             // Problem Observation (V2) [0..*]
-            foreach($PortionData['ProcedureFindings'] as $Observation) {
-                $Section['component']['section']['entry'][] = [
-                    'observation' => LevelEntry\problemObservation::Insert($Observation, $CompleteData)
-                ];
+            if(count($PortionData['ProcedureFindings'])>1)
+            {
+                foreach($PortionData['ProcedureFindings'] as $Observation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
+                        $Observation,
+                        $CompleteData
+                    );
+                }
             }
 
             return $Section;

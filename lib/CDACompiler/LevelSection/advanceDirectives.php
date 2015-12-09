@@ -49,7 +49,7 @@ class advanceDirectives
     {
         return [
             'AdvanceDirectives' => [
-                advanceDirectiveOrganizer::Structure()
+                LevelEntry\advanceDirectiveOrganizer::Structure()
             ]
         ];
     }
@@ -68,7 +68,7 @@ class advanceDirectives
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => \Component::templateId('2.16.840.1.113883.10.20.22.2.21'),
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.21'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '42348-3',

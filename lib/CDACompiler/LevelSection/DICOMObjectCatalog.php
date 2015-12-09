@@ -89,7 +89,10 @@ class DICOMObjectCatalog
             {
                 foreach ($PortionData['DICOMObjectCatalog'] as $Catalog)
                 {
-                    $Section['component']['section']['entry'][] = LevelEntry\studyAct::Insert($Catalog, $CompleteData);
+                    $Section['component']['section']['entry'][] = LevelEntry\studyAct::Insert(
+                        $Catalog,
+                        $CompleteData
+                    );
                 }
             }
 

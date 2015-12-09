@@ -77,7 +77,7 @@ class reviewOfSystems
                             ]
                         ],
                         'title' => 'Review Of Systems',
-                        'text' => self::Narrative($Data['ReviewOfSystems'])
+                        'text' => self::Narrative($PortionData['ReviewOfSystems'])
                     ]
                 ]
             ];

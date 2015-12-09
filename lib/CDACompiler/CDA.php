@@ -5,6 +5,11 @@ require_once("Autoloader.php");
 class CDA
 {
 
+    /**
+     * @param array $Arguments
+     * @return string|void
+     * @throws Exception
+     */
     public function Compile($Arguments = array())
     {
         // Check for the version argument, if not throw an exception
@@ -27,6 +32,11 @@ class CDA
 
     }
 
+    /**
+     * @param null $data
+     * @param string $docType
+     * @return string
+     */
     private static function __CDA_v2($data = null, $docType = 'CCD')
     {
 
@@ -95,6 +105,9 @@ class CDA
         return $xml->saveXML();
     }
 
+    /**
+     * @param $data
+     */
     private static function __CDA_v1($data)
     {
 

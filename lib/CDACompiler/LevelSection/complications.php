@@ -84,7 +84,10 @@ class complications
             ];
 
             // Compile Problem Observation (V2) [1..1]
-            $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert($PortionData, $CompleteData);
+            $Section['component']['section']['entry'][] = LevelEntry\problemObservation::Insert(
+                $PortionData,
+                $CompleteData
+            );
 
             return $Section;
         }

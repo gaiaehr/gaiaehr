@@ -28,8 +28,8 @@ class vitalSigns
      */
     private static function Validate($PortionData)
     {
-        if(!isset($PortionData['Allergies']))
-            throw new Exception('2.4 Allergies Section (entries required) (V2)');
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -38,7 +38,7 @@ class vitalSigns
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -48,16 +48,17 @@ class vitalSigns
     {
         return [
             'VitalSigns' => [
-
+                'Narrated' => '',
+                LevelEntry\vitalSignsOrganizer::Structure()
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($PortionData)
+    public static function Insert($PortionData, $CompleteData)
     {
         try
         {
@@ -86,8 +87,16 @@ class vitalSigns
                 ]
             ];
 
-            // 3.108 Vital Signs Organizer (V2)
-            // ...
+            // SHOULD contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Vital Signs Organizer (V2)
+            if(count($PortionData['VitalSignsOrganizer']) > 0) {
+                foreach ($PortionData['VitalSignsOrganizer'] as $VitalSignsOrganizer) {
+                    $Section['component']['section']['entry'][] = LevelEntry\vitalSignsOrganizer::Insert(
+                        $VitalSignsOrganizer,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

@@ -49,7 +49,13 @@ class socialHistory
     {
         return [
             'SocialHistory' => [
-
+                LevelEntry\socialHistoryObservation::Structure(),
+                LevelEntry\pregnancyObservation::Structure(),
+                LevelEntry\currentSmokingStatus::Structure(),
+                LevelEntry\tobaccoUse::Structure(),
+                LevelEntry\caregiverCharacteristics::Structure(),
+                LevelEntry\culturalAndReligiousObservation::Structure(),
+                LevelEntry\characteristicsOfHomeEnvironment::Structure()
             ]
         ];
     }
@@ -88,22 +94,82 @@ class socialHistory
                 ]
             ];
 
-            // 3.108 Vital Signs Organizer (V2)
-            // ...
-            // Caregiver Characteristics
-            // ...
-            // Characteristics of Home Environment (NEW)
-            // ...
-            // Cultural and Religious Observation (NEW)
-            // ...
-            // Current Smoking Status (V2)
-            // ...
-            // Pregnancy Observation
-            // ...
-            // Social History Observation (V2)
-            // ...
-            // Tobacco Use (V2)
-            // ...
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Social History Observation (V2)
+            if(count($PortionData['SocialHistoryObservation']) > 0) {
+                foreach ($PortionData['SocialHistoryObservation'] as $SocialHistoryObservation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\socialHistoryObservation::Insert(
+                        $SocialHistoryObservation,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Pregnancy Observation
+            if(count($PortionData['PregnancyObservation']) > 0) {
+                foreach ($PortionData['PregnancyObservation'] as $PregnancyObservation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\pregnancyObservation::Insert(
+                        $PregnancyObservation,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Current Smoking Status (V2)
+            if(count($PortionData['CurrentSmokingStatus']) > 0) {
+                foreach ($PortionData['CurrentSmokingStatus'] as $CurrentSmokingStatus) {
+                    $Section['component']['section']['entry'][] = LevelEntry\currentSmokingStatus::Insert(
+                        $CurrentSmokingStatus,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Tobacco Use (V2)
+            if(count($PortionData['TobaccoUse']) > 0) {
+                foreach ($PortionData['TobaccoUse'] as $TobaccoUse) {
+                    $Section['component']['section']['entry'][] = LevelEntry\tobaccoUse::Insert(
+                        $TobaccoUse,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Caregiver Characteristics
+            if(count($PortionData['CaregiverCharacteristics']) > 0) {
+                foreach ($PortionData['CaregiverCharacteristics'] as $CaregiverCharacteristics) {
+                    $Section['component']['section']['entry'][] = LevelEntry\caregiverCharacteristics::Insert(
+                        $CaregiverCharacteristics,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Cultural and Religious Observation (NEW)
+            if(count($PortionData['CulturalAndReligiousObservation']) > 0) {
+                foreach ($PortionData['CulturalAndReligiousObservation'] as $CulturalAndReligiousObservation) {
+                    $Section['component']['section']['entry'][] = LevelEntry\culturalAndReligiousObservation::Insert(
+                        $CulturalAndReligiousObservation,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Characteristics of Home Environment (NEW)
+            if(count($PortionData['CharacteristicsOfHomeEnvironment']) > 0) {
+                foreach ($PortionData['CharacteristicsOfHomeEnvironment'] as $CharacteristicsOfHomeEnvironment) {
+                    $Section['component']['section']['entry'][] = LevelEntry\characteristicsOfHomeEnvironment::Insert(
+                        $CharacteristicsOfHomeEnvironment,
+                        $CompleteData
+                    );
+                }
+            }
 
             return $Section;
         }

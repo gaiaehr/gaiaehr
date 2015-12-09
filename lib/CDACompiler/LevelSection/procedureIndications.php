@@ -43,7 +43,7 @@ class procedureFindings
     {
         return [
             'ProcedureFindings' => [
-
+                LevelEntry\indication::Structure()
             ]
         ];
     }
@@ -86,6 +86,17 @@ class procedureFindings
             // Indication (V2)
             if(count($PortionData['ProcedureIndications']['Indications'])>1) {
                 foreach ($PortionData['ProcedureIndications']['Indications'] as $Indication) {
+                    $Section['component']['section']['entry'][] = LevelEntry\indication::Insert(
+                        $Indication,
+                        $CompleteData
+                    );
+                }
+            }
+
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Indication (V2)
+            if(count($PortionData['Indication']) > 0) {
+                foreach ($PortionData['Indication'] as $Indication) {
                     $Section['component']['section']['entry'][] = LevelEntry\indication::Insert(
                         $Indication,
                         $CompleteData

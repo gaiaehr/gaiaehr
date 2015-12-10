@@ -26,7 +26,10 @@ class problems
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['ProblemConcernAct'])<1)
+            throw new Exception('Such entries SHALL contain exactly one [1..1] Problem Concern Act (Condition) (V2)');
     }
 
     /**
@@ -35,7 +38,7 @@ class problems
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -45,7 +48,9 @@ class problems
     {
         return [
             'Problems' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\problemConcernAct::Structure(),
+                LevelEntry\healthStatusObservation::Structure()
             ]
         ];
     }

@@ -25,7 +25,8 @@ class preoperativeDiagnosis
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -34,7 +35,7 @@ class preoperativeDiagnosis
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -44,7 +45,8 @@ class preoperativeDiagnosis
     {
         return [
             'PreoperativeDiagnosis' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\preoperativeDiagnosis::Structure()
             ]
         ];
     }

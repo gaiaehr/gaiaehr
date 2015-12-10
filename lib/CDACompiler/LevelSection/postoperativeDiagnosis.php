@@ -23,7 +23,10 @@ class postoperativeDiagnosis
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['title']))
+            throw new Exception('SHALL contain exactly one [1..1] title');
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -33,10 +36,7 @@ class postoperativeDiagnosis
      */
     public static function Narrative($PortionData)
     {
-        if(!isset($PortionData['title']))
-            throw new Exception('SHALL contain exactly one [1..1] title');
-        if(!isset($PortionData['Narrated']))
-            throw new Exception('SHALL contain exactly one [1..1] text');
+        return $PortionData['Narrated'];
     }
 
     /**

@@ -22,13 +22,14 @@ use Exception;
 
 class medicalGeneralHistory
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -37,7 +38,7 @@ class medicalGeneralHistory
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -47,7 +48,7 @@ class medicalGeneralHistory
     {
         return [
             'MedicalGeneralHistory' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
@@ -68,10 +69,7 @@ class medicalGeneralHistory
                 'component' => [
                     'section' => [
                         'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.39',
-                                'extension' => $PortionData['Interventions']['date']
-                            ]
+                            '@attributes' => Component::templateId('2.16.840.1.113883.10.20.22.2.39')
                         ],
                         'code' => [
                             '@attributes' => [

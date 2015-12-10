@@ -34,7 +34,8 @@ class interventions
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -43,7 +44,7 @@ class interventions
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -53,6 +54,7 @@ class interventions
     {
         return [
             'Interventions' => [
+                'Narrated' => '',
                 LevelEntry\interventionAct::Structure()
             ]
         ];

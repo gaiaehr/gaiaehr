@@ -17,13 +17,14 @@ use Exception;
 
 class instructions
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -32,7 +33,7 @@ class instructions
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -42,7 +43,8 @@ class instructions
     {
         return [
             'Instructions' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\instruction::Structure()
             ]
         ];
     }

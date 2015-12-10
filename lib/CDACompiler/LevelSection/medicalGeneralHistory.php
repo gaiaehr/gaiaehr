@@ -68,9 +68,7 @@ class medicalGeneralHistory
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => Component::templateId('2.16.840.1.113883.10.20.22.2.39')
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.39'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '11329-0',

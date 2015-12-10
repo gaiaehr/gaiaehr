@@ -18,13 +18,14 @@ use Exception;
 
 class objective
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -33,7 +34,7 @@ class objective
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -43,13 +44,13 @@ class objective
     {
         return [
             'Objective' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
     public static function Insert($PortionData)
@@ -62,12 +63,7 @@ class objective
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.21.2.1',
-                                'extension' => $PortionData['Objective']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.21.2.1'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '61149-1',
@@ -78,7 +74,7 @@ class objective
                         ],
                         'title' => 'Objective Data',
                         'text' => self::Narrative($PortionData['Objective'])
-                    ]
+                        ]
                 ]
             ];
 

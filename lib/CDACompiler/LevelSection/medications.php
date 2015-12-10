@@ -30,7 +30,11 @@ class medications
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        
+        if(count($PortionData['MedicationActivity'])<1)
+            throw new Exception('a.	SHALL contain exactly one [1..1] Medication Activity (V2)');
     }
 
     /**
@@ -39,7 +43,7 @@ class medications
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -49,7 +53,8 @@ class medications
     {
         return [
             'Medications' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\medicationActivity::Structure()
             ]
         ];
     }

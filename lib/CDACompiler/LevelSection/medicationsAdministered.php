@@ -67,12 +67,7 @@ class medicationsAdministered
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.38.2',
-                                'extension' => $PortionData['MedicationsAdministered']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.38.2'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '29549-3',

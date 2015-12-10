@@ -36,6 +36,8 @@ class payers
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -44,7 +46,7 @@ class payers
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -54,6 +56,7 @@ class payers
     {
         return [
             'Payers' => [
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
                 LevelEntry\coverageActivity::Structure()
             ]
         ];
@@ -87,7 +90,7 @@ class payers
                             ]
                         ],
                         'title' => 'Payers',
-                        'text' => self::Narrative($PortionData['Payers'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

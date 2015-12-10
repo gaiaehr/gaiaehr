@@ -25,6 +25,8 @@ class observerContext
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['name']))
+            throw new Exception('Either assignedPerson or assignedAuthoringDevice SHALL be present');
     }
 
     /**
@@ -43,7 +45,16 @@ class observerContext
     {
         return [
             'observerContext' => [
-
+                'name' => [
+                    'prefix' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'prefixQualifier' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'given' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'givenQualifier' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'family' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'familyQualifier' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'name' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                    'nameQualifier' => 'Either assignedPerson or assignedAuthoringDevice SHALL be present',
+                ]
             ]
         ];
     }
@@ -62,27 +73,28 @@ class observerContext
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.6.2.4'
-                            ]
-                        ],
-                        'id' => Component::id('2.16.840.1.113883.19.5', '121008'),
-                        'assignedPerson' => [
-                            'name' => Component::name(
-                                $PortionData['ObserverContext']['name']['prefix'],
-                                $PortionData['ObserverContext']['name']['prefixQualifier'],
-                                $PortionData['ObserverContext']['name']['given'],
-                                $PortionData['ObserverContext']['name']['givenQualifier'],
-                                $PortionData['ObserverContext']['name']['family'],
-                                $PortionData['ObserverContext']['name']['familyQualifier'],
-                                $PortionData['Patient']['name']['name'],
-                                $PortionData['ObserverContext']['name']['nameQualifier']
-                            )
-                        ]
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.6.2.4'),
+                        'id' => Component::id('2.16.840.1.113883.19.5', '121008')
                     ]
                 ]
             ];
+
+            // Either assignedPerson or assignedAuthoringDevice SHALL be present
+            if(isset($PortionData['name']))
+            {
+                $Section['component']['section']['assignedPerson'] = [
+                    'name' => Component::name(
+                        $PortionData['name']['prefix'],
+                        $PortionData['name']['prefixQualifier'],
+                        $PortionData['name']['given'],
+                        $PortionData['name']['givenQualifier'],
+                        $PortionData['name']['family'],
+                        $PortionData['name']['familyQualifier'],
+                        $PortionData['name']['name'],
+                        $PortionData['name']['nameQualifier']
+                    )
+                ];
+            }
 
             return $Section;
         }

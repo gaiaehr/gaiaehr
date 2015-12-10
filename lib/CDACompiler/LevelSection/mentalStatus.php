@@ -26,13 +26,15 @@ use Exception;
 
 class mentalStatus
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
+     *
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -41,7 +43,7 @@ class mentalStatus
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -51,7 +53,14 @@ class mentalStatus
     {
         return [
             'MentalStatus' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\cognitiveStatusOrganizer::Structure(),
+                LevelEntry\cognitiveStatusObservation::Structure(),
+                LevelEntry\caregiverCharacteristics::Structure(),
+                LevelEntry\assessmentScaleObservation::Structure(),
+                LevelEntry\nonMedicinalSupplyActivity::Structure(),
+                LevelEntry\cognitiveAbilitiesObservation::Structure(),
+                LevelEntry\mentalStatusObservation::Structure()
             ]
         ];
     }
@@ -71,12 +80,7 @@ class mentalStatus
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.14',
-                                'extension' => $PortionData['MentalStatus']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.14'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '10190-7',

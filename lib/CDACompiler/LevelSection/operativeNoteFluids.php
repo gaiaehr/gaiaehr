@@ -35,7 +35,7 @@ class operativeNoteFluids
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**

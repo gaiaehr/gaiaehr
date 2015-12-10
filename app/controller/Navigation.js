@@ -31,7 +31,7 @@ Ext.define('App.controller.Navigation', {
 	],
 
 	navKey: 'ALT',
-	enableNavKeys: false,
+	navKeysEnabled: false,
 
 	init: function() {
 		var me = this;
@@ -44,7 +44,7 @@ Ext.define('App.controller.Navigation', {
 		Ext.util.History.init();
 		Ext.util.History.on('change', me.urlChange, me);
 
-		if(me.enableNavKeys) me.initFunctionKeyNav();
+		if(me.navKeysEnabled) me.enableNavKeys();
 
 		me.control({
 			'viewport':{
@@ -310,12 +310,8 @@ Ext.define('App.controller.Navigation', {
 //		say('onPatientUnset');
 	},
 
-	initFunctionKeyNav:function(){
-		Ext.getBody().on('keydown', this.captureDownKey, this);
-		Ext.getBody().on('keyup', this.captureUpKey, this);
-	},
-
 	captureDownKey:function(e){
+
 		if(e.getKey() == e.ALT){
 			this.altIsDown = true;
 			return;
@@ -342,6 +338,16 @@ Ext.define('App.controller.Navigation', {
 			if(params[i].match(/^{.*}$/)) return eval('('+params[i]+')');
 		}
 		return false;
+	},
+
+	enableNavKeys: function(){
+		Ext.getBody().on('keydown', this.captureDownKey, this);
+		Ext.getBody().on('keyup', this.captureUpKey, this);
+	},
+
+	disabledNavKeys: function(){
+		Ext.getBody().un('keydown', this.captureDownKey, this);
+		Ext.getBody().un('keyup', this.captureUpKey, this);
 	}
 
 });

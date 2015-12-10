@@ -7,17 +7,25 @@ Ext.define('App.controller.KeyCommands', {
         }
 	],
 
+	enabled: false,
 
 	init: function() {
-		var me = this,
-			body = Ext.getBody();
-
-		body.on('keyup', me.onKeyUp, me);
-
+		this.enableKeyCommands();
 	},
 
-	onKeyUp: function(e, t, eOpts){
+	enableKeyCommands: function(){
+		if(this.enabled) return;
+		Ext.getBody().on('keyup', this.onKeyUp, this);
+		this.enabled = true;
+	},
 
+	disableKeyCommands: function(){
+		Ext.getBody().un('keyup', this.onKeyUp, this);
+		this.enabled = false;
+	},
+
+
+	onKeyUp: function(e, t, eOpts){
 
 		if(e.getKey() == e.ALT || e.getKey() == e.CTRL || e.getKey() == e.SHIFT){
 			return;

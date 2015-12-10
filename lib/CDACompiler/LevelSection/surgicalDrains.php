@@ -23,6 +23,8 @@ class surgicalDrains
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -31,7 +33,7 @@ class surgicalDrains
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
     /**
@@ -41,13 +43,13 @@ class surgicalDrains
     {
         return [
             'SurgicalDrains' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @param $CompleteData
      * @return array|Exception
      */

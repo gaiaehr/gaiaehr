@@ -20,6 +20,8 @@ class surgeryDescription
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -28,7 +30,7 @@ class surgeryDescription
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
     /**
@@ -38,13 +40,13 @@ class surgeryDescription
     {
         return [
             'SurgeryDescription' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
     public static function Insert($PortionData)
@@ -52,7 +54,7 @@ class surgeryDescription
         try
         {
             // Validate first
-            self::Validate($PortionData['SurgeryDescription']);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -71,7 +73,7 @@ class surgeryDescription
                             ]
                         ],
                         'title' => 'Surgical Drains',
-                        'text' => self::Narrative($PortionData['SurgeryDescription'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

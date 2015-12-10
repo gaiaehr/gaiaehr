@@ -30,6 +30,8 @@ class vitalSigns
     {
         if(!isset($PortionData['Narrated']))
             throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['VitalSignsOrganizer']) < 1)
+            throw new Exception('SHALL contain exactly one [1..1] Vital Signs Organizer (V2)');
     }
 
     /**
@@ -48,7 +50,7 @@ class vitalSigns
     {
         return [
             'VitalSigns' => [
-                'Narrated' => '',
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
                 LevelEntry\vitalSignsOrganizer::Structure()
             ]
         ];

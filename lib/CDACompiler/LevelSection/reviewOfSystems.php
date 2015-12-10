@@ -25,6 +25,8 @@ class reviewOfSystems
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -33,7 +35,7 @@ class reviewOfSystems
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
     /**
@@ -43,7 +45,7 @@ class reviewOfSystems
     {
         return [
             'ReviewOfSystems' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
@@ -77,7 +79,7 @@ class reviewOfSystems
                             ]
                         ],
                         'title' => 'Review Of Systems',
-                        'text' => self::Narrative($PortionData['ReviewOfSystems'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

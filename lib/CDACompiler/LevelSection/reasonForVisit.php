@@ -23,6 +23,8 @@ class reasonForVisit
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -31,7 +33,7 @@ class reasonForVisit
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -41,13 +43,13 @@ class reasonForVisit
     {
         return [
             'ReasonForVisit' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
     public static function Insert($PortionData)
@@ -55,7 +57,7 @@ class reasonForVisit
         try
         {
             // Validate first
-            self::Validate($PortionData['ReasonForVisit']);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
@@ -74,7 +76,7 @@ class reasonForVisit
                             ]
                         ],
                         'title' => 'Reason For Visit',
-                        'text' => self::Narrative($Data['ReasonForVisit'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

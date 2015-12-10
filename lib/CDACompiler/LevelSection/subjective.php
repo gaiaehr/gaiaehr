@@ -23,6 +23,8 @@ class subjective
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -31,7 +33,7 @@ class subjective
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
     /**
@@ -41,7 +43,7 @@ class subjective
     {
         return [
             'Subjective' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }

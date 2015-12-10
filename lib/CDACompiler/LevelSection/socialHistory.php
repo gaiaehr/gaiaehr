@@ -31,6 +31,8 @@ class socialHistory
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -39,7 +41,7 @@ class socialHistory
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrative'];
     }
 
     /**
@@ -49,6 +51,7 @@ class socialHistory
     {
         return [
             'SocialHistory' => [
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
                 LevelEntry\socialHistoryObservation::Structure(),
                 LevelEntry\pregnancyObservation::Structure(),
                 LevelEntry\currentSmokingStatus::Structure(),

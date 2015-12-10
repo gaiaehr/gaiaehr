@@ -40,7 +40,10 @@ class results
      */
     private static function Validate($PortionData)
     {
-        // ...
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
+        if(count($PortionData['ResultOrganizer'])<1)
+            throw new Exception('SHALL contain exactly one [1..1] Result Organizer (V2)');
     }
 
     /**
@@ -59,6 +62,7 @@ class results
     {
         return [
             'Results' => [
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
                 LevelEntry\resultOrganizer::Structure()
             ]
         ];

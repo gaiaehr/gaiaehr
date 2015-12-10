@@ -24,6 +24,8 @@ class reasonForReferral
      */
     private static function Validate($PortionData)
     {
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -32,7 +34,7 @@ class reasonForReferral
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -42,7 +44,8 @@ class reasonForReferral
     {
         return [
             'ReasonForReferral' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\patientReferralAct::Structure()
             ]
         ];
     }
@@ -76,12 +79,13 @@ class reasonForReferral
                             ]
                         ],
                         'title' => 'Reason for Referral',
-                        'text' => self::Narrative($PortionData['ReasonForReferral'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];
 
-            // Patient Referral Act (NEW)
+            // MAY contain zero or more [0..*] entry
+            // SHALL contain exactly one [1..1] Patient Referral Act (NEW)
             if(count($PortionData['ReasonForReferral']['Observations'])>1) {
                 foreach ($PortionData['ReasonForReferral']['Observations'] as $Observation) {
                     $Section['component']['section']['entry'][] = LevelEntry\patientReferralAct::Insert(

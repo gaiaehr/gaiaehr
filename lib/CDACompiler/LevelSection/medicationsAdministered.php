@@ -20,13 +20,14 @@ use Exception;
 
 class medicationsAdministered
 {
-
-    /**
+    /***
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -35,7 +36,7 @@ class medicationsAdministered
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -45,7 +46,8 @@ class medicationsAdministered
     {
         return [
             'MedicationsAdministered' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\medicationActivity::Structure()
             ]
         ];
     }

@@ -19,22 +19,23 @@ use Exception;
 
 class procedureEstimatedBloodLoss
 {
-
     /**
-     * @param $Data
+     * @param $PortionData
+     * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -44,7 +45,7 @@ class procedureEstimatedBloodLoss
     {
         return [
             'ProcedureEstimatedBloodLoss' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
@@ -64,12 +65,7 @@ class procedureEstimatedBloodLoss
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.18.2.9',
-                                'extension' => $PortionData['ProcedureEstimatedBloodLoss']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.18.2.9'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '59770-8',
@@ -79,7 +75,7 @@ class procedureEstimatedBloodLoss
                             ]
                         ],
                         'title' => 'Procedure Estimated Blood Loss',
-                        'text' => self::Narrative($PortionData['ProcedureEstimatedBloodLoss'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

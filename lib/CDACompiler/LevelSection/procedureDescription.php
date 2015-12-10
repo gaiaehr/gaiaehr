@@ -21,13 +21,14 @@ use Exception;
 
 class procedureDescription
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -36,7 +37,7 @@ class procedureDescription
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -46,7 +47,7 @@ class procedureDescription
     {
         return [
             'ProcedureDescription' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
@@ -66,12 +67,7 @@ class procedureDescription
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.27',
-                                'extension' => $PortionData['ProcedureDescription']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.27'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '29554-3',
@@ -81,7 +77,7 @@ class procedureDescription
                             ]
                         ],
                         'title' => 'Procedure Description',
-                        'text' => self::Narrative($PortionData['ProcedureDescription'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

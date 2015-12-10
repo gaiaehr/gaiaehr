@@ -18,13 +18,14 @@ use Exception;
 
 class procedureSpecimensTaken
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -33,7 +34,7 @@ class procedureSpecimensTaken
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -43,13 +44,13 @@ class procedureSpecimensTaken
     {
         return [
             'ProcedureSpecimensTaken' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
     public static function Insert($PortionData)
@@ -62,12 +63,7 @@ class procedureSpecimensTaken
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.31',
-                                'extension' => $PortionData['ProcedureSpecimensTaken']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.31'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '59773-2',
@@ -77,7 +73,7 @@ class procedureSpecimensTaken
                             ]
                         ],
                         'title' => 'Procedure Specimens Taken',
-                        'text' => self::Narrative($Data['ProcedureSpecimensTaken'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

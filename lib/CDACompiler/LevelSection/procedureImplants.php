@@ -17,22 +17,23 @@ use Exception;
 
 class procedureFindings
 {
-
-    /**
-     * @param $Data
+    /***
+     * @param $PortionData
+     * @throws Exception
      */
-    private static function Validate($Data)
+    private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
      * Build the Narrative part of this section
-     * @param $Data
+     * @param $PortionData
      */
-    public static function Narrative($Data)
+    public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -42,31 +43,26 @@ class procedureFindings
     {
         return [
             'ProcedureFindings' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text'
             ]
         ];
     }
 
     /**
-     * @param $Data
+     * @param $PortionData
      * @return array|Exception
      */
-    public static function Insert($Data)
+    public static function Insert($PortionData)
     {
         try
         {
             // Validate first
-            self::Validate($Data);
+            self::Validate($PortionData);
 
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.40',
-                                'extension' => $Data['ProcedureImplants']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.40'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '59771-6',
@@ -76,7 +72,7 @@ class procedureFindings
                             ]
                         ],
                         'title' => 'Procedure Implants',
-                        'text' => self::Narrative($Data['ProcedureImplants'])
+                        'text' => self::Narrative($PortionData)
                     ]
                 ]
             ];

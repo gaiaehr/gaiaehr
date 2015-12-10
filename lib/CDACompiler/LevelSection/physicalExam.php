@@ -28,13 +28,14 @@ use Exception;
 
 class physicalExam
 {
-
     /**
      * @param $PortionData
+     * @throws Exception
      */
     private static function Validate($PortionData)
     {
-
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -43,7 +44,7 @@ class physicalExam
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -53,7 +54,8 @@ class physicalExam
     {
         return [
             'PhysicalExam' => [
-
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\woundClassObservation::Structure()
             ]
         ];
     }
@@ -73,12 +75,7 @@ class physicalExam
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.2.10.2',
-                                'extension' => $PortionData['PhysicalExam']['date']
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.2.10.2'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '29545-1',

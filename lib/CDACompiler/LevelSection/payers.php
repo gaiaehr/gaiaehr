@@ -76,11 +76,7 @@ class payers
             $Section = [
                 'component' => [
                     'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.18.2'
-                            ]
-                        ],
+                        'templateId' => Component::templateId('2.16.840.1.113883.10.20.22.2.18.2'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '48768-6',

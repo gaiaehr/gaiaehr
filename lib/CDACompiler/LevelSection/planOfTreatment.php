@@ -49,8 +49,8 @@ class planOfTreatment
      */
     private static function Validate($PortionData)
     {
-        if(!isset($PortionData['Allergies']))
-            throw new Exception('2.4 Allergies Section (entries required) (V2)');
+        if(!isset($PortionData['Narrated']))
+            throw new Exception('SHALL contain exactly one [1..1] text');
     }
 
     /**
@@ -59,7 +59,7 @@ class planOfTreatment
      */
     public static function Narrative($PortionData)
     {
-
+        return $PortionData['Narrated'];
     }
 
     /**
@@ -69,6 +69,16 @@ class planOfTreatment
     {
         return [
             'PlanOfTreatment' => [
+                'Narrated' => 'SHALL contain exactly one [1..1] text',
+                LevelEntry\plannedObservation::Structure(),
+                LevelEntry\plannedEncounter::Structure(),
+                LevelEntry\plannedAct::Structure(),
+                LevelEntry\plannedProcedure::Structure(),
+                LevelEntry\plannedSubstanceAdministration::Structure(),
+                LevelEntry\plannedSupply::Structure(),
+                LevelEntry\instruction::Structure(),
+                LevelEntry\handoffCommunication::Structure(),
+                LevelEntry\nutritionRecommendations::Structure()
 
             ]
         ];
@@ -88,12 +98,7 @@ class planOfTreatment
 
             $Section = [
                 'component' => [
-                    'section' => [
-                        'templateId' => [
-                            '@attributes' => [
-                                'root' => '2.16.840.1.113883.10.20.22.2.10.1.2'
-                            ]
-                        ],
+                    'section' => Component::templateId('2.16.840.1.113883.10.20.22.2.10.1.2'),
                         'code' => [
                             '@attributes' => [
                                 'code' => '18776-5',
@@ -102,9 +107,8 @@ class planOfTreatment
                                 'codeSystemName' => 'LOINC'
                             ]
                         ],
-                        'title' => 'Treatment Plan',
-                        'text' => self::Narrative($PortionData)
-                    ]
+                    'title' => 'Treatment Plan',
+                    'text' => self::Narrative($PortionData)
                 ]
             ];
 

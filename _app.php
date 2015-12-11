@@ -143,13 +143,15 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			}
 
 			Ext.direct.Manager.on('exception', function(e, o){
-				say(e);
+
+				if(e.xhr.aborted) return;
+
 				app.alert(
 					'<p><span style="font-weight:bold">'+
 					(e.where != 'undefined' ? e.message : e.message.replace(/\n/g,''))  +
 					'</span></p><hr>' +
 					'<p>'+
-					(typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data) +
+					(typeof e.where != 'undefined' ? e.where.replace(/\n/g,'<br>') : e.data != null ?  e.data : '') +
 					'</p>',
 					'error'
 				);

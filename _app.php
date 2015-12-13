@@ -144,7 +144,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 			Ext.direct.Manager.on('exception', function(e, o){
 
-				if(e.xhr.aborted) return;
+				if(e.xhr && e.xhr.aborted) return;
 
 				app.alert(
 					'<p><span style="font-weight:bold">'+

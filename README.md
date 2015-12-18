@@ -1,7 +1,7 @@
 ![Alt text](http://gaiaehr.org/wp-content/uploads/2012/10/gaiaehr_white_100px1.png)
 =====================
 
-[GaiaEHR](http://www.gaiaehr.org/) is a Open source Web-Based Software for:
+[GaiaEHR](http://www.gaiaehr.org/) is an Open source Web-Based Software for:
 * Medic Practice management
 * Electronic Medical Records
 * Prescription writing and medical billing application

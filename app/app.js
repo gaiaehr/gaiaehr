@@ -2421,6 +2421,18 @@ Ext.define('App.ux.LiveICDXSearch', {
 	displayField: 'code_text', // this should be code
 	valueField: 'code',
 
+	emptyText: _('search') + '...',
+	typeAhead: false,
+	minChars: 1,
+	anchor: '100%',
+
+	listConfig: {
+		loadingText: _('searching') + '...',
+		getInnerTpl: function(){
+			return '<div class="search-item">{code_type} <span style="font-weight: bold;">{code}</span>: {code_text}</div>';
+		}
+	},
+
 	initComponent: function(){
 		var me = this;
 
@@ -2452,40 +2464,11 @@ Ext.define('App.ux.LiveICDXSearch', {
 		});
 
 		Ext.apply(this, {
-			store: me.store,
-			emptyText: _('search') + '...',
-			typeAhead: false,
-			minChars: 1,
-			anchor: '100%',
-			listConfig: {
-				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-				getInnerTpl: function(){
-					return '<div class="search-item">{code_type} <span style="font-weight: bold;">{code}</span>: {code_text}</div>';
-				}
-			}
-//			pageSize: 10
-			//            listeners:{
-			//                scope:me,
-			//                select:me.codeSelected
-			//            }
+			store: me.store
 		});
 
 		me.callParent();
 	},
-
-	//    codeSelected:function(combo, record){
-	//        var value = record[0].data.code;
-	//        if(this.oldValue){
-	//            combo.setRawValue(this.oldValue + value + ', ');
-	//        }else{
-	//            combo.setRawValue(value + ', ');
-	//        }
-	//        this.oldValue = combo.getRawValue();
-	//    },
 
 	onRender: function(ct, position){
 		this.callParent(arguments);

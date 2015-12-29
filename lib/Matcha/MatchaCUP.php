@@ -387,7 +387,7 @@ class MatchaCUP {
 	}
 
 	/**
-	 * @param $columns
+	 * @param $columns {string|array}
 	 * @param $table
 	 * @param $onMainTable
 	 * @param $onMergeTable
@@ -403,7 +403,7 @@ class MatchaCUP {
 	}
 
 	/**
-	 * @param $columns
+	 * @param $columns {string|array}
 	 * @param $table
 	 * @param $onMainTable
 	 * @param $onMergeTable
@@ -419,7 +419,7 @@ class MatchaCUP {
 	}
 
 	/**
-	 * @param $columns
+	 * @param $columns {string|array}
 	 * @param $table
 	 * @param $onMainTable
 	 * @param $onMergeTable

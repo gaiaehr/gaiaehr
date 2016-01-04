@@ -122,6 +122,14 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 					$_SESSION['styles'][] = 'modules/' . $module['name'] . '/resources/css/' . $style;
 				}
 			}
+			/**
+			 * Scripts
+			 */
+			if(isset($module['scripts'])){
+				foreach($module['scripts'] AS $script){
+					$_SESSION['scripts'][] = 'modules/' . $module['name'] . '/resources/js/' . $script;
+				}
+			}
 
 			/**
 			 * Hooks

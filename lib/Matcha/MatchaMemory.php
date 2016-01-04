@@ -59,7 +59,10 @@ class MatchaMemory extends Matcha
     {
         try
         {
-            $recordSet = self::$__conn->query("SHOW TABLES LIKE '_sencha_model'")->fetch();
+	        $sql = "SHOW TABLES LIKE '_sencha_model';";
+	        $sth = self::$__conn->prepare($sql);
+	        $sth->execute();
+	        $recordSet = $sth->fetch(PDO::FETCH_ASSOC);
             if(!is_array($recordSet)) self::__createMemoryModel();
         }
         catch(PDOException $e)
@@ -84,15 +87,12 @@ class MatchaMemory extends Matcha
         {
             self::__checkMemoryModel();
 
-            if(isset($instance)){
-                $senchaModelName .= '_' . $instance;
-            }
-
-            self::__destroySenchaMemoryModel($senchaModelName);
-            $sql = "INSERT INTO `_sencha_model` (model, modelData, modelLastChange)
-            VALUES ('$senchaModelName', '".serialize($senchaModelArray)."',
-            FROM_UNIXTIME(".MatchaModel::__getFileModifyDate($senchaModelName)."))";
-            self::$__conn->query($sql);
+            $senchaMemoryModelName = isset($instance) ? $senchaModelName .'_' . $instance : $senchaModelName;
+            self::__destroySenchaMemoryModel($senchaMemoryModelName);
+            $sql = "INSERT INTO `_sencha_model` (model, modelData, modelLastChange) VALUES (?,?,?)";
+            $params = [$senchaMemoryModelName, serialize($senchaModelArray), date('Y-m-d H:i:s', MatchaModel::__getFileModifyDate($senchaModelName))];
+            $sth = self::$__conn->prepare($sql);
+            $sth->execute($params);
             return true;
         }
         catch(PDOException $e)
@@ -106,21 +106,24 @@ class MatchaMemory extends Matcha
      * function __getModelFromMemory($senchaModel = NULL):
      * Method to get the sencha model from the server side memory(HEAP)
      * and return a Array.
-     * @param null $senchaModel
+     * @param null $senchaModelName
      * @param null $instance
      * @return bool|mixed
      */
-    public static function __getModelFromMemory($senchaModel = null, $instance = null)
+    public static function __getModelFromMemory($senchaModelName = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
 
-            if(isset($instance)){
-                $senchaModel .= '_' . $instance;
-            }
+            $senchaMemoryModelName = isset($instance) ? $senchaModelName .'_' . $instance : $senchaModelName;
 
-            $model = self::$__conn->query("SELECT * FROM _sencha_model WHERE model='$senchaModel';")->fetch();
+            $sql = "SELECT * FROM _sencha_model WHERE model = ?;";
+            $params = [$senchaMemoryModelName];
+            $sth = self::$__conn->prepare($sql);
+            $sth->execute($params);
+            $model = $sth->fetch(PDO::FETCH_ASSOC);
+
             if(is_array($model)) return unserialize($model['modelData']); else return false;
         }
         catch(PDOException $e)
@@ -133,21 +136,24 @@ class MatchaMemory extends Matcha
     /**
      * function __getModelLastChange($senchaModel = NULL):
      * Method to get the last modified date in Unix TIMESTAMP format
-     * @param null $senchaModel
+     * @param null $senchaModelName
      * @param null $instance
      * @return bool
      */
-    public static function __getSenchaModelLastChange($senchaModel = null, $instance = null)
+    public static function __getSenchaModelLastChange($senchaModelName = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
 
-            if(isset($instance)){
-                $senchaModel .= '_' . $instance;
-            }
+            $senchaMemoryModelName = isset($instance) ? $senchaModelName .'_' . $instance : $senchaModelName;
 
-            $model = self::$__conn->query("SELECT * FROM _sencha_model WHERE model='$senchaModel';")->fetch();
+            $sql = "SELECT * FROM _sencha_model WHERE model = ?;";
+            $params = [$senchaMemoryModelName];
+            $sth = self::$__conn->prepare($sql);
+            $sth->execute($params);
+            $model = $sth->fetch(PDO::FETCH_ASSOC);
+
             if(is_array($model)) return strtotime($model['modelLastChange']); else return false;
         }
         catch(PDOException $e)
@@ -160,21 +166,24 @@ class MatchaMemory extends Matcha
     /**
      * function __isModelInMemory($senchaModel = NULL):
      * Method to check if a sencha model is loaded into memory.
-     * @param null $senchaModel
+     * @param null $senchaModelName
      * @param null $instance
      * @return bool
      */
-    public static function __isModelInMemory($senchaModel = null, $instance = null)
+    public static function __isModelInMemory($senchaModelName = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
 
-            if(isset($instance)){
-                $senchaModel .= '_' . $instance;
-            }
+            $senchaMemoryModelName = isset($instance) ? $senchaModelName .'_' . $instance : $senchaModelName;
 
-            $model = self::$__conn->query("SELECT * FROM _sencha_model WHERE model='$senchaModel';")->fetch();
+            $sql = "SELECT * FROM _sencha_model WHERE model = ?;";
+            $params = [$senchaMemoryModelName];
+            $sth = self::$__conn->prepare($sql);
+            $sth->execute($params);
+            $model = $sth->fetch(PDO::FETCH_ASSOC);
+
             if(is_array($model)) return true; else return false;
         }
         catch(PDOException $e)
@@ -187,21 +196,23 @@ class MatchaMemory extends Matcha
     /**
      * function __destroySenchaMemoryModel($senchaModel = NULL):
      * Method to delete a sencha model stored in memory.
-     * @param null $senchaModel
+     * @param null $senchaModelName
      * @param null $instance
      * @return bool
      */
-    public static function __destroySenchaMemoryModel($senchaModel = null, $instance = null)
+    public static function __destroySenchaMemoryModel($senchaModelName = null, $instance = null)
     {
         try
         {
             self::__checkMemoryModel();
 
-            if(isset($instance)){
-                $senchaModel .= '_' . $instance;
-            }
+            $senchaMemoryModelName = isset($instance) ? $senchaModelName .'_' . $instance : $senchaModelName;
 
-            self::$__conn->query("DELETE FROM _sencha_model WHERE model='$senchaModel';");
+            $sql = "DELETE FROM _sencha_model WHERE model = ?;";
+            $params = [$senchaMemoryModelName];
+            $sth = self::$__conn->prepare($sql);
+            $sth->execute($params);
+
             return true;
         }
         catch(PDOException $e)

@@ -703,10 +703,7 @@ class MatchaCUP {
 			} else {
 				$this->sql = $this->sql . " LIMIT $start, $limit";
 			}
-			$this->record = Matcha::$__conn->query($this->sql)->fetchAll();
-			$this->dataDecryptWalk();
-			$this->dataUnSerializeWalk();
-			return $this->record;
+			return $this->all();
 		} catch(PDOException $e) {
 			return MatchaErrorHandler::__errorProcess($e);
 		}

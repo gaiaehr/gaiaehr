@@ -188,7 +188,7 @@ class SiteSetup {
 			// check if PDO
 			$status = (class_exists('PDO') ? 'Ok' : 'Fail');
 			$row[] = [
-				'msg' => 'PHP class PDO',
+				'msg' => 'PHP PDO installed',
 				'status' => $status
 			];
 			// check if ZipArchive is enable
@@ -207,12 +207,6 @@ class SiteSetup {
 			$status = (function_exists('mcrypt_encrypt') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'PHP MCrypt installed',
-				'status' => $status
-			];
-			// check if PDO object exists
-			$status = (defined('PDO::ATTR_DRIVER_NAME') ? 'Ok' : 'Fail');
-			$row[] = [
-				'msg' => 'PHP PDO installed',
 				'status' => $status
 			];
 			// check if GD exists

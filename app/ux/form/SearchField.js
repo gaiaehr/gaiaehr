@@ -82,6 +82,8 @@ Ext.define('App.ux.form.SearchField', {
 			me.hasSearch = true;
 			me.triggerCell.item(0).setDisplayed(true);
 			me.updateLayout();
+		}else{
+			me.onTrigger1Click();
 		}
 	}
 });

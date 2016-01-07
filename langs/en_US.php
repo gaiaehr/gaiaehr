@@ -1628,5 +1628,9 @@ $LANG = array(
     'new_radiology_result'                  => 'New radiology result',
     'lab_observations'                      => 'Laboratory Observations',
     'cell_number'                           => 'Mobile Number',
-    'download_shortly'                      => '<p>Download will begin shortly...</p><p>This could take several minutes, depending on the amount of patients stored</p>'
+    'download_shortly'                      => '<p>Download will begin shortly...</p><p>This could take several minutes, depending on the amount of patients stored</p>',
+	'account_number'                        => 'Account Number',
+	'patient_history'                       => 'Patient History',
+	'init'                                  => 'Init',
+	'patient_class'                         => 'Patient Class',
 );

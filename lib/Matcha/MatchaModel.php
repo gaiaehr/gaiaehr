@@ -55,7 +55,7 @@ class MatchaModel extends Matcha {
 			self::$fileModel = $fileModel;
 
 			// skip this entire routine if freeze option is true
-			if(self::$__freeze){
+			if(!$force && self::$__freeze){
 				self::$__senchaModel = self::__getSenchaModel($fileModel, $instance);
 				return true;
 			}
@@ -523,12 +523,12 @@ class MatchaModel extends Matcha {
 	 * function setSenchaModel($senchaModel = array()):
 	 * The first thing to do, to begin using Matcha
 	 * This will load the Sencha Model to Matcha and do it's magic.
-	 * @param array $senchaModel
+	 * @param string $senchaModel
 	 * @param bool $force
 	 * @param null $instance
 	 * @return bool|MatchaCUP
 	 */
-	static public function setSenchaModel($senchaModel = [], $force = false, $instance = null) {
+	static public function setSenchaModel($senchaModel, $force = false, $instance = null) {
 		try {
 			if(self::__SenchaModel($senchaModel, $force, $instance)){
 				$MatchaCUP = new MatchaCUP;

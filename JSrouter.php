@@ -97,5 +97,9 @@ if(!isset($_SESSION['site']['error']) && (isset($_SESSION['user']) && $_SESSION[
 		print 'window.styles = ' . json_encode($_SESSION['styles']) . ';';
 	}
 
+	if(isset($_SESSION['scripts'])){
+		print 'window.scripts = ' . json_encode($_SESSION['scripts']) . ';';
+	}
+
 }
 

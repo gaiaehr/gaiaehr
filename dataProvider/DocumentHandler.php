@@ -165,7 +165,7 @@ class DocumentHandler {
 			$document->document ='';
 			$document->document_instance = $instance;
 			$document->document_id = $record->id;
-			$sth = $conn->prepare("UPDATE documents_data_{$instance} SET document = '', document_instance = :doc_ins, document_id = :doc_id WHERE id = :id;");
+			$sth = $conn->prepare("UPDATE patient_documents SET document = '', document_instance = :doc_ins, document_id = :doc_id WHERE id = :id;");
 			$sth->execute([
 				':id' => $document->id,
 				':doc_ins' => $document->document_instance,

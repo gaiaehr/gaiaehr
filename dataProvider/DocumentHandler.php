@@ -31,7 +31,7 @@ class DocumentHandler {
 	private $workingDir;
 	private $fileName;
 
-	private $filesPerInstance = 100000;
+	private $filesPerInstance = 50000;
 
 	/**
 	 * @var MatchaCUP

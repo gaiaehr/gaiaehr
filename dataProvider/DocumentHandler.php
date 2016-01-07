@@ -504,12 +504,12 @@ class DocumentHandler {
 		return ['success' => $doc['hash'] == $hash, 'msg' => 'Stored Hash:' . $doc['hash'] . '<br>File hash:' . $hash];
 	}
 
-	public function convertDocuments(){
+	public function convertDocuments($quantity = 100){
 		$this->setPatientDocumentModel();
 		$this->d->addFilter('document', '', '!=');
 
 		error_log('LOAD RECORDS');
-		$records = $this->d->load()->limit(0, 2);
+		$records = $this->d->load()->limit(0, $quantity);
 		error_log('LOAD RECORDS COMPLETED');
 
 		foreach($records as $record){

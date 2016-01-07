@@ -22,6 +22,7 @@ include_once(ROOT . '/dataProvider/Documents.php');
 include_once(ROOT . '/dataProvider/DoctorsNotes.php');
 
 class DocumentHandler {
+
 	private $db;
 	private $documents;
 
@@ -30,14 +31,17 @@ class DocumentHandler {
 	private $workingDir;
 	private $fileName;
 
+	private $filesPerInstance = 100000;
+
 	/**
 	 * @var MatchaCUP
 	 */
-	private $d = null;
+	private $d;
+
 	/**
 	 * @var MatchaCUP
 	 */
-	private $t = null;
+	private $t;
 
 	private $doctorsnotes;
 
@@ -65,6 +69,7 @@ class DocumentHandler {
 	public function getPatientDocuments($params, $includeDocument = false){
 		$this->setPatientDocumentModel();
 		$records = $this->d->load($params)->all();
+
 		/** lets unset the actual document data */
 		if(!$includeDocument && isset($records['data'])){
 			foreach($records['data'] as $i => $record){
@@ -114,12 +119,13 @@ class DocumentHandler {
 		}
 
 		$results = $this->d->save($params);
+
 		if(is_array($results)){
-			foreach($results as $i => $result){
-				unset($results[$i]->document);
+			foreach($results as &$result){
+				$this->handleDocumentData($result);
 			}
 		}else{
-			unset($results->document);
+			$this->handleDocumentData($results);
 		}
 		return $results;
 	}
@@ -130,15 +136,44 @@ class DocumentHandler {
 	 *
 	 * @param $document
 	 */
-	private function addDocumentData(&$document){
+	private function handleDocumentData(&$document){
 
-		$instance = floor($document->id / 100000);
-		$document_model = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $instance);
+		try{
+			$document = (object) $document;
+			$instance = floor($document->id / $this->filesPerInstance) + 1;
 
-		return $document;
+			$conn = Matcha::getConn();
+			$sth = $conn->prepare("SHOW TABLES LIKE 'documents_data_{$instance}'");
+			$sth->execute();
 
+			if($sth->rowCount() == 0){
+				$document_model = MatchaModel::setSenchaModel('App.model.administration.DocumentData', true, $instance);
+			}else{
+				$document_model = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $instance);
+			}
+
+			if($document_model === false) {
+				throw new Exception("Unable to create App.model.administration.DocumentData model instance '{$instance}'");
+			};
+
+			$data = new stdClass();
+			$data->pid = $document->pid;
+			$data->document = $document->document;
+			$record = $document_model->save($data);
+
+			$document->document = '';
+			$document->document_instance = $instance;
+			$document->document_id = $record->id;
+			$this->d->save($document);
+
+			unset($document->document);
+
+			unset($data, $record, $document_model);
+		}catch(Exception $e){
+			error_log('Error Converting Document');
+			error_log($e->getMessage());
+		}
 	}
-
 
 	/**
 	 * @param $params
@@ -147,34 +182,13 @@ class DocumentHandler {
 	 */
 	public function updatePatientDocument($params){
 		$this->setPatientDocumentModel();
+
 		if(is_array($params)){
-			foreach($params as $i => $param){
-				if(!isset($params[$i]->document)) continue;
-
-				$doc = $this->d->load(['id' => $params[$i]->id])->one();
-
-				/** remove the mime type */
-				$params[$i]->document = $this->trimBase64($params[$i]->document);
-
-				/** encrypted if necessary */
-				if($doc['encrypted']){
-					$params[$i]->document = MatchaUtils::encrypt($params[$i]->document);
-				};
-				$params[$i]->hash = hash('sha256', $params[$i]->document);
+			foreach($params as &$param){
+				unset($param->document, $param->hash);
 			}
 		}else{
-			if(isset($params->document)){
-
-				$doc = $this->d->load(['id' => $params->id])->one();
-
-				/** remove the mime type */
-				$params->document = $this->trimBase64($params->document);
-				/** encrypted if necessary */
-				if($doc['encrypted']){
-					$params->document = MatchaUtils::encrypt($params->document);
-				};
-				$params->hash = hash('sha256', $params->document);
-			}
+			unset($params->document, $params->hash);
 		}
 
 		return $this->d->save($params);
@@ -482,6 +496,17 @@ class DocumentHandler {
 		$doc = $this->getPatientDocument($doc->id);
 		$hash = hash('sha256', $doc['document']);
 		return ['success' => $doc['hash'] == $hash, 'msg' => 'Stored Hash:' . $doc['hash'] . '<br>File hash:' . $hash];
+	}
+
+	public function convertDocuments(){
+		$this->setPatientDocumentModel();
+		$this->d->addFilter('document', '', '!=');
+
+		$records = $this->d->load()->limit(0, 2);
+
+		foreach($records as $record){
+			$this->handleDocumentData($record);
+		}
 	}
 
 }

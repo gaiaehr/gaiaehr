@@ -109,7 +109,18 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		}
 		$doc = (object) $doc;
 		$doc->is_temp = 'false';
-		$document = base64ToBinary($doc->document, $doc->encrypted);
+
+		if(isset($doc->document_instance)){
+			$dd = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $doc->document_instance);
+			$data = $dd->load($doc->document_id)->one();
+			if($data == false){
+				die('No Document Data Found, Please contact Support Desk. Thank You!');
+			}
+			$data = (object) $data;
+			$document = base64ToBinary($data->document, $doc->encrypted);
+		}else{
+			$document = base64ToBinary($doc->document, $doc->encrypted);
+		}
 	}
 
 	$mineType = get_mime_type($doc->name);

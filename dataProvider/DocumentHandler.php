@@ -506,7 +506,7 @@ class DocumentHandler {
 
 	public function convertDocuments($quantity = 100){
 		$this->setPatientDocumentModel();
-		$this->d->addFilter('document', '', '!=');
+		$this->d->addFilter('document_instance', null, '=');
 
 		error_log('LOAD RECORDS');
 		$records = $this->d->load()->limit(0, $quantity);

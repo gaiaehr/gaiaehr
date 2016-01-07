@@ -141,12 +141,11 @@ class DocumentHandler {
 		try{
 			$document = (object) $document;
 			$instance = floor($document->id / $this->filesPerInstance) + 1;
-
 			$conn = Matcha::getConn();
 			$sth = $conn->prepare("SHOW TABLES LIKE 'documents_data_{$instance}'");
 			$sth->execute();
-
-			if($sth->rowCount() == 0){
+			$table = $sth->fetch(PDO::FETCH_ASSOC);
+			if($table === false){
 				$document_model = MatchaModel::setSenchaModel('App.model.administration.DocumentData', true, $instance);
 			}else{
 				$document_model = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $instance);
@@ -156,16 +155,23 @@ class DocumentHandler {
 				throw new Exception("Unable to create App.model.administration.DocumentData model instance '{$instance}'");
 			};
 
+			//error_log('DOCUMENT');
 			$data = new stdClass();
 			$data->pid = $document->pid;
 			$data->document = $document->document;
 			$record = $document_model->save($data);
+			//error_log('DOCUMENT DATA COMPLETED');
 
-			$document->document = '';
+			$document->document ='';
 			$document->document_instance = $instance;
 			$document->document_id = $record->id;
-			$this->d->save($document);
-
+			$sth = $conn->prepare("UPDATE documents_data_{$instance} SET document = '', document_instance = :doc_ins, document_id = :doc_id WHERE id = :id;");
+			$sth->execute([
+				':id' => $document->id,
+				':doc_ins' => $document->document_instance,
+				':doc_id' => $document->document_id
+			]);
+			//error_log('DOCUMENT COMPLETE');
 			unset($document->document);
 
 			unset($data, $record, $document_model);
@@ -502,11 +508,15 @@ class DocumentHandler {
 		$this->setPatientDocumentModel();
 		$this->d->addFilter('document', '', '!=');
 
+		error_log('LOAD RECORDS');
 		$records = $this->d->load()->limit(0, 2);
+		error_log('LOAD RECORDS COMPLETED');
 
 		foreach($records as $record){
 			$this->handleDocumentData($record);
 		}
+
+		return [ 'success' => true, 'total' => count($records) ];
 	}
 
 }

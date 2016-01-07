@@ -2002,7 +2002,7 @@ $API = [
 				'len' => 1
             ],
 			'convertDocuments' => [
-				'len' => 0
+				'len' => 1
             ]
         ]
     ],

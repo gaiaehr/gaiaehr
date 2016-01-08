@@ -505,12 +505,15 @@ class DocumentHandler {
 	}
 
 	public function convertDocuments($quantity = 100){
+
+		ini_set('memory_limit', '-1');
+
 		$this->setPatientDocumentModel();
 		$this->d->addFilter('document_instance', null, '=');
 
-		error_log('LOAD RECORDS');
+		//error_log('LOAD RECORDS');
 		$records = $this->d->load()->limit(0, $quantity);
-		error_log('LOAD RECORDS COMPLETED');
+		//error_log('LOAD RECORDS COMPLETED');
 
 		foreach($records as $record){
 			$this->handleDocumentData($record);

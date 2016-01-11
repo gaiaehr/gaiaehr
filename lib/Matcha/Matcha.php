@@ -139,6 +139,7 @@ class Matcha {
 	/**
 	 * freeze($freeze = false):
 	 * freeze the database and tables alteration by the Matcha microORM
+	 * @param bool $freeze
 	 */
 	static public function freeze($freeze = false){
 		self::$__freeze = (bool)$freeze;
@@ -501,6 +502,13 @@ class Matcha {
 	 */
 	public static function setFreeze($freeze){
 		self::$__freeze = $freeze;
+	}
+
+	/**
+	 *
+	 */
+	public static function getFreeze(){
+		return self::$__freeze;
 	}
 
 	/**

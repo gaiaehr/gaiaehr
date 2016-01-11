@@ -17472,6 +17472,12 @@ Ext.define('App.model.patient.PatientDocuments', {
 			index: true
 		},
 		{
+			name: 'docTypeCode',
+			type: 'string',
+			len: 20,
+			index: true
+		},
+		{
 			name: 'name',
 			type: 'string'
 		},
@@ -17525,6 +17531,15 @@ Ext.define('App.model.patient.PatientDocuments', {
 				date.setMilliseconds(0);
 				return date;
 			}
+		},
+		{
+			name: 'document_instance',
+			type: 'string',
+			len: 10
+		},
+		{
+			name: 'document_id',
+			type: 'int'
 		},
 		{
 			name: 'document',
@@ -46311,7 +46326,6 @@ Ext.define('App.ux.AddTabButton', {
 		hidden: false
 	},
 	// end defaults
-
 	constructor: function(config){
 		this.panelConfig = Ext.apply(this.panelConfig, config.tabConfig || {});
 		this.callParent(arguments);

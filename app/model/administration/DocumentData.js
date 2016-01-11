@@ -19,13 +19,17 @@
 Ext.define('App.model.administration.DocumentData', {
 	extend: 'Ext.data.Model',
 	table: {
-		name: 'documents_data',
-		uuid: true
+		name: 'documents_data'
 	},
 	fields: [
 		{
 			name: 'id',
-			type: 'string'
+			type: 'int'
+		},
+		{
+			name: 'pid',
+			type: 'int',
+			index: true
 		},
 		{
 			name: 'document',

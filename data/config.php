@@ -2000,6 +2000,9 @@ $API = [
             ],
 			'checkDocHash' => [
 				'len' => 1
+            ],
+			'convertDocuments' => [
+				'len' => 1
             ]
         ]
     ],

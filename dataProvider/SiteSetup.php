@@ -188,7 +188,7 @@ class SiteSetup {
 			// check if PDO
 			$status = (class_exists('PDO') ? 'Ok' : 'Fail');
 			$row[] = [
-				'msg' => 'PHP class PDO',
+				'msg' => 'PHP PDO installed',
 				'status' => $status
 			];
 			// check if ZipArchive is enable
@@ -207,12 +207,6 @@ class SiteSetup {
 			$status = (function_exists('mcrypt_encrypt') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'PHP MCrypt installed',
-				'status' => $status
-			];
-			// check if PDO object exists
-			$status = (defined('PDO::ATTR_DRIVER_NAME') ? 'Ok' : 'Fail');
-			$row[] = [
-				'msg' => 'PHP PDO installed',
 				'status' => $status
 			];
 			// check if GD exists
@@ -235,7 +229,14 @@ class SiteSetup {
 		if(!file_exists($siteDir)){
 			if(mkdir($siteDir, 0755, true)){
 				if(chmod($siteDir, 0755)){
-					if((mkdir("$siteDir/patients", 0755, true) && chmod("$siteDir/patients", 0755)) && (mkdir("$siteDir/documents", 0755, true) && chmod("$siteDir/documents", 0755)) && (mkdir("$siteDir/temp", 0755, true) && chmod("$siteDir/temp", 0755)) && (mkdir("$siteDir/trash", 0755, true) && chmod("$siteDir/trash", 0755))
+					if((mkdir("$siteDir/patients", 0755, true) &&
+                            chmod("$siteDir/patients", 0755)) &&
+                        (mkdir("$siteDir/documents", 0755, true) &&
+                            chmod("$siteDir/documents", 0755)) &&
+                        (mkdir("$siteDir/temp", 0755, true) &&
+                            chmod("$siteDir/temp", 0755)) &&
+                        (mkdir("$siteDir/trash", 0755, true) &&
+                            chmod("$siteDir/trash", 0755))
 					){
 						return ['success' => true];
 					} else {
@@ -266,7 +267,12 @@ class SiteSetup {
 
 	public function createDatabaseStructure(stdClass $params) {
         try{
-            if(isset($params->rootUser) && $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass)){
+            if(isset($params->rootUser) && $this->rootDatabaseConn(
+					$params->dbHost,
+					$params->dbPort,
+					$params->rootUser,
+					$params->rootPass))
+			{
                 $sth = $this->conn->prepare("
                 CREATE DATABASE `$params->dbName`;
                 CREATE USER '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass';
@@ -277,7 +283,13 @@ class SiteSetup {
                 $sth->execute();
                 $error = $this->conn->errorInfo();
 
-                if($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)){
+                if($this->databaseConn(
+					$params->dbHost,
+					$params->dbPort,
+					$params->dbName,
+					$params->dbUser,
+                    $params->dbPass))
+                {
 
                     if($this->loadDatabaseStructure()){
                         return ['success' => true];
@@ -292,7 +304,13 @@ class SiteSetup {
                     FileManager::rmdir_recursive("sites/$params->siteId");
                     throw new Exception($this->err);
                 }
-            } elseif($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)) {
+            } elseif($this->databaseConn(
+                $params->dbHost,
+                $params->dbPort,
+                $params->dbName,
+                $params->dbUser,
+                $params->dbPass))
+            {
                 if($this->loadDatabaseStructure()){
                     return ['success' => true];
                 } else {
@@ -332,7 +350,13 @@ class SiteSetup {
 	public function loadDatabaseData(stdClass $params) {
         try {
             ini_set('memory_limit', '-1');
-            if ($this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass)) {
+            if ($this->databaseConn(
+                $params->dbHost,
+                $params->dbPort,
+                $params->dbName,
+                $params->dbUser,
+                $params->dbPass))
+            {
                 if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql')) {
                     $query = file_get_contents($sqlFile);
                     if ($this->conn->exec($query) !== false) {

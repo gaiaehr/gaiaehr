@@ -17494,7 +17494,7 @@ Ext.define('App.model.patient.PatientDocuments', {
 		{
 			name: 'note',
 			type: 'string',
-			dataType: 'TEXT'
+			dataType: 'MEDIUMTEXT'
 		},
 		{
 			name: 'title',

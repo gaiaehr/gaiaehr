@@ -17493,7 +17493,8 @@ Ext.define('App.model.patient.PatientDocuments', {
 		},
 		{
 			name: 'note',
-			type: 'string'
+			type: 'string',
+			dataType: 'TEXT'
 		},
 		{
 			name: 'title',
@@ -46326,6 +46327,7 @@ Ext.define('App.ux.AddTabButton', {
 		hidden: false
 	},
 	// end defaults
+
 	constructor: function(config){
 		this.panelConfig = Ext.apply(this.panelConfig, config.tabConfig || {});
 		this.callParent(arguments);

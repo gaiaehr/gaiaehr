@@ -76,7 +76,8 @@ Ext.define('App.model.patient.PatientDocuments', {
 		},
 		{
 			name: 'note',
-			type: 'string'
+			type: 'string',
+			dataType: 'TEXT'
 		},
 		{
 			name: 'title',

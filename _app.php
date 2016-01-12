@@ -116,16 +116,22 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 	            /**
 	             * Modules Styles
 	             */
-	            for(s = 0; s < window.styles.length; s++){
-		            document.write('<link rel="stylesheet" type="text/style" href="'+ window.styles[s] + '?_v' + version + '"><\/link>');
+	            if(window.styles){
+		            for(s = 0; s < window.styles.length; s++){
+			            document.write('<link rel="stylesheet" type="text/style" href="'+ window.styles[s] + '?_v' + version + '"><\/link>');
+		            }
 	            }
 
 	            /**
 	             * Modules Scripts
 	             */
-	            for(s = 0; s < window.scripts.length; s++){
-		            document.write('<script type="text/javascript" src="' + window.scripts[s] + '?_v' + version + '"><\/script>');
+	            if(window.scripts){
+		            for(s = 0; s < window.scripts.length; s++){
+			            document.write('<script type="text/javascript" src="' + window.scripts[s] + '?_v' + version + '"><\/script>');
+		            }
 	            }
+
+
 
             })();
 

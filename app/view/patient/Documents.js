@@ -102,7 +102,8 @@ Ext.define('App.view.patient.Documents', {
 						itemId: 'docType',
 						renderer: function(v, meta, record){
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
 							return v;
 						}
@@ -114,10 +115,13 @@ Ext.define('App.view.patient.Documents', {
 						format: g('date_display_format'),
 						itemId: 'groupDate',
 						renderer: function(v, meta, record){
+							var val = v != null ? Ext.Date.format(v, g('date_display_format')) : '-';
+
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
-							return v != null ? Ext.Date.format(v, g('date_display_format')) : '-';
+							return val;
 						}
 					},
 					{
@@ -130,7 +134,8 @@ Ext.define('App.view.patient.Documents', {
 						},
 						renderer: function(v, meta, record){
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
 							return v;
 						}
@@ -141,7 +146,8 @@ Ext.define('App.view.patient.Documents', {
 						width: 70,
 						renderer: function(v, meta, record){
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
 							return app.boolRenderer(v);
 						}

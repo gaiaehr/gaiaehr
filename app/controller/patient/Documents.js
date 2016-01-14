@@ -147,6 +147,8 @@ Ext.define('App.controller.patient.Documents', {
 			document_record.save({
 				success: function(){
 					win.close();
+					document_record.set({groupDate:''});
+					document_record.commit();
 				}
 			});
 		}

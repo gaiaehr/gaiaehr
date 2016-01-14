@@ -43354,6 +43354,10 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 			for(var i = 0; i < results.length; i++){
 				var document = results[i];
 
+				/**
+				 * This define the Controller.Method to call for this document
+				 *
+				 */
 				if(document.document_type == 'rx'){
 					document.controller = 'patient.RxOrders';
 					document.method = 'onPrintRxOrderBtnClick';
@@ -45547,7 +45551,8 @@ Ext.define('App.view.patient.Documents', {
 						itemId: 'docType',
 						renderer: function(v, meta, record){
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
 							return v;
 						}
@@ -45559,10 +45564,13 @@ Ext.define('App.view.patient.Documents', {
 						format: g('date_display_format'),
 						itemId: 'groupDate',
 						renderer: function(v, meta, record){
+							var val = v != null ? Ext.Date.format(v, g('date_display_format')) : '-';
+
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
-							return v != null ? Ext.Date.format(v, g('date_display_format')) : '-';
+							return val;
 						}
 					},
 					{
@@ -45575,7 +45583,8 @@ Ext.define('App.view.patient.Documents', {
 						},
 						renderer: function(v, meta, record){
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
 							return v;
 						}
@@ -45586,7 +45595,8 @@ Ext.define('App.view.patient.Documents', {
 						width: 70,
 						renderer: function(v, meta, record){
 							if(record.get('entered_in_error')){
-								meta.tdCls += ' entered-in-error '
+								meta.tdCls += ' entered-in-error ';
+								meta.tdAttr = 'data-qtip="' + _('error_note') + ': ' + record.get('error_note') + '"';
 							}
 							return app.boolRenderer(v);
 						}
@@ -51679,7 +51689,7 @@ Ext.define('App.controller.DocumentViewer', {
 	doDocumentView: function(id, type, site){
 
 		var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-			src = 'dataProvider/DocumentViewer.php?site=' + site || app.user.site + '&id=' + id + '&token=' + app.user.token,
+			src = 'dataProvider/DocumentViewer.php?site=' + (site || app.user.site) + '&id=' + id + '&token=' + app.user.token,
 			win;
 
 		if(typeof type != 'undefined') src += '&temp=' + type;
@@ -52208,6 +52218,8 @@ Ext.define('App.controller.patient.Documents', {
 			document_record.save({
 				success: function(){
 					win.close();
+					document_record.set({groupDate:''});
+					document_record.commit();
 				}
 			});
 		}

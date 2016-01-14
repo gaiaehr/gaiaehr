@@ -101,6 +101,10 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 			for(var i = 0; i < results.length; i++){
 				var document = results[i];
 
+				/**
+				 * This define the Controller.Method to call for this document
+				 *
+				 */
 				if(document.document_type == 'rx'){
 					document.controller = 'patient.RxOrders';
 					document.method = 'onPrintRxOrderBtnClick';

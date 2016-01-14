@@ -3,6 +3,7 @@ sites/*/*
 temp/*
 GaiaEHR
 GaiaEHR.iml
+gaiaehr.iml
 contrib/snomed/*
 temp
 /modules/advancetasks

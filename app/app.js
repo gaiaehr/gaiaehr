@@ -52,25 +52,25 @@ Ext.define('Ext.ux.PreviewPlugin', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.preview',
     requires: ['Ext.grid.feature.RowBody', 'Ext.grid.feature.RowWrap'],
-    
+
     // private, css class to use to hide the body
     hideBodyCls: 'x-grid-row-body-hidden',
-    
+
     /**
      * @cfg {String} bodyField
      * Field to display in the preview. Must be a field within the Model definition
      * that the store is using.
      */
     bodyField: '',
-    
+
     /**
      * @cfg {Boolean} previewExpanded
      */
     previewExpanded: true,
-    
+
     setCmp: function(grid) {
         this.callParent(arguments);
-        
+
         var bodyField   = this.bodyField,
             hideBodyCls = this.hideBodyCls,
             features    = [{
@@ -81,7 +81,7 @@ Ext.define('Ext.ux.PreviewPlugin', {
                             rowBody: data[bodyField],
                             rowBodyCls: grid.previewExpanded ? '' : hideBodyCls
                         };
-                        
+
                     if (getAdditionalData) {
                         Ext.apply(additionalData, getAdditionalData.apply(this, arguments));
                     }
@@ -90,14 +90,14 @@ Ext.define('Ext.ux.PreviewPlugin', {
             }, {
                 ftype: 'rowwrap'
             }];
-        
+
         grid.previewExpanded = this.previewExpanded;
         if (!grid.features) {
             grid.features = [];
         }
         grid.features = features.concat(grid.features);
     },
-    
+
     /**
      * Toggle between the preview being expanded/hidden
      * @param {Boolean} expanded Pass true to expand the record and false to not show the preview.
@@ -370,7 +370,7 @@ Ext.define('Ext.ux.statusbar.StatusBar', {
      * it will be used as the callback interval (in milliseconds), overriding the {@link #autoClear} value.
      * All other options will be defaulted as with the boolean option.  To customize any other options,
      * you can pass an object in the format:
-     * 
+     *
      * @param {Number} config.clear.wait The number of milliseconds to wait before clearing
      * (defaults to {@link #autoClear}).
      * @param {Boolean} config.clear.anim False to clear the status immediately once the callback
@@ -550,51 +550,51 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
         'Ext.form.field.Text',
         'Ext.ux.statusbar.StatusBar'
     ],
-    
+
     /**
      * @private
      * search value initialization
      */
     searchValue: null,
-    
+
     /**
      * @private
      * The row indexes where matching strings are found. (used by previous and next buttons)
      */
     indexes: [],
-    
+
     /**
      * @private
      * The row index of the first search, it could change if next or previous buttons are used.
      */
     currentIndex: null,
-    
+
     /**
      * @private
      * The generated regular expression used for searching.
      */
     searchRegExp: null,
-    
+
     /**
      * @private
      * Case sensitive mode.
      */
     caseSensitive: false,
-    
+
     /**
      * @private
      * Regular expression mode.
      */
     regExpMode: false,
-    
+
     /**
      * @cfg {String} matchCls
      * The matched string css classe.
      */
     matchCls: 'x-livesearch-match',
-    
+
     defaultStatusText: 'Nothing Found',
-    
+
     // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
     initComponent: function() {
         var me = this;
@@ -627,7 +627,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                 hideLabel: true,
                 margin: '0 0 0 4px',
                 handler: me.regExpToggle,
-                scope: me                
+                scope: me
             }, 'Regular expression', {
                 xtype: 'checkbox',
                 hideLabel: true,
@@ -640,11 +640,11 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
             defaultText: me.defaultStatusText,
             name: 'searchStatusBar'
         });
-        
+
         me.callParent(arguments);
     },
-    
-    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input 
+
+    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input
     afterRender: function() {
         var me = this;
         me.callParent(arguments);
@@ -653,13 +653,13 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
     },
     // detects html tag
     tagsRe: /<[^>]*>/gm,
-    
+
     // DEL ASCII code
     tagsProtect: '\x0f',
-    
+
     // detects regexp reserved word
     regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
-    
+
     /**
      * In normal mode it returns the value with protected regexp characters.
      * In regular expression mode it returns the raw value except if the regexp is invalid.
@@ -669,7 +669,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
     getSearchValue: function() {
         var me = this,
             value = me.textField.getValue();
-            
+
         if (value === '') {
             return null;
         }
@@ -695,7 +695,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
 
         return value;
     },
-    
+
     /**
      * Finds all strings that matches the searched value in each grid cells.
      * @private
@@ -717,8 +717,8 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
 
          if (me.searchValue !== null) {
              me.searchRegExp = new RegExp(me.searchValue, 'g' + (me.caseSensitive ? '' : 'i'));
-             
-             
+
+
              me.store.each(function(record, idx) {
                  var td = Ext.fly(me.view.getNode(idx)).down('td'),
                      cell, matches, cellHTML;
@@ -726,7 +726,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                      cell = td.down('.x-grid-cell-inner');
                      matches = cell.dom.innerHTML.match(me.tagsRe);
                      cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
-                     
+
                      // populate indexes array, set currentIndex, and replace wrap matched string in a span
                      cellHTML = cellHTML.replace(me.searchRegExp, function(m) {
                         count += 1;
@@ -740,7 +740,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                      });
                      // restore protected tags
                      Ext.each(matches, function(match) {
-                        cellHTML = cellHTML.replace(me.tagsProtect, match); 
+                        cellHTML = cellHTML.replace(me.tagsProtect, match);
                      });
                      // update cell html
                      cell.dom.innerHTML = cellHTML;
@@ -766,44 +766,44 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
          // force textfield focus
          me.textField.focus();
      },
-    
+
     /**
      * Selects the previous row containing a match.
      * @private
-     */   
+     */
     onPreviousClick: function() {
         var me = this,
             idx;
-            
+
         if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
             me.currentIndex = me.indexes[idx - 1] || me.indexes[me.indexes.length - 1];
             me.getSelectionModel().select(me.currentIndex);
          }
     },
-    
+
     /**
      * Selects the next row containing a match.
      * @private
-     */    
+     */
     onNextClick: function() {
          var me = this,
              idx;
-             
+
          if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
             me.currentIndex = me.indexes[idx + 1] || me.indexes[0];
             me.getSelectionModel().select(me.currentIndex);
          }
     },
-    
+
     /**
      * Switch to case sensitive mode.
      * @private
-     */    
+     */
     caseSensitiveToggle: function(checkbox, checked) {
         this.caseSensitive = checked;
         this.onTextFieldChange();
     },
-    
+
     /**
      * Switch to regular expression mode
      * @private
@@ -897,7 +897,7 @@ Ext.define('Ext.ux.IFrame', {
         this.cleanupListeners(true);
         this.callParent();
     },
-    
+
     cleanupListeners: function(destroying){
         var doc, prop;
 
@@ -1301,7 +1301,7 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this
+		var me = this;;
 		me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
@@ -2801,7 +2801,7 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 
 		me.callParent();
 	}
-}); 
+});
 Ext.define('App.ux.LivePatientSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patienlivetsearch',
@@ -3210,7 +3210,7 @@ Ext.define('App.ux.PhotoIdWindow',
 	{
 		window.webcam.snap();
 	}
-}); 
+});
 Ext.define('App.ux.PatientEncounterCombo', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patientEncounterCombo',
@@ -6739,7 +6739,7 @@ Ext.define('App.ux.combo.ActiveInsurances', {
 
 		me.callParent();
 	}
-}); 
+});
 Ext.define('App.ux.combo.ActiveProviders', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'activeproviderscombo',
@@ -6810,7 +6810,7 @@ Ext.define('App.ux.combo.ActiveProviders', {
 
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.ux.combo.Allergies',
 {
 	extend : 'Ext.form.ComboBox',
@@ -6861,7 +6861,7 @@ Ext.define('App.ux.combo.Allergies',
 		}, null);
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.ux.combo.AllergiesAbdominal',{
 		extend: 'Ext.form.ComboBox',
 		alias: 'widget.mitos.allergiesabdominalcombo',
@@ -6887,7 +6887,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 					}
 				}
 			});
-            
+
 			Ext.apply(this,{
 				editable: false,
 				queryMode: 'local',
@@ -7063,7 +7063,7 @@ Ext.define('App.ux.combo.Authorizations',
 
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.ux.combo.BillingFacilities', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.billingfacilitiescombo',
@@ -7137,7 +7137,7 @@ Ext.define('App.ux.combo.CalendarCategories', {
 		}, null);
 		me.callParent();
 	}
-}); 
+});
 Ext.define('App.ux.combo.CalendarStatus', {
 	extend: 'Ext.form.ComboBox',
 	alias : 'widget.mitos.calstatuscombobox',
@@ -7178,7 +7178,7 @@ Ext.define('App.ux.combo.CalendarStatus', {
 		}, null);
 		me.callParent();
 	} // end initComponent
-}); 
+});
 Ext.define('App.ux.combo.CodesTypes', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.mitos.codestypescombo',
@@ -8488,35 +8488,35 @@ Ext.define('App.ux.combo.Languages',
 {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.languagescombo',
-	initComponent: function() 
+	initComponent: function()
 	{
 		var me = this;
 
-		Ext.define('LanguagesComboModel', 
+		Ext.define('LanguagesComboModel',
 		{
 			extend: 'Ext.data.Model',
-			fields: 
+			fields:
 			[
 				{ name: 'code', type: 'string' },
 				{ name: 'description', type: 'string' }
 			],
-			proxy : 
+			proxy :
 			{
 				type: 'direct',
-				api :  
+				api :
 				{
 					read: i18nRouter.getAvailableLanguages
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', 
+		me.store = Ext.create('Ext.data.Store',
 		{
 			model   : 'LanguagesComboModel',
 			autoLoad: false
 		});
 
-		Ext.apply(this, 
+		Ext.apply(this,
 		{
 			editable    : false,
 			valueField  : 'code',
@@ -8524,7 +8524,7 @@ Ext.define('App.ux.combo.Languages',
             emptyText   : _('select'),
 			store       : me.store
 		}, null);
-		
+
 		me.callParent();
 	}
 });
@@ -10097,7 +10097,7 @@ Ext.define('App.view.search.PatientSearch',
 				}
 			}]
 		});
-		
+
 		me.grid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
@@ -10142,7 +10142,7 @@ Ext.define('App.view.search.PatientSearch',
 		me.pageBody = [me.form, me.grid];
 		me.callParent(arguments);
 	}, // end of initComponent
-	
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
@@ -22091,7 +22091,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 		me.callParent(arguments);
 
 	}
-}); 
+});
 Ext.define('App.view.patient.charts.HeadCircumference',
 {
 	extend : 'Ext.panel.Panel',
@@ -22332,7 +22332,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',
 		me.callParent(arguments);
 
 	}
-}); 
+});
 Ext.define('App.view.patient.charts.HeightForStature',
 {
 	extend : 'Ext.panel.Panel',
@@ -22595,7 +22595,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 		me.callParent(arguments);
 
 	}
-}); 
+});
 Ext.define('App.store.patient.AppointmentRequests', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.patient.AppointmentRequest'
@@ -26792,20 +26792,20 @@ Ext.define('App.view.fees.Billing',
 
 	/**
 	 * Function: Search for billing based on the search fields
-	 * This function will pass all the fields to the server side 
-	 * so PHP dataProvider can calculate and do the search against 
+	 * This function will pass all the fields to the server side
+	 * so PHP dataProvider can calculate and do the search against
 	 * the SQL Server
 	 */
 	ReloadGrid : function(btn)
 	{
 		// Declare some variables
 		var topBarItems = this.encountersGrid.getDockedItems('toolbar[dock="top"]')[0],
-		datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ), 
+		datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
 		dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
 		// Check if the dateFrom and dateTo are in use, if they are clear the pastDue variable
 		if(datefrom || dateto) this.pastDue = 0;
-		
+
 		// Load the ExtJs dataStore with the new parameters
 		this.patientListStore.load(
 		{
@@ -27276,7 +27276,7 @@ Ext.define('App.view.fees.Payments',
 	},
 
 	/**
-	 * Shows the payment entry window. 
+	 * Shows the payment entry window.
 	 */
 	onAddPaymentClick : function()
 	{
@@ -27424,11 +27424,11 @@ Ext.define('App.view.fees.Payments',
 			me.window.show();
 		}
 	},
-	
+
 	/**
 	 * Search for patients that own money
-	 * This function will pass all the fields to the server side 
-	 * so PHP dataProvider can calculate and do the search against 
+	 * This function will pass all the fields to the server side
+	 * so PHP dataProvider can calculate and do the search against
 	 * the SQL Server
 	 */
 	onSearchButton: function(btn)
@@ -27437,7 +27437,7 @@ Ext.define('App.view.fees.Payments',
 		var	searchForm =  this.searchPanel.getComponent('searchPanelForm'),
 		dateFrom = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldFromDate').getValue(),
 		dateTo = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldToDate').getValue();
-		
+
 		// Load the ExtJs dataStore with the new parameters
 		this.encountersPaymentsStore.load(
 		{
@@ -27453,7 +27453,7 @@ Ext.define('App.view.fees.Payments',
 		} );
 		//alert(payingEntityCombo);
 	},
-	
+
 	/**
 	 * Reset the form of search.
 	 */
@@ -30461,7 +30461,7 @@ Ext.define('App.view.administration.AuditLog', {
 		me.callParent(arguments);
 	}
 
-}); 
+});
 Ext.define('App.view.administration.Medications',
 {
 	extend : 'App.ux.RenderPanel',
@@ -33085,7 +33085,7 @@ Ext.define('App.store.administration.ActiveProblems',
 		}
 	},
 	autoLoad : false
-}); 
+});
 Ext.define('App.store.administration.Applications', {
     model: 'App.model.administration.Applications',
     extend: 'Ext.data.Store',
@@ -33109,7 +33109,7 @@ Ext.define('App.store.administration.DefaultDocuments',
 	autoSync : true,
 	autoLoad : false
 
-}); 
+});
 Ext.define('App.store.administration.DocumentsTemplates', {
 	model: 'App.model.administration.DocumentsTemplates',
 	extend: 'Ext.data.Store',
@@ -33123,7 +33123,7 @@ Ext.define('App.store.administration.DocumentsTemplates', {
 	},
 	autoSync: true,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.DocumentToken', {
     model: 'App.model.administration.DocumentToken',
     extend: 'Ext.data.Store',
@@ -33585,7 +33585,7 @@ Ext.define('App.store.administration.FloorPlans', {
 	extend: 'Ext.data.Store',
 	autoSync: false,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.FormListOptions', {
     model: 'App.model.administration.FormListOptions',
     extend: 'Ext.data.Store',
@@ -33626,7 +33626,7 @@ Ext.define('App.store.administration.HeadersAndFooters',
 	autoSync : true,
 	autoLoad : false
 
-}); 
+});
 Ext.define('App.store.administration.ImmunizationRelations', {
 	model: 'App.model.administration.ImmunizationRelations',
 	extend: 'Ext.data.Store',
@@ -33634,7 +33634,7 @@ Ext.define('App.store.administration.ImmunizationRelations', {
 	autoSync: true,
 	remoteSort: false
 
-}); 
+});
 Ext.define('App.store.administration.LabObservations', {
 	model: 'App.model.administration.LabObservations',
 	extend: 'Ext.data.Store',
@@ -33694,7 +33694,7 @@ Ext.define('App.store.administration.Medications',{
 	leadingBufferZone: 100,
 	pageSize: 50,
 	remoteFilter: true
-}); 
+});
 Ext.define('App.store.administration.Modules', {
     model: 'App.model.administration.Modules',
     extend: 'Ext.data.Store'
@@ -33762,7 +33762,7 @@ Ext.define('App.store.administration.PreventiveCareLabs', {
 	},
 	remoteSort: false,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.PreventiveCareMedications', {
 	model: 'App.model.administration.PreventiveCareMedications',
 	extend: 'Ext.data.Store',
@@ -33776,7 +33776,7 @@ Ext.define('App.store.administration.PreventiveCareMedications', {
 	},
 	remoteSort: false,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.ProviderCredentializations', {
     model: 'App.model.administration.ProviderCredentialization',
     extend: 'Ext.data.Store'
@@ -33807,7 +33807,7 @@ Ext.define('App.store.administration.Services', {
 	autoSync: true,
 	remoteSort: true,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.TransactionLogs', {
 	model: 'App.model.administration.TransactionLog',
 	extend: 'Ext.data.Store'
@@ -33817,7 +33817,7 @@ Ext.define('App.store.administration.User', {
     model: 'App.model.administration.User',
     extend: 'Ext.data.Store',
     autoLoad: false
-}); 
+});
 Ext.define('App.view.administration.Layout', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLayout',
@@ -34990,7 +34990,7 @@ Ext.define('App.view.administration.Layout', {
 
         callback(true);
     }
-}); 
+});
 Ext.define('App.store.administration.XtypesComboModel', {
 	model: 'App.model.administration.XtypesComboModel',
 	extend: 'Ext.data.Store',
@@ -35028,7 +35028,7 @@ Ext.define('App.store.fees.Billing',
 	extend : 'Ext.data.Store',
 	model : 'App.model.fees.Billing',
 	autoLoad : false
-}); 
+});
 Ext.define('App.store.fees.Checkout', {
 	extend    : 'Ext.data.Store',
 	model     : 'App.model.fees.Checkout',
@@ -35046,7 +35046,7 @@ Ext.define( 'App.store.fees.PaymentTransactions',
 	extend : 'Ext.data.Store',
 	model : 'App.model.fees.PaymentTransactions',
 	autoLoad : false
-} ); 
+} );
 Ext.define('App.store.navigation.Navigation', {
 	extend  : 'Ext.data.TreeStore',
 	requires: ['App.model.navigation.Navigation'],
@@ -39637,7 +39637,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39723,7 +39723,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39803,7 +39803,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39823,7 +39823,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -40467,7 +40467,7 @@ Ext.define('App.controller.patient.FamilyHistory', {
 Ext.define('App.controller.patient.HL7', {
 	extend: 'Ext.app.Controller',
 	requires: [
-		
+
 	],
 	refs: [
 		{
@@ -45108,7 +45108,7 @@ Ext.define('App.ux.combo.EncounterSupervisors', {
 
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.view.dashboard.panel.Portlet', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.portlet',
@@ -46675,7 +46675,7 @@ Ext.define('App.view.administration.HL7MessageViewer', {
 			flex: 1
 		}
 	]
-}); 
+});
 Ext.define('App.view.patient.encounter.Snippets', {
 	extend: 'Ext.window.Window',
 	xtype: 'snippetswindow',
@@ -49998,7 +49998,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		callback(true);
 
 	}
-}); 
+});
 
 Ext.define('App.view.patient.Patient', {
 	extend: 'Ext.panel.Panel',
@@ -54289,7 +54289,7 @@ Ext.define('App.ux.combo.ComboResettable', {
 		var trigger2 = Ext.get("trigger2" + id);
 		trigger2.addClsOnOver('x-form-trigger-over');
 	}
-}); 
+});
 Ext.define('App.ux.form.SearchField', {
 	extend: 'Ext.form.field.Trigger',
 
@@ -56177,7 +56177,7 @@ Ext.define('App.view.patient.Encounter', {
 					fieldDefaults: {
 						msgTarget: 'side'
 					},
-					
+
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),

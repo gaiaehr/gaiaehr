@@ -92,7 +92,7 @@ Ext.define('App.controller.DocumentViewer', {
 	doDocumentView: function(id, type, site){
 
 		var windows = Ext.ComponentQuery.query('documentviewerwindow'),
-			src = 'dataProvider/DocumentViewer.php?site=' + site || app.user.site + '&id=' + id + '&token=' + app.user.token,
+			src = 'dataProvider/DocumentViewer.php?site=' + (site || app.user.site) + '&id=' + id + '&token=' + app.user.token,
 			win;
 
 		if(typeof type != 'undefined') src += '&temp=' + type;

@@ -606,6 +606,7 @@ Ext.override(Ext.grid.RowEditor, {
 					return null;
 				}
 			});
+
 			if (column.align === 'right') {
 				field.fieldStyle = 'text-align:right';
 			}
@@ -629,8 +630,10 @@ Ext.override(Ext.grid.RowEditor, {
 				// Setting after initial render
 				me.onColumnShow(column);
 			}
+
+			me.mon(field, 'change', me.onFieldChange, me);
 		}
-		me.mon(field, 'change', me.onFieldChange, me);
+
 	}
 
 });

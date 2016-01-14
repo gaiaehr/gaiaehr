@@ -130,9 +130,6 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 			            document.write('<script type="text/javascript" src="' + window.scripts[s] + '?_v' + version + '"><\/script>');
 		            }
 	            }
-
-
-
             })();
 
             Ext.Loader.setConfig({

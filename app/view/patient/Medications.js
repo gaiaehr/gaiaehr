@@ -65,7 +65,7 @@ Ext.define('App.view.patient.Medications', {
 					header: _('medication'),
 					flex: 1,
                     groupable: true,
-                    hidden: true,
+                    hidden: false,
 					minWidth: 200,
 					dataIndex: 'STR',
 					editor: {

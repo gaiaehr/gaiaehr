@@ -26,11 +26,11 @@ Ext.define('App.controller.patient.Medications', {
 		},
 		{
 			ref: 'PatientMedicationsGrid',
-			selector: 'patientmedicationspanel #patientMedicationsGrid'
+			selector: '#patientMedicationsGrid'
 		},
 		{
 			ref: 'addPatientMedicationBtn',
-			selector: 'patientmedicationspanel #addPatientMedicationBtn'
+			selector: '#addPatientMedicationBtn'
 		},
 		{
 			ref: 'PatientMedicationReconciledBtn',
@@ -66,14 +66,13 @@ Ext.define('App.controller.patient.Medications', {
 			'viewport': {
 				encounterload: me.onViewportEncounterLoad
 			},
-
 			'patientmedicationspanel': {
 				activate: me.onMedicationsPanelActive
 			},
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
-			'patientmedicationspanel #addPatientMedicationBtn': {
+			'#addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
 			'#patientMedicationLiveSearch': {
@@ -109,8 +108,6 @@ Ext.define('App.controller.patient.Medications', {
 	onAdministeredMedicationsGridBeforeEdit: function(plugin, context){
 		var me = this,
 			field = me.getAdministeredMedicationsUserLiveSearch();
-
-		say(plugin.grid.doLayout());
 
 		field.forceSelection = false;
 		field.setValue(context.record.data.administered_by);
@@ -158,6 +155,7 @@ Ext.define('App.controller.patient.Medications', {
 			mname: app.user.mname,
 			lname: app.user.lname,
 		});
+
 		grid.editingPlugin.startEdit(0, 0);
 	},
 

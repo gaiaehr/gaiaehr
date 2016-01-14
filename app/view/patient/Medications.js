@@ -22,7 +22,7 @@ Ext.define('App.view.patient.Medications', {
 		'App.store.patient.Medications',
 		'App.store.administration.Medications',
 		'Ext.form.field.Trigger',
-		'Ext.grid.plugin.RowEditing',
+		//'Ext.grid.plugin.RowEditing',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
@@ -31,11 +31,9 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.form.fields.DateTime'
 	],
 	xtype: 'patientmedicationspanel',
-	itemId: 'PatientMedicationsPanel',
 	title: _('medications'),
 	layout: 'border',
 	border: false,
-	columnLines: true,
 	items: [
 		{
 			xtype: 'grid',
@@ -187,61 +185,16 @@ Ext.define('App.view.patient.Medications', {
 				'->',
 				{
 					text: _('review'),
-					itemId: 'review_medications',
-					action: 'encounterRecordAdd'
+					itemId: 'reviewMedications'
 				}
 			]
-		},
-		//{
-		//	xtype: 'grid',
-		//	title: _('medication_list'),
-		//	itemId: 'medicationsListGrid',
-		//	collapseMode: 'mini',
-		//	region: 'east',
-		//	width: 400,
-		//	collapsible: true,
-		//	collapsed: true,
-		//	split: true,
-		//	loadMask: true,
-		//	selModel: {
-		//		pruneRemoved: false
-		//	},
-		//	viewConfig: {
-		//		trackOver: false
-		//	},
-		//	verticalScroller: {
-		//		variableRowHeight: true
-		//	},
-		//	store: Ext.create('App.store.administration.Medications'),
-		//	tbar: [
-		//		{
-		//			xtype: 'triggerfield',
-		//			triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
-		//			fieldLabel: _('search'),
-		//			flex: 1,
-		//			labelWidth: 43
-		//		}
-		//	],
-		//	columns: [
-		//		{
-		//			xtype: 'rownumberer',
-		//			width: 50,
-		//			sortable: false
-		//		},
-		//		{
-		//			text: _('medication'),
-		//			dataIndex: 'STR',
-		//			flex: 1
-		//		}
-		//	]
-		//}
+		}
 	],
 	tbar: [
 		'->',
 		{
 			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',
-			action: 'encounterRecordAdd',
 			iconCls: 'icoAdd'
 		}
 	]

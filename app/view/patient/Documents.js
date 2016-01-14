@@ -37,8 +37,8 @@ Ext.define('App.view.patient.Documents', {
 				remoteFilter: true,
 				remoteSort: false,
 				autoSync: false,
-				pageSize: 200,
-				groupField: 'docType'
+				pageSize: 500,
+				groupField: 'docTypeCode'
 			}),
 			docCtrl = App.app.getController('patient.Documents');
 
@@ -54,11 +54,12 @@ Ext.define('App.view.patient.Documents', {
 					{
 						ftype: 'grouping',
 						hideGroupedHeader: true,
+						startCollapsed: me.startCollapsed || false,
 						groupHeaderTpl: Ext.create('Ext.XTemplate',
-							'{columnName}: {name:this.getGroupName}',
+							'{children:this.getGroupName}',
 							{
-								getGroupName: function(name){
-									return docCtrl.getGroupName(name);
+								getGroupName: function(children){
+									return docCtrl.getGroupName(children[0].store, children[0]);
 								}
 							}
 						)
@@ -157,7 +158,7 @@ Ext.define('App.view.patient.Documents', {
 						xtype: 'button',
 						text: _('category'),
 						enableToggle: true,
-						action: 'docType',
+						action: 'docTypeCode',
 						pressed: true,
 						disabled: true,
 						toggleGroup: 'documentgridgroup'

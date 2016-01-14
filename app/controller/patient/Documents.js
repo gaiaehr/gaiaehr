@@ -289,8 +289,16 @@ Ext.define('App.controller.patient.Documents', {
 		})
 	},
 
-	getGroupName: function(name){
-		return Ext.String.capitalize(name);
+	getGroupName: function(store, record){
+		var group = store.groupers.items[0].property;
+
+		if(group == 'docTypeCode'){
+			return Ext.String.capitalize(record.get('docTypeCode') + ' - ' + record.get('docType'));
+		}else if(group == 'groupDate'){
+			return Ext.Date.format(record.get(group), g('date_display_format'));
+		}else{
+			return Ext.String.capitalize(record.get(group));
+		}
 	},
 
 	onDocumentHashCheckBtnClick: function(grid, rowIndex){

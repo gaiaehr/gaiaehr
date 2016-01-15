@@ -48,6 +48,8 @@ require('config.php');
  * Enable the error and also set the ROOT directory for
  * the error log. But checks if the files exists and is
  * writable.
+ *
+ * NOTE: This should be part of Matcha::Connect
  */
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');

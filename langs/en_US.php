@@ -1634,5 +1634,6 @@ $LANG = array(
 	'init'                                  => 'Init',
 	'patient_class'                         => 'Patient Class',
 	'specialties'							=> 'Specialties',
-    'modality'                              => 'Modality'
+    'modality'                              => 'Modality',
+    'new_order'                             => 'New Order'
 );

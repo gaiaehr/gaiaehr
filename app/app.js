@@ -1301,7 +1301,7 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this;
+		var me = this;;
 		me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
@@ -2551,10 +2551,6 @@ Ext.define('App.ux.LiveImmunizationSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">CVX - {cvx_code}: <span style="font-weight: normal;" class="list-status-{status}">{name} ({status})</span></div>';
 				}
@@ -2565,6 +2561,7 @@ Ext.define('App.ux.LiveImmunizationSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveMedicationSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.medicationlivetsearch',
@@ -2610,10 +2607,6 @@ Ext.define('App.ux.LiveMedicationSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{PROPRIETARYNAME}<span style="font-weight: normal"> ({NONPROPRIETARYNAME}) </span></h3>{ACTIVE_NUMERATOR_STRENGTH} | {ACTIVE_INGRED_UNIT}</div>';
 				}
@@ -2624,6 +2617,7 @@ Ext.define('App.ux.LiveMedicationSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveLabsSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.labslivetsearch',
@@ -2667,10 +2661,6 @@ Ext.define('App.ux.LiveLabsSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{loinc_name} ({loinc_number})</h3></div>';
 				}
@@ -2681,6 +2671,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveCDTSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.cdtlivetsearch',
@@ -2724,10 +2715,6 @@ Ext.define('App.ux.LiveCDTSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({text}) </span></h3></div>';
 				}
@@ -2738,6 +2725,7 @@ Ext.define('App.ux.LiveCDTSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveRXNORMAllergySearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.rxnormallergylivetsearch',
@@ -2788,10 +2776,6 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
 				}
@@ -2802,6 +2786,7 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LivePatientSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patienlivetsearch',
@@ -2810,9 +2795,15 @@ Ext.define('App.ux.LivePatientSearch', {
 	valueField: 'pid',
 	emptyText: _('search_for_a_patient') + '...',
 	maxLength: 40,
+    queryMode: 'remote',
+    allowBlank: true,
 	typeAhead: false,
+    forceSelection: false,
+    allowOnlyWhitespace: true,
 	hideTrigger: true,
-	minChars: 1,
+    validateBlank: true,
+    submitValue: true,
+	minChars: 0,
 	queryDelay: 200,
 	initComponent: function(){
 		var me = this;
@@ -2866,6 +2857,9 @@ Ext.define('App.ux.LivePatientSearch', {
 				api: {
 					read: 'Patient.patientLiveSearch'
 				},
+                writer:{
+                    writeAllFields: true
+                },
 				reader: {
 					totalProperty: 'totals',
 					root: 'rows'
@@ -2883,11 +2877,6 @@ Ext.define('App.ux.LivePatientSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
 				getInnerTpl: function(){
 					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
 					return '<div class="search-item"><h3><span>{fullname}</span> {[Ext.Date.format(values.DOB, g("date_display_format"))]}</h3>' +
@@ -2900,6 +2889,7 @@ Ext.define('App.ux.LivePatientSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveSigsSearch', {
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.livesigssearch',
@@ -2938,10 +2928,6 @@ Ext.define('App.ux.LiveSigsSearch', {
 			anchor: '100%',
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{option_value} ({option_name})</div>';
 				}
@@ -2969,6 +2955,7 @@ Ext.define('App.ux.LiveSigsSearch', {
 
 
 });
+
 Ext.define('App.ux.LiveUserSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.userlivetsearch',
@@ -2978,10 +2965,12 @@ Ext.define('App.ux.LiveUserSearch', {
 	emptyText: _('search_for_a_user') + '...',
 	maxLength: 40,
 	typeAhead: false,
+    queryMode: 'remote',
+    allowBlank: true,
+    validateBlank: true,
 	hideTrigger: true,
-	minChars: 1,
+    minChars: 1,
 	queryDelay: 200,
-	forceSelection:true,
 	acl: null,
 	initComponent: function(){
 		var me = this;
@@ -3037,22 +3026,19 @@ Ext.define('App.ux.LiveUserSearch', {
 				},
 				reader: {
 					root: 'data'
-				}
+				},
+                writer: {
+                    writeAllFields: true
+                }
 			}
-
 		});
 
 		Ext.apply(me, {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
 				getInnerTpl: function(){
-					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
+					//var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
 					return '<div class="search-item">{fullname} <b>({role})</b></div>'
 				}
 			},
@@ -3062,6 +3048,7 @@ Ext.define('App.ux.LiveUserSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.NodeDisabled',
 	{
 		alias:'plugin.nodedisabled',
@@ -10444,10 +10431,6 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
 				}
@@ -10458,6 +10441,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.store.administration.CPT', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.administration.CPT'
@@ -10491,10 +10475,6 @@ Ext.define('App.ux.LiveRadiologySearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{code_text_short} ({code})</h3></div>';
 				}
@@ -10505,6 +10485,7 @@ Ext.define('App.ux.LiveRadiologySearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.model.miscellaneous.AddressBook', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -17116,6 +17097,9 @@ Ext.define('App.model.patient.Medications', {
 			update: 'Medications.updatePatientMedication',
 			destroy: 'Medications.destroyPatientMedication'
 		},
+        writer: {
+            writeAllFields: true
+        },
 		remoteGroup: false
 	}
 });
@@ -39637,7 +39621,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39723,7 +39707,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39803,7 +39787,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39823,7 +39807,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -41286,7 +41270,7 @@ Ext.define('App.controller.patient.Medications', {
 			title: app.user.title,
 			fname: app.user.fname,
 			mname: app.user.mname,
-			lname: app.user.lname,
+			lname: app.user.lname
 		});
 
 		grid.editingPlugin.startEdit(0, 0);
@@ -41306,7 +41290,10 @@ Ext.define('App.controller.patient.Medications', {
 	onPatientMedicationUserLiveSearchSelect: function(cmb, records){
 		var user = records[0],
 			record = cmb.up('form').getForm().getRecord();
-
+        record.set({fname: user.data.fname});
+        record.set({lname: user.data.lname});
+        record.set({mname: user.data.mname});
+        record.set({title: user.data.title});
 		record.set({administered_uid: user.data.id});
 	},
 
@@ -44472,7 +44459,11 @@ Ext.define('App.view.patient.Medications', {
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
-								App.app.getController('InfoButton').doGetInfo(record.data.RXCUI, 'RXCUI', record.data.STR);
+								App.app.getController('InfoButton').doGetInfo(
+                                    record.data.RXCUI,
+                                    'RXCUI',
+                                    record.data.STR
+                                );
 							}
 						}
 					]
@@ -45270,10 +45261,6 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
 				}
@@ -45291,6 +45278,7 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 		});
 	}
 });
+
 Ext.define('App.view.patient.encounter.AdministeredMedications', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -46954,10 +46942,6 @@ Ext.define('App.ux.LiveSnomedSearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
 				}
@@ -46968,6 +46952,7 @@ Ext.define('App.ux.LiveSnomedSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveRadsSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.radslivetsearch',
@@ -47012,10 +46997,6 @@ Ext.define('App.ux.LiveRadsSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{loinc_name} ({loinc_number})</h3></div>';
 				}
@@ -47026,6 +47007,7 @@ Ext.define('App.ux.LiveRadsSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.store.administration.MedicationInstructions', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.administration.MedicationInstruction'

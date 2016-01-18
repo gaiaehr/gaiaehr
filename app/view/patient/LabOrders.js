@@ -75,7 +75,8 @@ Ext.define('App.view.patient.LabOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: _('remove')
+					tooltip: _('remove'),
+                    itemId: 'rxLabOrderRemove'
 //					scope: me,
 //					handler: me.onRemoveClick
 				}

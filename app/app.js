@@ -38971,8 +38971,8 @@ Ext.define('App.controller.patient.Allergies', {
 						value: app.patient.pid
 					},
 					{
-						property: 'end_date',
-						value: '0000-00-00'
+						property: 'status',
+						value: 'Active'
 					}
 				]
 			})
@@ -39006,6 +39006,7 @@ Ext.define('App.controller.patient.Allergies', {
 	}
 
 });
+
 Ext.define('App.controller.patient.AppointmentRequests', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -44812,7 +44813,8 @@ Ext.define('App.view.patient.LabOrders', {
 			items: [
 				{
 					icon: 'resources/images/icons/cross.png',
-					tooltip: _('remove')
+					tooltip: _('remove'),
+                    itemId: 'rxLabOrderRemove'
 //					scope: me,
 //					handler: me.onRemoveClick
 				}
@@ -44926,6 +44928,7 @@ Ext.define('App.view.patient.LabOrders', {
 //		selectionchange: me.onSelectionChange
 //	}
 });
+
 Ext.define('App.view.patient.SupperBill', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -55636,7 +55639,6 @@ Ext.define('App.view.patient.Allergies', {
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
 				var codes = '';
-
 				if(record.data.allergy_code != ''){
 					codes += ' ( <b>'+ record.data.allergy_code_type + ':</b> ' + record.data.allergy_code +' )';
 				}
@@ -55827,9 +55829,8 @@ Ext.define('App.view.patient.Allergies', {
 			itemId: 'reviewAllergiesBtn'
 		}
 	]
-
-
 });
+
 Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
 	title: _('medical_window'),

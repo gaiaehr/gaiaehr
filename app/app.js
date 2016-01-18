@@ -1301,7 +1301,7 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this;;
+		var me = this;
 		me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
@@ -2410,6 +2410,7 @@ Ext.define('App.ux.LiveICDXSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.liveicdxsearch',
 	hideLabel: true,
+
 	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
@@ -2471,8 +2472,9 @@ Ext.define('App.ux.LiveICDXSearch', {
 	},
 
 	onRender: function(ct, position){
+        var trigger2,
+            id = this.getId();
 		this.callParent(arguments);
-		var id = this.getId();
 		this.triggerConfig = {
 			tag: 'div',
 			cls: 'x-form-twin-triggers',
@@ -2501,11 +2503,13 @@ Ext.define('App.ux.LiveICDXSearch', {
 					Ext.getCmp(this.spForm).getForm().reset();
 				}
 			}
+
 		}, this);
-		var trigger2 = Ext.get("trigger2" + id);
+		trigger2 = Ext.get("trigger2" + id);
 		trigger2.addClsOnOver('x-form-trigger-over');
 	}
 });
+
 Ext.define('App.ux.LiveImmunizationSearch', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'immunizationlivesearch',
@@ -2967,11 +2971,25 @@ Ext.define('App.ux.LiveUserSearch', {
 	typeAhead: false,
     queryMode: 'remote',
     allowBlank: true,
-    validateBlank: true,
-	hideTrigger: true,
     minChars: 1,
 	queryDelay: 200,
 	acl: null,
+
+    triggerTip: _('click_to_clear_selection'),
+    spObj: '',
+    spForm: '',
+    spExtraParam: '',
+    qtip: _('clearable_combo_box'),
+    trigger1Class: 'x-form-select-trigger',
+    trigger2Class: 'x-form-clear-trigger',
+
+    listConfig: {
+        loadingText: _('searching') + '...',
+        getInnerTpl: function(){
+            return '<div class="search-item">{fullname} <b>({role})</b></div>'
+        }
+    },
+
 	initComponent: function(){
 		var me = this;
 
@@ -3035,18 +3053,42 @@ Ext.define('App.ux.LiveUserSearch', {
 
 		Ext.apply(me, {
 			store: me.store,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				getInnerTpl: function(){
-					//var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
-					return '<div class="search-item">{fullname} <b>({role})</b></div>'
-				}
-			},
 			pageSize: 10
 		});
 
 		me.callParent();
-	}
+	},
+
+    onRender: function(ct, position){
+        var id = this.getId();
+        var trigger2;
+        this.callParent(arguments);
+        this.triggerConfig = {
+            tag: 'div',
+            cls: 'x-form-twin-triggers',
+            style: 'display:block;',
+            cn: [
+                {
+                    tag: "img",
+                    style: Ext.isIE ? 'margin-left:0;height:21px' : '',
+                    src: Ext.BLANK_IMAGE_URL,
+                    id: "trigger2" + id,
+                    name: "trigger2" + id,
+                    cls: "x-form-trigger " + this.trigger2Class
+                }
+            ]
+        };
+        this.triggerEl.replaceWith(this.triggerConfig);
+        this.triggerEl.on('mouseup', function(e){
+            if(e.target.name == "trigger2" + id){
+                this.reset();
+                this.fireEvent('reset', this);
+            }
+        }, this);
+        trigger2 = Ext.get("trigger2" + id);
+        trigger2.addClsOnOver('x-form-trigger-over');
+    }
+
 });
 
 Ext.define('App.ux.NodeDisabled',
@@ -39621,7 +39663,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39707,7 +39749,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39787,7 +39829,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39807,7 +39849,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -41199,7 +41241,8 @@ Ext.define('App.controller.patient.Medications', {
 				click: me.onPatientMedicationReconciledBtnClick
 			},
 			'#PatientMedicationUserLiveSearch': {
-				select: me.onPatientMedicationUserLiveSearchSelect
+				select: me.onPatientMedicationUserLiveSearchSelect,
+                reset: me.onPatientMedicationUserLiveSearchReset
 			},
 
 			// administer controls
@@ -41296,6 +41339,15 @@ Ext.define('App.controller.patient.Medications', {
         record.set({title: user.data.title});
 		record.set({administered_uid: user.data.id});
 	},
+
+    onPatientMedicationUserLiveSearchReset: function(cmb){
+        var record = cmb.up('form').getForm().getRecord();
+        record.set({fname: ''});
+        record.set({lname: ''});
+        record.set({mname: ''});
+        record.set({title: ''});
+        record.set({administered_uid: ''});
+    },
 
 	onAddPatientMedicationBtnClick: function(){
 		var me = this,

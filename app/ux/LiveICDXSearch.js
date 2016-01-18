@@ -20,6 +20,7 @@ Ext.define('App.ux.LiveICDXSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.liveicdxsearch',
 	hideLabel: true,
+
 	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
@@ -81,8 +82,9 @@ Ext.define('App.ux.LiveICDXSearch', {
 	},
 
 	onRender: function(ct, position){
+        var trigger2,
+            id = this.getId();
 		this.callParent(arguments);
-		var id = this.getId();
 		this.triggerConfig = {
 			tag: 'div',
 			cls: 'x-form-twin-triggers',
@@ -111,8 +113,9 @@ Ext.define('App.ux.LiveICDXSearch', {
 					Ext.getCmp(this.spForm).getForm().reset();
 				}
 			}
+
 		}, this);
-		var trigger2 = Ext.get("trigger2" + id);
+		trigger2 = Ext.get("trigger2" + id);
 		trigger2.addClsOnOver('x-form-trigger-over');
 	}
 });

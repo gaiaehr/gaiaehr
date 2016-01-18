@@ -241,8 +241,8 @@ Ext.define('App.controller.patient.Allergies', {
 						value: app.patient.pid
 					},
 					{
-						property: 'end_date',
-						value: '0000-00-00'
+						property: 'status',
+						value: 'Active'
 					}
 				]
 			})

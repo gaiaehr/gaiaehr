@@ -44,10 +44,6 @@ Ext.define('App.ux.LiveRadiologySearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{code_text_short} ({code})</h3></div>';
 				}

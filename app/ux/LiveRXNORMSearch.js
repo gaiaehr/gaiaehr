@@ -118,10 +118,6 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
 				}

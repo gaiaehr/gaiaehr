@@ -24,10 +24,12 @@ Ext.define('App.ux.LiveUserSearch', {
 	emptyText: _('search_for_a_user') + '...',
 	maxLength: 40,
 	typeAhead: false,
+    queryMode: 'remote',
+    allowBlank: true,
+    validateBlank: true,
 	hideTrigger: true,
-	minChars: 1,
+    minChars: 1,
 	queryDelay: 200,
-	forceSelection:true,
 	acl: null,
 	initComponent: function(){
 		var me = this;
@@ -83,22 +85,19 @@ Ext.define('App.ux.LiveUserSearch', {
 				},
 				reader: {
 					root: 'data'
-				}
+				},
+                writer: {
+                    writeAllFields: true
+                }
 			}
-
 		});
 
 		Ext.apply(me, {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
 				getInnerTpl: function(){
-					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
+					//var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
 					return '<div class="search-item">{fullname} <b>({role})</b></div>'
 				}
 			},

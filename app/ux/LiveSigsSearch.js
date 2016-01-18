@@ -54,10 +54,6 @@ Ext.define('App.ux.LiveSigsSearch', {
 			anchor: '100%',
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{option_value} ({option_name})</div>';
 				}

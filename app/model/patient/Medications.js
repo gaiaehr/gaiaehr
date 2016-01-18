@@ -220,6 +220,9 @@ Ext.define('App.model.patient.Medications', {
 			update: 'Medications.updatePatientMedication',
 			destroy: 'Medications.destroyPatientMedication'
 		},
+        writer: {
+            writeAllFields: true
+        },
 		remoteGroup: false
 	}
 });

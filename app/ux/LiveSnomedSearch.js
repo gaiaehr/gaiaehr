@@ -68,10 +68,6 @@ Ext.define('App.ux.LiveSnomedSearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
 				}

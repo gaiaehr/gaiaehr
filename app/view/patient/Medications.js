@@ -56,7 +56,11 @@ Ext.define('App.view.patient.Medications', {
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
-								App.app.getController('InfoButton').doGetInfo(record.data.RXCUI, 'RXCUI', record.data.STR);
+								App.app.getController('InfoButton').doGetInfo(
+                                    record.data.RXCUI,
+                                    'RXCUI',
+                                    record.data.STR
+                                );
 							}
 						}
 					]

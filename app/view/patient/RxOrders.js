@@ -89,7 +89,7 @@ Ext.define('App.view.patient.RxOrders', {
 									fieldLabel: _('medication'),
 									width: 700,
 									name: 'STR',
-									maxLength: 105,
+									maxLength: 255,
 									displayField: 'STR',
 									valueField: 'STR',
 									vtype: 'nonspecialcharactersrequired',

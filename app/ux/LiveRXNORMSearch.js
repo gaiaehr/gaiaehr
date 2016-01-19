@@ -116,6 +116,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
+            maxLength: 255,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				getInnerTpl: function(){

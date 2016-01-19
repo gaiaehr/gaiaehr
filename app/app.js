@@ -10471,6 +10471,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
+            maxLength: 255,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				getInnerTpl: function(){
@@ -54680,7 +54681,7 @@ Ext.define('App.view.patient.RxOrders', {
 									fieldLabel: _('medication'),
 									width: 700,
 									name: 'STR',
-									maxLength: 105,
+									maxLength: 255,
 									displayField: 'STR',
 									valueField: 'STR',
 									vtype: 'nonspecialcharactersrequired',
@@ -54968,6 +54969,7 @@ Ext.define('App.view.patient.RxOrders', {
 		}
 	]
 });
+
 Ext.define('App.ux.combo.Specialties', {
 	extend: 'App.ux.combo.ComboResettable',
 	xtype: 'specialtiescombo',

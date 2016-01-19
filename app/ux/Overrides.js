@@ -878,6 +878,20 @@ Ext.override(Ext.container.Container, {
         return val;
     },
 
+    /**
+     * A custom renderer to show VOIDed records in a Grid Panel.
+     * @param val
+     * @returns {*}
+     */
+    voidRenderer: function(val){
+        if(val == '1' || val == true || val == 'true'){
+            return '<div style="margin-left:auto; margin-right:auto; width:16px; height:16px"><img src="resources/images/icons/close_exit.png" /></div>';
+        }else if(val == '0' || val == false || val == 'false'){
+            return '';
+        }
+        return val;
+    },
+
 	alertRenderer: function(val){
         if(val == '1' || val == true || val == 'true'){
             return '<img style="padding-left: 13px" src="resources/images/icons/no.gif" />';

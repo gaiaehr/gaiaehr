@@ -21,13 +21,13 @@ Ext.apply(Ext.form.VTypes, {
 	nonspecialcharacters: function(val){
 		return  !val.match(/[`<>[\]~+!@#$%^&*():;\\/{}=^|?]/ig);
 	},
-	nonspecialcharactersText: _('vtype_empty_3chr'),
+	nonspecialcharactersText: _('vtype_nonespecialchar'),
 
 
 	nonspecialcharactersrequired: function(val){
 		return  !val.match(/^[ ]*$|[`<>[\]~+!@#$^&*:;{}=^|?]/ig);
 	},
-	nonspecialcharactersrequiredText: _('vtype_empty_3chr'),
+	nonspecialcharactersrequiredText: _('vtype_nonespecialcharReq'),
 
 	/**
 	 * Validate against 3 characters minimum
@@ -92,7 +92,7 @@ Ext.apply(Ext.form.VTypes, {
 	// abc@abc.com
 	// ---------------------------------------
 	checkEmail: function(val, field){
-		var rgx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+		var rgx = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 		return val.match(rgx);
 	},
 	checkEmailText: _('vtype_checkEmail'),

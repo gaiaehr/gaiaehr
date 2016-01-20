@@ -1301,7 +1301,7 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this;;
+		var me = this;
 		me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
@@ -2244,7 +2244,6 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
     warnRenderer:function(val, metaData, record){
-	    say(record);
 	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
 
         if(val == '1' || val == true || val == 'true') {
@@ -2948,13 +2947,13 @@ Ext.define('App.ux.LiveSigsSearch', {
 	},
 
 	onBeforeSigSelect: function(cmb, record){
-		say(cmb);
-		say(record);
+		//say(cmb);
+		//say(record);
 	},
 
 	onBeSigSelect: function(cmb, record){
-		say(cmb);
-		say(record);
+		//say(cmb);
+		//say(record);
 	}
 
 
@@ -20138,11 +20137,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 			form = me.encForm.getForm(),
 			values = form.getValues(),
 			record = form.getRecord(),
-			isNew = record.data.eid === 0 ;
-
-		say('isValid');
-		say(form.isValid());
-
+			isNew = record.data.eid === 0;
 		if(form.isValid()){
 			if((isNew && a('add_encounters') || (!isNew && a('edit_encounters')))){
 				record.set(values);
@@ -20166,8 +20161,6 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 	},
 
 	loadRecord: function(record){
-		say(record);
-
 		this.encForm.getForm().loadRecord(record);
 	},
 
@@ -26121,7 +26114,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 					voucher.voucherlines().load({
 						callback:function(){
-							say('hello');
+							// say('hello');
 						}
 					});
 
@@ -26162,8 +26155,6 @@ Ext.define('App.view.patient.VisitCheckout', {
         for(var i=0; i < records.length; i++){
             total = eval(total) + eval(records[i].data.amount);
         }
-
-		say(total);
         me.total.setValue(total);
         balance = total - paid;
         me.balance.setValue(balance);
@@ -29686,9 +29677,6 @@ Ext.define('App.view.administration.Globals', {
 
 						var getCat = function(o){
 								var name = o.get('gl_category');
-
-								say(name);
-
 								if (name === 'General') {
 									return 1;
 								} else if (name === 'Locale') {
@@ -31022,18 +31010,12 @@ Ext.define('App.view.administration.FloorPlans', {
 	        el = me.activeZone ? me.activeZone.getEl() : null;
 
         if(el){
-//            me.floorPlanZoneEditor.hide(null, function(){
-//	            say('hide');
                 me.setEditor(show, zone);
-//            });
         }else{
             me.setEditor(show, zone);
         }
     },
     setEditor:function(show, zone){
-
-	    say('setEditor');
-
         var me = this;
         if(show){
             me.activeZone = zone;
@@ -31194,7 +31176,6 @@ Ext.define('App.view.administration.FloorPlans', {
         zone.record = record;
     },
     applyZoneConfig:function(zone, config){
-        say(config);
         zone.setText(config.text);
         zone.getEl().applyStyles(config.style);
         zone.setScale(config.scale);
@@ -32223,10 +32204,10 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 					codeType: btn.action
 				},
 				success: function(fp, o){
-					say(o.result);
+					//say(o.result);
 				},
 				failure: function(fp, o){
-					say(o.result);
+					//say(o.result);
 				}
 			});
 		}
@@ -33070,7 +33051,6 @@ Ext.define('App.view.signature.SignatureWindow', {
 
     signatureSave:function(){
         var svg = document.getElementById('svgSignature').contentWindow;
-        say(svg.getSignature());
     },
 
     signatureCancel:function(){
@@ -33082,6 +33062,7 @@ Ext.define('App.view.signature.SignatureWindow', {
 
 
 });
+
 Ext.define('App.store.miscellaneous.AddressBook', {
 	model: 'App.model.miscellaneous.AddressBook',
 	extend: 'Ext.data.Store'
@@ -35433,7 +35414,7 @@ Ext.define('App.controller.administration.AuditLog', {
 
 	onAuditLogGridItemDblClick: function(grid, record){
 
-		say(record);
+		//say(record);
 
 	},
 
@@ -35492,6 +35473,7 @@ Ext.define('App.controller.administration.AuditLog', {
 	}
 
 });
+
 Ext.define('App.controller.administration.CPT', {
 	extend: 'Ext.app.Controller',
 
@@ -37690,9 +37672,6 @@ Ext.define('App.controller.DualScreen', {
 			me.appMask.show();
 			me.appMask.msgEl.query('p')[0].innerHTML = msg;
 		}
-
-		say(me.appMask);
-
 	},
 
 	unmask:function(){
@@ -37716,6 +37695,7 @@ Ext.define('App.controller.DualScreen', {
 	}
 
 });
+
 Ext.define('App.controller.Header', {
     extend: 'Ext.app.Controller',
 	requires:[
@@ -38022,7 +38002,6 @@ Ext.define('App.controller.LogOut', {
 		}else{
 			me.logoutWarinigWindow.update('Logging Out in ' + sec + 'sec');
 			me.logoutWarinigWindow.seconds = sec;
-			say('Logging Out in ' + sec + 'sec');
 		}
 	},
 
@@ -38059,6 +38038,7 @@ Ext.define('App.controller.LogOut', {
 		}
 	}
 });
+
 Ext.define('App.controller.Navigation', {
     extend: 'Ext.app.Controller',
 	requires:[
@@ -39092,14 +39072,8 @@ Ext.define('App.controller.patient.AppointmentRequests', {
 	},
 
 	onAppEncounterLoad: function(encounter){
-
-		say('onAppEncounterLoad');
-		say(encounter);
-
 		this.getAppointmentRequestGrid().reconfigure(encounter.appointmentrequests());
-
 		encounter.appointmentrequests().load();
-
 	},
 
 	onAppointmentRequestDateFieldButtonsClick: function(btn){
@@ -39204,6 +39178,7 @@ Ext.define('App.controller.patient.AppointmentRequests', {
 		this.getAppointmentRequestForm().getForm().reset(true);
 	}
 });
+
 Ext.define('App.controller.patient.CarePlanGoals', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -39481,7 +39456,6 @@ Ext.define('App.controller.patient.CCD', {
 	},
 
 	onPrintCcdBtnClick: function(btn){
-		say(btn.up('panel').query('miframe')[0]);
 		var cont = btn.up('panel').query('miframe')[0].frameElement.dom.contentWindow;
 		cont.focus();
 		cont.print();
@@ -39505,6 +39479,7 @@ Ext.define('App.controller.patient.CCD', {
 	}
 
 });
+
 Ext.define('App.controller.patient.CCDImport', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -39686,7 +39661,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39772,7 +39747,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39852,7 +39827,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39872,7 +39847,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -40229,9 +40204,6 @@ Ext.define('App.controller.patient.DecisionSupport', {
 
 		DecisionSupport.getAlerts({ pid:app.patient.pid, alertType:'P' }, function(results){
 			for(var i=0; i < results.length; i++){
-
-				say(results[i]);
-
 				var btn = {
 					xtype: 'button',
 					margin: '2 5',
@@ -40259,6 +40231,7 @@ Ext.define('App.controller.patient.DecisionSupport', {
 	}
 
 });
+
 Ext.define('App.controller.patient.DoctorsNotes', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -40555,10 +40528,6 @@ Ext.define('App.controller.patient.HL7', {
 			fid: app.user.facility,
 			event: 'A04'
 		}, function(response){
-
-			say(response);
-
-
 		});
 	}
 
@@ -41610,9 +41579,6 @@ Ext.define('App.controller.patient.RadOrders', {
 
 	onRadSearchSelect: function(cmb, records){
 		var form = cmb.up('form').getForm();
-
-		say(records);
-
 		form.getRecord().set({
 			code: records[0].data.loinc_number,
 			code_type: records[0].data.code_type
@@ -41731,6 +41697,7 @@ Ext.define('App.controller.patient.RadOrders', {
 	}
 
 });
+
 Ext.define('App.controller.patient.Reminders', {
 	extend: 'Ext.app.Controller',
 	requires: [],
@@ -42813,7 +42780,6 @@ Ext.define('App.controller.patient.Vitals', {
 		var selected = sm.getSelection().length;
 
 		if(selected > 0 && record.data.auth_uid > 0){
-			say('entre false');
 			app.msg(_('oops'),_('multi_select_signed_records_not_authorized'), true);
 			return false;
 		}
@@ -43202,6 +43168,7 @@ Ext.define('App.controller.patient.Vitals', {
     }
 
 });
+
 Ext.define('App.controller.patient.Summary', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -43399,8 +43366,6 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 	},
 
 	onDocumentView: function(grid, rowIndex){
-		say('onDocumentView');
-
 	},
 
 	loadDocumentsByEid: function(grid, eid){
@@ -43446,6 +43411,7 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 	}
 
 });
+
 Ext.define('App.controller.patient.encounter.EncounterSign', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -44036,7 +44002,6 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		me.recognition.lang = app.user.localization;
 
 		me.recognition.onstart = function(){
-			say('onstart');
 			me.recognizing = true;
 			me.setRecordButton(true);
 		};
@@ -44071,6 +44036,7 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	}
 
 });
+
 Ext.define('App.model.patient.EncounterDx', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -46216,14 +46182,12 @@ Ext.define('App.ux.combo.XCombo', {
 			me.store.sync({
 				// hanlde sync success
 				success: function(batch, options) {
-					say('success');
 					me.select(record);
 					me.fireEvent('sync', me.store, record, batch, options);
 				},
 				// handle sync failure
 				failure: function() {
 					me.fireEvent('failure', me.store, record, batch, options);
-					say('failure');
 				},
 				// handle all request
 				callback: function() {
@@ -46250,6 +46214,7 @@ Ext.define('App.ux.combo.XCombo', {
 		me.uWindow.close();
 	}
 });
+
 Ext.define("App.ux.form.fields.plugin.PasswordStrength", {
 	extend : "Ext.AbstractPlugin",
 	alias  : "plugin.passwordstrength",
@@ -52128,15 +52093,13 @@ Ext.define('App.controller.Notification', {
 	},
 
 	testNotification:function(data, callback){
-		say('Hello Word!');
-		say(data);
-
 		if(typeof callback == 'function'){
 			callback(true);
 		}
 	}
 
 });
+
 Ext.define('App.controller.patient.Documents', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -52692,7 +52655,7 @@ Ext.define('App.controller.patient.LabOrders', {
 	},
 
 	onElectronicLabOrderBtnClick: function(){
-		say('TODO!');
+		// say('TODO!');
 	},
 
 	onNewLabOrderBtnClick: function(){
@@ -52920,7 +52883,6 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onOrderSelectionEdit: function(editor, e){
-		say(e.record);
 		this.getOrderResult(e.record);
 	},
 
@@ -53181,6 +53143,7 @@ Ext.define('App.controller.patient.Results', {
 	}
 
 });
+
 Ext.define('App.controller.patient.encounter.Encounter', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -54637,9 +54600,14 @@ Ext.define('App.view.patient.RxOrders', {
 		cls: 'order-tab'
 	},
 	itemId: 'RxOrderGrid',
+    features: [
+        {
+            ftype: 'grouping'
+        }
+    ],
 	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
-		//groupField: 'date_ordered',
+		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [
@@ -54652,11 +54620,6 @@ Ext.define('App.view.patient.RxOrders', {
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
 	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowformediting',
@@ -54736,7 +54699,6 @@ Ext.define('App.view.patient.RxOrders', {
 												}else{
 													return Number(num);
 												}
-												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
 											}
 										},
 										{
@@ -55372,10 +55334,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var me = this,
 			form = me.pForm.getForm(),
 			procedure = form.getRecord();
-
-
-		say(record[0].data);
-
 		procedure.set({
 			code: record[0].data.ConceptId,
 			code_type: record[0].data.CodeType,
@@ -55595,6 +55553,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.snippetStore.sync();
 	}
 });
+
 Ext.define('App.view.patient.encounter.ProgressNotesHistory', {
 	extend: 'Ext.grid.Panel',
 	requires: [

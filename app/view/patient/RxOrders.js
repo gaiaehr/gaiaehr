@@ -36,14 +36,8 @@ Ext.define('App.view.patient.RxOrders', {
 		cls: 'order-tab'
 	},
 	itemId: 'RxOrderGrid',
-    features: [
-        {
-            ftype: 'grouping'
-        }
-    ],
 	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
-		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [

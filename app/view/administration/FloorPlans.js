@@ -210,18 +210,12 @@ Ext.define('App.view.administration.FloorPlans', {
 	        el = me.activeZone ? me.activeZone.getEl() : null;
 
         if(el){
-//            me.floorPlanZoneEditor.hide(null, function(){
-//	            say('hide');
                 me.setEditor(show, zone);
-//            });
         }else{
             me.setEditor(show, zone);
         }
     },
     setEditor:function(show, zone){
-
-	    say('setEditor');
-
         var me = this;
         if(show){
             me.activeZone = zone;
@@ -382,7 +376,6 @@ Ext.define('App.view.administration.FloorPlans', {
         zone.record = record;
     },
     applyZoneConfig:function(zone, config){
-        say(config);
         zone.setText(config.text);
         zone.getEl().applyStyles(config.style);
         zone.setScale(config.scale);

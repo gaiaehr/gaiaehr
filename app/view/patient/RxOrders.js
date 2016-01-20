@@ -36,9 +36,14 @@ Ext.define('App.view.patient.RxOrders', {
 		cls: 'order-tab'
 	},
 	itemId: 'RxOrderGrid',
+    features: [
+        {
+            ftype: 'grouping'
+        }
+    ],
 	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
-		//groupField: 'date_ordered',
+		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [
@@ -51,11 +56,6 @@ Ext.define('App.view.patient.RxOrders', {
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
 	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowformediting',
@@ -135,7 +135,6 @@ Ext.define('App.view.patient.RxOrders', {
 												}else{
 													return Number(num);
 												}
-												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
 											}
 										},
 										{

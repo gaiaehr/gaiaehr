@@ -49,7 +49,6 @@ Ext.define('App.view.signature.SignatureWindow', {
 
     signatureSave:function(){
         var svg = document.getElementById('svgSignature').contentWindow;
-        say(svg.getSignature());
     },
 
     signatureCancel:function(){

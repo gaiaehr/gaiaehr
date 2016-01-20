@@ -70,13 +70,13 @@ Ext.define('App.ux.LiveSigsSearch', {
 	},
 
 	onBeforeSigSelect: function(cmb, record){
-		say(cmb);
-		say(record);
+		//say(cmb);
+		//say(record);
 	},
 
 	onBeSigSelect: function(cmb, record){
-		say(cmb);
-		say(record);
+		//say(cmb);
+		//say(record);
 	}
 
 

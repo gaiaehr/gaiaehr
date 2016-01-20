@@ -64,9 +64,6 @@ Ext.define('App.controller.patient.DecisionSupport', {
 
 		DecisionSupport.getAlerts({ pid:app.patient.pid, alertType:'P' }, function(results){
 			for(var i=0; i < results.length; i++){
-
-				say(results[i]);
-
 				var btn = {
 					xtype: 'button',
 					margin: '2 5',

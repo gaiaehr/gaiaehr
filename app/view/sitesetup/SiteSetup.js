@@ -934,7 +934,6 @@ Ext.define('App.view.sitesetup.SiteSetup',
 		 */
 		loadCodes:function(codes, callback){
 			var me = this;
-			say(codes[0]);
 			if(codes[0]){
 				me.installationPregress.updateProgress(me.installProgress + .1, 'Loading ' + codes[0] + ' Data', true);
 				SiteSetup.loadCode(codes[0], function(provider, response){

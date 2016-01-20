@@ -394,10 +394,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var me = this,
 			form = me.pForm.getForm(),
 			procedure = form.getRecord();
-
-
-		say(record[0].data);
-
 		procedure.set({
 			code: record[0].data.ConceptId,
 			code_type: record[0].data.CodeType,

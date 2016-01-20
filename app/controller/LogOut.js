@@ -116,7 +116,6 @@ Ext.define('App.controller.LogOut', {
 		}else{
 			me.logoutWarinigWindow.update('Logging Out in ' + sec + 'sec');
 			me.logoutWarinigWindow.seconds = sec;
-			say('Logging Out in ' + sec + 'sec');
 		}
 	},
 

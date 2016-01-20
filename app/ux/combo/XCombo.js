@@ -209,14 +209,12 @@ Ext.define('App.ux.combo.XCombo', {
 			me.store.sync({
 				// hanlde sync success
 				success: function(batch, options) {
-					say('success');
 					me.select(record);
 					me.fireEvent('sync', me.store, record, batch, options);
 				},
 				// handle sync failure
 				failure: function() {
 					me.fireEvent('failure', me.store, record, batch, options);
-					say('failure');
 				},
 				// handle all request
 				callback: function() {

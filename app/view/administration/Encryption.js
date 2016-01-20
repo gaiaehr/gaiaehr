@@ -57,10 +57,7 @@ Ext.define('App.view.administration.Encryption', {
 		var me = this,
 			value = me.textbox.getValue();
 
-		say(value);
 		Encryption.Encrypt(value, function(provider, response){
-			say(response);
-
 			me.textbox.setValue(response.result);
 		});
 	},
@@ -68,11 +65,7 @@ Ext.define('App.view.administration.Encryption', {
 	onDecrypt:function(){
 		var me = this,
 			value = me.textbox.getValue();
-
-		say(value);
 		Encryption.Decrypt(value, function(provider, response){
-			say(response);
-
 			me.textbox.setValue(response.result);
 		});
 	},

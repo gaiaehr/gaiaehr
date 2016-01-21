@@ -37,9 +37,6 @@ Ext.define('App.view.administration.Globals', {
 
 						var getCat = function(o){
 								var name = o.get('gl_category');
-
-								say(name);
-
 								if (name === 'General') {
 									return 1;
 								} else if (name === 'Locale') {

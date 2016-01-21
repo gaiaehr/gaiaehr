@@ -23,9 +23,15 @@ Ext.define('App.ux.LivePatientSearch', {
 	valueField: 'pid',
 	emptyText: _('search_for_a_patient') + '...',
 	maxLength: 40,
+    queryMode: 'remote',
+    allowBlank: true,
 	typeAhead: false,
+    forceSelection: false,
+    allowOnlyWhitespace: true,
 	hideTrigger: true,
-	minChars: 1,
+    validateBlank: true,
+    submitValue: true,
+	minChars: 0,
 	queryDelay: 200,
 	initComponent: function(){
 		var me = this;
@@ -79,6 +85,9 @@ Ext.define('App.ux.LivePatientSearch', {
 				api: {
 					read: 'Patient.patientLiveSearch'
 				},
+                writer:{
+                    writeAllFields: true
+                },
 				reader: {
 					totalProperty: 'totals',
 					root: 'rows'
@@ -96,11 +105,6 @@ Ext.define('App.ux.LivePatientSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
 				getInnerTpl: function(){
 					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
 					return '<div class="search-item"><h3><span>{fullname}</span> {[Ext.Date.format(values.DOB, g("date_display_format"))]}</h3>' +

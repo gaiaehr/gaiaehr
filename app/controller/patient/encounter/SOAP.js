@@ -221,7 +221,6 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		me.recognition.lang = app.user.localization;
 
 		me.recognition.onstart = function(){
-			say('onstart');
 			me.recognizing = true;
 			me.setRecordButton(true);
 		};

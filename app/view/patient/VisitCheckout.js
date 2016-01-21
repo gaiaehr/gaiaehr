@@ -566,7 +566,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 					voucher.voucherlines().load({
 						callback:function(){
-							say('hello');
+							// say('hello');
 						}
 					});
 
@@ -607,8 +607,6 @@ Ext.define('App.view.patient.VisitCheckout', {
         for(var i=0; i < records.length; i++){
             total = eval(total) + eval(records[i].data.amount);
         }
-
-		say(total);
         me.total.setValue(total);
         balance = total - paid;
         me.balance.setValue(balance);

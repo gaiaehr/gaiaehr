@@ -59,9 +59,6 @@ Ext.define('App.controller.patient.RadOrders', {
 
 	onRadSearchSelect: function(cmb, records){
 		var form = cmb.up('form').getForm();
-
-		say(records);
-
 		form.getRecord().set({
 			code: records[0].data.loinc_number,
 			code_type: records[0].data.code_type

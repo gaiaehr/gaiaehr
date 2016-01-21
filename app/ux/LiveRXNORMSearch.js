@@ -116,17 +116,23 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
+            maxLength: 255,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
 				}
 			},
-			pageSize: 25
+			pageSize: 25,
+            listeners: {
+                select: function(combo, records, eOpts){
+                    var medicine = records[0].data,
+                        cpos = medicine.STR.indexOf("["),
+                        spos = medicine.STR.indexOf("]");
+                    if (cpos > -1 && spos > cpos)
+                        this.setValue( medicine.STR.substr(0, cpos)+medicine.STR.substr(spos+1) );
+                }
+            }
 		});
 
 		me.callParent();

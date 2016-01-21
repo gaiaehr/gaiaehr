@@ -38,7 +38,6 @@ Ext.define('App.view.patient.RxOrders', {
 	itemId: 'RxOrderGrid',
 	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
-		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [
@@ -51,11 +50,6 @@ Ext.define('App.view.patient.RxOrders', {
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
 	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowformediting',
@@ -89,7 +83,7 @@ Ext.define('App.view.patient.RxOrders', {
 									fieldLabel: _('medication'),
 									width: 700,
 									name: 'STR',
-									maxLength: 105,
+									maxLength: 255,
 									displayField: 'STR',
 									valueField: 'STR',
 									vtype: 'nonspecialcharactersrequired',
@@ -115,16 +109,18 @@ Ext.define('App.view.patient.RxOrders', {
 											fixPrecision: function(value){
 												var me = this,
 													nan = isNaN(value),
-													precision = me.decimalPrecision;
+													precision = me.decimalPrecision,
+                                                    num,
+                                                    numArr;
 
 												if(nan || !value){
 													return nan ? '' : value;
 												}else if(!me.allowDecimals || precision <= 0){
 													precision = 0;
 												}
-												var num = String(value);
+												num = String(value);
 												if(num.indexOf('.') !== -1){
-													var numArr = num.split(".");
+													numArr = num.split(".");
 													if(numArr.length == 1){
 														return Number(num);
 													}else{
@@ -133,7 +129,6 @@ Ext.define('App.view.patient.RxOrders', {
 												}else{
 													return Number(num);
 												}
-												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
 											}
 										},
 										{

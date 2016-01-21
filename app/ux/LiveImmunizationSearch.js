@@ -60,10 +60,6 @@ Ext.define('App.ux.LiveImmunizationSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">CVX - {cvx_code}: <span style="font-weight: normal;" class="list-status-{status}">{name} ({status})</span></div>';
 				}

@@ -79,14 +79,8 @@ Ext.define('App.controller.patient.AppointmentRequests', {
 	},
 
 	onAppEncounterLoad: function(encounter){
-
-		say('onAppEncounterLoad');
-		say(encounter);
-
 		this.getAppointmentRequestGrid().reconfigure(encounter.appointmentrequests());
-
 		encounter.appointmentrequests().load();
-
 	},
 
 	onAppointmentRequestDateFieldButtonsClick: function(btn){

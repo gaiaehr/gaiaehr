@@ -167,7 +167,6 @@ Ext.define('App.controller.patient.Vitals', {
 		var selected = sm.getSelection().length;
 
 		if(selected > 0 && record.data.auth_uid > 0){
-			say('entre false');
 			app.msg(_('oops'),_('multi_select_signed_records_not_authorized'), true);
 			return false;
 		}

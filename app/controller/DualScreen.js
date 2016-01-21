@@ -137,9 +137,6 @@ Ext.define('App.controller.DualScreen', {
 			me.appMask.show();
 			me.appMask.msgEl.query('p')[0].innerHTML = msg;
 		}
-
-		say(me.appMask);
-
 	},
 
 	unmask:function(){

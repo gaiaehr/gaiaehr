@@ -70,21 +70,28 @@ Ext.define('App.view.patient.LabOrders', {
 	],
 	columns: [
 		{
-			xtype: 'actioncolumn',
-			width: 20,
-			items: [
-				{
-					icon: 'resources/images/icons/cross.png',
-					tooltip: _('remove')
-//					scope: me,
-//					handler: me.onRemoveClick
-				}
-			]
+            header: _('void'),
+            groupable: false,
+            width: 60,
+            align: 'center',
+            dataIndex: 'void',
+            tooltip: _('void'),
+            editor: {
+                xtype: 'checkbox'
+            },
+            renderer: function(v, meta, record){
+                return app.voidRenderer(v);
+            }
 		},
 		{
 			header: _('order#'),
 			width: 60,
-			dataIndex: 'id'
+			dataIndex: 'id',
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('status'),
@@ -94,8 +101,10 @@ Ext.define('App.view.patient.LabOrders', {
 				xtype: 'gaiaehr.combo',
 				list: 40
 			},
-			renderer: function(v){
-				return app.getController('patient.LabOrders').labOrdersGridStatusColumnRenderer(v)
+			renderer: function(v, meta, record){
+                var look = app.getController('patient.LabOrders').labOrdersGridStatusColumnRenderer(v);
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+look+'</span>';
+                return look;
 			}
 		},
 		{
@@ -106,12 +115,22 @@ Ext.define('App.view.patient.LabOrders', {
 			format: 'Y-m-d',
 			editor: {
 				xtype: 'datefield'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('code'),
 			width: 100,
-			dataIndex: 'code'
+			dataIndex: 'code',
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('description'),
@@ -120,7 +139,12 @@ Ext.define('App.view.patient.LabOrders', {
 			editor: {
 				xtype: 'labslivetsearch',
 				itemId: 'rxLabOrderLabsLiveSearch'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('notes'),
@@ -128,7 +152,12 @@ Ext.define('App.view.patient.LabOrders', {
 			dataIndex: 'note',
 			editor: {
 				xtype: 'textfield'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('priority'),
@@ -137,7 +166,12 @@ Ext.define('App.view.patient.LabOrders', {
 			editor: {
 				xtype: 'gaiaehr.combo',
 				list: 98
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			xtype: 'datecolumn',
@@ -147,7 +181,12 @@ Ext.define('App.view.patient.LabOrders', {
 			format: 'Y-m-d',
 			editor: {
 				xtype: 'datefield'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		}
 	],
 	tbar: [

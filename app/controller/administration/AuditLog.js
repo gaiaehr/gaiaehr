@@ -79,7 +79,7 @@ Ext.define('App.controller.administration.AuditLog', {
 
 	onAuditLogGridItemDblClick: function(grid, record){
 
-		say(record);
+		//say(record);
 
 	},
 

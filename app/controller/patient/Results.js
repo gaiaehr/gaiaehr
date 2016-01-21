@@ -127,7 +127,6 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onOrderSelectionEdit: function(editor, e){
-		say(e.record);
 		this.getOrderResult(e.record);
 	},
 

@@ -294,10 +294,10 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 					codeType: btn.action
 				},
 				success: function(fp, o){
-					say(o.result);
+					//say(o.result);
 				},
 				failure: function(fp, o){
-					say(o.result);
+					//say(o.result);
 				}
 			});
 		}

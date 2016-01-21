@@ -106,7 +106,6 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
     warnRenderer:function(val, metaData, record){
-	    say(record);
 	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
 
         if(val == '1' || val == true || val == 'true') {

@@ -18,7 +18,7 @@
 Ext.define('App.controller.patient.HL7', {
 	extend: 'Ext.app.Controller',
 	requires: [
-		
+
 	],
 	refs: [
 		{
@@ -57,10 +57,6 @@ Ext.define('App.controller.patient.HL7', {
 			fid: app.user.facility,
 			event: 'A04'
 		}, function(response){
-
-			say(response);
-
-
 		});
 	}
 

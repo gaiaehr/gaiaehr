@@ -115,7 +115,6 @@ Ext.define('App.controller.patient.CCD', {
 	},
 
 	onPrintCcdBtnClick: function(btn){
-		say(btn.up('panel').query('miframe')[0]);
 		var cont = btn.up('panel').query('miframe')[0].frameElement.dom.contentWindow;
 		cont.focus();
 		cont.print();

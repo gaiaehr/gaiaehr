@@ -52,25 +52,25 @@ Ext.define('Ext.ux.PreviewPlugin', {
     extend: 'Ext.AbstractPlugin',
     alias: 'plugin.preview',
     requires: ['Ext.grid.feature.RowBody', 'Ext.grid.feature.RowWrap'],
-    
+
     // private, css class to use to hide the body
     hideBodyCls: 'x-grid-row-body-hidden',
-    
+
     /**
      * @cfg {String} bodyField
      * Field to display in the preview. Must be a field within the Model definition
      * that the store is using.
      */
     bodyField: '',
-    
+
     /**
      * @cfg {Boolean} previewExpanded
      */
     previewExpanded: true,
-    
+
     setCmp: function(grid) {
         this.callParent(arguments);
-        
+
         var bodyField   = this.bodyField,
             hideBodyCls = this.hideBodyCls,
             features    = [{
@@ -81,7 +81,7 @@ Ext.define('Ext.ux.PreviewPlugin', {
                             rowBody: data[bodyField],
                             rowBodyCls: grid.previewExpanded ? '' : hideBodyCls
                         };
-                        
+
                     if (getAdditionalData) {
                         Ext.apply(additionalData, getAdditionalData.apply(this, arguments));
                     }
@@ -90,14 +90,14 @@ Ext.define('Ext.ux.PreviewPlugin', {
             }, {
                 ftype: 'rowwrap'
             }];
-        
+
         grid.previewExpanded = this.previewExpanded;
         if (!grid.features) {
             grid.features = [];
         }
         grid.features = features.concat(grid.features);
     },
-    
+
     /**
      * Toggle between the preview being expanded/hidden
      * @param {Boolean} expanded Pass true to expand the record and false to not show the preview.
@@ -370,7 +370,7 @@ Ext.define('Ext.ux.statusbar.StatusBar', {
      * it will be used as the callback interval (in milliseconds), overriding the {@link #autoClear} value.
      * All other options will be defaulted as with the boolean option.  To customize any other options,
      * you can pass an object in the format:
-     * 
+     *
      * @param {Number} config.clear.wait The number of milliseconds to wait before clearing
      * (defaults to {@link #autoClear}).
      * @param {Boolean} config.clear.anim False to clear the status immediately once the callback
@@ -550,51 +550,51 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
         'Ext.form.field.Text',
         'Ext.ux.statusbar.StatusBar'
     ],
-    
+
     /**
      * @private
      * search value initialization
      */
     searchValue: null,
-    
+
     /**
      * @private
      * The row indexes where matching strings are found. (used by previous and next buttons)
      */
     indexes: [],
-    
+
     /**
      * @private
      * The row index of the first search, it could change if next or previous buttons are used.
      */
     currentIndex: null,
-    
+
     /**
      * @private
      * The generated regular expression used for searching.
      */
     searchRegExp: null,
-    
+
     /**
      * @private
      * Case sensitive mode.
      */
     caseSensitive: false,
-    
+
     /**
      * @private
      * Regular expression mode.
      */
     regExpMode: false,
-    
+
     /**
      * @cfg {String} matchCls
      * The matched string css classe.
      */
     matchCls: 'x-livesearch-match',
-    
+
     defaultStatusText: 'Nothing Found',
-    
+
     // Component initialization override: adds the top and bottom toolbars and setup headers renderer.
     initComponent: function() {
         var me = this;
@@ -627,7 +627,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                 hideLabel: true,
                 margin: '0 0 0 4px',
                 handler: me.regExpToggle,
-                scope: me                
+                scope: me
             }, 'Regular expression', {
                 xtype: 'checkbox',
                 hideLabel: true,
@@ -640,11 +640,11 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
             defaultText: me.defaultStatusText,
             name: 'searchStatusBar'
         });
-        
+
         me.callParent(arguments);
     },
-    
-    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input 
+
+    // afterRender override: it adds textfield and statusbar reference and start monitoring keydown events in textfield input
     afterRender: function() {
         var me = this;
         me.callParent(arguments);
@@ -653,13 +653,13 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
     },
     // detects html tag
     tagsRe: /<[^>]*>/gm,
-    
+
     // DEL ASCII code
     tagsProtect: '\x0f',
-    
+
     // detects regexp reserved word
     regExpProtect: /\\|\/|\+|\\|\.|\[|\]|\{|\}|\?|\$|\*|\^|\|/gm,
-    
+
     /**
      * In normal mode it returns the value with protected regexp characters.
      * In regular expression mode it returns the raw value except if the regexp is invalid.
@@ -669,7 +669,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
     getSearchValue: function() {
         var me = this,
             value = me.textField.getValue();
-            
+
         if (value === '') {
             return null;
         }
@@ -695,7 +695,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
 
         return value;
     },
-    
+
     /**
      * Finds all strings that matches the searched value in each grid cells.
      * @private
@@ -717,8 +717,8 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
 
          if (me.searchValue !== null) {
              me.searchRegExp = new RegExp(me.searchValue, 'g' + (me.caseSensitive ? '' : 'i'));
-             
-             
+
+
              me.store.each(function(record, idx) {
                  var td = Ext.fly(me.view.getNode(idx)).down('td'),
                      cell, matches, cellHTML;
@@ -726,7 +726,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                      cell = td.down('.x-grid-cell-inner');
                      matches = cell.dom.innerHTML.match(me.tagsRe);
                      cellHTML = cell.dom.innerHTML.replace(me.tagsRe, me.tagsProtect);
-                     
+
                      // populate indexes array, set currentIndex, and replace wrap matched string in a span
                      cellHTML = cellHTML.replace(me.searchRegExp, function(m) {
                         count += 1;
@@ -740,7 +740,7 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
                      });
                      // restore protected tags
                      Ext.each(matches, function(match) {
-                        cellHTML = cellHTML.replace(me.tagsProtect, match); 
+                        cellHTML = cellHTML.replace(me.tagsProtect, match);
                      });
                      // update cell html
                      cell.dom.innerHTML = cellHTML;
@@ -766,44 +766,44 @@ Ext.define('Ext.ux.LiveSearchGridPanel', {
          // force textfield focus
          me.textField.focus();
      },
-    
+
     /**
      * Selects the previous row containing a match.
      * @private
-     */   
+     */
     onPreviousClick: function() {
         var me = this,
             idx;
-            
+
         if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
             me.currentIndex = me.indexes[idx - 1] || me.indexes[me.indexes.length - 1];
             me.getSelectionModel().select(me.currentIndex);
          }
     },
-    
+
     /**
      * Selects the next row containing a match.
      * @private
-     */    
+     */
     onNextClick: function() {
          var me = this,
              idx;
-             
+
          if ((idx = Ext.Array.indexOf(me.indexes, me.currentIndex)) !== -1) {
             me.currentIndex = me.indexes[idx + 1] || me.indexes[0];
             me.getSelectionModel().select(me.currentIndex);
          }
     },
-    
+
     /**
      * Switch to case sensitive mode.
      * @private
-     */    
+     */
     caseSensitiveToggle: function(checkbox, checked) {
         this.caseSensitive = checked;
         this.onTextFieldChange();
     },
-    
+
     /**
      * Switch to regular expression mode
      * @private
@@ -897,7 +897,7 @@ Ext.define('Ext.ux.IFrame', {
         this.cleanupListeners(true);
         this.callParent();
     },
-    
+
     cleanupListeners: function(destroying){
         var doc, prop;
 
@@ -1301,7 +1301,7 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this
+		var me = this;
 		me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
@@ -2244,7 +2244,6 @@ Ext.define('App.ux.AbstractPanel', {
 	},
 
     warnRenderer:function(val, metaData, record){
-	    say(record);
 	    var toolTip = record.data.warningMsg ? record.data.warningMsg : '';
 
         if(val == '1' || val == true || val == 'true') {
@@ -2410,6 +2409,7 @@ Ext.define('App.ux.LiveICDXSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.liveicdxsearch',
 	hideLabel: true,
+
 	triggerTip: _('click_to_clear_selection'),
 	spObj: '',
 	spForm: '',
@@ -2471,8 +2471,9 @@ Ext.define('App.ux.LiveICDXSearch', {
 	},
 
 	onRender: function(ct, position){
+        var trigger2,
+            id = this.getId();
 		this.callParent(arguments);
-		var id = this.getId();
 		this.triggerConfig = {
 			tag: 'div',
 			cls: 'x-form-twin-triggers',
@@ -2501,11 +2502,13 @@ Ext.define('App.ux.LiveICDXSearch', {
 					Ext.getCmp(this.spForm).getForm().reset();
 				}
 			}
+
 		}, this);
-		var trigger2 = Ext.get("trigger2" + id);
+		trigger2 = Ext.get("trigger2" + id);
 		trigger2.addClsOnOver('x-form-trigger-over');
 	}
 });
+
 Ext.define('App.ux.LiveImmunizationSearch', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'immunizationlivesearch',
@@ -2551,10 +2554,6 @@ Ext.define('App.ux.LiveImmunizationSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">CVX - {cvx_code}: <span style="font-weight: normal;" class="list-status-{status}">{name} ({status})</span></div>';
 				}
@@ -2565,6 +2564,7 @@ Ext.define('App.ux.LiveImmunizationSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveMedicationSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.medicationlivetsearch',
@@ -2610,10 +2610,6 @@ Ext.define('App.ux.LiveMedicationSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{PROPRIETARYNAME}<span style="font-weight: normal"> ({NONPROPRIETARYNAME}) </span></h3>{ACTIVE_NUMERATOR_STRENGTH} | {ACTIVE_INGRED_UNIT}</div>';
 				}
@@ -2624,6 +2620,7 @@ Ext.define('App.ux.LiveMedicationSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveLabsSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.labslivetsearch',
@@ -2667,10 +2664,6 @@ Ext.define('App.ux.LiveLabsSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{loinc_name} ({loinc_number})</h3></div>';
 				}
@@ -2681,6 +2674,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveCDTSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.cdtlivetsearch',
@@ -2724,10 +2718,6 @@ Ext.define('App.ux.LiveCDTSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{code}<span style="font-weight: normal"> ({text}) </span></h3></div>';
 				}
@@ -2738,6 +2728,7 @@ Ext.define('App.ux.LiveCDTSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveRXNORMAllergySearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.rxnormallergylivetsearch',
@@ -2788,10 +2779,6 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{STR}<span style="font-weight: normal"> ({RXCUI}) </span></h3></div>';
 				}
@@ -2801,7 +2788,8 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 
 		me.callParent();
 	}
-}); 
+});
+
 Ext.define('App.ux.LivePatientSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patienlivetsearch',
@@ -2810,9 +2798,15 @@ Ext.define('App.ux.LivePatientSearch', {
 	valueField: 'pid',
 	emptyText: _('search_for_a_patient') + '...',
 	maxLength: 40,
+    queryMode: 'remote',
+    allowBlank: true,
 	typeAhead: false,
+    forceSelection: false,
+    allowOnlyWhitespace: true,
 	hideTrigger: true,
-	minChars: 1,
+    validateBlank: true,
+    submitValue: true,
+	minChars: 0,
 	queryDelay: 200,
 	initComponent: function(){
 		var me = this;
@@ -2866,6 +2860,9 @@ Ext.define('App.ux.LivePatientSearch', {
 				api: {
 					read: 'Patient.patientLiveSearch'
 				},
+                writer:{
+                    writeAllFields: true
+                },
 				reader: {
 					totalProperty: 'totals',
 					root: 'rows'
@@ -2883,11 +2880,6 @@ Ext.define('App.ux.LivePatientSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
 				getInnerTpl: function(){
 					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
 					return '<div class="search-item"><h3><span>{fullname}</span> {[Ext.Date.format(values.DOB, g("date_display_format"))]}</h3>' +
@@ -2900,6 +2892,7 @@ Ext.define('App.ux.LivePatientSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveSigsSearch', {
 	extend: 'Ext.form.field.ComboBox',
 	alias: 'widget.livesigssearch',
@@ -2938,10 +2931,6 @@ Ext.define('App.ux.LiveSigsSearch', {
 			anchor: '100%',
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{option_value} ({option_name})</div>';
 				}
@@ -2958,17 +2947,18 @@ Ext.define('App.ux.LiveSigsSearch', {
 	},
 
 	onBeforeSigSelect: function(cmb, record){
-		say(cmb);
-		say(record);
+		//say(cmb);
+		//say(record);
 	},
 
 	onBeSigSelect: function(cmb, record){
-		say(cmb);
-		say(record);
+		//say(cmb);
+		//say(record);
 	}
 
 
 });
+
 Ext.define('App.ux.LiveUserSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.userlivetsearch',
@@ -2978,11 +2968,27 @@ Ext.define('App.ux.LiveUserSearch', {
 	emptyText: _('search_for_a_user') + '...',
 	maxLength: 40,
 	typeAhead: false,
-	hideTrigger: true,
-	minChars: 1,
+    queryMode: 'remote',
+    allowBlank: true,
+    minChars: 1,
 	queryDelay: 200,
-	forceSelection:true,
 	acl: null,
+
+    triggerTip: _('click_to_clear_selection'),
+    spObj: '',
+    spForm: '',
+    spExtraParam: '',
+    qtip: _('clearable_combo_box'),
+    trigger1Class: 'x-form-select-trigger',
+    trigger2Class: 'x-form-clear-trigger',
+
+    listConfig: {
+        loadingText: _('searching') + '...',
+        getInnerTpl: function(){
+            return '<div class="search-item">{fullname} <b>({role})</b></div>'
+        }
+    },
+
 	initComponent: function(){
 		var me = this;
 
@@ -3037,31 +3043,53 @@ Ext.define('App.ux.LiveUserSearch', {
 				},
 				reader: {
 					root: 'data'
-				}
+				},
+                writer: {
+                    writeAllFields: true
+                }
 			}
-
 		});
 
 		Ext.apply(me, {
 			store: me.store,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
-				getInnerTpl: function(){
-					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
-					return '<div class="search-item">{fullname} <b>({role})</b></div>'
-				}
-			},
 			pageSize: 10
 		});
 
 		me.callParent();
-	}
+	},
+
+    onRender: function(ct, position){
+        var id = this.getId();
+        var trigger2;
+        this.callParent(arguments);
+        this.triggerConfig = {
+            tag: 'div',
+            cls: 'x-form-twin-triggers',
+            style: 'display:block;',
+            cn: [
+                {
+                    tag: "img",
+                    style: Ext.isIE ? 'margin-left:0;height:21px' : '',
+                    src: Ext.BLANK_IMAGE_URL,
+                    id: "trigger2" + id,
+                    name: "trigger2" + id,
+                    cls: "x-form-trigger " + this.trigger2Class
+                }
+            ]
+        };
+        this.triggerEl.replaceWith(this.triggerConfig);
+        this.triggerEl.on('mouseup', function(e){
+            if(e.target.name == "trigger2" + id){
+                this.reset();
+                this.fireEvent('reset', this);
+            }
+        }, this);
+        trigger2 = Ext.get("trigger2" + id);
+        trigger2.addClsOnOver('x-form-trigger-over');
+    }
+
 });
+
 Ext.define('App.ux.NodeDisabled',
 	{
 		alias:'plugin.nodedisabled',
@@ -3210,7 +3238,7 @@ Ext.define('App.ux.PhotoIdWindow',
 	{
 		window.webcam.snap();
 	}
-}); 
+});
 Ext.define('App.ux.PatientEncounterCombo', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.patientEncounterCombo',
@@ -6739,7 +6767,7 @@ Ext.define('App.ux.combo.ActiveInsurances', {
 
 		me.callParent();
 	}
-}); 
+});
 Ext.define('App.ux.combo.ActiveProviders', {
 	extend: 'Ext.form.ComboBox',
 	xtype: 'activeproviderscombo',
@@ -6810,7 +6838,7 @@ Ext.define('App.ux.combo.ActiveProviders', {
 
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.ux.combo.Allergies',
 {
 	extend : 'Ext.form.ComboBox',
@@ -6861,7 +6889,7 @@ Ext.define('App.ux.combo.Allergies',
 		}, null);
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.ux.combo.AllergiesAbdominal',{
 		extend: 'Ext.form.ComboBox',
 		alias: 'widget.mitos.allergiesabdominalcombo',
@@ -6887,7 +6915,7 @@ Ext.define('App.ux.combo.AllergiesAbdominal',{
 					}
 				}
 			});
-            
+
 			Ext.apply(this,{
 				editable: false,
 				queryMode: 'local',
@@ -7063,7 +7091,7 @@ Ext.define('App.ux.combo.Authorizations',
 
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.ux.combo.BillingFacilities', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.billingfacilitiescombo',
@@ -7137,7 +7165,7 @@ Ext.define('App.ux.combo.CalendarCategories', {
 		}, null);
 		me.callParent();
 	}
-}); 
+});
 Ext.define('App.ux.combo.CalendarStatus', {
 	extend: 'Ext.form.ComboBox',
 	alias : 'widget.mitos.calstatuscombobox',
@@ -7178,7 +7206,7 @@ Ext.define('App.ux.combo.CalendarStatus', {
 		}, null);
 		me.callParent();
 	} // end initComponent
-}); 
+});
 Ext.define('App.ux.combo.CodesTypes', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.mitos.codestypescombo',
@@ -8488,35 +8516,35 @@ Ext.define('App.ux.combo.Languages',
 {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.languagescombo',
-	initComponent: function() 
+	initComponent: function()
 	{
 		var me = this;
 
-		Ext.define('LanguagesComboModel', 
+		Ext.define('LanguagesComboModel',
 		{
 			extend: 'Ext.data.Model',
-			fields: 
+			fields:
 			[
 				{ name: 'code', type: 'string' },
 				{ name: 'description', type: 'string' }
 			],
-			proxy : 
+			proxy :
 			{
 				type: 'direct',
-				api :  
+				api :
 				{
 					read: i18nRouter.getAvailableLanguages
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', 
+		me.store = Ext.create('Ext.data.Store',
 		{
 			model   : 'LanguagesComboModel',
 			autoLoad: false
 		});
 
-		Ext.apply(this, 
+		Ext.apply(this,
 		{
 			editable    : false,
 			valueField  : 'code',
@@ -8524,7 +8552,7 @@ Ext.define('App.ux.combo.Languages',
             emptyText   : _('select'),
 			store       : me.store
 		}, null);
-		
+
 		me.callParent();
 	}
 });
@@ -10097,7 +10125,7 @@ Ext.define('App.view.search.PatientSearch',
 				}
 			}]
 		});
-		
+
 		me.grid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
@@ -10142,7 +10170,7 @@ Ext.define('App.view.search.PatientSearch',
 		me.pageBody = [me.form, me.grid];
 		me.callParent(arguments);
 	}, // end of initComponent
-	
+
 	/**
 	 * This function is called from Viewport.js when
 	 * this panel is selected in the navigation panel.
@@ -10442,22 +10470,29 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
+            maxLength: 255,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item">{STR} ( <b>RxNorm:</b> {RXCUI} <b>NDC:</b> {NDC} )</div>';
 				}
 			},
-			pageSize: 25
+			pageSize: 25,
+            listeners: {
+                select: function(combo, records, eOpts){
+                    var medicine = records[0].data,
+                        cpos = medicine.STR.indexOf("["),
+                        spos = medicine.STR.indexOf("]");
+                    if (cpos > -1 && spos > cpos)
+                        this.setValue( medicine.STR.substr(0, cpos)+medicine.STR.substr(spos+1) );
+                }
+            }
 		});
 
 		me.callParent();
 	}
 });
+
 Ext.define('App.store.administration.CPT', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.administration.CPT'
@@ -10491,10 +10526,6 @@ Ext.define('App.ux.LiveRadiologySearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{code_text_short} ({code})</h3></div>';
 				}
@@ -10505,6 +10536,7 @@ Ext.define('App.ux.LiveRadiologySearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.model.miscellaneous.AddressBook', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -17116,6 +17148,9 @@ Ext.define('App.model.patient.Medications', {
 			update: 'Medications.updatePatientMedication',
 			destroy: 'Medications.destroyPatientMedication'
 		},
+        writer: {
+            writeAllFields: true
+        },
 		remoteGroup: false
 	}
 });
@@ -18292,7 +18327,18 @@ Ext.define('App.model.patient.PatientsOrders', {
 		{
 			name: 'note',
 			type: 'string'
-		}
+		},
+        {
+            name: 'void',
+            type: 'boolean',
+            defaultValue: false,
+            comment: 'VOID the Order'
+        },
+        {
+            name: 'void_comment',
+            type: 'string',
+            comment: 'Order VOID Comments'
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -18313,6 +18359,7 @@ Ext.define('App.model.patient.PatientsOrders', {
 		}
 	]
 });
+
 Ext.define('App.model.patient.PatientsPrescriptionMedications', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -20090,11 +20137,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 			form = me.encForm.getForm(),
 			values = form.getValues(),
 			record = form.getRecord(),
-			isNew = record.data.eid === 0 ;
-
-		say('isValid');
-		say(form.isValid());
-
+			isNew = record.data.eid === 0;
 		if(form.isValid()){
 			if((isNew && a('add_encounters') || (!isNew && a('edit_encounters')))){
 				record.set(values);
@@ -20118,8 +20161,6 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 	},
 
 	loadRecord: function(record){
-		say(record);
-
 		this.encForm.getForm().loadRecord(record);
 	},
 
@@ -22091,7 +22132,7 @@ Ext.define('App.view.patient.charts.BPPulseTemp',
 		me.callParent(arguments);
 
 	}
-}); 
+});
 Ext.define('App.view.patient.charts.HeadCircumference',
 {
 	extend : 'Ext.panel.Panel',
@@ -22332,7 +22373,7 @@ Ext.define('App.view.patient.charts.HeadCircumference',
 		me.callParent(arguments);
 
 	}
-}); 
+});
 Ext.define('App.view.patient.charts.HeightForStature',
 {
 	extend : 'Ext.panel.Panel',
@@ -22595,7 +22636,7 @@ Ext.define('App.view.patient.charts.HeightForStature',
 		me.callParent(arguments);
 
 	}
-}); 
+});
 Ext.define('App.store.patient.AppointmentRequests', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.patient.AppointmentRequest'
@@ -26073,7 +26114,7 @@ Ext.define('App.view.patient.VisitCheckout', {
 
 					voucher.voucherlines().load({
 						callback:function(){
-							say('hello');
+							// say('hello');
 						}
 					});
 
@@ -26114,8 +26155,6 @@ Ext.define('App.view.patient.VisitCheckout', {
         for(var i=0; i < records.length; i++){
             total = eval(total) + eval(records[i].data.amount);
         }
-
-		say(total);
         me.total.setValue(total);
         balance = total - paid;
         me.balance.setValue(balance);
@@ -26792,20 +26831,20 @@ Ext.define('App.view.fees.Billing',
 
 	/**
 	 * Function: Search for billing based on the search fields
-	 * This function will pass all the fields to the server side 
-	 * so PHP dataProvider can calculate and do the search against 
+	 * This function will pass all the fields to the server side
+	 * so PHP dataProvider can calculate and do the search against
 	 * the SQL Server
 	 */
 	ReloadGrid : function(btn)
 	{
 		// Declare some variables
 		var topBarItems = this.encountersGrid.getDockedItems('toolbar[dock="top"]')[0],
-		datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ), 
+		datefrom = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'datefrom' ).getValue( ),
 		dateto = topBarItems.getComponent( 'fieldContainerDateRange' ).getComponent( 'dateto' ).getValue( );
 
 		// Check if the dateFrom and dateTo are in use, if they are clear the pastDue variable
 		if(datefrom || dateto) this.pastDue = 0;
-		
+
 		// Load the ExtJs dataStore with the new parameters
 		this.patientListStore.load(
 		{
@@ -27276,7 +27315,7 @@ Ext.define('App.view.fees.Payments',
 	},
 
 	/**
-	 * Shows the payment entry window. 
+	 * Shows the payment entry window.
 	 */
 	onAddPaymentClick : function()
 	{
@@ -27424,11 +27463,11 @@ Ext.define('App.view.fees.Payments',
 			me.window.show();
 		}
 	},
-	
+
 	/**
 	 * Search for patients that own money
-	 * This function will pass all the fields to the server side 
-	 * so PHP dataProvider can calculate and do the search against 
+	 * This function will pass all the fields to the server side
+	 * so PHP dataProvider can calculate and do the search against
 	 * the SQL Server
 	 */
 	onSearchButton: function(btn)
@@ -27437,7 +27476,7 @@ Ext.define('App.view.fees.Payments',
 		var	searchForm =  this.searchPanel.getComponent('searchPanelForm'),
 		dateFrom = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldFromDate').getValue(),
 		dateTo = searchForm.getComponent('fieldcontainerFromTo').getComponent('fieldToDate').getValue();
-		
+
 		// Load the ExtJs dataStore with the new parameters
 		this.encountersPaymentsStore.load(
 		{
@@ -27453,7 +27492,7 @@ Ext.define('App.view.fees.Payments',
 		} );
 		//alert(payingEntityCombo);
 	},
-	
+
 	/**
 	 * Reset the form of search.
 	 */
@@ -29638,9 +29677,6 @@ Ext.define('App.view.administration.Globals', {
 
 						var getCat = function(o){
 								var name = o.get('gl_category');
-
-								say(name);
-
 								if (name === 'General') {
 									return 1;
 								} else if (name === 'Locale') {
@@ -30461,7 +30497,7 @@ Ext.define('App.view.administration.AuditLog', {
 		me.callParent(arguments);
 	}
 
-}); 
+});
 Ext.define('App.view.administration.Medications',
 {
 	extend : 'App.ux.RenderPanel',
@@ -30974,18 +31010,12 @@ Ext.define('App.view.administration.FloorPlans', {
 	        el = me.activeZone ? me.activeZone.getEl() : null;
 
         if(el){
-//            me.floorPlanZoneEditor.hide(null, function(){
-//	            say('hide');
                 me.setEditor(show, zone);
-//            });
         }else{
             me.setEditor(show, zone);
         }
     },
     setEditor:function(show, zone){
-
-	    say('setEditor');
-
         var me = this;
         if(show){
             me.activeZone = zone;
@@ -31146,7 +31176,6 @@ Ext.define('App.view.administration.FloorPlans', {
         zone.record = record;
     },
     applyZoneConfig:function(zone, config){
-        say(config);
         zone.setText(config.text);
         zone.getEl().applyStyles(config.style);
         zone.setScale(config.scale);
@@ -32175,10 +32204,10 @@ Ext.define('App.view.administration.ExternalDataLoads', {
 					codeType: btn.action
 				},
 				success: function(fp, o){
-					say(o.result);
+					//say(o.result);
 				},
 				failure: function(fp, o){
-					say(o.result);
+					//say(o.result);
 				}
 			});
 		}
@@ -33022,7 +33051,6 @@ Ext.define('App.view.signature.SignatureWindow', {
 
     signatureSave:function(){
         var svg = document.getElementById('svgSignature').contentWindow;
-        say(svg.getSignature());
     },
 
     signatureCancel:function(){
@@ -33034,6 +33062,7 @@ Ext.define('App.view.signature.SignatureWindow', {
 
 
 });
+
 Ext.define('App.store.miscellaneous.AddressBook', {
 	model: 'App.model.miscellaneous.AddressBook',
 	extend: 'Ext.data.Store'
@@ -33085,7 +33114,7 @@ Ext.define('App.store.administration.ActiveProblems',
 		}
 	},
 	autoLoad : false
-}); 
+});
 Ext.define('App.store.administration.Applications', {
     model: 'App.model.administration.Applications',
     extend: 'Ext.data.Store',
@@ -33109,7 +33138,7 @@ Ext.define('App.store.administration.DefaultDocuments',
 	autoSync : true,
 	autoLoad : false
 
-}); 
+});
 Ext.define('App.store.administration.DocumentsTemplates', {
 	model: 'App.model.administration.DocumentsTemplates',
 	extend: 'Ext.data.Store',
@@ -33123,7 +33152,7 @@ Ext.define('App.store.administration.DocumentsTemplates', {
 	},
 	autoSync: true,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.DocumentToken', {
     model: 'App.model.administration.DocumentToken',
     extend: 'Ext.data.Store',
@@ -33585,7 +33614,7 @@ Ext.define('App.store.administration.FloorPlans', {
 	extend: 'Ext.data.Store',
 	autoSync: false,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.FormListOptions', {
     model: 'App.model.administration.FormListOptions',
     extend: 'Ext.data.Store',
@@ -33626,7 +33655,7 @@ Ext.define('App.store.administration.HeadersAndFooters',
 	autoSync : true,
 	autoLoad : false
 
-}); 
+});
 Ext.define('App.store.administration.ImmunizationRelations', {
 	model: 'App.model.administration.ImmunizationRelations',
 	extend: 'Ext.data.Store',
@@ -33634,7 +33663,7 @@ Ext.define('App.store.administration.ImmunizationRelations', {
 	autoSync: true,
 	remoteSort: false
 
-}); 
+});
 Ext.define('App.store.administration.LabObservations', {
 	model: 'App.model.administration.LabObservations',
 	extend: 'Ext.data.Store',
@@ -33694,7 +33723,7 @@ Ext.define('App.store.administration.Medications',{
 	leadingBufferZone: 100,
 	pageSize: 50,
 	remoteFilter: true
-}); 
+});
 Ext.define('App.store.administration.Modules', {
     model: 'App.model.administration.Modules',
     extend: 'Ext.data.Store'
@@ -33762,7 +33791,7 @@ Ext.define('App.store.administration.PreventiveCareLabs', {
 	},
 	remoteSort: false,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.PreventiveCareMedications', {
 	model: 'App.model.administration.PreventiveCareMedications',
 	extend: 'Ext.data.Store',
@@ -33776,7 +33805,7 @@ Ext.define('App.store.administration.PreventiveCareMedications', {
 	},
 	remoteSort: false,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.ProviderCredentializations', {
     model: 'App.model.administration.ProviderCredentialization',
     extend: 'Ext.data.Store'
@@ -33807,7 +33836,7 @@ Ext.define('App.store.administration.Services', {
 	autoSync: true,
 	remoteSort: true,
 	autoLoad: false
-}); 
+});
 Ext.define('App.store.administration.TransactionLogs', {
 	model: 'App.model.administration.TransactionLog',
 	extend: 'Ext.data.Store'
@@ -33817,7 +33846,7 @@ Ext.define('App.store.administration.User', {
     model: 'App.model.administration.User',
     extend: 'Ext.data.Store',
     autoLoad: false
-}); 
+});
 Ext.define('App.view.administration.Layout', {
     extend: 'App.ux.RenderPanel',
     id: 'panelLayout',
@@ -34990,7 +35019,7 @@ Ext.define('App.view.administration.Layout', {
 
         callback(true);
     }
-}); 
+});
 Ext.define('App.store.administration.XtypesComboModel', {
 	model: 'App.model.administration.XtypesComboModel',
 	extend: 'Ext.data.Store',
@@ -35028,7 +35057,7 @@ Ext.define('App.store.fees.Billing',
 	extend : 'Ext.data.Store',
 	model : 'App.model.fees.Billing',
 	autoLoad : false
-}); 
+});
 Ext.define('App.store.fees.Checkout', {
 	extend    : 'Ext.data.Store',
 	model     : 'App.model.fees.Checkout',
@@ -35046,7 +35075,7 @@ Ext.define( 'App.store.fees.PaymentTransactions',
 	extend : 'Ext.data.Store',
 	model : 'App.model.fees.PaymentTransactions',
 	autoLoad : false
-} ); 
+} );
 Ext.define('App.store.navigation.Navigation', {
 	extend  : 'Ext.data.TreeStore',
 	requires: ['App.model.navigation.Navigation'],
@@ -35385,7 +35414,7 @@ Ext.define('App.controller.administration.AuditLog', {
 
 	onAuditLogGridItemDblClick: function(grid, record){
 
-		say(record);
+		//say(record);
 
 	},
 
@@ -35444,6 +35473,7 @@ Ext.define('App.controller.administration.AuditLog', {
 	}
 
 });
+
 Ext.define('App.controller.administration.CPT', {
 	extend: 'Ext.app.Controller',
 
@@ -37642,9 +37672,6 @@ Ext.define('App.controller.DualScreen', {
 			me.appMask.show();
 			me.appMask.msgEl.query('p')[0].innerHTML = msg;
 		}
-
-		say(me.appMask);
-
 	},
 
 	unmask:function(){
@@ -37668,6 +37695,7 @@ Ext.define('App.controller.DualScreen', {
 	}
 
 });
+
 Ext.define('App.controller.Header', {
     extend: 'Ext.app.Controller',
 	requires:[
@@ -37974,7 +38002,6 @@ Ext.define('App.controller.LogOut', {
 		}else{
 			me.logoutWarinigWindow.update('Logging Out in ' + sec + 'sec');
 			me.logoutWarinigWindow.seconds = sec;
-			say('Logging Out in ' + sec + 'sec');
 		}
 	},
 
@@ -38011,6 +38038,7 @@ Ext.define('App.controller.LogOut', {
 		}
 	}
 });
+
 Ext.define('App.controller.Navigation', {
     extend: 'Ext.app.Controller',
 	requires:[
@@ -38945,8 +38973,8 @@ Ext.define('App.controller.patient.Allergies', {
 						value: app.patient.pid
 					},
 					{
-						property: 'end_date',
-						value: '0000-00-00'
+						property: 'status',
+						value: 'Active'
 					}
 				]
 			})
@@ -38980,6 +39008,7 @@ Ext.define('App.controller.patient.Allergies', {
 	}
 
 });
+
 Ext.define('App.controller.patient.AppointmentRequests', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -39043,14 +39072,8 @@ Ext.define('App.controller.patient.AppointmentRequests', {
 	},
 
 	onAppEncounterLoad: function(encounter){
-
-		say('onAppEncounterLoad');
-		say(encounter);
-
 		this.getAppointmentRequestGrid().reconfigure(encounter.appointmentrequests());
-
 		encounter.appointmentrequests().load();
-
 	},
 
 	onAppointmentRequestDateFieldButtonsClick: function(btn){
@@ -39155,6 +39178,7 @@ Ext.define('App.controller.patient.AppointmentRequests', {
 		this.getAppointmentRequestForm().getForm().reset(true);
 	}
 });
+
 Ext.define('App.controller.patient.CarePlanGoals', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -39432,7 +39456,6 @@ Ext.define('App.controller.patient.CCD', {
 	},
 
 	onPrintCcdBtnClick: function(btn){
-		say(btn.up('panel').query('miframe')[0]);
 		var cont = btn.up('panel').query('miframe')[0].frameElement.dom.contentWindow;
 		cont.focus();
 		cont.print();
@@ -39456,6 +39479,7 @@ Ext.define('App.controller.patient.CCD', {
 	}
 
 });
+
 Ext.define('App.controller.patient.CCDImport', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -39637,7 +39661,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39723,7 +39747,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39803,7 +39827,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39823,7 +39847,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -40180,9 +40204,6 @@ Ext.define('App.controller.patient.DecisionSupport', {
 
 		DecisionSupport.getAlerts({ pid:app.patient.pid, alertType:'P' }, function(results){
 			for(var i=0; i < results.length; i++){
-
-				say(results[i]);
-
 				var btn = {
 					xtype: 'button',
 					margin: '2 5',
@@ -40210,6 +40231,7 @@ Ext.define('App.controller.patient.DecisionSupport', {
 	}
 
 });
+
 Ext.define('App.controller.patient.DoctorsNotes', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -40467,7 +40489,7 @@ Ext.define('App.controller.patient.FamilyHistory', {
 Ext.define('App.controller.patient.HL7', {
 	extend: 'Ext.app.Controller',
 	requires: [
-		
+
 	],
 	refs: [
 		{
@@ -40506,10 +40528,6 @@ Ext.define('App.controller.patient.HL7', {
 			fid: app.user.facility,
 			event: 'A04'
 		}, function(response){
-
-			say(response);
-
-
 		});
 	}
 
@@ -41159,11 +41177,11 @@ Ext.define('App.controller.patient.Medications', {
 		},
 		{
 			ref: 'PatientMedicationsGrid',
-			selector: 'patientmedicationspanel #patientMedicationsGrid'
+			selector: '#patientMedicationsGrid'
 		},
 		{
 			ref: 'addPatientMedicationBtn',
-			selector: 'patientmedicationspanel #addPatientMedicationBtn'
+			selector: '#addPatientMedicationBtn'
 		},
 		{
 			ref: 'PatientMedicationReconciledBtn',
@@ -41199,14 +41217,13 @@ Ext.define('App.controller.patient.Medications', {
 			'viewport': {
 				encounterload: me.onViewportEncounterLoad
 			},
-
 			'patientmedicationspanel': {
 				activate: me.onMedicationsPanelActive
 			},
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
-			'patientmedicationspanel #addPatientMedicationBtn': {
+			'#addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
 			'#patientMedicationLiveSearch': {
@@ -41216,7 +41233,8 @@ Ext.define('App.controller.patient.Medications', {
 				click: me.onPatientMedicationReconciledBtnClick
 			},
 			'#PatientMedicationUserLiveSearch': {
-				select: me.onPatientMedicationUserLiveSearchSelect
+				select: me.onPatientMedicationUserLiveSearchSelect,
+                reset: me.onPatientMedicationUserLiveSearchReset
 			},
 
 			// administer controls
@@ -41242,8 +41260,6 @@ Ext.define('App.controller.patient.Medications', {
 	onAdministeredMedicationsGridBeforeEdit: function(plugin, context){
 		var me = this,
 			field = me.getAdministeredMedicationsUserLiveSearch();
-
-		say(plugin.grid.doLayout());
 
 		field.forceSelection = false;
 		field.setValue(context.record.data.administered_by);
@@ -41289,8 +41305,9 @@ Ext.define('App.controller.patient.Medications', {
 			title: app.user.title,
 			fname: app.user.fname,
 			mname: app.user.mname,
-			lname: app.user.lname,
+			lname: app.user.lname
 		});
+
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
@@ -41308,9 +41325,21 @@ Ext.define('App.controller.patient.Medications', {
 	onPatientMedicationUserLiveSearchSelect: function(cmb, records){
 		var user = records[0],
 			record = cmb.up('form').getForm().getRecord();
-
+        record.set({fname: user.data.fname});
+        record.set({lname: user.data.lname});
+        record.set({mname: user.data.mname});
+        record.set({title: user.data.title});
 		record.set({administered_uid: user.data.id});
 	},
+
+    onPatientMedicationUserLiveSearchReset: function(cmb){
+        var record = cmb.up('form').getForm().getRecord();
+        record.set({fname: ''});
+        record.set({lname: ''});
+        record.set({mname: ''});
+        record.set({title: ''});
+        record.set({administered_uid: ''});
+    },
 
 	onAddPatientMedicationBtnClick: function(){
 		var me = this,
@@ -41361,6 +41390,7 @@ Ext.define('App.controller.patient.Medications', {
 		});
 	}
 });
+
 Ext.define('App.controller.patient.Patient', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -41549,9 +41579,6 @@ Ext.define('App.controller.patient.RadOrders', {
 
 	onRadSearchSelect: function(cmb, records){
 		var form = cmb.up('form').getForm();
-
-		say(records);
-
 		form.getRecord().set({
 			code: records[0].data.loinc_number,
 			code_type: records[0].data.code_type
@@ -41670,6 +41697,7 @@ Ext.define('App.controller.patient.RadOrders', {
 	}
 
 });
+
 Ext.define('App.controller.patient.Reminders', {
 	extend: 'Ext.app.Controller',
 	requires: [],
@@ -42752,7 +42780,6 @@ Ext.define('App.controller.patient.Vitals', {
 		var selected = sm.getSelection().length;
 
 		if(selected > 0 && record.data.auth_uid > 0){
-			say('entre false');
 			app.msg(_('oops'),_('multi_select_signed_records_not_authorized'), true);
 			return false;
 		}
@@ -43141,6 +43168,7 @@ Ext.define('App.controller.patient.Vitals', {
     }
 
 });
+
 Ext.define('App.controller.patient.Summary', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -43338,8 +43366,6 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 	},
 
 	onDocumentView: function(grid, rowIndex){
-		say('onDocumentView');
-
 	},
 
 	loadDocumentsByEid: function(grid, eid){
@@ -43385,6 +43411,7 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 	}
 
 });
+
 Ext.define('App.controller.patient.encounter.EncounterSign', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -43975,7 +44002,6 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 		me.recognition.lang = app.user.localization;
 
 		me.recognition.onstart = function(){
-			say('onstart');
 			me.recognizing = true;
 			me.setRecordButton(true);
 		};
@@ -44010,6 +44036,7 @@ Ext.define('App.controller.patient.encounter.SOAP', {
 	}
 
 });
+
 Ext.define('App.model.patient.EncounterDx', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -44439,7 +44466,7 @@ Ext.define('App.view.patient.Medications', {
 		'App.store.patient.Medications',
 		'App.store.administration.Medications',
 		'Ext.form.field.Trigger',
-		'Ext.grid.plugin.RowEditing',
+		//'Ext.grid.plugin.RowEditing',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
@@ -44448,11 +44475,9 @@ Ext.define('App.view.patient.Medications', {
 		'App.ux.form.fields.DateTime'
 	],
 	xtype: 'patientmedicationspanel',
-	itemId: 'PatientMedicationsPanel',
 	title: _('medications'),
 	layout: 'border',
 	border: false,
-	columnLines: true,
 	items: [
 		{
 			xtype: 'grid',
@@ -44475,7 +44500,11 @@ Ext.define('App.view.patient.Medications', {
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
-								App.app.getController('InfoButton').doGetInfo(record.data.RXCUI, 'RXCUI', record.data.STR);
+								App.app.getController('InfoButton').doGetInfo(
+                                    record.data.RXCUI,
+                                    'RXCUI',
+                                    record.data.STR
+                                );
 							}
 						}
 					]
@@ -44484,7 +44513,7 @@ Ext.define('App.view.patient.Medications', {
 					header: _('medication'),
 					flex: 1,
                     groupable: true,
-                    hidden: true,
+                    hidden: false,
 					minWidth: 200,
 					dataIndex: 'STR',
 					editor: {
@@ -44604,67 +44633,23 @@ Ext.define('App.view.patient.Medications', {
 				'->',
 				{
 					text: _('review'),
-					itemId: 'review_medications',
-					action: 'encounterRecordAdd'
+					itemId: 'reviewMedications'
 				}
 			]
-		},
-		//{
-		//	xtype: 'grid',
-		//	title: _('medication_list'),
-		//	itemId: 'medicationsListGrid',
-		//	collapseMode: 'mini',
-		//	region: 'east',
-		//	width: 400,
-		//	collapsible: true,
-		//	collapsed: true,
-		//	split: true,
-		//	loadMask: true,
-		//	selModel: {
-		//		pruneRemoved: false
-		//	},
-		//	viewConfig: {
-		//		trackOver: false
-		//	},
-		//	verticalScroller: {
-		//		variableRowHeight: true
-		//	},
-		//	store: Ext.create('App.store.administration.Medications'),
-		//	tbar: [
-		//		{
-		//			xtype: 'triggerfield',
-		//			triggerCls: Ext.baseCSSPrefix + 'form-search-trigger',
-		//			fieldLabel: _('search'),
-		//			flex: 1,
-		//			labelWidth: 43
-		//		}
-		//	],
-		//	columns: [
-		//		{
-		//			xtype: 'rownumberer',
-		//			width: 50,
-		//			sortable: false
-		//		},
-		//		{
-		//			text: _('medication'),
-		//			dataIndex: 'STR',
-		//			flex: 1
-		//		}
-		//	]
-		//}
+		}
 	],
 	tbar: [
 		'->',
 		{
 			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',
-			action: 'encounterRecordAdd',
 			iconCls: 'icoAdd'
 		}
 	]
 
 
 });
+
 Ext.define('App.view.patient.AdvanceDirectives', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -44811,21 +44796,28 @@ Ext.define('App.view.patient.LabOrders', {
 	],
 	columns: [
 		{
-			xtype: 'actioncolumn',
-			width: 20,
-			items: [
-				{
-					icon: 'resources/images/icons/cross.png',
-					tooltip: _('remove')
-//					scope: me,
-//					handler: me.onRemoveClick
-				}
-			]
+            header: _('void'),
+            groupable: false,
+            width: 60,
+            align: 'center',
+            dataIndex: 'void',
+            tooltip: _('void'),
+            editor: {
+                xtype: 'checkbox'
+            },
+            renderer: function(v, meta, record){
+                return app.voidRenderer(v);
+            }
 		},
 		{
 			header: _('order#'),
 			width: 60,
-			dataIndex: 'id'
+			dataIndex: 'id',
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('status'),
@@ -44835,8 +44827,10 @@ Ext.define('App.view.patient.LabOrders', {
 				xtype: 'gaiaehr.combo',
 				list: 40
 			},
-			renderer: function(v){
-				return app.getController('patient.LabOrders').labOrdersGridStatusColumnRenderer(v)
+			renderer: function(v, meta, record){
+                var look = app.getController('patient.LabOrders').labOrdersGridStatusColumnRenderer(v);
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+look+'</span>';
+                return look;
 			}
 		},
 		{
@@ -44847,12 +44841,22 @@ Ext.define('App.view.patient.LabOrders', {
 			format: 'Y-m-d',
 			editor: {
 				xtype: 'datefield'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('code'),
 			width: 100,
-			dataIndex: 'code'
+			dataIndex: 'code',
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('description'),
@@ -44861,7 +44865,12 @@ Ext.define('App.view.patient.LabOrders', {
 			editor: {
 				xtype: 'labslivetsearch',
 				itemId: 'rxLabOrderLabsLiveSearch'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('notes'),
@@ -44869,7 +44878,12 @@ Ext.define('App.view.patient.LabOrders', {
 			dataIndex: 'note',
 			editor: {
 				xtype: 'textfield'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			header: _('priority'),
@@ -44878,7 +44892,12 @@ Ext.define('App.view.patient.LabOrders', {
 			editor: {
 				xtype: 'gaiaehr.combo',
 				list: 98
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		},
 		{
 			xtype: 'datecolumn',
@@ -44888,7 +44907,12 @@ Ext.define('App.view.patient.LabOrders', {
 			format: 'Y-m-d',
 			editor: {
 				xtype: 'datefield'
-			}
+			},
+            renderer: function(v, meta, record)
+            {
+                if(record.data.void) return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                return '<span>'+ v + '</span>';
+            }
 		}
 	],
 	tbar: [
@@ -44930,6 +44954,7 @@ Ext.define('App.view.patient.LabOrders', {
 //		selectionchange: me.onSelectionChange
 //	}
 });
+
 Ext.define('App.view.patient.SupperBill', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -45112,7 +45137,7 @@ Ext.define('App.ux.combo.EncounterSupervisors', {
 
 		me.callParent(arguments);
 	}
-}); 
+});
 Ext.define('App.view.dashboard.panel.Portlet', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.portlet',
@@ -45317,10 +45342,6 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 			store: me.store,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
 				}
@@ -45338,6 +45359,7 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 		});
 	}
 });
+
 Ext.define('App.view.patient.encounter.AdministeredMedications', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -46160,14 +46182,12 @@ Ext.define('App.ux.combo.XCombo', {
 			me.store.sync({
 				// hanlde sync success
 				success: function(batch, options) {
-					say('success');
 					me.select(record);
 					me.fireEvent('sync', me.store, record, batch, options);
 				},
 				// handle sync failure
 				failure: function() {
 					me.fireEvent('failure', me.store, record, batch, options);
-					say('failure');
 				},
 				// handle all request
 				callback: function() {
@@ -46194,6 +46214,7 @@ Ext.define('App.ux.combo.XCombo', {
 		me.uWindow.close();
 	}
 });
+
 Ext.define("App.ux.form.fields.plugin.PasswordStrength", {
 	extend : "Ext.AbstractPlugin",
 	alias  : "plugin.passwordstrength",
@@ -46686,7 +46707,7 @@ Ext.define('App.view.administration.HL7MessageViewer', {
 			flex: 1
 		}
 	]
-}); 
+});
 Ext.define('App.view.patient.encounter.Snippets', {
 	extend: 'Ext.window.Window',
 	xtype: 'snippetswindow',
@@ -47001,10 +47022,6 @@ Ext.define('App.ux.LiveSnomedSearch', {
 			minChars: 3,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{FullySpecifiedName}<span style="font-weight: normal"> ({ConceptId}) </span></h3></div>';
 				}
@@ -47015,6 +47032,7 @@ Ext.define('App.ux.LiveSnomedSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.ux.LiveRadsSearch', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.radslivetsearch',
@@ -47059,10 +47077,6 @@ Ext.define('App.ux.LiveRadsSearch', {
 			minChars: 1,
 			listConfig: {
 				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl: function(){
 					return '<div class="search-item"><h3>{loinc_name} ({loinc_number})</h3></div>';
 				}
@@ -47073,6 +47087,7 @@ Ext.define('App.ux.LiveRadsSearch', {
 		me.callParent();
 	}
 });
+
 Ext.define('App.store.administration.MedicationInstructions', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.administration.MedicationInstruction'
@@ -50009,7 +50024,7 @@ Ext.define('App.view.miscellaneous.MyAccount', {
 		callback(true);
 
 	}
-}); 
+});
 
 Ext.define('App.view.patient.Patient', {
 	extend: 'Ext.panel.Panel',
@@ -52078,15 +52093,13 @@ Ext.define('App.controller.Notification', {
 	},
 
 	testNotification:function(data, callback){
-		say('Hello Word!');
-		say(data);
-
 		if(typeof callback == 'function'){
 			callback(true);
 		}
 	}
 
 });
+
 Ext.define('App.controller.patient.Documents', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -52642,7 +52655,7 @@ Ext.define('App.controller.patient.LabOrders', {
 	},
 
 	onElectronicLabOrderBtnClick: function(){
-		say('TODO!');
+		// say('TODO!');
 	},
 
 	onNewLabOrderBtnClick: function(){
@@ -52758,6 +52771,7 @@ Ext.define('App.controller.patient.LabOrders', {
 		});
 	}
 });
+
 Ext.define('App.controller.patient.Results', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -52869,7 +52883,6 @@ Ext.define('App.controller.patient.Results', {
 	},
 
 	onOrderSelectionEdit: function(editor, e){
-		say(e.record);
 		this.getOrderResult(e.record);
 	},
 
@@ -53130,6 +53143,7 @@ Ext.define('App.controller.patient.Results', {
 	}
 
 });
+
 Ext.define('App.controller.patient.encounter.Encounter', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -53239,9 +53253,9 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this,
 			show = false;
 
-		say('reloadSpecialityCmbBySpecialty');
-		say(specialties);
-		say(specialty);
+		//say('reloadSpecialityCmbBySpecialty');
+		//say(specialties);
+		//say(specialty);
 
 		if(Ext.isNumeric(specialty) && specialty > 0){
 			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
@@ -53256,10 +53270,9 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 
 		if(Ext.isArray(specialties)){
 
-			show = true;
-
 			var store = this.getEncounterSpecialtyCmb().getStore(),
-				filters = [];
+				filters = [],
+				show = true;
 
 			for(var i = 0; i < specialties.length; i++){
 				Ext.Array.push(filters, specialties[i]);
@@ -53282,6 +53295,7 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 	}
 
 });
+
 Ext.define('App.controller.patient.encounter.Snippets', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -54310,7 +54324,7 @@ Ext.define('App.ux.combo.ComboResettable', {
 		var trigger2 = Ext.get("trigger2" + id);
 		trigger2.addClsOnOver('x-form-trigger-over');
 	}
-}); 
+});
 Ext.define('App.ux.form.SearchField', {
 	extend: 'Ext.form.field.Trigger',
 
@@ -54586,6 +54600,11 @@ Ext.define('App.view.patient.RxOrders', {
 		cls: 'order-tab'
 	},
 	itemId: 'RxOrderGrid',
+    features: [
+        {
+            ftype: 'grouping'
+        }
+    ],
 	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
 		groupField: 'date_ordered',
@@ -54601,11 +54620,6 @@ Ext.define('App.view.patient.RxOrders', {
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
 	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowformediting',
@@ -54639,7 +54653,7 @@ Ext.define('App.view.patient.RxOrders', {
 									fieldLabel: _('medication'),
 									width: 700,
 									name: 'STR',
-									maxLength: 105,
+									maxLength: 255,
 									displayField: 'STR',
 									valueField: 'STR',
 									vtype: 'nonspecialcharactersrequired',
@@ -54665,16 +54679,18 @@ Ext.define('App.view.patient.RxOrders', {
 											fixPrecision: function(value){
 												var me = this,
 													nan = isNaN(value),
-													precision = me.decimalPrecision;
+													precision = me.decimalPrecision,
+                                                    num,
+                                                    numArr;
 
 												if(nan || !value){
 													return nan ? '' : value;
 												}else if(!me.allowDecimals || precision <= 0){
 													precision = 0;
 												}
-												var num = String(value);
+												num = String(value);
 												if(num.indexOf('.') !== -1){
-													var numArr = num.split(".");
+													numArr = num.split(".");
 													if(numArr.length == 1){
 														return Number(num);
 													}else{
@@ -54683,7 +54699,6 @@ Ext.define('App.view.patient.RxOrders', {
 												}else{
 													return Number(num);
 												}
-												//return parseFloat(Ext.Number.toFixed(parseFloat(value), precision));
 											}
 										},
 										{
@@ -54927,6 +54942,7 @@ Ext.define('App.view.patient.RxOrders', {
 		}
 	]
 });
+
 Ext.define('App.ux.combo.Specialties', {
 	extend: 'App.ux.combo.ComboResettable',
 	xtype: 'specialtiescombo',
@@ -55318,10 +55334,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		var me = this,
 			form = me.pForm.getForm(),
 			procedure = form.getRecord();
-
-
-		say(record[0].data);
-
 		procedure.set({
 			code: record[0].data.ConceptId,
 			code_type: record[0].data.CodeType,
@@ -55541,6 +55553,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		me.snippetStore.sync();
 	}
 });
+
 Ext.define('App.view.patient.encounter.ProgressNotesHistory', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -55649,7 +55662,6 @@ Ext.define('App.view.patient.Allergies', {
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
 				var codes = '';
-
 				if(record.data.allergy_code != ''){
 					codes += ' ( <b>'+ record.data.allergy_code_type + ':</b> ' + record.data.allergy_code +' )';
 				}
@@ -55840,9 +55852,8 @@ Ext.define('App.view.patient.Allergies', {
 			itemId: 'reviewAllergiesBtn'
 		}
 	]
-
-
 });
+
 Ext.define('App.view.patient.windows.Medical', {
 	extend: 'App.ux.window.Window',
 	title: _('medical_window'),
@@ -56198,7 +56209,7 @@ Ext.define('App.view.patient.Encounter', {
 					fieldDefaults: {
 						msgTarget: 'side'
 					},
-					
+
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
@@ -56561,6 +56572,7 @@ Ext.define('App.view.patient.Encounter', {
 	onEncounterUpdate: function(SaveBtn){
 		var me = this,
 			form;
+
 		if(SaveBtn.action == "encounter"){
 			form = me.newEncounterWindow.down('form').getForm();
 		}else{

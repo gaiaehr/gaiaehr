@@ -42,6 +42,7 @@ if(isset($_SESSION['hooks'])) unset($_SESSION['hooks']);
  * and mobile_detect class is used to detect mobile browsers.
  */
 include_once('registry.php');
+
 /**
  * Make the auth process
  * lets check for 4 things to allow the user in

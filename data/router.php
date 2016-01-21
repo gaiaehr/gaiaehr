@@ -18,7 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO: This ROUTER much be part of Matcha::Connect to handle request from the client, this way the Matcha::Connect is in control
+// TODO: This ROUTER much be part of Matcha::Connect to handle request from the client,
+// TODO: this way the Matcha::Connect is in control
 
 session_cache_limiter('private');
 session_cache_expire(1);
@@ -42,6 +43,23 @@ include_once(ROOT . '/dataProvider/Modules.php');
 include_once(ROOT . '/dataProvider/ACL.php');
 include_once(ROOT . '/dataProvider/Globals.php');
 require('config.php');
+
+/**
+ * Enable the error and also set the ROOT directory for
+ * the error log. But checks if the files exists and is
+ * writable.
+ *
+ * NOTE: This should be part of Matcha::Connect
+ */
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+if(file_exists(ROOT.'/log/error_log.txt'))
+{
+    if(is_writable(ROOT.'/log/error_log.txt'))
+    {
+        ini_set('error_log', ROOT . '/log/error_log.txt');
+    }
+}
 
 if(isset($_SESSION['install']) && $_SESSION['install'] != true){
 	$modules = new Modules();

@@ -151,7 +151,7 @@ Ext.define('App.view.patient.Encounter', {
 					fieldDefaults: {
 						msgTarget: 'side'
 					},
-					
+
 					plugins: {
 						ptype: 'advanceform',
 						autoSync: g('autosave'),
@@ -514,6 +514,7 @@ Ext.define('App.view.patient.Encounter', {
 	onEncounterUpdate: function(SaveBtn){
 		var me = this,
 			form;
+
 		if(SaveBtn.action == "encounter"){
 			form = me.newEncounterWindow.down('form').getForm();
 		}else{

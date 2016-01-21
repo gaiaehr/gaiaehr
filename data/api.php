@@ -81,6 +81,7 @@ if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['in
 	include_once(ROOT . '/dataProvider/Modules.php');
 	$m = new Modules();
 }
+
 /*
  * getREMOTING_API
  */

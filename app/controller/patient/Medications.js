@@ -26,11 +26,11 @@ Ext.define('App.controller.patient.Medications', {
 		},
 		{
 			ref: 'PatientMedicationsGrid',
-			selector: 'patientmedicationspanel #patientMedicationsGrid'
+			selector: '#patientMedicationsGrid'
 		},
 		{
 			ref: 'addPatientMedicationBtn',
-			selector: 'patientmedicationspanel #addPatientMedicationBtn'
+			selector: '#addPatientMedicationBtn'
 		},
 		{
 			ref: 'PatientMedicationReconciledBtn',
@@ -66,14 +66,13 @@ Ext.define('App.controller.patient.Medications', {
 			'viewport': {
 				encounterload: me.onViewportEncounterLoad
 			},
-
 			'patientmedicationspanel': {
 				activate: me.onMedicationsPanelActive
 			},
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
-			'patientmedicationspanel #addPatientMedicationBtn': {
+			'#addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
 			'#patientMedicationLiveSearch': {
@@ -83,7 +82,8 @@ Ext.define('App.controller.patient.Medications', {
 				click: me.onPatientMedicationReconciledBtnClick
 			},
 			'#PatientMedicationUserLiveSearch': {
-				select: me.onPatientMedicationUserLiveSearchSelect
+				select: me.onPatientMedicationUserLiveSearchSelect,
+                reset: me.onPatientMedicationUserLiveSearchReset
 			},
 
 			// administer controls
@@ -109,8 +109,6 @@ Ext.define('App.controller.patient.Medications', {
 	onAdministeredMedicationsGridBeforeEdit: function(plugin, context){
 		var me = this,
 			field = me.getAdministeredMedicationsUserLiveSearch();
-
-		say(plugin.grid.doLayout());
 
 		field.forceSelection = false;
 		field.setValue(context.record.data.administered_by);
@@ -156,8 +154,9 @@ Ext.define('App.controller.patient.Medications', {
 			title: app.user.title,
 			fname: app.user.fname,
 			mname: app.user.mname,
-			lname: app.user.lname,
+			lname: app.user.lname
 		});
+
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
@@ -175,9 +174,21 @@ Ext.define('App.controller.patient.Medications', {
 	onPatientMedicationUserLiveSearchSelect: function(cmb, records){
 		var user = records[0],
 			record = cmb.up('form').getForm().getRecord();
-
+        record.set({fname: user.data.fname});
+        record.set({lname: user.data.lname});
+        record.set({mname: user.data.mname});
+        record.set({title: user.data.title});
 		record.set({administered_uid: user.data.id});
 	},
+
+    onPatientMedicationUserLiveSearchReset: function(cmb){
+        var record = cmb.up('form').getForm().getRecord();
+        record.set({fname: ''});
+        record.set({lname: ''});
+        record.set({mname: ''});
+        record.set({title: ''});
+        record.set({administered_uid: ''});
+    },
 
 	onAddPatientMedicationBtnClick: function(){
 		var me = this,

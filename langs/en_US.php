@@ -1084,6 +1084,8 @@ $LANG = array(
 	'vtype_postalCode'						=> 'This field should be an valid Postal Code number, it can by Canadian or US',
 	'vtype_password'						=> 'Passwords do not match',
 	'vtype_mysqlField'						=> 'The field entered has invalid characters',
+    'vtype_nonespecialcharReq'              => 'This field should not have any special characters',
+    'vtype_nonespecialchar'                 => 'Non special characters detected',
 	'patient_visits_history'			    => 'Patient Visits History',
 	'source'								=> 'Source',
 	'path_to_ca_certificate_file'			=> 'Path to CA Certificate File',
@@ -1634,5 +1636,7 @@ $LANG = array(
 	'init'                                  => 'Init',
 	'patient_class'                         => 'Patient Class',
 	'specialties'							=> 'Specialties',
-    'modality'                              => 'Modality'
+    'modality'                              => 'Modality',
+    'new_order'                             => 'New Order',
+    'void'                                  => 'VOID'
 );

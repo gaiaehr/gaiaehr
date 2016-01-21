@@ -107,7 +107,18 @@ Ext.define('App.model.patient.PatientsOrders', {
 		{
 			name: 'note',
 			type: 'string'
-		}
+		},
+        {
+            name: 'void',
+            type: 'boolean',
+            defaultValue: false,
+            comment: 'VOID the Order'
+        },
+        {
+            name: 'void_comment',
+            type: 'string',
+            comment: 'Order VOID Comments'
+        }
 	],
 	proxy: {
 		type: 'direct',

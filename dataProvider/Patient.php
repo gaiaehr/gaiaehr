@@ -497,6 +497,7 @@ class Patient {
 				return false;
 			}
 		} else {
+            if(!is_writable($path)) chmod($path, 0777);
 			return true;
 		}
 	}

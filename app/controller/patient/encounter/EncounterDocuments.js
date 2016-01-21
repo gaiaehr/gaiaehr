@@ -85,8 +85,6 @@ Ext.define('App.controller.patient.encounter.EncounterDocuments', {
 	},
 
 	onDocumentView: function(grid, rowIndex){
-		say('onDocumentView');
-
 	},
 
 	loadDocumentsByEid: function(grid, eid){

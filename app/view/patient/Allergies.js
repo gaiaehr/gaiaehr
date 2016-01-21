@@ -49,7 +49,6 @@ Ext.define('App.view.patient.Allergies', {
 			dataIndex: 'allergy',
 			renderer:function(v, meta, record){
 				var codes = '';
-
 				if(record.data.allergy_code != ''){
 					codes += ' ( <b>'+ record.data.allergy_code_type + ':</b> ' + record.data.allergy_code +' )';
 				}
@@ -240,6 +239,4 @@ Ext.define('App.view.patient.Allergies', {
 			itemId: 'reviewAllergiesBtn'
 		}
 	]
-
-
 });

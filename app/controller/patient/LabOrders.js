@@ -83,7 +83,7 @@ Ext.define('App.controller.patient.LabOrders', {
 	},
 
 	onElectronicLabOrderBtnClick: function(){
-		say('TODO!');
+		// say('TODO!');
 	},
 
 	onNewLabOrderBtnClick: function(){

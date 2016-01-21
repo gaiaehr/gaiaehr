@@ -77,10 +77,6 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 			listConfig :
 			{
 				loadingText : i18n('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
 				getInnerTpl : function()
 				{
 					return '<div class="search-item"><h3>{surgery}<span style="font-weight: normal"> ({type}) </span></h3></div>';
@@ -91,4 +87,4 @@ Ext.define('App.ux.LiveSurgeriesSearch',
 
 		me.callParent();
 	}
-}); 
+});

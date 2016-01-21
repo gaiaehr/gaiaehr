@@ -107,9 +107,9 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this,
 			show = false;
 
-		say('reloadSpecialityCmbBySpecialty');
-		say(specialties);
-		say(specialty);
+		//say('reloadSpecialityCmbBySpecialty');
+		//say(specialties);
+		//say(specialty);
 
 		if(Ext.isNumeric(specialty) && specialty > 0){
 			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
@@ -124,10 +124,9 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 
 		if(Ext.isArray(specialties)){
 
-			show = true;
-
 			var store = this.getEncounterSpecialtyCmb().getStore(),
-				filters = [];
+				filters = [],
+				show = true;
 
 			for(var i = 0; i < specialties.length; i++){
 				Ext.Array.push(filters, specialties[i]);

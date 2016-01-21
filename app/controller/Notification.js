@@ -177,9 +177,6 @@ Ext.define('App.controller.Notification', {
 	},
 
 	testNotification:function(data, callback){
-		say('Hello Word!');
-		say(data);
-
 		if(typeof callback == 'function'){
 			callback(true);
 		}

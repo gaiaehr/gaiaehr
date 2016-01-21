@@ -32,12 +32,24 @@ class FileManager
     public $error = '';
     public $src;
 
+    /**
+     * FileManager constructor.
+     * At start please check the temporary directory located in "sites", check if a temp
+     * directory exists if not, created it, and also check the permission if the
+     * directory is not writable, go ahead and do it.
+     */
     function __construct()
     {
-        $this->tempDir = site_temp_path . '/';
-        chmod($this->tempDir, 0777);
-
-        return;
+        try
+        {
+            $this->tempDir = site_temp_path . '/';
+            if(!file_exists($this->tempDir)) mkdir($this->tempDir, 0777, true);
+            if(!is_writable($this->tempDir)) chmod($this->tempDir, 0777);
+        }
+        catch(Exception $Error)
+        {
+            return $Error;
+        }
     }
 
     public function cleanUp()

@@ -24,11 +24,27 @@ Ext.define('App.ux.LiveUserSearch', {
 	emptyText: _('search_for_a_user') + '...',
 	maxLength: 40,
 	typeAhead: false,
-	hideTrigger: true,
-	minChars: 1,
+    queryMode: 'remote',
+    allowBlank: true,
+    minChars: 1,
 	queryDelay: 200,
-	forceSelection:true,
 	acl: null,
+
+    triggerTip: _('click_to_clear_selection'),
+    spObj: '',
+    spForm: '',
+    spExtraParam: '',
+    qtip: _('clearable_combo_box'),
+    trigger1Class: 'x-form-select-trigger',
+    trigger2Class: 'x-form-clear-trigger',
+
+    listConfig: {
+        loadingText: _('searching') + '...',
+        getInnerTpl: function(){
+            return '<div class="search-item">{fullname} <b>({role})</b></div>'
+        }
+    },
+
 	initComponent: function(){
 		var me = this;
 
@@ -83,28 +99,49 @@ Ext.define('App.ux.LiveUserSearch', {
 				},
 				reader: {
 					root: 'data'
-				}
+				},
+                writer: {
+                    writeAllFields: true
+                }
 			}
-
 		});
 
 		Ext.apply(me, {
 			store: me.store,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				//emptyText	: 'No matching posts found.',
-				//---------------------------------------------------------------------
-				// Custom rendering template for each item
-				//---------------------------------------------------------------------
-
-				getInnerTpl: function(){
-					var pid = (eval(g('display_pubpid')) ? 'pubpid' : 'pid');
-					return '<div class="search-item">{fullname} <b>({role})</b></div>'
-				}
-			},
 			pageSize: 10
 		});
 
 		me.callParent();
-	}
+	},
+
+    onRender: function(ct, position){
+        var id = this.getId();
+        var trigger2;
+        this.callParent(arguments);
+        this.triggerConfig = {
+            tag: 'div',
+            cls: 'x-form-twin-triggers',
+            style: 'display:block;',
+            cn: [
+                {
+                    tag: "img",
+                    style: Ext.isIE ? 'margin-left:0;height:21px' : '',
+                    src: Ext.BLANK_IMAGE_URL,
+                    id: "trigger2" + id,
+                    name: "trigger2" + id,
+                    cls: "x-form-trigger " + this.trigger2Class
+                }
+            ]
+        };
+        this.triggerEl.replaceWith(this.triggerConfig);
+        this.triggerEl.on('mouseup', function(e){
+            if(e.target.name == "trigger2" + id){
+                this.reset();
+                this.fireEvent('reset', this);
+            }
+        }, this);
+        trigger2 = Ext.get("trigger2" + id);
+        trigger2.addClsOnOver('x-form-trigger-over');
+    }
+
 });

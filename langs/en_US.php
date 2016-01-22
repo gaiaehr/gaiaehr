@@ -1635,5 +1635,7 @@ $LANG = array(
     'new_order'                             => 'New Order',
     'void'                                  => 'VOID',
     'new_result'                            => 'New Result',
-    'order_description'                     => 'Order Description'
+    'order_description'                     => 'Order Description',
+    'laboratories_search'                   => 'Laboratories search...',
+    'radiology_search'                      => 'Radiology search...'
 );

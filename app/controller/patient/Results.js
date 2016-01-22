@@ -328,6 +328,7 @@ Ext.define('App.controller.patient.Results', {
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
 
+        // The form is not valid, go ahead and warn the user.
 		if(!form.isValid())
         {
 			app.msg(_('oops'), _('required_fields_missing'), true);

@@ -55,8 +55,12 @@ Ext.define('App.controller.patient.Results', {
 			selector: '#OrderResultSignBtn'
 		},
         {
-            ref: 'DocumentTypeTab',
-            selector: 'patientresultspanel #documentTypeTab'
+            ref: 'DocumentTypeCard',
+            selector: 'patientresultspanel > #documentTypeCard'
+        },
+        {
+            ref: 'LaboratoryResultForm',
+            selector: 'patientresultspanel > #laboratoryResultForm'
         }
 	],
 
@@ -82,75 +86,124 @@ Ext.define('App.controller.patient.Results', {
 			'button[action=orderDocumentViewBtn]': {
 				click: me.onOrderDocumentViewBtnClicked
 			},
-			'#OrderResultNewOrderBtn': {
-				click: me.onOrderResultNewOrderBtnClick
+			'#NewOrderResultBtn': {
+				click: me.onNewOrderResultBtnClick
 			},
-            '#ResultNewRadiologyBtn': {
-                click: me.onResultNewRadiologyBtnClick
-            },
 			'#OrderResultSignBtn': {
 				click: me.onOrderResultSignBtnClick
-			}
+			},
+            '#orderTypeCombo':{
+                change: me.onOrderTypeSelect
+            },
+            '#resultRowEditor':{
+                beforeedit: me.onOrderResultGridRowEdit
+            }
 		});
 	},
 
 	onOrderResultSignBtnClick: function(){
-		var me = this;
+		var me = this,
+            record;
 
-		app.passwordVerificationWin(function(btn, password){
-			if(btn == 'ok'){
-
+		app.passwordVerificationWin(function(btn, password)
+        {
+			if(btn == 'ok')
+            {
 				User.verifyUserPass(password, function(success){
-					if(success){
-						var form = me.getResultForm(),
-							record = form.getRecord();
-
+					if(success)
+                    {
+                        record = me.getLaboratoryResultForm().getRecord();
 						record.set({signed_uid: app.user.id});
 						record.save({
-							success: function(){
+							success: function()
+                            {
 								app.msg(_('sweet'), _('result_signed'));
 							},
-							failure: function(){
+							failure: function()
+                            {
 								app.msg(_('sweet'), _('record_error'), true);
 							}
 						});
-
-					}else{
+					}
+                    else
+                    {
 						me.onOrderResultSignBtnClick();
 					}
-
 				});
-
 			}
 		});
-
 	},
 
 	onOrderSelectionEdit: function(editor, e){
 		this.getOrderResult(e.record);
 	},
 
-	onOrderResultNewOrderBtnClick: function(btn){
+    onNewOrderResultBtnClick: function(btn){
 		var grid = btn.up('grid'),
 			store = grid.getStore(),
-			records;
-
+			records,
+            fields;
 		grid.editingPlugin.cancelEdit();
 		records = store.add({
 			pid: app.patient.pid,
 			uid: app.user.id,
-			order_type: 'lab',
+            order_type: 'lab',
 			status: 'Pending'
 		});
-		grid.editingPlugin.startEdit(records[0], 0);
-	},
+		grid.getPlugin('resultRowEditor').startEdit(records[0], 0);
 
-    // TODO: Finish me.
-    onResultNewRadiologyBtnClick: function(btn){
+        // Focus the second column when editing.
+        fields = grid.getPlugin('resultRowEditor').getEditor();
+        fields.items.items[2].focus();
+        fields.items.items[1].setValue('lab');
+
+        // By Default when adding a new record, it will be a Laboratory
+        grid.columns[3].setEditor({
+            xtype: 'labslivetsearch',
+            itemId: 'labOrderLiveSearch',
+            allowBlank: false,
+            flex: 1
+        });
+    },
+
+    onOrderResultGridRowEdit: function(editor, context, eOpts){
+        //say(context);
+    },
+
+    onOrderTypeSelect: function(combo, newValue, oldValue, eOpts){
+        var grid = combo.up('grid');
+
+        if(newValue === 'lab')
+        {
+            // Change the Card panel, to show the Laboratory results form
+            this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
+
+            // Change the field to look for laboratories
+            grid.columns[3].setEditor({
+                xtype: 'labslivetsearch',
+                itemId: 'labOrderLiveSearch',
+                allowBlank: false,
+                flex: 1
+            });
+        }
+
+        if(newValue === 'rad')
+        {
+            // Change the Card panel, to show the Radiology results form
+            this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultForm');
+            // Change the field to look for radiologies
+            grid.columns[3].setEditor({
+                xtype: 'radslivetsearch',
+                itemId: 'radsOrderLiveSearch',
+                allowBlank: false,
+                flex: 1
+            });
+        }
 
     },
 
-	onResultPanelActive: function(){
+	onResultPanelActive: function()
+    {
 		this.setResultPanel();
 	},
 
@@ -158,7 +211,8 @@ Ext.define('App.controller.patient.Results', {
 		var me = this,
 			ordersStore = me.getOrdersGrid().getStore();
 
-		if(app.patient){
+		if(app.patient)
+        {
 			ordersStore.clearFilter(true);
 			ordersStore.filter([
 				{
@@ -166,22 +220,30 @@ Ext.define('App.controller.patient.Results', {
 					value: app.patient.pid
 				}
 			]);
-		}else{
+		}
+        else
+        {
 			ordersStore.clearFilter(true);
 			ordersStore.load();
 		}
 	},
 
-	onOrderSelectionChange: function(model, records){
-        if(records[0]) {
-            if (records[0].data.order_type === 'lab') {
-                this.getDocumentTypeTab().setActiveTab(0);
-            } else if (records[0].data.order_type === 'rad') {
-                this.getDocumentTypeTab().setActiveTab(1);
-            }
-            if (records.length > 0) {
+	onOrderSelectionChange: function(model, records)
+    {
+        if(records[0])
+        {
+            if (records[0].data.order_type === 'lab')
+                this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
+
+            if (records[0].data.order_type === 'rad')
+                this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultForm');
+
+            if (records.length > 0)
+            {
                 this.getOrderResult(records[0]);
-            } else {
+            }
+            else
+            {
                 this.resetOrderResultForm();
             }
         }
@@ -190,24 +252,29 @@ Ext.define('App.controller.patient.Results', {
 	getOrderResult: function(orderRecord){
 
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			resultsStore = orderRecord.results(),
 			observationGrid = me.getObservationsGrid(),
-			observationStore;
+			observationStore,
+            newResult,
+            i;
 
 		observationGrid.editingPlugin.cancelEdit();
 		resultsStore.load({
 			callback: function(records){
 
-				if(records.length > 0){
+				if(records.length > 0)
+                {
 					form.loadRecord(records[0]);
 					me.getOrderResultSignBtn().setDisabled(records[0].data.signed_uid > 0);
 					observationStore = records[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load();
 
-				}else{
-					var newResult = resultsStore.add({
+				}
+                else
+                {
+					newResult = resultsStore.add({
 						pid: orderRecord.data.pid,
 						code: orderRecord.data.code,
 						code_text: orderRecord.data.description,
@@ -223,8 +290,10 @@ Ext.define('App.controller.patient.Results', {
 						params: {
 							loinc: orderRecord.data.code
 						},
-						callback: function(ObsRecords){
-							for(var i = 0; i < ObsRecords.length; i++){
+						callback: function(ObsRecords)
+                        {
+							for(i = 0; i < ObsRecords.length; i++)
+                            {
 								ObsRecords[i].phantom = true;
 							}
 						}
@@ -234,13 +303,15 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onResetOrderResultClicked: function(){
+	onResetOrderResultClicked: function()
+    {
 		this.resetOrderResultForm();
 	},
 
-	resetOrderResultForm: function(){
+	resetOrderResultForm: function()
+    {
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			observationGrid = me.getObservationsGrid(),
 			store = Ext.create('App.store.patient.PatientsOrderObservations');
 
@@ -249,23 +320,26 @@ Ext.define('App.controller.patient.Results', {
 		observationGrid.reconfigure(store);
 	},
 
-	onSaveOrderResultClicked: function(){
+	onSaveOrderResultClicked: function()
+    {
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			values = form.getValues(),
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
 
-		if(!form.isValid()){
+        // The form is not valid, go ahead and warn the user.
+		if(!form.isValid())
+        {
 			app.msg(_('oops'), _('required_fields_missing'), true);
 			return;
 		}
 
-		if(files.length > 0){
-
+		if(files.length > 0)
+        {
 			reader.onload = (function(){
-				return function(e){
-
+				return function(e)
+                {
 					var sm = me.getOrdersGrid().getSelectionModel(),
 						order = sm.getSelection(),
 						params = {
@@ -276,7 +350,6 @@ Ext.define('App.controller.patient.Results', {
 							title: 'Lab #' + values.lab_order_id + ' Result',
 							document: e.target.result
 						};
-
 					File.savePatientBase64Document(params, function(provider, response){
 						if(response.result.success){
 							values.documentId = 'doc|' + response.result.id;
@@ -285,17 +358,19 @@ Ext.define('App.controller.patient.Results', {
 							app.msg(_('oops'), response.result.error)
 						}
 					});
-
 				};
 			})(files[0]);
 			reader.readAsDataURL(files[0]);
-		}else{
+		}
+        else
+        {
 			me.saveOrderResult(form, values);
 		}
 
 	},
 
-	saveOrderResult: function(form, values){
+	saveOrderResult: function(form, values)
+    {
 		var me = this,
 			record = form.getRecord(),
 			sm = me.getOrdersGrid().getSelectionModel(),
@@ -309,27 +384,15 @@ Ext.define('App.controller.patient.Results', {
         record.save({
 			success: function(rec){
 
-				for(var i = 0; i < observations.length; i++){
+				for(var i = 0; i < observations.length; i++)
+                {
 					observations[i].set({result_id: rec.data.id});
 				}
 
 				observationStore.sync({
-					callback:function(batch, options){
+					callback:function(batch, options)
+                    {
 
-						//say(batch);
-						//say(options);
-
-						//for(var i = 0; i < observations.length; i++){
-						//	observations[i].set({ result_id: rec.data.id });
-						//}
-						//store.load({
-						//	filters: [
-						//		{
-						//			property: 'result_id',
-						//			value: rec.data.id
-						//		}
-						//	]
-						//});
 					}
 				});
 				order[0].set({status: 'Received'});
@@ -339,9 +402,10 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onOrderDocumentViewBtnClicked: function(){
+	onOrderDocumentViewBtnClicked: function()
+    {
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			record = form.getRecord(),
 			foo = record.data.documentId.split('|'),
 			type = null,
@@ -351,26 +415,32 @@ Ext.define('App.controller.patient.Results', {
 		if(foo[0]) type = foo[0];
 		if(foo[1]) id = foo[1];
 
-		if(type && id){
-			if(type == 'hl7'){
+		if(type && id)
+        {
+			if(type == 'hl7')
+            {
 				win = Ext.widget('hl7messageviewer').show();
 				win.body.mask(_('loading...'));
-				HL7Messages.getMessageById(id, function(provider, response){
+				HL7Messages.getMessageById(id, function(provider, response)
+                {
 					me.getMessageField().setValue(response.result.message);
 					me.getAcknowledgeField().setValue(response.result.response);
 					win.body.unmask();
 				});
-
-			}else if(type == 'doc'){
+			}
+            else if(type == 'doc')
+            {
 				app.onDocumentView(id);
 			}
-		}else{
+		}
+        else
+        {
 			app.msg(_('oops'), _('no_document_found'), true)
 		}
 	},
 
-	onOrderDocumentChange: function(field){
-
+	onOrderDocumentChange: function(field)
+    {
 		//		say(field);
 		//		say(document.getElementById(field.inputEl.id).files[0]);
 		//		say(field.inputEl);
@@ -383,7 +453,6 @@ Ext.define('App.controller.patient.Results', {
 		//		};
 		//
 		//		fr.readAsDataURL( field.value );
-
 	}
 
 });

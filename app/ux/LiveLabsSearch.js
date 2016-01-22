@@ -52,7 +52,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 			store: me.store,
 			displayField: 'loinc_name',
 			valueField: 'loinc_name',
-			emptyText: _('search') + '...',
+			emptyText: _('laboratories_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,

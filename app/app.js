@@ -1301,8 +1301,8 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this;
-		me.bodyEl.removeCls(me.starClsFocus)
+        var me = this;
+        me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
 		var me = this,
@@ -42111,7 +42111,8 @@ Ext.define('App.controller.patient.RxOrders', {
 
 	onRxNormOrderLiveSearchBeforeSelect: function(combo, record){
 		var form = combo.up('form').getForm(),
-			insCmb = this.getRxOrderMedicationInstructionsCombo();
+			insCmb = this.getRxOrderMedicationInstructionsCombo(),
+            store;
 
 		form.getRecord().set({
 			RXCUI: record.data.RXCUI,
@@ -42119,7 +42120,7 @@ Ext.define('App.controller.patient.RxOrders', {
 			NDC: record.data.NDC
 		});
 
-		var store = record.instructions();
+		store = record.instructions();
 		insCmb.bindStore(store, true);
 		insCmb.store = store;
 		insCmb.store.load();
@@ -42150,7 +42151,8 @@ Ext.define('App.controller.patient.RxOrders', {
 	onRxOrdersGridEdit: function(plugin, context){
 		var insCmb = this.getRxOrderMedicationInstructionsCombo(),
 			instructions = context.record.data.directions,
-			record = insCmb.findRecordByValue(instructions);
+			record = insCmb.findRecordByValue(instructions),
+            store;
 
 		// record found
 		if(record !== false) return true;
@@ -42162,22 +42164,17 @@ Ext.define('App.controller.patient.RxOrders', {
 			icon: Ext.Msg.QUESTION,
 			fn: function(btn){
 				if(btn == 'yes'){
-
-					var store = insCmb.getStore();
-
+					store = insCmb.getStore();
 					store.add({
 						rxcui: context.record.data.RXCUI,
 						occurrence: '1',
 						instruction: instructions
 					});
-
 					store.sync();
 				}
 			}
 		});
-
 		return true;
-
 	},
 
 	onNewRxOrderBtnClick: function(btn){
@@ -42265,7 +42262,9 @@ Ext.define('App.controller.patient.RxOrders', {
 			params = {},
 			columns,
 			data,
-			i;
+            i,
+            refs,
+            text;
 
 		params.pid = app.patient.pid;
 		params.eid = app.patient.eid;
@@ -42294,7 +42293,7 @@ Ext.define('App.controller.patient.RxOrders', {
 			data = items[i].data;
 
 			if(data.ref_order !== ''){
-				var refs = data.ref_order.split('~');
+				refs = data.ref_order.split('~');
 				if(refs.length >= 3){
 					references = 'Rx Reference#: ' + refs[2];
 				}
@@ -42302,7 +42301,7 @@ Ext.define('App.controller.patient.RxOrders', {
 
 			if(isSingleColumnTable){
 
-				var text = '<u>' + _('order_number') + '</u>: ' + g('rx_order_number_prefix') + data.id + '<br>';
+				text = '<u>' + _('order_number') + '</u>: ' + g('rx_order_number_prefix') + data.id + '<br>';
 				text += '<u>' + _('description') + '</u>: ' + '<b>' + data.STR.toUpperCase() + '</b><br>';
 				text += '<u>' + _('dispense_as_written') + '</u>: ' + (data.daw ? _('yes') : _('no')) + '<br>';
 				text += '<u>' + _('quantity') + '</u>: ' + data.dispense + '<br>';
@@ -42393,6 +42392,7 @@ Ext.define('App.controller.patient.RxOrders', {
 	}
 
 });
+
 Ext.define('App.controller.patient.Social', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -52901,11 +52901,6 @@ Ext.define('App.controller.patient.Results', {
 		grid.editingPlugin.startEdit(records[0], 0);
 	},
 
-    // TODO: Finish me.
-    onResultNewRadiologyBtnClick: function(btn){
-
-    },
-
 	onResultPanelActive: function(){
 		this.setResultPanel();
 	},
@@ -54600,14 +54595,8 @@ Ext.define('App.view.patient.RxOrders', {
 		cls: 'order-tab'
 	},
 	itemId: 'RxOrderGrid',
-    features: [
-        {
-            ftype: 'grouping'
-        }
-    ],
 	store: Ext.create('App.store.patient.RxOrders', {
 		storeId: 'RxOrderStore',
-		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [

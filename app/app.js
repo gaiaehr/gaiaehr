@@ -1301,8 +1301,8 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-        var me = this;
-        me.bodyEl.removeCls(me.starClsFocus)
+		var me = this;
+		me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
 		var me = this,
@@ -2658,7 +2658,7 @@ Ext.define('App.ux.LiveLabsSearch', {
 			store: me.store,
 			displayField: 'loinc_name',
 			valueField: 'loinc_name',
-			emptyText: _('search') + '...',
+			emptyText: _('laboratories_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
@@ -8086,11 +8086,12 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	init: function(grid){
-		var me = this;
+		var me = this,
+            t;
 		me.callParent(arguments);
 
 		if(me.enableAddBtn){
-			var t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
+			t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
 				grid.addDocked({ xtype: 'toolbar', dock: me.toolbarDock })[0];
 
 			t.add({
@@ -8273,7 +8274,6 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	// private
 	initEditTriggers: function(){
 		var me = this,
-			view = me.view,
 			moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
 
 		me.callParent(arguments);
@@ -10497,46 +10497,6 @@ Ext.define('App.store.administration.CPT', {
 	extend: 'Ext.data.Store',
 	model: 'App.model.administration.CPT'
 });
-Ext.define('App.ux.LiveRadiologySearch', {
-	extend: 'Ext.form.ComboBox',
-	requires:['App.store.administration.CPT'],
-	alias: 'widget.radiologylivetsearch',
-	hideLabel: true,
-
-	initComponent: function(){
-		var me = this;
-
-		me.store = Ext.create('App.store.administration.CPT',{
-			pageSize: 10,
-			autoLoad: false
-		});
-
-		me.store.proxy.extraParams = {
-			onlyActive: true,
-			isRadiology: true
-		};
-
-		Ext.apply(this, {
-			store: me.store,
-			displayField: 'code_text_medium',
-			valueField: 'code_text_medium',
-			emptyText: _('search') + '...',
-			typeAhead: false,
-			hideTrigger: true,
-			minChars: 1,
-			listConfig: {
-				loadingText: _('searching') + '...',
-				getInnerTpl: function(){
-					return '<div class="search-item"><h3>{code_text_short} ({code})</h3></div>';
-				}
-			},
-			pageSize: 10
-		});
-
-		me.callParent();
-	}
-});
-
 Ext.define('App.model.miscellaneous.AddressBook', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -24870,11 +24830,13 @@ Ext.define('App.view.patient.Results', {
 		'Ext.grid.plugin.RowEditing',
         'Ext.tab.Panel',
 		'App.store.patient.PatientsOrders',
-		'App.ux.LiveLabsSearch'
+		'App.ux.LiveLabsSearch',
+        'App.ux.LiveRadsSearch'
 	],
 	title: _('results'),
 	xtype: 'patientresultspanel',
 	layout: 'border',
+    border: false,
 	items: [
 		{
 			xtype: 'grid',
@@ -24882,6 +24844,7 @@ Ext.define('App.view.patient.Results', {
 			action: 'orders',
 			region: 'center',
 			split: true,
+            border: false,
 			columnLines: true,
 			allowDeselect: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
@@ -24889,6 +24852,7 @@ Ext.define('App.view.patient.Results', {
 			}),
 			plugins: [
 				{
+                    pluginId: 'resultRowEditor',
 					ptype: 'rowediting',
 					errorSummary: false
 				}
@@ -24899,7 +24863,7 @@ Ext.define('App.view.patient.Results', {
 					width: 25,
 					items: [
 						{
-							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+							icon: 'resources/images/icons/blueInfo.png',
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.app.getController('InfoButton').doGetInfo(
@@ -24913,16 +24877,23 @@ Ext.define('App.view.patient.Results', {
 				},
                 {
                     header: _('type'),
-                    width: 80,
+                    width: 100,
                     dataIndex: 'order_type',
-                    align: 'center',
-                    renderer: function(value){
-                        if(value === 'lab'){
-                            return 'Laboratory';
-                        }
-                        if(value === 'rad'){
-                            return 'Radiology';
-                        }
+                    editor: {
+                        xtype: 'combobox',
+                        itemId: 'orderTypeCombo',
+                        store: Ext.create('Ext.data.Store', {
+                            fields: ['type', 'order_type'],
+                            data: [
+                                {"type": "Laboratory", "order_type": "lab"},
+                                {"type": "Radiology", "order_type": "rad"}
+                            ]
+                        }),
+                        allowBlank: false,
+                        editable: false,
+                        queryMode: 'local',
+                        displayField: 'type',
+                        valueField: 'order_type'
                     }
                 },
                 {
@@ -24939,16 +24910,11 @@ Ext.define('App.view.patient.Results', {
                     }
                 },
 				{
-					header: _('orders'),
+					header: _('order_description'),
 					dataIndex: 'description',
 					menuDisabled: true,
 					resizable: false,
-					flex: 1,
-					editor: {
-						xtype: 'labslivetsearch',
-						itemId: 'rxLabOrderLabsLiveSearch',
-						allowBlank: false
-					}
+					flex: 1
 				},
 				{
 					header: _('status'),
@@ -24961,30 +24927,26 @@ Ext.define('App.view.patient.Results', {
 			bbar: [
 				'->',
 				{
-					text: _('new_lab_result'),
-					itemId: 'OrderResultNewOrderBtn',
+					text: _('new_result'),
+					itemId: 'NewOrderResultBtn',
 					iconCls: 'icoAdd'
-				},
-                '|',
-                {
-                    text: _('new_radiology_result'),
-                    itemId: 'ResultNewRadiologyBtn',
-                    iconCls: 'icoAdd'
-                }
+				}
 			]
 		},
         {
-            xtype: 'tabpanel',
+            xtype: 'panel',
+            //border: false,
             region: 'south',
-            split: true,
-            itemId: 'documentTypeTab',
-            height: 400,
+            //split: true,
+            itemId: 'documentTypeCard',
+            height: 350,
+            layout: 'card',
+            activeItem: 0,
             items: [
                 {
-                    title: _('lab_observations'),
                     xtype: 'form',
-                    frame: true,
-                    itemId: 'OrderResultForm',
+                    frame: false,
+                    itemId: 'laboratoryResultForm',
                     layout: {
                         type: 'border'
                     },
@@ -25000,7 +24962,7 @@ Ext.define('App.view.patient.Results', {
                         {
                             xtype: 'panel',
                             title: _('report_info'),
-                            itemId: 'reportInfoForm',
+                            itemId: 'laboratoryResultForm',
                             region: 'west',
                             collapsible: true,
                             autoScroll: true,
@@ -25096,6 +25058,7 @@ Ext.define('App.view.patient.Results', {
                             flex: 1,
                             region: 'center',
                             split: true,
+                            border: false,
                             columnLines: true,
                             plugins: [
                                 {
@@ -25251,7 +25214,6 @@ Ext.define('App.view.patient.Results', {
                 },
                 {
                     xtype: 'form',
-                    title: _('radiology_observations'),
                     itemId: 'radiologyResultForm',
                     frame: true,
                     layout: {
@@ -25294,6 +25256,7 @@ Ext.define('App.view.patient.Results', {
         }
 	]
 });
+
 Ext.define('App.store.patient.PatientSocialHistory', {
 	extend: 'Ext.data.Store',
 	requires:['App.model.patient.PatientSocialHistory'],
@@ -47071,7 +47034,7 @@ Ext.define('App.ux.LiveRadsSearch', {
 			store: me.store,
 			displayField: 'loinc_name',
 			valueField: 'loinc_name',
-			emptyText: _('search') + '...',
+			emptyText: _('radiology_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,
@@ -52811,8 +52774,12 @@ Ext.define('App.controller.patient.Results', {
 			selector: '#OrderResultSignBtn'
 		},
         {
-            ref: 'DocumentTypeTab',
-            selector: 'patientresultspanel #documentTypeTab'
+            ref: 'DocumentTypeCard',
+            selector: 'patientresultspanel > #documentTypeCard'
+        },
+        {
+            ref: 'LaboratoryResultForm',
+            selector: 'patientresultspanel > #laboratoryResultForm'
         }
 	],
 
@@ -52838,70 +52805,124 @@ Ext.define('App.controller.patient.Results', {
 			'button[action=orderDocumentViewBtn]': {
 				click: me.onOrderDocumentViewBtnClicked
 			},
-			'#OrderResultNewOrderBtn': {
-				click: me.onOrderResultNewOrderBtnClick
+			'#NewOrderResultBtn': {
+				click: me.onNewOrderResultBtnClick
 			},
-            '#ResultNewRadiologyBtn': {
-                click: me.onResultNewRadiologyBtnClick
-            },
 			'#OrderResultSignBtn': {
 				click: me.onOrderResultSignBtnClick
-			}
+			},
+            '#orderTypeCombo':{
+                change: me.onOrderTypeSelect
+            },
+            '#resultRowEditor':{
+                beforeedit: me.onOrderResultGridRowEdit
+            }
 		});
 	},
 
 	onOrderResultSignBtnClick: function(){
-		var me = this;
+		var me = this,
+            record;
 
-		app.passwordVerificationWin(function(btn, password){
-			if(btn == 'ok'){
-
+		app.passwordVerificationWin(function(btn, password)
+        {
+			if(btn == 'ok')
+            {
 				User.verifyUserPass(password, function(success){
-					if(success){
-						var form = me.getResultForm(),
-							record = form.getRecord();
-
+					if(success)
+                    {
+                        record = me.getLaboratoryResultForm().getRecord();
 						record.set({signed_uid: app.user.id});
 						record.save({
-							success: function(){
+							success: function()
+                            {
 								app.msg(_('sweet'), _('result_signed'));
 							},
-							failure: function(){
+							failure: function()
+                            {
 								app.msg(_('sweet'), _('record_error'), true);
 							}
 						});
-
-					}else{
+					}
+                    else
+                    {
 						me.onOrderResultSignBtnClick();
 					}
-
 				});
-
 			}
 		});
-
 	},
 
 	onOrderSelectionEdit: function(editor, e){
 		this.getOrderResult(e.record);
 	},
 
-	onOrderResultNewOrderBtnClick: function(btn){
+    onNewOrderResultBtnClick: function(btn){
 		var grid = btn.up('grid'),
 			store = grid.getStore(),
-			records;
-
+			records,
+            fields;
 		grid.editingPlugin.cancelEdit();
 		records = store.add({
 			pid: app.patient.pid,
 			uid: app.user.id,
-			order_type: 'lab',
+            order_type: 'lab',
 			status: 'Pending'
 		});
-		grid.editingPlugin.startEdit(records[0], 0);
-	},
+		grid.getPlugin('resultRowEditor').startEdit(records[0], 0);
 
-	onResultPanelActive: function(){
+        // Focus the second column when editing.
+        fields = grid.getPlugin('resultRowEditor').getEditor();
+        fields.items.items[2].focus();
+        fields.items.items[1].setValue('lab');
+
+        // By Default when adding a new record, it will be a Laboratory
+        grid.columns[3].setEditor({
+            xtype: 'labslivetsearch',
+            itemId: 'labOrderLiveSearch',
+            allowBlank: false,
+            flex: 1
+        });
+    },
+
+    onOrderResultGridRowEdit: function(editor, context, eOpts){
+        //say(context);
+    },
+
+    onOrderTypeSelect: function(combo, newValue, oldValue, eOpts){
+        var grid = combo.up('grid');
+
+        if(newValue === 'lab')
+        {
+            // Change the Card panel, to show the Laboratory results form
+            this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
+
+            // Change the field to look for laboratories
+            grid.columns[3].setEditor({
+                xtype: 'labslivetsearch',
+                itemId: 'labOrderLiveSearch',
+                allowBlank: false,
+                flex: 1
+            });
+        }
+
+        if(newValue === 'rad')
+        {
+            // Change the Card panel, to show the Radiology results form
+            this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultForm');
+            // Change the field to look for radiologies
+            grid.columns[3].setEditor({
+                xtype: 'radslivetsearch',
+                itemId: 'radsOrderLiveSearch',
+                allowBlank: false,
+                flex: 1
+            });
+        }
+
+    },
+
+	onResultPanelActive: function()
+    {
 		this.setResultPanel();
 	},
 
@@ -52909,7 +52930,8 @@ Ext.define('App.controller.patient.Results', {
 		var me = this,
 			ordersStore = me.getOrdersGrid().getStore();
 
-		if(app.patient){
+		if(app.patient)
+        {
 			ordersStore.clearFilter(true);
 			ordersStore.filter([
 				{
@@ -52917,22 +52939,30 @@ Ext.define('App.controller.patient.Results', {
 					value: app.patient.pid
 				}
 			]);
-		}else{
+		}
+        else
+        {
 			ordersStore.clearFilter(true);
 			ordersStore.load();
 		}
 	},
 
-	onOrderSelectionChange: function(model, records){
-        if(records[0]) {
-            if (records[0].data.order_type === 'lab') {
-                this.getDocumentTypeTab().setActiveTab(0);
-            } else if (records[0].data.order_type === 'rad') {
-                this.getDocumentTypeTab().setActiveTab(1);
-            }
-            if (records.length > 0) {
+	onOrderSelectionChange: function(model, records)
+    {
+        if(records[0])
+        {
+            if (records[0].data.order_type === 'lab')
+                this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
+
+            if (records[0].data.order_type === 'rad')
+                this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultForm');
+
+            if (records.length > 0)
+            {
                 this.getOrderResult(records[0]);
-            } else {
+            }
+            else
+            {
                 this.resetOrderResultForm();
             }
         }
@@ -52941,24 +52971,28 @@ Ext.define('App.controller.patient.Results', {
 	getOrderResult: function(orderRecord){
 
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			resultsStore = orderRecord.results(),
 			observationGrid = me.getObservationsGrid(),
-			observationStore;
+			observationStore,
+            newResult,
+            i;
 
 		observationGrid.editingPlugin.cancelEdit();
 		resultsStore.load({
 			callback: function(records){
 
-				if(records.length > 0){
+				if(records.length > 0)
+                {
 					form.loadRecord(records[0]);
 					me.getOrderResultSignBtn().setDisabled(records[0].data.signed_uid > 0);
 					observationStore = records[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load();
-
-				}else{
-					var newResult = resultsStore.add({
+				}
+                else
+                {
+					newResult = resultsStore.add({
 						pid: orderRecord.data.pid,
 						code: orderRecord.data.code,
 						code_text: orderRecord.data.description,
@@ -52974,8 +53008,10 @@ Ext.define('App.controller.patient.Results', {
 						params: {
 							loinc: orderRecord.data.code
 						},
-						callback: function(ObsRecords){
-							for(var i = 0; i < ObsRecords.length; i++){
+						callback: function(ObsRecords)
+                        {
+							for(i = 0; i < ObsRecords.length; i++)
+                            {
 								ObsRecords[i].phantom = true;
 							}
 						}
@@ -52985,13 +53021,15 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onResetOrderResultClicked: function(){
+	onResetOrderResultClicked: function()
+    {
 		this.resetOrderResultForm();
 	},
 
-	resetOrderResultForm: function(){
+	resetOrderResultForm: function()
+    {
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			observationGrid = me.getObservationsGrid(),
 			store = Ext.create('App.store.patient.PatientsOrderObservations');
 
@@ -53000,23 +53038,26 @@ Ext.define('App.controller.patient.Results', {
 		observationGrid.reconfigure(store);
 	},
 
-	onSaveOrderResultClicked: function(){
+	onSaveOrderResultClicked: function()
+    {
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			values = form.getValues(),
 			files = me.getUploadField().getEl().down('input[type=file]').dom.files,
 			reader = new FileReader();
 
-		if(!form.isValid()){
+        // The form is not valid, go ahead and warn the user.
+		if(!form.isValid())
+        {
 			app.msg(_('oops'), _('required_fields_missing'), true);
 			return;
 		}
 
-		if(files.length > 0){
-
+		if(files.length > 0)
+        {
 			reader.onload = (function(){
-				return function(e){
-
+				return function(e)
+                {
 					var sm = me.getOrdersGrid().getSelectionModel(),
 						order = sm.getSelection(),
 						params = {
@@ -53027,7 +53068,6 @@ Ext.define('App.controller.patient.Results', {
 							title: 'Lab #' + values.lab_order_id + ' Result',
 							document: e.target.result
 						};
-
 					File.savePatientBase64Document(params, function(provider, response){
 						if(response.result.success){
 							values.documentId = 'doc|' + response.result.id;
@@ -53036,17 +53076,19 @@ Ext.define('App.controller.patient.Results', {
 							app.msg(_('oops'), response.result.error)
 						}
 					});
-
 				};
 			})(files[0]);
 			reader.readAsDataURL(files[0]);
-		}else{
+		}
+        else
+        {
 			me.saveOrderResult(form, values);
 		}
 
 	},
 
-	saveOrderResult: function(form, values){
+	saveOrderResult: function(form, values)
+    {
 		var me = this,
 			record = form.getRecord(),
 			sm = me.getOrdersGrid().getSelectionModel(),
@@ -53060,27 +53102,15 @@ Ext.define('App.controller.patient.Results', {
         record.save({
 			success: function(rec){
 
-				for(var i = 0; i < observations.length; i++){
+				for(var i = 0; i < observations.length; i++)
+                {
 					observations[i].set({result_id: rec.data.id});
 				}
 
 				observationStore.sync({
-					callback:function(batch, options){
+					callback:function(batch, options)
+                    {
 
-						//say(batch);
-						//say(options);
-
-						//for(var i = 0; i < observations.length; i++){
-						//	observations[i].set({ result_id: rec.data.id });
-						//}
-						//store.load({
-						//	filters: [
-						//		{
-						//			property: 'result_id',
-						//			value: rec.data.id
-						//		}
-						//	]
-						//});
 					}
 				});
 				order[0].set({status: 'Received'});
@@ -53090,9 +53120,10 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onOrderDocumentViewBtnClicked: function(){
+	onOrderDocumentViewBtnClicked: function()
+    {
 		var me = this,
-			form = me.getResultForm(),
+			form = me.getLaboratoryResultForm(),
 			record = form.getRecord(),
 			foo = record.data.documentId.split('|'),
 			type = null,
@@ -53102,26 +53133,32 @@ Ext.define('App.controller.patient.Results', {
 		if(foo[0]) type = foo[0];
 		if(foo[1]) id = foo[1];
 
-		if(type && id){
-			if(type == 'hl7'){
+		if(type && id)
+        {
+			if(type == 'hl7')
+            {
 				win = Ext.widget('hl7messageviewer').show();
 				win.body.mask(_('loading...'));
-				HL7Messages.getMessageById(id, function(provider, response){
+				HL7Messages.getMessageById(id, function(provider, response)
+                {
 					me.getMessageField().setValue(response.result.message);
 					me.getAcknowledgeField().setValue(response.result.response);
 					win.body.unmask();
 				});
-
-			}else if(type == 'doc'){
+			}
+            else if(type == 'doc')
+            {
 				app.onDocumentView(id);
 			}
-		}else{
+		}
+        else
+        {
 			app.msg(_('oops'), _('no_document_found'), true)
 		}
 	},
 
-	onOrderDocumentChange: function(field){
-
+	onOrderDocumentChange: function(field)
+    {
 		//		say(field);
 		//		say(document.getElementById(field.inputEl.id).files[0]);
 		//		say(field.inputEl);
@@ -53134,7 +53171,6 @@ Ext.define('App.controller.patient.Results', {
 		//		};
 		//
 		//		fr.readAsDataURL( field.value );
-
 	}
 
 });
@@ -56380,7 +56416,11 @@ Ext.define('App.view.patient.Encounter', {
 							tooltip: _('print_progress_note'),
 							scope: me,
 							handler: function(){
-								var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+								var win = window.open(
+                                    'print.html',
+                                    'win',
+                                    'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0'
+                                );
 								var dom = me.progressNote.body.dom;
 								var wrap = document.createElement('div');
 								var html = wrap.appendChild(dom.cloneNode(true));

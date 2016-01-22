@@ -270,7 +270,6 @@ Ext.define('App.controller.patient.Results', {
 					observationStore = records[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load();
-
 				}
                 else
                 {

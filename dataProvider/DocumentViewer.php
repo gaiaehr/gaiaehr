@@ -28,7 +28,7 @@ if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 require_once(ROOT . '/sites/'. $_REQUEST['site'] .'/conf.php');
 
-ini_set('memory_limit', '256M');
+ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', 5);
 
 if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){

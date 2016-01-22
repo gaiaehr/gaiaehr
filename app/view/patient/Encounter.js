@@ -333,7 +333,11 @@ Ext.define('App.view.patient.Encounter', {
 							tooltip: _('print_progress_note'),
 							scope: me,
 							handler: function(){
-								var win = window.open('print.html', 'win', 'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0');
+								var win = window.open(
+                                    'print.html',
+                                    'win',
+                                    'left=20,top=20,width=700,height=700,toolbar=0,resizable=1,location=1,scrollbars=1,menubar=0,directories=0'
+                                );
 								var dom = me.progressNote.body.dom;
 								var wrap = document.createElement('div');
 								var html = wrap.appendChild(dom.cloneNode(true));

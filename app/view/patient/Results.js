@@ -23,11 +23,13 @@ Ext.define('App.view.patient.Results', {
 		'Ext.grid.plugin.RowEditing',
         'Ext.tab.Panel',
 		'App.store.patient.PatientsOrders',
-		'App.ux.LiveLabsSearch'
+		'App.ux.LiveLabsSearch',
+        'App.ux.LiveRadsSearch'
 	],
 	title: _('results'),
 	xtype: 'patientresultspanel',
 	layout: 'border',
+    border: false,
 	items: [
 		{
 			xtype: 'grid',
@@ -35,6 +37,7 @@ Ext.define('App.view.patient.Results', {
 			action: 'orders',
 			region: 'center',
 			split: true,
+            border: false,
 			columnLines: true,
 			allowDeselect: true,
 			store: Ext.create('App.store.patient.PatientsOrders', {
@@ -42,6 +45,7 @@ Ext.define('App.view.patient.Results', {
 			}),
 			plugins: [
 				{
+                    pluginId: 'resultRowEditor',
 					ptype: 'rowediting',
 					errorSummary: false
 				}
@@ -52,7 +56,7 @@ Ext.define('App.view.patient.Results', {
 					width: 25,
 					items: [
 						{
-							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
+							icon: 'resources/images/icons/blueInfo.png',
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
 								App.app.getController('InfoButton').doGetInfo(
@@ -66,16 +70,23 @@ Ext.define('App.view.patient.Results', {
 				},
                 {
                     header: _('type'),
-                    width: 80,
+                    width: 100,
                     dataIndex: 'order_type',
-                    align: 'center',
-                    renderer: function(value){
-                        if(value === 'lab'){
-                            return 'Laboratory';
-                        }
-                        if(value === 'rad'){
-                            return 'Radiology';
-                        }
+                    editor: {
+                        xtype: 'combobox',
+                        itemId: 'orderTypeCombo',
+                        store: Ext.create('Ext.data.Store', {
+                            fields: ['type', 'order_type'],
+                            data: [
+                                {"type": "Laboratory", "order_type": "lab"},
+                                {"type": "Radiology", "order_type": "rad"}
+                            ]
+                        }),
+                        allowBlank: false,
+                        editable: false,
+                        queryMode: 'local',
+                        displayField: 'type',
+                        valueField: 'order_type'
                     }
                 },
                 {
@@ -92,16 +103,11 @@ Ext.define('App.view.patient.Results', {
                     }
                 },
 				{
-					header: _('orders'),
+					header: _('order_description'),
 					dataIndex: 'description',
 					menuDisabled: true,
 					resizable: false,
-					flex: 1,
-					editor: {
-						xtype: 'labslivetsearch',
-						itemId: 'rxLabOrderLabsLiveSearch',
-						allowBlank: false
-					}
+					flex: 1
 				},
 				{
 					header: _('status'),
@@ -114,30 +120,26 @@ Ext.define('App.view.patient.Results', {
 			bbar: [
 				'->',
 				{
-					text: _('new_lab_result'),
-					itemId: 'OrderResultNewOrderBtn',
+					text: _('new_result'),
+					itemId: 'NewOrderResultBtn',
 					iconCls: 'icoAdd'
-				},
-                '|',
-                {
-                    text: _('new_radiology_result'),
-                    itemId: 'ResultNewRadiologyBtn',
-                    iconCls: 'icoAdd'
-                }
+				}
 			]
 		},
         {
-            xtype: 'tabpanel',
+            xtype: 'panel',
+            //border: false,
             region: 'south',
-            split: true,
-            itemId: 'documentTypeTab',
-            height: 400,
+            //split: true,
+            itemId: 'documentTypeCard',
+            height: 350,
+            layout: 'card',
+            activeItem: 0,
             items: [
                 {
-                    title: _('lab_observations'),
                     xtype: 'form',
-                    frame: true,
-                    itemId: 'OrderResultForm',
+                    frame: false,
+                    itemId: 'laboratoryResultForm',
                     layout: {
                         type: 'border'
                     },
@@ -153,7 +155,7 @@ Ext.define('App.view.patient.Results', {
                         {
                             xtype: 'panel',
                             title: _('report_info'),
-                            itemId: 'reportInfoForm',
+                            itemId: 'laboratoryResultForm',
                             region: 'west',
                             collapsible: true,
                             autoScroll: true,
@@ -249,6 +251,7 @@ Ext.define('App.view.patient.Results', {
                             flex: 1,
                             region: 'center',
                             split: true,
+                            border: false,
                             columnLines: true,
                             plugins: [
                                 {
@@ -404,7 +407,6 @@ Ext.define('App.view.patient.Results', {
                 },
                 {
                     xtype: 'form',
-                    title: _('radiology_observations'),
                     itemId: 'radiologyResultForm',
                     frame: true,
                     layout: {

@@ -1301,8 +1301,8 @@ Ext.define('App.ux.RatingField', {
 		}
 	},
 	onBlur: function () {
-		var me = this;;
-		me.bodyEl.removeCls(me.starClsFocus)
+        var me = this;
+        me.bodyEl.removeCls(me.starClsFocus)
 	},
 	afterRender: function (ct, position) {
 		var me = this,
@@ -39661,7 +39661,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
         if(data.patient.pid && data.patient.pid !== '') {
             PatientContacts.getSelfContact(data.patient.pid, function (response) {
-                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                 ccdPatientForm.findField('phones').setValue(phone);
             });
         }
@@ -39747,7 +39747,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
                 if(patient.data.pid) {
                     PatientContacts.getSelfContact(patient.data.pid, function (response) {
-                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                        phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                         pForm.findField('phones').setValue(phone);
                     });
                 }
@@ -39827,7 +39827,7 @@ Ext.define('App.controller.patient.CCDImport', {
 
             if(mergePatient.data.pid && mergePatient.data.pid !== '') {
                 PatientContacts.getSelfContact(mergePatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -39847,7 +39847,7 @@ Ext.define('App.controller.patient.CCDImport', {
 			}
             if(importPatient.data.pid && importPatient.data.pid !== '') {
                 PatientContacts.getSelfContact(importPatient.data.pid, function (response) {
-                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;;
+                    phone = response.phone_use_code + '-' + response.phone_area_code + '-' + response.phone_local_number;
                     pForm.findField('phones').setValue(phone);
                 });
             }
@@ -52900,11 +52900,6 @@ Ext.define('App.controller.patient.Results', {
 		});
 		grid.editingPlugin.startEdit(records[0], 0);
 	},
-
-    // TODO: Finish me.
-    onResultNewRadiologyBtnClick: function(btn){
-
-    },
 
 	onResultPanelActive: function(){
 		this.setResultPanel();

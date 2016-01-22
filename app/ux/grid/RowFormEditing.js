@@ -192,11 +192,12 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	},
 
 	init: function(grid){
-		var me = this;
+		var me = this,
+            t;
 		me.callParent(arguments);
 
 		if(me.enableAddBtn){
-			var t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
+			t = grid.getDockedItems('toolbar[dock="' + me.toolbarDock + '"]')[0] ||
 				grid.addDocked({ xtype: 'toolbar', dock: me.toolbarDock })[0];
 
 			t.add({
@@ -379,7 +380,6 @@ Ext.define('App.ux.grid.RowFormEditing', {
 	// private
 	initEditTriggers: function(){
 		var me = this,
-			view = me.view,
 			moveEditorEvent = me.clicksToMoveEditor === 1 ? 'click' : 'dblclick';
 
 		me.callParent(arguments);

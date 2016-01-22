@@ -53,7 +53,7 @@ Ext.define('App.ux.LiveRadsSearch', {
 			store: me.store,
 			displayField: 'loinc_name',
 			valueField: 'loinc_name',
-			emptyText: _('search') + '...',
+			emptyText: _('radiology_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 1,

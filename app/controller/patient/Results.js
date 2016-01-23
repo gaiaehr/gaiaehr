@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.controller.patient.Results', {
+Ext.define('App.controller.patient.Results',
+{
 	extend: 'Ext.app.Controller',
 	requires: [
 		'App.view.administration.HL7MessageViewer'
@@ -64,7 +65,8 @@ Ext.define('App.controller.patient.Results', {
         }
 	],
 
-	init: function(){
+	init: function()
+    {
 		var me = this;
 		me.control({
 			'patientresultspanel': {
@@ -101,7 +103,8 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onOrderResultSignBtnClick: function(){
+	onOrderResultSignBtnClick: function()
+    {
 		var me = this,
             record;
 
@@ -134,7 +137,8 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onOrderSelectionEdit: function(editor, e){
+	onOrderSelectionEdit: function(editor, e)
+    {
 		this.getOrderResult(e.record);
 	},
 
@@ -166,18 +170,19 @@ Ext.define('App.controller.patient.Results', {
         });
     },
 
-    onOrderResultGridRowEdit: function(editor, context, eOpts){
+    onOrderResultGridRowEdit: function(editor, context, eOpts)
+    {
         //say(context);
     },
 
-    onOrderTypeSelect: function(combo, newValue, oldValue, eOpts){
+    onOrderTypeSelect: function(combo, newValue, oldValue, eOpts)
+    {
         var grid = combo.up('grid');
 
         if(newValue === 'lab')
         {
             // Change the Card panel, to show the Laboratory results form
             this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
-
             // Change the field to look for laboratories
             grid.columns[3].setEditor({
                 xtype: 'labslivetsearch',
@@ -249,7 +254,8 @@ Ext.define('App.controller.patient.Results', {
         }
 	},
 
-	getOrderResult: function(orderRecord){
+	getOrderResult: function(orderRecord)
+    {
 
 		var me = this,
 			form = me.getLaboratoryResultForm(),
@@ -270,7 +276,6 @@ Ext.define('App.controller.patient.Results', {
 					observationStore = records[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load();
-
 				}
                 else
                 {

@@ -18281,9 +18281,26 @@ Ext.define('App.model.patient.PatientsOrders', {
 		{
 			name: 'order_type',
 			type: 'string',
-			comment: 'rad || lab',
+			comment: 'Order is radiology or laboratory.',
 			index: true
 		},
+        {
+            name: 'type',
+            type: 'string',
+            store: false,
+            convert: function(v, record)
+            {
+                switch(record.data.order_type)
+                {
+                    case 'lab':
+                        return _('laboratory');
+                        break;
+                    case 'rad':
+                        return _('radiology');
+                        break;
+                }
+            }
+        },
 		{
 			name: 'note',
 			type: 'string'
@@ -24839,6 +24856,10 @@ Ext.define('App.view.patient.Results', {
     border: false,
 	items: [
 		{
+            /**
+             * Order Grid
+             * ----------
+             */
 			xtype: 'grid',
             itemId: 'orderResultsGrid',
 			action: 'orders',
@@ -24934,19 +24955,28 @@ Ext.define('App.view.patient.Results', {
 			]
 		},
         {
+            /**
+             * Orders Card [ Laboratory or Radiology ]
+             * ---------------------------------------
+             */
             xtype: 'panel',
-            //border: false,
+            border: false,
             region: 'south',
-            //split: true,
+            split: true,
             itemId: 'documentTypeCard',
             height: 350,
+            hidden: true,
             layout: 'card',
             activeItem: 0,
             items: [
                 {
-                    xtype: 'form',
+                    /**
+                     * Laboratory Order Panel
+                     * ---------------------
+                     */
+                    xtype: 'panel',
                     frame: false,
-                    itemId: 'laboratoryResultForm',
+                    itemId: 'laboratoryResultPanel',
                     layout: {
                         type: 'border'
                     },
@@ -24960,7 +24990,7 @@ Ext.define('App.view.patient.Results', {
                     ],
                     items: [
                         {
-                            xtype: 'panel',
+                            xtype: 'form',
                             title: _('report_info'),
                             itemId: 'laboratoryResultForm',
                             region: 'west',
@@ -25213,8 +25243,12 @@ Ext.define('App.view.patient.Results', {
                     ]
                 },
                 {
-                    xtype: 'form',
-                    itemId: 'radiologyResultForm',
+                    /**
+                     * Radiology Order Panel
+                     * ---------------------
+                     */
+                    xtype: 'panel',
+                    itemId: 'radiologyResultPanel',
                     frame: true,
                     layout: {
                         type: 'border'
@@ -52735,7 +52769,8 @@ Ext.define('App.controller.patient.LabOrders', {
 	}
 });
 
-Ext.define('App.controller.patient.Results', {
+Ext.define('App.controller.patient.Results',
+{
 	extend: 'Ext.app.Controller',
 	requires: [
 		'App.view.administration.HL7MessageViewer'
@@ -52778,12 +52813,17 @@ Ext.define('App.controller.patient.Results', {
             selector: 'patientresultspanel > #documentTypeCard'
         },
         {
+            ref: 'LaboratoryResultPanel',
+            selector: '#laboratoryResultPanel'
+        },
+        {
             ref: 'LaboratoryResultForm',
-            selector: 'patientresultspanel > #laboratoryResultForm'
+            selector: '#laboratoryResultForm'
         }
 	],
 
-	init: function(){
+	init: function()
+    {
 		var me = this;
 		me.control({
 			'patientresultspanel': {
@@ -52820,7 +52860,8 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onOrderResultSignBtnClick: function(){
+	onOrderResultSignBtnClick: function()
+    {
 		var me = this,
             record;
 
@@ -52853,7 +52894,8 @@ Ext.define('App.controller.patient.Results', {
 		});
 	},
 
-	onOrderSelectionEdit: function(editor, e){
+	onOrderSelectionEdit: function(editor, e)
+    {
 		this.getOrderResult(e.record);
 	},
 
@@ -52885,40 +52927,42 @@ Ext.define('App.controller.patient.Results', {
         });
     },
 
-    onOrderResultGridRowEdit: function(editor, context, eOpts){
+    onOrderResultGridRowEdit: function(editor, context, eOpts)
+    {
         //say(context);
     },
 
-    onOrderTypeSelect: function(combo, newValue, oldValue, eOpts){
+    onOrderTypeSelect: function(combo, newValue, oldValue, eOpts)
+    {
         var grid = combo.up('grid');
 
         if(newValue === 'lab')
         {
             // Change the Card panel, to show the Laboratory results form
-            this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
-
+            this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultPanel');
             // Change the field to look for laboratories
             grid.columns[3].setEditor({
                 xtype: 'labslivetsearch',
                 itemId: 'labOrderLiveSearch',
                 allowBlank: false,
-                flex: 1
+                flex: 1,
+                value: ''
             });
         }
 
         if(newValue === 'rad')
         {
             // Change the Card panel, to show the Radiology results form
-            this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultForm');
+            this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultPanel');
             // Change the field to look for radiologies
             grid.columns[3].setEditor({
                 xtype: 'radslivetsearch',
                 itemId: 'radsOrderLiveSearch',
                 allowBlank: false,
-                flex: 1
+                flex: 1,
+                value: ''
             });
         }
-
     },
 
 	onResultPanelActive: function()
@@ -52949,13 +52993,16 @@ Ext.define('App.controller.patient.Results', {
 
 	onOrderSelectionChange: function(model, records)
     {
+        if(!this.getDocumentTypeCard().isVisible())
+            this.getDocumentTypeCard().setVisible(true);
+
         if(records[0])
         {
             if (records[0].data.order_type === 'lab')
-                this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultForm');
+                this.getDocumentTypeCard().getLayout().setActiveItem('laboratoryResultPanel');
 
             if (records[0].data.order_type === 'rad')
-                this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultForm');
+                this.getDocumentTypeCard().getLayout().setActiveItem('radiologyResultPanel');
 
             if (records.length > 0)
             {
@@ -52968,8 +53015,8 @@ Ext.define('App.controller.patient.Results', {
         }
 	},
 
-	getOrderResult: function(orderRecord){
-
+	getOrderResult: function(orderRecord)
+    {
 		var me = this,
 			form = me.getLaboratoryResultForm(),
 			resultsStore = orderRecord.results(),
@@ -52981,7 +53028,6 @@ Ext.define('App.controller.patient.Results', {
 		observationGrid.editingPlugin.cancelEdit();
 		resultsStore.load({
 			callback: function(records){
-
 				if(records.length > 0)
                 {
 					form.loadRecord(records[0]);
@@ -53005,7 +53051,8 @@ Ext.define('App.controller.patient.Results', {
 					observationStore = newResult[0].observations();
 					observationGrid.reconfigure(observationStore);
 					observationStore.load({
-						params: {
+						params:
+                        {
 							loinc: orderRecord.data.code
 						},
 						callback: function(ObsRecords)
@@ -53084,7 +53131,6 @@ Ext.define('App.controller.patient.Results', {
         {
 			me.saveOrderResult(form, values);
 		}
-
 	},
 
 	saveOrderResult: function(form, values)
@@ -53125,13 +53171,13 @@ Ext.define('App.controller.patient.Results', {
 		var me = this,
 			form = me.getLaboratoryResultForm(),
 			record = form.getRecord(),
-			foo = record.data.documentId.split('|'),
+			recordData = record.data.documentId.split('|'),
 			type = null,
 			id = null,
 			win;
 
-		if(foo[0]) type = foo[0];
-		if(foo[1]) id = foo[1];
+		if(recordData[0]) type = recordData[0];
+		if(recordData[1]) id = recordData[1];
 
 		if(type && id)
         {

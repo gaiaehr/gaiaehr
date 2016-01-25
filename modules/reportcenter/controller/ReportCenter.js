@@ -153,7 +153,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
         // Send the request to display the report
         Ext.Ajax.request({
-            url: 'modules/reportcenter/dataProvider/ReportGenerator.php',
+            url: 'modules/reportcenter/dataProvider/ReportGenerator.php?site=',
             params: {
                 reportDir: this.getReportFilterPanel().getItemId(),
                 format: format,

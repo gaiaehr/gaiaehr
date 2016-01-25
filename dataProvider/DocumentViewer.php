@@ -126,6 +126,24 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 	$mineType = get_mime_type($doc->name);
 
 	if(preg_match('/^image/', $mineType)){
+
+		$len = strlen($document);
+
+		if($len > 2500000 && preg_match('/png|jpg/', $mineType)){
+
+			error_log('Compressing Image: length ' . $len);
+
+			ob_start();
+			$image = imagecreatefromstring($document);
+			if(preg_match('/png/', $mineType)){
+				imagepng($image, null, 5);
+			}elseif(preg_match('/jpg/', $mineType)){
+				imagejpeg($image, null, 5);
+			}
+			$image_data = ob_get_contents();
+			ob_end_clean();
+		}
+
 		$document = base64_encode($document);
 
 		$html = <<<HTML

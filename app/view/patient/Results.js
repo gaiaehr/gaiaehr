@@ -32,6 +32,10 @@ Ext.define('App.view.patient.Results', {
     border: false,
 	items: [
 		{
+            /**
+             * Order Grid
+             * ----------
+             */
 			xtype: 'grid',
             itemId: 'orderResultsGrid',
 			action: 'orders',
@@ -127,19 +131,28 @@ Ext.define('App.view.patient.Results', {
 			]
 		},
         {
+            /**
+             * Orders Card [ Laboratory or Radiology ]
+             * ---------------------------------------
+             */
             xtype: 'panel',
-            //border: false,
+            border: false,
             region: 'south',
-            //split: true,
+            split: true,
             itemId: 'documentTypeCard',
             height: 350,
+            hidden: true,
             layout: 'card',
             activeItem: 0,
             items: [
                 {
-                    xtype: 'form',
+                    /**
+                     * Laboratory Order Panel
+                     * ---------------------
+                     */
+                    xtype: 'panel',
                     frame: false,
-                    itemId: 'laboratoryResultForm',
+                    itemId: 'laboratoryResultPanel',
                     layout: {
                         type: 'border'
                     },
@@ -153,7 +166,7 @@ Ext.define('App.view.patient.Results', {
                     ],
                     items: [
                         {
-                            xtype: 'panel',
+                            xtype: 'form',
                             title: _('report_info'),
                             itemId: 'laboratoryResultForm',
                             region: 'west',
@@ -406,8 +419,12 @@ Ext.define('App.view.patient.Results', {
                     ]
                 },
                 {
-                    xtype: 'form',
-                    itemId: 'radiologyResultForm',
+                    /**
+                     * Radiology Order Panel
+                     * ---------------------
+                     */
+                    xtype: 'panel',
+                    itemId: 'radiologyResultPanel',
                     frame: true,
                     layout: {
                         type: 'border'

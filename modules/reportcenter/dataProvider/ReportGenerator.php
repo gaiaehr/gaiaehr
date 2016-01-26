@@ -30,7 +30,15 @@ class ReportGenerator
     {
         try
         {
-            $this->site = $site;
+            if($_REQUEST['site'])
+            {
+                $this->site = $_REQUEST['site'];
+            }
+            else
+            {
+                $this->site = $site;
+            }
+
             if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
             require_once('../../../registry.php');
             require_once("../../../sites/$this->site/conf.php");
@@ -129,6 +137,8 @@ class ReportGenerator
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }
                 }
+
+                //error_log(print_r($records,true));
 
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);

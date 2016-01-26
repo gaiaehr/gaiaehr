@@ -79,12 +79,16 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return isset($mime_types[$extension]) ? $mime_types[$extension] : '';
 	}
 
-	function base64ToBinary($document, $encrypted = false){
-		if(isset($encrypted) && $encrypted == true){
-			$document = base64_decode(MatchaUtils::decrypt($document));
-		} else {
+	function documentHandler($document, $encrypted, $isImage){
+
+		if($encrypted === true){
+			$document = MatchaUtils::decrypt($document);
+		}
+
+		if(!$isImage){
 			$document = base64_decode($document);
 		}
+
 		return $document;
 	}
 
@@ -99,7 +103,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		$doc = (object) $doc;
 		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
 		$doc->is_temp = 'true';
-		$document = base64ToBinary($doc->document);
+		$mineType = get_mime_type($doc->name);
+
+		$document = documentHandler($doc->document, false, $isImage);
 
 	}else{
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
@@ -109,6 +115,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		}
 		$doc = (object) $doc;
 		$doc->is_temp = 'false';
+		$mineType = get_mime_type($doc->name);
+
+		$isImage = preg_match('/^image/', $mineType);
 
 		if(isset($doc->document_instance)){
 			$dd = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $doc->document_instance);
@@ -117,66 +126,44 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 				die('No Document Data Found, Please contact Support Desk. Thank You!');
 			}
 			$data = (object) $data;
-			$document = base64ToBinary($data->document, $doc->encrypted);
+			$document = documentHandler($data->document, $doc->encrypted, $isImage);
 		}else{
-			$document = base64ToBinary($doc->document, $doc->encrypted);
+			$document = documentHandler($doc->document, $doc->encrypted, $isImage);
 		}
 	}
 
-	$mineType = get_mime_type($doc->name);
-
-	if(preg_match('/^image/', $mineType)){
-
-		$len = strlen($document);
-
-		if($len > 2500000 && preg_match('/png|jpg/', $mineType)){
-
-			error_log('Compressing Image: length ' . $len);
-
-			ob_start();
-			$image = imagecreatefromstring($document);
-			if(preg_match('/png/', $mineType)){
-				imagepng($image, null, 5);
-			}elseif(preg_match('/jpg/', $mineType)){
-				imagejpeg($image, null, 5);
-			}
-			$image_data = ob_get_contents();
-			ob_end_clean();
-		}
-
-		$document = base64_encode($document);
-
+	if($isImage){
 		$html = <<<HTML
-<!doctype html>
-<html>
-	<head>
-	 	<meta charset="UTF-8">
-	  	<link rel="stylesheet" href="../lib/darkroomjs/build/css/darkroom.min.css">
-	</head>
-	<body style="overflow: hidden">
-       	<div class="image-container target">
-	      	<img src="data:{$mineType};base64,{$document}" style="width:100%;" alt="" id="target" crossOrigin="anonymous">
-        </div>
-		<script src="../lib/darkroomjs/vendor/fabric.js" data-illuminations="true"></script>
-		<script src="../lib/darkroomjs/build/js/darkroom.min.js" data-illuminations="true"></script>
-		<script data-illuminations="true">
+			<!doctype html>
+			<html>
+				<head>
+				    <meta charset="UTF-8">
+				    <link rel="stylesheet" href="../lib/darkroomjs/build/css/darkroom.min.css">
+				</head>
+				<body style="overflow: hidden">
+			        <div class="image-container target">
+				        <img src="data:{$mineType};base64,{$document}" style="width:100%;" alt="" id="target" crossOrigin="anonymous">
+			        </div>
+					<script src="../lib/darkroomjs/vendor/fabric.js" data-illuminations="true"></script>
+					<script src="../lib/darkroomjs/build/js/darkroom.min.js" data-illuminations="true"></script>
+					<script data-illuminations="true">
 
-	    var dkrm = new Darkroom('#target', {
-	        plugins: {
-		        save: '$doc->is_temp' == 'true' ? false : {
-		        	callback: function(){
-                		var msg = 'documentedit{"save":{"id":{$doc->id},"document":"'+dkrm.snapshotImage()+'" }}';
-                		window.parent.postMessage(msg, '*');
-		        	}
-		        },
-		        crop: {
-		            quickCropKey: 67
-	        	}
-        	}
-	    });
-	  </script>
-	</body>
-</html>
+				    var dkrm = new Darkroom('#target', {
+				        plugins: {
+					        save: '$doc->is_temp' == 'true' ? false : {
+					            callback: function(){
+			                        var msg = 'documentedit{"save":{"id":{$doc->id},"document":"'+dkrm.snapshotImage()+'" }}';
+			                        window.parent.postMessage(msg, '*');
+					            }
+					        },
+					        crop: {
+					            quickCropKey: 67
+				            }
+			            }
+				    });
+				  </script>
+				</body>
+			</html>
 HTML;
 
 		print $html;

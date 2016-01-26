@@ -840,19 +840,20 @@ Ext.define('App.view.sitesetup.SiteSetup',
 				form = panel.getForm(),
 				values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo),
 				codeFields = me.query('checkboxfield[action="code"]'),
-				codes = [];
+				codes = [],
+                i;
 
 			me.installationPregress.show();
 			me.siteConfigurationContainer.el.mask('Installing New Site');
 
-            if(me.setSiteDirBySiteId(values.siteId)) return;
-            if(me.createDatabaseStructure(values)) return;
-            if(me.loadDatabaseData(values)) return;
-            if(me.createSConfigurationFile(values)) return;
-            if(me.createSiteAdmin(values)) return;
+            if(!me.setSiteDirBySiteId(values.siteId)) return;
+            if(!me.createDatabaseStructure(values)) return;
+            if(!me.loadDatabaseData(values)) return;
+            if(!me.createSConfigurationFile(values)) return;
+            if(!me.createSiteAdmin(values)) return;
 
             values['AESkey'] = me.AESKey;
-            for(var i = 0; i < codeFields.length; i++){
+            for(i = 0; i < codeFields.length; i++){
                 if(codeFields[i].getValue()) codes.push(codeFields[i].name);
             }
             me.installProgress = .5;

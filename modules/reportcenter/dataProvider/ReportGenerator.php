@@ -138,8 +138,6 @@ class ReportGenerator
                     }
                 }
 
-                //error_log(print_r($records,true));
-
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                 $xml = Array2XML::createXML('records', array(

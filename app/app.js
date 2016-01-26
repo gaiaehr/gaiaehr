@@ -18166,7 +18166,19 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			name: 'upload',
 			type: 'string',
 			store: false
-		}
+		},
+        {
+            name: 'void',
+            type: 'bool',
+            defaultValue: false,
+            comment: 'VOID the order'
+        },
+        {
+            name: 'void_comment',
+            type: 'string',
+            comment: 'VOID comments',
+            len: 100
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -18196,6 +18208,7 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 	]
 
 });
+
 Ext.define('App.model.patient.PatientsOrders', {
 	extend: 'Ext.data.Model',
 	requires: [
@@ -18314,7 +18327,8 @@ Ext.define('App.model.patient.PatientsOrders', {
         {
             name: 'void_comment',
             type: 'string',
-            comment: 'Order VOID Comments'
+            comment: 'VOID Comments',
+            len: 100
         }
 	],
 	proxy: {
@@ -24950,7 +24964,8 @@ Ext.define('App.view.patient.Results', {
 				{
 					text: _('new_result'),
 					itemId: 'NewOrderResultBtn',
-					iconCls: 'icoAdd'
+					iconCls: 'icoAdd',
+                    disabled: true
 				}
 			]
 		},
@@ -25134,15 +25149,24 @@ Ext.define('App.view.patient.Results', {
                                             blue = ['B', 'S', 'U', 'D', 'R', 'I'],
                                             green = ['N'];
 
-                                        if(Ext.Array.contains(green, record.data.abnormal_flag)){
+                                        if(Ext.Array.contains(green, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:green;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(blue, record.data.abnormal_flag)){
+                                        }
+                                        else if(Ext.Array.contains(blue, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:blue;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(orange, record.data.abnormal_flag)){
+                                        }
+                                        else if(Ext.Array.contains(orange, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:orange;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(red, record.data.abnormal_flag)){
+                                        }
+                                        else if(Ext.Array.contains(red, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:red;">' + v + '</span>';
-                                        }else{
+                                        }
+                                        else
+                                        {
                                             return v;
                                         }
                                     }
@@ -25170,15 +25194,24 @@ Ext.define('App.view.patient.Results', {
                                             blue = ['B', 'S', 'U', 'D', 'R', 'I'],
                                             green = ['N'];
 
-                                        if(Ext.Array.contains(green, v)){
+                                        if(Ext.Array.contains(green, v))
+                                        {
                                             return '<span style="color:green;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(blue, v)){
+                                        }
+                                        else if(Ext.Array.contains(blue, v))
+                                        {
                                             return '<span style="color:blue;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(orange, v)){
+                                        }
+                                        else if(Ext.Array.contains(orange, v))
+                                        {
                                             return '<span style="color:orange;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(red, v)){
+                                        }
+                                        else if(Ext.Array.contains(red, v))
+                                        {
                                             return '<span style="color:red;">' + v + '</span>';
-                                        }else{
+                                        }
+                                        else
+                                        {
                                             return v;
                                         }
                                     }
@@ -52819,6 +52852,10 @@ Ext.define('App.controller.patient.Results',
         {
             ref: 'LaboratoryResultForm',
             selector: '#laboratoryResultForm'
+        },
+        {
+            ref: 'NewOrderResultBtn',
+            selector: '#NewOrderResultBtn'
         }
 	],
 
@@ -52948,6 +52985,8 @@ Ext.define('App.controller.patient.Results',
                 flex: 1,
                 value: ''
             });
+            // Enabled the New Order Result Properties
+            this.getNewOrderResultBtn().disable(false);
         }
 
         if(newValue === 'rad')
@@ -52962,6 +53001,8 @@ Ext.define('App.controller.patient.Results',
                 flex: 1,
                 value: ''
             });
+            // Enabled the New Order Result Properties
+            this.getNewOrderResultBtn().disable(false);
         }
     },
 

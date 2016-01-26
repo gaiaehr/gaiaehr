@@ -62,12 +62,14 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 		me.callParent(arguments);
 	},
 
-	checkValidation: function(){
-		if(app.patient.pid){
-			var me = this,
-				form = me.down('form').getForm(),
-				record = form.getRecord();
-
+	checkValidation: function()
+    {
+        var me = this,
+            form = me.down('form').getForm(),
+            record = form.getRecord();
+        
+		if(app.patient.pid)
+        {
 			if(!record && a('add_encounters')){
 
 				me.loadRecord(

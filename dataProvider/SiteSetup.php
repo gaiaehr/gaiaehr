@@ -38,7 +38,12 @@ class SiteSetup {
 	 */
 	public function checkDatabaseCredentials(stdClass $params) {
 		if(isset($params->rootUser)){
-			$success = $this->rootDatabaseConn($params->dbHost, $params->dbPort, $params->rootUser, $params->rootPass);
+			$success = $this->rootDatabaseConn(
+                $params->dbHost,
+                $params->dbPort,
+                $params->rootUser,
+                $params->rootPass
+            );
 
 			if($success){
 				$sth = $this->conn->prepare("USE $params->dbName");
@@ -50,9 +55,14 @@ class SiteSetup {
 				}
 			}
 		} else {
-			$success = $this->databaseConn($params->dbHost, $params->dbPort, $params->dbName, $params->dbUser, $params->dbPass);
+			$success = $this->databaseConn(
+                $params->dbHost,
+                $params->dbPort,
+                $params->dbName,
+                $params->dbUser,
+                $params->dbPass
+            );
 		}
-
 
 		if($success){
 			$maxAllowPacket = $this->setMaxAllowedPacket();

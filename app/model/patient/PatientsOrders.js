@@ -134,7 +134,8 @@ Ext.define('App.model.patient.PatientsOrders', {
         {
             name: 'void_comment',
             type: 'string',
-            comment: 'Order VOID Comments'
+            comment: 'VOID Comments',
+            len: 100
         }
 	],
 	proxy: {

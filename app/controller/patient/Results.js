@@ -66,6 +66,10 @@ Ext.define('App.controller.patient.Results',
         {
             ref: 'LaboratoryResultForm',
             selector: '#laboratoryResultForm'
+        },
+        {
+            ref: 'NewOrderResultBtn',
+            selector: '#NewOrderResultBtn'
         }
 	],
 
@@ -195,6 +199,8 @@ Ext.define('App.controller.patient.Results',
                 flex: 1,
                 value: ''
             });
+            // Enabled the New Order Result Properties
+            this.getNewOrderResultBtn().disable(false);
         }
 
         if(newValue === 'rad')
@@ -209,6 +215,8 @@ Ext.define('App.controller.patient.Results',
                 flex: 1,
                 value: ''
             });
+            // Enabled the New Order Result Properties
+            this.getNewOrderResultBtn().disable(false);
         }
     },
 

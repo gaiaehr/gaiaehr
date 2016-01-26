@@ -142,7 +142,19 @@ Ext.define('App.model.patient.PatientsOrderResult', {
 			name: 'upload',
 			type: 'string',
 			store: false
-		}
+		},
+        {
+            name: 'void',
+            type: 'bool',
+            defaultValue: false,
+            comment: 'VOID the order'
+        },
+        {
+            name: 'void_comment',
+            type: 'string',
+            comment: 'VOID comments',
+            len: 100
+        }
 	],
 	proxy: {
 		type: 'direct',

@@ -126,7 +126,8 @@ Ext.define('App.view.patient.Results', {
 				{
 					text: _('new_result'),
 					itemId: 'NewOrderResultBtn',
-					iconCls: 'icoAdd'
+					iconCls: 'icoAdd',
+                    disabled: true
 				}
 			]
 		},
@@ -310,15 +311,24 @@ Ext.define('App.view.patient.Results', {
                                             blue = ['B', 'S', 'U', 'D', 'R', 'I'],
                                             green = ['N'];
 
-                                        if(Ext.Array.contains(green, record.data.abnormal_flag)){
+                                        if(Ext.Array.contains(green, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:green;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(blue, record.data.abnormal_flag)){
+                                        }
+                                        else if(Ext.Array.contains(blue, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:blue;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(orange, record.data.abnormal_flag)){
+                                        }
+                                        else if(Ext.Array.contains(orange, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:orange;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(red, record.data.abnormal_flag)){
+                                        }
+                                        else if(Ext.Array.contains(red, record.data.abnormal_flag))
+                                        {
                                             return '<span style="color:red;">' + v + '</span>';
-                                        }else{
+                                        }
+                                        else
+                                        {
                                             return v;
                                         }
                                     }
@@ -346,15 +356,24 @@ Ext.define('App.view.patient.Results', {
                                             blue = ['B', 'S', 'U', 'D', 'R', 'I'],
                                             green = ['N'];
 
-                                        if(Ext.Array.contains(green, v)){
+                                        if(Ext.Array.contains(green, v))
+                                        {
                                             return '<span style="color:green;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(blue, v)){
+                                        }
+                                        else if(Ext.Array.contains(blue, v))
+                                        {
                                             return '<span style="color:blue;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(orange, v)){
+                                        }
+                                        else if(Ext.Array.contains(orange, v))
+                                        {
                                             return '<span style="color:orange;">' + v + '</span>';
-                                        }else if(Ext.Array.contains(red, v)){
+                                        }
+                                        else if(Ext.Array.contains(red, v))
+                                        {
                                             return '<span style="color:red;">' + v + '</span>';
-                                        }else{
+                                        }
+                                        else
+                                        {
                                             return v;
                                         }
                                     }

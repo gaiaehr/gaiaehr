@@ -104,16 +104,6 @@ INSERT INTO `user_settings` VALUES (0,'allergy_ps_expand','1'),(0,'appointments_
 UNLOCK TABLES;
 
 --
--- Dumping data for table `users`
---
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'',8,1,0,'admin','RkSrnTkLoI5WHuaE09t3KCw8/3JswxmFkC/+4ezSXF8=','qqC634CkzR43sEUG9o4TjXiUUaredH37s6cyktBRa80=','xbb3xN8S06KS2IhrAaYxifL0h7LHA53mUAkfievpD08=','Mrs.','Donna','Burden','Administrator','0000','','','','','','','','','a:1:{i:0;s:5:\"false\";}','',1,1,1,'hrivera@test.directproject.net','','','','','','','','',0,0,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,NULL);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `users_facility`
 --
 
@@ -121,10 +111,6 @@ LOCK TABLES `users_facility` WRITE;
 /*!40000 ALTER TABLE `users_facility` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_facility` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'gaiadb'
---
 
 --
 -- Dumping routines for database 'gaiadb'

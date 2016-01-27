@@ -102,8 +102,8 @@ class Matcha {
                 // If not activate it.
                 if( defined( 'PDO::MYSQL_ATTR_MAX_BUFFER_SIZE' ) )
                 {
-                    // Increase the size to 100MB
-                    self::$__conn->setAttribute(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE, 1024 * 1024 * 100);
+                    // Increase the size to 5MB
+                    self::$__conn->setAttribute(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE, 1024 * 1024 * 5);
                 }
 				self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

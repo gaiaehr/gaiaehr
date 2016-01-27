@@ -20075,12 +20075,14 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 		me.callParent(arguments);
 	},
 
-	checkValidation: function(){
-		if(app.patient.pid){
-			var me = this,
-				form = me.down('form').getForm(),
-				record = form.getRecord();
+	checkValidation: function()
+    {
+        var me = this,
+            form = me.down('form').getForm(),
+            record = form.getRecord();
 
+		if(app.patient.pid)
+        {
 			if(!record && a('add_encounters')){
 
 				me.loadRecord(
@@ -56525,7 +56527,6 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.panelToolBar = Ext.create('Ext.toolbar.Toolbar', {
 			dock: 'top',
-			//			ui:'footer',
 			defaults: {
 				scope: me,
 				handler: me.onToolbarBtnHandler
@@ -56687,7 +56688,11 @@ Ext.define('App.view.patient.Encounter', {
 	 */
 	onEncounterUpdate: function(SaveBtn){
 		var me = this,
-			form;
+			form,
+            values,
+            store,
+            record,
+            storeIndex;
 
 		if(SaveBtn.action == "encounter"){
 			form = me.newEncounterWindow.down('form').getForm();
@@ -56696,10 +56701,7 @@ Ext.define('App.view.patient.Encounter', {
 		}
 
 		if(form.isValid()){
-			var values = form.getValues(),
-				store,
-				record,
-				storeIndex;
+			values = form.getValues();
 
 			if(SaveBtn.action == 'encounter'){
 

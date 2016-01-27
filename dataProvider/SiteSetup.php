@@ -227,11 +227,11 @@ class SiteSetup {
 				'status' => $status
 			];
             // check if MYSQL_ATTR_MAX_BUFFER_SIZE parameter is available in PDO
-            $status = (defined( 'PDO::MYSQL_ATTR_MAX_BUFFER_SIZE' ) ? 'Ok' : 'Fail');
-            $row[] = [
-                'msg' => 'PHP PDO MYSQL_ATTR_MAX_BUFFER_SIZE Parameter is not available',
-                'status' => $status
-            ];
+//            $status = (defined( 'PDO::MYSQL_ATTR_MAX_BUFFER_SIZE' ) ? 'Ok' : 'Fail');
+//            $row[] = [
+//                'msg' => 'PHP PDO MYSQL_ATTR_MAX_BUFFER_SIZE Parameter is not available',
+//                'status' => $status
+//            ];
 
 			return $row;
 		}

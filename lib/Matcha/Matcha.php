@@ -100,7 +100,7 @@ class Matcha {
 
                 // Check if the current version of PDO::MySQL has this parameter available
                 // If not activate it.
-                if( defined( 'PDO::MYSQL_ATTR_MAX_BUFFER_SIZE' ) ) // note the quotes
+                if( defined( 'PDO::MYSQL_ATTR_MAX_BUFFER_SIZE' ) )
                 {
                     // Increase the size to 100MB
                     self::$__conn->setAttribute(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE, 1024 * 1024 * 100);

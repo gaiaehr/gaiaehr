@@ -39,7 +39,7 @@ Ext.override(Ext.form.Basic, {
         Ext.suspendLayouts();
 
 		for (f = 0; f < fLen; f++) {
-			fields[f].reset();s
+			fields[f].reset();
 		}
 
 		Ext.resumeLayouts(true);

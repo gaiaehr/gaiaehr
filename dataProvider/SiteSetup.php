@@ -29,6 +29,15 @@ class SiteSetup {
 
 	function __construct() {
 		chdir(ROOT);
+        error_reporting(-1);
+        ini_set('display_errors', 'On');
+        if(file_exists(ROOT.'/log/install_error_log.txt'))
+        {
+            if(is_writable(ROOT.'/log/install_error_log.txt'))
+            {
+                ini_set('error_log', ROOT.'/log/install_error_log.txt');
+            }
+        }
 	}
 
 	/*

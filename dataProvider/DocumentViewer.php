@@ -79,15 +79,12 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return isset($mime_types[$extension]) ? $mime_types[$extension] : '';
 	}
 
-	function documentHandler($document, $encrypted, $isImage){
+	function documentHandler($document, $encrypted){
 
 		if($encrypted === true){
 			$document = MatchaUtils::decrypt($document);
 		}
-
-		if(!$isImage){
-			$document = base64_decode($document);
-		}
+		$document = base64_decode($document);
 
 		return $document;
 	}
@@ -104,8 +101,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
 		$doc->is_temp = 'true';
 		$mineType = get_mime_type($doc->name);
+		$isImage = preg_match('/^image/', $mineType);
 
-		$document = documentHandler($doc->document, false, $isImage);
+		$document = documentHandler($doc->document, false);
 
 	}else{
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
@@ -126,13 +124,31 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 				die('No Document Data Found, Please contact Support Desk. Thank You!');
 			}
 			$data = (object) $data;
-			$document = documentHandler($data->document, $doc->encrypted, $isImage);
+			$document = documentHandler($data->document, $doc->encrypted);
 		}else{
-			$document = documentHandler($doc->document, $doc->encrypted, $isImage);
+			$document = documentHandler($doc->document, $doc->encrypted);
 		}
 	}
 
 	if($isImage){
+		if(preg_match('/png|jpg/', $mineType)){
+			ob_start();
+			$size = getimagesizefromstring($document);
+			if($size[0] > 800){
+				$document = imagecreatefromstring($document);
+				$document = imagescale($document, 800, -1,  IMG_BICUBIC_FIXED);
+				if(preg_match('/png/', $mineType)){
+					imagepng($document);
+				}elseif(preg_match('/jpg/', $mineType)){
+					imagejpeg($document);
+				}
+				$document = ob_get_contents();
+				ob_end_clean();
+			}
+			$document = base64_encode($document);
+		}else{
+			$document = base64_encode($document);
+		}
 		$html = <<<HTML
 			<!doctype html>
 			<html>

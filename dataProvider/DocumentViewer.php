@@ -138,13 +138,14 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 				$document = imagecreatefromstring($document);
 				$document = imagescale($document, 800, -1,  IMG_BICUBIC_FIXED);
 				if(preg_match('/png/', $mineType)){
-					imagepng($document, null, 6);
+					imagepng($document);
 				}elseif(preg_match('/jpg/', $mineType)){
-					imagejpeg($document, null, 6);
+					imagejpeg($document);
 				}
 				$document = ob_get_contents();
 				ob_end_clean();
 			}
+
 			$document = base64_encode($document);
 		}else{
 			$document = base64_encode($document);

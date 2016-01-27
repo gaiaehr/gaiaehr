@@ -98,6 +98,7 @@ class Matcha {
 					PDO::ATTR_PERSISTENT => false,
 				));
 
+				self::$__conn->setAttribute(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE, 1024*1024*100); //100MB
 				self::$__conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				self::$__conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 				self::$__conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);

@@ -341,7 +341,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 												{
 													fieldLabel:'SQL Server Host or IP address',
 													name:'dbHost',
-													value:'127.0.0.1',
+													value:'localhost',
 													allowBlank:false
 												},
 												{
@@ -451,13 +451,6 @@ Ext.define('App.view.sitesetup.SiteSetup',
 								},
 								items:[
 									me.siteConfigurationContainer = Ext.create('Ext.container.Container', {
-										//                                floating:true,
-										//                                x:0,
-										//                                y:0,
-										//                                shadow:false,
-										//                                hidden:false,
-										//                                width:855,
-										//                                height:335,
 										items:[
 											{
 												xtype:'fieldset',
@@ -831,7 +824,7 @@ Ext.define('App.view.sitesetup.SiteSetup',
 			}
 		},
 
-		/*
+		/**
 		 * Event: onInstall
 		 */
 		onInstall:function(){
@@ -846,11 +839,11 @@ Ext.define('App.view.sitesetup.SiteSetup',
 			me.installationPregress.show();
 			me.siteConfigurationContainer.el.mask('Installing New Site');
 
-            if(!me.setSiteDirBySiteId(values.siteId)) return;
-            if(!me.createDatabaseStructure(values)) return;
-            if(!me.loadDatabaseData(values)) return;
-            if(!me.createSConfigurationFile(values)) return;
-            if(!me.createSiteAdmin(values)) return;
+            if(me.setSiteDirBySiteId(values.siteId) === false) return;
+            if(me.createDatabaseStructure(values) === false) return;
+            if(me.loadDatabaseData(values) === false) return;
+            if(me.createConfigurationFile(values) === false) return;
+            if(me.createSiteAdmin(values) === false) return;
 
             values['AESkey'] = me.AESKey;
             for(i = 0; i < codeFields.length; i++){
@@ -869,6 +862,10 @@ Ext.define('App.view.sitesetup.SiteSetup',
             });
 		},
 
+        /**
+         * setSiteDirBySiteId
+         * @param siteId
+         */
         setSiteDirBySiteId: function(siteId){
             this.installationPregress.updateProgress(0, 'Creating Directory and Sub Directories');
             SiteSetup.setSiteDirBySiteId(siteId, function(provider, response) {
@@ -905,9 +902,9 @@ Ext.define('App.view.sitesetup.SiteSetup',
             });
         },
 
-        createSConfigurationFile: function(values){
+        createConfigurationFile: function(values){
             this.installationPregress.updateProgress(.4, 'Creating Configuration File', true);
-            SiteSetup.createSConfigurationFile(values, function(provider, response) {
+            SiteSetup.createConfigurationFile(values, function(provider, response) {
                 if(response.result.success){
                     this.AESKey = response.result.AESkey;
                     return true;

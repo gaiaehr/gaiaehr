@@ -31,9 +31,7 @@ ini_set('max_execution_time', '1500');
 require_once(ROOT . '/classes/Time.php');
 require_once(ROOT . '/lib/Matcha/Matcha.php');
 
-if(defined(('site_timezone'))){
-	date_default_timezone_set(site_timezone);
-}
+if(defined(('site_timezone'))) date_default_timezone_set(site_timezone);
 
 class MatchaHelper extends Matcha {
 

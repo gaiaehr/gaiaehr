@@ -34,23 +34,6 @@ if(!defined('_GaiaEXEC'))
 	define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 
-/**
- * Enable the error and also set the ROOT directory for
- * the error log. But checks if the files exists and is
- * writable.
- *
- * NOTE: This should be part of Matcha::Connect
- */
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
-if(file_exists(ROOT.'/log/error_log.txt'))
-{
-    if(is_writable(ROOT.'/log/error_log.txt'))
-    {
-        ini_set('error_log', ROOT . '/log/error_log.txt');
-    }
-}
-
 $conf = ROOT . '/sites/' . $site . '/conf.php';
 if(file_exists($conf)){
 	require_once(ROOT . '/sites/' . $site . '/conf.php');
@@ -150,7 +133,7 @@ function doRpc($cdata) {
             ($action == 'SiteSetup' && $method == 'checkDatabaseCredentials') || // Used by SiteSetup
             ($action == 'SiteSetup' && $method == 'setSiteDirBySiteId') || // Used by SiteSetup
             ($action == 'SiteSetup' && $method == 'createDatabaseStructure') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'createSConfigurationFile') || // Used by SiteSetup
+            ($action == 'SiteSetup' && $method == 'createConfigurationFile') || // Used by SiteSetup
             ($action == 'SiteSetup' && $method == 'createSiteAdmin') || // Used by SiteSetup
             ($action == 'SiteSetup' && $method == 'loadDatabaseData') || // Used by SiteSetup
             ($action == 'CombosData' && $method == 'getTimeZoneList') || // Used by SiteSetup

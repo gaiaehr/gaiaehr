@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
 include_once(ROOT . '/classes/FileManager.php');
 include_once(ROOT . '/dataProvider/ACL.php');
 
@@ -50,7 +48,7 @@ class SiteSetup {
 				if($sth->execute() !== false){
 					return [
 						'success' => false,
-						'error' => 'Database name is used. Please, use a different Database name. ' . $this->err
+						'error' => 'Database name is already in use. Please, use a different name. ' . $this->err
 					];
 				}
 			}
@@ -79,7 +77,7 @@ class SiteSetup {
 		} else {
 			return [
 				'success' => false,
-				'error' => 'Could not connect to sql server!!! Please, check database information and try again. ' . $this->err
+				'error' => 'Could not connect to SQL server!!! Please, check database information and try again. ' . $this->err
 			];
 		}
 	}
@@ -160,12 +158,6 @@ class SiteSetup {
 	public function checkRequirements() {
 		try {
 			$row = [];
-			// check if ...
-			//		$status = (empty($_SESSION['sites']['sites']) ? 'Ok' : 'Fail');
-			//		$row[]  = array(
-			//			'msg' => 'GaiaEHR is not installed', 'status' => $status
-			//		);
-			// verified that php 5.4.0 or later is installed
 			$status = (version_compare(phpversion(), '5.4.0', '>=') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'PHP 5.4 + installed',
@@ -228,52 +220,116 @@ class SiteSetup {
 			];
 
 			return $row;
-		} catch(Exception $e) {
-			return $e->getMessage();
+		}
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error->getMessage(), true));
+			return $Error->getMessage();
 		}
 
 	}
 
+    /**
+     * Process to create the site directory and it's sub-directories
+     *
+     * @param $siteId
+     * @return array
+     */
 	public function setSiteDirBySiteId($siteId) {
 		$siteDir = "sites/$siteId";
-		if(!file_exists($siteDir)){
-			if(mkdir($siteDir, 0755, true)){
-				if(chmod($siteDir, 0755)){
-					if((mkdir("$siteDir/patients", 0755, true) &&
-                            chmod("$siteDir/patients", 0755)) &&
-                        (mkdir("$siteDir/documents", 0755, true) &&
-                            chmod("$siteDir/documents", 0755)) &&
-                        (mkdir("$siteDir/temp", 0755, true) &&
-                            chmod("$siteDir/temp", 0755)) &&
-                        (mkdir("$siteDir/trash", 0755, true) &&
-                            chmod("$siteDir/trash", 0755))
-					){
-						return ['success' => true];
-					} else {
-						return [
-							'success' => false,
-							'error' => 'Something went wrong creating site sub directories'
-						];
-					}
-				} else {
-					return [
-						'success' => false,
-						'error' => 'Unable to set "/sites/' . $siteId . '" write permissions,<br>Please, check "/sites/' . $siteId . '" directory write permissions'
-					];
-				}
-			} else {
-				return [
-					'success' => false,
-					'error' => 'Unable to create Site directory, Please, check "/sites" directory write permissions'
-				];
-			}
-		} else {
-			return [
-				'success' => false,
-				'error' => 'Site ID already in use. Please, choose another Site ID'
-			];
-		}
+
+        if(!$this->createDirectory($siteDir))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating site directory'
+            ];
+        }
+        if(!$this->createDirectory("$siteDir/patients"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating PATIENT directory'
+            ];
+        }
+        if(!$this->createDirectory("$siteDir/documents"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating DOCUMENT directory'
+            ];
+        }
+        if(!$this->createDirectory("$siteDir/temp"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating TEMP directory'
+            ];
+        }
+        if(!$this->createDirectory("$siteDir/trash"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating TRASH directory'
+            ];
+        }
+        if(!$this->createDirectory("$siteDir/log"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating LOG directory'
+            ];
+        }
+        if(!$this->touch("$siteDir/log/error_log.txt"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating LOG file'
+            ];
+        }
+        return ['success' => true];
 	}
+
+    /**
+     * createDirectory
+     * Tries to  create a directory with it's permissions, if not it will return false.
+     *
+     * @param $dirPath
+     * @return bool
+     */
+    private function createDirectory($dirPath){
+        try
+        {
+            if(!file_exists($dirPath)) mkdir($dirPath, 0755, true);
+            if(!is_writable($dirPath)) chmod($dirPath, 0755);
+            return true;
+        }
+        catch(Exception $Error)
+        {
+            error_log($Error->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * touch
+     * A custome version of touch function of PHP
+     *
+     * @param $file
+     * @return bool
+     */
+    private function touch($file)
+    {
+        try
+        {
+            if(!file_exists($file)) touch($file);
+            return true;
+        }
+        catch(Exception $Error)
+        {
+            return false;
+        }
+    }
 
 	public function createDatabaseStructure(stdClass $params) {
         try{
@@ -285,9 +341,7 @@ class SiteSetup {
 			{
                 $sth = $this->conn->prepare("
                 CREATE DATABASE `$params->dbName`;
-                CREATE USER '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass';
-                GRANT USAGE ON *.* TO  '$params->dbUser'@'$params->dbHost' IDENTIFIED BY  '$params->dbPass' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
-                GRANT ALL PRIVILEGES ON `$params->dbName`.* TO '$params->dbUser'@'$params->dbHost' WITH GRANT OPTION;
+                GRANT ALL PRIVILEGES ON $params->dbName.* To '$params->dbUser'@'$params->dbHost' IDENTIFIED BY '$params->dbPass';
 			    FLUSH PRIVILEGES;
 			");
                 $sth->execute();
@@ -304,7 +358,6 @@ class SiteSetup {
                     if($this->loadDatabaseStructure()){
                         return ['success' => true];
                     } else {
-
                         FileManager::rmdir_recursive("sites/$params->siteId");
                         throw new Exception($this->conn->errorInfo());
                     }
@@ -333,7 +386,10 @@ class SiteSetup {
                 FileManager::rmdir_recursive("sites/$params->siteId");
                 throw new Exception($this->err);
             }
-        } catch(Exception $Error){
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error->getMessage(), true));
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -388,7 +444,10 @@ class SiteSetup {
                 FileManager::rmdir_recursive("sites/$params->siteId");
                 throw new Exception($this->err);
             }
-        } catch(Exception $Error) {
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error->getMessage(), true));
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -401,9 +460,12 @@ class SiteSetup {
 		$sth->execute();
 	}
 
-	public function createSConfigurationFile($params) {
-        try {
-            if (file_exists($conf = 'sites/conf.example.php')) {
+	public function createConfigurationFile($params)
+    {
+        try
+        {
+            if (file_exists($conf = 'sites/conf.example.php'))
+            {
                 if (($params->AESkey = ACL::createRandomKey()) !== false) {
                     $buffer = file_get_contents($conf);
                     $search = [
@@ -454,7 +516,10 @@ class SiteSetup {
             } else {
                 throw new Exception('Unable to Find sites/conf.example.php');
             }
-        } catch(Exception $Error){
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error->getMessage(), true));
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -463,9 +528,22 @@ class SiteSetup {
 	}
 
 	public function createSiteAdmin($params) {
-        try {
+        try
+        {
             include_once(ROOT . '/sites/' . $params->siteId . '/conf.php');
+            Matcha::connect([
+                'host' => site_db_host,
+                'port' => site_db_port,
+                'name' => site_db_database,
+                'user' => site_db_username,
+                'pass' => site_db_password,
+                'app' => ROOT . '/app'
+            ]);
+
+            Matcha::$__secretKey = defined('site_aes_key') ? site_aes_key : '';
+
             include_once(ROOT . '/dataProvider/User.php');
+
             $u = new User();
             $admin = new stdClass();
             $admin->title = 'Mr.';
@@ -482,7 +560,10 @@ class SiteSetup {
             session_unset();
             session_destroy();
             return ['success' => true];
-        } catch(Exception $Error){
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error->getMessage(), true));
             return [
                 'success' => false,
                 'error' => $Error->getMessage()

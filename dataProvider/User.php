@@ -27,7 +27,6 @@ class User {
 	 */
 	private $u;
 
-
 	/**
 	 * @var ACL
 	 */

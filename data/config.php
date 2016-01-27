@@ -2072,7 +2072,7 @@ $API = [
 			'createSiteAdmin' => [
 				'len' => 1
             ],
-			'createSConfigurationFile' => [
+			'createConfigurationFile' => [
 				'len' => 1
             ],
 			'loadCode' => [

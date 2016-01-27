@@ -28,7 +28,7 @@ if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 require_once(ROOT . '/sites/'. $_REQUEST['site'] .'/conf.php');
 
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '256M');
 ini_set('max_execution_time', 5);
 
 if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
@@ -79,12 +79,14 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return isset($mime_types[$extension]) ? $mime_types[$extension] : '';
 	}
 
-	function documentHandler($document, $encrypted){
-
-		if($encrypted === true){
-			$document = MatchaUtils::decrypt($document);
+	function base64ToBinary($document, $encrypted, $is_image){
+		if($encrypted == true){
+			$document = base64_decode(MatchaUtils::decrypt($document));
 		}
-		$document = base64_decode($document);
+
+		if(!$is_image){
+			$document = base64_decode($document);
+		}
 
 		return $document;
 	}
@@ -101,9 +103,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
 		$doc->is_temp = 'true';
 		$mineType = get_mime_type($doc->name);
-		$isImage = preg_match('/^image/', $mineType);
+		$is_image = preg_match('/^image/', $mineType);
 
-		$document = documentHandler($doc->document, false);
+		$document = base64ToBinary($doc->document, false, $is_image);
 
 	}else{
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
@@ -114,8 +116,7 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		$doc = (object) $doc;
 		$doc->is_temp = 'false';
 		$mineType = get_mime_type($doc->name);
-
-		$isImage = preg_match('/^image/', $mineType);
+		$is_image = preg_match('/^image/', $mineType);
 
 		if(isset($doc->document_instance)){
 			$dd = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $doc->document_instance);
@@ -124,32 +125,14 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 				die('No Document Data Found, Please contact Support Desk. Thank You!');
 			}
 			$data = (object) $data;
-			$document = documentHandler($data->document, $doc->encrypted);
+			$document = base64ToBinary($data->document, $doc->encrypted, $is_image);
 		}else{
-			$document = documentHandler($doc->document, $doc->encrypted);
+			$document = base64ToBinary($doc->document, $doc->encrypted, $is_image);
 		}
 	}
 
-	if($isImage){
-		if(preg_match('/png|jpg/', $mineType)){
-			ob_start();
-			$size = getimagesizefromstring($document);
-			if($size[0] > 800){
-				$document = imagecreatefromstring($document);
-				$document = imagescale($document, 800, -1,  IMG_BICUBIC_FIXED);
-				if(preg_match('/png/', $mineType)){
-					imagepng($document);
-				}elseif(preg_match('/jpg/', $mineType)){
-					imagejpeg($document);
-				}
-				$document = ob_get_contents();
-				ob_end_clean();
-			}
+	if($is_image){
 
-			$document = base64_encode($document);
-		}else{
-			$document = base64_encode($document);
-		}
 		$html = <<<HTML
 			<!doctype html>
 			<html>

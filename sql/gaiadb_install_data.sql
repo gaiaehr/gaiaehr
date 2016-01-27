@@ -96,7 +96,6 @@ UNLOCK TABLES;
 --
 -- Dumping data for table `user_settings`
 --
-
 LOCK TABLES `user_settings` WRITE;
 /*!40000 ALTER TABLE `user_settings` DISABLE KEYS */;
 INSERT INTO `user_settings` VALUES (0,'allergy_ps_expand','1'),(0,'appointments_ps_expand','1'),(0,'billing_ps_expand','0'),(0,'demographics_ps_expand','0'),(0,'dental_ps_expand','1'),(0,'directives_ps_expand','1'),(0,'disclosures_ps_expand','0'),(0,'gacl_protect','0'),(0,'immunizations_ps_expand','1'),(0,'insurance_ps_expand','0'),(0,'medical_problem_ps_expand','1'),(0,'medication_ps_expand','1'),(0,'pnotes_ps_expand','0'),(0,'prescriptions_ps_expand','1'),(0,'surgery_ps_expand','1'),(0,'vitals_ps_expand','1'),(1,'gacl_protect','1');
@@ -106,23 +105,25 @@ UNLOCK TABLES;
 --
 -- Dumping data for table `users_facility`
 --
-
 LOCK TABLES `users_facility` WRITE;
 /*!40000 ALTER TABLE `users_facility` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users_facility` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'gaiadb'
+-- Dumping data for table `globals`
 --
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+LOCK TABLES `globals` WRITE;
+/*!40000 ALTER TABLE `globals` DISABLE KEYS */;
+INSERT INTO `globals` VALUES (1,'activate_ccr_ccd_report',0,'0','Reports'),(3,'atna_audit_cacert',0,'','Audit'),(4,'atna_audit_host',0,'','Audit'),(5,'atna_audit_localcert',0,'','Audit'),(6,'atna_audit_port',0,'6514','Audit'),(7,'audit_events_backup',0,'0','Audit'),(8,'audit_events_order',0,'0','Audit'),(9,'audit_events_other',0,'0','Audit'),(10,'audit_events_patient-record',0,'','Audit'),(11,'audit_events_query',0,'0','Audit'),(12,'audit_events_scheduling',0,'0','Audit'),(13,'audit_events_security-administration',0,'','Audit'),(14,'autosave',0,'1','General'),(19,'certificate_authority_crt',0,'','Security'),(20,'certificate_authority_key',0,'','Security'),(21,'client_certificate_valid_in_days',0,'365','Security'),(23,'country_data_type',0,'26','Locale'),(24,'country_list',0,'country','Locale'),(25,'css_header',0,'ext-all-gray.css','General'),(26,'currency_decimals',0,'2','Locale'),(27,'currency_dec_point',0,'.','Locale'),(28,'currency_thousands_sep',0,',','Locale'),(29,'date_display_format',0,'Y-m-d','Locale'),(30,'default_chief_complaint',0,'','Clinical'),(42,'EMAIL_METHOD',0,'SMTP','Email'),(43,'EMAIL_NOTIFICATION_HOUR',0,'50','Email'),(45,'enable_atna_audit',0,'0','Audit'),(46,'enable_auditlog',0,'0','Audit'),(47,'enable_hylafax',0,'0','Fax/Scanner'),(48,'enable_scanner',0,'0','Fax/Scanner'),(50,'fullname',0,'1','Locale'),(52,'gbl_currency_symbol',0,'$','Locale'),(53,'gbl_mask_invoice_number',0,'','General'),(54,'gbl_mask_patient_id',0,'','General'),(55,'gbl_mask_product_id',0,'','General'),(56,'gbl_nav_area_width',0,'200','General'),(57,'gbl_visit_referral_source',0,'0','General'),(58,'hylafax_basedir',0,'/var/spool/fax','Fax/Scanner'),(59,'hylafax_enscript',0,'enscript -M Letter -B -e^ --margins=36:36:36:36','Fax/Scanner'),(60,'hylafax_server',0,'localhost','Fax/Scanner'),(62,'inhouse_pharmacy',0,'','General'),(63,'is_client_ssl_enabled',0,'0','Security'),(64,'language_default',0,'en_US','Locale'),(66,'main_navigation_menu_left',0,'west','General'),(72,'password_expiration_days',0,'0','General'),(79,'phone_country_code',0,'1','Locale'),(82,'print_command',0,'lpr -P HPLaserjet6P -o cpi=10 -o lpi=6 -o page-left=72 -o page-top=72','Fax/Scanner'),(84,'scanner_output_directory',0,'/mnt/scan_docs','Fax/Scanner'),(93,'SMS_GATEWAY_APIKEY',0,'','Email'),(94,'SMS_GATEWAY_PASSWORD',0,'','Email'),(95,'SMS_GATEWAY_USENAME',0,'','Email'),(96,'SMS_NOTIFICATION_HOUR',0,'50','Email'),(97,'SMTP_HOST',0,'localhost','Email'),(98,'SMTP_PASS',0,'','Email'),(99,'SMTP_PORT',0,'25','Email'),(100,'SMTP_USER',0,'','Email'),(107,'timeout',0,'30','General'),(108,'time_display_format',0,'g:i a','Locale'),(109,'enable_poolarea_fade_in_out',0,'0','General'),(110,'enable_encounter_vitals',0,'1','Clinical'),(111,'enable_encounter_soap',0,'1','Clinical'),(112,'enable_encounter_cpt',0,'1','Clinical'),(113,'enable_encounter_hcfa',0,'1','Clinical'),(114,'enable_encounter_history',0,'1','Clinical'),(115,'enable_encounter_items_to_review',0,'1','Clinical'),(116,'enable_encounter_review_of_systems',0,'1','Clinical'),(117,'enable_encounter_review_of_systems_cks',0,'0','Clinical'),(118,'enable_encounter_dictation',0,'0','Clinical'),(119,'enable_document_encryption',0,'0','Security'),(120,'enable_dual_monitor',0,'0','General'),(121,'enable_encounter_soap_templates',0,'1','Clinical'),(122,'dx_code_type',0,'ICD10','Clinical'),(123,'units_of_measurement',0,'metric','General'),(124,'enable_encounter_family_history',0,'1','Clinical'),(125,'use_pubid_for_external_comm',0,'1','General'),(126,'enable_clinical_decision_support',0,'1','Clinical'),(127,'compact_demographics',0,'1','Demographics'),(128,'phone_validation_format',0,'^\\d{3}-\\d{3}-\\d{4}$','Locale'),(129,'zipcode_validation_format',0,'^\\d{5}(?:[-\\s]\\d{4})?$','Locale'),(130,'rx_order_number_prefix',0,'RX','General'),(131,'poolarea_order_by',0,'appointment','General'),(132,'display_pubpid',0,'1','General');
+/*!40000 ALTER TABLE `globals` ENABLE KEYS */;
+UNLOCK TABLES;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2016-01-11 11:21:12
+--
+-- Dumping data for table `groups`
+--
+LOCK TABLES `groups` WRITE;
+/*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+INSERT INTO `groups` VALUES (1,'Default','admin');
+/*!40000 ALTER TABLE `groups` ENABLE KEYS */;
+UNLOCK TABLES;

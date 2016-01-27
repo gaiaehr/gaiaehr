@@ -138,9 +138,9 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 				$document = imagecreatefromstring($document);
 				$document = imagescale($document, 800, -1,  IMG_BICUBIC_FIXED);
 				if(preg_match('/png/', $mineType)){
-					imagepng($document);
+					imagepng($document, null, 6);
 				}elseif(preg_match('/jpg/', $mineType)){
-					imagejpeg($document);
+					imagejpeg($document, null, 6);
 				}
 				$document = ob_get_contents();
 				ob_end_clean();

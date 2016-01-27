@@ -1,1 +1,0 @@
-Installation error log directory.

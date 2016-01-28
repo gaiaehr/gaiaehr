@@ -225,13 +225,7 @@ class MatchaModel extends Matcha {
 							$isIndex = count($recs) != 0;
 							$toIndex = in_array($field['name'], $indexArray);
 							$indexChange = $toIndex !== $isIndex;
-							if($indexChange)
-								$change = 'true';
-
-							//error_log($table);
-							//error_log($field['name']);
-							//error_log(var_dump($toIndex));
-							//error_log(var_dump($indexChange));
+							if($indexChange) $change = 'true';
 
 							// Modify the column on the database
 							if($change == 'true')

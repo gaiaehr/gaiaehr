@@ -251,6 +251,7 @@ class Matcha {
 			if(!$table)
 				$table = (string)(is_array(MatchaModel::$__senchaModel['table']) ? MatchaModel::$__senchaModel['table']['name'] : MatchaModel::$__senchaModel['table']);
 
+
 			$colName = isset($column['mapping']) ? $column['mapping'] : $column['name'];
 			if(self::__rendercolumnsyntax($column) == true)
 				self::$__conn->query('ALTER TABLE `' . $table . '` ADD `' . $colName . '` ' . self::__rendercolumnsyntax($column) . ';');

@@ -481,13 +481,7 @@ class Codes
 						// and execute the $run_sql with the new codes
 						$run_sql = str_replace('#REVISION#', $next_rev, $run_sql);
 						$this->db->conn->exec($run_sql);
-						//						$stmt->execute();
 						$this->installedRevision = $next_rev;
-
-						//print_r($this->db->conn->errorInfo());
-						//print $run_sql.'<br>';
-						// time to get out :-)
-						//break;
 					}
 				}
 			}

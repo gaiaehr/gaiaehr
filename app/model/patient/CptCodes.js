@@ -18,7 +18,6 @@
 
 Ext.define('App.model.patient.CptCodes', {
 	extend: 'Ext.data.Model',
-
 	fields: [
 		{
 			name: 'id',

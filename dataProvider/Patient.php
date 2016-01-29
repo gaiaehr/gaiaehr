@@ -487,19 +487,40 @@ class Patient {
 		];
 	}
 
+    /**
+     * createPatientDir
+     * Creates the patient directory to store
+     * documents and media into the file system
+     *
+     * @param $pid
+     * @return bool
+     */
 	private function createPatientDir($pid) {
-		$path = site_path . '/patients/' . $pid;
-		if(!file_exists($path)){
-			if(mkdir($path, 0777, true)){
-				chmod($path, 0777);
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-            if(!is_writable($path)) chmod($path, 0777);
-			return true;
-		}
+        try
+        {
+            $path = site_path . '/patients/' . $pid;
+            if(!file_exists($path))
+            {
+                if(mkdir($path, 0777, true))
+                {
+                    chmod($path, 0777);
+                }
+                else
+                {
+                    throw new Exception('Could not create the directory for the patient.');
+                }
+            }
+            else
+            {
+                if(!is_writable($path)) chmod($path, 0777);
+            }
+            return true;
+        }
+        catch(Exception $Error)
+        {
+            error_log($Error->getMessage());
+            return $Error->getMessage();
+        }
 	}
 
 	public function getPatientAddressById($pid) {

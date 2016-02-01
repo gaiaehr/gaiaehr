@@ -135,7 +135,8 @@ class ReportGenerator
                     {
                         $SQL = $this->conn->prepare($Query);
                         $SQL->execute();
-                        if(!$this->checkIfVariable($Query)) $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                        if(!$this->checkIfVariable($Query))
+                            $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }
                 }
 

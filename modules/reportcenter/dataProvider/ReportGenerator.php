@@ -128,13 +128,14 @@ class ReportGenerator
                 $Queries = explode(';', $PreparedSQL);
 
                 // Run all the SQL Statement separated by `;` in the file
+                $records = array();
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)
                     {
                         $SQL = $this->conn->prepare($Query);
                         $SQL->execute();
-                        $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                        if(!$this->checkIfVariable($Query)) $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }
                 }
 
@@ -156,6 +157,19 @@ class ReportGenerator
             error_log(print_r($Error->getMessage(),true));
             return $Error;
         }
+    }
+
+    /**
+     * checkIfVariable
+     * Check in the SQL statement if the current line is a variable, if not return false.
+     * @param $Statement
+     * @return bool
+     */
+    function checkIfVariable($Statement)
+    {
+        preg_match('/(?:set)+[^@]*@*/i', $Statement, $matches);
+        if(count($matches) >= 1) return true;
+        return false;
     }
 
     /**

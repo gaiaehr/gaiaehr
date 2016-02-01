@@ -133,9 +133,9 @@ class ReportGenerator
                     if(strlen(trim($Query)) > 0)
                     {
                         $SQL = $this->conn->prepare($Query);
+                        error_log(print_r($Query,true));
                         $SQL->execute();
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
-                        error_log(print_r($records,true));
                     }
                 }
 

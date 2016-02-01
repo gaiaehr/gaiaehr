@@ -102,6 +102,8 @@ class ReportGenerator
                 $this->conn = Matcha::getConn();
                 $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
+
+                //TEST
                 // Get the report SQL statement content
                 $fileContent = file_get_contents($filePointer);
 

@@ -127,13 +127,12 @@ class ReportGenerator
                 $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
                 $Queries = explode(';', $PreparedSQL);
 
-                error_log(print_r($Queries,true));
-
                 // Run all the SQL Statement separated by `;` in the file
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)
                     {
+                        error_log(print_r($Query,true));
                         $SQL = $this->conn->prepare($Query);
                         $SQL->execute();
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);

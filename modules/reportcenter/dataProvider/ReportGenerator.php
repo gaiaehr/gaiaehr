@@ -128,7 +128,6 @@ class ReportGenerator
                 $Queries = explode(';', $PreparedSQL);
 
                 // Run all the SQL Statement separated by `;` in the file
-                // TODO
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)

@@ -133,7 +133,7 @@ class ReportGenerator
                     if(strlen(trim($Query)) > 0)
                     {
                         $SQL = $this->conn->prepare($Query);
-                        error_log(print_r($Query,true));
+                        error_log(var_export($Query,true));
                         $SQL->execute();
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }

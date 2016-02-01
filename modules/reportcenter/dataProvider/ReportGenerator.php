@@ -127,6 +127,8 @@ class ReportGenerator
                 $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
                 $Queries = explode(';', $PreparedSQL);
 
+                error_log(print_r($PreparedSQL,true));
+
                 // Run all the SQL Statement separated by `;` in the file
                 foreach($Queries as $Query)
                 {

@@ -103,6 +103,7 @@ class ReportGenerator
                 $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
                 // Get the report SQL statement content
+                // TEST...
                 $fileContent = file_get_contents($filePointer);
 
                 // Copy all the request variables into the Prepared Values,

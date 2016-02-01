@@ -100,7 +100,7 @@ class ReportGenerator
                 // Important connection parameter, this will allow multiple
                 // prepare tags with the same name.
                 $this->conn = Matcha::getConn();
-                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
                 // Get the report SQL statement content
                 $fileContent = file_get_contents($filePointer);
@@ -133,7 +133,6 @@ class ReportGenerator
                     if(strlen(trim($Query)) > 0)
                     {
                         $SQL = $this->conn->prepare($Query);
-                        error_log(print_r($Query,true));
                         $SQL->execute();
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
                     }

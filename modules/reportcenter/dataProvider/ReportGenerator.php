@@ -135,9 +135,9 @@ class ReportGenerator
                         $SQL = $this->conn->prepare($Query);
                         $SQL->execute();
                         $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                        error_log(print_r($records,true));
                     }
                 }
-                error_log(print_r($records,true));
 
                 $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
                 Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);

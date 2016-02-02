@@ -721,25 +721,26 @@ class MatchaCUP {
 	public function save($record, $where = []) {
 		try {
 
+            // If only is just one filed in the variable is probably only the ID
+            // of the model, is not worth saving of build the SQL statement
+            if(count($record) <= 1) return;
+
 			if(!empty($where)){
 				$this->isSenchaRequest = false;
 				$data = get_object_vars($record);
 				$this->sql = $this->buildUpdateSqlStatement($data, $where);
 				$this->rowsAffected = Matcha::$__conn->exec($this->sql);
 				self::callBackMethod([
-					//					'crc32' => crc32($this->sql),
 					'event' => 'UPDATE',
 					'sql' => $this->sql,
 					'data' => $data,
 					'table' => $this->table
 				]);
 				$this->record = $data;
-
 				// single object handler
 			} elseif(is_object($record)) {
 				$this->isSenchaRequest = true;
 				$this->record = $this->saveRecord($record);
-
 				// multiple objects handler
 			} else {
 				$this->isSenchaRequest = true;

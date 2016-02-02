@@ -294,6 +294,13 @@ class SiteSetup {
                 'error' => 'Something went wrong creating LOG directory'
             ];
         }
+        if(!$this->createDirectory("$siteDir/cert/"))
+        {
+            return [
+                'success' => false,
+                'error' => 'Something went wrong creating CERT directory'
+            ];
+        }
         if(!$this->touch("$siteDir/log/error_log.txt"))
         {
             return [
@@ -601,7 +608,3 @@ class SiteSetup {
 	}
 
 }
-
-//$s = new SiteSetup();
-//print '<pre>';
-//print_r($s->loadCode('ICD9'));

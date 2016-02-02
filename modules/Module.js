@@ -51,7 +51,10 @@ Ext.define('Modules.Module', {
 	 *
 	 */
 	addNavigationNodes: function(parentId, node, index){
-		var parent;
+		var parent,
+            firstChildNode,
+            nodes,
+            i;
 
 		if(parentId == 'root' || parentId == null){
 			parent = this.getMainNav().getStore().getRootNode();
@@ -61,13 +64,13 @@ Ext.define('Modules.Module', {
 		}
 
 		if(parent){
-			var firstChildNode = parent.findChildBy(function(node){
+			firstChildNode = parent.findChildBy(function(node){
 				return node.hasChildNodes();
 			});
 
 			if(Ext.isArray(node)){
-				var nodes = [];
-				for(var i = 0; i < node.length; i++){
+				nodes = [];
+				for(i = 0; i < node.length; i++){
 					Ext.Array.push(nodes, parent.insertBefore(node[i], firstChildNode));
 				}
 				return nodes;

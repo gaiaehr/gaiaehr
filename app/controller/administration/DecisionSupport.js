@@ -139,12 +139,15 @@ Ext.define('App.controller.administration.DecisionSupport', {
 	onDecisionSupportAdminGridBeforeEdit: function(plugin, context){
 		var editor = plugin.editor,
 			record = context.record,
-			grids = editor.query('grid');
+			grids = editor.query('grid'),
+            grid,
+            store,
+            i;
 
 		this.getDecisionSupportEditorTabPanel().setActiveTab(0);
 
-		for(var i = 0; i < grids.length; i++){
-			var grid = grids[i],
+		for(i = 0; i < grids.length; i++){
+			grid = grids[i],
 				store = grid.getStore();
 			store.grid = grid;
 			store.load({
@@ -167,10 +170,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportProcedureComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.code,
@@ -182,10 +186,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportProblemComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.ConceptId,
@@ -197,10 +202,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportMedicationComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.RXCUI,
@@ -212,10 +218,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportMedicationAllergyComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.RXCUI,
@@ -227,10 +234,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportLabComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.loinc_number,
@@ -245,10 +253,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 			cmcStore = cmb.getStore(),
 			record = cmcStore.findRecord('option_value', cmb.getValue()),
 			grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: record.data.code,
@@ -263,10 +272,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 			cmcStore = cmb.getStore(),
 			record = cmcStore.findRecord('option_value', cmb.getValue()),
 			grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: record.data.code,

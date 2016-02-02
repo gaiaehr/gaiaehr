@@ -721,10 +721,6 @@ class MatchaCUP {
 	public function save($record, $where = []) {
 		try {
 
-            // If only is just one filed in the variable is probably only the ID
-            // of the model, is not worth saving of build the SQL statement
-            if(count($record) <= 1) return;
-
 			if(!empty($where)){
 				$this->isSenchaRequest = false;
 				$data = get_object_vars($record);

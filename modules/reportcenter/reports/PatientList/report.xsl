@@ -57,17 +57,28 @@
                         <th class="report">Race</th>
                         <th class="report">Ethnicity</th>
                     </tr>
-                    <xsl:for-each select="records/record">
+                    <xsl:choose>
+                    <xsl:when test="count(record) > 0">
+                        <xsl:for-each select="records/record">
+                            <tr>
+                                <td class="report" style="text-align: left;"><xsl:value-of select="title"/>&#160;<xsl:value-of select="fname"/>&#160;<xsl:value-of select="mname"/>&#160;<xsl:value-of select="lname"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="sex"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="php:function('date', 'jS M, Y', number(DOB))"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="marital_status"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="occupation"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="Race"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="Ethnicity"/></td>
+                            </tr>
+                        </xsl:for-each>
+                    </xsl:when>
+                    <xsl:otherwise>
                         <tr>
-                            <td class="report" style="text-align: left;"><xsl:value-of select="title"/>&#160;<xsl:value-of select="fname"/>&#160;<xsl:value-of select="mname"/>&#160;<xsl:value-of select="lname"/></td>
-                            <td class="report" style="text-align: center;"><xsl:value-of select="sex"/></td>
-                            <td class="report" style="text-align: center;"><xsl:value-of select="php:function('date', 'jS M, Y', number(DOB))"/></td>
-                            <td class="report" style="text-align: center;"><xsl:value-of select="marital_status"/></td>
-                            <td class="report" style="text-align: center;"><xsl:value-of select="occupation"/></td>
-                            <td class="report" style="text-align: center;"><xsl:value-of select="Race"/></td>
-                            <td class="report" style="text-align: center;"><xsl:value-of select="Ethnicity"/></td>
+                            <td colspan="7" style="text-align: center;">
+                                <span>No records were found.</span>
+                            </td>
                         </tr>
-                    </xsl:for-each>
+                    </xsl:otherwise>
+                    </xsl:choose>
                 </table>
             </body>
         </html>

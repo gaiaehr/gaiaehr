@@ -56,8 +56,6 @@ Ext.define('App.view.patient.DoctorsNotes', {
 				{
 					icon: 'resources/images/icons/cross.png',
 					tooltip: _('remove')
-					//					scope: me,
-					//					handler: me.onRemoveClick
 				}
 			]
 		},

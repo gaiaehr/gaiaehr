@@ -202,12 +202,6 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		//if(me.enableFamilyHistory && a('access_family_history')){
-		//	me.familyHistoryPanel = me.encounterTabPanel.add(
-		//		Ext.create('App.view.patient.encounter.FamilyHistory')
-		//	);
-		//}
-
 		if(me.enableItemsToReview && a('access_itmes_to_review')){
 			me.itemsToReview = me.encounterTabPanel.add(
 				Ext.create('App.view.patient.ItemsToReview', {
@@ -626,8 +620,11 @@ Ext.define('App.view.patient.Encounter', {
 		App.model.patient.Encounter.load(eid, {
 			scope: me,
 			callback: function(record){
+                var timer,
+                    data;
+
 				me.encounter = record;
-				var data = me.encounter.data;
+				data = me.encounter.data;
 
 				// set pid globally for convenient use
 				me.pid = data.pid;
@@ -645,7 +642,7 @@ Ext.define('App.view.patient.Encounter', {
 					me.setButtonsDisabled(me.getButtonsToDisable());
 				}else{
 					if(me.stopTimer()){
-						var timer = me.timer(data.service_date, data.close_date),
+						timer = me.timer(data.service_date, data.close_date),
 							patient = app.patient;
 
 						me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
@@ -658,20 +655,6 @@ Ext.define('App.view.patient.Encounter', {
 					store.on('write', me.getProgressNote, me);
 					me.reviewSysPanel.getForm().loadRecord(store.getAt(0));
 				}
-
-				//if(me.familyHistoryPanel){
-				//	store = me.encounter.familyhistory();
-				//	store.on('write', me.getProgressNote, me);
-				//	if(!store.last()){
-				//		store.add({
-				//			pid: data.pid,
-				//			eid: data.eid,
-				//			create_uid: app.user.id,
-				//			create_date: new Date()
-				//		});
-				//	}
-				//	me.familyHistoryPanel.getForm().loadRecord(store.last());
-				//}
 
 				if(me.reviewSysCkPanel){
 					store = me.encounter.reviewofsystemschecks();
@@ -708,9 +691,6 @@ Ext.define('App.view.patient.Encounter', {
 
 				App.app.getController('patient.ProgressNotesHistory').loadPatientProgressHistory(data.pid, data.eid);
 
-
-				//if(app.PreventiveCareWindow) app.PreventiveCareWindow.loadPatientPreventiveCare();
-
 				app.setEncounterClose(record.isClose());
 
 				app.fireEvent('encounterload', me.encounter);
@@ -746,11 +726,12 @@ Ext.define('App.view.patient.Encounter', {
 				}
 
 				Encounter.signEncounter(values, function(provider, response){
+                    var params;
 					if(response.result.success){
 						if(me.stopTimer()){
-
+S;
 							/** default data for notes and reminder **/
-							var params = {
+							params = {
 								pid: me.pid,
 								eid: me.eid,
 								uid: app.user.id,
@@ -818,27 +799,6 @@ Ext.define('App.view.patient.Encounter', {
 			//me.progressNote.tpl.overwrite(me.progressNote.body, response.result);
 		//});
 	},
-
-	//getProgressNotesHistory: function(){
-	//	var me = this,
-	//		soaps;
-	//
-	//	me.progressHistory.removeAll();
-	//	Encounter.getSoapHistory({pid: me.encounter.data.pid, eid: me.encounter.data.eid}, function(provider, response){
-	//		soaps = response.result;
-	//		for(var i = 0; i < soaps.length; i++){
-	//			me.progressHistory.add(Ext.create('Ext.form.FieldSet', {
-	//				styleHtmlContent: true,
-	//				title: '<span style="font-weight: bold; font-size: 14px;">' + soaps[i].service_date + '</span>',
-	//				html: '<strong>' + _('chief_complaint') + ':</strong> ' + (soaps[i].brief_description ? Ext.String.htmlDecode(soaps[i].brief_description) : 'none') + '<br>' +
-	//				'<strong>' + _('subjective') + ':</strong> ' + (soaps[i].subjective ? Ext.String.htmlDecode(soaps[i].subjective) : 'none') + '<br>' +
-	//				'<strong>' + _('objective') + ':</strong> ' + (soaps[i].objective ? Ext.String.htmlDecode(soaps[i].objective) : 'none') + '<br>' +
-	//				'<strong>' + _('assessment') + ':</strong> ' + (soaps[i].assessment ? Ext.String.htmlDecode(soaps[i].assessment) : 'none') + '<br>' +
-	//				'<strong>' + _('plan') + ':</strong> ' + (soaps[i].plan ? Ext.String.htmlDecode(soaps[i].plan) : 'none')
-	//			}))
-	//		}
-	//	})
-	//},
 
 	onTapPanelChange: function(panel){
 		//if(panel.card.itemId == 'encounter'){

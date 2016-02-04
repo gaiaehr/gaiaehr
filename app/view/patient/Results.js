@@ -76,6 +76,11 @@ Ext.define('App.view.patient.Results', {
                     header: _('type'),
                     width: 100,
                     dataIndex: 'order_type',
+                    renderer: function(v, meta, record)
+                    {
+                        if(record.data.order_type == 'lab') return '<span>'+_('laboratory')+'</span>';
+                        if(record.data.order_type == 'rad') return '<span>'+_('radiology')+'</span>';
+                    },
                     editor: {
                         xtype: 'combobox',
                         itemId: 'orderTypeCombo',

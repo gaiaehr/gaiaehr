@@ -10218,7 +10218,10 @@ Ext.define('Modules.Module', {
 	 *
 	 */
 	addNavigationNodes: function(parentId, node, index){
-		var parent;
+		var parent,
+            firstChildNode,
+            nodes,
+            i;
 
 		if(parentId == 'root' || parentId == null){
 			parent = this.getMainNav().getStore().getRootNode();
@@ -10228,13 +10231,13 @@ Ext.define('Modules.Module', {
 		}
 
 		if(parent){
-			var firstChildNode = parent.findChildBy(function(node){
+			firstChildNode = parent.findChildBy(function(node){
 				return node.hasChildNodes();
 			});
 
 			if(Ext.isArray(node)){
-				var nodes = [];
-				for(var i = 0; i < node.length; i++){
+				nodes = [];
+				for(i = 0; i < node.length; i++){
 					Ext.Array.push(nodes, parent.insertBefore(node[i], firstChildNode));
 				}
 				return nodes;
@@ -10269,6 +10272,7 @@ Ext.define('Modules.Module', {
 		Ext.getHead().appendChild(link);
 	}
 });
+
 Ext.define('App.model.administration.MedicationInstruction', {
     extend: 'Ext.data.Model',
     table: {
@@ -35848,12 +35852,15 @@ Ext.define('App.controller.administration.DecisionSupport', {
 	onDecisionSupportAdminGridBeforeEdit: function(plugin, context){
 		var editor = plugin.editor,
 			record = context.record,
-			grids = editor.query('grid');
+			grids = editor.query('grid'),
+            grid,
+            store,
+            i;
 
 		this.getDecisionSupportEditorTabPanel().setActiveTab(0);
 
-		for(var i = 0; i < grids.length; i++){
-			var grid = grids[i],
+		for(i = 0; i < grids.length; i++){
+			grid = grids[i],
 				store = grid.getStore();
 			store.grid = grid;
 			store.load({
@@ -35876,10 +35883,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportProcedureComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.code,
@@ -35891,10 +35899,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportProblemComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.ConceptId,
@@ -35906,10 +35915,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportMedicationComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.RXCUI,
@@ -35921,10 +35931,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportMedicationAllergyComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.RXCUI,
@@ -35936,10 +35947,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 
 	onDecisionSupportLabComboSelect: function(cmb, records){
 		var grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: records[0].data.loinc_number,
@@ -35954,10 +35966,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 			cmcStore = cmb.getStore(),
 			record = cmcStore.findRecord('option_value', cmb.getValue()),
 			grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: record.data.code,
@@ -35972,10 +35985,11 @@ Ext.define('App.controller.administration.DecisionSupport', {
 			cmcStore = cmb.getStore(),
 			record = cmcStore.findRecord('option_value', cmb.getValue()),
 			grid = cmb.up('grid'),
-			store = grid.getStore();
+			store = grid.getStore(),
+            foo;
 
 		grid.editingPlugin.cancelEdit();
-		var foo = store.add({
+		foo = store.add({
 			rule_id: this.getRuleId(),
 			concept_type: grid.action,
 			concept_code: record.data.code,
@@ -36009,6 +36023,7 @@ Ext.define('App.controller.administration.DecisionSupport', {
 	}
 
 });
+
 Ext.define('App.controller.administration.Practice', {
     extend: 'Ext.app.Controller',
 
@@ -37646,8 +37661,11 @@ Ext.define('App.controller.DualScreen', {
 	},
 
 	onPatientSet:function(){
+        var title,
+            store;
+
 		if(!this.isDual || this._loggedout) return;
-		var title = app.patient.name + ' - #' + app.patient.pid + ' - ' + app.patient.age.str,
+		title = app.patient.name + ' - #' + app.patient.pid + ' - ' + app.patient.age.str,
 			store = this.getActiveStore();
 
 		this.unmask();
@@ -37662,8 +37680,10 @@ Ext.define('App.controller.DualScreen', {
 	},
 
 	onPatientUnset:function(filter){
+        var store;
+
 		if(!this.isDual || this._loggedout) return;
-		var store = this.getActiveStore();
+		store = this.getActiveStore();
 
 		this.mask(_('no_patient_selected'));
 		this.getHeader().update('');
@@ -38564,8 +38584,6 @@ Ext.define('App.controller.Support', {
 
 	init: function() {
 		var me = this;
-
-
 		me.control({
 			'button[action=supportBtn]':{
 				click: me.supportBtnClick
@@ -38623,6 +38641,7 @@ Ext.define('App.controller.Support', {
 	}
 
 });
+
 Ext.define('App.controller.patient.ActiveProblems', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -40225,18 +40244,20 @@ Ext.define('App.controller.patient.DecisionSupport', {
 	},
 
 	getDecisionSupportAlerts:function(){
+        var btn,
+            warning,
+            i;
 
 		if(!this.getDecisionSupportWarningPanel()) return;
 
-		var warning = this.getDecisionSupportWarningPanel();
-
+		warning = this.getDecisionSupportWarningPanel();
 		warning.collapse();
 		warning.hide();
 		warning.removeAll();
 
 		DecisionSupport.getAlerts({ pid:app.patient.pid, alertType:'P' }, function(results){
-			for(var i=0; i < results.length; i++){
-				var btn = {
+			for(i=0; i < results.length; i++){
+				btn = {
 					xtype: 'button',
 					margin: '2 5',
 					icon: (results[i].reference != '' ? 'resources/images/icons/blueInfo.png' : null),
@@ -40465,17 +40486,14 @@ Ext.define('App.controller.patient.FamilyHistory', {
 			store = grid.getStore(),
 			values = form.getValues(),
 			histories = [],
-			isValid =  true;
-
-		//say('form.isValid()');
-		//say(form.isValid());
-		//if(!form.isValid()) return;
+			isValid =  true,
+            foo;
 
 		Ext.Object.each(values, function(key, value){
 
 			if(value == '0~0') return;
 
-			var foo = value.split('~'),
+			foo = value.split('~'),
 				condition = foo[0].split(':'),
 				relation = foo[1].split(':');
 
@@ -40518,6 +40536,7 @@ Ext.define('App.controller.patient.FamilyHistory', {
 	}
 
 });
+
 Ext.define('App.controller.patient.HL7', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -41949,16 +41968,18 @@ Ext.define('App.controller.patient.Referrals', {
 		var me = this,
 			grid = me.getReferralPanelGrid(),
 			sm = grid.getSelectionModel(),
-			selection = sm.getSelection();
+			selection = sm.getSelection(),
+            params,
+            i;
 		grid.view.el.mask(_('generating_documents'));
-		for(var i=0; i < selection.length; i++){
-			var params = {
-					pid: app.patient.pid,
-					eid: app.patient.eid,
-					referralId: selection[i].data.id,
-					templateId: 10,
-					docType: 'Referral'
-				};
+		for(i=0; i < selection.length; i++){
+			params = {
+                pid: app.patient.pid,
+                eid: app.patient.eid,
+                referralId: selection[i].data.id,
+                templateId: 10,
+                docType: 'Referral'
+            };
 			DocumentHandler.createTempDocument(params, function(provider, response){
 				if(window.dual){
 					dual.onDocumentView(response.result.id, 'Referral');
@@ -42028,6 +42049,7 @@ Ext.define('App.controller.patient.Referrals', {
 	}
 
 });
+
 Ext.define('App.controller.patient.RxOrders', {
 	extend: 'Ext.app.Controller',
 	requires: [],
@@ -51831,10 +51853,11 @@ Ext.define('App.controller.Scanner', {
 
 	doLoadScannersCombo: function(data){
 		var combo = this.getScannerCombo(),
-			store = combo.getStore();
+			store = combo.getStore(),
+            checked;
 
 		store.loadData(data);
-		var checked = store.findRecord('Checked', 'true');
+		checked = store.findRecord('Checked', 'true');
 		if(checked){
 			combo.select(checked);
 		}
@@ -51946,6 +51969,7 @@ Ext.define('App.controller.Scanner', {
 		//}
 	}
 });
+
 Ext.define('App.controller.Notification', {
 	extend: 'Ext.app.Controller',
 	requires: [

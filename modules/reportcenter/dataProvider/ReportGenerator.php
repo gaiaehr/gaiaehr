@@ -166,15 +166,23 @@ class ReportGenerator
                 $Queries = explode(';', $PreparedSQL);
 
                 // Run all the SQL Statement separated by `;` in the file
-                $records = [];
+                $records = null;
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)
                     {
-                        $SQL = $this->conn->prepare($Query);
-                        $SQL->execute();
-                        if(!$this->checkIfVariable($Query))
+                        // Is just a SET @ variable, if yes query but not try to
+                        // fetch any records. SET does not return any dataSet
+                        if($this->checkIfVariable($Query))
+                        {
+                            $this->conn->query($Query);
+                        }
+                        else
+                        {
+                            $SQL = $this->conn->prepare($Query);
+                            $SQL->execute();
                             $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                        }
                     }
                 }
 
@@ -184,6 +192,7 @@ class ReportGenerator
                     'filters' => $ReturnFilter,
                     'record' => $records[count($records)-1]
                 ));
+                error_log($xml->saveXML());
                 return $xml->saveXML();
             }
             else

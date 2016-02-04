@@ -228,10 +228,12 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 	},
 
 	doPaint: function(form){
+        var b, i, c,d;
+
 		form.ppts.push({x: form.mouse.x, y: form.mouse.y});
 
 		if(form.ppts.length < 3){
-			var b = form.ppts[0];
+		    b = form.ppts[0];
 			form.dContext.beginPath();
 			form.dContext.arc(b.x, b.y, form.dContext.lineWidth / 2, 0, Math.PI * 2, !0);
 			form.dContext.fill();
@@ -246,10 +248,9 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 		form.dContext.beginPath();
 		form.dContext.moveTo(form.ppts[0].x, form.ppts[0].y);
 
-		for(var i = 1; i < form.ppts.length - 2; i++){
-			var c = (form.ppts[i].x + form.ppts[i + 1].x) / 2;
-			var d = (form.ppts[i].y + form.ppts[i + 1].y) / 2;
-
+		for(i = 1; i < form.ppts.length - 2; i++){
+			c = (form.ppts[i].x + form.ppts[i + 1].x) / 2;
+			d = (form.ppts[i].y + form.ppts[i + 1].y) / 2;
 			form.dContext.quadraticCurveTo(form.ppts[i].x, form.ppts[i].y, c, d);
 		}
 
@@ -281,9 +282,6 @@ Ext.define('Modules.imageforms.controller.ImageForm', {
 		form.image.src = src;
 
 		form.image.onload = function(){
-
-			say(form);
-
 			form.setSize(form.image.width + 10, form.image.height + 120);
 			form.controller.setFormCanvasBox(form);
 			form.iContext.clearRect(0, 0, form.image.width, form.image.height);

@@ -95,7 +95,8 @@ class File {
 		}
 
 		$rec = $this->d->save($params);
-		if($rec === false) return array('success' => false, 'error' => 'Unable to save document record');
+		if($rec === false)
+            return array('success' => false, 'error' => 'Unable to save document record');
 
 		return array('success' => true, 'id' => $rec['data']->id);
 

@@ -191,18 +191,3 @@ class Modules {
 		return;
 	}
 }
-
-//print '<pre>';
-//$m = new Modules();
-
-//print '****All MODULES***** <br>';
-//print_r($m->getAllModules());
-//print '*****Active MODULES***** <br>';
-//print_r($m->getActiveModules());
-//print '*****Enabled MODULES***** <br>';
-//print_r($m->getEnabledModules());
-//print '*****Disabled MODULES***** <br>';
-//print_r($m->getDisabledModules());
-
-//print_r($m->getModuleByName('druginteractions'));
-//print 'hello';

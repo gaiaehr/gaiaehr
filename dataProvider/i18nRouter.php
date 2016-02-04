@@ -17,12 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-class i18nRouter {
-	// -----------------------------------------------------------------------
-	// Get the translation file
-	// An array made by http://transifex.net/
-	// GaiaEHR Project
-	// -----------------------------------------------------------------------
+
+class i18nRouter
+{
+    /**
+     * Get the translation file
+     * An array made by http://transifex.net/
+     * GaiaEHR Project
+     * @return array
+     */
 	public static function getTranslation(){
 		$hasModuleLocales = false;
 
@@ -76,12 +79,13 @@ class i18nRouter {
 		}
 	}
 
-	// -----------------------------------------------------------------------
-	// This will loop through the langs directory and get
-	// all the available languages for GaiaEHR
-	// This function is consumed by the dropdown list.
-	// Need more translations go to: https://www.transifex.com/projects/p/gaiaehr/
-	// -----------------------------------------------------------------------
+    /**
+     * This will loop through the langs directory and get
+     * all the available languages for GaiaEHR
+     * This function is consumed by the dropdown list.
+     * Need more translations go to: https://www.transifex.com/projects/p/gaiaehr/
+     * @return array
+     */
 	public static function getAvailableLanguages(){
 		$availableLanguages = array();
 		if($handle = opendir(ROOT . '/langs/')){
@@ -99,9 +103,10 @@ class i18nRouter {
 		return $availableLanguages;
 	}
 
-	// -----------------------------------------------------------------------
-	// Get the default language
-	// -----------------------------------------------------------------------
+    /**
+     * Get the default language
+     * @return string
+     */
 	public static function getDefaultLanguage(){
 		if(defined('site_default_localization')){
 			return site_default_localization;
@@ -110,14 +115,15 @@ class i18nRouter {
 		}
 	}
 
-	// -----------------------------------------------------------------------
-	// this function will look for the translation, if none found will return the key
-	// -----------------------------------------------------------------------
+    /**
+     * This function will look for the translation, if none
+     * found will return the key
+     * @param $key
+     * @return mixed
+     */
 	public static function t($key){
 		$lang = self::getTranslation();
 		return (array_key_exists($key, $lang) ? $lang[$key] : $key);
 	}
 
 }
-
-//	print_r(i18nRouter::getTranslation());

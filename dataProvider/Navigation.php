@@ -28,7 +28,6 @@ class Navigation
 	 */
 	private $ACL;
 	private $i18n;
-	private $t;
 
 	function __construct()
 	{

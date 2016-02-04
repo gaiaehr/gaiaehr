@@ -323,8 +323,9 @@ Ext.define('App.view.patient.Summary', {
 				columns: [
 					{
 						xtype: 'datecolumn',
-						format: 'Y-m-d',
+						format: 'Y-m-d h:i:s',
 						text: _('date'),
+                        with: 220,
 						dataIndex: 'date'
 					},
 					{

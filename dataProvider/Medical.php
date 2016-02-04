@@ -86,7 +86,6 @@ class Medical {
 	/**
 	 * @return mixed
 	 */
-	/*************************************************************************************************************/
 
 	/**
 	 * @return array
@@ -139,7 +138,6 @@ class Medical {
 
 	}
 
-	/*************************************************************************************************************/
 	public function getPatientAllergies($params){
 		return $this->a->load($params)->all();
 	}
@@ -158,110 +156,6 @@ class Medical {
 	public function updatePatientAllergies($params){
 		return $this->a->save($params);
 	}
-
-	/*************************************************************************************************************/
-//	public function getMedicalIssues(stdClass $params){
-//		return $this->ap->load($params)->all();
-//	}
-//
-//	public function addMedicalIssues($params){
-//		return $this->ap->save($params);
-//	}
-//
-//	public function updateMedicalIssues($params){
-//		return $this->ap->save($params);
-//	}
-
-	/*************************************************************************************************************/
-	//	public function getPatientSurgery(stdClass $params)
-	//	{
-	//		return $this->getPatientSurgeryByPatientID($params->pid);
-	//	}
-	//
-	//	public function addPatientSurgery(stdClass $params)
-	//	{
-	//		$data = get_object_vars($params);
-	//		unset($data['id'], $data['active']);
-	//		$data['date']        = $this->parseDate($data['date']);
-	//		$data['create_date'] = $this->parseDate($data['create_date']);
-	//		$this->db->setSQL($this->db->sqlBind($data, 'patient_surgery', 'I'));
-	//		$this->db->execLog();
-	//		$params->id = $this->db->lastInsertId;
-	//		return $params;
-	//	}
-	//
-	//	public function updatePatientSurgery(stdClass $params)
-	//	{
-	//		$data = get_object_vars($params);
-	//		$id   = $data['id'];
-	//		unset($data['id'], $data['active']);
-	//		$data['date']        = $this->parseDate($data['date']);
-	//		$data['create_date'] = $this->parseDate($data['create_date']);
-	//		$this->db->setSQL($this->db->sqlBind($data, "patient_surgery", "U", "id='$id'"));
-	//		$this->db->execLog();
-	//		return $params;
-	//
-	//	}
-
-	/*************************************************************************************************************/
-	//	public function getPatientDental(stdClass $params)
-	//	{
-	//		return $this->getPatientDentalByPatientID($params->pid);
-	//	}
-	//
-	//	public function addPatientDental(stdClass $params)
-	//	{
-	//		$data = get_object_vars($params);
-	//		unset($data['id'], $data['active']);
-	//		$data['begin_date']  = $this->parseDate($data['begin_date']);
-	//		$data['end_date']    = $this->parseDate($data['end_date']);
-	//		$data['create_date'] = $this->parseDate($data['create_date']);
-	//		$this->db->setSQL($this->db->sqlBind($data, 'patient_dental', 'I'));
-	//		$this->db->execLog();
-	//		$params->id = $this->db->lastInsertId;
-	//		return $params;
-	//	}
-	//
-	//	public function updatePatientDental(stdClass $params)
-	//	{
-	//		$data = get_object_vars($params);
-	//		$id   = $data['id'];
-	//		unset($data['id'], $data['active']);
-	//		$data['begin_date']  = $this->parseDate($data['begin_date']);
-	//		$data['end_date']    = $this->parseDate($data['end_date']);
-	//		$data['create_date'] = $this->parseDate($data['create_date']);
-	//		$this->db->setSQL($this->db->sqlBind($data, "patient_dental", "U", "id='$id'"));
-	//		$this->db->execLog();
-	//		return $params;
-	//
-	//	}
-
-	/*************************************************************************************************************/
-//	public function getPatientMedications($params){
-//		return $this->m->load($params)->all();
-//	}
-//
-//	public function addPatientMedications($params){
-//		return $this->m->save($params);
-//	}
-//
-//	public function updatePatientMedications($params){
-//		return $this->m->save($params);
-//	}
-//
-//	public function deletePatientMedications($params){
-//		return $this->m->destroy($params);
-//	}
-//
-//	public function getPatientMedicationsByPid($pid){
-//		$params =  new stdClass();
-//		$params->filters[0] = new stdClass();
-//		$params->filters[0]->property =  'pid';
-//		$params->filters[0]->value =  $pid;
-//		return $this->m->load($params)->all();
-//	}
-	/*************************************************************************************************************/
-	/***************************************************************************************************************/
 
 	public function getPatientLabsResults(stdClass $params){
 		return $this->getPatientLabsResultsByPid($params->parent_id);
@@ -547,7 +441,6 @@ class Medical {
 		return $this->db->fetchRecords(PDO::FETCH_ASSOC);
 	}
 
-	//******************************************************************************************************************
 	public function reviewMedicalWindowEncounter(stdClass $params){
 		$data = get_object_vars($params);
 		$eid = $data['eid'];
@@ -559,7 +452,6 @@ class Medical {
 		return array('success' => true);
 	}
 
-	/*************************************************************************************************************/
 	public function getLabsLiveSearch(stdClass $params){
 		$this->db->setSQL("SELECT id,
 								  parent_loinc,
@@ -688,13 +580,3 @@ class Medical {
 	}
 
 }
-
-//
-//$e = new Medical();
-//$params = new stdClass();
-//$params->pid = 1;
-//$params->immunizations[] = 1;
-//$params->immunizations[] = 2;
-//$params->immunizations[] = 3;
-//echo '<pre>';
-//print_r($e->sendVXU($params));

@@ -56,7 +56,11 @@ class authProcedures {
 		// use the logon form. Possible hack.
 		//-------------------------------------------
 		if(strlen($params->authUser) >= 26){
-			return array('success' => false, 'type' => 'error', 'message' => 'Possible hack, please use the Logon Screen.');
+			return array(
+                'success' => false,
+                'type' => 'error',
+                'message' => 'Possible hack, please use the Logon Screen.'
+            );
 		}
 		//-------------------------------------------
 		// Check that the username do not pass
@@ -67,19 +71,31 @@ class authProcedures {
 		// use the logon form. Possible hack.
 		//-------------------------------------------
 		if(strlen($params->authPass) >= 15){
-			return array('success' => false, 'type' => 'error', 'message' => 'Possible hack, please use the Logon Screen.');
+			return array(
+                'success' => false,
+                'type' => 'error',
+                'message' => 'Possible hack, please use the Logon Screen.'
+            );
 		}
 		//-------------------------------------------
 		// Simple check username
 		//-------------------------------------------
 		if(!$params->authUser){
-			return array('success' => false, 'type' => 'error', 'message' => 'The username field can not be in blank. Try again.');
+			return array(
+                'success' => false,
+                'type' => 'error',
+                'message' => 'The username field can not be in blank. Try again.'
+            );
 		}
 		//-------------------------------------------
 		// Simple check password
 		//-------------------------------------------
 		if(!$params->authPass){
-			return array('success' => false, 'type' => 'error', 'message' => 'The password field can not be in blank. Try again.');
+			return array(
+                'success' => false,
+                'type' => 'error',
+                'message' => 'The password field can not be in blank. Try again.'
+            );
 		}
 		//-------------------------------------------
 		// remove empty spaces single and double quotes from username and password
@@ -113,7 +129,11 @@ class authProcedures {
 		)->one();
 
 		if($user === false || $params->authPass != $user['password']){
-			return array('success' => false, 'type' => 'error', 'message' => 'The username or password you provided is invalid.');
+			return array(
+                'success' => false,
+                'type' => 'error',
+                'message' => 'The username or password you provided is invalid.'
+            );
 		} else{
 			//-------------------------------------------
 			// Change some User related variables and go
@@ -126,18 +146,6 @@ class authProcedures {
 			$_SESSION['user']['npi'] = $user['npi'] ;
 			$_SESSION['user']['site'] = $params->site;
 			$_SESSION['user']['auth'] = true;
-			//-------------------------------------------
-			// Also fetch the current version of the
-			// Application & Database
-			//-------------------------------------------
-//			$sql = "SELECT * FROM version LIMIT 1";
-//			$db->setSQL($sql);
-//			$version = $db->fetchRecord();
-//			$_SESSION['ver']['codeName'] = $version['v_tag'];
-//			$_SESSION['ver']['major'] = $version['v_major'];
-//			$_SESSION['ver']['rev'] = $version['v_patch'];
-//			$_SESSION['ver']['minor'] = $version['v_minor'];
-//			$_SESSION['ver']['database'] = $version['v_database'];
 			$_SESSION['site']['localization'] = $params->lang;
 			$_SESSION['site']['checkInMode'] = $params->checkInMode;
 			$_SESSION['timeout'] = time();

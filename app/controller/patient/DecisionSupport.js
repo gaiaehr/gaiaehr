@@ -53,18 +53,20 @@ Ext.define('App.controller.patient.DecisionSupport', {
 	},
 
 	getDecisionSupportAlerts:function(){
+        var btn,
+            warning,
+            i;
 
 		if(!this.getDecisionSupportWarningPanel()) return;
 
-		var warning = this.getDecisionSupportWarningPanel();
-
+		warning = this.getDecisionSupportWarningPanel();
 		warning.collapse();
 		warning.hide();
 		warning.removeAll();
 
 		DecisionSupport.getAlerts({ pid:app.patient.pid, alertType:'P' }, function(results){
-			for(var i=0; i < results.length; i++){
-				var btn = {
+			for(i=0; i < results.length; i++){
+				btn = {
 					xtype: 'button',
 					margin: '2 5',
 					icon: (results[i].reference != '' ? 'resources/images/icons/blueInfo.png' : null),

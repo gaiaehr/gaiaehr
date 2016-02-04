@@ -12,8 +12,6 @@ Ext.define('App.controller.Support', {
 
 	init: function() {
 		var me = this;
-
-
 		me.control({
 			'button[action=supportBtn]':{
 				click: me.supportBtnClick

@@ -90,17 +90,14 @@ Ext.define('App.controller.patient.FamilyHistory', {
 			store = grid.getStore(),
 			values = form.getValues(),
 			histories = [],
-			isValid =  true;
-
-		//say('form.isValid()');
-		//say(form.isValid());
-		//if(!form.isValid()) return;
+			isValid =  true,
+            foo;
 
 		Ext.Object.each(values, function(key, value){
 
 			if(value == '0~0') return;
 
-			var foo = value.split('~'),
+			foo = value.split('~'),
 				condition = foo[0].split(':'),
 				relation = foo[1].split(':');
 

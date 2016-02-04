@@ -79,8 +79,11 @@ Ext.define('App.controller.DualScreen', {
 	},
 
 	onPatientSet:function(){
+        var title,
+            store;
+
 		if(!this.isDual || this._loggedout) return;
-		var title = app.patient.name + ' - #' + app.patient.pid + ' - ' + app.patient.age.str,
+		title = app.patient.name + ' - #' + app.patient.pid + ' - ' + app.patient.age.str,
 			store = this.getActiveStore();
 
 		this.unmask();
@@ -95,8 +98,10 @@ Ext.define('App.controller.DualScreen', {
 	},
 
 	onPatientUnset:function(filter){
+        var store;
+
 		if(!this.isDual || this._loggedout) return;
-		var store = this.getActiveStore();
+		store = this.getActiveStore();
 
 		this.mask(_('no_patient_selected'));
 		this.getHeader().update('');

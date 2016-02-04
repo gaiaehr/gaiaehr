@@ -62,10 +62,11 @@ Ext.define('App.controller.Scanner', {
 
 	doLoadScannersCombo: function(data){
 		var combo = this.getScannerCombo(),
-			store = combo.getStore();
+			store = combo.getStore(),
+            checked;
 
 		store.loadData(data);
-		var checked = store.findRecord('Checked', 'true');
+		checked = store.findRecord('Checked', 'true');
 		if(checked){
 			combo.select(checked);
 		}

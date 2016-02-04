@@ -192,7 +192,6 @@ class ReportGenerator
                     'filters' => $ReturnFilter,
                     'record' => $records[count($records)-1]
                 ));
-                error_log($xml->saveXML());
                 return $xml->saveXML();
             }
             else

@@ -20,12 +20,36 @@
 class ReportGenerator
 {
 
+    /**
+     * @var
+     */
     private $request;
+
+    /**
+     * @var
+     */
     public $reportDir;
+
+    /**
+     * @var
+     */
     public $format;
+
+    /**
+     * @var
+     */
     private $conn;
+
+    /**
+     * @var string
+     */
     private $site;
 
+    /**
+     * ReportGenerator constructor.
+     * It all begins here.
+     * @param string $site
+     */
     function __construct($site = 'default')
     {
         try
@@ -44,6 +68,7 @@ class ReportGenerator
             require_once("../../../sites/$this->site/conf.php");
             require_once('../../../classes/MatchaHelper.php');
             require_once('../../../classes/Array2XML.php');
+            return true;
         }
         catch(Exception $Error)
         {
@@ -52,6 +77,11 @@ class ReportGenerator
         }
     }
 
+    /**
+     * Set the REQUEST for sending.
+     * @param $REQUEST
+     * @return bool|Exception
+     */
     function setRequest($REQUEST)
     {
         try
@@ -61,6 +91,7 @@ class ReportGenerator
             $this->request = json_decode($REQUEST['params'], true);
             $this->reportDir = $REQUEST['reportDir'];
             $this->format = $REQUEST['format'];
+            return true;
         }
         catch(Exception $Error)
         {
@@ -68,7 +99,9 @@ class ReportGenerator
             return $Error;
         }
     }
-
+    /**
+     * @return Exception|string
+     */
     function getXSLTemplate()
     {
         try
@@ -90,11 +123,16 @@ class ReportGenerator
         }
     }
 
+    /**
+     * @return Exception|string
+     */
     function getXMLDocument()
     {
         try
         {
             $filePointer = "../reports/$this->reportDir/reportStatement.sql";
+            $PrepareField = [];
+
             if(file_exists($filePointer) && is_readable($filePointer))
             {
                 // Important connection parameter, this will allow multiple
@@ -128,7 +166,7 @@ class ReportGenerator
                 $Queries = explode(';', $PreparedSQL);
 
                 // Run all the SQL Statement separated by `;` in the file
-                $records = array();
+                $records = [];
                 foreach($Queries as $Query)
                 {
                     if(strlen(trim($Query)) > 0)
@@ -182,7 +220,7 @@ class ReportGenerator
      * @param array $variables
      * @return mixed|string
      */
-    function PostPrepare($sqlStatement = '', $variables = array())
+    function PostPrepare($sqlStatement = '', $variables = [])
     {
         foreach($variables as $key => $variable)
         {

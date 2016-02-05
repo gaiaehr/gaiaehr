@@ -23,13 +23,17 @@ Ext.define('App.ux.window.Window', {
 
 	setReadOnly: function() {
 		var forms = this.query('form'),
-			readOnly = app.patient.readOnly;
-		for(var j = 0; j < forms.length; j++) {
-			var form = forms[j], items;
+			readOnly = app.patient.readOnly,
+            j,
+            form,
+            k,
+            items;
+		for(j = 0; j < forms.length; j++) {
+			form = forms[j], items;
 			if(form.readOnly != readOnly){
 				form.readOnly = readOnly;
 				items = form.getForm().getFields().items;
-				for(var k = 0; k < items.length; k++) {
+				for(k = 0; k < items.length; k++) {
 					items[k].setReadOnly(readOnly);
 				}
 			}
@@ -38,9 +42,11 @@ Ext.define('App.ux.window.Window', {
 	},
 
 	setButtonsDisabled:function(buttons){
-		var disable = app.patient.readOnly;
-		for(var i = 0; i < buttons.length; i++) {
-			var btn = buttons[i];
+		var disable = app.patient.readOnly,
+            i,
+            btn;
+		for(i = 0; i < buttons.length; i++) {
+			btn = buttons[i];
 			if(btn.disabled != disable){
 				btn.disabled = disable;
 				btn.setDisabled(disable)
@@ -72,10 +78,11 @@ Ext.define('App.ux.window.Window', {
 	},
 
 	getFormItems: function(formPanel, formToRender, callback) {
-		formPanel.removeAll();
+        var items;
 
+		formPanel.removeAll();
 		FormLayoutEngine.getFields({formToRender: formToRender}, function(provider, response) {
-			var items = eval(response.result);
+			items = eval(response.result);
 			formPanel.add(items);
 			if(typeof callback == 'function') {
 				callback(formPanel, items, true);
@@ -128,10 +135,11 @@ Ext.define('App.ux.window.Window', {
 	},
 
 	passwordVerificationWin: function(callback) {
-		var msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
+        var msg, f;
+		msg = Ext.Msg.prompt(_('password_verification'), _('please_enter_your_password') + ':', function(btn, password) {
 			callback(btn, password);
 		});
-		var f = msg.textField.getInputId();
+		f = msg.textField.getInputId();
 		document.getElementById(f).type = 'password';
 		return msg;
 	}

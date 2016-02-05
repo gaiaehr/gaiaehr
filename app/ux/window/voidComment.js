@@ -18,8 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.ux.voidCommentWindow',{
+Ext.define('App.ux.window.voidComment',{
     extend:'Ext.window.Window',
+    xtype: 'voidcommentwindow',
+    itemId: 'VoidCommentWindow',
     alias:'widget.voidwindow',
     title: _('void_comment'),
     items:[
@@ -28,7 +30,7 @@ Ext.define('App.ux.voidCommentWindow',{
             id:'VOIDComment',
             bodyPadding: 3,
             width: 400,
-            height: 300,
+            height: 250,
             layout: 'anchor',
             defaultType: 'textfield',
             items: [{

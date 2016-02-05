@@ -36,7 +36,7 @@ Ext.define('App.ux.LiveAllergiesSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: _('search') + '...',
+			emptyText: _('allergy_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,

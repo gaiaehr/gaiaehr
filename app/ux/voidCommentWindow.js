@@ -1,8 +1,8 @@
 /**
  * GaiaEHR (Electronic Health Records)
- * RenderPanel.js
+ * voidCommentWindow.js
  * UX
- * Copyright (C) 2012 Ernesto Rodriguez
+ * Copyright (C) 2012 TRA NextGen, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,34 +18,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.ux.ScriptCamWindow',{
-	extend:'Ext.window.Window',
-	alias:'widget.webcamwindow',
-//    closeAction:'hide',
-    title:'...',
-	items:[
+Ext.define('App.ux.voidCommentWindow',{
+    extend:'Ext.window.Window',
+    alias:'widget.voidwindow',
+    title: _('void_comment'),
+    items:[
         {
-            xtype:'container',
-            id:'WebCamCanvas',
-            height:320,
-            width:320
-
+            xtype:'form',
+            id:'VOIDComment',
+            bodyPadding: 3,
+            width: 400,
+            height: 300,
+            layout: 'anchor',
+            defaultType: 'textfield',
+            items: [{
+                name: 'void_comment',
+                allowBlank: false,
+                hideLabel: true,
+                grow: true,
+                growMax: 600
+            }]
         }
-	],
+    ],
     buttons:[
         {
-            xtype:'combobox',
-            action:'webCamCameras',
-            store:Ext.create('App.store.WebCamCameras'),
-            queryMode: 'local',
-            displayField: 'option',
-            valueField: 'value',
-            editable:false
+            xtype:'button',
+            action:'save',
+            text: _('save')
         },
-        '->',
         {
-            text:w('capture_img'),
-            action:'onCaptureImage'
+            xtype:'button',
+            action:'cancel',
+            text: _('cancel')
         }
     ]
 });

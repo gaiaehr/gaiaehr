@@ -63,7 +63,7 @@
                             <tr>
                                 <td class="report" style="text-align: left;"><xsl:value-of select="title"/>&#160;<xsl:value-of select="fname"/>&#160;<xsl:value-of select="mname"/>&#160;<xsl:value-of select="lname"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="sex"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="php:function('date', 'jS M, Y', number(DOB))"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="DateOfBirth"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="marital_status"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="occupation"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="Race"/></td>

@@ -281,6 +281,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.grid.EventHistory',
 		            'App.ux.grid.RowFormEditing',
 		            'App.ux.grid.RowFormEditor',
+                    'App.ux.voidCommentWindow',
 		            /*
 		             * Load the combo boxes spread on all the web application
 		             * remember this are all reusable combo boxes.

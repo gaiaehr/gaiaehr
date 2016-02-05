@@ -1637,5 +1637,7 @@ $LANG = array(
     'new_result'                            => 'New Result',
     'order_description'                     => 'Order Description',
     'laboratories_search'                   => 'Laboratories search...',
-    'radiology_search'                      => 'Radiology search...'
+    'radiology_search'                      => 'Radiology search...',
+    'allergy_search'                        => 'Allergy search...',
+    'void_comment'                          => 'VOID Comment'
 );

@@ -72,6 +72,7 @@ class ReportList
         }
         catch(\Exception $Error)
         {
+            error_log(print_r($Error, true));
             return $Error;
         }
     }

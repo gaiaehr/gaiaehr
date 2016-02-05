@@ -93,12 +93,11 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                 {
                     xtype: 'allergieslivesearch',
                     fieldLabel: _('allergy'),
-                    hideLabel: false,
                     name: 'allergy_code',
+                    hideLabel: false,
                     width: 400,
-                    enableKeyEvents: true,
-                    flex: 1,
-                    value: null,
+                    displayField: 'allergy',
+                    valueField: 'allergy_code',
                     listeners: {
                         select: function(combo, records, eOpts){
                             var fieldName = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];

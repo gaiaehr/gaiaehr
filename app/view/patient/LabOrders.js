@@ -76,10 +76,12 @@ Ext.define('App.view.patient.LabOrders', {
             align: 'center',
             dataIndex: 'void',
             tooltip: _('void'),
-            editor: {
+            editor:
+            {
                 xtype: 'checkbox'
             },
-            renderer: function(v, meta, record){
+            renderer: function(v, meta, record)
+            {
                 return app.voidRenderer(v);
             }
 		},

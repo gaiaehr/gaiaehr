@@ -24,12 +24,16 @@ Ext.define('App.view.patient.Results', {
         'Ext.tab.Panel',
 		'App.store.patient.PatientsOrders',
 		'App.ux.LiveLabsSearch',
-        'App.ux.LiveRadsSearch'
+        'App.ux.LiveRadsSearch',
+        'App.ux.window.voidComment'
 	],
 	title: _('results'),
 	xtype: 'patientresultspanel',
 	layout: 'border',
     border: false,
+    init: function() {
+        var voidCommentWindow;
+    },
 	items: [
 		{
             /**
@@ -73,15 +77,44 @@ Ext.define('App.view.patient.Results', {
 					]
 				},
                 {
+                    header: _('void'),
+                    itemid: 'voidField',
+                    groupable: false,
+                    width: 30,
+                    align: 'center',
+                    dataIndex: 'void',
+                    tooltip: _('void'),
+                    editor:
+                    {
+                        xtype: 'checkbox',
+                        listeners:
+                        {
+                            change: function()
+                            {
+                                if(!this.voidCommentWindow()) {
+                                    this.voidCommentWindow = Ext.create('App.ux.window.voidComments');
+                                }
+                                this.voidCommentWindow().show();
+                            }
+                        }
+                    },
+                    renderer: function(v, meta, record)
+                    {
+                        return app.voidRenderer(v);
+                    }
+                },
+                {
                     header: _('type'),
                     width: 100,
                     dataIndex: 'order_type',
                     renderer: function(v, meta, record)
                     {
+                        var style = '';
+                        if(record.data.void) style = 'text-decoration: line-through;';
                         if(record.data.order_type == 'lab')
-                            return '<span>'+_('laboratory')+'</span>';
+                            return '<span style="'+style+'">'+_('laboratory')+'</span>';
                         if(record.data.order_type == 'rad')
-                            return '<span>'+_('radiology')+'</span>';
+                            return '<span style="'+style+'">'+_('radiology')+'</span>';
                     },
                     editor: {
                         xtype: 'combobox',
@@ -111,6 +144,15 @@ Ext.define('App.view.patient.Results', {
                     editor: {
                         xtype: 'datefield',
                         allowBlank: false
+                    },
+                    renderer: function(v, meta, record)
+                    {
+                        var dataOrdered = record.data.date_ordered;
+                        if(record.data.void)
+                        {
+                            return '<span style="text-decoration: line-through;">'+dataOrdered+'</span>';
+                        }
+                        return '<span>'+dataOrdered+'</span>';
                     }
                 },
 				{
@@ -118,14 +160,30 @@ Ext.define('App.view.patient.Results', {
 					dataIndex: 'description',
 					menuDisabled: true,
 					resizable: false,
-					flex: 1
+					flex: 1,
+                    renderer: function(v, meta, record)
+                    {
+                        if(record.data.void)
+                        {
+                            return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                        }
+                        return '<span>'+ v + '</span>';
+                    }
 				},
 				{
 					header: _('status'),
 					dataIndex: 'status',
 					menuDisabled: true,
 					resizable: false,
-					width: 60
+					width: 60,
+                    renderer: function(v, meta, record)
+                    {
+                        if(record.data.void)
+                        {
+                            return '<span style="text-decoration: line-through;">'+ v + '</span>';
+                        }
+                        return '<span>'+ v + '</span>';
+                    }
 				}
 			],
 			bbar: [

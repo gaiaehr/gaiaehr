@@ -109,7 +109,7 @@ Ext.define('App.controller.Scanner', {
 		};
 
 		me.ws.onerror = function(){
-			app.msg(_('oops'), _('no_scanner_service_found'), true);
+			say(_('no_scanner_service_found'));
 		};
 
 		me.ws.onmessage = function(evt){

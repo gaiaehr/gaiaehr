@@ -1069,6 +1069,7 @@ $LANG = array(
 	'please_enter_your_password'			=> 'Please enter your password',
 	'immunization_search'			        => 'Immunization search',
 	'medication_search'     				=> 'Medication search',
+    'procedure_search'     				    => 'Procedure search',
     'problem_search'                        => 'Problem search',
 	'surgery_search'					    => 'Surgery search',
 	'frames_are_disabled'					=> 'Frames are disabled',

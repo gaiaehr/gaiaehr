@@ -179,11 +179,18 @@ Ext.define('App.ux.grid.LiveSearchGridPanel', {
 
 			me.store.each(function(record, idx){
 
-				var td = Ext.fly(me.view.getNode(record)).down('td'),
-					cell, matches, cellHTML, is_special;
+				var fly = Ext.fly(me.view.getNode(record)),
+					td, cell, matches, cellHTML, is_special;
 
+				if(fly == null) return;
+
+				td = fly.down('td');
 
 				while(td){
+
+					if(td == null){
+						break;
+					}
 
 					is_special = false;
 

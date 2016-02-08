@@ -22,7 +22,7 @@ Ext.define('App.ux.LiveSnomedProblemSearch', {
 	hideLabel: true,
 	displayField: 'FullySpecifiedName',
 	valueField: 'ConceptId',
-	emptyText: _('search') + '...',
+	emptyText: _('problem_search') + '...',
 	typeAhead: false,
 	hideTrigger: true,
 	minChars: 3,

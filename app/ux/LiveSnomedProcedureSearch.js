@@ -22,7 +22,7 @@ Ext.define('App.ux.LiveSnomedProcedureSearch', {
 	hideLabel: true,
 	displayField: 'FullySpecifiedName',
 	valueField: 'ConceptId',
-	emptyText: _('search') + '...',
+	emptyText: _('procedure_search') + '...',
 	typeAhead: false,
 	hideTrigger: true,
 	minChars: 3,

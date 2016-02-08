@@ -358,7 +358,7 @@ Ext.define('App.view.administration.PreventiveCare',
 						}],
 						bbar :
 						{
-							xtype : 'medicationlivetsearch',
+							xtype : 'rxnormlivetsearch',
 							margin : 5,
 							fieldLabel : _('add_problem'),
 							hideLabel : false,

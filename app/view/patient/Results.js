@@ -89,12 +89,11 @@ Ext.define('App.view.patient.Results', {
                         xtype: 'checkbox',
                         listeners:
                         {
-                            change: function()
+                            change: function( chkbox )
                             {
-                                if(!this.voidCommentWindow()) {
-                                    this.voidCommentWindow = Ext.create('App.ux.window.voidComments');
-                                }
-                                this.voidCommentWindow().show();
+                                if(!this.voidCommentWindow)
+                                    this.voidCommentWindow = Ext.create('App.ux.window.voidComment');
+                                this.voidCommentWindow.showAt(chkbox.getXY());
                             }
                         }
                     },

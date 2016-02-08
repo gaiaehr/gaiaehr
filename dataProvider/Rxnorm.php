@@ -112,7 +112,6 @@ class Rxnorm {
 								    WHERE (`rxnconso`.`STR` LIKE :q1 OR `rxnconso`.`RXCUI` = :q2)
 							     GROUP BY `rxnconso`.`STR`
      							    LIMIT 100");
-
 		$sth->execute([ ':q1' => '%'.$params->query.'%', ':q2' => $params->query ]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
 		$total = count($records);
@@ -125,10 +124,16 @@ class Rxnorm {
 
 	public function getRXNORMList(stdClass $params) {
 		if(isset($params->query)){
-			$sth = $this->db->prepare("SELECT * FROM rxnconso WHERE (SAB = 'RXNORM' AND TTY = 'BD') AND STR LIKE :q GROUP BY RXCUI LIMIT 500");
+			$sth = $this->db->prepare("SELECT * FROM rxnconso
+                                        WHERE (SAB = 'RXNORM' AND TTY = 'BD')
+                                        AND STR LIKE :q
+                                        GROUP BY RXCUI LIMIT 500");
 			$sth->execute([':q' => $params->query . '%']);
 		} else {
-			$sth = $this->db->prepare("SELECT * FROM rxnconso WHERE (SAB = 'RXNORM' AND TTY = 'BD') GROUP BY RXCUI LIMIT 500");
+			$sth = $this->db->prepare("SELECT * FROM rxnconso
+                                        WHERE (SAB = 'RXNORM'
+                                        AND TTY = 'BD')
+                                        GROUP BY RXCUI LIMIT 500");
 			$sth->execute();
 		}
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);

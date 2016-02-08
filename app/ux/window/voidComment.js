@@ -23,23 +23,22 @@ Ext.define('App.ux.window.voidComment',{
     xtype: 'voidcommentwindow',
     itemId: 'VoidCommentWindow',
     alias:'widget.voidwindow',
+    closable: false,
+    frame: false,
+    frameHeader: false,
     title: _('void_comment'),
+    init: function() {
+        var me = this;
+    },
     items:[
         {
-            xtype:'form',
-            id:'VOIDComment',
-            bodyPadding: 3,
-            width: 400,
-            height: 250,
-            layout: 'anchor',
-            defaultType: 'textfield',
-            items: [{
-                name: 'void_comment',
-                allowBlank: false,
-                hideLabel: true,
-                grow: true,
-                growMax: 600
-            }]
+            xtype:'textfield',
+            itemId:'VOIDComment',
+            name: 'void_comment',
+            allowBlank: false,
+            hideLabel: true,
+            grow: true,
+            growMax: 600
         }
     ],
     buttons:[
@@ -51,7 +50,11 @@ Ext.define('App.ux.window.voidComment',{
         {
             xtype:'button',
             action:'cancel',
-            text: _('cancel')
+            text: _('cancel'),
+            listeners:
+            {
+                click: function( btn ) { me.close(); }
+            }
         }
     ]
 });

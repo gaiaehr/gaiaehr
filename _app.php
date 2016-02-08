@@ -221,21 +221,19 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.RatingField',
 		            'App.ux.grid.GridToHtml',
 		            'App.ux.grid.Printer',
-
-		            /*
+		            /**
 		             * Load the activity by the user
 		             * This will detect the activity of the user, if the user are idle by a
 		             * certain time, it will logout.
 		             */
 		            'App.ux.ActivityMonitor',
-		            /*
+		            /**
 		             * Load the classes that the CORE application needs
 		             */
 		            'App.ux.AbstractPanel',
 		            'App.ux.LiveCPTSearch',
 		            'App.ux.LiveICDXSearch',
 		            'App.ux.LiveImmunizationSearch',
-		            'App.ux.LiveMedicationSearch',
 		            'App.ux.LiveLabsSearch',
 		            'App.ux.LiveCDTSearch',
 		            'App.ux.LiveRXNORMAllergySearch',
@@ -248,20 +246,20 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.NodeDisabled',
 		            'App.ux.PhotoIdWindow',
 		            'App.ux.PatientEncounterCombo',
-		            /*
+		            /**
 		             * Load the RenderPanel
 		             * This is the main panel when all the forms are rendered.
 		             */
 		            'App.ux.RenderPanel',
-		            /*
+		            /**
 		             * Load the charts related controls
 		             */
 		            'Ext.fx.target.Sprite',
-		            /*
+		            /**
 		             * Load the DropDown related components
 		             */
 		            'Ext.dd.DropZone', 'Ext.dd.DragZone',
-		            /*
+		            /**
 		             * Load the form specific related fields
 		             * Not all the fields are the same.
 		             */
@@ -282,7 +280,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.grid.RowFormEditing',
 		            'App.ux.grid.RowFormEditor',
                     'App.ux.window.voidComment',
-		            /*
+		            /**
 		             * Load the combo boxes spread on all the web application
 		             * remember this are all reusable combo boxes.
 		             */
@@ -353,8 +351,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		            'App.ux.window.Window',
 		            'App.ux.NodeDisabled',
 		            'App.view.search.PatientSearch',
-
-		            /*
+		            /**
 		             * Dynamically load the modules
 		             */
 		            'Modules.Module'
@@ -367,12 +364,12 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 					'patient.SmokeStatus',
 					'patient.PatientPossibleDuplicate',
 
-				/**
-				 * Load the models, the model are the representative of the database
-				 * table structure with modifications behind the PHP counterpart.
-				 * All table should be declared here, and Sencha's ExtJS models.
-				 * This are spread in all the core application.
-				 */
+                    /**
+                     * Load the models, the model are the representative of the database
+                     * table structure with modifications behind the PHP counterpart.
+                     * All table should be declared here, and Sencha's ExtJS models.
+                     * This are spread in all the core application.
+                     */
 					'administration.ActiveProblems',
 					'administration.Applications',
 					'administration.DefaultDocuments',

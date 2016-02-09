@@ -101,9 +101,9 @@ class IpAccessRules {
 		$where[] = $ipBlocks[0] . '.' . $ipBlocks[1] . '.' . $ipBlocks[2] . '.' . $ipBlocks[3];
 
 		if($geo_data === false){
-			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = ? OR ip = ?, ip = ?, ip = ?, ip = ? ORDER BY weight DESC LIMIT 1';
+			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND (ip = ? OR ip = ? OR ip = ? OR ip = ? OR ip = ?) ORDER BY weight DESC LIMIT 1';
 		}else{
-			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = ? OR ip = ?, ip = ?, ip = ?, ip = ? OR country_code = :country_code ORDER BY weight DESC LIMIT 1';
+			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND (ip = ? OR ip = ? OR ip = ? OR ip = ? OR ip = ? OR country_code = ?) ORDER BY weight DESC LIMIT 1';
 			$where[] = $geo_data['country_code'];
 		}
 

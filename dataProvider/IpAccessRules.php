@@ -92,13 +92,15 @@ class IpAccessRules {
 
 		$geo_data = GeoIpLocation::getGeoLocation($ip);
 
+		$ip = str_replace(['.','*'], ['\.', '(\d*)'], $ip);
+
 		if($geo_data === false){
-			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = :ip1  OR ip = :ip2 ORDER BY weight DESC LIMIT 1';
+			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = :ip1  OR ip REGEXP :ip2 ORDER BY weight DESC LIMIT 1';
 			$where = [];
 			$where[':ip1'] = '*';
 			$where[':ip2'] = $ip;
 		}else{
-			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = :ip1 OR ip = :ip2 OR country_code = :country_code ORDER BY weight DESC LIMIT 1';
+			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = :ip1 OR ip REGEXP :ip2 OR country_code = :country_code ORDER BY weight DESC LIMIT 1';
 			$where = [];
 			$where[':ip1'] = '*';
 			$where[':ip2'] = $ip;

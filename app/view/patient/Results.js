@@ -148,9 +148,7 @@ Ext.define('App.view.patient.Results', {
                     {
                         var dataOrdered = record.data.date_ordered;
                         if(record.data.void)
-                        {
                             return '<span style="text-decoration: line-through;">'+dataOrdered+'</span>';
-                        }
                         return '<span>'+dataOrdered+'</span>';
                     }
                 },
@@ -163,9 +161,7 @@ Ext.define('App.view.patient.Results', {
                     renderer: function(v, meta, record)
                     {
                         if(record.data.void)
-                        {
                             return '<span style="text-decoration: line-through;">'+ v + '</span>';
-                        }
                         return '<span>'+ v + '</span>';
                     }
 				},
@@ -178,9 +174,7 @@ Ext.define('App.view.patient.Results', {
                     renderer: function(v, meta, record)
                     {
                         if(record.data.void)
-                        {
                             return '<span style="text-decoration: line-through;">'+ v + '</span>';
-                        }
                         return '<span>'+ v + '</span>';
                     }
 				}

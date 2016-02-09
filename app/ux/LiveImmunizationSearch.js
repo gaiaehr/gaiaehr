@@ -21,7 +21,7 @@ Ext.define('App.ux.LiveImmunizationSearch', {
 	hideLabel: true,
 	displayField: 'name',
 	valueField: 'cvx_code',
-	emptyText: _('search_for_a_immunizations') + '...',
+	emptyText: _('immunization_search') + '...',
 	typeAhead: true,
 	minChars: 1,
 	initComponent: function(){

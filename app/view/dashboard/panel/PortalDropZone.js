@@ -50,7 +50,13 @@ Ext.define('App.view.dashboard.panel.PortalDropZone', {
     notifyOver: function(dd, e, data) {
         var xy = e.getXY(),
             portal = this.portal,
-            proxy = dd.proxy;
+            proxy = dd.proxy,
+            cw,
+            colIndex,
+            colRight,
+            cols,
+            len,
+            cmatch;
 
         // case column widths
         if (!this.grid) {
@@ -58,7 +64,7 @@ Ext.define('App.view.dashboard.panel.PortalDropZone', {
         }
 
         // handle case scroll where scrollbars appear during drag
-        var cw = portal.body.dom.clientWidth;
+        cw = portal.body.dom.clientWidth;
         if (!this.lastCW) {
             // set initial client width
             this.lastCW = cw;
@@ -70,11 +76,11 @@ Ext.define('App.view.dashboard.panel.PortalDropZone', {
         }
 
         // determine column
-        var colIndex = 0,
-            colRight = 0,
-            cols = this.grid.columnX,
-            len = cols.length,
-            cmatch = false;
+        colIndex = 0,
+        colRight = 0,
+        cols = this.grid.columnX,
+        len = cols.length,
+        cmatch = false;
 
         for (len; colIndex < len; colIndex++) {
             colRight = cols[colIndex].x + cols[colIndex].w;

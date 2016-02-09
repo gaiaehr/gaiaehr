@@ -112,7 +112,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: _('search') + '...',
+			emptyText: _('medication_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,

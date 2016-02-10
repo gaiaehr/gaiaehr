@@ -92,17 +92,19 @@ class IpAccessRules {
 
 		$geo_data = GeoIpLocation::getGeoLocation($ip);
 
+		$ipBlocks =  explode('.', $ip);
+		$where = [];
+		$where[] = '*';
+		$where[] = $ipBlocks[0] . '.*';
+		$where[] = $ipBlocks[0] . '.' . $ipBlocks[1] . '.*';
+		$where[] = $ipBlocks[0] . '.' . $ipBlocks[1] . '.' . $ipBlocks[2] . '.*';
+		$where[] = $ipBlocks[0] . '.' . $ipBlocks[1] . '.' . $ipBlocks[2] . '.' . $ipBlocks[3];
+
 		if($geo_data === false){
-			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = :ip1  OR ip = :ip2 ORDER BY weight DESC LIMIT 1';
-			$where = [];
-			$where[':ip1'] = '*';
-			$where[':ip2'] = $ip;
+			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND (ip = ? OR ip = ? OR ip = ? OR ip = ? OR ip = ?) ORDER BY weight DESC LIMIT 1';
 		}else{
-			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND ip = :ip1 OR ip = :ip2 OR country_code = :country_code ORDER BY weight DESC LIMIT 1';
-			$where = [];
-			$where[':ip1'] = '*';
-			$where[':ip2'] = $ip;
-			$where[':country_code'] = $geo_data['country_code'];
+			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND (ip = ? OR ip = ? OR ip = ? OR ip = ? OR ip = ? OR country_code = ?) ORDER BY weight DESC LIMIT 1';
+			$where[] = $geo_data['country_code'];
 		}
 
 		$conn = Matcha::getConn();
@@ -114,7 +116,7 @@ class IpAccessRules {
 			$blocked = $result['rule'] == 'BLK';
 		}else{
 			// if no rule found blocked the IP if not inside local network
-			$blocked = filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) !== false;
+			$blocked = !$this->ip_is_private($ip);
 		}
 
 		if($blocked){
@@ -128,6 +130,31 @@ class IpAccessRules {
 
 		return $blocked;
 
+	}
+
+	function ip_is_private ($ip) {
+		$pri_addrs = array (
+			'10.0.0.0|10.255.255.255', // single class A network
+			'172.16.0.0|172.31.255.255', // 16 contiguous class B network
+			'192.168.0.0|192.168.255.255', // 256 contiguous class C network
+			'169.254.0.0|169.254.255.255', // Link-local address also refered to as Automatic Private IP Addressing
+			'127.0.0.0|127.255.255.255' // localhost
+		);
+
+		$long_ip = ip2long ($ip);
+		if ($long_ip != -1) {
+
+			foreach ($pri_addrs AS $pri_addr) {
+				list ($start, $end) = explode('|', $pri_addr);
+
+				// IF IS PRIVATE
+				if ($long_ip >= ip2long ($start) && $long_ip <= ip2long ($end)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 }

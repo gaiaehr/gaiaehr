@@ -61,4 +61,5 @@ class MatchaErrorHandler extends Matcha {
 	static public function __errorLogFile($file = NULL) {
 		self::$__logFile = $file;
 	}
+
 }

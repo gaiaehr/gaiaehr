@@ -1641,5 +1641,6 @@ $LANG = array(
     'laboratories_search'                   => 'Laboratories search...',
     'radiology_search'                      => 'Radiology search...',
     'allergy_search'                        => 'Allergy search...',
-    'void_comment'                          => 'VOID Comment'
+    'void_comment'                          => 'VOID Comment',
+    'processing'                            => 'Processing'
 );

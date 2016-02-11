@@ -73,7 +73,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         });
     },
 
-    onReportCenterGridRowDblClick: function(record, item, index, e, eOpts){
+    onReportCenterGridRowDblClick: function(record, item, index, e, eOpts)
+    {
         this.getReportWindow().remove(Ext.ComponentQuery.query('reportFilter')[0] , true);
         Ext.require('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm');
         this.getReportWindow().insert(
@@ -129,7 +130,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
         this.getReportWindow().getEl().mask(_('loading'));
 
-        // Evaluates every field in the form, extrat the submitFormat and other
+        // Evaluates every field in the form, extract the submitFormat and other
         // things.
         for(Index = 0; Index < fields.items.length; Index++) {
             parameters[Index] = {};

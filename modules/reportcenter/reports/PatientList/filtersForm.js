@@ -22,8 +22,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
         'Ext.form.field.Date',
         'App.ux.combo.ActiveProviders',
         'App.ux.combo.Allergies',
-        'App.ux.LiveMedicationSearch',
-        'App.ux.LiveSnomedProblemSearch'
+        'App.ux.LiveRXNORMSearch',
+        'Modules.reportcenter.reports.PatientList.ux.LiveRXNORMSearchReport'
     ],
     xtype: 'reportFilter',
     region: 'north',
@@ -79,8 +79,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     valueField: 'id',
                     listeners: {
                         select: function(combo, records, eOpts){
-                            var fieldName = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
-                            fieldName.setValue(records[0].data.option_name);
+                            var field = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
+                            field.setValue(records[0].data.option_name);
                         }
                     }
                 },
@@ -100,8 +100,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     valueField: 'allergy_code',
                     listeners: {
                         select: function(combo, records, eOpts){
-                            var fieldName = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
-                            fieldName.setValue(records[0].data.allergy);
+                            var field = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
+                            field.setValue(records[0].data.allergy);
                         }
                     }
                 },
@@ -121,8 +121,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     value: null,
                     listeners: {
                         select: function(combo, records, eOpts){
-                            var fieldName = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
-                            fieldName.setValue(records[0].data.FullySpecifiedName);
+                            var field = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
+                            field.setValue(records[0].data.FullySpecifiedName);
                         }
                     }
                 },
@@ -133,19 +133,15 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     value: ''
                 },
                 {
-                    xtype: 'medicationlivetsearch',
+                    xtype: 'rxnormlivetsearchreport',
                     hideLabel: false,
                     fieldLabel: _('medication'),
                     name: 'medication_code',
                     enableKeyEvents: true,
                     flex: 1,
                     value: null,
-                    listeners: {
-                        select: function(combo, records, eOpts){
-                            var fieldName = Ext.ComponentQuery.query('reportFilter #medication_name')[0];
-                            fieldName.setValue(records[0].data.PROPRIETARYNAME);
-                        }
-                    }
+                    displayField: 'STR',
+                    valueField: 'RXCUI'
                 },
                 {
                     xtype: 'hiddenfield',

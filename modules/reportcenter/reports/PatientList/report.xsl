@@ -28,7 +28,7 @@
                             <span>Medication:</span>
                             <xsl:choose>
                                 <xsl:when test="records/filters/medication_name/value != ''">
-                                    <xsl:value-of select="records/filters/allergy_name/value" />
+                                    <xsl:value-of select="records/filters/medication_name/value" />
                                 </xsl:when>
                                 <xsl:otherwise>
                                     All

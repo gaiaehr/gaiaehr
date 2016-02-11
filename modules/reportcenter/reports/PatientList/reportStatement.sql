@@ -45,11 +45,11 @@ SELECT distinct(pid) as pid, provider_uid, service_date
 ) encounters ON patient.pid = encounters.pid
 
 LEFT JOIN (
-SELECT distinct(pid) AS pid, CODE as medication_code
+SELECT distinct(pid) AS pid, RXCUI as medication_code
 	FROM patient_medications
     WHERE CASE
 		WHEN @MedicationCode IS NOT NULL
-		THEN patient_medications.code = @MedicationCode
+		THEN patient_medications.rxcui = @MedicationCode
     ELSE 1=1
 	END
     LIMIT 1

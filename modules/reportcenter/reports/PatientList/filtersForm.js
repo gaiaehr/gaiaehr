@@ -43,22 +43,49 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             border: false,
             items :[
                 {
-                    xtype: 'datefield',
-                    name: 'begin_date',
-                    fieldLabel: _('begin_date'),
-                    allowBlank: false,
-                    width: 320,
-                    format: g('date_display_format'),
-                    submitFormat: 'Y-m-d'
+                    xtype: 'panel',
+                    layout: 'hbox',
+                    border: false,
+                    frame: false,
+                    margin: 2,
+                    items:
+                    [
+                        {
+                            xtype: 'datefield',
+                            name: 'begin_date',
+                            fieldLabel: _('begin_date'),
+                            allowBlank: false,
+                            format: g('date_display_format'),
+                            submitFormat: 'Y-m-d'
+                        },
+                        {
+                            xtype: 'combo',
+                            name: 'begin_sort',
+                            queryMode: 'local',
+                            width: 55,
+                            editable: false,
+                            emptyText: _('sort'),
+                            store: ['ASC', 'DESC']
+                        }
+                    ]
                 },
                 {
-                    xtype: 'datefield',
-                    name: 'end_date',
-                    fieldLabel: _('end_date'),
-                    width: 320,
-                    allowBlank: false,
-                    format: g('date_display_format'),
-                    submitFormat: 'Y-m-d'
+                    xtype: 'panel',
+                    layout: 'hbox',
+                    border: false,
+                    frame: false,
+                    margin: 2,
+                    items:
+                    [
+                        {
+                            xtype: 'datefield',
+                            name: 'end_date',
+                            fieldLabel: _('end_date'),
+                            allowBlank: false,
+                            format: g('date_display_format'),
+                            submitFormat: 'Y-m-d'
+                        }
+                    ]
                 }
             ]
         },
@@ -70,84 +97,122 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             border: false,
             items:[
                 {
-                    xtype: 'activeproviderscombo',
-                    fieldLabel: _('provider'),
-                    name: 'provider',
-                    width: 400,
-                    allowBlank: false,
-                    displayField: 'option_name',
-                    valueField: 'id',
-                    listeners: {
-                        select: function(combo, records, eOpts){
-                            var field = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
-                            field.setValue(records[0].data.option_name);
+                    xtype: 'panel',
+                    layout: 'hbox',
+                    border: false,
+                    frame: false,
+                    margin: 2,
+                    items:
+                    [
+                        {
+                            xtype: 'activeproviderscombo',
+                            fieldLabel: _('provider'),
+                            name: 'provider',
+                            allowBlank: false,
+                            displayField: 'option_name',
+                            valueField: 'id',
+                            flex: 1,
+                            listeners: {
+                                select: function(combo, records, eOpts){
+                                    var field = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
+                                    field.setValue(records[0].data.option_name);
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'hiddenfield',
+                            itemId: 'provider_name',
+                            name: 'provider_name',
+                            value: ''
                         }
-                    }
+                    ]
                 },
                 {
-                    xtype: 'hiddenfield',
-                    itemId: 'provider_name',
-                    name: 'provider_name',
-                    value: ''
-                },
-                {
-                    xtype: 'allergieslivesearch',
-                    fieldLabel: _('allergy'),
-                    name: 'allergy_code',
-                    hideLabel: false,
-                    width: 400,
-                    displayField: 'allergy',
-                    valueField: 'allergy_code',
-                    listeners: {
-                        select: function(combo, records, eOpts){
-                            var field = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
-                            field.setValue(records[0].data.allergy);
+                    xtype: 'panel',
+                    layout: 'hbox',
+                    border: false,
+                    frame: false,
+                    margin: 2,
+                    items:
+                    [
+                        {
+                            xtype: 'allergieslivesearch',
+                            fieldLabel: _('allergy'),
+                            name: 'allergy_code',
+                            hideLabel: false,
+                            displayField: 'allergy',
+                            valueField: 'allergy_code',
+                            flex: 1,
+                            listeners: {
+                                select: function(combo, records, eOpts){
+                                    var field = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
+                                    field.setValue(records[0].data.allergy);
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'hiddenfield',
+                            itemId: 'allergy_name',
+                            name: 'allergy_name',
+                            value: ''
                         }
-                    }
+                    ]
                 },
                 {
-                    xtype: 'hiddenfield',
-                    itemId: 'allergy_name',
-                    name: 'allergy_name',
-                    value: ''
-                },
-                {
-                    xtype: 'snomedliveproblemsearch',
-                    hideLabel: false,
-                    fieldLabel: _('problem'),
-                    name: 'problem_code',
-                    enableKeyEvents: true,
-                    flex: 1,
-                    value: null,
-                    listeners: {
-                        select: function(combo, records, eOpts){
-                            var field = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
-                            field.setValue(records[0].data.FullySpecifiedName);
+                    xtype: 'panel',
+                    layout: 'hbox',
+                    border: false,
+                    frame: false,
+                    margin: 2,
+                    items:[
+                        {
+                            xtype: 'snomedliveproblemsearch',
+                            hideLabel: false,
+                            fieldLabel: _('problem'),
+                            name: 'problem_code',
+                            enableKeyEvents: true,
+                            flex: 1,
+                            value: null,
+                            listeners: {
+                                select: function(combo, records, eOpts){
+                                    var field = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
+                                    field.setValue(records[0].data.FullySpecifiedName);
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'hiddenfield',
+                            itemId: 'problem_name',
+                            name: 'problem_name',
+                            value: ''
                         }
-                    }
+                    ]
                 },
                 {
-                    xtype: 'hiddenfield',
-                    itemId: 'problem_name',
-                    name: 'problem_name',
-                    value: ''
-                },
-                {
-                    xtype: 'rxnormlivetsearchreport',
-                    hideLabel: false,
-                    fieldLabel: _('medication'),
-                    name: 'medication_code',
-                    enableKeyEvents: true,
-                    flex: 1,
-                    value: null,
-                    displayField: 'STR',
-                    valueField: 'RXCUI'
-                },
-                {
-                    xtype: 'hiddenfield',
-                    itemId: 'medication_name',
-                    name: 'medication_name',
-                    value: ''
+                    xtype: 'panel',
+                    layout: 'hbox',
+                    border: false,
+                    frame: false,
+                    margin: 2,
+                    items:[
+                        {
+                            xtype: 'rxnormlivetsearchreport',
+                            hideLabel: false,
+                            fieldLabel: _('medication'),
+                            name: 'medication_code',
+                            enableKeyEvents: true,
+                            flex: 1,
+                            value: null,
+                            displayField: 'STR',
+                            valueField: 'RXCUI'
+                        },
+                        {
+                            xtype: 'hiddenfield',
+                            itemId: 'medication_name',
+                            name: 'medication_name',
+                            value: ''
+                        }
+                    ]
                 }
             ]
         }

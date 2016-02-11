@@ -4,6 +4,7 @@ SET @EndDate = :end_date;
 SET @ProblemCode = :problem_code;
 SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
+SET @StartDateOrder = :begin_sort;
 
 SELECT patient.*, DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth, Race.option_name as Race, Ethnicity.option_name as Ethnicity
 FROM patient
@@ -111,3 +112,8 @@ AND CASE
 	THEN patient_allergies.allergy_code = @MedicationAllergyCode
 	ELSE 1=1
 END
+
+ORDER BY
+CASE WHEN @StartDateOrder = 'ASC' THEN encounters.service_date END ASC,
+CASE WHEN @StartDateOrder = 'DESC' THEN encounters.service_date END DESC
+

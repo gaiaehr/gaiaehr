@@ -11,7 +11,16 @@
                 <table class="filters">
                     <tr>
                         <td>
-                            <span>Provider Name:</span><xsl:value-of select="records/filters/provider_name/value"/><br/>
+                            <span>Provider Name:</span>
+                            <xsl:choose>
+                                <xsl:when test="records/filters/provider_name/value != ''">
+                                    <xsl:value-of select="records/filters/provider_name/value" />
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    All
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            <br/>
                             <span>Begin Date:</span><xsl:value-of select="records/filters/begin_date/value"/><br/>
                             <span>End Date:</span><xsl:value-of select="records/filters/end_date/value"/><br/>
                         </td>
@@ -49,7 +58,8 @@
 
                 <table class="report" width="100%">
                     <tr>
-                        <th class="report" style="text-align: left;">Name</th>
+                        <th class="report" style="text-align: left;">Provider</th>
+                        <th class="report" style="text-align: left;">Patient</th>
                         <th class="report">Gender</th>
                         <th class="report">DOB</th>
                         <th class="report">Marital Status</th>
@@ -61,6 +71,7 @@
                     <xsl:when test="count(records/record/title) > 0">
                         <xsl:for-each select="records/record">
                             <tr>
+                                <td class="report" style="text-align: left;"><xsl:value-of select="ProviderName"/></td>
                                 <td class="report" style="text-align: left;"><xsl:value-of select="title"/>&#160;<xsl:value-of select="fname"/>&#160;<xsl:value-of select="mname"/>&#160;<xsl:value-of select="lname"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="sex"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="DateOfBirth"/></td>
@@ -73,7 +84,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <tr>
-                            <td colspan="7" style="text-align: center;">
+                            <td colspan="8" style="text-align: center;">
                                 <span>No records were found.</span>
                             </td>
                         </tr>

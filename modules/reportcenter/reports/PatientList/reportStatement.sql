@@ -5,8 +5,16 @@ SET @ProblemCode = :problem_code;
 SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
 SET @StartDateOrder = :begin_sort;
+SET @ProviderOrder = :prov_sort;
+SET @AllergiesOrder = :allergies_sort;
+SET @ProblemsOrder = :problems_sort;
+SET @MedicationsOrder = :medications_sort;
 
-SELECT patient.*, DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth, Race.option_name as Race, Ethnicity.option_name as Ethnicity
+SELECT patient.*,
+        DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth,
+        Race.option_name as Race,
+        Ethnicity.option_name as Ethnicity,
+        CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) as ProviderName
 FROM patient
 
 LEFT JOIN (
@@ -73,6 +81,8 @@ AND Race.list_id = 14
 LEFT JOIN combo_lists_options as Ethnicity ON Ethnicity.option_value = patient.ethnicity
 AND Ethnicity.list_id = 59
 
+LEFT JOIN users as Provider ON Provider.id = encounters.provider_uid
+
 WHERE CASE
 	WHEN @MedicationCode IS NOT NULL
 	THEN patient_medications.medication_code = @MedicationCode
@@ -115,5 +125,6 @@ END
 
 ORDER BY
 CASE WHEN @StartDateOrder = 'ASC' THEN encounters.service_date END ASC,
-CASE WHEN @StartDateOrder = 'DESC' THEN encounters.service_date END DESC
-
+CASE WHEN @StartDateOrder = 'DESC' THEN encounters.service_date END DESC,
+CASE WHEN @ProviderOrder = 'ASC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END ASC,
+CASE WHEN @ProviderOrder = 'DESC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END DESC

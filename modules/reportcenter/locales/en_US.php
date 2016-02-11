@@ -43,5 +43,6 @@ $LANG = array(
     'less_or_equal'                         => 'Less than or equal to',
     'not_equal'                             => 'Not equal',
     'remove_filter'                         => 'Remove Filter',
-    'sort'                                  => 'Sort'
+    'sort'                                  => 'Sort',
+    'select_provider'                       => 'Select provider'
 );

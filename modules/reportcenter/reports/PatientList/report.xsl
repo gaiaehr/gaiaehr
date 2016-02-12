@@ -66,7 +66,9 @@
                         <th class="report">Occupation</th>
                         <th class="report">Race</th>
                         <th class="report">Ethnicity</th>
-                        <th class="report">Allergy</th>
+                        <th class="report">Allergies</th>
+                        <th class="report">Problems</th>
+                        <th class="report">Medications</th>
                     </tr>
                     <xsl:choose>
                     <xsl:when test="count(records/record/title) > 0">
@@ -81,12 +83,14 @@
                                 <td class="report" style="text-align: center;"><xsl:value-of select="Race"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="Ethnicity"/></td>
                                 <td class="report" style="text-align: center;"><xsl:value-of select="allergy"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="problem_name"/></td>
+                                <td class="report" style="text-align: center;"><xsl:value-of select="medication_name"/></td>
                             </tr>
                         </xsl:for-each>
                     </xsl:when>
                     <xsl:otherwise>
                         <tr>
-                            <td colspan="9" style="text-align: center;">
+                            <td colspan="11" style="text-align: center;">
                                 <span>No records were found.</span>
                             </td>
                         </tr>

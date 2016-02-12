@@ -15,11 +15,13 @@ SELECT patient.*,
         Race.option_name as Race,
         Ethnicity.option_name as Ethnicity,
         CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) as ProviderName,
-        patient_allergies.allergy
+        patient_allergies.allergy,
+        patient_active_problems.problem_name,
+        patient_medications.medication_name
 FROM patient
 
 LEFT JOIN (
-SELECT distinct(pid) AS pid, code as problem_code
+SELECT distinct(pid) AS pid, code as problem_code, code_text as problem_name
 	FROM patient_active_problems
     WHERE CASE
 		WHEN @ProblemCode IS NOT NULL
@@ -55,7 +57,7 @@ SELECT distinct(pid) as pid, provider_uid, service_date
 ) encounters ON patient.pid = encounters.pid
 
 LEFT JOIN (
-SELECT distinct(pid) AS pid, RXCUI as medication_code
+SELECT distinct(pid) AS pid, RXCUI as medication_code, STR as medication_name
 	FROM patient_medications
     WHERE CASE
 		WHEN @MedicationCode IS NOT NULL
@@ -130,4 +132,8 @@ CASE WHEN @StartDateOrder = 'DESC' THEN encounters.service_date END DESC,
 CASE WHEN @ProviderOrder = 'ASC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END ASC,
 CASE WHEN @ProviderOrder = 'DESC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END DESC,
 CASE WHEN @AllergiesOrder = 'ASC' THEN patient_allergies.allergy END ASC,
-CASE WHEN @AllergiesOrder = 'DESC' THEN patient_allergies.allergy END DESC
+CASE WHEN @AllergiesOrder = 'DESC' THEN patient_allergies.allergy END DESC,
+CASE WHEN @ProblemsOrder = 'ASC' THEN patient_active_problems.problem_name END ASC,
+CASE WHEN @ProblemsOrder = 'DESC' THEN patient_active_problems.problem_name END DESC,
+CASE WHEN @MedicationsOrder = 'ASC' THEN patient_medications.medication_name END ASC,
+CASE WHEN @MedicationsOrder = 'DESC' THEN patient_medications.medication_name END DESC

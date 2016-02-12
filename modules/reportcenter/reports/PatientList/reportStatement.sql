@@ -14,7 +14,8 @@ SELECT patient.*,
         DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth,
         Race.option_name as Race,
         Ethnicity.option_name as Ethnicity,
-        CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) as ProviderName
+        CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) as ProviderName,
+        patient_allergies.allergy
 FROM patient
 
 LEFT JOIN (
@@ -65,7 +66,7 @@ SELECT distinct(pid) AS pid, RXCUI as medication_code
 ) patient_medications ON patient.pid = patient_medications.pid
 
 LEFT JOIN (
-SELECT distinct(pid) AS pid, allergy_code
+SELECT distinct(pid) AS pid, allergy_code, allergy
 	FROM patient_allergies
     WHERE CASE
 		WHEN @MedicationAllergyCode IS NOT NULL
@@ -127,4 +128,6 @@ ORDER BY
 CASE WHEN @StartDateOrder = 'ASC' THEN encounters.service_date END ASC,
 CASE WHEN @StartDateOrder = 'DESC' THEN encounters.service_date END DESC,
 CASE WHEN @ProviderOrder = 'ASC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END ASC,
-CASE WHEN @ProviderOrder = 'DESC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END DESC
+CASE WHEN @ProviderOrder = 'DESC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END DESC,
+CASE WHEN @AllergiesOrder = 'ASC' THEN patient_allergies.allergy END ASC,
+CASE WHEN @AllergiesOrder = 'DESC' THEN patient_allergies.allergy END DESC

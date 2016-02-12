@@ -5,7 +5,7 @@
   "version":"0.1",
   "width": 1024,
   "height": 900,
-  "filterHeight": 150,
+  "filterHeight": 130,
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Enable a user to electronically and dynamically select, sort, access, and create patient lists by: date and time; and based on each one and at least one combinations.",
   "dir":"reportcenter/reports/PatientList",

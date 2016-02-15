@@ -92,23 +92,23 @@ ini_set('display_errors', 'On');
 $LogPath = ROOT.'/sites/'.$site.'/log/';
 $LogFile = 'error_log.txt';
 // Function to create the log file.
-$makeLog = function($LogFile){
-    touch($LogFile);
-    chmod($LogFile, 777);
-};
+//$makeLog = function($LogFile){
+//    touch($LogFile);
+//    chmod($LogFile, 777);
+//};
 // Check the directory first.
-if(!file_exists($LogPath))
-{
-    mkdir($LogPath, 777, true);
-    $makeLog($LogPath.'/'.$LogFile);
-}
+//if(!file_exists($LogPath))
+//{
+//    mkdir($LogPath, 777, true);
+//    $makeLog($LogPath.'/'.$LogFile);
+//}
 // Check the log file.
-if(!file_exists($LogFile.'/'.$LogFile)) $makeLog($LogPath.'/'.$LogFile);
-if(is_writable($LogFile.'/'.$LogFile)) ini_set('error_log', $LogFile);
-
-if(!isset($_SESSION['styles'])){
-	$_SESSION['styles'] = [];
-}
+//if(!file_exists($LogFile.'/'.$LogFile)) $makeLog($LogPath.'/'.$LogFile);
+//if(is_writable($LogFile.'/'.$LogFile)) ini_set('error_log', $LogFile);
+//
+//if(!isset($_SESSION['styles'])){
+//	$_SESSION['styles'] = [];
+//}
 
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');

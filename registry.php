@@ -103,7 +103,7 @@ if(!file_exists($LogPath))
 }
 // Check the log file.
 if(!file_exists($LogFile.'/'.$LogFile)) $makeLog($LogPath.'/'.$LogFile);
-if(is_writable($LogFile.'/'.$LogFile)) ini_set($LogFile);
+if(is_writable($LogFile.'/'.$LogFile)) ini_set('error_log', $LogFile);
 
 if(!isset($_SESSION['styles'])){
 	$_SESSION['styles'] = [];

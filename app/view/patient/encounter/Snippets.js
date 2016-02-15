@@ -52,6 +52,11 @@ Ext.define('App.view.patient.encounter.Snippets', {
 	],
 	buttons:[
 		{
+			text: _('delete'),
+			itemId: 'SnippetDeleteBtn'
+		},
+		'->',
+		{
 			text: _('cancel'),
 			itemId: 'SnippetCancelBtn'
 		},

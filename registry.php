@@ -91,14 +91,15 @@ error_reporting(-1);
 ini_set('display_errors', 'On');
 $LogPath = ROOT.'/sites/'.$site.'/log/';
 $LogFile = 'error_log.txt';
+// Function to create the log file.
 $makeLog = function($LogFile){
     touch($LogFile);
-    chmod($LogFile, 775);
+    chmod($LogFile, 777);
 };
 // Check the directory first.
 if(!file_exists($LogPath))
 {
-    mkdir($LogPath);
+    mkdir($LogPath, 777, true);
     $makeLog($LogPath.'/'.$LogFile);
 }
 // Check the log file.

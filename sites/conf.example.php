@@ -17,23 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Enable the error and also set the ROOT directory for
- * the error log. But checks if the files exists and is
- * writable.
- *
- * NOTE: This should be part of Matcha::Connect
- */
-error_reporting(-1);
-ini_set('display_errors', 'On');
-if(file_exists(ROOT.'/sites/#sitename#/log/error_log.txt'))
-{
-    if(is_writable(ROOT.'/sites/#sitename#/log/error_log.txt'))
-    {
-        ini_set('error_log', ROOT.'/sites/#sitename#/log/error_log.txt');
-    }
-}
-
 if(!defined('site_db_type')) define('site_db_type', 'mysql');
 if(!defined('site_db_host')) define('site_db_host', '#host#');
 if(!defined('site_db_port')) define('site_db_port', '#port#');

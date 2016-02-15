@@ -89,13 +89,21 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
  */
 error_reporting(-1);
 ini_set('display_errors', 'On');
-if(file_exists(ROOT.'/sites/'.$site.'/log/error_log.txt'))
+$LogPath = ROOT.'/sites/'.$site.'/log/';
+$LogFile = 'error_log.txt';
+$makeLog = function($LogFile){
+    touch($LogFile);
+    chmod($LogFile, 775);
+};
+// Check the directory first.
+if(!file_exists($LogPath))
 {
-    if(is_writable(ROOT.'/sites/'.$site.'/log/error_log.txt'))
-    {
-        ini_set('error_log', ROOT.'/sites/'.$site.'/log/error_log.txt');
-    }
+    mkdir($LogPath);
+    $makeLog($LogPath.'/'.$LogFile);
 }
+// Check the log file.
+if(!file_exists($LogFile.'/'.$LogFile)) $makeLog($LogPath.'/'.$LogFile);
+if(is_writable($LogFile.'/'.$LogFile)) ini_set($LogFile);
 
 if(!isset($_SESSION['styles'])){
 	$_SESSION['styles'] = [];

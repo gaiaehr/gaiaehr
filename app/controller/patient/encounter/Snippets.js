@@ -21,6 +21,10 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 			selector: '#SnippetFormTextField'
 		},
 		{
+			ref: 'SnippetDeleteBtn',
+			selector: '#SnippetDeleteBtn'
+		},
+		{
 			ref: 'SnippetCancelBtn',
 			selector: '#SnippetCancelBtn'
 		},
@@ -40,6 +44,9 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 		var me = this;
 
 		this.control({
+			'#SnippetDeleteBtn': {
+				click: me.onSnippetDeleteBtnClick
+			},
 			'#SnippetSaveBtn': {
 				click: me.onSnippetSaveBtnClick
 			},
@@ -50,6 +57,21 @@ Ext.define('App.controller.patient.encounter.Snippets', {
 				click: me.onSnippetCategoryAddBtnClick
 			}
 		});
+	},
+
+	onSnippetDeleteBtnClick: function(){
+		var me = this,
+			form = me.getSnippetForm().getForm(),
+			record = form.getRecord();
+
+		if(record.childNodes.length > 0){
+			app.msg(_('oops'),_('snippet_delete_child_error'), true);
+			return;
+		}
+
+		record.remove(true);
+		form.reset();
+		me.getSnippetWindow().close()
 	},
 
 	onSnippetAddBtnClick: function(grid, rowIndex, colIndex, actionItem, event, record){

@@ -54,15 +54,7 @@ class ReportGenerator
     {
         try
         {
-            if($_REQUEST['site'])
-            {
-                $this->site = $_REQUEST['site'];
-            }
-            else
-            {
-                $this->site = $site;
-            }
-
+            $this->site = ($_REQUEST['site'] ? $_REQUEST['site'] : $site);
             if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
             require_once('../../../registry.php');
             require_once("../../../sites/$this->site/conf.php");
@@ -148,7 +140,7 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 foreach($this->request as $field)
                 {
-                    $PrepareField[':' . $field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $PrepareField[':'.$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
                     $PrepareField[':' . $field['name']]['value'] = $field['value'];
                 }
 

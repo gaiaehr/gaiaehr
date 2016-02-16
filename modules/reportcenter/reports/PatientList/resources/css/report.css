@@ -73,3 +73,7 @@ table.report td
     display: block;
     float: right;
 }
+.sort:hover
+{
+    cursor:crosshair;
+}

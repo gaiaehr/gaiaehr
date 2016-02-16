@@ -75,5 +75,6 @@ table.report td
 }
 .sort:hover
 {
-    cursor:crosshair;
+    cursor:hand;
+    cursor:pointer;
 }

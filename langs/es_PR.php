@@ -1642,5 +1642,6 @@ $LANG = array(
     'radiology_search'                      => 'Radiology search',
     'allergy_search'                        => 'Allergy search',
     'void_comment'                          => 'Comentario para inválidar',
-    'processing'                            => 'Procesando'
+    'processing'                            => 'Procesando',
+    'snippet_delete_child_error'            => 'Unable To Remove, Please Remove Child Templates'
 );

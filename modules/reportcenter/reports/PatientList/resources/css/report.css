@@ -61,3 +61,29 @@ table.report td
     border-bottom: 1px;
     border-bottom: 1px dotted #A2B6C4;
 }
+
+.sort
+{
+    width: 16px;
+    height: 16px;
+    background: url(../img/sort-asc.png) no-repeat;
+    margin: 1px;
+    display: block;
+    float: right;
+}
+
+.sortDESC
+{
+    width: 16px;
+    height: 16px;
+    background: url(../img/sort-desc.png) no-repeat;
+    margin: 1px;
+    display: block;
+    float: right;
+
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}

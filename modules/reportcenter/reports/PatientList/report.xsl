@@ -4,6 +4,7 @@
         <html>
             <HEAD>
                 <link rel="stylesheet" type="text/css" href="modules/reportcenter/reports/PatientList/resources/css/report.css" />
+                <script type="text/javascript" src="modules/reportcenter/reports/PatientList/resources/js/post.js"></script>
             </HEAD>
             <body>
                 <h1>170.314 (a)(14) Patient List</h1>
@@ -60,47 +61,47 @@
                     <tr>
                         <th class="report" style="text-align: left;">
                             Provider
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report" style="text-align: left;">
                             Patient
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Gender
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             DOB
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Marital Status
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Occupation
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Race
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Ethnicity
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Allergies
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Problems
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                         <th class="report">
                             Medications
-                            <span class="sort"></span>
+                            <span class="sort" onclick=""></span>
                         </th>
                     </tr>
                     <xsl:choose>

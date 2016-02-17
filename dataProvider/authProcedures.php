@@ -21,18 +21,6 @@ include_once(ROOT . '/classes/Sessions.php');
 include_once(ROOT . '/classes/Crypt.php');
 include_once(ROOT . '/dataProvider/Patient.php');
 
-/**
- * set_error_handler it's a PHP function to overwrite the errors that PHP spit out, in costume way
- * TODO: This is a temporary fix, this function should be part of Match::Connect
- */
-set_error_handler(function($errno, $errstr, $errfile, $errline, array $errcontext) {
-	// error was suppressed with the @-operator
-	if (0 === error_reporting()) {
-		return false;
-	}
-	throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-});
-
 class authProcedures {
 
 	private $session;
@@ -46,15 +34,14 @@ class authProcedures {
 	 * @return int
 	 */
 	public function login(stdClass $params){
-		error_reporting(E_ALL);
-		//-------------------------------------------
+		error_reporting(-1);
+
 		// Check that the username do not pass
 		// the maximum limit of the field.
 		//
 		// NOTE:
 		// If this condition is met, the user did not
 		// use the logon form. Possible hack.
-		//-------------------------------------------
 		if(strlen($params->authUser) >= 26){
 			return array(
                 'success' => false,
@@ -62,14 +49,13 @@ class authProcedures {
                 'message' => 'Possible hack, please use the Logon Screen.'
             );
 		}
-		//-------------------------------------------
+
 		// Check that the username do not pass
 		// the maximum limit of the field.
 		//
 		// NOTE:
 		// If this condition is met, the user did not
 		// use the logon form. Possible hack.
-		//-------------------------------------------
 		if(strlen($params->authPass) >= 15){
 			return array(
                 'success' => false,
@@ -77,9 +63,7 @@ class authProcedures {
                 'message' => 'Possible hack, please use the Logon Screen.'
             );
 		}
-		//-------------------------------------------
 		// Simple check username
-		//-------------------------------------------
 		if(!$params->authUser){
 			return array(
                 'success' => false,
@@ -87,9 +71,7 @@ class authProcedures {
                 'message' => 'The username field can not be in blank. Try again.'
             );
 		}
-		//-------------------------------------------
 		// Simple check password
-		//-------------------------------------------
 		if(!$params->authPass){
 			return array(
                 'success' => false,
@@ -97,16 +79,12 @@ class authProcedures {
                 'message' => 'The password field can not be in blank. Try again.'
             );
 		}
-		//-------------------------------------------
 		// remove empty spaces single and double quotes from username and password
-		//-------------------------------------------
 		$params->authUser = trim(str_replace(array('\'', '"'), '', $params->authUser));
 		$params->authPass = trim(str_replace(array('\'', '"'), '', $params->authPass));
 
-		//-------------------------------------------
 		// Username & password match
 		// Only bring authorized and active users.
-		//-------------------------------------------
 		$u = MatchaModel::setSenchaModel('App.model.administration.User');
 		$user = $u->load(
 			array(
@@ -135,21 +113,19 @@ class authProcedures {
                 'message' => 'The username or password you provided is invalid.'
             );
 		} else{
-			//-------------------------------------------
 			// Change some User related variables and go
-			//-------------------------------------------
 			$_SESSION['user']['name'] = trim($user['title'] . ' ' . $user['lname'] . ', ' . $user['fname'] . ' ' . $user['mname']);
 			$_SESSION['user']['id'] = $user['id'];
 			$_SESSION['user']['email'] = $user['email'];
 			$_SESSION['user']['facility'] = (!isset($params->facility) || $params->facility == 0) ? $user['facility_id'] : $params->facility;
 			$_SESSION['user']['localization'] = isset($params->lang) ? $params->lang : 'en_US';
 			$_SESSION['user']['npi'] = $user['npi'] ;
-			$_SESSION['user']['site'] = site_name;
+			$_SESSION['user']['site'] = $params->site;
 			$_SESSION['user']['auth'] = true;
 			$_SESSION['site']['localization'] = $_SESSION['user']['localization'];
 			$_SESSION['site']['checkInMode'] = isset($params->checkInMode) ? $params->checkInMode: false;
 			$_SESSION['timeout'] = time();
-			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":' . $user['id'] . ',"sid":' . $this->session->loginSession() . ',"site":"' . site_name . '"}');
+			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":' . $user['id'] . ',"sid":' . $this->session->loginSession() . ',"site":"' . $params->site . '"}');
 			$_SESSION['inactive']['timeout'] = time();
 
 			unset($db);

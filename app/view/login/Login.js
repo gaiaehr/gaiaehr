@@ -25,7 +25,8 @@ Ext.define('App.view.login.Login', {
 	],
 
 	initComponent: function(){
-		var me = this;
+		var me = this,
+            windowItems;
 		me.currSite = null;
 		me.siteLang = window['lang']['lang_code'];
 
@@ -191,7 +192,7 @@ Ext.define('App.view.login.Login', {
 			}]);
 		}
 
-		var windowItems = [
+		windowItems = [
 			{
 				xtype: 'box',
 				width: 483,

@@ -141,15 +141,15 @@ class authProcedures {
 			$_SESSION['user']['name'] = trim($user['title'] . ' ' . $user['lname'] . ', ' . $user['fname'] . ' ' . $user['mname']);
 			$_SESSION['user']['id'] = $user['id'];
 			$_SESSION['user']['email'] = $user['email'];
-			$_SESSION['user']['facility'] = ($params->facility == 0 ? $user['facility_id'] : $params->facility);
-			$_SESSION['user']['localization'] = $params->lang;
+			$_SESSION['user']['facility'] = (!isset($params->facility) || $params->facility == 0) ? $user['facility_id'] : $params->facility;
+			$_SESSION['user']['localization'] = isset($params->lang) ? $params->lang : 'en_US';
 			$_SESSION['user']['npi'] = $user['npi'] ;
-			$_SESSION['user']['site'] = $params->site;
+			$_SESSION['user']['site'] = site_name;
 			$_SESSION['user']['auth'] = true;
-			$_SESSION['site']['localization'] = $params->lang;
-			$_SESSION['site']['checkInMode'] = $params->checkInMode;
+			$_SESSION['site']['localization'] = $_SESSION['user']['localization'];
+			$_SESSION['site']['checkInMode'] = isset($params->checkInMode) ? $params->checkInMode: false;
 			$_SESSION['timeout'] = time();
-			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":' . $user['id'] . ',"sid":' . $this->session->loginSession() . ',"site":"' . $params->site . '"}');
+			$_SESSION['user']['token'] = MatchaUtils::__encrypt('{"uid":' . $user['id'] . ',"sid":' . $this->session->loginSession() . ',"site":"' . site_name . '"}');
 			$_SESSION['inactive']['timeout'] = time();
 
 			unset($db);
@@ -164,7 +164,7 @@ class authProcedures {
 					'site' => $_SESSION['user']['site'],
 					'email' => $_SESSION['user']['email'],
 					'facility' => $_SESSION['user']['facility'],
-				    'localization' => $params->lang
+				    'localization' => $_SESSION['user']['localization']
 				)
 			);
 		}

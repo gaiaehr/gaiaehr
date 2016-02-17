@@ -50,6 +50,7 @@ table.report th
     line-height: 10px;
     border-bottom: 1px solid #A2B6C4;
     padding: 5px;
+    vertical-align: middle;
 }
 
 table.report td
@@ -60,4 +61,20 @@ table.report td
     padding: 5px;
     border-bottom: 1px;
     border-bottom: 1px dotted #A2B6C4;
+}
+
+.sort
+{
+    width: 8px;
+    height: 8px;
+    background: url(../img/sort.svg) no-repeat;
+    background-size: 8px 8px;
+    margin: 1px;
+    display: block;
+    float: right;
+}
+.sort:hover
+{
+    cursor:hand;
+    cursor:pointer;
 }

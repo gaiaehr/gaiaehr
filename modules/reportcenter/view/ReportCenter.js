@@ -69,12 +69,15 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     xtype: 'uxiframe',
+                    shadow: 'drop',
+                    bodyPadding: 5,
                     autoScroll: true,
                     itemId: 'reportRender',
                     baseCls: 'x-panel-body',
                     flex: 1,
                     split: true,
-                    border: true
+                    border: true,
+                    frame: true
                 }
             ],
             dockedItems: [{

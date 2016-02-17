@@ -4,6 +4,7 @@
         <html>
             <HEAD>
                 <link rel="stylesheet" type="text/css" href="modules/reportcenter/reports/PatientList/resources/css/report.css" />
+                <script type="text/javascript" src="modules/reportcenter/reports/PatientList/resources/js/post.js"></script>
             </HEAD>
             <body>
                 <h1>170.314 (a)(14) Patient List</h1>
@@ -58,33 +59,91 @@
 
                 <table class="report" width="100%">
                     <tr>
-                        <th class="report" style="text-align: left;">Provider</th>
-                        <th class="report" style="text-align: left;">Patient</th>
-                        <th class="report">Gender</th>
-                        <th class="report">DOB</th>
-                        <th class="report">Marital Status</th>
-                        <th class="report">Occupation</th>
-                        <th class="report">Race</th>
-                        <th class="report">Ethnicity</th>
-                        <th class="report">Allergies</th>
-                        <th class="report">Problems</th>
-                        <th class="report">Medications</th>
+                        <th class="report" style="text-align: left;">
+                            Provider
+                            <span class="sort" onclick="alert('Hello')"></span>
+                        </th>
+                        <th class="report" style="text-align: left;">
+                            Patient
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Gender
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            DOB
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Marital Status
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Occupation
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Race
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Ethnicity
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Allergies
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Problems
+                            <span class="sort" onclick=""></span>
+                        </th>
+                        <th class="report">
+                            Medications
+                            <span class="sort" onclick=""></span>
+                        </th>
                     </tr>
                     <xsl:choose>
                     <xsl:when test="count(records/record/title) > 0">
                         <xsl:for-each select="records/record">
                             <tr>
-                                <td class="report" style="text-align: left;"><xsl:value-of select="ProviderName"/></td>
-                                <td class="report" style="text-align: left;"><xsl:value-of select="title"/>&#160;<xsl:value-of select="fname"/>&#160;<xsl:value-of select="mname"/>&#160;<xsl:value-of select="lname"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="sex"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="DateOfBirth"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="marital_status"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="occupation"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="Race"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="Ethnicity"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="allergy"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="problem_name"/></td>
-                                <td class="report" style="text-align: center;"><xsl:value-of select="medication_name"/></td>
+                                <td class="report" style="text-align: left;">
+                                    <xsl:value-of select="ProviderName"/>
+                                </td>
+                                <td class="report" style="text-align: left;">
+                                    <xsl:value-of select="title"/>&#160;
+                                    <xsl:value-of select="fname"/>&#160;
+                                    <xsl:value-of select="mname"/>&#160;
+                                    <xsl:value-of select="lname"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="sex"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="DateOfBirth"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="marital_status"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="occupation"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="Race"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="Ethnicity"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="allergy"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="problem_name"/>
+                                </td>
+                                <td class="report" style="text-align: center;">
+                                    <xsl:value-of select="medication_name"/>
+                                </td>
                             </tr>
                         </xsl:for-each>
                     </xsl:when>

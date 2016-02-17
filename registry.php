@@ -88,26 +88,26 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
  * NOTE: This should be part of Matcha::Connect
  */
 error_reporting(-1);
-ini_set('display_errors', 'On');
-$LogPath = ROOT.'/sites/'.$site.'/log/';
-$LogFile = 'error_log.txt';
-$makeLog = function($LogFile){
-    touch($LogFile);
-    chmod($LogFile, 775);
-};
+ini_set('display_errors', 1);
+$logPath = ROOT.'/sites/'.$site.'/log/';
+$logFile = 'error_log.txt';
+$oldUmask = umask(0);
+clearstatcache();
 // Check the directory first.
-if(!file_exists($LogPath))
-{
-    mkdir($LogPath);
-    $makeLog($LogPath.'/'.$LogFile);
-}
+if(!file_exists($logPath)) mkdir($logPath, 0775, true);
 // Check the log file.
-if(!file_exists($LogFile.'/'.$LogFile)) $makeLog($LogPath.'/'.$LogFile);
-if(is_writable($LogFile.'/'.$LogFile)) ini_set($LogFile);
-
-if(!isset($_SESSION['styles'])){
-	$_SESSION['styles'] = [];
+if(!file_exists($logPath.$logFile))
+{
+    touch($logPath.$logFile);
+    chmod($logPath.$logFile, 0775);
 }
+if(is_writable($logPath.$logFile)) ini_set('error_log', $logPath.$logFile);
+umask($oldUmask);
+
+//
+//if(!isset($_SESSION['styles'])){
+//	$_SESSION['styles'] = [];
+//}
 
 if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 	include_once(ROOT. '/sites/' . $site . '/conf.php');

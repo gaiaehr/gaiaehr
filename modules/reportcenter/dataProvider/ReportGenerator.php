@@ -54,15 +54,7 @@ class ReportGenerator
     {
         try
         {
-            if($_REQUEST['site'])
-            {
-                $this->site = $_REQUEST['site'];
-            }
-            else
-            {
-                $this->site = $site;
-            }
-
+            $this->site = ($_REQUEST['site'] ? $_REQUEST['site'] : $site);
             if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
             require_once('../../../registry.php');
             require_once("../../../sites/$this->site/conf.php");
@@ -148,7 +140,7 @@ class ReportGenerator
                 // This because we need to do a POST-PREPARE the SQL statement
                 foreach($this->request as $field)
                 {
-                    $PrepareField[':' . $field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $PrepareField[':'.$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
                     $PrepareField[':' . $field['name']]['value'] = $field['value'];
                 }
 
@@ -271,7 +263,9 @@ switch($rg->format)
         header('Content-Type: application/xslt+xml');
         header('Content-Disposition: inline; filename='.strtolower($rg->reportDir).'-'.$Stamp.'".html"');
         $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
+
         echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
+
         break;
     case 'pdf':
         require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
@@ -280,7 +274,11 @@ switch($rg->format)
         $html2pdf->pdf->SetAuthor('GaiaEHR');
         $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
         $PDFDocument = base64_encode($html2pdf->Output(strtolower($rg->reportDir).'-'.$Stamp.'.pdf', "S"));
-        echo '<object data="data:application/pdf;base64,' . $PDFDocument . '" type="application/pdf" width="100%" height="100%"></object>';
+
+        echo '<object data="data:application/pdf;base64,'.
+            $PDFDocument.
+            '" type="application/pdf" width="100%" height="100%"></object>';
+
         break;
 }
 

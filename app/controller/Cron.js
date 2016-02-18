@@ -1,7 +1,8 @@
 Ext.define('App.controller.Cron', {
     extend: 'Ext.app.Controller',
 
-	cronTaskInterval: 10, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+	cronTaskInterval: 10,
 
 	fns:[
 		'app.getPatientsInPoolArea()',
@@ -10,7 +11,8 @@ Ext.define('App.controller.Cron', {
 	],
 
 	init: function() {
-		var me = this;
+		var me = this,
+            i;
 
 		/**
 		 * TaskScheduler
@@ -21,7 +23,7 @@ Ext.define('App.controller.Cron', {
 				/**
 				 * loop for functions
 				 */
-				for(var i=0; i < me.fns.length; i++){
+				for(i=0; i < me.fns.length; i++){
 					eval(me.fns[i]);
 				}
 			},

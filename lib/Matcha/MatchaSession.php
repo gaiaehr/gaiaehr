@@ -70,9 +70,10 @@ class MatchaSession extends Matcha
         }
     }
 
-    public function setValue($Parameter){
+    public function setValue($Parameter, $Value){
         try
         {
+            $_SESSION[$Parameter] = $Value;
         }
         catch(PDOException $e)
         {
@@ -93,10 +94,10 @@ class MatchaSession extends Matcha
         }
     }
 
-    public function getAllValues($Parameter){
+    public function getAllValues(){
         try
         {
-
+            return $_SESSION;
         }
         catch(PDOException $e)
         {

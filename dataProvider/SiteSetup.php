@@ -384,7 +384,7 @@ class SiteSetup {
                         return ['success' => true];
                     } else {
                         FileManager::rmdir_recursive("sites/$params->siteId");
-                        throw new Exception($this->conn->errorInfo());
+                        throw new Exception($this->conn->errorInfo()[2]);
                     }
 
                 } else {

@@ -89,21 +89,20 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
  */
 error_reporting(-1);
 ini_set('display_errors', 1);
-$logPath = ROOT.'/sites/'.$site.'/log/';
-$logFile = 'error_log.txt';
-$oldUmask = umask(0);
-clearstatcache();
-// Check the directory first.
-if(!file_exists($logPath)) mkdir($logPath, 0775, true);
-// Check the log file.
-if(!file_exists($logPath.$logFile))
-{
-    touch($logPath.$logFile);
-    chmod($logPath.$logFile, 0775);
-}
-if(is_writable($logPath.$logFile)) ini_set('error_log', $logPath.$logFile);
-umask($oldUmask);
 
+if(file_exists(ROOT. '/sites/' . $site )){
+	$logPath = ROOT . '/sites/' . $site . '/log/';
+	$logFile = 'error_log.txt';
+	$oldUmask = umask(0);
+	clearstatcache();
+	if(!file_exists($logPath . $logFile)){
+		touch($logPath . $logFile);
+		chmod($logPath . $logFile, 0775);
+	}
+	if(is_writable($logPath . $logFile))
+		ini_set('error_log', $logPath . $logFile);
+	umask($oldUmask);
+}
 //
 //if(!isset($_SESSION['styles'])){
 //	$_SESSION['styles'] = [];

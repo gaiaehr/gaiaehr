@@ -30,6 +30,7 @@ class SiteSetup {
 	function __construct() {
 		chdir(ROOT);
         error_reporting(-1);
+		$olSMASK = umask(0);
         ini_set('display_errors', 'On');
         if(file_exists(ROOT.'/log/install_error_log.txt'))
         {
@@ -38,6 +39,7 @@ class SiteSetup {
                 ini_set('error_log', ROOT.'/log/install_error_log.txt');
             }
         }
+		umask($olSMASK);
 	}
 
 	/*

@@ -90,7 +90,8 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-if(file_exists(ROOT. '/sites/' . $site )){
+//error_log($site);
+if(isset($site) && !empty($site)){
 	$logPath = ROOT . '/sites/' . $site . '/log/';
 	$logFile = 'error_log.txt';
 	$oldUmask = umask(0);

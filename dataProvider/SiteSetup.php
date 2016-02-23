@@ -321,9 +321,11 @@ class SiteSetup {
     private function createDirectory($dirPath){
         try
         {
+	        $oldMask = umask(0);
             if(!file_exists($dirPath)) mkdir($dirPath, 0755, true);
             if(!is_writable($dirPath)) chmod($dirPath, 0755);
             return true;
+	        umask($oldMask);
         }
         catch(Exception $Error)
         {
@@ -343,7 +345,9 @@ class SiteSetup {
     {
         try
         {
+	        $oldMask = umask(0);
             if(!file_exists($file)) touch($file);
+	        umask($oldMask);
             return true;
         }
         catch(Exception $Error)

@@ -24,7 +24,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta content="utf-8" http-equiv="encoding">
     <title>GaiaEHR Logon Screen</title>
-    <script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js"></script>
+    <script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js" charset="utf-8"></script>
     <link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
     <link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
     <link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
@@ -37,8 +37,8 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
             site = '<?php print $site ?>',
             localization = '<?php print site_default_localization ?>';
     </script>
-    <script src="JSrouter.php?site=<?php print $site ?>"></script>
-    <script src="data/api.php?site=<?php print $site ?>"></script>
+    <script src="JSrouter.php?site=<?php print $site ?>" charset="utf-8"></script>
+    <script src="data/api.php?site=<?php print $site ?>" charset="utf-8"></script>
     <script type="text/javascript">
 
         window.i18n = window._ = function(key){

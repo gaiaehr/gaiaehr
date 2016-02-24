@@ -21,6 +21,11 @@
 // TODO: This ROUTER much be part of Matcha::Connect to handle request from the client,
 // TODO: this way the Matcha::Connect is in control
 
+header('Content-type: text/html; charset=utf-8');
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+header("Pragma: no-cache"); // HTTP 1.0.
+header("Expires: 0"); // Proxies.
+
 session_cache_limiter('private');
 session_cache_expire(1);
 session_regenerate_id(false);
@@ -184,22 +189,6 @@ function doRpc($cdata) {
 	return $r;
 }
 
-function utf8_encode_deep(&$input) {
-	if (is_string($input)) {
-		$input = utf8_encode($input);
-	} else if (is_array($input)) {
-		foreach ($input as &$value) {
-			utf8_encode_deep($value);
-		}
-		unset($value);
-	} else if (is_object($input)) {
-		$vars = array_keys(get_object_vars($input));
-		foreach ($vars as $var) {
-			utf8_encode_deep($input->$var);
-		}
-	}
-}
-
 $response = null;
 if(is_array($data)){
 	$response = array();
@@ -210,18 +199,16 @@ if(is_array($data)){
 	$response = doRpc($data);
 }
 
-utf8_encode_deep($response);
-
 if($isForm && $isUpload){
 	print '<html><body><textarea>';
-	$json = htmlentities(json_encode($response), ENT_NOQUOTES | ENT_SUBSTITUTE , 'UTF-8');
-	$json  = mb_convert_encoding($json, 'UTF-8', 'UTF-8');
+	$json = htmlentities(json_encode($json), ENT_NOQUOTES | ENT_SUBSTITUTE , 'UTF-8');
+    $json = mb_convert_encoding($json, 'UTF-8');
 	print $json;
 	print '</textarea></body></html>';
 } else {
 	header('Content-Type: application/json; charset=utf-8');
 	$json = htmlentities(json_encode($response), ENT_NOQUOTES | ENT_SUBSTITUTE , 'UTF-8');
-	$json  = mb_convert_encoding($json, 'UTF-8', 'UTF-8');
+    $json = mb_convert_encoding($json, 'UTF-8');
 	print $json;
 }
 

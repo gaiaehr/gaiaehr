@@ -80,9 +80,9 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getReportWindow().insert(
             0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
         );
-        this.getReportWindow().setHeight(item.data.height);
-        this.getReportWindow().setWidth(item.data.width);
-        this.getReportFilterPanel().setHeight(item.data.filterHeight);
+        this.getReportWindow().setHeight(900);
+        this.getReportWindow().setWidth(1024);
+        this.getReportFilterPanel().setWidth(350);
         this.getReportWindow().show();
         this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.title + ' )');
     },

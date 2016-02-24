@@ -86,7 +86,8 @@ class i18nRouter
      * Need more translations go to: https://www.transifex.com/projects/p/gaiaehr/
      * @return array
      */
-	public static function getAvailableLanguages(){
+	public static function getAvailableLanguages()
+    {
 		$availableLanguages = array();
 		if($handle = opendir(ROOT . '/langs/')){
 			while(false !== ($entry = readdir($handle))){

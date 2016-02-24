@@ -56,10 +56,10 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             hidden: true,
             title: _('report_window'),
             layout: {
-                type:'vbox',
+                type:'hbox',
                 align: 'stretch'
             },
-            maximizable: false,
+            maximizable: true,
             maximized: false,
             minimizable: false,
             modal: false,
@@ -69,6 +69,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 },
                 {
                     xtype: 'uxiframe',
+                    region: 'center',
                     shadow: 'drop',
                     bodyPadding: 5,
                     autoScroll: true,

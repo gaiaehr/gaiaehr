@@ -59,14 +59,14 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
         <div id="msg-div"></div>
 
         <!-- Ext library -->
-		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js"></script>
+		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js" charset="utf-8"></script>
 
 		<!-- JSrouter and Ext.deirect API files -->
-		<script src="JSrouter.php?site=<?php print $site ?>"></script>
-		<script src="data/api.php?site=<?php print $site ?>"></script>
-		<script type="text/javascript" src="lib/ZeroClipboard/ZeroClipboard.js"></script>
-		<script type="text/javascript" src="lib/darkroomjs/vendor/fabric.js"></script>
-		<script type="text/javascript" src="lib/darkroomjs/build/js/darkroom.min.js"></script>
+		<script src="JSrouter.php?site=<?php print $site ?>" charset="utf-8"></script>
+		<script src="data/api.php?site=<?php print $site ?>" charset="utf-8"></script>
+		<script type="text/javascript" src="lib/ZeroClipboard/ZeroClipboard.js" charset="utf-8"></script>
+		<script type="text/javascript" src="lib/darkroomjs/vendor/fabric.js" charset="utf-8"></script>
+		<script type="text/javascript" src="lib/darkroomjs/build/js/darkroom.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
 

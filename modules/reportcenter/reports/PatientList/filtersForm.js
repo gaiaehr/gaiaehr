@@ -26,229 +26,192 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
         'Modules.reportcenter.reports.PatientList.ux.LiveRXNORMSearchReport'
     ],
     xtype: 'reportFilter',
-    region: 'north',
+    region: 'west',
     title: _('filters'),
     itemId: 'PatientList',
     collapsible: true,
-    height: 100,
     border: true,
     bodyPadding: 2,
-    layout: 'column',
+    layout: 'vbox',
+    defaults:{
+        layout: 'column',
+        border: false,
+        frame: false,
+        margin: 2,
+    },
     items:[
         {
-            xtype:'fieldset',
-            columnWidth: 0.5,
-            defaults: {anchor: '100%'},
-            layout: 'anchor',
-            border: false,
-            items :[
+            xtype: 'panel',
+            items:
+            [
                 {
-                    xtype: 'panel',
-                    layout: 'hbox',
-                    border: false,
-                    frame: false,
-                    margin: 2,
-                    items:
-                    [
-                        {
-                            xtype: 'datefield',
-                            name: 'begin_date',
-                            fieldLabel: _('begin_date'),
-                            allowBlank: false,
-                            format: g('date_display_format'),
-                            submitFormat: 'Y-m-d'
-                        },
-                        {
-                            xtype: 'combo',
-                            name: 'begin_sort',
-                            queryMode: 'local',
-                            width: 55,
-                            editable: false,
-                            emptyText: _('sort'),
-                            store: ['ASC', 'DESC']
-                        }
-                    ]
+                    xtype: 'datefield',
+                    name: 'begin_date',
+                    fieldLabel: _('begin_date'),
+                    allowBlank: false,
+                    format: g('date_display_format'),
+                    submitFormat: 'Y-m-d'
                 },
                 {
-                    xtype: 'panel',
-                    layout: 'hbox',
-                    border: false,
-                    frame: false,
-                    margin: 2,
-                    items:
-                    [
-                        {
-                            xtype: 'datefield',
-                            name: 'end_date',
-                            fieldLabel: _('end_date'),
-                            allowBlank: false,
-                            format: g('date_display_format'),
-                            submitFormat: 'Y-m-d'
-                        }
-                    ]
+                    xtype: 'combo',
+                    name: 'begin_sort',
+                    queryMode: 'local',
+                    width: 55,
+                    editable: false,
+                    emptyText: _('sort'),
+                    store: ['ASC', 'DESC']
                 }
             ]
         },
         {
-            xtype:'fieldset',
-            columnWidth: 0.5,
-            defaults: {anchor: '100%'},
-            layout: 'anchor',
-            border: false,
+            xtype: 'panel',
+            items:
+            [
+                {
+                    xtype: 'datefield',
+                    flex: 1,
+                    name: 'end_date',
+                    fieldLabel: _('end_date'),
+                    allowBlank: false,
+                    format: g('date_display_format'),
+                    submitFormat: 'Y-m-d'
+                }
+            ]
+        },
+        {
+            xtype: 'panel',
+            items:
+                [
+                    {
+                        xtype: 'activeproviderscombo',
+                        fieldLabel: _('provider'),
+                        name: 'provider',
+                        displayField: 'option_name',
+                        valueField: 'id',
+                        editable: true,
+                        hideLabel: true,
+                        flex: 1,
+                        emptyText: _('select_provider'),
+                        allowOnlyWhitespace: true,
+                        listeners: {
+                            select: function(combo, records, eOpts){
+                                var field = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
+                                field.setValue(records[0].data.option_name);
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'hiddenfield',
+                        itemId: 'provider_name',
+                        name: 'provider_name',
+                        value: ''
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'prov_sort',
+                        queryMode: 'local',
+                        width: 55,
+                        editable: false,
+                        emptyText: _('sort'),
+                        store: ['ASC', 'DESC']
+                    }
+                ]
+        },
+        {
+            xtype: 'panel',
+            items:
+                [
+                    {
+                        xtype: 'allergieslivesearch',
+                        hideLabel: true,
+                        name: 'allergy_code',
+                        displayField: 'allergy',
+                        valueField: 'allergy_code',
+                        flex: 1,
+                        listeners: {
+                            select: function(combo, records, eOpts){
+                                var field = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
+                                field.setValue(records[0].data.allergy);
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'hiddenfield',
+                        itemId: 'allergy_name',
+                        name: 'allergy_name',
+                        value: ''
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'allergies_sort',
+                        queryMode: 'local',
+                        width: 55,
+                        editable: false,
+                        emptyText: _('sort'),
+                        store: ['ASC', 'DESC']
+                    }
+                ]
+        },
+        {
+            xtype: 'panel',
             items:[
                 {
-                    xtype: 'panel',
-                    layout: 'hbox',
-                    border: false,
-                    frame: false,
-                    margin: 2,
-                    items:
-                    [
-                        {
-                            xtype: 'activeproviderscombo',
-                            fieldLabel: _('provider'),
-                            name: 'provider',
-                            displayField: 'option_name',
-                            valueField: 'id',
-                            editable: true,
-                            hideLabel: true,
-                            emptyText: _('select_provider'),
-                            allowOnlyWhitespace: true,
-                            flex: 1,
-                            listeners: {
-                                select: function(combo, records, eOpts){
-                                    var field = Ext.ComponentQuery.query('reportFilter #provider_name')[0];
-                                    field.setValue(records[0].data.option_name);
-                                }
-                            }
-                        },
-                        {
-                            xtype: 'hiddenfield',
-                            itemId: 'provider_name',
-                            name: 'provider_name',
-                            value: ''
-                        },
-                        {
-                            xtype: 'combo',
-                            name: 'prov_sort',
-                            queryMode: 'local',
-                            width: 55,
-                            editable: false,
-                            emptyText: _('sort'),
-                            store: ['ASC', 'DESC']
+                    xtype: 'snomedliveproblemsearch',
+                    hideLabel: true,
+                    name: 'problem_code',
+                    enableKeyEvents: true,
+                    value: null,
+                    flex: 1,
+                    listeners: {
+                        select: function(combo, records, eOpts){
+                            var field = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
+                            field.setValue(records[0].data.FullySpecifiedName);
                         }
-                    ]
+                    }
                 },
                 {
-                    xtype: 'panel',
-                    layout: 'hbox',
-                    border: false,
-                    frame: false,
-                    margin: 2,
-                    items:
-                    [
-                        {
-                            xtype: 'allergieslivesearch',
-                            hideLabel: true,
-                            name: 'allergy_code',
-                            displayField: 'allergy',
-                            valueField: 'allergy_code',
-                            flex: 1,
-                            listeners: {
-                                select: function(combo, records, eOpts){
-                                    var field = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
-                                    field.setValue(records[0].data.allergy);
-                                }
-                            }
-                        },
-                        {
-                            xtype: 'hiddenfield',
-                            itemId: 'allergy_name',
-                            name: 'allergy_name',
-                            value: ''
-                        },
-                        {
-                            xtype: 'combo',
-                            name: 'allergies_sort',
-                            queryMode: 'local',
-                            width: 55,
-                            editable: false,
-                            emptyText: _('sort'),
-                            store: ['ASC', 'DESC']
-                        }
-                    ]
+                    xtype: 'hiddenfield',
+                    itemId: 'problem_name',
+                    name: 'problem_name',
+                    value: ''
                 },
                 {
-                    xtype: 'panel',
-                    layout: 'hbox',
-                    border: false,
-                    frame: false,
-                    margin: 2,
-                    items:[
-                        {
-                            xtype: 'snomedliveproblemsearch',
-                            hideLabel: true,
-                            name: 'problem_code',
-                            enableKeyEvents: true,
-                            flex: 1,
-                            value: null,
-                            listeners: {
-                                select: function(combo, records, eOpts){
-                                    var field = Ext.ComponentQuery.query('reportFilter #problem_name')[0];
-                                    field.setValue(records[0].data.FullySpecifiedName);
-                                }
-                            }
-                        },
-                        {
-                            xtype: 'hiddenfield',
-                            itemId: 'problem_name',
-                            name: 'problem_name',
-                            value: ''
-                        },
-                        {
-                            xtype: 'combo',
-                            name: 'problems_sort',
-                            queryMode: 'local',
-                            width: 55,
-                            editable: false,
-                            emptyText: _('sort'),
-                            store: ['ASC', 'DESC']
-                        }
-                    ]
+                    xtype: 'combo',
+                    name: 'problems_sort',
+                    queryMode: 'local',
+                    width: 55,
+                    editable: false,
+                    emptyText: _('sort'),
+                    store: ['ASC', 'DESC']
+                }
+            ]
+        },
+        {
+            xtype: 'panel',
+            items:[
+                {
+                    xtype: 'rxnormlivetsearchreport',
+                    hideLabel: true,
+                    name: 'medication_code',
+                    enableKeyEvents: true,
+                    value: null,
+                    displayField: 'STR',
+                    valueField: 'RXCUI'
                 },
                 {
-                    xtype: 'panel',
-                    layout: 'hbox',
-                    border: false,
-                    frame: false,
-                    margin: 2,
-                    items:[
-                        {
-                            xtype: 'rxnormlivetsearchreport',
-                            hideLabel: true,
-                            name: 'medication_code',
-                            enableKeyEvents: true,
-                            flex: 1,
-                            value: null,
-                            displayField: 'STR',
-                            valueField: 'RXCUI'
-                        },
-                        {
-                            xtype: 'hiddenfield',
-                            itemId: 'medication_name',
-                            name: 'medication_name',
-                            value: ''
-                        },
-                        {
-                            xtype: 'combo',
-                            name: 'medications_sort',
-                            queryMode: 'local',
-                            width: 55,
-                            editable: false,
-                            emptyText: _('sort'),
-                            store: ['ASC', 'DESC']
-                        }
-                    ]
+                    xtype: 'hiddenfield',
+                    itemId: 'medication_name',
+                    name: 'medication_name',
+                    value: ''
+                },
+                {
+                    xtype: 'combo',
+                    name: 'medications_sort',
+                    queryMode: 'local',
+                    width: 55,
+                    editable: false,
+                    emptyText: _('sort'),
+                    store: ['ASC', 'DESC']
                 }
             ]
         }

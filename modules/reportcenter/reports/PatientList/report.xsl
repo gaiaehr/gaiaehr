@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:php="http://php.net/xsl">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:template match="/">
         <html>
             <HEAD>
@@ -61,7 +61,7 @@
                     <tr>
                         <th class="report" style="text-align: left;">
                             Provider
-                            <span class="sort" onclick="alert('Hello')"></span>
+                            <span class="sort" onclick="post('modules/reportcenter/dataProvider/ReportGenerator.php',['order', 'provider'])"></span>
                         </th>
                         <th class="report" style="text-align: left;">
                             Patient

@@ -79,6 +79,11 @@ Ext.define('App.controller.patient.ActiveProblems', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
+    /**
+     * TODO: We need to add some logic to very if there are a No Active Problem without End Date, if
+     * there are an No Active Problem with an expired End Date, we can add another one, or not allow the
+     * user to add any other.
+     */
     AddNoActiveProblemBtnClick: function(){
         var me = this,
             grid = me.getActiveProblemsGrid(),

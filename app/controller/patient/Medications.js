@@ -197,6 +197,11 @@ Ext.define('App.controller.patient.Medications', {
         record.set({administered_uid: ''});
     },
 
+    /**
+     * TODO: We need to add some logic to very if there are a No Active Medication without End Date, if
+     * there are an No Active Medication with an expired End Date, we can add another one, or not allow the
+     * user to add any other.
+     */
     onAddNoActiveMedicationBtnClick: function(){
         var me = this,
             grid = me.getPatientMedicationsGrid(),

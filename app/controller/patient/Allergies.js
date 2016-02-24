@@ -235,6 +235,11 @@ Ext.define('App.controller.patient.Allergies', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
+    /**
+     * TODO: We need to add some logic to very if there are a No Active Allergy without End Date, if
+     * there are an No Active Allergy with an expired End Date, we can add another one, or not allow the
+     * user to add any other.
+     */
     onAddNoActiveAllergyBtnClick: function(){
         var me = this,
             grid = me.getAllergiesGrid(),

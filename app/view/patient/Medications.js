@@ -196,6 +196,11 @@ Ext.define('App.view.patient.Medications', {
 	],
 	tbar: [
 		'->',
+        {
+            text: _('no_active_medication'),
+            itemId: 'addNoActiveMedicationBtn',
+            iconCls: 'icoAdd'
+        },
 		{
 			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',

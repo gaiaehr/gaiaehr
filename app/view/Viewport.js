@@ -413,7 +413,6 @@ Ext.define('App.view.Viewport', {
                 },
                 me.patientPoolArea = Ext.create('Ext.Panel', {
                     title: _('patient_pool_areas'),
-//                    layout: 'fit',
                     region: 'south',
 	                action:'patientPoolArea',
                     bodyPadding: 5,
@@ -423,7 +422,6 @@ Ext.define('App.view.Viewport', {
                     collapsible: true,
                     border: false,
 	                overflowY: 'auto',
-                    //                    overflowY: 'auto',
                     items: [
                         {
                             xtype: 'dataview',

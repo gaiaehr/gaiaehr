@@ -32,7 +32,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     collapsible: true,
     border: true,
     bodyPadding: 2,
-    layout: 'vbox',
+    split: true,
     defaults:{
         layout: 'column',
         border: false,
@@ -48,6 +48,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     xtype: 'datefield',
                     name: 'begin_date',
                     fieldLabel: _('begin_date'),
+                    labelWidth: 120,
                     allowBlank: false,
                     format: g('date_display_format'),
                     submitFormat: 'Y-m-d'
@@ -69,8 +70,8 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
             [
                 {
                     xtype: 'datefield',
-                    flex: 1,
                     name: 'end_date',
+                    labelWidth: 120,
                     fieldLabel: _('end_date'),
                     allowBlank: false,
                     format: g('date_display_format'),
@@ -90,7 +91,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         valueField: 'id',
                         editable: true,
                         hideLabel: true,
-                        flex: 1,
                         emptyText: _('select_provider'),
                         allowOnlyWhitespace: true,
                         listeners: {
@@ -127,7 +127,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         name: 'allergy_code',
                         displayField: 'allergy',
                         valueField: 'allergy_code',
-                        flex: 1,
                         listeners: {
                             select: function(combo, records, eOpts){
                                 var field = Ext.ComponentQuery.query('reportFilter #allergy_name')[0];
@@ -161,7 +160,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                     name: 'problem_code',
                     enableKeyEvents: true,
                     value: null,
-                    flex: 1,
                     listeners: {
                         select: function(combo, records, eOpts){
                             var field = Ext.ComponentQuery.query('reportFilter #problem_name')[0];

@@ -55,28 +55,21 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             closeAction: 'hide',
             hidden: true,
             title: _('report_window'),
-            layout: {
-                type:'hbox',
-                align: 'stretch'
-            },
+            layout: 'border',
             maximizable: true,
             maximized: false,
             minimizable: false,
             modal: false,
             items:[
                 {
-                    xtype: 'splitter'
-                },
-                {
                     xtype: 'uxiframe',
                     region: 'center',
-                    shadow: 'drop',
-                    bodyPadding: 5,
+                    split: true,
                     autoScroll: true,
+                    border: true,
+                    bodyPadding: 5,
                     itemId: 'reportRender',
                     baseCls: 'x-panel-body',
-                    flex: 1,
-                    split: true,
                     border: true,
                     frame: true
                 }

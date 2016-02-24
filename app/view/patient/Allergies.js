@@ -23,7 +23,6 @@ Ext.define('App.view.patient.Allergies', {
 		'App.ux.grid.RowFormEditing',
 		'App.ux.LiveRXNORMAllergySearch',
 		'App.ux.LiveAllergiesSearch',
-
 		'App.ux.combo.Allergies',
 		'App.ux.combo.AllergiesReaction',
 		'App.ux.combo.AllergiesTypes',
@@ -219,6 +218,11 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	tbar:[
 		'->',
+        {
+            text: _('no_active_allergy'),
+            itemId: 'addNoActiveAllergyBtn',
+            iconCls: 'icoAdd'
+        },
 		{
 			text: _('add_new'),
 			itemId: 'addAllergyBtn',

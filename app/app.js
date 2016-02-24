@@ -37539,7 +37539,8 @@ Ext.define('App.controller.AlwaysOnTop', {
 Ext.define('App.controller.Cron', {
     extend: 'Ext.app.Controller',
 
-	cronTaskInterval: 10, // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+    // in seconds - interval to run me.cronTask (check PHP session, refresh Patient Pool Areas, and PHP Cron Job)
+	cronTaskInterval: 10,
 
 	fns:[
 		'app.getPatientsInPoolArea()',
@@ -37548,7 +37549,8 @@ Ext.define('App.controller.Cron', {
 	],
 
 	init: function() {
-		var me = this;
+		var me = this,
+            i;
 
 		/**
 		 * TaskScheduler
@@ -37559,7 +37561,7 @@ Ext.define('App.controller.Cron', {
 				/**
 				 * loop for functions
 				 */
-				for(var i=0; i < me.fns.length; i++){
+				for(i=0; i < me.fns.length; i++){
 					eval(me.fns[i]);
 				}
 			},
@@ -37604,6 +37606,7 @@ Ext.define('App.controller.Cron', {
 	}
 
 });
+
 Ext.define('App.controller.DualScreen', {
     extend: 'Ext.app.Controller',
 	requires:[
@@ -38680,6 +38683,10 @@ Ext.define('App.controller.patient.ActiveProblems', {
 			ref: 'ActiveProblemLiveSearch',
 			selector: '#activeProblemLiveSearch'
 		},
+        {
+            ref: 'AddNoActiveProblemBtn',
+            selector: 'patientactiveproblemspanel #addNoActiveProblemBtn'
+        },
 		{
 			ref: 'AddActiveProblemBtn',
 			selector: 'patientactiveproblemspanel #addActiveProblemBtn'
@@ -38700,7 +38707,10 @@ Ext.define('App.controller.patient.ActiveProblems', {
 			},
 			'patientactiveproblemspanel #addActiveProblemBtn':{
 				click: me.onAddActiveProblemBtnClick
-			}
+			},
+            'patientactiveproblemspanel #addNoActiveProblemBtn':{
+                click: me.AddNoActiveProblemBtnClick
+            }
 		});
 	},
 
@@ -38721,6 +38731,31 @@ Ext.define('App.controller.patient.ActiveProblems', {
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
+
+    /**
+     * TODO: We need to add some logic to very if there are a No Active Problem without End Date, if
+     * there are an No Active Problem with an expired End Date, we can add another one, or not allow the
+     * user to add any other.
+     */
+    AddNoActiveProblemBtnClick: function(){
+        var me = this,
+            grid = me.getActiveProblemsGrid(),
+            store = grid.getStore();
+
+        grid.editingPlugin.cancelEdit();
+        store.insert(0, {
+            pid: app.patient.pid,
+            eid: app.patient.eid,
+            uid: app.user.id,
+            created_uid: app.user.id,
+            create_date: new Date(),
+            begin_date: new Date(),
+            code_text: _('no_active_problem'),
+            occurrence: 'Unknown or N/A',
+            status: 'Active'
+        });
+        store.sync();
+    },
 
 	onActiveProblemsGridActive:function(grid){
 		var store = grid.getStore();
@@ -38755,6 +38790,7 @@ Ext.define('App.controller.patient.ActiveProblems', {
 
 	}
 });
+
 Ext.define('App.controller.patient.AdvanceDirectives', {
 	extend: 'Ext.app.Controller',
 	requires: [
@@ -38837,6 +38873,11 @@ Ext.define('App.controller.patient.Allergies', {
 			ref: 'AddAllergyBtn',
 			selector: 'patientallergiespanel #addAllergyBtn'
 		},
+        {
+            ref: 'AddNoActiveAllergyBtn',
+            selector: 'patientallergiespanel #addNoActiveAllergyBtn'
+        },
+
 		{
 			ref: 'ReviewAllergiesBtn',
 			selector: 'patientallergiespanel #reviewAllergiesBtn'
@@ -38885,6 +38926,9 @@ Ext.define('App.controller.patient.Allergies', {
 			'patientallergiespanel #addAllergyBtn': {
 				click: me.onAddAllergyBtnClick
 			},
+            'patientallergiespanel #addNoActiveAllergyBtn':{
+                click: me.onAddNoActiveAllergyBtnClick
+            },
 			'patientallergiespanel #activeAllergyBtn': {
 				toggle: me.onActiveAllergyBtnToggle
 			},
@@ -38901,8 +38945,6 @@ Ext.define('App.controller.patient.Allergies', {
 			'#allergyLocationCombo': {
 				change: me.onAllergyLocationComboChange
 			},
-
-
 			'#allergySearchCombo': {
 				select: me.onAllergySearchComboSelect
 			},
@@ -39035,6 +39077,34 @@ Ext.define('App.controller.patient.Allergies', {
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
+
+    /**
+     * TODO: We need to add some logic to very if there are a No Active Allergy without End Date, if
+     * there are an No Active Allergy with an expired End Date, we can add another one, or not allow the
+     * user to add any other.
+     */
+    onAddNoActiveAllergyBtnClick: function(){
+        var me = this,
+            grid = me.getAllergiesGrid(),
+            store = grid.getStore();
+
+        grid.editingPlugin.cancelEdit();
+        store.insert(0, {
+            created_uid: app.user.id,
+            uid: app.user.id,
+            pid: app.patient.pid,
+            eid: app.patient.eid,
+            create_date: new Date(),
+            begin_date: new Date(),
+            allergy: _('no_active_allergy'),
+            status: 'Active',
+            severity: 'N/A',
+            reaction: 'N/A',
+            location: 'N/A',
+            type: 'N/A'
+        });
+        store.sync();
+    },
 
 	onActiveAllergyBtnToggle: function(btn, pressed){
 		var me = this,
@@ -41254,6 +41324,10 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationsGrid',
 			selector: '#patientMedicationsGrid'
 		},
+        {
+            ref: 'addNoActiveMedicationBtn',
+            selector: '#addNoActiveMedicationBtn'
+        },
 		{
 			ref: 'addPatientMedicationBtn',
 			selector: '#addPatientMedicationBtn'
@@ -41298,6 +41372,9 @@ Ext.define('App.controller.patient.Medications', {
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
+            '#addNoActiveMedicationBtn':{
+                click: me.onAddNoActiveMedicationBtnClick
+            },
 			'#addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
@@ -41414,6 +41491,29 @@ Ext.define('App.controller.patient.Medications', {
         record.set({mname: ''});
         record.set({title: ''});
         record.set({administered_uid: ''});
+    },
+
+    /**
+     * TODO: We need to add some logic to very if there are a No Active Medication without End Date, if
+     * there are an No Active Medication with an expired End Date, we can add another one, or not allow the
+     * user to add any other.
+     */
+    onAddNoActiveMedicationBtnClick: function(){
+        var me = this,
+            grid = me.getPatientMedicationsGrid(),
+            store = grid.getStore();
+
+        grid.editingPlugin.cancelEdit();
+        store.insert(0, {
+            pid: app.patient.pid,
+            eid: app.patient.eid,
+            uid: app.user.id,
+            created_uid: app.user.id,
+            create_date: new Date(),
+            begin_date: new Date(),
+            STR: _('no_active_medication')
+        });
+        store.sync();
     },
 
 	onAddPatientMedicationBtnClick: function(){
@@ -44718,6 +44818,11 @@ Ext.define('App.view.patient.Medications', {
 	],
 	tbar: [
 		'->',
+        {
+            text: _('no_active_medication'),
+            itemId: 'addNoActiveMedicationBtn',
+            iconCls: 'icoAdd'
+        },
 		{
 			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',
@@ -54043,6 +54148,11 @@ Ext.define('App.view.patient.ActiveProblems', {
 	}),
 	tbar: [
 		'->',
+        {
+            text: _('no_active_problem'),
+            itemId: 'addNoActiveProblemBtn',
+            iconCls: 'icoAdd'
+        },
 		{
 			text: _('add_new'),
 			action: 'encounterRecordAdd',
@@ -54056,6 +54166,7 @@ Ext.define('App.view.patient.ActiveProblems', {
 		action: 'encounterRecordAdd'
 	}]
 });
+
 Ext.define('App.view.patient.SocialPanel', {
 	extend: 'Ext.panel.Panel',
 	requires: [
@@ -55831,7 +55942,6 @@ Ext.define('App.view.patient.Allergies', {
 		'App.ux.grid.RowFormEditing',
 		'App.ux.LiveRXNORMAllergySearch',
 		'App.ux.LiveAllergiesSearch',
-
 		'App.ux.combo.Allergies',
 		'App.ux.combo.AllergiesReaction',
 		'App.ux.combo.AllergiesTypes',
@@ -56027,6 +56137,11 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	tbar:[
 		'->',
+        {
+            text: _('no_active_allergy'),
+            itemId: 'addNoActiveAllergyBtn',
+            iconCls: 'icoAdd'
+        },
 		{
 			text: _('add_new'),
 			itemId: 'addAllergyBtn',

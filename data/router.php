@@ -189,6 +189,23 @@ function doRpc($cdata) {
 	return $r;
 }
 
+function utf8_encode_deep(&$input) {
+	if (is_string($input)) {
+		if(mb_check_encoding($input, 'UTF-8')) return;
+		$input = utf8_encode($input);
+	} else if (is_array($input)) {
+		foreach ($input as &$value) {
+			utf8_encode_deep($value);
+		}
+		unset($value);
+	} else if (is_object($input)) {
+		$vars = array_keys(get_object_vars($input));
+		foreach ($vars as $var) {
+			utf8_encode_deep($input->$var);
+		}
+	}
+}
+
 $response = null;
 if(is_array($data)){
 	$response = array();
@@ -198,6 +215,8 @@ if(is_array($data)){
 } else {
 	$response = doRpc($data);
 }
+
+utf8_encode_deep($response);
 
 if($isForm && $isUpload){
 	print '<html><body><textarea>';

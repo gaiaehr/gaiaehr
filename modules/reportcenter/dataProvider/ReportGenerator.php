@@ -64,8 +64,8 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error,true));
-            return $Error;
+            error_log(print_r($Error->getMessage(),true));
+            return $Error->getMessage();
         }
     }
 
@@ -87,8 +87,8 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error,true));
-            return $Error;
+            error_log(print_r($Error->getMessage(),true));
+            return $Error->getMessage();
         }
     }
     /**
@@ -110,8 +110,24 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error,true));
-            return $Error;
+            error_log(print_r($Error->getMessage(),true));
+            return $Error->getMessage();
+        }
+    }
+
+    /**
+     *
+     */
+    function buildFilterPanelFields()
+    {
+        try
+        {
+
+        }
+        catch(Exception $Error)
+        {
+            error_log(print_r($Error->getMessage(),true));
+            return $Error->getMessage();
         }
     }
 
@@ -194,7 +210,7 @@ class ReportGenerator
         catch(Exception $Error)
         {
             error_log(print_r($Error->getMessage(),true));
-            return $Error;
+            return $Error->getMessage();
         }
     }
 

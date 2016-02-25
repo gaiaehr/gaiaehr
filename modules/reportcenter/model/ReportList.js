@@ -48,16 +48,12 @@ Ext.define('Modules.reportcenter.model.ReportList', {
             type: 'string'
         },
         {
-            name: 'width',
+            name: 'filterPanelWidth',
             type: 'int'
         },
         {
-            name: 'height',
-            type: 'int'
-        },
-        {
-            name: 'filterHeight',
-            type: 'int'
+            name: 'layout',
+            type: 'string'
         }
     ]
 });

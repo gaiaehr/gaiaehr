@@ -73,6 +73,18 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         });
     },
 
+    /**
+     * This will insert the reportFilter panel of the report into the ReportCenter's Report Window,
+     * also will set all the configuration to the Report Window, this configurtion is loaded into
+     * the DataGrid, so when it's double clicked the configuration is already there. When all is set
+     * and ready go ahead and show the Window, and recalculate it's layout.
+     *
+     * @param record
+     * @param item
+     * @param index
+     * @param e
+     * @param eOpts
+     */
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts)
     {
         this.getReportWindow().remove(Ext.ComponentQuery.query('reportFilter')[0] , true);
@@ -82,7 +94,9 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         );
         this.getReportWindow().setHeight(900);
         this.getReportWindow().setWidth(1024);
-        this.getReportFilterPanel().setWidth(item.data.filterWidth);
+        this.getReportWindow().doLayout();
+        this.getReportFilterPanel().setWidth(item.data.filterPanelWidth);
+        this.getReportFilterPanel().doLayout();
 
         this.getReportWindow().show();
         this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.title + ' )');

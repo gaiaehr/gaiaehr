@@ -99,10 +99,9 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
  */
 error_reporting(-1);
 ini_set('display_errors', 1);
-
-//error_log($site);
-if(isset($site) && !empty($site)){
-	$logPath = ROOT . '/sites/' . $site . '/log/';
+$logPath = ROOT . '/sites/' . $site . '/log/';
+if(file_exists($logPath) && is_writable($logPath))
+{
 	$logFile = 'error_log.txt';
 	$oldUmask = umask(0);
 	clearstatcache();
@@ -114,6 +113,7 @@ if(isset($site) && !empty($site)){
 		ini_set('error_log', $logPath . $logFile);
 	umask($oldUmask);
 }
+
 //
 //if(!isset($_SESSION['styles'])){
 //	$_SESSION['styles'] = [];

@@ -1195,7 +1195,7 @@ class MatchaCUP {
 	 * @param $encryptedFields
 	 */
 	private function dataDecrypt(&$item, $key, $encryptedFields) {
-		if(in_array($key, $encryptedFields)){
+		if(in_array($key, $encryptedFields) && isset($item)){
 			$item = MatchaUtils::__decrypt($item);
 		}
 	}

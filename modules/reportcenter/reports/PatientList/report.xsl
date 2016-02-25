@@ -65,7 +65,7 @@
                         </th>
                         <th class="report" style="text-align: left;">
                             Patient
-                            <span class="sort" onclick=""></span>
+                            <span class="sort" onclick="console.log(App)"></span>
                         </th>
                         <th class="report">
                             Gender

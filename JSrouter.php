@@ -35,9 +35,12 @@ include_once(dirname(__FILE__) . '/dataProvider/Globals.php');
 header('Content-Type: text/javascript');
 
 // check if is emergency access....
-if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess']){
+if(isset($_SESSION['user']) && isset($_SESSION['user']['emergencyAccess']) && $_SESSION['user']['emergencyAccess'])
+{
 	$isEmerAccess = 1;
-}else{
+}
+else
+{
 	$isEmerAccess = 0;
 }
 print 'isEmerAccess = '.$isEmerAccess.';';

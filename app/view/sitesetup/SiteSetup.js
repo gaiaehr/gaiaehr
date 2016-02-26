@@ -70,9 +70,18 @@ Ext.define('App.view.sitesetup.SiteSetup',
 				{
 					fields:['value', 'name'],
 					data:[
-						{value:'Production', name:'Production/Clinic'},
-						{value:'Development', name:'Development'},
-						{value:'Testing', name:'Testing'}
+						{
+                            value:'Production',
+                            name:'Production/Clinic'
+                        },
+						{
+                            value:'Development',
+                            name:'Development'
+                        },
+						{
+                            value:'Testing',
+                            name:'Testing'
+                        }
 					]
 				});
 
@@ -83,8 +92,14 @@ Ext.define('App.view.sitesetup.SiteSetup',
 				{
 					fields:['value', 'name'],
 					data:[
-						{value:'Yes', name:'Yes'},
-						{value:'No', name:'No'}
+						{
+                            value:'Yes',
+                            name:'Yes'
+                        },
+						{
+                            value:'No',
+                            name:'No'
+                        }
 					]
 				});
 
@@ -94,11 +109,26 @@ Ext.define('App.view.sitesetup.SiteSetup',
 			me.sizeStore = Ext.create('Ext.data.Store', {
 				fields:['value', 'name'],
 				data:[
-					{value:'1', name:'1 User'},
-					{value:'2-5', name:'2-5 Users'},
-					{value:'6-10', name:'6-10 Users'},
-					{value:'11-20', name:'11-20 Users'},
-					{value:'20+', name:'20+ Users'}
+					{
+                        value:'1',
+                        name:'1 User'
+                    },
+					{
+                        value:'2-5',
+                        name:'2-5 Users'
+                    },
+					{
+                        value:'6-10',
+                        name:'6-10 Users'
+                    },
+					{
+                        value:'11-20',
+                        name:'11-20 Users'
+                    },
+					{
+                        value:'20+',
+                        name:'20+ Users'
+                    }
 				]
 			});
 

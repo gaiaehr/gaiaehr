@@ -18,7 +18,6 @@
  */
 
 include_once(ROOT . '/classes/FileManager.php');
-include_once(ROOT . '/dataProvider/ACL.php');
 
 class SiteSetup {
 	/**
@@ -225,7 +224,7 @@ class SiteSetup {
 		}
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(), true));
+            error_log($Error->getMessage());
 			return $Error->getMessage();
 		}
 
@@ -460,24 +459,24 @@ class SiteSetup {
                 if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql'))
                 {
                     $query = file_get_contents($sqlFile);
-                    if ($this->conn->exec($query) !== false)
+                    $sth = $this->conn->prepare($query);
+                    if ($sth->execute() == false)
                     {
-                        return ['success' => true];
+                        $error = $sth->errorInfo();
+                        FileManager::rmdir_recursive("sites/$params->siteId");
+                        if (isset($params->rootUser)) $this->dropDatabase($params->dbName);
+                        throw new Exception($error[2]);
                     }
                     else
                     {
-                        FileManager::rmdir_recursive("sites/$params->siteId");
-                        if (isset($params->rootUser))
-                            $this->dropDatabase($params->dbName);
-                        throw new Exception($this->conn->errorInfo());
+                        return ['success' => true];
                     }
 
                 }
                 else
                 {
                     FileManager::rmdir_recursive("sites/$params->siteId");
-                    if (isset($params->rootUser))
-                        $this->dropDatabase($params->dbName);
+                    if (isset($params->rootUser)) $this->dropDatabase($params->dbName);
                     throw new Exception('Unable find installation data file');
                 }
             }
@@ -499,7 +498,7 @@ class SiteSetup {
 
 	function dropDatabase($dbName)
     {
-		$sth = $this->conn->prepare("DROP DATABASE $dbName");
+		$sth = $this->conn->prepare("DROP DATABASE $dbName;");
 		$sth->execute();
 	}
 
@@ -516,6 +515,7 @@ class SiteSetup {
         {
             if (file_exists($conf = 'sites/conf.example.php'))
             {
+                include_once(ROOT . '/dataProvider/ACL.php');
                 if (($params->AESkey = ACL::createRandomKey()) !== false) {
                     $buffer = file_get_contents($conf);
                     $search = [
@@ -595,6 +595,7 @@ class SiteSetup {
         try
         {
             include_once(ROOT . '/sites/' . $params->siteId . '/conf.php');
+            require_once(ROOT . '/classes/MatchaHelper.php');
             Matcha::connect([
                 'host' => site_db_host,
                 'port' => site_db_port,

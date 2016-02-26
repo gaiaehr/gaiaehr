@@ -39,20 +39,28 @@ if(!defined('_GaiaEXEC'))
 	define('_GaiaEXEC', 1);
 require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 
+
+/**
+ * Load the configuration for the router.php (rpc) Remote Procedure Calls
+ */
+require('config.php');
+
+/**
+ * If the site configuration exist, fire up the database connection
+ * otherwise don't try to connect.
+ */
 $conf = ROOT . '/sites/' . $site . '/conf.php';
 if(file_exists($conf)){
 	require_once(ROOT . '/sites/' . $site . '/conf.php');
 	require_once(ROOT . '/classes/MatchaHelper.php');
-}
-require_once(ROOT . '/classes/MatchaHelper.php');
-include_once(ROOT . '/dataProvider/Modules.php');
-include_once(ROOT . '/dataProvider/ACL.php');
-include_once(ROOT . '/dataProvider/Globals.php');
-require('config.php');
-
-if(isset($_SESSION['install']) && $_SESSION['install'] != true){
-	$modules = new Modules();
-	$API = array_merge($API, $modules->getEnabledModulesAPI());
+    include_once(ROOT . '/dataProvider/ACL.php');
+    include_once(ROOT . '/dataProvider/Globals.php');
+    include_once(ROOT . '/dataProvider/Modules.php');
+    if(isset($_SESSION['install']) && $_SESSION['install'] != true)
+    {
+        $modules = new Modules();
+        $API = array_merge($API, $modules->getEnabledModulesAPI());
+    }
 }
 
 class BogusAction {
@@ -107,9 +115,9 @@ function doRpc($cdata) {
 
 		$method = $cdata->method;
 
+        // TODO: Create a config file for those classes and methods that not require authorization
+        // TODO: Create am authorization for the SiteSetup. This has security flaws
 		if(
-            // TODO: Create a config file for those classes and methods that not require authorization
-            // TODO: Create am authorization for the SiteSetup. This has security flaws
 			(isset($_SESSION['user']) && isset($_SESSION['user']['auth']) && $_SESSION['user']['auth']) ||
 			($action == 'authProcedures' && $method == 'login') ||
 			($action == 'CombosData' && $method == 'getActiveFacilities') ||
@@ -231,4 +239,7 @@ if($isForm && $isUpload){
 	print $json;
 }
 
-Matcha::$__conn = null;
+/**
+ * Close the connection to the database if the site configuration was found.
+ */
+if(file_exists($conf)) Matcha::$__conn = null;

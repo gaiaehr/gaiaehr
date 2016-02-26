@@ -31,6 +31,7 @@ if(!defined('site_aes_key')) define('site_aes_key', '#key#');
 /**
  * HL7 server values
  */
+
 if(!defined('site_hl7_ports')) define('site_hl7_ports', '#hl7Port#');
 /**
  * Default site language and theme
@@ -41,6 +42,7 @@ if(!defined('site_name')) define('site_name', '#sitename#');
 if(!defined('site_theme')) define('site_theme', '#theme#');
 if(!defined('site_timezone')) define('site_timezone', '#timezone#');
 if(!defined('site_default_localization')) define('site_default_localization', '#lang#');
+
 if(!defined('site_id')) define('site_id', basename(dirname(__FILE__)));
 if(!defined('site_dir')) define('site_dir', site_id);
 if(!defined('site_url')) define('site_url', URL .'sites/'.site_id);
@@ -48,5 +50,8 @@ if(!defined('site_path')) define('site_path', str_replace('\\', '/', dirname(__F
 if(!defined('site_temp_url')) define('site_temp_url', site_url .'/temp');
 if(!defined('site_temp_path')) define('site_temp_path', site_path . '/temp');
 
+/**
+ * Set the timezone of the site, this will affect the complete application
+ */
 date_default_timezone_set(site_timezone);
 ini_set('date.timezone',site_timezone);

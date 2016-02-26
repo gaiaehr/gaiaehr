@@ -26,7 +26,13 @@ class SiteSetup {
 	private $conn;
 	private $err;
 
-	function __construct() {
+    /**
+     * SiteSetup constructor.
+     * On the first ru, set up the install log for better DEBUG or Error Reporting,
+     * perfect when this application is running on shared systems.
+     */
+	function __construct()
+    {
 		chdir(ROOT);
         error_reporting(-1);
 		$olSMASK = umask(0);
@@ -70,9 +76,11 @@ class SiteSetup {
             );
 		}
 
-		if($success){
+		if($success)
+        {
 			$maxAllowPacket = $this->setMaxAllowedPacket();
-			if($maxAllowPacket !== true){
+			if($maxAllowPacket !== true)
+            {
 				return [
 					'success' => false,
 					'error' => 'Could not set the MySQL <strong>max_allowed_packet</strong> variable.<br>GaiaEHR requires to set max_allowed_packet to 50M or more.<br>Please check my.cnf or my.ini, also you can install GaiaEHR using MySQL root user<br>max_allowed_packet = ' . $maxAllowPacket
@@ -82,7 +90,9 @@ class SiteSetup {
 				'success' => true,
 				'dbInfo' => $params
 			];
-		} else {
+		}
+        else
+        {
 			return [
 				'success' => false,
 				'error' => 'Could not connect to SQL server!!! Please, check database information and try again. ' . $this->err
@@ -90,32 +100,41 @@ class SiteSetup {
 		}
 	}
 
-	function setMaxAllowedPacket() {
+	function setMaxAllowedPacket()
+    {
 		$stm = $this->conn->prepare("SELECT @@global.max_allowed_packet AS size");
 		$stm->execute();
 		$pkg = $stm->fetch(PDO::FETCH_ASSOC);
-		if($pkg['size'] < 209715200){
+		if($pkg['size'] < 209715200)
+        {
 			$stm = $this->conn->prepare("SET @@global.max_allowed_packet = 52428800000");
 			$stm->execute();
 			$error = $this->conn->errorInfo();
-			if(isset($error[2])){
+			if(isset($error[2]))
+            {
 				return $pkg['size'];
-			} else {
+			}
+            else
+            {
 				return true;
 			}
 		}
 		return true;
 	}
 
-	function databaseConn($host, $port, $dbName, $dbUser, $dbPass) {
-		try {
+	function databaseConn($host, $port, $dbName, $dbUser, $dbPass)
+    {
+		try
+        {
 			$this->conn = new PDO("mysql:host=$host;port=$port;dbname=$dbName", $dbUser, $dbPass, [
 				PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
 				PDO::ATTR_PERSISTENT => false,
 				PDO::ATTR_TIMEOUT => 7600
 			]);
 			return true;
-		} catch(PDOException $e) {
+		}
+        catch(PDOException $e)
+        {
 			$this->err = $e->getMessage();
 			return false;
 		}
@@ -127,31 +146,39 @@ class SiteSetup {
 	 * connections
 	 * to any database please refer to MatchaHelper.php to learn more about PHP PDO.
 	 */
-	public function rootDatabaseConn($host, $port, $rootUser, $rootPass) {
-		try {
+	public function rootDatabaseConn($host, $port, $rootUser, $rootPass)
+    {
+		try
+        {
 			$this->conn = new PDO("mysql:host=$host;port=$port", $rootUser, $rootPass);
 			return true;
-		} catch(PDOException $e) {
+		}
+        catch(PDOException $e)
+        {
 			$this->err = $e->getMessage();
 			return false;
 		}
 	}
 
-	function is__writable($path) {
-		if ($path{strlen($path)-1}=='/'){
+	function is__writable($path)
+    {
+		if ($path{strlen($path)-1}=='/')
+        {
 			return $this->is__writable($path . uniqid(mt_rand()) . '.tmp');
 		}
 
-		if (file_exists($path)) {
-			if (!($f = @fopen($path, 'r+'))){
+		if (file_exists($path))
+        {
+			if (!($f = @fopen($path, 'r+')))
+            {
 				return false;
 			}
-
 			fclose($f);
 			return true;
 		}
 
-		if (!($f = @fopen($path, 'w'))){
+		if (!($f = @fopen($path, 'w')))
+        {
 			return false;
 		}
 
@@ -163,8 +190,10 @@ class SiteSetup {
 	/*
 	 * Verify: checkRequirements
 	 */
-	public function checkRequirements() {
-		try {
+	public function checkRequirements()
+    {
+		try
+        {
 			$row = [];
 			$status = (version_compare(phpversion(), '5.4.0', '>=') ? 'Ok' : 'Fail');
 			$row[] = [
@@ -236,7 +265,8 @@ class SiteSetup {
      * @param $siteId
      * @return array
      */
-	public function setSiteDirBySiteId($siteId) {
+	public function setSiteDirBySiteId($siteId)
+    {
 		$siteDir = ROOT."/sites/$siteId";
 
         if(!$this->createDirectory($siteDir))
@@ -305,7 +335,8 @@ class SiteSetup {
      * @param $dirPath
      * @return bool
      */
-    private function createDirectory($dirPath){
+    private function createDirectory($dirPath)
+    {
         try
         {
 	        $oldMask = umask(0);
@@ -343,7 +374,8 @@ class SiteSetup {
         }
     }
 
-	public function createDatabaseStructure(stdClass $params) {
+	public function createDatabaseStructure(stdClass $params)
+    {
         try
         {
             if(isset($params->rootUser) && $this->rootDatabaseConn(
@@ -380,7 +412,8 @@ class SiteSetup {
                     FileManager::rmdir_recursive("sites/$params->siteId");
                     throw new Exception($this->err);
                 }
-            } elseif($this->databaseConn(
+            }
+            elseif($this->databaseConn(
                 $params->dbHost,
                 $params->dbPort,
                 $params->dbName,
@@ -447,43 +480,30 @@ class SiteSetup {
 
 	public function loadDatabaseData(stdClass $params)
     {
-        try {
+        try
+        {
             ini_set('memory_limit', '-1');
-            if ($this->databaseConn(
-                $params->dbHost,
-                $params->dbPort,
-                $params->dbName,
-                $params->dbUser,
-                $params->dbPass))
+            if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql'))
             {
-                if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql'))
+                $query = file_get_contents($sqlFile);
+                $sth = $this->conn->prepare($query);
+                if ($sth->execute() == false)
                 {
-                    $query = file_get_contents($sqlFile);
-                    $sth = $this->conn->prepare($query);
-                    if ($sth->execute() == false)
-                    {
-                        $error = $sth->errorInfo();
-                        FileManager::rmdir_recursive("sites/$params->siteId");
-                        if (isset($params->rootUser)) $this->dropDatabase($params->dbName);
-                        throw new Exception($error[2]);
-                    }
-                    else
-                    {
-                        return ['success' => true];
-                    }
-
+                    $error = $sth->errorInfo();
+                    FileManager::rmdir_recursive("sites/$params->siteId");
+                    if (isset($params->rootUser)) $this->dropDatabase($params->dbName);
+                    throw new Exception($error[2]);
                 }
                 else
                 {
-                    FileManager::rmdir_recursive("sites/$params->siteId");
-                    if (isset($params->rootUser)) $this->dropDatabase($params->dbName);
-                    throw new Exception('Unable find installation data file');
+                    return ['success' => true];
                 }
             }
             else
             {
                 FileManager::rmdir_recursive("sites/$params->siteId");
-                throw new Exception($this->err);
+                if (isset($params->rootUser)) $this->dropDatabase($params->dbName);
+                throw new Exception('Unable find installation data file');
             }
         }
         catch(Exception $Error)

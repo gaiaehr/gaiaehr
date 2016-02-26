@@ -27,6 +27,7 @@ Ext.define('App.view.patient.windows.FamilyHistory', {
 	height: 400,
 	layout: 'fit',
 	closeAction: 'hide',
+	modal: true,
 	bodyStyle: 'background-color:white',
 	items: [
 		{

@@ -827,49 +827,50 @@ Ext.define('App.view.sitesetup.SiteSetup',
 		/**
 		 * Event: onInstall
 		 */
-		onInstall:function(){
+		onInstall: function(){
 			var me = this,
 				panel = me.siteConfiguration,
 				form = panel.getForm(),
-				values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo),
-				codeFields = me.query('checkboxfield[action="code"]'),
-				codes = [],
-                i;
+				values = Ext.Object.merge(form.getValues(), me.step[2].dbInfo);
 
+            // Show the installation process bar
 			me.installationPregress.show();
 			me.siteConfigurationContainer.el.mask('Installing New Site');
 
-            if(me.setSiteDirBySiteId(values.siteId) === false) return;
-            if(me.createDatabaseStructure(values) === false) return;
-            if(me.loadDatabaseData(values) === false) return;
-            if(me.createConfigurationFile(values) === false) return;
-            if(me.createSiteAdmin(values) === false) return;
+            // Start the installation process, when this procedure finishes
+            // it will start the next steap of the installation.
+            me.setSiteDirBySiteId(values);
 
-            values['AESkey'] = me.AESKey;
-            for(i = 0; i < codeFields.length; i++){
-                if(codeFields[i].getValue()) codes.push(codeFields[i].name);
-            }
-            me.installProgress = .5;
-            me.loadCodes(codes, function() {
-                me.installationPregress.updateProgress(1, 'Done!', true);
-                me.siteConfigurationContainer.el.unmask();
-
-                me.step[3] = {success: true};
-                me.okToGoNext(true);
-                values.siteURL = values.siteId != 'default' ? document.URL + '?site=' + values.siteId : document.URL;
-
-                me.onComplete(values)
-            });
 		},
 
         /**
          * setSiteDirBySiteId
+         * Create the site choosen by the user, and algo create all it's dectories that the site
+         * requieres.
          * @param siteId
          */
-        setSiteDirBySiteId: function(siteId){
+        setSiteDirBySiteId: function(values){
+            var me = this;
             this.installationPregress.updateProgress(0, 'Creating Directory and Sub Directories');
-            SiteSetup.setSiteDirBySiteId(siteId, function(provider, response) {
+            SiteSetup.setSiteDirBySiteId(values.siteId, function(provider, response) {
                 if(response.result.success){
+                    me.createConfigurationFile(values);
+                    return true;
+                } else {
+
+                    Ext.Msg.alert('Error', response.result.error);
+                    return false;
+                }
+            });
+        },
+
+        createConfigurationFile: function(values){
+            var me = this;
+            this.installationPregress.updateProgress(.1, 'Creating Configuration File', true);
+            SiteSetup.createConfigurationFile(values, function(provider, response) {
+                if(response.result.success){
+                    this.AESKey = response.result.AESkey;
+                    me.createDatabaseStructure(values);
                     return true;
                 } else {
                     Ext.Msg.alert('Error', response.result.error);
@@ -879,9 +880,11 @@ Ext.define('App.view.sitesetup.SiteSetup',
         },
 
         createDatabaseStructure: function(values){
-            this.installationPregress.updateProgress(.1, 'Creating Database Structure and Tables', true);
+            var me = this;
+            this.installationPregress.updateProgress(.2, 'Creating Database Structure and Tables', true);
             SiteSetup.createDatabaseStructure(values, function(provider, response) {
                 if(response.result.success){
+                    me.loadDatabaseData(values);
                     return true;
                 } else {
                     Ext.Msg.alert('Error', response.result.error);
@@ -891,22 +894,11 @@ Ext.define('App.view.sitesetup.SiteSetup',
         },
 
         loadDatabaseData: function(values){
-            this.installationPregress.updateProgress(.2, 'Dumping Data Into Database', true);
+            var me = this;
+            me.installationPregress.updateProgress(.3, 'Dumping Data Into Database', true);
             SiteSetup.loadDatabaseData(values, function(provider, response) {
                 if(response.result.success){
-                    return true;
-                } else {
-                    Ext.Msg.alert('Error', response.result.error);
-                    return false;
-                }
-            });
-        },
-
-        createConfigurationFile: function(values){
-            this.installationPregress.updateProgress(.4, 'Creating Configuration File', true);
-            SiteSetup.createConfigurationFile(values, function(provider, response) {
-                if(response.result.success){
-                    this.AESKey = response.result.AESkey;
+                    me.createSiteAdmin(values);
                     return true;
                 } else {
                     Ext.Msg.alert('Error', response.result.error);
@@ -916,14 +908,49 @@ Ext.define('App.view.sitesetup.SiteSetup',
         },
 
         createSiteAdmin: function(values){
-            this.installationPregress.updateProgress(.6, 'Creating Administrator User', true);
+            var me = this;
+            me.installationPregress.updateProgress(.4, 'Creating Administrator User', true);
             SiteSetup.createSiteAdmin(values, function(provider, response) {
                 if(response.result.success){
+                    me.createKeyAndUploadCodes(values);
                     return true;
                 } else {
                     Ext.Msg.alert('Error', response.result.error);
                     return false;
                 }
+            });
+        },
+
+        /**
+         * Create the AES Key and Upload teh codes if the user has chosen to.
+         *
+         * @param values
+         */
+        createKeyAndUploadCodes: function(values){
+            var me = this,
+                codeFields = me.query('checkboxfield[action="code"]'),
+                codes = [],
+                index;
+
+            this.installationPregress.updateProgress(1, 'Done...');
+
+            values['AESkey'] = me.AESKey;
+            for(index = 0; index < codeFields.length; index++){
+                if(codeFields[index].getValue()) codes.push(codeFields[index].name);
+            }
+
+            me.loadCodes(codes, function() {
+                me.installationPregress.updateProgress(1, 'Done!', true);
+                me.siteConfigurationContainer.el.unmask();
+
+                me.step[3] = {success: true};
+                me.okToGoNext(true);
+
+                // Build the URL for the user, when the installation is finished
+                // he can just press the link and hover into GaiaEHR
+                values.siteURL = values.siteId != 'default' ? document.URL + '?site=' + values.siteId : document.URL;
+
+                me.onComplete(values)
             });
         },
 

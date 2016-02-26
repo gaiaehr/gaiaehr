@@ -35,9 +35,7 @@ class SiteSetup {
         if(file_exists(ROOT.'/log/install_error_log.txt'))
         {
             if(is_writable(ROOT.'/log/install_error_log.txt'))
-            {
                 ini_set('error_log', ROOT.'/log/install_error_log.txt');
-            }
         }
 		umask($olSMASK);
 	}
@@ -124,7 +122,7 @@ class SiteSetup {
 		}
 	}
 
-	/*
+	/**
 	 * Make a connection to the database: rootDatabaseConn
 	 * We use PDO to make the connection, PDO is a internal library of PHP that make
 	 * connections
@@ -172,12 +170,6 @@ class SiteSetup {
 			$status = (version_compare(phpversion(), '5.4.0', '>=') ? 'Ok' : 'Fail');
 			$row[] = [
 				'msg' => 'PHP 5.4 + installed',
-				'status' => $status
-			];
-			// Check if get_magic_quotes_gpc is off
-			$status = (get_magic_quotes_gpc() != 1 ? 'Ok' : 'Fail');
-			$row[] = [
-				'msg' => 'get_magic_quotes_gpc off/disabled',
 				'status' => $status
 			];
 			// try chmod sites folder and check chmod after that
@@ -228,12 +220,6 @@ class SiteSetup {
 				'msg' => 'PHP GD Installed',
 				'status' => $status
 			];
-            // check if MYSQL_ATTR_MAX_BUFFER_SIZE parameter is available in PDO
-//            $status = (defined( 'PDO::MYSQL_ATTR_MAX_BUFFER_SIZE' ) ? 'Ok' : 'Fail');
-//            $row[] = [
-//                'msg' => 'PHP PDO MYSQL_ATTR_MAX_BUFFER_SIZE Parameter is not available',
-//                'status' => $status
-//            ];
 
 			return $row;
 		}
@@ -252,7 +238,7 @@ class SiteSetup {
      * @return array
      */
 	public function setSiteDirBySiteId($siteId) {
-		$siteDir = "sites/$siteId";
+		$siteDir = ROOT."/sites/$siteId";
 
         if(!$this->createDirectory($siteDir))
         {
@@ -326,8 +312,8 @@ class SiteSetup {
 	        $oldMask = umask(0);
             if(!file_exists($dirPath)) mkdir($dirPath, 0755, true);
             if(!is_writable($dirPath)) chmod($dirPath, 0755);
-            return true;
 	        umask($oldMask);
+            return true;
         }
         catch(Exception $Error)
         {
@@ -359,7 +345,8 @@ class SiteSetup {
     }
 
 	public function createDatabaseStructure(stdClass $params) {
-        try{
+        try
+        {
             if(isset($params->rootUser) && $this->rootDatabaseConn(
 					$params->dbHost,
 					$params->dbPort,
@@ -372,8 +359,6 @@ class SiteSetup {
 			    FLUSH PRIVILEGES;
 			");
                 $sth->execute();
-                $error = $this->conn->errorInfo();
-
                 if($this->databaseConn(
 					$params->dbHost,
 					$params->dbPort,
@@ -381,16 +366,18 @@ class SiteSetup {
 					$params->dbUser,
                     $params->dbPass))
                 {
-
-                    if($this->loadDatabaseStructure()){
+                    if($this->loadDatabaseStructure())
+                    {
                         return ['success' => true];
-                    } else {
+                    }
+                    else
+                    {
                         FileManager::rmdir_recursive("sites/$params->siteId");
                         throw new Exception($this->conn->errorInfo()[2]);
                     }
-
-                } else {
-
+                }
+                else
+                {
                     FileManager::rmdir_recursive("sites/$params->siteId");
                     throw new Exception($this->err);
                 }
@@ -401,22 +388,25 @@ class SiteSetup {
                 $params->dbUser,
                 $params->dbPass))
             {
-                if($this->loadDatabaseStructure()){
+                if($this->loadDatabaseStructure())
+                {
                     return ['success' => true];
-                } else {
-
+                }
+                else
+                {
                     FileManager::rmdir_recursive("sites/$params->siteId");
                     throw new Exception($this->conn->errorInfo());
                 }
-            } else {
-
+            }
+            else
+            {
                 FileManager::rmdir_recursive("sites/$params->siteId");
                 throw new Exception($this->err);
             }
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(), true));
+            error_log($Error->getMessage());
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -425,22 +415,39 @@ class SiteSetup {
 
 	}
 
-	public function loadDatabaseStructure() {
-		ini_set('memory_limit', '-1');
-		if(file_exists($sqlFile = 'sql/gaiadb_install_structure.sql')){
-			$query = file_get_contents($sqlFile);
-			$sth = $this->conn->prepare($query);
-			if($sth->execute() !== false){
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
+	public function loadDatabaseStructure()
+    {
+        try
+        {
+            ini_set('memory_limit', '-1');
+            if(file_exists($sqlFile = 'sql/gaiadb_install_structure.sql'))
+            {
+                $query = file_get_contents($sqlFile);
+                $sth = $this->conn->prepare($query);
+                if($sth->execute() == false)
+                {
+                    $error = $sth->errorInfo();
+                    throw new Exception($error[2]);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                throw new Exception('Could not find the structure of the database file.');
+            }
+        }
+        catch(Exception $Error)
+        {
+            error_log($Error->getMessage());
+            throw new Exception($Error->getMessage());
+        }
 	}
 
-	public function loadDatabaseData(stdClass $params) {
+	public function loadDatabaseData(stdClass $params)
+    {
         try {
             ini_set('memory_limit', '-1');
             if ($this->databaseConn(
@@ -450,31 +457,39 @@ class SiteSetup {
                 $params->dbUser,
                 $params->dbPass))
             {
-                if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql')) {
+                if (file_exists($sqlFile = 'sql/gaiadb_install_data.sql'))
+                {
                     $query = file_get_contents($sqlFile);
-                    if ($this->conn->exec($query) !== false) {
+                    if ($this->conn->exec($query) !== false)
+                    {
                         return ['success' => true];
-                    } else {
+                    }
+                    else
+                    {
                         FileManager::rmdir_recursive("sites/$params->siteId");
                         if (isset($params->rootUser))
                             $this->dropDatabase($params->dbName);
                         throw new Exception($this->conn->errorInfo());
                     }
 
-                } else {
+                }
+                else
+                {
                     FileManager::rmdir_recursive("sites/$params->siteId");
                     if (isset($params->rootUser))
                         $this->dropDatabase($params->dbName);
                     throw new Exception('Unable find installation data file');
                 }
-            } else {
+            }
+            else
+            {
                 FileManager::rmdir_recursive("sites/$params->siteId");
                 throw new Exception($this->err);
             }
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(), true));
+            error_log($Error->getMessage());
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -482,11 +497,19 @@ class SiteSetup {
         }
 	}
 
-	function dropDatabase($dbName) {
+	function dropDatabase($dbName)
+    {
 		$sth = $this->conn->prepare("DROP DATABASE $dbName");
 		$sth->execute();
 	}
 
+    /**
+     * createConfigurationFile
+     * Create the configuration file for the site.
+     *
+     * @param $params
+     * @return array
+     */
 	public function createConfigurationFile($params)
     {
         try
@@ -529,24 +552,31 @@ class SiteSetup {
                     fwrite($handle, $newConf);
                     fclose($handle);
                     chmod($conf_file, 0644);
-                    if (file_exists($conf_file)) {
+                    if (file_exists($conf_file))
+                    {
                         return [
                             'success' => true,
                             'AESkey' => $params->AESkey
                         ];
-                    } else {
+                    }
+                    else
+                    {
                         throw new Exception("Unable to create $siteDir/conf.php file");
                     }
-                } else {
+                }
+                else
+                {
                     throw new Exception('Unable to Generate AES 32 bit key');
                 }
-            } else {
+            }
+            else
+            {
                 throw new Exception('Unable to Find sites/conf.example.php');
             }
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(), true));
+            error_log($Error->getMessage());
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -554,7 +584,14 @@ class SiteSetup {
         }
 	}
 
-	public function createSiteAdmin($params) {
+    /**
+     * Create the administrative user, this account will allow the user to change
+     * all the options and features of GaiaEHR.
+     * @param $params
+     * @return array
+     */
+	public function createSiteAdmin($params)
+    {
         try
         {
             include_once(ROOT . '/sites/' . $params->siteId . '/conf.php');
@@ -590,7 +627,7 @@ class SiteSetup {
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(), true));
+            error_log($Error->getMessage());
             return [
                 'success' => false,
                 'error' => $Error->getMessage()
@@ -598,19 +635,36 @@ class SiteSetup {
         }
 	}
 
-	public function loadCode($code) {
-		include_once(ROOT . '/dataProvider/ExternalDataUpdate.php');
-		$codes = new ExternalDataUpdate();
-		$params = new stdClass();
-		$params->codeType = $code;
-		$foo = $codes->getCodeFiles($params);
-		$params = new stdClass();
-		$params->codeType = $foo[0]['codeType'];
-		$params->version = $foo[0]['version'];
-		$params->path = $foo[0]['path'];
-		$params->date = $foo[0]['date'];
-		$params->basename = $foo[0]['basename'];
-		return $codes->updateCodes($params);
+    /**
+     * loadCode
+     * Procedure to load the ICD9 and RxNorm code into the GaiaEHR database
+     *
+     * @param $code
+     * @return array
+     * @throws Exception
+     */
+	public function loadCode($code)
+    {
+        try
+        {
+            include_once(ROOT . '/dataProvider/ExternalDataUpdate.php');
+            $codes = new ExternalDataUpdate();
+            $params = new stdClass();
+            $params->codeType = $code;
+            $foo = $codes->getCodeFiles($params);
+            $params = new stdClass();
+            $params->codeType = $foo[0]['codeType'];
+            $params->version = $foo[0]['version'];
+            $params->path = $foo[0]['path'];
+            $params->date = $foo[0]['date'];
+            $params->basename = $foo[0]['basename'];
+            return $codes->updateCodes($params);
+        }
+        catch(Exception $Error)
+        {
+            error_log($Error->getMessage());
+            throw new Exception($Error->getMessage());
+        }
 	}
 
 }

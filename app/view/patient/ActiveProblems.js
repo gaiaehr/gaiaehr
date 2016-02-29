@@ -182,11 +182,6 @@ Ext.define('App.view.patient.ActiveProblems', {
 	}),
 	tbar: [
 		'->',
-        {
-            text: _('no_active_problem'),
-            itemId: 'addNoActiveProblemBtn',
-            iconCls: 'icoAdd'
-        },
 		{
 			text: _('add_new'),
 			action: 'encounterRecordAdd',

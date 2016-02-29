@@ -30,11 +30,6 @@ Ext.define('App.controller.patient.Allergies', {
 			ref: 'AddAllergyBtn',
 			selector: 'patientallergiespanel #addAllergyBtn'
 		},
-        {
-            ref: 'AddNoActiveAllergyBtn',
-            selector: 'patientallergiespanel #addNoActiveAllergyBtn'
-        },
-
 		{
 			ref: 'ReviewAllergiesBtn',
 			selector: 'patientallergiespanel #reviewAllergiesBtn'
@@ -83,16 +78,12 @@ Ext.define('App.controller.patient.Allergies', {
 			'patientallergiespanel #addAllergyBtn': {
 				click: me.onAddAllergyBtnClick
 			},
-            'patientallergiespanel #addNoActiveAllergyBtn':{
-                click: me.onAddNoActiveAllergyBtnClick
-            },
 			'patientallergiespanel #activeAllergyBtn': {
 				toggle: me.onActiveAllergyBtnToggle
 			},
 			'patientallergiespanel #reviewAllergiesBtn': {
 				toggle: me.onReviewAllergiesBtnClick
 			},
-
 			'#allergyTypeCombo': {
 				select: me.onAllergyTypeComboSelect
 			},
@@ -234,34 +225,6 @@ Ext.define('App.controller.patient.Allergies', {
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
-
-    /**
-     * TODO: We need to add some logic to very if there are a No Active Allergy without End Date, if
-     * there are an No Active Allergy with an expired End Date, we can add another one, or not allow the
-     * user to add any other.
-     */
-    onAddNoActiveAllergyBtnClick: function(){
-        var me = this,
-            grid = me.getAllergiesGrid(),
-            store = grid.getStore();
-
-        grid.editingPlugin.cancelEdit();
-        store.insert(0, {
-            created_uid: app.user.id,
-            uid: app.user.id,
-            pid: app.patient.pid,
-            eid: app.patient.eid,
-            create_date: new Date(),
-            begin_date: new Date(),
-            allergy: _('no_active_allergy'),
-            status: 'Active',
-            severity: 'N/A',
-            reaction: 'N/A',
-            location: 'N/A',
-            type: 'N/A'
-        });
-        store.sync();
-    },
 
 	onActiveAllergyBtnToggle: function(btn, pressed){
 		var me = this,

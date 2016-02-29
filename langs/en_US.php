@@ -1643,8 +1643,5 @@ $LANG = array(
     'allergy_search'                        => 'Allergy search',
     'void_comment'                          => 'VOID Comment',
     'processing'                            => 'Processing',
-    'snippet_delete_child_error'            => 'Unable To Remove, Please Remove Child Templates',
-    'no_active_medication'                  => 'No Active Medication',
-    'no_active_problem'                     => 'No Active Problem',
-    'no_active_allergy'                     => 'No Active Allergy'
+    'snippet_delete_child_error'            => 'Unable To Remove, Please Remove Child Templates'
 );

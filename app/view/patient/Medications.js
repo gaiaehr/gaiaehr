@@ -22,7 +22,6 @@ Ext.define('App.view.patient.Medications', {
 		'App.store.patient.Medications',
 		'App.store.administration.Medications',
 		'Ext.form.field.Trigger',
-		//'Ext.grid.plugin.RowEditing',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
 		'App.ux.combo.PrescriptionTypes',
@@ -196,11 +195,6 @@ Ext.define('App.view.patient.Medications', {
 	],
 	tbar: [
 		'->',
-        {
-            text: _('no_active_medication'),
-            itemId: 'addNoActiveMedicationBtn',
-            iconCls: 'icoAdd'
-        },
 		{
 			text: _('add_new'),
 			itemId: 'addPatientMedicationBtn',

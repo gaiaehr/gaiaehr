@@ -30,10 +30,6 @@ Ext.define('App.controller.patient.ActiveProblems', {
 			ref: 'ActiveProblemLiveSearch',
 			selector: '#activeProblemLiveSearch'
 		},
-        {
-            ref: 'AddNoActiveProblemBtn',
-            selector: 'patientactiveproblemspanel #addNoActiveProblemBtn'
-        },
 		{
 			ref: 'AddActiveProblemBtn',
 			selector: 'patientactiveproblemspanel #addActiveProblemBtn'
@@ -54,10 +50,7 @@ Ext.define('App.controller.patient.ActiveProblems', {
 			},
 			'patientactiveproblemspanel #addActiveProblemBtn':{
 				click: me.onAddActiveProblemBtnClick
-			},
-            'patientactiveproblemspanel #addNoActiveProblemBtn':{
-                click: me.AddNoActiveProblemBtnClick
-            }
+			}
 		});
 	},
 
@@ -78,31 +71,6 @@ Ext.define('App.controller.patient.ActiveProblems', {
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
-
-    /**
-     * TODO: We need to add some logic to very if there are a No Active Problem without End Date, if
-     * there are an No Active Problem with an expired End Date, we can add another one, or not allow the
-     * user to add any other.
-     */
-    AddNoActiveProblemBtnClick: function(){
-        var me = this,
-            grid = me.getActiveProblemsGrid(),
-            store = grid.getStore();
-
-        grid.editingPlugin.cancelEdit();
-        store.insert(0, {
-            pid: app.patient.pid,
-            eid: app.patient.eid,
-            uid: app.user.id,
-            created_uid: app.user.id,
-            create_date: new Date(),
-            begin_date: new Date(),
-            code_text: _('no_active_problem'),
-            occurrence: 'Unknown or N/A',
-            status: 'Active'
-        });
-        store.sync();
-    },
 
 	onActiveProblemsGridActive:function(grid){
 		var store = grid.getStore();

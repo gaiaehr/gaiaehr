@@ -28,10 +28,6 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationsGrid',
 			selector: '#patientMedicationsGrid'
 		},
-        {
-            ref: 'addNoActiveMedicationBtn',
-            selector: '#addNoActiveMedicationBtn'
-        },
 		{
 			ref: 'addPatientMedicationBtn',
 			selector: '#addPatientMedicationBtn'
@@ -76,9 +72,6 @@ Ext.define('App.controller.patient.Medications', {
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
-            '#addNoActiveMedicationBtn':{
-                click: me.onAddNoActiveMedicationBtnClick
-            },
 			'#addPatientMedicationBtn': {
 				click: me.onAddPatientMedicationBtnClick
 			},
@@ -195,29 +188,6 @@ Ext.define('App.controller.patient.Medications', {
         record.set({mname: ''});
         record.set({title: ''});
         record.set({administered_uid: ''});
-    },
-
-    /**
-     * TODO: We need to add some logic to very if there are a No Active Medication without End Date, if
-     * there are an No Active Medication with an expired End Date, we can add another one, or not allow the
-     * user to add any other.
-     */
-    onAddNoActiveMedicationBtnClick: function(){
-        var me = this,
-            grid = me.getPatientMedicationsGrid(),
-            store = grid.getStore();
-
-        grid.editingPlugin.cancelEdit();
-        store.insert(0, {
-            pid: app.patient.pid,
-            eid: app.patient.eid,
-            uid: app.user.id,
-            created_uid: app.user.id,
-            create_date: new Date(),
-            begin_date: new Date(),
-            STR: _('no_active_medication')
-        });
-        store.sync();
     },
 
 	onAddPatientMedicationBtnClick: function(){

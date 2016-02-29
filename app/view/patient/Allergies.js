@@ -218,11 +218,6 @@ Ext.define('App.view.patient.Allergies', {
 	}),
 	tbar:[
 		'->',
-        {
-            text: _('no_active_allergy'),
-            itemId: 'addNoActiveAllergyBtn',
-            iconCls: 'icoAdd'
-        },
 		{
 			text: _('add_new'),
 			itemId: 'addAllergyBtn',

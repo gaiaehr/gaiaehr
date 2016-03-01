@@ -64,7 +64,7 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(),true));
+            error_log($Error->getMessage());
             return $Error->getMessage();
         }
     }
@@ -87,7 +87,7 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(),true));
+            error_log($Error->getMessage());
             return $Error->getMessage();
         }
     }
@@ -110,7 +110,7 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(),true));
+            error_log($Error->getMessage());
             return $Error->getMessage();
         }
     }
@@ -126,7 +126,7 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(),true));
+            error_log($Error->getMessage());
             return $Error->getMessage();
         }
     }
@@ -209,13 +209,72 @@ class ReportGenerator
         }
         catch(Exception $Error)
         {
-            error_log(print_r($Error->getMessage(),true));
+            error_log($Error->getMessage());
             return $Error->getMessage();
         }
     }
 
     /**
+     * buildFilterPanel
+     *
+     * Build a panel that will contain the report title and filters
+     * selected by the user on the filterPanel
+     *
+     * @throws Exception
+     */
+    function buildFilterPanel()
+    {
+        try
+        {
+            // Try to load Filter Display Panel
+            $filePointer = "../reports/$this->reportDir/resources/filterDisplayPanel.js";
+            if(file_exists($filePointer) && is_readable($filePointer))
+            {
+
+            }
+            else
+            {
+                throw new Exception('Error reading the Filter Display Panel, make sure is readable.');
+            }
+        }
+        catch(Exception $Error)
+        {
+            error_log($Error->getMessage());
+            throw new Exception($Error->getMessage());
+        }
+    }
+
+    /**
+     * Build the data grid panel for the report, displaying the data extracted by
+     * getXMLDocument method
+     *
+     * @throws Exception
+     */
+    function buildDataGrid()
+    {
+        try
+        {
+            // Try to load the data grid to build the Data Grid Panel
+            $filePointer = "../reports/$this->reportDir/resources/dataGridPanel.js";
+            if(file_exists($filePointer) && is_readable($filePointer))
+            {
+
+            }
+            else
+            {
+                throw new Exception('Error reading the Data Grid Panel, make sure is readable.');
+            }
+        }
+        catch(Exception $Error)
+        {
+            error_log($Error->getMessage());
+            throw new Exception($Error->getMessage());
+        }
+    }
+
+    /**
      * checkIfVariable
+     *
      * Check in the SQL statement if the current line is a variable, if not return false.
      * @param $Statement
      * @return bool

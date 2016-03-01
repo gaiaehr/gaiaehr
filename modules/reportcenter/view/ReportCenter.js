@@ -61,18 +61,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             minimizable: false,
             modal: false,
             items:[
-                {
-                    xtype: 'uxiframe',
-                    region: 'center',
-                    split: true,
-                    autoScroll: true,
-                    border: true,
-                    bodyPadding: 5,
-                    itemId: 'reportRender',
-                    baseCls: 'x-panel-body',
-                    border: true,
-                    frame: true
-                }
+                filterDisplayPanel,
+                dataGridPanel
             ],
             dockedItems: [{
                 xtype: 'toolbar',

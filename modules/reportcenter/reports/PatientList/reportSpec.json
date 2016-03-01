@@ -3,10 +3,59 @@
   "name":"patientListReport",
   "reportDir":"PatientList",
   "version":"0.1",
-  "filterPanelWidth": 250,
-  "layout": "portrait",
   "author": "TRA NextGen, Inc (c) 2015",
   "description":"Enable a user to electronically and dynamically select, sort, access, and create patient lists by: date and time; and based on each one and at least one combinations.",
   "dir":"reportcenter/reports/PatientList",
-  "category":"ONC Meaningful Use"
+  "category":"ONC Meaningful Use",
+  "filterPanelWidth": 250,
+  "filterDisplayHeight": 200,
+  "gridFields":{
+    "ProviderName": {
+      "name": "Provider Name",
+      "align": "left",
+      "width": 10
+    },
+    "patient_name":{
+      "name": "Patient Name",
+      "align": "left",
+      "flex": 1
+    },
+    "sex":{
+      "name": "Sex",
+      "align": "center"
+    },
+    "DateOfBirth": {
+      "name": "Date of Birth",
+      "align": "center",
+      "format": "Y-m-d"
+    },
+    "marital_status":{
+      "name": "Marital Status",
+      "align": "center"
+    },
+    "occupation":{
+      "name": "Occupation",
+      "align": "center"
+    },
+    "Race":{
+      "name": "Race",
+      "align": "center"
+    },
+    "Ethnicity":{
+      "name": "Ethnicity",
+      "align": "center"
+    },
+    "allergy":{
+      "name": "Allergies",
+      "align": "left"
+    },
+    "problem_name":{
+      "name": "Problem Name",
+      "align": "left"
+    },
+    "medication_name":{
+      "name": "Medications",
+      "align": "left"
+    }
+  }
 }

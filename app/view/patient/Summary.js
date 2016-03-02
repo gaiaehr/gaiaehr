@@ -26,7 +26,6 @@ Ext.define('App.view.patient.Summary', {
 		'App.view.patient.Documents',
 		'App.view.patient.CCD',
 		'App.ux.ManagedIframe',
-
 		'App.view.patient.Patient',
 		'App.view.patient.Reminders'
 	],
@@ -581,14 +580,17 @@ Ext.define('App.view.patient.Summary', {
 	 * verify the patient required info and add a yellow background if empty
 	 */
 	verifyPatientRequiredInfo: function(){
-		var me = this, formPanel = me.query('[action="demoFormPanel"]')[0], field;
+		var me = this,
+            formPanel = me.query('[action="demoFormPanel"]')[0],
+            field,
+            i;
 		me.patientAlertsStore.load({
 			scope: me,
 			params: {
 				pid: me.pid
 			},
 			callback: function(records, operation, success){
-				for(var i = 0; i < records.length; i++){
+				for(i = 0; i < records.length; i++){
 					field = formPanel.getForm().findField(records[i].data.name);
 					if(records[i].data.val){
 						if(field) field.removeCls('x-field-yellow');
@@ -604,9 +606,10 @@ Ext.define('App.view.patient.Summary', {
 	 * load all the stores in the summaryStores array
 	 */
 	loadStores: function(){
-		var me = this;
+		var me = this,
+            i;
 
-		for(var i = 0; i < me.stores.length; i++){
+		for(i = 0; i < me.stores.length; i++){
 			me.stores[i].clearFilter(true);
 			me.stores[i].load({
 				params: {
@@ -624,7 +627,7 @@ Ext.define('App.view.patient.Summary', {
 
 	loadPatient: function(){
 		var me = this,
-			billingPanel;
+            patient;
 
 		me.el.mask(_('loading...'));
 		/**
@@ -632,11 +635,11 @@ Ext.define('App.view.patient.Summary', {
 		 * @type {*}
 		 */
 		me.pid = app.patient.pid;
+
 		/**
 		 * get current set patient info
-		 * @type {*}
 		 */
-		var patient = app.patient;
+		patient = app.patient;
 
 		/**
 		 * update panel main title to reflect the patient name and if the patient is read only
@@ -660,17 +663,6 @@ Ext.define('App.view.patient.Summary', {
 
 		if(a('access_demographics')) me.demographics.loadPatient(me.pid);
 
-//		/**
-//		 * get billing info if user has access
-//		 */
-//		if(a('access_patient_billing')){
-//			billingPanel = me.tabPanel.getComponent('balancePanel');
-//			Fees.getPatientBalance({pid: me.pid},
-//				function(balance){
-//					billingPanel.update(_('account_balance') + ': $' + balance);
-//				}
-//			);
-//		}
 		/**
 		 * reset tab panel to the first tap
 		 */

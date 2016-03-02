@@ -36,7 +36,7 @@ Ext.define('App.controller.patient.Patient', {
 		var me = this;
 		me.control({
 			'#PossiblePatientDuplicatesWindow': {
-				close: me.onPossiblePatientDuplicatesWindowCLose
+				close: me.onPossiblePatientDuplicatesWindowClose
 			},
 			'#PossiblePatientDuplicatesWindow > grid': {
 				itemdblclick: me.onPossiblePatientDuplicatesGridItemDblClick
@@ -64,7 +64,7 @@ Ext.define('App.controller.patient.Patient', {
 		});
 	},
 
-	onPossiblePatientDuplicatesWindowCLose: function(window){
+    onPossiblePatientDuplicatesWindowClose: function(window){
 		var store = window.down('grid').getStore();
 		store.removeAll();
 		store.commitChanges();
@@ -72,11 +72,12 @@ Ext.define('App.controller.patient.Patient', {
 
 	checkForPossibleDuplicates: function(cmp){
 		var me = this,
+            params,
 			form = cmp.isPanel ? cmp.getForm() : cmp.up('form').getForm();
 
 		if(!form.isValid()) return;
 
-		var params = {
+		params = {
 			fname: form.findField('fname').getValue(),
 			lname: form.findField('lname').getValue(),
 			sex: form.findField('sex').getValue(),

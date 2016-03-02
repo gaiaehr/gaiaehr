@@ -110,12 +110,7 @@ Ext.define('App.controller.patient.Summary', {
 		}else{
 			store = grid.getStore();
 		}
-
-		//store.clearFilter(true);
 		store.load({
-			//params: {
-			//	pid: app.patient.pid
-			//},
 			filters:[
 				{
 					property:'pid',

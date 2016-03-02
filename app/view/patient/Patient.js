@@ -34,7 +34,8 @@ Ext.define('App.view.patient.Patient', {
 	defaultQRCodeImage: 'resources/images/QRCodeImage.png',
 
 	initComponent: function(){
-		var me = this;
+		var me = this,
+            configs;
 
 		me.store = Ext.create('App.store.patient.Patient');
 		me.patientAlertsStore = Ext.create('App.store.patient.MeaningfulUseAlert');
@@ -69,7 +70,7 @@ Ext.define('App.view.patient.Patient', {
 			}
 		});
 
-		var configs = {
+		configs = {
 			items: [
 				me.demoForm = Ext.widget('form', {
 					action: 'demoFormPanel',
@@ -171,6 +172,9 @@ Ext.define('App.view.patient.Patient', {
 			whoPanel,
 			PatientContactsTab;
 
+        // Part of the Override custome function, this function calls the FormBuilder (a PHP method)
+        // to dynamically insert the fields configured on the administration panel. All the fields
+        // are in the GaiaEHR database.
 		me.getFormItems(me.demoForm, 1, function(formPanel){
 
 			var form = me.demoForm.getForm(),
@@ -178,7 +182,8 @@ Ext.define('App.view.patient.Patient', {
 				mname = form.findField('mname'),
 				lname = form.findField('lname'),
 				sex = form.findField('sex'),
-				dob = form.findField('DOB');
+				dob = form.findField('DOB'),
+                crtl;
 
 			if(fname) fname.vtype = 'nonspecialcharacters';
 			if(mname) mname.vtype = 'nonspecialcharacters';
@@ -187,7 +192,7 @@ Ext.define('App.view.patient.Patient', {
 			if(dob) dob.setMaxValue(new Date());
 
 			if(me.newPatient){
-				var crtl = App.app.getController('patient.Patient');
+				crtl = App.app.getController('patient.Patient');
 
 				fname.on('blur', crtl.checkForPossibleDuplicates, crtl);
 				lname.on('blur', crtl.checkForPossibleDuplicates, crtl);

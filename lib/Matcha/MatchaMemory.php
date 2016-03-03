@@ -41,6 +41,7 @@ class MatchaMemory extends Matcha
                     ) ENGINE = MEMORY;';
             self::$__conn->query($setHeap);
             self::$__conn->query($sql);
+            self::$__conn->query("ALTER TABLE `_sencha_model` ADD INDEX `model` (`model`)");
             return true;
         }
         catch(PDOException $e)

@@ -69,7 +69,7 @@ class DocumentHandler {
 	public function getPatientDocuments($params, $includeDocument = false){
 		$this->setPatientDocumentModel();
 		$records = $this->d->load($params)->all();
-
+		ini_set('memory_limit', '2024M');
 		/** lets unset the actual document data */
 		if(!$includeDocument && isset($records['data'])){
 			foreach($records['data'] as $i => $record){
@@ -131,6 +131,61 @@ class DocumentHandler {
 	}
 
 	/**
+	 * @param $params
+	 * @param $updateDocumentData
+	 *
+	 * @return array
+	 */
+	public function updatePatientDocument($params, $updateDocumentData = false){
+		$this->setPatientDocumentModel();
+
+		if(is_array($params)){
+			foreach($params as &$param){
+
+				if($updateDocumentData){
+					/** remove the mime type */
+					$param->document = $this->trimBase64($param->document);
+
+					/** encrypted if necessary */
+					if($param->encrypted){
+						$param->document = MatchaUtils::encrypt($param->document);
+					};
+					$param->hash = hash('sha256', $param->document);
+				}else{
+					unset($param->document, $param->hash);
+				}
+			}
+		}else{
+
+			if($updateDocumentData){
+				/** remove the mime type */
+				$params->document = $this->trimBase64($params->document);
+				/** encrypted if necessary */
+				if($params->encrypted){
+					$params->document = MatchaUtils::encrypt($params->document);
+				};
+				$params->hash = hash('sha256', $params->document);
+			}else{
+				unset($params->document, $params->hash);
+			}
+		}
+
+		$results = $this->d->save($params);
+
+		if($updateDocumentData){
+			if(is_array($results)){
+				foreach($results as &$result){
+					$this->handleDocumentData($result);
+				}
+			}else{
+				$this->handleDocumentData($results);
+			}
+		}
+
+		return $results;
+	}
+
+	/**
 	 * This logic is to eventually split the document into multiples tables
 	 * using the sencha model instance
 	 *
@@ -140,7 +195,15 @@ class DocumentHandler {
 
 		try{
 			$document = (object) $document;
-			$instance = floor($document->id / $this->filesPerInstance) + 1;
+
+			$isUpdate = isset($document->document_id) &&
+				isset($document->document_instance) &&
+				isset($document->document) &&
+				$document->document_id != 0 &&
+				$document->document != '';
+
+			$instance = $isUpdate ? $document->document_instance : floor($document->id / $this->filesPerInstance) + 1;
+
 			$conn = Matcha::getConn();
 			$sth = $conn->prepare("SHOW TABLES LIKE 'documents_data_{$instance}'");
 			$sth->execute();
@@ -155,23 +218,28 @@ class DocumentHandler {
 				throw new Exception("Unable to create App.model.administration.DocumentData model instance '{$instance}'");
 			};
 
-			//error_log('DOCUMENT');
 			$data = new stdClass();
+
+			if($isUpdate){
+				$data->id = $document->document_id;
+			}
+
 			$data->pid = $document->pid;
 			$data->document = $document->document;
 			$record = $document_model->save($data);
-			//error_log('DOCUMENT DATA COMPLETED');
 
-			$document->document ='';
-			$document->document_instance = $instance;
-			$document->document_id = $record->id;
-			$sth = $conn->prepare("UPDATE patient_documents SET document = '', document_instance = :doc_ins, document_id = :doc_id WHERE id = :id;");
-			$sth->execute([
-				':id' => $document->id,
-				':doc_ins' => $document->document_instance,
-				':doc_id' => $document->document_id
-			]);
-			//error_log('DOCUMENT COMPLETE');
+			if(!$isUpdate){
+				$document->document ='';
+				$document->document_instance = $instance;
+				$document->document_id = $record->id;
+				$sth = $conn->prepare("UPDATE patient_documents SET document = '', document_instance = :doc_ins, document_id = :doc_id WHERE id = :id;");
+				$sth->execute([
+					':id' => $document->id,
+					':doc_ins' => $document->document_instance,
+					':doc_id' => $document->document_id
+				]);
+			}
+
 			unset($document->document);
 
 			unset($data, $record, $document_model);
@@ -179,25 +247,6 @@ class DocumentHandler {
 			error_log('Error Converting Document');
 			error_log($e->getMessage());
 		}
-	}
-
-	/**
-	 * @param $params
-	 *
-	 * @return array
-	 */
-	public function updatePatientDocument($params){
-		$this->setPatientDocumentModel();
-
-		if(is_array($params)){
-			foreach($params as &$param){
-				unset($param->document, $param->hash);
-			}
-		}else{
-			unset($params->document, $params->hash);
-		}
-
-		return $this->d->save($params);
 	}
 
 	/**
@@ -286,98 +335,98 @@ class DocumentHandler {
 	 * @param $params
 	 * @return array
 	 */
-	public function createDocument($params){
-		$this->setPatientDocumentModel();
-
-		$params = (object)$params;
-		$path = $this->getPatientDir($params) . $this->nameFile();
-
-		$this->documents = new Documents();
-		$this->documents->PDFDocumentBuilder($params, $path);
-
-		if(file_exists($path)){
-
-			$data = new stdClass();
-			$data->pid = $this->pid;
-			$data->eid = (isset($params->eid) ? $params->eid : '0');
-			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
-			$data->docType = $this->docType;
-			$data->name = $this->fileName;
-			$data->url = $this->getDocumentUrl();
-			$data->date = date('Y-m-d H:i:s');
-			$data->hash = hash_file('sha256', $path);
-
-			$data = $this->d->save($data);
-
-			if(isset($params->DoctorsNote)){
-				$this->doctorsnotes = new DoctorsNotes();
-				$this->doctorsnotes->addDoctorsNotes($params);
-			}
-
-			//print_r($data);
-
-			return ['success' => true, 'doc' => ['id' => $data['data']->id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path]];
-		} else{
-			return ['success' => false, 'error' => 'Document could not be created'];
-		}
-	}
+//	public function createDocument($params){
+//		$this->setPatientDocumentModel();
+//
+//		$params = (object)$params;
+//		$path = $this->getPatientDir($params) . $this->nameFile();
+//
+//		$this->documents = new Documents();
+//		$this->documents->PDFDocumentBuilder($params, $path);
+//
+//		if(file_exists($path)){
+//
+//			$data = new stdClass();
+//			$data->pid = $this->pid;
+//			$data->eid = (isset($params->eid) ? $params->eid : '0');
+//			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
+//			$data->docType = $this->docType;
+//			$data->name = $this->fileName;
+//			$data->url = $this->getDocumentUrl();
+//			$data->date = date('Y-m-d H:i:s');
+//			$data->hash = hash_file('sha256', $path);
+//
+//			$data = $this->d->save($data);
+//
+//			if(isset($params->DoctorsNote)){
+//				$this->doctorsnotes = new DoctorsNotes();
+//				$this->doctorsnotes->addDoctorsNotes($params);
+//			}
+//
+//			//print_r($data);
+//
+//			return ['success' => true, 'doc' => ['id' => $data['data']->id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path]];
+//		} else{
+//			return ['success' => false, 'error' => 'Document could not be created'];
+//		}
+//	}
 
 	/**
 	 * this will return the PDF base64 string
 	 * @param $params
 	 * @return bool|string
 	 */
-	public function createPDF($params){
-		$this->setPatientDocumentModel();
-		$this->documents = new Documents();
-		return $this->documents->PDFDocumentBuilder((object)$params);
-	}
+//	public function createPDF($params){
+//		$this->setPatientDocumentModel();
+//		$this->documents = new Documents();
+//		return $this->documents->PDFDocumentBuilder((object)$params);
+//	}
 
-	public function uploadDocument($params, $file){
-		$this->setPatientDocumentModel();
-
-		$params = (object)$params;
-		$src = $this->getPatientDir($params) . $this->reNameFile($file);
-		if(move_uploaded_file($file['filePath']['tmp_name'], $src)){
-
-			if(isset($params->encrypted) && $params->encrypted){
-				file_put_contents($src, Crypt::encrypt(file_get_contents($src)), LOCK_EX);
-			}
-
-			$data = new stdClass();
-			$data->pid = $this->pid;
-			$data->eid = (isset($params->eid) ? $params->eid : 0);
-			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
-			$data->docType = $this->docType;
-			$data->name = $this->fileName;
-			$data->url = $this->getDocumentUrl();
-			$data->date = date('Y-m-d H:i:s');
-			$data->hash = hash_file('sha256', $src);
-			$data->encrypted = $params->encrypted;
-			$data = $this->d->save($data);
-
-			return ['success' => true, 'doc' => ['id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()]];
-		} else{
-			return ['success' => false, 'error' => 'File could not be uploaded'];
-		}
-	}
+//	public function uploadDocument($params, $file){
+//		$this->setPatientDocumentModel();
+//
+//		$params = (object)$params;
+//		$src = $this->getPatientDir($params) . $this->reNameFile($file);
+//		if(move_uploaded_file($file['filePath']['tmp_name'], $src)){
+//
+//			if(isset($params->encrypted) && $params->encrypted){
+//				file_put_contents($src, Crypt::encrypt(file_get_contents($src)), LOCK_EX);
+//			}
+//
+//			$data = new stdClass();
+//			$data->pid = $this->pid;
+//			$data->eid = (isset($params->eid) ? $params->eid : 0);
+//			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
+//			$data->docType = $this->docType;
+//			$data->name = $this->fileName;
+//			$data->url = $this->getDocumentUrl();
+//			$data->date = date('Y-m-d H:i:s');
+//			$data->hash = hash_file('sha256', $src);
+//			$data->encrypted = $params->encrypted;
+//			$data = $this->d->save($data);
+//
+//			return ['success' => true, 'doc' => ['id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()]];
+//		} else{
+//			return ['success' => false, 'error' => 'File could not be uploaded'];
+//		}
+//	}
 
 	/**
 	 * @param $id
 	 * @return bool
 	 */
-	public function deleteDocumentById($id){
-		$path = $this->getDocumentPathById($id);
-		if(unlink($path)){
-			$this->db->setSQL("DELETE FROM patient_documents WHERE id = '$id'");
-			$this->db->execLog();
-			return true;
-		} else{
-			return false;
-
-		}
-
-	}
+//	public function deleteDocumentById($id){
+//		$path = $this->getDocumentPathById($id);
+//		if(unlink($path)){
+//			$this->db->setSQL("DELETE FROM patient_documents WHERE id = '$id'");
+//			$this->db->execLog();
+//			return true;
+//		} else{
+//			return false;
+//
+//		}
+//
+//	}
 
 	/**
 	 * @return string
@@ -491,7 +540,6 @@ class DocumentHandler {
 		$this->db->setSQL($this->db->sqlBind($data, 'documents_templates', 'U', ['id' => $params->id]));
 		$this->db->execLog();
 		return $params;
-
 	}
 
 	/**

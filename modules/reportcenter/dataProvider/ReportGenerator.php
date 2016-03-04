@@ -47,13 +47,6 @@ class ReportGenerator
      */
     private $site;
 
-    /**
-     * This variable holds all the information about the current loaded report.
-     * is practically the reportConf.json file located inside avery
-     * @var object
-     */
-    private $reportConfiguration;
-
     private $reportParameters;
 
     /**
@@ -244,42 +237,26 @@ class ReportGenerator
             $reportParameters = json_decode($summarizedParameters->params, true);
             $reportInformation = json_decode($summarizedParameters->reportInformation);
 
-            // If the filter HTML template file exist, go ahead and load it, if not
-            // sadly throw an exception.
-            $filePointer = "../modules/reportcenter/resources/filterHTML.html";
-            if(file_exists($filePointer) && is_readable($filePointer))
-            {
-                // Begin the construction of the HTML code we simple load another html template and start
-                // replacing the our tags with the report information ones, and then again replace our tag in
-                // the filter display panel with the parsed filterHTML template. fast and simple!
-                $fileContent = file_get_contents($filePointer);
-                $htmlTemplate = str_ireplace(
-                    "/*title*/",
-                    $reportInformation->title,
-                    $fileContent
-                );
-                $htmlTemplate = str_ireplace(
-                    "/*filters*/",
-                    self::__buildFilterHTML($reportParameters),
-                    $htmlTemplate
-                );
+            // Build the filter display content for the sencha filter display panel
+            $reportParameters[] = [
+                'name' => 'title',
+                'value' => $reportInformation->title
+            ];
+            $htmlTemplate = self::__buildFilterHTML($reportParameters);
+            array_pop($reportParameters);
 
-                // Clean the string from unnecessary characters from the code, and also do some
-                // sort of minify
-                $htmlTemplate = self::__clearString($htmlTemplate);
+            // Clean the string from unnecessary characters from the code, and also do some
+            // sort of minify
+            $htmlTemplate = self::__clearString($htmlTemplate);
 
-                // Return the successfully parsed filter display panel back to Sencha.
-                // and Sencha, and JavaScript will eval this JavaScript code and make it available and
-                // be used by the reporting system
-                return [
-                    'success' => true,
-                    'data' => $htmlTemplate
-                ];
-            }
-            else
-            {
-                throw new \Exception('Error loading the Filter Display Panel, make sure is readable.');
-            }
+            // Return the successfully parsed filter display panel back to Sencha.
+            // and Sencha, and JavaScript will eval this JavaScript code and make it available and
+            // be used by the reporting system
+            return [
+                'success' => true,
+                'data' => $htmlTemplate
+            ];
+
         }
         catch(\Exception $Error)
         {
@@ -292,28 +269,36 @@ class ReportGenerator
     }
 
     /**
-     * Automatically build  a table for the filters, no matter how much filter are
+     * Will look for all the matches with html comment <!--filter_name--> and replace with filter values
+     * from the filterPanel
      *
      * @param $filters
-     * @return string
+     * @return mixed
+     * @throws \Exception
      */
     private function __buildFilterHTML($filters)
     {
-        $count = 0; // Records [Key and Value] Pair
-        $cols = 2; // Columns
-        $html = '<table width="100%" style="padding: 2px;"><tr>';
-        foreach($filters as $filter)
+        try
         {
-            $html .= '<td style="width: 1%; border-left: 2px solid #12B74E; font-size: .8em; padding: 2px;">'.$filter['name'].'</td>';
-            $html .= '<td style="font-size: .8em; padding: 2px;">'.$filter['value'].'</td>';
-            $count++;
-            if($count == $cols){
-                $cols += 2;
-                $html .= "</tr><tr>";
+            // Load the filter html tamplate
+            $filePointer = "../modules/reportcenter/resources/filterHTML.html";
+            if(!file_exists($filePointer) && !is_readable($filePointer))
+                throw new \Exception('Filter HTML template not found or is readable.');
+
+            $htmlTemplate = file_get_contents($filePointer);
+
+            // Replace the filter key pairs.
+            foreach($filters as $filter)
+            {
+                $htmlTemplate = str_ireplace('<!--'.$filter['name'].'-->', $filter['value'], $htmlTemplate);
             }
+            return $htmlTemplate;
         }
-        $html .= "</tr></table>";
-        return $html;
+        catch(\Exception $Error)
+        {
+            error_log($Error->getMessage());
+            throw new \Exception($Error->getMessage());
+        }
     }
 
     /**

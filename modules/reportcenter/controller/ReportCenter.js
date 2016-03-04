@@ -48,6 +48,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             selector: '#reportWindow #print'
         },
         {
+            ref: 'PDFButton',
+            selector: '#reportWindow #createPdf'
+        },
+        {
             ref: 'ReportPanel',
             selector: '#reportWindow #reportPanel'
         },
@@ -154,12 +158,12 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
     /**
      * Print report event, this procedure will print the report on the printer.
-     * TODO: Finish me.
      */
     onPrint: function(){
-        var iframe = Ext.ComponentQuery.query('#reportWindow #reportRender')[0].el;
-        say(iframe);
-        //iframe.contentWindow.document.execCommand('print', false, null);
+        var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0],
+            GridToHtml = new Ext.create('App.ux.grid.GridToHtml'),
+            html = GridToHtml.getHtml(reportDataGrid);
+        console.log(html);
     },
 
     onCreatePDF: function(){
@@ -170,6 +174,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     onRender: function(){
         this.generateDocument('html');
         this.getPrintButton().enable();
+        this.getPDFButton().enable();
     },
 
     /**

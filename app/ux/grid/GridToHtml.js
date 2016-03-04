@@ -149,9 +149,6 @@ Ext.define('App.ux.grid.GridToHtml', {
                 '</html>'
             ];
 
-
-
-
             return Ext.create('Ext.XTemplate', htmlMarkup).apply(data);
 
         },

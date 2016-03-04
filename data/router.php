@@ -235,6 +235,7 @@ if($isForm && $isUpload){
 } else {
 	header('Content-Type: application/json; charset=utf-8');
 	$json = htmlentities(json_encode($response), ENT_NOQUOTES | ENT_SUBSTITUTE , 'UTF-8');
+    $json = json_encode($response);
     $json = mb_convert_encoding($json, 'UTF-8');
 	print $json;
 }

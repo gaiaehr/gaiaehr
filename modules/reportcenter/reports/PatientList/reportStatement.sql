@@ -4,11 +4,7 @@ SET @EndDate = :end_date;
 SET @ProblemCode = :problem_code;
 SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
-SET @StartDateOrder = :begin_sort;
-SET @ProviderOrder = :prov_sort;
-SET @AllergiesOrder = :allergies_sort;
-SET @ProblemsOrder = :problems_sort;
-SET @MedicationsOrder = :medications_sort;
+
 
 SELECT patient.*,
         DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth,
@@ -126,14 +122,3 @@ AND CASE
 	ELSE 1=1
 END
 
-ORDER BY
-CASE WHEN @StartDateOrder = 'ASC' THEN encounters.service_date END ASC,
-CASE WHEN @StartDateOrder = 'DESC' THEN encounters.service_date END DESC,
-CASE WHEN @ProviderOrder = 'ASC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END ASC,
-CASE WHEN @ProviderOrder = 'DESC' THEN CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) END DESC,
-CASE WHEN @AllergiesOrder = 'ASC' THEN patient_allergies.allergy END ASC,
-CASE WHEN @AllergiesOrder = 'DESC' THEN patient_allergies.allergy END DESC,
-CASE WHEN @ProblemsOrder = 'ASC' THEN patient_active_problems.problem_name END ASC,
-CASE WHEN @ProblemsOrder = 'DESC' THEN patient_active_problems.problem_name END DESC,
-CASE WHEN @MedicationsOrder = 'ASC' THEN patient_medications.medication_name END ASC,
-CASE WHEN @MedicationsOrder = 'DESC' THEN patient_medications.medication_name END DESC

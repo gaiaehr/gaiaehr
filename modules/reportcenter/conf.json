@@ -13,64 +13,16 @@
 		"es_PR"
 	],
 	"actionsAPI":{
-		"SuperBill":{
-			"methods":{
-				"CreateSuperBill":
-				{
-					"len":1
-				}
-			}
-		},
-		"ClientList":{
-			"methods":{
-				"CreateClientList":
-				{
-					"len":1
-				},
-				"getClientList":
-				{
-					"len":1
-				}
-			}
-		},
-		"ImmunizationsReport":{
-			"methods":{
-				"createImmunizationsReport":
-				{
-					"len":1
-				},
-				"getImmunizationsReport":
-				{
-					"len":1
-				}
-			}
-		},
-		"Clinical":{
-			"methods":{
-				"createClinicalReport":
-				{
-					"len":1
-				},
-				"getClinicalList":
-				{
-					"len":1
-				}
-			}
-		},
-		"Encounters":{
-			"methods":{
-				"CreateEncountersReport":
-				{
-					"len":1
-				}
-			}
-		},
+      "ReportGenerator": {
+        "methods":{
+          "buildDataGrid": { "len": 1 },
+          "buildFilterPanel": { "len": 2 },
+          "dispatchReportData": { "len":  1 }
+        }
+      },
         "ReportList":{
             "methods":{
-                "getAvailableReports":
-                {
-                    "len":1
-                }
+                "getAvailableReports": { "len": 1 }
             }
         }
 	},

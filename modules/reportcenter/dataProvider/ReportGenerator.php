@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace modules\reportcenter\dataProvider;
+
 class ReportGenerator
 {
 
@@ -46,23 +48,40 @@ class ReportGenerator
     private $site;
 
     /**
-     * ReportGenerator constructor.
-     * It all begins here.
-     * @param string $site
+     * This variable holds all the information about the current loaded report.
+     * is practically the reportConf.json file located inside avery
+     * @var object
      */
-    function __construct($site = 'default')
+    private $reportConfiguration;
+
+    private $reportParameters;
+
+    /**
+     * Start
+     * @return bool|string
+     */
+    function start()
     {
         try
         {
-            $this->site = ($_REQUEST['site'] ? $_REQUEST['site'] : $site);
+            $this->site = $_SESSION['user']['site'];
             if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
-            require_once('../../../registry.php');
-            require_once("../../../sites/$this->site/conf.php");
-            require_once('../../../classes/MatchaHelper.php');
-            require_once('../../../classes/Array2XML.php');
+            require_once('../registry.php');
+
+            // Try to connect to the database automatically. By just including the
+            // MatchaHelper and the configuration file of the site, it will
+            // connect to database.
+            require_once("../sites/$this->site/conf.php");
+            require_once('../classes/MatchaHelper.php');
+
+
+            // Load the Array2XML library, this will create excellent and well formatted XML's for our hybrid
+            // counterpart, this to create XSL pages. This is only used when XSL reporting is implied.
+            require_once('../classes/Array2XML.php');
+
             return true;
         }
-        catch(Exception $Error)
+        catch(\Exception $Error)
         {
             error_log($Error->getMessage());
             return $Error->getMessage();
@@ -70,83 +89,53 @@ class ReportGenerator
     }
 
     /**
-     * Set the REQUEST for sending.
-     * @param $REQUEST
-     * @return bool|Exception
-     */
-    function setRequest($REQUEST)
-    {
-        try
-        {
-            if(!isset($REQUEST)) throw new Exception('No request was sent by the client.');
-            if(isset($REQUEST['site'])) $this->site = $REQUEST['site'];
-            $this->request = json_decode($REQUEST['params'], true);
-            $this->reportDir = $REQUEST['reportDir'];
-            $this->format = $REQUEST['format'];
-            return true;
-        }
-        catch(Exception $Error)
-        {
-            error_log($Error->getMessage());
-            return $Error->getMessage();
-        }
-    }
-    /**
-     * @return Exception|string
+     * @return string
      */
     function getXSLTemplate()
     {
-        try
-        {
-            $filePointer = "../reports/$this->reportDir/report.xsl";
-            if(file_exists($filePointer) && is_readable($filePointer))
-            {
+        try {
+            $filePointer = "../modules/reportcenter/reports/$this->reportParameters->reportDir/report.xsl";
+            if (file_exists($filePointer) && is_readable($filePointer)) {
                 return file_get_contents($filePointer);
+            } else {
+                throw new \Exception('Error: Not XSLT file was found or readable.');
             }
-            else
-            {
-                throw new Exception('Error: Not XSLT file was found or readable.');
-            }
-        }
-        catch(Exception $Error)
-        {
+        } catch (\Exception $Error) {
             error_log($Error->getMessage());
             return $Error->getMessage();
         }
     }
 
     /**
+     * Dispatch data to the report, depending on the report usage it will return XML or JSON valid
+     * data, JSON when Sencha report is used. When XML is used, is when XSL is used.
      *
+     * @param $summarizedParameters
+     * @return array|string
      */
-    function buildFilterPanelFields()
+    function dispatchReportData($summarizedParameters)
     {
         try
         {
+            // Decode the reportInformation JSON to itself.
+            $reportParameters = json_decode($summarizedParameters->params, true);
+            $reportInformation = json_decode($summarizedParameters->reportInformation);
 
-        }
-        catch(Exception $Error)
-        {
-            error_log($Error->getMessage());
-            return $Error->getMessage();
-        }
-    }
-
-    /**
-     * @return Exception|string
-     */
-    function getXMLDocument()
-    {
-        try
-        {
-            $filePointer = "../reports/$this->reportDir/reportStatement.sql";
+            // Prepare the variables for file operations
+            $filePointer = "../modules/reportcenter/reports/$reportInformation->reportDir/reportStatement.sql";
             $PrepareField = [];
 
             if(file_exists($filePointer) && is_readable($filePointer))
             {
+                // Load all the report information on memory, keep in memory almost all the methods
+                // in this class use that this variable to extract portions of the configuration
+                // information.
+                $this->start();
+
                 // Important connection parameter, this will allow multiple
                 // prepare tags with the same name.
-                $this->conn = Matcha::getConn();
-                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+                $this->conn = \Matcha::getConn();
+                $this->conn->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
                 // Get the report SQL statement content
                 $fileContent = file_get_contents($filePointer);
@@ -154,7 +143,8 @@ class ReportGenerator
                 // Copy all the request variables into the Prepared Values,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
-                foreach($this->request as $field)
+                $parameters = $reportParameters;
+                foreach($parameters as $field)
                 {
                     $PrepareField[':'.$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
                     $PrepareField[':' . $field['name']]['value'] = $field['value'];
@@ -163,14 +153,14 @@ class ReportGenerator
                 // Copy all the request filter variables to the XML,
                 // also check if it came from the grid form and normal form.
                 // This because we need to do a POST-PREPARE the SQL statement
-                foreach ($this->request as $field)
+                foreach ($parameters as $field)
                 {
                     $ReturnFilter[$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
                     $ReturnFilter[$field['name']]['value'] = $field['value'];
                 }
 
                 // Prepare all the variable fields in the SQL Statement
-                $PreparedSQL = $this->PostPrepare($fileContent, $PrepareField);
+                $PreparedSQL = self::__postPrepare($fileContent, $PrepareField);
                 $Queries = explode(';', $PreparedSQL);
 
                 // Run all the SQL Statement separated by `;` in the file
@@ -181,7 +171,7 @@ class ReportGenerator
                     {
                         // Is just a SET @ variable, if yes query but not try to
                         // fetch any records. SET does not return any dataSet
-                        if($this->checkIfVariable($Query))
+                        if(self::__checkIfVariable($Query))
                         {
                             $this->conn->query($Query);
                         }
@@ -189,25 +179,50 @@ class ReportGenerator
                         {
                             $SQL = $this->conn->prepare($Query);
                             $SQL->execute();
-                            $records[] = $SQL->fetchAll(PDO::FETCH_ASSOC);
+                            $records[] = $SQL->fetchAll(\PDO::FETCH_ASSOC);
                         }
                     }
                 }
 
-                $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
-                Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
-                $xml = Array2XML::createXML('records', array(
-                    'filters' => $ReturnFilter,
-                    'record' => $records[count($records)-1]
-                ));
-                return $xml->saveXML();
+                // Prepare the filters HTML representation.
+                $filterDisplay = $this->__buildFilterPanel($summarizedParameters);
+
+                // When format value is used in the parameters object dispatch the
+                // data in XML format, or in JSON format
+                //
+                // XML::filters - The filters used in the filter panel
+                // XML::record - The actual records extracted from the data base
+                //
+                // JSON::success - True when seccess, yeah!!
+                // JSON::filters - The filters used in the filter panel
+                // JSON::total - The total records in the data
+                // JSON::data - The actual records extracted from the data base
+                if($summarizedParameters->format == 'xml')
+                {
+                    $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
+                    \Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
+                    $xml = \Array2XML::createXML('records', array(
+                        'filters' => $ReturnFilter,
+                        'record' => $records[count($records) - 1]
+                    ));
+                    return $xml->saveXML();
+                }
+                elseif($summarizedParameters->format == 'json')
+                {
+                    return [
+                        'success' => true,
+                        'filters' => $filterDisplay,
+                        'total' => count($records),
+                        'data' => $records[count($records) - 1]
+                    ];
+                }
             }
             else
             {
-                throw new Exception('Error: Not SQL Statement file was found or readable.');
+                throw new \Exception('Error: Not SQL Statement file was found or readable.');
             }
         }
-        catch(Exception $Error)
+        catch(\Exception $Error)
         {
             error_log($Error->getMessage());
             return $Error->getMessage();
@@ -215,71 +230,253 @@ class ReportGenerator
     }
 
     /**
-     * buildFilterPanel
-     *
      * Build a panel that will contain the report title and filters
      * selected by the user on the filterPanel
      *
-     * @throws Exception
+     * @param null $summarizedParameters
+     * @return array
      */
-    function buildFilterPanel()
+    private function __buildFilterPanel($summarizedParameters = null)
     {
         try
         {
-            // Try to load Filter Display Panel
-            $filePointer = "../reports/$this->reportDir/resources/filterDisplayPanel.js";
+            // Decode the reportInformation JSON to itself.
+            $reportParameters = json_decode($summarizedParameters->params, true);
+            $reportInformation = json_decode($summarizedParameters->reportInformation);
+
+            // If the filter HTML template file exist, go ahead and load it, if not
+            // sadly throw an exception.
+            $filePointer = "../modules/reportcenter/resources/filterHTML.html";
             if(file_exists($filePointer) && is_readable($filePointer))
             {
+                // Begin the construction of the HTML code we simple load another html template and start
+                // replacing the our tags with the report information ones, and then again replace our tag in
+                // the filter display panel with the parsed filterHTML template. fast and simple!
+                $fileContent = file_get_contents($filePointer);
+                $htmlTemplate = str_ireplace(
+                    "/*title*/",
+                    $reportInformation->title,
+                    $fileContent
+                );
+                $htmlTemplate = str_ireplace(
+                    "/*filters*/",
+                    self::__buildFilterHTML($reportParameters),
+                    $htmlTemplate
+                );
 
+                // Clean the string from unnecessary characters from the code, and also do some
+                // sort of minify
+                $htmlTemplate = self::__clearString($htmlTemplate);
+
+                // Return the successfully parsed filter display panel back to Sencha.
+                // and Sencha, and JavaScript will eval this JavaScript code and make it available and
+                // be used by the reporting system
+                return [
+                    'success' => true,
+                    'data' => $htmlTemplate
+                ];
             }
             else
             {
-                throw new Exception('Error reading the Filter Display Panel, make sure is readable.');
+                throw new \Exception('Error loading the Filter Display Panel, make sure is readable.');
             }
         }
-        catch(Exception $Error)
+        catch(\Exception $Error)
         {
             error_log($Error->getMessage());
-            throw new Exception($Error->getMessage());
+            return [
+                'success' => false,
+                'data' => $Error->getMessage()
+            ];
         }
+    }
+
+    /**
+     * Automatically build  a table for the filters, no matter how much filter are
+     *
+     * @param $filters
+     * @return string
+     */
+    private function __buildFilterHTML($filters)
+    {
+        $count = 0; // Records [Key and Value] Pair
+        $cols = 2; // Columns
+        $html = '<table width="100%" style="padding: 2px;"><tr>';
+        foreach($filters as $filter)
+        {
+            $html .= '<td style="width: 1%; border-left: 2px solid #12B74E; font-size: .8em; padding: 2px;">'.$filter['name'].'</td>';
+            $html .= '<td style="font-size: .8em; padding: 2px;">'.$filter['value'].'</td>';
+            $count++;
+            if($count == $cols){
+                $cols += 2;
+                $html .= "</tr><tr>";
+            }
+        }
+        $html .= "</tr></table>";
+        return $html;
     }
 
     /**
      * Build the data grid panel for the report, displaying the data extracted by
      * getXMLDocument method
      *
-     * @throws Exception
+     * @param null $summarizedParameters
+     * @return array
+     * @throws \Exception
      */
-    function buildDataGrid()
+    function buildDataGrid($summarizedParameters = null)
     {
         try
         {
+            // Decode the reportInformation JSON to itself.
+            $reportInformation = json_decode($summarizedParameters->reportInformation);
+
             // Try to load the data grid to build the Data Grid Panel
-            $filePointer = "../reports/$this->reportDir/resources/dataGridPanel.js";
+            $filePointer = "../modules/reportcenter/resources/dataGridPanel.js";
             if(file_exists($filePointer) && is_readable($filePointer))
             {
+                // Load the dataGridPanel.js template file
+                $dataGridPanel = file_get_contents($filePointer);
 
+                // Load the report specifications json file
+                $reportConfiguration = json_decode(file_get_contents(
+                    "../modules/reportcenter/reports/$reportInformation->reportDir/reportSpec.json"
+                ));
+
+                $this->start();
+
+                // Verify and check that the gridFields space are declared in the
+                // report specification file
+                if(!is_object($reportConfiguration->gridFields))
+                {
+                    throw new \Exception('No Sencha gridField are declared on the report specification file.');
+                }
+
+                // Replace the /*fieldColumns*/ in the data grid panel file, and write down the our build
+                // Sencha column definitions.
+                $resultSenchaDefinition = str_ireplace(
+                    "/*fieldColumns*/",
+                    self::__senchaColumnDefinition($reportConfiguration->gridFields),
+                    $dataGridPanel
+                );
+
+                // Replaces the /*fieldStore*/ in the data store, and write down our build
+                // Sencha store definitions, we are almost done.
+                $resultSenchaDefinition = str_ireplace(
+                    "/*fieldStore*/",
+                    self::__senchaStoreDefinition($reportConfiguration->gridFields),
+                    $resultSenchaDefinition
+                );
+
+                // Clean the string from unnecessary characters from the code, and also do some
+                // sort of minify
+                $resultSenchaDefinition = self::__clearString($resultSenchaDefinition);
+
+                // Return the successfully parsed filter display panel back to Sencha.
+                // and Sencha, and JavaScript will eval this JavaScript code and make it available and
+                // be used by the reporting system
+                return [
+                    'success' => true,
+                    'data' => $resultSenchaDefinition
+                ];
             }
             else
             {
-                throw new Exception('Error reading the Data Grid Panel, make sure is readable.');
+                throw new \Exception('Error reading & loading the Data Grid Panel, make sure is readable.');
             }
         }
-        catch(Exception $Error)
+        catch(\Exception $Error)
         {
             error_log($Error->getMessage());
-            throw new Exception($Error->getMessage());
+            throw new \Exception($Error->getMessage());
         }
     }
 
+
     /**
-     * checkIfVariable
+     * Build up the Sencha Store definition string
+     * fields : Object[]/String[]
+     * An object of field definition which define all the store fields
      *
+     * @param null $storeFields
+     * @return bool|string
+     */
+    private function __senchaStoreDefinition($storeFields = null)
+    {
+        // If gridFields is not set exit the method.
+        if(!is_object($storeFields)) return false;
+
+        $senchaDefinition = '';
+        foreach($storeFields as $Index => $storeField)
+        {
+            $senchaDefinition .= '{ ';
+            $senchaDefinition .= "name: '$Index',";
+            $senchaDefinition .= "type: '$storeField->type'";
+            $senchaDefinition .= ' },';
+        }
+
+        // Delete the last comma, we don't need it.
+        $senchaDefinition = substr($senchaDefinition, 0, -1);
+
+        return $senchaDefinition;
+    }
+
+    /**
+     * Build up the Sencha Column definition string
+     * Ext.grid.column.Column[]/Object
+     * An array of column definition objects which define all columns that appear in this grid.
+     * Each column definition provides the header text for the column, and a definition of where
+     * the data for that column comes from.
+     *
+     * @param null $gridFields
+     * @return bool
+     */
+    private function __senchaColumnDefinition($gridFields = null)
+    {
+        // If gridFields is not set exit the method.
+        if(!is_object($gridFields)) return false;
+
+        // Loop through the gridFields to write the entire column
+        // definition.
+        $senchaDefinition = '';
+        foreach($gridFields as $Index => $gridField)
+        {
+            $senchaDefinition .= '{ ';
+            $senchaDefinition .= "text: '$gridField->name',";
+            $senchaDefinition .= "dataIndex: '$Index',";
+            $senchaDefinition .= "align: '$gridField->align'";
+            if(isset($gridField->width)) $senchaDefinition .= ", width: $gridField->width";
+            if(isset($gridField->flex)) $senchaDefinition .= ", flex: $gridField->flex";
+            $senchaDefinition .= ' },';
+        }
+
+        // Delete the last comma, we don't need it.
+        $senchaDefinition = substr($senchaDefinition, 0, -1);
+
+        return $senchaDefinition;
+    }
+
+    /**
+     * Clean any giving string from unnecessary characters
+     * @param $code
+     * @return mixed
+     */
+    private function __clearString($code)
+    {
+        $buffer = str_ireplace("\r\n", '', $code);
+        $buffer = str_ireplace("\n\r", '', $buffer);
+        $buffer = str_ireplace("\r", '', $buffer);
+        $buffer = str_ireplace("\n", '', $buffer);
+        $buffer = str_ireplace("  ", '', $buffer);
+        return $buffer;
+    }
+
+    /**
      * Check in the SQL statement if the current line is a variable, if not return false.
      * @param $Statement
      * @return bool
      */
-    function checkIfVariable($Statement)
+    private function __checkIfVariable($Statement)
     {
         preg_match('/(?:set)+[^@]*@*/i', $Statement, $matches);
         if(count($matches) >= 1) return true;
@@ -295,7 +492,7 @@ class ReportGenerator
      * @param array $variables
      * @return mixed|string
      */
-    function PostPrepare($sqlStatement = '', $variables = [])
+    private function __postPrepare($sqlStatement = '', $variables = [])
     {
         foreach($variables as $key => $variable)
         {
@@ -318,42 +515,3 @@ class ReportGenerator
         return $sqlStatement;
     }
 }
-
-/**
- * This will combine the XML and the XSL
- * or generate the HTML, Text
- */
-$rg = new ReportGenerator();
-$rg->setRequest($_REQUEST);
-
-$date = new DateTime();
-$Stamp = $date->format('Ymd-His');
-
-$xslt = new XSLTProcessor();
-$xslt->registerPHPFunctions();
-
-switch($rg->format)
-{
-    case 'html':
-        header('Content-Type: application/xslt+xml');
-        header('Content-Disposition: inline; filename='.strtolower($rg->reportDir).'-'.$Stamp.'".html"');
-        $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
-
-        echo $xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument()));
-
-        break;
-    case 'pdf':
-        require_once('../../../lib/html2pdf_v4.03/html2pdf.class.php');
-        $xslt->importStylesheet(new SimpleXMLElement($rg->getXSLTemplate()));
-        $html2pdf = new HTML2PDF('P', 'A4', 'en');
-        $html2pdf->pdf->SetAuthor('GaiaEHR');
-        $html2pdf->WriteHTML($xslt->transformToXml(new SimpleXMLElement($rg->getXMLDocument())));
-        $PDFDocument = base64_encode($html2pdf->Output(strtolower($rg->reportDir).'-'.$Stamp.'.pdf', "S"));
-
-        echo '<object data="data:application/pdf;base64,'.
-            $PDFDocument.
-            '" type="application/pdf" width="100%" height="100%"></object>';
-
-        break;
-}
-

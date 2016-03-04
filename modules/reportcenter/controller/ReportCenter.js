@@ -46,11 +46,21 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         {
             ref: 'PrintButton',
             selector: '#reportWindow #print'
+        },
+        {
+            ref: 'ReportPanel',
+            selector: '#reportWindow #reportPanel'
+        },
+        {
+            ref: 'FilterDisplayPanel',
+            selector: '#reportWindow #filterDisplayPanel'
         }
     ],
 
     init: function(){
-        var me = this;
+        var me = this
+            reportInformation = null;
+
         me.control({
             '#reportCenterGrid': {
                 itemdblclick: me.onReportCenterGridRowDblClick
@@ -67,8 +77,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             '#reportWindow #createPdf':{
                 click: me.onCreatePDF
             },
-            '#reportWindow #createHtml':{
-                click: me.onCreateHTML
+            '#reportWindow #render':{
+                click: me.onRender
             }
         });
     },
@@ -87,27 +97,59 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
      */
     onReportCenterGridRowDblClick: function(record, item, index, e, eOpts)
     {
-        this.getReportWindow().remove(Ext.ComponentQuery.query('reportFilter')[0] , true);
-        Ext.require('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm');
-        this.getReportWindow().insert(
-            0, Ext.create('Modules.reportcenter.reports.'+item.data.reportDir+'.filtersForm')
-        );
-        this.getReportWindow().setHeight(900);
-        this.getReportWindow().setWidth(1024);
-        this.getReportWindow().doLayout();
-        this.getReportFilterPanel().setWidth(item.data.filterPanelWidth);
-        this.getReportFilterPanel().doLayout();
+        // Pickup the Report Window Panel Object and it's buddies
+        var reportWindow = this.getReportWindow(),
+            reportPanel = this.getReportPanel(),
+            me = this;
 
-        this.getReportWindow().show();
-        this.getReportWindow().setTitle(_('report_window') + ' ( ' + item.data.title + ' )');
+        // Save the report information into a global variable
+        me.reportInformation = item.data;
+
+        // Try to remove any previuos filterForm in the Report Window
+        reportWindow.remove(Ext.ComponentQuery.query('reportFilter')[0] , true);
+
+        // Load the filtersForm panel and inert into the Report Window
+        // this is the panel where the developer create the filter for the report,
+        // it should be in Sencha code.
+        Ext.require('Modules.reportcenter.reports.'+me.reportInformation.reportDir+'.filtersForm');
+        reportWindow.insert(
+            0, Ext.create('Modules.reportcenter.reports.'+me.reportInformation.reportDir+'.filtersForm')
+        );
+
+        // Configure the initial report panel layout, and finally show it.
+        reportWindow.setHeight(900);
+        reportWindow.setWidth(me.reportInformation.reportWindowWidth);
+        reportWindow.doLayout();
+        this.getReportFilterPanel().setWidth(me.reportInformation.filterPanelWidth);
+        this.getFilterDisplayPanel().setHeight(me.reportInformation.filterDisplayHeight);
+        reportWindow.setTitle(_('report_window') + ' ( ' + me.reportInformation.title + ' )');
+        reportWindow.show();
     },
 
-    onReportCenterPanelBeforeShow: function(eOpts){
+    /**
+     * This will load the report list available in GaiaEHR, installation may vary.
+     *
+     * @param eOpts
+     */
+    onReportCenterPanelBeforeShow: function(eOpts)
+    {
         this.getReportCenterGrid().getStore().load();
     },
 
-    onReportWindowBeforeHide: function(){
-        this.getReportRenderPanel().update('', true);
+    /**
+     * Tries to clear the filter display panel before hidding it also will destroys the data grid panel,
+     * this will help some performance at the time of displaying it again
+     */
+    onReportWindowBeforeHide: function()
+    {
+        // Pick up all the components if the report window
+        var filterDisplayPanel = Ext.ComponentQuery.query('#reportWindow #filterDisplayPanel')[0],
+            reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
+
+        // Clear the HTML in the filter display panel
+        // and destroys the Data Grid, on the reportWindow
+        if(filterDisplayPanel) filterDisplayPanel.update('', true);
+        if(reportDataGrid) reportDataGrid.destroy();
     },
 
     /**
@@ -125,16 +167,24 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         this.getPrintButton().disable();
     },
 
-    onCreateHTML: function(){
+    onRender: function(){
         this.generateDocument('html');
         this.getPrintButton().enable();
     },
 
+    /**
+     * Depending on the format this will call the data and then render the final
+     * product, HTML that uses Sencha widgets and PDF that will take the Sencha widgets and
+     * convert them in pure HTML and finally convert it to PDF document.
+     *
+     * @param format
+     */
     generateDocument: function(format){
         var form = this.getReportFilterPanel().getForm(),
             fields = form.getFields(),
             parameters = {},
             Index,
+            sumarizedParameters,
             me = this;
 
         // Validate the form, check if a field as a validation rule
@@ -143,7 +193,12 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             return;
         }
 
+        // Mask the window with the loading sign
         this.getReportWindow().getEl().mask(_('loading'));
+
+        // Destroy the datagrid and clear the filterDisplayPanel
+        // start all over again.
+        this.onReportWindowBeforeHide();
 
         // Evaluates every field in the form, extract the submitFormat and other
         // things.
@@ -167,25 +222,70 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         }
 
-        // Send the request to display the report
-        Ext.Ajax.request({
-            url: 'modules/reportcenter/dataProvider/ReportGenerator.php?site=',
-            params: {
-                reportDir: this.getReportFilterPanel().getItemId(),
-                format: format,
-                site: app.user.site,
-                params: JSON.stringify(parameters)
-            },
-            success: function(response){
-                var XSLDocument = response.responseText;
-                me.getReportRenderPanel().update(XSLDocument, true);
-                me.getReportWindow().getEl().unmask();
-            },
-            failure: function(response, opts) {
-                me.getReportWindow().getEl().unmask();
-                Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
+        // Sumarize all the variables into a single variable and then make the rpc call will get data from the
+        // server, executing the SQL statement in the report directory.
+        summarizedParameters = {
+            format: "json",
+            site: app.user.site,
+            params: JSON.stringify(parameters),
+            reportInformation: JSON.stringify(me.reportInformation)
+        };
+
+        // This rpc call will get the parsed Sencha Ext.grid.panel and try to add it to reportWindow
+        // object, the server will parse several files and bring back a welll formatted Sencha Ext object
+        // in a string, and then run de code in JavaScript.
+        ReportGenerator.buildDataGrid(summarizedParameters, function(response){
+            var senchaCode;
+            if(response.success)
+            {
+                me.getReportPanel().add(
+                    eval(Ext.htmlDecode(response.data))
+                );
             }
+            else
+            {
+                Ext.Msg.alert(_('error'), 'Could not load the data grid panel.');
+            }
+            return;
         });
 
+        // Request the server to dispatch the report data to show it.
+        ReportGenerator.dispatchReportData(summarizedParameters, function(response){
+            var dataStore;
+            if(response.success)
+            {
+                dataStore = Ext.getStore('reportStore');
+                dataStore.clearData();
+                dataStore.loadData(response.data);
+                me.getFilterDisplayPanel().update(response.filters.data);
+            }
+            else
+            {
+                Ext.Msg.alert(_('error'), 'Could not load the data store.');
+            }
+            me.getReportWindow().getEl().unmask();
+            return;
+        });
+
+        // Send the request to display the report
+        //Ext.Ajax.request({
+        //    url: 'modules/reportcenter/dataProvider/ReportGenerator.php?site=',
+        //    params: {
+        //        reportDir: this.getReportFilterPanel().getItemId(),
+        //        format: format,
+        //        site: app.user.site,
+        //        params: JSON.stringify(parameters)
+        //    },
+        //    success: function(response){
+        //        var XSLDocument = response.responseText;
+        //        me.getReportRenderPanel().update(XSLDocument, true);
+        //        me.getReportWindow().getEl().unmask();
+        //    },
+        //    failure: function(response, opts) {
+        //        me.getReportWindow().getEl().unmask();
+        //        Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
+        //    }
+        //});
     }
+
 });

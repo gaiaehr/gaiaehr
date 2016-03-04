@@ -621,12 +621,3 @@ class FormLayoutBuilder {
 	}
 
 }
-//$params = new stdClass();
-////$params->id         = '129';
-//$params->currForm    = '2';
-////$params->name       = 'allow_voice_msg';
-////$params->xtype      = 'checkbox';
-//print '<pre>';
-//$p = new FormLayoutBuilder();
-//echo '<pre>';
-//print_r($p->getFormFieldsTree($params));

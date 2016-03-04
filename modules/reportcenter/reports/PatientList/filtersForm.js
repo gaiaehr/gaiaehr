@@ -28,10 +28,9 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
     xtype: 'reportFilter',
     region: 'west',
     title: _('filters'),
-    itemId: 'PatientList',
+    itemId: 'PatientListFilters',
     collapsible: true,
     border: true,
-    bodyPadding: 2,
     split: true,
     defaults: {
         xtype: 'fieldset',
@@ -53,9 +52,9 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         {
                             xtype: 'datefield',
                             name: 'begin_date',
+                            columnWidth: 1,
                             fieldLabel: _('begin_date'),
-                            labelWidth: 120,
-                            columnWidth: 0.85,
+                            labelWidth: 100,
                             allowBlank: false,
                             format: g('date_display_format'),
                             submitFormat: 'Y-m-d'
@@ -76,7 +75,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                             columnWidth: 1,
                             xtype: 'datefield',
                             name: 'end_date',
-                            labelWidth: 120,
+                            labelWidth: 100,
                             fieldLabel: _('end_date'),
                             allowBlank: false,
                             format: g('date_display_format'),
@@ -101,7 +100,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                             displayField: 'option_name',
                             valueField: 'id',
                             editable: true,
-                            columnWidth: 0.75,
+                            columnWidth: 1,
                             hideLabel: true,
                             emptyText: _('select_provider'),
                             allowOnlyWhitespace: true,
@@ -116,8 +115,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                             xtype: 'hiddenfield',
                             itemId: 'provider_name',
                             name: 'provider_name',
-                            value: '',
-                            columnWidth: 0
+                            value: ''
                         }
                     ]
                 }
@@ -135,7 +133,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                             xtype: 'allergieslivesearch',
                             hideLabel: true,
                             name: 'allergy_code',
-                            columnWidth: 0.75,
+                            columnWidth: 1,
                             displayField: 'allergy',
                             valueField: 'allergy_code',
                             listeners: {
@@ -148,7 +146,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         {
                             xtype: 'hiddenfield',
                             itemId: 'allergy_name',
-                            columnWidth: 0,
                             name: 'allergy_name',
                             value: ''
                         }
@@ -168,7 +165,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                             xtype: 'snomedliveproblemsearch',
                             hideLabel: true,
                             name: 'problem_code',
-                            columnWidth: 0.75,
+                            columnWidth: 1,
                             enableKeyEvents: true,
                             value: null,
                             listeners: {
@@ -181,7 +178,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         {
                             xtype: 'hiddenfield',
                             itemId: 'problem_name',
-                            columnWidth: 0,
                             name: 'problem_name',
                             value: ''
                         }
@@ -200,7 +196,7 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         {
                             xtype: 'rxnormlivetsearchreport',
                             hideLabel: true,
-                            columnWidth: 0.75,
+                            columnWidth: 1,
                             name: 'medication_code',
                             enableKeyEvents: true,
                             value: null,
@@ -209,7 +205,6 @@ Ext.define('Modules.reportcenter.reports.PatientList.filtersForm', {
                         },
                         {
                             xtype: 'hiddenfield',
-                            columnWidth: 0,
                             itemId: 'medication_name',
                             name: 'medication_name',
                             value: ''

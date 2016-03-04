@@ -1,61 +1,77 @@
 {
-  "title":"Patient list",
+  "title":"Patient List",
   "name":"patientListReport",
   "reportDir":"PatientList",
   "version":"0.1",
-  "author": "TRA NextGen, Inc (c) 2015",
+  "author": "TRA NextGen, Inc (c) 2016",
   "description":"Enable a user to electronically and dynamically select, sort, access, and create patient lists by: date and time; and based on each one and at least one combinations.",
   "dir":"reportcenter/reports/PatientList",
   "category":"ONC Meaningful Use",
+  "reportWindowWidth": 1096,
   "filterPanelWidth": 250,
-  "filterDisplayHeight": 200,
+  "filterDisplayHeight": 150,
   "gridFields":{
     "ProviderName": {
       "name": "Provider Name",
       "align": "left",
-      "width": 10
+      "type": "string"
     },
     "patient_name":{
       "name": "Patient Name",
       "align": "left",
-      "flex": 1
+      "flex": 1,
+      "type": "string"
     },
     "sex":{
       "name": "Sex",
-      "align": "center"
+      "align": "center",
+      "type": "string",
+      "width": 30
     },
     "DateOfBirth": {
       "name": "Date of Birth",
       "align": "center",
-      "format": "Y-m-d"
+      "format": "Y-m-d",
+      "type": "date",
+      "width": 120
     },
     "marital_status":{
       "name": "Marital Status",
-      "align": "center"
+      "align": "center",
+      "type": "string",
+      "width": 30
     },
     "occupation":{
       "name": "Occupation",
-      "align": "center"
+      "align": "center",
+      "type": "string",
+      "width": 100
     },
     "Race":{
       "name": "Race",
-      "align": "center"
+      "align": "center",
+      "type": "string"
     },
     "Ethnicity":{
       "name": "Ethnicity",
-      "align": "center"
+      "align": "center",
+      "type": "string",
+      "width": 100
     },
     "allergy":{
       "name": "Allergies",
-      "align": "left"
+      "align": "left",
+      "type": "string"
     },
     "problem_name":{
       "name": "Problem Name",
-      "align": "left"
+      "align": "left",
+      "type": "string"
     },
     "medication_name":{
       "name": "Medications",
-      "align": "left"
+      "align": "left",
+      "type": "string"
     }
   }
 }

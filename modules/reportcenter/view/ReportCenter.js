@@ -60,9 +60,25 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
             maximized: false,
             minimizable: false,
             modal: false,
+            autoScroll: false,
             items:[
-                filterDisplayPanel,
-                dataGridPanel
+                {
+                    xtype: 'panel',
+                    region: 'center',
+                    itemId: 'reportPanel',
+                    autoScroll: false,
+                    items:[
+                        {
+                            xtype: 'panel',
+                            frame: false,
+                            border: false,
+                            itemId: 'filterDisplayPanel',
+                            region: 'north',
+                            html: '',
+                            autoScroll: true
+                        }
+                    ]
+                }
             ],
             dockedItems: [{
                 xtype: 'toolbar',
@@ -70,16 +86,16 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                 items: [
                     {
                         xtype: 'button',
+                        text: _('render'),
+                        itemId: 'render'
+                    },
+                    '->',
+                    {
+                        xtype: 'button',
                         text: _('create_pdf'),
                         itemId: 'createPdf'
                     },
                     '-',
-                    {
-                        xtype: 'button',
-                        text: _('create_html'),
-                        itemId: 'createHtml'
-                    },
-                    '->',
                     {
                         xtype: 'button',
                         text: _('print'),

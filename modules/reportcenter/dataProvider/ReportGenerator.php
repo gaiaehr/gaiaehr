@@ -51,6 +51,8 @@ class ReportGenerator
 
     /**
      * Start
+     * This baby, will activate Matcha::connect to connect to the database
+     *
      * @return bool|string
      */
     function start()
@@ -102,6 +104,7 @@ class ReportGenerator
     /**
      * Dispatch data to the report, depending on the report usage it will return XML or JSON valid
      * data, JSON when Sencha report is used. When XML is used, is when XSL is used.
+     * $summarizedParameters = Is variable that comes from Sencha
      *
      * @param $summarizedParameters
      * @return array|string
@@ -280,18 +283,15 @@ class ReportGenerator
     {
         try
         {
-            // Load the filter html tamplate
+            // Load the filter html tamplate, but check for it existence of the template file
             $filePointer = "../modules/reportcenter/resources/filterHTML.html";
             if(!file_exists($filePointer) && !is_readable($filePointer))
                 throw new \Exception('Filter HTML template not found or is readable.');
-
             $htmlTemplate = file_get_contents($filePointer);
 
-            // Replace the filter key pairs.
+            // Replace the filter key pairs. <!--filter_name-->
             foreach($filters as $filter)
-            {
                 $htmlTemplate = str_ireplace('<!--'.$filter['name'].'-->', $filter['value'], $htmlTemplate);
-            }
             return $htmlTemplate;
         }
         catch(\Exception $Error)
@@ -304,6 +304,7 @@ class ReportGenerator
     /**
      * Build the data grid panel for the report, displaying the data extracted by
      * getXMLDocument method
+     * $summarizedParameters = Is variable that comes from Sencha
      *
      * @param null $summarizedParameters
      * @return array

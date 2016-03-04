@@ -62,25 +62,36 @@ if(isset($_SESSION['user']) &&
      * if mobile go to mobile app, else go to app
      */
     $_SESSION['install'] = false;
-    if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode']){
+    if(isset($_SESSION['site']['checkInMode']) && $_SESSION['site']['checkInMode'])
+    {
         include_once('checkin/checkin.php');
-    } else {
-        if(isset($_REQUEST['dual']) && $_REQUEST['dual']){
+    }
+    else
+    {
+        if(isset($_REQUEST['dual']) && $_REQUEST['dual'])
+        {
             include_once('_dual.php');
-        }else{
+        }
+        else
+        {
             include_once('_app.php');
         }
     }
-} else { // Make the logon process or Setup process
+}
+else
+{ // Make the logon process or Setup process
     /**
      * If no directory is found inside sites dir run the setup wizard,
      * if a directory is found inside sites dir run the logon screen
      */
-    if(sites_count == 0){
+    if(sites_count == 0)
+    {
         unset($_SESSION['site']);
         $_SESSION['install'] = true;
         include_once('_install.php');
-    } else {
+    }
+    else
+    {
         $_SESSION['user']['auth'] = false;
         $_SESSION['install'] = false;
         include_once('_login.php');

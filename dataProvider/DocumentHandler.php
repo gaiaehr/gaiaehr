@@ -286,98 +286,98 @@ class DocumentHandler {
 	 * @param $params
 	 * @return array
 	 */
-	public function createDocument($params){
-		$this->setPatientDocumentModel();
-
-		$params = (object)$params;
-		$path = $this->getPatientDir($params) . $this->nameFile();
-
-		$this->documents = new Documents();
-		$this->documents->PDFDocumentBuilder($params, $path);
-
-		if(file_exists($path)){
-
-			$data = new stdClass();
-			$data->pid = $this->pid;
-			$data->eid = (isset($params->eid) ? $params->eid : '0');
-			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
-			$data->docType = $this->docType;
-			$data->name = $this->fileName;
-			$data->url = $this->getDocumentUrl();
-			$data->date = date('Y-m-d H:i:s');
-			$data->hash = hash_file('sha256', $path);
-
-			$data = $this->d->save($data);
-
-			if(isset($params->DoctorsNote)){
-				$this->doctorsnotes = new DoctorsNotes();
-				$this->doctorsnotes->addDoctorsNotes($params);
-			}
-
-			//print_r($data);
-
-			return ['success' => true, 'doc' => ['id' => $data['data']->id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path]];
-		} else{
-			return ['success' => false, 'error' => 'Document could not be created'];
-		}
-	}
+//	public function createDocument($params){
+//		$this->setPatientDocumentModel();
+//
+//		$params = (object)$params;
+//		$path = $this->getPatientDir($params) . $this->nameFile();
+//
+//		$this->documents = new Documents();
+//		$this->documents->PDFDocumentBuilder($params, $path);
+//
+//		if(file_exists($path)){
+//
+//			$data = new stdClass();
+//			$data->pid = $this->pid;
+//			$data->eid = (isset($params->eid) ? $params->eid : '0');
+//			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
+//			$data->docType = $this->docType;
+//			$data->name = $this->fileName;
+//			$data->url = $this->getDocumentUrl();
+//			$data->date = date('Y-m-d H:i:s');
+//			$data->hash = hash_file('sha256', $path);
+//
+//			$data = $this->d->save($data);
+//
+//			if(isset($params->DoctorsNote)){
+//				$this->doctorsnotes = new DoctorsNotes();
+//				$this->doctorsnotes->addDoctorsNotes($params);
+//			}
+//
+//			//print_r($data);
+//
+//			return ['success' => true, 'doc' => ['id' => $data['data']->id, 'name' => $this->fileName, 'url' => $this->getDocumentUrl(), 'path' => $path]];
+//		} else{
+//			return ['success' => false, 'error' => 'Document could not be created'];
+//		}
+//	}
 
 	/**
 	 * this will return the PDF base64 string
 	 * @param $params
 	 * @return bool|string
 	 */
-	public function createPDF($params){
-		$this->setPatientDocumentModel();
-		$this->documents = new Documents();
-		return $this->documents->PDFDocumentBuilder((object)$params);
-	}
+//	public function createPDF($params){
+//		$this->setPatientDocumentModel();
+//		$this->documents = new Documents();
+//		return $this->documents->PDFDocumentBuilder((object)$params);
+//	}
 
-	public function uploadDocument($params, $file){
-		$this->setPatientDocumentModel();
-
-		$params = (object)$params;
-		$src = $this->getPatientDir($params) . $this->reNameFile($file);
-		if(move_uploaded_file($file['filePath']['tmp_name'], $src)){
-
-			if(isset($params->encrypted) && $params->encrypted){
-				file_put_contents($src, Crypt::encrypt(file_get_contents($src)), LOCK_EX);
-			}
-
-			$data = new stdClass();
-			$data->pid = $this->pid;
-			$data->eid = (isset($params->eid) ? $params->eid : 0);
-			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
-			$data->docType = $this->docType;
-			$data->name = $this->fileName;
-			$data->url = $this->getDocumentUrl();
-			$data->date = date('Y-m-d H:i:s');
-			$data->hash = hash_file('sha256', $src);
-			$data->encrypted = $params->encrypted;
-			$data = $this->d->save($data);
-
-			return ['success' => true, 'doc' => ['id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()]];
-		} else{
-			return ['success' => false, 'error' => 'File could not be uploaded'];
-		}
-	}
+//	public function uploadDocument($params, $file){
+//		$this->setPatientDocumentModel();
+//
+//		$params = (object)$params;
+//		$src = $this->getPatientDir($params) . $this->reNameFile($file);
+//		if(move_uploaded_file($file['filePath']['tmp_name'], $src)){
+//
+//			if(isset($params->encrypted) && $params->encrypted){
+//				file_put_contents($src, Crypt::encrypt(file_get_contents($src)), LOCK_EX);
+//			}
+//
+//			$data = new stdClass();
+//			$data->pid = $this->pid;
+//			$data->eid = (isset($params->eid) ? $params->eid : 0);
+//			$data->uid = (isset($params->uid) ? $params->uid : $_SESSION['user']['id']);
+//			$data->docType = $this->docType;
+//			$data->name = $this->fileName;
+//			$data->url = $this->getDocumentUrl();
+//			$data->date = date('Y-m-d H:i:s');
+//			$data->hash = hash_file('sha256', $src);
+//			$data->encrypted = $params->encrypted;
+//			$data = $this->d->save($data);
+//
+//			return ['success' => true, 'doc' => ['id' => $data['id'], 'name' => $this->fileName, 'url' => $this->getDocumentUrl()]];
+//		} else{
+//			return ['success' => false, 'error' => 'File could not be uploaded'];
+//		}
+//	}
 
 	/**
 	 * @param $id
 	 * @return bool
 	 */
-	public function deleteDocumentById($id){
-		$path = $this->getDocumentPathById($id);
-		if(unlink($path)){
-			$this->db->setSQL("DELETE FROM patient_documents WHERE id = '$id'");
-			$this->db->execLog();
-			return true;
-		} else{
-			return false;
-
-		}
-
-	}
+//	public function deleteDocumentById($id){
+//		$path = $this->getDocumentPathById($id);
+//		if(unlink($path)){
+//			$this->db->setSQL("DELETE FROM patient_documents WHERE id = '$id'");
+//			$this->db->execLog();
+//			return true;
+//		} else{
+//			return false;
+//
+//		}
+//
+//	}
 
 	/**
 	 * @return string

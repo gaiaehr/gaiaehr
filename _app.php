@@ -18,6 +18,7 @@
  */
 
 if (!defined('_GaiaEXEC')) die('No direct access allowed.');
+header("Access-Control-Allow-Origin: *");
 ?>
 <html>
 	<head>

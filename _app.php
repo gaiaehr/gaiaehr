@@ -42,6 +42,7 @@ header("Access-Control-Allow-Origin: *");
 		<link rel="stylesheet" type="text/css" href="resources/css/ext-all-gray.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/style_newui.css">
 		<link rel="stylesheet" type="text/css" href="resources/css/custom_app.css">
+        <link rel="stylesheet" type="text/css" href="resources/report/reportStyle.css">
 		<link rel="stylesheet" type="text/css" href="lib/darkroomjs/build/css/darkroom.min.css">
 		<link rel="shortcut icon" href="favicon.ico">
 	</head>

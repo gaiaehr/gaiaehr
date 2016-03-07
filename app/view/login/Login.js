@@ -138,12 +138,12 @@ Ext.define('App.view.login.Login', {
 				}
 			],
 			buttons: [
-				{
-					xtype: 'checkbox',
-					name: 'checkin'
-				},
-				'Check-In Mode',
-				'->',
+				//{
+				//	xtype: 'checkbox',
+				//	name: 'checkin'
+				//},
+				//'Check-In Mode',
+				//'->',
 				{
 					text: _('login'),
 					name: 'btn_login',
@@ -262,12 +262,12 @@ Ext.define('App.view.login.Login', {
 		var me = this,
 			formPanel = me.winLogon.down('form'),
 			form = formPanel.getForm(),
-			params = form.getValues(),
-			checkInMode = formPanel.query('checkbox')[0].getValue();
+			params = form.getValues();
+			//checkInMode = formPanel.query('checkbox')[0].getValue();
 
 		if(form.isValid()){
 			formPanel.el.mask('Sending credentials...');
-			params.checkInMode = checkInMode;
+			//params.checkInMode = checkInMode;
 
 			authProcedures.login(params, function(provider, response){
 				if(response.result.success){

@@ -489,6 +489,7 @@ Ext.define('App.view.Viewport', {
             layout: 'card',
             border: true,
             itemId: 'MainPanel',
+	        deferredRender: true,
             defaults: {
                 layout: 'fit',
                 xtype: 'container'

@@ -21,7 +21,6 @@ module.exports = function(grunt){
 					'lib/extjs-4.2.1/examples/ux/DataTip.js',
 					'app/ux/RatingField.js',
 					'app/ux/grid/LiveSearchGridPanel.js',
-					'app/ux/grid/GridToHtml.js',
 					'app/ux/grid/Printer.js',
 					'app/ux/ActivityMonitor.js',
 					'app/ux/AbstractPanel.js',

@@ -48,10 +48,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             selector: '#reportWindow #print'
         },
         {
-            ref: 'PDFButton',
-            selector: '#reportWindow #createPdf'
-        },
-        {
             ref: 'ReportPanel',
             selector: '#reportWindow #reportPanel'
         },
@@ -77,9 +73,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             },
             '#reportWindow #print':{
                 click: me.onPrint
-            },
-            '#reportWindow #createPdf':{
-                click: me.onCreatePDF
             },
             '#reportWindow #render':{
                 click: me.onRender
@@ -147,34 +140,30 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     onReportWindowBeforeHide: function()
     {
         // Pick up all the components if the report window
-        var filterDisplayPanel = Ext.ComponentQuery.query('#reportWindow #filterDisplayPanel')[0],
-            reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
+        var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
 
         // Clear the HTML in the filter display panel
         // and destroys the Data Grid, on the reportWindow
-        if(filterDisplayPanel) filterDisplayPanel.update('', true);
+        if(this.getReportFilterPanel()) this.getReportFilterPanel().update('', true);
         if(reportDataGrid) reportDataGrid.destroy();
     },
 
     /**
      * Print report event, this procedure will print the report on the printer.
      */
-    onPrint: function(){
-        var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0],
-            GridToHtml = new Ext.create('App.ux.grid.GridToHtml'),
-            html = GridToHtml.getHtml(reportDataGrid);
-        console.log(html);
-    },
-
-    onCreatePDF: function(){
-        this.generateDocument('pdf');
-        this.getPrintButton().disable();
+    onPrint: function()
+    {
+        var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
+        Ext.ux.grid.Printer.stylesheetPath = 'app/ux/grid/gridPrinterCss/print.css';
+        Ext.ux.grid.Printer.mainTitle = this.reportInformation.title;
+        Ext.ux.grid.Printer.filtersHtml = this.getFilterDisplayPanel().body.dom.outerHTML;
+        Ext.ux.grid.Printer.printAutomatically = false;
+        Ext.ux.grid.Printer.print(reportDataGrid);
     },
 
     onRender: function(){
         this.generateDocument('html');
         this.getPrintButton().enable();
-        this.getPDFButton().enable();
     },
 
     /**

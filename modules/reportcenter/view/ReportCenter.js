@@ -8,7 +8,8 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
 	pageTitle: _('report_center'),
     itemId: 'ReportCenterPanel',
     requires: [
-        'App.ux.grid.GridToHtml'
+        'App.ux.grid.Printer',
+        'App.ux.grid.RowExpander'
     ],
     pageBody: [
         // Report List
@@ -91,13 +92,6 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                         itemId: 'render'
                     },
                     '->',
-                    {
-                        xtype: 'button',
-                        text: _('create_pdf'),
-                        itemId: 'createPdf',
-                        disabled: true
-                    },
-                    '-',
                     {
                         xtype: 'button',
                         text: _('print'),

@@ -9,7 +9,7 @@
   "category":"ONC Meaningful Use",
   "reportWindowWidth": 1096,
   "filterPanelWidth": 250,
-  "filterDisplayHeight": 150,
+  "filterDisplayHeight": 140,
   "gridFields":{
     "ProviderName": {
       "name": "Provider Name",

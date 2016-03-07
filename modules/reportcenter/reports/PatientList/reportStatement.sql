@@ -5,7 +5,6 @@ SET @ProblemCode = :problem_code;
 SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
 
-
 SELECT patient.*,
         DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth,
         Race.option_name as Race,

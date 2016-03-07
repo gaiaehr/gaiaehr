@@ -217,11 +217,8 @@ header("Access-Control-Allow-Origin: *");
 		            'Ext.ux.SlidingPager',
 		            'Ext.ux.PreviewPlugin',
 		            'Ext.ux.form.SearchField',
-
 		            'App.ux.grid.LiveSearchGridPanel',
 		            'App.ux.RatingField',
-		            'App.ux.grid.GridToHtml',
-		            'App.ux.grid.Printer',
 		            /**
 		             * Load the activity by the user
 		             * This will detect the activity of the user, if the user are idle by a

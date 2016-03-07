@@ -5,8 +5,16 @@ table.rep-table
     margin: 2px;
 }
 
+div.rep-filters-class{
+    border-bottom: 1px dotted #D3D3D3;
+    border-top: 1px dotted #D3D3D3;
+    margin: 4px;
+    padding: 4px;
+}
+
 td.rep-filterName
 {
+    margin-left: 4px;
     font-weight: bold;
     white-space: nowrap;
     border-left: 2px solid #1D822C;

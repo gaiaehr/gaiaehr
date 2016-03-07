@@ -28,7 +28,6 @@ Ext.define('App.view.administration.Medications',
 		me.query = '';
 
 		me.storeMedications = Ext.create('App.store.administration.Medications');
-
 		me.medicationsGrid = Ext.create('Ext.grid.Panel',
 		{
 			region : 'center',
@@ -111,16 +110,13 @@ Ext.define('App.view.administration.Medications',
 							name : 'NONPROPRIETARYNAME'
 
 						},
-
 						{
 							xtype : 'textfield',
 							fieldLabel : _('dosage'),
 							width : 200,
 							labelWidth : 50,
 							name : 'DOSAGEFORMNAME'
-
 						}]
-
 					},
 					{
 						/**
@@ -199,8 +195,8 @@ Ext.define('App.view.administration.Medications',
                         text: 'Print',
                         iconCls: 'icon-print',
                         handler : function(){
-                            App.ux.grid.Printer.printAutomatically = false;
-                            App.ux.grid.Printer.print(this.up('grid'));
+                            //App.ux.grid.Printer.printAutomatically = false;
+                            //App.ux.grid.Printer.print(this.up('grid'));
                         }
                     }
                 ]

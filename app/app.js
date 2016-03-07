@@ -37837,6 +37837,8 @@ Ext.define('App.controller.InfoButton', {
 			'ICD9-CM': '2.16.840.1.113883.6.103',
 			'ICD-9-CM': '2.16.840.1.113883.6.103',
 			'SNOMED': '2.16.840.1.113883.6.96',
+			'SNOMEDCT': '2.16.840.1.113883.6.96',
+			'SNOMED-CT': '2.16.840.1.113883.6.96',
 			'RXCUI': '2.16.840.1.113883.6.88',
 			'NDC': '2.16.840.1.113883.6.69',
 			'LN': '2.16.840.1.113883.6.1',
@@ -44573,6 +44575,9 @@ Ext.define('App.view.patient.Medications', {
 							icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
 							tooltip: 'Get Info',
 							handler: function(grid, rowIndex, colIndex, item, e, record){
+
+								say(record.data);
+
 								App.app.getController('InfoButton').doGetInfo(
                                     record.data.RXCUI,
                                     'RXCUI',

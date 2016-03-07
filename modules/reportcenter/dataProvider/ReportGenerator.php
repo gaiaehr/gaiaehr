@@ -245,7 +245,7 @@ class ReportGenerator
                 'name' => 'title',
                 'value' => $reportInformation->title
             ];
-            $htmlTemplate = self::__buildFilterHTML($reportParameters);
+            $htmlTemplate = self::__buildFilterHTML($reportParameters, $reportInformation);
             array_pop($reportParameters);
 
             // Clean the string from unnecessary characters from the code, and also do some
@@ -276,15 +276,16 @@ class ReportGenerator
      * from the filterPanel
      *
      * @param $filters
-     * @return mixed
+     * @param $reportInformation
+     * @return mixed|string
      * @throws \Exception
      */
-    private function __buildFilterHTML($filters)
+    private function __buildFilterHTML($filters, $reportInformation)
     {
         try
         {
             // Load the filter html tamplate, but check for it existence of the template file
-            $filePointer = "../modules/reportcenter/resources/filterHTML.html";
+            $filePointer = "../modules/reportcenter/reports/$reportInformation->reportDir/filterHTML.html";
             if(!file_exists($filePointer) && !is_readable($filePointer))
                 throw new \Exception('Filter HTML template not found or is readable.');
             $htmlTemplate = file_get_contents($filePointer);

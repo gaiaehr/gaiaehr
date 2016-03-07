@@ -2033,12 +2033,10 @@ Ext.define("Ext.ux.grid.Printer", {
                    		for (var i = 0; i < columns.length; i++)
                    		{
                    			var valueObject = this.getSummary(this.grid.store, this.columns[i].summaryType, this.columns[i].dataIndex, false);
-                   			if (valueObject === undefined)
-                   				 // Do nothing
-                   			else
-                   				summaryValues[columns[i].id] = valueObject;
+                   			if (valueObject !== undefined)
+                                summaryValues[columns[i].id] = valueObject;
                    		}
-                   		summaryValues['style'] = "text-align:" + align + ';';
+                        summaryValues['style'] = "text-align:" + align + ';';
                    		return summaryValues;
                    },
                    getSummaryRecord42: function()
@@ -2060,9 +2058,7 @@ Ext.define("Ext.ux.grid.Printer", {
                    		for (var i = 0; i < this.columns.length; i++)
                    		{
                    			var	valueObject = this.getSummary(this.grid.store, this.columns[i].summaryType, this.columns[i].dataIndex, false);
-                   			if (valueObject === undefined)
-                   				 // Do nothing
-                   			else
+                   			if (valueObject !== undefined)
                    				rcd.set(this.columns[i].dataIndex, valueObject);
                    		}
                    		return rcd;
@@ -2482,14 +2478,12 @@ Ext.define("Ext.ux.grid.Printer", {
                         	for (var i = 0; i < this.columns.length; i++)
                         	{
                             	var	valueObject = this.getSummary(this.grid.store, this.columns[i].summaryType, this.columns[i].dataIndex, this.grid.store.isGrouped());
-                            	if (valueObject === undefined)
-                            		 // Do nothing
-                            	else if (Ext.isObject(valueObject))
-                            		summaryValues[columns[i].id] = valueObject[this.groupName];
+                            	if (Ext.isObject(valueObject))
+                                    summaryValues[columns[i].id] = valueObject[this.groupName];
                             	else
-                            		summaryValues[columns[i].id] = valueObject;
+                                    summaryValues[columns[i].id] = valueObject;
                             }
-                        	summaryValues['style'] = "text-align:" + align + ';';
+                            summaryValues['style'] = "text-align:" + align + ';';
                         	return summaryValues;
                         },
                         getSummaryRecord42: function()
@@ -2498,9 +2492,7 @@ Ext.define("Ext.ux.grid.Printer", {
                         	for (var i = 0; i < this.columns.length; i++)
                         	{
                         		var	valueObject = this.getSummary(this.grid.store, this.columns[i].summaryType, this.columns[i].dataIndex, this.grid.store.isGrouped());
-                        		if (valueObject === undefined)
-                        			 // Do nothing
-                        		else if (Ext.isObject(valueObject))
+                        		if (Ext.isObject(valueObject))
                         			rcd.set(this.columns[i].dataIndex, valueObject[this.groupName]);
                         		else
                         			rcd.set(this.columns[i].dataIndex, valueObject);

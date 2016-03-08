@@ -1,0 +1,55 @@
+{
+  "title":"Transaction Log",
+  "name":"transactionLogReport",
+  "reportDir":"TransactionLog",
+  "version":"0.1",
+  "author": "TRA NextGen, Inc (c) 2016",
+  "description":"Enables administrators or user with privileged access, view and filter the Transaction Log",
+  "dir":"reportcenter/reports/TransactionLog",
+  "category":"IT Department",
+  "reportWindowWidth": 1096,
+  "filterPanelWidth": 250,
+  "filterDisplayHeight": 80,
+  "gridFields":{
+    "date": {
+      "name": "Date",
+      "align": "center",
+      "type": "Y-m-d"
+    },
+    "pid":{
+      "name": "Patient ID",
+      "align":"left",
+      "type": "int"
+    },
+    "eid":{
+      "name": "Ecounter ID",
+      "align":"ccenter",
+      "type": "int"
+    },
+    "uid":{
+      "name": "User ID",
+      "align":"center",
+      "type": "int"
+    },
+    "fid":{
+      "name": "Facility ID",
+      "align":"center",
+      "type": "int"
+    },
+    "event":{
+      "name": "Event",
+      "align":"left",
+      "type": "string"
+    },
+    "table_name":{
+      "name": "Table",
+      "align":"left",
+      "type": "string"
+    },
+    "ip":{
+      "name": "IP",
+      "align":"left",
+      "type": "string"
+    }
+  }
+}

@@ -196,8 +196,6 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			callback: function(records, operation, success){
 				if(records.length > 0){
 					me.show();
-					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-					app.AuditLog('Patient preventive care viewed');
 					return true;
 				}else{
 					return false;

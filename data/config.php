@@ -696,9 +696,6 @@ $API = [
 			'signEncounter' => [
 				'len' => 1
             ],
-			'getEncounterEventHistory' => [
-				'len' => 1
-            ],
 			'getEncounterCodes' => [
 				'len' => 1
             ],
@@ -1921,19 +1918,6 @@ $API = [
 	/**
 	 * Navigation Function
 	 */
-	'AuditLog' => [
-		'methods' => [
-			'getLogs' => [
-				'len' => 1
-            ],
-			'getLog' => [
-				'len' => 1
-            ],
-            'setLog' => [
-                'len' => 1
-            ]
-        ]
-    ],
 	'Documents' => [
 		'methods' => [
 			'updateDocumentsTitle' => [

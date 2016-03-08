@@ -267,14 +267,6 @@ class Navigation
 				'id' => 'App.view.administration.Lists'
 			];
 		}
-		if($this->ACL->hasPermission('access_admin_audit_log')){
-			$admin['children'][] = [
-				'text' => $this->i18n('audit_log'),
-				'leaf' => true,
-				'cls' => 'file',
-				'id' => 'App.view.administration.AuditLog'
-			];
-		}
 		if($this->ACL->hasPermission('access_documents')){
 			$admin['children'][] = [
 				'text' => $this->i18n('documents'),

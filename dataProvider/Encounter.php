@@ -451,9 +451,6 @@ class Encounter {
 		return $records;
 	}
 
-	//***********************************************************************************************
-	//***********************************************************************************************
-
 	/**
 	 * @param $eid
 	 * @return array
@@ -618,11 +615,6 @@ class Encounter {
 		unset($ActiveProblems);
 
 		return $ExtraData;
-	}
-
-	public function getEncounterEventHistory($params) {
-		$this->EncounterHistory = MatchaModel::setSenchaModel('App.model.administration.AuditLog');
-		return $this->EncounterHistory->load($params)->all();
 	}
 
 	public function checkoutAlerts(stdClass $params) {

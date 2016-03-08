@@ -240,8 +240,6 @@ Ext.define('App.controller.patient.Vitals', {
 						records[0].store.sync({
 							callback: function(){
 								app.msg('Sweet!', _('vitals_signed'));
-//								me.getProgressNote();
-								app.AuditLog('Patient vitals authorized');
 								app.fireEvent('vitalssigned', records);
 							}
 						});

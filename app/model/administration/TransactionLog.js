@@ -163,7 +163,7 @@ Ext.define('App.model.administration.TransactionLog', {
     proxy: {
         type: 'direct',
         api: {
-            read: 'AuditLog.getLogs'
+            read: 'TransactionLog.getLogs'
         },
         reader: {
             root: 'data'

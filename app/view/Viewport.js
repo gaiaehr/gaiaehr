@@ -68,12 +68,6 @@ Ext.define('App.view.Viewport', {
         };
 
         /**
-         * Create the model/store of the AuditLog
-         * @type {*}
-         */
-        //me.User = Ext.ModelManager.getModel('App.model.administration.AuditLog');
-
-        /**
          * This store will handle the patient pool area
          */
         me.patientPoolStore = Ext.create('App.store.areas.PatientAreas');
@@ -650,25 +644,6 @@ Ext.define('App.view.Viewport', {
 	setWindowTitle:function(facility){
 		window.document.title = 'GaiaEHR :: ' + facility;
 	},
-
-    /**
-     * AuditLog('Data created');
-     * Function to inject logs to the audit log table
-     * This function should be used on every screen that display
-     * health information of patient.
-     * Event: create, read, update, delete
-     */
-    AuditLog: function(message){
-        Ext.create('App.model.administration.AuditLog',{
-            eid: this.patient.eid,
-            pid: this.patient.pid,
-            event: message
-        }).save({
-           callback:function(){
-               delete this;
-           }
-        });
-    },
 
     /**
      * Show the medical window dialog.

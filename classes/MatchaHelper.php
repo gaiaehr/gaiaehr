@@ -81,7 +81,6 @@ class MatchaHelper extends Matcha {
 			MatchaAudit::$hookClass = 'MatchaHelper';
 			MatchaAudit::$hookMethod = 'storeAudit';
 			MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
-			MatchaModel::setSenchaModel('App.model.administration.AuditLog');
 		}
 
 	}

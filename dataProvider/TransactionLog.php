@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-class AuditLog {
+class TransactionLog {
 
 	/**
 	 * @var MatchaCUP
@@ -29,7 +29,8 @@ class AuditLog {
             $this->t = MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
 	}
 
-	public function getLogs($params) {
+	public function getLogs($params)
+    {
 		$records = $this->t->load($params)->leftJoin([
 			'title' => 'user_title',
 			'fname' => 'user_fname',

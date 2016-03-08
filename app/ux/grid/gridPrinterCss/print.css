@@ -43,16 +43,34 @@ html.x-ux-grid-printer, .x-ux-grid-printer img,.x-ux-grid-printer body {
     padding: 0 0 20px 0;
 }
 
+.x-ux-grid-printer-noprint {
+    padding-left: 32px;
+    border-bottom: 1px dotted #D3D3D3;
+    line-height: 16px;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: #000000;
+    opacity: 0.7;
+    display: block;
+}
+
 .x-ux-grid-printer a.x-ux-grid-printer-linkprint {
     padding: 0 0 0 18px;
     margin: 0 5px;
     background: url(printer.png) no-repeat bottom left !important;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
+    text-decoration: none;
+    color: #EAEAEA;
 }
 
 .x-ux-grid-printer a.x-ux-grid-printer-linkclose {
     padding: 0 0 0 18px;
     margin: 0 5px;
     background: url(cross.png) no-repeat bottom left !important;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
+    text-decoration: none;
+    color: #EAEAEA;
 }
 
 .x-ux-grid-printer table {

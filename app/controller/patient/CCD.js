@@ -77,7 +77,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD viewed');
 	},
 
 	onArchiveCcdBtnClick: function(btn){
@@ -88,7 +87,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD archived');
 	},
 
 	onExportCcdBtnClick: function(btn){
@@ -99,7 +97,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD exported');
 	},
 
 	onPatientCcdPanelEncounterCmbSelect: function(cmb, records){
@@ -111,7 +108,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(cmb) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD exported');
 	},
 
 	onPrintCcdBtnClick: function(btn){

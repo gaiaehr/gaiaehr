@@ -24,7 +24,6 @@ Ext.define('App.view.patient.Encounter', {
 	requires: [
 		'App.store.patient.Encounters',
 		'App.store.patient.Vitals',
-		'App.store.administration.AuditLog',
 		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
@@ -77,8 +76,6 @@ Ext.define('App.view.patient.Encounter', {
 				datachanged: me.getProgressNote
 			}
 		});
-
-		me.encounterEventHistoryStore = Ext.create('App.store.administration.AuditLog');
 
 		if(me.renderAdministrative){
 			me.centerPanel = Ext.create('Ext.tab.Panel', {
@@ -537,8 +534,6 @@ Ext.define('App.view.patient.Encounter', {
 							app.patientBtn.addCls(data.priority);
 							me.openEncounter(data.eid);
 							SaveBtn.up('window').hide();
-							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-							app.AuditLog('Patient encounter created');
 						}
 					});
 				}else{
@@ -563,8 +558,6 @@ Ext.define('App.view.patient.Encounter', {
 							app.fireEvent('encountersync', me, store, form);
 
 							me.msg('Sweet!', _('encounter_updated'));
-							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-							app.AuditLog('Patient encounter updated');
 						}
 					});
 
@@ -611,9 +604,6 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.el.mask(_('loading...') + ' ' + _('encounter') + ' - ' + eid);
 		me.resetTabs();
-
-		/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-		app.AuditLog('Patient encounter viewed');
 
 		if(me.encounter) delete me.encounter;
 
@@ -749,8 +739,6 @@ S;
 							/** unset the patient eid **/
 							app.patient.eid = null;
 							app.openPatientVisits();
-
-							app.AuditLog('Patient encounter ' + (isSupervisor ? 'co-signed' : 'signed'));
 							me.msg('Sweet!', _('encounter_closed'));
 							app.checkoutWindow.close();
 						}

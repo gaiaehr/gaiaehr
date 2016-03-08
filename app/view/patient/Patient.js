@@ -629,9 +629,7 @@ Ext.define('App.view.patient.Patient', {
 
 					// fire global event
 					app.fireEvent('afterdemographicssave', record, me);
-
 					me.msg(_('sweet'), _('record_saved'));
-					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});
 		}else{
@@ -652,9 +650,6 @@ Ext.define('App.view.patient.Patient', {
 			'update_date': new Date(),
 			'DOB': '0000-00-00 00:00:00'
 		});
-
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		app.AuditLog('Patient new record created');
 		this.demoForm.getForm().loadRecord(patient);
 	},
 
@@ -665,9 +660,6 @@ Ext.define('App.view.patient.Patient', {
 		me.pid = pid;
 
 		form.reset();
-
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		app.AuditLog('Patient record viewed');
 
 		me.getPatientContacts(pid);
 

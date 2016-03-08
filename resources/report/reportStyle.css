@@ -6,10 +6,7 @@ table.rep-table
 }
 
 div.rep-filters-class{
-    border-bottom: 1px dotted #D3D3D3;
-    border-top: 1px dotted #D3D3D3;
-    margin: 4px;
-    padding: 4px;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }
 
 td.rep-filterName

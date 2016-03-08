@@ -12673,134 +12673,6 @@ Ext.define('App.model.administration.Lists', {
         }
     }
 });
-Ext.define('App.model.administration.AuditLog', {
-	extend: 'Ext.data.Model',
-	table: {
-		name: 'audit_log',
-		comment: 'Audit Logs'
-	},
-	fields: [
-		{
-			name: 'id',
-			type: 'int',
-			comment: 'Audit Log ID'
-		},
-		{
-			name: 'eid',
-			type: 'int',
-			comment: 'Encounter ID',
-			index: true
-		},
-		{
-			name: 'pid',
-			type: 'int',
-			comment: 'Patient ID',
-			index: true
-		},
-		{
-			name: 'uid',
-			type: 'int',
-			comment: 'User ID',
-			index: true
-		},
-		{
-			name: 'fid',
-			type: 'int',
-			comment: 'Facility ID',
-			index: true
-		},
-		{
-			name: 'event',
-			type: 'string',
-			len: 200,
-			comment: 'Event description'
-		},
-		{
-			name: 'user_title',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_fname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_mname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_lname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_title',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_fname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_mname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'patient_lname',
-			type: 'string',
-			store: false
-		},
-		{
-			name: 'user_name',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				var str = '';
-				if(record.data.user_title) str += record.data.user_title + ' ';
-				if(record.data.user_fname) str += record.data.user_fname + ' ';
-				if(record.data.user_mname) str += record.data.user_mname + ' ';
-				if(record.data.user_lname) str += record.data.user_lname;
-				return str;
-			}
-		},
-		{
-			name: 'patient_name',
-			type: 'string',
-			store: false,
-			convert: function(v, record){
-				var str = '';
-				if(record.data.patient_title) str += record.data.patient_title + ' ';
-				if(record.data.patient_fname) str += record.data.patient_fname + ' ';
-				if(record.data.patient_mname) str += record.data.patient_mname + ' ';
-				if(record.data.patient_lname) str += record.data.patient_lname;
-				return str;
-			}
-		},
-		{
-			name: 'date',
-			type: 'date',
-			dateFormat: 'Y-m-d H:i:s',
-			comment: 'Date of the event'
-		}
-	],
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'AuditLog.getLogs',
-			create: 'AuditLog.setLog',
-			update: 'AuditLog.setLog'
-		},
-		reader: {
-			totalProperty: 'totals',
-			root: 'rows'
-		}
-	}
-});
 Ext.define('App.model.administration.Modules', {
 	extend: 'Ext.data.Model',
 	table: {
@@ -13897,7 +13769,7 @@ Ext.define('App.model.administration.TransactionLog', {
     proxy: {
         type: 'direct',
         api: {
-            read: 'AuditLog.getLogs'
+            read: 'TransactionLog.getLogs'
         },
         reader: {
             root: 'data'
@@ -13913,6 +13785,7 @@ Ext.define('App.model.administration.TransactionLog', {
 
     }
 });
+
 Ext.define('App.model.administration.XtypesComboModel', {
     extend: 'Ext.data.Model',
     table: {
@@ -20570,8 +20443,6 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 			callback: function(records, operation, success){
 				if(records.length > 0){
 					me.show();
-					// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-					app.AuditLog('Patient preventive care viewed');
 					return true;
 				}else{
 					return false;
@@ -20586,6 +20457,7 @@ Ext.define('App.view.patient.windows.PreventiveCare', {
 	//    }
 
 });
+
 Ext.define('App.view.patient.windows.DocumentViewer', {
 	extend: 'Ext.window.Window',
 	xtype: 'documentviewerwindow',
@@ -31054,123 +30926,6 @@ Ext.define('App.view.administration.Lists', {
     }
 });
 
-Ext.define('App.view.administration.AuditLog', {
-	extend: 'App.ux.RenderPanel',
-	pageTitle: _('audit_log'),
-	itemId: 'AuditLogPanel',
-
-	initComponent: function(){
-		var me = this;
-
-		me.store = Ext.create('App.store.administration.TransactionLogs',{
-			remoteFilter: true,
-			remoteSort: true
-		});
-
-		me.pageBody = [
-
-			Ext.create('Ext.grid.Panel', {
-				itemId: 'AuditLogGrid',
-				store: me.store,
-				columns: [
-					{
-						width: 130,
-						text: _('date'),
-						dataIndex: 'date',
-						renderer: Ext.util.Format.dateRenderer('Y-m-d g:i a')
-					},
-					{
-						width: 200,
-						text: _('user'),
-						dataIndex: 'user_name'
-					},
-					{
-						width: 200,
-						text: _('patient'),
-						dataIndex: 'patient_name'
-					},
-					{
-						width: 100,
-						text: _('event'),
-						dataIndex: 'event'
-					},
-					{
-						width: 200,
-						text: _('table'),
-						dataIndex: 'table_name'
-					},
-					{
-						flex: 1,
-						text: _('sql'),
-						dataIndex: 'sql_string'
-					},
-					{
-						flex: 1,
-						text: _('data'),
-						dataIndex: 'data'
-					},
-					{
-						width: 60,
-						text: _('valid'),
-						dataIndex: 'is_valid',
-						renderer: app.boolRenderer
-					}
-				],
-				tbar: Ext.create('Ext.PagingToolbar', {
-					store: me.store,
-					displayInfo: true,
-					plugins: Ext.create('Ext.ux.SlidingPager'),
-					items: [
-						'-',
-						{
-							xtype: 'datefield',
-							name: 'from',
-							itemId: 'AuditLogGridFromDateField',
-							labelWidth: 35,
-							width: 150,
-							fieldLabel: _('from'),
-							labelAlign: 'right',
-							format: 'Y-m-d',
-							allowBlank: false,
-							value: new Date()  // defaults to today
-						},
-						{
-							xtype: 'datefield',
-							name: 'to',
-							itemId: 'AuditLogGridToDateField',
-							labelWidth: 30,
-							width: 150,
-							fieldLabel: _('to'),
-							format: 'Y-m-d',
-							labelAlign: 'right',
-							allowBlank: false,
-							value: new Date()  // defaults to today
-						},
-						{
-							xtype: 'patienlivetsearch',
-							itemId: 'AuditLogGridPatientLiveSearch',
-							emptyText: _('patient_live_search') + '...',
-							width: app.fullMode ? 300 : 250
-						},
-						{
-							xtype: 'button',
-							text: _('filter'),
-							itemId: 'AuditLogGridFilterBtn'
-						},
-						{
-							xtype: 'button',
-							text: _('reset'),
-							itemId: 'AuditLogGridResetBtn'
-						}
-					]
-				})
-			})
-		];
-
-		me.callParent(arguments);
-	}
-
-}); 
 Ext.define('App.view.administration.Medications',
 {
 	extend : 'App.ux.RenderPanel',
@@ -34382,11 +34137,6 @@ Ext.define('App.store.administration.Lists', {
 		}
 	]
 });
-Ext.define('App.store.administration.AuditLog', {
-    model: 'App.model.administration.AuditLog',
-    extend: 'Ext.data.Store',
-    autoLoad : false
-});
 Ext.define('App.store.administration.Medications',{
 	model : 'App.model.administration.Medications',
 	extend : 'Ext.data.Store',
@@ -36022,129 +35772,6 @@ Ext.define('App.store.areas.PoolDropAreas', {
 	pageSize: 10,
 	model   : 'App.model.areas.PoolDropAreas'
 });
-Ext.define('App.controller.administration.AuditLog', {
-	extend: 'Ext.app.Controller',
-
-	requires: [
-
-	],
-
-	refs: [
-		{
-			ref: 'AuditLogPanel',
-			selector: '#AuditLogPanel'
-		},
-		{
-			ref: 'AuditLogGrid',
-			selector: '#AuditLogGrid'
-		},
-		{
-			ref: 'AuditLogGridFromDateField',
-			selector: '#AuditLogGridFromDateField'
-		},
-		{
-			ref: 'AuditLogGridToDateField',
-			selector: '#AuditLogGridToDateField'
-		},
-		{
-			ref: 'AuditLogGridPatientLiveSearch',
-			selector: '#AuditLogGridPatientLiveSearch'
-		},
-		{
-			ref: 'AuditLogGridFilterBtn',
-			selector: '#AuditLogGridFilterBtn'
-		},
-		{
-			ref: 'AuditLogGridResetBtn',
-			selector: '#AuditLogGridResetBtn'
-		}
-	],
-
-	init: function(){
-		var me = this;
-
-		me.control({
-			'#AuditLogPanel': {
-				activate: me.onAuditLogPanelActivate
-			},
-			'#AuditLogGrid': {
-				itemdblclick: me.onAuditLogGridItemDblClick
-			},
-			'#AuditLogGridPatientLiveSearch': {
-				select: me.onAuditLogGridPatientLiveSearchSelect
-			},
-			'#AuditLogGridFilterBtn': {
-				click: me.onAuditLogGridFilterBtnClick
-			},
-			'#AuditLogGridResetBtn': {
-				click: me.onAuditLogGridResetBtnClick
-			}
-		});
-
-	},
-
-	onAuditLogGridItemDblClick: function(grid, record){
-
-		//say(record);
-
-	},
-
-	onAuditLogPanelActivate: function(panel){
-		this.doFilterAuditGrid(panel.query('#AuditLogGridFilterBtn')[0]);
-	},
-
-	onAuditLogGridPatientLiveSearchSelect: function(){
-
-	},
-
-	onAuditLogGridFilterBtnClick: function(btn){
-		this.doFilterAuditGrid(btn);
-	},
-
-	onAuditLogGridResetBtnClick: function(btn){
-		btn.up('toolbar').query('#AuditLogGridFromDateField')[0].setRawValue('');
-		btn.up('toolbar').query('#AuditLogGridToDateField')[0].setValue(new Date());
-		btn.up('toolbar').query('#AuditLogGridPatientLiveSearch')[0].reset();
-		this.doFilterAuditGrid(btn);
-	},
-
-	doFilterAuditGrid: function(btn){
-
-		var fromField = btn.up('toolbar').query('#AuditLogGridFromDateField')[0],
-			toField =  btn.up('toolbar').query('#AuditLogGridToDateField')[0],
-			patient = btn.up('toolbar').query('#AuditLogGridPatientLiveSearch')[0].getValue(),
-			store = btn.up('grid').getStore(),
-			filters = [
-				{
-					property: 'date',
-					operator: '>=',
-					value: fromField.getRawValue() + ' 00:00:00'
-
-				},
-				{
-					property: 'date',
-					operator: '<=',
-					value: toField.getRawValue() + ' 23:59:59'
-				}
-			];
-
-		if(patient){
-			Ext.Array.push(filters, {
-				property: 'pid',
-				value: patient
-			});
-		}
-
-		if(fromField.isValid() && toField.isValid()){
-			store.clearFilter(true);
-			store.filter(filters);
-		}
-
-
-	}
-
-});
-
 Ext.define('App.controller.administration.CPT', {
 	extend: 'Ext.app.Controller',
 
@@ -40107,7 +39734,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD viewed');
 	},
 
 	onArchiveCcdBtnClick: function(btn){
@@ -40118,7 +39744,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD archived');
 	},
 
 	onExportCcdBtnClick: function(btn){
@@ -40129,7 +39754,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD exported');
 	},
 
 	onPatientCcdPanelEncounterCmbSelect: function(cmb, records){
@@ -40141,7 +39765,6 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(cmb) +
 			'&token=' + app.user.token
 		);
-		app.AuditLog('Patient summary CCD exported');
 	},
 
 	onPrintCcdBtnClick: function(btn){
@@ -43547,8 +43170,6 @@ Ext.define('App.controller.patient.Vitals', {
 						records[0].store.sync({
 							callback: function(){
 								app.msg('Sweet!', _('vitals_signed'));
-//								me.getProgressNote();
-								app.AuditLog('Patient vitals authorized');
 								app.fireEvent('vitalssigned', records);
 							}
 						});
@@ -51336,9 +50957,7 @@ Ext.define('App.view.patient.Patient', {
 
 					// fire global event
 					app.fireEvent('afterdemographicssave', record, me);
-
 					me.msg(_('sweet'), _('record_saved'));
-					app.AuditLog('Patient new record ' + (me.newPatient ? 'created' : 'updated'));
 				}
 			});
 		}else{
@@ -51359,9 +50978,6 @@ Ext.define('App.view.patient.Patient', {
 			'update_date': new Date(),
 			'DOB': '0000-00-00 00:00:00'
 		});
-
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		app.AuditLog('Patient new record created');
 		this.demoForm.getForm().loadRecord(patient);
 	},
 
@@ -51372,9 +50988,6 @@ Ext.define('App.view.patient.Patient', {
 		me.pid = pid;
 
 		form.reset();
-
-		// GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core)
-		app.AuditLog('Patient record viewed');
 
 		me.getPatientContacts(pid);
 
@@ -56886,7 +56499,6 @@ Ext.define('App.view.patient.Encounter', {
 	requires: [
 		'App.store.patient.Encounters',
 		'App.store.patient.Vitals',
-		'App.store.administration.AuditLog',
 		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
@@ -56939,8 +56551,6 @@ Ext.define('App.view.patient.Encounter', {
 				datachanged: me.getProgressNote
 			}
 		});
-
-		me.encounterEventHistoryStore = Ext.create('App.store.administration.AuditLog');
 
 		if(me.renderAdministrative){
 			me.centerPanel = Ext.create('Ext.tab.Panel', {
@@ -57399,8 +57009,6 @@ Ext.define('App.view.patient.Encounter', {
 							app.patientBtn.addCls(data.priority);
 							me.openEncounter(data.eid);
 							SaveBtn.up('window').hide();
-							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-							app.AuditLog('Patient encounter created');
 						}
 					});
 				}else{
@@ -57425,8 +57033,6 @@ Ext.define('App.view.patient.Encounter', {
 							app.fireEvent('encountersync', me, store, form);
 
 							me.msg('Sweet!', _('encounter_updated'));
-							/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-							app.AuditLog('Patient encounter updated');
 						}
 					});
 
@@ -57473,9 +57079,6 @@ Ext.define('App.view.patient.Encounter', {
 
 		me.el.mask(_('loading...') + ' ' + _('encounter') + ' - ' + eid);
 		me.resetTabs();
-
-		/** GAIAEH-177 GAIAEH-173 170.302.r Audit Log (core) **/
-		app.AuditLog('Patient encounter viewed');
 
 		if(me.encounter) delete me.encounter;
 
@@ -57611,8 +57214,6 @@ S;
 							/** unset the patient eid **/
 							app.patient.eid = null;
 							app.openPatientVisits();
-
-							app.AuditLog('Patient encounter ' + (isSupervisor ? 'co-signed' : 'signed'));
 							me.msg('Sweet!', _('encounter_closed'));
 							app.checkoutWindow.close();
 						}
@@ -57914,12 +57515,6 @@ Ext.define('App.view.Viewport', {
 	        readOnly: false,
 	        rating: null
         };
-
-        /**
-         * Create the model/store of the AuditLog
-         * @type {*}
-         */
-        //me.User = Ext.ModelManager.getModel('App.model.administration.AuditLog');
 
         /**
          * This store will handle the patient pool area
@@ -58498,25 +58093,6 @@ Ext.define('App.view.Viewport', {
 	setWindowTitle:function(facility){
 		window.document.title = 'GaiaEHR :: ' + facility;
 	},
-
-    /**
-     * AuditLog('Data created');
-     * Function to inject logs to the audit log table
-     * This function should be used on every screen that display
-     * health information of patient.
-     * Event: create, read, update, delete
-     */
-    AuditLog: function(message){
-        Ext.create('App.model.administration.AuditLog',{
-            eid: this.patient.eid,
-            pid: this.patient.pid,
-            event: message
-        }).save({
-           callback:function(){
-               delete this;
-           }
-        });
-    },
 
     /**
      * Show the medical window dialog.

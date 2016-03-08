@@ -389,7 +389,6 @@ header("Access-Control-Allow-Origin: *");
 					'administration.LayoutTree',
 					'administration.ListOptions',
 					'administration.Lists',
-					'administration.AuditLog',
 					'administration.Medications',
 					'administration.Modules',
 					'administration.ParentFields',
@@ -518,7 +517,6 @@ header("Access-Control-Allow-Origin: *");
 	                'administration.LayoutTree',
 	                'administration.ListOptions',
 	                'administration.Lists',
-	                'administration.AuditLog',
 	                'administration.Medications',
 	                'administration.Modules',
 	                'administration.ParentFields',
@@ -695,7 +693,6 @@ header("Access-Control-Allow-Origin: *");
 	                'administration.Globals',
 	                'administration.Layout',
 	                'administration.Lists',
-	                'administration.AuditLog',
 	                'administration.Medications',
 	                'administration.Modules',
 	                'administration.FloorPlans',
@@ -716,7 +713,6 @@ header("Access-Control-Allow-Origin: *");
                 ],
 
                 controllers:[
-	                'administration.AuditLog',
 	                'administration.CPT',
 	                'administration.DataPortability',
 	                'administration.DecisionSupport',

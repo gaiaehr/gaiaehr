@@ -1308,7 +1308,7 @@ Ext.define('App.view.Viewport', {
 
 		Ext.create('Ext.fx.Animator', {
 			target: m,
-			duration: error === true ? 8000 : 3000,
+			duration: error ? 8000 : 3000,
 			keyframes: {
 				0: { opacity: 0 },
 				10: { opacity: 1 },

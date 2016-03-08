@@ -19,7 +19,6 @@ Ext.create('Ext.grid.Panel', {
     region: 'center',
     rowLines: false,
     columnLines: true,
-    autoScroll: true,
     columns: [
         /*fieldColumns*/
     ]

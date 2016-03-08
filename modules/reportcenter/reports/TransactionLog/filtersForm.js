@@ -51,7 +51,7 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             columnWidth: 1,
                             fieldLabel: _('begin_date'),
                             labelWidth: 100,
-                            allowBlank: false,
+                            allowBlank: true,
                             format: g('date_display_format'),
                             submitFormat: 'Y-d-m'
                         }
@@ -73,7 +73,7 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             name: 'end_date',
                             labelWidth: 100,
                             fieldLabel: _('end_date'),
-                            allowBlank: false,
+                            allowBlank: true,
                             format: g('date_display_format'),
                             submitFormat: 'Y-d-m'
                         }

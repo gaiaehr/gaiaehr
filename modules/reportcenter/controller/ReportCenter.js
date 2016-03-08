@@ -161,7 +161,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         Ext.ux.grid.Printer.print(reportDataGrid);
     },
 
-    onRender: function(){
+    onRender: function()
+    {
         this.generateDocument('html');
         this.getPrintButton().enable();
     },
@@ -179,10 +180,12 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             parameters = {},
             Index,
             sumarizedParameters,
-            me = this;
+            me = this,
+            reportDataGrid;
 
         // Validate the form, check if a field as a validation rule
-        if(!form.isValid()) {
+        if(!form.isValid())
+        {
             Ext.Msg.alert(_('error'), _('please_check_form'));
             return;
         }
@@ -229,12 +232,13 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         // object, the server will parse several files and bring back a welll formatted Sencha Ext object
         // in a string, and then run de code in JavaScript.
         ReportGenerator.buildDataGrid(summarizedParameters, function(response){
-            var senchaCode;
             if(response.success)
             {
                 me.getReportPanel().add(
                     eval(Ext.htmlDecode(response.data))
                 );
+                me.reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
+                me.reportDataGrid.doLayout();
             }
             else
             {

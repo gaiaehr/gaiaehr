@@ -46,7 +46,6 @@ html.x-ux-grid-printer, .x-ux-grid-printer img,.x-ux-grid-printer body {
 .x-ux-grid-printer-noprint {
     padding-left: 32px;
     border-bottom: 1px dotted #D3D3D3;
-    line-height: 16px;
     width: 100%;
     top: 0px;
     left: 0px;
@@ -62,6 +61,7 @@ html.x-ux-grid-printer, .x-ux-grid-printer img,.x-ux-grid-printer body {
     font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
     text-decoration: none;
     color: #EAEAEA;
+    line-height: 32px;
 }
 
 .x-ux-grid-printer a.x-ux-grid-printer-linkclose {
@@ -71,6 +71,7 @@ html.x-ux-grid-printer, .x-ux-grid-printer img,.x-ux-grid-printer body {
     font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
     text-decoration: none;
     color: #EAEAEA;
+    line-height: 32px;
 }
 
 .x-ux-grid-printer table {

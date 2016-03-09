@@ -11,30 +11,25 @@
   "filterPanelWidth": 250,
   "filterDisplayHeight": 80,
   "gridFields":{
+    "PatientName":{
+      "name": "Patient",
+      "align": "left",
+      "type": "string"
+    },
     "date": {
       "name": "Date",
       "align": "center",
       "type": "Y-m-d"
     },
-    "pid":{
-      "name": "Patient ID",
+    "UserName":{
+      "name": "User",
       "align":"left",
-      "type": "int"
+      "type": "string"
     },
-    "eid":{
-      "name": "Ecounter ID",
-      "align":"ccenter",
-      "type": "int"
-    },
-    "uid":{
-      "name": "User ID",
-      "align":"center",
-      "type": "int"
-    },
-    "fid":{
-      "name": "Facility ID",
-      "align":"center",
-      "type": "int"
+    "legal_name":{
+      "name": "Facility",
+      "align":"left",
+      "type": "string"
     },
     "event":{
       "name": "Event",
@@ -48,7 +43,12 @@
     },
     "ip":{
       "name": "IP",
-      "align":"left",
+      "align":"center",
+      "type": "string"
+    },
+    "valid":{
+      "name": "Valid",
+      "align":"center",
       "type": "string"
     }
   }

@@ -43,21 +43,25 @@ class TransactionLog {
 			'lname' => 'patient_lname'
 		], 'patient', 'pid', 'pid')->all();
 
-		foreach($records['data'] as &$record){
-			$checksum = crc32(
+        // iterate all the returned record to see if they have a valid CRC, if it fails
+        // the record has been altered.
+        // crc32($date.$pid.$eid.$uid.$fid.$saveParams['event'].$table.$sql.$data.$IP)
+		foreach($records['data'] as $Index => $record)
+        {
+			$checksum = sha1(
+                $record['date'] .
+                $record['pid'] .
+                $record['eid'] .
                 $record['uid'] .
                 $record['fid'] .
-                $record['date'] .
+                $record['event'] .
                 $record['table_name'] .
                 $record['sql_string'] .
-                serialize($record['data'])
+                $record['data'] .
+                $record['ip']
             );
-
-			$record['is_valid'] = $record['checksum'] == $checksum;
+            $records['data'][$Index]['valid'] = ($record['checksum'] == $checksum ? true : false);
 		}
-
-		unset($record);
-
 		return $records;
 	}
 
@@ -75,27 +79,24 @@ class TransactionLog {
 		], 'patient', 'pid', 'pid')->one();
 
 		if($record !== false){
-			$checksum = crc32(
+            $checksum = sha1(
+                $record['date'] .
+                $record['pid'] .
+                $record['eid'] .
                 $record['uid'] .
                 $record['fid'] .
-                $record['data']['date'] .
-                $record['data']['table_name'] .
-                $record['data']['sql_string'] .
-                serialize($record['data']['data'])
+                $record['event'] .
+                $record['table_name'] .
+                $record['sql_string'] .
+                $record['data'] .
+                $record['ip']
             );
-			$record['data']['is_valid'] = $record['data']['checksum'] == $checksum;
+			$record['data']['valid'] = ($record['data']['checksum'] == $checksum ? true : false);
 		}
-
 		return $record;
 	}
 
 	public function setLog(stdClass $params) {
-		//		$params->date = date('Y-m-d H:i:s');
-		//		$params->fid = $_SESSION['user']['facility'];
-		//		$params->uid = $_SESSION['user']['id'];
-		//		Matcha::pauseLog(true);
-		//		$record = $this->l->save($params);
-		//		Matcha::pauseLog(false);
 		return $params;
 	}
 

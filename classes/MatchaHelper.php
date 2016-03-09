@@ -141,8 +141,14 @@ class MatchaHelper extends Matcha {
 		$table = isset($saveParams['table']) ? $saveParams['table'] : '';
 		$sql = isset($saveParams['sql']) ? $saveParams['sql'] : '';
 		$data = isset($saveParams['data']) ? serialize($saveParams['data']) : '';
-
-
+        if($_SERVER['REMOTE_ADDR'] == '::1')
+        {
+            $IP = '127.0.0.1';
+        }
+        else
+        {
+            $IP = $_SERVER['REMOTE_ADDR'];
+        }
 		MatchaAudit::$eventLogData = [
 			'date' => $date,
 			'pid' => $pid,
@@ -153,8 +159,8 @@ class MatchaHelper extends Matcha {
 			'table_name' => $table,
 			'sql_string' => $sql,
 			'data' => $data,
-			'ip' => (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0'),
-			'checksum' => crc32($uid . $fid . $date . $table . $sql . $data)
+			'ip' => $IP,
+			'checksum' => sha1($date.$pid.$eid.$uid.$fid.$saveParams['event'].$table.$sql.$data.$IP)
 		];
 		MatchaAudit::auditSaveLog();
 

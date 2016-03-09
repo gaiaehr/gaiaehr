@@ -150,7 +150,7 @@ Ext.define('App.model.administration.TransactionLog', {
             }
         },
         {
-            name: 'is_valid',
+            name: 'valid',
             type: 'bool',
             store: false
         },

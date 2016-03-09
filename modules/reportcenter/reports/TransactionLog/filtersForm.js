@@ -53,7 +53,7 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             emptyText:  _('begin_date'),
                             allowBlank: true,
                             format: g('date_display_format'),
-                            submitFormat: 'Y-d-m'
+                            submitFormat: 'Y-m-d'
                         },
                         {
                             xtype: 'timefield',
@@ -64,7 +64,7 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             columnWidth:.5,
                             format: 'H:i:s',
                             submitFormat: 'H:i:s',
-                            value: '00:01:00'
+                            value: '00:00:00'
                         }
                     ]
                 }
@@ -86,7 +86,7 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             emptyText:  _('end_date'),
                             allowBlank: true,
                             format: g('date_display_format'),
-                            submitFormat: 'Y-d-m'
+                            submitFormat: 'Y-m-d'
                         },
                         {
                             xtype: 'timefield',

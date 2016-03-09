@@ -159,8 +159,6 @@ class ReportGenerator
                 $PreparedSQL = self::__postPrepare($fileContent, $PrepareField);
                 $Queries = explode(';', $PreparedSQL);
 
-                error_log($PreparedSQL);
-
                 // Run all the SQL Statement separated by `;` in the file
                 $records = null;
                 foreach($Queries as $Query)

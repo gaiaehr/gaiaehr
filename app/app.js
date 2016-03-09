@@ -6100,7 +6100,8 @@ Ext.define('App.ux.form.fields.Percent',{
 				//<debug>
 				var Err = this.statics().Error;
 				Err.raise(
-					{ msg: Err.message.printexception || ex.description || ex.message,
+					{
+                        msg: Err.message.printexception || ex.description || ex.message,
 						error: ex,
 						win: win
 					}
@@ -13715,7 +13716,7 @@ Ext.define('App.model.administration.TransactionLog', {
             }
         },
         {
-            name: 'is_valid',
+            name: 'valid',
             type: 'bool',
             store: false
         },

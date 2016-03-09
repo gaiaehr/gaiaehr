@@ -2173,7 +2173,7 @@ $API = [
     'TransactionLog' => [
         'methods' => [
             'saveExportLog' => [
-                'len' => 0
+                'len' => 1
             ]
         ]
     ]

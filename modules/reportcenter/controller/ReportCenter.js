@@ -154,10 +154,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     onExport: function()
     {
         var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0],
-            me = this;
+            me = this,
+            data = me.getFilterDisplayPanel().body.dom.outerHTML;
 
         // Call the Audit Log, server method to save audit log
-        TransactionLog.saveExportLog(function(response)
+        TransactionLog.saveExportLog(data, function(response)
         {
             if(response.success)
             {
@@ -165,7 +166,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 // the HTML data ready to print.
                 Ext.ux.grid.Printer.stylesheetPath = 'app/ux/grid/gridPrinterCss/print.css';
                 Ext.ux.grid.Printer.mainTitle = me.reportInformation.title;
-                Ext.ux.grid.Printer.filtersHtml = me.getFilterDisplayPanel().body.dom.outerHTML;
+                Ext.ux.grid.Printer.filtersHtml = data;
                 Ext.ux.grid.Printer.printAutomatically = false;
                 Ext.ux.grid.Printer.print(reportDataGrid);
             }

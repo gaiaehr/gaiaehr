@@ -99,10 +99,11 @@ class TransactionLog {
 		return $record;
 	}
 
-    public function saveExportLog()
+    public function saveExportLog($data)
     {
         $saveParams = [
-            'event' => 'EXPORT'
+            'event' => 'EXPORT',
+            'data' => htmlentities($data)
         ];
         MatchaHelper::storeAudit($saveParams);
         return [

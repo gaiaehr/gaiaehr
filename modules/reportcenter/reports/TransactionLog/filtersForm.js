@@ -63,7 +63,8 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             increment: 30,
                             columnWidth:.5,
                             format: 'H:i:s',
-                            submitFormat: 'H:i:s'
+                            submitFormat: 'H:i:s',
+                            value: '00:01:00'
                         }
                     ]
                 }
@@ -95,7 +96,8 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                             increment: 30,
                             columnWidth:.5,
                             format: 'H:i:s',
-                            submitFormat: 'H:i:s'
+                            submitFormat: 'H:i:s',
+                            value: '23:00:00'
                         }
                     ]
                 }

@@ -19,6 +19,7 @@ Ext.create('Ext.grid.Panel', {
     region: 'center',
     rowLines: false,
     columnLines: true,
+    layout: 'fit',
     columns: [
         /*fieldColumns*/
     ]

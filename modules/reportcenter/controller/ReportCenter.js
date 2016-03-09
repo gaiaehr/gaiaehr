@@ -144,7 +144,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
 
         // Clear the HTML in the filter display panel
         // and destroys the Data Grid, on the reportWindow
-        if(this.getReportFilterPanel()) this.getReportFilterPanel().update('', true);
+        this.getFilterDisplayPanel().update('');
         if(reportDataGrid) reportDataGrid.destroy();
     },
 
@@ -238,7 +238,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                     eval(Ext.htmlDecode(response.data))
                 );
                 me.reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
-                me.reportDataGrid.doLayout();
             }
             else
             {
@@ -252,10 +251,10 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             var dataStore;
             if(response.success)
             {
+                me.getFilterDisplayPanel().update(response.filters.data);
                 dataStore = Ext.getStore('reportStore');
                 dataStore.clearData();
                 dataStore.loadData(response.data);
-                me.getFilterDisplayPanel().update(response.filters.data);
             }
             else
             {

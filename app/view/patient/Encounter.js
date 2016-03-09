@@ -24,6 +24,7 @@ Ext.define('App.view.patient.Encounter', {
 	requires: [
 		'App.store.patient.Encounters',
 		'App.store.patient.Vitals',
+        'App.store.administration.EncounterEventHistory',
 		'App.view.patient.encounter.SOAP',
 		'App.view.patient.encounter.HealthCareFinancingAdministrationOptions',
 		'App.view.patient.encounter.CurrentProceduralTerminology',
@@ -76,6 +77,8 @@ Ext.define('App.view.patient.Encounter', {
 				datachanged: me.getProgressNote
 			}
 		});
+
+        me.encounterEventHistoryStore = Ext.create('App.store.administration.EncounterEventHistory');
 
 		if(me.renderAdministrative){
 			me.centerPanel = Ext.create('Ext.tab.Panel', {

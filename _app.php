@@ -405,6 +405,7 @@ header("Access-Control-Allow-Origin: *");
 					'administration.TemplatePanel',
 					'administration.TemplatePanelTemplate',
 					'administration.TransactionLog',
+                    'administration.EncounterEventHistory',
 					'administration.User',
 					'administration.XtypesComboModel',
 
@@ -528,6 +529,7 @@ header("Access-Control-Allow-Origin: *");
 	                'administration.ProviderCredentializations',
 	                'administration.Services',
 	                'administration.TransactionLogs',
+                    'administration.EncounterEventHistory',
 	                'administration.User',
 	                'administration.XtypesComboModel',
 

@@ -9,7 +9,7 @@
   "category":"IT Department",
   "reportWindowWidth": 1096,
   "filterPanelWidth": 250,
-  "filterDisplayHeight": 80,
+  "filterDisplayHeight": 90,
   "gridFields":{
     "PatientName":{
       "name": "Patient",

@@ -1,5 +1,7 @@
 SET @StartDate = :begin_date;
 SET @EndDate = :end_date;
+SET @StartTime = :begin_time;
+SET @EndTime = :end_time;
 
 SELECT audit_transaction_log.*,
         CONCAT(patient.title, ' ', patient.fname, ' ',patient.mname, ' ',patient.lname) as PatientName,
@@ -13,9 +15,9 @@ LEFT JOIN users ON users.id = audit_transaction_log.uid
 LEFT JOIN facility ON facility.id = audit_transaction_log.fid
 WHERE CASE
  WHEN @StartDate IS NOT NULL AND @EndDate IS NOT NULL
- THEN date BETWEEN @StartDate AND @EndDate
+ THEN date BETWEEN CONCAT(@StartDate,' ',@StartTime) AND CONCAT(@EndDate,' ',@EndTime)
  WHEN @StartDate IS NOT NULL AND @EndDate IS NULL
- THEN date BETWEEN @StartDate AND NOW()
+ THEN date BETWEEN CONCAT(@StartDate,' ',@StartTime) AND NOW()
  ELSE
  1=1
 END

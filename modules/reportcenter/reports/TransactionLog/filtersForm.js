@@ -48,12 +48,22 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                         {
                             xtype: 'datefield',
                             name: 'begin_date',
-                            columnWidth: 1,
-                            fieldLabel: _('begin_date'),
-                            labelWidth: 100,
+                            columnWidth:.5,
+                            hideLabel: true,
+                            emptyText:  _('begin_date'),
                             allowBlank: true,
                             format: g('date_display_format'),
                             submitFormat: 'Y-d-m'
+                        },
+                        {
+                            xtype: 'timefield',
+                            name: 'begin_time',
+                            hideLabel: true,
+                            emptyText:  _('begin_time'),
+                            increment: 30,
+                            columnWidth:.5,
+                            format: 'H:i:s',
+                            submitFormat: 'H:i:s'
                         }
                     ]
                 }
@@ -68,14 +78,24 @@ Ext.define('Modules.reportcenter.reports.TransactionLog.filtersForm', {
                     frame: false,
                     items: [
                         {
-                            columnWidth: 1,
                             xtype: 'datefield',
                             name: 'end_date',
-                            labelWidth: 100,
-                            fieldLabel: _('end_date'),
+                            columnWidth:.5,
+                            hideLabel: true,
+                            emptyText:  _('end_date'),
                             allowBlank: true,
                             format: g('date_display_format'),
                             submitFormat: 'Y-d-m'
+                        },
+                        {
+                            xtype: 'timefield',
+                            name: 'end_time',
+                            hideLabel: true,
+                            emptyText:  _('end_time'),
+                            increment: 30,
+                            columnWidth:.5,
+                            format: 'H:i:s',
+                            submitFormat: 'H:i:s'
                         }
                     ]
                 }

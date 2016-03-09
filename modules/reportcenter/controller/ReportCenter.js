@@ -203,6 +203,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             parameters[Index] = {};
             switch(fields.items[Index].xtype){
                 case 'datefield':
+                case 'timefield':
                     parameters[Index].name = fields.items[Index].name;
                     if(fields.items[Index].submitFormat) {
                         parameters[Index].value = Ext.util.Format.date(

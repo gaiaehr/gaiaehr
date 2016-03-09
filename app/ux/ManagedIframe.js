@@ -1190,7 +1190,8 @@
 				//<debug>
 				var Err = this.statics().Error;
 				Err.raise(
-					{ msg: Err.message.printexception || ex.description || ex.message,
+					{
+                        msg: Err.message.printexception || ex.description || ex.message,
 						error: ex,
 						win: win
 					}

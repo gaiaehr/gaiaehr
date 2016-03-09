@@ -125,7 +125,6 @@ Ext.define('App.view.ViewportDual', {
 				windows[i].toFront();
 			}
 			win.showAt((last.x + 25), (last.y + 5));
-
 		}else{
 			win.show();
 		}

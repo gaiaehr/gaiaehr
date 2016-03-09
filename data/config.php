@@ -2169,5 +2169,12 @@ $API = [
 				'len' => 1
             ]
         ]
+    ],
+    'TransactionLog' => [
+        'methods' => [
+            'savePrintLog' => [
+                'len' => 0
+            ]
+        ]
     ]
 ];

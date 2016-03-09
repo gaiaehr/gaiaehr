@@ -24,7 +24,8 @@ class TransactionLog {
 	 */
 	private $t;
 
-	function __construct() {
+	function __construct()
+    {
         if ($this->t == NULL)
             $this->t = MatchaModel::setSenchaModel('App.model.administration.TransactionLog');
 	}
@@ -65,7 +66,8 @@ class TransactionLog {
 		return $records;
 	}
 
-	public function getLog($params) {
+	public function getLog($params)
+    {
 		$record = $this->t->load($params)->leftJoin([
 			'title' => 'user_title',
 			'fname' => 'user_fname',
@@ -78,7 +80,8 @@ class TransactionLog {
 			'lname' => 'patient_lname'
 		], 'patient', 'pid', 'pid')->one();
 
-		if($record !== false){
+		if($record !== false)
+        {
             $checksum = sha1(
                 $record['date'] .
                 $record['pid'] .
@@ -96,8 +99,15 @@ class TransactionLog {
 		return $record;
 	}
 
-	public function setLog(stdClass $params) {
-		return $params;
-	}
+    public function savePrintLog()
+    {
+        $saveParams = [
+            'event' => 'PRINT'
+        ];
+        MatchaHelper::storeAudit($saveParams);
+        return [
+            'success' => true
+        ];
+    }
 
 }

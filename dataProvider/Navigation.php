@@ -39,14 +39,14 @@ class Navigation
 		return isset($this->i18n[$w]) ? $this->i18n[$w] : '*' . $w . '*';
 	}
 
+    /***
+     * Renders the items of the navigation panel
+     * Default Nav Data
+     * @return array
+     */
 	public function getNavigation()
 	{
-		// *************************************************************************************
-		// Renders the items of the navigation panel
-		// Default Nav Data
-		// *************************************************************************************
 		$nav = [];
-
 		$nav[] = [
 			'text' => $this->i18n('dashboard'),
 			'leaf' => true,

@@ -153,12 +153,28 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
      */
     onPrint: function()
     {
-        var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
-        Ext.ux.grid.Printer.stylesheetPath = 'app/ux/grid/gridPrinterCss/print.css';
-        Ext.ux.grid.Printer.mainTitle = this.reportInformation.title;
-        Ext.ux.grid.Printer.filtersHtml = this.getFilterDisplayPanel().body.dom.outerHTML;
-        Ext.ux.grid.Printer.printAutomatically = false;
-        Ext.ux.grid.Printer.print(reportDataGrid);
+        var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0],
+            me = this;
+
+        // Call the Audit Log, server method to save audit log
+        TransactionLog.savePrintLog(function(response)
+        {
+            if(response.success)
+            {
+                // Prepare the print friendly HTML, this will open a new tab or window with
+                // the HTML data ready to print.
+                Ext.ux.grid.Printer.stylesheetPath = 'app/ux/grid/gridPrinterCss/print.css';
+                Ext.ux.grid.Printer.mainTitle = me.reportInformation.title;
+                Ext.ux.grid.Printer.filtersHtml = me.getFilterDisplayPanel().body.dom.outerHTML;
+                Ext.ux.grid.Printer.printAutomatically = false;
+                Ext.ux.grid.Printer.print(reportDataGrid);
+            }
+            else
+            {
+                Ext.Msg.alert(_('error'), 'Could not save audit log into database.');
+            }
+            return;
+        });
     },
 
     onRender: function()

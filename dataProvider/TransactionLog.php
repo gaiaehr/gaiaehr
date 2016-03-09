@@ -99,10 +99,10 @@ class TransactionLog {
 		return $record;
 	}
 
-    public function savePrintLog()
+    public function saveExportLog()
     {
         $saveParams = [
-            'event' => 'PRINT'
+            'event' => 'EXPORT'
         ];
         MatchaHelper::storeAudit($saveParams);
         return [

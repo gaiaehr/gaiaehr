@@ -44,8 +44,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             selector: '#reportWindow #reportRender'
         },
         {
-            ref: 'PrintButton',
-            selector: '#reportWindow #print'
+            ref: 'ExportButton',
+            selector: '#reportWindow #export'
         },
         {
             ref: 'ReportPanel',
@@ -71,8 +71,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             '#reportWindow':{
                 beforehide: me.onReportWindowBeforeHide
             },
-            '#reportWindow #print':{
-                click: me.onPrint
+            '#reportWindow #export':{
+                click: me.onExport
             },
             '#reportWindow #render':{
                 click: me.onRender
@@ -149,15 +149,15 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     },
 
     /**
-     * Print report event, this procedure will print the report on the printer.
+     * Export report event, this procedure will export the report.
      */
-    onPrint: function()
+    onExport: function()
     {
         var reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0],
             me = this;
 
         // Call the Audit Log, server method to save audit log
-        TransactionLog.savePrintLog(function(response)
+        TransactionLog.saveExportLog(function(response)
         {
             if(response.success)
             {
@@ -180,7 +180,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
     onRender: function()
     {
         this.generateDocument('html');
-        this.getPrintButton().enable();
+        this.getExportButton().enable();
     },
 
     /**

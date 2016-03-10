@@ -10,6 +10,9 @@
   "reportWindowWidth": 1096,
   "filterPanelWidth": 250,
   "filterDisplayHeight": 90,
+  "paging":{
+    "size": 300
+  },
   "gridFields":{
     "PatientName":{
       "name": "Patient",

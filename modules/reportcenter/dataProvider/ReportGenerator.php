@@ -355,6 +355,12 @@ class ReportGenerator
                     $resultSenchaDefinition
                 );
 
+                $resultSenchaDefinition = str_ireplace(
+                    "/*dataGridConfig*/",
+                    self::__gridPaging($reportConfiguration->paging),
+                    $resultSenchaDefinition
+                );
+
                 // Clean the string from unnecessary characters from the code, and also do some
                 // sort of minify
                 $resultSenchaDefinition = self::__clearString($resultSenchaDefinition);
@@ -376,6 +382,22 @@ class ReportGenerator
         {
             error_log($Error->getMessage());
             throw new \Exception($Error->getMessage());
+        }
+    }
+
+    /**
+     * Method to set the Pagin Init configuration for a Data Grid.
+     */
+    private function __gridPaging($pagingConfiguration)
+    {
+        $returnDataGtidConfiguration = '';
+        if(isset($pagingConfiguration))
+        {
+            $returnDataGtidConfiguration .= 'pageSize: '.$pagingConfiguration->size;
+        }
+        else
+        {
+            return '';
         }
     }
 

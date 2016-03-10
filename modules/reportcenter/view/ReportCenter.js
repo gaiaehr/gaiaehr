@@ -69,6 +69,7 @@ Ext.define('Modules.reportcenter.view.ReportCenter', {
                     region: 'center',
                     itemId: 'reportPanel',
                     layout: 'border',
+                    autoScroll: true,
                     items:[
                         {
                             xtype: 'panel',

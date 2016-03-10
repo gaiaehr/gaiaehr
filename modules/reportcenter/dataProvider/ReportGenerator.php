@@ -355,11 +355,25 @@ class ReportGenerator
                     $resultSenchaDefinition
                 );
 
-                $resultSenchaDefinition = str_ireplace(
-                    "/*dataGridConfig*/",
-                    self::__gridPaging($reportConfiguration->paging),
-                    $resultSenchaDefinition
-                );
+                // If the page configuration is set, then start adding the configuration to the
+                // dataGrid and dataStore
+                if(isset($reportConfiguration->page))
+                {
+                    // Write down the configuration into the dataStore
+                    // [page]
+                    $resultSenchaDefinition = str_ireplace(
+                        "/*dataGridConfig*/",
+                        self::__gridPaging($reportConfiguration->page),
+                        $resultSenchaDefinition
+                    );
+                    // Write down the configuration into the dataGrid
+                    // [page]
+                    $resultSenchaDefinition = str_ireplace(
+                        "/*dataStoreConfig*/",
+                        self::__storePagin($reportConfiguration->page),
+                        $resultSenchaDefinition
+                    );
+                }
 
                 // Clean the string from unnecessary characters from the code, and also do some
                 // sort of minify
@@ -385,20 +399,37 @@ class ReportGenerator
         }
     }
 
+    private function __storePagin($pagingConfiguration)
+    {
+        $returnDataStoreConfiguration = '';
+        if(isset($pagingConfiguration))
+        {
+            $returnDataStoreConfiguration .= "pageSize: $pagingConfiguration->size,";
+        }
+        return $returnDataStoreConfiguration;
+    }
+
     /**
-     * Method to set the Pagin Init configuration for a Data Grid.
+     * Method to set the Paging Init configuration for a Data Grid.
+     * if no configuration is found in the report configuration json
+     * return blank, to delete the dataGridConfig
+     *
+     * @param $pagingConfiguration
+     * @return string
      */
     private function __gridPaging($pagingConfiguration)
     {
-        $returnDataGtidConfiguration = '';
+        $returnDataGridConfiguration = '';
         if(isset($pagingConfiguration))
         {
-            $returnDataGtidConfiguration .= 'pageSize: '.$pagingConfiguration->size;
+            $returnDataGridConfiguration .= "dockedItems: [{";
+            $returnDataGridConfiguration .= "xtype: 'pagingtoolbar',";
+            $returnDataGridConfiguration .= "store: dataGridStore,";
+            $returnDataGridConfiguration .= "dock: 'bottom',";
+            $returnDataGridConfiguration .= "displayInfo: true";
+            $returnDataGridConfiguration .= "}],";
         }
-        else
-        {
-            return '';
-        }
+        return $returnDataGridConfiguration;
     }
 
 

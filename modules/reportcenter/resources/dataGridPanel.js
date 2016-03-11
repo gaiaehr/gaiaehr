@@ -1,17 +1,22 @@
 var dataGridStore = new Ext.create('Ext.data.Store', {
     storeId: 'reportStore',
-    remoteSort: false,
     autoLoad  : false,
-    /*dataStoreConfig*/
+    remoteFilter: true,
     fields: [
         /*fieldStore*/
     ],
+    /*remoteSort*/
     proxy: {
         type: 'direct',
         api: {
             read: 'ReportGenerator.dispatchReportData'
+        },
+        reader: {
+            type: 'json',
+            root: 'data'
         }
-    }
+    },
+    /*dataStoreConfig*/
 });
 
 Ext.create('Ext.grid.Panel', {
@@ -20,7 +25,6 @@ Ext.create('Ext.grid.Panel', {
     region: 'center',
     rowLines: false,
     columnLines: true,
-    layout: 'fit',
     /*dataGridConfig*/
     columns: [
         /*fieldColumns*/

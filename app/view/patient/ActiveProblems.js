@@ -175,7 +175,6 @@ Ext.define('App.view.patient.ActiveProblems', {
 							}
 						]
 					}
-
 				]
 			}
 		]

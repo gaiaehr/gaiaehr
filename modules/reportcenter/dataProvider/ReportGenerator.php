@@ -82,169 +82,7 @@ class ReportGenerator
         }
     }
 
-    /**
-     * @return string
-     */
-    function getXSLTemplate()
-    {
-        try {
-            $filePointer = "../modules/reportcenter/reports/$this->reportParameters->reportDir/report.xsl";
-            if (file_exists($filePointer) && is_readable($filePointer)) {
-                return file_get_contents($filePointer);
-            } else {
-                throw new \Exception('Error: Not XSLT file was found or readable.');
-            }
-        } catch (\Exception $Error) {
-            error_log($Error->getMessage());
-            return $Error->getMessage();
-        }
-    }
-
-    /**
-     * Dispatch data to the report, depending on the report usage it will return XML or JSON valid
-     * data, JSON when Sencha report is used. When XML is used, is when XSL is used.
-     * $summarizedParameters = Is variable that comes from Sencha
-     *
-     * @param $summarizedParameters
-     * @return array|string
-     */
-    function dispatchReportData($summarizedParameters)
-    {
-        try
-        {
-            error_log(print_r($summarizedParameters,true));
-            // Decode the reportInformation JSON to itself.
-            $reportParameters = json_decode($summarizedParameters->params, true);
-            $reportInformation = json_decode($summarizedParameters->reportInformation);
-
-            // Prepare the variables for file operations
-            $filePointer = "../modules/reportcenter/reports/$reportInformation->reportDir/reportStatement.sql";
-            $PrepareField = [];
-
-            if(file_exists($filePointer) && is_readable($filePointer))
-            {
-                // Load the report specifications json file
-                $reportInformation = json_decode(file_get_contents(
-                    "../modules/reportcenter/reports/$reportInformation->reportDir/reportSpec.json"
-                ));
-
-                // Load all the report information on memory, keep in memory almost all the methods
-                // in this class use that this variable to extract portions of the configuration
-                // information.
-                $this->start();
-
-                // Important connection parameter, this will allow multiple
-                // prepare tags with the same name.
-                $this->conn = \Matcha::getConn();
-                $this->conn->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-
-                // Get the report SQL statement content
-                $fileContent = file_get_contents($filePointer);
-
-                // Copy all the request variables into the Prepared Values,
-                // also check if it came from the grid form and normal form.
-                // This because we need to do a POST-PREPARE the SQL statement
-                $parameters = $reportParameters;
-                foreach($parameters as $field)
-                {
-                    $PrepareField[':'.$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
-                    $PrepareField[':' . $field['name']]['value'] = $field['value'];
-                }
-
-                // Copy all the request filter variables to the XML,
-                // also check if it came from the grid form and normal form.
-                // This because we need to do a POST-PREPARE the SQL statement
-                foreach ($parameters as $field)
-                {
-                    $ReturnFilter[$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
-                    $ReturnFilter[$field['name']]['value'] = $field['value'];
-                }
-
-                // Prepare all the variable fields in the SQL Statement
-                $PreparedSQL = self::__postPrepare($fileContent, $PrepareField);
-                $Queries = explode(';', $PreparedSQL);
-
-                // Run all the SQL Statement separated by `;` in the file
-                $records = null;
-                foreach($Queries as $Query)
-                {
-                    if(strlen(trim($Query)) > 0)
-                    {
-                        // Is just a SET @ variable, if yes query but not try to
-                        // fetch any records. SET does not return any dataSet
-                        if(self::__checkIfVariable($Query))
-                        {
-                            $this->conn->query($Query);
-                        }
-                        else
-                        {
-                            // Check if the page configuration exists, if yes try to look
-                            // for an :ux-pagination in the SQL statement and replace it
-                            // with SQL commands for the paging
-                            if(isset($reportInformation->page))
-                            {
-                                $Query = str_ireplace(':ux-pagination', '', $Query);
-                            }
-                            $SQL = $this->conn->prepare($Query);
-                            $SQL->execute();
-                            $records[] = $SQL->fetchAll(\PDO::FETCH_ASSOC);
-                        }
-                    }
-                }
-
-                // Prepare the filters HTML representation.
-                $filterDisplay = $this->__buildFilterPanel($summarizedParameters);
-
-                // When format value is used in the parameters object dispatch the
-                // data in XML format, or in JSON format
-                //
-                // XML::filters - The filters used in the filter panel
-                // XML::record - The actual records extracted from the data base
-                //
-                // JSON::success - True when seccess, yeah!!
-                // JSON::filters - The filters used in the filter panel
-                // JSON::total - The total records in the data
-                // JSON::data - The actual records extracted from the data base
-                if($summarizedParameters->format == 'xml')
-                {
-                    $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
-                    \Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
-                    $xml = \Array2XML::createXML('records', array(
-                        'filters' => $ReturnFilter,
-                        'record' => $records[count($records[0]) - 1]
-                    ));
-                    return $xml->saveXML();
-                }
-                elseif($summarizedParameters->format == 'json')
-                {
-                    return [
-                        'success' => true,
-                        'filters' => $filterDisplay,
-                        'total' => count($records[count($records) - 1]),
-                        'data' => $records[count($records) - 1]
-                    ];
-                }
-            }
-            else
-            {
-                throw new \Exception('Error: Not SQL Statement file was found or readable.');
-            }
-        }
-        catch(\Exception $Error)
-        {
-            error_log($Error->getMessage());
-            return $Error->getMessage();
-        }
-    }
-
-    /**
-     * Build a panel that will contain the report title and filters
-     * selected by the user on the filterPanel
-     *
-     * @param null $summarizedParameters
-     * @return array
-     */
-    private function __buildFilterPanel($summarizedParameters = null)
+    function dispatchReportFilterPanel($summarizedParameters)
     {
         try
         {
@@ -264,9 +102,7 @@ class ReportGenerator
             // sort of minify
             $htmlTemplate = self::__clearString($htmlTemplate);
 
-            // Return the successfully parsed filter display panel back to Sencha.
-            // and Sencha, and JavaScript will eval this JavaScript code and make it available and
-            // be used by the reporting system
+            // Return the filters HTML representation.
             return [
                 'success' => true,
                 'data' => $htmlTemplate
@@ -276,41 +112,7 @@ class ReportGenerator
         catch(\Exception $Error)
         {
             error_log($Error->getMessage());
-            return [
-                'success' => false,
-                'data' => $Error->getMessage()
-            ];
-        }
-    }
-
-    /**
-     * Will look for all the matches with html comment <!--filter_name--> and replace with filter values
-     * from the filterPanel
-     *
-     * @param $filters
-     * @param $reportInformation
-     * @return mixed|string
-     * @throws \Exception
-     */
-    private function __buildFilterHTML($filters, $reportInformation)
-    {
-        try
-        {
-            // Load the filter html tamplate, but check for it existence of the template file
-            $filePointer = "../modules/reportcenter/reports/$reportInformation->reportDir/filterHTML.html";
-            if(!file_exists($filePointer) && !is_readable($filePointer))
-                throw new \Exception('Filter HTML template not found or is readable.');
-            $htmlTemplate = file_get_contents($filePointer);
-
-            // Replace the filter key pairs. <!--filter_name-->
-            foreach($filters as $filter)
-                $htmlTemplate = str_ireplace('<!--'.$filter['name'].'-->', $filter['value'], $htmlTemplate);
-            return $htmlTemplate;
-        }
-        catch(\Exception $Error)
-        {
-            error_log($Error->getMessage());
-            throw new \Exception($Error->getMessage());
+            return $Error->getMessage();
         }
     }
 
@@ -385,6 +187,19 @@ class ReportGenerator
                         self::__storePagin($reportConfiguration->page),
                         $resultSenchaDefinition
                     );
+                    $resultSenchaDefinition = str_ireplace(
+                        "/*remoteSort*/",
+                        'remoteSort: true,',
+                        $resultSenchaDefinition
+                    );
+                }
+                else
+                {
+                    $resultSenchaDefinition = str_ireplace(
+                        "/*remoteSort*/",
+                        'remoteSort: false,',
+                        $resultSenchaDefinition
+                    );
                 }
 
                 // Clean the string from unnecessary characters from the code, and also do some
@@ -412,6 +227,224 @@ class ReportGenerator
     }
 
     /**
+     * Dispatch data to the report, depending on the report usage it will return XML or JSON valid
+     * data, JSON when Sencha report is used. When XML is used, is when XSL is used.
+     * $summarizedParameters = Is variable that comes from Sencha
+     *
+     * @param $summarizedParameters
+     * @return array|string
+     */
+    function dispatchReportData($summarizedParameters)
+    {
+        try
+        {
+            // Decode the reportInformation JSON to itself.
+            $extra = $summarizedParameters->filter[0]->value;
+            $reportParameters = json_decode($extra->params, true);
+            $reportInformation = json_decode($extra->reportInformation);
+
+            // Prepare the variables for file operations
+            $filePointer = "../modules/reportcenter/reports/$reportInformation->reportDir/reportStatement.sql";
+            $PrepareField = [];
+
+            if(file_exists($filePointer) && is_readable($filePointer))
+            {
+                // Load the report specifications json file
+                $reportInformation = json_decode(file_get_contents(
+                    "../modules/reportcenter/reports/$reportInformation->reportDir/reportSpec.json"
+                ));
+
+                // Load all the report information on memory, keep in memory almost all the methods
+                // in this class use that this variable to extract portions of the configuration
+                // information.
+                $this->start();
+
+                // Important connection parameter, this will allow multiple
+                // prepare tags with the same name.
+                $this->conn = \Matcha::getConn();
+                $this->conn->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+
+                // Get the report SQL statement content
+                $fileContent = file_get_contents($filePointer);
+
+                // Copy all the request variables into the Prepared Values,
+                // also check if it came from the grid form and normal form.
+                // This because we need to do a POST-PREPARE the SQL statement
+                $parameters = $reportParameters;
+                foreach($parameters as $field)
+                {
+                    $PrepareField[':'.$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $PrepareField[':' . $field['name']]['value'] = $field['value'];
+                }
+
+                // Copy all the request filter variables to the XML,
+                // also check if it came from the grid form and normal form.
+                // This because we need to do a POST-PREPARE the SQL statement
+                foreach ($parameters as $field)
+                {
+                    $ReturnFilter[$field['name']]['operator'] = (isset($field['operator']) ? $field['operator'] : '=');
+                    $ReturnFilter[$field['name']]['value'] = $field['value'];
+                }
+
+                // Prepare all the variable fields in the SQL Statement
+                $PreparedSQL = self::__postPrepare($fileContent, $PrepareField);
+                $Queries = explode(';', $PreparedSQL);
+
+                // Run all the SQL Statement separated by `;` in the file
+                $records = null;
+                foreach($Queries as $Query)
+                {
+                    if(strlen(trim($Query)) > 0)
+                    {
+                        // Is just a SET @ variable, if yes query but not try to
+                        // fetch any records. SET does not return any dataSet
+                        if(self::__checkIfVariable($Query))
+                        {
+                            $this->conn->query($Query);
+                        }
+                        else
+                        {
+                            // Check if the page configuration exists, if yes try to look
+                            // for an :ux-pagination in the SQL statement and replace it
+                            // with SQL commands for the paging, keep in mind that we need
+                            // to run 2 sql statements, one to get the total of records for sencha
+                            // and the other one to get only the records need for display
+                            if(isset($reportInformation->page))
+                            {
+                                error_log(print_r($summarizedParameters,true));
+
+                                // Compile the sorting sql statement
+                                if(isset($summarizedParameters->sort))
+                                {
+                                    $sortStatement = "ORDER BY ";
+                                    foreach($summarizedParameters->sort as $sortField)
+                                    {
+                                        $sortStatement .= "$sortField->property $sortField->direction,";
+                                    }
+                                    $sortStatement = substr($sortStatement, 0, -1);
+                                    $sortStatement .= " ";
+                                    $Query = str_ireplace(
+                                        ':ux-sort',
+                                        $sortStatement,
+                                        $Query
+                                    );
+                                }
+                                else
+                                {
+                                    $Query = str_ireplace(
+                                        ':ux-sort',
+                                        '',
+                                        $Query
+                                    );
+                                }
+
+                                // Get the result records
+                                $SQL = $this->conn->prepare(str_ireplace(
+                                    ':ux-pagination',
+                                    " LIMIT $summarizedParameters->start, $summarizedParameters->limit",
+                                    $Query
+                                ));
+                                $SQL->execute();
+                                $ResultRecords[] = $SQL->fetchAll(\PDO::FETCH_ASSOC);
+
+                                // Get the totals
+                                $SQL = $this->conn->prepare(str_ireplace(
+                                    ':ux-pagination',
+                                    "",
+                                    $Query
+                                ));
+                                $SQL->execute();
+                                $records[] = $SQL->fetchAll();
+                                $Total = count($records[count($records) - 1]);
+                            }
+                            else
+                            {
+                                $SQL = $this->conn->prepare($Query);
+                                $SQL->execute();
+                                $ResultRecords[] = $SQL->fetchAll(\PDO::FETCH_ASSOC);
+                                $Total = count($ResultRecords[count($ResultRecords) - 1]);
+                            }
+                        }
+                    }
+                }
+                // When format value is used in the parameters object dispatch the
+                // data in XML format, or in JSON format
+                //
+                // XML::filters - The filters used in the filter panel
+                // XML::record - The actual records extracted from the data base
+                //
+                // JSON::success - True when seccess, yeah!!
+                // JSON::filters - The filters used in the filter panel
+                // JSON::total - The total records in the data
+                // JSON::data - The actual records extracted from the data base
+                if($extra->format == 'xml')
+                {
+                    $ExtraAttributes['xml-stylesheet'] = 'type="text/xsl" href="report.xsl"';
+                    \Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
+                    $xml = \Array2XML::createXML('records', array(
+                        'record' => $records[count($records[0]) - 1]
+                    ));
+                    return [
+                        'success' => true,
+                        'data' => $xml->saveXML()
+                    ];
+                }
+                elseif($extra->format == 'json')
+                {
+                    return [
+                        'success' => true,
+                        'total' => $Total,
+                        'data' => $ResultRecords[count($ResultRecords) - 1]
+                    ];
+                }
+            }
+            else
+            {
+                throw new \Exception('Error: Not SQL Statement file was found or readable.');
+            }
+        }
+        catch(\Exception $Error)
+        {
+            error_log($Error->getMessage());
+            return [
+                'success' => false,
+                'error' => $Error->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Will look for all the matches with html comment <!--filter_name--> and replace with filter values
+     * from the filterPanel
+     *
+     * @param $filters
+     * @param $reportInformation
+     * @return mixed|string
+     * @throws \Exception
+     */
+    private function __buildFilterHTML($filters, $reportInformation)
+    {
+        try
+        {
+            // Load the filter html tamplate, but check for it existence of the template file
+            $filePointer = "../modules/reportcenter/reports/$reportInformation->reportDir/filterHTML.html";
+            if(!file_exists($filePointer) && !is_readable($filePointer))
+                throw new \Exception('Filter HTML template not found or is readable.');
+            $htmlTemplate = file_get_contents($filePointer);
+
+            // Replace the filter key pairs. <!--filter_name-->
+            foreach($filters as $filter)
+                $htmlTemplate = str_ireplace('<!--'.$filter['name'].'-->', $filter['value'], $htmlTemplate);
+            return $htmlTemplate;
+        }
+        catch(\Exception $Error)
+        {
+            error_log($Error->getMessage());
+            throw new \Exception($Error->getMessage());
+        }
+    }
+
+    /**
      * Method to set the pagin init configuration for the Data Store
      * if no configuration is found in the report configuration json
      * return blank, to delete the dataStoreConfig
@@ -423,7 +456,7 @@ class ReportGenerator
         $returnDataStoreConfiguration = '';
         if(isset($pagingConfiguration))
         {
-            $returnDataStoreConfiguration .= "pageSize: $pagingConfiguration->limit,";
+            $returnDataStoreConfiguration .= "pageSize: $pagingConfiguration->limit";
         }
         return $returnDataStoreConfiguration;
     }

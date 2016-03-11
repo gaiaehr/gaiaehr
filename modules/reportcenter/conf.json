@@ -15,9 +15,15 @@
 	"actionsAPI":{
       "ReportGenerator": {
         "methods":{
-          "buildDataGrid": { "len": 1 },
-          "buildFilterPanel": { "len": 2 },
-          "dispatchReportData": { "len":  1 }
+          "buildDataGrid": {
+            "len": 1
+          },
+          "dispatchReportData": {
+            "len":  1
+          },
+          "dispatchReportFilterPanel": {
+            "len":  1
+          }
         }
       },
         "ReportList":{

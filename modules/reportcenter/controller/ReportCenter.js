@@ -209,11 +209,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         }
 
         // Mask the window with the loading sign
-        this.getReportWindow().getEl().mask(_('loading'));
+        me.getReportWindow().getEl().mask(_('loading'));
 
         // Destroy the datagrid and clear the filterDisplayPanel
         // start all over again.
-        this.onReportWindowBeforeHide();
+        me.onReportWindowBeforeHide();
 
         // Evaluates every field in the form, extract the submitFormat and other
         // things.
@@ -238,14 +238,26 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             }
         }
 
-        // Sumarize all the variables into a single variable and then make the rpc call will get data from the
-        // server, executing the SQL statement in the report directory.
+        // Sumarize all the variables into a single variable and then make
+        // the rpc call will get data from the server, executing the SQL
+        // statement in the report directory.
         summarizedParameters = {
             format: "json",
             site: app.user.site,
             params: JSON.stringify(parameters),
             reportInformation: JSON.stringify(me.reportInformation)
         };
+
+        ReportGenerator.dispatchReportFilterPanel(summarizedParameters, function(response){
+            if(response.success)
+            {
+                me.getFilterDisplayPanel().update(response.data);
+            }
+            else
+            {
+                Ext.Msg.alert(_('error'), 'Could not load the filter panel.');
+            }
+        });
 
         // This rpc call will get the parsed Sencha Ext.grid.panel and try to add it to reportWindow
         // object, the server will parse several files and bring back a welll formatted Sencha Ext object
@@ -256,15 +268,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 me.getReportPanel().add(
                     eval(Ext.htmlDecode(response.data))
                 );
-                me.reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
-                dataStore = Ext.getStore('reportStore');
-                dataStore.clearData();
-                dataStore.load({
-                    params:{
-                        start: 0,
-                        limit: 300
-                    }
+                dataGridStore.addFilter({
+                    property: 'extra',
+                    value   : summarizedParameters
                 });
+                dataGridStore.load();
             }
             else
             {
@@ -273,28 +281,7 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             return;
         });
 
-        //me.getFilterDisplayPanel().update(response.filters.data);
-
-
         me.getReportWindow().getEl().unmask();
-
-        // Request the server to dispatch the report data to show it.
-        //ReportGenerator.dispatchReportData(summarizedParameters, function(response){
-        //    var dataStore;
-        //    if(response.success)
-        //    {
-        //        me.getFilterDisplayPanel().update(response.filters.data);
-        //        dataStore = Ext.getStore('reportStore');
-        //        dataStore.clearData();
-        //        dataStore.loadData(response.data);
-        //    }
-        //    else
-        //    {
-        //        Ext.Msg.alert(_('error'), 'Could not load the data store.');
-        //    }
-        //    me.getReportWindow().getEl().unmask();
-        //    return;
-        //});
 
         // Send the request to display the report
         //Ext.Ajax.request({
@@ -308,12 +295,11 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
         //    success: function(response){
         //        var XSLDocument = response.responseText;
         //        me.getReportRenderPanel().update(XSLDocument, true);
-        //        me.getReportWindow().getEl().unmask();
         //    },
         //    failure: function(response, opts) {
-        //        me.getReportWindow().getEl().unmask();
         //        Ext.Msg.alert(_('error'), 'server-side failure with status code ' + response.status);
         //    }
+        //    me.getReportWindow().getEl().unmask();
         //});
     }
 

@@ -21,6 +21,4 @@ WHERE CASE
  ELSE
  1=1
 END
-ORDER BY
-date
-LIMIT 500
+:ux-pagination

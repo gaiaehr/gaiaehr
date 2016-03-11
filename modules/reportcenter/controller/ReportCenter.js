@@ -198,7 +198,8 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             Index,
             sumarizedParameters,
             me = this,
-            reportDataGrid;
+            reportDataGrid,
+            dataStore;
 
         // Validate the form, check if a field as a validation rule
         if(!form.isValid())
@@ -256,6 +257,14 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                     eval(Ext.htmlDecode(response.data))
                 );
                 me.reportDataGrid = Ext.ComponentQuery.query('#reportWindow #reportDataGrid')[0];
+                dataStore = Ext.getStore('reportStore');
+                dataStore.clearData();
+                dataStore.load({
+                    params:{
+                        start: 0,
+                        limit: 300
+                    }
+                });
             }
             else
             {
@@ -264,23 +273,28 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
             return;
         });
 
+        //me.getFilterDisplayPanel().update(response.filters.data);
+
+
+        me.getReportWindow().getEl().unmask();
+
         // Request the server to dispatch the report data to show it.
-        ReportGenerator.dispatchReportData(summarizedParameters, function(response){
-            var dataStore;
-            if(response.success)
-            {
-                me.getFilterDisplayPanel().update(response.filters.data);
-                dataStore = Ext.getStore('reportStore');
-                dataStore.clearData();
-                dataStore.loadData(response.data);
-            }
-            else
-            {
-                Ext.Msg.alert(_('error'), 'Could not load the data store.');
-            }
-            me.getReportWindow().getEl().unmask();
-            return;
-        });
+        //ReportGenerator.dispatchReportData(summarizedParameters, function(response){
+        //    var dataStore;
+        //    if(response.success)
+        //    {
+        //        me.getFilterDisplayPanel().update(response.filters.data);
+        //        dataStore = Ext.getStore('reportStore');
+        //        dataStore.clearData();
+        //        dataStore.loadData(response.data);
+        //    }
+        //    else
+        //    {
+        //        Ext.Msg.alert(_('error'), 'Could not load the data store.');
+        //    }
+        //    me.getReportWindow().getEl().unmask();
+        //    return;
+        //});
 
         // Send the request to display the report
         //Ext.Ajax.request({

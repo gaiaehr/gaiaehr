@@ -11,7 +11,7 @@
   "filterPanelWidth": 250,
   "filterDisplayHeight": 90,
   "page":{
-    "size": 300
+    "limit": 300
   },
   "gridFields":{
     "PatientName":{

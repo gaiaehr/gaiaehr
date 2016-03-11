@@ -69,7 +69,6 @@ class ReportGenerator
             require_once("../sites/$this->site/conf.php");
             require_once('../classes/MatchaHelper.php');
 
-
             // Load the Array2XML library, this will create excellent and well formatted XML's for our hybrid
             // counterpart, this to create XSL pages. This is only used when XSL reporting is implied.
             require_once('../classes/Array2XML.php');
@@ -113,6 +112,7 @@ class ReportGenerator
     {
         try
         {
+            error_log(print_r($summarizedParameters,true));
             // Decode the reportInformation JSON to itself.
             $reportParameters = json_decode($summarizedParameters->params, true);
             $reportInformation = json_decode($summarizedParameters->reportInformation);
@@ -123,6 +123,11 @@ class ReportGenerator
 
             if(file_exists($filePointer) && is_readable($filePointer))
             {
+                // Load the report specifications json file
+                $reportInformation = json_decode(file_get_contents(
+                    "../modules/reportcenter/reports/$reportInformation->reportDir/reportSpec.json"
+                ));
+
                 // Load all the report information on memory, keep in memory almost all the methods
                 // in this class use that this variable to extract portions of the configuration
                 // information.
@@ -173,6 +178,13 @@ class ReportGenerator
                         }
                         else
                         {
+                            // Check if the page configuration exists, if yes try to look
+                            // for an :ux-pagination in the SQL statement and replace it
+                            // with SQL commands for the paging
+                            if(isset($reportInformation->page))
+                            {
+                                $Query = str_ireplace(':ux-pagination', '', $Query);
+                            }
                             $SQL = $this->conn->prepare($Query);
                             $SQL->execute();
                             $records[] = $SQL->fetchAll(\PDO::FETCH_ASSOC);
@@ -199,7 +211,7 @@ class ReportGenerator
                     \Array2XML::init('1.0', 'UTF-8', true, $ExtraAttributes);
                     $xml = \Array2XML::createXML('records', array(
                         'filters' => $ReturnFilter,
-                        'record' => $records[count($records) - 1]
+                        'record' => $records[count($records[0]) - 1]
                     ));
                     return $xml->saveXML();
                 }
@@ -208,7 +220,7 @@ class ReportGenerator
                     return [
                         'success' => true,
                         'filters' => $filterDisplay,
-                        'total' => count($records),
+                        'total' => count($records[count($records) - 1]),
                         'data' => $records[count($records) - 1]
                     ];
                 }
@@ -399,12 +411,19 @@ class ReportGenerator
         }
     }
 
+    /**
+     * Method to set the pagin init configuration for the Data Store
+     * if no configuration is found in the report configuration json
+     * return blank, to delete the dataStoreConfig
+     * @param $pagingConfiguration
+     * @return string
+     */
     private function __storePagin($pagingConfiguration)
     {
         $returnDataStoreConfiguration = '';
         if(isset($pagingConfiguration))
         {
-            $returnDataStoreConfiguration .= "pageSize: $pagingConfiguration->size,";
+            $returnDataStoreConfiguration .= "pageSize: $pagingConfiguration->limit,";
         }
         return $returnDataStoreConfiguration;
     }

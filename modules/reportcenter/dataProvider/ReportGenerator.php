@@ -311,8 +311,6 @@ class ReportGenerator
                             // and the other one to get only the records need for display
                             if(isset($reportInformation->page))
                             {
-                                error_log(print_r($summarizedParameters,true));
-
                                 // Compile the sorting sql statement
                                 if(isset($summarizedParameters->sort))
                                 {

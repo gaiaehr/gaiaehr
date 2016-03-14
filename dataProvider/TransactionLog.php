@@ -42,4 +42,13 @@ class TransactionLog {
         ];
     }
 
+    public function saveTransactionLog($Log)
+    {
+        $saveParams = $Log;
+        MatchaHelper::storeAudit($saveParams);
+        return [
+            'success' => true
+        ];
+    }
+
 }

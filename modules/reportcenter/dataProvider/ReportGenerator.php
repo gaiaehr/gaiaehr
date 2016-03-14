@@ -348,7 +348,7 @@ class ReportGenerator
                                 // Get the totals
                                 $SQL = $this->conn->prepare(str_ireplace(
                                     ':ux-pagination',
-                                    "",
+                                    '',
                                     $Query
                                 ));
                                 $SQL->execute();

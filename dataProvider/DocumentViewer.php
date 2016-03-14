@@ -16,7 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-if(!isset($_SESSION)){
+if(!isset($_SESSION))
+{
 	session_name('GaiaEHR');
 	session_start();
 	session_cache_limiter('private');
@@ -31,19 +32,19 @@ require_once(ROOT . '/sites/'. $_REQUEST['site'] .'/conf.php');
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', 5);
 
-if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
+if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
+{
 	/**
 	 * init Matcha
 	 */
 	require_once(ROOT . '/classes/MatchaHelper.php');
+    require_once(ROOT . '/dataProvider/TransactionLog.php');
 	new MatchaHelper();
 
+	if(!isset($_REQUEST['id'])) die('');
 
-	if(!isset($_REQUEST['id'])){
-		die('');
-	}
-
-	function get_mime_type($file) {
+	function get_mime_type($file)
+    {
 		$mime_types = [
 			"pdf" => "application/pdf",
 			"exe" => "application/octet-stream",
@@ -79,38 +80,50 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		return isset($mime_types[$extension]) ? $mime_types[$extension] : '';
 	}
 
-	function base64ToBinary($document, $encrypted, $is_image){
-		if($encrypted == true){
+	function base64ToBinary($document, $encrypted, $is_image)
+    {
+		if($encrypted == true)
+        {
 			$document = MatchaUtils::decrypt($document);
 		}
-
-		if(!$is_image){
+		if(!$is_image)
+        {
 			$document = base64_decode($document);
 		}
-
 		return $document;
 	}
 
 	$isTemp = isset($_REQUEST['temp']);
 
-	if($isTemp){
+	if($isTemp)
+    {
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocumentsTemp');
+        $TransactionLog = new TransactionLog();
+
 		$doc = $d->load($_REQUEST['id'])->one();
-		if($doc === false){
-			die('No Document Found, Please contact Support Desk. Thank You!');
+		if($doc === false)
+        {
+            error_log('No Document Found, Please contact Support Desk. Thank You!');
+            die('No Document Found, Please contact Support Desk. Thank You!');
 		}
 		$doc = (object) $doc;
 		$doc->name = isset($doc->document_name) && $doc->document_name != '' ? $doc->document_name : 'temp.pdf';
 		$doc->is_temp = 'true';
 		$mineType = get_mime_type($doc->name);
 		$is_image = preg_match('/^image/', $mineType);
-
 		$document = base64ToBinary($doc->document, false, $is_image);
-
-	}else{
+        $TransactionLog->saveTransactionLog([
+                'event' => 'EXPORT',
+                'data' => 'Generated a PDF'
+        ]);
+	}
+    else
+    {
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocuments');
 		$doc = $d->load($_REQUEST['id'])->one();
-		if($doc === false){
+		if($doc === false)
+        {
+            error_log('No Document Found, Please contact Support Desk. Thank You!');
 			die('No Document Found, Please contact Support Desk. Thank You!');
 		}
 		$doc = (object) $doc;
@@ -118,16 +131,29 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true){
 		$mineType = get_mime_type($doc->name);
 		$is_image = preg_match('/^image/', $mineType);
 
-		if(isset($doc->document_instance)){
+		if(isset($doc->document_instance))
+        {
 			$dd = MatchaModel::setSenchaModel('App.model.administration.DocumentData', false, $doc->document_instance);
 			$data = $dd->load($doc->document_id)->one();
-			if($data == false){
+			if($data == false)
+            {
+                error_log('No Document Found, Please contact Support Desk. Thank You!');
 				die('No Document Data Found, Please contact Support Desk. Thank You!');
 			}
 			$data = (object) $data;
 			$document = base64ToBinary($data->document, $doc->encrypted, $is_image);
-		}else{
+            $TransactionLog->saveTransactionLog([
+                'event' => 'VIEW',
+                'data' => 'Generated and viewed image'
+            ]);
+		}
+        else
+        {
 			$document = base64ToBinary($doc->document, $doc->encrypted, $is_image);
+            $TransactionLog->saveTransactionLog([
+                'event' => 'VIEW',
+                'data' => 'Generated and viewed image'
+            ]);
 		}
 	}
 
@@ -168,7 +194,9 @@ HTML;
 
 		print $html;
 
-	}else{
+	}
+    else
+    {
 		header('Content-Type: ' . $mineType, true);
 		header('Content-Disposition: inline; filename="' . $doc->name . '"');
 		header('Content-Transfer-Encoding: BINARY');
@@ -177,7 +205,9 @@ HTML;
 		print $document;
 	}
 
-} else {
+}
+else
+{
 	print 'Not Authorized to be here, Please contact Support Desk. Thank You!';
 }
 

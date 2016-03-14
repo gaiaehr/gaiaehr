@@ -178,17 +178,17 @@
   `pid` int(11) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
   `fid` int(11) DEFAULT NULL,
-  `event` varchar(200) DEFAULT NULL,
-  `user_title` varchar(45) DEFAULT NULL,
-  `user_mname` varchar(200) DEFAULT NULL,
-  `user_lname` varchar(200) DEFAULT NULL,
-  `patient_title` varchar(200) DEFAULT NULL,
-  `patient_fname` varchar(200) DEFAULT NULL,
-  `patient_mname` varchar(200) DEFAULT NULL,
-  `patient_lname` varchar(200) DEFAULT NULL,
+  `event` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
+  `user_title` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `user_mname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
+  `user_lname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
+  `patient_title` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
+  `patient_fname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
+  `patient_mname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
+  `patient_lname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Encounter History Events';DROP TABLE IF EXISTS `facility`;CREATE TABLE `facility` (
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Encounter History Events';DROP TABLE IF EXISTS `facility`;CREATE TABLE `facility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(80) DEFAULT NULL,
   `name` varchar(120) DEFAULT NULL COMMENT 'Facility Name',
@@ -607,7 +607,7 @@
   KEY `pid` (`pid`),
   KEY `eid` (`eid`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1116834 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
+) ENGINE=InnoDB AUTO_INCREMENT=1126714 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(40) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL COMMENT 'acl_user_roles relation',
@@ -672,7 +672,7 @@
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5119 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
+) ENGINE=InnoDB AUTO_INCREMENT=5127 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL COMMENT 'user id that is treating the patient',
@@ -1317,7 +1317,7 @@
   `pool_area_id` int(11) DEFAULT NULL,
   `read_only` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2314 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_contacts`;CREATE TABLE `patient_contacts` (
+) ENGINE=InnoDB AUTO_INCREMENT=2317 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_contacts`;CREATE TABLE `patient_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
@@ -1345,6 +1345,7 @@
   `eid` int(11) DEFAULT NULL,
   `uid` int(11) DEFAULT NULL,
   `docType` varchar(255) DEFAULT NULL,
+  `docTypeCode` varchar(80) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `date` datetime DEFAULT NULL,

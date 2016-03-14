@@ -6,13 +6,13 @@ SET @MedicationCode = :medication_code;
 SET @MedicationAllergyCode = :allergy_code;
 
 SELECT patient.*,
-        DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth,
-        Race.option_name as Race,
-        Ethnicity.option_name as Ethnicity,
-        CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) as ProviderName,
-        patient_allergies.allergy,
-        patient_active_problems.problem_name,
-        patient_medications.medication_name
+  DATE_FORMAT(patient.DOB, '%d %b %y') as DateOfBirth,
+  Race.option_name as Race,
+  Ethnicity.option_name as Ethnicity,
+  CONCAT(Provider.fname,' ',Provider.mname,' ',Provider.lname) as ProviderName,
+  patient_allergies.allergy,
+  patient_active_problems.problem_name,
+  patient_medications.medication_name
 FROM patient
 
 LEFT JOIN (

@@ -1,11 +1,13 @@
 table.rep-table
 {
     margin: 2px;
-    font-size: 1.2em;
     margin: 2px;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }
 
-div.rep-filters-class{
+div.rep-filters-class
+{
+    display: block;
     font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }
 
@@ -15,27 +17,28 @@ td.rep-filterName
     font-weight: bold;
     white-space: nowrap;
     border-left: 2px solid #1D822C;
-    font-size: .8em;
     padding: 2px;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }
 
 td.rep-filterValue
 {
-    font-size: .8em;
     padding: 2px;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }
 
 span.rep-bold
 {
     font-weight: bold;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }
 
-span.rep-title
+h1.rep-title
 {
-    font-size: 2em;
     display: block;
     margin: 2px;
     padding: 2px;
     color: #35AEFF;
     border-bottom: 1px dotted #ADADAD;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
 }

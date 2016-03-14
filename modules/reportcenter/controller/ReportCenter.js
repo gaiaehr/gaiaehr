@@ -165,7 +165,6 @@ Ext.define('Modules.reportcenter.controller.ReportCenter', {
                 // Prepare the print friendly HTML, this will open a new tab or window with
                 // the HTML data ready to print.
                 Ext.ux.grid.Printer.stylesheetPath = 'app/ux/grid/gridPrinterCss/print.css';
-                Ext.ux.grid.Printer.mainTitle = me.reportInformation.title;
                 Ext.ux.grid.Printer.filtersHtml = data;
                 Ext.ux.grid.Printer.printAutomatically = false;
                 Ext.ux.grid.Printer.print(reportDataGrid);

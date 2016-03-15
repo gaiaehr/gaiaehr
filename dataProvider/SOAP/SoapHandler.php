@@ -19,7 +19,8 @@ class SoapHandler {
 
 	private $vDateTime = '/\d{4}-\d{2}-\d{2}/ \d{2}:\d{2}:\d{2}/';
 
-	function constructor($params) {
+	function constructor($params)
+    {
 		$this->params = $params;
 
 		$this->site = isset($params->ServerSite) ? $params->ServerSite : 'default';
@@ -28,18 +29,13 @@ class SoapHandler {
 
 		if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);
 
+        define('SITE', $params->ServerSite);
+
 		include_once(str_replace('\\', '/', dirname(__FILE__)) . '/../../registry.php');
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
 		include_once(ROOT . '/classes/MatchaHelper.php');
-
-		if(isset($params->Provider)){
-			$this->getProvider($params->Provider);
-		}
-
-		if(isset($params->Patient)){
-			$this->getPatient($params->Patient);
-		}
-
+		if(isset($params->Provider)) $this->getProvider($params->Provider);
+		if(isset($params->Patient)) $this->getPatient($params->Patient);
 	}
 
 	/**
@@ -58,7 +54,6 @@ class SoapHandler {
 	public function PatientPortalAuthorize($params)
     {
 		$this->constructor($params);
-
 		if(!$this->isAuth())
         {
 			return [
@@ -67,31 +62,28 @@ class SoapHandler {
 			];
 		}
 		$patient = $this->getPatient($params);
+
+        error_log(print_r($patient,true));
+        error_log(print_r($params,true));
+
 		$response = [
 			'Success' => false,
 			'Error' => 'Not Authorized'
 		];
 
-		if($patient === false){
+		if(!isset($patient)) return $response;
+
+		if(	$patient->WebPortalPassword !== $params->Password ||
+			substr($patient->DateOfBirth, 0, 10) !== $params->DateOfBirth )
+        {
 			return $response;
 		}
-
-		if(
-			$patient->WebPortalAccess == 0 ||
-			$patient->WebPortalPassword !== $params->Password ||
-			substr($patient->DateOfBirth, 0, 10) !== $params->DateOfBirth
-		){
-			return $response;
-		}
-
 		$response = [
 			'Success' => true,
 			'Patient' => $patient,
 			'Error' => ''
 		];
-
 		return $response;
-
 	}
 
 	/**
@@ -99,12 +91,13 @@ class SoapHandler {
 	 * @param $params
 	 * @return array
 	 */
-	public function newPatientAmendment($params){
-
-		try{
+	public function newPatientAmendment($params)
+    {
+		try
+        {
 			$this->constructor($params);
-
-			if(!$this->isAuth()){
+			if(!$this->isAuth())
+            {
 				return [
 					'Success' => false,
 					'Error' => 'Error: HTTP 403 Access Forbidden'
@@ -115,9 +108,12 @@ class SoapHandler {
 			$Amendments = new Amendments();
 			$data = json_decode($params->Data);
 
-			if(isset($data->demographics) && count($data->demographics) > 0){
-				foreach($data->demographics as &$demographic){
-					if(array_key_exists($demographic->field_name, $this->demographicsMap)){
+			if(isset($data->demographics) && count($data->demographics) > 0)
+            {
+				foreach($data->demographics as &$demographic)
+                {
+					if(array_key_exists($demographic->field_name, $this->demographicsMap))
+                    {
 						$demographic->field_name = $this->demographicsMap[$demographic->field_name];
 					}
 				}
@@ -142,20 +138,24 @@ class SoapHandler {
 			$record = $Amendments->addAmendment($record);
 			$record = (object) $record['data'];
 
-			if(isset($record->id) && $record->id > 0){
+			if(isset($record->id) && $record->id > 0)
+            {
 				return [
 					'Success' => true,
 					'AmendmentId' => $record->id,
 					'Error' => ''
 				];
-			}else{
+			}
+            else
+            {
 				return [
 					'Success' => false,
 					'Error' => 'Unable to complete request, Please contact provider.'
 				];
 			}
-
-		}catch (Exception $e){
+		}
+        catch (Exception $e)
+        {
 			return [
 				'Success' => false,
 				'Error' => 'Unable to complete request, Please contact provider.'
@@ -164,11 +164,11 @@ class SoapHandler {
 	}
 
 
-	public function cancelPatientAmendment($params){
-
+	public function cancelPatientAmendment($params)
+    {
 		$this->constructor($params);
-
-		if(!$this->isAuth()){
+		if(!$this->isAuth())
+        {
 			return [
 				'Success' => false,
 				'Error' => 'Error: HTTP 403 Access Forbidden'

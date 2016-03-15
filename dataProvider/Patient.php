@@ -223,7 +223,6 @@ class Patient {
 		}
 
 		unset($params);
-
 		return $this->patient;
 	}
 

@@ -1,6 +1,7 @@
 <?php
 $functions = [];
 $complexTypes = [];
+
 /*****************************************************************************
  * To access this WSDL specification run via: /wsdl.php?WSDL
  * Any other access to this WSDL will display as a HTML document
@@ -24,9 +25,13 @@ $complexTypes = [];
  *  soapAddress - The php file to send to to process SOAP requests
  *****************************************************************************/
 
+/**
+ * Always include the registry.
+ */
+
 $serviceName = 'GaiaEHR Access Point';
 
-$ip = 'localhost';
+$Server = '10.23.150.10/GaiaEHR';
 
 $complexTypes['Patient'] = [
 	[
@@ -499,7 +504,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -550,7 +555,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -601,7 +606,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -667,7 +672,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -733,7 +738,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -806,7 +811,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -861,7 +866,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -929,7 +934,7 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
 
 $functions[] = [
@@ -973,21 +978,17 @@ $functions[] = [
 			'document' => 'If success == false an error message will be send back'
 		]
 	],
-	'soapAddress' => 'http://'.$ip.'/gaiaehr/dataProvider/SOAP/Server.php'
+	'soapAddress' => "http://$Server/dataProvider/SOAP/Server.php"
 ];
-// ----------------------------------------------------------------------------
-// END OF PARAMETERS SET UP
-// ----------------------------------------------------------------------------
 
-/*****************************************************************************
- * Process Page / Request
- *****************************************************************************/
-
-if(stristr($_SERVER['QUERY_STRING'], 'wsdl')){
+if(stristr($_SERVER['QUERY_STRING'], 'wsdl'))
+{
 	// WSDL request - output raw XML
 	header('Content-Type: application/soap+xml; charset=utf-8');
 	print DisplayXML();
-} else {
+}
+else
+{
 	// Page accessed normally - output documentation
 	$cp = substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], '/') + 1); // Current page
 	print '<!-- Attention: To access via a SOAP client use ' . $cp . '?WSDL -->';
@@ -1015,7 +1016,8 @@ STYLES;
 	// Document each function
 	print '<h2>Available Functions:</h2>';
 	print '<div style="margin-left:20px;">';
-	for($i = 0; $i < count($functions); $i++){
+	for($i = 0; $i < count($functions); $i++)
+    {
 		print '<h3>Method: ' . $functions[$i]['funcName'] . '</h3>';
 		print '<div style="margin-left:20px;">';
 		print '<p>';
@@ -1078,6 +1080,7 @@ function DisplayXML($xmlformat = true) {
 	global $functions; // Functions that this web service supports
 	global $serviceName; // Web Service ID
 	global $complexTypes;
+
 	$i = 0; // For traversing functions array
 	$j = 0; // For traversing parameters arrays
 	$str = ''; // XML String to output

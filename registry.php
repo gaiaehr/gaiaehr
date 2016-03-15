@@ -29,8 +29,11 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
 date_default_timezone_set('UTC');
 
-if(!defined('HTTP')){
-	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)){
+if(!defined('HTTP'))
+{
+	if(!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ||
+        (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443))
+    {
 		define('HTTP', 'https');
 	} else {
 		define('HTTP', 'http');
@@ -39,24 +42,28 @@ if(!defined('HTTP')){
 if(!defined('HOST')) define('HOST', isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
 if(!defined('URI'))	define('URI', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/gaiaehr/');
 if(!defined('ROOT')) define('ROOT', str_replace('\\', '/', dirname(__FILE__)));
-if(!defined('URL')){
+if(!defined('URL'))
+{
 	$URL = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : HTTP . '://' . HOST . URI;
 	$URL = rtrim(preg_replace('/dataProvider.*/', '', $URL),'/');
 	define('URL', $URL);
 }
+
 // application version
 if(!defined('VERSION'))	define('VERSION', '1.0.102');
 // extjs sdk directory
 if(!defined('EXTJS')) define('EXTJS', 'extjs-4.2.1');
-
 // sites values
 $_SESSION['sites'] = [];
 
-if(!defined('sites_count')){
+if(!defined('sites_count'))
+{
 	$sitedir = ROOT . '/sites/';
 	$count = 0;
-	if($handle = opendir($sitedir)){
-		while(false !== ($entry = readdir($handle))) {
+	if($handle = opendir($sitedir))
+    {
+		while(false !== ($entry = readdir($handle)))
+        {
 			if($entry != '.' && $entry != '..' && is_dir($sitedir . $entry) === true)
 				$count++;
 		}
@@ -88,7 +95,7 @@ $_SESSION['client']['browser'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['
 $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') === false ? 'Linux' : 'Windows');
 
 // default site
-$site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+if(!defined('SITE')) define('SITE', (isset($_GET['site']) ? $_GET['site'] : 'default'));
 
 /**
  * Enable the error and also set the ROOT directory for
@@ -99,7 +106,7 @@ $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
  */
 error_reporting(-1);
 ini_set('display_errors', 1);
-$logPath = ROOT . '/sites/' . $site . '/log/';
+$logPath = ROOT . '/sites/' . SITE . '/log/';
 if(file_exists($logPath) && is_writable($logPath))
 {
 	$logFile = 'error_log.txt';
@@ -114,27 +121,30 @@ if(file_exists($logPath) && is_writable($logPath))
 	umask($oldUmask);
 }
 
-if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
-	include_once(ROOT. '/sites/' . $site . '/conf.php');
+if(file_exists(ROOT. '/sites/' . SITE . '/conf.php'))
+{
+	include_once(ROOT. '/sites/' . SITE . '/conf.php');
 
 	unset($_SESSION['site']['error']);
 
 	//check for ip access
-	if(!isset($_SESSION['access_blocked'])){
+	if(!isset($_SESSION['access_blocked']))
+    {
 		include_once(ROOT. '/dataProvider/IpAccessRules.php');
 		$IpAccessRules = new IpAccessRules();
 		$_SESSION['access_blocked'] = $IpAccessRules->isBlocked();
 	}
 
-	if($_SESSION['access_blocked']){
+	if($_SESSION['access_blocked'])
+    {
 		header("HTTP/1.1 401 Unauthorized");
 		header('Location: 401.html');
 		exit;
 	}
 
 	// load modules hooks
-	if(!isset($_SESSION['hooks'])){
-
+	if(!isset($_SESSION['hooks']))
+    {
 		include_once(ROOT. '/dataProvider/Modules.php');
 		$Modules = new Modules();
 		$modules = $Modules->getEnabledModules();
@@ -142,21 +152,25 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 
 		$_SESSION['styles'] = [];
 
-		foreach($modules as $module){
-
+		foreach($modules as $module)
+        {
 			/**
 			 * Styles
 			 */
-			if(isset($module['styles'])){
-				foreach($module['styles'] AS $style){
+			if(isset($module['styles']))
+            {
+				foreach($module['styles'] AS $style)
+                {
 					$_SESSION['styles'][] = 'modules/' . $module['name'] . '/resources/css/' . $style;
 				}
 			}
 			/**
 			 * Scripts
 			 */
-			if(isset($module['scripts'])){
-				foreach($module['scripts'] AS $script){
+			if(isset($module['scripts']))
+            {
+				foreach($module['scripts'] AS $script)
+                {
 					$_SESSION['scripts'][] = 'modules/' . $module['name'] . '/resources/js/' . $script;
 				}
 			}
@@ -173,7 +187,8 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 
 			$methods = $ReflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
 
-			foreach($methods as $method){
+			foreach($methods as $method)
+            {
 				// if method starts with underscores the skill example "__construct"
 				if(preg_match('/^__/', $method->name)) continue;
 
@@ -187,7 +202,9 @@ if(file_exists(ROOT. '/sites/' . $site . '/conf.php')){
 			}
 		}
 	}
-} else {
+}
+else
+{
 	$_SESSION['site'] = ['error' => 'Site configuration file not found, Please contact Support Desk. Thanks!'];
 };
 

@@ -45,7 +45,8 @@ class SoapHandler {
 	/**
 	 * @return bool
 	 */
-	protected function isAuth() {
+	protected function isAuth()
+    {
 		require_once(ROOT . '/dataProvider/Applications.php');
 		$Applications = new Applications();
 		$access = $Applications->hasAccess($this->params->SecureKey);
@@ -54,10 +55,12 @@ class SoapHandler {
 	}
 
 
-	public function PatientPortalAuthorize($params){
+	public function PatientPortalAuthorize($params)
+    {
 		$this->constructor($params);
 
-		if(!$this->isAuth()){
+		if(!$this->isAuth())
+        {
 			return [
 				'Success' => false,
 				'Error' => 'Error: HTTP 403 Access Forbidden'

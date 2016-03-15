@@ -122,13 +122,6 @@ function doRpc($cdata) {
 			($action == 'authProcedures' && $method == 'login') ||
 			($action == 'CombosData' && $method == 'getActiveFacilities') ||
 			($action == 'i18nRouter' && $method == 'getAvailableLanguages') ||
-            ($action == 'SiteSetup' && $method == 'checkRequirements') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'checkDatabaseCredentials') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'setSiteDirBySiteId') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'createDatabaseStructure') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'createConfigurationFile') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'createSiteAdmin') || // Used by SiteSetup
-            ($action == 'SiteSetup' && $method == 'loadDatabaseData') || // Used by SiteSetup
             ($action == 'CombosData' && $method == 'getTimeZoneList') || // Used by SiteSetup
             ($action == 'CombosData' && $method == 'getThemes') // Used by SiteSetup
 		){

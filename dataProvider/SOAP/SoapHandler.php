@@ -63,9 +63,6 @@ class SoapHandler {
 		}
 		$patient = $this->getPatient($params);
 
-        error_log(print_r($patient,true));
-        error_log(print_r($params,true));
-
 		$response = [
 			'Success' => false,
 			'Error' => 'Not Authorized'

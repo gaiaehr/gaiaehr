@@ -47,7 +47,7 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         window.say = function(args) {
             console.log.apply(this, arguments);
-        }
+        };
 
         window.g = function(global){
 	        return window.globals[global] || false;

@@ -20,14 +20,21 @@
 include_once(ROOT . '/classes/Time.php');
 include_once(ROOT . '/classes/FileManager.php');
 
-class ExternalDataUpdate {
+class ExternalDataUpdate
+{
 	private $db;
 	private $codeType;
 	private $installedRevision;
 	private $error = false;
 
-	function __construct() {
-		$this->db = new MatchaHelper();
+	function __construct()
+    {
+        // Set the time limit to infinite, this will take a lot of time.
+        // Maybe hours on a magnetic hard disk, maybe 1 hour to minutes in a SSD (Solid State Disk)
+        set_time_limit(0);
+
+        // Now, let's the party begin
+        $this->db = new MatchaHelper();
 		$this->file = new FileManager();
 		return;
 	}
@@ -43,22 +50,28 @@ class ExternalDataUpdate {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function getCodeFiles(stdClass $params) {
+	public function getCodeFiles(stdClass $params)
+    {
 		$this->codeType = $params->codeType;
 		$mainDir = $this->getCodeDir();
 		$revisions = [];
-		if(is_dir($mainDir)){
+		if(is_dir($mainDir))
+        {
 			$files_array = $this->file->scanDir($mainDir);
 			/**
 			 * this foreach loop only encounters 1 file for SNOMED, RXNORM and ICD9 but will
 			 * cycle through all the
 			 * the release files for ICD10
 			 */
-			foreach($files_array as $file){
+			foreach($files_array as $file)
+            {
 				$file = $mainDir . '/' . $file;
-				if(is_file($file)){
-					if($this->codeType == 'RXNORM'){
-						if(preg_match("/RxNorm_full_([0-9]{8}).zip/", $file, $matches)){
+				if(is_file($file))
+                {
+					if($this->codeType == 'RXNORM')
+                    {
+						if(preg_match("/RxNorm_full_([0-9]{8}).zip/", $file, $matches))
+                        {
 							/**
 							 * Hard code the version RxNorm feed to be Standard
 							 * (if add different RxNorm types/versions/lanuages, then can use this)
@@ -74,8 +87,11 @@ class ExternalDataUpdate {
 							];
 							array_push($revisions, $temp_date);
 						}
-					} elseif($this->codeType == 'SNOMED') {
-						if(preg_match("/SnomedCT_RF1Release_INT_([0-9]{8}).zip/", $file, $matches)){
+					}
+                    elseif($this->codeType == 'SNOMED')
+                    {
+						if(preg_match("/SnomedCT_RF1Release_INT_([0-9]{8}).zip/", $file, $matches))
+                        {
 							/**
 							 * Hard code the version SNOMED feed to be International:English
 							 * (if add different SNOMED types/versions/languages, then can use this)
@@ -90,7 +106,9 @@ class ExternalDataUpdate {
 								'codeType' => $this->codeType
 							];
 							array_push($revisions, $temp_date);
-						} elseif(preg_match("/SnomedCT_RF1Release_US([0-9]{7})_([0-9]{8}).zip/", $file, $matches)) {
+						}
+                        elseif(preg_match("/SnomedCT_RF1Release_US([0-9]{7})_([0-9]{8}).zip/", $file, $matches))
+                        {
 							/**
 							 * Hard code the version SNOMED feed to be International:English
 							 * (if add different SNOMED types/versions/languages, then can use this)
@@ -106,66 +124,11 @@ class ExternalDataUpdate {
 							];
 							array_push($revisions, $temp_date);
 						}
-						//						}elseif(preg_match("/SnomedCT_INT_([0-9]{8}).zip/", $file, $matches)){
-						//							/**
-						//							 * Hard code the version SNOMED feed to be International:English
-						//							 * (if add different SNOMED types/versions/languages, then can use this)
-						//							 */
-						//							$version = 'International:English';
-						//							$date_release = substr($matches[1], 0, 4) . '-' . substr($matches[1], 4, -2) . '-' . substr($matches[1], 6);
-						//							$temp_date = [
-						//								'date' => $date_release,
-						//								'version' => $version,
-						//								'path' => $file,
-						//								'basename' => basename($file),
-						//								'codeType' => $this->codeType
-						//							];
-						//							array_push($revisions, $temp_date);
-						//						} elseif(preg_match("/SnomedCT_Release_INT_([0-9]{8}).zip/", $file, $matches)){
-						//							/**
-						//							 * Hard code the version SNOMED feed to be International:English
-						//							 * (if add different SNOMED types/versions/languages, then can use this)
-						//							 */
-						//							$version = 'International:English';
-						//							$date_release = substr($matches[1], 0, 4) . '-' . substr($matches[1], 4, -2) . '-' . substr($matches[1], 6);
-						//							$temp_date = [
-						//								'date' => $date_release,
-						//								'version' => $version,
-						//								'path' => $file,
-						//								'basename' => basename($file),
-						//								'codeType' => $this->codeType
-						//							];
-						//							array_push($revisions, $temp_date);
-						//						} elseif(preg_match("/SnomedCT_Release_US([0-9]{7})_([0-9]{8}).zip/", $file, $matches)){
-						//							/**
-						//							 * Hard code the version SNOMED feed to be International:English
-						//							 * (if add different SNOMED types/versions/languages, then can use this)
-						//							 */
-						//							$version = 'US:English';
-						//							$date_release = substr($matches[1], 0, 4) . '-' . substr($matches[1], 4, -2) . '-' . substr($matches[1], 6);
-						//							$temp_date = [
-						//								'date' => $date_release,
-						//								'version' => $version,
-						//								'path' => $file,
-						//								'basename' => basename($file),
-						//								'codeType' => $this->codeType
-						//							];
-						//							array_push($revisions, $temp_date);
-						//						} elseif(preg_match("/SNOMEDCT_CORE_SUBSET_([0-9]{6}).zip/", $file, $matches)){
-						//
-						//							$version = 'CoreProblemList:English';
-						//							$date_release = substr($matches[0], 0, 4) . '-' . substr($matches[1], 4, -0) . '-01';
-						//							$temp_date = [
-						//								'date' => $date_release,
-						//								'version' => $version,
-						//								'path' => $file,
-						//								'basename' => basename($file),
-						//								'codeType' => $this->codeType.'CoreProblem'
-						//							];
-						//							array_push($revisions, $temp_date);
-						//						}
-					} elseif($this->codeType == 'ICD9') {
-						if(preg_match("/cmsv([0-9]+)_master_descriptions.zip/", $file, $matches)){
+					}
+                    elseif($this->codeType == 'ICD9')
+                    {
+						if(preg_match("/cmsv([0-9]+)_master_descriptions.zip/", $file, $matches))
+                        {
 							/**
 							 * Hard code the version SNOMED feed to be International:English
 							 * (if add different SNOMED types/versions/languages, then can use this)
@@ -179,8 +142,11 @@ class ExternalDataUpdate {
 							];
 							array_push($revisions, $temp_date);
 						}
-					} elseif($this->codeType == 'ICD10') {
-						if(preg_match("/([0-9]{4})_PCS_long_and_abbreviated_titles.zip/", $file, $matches) || preg_match("/DiagnosisGEMs_([0-9]{4}).zip/", $file, $matches) || preg_match("/ICD10OrderFiles_([0-9]{4}).zip/", $file, $matches) || preg_match("/ProcedureGEMs_([0-9]{4}).zip/", $file, $matches) || preg_match("/ReimbursementMapping_([0-9]{4}).zip/", $file, $matches)){
+					}
+                    elseif($this->codeType == 'ICD10')
+                    {
+						if(preg_match("/([0-9]{4})_PCS_long_and_abbreviated_titles.zip/", $file, $matches) || preg_match("/DiagnosisGEMs_([0-9]{4}).zip/", $file, $matches) || preg_match("/ICD10OrderFiles_([0-9]{4}).zip/", $file, $matches) || preg_match("/ProcedureGEMs_([0-9]{4}).zip/", $file, $matches) || preg_match("/ReimbursementMapping_([0-9]{4}).zip/", $file, $matches))
+                        {
 							$temp_date = [
 								'date' => $matches[1] . '-01-01',
 								'version' => $matches[1],
@@ -190,7 +156,9 @@ class ExternalDataUpdate {
 							];
 							array_push($revisions, $temp_date);
 						}
-					} elseif($this->codeType == 'HCPCS') {
+					}
+                    elseif($this->codeType == 'HCPCS')
+                    {
 						if(preg_match("/([0-9]{2})anweb.zip/", $file, $matches)){
 							$temp_date = [
 								'date' => '20' . $matches[1] . '-01-01',
@@ -206,7 +174,9 @@ class ExternalDataUpdate {
 			}
 			return $revisions;
 
-		} else {
+		}
+        else
+        {
 			return [
 				'success' => false,
 				'error' => $mainDir . 'directory not found'
@@ -215,73 +185,90 @@ class ExternalDataUpdate {
 
 	}
 
-	public function updateCodes(stdClass $params) {
+	public function updateCodes(stdClass $params)
+    {
 		$this->codeType = $params->codeType;
 		$dir = false;
 		if((($params->codeType == 'ICD9' || $params->codeType == 'ICD10') && $this->isCodeVersionNewer($params->version)) || ($params->codeType != 'ICD9' && $params->codeType != 'ICD10')){
 			// handle ICD10 request to loop for avery file
 			if($params->codeType == 'ICD10'){
 				$idc10Dir = $this->getCodeDir();
-				if(is_dir($idc10Dir)){
-					if($this->file->setWorkingDir()){
+				if(is_dir($idc10Dir))
+                {
+					if($this->file->setWorkingDir())
+                    {
 						$files = $this->file->scanDir($idc10Dir);
 						$filesFound = 0;
-						foreach($files as $file){
-							if($file == $params->version . '_PCS_long_and_abbreviated_titles.zip' || $file == 'DiagnosisGEMs_' . $params->version . '.zip' || $file == 'ICD10OrderFiles_' . $params->version . '.zip' || $file == 'ProcedureGEMs_' . $params->version . '.zip' || $file == 'ReimbursementMapping_' . $params->version . '.zip'){
+						foreach($files as $file)
+                        {
+							if($file == $params->version . '_PCS_long_and_abbreviated_titles.zip' || $file == 'DiagnosisGEMs_' . $params->version . '.zip' || $file == 'ICD10OrderFiles_' . $params->version . '.zip' || $file == 'ProcedureGEMs_' . $params->version . '.zip' || $file == 'ReimbursementMapping_' . $params->version . '.zip')
+                            {
 								$filesFound++;
 								$dir = $this->file->extractFileToDir($idc10Dir . '/' . $file, $this->file->workingDir);
-								if($dir === false){
-									$this->error = $this->file->error;
-								}
+								if($dir === false) $this->error = $this->file->error;
 							}
 						}
-						if($filesFound == 0){
-							$this->error = 'Could not find version ' . $params->version . ' files';
-						}
-					} else {
+						if($filesFound == 0) $this->error = 'Could not find version ' . $params->version . ' files';
+					}
+                    else
+                    {
 						$this->error = $this->file->error;
 					}
-				} else {
+				}
+                else
+                {
 					$this->error = 'Could not find ICD10 directory';
 				}
 
 				// handle the ICD9, RXNORM, and SNOMED requests
-			} else {
+			}
+            else
+            {
 				$dir = $this->file->extractFileToTempDir($params->path);
-				if($dir === false){
-					$this->error = $this->file->error;
-				}
+				if($dir === false) $this->error = $this->file->error;
 			}
 
-			if($this->error === false){
-				if($dir != false){
+			if($this->error === false)
+            {
+				if($dir != false)
+                {
 					$this->file->chmodReclusive($dir, 0777);
 					$success = false;
 					$name = $params->codeType;
-					if($params->codeType == 'ICD9' || $params->codeType == 'ICD10'){
+					if($params->codeType == 'ICD9' || $params->codeType == 'ICD10')
+                    {
 						$name = 'CMS';
 						$success = $this->icd_import($dir, $params->codeType);
-					} elseif($params->codeType == 'RXNORM') {
+					}
+                    elseif($params->codeType == 'RXNORM')
+                    {
 						$success = $this->rxnorm_import($dir);
-					} elseif($params->codeType == 'SNOMED') {
+					}
+                    elseif($params->codeType == 'SNOMED')
+                    {
 						$success = $this->snomed_import($dir);
-					} elseif($params->codeType == 'SNOMEDCoreProblem') {
+					}
+                    elseif($params->codeType == 'SNOMEDCoreProblem')
+                    {
 						$success = $this->snomed_problems($dir);
-					} elseif($params->codeType == 'HCPCS') {
+					}
+                    elseif($params->codeType == 'HCPCS')
+                    {
 						$success = $this->hcpcs_import($dir);
 					}
 					$this->file->cleanUp();
-					if($success !== false){
-
+					if($success !== false)
+                    {
 						$params->date = isset($params->date) ? $params->date : date('Y-m-d');
-
 						$this->updateTrackerTable($name, $params->codeType, $this->installedRevision, $params->version, $params->date);
 						return [
 							'success' => $success,
 							'dir' => $dir,
 							'params' => $params
 						];
-					} else {
+					}
+                    else
+                    {
 						return [
 							'success' => $success,
 							'error' => $this->error
@@ -293,7 +280,9 @@ class ExternalDataUpdate {
 						'error' => $this->file->error
 					];
 				}
-			} else {
+			}
+            else
+            {
 				return [
 					'success' => false,
 					'error' => $this->error
@@ -307,7 +296,8 @@ class ExternalDataUpdate {
 		}
 	}
 
-	public function hcpcs_import($dir) {
+	public function hcpcs_import($dir)
+    {
 		$dir = str_replace('\\', '/', $dir . '/');
 		$fields = [
 			[
@@ -431,27 +421,37 @@ class ExternalDataUpdate {
 				'len' => 1
 			]
 		];
-		if(is_dir($dir) && $handle = opendir($dir)){
-			while(false !== ($filename = readdir($handle))) {
-				if(preg_match("/HCPC([0-9]{4})_A-N.txt/", $filename)){
+		if(is_dir($dir) && $handle = opendir($dir))
+        {
+			while(false !== ($filename = readdir($handle)))
+            {
+				if(preg_match("/HCPC([0-9]{4})_A-N.txt/", $filename))
+                {
 					$file_handle = fopen($dir . $filename, "r");
 					$buff = [];
 					$count = 0;
 					$this->db->setSQL('TRUNCATE TABLE `hcpcs_codes`');
 					$this->db->execOnly();
-					while(!feof($file_handle)) {
+					while(!feof($file_handle))
+                    {
 						$line = fgets($file_handle);
 						$foo = [];
-						foreach($fields As $field){
+						foreach($fields As $field)
+                        {
 							$foo[$field['name']] = trim(substr($line, $field['pos'] - 1, $field['len']));
 						}
-						if($count == 0){
+						if($count == 0)
+                        {
 							$buff = $foo;
-						} elseif($buff['HCPCS_CD'] != $foo['HCPCS_CD']) {
+						}
+                        elseif($buff['HCPCS_CD'] != $foo['HCPCS_CD'])
+                        {
 							$this->db->setSQL($this->db->sqlBind($buff, 'hcpcs_codes', 'I'));
 							$this->db->execOnly();
 							$buff = $foo;
-						} else {
+						}
+                        else
+                        {
 							$buff['HCPCS_LONG_DESC_TXT'] = $buff['HCPCS_LONG_DESC_TXT'] . ' ' . $foo['HCPCS_LONG_DESC_TXT'];
 						}
 						$count++;
@@ -460,14 +460,17 @@ class ExternalDataUpdate {
 				}
 			}
 			return true;
-		} else {
+		}
+        else
+        {
 			$this->error = 'Unable to open ' . $dir;
 			return false;
 		}
 
 	}
 
-	public function icd_import($dir, $type) {
+	public function icd_import($dir, $type)
+    {
 		$dir = str_replace('\\', '/', $dir . '/');
 		// the incoming array is a metadata array containing keys that substr match to
 		// the incoming filename
@@ -476,7 +479,8 @@ class ExternalDataUpdate {
 		// flat files. There are separate definitions for ICD 9 and 10 based on the type
 		// passed in
 		$incoming = [];
-		if($type == 'ICD9'){
+		if($type == 'ICD9')
+        {
 			$incoming['SHORT_DX'] = [
 				'#TABLENAME#' => 'icd9_dx_code',
 				'#FLD1#' => 'dx_code',
@@ -513,7 +517,9 @@ class ExternalDataUpdate {
 				'#POS2#' => 7,
 				'#LEN2#' => 300
 			];
-		} else {
+		}
+        else
+        {
 			$incoming['icd10pcs_order_'] = [
 				'#TABLENAME#' => 'icd10_pcs_order_code',
 				'#FLD1#' => 'pcs_code',
@@ -653,23 +659,26 @@ class ExternalDataUpdate {
 		$db_load = "LOAD DATA LOCAL INFILE '#INFILE#' INTO TABLE #TABLENAME# FIELDS TERMINATED BY '\0' (@var) SET revision = #REVISION#, active = 1, ";
 		$col_template = '#FLD# = trim(Substring(@var, #POS#, #LEN#))';
 		// load all data and set active revision
-		if(is_dir($dir) && $handle = opendir($dir)){
-			while(false !== ($filename = readdir($handle))) {
+		if(is_dir($dir) && $handle = opendir($dir))
+        {
+			while(false !== ($filename = readdir($handle)))
+            {
 				// bypass unwanted entries
-				if(!stripos($filename, '.txt') || stripos($filename, 'diff')){
-					continue;
-				}
+				if(!stripos($filename, '.txt') || stripos($filename, 'diff')) continue;
 				// reset the sql load command and susbtitute the filename
 				$run_sql = $db_load;
 				$run_sql = str_replace('#INFILE#', $dir . $filename, $run_sql);
 				$keys = array_keys($incoming);
-				while($this_key = array_pop($keys)) {
-					if(stripos($filename, $this_key) !== false){
+				while($this_key = array_pop($keys))
+                {
+					if(stripos($filename, $this_key) !== false)
+                    {
 						// now substitute the tablename
 						$run_sql = str_replace('#TABLENAME#', $incoming[$this_key]['#TABLENAME#'], $run_sql);
 						// the range defines the maximum number of fields contained
 						// in any of the incoming files
-						foreach(range(1, 8) as $field){
+						foreach(range(1, 8) as $field)
+                        {
 							$fld = '#FLD' . $field . '#';
 							$pos = '#POS' . $field . '#';
 							$len = '#LEN' . $field . '#';
@@ -680,9 +689,7 @@ class ExternalDataUpdate {
 							$run_sql = str_replace('#POS#', $incoming[$this_key][$pos], $run_sql);
 							$run_sql = str_replace('#LEN#', $incoming[$this_key][$len], $run_sql);
 							// at the end of this table's field list
-							if(!array_key_exists($nxtfld, $incoming[$this_key])){
-								break;
-							}
+							if(!array_key_exists($nxtfld, $incoming[$this_key])) break;
 							$run_sql .= ',';
 						}
 						// get the next revision
@@ -690,7 +697,8 @@ class ExternalDataUpdate {
 						$row = $this->db->fetchRecord(PDO::FETCH_ASSOC);
 						$next_rev = $row['rev'] + 1;
 						// if the next revision is grater than one, lets disable the existing codes
-						if($next_rev > 1){
+						if($next_rev > 1)
+                        {
 							$this->db->setSQL($this->db->sqlBind(['active' => 0], $incoming[$this_key]['#TABLENAME#'], 'U'));
 							$this->db->execOnly();
 						}
@@ -698,23 +706,19 @@ class ExternalDataUpdate {
 						// and execute the $run_sql with the new codes
 						$run_sql = str_replace('#REVISION#', $next_rev, $run_sql);
 						$this->db->exec($run_sql);
-						//$stmt->execute();
 						$this->installedRevision = $next_rev;
-
-						//print_r($this->db->conn->errorInfo());
-						//print $run_sql.'<br>';
-
-						// time to get out :-)
-						//break;
 					}
 				}
 			}
-		} else {
+		}
+        else
+        {
 			$this->error = 'No ICD import directory';
 			return false;
 		}
 		// now update the tables where necessary
-		if($type == 'ICD9'){
+		if($type == 'ICD9')
+        {
 			$this->db->setSQL("UPDATE `icd9_dx_code` SET formatted_dx_code = dx_code");
 			$this->db->execOnly();
 			$this->db->setSQL("UPDATE `icd9_dx_code` SET formatted_dx_code = concat(concat(LEFT(dx_code, 3), '.'), substr(dx_code, 4)) WHERE dx_code RLIKE '^[V0-9]{1}.*' AND LENGTH(dx_code) > 3");
@@ -727,7 +731,9 @@ class ExternalDataUpdate {
 			$this->db->execOnly();
 			$this->db->setSQL("UPDATE `icd9_sg_code` A, `icd9_sg_long_code` B SET A.long_desc = B.long_desc WHERE A.sg_code = B.sg_code AND A.active = 1 AND A.long_desc IS NULL");
 			$this->db->execOnly();
-		} else {
+		}
+        else
+        {
 			// ICD 10
 			$this->db->setSQL("UPDATE `icd10_dx_order_code` SET formatted_dx_code = dx_code");
 			$this->db->execOnly();
@@ -737,19 +743,12 @@ class ExternalDataUpdate {
 		return true;
 	}
 
-	private function rxnorm_import($dir) {
+	private function rxnorm_import($dir)
+    {
 		$dirScripts = $dir . '/scripts/mysql';
 		$dir = $dir . '/rrf';
 		$dir = str_replace('\\', '/', $dir);
 		$rx_info = [];
-		//		$rx_info['rxnatomarchive'] = array(
-		//			'title' => 'Archive Data',
-		//			'dir' => $dir,
-		//			'origin' => 'RXNATOMARCHIVE.RRF',
-		//			'filename' => 'RXNATOMARCHIVE.RRF',
-		//			'table' => 'rxnatomarchive',
-		//			'required' => 0
-		//		);
 		$rx_info['rxnconso'] = [
 			'title' => 'Concept Names and Sources',
 			'dir' => $dir,
@@ -758,30 +757,6 @@ class ExternalDataUpdate {
 			'table' => 'rxnconso',
 			'required' => 1
 		];
-		//		$rx_info['rxncui'] = array(
-		//			'title' => 'Retired RXCUI Data',
-		//			'dir' => $dir,
-		//			'origin' => 'RXNCUI.RRF',
-		//			'filename' => 'RXNCUI.RRF',
-		//			'table' => 'rxncui',
-		//			'required' => 1
-		//		);
-		//		$rx_info['rxncuichanges'] = array(
-		//			'title' => 'Concept Changes',
-		//			'dir' => $dir,
-		//			'origin' => 'RXNCUICHANGES.RRF',
-		//			'filename' => 'RXNCUICHANGES.RRF',
-		//			'table' => 'rxncuichanges',
-		//			'required' => 1
-		//		);
-		//		$rx_info['rxndoc'] = array(
-		//			'title' => 'Documentation for Abbreviated Values',
-		//			'dir' => $dir,
-		//			'origin' => 'RXNDOC.RRF',
-		//			'filename' => 'RXNDOC.RRF',
-		//			'table' => 'rxndoc',
-		//			'required' => 1
-		//		);
 		$rx_info['rxnrel'] = [
 			'title' => 'Relationships',
 			'dir' => $dir,
@@ -790,14 +765,7 @@ class ExternalDataUpdate {
 			'table' => 'rxnrel',
 			'required' => 1
 		];
-		//		$rx_info['rxnsab'] = array(
-		//			'title' => 'Source Information',
-		//			'dir' => $dir,
-		//			'origin' => 'RXNSAB.RRF',
-		//			'filename' => 'RXNSAB.RRF',
-		//			'table' => 'rxnsab',
-		//			'required' => 0
-		//		);
+
 		$rx_info['rxnsat'] = [
 			'title' => 'Simple Concept and Atom Attributes',
 			'dir' => $dir,
@@ -806,46 +774,49 @@ class ExternalDataUpdate {
 			'table' => 'rxnsat',
 			'required' => 0
 		];
-		//		$rx_info['rxnsty'] = array(
-		//			'title' => 'Semantic Types ',
-		//			'dir' => $dir,
-		//			'origin' => 'RXNSTY.RRF',
-		//			'filename' => 'RXNSTY.RRF',
-		//			'table' => 'rxnsty',
-		//			'required' => 1
-		//		);
 		// load scripts
 		$file_load = file_get_contents($dirScripts . '/Table_scripts_mysql_rxn.sql', true);
-		if($_SESSION['server']['IS_WINDOWS']){
+		if($_SESSION['server']['IS_WINDOWS'])
+        {
 			$data_load = file_get_contents($dirScripts . '/Load_scripts_mysql_rxn_win.sql', true);
-		} else {
+		}
+        else
+        {
 			$data_load = file_get_contents($dirScripts . '/Load_scripts_mysql_rxn_unix.sql', true);
 		}
 		$indexes_load = file_get_contents($dirScripts . '/Indexes_mysql_rxn.sql', true);
 		// Creating the structure for table and applying indexes
 		$file_array = explode(';', $file_load);
-		foreach($file_array as $val){
-			if(trim($val) != ''){
+		foreach($file_array as $val)
+        {
+			if(trim($val) != '')
+            {
 				$stmt = $this->db->conn()->prepare($val);
 				$stmt->execute();
 			}
 		}
 
 		$indexes_array = explode(';', $indexes_load);
-		foreach($indexes_array as $val1){
-			if(trim($val1) != ''){
+		foreach($indexes_array as $val1)
+        {
+			if(trim($val1) != '')
+            {
 				$stmt = $this->db->conn()->prepare($val1);
 				$stmt->execute();
 			}
 		}
 		$data = explode(';', $data_load);
-		foreach($data as $val){
-			foreach($rx_info as $key => $value){
+		foreach($data as $val)
+        {
+			foreach($rx_info as $key => $value)
+            {
 				$file_name = $value['origin'];
 				$replacement = $dir . '/' . $file_name;
-				if(strpos($val, $file_name) !== false){
+				if(strpos($val, $file_name) !== false)
+                {
 					$val1 = str_replace($file_name, $replacement, $val);
-					if(trim($val1) != ''){
+					if(trim($val1) != '')
+                    {
 						$this->db->conn()->exec($val1);
 					}
 				}
@@ -866,7 +837,8 @@ class ExternalDataUpdate {
 		return true;
 	}
 
-	private function snomed_import($dir) {
+	private function snomed_import($dir)
+    {
 		// set up array
 		$table_array_for_snomed = [
 			'sct_concepts_drop' => 'DROP TABLE IF EXISTS sct_concepts',
@@ -952,8 +924,10 @@ class ExternalDataUpdate {
 		$dir = str_replace('\\', '/', $dir);
 		// executing the create statement for tables, these are defined in
 		// snomed_capture.inc file
-		foreach($table_array_for_snomed as $val){
-			if(trim($val) != ''){
+		foreach($table_array_for_snomed as $val)
+        {
+			if(trim($val) != '')
+            {
 				$stmt = $this->db->conn()->prepare($val);
 				$stmt->execute();
 			}
@@ -975,7 +949,8 @@ class ExternalDataUpdate {
 		return true;
 	}
 
-	private function snomed_problems($dir) {
+	private function snomed_problems($dir)
+    {
 		// set up array
 		$this->db->conn()->exec('
 			DROP TABLE IF EXISTS sct_problem_list;
@@ -997,9 +972,12 @@ class ExternalDataUpdate {
 
 		$dir = str_replace('\\', '/', $dir . '/');
 
-		if(is_dir($dir) && $handle = opendir($dir)){
-			while(false !== ($filename = readdir($handle))) {
-				if(($filename != '.' || $filename != '..') && strstr($filename, 'SNOMEDCT_CORE_SUBSET') !== false){
+		if(is_dir($dir) && $handle = opendir($dir))
+        {
+			while(false !== ($filename = readdir($handle)))
+            {
+				if(($filename != '.' || $filename != '..') && strstr($filename, 'SNOMEDCT_CORE_SUBSET') !== false)
+                {
 					$path = $dir . $filename;
 					$load_script = "LOAD DATA LOCAL INFILE '#FILENAME#' into table #TABLE# fields terminated by '|' ESCAPED BY '' lines terminated by '\\n' ignore 1 lines ";
 					$array_replace = [
@@ -1010,9 +988,7 @@ class ExternalDataUpdate {
 						$path,
 						'sct_problem_list'
 					], $load_script);
-					if(isset($new_str)){
-						$this->db->conn()->exec($new_str);
-					}
+					if(isset($new_str)) $this->db->conn()->exec($new_str);
 				}
 			}
 			closedir($handle);
@@ -1027,17 +1003,19 @@ class ExternalDataUpdate {
 	 * @param $dir
 	 * @param $sub_path
 	 */
-	private function loadSnomedData($dir, $sub_path) {
+	private function loadSnomedData($dir, $sub_path)
+    {
 		// This max executin time, is temporary
 		// Match should control this time, in INIT time of loading the library
 		// And it should be configurable too.
 		@ini_set('max_execution_time', 0);
 
-		if(is_dir($dir . $sub_path) && $handle = opendir($dir . $sub_path)){
-
-			while(false !== ($filename = readdir($handle))) {
-
-				if($filename != '.' && $filename != '..' && !strpos($filename, 'zip')){
+		if(is_dir($dir . $sub_path) && $handle = opendir($dir . $sub_path))
+        {
+			while(false !== ($filename = readdir($handle)))
+            {
+				if($filename != '.' && $filename != '..' && !strpos($filename, 'zip'))
+                {
 
 					$path = $dir . $sub_path . $filename;
 
@@ -1047,43 +1025,49 @@ class ExternalDataUpdate {
 						'#FILENAME#',
 						'#TABLE#'
 					];
-
-					if(strpos($filename, 'Concepts') !== false){
+					if(strpos($filename, 'Concepts') !== false)
+                    {
 						$new_str = str_replace($array_replace, [
 							$path,
 							'sct_concepts'
 						], $load_script);
-					} elseif(strpos($filename, 'Descriptions') !== false) {
+					}
+                    elseif(strpos($filename, 'Descriptions') !== false)
+                    {
 						$new_str = str_replace($array_replace, [
 							$path,
 							'sct_descriptions'
 						], $load_script);
-					} elseif(strpos($filename, 'Relationships') !== false) {
+					}
+                    elseif(strpos($filename, 'Relationships') !== false)
+                    {
 						$new_str = str_replace($array_replace, [
 							$path,
 							'sct_relationships'
 						], $load_script);
-					} elseif(strpos($filename, 'Integration_LOINC') !== false) {
+					}
+                    elseif(strpos($filename, 'Integration_LOINC') !== false)
+                    {
 						$new_str = str_replace($array_replace, [
 							$path,
 							'sct_relationships_loinc'
 						], $load_script);
-					} elseif(strpos($filename, 'CrossMapTargets_ICD9') !== false) {
+					}
+                    elseif(strpos($filename, 'CrossMapTargets_ICD9') !== false)
+                    {
 						$new_str = str_replace($array_replace, [
 							$path,
 							'sct_relationships_icd9'
 						], $load_script);
-					} elseif(strpos($filename, 'CrossMapTargets_ICDO') !== false) {
+					}
+                    elseif(strpos($filename, 'CrossMapTargets_ICDO') !== false)
+                    {
 						$new_str = str_replace($array_replace, [
 							$path,
 							'sct_relationships_icd10'
 						], $load_script);
 					}
-					if(isset($new_str)){
-						// Execute the Query
-						$this->db->conn()->exec($new_str);
-					}
-
+					if(isset($new_str)) $this->db->conn()->exec($new_str);
 				}
 			}
 			closedir($handle);

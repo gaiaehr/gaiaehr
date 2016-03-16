@@ -34,11 +34,11 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
             acl = {},
             lang = {},
             globals = {},
-            site = '<?php print $site ?>',
+            site = '<?php print SITE ?>',
             localization = '<?php print site_default_localization ?>';
     </script>
-    <script src="JSrouter.php?site=<?php print $site ?>" charset="utf-8"></script>
-    <script src="data/api.php?site=<?php print $site ?>" charset="utf-8"></script>
+    <script src="JSrouter.php?site=<?php print SITE ?>" charset="utf-8"></script>
+    <script src="data/api.php?site=<?php print SITE ?>" charset="utf-8"></script>
     <script type="text/javascript">
 
         window.i18n = window._ = function(key){
@@ -47,7 +47,6 @@ if(!defined('_GaiaEXEC')) die('No direct access allowed.');
 
         window.say = function(args){
 	        console.log.apply(this, arguments);
-        };
 
         window.g = function(global){
 	        return window.globals[global] || false;

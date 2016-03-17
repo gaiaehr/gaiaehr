@@ -75,8 +75,9 @@ if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['in
 	if(!defined('_GaiaEXEC'))
 		define('_GaiaEXEC', 1);
 	$site  = isset($_REQUEST['site']) ? $_REQUEST['site'] : 'default';
+    if(!defined('SITE')) define('SITE', (isset($_GET['site']) ? $_GET['site'] : 'default'));
 	require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
-	require_once(ROOT . '/sites/' . $site . '/conf.php');
+	require_once(ROOT . '/sites/' . SITE . '/conf.php');
 	require_once(ROOT . '/classes/MatchaHelper.php');
 	include_once(ROOT . '/dataProvider/Modules.php');
 	$m = new Modules();

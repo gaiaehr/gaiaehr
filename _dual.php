@@ -30,7 +30,7 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 				globals = {},
 				ext = '<?php print EXTJS ?>',
 				version = '<?php print VERSION ?>',
-				site = '<?php print $site ?>',
+				site = '<?php print SITE ?>',
 				requires;
 		</script>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -60,8 +60,8 @@ if (!defined('_GaiaEXEC')) die('No direct access allowed.');
 		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js"></script>
 
 		<!-- JSrouter and Ext.deirect API files -->
-		<script src="JSrouter.php?site=<?php print $site ?>"></script>
-		<script src="data/api.php?site=<?php print $site ?>"></script>
+		<script src="JSrouter.php?site=<?php print SITE ?>"></script>
+		<script src="data/api.php?site=<?php print SITE ?>"></script>
 
         <script type="text/javascript">
 

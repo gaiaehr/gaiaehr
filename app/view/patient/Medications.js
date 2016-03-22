@@ -21,6 +21,7 @@ Ext.define('App.view.patient.Medications', {
 	requires: [
 		'App.store.patient.Medications',
 		'App.store.administration.Medications',
+        'App.store.patient.DrugInteractions',
 		'Ext.form.field.Trigger',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
@@ -191,7 +192,37 @@ Ext.define('App.view.patient.Medications', {
 					itemId: 'reviewMedications'
 				}
 			]
-		}
+		},
+        {
+            xtype: 'grid',
+            title: _('drug_interactions'),
+            itemId: 'drugInteractionGrid',
+            collapsible: true,
+            height: 300,
+            collapsed: true,
+            region: 'south',
+            store:  Ext.create('App.store.patient.DrugInteractions', {
+                autoSync: false
+            }),
+            columns: [
+                {
+                    text: _('drug_1'),
+                    dataIndex: 'drug_1'
+                },
+                {
+                    text: _('drug_2'),
+                    dataIndex: 'drug_2'
+                },
+                {
+                    text: _('interaction'),
+                    dataIndex: 'interaction_description'
+                },
+                {
+                    text: _('severity'),
+                    dataIndex: 'severity'
+                }
+            ]
+        }
 	],
 	tbar: [
 		'->',

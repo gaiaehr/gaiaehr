@@ -16,8 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.DoctorsNotes', {
-	extend: 'Ext.data.Store',
-	model: 'App.model.patient.DoctorsNote',
-	autoLoad: false
+Ext.define('App.model.patient.DrugInteractions', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {
+            name: 'drug_1',
+            type: 'string'
+        },
+        {
+            name: 'drug_2',
+            type: 'string'
+        },
+        {
+            name: 'interaction_description',
+            type: 'string'
+        },
+        {
+            name: 'severity',
+            type: 'string'
+        }
+    ],
+    proxy: {
+        type: 'direct',
+        api: {
+            read: 'DrugInteractions.getDrugInteractions'
+        }
+    }
 });

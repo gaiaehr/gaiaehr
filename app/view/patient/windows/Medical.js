@@ -164,12 +164,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
 		p.setSize(w, h);
 		this.alignTo(Ext.getBody(), 'c-c');
-
-//		say(p);
-//		say(Ext.getBody().getWidth());
-//		say(w);
-//		say(Ext.getBody().getHeight());
-//		say(h);
 	},
 
 	onMedicalWinClose: function(){

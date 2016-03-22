@@ -2189,5 +2189,12 @@ $API = [
                 'len' => 1
             ]
         ]
+    ],
+    'DrugInteractions' => [
+        'methods' => [
+            'getDrugInteractions' => [
+                'len' => 1
+            ]
+        ]
     ]
 ];

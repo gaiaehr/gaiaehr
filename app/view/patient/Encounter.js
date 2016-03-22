@@ -475,7 +475,6 @@ Ext.define('App.view.patient.Encounter', {
 		}else{
 			app.onMedicalWin(btn.action);
 		}
-
 	},
 
 	/**
@@ -722,7 +721,7 @@ Ext.define('App.view.patient.Encounter', {
                     var params;
 					if(response.result.success){
 						if(me.stopTimer()){
-S;
+                            S;
 							/** default data for notes and reminder **/
 							params = {
 								pid: me.pid,
@@ -981,7 +980,6 @@ S;
 			patient = app.patient;
 
 		if(patient.pid && patient.eid){
-
 			me.updateTitle(patient.name + ' (' + _('visits') + ')', patient.readOnly, null);
 			me.setReadOnly(patient.readOnly);
 			callback(true);

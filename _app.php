@@ -480,6 +480,7 @@ header("Access-Control-Allow-Origin: *");
 					'patient.charts.WeightForAgeInf',
 					'patient.charts.WeightForRecumbentInf',
 					'patient.charts.WeightForStature',
+                    'patient.DrugInteractions',
 					'areas.PatientArea',
 					'areas.PoolArea',
 					'areas.PoolDropAreas'
@@ -562,6 +563,7 @@ header("Access-Control-Allow-Origin: *");
 	                'patient.LaboratoryTypes',
 	                'patient.MeaningfulUseAlert',
 	                'patient.Medications',
+                    'patient.DrugInteractions',
                     'patient.RxOrders',
 	                'patient.Notes',
 	                'patient.Patient',

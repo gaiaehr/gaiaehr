@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Ext.define('App.store.patient.DoctorsNotes', {
-	extend: 'Ext.data.Store',
-	model: 'App.model.patient.DoctorsNote',
-	autoLoad: false
+Ext.define('App.store.patient.DrugInteractions', {
+    extend: 'Ext.data.Store',
+    model: 'App.model.patient.DrugInteractions',
+    autoLoad: false
 });

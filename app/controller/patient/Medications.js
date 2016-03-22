@@ -40,6 +40,10 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationUserLiveSearch',
 			selector: '#PatientMedicationUserLiveSearch'
 		},
+        {
+            ref: 'DrugInteractionGrid',
+            selector: '#drugInteractionGrid'
+        },
 
 		// administer refs
 		{
@@ -221,12 +225,19 @@ Ext.define('App.controller.patient.Medications', {
 		this.onMedicationsPanelActive();
 	},
 
-	onMedicationsPanelActive: function(){
-		var store = this.getPatientMedicationsGrid().getStore(),
+    /**
+     * On Medication TAB Panel activates clear the filters and load all the stores
+     * for this panel's data grids
+     */
+	onMedicationsPanelActive: function()
+    {
+		var medicationsStore = this.getPatientMedicationsGrid().getStore(),
+            drugInteractionStore = this.getDrugInteractionGrid().getStore(),
 			reconciled = this.getPatientMedicationReconciledBtn().pressed;
 
-		store.clearFilter(true);
-		store.load({
+        // Load the Medications Store of the patient
+        medicationsStore.clearFilter(true);
+        medicationsStore.load({
 			filters: [
 				{
 					property: 'pid',
@@ -237,5 +248,16 @@ Ext.define('App.controller.patient.Medications', {
 				reconciled: reconciled
 			}
 		});
+
+        // Load the Drug Interaction for those medications
+        drugInteractionStore.clearFilter(true);
+        drugInteractionStore.load({
+            filters: [
+                {
+                    property: 'pid',
+                    value: app.patient.pid
+                }
+            ]
+        });
 	}
 });

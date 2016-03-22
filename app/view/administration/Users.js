@@ -20,7 +20,8 @@ Ext.define('App.view.administration.Users', {
 	extend: 'App.ux.RenderPanel',
 	requires: [
 		'App.ux.form.fields.plugin.PasswordStrength',
-		'App.ux.combo.ActiveSpecialties'
+		'App.ux.combo.ActiveSpecialties',
+		'App.ux.combo.Departments'
 	],
 	pageTitle: _('users'),
 	itemId: 'AdminUsersPanel',
@@ -114,7 +115,7 @@ Ext.define('App.view.administration.Users', {
 															vtype: 'usernameField'
 														},
 														{
-															width: 275,
+															width: 300,
 															xtype: 'textfield',
 															fieldLabel: _('password'),
 															name: 'password',
@@ -154,7 +155,7 @@ Ext.define('App.view.administration.Users', {
 															name: 'mname'
 														},
 														{
-															width: 150,
+															width: 175,
 															xtype: 'textfield',
 															name: 'lname'
 														}
@@ -190,7 +191,7 @@ Ext.define('App.view.administration.Users', {
 															name: 'calendar'
 														},
 														{
-															width: 225,
+															width: 250,
 															labelWidth: 50,
 															xtype: 'gaiaehr.combo',
 															fieldLabel: _('type'),
@@ -216,7 +217,7 @@ Ext.define('App.view.administration.Users', {
 															name: 'facility_id'
 														},
 														{
-															width: 275,
+															width: 300,
 															xtype: 'mitos.authorizationscombo',
 															fieldLabel: _('authorizations'),
 															name: 'see_auth'
@@ -233,7 +234,14 @@ Ext.define('App.view.administration.Users', {
 													},
 													items: [
 														{
-															width: 555,
+															width: 280,
+															xtype: 'depatmentscombo',
+															fieldLabel: _('department'),
+															name: 'department_id',
+															allowBlank: false
+														},
+														{
+															width: 300,
 															xtype: 'mitos.rolescombo',
 															fieldLabel: _('access_control'),
 															name: 'role_id',

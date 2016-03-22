@@ -145,17 +145,17 @@ Ext.define('App.view.login.Login', {
 				//'Check-In Mode',
 				//'->',
 				{
-					text: _('login'),
-					name: 'btn_login',
-					scope: me,
-					handler: me.loginSubmit
-				},
-				'-',
-				{
 					text: _('reset'),
 					name: 'btn_reset',
 					scope: me,
 					handler: me.onFormReset
+				},
+				'-',
+				{
+					text: _('login'),
+					name: 'btn_login',
+					scope: me,
+					handler: me.loginSubmit
 				}
 			]
 		};
@@ -293,11 +293,11 @@ Ext.define('App.view.login.Login', {
 	 * @param value
 	 */
 	onSiteSelect: function(combo, value){
-		this.currSite = value[0].data.site;
+		this.currSite = combo.getValue();
 	},
 
 	onLangSelect: function(combo, value){
-		this.siteLang = value[0].data.value;
+		this.siteLang = combo.getValue();
 	},
 
 	onFacilityLoad: function(store, records){

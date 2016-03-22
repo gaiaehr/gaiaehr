@@ -225,6 +225,12 @@ Ext.define('App.model.administration.User', {
 			index: true
 		},
 		{
+			name: 'department_id',
+			type: 'int',
+			comment: 'default department',
+			index: true
+		},
+		{
 			name: 'role_id',
 			type: 'int',
 			comment: 'acl_user_roles relation'

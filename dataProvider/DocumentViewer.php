@@ -95,10 +95,11 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
 
 	$isTemp = isset($_REQUEST['temp']);
 
+	$TransactionLog = new TransactionLog();
+
 	if($isTemp)
     {
 		$d = MatchaModel::setSenchaModel('App.model.patient.PatientDocumentsTemp');
-        $TransactionLog = new TransactionLog();
 
 		$doc = $d->load($_REQUEST['id'])->one();
 		if($doc === false)
@@ -156,6 +157,8 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
             ]);
 		}
 	}
+
+	unset($TransactionLog);
 
 	if($is_image){
 

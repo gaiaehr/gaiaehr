@@ -9037,47 +9037,30 @@ Ext.define('App.ux.combo.LabsTypes', {
 		me.callParent(arguments);
 	}
 });
-Ext.define('App.ux.combo.Languages',
-{
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.languagescombo',
-	initComponent: function() 
-	{
+Ext.define('App.ux.combo.Languages', {
+	extend: 'Ext.form.ComboBox',
+	alias: 'widget.languagescombo',
+	editable: false,
+	valueField: 'code',
+	displayField: 'description',
+	emptyText: _('select'),
+	initComponent: function(){
 		var me = this;
 
-		Ext.define('LanguagesComboModel', 
-		{
-			extend: 'Ext.data.Model',
-			fields: 
-			[
-				{ name: 'code', type: 'string' },
-				{ name: 'description', type: 'string' }
+		me.store = Ext.create('Ext.data.Store', {
+			autoLoad: false,
+			fields: [
+				{name: 'code', type: 'string'},
+				{name: 'description', type: 'string'}
 			],
-			proxy : 
-			{
+			proxy: {
 				type: 'direct',
-				api :  
-				{
-					read: i18nRouter.getAvailableLanguages
+				api: {
+					read: 'i18nRouter.getAvailableLanguages'
 				}
 			}
 		});
 
-		me.store = Ext.create('Ext.data.Store', 
-		{
-			model   : 'LanguagesComboModel',
-			autoLoad: false
-		});
-
-		Ext.apply(this, 
-		{
-			editable    : false,
-			valueField  : 'code',
-			displayField: 'description',
-            emptyText   : _('select'),
-			store       : me.store
-		}, null);
-		
 		me.callParent();
 	}
 });
@@ -13980,6 +13963,12 @@ Ext.define('App.model.administration.User', {
 			name: 'facility_id',
 			type: 'int',
 			comment: 'default facility',
+			index: true
+		},
+		{
+			name: 'department_id',
+			type: 'int',
+			comment: 'default department',
 			index: true
 		},
 		{
@@ -49171,7 +49160,8 @@ Ext.define('App.view.administration.Users', {
 	extend: 'App.ux.RenderPanel',
 	requires: [
 		'App.ux.form.fields.plugin.PasswordStrength',
-		'App.ux.combo.ActiveSpecialties'
+		'App.ux.combo.ActiveSpecialties',
+		'App.ux.combo.Departments'
 	],
 	pageTitle: _('users'),
 	itemId: 'AdminUsersPanel',
@@ -49265,7 +49255,7 @@ Ext.define('App.view.administration.Users', {
 															vtype: 'usernameField'
 														},
 														{
-															width: 275,
+															width: 300,
 															xtype: 'textfield',
 															fieldLabel: _('password'),
 															name: 'password',
@@ -49305,7 +49295,7 @@ Ext.define('App.view.administration.Users', {
 															name: 'mname'
 														},
 														{
-															width: 150,
+															width: 175,
 															xtype: 'textfield',
 															name: 'lname'
 														}
@@ -49341,7 +49331,7 @@ Ext.define('App.view.administration.Users', {
 															name: 'calendar'
 														},
 														{
-															width: 225,
+															width: 250,
 															labelWidth: 50,
 															xtype: 'gaiaehr.combo',
 															fieldLabel: _('type'),
@@ -49367,7 +49357,7 @@ Ext.define('App.view.administration.Users', {
 															name: 'facility_id'
 														},
 														{
-															width: 275,
+															width: 300,
 															xtype: 'mitos.authorizationscombo',
 															fieldLabel: _('authorizations'),
 															name: 'see_auth'
@@ -49384,7 +49374,14 @@ Ext.define('App.view.administration.Users', {
 													},
 													items: [
 														{
-															width: 555,
+															width: 280,
+															xtype: 'depatmentscombo',
+															fieldLabel: _('department'),
+															name: 'department_id',
+															allowBlank: false
+														},
+														{
+															width: 300,
 															xtype: 'mitos.rolescombo',
 															fieldLabel: _('access_control'),
 															name: 'role_id',
@@ -54218,7 +54215,6 @@ Ext.define('App.view.patient.ActiveProblems', {
 							}
 						]
 					}
-
 				]
 			}
 		]
@@ -56714,15 +56710,15 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		if(me.enableEncHistory && a('access_enc_history')){
-			me.EncounterEventHistory = me.administrativeTabPanel.add(
-				Ext.create('App.ux.grid.EventHistory', {
-					bodyStyle: 0,
-					title: _('encounter_history'),
-					store: me.encounterEventHistoryStore
-				})
-			);
-		}
+		//if(me.enableEncHistory && a('access_enc_history')){
+		//	me.EncounterEventHistory = me.administrativeTabPanel.add(
+		//		Ext.create('App.ux.grid.EventHistory', {
+		//			bodyStyle: 0,
+		//			title: _('encounter_history'),
+		//			store: me.encounterEventHistoryStore
+		//		})
+		//	);
+		//}
 
 		/**
 		 * Progress Note
@@ -56999,14 +56995,14 @@ Ext.define('App.view.patient.Encounter', {
 						}
 					});
 
-					me.encounterEventHistoryStore.load({
-						filters: [
-							{
-								property: 'eid',
-								value: me.eid
-							}
-						]
-					});
+					//me.encounterEventHistoryStore.load({
+					//	filters: [
+					//		{
+					//			property: 'eid',
+					//			value: me.eid
+					//		}
+					//	]
+					//});
 
 				}else{
 					app.accessDenied();
@@ -57103,13 +57099,13 @@ Ext.define('App.view.patient.Encounter', {
 
 				me.priorityCombo.setValue(data.priority);
 
-				me.encounterEventHistoryStore.load({
-					filters: [
-						{
-							property: 'eid', value: me.eid
-						}
-					]
-				});
+				//me.encounterEventHistoryStore.load({
+				//	filters: [
+				//		{
+				//			property: 'eid', value: me.eid
+				//		}
+				//	]
+				//});
 
 				if(me.CurrentProceduralTerminology){
 					me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){

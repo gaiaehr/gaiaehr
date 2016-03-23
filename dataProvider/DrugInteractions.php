@@ -49,7 +49,8 @@ class DrugInteractions
         'Grapefruit juice',
         'Ethanol',
         'Caffeine',
-        'Marijuana'
+        'Marijuana',
+        'Cranberry-containing'
     ];
 
     var $Medications;
@@ -64,7 +65,6 @@ class DrugInteractions
     {
         if(!isset($this->DrugInteractions))
             $this->Medications = MatchaModel::setSenchaModel('App.model.patient.Medications');
-
         return;
     }
 
@@ -77,19 +77,23 @@ class DrugInteractions
     {
         // Load all the active medication of the patient.
         // If the medication is not active, do not check for interactions
-        $agregateFilter = new stdClass();
-        $agregateFilter->property = 'end_date';
-        $agregateFilter->operator = '=';
-        $agregateFilter->value = null;
-        $params->filter[] = $agregateFilter;
+        $aggregateFilter = new stdClass();
+        $aggregateFilter->property = 'end_date';
+        $aggregateFilter->operator = '=';
+        $aggregateFilter->value = null;
+        $params->filter[] = $aggregateFilter;
         $Medications = $this->Medications->load($params)->all();
         $getQueryString = '';
 
         // Build up the query string of active medications
         foreach($Medications as $Medication)
         {
-            $getQueryString = $Medication['GS_CODE'] . ':';
+            if(!empty($Medication['GS_CODE']))
+                $getQueryString .= $Medication['GS_CODE'] . ':';
         }
+        // Delete the char, we don't need it.
+        $getQueryString = substr($getQueryString, 0, -1);
+
         $requestValues = [
             'drugproductids' => $getQueryString
         ];
@@ -111,16 +115,23 @@ class DrugInteractions
         $foundOn = strpos($result, "No significant drug interactions were found.");
         if($foundOn) return false;
 
-        $dom = new Dom;
-        $parsed = $dom->loadStr($result, [
-            'cleanupInput' => false,
-            'removeScripts' => true
-        ]);
-        $serviceInteractions = $parsed->find('div.item');
+        libxml_use_internal_errors(true);
+        $DOM = new DOMDocument();
+        $DOM->preserveWhiteSpace = FALSE;
+        $DOM->loadHTML($result, LIBXML_ERR_NONE | LIBXML_NOERROR | LIBXML_NOWARNING);
+        $xPath = new DOMXPath($DOM);
 
-        foreach($serviceInteractions as $serviceInteraction)
+        $interactions = null;
+        foreach($xPath->query('//div[@class="item"]') as $index => $node)
         {
-            $title = strip_tags($serviceInteraction->find('p.InteractionTitle', 0)->outerHtml);
+            // Extract the drug medication and ingredients.
+            $title = $xPath->query(
+                '//p[@class="InteractionTitle"]',
+                $node
+            )->item($index)->nodeValue;
+
+            // Check if one of the ingredients are in the typical list,
+            // if exists, do not send them.
             $saveIt = true;
             foreach($this->typicalIngredients as $typicalIngredient)
             {
@@ -128,23 +139,33 @@ class DrugInteractions
             }
             if($saveIt)
             {
-
+                // Compile the drugs
                 $drugs = explode(' and ', $title);
                 $interaction['drug_1'] = $drugs[0];
                 $interaction['drug_2'] = $drugs[1];
+
+                // Extract the severity
+                $severity = $xPath->query(
+                    '//p[@class="InteractionSeverity"]',
+                    $node
+                )->item($index)->nodeValue;
                 $interaction['severity'] = str_replace(
                     'Severity: ',
                     '',
-                    strip_tags($serviceInteraction->find('p.InteractionSeverity', 0)->outerHtml)
+                    strip_tags($severity)
                 );
-                $interaction['interaction_description'] = strip_tags($serviceInteraction->find('p.InteractionText', 0)->outerHtml);
+
+                // Extract interaction description
+                $interaction['interaction_description'] = strip_tags(
+                    $xPath->query(
+                        '//p[@class="InteractionText"]',
+                        $node
+                    )->item($index)->nodeValue
+                );
                 $interactions[] = $interaction;
             }
         }
-        return [
-            'totals' => count($interactions),
-            'data' => $interactions
-        ];
+        return $interactions;
     }
 
     /**

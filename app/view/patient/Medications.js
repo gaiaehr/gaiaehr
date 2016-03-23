@@ -207,19 +207,23 @@ Ext.define('App.view.patient.Medications', {
             columns: [
                 {
                     text: _('drug_1'),
-                    dataIndex: 'drug_1'
+                    dataIndex: 'drug_1',
+                    flex: 1
                 },
                 {
                     text: _('drug_2'),
-                    dataIndex: 'drug_2'
+                    dataIndex: 'drug_2',
+                    flex: 1
                 },
                 {
                     text: _('interaction'),
-                    dataIndex: 'interaction_description'
+                    dataIndex: 'interaction_description',
+                    flex: 3
                 },
                 {
                     text: _('severity'),
-                    dataIndex: 'severity'
+                    dataIndex: 'severity',
+                    width: 200
                 }
             ]
         }

@@ -180,7 +180,7 @@ class Medications {
      */
     private function __getGoldStandardCode($rxnorm_code)
     {
-        $sth = $this->db->prepare("SELECT * FROM rxnconso WHERE SAB='GS' AND TTY='BD' AND RXCUI='$rxnorm_code'");
+        $sth = $this->db->prepare("SELECT * FROM rxnconso WHERE SAB='GS' AND RXCUI='$rxnorm_code'");
         $sth->execute();
         return $sth->fetch(PDO::FETCH_ASSOC);
     }

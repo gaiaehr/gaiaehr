@@ -88,7 +88,7 @@ class DrugInteractions
         // Build up the query string of active medications
         foreach($Medications as $Medication)
         {
-            $getQueryString = $Medication['CODE'] . ':';
+            $getQueryString = $Medication['GS_CODE'] . ':';
         }
         $requestValues = [
             'drugproductids' => $getQueryString

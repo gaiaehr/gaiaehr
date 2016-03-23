@@ -35,7 +35,8 @@ class Navigation
 		$this->i18n = i18nRouter::getTranslation();
 	}
 
-	private function i18n($w){
+	private function i18n($w)
+    {
 		return isset($this->i18n[$w]) ? $this->i18n[$w] : '*' . $w . '*';
 	}
 
@@ -54,35 +55,6 @@ class Navigation
 			'iconCls' => 'icoDash',
 			'id' => 'App.view.dashboard.Dashboard'
 		];
-
-//		if($this->ACL->hasPermission('access_calendar')){
-//			$nav[] = array(
-//				'text' => $this->i18n('calendar'),
-//				'leaf' => true,
-//				'cls' => 'file',
-//				'iconCls' => 'icoCalendar',
-//				'id' => 'App.view.calendar.Calendar'
-//			);
-//		}
-
-//		if($this->ACL->hasPermission('access_messages')){
-//			$nav[] = array(
-//				'text' => $this->i18n('messages'),
-//				'leaf' => true,
-//				'cls' => 'file',
-//				'iconCls' => 'mail',
-//				'id' => 'App.view.messages.Messages'
-//			);
-//		}
-
-//		$nav[] = array(
-//			'text' => $this->i18n('patient_search'),
-//			'disabled' => !$this->ACL->hasPermission('access_patient_search'),
-//			'leaf' => true,
-//			'cls' => 'file',
-//			'iconCls' => 'searchUsers',
-//			'id' => 'panelPatientSearch'
-//		);
 
 		if($this->ACL->hasPermission('access_floor_plan_panel')){
 			$nav[] = [
@@ -103,9 +75,8 @@ class Navigation
 				'id' => 'App.view.areas.PatientPoolAreas'
 			];
 		}
-		// *************************************************************************************
+
 		// Patient Folder
-		// *************************************************************************************
 		$patient = [
 			'text' => $this->i18n('patient'),
 			'cls' => 'folder',
@@ -154,9 +125,8 @@ class Navigation
 			];
 		}
 		array_push($nav, $patient);
-		// *************************************************************************************
+
 		// Billing Manager Folder
-		// *************************************************************************************
 		array_push($nav, [
 			'text' => $this->i18n('billing_manager'),
 			'cls' => 'folder',
@@ -177,9 +147,8 @@ class Navigation
 				]
 			]
 		]);
-		// *************************************************************************************
+
 		// Administration Folder
-		// *************************************************************************************
 		$admin = [
 			'text' => $this->i18n('administration'),
 			'cls' => 'folder',
@@ -195,14 +164,6 @@ class Navigation
 				'id' => 'App.view.administration.Globals'
 			];
 		}
-//		if($this->ACL->hasPermission('access_facilities')){
-//			$admin['children'][] = array(
-//				'text' => $this->i18n('facilities'),
-//				'leaf' => true,
-//				'cls' => 'file',
-//				'id' => 'App.view.administration.Facilities'
-//			);
-//		}
 		if($this->ACL->hasPermission('access_users')){
 			$admin['children'][] = [
 				'text' => $this->i18n('users'),

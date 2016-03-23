@@ -25,14 +25,22 @@ class Medications {
 	 */
 	private $m;
 
-	function __construct() {
+    /**
+     * @var PDO
+     */
+    private $db;
+
+	function __construct()
+    {
         if(!isset($this->m))
             $this->m = MatchaModel::setSenchaModel('App.model.patient.Medications');
 		$this->m->setOrFilterProperties(['id']);
+        $this->db = Matcha::getConn();
 	}
 
 	public function getPatientMedications($params) {
-		if(isset($params->reconciled) && $params->reconciled == true){
+		if(isset($params->reconciled) && $params->reconciled == true)
+        {
 			$groups = new stdClass();
 			$groups->group[0] = new stdClass();
 			$groups->group[0]->property = 'RXCUI';
@@ -67,27 +75,37 @@ class Medications {
             ->all();
     }
 
-	public function getPatientMedication($params) {
+	public function getPatientMedication($params)
+    {
 		return $this->m->load($params)
 			->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')
 			->one();
 	}
 
-	public function addPatientMedication($params) {
+	public function addPatientMedication($params)
+    {
+        $gs_Code = $this->__getGoldStandardCode($params->RXCUI);
+        $params->GS_CODE = $gs_Code['CODE'];
 		return $this->m->save($params);
 	}
 
-	public function updatePatientMedication($params) {
+	public function updatePatientMedication($params)
+    {
+        $gs_Code = $this->__getGoldStandardCode($params->RXCUI);
+        $params->GS_CODE = $gs_Code['CODE'];
 		return $this->m->save($params);
 	}
 
-	public function destroyPatientMedication($params) {
+	public function destroyPatientMedication($params)
+    {
 		return $this->m->destroy($params);
 	}
 
-	public function getPatientMedicationsByPid($pid, $reconciled = false){
+	public function getPatientMedicationsByPid($pid, $reconciled = false)
+    {
 		$this->m->addFilter('pid', $pid);
-		if($reconciled){
+		if($reconciled)
+        {
 			$groups = new stdClass();
 			$groups->group[0] = new stdClass();
 			$groups->group[0]->property = 'RXCUI';
@@ -102,14 +120,17 @@ class Medications {
 			->all();
 	}
 
-	public function getPatientMedicationsByEid($eid){
+	public function getPatientMedicationsByEid($eid)
+    {
 		$this->m->addFilter('eid', $eid);
 		return $this->m->load()->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')->all();
 	}
 
-	public function getPatientActiveMedicationsByPid($pid, $reconciled = false){
+	public function getPatientActiveMedicationsByPid($pid, $reconciled = false)
+    {
 		$records = $this->getPatientMedicationsByPid($pid, $reconciled);
-		foreach($records as $i => $record){
+		foreach($records as $i => $record)
+        {
 			if(
 				$record['end_date'] == null ||
 				$record['end_date'] == '0000-00-00' ||
@@ -121,14 +142,16 @@ class Medications {
 		return $records;
 	}
 
-	public function getPatientAdministeredMedicationsByPid($pid, $eid){
+	public function getPatientAdministeredMedicationsByPid($pid, $eid)
+    {
 		$this->m->addFilter('pid', $pid);
 		$this->m->addFilter('administered_uid', null, '!=');
 		$this->m->addFilter('administered_uid', 0, '!=');
 		return $this->m->load()->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')->all();
 	}
 
-	public function getPatientAdministeredMedicationsByPidAndEid($pid, $eid){
+	public function getPatientAdministeredMedicationsByPidAndEid($pid, $eid)
+    {
 		$this->m->addFilter('pid', $pid);
 		$this->m->addFilter('eid', $eid);
 		$this->m->addFilter('administered_uid', null, '!=');
@@ -136,7 +159,8 @@ class Medications {
 		return $this->m->load()->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')->all();
 	}
 
-	public function getPatientActiveMedicationsByPidAndCode($pid, $code){
+	public function getPatientActiveMedicationsByPidAndCode($pid, $code)
+    {
 		$this->m->addFilter('pid', $pid);
 		$this->m->addFilter('RXCUI', $code);
 		$records = $this->m->load()->leftJoin(['title', 'fname', 'mname', 'lname'], 'users', 'administered_uid', 'id')->all();
@@ -148,6 +172,18 @@ class Medications {
 
 		return $records;
 	}
+
+    /**
+     * Fetch the CODE of a Gold Standard entry in the RX Norm.
+     * @param $rxnorm_code
+     * @return array
+     */
+    private function __getGoldStandardCode($rxnorm_code)
+    {
+        $sth = $this->db->prepare("SELECT * FROM rxnconso WHERE SAB='GS' AND TTY='BD' AND RXCUI='$rxnorm_code'");
+        $sth->execute();
+        return $sth->fetch(PDO::FETCH_ASSOC);
+    }
 
 }
 

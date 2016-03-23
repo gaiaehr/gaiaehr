@@ -62,6 +62,12 @@ Ext.define('App.model.patient.Medications', {
 			type: 'string',
 			len: 40
 		},
+        {
+            name: 'GS_CODE',
+            type: 'string',
+            len: 40,
+            comment: 'Gold Standard code'
+        },
 		{
 			name: 'NDC',
 			type: 'string',

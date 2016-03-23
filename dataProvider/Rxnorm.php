@@ -28,16 +28,19 @@ class Rxnorm {
 	 */
 	private $i;
 
-	function __construct() {
+	function __construct()
+    {
 		$this->db = Matcha::getConn();
 	}
 
-	function setInstructionModel() {
+	function setInstructionModel()
+    {
 		if(isset($this->i)) return $this->i;
 		return $this->i = MatchaModel::setSenchaModel('App.model.administration.MedicationInstruction');
 	}
 
-	public function getStrengthByCODE($CODE) {
+	public function getStrengthByCODE($CODE)
+    {
 		$sth = $this->db->prepare("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = :c
@@ -59,7 +62,8 @@ class Rxnorm {
 		return $rec['ATV'];
 	}
 
-	public function getDoseformByCODE($CODE) {
+	public function getDoseformByCODE($CODE)
+    {
 		$sth = $this->db->prepare("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = :c
@@ -70,7 +74,8 @@ class Rxnorm {
 		return $rec['ATV'];
 	}
 
-	public function getDoseformAbbreviateByCODE($CODE) {
+	public function getDoseformAbbreviateByCODE($CODE)
+    {
 		$sth = $this->db->prepare("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = :c
@@ -101,7 +106,8 @@ class Rxnorm {
 		return $rec['STR'];
 	}
 
-	public function getRXNORMLiveSearch(stdClass $params) {
+	public function getRXNORMLiveSearch(stdClass $params)
+    {
 		$sth = $this->db->prepare("SELECT `rxnconso`.*, `rxnsat`.`ATV` AS NDC
 									 FROM `rxnconso`
 							   INNER JOIN `rxnsat`

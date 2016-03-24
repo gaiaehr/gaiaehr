@@ -28,7 +28,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 		var me = this;
 
 		me.store = Ext.create('App.store.administration.ReferringProviders', {
-			autoSync: false
+			autoSync: false,
+			remoteSort: true,
+			sorters: [
+				{
+					property: 'lname',
+					direction: 'ASC'
+				}
+			]
 		});
 		
 		Ext.apply(me, {
@@ -38,7 +45,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 					text: _('name'),
 					sortable: true,
 					renderer:function(v, meta, record){
-						return record.data.title + ' ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
+						return record.data.title + ' ' + record.data.lname + ', ' + record.data.fname + ' ' + record.data.mname;
 					}
 				},
 				{

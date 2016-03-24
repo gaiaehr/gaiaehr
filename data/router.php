@@ -56,7 +56,8 @@ if(file_exists($conf)){
     include_once(ROOT . '/dataProvider/ACL.php');
     include_once(ROOT . '/dataProvider/Globals.php');
     include_once(ROOT . '/dataProvider/Modules.php');
-    if(isset($_SESSION['install']) && $_SESSION['install'] != true)
+
+	if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['install'] != true))
     {
         $modules = new Modules();
         $API = array_merge($API, $modules->getEnabledModulesAPI());

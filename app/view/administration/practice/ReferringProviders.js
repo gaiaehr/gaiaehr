@@ -20,17 +20,18 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 	extend: 'Ext.grid.Panel',
 	xtype: 'referringproviderspanel',
 	requires: [
-
+		'Ext.ux.SlidingPager'
 	],
 	title: _('referring_providers'),
 
 	initComponent: function(){
 		var me = this;
 
+		me.store = Ext.create('App.store.administration.ReferringProviders', {
+			autoSync: false
+		});
+		
 		Ext.apply(me, {
-			store: Ext.create('App.store.administration.ReferringProviders', {
-				autoSync: false
-			}),
 			columns: [
 				{
 					width: 200,
@@ -316,6 +317,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 					]
 				})
 			],
+
 			dockedItems: [
 				{
 					xtype: 'toolbar',
@@ -329,6 +331,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							itemId: 'referringProviderAddBtn',
 						}
 					]
+				},
+				{
+					xtype: 'pagingtoolbar',
+					dock: 'bottom',
+					pageSize: 25,
+					store: me.store,
+					displayInfo: true,
+					plugins: Ext.create('Ext.ux.SlidingPager')
 				}
 			]
 		});

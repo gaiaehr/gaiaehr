@@ -13191,6 +13191,23 @@ Ext.define('App.model.administration.ReferringProvider', {
 			len: 40
 		},
 		{
+			name: 'username',
+			type: 'string',
+			len: 40,
+			index: true
+		},
+		{
+			name: 'password',
+			type: 'string',
+			len: 300,
+			encrypt: true
+		},
+		{
+			name: 'authorized',
+			type: 'bool',
+			index: true
+		},
+		{
 			name: 'title',
 			type: 'string',
 			len: 10
@@ -13286,7 +13303,8 @@ Ext.define('App.model.administration.ReferringProvider', {
 		},
 		{
 			name: 'active',
-			type: 'bool'
+			type: 'bool',
+			index: true
 		},
 		{
 			name: 'create_uid',
@@ -17350,6 +17368,12 @@ Ext.define('App.model.patient.Medications', {
 			type: 'string',
 			len: 40
 		},
+        {
+            name: 'GS_CODE',
+            type: 'string',
+            len: 40,
+            comment: 'Gold Standard code'
+        },
 		{
 			name: 'NDC',
 			type: 'string',
@@ -23882,8 +23906,6 @@ Ext.define('App.store.patient.DoctorsNotes', {
 	autoLoad: false
 });
 
-
-
 Ext.define('App.view.patient.DoctorsNotes', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -29992,6 +30014,52 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'active'
+								}
+
+							]
+						},
+						{
+							xtype: 'fieldcontainer',
+							layout: {
+								type: 'hbox',
+								defaultMargins: {
+									top: 0,
+									right: 5,
+									bottom: 0,
+									left: 0
+								}
+							},
+							items: [
+								{
+									xtype: 'textfield',
+									fieldLabel: _('username'),
+									labelWidth: 130,
+									labelAlign: 'right',
+									minLength: 5,
+									maxLength: 15,
+									name: 'username'
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: _('password'),
+									labelWidth: 130,
+									labelAlign: 'right',
+									minLength: 8,
+									maxLength: 15,
+									name: 'password',
+									inputType: 'password',
+									vtype: 'strength',
+									strength: 24,
+									plugins: {
+										ptype: 'passwordstrength'
+									}
+								},
+								{
+									xtype: 'checkbox',
+									fieldLabel: _('authorized'),
+									labelWidth: 130,
+									labelAlign: 'right',
+									name: 'authorized'
 								}
 
 							]
@@ -41452,6 +41520,10 @@ Ext.define('App.controller.patient.Medications', {
 			ref: 'PatientMedicationUserLiveSearch',
 			selector: '#PatientMedicationUserLiveSearch'
 		},
+        {
+            ref: 'DrugInteractionGrid',
+            selector: '#drugInteractionGrid'
+        },
 
 		// administer refs
 		{
@@ -41633,12 +41705,19 @@ Ext.define('App.controller.patient.Medications', {
 		this.onMedicationsPanelActive();
 	},
 
-	onMedicationsPanelActive: function(){
-		var store = this.getPatientMedicationsGrid().getStore(),
+    /**
+     * On Medication TAB Panel activates clear the filters and load all the stores
+     * for this panel's data grids
+     */
+	onMedicationsPanelActive: function()
+    {
+		var medicationsStore = this.getPatientMedicationsGrid().getStore(),
+            drugInteractionStore = this.getDrugInteractionGrid().getStore(),
 			reconciled = this.getPatientMedicationReconciledBtn().pressed;
 
-		store.clearFilter(true);
-		store.load({
+        // Load the Medications Store of the patient
+        medicationsStore.clearFilter(true);
+        medicationsStore.load({
 			filters: [
 				{
 					property: 'pid',
@@ -41649,6 +41728,17 @@ Ext.define('App.controller.patient.Medications', {
 				reconciled: reconciled
 			}
 		});
+
+        // Load the Drug Interaction for those medications
+        drugInteractionStore.clearFilter(true);
+        drugInteractionStore.load({
+            filters: [
+                {
+                    property: 'pid',
+                    value: app.patient.pid
+                }
+            ]
+        });
 	}
 });
 
@@ -44725,6 +44815,7 @@ Ext.define('App.view.patient.Medications', {
 	requires: [
 		'App.store.patient.Medications',
 		'App.store.administration.Medications',
+        'App.store.patient.DrugInteractions',
 		'Ext.form.field.Trigger',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',
@@ -44895,7 +44986,41 @@ Ext.define('App.view.patient.Medications', {
 					itemId: 'reviewMedications'
 				}
 			]
-		}
+		},
+        {
+            xtype: 'grid',
+            title: _('drug_interactions'),
+            itemId: 'drugInteractionGrid',
+            collapsible: true,
+            height: 300,
+            collapsed: true,
+            region: 'south',
+            store:  Ext.create('App.store.patient.DrugInteractions', {
+                autoSync: false
+            }),
+            columns: [
+                {
+                    text: _('drug_1'),
+                    dataIndex: 'drug_1',
+                    flex: 1
+                },
+                {
+                    text: _('drug_2'),
+                    dataIndex: 'drug_2',
+                    flex: 1
+                },
+                {
+                    text: _('interaction'),
+                    dataIndex: 'interaction_description',
+                    flex: 3
+                },
+                {
+                    text: _('severity'),
+                    dataIndex: 'severity',
+                    width: 200
+                }
+            ]
+        }
 	],
 	tbar: [
 		'->',
@@ -56375,12 +56500,6 @@ Ext.define('App.view.patient.windows.Medical', {
 			h = Ext.getBody().getHeight() < 700 ? (Ext.getBody().getHeight() - 100) : 600;
 		p.setSize(w, h);
 		this.alignTo(Ext.getBody(), 'c-c');
-
-//		say(p);
-//		say(Ext.getBody().getWidth());
-//		say(w);
-//		say(Ext.getBody().getHeight());
-//		say(h);
 	},
 
 	onMedicalWinClose: function(){
@@ -56389,6 +56508,7 @@ Ext.define('App.view.patient.windows.Medical', {
 		}
 	}
 });
+
 Ext.define('App.ux.form.fields.CheckBoxWithFamilyRelation', {
 	extend: 'App.ux.form.fields.CheckBoxWithText',
 	alias: 'widget.checkboxwithfamilyhistory',
@@ -56710,15 +56830,15 @@ Ext.define('App.view.patient.Encounter', {
 			);
 		}
 
-		//if(me.enableEncHistory && a('access_enc_history')){
-		//	me.EncounterEventHistory = me.administrativeTabPanel.add(
-		//		Ext.create('App.ux.grid.EventHistory', {
-		//			bodyStyle: 0,
-		//			title: _('encounter_history'),
-		//			store: me.encounterEventHistoryStore
-		//		})
-		//	);
-		//}
+		if(me.enableEncHistory && a('access_enc_history')){
+			me.EncounterEventHistory = me.administrativeTabPanel.add(
+				Ext.create('App.ux.grid.EventHistory', {
+					bodyStyle: 0,
+					title: _('encounter_history'),
+					store: me.encounterEventHistoryStore
+				})
+			);
+		}
 
 		/**
 		 * Progress Note
@@ -56906,7 +57026,6 @@ Ext.define('App.view.patient.Encounter', {
 		}else{
 			app.onMedicalWin(btn.action);
 		}
-
 	},
 
 	/**
@@ -56995,14 +57114,14 @@ Ext.define('App.view.patient.Encounter', {
 						}
 					});
 
-					//me.encounterEventHistoryStore.load({
-					//	filters: [
-					//		{
-					//			property: 'eid',
-					//			value: me.eid
-					//		}
-					//	]
-					//});
+					me.encounterEventHistoryStore.load({
+						filters: [
+							{
+								property: 'eid',
+								value: me.eid
+							}
+						]
+					});
 
 				}else{
 					app.accessDenied();
@@ -57099,13 +57218,13 @@ Ext.define('App.view.patient.Encounter', {
 
 				me.priorityCombo.setValue(data.priority);
 
-				//me.encounterEventHistoryStore.load({
-				//	filters: [
-				//		{
-				//			property: 'eid', value: me.eid
-				//		}
-				//	]
-				//});
+				me.encounterEventHistoryStore.load({
+					filters: [
+						{
+							property: 'eid', value: me.eid
+						}
+					]
+				});
 
 				if(me.CurrentProceduralTerminology){
 					me.CurrentProceduralTerminology.encounterCptStoreLoad(me.pid, me.eid, function(){
@@ -57153,7 +57272,7 @@ Ext.define('App.view.patient.Encounter', {
                     var params;
 					if(response.result.success){
 						if(me.stopTimer()){
-S;
+                            S;
 							/** default data for notes and reminder **/
 							params = {
 								pid: me.pid,
@@ -57412,7 +57531,6 @@ S;
 			patient = app.patient;
 
 		if(patient.pid && patient.eid){
-
 			me.updateTitle(patient.name + ' (' + _('visits') + ')', patient.readOnly, null);
 			me.setReadOnly(patient.readOnly);
 			callback(true);

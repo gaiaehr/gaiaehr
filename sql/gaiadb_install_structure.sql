@@ -664,11 +664,11 @@ CREATE TABLE `provider_credentializations` (
 
 DROP TABLE IF EXISTS `referring_providers`;
 CREATE TABLE `referring_providers` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `create_uid` int(11) DEFAULT NULL COMMENT 'create user ID',
-  `update_uid` int(11) DEFAULT NULL COMMENT 'update user ID',
-  `create_date` datetime DEFAULT NULL COMMENT 'create date',
-  `update_date` datetime DEFAULT NULL COMMENT 'last update date',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(40) DEFAULT NULL,
+  `username` VARCHAR(40) DEFAULT NULL,
+  `password` VARCHAR(300) DEFAULT NULL,
+  `portal_authorized` TINYINT NULL,
   `title` varchar(10) DEFAULT NULL COMMENT 'title (Mr. Mrs.)',
   `fname` varchar(80) DEFAULT NULL COMMENT 'first name',
   `mname` varchar(80) DEFAULT NULL COMMENT 'middle name',
@@ -686,16 +686,20 @@ CREATE TABLE `referring_providers` (
   `fax_number` varchar(25) DEFAULT NULL COMMENT 'fax number',
   `cel_number` varchar(25) DEFAULT NULL COMMENT 'cell phone number',
   `active` tinyint(1) DEFAULT NULL,
-  `code` varchar(40) DEFAULT NULL,
   `fda` varchar(25) DEFAULT NULL,
   `ess` varchar(25) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `create_uid` int(11) DEFAULT NULL COMMENT 'create user ID',
+  `update_uid` int(11) DEFAULT NULL COMMENT 'update user ID',
+  `create_date` datetime DEFAULT NULL COMMENT 'create date',
+  `update_date` datetime DEFAULT NULL COMMENT 'last update date',
+  PRIMARY KEY (`id`),
+  KEY `IK_username` (`username`),
+  KEY `IK_password` (`password`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Referring Providers';
-
 
 DROP TABLE IF EXISTS `referring_providers_facilities`;
 CREATE TABLE `referring_providers_facilities` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `referring_provider_id` int(11) DEFAULT NULL,
   `name` varchar(80) DEFAULT NULL,
   `address` varchar(35) DEFAULT NULL,
@@ -721,6 +725,35 @@ CREATE TABLE `referring_providers_facilities` (
   KEY `IK_referring_provider_id` (`referring_provider_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `referring_providers_groups`;
+CREATE TABLE `referring_providers_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(40) DEFAULT NULL,
+  `description` varchar(180) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `create_uid` int(11) DEFAULT NULL,
+  `update_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL COMMENT 'create date',
+  `update_date` datetime DEFAULT NULL COMMENT 'last update date',
+  PRIMARY KEY (`id`),
+  KEY `IK_active` (`active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `referring_providers_groups_rel`;
+CREATE TABLE `referring_providers_groups_rel` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `referring_provider_group_id` int(11) DEFAULT NULL,
+  `referring_provider_id` int(11) DEFAULT NULL,
+  `is_admin` tinyint(1) DEFAULT NULL,
+  `create_uid` int(11) DEFAULT NULL,
+  `update_uid` int(11) DEFAULT NULL,
+  `create_date` datetime DEFAULT NULL COMMENT 'create date',
+  `update_date` datetime DEFAULT NULL COMMENT 'last update date',
+  PRIMARY KEY (`id`),
+  KEY `IK_referring_provider_group_id` (`referring_provider_group_id`),
+  KEY `IK_referring_provider_id` (`referring_provider_id`),
+  KEY `IK_is_admin` (`is_admin`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `specialties`;
 CREATE TABLE `specialties` (

@@ -22,7 +22,7 @@ Ext.define('App.view.administration.ReferringProviders', {
 	requires: [
 
 	],
-	title: i18n('referring_providers'),
+	title: _('referring_providers'),
 
 	initComponent: function(){
 		var me = this;
@@ -34,7 +34,7 @@ Ext.define('App.view.administration.ReferringProviders', {
 			columns: [
 				{
 					width: 200,
-					text: i18n('name'),
+					text: _('name'),
 					sortable: true,
 					renderer:function(v, meta, record){
 						return record.data.title + ' ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
@@ -42,30 +42,30 @@ Ext.define('App.view.administration.ReferringProviders', {
 				},
 				{
 					flex: 1,
-					text: i18n('email'),
+					text: _('email'),
 					sortable: true,
 					dataIndex: 'email'
 				},
 				{
 					flex: 1,
-					text: i18n('phone_number'),
+					text: _('phone_number'),
 					sortable: true,
 					dataIndex: 'phone_number'
 				},
 				{
 					flex: 1,
-					text: i18n('cell_number'),
+					text: _('cell_number'),
 					sortable: true,
 					dataIndex: 'cel_number'
 				},
 				{
 					flex: 1,
-					text: i18n('aditional_info'),
+					text: _('aditional_info'),
 					sortable: true,
 					dataIndex: 'notes'
 				},
 				{
-					text: i18n('active'),
+					text: _('active'),
 					sortable: true,
 					dataIndex: 'active',
 					renderer: me.boolRenderer
@@ -77,7 +77,7 @@ Ext.define('App.view.administration.ReferringProviders', {
 					items: [
 						{
 							xtype: 'fieldcontainer',
-							fieldLabel: i18n('first_middle_last'),
+							fieldLabel: _('first_middle_last'),
 							labelWidth: 130,
 							labelAlign: 'right',
 							layout: {
@@ -130,13 +130,13 @@ Ext.define('App.view.administration.ReferringProviders', {
 								{
 									xtype: 'textfield',
 									name: 'email',
-									fieldLabel: i18n('email'),
+									fieldLabel: _('email'),
 									labelWidth: 130,
 									labelAlign: 'right'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('taxonomy'),
+									fieldLabel: _('taxonomy'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'taxonomy'
@@ -157,14 +157,14 @@ Ext.define('App.view.administration.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('upin'),
+									fieldLabel: _('upin'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'upin'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('npi'),
+									fieldLabel: _('npi'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'npi'
@@ -185,14 +185,14 @@ Ext.define('App.view.administration.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('lic'),
+									fieldLabel: _('lic'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'lic'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('ssn'),
+									fieldLabel: _('ssn'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'ssn'
@@ -213,14 +213,14 @@ Ext.define('App.view.administration.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('phone_number'),
+									fieldLabel: _('phone_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'phone_number'
 								},
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('fax_number'),
+									fieldLabel: _('fax_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'fax_number'
@@ -242,14 +242,14 @@ Ext.define('App.view.administration.ReferringProviders', {
 							items: [
 								{
 									xtype: 'textfield',
-									fieldLabel: i18n('cell_number'),
+									fieldLabel: _('cell_number'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'cel_number'
 								},
 								{
 									xtype: 'checkbox',
-									fieldLabel: i18n('active'),
+									fieldLabel: _('active'),
 									labelWidth: 130,
 									labelAlign: 'right',
 									name: 'active'
@@ -262,10 +262,10 @@ Ext.define('App.view.administration.ReferringProviders', {
 							xtype: 'textareafield',
 							name: 'notes',
 							width: 600,
-							fieldLabel: i18n('notes'),
+							fieldLabel: _('notes'),
 							labelWidth: 130,
 							labelAlign: 'right',
-							emptyText: i18n('additional_info')
+							emptyText: _('additional_info')
 						}
 					]
 				})
@@ -278,7 +278,7 @@ Ext.define('App.view.administration.ReferringProviders', {
 						'->',
 						{
 							xtype: 'button',
-							text: i18n('referring_provider'),
+							text: _('referring_provider'),
 							iconCls: 'icoAdd',
 							itemId: 'referringProviderAddBtn',
 						}

@@ -173,10 +173,9 @@ class authProcedures {
 	 */
 	public function ckAuth(){
 
-		if(isset($_SESSION['session_id'])){
+		if(isset($_SESSION['session_id']) && isset($_SESSION['user']) && $_SESSION['user']['auth']){
 			$this->session->updateSession();
-			return array('authorized' => true);
-
+			return array('authorized' => true, 'user' => $_SESSION['user']);
 		} elseif(isset($_SESSION['session_id']) && (isset($_SESSION['user']) && !$_SESSION['user']['auth'])){
 			$this->unAuth();
 			return array('authorized' => false);

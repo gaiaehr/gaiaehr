@@ -693,7 +693,7 @@ CREATE TABLE `referring_providers` (
   `create_date` datetime DEFAULT NULL COMMENT 'create date',
   `update_date` datetime DEFAULT NULL COMMENT 'last update date',
   PRIMARY KEY (`id`),
-  KEY `IK_username` (`username`),
+  UNIQUE `IK_username` (`username`),
   KEY `IK_password` (`password`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Referring Providers';
 

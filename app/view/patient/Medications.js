@@ -192,41 +192,7 @@ Ext.define('App.view.patient.Medications', {
 					itemId: 'reviewMedications'
 				}
 			]
-		},
-        {
-            xtype: 'grid',
-            title: _('drug_interactions'),
-            itemId: 'drugInteractionGrid',
-            collapsible: true,
-            height: 300,
-            collapsed: true,
-            region: 'south',
-            store:  Ext.create('App.store.patient.DrugInteractions', {
-                autoSync: false
-            }),
-            columns: [
-                {
-                    text: _('drug_1'),
-                    dataIndex: 'drug_1',
-                    flex: 1
-                },
-                {
-                    text: _('drug_2'),
-                    dataIndex: 'drug_2',
-                    flex: 1
-                },
-                {
-                    text: _('interaction'),
-                    dataIndex: 'interaction_description',
-                    flex: 3
-                },
-                {
-                    text: _('severity'),
-                    dataIndex: 'severity',
-                    width: 200
-                }
-            ]
-        }
+		}
 	],
 	tbar: [
 		'->',

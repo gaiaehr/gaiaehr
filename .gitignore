@@ -7,10 +7,7 @@ gaiaehr.iml
 contrib/snomed/*
 temp
 /modules/advancetasks
-/modules/billing
 /modules/appointments
-/modules/erx
 /modules/phimail
-/modules/worklist
 /modules/drugtodrugtoallergy
 AutomatedMeasureCalculation

@@ -35,8 +35,6 @@ class HL7ServerAbstract implements MessageComponentInterface
 		$this->clients = new \SplObjectStorage;
 	}
 
-
-
 	public function onOpen(ConnectionInterface $conn)
     {
 		// Store the new connection to send messages to later

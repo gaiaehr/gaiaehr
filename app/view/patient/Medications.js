@@ -21,7 +21,6 @@ Ext.define('App.view.patient.Medications', {
 	requires: [
 		'App.store.patient.Medications',
 		'App.store.administration.Medications',
-        'App.store.patient.DrugInteractions',
 		'Ext.form.field.Trigger',
 		'App.ux.LiveRXNORMSearch',
 		'App.ux.combo.PrescriptionHowTo',

@@ -19,7 +19,6 @@
 Ext.define('App.view.administration.HL7', {
 	extend: 'App.ux.RenderPanel',
 	requires: [
-		//		'App.ux.grid.Button',
 		'Ext.grid.plugin.RowEditing'
 	],
 	xtype: 'hl7serverspanel',
@@ -94,29 +93,6 @@ Ext.define('App.view.administration.HL7', {
 						}
 					]
 				}
-				//				{
-				//					xtype:'gridbutton',
-				//					width: 120,
-				//					items:[
-				//						{
-				//							xtype:'button',
-				//							text: _('start'),
-				//							width: 50,
-				//							margin: '0 5 0 0',
-				//							handler: function(record){
-				//								App.Current.getController('administration.HL7').serverStartHandler(record);
-				//							}
-				//						},
-				//						{
-				//							xtype:'button',
-				//							text: _('stop'),
-				//							width: 50,
-				//							handler: function(record){
-				//								App.Current.getController('administration.HL7').serverStopHandler(record);
-				//							}
-				//						}
-				//					]
-				//				}
 			],
 			plugins: [
 				{
@@ -402,4 +378,4 @@ Ext.define('App.view.administration.HL7', {
 			})
 		}
 	]
-}); 
+});

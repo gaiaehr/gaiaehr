@@ -18,15 +18,15 @@
  */
 class HL7ServerHandler {
 
-	public function start(stdClass $params){
-
+	public function start(stdClass $params)
+    {
 		$server = MatchaModel::setSenchaModel('App.model.administration.HL7Server');
 		$data = new stdClass();
 		$data->id = $params->id;
 		$data->token = $params->token = md5(time());
 		$server->save($data);
 
-		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "' . $params->ip . '" ' . $params->port . ' "' . ROOT . '/dataProvider" "HL7Server" "Process" "default" "'.$params->token.'"';
+		$cmd = 'php -f "'.ROOT.'/lib/HL7/HL7Server.php" -- "' . $params->ip . '" ' . $params->port . ' "' . ROOT . '/dataProvider" "HL7Server" "Process" "'.$_SESSION['user']['site'].'" "'.$params->token.'"';
 		if (substr(php_uname(), 0, 7) == "Windows"){
 			pclose(popen("start /B ". $cmd, "r"));
 		}

@@ -129,12 +129,12 @@ if(file_exists(ROOT. '/sites/' . SITE . '/conf.php'))
 	unset($_SESSION['site']['error']);
 
 	//check for ip access
-	if(!isset($_SESSION['access_blocked']))
-    {
+//	if(!isset($_SESSION['access_blocked']))
+//    {
 		include_once(ROOT. '/dataProvider/IpAccessRules.php');
 		$IpAccessRules = new IpAccessRules();
 		$_SESSION['access_blocked'] = $IpAccessRules->isBlocked();
-	}
+//	}
 
 	if($_SESSION['access_blocked'])
     {

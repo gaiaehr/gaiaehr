@@ -20,24 +20,32 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 	extend: 'Ext.grid.Panel',
 	xtype: 'referringproviderspanel',
 	requires: [
-
+		'Ext.ux.SlidingPager'
 	],
 	title: _('referring_providers'),
 
 	initComponent: function(){
 		var me = this;
 
+		me.store = Ext.create('App.store.administration.ReferringProviders', {
+			autoSync: false,
+			remoteSort: true,
+			sorters: [
+				{
+					property: 'lname',
+					direction: 'ASC'
+				}
+			]
+		});
+		
 		Ext.apply(me, {
-			store: Ext.create('App.store.administration.ReferringProviders', {
-				autoSync: false
-			}),
 			columns: [
 				{
 					width: 200,
 					text: _('name'),
 					sortable: true,
 					renderer:function(v, meta, record){
-						return record.data.title + ' ' + record.data.fname + ' ' + record.data.mname + ' ' + record.data.lname;
+						return record.data.title + ' ' + record.data.lname + ', ' + record.data.fname + ' ' + record.data.mname;
 					}
 				},
 				{
@@ -258,6 +266,52 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							]
 						},
 						{
+							xtype: 'fieldcontainer',
+							layout: {
+								type: 'hbox',
+								defaultMargins: {
+									top: 0,
+									right: 5,
+									bottom: 0,
+									left: 0
+								}
+							},
+							items: [
+								{
+									xtype: 'textfield',
+									fieldLabel: _('username'),
+									labelWidth: 130,
+									labelAlign: 'right',
+									minLength: 5,
+									maxLength: 15,
+									name: 'username'
+								},
+								{
+									xtype: 'textfield',
+									fieldLabel: _('password'),
+									labelWidth: 130,
+									labelAlign: 'right',
+									minLength: 8,
+									maxLength: 15,
+									name: 'password',
+									inputType: 'password',
+									vtype: 'strength',
+									strength: 24,
+									plugins: {
+										ptype: 'passwordstrength'
+									}
+								},
+								{
+									xtype: 'checkbox',
+									fieldLabel: _('authorized'),
+									labelWidth: 130,
+									labelAlign: 'right',
+									name: 'authorized'
+								}
+
+							]
+						},
+						{
 							height: 50,
 							xtype: 'textareafield',
 							name: 'notes',
@@ -270,6 +324,7 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 					]
 				})
 			],
+
 			dockedItems: [
 				{
 					xtype: 'toolbar',
@@ -283,6 +338,14 @@ Ext.define('App.view.administration.practice.ReferringProviders', {
 							itemId: 'referringProviderAddBtn',
 						}
 					]
+				},
+				{
+					xtype: 'pagingtoolbar',
+					dock: 'bottom',
+					pageSize: 25,
+					store: me.store,
+					displayInfo: true,
+					plugins: Ext.create('Ext.ux.SlidingPager')
 				}
 			]
 		});

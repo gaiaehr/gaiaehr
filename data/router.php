@@ -56,7 +56,8 @@ if(file_exists($conf)){
     include_once(ROOT . '/dataProvider/ACL.php');
     include_once(ROOT . '/dataProvider/Globals.php');
     include_once(ROOT . '/dataProvider/Modules.php');
-    if(isset($_SESSION['install']) && $_SESSION['install'] != true)
+
+	if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['install'] != true))
     {
         $modules = new Modules();
         $API = array_merge($API, $modules->getEnabledModulesAPI());
@@ -119,7 +120,10 @@ function doRpc($cdata) {
         // TODO: Create am authorization for the SiteSetup. This has security flaws
 		if(
 			(isset($_SESSION['user']) && isset($_SESSION['user']['auth']) && $_SESSION['user']['auth']) ||
+			(isset($_SESSION['portal_authorized']) && $_SESSION['portal_authorized']) ||
 			($action == 'authProcedures' && $method == 'login') ||
+			($action == 'PortalAuthorize' && $method == 'login') ||
+			($action == 'PortalAuthorize' && $method == 'check') ||
 			($action == 'CombosData' && $method == 'getActiveFacilities') ||
 			($action == 'i18nRouter' && $method == 'getAvailableLanguages') ||
             ($action == 'CombosData' && $method == 'getTimeZoneList') || // Used by SiteSetup

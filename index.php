@@ -54,8 +54,8 @@ include_once('registry.php');
  *
  */
 if(isset($_SESSION['user']) &&
-    $_SESSION['user']['auth'] == true &&
-    $_SESSION['user']['site'] == $site &&
+    isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true &&
+    isset($_SESSION['user']['site']) && $_SESSION['user']['site'] == $site &&
     $_SESSION['inactive']['life'] < $_SESSION['inactive']['time'])
 {
     /**

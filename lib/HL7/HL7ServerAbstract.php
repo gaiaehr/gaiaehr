@@ -33,6 +33,7 @@ class HL7ServerAbstract implements MessageComponentInterface
 		//TODO hard coded for now
 		date_default_timezone_set('America/Puerto_Rico');
 		$this->clients = new \SplObjectStorage;
+        error_log(getmypid());
 	}
 
 	public function onOpen(ConnectionInterface $conn)
@@ -44,10 +45,9 @@ class HL7ServerAbstract implements MessageComponentInterface
 
 	public function onMessage(ConnectionInterface $conn, $message, IoServer $server)
     {
-		try{
-
+		try
+        {
 			if($message == '') $conn->send('');
-
             if($message == $this->token)
             {
 				$server->loop->stop();

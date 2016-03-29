@@ -35987,14 +35987,22 @@ Ext.define('App.controller.administration.HL7', {
 	},
 
 	serverStartHandler: function(record){
-		HL7ServerHandler.start({ id: record.data.id, ip: record.data.ip, port: record.data.port }, function(provider, response){
+		HL7ServerHandler.start({
+            id: record.data.id,
+            ip: record.data.ip,
+            port: record.data.port
+        }, function(provider, response){
 			record.set({'online': response.result.online, token: response.result.token});
 			record.commit();
 		});
 	},
 
 	serverStopHandler: function(record){
-		HL7ServerHandler.stop({ token: record.data.token, ip: record.data.ip, port: record.data.port }, function(provider, response){
+		HL7ServerHandler.stop({
+            token: record.data.token,
+            ip: record.data.ip,
+            port: record.data.port
+        }, function(provider, response){
 			record.set({'online': response.result.online});
 			record.commit();
 		});
@@ -36025,6 +36033,7 @@ Ext.define('App.controller.administration.HL7', {
 	}
 
 });
+
 Ext.define('App.controller.administration.DecisionSupport', {
 	extend: 'Ext.app.Controller',
 

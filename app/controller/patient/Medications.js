@@ -66,6 +66,9 @@ Ext.define('App.controller.patient.Medications', {
 			'viewport': {
 				encounterload: me.onViewportEncounterLoad
 			},
+            'patientmedicationspanel': {
+                activate: me.onMedicationsPanelActive
+            },
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
@@ -121,6 +124,7 @@ Ext.define('App.controller.patient.Medications', {
 		form.getRecord().set({
 			RXCUI: records[0].data.RXCUI,
 			CODE: records[0].data.CODE,
+            GS_CODE: records[0].data.GS_CODE,
 			NDC: records[0].data.NDC
 		});
 	},
@@ -210,11 +214,31 @@ Ext.define('App.controller.patient.Medications', {
 		form.getRecord().set({
 			RXCUI: records[0].data.RXCUI,
 			CODE: records[0].data.CODE,
+            GS_CODE: records[0].data.GS_CODE,
 			NDC: records[0].data.NDC
 		});
 	},
 
 	onPatientMedicationReconciledBtnClick: function(){
 		this.onMedicationsPanelActive();
-	}
+	},
+
+    onMedicationsPanelActive: function(){
+        var store = this.getPatientMedicationsGrid().getStore(),
+            reconciled = this.getPatientMedicationReconciledBtn().pressed;
+
+        store.clearFilter(true);
+        store.load({
+            filters: [
+                {
+                    property: 'pid',
+                    value: app.patient.pid
+                }
+            ],
+            params: {
+                reconciled: reconciled
+            }
+        });
+    }
+
 });

@@ -22,6 +22,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 		'App.model.administration.MedicationInstruction'
 	],
 	alias: 'widget.rxnormlivetsearch',
+    itemId: 'RxNormLiveSearch',
 	hideLabel: true,
 	displayField: 'STR',
 	valueField: 'RXCUI',
@@ -39,6 +40,10 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 					name: 'CODE',
 					type: 'string'
 				},
+                {
+                    name: 'GS_CODE',
+                    type: 'string'
+                },
 				{
 					name: 'NDC',
 					type: 'string'

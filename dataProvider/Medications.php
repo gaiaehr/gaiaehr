@@ -84,15 +84,11 @@ class Medications {
 
 	public function addPatientMedication($params)
     {
-        $gs_Code = $this->__getGoldStandardCode($params->RXCUI);
-        $params->GS_CODE = $gs_Code['CODE'];
 		return $this->m->save($params);
 	}
 
 	public function updatePatientMedication($params)
     {
-        $gs_Code = $this->__getGoldStandardCode($params->RXCUI);
-        $params->GS_CODE = $gs_Code['CODE'];
 		return $this->m->save($params);
 	}
 
@@ -174,18 +170,6 @@ class Medications {
 
 		return $records;
 	}
-
-    /**
-     * Fetch the CODE of a Gold Standard entry in the RX Norm.
-     * @param $rxnorm_code
-     * @return array
-     */
-    private function __getGoldStandardCode($rxnorm_code)
-    {
-        $sth = $this->db->prepare("SELECT * FROM rxnconso WHERE SAB='GS' AND RXCUI='$rxnorm_code'");
-        $sth->execute();
-        return $sth->fetch(PDO::FETCH_ASSOC);
-    }
 
 }
 

@@ -120,6 +120,15 @@ class Rxnorm {
      							    LIMIT 100");
 		$sth->execute([ ':q1' => '%'.$params->query.'%', ':q2' => $params->query ]);
 		$records = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+        // Look for the GS Code
+        foreach($records as $key => $record)
+        {
+            $sth = $this->db->prepare("SELECT * FROM rxnconso WHERE SAB='GS' AND RXCUI='".$record['CODE']."'");
+            $sth->execute();
+            $records[$key]['GS_CODE']  = $sth->fetch(PDO::FETCH_ASSOC)['CODE'];
+        }
+
 		$total = count($records);
 		$records = array_slice($records, $params->start, $params->limit);
 		return [

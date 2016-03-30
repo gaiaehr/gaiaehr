@@ -18,6 +18,7 @@
 
 Ext.define('App.store.patient.Medications', {
 	extend: 'Ext.data.Store',
+    storeId: 'patientMedicationsStore',
 	model     : 'App.model.patient.Medications',
     groupField: 'STR',
     startCollapsed: true

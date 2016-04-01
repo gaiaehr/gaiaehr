@@ -59,7 +59,7 @@ class MatchaHelper extends Matcha {
 	 *
 	 */
 	function __construct() {
-		self::$__freeze = true;
+		self::$__freeze = false;
 		// Connect to the database
 		// This is compatible with the old methods
 		if(defined('site_db_type'))
@@ -157,14 +157,13 @@ class MatchaHelper extends Matcha {
 		$table = isset($saveParams['table']) ? $saveParams['table'] : '';
 		$sql = $saveParams['sql'];
 		$data = isset($saveParams['data']) ? serialize($saveParams['data']) : '';
-        if($_SERVER['REMOTE_ADDR'] == '::1')
-        {
+
+	    $IP = self::getUserIP();
+
+        if($IP == '::1'){
             $IP = '127.0.0.1';
         }
-        else
-        {
-            $IP = $_SERVER['REMOTE_ADDR'];
-        }
+
 		MatchaAudit::$eventLogData = [
 			'date' => $date,
 			'pid' => $pid,
@@ -180,6 +179,23 @@ class MatchaHelper extends Matcha {
 		];
 		MatchaAudit::auditSaveLog();
 
+	}
+
+	public static function getUserIP() {
+		$client = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
+		$forward = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
+		$remote = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
+
+		if($client !== false && filter_var($client, FILTER_VALIDATE_IP)){
+			$ip = $client;
+		} elseif($forward !== false && filter_var($forward, FILTER_VALIDATE_IP)) {
+			$ip = $forward;
+		} elseif($remote !== false) {
+			$ip = $remote;
+		}else{
+			return '0.0.0.0';
+		}
+		return $ip;
 	}
 
 	/**

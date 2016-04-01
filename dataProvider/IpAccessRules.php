@@ -31,8 +31,7 @@ class IpAccessRules {
 	 */
 	private $l;
 
-
-	function __construct(){
+	function __construct() {
 		$this->r = MatchaModel::setSenchaModel('App.model.administration.IpAccessRule');
 		$this->l = MatchaModel::setSenchaModel('App.model.administration.IpAccessLog');
 	}
@@ -41,7 +40,7 @@ class IpAccessRules {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function getIpAccessRules($params){
+	public function getIpAccessRules($params) {
 		return $this->r->load($params)->all();
 	}
 
@@ -49,7 +48,7 @@ class IpAccessRules {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function getIpAccessRule($params){
+	public function getIpAccessRule($params) {
 		return $this->r->load($params)->one();
 	}
 
@@ -57,7 +56,7 @@ class IpAccessRules {
 	 * @param stdClass $params
 	 * @return array
 	 */
-	public function createIpAccessRule($params){
+	public function createIpAccessRule($params) {
 		return $this->r->save($params);
 	}
 
@@ -65,7 +64,7 @@ class IpAccessRules {
 	 * @param $params
 	 * @return array
 	 */
-	public function updateIpAccessRule($params){
+	public function updateIpAccessRule($params) {
 		return $this->r->save($params);
 	}
 
@@ -73,16 +72,16 @@ class IpAccessRules {
 	 * @param $params
 	 * @return mixed
 	 */
-	public function deleteIpAccessRule($params){
+	public function deleteIpAccessRule($params) {
 		return $this->r->destroy($params);
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isBlocked(){
+	public function isBlocked() {
 
-		include_once(ROOT. '/dataProvider/GeoIpLocation.php');
+		include_once(ROOT . '/dataProvider/GeoIpLocation.php');
 
 		$ip = $this->getUserIP();
 
@@ -92,7 +91,7 @@ class IpAccessRules {
 
 		$geo_data = GeoIpLocation::getGeoLocation($ip);
 
-		$ipBlocks =  explode('.', $ip);
+		$ipBlocks = explode('.', $ip);
 		$where = [];
 		$where[] = '*';
 		$where[] = $ipBlocks[0] . '.*';
@@ -102,7 +101,7 @@ class IpAccessRules {
 
 		if($geo_data === false){
 			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND (ip = ? OR ip = ? OR ip = ? OR ip = ? OR ip = ?) ORDER BY weight DESC LIMIT 1';
-		}else{
+		} else {
 			$sql = 'SELECT * FROM `ip_access_rules` WHERE active = 1 AND (ip = ? OR ip = ? OR ip = ? OR ip = ? OR ip = ? OR country_code = ?) ORDER BY weight DESC LIMIT 1';
 			$where[] = $geo_data['country_code'];
 		}
@@ -114,7 +113,7 @@ class IpAccessRules {
 
 		if($result !== false){
 			$blocked = $result['rule'] == 'BLK';
-		}else{
+		} else {
 			// if no rule found blocked the IP if not inside local network
 			$blocked = !$this->ip_is_private($ip);
 		}
@@ -132,23 +131,28 @@ class IpAccessRules {
 
 	}
 
-	function ip_is_private ($ip) {
-		$pri_addrs = array (
-			'10.0.0.0|10.255.255.255', // single class A network
-			'172.16.0.0|172.31.255.255', // 16 contiguous class B network
-			'192.168.0.0|192.168.255.255', // 256 contiguous class C network
-			'169.254.0.0|169.254.255.255', // Link-local address also refered to as Automatic Private IP Addressing
-			'127.0.0.0|127.255.255.255' // localhost
+	function ip_is_private($ip) {
+		$pri_addrs = array(
+			'10.0.0.0|10.255.255.255',
+			// single class A network
+			'172.16.0.0|172.31.255.255',
+			// 16 contiguous class B network
+			'192.168.0.0|192.168.255.255',
+			// 256 contiguous class C network
+			'169.254.0.0|169.254.255.255',
+			// Link-local address also refered to as Automatic Private IP Addressing
+			'127.0.0.0|127.255.255.255'
+			// localhost
 		);
 
-		$long_ip = ip2long ($ip);
-		if ($long_ip != -1) {
+		$long_ip = ip2long($ip);
+		if($long_ip != -1){
 
-			foreach ($pri_addrs AS $pri_addr) {
+			foreach($pri_addrs AS $pri_addr){
 				list ($start, $end) = explode('|', $pri_addr);
 
 				// IF IS PRIVATE
-				if ($long_ip >= ip2long ($start) && $long_ip <= ip2long ($end)) {
+				if($long_ip >= ip2long($start) && $long_ip <= ip2long($end)){
 					return true;
 				}
 			}
@@ -157,26 +161,21 @@ class IpAccessRules {
 		return false;
 	}
 
-	function getUserIP(){
-		$client  = @$_SERVER['HTTP_CLIENT_IP'];
-		$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
-		$remote  = $_SERVER['REMOTE_ADDR'];
+	function getUserIP() {
+		$client = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : false;
+		$forward = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : false;
+		$remote = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
 
-		if(filter_var($client, FILTER_VALIDATE_IP))
-		{
+		if($client !== false && filter_var($client, FILTER_VALIDATE_IP)){
 			$ip = $client;
-		}
-		elseif(filter_var($forward, FILTER_VALIDATE_IP))
-		{
+		} elseif($forward !== false && filter_var($forward, FILTER_VALIDATE_IP)) {
 			$ip = $forward;
-		}
-		else
-		{
+		} elseif($remote !== false) {
 			$ip = $remote;
+		}else{
+			return '0.0.0.0';
 		}
-
 		return $ip;
 	}
-
 
 }

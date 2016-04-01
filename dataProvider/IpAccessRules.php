@@ -84,7 +84,7 @@ class IpAccessRules {
 
 		include_once(ROOT. '/dataProvider/GeoIpLocation.php');
 
-		$ip = $_SERVER['REMOTE_ADDR'];
+		$ip = $this->getUserIP();
 
 		if($ip == '::1' || $ip == '127.0.0.1'){
 			return false;
@@ -156,5 +156,27 @@ class IpAccessRules {
 
 		return false;
 	}
+
+	function getUserIP(){
+		$client  = @$_SERVER['HTTP_CLIENT_IP'];
+		$forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
+		$remote  = $_SERVER['REMOTE_ADDR'];
+
+		if(filter_var($client, FILTER_VALIDATE_IP))
+		{
+			$ip = $client;
+		}
+		elseif(filter_var($forward, FILTER_VALIDATE_IP))
+		{
+			$ip = $forward;
+		}
+		else
+		{
+			$ip = $remote;
+		}
+
+		return $ip;
+	}
+
 
 }

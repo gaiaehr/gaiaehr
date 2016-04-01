@@ -10897,6 +10897,7 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 		'App.model.administration.MedicationInstruction'
 	],
 	alias: 'widget.rxnormlivetsearch',
+    itemId: 'RxNormLiveSearch',
 	hideLabel: true,
 	displayField: 'STR',
 	valueField: 'RXCUI',
@@ -10914,6 +10915,10 @@ Ext.define('App.ux.LiveRXNORMSearch', {
 					name: 'CODE',
 					type: 'string'
 				},
+                {
+                    name: 'GS_CODE',
+                    type: 'string'
+                },
 				{
 					name: 'NDC',
 					type: 'string'
@@ -17363,6 +17368,11 @@ Ext.define('App.model.patient.Medications', {
 			type: 'string',
 			len: 40
 		},
+        {
+            name: 'GS_CODE',
+            type: 'string',
+            len: 40
+        },
 		{
 			name: 'RXCUI',
 			type: 'string',
@@ -24106,10 +24116,12 @@ Ext.define('App.store.patient.PatientActiveProblems', {
 });
 Ext.define('App.store.patient.Medications', {
 	extend: 'Ext.data.Store',
+    storeId: 'patientMedicationsStore',
 	model     : 'App.model.patient.Medications',
     groupField: 'STR',
     startCollapsed: true
 });
+
 Ext.define('App.view.patient.ItemsToReview', {
 	extend: 'Ext.panel.Panel',
 	alias: 'widget.itemstoreview',
@@ -41572,6 +41584,9 @@ Ext.define('App.controller.patient.Medications', {
 			'viewport': {
 				encounterload: me.onViewportEncounterLoad
 			},
+            'patientmedicationspanel': {
+                activate: me.onMedicationsPanelActive
+            },
 			'#patientMedicationsGrid': {
 				beforeedit: me.onPatientMedicationsGridBeforeEdit
 			},
@@ -41627,6 +41642,7 @@ Ext.define('App.controller.patient.Medications', {
 		form.getRecord().set({
 			RXCUI: records[0].data.RXCUI,
 			CODE: records[0].data.CODE,
+            GS_CODE: records[0].data.GS_CODE,
 			NDC: records[0].data.NDC
 		});
 	},
@@ -41716,13 +41732,33 @@ Ext.define('App.controller.patient.Medications', {
 		form.getRecord().set({
 			RXCUI: records[0].data.RXCUI,
 			CODE: records[0].data.CODE,
+            GS_CODE: records[0].data.GS_CODE,
 			NDC: records[0].data.NDC
 		});
 	},
 
 	onPatientMedicationReconciledBtnClick: function(){
 		this.onMedicationsPanelActive();
-	}
+	},
+
+    onMedicationsPanelActive: function(){
+        var store = this.getPatientMedicationsGrid().getStore(),
+            reconciled = this.getPatientMedicationReconciledBtn().pressed;
+
+        store.clearFilter(true);
+        store.load({
+            filters: [
+                {
+                    property: 'pid',
+                    value: app.patient.pid
+                }
+            ],
+            params: {
+                reconciled: reconciled
+            }
+        });
+    }
+
 });
 
 Ext.define('App.controller.patient.Patient', {
@@ -45710,19 +45746,6 @@ Ext.define('App.view.patient.encounter.AdministeredMedications', {
 		autoSync: false
 	}),
 	columns: [
-		//{
-		//	xtype: 'actioncolumn',
-		//	width: 25,
-		//	items: [
-		//		{
-		//			icon: 'resources/images/icons/blueInfo.png',  // Use a URL in the icon config
-		//			tooltip: 'Get Info',
-		//			handler: function(grid, rowIndex, colIndex, item, e, record){
-		//				App.app.getController('InfoButton').doGetInfo(record.data.RXCUI, 'RXCUI', record.data.STR);
-		//			}
-		//		}
-		//	]
-		//},
 		{
 			header: _('medication'),
 			flex: 1,
@@ -45795,8 +45818,8 @@ Ext.define('App.view.patient.encounter.AdministeredMedications', {
 		}
 	]
 
-
 });
+
 Ext.define('App.view.patient.DecisionSupportWarningPanel', {
 	extend: 'Ext.panel.Panel',
 	xtype: 'decisionsupportwarningpanel',

@@ -1639,5 +1639,10 @@ $LANG = array(
     'void_comment'                          => 'VOID Comment',
     'processing'                            => 'Processing',
     'snippet_delete_child_error'            => 'Unable To Remove, Please Remove Child Templates',
-    'transaction_log'                       => 'Transaction log'
+    'transaction_log'                       => 'Transaction log',
+    'drug_interactions'                     => 'Drug Interactions',
+    'drug_1'                                => 'Drug',
+    'drug_2'                                => 'Drug',
+    'interaction'                           => 'Interaction',
+    'severity'                              => 'Gravedad'
 );

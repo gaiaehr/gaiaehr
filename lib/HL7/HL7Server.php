@@ -25,13 +25,13 @@ error_reporting(E_ALL);
 set_time_limit(0);
 ob_implicit_flush();
 
-$host = $argv[1];
-$port = $argv[2];
-$path = $argv[3];
-$class = $argv[4];
-$method = $argv[5];
-$site = $argv[6];
-$token = $argv[7];
+$host = $_POST['host'];
+$port = $_POST['port'];
+$path = $_POST['path'];
+$class = $_POST['class'];
+$method = $_POST['method'];
+$site = $_POST['site'];
+$token = $_POST['token'];
 
 define('ROOT', str_replace('lib/HL7', '', str_replace('\\', '/', dirname(__FILE__))));
 

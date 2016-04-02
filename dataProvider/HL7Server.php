@@ -128,6 +128,7 @@ class HL7Server {
 	}
 
 	public function Process($msg = '', $addSocketCharacters = true) {
+
 		//		try{
 		$this->msg = $msg;
 

@@ -221,7 +221,12 @@ Ext.define('App.model.patient.Medications', {
 			name: 'created_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s'
-		}
+		},
+        {
+            name: 'overridden',
+            type: 'bool',
+            comment: 'This is used by the Drug-To-Drug Interactions (MODULE)'
+        }
 	],
 	proxy: {
 		type: 'direct',

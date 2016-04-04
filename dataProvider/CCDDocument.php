@@ -4865,8 +4865,11 @@ class CCDDocument {
 		//			)
 		//		);
 
-		$this->addSection(['section' => $socialHistory]);
-		unset($socialHistoryData, $socialHistory);
+		if(isset($socialHistory)){
+			$this->addSection(['section' => $socialHistory]);
+			unset($socialHistoryData, $socialHistory);
+		}
+
 	}
 
 	/**

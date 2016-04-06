@@ -135,8 +135,7 @@ class Rxnorm {
         }
     }
 
-	public function getDoseformAbbreviateByCODE($CODE)
-    {
+	public function getDoseformAbbreviateByCODE($CODE) {
 		$sth = $this->db->prepare("SELECT ATV
 		                     FROM rxnsat
 		                    WHERE `CODE` = :c

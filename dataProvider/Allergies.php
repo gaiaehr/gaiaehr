@@ -113,7 +113,11 @@ class Allergies {
 	public function searchAllergiesData($params){
 		if(!isset($params->query)) return array();
 		$this->setAdminAllergyModel();
-		$sql = "SELECT * FROM `allergies` WHERE `allergy` LIKE '%{$params->query}%' GROUP BY `allergy_code`	LIMIT 100";
+		$sql = "SELECT * 
+                FROM `allergies` 
+                WHERE `allergy` LIKE '%{$params->query}%' 
+                GROUP BY `allergy_code`	
+                LIMIT 100";
 		$records = $this->d->sql($sql)->all();
 		return array(
 			'total' => count($records),

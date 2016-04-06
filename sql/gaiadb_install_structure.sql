@@ -174,20 +174,17 @@
   KEY `template_type` (`template_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `encounter_event_history`;CREATE TABLE `encounter_event_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `eid` int(11) DEFAULT NULL,
-  `pid` int(11) DEFAULT NULL,
-  `uid` int(11) DEFAULT NULL,
-  `fid` int(11) DEFAULT NULL,
-  `event` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `user_title` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
-  `user_mname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `user_lname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `patient_title` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `patient_fname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `patient_mname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `patient_lname` varchar(200) CHARACTER SET latin1 DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `eid` int(11) DEFAULT NULL COMMENT 'Encounter ID',
+  `pid` int(11) DEFAULT NULL COMMENT 'Patient ID',
+  `uid` int(11) DEFAULT NULL COMMENT 'User ID',
+  `fid` int(11) DEFAULT NULL COMMENT 'Facility ID',
+  `event` varchar(200) DEFAULT NULL COMMENT 'Event description',
+  `date` datetime DEFAULT NULL COMMENT 'Date of the event',
+  PRIMARY KEY (`id`),
+  KEY `IK_eid` (`eid`),
+  KEY `IK_pid` (`pid`),
+  KEY `IK_uid` (`uid`),
+  KEY `IK_fid` (`fid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Encounter History Events';DROP TABLE IF EXISTS `facility`;CREATE TABLE `facility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(80) DEFAULT NULL,
@@ -607,7 +604,7 @@
   KEY `pid` (`pid`),
   KEY `eid` (`eid`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1208338 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
+) ENGINE=InnoDB AUTO_INCREMENT=1241097 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(40) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL COMMENT 'acl_user_roles relation',
@@ -650,6 +647,7 @@
   `update_date` datetime DEFAULT NULL COMMENT 'last update date',
   `providerCode` varchar(40) DEFAULT NULL,
   `is_attending` tinyint(1) DEFAULT NULL,
+  `department_id` int(11) DEFAULT NULL COMMENT 'default department',
   PRIMARY KEY (`id`),
   KEY `fname` (`fname`),
   KEY `mname` (`mname`),
@@ -663,7 +661,8 @@
   KEY `IK_calendar` (`calendar`),
   KEY `IK_phone` (`phone`),
   KEY `IK_active` (`active`),
-  KEY `IK_is_attending` (`is_attending`)
+  KEY `IK_is_attending` (`is_attending`),
+  KEY `IK_department_id` (`department_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8 COMMENT='User accounts';DROP TABLE IF EXISTS `users_sessions`;CREATE TABLE `users_sessions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sid` varchar(255) DEFAULT NULL COMMENT 'Session ID',
@@ -672,7 +671,7 @@
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5169 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
+) ENGINE=InnoDB AUTO_INCREMENT=5176 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL COMMENT 'user id that is treating the patient',
@@ -857,7 +856,7 @@
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_appointment_requests`;CREATE TABLE `patient_appointment_requests` (
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_appointment_requests`;CREATE TABLE `patient_appointment_requests` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,
@@ -1149,7 +1148,7 @@
   `CODE` varchar(40) DEFAULT NULL,
   `RXCUI` varchar(40) DEFAULT NULL,
   `NDC` varchar(40) DEFAULT NULL,
-  `GS_CODE` varchar(40) DEFAULT NULL,
+  `GS_CODE` varchar(40) DEFAULT NULL COMMENT 'Gold Standard code',
   `dxs` mediumtext,
   `route` varchar(80) DEFAULT NULL,
   `dispense` varchar(80) DEFAULT NULL,
@@ -1172,6 +1171,7 @@
   `is_compound` tinyint(1) DEFAULT NULL,
   `is_supply` tinyint(1) DEFAULT NULL,
   `system_notes` varchar(210) DEFAULT NULL,
+  `overridden` tinyint(1) DEFAULT NULL COMMENT 'This is used by the Drug-To-Drug Interactions (MODULE)',
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
@@ -1318,7 +1318,7 @@
   `pool_area_id` int(11) DEFAULT NULL,
   `read_only` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2431 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_contacts`;CREATE TABLE `patient_contacts` (
+) ENGINE=InnoDB AUTO_INCREMENT=2475 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_contacts`;CREATE TABLE `patient_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
@@ -1474,8 +1474,8 @@
   `reason_code` varchar(40) DEFAULT NULL,
   `documentId` varchar(40) DEFAULT NULL COMMENT 'this is the document or hl7 message id - example -> doc|123 or hl7|123',
   `create_date` datetime DEFAULT NULL,
-  `void` tinyint(1) NOT NULL DEFAULT '0',
-  `void_comment` varchar(100) DEFAULT NULL,
+  `void` tinyint(1) DEFAULT NULL COMMENT 'VOID the order',
+  `void_comment` varchar(100) DEFAULT NULL COMMENT 'VOID comments',
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
   KEY `lab_order_id` (`lab_order_id`),
@@ -1500,7 +1500,6 @@
   `status` varchar(25) DEFAULT NULL COMMENT 'order status',
   `note` varchar(255) DEFAULT NULL,
   `hl7_recipient_id` int(11) DEFAULT NULL COMMENT 'laboratory id if electronic request',
-  `patient_orderscol` varchar(45) DEFAULT NULL,
   `void` tinyint(1) NOT NULL DEFAULT '0',
   `void_comment` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),

@@ -33,7 +33,7 @@ class HL7ServerAbstract implements MessageComponentInterface
 		//TODO hard coded for now
 		date_default_timezone_set('America/Puerto_Rico');
 		$this->clients = new \SplObjectStorage;
-        error_log(getmypid());
+        error_log('HL7 Server PID: '.getmypid());
 	}
 
 	public function onOpen(ConnectionInterface $conn)
@@ -54,7 +54,6 @@ class HL7ServerAbstract implements MessageComponentInterface
 				$server->socket->shutdown();
 				die();
 			}
-
 			$ack = call_user_func(array($conn->handler, $this->method), $message);
 			$conn->send($ack);
 		}

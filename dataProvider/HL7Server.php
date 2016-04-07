@@ -1,5 +1,4 @@
 <?php
-
 /**
  * GaiaEHR (Electronic Health Records)
  * Copyright (C) 2013 Certun, LLC.
@@ -17,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 class HL7Server {
 
 	/**
@@ -390,7 +390,6 @@ class HL7Server {
 					} else {
 						$foo->value = $obx[5];
 					}
-
 
 					$foo->units = $obx[6][1];
 					$foo->reference_rage = $obx[7];

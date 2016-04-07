@@ -604,7 +604,7 @@
   KEY `pid` (`pid`),
   KEY `eid` (`eid`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1241097 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
+) ENGINE=InnoDB AUTO_INCREMENT=1241271 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(40) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL COMMENT 'acl_user_roles relation',
@@ -671,7 +671,7 @@
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5176 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
+) ENGINE=InnoDB AUTO_INCREMENT=5178 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL COMMENT 'user id that is treating the patient',
@@ -856,7 +856,7 @@
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_appointment_requests`;CREATE TABLE `patient_appointment_requests` (
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_appointment_requests`;CREATE TABLE `patient_appointment_requests` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` int(11) DEFAULT NULL,
   `eid` int(11) DEFAULT NULL,

@@ -32,8 +32,17 @@ require_once(ROOT . '/sites/'. $_REQUEST['site'] .'/conf.php');
 ini_set('memory_limit', '1024M');
 ini_set('max_execution_time', 5);
 
-if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
-{
+if(
+	isset($_SESSION['user']) && 
+	(
+		isset($_SESSION['user']['auth']) &&
+		$_SESSION['user']['auth'] == true
+	) ||
+	(
+		isset($_SESSION['user']['portal_authorized']) &&
+		$_SESSION['user']['portal_authorized'] == true
+	)
+){
 	/**
 	 * init Matcha
 	 */
@@ -162,7 +171,10 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
 
 	if($is_image){
 
-		$html = <<<HTML
+		$enableEdit = isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true;
+
+		if($enableEdit){
+			$html = <<<HTML
 			<!doctype html>
 			<html>
 				<head>
@@ -194,6 +206,18 @@ if(isset($_SESSION['user']) && $_SESSION['user']['auth'] == true)
 				</body>
 			</html>
 HTML;
+		}else{
+			$html = <<<HTML
+			<!doctype html>
+			<html>
+				<head>
+				</head>
+				<body>
+				 	<img src="data:{$mineType};base64,{$document}" style="width:100%;" alt="" id="target" crossOrigin="anonymous">			        
+				</body>
+			</html>
+HTML;
+		}
 
 		print $html;
 

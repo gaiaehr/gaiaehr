@@ -1644,5 +1644,10 @@ $LANG = array(
     'drug_1'                                => 'Drug',
     'drug_2'                                => 'Drug',
     'interaction'                           => 'Interaction',
-    'severity'                              => 'Severity'
+    'report'                                => 'Report',
+    'study'                                 => 'Study',
+    'study_images'                          => 'Study Images',
+    'view'                                  => 'View',
+    'link'                                  => 'Link',
+    'radiologist'                           => 'Radiologist',
 );

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace dataProvider;
+
 class AddressBook {
 	/**
 	 * @var MatchaCUP
@@ -25,7 +27,7 @@ class AddressBook {
 
 	function __construct() {
         if($this->a == NULL)
-            $this->a = MatchaModel::setSenchaModel('App.model.miscellaneous.AddressBook');
+            $this->a = \MatchaModel::setSenchaModel('App.model.miscellaneous.AddressBook');
 	}
 
 	/**

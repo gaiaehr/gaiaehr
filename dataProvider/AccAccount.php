@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace dataProvider;
+
 include_once (ROOT . '/dataProvider/Services.php');
 include_once (ROOT . '/dataProvider/Insurance.php');
 
@@ -45,12 +47,12 @@ class AccAccount
 
     function __construct()
     {
-        $this->services = new Services();
-        $this->insurance  = new Insurance();
+        $this->services = new \Services();
+        $this->insurance  = new \Insurance();
         return;
     }
 
-	public function getVisitCheckOutCharges(stdClass $params)
+	public function getVisitCheckOutCharges(\stdClass $params)
     {
         $invoice = array();
         $insurance = $this->insurance->getPatientPrimaryInsuranceByPid($params->pid);
@@ -75,15 +77,3 @@ class AccAccount
     }
 
 }
-
-//
-//$params = new stdClass();
-//$params->filter = 2;
-//$params->pid = '7';
-//$params->eid = '1';
-//$params->start = 0;
-//$params->limit = 25;
-//
-//$t = new Billing();
-//print '<pre>';
-//print_r($t->getLastRevisionByCode('ICD9'));

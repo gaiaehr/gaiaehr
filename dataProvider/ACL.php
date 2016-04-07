@@ -343,13 +343,22 @@ class ACL {
 	private static function buildACL() {
 		//first, get the rules for the user's role
 		if(count(self::$user_roles) > 0){
-			self::$perms = array_merge(self::$perms, self::getRolePerms(self::$user_roles));
+			self::$perms = array_merge(
+                self::$perms,
+                self::getRolePerms(self::$user_roles)
+            );
 		}
 		//then, get the individual user permissions
-		self::$perms = array_merge(self::$perms, self::getUserPerms());
+		self::$perms = array_merge(
+            self::$perms,
+            self::getUserPerms()
+        );
 
 		if(self::$emerAccess){
-			self::$perms = array_merge(self::$perms, self::getEmergencyAccessPerms());
+			self::$perms = array_merge(
+                self::$perms,
+                self::getEmergencyAccessPerms()
+            );
 		}
 
 	}

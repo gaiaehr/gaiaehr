@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dataProvider;
-
 class AddressBook {
 	/**
 	 * @var MatchaCUP

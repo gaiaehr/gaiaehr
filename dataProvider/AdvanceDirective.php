@@ -19,7 +19,6 @@
 
 class AdvanceDirective {
 
-
 	/**
 	 * @var MatchaCUP
 	 */

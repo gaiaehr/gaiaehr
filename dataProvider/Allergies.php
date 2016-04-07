@@ -19,7 +19,6 @@
 
 class Allergies {
 
-
 	/**
 	 * @var MatchaCUP
 	 */

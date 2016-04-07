@@ -103,6 +103,7 @@ class HL7Server {
 		include_once(ROOT . '/dataProvider/HL7ServerHandler.php');
 		include_once(ROOT . '/dataProvider/PoolArea.php');
 		include_once(ROOT . '/dataProvider/Merge.php');
+        include_once(ROOT . '/dataProvider/Facility.php');
 
 		new MatchaHelper();
 
@@ -117,6 +118,11 @@ class HL7Server {
 		/** Patient Model */
         if(!isset($this->p))
             $this->p = MatchaModel::setSenchaModel('App.model.patient.Patient');
+
+        /**
+         * User facilities
+         */
+        $this->Facility = MatchaModel::setSenchaModel('App.model.administration.Facility');
 
 		/** Order Models */
         if(!isset($this->pOrder))
@@ -194,7 +200,6 @@ class HL7Server {
 					$this->ProcessADT($hl7, $msg, $msgRecord);
 					break;
 				default:
-
 					break;
 			}
 		}
@@ -205,7 +210,7 @@ class HL7Server {
 		$ack = new HL7();
 		$msh = $ack->addSegment('MSH');
 		$msh->setValue('3.1', 'GaiaEHR'); // Sending Application
-		$msh->setValue('4.1', 'Gaia'); // Sending Facility
+		$msh->setValue('4.1', $this->Facility->getgetCurrentFacility(true)); // Sending Facility
 		$msh->setValue('9.1', 'ACK');
 		$msh->setValue('11.1', 'P'); // P = Production
 		$msh->setValue('12.1', '2.5.1'); // HL7 version

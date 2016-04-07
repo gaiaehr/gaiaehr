@@ -453,34 +453,4 @@ class HL7 {
 		};
 		return $text;
 	}
-
-
 }
-
-//print '<pre>';
-//$hl7 = new HL7();
-//
-//$msg = <<<EOF
-//MSH|^~\&||OTHER REG MED CTR^1234567890^NPI|||201102171531||ADT^A04^ADT_A01|201102171531956|P|2.5.1
-//EVN||201102171531
-//PID|1||FL01059711^^^^PI||~^^^^^^U|||F||2106-3^White^CDCREC|^^^12^33821|||||||||||2186-5^Not Hispanic^CDCREC
-//PV1||E||E||||||||||7|||||V20220217-00274^^^^VN|||||||||||||||||||||||||201102171522
-//PV2|||78907^ABDOMINAL PAIN, GENERALIZED^I9CDX
-//OBX|1|HD|SS001^TREATING FACILITY IDENTIFIER^PHINQUESTION||OTHER REG MED CTR^1234567890^NPI||||||F|||201102171531
-//OBX|2|CWE|8661-1^CHIEF COMPLAINT:FIND:PT:PATIENT:NOM:REPORTED^LN||^^^^^^^^STOMACH ACHE||||||F|||201102171531
-//OBX|3|NM|21612-7^AGE TIME PATIENT REPORTED^LN||43|a^YEAR^UCUM|||||F|||201102171531
-//DG1|1||78900^ABDMNAL PAIN UNSPCF SITE^I9CDX|||A
-//EOF;
-//
-//
-//$_msg = $hl7->readMessage($msg);
-//
-//
-//print_r($_msg);
-
-
-
-
-//$hl7->addSegment('MSH');
-//print_r($hl7->getSegment('MSH')->build());
-//print_r($hl7->getSegment('MSH'));

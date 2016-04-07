@@ -205,7 +205,7 @@ class HL7Server {
 		}
 
 		/**
-		 * The first segment of the HL& Message
+		 * The first segment of the HL7 Message
 		 */
 		$ack = new HL7();
 		$msh = $ack->addSegment('MSH');

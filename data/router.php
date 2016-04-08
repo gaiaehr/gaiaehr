@@ -119,8 +119,9 @@ function doRpc($cdata) {
         // TODO: Create a config file for those classes and methods that not require authorization
         // TODO: Create am authorization for the SiteSetup. This has security flaws
 		if(
-			(isset($_SESSION['user']) && isset($_SESSION['user']['auth']) && $_SESSION['user']['auth']) ||
-			(isset($_SESSION['portal_authorized']) && $_SESSION['portal_authorized']) ||
+			isset($_SESSION['user']) &&
+			(isset($_SESSION['user']['auth']) && $_SESSION['user']['auth'] == true) ||
+			(isset($_SESSION['user']['portal_authorized']) && $_SESSION['user']['portal_authorized'] == true ) ||
 			($action == 'authProcedures' && $method == 'login') ||
 			($action == 'PortalAuthorize' && $method == 'login') ||
 			($action == 'PortalAuthorize' && $method == 'check') ||

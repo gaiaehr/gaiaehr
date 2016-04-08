@@ -129,6 +129,9 @@ $API = [
             ],
             'deleteIpAccessRule' => [
                 'len' => 1
+            ],
+            'getIpAccessLogs' => [
+                'len' => 1
             ]
         ]
     ],

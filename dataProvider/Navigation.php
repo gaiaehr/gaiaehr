@@ -286,6 +286,14 @@ class Navigation
 				'id' => 'App.view.administration.DataPortability'
 			];
 		}
+        if($this->ACL->hasPermission('admin_access_networks')){
+            $admin['children'][] = [
+                'text' => $this->i18n('network_ip_access'),
+                'leaf' => true,
+                'cls' => 'file',
+                'id' => 'App.view.administration.IpAccess'
+            ];
+        }
 
 		if(isset($admin['children']) && count($admin['children']) > 0) array_push($nav, $admin);
 

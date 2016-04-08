@@ -178,4 +178,13 @@ class IpAccessRules {
 		return $ip;
 	}
 
+    /**
+     * Method to load all the LOG's of Network access to GaiaEHR
+     * @param $params
+     * @return mixed
+     */
+    function getIpAccessLogs($params){
+        return $this->l->load($params)->all();
+    }
+
 }

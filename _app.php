@@ -408,6 +408,8 @@ header("Access-Control-Allow-Origin: *");
                     'administration.EncounterEventHistory',
 					'administration.User',
 					'administration.XtypesComboModel',
+                    'administration.IpAccessLog',
+                    'administration.IpAccessRule',
 
 					'miscellaneous.OfficeNotes',
 					'miscellaneous.Amendment',
@@ -532,6 +534,8 @@ header("Access-Control-Allow-Origin: *");
                     'administration.EncounterEventHistory',
 	                'administration.User',
 	                'administration.XtypesComboModel',
+                    'administration.IpAccessLog',
+                    'administration.IpAccessRules',
 
 	                'miscellaneous.OfficeNotes',
 	                'miscellaneous.Amendments',
@@ -688,7 +692,7 @@ header("Access-Control-Allow-Origin: *");
 	                'administration.practice.ProviderNumbers',
 	                'administration.practice.ReferringProviders',
 	                'administration.practice.Specialties',
-
+                    'administration.IpAccess',
 	                'administration.Applications',
 	                'administration.DataManager',
 	                'administration.Documents',
@@ -702,6 +706,7 @@ header("Access-Control-Allow-Origin: *");
 	                'administration.Roles',
 	                'administration.ExternalDataLoads',
 	                'administration.Users',
+
 	                /**
 	                 * Load the miscellaneous related panels
 	                 */
@@ -726,6 +731,7 @@ header("Access-Control-Allow-Origin: *");
 	                'administration.Specialties',
 	                'administration.TemplatePanels',
 	                'administration.Users',
+                    'administration.IpAccess',
 
 	                'areas.FloorPlan',
 

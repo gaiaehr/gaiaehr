@@ -1644,5 +1644,11 @@ $LANG = array(
     'drug_1'                                => 'Drug',
     'drug_2'                                => 'Drug',
     'interaction'                           => 'Interaction',
-    'severity'                              => 'Severity'
+    'severity'                              => 'Severity',
+    'network_ip_access'                     => 'Network IP Access',
+    'add_new_ip_rule'                       => 'Add new IP Rule',
+    'delete_ip_rule'                        => 'Delete IP Rule',
+    'rule'                                  => 'Rule',
+    'network_rules'                         => 'Network rules',
+    'network_log'                           => 'Network log'
 );

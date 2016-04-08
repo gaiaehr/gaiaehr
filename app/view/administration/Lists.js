@@ -341,18 +341,18 @@ Ext.define('App.view.administration.Lists', {
                         store.remove(record);
                         store.sync({
                             success:function(){
-                                me.msg('Sweet!', _('record_deleted'));
+                                me.msg(_('sweet'), _('record_deleted'));
                                 me.optionsStore.removeAll();
                             },
                             failure:function(){
-                                me.msg('Oops!', _('unable_to_delete') + ' "' + record.data.title, true);
+                                me.msg(_('oops'), _('unable_to_delete') + ' "' + record.data.title, true);
                             }
                         });
                     }
                 }
             });
         }else{
-            Ext.Msg.alert('Oops!', _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
+            Ext.Msg.alert(_('oops'), _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
         }
     },
 

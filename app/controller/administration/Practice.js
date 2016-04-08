@@ -57,8 +57,7 @@ Ext.define('App.controller.administration.Practice', {
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
-
-
+    
 	onInsuranceNumberGroupToggle:function(btn, pressed){
 		var grid = btn.up('grid');
 
@@ -69,8 +68,5 @@ Ext.define('App.controller.administration.Practice', {
 			grid.view.features[0].disable();
 		}
 	}
-
-
-
 
 });

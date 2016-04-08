@@ -215,13 +215,13 @@ Ext.define('App.view.administration.Practice', {
 													},
 													{
 														xtype: 'textfield',
-														fieldLabel: i18n('email'),
+														fieldLabel: _('email'),
 														name: 'email',
 														width: 385
 													},
 													{
 														xtype: 'transmitmethodcombo',
-														fieldLabel: i18n('default_method'),
+														fieldLabel: _('default_method'),
 														labelWidth: 100,
 														width: 275
 													}
@@ -229,7 +229,7 @@ Ext.define('App.view.administration.Practice', {
 											},
 											{
 												xtype: 'checkbox',
-												fieldLabel: i18n('active'),
+												fieldLabel: _('active'),
 												labelWidth: 60,
 												margin: '0 0 0 10',
 												name: 'active'

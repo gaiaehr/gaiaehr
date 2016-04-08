@@ -39,6 +39,11 @@ Ext.define('App.view.administration.IpAccess', {
             autoLoad: false
         });
 
+        me.GeoIpLocation = Ext.create('App.store.administration.GeoIpLocation', {
+            remoteFilter: true,
+            autoLoad: false
+        });
+
         me.pageBody = [
             {
                 xtype: 'grid',
@@ -67,7 +72,11 @@ Ext.define('App.view.administration.IpAccess', {
                         dataIndex: 'country_code',
                         editor: {
                             xtype: 'combo',
-                            allowBlank: false
+                            allowBlank: false,
+                            store: GeoIpLocation,
+                            queryMode: 'remote',
+                            displayField: 'country',
+                            valueField: 'id'
                         }
                     },
                     {

@@ -23,6 +23,14 @@ Ext.define('App.controller.administration.IpAccess', {
         {
             ref:'IpAccessPanel',
             selector:'ipaccesspanel'
+        },
+        {
+            ref: 'IpAccessRulesGrid',
+            selector: '#IpAccessRulesGrid'
+        },
+        {
+            ref: 'IpAccessLogGrid',
+            selector: '#IpAccessLogGrid'
         }
     ],
 
@@ -30,11 +38,8 @@ Ext.define('App.controller.administration.IpAccess', {
         var me = this;
 
         me.control({
-            'ipaccesspanel #IpAccessRulesGrid':{
-                activate: me.onIpAccessRulesGridActive
-            },
-            'ipaccesspanel #IpAccessLogGrid':{
-                activate: me.onIpAccessLogGridActive
+            'ipaccesspanel':{
+                activate: me.onIpAccessPanelActive
             },
             'ipaccesspanel #addIpRule':{
                 click: me.onAddIpRuleClick
@@ -44,19 +49,13 @@ Ext.define('App.controller.administration.IpAccess', {
     },
 
     onAddIpRuleClick: function(btn){
-        var grid = btn.down('grid'),
-            store = grid.getStore();
-        store.add();
+        this.getIpAccessRulesGrid().getStore().add();
     },
 
-    onIpAccessRulesGridActive: function(grid){
-        say('Hit: onIpAccessRulesGridActive');
-        grid.getStore().load();
-    },
-
-    onIpAccessLogGridActive: function(grid){
-        say('Hit: onIpAccessLogGridActive');
-        grid.getStore().load();
+    onIpAccessPanelActive: function(){
+        say('Hit');
+        this.getIpAccessRulesGrid().getStore().load();
+        this.getIpAccessLogGrid().getStore().load();
     }
 
 });

@@ -103,7 +103,7 @@ class HL7Server {
 		include_once(ROOT . '/dataProvider/HL7ServerHandler.php');
 		include_once(ROOT . '/dataProvider/PoolArea.php');
 		include_once(ROOT . '/dataProvider/Merge.php');
-        include_once(ROOT . '/dataProvider/Facility.php');
+        include_once(ROOT . '/dataProvider/Facilities.php');
 
 		new MatchaHelper();
 

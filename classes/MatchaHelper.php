@@ -59,7 +59,7 @@ class MatchaHelper extends Matcha {
 	 *
 	 */
 	function __construct() {
-		self::$__freeze = false;
+		self::$__freeze = true;
 		// Connect to the database
 		// This is compatible with the old methods
 		if(defined('site_db_type'))

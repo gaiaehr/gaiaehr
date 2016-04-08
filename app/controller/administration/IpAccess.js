@@ -31,13 +31,31 @@ Ext.define('App.controller.administration.IpAccess', {
 
         me.control({
             'ipaccesspanel #IpAccessRulesGrid':{
-                activate: me.onPracticeGridPanelsActive
+                activate: me.onIpAccessRulesGridActive
             },
+            'ipaccesspanel #IpAccessLogGrid':{
+                activate: me.onIpAccessLogGridActive
+            },
+            'ipaccesspanel #addIpRule':{
+                click: me.onAddIpRuleClick
+            }
         });
 
     },
 
-    onPracticeGridPanelsActive: function(grid){
+    onAddIpRuleClick: function(btn){
+        var grid = btn.down('grid'),
+            store = grid.getStore();
+        store.add();
+    },
+
+    onIpAccessRulesGridActive: function(grid){
+        say('Hit: onIpAccessRulesGridActive');
+        grid.getStore().load();
+    },
+
+    onIpAccessLogGridActive: function(grid){
+        say('Hit: onIpAccessLogGridActive');
         grid.getStore().load();
     }
 

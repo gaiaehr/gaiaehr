@@ -18,6 +18,7 @@
 
 
 Ext.define('App.store.administration.IpAccessLog', {
+    storeId: 'IpAccessLogStore',
     model: 'App.model.administration.IpAccessLog',
     extend: 'Ext.data.Store'
 });

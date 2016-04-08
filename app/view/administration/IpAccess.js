@@ -48,22 +48,42 @@ Ext.define('App.view.administration.IpAccess', {
                 itemId: 'IpAccessRulesGrid',
                 columnLines: true,
                 store: me.IpAccessRulesStore,
+                plugins: {
+                    ptype: 'rowediting',
+                    clicksToEdit: 2
+                },
                 columns: [
                     {
                         text: _('ip'),
-                        dataIndex: 'ip'
+                        dataIndex: 'ip',
+                        width: 400,
+                        editor: {
+                            xtype: 'textfield',
+                            allowBlank: false
+                        }
                     },
                     {
                         text: _('country_code'),
-                        dataIndex: 'country_code'
+                        dataIndex: 'country_code',
+                        editor: {
+                            xtype: 'combo',
+                            allowBlank: false
+                        }
                     },
                     {
                         text: _('rule'),
-                        dataIndex: 'rule'
+                        dataIndex: 'rule',
+                        editor: {
+                            xtype: 'combo',
+                            allowBlank: false
+                        }
                     },
                     {
                         text: _('active'),
-                        dataIndex: 'active'
+                        dataIndex: 'active',
+                        editor: {
+                            xtype: 'checkboxfield'
+                        }
                     }
                 ],
                 tbar: [
@@ -88,13 +108,14 @@ Ext.define('App.view.administration.IpAccess', {
                 flex: 1,
                 frame: true,
                 title: _('network_log'),
-                itemId: 'IpAccessoLogGrid',
+                itemId: 'IpAccessLogGrid',
                 columnLines: true,
                 store: me.IpAccessLogStore,
                 columns: [
                     {
                         text: _('ip'),
-                        dataIndex: 'ip'
+                        dataIndex: 'ip',
+                        width: 400
                     },
                     {
                         text: _('country_code'),
@@ -118,18 +139,8 @@ Ext.define('App.view.administration.IpAccess', {
             }
         ];
 
-    },
+        me.callParent(arguments);
 
-    /**
-     * This function is called from Viewport.js when
-     * this panel is selected in the navigation panel.
-     * place inside this function all the functions you want
-     * to call every this panel becomes active
-     */
-    onActive: function(callback){
-        this.IpAccessRulesStore.load();
-        this.IpAccessLogStore.load();
-        callback(true);
     }
 
 });

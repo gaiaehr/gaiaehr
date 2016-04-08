@@ -18,6 +18,9 @@
 
 Ext.define('App.view.administration.IpAccess', {
     extend: 'App.ux.RenderPanel',
+    requires: [
+        'Ext.grid.plugin.RowEditing'
+    ],
     xtype: 'ipaccesspanel',
     itemId: 'IpAccessPanel',
     border: false,
@@ -53,6 +56,7 @@ Ext.define('App.view.administration.IpAccess', {
                 itemId: 'IpAccessRulesGrid',
                 columnLines: true,
                 store: me.IpAccessRulesStore,
+                selType: 'rowmodel',
                 plugins: {
                     ptype: 'rowediting',
                     clicksToEdit: 2

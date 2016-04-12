@@ -26,11 +26,11 @@ Ext.define('App.controller.administration.IpAccess', {
         },
         {
             ref: 'IpAccessRulesGrid',
-            selector: '#IpAccessRulesGrid'
+            selector: 'ipaccesspanel #IpAccessRulesGrid'
         },
         {
             ref: 'IpAccessLogGrid',
-            selector: '#IpAccessLogGrid'
+            selector: 'ipaccesspanel #IpAccessLogGrid'
         }
     ],
 
@@ -49,13 +49,27 @@ Ext.define('App.controller.administration.IpAccess', {
     },
 
     onAddIpRuleClick: function(btn){
-        this.getIpAccessRulesGrid().getStore().add();
+        var me = this,
+            rulesGrid = me.getIpAccessRulesGrid();
+
+        rulesGrid.editingPlugin.cancelEdit();
+        rulesGrid.getStore().insert(0,
+            {
+                create_date: new Date(),
+                update_date: new Date(),
+                active: 1
+            }
+        );
+        rulesGrid.editingPlugin.startEdit(0, 0);
     },
 
     onIpAccessPanelActive: function(){
-        say('Hit');
-        this.getIpAccessRulesGrid().getStore().load();
-        this.getIpAccessLogGrid().getStore().load();
+        var me = this,
+            rulesGrid = me.getIpAccessRulesGrid(),
+            logGrid = me.getIpAccessLogGrid();
+
+        rulesGrid.getStore().load();
+        logGrid.getStore().load();
     }
 
 });

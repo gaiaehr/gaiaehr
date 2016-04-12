@@ -2161,7 +2161,7 @@ $API = [
     ],
     'GeoIpLocation' => [
         'methods' => [
-            'getAllCountries' => [
+            'getAllLocations' => [
                 'len' => 1
             ]
         ]

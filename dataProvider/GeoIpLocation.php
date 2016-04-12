@@ -36,7 +36,11 @@ class GeoIpLocation
 		return $sth->fetch(PDO::FETCH_ASSOC);
 	}
 
-    public function getAllCountries($params){
+    /**
+     * Simple method to bring all the rows of the records from the GeoIpLocation
+     * @param $params
+     */
+    public function getAllLocations($params){
         $this->GeoIpLocationModel->load($params)->all();
     }
 

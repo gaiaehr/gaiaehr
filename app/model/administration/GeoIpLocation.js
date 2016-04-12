@@ -61,7 +61,7 @@ Ext.define('App.model.administration.GeoIpLocation', {
     proxy: {
         type: 'direct',
         api: {
-            read: 'GeoIpLocation.getAllCountries'
+            read: 'GeoIpLocation.getAllLocations'
         }
     }
 });

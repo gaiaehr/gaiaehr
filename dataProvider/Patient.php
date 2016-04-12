@@ -279,7 +279,6 @@ class Patient {
 			$params->lname = trim($params->lname);
 		}
 		$params->create_uid = $_SESSION['user']['id'];
-		$params->create_uid = $_SESSION['user']['id'];
 		$params->create_date = date('Y-m-d H:i:s');
 		$params->update_date = date('Y-m-d H:i:s');
 		$patient = $this->savePatient($params);
@@ -768,38 +767,4 @@ class Patient {
 	}
 
 }
-
-//DROP FUNCTION IF EXISTS UC_FIRST;
-//CREATE FUNCTION UC_FIRST(oldWord VARCHAR(255)) RETURNS VARCHAR(255) RETURN CONCAT(UCASE(SUBSTRING(oldWord, 1, 1)),SUBSTRING(oldWord, 2));
-//
-//
-//
-//
-//DROP FUNCTION IF EXISTS UC_DELIMETER;# MySQL returned an empty result set (i.e. zero rows).
-//
-//DELIMITER //
-//CREATE FUNCTION UC_DELIMETER(oldName VARCHAR(255), delim VARCHAR(1), trimSpaces BOOL) RETURNS VARCHAR(255)
-//BEGIN
-//  SET @oldString := oldName;
-//  SET @newString := "";
-//
-//  tokenLoop: LOOP
-//    IF trimSpaces THEN SET @oldString := TRIM(BOTH " " FROM @oldString); END IF;
-//
-//    SET @splitPoint := LOCATE(delim, @oldString);
-//
-//    IF @splitPoint = 0 THEN
-//      SET @newString := CONCAT(@newString, UC_FIRST(@oldString));
-//      LEAVE tokenLoop;
-//    END IF;
-//
-//    SET @newString := CONCAT(@newString, UC_FIRST(SUBSTRING(@oldString, 1, @splitPoint)));
-//    SET @oldString := SUBSTRING(@oldString, @splitPoint+1);
-//  END LOOP tokenLoop;
-//
-//  RETURN @newString;
-//END//
-//# MySQL returned an empty result set (i.e. zero rows).
-//
-//DELIMITER ;
 

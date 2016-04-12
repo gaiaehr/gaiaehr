@@ -31,9 +31,15 @@ class IpAccessRules {
 	 */
 	private $l;
 
+    private $GeoIpCountryModel;
+
 	function __construct() {
 		$this->r = MatchaModel::setSenchaModel('App.model.administration.IpAccessRule');
 		$this->l = MatchaModel::setSenchaModel('App.model.administration.IpAccessLog');
+
+        // If the object is set, do not load the model again, reuse it.
+        if(!isset($this->GeoIpCountryModel))
+            $this->GeoIpCountryModel = MatchaModel::setSenchaModel('App.model.administration.GeoIpLocation');
 	}
 
 	/**
@@ -57,6 +63,11 @@ class IpAccessRules {
 	 * @return array
 	 */
 	public function createIpAccessRule($params) {
+        $geoCountry = self::__lookIpCountry($params->ip);
+        $params->country_code = $geoCountry['country_code'];
+        $params->country_name = $geoCountry['country'];
+        $params->create_uid = $_SESSION['user']['id'];
+        $params->update_uid = $_SESSION['user']['id'];
 		return $this->r->save($params);
 	}
 
@@ -65,8 +76,26 @@ class IpAccessRules {
 	 * @return array
 	 */
 	public function updateIpAccessRule($params) {
+        $geoCountry = self::__lookIpCountry($params->ip);
+        $params->update_uid = $_SESSION['user']['id'];
+        $params->country_code = $geoCountry['country_code'];
+        $params->country_name = $geoCountry['country'];
 		return $this->r->save($params);
 	}
+
+    private static function __lookIpCountry($ipAddress){
+        $sql = 'SELECT *
+                FROM geo_ip_location
+                WHERE (INET_ATON(:ipaddress) BETWEEN INET_ATON(ip_start) AND INET_ATON(ip_end))';
+        $conn = Matcha::getConn();
+        $statement = $conn->prepare($sql);
+        $statement->execute(
+            [
+                ':ipaddress' => $ipAddress
+            ]
+        );
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
 
 	/**
 	 * @param $params

@@ -36,6 +36,19 @@ Ext.define('App.model.administration.IpAccessRule', {
 			type: 'string',
 			len: 130
 		},
+        {
+            name: 'country_name',
+            type: 'string',
+            store: false
+        },
+        {
+            name: 'country',
+            type: 'string',
+            store: false,
+            convert: function (v, record) {
+                return record.data.country_name + '('+record.data.country_code+')';
+            }
+        },
 		{
 			name: 'rule',
 			type: 'string',
@@ -76,6 +89,9 @@ Ext.define('App.model.administration.IpAccessRule', {
 			read: 'IpAccessRules.getIpAccessRules',
 			create: 'IpAccessRules.createIpAccessRule',
 			update: 'IpAccessRules.updateIpAccessRule'
-		}
+		},
+        writer: {
+            writeAllFields: true
+        }
 	}
 });

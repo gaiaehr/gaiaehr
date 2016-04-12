@@ -41,7 +41,7 @@ class GeoIpLocation
      * @param $params
      */
     public function getAllLocations($params){
-        $this->GeoIpLocationModel->load($params)->all();
+        return $this->GeoIpLocationModel->load($params)->all();
     }
 
 	private static function getIpV4Number($ip)	{

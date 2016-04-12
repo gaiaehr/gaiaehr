@@ -44,31 +44,14 @@ Ext.define('App.view.administration.IpAccess', {
             autoSync: false
         });
 
-        me.GeoIpLocationStore = Ext.create('App.store.administration.GeoIpLocation', {
-            storeId: 'GeoIpLocationStore',
-            remoteFilter: true,
-            autoLoad: false,
-            autoSync: false
-        });
-
         me.RuleStore = Ext.create('Ext.data.Store',{
             fields: [
-                {
-                    name: 'id', type: 'string'
-                },
-                {
-                    name: 'ruleName', type: 'string'
-                }
+                { name: 'id', type: 'string' },
+                { name: 'ruleName', type: 'string' }
             ],
             data : [
-                {
-                    id: '',
-                    ruleName: 'Allow'
-                },
-                {
-                    id: 'BLK',
-                    ruleName: 'Block'
-                }
+                { id: '', ruleName: 'Allow' },
+                { id: 'BLK', ruleName: 'Block' }
             ]
         });
 
@@ -93,25 +76,21 @@ Ext.define('App.view.administration.IpAccess', {
                         width: 200,
                         editor: {
                             xtype: 'textfield',
-                            allowBlank: false
+                            allowBlank: false,
+                            validateOnBlur: true,
+                            vtype: 'usernameField'
                         }
                     },
                     {
-                        text: _('country_code'),
-                        dataIndex: 'country_code',
-                        width: 300,
-                        editor: {
-                            xtype: 'combo',
-                            allowBlank: false,
-                            store: me.GeoIpLocationStore,
-                            queryMode: 'remote',
-                            displayField: 'country',
-                            valueField: 'id'
-                        }
+                        text: _('country_name'),
+                        dataIndex: 'country',
+                        align: 'center',
+                        width: 300
                     },
                     {
                         text: _('rule'),
                         dataIndex: 'rule',
+                        align: 'center',
                         editor: {
                             xtype: 'combo',
                             allowBlank: false,
@@ -125,6 +104,7 @@ Ext.define('App.view.administration.IpAccess', {
                         text: _('active'),
                         dataIndex: 'active',
                         renderer: me.boolRenderer,
+                        align: 'center',
                         editor: {
                             xtype: 'checkboxfield'
                         }

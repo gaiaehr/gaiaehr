@@ -692,6 +692,7 @@ $LANG = array(
 	'state'									=> 'State',
 	'postal_code'							=> 'Postal Code',
 	'country_code'							=> 'Country Code',
+    'country_name'							=> 'Country Name',
 	'tax_id'								=> 'Tax ID',
 	'service_location'						=> 'Service Location',
 	'billing_location'						=> 'Billing Location',

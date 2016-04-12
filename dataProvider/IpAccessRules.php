@@ -63,11 +63,11 @@ class IpAccessRules {
 	 * @return array
 	 */
 	public function createIpAccessRule($params) {
+        $params->create_uid = $_SESSION['user']['id'];
+        $params->update_uid = $_SESSION['user']['id'];
         $geoCountry = self::__lookIpCountry($params->ip);
         $params->country_code = $geoCountry['country_code'];
         $params->country_name = $geoCountry['country'];
-        $params->create_uid = $_SESSION['user']['id'];
-        $params->update_uid = $_SESSION['user']['id'];
 		return $this->r->save($params);
 	}
 
@@ -76,8 +76,8 @@ class IpAccessRules {
 	 * @return array
 	 */
 	public function updateIpAccessRule($params) {
-        $geoCountry = self::__lookIpCountry($params->ip);
         $params->update_uid = $_SESSION['user']['id'];
+        $geoCountry = self::__lookIpCountry($params->ip);
         $params->country_code = $geoCountry['country_code'];
         $params->country_name = $geoCountry['country'];
 		return $this->r->save($params);

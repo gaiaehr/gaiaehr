@@ -34,12 +34,12 @@ Ext.define('App.model.administration.IpAccessRule', {
 		{
 			name: 'country_code',
 			type: 'string',
-			len: 130
+			len: 50
 		},
         {
             name: 'country_name',
             type: 'string',
-            store: false
+            len: 100
         },
         {
             name: 'country',

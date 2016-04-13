@@ -39,7 +39,8 @@ class HL7ServerAbstract implements MessageComponentInterface
 	public function onOpen(ConnectionInterface $conn)
     {
 		// Store the new connection to send messages to later
-		$conn->handler = new $this->class($this->port, $this->site);
+	    $class = new ReflectionClass($this->class);
+	    $conn->handler = $class->newInstanceArgs(array($this->port, $this->site));
 		$this->clients->attach($conn);
 	}
 

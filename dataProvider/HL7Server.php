@@ -92,11 +92,12 @@ class HL7Server {
 	 */
 	protected $updateKey = 'pid';
 
-	function __construct($port, $site) {
-		$this->site = $site;
+	function __construct($port = 9000, $site = 'default') {
+		$this->site = defined('site_id') ? site_id : $site;
+
 		if(!defined('_GaiaEXEC'))
 			define('_GaiaEXEC', 1);
-		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php?site=' . $this->site);
+		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
 		include_once(ROOT . '/classes/MatchaHelper.php');
 		include_once(ROOT . '/lib/HL7/HL7.php');
@@ -106,9 +107,6 @@ class HL7Server {
         include_once(ROOT . '/dataProvider/Facilities.php');
 
 		new MatchaHelper();
-
-		error_log('site_id: ' . $this->site);
-		error_log('site_id: ' . site_id);
 
 		/** HL7 Models */
         if(!isset($this->s))
@@ -317,6 +315,9 @@ class HL7Server {
 		foreach($msg->data['PATIENT_RESULT'] AS $patient_result){
 			$patient = isset($patient_result['PATIENT']) ? $patient_result['PATIENT'] : null;
 
+			// Patient validation...
+
+			
 			foreach($patient_result['ORDER_OBSERVATION'] AS $order){
 				$orc = $order['ORC'];
 				$obr = $order['OBR'];

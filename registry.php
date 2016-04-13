@@ -95,8 +95,8 @@ $_SESSION['client']['browser'] = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['
 $_SESSION['client']['os'] = (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows') === false ? 'Linux' : 'Windows');
 
 // default site
-if(!defined('SITE')) define('SITE', (isset($_GET['site']) ? $_GET['site'] : 'default'));
-if(!isset($site)) $site = (isset($_GET['site']) ? $_GET['site'] : 'default');
+if(!defined('SITE')) define('SITE', (isset($_REQUEST['site']) ? $_REQUEST['site'] : 'default'));
+if(!isset($site)) $site = (isset($_REQUEST['site']) ? $_REQUEST['site'] : 'default');
 
 /**
  * Enable the error and also set the ROOT directory for

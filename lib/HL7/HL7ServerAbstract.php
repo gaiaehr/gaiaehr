@@ -28,11 +28,6 @@ class HL7ServerAbstract implements MessageComponentInterface {
 		$this->method = $method;
 		$this->token = $token;
 
-		error_log($site);
-		error_log($port);
-		error_log($class);
-		error_log($method);
-
 		//TODO hard coded for now
 		date_default_timezone_set('America/Puerto_Rico');
 		$this->clients = new \SplObjectStorage;

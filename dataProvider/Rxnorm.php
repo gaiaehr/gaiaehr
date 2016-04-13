@@ -17,7 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-class Rxnorm {
+class Rxnorm
+{
 	/**
 	 * @var PDO
 	 */
@@ -74,12 +75,34 @@ class Rxnorm {
 		return $rec['ATV'];
 	}
 
-    public function getIngredient($RxNormCode){
+    /**
+     * Method to convert from Gold Standard Code to RxNorm code.
+     * @param $GSCode
+     * @return mixed
+     */
+    public function getMetathesaurusRxNormCode($GSCode)
+    {
+        $Statement = $this->db->prepare("SELECT * FROM rxnconso WHERE CODE=:gs_code AND TTY='MTH_RXN_CD'");
+        $Statement->execute([':gs_code' => $GSCode]);
+        $RxNormRecord = $Statement->fetchAll(PDO::FETCH_ASSOC);
+        $RxNormRecord = $RxNormRecord[0];
+        return $RxNormRecord['RXCUI'];
+    }
 
+    /**
+     * getIngredient
+     * Method to do search in the RxNorm medication by it's ingredients, this depends if the search
+     * is made by SCD (Clinic) or SBD (Brand)
+     * @param $RxNormCode
+     * @return array
+     */
+    public function getIngredient($RxNormCode)
+    {
         // Fetch the RxNorm entire record, this because we need the entire RxNorm Concepts record
         $Statement = $this->db->prepare("SELECT * FROM rxnconso WHERE CODE=:code AND (TTY='SCD' OR TTY='SBD')");
         $Statement->execute([':code' => $RxNormCode]);
         $RxNormRecord = $Statement->fetchAll(PDO::FETCH_ASSOC);
+        $RxNormRecord = $RxNormRecord[0];
 
         // If the record has the Branded Record execute SQL to extract
         // the ingredient of that branded drug
@@ -88,16 +111,19 @@ class Rxnorm {
             $Statement = $this->db->prepare("SELECT * FROM rxnrel WHERE RXCUI2=:rxcui AND RELA='has_ingredient'");
             $Statement->execute([':rxcui' => $RxNormRecord['RXCUI']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             // Fetch the relationship for trademark
             $Statement = $this->db->prepare("SELECT * FROM rxnrel WHERE RXCUI1=:rxcui AND RELA='has_tradename'");
             $Statement->execute([':rxcui' => $Record['RXCUI1']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             // Extract the ingredient
             $Statement = $this->db->prepare("SELECT * FROM gaiadb.rxnconso WHERE RXCUI=:rxcui AND SAB='RXNORM'");
             $Statement->execute([':rxcui' => $Record['RXCUI2']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             return $Record;
         }
@@ -108,16 +134,19 @@ class Rxnorm {
             $Statement = $this->db->prepare("SELECT * FROM rxnrel WHERE RXCUI2=:rxcui AND RELA='consists_of'");
             $Statement->execute([':rxcui' => $RxNormRecord['RXCUI']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             // Fetch the relationship for ingredient of...
             $Statement = $this->db->prepare("SELECT * FROM rxnrel WHERE RXCUI1=:rxcui AND RELA='ingredient_of'");
             $Statement->execute([':rxcui' => $Record['RXCUI1']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             // Extract the ingredient
             $Statement = $this->db->prepare("SELECT * FROM rxnconso WHERE RXCUI=:rxcui AND SAB='RXNORM'");
             $Statement->execute([':rxcui' => $Record['RXCUI2']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             return $Record;
         }
@@ -125,11 +154,13 @@ class Rxnorm {
             $Statement = $this->db->prepare("SELECT * FROM rxnrel WHERE RXCUI1=:rxcui AND RELA='has_tradename'");
             $Statement->execute([':rxcui' => $RxNormRecord['RXCUI']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             // Extract the ingredient
             $Statement = $this->db->prepare("SELECT * FROM rxnconso WHERE RXCUI=:rxcui AND SAB='RXNORM'");
             $Statement->execute([':rxcui' => $Record['RXCUI2']]);
             $Record = $Statement->fetchAll(PDO::FETCH_ASSOC);
+            $Record = $Record[0];
 
             return $Record;
         }

@@ -77,7 +77,7 @@ class Practice
     public function addPharmacy(stdClass $params){
 	    $this->setPharmacyModel();
 	    $record = $this->p->save($params);
-	    $params->id = $record['id'];
+	    $params->id = $record->id;
 	    unset($record);
         $params = $this->addAddress($params);
         $params = $this->addPhones($params);
@@ -155,16 +155,6 @@ class Practice
         return $params;
     }
 
-//    public function getInsuranceNumbers(stdClass $params)
-//    {
-//        return $params;
-//    }
-//
-//    public function getX12Partners(stdClass $params)
-//    {
-//        return $params;
-//    }
-
     private function addAddress($params){
 	    $o = new stdClass();
 	    $o->line1 = $params->line1;
@@ -176,7 +166,7 @@ class Practice
         $o->country = $params->country;
         $o->foreign_id = $params->id;
 	    $record = $this->address->save($o);
-	    $params->address_id = $record['id'];
+	    $params->address_id = $record->id;
 	    unset($o, $record);
 	    if(is_object($this->p)){
 		    $this->p->save($params);
@@ -271,12 +261,12 @@ class Practice
 	    $p->foreign_type = $foreignType;
 	    $p->foreign_id = $params->id;
 	    $record = $this->phone->save($p);
-	    $params->phone_id = $record['id'];
+	    $params->phone_id = $record->id;
 	    $params->phone_full = Phone::fullPhone(
-            $record['country_code'],
-            $record['area_code'],
-            $record['prefix'],
-            $record['number']
+            $record->country_code,
+            $record->area_code,
+            $record->prefix,
+            $record->number
         );
 		unset($p, $record);
 	    $f = new stdClass();
@@ -288,12 +278,12 @@ class Practice
 	    $f->foreign_type = $foreignType;
 	    $f->foreign_id = $params->id;
 	    $record = $this->phone->save($f);
-	    $params->fax_id = $record['id'];
+	    $params->fax_id = $record->id;
 	    $params->fax_full = Phone::fullPhone(
-            $record['country_code'],
-            $record['area_code'],
-            $record['prefix'],
-            $record['number']
+            $record->country_code,
+            $record->area_code,
+            $record->prefix,
+            $record->number
         );
 	    unset($f, $record);
 	    if(is_object($this->p)){
@@ -318,10 +308,10 @@ class Practice
 	    $p->foreign_id = $params->id;
 	    $record = $this->phone->save($p);
 	    $params->phone_full = Phone::fullPhone(
-            $record['country_code'],
-            $record['area_code'],
-            $record['prefix'],
-            $record['number']
+            $record->country_code,
+            $record->area_code,
+            $record->prefix,
+            $record->number
         );
 	    unset($p, $record);
 	    $f = new stdClass();
@@ -335,10 +325,10 @@ class Practice
 	    $f->foreign_id = $params->id;
 	    $record = $this->phone->save($f);
 	    $params->fax_full = Phone::fullPhone(
-            $record['country_code'],
-            $record['area_code'],
-            $record['prefix'],
-            $record['number']
+            $record->country_code,
+            $record->area_code,
+            $record->prefix,
+            $record->number
         );
 	    unset($f, $record);
 	    return $params;

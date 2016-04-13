@@ -284,44 +284,11 @@ Ext.define('App.view.patient.Vitals', {
 			}
 		});
 
-
-//		{
-//			text: _('oxygen_saturation'),
-//			dataIndex: 'oxygen_saturation'
-//		},
-//		{
-//			text: _('head_circumference_in'),
-//			dataIndex: 'head_circumference_in',
-//			width: 150
-//		},
-//		{
-//			text: _('head_circumference_cm'),
-//			dataIndex: 'head_circumference_cm',
-//			width: 150,
-//			hidden: true
-//		},
-//		{
-//			text: _('waist_circumference_in'),
-//			dataIndex: 'waist_circumference_in',
-//			width: 150
-//		},
-//		{
-//			text: _('waist_circumference_cm'),
-//			dataIndex: 'waist_circumference_cm',
-//			width: 150,
-//			hidden: true
-//		},
-
 		columns.push({
 			text: _('bmi'),
 			dataIndex: 'bmi',
 			width: 50
 		});
-
-//		{
-//			text: _('bmi_status'),
-//			dataIndex: 'bmi_status'
-//		}
 
 		columns.push({
 			text: _('other_notes'),

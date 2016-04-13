@@ -18,7 +18,7 @@
 
 Ext.define('App.view.administration.Facilities', {
     extend: 'App.ux.RenderPanel',
-    pageTitle: i18n('facilities_active'),
+    pageTitle: _('facilities_active'),
 
     initComponent: function(){
         var me = this;

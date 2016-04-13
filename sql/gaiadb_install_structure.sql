@@ -37,7 +37,7 @@
   KEY `IK_perm_key` (`perm_key`),
   KEY `IK_seq` (`seq`),
   KEY `IK_active` (`active`)
-) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `acl_role_perms`;CREATE TABLE `acl_role_perms` (
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `acl_role_perms`;CREATE TABLE `acl_role_perms` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `value` tinyint(1) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
@@ -46,7 +46,7 @@
   PRIMARY KEY (`id`),
   KEY `IK_role_id` (`role_id`),
   KEY `IK_perm_id` (`perm_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1126 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `acl_roles`;CREATE TABLE `acl_roles` (
+) ENGINE=InnoDB AUTO_INCREMENT=1128 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `acl_roles`;CREATE TABLE `acl_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(255) DEFAULT NULL COMMENT 'Role Name',
   `seq` int(11) DEFAULT NULL,
@@ -373,18 +373,19 @@
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `ip_access_rules`;CREATE TABLE `ip_access_rules` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `ip` varchar(40) DEFAULT NULL,
-  `country_code` varchar(130) DEFAULT NULL,
+  `country_code` varchar(50) DEFAULT NULL,
+  `country_name` varchar(100) DEFAULT NULL,
   `rule` varchar(10) DEFAULT NULL,
   `weight` int(11) DEFAULT NULL,
   `active` tinyint(1) DEFAULT NULL,
   `create_uid` int(11) DEFAULT NULL,
   `update_uid` int(11) DEFAULT NULL,
-  `create_date` datetime DEFAULT NULL,
-  `update_date` datetime DEFAULT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IK_weight` (`weight`),
   KEY `IK_active` (`active`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `labs_panels`;CREATE TABLE `labs_panels` (
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `labs_panels`;CREATE TABLE `labs_panels` (
   `id` bigint(20) NOT NULL,
   `code_text_short` varchar(255) DEFAULT NULL,
   `parent_id` bigint(20) DEFAULT NULL,
@@ -604,7 +605,7 @@
   KEY `pid` (`pid`),
   KEY `eid` (`eid`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1241271 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
+) ENGINE=InnoDB AUTO_INCREMENT=1250319 DEFAULT CHARSET=utf8 COMMENT='Data INSERT UPDATE DELETE Logs';DROP TABLE IF EXISTS `users`;CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `code` varchar(40) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL COMMENT 'acl_user_roles relation',
@@ -671,7 +672,7 @@
   `logout` int(11) DEFAULT NULL,
   `last_request` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5178 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
+) ENGINE=InnoDB AUTO_INCREMENT=5198 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_pools`;CREATE TABLE `patient_pools` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `pid` bigint(20) DEFAULT NULL,
   `uid` bigint(20) DEFAULT NULL COMMENT 'user id that is treating the patient',
@@ -1318,7 +1319,7 @@
   `pool_area_id` int(11) DEFAULT NULL,
   `read_only` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2475 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_contacts`;CREATE TABLE `patient_contacts` (
+) ENGINE=InnoDB AUTO_INCREMENT=2476 DEFAULT CHARSET=utf8;DROP TABLE IF EXISTS `patient_contacts`;CREATE TABLE `patient_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pid` int(11) NOT NULL,
   `uid` int(11) NOT NULL,
@@ -1490,7 +1491,7 @@
   `pid` int(11) DEFAULT NULL COMMENT 'patient ID',
   `eid` int(11) DEFAULT NULL COMMENT 'encounter id',
   `uid` int(11) DEFAULT NULL COMMENT 'user ID who created the order',
-  `order_type` varchar(255) DEFAULT NULL COMMENT 'rad || lab',
+  `order_type` varchar(255) DEFAULT NULL COMMENT 'Order is radiology or laboratory.',
   `code` varchar(25) DEFAULT NULL COMMENT 'Order code',
   `description` varchar(255) DEFAULT NULL COMMENT 'Order Text Description',
   `code_type` varchar(15) DEFAULT NULL COMMENT 'Order code type LOINC',
@@ -1500,8 +1501,8 @@
   `status` varchar(25) DEFAULT NULL COMMENT 'order status',
   `note` varchar(255) DEFAULT NULL,
   `hl7_recipient_id` int(11) DEFAULT NULL COMMENT 'laboratory id if electronic request',
-  `void` tinyint(1) NOT NULL DEFAULT '0',
-  `void_comment` varchar(100) DEFAULT NULL,
+  `void` tinyint(1) DEFAULT NULL COMMENT 'VOID the Order',
+  `void_comment` varchar(100) DEFAULT NULL COMMENT 'VOID Comments',
   PRIMARY KEY (`id`),
   KEY `pid` (`pid`),
   KEY `eid` (`eid`),
@@ -1509,7 +1510,8 @@
   KEY `date_ordered` (`date_ordered`),
   KEY `date_collected` (`date_collected`),
   KEY `priority` (`priority`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `IK_order_type` (`order_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;DROP TABLE IF EXISTS `patient_referrals`;CREATE TABLE `patient_referrals` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `eid` int(11) DEFAULT NULL COMMENT 'encounter id',

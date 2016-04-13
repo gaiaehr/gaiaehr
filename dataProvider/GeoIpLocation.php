@@ -17,18 +17,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-class GeoIpLocation {
+class GeoIpLocation
+{
+
+    var $GeoIpLocationModel;
+
+    function __construct(){
+        if(!isset($this->GeoIpLocationModel))
+            $this->GeoIpLocationModel = MatchaModel::setSenchaModel('App.model.administration.GeoIpLocation');
+    }
 
 	public static function getGeoLocation($ip){
-
 		$conn = Matcha::getConn();
 		$sql = 'SELECT * FROM `geo_ip_location` WHERE ? BETWEEN `ip_start_num` AND `ip_end_num`';
 		$ip_number = self::isIpV4($ip) ? self::getIpV4Number($ip) : self::getIpV6Number($ip);
 		$sth = $conn->prepare($sql);
 		$sth->execute([$ip_number]);
 		return $sth->fetch(PDO::FETCH_ASSOC);
-
 	}
+
+    /**
+     * Simple method to bring all the rows of the records from the GeoIpLocation
+     * @param $params
+     */
+    public function getAllLocations($params){
+        return $this->GeoIpLocationModel->load($params)->all();
+    }
 
 	private static function getIpV4Number($ip)	{
 		if ($ip == '') {
@@ -51,8 +65,7 @@ class GeoIpLocation {
 
 			if($ipv6long){
 				$ipv6long = $bin . $ipv6long;
-			}
-			else{
+			}else{
 				$ipv6long = $bin;
 			}
 			$bits--;

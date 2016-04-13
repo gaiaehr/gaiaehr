@@ -18,6 +18,7 @@
 
 
 Ext.define('App.store.administration.IpAccessRules', {
+    storeId: 'IpAccessRulesStore',
     model: 'App.model.administration.IpAccessRule',
     extend: 'Ext.data.Store'
 });

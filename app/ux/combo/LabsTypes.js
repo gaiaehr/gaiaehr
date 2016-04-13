@@ -27,7 +27,6 @@ Ext.define('App.ux.combo.LabsTypes', {
 
 		Ext.apply(this, {
 			editable    : false,
-			//queryMode   : 'local',
 			displayField: 'loinc_name',
 			valueField  : 'loinc_name',
 			emptyText   : _('select'),

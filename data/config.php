@@ -129,6 +129,9 @@ $API = [
             ],
             'deleteIpAccessRule' => [
                 'len' => 1
+            ],
+            'getIpAccessLogs' => [
+                'len' => 1
             ]
         ]
     ],
@@ -431,7 +434,6 @@ $API = [
             ]
         ]
     ],
-
 	'Modules' => [
 		'methods' => [
 			'getAllModules' => [
@@ -977,46 +979,6 @@ $API = [
             ]
         ]
     ],
-	/**
-	 * Medical Functions
-	 */
-//	'Medical' => array(
-//		'methods' => array(
-//			'getPatientLabsResults' => array(
-//				'len' => 1
-//			),
-//			'addPatientLabsResult' => array(
-//				'len' => 1
-//			),
-//			'updatePatientLabsResult' => array(
-//				'len' => 1
-//			),
-//			'deletePatientLabsResult' => array(
-//				'len' => 1
-//			),
-//			'signPatientLabsResultById' => array(
-//				'len' => 1
-//			),
-//			'reviewMedicalWindowEncounter' => array(
-//				'len' => 1
-//			),
-//			'getLabsLiveSearch' => array(
-//				'len' => 1
-//			),
-//			'reviewAllMedicalWindowEncounter' => array(
-//				'len' => 1
-//			),
-//			'getEncounterReviewByEid' => array(
-//				'len' => 1
-//			),
-//			'getSurgeriesLiveSearch' => array(
-//				'len' => 1
-//			),
-//			'getCDTLiveSearch' => array(
-//				'len' => 1
-//			)
-//		)
-//	),
 	 /**
 	 * AddressBook Functions
 	 */
@@ -2193,6 +2155,13 @@ $API = [
     'DrugInteractions' => [
         'methods' => [
             'getDrugInteractions' => [
+                'len' => 1
+            ]
+        ]
+    ],
+    'GeoIpLocation' => [
+        'methods' => [
+            'getAllLocations' => [
                 'len' => 1
             ]
         ]

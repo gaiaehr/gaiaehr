@@ -192,15 +192,10 @@ Ext.define('App.view.patient.LabOrders', {
 		}
 	],
 	tbar: [
-//		me.eLabBtn =
 		{
 			text: _('eLab'),
 			iconCls: 'icoSend',
 			itemId:'electronicLabOrderBtn'
-//			scope: me,
-//			handler: function(){
-//				alert('TODO...');
-//			}
 		},
 		'-',
 		'->',
@@ -210,23 +205,14 @@ Ext.define('App.view.patient.LabOrders', {
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId:'newLabOrderBtn'
-//			scope: me,
-//			handler: me.onAddOrder
 		},
 		'-',
-//		me.labPrintBtn =
 		{
 			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
 			itemId:'printLabOrderBtn'
-//			scope: me,
-//			handler: me.onPrintOrder
 		}
 	]
-//	listeners: {
-//		scope: me,
-//		selectionchange: me.onSelectionChange
-//	}
 });

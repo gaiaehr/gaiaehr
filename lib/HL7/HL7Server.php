@@ -18,8 +18,8 @@
  */
 use Ratchet\Server\IoServer;
 
-require (str_replace('\\', '/', dirname(__FILE__)) . '/../../vendor/autoload.php');
-require (str_replace('\\', '/', dirname(__FILE__)) . '/HL7ServerAbstract.php');
+require(str_replace('\\', '/', dirname(__FILE__)) . '/../../vendor/autoload.php');
+require(str_replace('\\', '/', dirname(__FILE__)) . '/HL7ServerAbstract.php');
 
 error_reporting(E_ALL);
 set_time_limit(0);
@@ -44,18 +44,17 @@ define('ROOT', str_replace('lib/HL7', '', str_replace('\\', '/', dirname(__FILE_
  */
 ini_set('display_errors', 1);
 $logPath = ROOT . 'sites/' . $site . '/log/';
-if(file_exists($logPath) && is_writable($logPath))
-{
-    $logFile = 'error_log.txt';
-    $oldUmask = umask(0);
-    clearstatcache();
-    if(!file_exists($logPath . $logFile)){
-        touch($logPath . $logFile);
-        chmod($logPath . $logFile, 0775);
-    }
-    if(is_writable($logPath . $logFile))
-        ini_set('error_log', $logPath . $logFile);
-    umask($oldUmask);
+if(file_exists($logPath) && is_writable($logPath)){
+	$logFile = 'error_log.txt';
+	$oldUmask = umask(0);
+	clearstatcache();
+	if(!file_exists($logPath . $logFile)){
+		touch($logPath . $logFile);
+		chmod($logPath . $logFile, 0775);
+	}
+	if(is_writable($logPath . $logFile))
+		ini_set('error_log', $logPath . $logFile);
+	umask($oldUmask);
 }
 
 chdir($path);

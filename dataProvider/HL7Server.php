@@ -92,11 +92,11 @@ class HL7Server {
 	 */
 	protected $updateKey = 'pid';
 
-	function __construct($port = '9000', $site = 'default') {
+	function __construct($port, $site) {
 		$this->site = $site;
 		if(!defined('_GaiaEXEC'))
 			define('_GaiaEXEC', 1);
-		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
+		require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php?site=' . $this->site);
 		include_once(ROOT . "/sites/{$this->site}/conf.php");
 		include_once(ROOT . '/classes/MatchaHelper.php');
 		include_once(ROOT . '/lib/HL7/HL7.php');
@@ -106,6 +106,9 @@ class HL7Server {
         include_once(ROOT . '/dataProvider/Facilities.php');
 
 		new MatchaHelper();
+
+		error_log('site_id: ' . $this->site);
+		error_log('site_id: ' . site_id);
 
 		/** HL7 Models */
         if(!isset($this->s))
@@ -122,7 +125,7 @@ class HL7Server {
         /**
          * User facilities
          */
-        $this->Facility = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        $this->Facility = new Facilities();
 
 		/** Order Models */
         if(!isset($this->pOrder))
@@ -210,7 +213,7 @@ class HL7Server {
 		$ack = new HL7();
 		$msh = $ack->addSegment('MSH');
 		$msh->setValue('3.1', 'GaiaEHR'); // Sending Application
-		$msh->setValue('4.1', $this->Facility->getgetCurrentFacility(true)); // Sending Facility
+		$msh->setValue('4.1', $this->Facility->getCurrentFacility(true)); // Sending Facility
 		$msh->setValue('9.1', 'ACK');
 		$msh->setValue('11.1', 'P'); // P = Production
 		$msh->setValue('12.1', '2.5.1'); // HL7 version
